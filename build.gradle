@@ -1,0 +1,15 @@
+plugins {
+    id 'java'
+    id 'maven'
+}
+
+group 'net.kyori'
+version '1.11-SNAPSHOT'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
