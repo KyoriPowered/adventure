@@ -106,10 +106,9 @@ public class TranslatableComponent extends BaseComponent {
     }
 
     @Override
-    public String toString() {
-        return Objects.toStringHelper(this)
+    protected void populateToString(final Objects.ToStringHelper builder) {
+        builder
             .add("key", this.key)
-            .add("args", this.args)
-            .toString();
+            .add("args", this.args);
     }
 }

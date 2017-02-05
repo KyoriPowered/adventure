@@ -3,6 +3,8 @@ package net.kyori.text.format;
 import com.google.gson.annotations.SerializedName;
 import net.kyori.text.Component;
 
+import java.util.Locale;
+
 /**
  * An enumeration of colors which may be applied to a {@link Component}.
  */
@@ -39,4 +41,9 @@ public enum TextColor {
     YELLOW,
     @SerializedName("white")
     WHITE;
+
+    @Override
+    public String toString() {
+        return this.name().toLowerCase(Locale.ROOT);
+    }
 }

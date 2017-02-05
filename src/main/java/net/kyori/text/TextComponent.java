@@ -50,9 +50,7 @@ public class TextComponent extends BaseComponent {
     }
 
     @Override
-    public String toString() {
-        return Objects.toStringHelper(this)
-            .add("content", this.content)
-            .toString();
+    protected void populateToString(final Objects.ToStringHelper builder) {
+        builder.add("content", this.content);
     }
 }

@@ -34,16 +34,6 @@ public class ComponentSerializer implements JsonDeserializer<Component>, JsonSer
         .create();
 
     /**
-     * Serialize a component into a json string.
-     *
-     * @param component the component
-     * @return the json string
-     */
-    public static String serialize(final Component component) {
-        return GSON.toJson(component);
-    }
-
-    /**
      * Deserialize a json string into a component.
      *
      * @param string the json string
@@ -51,6 +41,16 @@ public class ComponentSerializer implements JsonDeserializer<Component>, JsonSer
      */
     public static Component deserialize(final String string) {
         return GSON.fromJson(string, Component.class);
+    }
+
+    /**
+     * Serialize a component into a json string.
+     *
+     * @param component the component
+     * @return the json string
+     */
+    public static String serialize(final Component component) {
+        return GSON.toJson(component);
     }
 
     @Override
@@ -127,7 +127,7 @@ public class ComponentSerializer implements JsonDeserializer<Component>, JsonSer
             final JsonObject clickEvent = object.getAsJsonObject("clickEvent");
             if(clickEvent != null) {
                 @Nullable final JsonPrimitive rawAction = clickEvent.getAsJsonPrimitive("action");
-                @Nullable final ClickEvent.Action action = rawAction == null ? null : ClickEvent.Action.getById(rawAction.getAsString());
+                @Nullable final ClickEvent.Action action = rawAction == null ? null : context.deserialize(rawAction, ClickEvent.Action.class);
                 @Nullable final JsonPrimitive rawValue = clickEvent.getAsJsonPrimitive("value");
                 @Nullable final String value = rawValue == null ? null : rawValue.getAsString();
                 if(action != null && value != null && action.isReadable()) {
@@ -139,7 +139,7 @@ public class ComponentSerializer implements JsonDeserializer<Component>, JsonSer
             final JsonObject hoverEvent = object.getAsJsonObject("hoverEvent");
             if(hoverEvent != null) {
                 @Nullable final JsonPrimitive rawAction = hoverEvent.getAsJsonPrimitive("action");
-                @Nullable final HoverEvent.Action action = rawAction == null ? null : HoverEvent.Action.getById(rawAction.getAsString());
+                @Nullable final HoverEvent.Action action = rawAction == null ? null : context.deserialize(rawAction, HoverEvent.Action.class);
                 if(action != null && action.isReadable()) {
                     @Nullable final JsonElement rawValue = hoverEvent.get("value");
                     @Nullable final Component value = rawValue == null ? null : this.deserialize(rawValue, rawValue.getClass(), context);
@@ -182,7 +182,7 @@ public class ComponentSerializer implements JsonDeserializer<Component>, JsonSer
 
         if(!component.getChildren().isEmpty()) {
             final JsonArray extra = new JsonArray();
-            for(Component child : component.getChildren()) {
+            for(final Component child : component.getChildren()) {
                 extra.add(this.serialize(child, child.getClass(), context));
             }
             object.add("extra", extra);
@@ -198,13 +198,13 @@ public class ComponentSerializer implements JsonDeserializer<Component>, JsonSer
             if(component.getInsertion() != null) object.add("insertion", context.serialize(component.getInsertion()));
             if(component.getClickEvent() != null) {
                 final JsonObject clickEvent = new JsonObject();
-                clickEvent.addProperty("action", component.getClickEvent().getAction().getId());
+                clickEvent.add("action", context.serialize(component.getClickEvent().getAction()));
                 clickEvent.addProperty("value", component.getClickEvent().getValue());
                 object.add("clickEvent", clickEvent);
             }
             if(component.getHoverEvent() != null) {
                 final JsonObject hoverEvent = new JsonObject();
-                hoverEvent.addProperty("action", component.getHoverEvent().getAction().getId());
+                hoverEvent.add("action", context.serialize(component.getHoverEvent().getAction()));
                 hoverEvent.add("value", this.serialize(component.getHoverEvent().getValue(), type, context));
                 object.add("hoverEvent", hoverEvent);
             }

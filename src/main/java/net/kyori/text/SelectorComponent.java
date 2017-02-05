@@ -36,7 +36,7 @@ public class SelectorComponent extends BaseComponent {
     }
 
     @Override
-    public boolean equals(Object other) {
+    public boolean equals(final Object other) {
         if(this == other) return true;
         if(other == null || !(other instanceof SelectorComponent)) return false;
         if(!super.equals(other)) return false;
@@ -50,9 +50,7 @@ public class SelectorComponent extends BaseComponent {
     }
 
     @Override
-    public String toString() {
-        return Objects.toStringHelper(this)
-            .add("pattern", this.pattern)
-            .toString();
+    protected void populateToString(final Objects.ToStringHelper builder) {
+        builder.add("pattern", this.pattern);
     }
 }

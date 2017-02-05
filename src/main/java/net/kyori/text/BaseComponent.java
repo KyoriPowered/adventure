@@ -245,7 +245,9 @@ public abstract class BaseComponent implements Component {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        final Objects.ToStringHelper builder = Objects.toStringHelper(this);
+        this.populateToString(builder);
+        builder
             .add("children", this.children)
             .add("color", this.color)
             .add("obfuscated", this.obfuscated)
@@ -255,7 +257,10 @@ public abstract class BaseComponent implements Component {
             .add("italic", this.italic)
             .add("clickEvent", this.clickEvent)
             .add("hoverEvent", this.hoverEvent)
-            .add("insertion", this.insertion)
-            .toString();
+            .add("insertion", this.insertion);
+        return builder.toString();
+    }
+
+    protected void populateToString(final Objects.ToStringHelper builder) {
     }
 }

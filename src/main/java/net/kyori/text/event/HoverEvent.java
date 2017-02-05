@@ -1,12 +1,10 @@
 package net.kyori.text.event;
 
 import com.google.common.base.Objects;
+import com.google.gson.annotations.SerializedName;
 import net.kyori.text.Component;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Nullable;
+import java.util.Locale;
 
 /**
  * A hover event.
@@ -85,30 +83,24 @@ public final class HoverEvent {
         /**
          * Shows a {@link Component} when hovered over.
          */
-        SHOW_TEXT("show_text", true),
+        @SerializedName("show_text")
+        SHOW_TEXT(true),
         /**
          * Shows an achievement when hovered over.
          */
-        SHOW_ACHIEVEMENT("show_achievement", true),
+        @SerializedName("show_achievement")
+        SHOW_ACHIEVEMENT(true),
         /**
          * Shows an item instance when hovered over.
          */
-        SHOW_ITEM("show_item", true),
+        @SerializedName("show_item")
+        SHOW_ITEM(true),
         /**
          * Shows an entity when hovered over.
          */
-        SHOW_ENTITY("show_entity", true);
+        @SerializedName("show_entity")
+        SHOW_ENTITY(true);
 
-        /**
-         * A mapping of {@link #id} to the action for lookups.
-         */
-        private static final Map<String, Action> BY_ID = new HashMap<>();
-        /**
-         * The id of this action.
-         *
-         * <p>This is {@link #name()} in lowercase form.</p>
-         */
-        private final String id;
         /**
          * If this action is readable.
          *
@@ -116,18 +108,8 @@ public final class HoverEvent {
          */
         private final boolean readable;
 
-        Action(final String id, final boolean readable) {
-            this.id = id;
+        Action(final boolean readable) {
             this.readable = readable;
-        }
-
-        /**
-         * Gets the id of this action.
-         *
-         * @return the id of this action
-         */
-        public String getId() {
-            return this.id;
         }
 
         /**
@@ -140,21 +122,9 @@ public final class HoverEvent {
             return this.readable;
         }
 
-        /**
-         * Gets an action by its id.
-         *
-         * @param id the action id
-         * @return the action
-         */
-        @Nullable
-        public static Action getById(final String id) {
-            return BY_ID.get(id);
-        }
-
-        static {
-            for(final Action action : values()) {
-                BY_ID.put(action.name(), action);
-            }
+        @Override
+        public String toString() {
+            return this.name().toLowerCase(Locale.ROOT);
         }
     }
 }

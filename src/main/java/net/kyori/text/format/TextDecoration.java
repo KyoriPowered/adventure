@@ -2,6 +2,8 @@ package net.kyori.text.format;
 
 import net.kyori.text.Component;
 
+import java.util.Locale;
+
 /**
  * An enumeration of decorations which may be applied to a {@link Component}.
  */
@@ -26,4 +28,9 @@ public enum TextDecoration {
      * A decoration which makes text appear in italics.
      */
     ITALIC;
+
+    @Override
+    public String toString() {
+        return this.name().toLowerCase(Locale.ROOT);
+    }
 }

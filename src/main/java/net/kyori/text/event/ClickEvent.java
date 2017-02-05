@@ -1,11 +1,10 @@
 package net.kyori.text.event;
 
 import com.google.common.base.Objects;
+import com.google.gson.annotations.SerializedName;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Locale;
 
-import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 /**
@@ -76,36 +75,31 @@ public final class ClickEvent {
         /**
          * Opens a url when clicked.
          */
-        OPEN_URL("open_url", true),
+        @SerializedName("open_url")
+        OPEN_URL(true),
         /**
          * Opens a file when clicked.
          *
          * <p>This action is not readable, and may only be used locally on the client.</p>
          */
-        OPEN_FILE("open_file", false),
+        @SerializedName("open_file")
+        OPEN_FILE(false),
         /**
          * Runs a command when clicked.
          */
-        RUN_COMMAND("run_command", true),
+        @SerializedName("run_command")
+        RUN_COMMAND(true),
         /**
          * Suggests a command into the chat box.
          */
-        SUGGEST_COMMAND("suggest_command", true),
+        @SerializedName("suggest_command")
+        SUGGEST_COMMAND(true),
         /**
          * Changes the page of a book.
          */
-        CHANGE_PAGE("change_page", true);
+        @SerializedName("change_page")
+        CHANGE_PAGE(true);
 
-        /**
-         * A mapping of {@link #id} to the action for lookups.
-         */
-        private static final Map<String, Action> BY_ID = new HashMap<>();
-        /**
-         * The id of this action.
-         *
-         * <p>This is {@link #name()} in lowercase form.</p>
-         */
-        private final String id;
         /**
          * If this action is readable.
          *
@@ -113,18 +107,8 @@ public final class ClickEvent {
          */
         private final boolean readable;
 
-        Action(final String id, final boolean readable) {
-            this.id = id;
+        Action(final boolean readable) {
             this.readable = readable;
-        }
-
-        /**
-         * Gets the id of this action.
-         *
-         * @return the id of this action
-         */
-        public String getId() {
-            return this.id;
         }
 
         /**
@@ -137,21 +121,9 @@ public final class ClickEvent {
             return this.readable;
         }
 
-        /**
-         * Gets an action by its id.
-         *
-         * @param id the action id
-         * @return the action
-         */
-        @Nullable
-        public static Action getById(final String id) {
-            return BY_ID.get(id);
-        }
-
-        static {
-            for(final Action action : values()) {
-                BY_ID.put(action.name(), action);
-            }
+        @Override
+        public String toString() {
+            return this.name().toLowerCase(Locale.ROOT);
         }
     }
 }

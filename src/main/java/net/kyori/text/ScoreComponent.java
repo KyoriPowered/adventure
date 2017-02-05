@@ -85,11 +85,10 @@ public class ScoreComponent extends BaseComponent {
     }
 
     @Override
-    public String toString() {
-        return Objects.toStringHelper(this)
+    protected void populateToString(final Objects.ToStringHelper builder) {
+        builder
             .add("name", this.name)
             .add("objective", this.objective)
-            .add("value", this.value)
-            .toString();
+            .add("value", this.value);
     }
 }
