@@ -2,14 +2,25 @@ package net.kyori.text;
 
 import com.google.common.base.Objects;
 
+/**
+ * A scoreboard selector component.
+ */
 public class SelectorComponent extends BaseComponent {
 
+    /**
+     * The selector pattern.
+     */
     private final String pattern;
 
     public SelectorComponent(final String pattern) {
         this.pattern = pattern;
     }
 
+    /**
+     * Gets the selector pattern.
+     *
+     * @return the selector pattern
+     */
     public String getPattern() {
         return this.pattern;
     }

@@ -4,10 +4,22 @@ import com.google.common.base.Objects;
 
 import javax.annotation.Nullable;
 
+/**
+ * A scoreboard score component.
+ */
 public class ScoreComponent extends BaseComponent {
 
+    /**
+     * The score name.
+     */
     private final String name;
+    /**
+     * The score objective.
+     */
     private final String objective;
+    /**
+     * The value.
+     */
     @Nullable private final String value;
 
     public ScoreComponent(final String name, final String objective) {
@@ -20,14 +32,29 @@ public class ScoreComponent extends BaseComponent {
         this.value = value;
     }
 
+    /**
+     * Gets the score name.
+     *
+     * @return the score name
+     */
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Gets the objective name.
+     *
+     * @return the objective name
+     */
     public String getObjective() {
         return this.objective;
     }
 
+    /**
+     * Gets the value.
+     *
+     * @return the value
+     */
     @Nullable
     public String getValue() {
         return this.value;

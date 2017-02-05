@@ -24,16 +24,31 @@ import java.lang.reflect.Type;
 
 import javax.annotation.Nullable;
 
+/**
+ * A {@link Component} serializer and deserializer.
+ */
 public class ComponentSerializer implements JsonDeserializer<Component>, JsonSerializer<Component> {
 
     private static final Gson GSON = new GsonBuilder()
         .registerTypeHierarchyAdapter(Component.class, new ComponentSerializer())
         .create();
 
+    /**
+     * Serialize a component into a json string.
+     *
+     * @param component the component
+     * @return the json string
+     */
     public static String serialize(final Component component) {
         return GSON.toJson(component);
     }
 
+    /**
+     * Deserialize a json string into a component.
+     *
+     * @param string the json string
+     * @return the component
+     */
     public static Component deserialize(final String string) {
         return GSON.fromJson(string, Component.class);
     }

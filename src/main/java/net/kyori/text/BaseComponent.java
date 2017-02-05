@@ -11,17 +11,53 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+/**
+ * An abstract implementation of a text component.
+ */
 public abstract class BaseComponent implements Component {
 
+    /**
+     * The list of children.
+     *
+     * <p>This list is set to {@link #EMPTY_COMPONENT_LIST an empty list of components}
+     * by default to prevent unnecessary list creation for components with no children.</p>
+     */
     private List<Component> children = EMPTY_COMPONENT_LIST;
+    /**
+     * The color of this component.
+     */
     @Nullable private TextColor color;
+    /**
+     * If this component should have the {@link TextDecoration#OBFUSCATED obfuscated} decoration.
+     */
     @Nullable private Boolean obfuscated;
+    /**
+     * If this component should have the {@link TextDecoration#BOLD bold} decoration.
+     */
     @Nullable private Boolean bold;
+    /**
+     * If this component should have the {@link TextDecoration#STRIKETHROUGH strikethrough} decoration.
+     */
     @Nullable private Boolean strikethrough;
+    /**
+     * If this component should have the {@link TextDecoration#UNDERLINE underlined} decoration.
+     */
     @Nullable private Boolean underlined;
+    /**
+     * If this component should have the {@link TextDecoration#ITALIC italic} decoration.
+     */
     @Nullable private Boolean italic;
+    /**
+     * The click event to apply to this component.
+     */
     @Nullable private ClickEvent clickEvent;
+    /**
+     * The hover event to apply to this component.
+     */
     @Nullable private HoverEvent hoverEvent;
+    /**
+     * The string to insert when this component is shift-clicked in chat.
+     */
     @Nullable private String insertion;
 
     @Override
@@ -135,37 +171,6 @@ public abstract class BaseComponent implements Component {
 
     @Nullable
     @Override
-    public Boolean getDecoration(final TextDecoration decoration) {
-        switch(decoration) {
-            case BOLD: return this.getBold();
-            case ITALIC: return this.getItalic();
-            case UNDERLINE: return this.getUnderlined();
-            case STRIKETHROUGH: return this.getStrikethrough();
-            case OBFUSCATED: return this.getObfuscated();
-            default: return null;
-        }
-    }
-
-    @Override
-    public boolean getDecoration(final TextDecoration decoration, final boolean defaultValue) {
-        @Nullable final Boolean flag = this.getDecoration(decoration);
-        return flag != null ? flag : defaultValue;
-    }
-
-    @Override
-    public Component setDecoration(final TextDecoration decoration, final Boolean flag) {
-        switch(decoration) {
-            case BOLD: return this.setBold(flag);
-            case ITALIC: return this.setItalic(flag);
-            case UNDERLINE: return this.setUnderlined(flag);
-            case STRIKETHROUGH: return this.setStrikethrough(flag);
-            case OBFUSCATED: return this.setObfuscated(flag);
-            default: return this;
-        }
-    }
-
-    @Nullable
-    @Override
     public ClickEvent getClickEvent() {
         return this.clickEvent;
     }
@@ -201,37 +206,8 @@ public abstract class BaseComponent implements Component {
     }
 
     @Override
-    public Component mergeStyle(final Component that) {
-        this.mergeColor(that);
-        this.mergeDecorations(that);
-        this.mergeEvents(that);
-        return this;
-    }
-
-    @Override
-    public Component mergeColor(final Component that) {
-        if(that.getColor() != null) this.setColor(that.getColor());
-        return this;
-    }
-
-    @Override
-    public Component mergeDecorations(final Component that) {
-        for(final TextDecoration decoration : TextDecoration.values()) {
-            @Nullable final Boolean flag = that.getDecoration(decoration);
-            if(flag != null) this.setDecoration(decoration, flag);
-        }
-        return this;
-    }
-
-    @Override
-    public Component mergeEvents(final Component that) {
-        if(that.getClickEvent() != null) this.setClickEvent(that.getClickEvent());
-        if(that.getHoverEvent() != null) this.setHoverEvent(new HoverEvent(that.getHoverEvent().getAction(), that.getHoverEvent().getValue().copy()));
-        return this;
-    }
-
-    @Override
     public boolean hasStyling() {
+        // A component has styling when any of these fields are set.
         return this.color != null
             || this.bold != null
             || this.strikethrough != null
@@ -246,7 +222,10 @@ public abstract class BaseComponent implements Component {
     public boolean equals(final Object other) {
         if(this == other) return true;
         if(other == null || !(other instanceof BaseComponent)) return false;
-        final BaseComponent that = (BaseComponent) other;
+        return this.equals((BaseComponent) other);
+    }
+
+    protected boolean equals(final BaseComponent that) {
         return Objects.equal(this.children, that.children)
             && this.color == that.color
             && Objects.equal(this.obfuscated, that.obfuscated)

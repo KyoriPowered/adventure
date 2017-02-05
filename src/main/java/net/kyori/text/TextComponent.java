@@ -2,14 +2,25 @@ package net.kyori.text;
 
 import com.google.common.base.Objects;
 
+/**
+ * A plain text component.
+ */
 public class TextComponent extends BaseComponent {
 
+    /**
+     * The plain text content.
+     */
     private final String content;
 
     public TextComponent(final String content) {
         this.content = content;
     }
 
+    /**
+     * Gets the plain text content.
+     *
+     * @return the plain text content
+     */
     public String getContent() {
         return this.content;
     }
