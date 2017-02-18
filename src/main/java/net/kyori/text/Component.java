@@ -6,7 +6,9 @@ import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -197,25 +199,6 @@ public interface Component {
     Component setObfuscated(@Nullable final Boolean obfuscated);
 
     /**
-     * Gets if this component has a decoration.
-     *
-     * @param decoration the decoration
-     * @return {@code true} if this component has the decoration, {@code false} if this
-     *     component does not have the decoration, and {@code null} if not set
-     */
-    @Nullable
-    default Boolean getDecoration(final TextDecoration decoration) {
-        switch(decoration) {
-            case BOLD: return this.getBold();
-            case ITALIC: return this.getItalic();
-            case UNDERLINE: return this.getUnderlined();
-            case STRIKETHROUGH: return this.getStrikethrough();
-            case OBFUSCATED: return this.getObfuscated();
-            default: return null;
-        }
-    }
-
-    /**
      * Tests if this component has a decoration.
      *
      * @param decoration the decoration
@@ -240,6 +223,39 @@ public interface Component {
     }
 
     /**
+     * Gets the value of a decoration on this component.
+     *
+     * @param decoration the decoration
+     * @param defaultValue the default value when the decoration has not been set
+     * @return {@code true} if this component has the decoration, {@code false} if this
+     *     component does not have the decoration, and {@code null} if not set
+     */
+    @Nullable
+    default Boolean getDecoration(final TextDecoration decoration, final boolean defaultValue) {
+        @Nullable final Boolean value = this.getDecoration(decoration);
+        return value != null ? value : defaultValue;
+    }
+
+    /**
+     * Gets the value of a decoration on this component.
+     *
+     * @param decoration the decoration
+     * @return {@code true} if this component has the decoration, {@code false} if this
+     *     component does not have the decoration, and {@code null} if not set
+     */
+    @Nullable
+    default Boolean getDecoration(final TextDecoration decoration) {
+        switch(decoration) {
+            case BOLD: return this.getBold();
+            case ITALIC: return this.getItalic();
+            case UNDERLINE: return this.getUnderlined();
+            case STRIKETHROUGH: return this.getStrikethrough();
+            case OBFUSCATED: return this.getObfuscated();
+            default: return null;
+        }
+    }
+
+    /**
      * Sets the value of a decoration on this component.
      *
      * @param decoration the decoration
@@ -255,8 +271,32 @@ public interface Component {
             case UNDERLINE: return this.setUnderlined(flag);
             case STRIKETHROUGH: return this.setStrikethrough(flag);
             case OBFUSCATED: return this.setObfuscated(flag);
-            default: return this;
+            default: throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
         }
+    }
+
+    /**
+     * Gets a set of decorations this component has.
+     *
+     * @return a set of decorations this component has
+     */
+    default Set<TextDecoration> getDecorations() {
+        return this.getDecorations(Collections.emptySet());
+    }
+
+    /**
+     * Gets a set of decorations this component has.
+     *
+     * @param defaultValues a set of default values
+     * @return a set of decorations this component has
+     */
+    default Set<TextDecoration> getDecorations(final Set<TextDecoration> defaultValues) {
+        final Set<TextDecoration> decorations = EnumSet.noneOf(TextDecoration.class);
+        for(final TextDecoration decoration : TextDecoration.values()) {
+            @Nullable final Boolean value = this.getDecoration(decoration, defaultValues.contains(decoration));
+            if(value != null && value) decorations.add(decoration);
+        }
+        return decorations;
     }
 
     /**
@@ -353,7 +393,20 @@ public interface Component {
      */
     default Component mergeEvents(final Component that) {
         if(that.getClickEvent() != null) this.setClickEvent(that.getClickEvent());
-        if(that.getHoverEvent() != null) this.setHoverEvent(new HoverEvent(that.getHoverEvent().getAction(), that.getHoverEvent().getValue().copy()));
+        if(that.getHoverEvent() != null) this.setHoverEvent(that.getHoverEvent().copy()); // hard copy, hover events have a component
+        return this;
+    }
+
+    /**
+     * Resets all styling on this component.
+     *
+     * @return this component
+     */
+    default Component resetStyle() {
+        this.setColor(null);
+        for(final TextDecoration decoration : TextDecoration.values()) this.setDecoration(decoration, null);
+        this.setClickEvent(null);
+        this.setHoverEvent(null);
         return this;
     }
 

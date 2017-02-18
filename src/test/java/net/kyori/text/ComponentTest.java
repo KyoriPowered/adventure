@@ -1,13 +1,17 @@
 package net.kyori.text;
 
 import net.kyori.text.event.ClickEvent;
+import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import net.kyori.text.serializer.ComponentSerializer;
 import org.junit.Test;
 
+import java.util.Set;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -24,7 +28,7 @@ public class ComponentTest {
     }
 
     @Test
-    public void testAddDecoration() {
+    public void testDecorations() {
         final Component component = new TextComponent("Kittens!");
 
         // The bold decoration should not be set at this point.
@@ -34,17 +38,49 @@ public class ComponentTest {
 
         component.setDecoration(TextDecoration.BOLD, true);
 
+        final Set<TextDecoration> decorations = component.getDecorations();
+
         // The bold decoration should be set and true at this point.
         assertTrue(component.hasDecoration(TextDecoration.BOLD));
         assertTrue(component.isBold());
         assertNotNull(component.getBold());
+        assertEquals(component.isBold(), decorations.contains(TextDecoration.BOLD));
+        assertTrue(decorations.contains(TextDecoration.BOLD));
+        assertFalse(decorations.contains(TextDecoration.OBFUSCATED));
+    }
+
+    @Test
+    public void testStyleReset() {
+        final Component component = new TextComponent("kittens");
+        assertFalse(component.hasStyling());
+        component.setBold(true);
+        assertTrue(component.hasStyling());
+        component.resetStyle();
+        assertFalse(component.hasStyling());
     }
 
     @Test
     public void testSerializeDeserialize() {
         final TextComponent expected = new TextComponent("Hello!");
         expected.setColor(TextColor.DARK_PURPLE).setBold(true);
+        expected.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://google.com/"));
+        expected.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent(":o").setColor(TextColor.DARK_AQUA)));
         final String json = ComponentSerializer.serialize(expected);
         assertEquals(expected, ComponentSerializer.deserialize(json));
+    }
+
+    @Test
+    public void assertOpenFileNotReadable() {
+        final ClickEvent event = new ClickEvent(ClickEvent.Action.OPEN_FILE, "fake");
+        assertFalse(event.getAction().isReadable());
+    }
+
+    @Test
+    public void testCopyHover() {
+        final HoverEvent event = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent("Kittens!"));
+        final HoverEvent copy = event.copy();
+        assertEquals(event, copy);
+        copy.getValue().setBold(true);
+        assertNotEquals(event, copy);
     }
 }
