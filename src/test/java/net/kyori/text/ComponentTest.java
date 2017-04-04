@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class ComponentTest {
 
@@ -57,6 +58,41 @@ public class ComponentTest {
         assertTrue(component.hasStyling());
         component.resetStyle();
         assertFalse(component.hasStyling());
+    }
+
+    @Test
+    public void testContains() {
+        final Component component = new TextComponent("cat");
+        final Component child = new TextComponent("kittens");
+        component.append(child);
+        assertTrue(component.contains(child));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testCycleSelf() {
+        final Component component = new TextComponent("cat");
+        component.append(component);
+        fail("A component was added to itself");
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testCycleHoverRoot() {
+        final Component component = new TextComponent("cat");
+        final Component hoverComponent = new TextComponent("hover");
+        component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent));
+        // component's hover event value is hoverComponent, we should not be able to add it
+        hoverComponent.append(component);
+        fail("A component was added to itself");
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testCycleHoverChild() {
+        final Component component = new TextComponent("cat");
+        final Component hoverComponent = new TextComponent("hover child");
+        component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent("hover").append(hoverComponent)));
+        // component's hover event value contains hoverComponent, we should not be able to add it
+        hoverComponent.append(component);
+        fail("A component was added to itself");
     }
 
     @Test

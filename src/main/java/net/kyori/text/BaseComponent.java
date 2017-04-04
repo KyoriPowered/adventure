@@ -67,6 +67,7 @@ public abstract class BaseComponent implements Component {
 
     @Override
     public Component append(final Component component) {
+        this.detectCycle(component); // detect cycle before modifying
         if(this.children == EMPTY_COMPONENT_LIST) this.children = new ArrayList<>();
         this.children.add(component);
         return this;
@@ -189,6 +190,7 @@ public abstract class BaseComponent implements Component {
 
     @Override
     public Component setHoverEvent(@Nullable final HoverEvent event) {
+        if(event != null) this.detectCycle(event.getValue()); // detect cycle before modifying
         this.hoverEvent = event;
         return this;
     }

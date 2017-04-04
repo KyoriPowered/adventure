@@ -45,6 +45,7 @@ public class TranslatableComponent extends BaseComponent {
         for(int i = 0; i < args.length; i++) {
             final Object arg = args[i];
             if(arg instanceof Component) {
+                this.detectCycle((Component) arg);
                 builder.add((Component) arg);
             } else {
                 builder.add(new TextComponent(String.valueOf(arg)));
@@ -78,6 +79,7 @@ public class TranslatableComponent extends BaseComponent {
      * @return this component
      */
     public TranslatableComponent addArg(final Component arg) {
+        this.detectCycle(arg); // detect cycle before modifying
         if(this.args == EMPTY_COMPONENT_LIST) this.args = new ArrayList<>();
         this.args.add(arg);
         return this;

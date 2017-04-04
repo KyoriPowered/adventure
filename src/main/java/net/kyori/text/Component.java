@@ -30,6 +30,39 @@ public interface Component {
     List<Component> getChildren();
 
     /**
+     * Checks if this component contains a component.
+     *
+     * @param that the other component
+     * @return {@code true} if this component contains the provided
+     *     component, {@code false} otherwise
+     */
+    default boolean contains(final Component that) {
+        if(this == that) return true;
+        for(final Component child : this.getChildren()) {
+            if(child.contains(that)) return true;
+        }
+        if(this.getHoverEvent() != null) {
+            final Component hover = this.getHoverEvent().getValue();
+            if(that == hover) return true;
+            for(final Component child : hover.getChildren()) {
+                if(child.contains(that)) return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Prevents a cycle between this component and the provided component.
+     *
+     * @param that the other component
+     */
+    default void detectCycle(final Component that) {
+        if(that.contains(this)) {
+            throw new IllegalStateException("Component cycle detected between " + this + " and " + that);
+        }
+    }
+
+    /**
      * Append a component to this component.
      *
      * @param component the component to append
