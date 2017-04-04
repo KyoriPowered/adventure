@@ -3,6 +3,7 @@ package net.kyori.text;
 import com.google.common.base.Objects;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -64,12 +65,12 @@ public class TranslatableComponent extends BaseComponent {
     }
 
     /**
-     * Gets the list of translation arguments.
+     * Gets the unmodifiable list of translation arguments.
      *
-     * @return the list of translation arguments
+     * @return the unmodifiable list of translation arguments
      */
     public List<Component> getArgs() {
-        return this.args;
+        return Collections.unmodifiableList(this.args);
     }
 
     /**

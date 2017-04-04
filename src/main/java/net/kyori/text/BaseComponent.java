@@ -7,6 +7,7 @@ import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -62,7 +63,7 @@ public abstract class BaseComponent implements Component {
 
     @Override
     public List<Component> getChildren() {
-        return this.children;
+        return Collections.unmodifiableList(this.children);
     }
 
     @Override

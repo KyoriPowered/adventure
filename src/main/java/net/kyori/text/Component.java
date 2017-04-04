@@ -23,9 +23,9 @@ public interface Component {
     List<Component> EMPTY_COMPONENT_LIST = Collections.emptyList();
 
     /**
-     * Gets the modifiable list of children.
+     * Gets the unmodifiable list of children.
      *
-     * @return the list of children
+     * @return the unmodifiable list of children
      */
     List<Component> getChildren();
 
