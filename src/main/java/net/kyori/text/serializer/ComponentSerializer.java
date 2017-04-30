@@ -12,6 +12,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import net.kyori.text.Component;
+import net.kyori.text.KeybindComponent;
 import net.kyori.text.ScoreComponent;
 import net.kyori.text.SelectorComponent;
 import net.kyori.text.TextComponent;
@@ -106,6 +107,8 @@ public class ComponentSerializer implements JsonDeserializer<Component>, JsonSer
             }
         } else if(object.has("selector")) {
             component = new SelectorComponent(object.get("selector").getAsString());
+        } else if(object.has("keybind")) {
+            component = new KeybindComponent(object.get("keybind").getAsString());
         } else {
             throw new JsonParseException("Don't know how to turn " + element + " into a Component");
         }
@@ -178,6 +181,8 @@ public class ComponentSerializer implements JsonDeserializer<Component>, JsonSer
             object.add("score", score);
         } else if(component instanceof SelectorComponent) {
             object.addProperty("selector", ((SelectorComponent) component).pattern());
+        } else if(component instanceof KeybindComponent) {
+            object.addProperty("keybind", ((KeybindComponent) component).keybind());
         } else {
             throw new IllegalArgumentException("Don't know how to serialize " + component + " as a Component");
         }
