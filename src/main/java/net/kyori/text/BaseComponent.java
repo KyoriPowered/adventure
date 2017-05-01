@@ -212,6 +212,7 @@ public abstract class BaseComponent implements Component {
     public boolean hasStyling() {
         // A component has styling when any of these fields are set.
         return this.color != null
+            || this.obfuscated != null
             || this.bold != null
             || this.strikethrough != null
             || this.underlined != null
