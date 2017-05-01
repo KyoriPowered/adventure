@@ -37,7 +37,7 @@ public class ScoreComponent extends BaseComponent {
      *
      * @return the score name
      */
-    public String getName() {
+    public String name() {
         return this.name;
     }
 
@@ -46,7 +46,7 @@ public class ScoreComponent extends BaseComponent {
      *
      * @return the objective name
      */
-    public String getObjective() {
+    public String objective() {
         return this.objective;
     }
 
@@ -56,7 +56,7 @@ public class ScoreComponent extends BaseComponent {
      * @return the value
      */
     @Nullable
-    public String getValue() {
+    public String value() {
         return this.value;
     }
 
@@ -64,7 +64,7 @@ public class ScoreComponent extends BaseComponent {
     public Component copy() {
         final ScoreComponent that = new ScoreComponent(this.name, this.objective, this.value);
         that.mergeStyle(this);
-        for(final Component child : this.getChildren()) {
+        for(final Component child : this.children()) {
             that.append(child);
         }
         return that;

@@ -27,7 +27,7 @@ public interface Component {
      *
      * @return the unmodifiable list of children
      */
-    List<Component> getChildren();
+    List<Component> children();
 
     /**
      * Checks if this component contains a component.
@@ -38,13 +38,13 @@ public interface Component {
      */
     default boolean contains(final Component that) {
         if(this == that) return true;
-        for(final Component child : this.getChildren()) {
+        for(final Component child : this.children()) {
             if(child.contains(that)) return true;
         }
-        if(this.getHoverEvent() != null) {
-            final Component hover = this.getHoverEvent().getValue();
+        if(this.hoverEvent() != null) {
+            final Component hover = this.hoverEvent().value();
             if(that == hover) return true;
-            for(final Component child : hover.getChildren()) {
+            for(final Component child : hover.children()) {
                 if(child.contains(that)) return true;
             }
         }
@@ -83,7 +83,7 @@ public interface Component {
      * @return the color of this component
      */
     @Nullable
-    TextColor getColor();
+    TextColor color();
 
     /**
      * Sets the color of this component.
@@ -91,145 +91,7 @@ public interface Component {
      * @param color the color
      * @return this component
      */
-    Component setColor(@Nullable final TextColor color);
-
-    /**
-     * Tests if this component is bold.
-     *
-     * @return {@code true} if this component is bold, {@code false} otherwise
-     * @see TextDecoration#BOLD
-     */
-    boolean isBold();
-
-    /**
-     * Gets if this component is bold.
-     *
-     * @return {@code true} if this component is bold, {@code false} if not bold, and
-     *     {@code null} if not set
-     * @see TextDecoration#BOLD
-     */
-    @Nullable
-    Boolean getBold();
-
-    /**
-     * Sets if this component should have a bold decoration.
-     *
-     * @param bold if this component should have a bold decoration
-     * @return this component
-     * @see TextDecoration#BOLD
-     */
-    Component setBold(@Nullable final Boolean bold);
-
-    /**
-     * Tests if this component is italic.
-     *
-     * @return {@code true} if this component is italic, {@code false} otherwise
-     * @see TextDecoration#ITALIC
-     */
-    boolean isItalic();
-
-    /**
-     * Gets if this component is italic.
-     *
-     * @return {@code true} if this component is italic, {@code false} if not italic, and
-     *     {@code null} if not set
-     * @see TextDecoration#ITALIC
-     */
-    @Nullable
-    Boolean getItalic();
-
-    /**
-     * Sets if this component should have a italic decoration.
-     *
-     * @param italic if this component should have a italic decoration
-     * @return this component
-     * @see TextDecoration#ITALIC
-     */
-    Component setItalic(@Nullable final Boolean italic);
-
-    /**
-     * Tests if this component is underlined.
-     *
-     * @return {@code true} if this component is underlined, {@code false} if not
-     *     underlined, and {@code null} if not set
-     * @see TextDecoration#UNDERLINE
-     */
-    boolean isUnderlined();
-
-    /**
-     * Gets if this component is underlined.
-     *
-     * @return {@code true} if this component is underlined, {@code false} if not
-     *     underlined, and {@code null} if not set
-     * @see TextDecoration#UNDERLINE
-     */
-    @Nullable
-    Boolean getUnderlined();
-
-    /**
-     * Sets if this component should have an underline decoration.
-     *
-     * @param underlined if this component should have an underline decoration
-     * @return this component
-     * @see TextDecoration#UNDERLINE
-     */
-    Component setUnderlined(@Nullable final Boolean underlined);
-
-    /**
-     * Tests if this component is underlined.
-     *
-     * @return {@code true} if this component is underlined, {@code false} if not
-     *     underlined, and {@code null} if not set
-     * @see TextDecoration#STRIKETHROUGH
-     */
-    boolean isStrikethrough();
-
-    /**
-     * Gets if this component is strikethrough.
-     *
-     * @return {@code true} if this component is strikethrough, {@code false} if not strikethrough, and
-     *     {@code null} if not set
-     * @see TextDecoration#STRIKETHROUGH
-     */
-    @Nullable
-    Boolean getStrikethrough();
-
-    /**
-     * Sets if this component should have a strikethrough decoration.
-     *
-     * @param strikethrough if this component should have a strikethrough decoration
-     * @return this component
-     * @see TextDecoration#STRIKETHROUGH
-     */
-    Component setStrikethrough(@Nullable final Boolean strikethrough);
-
-    /**
-     * Tests if this component is obfuscated.
-     *
-     * @return {@code true} if this component is obfuscated, {@code false} if not
-     *     obfuscated, and {@code null} if not set
-     * @see TextDecoration#OBFUSCATED
-     */
-    boolean isObfuscated();
-
-    /**
-     * Gets if this component is obfuscated.
-     *
-     * @return {@code true} if this component is obfuscated, {@code false} if not
-     *     obfuscated, and {@code null} if not set
-     * @see TextDecoration#OBFUSCATED
-     */
-    @Nullable
-    Boolean getObfuscated();
-
-    /**
-     * Sets if this component should have an obfuscated decoration.
-     *
-     * @param obfuscated if this component should have an obfuscated decoration
-     * @return this component
-     * @see TextDecoration#OBFUSCATED
-     */
-    Component setObfuscated(@Nullable final Boolean obfuscated);
+    Component color(@Nullable final TextColor color);
 
     /**
      * Tests if this component has a decoration.
@@ -239,82 +101,50 @@ public interface Component {
      *     component does not have the decoration
      */
     default boolean hasDecoration(final TextDecoration decoration) {
-        return this.hasDecoration(decoration, false);
+        return this.decoration(decoration) == TextDecoration.State.TRUE;
     }
 
     /**
-     * Tests if this component has a decoration.
+     * Gets the state of a decoration on this component.
      *
      * @param decoration the decoration
-     * @param defaultValue the default value when this component does not have the decoration set
-     * @return {@code true} if this component has the decoration, {@code false} if this
-     *     component does not have the decoration
+     * @return {@link TextDecoration.State#TRUE} if this component has the decoration,
+     *     {@link TextDecoration.State#FALSE} if this component does not have the decoration,
+     *     and {@link TextDecoration.State#NOT_SET} if not set
      */
-    default boolean hasDecoration(final TextDecoration decoration, final boolean defaultValue) {
-        @Nullable final Boolean flag = this.getDecoration(decoration);
-        return flag != null ? flag : defaultValue;
-    }
+    TextDecoration.State decoration(final TextDecoration decoration);
 
     /**
-     * Gets the value of a decoration on this component.
+     * Sets the state of a decoration on this component.
      *
      * @param decoration the decoration
-     * @param defaultValue the default value when the decoration has not been set
-     * @return {@code true} if this component has the decoration, {@code false} if this
-     *     component does not have the decoration, and {@code null} if not set
+     * @param flag {@code true} if this component should have the decoration, {@code false} if
+     *     this component should not have the decoration
+     * @return this component
      */
-    @Nullable
-    default Boolean getDecoration(final TextDecoration decoration, final boolean defaultValue) {
-        @Nullable final Boolean value = this.getDecoration(decoration);
-        return value != null ? value : defaultValue;
-    }
-
-    /**
-     * Gets the value of a decoration on this component.
-     *
-     * @param decoration the decoration
-     * @return {@code true} if this component has the decoration, {@code false} if this
-     *     component does not have the decoration, and {@code null} if not set
-     */
-    @Nullable
-    default Boolean getDecoration(final TextDecoration decoration) {
-        switch(decoration) {
-            case BOLD: return this.getBold();
-            case ITALIC: return this.getItalic();
-            case UNDERLINE: return this.getUnderlined();
-            case STRIKETHROUGH: return this.getStrikethrough();
-            case OBFUSCATED: return this.getObfuscated();
-            default: return null;
-        }
+    default Component decoration(final TextDecoration decoration, final boolean flag) {
+        return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
     }
 
     /**
      * Sets the value of a decoration on this component.
      *
      * @param decoration the decoration
-     * @param flag {@code true} if this component should have the decoration, {@code false} if
-     *     this component should not have the decoration, and {@code null} if the decoration
+     * @param state {@link TextDecoration.State#TRUE} if this component should have the
+     *     decoration, {@link TextDecoration.State#FALSE} if this component should not
+     *     have the decoration, and {@link TextDecoration.State#NOT_SET} if the decoration
      *     should not have a set value
      * @return this component
      */
-    default Component setDecoration(final TextDecoration decoration, final Boolean flag) {
-        switch(decoration) {
-            case BOLD: return this.setBold(flag);
-            case ITALIC: return this.setItalic(flag);
-            case UNDERLINE: return this.setUnderlined(flag);
-            case STRIKETHROUGH: return this.setStrikethrough(flag);
-            case OBFUSCATED: return this.setObfuscated(flag);
-            default: throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
-        }
-    }
+    Component decoration(final TextDecoration decoration, final TextDecoration.State state);
 
     /**
      * Gets a set of decorations this component has.
      *
      * @return a set of decorations this component has
      */
-    default Set<TextDecoration> getDecorations() {
-        return this.getDecorations(Collections.emptySet());
+    default Set<TextDecoration> decorations() {
+        return this.decorations(Collections.emptySet());
     }
 
     /**
@@ -323,11 +153,13 @@ public interface Component {
      * @param defaultValues a set of default values
      * @return a set of decorations this component has
      */
-    default Set<TextDecoration> getDecorations(final Set<TextDecoration> defaultValues) {
+    default Set<TextDecoration> decorations(final Set<TextDecoration> defaultValues) {
         final Set<TextDecoration> decorations = EnumSet.noneOf(TextDecoration.class);
         for(final TextDecoration decoration : TextDecoration.values()) {
-            @Nullable final Boolean value = this.getDecoration(decoration, defaultValues.contains(decoration));
-            if(value != null && value) decorations.add(decoration);
+            final TextDecoration.State value = this.decoration(decoration);
+            if(value == TextDecoration.State.TRUE || (value == TextDecoration.State.NOT_SET && defaultValues.contains(decoration))) {
+                decorations.add(decoration);
+            }
         }
         return decorations;
     }
@@ -338,7 +170,7 @@ public interface Component {
      * @return the click event
      */
     @Nullable
-    ClickEvent getClickEvent();
+    ClickEvent clickEvent();
 
     /**
      * Sets the click event of this component.
@@ -346,7 +178,7 @@ public interface Component {
      * @param event the click event
      * @return this component
      */
-    Component setClickEvent(@Nullable final ClickEvent event);
+    Component clickEvent(@Nullable final ClickEvent event);
 
     /**
      * Gets the hover event of this component.
@@ -354,7 +186,7 @@ public interface Component {
      * @return the hover event
      */
     @Nullable
-    HoverEvent getHoverEvent();
+    HoverEvent hoverEvent();
 
     /**
      * Sets the hover event of this component.
@@ -362,7 +194,7 @@ public interface Component {
      * @param event the hover event
      * @return this component
      */
-    Component setHoverEvent(@Nullable final HoverEvent event);
+    Component hoverEvent(@Nullable final HoverEvent event);
 
     /**
      * Gets the string to be inserted when this component is shift-clicked.
@@ -370,7 +202,7 @@ public interface Component {
      * @return the insertion string
      */
     @Nullable
-    String getInsertion();
+    String insertion();
 
     /**
      * Sets the string to be inserted when this component is shift-clicked.
@@ -378,7 +210,7 @@ public interface Component {
      * @param insertion the insertion string
      * @return this component
      */
-    Component setInsertion(@Nullable final String insertion);
+    Component insertion(@Nullable final String insertion);
 
     /**
      * Merges styling from another component into this component.
@@ -400,7 +232,7 @@ public interface Component {
      * @return this component
      */
     default Component mergeColor(final Component that) {
-        if(that.getColor() != null) this.setColor(that.getColor());
+        if(that.color() != null) this.color(that.color());
         return this;
     }
 
@@ -412,8 +244,8 @@ public interface Component {
      */
     default Component mergeDecorations(final Component that) {
         for(final TextDecoration decoration : TextDecoration.values()) {
-            @Nullable final Boolean flag = that.getDecoration(decoration);
-            if(flag != null) this.setDecoration(decoration, flag);
+            final TextDecoration.State state = that.decoration(decoration);
+            if(state != TextDecoration.State.NOT_SET) this.decoration(decoration, state);
         }
         return this;
     }
@@ -425,8 +257,8 @@ public interface Component {
      * @return this component
      */
     default Component mergeEvents(final Component that) {
-        if(that.getClickEvent() != null) this.setClickEvent(that.getClickEvent());
-        if(that.getHoverEvent() != null) this.setHoverEvent(that.getHoverEvent().copy()); // hard copy, hover events have a component
+        if(that.clickEvent() != null) this.clickEvent(that.clickEvent());
+        if(that.hoverEvent() != null) this.hoverEvent(that.hoverEvent().copy()); // hard copy, hover events have a component
         return this;
     }
 
@@ -436,10 +268,10 @@ public interface Component {
      * @return this component
      */
     default Component resetStyle() {
-        this.setColor(null);
-        for(final TextDecoration decoration : TextDecoration.values()) this.setDecoration(decoration, null);
-        this.setClickEvent(null);
-        this.setHoverEvent(null);
+        this.color(null);
+        for(final TextDecoration decoration : TextDecoration.values()) this.decoration(decoration, TextDecoration.State.NOT_SET);
+        this.clickEvent(null);
+        this.hoverEvent(null);
         return this;
     }
 

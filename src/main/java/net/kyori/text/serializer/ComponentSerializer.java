@@ -19,6 +19,7 @@ import net.kyori.text.TranslatableComponent;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
+import net.kyori.text.format.TextDecoration;
 
 import java.lang.reflect.Type;
 
@@ -116,13 +117,13 @@ public class ComponentSerializer implements JsonDeserializer<Component>, JsonSer
             }
         }
 
-        if(object.has("bold")) component.setBold(object.get("bold").getAsBoolean());
-        if(object.has("italic")) component.setItalic(object.get("italic").getAsBoolean());
-        if(object.has("underlined")) component.setUnderlined(object.get("underlined").getAsBoolean());
-        if(object.has("strikethrough")) component.setStrikethrough(object.get("strikethrough").getAsBoolean());
-        if(object.has("obfuscated")) component.setObfuscated(object.get("obfuscated").getAsBoolean());
-        if(object.has("color")) component.setColor(context.deserialize(object.get("color"), TextColor.class));
-        if(object.has("insertion")) component.setInsertion(object.get("insertion").getAsString());
+        if(object.has("bold")) component.decoration(TextDecoration.BOLD, object.get("bold").getAsBoolean());
+        if(object.has("italic")) component.decoration(TextDecoration.ITALIC, object.get("italic").getAsBoolean());
+        if(object.has("underlined")) component.decoration(TextDecoration.UNDERLINE, object.get("underlined").getAsBoolean());
+        if(object.has("strikethrough")) component.decoration(TextDecoration.STRIKETHROUGH, object.get("strikethrough").getAsBoolean());
+        if(object.has("obfuscated")) component.decoration(TextDecoration.OBFUSCATED, object.get("obfuscated").getAsBoolean());
+        if(object.has("color")) component.color(context.deserialize(object.get("color"), TextColor.class));
+        if(object.has("insertion")) component.insertion(object.get("insertion").getAsString());
         if(object.has("clickEvent")) {
             final JsonObject clickEvent = object.getAsJsonObject("clickEvent");
             if(clickEvent != null) {
@@ -131,7 +132,7 @@ public class ComponentSerializer implements JsonDeserializer<Component>, JsonSer
                 @Nullable final JsonPrimitive rawValue = clickEvent.getAsJsonPrimitive("value");
                 @Nullable final String value = rawValue == null ? null : rawValue.getAsString();
                 if(action != null && value != null && action.isReadable()) {
-                    component.setClickEvent(new ClickEvent(action, value));
+                    component.clickEvent(new ClickEvent(action, value));
                 }
             }
         }
@@ -143,7 +144,7 @@ public class ComponentSerializer implements JsonDeserializer<Component>, JsonSer
                 if(action != null && action.isReadable()) {
                     @Nullable final JsonElement rawValue = hoverEvent.get("value");
                     @Nullable final Component value = rawValue == null ? null : this.deserialize(rawValue, rawValue.getClass(), context);
-                    if(value != null) component.setHoverEvent(new HoverEvent(action, value));
+                    if(value != null) component.hoverEvent(new HoverEvent(action, value));
                 }
             }
         }
@@ -155,13 +156,13 @@ public class ComponentSerializer implements JsonDeserializer<Component>, JsonSer
     public JsonElement serialize(final Component component, final Type type, final JsonSerializationContext context) {
         final JsonObject object = new JsonObject();
         if(component instanceof TextComponent) {
-            object.addProperty("text", ((TextComponent) component).getContent());
+            object.addProperty("text", ((TextComponent) component).content());
         } else if(component instanceof TranslatableComponent) {
             final TranslatableComponent tc = (TranslatableComponent) component;
-            object.addProperty("translate", tc.getKey());
-            if(!tc.getArgs().isEmpty()) {
+            object.addProperty("translate", tc.key());
+            if(!tc.args().isEmpty()) {
                 final JsonArray with = new JsonArray();
-                for(final Component arg : tc.getArgs()) {
+                for(final Component arg : tc.args()) {
                     with.add(this.serialize(arg, arg.getClass(), context));
                 }
                 object.add("with", with);
@@ -169,44 +170,45 @@ public class ComponentSerializer implements JsonDeserializer<Component>, JsonSer
         } else if(component instanceof ScoreComponent) {
             final ScoreComponent sc = (ScoreComponent) component;
             final JsonObject score = new JsonObject();
-            score.addProperty("name", sc.getName());
-            score.addProperty("objective", sc.getObjective());
+            score.addProperty("name", sc.name());
+            score.addProperty("objective", sc.objective());
             // score component value is optional
-            if(sc.getValue() != null) score.addProperty("value", sc.getValue());
+            if(sc.value() != null) score.addProperty("value", sc.value());
             object.add("score", score);
         } else if(component instanceof SelectorComponent) {
-            object.addProperty("selector", ((SelectorComponent) component).getPattern());
+            object.addProperty("selector", ((SelectorComponent) component).pattern());
         } else {
             throw new IllegalArgumentException("Don't know how to serialize " + component + " as a Component");
         }
 
-        if(!component.getChildren().isEmpty()) {
+        if(!component.children().isEmpty()) {
             final JsonArray extra = new JsonArray();
-            for(final Component child : component.getChildren()) {
+            for(final Component child : component.children()) {
                 extra.add(this.serialize(child, child.getClass(), context));
             }
             object.add("extra", extra);
         }
 
         if(component.hasStyling()) {
-            if(component.getBold() != null) object.addProperty("bold", component.getBold());
-            if(component.getItalic() != null) object.addProperty("italic", component.getItalic());
-            if(component.getUnderlined() != null) object.addProperty("underlined", component.getUnderlined());
-            if(component.getStrikethrough() != null) object.addProperty("strikethrough", component.getStrikethrough());
-            if(component.getObfuscated() != null) object.addProperty("obfuscated", component.getObfuscated());
-            if(component.getColor() != null) object.add("color", context.serialize(component.getColor()));
-            if(component.getInsertion() != null) object.add("insertion", context.serialize(component.getInsertion()));
-            if(component.getClickEvent() != null) {
-                final JsonObject clickEvent = new JsonObject();
-                clickEvent.add("action", context.serialize(component.getClickEvent().getAction()));
-                clickEvent.addProperty("value", component.getClickEvent().getValue());
-                object.add("clickEvent", clickEvent);
+            for(final TextDecoration decoration : TextDecoration.values()) {
+                final TextDecoration.State flag = component.decoration(decoration);
+                if(flag != TextDecoration.State.NOT_SET) object.addProperty(decoration.toString(), flag == TextDecoration.State.TRUE);
             }
-            if(component.getHoverEvent() != null) {
-                final JsonObject hoverEvent = new JsonObject();
-                hoverEvent.add("action", context.serialize(component.getHoverEvent().getAction()));
-                hoverEvent.add("value", this.serialize(component.getHoverEvent().getValue(), type, context));
-                object.add("hoverEvent", hoverEvent);
+            if(component.color() != null) object.add("color", context.serialize(component.color()));
+            if(component.insertion() != null) object.add("insertion", context.serialize(component.insertion()));
+            @Nullable final ClickEvent clickEvent = component.clickEvent();
+            if(clickEvent != null) {
+                final JsonObject clickEventO = new JsonObject();
+                clickEventO.add("action", context.serialize(clickEvent.action()));
+                clickEventO.addProperty("value", clickEvent.value());
+                object.add("clickEvent", clickEventO);
+            }
+            @Nullable final HoverEvent hoverEvent = component.hoverEvent();
+            if(hoverEvent != null) {
+                final JsonObject hoverEventO = new JsonObject();
+                hoverEventO.add("action", context.serialize(hoverEvent.action()));
+                hoverEventO.add("value", this.serialize(hoverEvent.value(), type, context));
+                object.add("hoverEvent", hoverEventO);
             }
         }
 

@@ -21,7 +21,7 @@ public class SelectorComponent extends BaseComponent {
      *
      * @return the selector pattern
      */
-    public String getPattern() {
+    public String pattern() {
         return this.pattern;
     }
 
@@ -29,7 +29,7 @@ public class SelectorComponent extends BaseComponent {
     public Component copy() {
         final SelectorComponent that = new SelectorComponent(this.pattern);
         that.mergeStyle(this);
-        for(final Component child : this.getChildren()) {
+        for(final Component child : this.children()) {
             that.append(child);
         }
         return that;

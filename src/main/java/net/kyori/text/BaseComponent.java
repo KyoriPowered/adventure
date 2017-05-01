@@ -12,6 +12,8 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * An abstract implementation of a text component.
  */
@@ -31,23 +33,23 @@ public abstract class BaseComponent implements Component {
     /**
      * If this component should have the {@link TextDecoration#OBFUSCATED obfuscated} decoration.
      */
-    @Nullable private Boolean obfuscated;
+    private TextDecoration.State obfuscated = TextDecoration.State.NOT_SET;
     /**
      * If this component should have the {@link TextDecoration#BOLD bold} decoration.
      */
-    @Nullable private Boolean bold;
+    private TextDecoration.State bold = TextDecoration.State.NOT_SET;
     /**
      * If this component should have the {@link TextDecoration#STRIKETHROUGH strikethrough} decoration.
      */
-    @Nullable private Boolean strikethrough;
+    private TextDecoration.State strikethrough = TextDecoration.State.NOT_SET;
     /**
      * If this component should have the {@link TextDecoration#UNDERLINE underlined} decoration.
      */
-    @Nullable private Boolean underlined;
+    private TextDecoration.State underlined = TextDecoration.State.NOT_SET;
     /**
      * If this component should have the {@link TextDecoration#ITALIC italic} decoration.
      */
-    @Nullable private Boolean italic;
+    private TextDecoration.State italic = TextDecoration.State.NOT_SET;
     /**
      * The click event to apply to this component.
      */
@@ -62,7 +64,7 @@ public abstract class BaseComponent implements Component {
     @Nullable private String insertion;
 
     @Override
-    public List<Component> getChildren() {
+    public List<Component> children() {
         return Collections.unmodifiableList(this.children);
     }
 
@@ -76,134 +78,73 @@ public abstract class BaseComponent implements Component {
 
     @Nullable
     @Override
-    public TextColor getColor() {
+    public TextColor color() {
         return this.color;
     }
 
     @Override
-    public Component setColor(@Nullable final TextColor color) {
+    public Component color(@Nullable final TextColor color) {
         this.color = color;
         return this;
     }
 
     @Override
-    public boolean isBold() {
-        return this.bold != null && this.bold;
+    public TextDecoration.State decoration(final TextDecoration decoration) {
+        switch(decoration) {
+            case BOLD: return this.bold;
+            case ITALIC: return this.italic;
+            case UNDERLINE: return this.underlined;
+            case STRIKETHROUGH: return this.strikethrough;
+            case OBFUSCATED: return this.obfuscated;
+            default: throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
+        }
+    }
+
+    @Override
+    public Component decoration(final TextDecoration decoration, final TextDecoration.State state) {
+        switch(decoration) {
+            case BOLD: this.bold = checkNotNull(state, "flag"); return this;
+            case ITALIC: this.italic = checkNotNull(state, "flag"); return this;
+            case UNDERLINE: this.underlined = checkNotNull(state, "flag"); return this;
+            case STRIKETHROUGH: this.strikethrough = checkNotNull(state, "flag"); return this;
+            case OBFUSCATED: this.obfuscated = checkNotNull(state, "flag"); return this;
+            default: throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
+        }
     }
 
     @Nullable
     @Override
-    public Boolean getBold() {
-        return this.bold;
-    }
-
-    @Override
-    public Component setBold(@Nullable final Boolean bold) {
-        this.bold = bold;
-        return this;
-    }
-
-    @Override
-    public boolean isItalic() {
-        return this.italic != null && this.italic;
-    }
-
-    @Nullable
-    @Override
-    public Boolean getItalic() {
-        return this.italic;
-    }
-
-    @Override
-    public Component setItalic(@Nullable final Boolean italic) {
-        this.italic = italic;
-        return this;
-    }
-
-    @Override
-    public boolean isUnderlined() {
-        return this.underlined != null && this.underlined;
-    }
-
-    @Nullable
-    @Override
-    public Boolean getUnderlined() {
-        return this.underlined;
-    }
-
-    @Override
-    public Component setUnderlined(@Nullable final Boolean underlined) {
-        this.underlined = underlined;
-        return this;
-    }
-
-    @Override
-    public boolean isStrikethrough() {
-        return this.strikethrough != null && this.strikethrough;
-    }
-
-    @Nullable
-    @Override
-    public Boolean getStrikethrough() {
-        return this.strikethrough;
-    }
-
-    @Override
-    public Component setStrikethrough(@Nullable final Boolean strikethrough) {
-        this.strikethrough = strikethrough;
-        return this;
-    }
-
-    @Override
-    public boolean isObfuscated() {
-        return this.obfuscated != null && this.obfuscated;
-    }
-
-    @Nullable
-    @Override
-    public Boolean getObfuscated() {
-        return this.obfuscated;
-    }
-
-    @Override
-    public Component setObfuscated(@Nullable final Boolean obfuscated) {
-        this.obfuscated = obfuscated;
-        return this;
-    }
-
-    @Nullable
-    @Override
-    public ClickEvent getClickEvent() {
+    public ClickEvent clickEvent() {
         return this.clickEvent;
     }
 
     @Override
-    public Component setClickEvent(@Nullable final ClickEvent event) {
+    public Component clickEvent(@Nullable final ClickEvent event) {
         this.clickEvent = event;
         return this;
     }
 
     @Nullable
     @Override
-    public HoverEvent getHoverEvent() {
+    public HoverEvent hoverEvent() {
         return this.hoverEvent;
     }
 
     @Override
-    public Component setHoverEvent(@Nullable final HoverEvent event) {
-        if(event != null) this.detectCycle(event.getValue()); // detect cycle before modifying
+    public Component hoverEvent(@Nullable final HoverEvent event) {
+        if(event != null) this.detectCycle(event.value()); // detect cycle before modifying
         this.hoverEvent = event;
         return this;
     }
 
     @Nullable
     @Override
-    public String getInsertion() {
+    public String insertion() {
         return this.insertion;
     }
 
     @Override
-    public Component setInsertion(@Nullable final String insertion) {
+    public Component insertion(@Nullable final String insertion) {
         this.insertion = insertion;
         return this;
     }
@@ -212,11 +153,11 @@ public abstract class BaseComponent implements Component {
     public boolean hasStyling() {
         // A component has styling when any of these fields are set.
         return this.color != null
-            || this.obfuscated != null
-            || this.bold != null
-            || this.strikethrough != null
-            || this.underlined != null
-            || this.italic != null
+            || this.obfuscated != TextDecoration.State.NOT_SET
+            || this.bold != TextDecoration.State.NOT_SET
+            || this.strikethrough != TextDecoration.State.NOT_SET
+            || this.underlined != TextDecoration.State.NOT_SET
+            || this.italic != TextDecoration.State.NOT_SET
             || this.clickEvent != null
             || this.hoverEvent != null
             || this.insertion != null;

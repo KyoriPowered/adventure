@@ -60,7 +60,7 @@ public class TranslatableComponent extends BaseComponent {
      *
      * @return the translation key
      */
-    public String getKey() {
+    public String key() {
         return this.key;
     }
 
@@ -69,7 +69,7 @@ public class TranslatableComponent extends BaseComponent {
      *
      * @return the unmodifiable list of translation arguments
      */
-    public List<Component> getArgs() {
+    public List<Component> args() {
         return Collections.unmodifiableList(this.args);
     }
 
@@ -100,7 +100,7 @@ public class TranslatableComponent extends BaseComponent {
             that = new TranslatableComponent(this.key, args);
         }
         that.mergeStyle(this);
-        for(final Component child : this.getChildren()) {
+        for(final Component child : this.children()) {
             that.append(child);
         }
         return that;

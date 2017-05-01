@@ -33,7 +33,7 @@ public final class HoverEvent {
      *
      * @return the hover event action
      */
-    public Action getAction() {
+    public Action action() {
         return this.action;
     }
 
@@ -42,7 +42,7 @@ public final class HoverEvent {
      *
      * @return the hover event value
      */
-    public Component getValue() {
+    public Component value() {
         return this.value;
     }
 

@@ -34,7 +34,7 @@ public final class ClickEvent {
      *
      * @return the click event action
      */
-    public Action getAction() {
+    public Action action() {
         return this.action;
     }
 
@@ -43,8 +43,17 @@ public final class ClickEvent {
      *
      * @return the click event value
      */
-    public String getValue() {
+    public String value() {
         return this.value;
+    }
+
+    /**
+     * Create a copy of this click event.
+     *
+     * @return a copy of this click event
+     */
+    public ClickEvent copy() {
+        return new ClickEvent(this.action, this.value);
     }
 
     @Override

@@ -40,4 +40,33 @@ public enum TextDecoration {
     public String toString() {
         return this.toString;
     }
+
+    /**
+     * A state that a {@link TextDecoration} can be in.
+     */
+    public enum State {
+        NOT_SET,
+        FALSE,
+        TRUE;
+
+        /**
+         * Gets a state from a {@code boolean}.
+         *
+         * @param flag the boolean
+         * @return the state
+         */
+        public static State byBoolean(final boolean flag) {
+            return flag ? TRUE : FALSE;
+        }
+
+        /**
+         * Gets a state from a {@code Boolean}.
+         *
+         * @param flag the boolean
+         * @return the state
+         */
+        public static State byBoolean(final Boolean flag) {
+            return flag == null ? NOT_SET : byBoolean(flag.booleanValue());
+        }
+    }
 }

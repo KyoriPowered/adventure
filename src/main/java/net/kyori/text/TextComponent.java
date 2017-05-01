@@ -21,7 +21,7 @@ public class TextComponent extends BaseComponent {
      *
      * @return the plain text content
      */
-    public String getContent() {
+    public String content() {
         return this.content;
     }
 
@@ -29,7 +29,7 @@ public class TextComponent extends BaseComponent {
     public Component copy() {
         final TextComponent that = new TextComponent(this.content);
         that.mergeStyle(this);
-        for(final Component child : this.getChildren()) {
+        for(final Component child : this.children()) {
             that.append(child);
         }
         return that;
