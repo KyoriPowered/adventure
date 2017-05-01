@@ -1,8 +1,10 @@
 package net.kyori.text.event;
 
 import com.google.common.base.Enums;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
@@ -64,18 +66,18 @@ public final class ClickEvent {
         if(this == other) return true;
         if(other == null || this.getClass() != other.getClass()) return false;
         final ClickEvent that = (ClickEvent) other;
-        return this.action == that.action && Objects.equal(this.value, that.value);
+        return this.action == that.action && Objects.equals(this.value, that.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(this.action, this.value);
+        return Objects.hash(this.action, this.value);
     }
 
     @Nonnull
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
             .add("action", this.action)
             .add("value", this.value)
             .toString();

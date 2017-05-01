@@ -1,6 +1,8 @@
 package net.kyori.text;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
+
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -46,16 +48,16 @@ public class TextComponent extends BaseComponent {
         if(other == null || !(other instanceof TextComponent)) return false;
         if(!super.equals(other)) return false;
         final TextComponent component = (TextComponent) other;
-        return Objects.equal(this.content, component.content);
+        return Objects.equals(this.content, component.content);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), this.content);
+        return Objects.hash(super.hashCode(), this.content);
     }
 
     @Override
-    protected void populateToString(@Nonnull final Objects.ToStringHelper builder) {
+    protected void populateToString(@Nonnull final MoreObjects.ToStringHelper builder) {
         builder.add("content", this.content);
     }
 }

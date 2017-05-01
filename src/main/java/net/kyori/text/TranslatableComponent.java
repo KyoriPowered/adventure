@@ -1,10 +1,11 @@
 package net.kyori.text;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -119,16 +120,16 @@ public class TranslatableComponent extends BaseComponent {
         if(other == null || !(other instanceof TranslatableComponent)) return false;
         if(!super.equals(other)) return false;
         final TranslatableComponent that = (TranslatableComponent) other;
-        return Objects.equal(this.key, that.key) && Objects.equal(this.args, that.args);
+        return Objects.equals(this.key, that.key) && Objects.equals(this.args, that.args);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), this.key, this.args);
+        return Objects.hash(super.hashCode(), this.key, this.args);
     }
 
     @Override
-    protected void populateToString(@Nonnull final Objects.ToStringHelper builder) {
+    protected void populateToString(@Nonnull final MoreObjects.ToStringHelper builder) {
         builder
             .add("key", this.key)
             .add("args", this.args);

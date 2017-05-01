@@ -1,6 +1,8 @@
 package net.kyori.text;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
+
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -46,16 +48,16 @@ public class SelectorComponent extends BaseComponent {
         if(other == null || !(other instanceof SelectorComponent)) return false;
         if(!super.equals(other)) return false;
         final SelectorComponent that = (SelectorComponent) other;
-        return Objects.equal(this.pattern, that.pattern);
+        return Objects.equals(this.pattern, that.pattern);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), this.pattern);
+        return Objects.hash(super.hashCode(), this.pattern);
     }
 
     @Override
-    protected void populateToString(@Nonnull final Objects.ToStringHelper builder) {
+    protected void populateToString(@Nonnull final MoreObjects.ToStringHelper builder) {
         builder.add("pattern", this.pattern);
     }
 }

@@ -1,6 +1,6 @@
 package net.kyori.text;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
@@ -9,6 +9,7 @@ import net.kyori.text.format.TextDecoration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -180,27 +181,27 @@ public abstract class BaseComponent implements Component {
     }
 
     protected boolean equals(@Nonnull final BaseComponent that) {
-        return Objects.equal(this.children, that.children)
+        return Objects.equals(this.children, that.children)
             && this.color == that.color
-            && Objects.equal(this.obfuscated, that.obfuscated)
-            && Objects.equal(this.bold, that.bold)
-            && Objects.equal(this.strikethrough, that.strikethrough)
-            && Objects.equal(this.underlined, that.underlined)
-            && Objects.equal(this.italic, that.italic)
-            && Objects.equal(this.clickEvent, that.clickEvent)
-            && Objects.equal(this.hoverEvent, that.hoverEvent)
-            && Objects.equal(this.insertion, that.insertion);
+            && Objects.equals(this.obfuscated, that.obfuscated)
+            && Objects.equals(this.bold, that.bold)
+            && Objects.equals(this.strikethrough, that.strikethrough)
+            && Objects.equals(this.underlined, that.underlined)
+            && Objects.equals(this.italic, that.italic)
+            && Objects.equals(this.clickEvent, that.clickEvent)
+            && Objects.equals(this.hoverEvent, that.hoverEvent)
+            && Objects.equals(this.insertion, that.insertion);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
+        return Objects.hash(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
     }
 
     @Nonnull
     @Override
     public String toString() {
-        final Objects.ToStringHelper builder = Objects.toStringHelper(this);
+        final MoreObjects.ToStringHelper builder = MoreObjects.toStringHelper(this);
         this.populateToString(builder);
         builder
             .add("children", this.children)
@@ -216,6 +217,6 @@ public abstract class BaseComponent implements Component {
         return builder.toString();
     }
 
-    protected void populateToString(@Nonnull final Objects.ToStringHelper builder) {
+    protected void populateToString(@Nonnull final MoreObjects.ToStringHelper builder) {
     }
 }

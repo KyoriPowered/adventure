@@ -1,6 +1,8 @@
 package net.kyori.text;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
+
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -80,16 +82,16 @@ public class ScoreComponent extends BaseComponent {
         if(other == null || !(other instanceof ScoreComponent)) return false;
         if(!super.equals(other)) return false;
         final ScoreComponent that = (ScoreComponent) other;
-        return Objects.equal(this.name, that.name) && Objects.equal(this.objective, that.objective) && Objects.equal(this.value, that.value);
+        return Objects.equals(this.name, that.name) && Objects.equals(this.objective, that.objective) && Objects.equals(this.value, that.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), this.name, this.objective, this.value);
+        return Objects.hash(super.hashCode(), this.name, this.objective, this.value);
     }
 
     @Override
-    protected void populateToString(@Nonnull final Objects.ToStringHelper builder) {
+    protected void populateToString(@Nonnull final MoreObjects.ToStringHelper builder) {
         builder
             .add("name", this.name)
             .add("objective", this.objective)
