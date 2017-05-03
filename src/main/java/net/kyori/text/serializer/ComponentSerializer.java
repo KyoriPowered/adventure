@@ -23,6 +23,7 @@ import net.kyori.text.format.TextDecoration;
 
 import java.lang.reflect.Type;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -40,7 +41,7 @@ public class ComponentSerializer implements JsonDeserializer<Component>, JsonSer
      * @param string the json string
      * @return the component
      */
-    public static Component deserialize(final String string) {
+    public static Component deserialize(@Nonnull final String string) {
         return GSON.fromJson(string, Component.class);
     }
 
@@ -50,7 +51,7 @@ public class ComponentSerializer implements JsonDeserializer<Component>, JsonSer
      * @param component the component
      * @return the json string
      */
-    public static String serialize(final Component component) {
+    public static String serialize(@Nonnull final Component component) {
         return GSON.toJson(component);
     }
 

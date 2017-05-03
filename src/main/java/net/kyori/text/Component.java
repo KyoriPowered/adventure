@@ -10,6 +10,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -27,6 +28,7 @@ public interface Component {
      *
      * @return the unmodifiable list of children
      */
+    @Nonnull
     List<Component> children();
 
     /**
@@ -36,7 +38,7 @@ public interface Component {
      * @return {@code true} if this component contains the provided
      *     component, {@code false} otherwise
      */
-    default boolean contains(final Component that) {
+    default boolean contains(@Nonnull final Component that) {
         if(this == that) return true;
         for(final Component child : this.children()) {
             if(child.contains(that)) return true;
@@ -56,7 +58,7 @@ public interface Component {
      *
      * @param that the other component
      */
-    default void detectCycle(final Component that) {
+    default void detectCycle(@Nonnull final Component that) {
         if(that.contains(this)) {
             throw new IllegalStateException("Component cycle detected between " + this + " and " + that);
         }
@@ -68,13 +70,15 @@ public interface Component {
      * @param component the component to append
      * @return this component
      */
-    Component append(final Component component);
+    @Nonnull
+    Component append(@Nonnull final Component component);
 
     /**
      * Create a copy of this component.
      *
      * @return a copy of this component
      */
+    @Nonnull
     Component copy();
 
     /**
@@ -91,6 +95,7 @@ public interface Component {
      * @param color the color
      * @return this component
      */
+    @Nonnull
     Component color(@Nullable final TextColor color);
 
     /**
@@ -100,7 +105,7 @@ public interface Component {
      * @return {@code true} if this component has the decoration, {@code false} if this
      *     component does not have the decoration
      */
-    default boolean hasDecoration(final TextDecoration decoration) {
+    default boolean hasDecoration(@Nonnull final TextDecoration decoration) {
         return this.decoration(decoration) == TextDecoration.State.TRUE;
     }
 
@@ -112,7 +117,8 @@ public interface Component {
      *     {@link TextDecoration.State#FALSE} if this component does not have the decoration,
      *     and {@link TextDecoration.State#NOT_SET} if not set
      */
-    TextDecoration.State decoration(final TextDecoration decoration);
+    @Nonnull
+    TextDecoration.State decoration(@Nonnull final TextDecoration decoration);
 
     /**
      * Sets the state of a decoration on this component.
@@ -122,7 +128,8 @@ public interface Component {
      *     this component should not have the decoration
      * @return this component
      */
-    default Component decoration(final TextDecoration decoration, final boolean flag) {
+    @Nonnull
+    default Component decoration(@Nonnull final TextDecoration decoration, final boolean flag) {
         return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
     }
 
@@ -136,13 +143,15 @@ public interface Component {
      *     should not have a set value
      * @return this component
      */
-    Component decoration(final TextDecoration decoration, final TextDecoration.State state);
+    @Nonnull
+    Component decoration(@Nonnull final TextDecoration decoration, @Nonnull final TextDecoration.State state);
 
     /**
      * Gets a set of decorations this component has.
      *
      * @return a set of decorations this component has
      */
+    @Nonnull
     default Set<TextDecoration> decorations() {
         return this.decorations(Collections.emptySet());
     }
@@ -153,7 +162,8 @@ public interface Component {
      * @param defaultValues a set of default values
      * @return a set of decorations this component has
      */
-    default Set<TextDecoration> decorations(final Set<TextDecoration> defaultValues) {
+    @Nonnull
+    default Set<TextDecoration> decorations(@Nonnull final Set<TextDecoration> defaultValues) {
         final Set<TextDecoration> decorations = EnumSet.noneOf(TextDecoration.class);
         for(final TextDecoration decoration : TextDecoration.values()) {
             final TextDecoration.State value = this.decoration(decoration);
@@ -178,6 +188,7 @@ public interface Component {
      * @param event the click event
      * @return this component
      */
+    @Nonnull
     Component clickEvent(@Nullable final ClickEvent event);
 
     /**
@@ -194,6 +205,7 @@ public interface Component {
      * @param event the hover event
      * @return this component
      */
+    @Nonnull
     Component hoverEvent(@Nullable final HoverEvent event);
 
     /**
@@ -210,6 +222,7 @@ public interface Component {
      * @param insertion the insertion string
      * @return this component
      */
+    @Nonnull
     Component insertion(@Nullable final String insertion);
 
     /**
@@ -218,7 +231,8 @@ public interface Component {
      * @param that the other component
      * @return this component
      */
-    default Component mergeStyle(final Component that) {
+    @Nonnull
+    default Component mergeStyle(@Nonnull final Component that) {
         this.mergeColor(that);
         this.mergeDecorations(that);
         this.mergeEvents(that);
@@ -231,7 +245,8 @@ public interface Component {
      * @param that the other component
      * @return this component
      */
-    default Component mergeColor(final Component that) {
+    @Nonnull
+    default Component mergeColor(@Nonnull final Component that) {
         if(that.color() != null) this.color(that.color());
         return this;
     }
@@ -242,7 +257,8 @@ public interface Component {
      * @param that the other component
      * @return this component
      */
-    default Component mergeDecorations(final Component that) {
+    @Nonnull
+    default Component mergeDecorations(@Nonnull final Component that) {
         for(final TextDecoration decoration : TextDecoration.values()) {
             final TextDecoration.State state = that.decoration(decoration);
             if(state != TextDecoration.State.NOT_SET) this.decoration(decoration, state);
@@ -256,7 +272,8 @@ public interface Component {
      * @param that the other component
      * @return this component
      */
-    default Component mergeEvents(final Component that) {
+    @Nonnull
+    default Component mergeEvents(@Nonnull final Component that) {
         if(that.clickEvent() != null) this.clickEvent(that.clickEvent());
         if(that.hoverEvent() != null) this.hoverEvent(that.hoverEvent().copy()); // hard copy, hover events have a component
         return this;
@@ -267,6 +284,7 @@ public interface Component {
      *
      * @return this component
      */
+    @Nonnull
     default Component resetStyle() {
         this.color(null);
         for(final TextDecoration decoration : TextDecoration.values()) this.decoration(decoration, TextDecoration.State.NOT_SET);

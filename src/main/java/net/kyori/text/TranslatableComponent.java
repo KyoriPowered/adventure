@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * A translatable text component.
  */
@@ -14,11 +17,11 @@ public class TranslatableComponent extends BaseComponent {
     /**
      * The translation key.
      */
-    private final String key;
+    @Nonnull private final String key;
     /**
      * The list of translation arguments.
      */
-    private List<Component> args;
+    @Nonnull private List<Component> args;
 
     /**
      * Creates a translatable component with no arguments.
@@ -28,7 +31,7 @@ public class TranslatableComponent extends BaseComponent {
      *
      * @param key the translation key
      */
-    public TranslatableComponent(final String key) {
+    public TranslatableComponent(@Nonnull final String key) {
         this.key = key;
         this.args = EMPTY_COMPONENT_LIST;
     }
@@ -39,7 +42,7 @@ public class TranslatableComponent extends BaseComponent {
      * @param key the translation key
      * @param args the translation arguments
      */
-    public TranslatableComponent(final String key, final Object... args) {
+    public TranslatableComponent(@Nonnull final String key, @Nonnull final Object... args) {
         this.key = key;
 
         final List<Component> builder = new ArrayList<>(args.length);
@@ -60,6 +63,7 @@ public class TranslatableComponent extends BaseComponent {
      *
      * @return the translation key
      */
+    @Nonnull
     public String key() {
         return this.key;
     }
@@ -69,6 +73,7 @@ public class TranslatableComponent extends BaseComponent {
      *
      * @return the unmodifiable list of translation arguments
      */
+        @Nonnull
     public List<Component> args() {
         return Collections.unmodifiableList(this.args);
     }
@@ -79,13 +84,15 @@ public class TranslatableComponent extends BaseComponent {
      * @param arg the translation argument
      * @return this component
      */
-    public TranslatableComponent addArg(final Component arg) {
+    @Nonnull
+    public TranslatableComponent addArg(@Nonnull final Component arg) {
         this.detectCycle(arg); // detect cycle before modifying
         if(this.args == EMPTY_COMPONENT_LIST) this.args = new ArrayList<>();
         this.args.add(arg);
         return this;
     }
 
+    @Nonnull
     @Override
     public Component copy() {
         final TranslatableComponent that;
@@ -107,7 +114,7 @@ public class TranslatableComponent extends BaseComponent {
     }
 
     @Override
-    public boolean equals(final Object other) {
+    public boolean equals(@Nullable final Object other) {
         if(this == other) return true;
         if(other == null || !(other instanceof TranslatableComponent)) return false;
         if(!super.equals(other)) return false;
@@ -121,7 +128,7 @@ public class TranslatableComponent extends BaseComponent {
     }
 
     @Override
-    protected void populateToString(final Objects.ToStringHelper builder) {
+    protected void populateToString(@Nonnull final Objects.ToStringHelper builder) {
         builder
             .add("key", this.key)
             .add("args", this.args);

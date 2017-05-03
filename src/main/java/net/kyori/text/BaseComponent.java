@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -25,7 +26,7 @@ public abstract class BaseComponent implements Component {
      * <p>This list is set to {@link #EMPTY_COMPONENT_LIST an empty list of components}
      * by default to prevent unnecessary list creation for components with no children.</p>
      */
-    private List<Component> children = EMPTY_COMPONENT_LIST;
+    @Nonnull private List<Component> children = EMPTY_COMPONENT_LIST;
     /**
      * The color of this component.
      */
@@ -33,23 +34,23 @@ public abstract class BaseComponent implements Component {
     /**
      * If this component should have the {@link TextDecoration#OBFUSCATED obfuscated} decoration.
      */
-    private TextDecoration.State obfuscated = TextDecoration.State.NOT_SET;
+    @Nonnull private TextDecoration.State obfuscated = TextDecoration.State.NOT_SET;
     /**
      * If this component should have the {@link TextDecoration#BOLD bold} decoration.
      */
-    private TextDecoration.State bold = TextDecoration.State.NOT_SET;
+    @Nonnull private TextDecoration.State bold = TextDecoration.State.NOT_SET;
     /**
      * If this component should have the {@link TextDecoration#STRIKETHROUGH strikethrough} decoration.
      */
-    private TextDecoration.State strikethrough = TextDecoration.State.NOT_SET;
+    @Nonnull private TextDecoration.State strikethrough = TextDecoration.State.NOT_SET;
     /**
      * If this component should have the {@link TextDecoration#UNDERLINE underlined} decoration.
      */
-    private TextDecoration.State underlined = TextDecoration.State.NOT_SET;
+    @Nonnull private TextDecoration.State underlined = TextDecoration.State.NOT_SET;
     /**
      * If this component should have the {@link TextDecoration#ITALIC italic} decoration.
      */
-    private TextDecoration.State italic = TextDecoration.State.NOT_SET;
+    @Nonnull private TextDecoration.State italic = TextDecoration.State.NOT_SET;
     /**
      * The click event to apply to this component.
      */
@@ -63,13 +64,15 @@ public abstract class BaseComponent implements Component {
      */
     @Nullable private String insertion;
 
+    @Nonnull
     @Override
     public List<Component> children() {
         return Collections.unmodifiableList(this.children);
     }
 
+    @Nonnull
     @Override
-    public Component append(final Component component) {
+    public Component append(@Nonnull final Component component) {
         this.detectCycle(component); // detect cycle before modifying
         if(this.children == EMPTY_COMPONENT_LIST) this.children = new ArrayList<>();
         this.children.add(component);
@@ -82,14 +85,16 @@ public abstract class BaseComponent implements Component {
         return this.color;
     }
 
+    @Nonnull
     @Override
     public Component color(@Nullable final TextColor color) {
         this.color = color;
         return this;
     }
 
+    @Nonnull
     @Override
-    public TextDecoration.State decoration(final TextDecoration decoration) {
+    public TextDecoration.State decoration(@Nonnull final TextDecoration decoration) {
         switch(decoration) {
             case BOLD: return this.bold;
             case ITALIC: return this.italic;
@@ -100,8 +105,9 @@ public abstract class BaseComponent implements Component {
         }
     }
 
+    @Nonnull
     @Override
-    public Component decoration(final TextDecoration decoration, final TextDecoration.State state) {
+    public Component decoration(@Nonnull final TextDecoration decoration, @Nonnull final TextDecoration.State state) {
         switch(decoration) {
             case BOLD: this.bold = checkNotNull(state, "flag"); return this;
             case ITALIC: this.italic = checkNotNull(state, "flag"); return this;
@@ -118,6 +124,7 @@ public abstract class BaseComponent implements Component {
         return this.clickEvent;
     }
 
+    @Nonnull
     @Override
     public Component clickEvent(@Nullable final ClickEvent event) {
         this.clickEvent = event;
@@ -130,6 +137,7 @@ public abstract class BaseComponent implements Component {
         return this.hoverEvent;
     }
 
+    @Nonnull
     @Override
     public Component hoverEvent(@Nullable final HoverEvent event) {
         if(event != null) this.detectCycle(event.value()); // detect cycle before modifying
@@ -143,6 +151,7 @@ public abstract class BaseComponent implements Component {
         return this.insertion;
     }
 
+    @Nonnull
     @Override
     public Component insertion(@Nullable final String insertion) {
         this.insertion = insertion;
@@ -164,13 +173,13 @@ public abstract class BaseComponent implements Component {
     }
 
     @Override
-    public boolean equals(final Object other) {
+    public boolean equals(@Nullable final Object other) {
         if(this == other) return true;
         if(other == null || !(other instanceof BaseComponent)) return false;
         return this.equals((BaseComponent) other);
     }
 
-    protected boolean equals(final BaseComponent that) {
+    protected boolean equals(@Nonnull final BaseComponent that) {
         return Objects.equal(this.children, that.children)
             && this.color == that.color
             && Objects.equal(this.obfuscated, that.obfuscated)
@@ -188,6 +197,7 @@ public abstract class BaseComponent implements Component {
         return Objects.hashCode(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
     }
 
+    @Nonnull
     @Override
     public String toString() {
         final Objects.ToStringHelper builder = Objects.toStringHelper(this);
@@ -206,6 +216,6 @@ public abstract class BaseComponent implements Component {
         return builder.toString();
     }
 
-    protected void populateToString(final Objects.ToStringHelper builder) {
+    protected void populateToString(@Nonnull final Objects.ToStringHelper builder) {
     }
 }

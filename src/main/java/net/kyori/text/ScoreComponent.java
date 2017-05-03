@@ -2,6 +2,7 @@ package net.kyori.text;
 
 import com.google.common.base.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -12,21 +13,21 @@ public class ScoreComponent extends BaseComponent {
     /**
      * The score name.
      */
-    private final String name;
+    @Nonnull private final String name;
     /**
      * The score objective.
      */
-    private final String objective;
+    @Nonnull private final String objective;
     /**
      * The value.
      */
     @Nullable private final String value;
 
-    public ScoreComponent(final String name, final String objective) {
+    public ScoreComponent(@Nonnull final String name, @Nonnull final String objective) {
         this(name, objective, null);
     }
 
-    public ScoreComponent(final String name, final String objective, @Nullable final String value) {
+    public ScoreComponent(@Nonnull final String name, @Nonnull final String objective, @Nullable final String value) {
         this.name = name;
         this.objective = objective;
         this.value = value;
@@ -37,6 +38,7 @@ public class ScoreComponent extends BaseComponent {
      *
      * @return the score name
      */
+    @Nonnull
     public String name() {
         return this.name;
     }
@@ -46,6 +48,7 @@ public class ScoreComponent extends BaseComponent {
      *
      * @return the objective name
      */
+    @Nonnull
     public String objective() {
         return this.objective;
     }
@@ -60,6 +63,7 @@ public class ScoreComponent extends BaseComponent {
         return this.value;
     }
 
+    @Nonnull
     @Override
     public Component copy() {
         final ScoreComponent that = new ScoreComponent(this.name, this.objective, this.value);
@@ -71,7 +75,7 @@ public class ScoreComponent extends BaseComponent {
     }
 
     @Override
-    public boolean equals(final Object other) {
+    public boolean equals(@Nullable final Object other) {
         if(this == other) return true;
         if(other == null || !(other instanceof ScoreComponent)) return false;
         if(!super.equals(other)) return false;
@@ -85,7 +89,7 @@ public class ScoreComponent extends BaseComponent {
     }
 
     @Override
-    protected void populateToString(final Objects.ToStringHelper builder) {
+    protected void populateToString(@Nonnull final Objects.ToStringHelper builder) {
         builder
             .add("name", this.name)
             .add("objective", this.objective)

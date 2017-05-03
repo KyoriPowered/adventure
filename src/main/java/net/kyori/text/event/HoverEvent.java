@@ -5,6 +5,8 @@ import com.google.common.base.Objects;
 import com.google.gson.annotations.SerializedName;
 import net.kyori.text.Component;
 
+import javax.annotation.Nonnull;
+
 /**
  * A hover event.
  *
@@ -16,13 +18,13 @@ public final class HoverEvent {
     /**
      * The hover event action.
      */
-    private final Action action;
+    @Nonnull private final Action action;
     /**
      * The hover event value.
      */
-    private final Component value;
+    @Nonnull private final Component value;
 
-    public HoverEvent(final Action action, final Component value) {
+    public HoverEvent(@Nonnull final Action action, @Nonnull final Component value) {
         this.action = action;
         this.value = value;
     }
@@ -32,6 +34,7 @@ public final class HoverEvent {
      *
      * @return the hover event action
      */
+    @Nonnull
     public Action action() {
         return this.action;
     }
@@ -41,6 +44,7 @@ public final class HoverEvent {
      *
      * @return the hover event value
      */
+    @Nonnull
     public Component value() {
         return this.value;
     }
@@ -50,6 +54,7 @@ public final class HoverEvent {
      *
      * @return a copy of this hover event
      */
+    @Nonnull
     public HoverEvent copy() {
         return new HoverEvent(this.action, this.value.copy());
     }
@@ -67,6 +72,7 @@ public final class HoverEvent {
         return Objects.hashCode(this.action, this.value);
     }
 
+    @Nonnull
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
@@ -103,7 +109,7 @@ public final class HoverEvent {
         /**
          * The serialized name of this action.
          */
-        private final String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
+        @Nonnull private final String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
         /**
          * If this action is readable.
          *
@@ -125,6 +131,7 @@ public final class HoverEvent {
             return this.readable;
         }
 
+        @Nonnull
         @Override
         public String toString() {
             return this.toString;

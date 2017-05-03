@@ -2,6 +2,9 @@ package net.kyori.text;
 
 import com.google.common.base.Objects;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * A scoreboard selector component.
  */
@@ -10,9 +13,9 @@ public class SelectorComponent extends BaseComponent {
     /**
      * The selector pattern.
      */
-    private final String pattern;
+    @Nonnull private final String pattern;
 
-    public SelectorComponent(final String pattern) {
+    public SelectorComponent(@Nonnull final String pattern) {
         this.pattern = pattern;
     }
 
@@ -21,10 +24,12 @@ public class SelectorComponent extends BaseComponent {
      *
      * @return the selector pattern
      */
+    @Nonnull
     public String pattern() {
         return this.pattern;
     }
 
+    @Nonnull
     @Override
     public Component copy() {
         final SelectorComponent that = new SelectorComponent(this.pattern);
@@ -36,7 +41,7 @@ public class SelectorComponent extends BaseComponent {
     }
 
     @Override
-    public boolean equals(final Object other) {
+    public boolean equals(@Nullable final Object other) {
         if(this == other) return true;
         if(other == null || !(other instanceof SelectorComponent)) return false;
         if(!super.equals(other)) return false;
@@ -50,7 +55,7 @@ public class SelectorComponent extends BaseComponent {
     }
 
     @Override
-    protected void populateToString(final Objects.ToStringHelper builder) {
+    protected void populateToString(@Nonnull final Objects.ToStringHelper builder) {
         builder.add("pattern", this.pattern);
     }
 }

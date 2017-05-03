@@ -4,6 +4,7 @@ import com.google.common.base.Enums;
 import com.google.common.base.Objects;
 import com.google.gson.annotations.SerializedName;
 
+import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
 /**
@@ -17,13 +18,13 @@ public final class ClickEvent {
     /**
      * The click event action.
      */
-    private final Action action;
+    @Nonnull private final Action action;
     /**
      * The click event value.
      */
-    private final String value;
+    @Nonnull private final String value;
 
-    public ClickEvent(final Action action, final String value) {
+    public ClickEvent(@Nonnull final Action action, @Nonnull final String value) {
         this.action = action;
         this.value = value;
     }
@@ -33,6 +34,7 @@ public final class ClickEvent {
      *
      * @return the click event action
      */
+    @Nonnull
     public Action action() {
         return this.action;
     }
@@ -42,6 +44,7 @@ public final class ClickEvent {
      *
      * @return the click event value
      */
+    @Nonnull
     public String value() {
         return this.value;
     }
@@ -51,6 +54,7 @@ public final class ClickEvent {
      *
      * @return a copy of this click event
      */
+    @Nonnull
     public ClickEvent copy() {
         return new ClickEvent(this.action, this.value);
     }
@@ -68,6 +72,7 @@ public final class ClickEvent {
         return Objects.hashCode(this.action, this.value);
     }
 
+    @Nonnull
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
@@ -111,7 +116,7 @@ public final class ClickEvent {
         /**
          * The serialized name of this action.
          */
-        private final String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
+        @Nonnull private final String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
         /**
          * If this action is readable.
          *
@@ -133,6 +138,7 @@ public final class ClickEvent {
             return this.readable;
         }
 
+        @Nonnull
         @Override
         public String toString() {
             return this.toString;

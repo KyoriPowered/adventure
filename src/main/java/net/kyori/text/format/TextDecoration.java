@@ -4,6 +4,8 @@ import com.google.common.base.Enums;
 import com.google.gson.annotations.SerializedName;
 import net.kyori.text.Component;
 
+import javax.annotation.Nonnull;
+
 /**
  * An enumeration of decorations which may be applied to a {@link Component}.
  */
@@ -37,8 +39,9 @@ public enum TextDecoration {
     /**
      * The serialized name of this decoration.
      */
-    private final String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
+    @Nonnull private final String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
 
+    @Nonnull
     @Override
     public String toString() {
         return this.toString;
