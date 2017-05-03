@@ -41,6 +41,9 @@ public enum TextColor {
     @SerializedName("white")
     WHITE;
 
+    /**
+     * The serialized name of this color.
+     */
     private final String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
 
     @Override

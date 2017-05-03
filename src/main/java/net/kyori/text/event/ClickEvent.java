@@ -1,9 +1,8 @@
 package net.kyori.text.event;
 
+import com.google.common.base.Enums;
 import com.google.common.base.Objects;
 import com.google.gson.annotations.SerializedName;
-
-import java.util.Locale;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -110,6 +109,10 @@ public final class ClickEvent {
         CHANGE_PAGE(true);
 
         /**
+         * The serialized name of this action.
+         */
+        private final String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
+        /**
          * If this action is readable.
          *
          * <p>When an action is not readable it will not be deserailized.</p>
@@ -132,7 +135,7 @@ public final class ClickEvent {
 
         @Override
         public String toString() {
-            return this.name().toLowerCase(Locale.ROOT);
+            return this.toString;
         }
     }
 }

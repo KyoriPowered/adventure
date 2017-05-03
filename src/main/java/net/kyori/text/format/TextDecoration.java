@@ -34,6 +34,9 @@ public enum TextDecoration {
     @SerializedName("italic")
     ITALIC;
 
+    /**
+     * The serialized name of this decoration.
+     */
     private final String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
 
     @Override

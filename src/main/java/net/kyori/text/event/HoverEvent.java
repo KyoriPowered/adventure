@@ -1,10 +1,9 @@
 package net.kyori.text.event;
 
+import com.google.common.base.Enums;
 import com.google.common.base.Objects;
 import com.google.gson.annotations.SerializedName;
 import net.kyori.text.Component;
-
-import java.util.Locale;
 
 /**
  * A hover event.
@@ -102,6 +101,10 @@ public final class HoverEvent {
         SHOW_ENTITY(true);
 
         /**
+         * The serialized name of this action.
+         */
+        private final String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
+        /**
          * If this action is readable.
          *
          * <p>When an action is not readable it will not be deserailized.</p>
@@ -124,7 +127,7 @@ public final class HoverEvent {
 
         @Override
         public String toString() {
-            return this.name().toLowerCase(Locale.ROOT);
+            return this.toString;
         }
     }
 }
