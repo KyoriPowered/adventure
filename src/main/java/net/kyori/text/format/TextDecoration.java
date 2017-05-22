@@ -51,9 +51,19 @@ public enum TextDecoration {
      * A state that a {@link TextDecoration} can be in.
      */
     public enum State {
-        NOT_SET,
+        NOT_SET {
+            @Override
+            public String toString() {
+                return "null";
+            }
+        },
         FALSE,
         TRUE;
+
+        @Override
+        public String toString() {
+            return this.name().toLowerCase();
+        }
 
         /**
          * Gets a state from a {@code boolean}.
