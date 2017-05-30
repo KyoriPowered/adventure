@@ -1,6 +1,9 @@
 plugins {
     id 'java'
     id 'maven'
+    id 'signing'
+    id 'jacoco'
+    id 'net.minecrell.licenser' version '0.3'
 }
 
 group 'net.kyori'
@@ -8,6 +11,19 @@ version '1.12-SNAPSHOT'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+license {
+    header project.file('header.txt')
+    include '**/*.java'
+    newLine false
+}
+
+jacocoTestReport {
+    reports {
+        html.enabled = true
+        xml.enabled = true
+    }
+}
 
 repositories {
     mavenLocal()
@@ -19,4 +35,64 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.google.guava:guava:21.0'
     testCompile 'junit:junit:4.12'
+}
+
+task javadocJar(type: Jar) {
+    classifier 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+signing {
+    required { !project.version.endsWith('-SNAPSHOT') && gradle.taskGraph.hasTask('uploadArchives') }
+    sign configurations.archives
+}
+
+if(project.hasProperty('sonatypeUsername') && project.hasProperty('sonatypePassword')) {
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
+                    authentication(userName: sonatypeUsername, password: sonatypePassword)
+                }
+
+                snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
+                    authentication(userName: sonatypeUsername, password: sonatypePassword)
+                }
+
+                pom.project {
+                    name project.name
+
+                    issueManagement {
+                        system 'GitHub Issues'
+                        url 'https://github.com/KyoriPowered/text/issues'
+                    }
+
+                    licenses {
+                        license {
+                            name 'MIT License'
+                            url 'https://opensource.org/licenses/MIT'
+                        }
+                    }
+
+                    scm {
+                        connection 'scm:git@github.com:KyoriPowered/text.git'
+                        developerConnection 'scm:git@github.com:KyoriPowered/text.git'
+                        url 'https://github.com/KyoriPowered/text'
+                    }
+                }
+            }
+        }
+    }
 }
