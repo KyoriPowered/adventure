@@ -116,11 +116,6 @@ public final class HoverEvent {
         @SerializedName("show_text")
         SHOW_TEXT(true),
         /**
-         * Shows an achievement when hovered over.
-         */
-        @SerializedName("show_achievement")
-        SHOW_ACHIEVEMENT(true),
-        /**
          * Shows an item instance when hovered over.
          */
         @SerializedName("show_item")
