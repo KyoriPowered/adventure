@@ -96,7 +96,7 @@ public class TranslatableComponent extends BaseComponent {
      *
      * @return the unmodifiable list of translation arguments
      */
-        @Nonnull
+    @Nonnull
     public List<Component> args() {
         return Collections.unmodifiableList(this.args);
     }
