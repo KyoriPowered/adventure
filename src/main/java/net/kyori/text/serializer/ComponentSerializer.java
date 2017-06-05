@@ -70,7 +70,7 @@ public class ComponentSerializer implements JsonDeserializer<Component>, JsonSer
     }
 
     /**
-     * Serialize a component into a json string.
+     * Serializes a component into a json string.
      *
      * @param component the component
      * @return the json string

@@ -75,7 +75,7 @@ public final class ClickEvent {
     }
 
     /**
-     * Create a copy of this click event.
+     * Creates a copy of this click event.
      *
      * @return a copy of this click event
      */

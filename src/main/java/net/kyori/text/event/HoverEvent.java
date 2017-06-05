@@ -75,7 +75,7 @@ public final class HoverEvent {
     }
 
     /**
-     * Create a copy of this hover event.
+     * Creates a copy of this hover event.
      *
      * @return a copy of this hover event
      */

@@ -88,7 +88,7 @@ public interface Component {
     }
 
     /**
-     * Append a component to this component.
+     * Appends a component to this component.
      *
      * @param component the component to append
      * @return this component
@@ -97,7 +97,7 @@ public interface Component {
     Component append(@Nonnull final Component component);
 
     /**
-     * Create a copy of this component.
+     * Creates a copy of this component.
      *
      * @return a copy of this component
      */
