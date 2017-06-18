@@ -33,79 +33,79 @@ import javax.annotation.Nonnull;
  * An enumeration of decorations which may be applied to a {@link Component}.
  */
 public enum TextDecoration {
-    /**
-     * A decoration which makes text obfuscated/unreadable.
-     */
-    @SerializedName("obfuscated")
-    OBFUSCATED,
-    /**
-     * A decoration which makes text appear bold.
-     */
-    @SerializedName("bold")
-    BOLD,
-    /**
-     * A decoration which makes text have a strike through it.
-     */
-    @SerializedName("strikethrough")
-    STRIKETHROUGH,
-    /**
-     * A decoration which makes text have an underline.
-     */
-    @SerializedName("underline")
-    UNDERLINE,
-    /**
-     * A decoration which makes text appear in italics.
-     */
-    @SerializedName("italic")
-    ITALIC;
+  /**
+   * A decoration which makes text obfuscated/unreadable.
+   */
+  @SerializedName("obfuscated")
+  OBFUSCATED,
+  /**
+   * A decoration which makes text appear bold.
+   */
+  @SerializedName("bold")
+  BOLD,
+  /**
+   * A decoration which makes text have a strike through it.
+   */
+  @SerializedName("strikethrough")
+  STRIKETHROUGH,
+  /**
+   * A decoration which makes text have an underline.
+   */
+  @SerializedName("underline")
+  UNDERLINE,
+  /**
+   * A decoration which makes text appear in italics.
+   */
+  @SerializedName("italic")
+  ITALIC;
 
-    /**
-     * The serialized name of this decoration.
-     */
-    @Nonnull private final String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
+  /**
+   * The serialized name of this decoration.
+   */
+  @Nonnull private final String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
 
-    @Nonnull
+  @Nonnull
+  @Override
+  public String toString() {
+    return this.toString;
+  }
+
+  /**
+   * A state that a {@link TextDecoration} can be in.
+   */
+  public enum State {
+    NOT_SET {
+      @Override
+      public String toString() {
+        return "null";
+      }
+    },
+    FALSE,
+    TRUE;
+
     @Override
     public String toString() {
-        return this.toString;
+      return this.name().toLowerCase();
     }
 
     /**
-     * A state that a {@link TextDecoration} can be in.
+     * Gets a state from a {@code boolean}.
+     *
+     * @param flag the boolean
+     * @return the state
      */
-    public enum State {
-        NOT_SET {
-            @Override
-            public String toString() {
-                return "null";
-            }
-        },
-        FALSE,
-        TRUE;
-
-        @Override
-        public String toString() {
-            return this.name().toLowerCase();
-        }
-
-        /**
-         * Gets a state from a {@code boolean}.
-         *
-         * @param flag the boolean
-         * @return the state
-         */
-        public static State byBoolean(final boolean flag) {
-            return flag ? TRUE : FALSE;
-        }
-
-        /**
-         * Gets a state from a {@code Boolean}.
-         *
-         * @param flag the boolean
-         * @return the state
-         */
-        public static State byBoolean(final Boolean flag) {
-            return flag == null ? NOT_SET : byBoolean(flag.booleanValue());
-        }
+    public static State byBoolean(final boolean flag) {
+      return flag ? TRUE : FALSE;
     }
+
+    /**
+     * Gets a state from a {@code Boolean}.
+     *
+     * @param flag the boolean
+     * @return the state
+     */
+    public static State byBoolean(final Boolean flag) {
+      return flag == null ? NOT_SET : byBoolean(flag.booleanValue());
+    }
+  }
 }
