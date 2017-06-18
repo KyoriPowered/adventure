@@ -38,126 +38,121 @@ import javax.annotation.Nonnull;
  */
 public final class HoverEvent {
 
-    /**
-     * The hover event action.
-     */
-    @Nonnull private final Action action;
-    /**
-     * The hover event value.
-     */
-    @Nonnull private final Component value;
+  /**
+   * The hover event action.
+   */
+  @Nonnull private final Action action;
+  /**
+   * The hover event value.
+   */
+  @Nonnull private final Component value;
 
-    public HoverEvent(@Nonnull final Action action, @Nonnull final Component value) {
-        this.action = action;
-        this.value = value;
-    }
+  public HoverEvent(@Nonnull final Action action, @Nonnull final Component value) {
+    this.action = action;
+    this.value = value;
+  }
+
+  /**
+   * Gets the hover event action.
+   *
+   * @return the hover event action
+   */
+  @Nonnull
+  public Action action() {
+    return this.action;
+  }
+
+  /**
+   * Gets the hover event value.
+   *
+   * @return the hover event value
+   */
+  @Nonnull
+  public Component value() {
+    return this.value;
+  }
+
+  /**
+   * Creates a copy of this hover event.
+   *
+   * @return a copy of this hover event
+   */
+  @Nonnull
+  public HoverEvent copy() {
+    return new HoverEvent(this.action, this.value.copy());
+  }
+
+  @Override
+  public boolean equals(final Object other) {
+    if(this == other) return true;
+    if(other == null || this.getClass() != other.getClass()) return false;
+    final HoverEvent that = (HoverEvent) other;
+    return this.action == that.action && Objects.equal(this.value, that.value);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(this.action, this.value);
+  }
+
+  @Nonnull
+  @Override
+  public String toString() {
+    return Objects.toStringHelper(this)
+      .add("action", this.action)
+      .add("value", this.value)
+      .toString();
+  }
+
+  /**
+   * An enumeration of hover event actions.
+   */
+  public enum Action {
+    /**
+     * Shows a {@link Component} when hovered over.
+     */
+    @SerializedName("show_text")
+    SHOW_TEXT(true),
+    /**
+     * Shows an item instance when hovered over.
+     */
+    @SerializedName("show_item")
+    SHOW_ITEM(true),
+    /**
+     * Shows an entity when hovered over.
+     */
+    @SerializedName("show_entity")
+    SHOW_ENTITY(true);
 
     /**
-     * Gets the hover event action.
+     * The serialized name of this action.
+     */
+    @Nonnull private final String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
+    /**
+     * If this action is readable.
      *
-     * @return the hover event action
+     * <p>When an action is not readable it will not be deserailized.</p>
      */
-    @Nonnull
-    public Action action() {
-        return this.action;
+    private final boolean readable;
+
+    Action(final boolean readable) {
+      this.readable = readable;
     }
 
     /**
-     * Gets the hover event value.
+     * Tests if this action is readable.
      *
-     * @return the hover event value
+     * @return {@code true} if this action is readable, {@code false} if this
+     *     action is not readable
      */
-    @Nonnull
-    public Component value() {
-        return this.value;
-    }
-
-    /**
-     * Creates a copy of this hover event.
-     *
-     * @return a copy of this hover event
-     */
-    @Nonnull
-    public HoverEvent copy() {
-        return new HoverEvent(this.action, this.value.copy());
-    }
-
-    @Override
-    public boolean equals(final Object other) {
-        if(this == other) return true;
-        if(other == null || this.getClass() != other.getClass()) return false;
-        final HoverEvent that = (HoverEvent) other;
-        return this.action == that.action && Objects.equal(this.value, that.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(this.action, this.value);
+    public boolean isReadable() {
+      return this.readable;
     }
 
     @Nonnull
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
-            .add("action", this.action)
-            .add("value", this.value)
-            .toString();
+      return this.toString;
     }
-
-    /**
-     * An enumeration of hover event actions.
-     */
-    public enum Action {
-        /**
-         * Shows a {@link Component} when hovered over.
-         */
-        @SerializedName("show_text")
-        SHOW_TEXT(true),
-        /**
-         * Shows an achievement when hovered over.
-         */
-        @SerializedName("show_achievement")
-        SHOW_ACHIEVEMENT(true),
-        /**
-         * Shows an item instance when hovered over.
-         */
-        @SerializedName("show_item")
-        SHOW_ITEM(true),
-        /**
-         * Shows an entity when hovered over.
-         */
-        @SerializedName("show_entity")
-        SHOW_ENTITY(true);
-
-        /**
-         * The serialized name of this action.
-         */
-        @Nonnull private final String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
-        /**
-         * If this action is readable.
-         *
-         * <p>When an action is not readable it will not be deserailized.</p>
-         */
-        private final boolean readable;
-
-        Action(final boolean readable) {
-            this.readable = readable;
-        }
-
-        /**
-         * Tests if this action is readable.
-         *
-         * @return {@code true} if this action is readable, {@code false} if this
-         *     action is not readable
-         */
-        public boolean isReadable() {
-            return this.readable;
-        }
-
-        @Nonnull
-        @Override
-        public String toString() {
-            return this.toString;
-        }
-    }
+  }
 }
