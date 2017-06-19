@@ -45,6 +45,8 @@ import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -81,7 +83,9 @@ public class ComponentSerializer implements JsonDeserializer<Component>, JsonSer
   @Override
   public Component deserialize(final JsonElement element, final Type type, final JsonDeserializationContext context) throws JsonParseException {
     if(element.isJsonPrimitive()) {
-      return new TextComponent(element.getAsString());
+      return TextComponent.builder()
+        .content(element.getAsString())
+        .build();
     }
     if(!element.isJsonObject()) {
       if(element.isJsonArray()) {
@@ -100,21 +104,21 @@ public class ComponentSerializer implements JsonDeserializer<Component>, JsonSer
       throw new JsonParseException("Don't know how to turn " + element + " into a Component");
     }
     final JsonObject object = element.getAsJsonObject();
-    final Component component;
+    final Component.Builder component;
     if(object.has("text")) {
-      component = new TextComponent(object.get("text").getAsString());
+      component = TextComponent.builder().content(object.get("text").getAsString());
     } else if(object.has("translate")) {
       final String key = object.get("translate").getAsString();
       if(!object.has("with")) {
-        component = new TranslatableComponent(key);
+        component = TranslatableComponent.builder().key(key);
       } else {
         final JsonArray with = object.getAsJsonArray("with");
-        final Component[] args = new Component[with.size()];
-        for(int i = 0; i < args.length; i++) {
+        final List<Component> args = new ArrayList<>(with.size());
+        for(int i = 0, size = args.size(); i < size; i++) {
           final JsonElement argElement = with.get(i);
-          args[i] = this.deserialize(argElement, argElement.getClass(), context);
+          args.add(this.deserialize(argElement, argElement.getClass(), context));
         }
-        component = new TranslatableComponent(key, args);
+        component = TranslatableComponent.builder().key(key).args(args);
       }
     } else if(object.has("score")) {
       final JsonObject score = object.getAsJsonObject("score");
@@ -123,12 +127,12 @@ public class ComponentSerializer implements JsonDeserializer<Component>, JsonSer
       }
       // score components can have a value sometimes, let's grab it
       if(score.has("value")) {
-        component = new ScoreComponent(score.get("name").getAsString(), score.get("objective").getAsString(), score.get("value").getAsString());
+        component = ScoreComponent.builder().name(score.get("name").getAsString()).objective(score.get("objective").getAsString()).value(score.get("value").getAsString());
       } else {
-        component = new ScoreComponent(score.get("name").getAsString(), score.get("objective").getAsString());
+        component = ScoreComponent.builder().name(score.get("name").getAsString()).objective(score.get("objective").getAsString());
       }
     } else if(object.has("selector")) {
-      component = new SelectorComponent(object.get("selector").getAsString());
+      component = SelectorComponent.builder().pattern(object.get("selector").getAsString());
     } else {
       throw new JsonParseException("Don't know how to turn " + element + " into a Component");
     }
@@ -174,7 +178,7 @@ public class ComponentSerializer implements JsonDeserializer<Component>, JsonSer
       }
     }
 
-    return component;
+    return component.build();
   }
 
   @Override
