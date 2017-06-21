@@ -117,6 +117,12 @@ public class TextComponent extends AbstractComponent {
 
   @Nonnull
   @Override
+  public TextComponent decoration(@Nonnull final TextDecoration decoration, final boolean flag) {
+    return (TextComponent) super.decoration(decoration, flag);
+  }
+
+  @Nonnull
+  @Override
   public TextComponent decoration(@Nonnull TextDecoration decoration, @Nonnull TextDecoration.State state) {
     switch(decoration) {
       case BOLD: return new TextComponent(this.children, this.color, this.obfuscated, checkNotNull(state, "flag"), this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.content);

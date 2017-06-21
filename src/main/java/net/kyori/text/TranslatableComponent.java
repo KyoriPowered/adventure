@@ -172,6 +172,12 @@ public class TranslatableComponent extends AbstractComponent {
 
   @Nonnull
   @Override
+  public TranslatableComponent decoration(@Nonnull final TextDecoration decoration, final boolean flag) {
+    return (TranslatableComponent) super.decoration(decoration, flag);
+  }
+
+  @Nonnull
+  @Override
   public TranslatableComponent decoration(@Nonnull TextDecoration decoration, @Nonnull TextDecoration.State state) {
     switch(decoration) {
       case BOLD: return new TranslatableComponent(this.children, this.color, this.obfuscated, checkNotNull(state, "flag"), this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.key, this.args);
