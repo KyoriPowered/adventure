@@ -187,6 +187,12 @@ public class ScoreComponent extends AbstractComponent {
 
   @Nonnull
   @Override
+  public ScoreComponent decoration(@Nonnull final TextDecoration decoration, final boolean flag) {
+    return (ScoreComponent) super.decoration(decoration, flag);
+  }
+
+  @Nonnull
+  @Override
   public ScoreComponent decoration(@Nonnull TextDecoration decoration, @Nonnull TextDecoration.State state) {
     switch(decoration) {
       case BOLD: return new ScoreComponent(this.children, this.color, this.obfuscated, checkNotNull(state, "flag"), this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, this.value);

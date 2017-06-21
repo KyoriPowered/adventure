@@ -116,6 +116,12 @@ public class SelectorComponent extends AbstractComponent {
 
   @Nonnull
   @Override
+  public SelectorComponent decoration(@Nonnull final TextDecoration decoration, final boolean flag) {
+    return (SelectorComponent) super.decoration(decoration, flag);
+  }
+
+  @Nonnull
+  @Override
   public SelectorComponent decoration(@Nonnull TextDecoration decoration, @Nonnull TextDecoration.State state) {
     switch(decoration) {
       case BOLD: return new SelectorComponent(this.children, this.color, this.obfuscated, checkNotNull(state, "flag"), this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.pattern);
