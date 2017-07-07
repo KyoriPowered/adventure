@@ -155,7 +155,7 @@ public class TranslatableComponent extends AbstractComponent {
 
   @Nonnull
   @Override
-  public TranslatableComponent append(@Nonnull Component component) {
+  public TranslatableComponent append(@Nonnull final Component component) {
     this.detectCycle(component); // detect cycle before modifying
     final List<Component> children = new ArrayList<>(this.children.size() + 1);
     children.addAll(this.children);
@@ -165,7 +165,7 @@ public class TranslatableComponent extends AbstractComponent {
 
   @Nonnull
   @Override
-  public TranslatableComponent color(@Nullable TextColor color) {
+  public TranslatableComponent color(@Nullable final TextColor color) {
     return new TranslatableComponent(this.children, color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.key, this.args);
   }
 
@@ -177,7 +177,7 @@ public class TranslatableComponent extends AbstractComponent {
 
   @Nonnull
   @Override
-  public TranslatableComponent decoration(@Nonnull TextDecoration decoration, @Nonnull TextDecoration.State state) {
+  public TranslatableComponent decoration(@Nonnull final TextDecoration decoration, @Nonnull final TextDecoration.State state) {
     switch(decoration) {
       case BOLD: return new TranslatableComponent(this.children, this.color, this.obfuscated, checkNotNull(state, "flag"), this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.key, this.args);
       case ITALIC: return new TranslatableComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, checkNotNull(state, "flag"), this.clickEvent, this.hoverEvent, this.insertion, this.key, this.args);
@@ -190,20 +190,20 @@ public class TranslatableComponent extends AbstractComponent {
 
   @Nonnull
   @Override
-  public TranslatableComponent clickEvent(@Nullable ClickEvent event) {
+  public TranslatableComponent clickEvent(@Nullable final ClickEvent event) {
     return new TranslatableComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, event, this.hoverEvent, this.insertion, this.key, this.args);
   }
 
   @Nonnull
   @Override
-  public TranslatableComponent hoverEvent(@Nullable HoverEvent event) {
+  public TranslatableComponent hoverEvent(@Nullable final HoverEvent event) {
     if(event != null) this.detectCycle(event.value()); // detect cycle before modifying
     return new TranslatableComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, event, this.insertion, this.key, this.args);
   }
 
   @Nonnull
   @Override
-  public TranslatableComponent insertion(@Nullable String insertion) {
+  public TranslatableComponent insertion(@Nullable final String insertion) {
     return new TranslatableComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, insertion, this.key, this.args);
   }
 
@@ -215,13 +215,13 @@ public class TranslatableComponent extends AbstractComponent {
 
   @Nonnull
   @Override
-  public TranslatableComponent mergeColor(@Nonnull Component that) {
+  public TranslatableComponent mergeColor(@Nonnull final Component that) {
     return new TranslatableComponent(this.children, that.color(), this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.key, this.args);
   }
 
   @Nonnull
   @Override
-  public TranslatableComponent mergeDecorations(@Nonnull Component that) {
+  public TranslatableComponent mergeDecorations(@Nonnull final Component that) {
     final TextDecoration.State obfuscated = that.decoration(TextDecoration.OBFUSCATED) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.OBFUSCATED) : this.obfuscated;
     final TextDecoration.State bold = that.decoration(TextDecoration.BOLD) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.BOLD) : this.bold;
     final TextDecoration.State strikethrough = that.decoration(TextDecoration.STRIKETHROUGH) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.STRIKETHROUGH) : this.strikethrough;
@@ -232,7 +232,7 @@ public class TranslatableComponent extends AbstractComponent {
 
   @Nonnull
   @Override
-  public TranslatableComponent mergeEvents(@Nonnull Component that) {
+  public TranslatableComponent mergeEvents(@Nonnull final Component that) {
     return new TranslatableComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, that.clickEvent(), that.hoverEvent(), this.insertion, this.key, this.args);
   }
 

@@ -171,7 +171,7 @@ public class ScoreComponent extends AbstractComponent {
 
   @Nonnull
   @Override
-  public ScoreComponent append(@Nonnull Component component) {
+  public ScoreComponent append(@Nonnull final Component component) {
     this.detectCycle(component); // detect cycle before modifying
     final List<Component> children = new ArrayList<>(this.children.size() + 1);
     children.addAll(this.children);
@@ -181,7 +181,7 @@ public class ScoreComponent extends AbstractComponent {
 
   @Nonnull
   @Override
-  public ScoreComponent color(@Nullable TextColor color) {
+  public ScoreComponent color(@Nullable final TextColor color) {
     return new ScoreComponent(this.children, color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
   }
 
@@ -193,7 +193,7 @@ public class ScoreComponent extends AbstractComponent {
 
   @Nonnull
   @Override
-  public ScoreComponent decoration(@Nonnull TextDecoration decoration, @Nonnull TextDecoration.State state) {
+  public ScoreComponent decoration(@Nonnull final TextDecoration decoration, @Nonnull final TextDecoration.State state) {
     switch(decoration) {
       case BOLD: return new ScoreComponent(this.children, this.color, this.obfuscated, checkNotNull(state, "flag"), this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
       case ITALIC: return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, checkNotNull(state, "flag"), this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
@@ -206,20 +206,20 @@ public class ScoreComponent extends AbstractComponent {
 
   @Nonnull
   @Override
-  public ScoreComponent clickEvent(@Nullable ClickEvent event) {
+  public ScoreComponent clickEvent(@Nullable final ClickEvent event) {
     return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, event, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
   }
 
   @Nonnull
   @Override
-  public ScoreComponent hoverEvent(@Nullable HoverEvent event) {
+  public ScoreComponent hoverEvent(@Nullable final HoverEvent event) {
     if(event != null) this.detectCycle(event.value()); // detect cycle before modifying
     return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, event, this.insertion, this.name, this.objective, this.value);
   }
 
   @Nonnull
   @Override
-  public ScoreComponent insertion(@Nullable String insertion) {
+  public ScoreComponent insertion(@Nullable final String insertion) {
     return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, insertion, this.name, this.objective, this.value);
   }
 
@@ -231,13 +231,13 @@ public class ScoreComponent extends AbstractComponent {
 
   @Nonnull
   @Override
-  public ScoreComponent mergeColor(@Nonnull Component that) {
+  public ScoreComponent mergeColor(@Nonnull final Component that) {
     return new ScoreComponent(this.children, that.color(), this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
   }
 
   @Nonnull
   @Override
-  public ScoreComponent mergeDecorations(@Nonnull Component that) {
+  public ScoreComponent mergeDecorations(@Nonnull final Component that) {
     final TextDecoration.State obfuscated = that.decoration(TextDecoration.OBFUSCATED) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.OBFUSCATED) : this.obfuscated;
     final TextDecoration.State bold = that.decoration(TextDecoration.BOLD) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.BOLD) : this.bold;
     final TextDecoration.State strikethrough = that.decoration(TextDecoration.STRIKETHROUGH) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.STRIKETHROUGH) : this.strikethrough;
@@ -248,7 +248,7 @@ public class ScoreComponent extends AbstractComponent {
 
   @Nonnull
   @Override
-  public ScoreComponent mergeEvents(@Nonnull Component that) {
+  public ScoreComponent mergeEvents(@Nonnull final Component that) {
     return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, that.clickEvent(), that.hoverEvent(), this.insertion, this.name, this.objective, this.value);
   }
 
