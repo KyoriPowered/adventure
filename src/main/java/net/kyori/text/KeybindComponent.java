@@ -98,7 +98,7 @@ public class KeybindComponent extends AbstractComponent {
 
   @Nonnull
   @Override
-  public KeybindComponent append(@Nonnull Component component) {
+  public KeybindComponent append(@Nonnull final Component component) {
     this.detectCycle(component); // detect cycle before modifying
     final List<Component> children = new ArrayList<>(this.children.size() + 1);
     children.addAll(this.children);
@@ -108,7 +108,7 @@ public class KeybindComponent extends AbstractComponent {
 
   @Nonnull
   @Override
-  public KeybindComponent color(@Nullable TextColor color) {
+  public KeybindComponent color(@Nullable final TextColor color) {
     return new KeybindComponent(this.children, color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.keybind);
   }
 
@@ -120,7 +120,7 @@ public class KeybindComponent extends AbstractComponent {
 
   @Nonnull
   @Override
-  public KeybindComponent decoration(@Nonnull TextDecoration decoration, @Nonnull TextDecoration.State state) {
+  public KeybindComponent decoration(@Nonnull final TextDecoration decoration, @Nonnull final TextDecoration.State state) {
     switch(decoration) {
       case BOLD: return new KeybindComponent(this.children, this.color, this.obfuscated, checkNotNull(state, "flag"), this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.keybind);
       case ITALIC: return new KeybindComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, checkNotNull(state, "flag"), this.clickEvent, this.hoverEvent, this.insertion, this.keybind);
@@ -133,20 +133,20 @@ public class KeybindComponent extends AbstractComponent {
 
   @Nonnull
   @Override
-  public KeybindComponent clickEvent(@Nullable ClickEvent event) {
+  public KeybindComponent clickEvent(@Nullable final ClickEvent event) {
     return new KeybindComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, event, this.hoverEvent, this.insertion, this.keybind);
   }
 
   @Nonnull
   @Override
-  public KeybindComponent hoverEvent(@Nullable HoverEvent event) {
+  public KeybindComponent hoverEvent(@Nullable final HoverEvent event) {
     if(event != null) this.detectCycle(event.value()); // detect cycle before modifying
     return new KeybindComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, event, this.insertion, this.keybind);
   }
 
   @Nonnull
   @Override
-  public KeybindComponent insertion(@Nullable String insertion) {
+  public KeybindComponent insertion(@Nullable final String insertion) {
     return new KeybindComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, insertion, this.keybind);
   }
 
@@ -158,13 +158,13 @@ public class KeybindComponent extends AbstractComponent {
 
   @Nonnull
   @Override
-  public KeybindComponent mergeColor(@Nonnull Component that) {
+  public KeybindComponent mergeColor(@Nonnull final Component that) {
     return new KeybindComponent(this.children, that.color(), this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.keybind);
   }
 
   @Nonnull
   @Override
-  public KeybindComponent mergeDecorations(@Nonnull Component that) {
+  public KeybindComponent mergeDecorations(@Nonnull final Component that) {
     final TextDecoration.State obfuscated = that.decoration(TextDecoration.OBFUSCATED) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.OBFUSCATED) : this.obfuscated;
     final TextDecoration.State bold = that.decoration(TextDecoration.BOLD) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.BOLD) : this.bold;
     final TextDecoration.State strikethrough = that.decoration(TextDecoration.STRIKETHROUGH) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.STRIKETHROUGH) : this.strikethrough;
@@ -175,7 +175,7 @@ public class KeybindComponent extends AbstractComponent {
 
   @Nonnull
   @Override
-  public KeybindComponent mergeEvents(@Nonnull Component that) {
+  public KeybindComponent mergeEvents(@Nonnull final Component that) {
     return new KeybindComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, that.clickEvent(), that.hoverEvent(), this.insertion, this.keybind);
   }
 

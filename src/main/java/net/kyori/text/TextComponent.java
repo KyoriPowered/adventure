@@ -101,7 +101,7 @@ public class TextComponent extends AbstractComponent {
 
   @Nonnull
   @Override
-  public TextComponent append(@Nonnull Component component) {
+  public TextComponent append(@Nonnull final Component component) {
     this.detectCycle(component); // detect cycle before modifying
     final List<Component> children = new ArrayList<>(this.children.size() + 1);
     children.addAll(this.children);
@@ -111,7 +111,7 @@ public class TextComponent extends AbstractComponent {
 
   @Nonnull
   @Override
-  public TextComponent color(@Nullable TextColor color) {
+  public TextComponent color(@Nullable final TextColor color) {
     return new TextComponent(this.children, color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.content);
   }
 
@@ -123,7 +123,7 @@ public class TextComponent extends AbstractComponent {
 
   @Nonnull
   @Override
-  public TextComponent decoration(@Nonnull TextDecoration decoration, @Nonnull TextDecoration.State state) {
+  public TextComponent decoration(@Nonnull final TextDecoration decoration, @Nonnull final TextDecoration.State state) {
     switch(decoration) {
       case BOLD: return new TextComponent(this.children, this.color, this.obfuscated, checkNotNull(state, "flag"), this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.content);
       case ITALIC: return new TextComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, checkNotNull(state, "flag"), this.clickEvent, this.hoverEvent, this.insertion, this.content);
@@ -136,20 +136,20 @@ public class TextComponent extends AbstractComponent {
 
   @Nonnull
   @Override
-  public TextComponent clickEvent(@Nullable ClickEvent event) {
+  public TextComponent clickEvent(@Nullable final ClickEvent event) {
     return new TextComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, event, this.hoverEvent, this.insertion, this.content);
   }
 
   @Nonnull
   @Override
-  public TextComponent hoverEvent(@Nullable HoverEvent event) {
+  public TextComponent hoverEvent(@Nullable final HoverEvent event) {
     if(event != null) this.detectCycle(event.value()); // detect cycle before modifying
     return new TextComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, event, this.insertion, this.content);
   }
 
   @Nonnull
   @Override
-  public TextComponent insertion(@Nullable String insertion) {
+  public TextComponent insertion(@Nullable final String insertion) {
     return new TextComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, insertion, this.content);
   }
 
@@ -161,13 +161,13 @@ public class TextComponent extends AbstractComponent {
 
   @Nonnull
   @Override
-  public TextComponent mergeColor(@Nonnull Component that) {
+  public TextComponent mergeColor(@Nonnull final Component that) {
     return new TextComponent(this.children, that.color(), this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.content);
   }
 
   @Nonnull
   @Override
-  public TextComponent mergeDecorations(@Nonnull Component that) {
+  public TextComponent mergeDecorations(@Nonnull final Component that) {
     final TextDecoration.State obfuscated = that.decoration(TextDecoration.OBFUSCATED) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.OBFUSCATED) : this.obfuscated;
     final TextDecoration.State bold = that.decoration(TextDecoration.BOLD) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.BOLD) : this.bold;
     final TextDecoration.State strikethrough = that.decoration(TextDecoration.STRIKETHROUGH) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.STRIKETHROUGH) : this.strikethrough;
@@ -178,7 +178,7 @@ public class TextComponent extends AbstractComponent {
 
   @Nonnull
   @Override
-  public TextComponent mergeEvents(@Nonnull Component that) {
+  public TextComponent mergeEvents(@Nonnull final Component that) {
     return new TextComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, that.clickEvent(), that.hoverEvent(), this.insertion, this.content);
   }
 
