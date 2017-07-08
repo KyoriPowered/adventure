@@ -7,15 +7,15 @@ A text library for Minecraft.
 #### Example usage:
 ```java
 // Creates a line of text saying "You're a Bunny! Press <key> to jump!", with some colouring and styling.
-final Component component = new TextComponent("You're a ")
+final Component component = TextComponent.of("You're a ")
     .color(TextColor.GRAY)
-    .append(new TextComponent("Bunny").color(TextColor.LIGHT_PURPLE))
-    .append(new TextComponent("! Press "))
+    .append(TextComponent.of("Bunny").color(TextColor.LIGHT_PURPLE))
+    .append(TextComponent.of("! Press "))
     .append(
-        new KeybindComponent("key.jump")
+        KeybindComponent.of("key.jump")
             .color(TextColor.LIGHT_PURPLE)
             .decoration(TextDecoration.BOLD, true)
     )
-    .append(new TextComponent(" to jump!"));
+    .append(TextComponent.of(" to jump!"));
 // now you can send `component` to something, such as a client
 ```
