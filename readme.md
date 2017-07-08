@@ -7,7 +7,7 @@ A text library for Minecraft.
 #### Example usage:
 ```java
 // Creates a line of text saying "You're a Bunny! Press <key> to jump!", with some colouring and styling.
-final Component component = TextComponent.of("You're a ")
+final TextComponent textComponent = TextComponent.of("You're a ")
     .color(TextColor.GRAY)
     .append(TextComponent.of("Bunny").color(TextColor.LIGHT_PURPLE))
     .append(TextComponent.of("! Press "))
