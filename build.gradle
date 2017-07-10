@@ -12,6 +12,12 @@ version '1.12-SNAPSHOT'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+tasks.withType(JavaCompile) {
+    options.compilerArgs += ['-Xlint:all', '-Xlint:-path', '-parameters']
+    options.deprecation = true
+    options.encoding = 'UTF-8'
+}
+
 license {
     header project.file('header.txt')
     include '**/*.java'
