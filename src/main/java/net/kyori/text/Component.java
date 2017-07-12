@@ -306,6 +306,7 @@ public interface Component {
    * @param value the boolean value
    * @return the component
    */
+  @Nonnull
   static Component of(final boolean value) {
     return TextComponent.of(String.valueOf(value));
   }
@@ -316,6 +317,7 @@ public interface Component {
    * @param value the char value
    * @return the component
    */
+  @Nonnull
   static Component of(final char value) {
     return TextComponent.of(String.valueOf(value));
   }
@@ -326,6 +328,7 @@ public interface Component {
    * @param value the double value
    * @return the component
    */
+  @Nonnull
   static Component of(final double value) {
     return TextComponent.of(String.valueOf(value));
   }
@@ -336,6 +339,7 @@ public interface Component {
    * @param value the float value
    * @return the component
    */
+  @Nonnull
   static Component of(final float value) {
     return TextComponent.of(String.valueOf(value));
   }
@@ -346,6 +350,7 @@ public interface Component {
    * @param value the int value
    * @return the component
    */
+  @Nonnull
   static Component of(final int value) {
     return TextComponent.of(String.valueOf(value));
   }
@@ -356,6 +361,7 @@ public interface Component {
    * @param value the long value
    * @return the component
    */
+  @Nonnull
   static Component of(final long value) {
     return TextComponent.of(String.valueOf(value));
   }
