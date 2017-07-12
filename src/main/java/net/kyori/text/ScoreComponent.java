@@ -67,6 +67,17 @@ public class ScoreComponent extends AbstractComponent {
   }
 
   /**
+   * Creates a score component builder with a name and objective.
+   *
+   * @param name the score name
+   * @param objective the score objective
+   * @return a builder
+   */
+  public static Builder builder(@Nonnull final String name, @Nonnull final String objective) {
+    return new Builder().name(name).objective(objective);
+  }
+
+  /**
    * Creates a score component with a name and objective.
    *
    * @param name the score name

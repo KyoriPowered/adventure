@@ -56,13 +56,23 @@ public class KeybindComponent extends AbstractComponent {
   }
 
   /**
+   * Creates a keybind component builder with a keybind.
+   *
+   * @param keybind the keybind
+   * @return a builder
+   */
+  public static Builder builder(@Nonnull final String keybind) {
+    return new Builder().keybind(keybind);
+  }
+
+  /**
    * Creates a keybind component with a keybind.
    *
    * @param keybind the keybind
    * @return the text component
    */
   public static KeybindComponent of(@Nonnull final String keybind) {
-    return builder().keybind(keybind).build();
+    return builder(keybind).build();
   }
 
   protected KeybindComponent(@Nonnull final Builder builder) {
