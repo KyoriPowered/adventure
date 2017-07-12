@@ -84,7 +84,7 @@ public abstract class AbstractComponent implements Component {
    */
   @Nullable protected final String insertion;
 
-  protected AbstractComponent(final AbstractBuilder builder) {
+  protected <B extends AbstractBuilder<B, C>, C extends Component> AbstractComponent(final B builder) {
     this(builder.children, builder.color, builder.obfuscated, builder.bold, builder.strikethrough, builder.underlined, builder.italic, builder.clickEvent, builder.hoverEvent, builder.insertion);
   }
 

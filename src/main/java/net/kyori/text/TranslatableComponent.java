@@ -65,13 +65,23 @@ public class TranslatableComponent extends AbstractComponent {
   }
 
   /**
+   * Creates a translatable component builder with a translation key.
+   *
+   * @param key the translation key
+   * @return a builder
+   */
+  public static Builder builder(@Nonnull final String key) {
+    return new Builder().key(key);
+  }
+
+  /**
    * Creates a translatable component with a translation key.
    *
    * @param key the translation key
    * @return the text component
    */
   public static TranslatableComponent of(@Nonnull final String key) {
-    return builder().key(key).build();
+    return builder(key).build();
   }
 
   /**

@@ -301,6 +301,66 @@ public interface Component {
   boolean hasStyling();
 
   /**
+   * Creates a text component with the content of {@link String#valueOf(boolean)}.
+   *
+   * @param value the boolean value
+   * @return the component
+   */
+  static Component of(final boolean value) {
+    return TextComponent.of(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(char)}.
+   *
+   * @param value the char value
+   * @return the component
+   */
+  static Component of(final char value) {
+    return TextComponent.of(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(double)}.
+   *
+   * @param value the double value
+   * @return the component
+   */
+  static Component of(final double value) {
+    return TextComponent.of(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(float)}.
+   *
+   * @param value the float value
+   * @return the component
+   */
+  static Component of(final float value) {
+    return TextComponent.of(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(int)}.
+   *
+   * @param value the int value
+   * @return the component
+   */
+  static Component of(final int value) {
+    return TextComponent.of(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(long)}.
+   *
+   * @param value the long value
+   * @return the component
+   */
+  static Component of(final long value) {
+    return TextComponent.of(String.valueOf(value));
+  }
+
+  /**
    * A component builder.
    *
    * @param <B> the builder type

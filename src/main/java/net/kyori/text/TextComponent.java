@@ -58,13 +58,23 @@ public class TextComponent extends AbstractComponent {
   }
 
   /**
-   * Creates a text component with context.
+   * Creates a text component builder with content.
+   *
+   * @param content the plain text content
+   * @return a builder
+   */
+  public static Builder builder(@Nonnull final String content) {
+    return new Builder().content(content);
+  }
+
+  /**
+   * Creates a text component with content.
    *
    * @param content the plain text content
    * @return the text component
    */
   public static TextComponent of(@Nonnull final String content) {
-    return builder().content(content).build();
+    return builder(content).build();
   }
 
   protected TextComponent(@Nonnull final Builder builder) {

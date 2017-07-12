@@ -54,7 +54,7 @@ import javax.annotation.Nullable;
 /**
  * A {@link Component} serializer and deserializer.
  */
-public class ComponentSerializer implements JsonDeserializer<Component>, JsonSerializer<Component> {
+public final class ComponentSerializer implements JsonDeserializer<Component>, JsonSerializer<Component> {
 
   private static final Gson GSON = new GsonBuilder()
     .registerTypeHierarchyAdapter(Component.class, new ComponentSerializer())
@@ -83,9 +83,7 @@ public class ComponentSerializer implements JsonDeserializer<Component>, JsonSer
   @Override
   public Component deserialize(final JsonElement element, final Type type, final JsonDeserializationContext context) throws JsonParseException {
     if(element.isJsonPrimitive()) {
-      return TextComponent.builder()
-        .content(element.getAsString())
-        .build();
+      return TextComponent.of(element.getAsString());
     }
     if(!element.isJsonObject()) {
       if(element.isJsonArray()) {
@@ -106,11 +104,11 @@ public class ComponentSerializer implements JsonDeserializer<Component>, JsonSer
     final JsonObject object = element.getAsJsonObject();
     final Component.Builder component;
     if(object.has("text")) {
-      component = TextComponent.builder().content(object.get("text").getAsString());
+      component = TextComponent.builder(object.get("text").getAsString());
     } else if(object.has("translate")) {
       final String key = object.get("translate").getAsString();
       if(!object.has("with")) {
-        component = TranslatableComponent.builder().key(key);
+        component = TranslatableComponent.builder(key);
       } else {
         final JsonArray with = object.getAsJsonArray("with");
         final List<Component> args = new ArrayList<>(with.size());
@@ -118,7 +116,7 @@ public class ComponentSerializer implements JsonDeserializer<Component>, JsonSer
           final JsonElement argElement = with.get(i);
           args.add(this.deserialize(argElement, argElement.getClass(), context));
         }
-        component = TranslatableComponent.builder().key(key).args(args);
+        component = TranslatableComponent.builder(key).args(args);
       }
     } else if(object.has("score")) {
       final JsonObject score = object.getAsJsonObject("score");

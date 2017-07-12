@@ -58,13 +58,23 @@ public class SelectorComponent extends AbstractComponent {
   }
 
   /**
+   * Creates a selector component builder with a pattern.
+   *
+   * @param pattern the selector pattern
+   * @return a builder
+   */
+  public static Builder builder(@Nonnull final String pattern) {
+    return new Builder().pattern(pattern);
+  }
+
+  /**
    * Creates a selector component with a pattern.
    *
    * @param pattern the selector pattern
    * @return the text component
    */
   public static SelectorComponent of(@Nonnull final String pattern) {
-    return builder().pattern(pattern).build();
+    return builder(pattern).build();
   }
 
   protected SelectorComponent(@Nonnull final Builder builder) {
