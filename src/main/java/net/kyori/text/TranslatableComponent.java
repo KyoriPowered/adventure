@@ -296,6 +296,17 @@ public class TranslatableComponent extends AbstractComponent {
      * @return this builder
      */
     @Nonnull
+    public Builder args(@Nonnull final Component... args) {
+      return this.args(Arrays.asList(args));
+    }
+
+    /**
+     * Sets the translation args.
+     *
+     * @param args the translation args
+     * @return this builder
+     */
+    @Nonnull
     public Builder args(@Nonnull final List<Component> args) {
       this.args = args;
       return this;
