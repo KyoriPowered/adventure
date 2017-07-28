@@ -30,14 +30,11 @@ import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * An abstract implementation of a text component.
@@ -84,10 +81,6 @@ public abstract class AbstractComponent implements Component {
    * The string to insert when this component is shift-clicked in chat.
    */
   @Nullable protected final String insertion;
-
-  protected <B extends AbstractBuilder<B, C>, C extends Component> AbstractComponent(final B builder) {
-    this(builder.children, builder.color, builder.obfuscated, builder.bold, builder.strikethrough, builder.underlined, builder.italic, builder.clickEvent, builder.hoverEvent, builder.insertion);
-  }
 
   protected AbstractComponent(@Nonnull final List<Component> children, @Nullable final TextColor color, @Nonnull final TextDecoration.State obfuscated, @Nonnull final TextDecoration.State bold, @Nonnull final TextDecoration.State strikethrough, @Nonnull final TextDecoration.State underlined, @Nonnull final TextDecoration.State italic, @Nullable final ClickEvent clickEvent, @Nullable final HoverEvent hoverEvent, @Nullable final String insertion) {
     this.children = ImmutableList.copyOf(children);
@@ -204,108 +197,5 @@ public abstract class AbstractComponent implements Component {
   }
 
   protected void populateToString(@Nonnull final MoreObjects.ToStringHelper builder) {
-  }
-
-  /**
-   * An abstract implementation of a component builder.
-   *
-   * @param <B> the builder type
-   * @param <C> the component type
-   */
-  protected static abstract class AbstractBuilder<B extends AbstractBuilder<B, C>, C extends Component> implements Builder<B, C> {
-
-    /**
-     * The list of children.
-     *
-     * <p>This list is set to {@link #EMPTY_COMPONENT_LIST an empty list of components}
-     * by default to prevent unnecessary list creation for components with no children.</p>
-     */
-    @Nonnull protected List<Component> children = EMPTY_COMPONENT_LIST;
-    /**
-     * The color of this component.
-     */
-    @Nullable protected TextColor color;
-    /**
-     * If this component should have the {@link TextDecoration#OBFUSCATED obfuscated} decoration.
-     */
-    @Nonnull protected TextDecoration.State obfuscated = TextDecoration.State.NOT_SET;
-    /**
-     * If this component should have the {@link TextDecoration#BOLD bold} decoration.
-     */
-    @Nonnull protected TextDecoration.State bold = TextDecoration.State.NOT_SET;
-    /**
-     * If this component should have the {@link TextDecoration#STRIKETHROUGH strikethrough} decoration.
-     */
-    @Nonnull protected TextDecoration.State strikethrough = TextDecoration.State.NOT_SET;
-    /**
-     * If this component should have the {@link TextDecoration#UNDERLINE underlined} decoration.
-     */
-    @Nonnull protected TextDecoration.State underlined = TextDecoration.State.NOT_SET;
-    /**
-     * If this component should have the {@link TextDecoration#ITALIC italic} decoration.
-     */
-    @Nonnull protected TextDecoration.State italic = TextDecoration.State.NOT_SET;
-    /**
-     * The click event to apply to this component.
-     */
-    @Nullable protected ClickEvent clickEvent;
-    /**
-     * The hover event to apply to this component.
-     */
-    @Nullable protected HoverEvent hoverEvent;
-    /**
-     * The string to insert when this component is shift-clicked in chat.
-     */
-    @Nullable protected String insertion;
-
-
-    @Nonnull
-    @Override
-    public B append(@Nonnull final Component component) {
-      if(this.children == EMPTY_COMPONENT_LIST) this.children = new ArrayList<>();
-      this.children.add(component);
-      return (B) this;
-    }
-
-    @Nonnull
-    @Override
-    public B color(@Nullable final TextColor color) {
-      this.color = color;
-      return (B) this;
-    }
-
-    @Nonnull
-    @Override
-    public B decoration(@Nonnull final TextDecoration decoration, @Nonnull final TextDecoration.State state) {
-      switch(decoration) {
-        case BOLD: this.bold = checkNotNull(state, "flag"); return (B) this;
-        case ITALIC: this.italic = checkNotNull(state, "flag"); return (B) this;
-        case UNDERLINE: this.underlined = checkNotNull(state, "flag"); return (B) this;
-        case STRIKETHROUGH: this.strikethrough = checkNotNull(state, "flag"); return (B) this;
-        case OBFUSCATED: this.obfuscated = checkNotNull(state, "flag"); return (B) this;
-        default: throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
-      }
-    }
-
-    @Nonnull
-    @Override
-    public B clickEvent(@Nullable final ClickEvent event) {
-      this.clickEvent = event;
-      return (B) this;
-    }
-
-    @Nonnull
-    @Override
-    public B hoverEvent(@Nullable final HoverEvent event) {
-      this.hoverEvent = event;
-      return (B) this;
-    }
-
-    @Nonnull
-    @Override
-    public B insertion(@Nullable final String insertion) {
-      this.insertion = insertion;
-      return (B) this;
-    }
   }
 }

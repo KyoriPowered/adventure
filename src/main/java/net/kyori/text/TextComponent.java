@@ -42,7 +42,7 @@ import static com.google.common.base.Preconditions.checkState;
 /**
  * A plain text component.
  */
-public class TextComponent extends AbstractComponent {
+public class TextComponent extends AbstractBuildableComponent<TextComponent, TextComponent.Builder> {
 
   /**
    * The plain text content.
@@ -223,12 +223,26 @@ public class TextComponent extends AbstractComponent {
     builder.add("content", this.content);
   }
 
+  @Nonnull
+  @Override
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+
   /**
    * A text component builder.
    */
-  public static class Builder extends AbstractComponent.AbstractBuilder<Builder, TextComponent> {
+  public static class Builder extends AbstractBuildableComponent.AbstractBuilder<TextComponent, Builder> {
 
     @Nullable private String content;
+
+    Builder() {
+    }
+
+    Builder(@Nonnull final TextComponent component) {
+      super(component);
+      this.content = component.content();
+    }
 
     /**
      * Sets the plain text content.
@@ -242,6 +256,7 @@ public class TextComponent extends AbstractComponent {
       return this;
     }
 
+    @Nonnull
     @Override
     public TextComponent build() {
       checkState(this.content != null, "content must be set");

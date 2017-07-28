@@ -45,7 +45,7 @@ import static com.google.common.base.Preconditions.checkState;
 /**
  * A translatable text component.
  */
-public class TranslatableComponent extends AbstractComponent {
+public class TranslatableComponent extends AbstractBuildableComponent<TranslatableComponent, TranslatableComponent.Builder> {
 
   /**
    * The translation key.
@@ -280,13 +280,28 @@ public class TranslatableComponent extends AbstractComponent {
       .add("args", this.args);
   }
 
+  @Nonnull
+  @Override
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+
   /**
    * A text component builder.
    */
-  public static class Builder extends AbstractComponent.AbstractBuilder<Builder, TranslatableComponent> {
+  public static class Builder extends AbstractBuildableComponent.AbstractBuilder<TranslatableComponent, Builder> {
 
     @Nullable private String key;
     @Nonnull private List<Component> args = Component.EMPTY_COMPONENT_LIST;
+
+    Builder() {
+    }
+
+    Builder(@Nonnull final TranslatableComponent component) {
+      super(component);
+      this.key = component.key();
+      this.args = component.args();
+    }
 
     /**
      * Sets the translation key.
@@ -323,6 +338,7 @@ public class TranslatableComponent extends AbstractComponent {
       return this;
     }
 
+    @Nonnull
     @Override
     public TranslatableComponent build() {
       checkState(this.key != null, "key must be set");

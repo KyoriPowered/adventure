@@ -42,7 +42,7 @@ import static com.google.common.base.Preconditions.checkState;
 /**
  * A scoreboard selector component.
  */
-public class SelectorComponent extends AbstractComponent {
+public class SelectorComponent extends AbstractBuildableComponent<SelectorComponent, SelectorComponent.Builder> {
 
   /**
    * The selector pattern.
@@ -223,12 +223,26 @@ public class SelectorComponent extends AbstractComponent {
     builder.add("pattern", this.pattern);
   }
 
+  @Nonnull
+  @Override
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+
   /**
    * A selector component builder.
    */
-  public static class Builder extends AbstractComponent.AbstractBuilder<Builder, SelectorComponent> {
+  public static class Builder extends AbstractBuildableComponent.AbstractBuilder<SelectorComponent, Builder> {
 
     @Nullable private String pattern;
+
+    Builder() {
+    }
+
+    Builder(@Nonnull final SelectorComponent component) {
+      super(component);
+      this.pattern = component.pattern();
+    }
 
     /**
      * Sets the selector pattern.
@@ -242,6 +256,7 @@ public class SelectorComponent extends AbstractComponent {
       return this;
     }
 
+    @Nonnull
     @Override
     public SelectorComponent build() {
       checkState(this.pattern != null, "pattern must be set");

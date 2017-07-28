@@ -39,7 +39,7 @@ import javax.annotation.Nullable;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
-public class KeybindComponent extends AbstractComponent {
+public class KeybindComponent extends AbstractBuildableComponent<KeybindComponent, KeybindComponent.Builder> {
 
   /**
    * The keybind.
@@ -220,12 +220,26 @@ public class KeybindComponent extends AbstractComponent {
     builder.add("keybind", this.keybind);
   }
 
+  @Nonnull
+  @Override
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+
   /**
    * A keybind component builder.
    */
-  public static class Builder extends AbstractComponent.AbstractBuilder<Builder, KeybindComponent> {
+  public static class Builder extends AbstractBuildableComponent.AbstractBuilder<KeybindComponent, Builder> {
 
     @Nullable private String keybind;
+
+    Builder() {
+    }
+
+    Builder(@Nonnull final KeybindComponent component) {
+      super(component);
+      this.keybind = component.keybind();
+    }
 
     /**
      * Sets the keybind.
@@ -239,6 +253,7 @@ public class KeybindComponent extends AbstractComponent {
       return this;
     }
 
+    @Nonnull
     @Override
     public KeybindComponent build() {
       checkState(this.keybind != null, "keybind must be set");
