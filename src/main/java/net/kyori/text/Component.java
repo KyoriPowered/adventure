@@ -91,15 +91,15 @@ public interface Component {
    * Appends a component to this component.
    *
    * @param component the component to append
-   * @return a copy of this component with the component added
+   * @return a component with the component added
    */
   @Nonnull
   Component append(@Nonnull final Component component);
 
   /**
-   * Creates a copy of this component.
+   * Creates a component.
    *
-   * @return a copy of this component
+   * @return a component
    */
   @Nonnull
   Component copy();
@@ -116,7 +116,7 @@ public interface Component {
    * Sets the color of this component.
    *
    * @param color the color
-   * @return a copy of this component
+   * @return a component
    */
   @Nonnull
   Component color(@Nullable final TextColor color);
@@ -149,7 +149,7 @@ public interface Component {
    * @param decoration the decoration
    * @param flag {@code true} if this component should have the decoration, {@code false} if
    *     this component should not have the decoration
-   * @return a copy of this component
+   * @return a component
    */
   @Nonnull
   default Component decoration(@Nonnull final TextDecoration decoration, final boolean flag) {
@@ -164,7 +164,7 @@ public interface Component {
    *     decoration, {@link TextDecoration.State#FALSE} if this component should not
    *     have the decoration, and {@link TextDecoration.State#NOT_SET} if the decoration
    *     should not have a set value
-   * @return a copy of this component
+   * @return a component
    */
   @Nonnull
   Component decoration(@Nonnull final TextDecoration decoration, @Nonnull final TextDecoration.State state);
@@ -209,7 +209,7 @@ public interface Component {
    * Sets the click event of this component.
    *
    * @param event the click event
-   * @return a copy of this component
+   * @return a component
    */
   @Nonnull
   Component clickEvent(@Nullable final ClickEvent event);
@@ -226,7 +226,7 @@ public interface Component {
    * Sets the hover event of this component.
    *
    * @param event the hover event
-   * @return a copy of this component
+   * @return a component
    */
   @Nonnull
   Component hoverEvent(@Nullable final HoverEvent event);
@@ -243,7 +243,7 @@ public interface Component {
    * Sets the string to be inserted when this component is shift-clicked.
    *
    * @param insertion the insertion string
-   * @return a copy of this component
+   * @return a component
    */
   @Nonnull
   Component insertion(@Nullable final String insertion);
@@ -252,7 +252,7 @@ public interface Component {
    * Merges styling from another component into this component.
    *
    * @param that the other component
-   * @return a copy of this component
+   * @return a component
    */
   @Nonnull
   Component mergeStyle(@Nonnull final Component that);
@@ -261,7 +261,7 @@ public interface Component {
    * Merges the color from another component into this component.
    *
    * @param that the other component
-   * @return a copy of this component
+   * @return a component
    */
   @Nonnull
   Component mergeColor(@Nonnull final Component that);
@@ -270,7 +270,7 @@ public interface Component {
    * Merges the decorations from another component into this component.
    *
    * @param that the other component
-   * @return a copy of this component
+   * @return a component
    */
   @Nonnull
   Component mergeDecorations(@Nonnull final Component that);
@@ -279,7 +279,7 @@ public interface Component {
    * Merges the events from another component into this component.
    *
    * @param that the other component
-   * @return a copy of this component
+   * @return a component
    */
   @Nonnull
   Component mergeEvents(@Nonnull final Component that);
@@ -287,7 +287,7 @@ public interface Component {
   /**
    * Resets all styling on this component.
    *
-   * @return a copy of this component
+   * @return a component
    */
   @Nonnull
   Component resetStyle();
@@ -364,160 +364,5 @@ public interface Component {
   @Nonnull
   static Component of(final long value) {
     return TextComponent.of(String.valueOf(value));
-  }
-
-  /**
-   * A component builder.
-   *
-   * @param <B> the builder type
-   * @param <C> the component type
-   */
-  interface Builder<B extends Builder<B, C>, C extends Component> {
-
-    /**
-     * Appends a component to this component.
-     *
-     * @param component the component to append
-     * @return this builder
-     */
-    @Nonnull
-    B append(@Nonnull final Component component);
-
-    /**
-     * Sets the color of this component.
-     *
-     * @param color the color
-     * @return this builder
-     */
-    @Nonnull
-    B color(@Nullable final TextColor color);
-
-    /**
-     * Sets the state of a decoration on this component.
-     *
-     * @param decoration the decoration
-     * @param flag {@code true} if this component should have the decoration, {@code false} if
-     *     this component should not have the decoration
-     * @return this builder
-     */
-    @Nonnull
-    default B decoration(@Nonnull final TextDecoration decoration, final boolean flag) {
-      return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
-    }
-
-    /**
-     * Sets the value of a decoration on this component.
-     *
-     * @param decoration the decoration
-     * @param state {@link TextDecoration.State#TRUE} if this component should have the
-     *     decoration, {@link TextDecoration.State#FALSE} if this component should not
-     *     have the decoration, and {@link TextDecoration.State#NOT_SET} if the decoration
-     *     should not have a set value
-     * @return this builder
-     */
-    @Nonnull
-    B decoration(@Nonnull final TextDecoration decoration, @Nonnull final TextDecoration.State state);
-
-    /**
-     * Sets the click event of this component.
-     *
-     * @param event the click event
-     * @return this builder
-     */
-    @Nonnull
-    B clickEvent(@Nullable final ClickEvent event);
-
-    /**
-     * Sets the hover event of this component.
-     *
-     * @param event the hover event
-     * @return this builder
-     */
-    @Nonnull
-    B hoverEvent(@Nullable final HoverEvent event);
-
-    /**
-     * Sets the string to be inserted when this component is shift-clicked.
-     *
-     * @param insertion the insertion string
-     * @return this builder
-     */
-    @Nonnull
-    B insertion(@Nullable final String insertion);
-
-    /**
-     * Merges styling from another component into this component.
-     *
-     * @param that the other component
-     * @return this builder
-     */
-    @Nonnull
-    default B mergeStyle(@Nonnull final Component that) {
-      this.mergeColor(that);
-      this.mergeDecorations(that);
-      this.mergeEvents(that);
-      return (B) this;
-    }
-
-    /**
-     * Merges the color from another component into this component.
-     *
-     * @param that the other component
-     * @return this builder
-     */
-    @Nonnull
-    default B mergeColor(@Nonnull final Component that) {
-      if(that.color() != null) this.color(that.color());
-      return (B) this;
-    }
-
-    /**
-     * Merges the decorations from another component into this component.
-     *
-     * @param that the other component
-     * @return this builder
-     */
-    @Nonnull
-    default B mergeDecorations(@Nonnull final Component that) {
-      for(final TextDecoration decoration : TextDecoration.values()) {
-        final TextDecoration.State state = that.decoration(decoration);
-        if(state != TextDecoration.State.NOT_SET) this.decoration(decoration, state);
-      }
-      return (B) this;
-    }
-
-    /**
-     * Merges the events from another component into this component.
-     *
-     * @param that the other component
-     * @return this builder
-     */
-    @Nonnull
-    default B mergeEvents(@Nonnull final Component that) {
-      if(that.clickEvent() != null) this.clickEvent(that.clickEvent());
-      if(that.hoverEvent() != null) this.hoverEvent(that.hoverEvent().copy()); // hard copy, hover events have a component
-      return (B) this;
-    }
-
-    /**
-     * Resets all styling on this component.
-     *
-     * @return this builder
-     */
-    @Nonnull
-    default B resetStyle() {
-      this.color(null);
-      for(final TextDecoration decoration : TextDecoration.values()) this.decoration(decoration, TextDecoration.State.NOT_SET);
-      this.clickEvent(null);
-      this.hoverEvent(null);
-      return (B) this;
-    }
-
-    /**
-     * Build a component.
-     *
-     * @return the component
-     */
-    C build();
   }
 }

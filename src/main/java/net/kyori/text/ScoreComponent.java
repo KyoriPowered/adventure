@@ -41,7 +41,7 @@ import static com.google.common.base.Preconditions.checkState;
 /**
  * A scoreboard score component.
  */
-public class ScoreComponent extends AbstractComponent {
+public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, ScoreComponent.Builder> {
 
   /**
    * The score name.
@@ -297,14 +297,30 @@ public class ScoreComponent extends AbstractComponent {
       .add("value", this.value);
   }
 
+  @Nonnull
+  @Override
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+
   /**
    * A score component builder.
    */
-  public static class Builder extends AbstractComponent.AbstractBuilder<Builder, ScoreComponent> {
+  public static class Builder extends AbstractBuildableComponent.AbstractBuilder<ScoreComponent, Builder> {
 
     @Nullable private String name;
     @Nullable private String objective;
     @Nullable private String value;
+
+    Builder() {
+    }
+
+    Builder(@Nonnull final ScoreComponent component) {
+      super(component);
+      this.name = component.name();
+      this.objective = component.objective();
+      this.value = component.value();
+    }
 
     /**
      * Sets the score name.
@@ -342,6 +358,7 @@ public class ScoreComponent extends AbstractComponent {
       return this;
     }
 
+    @Nonnull
     @Override
     public ScoreComponent build() {
       checkState(this.name != null, "name must be set");

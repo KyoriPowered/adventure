@@ -34,6 +34,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import net.kyori.text.BuildableComponent;
 import net.kyori.text.Component;
 import net.kyori.text.ScoreComponent;
 import net.kyori.text.SelectorComponent;
@@ -102,7 +103,7 @@ public final class ComponentSerializer implements JsonDeserializer<Component>, J
       throw new JsonParseException("Don't know how to turn " + element + " into a Component");
     }
     final JsonObject object = element.getAsJsonObject();
-    final Component.Builder component;
+    final BuildableComponent.Builder component;
     if(object.has("text")) {
       component = TextComponent.builder(object.get("text").getAsString());
     } else if(object.has("translate")) {
