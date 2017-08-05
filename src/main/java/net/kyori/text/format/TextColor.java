@@ -32,44 +32,58 @@ import javax.annotation.Nonnull;
 /**
  * An enumeration of colors which may be applied to a {@link Component}.
  */
-public enum TextColor {
+public enum TextColor implements TextFormat {
   @SerializedName("black")
-  BLACK,
+  BLACK('0'),
   @SerializedName("dark_blue")
-  DARK_BLUE,
+  DARK_BLUE('1'),
   @SerializedName("dark_green")
-  DARK_GREEN,
+  DARK_GREEN('2'),
   @SerializedName("dark_aqua")
-  DARK_AQUA,
+  DARK_AQUA('3'),
   @SerializedName("dark_red")
-  DARK_RED,
+  DARK_RED('4'),
   @SerializedName("dark_purple")
-  DARK_PURPLE,
+  DARK_PURPLE('5'),
   @SerializedName("gold")
-  GOLD,
+  GOLD('6'),
   @SerializedName("gray")
-  GRAY,
+  GRAY('7'),
   @SerializedName("dark_gray")
-  DARK_GRAY,
+  DARK_GRAY('8'),
   @SerializedName("blue")
-  BLUE,
+  BLUE('9'),
   @SerializedName("green")
-  GREEN,
+  GREEN('a'),
   @SerializedName("aqua")
-  AQUA,
+  AQUA('b'),
   @SerializedName("red")
-  RED,
+  RED('c'),
   @SerializedName("light_purple")
-  LIGHT_PURPLE,
+  LIGHT_PURPLE('d'),
   @SerializedName("yellow")
-  YELLOW,
+  YELLOW('e'),
   @SerializedName("white")
-  WHITE;
+  WHITE('f');
 
   /**
    * The serialized name of this color.
    */
   @Nonnull private final String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
+  /**
+   * The legacy code.
+   */
+  @Deprecated private final char legacy;
+
+  TextColor(final char legacy) {
+    this.legacy = legacy;
+  }
+
+  @Deprecated
+  @Override
+  public char legacy() {
+    return this.legacy;
+  }
 
   @Nonnull
   @Override
