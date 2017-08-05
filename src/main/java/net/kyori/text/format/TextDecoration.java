@@ -32,37 +32,51 @@ import javax.annotation.Nonnull;
 /**
  * An enumeration of decorations which may be applied to a {@link Component}.
  */
-public enum TextDecoration {
+public enum TextDecoration implements TextFormat {
   /**
    * A decoration which makes text obfuscated/unreadable.
    */
   @SerializedName("obfuscated")
-  OBFUSCATED,
+  OBFUSCATED('k'),
   /**
    * A decoration which makes text appear bold.
    */
   @SerializedName("bold")
-  BOLD,
+  BOLD('l'),
   /**
    * A decoration which makes text have a strike through it.
    */
   @SerializedName("strikethrough")
-  STRIKETHROUGH,
+  STRIKETHROUGH('m'),
   /**
    * A decoration which makes text have an underline.
    */
   @SerializedName("underline")
-  UNDERLINE,
+  UNDERLINE('n'),
   /**
    * A decoration which makes text appear in italics.
    */
   @SerializedName("italic")
-  ITALIC;
+  ITALIC('o');
 
   /**
    * The serialized name of this decoration.
    */
   @Nonnull private final String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
+  /**
+   * The legacy code.
+   */
+  @Deprecated private final char legacy;
+
+  TextDecoration(final char legacy) {
+    this.legacy = legacy;
+  }
+
+  @Deprecated
+  @Override
+  public char legacy() {
+    return this.legacy;
+  }
 
   @Nonnull
   @Override
