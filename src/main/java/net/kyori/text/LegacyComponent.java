@@ -23,8 +23,18 @@
  */
 package net.kyori.text;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Streams;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
+import net.kyori.text.format.TextFormat;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,11 +42,92 @@ import javax.annotation.Nullable;
 @Deprecated
 public final class LegacyComponent {
 
-  private static final char CHARACTER = '\u00A7';
+  @VisibleForTesting static final char CHARACTER = '\u00A7';
+  private static final TextFormat[] FORMATS = Streams.concat(Arrays.stream(TextColor.values()), Arrays.stream(TextDecoration.values()), Stream.of(Reset.INSTANCE)).toArray(TextFormat[]::new);
+  private static final String FORMAT_LOOKUP = Arrays.stream(FORMATS).map(format -> String.valueOf(format.legacy())).collect(Collectors.joining());
 
   private LegacyComponent() {
   }
 
+  @Deprecated
+  @Nonnull
+  public static TextComponent from(@Nonnull final String input) {
+    int next = input.lastIndexOf(CHARACTER, input.length() - 2);
+    if(next == -1) {
+      return TextComponent.of(input);
+    }
+
+    final List<TextComponent.Builder> parts = new ArrayList<>();
+
+    TextComponent.Builder current = null;
+    boolean reset = false;
+
+    int pos = input.length();
+    do {
+      TextFormat format = find(input.charAt(next + 1));
+      if(format != null) {
+        int from = next + 2;
+        if(from != pos) {
+          if(current != null) {
+            if(reset) {
+              parts.add(current);
+              reset = false;
+              current = TextComponent.builder("");
+            } else {
+              current = TextComponent.builder("").append(current.build());
+            }
+          } else {
+            current = TextComponent.builder("");
+          }
+
+          current.content(input.substring(from, pos));
+        } else if(current == null) {
+          current = TextComponent.builder("");
+        }
+
+        reset |= applyFormat(current, format);
+        pos = next;
+      }
+
+      next = input.lastIndexOf(CHARACTER, next - 1);
+    } while(next != -1);
+
+    if(current != null) {
+      parts.add(current);
+    }
+
+    Collections.reverse(parts);
+    switch(parts.size()) {
+      case 0:
+        return TextComponent.of(pos > 0 ? input.substring(0, pos) : "");
+      case 1:
+        return parts.get(0).build();
+      case 2:
+      default:
+        return parts.get(0)
+          .append(parts.subList(1, parts.size()).stream().map(TextComponent.Builder::build).collect(Collectors.toList()))
+          .build();
+    }
+  }
+
+  private static boolean applyFormat(@Nonnull final TextComponent.Builder builder, @Nonnull final TextFormat format) {
+    if(format instanceof TextColor) {
+      builder.color((TextColor) format);
+      return true;
+    } else if(format instanceof TextDecoration) {
+      builder.decoration((TextDecoration) format, TextDecoration.State.TRUE);
+      return false;
+    } else if(format instanceof Reset) {
+      builder.color(null);
+      for(final TextDecoration decoration : TextDecoration.values()) {
+        builder.decoration(decoration, TextDecoration.State.NOT_SET);
+      }
+      return true;
+    }
+    throw new IllegalArgumentException(String.format("unknown format '%s'", format.getClass()));
+  }
+
+  @Deprecated
   @Nonnull
   public static String to(@Nonnull final Component component) {
     final StringBuilder state = new StringBuilder();
@@ -60,6 +151,22 @@ public final class LegacyComponent {
 
     for(final Component child : component.children()) {
       to(sb, child);
+    }
+  }
+
+  private static TextFormat find(final char legacy) {
+    final int pos = FORMAT_LOOKUP.indexOf(legacy);
+    return pos == -1 ? null : FORMATS[pos];
+  }
+
+  @Deprecated
+  private enum Reset implements TextFormat {
+    INSTANCE;
+
+    @Deprecated
+    @Override
+    public char legacy() {
+      return 'r';
     }
   }
 }
