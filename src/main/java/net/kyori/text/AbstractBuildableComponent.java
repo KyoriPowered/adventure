@@ -23,6 +23,7 @@
  */
 package net.kyori.text;
 
+import com.google.common.collect.Iterables;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
@@ -126,6 +127,14 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
     public B append(@Nonnull final Component component) {
       if(this.children == EMPTY_COMPONENT_LIST) this.children = new ArrayList<>();
       this.children.add(component);
+      return (B) this;
+    }
+
+    @Nonnull
+    @Override
+    public B append(@Nonnull Iterable<? extends Component> components) {
+      if(this.children == EMPTY_COMPONENT_LIST) this.children = new ArrayList<>();
+      Iterables.addAll(this.children, components);
       return (B) this;
     }
 

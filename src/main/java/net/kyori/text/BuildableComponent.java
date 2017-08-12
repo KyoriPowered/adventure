@@ -65,6 +65,15 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
     B append(@Nonnull final Component component);
 
     /**
+     * Appends components to this component.
+     *
+     * @param components the components to append
+     * @return this builder
+     */
+    @Nonnull
+    B append(@Nonnull final Iterable<? extends Component> components);
+
+    /**
      * Sets the color of this component.
      *
      * @param color the color
