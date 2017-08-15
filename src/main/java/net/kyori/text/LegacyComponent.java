@@ -52,7 +52,13 @@ public final class LegacyComponent {
   @Deprecated
   @Nonnull
   public static TextComponent from(@Nonnull final String input) {
-    int next = input.lastIndexOf(CHARACTER, input.length() - 2);
+    return from(input, CHARACTER);
+  }
+
+  @Deprecated
+  @Nonnull
+  public static TextComponent from(@Nonnull final String input, final char character) {
+    int next = input.lastIndexOf(character, input.length() - 2);
     if(next == -1) {
       return TextComponent.of(input);
     }
@@ -89,7 +95,7 @@ public final class LegacyComponent {
         pos = next;
       }
 
-      next = input.lastIndexOf(CHARACTER, next - 1);
+      next = input.lastIndexOf(character, next - 1);
     } while(next != -1);
 
     if(current != null) {
@@ -130,19 +136,25 @@ public final class LegacyComponent {
   @Deprecated
   @Nonnull
   public static String to(@Nonnull final Component component) {
+    return to(component, CHARACTER);
+  }
+
+  @Deprecated
+  @Nonnull
+  public static String to(@Nonnull final Component component, final char character) {
     final StringBuilder state = new StringBuilder();
-    to(state, component);
+    to(state, component, character);
     return state.toString();
   }
 
-  private static void to(@Nonnull final StringBuilder sb, @Nonnull final Component component) {
+  private static void to(@Nonnull final StringBuilder sb, @Nonnull final Component component, final char character) {
     @Nullable final TextColor color = component.color();
     if(color != null) {
-      sb.append(CHARACTER).append(color.legacy());
+      sb.append(character).append(color.legacy());
     }
 
     for(final TextDecoration decoration : component.decorations()) {
-      sb.append(CHARACTER).append(decoration.legacy());
+      sb.append(character).append(decoration.legacy());
     }
 
     if(component instanceof TextComponent) {
@@ -150,7 +162,7 @@ public final class LegacyComponent {
     }
 
     for(final Component child : component.children()) {
-      to(sb, child);
+      to(sb, child, character);
     }
   }
 
