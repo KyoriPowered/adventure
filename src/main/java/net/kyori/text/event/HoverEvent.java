@@ -24,7 +24,6 @@
 package net.kyori.text.event;
 
 import com.google.common.base.Enums;
-import com.google.common.base.MoreObjects;
 import com.google.gson.annotations.SerializedName;
 import net.kyori.text.Component;
 
@@ -100,10 +99,9 @@ public final class HoverEvent {
   @Nonnull
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
-      .add("action", this.action)
-      .add("value", this.value)
-      .toString();
+    return "ClickEvent(" +
+        "action=" + this.action + ", " +
+        "value=" + this.value + ")";
   }
 
   /**

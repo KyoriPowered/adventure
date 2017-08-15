@@ -23,7 +23,6 @@
  */
 package net.kyori.text;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
@@ -180,22 +179,16 @@ public abstract class AbstractComponent implements Component {
   @Nonnull
   @Override
   public String toString() {
-    final MoreObjects.ToStringHelper builder = MoreObjects.toStringHelper(this);
-    this.populateToString(builder);
-    builder
-      .add("children", this.children)
-      .add("color", this.color)
-      .add("obfuscated", this.obfuscated)
-      .add("bold", this.bold)
-      .add("strikethrough", this.strikethrough)
-      .add("underlined", this.underlined)
-      .add("italic", this.italic)
-      .add("clickEvent", this.clickEvent)
-      .add("hoverEvent", this.hoverEvent)
-      .add("insertion", this.insertion);
-    return builder.toString();
-  }
-
-  protected void populateToString(@Nonnull final MoreObjects.ToStringHelper builder) {
+    return "AbstractComponent(" +
+        "children=" + children() + ", " +
+        "color=" + color() + ", " +
+        "obfuscated=" + decoration(TextDecoration.OBFUSCATED) + ", " +
+        "bold=" + decoration(TextDecoration.BOLD) + ", " +
+        "strikethrough=" + decoration(TextDecoration.STRIKETHROUGH) + ", " +
+        "underlined=" + decoration(TextDecoration.UNDERLINE) + ", " +
+        "italic=" + decoration(TextDecoration.ITALIC) + ", " +
+        "clickEvent=" + clickEvent() + ", " +
+        "hoverEvent=" + hoverEvent() + ", " +
+        "insertion=" + insertion() + ")";
   }
 }
