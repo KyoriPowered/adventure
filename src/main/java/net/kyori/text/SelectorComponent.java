@@ -23,7 +23,6 @@
  */
 package net.kyori.text;
 
-import com.google.common.base.MoreObjects;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
@@ -218,9 +217,21 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
     return Objects.hash(super.hashCode(), this.pattern);
   }
 
+  @Nonnull
   @Override
-  protected void populateToString(@Nonnull final MoreObjects.ToStringHelper builder) {
-    builder.add("pattern", this.pattern);
+  public String toString() {
+    return "SelectorComponent(" +
+        "pattern=" + pattern() + ", " +
+        "children=" + children() + ", " +
+        "color=" + color() + ", " +
+        "obfuscated=" + decoration(TextDecoration.OBFUSCATED) + ", " +
+        "bold=" + decoration(TextDecoration.BOLD) + ", " +
+        "strikethrough=" + decoration(TextDecoration.STRIKETHROUGH) + ", " +
+        "underlined=" + decoration(TextDecoration.UNDERLINE) + ", " +
+        "italic=" + decoration(TextDecoration.ITALIC) + ", " +
+        "clickEvent=" + clickEvent() + ", " +
+        "hoverEvent=" + hoverEvent() + ", " +
+        "insertion=" + insertion() + ")";
   }
 
   @Nonnull

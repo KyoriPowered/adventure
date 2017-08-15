@@ -23,7 +23,6 @@
  */
 package net.kyori.text;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
@@ -273,11 +272,22 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
     return Objects.hash(super.hashCode(), this.key, this.args);
   }
 
+  @Nonnull
   @Override
-  protected void populateToString(@Nonnull final MoreObjects.ToStringHelper builder) {
-    builder
-      .add("key", this.key)
-      .add("args", this.args);
+  public String toString() {
+    return "TranslatableComponent(" +
+        "key=" + key() + ", " +
+        "args=" + args() + ", " +
+        "children=" + children() + ", " +
+        "color=" + color() + ", " +
+        "obfuscated=" + decoration(TextDecoration.OBFUSCATED) + ", " +
+        "bold=" + decoration(TextDecoration.BOLD) + ", " +
+        "strikethrough=" + decoration(TextDecoration.STRIKETHROUGH) + ", " +
+        "underlined=" + decoration(TextDecoration.UNDERLINE) + ", " +
+        "italic=" + decoration(TextDecoration.ITALIC) + ", " +
+        "clickEvent=" + clickEvent() + ", " +
+        "hoverEvent=" + hoverEvent() + ", " +
+        "insertion=" + insertion() + ")";
   }
 
   @Nonnull

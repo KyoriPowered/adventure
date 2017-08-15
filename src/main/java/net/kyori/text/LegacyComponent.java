@@ -24,7 +24,6 @@
 package net.kyori.text;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Streams;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import net.kyori.text.format.TextFormat;
@@ -34,7 +33,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -43,8 +41,21 @@ import javax.annotation.Nullable;
 public final class LegacyComponent {
 
   @VisibleForTesting static final char CHARACTER = '\u00A7';
-  private static final TextFormat[] FORMATS = Streams.concat(Arrays.stream(TextColor.values()), Arrays.stream(TextDecoration.values()), Stream.of(Reset.INSTANCE)).toArray(TextFormat[]::new);
-  private static final String FORMAT_LOOKUP = Arrays.stream(FORMATS).map(format -> String.valueOf(format.legacy())).collect(Collectors.joining());
+  private static final TextFormat[] FORMATS;
+  private static final String FORMAT_LOOKUP;
+
+  static {
+    TextColor[] colors = TextColor.values();
+    TextDecoration[] decorations = TextDecoration.values();
+
+    FORMATS = new TextFormat[colors.length + decorations.length + 1];
+    int c = 0;
+    for(final TextColor color : colors) FORMATS[c++] = color;
+    for(final TextDecoration decoration : decorations) FORMATS[c++] = decoration;
+    FORMATS[c] = Reset.INSTANCE;
+
+    FORMAT_LOOKUP = Arrays.stream(FORMATS).map(format -> String.valueOf(format.legacy())).collect(Collectors.joining());
+  }
 
   private LegacyComponent() {
   }

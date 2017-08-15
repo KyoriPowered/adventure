@@ -23,7 +23,6 @@
  */
 package net.kyori.text;
 
-import com.google.common.base.MoreObjects;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
@@ -215,9 +214,21 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
     return Objects.hash(super.hashCode(), this.keybind);
   }
 
+  @Nonnull
   @Override
-  protected void populateToString(@Nonnull final MoreObjects.ToStringHelper builder) {
-    builder.add("keybind", this.keybind);
+  public String toString() {
+    return "KeybindComponent(" +
+        "keybind=" + keybind() + ", " +
+        "children=" + children() + ", " +
+        "color=" + color() + ", " +
+        "obfuscated=" + decoration(TextDecoration.OBFUSCATED) + ", " +
+        "bold=" + decoration(TextDecoration.BOLD) + ", " +
+        "strikethrough=" + decoration(TextDecoration.STRIKETHROUGH) + ", " +
+        "underlined=" + decoration(TextDecoration.UNDERLINE) + ", " +
+        "italic=" + decoration(TextDecoration.ITALIC) + ", " +
+        "clickEvent=" + clickEvent() + ", " +
+        "hoverEvent=" + hoverEvent() + ", " +
+        "insertion=" + insertion() + ")";
   }
 
   @Nonnull
