@@ -135,15 +135,16 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
 
     @Nonnull
     @Override
-    public B append(@Nonnull Iterable<? extends Component> components) {
+    public B append(@Nonnull final Iterable<? extends Component> components) {
       if(this.children == EMPTY_COMPONENT_LIST) this.children = new ArrayList<>();
       Iterables.addAll(this.children, components);
       return (B) this;
     }
 
+    @Nonnull
     @Override
-    public B applyDeep(@Nonnull final Consumer<Builder<?, ?>> action) {
-      this.apply(action);
+    public B applyDeep(@Nonnull final Consumer<Builder<?, ?>> consumer) {
+      this.apply(consumer);
       if(this.children == EMPTY_COMPONENT_LIST) {
         return (B) this;
       }
@@ -154,7 +155,7 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
           continue;
         }
         final Builder<?, ?> childBuilder = ((BuildableComponent) child).toBuilder();
-        childBuilder.applyDeep(action);
+        childBuilder.applyDeep(consumer);
         it.set(childBuilder.build());
       }
       return (B) this;
@@ -162,7 +163,7 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
 
     @Nonnull
     @Override
-    public B mapChildren(@Nonnull Function<BuildableComponent<? ,?>, BuildableComponent<? ,?>> function) {
+    public B mapChildren(@Nonnull final Function<BuildableComponent<? ,?>, BuildableComponent<? ,?>> function) {
       if(this.children == EMPTY_COMPONENT_LIST) {
         return (B) this;
       }
@@ -173,7 +174,9 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
           continue;
         }
         final BuildableComponent mappedChild = function.apply((BuildableComponent) child);
-        if(child == mappedChild) continue;
+        if(child == mappedChild) {
+          continue;
+        }
         it.set(mappedChild);
       }
       return (B) this;
@@ -181,7 +184,7 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
 
     @Nonnull
     @Override
-    public B mapChildrenDeep(@Nonnull Function<BuildableComponent<? ,?>, BuildableComponent<? ,?>> function) {
+    public B mapChildrenDeep(@Nonnull final Function<BuildableComponent<? ,?>, BuildableComponent<? ,?>> function) {
       if(this.children == EMPTY_COMPONENT_LIST) {
         return (B) this;
       }
@@ -193,7 +196,9 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
         }
         final BuildableComponent mappedChild = function.apply((BuildableComponent) child);
         if(mappedChild.children().isEmpty()) {
-          if(child == mappedChild) continue;
+          if(child == mappedChild) {
+            continue;
+          }
           it.set(mappedChild);
         } else {
           final Builder<?, ?> builder = mappedChild.toBuilder();

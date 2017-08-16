@@ -70,9 +70,9 @@ public final class LegacyComponent {
 
     int pos = input.length();
     do {
-      TextFormat format = find(input.charAt(next + 1));
+      final TextFormat format = find(input.charAt(next + 1));
       if(format != null) {
-        int from = next + 2;
+        final int from = next + 2;
         if(from != pos) {
           if(current != null) {
             if(reset) {
