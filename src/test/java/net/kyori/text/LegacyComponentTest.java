@@ -24,6 +24,8 @@
 package net.kyori.text;
 
 import net.kyori.text.format.TextColor;
+import net.kyori.text.format.TextDecoration;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -37,7 +39,11 @@ public class LegacyComponentTest {
 
   @Test
   public void testFromColor() {
-    assertEquals(TextComponent.of("foo").color(TextColor.GREEN), LegacyComponent.from(LegacyComponent.CHARACTER + "afoo"));
-    assertEquals(TextComponent.of("foo").color(TextColor.GREEN).append(TextComponent.of("bar").color(TextColor.BLUE)), LegacyComponent.from(LegacyComponent.CHARACTER + "afoo" + LegacyComponent.CHARACTER + "9bar"));
+    TextComponent component = TextComponent.builder("")
+      .append(TextComponent.of("foo").color(TextColor.GREEN).decoration(TextDecoration.BOLD, TextDecoration.State.TRUE))
+      .append(TextComponent.of("bar").color(TextColor.BLUE))
+      .build();
+
+    assertEquals(component, LegacyComponent.from("&a&lfoo&9bar", '&'));
   }
 }
