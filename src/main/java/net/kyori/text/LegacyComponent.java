@@ -63,7 +63,7 @@ public final class LegacyComponent {
       return TextComponent.of(input);
     }
 
-    final List<TextComponent.Builder> parts = new ArrayList<>();
+    final List<TextComponent> parts = new ArrayList<>();
 
     TextComponent.Builder current = null;
     boolean reset = false;
@@ -76,7 +76,7 @@ public final class LegacyComponent {
         if(from != pos) {
           if(current != null) {
             if(reset) {
-              parts.add(current);
+              parts.add(current.build());
               reset = false;
               current = TextComponent.builder("");
             } else {
@@ -99,21 +99,11 @@ public final class LegacyComponent {
     } while(next != -1);
 
     if(current != null) {
-      parts.add(current);
+      parts.add(current.build());
     }
 
     Collections.reverse(parts);
-    switch(parts.size()) {
-      case 0:
-        return TextComponent.of(pos > 0 ? input.substring(0, pos) : "");
-      case 1:
-        return parts.get(0).build();
-      case 2:
-      default:
-        return parts.get(0)
-          .append(parts.subList(1, parts.size()).stream().map(TextComponent.Builder::build).collect(Collectors.toList()))
-          .build();
-    }
+    return TextComponent.builder(pos > 0 ? input.substring(0, pos) : "").append(parts).build();
   }
 
   private static boolean applyFormat(@Nonnull final TextComponent.Builder builder, @Nonnull final TextFormat format) {
