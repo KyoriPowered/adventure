@@ -31,7 +31,10 @@ import net.kyori.text.format.TextDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -132,9 +135,77 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
 
     @Nonnull
     @Override
-    public B append(@Nonnull Iterable<? extends Component> components) {
+    public B append(@Nonnull final Iterable<? extends Component> components) {
       if(this.children == EMPTY_COMPONENT_LIST) this.children = new ArrayList<>();
       Iterables.addAll(this.children, components);
+      return (B) this;
+    }
+
+    @Nonnull
+    @Override
+    public B applyDeep(@Nonnull final Consumer<Builder<?, ?>> consumer) {
+      this.apply(consumer);
+      if(this.children == EMPTY_COMPONENT_LIST) {
+        return (B) this;
+      }
+      final ListIterator<Component> it = this.children.listIterator();
+      while(it.hasNext()) {
+        final Component child = it.next();
+        if(!(child instanceof BuildableComponent)) {
+          continue;
+        }
+        final Builder<?, ?> childBuilder = ((BuildableComponent) child).toBuilder();
+        childBuilder.applyDeep(consumer);
+        it.set(childBuilder.build());
+      }
+      return (B) this;
+    }
+
+    @Nonnull
+    @Override
+    public B mapChildren(@Nonnull final Function<BuildableComponent<? ,?>, BuildableComponent<? ,?>> function) {
+      if(this.children == EMPTY_COMPONENT_LIST) {
+        return (B) this;
+      }
+      final ListIterator<Component> it = this.children.listIterator();
+      while(it.hasNext()) {
+        final Component child = it.next();
+        if(!(child instanceof BuildableComponent)) {
+          continue;
+        }
+        final BuildableComponent mappedChild = function.apply((BuildableComponent) child);
+        if(child == mappedChild) {
+          continue;
+        }
+        it.set(mappedChild);
+      }
+      return (B) this;
+    }
+
+    @Nonnull
+    @Override
+    public B mapChildrenDeep(@Nonnull final Function<BuildableComponent<? ,?>, BuildableComponent<? ,?>> function) {
+      if(this.children == EMPTY_COMPONENT_LIST) {
+        return (B) this;
+      }
+      final ListIterator<Component> it = this.children.listIterator();
+      while(it.hasNext()) {
+        final Component child = it.next();
+        if(!(child instanceof BuildableComponent)) {
+          continue;
+        }
+        final BuildableComponent mappedChild = function.apply((BuildableComponent) child);
+        if(mappedChild.children().isEmpty()) {
+          if(child == mappedChild) {
+            continue;
+          }
+          it.set(mappedChild);
+        } else {
+          final Builder<?, ?> builder = mappedChild.toBuilder();
+          builder.mapChildrenDeep(function);
+          it.set(builder.build());
+        }
+      }
       return (B) this;
     }
 

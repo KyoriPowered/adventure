@@ -28,6 +28,9 @@ import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 
+import java.util.function.Consumer;
+import java.util.function.Function;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -72,6 +75,47 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
      */
     @Nonnull
     B append(@Nonnull final Iterable<? extends Component> components);
+
+    /**
+     * Applies an action to this builder.
+     *
+     * @param consumer the action
+     * @return this builder
+     */
+    @Nonnull
+    default B apply(@Nonnull final Consumer<Builder<? ,?>> consumer) {
+      consumer.accept(this);
+      return (B) this;
+    }
+
+    /**
+     * Applies an action to this component and all child components if they are
+     * an instance of {@link BuildableComponent}.
+     *
+     * @param action the action
+     * @return this builder
+     */
+    @Nonnull
+    B applyDeep(@Nonnull final Consumer<Builder<?, ?>> action);
+
+    /**
+     * Replaces each child of this component with the resultant component from the function.
+     *
+     * @param function the mapping function
+     * @return this builder
+     */
+    @Nonnull
+    B mapChildren(@Nonnull final Function<BuildableComponent<?, ?>, BuildableComponent<?, ?>> function);
+
+    /**
+     * Replaces each child and sub-child of this component with the resultant
+     * component of the function.
+     *
+     * @param function the mapping function
+     * @return this builder
+     */
+    @Nonnull
+    B mapChildrenDeep(@Nonnull final Function<BuildableComponent<?, ?>, BuildableComponent<?, ?>> function);
 
     /**
      * Sets the color of this component.
