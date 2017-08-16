@@ -79,11 +79,12 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
     /**
      * Applies an action to this builder.
      *
-     * @param action the action
+     * @param consumer the action
      * @return this builder
      */
-    default B apply(@Nonnull final Consumer<Builder<? ,?>> action) {
-      action.accept(this);
+    @Nonnull
+    default B apply(@Nonnull final Consumer<Builder<? ,?>> consumer) {
+      consumer.accept(this);
       return (B) this;
     }
 
@@ -94,6 +95,7 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
      * @param action the action
      * @return this builder
      */
+    @Nonnull
     B applyDeep(@Nonnull final Consumer<Builder<?, ?>> action);
 
     /**
