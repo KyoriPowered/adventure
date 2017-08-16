@@ -21,29 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.text;
+package net.kyori.text.serializer;
 
-import net.kyori.text.format.TextColor;
-import net.kyori.text.format.TextDecoration;
+import net.kyori.text.Component;
+import net.kyori.text.event.ClickEvent;
+import net.kyori.text.event.HoverEvent;
 
-import org.junit.Test;
+/**
+ * A collection of component serializers.
+ */
+public final class ComponentSerializers {
 
-import static org.junit.Assert.assertEquals;
+  /**
+   * A component serializer for JSON-based serialization and deserialization.
+   */
+  public static final ComponentSerializer<Component, String> JSON = new GsonComponentSerializer();
+  /**
+   * A component serializer for legacy-based serialization and deserialization.
+   *
+   * <p>Legacy does <b>not</b> support more complex features such as, but not limited
+   * to, {@link ClickEvent} and {@link HoverEvent}.</p>
+   *
+   * @deprecated legacy
+   */
+  @Deprecated
+  public static final LegacyComponentSerializerImpl LEGACY = new LegacyComponentSerializerImpl();
 
-public class LegacyComponentTest {
-
-  @Test
-  public void testFrom() {
-    assertEquals(TextComponent.of("foo"), LegacyComponent.from("foo"));
-  }
-
-  @Test
-  public void testFromColor() {
-    TextComponent component = TextComponent.builder("")
-      .append(TextComponent.of("foo").color(TextColor.GREEN).decoration(TextDecoration.BOLD, TextDecoration.State.TRUE))
-      .append(TextComponent.of("bar").color(TextColor.BLUE))
-      .build();
-
-    assertEquals(component, LegacyComponent.from("&a&lfoo&9bar", '&'));
+  private ComponentSerializers() {
   }
 }

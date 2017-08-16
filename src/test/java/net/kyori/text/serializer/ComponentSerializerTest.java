@@ -23,33 +23,27 @@
  */
 package net.kyori.text.serializer;
 
-import net.kyori.text.Component;
+import net.kyori.text.TextComponent;
+import net.kyori.text.format.TextColor;
+import net.kyori.text.format.TextDecoration;
+import org.junit.Test;
 
-import javax.annotation.Nonnull;
+import static org.junit.Assert.assertEquals;
 
-/**
- * A {@link Component} serializer and deserializer.
- *
- * @param <C> the component type
- * @param <R> the serialized type
- */
-public interface ComponentSerializer<C extends Component, R> {
+public class ComponentSerializerTest {
 
-  /**
-   * Deserialize a component from input of type {@code R}.
-   *
-   * @param input the input
-   * @return the component
-   */
-  @Nonnull
-  C deserialize(@Nonnull final R input);
+  @Test
+  public void testFrom() {
+    assertEquals(TextComponent.of("foo"), ComponentSerializers.LEGACY.deserialize("foo"));
+  }
 
-  /**
-   * Serializes a component into an output of type {@code R}.
-   *
-   * @param component the component
-   * @return the output
-   */
-  @Nonnull
-  R serialize(@Nonnull final C component);
+  @Test
+  public void testFromColor() {
+    TextComponent component = TextComponent.builder("")
+      .append(TextComponent.of("foo").color(TextColor.GREEN).decoration(TextDecoration.BOLD, TextDecoration.State.TRUE))
+      .append(TextComponent.of("bar").color(TextColor.BLUE))
+      .build();
+
+    assertEquals(component, ComponentSerializers.LEGACY.deserialize("&a&lfoo&9bar", '&'));
+  }
 }
