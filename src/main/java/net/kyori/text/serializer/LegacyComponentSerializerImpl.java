@@ -21,10 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.text;
+package net.kyori.text.serializer;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ObjectArrays;
+import net.kyori.text.Component;
+import net.kyori.text.TextComponent;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import net.kyori.text.format.TextFormat;
@@ -40,24 +41,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Deprecated
-public final class LegacyComponent {
+class LegacyComponentSerializerImpl implements LegacyComponentSerializer<Component> {
 
-  @VisibleForTesting static final char CHARACTER = '\u00A7';
   private static final TextFormat[] FORMATS = ObjectArrays.concat(Stream.concat(Arrays.stream(TextColor.values()), Arrays.stream(TextDecoration.values())).toArray(TextFormat[]::new), Reset.INSTANCE);
   private static final String FORMAT_LOOKUP = Arrays.stream(FORMATS).map(format -> String.valueOf(format.legacy())).collect(Collectors.joining());
 
-  private LegacyComponent() {
-  }
-
-  @Deprecated
   @Nonnull
-  public static TextComponent from(@Nonnull final String input) {
-    return from(input, CHARACTER);
-  }
-
-  @Deprecated
-  @Nonnull
-  public static TextComponent from(@Nonnull final String input, final char character) {
+  @Override
+  public Component deserialize(@Nonnull String input, char character) {
     int next = input.lastIndexOf(character, input.length() - 2);
     if(next == -1) {
       return TextComponent.of(input);
@@ -106,6 +97,14 @@ public final class LegacyComponent {
     return TextComponent.builder(pos > 0 ? input.substring(0, pos) : "").append(parts).build();
   }
 
+  @Nonnull
+  @Override
+  public String serialize(@Nonnull Component component, final char character) {
+    final StringBuilder state = new StringBuilder();
+    to(state, component, character);
+    return state.toString();
+  }
+
   private static boolean applyFormat(@Nonnull final TextComponent.Builder builder, @Nonnull final TextFormat format) {
     if(format instanceof TextColor) {
       builder.color((TextColor) format);
@@ -121,20 +120,6 @@ public final class LegacyComponent {
       return true;
     }
     throw new IllegalArgumentException(String.format("unknown format '%s'", format.getClass()));
-  }
-
-  @Deprecated
-  @Nonnull
-  public static String to(@Nonnull final Component component) {
-    return to(component, CHARACTER);
-  }
-
-  @Deprecated
-  @Nonnull
-  public static String to(@Nonnull final Component component, final char character) {
-    final StringBuilder state = new StringBuilder();
-    to(state, component, character);
-    return state.toString();
   }
 
   private static void to(@Nonnull final StringBuilder sb, @Nonnull final Component component, final char character) {

@@ -34,6 +34,7 @@ public interface TextFormat {
    * Gets the legacy code.
    *
    * @return the legacy code
+   * @deprecated legacy
    */
   @Deprecated
   char legacy();
