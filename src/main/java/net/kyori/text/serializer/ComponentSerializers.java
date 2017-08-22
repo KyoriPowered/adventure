@@ -24,6 +24,7 @@
 package net.kyori.text.serializer;
 
 import net.kyori.text.Component;
+import net.kyori.text.TextComponent;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 
@@ -45,7 +46,7 @@ public final class ComponentSerializers {
    * @deprecated legacy
    */
   @Deprecated
-  public static final LegacyComponentSerializerImpl LEGACY = new LegacyComponentSerializerImpl();
+  public static final LegacyComponentSerializer<TextComponent> LEGACY = new LegacyComponentSerializerImpl();
 
   private ComponentSerializers() {
   }
