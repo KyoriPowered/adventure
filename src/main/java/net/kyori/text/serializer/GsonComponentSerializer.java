@@ -52,7 +52,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class GsonComponentSerializer implements ComponentSerializer<Component, String>, JsonDeserializer<Component>, JsonSerializer<Component> {
+public class GsonComponentSerializer implements ComponentSerializer<Component, Component, String>, JsonDeserializer<Component>, JsonSerializer<Component> {
 
   private static final Gson GSON = new GsonBuilder()
     .registerTypeHierarchyAdapter(Component.class, new GsonComponentSerializer())

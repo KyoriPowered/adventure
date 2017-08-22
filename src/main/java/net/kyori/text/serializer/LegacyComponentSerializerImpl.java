@@ -41,7 +41,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @Deprecated
-class LegacyComponentSerializerImpl implements LegacyComponentSerializer<TextComponent> {
+class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
   private static final TextFormat[] FORMATS = ObjectArrays.concat(Stream.concat(Arrays.stream(TextColor.values()), Arrays.stream(TextDecoration.values())).toArray(TextFormat[]::new), Reset.INSTANCE);
   private static final String FORMAT_LOOKUP = Arrays.stream(FORMATS).map(format -> String.valueOf(format.legacy())).collect(Collectors.joining());
@@ -99,7 +99,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer<TextCom
 
   @Nonnull
   @Override
-  public String serialize(@Nonnull TextComponent component, final char character) {
+  public String serialize(@Nonnull Component component, final char character) {
     final StringBuilder state = new StringBuilder();
     to(state, component, character);
     return state.toString();

@@ -25,17 +25,17 @@ package net.kyori.text.serializer;
 
 import com.google.common.annotations.VisibleForTesting;
 import net.kyori.text.Component;
+import net.kyori.text.TextComponent;
 
 import javax.annotation.Nonnull;
 
 /**
  * A legacy component serializer.
  *
- * @param <C> the component type
  * @deprecated legacy
  */
 @Deprecated
-public interface LegacyComponentSerializer<C extends Component> extends ComponentSerializer<C, String> {
+public interface LegacyComponentSerializer extends ComponentSerializer<Component, TextComponent, String> {
 
   /**
    * The legacy character.
@@ -56,7 +56,7 @@ public interface LegacyComponentSerializer<C extends Component> extends Componen
   @Deprecated
   @Nonnull
   @Override
-  default C deserialize(@Nonnull final String input) {
+  default TextComponent deserialize(@Nonnull final String input) {
     return this.deserialize(input, CHARACTER);
   }
 
@@ -70,7 +70,7 @@ public interface LegacyComponentSerializer<C extends Component> extends Componen
    */
   @Deprecated
   @Nonnull
-  C deserialize(@Nonnull final String input, final char character);
+  TextComponent deserialize(@Nonnull final String input, final char character);
 
   /**
    * Serializes a component into a {@link String} with the specified {@link #CHARACTER legacy character}.
@@ -82,7 +82,7 @@ public interface LegacyComponentSerializer<C extends Component> extends Componen
   @Deprecated
   @Nonnull
   @Override
-  default String serialize(@Nonnull final C component) {
+  default String serialize(@Nonnull final Component component) {
     return this.serialize(component, CHARACTER);
   }
 
@@ -96,5 +96,5 @@ public interface LegacyComponentSerializer<C extends Component> extends Componen
    */
   @Deprecated
   @Nonnull
-  String serialize(@Nonnull final C component, final char character);
+  String serialize(@Nonnull final Component component, final char character);
 }
