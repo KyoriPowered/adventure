@@ -27,14 +27,13 @@ import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
-import net.kyori.text.serializer.ComponentSerializer;
+import net.kyori.text.serializer.ComponentSerializers;
 import org.junit.Test;
 
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -130,8 +129,8 @@ public class ComponentTest {
       .clickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://google.com/"))
       .hoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.builder().content(":o").color(TextColor.DARK_AQUA).build()))
       .build();
-    final String json = ComponentSerializer.serialize(expected);
-    assertEquals(expected, ComponentSerializer.deserialize(json));
+    final String json = ComponentSerializers.JSON.serialize(expected);
+    assertEquals(expected, ComponentSerializers.JSON.deserialize(json));
   }
 
   @Test
