@@ -24,7 +24,6 @@
 package net.kyori.text.serializer;
 
 import net.kyori.text.Component;
-import net.kyori.text.TextComponent;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 
@@ -36,7 +35,7 @@ public final class ComponentSerializers {
   /**
    * A component serializer for JSON-based serialization and deserialization.
    */
-  public static final ComponentSerializer<Component, String> JSON = new GsonComponentSerializer();
+  public static final ComponentSerializer<Component, Component, String> JSON = new GsonComponentSerializer();
   /**
    * A component serializer for legacy-based serialization and deserialization.
    *
@@ -46,7 +45,7 @@ public final class ComponentSerializers {
    * @deprecated legacy
    */
   @Deprecated
-  public static final LegacyComponentSerializer<TextComponent> LEGACY = new LegacyComponentSerializerImpl();
+  public static final LegacyComponentSerializer LEGACY = new LegacyComponentSerializerImpl();
 
   private ComponentSerializers() {
   }

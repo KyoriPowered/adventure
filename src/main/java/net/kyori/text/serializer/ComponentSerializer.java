@@ -30,10 +30,11 @@ import javax.annotation.Nonnull;
 /**
  * A {@link Component} serializer and deserializer.
  *
- * @param <C> the component type
+ * @param <I> the input component type
+ * @param <O> the output component type
  * @param <R> the serialized type
  */
-public interface ComponentSerializer<C extends Component, R> {
+public interface ComponentSerializer<I extends Component, O extends Component, R> {
 
   /**
    * Deserialize a component from input of type {@code R}.
@@ -42,7 +43,7 @@ public interface ComponentSerializer<C extends Component, R> {
    * @return the component
    */
   @Nonnull
-  C deserialize(@Nonnull final R input);
+  O deserialize(@Nonnull final R input);
 
   /**
    * Serializes a component into an output of type {@code R}.
@@ -51,5 +52,5 @@ public interface ComponentSerializer<C extends Component, R> {
    * @return the output
    */
   @Nonnull
-  R serialize(@Nonnull final C component);
+  R serialize(@Nonnull final I component);
 }
