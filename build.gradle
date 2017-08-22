@@ -78,7 +78,15 @@ if(project.hasProperty('sonatypeUsername') && project.hasProperty('sonatypePassw
                 }
 
                 pom.project {
+                    description 'A text library for Minecraft.'
                     name project.name
+                    url 'https://github.com/KyoriPowered/text'
+
+                    developers {
+                        developer {
+                            name 'kashike'
+                        }
+                    }
 
                     issueManagement {
                         system 'GitHub Issues'
