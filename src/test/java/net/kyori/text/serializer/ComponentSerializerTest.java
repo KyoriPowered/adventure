@@ -39,11 +39,30 @@ public class ComponentSerializerTest {
 
   @Test
   public void testFromColor() {
-    TextComponent component = TextComponent.builder("")
+    final TextComponent component = TextComponent.builder("")
       .append(TextComponent.of("foo").color(TextColor.GREEN).decoration(TextDecoration.BOLD, TextDecoration.State.TRUE))
       .append(TextComponent.of("bar").color(TextColor.BLUE))
       .build();
 
     assertEquals(component, ComponentSerializers.LEGACY.deserialize("&a&lfoo&9bar", '&'));
+  }
+
+  @Test
+  public void testToLegacy() {
+    final TextComponent componentS = TextComponent.builder("hi")
+      .decoration(TextDecoration.BOLD, TextDecoration.State.TRUE)
+      .append(
+        TextComponent.of("foo")
+          .color(TextColor.GREEN)
+          .decoration(TextDecoration.BOLD, TextDecoration.State.FALSE)
+      )
+      .append(
+        TextComponent.of("bar")
+          .color(TextColor.BLUE)
+      )
+      .append(TextComponent.of("baz"))
+      .build();
+
+    assertEquals("§lhi§afoo§9§lbar§r§lbaz", ComponentSerializers.LEGACY.serialize(componentS));
   }
 }
