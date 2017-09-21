@@ -33,7 +33,9 @@ import net.kyori.text.format.TextFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -43,7 +45,8 @@ import javax.annotation.Nullable;
 @Deprecated
 class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
-  private static final TextFormat[] FORMATS = ObjectArrays.concat(Stream.concat(Arrays.stream(TextColor.values()), Arrays.stream(TextDecoration.values())).toArray(TextFormat[]::new), Reset.INSTANCE);
+  private static final TextDecoration[] DECORATIONS = TextDecoration.values();
+  private static final TextFormat[] FORMATS = ObjectArrays.concat(Stream.concat(Arrays.stream(TextColor.values()), Arrays.stream(DECORATIONS)).toArray(TextFormat[]::new), Reset.INSTANCE);
   private static final String FORMAT_LOOKUP = Arrays.stream(FORMATS).map(format -> String.valueOf(format.legacy())).collect(Collectors.joining());
 
   @Nonnull
@@ -100,8 +103,8 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   @Nonnull
   @Override
   public String serialize(@Nonnull Component component, final char character) {
-    final StringBuilder state = new StringBuilder();
-    to(state, component, character);
+    final Cereal state = new Cereal(character);
+    state.append(component);
     return state.toString();
   }
 
@@ -114,31 +117,12 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       return false;
     } else if(format instanceof Reset) {
       builder.color(null);
-      for(final TextDecoration decoration : TextDecoration.values()) {
+      for(final TextDecoration decoration : DECORATIONS) {
         builder.decoration(decoration, TextDecoration.State.NOT_SET);
       }
       return true;
     }
     throw new IllegalArgumentException(String.format("unknown format '%s'", format.getClass()));
-  }
-
-  private static void to(@Nonnull final StringBuilder sb, @Nonnull final Component component, final char character) {
-    @Nullable final TextColor color = component.color();
-    if(color != null) {
-      sb.append(character).append(color.legacy());
-    }
-
-    for(final TextDecoration decoration : component.decorations()) {
-      sb.append(character).append(decoration.legacy());
-    }
-
-    if(component instanceof TextComponent) {
-      sb.append(((TextComponent) component).content());
-    }
-
-    for(final Component child : component.children()) {
-      to(sb, child, character);
-    }
   }
 
   private static TextFormat find(final char legacy) {
@@ -154,6 +138,117 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     @Override
     public char legacy() {
       return 'r';
+    }
+  }
+
+  // Are you hungry?
+  @Deprecated
+  private static final class Cereal {
+
+    private final StringBuilder sb = new StringBuilder();
+    private final char character;
+    @Nullable private TextColor oldColor;
+    @Nullable private TextColor newColor;
+    private final Set<TextDecoration> oldDecorations = EnumSet.noneOf(TextDecoration.class);
+    private final Set<TextDecoration> newDecorations = EnumSet.noneOf(TextDecoration.class);
+
+    Cereal(final char character) {
+      this.character = character;
+    }
+
+    void append(@Nonnull final Component component) {
+      this.append(null, component);
+    }
+
+    private void append(@Nullable final Component parent, @Nonnull final Component component) {
+      if(parent != null) {
+        this.format(
+          color(component.color(), parent.color()),
+          component.decorations(parent.decorations())
+        );
+      } else {
+        this.format(
+          color(component.color(), null),
+          component.decorations()
+        );
+      }
+
+      if(component instanceof TextComponent) {
+        this.append(((TextComponent) component).content());
+      }
+
+      for(final Component child : component.children()) {
+        this.append(component, child);
+      }
+    }
+
+    private void format(@Nullable final TextColor color, @Nonnull final Set<TextDecoration> decorations) {
+      this.newColor = color;
+
+      for(final TextDecoration decoration : DECORATIONS) {
+        if(decorations.contains(decoration)) {
+          this.newDecorations.add(decoration);
+        } else {
+          this.newDecorations.remove(decoration);
+        }
+      }
+    }
+
+    private void append(@Nonnull final String string) {
+      if(string.isEmpty()) {
+        return;
+      }
+      this.applyFormat(false);
+      this.sb.append(string);
+    }
+
+    private void append(@Nonnull final TextFormat format) {
+      this.sb.append(this.character).append(format.legacy());
+    }
+
+    private void applyFormat(final boolean full) {
+      if(full) {
+        this.oldColor = this.newColor;
+        if(this.newColor == null) {
+          this.append(Reset.INSTANCE);
+        } else {
+          this.append(this.newColor);
+        }
+
+        this.oldDecorations.clear();
+        for(final TextDecoration decoration : this.newDecorations) {
+          this.oldDecorations.add(decoration);
+          this.append(decoration);
+        }
+      } else {
+        if(this.oldColor != this.newColor) {
+          this.applyFormat(true);
+          return;
+        }
+
+        for(final TextDecoration decoration : this.oldDecorations) {
+          if(!this.newDecorations.contains(decoration)) {
+            this.applyFormat(true);
+            return;
+          }
+        }
+
+        for(final TextDecoration decoration : this.newDecorations) {
+          if(this.oldDecorations.add(decoration)) {
+            this.append(decoration);
+          }
+        }
+      }
+    }
+
+    @Override
+    public String toString() {
+      return this.sb.toString();
+    }
+
+    @Nullable
+    private static TextColor color(@Nullable TextColor color, @Nullable TextColor defaultValue) {
+      return color != null ? color : defaultValue;
     }
   }
 }
