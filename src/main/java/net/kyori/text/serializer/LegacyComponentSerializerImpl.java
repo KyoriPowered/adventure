@@ -146,99 +146,40 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   private static final class Cereal {
 
     private final StringBuilder sb = new StringBuilder();
+    private final Style style = new Style();
     private final char character;
-    @Nullable private TextColor oldColor;
-    @Nullable private TextColor newColor;
-    private final Set<TextDecoration> oldDecorations = EnumSet.noneOf(TextDecoration.class);
-    private final Set<TextDecoration> newDecorations = EnumSet.noneOf(TextDecoration.class);
 
     Cereal(final char character) {
       this.character = character;
     }
 
     void append(@Nonnull final Component component) {
-      this.append(null, component);
+      this.append(component, new Style());
     }
 
-    private void append(@Nullable final Component parent, @Nonnull final Component component) {
-      if(parent != null) {
-        this.format(
-          color(component.color(), parent.color()),
-          component.decorations(parent.decorations())
-        );
-      } else {
-        this.format(
-          color(component.color(), null),
-          component.decorations()
-        );
-      }
+    private void append(@Nonnull final Component component, @Nonnull final Style style) {
+      style.apply(component);
 
       if(component instanceof TextComponent) {
-        this.append(((TextComponent) component).content());
-      }
-
-      for(final Component child : component.children()) {
-        this.append(component, child);
-      }
-    }
-
-    private void format(@Nullable final TextColor color, @Nonnull final Set<TextDecoration> decorations) {
-      this.newColor = color;
-
-      for(final TextDecoration decoration : DECORATIONS) {
-        if(decorations.contains(decoration)) {
-          this.newDecorations.add(decoration);
-        } else {
-          this.newDecorations.remove(decoration);
+        final String content = ((TextComponent) component).content();
+        if(!content.isEmpty()) {
+          style.applyFormat();
+          this.sb.append(content);
         }
       }
-    }
 
-    private void append(@Nonnull final String string) {
-      if(string.isEmpty()) {
-        return;
+      final List<Component> children = component.children();
+      if(!children.isEmpty()) {
+        final Style childrenStyle = new Style(style);
+        for(final Component child : component.children()) {
+          this.append(child, childrenStyle);
+          childrenStyle.set(style);
+        }
       }
-      this.applyFormat(false);
-      this.sb.append(string);
     }
 
     private void append(@Nonnull final TextFormat format) {
       this.sb.append(this.character).append(format.legacy());
-    }
-
-    private void applyFormat(final boolean full) {
-      if(full) {
-        this.oldColor = this.newColor;
-        if(this.newColor == null) {
-          this.append(Reset.INSTANCE);
-        } else {
-          this.append(this.newColor);
-        }
-
-        this.oldDecorations.clear();
-        for(final TextDecoration decoration : this.newDecorations) {
-          this.oldDecorations.add(decoration);
-          this.append(decoration);
-        }
-      } else {
-        if(this.oldColor != this.newColor) {
-          this.applyFormat(true);
-          return;
-        }
-
-        for(final TextDecoration decoration : this.oldDecorations) {
-          if(!this.newDecorations.contains(decoration)) {
-            this.applyFormat(true);
-            return;
-          }
-        }
-
-        for(final TextDecoration decoration : this.newDecorations) {
-          if(this.oldDecorations.add(decoration)) {
-            this.append(decoration);
-          }
-        }
-      }
     }
 
     @Override
@@ -246,9 +187,80 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       return this.sb.toString();
     }
 
-    @Nullable
-    private static TextColor color(@Nullable TextColor color, @Nullable TextColor defaultValue) {
-      return color != null ? color : defaultValue;
+    private final class Style {
+
+      @Nullable private TextColor color;
+      private final Set<TextDecoration> decorations;
+
+      Style() {
+        this.decorations = EnumSet.noneOf(TextDecoration.class);
+      }
+
+      Style(@Nonnull final Style that) {
+        this.color = that.color;
+        this.decorations = EnumSet.copyOf(that.decorations);
+      }
+
+      void set(@Nonnull final Style that) {
+        this.color = that.color;
+        this.decorations.clear();
+        this.decorations.addAll(that.decorations);
+      }
+
+      void apply(@Nonnull final Component component) {
+        if(component.color() != null) {
+          this.color = component.color();
+        }
+
+        for(final TextDecoration decoration : DECORATIONS) {
+          switch(component.decoration(decoration)) {
+            case TRUE:
+              this.decorations.add(decoration);
+              break;
+            case FALSE:
+              this.decorations.remove(decoration);
+              break;
+          }
+        }
+      }
+
+      void applyFormat() {
+        // If color changes, we need to do a full reset
+        if(this.color != Cereal.this.style.color) {
+          this.applyFullFormat();
+          return;
+        }
+
+        // Does current have any decorations we don't have?
+        // Since there is no way to undo decorations, we need to reset these cases
+        if(!this.decorations.containsAll(Cereal.this.style.decorations)) {
+          this.applyFullFormat();
+          return;
+        }
+
+        // Apply new decorations
+        for(final TextDecoration decoration : this.decorations) {
+          if(Cereal.this.style.decorations.add(decoration)) {
+            Cereal.this.append(decoration);
+          }
+        }
+      }
+
+      private void applyFullFormat() {
+        if(this.color != null) {
+          Cereal.this.append(this.color);
+          Cereal.this.style.color = this.color;
+        } else {
+          Cereal.this.append(Reset.INSTANCE);
+        }
+
+        for(final TextDecoration decoration : this.decorations) {
+          Cereal.this.append(decoration);
+        }
+
+        Cereal.this.style.decorations.clear();
+        Cereal.this.style.decorations.addAll(this.decorations);
+      }
     }
   }
 }

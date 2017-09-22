@@ -49,7 +49,7 @@ public class ComponentSerializerTest {
 
   @Test
   public void testToLegacy() {
-    final TextComponent componentS = TextComponent.builder("hi")
+    final TextComponent c1 = TextComponent.builder("hi")
       .decoration(TextDecoration.BOLD, TextDecoration.State.TRUE)
       .append(
         TextComponent.of("foo")
@@ -62,7 +62,45 @@ public class ComponentSerializerTest {
       )
       .append(TextComponent.of("baz"))
       .build();
+    assertEquals("§lhi§afoo§9§lbar§r§lbaz", ComponentSerializers.LEGACY.serialize(c1, '§'));
 
-    assertEquals("§lhi§afoo§9§lbar§r§lbaz", ComponentSerializers.LEGACY.serialize(componentS));
+    final TextComponent c2 = TextComponent.builder()
+      .content("")
+      .color(TextColor.YELLOW)
+      .append(TextComponent.builder()
+        .content("Hello ")
+        .append(
+          TextComponent.builder()
+            .content("world")
+            .color(TextColor.GREEN)
+            .build()
+        )
+        .append(TextComponent.of("!")) // Should be yellow
+        .build()
+      )
+      .build();
+    assertEquals("§eHello §aworld§e!", ComponentSerializers.LEGACY.serialize(c2, '§'));
+
+    final TextComponent c3 = TextComponent.builder()
+      .content("")
+      .decoration(TextDecoration.BOLD, true)
+      .append(
+        TextComponent.builder()
+          .content("")
+          .color(TextColor.YELLOW)
+          .append(TextComponent.builder()
+            .content("Hello ")
+            .append(
+              TextComponent.builder()
+                .content("world")
+                .color(TextColor.GREEN)
+                .build()
+            )
+            .append(TextComponent.of("!"))
+            .build()
+          )
+          .build())
+      .build();
+    assertEquals("§e§lHello §a§lworld§e§l!", ComponentSerializers.LEGACY.serialize(c3, '§'));
   }
 }
