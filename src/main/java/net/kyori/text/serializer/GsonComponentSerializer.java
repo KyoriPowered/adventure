@@ -97,7 +97,7 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
       } else {
         final JsonArray with = object.getAsJsonArray("with");
         final List<Component> args = new ArrayList<>(with.size());
-        for(int i = 0, size = args.size(); i < size; i++) {
+        for(int i = 0, size = with.size(); i < size; i++) {
           final JsonElement argElement = with.get(i);
           args.add(this.deserialize(argElement, argElement.getClass(), context));
         }

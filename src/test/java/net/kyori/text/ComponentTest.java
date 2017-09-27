@@ -145,4 +145,16 @@ public class ComponentTest {
     final HoverEvent copy = event.copy();
     assertEquals(event, copy);
   }
+
+  @Test
+  public void testSerializeTranslatable() {
+    final TranslatableComponent component = TranslatableComponent.of(
+      "multiplayer.player.left",
+      TextComponent.builder("kashike")
+        .clickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg kashike "))
+        .hoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ENTITY, TextComponent.of("{\"name\":\"kashike\",\"id\":\"eb121687-8b1a-4944-bd4d-e0a818d9dfe2\"}")))
+      .build()
+    ).color(TextColor.YELLOW);
+    assertEquals(component, ComponentSerializers.JSON.deserialize(ComponentSerializers.JSON.serialize(component)));
+  }
 }
