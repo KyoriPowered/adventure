@@ -23,6 +23,8 @@
  */
 package net.kyori.text;
 
+import net.kyori.blizzard.NonNull;
+import net.kyori.blizzard.Nullable;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
@@ -32,9 +34,6 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * A text component.
@@ -51,7 +50,7 @@ public interface Component {
    *
    * @return the unmodifiable list of children
    */
-  @Nonnull
+  @NonNull
   List<Component> children();
 
   /**
@@ -61,7 +60,7 @@ public interface Component {
    * @return {@code true} if this component contains the provided
    *     component, {@code false} otherwise
    */
-  default boolean contains(@Nonnull final Component that) {
+  default boolean contains(@NonNull final Component that) {
     if(this == that) return true;
     for(final Component child : this.children()) {
       if(child.contains(that)) return true;
@@ -81,7 +80,7 @@ public interface Component {
    *
    * @param that the other component
    */
-  default void detectCycle(@Nonnull final Component that) {
+  default void detectCycle(@NonNull final Component that) {
     if(that.contains(this)) {
       throw new IllegalStateException("Component cycle detected between " + this + " and " + that);
     }
@@ -93,15 +92,15 @@ public interface Component {
    * @param component the component to append
    * @return a component with the component added
    */
-  @Nonnull
-  Component append(@Nonnull final Component component);
+  @NonNull
+  Component append(@NonNull final Component component);
 
   /**
    * Creates a component.
    *
    * @return a component
    */
-  @Nonnull
+  @NonNull
   Component copy();
 
   /**
@@ -118,7 +117,7 @@ public interface Component {
    * @param color the color
    * @return a component
    */
-  @Nonnull
+  @NonNull
   Component color(@Nullable final TextColor color);
 
   /**
@@ -128,7 +127,7 @@ public interface Component {
    * @return {@code true} if this component has the decoration, {@code false} if this
    *     component does not have the decoration
    */
-  default boolean hasDecoration(@Nonnull final TextDecoration decoration) {
+  default boolean hasDecoration(@NonNull final TextDecoration decoration) {
     return this.decoration(decoration) == TextDecoration.State.TRUE;
   }
 
@@ -140,8 +139,8 @@ public interface Component {
    *     {@link TextDecoration.State#FALSE} if this component does not have the decoration,
    *     and {@link TextDecoration.State#NOT_SET} if not set
    */
-  @Nonnull
-  TextDecoration.State decoration(@Nonnull final TextDecoration decoration);
+  @NonNull
+  TextDecoration.State decoration(@NonNull final TextDecoration decoration);
 
   /**
    * Sets the state of a decoration on this component.
@@ -151,8 +150,8 @@ public interface Component {
    *     this component should not have the decoration
    * @return a component
    */
-  @Nonnull
-  default Component decoration(@Nonnull final TextDecoration decoration, final boolean flag) {
+  @NonNull
+  default Component decoration(@NonNull final TextDecoration decoration, final boolean flag) {
     return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
   }
 
@@ -166,15 +165,15 @@ public interface Component {
    *     should not have a set value
    * @return a component
    */
-  @Nonnull
-  Component decoration(@Nonnull final TextDecoration decoration, @Nonnull final TextDecoration.State state);
+  @NonNull
+  Component decoration(@NonNull final TextDecoration decoration, @NonNull final TextDecoration.State state);
 
   /**
    * Gets a set of decorations this component has.
    *
    * @return a set of decorations this component has
    */
-  @Nonnull
+  @NonNull
   default Set<TextDecoration> decorations() {
     return this.decorations(Collections.emptySet());
   }
@@ -185,8 +184,8 @@ public interface Component {
    * @param defaultValues a set of default values
    * @return a set of decorations this component has
    */
-  @Nonnull
-  default Set<TextDecoration> decorations(@Nonnull final Set<TextDecoration> defaultValues) {
+  @NonNull
+  default Set<TextDecoration> decorations(@NonNull final Set<TextDecoration> defaultValues) {
     final Set<TextDecoration> decorations = EnumSet.noneOf(TextDecoration.class);
     for(final TextDecoration decoration : TextDecoration.values()) {
       final TextDecoration.State value = this.decoration(decoration);
@@ -211,7 +210,7 @@ public interface Component {
    * @param event the click event
    * @return a component
    */
-  @Nonnull
+  @NonNull
   Component clickEvent(@Nullable final ClickEvent event);
 
   /**
@@ -228,7 +227,7 @@ public interface Component {
    * @param event the hover event
    * @return a component
    */
-  @Nonnull
+  @NonNull
   Component hoverEvent(@Nullable final HoverEvent event);
 
   /**
@@ -245,7 +244,7 @@ public interface Component {
    * @param insertion the insertion string
    * @return a component
    */
-  @Nonnull
+  @NonNull
   Component insertion(@Nullable final String insertion);
 
   /**
@@ -254,8 +253,8 @@ public interface Component {
    * @param that the other component
    * @return a component
    */
-  @Nonnull
-  Component mergeStyle(@Nonnull final Component that);
+  @NonNull
+  Component mergeStyle(@NonNull final Component that);
 
   /**
    * Merges the color from another component into this component.
@@ -263,8 +262,8 @@ public interface Component {
    * @param that the other component
    * @return a component
    */
-  @Nonnull
-  Component mergeColor(@Nonnull final Component that);
+  @NonNull
+  Component mergeColor(@NonNull final Component that);
 
   /**
    * Merges the decorations from another component into this component.
@@ -272,8 +271,8 @@ public interface Component {
    * @param that the other component
    * @return a component
    */
-  @Nonnull
-  Component mergeDecorations(@Nonnull final Component that);
+  @NonNull
+  Component mergeDecorations(@NonNull final Component that);
 
   /**
    * Merges the events from another component into this component.
@@ -281,15 +280,15 @@ public interface Component {
    * @param that the other component
    * @return a component
    */
-  @Nonnull
-  Component mergeEvents(@Nonnull final Component that);
+  @NonNull
+  Component mergeEvents(@NonNull final Component that);
 
   /**
    * Resets all styling on this component.
    *
    * @return a component
    */
-  @Nonnull
+  @NonNull
   Component resetStyle();
 
   /**
@@ -306,7 +305,7 @@ public interface Component {
    * @param value the boolean value
    * @return the component
    */
-  @Nonnull
+  @NonNull
   static Component of(final boolean value) {
     return TextComponent.of(String.valueOf(value));
   }
@@ -317,7 +316,7 @@ public interface Component {
    * @param value the char value
    * @return the component
    */
-  @Nonnull
+  @NonNull
   static Component of(final char value) {
     return TextComponent.of(String.valueOf(value));
   }
@@ -328,7 +327,7 @@ public interface Component {
    * @param value the double value
    * @return the component
    */
-  @Nonnull
+  @NonNull
   static Component of(final double value) {
     return TextComponent.of(String.valueOf(value));
   }
@@ -339,7 +338,7 @@ public interface Component {
    * @param value the float value
    * @return the component
    */
-  @Nonnull
+  @NonNull
   static Component of(final float value) {
     return TextComponent.of(String.valueOf(value));
   }
@@ -350,7 +349,7 @@ public interface Component {
    * @param value the int value
    * @return the component
    */
-  @Nonnull
+  @NonNull
   static Component of(final int value) {
     return TextComponent.of(String.valueOf(value));
   }
@@ -361,7 +360,7 @@ public interface Component {
    * @param value the long value
    * @return the component
    */
-  @Nonnull
+  @NonNull
   static Component of(final long value) {
     return TextComponent.of(String.valueOf(value));
   }

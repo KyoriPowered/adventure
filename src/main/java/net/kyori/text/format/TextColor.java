@@ -25,9 +25,8 @@ package net.kyori.text.format;
 
 import com.google.common.base.Enums;
 import com.google.gson.annotations.SerializedName;
+import net.kyori.blizzard.NonNull;
 import net.kyori.text.Component;
-
-import javax.annotation.Nonnull;
 
 /**
  * An enumeration of colors which may be applied to a {@link Component}.
@@ -69,7 +68,7 @@ public enum TextColor implements TextFormat {
   /**
    * The serialized name of this color.
    */
-  @Nonnull private final String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
+  @NonNull private final String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
   /**
    * The legacy code.
    */
@@ -85,7 +84,7 @@ public enum TextColor implements TextFormat {
     return this.legacy;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public String toString() {
     return this.toString;

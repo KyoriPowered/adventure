@@ -25,6 +25,8 @@ package net.kyori.text;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
+import net.kyori.blizzard.NonNull;
+import net.kyori.blizzard.Nullable;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
@@ -32,9 +34,6 @@ import net.kyori.text.format.TextDecoration;
 
 import java.util.List;
 import java.util.Objects;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * An abstract implementation of a text component.
@@ -44,7 +43,7 @@ public abstract class AbstractComponent implements Component {
   /**
    * The list of children.
    */
-  @Nonnull protected final List<Component> children;
+  @NonNull protected final List<Component> children;
   /**
    * The color of this component.
    */
@@ -52,23 +51,23 @@ public abstract class AbstractComponent implements Component {
   /**
    * If this component should have the {@link TextDecoration#OBFUSCATED obfuscated} decoration.
    */
-  @Nonnull protected final TextDecoration.State obfuscated;
+  @NonNull protected final TextDecoration.State obfuscated;
   /**
    * If this component should have the {@link TextDecoration#BOLD bold} decoration.
    */
-  @Nonnull protected final TextDecoration.State bold;
+  @NonNull protected final TextDecoration.State bold;
   /**
    * If this component should have the {@link TextDecoration#STRIKETHROUGH strikethrough} decoration.
    */
-  @Nonnull protected final TextDecoration.State strikethrough;
+  @NonNull protected final TextDecoration.State strikethrough;
   /**
    * If this component should have the {@link TextDecoration#UNDERLINE underlined} decoration.
    */
-  @Nonnull protected final TextDecoration.State underlined;
+  @NonNull protected final TextDecoration.State underlined;
   /**
    * If this component should have the {@link TextDecoration#ITALIC italic} decoration.
    */
-  @Nonnull protected final TextDecoration.State italic;
+  @NonNull protected final TextDecoration.State italic;
   /**
    * The click event to apply to this component.
    */
@@ -82,7 +81,7 @@ public abstract class AbstractComponent implements Component {
    */
   @Nullable protected final String insertion;
 
-  protected AbstractComponent(@Nonnull final List<Component> children, @Nullable final TextColor color, @Nonnull final TextDecoration.State obfuscated, @Nonnull final TextDecoration.State bold, @Nonnull final TextDecoration.State strikethrough, @Nonnull final TextDecoration.State underlined, @Nonnull final TextDecoration.State italic, @Nullable final ClickEvent clickEvent, @Nullable final HoverEvent hoverEvent, @Nullable final String insertion) {
+  protected AbstractComponent(@NonNull final List<Component> children, @Nullable final TextColor color, @NonNull final TextDecoration.State obfuscated, @NonNull final TextDecoration.State bold, @NonNull final TextDecoration.State strikethrough, @NonNull final TextDecoration.State underlined, @NonNull final TextDecoration.State italic, @Nullable final ClickEvent clickEvent, @Nullable final HoverEvent hoverEvent, @Nullable final String insertion) {
     this.children = ImmutableList.copyOf(children);
     this.color = color;
     this.obfuscated = obfuscated;
@@ -95,7 +94,7 @@ public abstract class AbstractComponent implements Component {
     this.insertion = insertion;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public List<Component> children() {
     return this.children;
@@ -107,9 +106,9 @@ public abstract class AbstractComponent implements Component {
     return this.color;
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public TextDecoration.State decoration(@Nonnull final TextDecoration decoration) {
+  public TextDecoration.State decoration(@NonNull final TextDecoration decoration) {
     switch(decoration) {
       case BOLD: return this.bold;
       case ITALIC: return this.italic;
@@ -159,7 +158,7 @@ public abstract class AbstractComponent implements Component {
     return this.equals((AbstractComponent) other);
   }
 
-  protected boolean equals(@Nonnull final AbstractComponent that) {
+  protected boolean equals(@NonNull final AbstractComponent that) {
     return Objects.equals(this.children, that.children)
       && this.color == that.color
       && Objects.equals(this.obfuscated, that.obfuscated)
@@ -177,7 +176,7 @@ public abstract class AbstractComponent implements Component {
     return Objects.hash(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public String toString() {
     final MoreObjects.ToStringHelper builder = MoreObjects.toStringHelper(this);
@@ -196,6 +195,6 @@ public abstract class AbstractComponent implements Component {
     return builder.toString();
   }
 
-  protected void populateToString(@Nonnull final MoreObjects.ToStringHelper builder) {
+  protected void populateToString(@NonNull final MoreObjects.ToStringHelper builder) {
   }
 }

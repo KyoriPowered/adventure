@@ -24,6 +24,8 @@
 package net.kyori.text;
 
 import com.google.common.base.MoreObjects;
+import net.kyori.blizzard.NonNull;
+import net.kyori.blizzard.Nullable;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
@@ -32,9 +34,6 @@ import net.kyori.text.format.TextDecoration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -47,7 +46,7 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
   /**
    * The selector pattern.
    */
-  @Nonnull private final String pattern;
+  @NonNull private final String pattern;
 
   /**
    * Creates a selector component builder.
@@ -64,7 +63,7 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
    * @param pattern the selector pattern
    * @return a builder
    */
-  public static Builder builder(@Nonnull final String pattern) {
+  public static Builder builder(@NonNull final String pattern) {
     return new Builder().pattern(pattern);
   }
 
@@ -74,16 +73,16 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
    * @param pattern the selector pattern
    * @return the text component
    */
-  public static SelectorComponent of(@Nonnull final String pattern) {
+  public static SelectorComponent of(@NonNull final String pattern) {
     return builder(pattern).build();
   }
 
-  protected SelectorComponent(@Nonnull final Builder builder) {
+  protected SelectorComponent(@NonNull final Builder builder) {
     super(builder);
     this.pattern = builder.pattern;
   }
 
-  protected SelectorComponent(@Nonnull final List<Component> children, @Nullable final TextColor color, @Nonnull final TextDecoration.State obfuscated, @Nonnull final TextDecoration.State bold, @Nonnull final TextDecoration.State strikethrough, @Nonnull final TextDecoration.State underlined, @Nonnull final TextDecoration.State italic, @Nullable final ClickEvent clickEvent, @Nullable final HoverEvent hoverEvent, @Nullable final String insertion, @Nonnull final String pattern) {
+  protected SelectorComponent(@NonNull final List<Component> children, @Nullable final TextColor color, @NonNull final TextDecoration.State obfuscated, @NonNull final TextDecoration.State bold, @NonNull final TextDecoration.State strikethrough, @NonNull final TextDecoration.State underlined, @NonNull final TextDecoration.State italic, @Nullable final ClickEvent clickEvent, @Nullable final HoverEvent hoverEvent, @Nullable final String insertion, @NonNull final String pattern) {
     super(children, color, obfuscated, bold, strikethrough, underlined, italic, clickEvent, hoverEvent, insertion);
     this.pattern = pattern;
   }
@@ -93,7 +92,7 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
    *
    * @return the selector pattern
    */
-  @Nonnull
+  @NonNull
   public String pattern() {
     return this.pattern;
   }
@@ -104,14 +103,14 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
    * @param pattern the selector pattern
    * @return a copy of this component
    */
-  @Nonnull
-  public SelectorComponent pattern(@Nonnull final String pattern) {
+  @NonNull
+  public SelectorComponent pattern(@NonNull final String pattern) {
     return new SelectorComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, checkNotNull(pattern, "pattern"));
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public SelectorComponent append(@Nonnull final Component component) {
+  public SelectorComponent append(@NonNull final Component component) {
     this.detectCycle(component); // detect cycle before modifying
     final List<Component> children = new ArrayList<>(this.children.size() + 1);
     children.addAll(this.children);
@@ -119,21 +118,21 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
     return new SelectorComponent(children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.pattern);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public SelectorComponent color(@Nullable final TextColor color) {
     return new SelectorComponent(this.children, color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.pattern);
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public SelectorComponent decoration(@Nonnull final TextDecoration decoration, final boolean flag) {
+  public SelectorComponent decoration(@NonNull final TextDecoration decoration, final boolean flag) {
     return (SelectorComponent) super.decoration(decoration, flag);
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public SelectorComponent decoration(@Nonnull final TextDecoration decoration, @Nonnull final TextDecoration.State state) {
+  public SelectorComponent decoration(@NonNull final TextDecoration decoration, @NonNull final TextDecoration.State state) {
     switch(decoration) {
       case BOLD: return new SelectorComponent(this.children, this.color, this.obfuscated, checkNotNull(state, "flag"), this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.pattern);
       case ITALIC: return new SelectorComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, checkNotNull(state, "flag"), this.clickEvent, this.hoverEvent, this.insertion, this.pattern);
@@ -144,40 +143,40 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
     }
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public SelectorComponent clickEvent(@Nullable final ClickEvent event) {
     return new SelectorComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, event, this.hoverEvent, this.insertion, this.pattern);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public SelectorComponent hoverEvent(@Nullable final HoverEvent event) {
     if(event != null) this.detectCycle(event.value()); // detect cycle before modifying
     return new SelectorComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, event, this.insertion, this.pattern);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public SelectorComponent insertion(@Nullable final String insertion) {
     return new SelectorComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, insertion, this.pattern);
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public SelectorComponent mergeStyle(@Nonnull final Component that) {
+  public SelectorComponent mergeStyle(@NonNull final Component that) {
     return new SelectorComponent(this.children, that.color(), that.decoration(TextDecoration.OBFUSCATED), that.decoration(TextDecoration.BOLD), that.decoration(TextDecoration.STRIKETHROUGH), that.decoration(TextDecoration.UNDERLINE), that.decoration(TextDecoration.ITALIC), that.clickEvent(), that.hoverEvent(), that.insertion(), this.pattern);
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public SelectorComponent mergeColor(@Nonnull final Component that) {
+  public SelectorComponent mergeColor(@NonNull final Component that) {
     return new SelectorComponent(this.children, that.color(), this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.pattern);
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public SelectorComponent mergeDecorations(@Nonnull final Component that) {
+  public SelectorComponent mergeDecorations(@NonNull final Component that) {
     final TextDecoration.State obfuscated = that.decoration(TextDecoration.OBFUSCATED) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.OBFUSCATED) : this.obfuscated;
     final TextDecoration.State bold = that.decoration(TextDecoration.BOLD) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.BOLD) : this.bold;
     final TextDecoration.State strikethrough = that.decoration(TextDecoration.STRIKETHROUGH) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.STRIKETHROUGH) : this.strikethrough;
@@ -186,19 +185,19 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
     return new SelectorComponent(this.children, this.color, obfuscated, bold, strikethrough, underlined, italic, this.clickEvent, this.hoverEvent, this.insertion, this.pattern);
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public SelectorComponent mergeEvents(@Nonnull final Component that) {
+  public SelectorComponent mergeEvents(@NonNull final Component that) {
     return new SelectorComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, that.clickEvent(), that.hoverEvent(), this.insertion, this.pattern);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public SelectorComponent resetStyle() {
     return new SelectorComponent(this.children, null, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null, this.pattern);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public SelectorComponent copy() {
     return new SelectorComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.pattern);
@@ -219,11 +218,11 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
   }
 
   @Override
-  protected void populateToString(@Nonnull final MoreObjects.ToStringHelper builder) {
+  protected void populateToString(@NonNull final MoreObjects.ToStringHelper builder) {
     builder.add("pattern", this.pattern);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public Builder toBuilder() {
     return new Builder(this);
@@ -239,7 +238,7 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
     Builder() {
     }
 
-    Builder(@Nonnull final SelectorComponent component) {
+    Builder(@NonNull final SelectorComponent component) {
       super(component);
       this.pattern = component.pattern();
     }
@@ -250,13 +249,13 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
      * @param pattern the selector pattern
      * @return this builder
      */
-    @Nonnull
-    public Builder pattern(@Nonnull final String pattern) {
+    @NonNull
+    public Builder pattern(@NonNull final String pattern) {
       this.pattern = pattern;
       return this;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public SelectorComponent build() {
       checkState(this.pattern != null, "pattern must be set");

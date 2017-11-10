@@ -23,9 +23,8 @@
  */
 package net.kyori.text.serializer;
 
+import net.kyori.blizzard.NonNull;
 import net.kyori.text.Component;
-
-import javax.annotation.Nonnull;
 
 /**
  * A {@link Component} serializer and deserializer.
@@ -42,8 +41,8 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
    * @param input the input
    * @return the component
    */
-  @Nonnull
-  O deserialize(@Nonnull final R input);
+  @NonNull
+  O deserialize(@NonNull final R input);
 
   /**
    * Serializes a component into an output of type {@code R}.
@@ -51,6 +50,6 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
    * @param component the component
    * @return the output
    */
-  @Nonnull
-  R serialize(@Nonnull final I component);
+  @NonNull
+  R serialize(@NonNull final I component);
 }

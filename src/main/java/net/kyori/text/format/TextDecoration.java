@@ -25,9 +25,9 @@ package net.kyori.text.format;
 
 import com.google.common.base.Enums;
 import com.google.gson.annotations.SerializedName;
+import net.kyori.blizzard.NonNull;
+import net.kyori.blizzard.Nullable;
 import net.kyori.text.Component;
-
-import javax.annotation.Nonnull;
 
 /**
  * An enumeration of decorations which may be applied to a {@link Component}.
@@ -62,7 +62,7 @@ public enum TextDecoration implements TextFormat {
   /**
    * The serialized name of this decoration.
    */
-  @Nonnull private final String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
+  @NonNull private final String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
   /**
    * The legacy code.
    */
@@ -78,7 +78,7 @@ public enum TextDecoration implements TextFormat {
     return this.legacy;
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public String toString() {
     return this.toString;
@@ -108,6 +108,7 @@ public enum TextDecoration implements TextFormat {
      * @param flag the boolean
      * @return the state
      */
+    @NonNull
     public static State byBoolean(final boolean flag) {
       return flag ? TRUE : FALSE;
     }
@@ -118,7 +119,8 @@ public enum TextDecoration implements TextFormat {
      * @param flag the boolean
      * @return the state
      */
-    public static State byBoolean(final Boolean flag) {
+    @NonNull
+    public static State byBoolean(@Nullable final Boolean flag) {
       return flag == null ? NOT_SET : byBoolean(flag.booleanValue());
     }
   }

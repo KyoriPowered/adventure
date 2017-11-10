@@ -37,9 +37,9 @@ repositories {
 }
 
 dependencies {
-    compile 'com.google.code.findbugs:jsr305:3.0.2'
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.google.guava:guava:21.0'
+    compile 'net.kyori:blizzard:1.0.4-JDK8144185'
     testCompile 'junit:junit:4.12'
 }
 
@@ -59,7 +59,7 @@ artifacts {
 }
 
 signing {
-    required { !project.version.endsWith('-SNAPSHOT') && gradle.taskGraph.hasTask('uploadArchives') }
+    required { !project.version.endsWith('-SNAPSHOT') && gradle.taskGraph.hasTask(':uploadArchives') && project.hasProperty('signing.keyId') }
     sign configurations.archives
 }
 
@@ -71,6 +71,8 @@ jar {
 
 if(project.hasProperty('sonatypeUsername') && project.hasProperty('sonatypePassword')) {
     uploadArchives {
+        enabled = System.getenv('TRAVIS') == null || project.version.endsWith('-SNAPSHOT')
+
         repositories {
             mavenDeployer {
                 beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }

@@ -24,6 +24,8 @@
 package net.kyori.text;
 
 import com.google.common.collect.Iterables;
+import net.kyori.blizzard.NonNull;
+import net.kyori.blizzard.Nullable;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
@@ -36,9 +38,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -49,11 +48,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public abstract class AbstractBuildableComponent<C extends BuildableComponent<C, B>, B extends AbstractBuildableComponent.AbstractBuilder<C, B>> extends AbstractComponent implements BuildableComponent<C, B> {
 
-  protected AbstractBuildableComponent(@Nonnull final B builder) {
+  protected AbstractBuildableComponent(@NonNull final B builder) {
     super(builder.children, builder.color, builder.obfuscated, builder.bold, builder.strikethrough, builder.underlined, builder.italic, builder.clickEvent, builder.hoverEvent, builder.insertion);
   }
 
-  protected AbstractBuildableComponent(@Nonnull final List<Component> children, @Nullable final TextColor color, @Nonnull final TextDecoration.State obfuscated, @Nonnull final TextDecoration.State bold, @Nonnull final TextDecoration.State strikethrough, @Nonnull final TextDecoration.State underlined, @Nonnull final TextDecoration.State italic, @Nullable final ClickEvent clickEvent, @Nullable final HoverEvent hoverEvent, @Nullable final String insertion) {
+  protected AbstractBuildableComponent(@NonNull final List<Component> children, @Nullable final TextColor color, @NonNull final TextDecoration.State obfuscated, @NonNull final TextDecoration.State bold, @NonNull final TextDecoration.State strikethrough, @NonNull final TextDecoration.State underlined, @NonNull final TextDecoration.State italic, @Nullable final ClickEvent clickEvent, @Nullable final HoverEvent hoverEvent, @Nullable final String insertion) {
     super(children, color, obfuscated, bold, strikethrough, underlined, italic, clickEvent, hoverEvent, insertion);
   }
 
@@ -71,7 +70,7 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
      * <p>This list is set to {@link #EMPTY_COMPONENT_LIST an empty list of components}
      * by default to prevent unnecessary list creation for components with no children.</p>
      */
-    @Nonnull protected List<Component> children = EMPTY_COMPONENT_LIST;
+    @NonNull protected List<Component> children = EMPTY_COMPONENT_LIST;
     /**
      * The color of this component.
      */
@@ -79,23 +78,23 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
     /**
      * If this component should have the {@link TextDecoration#OBFUSCATED obfuscated} decoration.
      */
-    @Nonnull protected TextDecoration.State obfuscated = TextDecoration.State.NOT_SET;
+    @NonNull protected TextDecoration.State obfuscated = TextDecoration.State.NOT_SET;
     /**
      * If this component should have the {@link TextDecoration#BOLD bold} decoration.
      */
-    @Nonnull protected TextDecoration.State bold = TextDecoration.State.NOT_SET;
+    @NonNull protected TextDecoration.State bold = TextDecoration.State.NOT_SET;
     /**
      * If this component should have the {@link TextDecoration#STRIKETHROUGH strikethrough} decoration.
      */
-    @Nonnull protected TextDecoration.State strikethrough = TextDecoration.State.NOT_SET;
+    @NonNull protected TextDecoration.State strikethrough = TextDecoration.State.NOT_SET;
     /**
      * If this component should have the {@link TextDecoration#UNDERLINE underlined} decoration.
      */
-    @Nonnull protected TextDecoration.State underlined = TextDecoration.State.NOT_SET;
+    @NonNull protected TextDecoration.State underlined = TextDecoration.State.NOT_SET;
     /**
      * If this component should have the {@link TextDecoration#ITALIC italic} decoration.
      */
-    @Nonnull protected TextDecoration.State italic = TextDecoration.State.NOT_SET;
+    @NonNull protected TextDecoration.State italic = TextDecoration.State.NOT_SET;
     /**
      * The click event to apply to this component.
      */
@@ -112,7 +111,7 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
     protected AbstractBuilder() {
     }
 
-    protected AbstractBuilder(@Nonnull final C component) {
+    protected AbstractBuilder(@NonNull final C component) {
       this.children = new ArrayList<>(component.children());
       this.color = component.color();
       this.obfuscated = component.decoration(TextDecoration.OBFUSCATED);
@@ -125,25 +124,25 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
       this.insertion = component.insertion();
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public B append(@Nonnull final Component component) {
+    public B append(@NonNull final Component component) {
       if(this.children == EMPTY_COMPONENT_LIST) this.children = new ArrayList<>();
       this.children.add(component);
       return (B) this;
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public B append(@Nonnull final Iterable<? extends Component> components) {
+    public B append(@NonNull final Iterable<? extends Component> components) {
       if(this.children == EMPTY_COMPONENT_LIST) this.children = new ArrayList<>();
       Iterables.addAll(this.children, components);
       return (B) this;
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public B applyDeep(@Nonnull final Consumer<Builder<?, ?>> consumer) {
+    public B applyDeep(@NonNull final Consumer<Builder<?, ?>> consumer) {
       this.apply(consumer);
       if(this.children == EMPTY_COMPONENT_LIST) {
         return (B) this;
@@ -161,9 +160,9 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
       return (B) this;
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public B mapChildren(@Nonnull final Function<BuildableComponent<? ,?>, BuildableComponent<? ,?>> function) {
+    public B mapChildren(@NonNull final Function<BuildableComponent<? ,?>, BuildableComponent<? ,?>> function) {
       if(this.children == EMPTY_COMPONENT_LIST) {
         return (B) this;
       }
@@ -182,9 +181,9 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
       return (B) this;
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public B mapChildrenDeep(@Nonnull final Function<BuildableComponent<? ,?>, BuildableComponent<? ,?>> function) {
+    public B mapChildrenDeep(@NonNull final Function<BuildableComponent<? ,?>, BuildableComponent<? ,?>> function) {
       if(this.children == EMPTY_COMPONENT_LIST) {
         return (B) this;
       }
@@ -209,16 +208,16 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
       return (B) this;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public B color(@Nullable final TextColor color) {
       this.color = color;
       return (B) this;
     }
 
-    @Nonnull
+    @NonNull
     @Override
-    public B decoration(@Nonnull final TextDecoration decoration, @Nonnull final TextDecoration.State state) {
+    public B decoration(@NonNull final TextDecoration decoration, @NonNull final TextDecoration.State state) {
       switch(decoration) {
         case BOLD: this.bold = checkNotNull(state, "flag"); return (B) this;
         case ITALIC: this.italic = checkNotNull(state, "flag"); return (B) this;
@@ -229,21 +228,21 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
       }
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public B clickEvent(@Nullable final ClickEvent event) {
       this.clickEvent = event;
       return (B) this;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public B hoverEvent(@Nullable final HoverEvent event) {
       this.hoverEvent = event;
       return (B) this;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public B insertion(@Nullable final String insertion) {
       this.insertion = insertion;
