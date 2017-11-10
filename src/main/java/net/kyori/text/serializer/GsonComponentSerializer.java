@@ -34,6 +34,8 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import net.kyori.blizzard.NonNull;
+import net.kyori.blizzard.Nullable;
 import net.kyori.text.BuildableComponent;
 import net.kyori.text.Component;
 import net.kyori.text.ScoreComponent;
@@ -49,23 +51,20 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 public class GsonComponentSerializer implements ComponentSerializer<Component, Component, String>, JsonDeserializer<Component>, JsonSerializer<Component> {
 
   private static final Gson GSON = new GsonBuilder()
     .registerTypeHierarchyAdapter(Component.class, new GsonComponentSerializer())
     .create();
 
-  @Nonnull
+  @NonNull
   @Override
-  public Component deserialize(@Nonnull final String string) {
+  public Component deserialize(@NonNull final String string) {
     return GSON.fromJson(string, Component.class);
   }
 
   @Override
-  public Component deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
+  public Component deserialize(final JsonElement element, final Type type, final JsonDeserializationContext context) throws JsonParseException {
     if(element.isJsonPrimitive()) {
       return TextComponent.of(element.getAsString());
     }
@@ -162,14 +161,14 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
     return component.build();
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public String serialize(@Nonnull final Component component) {
+  public String serialize(@NonNull final Component component) {
     return GSON.toJson(component);
   }
 
   @Override
-  public JsonElement serialize(Component component, Type type, JsonSerializationContext context) {
+  public JsonElement serialize(final Component component, final Type type, final JsonSerializationContext context) {
     final JsonObject object = new JsonObject();
     if(component instanceof TextComponent) {
       object.addProperty("text", ((TextComponent) component).content());

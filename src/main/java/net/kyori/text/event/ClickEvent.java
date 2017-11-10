@@ -26,9 +26,8 @@ package net.kyori.text.event;
 import com.google.common.base.Enums;
 import com.google.common.base.Objects;
 import com.google.gson.annotations.SerializedName;
-
-import javax.annotation.Nonnull;
-import javax.annotation.concurrent.Immutable;
+import net.kyori.blizzard.Immutable;
+import net.kyori.blizzard.NonNull;
 
 /**
  * A click event.
@@ -41,13 +40,13 @@ public final class ClickEvent {
   /**
    * The click event action.
    */
-  @Nonnull private final Action action;
+  @NonNull private final Action action;
   /**
    * The click event value.
    */
-  @Nonnull private final String value;
+  @NonNull private final String value;
 
-  public ClickEvent(@Nonnull final Action action, @Nonnull final String value) {
+  public ClickEvent(@NonNull final Action action, @NonNull final String value) {
     this.action = action;
     this.value = value;
   }
@@ -57,7 +56,7 @@ public final class ClickEvent {
    *
    * @return the click event action
    */
-  @Nonnull
+  @NonNull
   public Action action() {
     return this.action;
   }
@@ -67,7 +66,7 @@ public final class ClickEvent {
    *
    * @return the click event value
    */
-  @Nonnull
+  @NonNull
   public String value() {
     return this.value;
   }
@@ -77,7 +76,7 @@ public final class ClickEvent {
    *
    * @return a copy of this click event
    */
-  @Nonnull
+  @NonNull
   public ClickEvent copy() {
     return new ClickEvent(this.action, this.value);
   }
@@ -95,7 +94,7 @@ public final class ClickEvent {
     return Objects.hashCode(this.action, this.value);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public String toString() {
     return Objects.toStringHelper(this)
@@ -139,7 +138,7 @@ public final class ClickEvent {
     /**
      * The serialized name of this action.
      */
-    @Nonnull private final String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
+    @NonNull private final String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
     /**
      * If this action is readable.
      *
@@ -161,7 +160,7 @@ public final class ClickEvent {
       return this.readable;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public String toString() {
       return this.toString;

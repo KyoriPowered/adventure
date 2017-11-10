@@ -24,6 +24,8 @@
 package net.kyori.text;
 
 import com.google.common.base.Objects;
+import net.kyori.blizzard.NonNull;
+import net.kyori.blizzard.Nullable;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
@@ -31,9 +33,6 @@ import net.kyori.text.format.TextDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -46,7 +45,7 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
   /**
    * The plain text content.
    */
-  @Nonnull private final String content;
+  @NonNull private final String content;
 
   /**
    * Creates a text component builder.
@@ -63,7 +62,7 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
    * @param content the plain text content
    * @return a builder
    */
-  public static Builder builder(@Nonnull final String content) {
+  public static Builder builder(@NonNull final String content) {
     return new Builder().content(content);
   }
 
@@ -73,16 +72,16 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
    * @param content the plain text content
    * @return the text component
    */
-  public static TextComponent of(@Nonnull final String content) {
+  public static TextComponent of(@NonNull final String content) {
     return builder(content).build();
   }
 
-  protected TextComponent(@Nonnull final Builder builder) {
+  protected TextComponent(@NonNull final Builder builder) {
     super(builder);
     this.content = builder.content;
   }
 
-  protected TextComponent(@Nonnull final List<Component> children, @Nullable final TextColor color, @Nonnull final TextDecoration.State obfuscated, @Nonnull final TextDecoration.State bold, @Nonnull final TextDecoration.State strikethrough, @Nonnull final TextDecoration.State underlined, @Nonnull final TextDecoration.State italic, @Nullable final ClickEvent clickEvent, @Nullable final HoverEvent hoverEvent, @Nullable final String insertion, @Nonnull final String content) {
+  protected TextComponent(@NonNull final List<Component> children, @Nullable final TextColor color, @NonNull final TextDecoration.State obfuscated, @NonNull final TextDecoration.State bold, @NonNull final TextDecoration.State strikethrough, @NonNull final TextDecoration.State underlined, @NonNull final TextDecoration.State italic, @Nullable final ClickEvent clickEvent, @Nullable final HoverEvent hoverEvent, @Nullable final String insertion, @NonNull final String content) {
     super(children, color, obfuscated, bold, strikethrough, underlined, italic, clickEvent, hoverEvent, insertion);
     this.content = content;
   }
@@ -92,7 +91,7 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
    *
    * @return the plain text content
    */
-  @Nonnull
+  @NonNull
   public String content() {
     return this.content;
   }
@@ -103,14 +102,14 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
    * @param content the plain text content
    * @return a copy of this component
    */
-  @Nonnull
-  public TextComponent content(@Nonnull final String content) {
+  @NonNull
+  public TextComponent content(@NonNull final String content) {
     return new TextComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, checkNotNull(content, "content"));
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public TextComponent append(@Nonnull final Component component) {
+  public TextComponent append(@NonNull final Component component) {
     this.detectCycle(component); // detect cycle before modifying
     final List<Component> children = new ArrayList<>(this.children.size() + 1);
     children.addAll(this.children);
@@ -118,21 +117,21 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
     return new TextComponent(children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.content);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public TextComponent color(@Nullable final TextColor color) {
     return new TextComponent(this.children, color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.content);
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public TextComponent decoration(@Nonnull final TextDecoration decoration, final boolean flag) {
+  public TextComponent decoration(@NonNull final TextDecoration decoration, final boolean flag) {
     return (TextComponent) super.decoration(decoration, flag);
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public TextComponent decoration(@Nonnull final TextDecoration decoration, @Nonnull final TextDecoration.State state) {
+  public TextComponent decoration(@NonNull final TextDecoration decoration, @NonNull final TextDecoration.State state) {
     switch(decoration) {
       case BOLD: return new TextComponent(this.children, this.color, this.obfuscated, checkNotNull(state, "flag"), this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.content);
       case ITALIC: return new TextComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, checkNotNull(state, "flag"), this.clickEvent, this.hoverEvent, this.insertion, this.content);
@@ -143,40 +142,40 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
     }
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public TextComponent clickEvent(@Nullable final ClickEvent event) {
     return new TextComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, event, this.hoverEvent, this.insertion, this.content);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public TextComponent hoverEvent(@Nullable final HoverEvent event) {
     if(event != null) this.detectCycle(event.value()); // detect cycle before modifying
     return new TextComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, event, this.insertion, this.content);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public TextComponent insertion(@Nullable final String insertion) {
     return new TextComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, insertion, this.content);
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public TextComponent mergeStyle(@Nonnull final Component that) {
+  public TextComponent mergeStyle(@NonNull final Component that) {
     return new TextComponent(this.children, that.color(), that.decoration(TextDecoration.OBFUSCATED), that.decoration(TextDecoration.BOLD), that.decoration(TextDecoration.STRIKETHROUGH), that.decoration(TextDecoration.UNDERLINE), that.decoration(TextDecoration.ITALIC), that.clickEvent(), that.hoverEvent(), that.insertion(), this.content);
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public TextComponent mergeColor(@Nonnull final Component that) {
+  public TextComponent mergeColor(@NonNull final Component that) {
     return new TextComponent(this.children, that.color(), this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.content);
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public TextComponent mergeDecorations(@Nonnull final Component that) {
+  public TextComponent mergeDecorations(@NonNull final Component that) {
     final TextDecoration.State obfuscated = that.decoration(TextDecoration.OBFUSCATED) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.OBFUSCATED) : this.obfuscated;
     final TextDecoration.State bold = that.decoration(TextDecoration.BOLD) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.BOLD) : this.bold;
     final TextDecoration.State strikethrough = that.decoration(TextDecoration.STRIKETHROUGH) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.STRIKETHROUGH) : this.strikethrough;
@@ -185,19 +184,19 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
     return new TextComponent(this.children, this.color, obfuscated, bold, strikethrough, underlined, italic, this.clickEvent, this.hoverEvent, this.insertion, this.content);
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public TextComponent mergeEvents(@Nonnull final Component that) {
+  public TextComponent mergeEvents(@NonNull final Component that) {
     return new TextComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, that.clickEvent(), that.hoverEvent(), this.insertion, this.content);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public TextComponent resetStyle() {
     return new TextComponent(this.children, null, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null, this.content);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public TextComponent copy() {
     return new TextComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.content);
@@ -218,11 +217,11 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
   }
 
   @Override
-  protected void populateToString(@Nonnull final Objects.ToStringHelper builder) {
+  protected void populateToString(@NonNull final Objects.ToStringHelper builder) {
     builder.add("content", this.content);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public Builder toBuilder() {
     return new Builder(this);
@@ -238,7 +237,7 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
     Builder() {
     }
 
-    Builder(@Nonnull final TextComponent component) {
+    Builder(@NonNull final TextComponent component) {
       super(component);
       this.content = component.content();
     }
@@ -249,13 +248,13 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
      * @param content the plain text content
      * @return this builder
      */
-    @Nonnull
-    public Builder content(@Nonnull final String content) {
+    @NonNull
+    public Builder content(@NonNull final String content) {
       this.content = content;
       return this;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public TextComponent build() {
       checkState(this.content != null, "content must be set");

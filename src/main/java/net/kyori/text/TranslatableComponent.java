@@ -25,6 +25,8 @@ package net.kyori.text;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
+import net.kyori.blizzard.NonNull;
+import net.kyori.blizzard.Nullable;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
@@ -34,9 +36,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -49,11 +48,11 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
   /**
    * The translation key.
    */
-  @Nonnull private final String key;
+  @NonNull private final String key;
   /**
    * The list of translation arguments.
    */
-  @Nonnull private final List<Component> args;
+  @NonNull private final List<Component> args;
 
   /**
    * Creates a translatable component builder.
@@ -70,7 +69,7 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
    * @param key the translation key
    * @return a builder
    */
-  public static Builder builder(@Nonnull final String key) {
+  public static Builder builder(@NonNull final String key) {
     return new Builder().key(key);
   }
 
@@ -80,7 +79,7 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
    * @param key the translation key
    * @return the text component
    */
-  public static TranslatableComponent of(@Nonnull final String key) {
+  public static TranslatableComponent of(@NonNull final String key) {
     return builder(key).build();
   }
 
@@ -91,7 +90,7 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
    * @param args the translation arguments
    * @return the text component
    */
-  public static TranslatableComponent of(@Nonnull final String key, @Nonnull final Component... args) {
+  public static TranslatableComponent of(@NonNull final String key, @NonNull final Component... args) {
     return of(key, Arrays.asList(args));
   }
 
@@ -102,20 +101,20 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
    * @param args the translation arguments
    * @return the text component
    */
-  public static TranslatableComponent of(@Nonnull final String key, @Nonnull final List<Component> args) {
+  public static TranslatableComponent of(@NonNull final String key, @NonNull final List<Component> args) {
     return builder()
       .key(key)
       .args(args)
       .build();
   }
 
-  protected TranslatableComponent(@Nonnull final Builder builder) {
+  protected TranslatableComponent(@NonNull final Builder builder) {
     super(builder);
     this.key = builder.key;
     this.args = ImmutableList.copyOf(builder.args);
   }
 
-  protected TranslatableComponent(@Nonnull final List<Component> children, @Nullable final TextColor color, @Nonnull final TextDecoration.State obfuscated, @Nonnull final TextDecoration.State bold, @Nonnull final TextDecoration.State strikethrough, @Nonnull final TextDecoration.State underlined, @Nonnull final TextDecoration.State italic, @Nullable final ClickEvent clickEvent, @Nullable final HoverEvent hoverEvent, @Nullable final String insertion, @Nonnull final String key, @Nonnull final List<Component> args) {
+  protected TranslatableComponent(@NonNull final List<Component> children, @Nullable final TextColor color, @NonNull final TextDecoration.State obfuscated, @NonNull final TextDecoration.State bold, @NonNull final TextDecoration.State strikethrough, @NonNull final TextDecoration.State underlined, @NonNull final TextDecoration.State italic, @Nullable final ClickEvent clickEvent, @Nullable final HoverEvent hoverEvent, @Nullable final String insertion, @NonNull final String key, @NonNull final List<Component> args) {
     super(children, color, obfuscated, bold, strikethrough, underlined, italic, clickEvent, hoverEvent, insertion);
     this.key = key;
     this.args = ImmutableList.copyOf(args);
@@ -126,7 +125,7 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
    *
    * @return the translation key
    */
-  @Nonnull
+  @NonNull
   public String key() {
     return this.key;
   }
@@ -137,8 +136,8 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
    * @param key the translation key
    * @return a copy of this component
    */
-  @Nonnull
-  public TranslatableComponent key(@Nonnull final String key) {
+  @NonNull
+  public TranslatableComponent key(@NonNull final String key) {
     return new TranslatableComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, checkNotNull(key, "key"), this.args);
   }
 
@@ -147,7 +146,7 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
    *
    * @return the unmodifiable list of translation arguments
    */
-  @Nonnull
+  @NonNull
   public List<Component> args() {
     return Collections.unmodifiableList(this.args);
   }
@@ -158,14 +157,14 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
    * @param args the translation arguments
    * @return this component
    */
-  @Nonnull
-  public TranslatableComponent args(@Nonnull final List<Component> args) {
+  @NonNull
+  public TranslatableComponent args(@NonNull final List<Component> args) {
     return new TranslatableComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.key, args);
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public TranslatableComponent append(@Nonnull final Component component) {
+  public TranslatableComponent append(@NonNull final Component component) {
     this.detectCycle(component); // detect cycle before modifying
     final List<Component> children = new ArrayList<>(this.children.size() + 1);
     children.addAll(this.children);
@@ -173,21 +172,21 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
     return new TranslatableComponent(children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.key, this.args);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public TranslatableComponent color(@Nullable final TextColor color) {
     return new TranslatableComponent(this.children, color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.key, this.args);
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public TranslatableComponent decoration(@Nonnull final TextDecoration decoration, final boolean flag) {
+  public TranslatableComponent decoration(@NonNull final TextDecoration decoration, final boolean flag) {
     return (TranslatableComponent) super.decoration(decoration, flag);
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public TranslatableComponent decoration(@Nonnull final TextDecoration decoration, @Nonnull final TextDecoration.State state) {
+  public TranslatableComponent decoration(@NonNull final TextDecoration decoration, @NonNull final TextDecoration.State state) {
     switch(decoration) {
       case BOLD: return new TranslatableComponent(this.children, this.color, this.obfuscated, checkNotNull(state, "flag"), this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.key, this.args);
       case ITALIC: return new TranslatableComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, checkNotNull(state, "flag"), this.clickEvent, this.hoverEvent, this.insertion, this.key, this.args);
@@ -198,40 +197,40 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
     }
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public TranslatableComponent clickEvent(@Nullable final ClickEvent event) {
     return new TranslatableComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, event, this.hoverEvent, this.insertion, this.key, this.args);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public TranslatableComponent hoverEvent(@Nullable final HoverEvent event) {
     if(event != null) this.detectCycle(event.value()); // detect cycle before modifying
     return new TranslatableComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, event, this.insertion, this.key, this.args);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public TranslatableComponent insertion(@Nullable final String insertion) {
     return new TranslatableComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, insertion, this.key, this.args);
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public TranslatableComponent mergeStyle(@Nonnull final Component that) {
+  public TranslatableComponent mergeStyle(@NonNull final Component that) {
     return new TranslatableComponent(this.children, that.color(), that.decoration(TextDecoration.OBFUSCATED), that.decoration(TextDecoration.BOLD), that.decoration(TextDecoration.STRIKETHROUGH), that.decoration(TextDecoration.UNDERLINE), that.decoration(TextDecoration.ITALIC), that.clickEvent(), that.hoverEvent(), that.insertion(), this.key, this.args);
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public TranslatableComponent mergeColor(@Nonnull final Component that) {
+  public TranslatableComponent mergeColor(@NonNull final Component that) {
     return new TranslatableComponent(this.children, that.color(), this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.key, this.args);
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public TranslatableComponent mergeDecorations(@Nonnull final Component that) {
+  public TranslatableComponent mergeDecorations(@NonNull final Component that) {
     final TextDecoration.State obfuscated = that.decoration(TextDecoration.OBFUSCATED) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.OBFUSCATED) : this.obfuscated;
     final TextDecoration.State bold = that.decoration(TextDecoration.BOLD) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.BOLD) : this.bold;
     final TextDecoration.State strikethrough = that.decoration(TextDecoration.STRIKETHROUGH) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.STRIKETHROUGH) : this.strikethrough;
@@ -240,19 +239,19 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
     return new TranslatableComponent(this.children, this.color, obfuscated, bold, strikethrough, underlined, italic, this.clickEvent, this.hoverEvent, this.insertion, this.key, this.args);
   }
 
-  @Nonnull
+  @NonNull
   @Override
-  public TranslatableComponent mergeEvents(@Nonnull final Component that) {
+  public TranslatableComponent mergeEvents(@NonNull final Component that) {
     return new TranslatableComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, that.clickEvent(), that.hoverEvent(), this.insertion, this.key, this.args);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public TranslatableComponent resetStyle() {
     return new TranslatableComponent(this.children, null, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null, this.key, this.args);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public TranslatableComponent copy() {
     return new TranslatableComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.key, this.args);
@@ -273,13 +272,13 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
   }
 
   @Override
-  protected void populateToString(@Nonnull final Objects.ToStringHelper builder) {
+  protected void populateToString(@NonNull final Objects.ToStringHelper builder) {
     builder
       .add("key", this.key)
       .add("args", this.args);
   }
 
-  @Nonnull
+  @NonNull
   @Override
   public Builder toBuilder() {
     return new Builder(this);
@@ -291,12 +290,12 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
   public static class Builder extends AbstractBuildableComponent.AbstractBuilder<TranslatableComponent, Builder> {
 
     @Nullable private String key;
-    @Nonnull private List<Component> args = Component.EMPTY_COMPONENT_LIST;
+    @NonNull private List<Component> args = Component.EMPTY_COMPONENT_LIST;
 
     Builder() {
     }
 
-    Builder(@Nonnull final TranslatableComponent component) {
+    Builder(@NonNull final TranslatableComponent component) {
       super(component);
       this.key = component.key();
       this.args = component.args();
@@ -308,8 +307,8 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
      * @param key the translation key
      * @return this builder
      */
-    @Nonnull
-    public Builder key(@Nonnull final String key) {
+    @NonNull
+    public Builder key(@NonNull final String key) {
       this.key = key;
       return this;
     }
@@ -320,8 +319,8 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
      * @param args the translation args
      * @return this builder
      */
-    @Nonnull
-    public Builder args(@Nonnull final Component... args) {
+    @NonNull
+    public Builder args(@NonNull final Component... args) {
       return this.args(Arrays.asList(args));
     }
 
@@ -331,13 +330,13 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
      * @param args the translation args
      * @return this builder
      */
-    @Nonnull
-    public Builder args(@Nonnull final List<Component> args) {
+    @NonNull
+    public Builder args(@NonNull final List<Component> args) {
       this.args = args;
       return this;
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public TranslatableComponent build() {
       checkState(this.key != null, "key must be set");

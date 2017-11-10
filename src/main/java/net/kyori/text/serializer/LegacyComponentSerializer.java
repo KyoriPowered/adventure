@@ -24,10 +24,9 @@
 package net.kyori.text.serializer;
 
 import com.google.common.annotations.VisibleForTesting;
+import net.kyori.blizzard.NonNull;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
-
-import javax.annotation.Nonnull;
 
 /**
  * A legacy component serializer.
@@ -54,9 +53,9 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * @deprecated legacy
    */
   @Deprecated
-  @Nonnull
+  @NonNull
   @Override
-  default TextComponent deserialize(@Nonnull final String input) {
+  default TextComponent deserialize(@NonNull final String input) {
     return this.deserialize(input, CHARACTER);
   }
 
@@ -69,8 +68,8 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * @deprecated legacy
    */
   @Deprecated
-  @Nonnull
-  TextComponent deserialize(@Nonnull final String input, final char character);
+  @NonNull
+  TextComponent deserialize(@NonNull final String input, final char character);
 
   /**
    * Serializes a component into a {@link String} with the specified {@link #CHARACTER legacy character}.
@@ -80,9 +79,9 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * @deprecated legacy
    */
   @Deprecated
-  @Nonnull
+  @NonNull
   @Override
-  default String serialize(@Nonnull final Component component) {
+  default String serialize(@NonNull final Component component) {
     return this.serialize(component, CHARACTER);
   }
 
@@ -95,6 +94,6 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * @deprecated legacy
    */
   @Deprecated
-  @Nonnull
-  String serialize(@Nonnull final Component component, final char character);
+  @NonNull
+  String serialize(@NonNull final Component component, final char character);
 }
