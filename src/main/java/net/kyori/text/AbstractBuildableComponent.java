@@ -217,6 +217,15 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
 
     @NonNull
     @Override
+    public B colorIfAbsent(@Nullable final TextColor color) {
+      if(this.color == null) {
+        this.color = color;
+      }
+      return (B) this;
+    }
+
+    @NonNull
+    @Override
     public B decoration(@NonNull final TextDecoration decoration, @NonNull final TextDecoration.State state) {
       switch(decoration) {
         case BOLD: this.bold = checkNotNull(state, "flag"); return (B) this;
