@@ -126,6 +126,15 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
     B color(@Nullable final TextColor color);
 
     /**
+     * Sets the color of this component if there isn't one set already.
+     *
+     * @param color the color
+     * @return this builder
+     */
+    @NonNull
+    B colorIfAbsent(@Nullable final TextColor color);
+
+    /**
      * Sets the state of a decoration on this component.
      *
      * @param decoration the decoration

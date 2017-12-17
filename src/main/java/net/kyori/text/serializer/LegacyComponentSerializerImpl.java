@@ -109,7 +109,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
   private static boolean applyFormat(@NonNull final TextComponent.Builder builder, @NonNull final TextFormat format) {
     if(format instanceof TextColor) {
-      builder.color((TextColor) format);
+      builder.colorIfAbsent((TextColor) format);
       return true;
     } else if(format instanceof TextDecoration) {
       builder.decoration((TextDecoration) format, TextDecoration.State.TRUE);

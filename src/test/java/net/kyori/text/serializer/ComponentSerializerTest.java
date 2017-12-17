@@ -48,6 +48,15 @@ public class ComponentSerializerTest {
   }
 
   @Test
+  public void testFromColorOverride() {
+    final TextComponent component = TextComponent.builder("")
+      .append(TextComponent.of("foo").color(TextColor.BLUE))
+      .build();
+
+    assertEquals(component, ComponentSerializers.LEGACY.deserialize("&a&9foo", '&'));
+  }
+
+  @Test
   public void testToLegacy() {
     final TextComponent c1 = TextComponent.builder("hi")
       .decoration(TextDecoration.BOLD, TextDecoration.State.TRUE)
