@@ -45,7 +45,6 @@ import static com.google.common.base.Preconditions.checkState;
  * A translatable text component.
  */
 public class TranslatableComponent extends AbstractBuildableComponent<TranslatableComponent, TranslatableComponent.Builder> {
-
   /**
    * The translation key.
    */
@@ -289,7 +288,6 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
    * A text component builder.
    */
   public static class Builder extends AbstractBuildableComponent.AbstractBuilder<TranslatableComponent, Builder> {
-
     @Nullable private String key;
     @NonNull private List<Component> args = Component.EMPTY_COMPONENT_LIST;
 

@@ -40,7 +40,6 @@ import java.util.function.Function;
  * @param <B> the builder type
  */
 public interface BuildableComponent<C extends BuildableComponent<C, B>, B extends BuildableComponent.Builder<C, B>> extends Component {
-
   /**
    * Create a builder from this component.
    *
@@ -56,7 +55,6 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
    * @param <B> the builder type
    */
   interface Builder<C extends BuildableComponent, B extends Builder<C, B>> {
-
     /**
      * Appends a component to this component.
      *

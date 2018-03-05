@@ -38,7 +38,6 @@ import java.util.Objects;
  * over by a mouse on the client.</p>
  */
 public final class HoverEvent {
-
   /**
    * The hover event action.
    */

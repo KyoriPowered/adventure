@@ -39,7 +39,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 public class KeybindComponent extends AbstractBuildableComponent<KeybindComponent, KeybindComponent.Builder> {
-
   /**
    * The keybind.
    */
@@ -229,7 +228,6 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
    * A keybind component builder.
    */
   public static class Builder extends AbstractBuildableComponent.AbstractBuilder<KeybindComponent, Builder> {
-
     @Nullable private String keybind;
 
     Builder() {

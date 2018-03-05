@@ -34,7 +34,6 @@ import net.kyori.text.Component;
  * @param <R> the serialized type
  */
 public interface ComponentSerializer<I extends Component, O extends Component, R> {
-
   /**
    * Deserialize a component from input of type {@code R}.
    *

@@ -38,7 +38,6 @@ import java.util.Objects;
  */
 @Immutable
 public final class ClickEvent {
-
   /**
    * The click event action.
    */

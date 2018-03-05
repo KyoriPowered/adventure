@@ -35,7 +35,6 @@ import net.kyori.text.TextComponent;
  */
 @Deprecated
 public interface LegacyComponentSerializer extends ComponentSerializer<Component, TextComponent, String> {
-
   /**
    * The legacy character.
    *

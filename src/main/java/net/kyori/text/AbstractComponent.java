@@ -39,7 +39,6 @@ import java.util.Objects;
  * An abstract implementation of a text component.
  */
 public abstract class AbstractComponent implements Component {
-
   /**
    * The list of children.
    */

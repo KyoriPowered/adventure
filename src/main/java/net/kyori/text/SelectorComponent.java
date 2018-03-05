@@ -42,7 +42,6 @@ import static com.google.common.base.Preconditions.checkState;
  * A scoreboard selector component.
  */
 public class SelectorComponent extends AbstractBuildableComponent<SelectorComponent, SelectorComponent.Builder> {
-
   /**
    * The selector pattern.
    */
@@ -232,7 +231,6 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
    * A selector component builder.
    */
   public static class Builder extends AbstractBuildableComponent.AbstractBuilder<SelectorComponent, Builder> {
-
     @Nullable private String pattern;
 
     Builder() {

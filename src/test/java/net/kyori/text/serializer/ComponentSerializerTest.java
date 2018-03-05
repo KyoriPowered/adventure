@@ -26,19 +26,18 @@ package net.kyori.text.serializer;
 import net.kyori.text.TextComponent;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ComponentSerializerTest {
-
+class ComponentSerializerTest {
   @Test
-  public void testFrom() {
+  void testFrom() {
     assertEquals(TextComponent.of("foo"), ComponentSerializers.LEGACY.deserialize("foo"));
   }
 
   @Test
-  public void testFromColor() {
+  void testFromColor() {
     final TextComponent component = TextComponent.builder("")
       .append(TextComponent.of("foo").color(TextColor.GREEN).decoration(TextDecoration.BOLD, TextDecoration.State.TRUE))
       .append(TextComponent.of("bar").color(TextColor.BLUE))
@@ -48,7 +47,7 @@ public class ComponentSerializerTest {
   }
 
   @Test
-  public void testFromColorOverride() {
+  void testFromColorOverride() {
     final TextComponent component = TextComponent.builder("")
       .append(TextComponent.of("foo").color(TextColor.BLUE))
       .build();
@@ -57,7 +56,7 @@ public class ComponentSerializerTest {
   }
 
   @Test
-  public void testToLegacy() {
+  void testToLegacy() {
     final TextComponent c1 = TextComponent.builder("hi")
       .decoration(TextDecoration.BOLD, TextDecoration.State.TRUE)
       .append(

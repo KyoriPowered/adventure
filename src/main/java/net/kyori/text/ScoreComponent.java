@@ -42,7 +42,6 @@ import static com.google.common.base.Preconditions.checkState;
  * A scoreboard score component.
  */
 public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, ScoreComponent.Builder> {
-
   /**
    * The score name.
    */
@@ -307,7 +306,6 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
    * A score component builder.
    */
   public static class Builder extends AbstractBuildableComponent.AbstractBuilder<ScoreComponent, Builder> {
-
     @Nullable private String name;
     @Nullable private String objective;
     @Nullable private String value;

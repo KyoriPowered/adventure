@@ -53,7 +53,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GsonComponentSerializer implements ComponentSerializer<Component, Component, String>, JsonDeserializer<Component>, JsonSerializer<Component> {
-
   private static final Gson GSON = new GsonBuilder()
     .registerTypeHierarchyAdapter(Component.class, new GsonComponentSerializer())
     .create();

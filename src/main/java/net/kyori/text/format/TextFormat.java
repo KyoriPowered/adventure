@@ -29,7 +29,6 @@ import net.kyori.text.Component;
  * A format which may be applied to a {@link Component}.
  */
 public interface TextFormat {
-
   /**
    * Gets the legacy code.
    *
