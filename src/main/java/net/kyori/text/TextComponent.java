@@ -32,8 +32,11 @@ import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.function.Consumer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -74,6 +77,54 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
    */
   public static TextComponent of(@NonNull final String content) {
     return builder(content).build();
+  }
+
+  /**
+   * Creates a text component with content, and optional color.
+   *
+   * @param content the plain text content
+   * @param color the color
+   * @return the text component
+   */
+  public static TextComponent of(@NonNull final String content, @Nullable final TextColor color) {
+    return of(content, color, Collections.emptySet());
+  }
+
+  /**
+   * Creates a text component with content, and optional color and decorations.
+   *
+   * @param content the plain text content
+   * @param color the color
+   * @param decorations the decorations
+   * @return the text component
+   */
+  public static TextComponent of(@NonNull final String content, @Nullable final TextColor color, @NonNull final Set<TextDecoration> decorations) {
+    return builder(content).color(color).decorations(decorations, true).build();
+  }
+
+  /**
+   * Creates a text component by applying configuration from {@code consumer}.
+   *
+   * @param consumer the builder configurator
+   * @return the text component
+   */
+  public static TextComponent make(@NonNull final Consumer<Builder> consumer) {
+    final Builder builder = builder();
+    consumer.accept(builder);
+    return builder.build();
+  }
+
+  /**
+   * Creates a text component by applying configuration from {@code consumer}.
+   *
+   * @param content the plain text content
+   * @param consumer the builder configurator
+   * @return the text component
+   */
+  public static TextComponent make(@NonNull final String content, @NonNull final Consumer<Builder> consumer) {
+    final Builder builder = builder(content);
+    consumer.accept(builder);
+    return builder.build();
   }
 
   protected TextComponent(@NonNull final Builder builder) {

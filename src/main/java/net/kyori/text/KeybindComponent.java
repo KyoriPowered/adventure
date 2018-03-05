@@ -32,8 +32,11 @@ import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.function.Consumer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -67,10 +70,58 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
    * Creates a keybind component with a keybind.
    *
    * @param keybind the keybind
-   * @return the text component
+   * @return the keybind component
    */
   public static KeybindComponent of(@NonNull final String keybind) {
     return builder(keybind).build();
+  }
+
+  /**
+   * Creates a keybind component with content, and optional color.
+   *
+   * @param keybind the keybind
+   * @param color the color
+   * @return the keybind component
+   */
+  public static KeybindComponent of(@NonNull final String keybind, @Nullable final TextColor color) {
+    return of(keybind, color, Collections.emptySet());
+  }
+
+  /**
+   * Creates a keybind component with content, and optional color and decorations.
+   *
+   * @param keybind the keybind
+   * @param color the color
+   * @param decorations the decorations
+   * @return the keybind component
+   */
+  public static KeybindComponent of(@NonNull final String keybind, @Nullable final TextColor color, @NonNull final Set<TextDecoration> decorations) {
+    return builder(keybind).color(color).decorations(decorations, true).build();
+  }
+
+  /**
+   * Creates a keybind component by applying configuration from {@code consumer}.
+   *
+   * @param consumer the builder configurator
+   * @return the keybind component
+   */
+  public static KeybindComponent make(@NonNull final Consumer<Builder> consumer) {
+    final Builder builder = builder();
+    consumer.accept(builder);
+    return builder.build();
+  }
+
+  /**
+   * Creates a keybind component by applying configuration from {@code consumer}.
+   *
+   * @param keybind the keybind
+   * @param consumer the builder configurator
+   * @return the keybind component
+   */
+  public static KeybindComponent make(@NonNull final String keybind, @NonNull final Consumer<Builder> consumer) {
+    final Builder builder = builder(keybind);
+    consumer.accept(builder);
+    return builder.build();
   }
 
   protected KeybindComponent(@NonNull final Builder builder) {
