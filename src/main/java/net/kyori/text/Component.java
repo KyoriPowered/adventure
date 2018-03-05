@@ -39,7 +39,6 @@ import java.util.Set;
  * A text component.
  */
 public interface Component {
-
   /**
    * An empty, unmodifiable, list of components.
    */

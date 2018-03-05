@@ -47,7 +47,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @param <B> the builder type
  */
 public abstract class AbstractBuildableComponent<C extends BuildableComponent<C, B>, B extends AbstractBuildableComponent.AbstractBuilder<C, B>> extends AbstractComponent implements BuildableComponent<C, B> {
-
   protected AbstractBuildableComponent(@NonNull final B builder) {
     super(builder.children, builder.color, builder.obfuscated, builder.bold, builder.strikethrough, builder.underlined, builder.italic, builder.clickEvent, builder.hoverEvent, builder.insertion);
   }
@@ -63,7 +62,6 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
    * @param <B> the builder type
    */
   protected static abstract class AbstractBuilder<C extends BuildableComponent<C, B>, B extends AbstractBuilder<C, B>> implements Builder<C, B> {
-
     /**
      * The list of children.
      *

@@ -41,7 +41,6 @@ import static com.google.common.base.Preconditions.checkState;
  * A plain text component.
  */
 public class TextComponent extends AbstractBuildableComponent<TextComponent, TextComponent.Builder> {
-
   /**
    * The plain text content.
    */
@@ -231,7 +230,6 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
    * A text component builder.
    */
   public static class Builder extends AbstractBuildableComponent.AbstractBuilder<TextComponent, Builder> {
-
     @Nullable private String content;
 
     Builder() {

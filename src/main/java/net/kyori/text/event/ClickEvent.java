@@ -36,7 +36,6 @@ import net.kyori.blizzard.NonNull;
  */
 @Immutable
 public final class ClickEvent {
-
   /**
    * The click event action.
    */

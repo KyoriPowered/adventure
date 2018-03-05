@@ -43,7 +43,6 @@ import java.util.stream.Stream;
 
 @Deprecated
 class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
-
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
   private static final TextFormat[] FORMATS = ObjectArrays.concat(Stream.concat(Arrays.stream(TextColor.values()), Arrays.stream(DECORATIONS)).toArray(TextFormat[]::new), Reset.INSTANCE);
   private static final String FORMAT_LOOKUP = Arrays.stream(FORMATS).map(format -> String.valueOf(format.legacy())).collect(Collectors.joining());
@@ -143,7 +142,6 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   // Are you hungry?
   @Deprecated
   private static final class Cereal {
-
     private final StringBuilder sb = new StringBuilder();
     private final Style style = new Style();
     private final char character;
@@ -187,7 +185,6 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     private final class Style {
-
       @Nullable private TextColor color;
       private final Set<TextDecoration> decorations;
 

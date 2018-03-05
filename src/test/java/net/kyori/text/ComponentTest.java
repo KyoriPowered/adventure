@@ -28,19 +28,19 @@ import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import net.kyori.text.serializer.ComponentSerializers;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-public class ComponentTest {
-
+class ComponentTest {
   @Test
-  public void testCopy() {
+  void testCopy() {
     final TextComponent.Builder component = TextComponent.builder().content("").color(TextColor.GRAY);
     component.append(TextComponent.builder().content("This is a test").color(TextColor.DARK_PURPLE).build());
     component.append(TextComponent.builder().content(" ").build());
@@ -49,7 +49,7 @@ public class ComponentTest {
   }
 
   @Test
-  public void testDecorations() {
+  void testDecorations() {
     TextComponent component = TextComponent.builder().content("Kittens!").build();
 
     // The bold decoration should not be set at this point.
@@ -69,7 +69,7 @@ public class ComponentTest {
   }
 
   @Test
-  public void testStyleReset() {
+  void testStyleReset() {
     Component component = TextComponent.builder()
       .content("kittens")
       .build();
@@ -81,7 +81,7 @@ public class ComponentTest {
   }
 
   @Test
-  public void testContains() {
+  void testContains() {
     final Component child = TextComponent.builder().content("kittens").build();
     final Component component = TextComponent.builder()
       .content("cat")
@@ -90,38 +90,44 @@ public class ComponentTest {
     assertTrue(component.contains(child));
   }
 
-  @Test(expected = IllegalStateException.class)
-  public void testCycleSelf() {
-    final Component component = TextComponent.builder().content("cat").build();
-    component.append(component);
-    fail("A component was added to itself");
-  }
-
-  @Test(expected = IllegalStateException.class)
-  public void testCycleHoverRoot() {
-    final Component hoverComponent = TextComponent.builder().content("hover").build();
-    final Component component = TextComponent.builder()
-      .content("cat")
-      .hoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent))
-      .build();
-    // component's hover event value is hoverComponent, we should not be able to add it
-    hoverComponent.append(component);
-    fail("A component was added to itself");
-  }
-
-  @Test(expected = IllegalStateException.class)
-  public void testCycleHoverChild() {
-    final Component hoverComponent = TextComponent.builder().content("hover child").build();
-    final Component component = TextComponent.builder().content("cat")
-      .hoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.builder().content("hover").build().append(hoverComponent)))
-      .build();
-    // component's hover event value contains hoverComponent, we should not be able to add it
-    hoverComponent.append(component);
-    fail("A component was added to itself");
+  @Test
+  void testCycleSelf() {
+    assertThrows(IllegalStateException.class, () -> {
+      final Component component = TextComponent.builder().content("cat").build();
+      component.append(component);
+      fail("A component was added to itself");
+    });
   }
 
   @Test
-  public void testSerializeDeserialize() {
+  void testCycleHoverRoot() {
+    assertThrows(IllegalStateException.class, () -> {
+      final Component hoverComponent = TextComponent.builder().content("hover").build();
+      final Component component = TextComponent.builder()
+        .content("cat")
+        .hoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent))
+        .build();
+      // component's hover event value is hoverComponent, we should not be able to add it
+      hoverComponent.append(component);
+      fail("A component was added to itself");
+    });
+  }
+
+  @Test
+  void testCycleHoverChild() {
+    assertThrows(IllegalStateException.class, () -> {
+      final Component hoverComponent = TextComponent.builder().content("hover child").build();
+      final Component component = TextComponent.builder().content("cat")
+        .hoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.builder().content("hover").build().append(hoverComponent)))
+        .build();
+      // component's hover event value contains hoverComponent, we should not be able to add it
+      hoverComponent.append(component);
+      fail("A component was added to itself");
+    });
+  }
+
+  @Test
+  void testSerializeDeserialize() {
     final TextComponent expected = TextComponent.builder()
       .content("Hello!")
       .color(TextColor.DARK_PURPLE)
@@ -134,20 +140,20 @@ public class ComponentTest {
   }
 
   @Test
-  public void assertOpenFileNotReadable() {
+  void assertOpenFileNotReadable() {
     final ClickEvent event = new ClickEvent(ClickEvent.Action.OPEN_FILE, "fake");
     assertFalse(event.action().isReadable());
   }
 
   @Test
-  public void testCopyHover() {
+  void testCopyHover() {
     final HoverEvent event = new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.builder().content("Kittens!").build());
     final HoverEvent copy = event.copy();
     assertEquals(event, copy);
   }
 
   @Test
-  public void testSerializeTranslatable() {
+  void testSerializeTranslatable() {
     final TranslatableComponent component = TranslatableComponent.of(
       "multiplayer.player.left",
       TextComponent.builder("kashike")

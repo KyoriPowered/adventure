@@ -31,7 +31,6 @@ import net.kyori.text.event.HoverEvent;
  * A collection of component serializers.
  */
 public final class ComponentSerializers {
-
   /**
    * A component serializer for JSON-based serialization and deserialization.
    */
