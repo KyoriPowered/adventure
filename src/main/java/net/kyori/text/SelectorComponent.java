@@ -69,7 +69,7 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
    * Creates a selector component with a pattern.
    *
    * @param pattern the selector pattern
-   * @return the text component
+   * @return the selector component
    */
   public static SelectorComponent of(@NonNull final String pattern) {
     return builder(pattern).build();
