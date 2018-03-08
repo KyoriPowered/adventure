@@ -80,7 +80,7 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
    *
    * @param name the score name
    * @param objective the score objective
-   * @return the text component
+   * @return the score component
    */
   public static ScoreComponent of(@NonNull final String name, @NonNull final String objective) {
     return of(name, objective, null);
@@ -92,7 +92,7 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
    * @param name the score name
    * @param objective the score objective
    * @param value the value
-   * @return the text component
+   * @return the score component
    */
   public static ScoreComponent of(@NonNull final String name, @NonNull final String objective, @Nullable final String value) {
     return builder()

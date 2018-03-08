@@ -30,9 +30,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ComponentSerializerTest {
+class LegacyComponentSerializerTest {
   @Test
-  void testFrom() {
+  void testSimpleFrom() {
     assertEquals(TextComponent.of("foo"), ComponentSerializers.LEGACY.deserialize("foo"));
   }
 

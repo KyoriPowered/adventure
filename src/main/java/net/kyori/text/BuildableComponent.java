@@ -30,6 +30,7 @@ import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -131,6 +132,20 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
      */
     @NonNull
     B colorIfAbsent(@Nullable final TextColor color);
+
+    /**
+     * Sets the state of a set of decorations to {@code flag} on this component.
+     *
+     * @param decorations the decorations
+     * @param flag {@code true} if this component should have the decorations, {@code false} if
+     *     this component should not have the decorations
+     * @return this builder
+     */
+    default B decorations(@NonNull final Set<TextDecoration> decorations, final boolean flag) {
+      final TextDecoration.State state = TextDecoration.State.byBoolean(flag);
+      decorations.forEach(decoration -> this.decoration(decoration, state));
+      return (B) this;
+    }
 
     /**
      * Sets the state of a decoration on this component.
