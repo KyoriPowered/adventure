@@ -139,7 +139,7 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
         @Nullable final ClickEvent.Action action = rawAction == null ? null : context.deserialize(rawAction, ClickEvent.Action.class);
         @Nullable final JsonPrimitive rawValue = clickEvent.getAsJsonPrimitive("value");
         @Nullable final String value = rawValue == null ? null : rawValue.getAsString();
-        if(action != null && value != null && action.isReadable()) {
+        if(action != null && value != null && action.readable()) {
           component.clickEvent(new ClickEvent(action, value));
         }
       }
@@ -149,7 +149,7 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
       if(hoverEvent != null) {
         @Nullable final JsonPrimitive rawAction = hoverEvent.getAsJsonPrimitive("action");
         @Nullable final HoverEvent.Action action = rawAction == null ? null : context.deserialize(rawAction, HoverEvent.Action.class);
-        if(action != null && action.isReadable()) {
+        if(action != null && action.readable()) {
           @Nullable final JsonElement rawValue = hoverEvent.get("value");
           @Nullable final Component value = rawValue == null ? null : this.deserialize(rawValue, rawValue.getClass(), context);
           if(value != null) component.hoverEvent(new HoverEvent(action, value));

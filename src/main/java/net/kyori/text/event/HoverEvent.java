@@ -143,6 +143,18 @@ public final class HoverEvent {
      * @return {@code true} if this action is readable, {@code false} if this
      *     action is not readable
      */
+    public boolean readable() {
+      return this.readable;
+    }
+
+    /**
+     * Tests if this action is readable.
+     *
+     * @return {@code true} if this action is readable, {@code false} if this
+     *     action is not readable
+     * @deprecated use {@link #readable()}
+     */
+    @Deprecated
     public boolean isReadable() {
       return this.readable;
     }
