@@ -165,7 +165,7 @@ class ComponentTest {
   @Test
   void assertOpenFileNotReadable() {
     final ClickEvent event = new ClickEvent(ClickEvent.Action.OPEN_FILE, "fake");
-    assertFalse(event.action().isReadable());
+    assertFalse(event.action().readable());
   }
 
   @Test
