@@ -25,8 +25,8 @@ package net.kyori.text.format;
 
 import com.google.common.base.Enums;
 import com.google.gson.annotations.SerializedName;
-import net.kyori.blizzard.NonNull;
 import net.kyori.text.Component;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * An enumeration of colors which may be applied to a {@link Component}.

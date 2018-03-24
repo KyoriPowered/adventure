@@ -26,8 +26,8 @@ package net.kyori.text.event;
 import com.google.common.base.Enums;
 import com.google.common.base.Objects;
 import com.google.gson.annotations.SerializedName;
-import net.kyori.blizzard.NonNull;
 import net.kyori.text.Component;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A hover event.

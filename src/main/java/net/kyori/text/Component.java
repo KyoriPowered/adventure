@@ -23,12 +23,12 @@
  */
 package net.kyori.text;
 
-import net.kyori.blizzard.NonNull;
-import net.kyori.blizzard.Nullable;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Collections;
 import java.util.EnumSet;
@@ -138,8 +138,7 @@ public interface Component {
    *     {@link TextDecoration.State#FALSE} if this component does not have the decoration,
    *     and {@link TextDecoration.State#NOT_SET} if not set
    */
-  @NonNull
-  TextDecoration.State decoration(@NonNull final TextDecoration decoration);
+  TextDecoration.@NonNull State decoration(@NonNull final TextDecoration decoration);
 
   /**
    * Sets the state of a decoration on this component.
@@ -165,7 +164,7 @@ public interface Component {
    * @return a component
    */
   @NonNull
-  Component decoration(@NonNull final TextDecoration decoration, @NonNull final TextDecoration.State state);
+  Component decoration(@NonNull final TextDecoration decoration, final TextDecoration.@NonNull State state);
 
   /**
    * Gets a set of decorations this component has.

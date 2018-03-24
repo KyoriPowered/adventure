@@ -23,8 +23,8 @@
  */
 package net.kyori.text.serializer;
 
-import net.kyori.blizzard.NonNull;
 import net.kyori.text.Component;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A {@link Component} serializer and deserializer.

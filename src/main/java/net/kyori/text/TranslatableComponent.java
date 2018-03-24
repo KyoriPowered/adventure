@@ -25,12 +25,12 @@ package net.kyori.text;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
-import net.kyori.blizzard.NonNull;
-import net.kyori.blizzard.Nullable;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -234,7 +234,7 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
     this.args = ImmutableList.copyOf(builder.args);
   }
 
-  protected TranslatableComponent(@NonNull final List<Component> children, @Nullable final TextColor color, @NonNull final TextDecoration.State obfuscated, @NonNull final TextDecoration.State bold, @NonNull final TextDecoration.State strikethrough, @NonNull final TextDecoration.State underlined, @NonNull final TextDecoration.State italic, @Nullable final ClickEvent clickEvent, @Nullable final HoverEvent hoverEvent, @Nullable final String insertion, @NonNull final String key, @NonNull final List<Component> args) {
+  protected TranslatableComponent(@NonNull final List<Component> children, @Nullable final TextColor color, final TextDecoration.@NonNull State obfuscated, final TextDecoration.@NonNull State bold, final TextDecoration.@NonNull State strikethrough, final TextDecoration.@NonNull State underlined, final TextDecoration.@NonNull State italic, @Nullable final ClickEvent clickEvent, @Nullable final HoverEvent hoverEvent, @Nullable final String insertion, @NonNull final String key, @NonNull final List<Component> args) {
     super(children, color, obfuscated, bold, strikethrough, underlined, italic, clickEvent, hoverEvent, insertion);
     this.key = key;
     this.args = ImmutableList.copyOf(args);
@@ -306,7 +306,7 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
 
   @NonNull
   @Override
-  public TranslatableComponent decoration(@NonNull final TextDecoration decoration, @NonNull final TextDecoration.State state) {
+  public TranslatableComponent decoration(@NonNull final TextDecoration decoration, final TextDecoration.@NonNull State state) {
     switch(decoration) {
       case BOLD: return new TranslatableComponent(this.children, this.color, this.obfuscated, checkNotNull(state, "flag"), this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.key, this.args);
       case ITALIC: return new TranslatableComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, checkNotNull(state, "flag"), this.clickEvent, this.hoverEvent, this.insertion, this.key, this.args);
@@ -392,7 +392,7 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
   }
 
   @Override
-  protected void populateToString(@NonNull final Objects.ToStringHelper builder) {
+  protected void populateToString(final Objects.@NonNull ToStringHelper builder) {
     builder
       .add("key", this.key)
       .add("args", this.args);

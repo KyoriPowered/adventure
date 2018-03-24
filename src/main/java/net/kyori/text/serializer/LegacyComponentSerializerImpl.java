@@ -24,13 +24,13 @@
 package net.kyori.text.serializer;
 
 import com.google.common.collect.ObjectArrays;
-import net.kyori.blizzard.NonNull;
-import net.kyori.blizzard.Nullable;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import net.kyori.text.format.TextFormat;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,7 +106,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     return state.toString();
   }
 
-  private static boolean applyFormat(@NonNull final TextComponent.Builder builder, @NonNull final TextFormat format) {
+  private static boolean applyFormat(final TextComponent.@NonNull Builder builder, @NonNull final TextFormat format) {
     if(format instanceof TextColor) {
       builder.colorIfAbsent((TextColor) format);
       return true;

@@ -24,12 +24,12 @@
 package net.kyori.text;
 
 import com.google.common.collect.Iterables;
-import net.kyori.blizzard.NonNull;
-import net.kyori.blizzard.Nullable;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +51,7 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
     super(builder.children, builder.color, builder.obfuscated, builder.bold, builder.strikethrough, builder.underlined, builder.italic, builder.clickEvent, builder.hoverEvent, builder.insertion);
   }
 
-  protected AbstractBuildableComponent(@NonNull final List<Component> children, @Nullable final TextColor color, @NonNull final TextDecoration.State obfuscated, @NonNull final TextDecoration.State bold, @NonNull final TextDecoration.State strikethrough, @NonNull final TextDecoration.State underlined, @NonNull final TextDecoration.State italic, @Nullable final ClickEvent clickEvent, @Nullable final HoverEvent hoverEvent, @Nullable final String insertion) {
+  protected AbstractBuildableComponent(@NonNull final List<Component> children, @Nullable final TextColor color, final TextDecoration.@NonNull State obfuscated, final TextDecoration.State bold, final TextDecoration.@NonNull State strikethrough, final TextDecoration.@NonNull State underlined, final TextDecoration.@NonNull State italic, @Nullable final ClickEvent clickEvent, @Nullable final HoverEvent hoverEvent, @Nullable final String insertion) {
     super(children, color, obfuscated, bold, strikethrough, underlined, italic, clickEvent, hoverEvent, insertion);
   }
 
@@ -76,23 +76,23 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
     /**
      * If this component should have the {@link TextDecoration#OBFUSCATED obfuscated} decoration.
      */
-    @NonNull protected TextDecoration.State obfuscated = TextDecoration.State.NOT_SET;
+    protected TextDecoration.@NonNull State obfuscated = TextDecoration.State.NOT_SET;
     /**
      * If this component should have the {@link TextDecoration#BOLD bold} decoration.
      */
-    @NonNull protected TextDecoration.State bold = TextDecoration.State.NOT_SET;
+    protected TextDecoration.@NonNull State bold = TextDecoration.State.NOT_SET;
     /**
      * If this component should have the {@link TextDecoration#STRIKETHROUGH strikethrough} decoration.
      */
-    @NonNull protected TextDecoration.State strikethrough = TextDecoration.State.NOT_SET;
+    protected TextDecoration.@NonNull State strikethrough = TextDecoration.State.NOT_SET;
     /**
      * If this component should have the {@link TextDecoration#UNDERLINE underlined} decoration.
      */
-    @NonNull protected TextDecoration.State underlined = TextDecoration.State.NOT_SET;
+    protected TextDecoration.@NonNull State underlined = TextDecoration.State.NOT_SET;
     /**
      * If this component should have the {@link TextDecoration#ITALIC italic} decoration.
      */
-    @NonNull protected TextDecoration.State italic = TextDecoration.State.NOT_SET;
+    protected TextDecoration.@NonNull State italic = TextDecoration.State.NOT_SET;
     /**
      * The click event to apply to this component.
      */
@@ -224,7 +224,7 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
 
     @NonNull
     @Override
-    public B decoration(@NonNull final TextDecoration decoration, @NonNull final TextDecoration.State state) {
+    public B decoration(@NonNull final TextDecoration decoration, final TextDecoration.@NonNull State state) {
       switch(decoration) {
         case BOLD: this.bold = checkNotNull(state, "flag"); return (B) this;
         case ITALIC: this.italic = checkNotNull(state, "flag"); return (B) this;

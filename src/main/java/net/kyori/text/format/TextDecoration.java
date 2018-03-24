@@ -25,9 +25,9 @@ package net.kyori.text.format;
 
 import com.google.common.base.Enums;
 import com.google.gson.annotations.SerializedName;
-import net.kyori.blizzard.NonNull;
-import net.kyori.blizzard.Nullable;
 import net.kyori.text.Component;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An enumeration of decorations which may be applied to a {@link Component}.

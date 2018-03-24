@@ -34,8 +34,6 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import net.kyori.blizzard.NonNull;
-import net.kyori.blizzard.Nullable;
 import net.kyori.text.BuildableComponent;
 import net.kyori.text.Component;
 import net.kyori.text.ScoreComponent;
@@ -46,6 +44,8 @@ import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -136,7 +136,7 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
       final JsonObject clickEvent = object.getAsJsonObject("clickEvent");
       if(clickEvent != null) {
         @Nullable final JsonPrimitive rawAction = clickEvent.getAsJsonPrimitive("action");
-        @Nullable final ClickEvent.Action action = rawAction == null ? null : context.deserialize(rawAction, ClickEvent.Action.class);
+        final ClickEvent.@Nullable Action action = rawAction == null ? null : context.deserialize(rawAction, ClickEvent.Action.class);
         @Nullable final JsonPrimitive rawValue = clickEvent.getAsJsonPrimitive("value");
         @Nullable final String value = rawValue == null ? null : rawValue.getAsString();
         if(action != null && value != null && action.readable()) {
@@ -148,7 +148,7 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
       final JsonObject hoverEvent = object.getAsJsonObject("hoverEvent");
       if(hoverEvent != null) {
         @Nullable final JsonPrimitive rawAction = hoverEvent.getAsJsonPrimitive("action");
-        @Nullable final HoverEvent.Action action = rawAction == null ? null : context.deserialize(rawAction, HoverEvent.Action.class);
+        final HoverEvent.@Nullable Action action = rawAction == null ? null : context.deserialize(rawAction, HoverEvent.Action.class);
         if(action != null && action.readable()) {
           @Nullable final JsonElement rawValue = hoverEvent.get("value");
           @Nullable final Component value = rawValue == null ? null : this.deserialize(rawValue, rawValue.getClass(), context);
