@@ -23,12 +23,12 @@
  */
 package net.kyori.text;
 
-import net.kyori.blizzard.NonNull;
-import net.kyori.blizzard.Nullable;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Set;
 import java.util.function.Consumer;
@@ -171,7 +171,7 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
      * @return this builder
      */
     @NonNull
-    B decoration(@NonNull final TextDecoration decoration, @NonNull final TextDecoration.State state);
+    B decoration(@NonNull final TextDecoration decoration, final TextDecoration.@NonNull State state);
 
     /**
      * Sets the click event of this component.

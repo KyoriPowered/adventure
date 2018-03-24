@@ -24,9 +24,9 @@
 package net.kyori.text.serializer;
 
 import com.google.common.annotations.VisibleForTesting;
-import net.kyori.blizzard.NonNull;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A legacy component serializer.

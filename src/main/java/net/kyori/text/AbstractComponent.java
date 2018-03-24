@@ -25,12 +25,12 @@ package net.kyori.text;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
-import net.kyori.blizzard.NonNull;
-import net.kyori.blizzard.Nullable;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.List;
 import java.util.Objects;
@@ -50,23 +50,23 @@ public abstract class AbstractComponent implements Component {
   /**
    * If this component should have the {@link TextDecoration#OBFUSCATED obfuscated} decoration.
    */
-  @NonNull protected final TextDecoration.State obfuscated;
+  protected final TextDecoration.@NonNull State obfuscated;
   /**
    * If this component should have the {@link TextDecoration#BOLD bold} decoration.
    */
-  @NonNull protected final TextDecoration.State bold;
+  protected final TextDecoration.@NonNull State bold;
   /**
    * If this component should have the {@link TextDecoration#STRIKETHROUGH strikethrough} decoration.
    */
-  @NonNull protected final TextDecoration.State strikethrough;
+  protected final TextDecoration.@NonNull State strikethrough;
   /**
    * If this component should have the {@link TextDecoration#UNDERLINE underlined} decoration.
    */
-  @NonNull protected final TextDecoration.State underlined;
+  protected final TextDecoration.@NonNull State underlined;
   /**
    * If this component should have the {@link TextDecoration#ITALIC italic} decoration.
    */
-  @NonNull protected final TextDecoration.State italic;
+  protected final TextDecoration.@NonNull State italic;
   /**
    * The click event to apply to this component.
    */
@@ -80,7 +80,7 @@ public abstract class AbstractComponent implements Component {
    */
   @Nullable protected final String insertion;
 
-  protected AbstractComponent(@NonNull final List<Component> children, @Nullable final TextColor color, @NonNull final TextDecoration.State obfuscated, @NonNull final TextDecoration.State bold, @NonNull final TextDecoration.State strikethrough, @NonNull final TextDecoration.State underlined, @NonNull final TextDecoration.State italic, @Nullable final ClickEvent clickEvent, @Nullable final HoverEvent hoverEvent, @Nullable final String insertion) {
+  protected AbstractComponent(@NonNull final List<Component> children, @Nullable final TextColor color, final TextDecoration.@NonNull State obfuscated, final TextDecoration.@NonNull State bold, final TextDecoration.@NonNull State strikethrough, final TextDecoration.@NonNull State underlined, final TextDecoration.@NonNull State italic, @Nullable final ClickEvent clickEvent, @Nullable final HoverEvent hoverEvent, @Nullable final String insertion) {
     this.children = ImmutableList.copyOf(children);
     this.color = color;
     this.obfuscated = obfuscated;
@@ -105,9 +105,8 @@ public abstract class AbstractComponent implements Component {
     return this.color;
   }
 
-  @NonNull
   @Override
-  public TextDecoration.State decoration(@NonNull final TextDecoration decoration) {
+  public TextDecoration.@NonNull State decoration(@NonNull final TextDecoration decoration) {
     switch(decoration) {
       case BOLD: return this.bold;
       case ITALIC: return this.italic;
@@ -194,6 +193,6 @@ public abstract class AbstractComponent implements Component {
     return builder.toString();
   }
 
-  protected void populateToString(@NonNull final MoreObjects.ToStringHelper builder) {
+  protected void populateToString(final MoreObjects.@NonNull ToStringHelper builder) {
   }
 }

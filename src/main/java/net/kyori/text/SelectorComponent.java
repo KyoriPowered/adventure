@@ -24,12 +24,12 @@
 package net.kyori.text;
 
 import com.google.common.base.MoreObjects;
-import net.kyori.blizzard.NonNull;
-import net.kyori.blizzard.Nullable;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +81,7 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
     this.pattern = builder.pattern;
   }
 
-  protected SelectorComponent(@NonNull final List<Component> children, @Nullable final TextColor color, @NonNull final TextDecoration.State obfuscated, @NonNull final TextDecoration.State bold, @NonNull final TextDecoration.State strikethrough, @NonNull final TextDecoration.State underlined, @NonNull final TextDecoration.State italic, @Nullable final ClickEvent clickEvent, @Nullable final HoverEvent hoverEvent, @Nullable final String insertion, @NonNull final String pattern) {
+  protected SelectorComponent(@NonNull final List<Component> children, @Nullable final TextColor color, final TextDecoration.@NonNull State obfuscated, final TextDecoration.@NonNull State bold, final TextDecoration.@NonNull State strikethrough, final TextDecoration.@NonNull State underlined, final TextDecoration.@NonNull State italic, @Nullable final ClickEvent clickEvent, @Nullable final HoverEvent hoverEvent, @Nullable final String insertion, @NonNull final String pattern) {
     super(children, color, obfuscated, bold, strikethrough, underlined, italic, clickEvent, hoverEvent, insertion);
     this.pattern = pattern;
   }
@@ -131,7 +131,7 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
 
   @NonNull
   @Override
-  public SelectorComponent decoration(@NonNull final TextDecoration decoration, @NonNull final TextDecoration.State state) {
+  public SelectorComponent decoration(@NonNull final TextDecoration decoration, final TextDecoration.@NonNull State state) {
     switch(decoration) {
       case BOLD: return new SelectorComponent(this.children, this.color, this.obfuscated, checkNotNull(state, "flag"), this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.pattern);
       case ITALIC: return new SelectorComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, checkNotNull(state, "flag"), this.clickEvent, this.hoverEvent, this.insertion, this.pattern);
@@ -217,7 +217,7 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
   }
 
   @Override
-  protected void populateToString(@NonNull final MoreObjects.ToStringHelper builder) {
+  protected void populateToString(final MoreObjects.@NonNull ToStringHelper builder) {
     builder.add("pattern", this.pattern);
   }
 

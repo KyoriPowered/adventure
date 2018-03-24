@@ -26,8 +26,7 @@ package net.kyori.text.event;
 import com.google.common.base.Enums;
 import com.google.common.base.MoreObjects;
 import com.google.gson.annotations.SerializedName;
-import net.kyori.blizzard.Immutable;
-import net.kyori.blizzard.NonNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Objects;
 
@@ -36,7 +35,6 @@ import java.util.Objects;
  *
  * <p>A click event processes an {@link Action} when clicked on.</p>
  */
-@Immutable
 public final class ClickEvent {
   /**
    * The click event action.
