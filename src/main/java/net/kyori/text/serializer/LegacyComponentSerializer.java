@@ -52,9 +52,8 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * @deprecated legacy
    */
   @Deprecated
-  @NonNull
   @Override
-  default TextComponent deserialize(@NonNull final String input) {
+  default @NonNull TextComponent deserialize(final @NonNull String input) {
     return this.deserialize(input, CHARACTER);
   }
 
@@ -67,8 +66,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * @deprecated legacy
    */
   @Deprecated
-  @NonNull
-  TextComponent deserialize(@NonNull final String input, final char character);
+  @NonNull TextComponent deserialize(final @NonNull String input, final char character);
 
   /**
    * Serializes a component into a {@link String} with the specified {@link #CHARACTER legacy character}.
@@ -78,9 +76,8 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * @deprecated legacy
    */
   @Deprecated
-  @NonNull
   @Override
-  default String serialize(@NonNull final Component component) {
+  default @NonNull String serialize(final @NonNull Component component) {
     return this.serialize(component, CHARACTER);
   }
 
@@ -93,6 +90,5 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * @deprecated legacy
    */
   @Deprecated
-  @NonNull
-  String serialize(@NonNull final Component component, final char character);
+  @NonNull String serialize(final @NonNull Component component, final char character);
 }

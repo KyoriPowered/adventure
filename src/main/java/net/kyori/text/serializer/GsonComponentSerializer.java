@@ -57,9 +57,8 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
     .registerTypeHierarchyAdapter(Component.class, new GsonComponentSerializer())
     .create();
 
-  @NonNull
   @Override
-  public Component deserialize(@NonNull final String string) {
+  public @NonNull Component deserialize(final @NonNull String string) {
     return GSON.fromJson(string, Component.class);
   }
 
@@ -138,10 +137,10 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
     if(object.has("clickEvent")) {
       final JsonObject clickEvent = object.getAsJsonObject("clickEvent");
       if(clickEvent != null) {
-        @Nullable final JsonPrimitive rawAction = clickEvent.getAsJsonPrimitive("action");
+        final /* @Nullable */ JsonPrimitive rawAction = clickEvent.getAsJsonPrimitive("action");
         final ClickEvent.@Nullable Action action = rawAction == null ? null : context.deserialize(rawAction, ClickEvent.Action.class);
-        @Nullable final JsonPrimitive rawValue = clickEvent.getAsJsonPrimitive("value");
-        @Nullable final String value = rawValue == null ? null : rawValue.getAsString();
+        final /* @Nullable */ JsonPrimitive rawValue = clickEvent.getAsJsonPrimitive("value");
+        final /* @Nullable */ String value = rawValue == null ? null : rawValue.getAsString();
         if(action != null && value != null && action.readable()) {
           component.clickEvent(new ClickEvent(action, value));
         }
@@ -150,11 +149,11 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
     if(object.has("hoverEvent")) {
       final JsonObject hoverEvent = object.getAsJsonObject("hoverEvent");
       if(hoverEvent != null) {
-        @Nullable final JsonPrimitive rawAction = hoverEvent.getAsJsonPrimitive("action");
+        final /* @Nullable */ JsonPrimitive rawAction = hoverEvent.getAsJsonPrimitive("action");
         final HoverEvent.@Nullable Action action = rawAction == null ? null : context.deserialize(rawAction, HoverEvent.Action.class);
         if(action != null && action.readable()) {
-          @Nullable final JsonElement rawValue = hoverEvent.get("value");
-          @Nullable final Component value = rawValue == null ? null : this.deserialize(rawValue, rawValue.getClass(), context);
+          final /* @Nullable */ JsonElement rawValue = hoverEvent.get("value");
+          final /* @Nullable */ Component value = rawValue == null ? null : this.deserialize(rawValue, rawValue.getClass(), context);
           if(value != null) component.hoverEvent(new HoverEvent(action, value));
         }
       }
@@ -163,9 +162,8 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
     return component.build();
   }
 
-  @NonNull
   @Override
-  public String serialize(@NonNull final Component component) {
+  public @NonNull String serialize(final @NonNull Component component) {
     return GSON.toJson(component);
   }
 
@@ -215,14 +213,14 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
       }
       if(component.color() != null) object.add("color", context.serialize(component.color()));
       if(component.insertion() != null) object.add("insertion", context.serialize(component.insertion()));
-      @Nullable final ClickEvent clickEvent = component.clickEvent();
+      final /* @Nullable */ ClickEvent clickEvent = component.clickEvent();
       if(clickEvent != null) {
         final JsonObject clickEventO = new JsonObject();
         clickEventO.add("action", context.serialize(clickEvent.action()));
         clickEventO.addProperty("value", clickEvent.value());
         object.add("clickEvent", clickEventO);
       }
-      @Nullable final HoverEvent hoverEvent = component.hoverEvent();
+      final /* @Nullable */ HoverEvent hoverEvent = component.hoverEvent();
       if(hoverEvent != null) {
         final JsonObject hoverEventO = new JsonObject();
         hoverEventO.add("action", context.serialize(hoverEvent.action()));

@@ -42,11 +42,11 @@ public abstract class AbstractComponent implements Component {
   /**
    * The list of children.
    */
-  @NonNull protected final List<Component> children;
+  protected final @NonNull List<Component> children;
   /**
    * The color of this component.
    */
-  @Nullable protected final TextColor color;
+  protected final @Nullable TextColor color;
   /**
    * If this component should have the {@link TextDecoration#OBFUSCATED obfuscated} decoration.
    */
@@ -70,17 +70,17 @@ public abstract class AbstractComponent implements Component {
   /**
    * The click event to apply to this component.
    */
-  @Nullable protected final ClickEvent clickEvent;
+  protected final @Nullable ClickEvent clickEvent;
   /**
    * The hover event to apply to this component.
    */
-  @Nullable protected final HoverEvent hoverEvent;
+  protected final @Nullable HoverEvent hoverEvent;
   /**
    * The string to insert when this component is shift-clicked in chat.
    */
-  @Nullable protected final String insertion;
+  protected final @Nullable String insertion;
 
-  protected AbstractComponent(@NonNull final List<Component> children, @Nullable final TextColor color, final TextDecoration.@NonNull State obfuscated, final TextDecoration.@NonNull State bold, final TextDecoration.@NonNull State strikethrough, final TextDecoration.@NonNull State underlined, final TextDecoration.@NonNull State italic, @Nullable final ClickEvent clickEvent, @Nullable final HoverEvent hoverEvent, @Nullable final String insertion) {
+  protected AbstractComponent(final @NonNull List<Component> children, final @Nullable TextColor color, final TextDecoration.@NonNull State obfuscated, final TextDecoration.@NonNull State bold, final TextDecoration.@NonNull State strikethrough, final TextDecoration.@NonNull State underlined, final TextDecoration.@NonNull State italic, final @Nullable ClickEvent clickEvent, final @Nullable HoverEvent hoverEvent, final @Nullable String insertion) {
     this.children = ImmutableList.copyOf(children);
     this.color = color;
     this.obfuscated = obfuscated;
@@ -93,20 +93,18 @@ public abstract class AbstractComponent implements Component {
     this.insertion = insertion;
   }
 
-  @NonNull
   @Override
-  public List<Component> children() {
+  public @NonNull List<Component> children() {
     return this.children;
   }
 
-  @Nullable
   @Override
-  public TextColor color() {
+  public @Nullable TextColor color() {
     return this.color;
   }
 
   @Override
-  public TextDecoration.@NonNull State decoration(@NonNull final TextDecoration decoration) {
+  public TextDecoration.@NonNull State decoration(final @NonNull TextDecoration decoration) {
     switch(decoration) {
       case BOLD: return this.bold;
       case ITALIC: return this.italic;
@@ -117,21 +115,18 @@ public abstract class AbstractComponent implements Component {
     }
   }
 
-  @Nullable
   @Override
-  public ClickEvent clickEvent() {
+  public @Nullable ClickEvent clickEvent() {
     return this.clickEvent;
   }
 
-  @Nullable
   @Override
-  public HoverEvent hoverEvent() {
+  public @Nullable HoverEvent hoverEvent() {
     return this.hoverEvent;
   }
 
-  @Nullable
   @Override
-  public String insertion() {
+  public @Nullable String insertion() {
     return this.insertion;
   }
 
@@ -150,13 +145,13 @@ public abstract class AbstractComponent implements Component {
   }
 
   @Override
-  public boolean equals(@Nullable final Object other) {
+  public boolean equals(final @Nullable Object other) {
     if(this == other) return true;
     if(other == null || !(other instanceof AbstractComponent)) return false;
     return this.equals((AbstractComponent) other);
   }
 
-  protected boolean equals(@NonNull final AbstractComponent that) {
+  protected boolean equals(final @NonNull AbstractComponent that) {
     return Objects.equals(this.children, that.children)
       && this.color == that.color
       && Objects.equals(this.obfuscated, that.obfuscated)
@@ -174,9 +169,8 @@ public abstract class AbstractComponent implements Component {
     return Objects.hash(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
   }
 
-  @NonNull
   @Override
-  public String toString() {
+  public @NonNull String toString() {
     final MoreObjects.ToStringHelper builder = MoreObjects.toStringHelper(this);
     this.populateToString(builder);
     builder

@@ -45,7 +45,7 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
   /**
    * The keybind.
    */
-  @NonNull private final String keybind;
+  private final @NonNull String keybind;
 
   /**
    * Creates a keybind component builder.
@@ -62,7 +62,7 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
    * @param keybind the keybind
    * @return a builder
    */
-  public static Builder builder(@NonNull final String keybind) {
+  public static Builder builder(final @NonNull String keybind) {
     return new Builder().keybind(keybind);
   }
 
@@ -72,7 +72,7 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
    * @param keybind the keybind
    * @return the keybind component
    */
-  public static KeybindComponent of(@NonNull final String keybind) {
+  public static KeybindComponent of(final @NonNull String keybind) {
     return builder(keybind).build();
   }
 
@@ -83,7 +83,7 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
    * @param color the color
    * @return the keybind component
    */
-  public static KeybindComponent of(@NonNull final String keybind, @Nullable final TextColor color) {
+  public static KeybindComponent of(final @NonNull String keybind, final @Nullable TextColor color) {
     return of(keybind, color, Collections.emptySet());
   }
 
@@ -95,7 +95,7 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
    * @param decorations the decorations
    * @return the keybind component
    */
-  public static KeybindComponent of(@NonNull final String keybind, @Nullable final TextColor color, @NonNull final Set<TextDecoration> decorations) {
+  public static KeybindComponent of(final @NonNull String keybind, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
     return builder(keybind).color(color).decorations(decorations, true).build();
   }
 
@@ -105,7 +105,7 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
    * @param consumer the builder configurator
    * @return the keybind component
    */
-  public static KeybindComponent make(@NonNull final Consumer<Builder> consumer) {
+  public static KeybindComponent make(final @NonNull Consumer<Builder> consumer) {
     final Builder builder = builder();
     consumer.accept(builder);
     return builder.build();
@@ -118,18 +118,18 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
    * @param consumer the builder configurator
    * @return the keybind component
    */
-  public static KeybindComponent make(@NonNull final String keybind, @NonNull final Consumer<Builder> consumer) {
+  public static KeybindComponent make(final @NonNull String keybind, final @NonNull Consumer<Builder> consumer) {
     final Builder builder = builder(keybind);
     consumer.accept(builder);
     return builder.build();
   }
 
-  protected KeybindComponent(@NonNull final Builder builder) {
+  protected KeybindComponent(final @NonNull Builder builder) {
     super(builder);
     this.keybind = builder.keybind;
   }
 
-  protected KeybindComponent(@NonNull final List<Component> children, @Nullable final TextColor color, final TextDecoration.@NonNull State obfuscated, final TextDecoration.@NonNull State bold, final TextDecoration.@NonNull State strikethrough, final TextDecoration.@NonNull State underlined, final TextDecoration.@NonNull State italic, @Nullable final ClickEvent clickEvent, @Nullable final HoverEvent hoverEvent, @Nullable final String insertion, @NonNull final String keybind) {
+  protected KeybindComponent(final @NonNull List<Component> children, final @Nullable TextColor color, final TextDecoration.@NonNull State obfuscated, final TextDecoration.@NonNull State bold, final TextDecoration.@NonNull State strikethrough, final TextDecoration.@NonNull State underlined, final TextDecoration.@NonNull State italic, final @Nullable ClickEvent clickEvent, final @Nullable HoverEvent hoverEvent, final @Nullable String insertion, final @NonNull String keybind) {
     super(children, color, obfuscated, bold, strikethrough, underlined, italic, clickEvent, hoverEvent, insertion);
     this.keybind = keybind;
   }
@@ -139,8 +139,7 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
    *
    * @return the keybind
    */
-  @NonNull
-  public String keybind() {
+  public @NonNull String keybind() {
     return this.keybind;
   }
 
@@ -150,14 +149,12 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
    * @param keybind the keybind
    * @return a copy of this component
    */
-  @NonNull
-  public KeybindComponent keybind(@NonNull final String keybind) {
+  public @NonNull KeybindComponent keybind(final @NonNull String keybind) {
     return new KeybindComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, checkNotNull(keybind, "keybind"));
   }
 
-  @NonNull
   @Override
-  public KeybindComponent append(@NonNull final Component component) {
+  public @NonNull KeybindComponent append(final @NonNull Component component) {
     this.detectCycle(component); // detect cycle before modifying
     final List<Component> children = new ArrayList<>(this.children.size() + 1);
     children.addAll(this.children);
@@ -165,21 +162,18 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
     return new KeybindComponent(children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.keybind);
   }
 
-  @NonNull
   @Override
-  public KeybindComponent color(@Nullable final TextColor color) {
+  public @NonNull KeybindComponent color(final @Nullable TextColor color) {
     return new KeybindComponent(this.children, color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.keybind);
   }
 
-  @NonNull
   @Override
-  public KeybindComponent decoration(@NonNull final TextDecoration decoration, final boolean flag) {
+  public @NonNull KeybindComponent decoration(final @NonNull TextDecoration decoration, final boolean flag) {
     return (KeybindComponent) super.decoration(decoration, flag);
   }
 
-  @NonNull
   @Override
-  public KeybindComponent decoration(@NonNull final TextDecoration decoration, final TextDecoration.@NonNull State state) {
+  public @NonNull KeybindComponent decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
     switch(decoration) {
       case BOLD: return new KeybindComponent(this.children, this.color, this.obfuscated, checkNotNull(state, "flag"), this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.keybind);
       case ITALIC: return new KeybindComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, checkNotNull(state, "flag"), this.clickEvent, this.hoverEvent, this.insertion, this.keybind);
@@ -190,40 +184,34 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
     }
   }
 
-  @NonNull
   @Override
-  public KeybindComponent clickEvent(@Nullable final ClickEvent event) {
+  public @NonNull KeybindComponent clickEvent(final @Nullable ClickEvent event) {
     return new KeybindComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, event, this.hoverEvent, this.insertion, this.keybind);
   }
 
-  @NonNull
   @Override
-  public KeybindComponent hoverEvent(@Nullable final HoverEvent event) {
+  public @NonNull KeybindComponent hoverEvent(final @Nullable HoverEvent event) {
     if(event != null) this.detectCycle(event.value()); // detect cycle before modifying
     return new KeybindComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, event, this.insertion, this.keybind);
   }
 
-  @NonNull
   @Override
-  public KeybindComponent insertion(@Nullable final String insertion) {
+  public @NonNull KeybindComponent insertion(final @Nullable String insertion) {
     return new KeybindComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, insertion, this.keybind);
   }
 
-  @NonNull
   @Override
-  public KeybindComponent mergeStyle(@NonNull final Component that) {
+  public @NonNull KeybindComponent mergeStyle(final @NonNull Component that) {
     return new KeybindComponent(this.children, that.color(), that.decoration(TextDecoration.OBFUSCATED), that.decoration(TextDecoration.BOLD), that.decoration(TextDecoration.STRIKETHROUGH), that.decoration(TextDecoration.UNDERLINE), that.decoration(TextDecoration.ITALIC), that.clickEvent(), that.hoverEvent(), that.insertion(), this.keybind);
   }
 
-  @NonNull
   @Override
-  public KeybindComponent mergeColor(@NonNull final Component that) {
+  public @NonNull KeybindComponent mergeColor(final @NonNull Component that) {
     return new KeybindComponent(this.children, that.color(), this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.keybind);
   }
 
-  @NonNull
   @Override
-  public KeybindComponent mergeDecorations(@NonNull final Component that) {
+  public @NonNull KeybindComponent mergeDecorations(final @NonNull Component that) {
     final TextDecoration.State obfuscated = that.decoration(TextDecoration.OBFUSCATED) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.OBFUSCATED) : this.obfuscated;
     final TextDecoration.State bold = that.decoration(TextDecoration.BOLD) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.BOLD) : this.bold;
     final TextDecoration.State strikethrough = that.decoration(TextDecoration.STRIKETHROUGH) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.STRIKETHROUGH) : this.strikethrough;
@@ -232,26 +220,23 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
     return new KeybindComponent(this.children, this.color, obfuscated, bold, strikethrough, underlined, italic, this.clickEvent, this.hoverEvent, this.insertion, this.keybind);
   }
 
-  @NonNull
   @Override
-  public KeybindComponent mergeEvents(@NonNull final Component that) {
+  public @NonNull KeybindComponent mergeEvents(final @NonNull Component that) {
     return new KeybindComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, that.clickEvent(), that.hoverEvent(), this.insertion, this.keybind);
   }
 
-  @NonNull
   @Override
-  public KeybindComponent resetStyle() {
+  public @NonNull KeybindComponent resetStyle() {
     return new KeybindComponent(this.children, null, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null, this.keybind);
   }
 
-  @NonNull
   @Override
-  public KeybindComponent copy() {
+  public @NonNull KeybindComponent copy() {
     return new KeybindComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.keybind);
   }
 
   @Override
-  public boolean equals(@Nullable final Object other) {
+  public boolean equals(final @Nullable Object other) {
     if(this == other) return true;
     if(other == null || !(other instanceof KeybindComponent)) return false;
     if(!super.equals(other)) return false;
@@ -269,9 +254,8 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
     builder.add("keybind", this.keybind);
   }
 
-  @NonNull
   @Override
-  public Builder toBuilder() {
+  public @NonNull Builder toBuilder() {
     return new Builder(this);
   }
 
@@ -279,12 +263,12 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
    * A keybind component builder.
    */
   public static class Builder extends AbstractBuildableComponent.AbstractBuilder<KeybindComponent, Builder> {
-    @Nullable private String keybind;
+    private @Nullable String keybind;
 
     Builder() {
     }
 
-    Builder(@NonNull final KeybindComponent component) {
+    Builder(final @NonNull KeybindComponent component) {
       super(component);
       this.keybind = component.keybind();
     }
@@ -295,15 +279,13 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
      * @param keybind the keybind
      * @return this builder
      */
-    @NonNull
-    public Builder keybind(@NonNull final String keybind) {
+    public @NonNull Builder keybind(final @NonNull String keybind) {
       this.keybind = keybind;
       return this;
     }
 
-    @NonNull
     @Override
-    public KeybindComponent build() {
+    public @NonNull KeybindComponent build() {
       checkState(this.keybind != null, "keybind must be set");
       return new KeybindComponent(this);
     }

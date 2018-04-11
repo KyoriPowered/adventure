@@ -47,11 +47,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @param <B> the builder type
  */
 public abstract class AbstractBuildableComponent<C extends BuildableComponent<C, B>, B extends AbstractBuildableComponent.AbstractBuilder<C, B>> extends AbstractComponent implements BuildableComponent<C, B> {
-  protected AbstractBuildableComponent(@NonNull final B builder) {
+  protected AbstractBuildableComponent(final @NonNull B builder) {
     super(builder.children, builder.color, builder.obfuscated, builder.bold, builder.strikethrough, builder.underlined, builder.italic, builder.clickEvent, builder.hoverEvent, builder.insertion);
   }
 
-  protected AbstractBuildableComponent(@NonNull final List<Component> children, @Nullable final TextColor color, final TextDecoration.@NonNull State obfuscated, final TextDecoration.State bold, final TextDecoration.@NonNull State strikethrough, final TextDecoration.@NonNull State underlined, final TextDecoration.@NonNull State italic, @Nullable final ClickEvent clickEvent, @Nullable final HoverEvent hoverEvent, @Nullable final String insertion) {
+  protected AbstractBuildableComponent(final @NonNull List<Component> children, final @Nullable TextColor color, final TextDecoration.@NonNull State obfuscated, final TextDecoration.State bold, final TextDecoration.@NonNull State strikethrough, final TextDecoration.@NonNull State underlined, final TextDecoration.@NonNull State italic, final @Nullable ClickEvent clickEvent, final @Nullable HoverEvent hoverEvent, final @Nullable String insertion) {
     super(children, color, obfuscated, bold, strikethrough, underlined, italic, clickEvent, hoverEvent, insertion);
   }
 
@@ -68,11 +68,11 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
      * <p>This list is set to {@link #EMPTY_COMPONENT_LIST an empty list of components}
      * by default to prevent unnecessary list creation for components with no children.</p>
      */
-    @NonNull protected List<Component> children = EMPTY_COMPONENT_LIST;
+    protected @NonNull List<Component> children = EMPTY_COMPONENT_LIST;
     /**
      * The color of this component.
      */
-    @Nullable protected TextColor color;
+    protected @Nullable TextColor color;
     /**
      * If this component should have the {@link TextDecoration#OBFUSCATED obfuscated} decoration.
      */
@@ -96,20 +96,20 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
     /**
      * The click event to apply to this component.
      */
-    @Nullable protected ClickEvent clickEvent;
+    protected @Nullable ClickEvent clickEvent;
     /**
      * The hover event to apply to this component.
      */
-    @Nullable protected HoverEvent hoverEvent;
+    protected @Nullable HoverEvent hoverEvent;
     /**
      * The string to insert when this component is shift-clicked in chat.
      */
-    @Nullable protected String insertion;
+    protected @Nullable String insertion;
 
     protected AbstractBuilder() {
     }
 
-    protected AbstractBuilder(@NonNull final C component) {
+    protected AbstractBuilder(final @NonNull C component) {
       this.children = new ArrayList<>(component.children());
       this.color = component.color();
       this.obfuscated = component.decoration(TextDecoration.OBFUSCATED);
@@ -122,25 +122,22 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
       this.insertion = component.insertion();
     }
 
-    @NonNull
     @Override
-    public B append(@NonNull final Component component) {
+    public @NonNull B append(final @NonNull Component component) {
       if(this.children == EMPTY_COMPONENT_LIST) this.children = new ArrayList<>();
       this.children.add(component);
       return (B) this;
     }
 
-    @NonNull
     @Override
-    public B append(@NonNull final Iterable<? extends Component> components) {
+    public @NonNull B append(final @NonNull Iterable<? extends Component> components) {
       if(this.children == EMPTY_COMPONENT_LIST) this.children = new ArrayList<>();
       Iterables.addAll(this.children, components);
       return (B) this;
     }
 
-    @NonNull
     @Override
-    public B applyDeep(@NonNull final Consumer<Builder<?, ?>> consumer) {
+    public @NonNull B applyDeep(final @NonNull Consumer<Builder<?, ?>> consumer) {
       this.apply(consumer);
       if(this.children == EMPTY_COMPONENT_LIST) {
         return (B) this;
@@ -158,9 +155,8 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
       return (B) this;
     }
 
-    @NonNull
     @Override
-    public B mapChildren(@NonNull final Function<BuildableComponent<? ,?>, BuildableComponent<? ,?>> function) {
+    public @NonNull B mapChildren(final @NonNull Function<BuildableComponent<? ,?>, BuildableComponent<? ,?>> function) {
       if(this.children == EMPTY_COMPONENT_LIST) {
         return (B) this;
       }
@@ -179,9 +175,8 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
       return (B) this;
     }
 
-    @NonNull
     @Override
-    public B mapChildrenDeep(@NonNull final Function<BuildableComponent<? ,?>, BuildableComponent<? ,?>> function) {
+    public @NonNull B mapChildrenDeep(final @NonNull Function<BuildableComponent<? ,?>, BuildableComponent<? ,?>> function) {
       if(this.children == EMPTY_COMPONENT_LIST) {
         return (B) this;
       }
@@ -206,25 +201,22 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
       return (B) this;
     }
 
-    @NonNull
     @Override
-    public B color(@Nullable final TextColor color) {
+    public @NonNull B color(final @Nullable TextColor color) {
       this.color = color;
       return (B) this;
     }
 
-    @NonNull
     @Override
-    public B colorIfAbsent(@Nullable final TextColor color) {
+    public @NonNull B colorIfAbsent(final @Nullable TextColor color) {
       if(this.color == null) {
         this.color = color;
       }
       return (B) this;
     }
 
-    @NonNull
     @Override
-    public B decoration(@NonNull final TextDecoration decoration, final TextDecoration.@NonNull State state) {
+    public @NonNull B decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
       switch(decoration) {
         case BOLD: this.bold = checkNotNull(state, "flag"); return (B) this;
         case ITALIC: this.italic = checkNotNull(state, "flag"); return (B) this;
@@ -235,23 +227,20 @@ public abstract class AbstractBuildableComponent<C extends BuildableComponent<C,
       }
     }
 
-    @NonNull
     @Override
-    public B clickEvent(@Nullable final ClickEvent event) {
+    public @NonNull B clickEvent(final @Nullable ClickEvent event) {
       this.clickEvent = event;
       return (B) this;
     }
 
-    @NonNull
     @Override
-    public B hoverEvent(@Nullable final HoverEvent event) {
+    public @NonNull B hoverEvent(final @Nullable HoverEvent event) {
       this.hoverEvent = event;
       return (B) this;
     }
 
-    @NonNull
     @Override
-    public B insertion(@Nullable final String insertion) {
+    public @NonNull B insertion(final @Nullable String insertion) {
       this.insertion = insertion;
       return (B) this;
     }

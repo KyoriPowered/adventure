@@ -46,8 +46,7 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
    *
    * @return the builder
    */
-  @NonNull
-  B toBuilder();
+  @NonNull B toBuilder();
 
   /**
    * A component builder.
@@ -62,8 +61,7 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
      * @param component the component to append
      * @return this builder
      */
-    @NonNull
-    B append(@NonNull final Component component);
+    @NonNull B append(final @NonNull Component component);
 
     /**
      * Appends components to this component.
@@ -71,8 +69,7 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
      * @param components the components to append
      * @return this builder
      */
-    @NonNull
-    B append(@NonNull final Iterable<? extends Component> components);
+    @NonNull B append(final @NonNull Iterable<? extends Component> components);
 
     /**
      * Applies an action to this builder.
@@ -80,8 +77,7 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
      * @param consumer the action
      * @return this builder
      */
-    @NonNull
-    default B apply(@NonNull final Consumer<Builder<? ,?>> consumer) {
+    default @NonNull B apply(final @NonNull Consumer<Builder<? ,?>> consumer) {
       consumer.accept(this);
       return (B) this;
     }
@@ -93,8 +89,7 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
      * @param action the action
      * @return this builder
      */
-    @NonNull
-    B applyDeep(@NonNull final Consumer<Builder<?, ?>> action);
+    @NonNull B applyDeep(final @NonNull Consumer<Builder<?, ?>> action);
 
     /**
      * Replaces each child of this component with the resultant component from the function.
@@ -102,8 +97,7 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
      * @param function the mapping function
      * @return this builder
      */
-    @NonNull
-    B mapChildren(@NonNull final Function<BuildableComponent<?, ?>, BuildableComponent<?, ?>> function);
+    @NonNull B mapChildren(final @NonNull Function<BuildableComponent<?, ?>, BuildableComponent<?, ?>> function);
 
     /**
      * Replaces each child and sub-child of this component with the resultant
@@ -112,8 +106,7 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
      * @param function the mapping function
      * @return this builder
      */
-    @NonNull
-    B mapChildrenDeep(@NonNull final Function<BuildableComponent<?, ?>, BuildableComponent<?, ?>> function);
+    @NonNull B mapChildrenDeep(final @NonNull Function<BuildableComponent<?, ?>, BuildableComponent<?, ?>> function);
 
     /**
      * Sets the color of this component.
@@ -121,8 +114,7 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
      * @param color the color
      * @return this builder
      */
-    @NonNull
-    B color(@Nullable final TextColor color);
+    @NonNull B color(final @Nullable TextColor color);
 
     /**
      * Sets the color of this component if there isn't one set already.
@@ -130,8 +122,7 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
      * @param color the color
      * @return this builder
      */
-    @NonNull
-    B colorIfAbsent(@Nullable final TextColor color);
+    @NonNull B colorIfAbsent(final @Nullable TextColor color);
 
     /**
      * Sets the state of a set of decorations to {@code flag} on this component.
@@ -141,7 +132,7 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
      *     this component should not have the decorations
      * @return this builder
      */
-    default B decorations(@NonNull final Set<TextDecoration> decorations, final boolean flag) {
+    default @NonNull B decorations(final @NonNull Set<TextDecoration> decorations, final boolean flag) {
       final TextDecoration.State state = TextDecoration.State.byBoolean(flag);
       decorations.forEach(decoration -> this.decoration(decoration, state));
       return (B) this;
@@ -155,8 +146,7 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
      *     this component should not have the decoration
      * @return this builder
      */
-    @NonNull
-    default B decoration(@NonNull final TextDecoration decoration, final boolean flag) {
+    default @NonNull B decoration(final @NonNull TextDecoration decoration, final boolean flag) {
       return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
     }
 
@@ -170,8 +160,7 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
      *     should not have a set value
      * @return this builder
      */
-    @NonNull
-    B decoration(@NonNull final TextDecoration decoration, final TextDecoration.@NonNull State state);
+    @NonNull B decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state);
 
     /**
      * Sets the click event of this component.
@@ -179,8 +168,7 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
      * @param event the click event
      * @return this builder
      */
-    @NonNull
-    B clickEvent(@Nullable final ClickEvent event);
+    @NonNull B clickEvent(final @Nullable ClickEvent event);
 
     /**
      * Sets the hover event of this component.
@@ -188,8 +176,7 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
      * @param event the hover event
      * @return this builder
      */
-    @NonNull
-    B hoverEvent(@Nullable final HoverEvent event);
+    @NonNull B hoverEvent(final @Nullable HoverEvent event);
 
     /**
      * Sets the string to be inserted when this component is shift-clicked.
@@ -197,8 +184,7 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
      * @param insertion the insertion string
      * @return this builder
      */
-    @NonNull
-    B insertion(@Nullable final String insertion);
+    @NonNull B insertion(final @Nullable String insertion);
 
     /**
      * Merges styling from another component into this component.
@@ -206,8 +192,7 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
      * @param that the other component
      * @return this builder
      */
-    @NonNull
-    default B mergeStyle(@NonNull final Component that) {
+    default @NonNull B mergeStyle(final @NonNull Component that) {
       this.mergeColor(that);
       this.mergeDecorations(that);
       this.mergeEvents(that);
@@ -220,8 +205,7 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
      * @param that the other component
      * @return this builder
      */
-    @NonNull
-    default B mergeColor(@NonNull final Component that) {
+    default @NonNull B mergeColor(final @NonNull Component that) {
       if(that.color() != null) this.color(that.color());
       return (B) this;
     }
@@ -232,8 +216,7 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
      * @param that the other component
      * @return this builder
      */
-    @NonNull
-    default B mergeDecorations(@NonNull final Component that) {
+    default @NonNull B mergeDecorations(final @NonNull Component that) {
       for(final TextDecoration decoration : TextDecoration.values()) {
         final TextDecoration.State state = that.decoration(decoration);
         if(state != TextDecoration.State.NOT_SET) this.decoration(decoration, state);
@@ -247,8 +230,7 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
      * @param that the other component
      * @return this builder
      */
-    @NonNull
-    default B mergeEvents(@NonNull final Component that) {
+    default @NonNull B mergeEvents(final @NonNull Component that) {
       if(that.clickEvent() != null) this.clickEvent(that.clickEvent());
       if(that.hoverEvent() != null) this.hoverEvent(that.hoverEvent().copy()); // hard copy, hover events have a component
       return (B) this;
@@ -259,8 +241,7 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
      *
      * @return this builder
      */
-    @NonNull
-    default B resetStyle() {
+    default @NonNull B resetStyle() {
       this.color(null);
       for(final TextDecoration decoration : TextDecoration.values()) this.decoration(decoration, TextDecoration.State.NOT_SET);
       this.clickEvent(null);
@@ -273,7 +254,6 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
      *
      * @return the component
      */
-    @NonNull
-    C build();
+    @NonNull C build();
   }
 }

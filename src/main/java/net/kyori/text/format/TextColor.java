@@ -68,7 +68,7 @@ public enum TextColor implements TextFormat {
   /**
    * The serialized name of this color.
    */
-  @NonNull private final String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
+  private final @NonNull String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
   /**
    * The legacy code.
    */
@@ -84,9 +84,8 @@ public enum TextColor implements TextFormat {
     return this.legacy;
   }
 
-  @NonNull
   @Override
-  public String toString() {
+  public @NonNull String toString() {
     return this.toString;
   }
 }
