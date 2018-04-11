@@ -47,9 +47,8 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   private static final TextFormat[] FORMATS = ObjectArrays.concat(Stream.concat(Arrays.stream(TextColor.values()), Arrays.stream(DECORATIONS)).toArray(TextFormat[]::new), Reset.INSTANCE);
   private static final String FORMAT_LOOKUP = Arrays.stream(FORMATS).map(format -> String.valueOf(format.legacy())).collect(Collectors.joining());
 
-  @NonNull
   @Override
-  public TextComponent deserialize(@NonNull final String input, final char character) {
+  public @NonNull TextComponent deserialize(final @NonNull String input, final char character) {
     int next = input.lastIndexOf(character, input.length() - 2);
     if(next == -1) {
       return TextComponent.of(input);
@@ -98,15 +97,14 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     return TextComponent.builder(pos > 0 ? input.substring(0, pos) : "").append(parts).build();
   }
 
-  @NonNull
   @Override
-  public String serialize(@NonNull final Component component, final char character) {
+  public @NonNull String serialize(final @NonNull Component component, final char character) {
     final Cereal state = new Cereal(character);
     state.append(component);
     return state.toString();
   }
 
-  private static boolean applyFormat(final TextComponent.@NonNull Builder builder, @NonNull final TextFormat format) {
+  private static boolean applyFormat(final TextComponent.@NonNull Builder builder, final @NonNull TextFormat format) {
     if(format instanceof TextColor) {
       builder.colorIfAbsent((TextColor) format);
       return true;
@@ -150,11 +148,11 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       this.character = character;
     }
 
-    void append(@NonNull final Component component) {
+    void append(final @NonNull Component component) {
       this.append(component, new Style());
     }
 
-    private void append(@NonNull final Component component, @NonNull final Style style) {
+    private void append(final @NonNull Component component, final @NonNull Style style) {
       style.apply(component);
 
       if(component instanceof TextComponent) {
@@ -175,7 +173,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       }
     }
 
-    private void append(@NonNull final TextFormat format) {
+    private void append(final @NonNull TextFormat format) {
       this.sb.append(this.character).append(format.legacy());
     }
 
@@ -185,25 +183,25 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     private final class Style {
-      @Nullable private TextColor color;
+      private @Nullable TextColor color;
       private final Set<TextDecoration> decorations;
 
       Style() {
         this.decorations = EnumSet.noneOf(TextDecoration.class);
       }
 
-      Style(@NonNull final Style that) {
+      Style(final @NonNull Style that) {
         this.color = that.color;
         this.decorations = EnumSet.copyOf(that.decorations);
       }
 
-      void set(@NonNull final Style that) {
+      void set(final @NonNull Style that) {
         this.color = that.color;
         this.decorations.clear();
         this.decorations.addAll(that.decorations);
       }
 
-      void apply(@NonNull final Component component) {
+      void apply(final @NonNull Component component) {
         if(component.color() != null) {
           this.color = component.color();
         }

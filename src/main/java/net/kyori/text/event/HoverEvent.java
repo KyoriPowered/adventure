@@ -39,13 +39,13 @@ public final class HoverEvent {
   /**
    * The hover event action.
    */
-  @NonNull private final Action action;
+  private final @NonNull Action action;
   /**
    * The hover event value.
    */
-  @NonNull private final Component value;
+  private final @NonNull Component value;
 
-  public HoverEvent(@NonNull final Action action, @NonNull final Component value) {
+  public HoverEvent(final @NonNull Action action, final @NonNull Component value) {
     this.action = action;
     this.value = value;
   }
@@ -55,8 +55,7 @@ public final class HoverEvent {
    *
    * @return the hover event action
    */
-  @NonNull
-  public Action action() {
+  public @NonNull Action action() {
     return this.action;
   }
 
@@ -65,8 +64,7 @@ public final class HoverEvent {
    *
    * @return the hover event value
    */
-  @NonNull
-  public Component value() {
+  public @NonNull Component value() {
     return this.value;
   }
 
@@ -75,8 +73,7 @@ public final class HoverEvent {
    *
    * @return a copy of this hover event
    */
-  @NonNull
-  public HoverEvent copy() {
+  public @NonNull HoverEvent copy() {
     return new HoverEvent(this.action, this.value.copy());
   }
 
@@ -93,9 +90,8 @@ public final class HoverEvent {
     return Objects.hashCode(this.action, this.value);
   }
 
-  @NonNull
   @Override
-  public String toString() {
+  public @NonNull String toString() {
     return Objects.toStringHelper(this)
       .add("action", this.action)
       .add("value", this.value)
@@ -125,7 +121,7 @@ public final class HoverEvent {
     /**
      * The serialized name of this action.
      */
-    @NonNull private final String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
+    private final @NonNull String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
     /**
      * If this action is readable.
      *
@@ -159,9 +155,8 @@ public final class HoverEvent {
       return this.readable;
     }
 
-    @NonNull
     @Override
-    public String toString() {
+    public @NonNull String toString() {
       return this.toString;
     }
   }

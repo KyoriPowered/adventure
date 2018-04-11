@@ -37,13 +37,13 @@ public final class ClickEvent {
   /**
    * The click event action.
    */
-  @NonNull private final Action action;
+  private final @NonNull Action action;
   /**
    * The click event value.
    */
-  @NonNull private final String value;
+  private final @NonNull String value;
 
-  public ClickEvent(@NonNull final Action action, @NonNull final String value) {
+  public ClickEvent(final @NonNull Action action, final @NonNull String value) {
     this.action = action;
     this.value = value;
   }
@@ -53,8 +53,7 @@ public final class ClickEvent {
    *
    * @return the click event action
    */
-  @NonNull
-  public Action action() {
+  public @NonNull Action action() {
     return this.action;
   }
 
@@ -63,8 +62,7 @@ public final class ClickEvent {
    *
    * @return the click event value
    */
-  @NonNull
-  public String value() {
+  public @NonNull String value() {
     return this.value;
   }
 
@@ -73,8 +71,7 @@ public final class ClickEvent {
    *
    * @return a copy of this click event
    */
-  @NonNull
-  public ClickEvent copy() {
+  public @NonNull ClickEvent copy() {
     return new ClickEvent(this.action, this.value);
   }
 
@@ -91,9 +88,8 @@ public final class ClickEvent {
     return Objects.hashCode(this.action, this.value);
   }
 
-  @NonNull
   @Override
-  public String toString() {
+  public @NonNull String toString() {
     return Objects.toStringHelper(this)
       .add("action", this.action)
       .add("value", this.value)
@@ -135,7 +131,7 @@ public final class ClickEvent {
     /**
      * The serialized name of this action.
      */
-    @NonNull private final String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
+    private final @NonNull String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
     /**
      * If this action is readable.
      *
@@ -168,9 +164,8 @@ public final class ClickEvent {
       return this.readable;
     }
 
-    @NonNull
     @Override
-    public String toString() {
+    public @NonNull String toString() {
       return this.toString;
     }
   }

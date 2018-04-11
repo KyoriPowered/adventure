@@ -62,7 +62,7 @@ public enum TextDecoration implements TextFormat {
   /**
    * The serialized name of this decoration.
    */
-  @NonNull private final String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
+  private final @NonNull String toString = Enums.getField(this).getAnnotation(SerializedName.class).value();
   /**
    * The legacy code.
    */
@@ -78,9 +78,8 @@ public enum TextDecoration implements TextFormat {
     return this.legacy;
   }
 
-  @NonNull
   @Override
-  public String toString() {
+  public @NonNull String toString() {
     return this.toString;
   }
 
@@ -108,8 +107,7 @@ public enum TextDecoration implements TextFormat {
      * @param flag the boolean
      * @return the state
      */
-    @NonNull
-    public static State byBoolean(final boolean flag) {
+    public static @NonNull State byBoolean(final boolean flag) {
       return flag ? TRUE : FALSE;
     }
 
@@ -119,8 +117,7 @@ public enum TextDecoration implements TextFormat {
      * @param flag the boolean
      * @return the state
      */
-    @NonNull
-    public static State byBoolean(@Nullable final Boolean flag) {
+    public static @NonNull State byBoolean(final @Nullable Boolean flag) {
       return flag == null ? NOT_SET : byBoolean(flag.booleanValue());
     }
   }
