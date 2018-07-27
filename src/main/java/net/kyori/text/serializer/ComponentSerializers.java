@@ -45,6 +45,16 @@ public final class ComponentSerializers {
    */
   @Deprecated
   public static final LegacyComponentSerializer LEGACY = new LegacyComponentSerializerImpl();
+  /**
+   * A component serializer for plain-based serialization and deserialization.
+   *
+   * <p>Plain does <b>not</b> support more complex features such as, but not limited
+   * to, colours, decorations, {@link ClickEvent}, and {@link HoverEvent}.</p>
+   *
+   * @deprecated not recommended for general use
+   */
+  @Deprecated
+  public static final PlainComponentSerializer PLAIN = new PlainComponentSerializer();
 
   private ComponentSerializers() {
   }
