@@ -112,7 +112,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       builder.decoration((TextDecoration) format, TextDecoration.State.TRUE);
       return false;
     } else if(format instanceof Reset) {
-      builder.color(null);
+      builder.colorIfAbsent(null);
       for(final TextDecoration decoration : DECORATIONS) {
         builder.decoration(decoration, TextDecoration.State.NOT_SET);
       }
