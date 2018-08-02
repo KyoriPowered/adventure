@@ -56,6 +56,16 @@ class LegacyComponentSerializerTest {
   }
 
   @Test
+  void testResetOverride() {
+    final TextComponent component = TextComponent.builder("")
+            .append(TextComponent.of("foo").color(TextColor.GREEN).decoration(TextDecoration.BOLD, TextDecoration.State.TRUE))
+            .append(TextComponent.of("bar").color(TextColor.DARK_GRAY))
+            .build();
+
+    assertEquals(component, ComponentSerializers.LEGACY.deserialize("&a&lfoo&r&8bar", '&'));
+  }
+
+  @Test
   void testToLegacy() {
     final TextComponent c1 = TextComponent.builder("hi")
       .decoration(TextDecoration.BOLD, TextDecoration.State.TRUE)
