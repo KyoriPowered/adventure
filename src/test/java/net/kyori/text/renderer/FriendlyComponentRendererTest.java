@@ -27,6 +27,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import net.kyori.text.TextComponent;
 import net.kyori.text.TranslatableComponent;
+import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
@@ -111,6 +112,7 @@ class FriendlyComponentRendererTest {
             .append(TextComponent.of(" and "))
             .append(TextComponent.of("lucko"))
             .append(TextComponent.of(" are cats."))
+            .hoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.of("This is a test.")))
         )
         .build(),
       renderer.render(
@@ -129,6 +131,7 @@ class FriendlyComponentRendererTest {
               TextComponent.of("kashike"),
               TextComponent.of("lucko")
             )
+            .hoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TranslatableComponent.of("test")))
             .build()
         )
           .color(TextColor.YELLOW)
