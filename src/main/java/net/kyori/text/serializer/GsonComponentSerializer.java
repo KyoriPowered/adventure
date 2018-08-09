@@ -45,7 +45,6 @@ import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -135,7 +134,7 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
       final JsonObject clickEvent = object.getAsJsonObject("clickEvent");
       if(clickEvent != null) {
         final /* @Nullable */ JsonPrimitive rawAction = clickEvent.getAsJsonPrimitive("action");
-        final ClickEvent.@Nullable Action action = rawAction == null ? null : context.deserialize(rawAction, ClickEvent.Action.class);
+        final ClickEvent./*@Nullable*/ Action action = rawAction == null ? null : context.deserialize(rawAction, ClickEvent.Action.class);
         final /* @Nullable */ JsonPrimitive rawValue = clickEvent.getAsJsonPrimitive("value");
         final /* @Nullable */ String value = rawValue == null ? null : rawValue.getAsString();
         if(action != null && value != null && action.readable()) {
@@ -147,7 +146,7 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
       final JsonObject hoverEvent = object.getAsJsonObject("hoverEvent");
       if(hoverEvent != null) {
         final /* @Nullable */ JsonPrimitive rawAction = hoverEvent.getAsJsonPrimitive("action");
-        final HoverEvent.@Nullable Action action = rawAction == null ? null : context.deserialize(rawAction, HoverEvent.Action.class);
+        final HoverEvent./*@Nullable*/ Action action = rawAction == null ? null : context.deserialize(rawAction, HoverEvent.Action.class);
         if(action != null && action.readable()) {
           final /* @Nullable */ JsonElement rawValue = hoverEvent.get("value");
           final /* @Nullable */ Component value = rawValue == null ? null : this.deserialize(rawValue, rawValue.getClass(), context);
