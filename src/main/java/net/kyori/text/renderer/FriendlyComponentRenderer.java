@@ -30,6 +30,7 @@ import net.kyori.text.ScoreComponent;
 import net.kyori.text.SelectorComponent;
 import net.kyori.text.TextComponent;
 import net.kyori.text.TranslatableComponent;
+import net.kyori.text.event.HoverEvent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -37,6 +38,7 @@ import java.text.AttributedCharacterIterator;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.function.BiFunction;
 
 /**
@@ -53,7 +55,7 @@ public abstract class FriendlyComponentRenderer<C extends ComponentRenderer.Cont
   }
 
   @Override
-  public @NonNull Component render(final @NonNull Component component, @NonNull final C context) {
+  public @NonNull Component render(final @NonNull Component component, final @NonNull C context) {
     if(component instanceof TranslatableComponent) {
       return this.render((TranslatableComponent) component, context);
     } else if(component instanceof TextComponent) {
@@ -78,9 +80,21 @@ public abstract class FriendlyComponentRenderer<C extends ComponentRenderer.Cont
   }
 
   private <B extends BuildableComponent.Builder<?, ?>> B deepRender(final Component component, final B builder, final C context) {
-    builder.mergeStyle(component);
+    this.mergeStyle(component, builder, context);
     component.children().forEach(child -> builder.append(this.render(child, context)));
     return builder;
+  }
+
+  private <B extends BuildableComponent.Builder<?, ?>> void mergeStyle(final Component component, final B builder, final C context) {
+    builder.mergeColor(component);
+    builder.mergeDecorations(component);
+    builder.clickEvent(component.clickEvent());
+    Optional.ofNullable(component.hoverEvent()).ifPresent(hoverEvent -> {
+      builder.hoverEvent(new HoverEvent(
+        hoverEvent.action(),
+        this.render(hoverEvent.value(), context)
+      ));
+    });
   }
 
   private Component render(final TranslatableComponent component, final C context) {
@@ -91,7 +105,8 @@ public abstract class FriendlyComponentRenderer<C extends ComponentRenderer.Cont
 
     final List<Component> args = component.args();
 
-    final TextComponent.Builder builder = TextComponent.builder().mergeStyle(component);
+    final TextComponent.Builder builder = TextComponent.builder();
+    this.mergeStyle(component, builder, context);
 
     // no arguments makes this render very simple
     if(args.isEmpty()) {
