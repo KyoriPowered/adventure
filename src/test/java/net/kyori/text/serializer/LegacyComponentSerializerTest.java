@@ -24,6 +24,7 @@
 package net.kyori.text.serializer;
 
 import net.kyori.text.TextComponent;
+import net.kyori.text.event.ClickEvent;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
@@ -58,11 +59,27 @@ class LegacyComponentSerializerTest {
   @Test
   void testResetOverride() {
     final TextComponent component = TextComponent.builder("")
-            .append(TextComponent.of("foo").color(TextColor.GREEN).decoration(TextDecoration.BOLD, TextDecoration.State.TRUE))
-            .append(TextComponent.of("bar").color(TextColor.DARK_GRAY))
-            .build();
+      .append(TextComponent.of("foo").color(TextColor.GREEN).decoration(TextDecoration.BOLD, TextDecoration.State.TRUE))
+      .append(TextComponent.of("bar").color(TextColor.DARK_GRAY))
+      .build();
 
     assertEquals(component, ComponentSerializers.LEGACY.deserialize("&a&lfoo&r&8bar", '&'));
+  }
+
+  @Test
+  void testCompound() {
+    final TextComponent component = TextComponent.builder()
+      .content("hi there ")
+      .append(TextComponent.builder("this bit is green ")
+        .color(TextColor.GREEN)
+        .build())
+      .append(TextComponent.of("this isn't ").resetStyle())
+      .append(TextComponent.builder("and woa, this is again")
+        .color(TextColor.GREEN)
+        .build())
+      .build();
+
+    assertEquals("hi there &athis bit is green &rthis isn't &aand woa, this is again", ComponentSerializers.LEGACY.serialize(component, '&'));
   }
 
   @Test

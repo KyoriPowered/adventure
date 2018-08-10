@@ -243,10 +243,10 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       private void applyFullFormat() {
         if(this.color != null) {
           Cereal.this.append(this.color);
-          Cereal.this.style.color = this.color;
         } else {
           Cereal.this.append(Reset.INSTANCE);
         }
+        Cereal.this.style.color = this.color;
 
         for(final TextDecoration decoration : this.decorations) {
           Cereal.this.append(decoration);
