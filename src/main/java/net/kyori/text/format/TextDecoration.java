@@ -51,8 +51,8 @@ public enum TextDecoration implements TextFormat {
   /**
    * A decoration which makes text have an underline.
    */
-  @SerializedName("underline")
-  UNDERLINE('n'),
+  @SerializedName("underlined")
+  UNDERLINE('n'), // TODO(kashike): rename to UNDERLINED
   /**
    * A decoration which makes text appear in italics.
    */
