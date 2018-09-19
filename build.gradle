@@ -18,6 +18,10 @@ tasks.withType(JavaCompile) {
   options.encoding = 'UTF-8'
 }
 
+test {
+  useJUnitPlatform()
+}
+
 license {
   header project.file('header.txt')
   include '**/*.java'
