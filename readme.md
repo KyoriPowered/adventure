@@ -56,7 +56,7 @@ final TextComponent textComponent = TextComponent.of("You're a ")
       .decoration(TextDecoration.BOLD, true)
   )
   .append(TextComponent.of(" to jump!"));
-// now you can send `component` to something, such as a client
+// now you can send `textComponent` to something, such as a client
 ```
 
 You can also use a builder, which is mutable, and creates one final component with the children.
@@ -74,7 +74,7 @@ final TextComponent textComponent2 = TextComponent.builder().content("You're a "
   )
   .append(TextComponent.of(" to jump!"))
   .build();
-// now you can send `textComponent` to something, such as a client
+// now you can send `textComponent2` to something, such as a client
 ```
 
 #### Serializing and deserializing components
