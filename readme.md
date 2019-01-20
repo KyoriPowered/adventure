@@ -93,26 +93,26 @@ final TextComponent textComponent = TextComponent.of("Hello ")
   .append(TextComponent.of("!").color(TextColor.RED));
 
 // Converts textComponent to the JSON form used for serialization by Minecraft.
-String json = ComponentSerializers.JSON.serialize(textComponent);
+String json = GsonComponentSerializer.INSTANCE.serialize(textComponent);
 
 // Converts textComponent to a legacy string - "&6Hello &b&lworld&c!"
-String legacy = ComponentSerializers.LEGACY.serialize(textComponent, '&');
+String legacy = LegacyComponentSerializer.INSTANCE.serialize(textComponent, '&');
 
 // Converts textComponent to a plain string - "Hello world!"
-String plain = ComponentSerializers.PLAIN.serialize(textComponent);
+String plain = PlainComponentSerializer.INSTANCE.serialize(textComponent);
 ```
 
 The same is of course also possible in reverse for deserialization.
 
 ```java
 // Converts JSON in the form used for serialization by Minecraft to a Component
-Component component = ComponentSerializers.JSON.deserialize(json);
+Component component = GsonComponentSerializer.INSTANCE.deserialize(json);
 
 // Converts a legacy string (using formatting codes) to a TextComponent
-TextComponent component = ComponentSerializers.LEGACY.deserialize("&6Hello &b&lworld&c!", '&');
+TextComponent component = LegacyComponentSerializer.INSTANCE.deserialize("&6Hello &b&lworld&c!", '&');
 
 // Converts a plain string to a TextComponent
-TextComponent component = ComponentSerializers.PLAIN.deserialize("Hello world!");
+TextComponent component = PlainComponentSerializer.INSTANCE.deserialize("Hello world!");
 ```
 
 #### Using components within your application

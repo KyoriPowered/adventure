@@ -1,5 +1,11 @@
 /.gradle/
 /.idea/
-/build/
-/out/
+/api/build/
+/api/out/
+/serializer-gson/build/
+/serializer-gson/out/
+/serializer-legacy/build/
+/serializer-legacy/out/
+/serializer-plain/build/
+/serializer-plain/out/
 /*.iml
