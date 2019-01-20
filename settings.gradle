@@ -1,1 +1,13 @@
-rootProject.name = 'text'
+rootProject.name = 'text-parent'
+
+include 'api'
+findProject(':api')?.name = 'text-api'
+
+include 'serializer-gson'
+findProject(':serializer-gson')?.name = 'text-serializer-gson'
+
+include 'serializer-legacy'
+findProject(':serializer-legacy')?.name = 'text-serializer-legacy'
+
+include 'serializer-plain'
+findProject(':serializer-plain')?.name = 'text-serializer-plain'
