@@ -1,7 +1,7 @@
 /*
  * This file is part of text, licensed under the MIT License.
  *
- * Copyright (c) 2017-2018 KyoriPowered
+ * Copyright (c) 2017-2019 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
