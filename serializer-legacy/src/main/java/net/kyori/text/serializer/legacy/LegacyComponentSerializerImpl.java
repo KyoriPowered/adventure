@@ -32,19 +32,38 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Deprecated
 class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
-  private static final TextFormat[] FORMATS = Stream.concat(Stream.concat(Arrays.stream(TextColor.values()), Arrays.stream(DECORATIONS)), Stream.of(Reset.INSTANCE)).toArray(TextFormat[]::new);
-  private static final String FORMAT_LOOKUP = Arrays.stream(FORMATS).map(format -> String.valueOf(format.legacy())).collect(Collectors.joining());
+  private static final String LEGACY_CHARS = "0123456789abcdefklmnor";
+  private static final List<TextFormat> FORMATS;
+  static {
+    final List<TextFormat> formats = new ArrayList<>();
+    Collections.addAll(formats, TextColor.values());
+    Collections.addAll(formats, DECORATIONS);
+    formats.add(Reset.INSTANCE);
+    FORMATS = Collections.unmodifiableList(formats);
+
+    // assert same length
+    if(FORMATS.size() != LEGACY_CHARS.length()) {
+      throw new IllegalStateException("FORMATS length differs from LEGACY_CHARS length");
+    }
+  }
+
+  private static @Nullable TextFormat formatByLegacyChar(final char legacy) {
+    final int index = LEGACY_CHARS.indexOf(legacy);
+    return index == -1 ? null : FORMATS.get(index);
+  }
+
+  private static char getLegacyChar(final TextFormat legacy) {
+    final int index = FORMATS.indexOf(legacy);
+    return LEGACY_CHARS.charAt(index);
+  }
 
   @Override
   public @NonNull TextComponent deserialize(final @NonNull String input, final char character) {
@@ -60,7 +79,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
     int pos = input.length();
     do {
-      final TextFormat format = find(input.charAt(next + 1));
+      final TextFormat format = formatByLegacyChar(input.charAt(next + 1));
       if(format != null) {
         final int from = next + 2;
         if(from != pos) {
@@ -120,20 +139,9 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     throw new IllegalArgumentException(String.format("unknown format '%s'", format.getClass()));
   }
 
-  private static TextFormat find(final char legacy) {
-    final int pos = FORMAT_LOOKUP.indexOf(legacy);
-    return pos == -1 ? null : FORMATS[pos];
-  }
-
   @Deprecated
   private enum Reset implements TextFormat {
     INSTANCE;
-
-    @Deprecated
-    @Override
-    public char legacy() {
-      return 'r';
-    }
   }
 
   // Are you hungry?
@@ -173,7 +181,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     private void append(final @NonNull TextFormat format) {
-      this.sb.append(this.character).append(format.legacy());
+      this.sb.append(this.character).append(getLegacyChar(format));
     }
 
     @Override

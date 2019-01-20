@@ -31,22 +31,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * An enumeration of colors which may be applied to a {@link Component}.
  */
 public enum TextColor implements TextFormat {
-  BLACK("black", '0'),
-  DARK_BLUE("dark_blue", '1'),
-  DARK_GREEN("dark_green", '2'),
-  DARK_AQUA("dark_aqua", '3'),
-  DARK_RED("dark_red", '4'),
-  DARK_PURPLE("dark_purple", '5'),
-  GOLD("gold", '6'),
-  GRAY("gray", '7'),
-  DARK_GRAY("dark_gray", '8'),
-  BLUE("blue", '9'),
-  GREEN("green", 'a'),
-  AQUA("aqua", 'b'),
-  RED("red", 'c'),
-  LIGHT_PURPLE("light_purple", 'd'),
-  YELLOW("yellow", 'e'),
-  WHITE("white", 'f');
   BLACK("black"),
   DARK_BLUE("dark_blue"),
   DARK_GREEN("dark_green"),
@@ -72,20 +56,9 @@ public enum TextColor implements TextFormat {
    * The name of this color.
    */
   private final String name;
-  /**
-   * The legacy code.
-   */
-  @Deprecated private final char legacy;
 
-  TextColor(final String name, final char legacy) {
+  TextColor(final String name) {
     this.name = name;
-    this.legacy = legacy;
-  }
-
-  @Deprecated
-  @Override
-  public char legacy() {
-    return this.legacy;
   }
 
   @Override

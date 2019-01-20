@@ -29,12 +29,4 @@ import net.kyori.text.Component;
  * A format which may be applied to a {@link Component}.
  */
 public interface TextFormat {
-  /**
-   * Gets the legacy code.
-   *
-   * @return the legacy code
-   * @deprecated legacy
-   */
-  @Deprecated
-  char legacy();
 }

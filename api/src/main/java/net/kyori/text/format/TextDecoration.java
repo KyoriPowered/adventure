@@ -35,43 +35,32 @@ public enum TextDecoration implements TextFormat {
   /**
    * A decoration which makes text obfuscated/unreadable.
    */
-  OBFUSCATED("obfuscated", 'k'),
+  OBFUSCATED("obfuscated"),
   /**
    * A decoration which makes text appear bold.
    */
-  BOLD("bold", 'l'),
+  BOLD("bold"),
   /**
    * A decoration which makes text have a strike through it.
    */
-  STRIKETHROUGH("strikethrough", 'm'),
+  STRIKETHROUGH("strikethrough"),
   /**
    * A decoration which makes text have an underline.
    */
-  UNDERLINED("underlined", 'n'),
+  UNDERLINED("underlined"),
   /**
    * A decoration which makes text appear in italics.
    */
-  ITALIC("italic", 'o');
+  ITALIC("italic");
 
   public static final NameMap<TextDecoration> NAMES = NameMap.create(values(), constant -> constant.name);
   /**
    * The name of this decoration.
    */
   private final String name;
-  /**
-   * The legacy code.
-   */
-  @Deprecated private final char legacy;
 
-  TextDecoration(final String name, final char legacy) {
+  TextDecoration(final String name) {
     this.name = name;
-    this.legacy = legacy;
-  }
-
-  @Deprecated
-  @Override
-  public char legacy() {
-    return this.legacy;
   }
 
   @Override
