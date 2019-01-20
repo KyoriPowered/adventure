@@ -33,26 +33,17 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 /**
  * A legacy component serializer.
  *
- * @deprecated legacy
+ * <p>Legacy does <b>not</b> support more complex features such as, but not limited
+ * to, {@link ClickEvent} and {@link HoverEvent}.</p>
  */
-@Deprecated
 public interface LegacyComponentSerializer extends ComponentSerializer<Component, TextComponent, String> {
   /**
    * A component serializer for legacy-based serialization and deserialization.
-   *
-   * <p>Legacy does <b>not</b> support more complex features such as, but not limited
-   * to, {@link ClickEvent} and {@link HoverEvent}.</p>
-   *
-   * @deprecated legacy
    */
-  @Deprecated
   LegacyComponentSerializer INSTANCE = new LegacyComponentSerializerImpl();
   /**
    * The legacy character.
-   *
-   * @deprecated legacy
    */
-  @Deprecated
   char CHARACTER = '\u00A7';
 
   /**
@@ -60,9 +51,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    *
    * @param input the input
    * @return the component
-   * @deprecated legacy
    */
-  @Deprecated
   @Override
   default @NonNull TextComponent deserialize(final @NonNull String input) {
     return this.deserialize(input, CHARACTER);
@@ -74,9 +63,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * @param input the input
    * @param character the legacy character
    * @return the component
-   * @deprecated legacy
    */
-  @Deprecated
   @NonNull TextComponent deserialize(final @NonNull String input, final char character);
 
   /**
@@ -84,9 +71,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    *
    * @param component the component
    * @return the string
-   * @deprecated legacy
    */
-  @Deprecated
   @Override
   default @NonNull String serialize(final @NonNull Component component) {
     return this.serialize(component, CHARACTER);
@@ -98,8 +83,6 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * @param component the component
    * @param character the legacy character
    * @return the string
-   * @deprecated legacy
    */
-  @Deprecated
   @NonNull String serialize(final @NonNull Component component, final char character);
 }

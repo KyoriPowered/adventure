@@ -39,25 +39,19 @@ import java.util.function.Function;
 /**
  * A plain component serializer.
  *
- * @deprecated not recommended for general use
+ * <p>Plain does <b>not</b> support more complex features such as, but not limited
+ * to, colours, decorations, {@link ClickEvent}, and {@link HoverEvent}.</p>
  */
-@Deprecated
 public class PlainComponentSerializer implements ComponentSerializer<Component, TextComponent, String> {
   /**
    * A component serializer for plain-based serialization and deserialization.
-   *
-   * <p>Plain does <b>not</b> support more complex features such as, but not limited
-   * to, colours, decorations, {@link ClickEvent}, and {@link HoverEvent}.</p>
-   *
-   * @deprecated not recommended for general use
    */
-  @Deprecated
   public static final PlainComponentSerializer INSTANCE = new PlainComponentSerializer();
   private final Function<KeybindComponent, String> keybind;
   private final Function<TranslatableComponent, String> translatable;
 
   public PlainComponentSerializer() {
-    this((component) -> "", (component) -> "");
+    this(component -> "", component -> "");
   }
 
   public PlainComponentSerializer(final @NonNull Function<KeybindComponent, String> keybind, final @NonNull Function<TranslatableComponent, String> translatable) {

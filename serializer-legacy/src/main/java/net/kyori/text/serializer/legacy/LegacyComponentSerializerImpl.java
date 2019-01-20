@@ -37,7 +37,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-@Deprecated
 class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
   private static final String LEGACY_CHARS = "0123456789abcdefklmnor";
