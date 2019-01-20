@@ -1,44 +1,36 @@
-# text [![License](https://img.shields.io/github/license/KyoriPowered/text.svg)](https://github.com/KyoriPowered/text/blob/master/license.txt) [![Build Status](https://travis-ci.org/KyoriPowered/text.svg?branch=master)](https://travis-ci.org/KyoriPowered/text) [![codecov](https://codecov.io/gh/KyoriPowered/text/branch/master/graph/badge.svg)](https://codecov.io/gh/KyoriPowered/text)
+# text [![License](https://img.shields.io/github/license/KyoriPowered/text.svg)](https://github.com/KyoriPowered/text/blob/master/license.txt) [![Build Status](https://travis-ci.org/KyoriPowered/text.svg?branch=master)](https://travis-ci.org/KyoriPowered/text)
 
 A text library for Minecraft.
 
-#### Versions
+#### Artifacts
 
-There are currently two release branches for text.
+There are various artifacts:
 
-* The `1.12` version targets Minecraft 1.12 and above.
-    * Can be found under the `master` Git branch.
-    * The version string is prefixed with `1.12-`.
-    * Uses Guava `21.0` and GSON `2.8.0`.
-    * Includes the `KeybindComponent` type.
-* The `1.11` version targets Minecraft 1.11 and below.
-    * Can be found under the `1.11` Git branch.
-    * The version string is prefixed with `1.11-`.
-    * Uses Guava `17.0` and GSON `2.2.0`.
-
-The full diff between the 1.12 and 1.11 branches can be viewed [here](https://github.com/KyoriPowered/text/compare/1.11..master).
+* `text-api` is the core project - you will always want to import this.
+* `text-serializer-gson` is a GSON-based JSON serializer.
+* `text-serializer-legacy` is a legacy character text serializer.
+* `text-serializer-plain` is a plain text serializer.
 
 #### Importing text into your project
 
 * Maven
 ```xml
 <dependency>
-    <groupId>net.kyori</groupId>
-    <artifactId>text</artifactId>
-    <version>1.12-1.6.4</version>
+  <groupId>net.kyori</groupId>
+  <artifactId>text-api</artifactId>
+  <version>2.0.0-SNAPSHOT</version>
 </dependency>
 ```
 * Gradle
 ```gradle
 repositories {
-    mavenCentral()
+  mavenCentral()
 }
+
 dependencies {
-    compile 'net.kyori:text:1.12-1.6.4'
+  compile 'net.kyori:text-api:2.0.0-SNAPSHOT'
 }
 ```
-
-`1.12` can be substituted with `1.11` for the other branch.
 
 ### Example usage
 
