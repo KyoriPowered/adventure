@@ -62,22 +62,25 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
   }
 
   @Override
-  public Component deserialize(final JsonElement element, final Type type, final JsonDeserializationContext context) throws JsonParseException {
+  public BuildableComponent<?, ?> deserialize(final JsonElement element, final Type type, final JsonDeserializationContext context) throws JsonParseException {
     if(element.isJsonPrimitive()) {
       return TextComponent.of(element.getAsString());
     }
     if(!element.isJsonObject()) {
       if(element.isJsonArray()) {
-        Component parent = null;
+        BuildableComponent.Builder<?, ?> parent = null;
         for(final JsonElement childElement : element.getAsJsonArray()) {
-          final Component child = this.deserialize(childElement, childElement.getClass(), context);
+          final BuildableComponent<?, ?> child = this.deserialize(childElement, childElement.getClass(), context);
           if(parent == null) {
-            parent = child;
+            parent = child.toBuilder();
           } else {
             parent.append(child);
           }
         }
-        return parent;
+        if(parent == null) {
+          throw new JsonParseException("Don't know how to turn " + element + " into a Component");
+        }
+        return parent.build();
       }
 
       throw new JsonParseException("Don't know how to turn " + element + " into a Component");
