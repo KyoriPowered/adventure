@@ -23,7 +23,6 @@
  */
 package net.kyori.text;
 
-import com.google.common.collect.ImmutableSet;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
@@ -32,35 +31,13 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-import static net.kyori.text.Tests.with;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class ComponentTest {
-  @Test
-  void testCreate() {
-    with(TextComponent.of("foo"), component -> {
-      assertEquals("foo", component.content());
-      assertNull(component.color());
-      assertEquals(TextDecoration.State.NOT_SET, component.decoration(TextDecoration.BOLD));
-    });
-    with(TextComponent.of("foo", TextColor.GREEN), component -> {
-      assertEquals("foo", component.content());
-      assertEquals(TextColor.GREEN, component.color());
-      assertEquals(TextDecoration.State.NOT_SET, component.decoration(TextDecoration.BOLD));
-    });
-    with(TextComponent.of("foo", TextColor.GREEN, ImmutableSet.of(TextDecoration.BOLD)), component -> {
-      assertEquals("foo", component.content());
-      assertEquals(TextColor.GREEN, component.color());
-      assertEquals(TextDecoration.State.TRUE, component.decoration(TextDecoration.BOLD));
-      assertEquals(TextDecoration.State.NOT_SET, component.decoration(TextDecoration.ITALIC));
-    });
-  }
-
   @Test
   void testCopy() {
     final TextComponent.Builder component = TextComponent.builder().content("").color(TextColor.GRAY);
@@ -103,16 +80,6 @@ class ComponentTest {
   }
 
   @Test
-  void testContains() {
-    final Component child = TextComponent.builder().content("kittens").build();
-    final Component component = TextComponent.builder()
-      .content("cat")
-      .append(child)
-      .build();
-    assertTrue(component.contains(child));
-  }
-
-  @Test
   void testCycleSelf() {
     assertThrows(IllegalStateException.class, () -> {
       final Component component = TextComponent.builder().content("cat").build();
@@ -146,18 +113,5 @@ class ComponentTest {
       hoverComponent.append(component);
       fail("A component was added to itself");
     });
-  }
-
-  @Test
-  void assertOpenFileNotReadable() {
-    final ClickEvent event = new ClickEvent(ClickEvent.Action.OPEN_FILE, "fake");
-    assertFalse(event.action().readable());
-  }
-
-  @Test
-  void testCopyHover() {
-    final HoverEvent event = new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.builder().content("Kittens!").build());
-    final HoverEvent copy = event.copy();
-    assertEquals(event, copy);
   }
 }

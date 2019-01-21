@@ -23,10 +23,39 @@
  */
 package net.kyori.text;
 
-import java.util.function.Consumer;
+import net.kyori.text.format.TextDecoration;
+import org.junit.jupiter.api.Test;
 
-public final class Tests {
-  public static <T> void with(final T value, final Consumer<T> consumer) {
-    consumer.accept(value);
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+class SelectorComponentTest extends AbstractComponentTest<SelectorComponent, SelectorComponent.Builder> {
+  @Override
+  SelectorComponent.Builder builder() {
+    return SelectorComponent.builder("@p");
+  }
+
+  @Test
+  void testOf() {
+    final SelectorComponent component = SelectorComponent.of("@p");
+    assertEquals("@p", component.pattern());
+    assertNull(component.color());
+    for(final TextDecoration decoration : TextDecoration.values()) {
+      assertEquals(TextDecoration.State.NOT_SET, component.decoration(decoration));
+    }
+  }
+
+  @Test
+  void testPattern() {
+    final SelectorComponent c0 = SelectorComponent.of("@p");
+    final SelectorComponent c1 = c0.pattern("@a");
+    assertEquals("@p", c0.pattern());
+    assertEquals("@a", c1.pattern());
+  }
+
+  @Test
+  void testRebuildWithNoChanges() {
+    final SelectorComponent component = SelectorComponent.of("@p");
+    assertEquals(component, component.toBuilder().build());
   }
 }
