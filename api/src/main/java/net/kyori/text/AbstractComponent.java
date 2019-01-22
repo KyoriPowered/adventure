@@ -43,6 +43,10 @@ import java.util.StringJoiner;
  */
 public abstract class AbstractComponent implements Component {
   /**
+   * An empty, unmodifiable, list of components.
+   */
+  protected static final List<Component> EMPTY_COMPONENT_LIST = Collections.emptyList();
+  /**
    * The list of children.
    */
   protected final List<Component> children;

@@ -23,46 +23,20 @@
  */
 package net.kyori.text;
 
-public interface Components {
-  /**
-   * Gets an immutable component with empty content.
-   *
-   * @return a component with empty content
-   */
-  static Component empty() {
-    return Components0.EMPTY;
-  }
-
-  /**
-   * Gets an immutable component with a new line character as the content.
-   *
-   * @return a component with a new line character as the content
-   */
-  static Component newline() {
-    return Components0.NEWLINE;
-  }
-
-  /**
-   * Gets an immutable component with a single space as the content.
-   *
-   * @return a component with a single space as the content
-   */
-  static Component space() {
-    return Components0.SPACE;
-  }
-}
-
-final class Components0 {
+/**
+ * Internal.
+ */
+interface Component0 {
   /**
    * A component with empty content.
    */
-  static final Component EMPTY = TextComponent.of("");
+  Component EMPTY = TextComponent.of("");
   /**
    * A component with a new line character as the content.
    */
-  static final Component NEWLINE = TextComponent.of("\n");
+  Component NEWLINE = TextComponent.of("\n");
   /**
    * A component with a single space as the content.
    */
-  static final Component SPACE = TextComponent.of(" ");
+  Component SPACE = TextComponent.of(" ");
 }

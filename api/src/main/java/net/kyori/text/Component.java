@@ -40,9 +40,93 @@ import java.util.Set;
  */
 public interface Component {
   /**
-   * An empty, unmodifiable, list of components.
+   * Gets an immutable component with empty content.
+   *
+   * @return a component with empty content
    */
-  List<Component> EMPTY_COMPONENT_LIST = Collections.emptyList();
+  static Component empty() {
+    return Component0.EMPTY;
+  }
+
+  /**
+   * Gets an immutable component with a new line character as the content.
+   *
+   * @return a component with a new line character as the content
+   */
+  static Component newline() {
+    return Component0.NEWLINE;
+  }
+
+  /**
+   * Gets an immutable component with a single space as the content.
+   *
+   * @return a component with a single space as the content
+   */
+  static Component space() {
+    return Component0.SPACE;
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(boolean)}.
+   *
+   * @param value the boolean value
+   * @return the component
+   */
+  static @NonNull Component of(final boolean value) {
+    return TextComponent.of(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(char)}.
+   *
+   * @param value the char value
+   * @return the component
+   */
+  static @NonNull Component of(final char value) {
+    if(value == '\n') return newline();
+    if(value == ' ') return space();
+    return TextComponent.of(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(double)}.
+   *
+   * @param value the double value
+   * @return the component
+   */
+  static @NonNull Component of(final double value) {
+    return TextComponent.of(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(float)}.
+   *
+   * @param value the float value
+   * @return the component
+   */
+  static @NonNull Component of(final float value) {
+    return TextComponent.of(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(int)}.
+   *
+   * @param value the int value
+   * @return the component
+   */
+  static @NonNull Component of(final int value) {
+    return TextComponent.of(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(long)}.
+   *
+   * @param value the long value
+   * @return the component
+   */
+  static @NonNull Component of(final long value) {
+    return TextComponent.of(String.valueOf(value));
+  }
 
   /**
    * Gets the unmodifiable list of children.
@@ -276,64 +360,4 @@ public interface Component {
    *     component does not have any styling
    */
   boolean hasStyling();
-
-  /**
-   * Creates a text component with the content of {@link String#valueOf(boolean)}.
-   *
-   * @param value the boolean value
-   * @return the component
-   */
-  static @NonNull Component of(final boolean value) {
-    return TextComponent.of(String.valueOf(value));
-  }
-
-  /**
-   * Creates a text component with the content of {@link String#valueOf(char)}.
-   *
-   * @param value the char value
-   * @return the component
-   */
-  static @NonNull Component of(final char value) {
-    return TextComponent.of(String.valueOf(value));
-  }
-
-  /**
-   * Creates a text component with the content of {@link String#valueOf(double)}.
-   *
-   * @param value the double value
-   * @return the component
-   */
-  static @NonNull Component of(final double value) {
-    return TextComponent.of(String.valueOf(value));
-  }
-
-  /**
-   * Creates a text component with the content of {@link String#valueOf(float)}.
-   *
-   * @param value the float value
-   * @return the component
-   */
-  static @NonNull Component of(final float value) {
-    return TextComponent.of(String.valueOf(value));
-  }
-
-  /**
-   * Creates a text component with the content of {@link String#valueOf(int)}.
-   *
-   * @param value the int value
-   * @return the component
-   */
-  static @NonNull Component of(final int value) {
-    return TextComponent.of(String.valueOf(value));
-  }
-
-  /**
-   * Creates a text component with the content of {@link String#valueOf(long)}.
-   *
-   * @param value the long value
-   * @return the component
-   */
-  static @NonNull Component of(final long value) {
-    return TextComponent.of(String.valueOf(value));
-  }
 }

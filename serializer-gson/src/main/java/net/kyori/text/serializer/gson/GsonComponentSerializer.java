@@ -71,6 +71,7 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
   }
 
   @Override
+  @SuppressWarnings("rawtypes")
   public BuildableComponent<?, ?> deserialize(final JsonElement element, final Type type, final JsonDeserializationContext context) throws JsonParseException {
     if(element.isJsonPrimitive()) {
       return TextComponent.of(element.getAsString());
