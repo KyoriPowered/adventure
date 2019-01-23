@@ -57,13 +57,23 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
    * A component serializer for JSON-based serialization and deserialization.
    */
   public static final GsonComponentSerializer INSTANCE = new GsonComponentSerializer();
-  private static final Gson GSON = new GsonBuilder()
-    .registerTypeHierarchyAdapter(Component.class, new GsonComponentSerializer())
-    .registerTypeAdapter(ClickEvent.Action.class, new NameMapSerializer<>("click action", ClickEvent.Action.NAMES))
-    .registerTypeAdapter(HoverEvent.Action.class, new NameMapSerializer<>("hover action", HoverEvent.Action.NAMES))
-    .registerTypeAdapter(TextColor.class, new NameMapSerializer<>("text color", TextColor.NAMES))
-    .registerTypeAdapter(TextDecoration.class, new NameMapSerializer<>("text decoration", TextDecoration.NAMES))
-    .create();
+  private static final Gson GSON = populate(new GsonBuilder()).create();
+
+  /**
+   * Populate a builder with our serializers.
+   *
+   * @param builder the gson builder
+   * @return the gson builder
+   */
+  public static @NonNull GsonBuilder populate(final @NonNull GsonBuilder builder) {
+    builder
+      .registerTypeHierarchyAdapter(Component.class, INSTANCE)
+      .registerTypeAdapter(ClickEvent.Action.class, new NameMapSerializer<>("click action", ClickEvent.Action.NAMES))
+      .registerTypeAdapter(HoverEvent.Action.class, new NameMapSerializer<>("hover action", HoverEvent.Action.NAMES))
+      .registerTypeAdapter(TextColor.class, new NameMapSerializer<>("text color", TextColor.NAMES))
+      .registerTypeAdapter(TextDecoration.class, new NameMapSerializer<>("text decoration", TextDecoration.NAMES));
+    return builder;
+  }
 
   @Override
   public @NonNull Component deserialize(final @NonNull String string) {
