@@ -32,6 +32,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -87,6 +88,20 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
    */
   public static TextComponent of(final @NonNull String content, final @Nullable TextColor color) {
     return of(content, color, Collections.emptySet());
+  }
+
+  /**
+   * Creates a text component with content, and optional color and decorations.
+   *
+   * @param content the plain text content
+   * @param color the color
+   * @param decorations the decorations
+   * @return the text component
+   */
+  public static TextComponent of(final @NonNull String content, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
+    final Set<TextDecoration> activeDecorations = new HashSet<>(decorations.length);
+    Collections.addAll(activeDecorations, decorations);
+    return of(content, color, activeDecorations);
   }
 
   /**

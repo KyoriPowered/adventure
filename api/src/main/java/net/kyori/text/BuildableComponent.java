@@ -56,6 +56,50 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
    */
   interface Builder<C extends BuildableComponent<C, B>, B extends Builder<C, B>> {
     /**
+     * Appends a text component to this component.
+     *
+     * @param content the content
+     * @return this builder
+     */
+    default @NonNull B append(final @NonNull String content) {
+      return this.append(TextComponent.of(content));
+    }
+
+    /**
+     * Appends a text component to this component.
+     *
+     * @param content the content
+     * @param color the color
+     * @return this builder
+     */
+    default @NonNull B append(final @NonNull String content, final @NonNull TextColor color) {
+      return this.append(TextComponent.of(content, color));
+    }
+
+    /**
+     * Appends a text component to this component.
+     *
+     * @param content the content
+     * @param color the color
+     * @param decorations the decorations
+     * @return this builder
+     */
+    default @NonNull B append(final @NonNull String content, final @NonNull TextColor color, final TextDecoration@NonNull... decorations) {
+      return this.append(TextComponent.of(content, color, decorations));
+    }
+
+    /**
+     * Appends a text component to this component.
+     *
+     * @param content the content
+     * @param builder the builder
+     * @return this builder
+     */
+    default @NonNull B append(final @NonNull String content, final @NonNull Consumer<TextComponent.Builder> builder) {
+      return this.append(TextComponent.make(content, builder));
+    }
+
+    /**
      * Appends a component to this component.
      *
      * @param component the component to append
