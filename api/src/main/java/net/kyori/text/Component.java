@@ -34,7 +34,6 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
 
 /**
  * A text component.
@@ -45,7 +44,7 @@ public interface Component {
    *
    * @return a component with empty content
    */
-  static Component empty() {
+  static @NonNull Component empty() {
     return Component0.EMPTY;
   }
 
@@ -54,7 +53,7 @@ public interface Component {
    *
    * @return a component with a new line character as the content
    */
-  static Component newline() {
+  static @NonNull Component newline() {
     return Component0.NEWLINE;
   }
 
@@ -63,7 +62,7 @@ public interface Component {
    *
    * @return a component with a single space as the content
    */
-  static Component space() {
+  static @NonNull Component space() {
     return Component0.SPACE;
   }
 
@@ -72,9 +71,11 @@ public interface Component {
    *
    * @param value the boolean value
    * @return the component
+   * @deprecated use {@link TextComponent#of(boolean)}
    */
+  @Deprecated
   static @NonNull Component of(final boolean value) {
-    return TextComponent.of(String.valueOf(value));
+    return TextComponent.of(value);
   }
 
   /**
@@ -82,11 +83,11 @@ public interface Component {
    *
    * @param value the char value
    * @return the component
+   * @deprecated use {@link TextComponent#of(char)}
    */
+  @Deprecated
   static @NonNull Component of(final char value) {
-    if(value == '\n') return newline();
-    if(value == ' ') return space();
-    return TextComponent.of(String.valueOf(value));
+    return TextComponent.of(value);
   }
 
   /**
@@ -94,9 +95,11 @@ public interface Component {
    *
    * @param value the double value
    * @return the component
+   * @deprecated use {@link TextComponent#of(double)}
    */
+  @Deprecated
   static @NonNull Component of(final double value) {
-    return TextComponent.of(String.valueOf(value));
+    return TextComponent.of(value);
   }
 
   /**
@@ -104,9 +107,11 @@ public interface Component {
    *
    * @param value the float value
    * @return the component
+   * @deprecated use {@link TextComponent#of(float)}
    */
+  @Deprecated
   static @NonNull Component of(final float value) {
-    return TextComponent.of(String.valueOf(value));
+    return TextComponent.of(value);
   }
 
   /**
@@ -114,9 +119,11 @@ public interface Component {
    *
    * @param value the int value
    * @return the component
+   * @deprecated use {@link TextComponent#of(int)}
    */
+  @Deprecated
   static @NonNull Component of(final int value) {
-    return TextComponent.of(String.valueOf(value));
+    return TextComponent.of(value);
   }
 
   /**
@@ -124,9 +131,11 @@ public interface Component {
    *
    * @param value the long value
    * @return the component
+   * @deprecated use {@link TextComponent#of(long)}
    */
+  @Deprecated
   static @NonNull Component of(final long value) {
-    return TextComponent.of(String.valueOf(value));
+    return TextComponent.of(value);
   }
 
   /**

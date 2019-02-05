@@ -30,13 +30,13 @@ interface Component0 {
   /**
    * A component with empty content.
    */
-  Component EMPTY = TextComponent.of("");
+  TextComponent EMPTY = TextComponent.of("");
   /**
    * A component with a new line character as the content.
    */
-  Component NEWLINE = TextComponent.of("\n");
+  TextComponent NEWLINE = TextComponent.of("\n");
   /**
    * A component with a single space as the content.
    */
-  Component SPACE = TextComponent.of(" ");
+  TextComponent SPACE = TextComponent.of(" ");
 }

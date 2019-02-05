@@ -80,6 +80,68 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
   }
 
   /**
+   * Creates a text component with the content of {@link String#valueOf(boolean)}.
+   *
+   * @param value the boolean value
+   * @return the component
+   */
+  static @NonNull TextComponent of(final boolean value) {
+    return TextComponent.of(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(char)}.
+   *
+   * @param value the char value
+   * @return the component
+   */
+  static @NonNull TextComponent of(final char value) {
+    if(value == '\n') return Component0.NEWLINE;
+    if(value == ' ') return Component0.SPACE;
+    return TextComponent.of(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(double)}.
+   *
+   * @param value the double value
+   * @return the component
+   */
+  static @NonNull TextComponent of(final double value) {
+    return TextComponent.of(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(float)}.
+   *
+   * @param value the float value
+   * @return the component
+   */
+  static @NonNull TextComponent of(final float value) {
+    return TextComponent.of(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(int)}.
+   *
+   * @param value the int value
+   * @return the component
+   */
+  static @NonNull TextComponent of(final int value) {
+    return TextComponent.of(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(long)}.
+   *
+   * @param value the long value
+   * @return the component
+   */
+  static @NonNull TextComponent of(final long value) {
+    return TextComponent.of(String.valueOf(value));
+  }
+
+  /**
    * Creates a text component with content, and optional color.
    *
    * @param content the plain text content
