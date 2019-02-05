@@ -47,6 +47,36 @@ public final class HoverEvent {
    */
   private final Component value;
 
+  /**
+   * Creates a hover event that shows text on hover.
+   *
+   * @param text the text to show on hover
+   * @return a hover event
+   */
+  public static @NonNull HoverEvent showText(final @NonNull Component text) {
+    return new HoverEvent(Action.SHOW_TEXT, text);
+  }
+
+  /**
+   * Creates a hover event that shows an item on hover.
+   *
+   * @param item the item to show on hover
+   * @return a hover event
+   */
+  public static @NonNull HoverEvent showItem(final @NonNull Component item) {
+    return new HoverEvent(Action.SHOW_ITEM, item);
+  }
+
+  /**
+   * Creates a hover event that shows an entity on hover.
+   *
+   * @param entity the entity to show on hover
+   * @return a hover event
+   */
+  public static @NonNull HoverEvent showEntity(final @NonNull Component entity) {
+    return new HoverEvent(Action.SHOW_ENTITY, entity);
+  }
+
   public HoverEvent(final @NonNull Action action, final @NonNull Component value) {
     this.action = action;
     this.value = value;

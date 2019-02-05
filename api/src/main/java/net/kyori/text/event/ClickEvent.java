@@ -45,6 +45,68 @@ public final class ClickEvent {
    */
   private final String value;
 
+  /**
+   * Creates a click event that opens a url.
+   *
+   * @param url the url to open
+   * @return a click event
+   */
+  public static @NonNull ClickEvent openUrl(final @NonNull String url) {
+    return new ClickEvent(Action.OPEN_URL, url);
+  }
+
+  /**
+   * Creates a click event that opens a file.
+   *
+   * <p>This action is not readable, and may only be used locally on the client.</p>
+   *
+   * @param file the file to open
+   * @return a click event
+   */
+  public static @NonNull ClickEvent openFile(final @NonNull String file) {
+    return new ClickEvent(Action.OPEN_FILE, file);
+  }
+
+  /**
+   * Creates a click event that runs a command.
+   *
+   * @param command the command to run
+   * @return a click event
+   */
+  public static @NonNull ClickEvent runCommand(final @NonNull String command) {
+    return new ClickEvent(Action.RUN_COMMAND, command);
+  }
+
+  /**
+   * Creates a click event that suggests a command.
+   *
+   * @param command the command to suggest
+   * @return a click event
+   */
+  public static @NonNull ClickEvent suggestCommand(final @NonNull String command) {
+    return new ClickEvent(Action.SUGGEST_COMMAND, command);
+  }
+
+  /**
+   * Creates a click event that changes to a page.
+   *
+   * @param page the page to change to
+   * @return a click event
+   */
+  public static @NonNull ClickEvent changePage(final int page) {
+    return changePage(String.valueOf(page));
+  }
+
+  /**
+   * Creates a click event that changes to a page.
+   *
+   * @param page the page to change to
+   * @return a click event
+   */
+  public static @NonNull ClickEvent changePage(final @NonNull String page) {
+    return new ClickEvent(Action.CHANGE_PAGE, page);
+  }
+
   public ClickEvent(final @NonNull Action action, final @NonNull String value) {
     this.action = action;
     this.value = value;
