@@ -48,14 +48,23 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
   /**
    * The plain text content.
    */
-  private final @NonNull String content;
+  private final String content;
 
   /**
    * Creates a text component builder.
    *
    * @return a builder
    */
-  public static Builder builder() {
+  public static @NonNull Builder text() {
+    return new Builder();
+  }
+
+  /**
+   * Creates a text component builder.
+   *
+   * @return a builder
+   */
+  public static @NonNull Builder builder() {
     return new Builder();
   }
 
@@ -65,7 +74,17 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
    * @param content the plain text content
    * @return a builder
    */
-  public static Builder builder(final @NonNull String content) {
+  public static @NonNull Builder text(final @NonNull String content) {
+    return new Builder().content(content);
+  }
+
+  /**
+   * Creates a text component builder with content.
+   *
+   * @param content the plain text content
+   * @return a builder
+   */
+  public static @NonNull Builder builder(final @NonNull String content) {
     return new Builder().content(content);
   }
 
@@ -75,7 +94,7 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
    * @param content the plain text content
    * @return the text component
    */
-  public static TextComponent of(final @NonNull String content) {
+  public static @NonNull TextComponent of(final @NonNull String content) {
     return builder(content).build();
   }
 
@@ -148,7 +167,7 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
    * @param color the color
    * @return the text component
    */
-  public static TextComponent of(final @NonNull String content, final @Nullable TextColor color) {
+  public static @NonNull TextComponent of(final @NonNull String content, final @Nullable TextColor color) {
     return of(content, color, Collections.emptySet());
   }
 
@@ -160,7 +179,7 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
    * @param decorations the decorations
    * @return the text component
    */
-  public static TextComponent of(final @NonNull String content, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
+  public static @NonNull TextComponent of(final @NonNull String content, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
     final Set<TextDecoration> activeDecorations = new HashSet<>(decorations.length);
     Collections.addAll(activeDecorations, decorations);
     return of(content, color, activeDecorations);
@@ -174,7 +193,7 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
    * @param decorations the decorations
    * @return the text component
    */
-  public static TextComponent of(final @NonNull String content, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
+  public static @NonNull TextComponent of(final @NonNull String content, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
     return builder(content).color(color).decorations(decorations, true).build();
   }
 
@@ -184,7 +203,7 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
    * @param consumer the builder configurator
    * @return the text component
    */
-  public static TextComponent make(final @NonNull Consumer<Builder> consumer) {
+  public static @NonNull TextComponent make(final @NonNull Consumer<Builder> consumer) {
     final Builder builder = builder();
     consumer.accept(builder);
     return builder.build();
@@ -197,7 +216,7 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
    * @param consumer the builder configurator
    * @return the text component
    */
-  public static TextComponent make(final @NonNull String content, final @NonNull Consumer<Builder> consumer) {
+  public static @NonNull TextComponent make(final @NonNull String content, final @NonNull Consumer<Builder> consumer) {
     final Builder builder = builder(content);
     consumer.accept(builder);
     return builder.build();

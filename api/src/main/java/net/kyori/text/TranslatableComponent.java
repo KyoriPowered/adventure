@@ -48,7 +48,7 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
   /**
    * The translation key.
    */
-  private final @NonNull String key;
+  private final String key;
   /**
    * The list of translation arguments.
    */
@@ -59,7 +59,16 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
    *
    * @return a builder
    */
-  public static Builder builder() {
+  public static @NonNull Builder translatable() {
+    return new Builder();
+  }
+
+  /**
+   * Creates a translatable component builder.
+   *
+   * @return a builder
+   */
+  public static @NonNull Builder builder() {
     return new Builder();
   }
 
@@ -69,7 +78,17 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
    * @param key the translation key
    * @return a builder
    */
-  public static Builder builder(final @NonNull String key) {
+  public static @NonNull Builder translatable(final @NonNull String key) {
+    return new Builder().key(key);
+  }
+
+  /**
+   * Creates a translatable component builder with a translation key.
+   *
+   * @param key the translation key
+   * @return a builder
+   */
+  public static @NonNull Builder builder(final @NonNull String key) {
     return new Builder().key(key);
   }
 
@@ -79,7 +98,7 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
    * @param key the translation key
    * @return the translatable component
    */
-  public static TranslatableComponent of(final @NonNull String key) {
+  public static @NonNull TranslatableComponent of(final @NonNull String key) {
     return builder(key).build();
   }
 
@@ -90,7 +109,7 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
    * @param color the color
    * @return the translatable component
    */
-  public static TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color) {
+  public static @NonNull TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color) {
     return builder(key)
       .color(color)
       .build();
@@ -104,7 +123,7 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
    * @param decorations the decorations
    * @return the translatable component
    */
-  public static TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
+  public static @NonNull TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
     return builder(key)
       .color(color)
       .decorations(decorations, true)
@@ -118,7 +137,7 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
    * @param args the translation arguments
    * @return the translatable component
    */
-  public static TranslatableComponent of(final @NonNull String key, final @NonNull Component... args) {
+  public static @NonNull TranslatableComponent of(final @NonNull String key, final @NonNull Component... args) {
     return of(key, null, args);
   }
 
@@ -130,7 +149,7 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
    * @param args the translation arguments
    * @return the translatable component
    */
-  public static TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final @NonNull Component... args) {
+  public static @NonNull TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final @NonNull Component... args) {
     return of(key, color, Collections.emptySet(), args);
   }
 
@@ -143,7 +162,7 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
    * @param args the translation arguments
    * @return the translatable component
    */
-  public static TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations, final @NonNull Component... args) {
+  public static @NonNull TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations, final @NonNull Component... args) {
     return of(key, color, decorations, Arrays.asList(args));
   }
 
@@ -154,7 +173,7 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
    * @param args the translation arguments
    * @return the translatable component
    */
-  public static TranslatableComponent of(final @NonNull String key, final @NonNull List<Component> args) {
+  public static @NonNull TranslatableComponent of(final @NonNull String key, final @NonNull List<Component> args) {
     return of(key, null, args);
   }
 
@@ -179,7 +198,7 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
    * @param args the translation arguments
    * @return the translatable component
    */
-  public static TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations, final @NonNull List<Component> args) {
+  public static @NonNull TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations, final @NonNull List<Component> args) {
     return builder()
       .color(color)
       .decorations(decorations, true)
@@ -194,7 +213,7 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
    * @param consumer the builder configurator
    * @return the translatable component
    */
-  public static TranslatableComponent make(final @NonNull Consumer<Builder> consumer) {
+  public static @NonNull TranslatableComponent make(final @NonNull Consumer<Builder> consumer) {
     final Builder builder = builder();
     consumer.accept(builder);
     return builder.build();
@@ -207,7 +226,7 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
    * @param consumer the builder configurator
    * @return the translatable component
    */
-  public static TranslatableComponent make(final @NonNull String key, final @NonNull Consumer<Builder> consumer) {
+  public static @NonNull TranslatableComponent make(final @NonNull String key, final @NonNull Consumer<Builder> consumer) {
     final Builder builder = builder(key);
     consumer.accept(builder);
     return builder.build();
@@ -221,7 +240,7 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
    * @param consumer the builder configurator
    * @return the translatable component
    */
-  public static TranslatableComponent make(final @NonNull String key, final @NonNull List<Component> args, final @NonNull Consumer<Builder> consumer) {
+  public static @NonNull TranslatableComponent make(final @NonNull String key, final @NonNull List<Component> args, final @NonNull Consumer<Builder> consumer) {
     final Builder builder = builder(key).args(args);
     consumer.accept(builder);
     return builder.build();

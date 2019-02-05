@@ -44,11 +44,11 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
   /**
    * The score name.
    */
-  private final @NonNull String name;
+  private final String name;
   /**
    * The score objective.
    */
-  private final @NonNull String objective;
+  private final String objective;
   /**
    * The value.
    */
@@ -59,7 +59,7 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
    *
    * @return a builder
    */
-  public static Builder builder() {
+  public static @NonNull Builder builder() {
     return new Builder();
   }
 
@@ -70,7 +70,7 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
    * @param objective the score objective
    * @return a builder
    */
-  public static Builder builder(final @NonNull String name, final @NonNull String objective) {
+  public static @NonNull Builder builder(final @NonNull String name, final @NonNull String objective) {
     return new Builder().name(name).objective(objective);
   }
 
@@ -81,7 +81,7 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
    * @param objective the score objective
    * @return the score component
    */
-  public static ScoreComponent of(final @NonNull String name, final @NonNull String objective) {
+  public static @NonNull ScoreComponent of(final @NonNull String name, final @NonNull String objective) {
     return of(name, objective, null);
   }
 
@@ -93,7 +93,7 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
    * @param value the value
    * @return the score component
    */
-  public static ScoreComponent of(final @NonNull String name, final @NonNull String objective, final @Nullable String value) {
+  public static @NonNull ScoreComponent of(final @NonNull String name, final @NonNull String objective, final @Nullable String value) {
     return builder()
       .name(name)
       .objective(objective)

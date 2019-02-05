@@ -44,14 +44,14 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
   /**
    * The keybind.
    */
-  private final @NonNull String keybind;
+  private final String keybind;
 
   /**
    * Creates a keybind component builder.
    *
    * @return a builder
    */
-  public static Builder builder() {
+  public static @NonNull Builder builder() {
     return new Builder();
   }
 
@@ -61,7 +61,7 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
    * @param keybind the keybind
    * @return a builder
    */
-  public static Builder builder(final @NonNull String keybind) {
+  public static @NonNull Builder builder(final @NonNull String keybind) {
     return new Builder().keybind(keybind);
   }
 
@@ -71,7 +71,7 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
    * @param keybind the keybind
    * @return the keybind component
    */
-  public static KeybindComponent of(final @NonNull String keybind) {
+  public static @NonNull KeybindComponent of(final @NonNull String keybind) {
     return builder(keybind).build();
   }
 
@@ -82,7 +82,7 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
    * @param color the color
    * @return the keybind component
    */
-  public static KeybindComponent of(final @NonNull String keybind, final @Nullable TextColor color) {
+  public static @NonNull KeybindComponent of(final @NonNull String keybind, final @Nullable TextColor color) {
     return of(keybind, color, Collections.emptySet());
   }
 
@@ -94,7 +94,7 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
    * @param decorations the decorations
    * @return the keybind component
    */
-  public static KeybindComponent of(final @NonNull String keybind, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
+  public static @NonNull KeybindComponent of(final @NonNull String keybind, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
     return builder(keybind).color(color).decorations(decorations, true).build();
   }
 
@@ -104,7 +104,7 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
    * @param consumer the builder configurator
    * @return the keybind component
    */
-  public static KeybindComponent make(final @NonNull Consumer<Builder> consumer) {
+  public static @NonNull KeybindComponent make(final @NonNull Consumer<Builder> consumer) {
     final Builder builder = builder();
     consumer.accept(builder);
     return builder.build();
@@ -117,7 +117,7 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
    * @param consumer the builder configurator
    * @return the keybind component
    */
-  public static KeybindComponent make(final @NonNull String keybind, final @NonNull Consumer<Builder> consumer) {
+  public static @NonNull KeybindComponent make(final @NonNull String keybind, final @NonNull Consumer<Builder> consumer) {
     final Builder builder = builder(keybind);
     consumer.accept(builder);
     return builder.build();

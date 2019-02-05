@@ -44,14 +44,14 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
   /**
    * The selector pattern.
    */
-  private final @NonNull String pattern;
+  private final String pattern;
 
   /**
    * Creates a selector component builder.
    *
    * @return a builder
    */
-  public static Builder builder() {
+  public static @NonNull Builder builder() {
     return new Builder();
   }
 
@@ -61,7 +61,7 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
    * @param pattern the selector pattern
    * @return a builder
    */
-  public static Builder builder(final @NonNull String pattern) {
+  public static @NonNull Builder builder(final @NonNull String pattern) {
     return new Builder().pattern(pattern);
   }
 
@@ -71,7 +71,7 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
    * @param pattern the selector pattern
    * @return the selector component
    */
-  public static SelectorComponent of(final @NonNull String pattern) {
+  public static @NonNull SelectorComponent of(final @NonNull String pattern) {
     return builder(pattern).build();
   }
 
