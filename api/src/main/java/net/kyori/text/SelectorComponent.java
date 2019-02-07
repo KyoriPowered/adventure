@@ -25,6 +25,7 @@ package net.kyori.text;
 
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
+import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -77,11 +78,11 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
 
   protected SelectorComponent(final @NonNull Builder builder) {
     super(builder);
-    this.pattern = builder.pattern;
+    this.pattern = requireNonNull(builder.pattern, "pattern");
   }
 
-  protected SelectorComponent(final @NonNull List<Component> children, final @Nullable TextColor color, final TextDecoration.@NonNull State obfuscated, final TextDecoration.@NonNull State bold, final TextDecoration.@NonNull State strikethrough, final TextDecoration.@NonNull State underlined, final TextDecoration.@NonNull State italic, final @Nullable ClickEvent clickEvent, final @Nullable HoverEvent hoverEvent, final @Nullable String insertion, final @NonNull String pattern) {
-    super(children, color, obfuscated, bold, strikethrough, underlined, italic, clickEvent, hoverEvent, insertion);
+  protected SelectorComponent(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String pattern) {
+    super(children, style);
     this.pattern = pattern;
   }
 
@@ -101,7 +102,7 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
    * @return a copy of this component
    */
   public @NonNull SelectorComponent pattern(final @NonNull String pattern) {
-    return new SelectorComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, requireNonNull(pattern, "pattern"));
+    return new SelectorComponent(this.children, this.style, requireNonNull(pattern, "pattern"));
   }
 
   @Override
@@ -110,12 +111,12 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
     final List<Component> children = new ArrayList<>(this.children.size() + 1);
     children.addAll(this.children);
     children.add(component);
-    return new SelectorComponent(children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.pattern);
+    return new SelectorComponent(children, this.style, this.pattern);
   }
 
   @Override
   public @NonNull SelectorComponent color(final @Nullable TextColor color) {
-    return new SelectorComponent(this.children, color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.pattern);
+    return new SelectorComponent(this.children, this.style.color(color), this.pattern);
   }
 
   @Override
@@ -125,65 +126,53 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
 
   @Override
   public @NonNull SelectorComponent decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
-    switch(decoration) {
-      case BOLD: return new SelectorComponent(this.children, this.color, this.obfuscated, requireNonNull(state, "flag"), this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.pattern);
-      case ITALIC: return new SelectorComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, requireNonNull(state, "flag"), this.clickEvent, this.hoverEvent, this.insertion, this.pattern);
-      case UNDERLINED: return new SelectorComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, requireNonNull(state, "flag"), this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.pattern);
-      case STRIKETHROUGH: return new SelectorComponent(this.children, this.color, this.obfuscated, this.bold, requireNonNull(state, "flag"), this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.pattern);
-      case OBFUSCATED: return new SelectorComponent(this.children, this.color, requireNonNull(state, "flag"), this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.pattern);
-      default: throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
-    }
+    return new SelectorComponent(this.children, this.style.decoration(decoration, state), this.pattern);
   }
 
   @Override
   public @NonNull SelectorComponent clickEvent(final @Nullable ClickEvent event) {
-    return new SelectorComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, event, this.hoverEvent, this.insertion, this.pattern);
+    return new SelectorComponent(this.children, this.style.clickEvent(event), this.pattern);
   }
 
   @Override
   public @NonNull SelectorComponent hoverEvent(final @Nullable HoverEvent event) {
     if(event != null) this.detectCycle(event.value()); // detect cycle before modifying
-    return new SelectorComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, event, this.insertion, this.pattern);
+    return new SelectorComponent(this.children, this.style.hoverEvent(event), this.pattern);
   }
 
   @Override
   public @NonNull SelectorComponent insertion(final @Nullable String insertion) {
-    return new SelectorComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, insertion, this.pattern);
+    return new SelectorComponent(this.children, this.style.insertion(insertion), this.pattern);
   }
 
   @Override
   public @NonNull SelectorComponent mergeStyle(final @NonNull Component that) {
-    return new SelectorComponent(this.children, that.color(), that.decoration(TextDecoration.OBFUSCATED), that.decoration(TextDecoration.BOLD), that.decoration(TextDecoration.STRIKETHROUGH), that.decoration(TextDecoration.UNDERLINED), that.decoration(TextDecoration.ITALIC), that.clickEvent(), that.hoverEvent(), that.insertion(), this.pattern);
+    return new SelectorComponent(this.children, this.style.mergeStyle(that.style()), this.pattern);
   }
 
   @Override
   public @NonNull SelectorComponent mergeColor(final @NonNull Component that) {
-    return new SelectorComponent(this.children, that.color(), this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.pattern);
+    return new SelectorComponent(this.children, this.style.mergeColor(that.style()), this.pattern);
   }
 
   @Override
   public @NonNull SelectorComponent mergeDecorations(final @NonNull Component that) {
-    final TextDecoration.State obfuscated = that.decoration(TextDecoration.OBFUSCATED) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.OBFUSCATED) : this.obfuscated;
-    final TextDecoration.State bold = that.decoration(TextDecoration.BOLD) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.BOLD) : this.bold;
-    final TextDecoration.State strikethrough = that.decoration(TextDecoration.STRIKETHROUGH) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.STRIKETHROUGH) : this.strikethrough;
-    final TextDecoration.State underlined = that.decoration(TextDecoration.UNDERLINED) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.UNDERLINED) : this.underlined;
-    final TextDecoration.State italic = that.decoration(TextDecoration.ITALIC) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.ITALIC) : this.italic;
-    return new SelectorComponent(this.children, this.color, obfuscated, bold, strikethrough, underlined, italic, this.clickEvent, this.hoverEvent, this.insertion, this.pattern);
+    return new SelectorComponent(this.children, this.style.mergeDecorations(that.style()), this.pattern);
   }
 
   @Override
   public @NonNull SelectorComponent mergeEvents(final @NonNull Component that) {
-    return new SelectorComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, that.clickEvent(), that.hoverEvent(), this.insertion, this.pattern);
+    return new SelectorComponent(this.children, this.style.mergeEvents(that.style()), this.pattern);
   }
 
   @Override
   public @NonNull SelectorComponent resetStyle() {
-    return new SelectorComponent(this.children, null, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null, this.pattern);
+    return new SelectorComponent(this.children, this.style.resetStyle(), this.pattern);
   }
 
   @Override
   public @NonNull SelectorComponent copy() {
-    return new SelectorComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.pattern);
+    return new SelectorComponent(this.children, this.style, this.pattern);
   }
 
   @Override

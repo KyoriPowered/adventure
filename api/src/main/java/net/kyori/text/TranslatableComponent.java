@@ -25,6 +25,7 @@ package net.kyori.text;
 
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
+import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -252,8 +253,8 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
     this.args = Collections.unmodifiableList(new ArrayList<>(builder.args));
   }
 
-  protected TranslatableComponent(final @NonNull List<Component> children, final @Nullable TextColor color, final TextDecoration.@NonNull State obfuscated, final TextDecoration.@NonNull State bold, final TextDecoration.@NonNull State strikethrough, final TextDecoration.@NonNull State underlined, final TextDecoration.@NonNull State italic, final @Nullable ClickEvent clickEvent, final @Nullable HoverEvent hoverEvent, final @Nullable String insertion, final @NonNull String key, final @NonNull List<Component> args) {
-    super(children, color, obfuscated, bold, strikethrough, underlined, italic, clickEvent, hoverEvent, insertion);
+  protected TranslatableComponent(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String key, final @NonNull List<Component> args) {
+    super(children, style);
     this.key = key;
     this.args = Collections.unmodifiableList(new ArrayList<>(args));
   }
@@ -274,7 +275,7 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
    * @return a copy of this component
    */
   public @NonNull TranslatableComponent key(final @NonNull String key) {
-    return new TranslatableComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, requireNonNull(key, "key"), this.args);
+    return new TranslatableComponent(this.children, this.style, requireNonNull(key, "key"), this.args);
   }
 
   /**
@@ -293,7 +294,7 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
    * @return this component
    */
   public @NonNull TranslatableComponent args(final @NonNull List<Component> args) {
-    return new TranslatableComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.key, args);
+    return new TranslatableComponent(this.children, this.style, this.key, args);
   }
 
   @Override
@@ -302,12 +303,12 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
     final List<Component> children = new ArrayList<>(this.children.size() + 1);
     children.addAll(this.children);
     children.add(component);
-    return new TranslatableComponent(children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.key, this.args);
+    return new TranslatableComponent(children, this.style, this.key, this.args);
   }
 
   @Override
   public @NonNull TranslatableComponent color(final @Nullable TextColor color) {
-    return new TranslatableComponent(this.children, color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.key, this.args);
+    return new TranslatableComponent(this.children, this.style.color(color), this.key, this.args);
   }
 
   @Override
@@ -317,65 +318,53 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
 
   @Override
   public @NonNull TranslatableComponent decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
-    switch(decoration) {
-      case BOLD: return new TranslatableComponent(this.children, this.color, this.obfuscated, requireNonNull(state, "flag"), this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.key, this.args);
-      case ITALIC: return new TranslatableComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, requireNonNull(state, "flag"), this.clickEvent, this.hoverEvent, this.insertion, this.key, this.args);
-      case UNDERLINED: return new TranslatableComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, requireNonNull(state, "flag"), this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.key, this.args);
-      case STRIKETHROUGH: return new TranslatableComponent(this.children, this.color, this.obfuscated, this.bold, requireNonNull(state, "flag"), this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.key, this.args);
-      case OBFUSCATED: return new TranslatableComponent(this.children, this.color, requireNonNull(state, "flag"), this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.key, this.args);
-      default: throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
-    }
+    return new TranslatableComponent(this.children, this.style.decoration(decoration, state), this.key, this.args);
   }
 
   @Override
   public @NonNull TranslatableComponent clickEvent(final @Nullable ClickEvent event) {
-    return new TranslatableComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, event, this.hoverEvent, this.insertion, this.key, this.args);
+    return new TranslatableComponent(this.children, this.style.clickEvent(event), this.key, this.args);
   }
 
   @Override
   public @NonNull TranslatableComponent hoverEvent(final @Nullable HoverEvent event) {
     if(event != null) this.detectCycle(event.value()); // detect cycle before modifying
-    return new TranslatableComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, event, this.insertion, this.key, this.args);
+    return new TranslatableComponent(this.children, this.style.hoverEvent(event), this.key, this.args);
   }
 
   @Override
   public @NonNull TranslatableComponent insertion(final @Nullable String insertion) {
-    return new TranslatableComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, insertion, this.key, this.args);
+    return new TranslatableComponent(this.children, this.style.insertion(insertion), this.key, this.args);
   }
 
   @Override
   public @NonNull TranslatableComponent mergeStyle(final @NonNull Component that) {
-    return new TranslatableComponent(this.children, that.color(), that.decoration(TextDecoration.OBFUSCATED), that.decoration(TextDecoration.BOLD), that.decoration(TextDecoration.STRIKETHROUGH), that.decoration(TextDecoration.UNDERLINED), that.decoration(TextDecoration.ITALIC), that.clickEvent(), that.hoverEvent(), that.insertion(), this.key, this.args);
+    return new TranslatableComponent(this.children, this.style.mergeStyle(that.style()), this.key, this.args);
   }
 
   @Override
   public @NonNull TranslatableComponent mergeColor(final @NonNull Component that) {
-    return new TranslatableComponent(this.children, that.color(), this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.key, this.args);
+    return new TranslatableComponent(this.children, this.style.mergeColor(that.style()), this.key, this.args);
   }
 
   @Override
   public @NonNull TranslatableComponent mergeDecorations(final @NonNull Component that) {
-    final TextDecoration.State obfuscated = that.decoration(TextDecoration.OBFUSCATED) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.OBFUSCATED) : this.obfuscated;
-    final TextDecoration.State bold = that.decoration(TextDecoration.BOLD) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.BOLD) : this.bold;
-    final TextDecoration.State strikethrough = that.decoration(TextDecoration.STRIKETHROUGH) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.STRIKETHROUGH) : this.strikethrough;
-    final TextDecoration.State underlined = that.decoration(TextDecoration.UNDERLINED) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.UNDERLINED) : this.underlined;
-    final TextDecoration.State italic = that.decoration(TextDecoration.ITALIC) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.ITALIC) : this.italic;
-    return new TranslatableComponent(this.children, this.color, obfuscated, bold, strikethrough, underlined, italic, this.clickEvent, this.hoverEvent, this.insertion, this.key, this.args);
+    return new TranslatableComponent(this.children, this.style.mergeDecorations(that.style()), this.key, this.args);
   }
 
   @Override
   public @NonNull TranslatableComponent mergeEvents(final @NonNull Component that) {
-    return new TranslatableComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, that.clickEvent(), that.hoverEvent(), this.insertion, this.key, this.args);
+    return new TranslatableComponent(this.children, this.style.mergeEvents(that.style()), this.key, this.args);
   }
 
   @Override
   public @NonNull TranslatableComponent resetStyle() {
-    return new TranslatableComponent(this.children, null, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null, this.key, this.args);
+    return new TranslatableComponent(this.children, this.style.resetStyle(), this.key, this.args);
   }
 
   @Override
   public @NonNull TranslatableComponent copy() {
-    return new TranslatableComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.key, this.args);
+    return new TranslatableComponent(this.children, this.style, this.key, this.args);
   }
 
   @Override

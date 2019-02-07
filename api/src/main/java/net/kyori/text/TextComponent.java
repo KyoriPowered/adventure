@@ -25,6 +25,7 @@ package net.kyori.text;
 
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
+import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -224,11 +225,11 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
 
   protected TextComponent(final @NonNull Builder builder) {
     super(builder);
-    this.content = builder.content;
+    this.content = requireNonNull(builder.content);
   }
 
-  protected TextComponent(final @NonNull List<Component> children, final @Nullable TextColor color, final TextDecoration.@NonNull State obfuscated, final TextDecoration.@NonNull State bold, final TextDecoration.@NonNull State strikethrough, final TextDecoration.@NonNull State underlined, final TextDecoration.@NonNull State italic, final @Nullable ClickEvent clickEvent, final @Nullable HoverEvent hoverEvent, final @Nullable String insertion, final @NonNull String content) {
-    super(children, color, obfuscated, bold, strikethrough, underlined, italic, clickEvent, hoverEvent, insertion);
+  protected TextComponent(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String content) {
+    super(children, style);
     this.content = content;
   }
 
@@ -248,7 +249,7 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
    * @return a copy of this component
    */
   public @NonNull TextComponent content(final @NonNull String content) {
-    return new TextComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, requireNonNull(content, "content"));
+    return new TextComponent(this.children, this.style, requireNonNull(content, "content"));
   }
 
   @Override
@@ -257,12 +258,12 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
     final List<Component> children = new ArrayList<>(this.children.size() + 1);
     children.addAll(this.children);
     children.add(component);
-    return new TextComponent(children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.content);
+    return new TextComponent(children, this.style, this.content);
   }
 
   @Override
   public @NonNull TextComponent color(final @Nullable TextColor color) {
-    return new TextComponent(this.children, color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.content);
+    return new TextComponent(this.children, this.style.color(color), this.content);
   }
 
   @Override
@@ -272,65 +273,53 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
 
   @Override
   public @NonNull TextComponent decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
-    switch(decoration) {
-      case BOLD: return new TextComponent(this.children, this.color, this.obfuscated, requireNonNull(state, "flag"), this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.content);
-      case ITALIC: return new TextComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, requireNonNull(state, "flag"), this.clickEvent, this.hoverEvent, this.insertion, this.content);
-      case UNDERLINED: return new TextComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, requireNonNull(state, "flag"), this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.content);
-      case STRIKETHROUGH: return new TextComponent(this.children, this.color, this.obfuscated, this.bold, requireNonNull(state, "flag"), this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.content);
-      case OBFUSCATED: return new TextComponent(this.children, this.color, requireNonNull(state, "flag"), this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.content);
-      default: throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
-    }
+    return new TextComponent(this.children, this.style.decoration(decoration, state), this.content);
   }
 
   @Override
   public @NonNull TextComponent clickEvent(final @Nullable ClickEvent event) {
-    return new TextComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, event, this.hoverEvent, this.insertion, this.content);
+    return new TextComponent(this.children, this.style.clickEvent(event), this.content);
   }
 
   @Override
   public @NonNull TextComponent hoverEvent(final @Nullable HoverEvent event) {
     if(event != null) this.detectCycle(event.value()); // detect cycle before modifying
-    return new TextComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, event, this.insertion, this.content);
+    return new TextComponent(this.children, this.style.hoverEvent(event), this.content);
   }
 
   @Override
   public @NonNull TextComponent insertion(final @Nullable String insertion) {
-    return new TextComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, insertion, this.content);
+    return new TextComponent(this.children, this.style.insertion(insertion), this.content);
   }
 
   @Override
   public @NonNull TextComponent mergeStyle(final @NonNull Component that) {
-    return new TextComponent(this.children, that.color(), that.decoration(TextDecoration.OBFUSCATED), that.decoration(TextDecoration.BOLD), that.decoration(TextDecoration.STRIKETHROUGH), that.decoration(TextDecoration.UNDERLINED), that.decoration(TextDecoration.ITALIC), that.clickEvent(), that.hoverEvent(), that.insertion(), this.content);
+    return new TextComponent(this.children, this.style.mergeStyle(that.style()), this.content);
   }
 
   @Override
   public @NonNull TextComponent mergeColor(final @NonNull Component that) {
-    return new TextComponent(this.children, that.color(), this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.content);
+    return new TextComponent(this.children, this.style.mergeColor(that.style()), this.content);
   }
 
   @Override
   public @NonNull TextComponent mergeDecorations(final @NonNull Component that) {
-    final TextDecoration.State obfuscated = that.decoration(TextDecoration.OBFUSCATED) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.OBFUSCATED) : this.obfuscated;
-    final TextDecoration.State bold = that.decoration(TextDecoration.BOLD) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.BOLD) : this.bold;
-    final TextDecoration.State strikethrough = that.decoration(TextDecoration.STRIKETHROUGH) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.STRIKETHROUGH) : this.strikethrough;
-    final TextDecoration.State underlined = that.decoration(TextDecoration.UNDERLINED) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.UNDERLINED) : this.underlined;
-    final TextDecoration.State italic = that.decoration(TextDecoration.ITALIC) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.ITALIC) : this.italic;
-    return new TextComponent(this.children, this.color, obfuscated, bold, strikethrough, underlined, italic, this.clickEvent, this.hoverEvent, this.insertion, this.content);
+    return new TextComponent(this.children, this.style.mergeDecorations(that.style()), this.content);
   }
 
   @Override
   public @NonNull TextComponent mergeEvents(final @NonNull Component that) {
-    return new TextComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, that.clickEvent(), that.hoverEvent(), this.insertion, this.content);
+    return new TextComponent(this.children, this.style.mergeEvents(that.style()), this.content);
   }
 
   @Override
   public @NonNull TextComponent resetStyle() {
-    return new TextComponent(this.children, null, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null, this.content);
+    return new TextComponent(this.children, this.style.resetStyle(), this.content);
   }
 
   @Override
   public @NonNull TextComponent copy() {
-    return new TextComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.content);
+    return new TextComponent(this.children, this.style, this.content);
   }
 
   @Override

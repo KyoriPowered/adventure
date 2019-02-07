@@ -25,11 +25,13 @@ package net.kyori.text.event;
 
 import net.kyori.text.Component;
 import net.kyori.text.util.NameMap;
+import net.kyori.text.util.ToStringer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
-import java.util.StringJoiner;
 
 /**
  * A hover event.
@@ -124,10 +126,10 @@ public final class HoverEvent {
 
   @Override
   public String toString() {
-    return new StringJoiner(", ", this.getClass().getSimpleName() + "{", "}")
-      .add("action=" + this.action)
-      .add("value=" + this.value)
-      .toString();
+    final Map<String, Object> builder = new LinkedHashMap<>();
+    builder.put("action", this.action);
+    builder.put("value", this.value);
+    return ToStringer.toString(this, builder);
   }
 
   /**

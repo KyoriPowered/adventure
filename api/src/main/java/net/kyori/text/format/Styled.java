@@ -21,122 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.text;
+package net.kyori.text.format;
 
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
-import net.kyori.text.format.Style;
-import net.kyori.text.format.TextColor;
-import net.kyori.text.format.TextDecoration;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Set;
 
-/**
- * A text component.
- */
-public interface Component {
-  /**
-   * Gets an immutable component with empty content.
-   *
-   * @return a component with empty content
-   */
-  static @NonNull Component empty() {
-    return Component0.EMPTY;
-  }
-
-  /**
-   * Gets an immutable component with a new line character as the content.
-   *
-   * @return a component with a new line character as the content
-   */
-  static @NonNull Component newline() {
-    return Component0.NEWLINE;
-  }
-
-  /**
-   * Gets an immutable component with a single space as the content.
-   *
-   * @return a component with a single space as the content
-   */
-  static @NonNull Component space() {
-    return Component0.SPACE;
-  }
-
-  /**
-   * Gets the unmodifiable list of children.
-   *
-   * @return the unmodifiable list of children
-   */
-  @NonNull List<Component> children();
-
-  /**
-   * Checks if this component contains a component.
-   *
-   * @param that the other component
-   * @return {@code true} if this component contains the provided
-   *     component, {@code false} otherwise
-   */
-  default boolean contains(final @NonNull Component that) {
-    if(this == that) return true;
-    for(final Component child : this.children()) {
-      if(child.contains(that)) return true;
-    }
-    if(this.hoverEvent() != null) {
-      final Component hover = this.hoverEvent().value();
-      if(that == hover) return true;
-      for(final Component child : hover.children()) {
-        if(child.contains(that)) return true;
-      }
-    }
-    return false;
-  }
-
-  /**
-   * Prevents a cycle between this component and the provided component.
-   *
-   * @param that the other component
-   */
-  default void detectCycle(final @NonNull Component that) {
-    if(that.contains(this)) {
-      throw new IllegalStateException("Component cycle detected between " + this + " and " + that);
-    }
-  }
-
-  /**
-   * Appends a component to this component.
-   *
-   * @param component the component to append
-   * @return a component with the component added
-   */
-  @NonNull Component append(final @NonNull Component component);
-
-  /**
-   * Creates a component.
-   *
-   * @return a component
-   */
-  @NonNull Component copy();
-
-  /**
-   * Gets the style of this component.
-   *
-   * @return the style of this component
-   */
-  @NonNull Style style();
-
+public interface Styled<R, M> {
   /**
    * Gets the color of this component.
    *
    * @return the color of this component
    */
-  default @Nullable TextColor color() {
-    return this.style().color();
-  }
+  @Nullable TextColor color();
 
   /**
    * Sets the color of this component.
@@ -144,7 +46,7 @@ public interface Component {
    * @param color the color
    * @return a component
    */
-  @NonNull Component color(final @Nullable TextColor color);
+  @NonNull R color(final @Nullable TextColor color);
 
   /**
    * Tests if this component has a decoration.
@@ -165,9 +67,7 @@ public interface Component {
    *     {@link TextDecoration.State#FALSE} if this component does not have the decoration,
    *     and {@link TextDecoration.State#NOT_SET} if not set
    */
-  default TextDecoration.@NonNull State decoration(final @NonNull TextDecoration decoration) {
-    return this.style().decoration(decoration);
-  }
+  TextDecoration.@NonNull State decoration(final @NonNull TextDecoration decoration);
 
   /**
    * Sets the state of a decoration on this component.
@@ -177,7 +77,7 @@ public interface Component {
    *     this component should not have the decoration
    * @return a component
    */
-  default @NonNull Component decoration(final @NonNull TextDecoration decoration, final boolean flag) {
+  default @NonNull R decoration(final @NonNull TextDecoration decoration, final boolean flag) {
     return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
   }
 
@@ -191,7 +91,7 @@ public interface Component {
    *     should not have a set value
    * @return a component
    */
-  @NonNull Component decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state);
+  @NonNull R decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state);
 
   /**
    * Gets a set of decorations this component has.
@@ -224,9 +124,7 @@ public interface Component {
    *
    * @return the click event
    */
-  default @Nullable ClickEvent clickEvent() {
-    return this.style().clickEvent();
-  }
+  @Nullable ClickEvent clickEvent();
 
   /**
    * Sets the click event of this component.
@@ -234,16 +132,14 @@ public interface Component {
    * @param event the click event
    * @return a component
    */
-  @NonNull Component clickEvent(final @Nullable ClickEvent event);
+  @NonNull R clickEvent(final @Nullable ClickEvent event);
 
   /**
    * Gets the hover event of this component.
    *
    * @return the hover event
    */
-  default @Nullable HoverEvent hoverEvent() {
-    return this.style().hoverEvent();
-  }
+  @Nullable HoverEvent hoverEvent();
 
   /**
    * Sets the hover event of this component.
@@ -251,16 +147,14 @@ public interface Component {
    * @param event the hover event
    * @return a component
    */
-  @NonNull Component hoverEvent(final @Nullable HoverEvent event);
+  @NonNull R hoverEvent(final @Nullable HoverEvent event);
 
   /**
    * Gets the string to be inserted when this component is shift-clicked.
    *
    * @return the insertion string
    */
-  default @Nullable String insertion() {
-    return this.style().insertion();
-  }
+  @Nullable String insertion();
 
   /**
    * Sets the string to be inserted when this component is shift-clicked.
@@ -268,7 +162,7 @@ public interface Component {
    * @param insertion the insertion string
    * @return a component
    */
-  @NonNull Component insertion(final @Nullable String insertion);
+  @NonNull R insertion(final @Nullable String insertion);
 
   /**
    * Merges styling from another component into this component.
@@ -276,7 +170,7 @@ public interface Component {
    * @param that the other component
    * @return a component
    */
-  @NonNull Component mergeStyle(final @NonNull Component that);
+  @NonNull R mergeStyle(final @NonNull M that);
 
   /**
    * Merges the color from another component into this component.
@@ -284,7 +178,7 @@ public interface Component {
    * @param that the other component
    * @return a component
    */
-  @NonNull Component mergeColor(final @NonNull Component that);
+  @NonNull R mergeColor(final @NonNull M that);
 
   /**
    * Merges the decorations from another component into this component.
@@ -292,7 +186,7 @@ public interface Component {
    * @param that the other component
    * @return a component
    */
-  @NonNull Component mergeDecorations(final @NonNull Component that);
+  @NonNull R mergeDecorations(final @NonNull M that);
 
   /**
    * Merges the events from another component into this component.
@@ -300,14 +194,14 @@ public interface Component {
    * @param that the other component
    * @return a component
    */
-  @NonNull Component mergeEvents(final @NonNull Component that);
+  @NonNull R mergeEvents(final @NonNull M that);
 
   /**
    * Resets all styling on this component.
    *
    * @return a component
    */
-  @NonNull Component resetStyle();
+  @NonNull R resetStyle();
 
   /**
    * Tests if this component has any styling.
@@ -315,7 +209,5 @@ public interface Component {
    * @return {@code true} if this component has any styling, {@code false} if this
    *     component does not have any styling
    */
-  default boolean hasStyling() {
-    return this.style().hasStyling();
-  }
+  boolean hasStyling();
 }

@@ -25,6 +25,7 @@ package net.kyori.text;
 
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
+import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -125,11 +126,11 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
 
   protected KeybindComponent(final @NonNull Builder builder) {
     super(builder);
-    this.keybind = builder.keybind;
+    this.keybind = requireNonNull(builder.keybind, "keybind");
   }
 
-  protected KeybindComponent(final @NonNull List<Component> children, final @Nullable TextColor color, final TextDecoration.@NonNull State obfuscated, final TextDecoration.@NonNull State bold, final TextDecoration.@NonNull State strikethrough, final TextDecoration.@NonNull State underlined, final TextDecoration.@NonNull State italic, final @Nullable ClickEvent clickEvent, final @Nullable HoverEvent hoverEvent, final @Nullable String insertion, final @NonNull String keybind) {
-    super(children, color, obfuscated, bold, strikethrough, underlined, italic, clickEvent, hoverEvent, insertion);
+  protected KeybindComponent(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String keybind) {
+    super(children, style);
     this.keybind = keybind;
   }
 
@@ -149,7 +150,7 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
    * @return a copy of this component
    */
   public @NonNull KeybindComponent keybind(final @NonNull String keybind) {
-    return new KeybindComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, requireNonNull(keybind, "keybind"));
+    return new KeybindComponent(this.children, this.style, requireNonNull(keybind, "keybind"));
   }
 
   @Override
@@ -158,12 +159,12 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
     final List<Component> children = new ArrayList<>(this.children.size() + 1);
     children.addAll(this.children);
     children.add(component);
-    return new KeybindComponent(children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.keybind);
+    return new KeybindComponent(children, this.style, this.keybind);
   }
 
   @Override
   public @NonNull KeybindComponent color(final @Nullable TextColor color) {
-    return new KeybindComponent(this.children, color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.keybind);
+    return new KeybindComponent(this.children, this.style.color(color), this.keybind);
   }
 
   @Override
@@ -173,65 +174,53 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
 
   @Override
   public @NonNull KeybindComponent decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
-    switch(decoration) {
-      case BOLD: return new KeybindComponent(this.children, this.color, this.obfuscated, requireNonNull(state, "flag"), this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.keybind);
-      case ITALIC: return new KeybindComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, requireNonNull(state, "flag"), this.clickEvent, this.hoverEvent, this.insertion, this.keybind);
-      case UNDERLINED: return new KeybindComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, requireNonNull(state, "flag"), this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.keybind);
-      case STRIKETHROUGH: return new KeybindComponent(this.children, this.color, this.obfuscated, this.bold, requireNonNull(state, "flag"), this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.keybind);
-      case OBFUSCATED: return new KeybindComponent(this.children, this.color, requireNonNull(state, "flag"), this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.keybind);
-      default: throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
-    }
+    return new KeybindComponent(this.children, this.style.decoration(decoration, state), this.keybind);
   }
 
   @Override
   public @NonNull KeybindComponent clickEvent(final @Nullable ClickEvent event) {
-    return new KeybindComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, event, this.hoverEvent, this.insertion, this.keybind);
+    return new KeybindComponent(this.children, this.style.clickEvent(event), this.keybind);
   }
 
   @Override
   public @NonNull KeybindComponent hoverEvent(final @Nullable HoverEvent event) {
     if(event != null) this.detectCycle(event.value()); // detect cycle before modifying
-    return new KeybindComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, event, this.insertion, this.keybind);
+    return new KeybindComponent(this.children, this.style.hoverEvent(event), this.keybind);
   }
 
   @Override
   public @NonNull KeybindComponent insertion(final @Nullable String insertion) {
-    return new KeybindComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, insertion, this.keybind);
+    return new KeybindComponent(this.children, this.style.insertion(insertion), this.keybind);
   }
 
   @Override
   public @NonNull KeybindComponent mergeStyle(final @NonNull Component that) {
-    return new KeybindComponent(this.children, that.color(), that.decoration(TextDecoration.OBFUSCATED), that.decoration(TextDecoration.BOLD), that.decoration(TextDecoration.STRIKETHROUGH), that.decoration(TextDecoration.UNDERLINED), that.decoration(TextDecoration.ITALIC), that.clickEvent(), that.hoverEvent(), that.insertion(), this.keybind);
+    return new KeybindComponent(this.children, this.style.mergeStyle(that.style()), this.keybind);
   }
 
   @Override
   public @NonNull KeybindComponent mergeColor(final @NonNull Component that) {
-    return new KeybindComponent(this.children, that.color(), this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.keybind);
+    return new KeybindComponent(this.children, this.style.mergeColor(that.style()), this.keybind);
   }
 
   @Override
   public @NonNull KeybindComponent mergeDecorations(final @NonNull Component that) {
-    final TextDecoration.State obfuscated = that.decoration(TextDecoration.OBFUSCATED) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.OBFUSCATED) : this.obfuscated;
-    final TextDecoration.State bold = that.decoration(TextDecoration.BOLD) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.BOLD) : this.bold;
-    final TextDecoration.State strikethrough = that.decoration(TextDecoration.STRIKETHROUGH) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.STRIKETHROUGH) : this.strikethrough;
-    final TextDecoration.State underlined = that.decoration(TextDecoration.UNDERLINED) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.UNDERLINED) : this.underlined;
-    final TextDecoration.State italic = that.decoration(TextDecoration.ITALIC) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.ITALIC) : this.italic;
-    return new KeybindComponent(this.children, this.color, obfuscated, bold, strikethrough, underlined, italic, this.clickEvent, this.hoverEvent, this.insertion, this.keybind);
+    return new KeybindComponent(this.children, this.style.mergeDecorations(that.style()), this.keybind);
   }
 
   @Override
   public @NonNull KeybindComponent mergeEvents(final @NonNull Component that) {
-    return new KeybindComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, that.clickEvent(), that.hoverEvent(), this.insertion, this.keybind);
+    return new KeybindComponent(this.children, this.style.mergeEvents(that.style()), this.keybind);
   }
 
   @Override
   public @NonNull KeybindComponent resetStyle() {
-    return new KeybindComponent(this.children, null, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null, this.keybind);
+    return new KeybindComponent(this.children, this.style.resetStyle(), this.keybind);
   }
 
   @Override
   public @NonNull KeybindComponent copy() {
-    return new KeybindComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.keybind);
+    return new KeybindComponent(this.children, this.style, this.keybind);
   }
 
   @Override

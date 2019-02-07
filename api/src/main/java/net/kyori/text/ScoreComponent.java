@@ -25,6 +25,7 @@ package net.kyori.text;
 
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
+import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -103,13 +104,13 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
 
   protected ScoreComponent(final @NonNull Builder builder) {
     super(builder);
-    this.name = builder.name;
-    this.objective = builder.objective;
+    this.name = requireNonNull(builder.name, "name");
+    this.objective = requireNonNull(builder.objective, "objective");
     this.value = builder.value;
   }
 
-  protected ScoreComponent(final @NonNull List<Component> children, final @Nullable TextColor color, final TextDecoration.@NonNull State obfuscated, final TextDecoration.@NonNull State bold, final TextDecoration.@NonNull State strikethrough, final TextDecoration.@NonNull State underlined, final TextDecoration.@NonNull State italic, final @Nullable ClickEvent clickEvent, final @Nullable HoverEvent hoverEvent, final @Nullable String insertion, final @NonNull String name, final @NonNull String objective, final @Nullable String value) {
-    super(children, color, obfuscated, bold, strikethrough, underlined, italic, clickEvent, hoverEvent, insertion);
+  protected ScoreComponent(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String name, final @NonNull String objective, final @Nullable String value) {
+    super(children, style);
     this.name = name;
     this.objective = objective;
     this.value = value;
@@ -131,7 +132,7 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
    * @return a copy of this component
    */
   public @NonNull ScoreComponent name(final @NonNull String name) {
-    return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, requireNonNull(name, "name"), this.objective, this.value);
+    return new ScoreComponent(this.children, this.style, requireNonNull(name, "name"), this.objective, this.value);
   }
 
   /**
@@ -150,7 +151,7 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
    * @return a copy of this component
    */
   public @NonNull ScoreComponent objective(final @NonNull String objective) {
-    return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.name, requireNonNull(objective, "objective"), this.value);
+    return new ScoreComponent(this.children, this.style, this.name, requireNonNull(objective, "objective"), this.value);
   }
 
   /**
@@ -169,7 +170,7 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
    * @return a copy of this component
    */
   public @NonNull ScoreComponent content(final @NonNull String value) {
-    return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, value);
+    return new ScoreComponent(this.children, this.style, this.name, this.objective, value);
   }
 
   @Override
@@ -178,12 +179,12 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
     final List<Component> children = new ArrayList<>(this.children.size() + 1);
     children.addAll(this.children);
     children.add(component);
-    return new ScoreComponent(children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
+    return new ScoreComponent(children, this.style, this.name, this.objective, this.value);
   }
 
   @Override
   public @NonNull ScoreComponent color(final @Nullable TextColor color) {
-    return new ScoreComponent(this.children, color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
+    return new ScoreComponent(this.children, this.style.color(color), this.name, this.objective, this.value);
   }
 
   @Override
@@ -193,65 +194,53 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
 
   @Override
   public @NonNull ScoreComponent decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
-    switch(decoration) {
-      case BOLD: return new ScoreComponent(this.children, this.color, this.obfuscated, requireNonNull(state, "flag"), this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
-      case ITALIC: return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, requireNonNull(state, "flag"), this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
-      case UNDERLINED: return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, requireNonNull(state, "flag"), this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
-      case STRIKETHROUGH: return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, requireNonNull(state, "flag"), this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
-      case OBFUSCATED: return new ScoreComponent(this.children, this.color, requireNonNull(state, "flag"), this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
-      default: throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
-    }
+    return new ScoreComponent(this.children, this.style.decoration(decoration, state), this.name, this.objective, this.value);
   }
 
   @Override
   public @NonNull ScoreComponent clickEvent(final @Nullable ClickEvent event) {
-    return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, event, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
+    return new ScoreComponent(this.children, this.style.clickEvent(event), this.name, this.objective, this.value);
   }
 
   @Override
   public @NonNull ScoreComponent hoverEvent(final @Nullable HoverEvent event) {
     if(event != null) this.detectCycle(event.value()); // detect cycle before modifying
-    return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, event, this.insertion, this.name, this.objective, this.value);
+    return new ScoreComponent(this.children, this.style.hoverEvent(event), this.name, this.objective, this.value);
   }
 
   @Override
   public @NonNull ScoreComponent insertion(final @Nullable String insertion) {
-    return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, insertion, this.name, this.objective, this.value);
+    return new ScoreComponent(this.children, this.style.insertion(insertion), this.name, this.objective, this.value);
   }
 
   @Override
   public @NonNull ScoreComponent mergeStyle(final @NonNull Component that) {
-    return new ScoreComponent(this.children, that.color(), that.decoration(TextDecoration.OBFUSCATED), that.decoration(TextDecoration.BOLD), that.decoration(TextDecoration.STRIKETHROUGH), that.decoration(TextDecoration.UNDERLINED), that.decoration(TextDecoration.ITALIC), that.clickEvent(), that.hoverEvent(), that.insertion(), this.name, this.objective, this.value);
+    return new ScoreComponent(this.children, this.style.mergeStyle(that.style()), this.name, this.objective, this.value);
   }
 
   @Override
   public @NonNull ScoreComponent mergeColor(final @NonNull Component that) {
-    return new ScoreComponent(this.children, that.color(), this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
+    return new ScoreComponent(this.children, this.style.mergeColor(that.style()), this.name, this.objective, this.value);
   }
 
   @Override
   public @NonNull ScoreComponent mergeDecorations(final @NonNull Component that) {
-    final TextDecoration.State obfuscated = that.decoration(TextDecoration.OBFUSCATED) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.OBFUSCATED) : this.obfuscated;
-    final TextDecoration.State bold = that.decoration(TextDecoration.BOLD) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.BOLD) : this.bold;
-    final TextDecoration.State strikethrough = that.decoration(TextDecoration.STRIKETHROUGH) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.STRIKETHROUGH) : this.strikethrough;
-    final TextDecoration.State underlined = that.decoration(TextDecoration.UNDERLINED) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.UNDERLINED) : this.underlined;
-    final TextDecoration.State italic = that.decoration(TextDecoration.ITALIC) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.ITALIC) : this.italic;
-    return new ScoreComponent(this.children, this.color, obfuscated, bold, strikethrough, underlined, italic, this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
+    return new ScoreComponent(this.children, this.style.mergeDecorations(that.style()), this.name, this.objective, this.value);
   }
 
   @Override
   public @NonNull ScoreComponent mergeEvents(final @NonNull Component that) {
-    return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, that.clickEvent(), that.hoverEvent(), this.insertion, this.name, this.objective, this.value);
+    return new ScoreComponent(this.children, this.style.mergeEvents(that.style()), this.name, this.objective, this.value);
   }
 
   @Override
   public @NonNull ScoreComponent resetStyle() {
-    return new ScoreComponent(this.children, null, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null, this.name, this.objective, this.value);
+    return new ScoreComponent(this.children, this.style.resetStyle(), this.name, this.objective, this.value);
   }
 
   @Override
   public @NonNull ScoreComponent copy() {
-    return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
+    return new ScoreComponent(this.children, this.style, this.name, this.objective, this.value);
   }
 
   @Override
