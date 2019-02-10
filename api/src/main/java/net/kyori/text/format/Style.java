@@ -129,7 +129,7 @@ public class Style implements Styled<Style, Style> {
 
   @Override
   public @NonNull Style clickEvent(final @Nullable ClickEvent event) {
-    return new Style(this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
+    return new Style(this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, event, this.hoverEvent, this.insertion);
   }
 
   @Override
@@ -139,7 +139,7 @@ public class Style implements Styled<Style, Style> {
 
   @Override
   public @NonNull Style hoverEvent(final @Nullable HoverEvent event) {
-    return new Style(this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
+    return new Style(this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, event, this.insertion);
   }
 
   @Override

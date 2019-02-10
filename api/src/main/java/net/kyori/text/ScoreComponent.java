@@ -23,11 +23,7 @@
  */
 package net.kyori.text;
 
-import net.kyori.text.event.ClickEvent;
-import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.Style;
-import net.kyori.text.format.TextColor;
-import net.kyori.text.format.TextDecoration;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -41,7 +37,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A scoreboard score component.
  */
-public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, ScoreComponent.Builder> {
+public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, ScoreComponent.Builder> implements ScopedComponent<ScoreComponent> {
   /**
    * The score name.
    */
@@ -174,68 +170,17 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
   }
 
   @Override
+  public @NonNull ScoreComponent style(final @NonNull Style style) {
+    return new ScoreComponent(this.children, style, this.name, this.objective, this.value);
+  }
+
+  @Override
   public @NonNull ScoreComponent append(final @NonNull Component component) {
     this.detectCycle(component); // detect cycle before modifying
     final List<Component> children = new ArrayList<>(this.children.size() + 1);
     children.addAll(this.children);
     children.add(component);
     return new ScoreComponent(children, this.style, this.name, this.objective, this.value);
-  }
-
-  @Override
-  public @NonNull ScoreComponent color(final @Nullable TextColor color) {
-    return new ScoreComponent(this.children, this.style.color(color), this.name, this.objective, this.value);
-  }
-
-  @Override
-  public @NonNull ScoreComponent decoration(final @NonNull TextDecoration decoration, final boolean flag) {
-    return (ScoreComponent) super.decoration(decoration, flag);
-  }
-
-  @Override
-  public @NonNull ScoreComponent decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
-    return new ScoreComponent(this.children, this.style.decoration(decoration, state), this.name, this.objective, this.value);
-  }
-
-  @Override
-  public @NonNull ScoreComponent clickEvent(final @Nullable ClickEvent event) {
-    return new ScoreComponent(this.children, this.style.clickEvent(event), this.name, this.objective, this.value);
-  }
-
-  @Override
-  public @NonNull ScoreComponent hoverEvent(final @Nullable HoverEvent event) {
-    if(event != null) this.detectCycle(event.value()); // detect cycle before modifying
-    return new ScoreComponent(this.children, this.style.hoverEvent(event), this.name, this.objective, this.value);
-  }
-
-  @Override
-  public @NonNull ScoreComponent insertion(final @Nullable String insertion) {
-    return new ScoreComponent(this.children, this.style.insertion(insertion), this.name, this.objective, this.value);
-  }
-
-  @Override
-  public @NonNull ScoreComponent mergeStyle(final @NonNull Component that) {
-    return new ScoreComponent(this.children, this.style.mergeStyle(that.style()), this.name, this.objective, this.value);
-  }
-
-  @Override
-  public @NonNull ScoreComponent mergeColor(final @NonNull Component that) {
-    return new ScoreComponent(this.children, this.style.mergeColor(that.style()), this.name, this.objective, this.value);
-  }
-
-  @Override
-  public @NonNull ScoreComponent mergeDecorations(final @NonNull Component that) {
-    return new ScoreComponent(this.children, this.style.mergeDecorations(that.style()), this.name, this.objective, this.value);
-  }
-
-  @Override
-  public @NonNull ScoreComponent mergeEvents(final @NonNull Component that) {
-    return new ScoreComponent(this.children, this.style.mergeEvents(that.style()), this.name, this.objective, this.value);
-  }
-
-  @Override
-  public @NonNull ScoreComponent resetStyle() {
-    return new ScoreComponent(this.children, this.style.resetStyle(), this.name, this.objective, this.value);
   }
 
   @Override

@@ -23,11 +23,7 @@
  */
 package net.kyori.text;
 
-import net.kyori.text.event.ClickEvent;
-import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.Style;
-import net.kyori.text.format.TextColor;
-import net.kyori.text.format.TextDecoration;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -41,7 +37,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A scoreboard selector component.
  */
-public class SelectorComponent extends AbstractBuildableComponent<SelectorComponent, SelectorComponent.Builder> {
+public class SelectorComponent extends AbstractBuildableComponent<SelectorComponent, SelectorComponent.Builder> implements ScopedComponent<SelectorComponent> {
   /**
    * The selector pattern.
    */
@@ -106,68 +102,17 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
   }
 
   @Override
+  public @NonNull SelectorComponent style(final @NonNull Style style) {
+    return new SelectorComponent(this.children, style, this.pattern);
+  }
+
+  @Override
   public @NonNull SelectorComponent append(final @NonNull Component component) {
     this.detectCycle(component); // detect cycle before modifying
     final List<Component> children = new ArrayList<>(this.children.size() + 1);
     children.addAll(this.children);
     children.add(component);
     return new SelectorComponent(children, this.style, this.pattern);
-  }
-
-  @Override
-  public @NonNull SelectorComponent color(final @Nullable TextColor color) {
-    return new SelectorComponent(this.children, this.style.color(color), this.pattern);
-  }
-
-  @Override
-  public @NonNull SelectorComponent decoration(final @NonNull TextDecoration decoration, final boolean flag) {
-    return (SelectorComponent) super.decoration(decoration, flag);
-  }
-
-  @Override
-  public @NonNull SelectorComponent decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
-    return new SelectorComponent(this.children, this.style.decoration(decoration, state), this.pattern);
-  }
-
-  @Override
-  public @NonNull SelectorComponent clickEvent(final @Nullable ClickEvent event) {
-    return new SelectorComponent(this.children, this.style.clickEvent(event), this.pattern);
-  }
-
-  @Override
-  public @NonNull SelectorComponent hoverEvent(final @Nullable HoverEvent event) {
-    if(event != null) this.detectCycle(event.value()); // detect cycle before modifying
-    return new SelectorComponent(this.children, this.style.hoverEvent(event), this.pattern);
-  }
-
-  @Override
-  public @NonNull SelectorComponent insertion(final @Nullable String insertion) {
-    return new SelectorComponent(this.children, this.style.insertion(insertion), this.pattern);
-  }
-
-  @Override
-  public @NonNull SelectorComponent mergeStyle(final @NonNull Component that) {
-    return new SelectorComponent(this.children, this.style.mergeStyle(that.style()), this.pattern);
-  }
-
-  @Override
-  public @NonNull SelectorComponent mergeColor(final @NonNull Component that) {
-    return new SelectorComponent(this.children, this.style.mergeColor(that.style()), this.pattern);
-  }
-
-  @Override
-  public @NonNull SelectorComponent mergeDecorations(final @NonNull Component that) {
-    return new SelectorComponent(this.children, this.style.mergeDecorations(that.style()), this.pattern);
-  }
-
-  @Override
-  public @NonNull SelectorComponent mergeEvents(final @NonNull Component that) {
-    return new SelectorComponent(this.children, this.style.mergeEvents(that.style()), this.pattern);
-  }
-
-  @Override
-  public @NonNull SelectorComponent resetStyle() {
-    return new SelectorComponent(this.children, this.style.resetStyle(), this.pattern);
   }
 
   @Override

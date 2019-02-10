@@ -23,8 +23,6 @@
  */
 package net.kyori.text;
 
-import net.kyori.text.event.ClickEvent;
-import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
@@ -45,7 +43,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A translatable text component.
  */
-public class TranslatableComponent extends AbstractBuildableComponent<TranslatableComponent, TranslatableComponent.Builder> {
+public class TranslatableComponent extends AbstractBuildableComponent<TranslatableComponent, TranslatableComponent.Builder> implements ScopedComponent<TranslatableComponent> {
   /**
    * The translation key.
    */
@@ -298,68 +296,17 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
   }
 
   @Override
+  public @NonNull TranslatableComponent style(final @NonNull Style style) {
+    return new TranslatableComponent(this.children, style, this.key, this.args);
+  }
+
+  @Override
   public @NonNull TranslatableComponent append(final @NonNull Component component) {
     this.detectCycle(component); // detect cycle before modifying
     final List<Component> children = new ArrayList<>(this.children.size() + 1);
     children.addAll(this.children);
     children.add(component);
     return new TranslatableComponent(children, this.style, this.key, this.args);
-  }
-
-  @Override
-  public @NonNull TranslatableComponent color(final @Nullable TextColor color) {
-    return new TranslatableComponent(this.children, this.style.color(color), this.key, this.args);
-  }
-
-  @Override
-  public @NonNull TranslatableComponent decoration(final @NonNull TextDecoration decoration, final boolean flag) {
-    return (TranslatableComponent) super.decoration(decoration, flag);
-  }
-
-  @Override
-  public @NonNull TranslatableComponent decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
-    return new TranslatableComponent(this.children, this.style.decoration(decoration, state), this.key, this.args);
-  }
-
-  @Override
-  public @NonNull TranslatableComponent clickEvent(final @Nullable ClickEvent event) {
-    return new TranslatableComponent(this.children, this.style.clickEvent(event), this.key, this.args);
-  }
-
-  @Override
-  public @NonNull TranslatableComponent hoverEvent(final @Nullable HoverEvent event) {
-    if(event != null) this.detectCycle(event.value()); // detect cycle before modifying
-    return new TranslatableComponent(this.children, this.style.hoverEvent(event), this.key, this.args);
-  }
-
-  @Override
-  public @NonNull TranslatableComponent insertion(final @Nullable String insertion) {
-    return new TranslatableComponent(this.children, this.style.insertion(insertion), this.key, this.args);
-  }
-
-  @Override
-  public @NonNull TranslatableComponent mergeStyle(final @NonNull Component that) {
-    return new TranslatableComponent(this.children, this.style.mergeStyle(that.style()), this.key, this.args);
-  }
-
-  @Override
-  public @NonNull TranslatableComponent mergeColor(final @NonNull Component that) {
-    return new TranslatableComponent(this.children, this.style.mergeColor(that.style()), this.key, this.args);
-  }
-
-  @Override
-  public @NonNull TranslatableComponent mergeDecorations(final @NonNull Component that) {
-    return new TranslatableComponent(this.children, this.style.mergeDecorations(that.style()), this.key, this.args);
-  }
-
-  @Override
-  public @NonNull TranslatableComponent mergeEvents(final @NonNull Component that) {
-    return new TranslatableComponent(this.children, this.style.mergeEvents(that.style()), this.key, this.args);
-  }
-
-  @Override
-  public @NonNull TranslatableComponent resetStyle() {
-    return new TranslatableComponent(this.children, this.style.resetStyle(), this.key, this.args);
   }
 
   @Override

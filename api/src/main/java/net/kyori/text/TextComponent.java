@@ -23,8 +23,6 @@
  */
 package net.kyori.text;
 
-import net.kyori.text.event.ClickEvent;
-import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
@@ -45,7 +43,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A plain text component.
  */
-public class TextComponent extends AbstractBuildableComponent<TextComponent, TextComponent.Builder> {
+public class TextComponent extends AbstractBuildableComponent<TextComponent, TextComponent.Builder> implements ScopedComponent<TextComponent> {
   /**
    * The plain text content.
    */
@@ -253,68 +251,17 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
   }
 
   @Override
+  public @NonNull TextComponent style(final @NonNull Style style) {
+    return new TextComponent(this.children, style, this.content);
+  }
+
+  @Override
   public @NonNull TextComponent append(final @NonNull Component component) {
     this.detectCycle(component); // detect cycle before modifying
     final List<Component> children = new ArrayList<>(this.children.size() + 1);
     children.addAll(this.children);
     children.add(component);
     return new TextComponent(children, this.style, this.content);
-  }
-
-  @Override
-  public @NonNull TextComponent color(final @Nullable TextColor color) {
-    return new TextComponent(this.children, this.style.color(color), this.content);
-  }
-
-  @Override
-  public @NonNull TextComponent decoration(final @NonNull TextDecoration decoration, final boolean flag) {
-    return (TextComponent) super.decoration(decoration, flag);
-  }
-
-  @Override
-  public @NonNull TextComponent decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
-    return new TextComponent(this.children, this.style.decoration(decoration, state), this.content);
-  }
-
-  @Override
-  public @NonNull TextComponent clickEvent(final @Nullable ClickEvent event) {
-    return new TextComponent(this.children, this.style.clickEvent(event), this.content);
-  }
-
-  @Override
-  public @NonNull TextComponent hoverEvent(final @Nullable HoverEvent event) {
-    if(event != null) this.detectCycle(event.value()); // detect cycle before modifying
-    return new TextComponent(this.children, this.style.hoverEvent(event), this.content);
-  }
-
-  @Override
-  public @NonNull TextComponent insertion(final @Nullable String insertion) {
-    return new TextComponent(this.children, this.style.insertion(insertion), this.content);
-  }
-
-  @Override
-  public @NonNull TextComponent mergeStyle(final @NonNull Component that) {
-    return new TextComponent(this.children, this.style.mergeStyle(that.style()), this.content);
-  }
-
-  @Override
-  public @NonNull TextComponent mergeColor(final @NonNull Component that) {
-    return new TextComponent(this.children, this.style.mergeColor(that.style()), this.content);
-  }
-
-  @Override
-  public @NonNull TextComponent mergeDecorations(final @NonNull Component that) {
-    return new TextComponent(this.children, this.style.mergeDecorations(that.style()), this.content);
-  }
-
-  @Override
-  public @NonNull TextComponent mergeEvents(final @NonNull Component that) {
-    return new TextComponent(this.children, this.style.mergeEvents(that.style()), this.content);
-  }
-
-  @Override
-  public @NonNull TextComponent resetStyle() {
-    return new TextComponent(this.children, this.style.resetStyle(), this.content);
   }
 
   @Override

@@ -130,6 +130,14 @@ public interface Component {
   @NonNull Style style();
 
   /**
+   * Sets the style of this component.
+   *
+   * @param style the style
+   * @return a component
+   */
+  @NonNull Component style(final @NonNull Style style);
+
+  /**
    * Gets the color of this component.
    *
    * @return the color of this component
@@ -144,7 +152,9 @@ public interface Component {
    * @param color the color
    * @return a component
    */
-  @NonNull Component color(final @Nullable TextColor color);
+  default @NonNull Component color(final @Nullable TextColor color) {
+    return this.style(this.style().color(color));
+  }
 
   /**
    * Tests if this component has a decoration.
@@ -191,7 +201,9 @@ public interface Component {
    *     should not have a set value
    * @return a component
    */
-  @NonNull Component decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state);
+  default @NonNull Component decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
+    return this.style(this.style().decoration(decoration, state));
+  }
 
   /**
    * Gets a set of decorations this component has.
@@ -234,7 +246,9 @@ public interface Component {
    * @param event the click event
    * @return a component
    */
-  @NonNull Component clickEvent(final @Nullable ClickEvent event);
+  default @NonNull Component clickEvent(final @Nullable ClickEvent event) {
+    return this.style(this.style().clickEvent(event));
+  }
 
   /**
    * Gets the hover event of this component.
@@ -251,7 +265,10 @@ public interface Component {
    * @param event the hover event
    * @return a component
    */
-  @NonNull Component hoverEvent(final @Nullable HoverEvent event);
+  default @NonNull Component hoverEvent(final @Nullable HoverEvent event) {
+    if(event != null) this.detectCycle(event.value()); // detect cycle before modifying
+    return this.style(this.style().hoverEvent(event));
+  }
 
   /**
    * Gets the string to be inserted when this component is shift-clicked.
@@ -268,7 +285,9 @@ public interface Component {
    * @param insertion the insertion string
    * @return a component
    */
-  @NonNull Component insertion(final @Nullable String insertion);
+  default @NonNull Component insertion(final @Nullable String insertion) {
+    return this.style(this.style().insertion(insertion));
+  }
 
   /**
    * Merges styling from another component into this component.
@@ -276,7 +295,9 @@ public interface Component {
    * @param that the other component
    * @return a component
    */
-  @NonNull Component mergeStyle(final @NonNull Component that);
+  default @NonNull Component mergeStyle(final @NonNull Component that) {
+    return this.style(this.style().mergeStyle(that.style()));
+  }
 
   /**
    * Merges the color from another component into this component.
@@ -284,7 +305,9 @@ public interface Component {
    * @param that the other component
    * @return a component
    */
-  @NonNull Component mergeColor(final @NonNull Component that);
+  default @NonNull Component mergeColor(final @NonNull Component that) {
+    return this.style(this.style().mergeColor(that.style()));
+  }
 
   /**
    * Merges the decorations from another component into this component.
@@ -292,7 +315,9 @@ public interface Component {
    * @param that the other component
    * @return a component
    */
-  @NonNull Component mergeDecorations(final @NonNull Component that);
+  default @NonNull Component mergeDecorations(final @NonNull Component that) {
+    return this.style(this.style().mergeDecorations(that.style()));
+  }
 
   /**
    * Merges the events from another component into this component.
@@ -300,14 +325,18 @@ public interface Component {
    * @param that the other component
    * @return a component
    */
-  @NonNull Component mergeEvents(final @NonNull Component that);
+  default @NonNull Component mergeEvents(final @NonNull Component that) {
+    return this.style(this.style().mergeEvents(that.style()));
+  }
 
   /**
    * Resets all styling on this component.
    *
    * @return a component
    */
-  @NonNull Component resetStyle();
+  default @NonNull Component resetStyle() {
+    return this.style(this.style().resetStyle());
+  }
 
   /**
    * Tests if this component has any styling.

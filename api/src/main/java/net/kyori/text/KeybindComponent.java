@@ -23,8 +23,6 @@
  */
 package net.kyori.text;
 
-import net.kyori.text.event.ClickEvent;
-import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
@@ -41,7 +39,7 @@ import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
-public class KeybindComponent extends AbstractBuildableComponent<KeybindComponent, KeybindComponent.Builder> {
+public class KeybindComponent extends AbstractBuildableComponent<KeybindComponent, KeybindComponent.Builder> implements ScopedComponent<KeybindComponent> {
   /**
    * The keybind.
    */
@@ -154,68 +152,17 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
   }
 
   @Override
+  public @NonNull KeybindComponent style(final @NonNull Style style) {
+    return new KeybindComponent(this.children, style, this.keybind);
+  }
+
+  @Override
   public @NonNull KeybindComponent append(final @NonNull Component component) {
     this.detectCycle(component); // detect cycle before modifying
     final List<Component> children = new ArrayList<>(this.children.size() + 1);
     children.addAll(this.children);
     children.add(component);
     return new KeybindComponent(children, this.style, this.keybind);
-  }
-
-  @Override
-  public @NonNull KeybindComponent color(final @Nullable TextColor color) {
-    return new KeybindComponent(this.children, this.style.color(color), this.keybind);
-  }
-
-  @Override
-  public @NonNull KeybindComponent decoration(final @NonNull TextDecoration decoration, final boolean flag) {
-    return (KeybindComponent) super.decoration(decoration, flag);
-  }
-
-  @Override
-  public @NonNull KeybindComponent decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
-    return new KeybindComponent(this.children, this.style.decoration(decoration, state), this.keybind);
-  }
-
-  @Override
-  public @NonNull KeybindComponent clickEvent(final @Nullable ClickEvent event) {
-    return new KeybindComponent(this.children, this.style.clickEvent(event), this.keybind);
-  }
-
-  @Override
-  public @NonNull KeybindComponent hoverEvent(final @Nullable HoverEvent event) {
-    if(event != null) this.detectCycle(event.value()); // detect cycle before modifying
-    return new KeybindComponent(this.children, this.style.hoverEvent(event), this.keybind);
-  }
-
-  @Override
-  public @NonNull KeybindComponent insertion(final @Nullable String insertion) {
-    return new KeybindComponent(this.children, this.style.insertion(insertion), this.keybind);
-  }
-
-  @Override
-  public @NonNull KeybindComponent mergeStyle(final @NonNull Component that) {
-    return new KeybindComponent(this.children, this.style.mergeStyle(that.style()), this.keybind);
-  }
-
-  @Override
-  public @NonNull KeybindComponent mergeColor(final @NonNull Component that) {
-    return new KeybindComponent(this.children, this.style.mergeColor(that.style()), this.keybind);
-  }
-
-  @Override
-  public @NonNull KeybindComponent mergeDecorations(final @NonNull Component that) {
-    return new KeybindComponent(this.children, this.style.mergeDecorations(that.style()), this.keybind);
-  }
-
-  @Override
-  public @NonNull KeybindComponent mergeEvents(final @NonNull Component that) {
-    return new KeybindComponent(this.children, this.style.mergeEvents(that.style()), this.keybind);
-  }
-
-  @Override
-  public @NonNull KeybindComponent resetStyle() {
-    return new KeybindComponent(this.children, this.style.resetStyle(), this.keybind);
   }
 
   @Override
