@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SuppressWarnings("unchecked")
-abstract class AbstractComponentTest<C extends BuildableComponent<C, B>, B extends BuildableComponent.Builder<C, B>> {
+abstract class AbstractComponentTest<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> {
   abstract B builder();
 
   @Test

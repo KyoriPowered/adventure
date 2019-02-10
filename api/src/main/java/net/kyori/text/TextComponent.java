@@ -349,7 +349,7 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
   /**
    * A text component builder.
    */
-  public static class Builder extends AbstractBuildableComponent.AbstractBuilder<TextComponent, Builder> {
+  public static class Builder extends AbstractComponentBuilder<TextComponent, Builder> {
     private @Nullable String content;
 
     Builder() {

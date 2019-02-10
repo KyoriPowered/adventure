@@ -272,7 +272,7 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
   /**
    * A score component builder.
    */
-  public static class Builder extends AbstractBuildableComponent.AbstractBuilder<ScoreComponent, Builder> {
+  public static class Builder extends AbstractComponentBuilder<ScoreComponent, Builder> {
     private @Nullable String name;
     private @Nullable String objective;
     private @Nullable String value;

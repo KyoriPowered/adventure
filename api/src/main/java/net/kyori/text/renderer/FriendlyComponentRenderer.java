@@ -23,8 +23,8 @@
  */
 package net.kyori.text.renderer;
 
-import net.kyori.text.BuildableComponent;
 import net.kyori.text.Component;
+import net.kyori.text.ComponentBuilder;
 import net.kyori.text.KeybindComponent;
 import net.kyori.text.ScoreComponent;
 import net.kyori.text.SelectorComponent;
@@ -79,13 +79,13 @@ public abstract class FriendlyComponentRenderer<C extends ComponentRenderer.Cont
     }
   }
 
-  private <B extends BuildableComponent.Builder<?, ?>> B deepRender(final Component component, final B builder, final C context) {
+  private <B extends ComponentBuilder<?, ?>> B deepRender(final Component component, final B builder, final C context) {
     this.mergeStyle(component, builder, context);
     component.children().forEach(child -> builder.append(this.render(child, context)));
     return builder;
   }
 
-  private <B extends BuildableComponent.Builder<?, ?>> void mergeStyle(final Component component, final B builder, final C context) {
+  private <B extends ComponentBuilder<?, ?>> void mergeStyle(final Component component, final B builder, final C context) {
     builder.mergeColor(component);
     builder.mergeDecorations(component);
     builder.clickEvent(component.clickEvent());

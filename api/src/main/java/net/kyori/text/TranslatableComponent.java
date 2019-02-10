@@ -395,7 +395,7 @@ public class TranslatableComponent extends AbstractBuildableComponent<Translatab
   /**
    * A text component builder.
    */
-  public static class Builder extends AbstractBuildableComponent.AbstractBuilder<TranslatableComponent, Builder> {
+  public static class Builder extends AbstractComponentBuilder<TranslatableComponent, Builder> {
     private @Nullable String key;
     private @NonNull List<Component> args = EMPTY_COMPONENT_LIST;
 

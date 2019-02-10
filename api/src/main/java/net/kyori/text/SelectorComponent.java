@@ -202,7 +202,7 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
   /**
    * A selector component builder.
    */
-  public static class Builder extends AbstractBuildableComponent.AbstractBuilder<SelectorComponent, Builder> {
+  public static class Builder extends AbstractComponentBuilder<SelectorComponent, Builder> {
     private @Nullable String pattern;
 
     Builder() {

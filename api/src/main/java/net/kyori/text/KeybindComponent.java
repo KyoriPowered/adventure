@@ -250,7 +250,7 @@ public class KeybindComponent extends AbstractBuildableComponent<KeybindComponen
   /**
    * A keybind component builder.
    */
-  public static class Builder extends AbstractBuildableComponent.AbstractBuilder<KeybindComponent, Builder> {
+  public static class Builder extends AbstractComponentBuilder<KeybindComponent, Builder> {
     private @Nullable String keybind;
 
     Builder() {
