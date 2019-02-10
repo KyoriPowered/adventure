@@ -32,7 +32,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
@@ -221,14 +220,7 @@ public interface Component {
    * @return a set of decorations this component has
    */
   default @NonNull Set<TextDecoration> decorations(final @NonNull Set<TextDecoration> defaultValues) {
-    final Set<TextDecoration> decorations = EnumSet.noneOf(TextDecoration.class);
-    for(final TextDecoration decoration : TextDecoration.values()) {
-      final TextDecoration.State value = this.decoration(decoration);
-      if(value == TextDecoration.State.TRUE || (value == TextDecoration.State.NOT_SET && defaultValues.contains(decoration))) {
-        decorations.add(decoration);
-      }
-    }
-    return decorations;
+    return this.style().decorations(defaultValues);
   }
 
   /**
@@ -335,7 +327,7 @@ public interface Component {
    * @return a component
    */
   default @NonNull Component resetStyle() {
-    return this.style(this.style().resetStyle());
+    return this.style(Style.empty());
   }
 
   /**
@@ -345,6 +337,6 @@ public interface Component {
    *     component does not have any styling
    */
   default boolean hasStyling() {
-    return this.style().hasStyling();
+    return !this.style().isEmpty();
   }
 }

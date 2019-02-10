@@ -36,7 +36,7 @@ import java.util.List;
  */
 public abstract class AbstractBuildableComponent<C extends BuildableComponent<C, B>, B extends AbstractComponentBuilder<C, B>> extends AbstractComponent implements BuildableComponent<C, B> {
   protected AbstractBuildableComponent(final @NonNull B builder) {
-    super(builder.children, new Style(builder.color, builder.obfuscated, builder.bold, builder.strikethrough, builder.underlined, builder.italic, builder.clickEvent, builder.hoverEvent, builder.insertion));
+    super(builder.children, builder.style != null ? builder.style.build() : Style.empty());
   }
 
   protected AbstractBuildableComponent(final @NonNull List<Component> children, final @NonNull Style style) {

@@ -25,8 +25,10 @@ package net.kyori.text;
 
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
+import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -36,8 +38,6 @@ import java.util.ListIterator;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * An abstract implementation of a component builder.
@@ -54,56 +54,27 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
    */
   protected List<Component> children = AbstractComponent.EMPTY_COMPONENT_LIST;
   /**
-   * The color of this component.
+   * The style.
    */
-  protected @Nullable TextColor color;
-  /**
-   * If this component should have the {@link TextDecoration#OBFUSCATED obfuscated} decoration.
-   */
-  protected TextDecoration.State obfuscated = TextDecoration.State.NOT_SET;
-  /**
-   * If this component should have the {@link TextDecoration#BOLD bold} decoration.
-   */
-  protected TextDecoration.State bold = TextDecoration.State.NOT_SET;
-  /**
-   * If this component should have the {@link TextDecoration#STRIKETHROUGH strikethrough} decoration.
-   */
-  protected TextDecoration.State strikethrough = TextDecoration.State.NOT_SET;
-  /**
-   * If this component should have the {@link TextDecoration#UNDERLINED underlined} decoration.
-   */
-  protected TextDecoration.State underlined = TextDecoration.State.NOT_SET;
-  /**
-   * If this component should have the {@link TextDecoration#ITALIC italic} decoration.
-   */
-  protected TextDecoration.State italic = TextDecoration.State.NOT_SET;
-  /**
-   * The click event to apply to this component.
-   */
-  protected @Nullable ClickEvent clickEvent;
-  /**
-   * The hover event to apply to this component.
-   */
-  protected @Nullable HoverEvent hoverEvent;
-  /**
-   * The string to insert when this component is shift-clicked in chat.
-   */
-  protected @Nullable String insertion;
+  protected Style.@MonotonicNonNull Builder style;
 
   protected AbstractComponentBuilder() {
   }
 
   protected AbstractComponentBuilder(final @NonNull C component) {
     this.children = new ArrayList<>(component.children());
-    this.color = component.color();
-    this.obfuscated = component.decoration(TextDecoration.OBFUSCATED);
-    this.bold = component.decoration(TextDecoration.BOLD);
-    this.strikethrough = component.decoration(TextDecoration.STRIKETHROUGH);
-    this.underlined = component.decoration(TextDecoration.UNDERLINED);
-    this.italic = component.decoration(TextDecoration.ITALIC);
-    this.clickEvent = Optional.ofNullable(component.clickEvent()).map(ClickEvent::copy).orElse(null);
-    this.hoverEvent = Optional.ofNullable(component.hoverEvent()).map(HoverEvent::copy).orElse(null);
-    this.insertion = component.insertion();
+    if(component.hasStyling()) {
+      this.style = Style.builder()
+        .color(component.color())
+        .decoration(TextDecoration.OBFUSCATED, component.decoration(TextDecoration.OBFUSCATED))
+        .decoration(TextDecoration.BOLD, component.decoration(TextDecoration.BOLD))
+        .decoration(TextDecoration.STRIKETHROUGH, component.decoration(TextDecoration.STRIKETHROUGH))
+        .decoration(TextDecoration.UNDERLINED, component.decoration(TextDecoration.UNDERLINED))
+        .decoration(TextDecoration.ITALIC, component.decoration(TextDecoration.ITALIC))
+        .clickEvent(Optional.ofNullable(component.clickEvent()).map(ClickEvent::copy).orElse(null))
+        .hoverEvent(Optional.ofNullable(component.hoverEvent()).map(HoverEvent::copy).orElse(null))
+        .insertion(component.insertion());
+    }
   }
 
   @Override
@@ -193,50 +164,49 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   @Override
   @SuppressWarnings("unchecked")
   public @NonNull B color(final @Nullable TextColor color) {
-    this.color = color;
+    this.style().color(color);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public @NonNull B colorIfAbsent(final @Nullable TextColor color) {
-    if(this.color == null) {
-      this.color = color;
-    }
+    this.style().colorIfAbsent(color);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public @NonNull B decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
-    switch(decoration) {
-      case BOLD: this.bold = requireNonNull(state, "flag"); return (B) this;
-      case ITALIC: this.italic = requireNonNull(state, "flag"); return (B) this;
-      case UNDERLINED: this.underlined = requireNonNull(state, "flag"); return (B) this;
-      case STRIKETHROUGH: this.strikethrough = requireNonNull(state, "flag"); return (B) this;
-      case OBFUSCATED: this.obfuscated = requireNonNull(state, "flag"); return (B) this;
-      default: throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
-    }
+    this.style().decoration(decoration, state);
+    return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public @NonNull B clickEvent(final @Nullable ClickEvent event) {
-    this.clickEvent = event;
+    this.style().clickEvent(event);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public @NonNull B hoverEvent(final @Nullable HoverEvent event) {
-    this.hoverEvent = event;
+    this.style().hoverEvent(event);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public @NonNull B insertion(final @Nullable String insertion) {
-    this.insertion = insertion;
+    this.style().insertion(insertion);
     return (B) this;
+  }
+
+  private Style.@NonNull Builder style() {
+    if(this.style == null) {
+      this.style = Style.builder();
+    }
+    return this.style;
   }
 }

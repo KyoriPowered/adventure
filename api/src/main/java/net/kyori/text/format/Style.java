@@ -30,53 +30,47 @@ import net.kyori.text.util.ToStringer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
-public class Style implements Styled<Style, Style> {
+public final class Style {
   private static final Style EMPTY = new Style(null, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null);;
-  /**
-   * The color of this component.
-   */
-  protected final @Nullable TextColor color;
-  /**
-   * If this component should have the {@link TextDecoration#OBFUSCATED obfuscated} decoration.
-   */
-  protected final TextDecoration.State obfuscated;
-  /**
-   * If this component should have the {@link TextDecoration#BOLD bold} decoration.
-   */
-  protected final TextDecoration.State bold;
-  /**
-   * If this component should have the {@link TextDecoration#STRIKETHROUGH strikethrough} decoration.
-   */
-  protected final TextDecoration.State strikethrough;
-  /**
-   * If this component should have the {@link TextDecoration#UNDERLINED underlined} decoration.
-   */
-  protected final TextDecoration.State underlined;
-  /**
-   * If this component should have the {@link TextDecoration#ITALIC italic} decoration.
-   */
-  protected final TextDecoration.State italic;
-  /**
-   * The click event to apply to this component.
-   */
-  protected final @Nullable ClickEvent clickEvent;
-  /**
-   * The hover event to apply to this component.
-   */
-  protected final @Nullable HoverEvent hoverEvent;
-  /**
-   * The string to insert when this component is shift-clicked in chat.
-   */
-  protected final @Nullable String insertion;
+  private final @Nullable TextColor color;
+  private final TextDecoration.State obfuscated;
+  private final TextDecoration.State bold;
+  private final TextDecoration.State strikethrough;
+  private final TextDecoration.State underlined;
+  private final TextDecoration.State italic;
+  private final @Nullable ClickEvent clickEvent;
+  private final @Nullable HoverEvent hoverEvent;
+  private final @Nullable String insertion;
 
-  public Style(final @Nullable TextColor color, final TextDecoration.State obfuscated, final TextDecoration.State bold, final TextDecoration.State strikethrough, final TextDecoration.State underlined, final TextDecoration.State italic, final @Nullable ClickEvent clickEvent, final @Nullable HoverEvent hoverEvent, final @Nullable String insertion) {
+  /**
+   * Creates a builder.
+   *
+   * @return a builder
+   */
+  public static @NonNull Builder builder() {
+    return new Builder();
+  }
+
+  /**
+   * Creates a builder.
+   *
+   * @return a builder
+   */
+  public static @NonNull Style empty() {
+    return EMPTY;
+  }
+
+  private Style(final @Nullable TextColor color, final TextDecoration.State obfuscated, final TextDecoration.State bold, final TextDecoration.State strikethrough, final TextDecoration.State underlined, final TextDecoration.State italic, final @Nullable ClickEvent clickEvent, final @Nullable HoverEvent hoverEvent, final @Nullable String insertion) {
     this.color = color;
     this.obfuscated = obfuscated;
     this.bold = bold;
@@ -88,17 +82,57 @@ public class Style implements Styled<Style, Style> {
     this.insertion = insertion;
   }
 
-  @Override
+  /**
+   * Gets the color.
+   *
+   * @return the color
+   */
   public @Nullable TextColor color() {
     return this.color;
   }
 
-  @Override
+  /**
+   * Sets the color if there isn't one set already.
+   *
+   * @param color the color
+   * @return this builder
+   */
+  public @NonNull Style colorIfAbsent(final @Nullable TextColor color) {
+    if(this.color == null) {
+      return this.color(color);
+    }
+    return this;
+  }
+
+  /**
+   * Sets the color.
+   *
+   * @param color the color
+   * @return a style
+   */
   public @NonNull Style color(final @Nullable TextColor color) {
     return new Style(color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
   }
 
-  @Override
+  /**
+   * Tests if this style has a decoration.
+   *
+   * @param decoration the decoration
+   * @return {@code true} if this style has the decoration, {@code false} if this
+   *     style does not have the decoration
+   */
+  public boolean hasDecoration(final @NonNull TextDecoration decoration) {
+    return this.decoration(decoration) == TextDecoration.State.TRUE;
+  }
+
+  /**
+   * Gets the state of a decoration on this style.
+   *
+   * @param decoration the decoration
+   * @return {@link TextDecoration.State#TRUE} if this style has the decoration,
+   *     {@link TextDecoration.State#FALSE} if this style does not have the decoration,
+   *     and {@link TextDecoration.State#NOT_SET} if not set
+   */
   public TextDecoration.@NonNull State decoration(final @NonNull TextDecoration decoration) {
     switch(decoration) {
       case BOLD: return this.bold;
@@ -110,7 +144,28 @@ public class Style implements Styled<Style, Style> {
     }
   }
 
-  @Override
+  /**
+   * Sets the state of a decoration on this style.
+   *
+   * @param decoration the decoration
+   * @param flag {@code true} if this style should have the decoration, {@code false} if
+   *     this style should not have the decoration
+   * @return a style
+   */
+  public @NonNull Style decoration(final @NonNull TextDecoration decoration, final boolean flag) {
+    return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
+  }
+
+  /**
+   * Sets the value of a decoration on this style.
+   *
+   * @param decoration the decoration
+   * @param state {@link TextDecoration.State#TRUE} if this style should have the
+   *     decoration, {@link TextDecoration.State#FALSE} if this style should not
+   *     have the decoration, and {@link TextDecoration.State#NOT_SET} if the decoration
+   *     should not have a set value
+   * @return a style
+   */
   public @NonNull Style decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
     switch(decoration) {
       case BOLD: return new Style(this.color, this.obfuscated, requireNonNull(state, "flag"), this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
@@ -122,47 +177,115 @@ public class Style implements Styled<Style, Style> {
     }
   }
 
-  @Override
+  /**
+   * Gets a set of decorations this style has.
+   *
+   * @return a set of decorations this style has
+   */
+  public @NonNull Set<TextDecoration> decorations() {
+    return this.decorations(Collections.emptySet());
+  }
+
+  /**
+   * Gets a set of decorations this style has.
+   *
+   * @param defaultValues a set of default values
+   * @return a set of decorations this style has
+   */
+  public @NonNull Set<TextDecoration> decorations(final @NonNull Set<TextDecoration> defaultValues) {
+    final Set<TextDecoration> decorations = EnumSet.noneOf(TextDecoration.class);
+    for(final TextDecoration decoration : TextDecoration.values()) {
+      final TextDecoration.State value = this.decoration(decoration);
+      if(value == TextDecoration.State.TRUE || (value == TextDecoration.State.NOT_SET && defaultValues.contains(decoration))) {
+        decorations.add(decoration);
+      }
+    }
+    return decorations;
+  }
+
+  /**
+   * Gets the click event.
+   *
+   * @return the click event
+   */
   public @Nullable ClickEvent clickEvent() {
     return this.clickEvent;
   }
 
-  @Override
+  /**
+   * Sets the click event.
+   *
+   * @param event the click event
+   * @return a style
+   */
   public @NonNull Style clickEvent(final @Nullable ClickEvent event) {
     return new Style(this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, event, this.hoverEvent, this.insertion);
   }
 
-  @Override
+  /**
+   * Gets the hover event.
+   *
+   * @return the hover event
+   */
   public @Nullable HoverEvent hoverEvent() {
     return this.hoverEvent;
   }
 
-  @Override
+  /**
+   * Sets the hover event.
+   *
+   * @param event the hover event
+   * @return a style
+   */
   public @NonNull Style hoverEvent(final @Nullable HoverEvent event) {
     return new Style(this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, event, this.insertion);
   }
 
-  @Override
+  /**
+   * Gets the string to be inserted when this style is shift-clicked.
+   *
+   * @return the insertion string
+   */
   public @Nullable String insertion() {
     return this.insertion;
   }
 
-  @Override
+  /**
+   * Sets the string to be inserted when this style is shift-clicked.
+   *
+   * @param insertion the insertion string
+   * @return a style
+   */
   public @NonNull Style insertion(final @Nullable String insertion) {
     return new Style(this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, insertion);
   }
 
-  @Override
+  /**
+   * Merges styling from another style into this style.
+   *
+   * @param that the other style
+   * @return a style
+   */
   public @NonNull Style mergeStyle(final @NonNull Style that) {
     return new Style(that.color(), that.decoration(TextDecoration.OBFUSCATED), that.decoration(TextDecoration.BOLD), that.decoration(TextDecoration.STRIKETHROUGH), that.decoration(TextDecoration.UNDERLINED), that.decoration(TextDecoration.ITALIC), that.clickEvent(), that.hoverEvent(), that.insertion());
   }
 
-  @Override
+  /**
+   * Merges the color from another style into this style.
+   *
+   * @param that the other style
+   * @return a style
+   */
   public @NonNull Style mergeColor(final @NonNull Style that) {
     return new Style(that.color(), this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
   }
 
-  @Override
+  /**
+   * Merges the decorations from another style into this style.
+   *
+   * @param that the other style
+   * @return a style
+   */
   public @NonNull Style mergeDecorations(final @NonNull Style that) {
     final TextDecoration.State obfuscated = that.decoration(TextDecoration.OBFUSCATED) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.OBFUSCATED) : this.obfuscated;
     final TextDecoration.State bold = that.decoration(TextDecoration.BOLD) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.BOLD) : this.bold;
@@ -172,28 +295,32 @@ public class Style implements Styled<Style, Style> {
     return new Style(this.color, obfuscated, bold, strikethrough, underlined, italic, this.clickEvent, this.hoverEvent, this.insertion);
   }
 
-  @Override
+  /**
+   * Merges the events from another style into this style.
+   *
+   * @param that the other style
+   * @return a style
+   */
   public @NonNull Style mergeEvents(final @NonNull Style that) {
     return new Style(this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, that.clickEvent(), that.hoverEvent(), this.insertion);
   }
 
-  @Override
-  public @NonNull Style resetStyle() {
-    return EMPTY;
-  }
-
-  @Override
-  public boolean hasStyling() {
-    // A component has styling when any of these fields are set.
-    return this.color != null
-      || this.obfuscated != TextDecoration.State.NOT_SET
-      || this.bold != TextDecoration.State.NOT_SET
-      || this.strikethrough != TextDecoration.State.NOT_SET
-      || this.underlined != TextDecoration.State.NOT_SET
-      || this.italic != TextDecoration.State.NOT_SET
-      || this.clickEvent != null
-      || this.hoverEvent != null
-      || this.insertion != null;
+  /**
+   * Tests if this style is empty.
+   *
+   * @return {@code true} if this style is empty, {@code false} if this
+   *     style is not empty
+   */
+  public boolean isEmpty() {
+    return this.color == null
+      && this.obfuscated == TextDecoration.State.NOT_SET
+      && this.bold == TextDecoration.State.NOT_SET
+      && this.strikethrough == TextDecoration.State.NOT_SET
+      && this.underlined == TextDecoration.State.NOT_SET
+      && this.italic == TextDecoration.State.NOT_SET
+      && this.clickEvent == null
+      && this.hoverEvent == null
+      && this.insertion == null;
   }
 
   @Override
@@ -235,9 +362,9 @@ public class Style implements Styled<Style, Style> {
   /**
    * A style builder.
    */
-  protected static class Builder {
+  public static class Builder {
     /**
-     * The color of this component.
+     * The color.
      */
     protected @Nullable TextColor color;
     /**
