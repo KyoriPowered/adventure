@@ -323,6 +323,10 @@ public final class Style {
       && this.insertion == null;
   }
 
+  public @NonNull Builder toBuilder() {
+    return new Builder(this);
+  }
+
   @Override
   public @NonNull String toString() {
     final Map<String, Object> builder = new LinkedHashMap<>();
@@ -403,16 +407,20 @@ public final class Style {
     protected Builder() {
     }
 
+    protected Builder(final @NonNull Style style) {
+      this.color = style.color();
+      this.obfuscated = style.decoration(TextDecoration.OBFUSCATED);
+      this.bold = style.decoration(TextDecoration.BOLD);
+      this.strikethrough = style.decoration(TextDecoration.STRIKETHROUGH);
+      this.underlined = style.decoration(TextDecoration.UNDERLINED);
+      this.italic = style.decoration(TextDecoration.ITALIC);
+      this.clickEvent = Optional.ofNullable(style.clickEvent()).map(ClickEvent::copy).orElse(null);
+      this.hoverEvent = Optional.ofNullable(style.hoverEvent()).map(HoverEvent::copy).orElse(null);
+      this.insertion = style.insertion();
+    }
+
     protected Builder(final @NonNull Component component) {
-      this.color = component.color();
-      this.obfuscated = component.decoration(TextDecoration.OBFUSCATED);
-      this.bold = component.decoration(TextDecoration.BOLD);
-      this.strikethrough = component.decoration(TextDecoration.STRIKETHROUGH);
-      this.underlined = component.decoration(TextDecoration.UNDERLINED);
-      this.italic = component.decoration(TextDecoration.ITALIC);
-      this.clickEvent = Optional.ofNullable(component.clickEvent()).map(ClickEvent::copy).orElse(null);
-      this.hoverEvent = Optional.ofNullable(component.hoverEvent()).map(HoverEvent::copy).orElse(null);
-      this.insertion = component.insertion();
+      this(component.style());
     }
 
     /**

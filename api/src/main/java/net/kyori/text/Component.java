@@ -74,6 +74,16 @@ public interface Component {
   @NonNull List<Component> children();
 
   /**
+   * Sets the list of children.
+   *
+   * <p>The contents of {@code children} will be copied.</p>
+   *
+   * @param children the children
+   * @return the unmodifiable list of children
+   */
+  @NonNull Component children(final @NonNull List<Component> children);
+
+  /**
    * Checks if this component contains a component.
    *
    * @param that the other component

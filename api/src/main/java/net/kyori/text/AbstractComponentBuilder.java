@@ -45,7 +45,7 @@ import java.util.function.Function;
  * @param <C> the component type
  * @param <B> the builder type
  */
-abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B extends AbstractComponentBuilder<C, B>> implements ComponentBuilder<C, B> {
+abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> implements ComponentBuilder<C, B> {
   /**
    * The list of children.
    *
@@ -64,16 +64,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   protected AbstractComponentBuilder(final @NonNull C component) {
     this.children = new ArrayList<>(component.children());
     if(component.hasStyling()) {
-      this.style = Style.builder()
-        .color(component.color())
-        .decoration(TextDecoration.OBFUSCATED, component.decoration(TextDecoration.OBFUSCATED))
-        .decoration(TextDecoration.BOLD, component.decoration(TextDecoration.BOLD))
-        .decoration(TextDecoration.STRIKETHROUGH, component.decoration(TextDecoration.STRIKETHROUGH))
-        .decoration(TextDecoration.UNDERLINED, component.decoration(TextDecoration.UNDERLINED))
-        .decoration(TextDecoration.ITALIC, component.decoration(TextDecoration.ITALIC))
-        .clickEvent(Optional.ofNullable(component.clickEvent()).map(ClickEvent::copy).orElse(null))
-        .hoverEvent(Optional.ofNullable(component.hoverEvent()).map(HoverEvent::copy).orElse(null))
-        .insertion(component.insertion());
+      this.style = component.style().toBuilder();
     }
   }
 

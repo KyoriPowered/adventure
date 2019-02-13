@@ -30,12 +30,28 @@ import net.kyori.text.format.TextDecoration;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Some magic to change return types.
  *
  * @param <C> the component style
  */
 public interface ScopedComponent<C extends Component> extends Component {
+  @Override
+  @NonNull C children(final @NonNull List<Component> children);
+
+  @Override
+  default @NonNull C append(final @NonNull Component component) {
+    this.detectCycle(component); // detect cycle before modifying
+    final List<Component> oldChildren = this.children();
+    final List<Component> newChildren = new ArrayList<>(oldChildren.size() + 1);
+    newChildren.addAll(oldChildren);
+    newChildren.add(component);
+    return this.children(newChildren);
+  }
+
   @Override
   @SuppressWarnings("unchecked")
   default @NonNull C color(final @Nullable TextColor color) {

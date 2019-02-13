@@ -23,33 +23,19 @@
  */
 package net.kyori.text;
 
-import net.kyori.text.format.Style;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * A scoreboard selector component.
  */
-public class SelectorComponent extends AbstractBuildableComponent<SelectorComponent, SelectorComponent.Builder> implements ScopedComponent<SelectorComponent> {
-  /**
-   * The selector pattern.
-   */
-  private final String pattern;
-
+public interface SelectorComponent extends BuildableComponent<SelectorComponent, SelectorComponent.Builder>, ScopedComponent<SelectorComponent> {
   /**
    * Creates a selector component builder.
    *
    * @return a builder
    */
-  public static @NonNull Builder builder() {
-    return new Builder();
+  static @NonNull Builder builder() {
+    return new SelectorComponentImpl.BuilderImpl();
   }
 
   /**
@@ -58,8 +44,8 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
    * @param pattern the selector pattern
    * @return a builder
    */
-  public static @NonNull Builder builder(final @NonNull String pattern) {
-    return new Builder().pattern(pattern);
+  static @NonNull Builder builder(final @NonNull String pattern) {
+    return builder().pattern(pattern);
   }
 
   /**
@@ -68,18 +54,8 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
    * @param pattern the selector pattern
    * @return the selector component
    */
-  public static @NonNull SelectorComponent of(final @NonNull String pattern) {
+  static @NonNull SelectorComponent of(final @NonNull String pattern) {
     return builder(pattern).build();
-  }
-
-  protected SelectorComponent(final @NonNull Builder builder) {
-    super(builder);
-    this.pattern = requireNonNull(builder.pattern, "pattern");
-  }
-
-  protected SelectorComponent(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String pattern) {
-    super(children, style);
-    this.pattern = pattern;
   }
 
   /**
@@ -87,9 +63,7 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
    *
    * @return the selector pattern
    */
-  public @NonNull String pattern() {
-    return this.pattern;
-  }
+  @NonNull String pattern();
 
   /**
    * Sets the selector pattern.
@@ -97,82 +71,18 @@ public class SelectorComponent extends AbstractBuildableComponent<SelectorCompon
    * @param pattern the selector pattern
    * @return a copy of this component
    */
-  public @NonNull SelectorComponent pattern(final @NonNull String pattern) {
-    return new SelectorComponent(this.children, this.style, requireNonNull(pattern, "pattern"));
-  }
-
-  @Override
-  public @NonNull SelectorComponent style(final @NonNull Style style) {
-    return new SelectorComponent(this.children, style, this.pattern);
-  }
-
-  @Override
-  public @NonNull SelectorComponent append(final @NonNull Component component) {
-    this.detectCycle(component); // detect cycle before modifying
-    final List<Component> children = new ArrayList<>(this.children.size() + 1);
-    children.addAll(this.children);
-    children.add(component);
-    return new SelectorComponent(children, this.style, this.pattern);
-  }
-
-  @Override
-  public @NonNull SelectorComponent copy() {
-    return new SelectorComponent(this.children, this.style, this.pattern);
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(other == null || !(other instanceof SelectorComponent)) return false;
-    if(!super.equals(other)) return false;
-    final SelectorComponent that = (SelectorComponent) other;
-    return Objects.equals(this.pattern, that.pattern);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), this.pattern);
-  }
-
-  @Override
-  protected void populateToString(final @NonNull Map<String, Object> builder) {
-    builder.put("pattern", this.pattern);
-  }
-
-  @Override
-  public @NonNull Builder toBuilder() {
-    return new Builder(this);
-  }
+  @NonNull SelectorComponent pattern(final @NonNull String pattern);
 
   /**
    * A selector component builder.
    */
-  public static class Builder extends AbstractComponentBuilder<SelectorComponent, Builder> {
-    private @Nullable String pattern;
-
-    Builder() {
-    }
-
-    Builder(final @NonNull SelectorComponent component) {
-      super(component);
-      this.pattern = component.pattern();
-    }
-
+  interface Builder extends ComponentBuilder<SelectorComponent, Builder> {
     /**
      * Sets the selector pattern.
      *
      * @param pattern the selector pattern
      * @return this builder
      */
-    public @NonNull Builder pattern(final @NonNull String pattern) {
-      this.pattern = pattern;
-      return this;
-    }
-
-    @Override
-    public @NonNull SelectorComponent build() {
-      if(this.pattern == null) throw new IllegalStateException("pattern must be set");
-      return new SelectorComponent(this);
-    }
+    @NonNull Builder pattern(final @NonNull String pattern);
   }
 }

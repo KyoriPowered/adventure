@@ -23,41 +23,20 @@
  */
 package net.kyori.text;
 
-import net.kyori.text.format.Style;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * A scoreboard score component.
  */
-public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, ScoreComponent.Builder> implements ScopedComponent<ScoreComponent> {
-  /**
-   * The score name.
-   */
-  private final String name;
-  /**
-   * The score objective.
-   */
-  private final String objective;
-  /**
-   * The value.
-   */
-  private final @Nullable String value;
-
+public interface ScoreComponent extends BuildableComponent<ScoreComponent, ScoreComponent.Builder>, ScopedComponent<ScoreComponent> {
   /**
    * Creates a score component builder.
    *
    * @return a builder
    */
-  public static @NonNull Builder builder() {
-    return new Builder();
+  static @NonNull Builder builder() {
+    return new ScoreComponentImpl.BuilderImpl();
   }
 
   /**
@@ -67,8 +46,8 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
    * @param objective the score objective
    * @return a builder
    */
-  public static @NonNull Builder builder(final @NonNull String name, final @NonNull String objective) {
-    return new Builder().name(name).objective(objective);
+  static @NonNull Builder builder(final @NonNull String name, final @NonNull String objective) {
+    return builder().name(name).objective(objective);
   }
 
   /**
@@ -78,7 +57,7 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
    * @param objective the score objective
    * @return the score component
    */
-  public static @NonNull ScoreComponent of(final @NonNull String name, final @NonNull String objective) {
+  static @NonNull ScoreComponent of(final @NonNull String name, final @NonNull String objective) {
     return of(name, objective, null);
   }
 
@@ -90,7 +69,7 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
    * @param value the value
    * @return the score component
    */
-  public static @NonNull ScoreComponent of(final @NonNull String name, final @NonNull String objective, final @Nullable String value) {
+  static @NonNull ScoreComponent of(final @NonNull String name, final @NonNull String objective, final @Nullable String value) {
     return builder()
       .name(name)
       .objective(objective)
@@ -98,28 +77,12 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
       .build();
   }
 
-  protected ScoreComponent(final @NonNull Builder builder) {
-    super(builder);
-    this.name = requireNonNull(builder.name, "name");
-    this.objective = requireNonNull(builder.objective, "objective");
-    this.value = builder.value;
-  }
-
-  protected ScoreComponent(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String name, final @NonNull String objective, final @Nullable String value) {
-    super(children, style);
-    this.name = name;
-    this.objective = objective;
-    this.value = value;
-  }
-
   /**
    * Gets the score name.
    *
    * @return the score name
    */
-  public @NonNull String name() {
-    return this.name;
-  }
+  @NonNull String name();
 
   /**
    * Sets the score name.
@@ -127,18 +90,14 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
    * @param name the score name
    * @return a copy of this component
    */
-  public @NonNull ScoreComponent name(final @NonNull String name) {
-    return new ScoreComponent(this.children, this.style, requireNonNull(name, "name"), this.objective, this.value);
-  }
+  @NonNull ScoreComponent name(final @NonNull String name);
 
   /**
    * Gets the objective name.
    *
    * @return the objective name
    */
-  public @NonNull String objective() {
-    return this.objective;
-  }
+  @NonNull String objective();
 
   /**
    * Sets the score objective.
@@ -146,18 +105,14 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
    * @param objective the score objective
    * @return a copy of this component
    */
-  public @NonNull ScoreComponent objective(final @NonNull String objective) {
-    return new ScoreComponent(this.children, this.style, this.name, requireNonNull(objective, "objective"), this.value);
-  }
+  @NonNull ScoreComponent objective(final @NonNull String objective);
 
   /**
    * Gets the value.
    *
    * @return the value
    */
-  public @Nullable String value() {
-    return this.value;
-  }
+  @Nullable String value();
 
   /**
    * Sets the value.
@@ -165,83 +120,19 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
    * @param value the value
    * @return a copy of this component
    */
-  public @NonNull ScoreComponent content(final @NonNull String value) {
-    return new ScoreComponent(this.children, this.style, this.name, this.objective, value);
-  }
-
-  @Override
-  public @NonNull ScoreComponent style(final @NonNull Style style) {
-    return new ScoreComponent(this.children, style, this.name, this.objective, this.value);
-  }
-
-  @Override
-  public @NonNull ScoreComponent append(final @NonNull Component component) {
-    this.detectCycle(component); // detect cycle before modifying
-    final List<Component> children = new ArrayList<>(this.children.size() + 1);
-    children.addAll(this.children);
-    children.add(component);
-    return new ScoreComponent(children, this.style, this.name, this.objective, this.value);
-  }
-
-  @Override
-  public @NonNull ScoreComponent copy() {
-    return new ScoreComponent(this.children, this.style, this.name, this.objective, this.value);
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(other == null || !(other instanceof ScoreComponent)) return false;
-    if(!super.equals(other)) return false;
-    final ScoreComponent that = (ScoreComponent) other;
-    return Objects.equals(this.name, that.name) && Objects.equals(this.objective, that.objective) && Objects.equals(this.value, that.value);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), this.name, this.objective, this.value);
-  }
-
-  @Override
-  protected void populateToString(final @NonNull Map<String, Object> builder) {
-    builder.put("name", this.name);
-    builder.put("objective", this.objective);
-    builder.put("value", this.value);
-  }
-
-  @Override
-  public @NonNull Builder toBuilder() {
-    return new Builder(this);
-  }
+  @NonNull ScoreComponent value(final @NonNull String value);
 
   /**
    * A score component builder.
    */
-  public static class Builder extends AbstractComponentBuilder<ScoreComponent, Builder> {
-    private @Nullable String name;
-    private @Nullable String objective;
-    private @Nullable String value;
-
-    Builder() {
-    }
-
-    Builder(final @NonNull ScoreComponent component) {
-      super(component);
-      this.name = component.name();
-      this.objective = component.objective();
-      this.value = component.value();
-    }
-
+  interface Builder extends ComponentBuilder<ScoreComponent, Builder> {
     /**
      * Sets the score name.
      *
      * @param name the score name
      * @return this builder
      */
-    public @NonNull Builder name(final @NonNull String name) {
-      this.name = name;
-      return this;
-    }
+    @NonNull Builder name(final @NonNull String name);
 
     /**
      * Sets the score objective.
@@ -249,10 +140,7 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
      * @param objective the score objective
      * @return this builder
      */
-    public @NonNull Builder objective(final @NonNull String objective) {
-      this.objective = objective;
-      return this;
-    }
+    @NonNull Builder objective(final @NonNull String objective);
 
     /**
      * Sets the value.
@@ -260,16 +148,6 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
      * @param value the value
      * @return this builder
      */
-    public @NonNull Builder value(final @Nullable String value) {
-      this.value = value;
-      return this;
-    }
-
-    @Override
-    public @NonNull ScoreComponent build() {
-      if(this.name == null) throw new IllegalStateException("name must be set");
-      if(this.objective == null) throw new IllegalStateException("objective must be set");
-      return new ScoreComponent(this);
-    }
+    @NonNull Builder value(final @Nullable String value);
   }
 }

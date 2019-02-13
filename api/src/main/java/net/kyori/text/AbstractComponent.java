@@ -52,6 +52,10 @@ public abstract class AbstractComponent implements Component {
    */
   protected final Style style;
 
+  protected AbstractComponent(final @NonNull List<Component> children, final Style.@Nullable Builder style) {
+    this(children, style != null ? style.build() : Style.empty());
+  }
+
   protected AbstractComponent(final @NonNull List<Component> children, final @NonNull Style style) {
     this.children = Collections.unmodifiableList(new ArrayList<>(children));
     this.style = style;

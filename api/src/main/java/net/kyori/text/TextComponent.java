@@ -23,39 +23,27 @@
  */
 package net.kyori.text;
 
-import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * A plain text component.
  */
-public class TextComponent extends AbstractBuildableComponent<TextComponent, TextComponent.Builder> implements ScopedComponent<TextComponent> {
-  /**
-   * The plain text content.
-   */
-  private final String content;
-
+public interface TextComponent extends BuildableComponent<TextComponent, TextComponent.Builder>, ScopedComponent<TextComponent> {
   /**
    * Creates a text component builder.
    *
    * @return a builder
    */
-  public static @NonNull Builder text() {
-    return new Builder();
+  static @NonNull Builder text() {
+    return builder();
   }
 
   /**
@@ -63,8 +51,8 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
    *
    * @return a builder
    */
-  public static @NonNull Builder builder() {
-    return new Builder();
+  static @NonNull Builder builder() {
+    return new TextComponentImpl.BuilderImpl();
   }
 
   /**
@@ -73,8 +61,8 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
    * @param content the plain text content
    * @return a builder
    */
-  public static @NonNull Builder text(final @NonNull String content) {
-    return new Builder().content(content);
+  static @NonNull Builder text(final @NonNull String content) {
+    return builder().content(content);
   }
 
   /**
@@ -83,8 +71,8 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
    * @param content the plain text content
    * @return a builder
    */
-  public static @NonNull Builder builder(final @NonNull String content) {
-    return new Builder().content(content);
+  static @NonNull Builder builder(final @NonNull String content) {
+    return builder().content(content);
   }
 
   /**
@@ -93,7 +81,7 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
    * @param content the plain text content
    * @return the text component
    */
-  public static @NonNull TextComponent of(final @NonNull String content) {
+  static @NonNull TextComponent of(final @NonNull String content) {
     return builder(content).build();
   }
 
@@ -166,7 +154,7 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
    * @param color the color
    * @return the text component
    */
-  public static @NonNull TextComponent of(final @NonNull String content, final @Nullable TextColor color) {
+  static @NonNull TextComponent of(final @NonNull String content, final @Nullable TextColor color) {
     return builder(content).color(color).build();
   }
 
@@ -178,7 +166,7 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
    * @param decorations the decorations
    * @return the text component
    */
-  public static @NonNull TextComponent of(final @NonNull String content, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
+  static @NonNull TextComponent of(final @NonNull String content, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
     final Set<TextDecoration> activeDecorations = new HashSet<>(decorations.length);
     Collections.addAll(activeDecorations, decorations);
     return of(content, color, activeDecorations);
@@ -192,7 +180,7 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
    * @param decorations the decorations
    * @return the text component
    */
-  public static @NonNull TextComponent of(final @NonNull String content, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
+  static @NonNull TextComponent of(final @NonNull String content, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
     return builder(content).color(color).decorations(decorations, true).build();
   }
 
@@ -202,7 +190,7 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
    * @param consumer the builder configurator
    * @return the text component
    */
-  public static @NonNull TextComponent make(final @NonNull Consumer<Builder> consumer) {
+  static @NonNull TextComponent make(final @NonNull Consumer<Builder> consumer) {
     final Builder builder = builder();
     consumer.accept(builder);
     return builder.build();
@@ -215,20 +203,10 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
    * @param consumer the builder configurator
    * @return the text component
    */
-  public static @NonNull TextComponent make(final @NonNull String content, final @NonNull Consumer<Builder> consumer) {
+  static @NonNull TextComponent make(final @NonNull String content, final @NonNull Consumer<Builder> consumer) {
     final Builder builder = builder(content);
     consumer.accept(builder);
     return builder.build();
-  }
-
-  protected TextComponent(final @NonNull Builder builder) {
-    super(builder);
-    this.content = requireNonNull(builder.content);
-  }
-
-  protected TextComponent(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String content) {
-    super(children, style);
-    this.content = content;
   }
 
   /**
@@ -236,9 +214,7 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
    *
    * @return the plain text content
    */
-  public @NonNull String content() {
-    return this.content;
-  }
+  @NonNull String content();
 
   /**
    * Sets the plain text content.
@@ -246,82 +222,18 @@ public class TextComponent extends AbstractBuildableComponent<TextComponent, Tex
    * @param content the plain text content
    * @return a copy of this component
    */
-  public @NonNull TextComponent content(final @NonNull String content) {
-    return new TextComponent(this.children, this.style, requireNonNull(content, "content"));
-  }
-
-  @Override
-  public @NonNull TextComponent style(final @NonNull Style style) {
-    return new TextComponent(this.children, style, this.content);
-  }
-
-  @Override
-  public @NonNull TextComponent append(final @NonNull Component component) {
-    this.detectCycle(component); // detect cycle before modifying
-    final List<Component> children = new ArrayList<>(this.children.size() + 1);
-    children.addAll(this.children);
-    children.add(component);
-    return new TextComponent(children, this.style, this.content);
-  }
-
-  @Override
-  public @NonNull TextComponent copy() {
-    return new TextComponent(this.children, this.style, this.content);
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(other == null || !(other instanceof TextComponent)) return false;
-    if(!super.equals(other)) return false;
-    final TextComponent component = (TextComponent) other;
-    return Objects.equals(this.content, component.content);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), this.content);
-  }
-
-  @Override
-  protected void populateToString(final @NonNull Map<String, Object> builder) {
-    builder.put("content", this.content);
-  }
-
-  @Override
-  public @NonNull Builder toBuilder() {
-    return new Builder(this);
-  }
+  @NonNull TextComponent content(final @NonNull String content);
 
   /**
    * A text component builder.
    */
-  public static class Builder extends AbstractComponentBuilder<TextComponent, Builder> {
-    private @Nullable String content;
-
-    Builder() {
-    }
-
-    Builder(final @NonNull TextComponent component) {
-      super(component);
-      this.content = component.content();
-    }
-
+  interface Builder extends ComponentBuilder<TextComponent, Builder> {
     /**
      * Sets the plain text content.
      *
      * @param content the plain text content
      * @return this builder
      */
-    public @NonNull Builder content(final @NonNull String content) {
-      this.content = content;
-      return this;
-    }
-
-    @Override
-    public @NonNull TextComponent build() {
-      if(this.content == null) throw new IllegalStateException("content must be set");
-      return new TextComponent(this);
-    }
+    @NonNull Builder content(final @NonNull String content);
   }
 }
