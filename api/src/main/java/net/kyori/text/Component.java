@@ -125,6 +125,16 @@ public interface Component {
   @NonNull Component append(final @NonNull Component component);
 
   /**
+   * Appends a component to this component.
+   *
+   * @param builder the component to append
+   * @return a component with the component added
+   */
+  default @NonNull Component append(final @NonNull ComponentBuilder<?, ?> builder) {
+    return this.append(builder.build());
+  }
+
+  /**
    * Creates a component.
    *
    * @return a component

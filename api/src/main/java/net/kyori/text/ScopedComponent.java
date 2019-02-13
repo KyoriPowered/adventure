@@ -54,6 +54,12 @@ public interface ScopedComponent<C extends Component> extends Component {
 
   @Override
   @SuppressWarnings("unchecked")
+  default @NonNull C append(final @NonNull ComponentBuilder<?, ?> builder) {
+    return (C) Component.super.append(builder);
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
   default @NonNull C color(final @Nullable TextColor color) {
     return (C) Component.super.color(color);
   }

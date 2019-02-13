@@ -66,6 +66,17 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
   }
 
   /**
+   * Creates a text component builder with content, and optional color.
+   *
+   * @param content the plain text content
+   * @param color the color
+   * @return a builder
+   */
+  static @NonNull Builder text(final @NonNull String content, final @Nullable TextColor color) {
+    return builder().content(content).color(color);
+  }
+
+  /**
    * Creates a text component builder with content.
    *
    * @param content the plain text content
@@ -155,7 +166,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @return the text component
    */
   static @NonNull TextComponent of(final @NonNull String content, final @Nullable TextColor color) {
-    return builder(content).color(color).build();
+    return text(content, color).build();
   }
 
   /**

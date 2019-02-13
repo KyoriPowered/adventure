@@ -94,6 +94,16 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
   @NonNull B append(final @NonNull Component component);
 
   /**
+   * Appends a component to this component.
+   *
+   * @param builder the component to append
+   * @return this builder
+   */
+  default @NonNull B append(final @NonNull ComponentBuilder<?, ?> builder) {
+    return this.append(builder.build());
+  }
+
+  /**
    * Appends components to this component.
    *
    * @param components the components to append
