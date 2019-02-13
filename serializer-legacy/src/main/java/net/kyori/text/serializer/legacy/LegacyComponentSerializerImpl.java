@@ -138,13 +138,11 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     throw new IllegalArgumentException(String.format("unknown format '%s'", format.getClass()));
   }
 
-  @Deprecated
   private enum Reset implements TextFormat {
     INSTANCE;
   }
 
   // Are you hungry?
-  @Deprecated
   private static final class Cereal {
     private final StringBuilder sb = new StringBuilder();
     private final Style style = new Style();
