@@ -68,10 +68,11 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
   public static @NonNull GsonBuilder populate(final @NonNull GsonBuilder builder) {
     builder
       .registerTypeHierarchyAdapter(Component.class, INSTANCE)
-      .registerTypeAdapter(ClickEvent.Action.class, NameMapSerializer.of("click action", ClickEvent.Action.NAMES))
-      .registerTypeAdapter(HoverEvent.Action.class, NameMapSerializer.of("hover action", HoverEvent.Action.NAMES))
-      .registerTypeAdapter(TextColor.class, NameMapSerializer.ofIgnoring("text color", TextColor.NAMES, "obfuscated", "bold", "strikethrough", "underlined", "italic", "reset"))
-      .registerTypeAdapter(TextDecoration.class, NameMapSerializer.of("text decoration", TextDecoration.NAMES));
+      .registerTypeAdapter(ClickEvent.Action.class, new NameMapSerializer<>("click action", ClickEvent.Action.NAMES))
+      .registerTypeAdapter(HoverEvent.Action.class, new NameMapSerializer<>("hover action", HoverEvent.Action.NAMES))
+      .registerTypeAdapter(TextColorWrapper.class, new TextColorWrapper.Serializer())
+      .registerTypeAdapter(TextColor.class, new NameMapSerializer<>("text color", TextColor.NAMES))
+      .registerTypeAdapter(TextDecoration.class, new NameMapSerializer<>("text decoration", TextDecoration.NAMES));
     return builder;
   }
 
@@ -149,12 +150,19 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
       }
     }
 
+    if(object.has("color")) {
+      final TextColorWrapper color = context.deserialize(object.get("color"), TextColorWrapper.class);
+      if(color.color != null) {
+        component.color(color.color);
+      } else if(color.decoration != null) {
+        component.decoration(color.decoration, true);
+      }
+    }
     if(object.has("bold")) component.decoration(TextDecoration.BOLD, object.get("bold").getAsBoolean());
     if(object.has("italic")) component.decoration(TextDecoration.ITALIC, object.get("italic").getAsBoolean());
     if(object.has("underlined")) component.decoration(TextDecoration.UNDERLINED, object.get("underlined").getAsBoolean());
     if(object.has("strikethrough")) component.decoration(TextDecoration.STRIKETHROUGH, object.get("strikethrough").getAsBoolean());
     if(object.has("obfuscated")) component.decoration(TextDecoration.OBFUSCATED, object.get("obfuscated").getAsBoolean());
-    if(object.has("color")) component.color(context.deserialize(object.get("color"), TextColor.class));
     if(object.has("insertion")) component.insertion(object.get("insertion").getAsString());
     if(object.has("clickEvent")) {
       final JsonObject clickEvent = object.getAsJsonObject("clickEvent");

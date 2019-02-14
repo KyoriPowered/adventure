@@ -31,47 +31,22 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import net.kyori.text.util.NameMap;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 public class NameMapSerializer<T> implements JsonDeserializer<T>, JsonSerializer<T> {
   private final String name;
   private final NameMap<T> map;
-  private final Collection<String> ignore;
 
-  public static <T> @NonNull NameMapSerializer<T> of(final String name, final NameMap<T> map) {
-    return new NameMapSerializer<>(name, map, Collections.emptySet());
-  }
-
-  public static <T> @NonNull NameMapSerializer<T> ofIgnoring(final String name, final NameMap<T> map, final String... ignores) {
-    final Set<String> ignore = new HashSet<>(ignores.length);
-    Collections.addAll(ignore, ignores);
-    return new NameMapSerializer<>(name, map, ignore);
-  }
-
-  @Deprecated
   public NameMapSerializer(final String name, final NameMap<T> map) {
-    this(name, map, Collections.emptySet());
-  }
-
-  private NameMapSerializer(final String name, final NameMap<T> map, final Collection<String> ignore) {
     this.name = name;
     this.map = map;
-    this.ignore = ignore;
   }
 
   @Override
   public T deserialize(final JsonElement json, final Type type, final JsonDeserializationContext context) throws JsonParseException {
     final String string = json.getAsString();
-    if(this.ignore.contains(string)) {
-      return null;
-    }
-    return this.map.get(string).orElseThrow(() -> new IllegalArgumentException("invalid " + this.name + ":  " + string));
+    return this.map.get(string).orElseThrow(() -> new JsonParseException("invalid " + this.name + ":  " + string));
   }
 
   @Override
