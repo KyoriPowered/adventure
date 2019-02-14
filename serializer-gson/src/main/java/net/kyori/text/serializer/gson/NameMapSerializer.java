@@ -45,7 +45,7 @@ public class NameMapSerializer<T> implements JsonDeserializer<T>, JsonSerializer
 
   @Override
   public T deserialize(final JsonElement json, final Type type, final JsonDeserializationContext context) throws JsonParseException {
-    return this.map.get(json.getAsString()).orElseThrow(() -> new IllegalArgumentException("invalid " + this.name));
+    return this.map.get(json.getAsString()).orElseThrow(() -> new IllegalArgumentException("invalid " + this.name + ":  " + json.getAsString()));
   }
 
   @Override
