@@ -68,10 +68,10 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
   public static @NonNull GsonBuilder populate(final @NonNull GsonBuilder builder) {
     builder
       .registerTypeHierarchyAdapter(Component.class, INSTANCE)
-      .registerTypeAdapter(ClickEvent.Action.class, new NameMapSerializer<>("click action", ClickEvent.Action.NAMES))
-      .registerTypeAdapter(HoverEvent.Action.class, new NameMapSerializer<>("hover action", HoverEvent.Action.NAMES))
-      .registerTypeAdapter(TextColor.class, new NameMapSerializer<>("text color", TextColor.NAMES))
-      .registerTypeAdapter(TextDecoration.class, new NameMapSerializer<>("text decoration", TextDecoration.NAMES));
+      .registerTypeAdapter(ClickEvent.Action.class, NameMapSerializer.of("click action", ClickEvent.Action.NAMES))
+      .registerTypeAdapter(HoverEvent.Action.class, NameMapSerializer.of("hover action", HoverEvent.Action.NAMES))
+      .registerTypeAdapter(TextColor.class, NameMapSerializer.ofIgnoring("text color", TextColor.NAMES, "obfuscated", "bold", "strikethrough", "underlined", "italic", "reset"))
+      .registerTypeAdapter(TextDecoration.class, NameMapSerializer.of("text decoration", TextDecoration.NAMES));
     return builder;
   }
 
