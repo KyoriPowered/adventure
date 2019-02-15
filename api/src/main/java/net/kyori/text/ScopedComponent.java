@@ -96,12 +96,6 @@ public interface ScopedComponent<C extends Component> extends Component {
 
   @Override
   @SuppressWarnings("unchecked")
-  default @NonNull C mergeStyle(final @NonNull Component that) {
-    return (C) Component.super.mergeStyle(that);
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
   default @NonNull C mergeColor(final @NonNull Component that) {
     return (C) Component.super.mergeColor(that);
   }
@@ -116,11 +110,5 @@ public interface ScopedComponent<C extends Component> extends Component {
   @SuppressWarnings("unchecked")
   default @NonNull C mergeEvents(final @NonNull Component that) {
     return (C) Component.super.mergeEvents(that);
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  default @NonNull C resetStyle() {
-    return (C) Component.super.resetStyle();
   }
 }

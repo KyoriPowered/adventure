@@ -302,16 +302,6 @@ public interface Component {
   }
 
   /**
-   * Merges styling from another component into this component.
-   *
-   * @param that the other component
-   * @return a component
-   */
-  default @NonNull Component mergeStyle(final @NonNull Component that) {
-    return this.style(this.style().mergeStyle(that.style()));
-  }
-
-  /**
    * Merges the color from another component into this component.
    *
    * @param that the other component
@@ -339,15 +329,6 @@ public interface Component {
    */
   default @NonNull Component mergeEvents(final @NonNull Component that) {
     return this.style(this.style().mergeEvents(that.style()));
-  }
-
-  /**
-   * Resets all styling on this component.
-   *
-   * @return a component
-   */
-  default @NonNull Component resetStyle() {
-    return this.style(Style.empty());
   }
 
   /**

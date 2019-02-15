@@ -25,6 +25,7 @@ package net.kyori.text;
 
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
+import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
@@ -75,7 +76,7 @@ class ComponentTest {
     assertFalse(component.hasStyling());
     component = component.decoration(TextDecoration.BOLD, TextDecoration.State.TRUE);
     assertTrue(component.hasStyling());
-    component = component.resetStyle();
+    component = component.style(Style.empty());
     assertFalse(component.hasStyling());
   }
 

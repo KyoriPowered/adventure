@@ -261,16 +261,6 @@ public final class Style {
   }
 
   /**
-   * Merges styling from another style into this style.
-   *
-   * @param that the other style
-   * @return a style
-   */
-  public @NonNull Style mergeStyle(final @NonNull Style that) {
-    return new Style(that.color(), that.decoration(TextDecoration.OBFUSCATED), that.decoration(TextDecoration.BOLD), that.decoration(TextDecoration.STRIKETHROUGH), that.decoration(TextDecoration.UNDERLINED), that.decoration(TextDecoration.ITALIC), that.clickEvent(), that.hoverEvent(), that.insertion());
-  }
-
-  /**
    * Merges the color from another style into this style.
    *
    * @param that the other style
@@ -323,6 +313,11 @@ public final class Style {
       && this.insertion == null;
   }
 
+  /**
+   * Create a builder from this style.
+   *
+   * @return a builder
+   */
   public @NonNull Builder toBuilder() {
     return new Builder(this);
   }
@@ -345,7 +340,7 @@ public final class Style {
   @Override
   public boolean equals(final @Nullable Object other) {
     if(this == other) return true;
-    if(other == null || !(other instanceof Style)) return false;
+    if(!(other instanceof Style)) return false;
     final Style that = (Style) other;
     return this.color == that.color
       && Objects.equals(this.obfuscated, that.obfuscated)
@@ -370,41 +365,45 @@ public final class Style {
     /**
      * The color.
      */
-    protected @Nullable TextColor color;
+    private @Nullable TextColor color;
     /**
      * If this component should have the {@link TextDecoration#OBFUSCATED obfuscated} decoration.
      */
-    protected TextDecoration.State obfuscated = TextDecoration.State.NOT_SET;
+    private TextDecoration.State obfuscated = TextDecoration.State.NOT_SET;
     /**
      * If this component should have the {@link TextDecoration#BOLD bold} decoration.
      */
-    protected TextDecoration.State bold = TextDecoration.State.NOT_SET;
+    private TextDecoration.State bold = TextDecoration.State.NOT_SET;
     /**
      * If this component should have the {@link TextDecoration#STRIKETHROUGH strikethrough} decoration.
      */
-    protected TextDecoration.State strikethrough = TextDecoration.State.NOT_SET;
+    private TextDecoration.State strikethrough = TextDecoration.State.NOT_SET;
     /**
      * If this component should have the {@link TextDecoration#UNDERLINED underlined} decoration.
      */
-    protected TextDecoration.State underlined = TextDecoration.State.NOT_SET;
+    private TextDecoration.State underlined = TextDecoration.State.NOT_SET;
     /**
      * If this component should have the {@link TextDecoration#ITALIC italic} decoration.
      */
-    protected TextDecoration.State italic = TextDecoration.State.NOT_SET;
+    private TextDecoration.State italic = TextDecoration.State.NOT_SET;
     /**
      * The click event to apply to this component.
      */
-    protected @Nullable ClickEvent clickEvent;
+    private @Nullable ClickEvent clickEvent;
     /**
      * The hover event to apply to this component.
      */
-    protected @Nullable HoverEvent hoverEvent;
+    private @Nullable HoverEvent hoverEvent;
     /**
      * The string to insert when this component is shift-clicked in chat.
      */
-    protected @Nullable String insertion;
+    private @Nullable String insertion;
 
     protected Builder() {
+    }
+
+    protected Builder(final @NonNull Component component) {
+      this(component.style());
     }
 
     protected Builder(final @NonNull Style style) {
@@ -417,10 +416,6 @@ public final class Style {
       this.clickEvent = Optional.ofNullable(style.clickEvent()).map(ClickEvent::copy).orElse(null);
       this.hoverEvent = Optional.ofNullable(style.hoverEvent()).map(HoverEvent::copy).orElse(null);
       this.insertion = style.insertion();
-    }
-
-    protected Builder(final @NonNull Component component) {
-      this(component.style());
     }
 
     /**
@@ -501,6 +496,11 @@ public final class Style {
       return this;
     }
 
+    /**
+     * Builds the style.
+     *
+     * @return the style
+     */
     public @NonNull Style build() {
       return new Style(this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
     }

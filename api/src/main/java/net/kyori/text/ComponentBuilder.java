@@ -278,7 +278,8 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
   @SuppressWarnings("unchecked")
   default @NonNull B mergeEvents(final @NonNull Component that) {
     if(that.clickEvent() != null) this.clickEvent(that.clickEvent());
-    if(that.hoverEvent() != null) this.hoverEvent(that.hoverEvent().copy()); // hard copy, hover events have a component
+    final HoverEvent hoverEvent = that.hoverEvent();
+    if(hoverEvent != null) this.hoverEvent(hoverEvent.copy()); // hard copy, hover events have a component
     return (B) this;
   }
 
@@ -287,14 +288,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    *
    * @return this builder
    */
-  @SuppressWarnings("unchecked")
-  default @NonNull B resetStyle() {
-    this.color(null);
-    for(final TextDecoration decoration : TextDecoration.values()) this.decoration(decoration, TextDecoration.State.NOT_SET);
-    this.clickEvent(null);
-    this.hoverEvent(null);
-    return (B) this;
-  }
+  @NonNull B resetStyle();
 
   /**
    * Build a component.
