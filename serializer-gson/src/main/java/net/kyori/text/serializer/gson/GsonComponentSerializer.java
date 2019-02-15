@@ -83,8 +83,11 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
   }
 
   @Override
-  @SuppressWarnings("rawtypes")
-  public BuildableComponent<?, ?> deserialize(final JsonElement element, final Type type, final JsonDeserializationContext context) throws JsonParseException {
+  public Component deserialize(final JsonElement element, final Type type, final JsonDeserializationContext context) throws JsonParseException {
+    return this.deserialize0(element, type, context);
+  }
+
+  private BuildableComponent<?, ?> deserialize0(final JsonElement element, final Type type, final JsonDeserializationContext context) throws JsonParseException {
     if(element.isJsonPrimitive()) {
       return TextComponent.of(element.getAsString());
     }
@@ -92,7 +95,7 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
       if(element.isJsonArray()) {
         ComponentBuilder<?, ?> parent = null;
         for(final JsonElement childElement : element.getAsJsonArray()) {
-          final BuildableComponent<?, ?> child = this.deserialize(childElement, childElement.getClass(), context);
+          final BuildableComponent<?, ?> child = this.deserialize0(childElement, childElement.getClass(), context);
           if(parent == null) {
             parent = child.toBuilder();
           } else {
@@ -108,7 +111,7 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
       throw new JsonParseException("Don't know how to turn " + element + " into a Component");
     }
     final JsonObject object = element.getAsJsonObject();
-    final ComponentBuilder component;
+    final ComponentBuilder<?, ?> component;
     if(object.has("text")) {
       component = TextComponent.builder(object.get("text").getAsString());
     } else if(object.has("translate")) {
@@ -120,7 +123,7 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
         final List<Component> args = new ArrayList<>(with.size());
         for(int i = 0, size = with.size(); i < size; i++) {
           final JsonElement argElement = with.get(i);
-          args.add(this.deserialize(argElement, argElement.getClass(), context));
+          args.add(this.deserialize0(argElement, argElement.getClass(), context));
         }
         component = TranslatableComponent.builder(key).args(args);
       }
@@ -147,7 +150,7 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
       final JsonArray extra = object.getAsJsonArray("extra");
       for(int i = 0, size = extra.size(); i < size; i++) {
         final JsonElement extraElement = extra.get(i);
-        component.append(this.deserialize(extraElement, extraElement.getClass(), context));
+        component.append(this.deserialize0(extraElement, extraElement.getClass(), context));
       }
     }
 
@@ -184,7 +187,7 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
         final HoverEvent./*@Nullable*/ Action action = rawAction == null ? null : context.deserialize(rawAction, HoverEvent.Action.class);
         if(action != null && action.readable()) {
           final /* @Nullable */ JsonElement rawValue = hoverEvent.get("value");
-          final /* @Nullable */ Component value = rawValue == null ? null : this.deserialize(rawValue, rawValue.getClass(), context);
+          final /* @Nullable */ Component value = rawValue == null ? null : this.deserialize0(rawValue, rawValue.getClass(), context);
           if(value != null) component.hoverEvent(new HoverEvent(action, value));
         }
       }
@@ -209,7 +212,7 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
       if(!tc.args().isEmpty()) {
         final JsonArray with = new JsonArray();
         for(final Component arg : tc.args()) {
-          with.add(this.serialize(arg, arg.getClass(), context));
+          with.add(context.serialize(arg));
         }
         object.add("with", with);
       }
@@ -232,7 +235,7 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
     if(!component.children().isEmpty()) {
       final JsonArray extra = new JsonArray();
       for(final Component child : component.children()) {
-        extra.add(this.serialize(child, child.getClass(), context));
+        extra.add(context.serialize(child));
       }
       object.add("extra", extra);
     }
@@ -255,7 +258,7 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
       if(hoverEvent != null) {
         final JsonObject hoverEventO = new JsonObject();
         hoverEventO.add("action", context.serialize(hoverEvent.action()));
-        hoverEventO.add("value", this.serialize(hoverEvent.value(), type, context));
+        hoverEventO.add("value", context.serialize(hoverEvent.value()));
         object.add("hoverEvent", hoverEventO);
       }
     }
