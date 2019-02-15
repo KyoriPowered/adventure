@@ -24,6 +24,7 @@
 package net.kyori.text.serializer.legacy;
 
 import net.kyori.text.TextComponent;
+import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
@@ -72,7 +73,7 @@ class LegacyComponentSerializerTest {
       .append(TextComponent.builder("this bit is green ")
         .color(TextColor.GREEN)
         .build())
-      .append(TextComponent.of("this isn't ").resetStyle())
+      .append(TextComponent.of("this isn't ").style(Style.empty()))
       .append(TextComponent.builder("and woa, this is again")
         .color(TextColor.GREEN)
         .build())
