@@ -52,10 +52,19 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
    * by default to prevent unnecessary list creation for components with no children.</p>
    */
   protected List<Component> children = AbstractComponent.EMPTY_COMPONENT_LIST;
+  /*
+   * We maintain two separate fields here - a style, and style builder. If we're creating this component builder from
+   * another component, or someone provides a style via style(Style), then we don't need a builder - unless someone later
+   * calls one of the style modification methods in this builder, at which time we'll convert 'style' to a style builder.
+   */
   /**
    * The style.
    */
-  protected Style.@MonotonicNonNull Builder style;
+  private @Nullable Style style;
+  /**
+   * The style builder.
+   */
+  private Style.@MonotonicNonNull Builder styleB;
 
   protected AbstractComponentBuilder() {
   }
@@ -63,7 +72,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   protected AbstractComponentBuilder(final @NonNull C component) {
     this.children = new ArrayList<>(component.children());
     if(component.hasStyling()) {
-      this.style = component.style().toBuilder();
+      this.style = component.style();
     }
   }
 
@@ -153,43 +162,50 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
 
   @Override
   @SuppressWarnings("unchecked")
+  public @NonNull B style(final @NonNull Style style) {
+    this.style = style;
+    return (B) this;
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
   public @NonNull B color(final @Nullable TextColor color) {
-    this.style().color(color);
+    this.styleBuilder().color(color);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public @NonNull B colorIfAbsent(final @Nullable TextColor color) {
-    this.style().colorIfAbsent(color);
+    this.styleBuilder().colorIfAbsent(color);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public @NonNull B decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
-    this.style().decoration(decoration, state);
+    this.styleBuilder().decoration(decoration, state);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public @NonNull B clickEvent(final @Nullable ClickEvent event) {
-    this.style().clickEvent(event);
+    this.styleBuilder().clickEvent(event);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public @NonNull B hoverEvent(final @Nullable HoverEvent event) {
-    this.style().hoverEvent(event);
+    this.styleBuilder().hoverEvent(event);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public @NonNull B insertion(final @Nullable String insertion) {
-    this.style().insertion(insertion);
+    this.styleBuilder().insertion(insertion);
     return (B) this;
   }
 
@@ -197,13 +213,29 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   @SuppressWarnings("unchecked")
   public @NonNull B resetStyle() {
     this.style = null;
+    this.styleB = null;
     return (B) this;
   }
 
-  private Style.@NonNull Builder style() {
-    if(this.style == null) {
-      this.style = Style.builder();
+  private Style.@NonNull Builder styleBuilder() {
+    if(this.styleB == null) {
+      if(this.style != null) {
+        this.styleB = this.style.toBuilder();
+        this.style = null;
+      } else {
+        this.styleB = Style.builder();
+      }
     }
-    return this.style;
+    return this.styleB;
+  }
+
+  protected @NonNull Style buildStyle() {
+    if(this.styleB != null) {
+      return this.styleB.build();
+    } else if(this.style != null) {
+      return this.style;
+    } else {
+      return Style.empty();
+    }
   }
 }

@@ -115,7 +115,7 @@ class TextComponentImpl extends AbstractComponent implements TextComponent {
     @Override
     public @NonNull TextComponentImpl build() {
       if(this.content == null) throw new IllegalStateException("content must be set");
-      return new TextComponentImpl(this.children, this.style, this.content);
+      return new TextComponentImpl(this.children, this.buildStyle(), this.content);
     }
   }
 }

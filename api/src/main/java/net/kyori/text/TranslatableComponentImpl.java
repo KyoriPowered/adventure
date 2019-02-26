@@ -145,7 +145,7 @@ class TranslatableComponentImpl extends AbstractComponent implements Translatabl
     @Override
     public @NonNull TranslatableComponentImpl build() {
       if(this.key == null) throw new IllegalStateException("key must be set");
-      return new TranslatableComponentImpl(this.children, this.style, this.key, this.args);
+      return new TranslatableComponentImpl(this.children, this.buildStyle(), this.key, this.args);
     }
   }
 }

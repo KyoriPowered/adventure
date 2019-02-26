@@ -25,6 +25,7 @@ package net.kyori.text;
 
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
+import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -148,6 +149,14 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    */
   @NonNull B mapChildrenDeep(final @NonNull Function<BuildableComponent<?, ?>, BuildableComponent<?, ?>> function);
+
+  /**
+   * Sets the style.
+   *
+   * @param style the style
+   * @return this builder
+   */
+  @NonNull B style(final @NonNull Style style);
 
   /**
    * Sets the color of this component.

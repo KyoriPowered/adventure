@@ -31,7 +31,6 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import net.kyori.text.BuildableComponent;
@@ -44,6 +43,7 @@ import net.kyori.text.TextComponent;
 import net.kyori.text.TranslatableComponent;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
+import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import net.kyori.text.serializer.ComponentSerializer;
@@ -52,6 +52,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class GsonComponentSerializer implements ComponentSerializer<Component, Component, String>, JsonDeserializer<Component>, JsonSerializer<Component> {
   /**
@@ -69,6 +70,7 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
   public static @NonNull GsonBuilder populate(final @NonNull GsonBuilder builder) {
     builder
       .registerTypeHierarchyAdapter(Component.class, INSTANCE)
+      .registerTypeAdapter(Style.class, new StyleSerializer())
       .registerTypeAdapter(ClickEvent.Action.class, new NameMapSerializer<>("click action", ClickEvent.Action.NAMES))
       .registerTypeAdapter(HoverEvent.Action.class, new NameMapSerializer<>("hover action", HoverEvent.Action.NAMES))
       .registerTypeAdapter(TextColorWrapper.class, new TextColorWrapper.Serializer())
@@ -77,123 +79,20 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
     return builder;
   }
 
+  static final String TEXT = "text";
+  static final String TRANSLATE = "translate";
+  static final String TRANSLATE_WITH = "with";
+  static final String SCORE = "score";
+  static final String SCORE_NAME = "name";
+  static final String SCORE_OBJECTIVE = "objective";
+  static final String SCORE_VALUE = "value";
+  static final String SELECTOR = "selector";
+  static final String KEYBIND = "keybind";
+  static final String EXTRA = "extra";
+
   @Override
   public @NonNull Component deserialize(final @NonNull String string) {
     return GSON.fromJson(string, Component.class);
-  }
-
-  @Override
-  public Component deserialize(final JsonElement element, final Type type, final JsonDeserializationContext context) throws JsonParseException {
-    return this.deserialize0(element, type, context);
-  }
-
-  private BuildableComponent<?, ?> deserialize0(final JsonElement element, final Type type, final JsonDeserializationContext context) throws JsonParseException {
-    if(element.isJsonPrimitive()) {
-      return TextComponent.of(element.getAsString());
-    }
-    if(!element.isJsonObject()) {
-      if(element.isJsonArray()) {
-        ComponentBuilder<?, ?> parent = null;
-        for(final JsonElement childElement : element.getAsJsonArray()) {
-          final BuildableComponent<?, ?> child = this.deserialize0(childElement, childElement.getClass(), context);
-          if(parent == null) {
-            parent = child.toBuilder();
-          } else {
-            parent.append(child);
-          }
-        }
-        if(parent == null) {
-          throw new JsonParseException("Don't know how to turn " + element + " into a Component");
-        }
-        return parent.build();
-      }
-
-      throw new JsonParseException("Don't know how to turn " + element + " into a Component");
-    }
-    final JsonObject object = element.getAsJsonObject();
-    final ComponentBuilder<?, ?> component;
-    if(object.has("text")) {
-      component = TextComponent.builder(object.get("text").getAsString());
-    } else if(object.has("translate")) {
-      final String key = object.get("translate").getAsString();
-      if(!object.has("with")) {
-        component = TranslatableComponent.builder(key);
-      } else {
-        final JsonArray with = object.getAsJsonArray("with");
-        final List<Component> args = new ArrayList<>(with.size());
-        for(int i = 0, size = with.size(); i < size; i++) {
-          final JsonElement argElement = with.get(i);
-          args.add(this.deserialize0(argElement, argElement.getClass(), context));
-        }
-        component = TranslatableComponent.builder(key).args(args);
-      }
-    } else if(object.has("score")) {
-      final JsonObject score = object.getAsJsonObject("score");
-      if(!score.has("name") && !score.has("objective")) {
-        throw new JsonParseException("A score component requires a name and objective");
-      }
-      // score components can have a value sometimes, let's grab it
-      if(score.has("value")) {
-        component = ScoreComponent.builder().name(score.get("name").getAsString()).objective(score.get("objective").getAsString()).value(score.get("value").getAsString());
-      } else {
-        component = ScoreComponent.builder().name(score.get("name").getAsString()).objective(score.get("objective").getAsString());
-      }
-    } else if(object.has("selector")) {
-      component = SelectorComponent.builder().pattern(object.get("selector").getAsString());
-    } else if(object.has("keybind")) {
-      component = KeybindComponent.builder().keybind(object.get("keybind").getAsString());
-    } else {
-      throw new JsonParseException("Don't know how to turn " + element + " into a Component");
-    }
-
-    if(object.has("extra")) {
-      final JsonArray extra = object.getAsJsonArray("extra");
-      for(int i = 0, size = extra.size(); i < size; i++) {
-        final JsonElement extraElement = extra.get(i);
-        component.append(this.deserialize0(extraElement, extraElement.getClass(), context));
-      }
-    }
-
-    if(object.has("color")) {
-      final TextColorWrapper color = context.deserialize(object.get("color"), TextColorWrapper.class);
-      if(color.color != null) {
-        component.color(color.color);
-      } else if(color.decoration != null) {
-        component.decoration(color.decoration, true);
-      }
-    }
-    if(object.has("bold")) component.decoration(TextDecoration.BOLD, object.get("bold").getAsBoolean());
-    if(object.has("italic")) component.decoration(TextDecoration.ITALIC, object.get("italic").getAsBoolean());
-    if(object.has("underlined")) component.decoration(TextDecoration.UNDERLINED, object.get("underlined").getAsBoolean());
-    if(object.has("strikethrough")) component.decoration(TextDecoration.STRIKETHROUGH, object.get("strikethrough").getAsBoolean());
-    if(object.has("obfuscated")) component.decoration(TextDecoration.OBFUSCATED, object.get("obfuscated").getAsBoolean());
-    if(object.has("insertion")) component.insertion(object.get("insertion").getAsString());
-    if(object.has("clickEvent")) {
-      final JsonObject clickEvent = object.getAsJsonObject("clickEvent");
-      if(clickEvent != null) {
-        final /* @Nullable */ JsonPrimitive rawAction = clickEvent.getAsJsonPrimitive("action");
-        final ClickEvent./*@Nullable*/ Action action = rawAction == null ? null : context.deserialize(rawAction, ClickEvent.Action.class);
-        final /* @Nullable */ JsonPrimitive rawValue = clickEvent.getAsJsonPrimitive("value");
-        final /* @Nullable */ String value = rawValue == null ? null : rawValue.getAsString();
-        if(action != null && value != null && action.readable()) {
-          component.clickEvent(new ClickEvent(action, value));
-        }
-      }
-    }
-    if(object.has("hoverEvent")) {
-      final JsonObject hoverEvent = object.getAsJsonObject("hoverEvent");
-      if(hoverEvent != null) {
-        final /* @Nullable */ JsonPrimitive rawAction = hoverEvent.getAsJsonPrimitive("action");
-        final HoverEvent./*@Nullable*/ Action action = rawAction == null ? null : context.deserialize(rawAction, HoverEvent.Action.class);
-        if(action != null && action.readable()) {
-          final /* @Nullable */ JsonElement rawValue = hoverEvent.get("value");
-          final /* @Nullable */ Component value = rawValue == null ? null : this.deserialize0(rawValue, rawValue.getClass(), context);
-          if(value != null) component.hoverEvent(new HoverEvent(action, value));
-        }
-      }
-    }
-
-    return component.build();
   }
 
   @Override
@@ -201,65 +100,133 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
     return GSON.toJson(component);
   }
 
+  // Not part of the API.
+  @Deprecated
   @Override
-  public JsonElement serialize(final Component component, final Type type, final JsonSerializationContext context) {
+  public Component deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
+    return this.deserialize0(json, context);
+  }
+
+  private BuildableComponent<?, ?> deserialize0(final JsonElement element, final JsonDeserializationContext context) throws JsonParseException {
+    if(element.isJsonPrimitive()) {
+      return TextComponent.of(element.getAsString());
+    } else if(element.isJsonArray()) {
+      ComponentBuilder<?, ?> parent = null;
+      for(final JsonElement childElement : element.getAsJsonArray()) {
+        final BuildableComponent<?, ?> child = this.deserialize0(childElement, context);
+        if(parent == null) {
+          parent = child.toBuilder();
+        } else {
+          parent.append(child);
+        }
+      }
+      if(parent == null) {
+        throw new JsonParseException("Don't know how to turn " + element + " into a Component");
+      }
+      return parent.build();
+    } else if(!element.isJsonObject()) {
+      throw new JsonParseException("Don't know how to turn " + element + " into a Component");
+    }
+
+    final JsonObject object = element.getAsJsonObject();
+    final ComponentBuilder<?, ?> component;
+    if(object.has(TEXT)) {
+      component = TextComponent.builder(object.get(TEXT).getAsString());
+    } else if(object.has(TRANSLATE)) {
+      final String key = object.get(TRANSLATE).getAsString();
+      if(!object.has(TRANSLATE_WITH)) {
+        component = TranslatableComponent.builder(key);
+      } else {
+        final JsonArray with = object.getAsJsonArray(TRANSLATE_WITH);
+        final List<Component> args = new ArrayList<>(with.size());
+        for(int i = 0, size = with.size(); i < size; i++) {
+          final JsonElement argElement = with.get(i);
+          args.add(this.deserialize0(argElement, context));
+        }
+        component = TranslatableComponent.builder(key).args(args);
+      }
+    } else if(object.has(SCORE)) {
+      final JsonObject score = object.getAsJsonObject(SCORE);
+      if(!score.has(SCORE_NAME) && !score.has(SCORE_OBJECTIVE)) {
+        throw new JsonParseException("A score component requires a " + SCORE_NAME + " and " + SCORE_OBJECTIVE);
+      }
+      // score components can have a value sometimes, let's grab it
+      if(score.has(SCORE_VALUE)) {
+        component = ScoreComponent.builder().name(score.get(SCORE_NAME).getAsString()).objective(score.get(SCORE_OBJECTIVE).getAsString()).value(score.get(SCORE_VALUE).getAsString());
+      } else {
+        component = ScoreComponent.builder().name(score.get(SCORE_NAME).getAsString()).objective(score.get(SCORE_OBJECTIVE).getAsString());
+      }
+    } else if(object.has(SELECTOR)) {
+      component = SelectorComponent.builder().pattern(object.get(SELECTOR).getAsString());
+    } else if(object.has(KEYBIND)) {
+      component = KeybindComponent.builder().keybind(object.get(KEYBIND).getAsString());
+    } else {
+      throw new JsonParseException("Don't know how to turn " + element + " into a Component");
+    }
+
+    if(object.has(EXTRA)) {
+      final JsonArray extra = object.getAsJsonArray(EXTRA);
+      for(int i = 0, size = extra.size(); i < size; i++) {
+        final JsonElement extraElement = extra.get(i);
+        component.append(this.deserialize0(extraElement, context));
+      }
+    }
+
+    final Style style = context.deserialize(element, Style.class);
+    if(!style.isEmpty()) {
+      component.style(style);
+    }
+
+    return component.build();
+  }
+
+  // Not part of the API.
+  @Deprecated
+  @Override
+  public JsonElement serialize(final Component src, final Type typeOfSrc, final JsonSerializationContext context) {
     final JsonObject object = new JsonObject();
-    if(component instanceof TextComponent) {
-      object.addProperty("text", ((TextComponent) component).content());
-    } else if(component instanceof TranslatableComponent) {
-      final TranslatableComponent tc = (TranslatableComponent) component;
-      object.addProperty("translate", tc.key());
+    if(src instanceof TextComponent) {
+      object.addProperty(TEXT, ((TextComponent) src).content());
+    } else if(src instanceof TranslatableComponent) {
+      final TranslatableComponent tc = (TranslatableComponent) src;
+      object.addProperty(TRANSLATE, tc.key());
       if(!tc.args().isEmpty()) {
         final JsonArray with = new JsonArray();
         for(final Component arg : tc.args()) {
           with.add(context.serialize(arg));
         }
-        object.add("with", with);
+        object.add(TRANSLATE_WITH, with);
       }
-    } else if(component instanceof ScoreComponent) {
-      final ScoreComponent sc = (ScoreComponent) component;
+    } else if(src instanceof ScoreComponent) {
+      final ScoreComponent sc = (ScoreComponent) src;
       final JsonObject score = new JsonObject();
-      score.addProperty("name", sc.name());
-      score.addProperty("objective", sc.objective());
+      score.addProperty(SCORE_NAME, sc.name());
+      score.addProperty(SCORE_OBJECTIVE, sc.objective());
       // score component value is optional
-      if(sc.value() != null) score.addProperty("value", sc.value());
-      object.add("score", score);
-    } else if(component instanceof SelectorComponent) {
-      object.addProperty("selector", ((SelectorComponent) component).pattern());
-    } else if(component instanceof KeybindComponent) {
-      object.addProperty("keybind", ((KeybindComponent) component).keybind());
+      if(sc.value() != null) score.addProperty(SCORE_VALUE, sc.value());
+      object.add(SCORE, score);
+    } else if(src instanceof SelectorComponent) {
+      object.addProperty(SELECTOR, ((SelectorComponent) src).pattern());
+    } else if(src instanceof KeybindComponent) {
+      object.addProperty(KEYBIND, ((KeybindComponent) src).keybind());
     } else {
-      throw new IllegalArgumentException("Don't know how to serialize " + component + " as a Component");
+      throw new IllegalArgumentException("Don't know how to serialize " + src + " as a Component");
     }
 
-    if(!component.children().isEmpty()) {
+    if(!src.children().isEmpty()) {
       final JsonArray extra = new JsonArray();
-      for(final Component child : component.children()) {
+      for(final Component child : src.children()) {
         extra.add(context.serialize(child));
       }
-      object.add("extra", extra);
+      object.add(EXTRA, extra);
     }
 
-    if(component.hasStyling()) {
-      for(final TextDecoration decoration : TextDecoration.values()) {
-        final TextDecoration.State flag = component.decoration(decoration);
-        if(flag != TextDecoration.State.NOT_SET) object.addProperty(decoration.toString(), flag == TextDecoration.State.TRUE);
-      }
-      if(component.color() != null) object.add("color", context.serialize(component.color()));
-      if(component.insertion() != null) object.add("insertion", context.serialize(component.insertion()));
-      final /* @Nullable */ ClickEvent clickEvent = component.clickEvent();
-      if(clickEvent != null) {
-        final JsonObject clickEventO = new JsonObject();
-        clickEventO.add("action", context.serialize(clickEvent.action()));
-        clickEventO.addProperty("value", clickEvent.value());
-        object.add("clickEvent", clickEventO);
-      }
-      final /* @Nullable */ HoverEvent hoverEvent = component.hoverEvent();
-      if(hoverEvent != null) {
-        final JsonObject hoverEventO = new JsonObject();
-        hoverEventO.add("action", context.serialize(hoverEvent.action()));
-        hoverEventO.add("value", context.serialize(hoverEvent.value()));
-        object.add("hoverEvent", hoverEventO);
+    if(src.hasStyling()) {
+      final JsonElement style = context.serialize(src.style());
+      if(style.isJsonObject()) {
+        for(final Map.Entry<String, JsonElement> entry : ((JsonObject) style).entrySet()) {
+          object.add(entry.getKey(), entry.getValue());
+        }
       }
     }
 

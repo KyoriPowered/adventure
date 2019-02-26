@@ -115,7 +115,7 @@ class KeybindComponentImpl extends AbstractComponent implements KeybindComponent
     @Override
     public @NonNull KeybindComponent build() {
       if(this.keybind == null) throw new IllegalStateException("keybind must be set");
-      return new KeybindComponentImpl(this.children, this.style, this.keybind);
+      return new KeybindComponentImpl(this.children, this.buildStyle(), this.keybind);
     }
   }
 }

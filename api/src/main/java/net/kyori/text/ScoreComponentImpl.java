@@ -160,7 +160,7 @@ class ScoreComponentImpl extends AbstractComponent implements ScoreComponent {
     public @NonNull ScoreComponent build() {
       if(this.name == null) throw new IllegalStateException("name must be set");
       if(this.objective == null) throw new IllegalStateException("objective must be set");
-      return new ScoreComponentImpl(this.children, this.style, this.name, this.objective, this.value);
+      return new ScoreComponentImpl(this.children, this.buildStyle(), this.name, this.objective, this.value);
     }
   }
 }

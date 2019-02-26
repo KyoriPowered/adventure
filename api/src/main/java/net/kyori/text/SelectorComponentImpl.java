@@ -115,7 +115,7 @@ class SelectorComponentImpl extends AbstractComponent implements SelectorCompone
     @Override
     public @NonNull SelectorComponent build() {
       if(this.pattern == null) throw new IllegalStateException("pattern must be set");
-      return new SelectorComponentImpl(this.children, this.style, this.pattern);
+      return new SelectorComponentImpl(this.children, this.buildStyle(), this.pattern);
     }
   }
 }

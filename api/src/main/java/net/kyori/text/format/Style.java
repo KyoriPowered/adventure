@@ -443,6 +443,18 @@ public final class Style {
     }
 
     /**
+     * Sets the state of a decoration on this style.
+     *
+     * @param decoration the decoration
+     * @param flag {@code true} if this style should have the decoration, {@code false} if
+     *     this style should not have the decoration
+     * @return a style
+     */
+    public @NonNull Builder decoration(final @NonNull TextDecoration decoration, final boolean flag) {
+      return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
+    }
+
+    /**
      * Sets the value of a decoration.
      *
      * @param decoration the decoration
