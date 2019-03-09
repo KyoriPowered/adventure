@@ -62,12 +62,38 @@ public final class Style {
   }
 
   /**
-   * Creates a builder.
+   * Gets an empty style.
    *
-   * @return a builder
+   * @return empty style
    */
   public static @NonNull Style empty() {
     return EMPTY;
+  }
+
+  /**
+   * Creates a style with color.
+   *
+   * @param color the style
+   * @return a style
+   */
+  public static @NonNull Style of(final @Nullable TextColor color) {
+    return builder().color(color).build();
+  }
+
+  /**
+   * Creates a style with color and decorations.
+   *
+   * @param color the style
+   * @param decorations the decorations
+   * @return a style
+   */
+  public static @NonNull Style of(final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
+    final Builder builder = builder();
+    builder.color(color);
+    for(final TextDecoration decoration : decorations) {
+      builder.decoration(decoration, true);
+    }
+    return builder.build();
   }
 
   private Style(final @Nullable TextColor color, final TextDecoration.State obfuscated, final TextDecoration.State bold, final TextDecoration.State strikethrough, final TextDecoration.State underlined, final TextDecoration.State italic, final @Nullable ClickEvent clickEvent, final @Nullable HoverEvent hoverEvent, final @Nullable String insertion) {

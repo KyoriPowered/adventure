@@ -33,6 +33,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
@@ -129,6 +131,11 @@ class TranslatableComponentImpl extends AbstractComponent implements Translatabl
     public @NonNull Builder key(final @NonNull String key) {
       this.key = key;
       return this;
+    }
+
+    @Override
+    public @NonNull Builder args(final @NonNull ComponentBuilder<?, ?>... args) {
+      return this.args(Stream.of(args).map(ComponentBuilder::build).collect(Collectors.toList()));
     }
 
     @Override

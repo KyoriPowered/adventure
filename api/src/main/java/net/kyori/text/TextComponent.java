@@ -42,27 +42,8 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    *
    * @return a builder
    */
-  static @NonNull Builder text() {
-    return builder();
-  }
-
-  /**
-   * Creates a text component builder.
-   *
-   * @return a builder
-   */
   static @NonNull Builder builder() {
     return new TextComponentImpl.BuilderImpl();
-  }
-
-  /**
-   * Creates a text component builder with content.
-   *
-   * @param content the plain text content
-   * @return a builder
-   */
-  static @NonNull Builder text(final @NonNull String content) {
-    return builder().content(content);
   }
 
   /**
@@ -72,7 +53,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param color the color
    * @return a builder
    */
-  static @NonNull Builder text(final @NonNull String content, final @Nullable TextColor color) {
+  static @NonNull Builder builder(final @NonNull String content, final @Nullable TextColor color) {
     return builder().content(content).color(color);
   }
 
@@ -166,7 +147,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @return the text component
    */
   static @NonNull TextComponent of(final @NonNull String content, final @Nullable TextColor color) {
-    return text(content, color).build();
+    return builder(content, color).build();
   }
 
   /**

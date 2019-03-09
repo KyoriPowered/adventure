@@ -40,8 +40,8 @@ import net.kyori.text.format.TextDecoration;
 
 import java.lang.reflect.Type;
 
-@SuppressWarnings("Duplicates")
 public class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<Style> {
+  public static final StyleSerializer INSTANCE = new StyleSerializer();
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
   static final String COLOR = "color";
   static final String INSERTION = "insertion";

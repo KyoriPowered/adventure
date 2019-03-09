@@ -70,7 +70,7 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
   public static @NonNull GsonBuilder populate(final @NonNull GsonBuilder builder) {
     builder
       .registerTypeHierarchyAdapter(Component.class, INSTANCE)
-      .registerTypeAdapter(Style.class, new StyleSerializer())
+      .registerTypeAdapter(Style.class, StyleSerializer.INSTANCE)
       .registerTypeAdapter(ClickEvent.Action.class, new NameMapSerializer<>("click action", ClickEvent.Action.NAMES))
       .registerTypeAdapter(HoverEvent.Action.class, new NameMapSerializer<>("hover action", HoverEvent.Action.NAMES))
       .registerTypeAdapter(TextColorWrapper.class, new TextColorWrapper.Serializer())

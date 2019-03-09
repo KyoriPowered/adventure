@@ -278,6 +278,14 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @param args the translation args
      * @return this builder
      */
+    @NonNull Builder args(final @NonNull ComponentBuilder<?, ?>... args);
+
+    /**
+     * Sets the translation args.
+     *
+     * @param args the translation args
+     * @return this builder
+     */
     @NonNull Builder args(final @NonNull Component... args);
 
     /**
