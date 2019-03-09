@@ -46,6 +46,10 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
   Stream<Map.Entry<TranslatableComponent, JsonElement>> tests() {
     return Stream.of(
       entry(
+        TranslatableComponent.of(KEY),
+        json -> json.addProperty(GsonComponentSerializer.TRANSLATE, KEY)
+      ),
+      entry(
         TranslatableComponent.of(
           KEY,
           TextComponent.builder(WHO)

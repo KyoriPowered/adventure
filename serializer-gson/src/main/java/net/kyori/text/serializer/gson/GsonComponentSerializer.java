@@ -59,7 +59,7 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
    * A component serializer for JSON-based serialization and deserialization.
    */
   public static final GsonComponentSerializer INSTANCE = new GsonComponentSerializer();
-  private static final Gson GSON = populate(new GsonBuilder()).create();
+  static final Gson GSON = populate(new GsonBuilder()).create();
 
   /**
    * Populate a builder with our serializers.
@@ -147,7 +147,7 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
       }
     } else if(object.has(SCORE)) {
       final JsonObject score = object.getAsJsonObject(SCORE);
-      if(!score.has(SCORE_NAME) && !score.has(SCORE_OBJECTIVE)) {
+      if(!score.has(SCORE_NAME) || !score.has(SCORE_OBJECTIVE)) {
         throw new JsonParseException("A score component requires a " + SCORE_NAME + " and " + SCORE_OBJECTIVE);
       }
       // score components can have a value sometimes, let's grab it
