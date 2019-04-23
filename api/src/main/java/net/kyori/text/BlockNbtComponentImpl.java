@@ -125,7 +125,7 @@ final class BlockNbtComponentImpl extends NbtComponentImpl<BlockNbtComponent, Bl
     public @NonNull BlockNbtComponent build() {
       if(this.nbtPath == null) throw new IllegalStateException("nbt path must be set");
       if(this.pos == null) throw new IllegalStateException("pos must be set");
-      return new BlockNbtComponentImpl(this.children, this.style, this.nbtPath, this.interpret, this.pos);
+      return new BlockNbtComponentImpl(this.children, this.buildStyle(), this.nbtPath, this.interpret, this.pos);
     }
   }
 }

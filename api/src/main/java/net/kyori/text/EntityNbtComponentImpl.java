@@ -103,7 +103,7 @@ final class EntityNbtComponentImpl extends NbtComponentImpl<EntityNbtComponent, 
     public @NonNull EntityNbtComponent build() {
       if(this.nbtPath == null) throw new IllegalStateException("nbt path must be set");
       if(this.selector == null) throw new IllegalStateException("selector must be set");
-      return new EntityNbtComponentImpl(this.children, this.style, this.nbtPath, this.interpret, this.selector);
+      return new EntityNbtComponentImpl(this.children, this.buildStyle(), this.nbtPath, this.interpret, this.selector);
     }
   }
 }
