@@ -100,7 +100,7 @@ class TextComponentImpl extends AbstractComponent implements TextComponent {
   }
 
   public static class BuilderImpl extends AbstractComponentBuilder<TextComponent, Builder> implements TextComponent.Builder {
-    private @Nullable String content;
+    private String content = "";
 
     BuilderImpl() {
     }
@@ -112,13 +112,12 @@ class TextComponentImpl extends AbstractComponent implements TextComponent {
 
     @Override
     public @NonNull Builder content(final @NonNull String content) {
-      this.content = content;
+      this.content = requireNonNull(content, "content");
       return this;
     }
 
     @Override
     public @NonNull TextComponentImpl build() {
-      if(this.content == null) throw new IllegalStateException("content must be set");
       return new TextComponentImpl(this.children, this.buildStyle(), this.content);
     }
   }
