@@ -34,6 +34,10 @@ import java.util.Objects;
 import static java.util.Objects.requireNonNull;
 
 class TextComponentImpl extends AbstractComponent implements TextComponent {
+  static final TextComponent EMPTY = TextComponent.of("");
+  static final TextComponent NEWLINE = TextComponent.of("\n");
+  static final TextComponent SPACE = TextComponent.of(" ");
+
   private final String content;
 
   protected TextComponentImpl(final @NonNull List<Component> children, final Style.@Nullable Builder style, final @NonNull String content) {

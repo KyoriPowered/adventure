@@ -40,33 +40,6 @@ import java.util.Set;
  */
 public interface Component {
   /**
-   * Gets an immutable component with empty content.
-   *
-   * @return a component with empty content
-   */
-  static @NonNull Component empty() {
-    return Component0.EMPTY;
-  }
-
-  /**
-   * Gets an immutable component with a new line character as the content.
-   *
-   * @return a component with a new line character as the content
-   */
-  static @NonNull Component newline() {
-    return Component0.NEWLINE;
-  }
-
-  /**
-   * Gets an immutable component with a single space as the content.
-   *
-   * @return a component with a single space as the content
-   */
-  static @NonNull Component space() {
-    return Component0.SPACE;
-  }
-
-  /**
    * Gets the unmodifiable list of children.
    *
    * @return the unmodifiable list of children
