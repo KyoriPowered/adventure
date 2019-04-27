@@ -94,8 +94,8 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @return the component
    */
   static @NonNull TextComponent of(final char value) {
-    if(value == '\n') return Component0.NEWLINE;
-    if(value == ' ') return Component0.SPACE;
+    if(value == '\n') return newline();
+    if(value == ' ') return space();
     return of(String.valueOf(value));
   }
 
@@ -148,6 +148,33 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    */
   static @NonNull TextComponent of(final @NonNull String content, final @Nullable TextColor color) {
     return builder(content, color).build();
+  }
+
+  /**
+   * Gets a text component with empty content.
+   *
+   * @return a text component with empty content
+   */
+  static @NonNull TextComponent empty() {
+    return TextComponentImpl.EMPTY;
+  }
+
+  /**
+   * Gets a text component with a new line character as the content.
+   *
+   * @return a text component with a new line character as the content
+   */
+  static @NonNull TextComponent newline() {
+    return TextComponentImpl.NEWLINE;
+  }
+
+  /**
+   * Gets a text immutable component with a single space as the content.
+   *
+   * @return a text component with a single space as the content
+   */
+  static @NonNull TextComponent space() {
+    return TextComponentImpl.SPACE;
   }
 
   /**
