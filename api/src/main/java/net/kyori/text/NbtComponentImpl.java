@@ -77,7 +77,7 @@ abstract class NbtComponentImpl<C extends NbtComponent<C, B>, B extends NbtCompo
     builder.put("interpret", this.interpret);
   }
 
-  public static abstract class BuilderImpl<C extends NbtComponent<C, B>, B extends NbtComponentBuilder<C, B>> extends AbstractComponentBuilder<C, B> implements NbtComponentBuilder<C, B> {
+  static abstract class BuilderImpl<C extends NbtComponent<C, B>, B extends NbtComponentBuilder<C, B>> extends AbstractComponentBuilder<C, B> implements NbtComponentBuilder<C, B> {
     @Nullable String nbtPath;
     boolean interpret;
 

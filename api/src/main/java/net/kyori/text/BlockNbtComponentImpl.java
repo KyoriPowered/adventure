@@ -31,15 +31,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-final class BlockNbtComponentImpl extends NbtComponentImpl<BlockNbtComponent, BlockNbtComponent.Builder> implements BlockNbtComponent {
-  private final String pos;
+import static java.util.Objects.requireNonNull;
 
-  protected BlockNbtComponentImpl(final @NonNull List<Component> children, final Style.@Nullable Builder style, final String nbtPath, final boolean interpret, final String posPattern) {
+final class BlockNbtComponentImpl extends NbtComponentImpl<BlockNbtComponent, BlockNbtComponent.Builder> implements BlockNbtComponent {
+  private final Pos pos;
+
+  protected BlockNbtComponentImpl(final @NonNull List<Component> children, final Style.@Nullable Builder style, final String nbtPath, final boolean interpret, final @NonNull Pos pos) {
     super(children, style, nbtPath, interpret);
-    this.pos = posPattern;
+    this.pos = pos;
   }
 
-  protected BlockNbtComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final String nbtPath, final boolean interpret, final String pos) {
+  protected BlockNbtComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final String nbtPath, final boolean interpret, final @NonNull Pos pos) {
     super(children, style, nbtPath, interpret);
     this.pos = pos;
   }
@@ -55,12 +57,12 @@ final class BlockNbtComponentImpl extends NbtComponentImpl<BlockNbtComponent, Bl
   }
 
   @Override
-  public @NonNull String pos() {
+  public @NonNull Pos pos() {
     return this.pos;
   }
 
   @Override
-  public @NonNull BlockNbtComponent pos(final @NonNull String pos) {
+  public @NonNull BlockNbtComponent pos(final @NonNull Pos pos) {
     return new BlockNbtComponentImpl(this.children, this.style, this.nbtPath, this.interpret, pos);
   }
 
@@ -104,19 +106,19 @@ final class BlockNbtComponentImpl extends NbtComponentImpl<BlockNbtComponent, Bl
     return new BuilderImpl(this);
   }
 
-  public static class BuilderImpl extends NbtComponentImpl.BuilderImpl<BlockNbtComponent, Builder> implements Builder {
-    private @Nullable String pos;
+  static class BuilderImpl extends NbtComponentImpl.BuilderImpl<BlockNbtComponent, Builder> implements Builder {
+    private @Nullable Pos pos;
 
     BuilderImpl() {
     }
 
-    BuilderImpl(final @NonNull BlockNbtComponentImpl component) {
+    BuilderImpl(final @NonNull BlockNbtComponent component) {
       super(component);
       this.pos = component.pos();
     }
 
     @Override
-    public @NonNull Builder pos(final @NonNull String pos) {
+    public @NonNull Builder pos(final @NonNull Pos pos) {
       this.pos = pos;
       return this;
     }
@@ -126,6 +128,139 @@ final class BlockNbtComponentImpl extends NbtComponentImpl<BlockNbtComponent, Bl
       if(this.nbtPath == null) throw new IllegalStateException("nbt path must be set");
       if(this.pos == null) throw new IllegalStateException("pos must be set");
       return new BlockNbtComponentImpl(this.children, this.buildStyle(), this.nbtPath, this.interpret, this.pos);
+    }
+  }
+
+  static final class LocalPosImpl implements LocalPos {
+    private final double left;
+    private final double up;
+    private final double forwards;
+
+    LocalPosImpl(final double left, final double up, final double forwards) {
+      this.left = left;
+      this.up = up;
+      this.forwards = forwards;
+    }
+
+    @Override
+    public double left() {
+      return this.left;
+    }
+
+    @Override
+    public double up() {
+      return this.up;
+    }
+
+    @Override
+    public double forwards() {
+      return this.forwards;
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object other) {
+      if(this == other) return true;
+      if(!(other instanceof LocalPos)) return false;
+      final LocalPos that = (LocalPos) other;
+      return Double.compare(that.left(), this.left()) == 0 &&
+        Double.compare(that.up(), this.up()) == 0 &&
+        Double.compare(that.forwards(), this.forwards()) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(this.left, this.up, this.forwards);
+    }
+
+    @Override
+    public String toString() {
+      return String.format("^%f ^%f ^%f", this.left, this.up, this.forwards);
+    }
+  }
+
+  static final class WorldPosImpl implements WorldPos {
+    private final Coordinate x;
+    private final Coordinate y;
+    private final Coordinate z;
+
+    WorldPosImpl(final Coordinate x, final Coordinate y, final Coordinate z) {
+      this.x = requireNonNull(x, "x");
+      this.y = requireNonNull(y, "y");
+      this.z = requireNonNull(z, "z");
+    }
+
+    @Override
+    public @NonNull Coordinate x() {
+      return this.x;
+    }
+
+    @Override
+    public @NonNull Coordinate y() {
+      return this.y;
+    }
+
+    @Override
+    public @NonNull Coordinate z() {
+      return this.z;
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object other) {
+      if(this == other) return true;
+      if(!(other instanceof WorldPos)) return false;
+      final WorldPos that = (WorldPos) other;
+      return this.x().equals(that.x()) &&
+        this.y().equals(that.y()) &&
+        this.z().equals(that.z());
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(this.x, this.y, this.z);
+    }
+
+    @Override
+    public String toString() {
+      return this.x.toString() + ' ' + this.y.toString() + ' ' + this.z.toString();
+    }
+
+    static final class CoordinateImpl implements Coordinate {
+      private final int value;
+      private final Type type;
+
+      CoordinateImpl(final int value, final @NonNull Type type) {
+        this.value = value;
+        this.type = requireNonNull(type, "type");
+      }
+
+      @Override
+      public int value() {
+        return this.value;
+      }
+
+      @Override
+      public @NonNull Type type() {
+        return this.type;
+      }
+
+      @Override
+      public boolean equals(final @Nullable Object other) {
+        if(this == other) return true;
+        if(!(other instanceof Coordinate)) return false;
+        final Coordinate that = (Coordinate) other;
+        return this.value() == that.value() &&
+          this.type() == that.type();
+      }
+
+      @Override
+      public int hashCode() {
+        return Objects.hash(this.value, this.type);
+      }
+
+      @Override
+      public String toString() {
+        return (this.type == Type.RELATIVE ? "~" : "") + this.value;
+      }
     }
   }
 }

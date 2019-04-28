@@ -95,13 +95,13 @@ class SelectorComponentImpl extends AbstractComponent implements SelectorCompone
     return new BuilderImpl(this);
   }
 
-  public static class BuilderImpl extends AbstractComponentBuilder<SelectorComponent, Builder> implements SelectorComponent.Builder {
+  static class BuilderImpl extends AbstractComponentBuilder<SelectorComponent, Builder> implements SelectorComponent.Builder {
     private @Nullable String pattern;
 
     BuilderImpl() {
     }
 
-    BuilderImpl(final @NonNull SelectorComponentImpl component) {
+    BuilderImpl(final @NonNull SelectorComponent component) {
       super(component);
       this.pattern = component.pattern();
     }

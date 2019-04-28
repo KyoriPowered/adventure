@@ -99,13 +99,13 @@ class TextComponentImpl extends AbstractComponent implements TextComponent {
     return new BuilderImpl(this);
   }
 
-  public static class BuilderImpl extends AbstractComponentBuilder<TextComponent, Builder> implements TextComponent.Builder {
+  static class BuilderImpl extends AbstractComponentBuilder<TextComponent, Builder> implements TextComponent.Builder {
     private String content = "";
 
     BuilderImpl() {
     }
 
-    BuilderImpl(final @NonNull TextComponentImpl component) {
+    BuilderImpl(final @NonNull TextComponent component) {
       super(component);
       this.content = component.content();
     }

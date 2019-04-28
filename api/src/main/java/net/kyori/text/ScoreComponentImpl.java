@@ -123,7 +123,7 @@ class ScoreComponentImpl extends AbstractComponent implements ScoreComponent {
     return new BuilderImpl(this);
   }
 
-  public static class BuilderImpl extends AbstractComponentBuilder<ScoreComponent, Builder> implements ScoreComponent.Builder {
+  static class BuilderImpl extends AbstractComponentBuilder<ScoreComponent, Builder> implements ScoreComponent.Builder {
     private @Nullable String name;
     private @Nullable String objective;
     private @Nullable String value;
@@ -131,7 +131,7 @@ class ScoreComponentImpl extends AbstractComponent implements ScoreComponent {
     BuilderImpl() {
     }
 
-    BuilderImpl(final @NonNull ScoreComponentImpl component) {
+    BuilderImpl(final @NonNull ScoreComponent component) {
       super(component);
       this.name = component.name();
       this.objective = component.objective();
