@@ -33,10 +33,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import net.kyori.text.BlockNbtComponent;
 import net.kyori.text.BuildableComponent;
 import net.kyori.text.Component;
 import net.kyori.text.ComponentBuilder;
+import net.kyori.text.EntityNbtComponent;
 import net.kyori.text.KeybindComponent;
+import net.kyori.text.NbtComponent;
 import net.kyori.text.ScoreComponent;
 import net.kyori.text.SelectorComponent;
 import net.kyori.text.TextComponent;
@@ -46,9 +49,6 @@ import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
-import net.kyori.text.BlockNbtComponent;
-import net.kyori.text.EntityNbtComponent;
-import net.kyori.text.NbtComponent;
 import net.kyori.text.serializer.ComponentSerializer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -78,7 +78,8 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
       .registerTypeAdapter(HoverEvent.Action.class, new NameMapSerializer<>("hover action", HoverEvent.Action.NAMES))
       .registerTypeAdapter(TextColorWrapper.class, new TextColorWrapper.Serializer())
       .registerTypeAdapter(TextColor.class, new NameMapSerializer<>("text color", TextColor.NAMES))
-      .registerTypeAdapter(TextDecoration.class, new NameMapSerializer<>("text decoration", TextDecoration.NAMES));
+      .registerTypeAdapter(TextDecoration.class, new NameMapSerializer<>("text decoration", TextDecoration.NAMES))
+      .registerTypeAdapter(BlockNbtComponent.Pos.class, BlockNbtComponentPosSerializer.INSTANCE);
     return builder;
   }
 
@@ -171,7 +172,8 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
       final String nbt = object.get(NBT).getAsString();
       final boolean interpret = object.has(NBT_INTERPRET) && object.getAsJsonPrimitive(NBT_INTERPRET).getAsBoolean();
       if(object.has(NBT_BLOCK)) {
-        component = BlockNbtComponent.builder().nbtPath(nbt).interpret(interpret).pos(object.get(NBT_BLOCK).getAsString());
+        final BlockNbtComponent.Pos position = context.deserialize(object.get(NBT_BLOCK), BlockNbtComponent.Pos.class);
+        component = BlockNbtComponent.builder().nbtPath(nbt).interpret(interpret).pos(position);
       } else if(object.has(NBT_ENTITY)) {
         component = EntityNbtComponent.builder().nbtPath(nbt).interpret(interpret).selector(object.get(NBT_ENTITY).getAsString());
       } else {
@@ -231,7 +233,8 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
       object.addProperty(NBT, nc.nbtPath());
       object.addProperty(NBT_INTERPRET, nc.interpret());
       if(src instanceof BlockNbtComponent) {
-        object.addProperty(NBT_BLOCK, ((BlockNbtComponent) nc).pos());
+        final JsonElement position = context.serialize(((BlockNbtComponent) nc).pos());
+        object.add(NBT_BLOCK, position);
       } else if(src instanceof EntityNbtComponent) {
         object.addProperty(NBT_ENTITY, ((EntityNbtComponent) nc).selector());
       } else {

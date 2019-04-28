@@ -82,13 +82,13 @@ final class EntityNbtComponentImpl extends NbtComponentImpl<EntityNbtComponent, 
     return new BuilderImpl(this);
   }
 
-  public static class BuilderImpl extends NbtComponentImpl.BuilderImpl<EntityNbtComponent, Builder> implements Builder {
+  static class BuilderImpl extends NbtComponentImpl.BuilderImpl<EntityNbtComponent, Builder> implements Builder {
     private @Nullable String selector;
 
     BuilderImpl() {
     }
 
-    BuilderImpl(final @NonNull EntityNbtComponentImpl component) {
+    BuilderImpl(final @NonNull EntityNbtComponent component) {
       super(component);
       this.selector = component.selector();
     }

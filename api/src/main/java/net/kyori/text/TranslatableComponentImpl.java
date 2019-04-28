@@ -114,14 +114,14 @@ class TranslatableComponentImpl extends AbstractComponent implements Translatabl
     return new BuilderImpl(this);
   }
 
-  public static class BuilderImpl extends AbstractComponentBuilder<TranslatableComponent, Builder> implements TranslatableComponent.Builder {
+  static class BuilderImpl extends AbstractComponentBuilder<TranslatableComponent, Builder> implements TranslatableComponent.Builder {
     private @Nullable String key;
     private @NonNull List<Component> args = EMPTY_COMPONENT_LIST;
 
     BuilderImpl() {
     }
 
-    BuilderImpl(final @NonNull TranslatableComponentImpl component) {
+    BuilderImpl(final @NonNull TranslatableComponent component) {
       super(component);
       this.key = component.key();
       this.args = component.args();

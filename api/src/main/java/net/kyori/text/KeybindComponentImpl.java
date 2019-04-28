@@ -95,13 +95,13 @@ class KeybindComponentImpl extends AbstractComponent implements KeybindComponent
     return new BuilderImpl(this);
   }
 
-  public static class BuilderImpl extends AbstractComponentBuilder<KeybindComponent, Builder> implements KeybindComponent.Builder {
+  static class BuilderImpl extends AbstractComponentBuilder<KeybindComponent, Builder> implements KeybindComponent.Builder {
     private @Nullable String keybind;
 
     BuilderImpl() {
     }
 
-    BuilderImpl(final @NonNull KeybindComponentImpl component) {
+    BuilderImpl(final @NonNull KeybindComponent component) {
       super(component);
       this.keybind = component.keybind();
     }

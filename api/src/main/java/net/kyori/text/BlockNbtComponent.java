@@ -43,7 +43,7 @@ public interface BlockNbtComponent extends NbtComponent<BlockNbtComponent, Block
    *
    * @return the block position
    */
-  @NonNull String pos();
+  @NonNull Pos pos();
 
   /**
    * Sets the block position.
@@ -51,7 +51,55 @@ public interface BlockNbtComponent extends NbtComponent<BlockNbtComponent, Block
    * @param pos the block position
    * @return a component
    */
-  @NonNull BlockNbtComponent pos(final @NonNull String pos);
+  @NonNull BlockNbtComponent pos(final @NonNull Pos pos);
+
+  /**
+   * Sets the block position to a {@link LocalPos} with the given coordinates.
+   * 
+   * @param left the left coordinate
+   * @param up the up coordinate
+   * @param forwards the forwards coordinate
+   * @return a component
+   */
+  default @NonNull BlockNbtComponent localPos(final double left, final double up, final double forwards) {
+    return this.pos(LocalPos.of(left, up, forwards));
+  }
+
+  /**
+   * Sets the block position to a {@link WorldPos} with the given coordinates.
+   *
+   * @param x the x coordinate
+   * @param y the y coordinate
+   * @param z the z coordinate
+   * @return a component
+   */
+  default @NonNull BlockNbtComponent worldPos(final WorldPos.@NonNull Coordinate x, final WorldPos.@NonNull Coordinate y, final WorldPos.@NonNull Coordinate z) {
+    return this.pos(WorldPos.of(x, y, z));
+  }
+
+  /**
+   * Sets the block position to an absolute {@link WorldPos} with the given coordinates.
+   *
+   * @param x the x coordinate
+   * @param y the y coordinate
+   * @param z the z coordinate
+   * @return a component
+   */
+  default @NonNull BlockNbtComponent absoluteWorldPos(final int x, final int y, final int z) {
+    return this.worldPos(WorldPos.Coordinate.absolute(x), WorldPos.Coordinate.absolute(y), WorldPos.Coordinate.absolute(z));
+  }
+
+  /**
+   * Sets the block position to an relative {@link WorldPos} with the given coordinates.
+   *
+   * @param x the x coordinate
+   * @param y the y coordinate
+   * @param z the z coordinate
+   * @return a component
+   */
+  default @NonNull BlockNbtComponent relativeWorldPos(final int x, final int y, final int z) {
+    return this.worldPos(WorldPos.Coordinate.relative(x), WorldPos.Coordinate.relative(y), WorldPos.Coordinate.relative(z));
+  }
 
   /**
    * An NBT component builder.
@@ -63,6 +111,194 @@ public interface BlockNbtComponent extends NbtComponent<BlockNbtComponent, Block
      * @param pos the block position
      * @return this builder
      */
-    @NonNull Builder pos(final @NonNull String pos);
+    @NonNull Builder pos(final @NonNull Pos pos);
+
+    /**
+     * Sets the block position to a {@link LocalPos} with the given values.
+     *
+     * @param left the left value
+     * @param up the up value
+     * @param forwards the forwards value
+     * @return this builder
+     */
+    default @NonNull Builder localPos(final double left, final double up, final double forwards) {
+      return this.pos(LocalPos.of(left, up, forwards));
+    }
+
+    /**
+     * Sets the block position to a {@link WorldPos} with the given coordinates.
+     *
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
+     * @return this builder
+     */
+    default @NonNull Builder worldPos(final WorldPos.@NonNull Coordinate x, final WorldPos.@NonNull Coordinate y, final WorldPos.@NonNull Coordinate z) {
+      return this.pos(WorldPos.of(x, y, z));
+    }
+
+    /**
+     * Sets the block position to an absolute {@link WorldPos} with the given coordinates.
+     *
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
+     * @return this builder
+     */
+    default @NonNull Builder absoluteWorldPos(final int x, final int y, final int z) {
+      return this.worldPos(WorldPos.Coordinate.absolute(x), WorldPos.Coordinate.absolute(y), WorldPos.Coordinate.absolute(z));
+    }
+
+    /**
+     * Sets the block position to an relative {@link WorldPos} with the given coordinates.
+     *
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
+     * @return this builder
+     */
+    default @NonNull Builder relativeWorldPos(final int x, final int y, final int z) {
+      return this.worldPos(WorldPos.Coordinate.relative(x), WorldPos.Coordinate.relative(y), WorldPos.Coordinate.relative(z));
+    }
+  }
+
+  /**
+   * A position.
+   */
+  interface Pos {
+  }
+
+  /**
+   * A local position.
+   */
+  interface LocalPos extends Pos {
+    /**
+     * Creates a local position with the given values.
+     *
+     * @param left the left value
+     * @param up the up value
+     * @param forwards the forwards value
+     * @return a local position
+     */
+    static @NonNull LocalPos of(final double left, final double up, final double forwards) {
+      return new BlockNbtComponentImpl.LocalPosImpl(left, up, forwards);
+    }
+
+    /**
+     * Gets the left value.
+     * 
+     * @return the left value
+     */
+    double left();
+
+    /**
+     * Gets the up value.
+     *
+     * @return the up value
+     */
+    double up();
+
+    /**
+     * Gets the forwards value.
+     *
+     * @return the forwards value
+     */
+    double forwards();
+  }
+
+  /**
+   * A world position.
+   */
+  interface WorldPos extends Pos {
+    /**
+     * Creates a world position with the given coordinates.
+     * 
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
+     * @return a world position
+     */
+    static @NonNull WorldPos of(final @NonNull Coordinate x, final @NonNull Coordinate y, final @NonNull Coordinate z) {
+      return new BlockNbtComponentImpl.WorldPosImpl(x, y, z);
+    }
+
+    /**
+     * Gets the x coordinate.
+     * 
+     * @return the x coordinate
+     */
+    @NonNull Coordinate x();
+
+    /**
+     * Gets the y coordinate.
+     *
+     * @return the y coordinate
+     */
+    @NonNull Coordinate y();
+
+    /**
+     * Gets the z coordinate.
+     *
+     * @return the z coordinate
+     */
+    @NonNull Coordinate z();
+
+    /**
+     * A coordinate component within a {@link WorldPos}.
+     */
+    interface Coordinate {
+      /**
+       * Creates a absolute coordinate with the given value.
+       *
+       * @param value the value
+       * @return a coordinate
+       */
+      static @NonNull Coordinate absolute(final int value) {
+        return of(value, Type.ABSOLUTE);
+      }
+
+      /**
+       * Creates a relative coordinate with the given value.
+       *
+       * @param value the value
+       * @return a coordinate
+       */
+      static @NonNull Coordinate relative(final int value) {
+        return of(value, Type.RELATIVE);
+      }
+
+      /**
+       * Creates a coordinate with the given value and type.
+       *
+       * @param value the value
+       * @param type the type
+       * @return a coordinate
+       */
+      static @NonNull Coordinate of(final int value, final @NonNull Type type) {
+        return new BlockNbtComponentImpl.WorldPosImpl.CoordinateImpl(value, type);
+      }
+
+      /**
+       * Gets the value.
+       *
+       * @return the value
+       */
+      int value();
+
+      /**
+       * Gets the type.
+       *
+       * @return the type
+       */
+      @NonNull Type type();
+
+      /**
+       * The type of a coordinate.
+       */
+      enum Type {
+        ABSOLUTE,
+        RELATIVE;
+      }
+    }
   }
 }
