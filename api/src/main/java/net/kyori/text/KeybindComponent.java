@@ -29,6 +29,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -79,6 +80,20 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
   /**
    * Creates a keybind component with content, and optional color and decorations.
    *
+   * @param content the plain text content
+   * @param color the color
+   * @param decorations the decorations
+   * @return the keybind component
+   */
+  static @NonNull KeybindComponent of(final @NonNull String content, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
+    final Set<TextDecoration> activeDecorations = new HashSet<>(decorations.length);
+    Collections.addAll(activeDecorations, decorations);
+    return of(content, color, activeDecorations);
+  }
+
+  /**
+   * Creates a keybind component with content, and optional color and decorations.
+   *
    * @param keybind the keybind
    * @param color the color
    * @param decorations the decorations
@@ -94,7 +109,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    * @param consumer the builder configurator
    * @return the keybind component
    */
-  static @NonNull KeybindComponent make(final @NonNull Consumer<Builder> consumer) {
+  static @NonNull KeybindComponent make(final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder();
     consumer.accept(builder);
     return builder.build();
@@ -107,7 +122,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    * @param consumer the builder configurator
    * @return the keybind component
    */
-  static @NonNull KeybindComponent make(final @NonNull String keybind, final @NonNull Consumer<Builder> consumer) {
+  static @NonNull KeybindComponent make(final @NonNull String keybind, final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder(keybind);
     consumer.accept(builder);
     return builder.build();

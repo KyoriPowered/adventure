@@ -84,7 +84,7 @@ abstract class NbtComponentImpl<C extends NbtComponent<C, B>, B extends NbtCompo
     BuilderImpl() {
     }
 
-    BuilderImpl(@NonNull final C component) {
+    BuilderImpl(final @NonNull C component) {
       super(component);
       this.nbtPath = component.nbtPath();
       this.interpret = component.interpret();

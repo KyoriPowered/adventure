@@ -27,12 +27,7 @@ import net.kyori.text.format.Style;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -42,13 +37,13 @@ class TranslatableComponentImpl extends AbstractComponent implements Translatabl
   private final String key;
   private final List<Component> args;
 
-  protected TranslatableComponentImpl(final @NonNull List<Component> children, final Style.@Nullable Builder style, final @NonNull String key, final @NonNull List<Component> args) {
+  protected TranslatableComponentImpl(final @NonNull List<Component> children, final Style.@Nullable Builder style, final @NonNull String key, final @NonNull List<? extends Component> args) {
     super(children, style);
     this.key = key;
     this.args = Collections.unmodifiableList(new ArrayList<>(args));
   }
 
-  protected TranslatableComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String key, final @NonNull List<Component> args) {
+  protected TranslatableComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String key, final @NonNull List<? extends Component> args) {
     super(children, style);
     this.key = key;
     this.args = Collections.unmodifiableList(new ArrayList<>(args));
@@ -70,7 +65,7 @@ class TranslatableComponentImpl extends AbstractComponent implements Translatabl
   }
 
   @Override
-  public @NonNull TranslatableComponent args(final @NonNull List<Component> args) {
+  public @NonNull TranslatableComponent args(final @NonNull List<? extends Component> args) {
     return new TranslatableComponentImpl(this.children, this.style, this.key, args);
   }
 
@@ -116,7 +111,7 @@ class TranslatableComponentImpl extends AbstractComponent implements Translatabl
 
   static class BuilderImpl extends AbstractComponentBuilder<TranslatableComponent, Builder> implements TranslatableComponent.Builder {
     private @Nullable String key;
-    private @NonNull List<Component> args = EMPTY_COMPONENT_LIST;
+    private @NonNull List<? extends Component> args = EMPTY_COMPONENT_LIST;
 
     BuilderImpl() {
     }
@@ -144,7 +139,7 @@ class TranslatableComponentImpl extends AbstractComponent implements Translatabl
     }
 
     @Override
-    public @NonNull Builder args(final @NonNull List<Component> args) {
+    public @NonNull Builder args(final @NonNull List<? extends Component> args) {
       this.args = args;
       return this;
     }

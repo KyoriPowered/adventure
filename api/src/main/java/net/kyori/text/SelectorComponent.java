@@ -25,6 +25,8 @@ package net.kyori.text;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.function.Consumer;
+
 /**
  * A scoreboard selector component.
  */
@@ -56,6 +58,31 @@ public interface SelectorComponent extends BuildableComponent<SelectorComponent,
    */
   static @NonNull SelectorComponent of(final @NonNull String pattern) {
     return builder(pattern).build();
+  }
+
+  /**
+   * Creates a selector component by applying configuration from {@code consumer}.
+   *
+   * @param consumer the builder configurator
+   * @return the selector component
+   */
+  static @NonNull SelectorComponent make(final @NonNull Consumer<? super Builder> consumer) {
+    final Builder builder = builder();
+    consumer.accept(builder);
+    return builder.build();
+  }
+
+  /**
+   * Creates a selector component by applying configuration from {@code consumer}.
+   *
+   * @param pattern the selector pattern
+   * @param consumer the builder configurator
+   * @return the selector component
+   */
+  static @NonNull SelectorComponent make(final @NonNull String pattern, final @NonNull Consumer<? super Builder> consumer) {
+    final Builder builder = builder(pattern);
+    consumer.accept(builder);
+    return builder.build();
   }
 
   /**

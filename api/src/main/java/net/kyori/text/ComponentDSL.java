@@ -23,10 +23,29 @@
  */
 package net.kyori.text;
 
-import net.kyori.text.format.Style;
+import net.kyori.text.format.TextColor;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public interface ComponentDSL {
+  /**
+   * Creates a block NBT component builder.
+   *
+   * @return a builder
+   */
+  static BlockNbtComponent.@NonNull Builder blockNbt() {
+    return BlockNbtComponent.builder();
+  }
+
+  /**
+   * Creates an entity NBT component builder.
+   *
+   * @return a builder
+   */
+  static EntityNbtComponent.@NonNull Builder entityNbt() {
+    return EntityNbtComponent.builder();
+  }
+
   /**
    * Creates a keybind component builder.
    *
@@ -43,18 +62,7 @@ public interface ComponentDSL {
    * @return a builder
    */
   static KeybindComponent.@NonNull Builder keybind(final @NonNull String keybind) {
-    return keybind().keybind(keybind);
-  }
-
-  /**
-   * Creates a keybind component builder with a keybind and style.
-   *
-   * @param keybind the keybind
-   * @param style the style
-   * @return a builder
-   */
-  static KeybindComponent.@NonNull Builder keybind(final @NonNull String keybind, final @NonNull Style style) {
-    return keybind(keybind).style(style);
+    return KeybindComponent.builder(keybind);
   }
 
   /**
@@ -67,12 +75,33 @@ public interface ComponentDSL {
   }
 
   /**
+   * Creates a score component builder with a name and objective.
+   *
+   * @param name the score name
+   * @param objective the score objective
+   * @return a builder
+   */
+  static ScoreComponent.@NonNull Builder score(final @NonNull String name, final @NonNull String objective) {
+    return ScoreComponent.builder(name, objective);
+  }
+
+  /**
    * Creates a selector component builder.
    *
    * @return a builder
    */
   static SelectorComponent.@NonNull Builder selector() {
     return SelectorComponent.builder();
+  }
+
+  /**
+   * Creates a selector component builder with a pattern.
+   *
+   * @param pattern the selector pattern
+   * @return a builder
+   */
+  static SelectorComponent.@NonNull Builder selector(final @NonNull String pattern) {
+    return SelectorComponent.builder(pattern);
   }
 
   /**
@@ -85,24 +114,24 @@ public interface ComponentDSL {
   }
 
   /**
-   * Creates a text component builder with content.
+   * Creates a text component builder with content, and optional color.
    *
-   * @param content the content
+   * @param content the plain text content
+   * @param color the color
    * @return a builder
    */
-  static TextComponent.@NonNull Builder text(final @NonNull String content) {
-    return text().content(content);
+  static TextComponent.@NonNull Builder text(final @NonNull String content, final @Nullable TextColor color) {
+    return TextComponent.builder(content, color);
   }
 
   /**
-   * Creates a text component builder with content and style.
+   * Creates a text component builder with content.
    *
-   * @param content the content
-   * @param style the style
+   * @param content the plain text content
    * @return a builder
    */
-  static TextComponent.@NonNull Builder text(final @NonNull String content, final @NonNull Style style) {
-    return text(content).style(style);
+  static TextComponent.@NonNull Builder text(final @NonNull String content) {
+    return TextComponent.builder(content);
   }
 
   /**
@@ -121,63 +150,6 @@ public interface ComponentDSL {
    * @return a builder
    */
   static TranslatableComponent.@NonNull Builder translatable(final @NonNull String key) {
-    return translatable().key(key);
-  }
-
-  /**
-   * Creates a translatable component builder with a translation key and style.
-   *
-   * @param key the translation key
-   * @param style the style
-   * @return a builder
-   */
-  static TranslatableComponent.@NonNull Builder translatable(final @NonNull String key, final @NonNull Style style) {
-    return translatable(key).style(style);
-  }
-
-  /**
-   * Creates a translatable component builder with a translation key and translation args.
-   *
-   * @param key the translation key
-   * @param args the translation args
-   * @return a builder
-   */
-  static TranslatableComponent.@NonNull Builder translatable(final @NonNull String key, final @NonNull ComponentBuilder<?, ?>... args) {
-    return translatable(key).args(args);
-  }
-
-  /**
-   * Creates a translatable component builder with a translation key, style, and translation args.
-   *
-   * @param key the translation key
-   * @param style the style
-   * @param args the translation args
-   * @return a builder
-   */
-  static TranslatableComponent.@NonNull Builder translatable(final @NonNull String key, final @NonNull Style style, final @NonNull ComponentBuilder<?, ?>... args) {
-    return translatable(key, style).args(args);
-  }
-
-  /**
-   * Creates a translatable component builder with a translation key and translation args.
-   *
-   * @param key the translation key
-   * @param args the translation args
-   * @return a builder
-   */
-  static TranslatableComponent.@NonNull Builder translatable(final @NonNull String key, final @NonNull Component... args) {
-    return translatable(key).args(args);
-  }
-
-  /**
-   * Creates a translatable component builder with a translation key, style, and translation args.
-   *
-   * @param key the translation key
-   * @param style the style
-   * @param args the translation args
-   * @return a builder
-   */
-  static TranslatableComponent.@NonNull Builder translatable(final @NonNull String key, final @NonNull Style style, final @NonNull Component... args) {
-    return translatable(key, style).args(args);
+    return TranslatableComponent.builder(key);
   }
 }
