@@ -39,36 +39,36 @@ class BlockNbtComponentTest extends AbstractComponentTest<BlockNbtComponent> {
   Stream<Map.Entry<BlockNbtComponent, JsonElement>> tests() {
     return Stream.of(
       entry(
-              BlockNbtComponent.builder().nbtPath("abc").localPos(1.23d, 2.0d, 3.89d).build(),
-              json -> {
-                json.addProperty(GsonComponentSerializer.NBT, "abc");
-                json.addProperty(GsonComponentSerializer.NBT_INTERPRET, false);
-                json.addProperty(GsonComponentSerializer.NBT_BLOCK, "^1.23 ^2.0 ^3.89");
-              }
+        BlockNbtComponent.builder().nbtPath("abc").localPos(1.23d, 2.0d, 3.89d).build(),
+        json -> {
+          json.addProperty(GsonComponentSerializer.NBT, "abc");
+          json.addProperty(GsonComponentSerializer.NBT_INTERPRET, false);
+          json.addProperty(GsonComponentSerializer.NBT_BLOCK, "^1.23 ^2.0 ^3.89");
+        }
       ),
       entry(
-              BlockNbtComponent.builder().nbtPath("xyz").absoluteWorldPos(4, 5, 6).interpret(true).build(),
-              json -> {
-                json.addProperty(GsonComponentSerializer.NBT, "xyz");
-                json.addProperty(GsonComponentSerializer.NBT_INTERPRET, true);
-                json.addProperty(GsonComponentSerializer.NBT_BLOCK, "4 5 6");
-              }
+        BlockNbtComponent.builder().nbtPath("xyz").absoluteWorldPos(4, 5, 6).interpret(true).build(),
+        json -> {
+          json.addProperty(GsonComponentSerializer.NBT, "xyz");
+          json.addProperty(GsonComponentSerializer.NBT_INTERPRET, true);
+          json.addProperty(GsonComponentSerializer.NBT_BLOCK, "4 5 6");
+        }
       ),
       entry(
-              BlockNbtComponent.builder().nbtPath("eeee").relativeWorldPos(7, 83, 900).build(),
-              json -> {
-                json.addProperty(GsonComponentSerializer.NBT, "eeee");
-                json.addProperty(GsonComponentSerializer.NBT_INTERPRET, false);
-                json.addProperty(GsonComponentSerializer.NBT_BLOCK, "~7 ~83 ~900");
-              }
+        BlockNbtComponent.builder().nbtPath("eeee").relativeWorldPos(7, 83, 900).build(),
+        json -> {
+          json.addProperty(GsonComponentSerializer.NBT, "eeee");
+          json.addProperty(GsonComponentSerializer.NBT_INTERPRET, false);
+          json.addProperty(GsonComponentSerializer.NBT_BLOCK, "~7 ~83 ~900");
+        }
       ),
       entry(
-              BlockNbtComponent.builder().nbtPath("qwert").worldPos(Coordinate.absolute(12), Coordinate.relative(3), Coordinate.absolute(1200)).build(),
-              json -> {
-                json.addProperty(GsonComponentSerializer.NBT, "qwert");
-                json.addProperty(GsonComponentSerializer.NBT_INTERPRET, false);
-                json.addProperty(GsonComponentSerializer.NBT_BLOCK, "12 ~3 1200");
-              }
+        BlockNbtComponent.builder().nbtPath("qwert").worldPos(Coordinate.absolute(12), Coordinate.relative(3), Coordinate.absolute(1200)).build(),
+        json -> {
+          json.addProperty(GsonComponentSerializer.NBT, "qwert");
+          json.addProperty(GsonComponentSerializer.NBT_INTERPRET, false);
+          json.addProperty(GsonComponentSerializer.NBT_BLOCK, "12 ~3 1200");
+        }
       )
     );
   }
@@ -76,8 +76,8 @@ class BlockNbtComponentTest extends AbstractComponentTest<BlockNbtComponent> {
   @Test
   void testLocalPosNoDecimal() {
     assertEquals(
-            BlockNbtComponent.LocalPos.of(1.0d, 2.0d, 3.89d),
-            GsonComponentSerializer.GSON.fromJson(new JsonPrimitive("^1 ^2 ^3.89"), BlockNbtComponent.Pos.class)
+      BlockNbtComponent.LocalPos.of(1.0d, 2.0d, 3.89d),
+      GsonComponentSerializer.GSON.fromJson(new JsonPrimitive("^1 ^2 ^3.89"), BlockNbtComponent.Pos.class)
     );
   }
 }

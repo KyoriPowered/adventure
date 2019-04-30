@@ -23,8 +23,27 @@
  */
 package net.kyori.text.serializer.gson;
 
-import com.google.gson.*;
-import net.kyori.text.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import net.kyori.text.BlockNbtComponent;
+import net.kyori.text.BuildableComponent;
+import net.kyori.text.Component;
+import net.kyori.text.ComponentBuilder;
+import net.kyori.text.EntityNbtComponent;
+import net.kyori.text.KeybindComponent;
+import net.kyori.text.NbtComponent;
+import net.kyori.text.ScoreComponent;
+import net.kyori.text.SelectorComponent;
+import net.kyori.text.TextComponent;
+import net.kyori.text.TranslatableComponent;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.Style;

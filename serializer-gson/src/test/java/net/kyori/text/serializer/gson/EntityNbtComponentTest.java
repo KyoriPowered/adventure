@@ -34,20 +34,20 @@ class EntityNbtComponentTest extends AbstractComponentTest<EntityNbtComponent> {
   Stream<Map.Entry<EntityNbtComponent, JsonElement>> tests() {
     return Stream.of(
       entry(
-              EntityNbtComponent.builder().nbtPath("abc").selector("test").build(),
-              json -> {
-                json.addProperty(GsonComponentSerializer.NBT, "abc");
-                json.addProperty(GsonComponentSerializer.NBT_INTERPRET, false);
-                json.addProperty(GsonComponentSerializer.NBT_ENTITY, "test");
-              }
+        EntityNbtComponent.builder().nbtPath("abc").selector("test").build(),
+        json -> {
+          json.addProperty(GsonComponentSerializer.NBT, "abc");
+          json.addProperty(GsonComponentSerializer.NBT_INTERPRET, false);
+          json.addProperty(GsonComponentSerializer.NBT_ENTITY, "test");
+        }
       ),
       entry(
-              EntityNbtComponent.builder().nbtPath("abc").selector("test").interpret(true).build(),
-              json -> {
-                json.addProperty(GsonComponentSerializer.NBT, "abc");
-                json.addProperty(GsonComponentSerializer.NBT_INTERPRET, true);
-                json.addProperty(GsonComponentSerializer.NBT_ENTITY, "test");
-              }
+        EntityNbtComponent.builder().nbtPath("abc").selector("test").interpret(true).build(),
+        json -> {
+          json.addProperty(GsonComponentSerializer.NBT, "abc");
+          json.addProperty(GsonComponentSerializer.NBT_INTERPRET, true);
+          json.addProperty(GsonComponentSerializer.NBT_ENTITY, "test");
+        }
       )
     );
   }

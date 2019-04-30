@@ -23,7 +23,13 @@
  */
 package net.kyori.text.renderer;
 
-import net.kyori.text.*;
+import net.kyori.text.Component;
+import net.kyori.text.ComponentBuilder;
+import net.kyori.text.KeybindComponent;
+import net.kyori.text.ScoreComponent;
+import net.kyori.text.SelectorComponent;
+import net.kyori.text.TextComponent;
+import net.kyori.text.TranslatableComponent;
 import net.kyori.text.event.HoverEvent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;

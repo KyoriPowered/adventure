@@ -29,7 +29,9 @@ import net.kyori.text.BlockNbtComponent.WorldPos.Coordinate;
 import net.kyori.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BlockNbtComponentTest extends AbstractComponentTest<BlockNbtComponent, BlockNbtComponent.Builder> {
   @Override
