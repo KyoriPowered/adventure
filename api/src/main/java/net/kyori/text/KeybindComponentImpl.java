@@ -36,11 +36,6 @@ import static java.util.Objects.requireNonNull;
 class KeybindComponentImpl extends AbstractComponent implements KeybindComponent {
   private final String keybind;
 
-  protected KeybindComponentImpl(final @NonNull List<Component> children, final Style.@Nullable Builder style, final @NonNull String keybind) {
-    super(children, style);
-    this.keybind = keybind;
-  }
-
   protected KeybindComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String keybind) {
     super(children, style);
     this.keybind = keybind;
@@ -64,11 +59,6 @@ class KeybindComponentImpl extends AbstractComponent implements KeybindComponent
   @Override
   public @NonNull KeybindComponent style(final @NonNull Style style) {
     return new KeybindComponentImpl(this.children, style, this.keybind);
-  }
-
-  @Override
-  public @NonNull KeybindComponent copy() {
-    return new KeybindComponentImpl(this.children, this.style, this.keybind);
   }
 
   @Override

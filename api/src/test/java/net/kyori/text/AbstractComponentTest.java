@@ -150,13 +150,6 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B>, B exten
     assertNotNull(c1.clickEvent());
   }
 
-  @Test
-  void testCopy() {
-    final C c0 = this.builder().build();
-    final C c1 = (C) c0.copy();
-    assertEquals(c0, c1);
-  }
-
   private static void assertDecorations(final Component component, final Map<TextDecoration, TextDecoration.State> expected) {
     if(expected.isEmpty()) {
       for(final TextDecoration decoration : TextDecoration.values()) {

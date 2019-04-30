@@ -38,13 +38,6 @@ class ScoreComponentImpl extends AbstractComponent implements ScoreComponent {
   private final String objective;
   private final @Nullable String value;
 
-  public ScoreComponentImpl(final @NonNull List<Component> children, final Style.@Nullable Builder style, final @NonNull String name, final @NonNull String objective, @Nullable final String value) {
-    super(children, style);
-    this.name = name;
-    this.objective = objective;
-    this.value = value;
-  }
-
   protected ScoreComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String name, final @NonNull String objective, final @Nullable String value) {
     super(children, style);
     this.name = name;
@@ -90,11 +83,6 @@ class ScoreComponentImpl extends AbstractComponent implements ScoreComponent {
   @Override
   public @NonNull ScoreComponent style(final @NonNull Style style) {
     return new ScoreComponentImpl(this.children, style, this.name, this.objective, this.value);
-  }
-
-  @Override
-  public @NonNull ScoreComponent copy() {
-    return new ScoreComponentImpl(this.children, this.style, this.name, this.objective, this.value);
   }
 
   @Override

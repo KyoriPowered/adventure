@@ -108,13 +108,6 @@ public interface Component {
   }
 
   /**
-   * Creates a component.
-   *
-   * @return a component
-   */
-  @NonNull Component copy();
-
-  /**
    * Gets the style of this component.
    *
    * @return the style of this component

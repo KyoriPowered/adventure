@@ -28,12 +28,7 @@ import net.kyori.text.util.ToStringer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * An abstract implementation of a text component.
@@ -51,10 +46,6 @@ public abstract class AbstractComponent implements Component {
    * The style of this component.
    */
   protected final Style style;
-
-  protected AbstractComponent(final @NonNull List<Component> children, final Style.@Nullable Builder style) {
-    this(children, style != null ? style.build() : Style.empty());
-  }
 
   protected AbstractComponent(final @NonNull List<Component> children, final @NonNull Style style) {
     this.children = Collections.unmodifiableList(new ArrayList<>(children));

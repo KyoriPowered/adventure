@@ -32,11 +32,6 @@ import java.util.List;
 final class EntityNbtComponentImpl extends NbtComponentImpl<EntityNbtComponent, EntityNbtComponent.Builder> implements EntityNbtComponent {
   private final String selectorPattern;
 
-  protected EntityNbtComponentImpl(final @NonNull List<Component> children, final Style.@Nullable Builder style, final String nbtPathPattern, final boolean interpret, final String selectorPattern) {
-    super(children, style, nbtPathPattern, interpret);
-    this.selectorPattern = selectorPattern;
-  }
-
   protected EntityNbtComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final String nbtPathPattern, final boolean interpret, final String selectorPattern) {
     super(children, style, nbtPathPattern, interpret);
     this.selectorPattern = selectorPattern;
@@ -65,11 +60,6 @@ final class EntityNbtComponentImpl extends NbtComponentImpl<EntityNbtComponent, 
   @Override
   public @NonNull EntityNbtComponent children(final @NonNull List<Component> children) {
     return new EntityNbtComponentImpl(children, this.style, this.nbtPath, this.interpret, this.selectorPattern);
-  }
-
-  @Override
-  public @NonNull EntityNbtComponent copy() {
-    return new EntityNbtComponentImpl(this.children, this.style, this.nbtPath, this.interpret, this.selectorPattern);
   }
 
   @Override
