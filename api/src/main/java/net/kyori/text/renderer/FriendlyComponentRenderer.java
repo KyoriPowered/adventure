@@ -37,19 +37,18 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.text.AttributedCharacterIterator;
 import java.text.MessageFormat;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
 /**
  * A friendly component renderer.
  */
-public abstract class FriendlyComponentRenderer<C extends ComponentRenderer.Context> implements ComponentRenderer<C> {
-  public static <C extends ComponentRenderer.Context> @NonNull FriendlyComponentRenderer<C> from(final @NonNull BiFunction<Locale, String, MessageFormat> translations) {
+public abstract class FriendlyComponentRenderer<C> implements ComponentRenderer<C> {
+  public static <C> @NonNull FriendlyComponentRenderer<C> from(final @NonNull BiFunction<C, String, MessageFormat> translations) {
     return new FriendlyComponentRenderer<C>() {
       @Override
-      protected @NonNull MessageFormat translation(final @NonNull Locale locale, final @NonNull String key) {
-        return translations.apply(locale, key);
+      protected @NonNull MessageFormat translation(final @NonNull C context, final @NonNull String key) {
+        return translations.apply(context, key);
       }
     };
   }
@@ -98,7 +97,7 @@ public abstract class FriendlyComponentRenderer<C extends ComponentRenderer.Cont
   }
 
   private Component render(final TranslatableComponent component, final C context) {
-    final /* @Nullable */ MessageFormat format = this.translation(context.locale(), component.key());
+    final /* @Nullable */ MessageFormat format = this.translation(context, component.key());
     if(format == null) {
       return component;
     }
@@ -132,11 +131,11 @@ public abstract class FriendlyComponentRenderer<C extends ComponentRenderer.Cont
   }
 
   /**
-   * Gets a translation from a locale and translation key.
+   * Gets a translation for a translation key in the given context.
    *
-   * @param locale the locale
+   * @param context the context
    * @param key the translation key
    * @return the translation
    */
-  protected abstract @Nullable MessageFormat translation(final @NonNull Locale locale, final @NonNull String key);
+  protected abstract @Nullable MessageFormat translation(final @NonNull C context, final @NonNull String key);
 }

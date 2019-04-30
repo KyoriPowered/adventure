@@ -29,7 +29,6 @@ import net.kyori.text.TextComponent;
 import net.kyori.text.TranslatableComponent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
 import java.text.MessageFormat;
@@ -47,7 +46,7 @@ class FriendlyComponentRendererTest {
 
   @Test
   void testSimple() {
-    final FriendlyComponentRenderer<ComponentRenderer.Context> renderer = FriendlyComponentRenderer.from((locale, key) -> new MessageFormat(TRANSLATIONS.get(locale, key), locale));
+    final FriendlyComponentRenderer<Locale> renderer = FriendlyComponentRenderer.from((locale, key) -> new MessageFormat(TRANSLATIONS.get(locale, key), locale));
     assertEquals(
       TextComponent.builder("This is a test.")
         .color(TextColor.YELLOW)
@@ -58,19 +57,14 @@ class FriendlyComponentRendererTest {
           .key("test")
           .color(TextColor.YELLOW)
           .build(),
-        new ComponentRenderer.Context() {
-          @Override
-          public @NonNull Locale locale() {
-            return Locale.US;
-          }
-        }
+        Locale.US
       )
     );
   }
 
   @Test
   void testComplex() {
-    final FriendlyComponentRenderer<ComponentRenderer.Context> renderer = FriendlyComponentRenderer.from((locale, key) -> new MessageFormat(TRANSLATIONS.get(locale, key), locale));
+    final FriendlyComponentRenderer<Locale> renderer = FriendlyComponentRenderer.from((locale, key) -> new MessageFormat(TRANSLATIONS.get(locale, key), locale));
     assertEquals(
       TextComponent.builder("")
         .color(TextColor.YELLOW)
@@ -89,19 +83,14 @@ class FriendlyComponentRendererTest {
           )
           .color(TextColor.YELLOW)
           .build(),
-        new ComponentRenderer.Context() {
-          @Override
-          public @NonNull Locale locale() {
-            return Locale.US;
-          }
-        }
+        Locale.US
       )
     );
   }
 
   @Test
   void testVeryComplex() {
-    final FriendlyComponentRenderer<ComponentRenderer.Context> renderer = FriendlyComponentRenderer.from((locale, key) -> new MessageFormat(TRANSLATIONS.get(locale, key), locale));
+    final FriendlyComponentRenderer<Locale> renderer = FriendlyComponentRenderer.from((locale, key) -> new MessageFormat(TRANSLATIONS.get(locale, key), locale));
     assertEquals(
       TextComponent.builder("")
         .color(TextColor.YELLOW)
@@ -136,12 +125,7 @@ class FriendlyComponentRendererTest {
         )
           .color(TextColor.YELLOW)
           .build(),
-        new ComponentRenderer.Context() {
-          @Override
-          public @NonNull Locale locale() {
-            return Locale.US;
-          }
-        }
+        Locale.US
       )
     );
   }
