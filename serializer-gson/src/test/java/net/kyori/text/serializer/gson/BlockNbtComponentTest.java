@@ -26,13 +26,12 @@ package net.kyori.text.serializer.gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import net.kyori.text.BlockNbtComponent;
+import net.kyori.text.BlockNbtComponent.WorldPos.Coordinate;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static net.kyori.text.BlockNbtComponent.WorldPos.Coordinate.absolute;
-import static net.kyori.text.BlockNbtComponent.WorldPos.Coordinate.relative;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BlockNbtComponentTest extends AbstractComponentTest<BlockNbtComponent> {
@@ -64,7 +63,7 @@ class BlockNbtComponentTest extends AbstractComponentTest<BlockNbtComponent> {
               }
       ),
       entry(
-              BlockNbtComponent.builder().nbtPath("qwert").worldPos(absolute(12), relative(3), absolute(1200)).build(),
+              BlockNbtComponent.builder().nbtPath("qwert").worldPos(Coordinate.absolute(12), Coordinate.relative(3), Coordinate.absolute(1200)).build(),
               json -> {
                 json.addProperty(GsonComponentSerializer.NBT, "qwert");
                 json.addProperty(GsonComponentSerializer.NBT_INTERPRET, false);
