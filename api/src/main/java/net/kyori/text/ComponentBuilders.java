@@ -27,7 +27,7 @@ import net.kyori.text.format.TextColor;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public interface ComponentDSL {
+public interface ComponentBuilders {
   /**
    * Creates a block NBT component builder.
    *
