@@ -23,14 +23,7 @@
  */
 package net.kyori.text.serializer.gson;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.google.gson.*;
 import net.kyori.text.Component;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
@@ -90,7 +83,7 @@ public class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<
           final /* @Nullable */ JsonPrimitive rawValue = clickEvent.getAsJsonPrimitive(CLICK_EVENT_VALUE);
           final /* @Nullable */ String value = rawValue == null ? null : rawValue.getAsString();
           if(value != null) {
-            style.clickEvent(new ClickEvent(action, value));
+            style.clickEvent(ClickEvent.of(action, value));
           }
         }
       }
@@ -105,7 +98,7 @@ public class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<
           final /* @Nullable */ JsonElement rawValue = hoverEvent.get(HOVER_EVENT_VALUE);
           final /* @Nullable */ Component value = rawValue == null ? null : context.deserialize(rawValue, Component.class);
           if(value != null) {
-            style.hoverEvent(new HoverEvent(action, value));
+            style.hoverEvent(HoverEvent.of(action, value));
           }
         }
       }

@@ -80,7 +80,7 @@ class TextComponentTest extends AbstractComponentTest<TextComponent> {
       entry(
         TextComponent.builder("This is a test.")
           .color(TextColor.DARK_PURPLE)
-          .hoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.of("A test.")))
+          .hoverEvent(HoverEvent.showText(TextComponent.of("A test.")))
           .append(TextComponent.of(" "))
           .append(TextComponent.of("A what?", TextColor.DARK_AQUA))
           .build(),

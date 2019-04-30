@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 class ClickEventTest {
   @Test
   void assertOpenFileNotReadable() {
-    final ClickEvent event = new ClickEvent(ClickEvent.Action.OPEN_FILE, "fake");
+    final ClickEvent event = ClickEvent.openFile("fake");
     assertFalse(event.action().readable());
   }
 }

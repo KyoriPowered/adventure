@@ -33,6 +33,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A hover event.
  *
@@ -41,13 +43,15 @@ import java.util.Objects;
  */
 public final class HoverEvent {
   /**
-   * The hover event action.
+   * Creates a hover event.
+   *
+   * @param action the action
+   * @param value the value
+   * @return a click event
    */
-  private final Action action;
-  /**
-   * The hover event value.
-   */
-  private final Component value;
+  public static @NonNull HoverEvent of(final @NonNull Action action, final @NonNull Component value) {
+    return new HoverEvent(action, value);
+  }
 
   /**
    * Creates a hover event that shows text on hover.
@@ -56,7 +60,7 @@ public final class HoverEvent {
    * @return a hover event
    */
   public static @NonNull HoverEvent showText(final @NonNull Component text) {
-    return new HoverEvent(Action.SHOW_TEXT, text);
+    return of(Action.SHOW_TEXT, text);
   }
 
   /**
@@ -66,7 +70,7 @@ public final class HoverEvent {
    * @return a hover event
    */
   public static @NonNull HoverEvent showItem(final @NonNull Component item) {
-    return new HoverEvent(Action.SHOW_ITEM, item);
+    return of(Action.SHOW_ITEM, item);
   }
 
   /**
@@ -76,12 +80,21 @@ public final class HoverEvent {
    * @return a hover event
    */
   public static @NonNull HoverEvent showEntity(final @NonNull Component entity) {
-    return new HoverEvent(Action.SHOW_ENTITY, entity);
+    return of(Action.SHOW_ENTITY, entity);
   }
 
-  public HoverEvent(final @NonNull Action action, final @NonNull Component value) {
-    this.action = action;
-    this.value = value;
+  /**
+   * The hover event action.
+   */
+  private final Action action;
+  /**
+   * The hover event value.
+   */
+  private final Component value;
+
+  private HoverEvent(final @NonNull Action action, final @NonNull Component value) {
+    this.action = requireNonNull(action, "action");
+    this.value = requireNonNull(value, "value");
   }
 
   /**
@@ -102,21 +115,12 @@ public final class HoverEvent {
     return this.value;
   }
 
-  /**
-   * Creates a copy of this hover event.
-   *
-   * @return a copy of this hover event
-   */
-  public @NonNull HoverEvent copy() {
-    return new HoverEvent(this.action, this.value.copy());
-  }
-
   @Override
   public boolean equals(final @Nullable Object other) {
     if(this == other) return true;
     if(other == null || this.getClass() != other.getClass()) return false;
     final HoverEvent that = (HoverEvent) other;
-    return this.action == that.action && Objects.equals(this.value, that.value);
+    return this.action == that.action && this.value.equals(that.value);
   }
 
   @Override
@@ -160,7 +164,7 @@ public final class HoverEvent {
     /**
      * If this action is readable.
      *
-     * <p>When an action is not readable it will not be deserailized.</p>
+     * <p>When an action is not readable it will not be deserialized.</p>
      */
     private final boolean readable;
 
@@ -176,18 +180,6 @@ public final class HoverEvent {
      *     action is not readable
      */
     public boolean readable() {
-      return this.readable;
-    }
-
-    /**
-     * Tests if this action is readable.
-     *
-     * @return {@code true} if this action is readable, {@code false} if this
-     *     action is not readable
-     * @deprecated use {@link #readable()}
-     */
-    @Deprecated
-    public boolean isReadable() {
       return this.readable;
     }
 

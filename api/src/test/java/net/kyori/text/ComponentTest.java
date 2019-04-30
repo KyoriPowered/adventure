@@ -32,11 +32,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ComponentTest {
   @Test
@@ -44,7 +40,7 @@ class ComponentTest {
     final TextComponent.Builder component = TextComponent.builder().content("").color(TextColor.GRAY);
     component.append(TextComponent.builder().content("This is a test").color(TextColor.DARK_PURPLE).build());
     component.append(TextComponent.builder().content(" ").build());
-    component.append(TextComponent.builder().content("A what?").color(TextColor.DARK_AQUA).clickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/what")).build());
+    component.append(TextComponent.builder().content("A what?").color(TextColor.DARK_AQUA).clickEvent(ClickEvent.runCommand("/what")).build());
     assertEquals(component.build(), component.build().copy());
   }
 
@@ -95,7 +91,7 @@ class ComponentTest {
       final Component hoverComponent = TextComponent.builder().content("hover").build();
       final Component component = TextComponent.builder()
         .content("cat")
-        .hoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent))
+        .hoverEvent(HoverEvent.showText(hoverComponent))
         .build();
       // component's hover event value is hoverComponent, we should not be able to add it
       hoverComponent.append(component);
@@ -108,7 +104,7 @@ class ComponentTest {
     assertThrows(IllegalStateException.class, () -> {
       final Component hoverComponent = TextComponent.builder().content("hover child").build();
       final Component component = TextComponent.builder().content("cat")
-        .hoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.builder().content("hover").build().append(hoverComponent)))
+        .hoverEvent(HoverEvent.showText(TextComponent.builder().content("hover").build().append(hoverComponent)))
         .build();
       // component's hover event value contains hoverComponent, we should not be able to add it
       hoverComponent.append(component);

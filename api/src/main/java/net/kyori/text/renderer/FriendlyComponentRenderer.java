@@ -23,13 +23,7 @@
  */
 package net.kyori.text.renderer;
 
-import net.kyori.text.Component;
-import net.kyori.text.ComponentBuilder;
-import net.kyori.text.KeybindComponent;
-import net.kyori.text.ScoreComponent;
-import net.kyori.text.SelectorComponent;
-import net.kyori.text.TextComponent;
-import net.kyori.text.TranslatableComponent;
+import net.kyori.text.*;
 import net.kyori.text.event.HoverEvent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -90,7 +84,7 @@ public abstract class FriendlyComponentRenderer<C extends ComponentRenderer.Cont
     builder.mergeDecorations(component);
     builder.clickEvent(component.clickEvent());
     Optional.ofNullable(component.hoverEvent()).ifPresent(hoverEvent -> {
-      builder.hoverEvent(new HoverEvent(
+      builder.hoverEvent(HoverEvent.of(
         hoverEvent.action(),
         this.render(hoverEvent.value(), context)
       ));

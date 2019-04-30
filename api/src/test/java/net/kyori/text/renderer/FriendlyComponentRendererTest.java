@@ -112,7 +112,7 @@ class FriendlyComponentRendererTest {
             .append(TextComponent.of(" and "))
             .append(TextComponent.of("lucko"))
             .append(TextComponent.of(" are cats."))
-            .hoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.of("This is a test.")))
+            .hoverEvent(HoverEvent.showText(TextComponent.of("This is a test.")))
         )
         .build(),
       renderer.render(
@@ -131,7 +131,7 @@ class FriendlyComponentRendererTest {
               TextComponent.of("kashike"),
               TextComponent.of("lucko")
             )
-            .hoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TranslatableComponent.of("test")))
+            .hoverEvent(HoverEvent.showText(TranslatableComponent.of("test")))
             .build()
         )
           .color(TextColor.YELLOW)

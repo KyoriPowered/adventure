@@ -53,8 +53,8 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
         TranslatableComponent.of(
           KEY,
           TextComponent.builder(WHO)
-            .clickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, COMMAND))
-            .hoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ENTITY, TextComponent.of(ENTITY)))
+            .clickEvent(ClickEvent.suggestCommand(COMMAND))
+            .hoverEvent(HoverEvent.showEntity(TextComponent.of(ENTITY)))
             .build()
         ).color(TextColor.YELLOW),
         json -> {

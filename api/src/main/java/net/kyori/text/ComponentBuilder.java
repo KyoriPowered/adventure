@@ -139,7 +139,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param function the mapping function
    * @return this builder
    */
-  @NonNull B mapChildren(final @NonNull Function<? super BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function);
+  @NonNull B mapChildren(final @NonNull Function<BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function);
 
   /**
    * Replaces each child and sub-child of this component with the resultant
@@ -148,7 +148,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param function the mapping function
    * @return this builder
    */
-  @NonNull B mapChildrenDeep(final @NonNull Function<? super BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function);
+  @NonNull B mapChildrenDeep(final @NonNull Function<BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function);
 
   /**
    * Sets the style.
@@ -288,7 +288,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
   default @NonNull B mergeEvents(final @NonNull Component that) {
     if(that.clickEvent() != null) this.clickEvent(that.clickEvent());
     final HoverEvent hoverEvent = that.hoverEvent();
-    if(hoverEvent != null) this.hoverEvent(hoverEvent.copy()); // hard copy, hover events have a component
+    if(hoverEvent != null) this.hoverEvent(hoverEvent);
     return (B) this;
   }
 

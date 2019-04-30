@@ -114,7 +114,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
 
   @Override
   @SuppressWarnings({"rawtypes", "unchecked"})
-  public @NonNull B mapChildren(final @NonNull Function<? super BuildableComponent<? ,?>, ? extends BuildableComponent<? ,?>> function) {
+  public @NonNull B mapChildren(final @NonNull Function<BuildableComponent<? ,?>, ? extends BuildableComponent<? ,?>> function) {
     if(this.children == AbstractComponent.EMPTY_COMPONENT_LIST) {
       return (B) this;
     }
@@ -135,7 +135,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
 
   @Override
   @SuppressWarnings({"rawtypes", "unchecked"})
-  public @NonNull B mapChildrenDeep(final @NonNull Function<? super BuildableComponent<? ,?>, ? extends BuildableComponent<? ,?>> function) {
+  public @NonNull B mapChildrenDeep(final @NonNull Function<BuildableComponent<? ,?>, ? extends BuildableComponent<? ,?>> function) {
     if(this.children == AbstractComponent.EMPTY_COMPONENT_LIST) {
       return (B) this;
     }
