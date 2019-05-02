@@ -125,6 +125,56 @@ public interface ComponentBuilders {
   }
 
   /**
+   * Creates a text component builder with the content of {@link String#valueOf(char)}.
+   *
+   * @param value the char value
+   * @return the component
+   */
+  static TextComponent.@NonNull Builder text(final char value) {
+    return text(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component builder with the content of {@link String#valueOf(double)}.
+   *
+   * @param value the double value
+   * @return the component
+   */
+  static TextComponent.@NonNull Builder text(final double value) {
+    return text(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component builder with the content of {@link String#valueOf(float)}.
+   *
+   * @param value the float value
+   * @return the component
+   */
+  static TextComponent.@NonNull Builder text(final float value) {
+    return text(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component builder with the content of {@link String#valueOf(int)}.
+   *
+   * @param value the int value
+   * @return the component
+   */
+  static TextComponent.@NonNull Builder text(final int value) {
+    return text(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component builder with the content of {@link String#valueOf(long)}.
+   *
+   * @param value the long value
+   * @return the component
+   */
+  static TextComponent.@NonNull Builder text(final long value) {
+    return text(String.valueOf(value));
+  }
+
+  /**
    * Creates a text component builder with content.
    *
    * @param content the plain text content

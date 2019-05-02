@@ -105,7 +105,7 @@ class TranslatableComponentImpl extends AbstractComponent implements Translatabl
 
   static class BuilderImpl extends AbstractComponentBuilder<TranslatableComponent, Builder> implements TranslatableComponent.Builder {
     private @Nullable String key;
-    private @NonNull List<? extends Component> args = EMPTY_COMPONENT_LIST;
+    private List<? extends Component> args = EMPTY_COMPONENT_LIST;
 
     BuilderImpl() {
     }
