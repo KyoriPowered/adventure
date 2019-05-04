@@ -21,21 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.text;
+package net.kyori.text.serializer.gson;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import com.google.gson.JsonElement;
+import net.kyori.text.SelectorComponent;
 
-/**
- * A component which may be built.
- *
- * @param <C> the component type
- * @param <B> the builder type
- */
-public interface BuildableComponent<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends Component {
-  /**
-   * Create a builder from this component.
-   *
-   * @return the builder
-   */
-  @NonNull B toBuilder();
+import java.util.Map;
+import java.util.stream.Stream;
+
+class SelectorComponentTest extends AbstractComponentTest<SelectorComponent> {
+  private static final String SELECTOR = "@p";
+
+  @Override
+  Stream<Map.Entry<SelectorComponent, JsonElement>> tests() {
+    return Stream.of(
+      entry(SelectorComponent.of(SELECTOR), json -> json.addProperty(GsonComponentSerializer.SELECTOR, SELECTOR))
+    );
+  }
 }

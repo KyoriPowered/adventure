@@ -23,20 +23,39 @@
  */
 package net.kyori.text;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 /**
- * Internal.
+ * An NBT component.
  */
-interface Component0 {
+public interface NbtComponent<C extends NbtComponent<C, B>, B extends NbtComponentBuilder<C, B>> extends BuildableComponent<C, B> {
   /**
-   * A component with empty content.
+   * Gets the NBT path.
+   *
+   * @return the NBT path
    */
-  TextComponent EMPTY = TextComponent.of("");
+  @NonNull String nbtPath();
+
   /**
-   * A component with a new line character as the content.
+   * Sets the NBT path.
+   *
+   * @param nbtPath the NBT path
+   * @return a component
    */
-  TextComponent NEWLINE = TextComponent.of("\n");
+  @NonNull C nbtPath(final @NonNull String nbtPath);
+
   /**
-   * A component with a single space as the content.
+   * Gets if we should be interpreting.
+   *
+   * @return if we should be interpreting
    */
-  TextComponent SPACE = TextComponent.of(" ");
+  boolean interpret();
+
+  /**
+   * Sets if we should be interpreting.
+   *
+   * @param interpret if we should be interpreting.
+   * @return a component
+   */
+  @NonNull C interpret(final boolean interpret);
 }

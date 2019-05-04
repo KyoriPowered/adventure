@@ -23,34 +23,39 @@
  */
 package net.kyori.text.serializer.gson;
 
-import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
 import net.kyori.text.Component;
-import net.kyori.text.TextComponent;
+import net.kyori.text.ScoreComponent;
 import org.junit.jupiter.api.Test;
 
-import static net.kyori.text.serializer.gson.AbstractComponentTest.array;
-import static net.kyori.text.serializer.gson.AbstractComponentTest.object;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.Map;
+import java.util.stream.Stream;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class GsonComponentSerializerTest {
-  @Test
-  void testDeserializePrimitive() {
-    assertEquals(TextComponent.of("potato"), GsonComponentSerializer.GSON.fromJson(new JsonPrimitive("potato"), Component.class));
+class ScoreComponentTest extends AbstractComponentTest<ScoreComponent> {
+  private static final String NAME = "abc";
+  private static final String OBJECTIVE = "def";
+  private static final String VALUE = "ghi";
+
+  @Override
+  Stream<Map.Entry<ScoreComponent, JsonElement>> tests() {
+    return Stream.of(
+      entry(ScoreComponent.of(NAME, OBJECTIVE), json -> json.add(GsonComponentSerializer.SCORE, object(score -> {
+        score.addProperty(GsonComponentSerializer.SCORE_NAME, NAME);
+        score.addProperty(GsonComponentSerializer.SCORE_OBJECTIVE, OBJECTIVE);
+      }))),
+      entry(ScoreComponent.of(NAME, OBJECTIVE, VALUE), json -> json.add(GsonComponentSerializer.SCORE, object(score -> {
+        score.addProperty(GsonComponentSerializer.SCORE_NAME, NAME);
+        score.addProperty(GsonComponentSerializer.SCORE_OBJECTIVE, OBJECTIVE);
+        score.addProperty(GsonComponentSerializer.SCORE_VALUE, VALUE);
+      })))
+    );
   }
 
   @Test
-  void testDeserializeArray_empty() {
-    assertThrows(JsonParseException.class, () -> GsonComponentSerializer.GSON.fromJson(new JsonArray(), Component.class));
-  }
-
-  @Test
-  void testDeserializeArray() {
-    assertEquals(TextComponent.of("Hello, ").append(TextComponent.of("world.")), GsonComponentSerializer.GSON.fromJson(array(array -> {
-      array.add(object(object -> object.addProperty(GsonComponentSerializer.TEXT, "Hello, ")));
-      array.add(object(object -> object.addProperty(GsonComponentSerializer.TEXT, "world.")));
-    }), Component.class));
+  void testDeserialize_withoutObjective() {
+    assertThrows(JsonParseException.class, () -> GsonComponentSerializer.GSON.fromJson(object(json -> json.add(GsonComponentSerializer.SCORE, object(score -> score.addProperty(GsonComponentSerializer.SCORE_NAME, NAME)))), Component.class));
   }
 }

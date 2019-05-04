@@ -24,11 +24,15 @@
 package net.kyori.text.event;
 
 import net.kyori.text.util.NameMap;
+import net.kyori.text.util.ToStringer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
-import java.util.StringJoiner;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A click event.
@@ -37,13 +41,15 @@ import java.util.StringJoiner;
  */
 public final class ClickEvent {
   /**
-   * The click event action.
+   * Creates a click event.
+   *
+   * @param action the action
+   * @param value the value
+   * @return a click event
    */
-  private final Action action;
-  /**
-   * The click event value.
-   */
-  private final String value;
+  public static @NonNull ClickEvent of(final @NonNull Action action, final @NonNull String value) {
+    return new ClickEvent(action, value);
+  }
 
   /**
    * Creates a click event that opens a url.
@@ -52,7 +58,7 @@ public final class ClickEvent {
    * @return a click event
    */
   public static @NonNull ClickEvent openUrl(final @NonNull String url) {
-    return new ClickEvent(Action.OPEN_URL, url);
+    return of(Action.OPEN_URL, url);
   }
 
   /**
@@ -64,7 +70,7 @@ public final class ClickEvent {
    * @return a click event
    */
   public static @NonNull ClickEvent openFile(final @NonNull String file) {
-    return new ClickEvent(Action.OPEN_FILE, file);
+    return of(Action.OPEN_FILE, file);
   }
 
   /**
@@ -74,7 +80,7 @@ public final class ClickEvent {
    * @return a click event
    */
   public static @NonNull ClickEvent runCommand(final @NonNull String command) {
-    return new ClickEvent(Action.RUN_COMMAND, command);
+    return of(Action.RUN_COMMAND, command);
   }
 
   /**
@@ -84,7 +90,17 @@ public final class ClickEvent {
    * @return a click event
    */
   public static @NonNull ClickEvent suggestCommand(final @NonNull String command) {
-    return new ClickEvent(Action.SUGGEST_COMMAND, command);
+    return of(Action.SUGGEST_COMMAND, command);
+  }
+
+  /**
+   * Creates a click event that changes to a page.
+   *
+   * @param page the page to change to
+   * @return a click event
+   */
+  public static @NonNull ClickEvent changePage(final @NonNull String page) {
+    return of(Action.CHANGE_PAGE, page);
   }
 
   /**
@@ -98,18 +114,17 @@ public final class ClickEvent {
   }
 
   /**
-   * Creates a click event that changes to a page.
-   *
-   * @param page the page to change to
-   * @return a click event
+   * The click event action.
    */
-  public static @NonNull ClickEvent changePage(final @NonNull String page) {
-    return new ClickEvent(Action.CHANGE_PAGE, page);
-  }
+  private final Action action;
+  /**
+   * The click event value.
+   */
+  private final String value;
 
-  public ClickEvent(final @NonNull Action action, final @NonNull String value) {
-    this.action = action;
-    this.value = value;
+  private ClickEvent(final @NonNull Action action, final @NonNull String value) {
+    this.action = requireNonNull(action, "action");
+    this.value = requireNonNull(value, "value");
   }
 
   /**
@@ -130,15 +145,6 @@ public final class ClickEvent {
     return this.value;
   }
 
-  /**
-   * Creates a copy of this click event.
-   *
-   * @return a copy of this click event
-   */
-  public @NonNull ClickEvent copy() {
-    return new ClickEvent(this.action, this.value);
-  }
-
   @Override
   public boolean equals(final @Nullable Object other) {
     if(this == other) return true;
@@ -154,10 +160,10 @@ public final class ClickEvent {
 
   @Override
   public String toString() {
-    return new StringJoiner(", ", this.getClass().getSimpleName() + "{", "}")
-      .add("action=" + this.action)
-      .add("value=" + this.value)
-      .toString();
+    final Map<String, Object> builder = new LinkedHashMap<>();
+    builder.put("action", this.action);
+    builder.put("value", this.value);
+    return ToStringer.toString(this, builder);
   }
 
   /**
@@ -198,11 +204,11 @@ public final class ClickEvent {
     /**
      * If this action is readable.
      *
-     * <p>When an action is not readable it will not be deserailized.</p>
+     * <p>When an action is not readable it will not be deserialized.</p>
      */
     private final boolean readable;
 
-    Action(final String name, final boolean readable) {
+    Action(final @NonNull String name, final boolean readable) {
       this.name = name;
       this.readable = readable;
     }
@@ -214,18 +220,6 @@ public final class ClickEvent {
      *     action is not readable
      */
     public boolean readable() {
-      return this.readable;
-    }
-
-    /**
-     * Tests if this action is readable.
-     *
-     * @return {@code true} if this action is readable, {@code false} if this
-     *     action is not readable
-     * @deprecated use {@link #readable()}
-     */
-    @Deprecated
-    public boolean isReadable() {
       return this.readable;
     }
 

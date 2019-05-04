@@ -27,6 +27,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
+import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
@@ -38,8 +39,22 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SuppressWarnings("unchecked")
-abstract class AbstractComponentTest<C extends BuildableComponent<C, B>, B extends BuildableComponent.Builder<C, B>> {
+abstract class AbstractComponentTest<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> {
   abstract B builder();
+
+  @Test
+  void testResetStyle() {
+    final C c0 = this.builder()
+      .color(TextColor.RED)
+      .decoration(TextDecoration.BOLD, true)
+      .clickEvent(ClickEvent.runCommand("/foo"))
+      .build();
+    final C c1 = (C) c0.style(Style.empty());
+    assertNull(c1.color());
+    assertDecorations(c1, ImmutableMap.of());
+    assertNull(c1.clickEvent());
+    assertEquals(c1, c0.color(null).decoration(TextDecoration.BOLD, TextDecoration.State.NOT_SET).clickEvent(null));
+  }
 
   @Test
   void testColor() {
@@ -47,6 +62,19 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B>, B exten
     assertNull(c0.color());
     final C c1 = (C) c0.color(TextColor.GREEN);
     assertEquals(TextColor.GREEN, c1.color());
+    assertEquals(c0, c1.color(null));
+  }
+
+  @Test
+  void testMergeColor() {
+    final C c0 = this.builder().build();
+    assertNull(c0.color());
+    assertDecorations(c0, ImmutableMap.of());
+    assertNull(c0.clickEvent());
+    final C c1 = (C) c0.mergeColor(TextComponent.of("xyz", TextColor.RED, ImmutableSet.of(TextDecoration.BOLD)).clickEvent(ClickEvent.runCommand("/foo")));
+    assertEquals(TextColor.RED, c1.color());
+    assertDecorations(c1, ImmutableMap.of());
+    assertNull(c1.clickEvent());
     assertEquals(c0, c1.color(null));
   }
 
@@ -63,7 +91,7 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B>, B exten
   void testClickEvent() {
     final C c0 = this.builder().build();
     assertNull(c0.clickEvent());
-    final C c1 = (C) c0.clickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "foo"));
+    final C c1 = (C) c0.clickEvent(ClickEvent.runCommand("foo"));
     assertNotNull(c1.clickEvent());
     assertEquals(c0, c1.clickEvent(null));
   }
@@ -72,7 +100,7 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B>, B exten
   void testHoverEvent() {
     final C c0 = this.builder().build();
     assertNull(c0.hoverEvent());
-    final C c1 = (C) c0.hoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.of("hover")));
+    final C c1 = (C) c0.hoverEvent(HoverEvent.showText(TextComponent.of("hover")));
     assertNotNull(c1.hoverEvent());
     assertEquals(c0, c1.hoverEvent(null));
   }
@@ -87,29 +115,16 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B>, B exten
   }
 
   @Test
-  void testMergeStyle() {
+  void testSetStyle() {
     final C c0 = this.builder().build();
     assertNull(c0.color());
     assertDecorations(c0, ImmutableMap.of());
     assertNull(c0.clickEvent());
-    final C c1 = (C) c0.mergeStyle(TextComponent.of("xyz", TextColor.RED, ImmutableSet.of(TextDecoration.BOLD)).clickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/foo")));
+    final C c1 = (C) c0.style(TextComponent.of("xyz", TextColor.RED, ImmutableSet.of(TextDecoration.BOLD)).clickEvent(ClickEvent.runCommand("/foo")).style());
     assertEquals(TextColor.RED, c1.color());
     assertDecorations(c1, ImmutableMap.of(TextDecoration.BOLD, TextDecoration.State.TRUE));
     assertNotNull(c1.clickEvent());
     assertEquals(c0, c1.color(null).decoration(TextDecoration.BOLD, TextDecoration.State.NOT_SET).clickEvent(null));
-  }
-
-  @Test
-  void testMergeColor() {
-    final C c0 = this.builder().build();
-    assertNull(c0.color());
-    assertDecorations(c0, ImmutableMap.of());
-    assertNull(c0.clickEvent());
-    final C c1 = (C) c0.mergeColor(TextComponent.of("xyz", TextColor.RED, ImmutableSet.of(TextDecoration.BOLD)).clickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/foo")));
-    assertEquals(TextColor.RED, c1.color());
-    assertDecorations(c1, ImmutableMap.of());
-    assertNull(c1.clickEvent());
-    assertEquals(c0, c1.color(null));
   }
 
   @Test
@@ -118,7 +133,7 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B>, B exten
     assertNull(c0.color());
     assertDecorations(c0, ImmutableMap.of());
     assertNull(c0.clickEvent());
-    final C c1 = (C) c0.mergeDecorations(TextComponent.of("xyz", TextColor.RED, ImmutableSet.of(TextDecoration.BOLD)).clickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/foo")));
+    final C c1 = (C) c0.mergeDecorations(TextComponent.of("xyz", TextColor.RED, ImmutableSet.of(TextDecoration.BOLD)).clickEvent(ClickEvent.runCommand("/foo")));
     assertNull(c1.color());
     assertDecorations(c1, ImmutableMap.of(TextDecoration.BOLD, TextDecoration.State.TRUE));
     assertNull(c1.clickEvent());
@@ -131,31 +146,10 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B>, B exten
     assertNull(c0.color());
     assertDecorations(c0, ImmutableMap.of());
     assertNull(c0.clickEvent());
-    final C c1 = (C) c0.mergeEvents(TextComponent.of("xyz", TextColor.RED, ImmutableSet.of(TextDecoration.BOLD)).clickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/foo")));
+    final C c1 = (C) c0.mergeEvents(TextComponent.of("xyz", TextColor.RED, ImmutableSet.of(TextDecoration.BOLD)).clickEvent(ClickEvent.runCommand("/foo")));
     assertNull(c1.color());
     assertDecorations(c1, ImmutableMap.of());
     assertNotNull(c1.clickEvent());
-  }
-
-  @Test
-  void testResetStyle() {
-    final C c0 = this.builder()
-      .color(TextColor.RED)
-      .decoration(TextDecoration.BOLD, true)
-      .clickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/foo"))
-      .build();
-    final C c1 = (C) c0.resetStyle();
-    assertNull(c1.color());
-    assertDecorations(c1, ImmutableMap.of());
-    assertNull(c1.clickEvent());
-    assertEquals(c1, c0.color(null).decoration(TextDecoration.BOLD, TextDecoration.State.NOT_SET).clickEvent(null));
-  }
-
-  @Test
-  void testCopy() {
-    final C c0 = this.builder().build();
-    final C c1 = (C) c0.copy();
-    assertEquals(c0, c1);
   }
 
   private static void assertDecorations(final Component component, final Map<TextDecoration, TextDecoration.State> expected) {

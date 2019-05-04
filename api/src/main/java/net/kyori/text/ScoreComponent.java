@@ -23,44 +23,22 @@
  */
 package net.kyori.text;
 
-import net.kyori.text.event.ClickEvent;
-import net.kyori.text.event.HoverEvent;
-import net.kyori.text.format.TextColor;
-import net.kyori.text.format.TextDecoration;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import static java.util.Objects.requireNonNull;
+import java.util.function.Consumer;
 
 /**
  * A scoreboard score component.
  */
-public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, ScoreComponent.Builder> {
-  /**
-   * The score name.
-   */
-  private final @NonNull String name;
-  /**
-   * The score objective.
-   */
-  private final @NonNull String objective;
-  /**
-   * The value.
-   */
-  private final @Nullable String value;
-
+public interface ScoreComponent extends BuildableComponent<ScoreComponent, ScoreComponent.Builder>, ScopedComponent<ScoreComponent> {
   /**
    * Creates a score component builder.
    *
    * @return a builder
    */
-  public static Builder builder() {
-    return new Builder();
+  static @NonNull Builder builder() {
+    return new ScoreComponentImpl.BuilderImpl();
   }
 
   /**
@@ -70,8 +48,8 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
    * @param objective the score objective
    * @return a builder
    */
-  public static Builder builder(final @NonNull String name, final @NonNull String objective) {
-    return new Builder().name(name).objective(objective);
+  static @NonNull Builder builder(final @NonNull String name, final @NonNull String objective) {
+    return builder().name(name).objective(objective);
   }
 
   /**
@@ -81,7 +59,7 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
    * @param objective the score objective
    * @return the score component
    */
-  public static ScoreComponent of(final @NonNull String name, final @NonNull String objective) {
+  static @NonNull ScoreComponent of(final @NonNull String name, final @NonNull String objective) {
     return of(name, objective, null);
   }
 
@@ -93,7 +71,7 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
    * @param value the value
    * @return the score component
    */
-  public static ScoreComponent of(final @NonNull String name, final @NonNull String objective, final @Nullable String value) {
+  static @NonNull ScoreComponent of(final @NonNull String name, final @NonNull String objective, final @Nullable String value) {
     return builder()
       .name(name)
       .objective(objective)
@@ -101,18 +79,30 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
       .build();
   }
 
-  protected ScoreComponent(final @NonNull Builder builder) {
-    super(builder);
-    this.name = builder.name;
-    this.objective = builder.objective;
-    this.value = builder.value;
+  /**
+   * Creates a score component by applying configuration from {@code consumer}.
+   *
+   * @param consumer the builder configurator
+   * @return the score component
+   */
+  static @NonNull ScoreComponent make(final @NonNull Consumer<? super Builder> consumer) {
+    final Builder builder = builder();
+    consumer.accept(builder);
+    return builder.build();
   }
 
-  protected ScoreComponent(final @NonNull List<Component> children, final @Nullable TextColor color, final TextDecoration.@NonNull State obfuscated, final TextDecoration.@NonNull State bold, final TextDecoration.@NonNull State strikethrough, final TextDecoration.@NonNull State underlined, final TextDecoration.@NonNull State italic, final @Nullable ClickEvent clickEvent, final @Nullable HoverEvent hoverEvent, final @Nullable String insertion, final @NonNull String name, final @NonNull String objective, final @Nullable String value) {
-    super(children, color, obfuscated, bold, strikethrough, underlined, italic, clickEvent, hoverEvent, insertion);
-    this.name = name;
-    this.objective = objective;
-    this.value = value;
+  /**
+   * Creates a score component by applying configuration from {@code consumer}.
+   *
+   * @param name the score name
+   * @param objective the score objective
+   * @param consumer the builder configurator
+   * @return the score component
+   */
+  static @NonNull ScoreComponent make(final @NonNull String name, final @NonNull String objective, final @NonNull Consumer<? super Builder> consumer) {
+    final Builder builder = builder(name, objective);
+    consumer.accept(builder);
+    return builder.build();
   }
 
   /**
@@ -120,9 +110,7 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
    *
    * @return the score name
    */
-  public @NonNull String name() {
-    return this.name;
-  }
+  @NonNull String name();
 
   /**
    * Sets the score name.
@@ -130,18 +118,14 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
    * @param name the score name
    * @return a copy of this component
    */
-  public @NonNull ScoreComponent name(final @NonNull String name) {
-    return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, requireNonNull(name, "name"), this.objective, this.value);
-  }
+  @NonNull ScoreComponent name(final @NonNull String name);
 
   /**
    * Gets the objective name.
    *
    * @return the objective name
    */
-  public @NonNull String objective() {
-    return this.objective;
-  }
+  @NonNull String objective();
 
   /**
    * Sets the score objective.
@@ -149,18 +133,14 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
    * @param objective the score objective
    * @return a copy of this component
    */
-  public @NonNull ScoreComponent objective(final @NonNull String objective) {
-    return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.name, requireNonNull(objective, "objective"), this.value);
-  }
+  @NonNull ScoreComponent objective(final @NonNull String objective);
 
   /**
    * Gets the value.
    *
    * @return the value
    */
-  public @Nullable String value() {
-    return this.value;
-  }
+  @Nullable String value();
 
   /**
    * Sets the value.
@@ -168,146 +148,19 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
    * @param value the value
    * @return a copy of this component
    */
-  public @NonNull ScoreComponent content(final @NonNull String value) {
-    return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, value);
-  }
-
-  @Override
-  public @NonNull ScoreComponent append(final @NonNull Component component) {
-    this.detectCycle(component); // detect cycle before modifying
-    final List<Component> children = new ArrayList<>(this.children.size() + 1);
-    children.addAll(this.children);
-    children.add(component);
-    return new ScoreComponent(children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
-  }
-
-  @Override
-  public @NonNull ScoreComponent color(final @Nullable TextColor color) {
-    return new ScoreComponent(this.children, color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
-  }
-
-  @Override
-  public @NonNull ScoreComponent decoration(final @NonNull TextDecoration decoration, final boolean flag) {
-    return (ScoreComponent) super.decoration(decoration, flag);
-  }
-
-  @Override
-  public @NonNull ScoreComponent decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
-    switch(decoration) {
-      case BOLD: return new ScoreComponent(this.children, this.color, this.obfuscated, requireNonNull(state, "flag"), this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
-      case ITALIC: return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, requireNonNull(state, "flag"), this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
-      case UNDERLINED: return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, requireNonNull(state, "flag"), this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
-      case STRIKETHROUGH: return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, requireNonNull(state, "flag"), this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
-      case OBFUSCATED: return new ScoreComponent(this.children, this.color, requireNonNull(state, "flag"), this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
-      default: throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
-    }
-  }
-
-  @Override
-  public @NonNull ScoreComponent clickEvent(final @Nullable ClickEvent event) {
-    return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, event, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
-  }
-
-  @Override
-  public @NonNull ScoreComponent hoverEvent(final @Nullable HoverEvent event) {
-    if(event != null) this.detectCycle(event.value()); // detect cycle before modifying
-    return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, event, this.insertion, this.name, this.objective, this.value);
-  }
-
-  @Override
-  public @NonNull ScoreComponent insertion(final @Nullable String insertion) {
-    return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, insertion, this.name, this.objective, this.value);
-  }
-
-  @Override
-  public @NonNull ScoreComponent mergeStyle(final @NonNull Component that) {
-    return new ScoreComponent(this.children, that.color(), that.decoration(TextDecoration.OBFUSCATED), that.decoration(TextDecoration.BOLD), that.decoration(TextDecoration.STRIKETHROUGH), that.decoration(TextDecoration.UNDERLINED), that.decoration(TextDecoration.ITALIC), that.clickEvent(), that.hoverEvent(), that.insertion(), this.name, this.objective, this.value);
-  }
-
-  @Override
-  public @NonNull ScoreComponent mergeColor(final @NonNull Component that) {
-    return new ScoreComponent(this.children, that.color(), this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
-  }
-
-  @Override
-  public @NonNull ScoreComponent mergeDecorations(final @NonNull Component that) {
-    final TextDecoration.State obfuscated = that.decoration(TextDecoration.OBFUSCATED) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.OBFUSCATED) : this.obfuscated;
-    final TextDecoration.State bold = that.decoration(TextDecoration.BOLD) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.BOLD) : this.bold;
-    final TextDecoration.State strikethrough = that.decoration(TextDecoration.STRIKETHROUGH) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.STRIKETHROUGH) : this.strikethrough;
-    final TextDecoration.State underlined = that.decoration(TextDecoration.UNDERLINED) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.UNDERLINED) : this.underlined;
-    final TextDecoration.State italic = that.decoration(TextDecoration.ITALIC) != TextDecoration.State.NOT_SET ? that.decoration(TextDecoration.ITALIC) : this.italic;
-    return new ScoreComponent(this.children, this.color, obfuscated, bold, strikethrough, underlined, italic, this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
-  }
-
-  @Override
-  public @NonNull ScoreComponent mergeEvents(final @NonNull Component that) {
-    return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, that.clickEvent(), that.hoverEvent(), this.insertion, this.name, this.objective, this.value);
-  }
-
-  @Override
-  public @NonNull ScoreComponent resetStyle() {
-    return new ScoreComponent(this.children, null, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null, this.name, this.objective, this.value);
-  }
-
-  @Override
-  public @NonNull ScoreComponent copy() {
-    return new ScoreComponent(this.children, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion, this.name, this.objective, this.value);
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(other == null || !(other instanceof ScoreComponent)) return false;
-    if(!super.equals(other)) return false;
-    final ScoreComponent that = (ScoreComponent) other;
-    return Objects.equals(this.name, that.name) && Objects.equals(this.objective, that.objective) && Objects.equals(this.value, that.value);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), this.name, this.objective, this.value);
-  }
-
-  @Override
-  protected void populateToString(final @NonNull Map<String, Object> builder) {
-    builder.put("name", this.name);
-    builder.put("objective", this.objective);
-    builder.put("value", this.value);
-  }
-
-  @Override
-  public @NonNull Builder toBuilder() {
-    return new Builder(this);
-  }
+  @NonNull ScoreComponent value(final @NonNull String value);
 
   /**
    * A score component builder.
    */
-  public static class Builder extends AbstractBuildableComponent.AbstractBuilder<ScoreComponent, Builder> {
-    private @Nullable String name;
-    private @Nullable String objective;
-    private @Nullable String value;
-
-    Builder() {
-    }
-
-    Builder(final @NonNull ScoreComponent component) {
-      super(component);
-      this.name = component.name();
-      this.objective = component.objective();
-      this.value = component.value();
-    }
-
+  interface Builder extends ComponentBuilder<ScoreComponent, Builder> {
     /**
      * Sets the score name.
      *
      * @param name the score name
      * @return this builder
      */
-    public @NonNull Builder name(final @NonNull String name) {
-      this.name = name;
-      return this;
-    }
+    @NonNull Builder name(final @NonNull String name);
 
     /**
      * Sets the score objective.
@@ -315,10 +168,7 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
      * @param objective the score objective
      * @return this builder
      */
-    public @NonNull Builder objective(final @NonNull String objective) {
-      this.objective = objective;
-      return this;
-    }
+    @NonNull Builder objective(final @NonNull String objective);
 
     /**
      * Sets the value.
@@ -326,16 +176,6 @@ public class ScoreComponent extends AbstractBuildableComponent<ScoreComponent, S
      * @param value the value
      * @return this builder
      */
-    public @NonNull Builder value(final @Nullable String value) {
-      this.value = value;
-      return this;
-    }
-
-    @Override
-    public @NonNull ScoreComponent build() {
-      if(this.name == null) throw new IllegalStateException("name must be set");
-      if(this.objective == null) throw new IllegalStateException("objective must be set");
-      return new ScoreComponent(this);
-    }
+    @NonNull Builder value(final @Nullable String value);
   }
 }

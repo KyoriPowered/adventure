@@ -21,21 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.text;
+package net.kyori.text.util;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-/**
- * A component which may be built.
- *
- * @param <C> the component type
- * @param <B> the builder type
- */
-public interface BuildableComponent<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends Component {
-  /**
-   * Create a builder from this component.
-   *
-   * @return the builder
-   */
-  @NonNull B toBuilder();
+import java.util.Map;
+import java.util.StringJoiner;
+
+public interface ToStringer {
+  static @NonNull String toString(final @NonNull Object object, final @NonNull Map<String, Object> builder) {
+    final StringJoiner joiner = new StringJoiner(", ", object.getClass().getSimpleName() + "{", "}");
+    builder.forEach((key, value) -> joiner.add(key + "=" + value));
+    return joiner.toString();
+  }
 }

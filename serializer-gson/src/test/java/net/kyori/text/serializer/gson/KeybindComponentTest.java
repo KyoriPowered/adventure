@@ -21,20 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.text.event;
+package net.kyori.text.serializer.gson;
 
-import net.kyori.text.TextComponent;
-import org.junit.jupiter.api.Test;
+import com.google.gson.JsonElement;
+import net.kyori.text.KeybindComponent;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
+import java.util.Map;
+import java.util.stream.Stream;
 
-class HoverEventTest {
-  @Test
-  void testCopy() {
-    final HoverEvent event = new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.of("Kittens!"));
-    final HoverEvent copy = event.copy();
-    assertNotSame(event, copy);
-    assertEquals(event, copy);
+class KeybindComponentTest extends AbstractComponentTest<KeybindComponent> {
+  private static final String KEY = "key.jump";
+
+  @Override
+  Stream<Map.Entry<KeybindComponent, JsonElement>> tests() {
+    return Stream.of(
+      entry(KeybindComponent.of(KEY), json -> json.addProperty(GsonComponentSerializer.KEYBIND, KEY))
+    );
   }
 }

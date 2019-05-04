@@ -21,21 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.text;
+package net.kyori.text.serializer.gson;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import com.google.gson.JsonElement;
+import net.kyori.text.EntityNbtComponent;
 
-/**
- * A component which may be built.
- *
- * @param <C> the component type
- * @param <B> the builder type
- */
-public interface BuildableComponent<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends Component {
-  /**
-   * Create a builder from this component.
-   *
-   * @return the builder
-   */
-  @NonNull B toBuilder();
+import java.util.Map;
+import java.util.stream.Stream;
+
+class EntityNbtComponentTest extends AbstractComponentTest<EntityNbtComponent> {
+  @Override
+  Stream<Map.Entry<EntityNbtComponent, JsonElement>> tests() {
+    return Stream.of(
+      entry(
+        EntityNbtComponent.builder().nbtPath("abc").selector("test").build(),
+        json -> {
+          json.addProperty(GsonComponentSerializer.NBT, "abc");
+          json.addProperty(GsonComponentSerializer.NBT_INTERPRET, false);
+          json.addProperty(GsonComponentSerializer.NBT_ENTITY, "test");
+        }
+      ),
+      entry(
+        EntityNbtComponent.builder().nbtPath("abc").selector("test").interpret(true).build(),
+        json -> {
+          json.addProperty(GsonComponentSerializer.NBT, "abc");
+          json.addProperty(GsonComponentSerializer.NBT_INTERPRET, true);
+          json.addProperty(GsonComponentSerializer.NBT_ENTITY, "test");
+        }
+      )
+    );
+  }
 }

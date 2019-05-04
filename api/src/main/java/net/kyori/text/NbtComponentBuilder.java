@@ -25,17 +25,27 @@ package net.kyori.text;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-/**
- * A component which may be built.
- *
- * @param <C> the component type
- * @param <B> the builder type
+/*
+ * This can't be a child of NbtComponent.
  */
-public interface BuildableComponent<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends Component {
+
+/**
+ * An NBT component builder.
+ */
+public interface NbtComponentBuilder<C extends NbtComponent<C, B>, B extends NbtComponentBuilder<C, B>> extends ComponentBuilder<C, B> {
   /**
-   * Create a builder from this component.
+   * Sets the NBT path content.
    *
-   * @return the builder
+   * @param nbtPath the NBT path
+   * @return this builder
    */
-  @NonNull B toBuilder();
+  @NonNull B nbtPath(final @NonNull String nbtPath);
+
+  /**
+   * Sets whether to interpret.
+   *
+   * @param interpret if we should be interpreting
+   * @return this builder
+   */
+  @NonNull B interpret(final boolean interpret);
 }
