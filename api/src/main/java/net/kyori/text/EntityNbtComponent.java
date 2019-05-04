@@ -25,6 +25,8 @@ package net.kyori.text;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.function.Consumer;
+
 /**
  * An entity NBT component.
  */
@@ -36,6 +38,29 @@ public interface EntityNbtComponent extends NbtComponent<EntityNbtComponent, Ent
    */
   static @NonNull Builder builder() {
     return new EntityNbtComponentImpl.BuilderImpl();
+  }
+
+  /**
+   * Creates a entity NBT component with a position.
+   *
+   * @param nbtPath the nbt path
+   * @param selector the selector
+   * @return the entity NBT component
+   */
+  static @NonNull EntityNbtComponent of(final @NonNull String nbtPath, final @NonNull String selector) {
+    return builder().nbtPath(nbtPath).selector(selector).build();
+  }
+
+  /**
+   * Creates a entity NBT component by applying configuration from {@code consumer}.
+   *
+   * @param consumer the builder configurator
+   * @return the entity NBT component
+   */
+  static @NonNull EntityNbtComponent make(final @NonNull Consumer<? super Builder> consumer) {
+    final Builder builder = builder();
+    consumer.accept(builder);
+    return builder.build();
   }
 
   /**

@@ -40,11 +40,6 @@ class TextComponentImpl extends AbstractComponent implements TextComponent {
 
   private final String content;
 
-  protected TextComponentImpl(final @NonNull List<Component> children, final Style.@Nullable Builder style, final @NonNull String content) {
-    super(children, style);
-    this.content = content;
-  }
-
   protected TextComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String content) {
     super(children, style);
     this.content = content;
@@ -68,11 +63,6 @@ class TextComponentImpl extends AbstractComponent implements TextComponent {
   @Override
   public @NonNull TextComponent style(final @NonNull Style style) {
     return new TextComponentImpl(this.children, style, this.content);
-  }
-
-  @Override
-  public @NonNull TextComponent copy() {
-    return new TextComponentImpl(this.children, this.style, this.content);
   }
 
   @Override

@@ -26,14 +26,12 @@ package net.kyori.text.renderer;
 import net.kyori.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.Locale;
-
 /**
  * A component renderer.
  *
  * @param <C> the context type
  */
-public interface ComponentRenderer<C extends ComponentRenderer.Context> {
+public interface ComponentRenderer<C> {
   /**
    * Renders a component.
    *
@@ -42,16 +40,4 @@ public interface ComponentRenderer<C extends ComponentRenderer.Context> {
    * @return the rendered component
    */
   @NonNull Component render(final @NonNull Component component, final @NonNull C context);
-
-  /**
-   * A component renderer context.
-   */
-  interface Context {
-    /**
-     * Gets the locale.
-     *
-     * @return the locale
-     */
-    @NonNull Locale locale();
-  }
 }

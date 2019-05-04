@@ -79,7 +79,7 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
       .registerTypeAdapter(TextColorWrapper.class, new TextColorWrapper.Serializer())
       .registerTypeAdapter(TextColor.class, new NameMapSerializer<>("text color", TextColor.NAMES))
       .registerTypeAdapter(TextDecoration.class, new NameMapSerializer<>("text decoration", TextDecoration.NAMES))
-      .registerTypeAdapter(BlockNbtComponent.Pos.class, BlockNbtComponentPosSerializer.INSTANCE);
+      .registerTypeHierarchyAdapter(BlockNbtComponent.Pos.class, BlockNbtComponentPosSerializer.INSTANCE);
     return builder;
   }
 

@@ -41,13 +41,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 abstract class AbstractComponentTest<C extends Component> {
   private static final JsonParser PARSER = new JsonParser();
 
-  static JsonArray array(final Consumer<JsonArray> consumer) {
+  static JsonArray array(final Consumer<? super JsonArray> consumer) {
     final JsonArray json = new JsonArray();
     consumer.accept(json);
     return json;
   }
 
-  static JsonObject object(final Consumer<JsonObject> consumer) {
+  static JsonObject object(final Consumer<? super JsonObject> consumer) {
     final JsonObject json = new JsonObject();
     consumer.accept(json);
     return json;
@@ -63,13 +63,13 @@ abstract class AbstractComponentTest<C extends Component> {
     this.forEach((component, json) -> assertEquals(json, PARSER.parse(GsonComponentSerializer.INSTANCE.serialize(component))));
   }
 
-  private void forEach(final BiConsumer<C, JsonElement> consumer) {
+  private void forEach(final BiConsumer<? super C, JsonElement> consumer) {
     this.tests().forEach(entry -> consumer.accept(entry.getKey(), entry.getValue()));
   }
 
   abstract Stream<Map.Entry<C, JsonElement>> tests();
 
-  static <C extends Component> Map.Entry<C, JsonElement> entry(final C component, final Consumer<JsonObject> json) {
+  static <C extends Component> Map.Entry<C, JsonElement> entry(final C component, final Consumer<? super JsonObject> json) {
     return new AbstractMap.SimpleImmutableEntry<>(component, object(json));
   }
 }

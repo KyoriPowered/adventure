@@ -25,6 +25,8 @@ package net.kyori.text;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.function.Consumer;
+
 /**
  * A block NBT component.
  */
@@ -36,6 +38,29 @@ public interface BlockNbtComponent extends NbtComponent<BlockNbtComponent, Block
    */
   static @NonNull Builder builder() {
     return new BlockNbtComponentImpl.BuilderImpl();
+  }
+
+  /**
+   * Creates a block NBT component with a position.
+   *
+   * @param nbtPath the nbt path
+   * @param pos the block position
+   * @return the block NBT component
+   */
+  static @NonNull BlockNbtComponent of(final @NonNull String nbtPath, final @NonNull Pos pos) {
+    return builder().nbtPath(nbtPath).pos(pos).build();
+  }
+
+  /**
+   * Creates a block NBT component by applying configuration from {@code consumer}.
+   *
+   * @param consumer the builder configurator
+   * @return the block NBT component
+   */
+  static @NonNull BlockNbtComponent make(final @NonNull Consumer<? super Builder> consumer) {
+    final Builder builder = builder();
+    consumer.accept(builder);
+    return builder.build();
   }
 
   /**

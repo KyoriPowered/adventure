@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
 
 public class BlockNbtComponentPosSerializer implements JsonDeserializer<BlockNbtComponent.Pos>, JsonSerializer<BlockNbtComponent.Pos> {
   public static final BlockNbtComponentPosSerializer INSTANCE = new BlockNbtComponentPosSerializer();
-  private static final Pattern LOCAL_PATTERN = Pattern.compile("^\\^(\\d+) \\^(\\d+) \\^(\\d+)$");
+  private static final Pattern LOCAL_PATTERN = Pattern.compile("^\\^(\\d+(\\.\\d+)?) \\^(\\d+(\\.\\d+)?) \\^(\\d+(\\.\\d+)?)$");
   private static final Pattern WORLD_PATTERN = Pattern.compile("^(~?)(\\d+) (~?)(\\d+) (~?)(\\d+)$");
 
   @Override
@@ -49,8 +49,8 @@ public class BlockNbtComponentPosSerializer implements JsonDeserializer<BlockNbt
     if(localMatch.matches()) {
       return BlockNbtComponent.LocalPos.of(
         Double.parseDouble(localMatch.group(1)),
-        Double.parseDouble(localMatch.group(2)),
-        Double.parseDouble(localMatch.group(3))
+        Double.parseDouble(localMatch.group(3)),
+        Double.parseDouble(localMatch.group(5))
       );
     }
 

@@ -26,6 +26,8 @@ package net.kyori.text;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.function.Consumer;
+
 /**
  * A scoreboard score component.
  */
@@ -75,6 +77,32 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
       .objective(objective)
       .value(value)
       .build();
+  }
+
+  /**
+   * Creates a score component by applying configuration from {@code consumer}.
+   *
+   * @param consumer the builder configurator
+   * @return the score component
+   */
+  static @NonNull ScoreComponent make(final @NonNull Consumer<? super Builder> consumer) {
+    final Builder builder = builder();
+    consumer.accept(builder);
+    return builder.build();
+  }
+
+  /**
+   * Creates a score component by applying configuration from {@code consumer}.
+   *
+   * @param name the score name
+   * @param objective the score objective
+   * @param consumer the builder configurator
+   * @return the score component
+   */
+  static @NonNull ScoreComponent make(final @NonNull String name, final @NonNull String objective, final @NonNull Consumer<? super Builder> consumer) {
+    final Builder builder = builder(name, objective);
+    consumer.accept(builder);
+    return builder.build();
   }
 
   /**

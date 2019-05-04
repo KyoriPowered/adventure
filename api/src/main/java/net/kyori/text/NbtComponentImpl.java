@@ -35,12 +35,6 @@ abstract class NbtComponentImpl<C extends NbtComponent<C, B>, B extends NbtCompo
   final String nbtPath;
   final boolean interpret;
 
-  NbtComponentImpl(final @NonNull List<Component> children, final Style.@Nullable Builder style, final String nbtPath, final boolean interpret) {
-    super(children, style);
-    this.nbtPath = nbtPath;
-    this.interpret = interpret;
-  }
-
   NbtComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final String nbtPath, final boolean interpret) {
     super(children, style);
     this.nbtPath = nbtPath;
@@ -84,7 +78,7 @@ abstract class NbtComponentImpl<C extends NbtComponent<C, B>, B extends NbtCompo
     BuilderImpl() {
     }
 
-    BuilderImpl(@NonNull final C component) {
+    BuilderImpl(final @NonNull C component) {
       super(component);
       this.nbtPath = component.nbtPath();
       this.interpret = component.interpret();

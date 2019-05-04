@@ -35,7 +35,6 @@ import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
@@ -439,8 +438,8 @@ public final class Style {
       this.strikethrough = style.decoration(TextDecoration.STRIKETHROUGH);
       this.underlined = style.decoration(TextDecoration.UNDERLINED);
       this.italic = style.decoration(TextDecoration.ITALIC);
-      this.clickEvent = Optional.ofNullable(style.clickEvent()).map(ClickEvent::copy).orElse(null);
-      this.hoverEvent = Optional.ofNullable(style.hoverEvent()).map(HoverEvent::copy).orElse(null);
+      this.clickEvent = style.clickEvent();
+      this.hoverEvent = style.hoverEvent();
       this.insertion = style.insertion();
     }
 

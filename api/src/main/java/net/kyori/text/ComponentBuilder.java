@@ -82,7 +82,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param builder the builder
    * @return this builder
    */
-  default @NonNull B append(final @NonNull String content, final @NonNull Consumer<TextComponent.Builder> builder) {
+  default @NonNull B append(final @NonNull String content, final @NonNull Consumer<? super TextComponent.Builder> builder) {
     return this.append(TextComponent.make(content, builder));
   }
 
@@ -119,7 +119,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    */
   @SuppressWarnings("unchecked")
-  default @NonNull B apply(final @NonNull Consumer<ComponentBuilder<?, ?>> consumer) {
+  default @NonNull B apply(final @NonNull Consumer<? super ComponentBuilder<?, ?>> consumer) {
     consumer.accept(this);
     return (B) this;
   }
@@ -131,7 +131,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param action the action
    * @return this builder
    */
-  @NonNull B applyDeep(final @NonNull Consumer<ComponentBuilder<?, ?>> action);
+  @NonNull B applyDeep(final @NonNull Consumer<? super ComponentBuilder<?, ?>> action);
 
   /**
    * Replaces each child of this component with the resultant component from the function.
@@ -139,7 +139,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param function the mapping function
    * @return this builder
    */
-  @NonNull B mapChildren(final @NonNull Function<BuildableComponent<?, ?>, BuildableComponent<?, ?>> function);
+  @NonNull B mapChildren(final @NonNull Function<BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function);
 
   /**
    * Replaces each child and sub-child of this component with the resultant
@@ -148,7 +148,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param function the mapping function
    * @return this builder
    */
-  @NonNull B mapChildrenDeep(final @NonNull Function<BuildableComponent<?, ?>, BuildableComponent<?, ?>> function);
+  @NonNull B mapChildrenDeep(final @NonNull Function<BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function);
 
   /**
    * Sets the style.
@@ -288,7 +288,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
   default @NonNull B mergeEvents(final @NonNull Component that) {
     if(that.clickEvent() != null) this.clickEvent(that.clickEvent());
     final HoverEvent hoverEvent = that.hoverEvent();
-    if(hoverEvent != null) this.hoverEvent(hoverEvent.copy()); // hard copy, hover events have a component
+    if(hoverEvent != null) this.hoverEvent(hoverEvent);
     return (B) this;
   }
 
