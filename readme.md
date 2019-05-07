@@ -18,7 +18,7 @@ There are various artifacts:
 <dependency>
   <groupId>net.kyori</groupId>
   <artifactId>text-api</artifactId>
-  <version>2.0.0-SNAPSHOT</version>
+  <version>3.0.0</version>
 </dependency>
 ```
 * Gradle
@@ -28,7 +28,7 @@ repositories {
 }
 
 dependencies {
-  compile 'net.kyori:text-api:2.0.0-SNAPSHOT'
+  compile 'net.kyori:text-api:3.0.0'
 }
 ```
 
