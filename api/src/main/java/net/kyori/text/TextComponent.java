@@ -23,13 +23,12 @@
  */
 package net.kyori.text;
 
+import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -94,9 +93,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @return the text component
    */
   static @NonNull TextComponent of(final @NonNull String content, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
-    final Set<TextDecoration> activeDecorations = new HashSet<>(decorations.length);
-    Collections.addAll(activeDecorations, decorations);
-    return of(content, color, activeDecorations);
+    return of(content, color, TextDecoration.setOf(decorations));
   }
 
   /**
@@ -112,6 +109,17 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
   }
 
   /**
+   * Creates a text component with content and styling.
+   *
+   * @param content the plain text content
+   * @param style the style
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final @NonNull String content, final @NonNull Style style) {
+    return builder(content).style(style).build();
+  }
+
+  /**
    * Creates a text component with the content of {@link String#valueOf(boolean)}.
    *
    * @param value the boolean value
@@ -119,6 +127,52 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    */
   static @NonNull TextComponent of(final boolean value) {
     return of(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(boolean)}, and optional color.
+   *
+   * @param value the boolean value
+   * @param color the color
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final boolean value, final @Nullable TextColor color) {
+    return builder(String.valueOf(value)).color(color).build();
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(boolean)}, and optional color and decorations.
+   *
+   * @param value the boolean value
+   * @param color the color
+   * @param decorations the decorations
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final boolean value, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
+    return of(String.valueOf(value), color, TextDecoration.setOf(decorations));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(boolean)}, and optional color and decorations.
+   *
+   * @param value the boolean value
+   * @param color the color
+   * @param decorations the decorations
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final boolean value, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
+    return builder(String.valueOf(value)).color(color).decorations(decorations, true).build();
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(boolean)} and styling.
+   *
+   * @param value the boolean value
+   * @param style the style
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final boolean value, final @NonNull Style style) {
+    return builder(String.valueOf(value)).style(style).build();
   }
 
   /**
@@ -134,6 +188,52 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
   }
 
   /**
+   * Creates a text component with the content of {@link String#valueOf(char)}, and optional color.
+   *
+   * @param value the char value
+   * @param color the color
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final char value, final @Nullable TextColor color) {
+    return builder(String.valueOf(value)).color(color).build();
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(char)}, and optional color and decorations.
+   *
+   * @param value the char value
+   * @param color the color
+   * @param decorations the decorations
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final char value, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
+    return of(String.valueOf(value), color, TextDecoration.setOf(decorations));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(char)}, and optional color and decorations.
+   *
+   * @param value the char value
+   * @param color the color
+   * @param decorations the decorations
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final char value, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
+    return builder(String.valueOf(value)).color(color).decorations(decorations, true).build();
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(char)} and styling.
+   *
+   * @param value the char value
+   * @param style the style
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final char value, final @NonNull Style style) {
+    return builder(String.valueOf(value)).style(style).build();
+  }
+
+  /**
    * Creates a text component with the content of {@link String#valueOf(double)}.
    *
    * @param value the double value
@@ -141,6 +241,52 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    */
   static @NonNull TextComponent of(final double value) {
     return of(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(double)}, and optional color.
+   *
+   * @param value the double value
+   * @param color the color
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final double value, final @Nullable TextColor color) {
+    return builder(String.valueOf(value)).color(color).build();
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(double)}, and optional color and decorations.
+   *
+   * @param value the double value
+   * @param color the color
+   * @param decorations the decorations
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final double value, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
+    return of(String.valueOf(value), color, TextDecoration.setOf(decorations));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(double)}, and optional color and decorations.
+   *
+   * @param value the double value
+   * @param color the color
+   * @param decorations the decorations
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final double value, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
+    return builder(String.valueOf(value)).color(color).decorations(decorations, true).build();
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(double)} and styling.
+   *
+   * @param value the double value
+   * @param style the style
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final double value, final @NonNull Style style) {
+    return builder(String.valueOf(value)).style(style).build();
   }
 
   /**
@@ -154,6 +300,52 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
   }
 
   /**
+   * Creates a text component with the content of {@link String#valueOf(float)}, and optional color.
+   *
+   * @param value the float value
+   * @param color the color
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final float value, final @Nullable TextColor color) {
+    return builder(String.valueOf(value)).color(color).build();
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(float)}, and optional color and decorations.
+   *
+   * @param value the float value
+   * @param color the color
+   * @param decorations the decorations
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final float value, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
+    return of(String.valueOf(value), color, TextDecoration.setOf(decorations));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(float)}, and optional color and decorations.
+   *
+   * @param value the float value
+   * @param color the color
+   * @param decorations the decorations
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final float value, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
+    return builder(String.valueOf(value)).color(color).decorations(decorations, true).build();
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(float)} and styling.
+   *
+   * @param value the float value
+   * @param style the style
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final float value, final @NonNull Style style) {
+    return builder(String.valueOf(value)).style(style).build();
+  }
+
+  /**
    * Creates a text component with the content of {@link String#valueOf(int)}.
    *
    * @param value the int value
@@ -164,6 +356,52 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
   }
 
   /**
+   * Creates a text component with the content of {@link String#valueOf(int)}, and optional color.
+   *
+   * @param value the int value
+   * @param color the color
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final int value, final @Nullable TextColor color) {
+    return builder(String.valueOf(value)).color(color).build();
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(int)}, and optional color and decorations.
+   *
+   * @param value the int value
+   * @param color the color
+   * @param decorations the decorations
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final int value, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
+    return of(String.valueOf(value), color, TextDecoration.setOf(decorations));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(int)}, and optional color and decorations.
+   *
+   * @param value the int value
+   * @param color the color
+   * @param decorations the decorations
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final int value, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
+    return builder(String.valueOf(value)).color(color).decorations(decorations, true).build();
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(int)} and styling.
+   *
+   * @param value the int value
+   * @param style the style
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final int value, final @NonNull Style style) {
+    return builder(String.valueOf(value)).style(style).build();
+  }
+
+  /**
    * Creates a text component with the content of {@link String#valueOf(long)}.
    *
    * @param value the long value
@@ -171,6 +409,52 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    */
   static @NonNull TextComponent of(final long value) {
     return of(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(long)}, and optional color.
+   *
+   * @param value the long value
+   * @param color the color
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final long value, final @Nullable TextColor color) {
+    return builder(String.valueOf(value)).color(color).build();
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(long)}, and optional color and decorations.
+   *
+   * @param value the long value
+   * @param color the color
+   * @param decorations the decorations
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final long value, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
+    return of(String.valueOf(value), color, TextDecoration.setOf(decorations));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(long)}, and optional color and decorations.
+   *
+   * @param value the long value
+   * @param color the color
+   * @param decorations the decorations
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final long value, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
+    return builder(String.valueOf(value)).color(color).decorations(decorations, true).build();
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(long)} and styling.
+   *
+   * @param value the long value
+   * @param style the style
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final long value, final @NonNull Style style) {
+    return builder(String.valueOf(value)).style(style).build();
   }
 
   /**
