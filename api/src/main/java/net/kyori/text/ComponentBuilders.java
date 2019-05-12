@@ -121,7 +121,7 @@ public interface ComponentBuilders {
    * @return a builder
    */
   static TextComponent.@NonNull Builder text(final @NonNull String content, final @Nullable TextColor color) {
-    return TextComponent.builder(content, color);
+    return TextComponent.builder(content).color(color);
   }
 
   /**

@@ -38,33 +38,30 @@ import java.util.function.Consumer;
  */
 public interface TextComponent extends BuildableComponent<TextComponent, TextComponent.Builder>, ScopedComponent<TextComponent> {
   /**
-   * Creates a text component builder.
+   * Gets a text component with empty content.
    *
-   * @return a builder
+   * @return a text component with empty content
    */
-  static @NonNull Builder builder() {
-    return new TextComponentImpl.BuilderImpl();
+  static @NonNull TextComponent empty() {
+    return TextComponentImpl.EMPTY;
   }
 
   /**
-   * Creates a text component builder with content.
+   * Gets a text component with a new line character as the content.
    *
-   * @param content the plain text content
-   * @return a builder
+   * @return a text component with a new line character as the content
    */
-  static @NonNull Builder builder(final @NonNull String content) {
-    return builder().content(content);
+  static @NonNull TextComponent newline() {
+    return TextComponentImpl.NEWLINE;
   }
 
   /**
-   * Creates a text component builder with content, and optional color.
+   * Gets a text immutable component with a single space as the content.
    *
-   * @param content the plain text content
-   * @param color the color
-   * @return a builder
+   * @return a text component with a single space as the content
    */
-  static @NonNull Builder builder(final @NonNull String content, final @Nullable TextColor color) {
-    return builder(content).color(color);
+  static @NonNull TextComponent space() {
+    return TextComponentImpl.SPACE;
   }
 
   /**
@@ -75,6 +72,43 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    */
   static @NonNull TextComponent of(final @NonNull String content) {
     return builder(content).build();
+  }
+
+  /**
+   * Creates a text component with content, and optional color.
+   *
+   * @param content the plain text content
+   * @param color the color
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final @NonNull String content, final @Nullable TextColor color) {
+    return builder(content).color(color).build();
+  }
+
+  /**
+   * Creates a text component with content, and optional color and decorations.
+   *
+   * @param content the plain text content
+   * @param color the color
+   * @param decorations the decorations
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final @NonNull String content, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
+    final Set<TextDecoration> activeDecorations = new HashSet<>(decorations.length);
+    Collections.addAll(activeDecorations, decorations);
+    return of(content, color, activeDecorations);
+  }
+
+  /**
+   * Creates a text component with content, and optional color and decorations.
+   *
+   * @param content the plain text content
+   * @param color the color
+   * @param decorations the decorations
+   * @return the text component
+   */
+  static @NonNull TextComponent of(final @NonNull String content, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
+    return builder(content).color(color).decorations(decorations, true).build();
   }
 
   /**
@@ -140,40 +174,33 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
   }
 
   /**
-   * Creates a text component with content, and optional color.
+   * Creates a text component builder.
    *
-   * @param content the plain text content
-   * @param color the color
-   * @return the text component
+   * @return a builder
    */
-  static @NonNull TextComponent of(final @NonNull String content, final @Nullable TextColor color) {
-    return builder(content, color).build();
+  static @NonNull Builder builder() {
+    return new TextComponentImpl.BuilderImpl();
   }
 
   /**
-   * Creates a text component with content, and optional color and decorations.
+   * Creates a text component builder with content.
    *
    * @param content the plain text content
-   * @param color the color
-   * @param decorations the decorations
-   * @return the text component
+   * @return a builder
    */
-  static @NonNull TextComponent of(final @NonNull String content, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
-    final Set<TextDecoration> activeDecorations = new HashSet<>(decorations.length);
-    Collections.addAll(activeDecorations, decorations);
-    return of(content, color, activeDecorations);
+  static @NonNull Builder builder(final @NonNull String content) {
+    return builder().content(content);
   }
 
   /**
-   * Creates a text component with content, and optional color and decorations.
+   * Creates a text component builder with content, and optional color.
    *
    * @param content the plain text content
    * @param color the color
-   * @param decorations the decorations
-   * @return the text component
+   * @return a builder
    */
-  static @NonNull TextComponent of(final @NonNull String content, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
-    return builder(content).color(color).decorations(decorations, true).build();
+  static @NonNull Builder builder(final @NonNull String content, final @Nullable TextColor color) {
+    return builder(content).color(color);
   }
 
   /**
@@ -199,33 +226,6 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
     final Builder builder = builder(content);
     consumer.accept(builder);
     return builder.build();
-  }
-
-  /**
-   * Gets a text component with empty content.
-   *
-   * @return a text component with empty content
-   */
-  static @NonNull TextComponent empty() {
-    return TextComponentImpl.EMPTY;
-  }
-
-  /**
-   * Gets a text component with a new line character as the content.
-   *
-   * @return a text component with a new line character as the content
-   */
-  static @NonNull TextComponent newline() {
-    return TextComponentImpl.NEWLINE;
-  }
-
-  /**
-   * Gets a text immutable component with a single space as the content.
-   *
-   * @return a text component with a single space as the content
-   */
-  static @NonNull TextComponent space() {
-    return TextComponentImpl.SPACE;
   }
 
   /**
