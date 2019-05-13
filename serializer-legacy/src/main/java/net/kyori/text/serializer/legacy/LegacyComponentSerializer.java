@@ -27,8 +27,11 @@ import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
+import net.kyori.text.format.Style;
 import net.kyori.text.serializer.ComponentSerializer;
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A legacy component serializer.
@@ -39,8 +42,46 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public interface LegacyComponentSerializer extends ComponentSerializer<Component, TextComponent, String> {
   /**
    * A component serializer for legacy-based serialization and deserialization.
+   *
+   * @deprecated use {@link #legacy()}
    */
-  LegacyComponentSerializer INSTANCE = new LegacyComponentSerializerImpl();
+  @Deprecated
+  LegacyComponentSerializer INSTANCE = LegacyComponentSerializerImpl.INSTANCE;
+
+  /**
+   * Gets a component serializer for legacy-based serialization and deserialization. Note that this
+   * serializer works exactly like vanilla Minecraft and does not detect any links. If you want to
+   * detect and make URLs clickable, use {@link #legacyLinking()}.
+   *
+   * @return a component serializer for legacy serialization and deserialization
+   */
+  static @NonNull LegacyComponentSerializer legacy() {
+    return LegacyComponentSerializerImpl.INSTANCE;
+  }
+
+  /**
+   * Gets a legacy component serializer for legacy serialization and deserialization that detects
+   * and makes URLs clickable in chat.
+   *
+   * @return a component serializer for legacy serialization and deserialization that detects and
+   *         makes URLs clickable in chat
+   */
+  static @NonNull LegacyComponentSerializer legacyLinking() {
+    return LinkingLegacyComponentSerializer.NO_STYLE;
+  }
+
+  /**
+   * Creates a legacy component serializer for legacy-based serialization and deserialization that
+   * detects links and applies {@code style}.
+   *
+   * @param style the style to use
+   * @return a legacy component serializer for legacy-based serialization and deserialization that
+   *         styles links with the specified {@code style}
+   */
+  static @NonNull LegacyComponentSerializer legacyLinking(final @NonNull Style style) {
+    return new LinkingLegacyComponentSerializer(requireNonNull(style));
+  }
+
   /**
    * The legacy character.
    */
