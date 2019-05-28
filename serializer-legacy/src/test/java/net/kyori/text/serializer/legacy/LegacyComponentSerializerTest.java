@@ -34,7 +34,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class LegacyComponentSerializerTest {
   @Test
   void testSimpleFrom() {
-    assertEquals(TextComponent.of("foo"), LegacyComponentSerializer.INSTANCE.deserialize("foo"));
+    TextComponent component = TextComponent.of("foo");
+    assertEquals(component, LegacyComponentSerializer.legacy().deserialize("foo"));
+    assertEquals(component, LegacyComponentSerializer.legacyLinking().deserialize("foo"));
   }
 
   @Test
@@ -44,7 +46,8 @@ class LegacyComponentSerializerTest {
       .append(TextComponent.of("bar").color(TextColor.BLUE))
       .build();
 
-    assertEquals(component, LegacyComponentSerializer.INSTANCE.deserialize("&a&lfoo&9bar", '&'));
+    assertEquals(component, LegacyComponentSerializer.legacy().deserialize("&a&lfoo&9bar", '&'));
+    assertEquals(component, LegacyComponentSerializer.legacyLinking().deserialize("&a&lfoo&9bar", '&'));
   }
 
   @Test
@@ -53,7 +56,8 @@ class LegacyComponentSerializerTest {
       .append(TextComponent.of("foo").color(TextColor.BLUE))
       .build();
 
-    assertEquals(component, LegacyComponentSerializer.INSTANCE.deserialize("&a&9foo", '&'));
+    assertEquals(component, LegacyComponentSerializer.legacy().deserialize("&a&9foo", '&'));
+    assertEquals(component, LegacyComponentSerializer.legacyLinking().deserialize("&a&9foo", '&'));
   }
 
   @Test
@@ -63,7 +67,8 @@ class LegacyComponentSerializerTest {
       .append(TextComponent.of("bar").color(TextColor.DARK_GRAY))
       .build();
 
-    assertEquals(component, LegacyComponentSerializer.INSTANCE.deserialize("&a&lfoo&r&8bar", '&'));
+    assertEquals(component, LegacyComponentSerializer.legacy().deserialize("&a&lfoo&r&8bar", '&'));
+    assertEquals(component, LegacyComponentSerializer.legacyLinking().deserialize("&a&lfoo&r&8bar", '&'));
   }
 
   @Test
@@ -79,7 +84,7 @@ class LegacyComponentSerializerTest {
         .build())
       .build();
 
-    assertEquals("hi there &athis bit is green &rthis isn't &aand woa, this is again", LegacyComponentSerializer.INSTANCE.serialize(component, '&'));
+    assertEquals("hi there &athis bit is green &rthis isn't &aand woa, this is again", LegacyComponentSerializer.legacy().serialize(component, '&'));
   }
 
   @Test
@@ -97,7 +102,7 @@ class LegacyComponentSerializerTest {
       )
       .append(TextComponent.of("baz"))
       .build();
-    assertEquals("§lhi§afoo§9§lbar§r§lbaz", LegacyComponentSerializer.INSTANCE.serialize(c1, '§'));
+    assertEquals("§lhi§afoo§9§lbar§r§lbaz", LegacyComponentSerializer.legacy().serialize(c1, '§'));
 
     final TextComponent c2 = TextComponent.builder()
       .content("")
@@ -114,7 +119,7 @@ class LegacyComponentSerializerTest {
         .build()
       )
       .build();
-    assertEquals("§eHello §aworld§e!", LegacyComponentSerializer.INSTANCE.serialize(c2, '§'));
+    assertEquals("§eHello §aworld§e!", LegacyComponentSerializer.legacy().serialize(c2, '§'));
 
     final TextComponent c3 = TextComponent.builder()
       .content("")
@@ -136,6 +141,6 @@ class LegacyComponentSerializerTest {
           )
           .build())
       .build();
-    assertEquals("§e§lHello §a§lworld§e§l!", LegacyComponentSerializer.INSTANCE.serialize(c3, '§'));
+    assertEquals("§e§lHello §a§lworld§e§l!", LegacyComponentSerializer.legacy().serialize(c3, '§'));
   }
 }
