@@ -1,0 +1,10 @@
+dependencies {
+  api project(':text-api')
+  api project(':text-serializer-plain')
+}
+
+jar {
+  manifest.attributes(
+    'Automatic-Module-Name': 'net.kyori.text.feature.pagination'
+  )
+}
