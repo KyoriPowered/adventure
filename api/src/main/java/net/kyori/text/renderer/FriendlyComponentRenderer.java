@@ -127,7 +127,7 @@ public abstract class FriendlyComponentRenderer<C> implements ComponentRenderer<
       it.setIndex(end);
     }
 
-    return builder.content("").build();
+    return this.deepRender(component, builder, context);
   }
 
   /**

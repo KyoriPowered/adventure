@@ -101,6 +101,8 @@ class FriendlyComponentRendererTest {
             .append(TextComponent.of(" and "))
             .append(TextComponent.of("lucko"))
             .append(TextComponent.of(" are cats."))
+            .append(TextComponent.space())
+            .append(TextComponent.of("Meow!"))
             .hoverEvent(HoverEvent.showText(TextComponent.of("This is a test.")))
         )
         .build(),
@@ -121,6 +123,8 @@ class FriendlyComponentRendererTest {
               TextComponent.of("lucko")
             )
             .hoverEvent(HoverEvent.showText(TranslatableComponent.of("test")))
+            .append(TextComponent.space())
+            .append(TextComponent.of("Meow!"))
             .build()
         )
           .color(TextColor.YELLOW)
