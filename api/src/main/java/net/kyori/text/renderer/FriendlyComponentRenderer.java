@@ -109,25 +109,25 @@ public abstract class FriendlyComponentRenderer<C> implements ComponentRenderer<
 
     // no arguments makes this render very simple
     if(args.isEmpty()) {
-      return builder.content(format.format(null, new StringBuffer(), null).toString()).build();
-    }
+      builder.content(format.format(null, new StringBuffer(), null).toString());
+    } else {
+      final Object[] nulls = new Object[args.size()];
+      final StringBuffer sb = format.format(nulls, new StringBuffer(), null);
+      final AttributedCharacterIterator it = format.formatToCharacterIterator(nulls);
 
-    final Object[] nulls = new Object[args.size()];
-    final StringBuffer sb = format.format(nulls, new StringBuffer(), null);
-    final AttributedCharacterIterator it = format.formatToCharacterIterator(nulls);
-
-    while(it.getIndex() < it.getEndIndex()) {
-      final int end = it.getRunLimit();
-      final Integer index = (Integer) it.getAttribute(MessageFormat.Field.ARGUMENT);
-      if(index != null) {
-        builder.append(this.render(args.get(index), context));
-      } else {
-        builder.append(TextComponent.of(sb.substring(it.getIndex(), end)));
+      while(it.getIndex() < it.getEndIndex()) {
+        final int end = it.getRunLimit();
+        final Integer index = (Integer) it.getAttribute(MessageFormat.Field.ARGUMENT);
+        if(index != null) {
+          builder.append(this.render(args.get(index), context));
+        } else {
+          builder.append(TextComponent.of(sb.substring(it.getIndex(), end)));
+        }
+        it.setIndex(end);
       }
-      it.setIndex(end);
     }
 
-    return this.deepRender(component, builder, context);
+    return this.deepRender(component, builder, context).build();
   }
 
   /**
