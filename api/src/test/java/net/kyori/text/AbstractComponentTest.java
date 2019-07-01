@@ -25,6 +25,7 @@ package net.kyori.text;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.testing.EqualsTester;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.Style;
@@ -150,6 +151,14 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B>, B exten
     assertNull(c1.color());
     assertDecorations(c1, ImmutableMap.of());
     assertNotNull(c1.clickEvent());
+  }
+
+  @Test
+  void testEquals() {
+    new EqualsTester()
+      .addEqualityGroup(this.builder().build())
+      .addEqualityGroup(this.builder().color(TextColor.RED).build())
+      .testEquals();
   }
 
   private static void assertDecorations(final Component component, final Map<TextDecoration, TextDecoration.State> expected) {

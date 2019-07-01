@@ -21,24 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.text.serializer.gson;
+package net.kyori.text.util;
 
-import com.google.common.reflect.TypeToken;
-import com.google.gson.JsonElement;
-import net.kyori.text.Component;
+import org.junit.jupiter.api.Test;
 
-abstract class AbstractComponentTest<C extends Component> extends AbstractSerializeDeserializeTest<C> {
-  @SuppressWarnings("serial")
-  private final TypeToken<C> type = new TypeToken<C>(this.getClass()) {};
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-  @Override
-  @SuppressWarnings("unchecked")
-  C deserialize(final JsonElement json) {
-    return GsonComponentSerializer.GSON.fromJson(json, (Class<C>) this.type.getRawType());
+class NameMapTest {
+  private static final NameMap<Thing> THINGS = NameMap.create(Thing.values(), thing -> thing.name);
+
+  @Test
+  void testName() {
+    for(final Thing thing : Thing.values()) {
+      assertEquals(thing.name, THINGS.name(thing));
+    }
   }
 
-  @Override
-  JsonElement serialize(final C object) {
-    return GsonComponentSerializer.GSON.toJsonTree(object);
+  @Test
+  void testGet() {
+    for(final Thing thing : Thing.values()) {
+      assertEquals(thing, THINGS.get(thing.name).orElse(null));
+    }
+  }
+
+  private enum Thing {
+    ABC("abc"),
+    DEF("def");
+
+    private final String name;
+
+    Thing(final String name) {
+      this.name = name;
+    }
   }
 }

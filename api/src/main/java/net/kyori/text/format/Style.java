@@ -80,6 +80,20 @@ public final class Style {
   }
 
   /**
+   * Creates a style with decorations.
+   *
+   * @param decorations the decorations
+   * @return a style
+   */
+  public static @NonNull Style of(final TextDecoration@NonNull... decorations) {
+    final Builder builder = builder();
+    for(final TextDecoration decoration : decorations) {
+      builder.decoration(decoration, true);
+    }
+    return builder.build();
+  }
+
+  /**
    * Creates a style with color and decorations.
    *
    * @param color the style

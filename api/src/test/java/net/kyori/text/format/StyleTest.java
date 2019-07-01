@@ -21,24 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.text.serializer.gson;
+package net.kyori.text.format;
 
-import com.google.common.reflect.TypeToken;
-import com.google.gson.JsonElement;
-import net.kyori.text.Component;
+import com.google.common.testing.EqualsTester;
+import org.junit.jupiter.api.Test;
 
-abstract class AbstractComponentTest<C extends Component> extends AbstractSerializeDeserializeTest<C> {
-  @SuppressWarnings("serial")
-  private final TypeToken<C> type = new TypeToken<C>(this.getClass()) {};
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-  @Override
-  @SuppressWarnings("unchecked")
-  C deserialize(final JsonElement json) {
-    return GsonComponentSerializer.GSON.fromJson(json, (Class<C>) this.type.getRawType());
+class StyleTest {
+  @Test
+  void testColorIfAbsent() {
+    assertEquals(TextColor.GREEN, Style.of(TextColor.GREEN).color());
+    assertEquals(TextColor.GREEN, Style.of(TextColor.GREEN).colorIfAbsent(TextColor.RED).color());
+    assertEquals(TextColor.RED, Style.empty().colorIfAbsent(TextColor.RED).color());
   }
 
-  @Override
-  JsonElement serialize(final C object) {
-    return GsonComponentSerializer.GSON.toJsonTree(object);
+  @Test
+  void testEquals() {
+    new EqualsTester()
+      .addEqualityGroup(Style.empty())
+      .addEqualityGroup(Style.of(TextColor.LIGHT_PURPLE))
+      .testEquals();
   }
 }

@@ -44,6 +44,9 @@ subprojects {
   }
 
   dependencies {
+    testImplementation 'com.google.guava:guava-testlib:27.0.1-jre'
+    testImplementation 'com.google.truth:truth:0.42'
+    testImplementation 'com.google.truth.extensions:truth-java8-extension:0.42'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
   }
