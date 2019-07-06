@@ -56,18 +56,18 @@ final class PaginationImpl<T> implements Pagination<T> {
   private final IntFunction<String> pageCommand;
 
   PaginationImpl(final @NonNull Component title, final int resultsPerPage, final char lineCharacter, final @NonNull Style lineStyle, final @NonNull RowRenderer<T> renderRow, final @NonNull InterfaceRenderer renderInterface, final int interfaceWidth, final char previousButtonCharacter, final @NonNull Style previousButtonStyle, final char nextButtonCharacter, final @NonNull Style nextButtonStyle, final @NonNull IntFunction<String> pageCommand) {
-    this.title = Objects.requireNonNull(title, "title");
+    this.title = title;
     this.resultsPerPage = resultsPerPage;
     this.lineCharacter = lineCharacter;
-    this.lineStyle = Objects.requireNonNull(lineStyle, "lineStyle");
-    this.renderRow = Objects.requireNonNull(renderRow, "renderRow");
-    this.renderInterface = Objects.requireNonNull(renderInterface, "renderInterface");
+    this.lineStyle = lineStyle;
+    this.renderRow = renderRow;
+    this.renderInterface = renderInterface;
     this.interfaceWidth = interfaceWidth;
     this.previousButtonCharacter = previousButtonCharacter;
-    this.previousButtonStyle = Objects.requireNonNull(previousButtonStyle, "previousButtonStyle");
+    this.previousButtonStyle = previousButtonStyle;
     this.nextButtonCharacter = nextButtonCharacter;
-    this.nextButtonStyle = Objects.requireNonNull(nextButtonStyle, "nextButtonStyle");
-    this.pageCommand = Objects.requireNonNull(pageCommand, "pageCommand");
+    this.nextButtonStyle = nextButtonStyle;
+    this.pageCommand = pageCommand;
   }
 
   @Override
