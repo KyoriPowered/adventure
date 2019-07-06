@@ -1,6 +1,5 @@
 dependencies {
   api project(':text-api')
-  api project(':text-serializer-plain')
 }
 
 jar {

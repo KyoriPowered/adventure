@@ -32,7 +32,6 @@ import net.kyori.text.TextComponent;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
-import net.kyori.text.serializer.plain.PlainComponentSerializer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 @SuppressWarnings({"unused", "Duplicates", "ConstantConditions"})
@@ -201,6 +200,13 @@ final class PaginationImpl<T> implements Pagination<T> {
   }
 
   private static int length(final @NonNull Component component) {
-    return PlainComponentSerializer.INSTANCE.serialize(component).length();
+    int length = 0;
+    if(component instanceof TextComponent) {
+      length += ((TextComponent) component).content().length();
+    }
+    for(final Component child : component.children()) {
+      length += length(child);
+    }
+    return length;
   }
 }
