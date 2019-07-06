@@ -88,11 +88,10 @@ public interface Pagination<T> {
   /**
    * Creates a pagination builder.
    *
-   * @param <T> the content type
    * @return a builder
    */
-  static <T> @NonNull Builder<T> builder() {
-    return new PaginationBuilder<>();
+  static @NonNull Builder builder() {
+    return new PaginationBuilder();
   }
 
   /**
@@ -216,17 +215,15 @@ public interface Pagination<T> {
 
   /**
    * A pagination builder.
-   *
-   * @param <T> the content type
    */
-  interface Builder<T> {
+  interface Builder {
     /**
      * Sets the title.
      *
      * @param title the title
      * @return this builder
      */
-    @NonNull Builder<T> title(final @NonNull Component title);
+    @NonNull Builder title(final @NonNull Component title);
 
     /**
      * Sets the number of results per page.
@@ -234,7 +231,7 @@ public interface Pagination<T> {
      * @param resultsPerPage the number of results per page
      * @return this builder
      */
-    @NonNull Builder<T> resultsPerPage(final @NonNegative int resultsPerPage);
+    @NonNull Builder resultsPerPage(final @NonNegative int resultsPerPage);
 
     /**
      * Sets the line character and style.
@@ -242,15 +239,7 @@ public interface Pagination<T> {
      * @param line the line consumer
      * @return this builder
      */
-    @NonNull Builder<T> line(final @NonNull Consumer<CharacterAndStyle> line);
-
-    /**
-     * Sets the row renderer.
-     *
-     * @param renderRow the row renderer
-     * @return this builder
-     */
-    @NonNull Builder<T> renderRow(final @NonNull RowRenderer<T> renderRow);
+    @NonNull Builder line(final @NonNull Consumer<CharacterAndStyle> line);
 
     /**
      * Sets the interface renderer.
@@ -258,7 +247,7 @@ public interface Pagination<T> {
      * @param renderInterface the interface renderer
      * @return this builder
      */
-    @NonNull Builder<T> renderInterface(final @NonNull InterfaceRenderer renderInterface);
+    @NonNull Builder renderInterface(final @NonNull InterfaceRenderer renderInterface);
 
     /**
      * Sets the interface width.
@@ -266,7 +255,7 @@ public interface Pagination<T> {
      * @param width the interface width
      * @return this builder
      */
-    @NonNull Builder<T> interfaceWidth(final int width);
+    @NonNull Builder interfaceWidth(final int width);
 
     /**
      * Sets the previous button.
@@ -274,7 +263,7 @@ public interface Pagination<T> {
      * @param previousButton the button consumer
      * @return this builder
      */
-    @NonNull Builder<T> previousButton(final @NonNull Consumer<CharacterAndStyle> previousButton);
+    @NonNull Builder previousButton(final @NonNull Consumer<CharacterAndStyle> previousButton);
 
     /**
      * Sets the next button.
@@ -282,7 +271,7 @@ public interface Pagination<T> {
      * @param nextButton the button consumer
      * @return this builder
      */
-    @NonNull Builder<T> nextButton(final @NonNull Consumer<CharacterAndStyle> nextButton);
+    @NonNull Builder nextButton(final @NonNull Consumer<CharacterAndStyle> nextButton);
 
     /**
      * Sets the next page command.
@@ -290,16 +279,17 @@ public interface Pagination<T> {
      * @param pageCommand the next page command
      * @return this builder
      */
-    @NonNull Builder<T> pageCommand(final @NonNull IntFunction<String> pageCommand);
+    @NonNull Builder pageCommand(final @NonNull IntFunction<String> pageCommand);
 
     /**
      * Builds.
      *
+     * @param renderRow the row renderer
      * @return pagination
      * @throws IllegalStateException if the title has not been set
      * @throws IllegalStateException if the row renderer has not been set
      */
-    @NonNull Pagination<T> build();
+    @NonNull <T> Pagination<T> build(final @NonNull RowRenderer<T> renderRow);
 
     /**
      * A builder for a character and style pair.

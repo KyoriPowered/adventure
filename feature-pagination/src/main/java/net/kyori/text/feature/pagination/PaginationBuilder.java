@@ -31,7 +31,7 @@ import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-final class PaginationBuilder<T> implements Pagination.Builder<T> {
+final class PaginationBuilder implements Pagination.Builder {
   private @MonotonicNonNull Component title;
 
   private int resultsPerPage = Pagination.RESULTS_PER_PAGE;
@@ -39,7 +39,6 @@ final class PaginationBuilder<T> implements Pagination.Builder<T> {
   private char lineCharacter = Pagination.LINE_CHARACTER;
   private Style lineStyle = Pagination.LINE_STYLE;
 
-  private Pagination.@MonotonicNonNull RowRenderer<T> renderRow;
   private Pagination.InterfaceRenderer renderInterface = Pagination.DEFAULT_INTERFACE_RENDERER;
 
   private int interfaceWidth = Pagination.INTERFACE_WIDTH;
@@ -51,19 +50,19 @@ final class PaginationBuilder<T> implements Pagination.Builder<T> {
   private @MonotonicNonNull IntFunction<String> pageCommand;
 
   @Override
-  public Pagination.@NonNull Builder<T> title(final @NonNull Component title) {
+  public Pagination.@NonNull Builder title(final @NonNull Component title) {
     this.title = title;
     return this;
   }
 
   @Override
-  public Pagination.@NonNull Builder<T> resultsPerPage(@NonNegative final int resultsPerPage) {
+  public Pagination.@NonNull Builder resultsPerPage(@NonNegative final int resultsPerPage) {
     this.resultsPerPage = resultsPerPage;
     return this;
   }
 
   @Override
-  public Pagination.@NonNull Builder<T> line(final @NonNull Consumer<CharacterAndStyle> line) {
+  public Pagination.@NonNull Builder line(final @NonNull Consumer<CharacterAndStyle> line) {
     line.accept(new CharacterAndStyle() {
       @Override
       public @NonNull CharacterAndStyle character(final char character) {
@@ -81,25 +80,19 @@ final class PaginationBuilder<T> implements Pagination.Builder<T> {
   }
 
   @Override
-  public Pagination.@NonNull Builder<T> renderRow(final Pagination.@NonNull RowRenderer<T> renderRow) {
-    this.renderRow = renderRow;
-    return this;
-  }
-
-  @Override
-  public Pagination.@NonNull Builder<T> renderInterface(final Pagination.@NonNull InterfaceRenderer renderInterface) {
+  public Pagination.@NonNull Builder renderInterface(final Pagination.@NonNull InterfaceRenderer renderInterface) {
     this.renderInterface = renderInterface;
     return this;
   }
 
   @Override
-  public Pagination.@NonNull Builder<T> interfaceWidth(final int width) {
+  public Pagination.@NonNull Builder interfaceWidth(final int width) {
     this.interfaceWidth = width;
     return this;
   }
 
   @Override
-  public Pagination.@NonNull Builder<T> previousButton(final @NonNull Consumer<CharacterAndStyle> previousButton) {
+  public Pagination.@NonNull Builder previousButton(final @NonNull Consumer<CharacterAndStyle> previousButton) {
     previousButton.accept(new CharacterAndStyle() {
       @Override
       public @NonNull CharacterAndStyle character(final char character) {
@@ -117,7 +110,7 @@ final class PaginationBuilder<T> implements Pagination.Builder<T> {
   }
 
   @Override
-  public Pagination.@NonNull Builder<T> nextButton(final @NonNull Consumer<CharacterAndStyle> nextButton) {
+  public Pagination.@NonNull Builder nextButton(final @NonNull Consumer<CharacterAndStyle> nextButton) {
     nextButton.accept(new CharacterAndStyle() {
       @Override
       public @NonNull CharacterAndStyle character(final char character) {
@@ -135,22 +128,21 @@ final class PaginationBuilder<T> implements Pagination.Builder<T> {
   }
 
   @Override
-  public Pagination.@NonNull Builder<T> pageCommand(final @NonNull IntFunction<String> pageCommand) {
+  public Pagination.@NonNull Builder pageCommand(final @NonNull IntFunction<String> pageCommand) {
     this.pageCommand = pageCommand;
     return this;
   }
 
   @Override
-  public @NonNull Pagination<T> build() {
+  public <T> @NonNull Pagination<T> build(final Pagination.@NonNull RowRenderer<T> renderRow) {
     if(this.title == null) throw new IllegalStateException("title not set");
-    if(this.renderRow == null) throw new IllegalStateException("render row not set");
     if(this.pageCommand == null) throw new IllegalStateException("page command not set");
     return new PaginationImpl<>(
       this.title,
       this.resultsPerPage,
       this.lineCharacter,
       this.lineStyle,
-      this.renderRow,
+      renderRow,
       this.renderInterface,
       this.interfaceWidth,
       this.previousButtonCharacter,
