@@ -105,8 +105,7 @@ final class PaginationImpl<T> implements Pagination<T> {
   }
 
   private Component renderHeader(final int page, final int pages) {
-    final Component title = TextComponent.space().append(this.title).append(TextComponent.space());
-    final Component header = this.renderer.renderHeader(title, page, pages);
+    final Component header = this.renderer.renderHeader(this.title, page, pages);
     final Component dashes = this.line((this.width - length(header)) / (LINE_CHARACTER_LENGTH * 2));
 
     return TextComponent.builder()

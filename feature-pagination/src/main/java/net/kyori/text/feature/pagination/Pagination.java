@@ -148,7 +148,9 @@ public interface Pagination<T> {
      */
     default @NonNull Component renderHeader(final @NonNull Component title, final int page, final int pages) {
       return TextComponent.builder()
+        .append(TextComponent.space())
         .append(title)
+        .append(TextComponent.space())
         .append(GRAY_LEFT_ROUND_BRACKET)
         .append(TextComponent.of(page, TextColor.WHITE))
         .append(GRAY_FORWARD_SLASH)
