@@ -28,6 +28,7 @@ import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
+import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
@@ -53,6 +54,14 @@ public interface Pagination<T> {
    * The default line style.
    */
   Style LINE_STYLE = Style.of(TextColor.DARK_GRAY);
+  /**
+   * The default interface renderer.
+   */
+  InterfaceRenderer DEFAULT_INTERFACE_RENDERER = new InterfaceRenderer(){};
+  /**
+   * The default interface width.
+   */
+  int INTERFACE_WIDTH = 55;
   /**
    * The default character for the previous page button.
    */
@@ -89,25 +98,103 @@ public interface Pagination<T> {
   /**
    * Renders.
    *
-   * @param results the content to render
+   * @param content the content to render
    * @param page the page number
    * @return the rendered results
    */
-  @NonNull List<? extends Component> render(final @NonNull List<? extends T> results, final int page);
+  @NonNull List<? extends Component> render(final @NonNull List<? extends T> content, final int page);
 
   /**
-   * An empty result renderer.
-   *
-   * <p>No header or footer are rendered.</p>
+   * An interface renderer.
    */
-  @FunctionalInterface
-  interface EmptyRenderer {
+  interface InterfaceRenderer {
     /**
      * Renders an empty result.
      *
+     * <p>No header or footer are rendered.</p>
+     *
      * @return the rendered component
      */
-    @NonNull Component renderEmpty();
+    default @NonNull Component renderEmpty() {
+      return TextComponent.of("No results match.", TextColor.GRAY);
+    }
+
+    /**
+     * Renders an unknown page.
+     *
+     * <p>No header or footer are rendered.</p>
+     *
+     * @param page the unknown page
+     * @param pages the total number of pages
+     * @return the rendered component
+     */
+    default @NonNull Component renderUnknownPage(final int page, final int pages) {
+      return TextComponent.of("Unknown page selected. " + pages + " total pages.", TextColor.GRAY);
+    }
+
+    /**
+     * Renders a header.
+     *
+     * @param title the title
+     * @param page the page
+     * @param pages the total number of pages
+     * @return the rendered component
+     */
+    default @NonNull Component renderHeader(final @NonNull Component title, final int page, final int pages) {
+      return TextComponent.builder()
+        .append(title)
+        .append(TextComponent.of("(", TextColor.GRAY))
+        .append(TextComponent.of(page, TextColor.WHITE))
+        .append(TextComponent.of("/", TextColor.GRAY))
+        .append(TextComponent.of(pages, TextColor.WHITE))
+        .append(TextComponent.of(")", TextColor.GRAY))
+        .append(TextComponent.space())
+        .build();
+    }
+
+    /**
+     * Renders a previous page button.
+     *
+     * @param buttonCharacter the button character
+     * @param buttonStyle the button style
+     * @param clickEvent the click event for the button
+     * @return the rendered component
+     */
+    default @NonNull Component renderPreviousPageButton(final char buttonCharacter, final @NonNull Style buttonStyle, final @NonNull ClickEvent clickEvent) {
+      return TextComponent.builder()
+        .append(TextComponent.space())
+        .append(TextComponent.of("[", TextColor.WHITE))
+        .append(
+          TextComponent.builder(String.valueOf(buttonCharacter))
+            .style(buttonStyle)
+            .clickEvent(clickEvent)
+        )
+        .append(TextComponent.of("]", TextColor.WHITE))
+        .append(TextComponent.space())
+        .build();
+    }
+
+    /**
+     * Renders a next page button.
+     *
+     * @param buttonCharacter the button character
+     * @param buttonStyle the button style
+     * @param clickEvent the click event for the button
+     * @return the rendered component
+     */
+    default @NonNull Component renderNextPageButton(final char buttonCharacter, final @NonNull Style buttonStyle, final @NonNull ClickEvent clickEvent) {
+      return TextComponent.builder()
+        .append(TextComponent.space())
+        .append(TextComponent.of("[", TextColor.WHITE))
+        .append(
+          TextComponent.builder(String.valueOf(buttonCharacter))
+            .style(buttonStyle)
+            .clickEvent(clickEvent)
+        )
+        .append(TextComponent.of("]", TextColor.WHITE))
+        .append(TextComponent.space())
+        .build();
+    }
   }
 
   /**
@@ -125,23 +212,6 @@ public interface Pagination<T> {
      * @return the rendered row
      */
     @NonNull Component renderRow(final @Nullable T value, final int index);
-  }
-
-  /**
-   * An unknown page renderer.
-   *
-   * <p>No header or footer are rendered.</p>
-   */
-  @FunctionalInterface
-  interface UnknownPageRenderer {
-    /**
-     * Renders an unknown page.
-     *
-     * @param page the unknown page
-     * @param pages the total number of pages
-     * @return the rendered component
-     */
-    @NonNull Component renderUnknownPage(final int page, final int pages);
   }
 
   /**
@@ -183,30 +253,20 @@ public interface Pagination<T> {
     @NonNull Builder<T> renderRow(final @NonNull RowRenderer<T> renderRow);
 
     /**
-     * Sets the empty result.
+     * Sets the interface renderer.
      *
-     * @param renderEmpty the empty result
+     * @param renderInterface the interface renderer
      * @return this builder
      */
-    default @NonNull Builder<T> renderEmpty(final @NonNull Component renderEmpty) {
-      return this.renderEmpty(() -> renderEmpty);
-    }
+    @NonNull Builder<T> renderInterface(final @NonNull InterfaceRenderer renderInterface);
 
     /**
-     * Sets the empty result renderer.
+     * Sets the interface width.
      *
-     * @param renderEmpty the empty result renderer
+     * @param width the interface width
      * @return this builder
      */
-    @NonNull Builder<T> renderEmpty(final @NonNull EmptyRenderer renderEmpty);
-
-    /**
-     * Sets the unknown page renderer.
-     *
-     * @param renderUnknownPage the unknown page renderer
-     * @return this builder
-     */
-    @NonNull Builder<T> renderUnknownPage(final @NonNull UnknownPageRenderer renderUnknownPage);
+    @NonNull Builder<T> interfaceWidth(final int width);
 
     /**
      * Sets the previous button.

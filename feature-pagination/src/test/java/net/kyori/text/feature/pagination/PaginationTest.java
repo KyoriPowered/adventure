@@ -31,6 +31,7 @@ import java.util.stream.Stream;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.format.TextColor;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -41,7 +42,12 @@ class PaginationTest {
   private static final Component EMPTY = TextComponent.of("E M P T Y");
   private static final Pagination<String> PAGINATION = Pagination.<String>builder()
     .title(TITLE)
-    .renderEmpty(EMPTY)
+    .renderInterface(new Pagination.InterfaceRenderer() {
+      @Override
+      public @NonNull Component renderEmpty() {
+        return EMPTY;
+      }
+    })
     .renderRow((value, index) -> value == null ? TextComponent.of("<null>") : TextComponent.of(value, TextColor.GOLD))
     .pageCommand(page -> "/page " + page)
     .build();
@@ -66,7 +72,7 @@ class PaginationTest {
   void testRender_unknownPage() {
     final List<? extends Component> rendered = PAGINATION.render(CONTENT_14, 0);
     assertEquals(1, rendered.size());
-    assertEquals(PaginationImpl.RENDER_UNKNOWN_PAGE.renderUnknownPage(0, 3), rendered.get(0));
+    assertEquals(Pagination.DEFAULT_INTERFACE_RENDERER.renderUnknownPage(0, 3), rendered.get(0));
   }
 
   @Test

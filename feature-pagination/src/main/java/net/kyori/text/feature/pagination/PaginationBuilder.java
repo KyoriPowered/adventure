@@ -30,7 +30,6 @@ import net.kyori.text.format.Style;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class PaginationBuilder<T> implements Pagination.Builder<T> {
   private @MonotonicNonNull Component title;
@@ -41,15 +40,15 @@ final class PaginationBuilder<T> implements Pagination.Builder<T> {
   private Style lineStyle = Pagination.LINE_STYLE;
 
   private Pagination.@MonotonicNonNull RowRenderer<T> renderRow;
-  private Pagination.EmptyRenderer renderEmpty = PaginationImpl.RENDER_EMPTY;
-  private Pagination.UnknownPageRenderer renderUnknownPage = PaginationImpl.RENDER_UNKNOWN_PAGE;
+  private Pagination.InterfaceRenderer renderInterface = Pagination.DEFAULT_INTERFACE_RENDERER;
 
+  private int interfaceWidth = Pagination.INTERFACE_WIDTH;
   private char previousButtonCharacter = Pagination.PREVIOUS_BUTTON_CHARACTER;
   private Style previousButtonStyle = Pagination.PREVIOUS_BUTTON_STYLE;
   private char nextButtonCharacter = Pagination.NEXT_BUTTON_CHARACTER;
   private Style nextButtonStyle = Pagination.NEXT_BUTTON_STYLE;
 
-  private @Nullable IntFunction<String> pageCommand;
+  private @MonotonicNonNull IntFunction<String> pageCommand;
 
   @Override
   public Pagination.@NonNull Builder<T> title(final @NonNull Component title) {
@@ -88,14 +87,14 @@ final class PaginationBuilder<T> implements Pagination.Builder<T> {
   }
 
   @Override
-  public Pagination.@NonNull Builder<T> renderEmpty(final Pagination.@NonNull EmptyRenderer renderEmpty) {
-    this.renderEmpty = renderEmpty;
+  public Pagination.@NonNull Builder<T> renderInterface(final Pagination.@NonNull InterfaceRenderer renderInterface) {
+    this.renderInterface = renderInterface;
     return this;
   }
 
   @Override
-  public Pagination.@NonNull Builder<T> renderUnknownPage(final Pagination.@NonNull UnknownPageRenderer renderUnknownPage) {
-    this.renderUnknownPage = renderUnknownPage;
+  public Pagination.@NonNull Builder<T> interfaceWidth(final int width) {
+    this.interfaceWidth = width;
     return this;
   }
 
@@ -152,8 +151,8 @@ final class PaginationBuilder<T> implements Pagination.Builder<T> {
       this.lineCharacter,
       this.lineStyle,
       this.renderRow,
-      this.renderEmpty,
-      this.renderUnknownPage,
+      this.renderInterface,
+      this.interfaceWidth,
       this.previousButtonCharacter,
       this.previousButtonStyle,
       this.nextButtonCharacter,
