@@ -39,10 +39,10 @@ final class PaginationBuilder implements Pagination.Builder {
 
   private Pagination.Renderer renderer = Pagination.DEFAULT_RENDERER;
 
-  private char previousButtonCharacter = Pagination.PREVIOUS_BUTTON_CHARACTER;
-  private Style previousButtonStyle = Pagination.PREVIOUS_BUTTON_STYLE;
-  private char nextButtonCharacter = Pagination.NEXT_BUTTON_CHARACTER;
-  private Style nextButtonStyle = Pagination.NEXT_BUTTON_STYLE;
+  private char previousPageButtonCharacter = Pagination.PREVIOUS_PAGE_BUTTON_CHARACTER;
+  private Style previousPageButtonStyle = Pagination.PREVIOUS_PAGE_BUTTON_STYLE;
+  private char nextPageButtonCharacter = Pagination.NEXT_PAGE_BUTTON_CHARACTER;
+  private Style nextPageButtonStyle = Pagination.NEXT_PAGE_BUTTON_STYLE;
 
   @Override
   public Pagination.@NonNull Builder width(final int width) {
@@ -85,13 +85,13 @@ final class PaginationBuilder implements Pagination.Builder {
     previousButton.accept(new CharacterAndStyle() {
       @Override
       public @NonNull CharacterAndStyle character(final char character) {
-        PaginationBuilder.this.previousButtonCharacter = character;
+        PaginationBuilder.this.previousPageButtonCharacter = character;
         return this;
       }
 
       @Override
       public @NonNull CharacterAndStyle style(final @NonNull Style style) {
-        PaginationBuilder.this.previousButtonStyle = style;
+        PaginationBuilder.this.previousPageButtonStyle = style;
         return this;
       }
     });
@@ -103,13 +103,13 @@ final class PaginationBuilder implements Pagination.Builder {
     nextButton.accept(new CharacterAndStyle() {
       @Override
       public @NonNull CharacterAndStyle character(final char character) {
-        PaginationBuilder.this.nextButtonCharacter = character;
+        PaginationBuilder.this.nextPageButtonCharacter = character;
         return this;
       }
 
       @Override
       public @NonNull CharacterAndStyle style(final @NonNull Style style) {
-        PaginationBuilder.this.nextButtonStyle = style;
+        PaginationBuilder.this.nextPageButtonStyle = style;
         return this;
       }
     });
@@ -124,10 +124,10 @@ final class PaginationBuilder implements Pagination.Builder {
       this.renderer,
       this.lineCharacter,
       this.lineStyle,
-      this.previousButtonCharacter,
-      this.previousButtonStyle,
-      this.nextButtonCharacter,
-      this.nextButtonStyle,
+      this.previousPageButtonCharacter,
+      this.previousPageButtonStyle,
+      this.nextPageButtonCharacter,
+      this.nextPageButtonStyle,
       title,
       rowRenderer,
       pageCommand

@@ -41,6 +41,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * @param <T> the content type
  */
+@FunctionalInterface
 public interface Pagination<T> {
   /**
    * The default interface width.
@@ -61,22 +62,22 @@ public interface Pagination<T> {
   /**
    * The default character for the previous page button.
    */
-  char PREVIOUS_BUTTON_CHARACTER = '\u00AB'; // «
+  char PREVIOUS_PAGE_BUTTON_CHARACTER = '\u00AB'; // «
   /**
    * The default style for the next page button.
    */
-  Style PREVIOUS_BUTTON_STYLE = Style.builder()
+  Style PREVIOUS_PAGE_BUTTON_STYLE = Style.builder()
     .color(TextColor.RED)
     .hoverEvent(HoverEvent.showText(TextComponent.of("Previous Page", TextColor.RED)))
     .build();
   /**
    * The default character for the next page button.
    */
-  char NEXT_BUTTON_CHARACTER = '\u00BB'; // »
+  char NEXT_PAGE_BUTTON_CHARACTER = '\u00BB'; // »
   /**
    * The default style for the next page button.
    */
-  Style NEXT_BUTTON_STYLE = Style.builder()
+  Style NEXT_PAGE_BUTTON_STYLE = Style.builder()
     .color(TextColor.GREEN)
     .hoverEvent(HoverEvent.showText(TextComponent.of("Next Page", TextColor.GREEN)))
     .build();
@@ -84,7 +85,12 @@ public interface Pagination<T> {
   /**
    * The default interface renderer.
    */
-  Renderer DEFAULT_RENDERER = new Renderer(){};
+  Renderer DEFAULT_RENDERER = new Renderer() {
+    @Override
+    public String toString() {
+      return "Pagination.DEFAULT_RENDERER";
+    }
+  };
 
   /**
    * Creates a pagination builder.
@@ -163,20 +169,16 @@ public interface Pagination<T> {
     /**
      * Renders a previous page button.
      *
-     * @param buttonCharacter the button character
-     * @param buttonStyle the button style
+     * @param character the button character
+     * @param style the button style
      * @param clickEvent the click event for the button
      * @return the rendered component
      */
-    default @NonNull Component renderPreviousPageButton(final char buttonCharacter, final @NonNull Style buttonStyle, final @NonNull ClickEvent clickEvent) {
+    default @NonNull Component renderPreviousPageButton(final char character, final @NonNull Style style, final @NonNull ClickEvent clickEvent) {
       return TextComponent.builder()
         .append(TextComponent.space())
         .append(WHITE_LEFT_SQUARE_BRACKET)
-        .append(
-          TextComponent.builder(String.valueOf(buttonCharacter))
-            .style(buttonStyle)
-            .clickEvent(clickEvent)
-        )
+        .append(TextComponent.of(character, style.clickEvent(clickEvent)))
         .append(WHITE_RIGHT_SQUARE_BRACKET)
         .append(TextComponent.space())
         .build();
@@ -185,21 +187,16 @@ public interface Pagination<T> {
     /**
      * Renders a next page button.
      *
-     * @param buttonCharacter the button character
-     * @param buttonStyle the button style
+     * @param character the button character
+     * @param style the button style
      * @param clickEvent the click event for the button
      * @return the rendered component
      */
-    default @NonNull Component renderNextPageButton(final char buttonCharacter, final @NonNull Style buttonStyle, final @NonNull ClickEvent clickEvent) {
+    default @NonNull Component renderNextPageButton(final char character, final @NonNull Style style, final @NonNull ClickEvent clickEvent) {
       return TextComponent.builder()
         .append(TextComponent.space())
         .append(WHITE_LEFT_SQUARE_BRACKET)
-        .append(
-          TextComponent.builder(String.valueOf(buttonCharacter))
-            .style(buttonStyle)
-            .clickEvent(clickEvent)
-        )
-        .append(TextComponent.of("]", TextColor.WHITE))
+        .append(TextComponent.of(character, style.clickEvent(clickEvent)))
         .append(WHITE_RIGHT_SQUARE_BRACKET)
         .append(TextComponent.space())
         .build();
@@ -281,11 +278,12 @@ public interface Pagination<T> {
      * @param title the title
      * @param rowRenderer the row renderer
      * @param pageCommand the page command
+     * @param <T> the content type
      * @return pagination
      * @throws IllegalStateException if the title has not been set
      * @throws IllegalStateException if the row renderer has not been set
      */
-    @NonNull <T> Pagination<T> build(final @NonNull Component title, final Renderer.@NonNull RowRenderer<T> rowRenderer, final @NonNull IntFunction<String> pageCommand);
+    <T> @NonNull Pagination<T> build(final @NonNull Component title, final Renderer.@NonNull RowRenderer<T> rowRenderer, final @NonNull IntFunction<String> pageCommand);
 
     /**
      * A builder for a character and style pair.

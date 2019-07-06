@@ -47,25 +47,25 @@ final class PaginationImpl<T> implements Pagination<T> {
   private final char lineCharacter;
   private final Style lineStyle;
 
-  private final char previousButtonCharacter;
-  private final Style previousButtonStyle;
-  private final char nextButtonCharacter;
-  private final Style nextButtonStyle;
+  private final char previousPageButtonCharacter;
+  private final Style previousPageButtonStyle;
+  private final char nextPageButtonCharacter;
+  private final Style nextPageButtonStyle;
 
   private final Component title;
   private final Renderer.RowRenderer<T> rowRenderer;
   private final IntFunction<String> pageCommand;
 
-  PaginationImpl(final int width, final int resultsPerPage, final @NonNull Renderer renderer, final char lineCharacter, final @NonNull Style lineStyle, final char previousButtonCharacter, final @NonNull Style previousButtonStyle, final char nextButtonCharacter, final @NonNull Style nextButtonStyle, final @NonNull Component title, final Renderer.@NonNull RowRenderer<T> rowRenderer, final @NonNull IntFunction<String> pageCommand) {
+  PaginationImpl(final int width, final int resultsPerPage, final @NonNull Renderer renderer, final char lineCharacter, final @NonNull Style lineStyle, final char previousPageButtonCharacter, final @NonNull Style previousPageButtonStyle, final char nextPageButtonCharacter, final @NonNull Style nextPageButtonStyle, final @NonNull Component title, final Renderer.@NonNull RowRenderer<T> rowRenderer, final @NonNull IntFunction<String> pageCommand) {
     this.width = width;
     this.resultsPerPage = resultsPerPage;
     this.renderer = renderer;
     this.lineCharacter = lineCharacter;
     this.lineStyle = lineStyle;
-    this.previousButtonCharacter = previousButtonCharacter;
-    this.previousButtonStyle = previousButtonStyle;
-    this.nextButtonCharacter = nextButtonCharacter;
-    this.nextButtonStyle = nextButtonStyle;
+    this.previousPageButtonCharacter = previousPageButtonCharacter;
+    this.previousPageButtonStyle = previousPageButtonStyle;
+    this.nextPageButtonCharacter = nextPageButtonCharacter;
+    this.nextPageButtonStyle = nextPageButtonStyle;
     this.title = title;
     this.rowRenderer = rowRenderer;
     this.pageCommand = pageCommand;
@@ -88,9 +88,11 @@ final class PaginationImpl<T> implements Pagination<T> {
     final List<Component> components = new ArrayList<>();
 
     components.add(this.renderHeader(page, pages));
+
     for(int i = this.resultsPerPage * (page - 1); i < this.resultsPerPage * page && i < size; i++) {
       components.add(this.rowRenderer.renderRow(content.get(i), i));
     }
+
     components.add(this.renderFooter(page, pages));
 
     return Collections.unmodifiableList(components);
@@ -106,7 +108,7 @@ final class PaginationImpl<T> implements Pagination<T> {
 
   private Component renderHeader(final int page, final int pages) {
     final Component header = this.renderer.renderHeader(this.title, page, pages);
-    final Component dashes = this.line((this.width - length(header)) / (LINE_CHARACTER_LENGTH * 2));
+    final Component dashes = this.line(header);
 
     return TextComponent.builder()
       .append(dashes)
@@ -120,8 +122,8 @@ final class PaginationImpl<T> implements Pagination<T> {
       return this.line(this.width);
     }
 
-    final Component buttons = this.buildFooterButtons(page, pages);
-    final Component dashes = this.line(((this.width - length(buttons))) / (LINE_CHARACTER_LENGTH * 2));
+    final Component buttons = this.renderFooterButtons(page, pages);
+    final Component dashes = this.line(buttons);
 
     return TextComponent.builder()
       .append(dashes)
@@ -130,14 +132,13 @@ final class PaginationImpl<T> implements Pagination<T> {
       .build();
   }
 
-  private Component buildFooterButtons(final int page, final int pages) {
+  private Component renderFooterButtons(final int page, final int pages) {
     final boolean hasPreviousPage = page > 1 && pages > 1;
-    final boolean hasNextPage = (page < pages && page == 1) || ((hasPreviousPage && page > 1) && !(page == pages));
+    final boolean hasNextPage = (page < pages && page == 1) || ((hasPreviousPage && page > 1) && page != pages);
 
     final TextComponent.Builder buttons = TextComponent.builder();
     if(hasPreviousPage) {
-      final ClickEvent clickEvent = ClickEvent.runCommand(this.pageCommand.apply(page - 1));
-      buttons.append(this.renderer.renderPreviousPageButton(this.previousButtonCharacter, this.previousButtonStyle, clickEvent));
+      buttons.append(this.renderer.renderPreviousPageButton(this.previousPageButtonCharacter, this.previousPageButtonStyle, ClickEvent.runCommand(this.pageCommand.apply(page - 1))));
 
       if(hasNextPage) {
         buttons.append(this.line(8));
@@ -145,23 +146,18 @@ final class PaginationImpl<T> implements Pagination<T> {
     }
 
     if(hasNextPage) {
-      final ClickEvent clickEvent = ClickEvent.runCommand(this.pageCommand.apply(page + 1));
-      buttons.append(this.renderer.renderNextPageButton(this.nextButtonCharacter, this.nextButtonStyle, clickEvent));
+      buttons.append(this.renderer.renderNextPageButton(this.nextPageButtonCharacter, this.nextPageButtonStyle, ClickEvent.runCommand(this.pageCommand.apply(page + 1))));
     }
 
     return buttons.build();
   }
 
+  private @NonNull Component line(final @NonNull Component component) {
+    return this.line((this.width - length(component)) / (LINE_CHARACTER_LENGTH * 2));
+  }
+
   private @NonNull Component line(final int characters) {
-    return TextComponent.of(repeat(this.lineCharacter, characters)).style(this.lineStyle);
-  }
-
-  private static @NonNull String repeat(final char character, final int count) {
-    return repeat(String.valueOf(character), count);
-  }
-
-  private static @NonNull String repeat(final @NonNull String character, final int count) {
-    return String.join("", Collections.nCopies(count, character));
+    return TextComponent.of(repeat(this.lineCharacter, characters), this.lineStyle);
   }
 
   private static int length(final @NonNull Component component) {
@@ -175,6 +171,14 @@ final class PaginationImpl<T> implements Pagination<T> {
     return length;
   }
 
+  private static @NonNull String repeat(final char character, final int count) {
+    return repeat(String.valueOf(character), count);
+  }
+
+  private static @NonNull String repeat(final @NonNull String character, final int count) {
+    return String.join("", Collections.nCopies(count, character));
+  }
+
   @Override
   public String toString() {
     final Map<String, Object> builder = new LinkedHashMap<>();
@@ -183,10 +187,10 @@ final class PaginationImpl<T> implements Pagination<T> {
     builder.put("renderer", this.renderer);
     builder.put("lineCharacter", this.lineCharacter);
     builder.put("lineStyle", this.lineStyle);
-    builder.put("previousButtonCharacter", this.previousButtonCharacter);
-    builder.put("previousButtonStyle", this.previousButtonStyle);
-    builder.put("nextButtonCharacter", this.nextButtonCharacter);
-    builder.put("nextButtonStyle", this.nextButtonStyle);
+    builder.put("previousPageButtonCharacter", this.previousPageButtonCharacter);
+    builder.put("previousPageButtonStyle", this.previousPageButtonStyle);
+    builder.put("nextPageButtonCharacter", this.nextPageButtonCharacter);
+    builder.put("nextPageButtonStyle", this.nextPageButtonStyle);
     builder.put("title", this.title);
     builder.put("rowRenderer", this.rowRenderer);
     builder.put("pageCommand", this.pageCommand);

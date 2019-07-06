@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class PaginationTest {
   private static final Component TITLE = TextComponent.of("The Things");
   private static final Component EMPTY = TextComponent.of("E M P T Y");
-  private static final Pagination<String> PAGINATION = Pagination.<String>builder()
+  private static final Pagination<String> PAGINATION = Pagination.builder()
     .renderer(new Pagination.Renderer() {
       @Override
       public @NonNull Component renderEmpty() {
@@ -106,8 +106,8 @@ class PaginationTest {
     for(int i = 1; i < 2; i++) {
       assertEquals(TextColor.GOLD, rendered.get(i).color());
     }
-    final String c7 = rendered.get(3).toString();
-    assertTrue(!c7.contains("Next") && !c7.contains("Previous"));
+    final String c3 = rendered.get(3).toString();
+    assertTrue(!c3.contains("Next") && !c3.contains("Previous"));
   }
 
   @Test
@@ -119,7 +119,7 @@ class PaginationTest {
       assertEquals(TextColor.GOLD, rendered.get(i).color());
     }
 
-    final String c7 = rendered.get(3).toString();
-    assertTrue(!c7.contains("Next") && c7.contains("Previous"));
+    final String c3 = rendered.get(3).toString();
+    assertTrue(!c3.contains("Next") && c3.contains("Previous"));
   }
 }
