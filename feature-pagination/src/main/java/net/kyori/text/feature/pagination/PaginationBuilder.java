@@ -28,36 +28,37 @@ import java.util.function.IntFunction;
 import net.kyori.text.Component;
 import net.kyori.text.format.Style;
 import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 final class PaginationBuilder implements Pagination.Builder {
-  private @MonotonicNonNull Component title;
-
+  private int width = Pagination.WIDTH;
   private int resultsPerPage = Pagination.RESULTS_PER_PAGE;
 
   private char lineCharacter = Pagination.LINE_CHARACTER;
   private Style lineStyle = Pagination.LINE_STYLE;
 
-  private Pagination.InterfaceRenderer renderInterface = Pagination.DEFAULT_INTERFACE_RENDERER;
+  private Pagination.Renderer renderer = Pagination.DEFAULT_RENDERER;
 
-  private int interfaceWidth = Pagination.INTERFACE_WIDTH;
   private char previousButtonCharacter = Pagination.PREVIOUS_BUTTON_CHARACTER;
   private Style previousButtonStyle = Pagination.PREVIOUS_BUTTON_STYLE;
   private char nextButtonCharacter = Pagination.NEXT_BUTTON_CHARACTER;
   private Style nextButtonStyle = Pagination.NEXT_BUTTON_STYLE;
 
-  private @MonotonicNonNull IntFunction<String> pageCommand;
-
   @Override
-  public Pagination.@NonNull Builder title(final @NonNull Component title) {
-    this.title = title;
+  public Pagination.@NonNull Builder width(final int width) {
+    this.width = width;
     return this;
   }
 
   @Override
   public Pagination.@NonNull Builder resultsPerPage(@NonNegative final int resultsPerPage) {
     this.resultsPerPage = resultsPerPage;
+    return this;
+  }
+
+  @Override
+  public Pagination.@NonNull Builder renderer(final Pagination.@NonNull Renderer renderer) {
+    this.renderer = renderer;
     return this;
   }
 
@@ -76,18 +77,6 @@ final class PaginationBuilder implements Pagination.Builder {
         return this;
       }
     });
-    return this;
-  }
-
-  @Override
-  public Pagination.@NonNull Builder renderInterface(final Pagination.@NonNull InterfaceRenderer renderInterface) {
-    this.renderInterface = renderInterface;
-    return this;
-  }
-
-  @Override
-  public Pagination.@NonNull Builder interfaceWidth(final int width) {
-    this.interfaceWidth = width;
     return this;
   }
 
@@ -128,28 +117,20 @@ final class PaginationBuilder implements Pagination.Builder {
   }
 
   @Override
-  public Pagination.@NonNull Builder pageCommand(final @NonNull IntFunction<String> pageCommand) {
-    this.pageCommand = pageCommand;
-    return this;
-  }
-
-  @Override
-  public <T> @NonNull Pagination<T> build(final Pagination.@NonNull RowRenderer<T> renderRow) {
-    if(this.title == null) throw new IllegalStateException("title not set");
-    if(this.pageCommand == null) throw new IllegalStateException("page command not set");
+  public <T> @NonNull Pagination<T> build(final @NonNull Component title, final Pagination.Renderer.@NonNull RowRenderer<T> rowRenderer, final @NonNull IntFunction<String> pageCommand) {
     return new PaginationImpl<>(
-      this.title,
+      this.width,
       this.resultsPerPage,
+      this.renderer,
       this.lineCharacter,
       this.lineStyle,
-      renderRow,
-      this.renderInterface,
-      this.interfaceWidth,
       this.previousButtonCharacter,
       this.previousButtonStyle,
       this.nextButtonCharacter,
       this.nextButtonStyle,
-      this.pageCommand
+      title,
+      rowRenderer,
+      pageCommand
     );
   }
 }

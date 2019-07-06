@@ -41,16 +41,13 @@ class PaginationTest {
   private static final Component TITLE = TextComponent.of("The Things");
   private static final Component EMPTY = TextComponent.of("E M P T Y");
   private static final Pagination<String> PAGINATION = Pagination.<String>builder()
-    .title(TITLE)
-    .renderInterface(new Pagination.InterfaceRenderer() {
+    .renderer(new Pagination.Renderer() {
       @Override
       public @NonNull Component renderEmpty() {
         return EMPTY;
       }
     })
-    .renderRow((value, index) -> value == null ? TextComponent.of("<null>") : TextComponent.of(value, TextColor.GOLD))
-    .pageCommand(page -> "/page " + page)
-    .build();
+    .build(TITLE, (value, index) -> value == null ? TextComponent.of("<null>") : TextComponent.of(value, TextColor.GOLD), page -> "/page " + page);
   private static final List<String> CONTENT_0 = Collections.emptyList();
   private static final List<String> CONTENT_2 = content(2);
   private static final List<String> CONTENT_14 = content(14);
@@ -72,7 +69,7 @@ class PaginationTest {
   void testRender_unknownPage() {
     final List<? extends Component> rendered = PAGINATION.render(CONTENT_14, 0);
     assertEquals(1, rendered.size());
-    assertEquals(Pagination.DEFAULT_INTERFACE_RENDERER.renderUnknownPage(0, 3), rendered.get(0));
+    assertEquals(Pagination.DEFAULT_RENDERER.renderUnknownPage(0, 3), rendered.get(0));
   }
 
   @Test
