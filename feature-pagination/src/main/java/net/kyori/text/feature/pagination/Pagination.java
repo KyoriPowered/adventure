@@ -115,9 +115,9 @@ public interface Pagination<T> {
    */
   interface Renderer {
     Component GRAY_LEFT_ROUND_BRACKET = TextComponent.of("(", TextColor.GRAY);
+    Component GRAY_LEFT_SQUARE_BRACKET = TextComponent.of("[", TextColor.GRAY);
     Component GRAY_RIGHT_ROUND_BRACKET = TextComponent.of(")", TextColor.GRAY);
-    Component WHITE_LEFT_SQUARE_BRACKET = TextComponent.of("[", TextColor.WHITE);
-    Component WHITE_RIGHT_SQUARE_BRACKET = TextComponent.of("]", TextColor.WHITE);
+    Component GRAY_RIGHT_SQUARE_BRACKET = TextComponent.of("]", TextColor.GRAY);
     Component GRAY_FORWARD_SLASH = TextComponent.of("/", TextColor.GRAY);
 
     /**
@@ -177,9 +177,9 @@ public interface Pagination<T> {
     default @NonNull Component renderPreviousPageButton(final char character, final @NonNull Style style, final @NonNull ClickEvent clickEvent) {
       return TextComponent.builder()
         .append(TextComponent.space())
-        .append(WHITE_LEFT_SQUARE_BRACKET)
+        .append(GRAY_LEFT_SQUARE_BRACKET)
         .append(TextComponent.of(character, style.clickEvent(clickEvent)))
-        .append(WHITE_RIGHT_SQUARE_BRACKET)
+        .append(GRAY_RIGHT_SQUARE_BRACKET)
         .append(TextComponent.space())
         .build();
     }
@@ -195,9 +195,9 @@ public interface Pagination<T> {
     default @NonNull Component renderNextPageButton(final char character, final @NonNull Style style, final @NonNull ClickEvent clickEvent) {
       return TextComponent.builder()
         .append(TextComponent.space())
-        .append(WHITE_LEFT_SQUARE_BRACKET)
+        .append(GRAY_LEFT_SQUARE_BRACKET)
         .append(TextComponent.of(character, style.clickEvent(clickEvent)))
-        .append(WHITE_RIGHT_SQUARE_BRACKET)
+        .append(GRAY_RIGHT_SQUARE_BRACKET)
         .append(TextComponent.space())
         .build();
     }
