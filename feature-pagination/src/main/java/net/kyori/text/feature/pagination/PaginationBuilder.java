@@ -24,7 +24,6 @@
 package net.kyori.text.feature.pagination;
 
 import java.util.function.Consumer;
-import java.util.function.IntFunction;
 import net.kyori.text.Component;
 import net.kyori.text.format.Style;
 import org.checkerframework.checker.index.qual.NonNegative;
@@ -117,7 +116,7 @@ final class PaginationBuilder implements Pagination.Builder {
   }
 
   @Override
-  public <T> @NonNull Pagination<T> build(final @NonNull Component title, final Pagination.Renderer.@NonNull RowRenderer<T> rowRenderer, final @NonNull IntFunction<String> pageCommand) {
+  public <T> @NonNull Pagination<T> build(final @NonNull Component title, final Pagination.Renderer.@NonNull RowRenderer<T> rowRenderer, final Pagination.@NonNull PageCommandFunction pageCommand) {
     return new PaginationImpl<>(
       this.width,
       this.resultsPerPage,

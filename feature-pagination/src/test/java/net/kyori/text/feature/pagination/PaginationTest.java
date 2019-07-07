@@ -47,7 +47,7 @@ class PaginationTest {
         return EMPTY;
       }
     })
-    .build(TITLE, (value, index) -> value == null ? TextComponent.of("<null>") : TextComponent.of(value, TextColor.GOLD), page -> "/page " + page);
+    .build(TITLE, (value, index) -> Collections.singleton(value == null ? TextComponent.of("<null>") : TextComponent.of(value, TextColor.GOLD)), page -> "/page " + page);
   private static final List<String> CONTENT_0 = Collections.emptyList();
   private static final List<String> CONTENT_2 = content(2);
   private static final List<String> CONTENT_14 = content(14);

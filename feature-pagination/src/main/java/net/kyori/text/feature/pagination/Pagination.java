@@ -23,9 +23,9 @@
  */
 package net.kyori.text.feature.pagination;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.IntFunction;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.event.ClickEvent;
@@ -216,8 +216,22 @@ public interface Pagination<T> {
        * @param index the index
        * @return the rendered row
        */
-      @NonNull Component renderRow(final @Nullable T value, final int index);
+      @NonNull Collection<Component> renderRow(final @Nullable T value, final int index);
     }
+  }
+
+  /**
+   * A page command function.
+   */
+  @FunctionalInterface
+  interface PageCommandFunction {
+    /**
+     * Gets the command to display the page.
+     *
+     * @param page the page
+     * @return the command
+     */
+    @NonNull String pageCommand(final int page);
   }
 
   /**
@@ -283,7 +297,7 @@ public interface Pagination<T> {
      * @throws IllegalStateException if the title has not been set
      * @throws IllegalStateException if the row renderer has not been set
      */
-    <T> @NonNull Pagination<T> build(final @NonNull Component title, final Renderer.@NonNull RowRenderer<T> rowRenderer, final @NonNull IntFunction<String> pageCommand);
+    <T> @NonNull Pagination<T> build(final @NonNull Component title, final Renderer.@NonNull RowRenderer<T> rowRenderer, final @NonNull PageCommandFunction pageCommand);
 
     /**
      * A builder for a character and style pair.

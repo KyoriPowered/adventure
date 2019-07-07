@@ -28,7 +28,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.IntFunction;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.event.ClickEvent;
@@ -54,9 +53,9 @@ final class PaginationImpl<T> implements Pagination<T> {
 
   private final Component title;
   private final Renderer.RowRenderer<T> rowRenderer;
-  private final IntFunction<String> pageCommand;
+  private final PageCommandFunction pageCommand;
 
-  PaginationImpl(final int width, final int resultsPerPage, final @NonNull Renderer renderer, final char lineCharacter, final @NonNull Style lineStyle, final char previousPageButtonCharacter, final @NonNull Style previousPageButtonStyle, final char nextPageButtonCharacter, final @NonNull Style nextPageButtonStyle, final @NonNull Component title, final Renderer.@NonNull RowRenderer<T> rowRenderer, final @NonNull IntFunction<String> pageCommand) {
+  PaginationImpl(final int width, final int resultsPerPage, final @NonNull Renderer renderer, final char lineCharacter, final @NonNull Style lineStyle, final char previousPageButtonCharacter, final @NonNull Style previousPageButtonStyle, final char nextPageButtonCharacter, final @NonNull Style nextPageButtonStyle, final @NonNull Component title, final Renderer.@NonNull RowRenderer<T> rowRenderer, final @NonNull PageCommandFunction pageCommand) {
     this.width = width;
     this.resultsPerPage = resultsPerPage;
     this.renderer = renderer;
@@ -90,7 +89,7 @@ final class PaginationImpl<T> implements Pagination<T> {
     components.add(this.renderHeader(page, pages));
 
     for(int i = this.resultsPerPage * (page - 1); i < this.resultsPerPage * page && i < size; i++) {
-      components.add(this.rowRenderer.renderRow(content.get(i), i));
+      components.addAll(this.rowRenderer.renderRow(content.get(i), i));
     }
 
     components.add(this.renderFooter(page, pages));
@@ -138,7 +137,7 @@ final class PaginationImpl<T> implements Pagination<T> {
 
     final TextComponent.Builder buttons = TextComponent.builder();
     if(hasPreviousPage) {
-      buttons.append(this.renderer.renderPreviousPageButton(this.previousPageButtonCharacter, this.previousPageButtonStyle, ClickEvent.runCommand(this.pageCommand.apply(page - 1))));
+      buttons.append(this.renderer.renderPreviousPageButton(this.previousPageButtonCharacter, this.previousPageButtonStyle, ClickEvent.runCommand(this.pageCommand.pageCommand(page - 1))));
 
       if(hasNextPage) {
         buttons.append(this.line(8));
@@ -146,7 +145,7 @@ final class PaginationImpl<T> implements Pagination<T> {
     }
 
     if(hasNextPage) {
-      buttons.append(this.renderer.renderNextPageButton(this.nextPageButtonCharacter, this.nextPageButtonStyle, ClickEvent.runCommand(this.pageCommand.apply(page + 1))));
+      buttons.append(this.renderer.renderNextPageButton(this.nextPageButtonCharacter, this.nextPageButtonStyle, ClickEvent.runCommand(this.pageCommand.pageCommand(page + 1))));
     }
 
     return buttons.build();
