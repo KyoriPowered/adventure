@@ -244,6 +244,14 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param args the translation arguments
    * @return this component
    */
+  @NonNull TranslatableComponent args(final @NonNull Component@NonNull... args);
+
+  /**
+   * Sets the translation arguments for this component.
+   *
+   * @param args the translation arguments
+   * @return this component
+   */
   @NonNull TranslatableComponent args(final @NonNull List<? extends Component> args);
 
   /**

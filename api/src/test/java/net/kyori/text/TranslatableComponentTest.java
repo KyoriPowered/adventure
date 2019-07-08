@@ -24,10 +24,12 @@
 package net.kyori.text;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.truth.Truth;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -103,6 +105,15 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
     final TranslatableComponent c1 = c0.key("multiplayer.player.joined");
     assertEquals("multiplayer.player.left", c0.key());
     assertEquals("multiplayer.player.joined", c1.key());
+  }
+
+  @Test
+  void testArgs() {
+    final TranslatableComponent c0 = TranslatableComponent.of("multiplayer.player.left");
+    final Component a0 = TextComponent.of("foo");
+    final TranslatableComponent c1 = c0.args(a0);
+    assertThat(c0.args()).isEmpty();
+    assertThat(c1.args()).containsExactly(a0).inOrder();
   }
 
   @Test

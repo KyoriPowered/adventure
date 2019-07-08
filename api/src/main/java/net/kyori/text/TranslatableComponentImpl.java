@@ -42,6 +42,12 @@ class TranslatableComponentImpl extends AbstractComponent implements Translatabl
   private final String key;
   private final List<Component> args;
 
+  protected TranslatableComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String key, final @NonNull Component@NonNull[] args) {
+    super(children, style);
+    this.key = key;
+    this.args = Collections.unmodifiableList(Arrays.asList(args));
+  }
+
   protected TranslatableComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String key, final @NonNull List<? extends Component> args) {
     super(children, style);
     this.key = key;
@@ -61,6 +67,11 @@ class TranslatableComponentImpl extends AbstractComponent implements Translatabl
   @Override
   public @NonNull List<Component> args() {
     return Collections.unmodifiableList(this.args);
+  }
+
+  @Override
+  public @NonNull TranslatableComponent args(final @NonNull Component@NonNull... args) {
+    return new TranslatableComponentImpl(this.children, this.style, this.key, args);
   }
 
   @Override
