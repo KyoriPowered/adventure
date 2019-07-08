@@ -23,6 +23,7 @@
  */
 package net.kyori.text;
 
+import java.util.Collections;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.Style;
@@ -243,6 +244,16 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param that the other component
    * @return this builder
    */
+  @NonNull B mergeStyle(final @NonNull Component that, final @NonNull Set<Style.Merge> merges);
+
+  /**
+   * Merges styling from another component into this component.
+   *
+   * @param that the other component
+   * @return this builder
+   * @deprecated use {@link #mergeStyle(Component, Set)}
+   */
+  @Deprecated
   @SuppressWarnings("unchecked")
   default @NonNull B mergeStyle(final @NonNull Component that) {
     this.mergeColor(that);
@@ -256,11 +267,11 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    *
    * @param that the other component
    * @return this builder
+   * @deprecated use {@link #mergeStyle(Component, Set)}
    */
-  @SuppressWarnings("unchecked")
+  @Deprecated
   default @NonNull B mergeColor(final @NonNull Component that) {
-    if(that.color() != null) this.color(that.color());
-    return (B) this;
+    return this.mergeStyle(that, Collections.singleton(Style.Merge.COLOR));
   }
 
   /**
@@ -268,14 +279,11 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    *
    * @param that the other component
    * @return this builder
+   * @deprecated use {@link #mergeStyle(Component, Set)}
    */
-  @SuppressWarnings("unchecked")
+  @Deprecated
   default @NonNull B mergeDecorations(final @NonNull Component that) {
-    for(final TextDecoration decoration : TextDecoration.values()) {
-      final TextDecoration.State state = that.decoration(decoration);
-      if(state != TextDecoration.State.NOT_SET) this.decoration(decoration, state);
-    }
-    return (B) this;
+    return this.mergeStyle(that, Collections.singleton(Style.Merge.DECORATIONS));
   }
 
   /**
@@ -283,13 +291,11 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    *
    * @param that the other component
    * @return this builder
+   * @deprecated use {@link #mergeStyle(Component, Set)}
    */
-  @SuppressWarnings("unchecked")
+  @Deprecated
   default @NonNull B mergeEvents(final @NonNull Component that) {
-    if(that.clickEvent() != null) this.clickEvent(that.clickEvent());
-    final HoverEvent hoverEvent = that.hoverEvent();
-    if(hoverEvent != null) this.hoverEvent(hoverEvent);
-    return (B) this;
+    return this.mergeStyle(that, Collections.singleton(Style.Merge.EVENTS));
   }
 
   /**

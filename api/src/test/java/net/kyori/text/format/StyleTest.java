@@ -23,17 +23,82 @@
  */
 package net.kyori.text.format;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.testing.EqualsTester;
+import net.kyori.text.event.ClickEvent;
 import org.junit.jupiter.api.Test;
 
+import static net.kyori.text.TextAssertions.assertDecorations;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class StyleTest {
+  @Test
+  void testSanity() {
+    final Style c0 = Style.empty();
+    assertNull(c0.color());
+    assertDecorations(c0, ImmutableMap.of());
+    assertNull(c0.clickEvent());
+    assertNull(c0.hoverEvent());
+    assertNull(c0.insertion());
+  }
+
   @Test
   void testColorIfAbsent() {
     assertEquals(TextColor.GREEN, Style.of(TextColor.GREEN).color());
     assertEquals(TextColor.GREEN, Style.of(TextColor.GREEN).colorIfAbsent(TextColor.RED).color());
     assertEquals(TextColor.RED, Style.empty().colorIfAbsent(TextColor.RED).color());
+  }
+
+  @Test
+  void testMerge_color() {
+    final Style s0 = Style.empty();
+    final Style s1 = merge(s0, Style.Merge.COLOR);
+    assertEquals(TextColor.RED, s1.color());
+    assertDecorations(s1, ImmutableMap.of());
+    assertNull(s1.clickEvent());
+    assertEquals(s0, s1.color(null));
+  }
+
+  @Test
+  void testMerge_decorations() {
+    final Style s0 = Style.empty();
+    final Style s1 = merge(s0, Style.Merge.DECORATIONS);
+    assertNull(s1.color());
+    assertDecorations(s1, ImmutableMap.of(TextDecoration.BOLD, TextDecoration.State.TRUE));
+    assertNull(s1.clickEvent());
+    assertEquals(s0, s1.decoration(TextDecoration.BOLD, TextDecoration.State.NOT_SET));
+  }
+
+  @Test
+  void testMerge_events() {
+    final Style s0 = Style.empty();
+    final Style s1 = merge(s0, Style.Merge.EVENTS);
+    assertNull(s1.color());
+    assertDecorations(s1, ImmutableMap.of());
+    assertNotNull(s1.clickEvent());
+    assertEquals(s0, s1.clickEvent(null));
+  }
+
+  @Test
+  void testMerge_insertion() {
+    final Style s0 = Style.empty();
+    final Style s1 = merge(s0, Style.Merge.INSERTION);
+    assertNull(s1.color());
+    assertDecorations(s1, ImmutableMap.of());
+    assertEquals("abc", s1.insertion());
+    assertEquals(s0, s1.insertion(null));
+  }
+
+  private static Style merge(final Style a, final Style.Merge merge) {
+    final Style b = Style.builder()
+      .color(TextColor.RED)
+      .decoration(TextDecoration.BOLD, true)
+      .clickEvent(ClickEvent.runCommand("/foo"))
+      .insertion("abc")
+      .build();
+    return a.merge(b, merge);
   }
 
   @Test
