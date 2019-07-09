@@ -108,7 +108,7 @@ public interface Pagination<T> {
    * @param page the page number
    * @return the rendered results
    */
-  @NonNull List<? extends Component> render(final @NonNull List<? extends T> content, final int page);
+  @NonNull List<Component> render(final @NonNull Collection<? extends T> content, final int page);
 
   /**
    * A pagination renderer.

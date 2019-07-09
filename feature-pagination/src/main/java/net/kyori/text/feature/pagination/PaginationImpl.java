@@ -24,6 +24,7 @@
 package net.kyori.text.feature.pagination;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -71,38 +72,24 @@ final class PaginationImpl<T> implements Pagination<T> {
   }
 
   @Override
-  public @NonNull List<? extends Component> render(final @NonNull List<? extends T> content, final int page) {
-    final int size = content.size();
-
-    if(size == 0) {
+  public @NonNull List<Component> render(final @NonNull Collection<? extends T> content, final int page) {
+    if(content.isEmpty()) {
       return Collections.singletonList(this.renderer.renderEmpty());
     }
 
-    final int pages = this.pages(size);
+    final int pages = pages(this.resultsPerPage, content.size());
 
-    if(page <= 0 || page > pages) {
+    if(!pageInRange(page, pages)) {
       return Collections.singletonList(this.renderer.renderUnknownPage(page, pages));
     }
 
     final List<Component> components = new ArrayList<>();
-
     components.add(this.renderHeader(page, pages));
-
-    for(int i = this.resultsPerPage * (page - 1); i < this.resultsPerPage * page && i < size; i++) {
-      components.addAll(this.rowRenderer.renderRow(content.get(i), i));
-    }
-
+    Paginator.forEachPageEntry(content, this.resultsPerPage, page, (value, index) -> {
+      components.addAll(this.rowRenderer.renderRow(value, index));
+    });
     components.add(this.renderFooter(page, pages));
-
     return Collections.unmodifiableList(components);
-  }
-
-  private int pages(final int size) {
-    int pages = size / this.resultsPerPage + 1;
-    if(size % this.resultsPerPage == 0) {
-      pages--;
-    }
-    return pages;
   }
 
   private Component renderHeader(final int page, final int pages) {
@@ -156,10 +143,10 @@ final class PaginationImpl<T> implements Pagination<T> {
   }
 
   private @NonNull Component line(final int characters) {
-    return TextComponent.of(repeat(this.lineCharacter, characters), this.lineStyle);
+    return TextComponent.of(repeat(String.valueOf(this.lineCharacter), characters), this.lineStyle);
   }
 
-  private static int length(final @NonNull Component component) {
+  static int length(final @NonNull Component component) {
     int length = 0;
     if(component instanceof TextComponent) {
       length += ((TextComponent) component).content().length();
@@ -170,12 +157,20 @@ final class PaginationImpl<T> implements Pagination<T> {
     return length;
   }
 
-  private static @NonNull String repeat(final char character, final int count) {
-    return repeat(String.valueOf(character), count);
+  static @NonNull String repeat(final @NonNull String character, final int count) {
+    return String.join("", Collections.nCopies(count, character));
   }
 
-  private static @NonNull String repeat(final @NonNull String character, final int count) {
-    return String.join("", Collections.nCopies(count, character));
+  static int pages(final int pageSize, final int count) {
+    final int pages = count / pageSize + 1;
+    if(count % pageSize == 0) {
+      return pages - 1;
+    }
+    return pages;
+  }
+
+  static boolean pageInRange(final int page, final int pages) {
+    return page > 0 && page <= pages;
   }
 
   @Override
@@ -194,5 +189,41 @@ final class PaginationImpl<T> implements Pagination<T> {
     builder.put("rowRenderer", this.rowRenderer);
     builder.put("pageCommand", this.pageCommand);
     return ToStringer.toString(this, builder);
+  }
+
+  @Override
+  public boolean equals(final Object other) {
+    if(this == other) return true;
+    if(other == null || this.getClass() != other.getClass()) return false;
+    final PaginationImpl<?> that = (PaginationImpl<?>) other;
+    if(this.width != that.width) return false;
+    if(this.resultsPerPage != that.resultsPerPage) return false;
+    if(this.lineCharacter != that.lineCharacter) return false;
+    if(this.previousPageButtonCharacter != that.previousPageButtonCharacter) return false;
+    if(this.nextPageButtonCharacter != that.nextPageButtonCharacter) return false;
+    if(!this.renderer.equals(that.renderer)) return false;
+    if(!this.lineStyle.equals(that.lineStyle)) return false;
+    if(!this.previousPageButtonStyle.equals(that.previousPageButtonStyle)) return false;
+    if(!this.nextPageButtonStyle.equals(that.nextPageButtonStyle)) return false;
+    if(!this.title.equals(that.title)) return false;
+    if(!this.rowRenderer.equals(that.rowRenderer)) return false;
+    return this.pageCommand.equals(that.pageCommand);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = this.width;
+    result = 31 * result + this.resultsPerPage;
+    result = 31 * result + this.renderer.hashCode();
+    result = 31 * result + (int) this.lineCharacter;
+    result = 31 * result + this.lineStyle.hashCode();
+    result = 31 * result + (int) this.previousPageButtonCharacter;
+    result = 31 * result + this.previousPageButtonStyle.hashCode();
+    result = 31 * result + (int) this.nextPageButtonCharacter;
+    result = 31 * result + this.nextPageButtonStyle.hashCode();
+    result = 31 * result + this.title.hashCode();
+    result = 31 * result + this.rowRenderer.hashCode();
+    result = 31 * result + this.pageCommand.hashCode();
+    return result;
   }
 }
