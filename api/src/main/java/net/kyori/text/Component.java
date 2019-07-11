@@ -126,6 +126,27 @@ public interface Component {
    * Merges from another style into this component's style.
    *
    * @param that the other style
+   * @return a component
+   */
+  default @NonNull Component mergeStyle(final @NonNull Component that) {
+    return this.mergeStyle(that, Style.Merge.all());
+  }
+
+  /**
+   * Merges from another style into this component's style.
+   *
+   * @param that the other style
+   * @param merges the style parts to merge
+   * @return a component
+   */
+  default @NonNull Component mergeStyle(final @NonNull Component that, final Style.@NonNull Merge@NonNull... merges) {
+    return this.mergeStyle(that, Style.Merge.of(merges));
+  }
+
+  /**
+   * Merges from another style into this component's style.
+   *
+   * @param that the other style
    * @param merges the style parts to merge
    * @return a component
    */

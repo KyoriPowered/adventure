@@ -23,6 +23,12 @@
  */
 package net.kyori.text.format;
 
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import net.kyori.text.Component;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
@@ -30,17 +36,11 @@ import net.kyori.text.util.ToStringer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-
 import static java.util.Objects.requireNonNull;
 
 public final class Style {
-  private static final Style EMPTY = new Style(null, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null);;
+  private static final Style EMPTY = new Style(null, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null);
+  private static final TextDecoration[] DECORATIONS = TextDecoration.values();
   private final @Nullable TextColor color;
   private final TextDecoration.State obfuscated;
   private final TextDecoration.State bold;
@@ -233,7 +233,7 @@ public final class Style {
    */
   public @NonNull Set<TextDecoration> decorations(final @NonNull Set<TextDecoration> defaultValues) {
     final Set<TextDecoration> decorations = EnumSet.noneOf(TextDecoration.class);
-    for(final TextDecoration decoration : TextDecoration.values()) {
+    for(final TextDecoration decoration : DECORATIONS) {
       final TextDecoration.State value = this.decoration(decoration);
       if(value == TextDecoration.State.TRUE || (value == TextDecoration.State.NOT_SET && defaultValues.contains(decoration))) {
         decorations.add(decoration);
@@ -306,7 +306,7 @@ public final class Style {
    * @return a style
    */
   public @NonNull Style merge(final @NonNull Style that) {
-    return this.merge(that, Merge.ALL);
+    return this.merge(that, Merge.all());
   }
 
   /**
@@ -328,26 +328,13 @@ public final class Style {
    * @return a style
    */
   public @NonNull Style merge(final @NonNull Style that, final @NonNull Set<Merge> merges) {
-    final TextColor color = merges.contains(Merge.COLOR) && that.color != null ? that.color : this.color;
-    final TextDecoration.State obfuscated = this.maybeMergeDecoration(that, merges, TextDecoration.OBFUSCATED);
-    final TextDecoration.State bold = this.maybeMergeDecoration(that, merges, TextDecoration.BOLD);
-    final TextDecoration.State strikethrough = this.maybeMergeDecoration(that, merges, TextDecoration.STRIKETHROUGH);
-    final TextDecoration.State underlined = this.maybeMergeDecoration(that, merges, TextDecoration.UNDERLINED);
-    final TextDecoration.State italic = this.maybeMergeDecoration(that, merges, TextDecoration.ITALIC);
-    final ClickEvent clickEvent = merges.contains(Merge.EVENTS) && that.clickEvent != null ? that.clickEvent : this.clickEvent;
-    final HoverEvent hoverEvent = merges.contains(Merge.EVENTS) && that.hoverEvent != null ? that.hoverEvent : this.hoverEvent;
-    final String insertion = merges.contains(Merge.INSERTION) && that.insertion != null ? that.insertion : this.insertion;
-    return new Style(color, obfuscated, bold, strikethrough, underlined, italic, clickEvent, hoverEvent, insertion);
-  }
-
-  private TextDecoration.@NonNull State maybeMergeDecoration(final @NonNull Style that, final @NonNull Set<Merge> merges, final TextDecoration decoration) {
-    if(merges.contains(Merge.DECORATIONS)) {
-      final TextDecoration.State state = that.decoration(decoration);
-      if(state != TextDecoration.State.NOT_SET) {
-        return state;
-      }
+    if(merges.isEmpty() || that.isEmpty()) {
+      return this;
     }
-    return this.decoration(decoration);
+
+    final Builder builder = this.toBuilder();
+    builder.merge(that, merges);
+    return builder.build();
   }
 
   /**
@@ -460,10 +447,25 @@ public final class Style {
 
     static final Set<Merge> ALL = of(Merge.values());
 
-    static @NonNull Set<Merge> of(final Merge... merges) {
+    /**
+     * Gets a merge set of all merge types.
+     *
+     * @return a merge set
+     */
+    public static @NonNull Set<Merge> all() {
+      return ALL;
+    }
+
+    /**
+     * Creates a merge set.
+     *
+     * @param merges the merge parts
+     * @return a merge set
+     */
+    public static @NonNull Set<Merge> of(final Merge... merges) {
       final Set<Merge> set = EnumSet.noneOf(Merge.class);
       Collections.addAll(set, merges);
-      return set;
+      return Collections.unmodifiableSet(set);
     }
   }
 
@@ -624,7 +626,7 @@ public final class Style {
      * @return a style
      */
     public @NonNull Builder merge(final @NonNull Style that) {
-      return this.merge(that, Merge.ALL);
+      return this.merge(that, Merge.all());
     }
 
     /**
@@ -634,7 +636,7 @@ public final class Style {
      * @param merges the parts to merge
      * @return a style
      */
-    public @NonNull Builder merge(final @NonNull Style that, final @NonNull Merge@NonNull... merges) {
+    public @NonNull Builder merge(final @NonNull Style that, final @NonNull Merge @NonNull ... merges) {
       return this.merge(that, Merge.of(merges));
     }
 
@@ -646,28 +648,31 @@ public final class Style {
      * @return a style
      */
     public @NonNull Builder merge(final @NonNull Style that, final @NonNull Set<Merge> merges) {
-      if(merges.contains(Merge.COLOR) && that.color != null) this.color = that.color;
-      if(merges.contains(Merge.DECORATIONS)) {
-        if(hasDecoration(that, merges, TextDecoration.OBFUSCATED)) this.obfuscated = that.decoration(TextDecoration.OBFUSCATED);
-        if(hasDecoration(that, merges, TextDecoration.BOLD)) this.bold = that.decoration(TextDecoration.BOLD);
-        if(hasDecoration(that, merges, TextDecoration.STRIKETHROUGH)) this.strikethrough = that.decoration(TextDecoration.STRIKETHROUGH);
-        if(hasDecoration(that, merges, TextDecoration.UNDERLINED)) this.underlined = that.decoration(TextDecoration.UNDERLINED);
-        if(hasDecoration(that, merges, TextDecoration.ITALIC)) this.italic = that.decoration(TextDecoration.ITALIC);
+      if(merges.contains(Merge.COLOR)) {
+        final TextColor color = that.color();
+        if(color != null) this.color(color);
       }
-      if(merges.contains(Merge.EVENTS) && that.clickEvent != null) this.clickEvent = that.clickEvent;
-      if(merges.contains(Merge.EVENTS) && that.hoverEvent != null) this.hoverEvent = that.hoverEvent;
-      if(merges.contains(Merge.INSERTION) && that.insertion != null) this.insertion = that.insertion;
-      return this;
-    }
 
-    private static boolean hasDecoration(final @NonNull Style that, final @NonNull Set<Merge> merges, final TextDecoration decoration) {
       if(merges.contains(Merge.DECORATIONS)) {
-        final TextDecoration.State state = that.decoration(decoration);
-        if(state != TextDecoration.State.NOT_SET) {
-          return true;
+        for(final TextDecoration decoration : DECORATIONS) {
+          final TextDecoration.State state = that.decoration(decoration);
+          if(state != TextDecoration.State.NOT_SET) this.decoration(decoration, state);
         }
       }
-      return false;
+
+      if(merges.contains(Merge.EVENTS)) {
+        final ClickEvent clickEvent = that.clickEvent();
+        if(clickEvent != null) this.clickEvent(clickEvent);
+
+        final HoverEvent hoverEvent = that.hoverEvent();
+        if(hoverEvent != null) this.hoverEvent(hoverEvent);
+      }
+
+      if(merges.contains(Merge.INSERTION)) {
+        this.insertion(that.insertion());
+      }
+
+      return this;
     }
 
     /**

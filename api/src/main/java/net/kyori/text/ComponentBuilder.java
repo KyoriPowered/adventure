@@ -244,23 +244,29 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param that the other component
    * @return this builder
    */
-  @NonNull B mergeStyle(final @NonNull Component that, final @NonNull Set<Style.Merge> merges);
+  default @NonNull B mergeStyle(final @NonNull Component that) {
+    return this.mergeStyle(that, Style.Merge.all());
+  }
 
   /**
    * Merges styling from another component into this component.
    *
    * @param that the other component
+   * @param merges the parts to merge
    * @return this builder
-   * @deprecated use {@link #mergeStyle(Component, Set)}
    */
-  @Deprecated
-  @SuppressWarnings("unchecked")
-  default @NonNull B mergeStyle(final @NonNull Component that) {
-    this.mergeColor(that);
-    this.mergeDecorations(that);
-    this.mergeEvents(that);
-    return (B) this;
+  default @NonNull B mergeStyle(final @NonNull Component that, final Style.@NonNull Merge@NonNull... merges) {
+    return this.mergeStyle(that, Style.Merge.of(merges));
   }
+
+  /**
+   * Merges styling from another component into this component.
+   *
+   * @param that the other component
+   * @param merges the parts to merge
+   * @return this builder
+   */
+  @NonNull B mergeStyle(final @NonNull Component that, final @NonNull Set<Style.Merge> merges);
 
   /**
    * Merges the color from another component into this component.

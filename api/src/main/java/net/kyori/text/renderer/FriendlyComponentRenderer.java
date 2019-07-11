@@ -31,6 +31,7 @@ import net.kyori.text.SelectorComponent;
 import net.kyori.text.TextComponent;
 import net.kyori.text.TranslatableComponent;
 import net.kyori.text.event.HoverEvent;
+import net.kyori.text.format.Style;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -85,8 +86,7 @@ public abstract class FriendlyComponentRenderer<C> implements ComponentRenderer<
   }
 
   private <B extends ComponentBuilder<?, ?>> void mergeStyle(final Component component, final B builder, final C context) {
-    builder.mergeColor(component);
-    builder.mergeDecorations(component);
+    builder.mergeStyle(component, Style.Merge.of(Style.Merge.COLOR, Style.Merge.DECORATIONS));
     builder.clickEvent(component.clickEvent());
     Optional.ofNullable(component.hoverEvent()).ifPresent(hoverEvent -> {
       builder.hoverEvent(HoverEvent.of(
