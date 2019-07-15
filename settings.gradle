@@ -3,6 +3,9 @@ rootProject.name = 'text-parent'
 include 'api'
 findProject(':api')?.name = 'text-api'
 
+include 'feature-pagination'
+findProject(':feature-pagination')?.name = 'text-feature-pagination'
+
 include 'serializer-gson'
 findProject(':serializer-gson')?.name = 'text-serializer-gson'
 
