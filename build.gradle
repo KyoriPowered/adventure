@@ -17,7 +17,7 @@ subprojects {
   apply plugin: 'net.minecrell.licenser'
 
   group 'net.kyori'
-  version '3.0.2-SNAPSHOT'
+  version '3.0.2'
 
   sourceCompatibility = 1.8
   targetCompatibility = 1.8
