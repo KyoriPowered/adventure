@@ -23,14 +23,18 @@
  */
 package net.kyori.text.feature.pagination;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.format.Style;
 import net.kyori.text.util.ToStringer;
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.util.*;
 
 final class PaginationImpl<T> implements Pagination<T> {
   private static final int LINE_CHARACTER_LENGTH = 1;

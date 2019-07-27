@@ -23,6 +23,10 @@
  */
 package net.kyori.text.feature.pagination;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Consumer;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.event.ClickEvent;
@@ -32,11 +36,6 @@ import net.kyori.text.format.TextColor;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * Pagination.

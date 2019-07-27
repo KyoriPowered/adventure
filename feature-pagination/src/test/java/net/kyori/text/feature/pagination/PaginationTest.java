@@ -23,17 +23,16 @@
  */
 package net.kyori.text.feature.pagination;
 
-import net.kyori.text.Component;
-import net.kyori.text.TextComponent;
-import net.kyori.text.format.TextColor;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.jupiter.api.Test;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import net.kyori.text.Component;
+import net.kyori.text.TextComponent;
+import net.kyori.text.format.TextColor;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
