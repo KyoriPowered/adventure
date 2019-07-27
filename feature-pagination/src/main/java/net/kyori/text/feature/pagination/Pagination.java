@@ -23,9 +23,6 @@
  */
 package net.kyori.text.feature.pagination;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.function.Consumer;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.event.ClickEvent;
@@ -35,6 +32,11 @@ import net.kyori.text.format.TextColor;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Pagination.
@@ -200,6 +202,14 @@ public interface Pagination<T> {
         .append(GRAY_RIGHT_SQUARE_BRACKET)
         .append(TextComponent.space())
         .build();
+    }
+
+    default @NonNull Component renderLine(final char character, final @NonNull Style style, final int length) {
+      return TextComponent.of(repeat(String.valueOf(character), length), style);
+    }
+
+    static @NonNull String repeat(final @NonNull String character, final int count) {
+      return String.join("", Collections.nCopies(count, character));
     }
 
     /**

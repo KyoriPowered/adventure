@@ -23,18 +23,14 @@
  */
 package net.kyori.text.feature.pagination;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.format.Style;
 import net.kyori.text.util.ToStringer;
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import java.util.*;
 
 final class PaginationImpl<T> implements Pagination<T> {
   private static final int LINE_CHARACTER_LENGTH = 1;
@@ -94,7 +90,7 @@ final class PaginationImpl<T> implements Pagination<T> {
 
   private Component renderHeader(final int page, final int pages) {
     final Component header = this.renderer.renderHeader(this.title, page, pages);
-    final Component dashes = this.line(header);
+    final Component dashes = this.renderer.renderLine(this.lineCharacter, this.lineStyle, bisect(this.width, header));
 
     return TextComponent.builder()
       .append(dashes)
@@ -105,11 +101,11 @@ final class PaginationImpl<T> implements Pagination<T> {
 
   private Component renderFooter(final int page, final int pages) {
     if(page == 1 && page == pages) {
-      return this.line(this.width);
+      return this.renderer.renderLine(this.lineCharacter, this.lineStyle, this.width);
     }
 
     final Component buttons = this.renderFooterButtons(page, pages);
-    final Component dashes = this.line(buttons);
+    final Component dashes = this.renderer.renderLine(this.lineCharacter, this.lineStyle, bisect(this.width, buttons));
 
     return TextComponent.builder()
       .append(dashes)
@@ -127,7 +123,7 @@ final class PaginationImpl<T> implements Pagination<T> {
       buttons.append(this.renderer.renderPreviousPageButton(this.previousPageButtonCharacter, this.previousPageButtonStyle, ClickEvent.runCommand(this.pageCommand.pageCommand(page - 1))));
 
       if(hasNextPage) {
-        buttons.append(this.line(8));
+        buttons.append(this.renderer.renderLine(this.lineCharacter, this.lineStyle, 8));
       }
     }
 
@@ -138,12 +134,8 @@ final class PaginationImpl<T> implements Pagination<T> {
     return buttons.build();
   }
 
-  private @NonNull Component line(final @NonNull Component component) {
-    return this.line((this.width - length(component)) / (LINE_CHARACTER_LENGTH * 2));
-  }
-
-  private @NonNull Component line(final int characters) {
-    return TextComponent.of(repeat(String.valueOf(this.lineCharacter), characters), this.lineStyle);
+  private static int bisect(final int totalSize, final @NonNull Component component) {
+    return totalSize - length(component) / (LINE_CHARACTER_LENGTH * 2);
   }
 
   static int length(final @NonNull Component component) {
@@ -155,10 +147,6 @@ final class PaginationImpl<T> implements Pagination<T> {
       length += length(child);
     }
     return length;
-  }
-
-  static @NonNull String repeat(final @NonNull String character, final int count) {
-    return String.join("", Collections.nCopies(count, character));
   }
 
   static int pages(final int pageSize, final int count) {

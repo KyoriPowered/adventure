@@ -26,9 +26,7 @@ package net.kyori.text.feature.pagination;
 import net.kyori.text.TextComponent;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class PaginationImplTest {
   @Test
@@ -41,12 +39,6 @@ class PaginationImplTest {
         .append(TextComponent.of("def"))
       .build()
     ));
-  }
-
-  @Test
-  void testRepeat() {
-    assertEquals("aaa", PaginationImpl.repeat("a", 3));
-    assertEquals("abcabcabc", PaginationImpl.repeat("abc", 3));
   }
 
   @Test

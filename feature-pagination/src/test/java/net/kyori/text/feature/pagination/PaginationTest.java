@@ -23,16 +23,17 @@
  */
 package net.kyori.text.feature.pagination;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.format.TextColor;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -63,6 +64,12 @@ class PaginationTest {
     final List<? extends Component> rendered = PAGINATION.render(CONTENT_0, 1);
     assertEquals(1, rendered.size());
     assertEquals(EMPTY, rendered.get(0));
+  }
+
+  @Test
+  void testRepeat() {
+    assertEquals("aaa", Pagination.Renderer.repeat("a", 3));
+    assertEquals("abcabcabc", Pagination.Renderer.repeat("abc", 3));
   }
 
   @Test
