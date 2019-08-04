@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class JacksonComponentSerializer implements ComponentSerializer<Component, Component, String> {
     public static final JacksonComponentSerializer INSTANCE = new JacksonComponentSerializer();
-    static final ObjectMapper MAPPER = new ObjectMapper().registerModule(new KyoriModule());
+    static final ObjectMapper MAPPER = new ObjectMapper().registerModule(new KyoriTextModule());
 
     @NonNull
     @Override
