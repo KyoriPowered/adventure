@@ -13,7 +13,7 @@ import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 
-public class KyoriModule extends Module implements java.io.Serializable {
+public class KyoriTextModule extends Module implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
 
     private static final Version VERSION = VersionUtil.parseVersion("3.0.2", "net.kyori", "text-serializer-jackson");
