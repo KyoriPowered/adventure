@@ -77,7 +77,7 @@ class BlockNbtComponentTest extends AbstractComponentTest<BlockNbtComponent> {
   void testLocalPosNoDecimal() throws IOException {
     assertEquals(
       BlockNbtComponent.LocalPos.of(1.0d, 2.0d, 3.89d),
-      JacksonComponentSerializer.MAPPER.readValue("^1 ^2 ^3.89", BlockNbtComponent.Pos.class)
+      JacksonComponentSerializer.MAPPER.convertValue("^1 ^2 ^3.89", BlockNbtComponent.Pos.class)
     );
   }
 }

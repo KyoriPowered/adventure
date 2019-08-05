@@ -23,7 +23,6 @@
  */
 package net.kyori.text.serializer.jackson;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
@@ -31,13 +30,13 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ComponentSerializerTest {
   @Test
   void testDeserializePrimitive() throws IOException {
-    assertEquals(TextComponent.of("potato"), JacksonComponentSerializer.MAPPER.readValue("potato", Component.class));
+    assertEquals(TextComponent.of("potato"), JacksonComponentSerializer.MAPPER.convertValue("potato", Component.class));
   }
 
   @Test

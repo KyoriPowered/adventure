@@ -133,7 +133,7 @@ public class ComponentDeserializer extends JsonDeserializer<Component> {
             }
         }
 
-        final Style style = p.readValueAs(Style.class);
+        final Style style = json.traverse(p.getCodec()).readValueAs(Style.class);
         if(!style.isEmpty()) {
             component.style(style);
         }
