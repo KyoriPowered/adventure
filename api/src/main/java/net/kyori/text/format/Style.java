@@ -669,7 +669,8 @@ public final class Style {
       }
 
       if(merges.contains(Merge.INSERTION)) {
-        this.insertion(that.insertion());
+        final String insertion = that.insertion();
+        if(insertion != null) this.insertion(insertion);
       }
 
       return this;
