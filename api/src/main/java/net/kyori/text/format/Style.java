@@ -328,6 +328,10 @@ public final class Style {
    * @return a style
    */
   public @NonNull Style merge(final @NonNull Style that, final @NonNull Set<Merge> merges) {
+    if(this.isEmpty()) {
+      return that;
+    }
+
     if(merges.isEmpty() || that.isEmpty()) {
       return this;
     }
