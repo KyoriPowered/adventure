@@ -23,8 +23,8 @@
  */
 package net.kyori.text.serializer.jackson;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import net.kyori.text.Component;
 import net.kyori.text.ScoreComponent;
 import org.junit.jupiter.api.Test;
@@ -56,6 +56,6 @@ class ScoreComponentTest extends AbstractComponentTest<ScoreComponent> {
 
   @Test
   void testDeserialize_withoutObjective() {
-    assertThrows(JsonParseException.class, () -> JacksonComponentSerializer.MAPPER.readValue(object(json -> json.set(ComponentSerializer.SCORE, object(score -> score.put(ComponentSerializer.SCORE_NAME, NAME)))).traverse(JacksonComponentSerializer.MAPPER.getFactory().getCodec()), Component.class));
+    assertThrows(MismatchedInputException.class, () -> JacksonComponentSerializer.MAPPER.readValue(object(json -> json.set(ComponentSerializer.SCORE, object(score -> score.put(ComponentSerializer.SCORE_NAME, NAME)))).traverse(JacksonComponentSerializer.MAPPER.getFactory().getCodec()), Component.class));
   }
 }

@@ -3,7 +3,6 @@ package net.kyori.text.serializer.jackson;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.core.util.VersionUtil;
 import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.module.SimpleDeserializers;
 import com.fasterxml.jackson.databind.module.SimpleSerializers;
 import net.kyori.text.BlockNbtComponent;
 import net.kyori.text.Component;
@@ -31,7 +30,7 @@ public class KyoriTextModule extends Module implements java.io.Serializable {
 
     @Override
     public void setupModule(SetupContext context) {
-        SimpleDeserializers deserializers = new SimpleDeserializers();
+        CustomDeserializers deserializers = new CustomDeserializers();
         deserializers.addDeserializer(BlockNbtComponent.Pos.class, BlockNbtComponentPosDeserializer.INSTANCE);
         deserializers.addDeserializer(Component.class, ComponentDeserializer.INSTANCE);
         deserializers.addDeserializer(ClickEvent.Action.class, NameMapDeserializer.CLICK);

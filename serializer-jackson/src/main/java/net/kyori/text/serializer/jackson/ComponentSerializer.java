@@ -1,9 +1,9 @@
 package net.kyori.text.serializer.jackson;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import net.kyori.text.BlockNbtComponent;
 import net.kyori.text.Component;
 import net.kyori.text.EntityNbtComponent;
@@ -13,9 +13,9 @@ import net.kyori.text.ScoreComponent;
 import net.kyori.text.SelectorComponent;
 import net.kyori.text.TextComponent;
 import net.kyori.text.TranslatableComponent;
-import net.kyori.text.format.Style;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Map;
 
 public class ComponentSerializer extends JsonSerializer<Component> {
@@ -85,8 +85,25 @@ public class ComponentSerializer extends JsonSerializer<Component> {
             gen.writeEndArray();
         }
 
+        //    if(src.hasStyling()) {
+        //      final JsonElement style = context.serialize(src.style());
+        //      if(style.isJsonObject()) {
+        //        for(final Map.Entry<String, JsonElement> entry : ((JsonObject) style).entrySet()) {
+        //          object.add(entry.getKey(), entry.getValue());
+        //        }
+        //      }
+        //    }
         if(value.hasStyling()) {
-            gen.writeObject(value.style());
+            JsonNode jsonNode = JacksonComponentSerializer.MAPPER.valueToTree(value.style());
+            if (jsonNode.isObject()) {
+                Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.fields();
+                while (fields.hasNext()) {
+                    Map.Entry<String, JsonNode> next = fields.next();
+                    gen.writeFieldName(next.getKey());
+                    gen.writeTree(next.getValue());
+                }
+            }
+//            gen.writeObject(value.style());
         }
     }
 }
