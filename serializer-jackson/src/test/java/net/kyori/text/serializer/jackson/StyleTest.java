@@ -23,16 +23,13 @@
  */
 package net.kyori.text.serializer.jackson;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -43,18 +40,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class StyleTest extends AbstractSerializeDeserializeTest<Style> {
   @Test
   void testWithDecorationAsColor() throws IOException {
-    final Style s0 = JacksonComponentSerializer.MAPPER.readValue(AbstractComponentTest.object(object -> {
+    final Style s0 = JacksonComponentSerializer.MAPPER.convertValue(object(object -> {
       object.put(StyleSerializer.COLOR, TextDecoration.NAMES.name(TextDecoration.BOLD));
-    }).traverse(JacksonComponentSerializer.MAPPER.getFactory().getCodec()), Style.class);
+    }), Style.class);
     assertNull(s0.color());
     assertTrue(s0.hasDecoration(TextDecoration.BOLD));
   }
 
   @Test
   void testWithResetAsColor() throws IOException {
-    final Style s0 = JacksonComponentSerializer.MAPPER.readValue(AbstractComponentTest.object(object -> {
+    final Style s0 = JacksonComponentSerializer.MAPPER.convertValue(object(object -> {
       object.put(StyleSerializer.COLOR, "reset");
-    }).traverse(JacksonComponentSerializer.MAPPER.getFactory().getCodec()), Style.class);
+    }), Style.class);
     assertNull(s0.color());
     assertThat(s0.decorations()).isEmpty();
   }
@@ -72,8 +69,8 @@ class StyleTest extends AbstractSerializeDeserializeTest<Style> {
   @Override
   Style deserialize(final JsonNode json) {
     try {
-      return JacksonComponentSerializer.MAPPER.readValue(json.traverse(JacksonComponentSerializer.MAPPER.getFactory().getCodec()), Style.class);
-    } catch (IOException e) {
+      return JacksonComponentSerializer.MAPPER.treeToValue(json, Style.class);
+    } catch (Exception e) {
       throw new RuntimeException("Can't deserialize", e);
     }
   }

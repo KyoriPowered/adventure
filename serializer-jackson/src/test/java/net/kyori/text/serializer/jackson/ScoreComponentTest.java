@@ -56,6 +56,7 @@ class ScoreComponentTest extends AbstractComponentTest<ScoreComponent> {
 
   @Test
   void testDeserialize_withoutObjective() {
+    // should be readValue, because convertValue wraps actual exception as IllegalArgumentException
     assertThrows(MismatchedInputException.class, () -> JacksonComponentSerializer.MAPPER.readValue(object(json -> json.set(ComponentSerializer.SCORE, object(score -> score.put(ComponentSerializer.SCORE_NAME, NAME)))).traverse(JacksonComponentSerializer.MAPPER.getFactory().getCodec()), Component.class));
   }
 }

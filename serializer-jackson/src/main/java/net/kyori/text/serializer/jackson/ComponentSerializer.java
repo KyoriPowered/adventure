@@ -38,6 +38,8 @@ public class ComponentSerializer extends JsonSerializer<Component> {
 
     @Override
     public void serialize(Component value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        gen.writeStartObject();
+
         if(value instanceof TextComponent) {
             gen.writeStringField(TEXT, ((TextComponent) value).content());
         } else if(value instanceof TranslatableComponent) {
@@ -85,14 +87,6 @@ public class ComponentSerializer extends JsonSerializer<Component> {
             gen.writeEndArray();
         }
 
-        //    if(src.hasStyling()) {
-        //      final JsonElement style = context.serialize(src.style());
-        //      if(style.isJsonObject()) {
-        //        for(final Map.Entry<String, JsonElement> entry : ((JsonObject) style).entrySet()) {
-        //          object.add(entry.getKey(), entry.getValue());
-        //        }
-        //      }
-        //    }
         if(value.hasStyling()) {
             JsonNode jsonNode = JacksonComponentSerializer.MAPPER.valueToTree(value.style());
             if (jsonNode.isObject()) {
@@ -103,7 +97,8 @@ public class ComponentSerializer extends JsonSerializer<Component> {
                     gen.writeTree(next.getValue());
                 }
             }
-//            gen.writeObject(value.style());
         }
+
+        gen.writeEndObject();
     }
 }

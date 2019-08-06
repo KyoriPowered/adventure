@@ -27,8 +27,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.reflect.TypeToken;
 import net.kyori.text.Component;
 
-import java.io.IOException;
-
 abstract class AbstractComponentTest<C extends Component> extends AbstractSerializeDeserializeTest<C> {
   @SuppressWarnings("serial")
   private final TypeToken<C> type = new TypeToken<C>(getClass()) {};
@@ -38,7 +36,7 @@ abstract class AbstractComponentTest<C extends Component> extends AbstractSerial
   C deserialize(final JsonNode json) {
     try {
       return (C) JacksonComponentSerializer.MAPPER.treeToValue(json, this.type.getRawType());
-    } catch (IOException e) {
+    } catch (Exception e) {
       throw new RuntimeException("Can't deserialize", e);
     }
   }

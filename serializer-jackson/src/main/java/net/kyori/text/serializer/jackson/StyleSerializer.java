@@ -26,6 +26,8 @@ public class StyleSerializer extends JsonSerializer<Style> {
 
     @Override
     public void serialize(Style value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        gen.writeStartObject();
+
         for(final TextDecoration decoration : DECORATIONS) {
             final TextDecoration.State state = value.decoration(decoration);
             if(state != TextDecoration.State.NOT_SET) {
@@ -59,5 +61,7 @@ public class StyleSerializer extends JsonSerializer<Style> {
             gen.writeObjectField(HOVER_EVENT_VALUE, hoverEvent.value());
             gen.writeEndObject();
         }
+
+        gen.writeEndObject();
     }
 }

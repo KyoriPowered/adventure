@@ -133,7 +133,8 @@ public class ComponentDeserializer extends JsonDeserializer<Component> {
             }
         }
 
-        final Style style = json.traverse(p.getCodec()).readValueAs(Style.class);
+        final Style style = JacksonComponentSerializer.MAPPER.treeToValue(json, Style.class);
+//        final Style style = json.traverse(p.getCodec()).readValueAs(Style.class);
         if(!style.isEmpty()) {
             component.style(style);
         }
