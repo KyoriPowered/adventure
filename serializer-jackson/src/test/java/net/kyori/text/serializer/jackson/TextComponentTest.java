@@ -34,49 +34,49 @@ import java.util.stream.Stream;
 class TextComponentTest extends AbstractComponentTest<TextComponent> {
   @Override
   Stream<Map.Entry<TextComponent, JsonNode>> tests() {
-    return Stream.of(
-      entry(TextComponent.of("Hello, world."), json -> json.put(ComponentSerializer.TEXT, "Hello, world.")),
-      entry(
-        TextComponent.builder("c")
-          .color(TextColor.GOLD)
-          .append(TextComponent.of("o", TextColor.DARK_AQUA))
-          .append(TextComponent.of("l", TextColor.LIGHT_PURPLE))
-          .append(TextComponent.of("o", TextColor.DARK_PURPLE))
-          .append(TextComponent.of("u", TextColor.BLUE))
-          .append(TextComponent.of("r", TextColor.DARK_GREEN))
-          .append(TextComponent.of("s", TextColor.RED))
-          .build(),
-        json -> {
-          json.put(ComponentSerializer.TEXT, "c");
-          json.put(StyleSerializer.COLOR, TextColor.NAMES.name(TextColor.GOLD));
-          json.set(ComponentSerializer.EXTRA, array(extra -> {
-            extra.add(object(item -> {
-              item.put(ComponentSerializer.TEXT, "o");
-              item.put(StyleSerializer.COLOR, TextColor.NAMES.name(TextColor.DARK_AQUA));
-            }));
-            extra.add(object(item -> {
-              item.put(ComponentSerializer.TEXT, "l");
-              item.put(StyleSerializer.COLOR, TextColor.NAMES.name(TextColor.LIGHT_PURPLE));
-            }));
-            extra.add(object(item -> {
-              item.put(ComponentSerializer.TEXT, "o");
-              item.put(StyleSerializer.COLOR, TextColor.NAMES.name(TextColor.DARK_PURPLE));
-            }));
-            extra.add(object(item -> {
-              item.put(ComponentSerializer.TEXT, "u");
-              item.put(StyleSerializer.COLOR, TextColor.NAMES.name(TextColor.BLUE));
-            }));
-            extra.add(object(item -> {
-              item.put(ComponentSerializer.TEXT, "r");
-              item.put(StyleSerializer.COLOR, TextColor.NAMES.name(TextColor.DARK_GREEN));
-            }));
-            extra.add(object(item -> {
-              item.put(ComponentSerializer.TEXT, "s");
-              item.put(StyleSerializer.COLOR, TextColor.NAMES.name(TextColor.RED));
-            }));
-          }));
-        }
-      ),
+      return Stream.of(
+//      entry(TextComponent.of("Hello, world."), json -> json.put(ComponentSerializer.TEXT, "Hello, world.")),
+//      entry(
+//        TextComponent.builder("c")
+//          .color(TextColor.GOLD)
+//          .append(TextComponent.of("o", TextColor.DARK_AQUA))
+//          .append(TextComponent.of("l", TextColor.LIGHT_PURPLE))
+//          .append(TextComponent.of("o", TextColor.DARK_PURPLE))
+//          .append(TextComponent.of("u", TextColor.BLUE))
+//          .append(TextComponent.of("r", TextColor.DARK_GREEN))
+//          .append(TextComponent.of("s", TextColor.RED))
+//          .build(),
+//        json -> {
+//          json.put(ComponentSerializer.TEXT, "c");
+//          json.put(StyleSerializer.COLOR, TextColor.NAMES.name(TextColor.GOLD));
+//          json.set(ComponentSerializer.EXTRA, array(extra -> {
+//            extra.add(object(item -> {
+//              item.put(ComponentSerializer.TEXT, "o");
+//              item.put(StyleSerializer.COLOR, TextColor.NAMES.name(TextColor.DARK_AQUA));
+//            }));
+//            extra.add(object(item -> {
+//              item.put(ComponentSerializer.TEXT, "l");
+//              item.put(StyleSerializer.COLOR, TextColor.NAMES.name(TextColor.LIGHT_PURPLE));
+//            }));
+//            extra.add(object(item -> {
+//              item.put(ComponentSerializer.TEXT, "o");
+//              item.put(StyleSerializer.COLOR, TextColor.NAMES.name(TextColor.DARK_PURPLE));
+//            }));
+//            extra.add(object(item -> {
+//              item.put(ComponentSerializer.TEXT, "u");
+//              item.put(StyleSerializer.COLOR, TextColor.NAMES.name(TextColor.BLUE));
+//            }));
+//            extra.add(object(item -> {
+//              item.put(ComponentSerializer.TEXT, "r");
+//              item.put(StyleSerializer.COLOR, TextColor.NAMES.name(TextColor.DARK_GREEN));
+//            }));
+//            extra.add(object(item -> {
+//              item.put(ComponentSerializer.TEXT, "s");
+//              item.put(StyleSerializer.COLOR, TextColor.NAMES.name(TextColor.RED));
+//            }));
+//          }));
+//        }
+//      ),
       entry(
         TextComponent.builder("This is a test.")
           .color(TextColor.DARK_PURPLE)

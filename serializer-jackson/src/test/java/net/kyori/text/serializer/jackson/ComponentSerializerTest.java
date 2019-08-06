@@ -46,9 +46,9 @@ class ComponentSerializerTest {
 
   @Test
   void testDeserializeArray() throws IOException {
-    assertEquals(TextComponent.of("Hello, ").append(TextComponent.of("world.")), JacksonComponentSerializer.MAPPER.readValue(AbstractSerializeDeserializeTest.array(array -> {
+    assertEquals(TextComponent.of("Hello, ").append(TextComponent.of("world.")), JacksonComponentSerializer.MAPPER.convertValue(AbstractSerializeDeserializeTest.array(array -> {
       array.add(AbstractSerializeDeserializeTest.object(object -> object.put(ComponentSerializer.TEXT, "Hello, ")));
       array.add(AbstractSerializeDeserializeTest.object(object -> object.put(ComponentSerializer.TEXT, "world.")));
-    }).traverse(JacksonComponentSerializer.MAPPER.getFactory().getCodec()), Component.class));
+    }), Component.class));
   }
 }

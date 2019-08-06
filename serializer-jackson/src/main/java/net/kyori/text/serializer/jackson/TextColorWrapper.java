@@ -28,7 +28,7 @@ class TextColorWrapper {
         public TextColorWrapper deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
             final TextColor color = deserializeColor(p, ctxt);
             final TextDecoration decoration = color == null ? deserializeDecoration(p, ctxt) : null;
-            final boolean reset = decoration == null && p.getValueAsString().equals("reset");
+            final boolean reset = decoration == null && "reset".equals(p.getValueAsString());
             if(color == null && decoration == null && !reset) {
                 return ctxt.reportInputMismatch(TextColorWrapper.class, "Don't know how to parse TextColorWrapper");
             }
