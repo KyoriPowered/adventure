@@ -23,10 +23,23 @@
  */
 package net.kyori.text.serializer.jackson;
 
-public class JacksonSerializeException extends RuntimeException {
-    private static final long serialVersionUID = 1L;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import net.kyori.text.Component;
+import net.kyori.text.TextComponent;
+import org.junit.jupiter.api.Test;
 
-    JacksonSerializeException(String message, Throwable cause) {
-        super(message, cause);
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class KyoriDeserializersTest {
+    @Test
+    void test() {
+        KyoriDeserializers deserializers = new KyoriDeserializers();
+        deserializers.addDeserializer(Component.class, ComponentDeserializer.INSTANCE);
+
+        JsonDeserializer<?> deserializer = deserializers.findBeanDeserializer(
+                JacksonComponentSerializer.MAPPER.constructType(TextComponent.of("").getClass()),
+                null,
+                null);
+        assertEquals(deserializer, ComponentDeserializer.INSTANCE);
     }
 }

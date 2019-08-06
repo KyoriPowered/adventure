@@ -1,3 +1,26 @@
+/*
+ * This file is part of text, licensed under the MIT License.
+ *
+ * Copyright (c) 2017-2019 KyoriPowered
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package net.kyori.text.serializer.jackson;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -21,23 +44,23 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static net.kyori.text.serializer.jackson.ComponentSerializer.EXTRA;
+import static net.kyori.text.serializer.jackson.ComponentSerializer.KEYBIND;
+import static net.kyori.text.serializer.jackson.ComponentSerializer.NBT;
+import static net.kyori.text.serializer.jackson.ComponentSerializer.NBT_BLOCK;
+import static net.kyori.text.serializer.jackson.ComponentSerializer.NBT_ENTITY;
+import static net.kyori.text.serializer.jackson.ComponentSerializer.NBT_INTERPRET;
+import static net.kyori.text.serializer.jackson.ComponentSerializer.SCORE;
+import static net.kyori.text.serializer.jackson.ComponentSerializer.SCORE_NAME;
+import static net.kyori.text.serializer.jackson.ComponentSerializer.SCORE_OBJECTIVE;
+import static net.kyori.text.serializer.jackson.ComponentSerializer.SCORE_VALUE;
+import static net.kyori.text.serializer.jackson.ComponentSerializer.SELECTOR;
+import static net.kyori.text.serializer.jackson.ComponentSerializer.TEXT;
+import static net.kyori.text.serializer.jackson.ComponentSerializer.TRANSLATE;
+import static net.kyori.text.serializer.jackson.ComponentSerializer.TRANSLATE_WITH;
+
 public class ComponentDeserializer extends JsonDeserializer<Component> {
     static final ComponentDeserializer INSTANCE = new ComponentDeserializer();
-
-    static final String TEXT = "text";
-    static final String TRANSLATE = "translate";
-    static final String TRANSLATE_WITH = "with";
-    static final String SCORE = "score";
-    static final String SCORE_NAME = "name";
-    static final String SCORE_OBJECTIVE = "objective";
-    static final String SCORE_VALUE = "value";
-    static final String SELECTOR = "selector";
-    static final String KEYBIND = "keybind";
-    static final String EXTRA = "extra";
-    static final String NBT = "nbt";
-    static final String NBT_INTERPRET = "interpret";
-    static final String NBT_BLOCK = "block";
-    static final String NBT_ENTITY = "entity";
 
     @Override
     public Component deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {

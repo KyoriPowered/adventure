@@ -23,10 +23,44 @@
  */
 package net.kyori.text.serializer.jackson;
 
-public class JacksonSerializeException extends RuntimeException {
+// This is reimplementation of ClassKey from Jackson, immutable, more features and under another license
+public class ClassKey implements Comparable<ClassKey>, java.io.Serializable {
     private static final long serialVersionUID = 1L;
 
-    JacksonSerializeException(String message, Throwable cause) {
-        super(message, cause);
+    private final Class<?> clazz;
+    private final String clazzName;
+    private final int clazzHash;
+
+    ClassKey(Class<?> clazz) {
+        this.clazz = clazz;
+        this.clazzName = clazz.getName();
+        this.clazzHash = clazz.hashCode();
+    }
+
+    boolean isAssignableFrom(Class<?> clazz) {
+        return this.clazz.isAssignableFrom(clazz);
+    }
+
+    @Override
+    public int compareTo(ClassKey o) {
+        return clazzName.compareTo(o.clazzName);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ClassKey classKey = (ClassKey) o;
+        return clazz == classKey.clazz;
+    }
+
+    @Override
+    public int hashCode() {
+        return clazzHash;
+    }
+
+    @Override
+    public String toString() {
+        return "ClassKey{" + clazzName + "}";
     }
 }
