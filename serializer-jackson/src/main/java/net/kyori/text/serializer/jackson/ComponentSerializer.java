@@ -88,6 +88,7 @@ public class ComponentSerializer extends JsonSerializer<Component> {
         }
 
         if(value.hasStyling()) {
+            // TODO: remove static accessor
             JsonNode jsonNode = JacksonComponentSerializer.MAPPER.valueToTree(value.style());
             if (jsonNode.isObject()) {
                 Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.fields();
