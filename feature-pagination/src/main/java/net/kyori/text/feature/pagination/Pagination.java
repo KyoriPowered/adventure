@@ -208,7 +208,11 @@ public interface Pagination<T> {
     }
 
     static @NonNull String repeat(final @NonNull String character, final int count) {
-      return String.join("", Collections.nCopies(count, character));
+      StringBuilder builder = new StringBuilder();
+      for (int i = 0; i < count; i++) {
+        builder.append(character);
+      }
+      return builder.toString();
     }
 
     /**
