@@ -27,6 +27,7 @@ import net.kyori.text.format.Style;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -34,7 +35,7 @@ import java.util.Objects;
 import static java.util.Objects.requireNonNull;
 
 class TextComponentImpl extends AbstractComponent implements TextComponent {
-  static final TextComponent EMPTY = TextComponent.of("");
+  static final TextComponent EMPTY = new TextComponentImpl(Collections.emptyList(), Style.empty(), "");
   static final TextComponent NEWLINE = TextComponent.of("\n");
   static final TextComponent SPACE = TextComponent.of(" ");
 
