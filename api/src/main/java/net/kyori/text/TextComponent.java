@@ -70,6 +70,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @return the text component
    */
   static @NonNull TextComponent of(final @NonNull String content) {
+    if(content.isEmpty()) return empty();
     return builder(content).build();
   }
 
@@ -526,6 +527,13 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @return a copy of this component
    */
   @NonNull TextComponent content(final @NonNull String content);
+
+  /**
+   * Checks if this component is empty.
+   *
+   * @return {@code true} if this component is empty, {@code false} otherwise
+   */
+  boolean isEmpty();
 
   /**
    * A text component builder.

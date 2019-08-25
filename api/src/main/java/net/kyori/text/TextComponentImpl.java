@@ -56,6 +56,11 @@ class TextComponentImpl extends AbstractComponent implements TextComponent {
   }
 
   @Override
+  public boolean isEmpty() {
+    return this == EMPTY;
+  }
+
+  @Override
   public @NonNull TextComponent children(final @NonNull List<Component> children) {
     return new TextComponentImpl(children, this.style, this.content);
   }
@@ -107,8 +112,15 @@ class TextComponentImpl extends AbstractComponent implements TextComponent {
     }
 
     @Override
-    public @NonNull TextComponentImpl build() {
+    public @NonNull TextComponent build() {
+      if(this.isEmpty()) {
+        return EMPTY;
+      }
       return new TextComponentImpl(this.children, this.buildStyle(), this.content);
+    }
+
+    private boolean isEmpty() {
+      return this.content.isEmpty() && this.children.isEmpty() && !this.hasStyle();
     }
   }
 }
