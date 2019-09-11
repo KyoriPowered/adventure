@@ -24,10 +24,13 @@
 package net.kyori.text.feature.pagination;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import net.kyori.text.Component;
 import net.kyori.text.format.Style;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class PaginationBuilder implements Pagination.Builder {
   private int width = Pagination.WIDTH;
@@ -42,6 +45,7 @@ final class PaginationBuilder implements Pagination.Builder {
   private Style previousPageButtonStyle = Pagination.PREVIOUS_PAGE_BUTTON_STYLE;
   private char nextPageButtonCharacter = Pagination.NEXT_PAGE_BUTTON_CHARACTER;
   private Style nextPageButtonStyle = Pagination.NEXT_PAGE_BUTTON_STYLE;
+  private @Nullable Supplier<@NonNull String> pageLookupCommandSupplier = null;
 
   @Override
   public Pagination.@NonNull Builder width(final int width) {
@@ -116,6 +120,12 @@ final class PaginationBuilder implements Pagination.Builder {
   }
 
   @Override
+  public Pagination.@NonNull Builder pageLookupCommand(final @NonNull Supplier<@NonNull String> supplier) {
+    this.pageLookupCommandSupplier = supplier;
+    return this;
+  }
+
+  @Override
   public <T> @NonNull Pagination<T> build(final @NonNull Component title, final Pagination.Renderer.@NonNull RowRenderer<T> rowRenderer, final Pagination.@NonNull PageCommandFunction pageCommand) {
     return new PaginationImpl<>(
       this.width,
@@ -129,7 +139,8 @@ final class PaginationBuilder implements Pagination.Builder {
       this.nextPageButtonStyle,
       title,
       rowRenderer,
-      pageCommand
+      pageCommand,
+      pageLookupCommandSupplier
     );
   }
 }

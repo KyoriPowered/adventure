@@ -29,12 +29,16 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Supplier;
+
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.format.Style;
 import net.kyori.text.util.ToStringer;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class PaginationImpl<T> implements Pagination<T> {
   private static final int LINE_CHARACTER_LENGTH = 1;
@@ -55,8 +59,9 @@ final class PaginationImpl<T> implements Pagination<T> {
   private final Component title;
   private final Renderer.RowRenderer<T> rowRenderer;
   private final PageCommandFunction pageCommand;
+  private final @Nullable Supplier<@NonNull String> pageLookupCommandSupplier;
 
-  PaginationImpl(final int width, final int resultsPerPage, final @NonNull Renderer renderer, final char lineCharacter, final @NonNull Style lineStyle, final char previousPageButtonCharacter, final @NonNull Style previousPageButtonStyle, final char nextPageButtonCharacter, final @NonNull Style nextPageButtonStyle, final @NonNull Component title, final Renderer.@NonNull RowRenderer<T> rowRenderer, final @NonNull PageCommandFunction pageCommand) {
+  PaginationImpl(final int width, final int resultsPerPage, final @NonNull Renderer renderer, final char lineCharacter, final @NonNull Style lineStyle, final char previousPageButtonCharacter, final @NonNull Style previousPageButtonStyle, final char nextPageButtonCharacter, final @NonNull Style nextPageButtonStyle, final @NonNull Component title, final Renderer.@NonNull RowRenderer<T> rowRenderer, final @NonNull PageCommandFunction pageCommand, final @Nullable Supplier<@NonNull String> pageLookupCommandSupplier) {
     this.width = width;
     this.resultsPerPage = resultsPerPage;
     this.renderer = renderer;
@@ -69,6 +74,7 @@ final class PaginationImpl<T> implements Pagination<T> {
     this.title = title;
     this.rowRenderer = rowRenderer;
     this.pageCommand = pageCommand;
+    this.pageLookupCommandSupplier = pageLookupCommandSupplier;
   }
 
   @Override
@@ -93,7 +99,7 @@ final class PaginationImpl<T> implements Pagination<T> {
   }
 
   private Component renderHeader(final int page, final int pages) {
-    final Component header = this.renderer.renderHeader(this.title, page, pages);
+    final Component header = this.renderer.renderHeader(this.title, page, pages, pageLookupCommandSupplier);
     final Component dashes = this.line(header);
 
     return TextComponent.builder()
@@ -188,6 +194,7 @@ final class PaginationImpl<T> implements Pagination<T> {
     builder.put("title", this.title);
     builder.put("rowRenderer", this.rowRenderer);
     builder.put("pageCommand", this.pageCommand);
+    builder.put("pageLookupCommandSupplier", String.valueOf(this.pageLookupCommandSupplier));
     return ToStringer.toString(this, builder);
   }
 
@@ -207,6 +214,7 @@ final class PaginationImpl<T> implements Pagination<T> {
     if(!this.nextPageButtonStyle.equals(that.nextPageButtonStyle)) return false;
     if(!this.title.equals(that.title)) return false;
     if(!this.rowRenderer.equals(that.rowRenderer)) return false;
+    if(!Objects.equals(this.pageLookupCommandSupplier, that.pageLookupCommandSupplier)) return false;
     return this.pageCommand.equals(that.pageCommand);
   }
 
@@ -224,6 +232,7 @@ final class PaginationImpl<T> implements Pagination<T> {
     result = 31 * result + this.title.hashCode();
     result = 31 * result + this.rowRenderer.hashCode();
     result = 31 * result + this.pageCommand.hashCode();
+    result = 31 * result + Objects.hashCode(this.pageLookupCommandSupplier);
     return result;
   }
 }

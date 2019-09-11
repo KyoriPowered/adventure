@@ -26,6 +26,8 @@ package net.kyori.text.feature.pagination;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.event.ClickEvent;
@@ -153,15 +155,38 @@ public interface Pagination<T> {
      * @return the rendered component
      */
     default @NonNull Component renderHeader(final @NonNull Component title, final int page, final int pages) {
-      return TextComponent.builder()
+      return renderHeader(title, page, pages, null);
+    }
+
+    /**
+     * Renders a header.
+     *
+     * @param title the title
+     * @param page the page
+     * @param pages the total number of pages
+     * @param pageLookupCommandSupplier  the supplier of page look up command
+     * @return the rendered component
+     */
+    default @NonNull Component renderHeader(final @NonNull Component title, final int page, final int pages, final @Nullable Supplier<@NonNull String> pageLookupCommandSupplier) {
+      TextComponent.Builder builder = TextComponent.builder()
         .append(TextComponent.space())
         .append(title)
         .append(TextComponent.space())
-        .append(GRAY_LEFT_ROUND_BRACKET)
-        .append(TextComponent.of(page, TextColor.WHITE))
-        .append(GRAY_FORWARD_SLASH)
-        .append(TextComponent.of(pages, TextColor.WHITE))
-        .append(GRAY_RIGHT_ROUND_BRACKET)
+        .append(GRAY_LEFT_ROUND_BRACKET);
+
+      if(pageLookupCommandSupplier != null) {
+        builder = builder.append(TextComponent.builder().clickEvent(ClickEvent.suggestCommand(pageLookupCommandSupplier.get()))
+          .append(TextComponent.of(page, TextColor.WHITE))
+          .append(GRAY_FORWARD_SLASH)
+          .append(TextComponent.of(pages, TextColor.WHITE))
+        );
+      } else {
+        builder.append(TextComponent.of(page, TextColor.WHITE))
+          .append(GRAY_FORWARD_SLASH)
+          .append(TextComponent.of(pages, TextColor.WHITE));
+      }
+
+      return builder.append(GRAY_RIGHT_ROUND_BRACKET)
         .append(TextComponent.space())
         .build();
     }
@@ -285,6 +310,14 @@ public interface Pagination<T> {
      * @return this builder
      */
     @NonNull Builder nextButton(final @NonNull Consumer<CharacterAndStyle> nextButton);
+
+    /**
+     * Sets the page look up command suggestion.
+     *
+     * @param supplier the supplier of the look up command
+     * @return this builder
+     */
+    @NonNull Builder pageLookupCommand(final @NonNull Supplier<@NonNull String> supplier);
 
     /**
      * Builds.
