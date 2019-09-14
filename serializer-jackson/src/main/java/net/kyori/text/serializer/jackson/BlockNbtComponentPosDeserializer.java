@@ -24,7 +24,6 @@
 package net.kyori.text.serializer.jackson;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import net.kyori.text.BlockNbtComponent;
@@ -34,44 +33,44 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BlockNbtComponentPosDeserializer extends JsonDeserializer<BlockNbtComponent.Pos> {
-    static final BlockNbtComponentPosDeserializer INSTANCE = new BlockNbtComponentPosDeserializer();
+  static final BlockNbtComponentPosDeserializer INSTANCE = new BlockNbtComponentPosDeserializer();
 
-    private static final Pattern LOCAL_PATTERN = Pattern.compile("^\\^(\\d+(\\.\\d+)?) \\^(\\d+(\\.\\d+)?) \\^(\\d+(\\.\\d+)?)$");
-    private static final Pattern WORLD_PATTERN = Pattern.compile("^(~?)(\\d+) (~?)(\\d+) (~?)(\\d+)$");
+  private static final Pattern LOCAL_PATTERN = Pattern.compile("^\\^(\\d+(\\.\\d+)?) \\^(\\d+(\\.\\d+)?) \\^(\\d+(\\.\\d+)?)$");
+  private static final Pattern WORLD_PATTERN = Pattern.compile("^(~?)(\\d+) (~?)(\\d+) (~?)(\\d+)$");
 
-    @Override
-    public BlockNbtComponent.Pos deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-        final String string = p.getValueAsString();
+  private static BlockNbtComponent.WorldPos.Coordinate deserializeCoordinate(final String prefix, final String value) {
+    final int i = Integer.parseInt(value);
+    if(prefix.isEmpty()) {
+      return BlockNbtComponent.WorldPos.Coordinate.absolute(i);
+    } else if(prefix.equals("~")) {
+      return BlockNbtComponent.WorldPos.Coordinate.relative(i);
+    } else {
+      throw new AssertionError(); // regex does not allow any other value for prefix.
+    }
+  }
 
-        final Matcher localMatch = LOCAL_PATTERN.matcher(string);
-        if(localMatch.matches()) {
-            return BlockNbtComponent.LocalPos.of(
-                    Double.parseDouble(localMatch.group(1)),
-                    Double.parseDouble(localMatch.group(3)),
-                    Double.parseDouble(localMatch.group(5))
-            );
-        }
+  @Override
+  public BlockNbtComponent.Pos deserialize(final JsonParser p, final DeserializationContext ctxt) throws IOException {
+    final String string = p.getValueAsString();
 
-        final Matcher worldMatch = WORLD_PATTERN.matcher(string);
-        if(worldMatch.matches()) {
-            return BlockNbtComponent.WorldPos.of(
-                    deserializeCoordinate(worldMatch.group(1), worldMatch.group(2)),
-                    deserializeCoordinate(worldMatch.group(3), worldMatch.group(4)),
-                    deserializeCoordinate(worldMatch.group(5), worldMatch.group(6))
-            );
-        }
-
-        return ctxt.reportInputMismatch(BlockNbtComponent.Pos.class, "Don't know how to turn " + string + " into a Position");
+    final Matcher localMatch = LOCAL_PATTERN.matcher(string);
+    if(localMatch.matches()) {
+      return BlockNbtComponent.LocalPos.of(
+        Double.parseDouble(localMatch.group(1)),
+        Double.parseDouble(localMatch.group(3)),
+        Double.parseDouble(localMatch.group(5))
+      );
     }
 
-    private static BlockNbtComponent.WorldPos.Coordinate deserializeCoordinate(final String prefix, final String value) {
-        final int i = Integer.parseInt(value);
-        if(prefix.isEmpty()) {
-            return BlockNbtComponent.WorldPos.Coordinate.absolute(i);
-        } else if(prefix.equals("~")) {
-            return BlockNbtComponent.WorldPos.Coordinate.relative(i);
-        } else {
-            throw new AssertionError(); // regex does not allow any other value for prefix.
-        }
+    final Matcher worldMatch = WORLD_PATTERN.matcher(string);
+    if(worldMatch.matches()) {
+      return BlockNbtComponent.WorldPos.of(
+        deserializeCoordinate(worldMatch.group(1), worldMatch.group(2)),
+        deserializeCoordinate(worldMatch.group(3), worldMatch.group(4)),
+        deserializeCoordinate(worldMatch.group(5), worldMatch.group(6))
+      );
     }
+
+    return ctxt.reportInputMismatch(BlockNbtComponent.Pos.class, "Don't know how to turn " + string + " into a Position");
+  }
 }

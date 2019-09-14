@@ -42,123 +42,124 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class KyoriDeserializers
-        implements Deserializers, java.io.Serializable {
-    private static final long serialVersionUID = 1L;
+  implements Deserializers, java.io.Serializable {
+  private static final long serialVersionUID = 1L;
 
-    private Map<ClassKey,JsonDeserializer<?>> mappings = null;
+  private Map<ClassKey, JsonDeserializer<?>> mappings = null;
 
-    private boolean enumDeserializer = false;
+  private boolean enumDeserializer = false;
 
-    KyoriDeserializers() {}
+  KyoriDeserializers() {
+  }
 
-    <T> void addDeserializer(Class<T> forClass, JsonDeserializer<? extends T> deser) {
-        ClassKey key = new ClassKey(forClass);
-        if (mappings == null) {
-            mappings = new HashMap<>();
-        }
-        mappings.put(key, deser);
-        if (forClass == Enum.class) {
-            enumDeserializer = true;
-        }
+  <T> void addDeserializer(final Class<T> forClass, final JsonDeserializer<? extends T> deser) {
+    final ClassKey key = new ClassKey(forClass);
+    if(this.mappings == null) {
+      this.mappings = new HashMap<>();
     }
-
-    @Override
-    public JsonDeserializer<?> findArrayDeserializer(ArrayType type,
-                                                     DeserializationConfig config,
-                                                     BeanDescription beanDesc,
-                                                     TypeDeserializer elementTypeDeserializer,
-                                                     JsonDeserializer<?> elementDeserializer) {
-        return find(type);
+    this.mappings.put(key, deser);
+    if(forClass == Enum.class) {
+      this.enumDeserializer = true;
     }
+  }
 
-    @Override
-    public JsonDeserializer<?> findBeanDeserializer(JavaType type,
-                                                    DeserializationConfig config,
-                                                    BeanDescription beanDesc) {
-        return find(type);
-    }
+  @Override
+  public JsonDeserializer<?> findArrayDeserializer(final ArrayType type,
+                                                   final DeserializationConfig config,
+                                                   final BeanDescription beanDesc,
+                                                   final TypeDeserializer elementTypeDeserializer,
+                                                   final JsonDeserializer<?> elementDeserializer) {
+    return this.find(type);
+  }
 
-    @Override
-    public JsonDeserializer<?> findCollectionDeserializer(CollectionType type,
-                                                          DeserializationConfig config,
-                                                          BeanDescription beanDesc,
-                                                          TypeDeserializer elementTypeDeserializer,
-                                                          JsonDeserializer<?> elementDeserializer) {
-        return find(type);
-    }
+  @Override
+  public JsonDeserializer<?> findBeanDeserializer(final JavaType type,
+                                                  final DeserializationConfig config,
+                                                  final BeanDescription beanDesc) {
+    return this.find(type);
+  }
 
-    @Override
-    public JsonDeserializer<?> findCollectionLikeDeserializer(CollectionLikeType type,
-                                                              DeserializationConfig config,
-                                                              BeanDescription beanDesc,
-                                                              TypeDeserializer elementTypeDeserializer,
-                                                              JsonDeserializer<?> elementDeserializer) {
-        return find(type);
-    }
+  @Override
+  public JsonDeserializer<?> findCollectionDeserializer(final CollectionType type,
+                                                        final DeserializationConfig config,
+                                                        final BeanDescription beanDesc,
+                                                        final TypeDeserializer elementTypeDeserializer,
+                                                        final JsonDeserializer<?> elementDeserializer) {
+    return this.find(type);
+  }
 
-    @Override
-    public JsonDeserializer<?> findEnumDeserializer(Class<?> type,
-                                                    DeserializationConfig config,
-                                                    BeanDescription beanDesc) {
-        if (mappings == null) {
-            return null;
-        }
-        JsonDeserializer<?> deser = mappings.get(new ClassKey(type));
-        if (deser == null && enumDeserializer && type.isEnum()) {
-            deser = mappings.get(new ClassKey(Enum.class));
-        }
-        return deser;
-    }
+  @Override
+  public JsonDeserializer<?> findCollectionLikeDeserializer(final CollectionLikeType type,
+                                                            final DeserializationConfig config,
+                                                            final BeanDescription beanDesc,
+                                                            final TypeDeserializer elementTypeDeserializer,
+                                                            final JsonDeserializer<?> elementDeserializer) {
+    return this.find(type);
+  }
 
-    @Override
-    public JsonDeserializer<?> findTreeNodeDeserializer(Class<? extends JsonNode> nodeType,
-                                                        DeserializationConfig config,
-                                                        BeanDescription beanDesc) {
-        return find(nodeType);
+  @Override
+  public JsonDeserializer<?> findEnumDeserializer(final Class<?> type,
+                                                  final DeserializationConfig config,
+                                                  final BeanDescription beanDesc) {
+    if(this.mappings == null) {
+      return null;
     }
+    JsonDeserializer<?> deser = this.mappings.get(new ClassKey(type));
+    if(deser == null && this.enumDeserializer && type.isEnum()) {
+      deser = this.mappings.get(new ClassKey(Enum.class));
+    }
+    return deser;
+  }
 
-    @Override
-    public JsonDeserializer<?> findReferenceDeserializer(ReferenceType refType,
-                                                         DeserializationConfig config,
-                                                         BeanDescription beanDesc,
-                                                         TypeDeserializer contentTypeDeserializer,
-                                                         JsonDeserializer<?> contentDeserializer) {
-        return find(refType);
-    }
+  @Override
+  public JsonDeserializer<?> findTreeNodeDeserializer(final Class<? extends JsonNode> nodeType,
+                                                      final DeserializationConfig config,
+                                                      final BeanDescription beanDesc) {
+    return this.find(nodeType);
+  }
 
-    @Override
-    public JsonDeserializer<?> findMapDeserializer(MapType type,
-                                                   DeserializationConfig config,
-                                                   BeanDescription beanDesc,
-                                                   KeyDeserializer keyDeserializer,
-                                                   TypeDeserializer elementTypeDeserializer,
-                                                   JsonDeserializer<?> elementDeserializer) {
-        return find(type);
-    }
+  @Override
+  public JsonDeserializer<?> findReferenceDeserializer(final ReferenceType refType,
+                                                       final DeserializationConfig config,
+                                                       final BeanDescription beanDesc,
+                                                       final TypeDeserializer contentTypeDeserializer,
+                                                       final JsonDeserializer<?> contentDeserializer) {
+    return this.find(refType);
+  }
 
-    @Override
-    public JsonDeserializer<?> findMapLikeDeserializer(MapLikeType type,
-                                                       DeserializationConfig config,
-                                                       BeanDescription beanDesc,
-                                                       KeyDeserializer keyDeserializer,
-                                                       TypeDeserializer elementTypeDeserializer,
-                                                       JsonDeserializer<?> elementDeserializer) {
-        return find(type);
-    }
+  @Override
+  public JsonDeserializer<?> findMapDeserializer(final MapType type,
+                                                 final DeserializationConfig config,
+                                                 final BeanDescription beanDesc,
+                                                 final KeyDeserializer keyDeserializer,
+                                                 final TypeDeserializer elementTypeDeserializer,
+                                                 final JsonDeserializer<?> elementDeserializer) {
+    return this.find(type);
+  }
 
-    private JsonDeserializer<?> find(JavaType type) {
-        return find(type.getRawClass());
-    }
+  @Override
+  public JsonDeserializer<?> findMapLikeDeserializer(final MapLikeType type,
+                                                     final DeserializationConfig config,
+                                                     final BeanDescription beanDesc,
+                                                     final KeyDeserializer keyDeserializer,
+                                                     final TypeDeserializer elementTypeDeserializer,
+                                                     final JsonDeserializer<?> elementDeserializer) {
+    return this.find(type);
+  }
 
-    private JsonDeserializer<?> find(Class<?> clazz) {
-        if (mappings == null) {
-            return null;
-        }
-        for (Map.Entry<ClassKey, JsonDeserializer<?>> entry : mappings.entrySet()) {
-            if (entry.getKey().isAssignableFrom(clazz)) {
-                return entry.getValue();
-            }
-        }
-        return null;
+  private JsonDeserializer<?> find(final JavaType type) {
+    return this.find(type.getRawClass());
+  }
+
+  private JsonDeserializer<?> find(final Class<?> clazz) {
+    if(this.mappings == null) {
+      return null;
     }
+    for(final Map.Entry<ClassKey, JsonDeserializer<?>> entry : this.mappings.entrySet()) {
+      if(entry.getKey().isAssignableFrom(clazz)) {
+        return entry.getValue();
+      }
+    }
+    return null;
+  }
 }

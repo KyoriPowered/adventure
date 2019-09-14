@@ -33,13 +33,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class KyoriDeserializersTest {
     @Test
     void test() {
-        KyoriDeserializers deserializers = new KyoriDeserializers();
+        final KyoriDeserializers deserializers = new KyoriDeserializers();
         deserializers.addDeserializer(Component.class, ComponentDeserializer.INSTANCE);
 
-        JsonDeserializer<?> deserializer = deserializers.findBeanDeserializer(
-                JacksonComponentSerializer.MAPPER.constructType(TextComponent.of("").getClass()),
-                null,
-                null);
+        final JsonDeserializer<?> deserializer = deserializers.findBeanDeserializer(
+          JacksonComponentSerializer.MAPPER.constructType(TextComponent.of("").getClass()),
+          null,
+          null);
         assertEquals(deserializer, ComponentDeserializer.INSTANCE);
     }
 }

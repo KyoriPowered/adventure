@@ -33,8 +33,12 @@ import java.io.IOException;
 public class BlockNbtComponentPosSerializer extends JsonSerializer<BlockNbtComponent.Pos> {
     static final BlockNbtComponentPosSerializer INSTANCE = new BlockNbtComponentPosSerializer();
 
+    private static String serializeCoordinate(final BlockNbtComponent.WorldPos.Coordinate coordinate) {
+        return (coordinate.type() == BlockNbtComponent.WorldPos.Coordinate.Type.RELATIVE ? "~" : "") + coordinate.value();
+    }
+
     @Override
-    public void serialize(BlockNbtComponent.Pos value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+    public void serialize(final BlockNbtComponent.Pos value, final JsonGenerator gen, final SerializerProvider serializers) throws IOException {
         if(value instanceof BlockNbtComponent.LocalPos) {
             final BlockNbtComponent.LocalPos local = (BlockNbtComponent.LocalPos) value;
             gen.writeString("^" + local.left() + ' ' + '^' + local.up() + ' ' + '^' + local.forwards());
@@ -44,9 +48,5 @@ public class BlockNbtComponentPosSerializer extends JsonSerializer<BlockNbtCompo
         } else {
             serializers.reportMappingProblem("Don't know how to serialize " + value + " as a Position");
         }
-    }
-
-    private static String serializeCoordinate(final BlockNbtComponent.WorldPos.Coordinate coordinate) {
-        return (coordinate.type() == BlockNbtComponent.WorldPos.Coordinate.Type.RELATIVE ? "~" : "") + coordinate.value();
     }
 }

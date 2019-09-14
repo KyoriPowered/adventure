@@ -34,7 +34,7 @@ import java.util.stream.Stream;
 class TextComponentTest extends AbstractComponentTest<TextComponent> {
   @Override
   Stream<Map.Entry<TextComponent, JsonNode>> tests() {
-      return Stream.of(
+    return Stream.of(
       entry(TextComponent.of("Hello, world."), json -> json.put(ComponentSerializer.TEXT, "Hello, world.")),
       entry(
         TextComponent.builder("c")

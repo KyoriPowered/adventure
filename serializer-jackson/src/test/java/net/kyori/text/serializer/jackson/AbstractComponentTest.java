@@ -29,14 +29,15 @@ import net.kyori.text.Component;
 
 abstract class AbstractComponentTest<C extends Component> extends AbstractSerializeDeserializeTest<C> {
   @SuppressWarnings("serial")
-  private final TypeToken<C> type = new TypeToken<C>(getClass()) {};
+  private final TypeToken<C> type = new TypeToken<C>(this.getClass()) {
+  };
 
   @Override
   @SuppressWarnings("unchecked")
   C deserialize(final JsonNode json) {
     try {
       return (C) JacksonComponentSerializer.MAPPER.treeToValue(json, this.type.getRawType());
-    } catch (Exception e) {
+    } catch(final Exception e) {
       throw new RuntimeException("Can't deserialize", e);
     }
   }

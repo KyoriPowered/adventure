@@ -31,36 +31,36 @@ public class ClassKey implements Comparable<ClassKey>, java.io.Serializable {
     private final String clazzName;
     private final int clazzHash;
 
-    ClassKey(Class<?> clazz) {
+    ClassKey(final Class<?> clazz) {
         this.clazz = clazz;
         this.clazzName = clazz.getName();
         this.clazzHash = clazz.hashCode();
     }
 
-    boolean isAssignableFrom(Class<?> clazz) {
+    boolean isAssignableFrom(final Class<?> clazz) {
         return this.clazz.isAssignableFrom(clazz);
     }
 
     @Override
-    public int compareTo(ClassKey o) {
-        return clazzName.compareTo(o.clazzName);
+    public int compareTo(final ClassKey o) {
+        return this.clazzName.compareTo(o.clazzName);
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ClassKey classKey = (ClassKey) o;
-        return clazz == classKey.clazz;
+    public boolean equals(final Object o) {
+        if(this == o) return true;
+        if(o == null || this.getClass() != o.getClass()) return false;
+        final ClassKey classKey = (ClassKey) o;
+        return this.clazz == classKey.clazz;
     }
 
     @Override
     public int hashCode() {
-        return clazzHash;
+        return this.clazzHash;
     }
 
     @Override
     public String toString() {
-        return "ClassKey{" + clazzName + "}";
+        return "ClassKey{" + this.clazzName + "}";
     }
 }
