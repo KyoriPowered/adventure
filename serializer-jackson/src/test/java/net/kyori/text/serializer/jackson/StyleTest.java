@@ -59,7 +59,8 @@ class StyleTest extends AbstractSerializeDeserializeTest<Style> {
   @Override
   Stream<Map.Entry<Style, JsonNode>> tests() {
     return Stream.of(
-      entry(Style.empty(), json -> {}),
+      entry(Style.empty(), json -> {
+      }),
       entry(Style.of(TextColor.LIGHT_PURPLE), json -> json.put(StyleSerializer.COLOR, TextColor.NAMES.name(TextColor.LIGHT_PURPLE))),
       entry(Style.of(TextDecoration.BOLD), json -> json.put(TextDecoration.NAMES.name(TextDecoration.BOLD), true)),
       entry(Style.builder().insertion("honk").build(), json -> json.put(StyleSerializer.INSERTION, "honk"))
@@ -70,7 +71,7 @@ class StyleTest extends AbstractSerializeDeserializeTest<Style> {
   Style deserialize(final JsonNode json) {
     try {
       return JacksonComponentSerializer.MAPPER.treeToValue(json, Style.class);
-    } catch (Exception e) {
+    } catch(final Exception e) {
       throw new RuntimeException("Can't deserialize", e);
     }
   }

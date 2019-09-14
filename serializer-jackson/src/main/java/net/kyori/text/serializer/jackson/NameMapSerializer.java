@@ -35,24 +35,23 @@ import net.kyori.text.util.NameMap;
 import java.io.IOException;
 
 public class NameMapSerializer<T> extends JsonSerializer<T> {
-    static final NameMapSerializer<ClickEvent.Action> CLICK = new NameMapSerializer<>("click action", ClickEvent.Action.NAMES, ClickEvent.Action.class);
-    static final NameMapSerializer<HoverEvent.Action> HOVER = new NameMapSerializer<>("hover action", HoverEvent.Action.NAMES, HoverEvent.Action.class);
-    static final NameMapSerializer<TextColor> COLOR = new NameMapSerializer<>("text color", TextColor.NAMES, TextColor.class);
-    static final NameMapSerializer<TextDecoration> DECORATION = new NameMapSerializer<>("text decoration", TextDecoration.NAMES, TextDecoration.class);
+  static final NameMapSerializer<ClickEvent.Action> CLICK = new NameMapSerializer<>("click action", ClickEvent.Action.NAMES, ClickEvent.Action.class);
+  static final NameMapSerializer<HoverEvent.Action> HOVER = new NameMapSerializer<>("hover action", HoverEvent.Action.NAMES, HoverEvent.Action.class);
+  static final NameMapSerializer<TextColor> COLOR = new NameMapSerializer<>("text color", TextColor.NAMES, TextColor.class);
+  static final NameMapSerializer<TextDecoration> DECORATION = new NameMapSerializer<>("text decoration", TextDecoration.NAMES, TextDecoration.class);
 
+  private final String name;
+  private final NameMap<T> map;
+  private final Class<T> type;
 
-    private final String name;
-    private final NameMap<T> map;
-    private final Class<T> type;
+  public NameMapSerializer(final String name, final NameMap<T> map, final Class<T> type) {
+    this.name = name;
+    this.map = map;
+    this.type = type;
+  }
 
-    public NameMapSerializer(String name, NameMap<T> map, Class<T> type) {
-        this.name = name;
-        this.map = map;
-        this.type = type;
-    }
-
-    @Override
-    public void serialize(T value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-        gen.writeString(map.name(value));
-    }
+  @Override
+  public void serialize(final T value, final JsonGenerator gen, final SerializerProvider serializers) throws IOException {
+    gen.writeString(this.map.name(value));
+  }
 }

@@ -32,26 +32,26 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.io.IOException;
 
 public class JacksonComponentSerializer implements ComponentSerializer<Component, Component, String> {
-    public static final JacksonComponentSerializer INSTANCE = new JacksonComponentSerializer();
-    static final ObjectMapper MAPPER = new ObjectMapper().registerModule(new KyoriTextModule());
+  public static final JacksonComponentSerializer INSTANCE = new JacksonComponentSerializer();
+  static final ObjectMapper MAPPER = new ObjectMapper().registerModule(new KyoriTextModule());
 
-    @NonNull
-    @Override
-    public Component deserialize(@NonNull String input) throws JacksonDeserializeException {
-        try {
-            return MAPPER.readValue(input, Component.class);
-        } catch (IOException e) {
-            throw new JacksonDeserializeException("Can't deserialize component", e);
-        }
+  @NonNull
+  @Override
+  public Component deserialize(@NonNull final String input) throws JacksonDeserializeException {
+    try {
+      return MAPPER.readValue(input, Component.class);
+    } catch(final IOException e) {
+      throw new JacksonDeserializeException("Can't deserialize component", e);
     }
+  }
 
-    @NonNull
-    @Override
-    public String serialize(@NonNull Component component) {
-        try {
-            return MAPPER.writeValueAsString(component);
-        } catch (JsonProcessingException e) {
-            throw new JacksonSerializeException("Can't serialize component", e);
-        }
+  @NonNull
+  @Override
+  public String serialize(@NonNull final Component component) {
+    try {
+      return MAPPER.writeValueAsString(component);
+    } catch(final JsonProcessingException e) {
+      throw new JacksonSerializeException("Can't serialize component", e);
     }
+  }
 }

@@ -49,6 +49,10 @@ abstract class AbstractSerializeDeserializeTest<C> {
     return json;
   }
 
+  static <C> Map.Entry<C, JsonNode> entry(final C object, final Consumer<? super ObjectNode> json) {
+    return new AbstractMap.SimpleImmutableEntry<>(object, object(json));
+  }
+
   abstract Stream<Map.Entry<C, JsonNode>> tests();
 
   private void forEach(final BiConsumer<? super C, JsonNode> consumer) {
@@ -68,8 +72,4 @@ abstract class AbstractSerializeDeserializeTest<C> {
   }
 
   abstract JsonNode serialize(final C object);
-
-  static <C> Map.Entry<C, JsonNode> entry(final C object, final Consumer<? super ObjectNode> json) {
-    return new AbstractMap.SimpleImmutableEntry<>(object, object(json));
-  }
 }

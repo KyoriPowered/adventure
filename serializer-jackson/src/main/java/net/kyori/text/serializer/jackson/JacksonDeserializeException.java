@@ -24,9 +24,9 @@
 package net.kyori.text.serializer.jackson;
 
 public class JacksonDeserializeException extends RuntimeException {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    JacksonDeserializeException(String message, Throwable cause) {
-        super(message, cause);
-    }
+  JacksonDeserializeException(final String message, final Throwable cause) {
+    super(message, cause);
+  }
 }

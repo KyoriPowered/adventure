@@ -42,87 +42,87 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class ComponentSerializer extends JsonSerializer<Component> {
-    static final ComponentSerializer INSTANCE = new ComponentSerializer();
+  static final ComponentSerializer INSTANCE = new ComponentSerializer();
 
-    static final String TEXT = "text";
-    static final String TRANSLATE = "translate";
-    static final String TRANSLATE_WITH = "with";
-    static final String SCORE = "score";
-    static final String SCORE_NAME = "name";
-    static final String SCORE_OBJECTIVE = "objective";
-    static final String SCORE_VALUE = "value";
-    static final String SELECTOR = "selector";
-    static final String KEYBIND = "keybind";
-    static final String EXTRA = "extra";
-    static final String NBT = "nbt";
-    static final String NBT_INTERPRET = "interpret";
-    static final String NBT_BLOCK = "block";
-    static final String NBT_ENTITY = "entity";
+  static final String TEXT = "text";
+  static final String TRANSLATE = "translate";
+  static final String TRANSLATE_WITH = "with";
+  static final String SCORE = "score";
+  static final String SCORE_NAME = "name";
+  static final String SCORE_OBJECTIVE = "objective";
+  static final String SCORE_VALUE = "value";
+  static final String SELECTOR = "selector";
+  static final String KEYBIND = "keybind";
+  static final String EXTRA = "extra";
+  static final String NBT = "nbt";
+  static final String NBT_INTERPRET = "interpret";
+  static final String NBT_BLOCK = "block";
+  static final String NBT_ENTITY = "entity";
 
-    @Override
-    public void serialize(Component value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-        gen.writeStartObject();
+  @Override
+  public void serialize(final Component value, final JsonGenerator gen, final SerializerProvider serializers) throws IOException {
+    gen.writeStartObject();
 
-        if(value instanceof TextComponent) {
-            gen.writeStringField(TEXT, ((TextComponent) value).content());
-        } else if(value instanceof TranslatableComponent) {
-            final TranslatableComponent tc = (TranslatableComponent) value;
-            gen.writeStringField(TRANSLATE, tc.key());
-            if(!tc.args().isEmpty()) {
-                gen.writeArrayFieldStart(TRANSLATE_WITH);
-                for(final Component arg : tc.args()) {
-                    gen.writeObject(arg);
-                }
-                gen.writeEndArray();
-            }
-        } else if(value instanceof ScoreComponent) {
-            final ScoreComponent sc = (ScoreComponent) value;
-            gen.writeObjectFieldStart(SCORE);
-            gen.writeStringField(SCORE_NAME, sc.name());
-            gen.writeStringField(SCORE_OBJECTIVE, sc.objective());
-            // score component value is optional
-            if(sc.value() != null) gen.writeStringField(SCORE_VALUE, sc.value());
-            gen.writeEndObject();
-        } else if(value instanceof SelectorComponent) {
-            gen.writeStringField(SELECTOR, ((SelectorComponent) value).pattern());
-        } else if(value instanceof KeybindComponent) {
-            gen.writeStringField(KEYBIND, ((KeybindComponent) value).keybind());
-        } else if(value instanceof NbtComponent) {
-            final NbtComponent<?, ?> nc = (NbtComponent<?, ?>) value;
-            gen.writeStringField(NBT, nc.nbtPath());
-            gen.writeBooleanField(NBT_INTERPRET, nc.interpret());
-            if(value instanceof BlockNbtComponent) {
-                gen.writeObjectField(NBT_BLOCK, ((BlockNbtComponent) nc).pos());
-            } else if(value instanceof EntityNbtComponent) {
-                gen.writeObjectField(NBT_ENTITY, ((EntityNbtComponent) nc).selector());
-            } else {
-                serializers.reportMappingProblem("Don't know how to serialize " + value + " as a Component");
-            }
-        } else {
-            serializers.reportMappingProblem("Don't know how to serialize " + value + " as a Component");
+    if(value instanceof TextComponent) {
+      gen.writeStringField(TEXT, ((TextComponent) value).content());
+    } else if(value instanceof TranslatableComponent) {
+      final TranslatableComponent tc = (TranslatableComponent) value;
+      gen.writeStringField(TRANSLATE, tc.key());
+      if(!tc.args().isEmpty()) {
+        gen.writeArrayFieldStart(TRANSLATE_WITH);
+        for(final Component arg : tc.args()) {
+          gen.writeObject(arg);
         }
-
-        if(!value.children().isEmpty()) {
-            gen.writeArrayFieldStart(EXTRA);
-            for(final Component child : value.children()) {
-                gen.writeObject(child);
-            }
-            gen.writeEndArray();
-        }
-
-        if(value.hasStyling()) {
-            // TODO: remove static accessor
-            JsonNode jsonNode = JacksonComponentSerializer.MAPPER.valueToTree(value.style());
-            if (jsonNode.isObject()) {
-                Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.fields();
-                while (fields.hasNext()) {
-                    Map.Entry<String, JsonNode> next = fields.next();
-                    gen.writeFieldName(next.getKey());
-                    gen.writeTree(next.getValue());
-                }
-            }
-        }
-
-        gen.writeEndObject();
+        gen.writeEndArray();
+      }
+    } else if(value instanceof ScoreComponent) {
+      final ScoreComponent sc = (ScoreComponent) value;
+      gen.writeObjectFieldStart(SCORE);
+      gen.writeStringField(SCORE_NAME, sc.name());
+      gen.writeStringField(SCORE_OBJECTIVE, sc.objective());
+      // score component value is optional
+      if(sc.value() != null) gen.writeStringField(SCORE_VALUE, sc.value());
+      gen.writeEndObject();
+    } else if(value instanceof SelectorComponent) {
+      gen.writeStringField(SELECTOR, ((SelectorComponent) value).pattern());
+    } else if(value instanceof KeybindComponent) {
+      gen.writeStringField(KEYBIND, ((KeybindComponent) value).keybind());
+    } else if(value instanceof NbtComponent) {
+      final NbtComponent<?, ?> nc = (NbtComponent<?, ?>) value;
+      gen.writeStringField(NBT, nc.nbtPath());
+      gen.writeBooleanField(NBT_INTERPRET, nc.interpret());
+      if(value instanceof BlockNbtComponent) {
+        gen.writeObjectField(NBT_BLOCK, ((BlockNbtComponent) nc).pos());
+      } else if(value instanceof EntityNbtComponent) {
+        gen.writeObjectField(NBT_ENTITY, ((EntityNbtComponent) nc).selector());
+      } else {
+        serializers.reportMappingProblem("Don't know how to serialize " + value + " as a Component");
+      }
+    } else {
+      serializers.reportMappingProblem("Don't know how to serialize " + value + " as a Component");
     }
+
+    if(!value.children().isEmpty()) {
+      gen.writeArrayFieldStart(EXTRA);
+      for(final Component child : value.children()) {
+        gen.writeObject(child);
+      }
+      gen.writeEndArray();
+    }
+
+    if(value.hasStyling()) {
+      // TODO: remove static accessor
+      final JsonNode jsonNode = JacksonComponentSerializer.MAPPER.valueToTree(value.style());
+      if(jsonNode.isObject()) {
+        final Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.fields();
+        while(fields.hasNext()) {
+          final Map.Entry<String, JsonNode> next = fields.next();
+          gen.writeFieldName(next.getKey());
+          gen.writeTree(next.getValue());
+        }
+      }
+    }
+
+    gen.writeEndObject();
+  }
 }
