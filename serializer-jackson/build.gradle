@@ -1,0 +1,10 @@
+dependencies {
+  api project(':text-api')
+  api 'com.fasterxml.jackson.core:jackson-databind:2.9.9.2'
+}
+
+jar {
+  manifest.attributes(
+    'Automatic-Module-Name': 'net.kyori.text.serializer.jackson'
+  )
+}
