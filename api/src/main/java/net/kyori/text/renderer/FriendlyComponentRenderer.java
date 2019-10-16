@@ -23,6 +23,11 @@
  */
 package net.kyori.text.renderer;
 
+import java.text.AttributedCharacterIterator;
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.BiFunction;
 import net.kyori.text.Component;
 import net.kyori.text.ComponentBuilder;
 import net.kyori.text.KeybindComponent;
@@ -34,12 +39,6 @@ import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.Style;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
-import java.text.AttributedCharacterIterator;
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.BiFunction;
 
 /**
  * A friendly component renderer.

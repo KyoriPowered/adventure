@@ -24,10 +24,9 @@
 package net.kyori.text.serializer.gson;
 
 import com.google.gson.JsonElement;
-import net.kyori.text.KeybindComponent;
-
 import java.util.Map;
 import java.util.stream.Stream;
+import net.kyori.text.KeybindComponent;
 
 class KeybindComponentTest extends AbstractComponentTest<KeybindComponent> {
   private static final String KEY = "key.jump";

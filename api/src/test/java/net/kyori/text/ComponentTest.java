@@ -23,12 +23,11 @@
  */
 package net.kyori.text;
 
+import java.util.Set;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.Style;
 import net.kyori.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
-
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

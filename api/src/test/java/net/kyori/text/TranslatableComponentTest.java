@@ -24,7 +24,6 @@
 package net.kyori.text;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.truth.Truth;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;

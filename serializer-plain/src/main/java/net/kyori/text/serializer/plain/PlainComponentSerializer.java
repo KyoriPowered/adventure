@@ -23,6 +23,7 @@
  */
 package net.kyori.text.serializer.plain;
 
+import java.util.function.Function;
 import net.kyori.text.Component;
 import net.kyori.text.KeybindComponent;
 import net.kyori.text.ScoreComponent;
@@ -33,8 +34,6 @@ import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.serializer.ComponentSerializer;
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.util.function.Function;
 
 /**
  * A plain component serializer.

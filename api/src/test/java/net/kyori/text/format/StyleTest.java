@@ -30,18 +30,48 @@ import org.junit.jupiter.api.Test;
 
 import static net.kyori.text.TextAssertions.assertDecorations;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class StyleTest {
   @Test
   void testSanity() {
-    final Style c0 = Style.empty();
-    assertNull(c0.color());
-    assertDecorations(c0, ImmutableMap.of());
-    assertNull(c0.clickEvent());
-    assertNull(c0.hoverEvent());
-    assertNull(c0.insertion());
+    final Style s0 = Style.empty();
+    assertNull(s0.color());
+    assertDecorations(s0, ImmutableMap.of());
+    assertNull(s0.clickEvent());
+    assertNull(s0.hoverEvent());
+    assertNull(s0.insertion());
+  }
+
+  @Test
+  void testHasDecoration() {
+    final Style s0 = Style.empty();
+    assertFalse(s0.hasDecoration(TextDecoration.BOLD));
+    final Style s1 = Style.of(TextDecoration.BOLD);
+    assertTrue(s1.hasDecoration(TextDecoration.BOLD));
+  }
+
+  @Test
+  void testOf_decorations() {
+    final Style s0 = Style.of(TextDecoration.BOLD, TextDecoration.ITALIC);
+    assertNull(s0.color());
+    assertDecorations(s0, ImmutableMap.of(
+      TextDecoration.BOLD, TextDecoration.State.TRUE,
+      TextDecoration.ITALIC, TextDecoration.State.TRUE
+    ));
+  }
+
+  @Test
+  void testOf_colorAndDecorations() {
+    final Style s0 = Style.of(TextColor.GREEN, TextDecoration.BOLD, TextDecoration.ITALIC);
+    assertEquals(TextColor.GREEN, s0.color());
+    assertDecorations(s0, ImmutableMap.of(
+      TextDecoration.BOLD, TextDecoration.State.TRUE,
+      TextDecoration.ITALIC, TextDecoration.State.TRUE
+    ));
   }
 
   @Test
@@ -49,6 +79,26 @@ class StyleTest {
     assertEquals(TextColor.GREEN, Style.of(TextColor.GREEN).color());
     assertEquals(TextColor.GREEN, Style.of(TextColor.GREEN).colorIfAbsent(TextColor.RED).color());
     assertEquals(TextColor.RED, Style.empty().colorIfAbsent(TextColor.RED).color());
+  }
+
+  @Test
+  void testMerge() {
+    final Style s0 = Style.empty();
+    final Style s1 = s0.merge(Style.of(TextColor.DARK_PURPLE));
+    assertEquals(TextColor.DARK_PURPLE, s1.color());
+    assertDecorations(s1, ImmutableMap.of());
+    assertNull(s1.clickEvent());
+    assertEquals(s0, s1.color(null));
+  }
+
+  @Test
+  void testMerge_none() {
+    final Style s0 = Style.empty();
+    final Style s1 = s0.merge(Style.of(TextColor.DARK_PURPLE), Style.Merge.of());
+    assertNull(s1.color());
+    assertDecorations(s1, ImmutableMap.of());
+    assertNull(s1.clickEvent());
+    assertEquals(s0, s1.color(null));
   }
 
   @Test

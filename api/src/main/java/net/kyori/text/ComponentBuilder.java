@@ -24,6 +24,9 @@
 package net.kyori.text;
 
 import java.util.Collections;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.Style;
@@ -31,10 +34,6 @@ import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * A component builder.
@@ -72,7 +71,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param decorations the decorations
    * @return this builder
    */
-  default @NonNull B append(final @NonNull String content, final @NonNull TextColor color, final TextDecoration @NonNull ... decorations) {
+  default @NonNull B append(final @NonNull String content, final @NonNull TextColor color, final TextDecoration@NonNull... decorations) {
     return this.append(TextComponent.of(content, color, decorations));
   }
 

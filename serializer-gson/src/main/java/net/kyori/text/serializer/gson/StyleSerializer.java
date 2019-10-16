@@ -31,14 +31,13 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import java.lang.reflect.Type;
 import net.kyori.text.Component;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
-
-import java.lang.reflect.Type;
 
 public class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<Style> {
   public static final StyleSerializer INSTANCE = new StyleSerializer();

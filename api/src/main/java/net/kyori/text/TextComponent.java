@@ -23,14 +23,14 @@
  */
 package net.kyori.text;
 
+import java.util.Set;
+import java.util.function.Consumer;
 import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
+import net.kyori.text.util.ShadyPines;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
-import java.util.Set;
-import java.util.function.Consumer;
 
 /**
  * A plain text component.
@@ -93,8 +93,8 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param decorations the decorations
    * @return the text component
    */
-  static @NonNull TextComponent of(final @NonNull String content, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
-    return of(content, color, TextDecoration.setOf(decorations));
+  static @NonNull TextComponent of(final @NonNull String content, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
+    return of(content, color, ShadyPines.enumSet(TextDecoration.class, decorations));
   }
 
   /**
@@ -149,8 +149,8 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param decorations the decorations
    * @return the text component
    */
-  static @NonNull TextComponent of(final boolean value, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
-    return of(String.valueOf(value), color, TextDecoration.setOf(decorations));
+  static @NonNull TextComponent of(final boolean value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
+    return of(String.valueOf(value), color, ShadyPines.enumSet(TextDecoration.class, decorations));
   }
 
   /**
@@ -207,8 +207,8 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param decorations the decorations
    * @return the text component
    */
-  static @NonNull TextComponent of(final char value, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
-    return of(String.valueOf(value), color, TextDecoration.setOf(decorations));
+  static @NonNull TextComponent of(final char value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
+    return of(String.valueOf(value), color, ShadyPines.enumSet(TextDecoration.class, decorations));
   }
 
   /**
@@ -263,8 +263,8 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param decorations the decorations
    * @return the text component
    */
-  static @NonNull TextComponent of(final double value, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
-    return of(String.valueOf(value), color, TextDecoration.setOf(decorations));
+  static @NonNull TextComponent of(final double value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
+    return of(String.valueOf(value), color, ShadyPines.enumSet(TextDecoration.class, decorations));
   }
 
   /**
@@ -319,8 +319,8 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param decorations the decorations
    * @return the text component
    */
-  static @NonNull TextComponent of(final float value, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
-    return of(String.valueOf(value), color, TextDecoration.setOf(decorations));
+  static @NonNull TextComponent of(final float value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
+    return of(String.valueOf(value), color, ShadyPines.enumSet(TextDecoration.class, decorations));
   }
 
   /**
@@ -375,8 +375,8 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param decorations the decorations
    * @return the text component
    */
-  static @NonNull TextComponent of(final int value, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
-    return of(String.valueOf(value), color, TextDecoration.setOf(decorations));
+  static @NonNull TextComponent of(final int value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
+    return of(String.valueOf(value), color, ShadyPines.enumSet(TextDecoration.class, decorations));
   }
 
   /**
@@ -431,8 +431,8 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param decorations the decorations
    * @return the text component
    */
-  static @NonNull TextComponent of(final long value, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
-    return of(String.valueOf(value), color, TextDecoration.setOf(decorations));
+  static @NonNull TextComponent of(final long value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
+    return of(String.valueOf(value), color, ShadyPines.enumSet(TextDecoration.class, decorations));
   }
 
   /**

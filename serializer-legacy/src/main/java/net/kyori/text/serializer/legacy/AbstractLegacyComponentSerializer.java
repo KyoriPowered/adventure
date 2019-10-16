@@ -23,6 +23,11 @@
  */
 package net.kyori.text.serializer.legacy;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.format.TextColor;
@@ -30,12 +35,6 @@ import net.kyori.text.format.TextDecoration;
 import net.kyori.text.format.TextFormat;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
 
 abstract class AbstractLegacyComponentSerializer implements LegacyComponentSerializer {
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();

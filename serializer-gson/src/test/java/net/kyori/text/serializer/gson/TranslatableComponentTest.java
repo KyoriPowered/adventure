@@ -24,14 +24,13 @@
 package net.kyori.text.serializer.gson;
 
 import com.google.gson.JsonElement;
+import java.util.Map;
+import java.util.stream.Stream;
 import net.kyori.text.TextComponent;
 import net.kyori.text.TranslatableComponent;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
-
-import java.util.Map;
-import java.util.stream.Stream;
 
 class TranslatableComponentTest extends AbstractComponentTest<TranslatableComponent> {
   private static final String KEY = "multiplayer.player.left";

@@ -24,12 +24,11 @@
 package net.kyori.text.serializer.gson;
 
 import com.google.gson.JsonElement;
+import java.util.Map;
+import java.util.stream.Stream;
 import net.kyori.text.TextComponent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
-
-import java.util.Map;
-import java.util.stream.Stream;
 
 class TextComponentTest extends AbstractComponentTest<TextComponent> {
   @Override

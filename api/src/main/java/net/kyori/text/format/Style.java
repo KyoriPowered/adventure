@@ -25,14 +25,12 @@ package net.kyori.text.format;
 
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import net.kyori.text.Component;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
-import net.kyori.text.util.ToStringer;
+import net.kyori.text.util.ShadyPines;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -383,6 +381,7 @@ public final class Style {
    * @return {@code true} if this style is empty, {@code false} if this
    *     style is not empty
    */
+  @SuppressWarnings("DuplicatedCode")
   public boolean isEmpty() {
     return this.color == null
       && this.obfuscated == TextDecoration.State.NOT_SET
@@ -406,17 +405,17 @@ public final class Style {
 
   @Override
   public @NonNull String toString() {
-    final Map<String, Object> builder = new LinkedHashMap<>();
-    builder.put("color", this.color);
-    builder.put("obfuscated", this.obfuscated);
-    builder.put("bold", this.bold);
-    builder.put("strikethrough", this.strikethrough);
-    builder.put("underlined", this.underlined);
-    builder.put("italic", this.italic);
-    builder.put("clickEvent", this.clickEvent);
-    builder.put("hoverEvent", this.hoverEvent);
-    builder.put("insertion", this.insertion);
-    return ToStringer.toString(this, builder);
+    return ShadyPines.toString(this, map -> {
+      map.put("color", this.color);
+      map.put("obfuscated", this.obfuscated);
+      map.put("bold", this.bold);
+      map.put("strikethrough", this.strikethrough);
+      map.put("underlined", this.underlined);
+      map.put("italic", this.italic);
+      map.put("clickEvent", this.clickEvent);
+      map.put("hoverEvent", this.hoverEvent);
+      map.put("insertion", this.insertion);
+    });
   }
 
   @Override
@@ -467,9 +466,7 @@ public final class Style {
      * @return a merge set
      */
     public static @NonNull Set<Merge> of(final Merge... merges) {
-      final Set<Merge> set = EnumSet.noneOf(Merge.class);
-      Collections.addAll(set, merges);
-      return Collections.unmodifiableSet(set);
+      return ShadyPines.enumSet(Merge.class, merges);
     }
 
     static boolean hasAll(final @NonNull Set<Merge> merges) {
@@ -644,7 +641,7 @@ public final class Style {
      * @param merges the parts to merge
      * @return a style
      */
-    public @NonNull Builder merge(final @NonNull Style that, final @NonNull Merge @NonNull ... merges) {
+    public @NonNull Builder merge(final @NonNull Style that, final @NonNull Merge@NonNull... merges) {
       return this.merge(that, Merge.of(merges));
     }
 
@@ -690,7 +687,23 @@ public final class Style {
      * @return the style
      */
     public @NonNull Style build() {
+      if(this.isEmpty()) {
+        return EMPTY;
+      }
       return new Style(this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
+    }
+
+    @SuppressWarnings("DuplicatedCode")
+    private boolean isEmpty() {
+      return this.color == null
+        && this.obfuscated == TextDecoration.State.NOT_SET
+        && this.bold == TextDecoration.State.NOT_SET
+        && this.strikethrough == TextDecoration.State.NOT_SET
+        && this.underlined == TextDecoration.State.NOT_SET
+        && this.italic == TextDecoration.State.NOT_SET
+        && this.clickEvent == null
+        && this.hoverEvent == null
+        && this.insertion == null;
     }
   }
 }

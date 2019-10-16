@@ -23,15 +23,21 @@
  */
 package net.kyori.text.util;
 
+import java.util.Map;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.Map;
-import java.util.StringJoiner;
-
+@Deprecated
 public interface ToStringer {
+  /**
+   * Generates a toString.
+   *
+   * @param object the object
+   * @param builder the map
+   * @return a toString value
+   * @deprecated use {@link ShadyPines#toString(Object, Map)}
+   */
+  @Deprecated
   static @NonNull String toString(final @NonNull Object object, final @NonNull Map<String, Object> builder) {
-    final StringJoiner joiner = new StringJoiner(", ", object.getClass().getSimpleName() + "{", "}");
-    builder.forEach((key, value) -> joiner.add(key + "=" + value));
-    return joiner.toString();
+    return ShadyPines.toString(object, builder);
   }
 }

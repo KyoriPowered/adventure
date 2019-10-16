@@ -24,10 +24,9 @@
 package net.kyori.text.serializer.gson;
 
 import com.google.gson.JsonElement;
-import net.kyori.text.SelectorComponent;
-
 import java.util.Map;
 import java.util.stream.Stream;
+import net.kyori.text.SelectorComponent;
 
 class SelectorComponentTest extends AbstractComponentTest<SelectorComponent> {
   private static final String SELECTOR = "@p";

@@ -23,17 +23,16 @@
  */
 package net.kyori.text;
 
-import net.kyori.text.format.TextColor;
-import net.kyori.text.format.TextDecoration;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+import net.kyori.text.format.TextColor;
+import net.kyori.text.format.TextDecoration;
+import net.kyori.text.util.ShadyPines;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A translatable text component.
@@ -87,10 +86,8 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param decorations the decorations
    * @return the text component
    */
-  static @NonNull TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
-    final Set<TextDecoration> activeDecorations = new HashSet<>(decorations.length);
-    Collections.addAll(activeDecorations, decorations);
-    return of(key, color, activeDecorations);
+  static @NonNull TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
+    return of(key, color, ShadyPines.enumSet(TextDecoration.class, decorations));
   }
 
   /**

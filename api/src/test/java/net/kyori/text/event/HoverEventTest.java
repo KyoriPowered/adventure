@@ -21,35 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.text.serializer.gson;
+package net.kyori.text.event;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import java.lang.reflect.Type;
-import net.kyori.text.util.NameMap;
+import com.google.common.testing.EqualsTester;
+import net.kyori.text.TextComponent;
+import org.junit.jupiter.api.Test;
 
-public class NameMapSerializer<T> implements JsonDeserializer<T>, JsonSerializer<T> {
-  private final String name;
-  private final NameMap<T> map;
-
-  public NameMapSerializer(final String name, final NameMap<T> map) {
-    this.name = name;
-    this.map = map;
-  }
-
-  @Override
-  public T deserialize(final JsonElement json, final Type type, final JsonDeserializationContext context) throws JsonParseException {
-    final String string = json.getAsString();
-    return this.map.value(string).orElseThrow(() -> new JsonParseException("invalid " + this.name + ":  " + string));
-  }
-
-  @Override
-  public JsonElement serialize(final T src, final Type typeOfT, final JsonSerializationContext context) {
-    return new JsonPrimitive(this.map.name(src));
+class HoverEventTest {
+  @Test
+  void testEquality() {
+    new EqualsTester()
+      .addEqualityGroup(HoverEvent.showText(TextComponent.empty()), HoverEvent.showText(TextComponent.empty()))
+      .testEquals();
   }
 }

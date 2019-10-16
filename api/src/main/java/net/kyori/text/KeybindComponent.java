@@ -23,15 +23,14 @@
  */
 package net.kyori.text;
 
-import net.kyori.text.format.TextColor;
-import net.kyori.text.format.TextDecoration;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
+import net.kyori.text.format.TextColor;
+import net.kyori.text.format.TextDecoration;
+import net.kyori.text.util.ShadyPines;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A keybind component.
@@ -85,10 +84,8 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    * @param decorations the decorations
    * @return the keybind component
    */
-  static @NonNull KeybindComponent of(final @NonNull String content, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
-    final Set<TextDecoration> activeDecorations = new HashSet<>(decorations.length);
-    Collections.addAll(activeDecorations, decorations);
-    return of(content, color, activeDecorations);
+  static @NonNull KeybindComponent of(final @NonNull String content, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
+    return of(content, color, ShadyPines.enumSet(TextDecoration.class, decorations));
   }
 
   /**

@@ -30,11 +30,10 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import net.kyori.text.BlockNbtComponent;
-
 import java.lang.reflect.Type;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.kyori.text.BlockNbtComponent;
 
 public class BlockNbtComponentPosSerializer implements JsonDeserializer<BlockNbtComponent.Pos>, JsonSerializer<BlockNbtComponent.Pos> {
   public static final BlockNbtComponentPosSerializer INSTANCE = new BlockNbtComponentPosSerializer();

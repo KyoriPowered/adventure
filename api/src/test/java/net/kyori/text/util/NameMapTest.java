@@ -40,7 +40,7 @@ class NameMapTest {
   @Test
   void testGet() {
     for(final Thing thing : Thing.values()) {
-      assertEquals(thing, THINGS.get(thing.name).orElse(null));
+      assertEquals(thing, THINGS.value(thing.name).orElse(null));
     }
   }
 
