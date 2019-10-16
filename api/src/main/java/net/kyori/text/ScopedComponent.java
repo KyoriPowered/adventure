@@ -23,8 +23,10 @@
  */
 package net.kyori.text;
 
+import java.util.Set;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
+import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -56,6 +58,12 @@ public interface ScopedComponent<C extends Component> extends Component {
   @SuppressWarnings("unchecked")
   default @NonNull C append(final @NonNull ComponentBuilder<?, ?> builder) {
     return (C) Component.super.append(builder);
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  default @NonNull C mergeStyle(final @NonNull Component that, final @NonNull Set<Style.Merge> merges) {
+    return (C) Component.super.mergeStyle(that, merges);
   }
 
   @Override
@@ -94,18 +102,21 @@ public interface ScopedComponent<C extends Component> extends Component {
     return (C) Component.super.insertion(insertion);
   }
 
+  @Deprecated
   @Override
   @SuppressWarnings("unchecked")
   default @NonNull C mergeColor(final @NonNull Component that) {
     return (C) Component.super.mergeColor(that);
   }
 
+  @Deprecated
   @Override
   @SuppressWarnings("unchecked")
   default @NonNull C mergeDecorations(final @NonNull Component that) {
     return (C) Component.super.mergeDecorations(that);
   }
 
+  @Deprecated
   @Override
   @SuppressWarnings("unchecked")
   default @NonNull C mergeEvents(final @NonNull Component that) {

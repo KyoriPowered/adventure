@@ -123,6 +123,38 @@ public interface Component {
   @NonNull Component style(final @NonNull Style style);
 
   /**
+   * Merges from another style into this component's style.
+   *
+   * @param that the other style
+   * @return a component
+   */
+  default @NonNull Component mergeStyle(final @NonNull Component that) {
+    return this.mergeStyle(that, Style.Merge.all());
+  }
+
+  /**
+   * Merges from another style into this component's style.
+   *
+   * @param that the other style
+   * @param merges the style parts to merge
+   * @return a component
+   */
+  default @NonNull Component mergeStyle(final @NonNull Component that, final Style.@NonNull Merge@NonNull... merges) {
+    return this.mergeStyle(that, Style.Merge.of(merges));
+  }
+
+  /**
+   * Merges from another style into this component's style.
+   *
+   * @param that the other style
+   * @param merges the style parts to merge
+   * @return a component
+   */
+  default @NonNull Component mergeStyle(final @NonNull Component that, final @NonNull Set<Style.Merge> merges) {
+    return this.style(this.style().merge(that.style(), merges));
+  }
+
+  /**
    * Gets the color of this component.
    *
    * @return the color of this component
@@ -272,7 +304,9 @@ public interface Component {
    *
    * @param that the other component
    * @return a component
+   * @deprecated use {@link #mergeStyle(Component, Set)}
    */
+  @Deprecated
   default @NonNull Component mergeColor(final @NonNull Component that) {
     return this.style(this.style().mergeColor(that.style()));
   }
@@ -282,7 +316,9 @@ public interface Component {
    *
    * @param that the other component
    * @return a component
+   * @deprecated use {@link #mergeStyle(Component, Set)}
    */
+  @Deprecated
   default @NonNull Component mergeDecorations(final @NonNull Component that) {
     return this.style(this.style().mergeDecorations(that.style()));
   }
@@ -292,7 +328,9 @@ public interface Component {
    *
    * @param that the other component
    * @return a component
+   * @deprecated use {@link #mergeStyle(Component, Set)}
    */
+  @Deprecated
   default @NonNull Component mergeEvents(final @NonNull Component that) {
     return this.style(this.style().mergeEvents(that.style()));
   }

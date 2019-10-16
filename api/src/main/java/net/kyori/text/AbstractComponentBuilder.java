@@ -23,6 +23,7 @@
  */
 package net.kyori.text;
 
+import java.util.Set;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.Style;
@@ -206,6 +207,13 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   @SuppressWarnings("unchecked")
   public @NonNull B insertion(final @Nullable String insertion) {
     this.styleBuilder().insertion(insertion);
+    return (B) this;
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public @NonNull B mergeStyle(final @NonNull Component that, final @NonNull Set<Style.Merge> merges) {
+    this.styleBuilder().merge(that.style(), merges);
     return (B) this;
   }
 
