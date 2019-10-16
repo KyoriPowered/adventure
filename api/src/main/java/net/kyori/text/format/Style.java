@@ -328,7 +328,7 @@ public final class Style {
    * @return a style
    */
   public @NonNull Style merge(final @NonNull Style that, final @NonNull Set<Merge> merges) {
-    if(this.isEmpty()) {
+    if(this.isEmpty() && Merge.hasAll(merges)) {
       return that;
     }
 
@@ -470,6 +470,10 @@ public final class Style {
       final Set<Merge> set = EnumSet.noneOf(Merge.class);
       Collections.addAll(set, merges);
       return Collections.unmodifiableSet(set);
+    }
+
+    static boolean hasAll(final @NonNull Set<Merge> merges) {
+      return merges.size() == ALL.size();
     }
   }
 
