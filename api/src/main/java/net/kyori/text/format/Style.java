@@ -148,6 +148,7 @@ public final class Style {
    * @return a style
    */
   public @NonNull Style color(final @Nullable TextColor color) {
+    if(Objects.equals(this.color, color)) return this;
     return new Style(color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
   }
 

@@ -47,6 +47,7 @@ class SelectorComponentImpl extends AbstractComponent implements SelectorCompone
 
   @Override
   public @NonNull SelectorComponent pattern(final @NonNull String pattern) {
+    if(Objects.equals(this.pattern, pattern)) return this;
     return new SelectorComponentImpl(this.children, this.style, requireNonNull(pattern, "pattern"));
   }
 
@@ -57,6 +58,7 @@ class SelectorComponentImpl extends AbstractComponent implements SelectorCompone
 
   @Override
   public @NonNull SelectorComponent style(final @NonNull Style style) {
+    if(Objects.equals(this.style, style)) return this;
     return new SelectorComponentImpl(this.children, style, this.pattern);
   }
 

@@ -56,6 +56,7 @@ class TextComponentImpl extends AbstractComponent implements TextComponent {
 
   @Override
   public @NonNull TextComponent content(final @NonNull String content) {
+    if(Objects.equals(this.content, content)) return this;
     return new TextComponentImpl(this.children, this.style, requireNonNull(content, "content"));
   }
 
@@ -71,6 +72,7 @@ class TextComponentImpl extends AbstractComponent implements TextComponent {
 
   @Override
   public @NonNull TextComponent style(final @NonNull Style style) {
+    if(Objects.equals(this.style, style)) return this;
     return new TextComponentImpl(this.children, style, this.content);
   }
 

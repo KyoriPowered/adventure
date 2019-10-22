@@ -51,6 +51,7 @@ class ScoreComponentImpl extends AbstractComponent implements ScoreComponent {
 
   @Override
   public @NonNull ScoreComponent name(final @NonNull String name) {
+    if(Objects.equals(this.name, name)) return this;
     return new ScoreComponentImpl(this.children, this.style, requireNonNull(name, "name"), this.objective, this.value);
   }
 
@@ -61,6 +62,7 @@ class ScoreComponentImpl extends AbstractComponent implements ScoreComponent {
 
   @Override
   public @NonNull ScoreComponent objective(final @NonNull String objective) {
+    if(Objects.equals(this.objective, objective)) return this;
     return new ScoreComponentImpl(this.children, this.style, this.name, requireNonNull(objective, "objective"), this.value);
   }
 
@@ -71,6 +73,7 @@ class ScoreComponentImpl extends AbstractComponent implements ScoreComponent {
 
   @Override
   public @NonNull ScoreComponent value(final @Nullable String value) {
+    if(Objects.equals(this.value, value)) return this;
     return new ScoreComponentImpl(this.children, this.style, this.name, this.objective, value);
   }
 
@@ -81,6 +84,7 @@ class ScoreComponentImpl extends AbstractComponent implements ScoreComponent {
 
   @Override
   public @NonNull ScoreComponent style(final @NonNull Style style) {
+    if(Objects.equals(this.style, style)) return this;
     return new ScoreComponentImpl(this.children, style, this.name, this.objective, this.value);
   }
 

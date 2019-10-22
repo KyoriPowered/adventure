@@ -42,11 +42,13 @@ final class BlockNbtComponentImpl extends NbtComponentImpl<BlockNbtComponent, Bl
 
   @Override
   public @NonNull BlockNbtComponent nbtPath(final @NonNull String nbtPath) {
+    if(Objects.equals(this.nbtPath, nbtPath)) return this;
     return new BlockNbtComponentImpl(this.children, this.style, nbtPath, this.interpret, this.pos);
   }
 
   @Override
   public @NonNull BlockNbtComponent interpret(final boolean interpret) {
+    if(this.interpret == interpret) return this;
     return new BlockNbtComponentImpl(this.children, this.style, this.nbtPath, interpret, this.pos);
   }
 
@@ -67,6 +69,7 @@ final class BlockNbtComponentImpl extends NbtComponentImpl<BlockNbtComponent, Bl
 
   @Override
   public @NonNull BlockNbtComponent style(final @NonNull Style style) {
+    if(Objects.equals(this.style, style)) return this;
     return new BlockNbtComponentImpl(this.children, style, this.nbtPath, this.interpret, this.pos);
   }
 
