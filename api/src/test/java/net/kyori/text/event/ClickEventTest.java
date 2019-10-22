@@ -23,11 +23,19 @@
  */
 package net.kyori.text.event;
 
+import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class ClickEventTest {
+  @Test
+  void testEquality() {
+    new EqualsTester()
+      .addEqualityGroup(ClickEvent.runCommand("/test"), ClickEvent.runCommand("/test"))
+      .testEquals();
+  }
+
   @Test
   void assertOpenFileNotReadable() {
     final ClickEvent event = ClickEvent.openFile("fake");

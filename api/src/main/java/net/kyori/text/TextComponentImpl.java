@@ -23,23 +23,26 @@
  */
 package net.kyori.text;
 
-import net.kyori.text.format.Style;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import net.kyori.text.format.Style;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
 class TextComponentImpl extends AbstractComponent implements TextComponent {
-  static final TextComponent EMPTY = new TextComponentImpl(Collections.emptyList(), Style.empty(), "");
-  static final TextComponent NEWLINE = TextComponent.of("\n");
-  static final TextComponent SPACE = TextComponent.of(" ");
+  static final TextComponent EMPTY = createDirect("");
+  static final TextComponent NEWLINE = createDirect("\n");
+  static final TextComponent SPACE = createDirect(" ");
 
   private final String content;
+
+  private static @NonNull TextComponent createDirect(final @NonNull String content) {
+    return new TextComponentImpl(Collections.emptyList(), Style.empty(), content);
+  }
 
   protected TextComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String content) {
     super(children, style);
@@ -76,13 +79,15 @@ class TextComponentImpl extends AbstractComponent implements TextComponent {
     if(this == other) return true;
     if(!(other instanceof TextComponentImpl)) return false;
     if(!super.equals(other)) return false;
-    final TextComponentImpl component = (TextComponentImpl) other;
-    return Objects.equals(this.content, component.content);
+    final TextComponentImpl that = (TextComponentImpl) other;
+    return Objects.equals(this.content, that.content);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), this.content);
+    int result = super.hashCode();
+    result = (31 * result) + this.content.hashCode();
+    return result;
   }
 
   @Override

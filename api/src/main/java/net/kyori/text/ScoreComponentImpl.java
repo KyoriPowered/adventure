@@ -23,13 +23,12 @@
  */
 package net.kyori.text;
 
-import net.kyori.text.format.Style;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import net.kyori.text.format.Style;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -71,7 +70,7 @@ class ScoreComponentImpl extends AbstractComponent implements ScoreComponent {
   }
 
   @Override
-  public @NonNull ScoreComponent value(final @NonNull String value) {
+  public @NonNull ScoreComponent value(final @Nullable String value) {
     return new ScoreComponentImpl(this.children, this.style, this.name, this.objective, value);
   }
 
@@ -96,7 +95,11 @@ class ScoreComponentImpl extends AbstractComponent implements ScoreComponent {
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), this.name, this.objective, this.value);
+    int result = super.hashCode();
+    result = (31 * result) + this.name.hashCode();
+    result = (31 * result) + this.objective.hashCode();
+    result = (31 * result) + Objects.hashCode(this.value);
+    return result;
   }
 
   @Override

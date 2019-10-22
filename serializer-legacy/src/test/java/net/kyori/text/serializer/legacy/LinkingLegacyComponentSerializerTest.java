@@ -23,8 +23,6 @@
  */
 package net.kyori.text.serializer.legacy;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.event.ClickEvent;
@@ -32,6 +30,8 @@ import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LinkingLegacyComponentSerializerTest {
   @Test

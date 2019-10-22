@@ -33,6 +33,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import net.kyori.text.BlockNbtComponent;
 import net.kyori.text.BuildableComponent;
 import net.kyori.text.Component;
@@ -51,11 +55,6 @@ import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import net.kyori.text.serializer.ComponentSerializer;
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class GsonComponentSerializer implements ComponentSerializer<Component, Component, String>, JsonDeserializer<Component>, JsonSerializer<Component> {
   /**
@@ -160,9 +159,9 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
       }
       // score components can have a value sometimes, let's grab it
       if(score.has(SCORE_VALUE)) {
-        component = ScoreComponent.builder().name(score.get(SCORE_NAME).getAsString()).objective(score.get(SCORE_OBJECTIVE).getAsString()).value(score.get(SCORE_VALUE).getAsString());
+        component = this.scoreBuilder(score).value(score.get(SCORE_VALUE).getAsString());
       } else {
-        component = ScoreComponent.builder().name(score.get(SCORE_NAME).getAsString()).objective(score.get(SCORE_OBJECTIVE).getAsString());
+        component = this.scoreBuilder(score);
       }
     } else if(object.has(SELECTOR)) {
       component = SelectorComponent.builder().pattern(object.get(SELECTOR).getAsString());
@@ -197,6 +196,12 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
     }
 
     return component.build();
+  }
+
+  private ScoreComponent.Builder scoreBuilder(final JsonObject score) {
+    return ScoreComponent.builder()
+      .name(score.get(SCORE_NAME).getAsString())
+      .objective(score.get(SCORE_OBJECTIVE).getAsString());
   }
 
   // Not part of the API.

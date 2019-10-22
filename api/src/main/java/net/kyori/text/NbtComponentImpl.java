@@ -23,13 +23,12 @@
  */
 package net.kyori.text;
 
-import net.kyori.text.format.Style;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import net.kyori.text.format.Style;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 abstract class NbtComponentImpl<C extends NbtComponent<C, B>, B extends NbtComponentBuilder<C, B>> extends AbstractComponent implements NbtComponent<C, B> {
   final String nbtPath;

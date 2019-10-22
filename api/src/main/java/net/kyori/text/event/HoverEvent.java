@@ -25,13 +25,9 @@ package net.kyori.text.event;
 
 import net.kyori.text.Component;
 import net.kyori.text.util.NameMap;
-import net.kyori.text.util.ToStringer;
+import net.kyori.text.util.ShadyPines;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
@@ -125,15 +121,17 @@ public final class HoverEvent {
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.action, this.value);
+    int result = this.action.hashCode();
+    result = (31 * result) + this.value.hashCode();
+    return result;
   }
 
   @Override
   public String toString() {
-    final Map<String, Object> builder = new LinkedHashMap<>();
-    builder.put("action", this.action);
-    builder.put("value", this.value);
-    return ToStringer.toString(this, builder);
+    return ShadyPines.toString(this, map -> {
+      map.put("action", this.action);
+      map.put("value", this.value);
+    });
   }
 
   /**

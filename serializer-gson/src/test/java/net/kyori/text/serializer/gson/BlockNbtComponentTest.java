@@ -25,12 +25,11 @@ package net.kyori.text.serializer.gson;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
+import java.util.Map;
+import java.util.stream.Stream;
 import net.kyori.text.BlockNbtComponent;
 import net.kyori.text.BlockNbtComponent.WorldPos.Coordinate;
 import org.junit.jupiter.api.Test;
-
-import java.util.Map;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

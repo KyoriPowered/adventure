@@ -33,7 +33,7 @@ import net.kyori.text.Component;
 import net.kyori.text.TextComponent;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.format.Style;
-import net.kyori.text.util.ToStringer;
+import net.kyori.text.util.ShadyPines;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 final class PaginationImpl<T> implements Pagination<T> {
@@ -188,7 +188,7 @@ final class PaginationImpl<T> implements Pagination<T> {
     builder.put("title", this.title);
     builder.put("rowRenderer", this.rowRenderer);
     builder.put("pageCommand", this.pageCommand);
-    return ToStringer.toString(this, builder);
+    return ShadyPines.toString(this, builder);
   }
 
   @Override

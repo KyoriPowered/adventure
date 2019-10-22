@@ -23,13 +23,12 @@
  */
 package net.kyori.text;
 
-import net.kyori.text.format.Style;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import net.kyori.text.format.Style;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -66,13 +65,15 @@ class KeybindComponentImpl extends AbstractComponent implements KeybindComponent
     if(this == other) return true;
     if(!(other instanceof KeybindComponent)) return false;
     if(!super.equals(other)) return false;
-    final KeybindComponent component = (KeybindComponent) other;
-    return Objects.equals(this.keybind, component.keybind());
+    final KeybindComponent that = (KeybindComponent) other;
+    return Objects.equals(this.keybind, that.keybind());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), this.keybind);
+    int result = super.hashCode();
+    result = (31 * result) + this.keybind.hashCode();
+    return result;
   }
 
   @Override

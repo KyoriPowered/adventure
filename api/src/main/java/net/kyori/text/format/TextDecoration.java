@@ -23,14 +23,12 @@
  */
 package net.kyori.text.format;
 
-import java.util.EnumSet;
+import java.util.Set;
 import net.kyori.text.Component;
 import net.kyori.text.util.NameMap;
+import net.kyori.text.util.ShadyPines;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
-import java.util.Collections;
-import java.util.Set;
 
 /**
  * An enumeration of decorations which may be applied to a {@link Component}.
@@ -72,10 +70,9 @@ public enum TextDecoration implements TextFormat {
     return this.name;
   }
 
+  @Deprecated
   public static @NonNull Set<TextDecoration> setOf(final @NonNull TextDecoration... decorations) {
-    final Set<TextDecoration> set = EnumSet.noneOf(TextDecoration.class);
-    Collections.addAll(set, decorations);
-    return set;
+    return ShadyPines.enumSet(TextDecoration.class, decorations);
   }
 
   /**

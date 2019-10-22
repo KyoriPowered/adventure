@@ -23,33 +23,34 @@
  */
 package net.kyori.text;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import net.kyori.text.format.Style;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.List;
-
 final class EntityNbtComponentImpl extends NbtComponentImpl<EntityNbtComponent, EntityNbtComponent.Builder> implements EntityNbtComponent {
-  private final String selectorPattern;
+  private final String selector;
 
-  protected EntityNbtComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final String nbtPathPattern, final boolean interpret, final String selectorPattern) {
-    super(children, style, nbtPathPattern, interpret);
-    this.selectorPattern = selectorPattern;
+  protected EntityNbtComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final String nbtPath, final boolean interpret, final String selector) {
+    super(children, style, nbtPath, interpret);
+    this.selector = selector;
   }
 
   @Override
   public @NonNull EntityNbtComponent nbtPath(final @NonNull String nbtPath) {
-    return new EntityNbtComponentImpl(this.children, this.style, nbtPath, this.interpret, this.selectorPattern);
+    return new EntityNbtComponentImpl(this.children, this.style, nbtPath, this.interpret, this.selector);
   }
 
   @Override
   public @NonNull EntityNbtComponent interpret(final boolean interpret) {
-    return new EntityNbtComponentImpl(this.children, this.style, this.nbtPath, interpret, this.selectorPattern);
+    return new EntityNbtComponentImpl(this.children, this.style, this.nbtPath, interpret, this.selector);
   }
 
   @Override
   public @NonNull String selector() {
-    return this.selectorPattern;
+    return this.selector;
   }
 
   @Override
@@ -59,12 +60,34 @@ final class EntityNbtComponentImpl extends NbtComponentImpl<EntityNbtComponent, 
 
   @Override
   public @NonNull EntityNbtComponent children(final @NonNull List<Component> children) {
-    return new EntityNbtComponentImpl(children, this.style, this.nbtPath, this.interpret, this.selectorPattern);
+    return new EntityNbtComponentImpl(children, this.style, this.nbtPath, this.interpret, this.selector);
   }
 
   @Override
   public @NonNull EntityNbtComponent style(final @NonNull Style style) {
-    return new EntityNbtComponentImpl(this.children, style, this.nbtPath, this.interpret, this.selectorPattern);
+    return new EntityNbtComponentImpl(this.children, style, this.nbtPath, this.interpret, this.selector);
+  }
+
+  @Override
+  public boolean equals(final @Nullable Object other) {
+    if(this == other) return true;
+    if(!(other instanceof EntityNbtComponent)) return false;
+    if(!super.equals(other)) return false;
+    final EntityNbtComponentImpl that = (EntityNbtComponentImpl) other;
+    return Objects.equals(this.selector, that.selector());
+  }
+
+  @Override
+  public int hashCode() {
+    int result = super.hashCode();
+    result = (31 * result) + this.selector.hashCode();
+    return result;
+  }
+
+  @Override
+  protected void populateToString(final @NonNull Map<String, Object> builder) {
+    super.populateToString(builder);
+    builder.put("selector", this.selector);
   }
 
   @Override

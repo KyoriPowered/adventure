@@ -23,9 +23,8 @@
  */
 package net.kyori.text;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import java.util.function.Consumer;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A block NBT component.

@@ -25,19 +25,19 @@ package net.kyori.text.renderer;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import java.text.MessageFormat;
+import java.util.Locale;
 import net.kyori.text.TextComponent;
 import net.kyori.text.TranslatableComponent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
 import org.junit.jupiter.api.Test;
 
-import java.text.MessageFormat;
-import java.util.Locale;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FriendlyComponentRendererTest {
   private static final Table<Locale, String, String> TRANSLATIONS = HashBasedTable.create();
+  private final FriendlyComponentRenderer<Locale> renderer = FriendlyComponentRenderer.from((locale, key) -> new MessageFormat(TRANSLATIONS.get(locale, key), locale));
 
   static {
     TRANSLATIONS.put(Locale.US, "test", "This is a test.");
@@ -46,12 +46,11 @@ class FriendlyComponentRendererTest {
 
   @Test
   void testSimple() {
-    final FriendlyComponentRenderer<Locale> renderer = FriendlyComponentRenderer.from((locale, key) -> new MessageFormat(TRANSLATIONS.get(locale, key), locale));
     assertEquals(
       TextComponent.builder("This is a test.")
         .color(TextColor.YELLOW)
         .build(),
-      renderer.render(
+      this.renderer.render(
         TranslatableComponent
           .builder()
           .key("test")
@@ -64,7 +63,6 @@ class FriendlyComponentRendererTest {
 
   @Test
   void testComplex() {
-    final FriendlyComponentRenderer<Locale> renderer = FriendlyComponentRenderer.from((locale, key) -> new MessageFormat(TRANSLATIONS.get(locale, key), locale));
     assertEquals(
       TextComponent.builder("")
         .color(TextColor.YELLOW)
@@ -73,7 +71,7 @@ class FriendlyComponentRendererTest {
         .append(TextComponent.of("lucko"))
         .append(TextComponent.of(" are cats."))
         .build(),
-      renderer.render(
+      this.renderer.render(
         TranslatableComponent
           .builder()
           .key("cats")
@@ -90,7 +88,6 @@ class FriendlyComponentRendererTest {
 
   @Test
   void testVeryComplex() {
-    final FriendlyComponentRenderer<Locale> renderer = FriendlyComponentRenderer.from((locale, key) -> new MessageFormat(TRANSLATIONS.get(locale, key), locale));
     assertEquals(
       TextComponent.builder("")
         .color(TextColor.YELLOW)
@@ -106,7 +103,7 @@ class FriendlyComponentRendererTest {
             .hoverEvent(HoverEvent.showText(TextComponent.of("This is a test.")))
         )
         .build(),
-      renderer.render(
+      this.renderer.render(
         TextComponent
           .builder("")
           .append(

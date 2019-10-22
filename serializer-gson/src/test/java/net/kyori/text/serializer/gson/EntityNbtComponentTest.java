@@ -24,10 +24,9 @@
 package net.kyori.text.serializer.gson;
 
 import com.google.gson.JsonElement;
-import net.kyori.text.EntityNbtComponent;
-
 import java.util.Map;
 import java.util.stream.Stream;
+import net.kyori.text.EntityNbtComponent;
 
 class EntityNbtComponentTest extends AbstractComponentTest<EntityNbtComponent> {
   @Override

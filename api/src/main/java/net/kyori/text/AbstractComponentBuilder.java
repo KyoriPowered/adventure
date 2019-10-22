@@ -23,7 +23,12 @@
  */
 package net.kyori.text;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.Style;
@@ -32,12 +37,6 @@ import net.kyori.text.format.TextDecoration;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * An abstract implementation of a component builder.

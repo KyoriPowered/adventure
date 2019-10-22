@@ -23,17 +23,15 @@
  */
 package net.kyori.text;
 
-import net.kyori.text.format.Style;
-import net.kyori.text.util.ToStringer;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import net.kyori.text.format.Style;
+import net.kyori.text.util.ShadyPines;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An abstract implementation of a text component.
@@ -85,12 +83,12 @@ public abstract class AbstractComponent implements Component {
   }
 
   @Override
-  public @NonNull String toString() {
-    final Map<String, Object> builder = new LinkedHashMap<>();
-    this.populateToString(builder);
-    builder.put("children", this.children);
-    builder.put("style", this.style);
-    return ToStringer.toString(this, builder);
+  public String toString() {
+    return ShadyPines.toString(this, map -> {
+      this.populateToString(map);
+      map.put("children", this.children);
+      map.put("style", this.style);
+    });
   }
 
   protected void populateToString(final @NonNull Map<String, Object> builder) {

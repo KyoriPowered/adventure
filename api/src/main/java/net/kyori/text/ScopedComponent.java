@@ -23,6 +23,8 @@
  */
 package net.kyori.text;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
@@ -31,9 +33,6 @@ import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Some magic to change return types.

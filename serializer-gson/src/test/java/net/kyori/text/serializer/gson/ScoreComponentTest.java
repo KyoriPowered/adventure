@@ -25,12 +25,11 @@ package net.kyori.text.serializer.gson;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+import java.util.Map;
+import java.util.stream.Stream;
 import net.kyori.text.Component;
 import net.kyori.text.ScoreComponent;
 import org.junit.jupiter.api.Test;
-
-import java.util.Map;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

@@ -23,13 +23,12 @@
  */
 package net.kyori.text.util;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A name map.
@@ -37,12 +36,12 @@ import java.util.function.Function;
  * @param <T> the type
  */
 public final class NameMap<T> {
-  private final Map<String, T> byName;
-  private final Map<T, String> byValue;
+  private final Map<String, T> nameToValue;
+  private final Map<T, String> valueToName;
 
-  private NameMap(final Map<String, T> byName, final Map<T, String> byValue) {
-    this.byName = byName;
-    this.byValue = byValue;
+  private NameMap(final Map<String, T> nameToValue, final Map<T, String> valueToName) {
+    this.nameToValue = nameToValue;
+    this.valueToName = valueToName;
   }
 
   /**
@@ -54,15 +53,16 @@ public final class NameMap<T> {
    * @return the name map
    */
   public static <T extends Enum<T>> @NonNull NameMap<T> create(final T @NonNull [] constants, final @NonNull Function<T, String> namer) {
-    final Map<String, T> byName = new HashMap<>(constants.length);
-    final Map<T, String> byValue = new HashMap<>(constants.length);
-    for(int i = 0, length = constants.length; i < length; i++) {
+    final int length = constants.length;
+    final Map<String, T> nameToValue = new HashMap<>(length);
+    final Map<T, String> valueToName = new HashMap<>(length);
+    for(int i = 0; i < length; i++) {
       final T constant = constants[i];
       final String name = namer.apply(constant);
-      byName.put(name, constant);
-      byValue.put(constant, name);
+      nameToValue.put(name, constant);
+      valueToName.put(constant, name);
     }
-    return new NameMap<>(Collections.unmodifiableMap(byName), Collections.unmodifiableMap(byValue));
+    return new NameMap<>(Collections.unmodifiableMap(nameToValue), Collections.unmodifiableMap(valueToName));
   }
 
   /**
@@ -72,7 +72,7 @@ public final class NameMap<T> {
    * @return the name
    */
   public @NonNull String name(final @NonNull T value) {
-    return this.byValue.get(value);
+    return this.valueToName.get(value);
   }
 
   /**
@@ -81,7 +81,19 @@ public final class NameMap<T> {
    * @param name the name
    * @return the value
    */
+  public @NonNull Optional<T> value(final @NonNull String name) {
+    return Optional.ofNullable(this.nameToValue.get(name));
+  }
+
+  /**
+   * Gets a value by its name.
+   *
+   * @param name the name
+   * @return the value
+   * @deprecated use {@link #value(String)}
+   */
+  @Deprecated
   public @NonNull Optional<T> get(final @NonNull String name) {
-    return Optional.ofNullable(this.byName.get(name));
+    return this.value(name);
   }
 }
