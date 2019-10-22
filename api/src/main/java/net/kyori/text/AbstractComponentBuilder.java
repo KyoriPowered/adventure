@@ -64,7 +64,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   /**
    * The style builder.
    */
-  private Style.@MonotonicNonNull Builder styleB;
+  private Style.@MonotonicNonNull Builder styleBuilder;
 
   protected AbstractComponentBuilder() {
   }
@@ -169,6 +169,13 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
 
   @Override
   @SuppressWarnings("unchecked")
+  public @NonNull B style(final @NonNull Consumer<Style.Builder> consumer) {
+    consumer.accept(this.styleBuilder());
+    return (B) this;
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
   public @NonNull B color(final @Nullable TextColor color) {
     this.styleBuilder().color(color);
     return (B) this;
@@ -220,29 +227,29 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   @SuppressWarnings("unchecked")
   public @NonNull B resetStyle() {
     this.style = null;
-    this.styleB = null;
+    this.styleBuilder = null;
     return (B) this;
   }
 
   private Style.@NonNull Builder styleBuilder() {
-    if(this.styleB == null) {
+    if(this.styleBuilder == null) {
       if(this.style != null) {
-        this.styleB = this.style.toBuilder();
+        this.styleBuilder = this.style.toBuilder();
         this.style = null;
       } else {
-        this.styleB = Style.builder();
+        this.styleBuilder = Style.builder();
       }
     }
-    return this.styleB;
+    return this.styleBuilder;
   }
 
   protected final boolean hasStyle() {
-    return this.styleB != null || this.style != null;
+    return this.styleBuilder != null || this.style != null;
   }
 
   protected @NonNull Style buildStyle() {
-    if(this.styleB != null) {
-      return this.styleB.build();
+    if(this.styleBuilder != null) {
+      return this.styleBuilder.build();
     } else if(this.style != null) {
       return this.style;
     } else {
