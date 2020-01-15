@@ -73,7 +73,7 @@ final class LinkingLegacyComponentSerializer extends AbstractLegacyComponentSeri
 
           Component link = withoutChildren.content(matched).clickEvent(ClickEvent.openUrl(matched));
           if(this.style != null) {
-            link = link.style(this.style);
+            link = link.style(link.style().merge(this.style));
           }
           produced.add(link);
           lastEnd = end;
