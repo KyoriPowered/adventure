@@ -24,6 +24,7 @@
 package net.kyori.text;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
@@ -79,17 +80,31 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   @Override
   @SuppressWarnings("unchecked")
   public @NonNull B append(final @NonNull Component component) {
-    if(this.children == AbstractComponent.EMPTY_COMPONENT_LIST) this.children = new ArrayList<>();
+    this.prepareChildren();
     this.children.add(component);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
+  public @NonNull B append(final @NonNull Component... components) {
+    this.prepareChildren();
+    Collections.addAll(this.children, components);
+    return (B) this;
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
   public @NonNull B append(final @NonNull Iterable<? extends Component> components) {
-    if(this.children == AbstractComponent.EMPTY_COMPONENT_LIST) this.children = new ArrayList<>();
+    this.prepareChildren();
     components.forEach(this.children::add);
     return (B) this;
+  }
+
+  private void prepareChildren() {
+    if(this.children == AbstractComponent.EMPTY_COMPONENT_LIST) {
+      this.children = new ArrayList<>();
+    }
   }
 
   @Override
@@ -105,7 +120,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
       if(!(child instanceof BuildableComponent)) {
         continue;
       }
-      final ComponentBuilder<?, ?> childBuilder = ((BuildableComponent) child).toBuilder();
+      final ComponentBuilder<?, ?> childBuilder = ((BuildableComponent<?, ?>) child).toBuilder();
       childBuilder.applyDeep(consumer);
       it.set(childBuilder.build());
     }

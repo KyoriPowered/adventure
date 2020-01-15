@@ -128,11 +128,11 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
         }
       }
       if(parent == null) {
-        throw new JsonParseException("Don't know how to turn " + element + " into a Component");
+        throw notSureHowToDeserialize(element);
       }
       return parent.build();
     } else if(!element.isJsonObject()) {
-      throw new JsonParseException("Don't know how to turn " + element + " into a Component");
+      throw notSureHowToDeserialize(element);
     }
 
     final JsonObject object = element.getAsJsonObject();

@@ -213,17 +213,17 @@ final class PaginationImpl<T> implements Pagination<T> {
   @Override
   public int hashCode() {
     int result = this.width;
-    result = 31 * result + this.resultsPerPage;
-    result = 31 * result + this.renderer.hashCode();
-    result = 31 * result + (int) this.lineCharacter;
-    result = 31 * result + this.lineStyle.hashCode();
-    result = 31 * result + (int) this.previousPageButtonCharacter;
-    result = 31 * result + this.previousPageButtonStyle.hashCode();
-    result = 31 * result + (int) this.nextPageButtonCharacter;
-    result = 31 * result + this.nextPageButtonStyle.hashCode();
-    result = 31 * result + this.title.hashCode();
-    result = 31 * result + this.rowRenderer.hashCode();
-    result = 31 * result + this.pageCommand.hashCode();
+    result = (31 * result) + this.resultsPerPage;
+    result = (31 * result) + this.renderer.hashCode();
+    result = (31 * result) + (int) this.lineCharacter;
+    result = (31 * result) + this.lineStyle.hashCode();
+    result = (31 * result) + (int) this.previousPageButtonCharacter;
+    result = (31 * result) + this.previousPageButtonStyle.hashCode();
+    result = (31 * result) + (int) this.nextPageButtonCharacter;
+    result = (31 * result) + this.nextPageButtonStyle.hashCode();
+    result = (31 * result) + this.title.hashCode();
+    result = (31 * result) + this.rowRenderer.hashCode();
+    result = (31 * result) + this.pageCommand.hashCode();
     return result;
   }
 }
