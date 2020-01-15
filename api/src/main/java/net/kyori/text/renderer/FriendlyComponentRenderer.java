@@ -42,7 +42,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A friendly component renderer.
+ *
+ * @deprecated use {@link TranslatableComponentRenderer}
  */
+@Deprecated
 public abstract class FriendlyComponentRenderer<C> implements ComponentRenderer<C> {
   public static <C> @NonNull FriendlyComponentRenderer<C> from(final @NonNull BiFunction<C, String, MessageFormat> translations) {
     return new FriendlyComponentRenderer<C>() {

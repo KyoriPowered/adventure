@@ -295,6 +295,7 @@ public final class Style {
    * @return a style
    */
   public @NonNull Style insertion(final @Nullable String insertion) {
+    if(Objects.equals(this.insertion, insertion)) return this;
     return new Style(this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, insertion);
   }
 

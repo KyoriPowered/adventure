@@ -48,6 +48,7 @@ public final class ShadyPines {
    * @return the set
    */
   @SafeVarargs
+  @SuppressWarnings("varargs")
   public static <E extends Enum<E>> @NonNull Set<E> enumSet(final Class<E> type, final E@NonNull... constants) {
     final Set<E> set = EnumSet.noneOf(type);
     Collections.addAll(set, constants);

@@ -35,10 +35,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Deprecated
-class FriendlyComponentRendererTest {
+class TranslatableComponentRendererTest {
   private static final Table<Locale, String, String> TRANSLATIONS = HashBasedTable.create();
-  private final FriendlyComponentRenderer<Locale> renderer = FriendlyComponentRenderer.from((locale, key) -> new MessageFormat(TRANSLATIONS.get(locale, key), locale));
+  private final TranslatableComponentRenderer<Locale> renderer = TranslatableComponentRenderer.from((locale, key) -> new MessageFormat(TRANSLATIONS.get(locale, key), locale));
 
   static {
     TRANSLATIONS.put(Locale.US, "test", "This is a test.");
@@ -51,7 +50,7 @@ class FriendlyComponentRendererTest {
       TextComponent.builder("This is a test.")
         .color(TextColor.YELLOW)
         .build(),
-      this.renderer.render(
+      this.renderer.renderTranslatable(
         TranslatableComponent
           .builder()
           .key("test")
@@ -72,7 +71,7 @@ class FriendlyComponentRendererTest {
         .append(TextComponent.of("lucko"))
         .append(TextComponent.of(" are cats."))
         .build(),
-      this.renderer.render(
+      this.renderer.renderTranslatable(
         TranslatableComponent
           .builder()
           .key("cats")
@@ -104,7 +103,7 @@ class FriendlyComponentRendererTest {
             .hoverEvent(HoverEvent.showText(TextComponent.of("This is a test.")))
         )
         .build(),
-      this.renderer.render(
+      this.renderer.renderText(
         TextComponent
           .builder("")
           .append(
