@@ -154,6 +154,16 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B>, B exten
   }
 
   @Test
+  void testStyleConsumer() {
+    final B b0 = this.builder();
+    b0.style(style -> {
+      style.color(TextColor.RED);
+    });
+    final C c0 = b0.build();
+    assertEquals(TextColor.RED, c0.color());
+  }
+
+  @Test
   void testEquals() {
     new EqualsTester()
       .addEqualityGroup(this.builder().build())

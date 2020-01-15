@@ -159,6 +159,14 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
   @NonNull B style(final @NonNull Style style);
 
   /**
+   * Configures the style.
+   *
+   * @param consumer the style consumer
+   * @return this builder
+   */
+  @NonNull B style(final @NonNull Consumer<Style.Builder> consumer);
+
+  /**
    * Sets the color of this component.
    *
    * @param color the color
