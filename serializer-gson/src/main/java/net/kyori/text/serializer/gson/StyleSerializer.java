@@ -67,6 +67,7 @@ public class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<
       if(color.color != null) {
         style.color(color.color);
       } else if(color.decoration != null) {
+        // I know. Setting a decoration from the color is weird. This is, unfortunately, something we need to support.
         style.decoration(color.decoration, true);
       }
     }
@@ -119,17 +120,17 @@ public class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<
   public JsonElement serialize(final Style src, final Type typeOfSrc, final JsonSerializationContext context) {
     final JsonObject json = new JsonObject();
 
+    final /* @Nullable */ TextColor color = src.color();
+    if(color != null) {
+      json.add(COLOR, context.serialize(color));
+    }
+
     for(final TextDecoration decoration : DECORATIONS) {
       final TextDecoration.State state = src.decoration(decoration);
       if(state != TextDecoration.State.NOT_SET) {
         final String name = TextDecoration.NAMES.name(decoration);
         json.addProperty(name, state == TextDecoration.State.TRUE);
       }
-    }
-
-    final /* @Nullable */ TextColor color = src.color();
-    if(color != null) {
-      json.add(COLOR, context.serialize(color));
     }
 
     final /* @Nullable */ String insertion = src.insertion();
