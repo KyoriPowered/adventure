@@ -60,6 +60,7 @@ class TranslatableComponentImpl extends AbstractComponent implements Translatabl
 
   @Override
   public @NonNull TranslatableComponent key(final @NonNull String key) {
+    if(Objects.equals(this.key, key)) return this;
     return new TranslatableComponentImpl(this.children, this.style, requireNonNull(key, "key"), this.args);
   }
 
@@ -85,6 +86,7 @@ class TranslatableComponentImpl extends AbstractComponent implements Translatabl
 
   @Override
   public @NonNull TranslatableComponent style(final @NonNull Style style) {
+    if(Objects.equals(this.style, style)) return this;
     return new TranslatableComponentImpl(this.children, style, this.key, this.args);
   }
 

@@ -47,6 +47,7 @@ class KeybindComponentImpl extends AbstractComponent implements KeybindComponent
 
   @Override
   public @NonNull KeybindComponent keybind(final @NonNull String keybind) {
+    if(Objects.equals(this.keybind, keybind)) return this;
     return new KeybindComponentImpl(this.children, this.style, requireNonNull(keybind, "keybind"));
   }
 
@@ -57,6 +58,7 @@ class KeybindComponentImpl extends AbstractComponent implements KeybindComponent
 
   @Override
   public @NonNull KeybindComponent style(final @NonNull Style style) {
+    if(Objects.equals(this.style, style)) return this;
     return new KeybindComponentImpl(this.children, style, this.keybind);
   }
 

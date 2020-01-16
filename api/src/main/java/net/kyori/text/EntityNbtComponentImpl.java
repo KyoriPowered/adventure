@@ -40,11 +40,13 @@ final class EntityNbtComponentImpl extends NbtComponentImpl<EntityNbtComponent, 
 
   @Override
   public @NonNull EntityNbtComponent nbtPath(final @NonNull String nbtPath) {
+    if(Objects.equals(this.nbtPath, nbtPath)) return this;
     return new EntityNbtComponentImpl(this.children, this.style, nbtPath, this.interpret, this.selector);
   }
 
   @Override
   public @NonNull EntityNbtComponent interpret(final boolean interpret) {
+    if(this.interpret == interpret) return this;
     return new EntityNbtComponentImpl(this.children, this.style, this.nbtPath, interpret, this.selector);
   }
 
@@ -55,6 +57,7 @@ final class EntityNbtComponentImpl extends NbtComponentImpl<EntityNbtComponent, 
 
   @Override
   public @NonNull EntityNbtComponent selector(final @NonNull String selector) {
+    if(Objects.equals(this.selector, selector)) return this;
     return new EntityNbtComponentImpl(this.children, this.style, this.nbtPath, this.interpret, selector);
   }
 
@@ -65,6 +68,7 @@ final class EntityNbtComponentImpl extends NbtComponentImpl<EntityNbtComponent, 
 
   @Override
   public @NonNull EntityNbtComponent style(final @NonNull Style style) {
+    if(Objects.equals(this.style, style)) return this;
     return new EntityNbtComponentImpl(this.children, style, this.nbtPath, this.interpret, this.selector);
   }
 
