@@ -49,8 +49,8 @@ class GsonComponentSerializerTest {
   @Test
   void testDeserializeArray() {
     assertEquals(TextComponent.of("Hello, ").append(TextComponent.of("world.")), GsonComponentSerializer.GSON.fromJson(array(array -> {
-      array.add(object(object -> object.addProperty(GsonComponentSerializer.TEXT, "Hello, ")));
-      array.add(object(object -> object.addProperty(GsonComponentSerializer.TEXT, "world.")));
+      array.add(object(object -> object.addProperty(ComponentSerializerImpl.TEXT, "Hello, ")));
+      array.add(object(object -> object.addProperty(ComponentSerializerImpl.TEXT, "world.")));
     }), Component.class));
   }
 }

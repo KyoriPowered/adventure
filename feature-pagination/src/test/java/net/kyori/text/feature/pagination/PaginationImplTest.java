@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PaginationImplTest {
   @Test
+  @SuppressWarnings("PointlessArithmeticExpression")
   void testLength() {
     assertEquals(0, PaginationImpl.length(TextComponent.empty()));
     assertEquals(0 + 3 + 1 + 3, PaginationImpl.length(

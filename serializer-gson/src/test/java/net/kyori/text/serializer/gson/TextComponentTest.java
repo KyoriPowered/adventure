@@ -30,11 +30,13 @@ import net.kyori.text.TextComponent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
 
+import static net.kyori.text.serializer.gson.StyleTest.name;
+
 class TextComponentTest extends AbstractComponentTest<TextComponent> {
   @Override
   Stream<Map.Entry<TextComponent, JsonElement>> tests() {
     return Stream.of(
-      entry(TextComponent.of("Hello, world."), json -> json.addProperty(GsonComponentSerializer.TEXT, "Hello, world.")),
+      entry(TextComponent.of("Hello, world."), json -> json.addProperty(ComponentSerializerImpl.TEXT, "Hello, world.")),
       entry(
         TextComponent.builder("c")
           .color(TextColor.GOLD)
@@ -46,32 +48,32 @@ class TextComponentTest extends AbstractComponentTest<TextComponent> {
           .append(TextComponent.of("s", TextColor.RED))
           .build(),
         json -> {
-          json.addProperty(GsonComponentSerializer.TEXT, "c");
-          json.addProperty(StyleSerializer.COLOR, TextColor.NAMES.name(TextColor.GOLD));
-          json.add(GsonComponentSerializer.EXTRA, array(extra -> {
+          json.addProperty(ComponentSerializerImpl.TEXT, "c");
+          json.addProperty(StyleSerializer.COLOR, name(TextColor.GOLD));
+          json.add(ComponentSerializerImpl.EXTRA, array(extra -> {
             extra.add(object(item -> {
-              item.addProperty(GsonComponentSerializer.TEXT, "o");
-              item.addProperty(StyleSerializer.COLOR, TextColor.NAMES.name(TextColor.DARK_AQUA));
+              item.addProperty(ComponentSerializerImpl.TEXT, "o");
+              item.addProperty(StyleSerializer.COLOR, name(TextColor.DARK_AQUA));
             }));
             extra.add(object(item -> {
-              item.addProperty(GsonComponentSerializer.TEXT, "l");
-              item.addProperty(StyleSerializer.COLOR, TextColor.NAMES.name(TextColor.LIGHT_PURPLE));
+              item.addProperty(ComponentSerializerImpl.TEXT, "l");
+              item.addProperty(StyleSerializer.COLOR, name(TextColor.LIGHT_PURPLE));
             }));
             extra.add(object(item -> {
-              item.addProperty(GsonComponentSerializer.TEXT, "o");
-              item.addProperty(StyleSerializer.COLOR, TextColor.NAMES.name(TextColor.DARK_PURPLE));
+              item.addProperty(ComponentSerializerImpl.TEXT, "o");
+              item.addProperty(StyleSerializer.COLOR, name(TextColor.DARK_PURPLE));
             }));
             extra.add(object(item -> {
-              item.addProperty(GsonComponentSerializer.TEXT, "u");
-              item.addProperty(StyleSerializer.COLOR, TextColor.NAMES.name(TextColor.BLUE));
+              item.addProperty(ComponentSerializerImpl.TEXT, "u");
+              item.addProperty(StyleSerializer.COLOR, name(TextColor.BLUE));
             }));
             extra.add(object(item -> {
-              item.addProperty(GsonComponentSerializer.TEXT, "r");
-              item.addProperty(StyleSerializer.COLOR, TextColor.NAMES.name(TextColor.DARK_GREEN));
+              item.addProperty(ComponentSerializerImpl.TEXT, "r");
+              item.addProperty(StyleSerializer.COLOR, name(TextColor.DARK_GREEN));
             }));
             extra.add(object(item -> {
-              item.addProperty(GsonComponentSerializer.TEXT, "s");
-              item.addProperty(StyleSerializer.COLOR, TextColor.NAMES.name(TextColor.RED));
+              item.addProperty(ComponentSerializerImpl.TEXT, "s");
+              item.addProperty(StyleSerializer.COLOR, name(TextColor.RED));
             }));
           }));
         }
@@ -84,17 +86,17 @@ class TextComponentTest extends AbstractComponentTest<TextComponent> {
           .append(TextComponent.of("A what?", TextColor.DARK_AQUA))
           .build(),
         json -> {
-          json.addProperty(GsonComponentSerializer.TEXT, "This is a test.");
-          json.addProperty(StyleSerializer.COLOR, TextColor.NAMES.name(TextColor.DARK_PURPLE));
+          json.addProperty(ComponentSerializerImpl.TEXT, "This is a test.");
+          json.addProperty(StyleSerializer.COLOR, name(TextColor.DARK_PURPLE));
           json.add(StyleSerializer.HOVER_EVENT, object(event -> {
-            event.addProperty(StyleSerializer.HOVER_EVENT_ACTION, HoverEvent.Action.NAMES.name(HoverEvent.Action.SHOW_TEXT));
-            event.add(StyleSerializer.HOVER_EVENT_VALUE, object(value -> value.addProperty(GsonComponentSerializer.TEXT, "A test.")));
+            event.addProperty(StyleSerializer.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_TEXT));
+            event.add(StyleSerializer.HOVER_EVENT_VALUE, object(value -> value.addProperty(ComponentSerializerImpl.TEXT, "A test.")));
           }));
-          json.add(GsonComponentSerializer.EXTRA, array(extra -> {
-            extra.add(object(item -> item.addProperty(GsonComponentSerializer.TEXT, " ")));
+          json.add(ComponentSerializerImpl.EXTRA, array(extra -> {
+            extra.add(object(item -> item.addProperty(ComponentSerializerImpl.TEXT, " ")));
             extra.add(object(item -> {
-              item.addProperty(GsonComponentSerializer.TEXT, "A what?");
-              item.addProperty(StyleSerializer.COLOR, TextColor.NAMES.name(TextColor.DARK_AQUA));
+              item.addProperty(ComponentSerializerImpl.TEXT, "A what?");
+              item.addProperty(StyleSerializer.COLOR, name(TextColor.DARK_AQUA));
             }));
           }));
         }

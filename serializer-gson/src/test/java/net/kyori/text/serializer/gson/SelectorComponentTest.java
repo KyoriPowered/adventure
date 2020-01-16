@@ -34,7 +34,7 @@ class SelectorComponentTest extends AbstractComponentTest<SelectorComponent> {
   @Override
   Stream<Map.Entry<SelectorComponent, JsonElement>> tests() {
     return Stream.of(
-      entry(SelectorComponent.of(SELECTOR), json -> json.addProperty(GsonComponentSerializer.SELECTOR, SELECTOR))
+      entry(SelectorComponent.of(SELECTOR), json -> json.addProperty(ComponentSerializerImpl.SELECTOR, SELECTOR))
     );
   }
 }

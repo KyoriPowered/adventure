@@ -32,6 +32,8 @@ import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
 
+import static net.kyori.text.serializer.gson.StyleTest.name;
+
 class TranslatableComponentTest extends AbstractComponentTest<TranslatableComponent> {
   private static final String KEY = "multiplayer.player.left";
   private static final String WHO = "kashike";
@@ -46,7 +48,7 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
     return Stream.of(
       entry(
         TranslatableComponent.of(KEY),
-        json -> json.addProperty(GsonComponentSerializer.TRANSLATE, KEY)
+        json -> json.addProperty(ComponentSerializerImpl.TRANSLATE, KEY)
       ),
       entry(
         TranslatableComponent.of(
@@ -57,17 +59,17 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
             .build()
         ).color(TextColor.YELLOW),
         json -> {
-          json.addProperty(GsonComponentSerializer.TRANSLATE, KEY);
-          json.addProperty(StyleSerializer.COLOR, TextColor.NAMES.name(TextColor.YELLOW));
-          json.add(GsonComponentSerializer.TRANSLATE_WITH, array(with -> with.add(object(item -> {
-            item.addProperty(GsonComponentSerializer.TEXT, WHO);
+          json.addProperty(ComponentSerializerImpl.TRANSLATE, KEY);
+          json.addProperty(StyleSerializer.COLOR, name(TextColor.YELLOW));
+          json.add(ComponentSerializerImpl.TRANSLATE_WITH, array(with -> with.add(object(item -> {
+            item.addProperty(ComponentSerializerImpl.TEXT, WHO);
             item.add(StyleSerializer.CLICK_EVENT, object(event -> {
-              event.addProperty(StyleSerializer.CLICK_EVENT_ACTION, ClickEvent.Action.NAMES.name(ClickEvent.Action.SUGGEST_COMMAND));
+              event.addProperty(StyleSerializer.CLICK_EVENT_ACTION, name(ClickEvent.Action.SUGGEST_COMMAND));
               event.addProperty(StyleSerializer.CLICK_EVENT_VALUE, COMMAND);
             }));
             item.add(StyleSerializer.HOVER_EVENT, object(event -> {
-              event.addProperty(StyleSerializer.HOVER_EVENT_ACTION, HoverEvent.Action.NAMES.name(HoverEvent.Action.SHOW_ENTITY));
-              event.add(StyleSerializer.HOVER_EVENT_VALUE, object(value -> value.addProperty(GsonComponentSerializer.TEXT, ENTITY)));
+              event.addProperty(StyleSerializer.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ENTITY));
+              event.add(StyleSerializer.HOVER_EVENT_VALUE, object(value -> value.addProperty(ComponentSerializerImpl.TEXT, ENTITY)));
             }));
           }))));
         }

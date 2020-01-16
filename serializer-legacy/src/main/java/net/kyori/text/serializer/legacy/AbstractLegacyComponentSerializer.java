@@ -85,17 +85,17 @@ abstract class AbstractLegacyComponentSerializer implements LegacyComponentSeria
             if(reset) {
               parts.add(current.build());
               reset = false;
-              current = TextComponent.builder("");
+              current = TextComponent.builder();
             } else {
-              current = TextComponent.builder("").append(current.build());
+              current = TextComponent.builder().append(current.build());
             }
           } else {
-            current = TextComponent.builder("");
+            current = TextComponent.builder();
           }
 
           current.content(input.substring(from, pos));
         } else if(current == null) {
-          current = TextComponent.builder("");
+          current = TextComponent.builder();
         }
 
         reset |= applyFormat(current, format);
@@ -171,7 +171,7 @@ abstract class AbstractLegacyComponentSerializer implements LegacyComponentSeria
       final List<Component> children = component.children();
       if(!children.isEmpty()) {
         final Style childrenStyle = new Style(style);
-        for(final Component child : component.children()) {
+        for(final Component child : children) {
           this.append(child, childrenStyle);
           childrenStyle.set(style);
         }
@@ -207,8 +207,9 @@ abstract class AbstractLegacyComponentSerializer implements LegacyComponentSeria
       }
 
       void apply(final @NonNull Component component) {
-        if(component.color() != null) {
-          this.color = component.color();
+        final TextColor color = component.color();
+        if(color != null) {
+          this.color = color;
         }
 
         for(final TextDecoration decoration : DECORATIONS) {

@@ -26,6 +26,8 @@ package net.kyori.text.serializer.gson;
 import com.google.gson.JsonElement;
 import java.util.Map;
 import java.util.stream.Stream;
+import net.kyori.text.event.ClickEvent;
+import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
@@ -58,10 +60,41 @@ class StyleTest extends AbstractSerializeDeserializeTest<Style> {
   Stream<Map.Entry<Style, JsonElement>> tests() {
     return Stream.of(
       entry(Style.empty(), json -> {}),
-      entry(Style.of(TextColor.LIGHT_PURPLE), json -> json.addProperty(StyleSerializer.COLOR, TextColor.NAMES.name(TextColor.LIGHT_PURPLE))),
-      entry(Style.of(TextDecoration.BOLD), json -> json.addProperty(TextDecoration.NAMES.name(TextDecoration.BOLD), true)),
-      entry(Style.builder().insertion("honk").build(), json -> json.addProperty(StyleSerializer.INSERTION, "honk"))
+      entry(Style.of(TextColor.LIGHT_PURPLE), json -> json.addProperty(StyleSerializer.COLOR, name(TextColor.LIGHT_PURPLE))),
+      entry(Style.of(TextDecoration.BOLD), json -> json.addProperty(name(TextDecoration.BOLD), true)),
+      entry(Style.builder().insertion("honk").build(), json -> json.addProperty(StyleSerializer.INSERTION, "honk")),
+      entry(
+        Style.builder()
+          .color(TextColor.RED)
+          .decoration(TextDecoration.BOLD, true)
+          .clickEvent(ClickEvent.openUrl("https://github.com"))
+          .build(),
+        json -> {
+          json.addProperty(StyleSerializer.COLOR, name(TextColor.RED));
+          json.addProperty(name(TextDecoration.BOLD), true);
+          json.add(StyleSerializer.CLICK_EVENT, object(clickEvent -> {
+            clickEvent.addProperty(StyleSerializer.CLICK_EVENT_ACTION, name(ClickEvent.Action.OPEN_URL));
+            clickEvent.addProperty(StyleSerializer.CLICK_EVENT_VALUE, "https://github.com");
+          }));
+        }
+      )
     );
+  }
+
+  static String name(final TextColor color) {
+    return TextColor.NAMES.name(color);
+  }
+
+  static String name(final TextDecoration decoration) {
+    return TextDecoration.NAMES.name(decoration);
+  }
+
+  static String name(final ClickEvent.Action action) {
+    return ClickEvent.Action.NAMES.name(action);
+  }
+
+  static String name(final HoverEvent.Action action) {
+    return HoverEvent.Action.NAMES.name(action);
   }
 
   @Override

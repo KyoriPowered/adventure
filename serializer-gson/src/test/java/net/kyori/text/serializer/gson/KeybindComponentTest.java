@@ -34,7 +34,7 @@ class KeybindComponentTest extends AbstractComponentTest<KeybindComponent> {
   @Override
   Stream<Map.Entry<KeybindComponent, JsonElement>> tests() {
     return Stream.of(
-      entry(KeybindComponent.of(KEY), json -> json.addProperty(GsonComponentSerializer.KEYBIND, KEY))
+      entry(KeybindComponent.of(KEY), json -> json.addProperty(ComponentSerializerImpl.KEYBIND, KEY))
     );
   }
 }

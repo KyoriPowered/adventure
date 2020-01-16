@@ -41,20 +41,20 @@ class ScoreComponentTest extends AbstractComponentTest<ScoreComponent> {
   @Override
   Stream<Map.Entry<ScoreComponent, JsonElement>> tests() {
     return Stream.of(
-      entry(ScoreComponent.of(NAME, OBJECTIVE), json -> json.add(GsonComponentSerializer.SCORE, object(score -> {
-        score.addProperty(GsonComponentSerializer.SCORE_NAME, NAME);
-        score.addProperty(GsonComponentSerializer.SCORE_OBJECTIVE, OBJECTIVE);
+      entry(ScoreComponent.of(NAME, OBJECTIVE), json -> json.add(ComponentSerializerImpl.SCORE, object(score -> {
+        score.addProperty(ComponentSerializerImpl.SCORE_NAME, NAME);
+        score.addProperty(ComponentSerializerImpl.SCORE_OBJECTIVE, OBJECTIVE);
       }))),
-      entry(ScoreComponent.of(NAME, OBJECTIVE, VALUE), json -> json.add(GsonComponentSerializer.SCORE, object(score -> {
-        score.addProperty(GsonComponentSerializer.SCORE_NAME, NAME);
-        score.addProperty(GsonComponentSerializer.SCORE_OBJECTIVE, OBJECTIVE);
-        score.addProperty(GsonComponentSerializer.SCORE_VALUE, VALUE);
+      entry(ScoreComponent.of(NAME, OBJECTIVE, VALUE), json -> json.add(ComponentSerializerImpl.SCORE, object(score -> {
+        score.addProperty(ComponentSerializerImpl.SCORE_NAME, NAME);
+        score.addProperty(ComponentSerializerImpl.SCORE_OBJECTIVE, OBJECTIVE);
+        score.addProperty(ComponentSerializerImpl.SCORE_VALUE, VALUE);
       })))
     );
   }
 
   @Test
   void testDeserialize_withoutObjective() {
-    assertThrows(JsonParseException.class, () -> GsonComponentSerializer.GSON.fromJson(object(json -> json.add(GsonComponentSerializer.SCORE, object(score -> score.addProperty(GsonComponentSerializer.SCORE_NAME, NAME)))), Component.class));
+    assertThrows(JsonParseException.class, () -> GsonComponentSerializer.GSON.fromJson(object(json -> json.add(ComponentSerializerImpl.SCORE, object(score -> score.addProperty(ComponentSerializerImpl.SCORE_NAME, NAME)))), Component.class));
   }
 }
