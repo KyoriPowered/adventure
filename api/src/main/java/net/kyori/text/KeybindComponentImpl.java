@@ -32,10 +32,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-class KeybindComponentImpl extends AbstractComponent implements KeybindComponent {
+final class KeybindComponentImpl extends AbstractComponent implements KeybindComponent {
   private final String keybind;
 
-  protected KeybindComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String keybind) {
+  KeybindComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String keybind) {
     super(children, style);
     this.keybind = keybind;
   }
@@ -88,7 +88,7 @@ class KeybindComponentImpl extends AbstractComponent implements KeybindComponent
     return new BuilderImpl(this);
   }
 
-  static class BuilderImpl extends AbstractComponentBuilder<KeybindComponent, Builder> implements KeybindComponent.Builder {
+  static final class BuilderImpl extends AbstractComponentBuilder<KeybindComponent, Builder> implements KeybindComponent.Builder {
     private @Nullable String keybind;
 
     BuilderImpl() {

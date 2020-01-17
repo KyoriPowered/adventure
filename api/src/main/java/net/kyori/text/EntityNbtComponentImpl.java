@@ -33,7 +33,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 final class EntityNbtComponentImpl extends NbtComponentImpl<EntityNbtComponent, EntityNbtComponent.Builder> implements EntityNbtComponent {
   private final String selector;
 
-  protected EntityNbtComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final String nbtPath, final boolean interpret, final String selector) {
+  EntityNbtComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final String nbtPath, final boolean interpret, final String selector) {
     super(children, style, nbtPath, interpret);
     this.selector = selector;
   }
@@ -99,7 +99,7 @@ final class EntityNbtComponentImpl extends NbtComponentImpl<EntityNbtComponent, 
     return new BuilderImpl(this);
   }
 
-  static class BuilderImpl extends NbtComponentImpl.BuilderImpl<EntityNbtComponent, Builder> implements Builder {
+  static final class BuilderImpl extends NbtComponentImpl.BuilderImpl<EntityNbtComponent, Builder> implements Builder {
     private @Nullable String selector;
 
     BuilderImpl() {

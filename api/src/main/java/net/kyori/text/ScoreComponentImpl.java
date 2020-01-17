@@ -32,12 +32,12 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-class ScoreComponentImpl extends AbstractComponent implements ScoreComponent {
+final class ScoreComponentImpl extends AbstractComponent implements ScoreComponent {
   private final String name;
   private final String objective;
   private final @Nullable String value;
 
-  protected ScoreComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String name, final @NonNull String objective, final @Nullable String value) {
+  ScoreComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String name, final @NonNull String objective, final @Nullable String value) {
     super(children, style);
     this.name = name;
     this.objective = objective;
@@ -118,7 +118,7 @@ class ScoreComponentImpl extends AbstractComponent implements ScoreComponent {
     return new BuilderImpl(this);
   }
 
-  static class BuilderImpl extends AbstractComponentBuilder<ScoreComponent, Builder> implements ScoreComponent.Builder {
+  static final class BuilderImpl extends AbstractComponentBuilder<ScoreComponent, Builder> implements ScoreComponent.Builder {
     private @Nullable String name;
     private @Nullable String objective;
     private @Nullable String value;

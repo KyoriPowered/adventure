@@ -35,7 +35,7 @@ import static java.util.Objects.requireNonNull;
 final class BlockNbtComponentImpl extends NbtComponentImpl<BlockNbtComponent, BlockNbtComponent.Builder> implements BlockNbtComponent {
   private final Pos pos;
 
-  protected BlockNbtComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final String nbtPath, final boolean interpret, final @NonNull Pos pos) {
+  BlockNbtComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final String nbtPath, final boolean interpret, final @NonNull Pos pos) {
     super(children, style, nbtPath, interpret);
     this.pos = pos;
   }
@@ -100,7 +100,7 @@ final class BlockNbtComponentImpl extends NbtComponentImpl<BlockNbtComponent, Bl
     return new BuilderImpl(this);
   }
 
-  static class BuilderImpl extends NbtComponentImpl.BuilderImpl<BlockNbtComponent, Builder> implements Builder {
+  static final class BuilderImpl extends NbtComponentImpl.BuilderImpl<BlockNbtComponent, Builder> implements Builder {
     private @Nullable Pos pos;
 
     BuilderImpl() {

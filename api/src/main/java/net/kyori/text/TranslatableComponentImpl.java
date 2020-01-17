@@ -37,17 +37,17 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-class TranslatableComponentImpl extends AbstractComponent implements TranslatableComponent {
+final class TranslatableComponentImpl extends AbstractComponent implements TranslatableComponent {
   private final String key;
   private final List<Component> args;
 
-  protected TranslatableComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String key, final @NonNull Component@NonNull[] args) {
+  TranslatableComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String key, final @NonNull Component@NonNull[] args) {
     super(children, style);
     this.key = key;
     this.args = Collections.unmodifiableList(Arrays.asList(args));
   }
 
-  protected TranslatableComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String key, final @NonNull List<? extends Component> args) {
+  TranslatableComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String key, final @NonNull List<? extends Component> args) {
     super(children, style);
     this.key = key;
     this.args = Collections.unmodifiableList(new ArrayList<>(args));
@@ -118,7 +118,7 @@ class TranslatableComponentImpl extends AbstractComponent implements Translatabl
     return new BuilderImpl(this);
   }
 
-  static class BuilderImpl extends AbstractComponentBuilder<TranslatableComponent, Builder> implements TranslatableComponent.Builder {
+  static final class BuilderImpl extends AbstractComponentBuilder<TranslatableComponent, Builder> implements TranslatableComponent.Builder {
     private @Nullable String key;
     private List<? extends Component> args = EMPTY_COMPONENT_LIST;
 

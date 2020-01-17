@@ -32,10 +32,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-class SelectorComponentImpl extends AbstractComponent implements SelectorComponent {
+final class SelectorComponentImpl extends AbstractComponent implements SelectorComponent {
   private final String pattern;
 
-  protected SelectorComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String pattern) {
+  SelectorComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String pattern) {
     super(children, style);
     this.pattern = pattern;
   }
@@ -88,7 +88,7 @@ class SelectorComponentImpl extends AbstractComponent implements SelectorCompone
     return new BuilderImpl(this);
   }
 
-  static class BuilderImpl extends AbstractComponentBuilder<SelectorComponent, Builder> implements SelectorComponent.Builder {
+  static final class BuilderImpl extends AbstractComponentBuilder<SelectorComponent, Builder> implements SelectorComponent.Builder {
     private @Nullable String pattern;
 
     BuilderImpl() {

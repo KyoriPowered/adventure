@@ -33,7 +33,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-class TextComponentImpl extends AbstractComponent implements TextComponent {
+final class TextComponentImpl extends AbstractComponent implements TextComponent {
   static final TextComponent EMPTY = createDirect("");
   static final TextComponent NEWLINE = createDirect("\n");
   static final TextComponent SPACE = createDirect(" ");
@@ -44,7 +44,7 @@ class TextComponentImpl extends AbstractComponent implements TextComponent {
     return new TextComponentImpl(Collections.emptyList(), Style.empty(), content);
   }
 
-  protected TextComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String content) {
+  TextComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String content) {
     super(children, style);
     this.content = content;
   }
@@ -102,7 +102,7 @@ class TextComponentImpl extends AbstractComponent implements TextComponent {
     return new BuilderImpl(this);
   }
 
-  static class BuilderImpl extends AbstractComponentBuilder<TextComponent, Builder> implements TextComponent.Builder {
+  static final class BuilderImpl extends AbstractComponentBuilder<TextComponent, Builder> implements TextComponent.Builder {
     private String content = "";
 
     BuilderImpl() {
