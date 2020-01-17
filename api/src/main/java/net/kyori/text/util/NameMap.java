@@ -24,6 +24,7 @@
 package net.kyori.text.util;
 
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -35,7 +36,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * @param <T> the type
  */
-public final class NameMap<T> {
+public final class NameMap<T extends Enum<T>> {
   private final Map<String, T> nameToValue;
   private final Map<T, String> valueToName;
 
@@ -47,12 +48,38 @@ public final class NameMap<T> {
   /**
    * Creates a name map.
    *
-   * @param constants the constants
+   * @param type the type
    * @param namer the name provider
    * @param <T> the type
    * @return the name map
    */
-  public static <T extends Enum<T>> @NonNull NameMap<T> create(final T @NonNull [] constants, final @NonNull Function<T, String> namer) {
+  @SuppressWarnings("DuplicatedCode") // TODO: remove when deprecated method below is removed
+  public static <T extends Enum<T>> @NonNull NameMap<T> create(final Class<T> type, final @NonNull Function<T, String> namer) {
+    final T[] constants = type.getEnumConstants();
+    final int length = constants.length;
+    final Map<String, T> nameToValue = new HashMap<>(length);
+    final Map<T, String> valueToName = new EnumMap<>(type);
+    for(int i = 0; i < length; i++) {
+      final T constant = constants[i];
+      final String name = namer.apply(constant);
+      nameToValue.put(name, constant);
+      valueToName.put(constant, name);
+    }
+    return new NameMap<>(Collections.unmodifiableMap(nameToValue), Collections.unmodifiableMap(valueToName));
+  }
+
+  /**
+   * Creates a name map.
+   *
+   * @param constants the constants
+   * @param namer the name provider
+   * @param <T> the type
+   * @return the name map
+   * @deprecated use {@link #create(Class, Function)}
+   */
+  @Deprecated
+  @SuppressWarnings("DuplicatedCode")
+  public static <T extends Enum<T>> @NonNull NameMap<T> create(final T@NonNull[] constants, final @NonNull Function<T, String> namer) {
     final int length = constants.length;
     final Map<String, T> nameToValue = new HashMap<>(length);
     final Map<T, String> valueToName = new HashMap<>(length);

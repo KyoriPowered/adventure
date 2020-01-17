@@ -55,7 +55,7 @@ public enum TextDecoration implements TextFormat {
    */
   ITALIC("italic");
 
-  public static final NameMap<TextDecoration> NAMES = NameMap.create(values(), constant -> constant.name);
+  public static final NameMap<TextDecoration> NAMES = NameMap.create(TextDecoration.class, constant -> constant.name);
   /**
    * The name of this decoration.
    */

@@ -51,7 +51,7 @@ public enum TextColor implements TextFormat {
   /**
    * The name map.
    */
-  public static final NameMap<TextColor> NAMES = NameMap.create(values(), constant -> constant.name);
+  public static final NameMap<TextColor> NAMES = NameMap.create(TextColor.class, constant -> constant.name);
   /**
    * The name of this color.
    */

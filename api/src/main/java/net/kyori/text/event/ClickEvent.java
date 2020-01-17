@@ -195,7 +195,7 @@ public final class ClickEvent {
     /**
      * The name map.
      */
-    public static final NameMap<Action> NAMES = NameMap.create(values(), constant -> constant.name);
+    public static final NameMap<Action> NAMES = NameMap.create(Action.class, constant -> constant.name);
     /**
      * The name of this action.
      */

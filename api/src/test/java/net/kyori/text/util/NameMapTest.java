@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class NameMapTest {
-  private static final NameMap<Thing> THINGS = NameMap.create(Thing.values(), thing -> thing.name);
+  private static final NameMap<Thing> THINGS = NameMap.create(Thing.class, thing -> thing.name);
 
   @Test
   void testName() {
