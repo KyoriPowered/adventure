@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 import net.kyori.text.Component;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
@@ -104,6 +105,18 @@ public final class Style {
     for(final TextDecoration decoration : decorations) {
       builder.decoration(decoration, true);
     }
+    return builder.build();
+  }
+
+  /**
+   * Creates a style.
+   *
+   * @param consumer the builder consumer
+   * @return a style
+   */
+  public static @NonNull Style of(final @NonNull Consumer<Builder> consumer) {
+    final Builder builder = builder();
+    consumer.accept(builder);
     return builder.build();
   }
 
@@ -205,12 +218,13 @@ public final class Style {
    * @return a style
    */
   public @NonNull Style decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
+    requireNonNull(state, "state");
     switch(decoration) {
-      case BOLD: return new Style(this.color, this.obfuscated, requireNonNull(state, "flag"), this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
-      case ITALIC: return new Style(this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, requireNonNull(state, "flag"), this.clickEvent, this.hoverEvent, this.insertion);
-      case UNDERLINED: return new Style(this.color, this.obfuscated, this.bold, this.strikethrough, requireNonNull(state, "flag"), this.italic, this.clickEvent, this.hoverEvent, this.insertion);
-      case STRIKETHROUGH: return new Style(this.color, this.obfuscated, this.bold, requireNonNull(state, "flag"), this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
-      case OBFUSCATED: return new Style(this.color, requireNonNull(state, "flag"), this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
+      case BOLD: return new Style(this.color, this.obfuscated, state, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
+      case ITALIC: return new Style(this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, state, this.clickEvent, this.hoverEvent, this.insertion);
+      case UNDERLINED: return new Style(this.color, this.obfuscated, this.bold, this.strikethrough, state, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
+      case STRIKETHROUGH: return new Style(this.color, this.obfuscated, this.bold, state, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
+      case OBFUSCATED: return new Style(this.color, state, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
       default: throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
     }
   }
@@ -385,15 +399,7 @@ public final class Style {
    */
   @SuppressWarnings("DuplicatedCode")
   public boolean isEmpty() {
-    return this.color == null
-      && this.obfuscated == TextDecoration.State.NOT_SET
-      && this.bold == TextDecoration.State.NOT_SET
-      && this.strikethrough == TextDecoration.State.NOT_SET
-      && this.underlined == TextDecoration.State.NOT_SET
-      && this.italic == TextDecoration.State.NOT_SET
-      && this.clickEvent == null
-      && this.hoverEvent == null
-      && this.insertion == null;
+    return this == EMPTY;
   }
 
   /**
@@ -425,12 +431,12 @@ public final class Style {
     if(this == other) return true;
     if(!(other instanceof Style)) return false;
     final Style that = (Style) other;
-    return this.color == that.color
-      && Objects.equals(this.obfuscated, that.obfuscated)
-      && Objects.equals(this.bold, that.bold)
-      && Objects.equals(this.strikethrough, that.strikethrough)
-      && Objects.equals(this.underlined, that.underlined)
-      && Objects.equals(this.italic, that.italic)
+    return Objects.equals(this.color, that.color)
+      && this.obfuscated == that.obfuscated
+      && this.bold == that.bold
+      && this.strikethrough == that.strikethrough
+      && this.underlined == that.underlined
+      && this.italic == that.italic
       && Objects.equals(this.clickEvent, that.clickEvent)
       && Objects.equals(this.hoverEvent, that.hoverEvent)
       && Objects.equals(this.insertion, that.insertion);
@@ -438,7 +444,16 @@ public final class Style {
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
+    int result = Objects.hashCode(this.color);
+    result = (31 * result) + this.obfuscated.hashCode();
+    result = (31 * result) + this.bold.hashCode();
+    result = (31 * result) + this.strikethrough.hashCode();
+    result = (31 * result) + this.underlined.hashCode();
+    result = (31 * result) + this.italic.hashCode();
+    result = (31 * result) + Objects.hashCode(this.clickEvent);
+    result = (31 * result) + Objects.hashCode(this.hoverEvent);
+    result = (31 * result) + Objects.hashCode(this.insertion);
+    return result;
   }
 
   /**
@@ -450,7 +465,7 @@ public final class Style {
     EVENTS,
     INSERTION;
 
-    static final Set<Merge> ALL = of(Merge.values());
+    static final Set<Merge> ALL = of(values());
 
     /**
      * Gets a merge set of all merge types.
@@ -583,12 +598,13 @@ public final class Style {
      * @return this builder
      */
     public @NonNull Builder decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
+      requireNonNull(state, "state");
       switch(decoration) {
-        case BOLD: this.bold = requireNonNull(state, "flag"); return this;
-        case ITALIC: this.italic = requireNonNull(state, "flag"); return this;
-        case UNDERLINED: this.underlined = requireNonNull(state, "flag"); return this;
-        case STRIKETHROUGH: this.strikethrough = requireNonNull(state, "flag"); return this;
-        case OBFUSCATED: this.obfuscated = requireNonNull(state, "flag"); return this;
+        case BOLD: this.bold = state; return this;
+        case ITALIC: this.italic = state; return this;
+        case UNDERLINED: this.underlined = state; return this;
+        case STRIKETHROUGH: this.strikethrough = state; return this;
+        case OBFUSCATED: this.obfuscated = state; return this;
         default: throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
       }
     }

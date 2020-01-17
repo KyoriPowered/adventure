@@ -47,6 +47,16 @@ class StyleTest {
   }
 
   @Test
+  void testOf_consumerBuilder() {
+    final Style s0 = Style.of(builder -> {
+      builder.color(TextColor.RED);
+      builder.decoration(TextDecoration.BOLD, true);
+    });
+    assertEquals(TextColor.RED, s0.color());
+    assertDecorations(s0, ImmutableMap.of(TextDecoration.BOLD, TextDecoration.State.TRUE));
+  }
+
+  @Test
   void testHasDecoration() {
     final Style s0 = Style.empty();
     assertFalse(s0.hasDecoration(TextDecoration.BOLD));
@@ -154,8 +164,8 @@ class StyleTest {
   @Test
   void testEquals() {
     new EqualsTester()
-      .addEqualityGroup(Style.empty())
-      .addEqualityGroup(Style.of(TextColor.LIGHT_PURPLE))
+      .addEqualityGroup(Style.empty(), Style.empty(), Style.builder().build(), Style.builder().color(TextColor.DARK_PURPLE).color(null).build())
+      .addEqualityGroup(Style.of(TextColor.LIGHT_PURPLE), Style.of(TextColor.LIGHT_PURPLE))
       .testEquals();
   }
 }

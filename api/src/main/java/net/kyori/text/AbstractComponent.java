@@ -79,7 +79,9 @@ public abstract class AbstractComponent implements Component {
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.children, this.style);
+    int result = this.children.hashCode();
+    result = (31 * result) + this.style.hashCode();
+    return result;
   }
 
   @Override
