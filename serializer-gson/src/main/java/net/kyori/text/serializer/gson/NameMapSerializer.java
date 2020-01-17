@@ -33,7 +33,7 @@ import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
 import net.kyori.text.util.NameMap;
 
-public class NameMapSerializer<T> implements JsonDeserializer<T>, JsonSerializer<T> {
+public class NameMapSerializer<T extends Enum<T>> implements JsonDeserializer<T>, JsonSerializer<T> {
   private final String name;
   private final NameMap<T> map;
 
