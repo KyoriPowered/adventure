@@ -23,6 +23,7 @@
  */
 package net.kyori.text;
 
+import net.kyori.minecraft.Key;
 import net.kyori.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
@@ -36,14 +37,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class StorageNbtComponentTest extends AbstractComponentTest<StorageNbtComponent, StorageNbtComponent.Builder> {
   @Override
   StorageNbtComponent.Builder builder() {
-    return StorageNbtComponent.builder().nbtPath("abc").storage("def");
+    return StorageNbtComponent.builder().nbtPath("abc").storage(Key.of("def"));
   }
 
   @Test
   void testOf() {
-    final StorageNbtComponent component = StorageNbtComponent.of("abc", "def");
+    final StorageNbtComponent component = StorageNbtComponent.of("abc", Key.of("def"));
     assertEquals("abc", component.nbtPath());
-    assertEquals("def", component.storage());
+    assertEquals(Key.of("def"), component.storage());
     assertNull(component.color());
     for(final TextDecoration decoration : TextDecoration.values()) {
       assertEquals(TextDecoration.State.NOT_SET, component.decoration(decoration));
@@ -52,38 +53,25 @@ class StorageNbtComponentTest extends AbstractComponentTest<StorageNbtComponent,
 
   @Test
   void testNbtPath() {
-    final StorageNbtComponent c0 = StorageNbtComponent.of("abc", "def");
+    final StorageNbtComponent c0 = StorageNbtComponent.of("abc", Key.of("def"));
     final StorageNbtComponent c1 = c0.nbtPath("ghi");
     assertEquals("abc", c0.nbtPath());
     assertEquals("ghi", c1.nbtPath());
-    assertEquals("def", c1.storage());
+    assertEquals(Key.of("def"), c1.storage());
   }
 
   @Test
   void testSelector() {
-    final StorageNbtComponent c0 = StorageNbtComponent.of("abc", "def:ghi");
-    final StorageNbtComponent c1 = c0.storage("ghi:jkl");
-    assertEquals("def:ghi", c0.storage());
-    assertEquals("ghi:jkl", c1.storage());
+    final StorageNbtComponent c0 = StorageNbtComponent.of("abc", Key.of("def:ghi"));
+    final StorageNbtComponent c1 = c0.storage(Key.of("ghi:jkl"));
+    assertEquals(Key.of("def:ghi"), c0.storage());
+    assertEquals(Key.of("ghi:jkl"), c1.storage());
     assertEquals("abc", c1.nbtPath());
   }
 
   @Test
   void testRebuildWithNoChanges() {
-    final StorageNbtComponent component = StorageNbtComponent.of("test", "test");
+    final StorageNbtComponent component = StorageNbtComponent.of("test", Key.of("test"));
     assertEquals(component, component.toBuilder().build());
-  }
-
-  @Test
-  void testIdPattern() {
-    final Predicate<String> tester = StorageNbtComponentImpl.BuilderImpl.ID_PATTERN.asPredicate();
-
-    assertTrue(tester.test("apple"));
-    assertFalse(tester.test("Ronald"));
-    assertFalse(tester.test("stone:Ronald"));
-    assertFalse(tester.test("Minecraft:apple"));
-    assertFalse(tester.test("mine-c/ra.ft:appl.e"));
-    assertTrue(tester.test("mine-c_ra.ft:appl.e"));
-    assertTrue(tester.test("minecraft:apple"));
   }
 }

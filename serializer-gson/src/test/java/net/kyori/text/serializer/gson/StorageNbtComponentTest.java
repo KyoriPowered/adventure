@@ -24,6 +24,7 @@
 package net.kyori.text.serializer.gson;
 
 import com.google.gson.JsonElement;
+import net.kyori.minecraft.Key;
 import net.kyori.text.StorageNbtComponent;
 
 import java.util.Map;
@@ -34,7 +35,7 @@ class StorageNbtComponentTest extends AbstractComponentTest<StorageNbtComponent>
   Stream<Map.Entry<StorageNbtComponent, JsonElement>> tests() {
     return Stream.of(
       entry(
-        StorageNbtComponent.builder().nbtPath("abc").storage("doom:apple").build(),
+        StorageNbtComponent.builder().nbtPath("abc").storage(Key.of("doom:apple")).build(),
         json -> {
           json.addProperty(ComponentSerializerImpl.NBT, "abc");
           json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
@@ -42,11 +43,11 @@ class StorageNbtComponentTest extends AbstractComponentTest<StorageNbtComponent>
         }
       ),
       entry(
-        StorageNbtComponent.builder().nbtPath("abc[].def").storage("diamond").interpret(true).build(),
+        StorageNbtComponent.builder().nbtPath("abc[].def").storage(Key.of("diamond")).interpret(true).build(),
         json -> {
           json.addProperty(ComponentSerializerImpl.NBT, "abc[].def");
           json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, true);
-          json.addProperty(ComponentSerializerImpl.NBT_STORAGE, "diamond");
+          json.addProperty(ComponentSerializerImpl.NBT_STORAGE, "minecraft:diamond");
         }
       )
     );

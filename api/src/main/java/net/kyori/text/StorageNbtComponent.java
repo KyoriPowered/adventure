@@ -23,6 +23,7 @@
  */
 package net.kyori.text;
 
+import net.kyori.minecraft.Key;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.function.Consumer;
@@ -47,7 +48,7 @@ public interface StorageNbtComponent extends NbtComponent<StorageNbtComponent, S
    * @param storage the identifier of the storage
    * @return the storage NBT component
    */
-  static @NonNull StorageNbtComponent of(final @NonNull String nbtPath, final @NonNull String storage) {
+  static @NonNull StorageNbtComponent of(final @NonNull String nbtPath, final @NonNull Key storage) {
     return builder().nbtPath(nbtPath).storage(storage).build();
   }
 
@@ -68,7 +69,7 @@ public interface StorageNbtComponent extends NbtComponent<StorageNbtComponent, S
    *
    * @return the NBT storage
    */
-  @NonNull String storage();
+  @NonNull Key storage();
 
   /**
    * Sets the NBT storage.
@@ -76,7 +77,7 @@ public interface StorageNbtComponent extends NbtComponent<StorageNbtComponent, S
    * @param storage the identifier of the NBT storage
    * @return a component
    */
-  @NonNull StorageNbtComponent storage(final @NonNull String storage);
+  @NonNull StorageNbtComponent storage(final @NonNull Key storage);
 
   /**
    * A command storage NBT component builder.
@@ -88,6 +89,6 @@ public interface StorageNbtComponent extends NbtComponent<StorageNbtComponent, S
      * @param storage the id of the NBT storage
      * @return this builder
      */
-    @NonNull Builder storage(final @NonNull String storage);
+    @NonNull Builder storage(final @NonNull Key storage);
   }
 }

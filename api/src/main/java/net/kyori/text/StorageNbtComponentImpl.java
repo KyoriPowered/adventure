@@ -23,18 +23,16 @@
  */
 package net.kyori.text;
 
+import java.util.List;
+import net.kyori.minecraft.Key;
 import net.kyori.text.format.Style;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
-import java.util.List;
-import java.util.regex.Pattern;
 
 final class StorageNbtComponentImpl extends NbtComponentImpl<StorageNbtComponent, StorageNbtComponent.Builder> implements StorageNbtComponent {
-  private final String selectorPattern;
+  private final Key selectorPattern;
 
-  protected StorageNbtComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final String nbtPathPattern, final boolean interpret, final String selectorPattern) {
+  protected StorageNbtComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final String nbtPathPattern, final boolean interpret, final Key selectorPattern) {
     super(children, style, nbtPathPattern, interpret);
     this.selectorPattern = selectorPattern;
   }
@@ -50,12 +48,12 @@ final class StorageNbtComponentImpl extends NbtComponentImpl<StorageNbtComponent
   }
 
   @Override
-  public @NonNull String storage() {
+  public @NonNull Key storage() {
     return this.selectorPattern;
   }
 
   @Override
-  public @NonNull StorageNbtComponent storage(final @NonNull String storage) {
+  public @NonNull StorageNbtComponent storage(final @NonNull Key storage) {
     return new StorageNbtComponentImpl(this.children, this.style, this.nbtPath, this.interpret, storage);
   }
 
@@ -75,8 +73,7 @@ final class StorageNbtComponentImpl extends NbtComponentImpl<StorageNbtComponent
   }
 
   static class BuilderImpl extends NbtComponentImpl.BuilderImpl<StorageNbtComponent, Builder> implements Builder {
-    static final Pattern ID_PATTERN = Pattern.compile("^([a-z0-9_.-]+:)?[a-z0-9/._-]+$");
-    private @MonotonicNonNull String storage;
+    private @MonotonicNonNull Key storage;
 
     BuilderImpl() {
     }
@@ -87,8 +84,7 @@ final class StorageNbtComponentImpl extends NbtComponentImpl<StorageNbtComponent
     }
 
     @Override
-    public @NonNull Builder storage(final @NonNull String storage) {
-      if(!ID_PATTERN.matcher(storage).find()) throw new IllegalStateException("Invalid storage id \"" + this.storage + "\" supplied");
+    public @NonNull Builder storage(final @NonNull Key storage) {
       this.storage = storage;
       return this;
     }

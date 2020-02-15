@@ -35,6 +35,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import net.kyori.minecraft.Key;
 import net.kyori.text.BlockNbtComponent;
 import net.kyori.text.BuildableComponent;
 import net.kyori.text.Component;
@@ -141,7 +142,7 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
       } else if(object.has(NBT_ENTITY)) {
         component = EntityNbtComponent.builder().nbtPath(nbt).interpret(interpret).selector(object.get(NBT_ENTITY).getAsString());
       } else if(object.has(NBT_STORAGE)) {
-        component = StorageNbtComponent.builder().nbtPath(nbt).interpret(interpret).storage(object.get(NBT_STORAGE).getAsString());
+        component = StorageNbtComponent.builder().nbtPath(nbt).interpret(interpret).storage(Key.of(object.get(NBT_STORAGE).getAsString()));
       } else {
         throw notSureHowToDeserialize(element);
       }
@@ -202,7 +203,7 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
       } else if(src instanceof EntityNbtComponent) {
         object.addProperty(NBT_ENTITY, ((EntityNbtComponent) nc).selector());
       } else if(src instanceof StorageNbtComponent) {
-        object.addProperty(NBT_STORAGE, ((StorageNbtComponent) nc).storage());
+        object.addProperty(NBT_STORAGE, ((StorageNbtComponent) nc).storage().asString());
       } else {
         throw notSureHowToSerialize(src);
       }

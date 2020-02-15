@@ -24,12 +24,17 @@
 package net.kyori.text;
 
 import java.util.Map;
+import java.util.function.Consumer;
 import net.kyori.text.format.Style;
 import net.kyori.text.format.TextDecoration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TextAssertions {
+  public static <T> void doWith(final T value, final Consumer<T> consumer) {
+    consumer.accept(value);
+  }
+
   public static void assertDecorations(final Component component, final Map<TextDecoration, TextDecoration.State> expected) {
     assertDecorations(component.style(), expected);
   }
