@@ -35,6 +35,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import net.kyori.minecraft.Key;
 import net.kyori.text.BlockNbtComponent;
 import net.kyori.text.BuildableComponent;
 import net.kyori.text.Component;
@@ -44,6 +45,7 @@ import net.kyori.text.KeybindComponent;
 import net.kyori.text.NbtComponent;
 import net.kyori.text.ScoreComponent;
 import net.kyori.text.SelectorComponent;
+import net.kyori.text.StorageNbtComponent;
 import net.kyori.text.TextComponent;
 import net.kyori.text.TranslatableComponent;
 import net.kyori.text.format.Style;
@@ -68,6 +70,7 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
   static final String NBT_INTERPRET = "interpret";
   static final String NBT_BLOCK = "block";
   static final String NBT_ENTITY = "entity";
+  static final String NBT_STORAGE = "storage";
 
   @Override
   public Component deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
@@ -138,6 +141,8 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
         component = BlockNbtComponent.builder().nbtPath(nbt).interpret(interpret).pos(position);
       } else if(object.has(NBT_ENTITY)) {
         component = EntityNbtComponent.builder().nbtPath(nbt).interpret(interpret).selector(object.get(NBT_ENTITY).getAsString());
+      } else if(object.has(NBT_STORAGE)) {
+        component = StorageNbtComponent.builder().nbtPath(nbt).interpret(interpret).storage(Key.of(object.get(NBT_STORAGE).getAsString()));
       } else {
         throw notSureHowToDeserialize(element);
       }
@@ -197,6 +202,8 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
         object.add(NBT_BLOCK, position);
       } else if(src instanceof EntityNbtComponent) {
         object.addProperty(NBT_ENTITY, ((EntityNbtComponent) nc).selector());
+      } else if(src instanceof StorageNbtComponent) {
+        object.addProperty(NBT_STORAGE, ((StorageNbtComponent) nc).storage().asString());
       } else {
         throw notSureHowToSerialize(src);
       }

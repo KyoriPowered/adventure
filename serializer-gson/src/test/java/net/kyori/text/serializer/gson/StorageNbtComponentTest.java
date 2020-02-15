@@ -21,33 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.text;
+package net.kyori.text.serializer.gson;
+
+import com.google.gson.JsonElement;
+import net.kyori.minecraft.Key;
+import net.kyori.text.StorageNbtComponent;
 
 import java.util.Map;
-import java.util.function.Consumer;
-import net.kyori.text.format.Style;
-import net.kyori.text.format.TextDecoration;
+import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-public class TextAssertions {
-  public static <T> void doWith(final T value, final Consumer<T> consumer) {
-    consumer.accept(value);
-  }
-
-  public static void assertDecorations(final Component component, final Map<TextDecoration, TextDecoration.State> expected) {
-    assertDecorations(component.style(), expected);
-  }
-
-  public static void assertDecorations(final Style style, final Map<TextDecoration, TextDecoration.State> expected) {
-    if(expected.isEmpty()) {
-      for(final TextDecoration decoration : TextDecoration.values()) {
-        assertEquals(TextDecoration.State.NOT_SET, style.decoration(decoration));
-      }
-    } else {
-      for(final Map.Entry<TextDecoration, TextDecoration.State> entry : expected.entrySet()) {
-        assertEquals(entry.getValue(), style.decoration(entry.getKey()));
-      }
-    }
+class StorageNbtComponentTest extends AbstractComponentTest<StorageNbtComponent> {
+  @Override
+  Stream<Map.Entry<StorageNbtComponent, JsonElement>> tests() {
+    return Stream.of(
+      entry(
+        StorageNbtComponent.builder().nbtPath("abc").storage(Key.of("doom:apple")).build(),
+        json -> {
+          json.addProperty(ComponentSerializerImpl.NBT, "abc");
+          json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
+          json.addProperty(ComponentSerializerImpl.NBT_STORAGE, "doom:apple");
+        }
+      ),
+      entry(
+        StorageNbtComponent.builder().nbtPath("abc[].def").storage(Key.of("diamond")).interpret(true).build(),
+        json -> {
+          json.addProperty(ComponentSerializerImpl.NBT, "abc[].def");
+          json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, true);
+          json.addProperty(ComponentSerializerImpl.NBT_STORAGE, "minecraft:diamond");
+        }
+      )
+    );
   }
 }

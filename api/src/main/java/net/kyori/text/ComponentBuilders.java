@@ -47,6 +47,15 @@ public interface ComponentBuilders {
   }
 
   /**
+   * Creates an storage NBT component builder.
+   *
+   * @return a builder
+   */
+  static StorageNbtComponent.@NonNull Builder storageNbt() {
+    return StorageNbtComponent.builder();
+  }
+
+  /**
    * Creates a keybind component builder.
    *
    * @return a builder

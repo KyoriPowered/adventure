@@ -101,6 +101,16 @@ public final class ClickEvent {
   }
 
   /**
+   * Creates a click event that copies text to the clipboard.
+   *
+   * @param text the text to copy to the clipboard
+   * @return a click event
+   */
+  public static @NonNull ClickEvent copyToClipboard(final @NonNull String text) {
+    return of(Action.COPY_TO_CLIPBOARD, text);
+  }
+
+  /**
    * Creates a click event that changes to a page.
    *
    * @param page the page to change to
@@ -190,7 +200,11 @@ public final class ClickEvent {
     /**
      * Changes the page of a book.
      */
-    CHANGE_PAGE("change_page", true);
+    CHANGE_PAGE("change_page", true),
+    /**
+     * Copies text to the clipboard.
+     */
+    COPY_TO_CLIPBOARD("copy_to_clipboard", true);
 
     /**
      * The name map.
