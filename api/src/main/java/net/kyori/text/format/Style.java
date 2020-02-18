@@ -466,6 +466,7 @@ public final class Style {
     INSERTION;
 
     static final Set<Merge> ALL = of(values());
+    static final Set<Merge> COLOR_AND_DECORATIONS = of(COLOR, DECORATIONS);
 
     /**
      * Gets a merge set of all merge types.
@@ -474,6 +475,15 @@ public final class Style {
      */
     public static @NonNull Set<Merge> all() {
       return ALL;
+    }
+
+    /**
+     * Gets a merge set containing {@link #COLOR} and {@link #DECORATIONS}.
+     *
+     * @return a merge set
+     */
+    public static @NonNull Set<Merge> colorAndDecorations() {
+      return COLOR_AND_DECORATIONS;
     }
 
     /**

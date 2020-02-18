@@ -47,7 +47,7 @@ public abstract class FriendlyComponentRenderer<C> implements ComponentRenderer<
 
   private final TranslatableComponentRenderer<C> renderer = new TranslatableComponentRenderer<C>() {
     @Override
-    protected @Nullable MessageFormat translation(@NonNull final C context, final @NonNull String key) {
+    protected @Nullable MessageFormat translation(final @NonNull C context, final @NonNull String key) {
       return FriendlyComponentRenderer.this.translation(context, key);
     }
   };

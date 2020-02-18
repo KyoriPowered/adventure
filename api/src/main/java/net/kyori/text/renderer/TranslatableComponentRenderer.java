@@ -26,7 +26,6 @@ package net.kyori.text.renderer;
 import java.text.AttributedCharacterIterator;
 import java.text.MessageFormat;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.BiFunction;
 import net.kyori.text.BlockNbtComponent;
 import net.kyori.text.BuildableComponent;
@@ -144,14 +143,15 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   }
 
   private <B extends ComponentBuilder<?, ?>> void mergeStyle(final Component component, final B builder, final C context) {
-    builder.mergeStyle(component, Style.Merge.of(Style.Merge.COLOR, Style.Merge.DECORATIONS));
+    builder.mergeStyle(component, Style.Merge.colorAndDecorations());
     builder.clickEvent(component.clickEvent());
-    Optional.ofNullable(component.hoverEvent()).ifPresent(hoverEvent -> {
+    final /* @Nullable */ HoverEvent hoverEvent = component.hoverEvent();
+    if(hoverEvent != null) {
       builder.hoverEvent(HoverEvent.of(
         hoverEvent.action(),
         this.render(hoverEvent.value(), context)
       ));
-    });
+    }
   }
 
   /**

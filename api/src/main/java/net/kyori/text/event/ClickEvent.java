@@ -101,16 +101,6 @@ public final class ClickEvent {
   }
 
   /**
-   * Creates a click event that copies text to the clipboard.
-   *
-   * @param text the text to copy to the clipboard
-   * @return a click event
-   */
-  public static @NonNull ClickEvent copyToClipboard(final @NonNull String text) {
-    return of(Action.COPY_TO_CLIPBOARD, text);
-  }
-
-  /**
    * Creates a click event that changes to a page.
    *
    * @param page the page to change to
@@ -118,6 +108,16 @@ public final class ClickEvent {
    */
   public static @NonNull ClickEvent changePage(final int page) {
     return changePage(String.valueOf(page));
+  }
+
+  /**
+   * Creates a click event that copies text to the clipboard.
+   *
+   * @param text the text to copy to the clipboard
+   * @return a click event
+   */
+  public static @NonNull ClickEvent copyToClipboard(final @NonNull String text) {
+    return of(Action.COPY_TO_CLIPBOARD, text);
   }
 
   /**

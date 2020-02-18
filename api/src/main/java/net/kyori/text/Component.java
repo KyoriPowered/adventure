@@ -67,8 +67,9 @@ public interface Component {
     for(final Component child : this.children()) {
       if(child.contains(that)) return true;
     }
-    if(this.hoverEvent() != null) {
-      final Component hover = this.hoverEvent().value();
+    final /* @Nullable */ HoverEvent hoverEvent = this.hoverEvent();
+    if(hoverEvent != null) {
+      final Component hover = hoverEvent.value();
       if(that == hover) return true;
       for(final Component child : hover.children()) {
         if(child.contains(that)) return true;
@@ -120,6 +121,16 @@ public interface Component {
    * @return a component
    */
   @NonNull Component style(final @NonNull Style style);
+
+  /**
+   * Sets the style of this component.
+   *
+   * @param style the style
+   * @return a component
+   */
+  default @NonNull Component style(final Style.@NonNull Builder style) {
+    return this.style(style.build());
+  }
 
   /**
    * Merges from another style into this component's style.
