@@ -24,6 +24,7 @@
 package net.kyori.text.title;
 
 import java.time.Duration;
+import java.util.function.Consumer;
 import net.kyori.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -33,33 +34,33 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public interface Title {
   /**
-   * Creates a title of type {@link Type#TITLE}.
+   * Creates a title.
    *
    * @param title the title
    * @return the title
    */
   static @NonNull Title title(final @NonNull Component title) {
-    return new TitleImpl(Type.TITLE, title, null);
+    return Title.builder().title(title).build();
   }
 
   /**
-   * Creates a title of type {@link Type#SUBTITLE}.
+   * Creates a title.
    *
    * @param subtitle the subtitle
    * @return the title
    */
   static @NonNull Title subtitle(final @NonNull Component subtitle) {
-    return new TitleImpl(Type.SUBTITLE, subtitle, null);
+    return Title.builder().subtitle(subtitle).build();
   }
 
   /**
-   * Creates a title of type {@link Type#ACTIONBAR}.
+   * Creates a title.
    *
    * @param actionbar the actionbar
    * @return the title
    */
   static @NonNull Title actionbar(final @NonNull Component actionbar) {
-    return new TitleImpl(Type.ACTIONBAR, actionbar, null);
+    return Title.builder().actionbar(actionbar).build();
   }
 
   /**
@@ -83,7 +84,7 @@ public interface Title {
    * @return the title
    */
   static @NonNull Title times(final int fadeIn, final int stay, final int fadeOut) {
-    return new TitleImpl(Type.TIMES, null, new TitleImpl.TimesImpl(fadeIn, stay, fadeOut));
+    return Title.builder().times(times -> times.fadeIn(fadeIn).stay(stay).fadeOut(fadeOut)).build();
   }
 
   /**
@@ -104,19 +105,30 @@ public interface Title {
     return TitleImpl.RESET;
   }
 
-  /**
-   * Gets the type.
-   *
-   * @return the type
-   */
-  @NonNull Type type();
+  static @NonNull Builder builder() {
+    return new TitleBuilder();
+  }
 
   /**
-   * Gets the text.
+   * Gets the title.
    *
-   * @return the text
+   * @return the title
    */
-  @Nullable Component text();
+  @Nullable Component title();
+
+  /**
+   * Gets the subtitle.
+   *
+   * @return the subtitle
+   */
+  @Nullable Component subtitle();
+
+  /**
+   * Gets the actionbar.
+   *
+   * @return the actionbar
+   */
+  @Nullable Component actionbar();
 
   /**
    * Gets the times.
@@ -124,6 +136,40 @@ public interface Title {
    * @return the times
    */
   @Nullable Times times();
+
+  boolean shouldClear();
+
+  boolean shouldReset();
+
+  interface Builder {
+    @NonNull Builder title(final @NonNull Component title);
+
+    @NonNull Builder subtitle(final @NonNull Component subtitle);
+
+    @NonNull Builder actionbar(final @NonNull Component actionbar);
+
+    @NonNull Builder times(final @NonNull Consumer<Times> consumer);
+
+    @NonNull Builder clear(final boolean clear);
+
+    @NonNull Builder reset(final boolean reset);
+
+    @NonNull Title build();
+
+    interface Times {
+      Times fadeIn(final @NonNull Duration duration);
+
+      Times stay(final @NonNull Duration duration);
+
+      Times fadeOut(final @NonNull Duration duration);
+
+      Times fadeIn(final int duration);
+
+      Times stay(final int duration);
+
+      Times fadeOut(final int duration);
+    }
+  }
 
   /**
    * Title times.
@@ -149,17 +195,5 @@ public interface Title {
      * @return the time (in ticks) the title will fade-out
      */
     int fadeOut();
-  }
-
-  /**
-   * A title type.
-   */
-  enum Type {
-    TITLE,
-    SUBTITLE,
-    ACTIONBAR,
-    TIMES,
-    CLEAR,
-    RESET;
   }
 }

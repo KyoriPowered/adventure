@@ -27,12 +27,11 @@ import java.time.Duration;
 import java.util.Objects;
 import net.kyori.text.Component;
 import net.kyori.text.util.ShadyPines;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class TitleImpl implements Title {
-  static final Title CLEAR = new TitleImpl(Type.CLEAR, null, null);
-  static final Title RESET = new TitleImpl(Type.RESET, null, null);
+  static final Title CLEAR = new TitleImpl(true, false);
+  static final Title RESET = new TitleImpl(false, true);
 
   static final long TICK_DURATION_NANOS = Duration.ofMillis(50).toNanos();
 
@@ -40,26 +39,52 @@ final class TitleImpl implements Title {
     return duration.toNanos() / TICK_DURATION_NANOS;
   }
 
-  private final Type type;
-  private final Component text;
+  private final Component title;
+  private final Component subtitle;
+  private final Component actionbar;
   private final Times times;
+  private final boolean clear;
+  private final boolean reset;
 
-  TitleImpl(final Type type, final Component text, final Times times) {
-    if((type == Type.TITLE || type == Type.SUBTITLE || type == Type.ACTIONBAR) && text == null) throw new NullPointerException("text");
-    if(type == Type.TIMES && times == null) throw new NullPointerException("times");
-    this.type = type;
-    this.text = text;
-    this.times = times;
+  TitleImpl(final TitleBuilder builder) {
+    this.title = builder.title;
+    this.subtitle = builder.subtitle;
+    this.actionbar = builder.actionbar;
+    if(builder.times != null) {
+      this.times = new TimesImpl(
+        builder.times.fadeIn,
+        builder.times.stay,
+        builder.times.fadeOut
+      );
+    } else {
+      this.times = null;
+    }
+    this.clear = builder.clear;
+    this.reset = builder.reset;
+  }
+
+  TitleImpl(final boolean clear, final boolean reset) {
+    this.title = null;
+    this.subtitle = null;
+    this.actionbar = null;
+    this.times = null;
+    this.clear = clear;
+    this.reset = reset;
   }
 
   @Override
-  public @NonNull Type type() {
-    return this.type;
+  public @Nullable Component title() {
+    return this.title;
   }
 
   @Override
-  public @Nullable Component text() {
-    return this.text;
+  public @Nullable Component subtitle() {
+    return this.subtitle;
+  }
+
+  @Override
+  public @Nullable Component actionbar() {
+    return this.actionbar;
   }
 
   @Override
@@ -68,27 +93,43 @@ final class TitleImpl implements Title {
   }
 
   @Override
+  public boolean shouldClear() {
+    return this.clear;
+  }
+
+  @Override
+  public boolean shouldReset() {
+    return this.reset;
+  }
+
+  @Override
   public boolean equals(final Object other) {
     if(this == other) return true;
     if(other == null || this.getClass() != other.getClass()) return false;
     final TitleImpl that = (TitleImpl) other;
-    return this.type == that.type && Objects.equals(this.text, that.text) && Objects.equals(this.times, that.times);
+    return Objects.equals(this.title, that.title) && Objects.equals(this.subtitle, that.subtitle) && Objects.equals(this.actionbar, that.actionbar) && Objects.equals(this.times, that.times) && this.clear == that.clear && this.reset == that.reset;
   }
 
   @Override
   public int hashCode() {
-    int result = this.type.hashCode();
-    result = (31 * result) + Objects.hashCode(this.text);
+    int result = Objects.hashCode(this.title);
+    result = (31 * result) + Objects.hashCode(this.subtitle);
+    result = (31 * result) + Objects.hashCode(this.actionbar);
     result = (31 * result) + Objects.hashCode(this.times);
+    result = 31 * result + (this.clear ? 1 : 0);
+    result = 31 * result + (this.reset ? 1 : 0);
     return result;
   }
 
   @Override
   public String toString() {
     return ShadyPines.toString(this, builder -> {
-      builder.put("type", this.type);
-      builder.put("text", this.text);
+      builder.put("title", this.title);
+      builder.put("subtitle", this.subtitle);
+      builder.put("actionbar", this.actionbar);
       builder.put("times", this.times);
+      builder.put("clear", this.clear);
+      builder.put("reset", this.reset);
     });
   }
 
