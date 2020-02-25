@@ -59,7 +59,7 @@ class TextColorWrapper {
     }
   }
 
-  private static TextColor deserializeColor(final JsonElement json, final JsonDeserializationContext context) {
+  private static @Nullable TextColor deserializeColor(final JsonElement json, final JsonDeserializationContext context) {
     try {
       return context.deserialize(json, TextColor.class);
     } catch(final JsonParseException e) {
@@ -67,7 +67,7 @@ class TextColorWrapper {
     }
   }
 
-  private static TextDecoration deserializeDecoration(final JsonElement json, final JsonDeserializationContext context) {
+  private static @Nullable TextDecoration deserializeDecoration(final JsonElement json, final JsonDeserializationContext context) {
     try {
       return context.deserialize(json, TextDecoration.class);
     } catch(final JsonParseException e) {
