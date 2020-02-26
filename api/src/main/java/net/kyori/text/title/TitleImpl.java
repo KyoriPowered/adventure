@@ -51,11 +51,7 @@ final class TitleImpl implements Title {
     this.subtitle = builder.subtitle;
     this.actionbar = builder.actionbar;
     if(builder.times != null) {
-      this.times = new TimesImpl(
-        builder.times.fadeIn,
-        builder.times.stay,
-        builder.times.fadeOut
-      );
+      this.times = builder.times.build();
     } else {
       this.times = null;
     }
@@ -107,7 +103,12 @@ final class TitleImpl implements Title {
     if(this == other) return true;
     if(other == null || this.getClass() != other.getClass()) return false;
     final TitleImpl that = (TitleImpl) other;
-    return Objects.equals(this.title, that.title) && Objects.equals(this.subtitle, that.subtitle) && Objects.equals(this.actionbar, that.actionbar) && Objects.equals(this.times, that.times) && this.clear == that.clear && this.reset == that.reset;
+    return Objects.equals(this.title, that.title)
+      && Objects.equals(this.subtitle, that.subtitle)
+      && Objects.equals(this.actionbar, that.actionbar)
+      && Objects.equals(this.times, that.times)
+      && this.clear == that.clear
+      && this.reset == that.reset;
   }
 
   @Override

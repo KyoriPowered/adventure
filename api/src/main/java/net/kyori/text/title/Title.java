@@ -105,6 +105,11 @@ public interface Title {
     return TitleImpl.RESET;
   }
 
+  /**
+   * Creates a builder.
+   *
+   * @return a builder
+   */
   static @NonNull Builder builder() {
     return new TitleBuilder();
   }
