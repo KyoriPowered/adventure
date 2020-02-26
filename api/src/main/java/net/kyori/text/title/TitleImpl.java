@@ -117,8 +117,8 @@ final class TitleImpl implements Title {
     result = (31 * result) + Objects.hashCode(this.subtitle);
     result = (31 * result) + Objects.hashCode(this.actionbar);
     result = (31 * result) + Objects.hashCode(this.times);
-    result = 31 * result + (this.clear ? 1 : 0);
-    result = 31 * result + (this.reset ? 1 : 0);
+    result = (31 * result) + Boolean.hashCode(this.clear);
+    result = (31 * result) + Boolean.hashCode(this.reset);
     return result;
   }
 

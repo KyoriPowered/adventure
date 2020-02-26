@@ -162,17 +162,17 @@ public interface Title {
     @NonNull Title build();
 
     interface Times {
-      Times fadeIn(final @NonNull Duration duration);
+      @NonNull Times fadeIn(final @NonNull Duration duration);
 
-      Times stay(final @NonNull Duration duration);
+      @NonNull Times stay(final @NonNull Duration duration);
 
-      Times fadeOut(final @NonNull Duration duration);
+      @NonNull Times fadeOut(final @NonNull Duration duration);
 
-      Times fadeIn(final int duration);
+      @NonNull Times fadeIn(final int duration);
 
-      Times stay(final int duration);
+      @NonNull Times stay(final int duration);
 
-      Times fadeOut(final int duration);
+      @NonNull Times fadeOut(final int duration);
     }
   }
 

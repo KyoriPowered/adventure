@@ -89,34 +89,34 @@ final class TitleBuilder implements Title.Builder {
     int fadeOut;
 
     @Override
-    public Times fadeIn(final @NonNull Duration duration) {
+    public @NonNull Times fadeIn(final @NonNull Duration duration) {
       return this.fadeIn((int) TitleImpl.ticks(duration));
     }
 
     @Override
-    public Times stay(final @NonNull Duration duration) {
+    public @NonNull Times stay(final @NonNull Duration duration) {
       return this.stay((int) TitleImpl.ticks(duration));
     }
 
     @Override
-    public Times fadeOut(final @NonNull Duration duration) {
+    public @NonNull Times fadeOut(final @NonNull Duration duration) {
       return this.fadeOut((int) TitleImpl.ticks(duration));
     }
 
     @Override
-    public Times fadeIn(final int duration) {
+    public @NonNull Times fadeIn(final int duration) {
       this.fadeIn = duration;
       return this;
     }
 
     @Override
-    public Times stay(final int duration) {
+    public @NonNull Times stay(final int duration) {
       this.stay = duration;
       return this;
     }
 
     @Override
-    public Times fadeOut(final int duration) {
+    public @NonNull Times fadeOut(final int duration) {
       this.fadeOut = duration;
       return this;
     }
