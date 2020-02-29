@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TranslatableComponentRendererTest {
-  private static final Table<Locale, String, String> TRANSLATIONS = HashBasedTable.create();
+  static final Table<Locale, String, String> TRANSLATIONS = HashBasedTable.create();
   private final TranslatableComponentRenderer<Locale> renderer = TranslatableComponentRenderer.from((locale, key) -> new MessageFormat(TRANSLATIONS.get(locale, key), locale));
 
   static {
@@ -46,11 +46,13 @@ class TranslatableComponentRendererTest {
 
   @Test
   void testSimple() {
+    testSimple(this.renderer);
+  }
+
+  static void testSimple(final ComponentRenderer<Locale> renderer) {
     assertEquals(
-      TextComponent.builder("This is a test.")
-        .color(TextColor.YELLOW)
-        .build(),
-      this.renderer.renderTranslatable(
+      TextComponent.of("This is a test.", TextColor.YELLOW),
+      renderer.render(
         TranslatableComponent
           .builder()
           .key("test")
@@ -63,6 +65,10 @@ class TranslatableComponentRendererTest {
 
   @Test
   void testComplex() {
+    testComplex(this.renderer);
+  }
+
+  static void testComplex(final ComponentRenderer<Locale> renderer) {
     assertEquals(
       TextComponent.builder("")
         .color(TextColor.YELLOW)
@@ -71,7 +77,7 @@ class TranslatableComponentRendererTest {
         .append(TextComponent.of("lucko"))
         .append(TextComponent.of(" are cats."))
         .build(),
-      this.renderer.renderTranslatable(
+      renderer.render(
         TranslatableComponent
           .builder()
           .key("cats")
@@ -88,6 +94,10 @@ class TranslatableComponentRendererTest {
 
   @Test
   void testVeryComplex() {
+    testVeryComplex(this.renderer);
+  }
+
+  static void testVeryComplex(final ComponentRenderer<Locale> renderer) {
     assertEquals(
       TextComponent.builder("")
         .color(TextColor.YELLOW)
@@ -103,27 +113,25 @@ class TranslatableComponentRendererTest {
             .hoverEvent(HoverEvent.showText(TextComponent.of("This is a test.")))
         )
         .build(),
-      this.renderer.renderText(
+      renderer.render(
         TextComponent
           .builder("")
           .append(
+            TranslatableComponent.of("test")
+          )
+          .append(
             TranslatableComponent
               .builder()
-              .key("test")
+              .key("cats")
+              .args(
+                TextComponent.of("kashike"),
+                TextComponent.of("lucko")
+              )
+              .hoverEvent(HoverEvent.showText(TranslatableComponent.of("test")))
+              .append(TextComponent.space())
+              .append(TextComponent.of("Meow!"))
               .build()
-          ).append(
-          TranslatableComponent
-            .builder()
-            .key("cats")
-            .args(
-              TextComponent.of("kashike"),
-              TextComponent.of("lucko")
-            )
-            .hoverEvent(HoverEvent.showText(TranslatableComponent.of("test")))
-            .append(TextComponent.space())
-            .append(TextComponent.of("Meow!"))
-            .build()
-        )
+          )
           .color(TextColor.YELLOW)
           .build(),
         Locale.US

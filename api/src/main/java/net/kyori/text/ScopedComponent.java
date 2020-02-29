@@ -37,11 +37,32 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  * Some magic to change return types.
  *
- * @param <C> the component style
+ * @param <C> the component type
  */
 public interface ScopedComponent<C extends Component> extends Component {
   @Override
   @NonNull C children(final @NonNull List<Component> children);
+
+  @Override
+  @NonNull C style(final @NonNull Style style);
+
+  @Override
+  @SuppressWarnings("unchecked")
+  default @NonNull C style(final Style.@NonNull Builder style) {
+    return (C) Component.super.style(style);
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  default @NonNull C mergeStyle(final @NonNull Component that) {
+    return (C) Component.super.mergeStyle(that);
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  default @NonNull C mergeStyle(final @NonNull Component that, final Style.@NonNull Merge@NonNull... merges) {
+    return (C) Component.super.mergeStyle(that, merges);
+  }
 
   @Override
   default @NonNull C append(final @NonNull Component component) {

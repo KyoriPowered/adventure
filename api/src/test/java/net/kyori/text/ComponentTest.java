@@ -23,13 +23,11 @@
  */
 package net.kyori.text;
 
-import java.util.Set;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.Style;
 import net.kyori.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -37,30 +35,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 class ComponentTest {
   @Test
-  void testDecorations() {
-    TextComponent component = TextComponent.builder().content("Kittens!").build();
-
-    // The bold decoration should not be set at this point.
-    assertFalse(component.hasDecoration(TextDecoration.BOLD));
-    assertEquals(TextDecoration.State.NOT_SET, component.decoration(TextDecoration.BOLD));
-
-    component = component.decoration(TextDecoration.BOLD, TextDecoration.State.TRUE);
-
-    final Set<TextDecoration> decorations = component.decorations();
-
-    // The bold decoration should be set and true at this point.
-    assertTrue(component.hasDecoration(TextDecoration.BOLD));
-    assertEquals(TextDecoration.State.TRUE, component.decoration(TextDecoration.BOLD));
-    assertEquals(component.decoration(TextDecoration.BOLD) == TextDecoration.State.TRUE, decorations.contains(TextDecoration.BOLD));
-    assertTrue(decorations.contains(TextDecoration.BOLD));
-    assertFalse(decorations.contains(TextDecoration.OBFUSCATED));
-  }
-
-  @Test
   void testStyleReset() {
-    Component component = TextComponent.builder()
-      .content("kittens")
-      .build();
+    Component component = TextComponent.of("kittens");
     assertFalse(component.hasStyling());
     component = component.decoration(TextDecoration.BOLD, TextDecoration.State.TRUE);
     assertTrue(component.hasStyling());
@@ -69,18 +45,9 @@ class ComponentTest {
   }
 
   @Test
-  void testCycleSelf() {
-    assertThrows(IllegalStateException.class, () -> {
-      final Component component = TextComponent.builder().content("cat").build();
-      component.append(component);
-      fail("A component was added to itself");
-    });
-  }
-
-  @Test
   void testCycleHoverRoot() {
     assertThrows(IllegalStateException.class, () -> {
-      final Component hoverComponent = TextComponent.builder().content("hover").build();
+      final Component hoverComponent = TextComponent.of("hover");
       final Component component = TextComponent.builder()
         .content("cat")
         .hoverEvent(HoverEvent.showText(hoverComponent))
@@ -94,9 +61,9 @@ class ComponentTest {
   @Test
   void testCycleHoverChild() {
     assertThrows(IllegalStateException.class, () -> {
-      final Component hoverComponent = TextComponent.builder().content("hover child").build();
+      final Component hoverComponent = TextComponent.of("hover child");
       final Component component = TextComponent.builder().content("cat")
-        .hoverEvent(HoverEvent.showText(TextComponent.builder().content("hover").build().append(hoverComponent)))
+        .hoverEvent(HoverEvent.showText(TextComponent.of("hover").append(hoverComponent)))
         .build();
       // component's hover event value contains hoverComponent, we should not be able to add it
       hoverComponent.append(component);

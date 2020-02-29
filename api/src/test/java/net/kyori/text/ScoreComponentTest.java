@@ -23,9 +23,10 @@
  */
 package net.kyori.text;
 
-import net.kyori.text.format.TextDecoration;
+import com.google.common.collect.ImmutableSet;
 import org.junit.jupiter.api.Test;
 
+import static net.kyori.text.TextAssertions.assertDecorations;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -41,9 +42,7 @@ class ScoreComponentTest extends AbstractComponentTest<ScoreComponent, ScoreComp
     assertEquals("abc", component.name());
     assertEquals("def", component.objective());
     assertNull(component.color());
-    for(final TextDecoration decoration : TextDecoration.values()) {
-      assertEquals(TextDecoration.State.NOT_SET, component.decoration(decoration));
-    }
+    assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
   }
 
   @Test
@@ -65,8 +64,10 @@ class ScoreComponentTest extends AbstractComponentTest<ScoreComponent, ScoreComp
   }
 
   @Test
-  void testRebuildWithNoChanges() {
-    final ScoreComponent component = ScoreComponent.of("test", "test");
-    assertEquals(component, component.toBuilder().build());
+  void testValue() {
+    final ScoreComponent c0 = ScoreComponent.of("abc", "def");
+    final ScoreComponent c1 = c0.value("ghi");
+    assertNull(c0.value());
+    assertEquals("ghi", c1.value());
   }
 }

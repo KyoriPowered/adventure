@@ -21,37 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.text;
+package net.kyori.test;
 
-import com.google.common.collect.ImmutableSet;
-import net.kyori.minecraft.Key;
-import org.junit.jupiter.api.Test;
+import com.google.common.truth.IterableSubject;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
-import static net.kyori.text.TextAssertions.assertDecorations;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
-class StorageNbtComponentTest extends AbstractNbtComponentTest<StorageNbtComponent, StorageNbtComponent.Builder> {
-  @Override
-  StorageNbtComponent.Builder builder() {
-    return StorageNbtComponent.builder().nbtPath("abc").storage(Key.of("def"));
+public class WeirdAssertions {
+  public static <T> void doWith(final T value, final Consumer<T> consumer) {
+    consumer.accept(value);
   }
 
-  @Test
-  void testOf() {
-    final StorageNbtComponent component = StorageNbtComponent.of("abc", Key.of("def"));
-    assertEquals("abc", component.nbtPath());
-    assertEquals(Key.of("def"), component.storage());
-    assertNull(component.color());
-    assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
+  @SafeVarargs
+  public static <T> void assertAllEqualToEachOther(final T... values) {
+    for(final T a : values) {
+      for(final T b : values) {
+        assertEquals(a, b);
+      }
+    }
   }
 
-  @Test
-  void testSelector() {
-    final StorageNbtComponent c0 = StorageNbtComponent.of("abc", Key.of("def:ghi"));
-    final StorageNbtComponent c1 = c0.storage(Key.of("ghi:jkl"));
-    assertEquals(Key.of("def:ghi"), c0.storage());
-    assertEquals(Key.of("ghi:jkl"), c1.storage());
-    assertEquals("abc", c1.nbtPath());
+  public static <T, U> void forEachTransformAndAssert(final Iterable<T> values, final Function<T, U> function, final Consumer<U> consumer) {
+    for(final T value : values) {
+      consumer.accept(function.apply(value));
+    }
+  }
+
+  public static <T, U extends Iterable<V>, V> void forEachTransformAndAssertIterable(final Iterable<T> values, final Function<T, U> function, final Consumer<IterableSubject> consumer) {
+    for(final T value : values) {
+      consumer.accept(assertThat(function.apply(value)));
+    }
   }
 }

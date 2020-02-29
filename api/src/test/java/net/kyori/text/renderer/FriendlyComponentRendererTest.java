@@ -23,112 +23,26 @@
  */
 package net.kyori.text.renderer;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import java.text.MessageFormat;
 import java.util.Locale;
-import net.kyori.text.TextComponent;
-import net.kyori.text.TranslatableComponent;
-import net.kyori.text.event.HoverEvent;
-import net.kyori.text.format.TextColor;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Deprecated
 class FriendlyComponentRendererTest {
-  private static final Table<Locale, String, String> TRANSLATIONS = HashBasedTable.create();
-  private final FriendlyComponentRenderer<Locale> renderer = FriendlyComponentRenderer.from((locale, key) -> new MessageFormat(TRANSLATIONS.get(locale, key), locale));
-
-  static {
-    TRANSLATIONS.put(Locale.US, "test", "This is a test.");
-    TRANSLATIONS.put(Locale.US, "cats", "{0} and {1} are cats.");
-  }
+  private final FriendlyComponentRenderer<Locale> renderer = FriendlyComponentRenderer.from((locale, key) -> new MessageFormat(TranslatableComponentRendererTest.TRANSLATIONS.get(locale, key), locale));
 
   @Test
   void testSimple() {
-    assertEquals(
-      TextComponent.builder("This is a test.")
-        .color(TextColor.YELLOW)
-        .build(),
-      this.renderer.render(
-        TranslatableComponent
-          .builder()
-          .key("test")
-          .color(TextColor.YELLOW)
-          .build(),
-        Locale.US
-      )
-    );
+    TranslatableComponentRendererTest.testSimple(this.renderer);
   }
 
   @Test
   void testComplex() {
-    assertEquals(
-      TextComponent.builder("")
-        .color(TextColor.YELLOW)
-        .append(TextComponent.of("kashike"))
-        .append(TextComponent.of(" and "))
-        .append(TextComponent.of("lucko"))
-        .append(TextComponent.of(" are cats."))
-        .build(),
-      this.renderer.render(
-        TranslatableComponent
-          .builder()
-          .key("cats")
-          .args(
-            TextComponent.of("kashike"),
-            TextComponent.of("lucko")
-          )
-          .color(TextColor.YELLOW)
-          .build(),
-        Locale.US
-      )
-    );
+    TranslatableComponentRendererTest.testComplex(this.renderer);
   }
 
   @Test
   void testVeryComplex() {
-    assertEquals(
-      TextComponent.builder("")
-        .color(TextColor.YELLOW)
-        .append(TextComponent.of("This is a test."))
-        .append(
-          TextComponent.of("")
-            .append(TextComponent.of("kashike"))
-            .append(TextComponent.of(" and "))
-            .append(TextComponent.of("lucko"))
-            .append(TextComponent.of(" are cats."))
-            .append(TextComponent.space())
-            .append(TextComponent.of("Meow!"))
-            .hoverEvent(HoverEvent.showText(TextComponent.of("This is a test.")))
-        )
-        .build(),
-      this.renderer.render(
-        TextComponent
-          .builder("")
-          .append(
-            TranslatableComponent
-              .builder()
-              .key("test")
-              .build()
-          ).append(
-          TranslatableComponent
-            .builder()
-            .key("cats")
-            .args(
-              TextComponent.of("kashike"),
-              TextComponent.of("lucko")
-            )
-            .hoverEvent(HoverEvent.showText(TranslatableComponent.of("test")))
-            .append(TextComponent.space())
-            .append(TextComponent.of("Meow!"))
-            .build()
-        )
-          .color(TextColor.YELLOW)
-          .build(),
-        Locale.US
-      )
-    );
+    TranslatableComponentRendererTest.testVeryComplex(this.renderer);
   }
 }

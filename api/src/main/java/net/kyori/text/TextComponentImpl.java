@@ -38,11 +38,11 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   static final TextComponent NEWLINE = createDirect("\n");
   static final TextComponent SPACE = createDirect(" ");
 
-  private final String content;
-
   private static @NonNull TextComponent createDirect(final @NonNull String content) {
     return new TextComponentImpl(Collections.emptyList(), Style.empty(), content);
   }
+
+  private final String content;
 
   TextComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String content) {
     super(children, style);

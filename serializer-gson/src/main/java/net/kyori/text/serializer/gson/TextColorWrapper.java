@@ -32,7 +32,7 @@ import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-/**
+/*
  * This is a hack.
  */
 class TextColorWrapper {

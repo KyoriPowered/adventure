@@ -75,7 +75,18 @@ public final class Style {
    * @return a style
    */
   public static @NonNull Style of(final @Nullable TextColor color) {
+    if(color == null) return empty();
     return builder().color(color).build();
+  }
+
+  /**
+   * Creates a style with decoration.
+   *
+   * @param decoration the decoration
+   * @return a style
+   */
+  public static @NonNull Style of(final @NonNull TextDecoration decoration) {
+    return builder().decoration(decoration, true).build();
   }
 
   /**
@@ -85,10 +96,9 @@ public final class Style {
    * @return a style
    */
   public static @NonNull Style of(final TextDecoration@NonNull... decorations) {
+    if(decorations.length == 0) return empty();
     final Builder builder = builder();
-    for(final TextDecoration decoration : decorations) {
-      builder.decoration(decoration, true);
-    }
+    decorate(builder, decorations);
     return builder.build();
   }
 
@@ -102,8 +112,31 @@ public final class Style {
   public static @NonNull Style of(final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
     final Builder builder = builder();
     builder.color(color);
-    for(final TextDecoration decoration : decorations) {
+    decorate(builder, decorations);
+    return builder.build();
+  }
+
+  private static void decorate(final Builder builder, final TextDecoration[] decorations) {
+    for(int i = 0, length = decorations.length; i < length; i++) {
+      final TextDecoration decoration = decorations[i];
       builder.decoration(decoration, true);
+    }
+  }
+
+  /**
+   * Creates a style with color and decorations.
+   *
+   * @param color the style
+   * @param decorations the decorations
+   * @return a style
+   */
+  public static @NonNull Style of(final @Nullable TextColor color, final Set<TextDecoration> decorations) {
+    final Builder builder = builder();
+    builder.color(color);
+    if(!decorations.isEmpty()) {
+      for(final TextDecoration decoration : decorations) {
+        builder.decoration(decoration, true);
+      }
     }
     return builder.build();
   }
@@ -114,10 +147,22 @@ public final class Style {
    * @param consumer the builder consumer
    * @return a style
    */
-  public static @NonNull Style of(final @NonNull Consumer<Builder> consumer) {
+  public static @NonNull Style make(final @NonNull Consumer<Builder> consumer) {
     final Builder builder = builder();
     consumer.accept(builder);
     return builder.build();
+  }
+
+  /**
+   * Creates a style.
+   *
+   * @param consumer the builder consumer
+   * @return a style
+   * @deprecated use {@link #make(Consumer)}
+   */
+  @Deprecated
+  public static @NonNull Style of(final @NonNull Consumer<Builder> consumer) {
+    return make(consumer);
   }
 
   private Style(final @Nullable TextColor color, final TextDecoration.State obfuscated, final TextDecoration.State bold, final TextDecoration.State strikethrough, final TextDecoration.State underlined, final TextDecoration.State italic, final @Nullable ClickEvent clickEvent, final @Nullable HoverEvent hoverEvent, final @Nullable String insertion) {
@@ -185,14 +230,18 @@ public final class Style {
    *     and {@link TextDecoration.State#NOT_SET} if not set
    */
   public TextDecoration.@NonNull State decoration(final @NonNull TextDecoration decoration) {
-    switch(decoration) {
-      case BOLD: return this.bold;
-      case ITALIC: return this.italic;
-      case UNDERLINED: return this.underlined;
-      case STRIKETHROUGH: return this.strikethrough;
-      case OBFUSCATED: return this.obfuscated;
-      default: throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
+    if(decoration == TextDecoration.BOLD) {
+      return this.bold;
+    } else if(decoration == TextDecoration.ITALIC) {
+      return this.italic;
+    } else if(decoration == TextDecoration.UNDERLINED) {
+      return this.underlined;
+    } else if(decoration == TextDecoration.STRIKETHROUGH) {
+      return this.strikethrough;
+    } else if(decoration == TextDecoration.OBFUSCATED) {
+      return this.obfuscated;
     }
+    throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
   }
 
   /**
@@ -219,14 +268,18 @@ public final class Style {
    */
   public @NonNull Style decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
     requireNonNull(state, "state");
-    switch(decoration) {
-      case BOLD: return new Style(this.color, this.obfuscated, state, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
-      case ITALIC: return new Style(this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, state, this.clickEvent, this.hoverEvent, this.insertion);
-      case UNDERLINED: return new Style(this.color, this.obfuscated, this.bold, this.strikethrough, state, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
-      case STRIKETHROUGH: return new Style(this.color, this.obfuscated, this.bold, state, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
-      case OBFUSCATED: return new Style(this.color, state, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
-      default: throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
+    if(decoration == TextDecoration.BOLD) {
+      return new Style(this.color, this.obfuscated, state, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
+    } else if(decoration == TextDecoration.ITALIC) {
+      return new Style(this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, state, this.clickEvent, this.hoverEvent, this.insertion);
+    } else if(decoration == TextDecoration.UNDERLINED) {
+      return new Style(this.color, this.obfuscated, this.bold, this.strikethrough, state, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
+    } else if(decoration == TextDecoration.STRIKETHROUGH) {
+      return new Style(this.color, this.obfuscated, this.bold, state, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
+    } else if(decoration == TextDecoration.OBFUSCATED) {
+      return new Style(this.color, state, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
     }
+    throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
   }
 
   /**
@@ -246,7 +299,8 @@ public final class Style {
    */
   public @NonNull Set<TextDecoration> decorations(final @NonNull Set<TextDecoration> defaultValues) {
     final Set<TextDecoration> decorations = EnumSet.noneOf(TextDecoration.class);
-    for(final TextDecoration decoration : DECORATIONS) {
+    for(int i = 0, length = DECORATIONS.length; i < length; i++) {
+      final TextDecoration decoration = DECORATIONS[i];
       final TextDecoration.State value = this.decoration(decoration);
       if(value == TextDecoration.State.TRUE || (value == TextDecoration.State.NOT_SET && defaultValues.contains(decoration))) {
         decorations.add(decoration);
@@ -327,6 +381,17 @@ public final class Style {
    * Merges from another style into this style.
    *
    * @param that the other style
+   * @param merge the part to merge
+   * @return a style
+   */
+  public @NonNull Style merge(final @NonNull Style that, final @NonNull Merge merge) {
+    return this.merge(that, Collections.singleton(merge));
+  }
+
+  /**
+   * Merges from another style into this style.
+   *
+   * @param that the other style
    * @param merges the parts to merge
    * @return a style
    */
@@ -364,7 +429,7 @@ public final class Style {
    */
   @Deprecated
   public @NonNull Style mergeColor(final @NonNull Style that) {
-    return this.merge(that, Collections.singleton(Merge.COLOR));
+    return this.merge(that, Merge.COLOR);
   }
 
   /**
@@ -376,7 +441,7 @@ public final class Style {
    */
   @Deprecated
   public @NonNull Style mergeDecorations(final @NonNull Style that) {
-    return this.merge(that, Collections.singleton(Merge.DECORATIONS));
+    return this.merge(that, Merge.DECORATIONS);
   }
 
   /**
@@ -388,7 +453,7 @@ public final class Style {
    */
   @Deprecated
   public @NonNull Style mergeEvents(final @NonNull Style that) {
-    return this.merge(that, Collections.singleton(Merge.EVENTS));
+    return this.merge(that, Merge.EVENTS);
   }
 
   /**
@@ -609,14 +674,23 @@ public final class Style {
      */
     public @NonNull Builder decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
       requireNonNull(state, "state");
-      switch(decoration) {
-        case BOLD: this.bold = state; return this;
-        case ITALIC: this.italic = state; return this;
-        case UNDERLINED: this.underlined = state; return this;
-        case STRIKETHROUGH: this.strikethrough = state; return this;
-        case OBFUSCATED: this.obfuscated = state; return this;
-        default: throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
+      if(decoration == TextDecoration.BOLD) {
+        this.bold = state;
+        return this;
+      } else if(decoration == TextDecoration.ITALIC) {
+        this.italic = state;
+        return this;
+      } else if(decoration == TextDecoration.UNDERLINED) {
+        this.underlined = state;
+        return this;
+      } else if(decoration == TextDecoration.STRIKETHROUGH) {
+        this.strikethrough = state;
+        return this;
+      } else if(decoration == TextDecoration.OBFUSCATED) {
+        this.obfuscated = state;
+        return this;
       }
+      throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
     }
 
     /**
@@ -670,6 +744,7 @@ public final class Style {
      * @return a style
      */
     public @NonNull Builder merge(final @NonNull Style that, final @NonNull Merge@NonNull... merges) {
+      if(merges.length == 0) return this;
       return this.merge(that, Merge.of(merges));
     }
 
@@ -681,13 +756,18 @@ public final class Style {
      * @return a style
      */
     public @NonNull Builder merge(final @NonNull Style that, final @NonNull Set<Merge> merges) {
+      if(merges.isEmpty()) {
+        return this;
+      }
+
       if(merges.contains(Merge.COLOR)) {
         final TextColor color = that.color();
         if(color != null) this.color(color);
       }
 
       if(merges.contains(Merge.DECORATIONS)) {
-        for(final TextDecoration decoration : DECORATIONS) {
+        for(int i = 0, length = DECORATIONS.length; i < length; i++) {
+          final TextDecoration decoration = DECORATIONS[i];
           final TextDecoration.State state = that.decoration(decoration);
           if(state != TextDecoration.State.NOT_SET) this.decoration(decoration, state);
         }

@@ -131,7 +131,8 @@ abstract class AbstractLegacyComponentSerializer implements LegacyComponentSeria
       return false;
     } else if(format instanceof Reset) {
       builder.colorIfAbsent(null);
-      for(final TextDecoration decoration : DECORATIONS) {
+      for(int i = 0, length = DECORATIONS.length; i < length; i++) {
+        final TextDecoration decoration = DECORATIONS[i];
         builder.decoration(decoration, TextDecoration.State.NOT_SET);
       }
       return true;
@@ -212,7 +213,8 @@ abstract class AbstractLegacyComponentSerializer implements LegacyComponentSeria
           this.color = color;
         }
 
-        for(final TextDecoration decoration : DECORATIONS) {
+        for(int i = 0, length = DECORATIONS.length; i < length; i++) {
+          final TextDecoration decoration = DECORATIONS[i];
           switch(component.decoration(decoration)) {
             case TRUE:
               this.decorations.add(decoration);

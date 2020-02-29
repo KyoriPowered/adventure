@@ -23,9 +23,10 @@
  */
 package net.kyori.text;
 
-import net.kyori.text.format.TextDecoration;
+import com.google.common.collect.ImmutableSet;
 import org.junit.jupiter.api.Test;
 
+import static net.kyori.text.TextAssertions.assertDecorations;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -40,9 +41,7 @@ class SelectorComponentTest extends AbstractComponentTest<SelectorComponent, Sel
     final SelectorComponent component = SelectorComponent.of("@p");
     assertEquals("@p", component.pattern());
     assertNull(component.color());
-    for(final TextDecoration decoration : TextDecoration.values()) {
-      assertEquals(TextDecoration.State.NOT_SET, component.decoration(decoration));
-    }
+    assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
   }
 
   @Test
@@ -51,11 +50,5 @@ class SelectorComponentTest extends AbstractComponentTest<SelectorComponent, Sel
     final SelectorComponent c1 = c0.pattern("@a");
     assertEquals("@p", c0.pattern());
     assertEquals("@a", c1.pattern());
-  }
-
-  @Test
-  void testRebuildWithNoChanges() {
-    final SelectorComponent component = SelectorComponent.of("@p");
-    assertEquals(component, component.toBuilder().build());
   }
 }

@@ -28,14 +28,14 @@ import java.util.function.IntPredicate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /* package */ final class KeyImpl implements Key {
-  static final IntPredicate NAMESPACE_PREDICATE = value -> value == '_' || value == '-' || (value >= 'a' && value <= 'z') || (value >= '0' && value <= '9') || value == '.';
-  static final IntPredicate VALUE_PREDICATE = value -> value == '_' || value == '-' || (value >= 'a' && value <= 'z') || (value >= '0' && value <= '9') || value == '/' || value == '.';
+  private static final IntPredicate NAMESPACE_PREDICATE = value -> value == '_' || value == '-' || (value >= 'a' && value <= 'z') || (value >= '0' && value <= '9') || value == '.';
+  private static final IntPredicate VALUE_PREDICATE = value -> value == '_' || value == '-' || (value >= 'a' && value <= 'z') || (value >= '0' && value <= '9') || value == '/' || value == '.';
   private final String namespace;
   private final String value;
 
-  KeyImpl(final @NonNull String namespace, final @NonNull String value) {
-    if(!namespaceValid(namespace)) throw new KeyParseException("Non [a-z0-9_.-] character in namespace of location: " + asString(namespace, value));
-    if(!valueValid(value)) throw new KeyParseException("Non [a-z0-9/._-] character in path of location: " + asString(namespace, value));
+  /* package */ KeyImpl(final @NonNull String namespace, final @NonNull String value) {
+    if(!namespaceValid(namespace)) throw new ParseException("Non [a-z0-9_.-] character in namespace of location: " + asString(namespace, value));
+    if(!valueValid(value)) throw new ParseException("Non [a-z0-9/._-] character in path of location: " + asString(namespace, value));
 
     this.namespace = namespace;
     this.value = value;

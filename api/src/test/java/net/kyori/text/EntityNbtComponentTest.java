@@ -23,13 +23,14 @@
  */
 package net.kyori.text;
 
-import net.kyori.text.format.TextDecoration;
+import com.google.common.collect.ImmutableSet;
 import org.junit.jupiter.api.Test;
 
+import static net.kyori.text.TextAssertions.assertDecorations;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-class EntityNbtComponentTest extends AbstractComponentTest<EntityNbtComponent, EntityNbtComponent.Builder> {
+class EntityNbtComponentTest extends AbstractNbtComponentTest<EntityNbtComponent, EntityNbtComponent.Builder> {
   @Override
   EntityNbtComponent.Builder builder() {
     return EntityNbtComponent.builder().nbtPath("abc").selector("def");
@@ -41,18 +42,7 @@ class EntityNbtComponentTest extends AbstractComponentTest<EntityNbtComponent, E
     assertEquals("abc", component.nbtPath());
     assertEquals("def", component.selector());
     assertNull(component.color());
-    for(final TextDecoration decoration : TextDecoration.values()) {
-      assertEquals(TextDecoration.State.NOT_SET, component.decoration(decoration));
-    }
-  }
-
-  @Test
-  void testNbtPath() {
-    final EntityNbtComponent c0 = EntityNbtComponent.of("abc", "def");
-    final EntityNbtComponent c1 = c0.nbtPath("ghi");
-    assertEquals("abc", c0.nbtPath());
-    assertEquals("ghi", c1.nbtPath());
-    assertEquals("def", c1.selector());
+    assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
   }
 
   @Test
@@ -62,11 +52,5 @@ class EntityNbtComponentTest extends AbstractComponentTest<EntityNbtComponent, E
     assertEquals("def", c0.selector());
     assertEquals("ghi", c1.selector());
     assertEquals("abc", c1.nbtPath());
-  }
-
-  @Test
-  void testRebuildWithNoChanges() {
-    final EntityNbtComponent component = EntityNbtComponent.of("test", "test");
-    assertEquals(component, component.toBuilder().build());
   }
 }

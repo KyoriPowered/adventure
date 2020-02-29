@@ -23,17 +23,16 @@
  */
 package net.kyori.text;
 
-import net.kyori.text.BlockNbtComponent.LocalPos;
-import net.kyori.text.BlockNbtComponent.WorldPos;
-import net.kyori.text.BlockNbtComponent.WorldPos.Coordinate;
-import net.kyori.text.format.TextDecoration;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Test;
 
+import static net.kyori.text.TextAssertions.assertDecorations;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class BlockNbtComponentTest extends AbstractComponentTest<BlockNbtComponent, BlockNbtComponent.Builder> {
+class BlockNbtComponentTest extends AbstractNbtComponentTest<BlockNbtComponent, BlockNbtComponent.Builder> {
   @Override
   BlockNbtComponent.Builder builder() {
     return BlockNbtComponent.builder().nbtPath("abc").absoluteWorldPos(1, 2, 3);
@@ -41,49 +40,40 @@ class BlockNbtComponentTest extends AbstractComponentTest<BlockNbtComponent, Blo
 
   @Test
   void testOf() {
-    final BlockNbtComponent component = BlockNbtComponent.of("abc", LocalPos.of(1.0d, 2.0d, 3.0d));
+    final BlockNbtComponent component = BlockNbtComponent.of("abc", BlockNbtComponent.LocalPos.of(1d, 2d, 3d));
     assertEquals("abc", component.nbtPath());
-    assertEquals(LocalPos.of(1.0d, 2.0d, 3.0d), component.pos());
+    assertEquals(BlockNbtComponent.LocalPos.of(1d, 2d, 3d), component.pos());
     assertNull(component.color());
-    for(final TextDecoration decoration : TextDecoration.values()) {
-      assertEquals(TextDecoration.State.NOT_SET, component.decoration(decoration));
-    }
-  }
-
-  @Test
-  void testNbtPath() {
-    final BlockNbtComponent c0 = BlockNbtComponent.of("abc", LocalPos.of(1.0d, 2.0d, 3.0d));
-    final BlockNbtComponent c1 = c0.nbtPath("def");
-    assertEquals("abc", c0.nbtPath());
-    assertEquals("def", c1.nbtPath());
-    assertEquals(LocalPos.of(1.0d, 2.0d, 3.0d), c1.pos());
+    assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
   }
 
   @Test
   void testPos() {
-    final BlockNbtComponent c0 = BlockNbtComponent.of("abc", LocalPos.of(1.0d, 2.0d, 3.0d));
-    final BlockNbtComponent c1 = c0.pos(WorldPos.of(Coordinate.absolute(1), Coordinate.relative(2), Coordinate.absolute(3)));
-    assertEquals(LocalPos.of(1.0d, 2.0d, 3.0d), c0.pos());
-    assertEquals(WorldPos.of(Coordinate.absolute(1), Coordinate.relative(2), Coordinate.absolute(3)), c1.pos());
+    final BlockNbtComponent c0 = BlockNbtComponent.of("abc", BlockNbtComponent.LocalPos.of(1d, 2d, 3d));
+    final BlockNbtComponent c1 = c0.pos(BlockNbtComponent.WorldPos.of(BlockNbtComponent.WorldPos.Coordinate.absolute(1), BlockNbtComponent.WorldPos.Coordinate.relative(2), BlockNbtComponent.WorldPos.Coordinate.absolute(3)));
+    assertEquals(BlockNbtComponent.LocalPos.of(1d, 2d, 3d), c0.pos());
+    assertEquals(BlockNbtComponent.WorldPos.of(BlockNbtComponent.WorldPos.Coordinate.absolute(1), BlockNbtComponent.WorldPos.Coordinate.relative(2), BlockNbtComponent.WorldPos.Coordinate.absolute(3)), c1.pos());
     assertEquals("abc", c1.nbtPath());
 
-    assertTrue(c0.pos() instanceof LocalPos);
-    assertEquals(1, ((LocalPos) c0.pos()).left());
-    assertEquals(2, ((LocalPos) c0.pos()).up());
-    assertEquals(3, ((LocalPos) c0.pos()).forwards());
+    assertTrue(c0.pos() instanceof BlockNbtComponent.LocalPos);
+    assertEquals(1, ((BlockNbtComponent.LocalPos) c0.pos()).left());
+    assertEquals(2, ((BlockNbtComponent.LocalPos) c0.pos()).up());
+    assertEquals(3, ((BlockNbtComponent.LocalPos) c0.pos()).forwards());
 
-    assertTrue(c1.pos() instanceof WorldPos);
-    assertEquals(Coordinate.Type.ABSOLUTE, ((WorldPos) c1.pos()).x().type());
-    assertEquals(Coordinate.Type.RELATIVE, ((WorldPos) c1.pos()).y().type());
-    assertEquals(Coordinate.Type.ABSOLUTE, ((WorldPos) c1.pos()).z().type());
-    assertEquals(1, ((WorldPos) c1.pos()).x().value());
-    assertEquals(2, ((WorldPos) c1.pos()).y().value());
-    assertEquals(3, ((WorldPos) c1.pos()).z().value());
+    assertTrue(c1.pos() instanceof BlockNbtComponent.WorldPos);
+    assertEquals(BlockNbtComponent.WorldPos.Coordinate.Type.ABSOLUTE, ((BlockNbtComponent.WorldPos) c1.pos()).x().type());
+    assertEquals(BlockNbtComponent.WorldPos.Coordinate.Type.RELATIVE, ((BlockNbtComponent.WorldPos) c1.pos()).y().type());
+    assertEquals(BlockNbtComponent.WorldPos.Coordinate.Type.ABSOLUTE, ((BlockNbtComponent.WorldPos) c1.pos()).z().type());
+    assertEquals(1, ((BlockNbtComponent.WorldPos) c1.pos()).x().value());
+    assertEquals(2, ((BlockNbtComponent.WorldPos) c1.pos()).y().value());
+    assertEquals(3, ((BlockNbtComponent.WorldPos) c1.pos()).z().value());
   }
 
   @Test
-  void testRebuildWithNoChanges() {
-    final BlockNbtComponent component = BlockNbtComponent.of("abc", LocalPos.of(1.0d, 2.0d, 3.0d));
-    assertEquals(component, component.toBuilder().build());
+  void testPosEquality() {
+    new EqualsTester()
+      .addEqualityGroup(BlockNbtComponent.LocalPos.of(1d, 2d, 3d))
+      .addEqualityGroup(BlockNbtComponent.WorldPos.of(BlockNbtComponent.WorldPos.Coordinate.absolute(1), BlockNbtComponent.WorldPos.Coordinate.absolute(2), BlockNbtComponent.WorldPos.Coordinate.absolute(3)))
+      .testEquals();
   }
 }

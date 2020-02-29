@@ -23,35 +23,35 @@
  */
 package net.kyori.text;
 
-import com.google.common.collect.ImmutableSet;
-import net.kyori.minecraft.Key;
 import org.junit.jupiter.api.Test;
 
-import static net.kyori.text.TextAssertions.assertDecorations;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class StorageNbtComponentTest extends AbstractNbtComponentTest<StorageNbtComponent, StorageNbtComponent.Builder> {
-  @Override
-  StorageNbtComponent.Builder builder() {
-    return StorageNbtComponent.builder().nbtPath("abc").storage(Key.of("def"));
+abstract class AbstractNbtComponentTest<C extends NbtComponent<C, B> & ScopedComponent<C>, B extends NbtComponentBuilder<C, B>> extends AbstractComponentTest<C, B> {
+  @Test
+  void testBuildWithInterpret() {
+    final C c0 = this.buildOne();
+    assertFalse(c0.interpret());
+    final C c1 = this.builder().interpret(true).build();
+    assertTrue(c1.interpret());
   }
 
   @Test
-  void testOf() {
-    final StorageNbtComponent component = StorageNbtComponent.of("abc", Key.of("def"));
-    assertEquals("abc", component.nbtPath());
-    assertEquals(Key.of("def"), component.storage());
-    assertNull(component.color());
-    assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
+  void testInterpret() {
+    final C c0 = this.buildOne();
+    final C c1 = c0.interpret(true);
+    assertFalse(c0.interpret());
+    assertTrue(c1.interpret());
   }
 
   @Test
-  void testSelector() {
-    final StorageNbtComponent c0 = StorageNbtComponent.of("abc", Key.of("def:ghi"));
-    final StorageNbtComponent c1 = c0.storage(Key.of("ghi:jkl"));
-    assertEquals(Key.of("def:ghi"), c0.storage());
-    assertEquals(Key.of("ghi:jkl"), c1.storage());
-    assertEquals("abc", c1.nbtPath());
+  void testNbtPath() {
+    final C c0 = this.buildOne();
+    final C c1 = c0.nbtPath("ghi");
+    assertEquals("abc", c0.nbtPath());
+    assertEquals("ghi", c1.nbtPath());
+    assertEquals(c0, c1.nbtPath(c0.nbtPath()));
   }
 }

@@ -23,12 +23,12 @@
  */
 package net.kyori.minecraft;
 
+import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Test;
 
-import static net.kyori.text.TextAssertions.doWith;
+import static net.kyori.test.WeirdAssertions.doWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -40,7 +40,7 @@ class KeyTest {
       assertEquals("empty", key.value());
     });
 
-    doWith(Key.of("minecraft:empty"), key -> {
+    doWith(Key.of(Key.MINECRAFT_NAMESPACE + ":empty"), key -> {
       assertEquals(Key.MINECRAFT_NAMESPACE, key.namespace());
       assertEquals("empty", key.value());
     });
@@ -58,10 +58,10 @@ class KeyTest {
 
   @Test
   void testOfInvalid() {
-    assertThrows(Key.KeyParseException.class, () -> Key.of("!"));
-    assertThrows(Key.KeyParseException.class, () -> Key.of("Thing:abc"));
-    assertThrows(Key.KeyParseException.class, () -> Key.of("abc:Thing"));
-    assertThrows(Key.KeyParseException.class, () -> Key.of("a/b:empty"));
+    assertThrows(Key.ParseException.class, () -> Key.of("!"));
+    assertThrows(Key.ParseException.class, () -> Key.of("Thing:abc"));
+    assertThrows(Key.ParseException.class, () -> Key.of("abc:Thing"));
+    assertThrows(Key.ParseException.class, () -> Key.of("a/b:empty"));
   }
 
   @Test
@@ -71,15 +71,18 @@ class KeyTest {
   }
 
   @Test
-  void testEquals() {
-    assertEquals(Key.of("empty"), Key.of("empty"));
-    assertNotEquals(Key.of("stone"), Key.of("air"));
-  }
-
-  @Test
-  void testHashCode() {
-    assertEquals(Key.of("empty").hashCode(), Key.of("empty").hashCode());
-    assertNotEquals(Key.of("stone").hashCode(), Key.of("air").hashCode());
+  void testEquality() {
+    new EqualsTester()
+      .addEqualityGroup(
+        Key.of("minecraft", "air"),
+        Key.of("air"),
+        Key.of("minecraft:air")
+      )
+      .addEqualityGroup(
+        Key.of("realms", "empty"),
+        Key.of("realms:empty")
+      )
+      .testEquals();
   }
 
   @Test

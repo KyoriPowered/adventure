@@ -33,8 +33,11 @@ import net.kyori.text.Component;
 import net.kyori.text.ComponentBuilder;
 import net.kyori.text.EntityNbtComponent;
 import net.kyori.text.KeybindComponent;
+import net.kyori.text.NbtComponent;
+import net.kyori.text.NbtComponentBuilder;
 import net.kyori.text.ScoreComponent;
 import net.kyori.text.SelectorComponent;
+import net.kyori.text.StorageNbtComponent;
 import net.kyori.text.TextComponent;
 import net.kyori.text.TranslatableComponent;
 import net.kyori.text.event.HoverEvent;
@@ -46,10 +49,11 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * A {@link MessageFormat}-based translatable component renderer.
  */
 public abstract class TranslatableComponentRenderer<C> extends AbstractComponentRenderer<C> {
-  public static <C> @NonNull TranslatableComponentRenderer<C> from(final @NonNull BiFunction<C, String, MessageFormat> translations) {
+  // TODO(kashike): move away from BiFunction - maybe TranslationFinder<C>?
+  public static <C> @NonNull TranslatableComponentRenderer<C> from(final @NonNull BiFunction<C, String, /* @Nullable */ MessageFormat> translations) {
     return new TranslatableComponentRenderer<C>() {
       @Override
-      protected @NonNull MessageFormat translation(final @NonNull C context, final @NonNull String key) {
+      protected @Nullable MessageFormat translation(final @NonNull C context, final @NonNull String key) {
         return translations.apply(context, key);
       }
     };
@@ -57,20 +61,29 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
 
   @Override
   protected @NonNull Component renderBlockNbt(final @NonNull BlockNbtComponent component, final @NonNull C context) {
-    final BlockNbtComponent.Builder builder = BlockNbtComponent.builder()
-      .nbtPath(component.nbtPath())
-      .interpret(component.interpret())
+    final BlockNbtComponent.Builder builder = nbt(BlockNbtComponent.builder(), component)
       .pos(component.pos());
     return this.deepRender(component, builder, context);
   }
 
   @Override
   protected @NonNull Component renderEntityNbt(final @NonNull EntityNbtComponent component, final @NonNull C context) {
-    final EntityNbtComponent.Builder builder = EntityNbtComponent.builder()
-      .nbtPath(component.nbtPath())
-      .interpret(component.interpret())
+    final EntityNbtComponent.Builder builder = nbt(EntityNbtComponent.builder(), component)
       .selector(component.selector());
     return this.deepRender(component, builder, context);
+  }
+
+  @Override
+  protected @NonNull Component renderStorageNbt(final @NonNull StorageNbtComponent component, final @NonNull C context) {
+    final StorageNbtComponent.Builder builder = nbt(StorageNbtComponent.builder(), component)
+      .storage(component.storage());
+    return this.deepRender(component, builder, context);
+  }
+
+  private static <C extends NbtComponent<C, B>, B extends NbtComponentBuilder<C, B>> B nbt(final B builder, final C oldComponent) {
+    return builder
+      .nbtPath(oldComponent.nbtPath())
+      .interpret(oldComponent.interpret());
   }
 
   @Override

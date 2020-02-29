@@ -27,11 +27,31 @@ import com.google.common.testing.EqualsTester;
 import net.kyori.text.TextComponent;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 class HoverEventTest {
   @Test
   void testEquality() {
     new EqualsTester()
-      .addEqualityGroup(HoverEvent.showText(TextComponent.empty()), HoverEvent.showText(TextComponent.empty()))
+      .addEqualityGroup(
+        HoverEvent.showText(TextComponent.empty()),
+        HoverEvent.of(HoverEvent.Action.SHOW_TEXT, TextComponent.empty())
+      )
+      .addEqualityGroup(
+        HoverEvent.showItem(TextComponent.empty()),
+        HoverEvent.of(HoverEvent.Action.SHOW_ITEM, TextComponent.empty())
+      )
+      .addEqualityGroup(
+        HoverEvent.showEntity(TextComponent.empty()),
+        HoverEvent.of(HoverEvent.Action.SHOW_ENTITY, TextComponent.empty())
+      )
       .testEquals();
+  }
+
+  @Test
+  void assertReadable() {
+    for(final HoverEvent.Action action : HoverEvent.Action.values()) {
+      assertTrue(action.readable());
+    }
   }
 }

@@ -23,30 +23,32 @@
  */
 package net.kyori.text;
 
-import java.util.Map;
-import java.util.function.Consumer;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import java.util.Set;
 import net.kyori.text.format.Style;
 import net.kyori.text.format.TextDecoration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TextAssertions {
-  public static <T> void doWith(final T value, final Consumer<T> consumer) {
-    consumer.accept(value);
+  private static final Set<TextDecoration> DECORATIONS = ImmutableSet.copyOf(TextDecoration.values());
+
+  public static void assertDecorations(final Component component, final Set<TextDecoration> trues, final Set<TextDecoration> falses) {
+    assertDecorations(component.style(), trues, falses);
   }
 
-  public static void assertDecorations(final Component component, final Map<TextDecoration, TextDecoration.State> expected) {
-    assertDecorations(component.style(), expected);
+  public static void assertDecorations(final Style style, final Set<TextDecoration> trues, final Set<TextDecoration> falses) {
+    assertDecorationsAre(style, trues, TextDecoration.State.TRUE);
+    assertDecorationsAre(style, falses, TextDecoration.State.FALSE);
+    final Set<TextDecoration> unset = Sets.difference(DECORATIONS, Sets.union(trues, falses));
+    assertDecorationsAre(style, unset, TextDecoration.State.NOT_SET);
   }
 
-  public static void assertDecorations(final Style style, final Map<TextDecoration, TextDecoration.State> expected) {
-    if(expected.isEmpty()) {
-      for(final TextDecoration decoration : TextDecoration.values()) {
-        assertEquals(TextDecoration.State.NOT_SET, style.decoration(decoration));
-      }
-    } else {
-      for(final Map.Entry<TextDecoration, TextDecoration.State> entry : expected.entrySet()) {
-        assertEquals(entry.getValue(), style.decoration(entry.getKey()));
+  private static void assertDecorationsAre(final Style style, final Set<TextDecoration> decorations, final TextDecoration.State state) {
+    if(!decorations.isEmpty()) {
+      for(final TextDecoration decoration : decorations) {
+        assertEquals(state, style.decoration(decoration));
       }
     }
   }

@@ -28,8 +28,11 @@ import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
+import static net.kyori.text.TextAssertions.assertDecorations;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TextComponentTest extends AbstractComponentTest<TextComponent, TextComponent.Builder> {
@@ -43,9 +46,13 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
     final TextComponent component = TextComponent.of("foo");
     assertEquals("foo", component.content());
     assertNull(component.color());
-    for(final TextDecoration decoration : TextDecoration.values()) {
-      assertEquals(TextDecoration.State.NOT_SET, component.decoration(decoration));
-    }
+    assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
+  }
+
+  @Test
+  void testOfKnownChar() {
+    assertSame(TextComponent.newline(), TextComponent.of('\n'));
+    assertSame(TextComponent.space(), TextComponent.of(' '));
   }
 
   @Test
@@ -53,9 +60,7 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
     final TextComponent component = TextComponent.of("foo", TextColor.GREEN);
     assertEquals("foo", component.content());
     assertEquals(TextColor.GREEN, component.color());
-    for(final TextDecoration decoration : TextDecoration.values()) {
-      assertEquals(TextDecoration.State.NOT_SET, component.decoration(decoration));
-    }
+    assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
   }
 
   @Test
@@ -63,11 +68,7 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
     final TextComponent component = TextComponent.of("foo", TextColor.GREEN, ImmutableSet.of(TextDecoration.BOLD));
     assertEquals("foo", component.content());
     assertEquals(TextColor.GREEN, component.color());
-    assertEquals(TextDecoration.State.NOT_SET, component.decoration(TextDecoration.OBFUSCATED));
-    assertEquals(TextDecoration.State.TRUE, component.decoration(TextDecoration.BOLD));
-    assertEquals(TextDecoration.State.NOT_SET, component.decoration(TextDecoration.STRIKETHROUGH));
-    assertEquals(TextDecoration.State.NOT_SET, component.decoration(TextDecoration.UNDERLINED));
-    assertEquals(TextDecoration.State.NOT_SET, component.decoration(TextDecoration.ITALIC));
+    assertDecorations(component, ImmutableSet.of(TextDecoration.BOLD), ImmutableSet.of());
   }
 
   @Test
@@ -76,13 +77,6 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
       builder.content("foo");
       builder.color(TextColor.DARK_PURPLE);
     });
-    assertEquals("foo", component.content());
-    assertEquals(TextColor.DARK_PURPLE, component.color());
-  }
-
-  @Test
-  void testMake_content() {
-    final TextComponent component = TextComponent.make("foo", builder -> builder.color(TextColor.DARK_PURPLE));
     assertEquals("foo", component.content());
     assertEquals(TextColor.DARK_PURPLE, component.color());
   }
@@ -106,8 +100,13 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
   }
 
   @Test
-  void testRebuildWithNoChanges() {
-    final TextComponent component = TextComponent.of("foo", TextColor.RED);
-    assertEquals(component, component.toBuilder().build());
+  void testIsEmpty() {
+    assertTrue(TextComponent.empty().isEmpty());
+    assertFalse(TextComponent.newline().isEmpty());
+  }
+
+  @Test
+  void testBuildEmptyIsEmpty() {
+    assertTrue(TextComponent.builder().build().isEmpty());
   }
 }

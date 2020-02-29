@@ -35,7 +35,6 @@ import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -65,13 +64,16 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   /**
    * The style builder.
    */
-  private Style.@MonotonicNonNull Builder styleBuilder;
+  private Style.@Nullable Builder styleBuilder;
 
   protected AbstractComponentBuilder() {
   }
 
   protected AbstractComponentBuilder(final @NonNull C component) {
-    this.children = new ArrayList<>(component.children());
+    final List<Component> children = component.children();
+    if(!children.isEmpty()) {
+      this.children = new ArrayList<>(component.children());
+    }
     if(component.hasStyling()) {
       this.style = component.style();
     }
@@ -87,7 +89,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NonNull B append(final @NonNull Component... components) {
+  public @NonNull B append(final @NonNull Component@NonNull... components) {
     this.prepareChildren();
     Collections.addAll(this.children, components);
     return (B) this;
@@ -117,7 +119,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
     final ListIterator<Component> it = this.children.listIterator();
     while(it.hasNext()) {
       final Component child = it.next();
-      if(!(child instanceof BuildableComponent)) {
+      if(!(child instanceof BuildableComponent<?, ?>)) {
         continue;
       }
       final ComponentBuilder<?, ?> childBuilder = ((BuildableComponent<?, ?>) child).toBuilder();
@@ -128,7 +130,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   }
 
   @Override
-  @SuppressWarnings({"rawtypes", "unchecked"})
+  @SuppressWarnings("unchecked")
   public @NonNull B mapChildren(final @NonNull Function<BuildableComponent<? ,?>, ? extends BuildableComponent<? ,?>> function) {
     if(this.children == AbstractComponent.EMPTY_COMPONENT_LIST) {
       return (B) this;
@@ -136,10 +138,10 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
     final ListIterator<Component> it = this.children.listIterator();
     while(it.hasNext()) {
       final Component child = it.next();
-      if(!(child instanceof BuildableComponent)) {
+      if(!(child instanceof BuildableComponent<?, ?>)) {
         continue;
       }
-      final BuildableComponent mappedChild = function.apply((BuildableComponent) child);
+      final BuildableComponent<?, ?> mappedChild = function.apply((BuildableComponent<?, ?>) child);
       if(child == mappedChild) {
         continue;
       }
@@ -149,7 +151,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   }
 
   @Override
-  @SuppressWarnings({"rawtypes", "unchecked"})
+  @SuppressWarnings("unchecked")
   public @NonNull B mapChildrenDeep(final @NonNull Function<BuildableComponent<? ,?>, ? extends BuildableComponent<? ,?>> function) {
     if(this.children == AbstractComponent.EMPTY_COMPONENT_LIST) {
       return (B) this;
@@ -157,10 +159,10 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
     final ListIterator<Component> it = this.children.listIterator();
     while(it.hasNext()) {
       final Component child = it.next();
-      if(!(child instanceof BuildableComponent)) {
+      if(!(child instanceof BuildableComponent<?, ?>)) {
         continue;
       }
-      final BuildableComponent mappedChild = function.apply((BuildableComponent) child);
+      final BuildableComponent<?, ?> mappedChild = function.apply((BuildableComponent<?, ?>) child);
       if(mappedChild.children().isEmpty()) {
         if(child == mappedChild) {
           continue;
@@ -179,6 +181,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   @SuppressWarnings("unchecked")
   public @NonNull B style(final @NonNull Style style) {
     this.style = style;
+    this.styleBuilder = null;
     return (B) this;
   }
 

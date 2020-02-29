@@ -30,6 +30,7 @@ import net.kyori.text.KeybindComponent;
 import net.kyori.text.NbtComponent;
 import net.kyori.text.ScoreComponent;
 import net.kyori.text.SelectorComponent;
+import net.kyori.text.StorageNbtComponent;
 import net.kyori.text.TextComponent;
 import net.kyori.text.TranslatableComponent;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -58,6 +59,8 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
         return this.renderBlockNbt((BlockNbtComponent) component, context);
       } else if(component instanceof EntityNbtComponent) {
         return this.renderEntityNbt((EntityNbtComponent) component, context);
+      } else if(component instanceof StorageNbtComponent) {
+        return this.renderStorageNbt((StorageNbtComponent) component, context);
       }
     }
     return component;
@@ -66,6 +69,8 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
   protected abstract @NonNull Component renderBlockNbt(final @NonNull BlockNbtComponent component, final @NonNull C context);
 
   protected abstract @NonNull Component renderEntityNbt(final @NonNull EntityNbtComponent component, final @NonNull C context);
+
+  protected abstract @NonNull Component renderStorageNbt(final @NonNull StorageNbtComponent component, final @NonNull C context);
 
   protected abstract @NonNull Component renderKeybind(final @NonNull KeybindComponent component, final @NonNull C context);
 

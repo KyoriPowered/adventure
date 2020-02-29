@@ -24,21 +24,45 @@
 package net.kyori.text.event;
 
 import com.google.common.testing.EqualsTester;
+import java.util.Collections;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ClickEventTest {
   @Test
   void testEquality() {
     new EqualsTester()
-      .addEqualityGroup(ClickEvent.runCommand("/test"), ClickEvent.runCommand("/test"))
+      .addEqualityGroup(
+        ClickEvent.openUrl("https://google.com/"),
+        ClickEvent.of(ClickEvent.Action.OPEN_URL, "https://google.com/")
+      )
+      .addEqualityGroup(
+        ClickEvent.runCommand("/test"),
+        ClickEvent.of(ClickEvent.Action.RUN_COMMAND, "/test")
+      )
+      .addEqualityGroup(
+        ClickEvent.suggestCommand("/test"),
+        ClickEvent.of(ClickEvent.Action.SUGGEST_COMMAND, "/test")
+      )
+      .addEqualityGroup(
+        ClickEvent.changePage(1),
+        ClickEvent.changePage("1"),
+        ClickEvent.of(ClickEvent.Action.CHANGE_PAGE, "1")
+      )
+      .addEqualityGroup(
+        ClickEvent.copyToClipboard("test"),
+        ClickEvent.of(ClickEvent.Action.COPY_TO_CLIPBOARD, "test")
+      )
       .testEquals();
   }
 
   @Test
-  void assertOpenFileNotReadable() {
-    final ClickEvent event = ClickEvent.openFile("fake");
-    assertFalse(event.action().readable());
+  void assertReadable() {
+    final Set<ClickEvent.Action> unreadable = Collections.singleton(ClickEvent.Action.OPEN_FILE);
+    for(final ClickEvent.Action action : ClickEvent.Action.values()) {
+      assertEquals(action.readable(), !unreadable.contains(action));
+    }
   }
 }

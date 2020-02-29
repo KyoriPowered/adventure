@@ -40,6 +40,10 @@ public class BlockNbtComponentPosSerializer implements JsonDeserializer<BlockNbt
   private static final Pattern LOCAL_PATTERN = Pattern.compile("^\\^(\\d+(\\.\\d+)?) \\^(\\d+(\\.\\d+)?) \\^(\\d+(\\.\\d+)?)$");
   private static final Pattern WORLD_PATTERN = Pattern.compile("^(~?)(\\d+) (~?)(\\d+) (~?)(\\d+)$");
 
+  private static final String LOCAL_SYMBOL = "^";
+  private static final String RELATIVE_SYMBOL = "~";
+  private static final String ABSOLUTE_SYMBOL = "";
+
   @Override
   public BlockNbtComponent.Pos deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
     final String string = json.getAsString();
@@ -69,7 +73,7 @@ public class BlockNbtComponentPosSerializer implements JsonDeserializer<BlockNbt
   public JsonElement serialize(final BlockNbtComponent.Pos src, final Type typeOfSrc, final JsonSerializationContext context) {
     if(src instanceof BlockNbtComponent.LocalPos) {
       final BlockNbtComponent.LocalPos local = (BlockNbtComponent.LocalPos) src;
-      return new JsonPrimitive("^" + local.left() + ' ' + '^' + local.up() + ' ' + '^' + local.forwards());
+      return new JsonPrimitive(serializeLocal(local.left()) + ' ' + serializeLocal(local.up()) + ' ' + serializeLocal(local.forwards()));
     } else if(src instanceof BlockNbtComponent.WorldPos) {
       final BlockNbtComponent.WorldPos world = (BlockNbtComponent.WorldPos) src;
       return new JsonPrimitive(serializeCoordinate(world.x()) + ' ' + serializeCoordinate(world.y()) + ' ' + serializeCoordinate(world.z()));
@@ -89,7 +93,11 @@ public class BlockNbtComponentPosSerializer implements JsonDeserializer<BlockNbt
     }
   }
 
+  private static String serializeLocal(final double value) {
+    return LOCAL_SYMBOL + value;
+  }
+
   private static String serializeCoordinate(final BlockNbtComponent.WorldPos.Coordinate coordinate) {
-    return (coordinate.type() == BlockNbtComponent.WorldPos.Coordinate.Type.RELATIVE ? "~" : "") + coordinate.value();
+    return (coordinate.type() == BlockNbtComponent.WorldPos.Coordinate.Type.RELATIVE ? RELATIVE_SYMBOL : ABSOLUTE_SYMBOL) + coordinate.value();
   }
 }

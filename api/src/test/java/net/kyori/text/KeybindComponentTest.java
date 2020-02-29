@@ -28,6 +28,7 @@ import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
+import static net.kyori.text.TextAssertions.assertDecorations;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -42,9 +43,7 @@ class KeybindComponentTest extends AbstractComponentTest<KeybindComponent, Keybi
     final KeybindComponent component = KeybindComponent.of("key.jump");
     assertEquals("key.jump", component.keybind());
     assertNull(component.color());
-    for(final TextDecoration decoration : TextDecoration.values()) {
-      assertEquals(TextDecoration.State.NOT_SET, component.decoration(decoration));
-    }
+    assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
   }
 
   @Test
@@ -52,9 +51,7 @@ class KeybindComponentTest extends AbstractComponentTest<KeybindComponent, Keybi
     final KeybindComponent component = KeybindComponent.of("key.jump", TextColor.GREEN);
     assertEquals("key.jump", component.keybind());
     assertEquals(TextColor.GREEN, component.color());
-    for(final TextDecoration decoration : TextDecoration.values()) {
-      assertEquals(TextDecoration.State.NOT_SET, component.decoration(decoration));
-    }
+    assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
   }
 
   @Test
@@ -62,11 +59,7 @@ class KeybindComponentTest extends AbstractComponentTest<KeybindComponent, Keybi
     final KeybindComponent component = KeybindComponent.of("key.jump", TextColor.GREEN, ImmutableSet.of(TextDecoration.BOLD));
     assertEquals("key.jump", component.keybind());
     assertEquals(TextColor.GREEN, component.color());
-    assertEquals(TextDecoration.State.NOT_SET, component.decoration(TextDecoration.OBFUSCATED));
-    assertEquals(TextDecoration.State.TRUE, component.decoration(TextDecoration.BOLD));
-    assertEquals(TextDecoration.State.NOT_SET, component.decoration(TextDecoration.STRIKETHROUGH));
-    assertEquals(TextDecoration.State.NOT_SET, component.decoration(TextDecoration.UNDERLINED));
-    assertEquals(TextDecoration.State.NOT_SET, component.decoration(TextDecoration.ITALIC));
+    assertDecorations(component, ImmutableSet.of(TextDecoration.BOLD), ImmutableSet.of());
   }
 
   @Test
@@ -92,11 +85,5 @@ class KeybindComponentTest extends AbstractComponentTest<KeybindComponent, Keybi
     final KeybindComponent c1 = c0.keybind("key.up");
     assertEquals("key.jump", c0.keybind());
     assertEquals("key.up", c1.keybind());
-  }
-
-  @Test
-  void testRebuildWithNoChanges() {
-    final KeybindComponent component = KeybindComponent.of("keybind.jump");
-    assertEquals(component, component.toBuilder().build());
   }
 }

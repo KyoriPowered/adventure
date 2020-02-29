@@ -110,7 +110,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param components the components to append
    * @return this builder
    */
-  @NonNull B append(final @NonNull Component... components);
+  @NonNull B append(final @NonNull Component@NonNull... components);
 
   /**
    * Appends components to this component.

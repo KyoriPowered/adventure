@@ -56,10 +56,10 @@ public class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<
   @Override
   public Style deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
     final JsonObject object = json.getAsJsonObject();
-    return this.deserialize(object, typeOfT, context);
+    return this.deserialize(object, context);
   }
 
-  private Style deserialize(final JsonObject json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
+  private Style deserialize(final JsonObject json, final JsonDeserializationContext context) throws JsonParseException {
     final Style.Builder style = Style.builder();
 
     if(json.has(COLOR)) {
@@ -72,7 +72,8 @@ public class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<
       }
     }
 
-    for(final TextDecoration decoration : DECORATIONS) {
+    for(int i = 0, length = DECORATIONS.length; i < length; i++) {
+      final TextDecoration decoration = DECORATIONS[i];
       final String name = TextDecoration.NAMES.name(decoration);
       if(json.has(name)) {
         style.decoration(decoration, json.get(name).getAsBoolean());
@@ -125,7 +126,8 @@ public class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<
       json.add(COLOR, context.serialize(color));
     }
 
-    for(final TextDecoration decoration : DECORATIONS) {
+    for(int i = 0, length = DECORATIONS.length; i < length; i++) {
+      final TextDecoration decoration = DECORATIONS[i];
       final TextDecoration.State state = src.decoration(decoration);
       if(state != TextDecoration.State.NOT_SET) {
         final String name = TextDecoration.NAMES.name(decoration);
