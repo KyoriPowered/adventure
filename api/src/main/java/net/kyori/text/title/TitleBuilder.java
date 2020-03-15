@@ -32,7 +32,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 final class TitleBuilder implements Title.Builder {
   @Nullable Component title;
   @Nullable Component subtitle;
-  @Nullable Component actionbar;
   @Nullable TimesImpl times;
   boolean clear;
   boolean reset;
@@ -46,12 +45,6 @@ final class TitleBuilder implements Title.Builder {
   @Override
   public Title.@NonNull Builder subtitle(final @NonNull Component subtitle) {
     this.subtitle = subtitle;
-    return this;
-  }
-
-  @Override
-  public Title.@NonNull Builder actionbar(final @NonNull Component actionbar) {
-    this.actionbar = actionbar;
     return this;
   }
 
@@ -77,7 +70,7 @@ final class TitleBuilder implements Title.Builder {
 
   @Override
   public @NonNull Title build() {
-    if(this.title == null && this.subtitle == null && this.actionbar == null && this.times == null && !this.clear && !this.reset) {
+    if(this.title == null && this.subtitle == null && this.times == null && !this.clear && !this.reset) {
       throw new IllegalStateException("empty");
     }
     return new TitleImpl(this);

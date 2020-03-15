@@ -54,16 +54,6 @@ public interface Title {
   }
 
   /**
-   * Creates a title.
-   *
-   * @param actionbar the actionbar
-   * @return the title
-   */
-  static @NonNull Title actionbar(final @NonNull Component actionbar) {
-    return Title.builder().actionbar(actionbar).build();
-  }
-
-  /**
    * Creates a title that sets times.
    *
    * @param fadeIn the fade-in duration
@@ -129,13 +119,6 @@ public interface Title {
   @Nullable Component subtitle();
 
   /**
-   * Gets the actionbar.
-   *
-   * @return the actionbar
-   */
-  @Nullable Component actionbar();
-
-  /**
    * Gets the times.
    *
    * @return the times
@@ -150,8 +133,6 @@ public interface Title {
     @NonNull Builder title(final @NonNull Component title);
 
     @NonNull Builder subtitle(final @NonNull Component subtitle);
-
-    @NonNull Builder actionbar(final @NonNull Component actionbar);
 
     @NonNull Builder times(final @NonNull Consumer<Times> consumer);
 

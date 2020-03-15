@@ -41,7 +41,6 @@ final class TitleImpl implements Title {
 
   private final Component title;
   private final Component subtitle;
-  private final Component actionbar;
   private final Times times;
   private final boolean clear;
   private final boolean reset;
@@ -49,7 +48,6 @@ final class TitleImpl implements Title {
   TitleImpl(final TitleBuilder builder) {
     this.title = builder.title;
     this.subtitle = builder.subtitle;
-    this.actionbar = builder.actionbar;
     if(builder.times != null) {
       this.times = builder.times.build();
     } else {
@@ -62,7 +60,6 @@ final class TitleImpl implements Title {
   TitleImpl(final boolean clear, final boolean reset) {
     this.title = null;
     this.subtitle = null;
-    this.actionbar = null;
     this.times = null;
     this.clear = clear;
     this.reset = reset;
@@ -76,11 +73,6 @@ final class TitleImpl implements Title {
   @Override
   public @Nullable Component subtitle() {
     return this.subtitle;
-  }
-
-  @Override
-  public @Nullable Component actionbar() {
-    return this.actionbar;
   }
 
   @Override
@@ -105,7 +97,6 @@ final class TitleImpl implements Title {
     final TitleImpl that = (TitleImpl) other;
     return Objects.equals(this.title, that.title)
       && Objects.equals(this.subtitle, that.subtitle)
-      && Objects.equals(this.actionbar, that.actionbar)
       && Objects.equals(this.times, that.times)
       && this.clear == that.clear
       && this.reset == that.reset;
@@ -115,7 +106,6 @@ final class TitleImpl implements Title {
   public int hashCode() {
     int result = Objects.hashCode(this.title);
     result = (31 * result) + Objects.hashCode(this.subtitle);
-    result = (31 * result) + Objects.hashCode(this.actionbar);
     result = (31 * result) + Objects.hashCode(this.times);
     result = (31 * result) + Boolean.hashCode(this.clear);
     result = (31 * result) + Boolean.hashCode(this.reset);
@@ -127,7 +117,6 @@ final class TitleImpl implements Title {
     return ShadyPines.toString(this, builder -> {
       builder.put("title", this.title);
       builder.put("subtitle", this.subtitle);
-      builder.put("actionbar", this.actionbar);
       builder.put("times", this.times);
       builder.put("clear", this.clear);
       builder.put("reset", this.reset);
