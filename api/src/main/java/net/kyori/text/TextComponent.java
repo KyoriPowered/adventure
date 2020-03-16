@@ -496,8 +496,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    */
   static @NonNull TextComponent make(final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder();
-    consumer.accept(builder);
-    return builder.build();
+    return AbstractComponentBuilder.configureAndBuild(builder, consumer);
   }
 
   /**
@@ -509,8 +508,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    */
   static @NonNull TextComponent make(final @NonNull String content, final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder(content);
-    consumer.accept(builder);
-    return builder.build();
+    return AbstractComponentBuilder.configureAndBuild(builder, consumer);
   }
 
   /**

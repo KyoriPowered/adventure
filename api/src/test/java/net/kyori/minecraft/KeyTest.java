@@ -93,14 +93,14 @@ class KeyTest {
   }
 
   @Test
-  void testTestNamespace() {
+  void testNamespaceValid() {
     assertTrue(KeyImpl.namespaceValid(Key.MINECRAFT_NAMESPACE));
     assertTrue(KeyImpl.namespaceValid("realms"));
     assertFalse(KeyImpl.namespaceValid("some/path"));
   }
 
   @Test
-  void testTestValue() {
+  void testValueValid() {
     assertTrue(KeyImpl.valueValid("empty"));
     assertTrue(KeyImpl.valueValid("some/path"));
   }

@@ -34,13 +34,13 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 /**
  * A name map.
  *
- * @param <T> the type
+ * @param <E> the type
  */
-public final class NameMap<T extends Enum<T>> {
-  private final Map<String, T> nameToValue;
-  private final Map<T, String> valueToName;
+public final class NameMap<E extends Enum<E>> {
+  private final Map<String, E> nameToValue;
+  private final Map<E, String> valueToName;
 
-  private NameMap(final Map<String, T> nameToValue, final Map<T, String> valueToName) {
+  private NameMap(final Map<String, E> nameToValue, final Map<E, String> valueToName) {
     this.nameToValue = nameToValue;
     this.valueToName = valueToName;
   }
@@ -50,17 +50,17 @@ public final class NameMap<T extends Enum<T>> {
    *
    * @param type the type
    * @param namer the name provider
-   * @param <T> the type
+   * @param <E> the type
    * @return the name map
    */
   @SuppressWarnings("DuplicatedCode") // TODO: remove when deprecated method below is removed
-  public static <T extends Enum<T>> @NonNull NameMap<T> create(final Class<T> type, final @NonNull Function<T, String> namer) {
-    final T[] constants = type.getEnumConstants();
+  public static <E extends Enum<E>> @NonNull NameMap<E> create(final Class<E> type, final @NonNull Function<E, String> namer) {
+    final E[] constants = type.getEnumConstants();
     final int length = constants.length;
-    final Map<String, T> nameToValue = new HashMap<>(length);
-    final Map<T, String> valueToName = new EnumMap<>(type);
+    final Map<String, E> nameToValue = new HashMap<>(length);
+    final Map<E, String> valueToName = new EnumMap<>(type);
     for(int i = 0; i < length; i++) {
-      final T constant = constants[i];
+      final E constant = constants[i];
       final String name = namer.apply(constant);
       nameToValue.put(name, constant);
       valueToName.put(constant, name);
@@ -73,18 +73,18 @@ public final class NameMap<T extends Enum<T>> {
    *
    * @param constants the constants
    * @param namer the name provider
-   * @param <T> the type
+   * @param <E> the type
    * @return the name map
    * @deprecated use {@link #create(Class, Function)}
    */
   @Deprecated
   @SuppressWarnings("DuplicatedCode")
-  public static <T extends Enum<T>> @NonNull NameMap<T> create(final T@NonNull[] constants, final @NonNull Function<T, String> namer) {
+  public static <E extends Enum<E>> @NonNull NameMap<E> create(final E @NonNull[] constants, final @NonNull Function<E, String> namer) {
     final int length = constants.length;
-    final Map<String, T> nameToValue = new HashMap<>(length);
-    final Map<T, String> valueToName = new HashMap<>(length);
+    final Map<String, E> nameToValue = new HashMap<>(length);
+    final Map<E, String> valueToName = new HashMap<>(length);
     for(int i = 0; i < length; i++) {
-      final T constant = constants[i];
+      final E constant = constants[i];
       final String name = namer.apply(constant);
       nameToValue.put(name, constant);
       valueToName.put(constant, name);
@@ -98,7 +98,7 @@ public final class NameMap<T extends Enum<T>> {
    * @param value the value
    * @return the name
    */
-  public @NonNull String name(final @NonNull T value) {
+  public @NonNull String name(final @NonNull E value) {
     return this.valueToName.get(value);
   }
 
@@ -108,7 +108,7 @@ public final class NameMap<T extends Enum<T>> {
    * @param name the name
    * @return the value
    */
-  public @NonNull Optional<T> value(final @NonNull String name) {
+  public @NonNull Optional<E> value(final @NonNull String name) {
     return Optional.ofNullable(this.nameToValue.get(name));
   }
 
@@ -120,7 +120,7 @@ public final class NameMap<T extends Enum<T>> {
    * @deprecated use {@link #value(String)}
    */
   @Deprecated
-  public @NonNull Optional<T> get(final @NonNull String name) {
+  public @NonNull Optional<E> get(final @NonNull String name) {
     return this.value(name);
   }
 }

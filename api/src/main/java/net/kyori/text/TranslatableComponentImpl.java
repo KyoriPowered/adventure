@@ -23,7 +23,6 @@
  */
 package net.kyori.text;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -48,7 +47,7 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
   TranslatableComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String key, final @NonNull List<? extends Component> args) {
     super(children, style);
     this.key = key;
-    this.args = Collections.unmodifiableList(new ArrayList<>(args));
+    this.args = unmodifiableCopy(args);
   }
 
   @Override
@@ -136,12 +135,24 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
     }
 
     @Override
+    public @NonNull Builder args(final @NonNull ComponentBuilder<?, ?> arg) {
+      return this.args(Collections.singletonList(arg.build()));
+    }
+
+    @Override
     public @NonNull Builder args(final @NonNull ComponentBuilder<?, ?>... args) {
+      if(args.length == 0) return this.args(EMPTY_COMPONENT_LIST);
       return this.args(Stream.of(args).map(ComponentBuilder::build).collect(Collectors.toList()));
     }
 
     @Override
+    public @NonNull Builder args(final @NonNull Component arg) {
+      return this.args(Collections.singletonList(arg));
+    }
+
+    @Override
     public @NonNull Builder args(final @NonNull Component... args) {
+      if(args.length == 0) return this.args(EMPTY_COMPONENT_LIST);
       return this.args(Arrays.asList(args));
     }
 

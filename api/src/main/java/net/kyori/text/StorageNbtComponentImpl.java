@@ -70,6 +70,7 @@ final class StorageNbtComponentImpl extends NbtComponentImpl<StorageNbtComponent
 
   @Override
   public @NonNull StorageNbtComponent style(final @NonNull Style style) {
+    if(Objects.equals(this.style, style)) return this;
     return new StorageNbtComponentImpl(this.children, style, this.nbtPath, this.interpret, this.storage);
   }
 

@@ -61,7 +61,10 @@ abstract class NbtComponentImpl<C extends NbtComponent<C, B>, B extends NbtCompo
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), this.nbtPath, this.interpret);
+    int result = super.hashCode();
+    result = (31 * result) + this.nbtPath.hashCode();
+    result = (31 * result) + Boolean.hashCode(this.interpret);
+    return result;
   }
 
   @Override

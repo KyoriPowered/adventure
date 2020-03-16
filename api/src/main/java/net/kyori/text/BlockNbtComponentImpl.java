@@ -156,14 +156,21 @@ final class BlockNbtComponentImpl extends NbtComponentImpl<BlockNbtComponent, Bl
       if(this == other) return true;
       if(!(other instanceof LocalPos)) return false;
       final LocalPos that = (LocalPos) other;
-      return Double.compare(that.left(), this.left()) == 0 &&
-        Double.compare(that.up(), this.up()) == 0 &&
-        Double.compare(that.forwards(), this.forwards()) == 0;
+      return equals(that.left(), this.left())
+        && equals(that.up(), this.up())
+        && equals(that.forwards(), this.forwards());
+    }
+
+    private static boolean equals(final double a, final double b) {
+      return Double.doubleToLongBits(a) == Double.doubleToLongBits(b);
     }
 
     @Override
     public int hashCode() {
-      return Objects.hash(this.left, this.up, this.forwards);
+      int result = Double.hashCode(this.left);
+      result = (31 * result) + Double.hashCode(this.up);
+      result = (31 * result) + Double.hashCode(this.forwards);
+      return result;
     }
 
     @Override
@@ -203,14 +210,17 @@ final class BlockNbtComponentImpl extends NbtComponentImpl<BlockNbtComponent, Bl
       if(this == other) return true;
       if(!(other instanceof WorldPos)) return false;
       final WorldPos that = (WorldPos) other;
-      return this.x().equals(that.x()) &&
-        this.y().equals(that.y()) &&
-        this.z().equals(that.z());
+      return this.x.equals(that.x())
+        && this.y.equals(that.y())
+        && this.z.equals(that.z());
     }
 
     @Override
     public int hashCode() {
-      return Objects.hash(this.x, this.y, this.z);
+      int result = this.x.hashCode();
+      result = (31 * result) + this.y.hashCode();
+      result = (31 * result) + this.z.hashCode();
+      return result;
     }
 
     @Override
@@ -242,13 +252,15 @@ final class BlockNbtComponentImpl extends NbtComponentImpl<BlockNbtComponent, Bl
         if(this == other) return true;
         if(!(other instanceof Coordinate)) return false;
         final Coordinate that = (Coordinate) other;
-        return this.value() == that.value() &&
-          this.type() == that.type();
+        return this.value() == that.value()
+          && this.type() == that.type();
       }
 
       @Override
       public int hashCode() {
-        return Objects.hash(this.value, this.type);
+        int result = this.value;
+        result = (31 * result) + this.type.hashCode();
+        return result;
       }
 
       @Override

@@ -122,12 +122,28 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
   }
 
   @Test
-  void testBuilderArgs() {
+  void testBuilderArgs_single() {
     final TranslatableComponent c0 = TranslatableComponent.builder()
       .key("multiplayer.player.left")
       .args(TextComponent.builder("kashike"))
       .build();
     assertThat(c0.args()).hasSize(1);
     assertThat(c0.args()).containsExactly(TextComponent.of("kashike")).inOrder();
+  }
+
+  @Test
+  void testBuilderArgs_multiple() {
+    final TranslatableComponent c0 = TranslatableComponent.builder()
+      .key("multiplayer.player.left")
+      .args(
+        TextComponent.builder("kashike"),
+        TextComponent.builder("lucko")
+      )
+      .build();
+    assertThat(c0.args()).hasSize(2);
+    assertThat(c0.args()).containsExactly(
+      TextComponent.of("kashike"),
+      TextComponent.of("lucko")
+    ).inOrder();
   }
 }

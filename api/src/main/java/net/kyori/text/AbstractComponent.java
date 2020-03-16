@@ -41,6 +41,17 @@ public abstract class AbstractComponent implements Component {
    * An empty, unmodifiable, list of components.
    */
   protected static final List<Component> EMPTY_COMPONENT_LIST = Collections.emptyList();
+
+  /*
+   * We do not need to create a new list if the one we are copying is empty - we can
+   * simply just return our known-empty list instead.
+   */
+  static List<Component> unmodifiableCopy(final List<? extends Component> list) {
+    return list.isEmpty()
+      ? EMPTY_COMPONENT_LIST
+      : Collections.unmodifiableList(new ArrayList<>(list));
+  }
+
   /**
    * The list of children.
    */
@@ -51,7 +62,7 @@ public abstract class AbstractComponent implements Component {
   protected final Style style;
 
   protected AbstractComponent(final @NonNull List<Component> children, final @NonNull Style style) {
-    this.children = children.isEmpty() ? EMPTY_COMPONENT_LIST : Collections.unmodifiableList(new ArrayList<>(children));
+    this.children = unmodifiableCopy(children);
     this.style = style;
   }
 

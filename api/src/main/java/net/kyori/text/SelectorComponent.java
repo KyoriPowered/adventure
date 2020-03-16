@@ -67,8 +67,7 @@ public interface SelectorComponent extends BuildableComponent<SelectorComponent,
    */
   static @NonNull SelectorComponent make(final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder();
-    consumer.accept(builder);
-    return builder.build();
+    return AbstractComponentBuilder.configureAndBuild(builder, consumer);
   }
 
   /**
@@ -80,8 +79,7 @@ public interface SelectorComponent extends BuildableComponent<SelectorComponent,
    */
   static @NonNull SelectorComponent make(final @NonNull String pattern, final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder(pattern);
-    consumer.accept(builder);
-    return builder.build();
+    return AbstractComponentBuilder.configureAndBuild(builder, consumer);
   }
 
   /**

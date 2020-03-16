@@ -23,7 +23,6 @@
  */
 package net.kyori.text;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -39,7 +38,7 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   static final TextComponent SPACE = createDirect(" ");
 
   private static @NonNull TextComponent createDirect(final @NonNull String content) {
-    return new TextComponentImpl(Collections.emptyList(), Style.empty(), content);
+    return new TextComponentImpl(EMPTY_COMPONENT_LIST, Style.empty(), content);
   }
 
   private final String content;

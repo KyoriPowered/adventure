@@ -108,8 +108,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    */
   static @NonNull KeybindComponent make(final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder();
-    consumer.accept(builder);
-    return builder.build();
+    return AbstractComponentBuilder.configureAndBuild(builder, consumer);
   }
 
   /**
@@ -121,8 +120,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    */
   static @NonNull KeybindComponent make(final @NonNull String keybind, final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder(keybind);
-    consumer.accept(builder);
-    return builder.build();
+    return AbstractComponentBuilder.configureAndBuild(builder, consumer);
   }
 
   /**

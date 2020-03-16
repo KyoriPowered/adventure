@@ -86,8 +86,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    */
   static @NonNull ScoreComponent make(final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder();
-    consumer.accept(builder);
-    return builder.build();
+    return AbstractComponentBuilder.configureAndBuild(builder, consumer);
   }
 
   /**
@@ -100,8 +99,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    */
   static @NonNull ScoreComponent make(final @NonNull String name, final @NonNull String objective, final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder(name, objective);
-    consumer.accept(builder);
-    return builder.build();
+    return AbstractComponentBuilder.configureAndBuild(builder, consumer);
   }
 
   /**

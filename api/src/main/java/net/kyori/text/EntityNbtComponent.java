@@ -58,8 +58,7 @@ public interface EntityNbtComponent extends NbtComponent<EntityNbtComponent, Ent
    */
   static @NonNull EntityNbtComponent make(final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder();
-    consumer.accept(builder);
-    return builder.build();
+    return AbstractComponentBuilder.configureAndBuild(builder, consumer);
   }
 
   /**

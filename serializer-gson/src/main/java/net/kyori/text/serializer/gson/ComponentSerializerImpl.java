@@ -43,6 +43,7 @@ import net.kyori.text.ComponentBuilder;
 import net.kyori.text.EntityNbtComponent;
 import net.kyori.text.KeybindComponent;
 import net.kyori.text.NbtComponent;
+import net.kyori.text.NbtComponentBuilder;
 import net.kyori.text.ScoreComponent;
 import net.kyori.text.SelectorComponent;
 import net.kyori.text.StorageNbtComponent;
@@ -54,7 +55,7 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
   /**
    * A component serializer for JSON-based serialization and deserialization.
    */
-  public static final ComponentSerializerImpl INSTANCE = new ComponentSerializerImpl();
+  static final ComponentSerializerImpl INSTANCE = new ComponentSerializerImpl();
 
   static final String TEXT = "text";
   static final String TRANSLATE = "translate";
@@ -137,12 +138,12 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
       final String nbt = object.get(NBT).getAsString();
       final boolean interpret = object.has(NBT_INTERPRET) && object.getAsJsonPrimitive(NBT_INTERPRET).getAsBoolean();
       if(object.has(NBT_BLOCK)) {
-        final BlockNbtComponent.Pos position = context.deserialize(object.get(NBT_BLOCK), BlockNbtComponent.Pos.class);
-        component = BlockNbtComponent.builder().nbtPath(nbt).interpret(interpret).pos(position);
+        final BlockNbtComponent.Pos pos = context.deserialize(object.get(NBT_BLOCK), BlockNbtComponent.Pos.class);
+        component = nbt(BlockNbtComponent.builder(), nbt, interpret).pos(pos);
       } else if(object.has(NBT_ENTITY)) {
-        component = EntityNbtComponent.builder().nbtPath(nbt).interpret(interpret).selector(object.get(NBT_ENTITY).getAsString());
+        component = nbt(EntityNbtComponent.builder(), nbt, interpret).selector(object.get(NBT_ENTITY).getAsString());
       } else if(object.has(NBT_STORAGE)) {
-        component = StorageNbtComponent.builder().nbtPath(nbt).interpret(interpret).storage(Key.of(object.get(NBT_STORAGE).getAsString()));
+        component = nbt(StorageNbtComponent.builder(), nbt, interpret).storage(Key.of(object.get(NBT_STORAGE).getAsString()));
       } else {
         throw notSureHowToDeserialize(element);
       }
@@ -166,6 +167,12 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
     return component.build();
   }
 
+  private static <C extends NbtComponent<C, B>, B extends NbtComponentBuilder<C, B>> B nbt(final B builder, final String nbt, final boolean interpret) {
+    return builder
+      .nbtPath(nbt)
+      .interpret(interpret);
+  }
+
   @Override
   public JsonElement serialize(final Component src, final Type typeOfSrc, final JsonSerializationContext context) {
     final JsonObject object = new JsonObject();
@@ -187,7 +194,8 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
       score.addProperty(SCORE_NAME, sc.name());
       score.addProperty(SCORE_OBJECTIVE, sc.objective());
       // score component value is optional
-      if(sc.value() != null) score.addProperty(SCORE_VALUE, sc.value());
+      final /* @Nullable */ String value = sc.value();
+      if(value != null) score.addProperty(SCORE_VALUE, value);
       object.add(SCORE, score);
     } else if(src instanceof SelectorComponent) {
       object.addProperty(SELECTOR, ((SelectorComponent) src).pattern());
@@ -211,9 +219,10 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
       throw notSureHowToSerialize(src);
     }
 
-    if(!src.children().isEmpty()) {
+    final List<Component> children = src.children();
+    if(!children.isEmpty()) {
       final JsonArray extra = new JsonArray();
-      for(final Component child : src.children()) {
+      for(final Component child : children) {
         extra.add(context.serialize(child));
       }
       object.add(EXTRA, extra);

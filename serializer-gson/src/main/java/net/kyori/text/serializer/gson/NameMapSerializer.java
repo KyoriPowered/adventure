@@ -31,25 +31,31 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
+import java.util.Optional;
 import net.kyori.text.util.NameMap;
 
-public class NameMapSerializer<T extends Enum<T>> implements JsonDeserializer<T>, JsonSerializer<T> {
+public class NameMapSerializer<E extends Enum<E>> implements JsonDeserializer<E>, JsonSerializer<E> {
   private final String name;
-  private final NameMap<T> map;
+  private final NameMap<E> map;
 
-  public NameMapSerializer(final String name, final NameMap<T> map) {
+  public NameMapSerializer(final String name, final NameMap<E> map) {
     this.name = name;
     this.map = map;
   }
 
   @Override
-  public T deserialize(final JsonElement json, final Type type, final JsonDeserializationContext context) throws JsonParseException {
+  public E deserialize(final JsonElement json, final Type type, final JsonDeserializationContext context) throws JsonParseException {
     final String string = json.getAsString();
-    return this.map.value(string).orElseThrow(() -> new JsonParseException("invalid " + this.name + ":  " + string));
+    final Optional<E> value = this.map.value(string);
+    if(value.isPresent()) {
+      return value.get();
+    } else {
+      throw new JsonParseException("invalid " + this.name + ":  " + string);
+    }
   }
 
   @Override
-  public JsonElement serialize(final T src, final Type typeOfT, final JsonSerializationContext context) {
+  public JsonElement serialize(final E src, final Type typeOfT, final JsonSerializationContext context) {
     return new JsonPrimitive(this.map.name(src));
   }
 }

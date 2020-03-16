@@ -94,7 +94,9 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
     if(!(other instanceof ScoreComponent)) return false;
     if(!super.equals(other)) return false;
     final ScoreComponent that = (ScoreComponent) other;
-    return Objects.equals(this.name, that.name()) && Objects.equals(this.objective, that.objective()) && Objects.equals(this.value, that.value());
+    return Objects.equals(this.name, that.name())
+      && Objects.equals(this.objective, that.objective())
+      && Objects.equals(this.value, that.value());
   }
 
   @Override

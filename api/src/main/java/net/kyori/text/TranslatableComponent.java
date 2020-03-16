@@ -182,8 +182,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    */
   static @NonNull TranslatableComponent make(final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder();
-    consumer.accept(builder);
-    return builder.build();
+    return AbstractComponentBuilder.configureAndBuild(builder, consumer);
   }
 
   /**
@@ -195,8 +194,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    */
   static @NonNull TranslatableComponent make(final @NonNull String key, final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder(key);
-    consumer.accept(builder);
-    return builder.build();
+    return AbstractComponentBuilder.configureAndBuild(builder, consumer);
   }
 
   /**
@@ -209,8 +207,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    */
   static @NonNull TranslatableComponent make(final @NonNull String key, final @NonNull List<? extends Component> args, final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder(key).args(args);
-    consumer.accept(builder);
-    return builder.build();
+    return AbstractComponentBuilder.configureAndBuild(builder, consumer);
   }
 
   /**
@@ -266,10 +263,26 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
     /**
      * Sets the translation args.
      *
+     * @param arg the translation arg
+     * @return this builder
+     */
+    @NonNull Builder args(final @NonNull ComponentBuilder<?, ?> arg);
+
+    /**
+     * Sets the translation args.
+     *
      * @param args the translation args
      * @return this builder
      */
     @NonNull Builder args(final @NonNull ComponentBuilder<?, ?>... args);
+
+    /**
+     * Sets the translation args.
+     *
+     * @param arg the translation arg
+     * @return this builder
+     */
+    @NonNull Builder args(final @NonNull Component arg);
 
     /**
      * Sets the translation args.
