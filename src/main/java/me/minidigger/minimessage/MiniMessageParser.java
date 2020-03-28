@@ -198,6 +198,13 @@ public class MiniMessageParser {
                 colors.push(color.get());
             } else if (token.startsWith(CLOSE_TAG) && resolveColor(token.replace(CLOSE_TAG, "")).isPresent()) {
                 colors.pop();
+            } else {
+                // invalid tag
+                if (builder == null) {
+                    builder = new ComponentBuilder(TAG_START + token + TAG_END);
+                } else {
+                    builder.append(TAG_START + token + TAG_END, ComponentBuilder.FormatRetention.NONE);
+                }
             }
         }
 

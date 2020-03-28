@@ -138,6 +138,26 @@ public class MiniMessageParserTest {
         test(input, expected);
     }
 
+    @Test
+    public void testInvalidTag() {
+        String input = "<test>";
+        String expected = "{\"text\":\"\\u003ctest\\u003e\"}"; // gson makes it html save
+        BaseComponent[] comp = MiniMessageParser.parseFormat(input);
+
+        test(comp, expected);
+
+        // am not totally happy about this yet, invalid tags arent getting colored for example, but good enough for now
+    }
+
+    @Test
+    public void testInvalidTagComplex() {
+        String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><oof></oof><underlined><red>click here</click><blue> to <bold>FEEL</underlined> it";
+        String expected = "{\"extra\":[{\"text\":\"\\u003ctest\\u003e\"},{\"color\":\"yellow\",\"text\":\" random \"},{\"color\":\"yellow\",\"bold\":true,\"text\":\"stranger\"},{\"text\":\"\\u003coof\\u003e\"},{\"text\":\"\\u003c/oof\\u003e\"},{\"color\":\"red\",\"underlined\":true,\"clickEvent\":{\"action\":\"run_command\",\"value\":\"test command\"},\"text\":\"click here\"},{\"color\":\"blue\",\"underlined\":true,\"text\":\" to \"},{\"color\":\"blue\",\"bold\":true,\"underlined\":true,\"text\":\"FEEL\"},{\"color\":\"blue\",\"bold\":true,\"text\":\" it\"}],\"text\":\"\"}";
+        BaseComponent[] comp = MiniMessageParser.parseFormat(input);
+
+        test(comp, expected);
+    }
+
     private void test(@Nonnull String input, @Nonnull String expected) {
         test(MiniMessageParser.parseFormat(input), expected);
     }
