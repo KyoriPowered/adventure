@@ -102,6 +102,16 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B> & Scoped
   }
 
   @Test
+  void testStyled() {
+    final Component c0 = this.builder().color(TextColor.RED).decoration(TextDecoration.STRIKETHROUGH, true).build();
+    final Component c1 = c0.style(style -> {
+      style.color(TextColor.GREEN);
+    });
+    assertEquals(TextColor.GREEN, c1.color());
+    assertDecorations(c1, ImmutableSet.of(), ImmutableSet.of());
+  }
+
+  @Test
   void testResetStyle() {
     final C c0 = this.builder()
       .color(TextColor.RED)

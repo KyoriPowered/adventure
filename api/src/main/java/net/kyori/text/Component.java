@@ -26,6 +26,7 @@ package net.kyori.text;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.Style;
@@ -128,6 +129,16 @@ public interface Component {
    * @param style the style
    * @return a component
    */
+  default @NonNull Component style(final @NonNull Consumer<Style.Builder> style) {
+    return this.style(Style.make(style));
+  }
+
+  /**
+   * Sets the style of this component.
+   *
+   * @param style the style
+   * @return a component
+   */
   default @NonNull Component style(final Style.@NonNull Builder style) {
     return this.style(style.build());
   }
@@ -181,6 +192,17 @@ public interface Component {
    */
   default @NonNull Component color(final @Nullable TextColor color) {
     return this.style(this.style().color(color));
+  }
+
+  /**
+   * Sets the color if there isn't one set already.
+   *
+   * @param color the color
+   * @return this builder
+   */
+  default  @NonNull Component colorIfAbsent(final @Nullable TextColor color) {
+    if(this.color() == null) return this.color(color);
+    return this;
   }
 
   /**

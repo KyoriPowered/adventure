@@ -24,6 +24,8 @@
 package net.kyori.text;
 
 import com.google.common.collect.ImmutableSet;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
@@ -108,5 +110,25 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
   @Test
   void testBuildEmptyIsEmpty() {
     assertTrue(TextComponent.builder().build().isEmpty());
+  }
+
+  @Test
+  void testJoin() {
+    final Component c0 = TextComponent.join(
+      TextComponent.space(),
+      IntStream.range(0, 3)
+        .mapToObj(TextComponent::of)
+        .toArray(Component[]::new)
+    );
+    assertEquals(
+      TextComponent.builder()
+        .append(TextComponent.of(0))
+        .append(TextComponent.space())
+        .append(TextComponent.of(1))
+        .append(TextComponent.space())
+        .append(TextComponent.of(2))
+        .build(),
+      c0
+    );
   }
 }

@@ -23,6 +23,8 @@
  */
 package net.kyori.text;
 
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.function.Consumer;
 import net.kyori.text.format.Style;
@@ -61,6 +63,39 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    */
   static @NonNull TextComponent space() {
     return TextComponentImpl.SPACE;
+  }
+
+  /**
+   * Joins {@code components} using {@code separator}.
+   *
+   * @param separator the separator
+   * @param components the components
+   * @return a component
+   */
+  static @NonNull TextComponent join(final @NonNull Component separator, final Component... components) {
+    return join(separator, Arrays.asList(components));
+  }
+
+  /**
+   * Joins {@code components} using {@code separator}.
+   *
+   * @param separator the separator
+   * @param components the components
+   * @return a component
+   */
+  static @NonNull TextComponent join(final @NonNull Component separator, final Iterable<? extends Component> components) {
+    final Iterator<? extends Component> it = components.iterator();
+    if(!it.hasNext()) {
+      return empty();
+    }
+    final Builder builder = builder();
+    while(it.hasNext()) {
+      builder.append(it.next());
+      if(it.hasNext()) {
+        builder.append(separator);
+      }
+    }
+    return builder.build();
   }
 
   /**
