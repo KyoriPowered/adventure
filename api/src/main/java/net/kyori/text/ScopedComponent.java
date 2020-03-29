@@ -26,6 +26,7 @@ package net.kyori.text;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.Style;
@@ -45,6 +46,12 @@ public interface ScopedComponent<C extends Component> extends Component {
 
   @Override
   @NonNull C style(final @NonNull Style style);
+
+  @Override
+  @SuppressWarnings("unchecked")
+  default @NonNull C style(final @NonNull Consumer<Style.Builder> style) {
+    return (C) Component.super.style(style);
+  }
 
   @Override
   @SuppressWarnings("unchecked")
@@ -90,6 +97,12 @@ public interface ScopedComponent<C extends Component> extends Component {
   @SuppressWarnings("unchecked")
   default @NonNull C color(final @Nullable TextColor color) {
     return (C) Component.super.color(color);
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  default @NonNull C colorIfAbsent(final @Nullable TextColor color) {
+    return (C) Component.super.colorIfAbsent(color);
   }
 
   @Override
