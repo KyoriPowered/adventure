@@ -24,7 +24,6 @@
 package net.kyori.text;
 
 import com.google.common.collect.ImmutableSet;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;

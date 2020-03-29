@@ -178,6 +178,37 @@ public final class Style {
   }
 
   /**
+   * Edits this style.
+   *
+   * <p>The old style will be merge into the new style before {@code consumer} is called.</p>
+   *
+   * @param consumer the consumer
+   * @return a new style
+   */
+  public @NonNull Style edit(final @NonNull Consumer<Builder> consumer) {
+    return this.edit(consumer, Merge.Strategy.ALWAYS);
+  }
+
+  /**
+   * Edits this style.
+   *
+   * @param consumer the consumer
+   * @param strategy the merge strategy
+   * @return a new style
+   */
+  public @NonNull Style edit(final @NonNull Consumer<Builder> consumer, final Style.Merge.@NonNull Strategy strategy) {
+    return make(style -> {
+      if(strategy == Style.Merge.Strategy.ALWAYS) {
+        style.merge(this, strategy);
+      }
+      consumer.accept(style);
+      if(strategy == Style.Merge.Strategy.IF_ABSENT_ON_TARGET) {
+        style.merge(this, strategy);
+      }
+    });
+  }
+
+  /**
    * Gets the color.
    *
    * @return the color
@@ -381,11 +412,34 @@ public final class Style {
    * Merges from another style into this style.
    *
    * @param that the other style
+   * @param strategy the merge strategy
+   * @return a style
+   */
+  public @NonNull Style merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy) {
+    return this.merge(that, strategy, Merge.all());
+  }
+
+  /**
+   * Merges from another style into this style.
+   *
+   * @param that the other style
    * @param merge the part to merge
    * @return a style
    */
   public @NonNull Style merge(final @NonNull Style that, final @NonNull Merge merge) {
     return this.merge(that, Collections.singleton(merge));
+  }
+
+  /**
+   * Merges from another style into this style.
+   *
+   * @param that the other style
+   * @param strategy the merge strategy
+   * @param merge the part to merge
+   * @return a style
+   */
+  public @NonNull Style merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy, final @NonNull Merge merge) {
+    return this.merge(that, strategy, Collections.singleton(merge));
   }
 
   /**
@@ -403,10 +457,34 @@ public final class Style {
    * Merges from another style into this style.
    *
    * @param that the other style
+   * @param strategy the merge strategy
+   * @param merges the parts to merge
+   * @return a style
+   */
+  public @NonNull Style merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy, final @NonNull Merge@NonNull... merges) {
+    return this.merge(that, strategy, Merge.of(merges));
+  }
+
+  /**
+   * Merges from another style into this style.
+   *
+   * @param that the other style
    * @param merges the parts to merge
    * @return a style
    */
   public @NonNull Style merge(final @NonNull Style that, final @NonNull Set<Merge> merges) {
+    return this.merge(that, Merge.Strategy.ALWAYS, merges);
+  }
+
+  /**
+   * Merges from another style into this style.
+   *
+   * @param that the other style
+   * @param strategy the merge strategy
+   * @param merges the parts to merge
+   * @return a style
+   */
+  public @NonNull Style merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy, final @NonNull Set<Merge> merges) {
     if(this.isEmpty() && Merge.hasAll(merges)) {
       return that;
     }
@@ -416,7 +494,7 @@ public final class Style {
     }
 
     final Builder builder = this.toBuilder();
-    builder.merge(that, merges);
+    builder.merge(that, strategy, merges);
     return builder.build();
   }
 
@@ -557,12 +635,84 @@ public final class Style {
      * @param merges the merge parts
      * @return a merge set
      */
-    public static @NonNull Set<Merge> of(final Merge... merges) {
+    public static @NonNull Set<Merge> of(final Merge@NonNull... merges) {
       return ShadyPines.enumSet(Merge.class, merges);
     }
 
     static boolean hasAll(final @NonNull Set<Merge> merges) {
       return merges.size() == ALL.size();
+    }
+
+    /**
+     * A merge strategy.
+     */
+    public enum Strategy {
+      /**
+       * Always merge onto target.
+       */
+      ALWAYS {
+        @Override boolean mergeColor(final @NonNull Builder target, final @Nullable TextColor color) { return true; }
+        @Override boolean mergeDecoration(final @NonNull Builder target, final @NonNull TextDecoration decoration) { return true; }
+        @Override boolean mergeClickEvent(final @NonNull Builder target, final @Nullable ClickEvent event) { return true; }
+        @Override boolean mergeHoverEvent(final @NonNull Builder target, final @Nullable HoverEvent event) { return true; }
+        @Override boolean mergeInsertion(final @NonNull Builder target, final @Nullable String insertion) { return true; }
+      },
+      /**
+       * Never merges onto target.
+       */
+      NEVER {
+        @Override boolean mergeColor(final @NonNull Builder target, final @Nullable TextColor color) { return false; }
+        @Override boolean mergeDecoration(final @NonNull Builder target, final @NonNull TextDecoration decoration) { return false; }
+        @Override boolean mergeClickEvent(final @NonNull Builder target, final @Nullable ClickEvent event) { return false; }
+        @Override boolean mergeHoverEvent(final @NonNull Builder target, final @Nullable HoverEvent event) { return false; }
+        @Override boolean mergeInsertion(final @NonNull Builder target, final @Nullable String insertion) { return false; }
+      },
+      /**
+       * Merge onto target when not already set on target.
+       */
+      IF_ABSENT_ON_TARGET {
+        @Override
+        boolean mergeColor(final @NonNull Builder target, final @Nullable TextColor color) {
+          return target.color == null;
+        }
+
+        @Override
+        boolean mergeDecoration(final @NonNull Builder target, final @NonNull TextDecoration decoration) {
+          if(decoration == TextDecoration.OBFUSCATED) {
+            return target.obfuscated == TextDecoration.State.NOT_SET;
+          } else if(decoration == TextDecoration.BOLD) {
+            return target.bold == TextDecoration.State.NOT_SET;
+          } else if(decoration == TextDecoration.STRIKETHROUGH) {
+            return target.strikethrough == TextDecoration.State.NOT_SET;
+          } else if(decoration == TextDecoration.UNDERLINED) {
+            return target.underlined == TextDecoration.State.NOT_SET;
+          } else if(decoration == TextDecoration.ITALIC) {
+            return target.italic == TextDecoration.State.NOT_SET;
+          }
+          throw new IllegalArgumentException();
+        }
+
+        @Override
+        boolean mergeClickEvent(final @NonNull Builder target, final @Nullable ClickEvent event) {
+          return target.clickEvent == null;
+        }
+
+        @Override
+        boolean mergeHoverEvent(final @NonNull Builder target, final @Nullable HoverEvent event) {
+          return target.hoverEvent == null;
+        }
+
+        @Override
+        boolean mergeInsertion(final @NonNull Builder target, final @Nullable String insertion) {
+          return target.insertion == null;
+        }
+      };
+
+      abstract boolean mergeColor(final @NonNull Builder target, final @Nullable TextColor color);
+      abstract boolean mergeDecoration(final @NonNull Builder target, final @NonNull TextDecoration decoration);
+      abstract boolean mergeClickEvent(final @NonNull Builder target, final @Nullable ClickEvent event);
+      abstract boolean mergeHoverEvent(final @NonNull Builder target, final @Nullable HoverEvent event);
+      abstract boolean mergeInsertion(final @NonNull Builder target, final @Nullable String insertion);
     }
   }
 
@@ -615,15 +765,15 @@ public final class Style {
     }
 
     protected Builder(final @NonNull Style style) {
-      this.color = style.color();
-      this.obfuscated = style.decoration(TextDecoration.OBFUSCATED);
-      this.bold = style.decoration(TextDecoration.BOLD);
-      this.strikethrough = style.decoration(TextDecoration.STRIKETHROUGH);
-      this.underlined = style.decoration(TextDecoration.UNDERLINED);
-      this.italic = style.decoration(TextDecoration.ITALIC);
-      this.clickEvent = style.clickEvent();
-      this.hoverEvent = style.hoverEvent();
-      this.insertion = style.insertion();
+      this.color = style.color;
+      this.obfuscated = style.obfuscated;
+      this.bold = style.bold;
+      this.strikethrough = style.strikethrough;
+      this.underlined = style.underlined;
+      this.italic = style.italic;
+      this.clickEvent = style.clickEvent;
+      this.hoverEvent = style.hoverEvent;
+      this.insertion = style.insertion;
     }
 
     /**
@@ -740,6 +890,17 @@ public final class Style {
      * Merges from another style into this style.
      *
      * @param that the other style
+     * @param strategy the merge strategy
+     * @return a style
+     */
+    public @NonNull Builder merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy) {
+      return this.merge(that, strategy, Merge.all());
+    }
+
+    /**
+     * Merges from another style into this style.
+     *
+     * @param that the other style
      * @param merges the parts to merge
      * @return a style
      */
@@ -752,38 +913,67 @@ public final class Style {
      * Merges from another style into this style.
      *
      * @param that the other style
+     * @param strategy the merge strategy
+     * @param merges the parts to merge
+     * @return a style
+     */
+    public @NonNull Builder merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy, final @NonNull Merge@NonNull... merges) {
+      if(merges.length == 0) return this;
+      return this.merge(that, strategy, Merge.of(merges));
+    }
+
+    /**
+     * Merges from another style into this style.
+     *
+     * @param that the other style
      * @param merges the parts to merge
      * @return a style
      */
     public @NonNull Builder merge(final @NonNull Style that, final @NonNull Set<Merge> merges) {
+      return this.merge(that, Merge.Strategy.ALWAYS, merges);
+    }
+
+    /**
+     * Merges from another style into this style.
+     *
+     * @param that the other style
+     * @param strategy the merge strategy
+     * @param merges the parts to merge
+     * @return a style
+     */
+    public @NonNull Builder merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy, final @NonNull Set<Merge> merges) {
+      if(strategy == Merge.Strategy.NEVER) {
+        return this;
+      }
+
       if(merges.isEmpty()) {
         return this;
       }
 
       if(merges.contains(Merge.COLOR)) {
         final TextColor color = that.color();
-        if(color != null) this.color(color);
+        if(color != null && strategy.mergeColor(this, color)) this.color(color);
       }
 
       if(merges.contains(Merge.DECORATIONS)) {
         for(int i = 0, length = DECORATIONS.length; i < length; i++) {
           final TextDecoration decoration = DECORATIONS[i];
           final TextDecoration.State state = that.decoration(decoration);
-          if(state != TextDecoration.State.NOT_SET) this.decoration(decoration, state);
+          if(state != TextDecoration.State.NOT_SET && strategy.mergeDecoration(this, decoration)) this.decoration(decoration, state);
         }
       }
 
       if(merges.contains(Merge.EVENTS)) {
         final ClickEvent clickEvent = that.clickEvent();
-        if(clickEvent != null) this.clickEvent(clickEvent);
+        if(clickEvent != null && strategy.mergeClickEvent(this, clickEvent)) this.clickEvent(clickEvent);
 
         final HoverEvent hoverEvent = that.hoverEvent();
-        if(hoverEvent != null) this.hoverEvent(hoverEvent);
+        if(hoverEvent != null && strategy.mergeHoverEvent(this, hoverEvent)) this.hoverEvent(hoverEvent);
       }
 
       if(merges.contains(Merge.INSERTION)) {
         final String insertion = that.insertion();
-        if(insertion != null) this.insertion(insertion);
+        if(insertion != null && strategy.mergeInsertion(this, insertion)) this.insertion(insertion);
       }
 
       return this;

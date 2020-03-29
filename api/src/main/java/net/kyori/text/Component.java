@@ -126,11 +126,22 @@ public interface Component {
   /**
    * Sets the style of this component.
    *
-   * @param style the style
+   * @param consumer the style consumer
    * @return a component
    */
-  default @NonNull Component style(final @NonNull Consumer<Style.Builder> style) {
-    return this.style(Style.make(style));
+  default @NonNull Component style(final @NonNull Consumer<Style.Builder> consumer) {
+    return this.style(this.style().edit(consumer));
+  }
+
+  /**
+   * Sets the style of this component.
+   *
+   * @param consumer the style consumer
+   * @param strategy the merge strategy
+   * @return a component
+   */
+  default @NonNull Component style(final @NonNull Consumer<Style.Builder> consumer, final Style.Merge.@NonNull Strategy strategy) {
+    return this.style(this.style().edit(consumer, strategy));
   }
 
   /**
