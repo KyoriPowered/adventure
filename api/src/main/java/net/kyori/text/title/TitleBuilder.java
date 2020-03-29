@@ -24,7 +24,6 @@
 package net.kyori.text.title;
 
 import java.time.Duration;
-import java.util.function.Consumer;
 import net.kyori.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -32,7 +31,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 final class TitleBuilder implements Title.Builder {
   @Nullable Component title;
   @Nullable Component subtitle;
-  @Nullable TimesImpl times;
+  @Nullable Duration fadeIn;
+  @Nullable Duration stay;
+  @Nullable Duration fadeOut;
   boolean clear;
   boolean reset;
 
@@ -49,10 +50,10 @@ final class TitleBuilder implements Title.Builder {
   }
 
   @Override
-  public Title.@NonNull Builder times(final @NonNull Consumer<Times> consumer) {
-    final TimesImpl times = new TimesImpl();
-    consumer.accept(times);
-    this.times = times;
+  public Title.@NonNull Builder times(final @NonNull Duration fadeIn, final @NonNull Duration stay, final @NonNull Duration fadeOut) {
+    this.fadeIn = fadeIn;
+    this.stay = stay;
+    this.fadeOut = fadeOut;
     return this;
   }
 
@@ -70,52 +71,13 @@ final class TitleBuilder implements Title.Builder {
 
   @Override
   public @NonNull Title build() {
-    if(this.title == null && this.subtitle == null && this.times == null && !this.clear && !this.reset) {
+    if(this.title == null && this.subtitle == null && !this.hasTimes() && !this.clear && !this.reset) {
       throw new IllegalStateException("empty");
     }
     return new TitleImpl(this);
   }
 
-  static class TimesImpl implements Times {
-    int fadeIn;
-    int stay;
-    int fadeOut;
-
-    @Override
-    public @NonNull Times fadeIn(final @NonNull Duration duration) {
-      return this.fadeIn((int) TitleImpl.ticks(duration));
-    }
-
-    @Override
-    public @NonNull Times stay(final @NonNull Duration duration) {
-      return this.stay((int) TitleImpl.ticks(duration));
-    }
-
-    @Override
-    public @NonNull Times fadeOut(final @NonNull Duration duration) {
-      return this.fadeOut((int) TitleImpl.ticks(duration));
-    }
-
-    @Override
-    public @NonNull Times fadeIn(final int duration) {
-      this.fadeIn = duration;
-      return this;
-    }
-
-    @Override
-    public @NonNull Times stay(final int duration) {
-      this.stay = duration;
-      return this;
-    }
-
-    @Override
-    public @NonNull Times fadeOut(final int duration) {
-      this.fadeOut = duration;
-      return this;
-    }
-
-    Title.@NonNull Times build() {
-      return new TitleImpl.TimesImpl(this.fadeIn, this.stay, this.fadeOut);
-    }
+  boolean hasTimes() {
+    return this.fadeIn != null && this.stay != null && this.fadeOut != null;
   }
 }

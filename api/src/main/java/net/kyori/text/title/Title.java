@@ -24,7 +24,6 @@
 package net.kyori.text.title;
 
 import java.time.Duration;
-import java.util.function.Consumer;
 import net.kyori.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -40,7 +39,7 @@ public interface Title {
    * @return the title
    */
   static @NonNull Title title(final @NonNull Component title) {
-    return Title.builder().title(title).build();
+    return new TitleImpl(title, null, null);
   }
 
   /**
@@ -50,7 +49,7 @@ public interface Title {
    * @return the title
    */
   static @NonNull Title subtitle(final @NonNull Component subtitle) {
-    return Title.builder().subtitle(subtitle).build();
+    return new TitleImpl(null, subtitle, null);
   }
 
   /**
@@ -62,19 +61,7 @@ public interface Title {
    * @return the title
    */
   static @NonNull Title times(final @NonNull Duration fadeIn, final @NonNull Duration stay, final @NonNull Duration fadeOut) {
-    return times((int) TitleImpl.ticks(fadeIn), (int) TitleImpl.ticks(stay), (int) TitleImpl.ticks(fadeOut));
-  }
-
-  /**
-   * Creates a title that sets times.
-   *
-   * @param fadeIn the fade-in duration, in ticks
-   * @param stay the stay duration, in ticks
-   * @param fadeOut the fade-out duration, in ticks
-   * @return the title
-   */
-  static @NonNull Title times(final int fadeIn, final int stay, final int fadeOut) {
-    return Title.builder().times(times -> times.fadeIn(fadeIn).stay(stay).fadeOut(fadeOut)).build();
+    return new TitleImpl(null, null, new TitleImpl.TimesImpl(fadeIn, stay, fadeOut));
   }
 
   /**
@@ -134,27 +121,13 @@ public interface Title {
 
     @NonNull Builder subtitle(final @NonNull Component subtitle);
 
-    @NonNull Builder times(final @NonNull Consumer<Times> consumer);
+    @NonNull Builder times(final @NonNull Duration fadeIn, final @NonNull Duration stay, final @NonNull Duration fadeOut);
 
     @NonNull Builder clear(final boolean clear);
 
     @NonNull Builder reset(final boolean reset);
 
     @NonNull Title build();
-
-    interface Times {
-      @NonNull Times fadeIn(final @NonNull Duration duration);
-
-      @NonNull Times stay(final @NonNull Duration duration);
-
-      @NonNull Times fadeOut(final @NonNull Duration duration);
-
-      @NonNull Times fadeIn(final int duration);
-
-      @NonNull Times stay(final int duration);
-
-      @NonNull Times fadeOut(final int duration);
-    }
   }
 
   /**
@@ -166,20 +139,20 @@ public interface Title {
      *
      * @return the time (in ticks) the title will fade-in
      */
-    int fadeIn();
+    @NonNull Duration fadeIn();
 
     /**
      * Gets the time (in ticks) the title will stay.
      *
      * @return the time (in ticks) the title will stay
      */
-    int stay();
+    @NonNull Duration stay();
 
     /**
      * Gets the time (in ticks) the title will fade-out.
      *
      * @return the time (in ticks) the title will fade-out
      */
-    int fadeOut();
+    @NonNull Duration fadeOut();
   }
 }

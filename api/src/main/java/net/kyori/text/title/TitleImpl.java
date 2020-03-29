@@ -27,17 +27,12 @@ import java.time.Duration;
 import java.util.Objects;
 import net.kyori.text.Component;
 import net.kyori.text.util.ShadyPines;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class TitleImpl implements Title {
   static final Title CLEAR = new TitleImpl(true, false);
   static final Title RESET = new TitleImpl(false, true);
-
-  static final long TICK_DURATION_NANOS = Duration.ofMillis(50).toNanos();
-
-  static long ticks(final Duration duration) {
-    return duration.toNanos() / TICK_DURATION_NANOS;
-  }
 
   private final Component title;
   private final Component subtitle;
@@ -48,13 +43,21 @@ final class TitleImpl implements Title {
   TitleImpl(final TitleBuilder builder) {
     this.title = builder.title;
     this.subtitle = builder.subtitle;
-    if(builder.times != null) {
-      this.times = builder.times.build();
+    if(builder.hasTimes()) {
+      this.times = new TitleImpl.TimesImpl(builder.fadeIn, builder.stay, builder.fadeOut);
     } else {
       this.times = null;
     }
     this.clear = builder.clear;
     this.reset = builder.reset;
+  }
+
+  TitleImpl(final Component title, final Component subtitle, final Times times) {
+    this.title = title;
+    this.subtitle = subtitle;
+    this.times = times;
+    this.clear = false;
+    this.reset = false;
   }
 
   TitleImpl(final boolean clear, final boolean reset) {
@@ -124,28 +127,28 @@ final class TitleImpl implements Title {
   }
 
   static final class TimesImpl implements Times {
-    private final int fadeIn;
-    private final int stay;
-    private final int fadeOut;
+    private final Duration fadeIn;
+    private final Duration stay;
+    private final Duration fadeOut;
 
-    TimesImpl(final int fadeIn, final int stay, final int fadeOut) {
+    TimesImpl(final Duration fadeIn, final Duration stay, final Duration fadeOut) {
       this.fadeIn = fadeIn;
       this.stay = stay;
       this.fadeOut = fadeOut;
     }
 
     @Override
-    public int fadeIn() {
+    public @NonNull Duration fadeIn() {
       return this.fadeIn;
     }
 
     @Override
-    public int stay() {
+    public @NonNull Duration stay() {
       return this.stay;
     }
 
     @Override
-    public int fadeOut() {
+    public @NonNull Duration fadeOut() {
       return this.fadeOut;
     }
 
@@ -154,14 +157,14 @@ final class TitleImpl implements Title {
       if(this == other) return true;
       if(other == null || this.getClass() != other.getClass()) return false;
       final TimesImpl that = (TimesImpl) other;
-      return this.fadeIn == that.fadeIn && this.stay == that.stay && this.fadeOut == that.fadeOut;
+      return Objects.equals(this.fadeIn, that.fadeIn) && Objects.equals(this.stay, that.stay) && Objects.equals(this.fadeOut, that.fadeOut);
     }
 
     @Override
     public int hashCode() {
-      int result = this.fadeIn;
-      result = (31 * result) + this.stay;
-      result = (31 * result) + this.fadeOut;
+      int result = Objects.hashCode(this.fadeIn);
+      result = (31 * result) + Objects.hashCode(this.stay);
+      result = (31 * result) + Objects.hashCode(this.fadeOut);
       return result;
     }
 
