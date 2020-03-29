@@ -23,7 +23,6 @@
  */
 package net.kyori.text.format;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.testing.EqualsTester;
 import net.kyori.text.event.ClickEvent;
@@ -177,6 +176,15 @@ class StyleTest {
       .insertion("abc")
       .build();
     return a.merge(b, merge);
+  }
+
+  @Test
+  void testMergeStrategy() {
+    final Style s0 = Style.of(TextColor.BLACK);
+    final Style s1 = s0.merge(Style.of(TextColor.DARK_PURPLE), Style.Merge.Strategy.ALWAYS);
+    assertEquals(TextColor.DARK_PURPLE, s1.color());
+    final Style s2 = s0.merge(Style.of(TextColor.DARK_PURPLE), Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
+    assertEquals(TextColor.BLACK, s2.color());
   }
 
   @Test

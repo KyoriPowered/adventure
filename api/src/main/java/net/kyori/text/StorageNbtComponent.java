@@ -23,10 +23,9 @@
  */
 package net.kyori.text;
 
+import java.util.function.Consumer;
 import net.kyori.minecraft.Key;
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.util.function.Consumer;
 
 /**
  * An storage NBT component.

@@ -102,13 +102,39 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B> & Scoped
   }
 
   @Test
-  void testStyled() {
+  void testStyledAlways() {
     final Component c0 = this.builder().color(TextColor.RED).decoration(TextDecoration.STRIKETHROUGH, true).build();
     final Component c1 = c0.style(style -> {
       style.color(TextColor.GREEN);
     });
     assertEquals(TextColor.GREEN, c1.color());
+    assertDecorations(c1, ImmutableSet.of(TextDecoration.STRIKETHROUGH), ImmutableSet.of());
+  }
+
+  @Test
+  void testStyledNever() {
+    final Component c0 = this.builder().color(TextColor.RED).decoration(TextDecoration.STRIKETHROUGH, true).build();
+    final Component c1 = c0.style(style -> {
+      style.color(TextColor.GREEN);
+    }, Style.Merge.Strategy.NEVER);
+    assertEquals(TextColor.GREEN, c1.color());
     assertDecorations(c1, ImmutableSet.of(), ImmutableSet.of());
+  }
+
+  @Test
+  void testStyledIfAbsentOnTarget() {
+    final Component c0 = this.builder().color(TextColor.RED).decoration(TextDecoration.STRIKETHROUGH, true).build();
+    final Component c1 = c0.style(style -> {
+      style.color(TextColor.GREEN);
+      style.decoration(TextDecoration.BOLD, false);
+    }, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
+    assertEquals(TextColor.GREEN, c1.color());
+    assertDecorations(c1, ImmutableSet.of(TextDecoration.STRIKETHROUGH), ImmutableSet.of(TextDecoration.BOLD));
+    final Component c2 = c0.style(style -> {
+      style.decoration(TextDecoration.BOLD, false);
+    }, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
+    assertEquals(TextColor.RED, c2.color());
+    assertDecorations(c2, ImmutableSet.of(TextDecoration.STRIKETHROUGH), ImmutableSet.of(TextDecoration.BOLD));
   }
 
   @Test
