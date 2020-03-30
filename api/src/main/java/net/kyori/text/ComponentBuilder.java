@@ -23,7 +23,6 @@
  */
 package net.kyori.text;
 
-import java.util.Collections;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -282,42 +281,6 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    */
   @NonNull B mergeStyle(final @NonNull Component that, final @NonNull Set<Style.Merge> merges);
-
-  /**
-   * Merges the color from another component into this component.
-   *
-   * @param that the other component
-   * @return this builder
-   * @deprecated use {@link #mergeStyle(Component, Set)}
-   */
-  @Deprecated
-  default @NonNull B mergeColor(final @NonNull Component that) {
-    return this.mergeStyle(that, Collections.singleton(Style.Merge.COLOR));
-  }
-
-  /**
-   * Merges the decorations from another component into this component.
-   *
-   * @param that the other component
-   * @return this builder
-   * @deprecated use {@link #mergeStyle(Component, Set)}
-   */
-  @Deprecated
-  default @NonNull B mergeDecorations(final @NonNull Component that) {
-    return this.mergeStyle(that, Collections.singleton(Style.Merge.DECORATIONS));
-  }
-
-  /**
-   * Merges the events from another component into this component.
-   *
-   * @param that the other component
-   * @return this builder
-   * @deprecated use {@link #mergeStyle(Component, Set)}
-   */
-  @Deprecated
-  default @NonNull B mergeEvents(final @NonNull Component that) {
-    return this.mergeStyle(that, Collections.singleton(Style.Merge.EVENTS));
-  }
 
   /**
    * Resets all styling on this component.

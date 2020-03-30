@@ -69,30 +69,6 @@ public final class NameMap<E extends Enum<E>> {
   }
 
   /**
-   * Creates a name map.
-   *
-   * @param constants the constants
-   * @param namer the name provider
-   * @param <E> the type
-   * @return the name map
-   * @deprecated use {@link #create(Class, Function)}
-   */
-  @Deprecated
-  @SuppressWarnings("DuplicatedCode")
-  public static <E extends Enum<E>> @NonNull NameMap<E> create(final E @NonNull[] constants, final @NonNull Function<E, String> namer) {
-    final int length = constants.length;
-    final Map<String, E> nameToValue = new HashMap<>(length);
-    final Map<E, String> valueToName = new HashMap<>(length);
-    for(int i = 0; i < length; i++) {
-      final E constant = constants[i];
-      final String name = namer.apply(constant);
-      nameToValue.put(name, constant);
-      valueToName.put(constant, name);
-    }
-    return new NameMap<>(Collections.unmodifiableMap(nameToValue), Collections.unmodifiableMap(valueToName));
-  }
-
-  /**
    * Gets the name for a value.
    *
    * @param value the value
@@ -110,17 +86,5 @@ public final class NameMap<E extends Enum<E>> {
    */
   public @NonNull Optional<E> value(final @NonNull String name) {
     return Optional.ofNullable(this.nameToValue.get(name));
-  }
-
-  /**
-   * Gets a value by its name.
-   *
-   * @param name the name
-   * @return the value
-   * @deprecated use {@link #value(String)}
-   */
-  @Deprecated
-  public @NonNull Optional<E> get(final @NonNull String name) {
-    return this.value(name);
   }
 }

@@ -153,18 +153,6 @@ public final class Style {
     return builder.build();
   }
 
-  /**
-   * Creates a style.
-   *
-   * @param consumer the builder consumer
-   * @return a style
-   * @deprecated use {@link #make(Consumer)}
-   */
-  @Deprecated
-  public static @NonNull Style of(final @NonNull Consumer<Builder> consumer) {
-    return make(consumer);
-  }
-
   private Style(final @Nullable TextColor color, final TextDecoration.State obfuscated, final TextDecoration.State bold, final TextDecoration.State strikethrough, final TextDecoration.State underlined, final TextDecoration.State italic, final @Nullable ClickEvent clickEvent, final @Nullable HoverEvent hoverEvent, final @Nullable String insertion) {
     this.color = color;
     this.obfuscated = obfuscated;
@@ -499,42 +487,6 @@ public final class Style {
     final Builder builder = this.toBuilder();
     builder.merge(that, strategy, merges);
     return builder.build();
-  }
-
-  /**
-   * Merges the color from another style into this style.
-   *
-   * @param that the other style
-   * @return a style
-   * @deprecated use {@link #merge(Style, Set)} instead
-   */
-  @Deprecated
-  public @NonNull Style mergeColor(final @NonNull Style that) {
-    return this.merge(that, Merge.COLOR);
-  }
-
-  /**
-   * Merges the decorations from another style into this style.
-   *
-   * @param that the other style
-   * @return a style
-   * @deprecated use {@link #merge(Style, Set)} instead
-   */
-  @Deprecated
-  public @NonNull Style mergeDecorations(final @NonNull Style that) {
-    return this.merge(that, Merge.DECORATIONS);
-  }
-
-  /**
-   * Merges the events from another style into this style.
-   *
-   * @param that the other style
-   * @return a style
-   * @deprecated use {@link #merge(Style, Set)} instead
-   */
-  @Deprecated
-  public @NonNull Style mergeEvents(final @NonNull Style that) {
-    return this.merge(that, Merge.EVENTS);
   }
 
   /**

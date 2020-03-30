@@ -23,10 +23,8 @@
  */
 package net.kyori.text.format;
 
-import java.util.Set;
 import net.kyori.text.Component;
 import net.kyori.text.util.NameMap;
-import net.kyori.text.util.ShadyPines;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -68,11 +66,6 @@ public enum TextDecoration implements TextFormat {
   @Override
   public @NonNull String toString() {
     return this.name;
-  }
-
-  @Deprecated
-  public static @NonNull Set<TextDecoration> setOf(final @NonNull TextDecoration... decorations) {
-    return ShadyPines.enumSet(TextDecoration.class, decorations);
   }
 
   /**

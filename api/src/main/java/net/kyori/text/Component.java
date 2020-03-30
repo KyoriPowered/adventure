@@ -343,42 +343,6 @@ public interface Component {
   }
 
   /**
-   * Merges the color from another component into this component.
-   *
-   * @param that the other component
-   * @return a component
-   * @deprecated use {@link #mergeStyle(Component, Set)}
-   */
-  @Deprecated
-  default @NonNull Component mergeColor(final @NonNull Component that) {
-    return this.style(this.style().mergeColor(that.style()));
-  }
-
-  /**
-   * Merges the decorations from another component into this component.
-   *
-   * @param that the other component
-   * @return a component
-   * @deprecated use {@link #mergeStyle(Component, Set)}
-   */
-  @Deprecated
-  default @NonNull Component mergeDecorations(final @NonNull Component that) {
-    return this.style(this.style().mergeDecorations(that.style()));
-  }
-
-  /**
-   * Merges the events from another component into this component.
-   *
-   * @param that the other component
-   * @return a component
-   * @deprecated use {@link #mergeStyle(Component, Set)}
-   */
-  @Deprecated
-  default @NonNull Component mergeEvents(final @NonNull Component that) {
-    return this.style(this.style().mergeEvents(that.style()));
-  }
-
-  /**
    * Tests if this component has any styling.
    *
    * @return {@code true} if this component has any styling, {@code false} if this

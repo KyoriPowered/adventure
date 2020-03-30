@@ -134,25 +134,4 @@ public interface ScopedComponent<C extends Component> extends Component {
   default @NonNull C insertion(final @Nullable String insertion) {
     return (C) Component.super.insertion(insertion);
   }
-
-  @Deprecated
-  @Override
-  @SuppressWarnings("unchecked")
-  default @NonNull C mergeColor(final @NonNull Component that) {
-    return (C) Component.super.mergeColor(that);
-  }
-
-  @Deprecated
-  @Override
-  @SuppressWarnings("unchecked")
-  default @NonNull C mergeDecorations(final @NonNull Component that) {
-    return (C) Component.super.mergeDecorations(that);
-  }
-
-  @Deprecated
-  @Override
-  @SuppressWarnings("unchecked")
-  default @NonNull C mergeEvents(final @NonNull Component that) {
-    return (C) Component.super.mergeEvents(that);
-  }
 }
