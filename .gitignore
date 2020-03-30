@@ -2,6 +2,7 @@
 /.idea/
 /api/build/
 /api/out/
+/api/run/
 /feature-pagination/build/
 /feature-pagination/out/
 /serializer-gson/build/
