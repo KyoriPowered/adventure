@@ -485,12 +485,15 @@ public final class Style {
    * @return a style
    */
   public @NonNull Style merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy, final @NonNull Set<Merge> merges) {
-    if(this.isEmpty() && Merge.hasAll(merges)) {
-      return that;
+    if(that.isEmpty() || strategy == Merge.Strategy.NEVER || merges.isEmpty()) {
+      // nothing to merge
+      return this;
     }
 
-    if(merges.isEmpty() || that.isEmpty()) {
-      return this;
+    if(this.isEmpty() && Merge.hasAll(merges)) {
+      // if the current style is empty and all merge types have been requested
+      // we can just return the other style instead of trying to merge
+      return that;
     }
 
     final Builder builder = this.toBuilder();
@@ -942,11 +945,8 @@ public final class Style {
      * @return a style
      */
     public @NonNull Builder merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy, final @NonNull Set<Merge> merges) {
-      if(strategy == Merge.Strategy.NEVER) {
-        return this;
-      }
-
-      if(merges.isEmpty()) {
+      if(that.isEmpty() || strategy == Merge.Strategy.NEVER || merges.isEmpty()) {
+        // nothing to merge
         return this;
       }
 
