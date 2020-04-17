@@ -31,6 +31,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
+import java.util.Objects;
 import java.util.Optional;
 import net.kyori.text.util.NameMap;
 
@@ -56,6 +57,7 @@ public class NameMapSerializer<E extends Enum<E>> implements JsonDeserializer<E>
 
   @Override
   public JsonElement serialize(final E src, final Type typeOfT, final JsonSerializationContext context) {
-    return new JsonPrimitive(this.map.name(src));
+    final Enum hack = Objects.requireNonNull(src); // HACK: generics suck
+    return new JsonPrimitive(this.map.name((E) hack));
   }
 }
