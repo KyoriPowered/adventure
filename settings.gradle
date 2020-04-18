@@ -4,13 +4,13 @@ include 'api'
 findProject(':api')?.name = 'adventure-api'
 
 include 'text-feature-pagination'
-findProject(':text-feature-pagination')?.name = 'text-feature-pagination'
+findProject(':text-feature-pagination')?.name = 'adventure-text-feature-pagination'
 
 include 'text-serializer-gson'
-findProject(':text-serializer-gson')?.name = 'text-serializer-gson'
+findProject(':text-serializer-gson')?.name = 'adventure-text-serializer-gson'
 
 include 'text-serializer-legacy'
-findProject(':text-serializer-legacy')?.name = 'text-serializer-legacy'
+findProject(':text-serializer-legacy')?.name = 'adventure-text-serializer-legacy'
 
 include 'text-serializer-plain'
-findProject(':text-serializer-plain')?.name = 'text-serializer-plain'
+findProject(':text-serializer-plain')?.name = 'adventure-text-serializer-plain'
