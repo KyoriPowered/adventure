@@ -35,7 +35,7 @@ import java.util.Objects;
 import java.util.Optional;
 import net.kyori.adventure.util.NameMap;
 
-public class NameMapSerializer<E extends Enum<E>> implements JsonDeserializer<E>, JsonSerializer<E> {
+public final class NameMapSerializer<E extends Enum<E>> implements JsonDeserializer<E>, JsonSerializer<E> {
   private final String name;
   private final NameMap<E> map;
 

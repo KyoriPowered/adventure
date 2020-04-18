@@ -35,7 +35,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /*
  * This is a hack.
  */
-class TextColorWrapper {
+final class TextColorWrapper {
   final @Nullable TextColor color;
   final @Nullable TextDecoration decoration;
   final boolean reset;

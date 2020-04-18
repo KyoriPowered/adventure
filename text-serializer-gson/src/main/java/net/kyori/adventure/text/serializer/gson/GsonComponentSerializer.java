@@ -25,13 +25,6 @@ package net.kyori.adventure.text.serializer.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import java.lang.reflect.Type;
 import net.kyori.adventure.text.BlockNbtComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -42,7 +35,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public class GsonComponentSerializer implements ComponentSerializer<Component, Component, String>, JsonDeserializer<Component>, JsonSerializer<Component> {
+public final class GsonComponentSerializer implements ComponentSerializer<Component, Component, String> {
   /**
    * A component serializer for JSON-based serialization and deserialization.
    */
@@ -76,19 +69,5 @@ public class GsonComponentSerializer implements ComponentSerializer<Component, C
   @Override
   public @NonNull String serialize(final @NonNull Component component) {
     return GSON.toJson(component);
-  }
-
-  // Not part of the API.
-  @Deprecated
-  @Override
-  public Component deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
-    return ComponentSerializerImpl.INSTANCE.deserialize(json, typeOfT, context);
-  }
-
-  // Not part of the API.
-  @Deprecated
-  @Override
-  public JsonElement serialize(final Component src, final Type typeOfSrc, final JsonSerializationContext context) {
-    return ComponentSerializerImpl.INSTANCE.serialize(src, typeOfSrc, context);
   }
 }

@@ -43,9 +43,16 @@ public interface Audience {
   /**
    * Shows a bossbar.
    *
-   * @param bossbar the bossbar
+   * @param bar the bossbar
    */
-  void showBossbar(final @NonNull BossBar bossbar);
+  void showBossBar(final @NonNull BossBar bar);
+
+  /**
+   * Hides a bossbar.
+   *
+   * @param bar the bossbar
+   */
+  void hideBossBar(final @NonNull BossBar bar);
 
   /**
    * Plays a sound.

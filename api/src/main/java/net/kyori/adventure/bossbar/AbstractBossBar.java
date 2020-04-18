@@ -29,6 +29,8 @@ import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import static java.util.Objects.requireNonNull;
+
 // TODO: "on change" notifications for implementation to know something changed
 public abstract class AbstractBossBar implements BossBar, Examinable {
   private Component name;
@@ -39,11 +41,11 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
   private boolean playBossMusic;
   private boolean createWorldFog;
 
-  protected AbstractBossBar(final Component name, final float percent, final Color color, final Overlay overlay) {
-    this.name = name;
+  protected AbstractBossBar(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay) {
+    this.name = requireNonNull(name, "name");
     this.percent = percent;
-    this.color = color;
-    this.overlay = overlay;
+    this.color = requireNonNull(color, "color");
+    this.overlay = requireNonNull(overlay, "overlay");
   }
 
   @Override
@@ -53,7 +55,7 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
 
   @Override
   public @NonNull BossBar name(final @NonNull Component name) {
-    this.name = name;
+    this.name = requireNonNull(name, "name");
     return this;
   }
 
@@ -75,7 +77,7 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
 
   @Override
   public @NonNull BossBar color(final @NonNull Color color) {
-    this.color = color;
+    this.color = requireNonNull(color, "color");
     return this;
   }
 
@@ -86,7 +88,7 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
 
   @Override
   public @NonNull BossBar overlay(final @NonNull Overlay overlay) {
-    this.overlay = overlay;
+    this.overlay = requireNonNull(overlay, "overlay");
     return this;
   }
 
