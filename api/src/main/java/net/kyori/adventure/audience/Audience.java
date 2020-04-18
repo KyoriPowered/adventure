@@ -25,7 +25,7 @@ package net.kyori.adventure.audience;
 
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.sound.Sound;
-import net.kyori.adventure.sound.StopSound;
+import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -57,5 +57,5 @@ public interface Audience {
   /**
    * Stops all sounds.
    */
-  void stopSound(final @NonNull StopSound stopper);
+  void stopSound(final @NonNull SoundStop stop);
 }

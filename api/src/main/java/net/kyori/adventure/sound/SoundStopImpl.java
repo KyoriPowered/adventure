@@ -26,12 +26,12 @@ package net.kyori.adventure.sound;
 import net.kyori.adventure.key.Key;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-final class StopSoundImpl implements StopSound {
-  static StopSound ALL = new StopSoundImpl(null, null);
+final class SoundStopImpl implements SoundStop {
+  static SoundStop ALL = new SoundStopImpl(null, null);
   private final @Nullable Key sound;
   private final Sound.@Nullable Source source;
 
-  StopSoundImpl(final @Nullable Key sound, final Sound.@Nullable Source source) {
+  SoundStopImpl(final @Nullable Key sound, final Sound.@Nullable Source source) {
     this.sound = sound;
     this.source = source;
   }

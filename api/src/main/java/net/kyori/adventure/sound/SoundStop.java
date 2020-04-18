@@ -30,16 +30,16 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A sound stopper.
+ * A sound stopp.
  */
-public interface StopSound {
+public interface SoundStop {
   /**
    * Stops all sounds.
    *
    * @return a sound stopper
    */
-  static @NonNull StopSound all() {
-    return StopSoundImpl.ALL;
+  static @NonNull SoundStop all() {
+    return SoundStopImpl.ALL;
   }
 
   /**
@@ -48,8 +48,8 @@ public interface StopSound {
    * @param sound the sound
    * @return a sound stopper
    */
-  static @NonNull StopSound named(final @NonNull Key sound) {
-    return new StopSoundImpl(requireNonNull(sound, "sound"), null);
+  static @NonNull SoundStop named(final @NonNull Key sound) {
+    return new SoundStopImpl(requireNonNull(sound, "sound"), null);
   }
 
   /**
@@ -58,8 +58,8 @@ public interface StopSound {
    * @param source the source
    * @return a sound stopper
    */
-  static @NonNull StopSound source(final Sound.@NonNull Source source) {
-    return new StopSoundImpl(null, requireNonNull(source, "source"));
+  static @NonNull SoundStop source(final Sound.@NonNull Source source) {
+    return new SoundStopImpl(null, requireNonNull(source, "source"));
   }
 
   /**
@@ -69,8 +69,8 @@ public interface StopSound {
    * @param source the source
    * @return a sound stopper
    */
-  static @NonNull StopSound namedOnSource(final @NonNull Key sound, final Sound.@NonNull Source source) {
-    return new StopSoundImpl(requireNonNull(sound, "sound"), requireNonNull(source, "source"));
+  static @NonNull SoundStop namedOnSource(final @NonNull Key sound, final Sound.@NonNull Source source) {
+    return new SoundStopImpl(requireNonNull(sound, "sound"), requireNonNull(source, "source"));
   }
 
   /**
