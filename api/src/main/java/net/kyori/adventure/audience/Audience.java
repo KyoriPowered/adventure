@@ -43,5 +43,5 @@ public interface Audience {
    *
    * @param sound the sound
    */
-  void sound(final @NonNull Sound sound);
+  void playSound(final @NonNull Sound sound);
 }
