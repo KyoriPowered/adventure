@@ -24,9 +24,10 @@
 package net.kyori.adventure.text;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -92,8 +93,13 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   }
 
   @Override
-  protected void populateToString(final @NonNull Map<String, Object> builder) {
-    builder.put("content", this.content);
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.concat(
+      Stream.of(
+        ExaminableProperty.of("content", this.content)
+      ),
+      super.examinableProperties()
+    );
   }
 
   @Override

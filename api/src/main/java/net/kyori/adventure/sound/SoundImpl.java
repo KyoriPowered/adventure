@@ -23,10 +23,13 @@
  */
 package net.kyori.adventure.sound;
 
+import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-final class SoundImpl implements Sound {
+final class SoundImpl implements Examinable, Sound {
   private final Key name;
   private final float volume;
   private final float pitch;
@@ -50,5 +53,14 @@ final class SoundImpl implements Sound {
   @Override
   public float pitch() {
     return this.pitch;
+  }
+
+  @Override
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(
+      ExaminableProperty.of("name", this.name),
+      ExaminableProperty.of("volume", this.volume),
+      ExaminableProperty.of("pitch", this.pitch)
+    );
   }
 }

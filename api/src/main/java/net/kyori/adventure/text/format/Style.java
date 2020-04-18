@@ -28,16 +28,19 @@ import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.util.ShadyPines;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-public final class Style {
+public final class Style implements Examinable {
   private static final Style EMPTY = new Style(null, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null);
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
   private final @Nullable TextColor color;
@@ -507,6 +510,21 @@ public final class Style {
    */
   public @NonNull Builder toBuilder() {
     return new Builder(this);
+  }
+
+  @Override
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(
+      ExaminableProperty.of("color", this.color),
+      ExaminableProperty.of("obfuscated", this.obfuscated),
+      ExaminableProperty.of("bold", this.bold),
+      ExaminableProperty.of("strikethrough", this.strikethrough),
+      ExaminableProperty.of("underlined", this.underlined),
+      ExaminableProperty.of("italic", this.italic),
+      ExaminableProperty.of("clickEvent", this.clickEvent),
+      ExaminableProperty.of("hoverEvent", this.hoverEvent),
+      ExaminableProperty.of("insertion", this.insertion)
+    );
   }
 
   @Override

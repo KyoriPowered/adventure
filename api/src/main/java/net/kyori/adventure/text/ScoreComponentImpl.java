@@ -24,9 +24,10 @@
 package net.kyori.adventure.text;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -109,10 +110,15 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
   }
 
   @Override
-  protected void populateToString(final @NonNull Map<String, Object> builder) {
-    builder.put("name", this.name);
-    builder.put("objective", this.objective);
-    builder.put("value", this.value);
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.concat(
+      Stream.of(
+        ExaminableProperty.of("name", this.name),
+        ExaminableProperty.of("objective", this.objective),
+        ExaminableProperty.of("value", this.value)
+      ),
+      super.examinableProperties()
+    );
   }
 
   @Override

@@ -24,10 +24,11 @@
 package net.kyori.adventure.text;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -91,9 +92,13 @@ final class StorageNbtComponentImpl extends NbtComponentImpl<StorageNbtComponent
   }
 
   @Override
-  protected void populateToString(final @NonNull Map<String, Object> builder) {
-    super.populateToString(builder);
-    builder.put("storage", this.storage);
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.concat(
+      Stream.of(
+        ExaminableProperty.of("storage", this.storage)
+      ),
+      super.examinableProperties()
+    );
   }
 
   @Override

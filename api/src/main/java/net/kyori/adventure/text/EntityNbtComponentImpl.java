@@ -24,9 +24,10 @@
 package net.kyori.adventure.text;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -89,9 +90,13 @@ final class EntityNbtComponentImpl extends NbtComponentImpl<EntityNbtComponent, 
   }
 
   @Override
-  protected void populateToString(final @NonNull Map<String, Object> builder) {
-    super.populateToString(builder);
-    builder.put("selector", this.selector);
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.concat(
+      Stream.of(
+        ExaminableProperty.of("selector", this.selector)
+      ),
+      super.examinableProperties()
+    );
   }
 
   @Override

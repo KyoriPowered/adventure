@@ -26,11 +26,11 @@ package net.kyori.adventure.text;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -105,9 +105,14 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
   }
 
   @Override
-  protected void populateToString(final @NonNull Map<String, Object> builder) {
-    builder.put("key", this.key);
-    builder.put("args", this.args);
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.concat(
+      Stream.of(
+        ExaminableProperty.of("key", this.key),
+        ExaminableProperty.of("args", this.args)
+      ),
+      super.examinableProperties()
+    );
   }
 
   @Override

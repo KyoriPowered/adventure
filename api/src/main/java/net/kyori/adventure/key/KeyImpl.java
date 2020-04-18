@@ -25,9 +25,12 @@ package net.kyori.adventure.key;
 
 import java.util.Objects;
 import java.util.function.IntPredicate;
+import java.util.stream.Stream;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-/* package */ final class KeyImpl implements Key {
+/* package */ final class KeyImpl implements Examinable, Key {
   private static final IntPredicate NAMESPACE_PREDICATE = value -> value == '_' || value == '-' || (value >= 'a' && value <= 'z') || (value >= '0' && value <= '9') || value == '.';
   private static final IntPredicate VALUE_PREDICATE = value -> value == '_' || value == '-' || (value >= 'a' && value <= 'z') || (value >= '0' && value <= '9') || value == '/' || value == '.';
   private final String namespace;
@@ -71,6 +74,14 @@ import org.checkerframework.checker.nullness.qual.NonNull;
   @Override
   public @NonNull String toString() {
     return this.asString();
+  }
+
+  @Override
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(
+      ExaminableProperty.of("namespace", this.namespace),
+      ExaminableProperty.of("value", this.value)
+    );
   }
 
   @Override

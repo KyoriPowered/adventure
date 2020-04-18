@@ -26,17 +26,19 @@ package net.kyori.adventure.text;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.util.ShadyPines;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An abstract implementation of a text component.
  */
-public abstract class AbstractComponent implements Component {
+public abstract class AbstractComponent implements Component, Examinable {
   /**
    * An empty, unmodifiable, list of components.
    */
@@ -96,14 +98,15 @@ public abstract class AbstractComponent implements Component {
   }
 
   @Override
-  public String toString() {
-    return ShadyPines.toString(this, map -> {
-      this.populateToString(map);
-      map.put("children", this.children);
-      map.put("style", this.style);
-    });
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(
+      ExaminableProperty.of("children", this.children),
+      ExaminableProperty.of("style", this.style)
+    );
   }
 
-  protected void populateToString(final @NonNull Map<String, Object> builder) {
+  @Override
+  public String toString() {
+    return this.examine(StringExaminer.simpleEscaping());
   }
 }
