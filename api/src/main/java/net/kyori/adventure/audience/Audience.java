@@ -27,6 +27,7 @@ import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An audience.
@@ -49,7 +50,30 @@ public interface Audience {
   /**
    * Plays a sound.
    *
+   * @param source the source
    * @param sound the sound
    */
-  void playSound(final @NonNull Sound sound);
+  void playSound(final Sound.@NonNull Source source, final @NonNull Sound sound);
+
+  /**
+   * Stops all sounds playing on {@code source}.
+   *
+   * @param source the source
+   */
+  void stopSound(final Sound.@NonNull Source source);
+
+  /**
+   * Stops all sounds playing on {@code source}.
+   *
+   * @param source the source
+   */
+  void stopSounds(final Sound.@NonNull Source source);
+
+  /**
+   * Stops all sounds of type {@code sound} playing on {@code source}.
+   *
+   * @param source the source
+   * @param sound the sound
+   */
+  void stopSounds(final Sound.@Nullable Source source, final @NonNull Sound sound);
 }

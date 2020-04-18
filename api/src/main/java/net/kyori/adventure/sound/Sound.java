@@ -24,6 +24,7 @@
 package net.kyori.adventure.sound;
 
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.util.NameMap;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -62,4 +63,27 @@ public interface Sound {
    * @return the pitch
    */
   float pitch();
+
+  /**
+   * The sound source.
+   */
+  enum Source {
+    MASTER("master"),
+    MUSIC("music"),
+    RECORDS("record"),
+    WEATHER("weather"),
+    BLOCKS("block"),
+    HOSTILE("hostile"),
+    NEUTRAL("neutral"),
+    PLAYERS("player"),
+    AMBIENT("ambient"),
+    VOICE("voice");
+
+    private static final NameMap<Source> NAMES = NameMap.create(Source.class, source -> source.name);
+    private final String name;
+
+    Source(final String name) {
+      this.name = name;
+    }
+  }
 }
