@@ -1,4 +1,4 @@
-This file is part of text, licensed under the MIT License.
+This file is part of adventure, licensed under the MIT License.
 
 Copyright (c) 2017-2020 KyoriPowered
 
