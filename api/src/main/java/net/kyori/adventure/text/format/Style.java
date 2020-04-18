@@ -35,6 +35,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -529,17 +530,7 @@ public final class Style implements Examinable {
 
   @Override
   public @NonNull String toString() {
-    return ShadyPines.toString(this, map -> {
-      map.put("color", this.color);
-      map.put("obfuscated", this.obfuscated);
-      map.put("bold", this.bold);
-      map.put("strikethrough", this.strikethrough);
-      map.put("underlined", this.underlined);
-      map.put("italic", this.italic);
-      map.put("clickEvent", this.clickEvent);
-      map.put("hoverEvent", this.hoverEvent);
-      map.put("insertion", this.insertion);
-    });
+    return StringExaminer.simpleEscaping().examine(this);
   }
 
   @Override

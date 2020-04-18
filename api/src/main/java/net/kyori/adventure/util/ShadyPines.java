@@ -25,11 +25,7 @@ package net.kyori.adventure.util;
 
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Set;
-import java.util.StringJoiner;
-import java.util.function.Consumer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -53,31 +49,5 @@ public final class ShadyPines {
     final Set<E> set = EnumSet.noneOf(type);
     Collections.addAll(set, constants);
     return Collections.unmodifiableSet(set);
-  }
-
-  /**
-   * Generates a toString.
-   *
-   * @param object the object
-   * @param consumer the builder consumer
-   * @return a toString value
-   */
-  public static @NonNull String toString(final @NonNull Object object, final @NonNull Consumer<Map<String, Object>> consumer) {
-    final Map<String, Object> builder = new LinkedHashMap<>();
-    consumer.accept(builder);
-    return toString(object, builder);
-  }
-
-  /**
-   * Generates a toString.
-   *
-   * @param object the object
-   * @param builder the map
-   * @return a toString value
-   */
-  public static @NonNull String toString(final @NonNull Object object, final @NonNull Map<String, Object> builder) {
-    final StringJoiner joiner = new StringJoiner(", ", object.getClass().getSimpleName() + "{", "}");
-    builder.forEach((key, value) -> joiner.add(key + "=" + value));
-    return joiner.toString();
   }
 }

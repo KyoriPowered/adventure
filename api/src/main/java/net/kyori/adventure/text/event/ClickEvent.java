@@ -26,9 +26,9 @@ package net.kyori.adventure.text.event;
 import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.util.NameMap;
-import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -180,10 +180,7 @@ public final class ClickEvent implements Examinable {
 
   @Override
   public String toString() {
-    return ShadyPines.toString(this, map -> {
-      map.put("action", this.action);
-      map.put("value", this.value);
-    });
+    return StringExaminer.simpleEscaping().examine(this);
   }
 
   /**

@@ -56,6 +56,7 @@ public class NameMapSerializer<E extends Enum<E>> implements JsonDeserializer<E>
   }
 
   @Override
+  @SuppressWarnings({"rawtypes", "unchecked"})
   public JsonElement serialize(final E src, final Type typeOfT, final JsonSerializationContext context) {
     final Enum hack = Objects.requireNonNull(src); // HACK: generics suck
     return new JsonPrimitive(this.map.name((E) hack));

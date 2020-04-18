@@ -26,17 +26,18 @@ package net.kyori.adventure.text.feature.pagination;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.util.ShadyPines;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-final class PaginationImpl<T> implements Pagination<T> {
+final class PaginationImpl<T> implements Examinable, Pagination<T> {
   private static final int LINE_CHARACTER_LENGTH = 1;
 
   private final int width;
@@ -174,21 +175,26 @@ final class PaginationImpl<T> implements Pagination<T> {
   }
 
   @Override
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(
+      ExaminableProperty.of("width", this.width),
+      ExaminableProperty.of("resultsPerPage", this.resultsPerPage),
+      ExaminableProperty.of("renderer", this.renderer),
+      ExaminableProperty.of("lineCharacter", this.lineCharacter),
+      ExaminableProperty.of("lineStyle", this.lineStyle),
+      ExaminableProperty.of("previousPageButtonCharacter", this.previousPageButtonCharacter),
+      ExaminableProperty.of("previousPageButtonStyle", this.previousPageButtonStyle),
+      ExaminableProperty.of("nextPageButtonCharacter", this.nextPageButtonCharacter),
+      ExaminableProperty.of("nextPageButtonStyle", this.nextPageButtonStyle),
+      ExaminableProperty.of("title", this.title),
+      ExaminableProperty.of("rowRenderer", this.rowRenderer),
+      ExaminableProperty.of("pageCommand", this.pageCommand)
+    );
+  }
+
+  @Override
   public String toString() {
-    final Map<String, Object> builder = new LinkedHashMap<>();
-    builder.put("width", this.width);
-    builder.put("resultsPerPage", this.resultsPerPage);
-    builder.put("renderer", this.renderer);
-    builder.put("lineCharacter", this.lineCharacter);
-    builder.put("lineStyle", this.lineStyle);
-    builder.put("previousPageButtonCharacter", this.previousPageButtonCharacter);
-    builder.put("previousPageButtonStyle", this.previousPageButtonStyle);
-    builder.put("nextPageButtonCharacter", this.nextPageButtonCharacter);
-    builder.put("nextPageButtonStyle", this.nextPageButtonStyle);
-    builder.put("title", this.title);
-    builder.put("rowRenderer", this.rowRenderer);
-    builder.put("pageCommand", this.pageCommand);
-    return ShadyPines.toString(this, builder);
+    return StringExaminer.simpleEscaping().examine(this);
   }
 
   @Override
