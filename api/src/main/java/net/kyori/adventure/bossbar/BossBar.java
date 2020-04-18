@@ -49,12 +49,16 @@ public interface BossBar {
   /**
    * Gets the percent.
    *
+   * <p>The percent is a value between 0 and 1.</p>
+   *
    * @return the percent
    */
   float percent();
 
   /**
    * Sets the percent.
+   *
+   * <p>The percent is a value between 0 and 1.</p>
    *
    * @param percent the percent
    * @return the bossbar

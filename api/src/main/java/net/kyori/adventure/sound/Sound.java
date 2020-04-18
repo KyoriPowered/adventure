@@ -87,7 +87,7 @@ public interface Sound {
     AMBIENT("ambient"),
     VOICE("voice");
 
-    private static final NameMap<Source> NAMES = NameMap.create(Source.class, source -> source.name);
+    public static final NameMap<Source> NAMES = NameMap.create(Source.class, source -> source.name);
     private final String name;
 
     Source(final String name) {
