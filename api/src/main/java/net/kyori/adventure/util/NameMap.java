@@ -53,7 +53,6 @@ public final class NameMap<E extends Enum<E>> {
    * @param <E> the type
    * @return the name map
    */
-  @SuppressWarnings("DuplicatedCode") // TODO: remove when deprecated method below is removed
   public static <E extends Enum<E>> @NonNull NameMap<E> create(final Class<E> type, final @NonNull Function<E, String> namer) {
     final E[] constants = type.getEnumConstants();
     final int length = constants.length;

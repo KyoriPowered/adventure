@@ -26,40 +26,29 @@ package net.kyori.adventure.sound;
 import net.kyori.adventure.key.Key;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-/**
- * A sound.
- */
-public interface Sound {
-  /**
-   * Creates a new sound.
-   *
-   * @param name the name
-   * @param volume the volume
-   * @param pitch the pitch
-   * @return the sound
-   */
-  static @NonNull Sound of(final @NonNull Key name, final float volume, final float pitch) {
-    return new SoundImpl(name, volume, pitch);
+final class SoundImpl implements Sound {
+  private final Key name;
+  private final float volume;
+  private final float pitch;
+
+  SoundImpl(final @NonNull Key name, final float volume, final float pitch) {
+    this.name = name;
+    this.volume = volume;
+    this.pitch = pitch;
   }
 
-  /**
-   * Gets the name.
-   *
-   * @return the name
-   */
-  @NonNull Key name();
+  @Override
+  public @NonNull Key name() {
+    return this.name;
+  }
 
-  /**
-   * Gets the volume.
-   *
-   * @return the volume
-   */
-  float volume();
+  @Override
+  public float volume() {
+    return this.volume;
+  }
 
-  /**
-   * Gets the pitch.
-   *
-   * @return the pitch
-   */
-  float pitch();
+  @Override
+  public float pitch() {
+    return this.pitch;
+  }
 }

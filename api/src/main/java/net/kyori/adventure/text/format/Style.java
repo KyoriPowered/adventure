@@ -674,7 +674,7 @@ public final class Style {
   /**
    * A style builder.
    */
-  public static class Builder {
+  public static final class Builder {
     /**
      * The color.
      */
