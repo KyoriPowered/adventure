@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.audience;
 
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -37,6 +38,13 @@ public interface Audience {
    * @param message the message
    */
   void message(final @NonNull Component message);
+
+  /**
+   * Shows a bossbar.
+   *
+   * @param bossbar the bossbar
+   */
+  void showBossbar(final @NonNull BossBar bossbar);
 
   /**
    * Plays a sound.
