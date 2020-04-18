@@ -23,52 +23,26 @@
  */
 package net.kyori.adventure.sound;
 
-import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-final class SoundImpl implements Examinable, Sound {
-  private final Key name;
-  private final Source source;
-  private final float volume;
-  private final float pitch;
+final class StopSoundImpl implements StopSound {
+  static StopSound ALL = new StopSoundImpl(null, null);
+  private final @Nullable Key sound;
+  private final Sound.@Nullable Source source;
 
-  SoundImpl(final @NonNull Key name, final @NonNull Source source, final float volume, final float pitch) {
-    this.name = name;
+  StopSoundImpl(final @Nullable Key sound, final Sound.@Nullable Source source) {
+    this.sound = sound;
     this.source = source;
-    this.volume = volume;
-    this.pitch = pitch;
   }
 
   @Override
-  public @NonNull Key name() {
-    return this.name;
+  public @Nullable Key sound() {
+    return this.sound;
   }
 
   @Override
-  public @NonNull Source source() {
+  public Sound.@Nullable Source source() {
     return this.source;
-  }
-
-  @Override
-  public float volume() {
-    return this.volume;
-  }
-
-  @Override
-  public float pitch() {
-    return this.pitch;
-  }
-
-  @Override
-  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("name", this.name),
-      ExaminableProperty.of("source", this.source),
-      ExaminableProperty.of("volume", this.volume),
-      ExaminableProperty.of("pitch", this.pitch)
-    );
   }
 }

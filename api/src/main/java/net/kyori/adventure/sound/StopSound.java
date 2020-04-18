@@ -24,74 +24,66 @@
 package net.kyori.adventure.sound;
 
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.util.NameMap;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import static java.util.Objects.requireNonNull;
 
 /**
- * A sound.
+ * A sound stopper.
  */
-public interface Sound {
+public interface StopSound {
   /**
-   * Creates a new sound.
+   * Stops all sounds.
    *
-   * @param name the name
-   * @param source the source
-   * @param volume the volume
-   * @param pitch the pitch
-   * @return the sound
+   * @return a sound stopper
    */
-  static @NonNull Sound of(final @NonNull Key name, final @NonNull Source source, final float volume, final float pitch) {
-    return new SoundImpl(name, source, volume, pitch);
+  static @NonNull StopSound all() {
+    return StopSoundImpl.ALL;
   }
 
   /**
-   * Gets the name.
+   * Stops all sounds named {@code sound}.
    *
-   * @return the name
+   * @param sound the sound
+   * @return a sound stopper
    */
-  @NonNull Key name();
+  static @NonNull StopSound named(final @NonNull Key sound) {
+    return new StopSoundImpl(requireNonNull(sound, "sound"), null);
+  }
+
+  /**
+   * Stops all sounds on source {@code source}.
+   *
+   * @param source the source
+   * @return a sound stopper
+   */
+  static @NonNull StopSound source(final Sound.@NonNull Source source) {
+    return new StopSoundImpl(null, requireNonNull(source, "source"));
+  }
+
+  /**
+   * Stops all sounds named {@code name} on source {@code source}.
+   *
+   * @param sound the sound
+   * @param source the source
+   * @return a sound stopper
+   */
+  static @NonNull StopSound namedOnSource(final @NonNull Key sound, final Sound.@NonNull Source source) {
+    return new StopSoundImpl(requireNonNull(sound, "sound"), requireNonNull(source, "source"));
+  }
+
+  /**
+   * Gets the sound.
+   *
+   * @return the sound
+   */
+  @Nullable Key sound();
 
   /**
    * Gets the source.
    *
    * @return the source
    */
-  @NonNull Source source();
-
-  /**
-   * Gets the volume.
-   *
-   * @return the volume
-   */
-  float volume();
-
-  /**
-   * Gets the pitch.
-   *
-   * @return the pitch
-   */
-  float pitch();
-
-  /**
-   * The sound source.
-   */
-  enum Source {
-    MASTER("master"),
-    MUSIC("music"),
-    RECORDS("record"),
-    WEATHER("weather"),
-    BLOCKS("block"),
-    HOSTILE("hostile"),
-    NEUTRAL("neutral"),
-    PLAYERS("player"),
-    AMBIENT("ambient"),
-    VOICE("voice");
-
-    private static final NameMap<Source> NAMES = NameMap.create(Source.class, source -> source.name);
-    private final String name;
-
-    Source(final String name) {
-      this.name = name;
-    }
-  }
+  Sound.@Nullable Source source();
 }
