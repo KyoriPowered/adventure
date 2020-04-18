@@ -63,6 +63,11 @@ public interface Audience {
   void stopSound(final Sound.@NonNull Source source);
 
   /**
+   * Stops all sounds.
+   */
+  void stopSounds();
+
+  /**
    * Stops all sounds playing on {@code source}.
    *
    * @param source the source
