@@ -1,9 +1,0 @@
-dependencies {
-  api project(':text-api')
-}
-
-jar {
-  manifest.attributes(
-    'Automatic-Module-Name': 'net.kyori.text.serializer.plain'
-  )
-}

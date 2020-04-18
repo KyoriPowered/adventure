@@ -1,16 +1,16 @@
-rootProject.name = 'text-parent'
+rootProject.name = 'adventure-parent'
 
 include 'api'
-findProject(':api')?.name = 'text-api'
+findProject(':api')?.name = 'adventure-api'
 
-include 'feature-pagination'
-findProject(':feature-pagination')?.name = 'text-feature-pagination'
+include 'text-feature-pagination'
+findProject(':text-feature-pagination')?.name = 'text-feature-pagination'
 
-include 'serializer-gson'
-findProject(':serializer-gson')?.name = 'text-serializer-gson'
+include 'text-serializer-gson'
+findProject(':text-serializer-gson')?.name = 'text-serializer-gson'
 
-include 'serializer-legacy'
-findProject(':serializer-legacy')?.name = 'text-serializer-legacy'
+include 'text-serializer-legacy'
+findProject(':text-serializer-legacy')?.name = 'text-serializer-legacy'
 
-include 'serializer-plain'
-findProject(':serializer-plain')?.name = 'text-serializer-plain'
+include 'text-serializer-plain'
+findProject(':text-serializer-plain')?.name = 'text-serializer-plain'

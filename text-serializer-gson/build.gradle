@@ -1,0 +1,10 @@
+dependencies {
+  api project(':adventure-api')
+  api 'com.google.code.gson:gson:2.8.0'
+}
+
+jar {
+  manifest.attributes(
+    'Automatic-Module-Name': 'net.kyori.adventure.text.serializer.gson'
+  )
+}
