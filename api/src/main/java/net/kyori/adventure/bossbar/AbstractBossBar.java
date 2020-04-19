@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.bossbar;
 
+import java.util.EnumSet;
 import java.util.Set;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
@@ -38,7 +39,7 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
   private float percent;
   private Color color;
   private Overlay overlay;
-  private Set<Flag> flags;
+  private final Set<Flag> flags = EnumSet.noneOf(Flag.class);
 
   protected AbstractBossBar(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay) {
     this.name = requireNonNull(name, "name");
@@ -118,7 +119,8 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
 
   @Override
   public @NonNull BossBar flags(final @NonNull Set<Flag> flags) {
-    this.flags = flags;
+    this.flags.clear();
+    this.flags.addAll(flags);
     return this;
   }
 
