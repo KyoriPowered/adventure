@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.bossbar;
 
+import java.util.Set;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.examination.Examinable;
@@ -32,13 +33,12 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import static java.util.Objects.requireNonNull;
 
 public abstract class AbstractBossBar implements BossBar, Examinable {
+  private static final float MINIMUM_PERCENT_CHANGE = 0.01f;
   private Component name;
   private float percent;
   private Color color;
   private Overlay overlay;
-  private boolean darkenScreen;
-  private boolean playBossMusic;
-  private boolean createWorldFog;
+  private Set<Flag> flags;
 
   protected AbstractBossBar(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay) {
     this.name = requireNonNull(name, "name");
@@ -69,10 +69,18 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
   @Override
   public @NonNull BossBar percent(final float percent) {
     if(percent != this.percent) {
+      final boolean enoughForClientToNotice = enoughForClientToNotice(this.percent, percent);
       this.percent = percent;
-      this.changed(Change.PERCENT);
+      if(enoughForClientToNotice) {
+        this.changed(Change.PERCENT);
+      }
     }
     return this;
+  }
+
+  // https://github.com/KyoriPowered/text/pull/62#discussion_r410790072
+  private static boolean enoughForClientToNotice(final float oldValue, final float newValue) {
+    return (newValue - oldValue) >= MINIMUM_PERCENT_CHANGE;
   }
 
   @Override
@@ -104,48 +112,45 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
   }
 
   @Override
-  public boolean darkenScreen() {
-    return this.darkenScreen;
+  public @NonNull Set<Flag> flags() {
+    return this.flags;
   }
 
   @Override
-  public @NonNull BossBar darkenScreen(final boolean darkenScreen) {
-    if(darkenScreen != this.darkenScreen) {
-      this.darkenScreen = darkenScreen;
-      this.changed(Change.FLAG);
+  public @NonNull BossBar flags(final @NonNull Set<Flag> flags) {
+    this.flags = flags;
+    return this;
+  }
+
+  @Override
+  public @NonNull BossBar addFlags(final @NonNull Flag@NonNull... flags) {
+    boolean changed = false;
+    for(int i = 0, length = flags.length; i < length; i++) {
+      if(this.flags.add(flags[i])) {
+        changed = true;
+      }
+    }
+    if(changed) {
+      this.changed(Change.FLAGS);
     }
     return this;
   }
 
   @Override
-  public boolean playBossMusic() {
-    return this.playBossMusic;
-  }
-
-  @Override
-  public @NonNull BossBar playBossMusic(final boolean playBossMusic) {
-    if(playBossMusic != this.playBossMusic) {
-      this.playBossMusic = playBossMusic;
-      this.changed(Change.FLAG);
+  public @NonNull BossBar removeFlags(final @NonNull Flag@NonNull... flags) {
+    boolean changed = false;
+    for(int i = 0, length = flags.length; i < length; i++) {
+      if(this.flags.remove(flags[i])) {
+        changed = true;
+      }
+    }
+    if(changed) {
+      this.changed(Change.FLAGS);
     }
     return this;
   }
 
-  @Override
-  public boolean createWorldFog() {
-    return this.createWorldFog;
-  }
-
-  @Override
-  public @NonNull BossBar createWorldFog(final boolean createWorldFog) {
-    if(createWorldFog != this.createWorldFog) {
-      this.createWorldFog = createWorldFog;
-      this.changed(Change.FLAG);
-    }
-    return this;
-  }
-
-  protected abstract void changed(final Change type);
+  protected abstract void changed(final @NonNull Change type);
 
   @Override
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
@@ -154,9 +159,7 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
       ExaminableProperty.of("percent", this.percent),
       ExaminableProperty.of("color", this.color),
       ExaminableProperty.of("overlay", this.overlay),
-      ExaminableProperty.of("darkenScreen", this.darkenScreen),
-      ExaminableProperty.of("playBossMusic", this.playBossMusic),
-      ExaminableProperty.of("createWorldFog", this.createWorldFog)
+      ExaminableProperty.of("flags", this.flags)
     );
   }
 
@@ -168,6 +171,6 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
     PERCENT,
     COLOR,
     OVERLAY,
-    FLAG;
+    FLAGS;
   }
 }

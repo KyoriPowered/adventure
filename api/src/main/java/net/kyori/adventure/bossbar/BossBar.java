@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.bossbar;
 
+import java.util.Set;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.NameMap;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -96,49 +97,35 @@ public interface BossBar {
   @NonNull BossBar overlay(final @NonNull Overlay overlay);
 
   /**
-   * Gets if the screen should be darkened.
+   * Gets the flags.
    *
-   * @return {@code true} if the screen should be darkened, {@code false} otherwise
+   * @return the flags
    */
-  boolean darkenScreen();
+  @NonNull Set<Flag> flags();
 
   /**
-   * Sets if the screen should be darkened.
+   * Sets the flags.
    *
-   * @param darkenScreen if the screen should be darkened
+   * @param flags the flags
    * @return the bossbar
    */
-  @NonNull BossBar darkenScreen(final boolean darkenScreen);
+  @NonNull BossBar flags(final @NonNull Set<Flag> flags);
 
   /**
-   * Gets if boss music should be played.
+   * Sets the flags.
    *
-   * @return {@code true} if boss music should be played, {@code false} otherwise
-   */
-  boolean playBossMusic();
-
-  /**
-   * Sets if boss music should be played.
-   *
-   * @param playBossMusic if boss music should be played
+   * @param flags the flags
    * @return the bossbar
    */
-  @NonNull BossBar playBossMusic(final boolean playBossMusic);
+  @NonNull BossBar addFlags(final @NonNull Flag@NonNull... flags);
 
   /**
-   * Gets if world fog should be created.
+   * Sets the flags.
    *
-   * @return {@code true} if world fog should be created, {@code false} otherwise
-   */
-  boolean createWorldFog();
-
-  /**
-   * Sets if world fog should be created.
-   *
-   * @param createWorldFog if world fog should be created
+   * @param flags the flags
    * @return the bossbar
    */
-  @NonNull BossBar createWorldFog(final boolean createWorldFog);
+  @NonNull BossBar removeFlags(final @NonNull Flag@NonNull... flags);
 
   enum Color {
     PINK("pink"),
@@ -155,6 +142,21 @@ public interface BossBar {
     Color(final String name) {
       this.name = name;
     }
+  }
+
+  enum Flag {
+    /**
+     * If the screen should be darkened.
+     */
+    DARKEN_SCREEN,
+    /**
+     * If boss music should be played.
+     */
+    PLAY_BOSS_MUSIC,
+    /**
+     * If world fog should be created.
+     */
+    CREATE_WORLD_FOG;
   }
 
   enum Overlay {
