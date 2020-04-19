@@ -31,7 +31,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static java.util.Objects.requireNonNull;
 
-// TODO: "on change" notifications for implementation to know something changed
 public abstract class AbstractBossBar implements BossBar, Examinable {
   private Component name;
   private float percent;
@@ -55,7 +54,10 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
 
   @Override
   public @NonNull BossBar name(final @NonNull Component name) {
-    this.name = requireNonNull(name, "name");
+    if(name != this.name) {
+      this.name = requireNonNull(name, "name");
+      this.changed(Change.NAME);
+    }
     return this;
   }
 
@@ -66,7 +68,10 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
 
   @Override
   public @NonNull BossBar percent(final float percent) {
-    this.percent = percent;
+    if(percent != this.percent) {
+      this.percent = percent;
+      this.changed(Change.PERCENT);
+    }
     return this;
   }
 
@@ -77,7 +82,10 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
 
   @Override
   public @NonNull BossBar color(final @NonNull Color color) {
-    this.color = requireNonNull(color, "color");
+    if(color != this.color) {
+      this.color = requireNonNull(color, "color");
+      this.changed(Change.COLOR);
+    }
     return this;
   }
 
@@ -88,7 +96,10 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
 
   @Override
   public @NonNull BossBar overlay(final @NonNull Overlay overlay) {
-    this.overlay = requireNonNull(overlay, "overlay");
+    if(overlay != this.overlay) {
+      this.overlay = requireNonNull(overlay, "overlay");
+      this.changed(Change.OVERLAY);
+    }
     return this;
   }
 
@@ -99,7 +110,10 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
 
   @Override
   public @NonNull BossBar darkenScreen(final boolean darkenScreen) {
-    this.darkenScreen = darkenScreen;
+    if(darkenScreen != this.darkenScreen) {
+      this.darkenScreen = darkenScreen;
+      this.changed(Change.FLAG);
+    }
     return this;
   }
 
@@ -110,7 +124,10 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
 
   @Override
   public @NonNull BossBar playBossMusic(final boolean playBossMusic) {
-    this.playBossMusic = playBossMusic;
+    if(playBossMusic != this.playBossMusic) {
+      this.playBossMusic = playBossMusic;
+      this.changed(Change.FLAG);
+    }
     return this;
   }
 
@@ -121,9 +138,14 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
 
   @Override
   public @NonNull BossBar createWorldFog(final boolean createWorldFog) {
-    this.createWorldFog = createWorldFog;
+    if(createWorldFog != this.createWorldFog) {
+      this.createWorldFog = createWorldFog;
+      this.changed(Change.FLAG);
+    }
     return this;
   }
+
+  protected abstract void changed(final Change type);
 
   @Override
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
@@ -136,5 +158,16 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
       ExaminableProperty.of("playBossMusic", this.playBossMusic),
       ExaminableProperty.of("createWorldFog", this.createWorldFog)
     );
+  }
+
+  /**
+   * The type of change.
+   */
+  protected enum Change {
+    NAME,
+    PERCENT,
+    COLOR,
+    OVERLAY,
+    FLAG;
   }
 }
