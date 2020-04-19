@@ -30,7 +30,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A sound stopp.
+ * A sound stop.
  */
 public interface SoundStop {
   /**

@@ -55,6 +55,13 @@ public interface Audience {
   void hideBossBar(final @NonNull BossBar bar);
 
   /**
+   * Shows a message on the action bar.
+   *
+   * @param message the message
+   */
+  void showActionBar(final @NonNull Component message);
+
+  /**
    * Plays a sound.
    *
    * @param sound the sound
@@ -67,4 +74,6 @@ public interface Audience {
    * @param stop the stop
    */
   void stopSound(final @NonNull SoundStop stop);
+
+  // TODO: titles
 }
