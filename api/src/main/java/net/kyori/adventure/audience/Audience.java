@@ -63,6 +63,8 @@ public interface Audience {
 
   /**
    * Stops all sounds.
+   *
+   * @param stop the stop
    */
   void stopSound(final @NonNull SoundStop stop);
 }
