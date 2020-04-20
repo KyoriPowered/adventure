@@ -81,7 +81,7 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
 
   // https://github.com/KyoriPowered/text/pull/62#discussion_r410790072
   private static boolean enoughForClientToNotice(final float oldValue, final float newValue) {
-    return (newValue - oldValue) >= MINIMUM_PERCENT_CHANGE;
+    return Math.abs(newValue - oldValue) >= MINIMUM_PERCENT_CHANGE;
   }
 
   @Override
