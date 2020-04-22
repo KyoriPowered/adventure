@@ -104,5 +104,11 @@ Repo (for snapshots):
 ```
 Releases get deployed to maven central.
 
+## Upgrading to 2.0
+
+2.0 seperated MiniMessage into two versions, minimessage-bungee and minimessage-text.  
+The bungee version continues to use the Bungee Chat Components, like 1.x did, but the new Version uses the kyori text lib, which has support for way more features.  
+If you dont want to change your code, use the old dependency, but you should really consider upgrading to the new one!
+
 ## Licence
 MIT

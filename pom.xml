@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>me.minidigger</groupId>
     <artifactId>MiniMessage</artifactId>
-    <version>1.0.3-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <version>2.0.0-SNAPSHOT</version>
     <name>MiniMessage</name>
     <description>Simple library that implements an easy to use textual format to send rich json messages.</description>
     <url>https://github.com/MiniDigger/MiniMessage</url>
@@ -15,21 +17,18 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.destroystokyo.paper</groupId>
-            <artifactId>paper-api</artifactId>
-            <version>1.15-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
-
     <repositories>
         <repository>
             <id>papermc</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
     </repositories>
+
+    <modules>
+        <module>minimessage-text</module>
+        <module>minimessage-bungee</module>
+        <module>minimessage-ext-markdown</module>
+    </modules>
 
     <build>
         <plugins>
@@ -122,8 +121,8 @@
         <connection>scm:git:https://github.com/MiniDigger/MiniMessage.git</connection>
         <developerConnection>scm:git:https://github.com/MiniDigger/MiniMessage.git</developerConnection>
         <url>https://github.com/MiniDigger/MiniMessage</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <licenses>
         <license>

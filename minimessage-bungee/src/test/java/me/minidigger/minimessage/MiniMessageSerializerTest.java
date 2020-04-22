@@ -87,7 +87,7 @@ public class MiniMessageSerializerTest {
         String expected = "<click:run_command:\"test\">Some click</click> that ends here";
 
         ComponentBuilder builder = new ComponentBuilder("Some click")
-            .event(new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND, "test"))//
+            .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "test"))//
             .append(" that ends here", FormatRetention.NONE);
 
         test(builder, expected);
@@ -98,7 +98,7 @@ public class MiniMessageSerializerTest {
         String expected = "<click:run_command:\"test\">Some click<red> that doesn't ends here";
 
         ComponentBuilder builder = new ComponentBuilder("Some click")
-            .event(new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND, "test"))//
+            .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "test"))//
             .append(" that doesn't ends here", FormatRetention.EVENTS).color(ChatColor.RED);
 
         test(builder, expected);
@@ -109,9 +109,9 @@ public class MiniMessageSerializerTest {
         String expected = "<click:run_command:\"test\">Some click<red> that doesn't ends here";
 
         ComponentBuilder builder = new ComponentBuilder("Some click")
-            .event(new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND, "test"))//
+            .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "test"))//
             .append(" that doesn't ends here", FormatRetention.NONE)
-            .event(new ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND, "test"))
+            .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "test"))
             .color(ChatColor.RED);
 
         test(builder, expected);
