@@ -26,8 +26,8 @@ package net.kyori.adventure.text.serializer.legacy;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
@@ -75,10 +75,10 @@ class LinkingLegacyComponentSerializerTest {
     final String bareUrl = "https://www.example.com";
     final String hasPrefixSuffixColors = "&adid you hear about &chttps://www.example.com? &9they're really cool";
     final TextComponent expectedHasPrefixSuffixColors = TextComponent.builder("")
-      .append(TextComponent.of("did you hear about ", TextColor.GREEN))
-      .append(TextComponent.of("https://www.example.com", TextColor.RED).clickEvent(ClickEvent.openUrl(bareUrl)))
-      .append(TextComponent.of("? ", TextColor.RED))
-      .append(TextComponent.of("they're really cool", TextColor.BLUE))
+      .append(TextComponent.of("did you hear about ", NamedTextColor.GREEN))
+      .append(TextComponent.of("https://www.example.com", NamedTextColor.RED).clickEvent(ClickEvent.openUrl(bareUrl)))
+      .append(TextComponent.of("? ", NamedTextColor.RED))
+      .append(TextComponent.of("they're really cool", NamedTextColor.BLUE))
       .build();
     assertEquals(expectedHasPrefixSuffixColors, LegacyComponentSerializer.legacyLinking().deserialize(hasPrefixSuffixColors, '&'));
   }
@@ -97,7 +97,7 @@ class LinkingLegacyComponentSerializerTest {
 
   @Test
   void testLinkifyWithStyle() {
-    final Style testStyle = Style.of(TextColor.GREEN, TextDecoration.UNDERLINED);
+    final Style testStyle = Style.of(NamedTextColor.GREEN, TextDecoration.UNDERLINED);
     final LegacyComponentSerializer serializer = LegacyComponentSerializer.legacyLinking(testStyle);
 
     final String bareUrl = "https://www.example.com";

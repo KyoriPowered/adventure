@@ -48,7 +48,7 @@ public final class HoverEvent implements Examinable {
    * @param value the value
    * @return a click event
    */
-  public static @NonNull HoverEvent of(final @NonNull Action action, final @NonNull Component value) {
+  public static <V> @NonNull HoverEvent of(final @NonNull Action<V> action, final @NonNull V value) {
     return new HoverEvent(action, value);
   }
 
@@ -85,13 +85,13 @@ public final class HoverEvent implements Examinable {
   /**
    * The hover event action.
    */
-  private final Action action;
+  private final Action<?> action;
   /**
    * The hover event value.
    */
-  private final Component value;
+  private final Object value;
 
-  private HoverEvent(final @NonNull Action action, final @NonNull Component value) {
+  private HoverEvent(final @NonNull Action<?> action, final @NonNull Object value) {
     this.action = requireNonNull(action, "action");
     this.value = requireNonNull(value, "value");
   }
@@ -101,7 +101,7 @@ public final class HoverEvent implements Examinable {
    *
    * @return the hover event action
    */
-  public @NonNull Action action() {
+  public @NonNull Action<?> action() {
     return this.action;
   }
 
@@ -110,8 +110,8 @@ public final class HoverEvent implements Examinable {
    *
    * @return the hover event value
    */
-  public @NonNull Component value() {
-    return this.value;
+  public <V> @NonNull V value(final Action<V> action) {
+    return action == this.action ? (V) this.value : null; // TODO
   }
 
   @Override
@@ -145,24 +145,24 @@ public final class HoverEvent implements Examinable {
   /**
    * An enumeration of hover event actions.
    */
-  public enum Action {
+  public static final class Action<V> {
     /**
      * Shows a {@link Component} when hovered over.
      */
-    SHOW_TEXT("show_text", true),
+    public static final Action<Component> SHOW_TEXT = new Action<>("show_text", true);
     /**
      * Shows an item instance when hovered over.
      */
-    SHOW_ITEM("show_item", true),
+    public static final Action<Component> SHOW_ITEM = new Action<>("show_item", true);
     /**
      * Shows an entity when hovered over.
      */
-    SHOW_ENTITY("show_entity", true);
+    public static final Action<Component> SHOW_ENTITY = new Action<>("show_entity", true);
 
     /**
      * The name map.
      */
-    public static final NameMap<Action> NAMES = NameMap.create(Action.class, constant -> constant.name);
+    public static final NameMap<Action<?>> NAMES = NameMap.create(constant -> constant.name, SHOW_TEXT, SHOW_ITEM, SHOW_ENTITY);
     /**
      * The name of this action.
      */

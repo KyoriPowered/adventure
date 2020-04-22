@@ -31,11 +31,10 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
-import java.util.Objects;
 import java.util.Optional;
 import net.kyori.adventure.util.NameMap;
 
-public final class NameMapSerializer<E extends Enum<E>> implements JsonDeserializer<E>, JsonSerializer<E> {
+public final class NameMapSerializer<E> implements JsonDeserializer<E>, JsonSerializer<E> {
   private final String name;
   private final NameMap<E> map;
 
@@ -56,9 +55,7 @@ public final class NameMapSerializer<E extends Enum<E>> implements JsonDeseriali
   }
 
   @Override
-  @SuppressWarnings({"rawtypes", "unchecked"})
   public JsonElement serialize(final E src, final Type typeOfT, final JsonSerializationContext context) {
-    final Enum hack = Objects.requireNonNull(src); // HACK: generics suck
-    return new JsonPrimitive(this.map.name((E) hack));
+    return new JsonPrimitive(this.map.name(src));
   }
 }

@@ -51,6 +51,7 @@ public final class StyleSerializer implements JsonDeserializer<Style>, JsonSeria
   static final String CLICK_EVENT_VALUE = "value";
   static final String HOVER_EVENT = "hoverEvent";
   static final String HOVER_EVENT_ACTION = "action";
+  static final String HOVER_EVENT_CONTENTS = "contents";
   static final String HOVER_EVENT_VALUE = "value";
 
   @Override
@@ -105,6 +106,7 @@ public final class StyleSerializer implements JsonDeserializer<Style>, JsonSeria
         final /* @Nullable */ JsonPrimitive rawAction = hoverEvent.getAsJsonPrimitive(HOVER_EVENT_ACTION);
         final HoverEvent./*@Nullable*/ Action action = rawAction == null ? null : context.deserialize(rawAction, HoverEvent.Action.class);
         if(action != null && action.readable()) {
+          // TODO all this
           final /* @Nullable */ JsonElement rawValue = hoverEvent.get(HOVER_EVENT_VALUE);
           final /* @Nullable */ Component value = rawValue == null ? null : context.deserialize(rawValue, Component.class);
           if(value != null) {
@@ -152,7 +154,7 @@ public final class StyleSerializer implements JsonDeserializer<Style>, JsonSeria
     if(hoverEvent != null) {
       final JsonObject eventJson = new JsonObject();
       eventJson.add(HOVER_EVENT_ACTION, context.serialize(hoverEvent.action()));
-      eventJson.add(HOVER_EVENT_VALUE, context.serialize(hoverEvent.value()));
+      eventJson.add(HOVER_EVENT_VALUE, context.serialize(hoverEvent.value())); // TODO
       json.add(HOVER_EVENT, eventJson);
     }
 

@@ -30,7 +30,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 import static net.kyori.adventure.text.serializer.gson.StyleTest.name;
 
@@ -57,10 +57,10 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
             .clickEvent(ClickEvent.suggestCommand(COMMAND))
             .hoverEvent(HoverEvent.showEntity(TextComponent.of(ENTITY)))
             .build()
-        ).color(TextColor.YELLOW),
+        ).color(NamedTextColor.YELLOW),
         json -> {
           json.addProperty(ComponentSerializerImpl.TRANSLATE, KEY);
-          json.addProperty(StyleSerializer.COLOR, name(TextColor.YELLOW));
+          json.addProperty(StyleSerializer.COLOR, name(NamedTextColor.YELLOW));
           json.add(ComponentSerializerImpl.TRANSLATE_WITH, array(with -> with.add(object(item -> {
             item.addProperty(ComponentSerializerImpl.TEXT, WHO);
             item.add(StyleSerializer.CLICK_EVENT, object(event -> {

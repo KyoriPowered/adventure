@@ -24,8 +24,8 @@
 package net.kyori.adventure.text.serializer.legacy;
 
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class LegacyComponentSerializerTest {
   @Test
   void testSimpleFrom() {
-    TextComponent component = TextComponent.of("foo");
+    final TextComponent component = TextComponent.of("foo");
     assertEquals(component, LegacyComponentSerializer.legacy().deserialize("foo"));
     assertEquals(component, LegacyComponentSerializer.legacyLinking().deserialize("foo"));
   }
@@ -42,8 +42,8 @@ class LegacyComponentSerializerTest {
   @Test
   void testFromColor() {
     final TextComponent component = TextComponent.builder("")
-      .append(TextComponent.of("foo").color(TextColor.GREEN).decoration(TextDecoration.BOLD, TextDecoration.State.TRUE))
-      .append(TextComponent.of("bar").color(TextColor.BLUE))
+      .append(TextComponent.of("foo").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, TextDecoration.State.TRUE))
+      .append(TextComponent.of("bar").color(NamedTextColor.BLUE))
       .build();
 
     assertEquals(component, LegacyComponentSerializer.legacy().deserialize("&a&lfoo&9bar", '&'));
@@ -53,7 +53,7 @@ class LegacyComponentSerializerTest {
   @Test
   void testFromColorOverride() {
     final TextComponent component = TextComponent.builder("")
-      .append(TextComponent.of("foo").color(TextColor.BLUE))
+      .append(TextComponent.of("foo").color(NamedTextColor.BLUE))
       .build();
 
     assertEquals(component, LegacyComponentSerializer.legacy().deserialize("&a&9foo", '&'));
@@ -63,8 +63,8 @@ class LegacyComponentSerializerTest {
   @Test
   void testResetOverride() {
     final TextComponent component = TextComponent.builder("")
-      .append(TextComponent.of("foo").color(TextColor.GREEN).decoration(TextDecoration.BOLD, TextDecoration.State.TRUE))
-      .append(TextComponent.of("bar").color(TextColor.DARK_GRAY))
+      .append(TextComponent.of("foo").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, TextDecoration.State.TRUE))
+      .append(TextComponent.of("bar").color(NamedTextColor.DARK_GRAY))
       .build();
 
     assertEquals(component, LegacyComponentSerializer.legacy().deserialize("&a&lfoo&r&8bar", '&'));
@@ -76,11 +76,11 @@ class LegacyComponentSerializerTest {
     final TextComponent component = TextComponent.builder()
       .content("hi there ")
       .append(TextComponent.builder("this bit is green ")
-        .color(TextColor.GREEN)
+        .color(NamedTextColor.GREEN)
         .build())
       .append(TextComponent.of("this isn't ").style(Style.empty()))
       .append(TextComponent.builder("and woa, this is again")
-        .color(TextColor.GREEN)
+        .color(NamedTextColor.GREEN)
         .build())
       .build();
 
@@ -93,12 +93,12 @@ class LegacyComponentSerializerTest {
       .decoration(TextDecoration.BOLD, TextDecoration.State.TRUE)
       .append(
         TextComponent.of("foo")
-          .color(TextColor.GREEN)
+          .color(NamedTextColor.GREEN)
           .decoration(TextDecoration.BOLD, TextDecoration.State.FALSE)
       )
       .append(
         TextComponent.of("bar")
-          .color(TextColor.BLUE)
+          .color(NamedTextColor.BLUE)
       )
       .append(TextComponent.of("baz"))
       .build();
@@ -106,13 +106,13 @@ class LegacyComponentSerializerTest {
 
     final TextComponent c2 = TextComponent.builder()
       .content("")
-      .color(TextColor.YELLOW)
+      .color(NamedTextColor.YELLOW)
       .append(TextComponent.builder()
         .content("Hello ")
         .append(
           TextComponent.builder()
             .content("world")
-            .color(TextColor.GREEN)
+            .color(NamedTextColor.GREEN)
             .build()
         )
         .append(TextComponent.of("!")) // Should be yellow
@@ -127,13 +127,13 @@ class LegacyComponentSerializerTest {
       .append(
         TextComponent.builder()
           .content("")
-          .color(TextColor.YELLOW)
+          .color(NamedTextColor.YELLOW)
           .append(TextComponent.builder()
             .content("Hello ")
             .append(
               TextComponent.builder()
                 .content("world")
-                .color(TextColor.GREEN)
+                .color(NamedTextColor.GREEN)
                 .build()
             )
             .append(TextComponent.of("!"))

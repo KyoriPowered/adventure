@@ -23,15 +23,49 @@
  */
 package net.kyori.adventure.text.format;
 
+import net.kyori.adventure.util.NameMap;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-/**
- * A color which may be applied to a {@link Style}.
- */
-public interface TextColor extends TextFormat {
-  static @NonNull TextColor of(final int value) {
-    return new TextColorImpl(value);
+public enum NamedTextColor implements TextColor {
+  BLACK("black", 0x000000),
+  DARK_BLUE("dark_blue", 0x0000aa),
+  DARK_GREEN("dark_green", 0x00aa00),
+  DARK_AQUA("dark_aqua", 0x00aaaa),
+  DARK_RED("dark_red", 0xaa0000),
+  DARK_PURPLE("dark_purple", 0xaa00aa),
+  GOLD("gold", 0xffaa00),
+  GRAY("gray", 0xaaaaaa),
+  DARK_GRAY("dark_gray", 0x555555),
+  BLUE("blue", 0x5555ff),
+  GREEN("green", 0x55ff55),
+  AQUA("aqua", 0x55ffff),
+  RED("red", 0xff5555),
+  LIGHT_PURPLE("light_purple", 0xff55ff),
+  YELLOW("yellow", 0xffff55),
+  WHITE("white", 0xffffff);
+
+  /**
+   * The name map.
+   */
+  public static final NameMap<NamedTextColor> NAMES = NameMap.create(NamedTextColor.class, constant -> constant.name);
+  /**
+   * The name of this color.
+   */
+  private final String name;
+  private final int value;
+
+  NamedTextColor(final String name, final int value) {
+    this.name = name;
+    this.value = value;
   }
 
-  int value();
+  @Override
+  public int value() {
+    return this.value;
+  }
+
+  @Override
+  public @NonNull String toString() {
+    return this.name;
+  }
 }

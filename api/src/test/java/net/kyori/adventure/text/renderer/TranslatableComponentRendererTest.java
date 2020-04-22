@@ -30,7 +30,7 @@ import java.util.Locale;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -51,12 +51,12 @@ class TranslatableComponentRendererTest {
 
   static void testSimple(final ComponentRenderer<Locale> renderer) {
     assertEquals(
-      TextComponent.of("This is a test.", TextColor.YELLOW),
+      TextComponent.of("This is a test.", NamedTextColor.YELLOW),
       renderer.render(
         TranslatableComponent
           .builder()
           .key("test")
-          .color(TextColor.YELLOW)
+          .color(NamedTextColor.YELLOW)
           .build(),
         Locale.US
       )
@@ -71,7 +71,7 @@ class TranslatableComponentRendererTest {
   static void testComplex(final ComponentRenderer<Locale> renderer) {
     assertEquals(
       TextComponent.builder("")
-        .color(TextColor.YELLOW)
+        .color(NamedTextColor.YELLOW)
         .append(TextComponent.of("kashike"))
         .append(TextComponent.of(" and "))
         .append(TextComponent.of("lucko"))
@@ -85,7 +85,7 @@ class TranslatableComponentRendererTest {
             TextComponent.of("kashike"),
             TextComponent.of("lucko")
           )
-          .color(TextColor.YELLOW)
+          .color(NamedTextColor.YELLOW)
           .build(),
         Locale.US
       )
@@ -100,7 +100,7 @@ class TranslatableComponentRendererTest {
   static void testVeryComplex(final ComponentRenderer<Locale> renderer) {
     assertEquals(
       TextComponent.builder("")
-        .color(TextColor.YELLOW)
+        .color(NamedTextColor.YELLOW)
         .append(TextComponent.of("This is a test."))
         .append(
           TextComponent.of("")
@@ -132,7 +132,7 @@ class TranslatableComponentRendererTest {
               .append(TextComponent.of("Meow!"))
               .build()
           )
-          .color(TextColor.YELLOW)
+          .color(NamedTextColor.YELLOW)
           .build(),
         Locale.US
       )

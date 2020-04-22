@@ -36,7 +36,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * @param <E> the type
  */
-public final class NameMap<E extends Enum<E>> {
+public final class NameMap<E> {
   private final Map<String, E> nameToValue;
   private final Map<E, String> valueToName;
 
@@ -59,6 +59,28 @@ public final class NameMap<E extends Enum<E>> {
     final int length = constants.length;
     final Map<String, E> nameToValue = new HashMap<>(length);
     final Map<E, String> valueToName = new EnumMap<>(type);
+    for(int i = 0; i < length; i++) {
+      final E constant = constants[i];
+      final String name = namer.apply(constant);
+      nameToValue.put(name, constant);
+      valueToName.put(constant, name);
+    }
+    return new NameMap<>(Collections.unmodifiableMap(nameToValue), Collections.unmodifiableMap(valueToName));
+  }
+
+  /**
+   * Creates a name map.
+   *
+   * @param namer the name provider
+   * @param constants the constants
+   * @param <E> the type
+   * @return the name map
+   */
+  @SuppressWarnings("ForLoopReplaceableByForEach")
+  public static <E> @NonNull NameMap<E> create(final @NonNull Function<E, String> namer, final @NonNull E@NonNull... constants) {
+    final int length = constants.length;
+    final Map<String, E> nameToValue = new HashMap<>(length);
+    final Map<E, String> valueToName = new HashMap<>(length);
     for(int i = 0; i < length; i++) {
       final E constant = constants[i];
       final String name = namer.apply(constant);

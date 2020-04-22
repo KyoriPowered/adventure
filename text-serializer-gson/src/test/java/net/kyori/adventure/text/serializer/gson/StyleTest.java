@@ -28,8 +28,8 @@ import java.util.Map;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
@@ -60,17 +60,17 @@ class StyleTest extends AbstractSerializeDeserializeTest<Style> {
   Stream<Map.Entry<Style, JsonElement>> tests() {
     return Stream.of(
       entry(Style.empty(), json -> {}),
-      entry(Style.of(TextColor.LIGHT_PURPLE), json -> json.addProperty(StyleSerializer.COLOR, name(TextColor.LIGHT_PURPLE))),
+      entry(Style.of(NamedTextColor.LIGHT_PURPLE), json -> json.addProperty(StyleSerializer.COLOR, name(NamedTextColor.LIGHT_PURPLE))),
       entry(Style.of(TextDecoration.BOLD), json -> json.addProperty(name(TextDecoration.BOLD), true)),
       entry(Style.builder().insertion("honk").build(), json -> json.addProperty(StyleSerializer.INSERTION, "honk")),
       entry(
         Style.builder()
-          .color(TextColor.RED)
+          .color(NamedTextColor.RED)
           .decoration(TextDecoration.BOLD, true)
           .clickEvent(ClickEvent.openUrl("https://github.com"))
           .build(),
         json -> {
-          json.addProperty(StyleSerializer.COLOR, name(TextColor.RED));
+          json.addProperty(StyleSerializer.COLOR, name(NamedTextColor.RED));
           json.addProperty(name(TextDecoration.BOLD), true);
           json.add(StyleSerializer.CLICK_EVENT, object(clickEvent -> {
             clickEvent.addProperty(StyleSerializer.CLICK_EVENT_ACTION, name(ClickEvent.Action.OPEN_URL));
@@ -81,8 +81,8 @@ class StyleTest extends AbstractSerializeDeserializeTest<Style> {
     );
   }
 
-  static String name(final TextColor color) {
-    return TextColor.NAMES.name(color);
+  static String name(final NamedTextColor color) {
+    return NamedTextColor.NAMES.name(color);
   }
 
   static String name(final TextDecoration decoration) {
@@ -93,7 +93,7 @@ class StyleTest extends AbstractSerializeDeserializeTest<Style> {
     return ClickEvent.Action.NAMES.name(action);
   }
 
-  static String name(final HoverEvent.Action action) {
+  static <V> String name(final HoverEvent.Action<V> action) {
     return HoverEvent.Action.NAMES.name(action);
   }
 

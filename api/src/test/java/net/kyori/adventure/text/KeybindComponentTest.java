@@ -24,7 +24,7 @@
 package net.kyori.adventure.text;
 
 import com.google.common.collect.ImmutableSet;
-import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
@@ -47,17 +47,17 @@ class KeybindComponentTest extends AbstractComponentTest<KeybindComponent, Keybi
 
   @Test
   void testOf_color() {
-    final KeybindComponent component = KeybindComponent.of("key.jump", TextColor.GREEN);
+    final KeybindComponent component = KeybindComponent.of("key.jump", NamedTextColor.GREEN);
     assertEquals("key.jump", component.keybind());
-    assertEquals(TextColor.GREEN, component.color());
+    assertEquals(NamedTextColor.GREEN, component.color());
     TextAssertions.assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
   }
 
   @Test
   void testOf_color_decorations() {
-    final KeybindComponent component = KeybindComponent.of("key.jump", TextColor.GREEN, ImmutableSet.of(TextDecoration.BOLD));
+    final KeybindComponent component = KeybindComponent.of("key.jump", NamedTextColor.GREEN, ImmutableSet.of(TextDecoration.BOLD));
     assertEquals("key.jump", component.keybind());
-    assertEquals(TextColor.GREEN, component.color());
+    assertEquals(NamedTextColor.GREEN, component.color());
     TextAssertions.assertDecorations(component, ImmutableSet.of(TextDecoration.BOLD), ImmutableSet.of());
   }
 
@@ -65,17 +65,17 @@ class KeybindComponentTest extends AbstractComponentTest<KeybindComponent, Keybi
   void testMake() {
     final KeybindComponent component = KeybindComponent.make(builder -> {
       builder.keybind("key.jump");
-      builder.color(TextColor.DARK_PURPLE);
+      builder.color(NamedTextColor.DARK_PURPLE);
     });
     assertEquals("key.jump", component.keybind());
-    assertEquals(TextColor.DARK_PURPLE, component.color());
+    assertEquals(NamedTextColor.DARK_PURPLE, component.color());
   }
 
   @Test
   void testMake_content() {
-    final KeybindComponent component = KeybindComponent.make("key.jump", builder -> builder.color(TextColor.DARK_PURPLE));
+    final KeybindComponent component = KeybindComponent.make("key.jump", builder -> builder.color(NamedTextColor.DARK_PURPLE));
     assertEquals("key.jump", component.keybind());
-    assertEquals(TextColor.DARK_PURPLE, component.color());
+    assertEquals(NamedTextColor.DARK_PURPLE, component.color());
   }
 
   @Test

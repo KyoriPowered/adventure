@@ -24,7 +24,7 @@
 package net.kyori.adventure.text.serializer.plain;
 
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
@@ -42,12 +42,12 @@ class PlainComponentSerializerTest {
       .decoration(TextDecoration.BOLD, TextDecoration.State.TRUE)
       .append(
         TextComponent.of("foo")
-          .color(TextColor.GREEN)
+          .color(NamedTextColor.GREEN)
           .decoration(TextDecoration.BOLD, TextDecoration.State.FALSE)
       )
       .append(
         TextComponent.of("bar")
-          .color(TextColor.BLUE)
+          .color(NamedTextColor.BLUE)
       )
       .append(TextComponent.of("baz"))
       .build();
@@ -57,12 +57,12 @@ class PlainComponentSerializerTest {
       .decoration(TextDecoration.BOLD, TextDecoration.State.TRUE)
       .append(
         TextComponent.of("you")
-          .color(TextColor.GREEN)
+          .color(NamedTextColor.GREEN)
           .decoration(TextDecoration.BOLD, TextDecoration.State.FALSE)
       )
       .append(
         TextComponent.of("!")
-          .color(TextColor.BLUE)
+          .color(NamedTextColor.BLUE)
       )
       .build();
     assertEquals("Hello there, you!", PlainComponentSerializer.INSTANCE.serialize(c2));

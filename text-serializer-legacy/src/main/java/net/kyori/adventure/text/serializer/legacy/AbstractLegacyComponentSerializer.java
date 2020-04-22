@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Set;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextFormat;
@@ -42,7 +43,7 @@ abstract class AbstractLegacyComponentSerializer implements LegacyComponentSeria
   private static final List<TextFormat> FORMATS;
   static {
     final List<TextFormat> formats = new ArrayList<>();
-    Collections.addAll(formats, TextColor.values());
+    Collections.addAll(formats, NamedTextColor.values());
     Collections.addAll(formats, DECORATIONS);
     formats.add(Reset.INSTANCE);
     FORMATS = Collections.unmodifiableList(formats);

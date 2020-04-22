@@ -23,15 +23,15 @@
  */
 package net.kyori.adventure.text.format;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+public final class TextColorImpl implements TextColor {
+  private final int value;
 
-/**
- * A color which may be applied to a {@link Style}.
- */
-public interface TextColor extends TextFormat {
-  static @NonNull TextColor of(final int value) {
-    return new TextColorImpl(value);
+  TextColorImpl(final int value) {
+    this.value = value;
   }
 
-  int value();
+  @Override
+  public int value() {
+    return this.value;
+  }
 }

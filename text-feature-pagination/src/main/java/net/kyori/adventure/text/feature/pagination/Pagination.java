@@ -30,8 +30,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.text.format.TextColor;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -58,7 +58,7 @@ public interface Pagination<T> {
   /**
    * The default line style.
    */
-  Style LINE_STYLE = Style.of(TextColor.DARK_GRAY);
+  Style LINE_STYLE = Style.of(NamedTextColor.DARK_GRAY);
   /**
    * The default character for the previous page button.
    */
@@ -67,8 +67,8 @@ public interface Pagination<T> {
    * The default style for the next page button.
    */
   Style PREVIOUS_PAGE_BUTTON_STYLE = Style.builder()
-    .color(TextColor.RED)
-    .hoverEvent(HoverEvent.showText(TextComponent.of("Previous Page", TextColor.RED)))
+    .color(NamedTextColor.RED)
+    .hoverEvent(HoverEvent.showText(TextComponent.of("Previous Page", NamedTextColor.RED)))
     .build();
   /**
    * The default character for the next page button.
@@ -78,8 +78,8 @@ public interface Pagination<T> {
    * The default style for the next page button.
    */
   Style NEXT_PAGE_BUTTON_STYLE = Style.builder()
-    .color(TextColor.GREEN)
-    .hoverEvent(HoverEvent.showText(TextComponent.of("Next Page", TextColor.GREEN)))
+    .color(NamedTextColor.GREEN)
+    .hoverEvent(HoverEvent.showText(TextComponent.of("Next Page", NamedTextColor.GREEN)))
     .build();
 
   /**
@@ -114,11 +114,11 @@ public interface Pagination<T> {
    * A pagination renderer.
    */
   interface Renderer {
-    Component GRAY_LEFT_ROUND_BRACKET = TextComponent.of("(", TextColor.GRAY);
-    Component GRAY_LEFT_SQUARE_BRACKET = TextComponent.of("[", TextColor.GRAY);
-    Component GRAY_RIGHT_ROUND_BRACKET = TextComponent.of(")", TextColor.GRAY);
-    Component GRAY_RIGHT_SQUARE_BRACKET = TextComponent.of("]", TextColor.GRAY);
-    Component GRAY_FORWARD_SLASH = TextComponent.of("/", TextColor.GRAY);
+    Component GRAY_LEFT_ROUND_BRACKET = TextComponent.of("(", NamedTextColor.GRAY);
+    Component GRAY_LEFT_SQUARE_BRACKET = TextComponent.of("[", NamedTextColor.GRAY);
+    Component GRAY_RIGHT_ROUND_BRACKET = TextComponent.of(")", NamedTextColor.GRAY);
+    Component GRAY_RIGHT_SQUARE_BRACKET = TextComponent.of("]", NamedTextColor.GRAY);
+    Component GRAY_FORWARD_SLASH = TextComponent.of("/", NamedTextColor.GRAY);
 
     /**
      * Renders an empty result.
@@ -128,7 +128,7 @@ public interface Pagination<T> {
      * @return the rendered component
      */
     default @NonNull Component renderEmpty() {
-      return TextComponent.of("No results match.", TextColor.GRAY);
+      return TextComponent.of("No results match.", NamedTextColor.GRAY);
     }
 
     /**
@@ -141,7 +141,7 @@ public interface Pagination<T> {
      * @return the rendered component
      */
     default @NonNull Component renderUnknownPage(final int page, final int pages) {
-      return TextComponent.of("Unknown page selected. " + pages + " total pages.", TextColor.GRAY);
+      return TextComponent.of("Unknown page selected. " + pages + " total pages.", NamedTextColor.GRAY);
     }
 
     /**
@@ -158,9 +158,9 @@ public interface Pagination<T> {
         .append(title)
         .append(TextComponent.space())
         .append(GRAY_LEFT_ROUND_BRACKET)
-        .append(TextComponent.of(page, TextColor.WHITE))
+        .append(TextComponent.of(page, NamedTextColor.WHITE))
         .append(GRAY_FORWARD_SLASH)
-        .append(TextComponent.of(pages, TextColor.WHITE))
+        .append(TextComponent.of(pages, NamedTextColor.WHITE))
         .append(GRAY_RIGHT_ROUND_BRACKET)
         .append(TextComponent.space())
         .build();

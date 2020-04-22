@@ -25,7 +25,7 @@ package net.kyori.adventure.text;
 
 import com.google.common.collect.ImmutableSet;
 import java.util.Collections;
-import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
@@ -51,19 +51,19 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
 
   @Test
   void testOf_color() {
-    final TranslatableComponent component = TranslatableComponent.of("multiplayer.player.left", TextColor.GREEN);
+    final TranslatableComponent component = TranslatableComponent.of("multiplayer.player.left", NamedTextColor.GREEN);
     assertEquals("multiplayer.player.left", component.key());
-    assertEquals(TextColor.GREEN, component.color());
+    assertEquals(NamedTextColor.GREEN, component.color());
     assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
   }
 
   @Test
   void testOf_color_decorations() {
-    final TranslatableComponent c0 = TranslatableComponent.of("multiplayer.player.left", TextColor.GREEN, TextDecoration.BOLD);
-    final TranslatableComponent c1 = TranslatableComponent.of("multiplayer.player.left", TextColor.GREEN, ImmutableSet.of(TextDecoration.BOLD));
+    final TranslatableComponent c0 = TranslatableComponent.of("multiplayer.player.left", NamedTextColor.GREEN, TextDecoration.BOLD);
+    final TranslatableComponent c1 = TranslatableComponent.of("multiplayer.player.left", NamedTextColor.GREEN, ImmutableSet.of(TextDecoration.BOLD));
     assertEquals("multiplayer.player.left", c1.key());
-    assertEquals(TextColor.GREEN, c0.color());
-    assertEquals(TextColor.GREEN, c1.color());
+    assertEquals(NamedTextColor.GREEN, c0.color());
+    assertEquals(NamedTextColor.GREEN, c1.color());
     assertDecorations(c0, ImmutableSet.of(TextDecoration.BOLD), ImmutableSet.of());
     assertDecorations(c1, ImmutableSet.of(TextDecoration.BOLD), ImmutableSet.of());
   }
@@ -72,17 +72,17 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
   void testMake() {
     final TranslatableComponent component = TranslatableComponent.make(builder -> {
       builder.key("multiplayer.player.left");
-      builder.color(TextColor.DARK_PURPLE);
+      builder.color(NamedTextColor.DARK_PURPLE);
     });
     assertEquals("multiplayer.player.left", component.key());
-    assertEquals(TextColor.DARK_PURPLE, component.color());
+    assertEquals(NamedTextColor.DARK_PURPLE, component.color());
   }
 
   @Test
   void testMake_content() {
-    final TranslatableComponent component = TranslatableComponent.make("multiplayer.player.left", builder -> builder.color(TextColor.DARK_PURPLE));
+    final TranslatableComponent component = TranslatableComponent.make("multiplayer.player.left", builder -> builder.color(NamedTextColor.DARK_PURPLE));
     assertEquals("multiplayer.player.left", component.key());
-    assertEquals(TextColor.DARK_PURPLE, component.color());
+    assertEquals(NamedTextColor.DARK_PURPLE, component.color());
   }
 
   @Test

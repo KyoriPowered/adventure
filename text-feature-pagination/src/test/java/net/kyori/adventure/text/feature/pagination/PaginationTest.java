@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
@@ -47,7 +47,7 @@ class PaginationTest {
         return EMPTY;
       }
     })
-    .build(TITLE, (value, index) -> Collections.singleton(value == null ? TextComponent.of("<null>") : TextComponent.of(value, TextColor.GOLD)), page -> "/page " + page);
+    .build(TITLE, (value, index) -> Collections.singleton(value == null ? TextComponent.of("<null>") : TextComponent.of(value, NamedTextColor.GOLD)), page -> "/page " + page);
   private static final List<String> CONTENT_0 = Collections.emptyList();
   private static final List<String> CONTENT_2 = content(2);
   private static final List<String> CONTENT_14 = content(14);
@@ -78,7 +78,7 @@ class PaginationTest {
     assertEquals(6 + 1 + 1, rendered.size());
     assertTrue(rendered.get(0).contains(TITLE));
     for(int i = 1; i < 7; i++) {
-      assertEquals(TextColor.GOLD, rendered.get(i).color());
+      assertEquals(NamedTextColor.GOLD, rendered.get(i).color());
     }
 
     final String c7 = rendered.get(7).toString();
@@ -91,7 +91,7 @@ class PaginationTest {
     assertEquals(6 + 1 + 1, rendered.size());
     assertTrue(rendered.get(0).contains(TITLE));
     for(int i = 1; i < 7; i++) {
-      assertEquals(TextColor.GOLD, rendered.get(i).color());
+      assertEquals(NamedTextColor.GOLD, rendered.get(i).color());
     }
 
     final String c7 = rendered.get(7).toString();
@@ -104,7 +104,7 @@ class PaginationTest {
     assertEquals(2 + 1 + 1, rendered.size());
     assertTrue(rendered.get(0).contains(TITLE));
     for(int i = 1; i < 2; i++) {
-      assertEquals(TextColor.GOLD, rendered.get(i).color());
+      assertEquals(NamedTextColor.GOLD, rendered.get(i).color());
     }
     final String c3 = rendered.get(3).toString();
     assertTrue(!c3.contains("Next") && !c3.contains("Previous"));
@@ -116,7 +116,7 @@ class PaginationTest {
     assertEquals(2 + 1 + 1, rendered.size());
     assertTrue(rendered.get(0).contains(TITLE));
     for(int i = 1; i < 2; i++) {
-      assertEquals(TextColor.GOLD, rendered.get(i).color());
+      assertEquals(NamedTextColor.GOLD, rendered.get(i).color());
     }
 
     final String c3 = rendered.get(3).toString();

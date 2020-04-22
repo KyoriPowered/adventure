@@ -25,7 +25,7 @@ package net.kyori.adventure.text;
 
 import com.google.common.collect.ImmutableSet;
 import java.util.stream.IntStream;
-import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
@@ -58,17 +58,17 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
 
   @Test
   void testOf_color() {
-    final TextComponent component = TextComponent.of("foo", TextColor.GREEN);
+    final TextComponent component = TextComponent.of("foo", NamedTextColor.GREEN);
     assertEquals("foo", component.content());
-    assertEquals(TextColor.GREEN, component.color());
+    assertEquals(NamedTextColor.GREEN, component.color());
     assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
   }
 
   @Test
   void testOf_color_decorations() {
-    final TextComponent component = TextComponent.of("foo", TextColor.GREEN, ImmutableSet.of(TextDecoration.BOLD));
+    final TextComponent component = TextComponent.of("foo", NamedTextColor.GREEN, ImmutableSet.of(TextDecoration.BOLD));
     assertEquals("foo", component.content());
-    assertEquals(TextColor.GREEN, component.color());
+    assertEquals(NamedTextColor.GREEN, component.color());
     assertDecorations(component, ImmutableSet.of(TextDecoration.BOLD), ImmutableSet.of());
   }
 
@@ -76,10 +76,10 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
   void testMake() {
     final TextComponent component = TextComponent.make(builder -> {
       builder.content("foo");
-      builder.color(TextColor.DARK_PURPLE);
+      builder.color(NamedTextColor.DARK_PURPLE);
     });
     assertEquals("foo", component.content());
-    assertEquals(TextColor.DARK_PURPLE, component.color());
+    assertEquals(NamedTextColor.DARK_PURPLE, component.color());
   }
 
   @Test
