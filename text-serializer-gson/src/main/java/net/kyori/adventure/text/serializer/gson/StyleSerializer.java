@@ -26,6 +26,7 @@ package net.kyori.adventure.text.serializer.gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
@@ -106,9 +107,16 @@ public final class StyleSerializer implements JsonDeserializer<Style>, JsonSeria
         final /* @Nullable */ JsonPrimitive rawAction = hoverEvent.getAsJsonPrimitive(HOVER_EVENT_ACTION);
         final HoverEvent./*@Nullable*/ Action action = rawAction == null ? null : context.deserialize(rawAction, HoverEvent.Action.class);
         if(action != null && action.readable()) {
-          // TODO all this
-          final /* @Nullable */ JsonElement rawValue = hoverEvent.get(HOVER_EVENT_VALUE);
-          final /* @Nullable */ Component value = rawValue == null ? null : context.deserialize(rawValue, Component.class);
+          final /* @Nullable */ Object value;
+          if(hoverEvent.has(HOVER_EVENT_CONTENTS)) {
+            final /* @Nullable */ JsonElement rawValue = hoverEvent.get(HOVER_EVENT_CONTENTS);
+            value = context.deserialize(rawValue, action.type());
+          } else if(hoverEvent.has(HOVER_EVENT_VALUE)) {
+            final /* @Nullable */ JsonElement rawValue = hoverEvent.get(HOVER_EVENT_VALUE);
+            value = rawValue == null ? null : context.deserialize(rawValue, Component.class);
+          } else {
+            value = null;
+          }
           if(value != null) {
             style.hoverEvent(HoverEvent.of(action, value));
           }
@@ -154,7 +162,8 @@ public final class StyleSerializer implements JsonDeserializer<Style>, JsonSeria
     if(hoverEvent != null) {
       final JsonObject eventJson = new JsonObject();
       eventJson.add(HOVER_EVENT_ACTION, context.serialize(hoverEvent.action()));
-      eventJson.add(HOVER_EVENT_VALUE, context.serialize(hoverEvent.value())); // TODO
+      eventJson.add(HOVER_EVENT_CONTENTS, context.serialize(hoverEvent.value(hoverEvent.action())));
+      eventJson.add(HOVER_EVENT_VALUE, JsonNull.INSTANCE); // TODO for legacy versions
       json.add(HOVER_EVENT, eventJson);
     }
 

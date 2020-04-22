@@ -149,15 +149,15 @@ public final class HoverEvent implements Examinable {
     /**
      * Shows a {@link Component} when hovered over.
      */
-    public static final Action<Component> SHOW_TEXT = new Action<>("show_text", true);
+    public static final Action<Component> SHOW_TEXT = new Action<>("show_text", Component.class, true);
     /**
      * Shows an item instance when hovered over.
      */
-    public static final Action<Component> SHOW_ITEM = new Action<>("show_item", true);
+    public static final Action<Component> SHOW_ITEM = new Action<>("show_item", Component.class, true);
     /**
      * Shows an entity when hovered over.
      */
-    public static final Action<Component> SHOW_ENTITY = new Action<>("show_entity", true);
+    public static final Action<Component> SHOW_ENTITY = new Action<>("show_entity", Component.class, true);
 
     /**
      * The name map.
@@ -167,6 +167,7 @@ public final class HoverEvent implements Examinable {
      * The name of this action.
      */
     private final String name;
+    private final Class<V> type;
     /**
      * If this action is readable.
      *
@@ -174,9 +175,14 @@ public final class HoverEvent implements Examinable {
      */
     private final boolean readable;
 
-    Action(final String name, final boolean readable) {
+    Action(final String name, final Class<V> type, final boolean readable) {
       this.name = name;
+      this.type = type;
       this.readable = readable;
+    }
+
+    public @NonNull Class<V> type() {
+      return this.type;
     }
 
     /**
