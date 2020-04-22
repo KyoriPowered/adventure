@@ -23,7 +23,9 @@
  */
 package net.kyori.adventure.text.event;
 
+import java.util.UUID;
 import java.util.stream.Stream;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.NameMap;
 import net.kyori.examination.Examinable;
@@ -143,9 +145,39 @@ public final class HoverEvent implements Examinable {
   }
 
   public static class ShowItem {
+    private final Key item;
+    private final int count;
+
+    public ShowItem(final Key item, final int count) {
+      this.item = item;
+      this.count = count;
+    }
+
+    public Key item() {
+      return this.item;
+    }
+
+    public int count() {
+      return this.count;
+    }
   }
 
   public static class ShowEntity {
+    private final Key type;
+    public final UUID id;
+
+    public ShowEntity(final Key type, final UUID id) {
+      this.type = type;
+      this.id = id;
+    }
+
+    public Key type() {
+      return this.type;
+    }
+
+    public UUID id() {
+      return this.id;
+    }
   }
 
   /**
