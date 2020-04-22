@@ -68,7 +68,7 @@ public final class HoverEvent implements Examinable {
    * @param item the item to show on hover
    * @return a hover event
    */
-  public static @NonNull HoverEvent showItem(final @NonNull Component item) {
+  public static @NonNull HoverEvent showItem(final @NonNull ShowItem item) {
     return of(Action.SHOW_ITEM, item);
   }
 
@@ -78,7 +78,7 @@ public final class HoverEvent implements Examinable {
    * @param entity the entity to show on hover
    * @return a hover event
    */
-  public static @NonNull HoverEvent showEntity(final @NonNull Component entity) {
+  public static @NonNull HoverEvent showEntity(final @NonNull ShowEntity entity) {
     return of(Action.SHOW_ENTITY, entity);
   }
 
@@ -142,6 +142,12 @@ public final class HoverEvent implements Examinable {
     return StringExaminer.simpleEscaping().examine(this);
   }
 
+  public static class ShowItem {
+  }
+
+  public static class ShowEntity {
+  }
+
   /**
    * An enumeration of hover event actions.
    */
@@ -153,11 +159,11 @@ public final class HoverEvent implements Examinable {
     /**
      * Shows an item instance when hovered over.
      */
-    public static final Action<Component> SHOW_ITEM = new Action<>("show_item", Component.class, true);
+    public static final Action<ShowItem> SHOW_ITEM = new Action<>("show_item", ShowItem.class, true);
     /**
      * Shows an entity when hovered over.
      */
-    public static final Action<Component> SHOW_ENTITY = new Action<>("show_entity", Component.class, true);
+    public static final Action<ShowEntity> SHOW_ENTITY = new Action<>("show_entity", ShowEntity.class, true);
 
     /**
      * The name map.
