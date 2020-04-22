@@ -6,6 +6,8 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.Optional;
@@ -30,7 +32,7 @@ public class MiniMessageParser {
     private static final String INNER = "inner";
     private static final String END = "end";
     // https://regex101.com/r/8VZ7uA/5
-    private static Pattern pattern = Pattern.compile("((?<start><)(?<token>([^<>]+)|([^<>]+\"(?<inner>[^\"]+)\"))(?<end>>))+?");
+    private static final Pattern pattern = Pattern.compile("((?<start><)(?<token>([^<>]+)|([^<>]+\"(?<inner>[^\"]+)\"))(?<end>>))+?");
 
     @Nonnull
     public static String escapeTokens(@Nonnull String richMessage) {
@@ -122,9 +124,9 @@ public class MiniMessageParser {
     public static BaseComponent[] parseFormat(@Nonnull String richMessage) {
         ComponentBuilder builder = null;
 
-        Stack<ClickEvent> clickEvents = new Stack<>();
-        Stack<HoverEvent> hoverEvents = new Stack<>();
-        Stack<ChatColor> colors = new Stack<>();
+        Deque<ClickEvent> clickEvents = new ArrayDeque<>();
+        Deque<HoverEvent> hoverEvents = new ArrayDeque<>();
+        Deque<ChatColor> colors = new ArrayDeque<>();
         EnumSet<TextDecoration> decorations = EnumSet.noneOf(TextDecoration.class);
 
         Matcher matcher = pattern.matcher(richMessage);
@@ -149,16 +151,16 @@ public class MiniMessageParser {
                 }
 
                 // set everything that is not closed yet
-                if (clickEvents.size() > 0) {
+                if (!clickEvents.isEmpty()) {
                     builder.event(clickEvents.peek());
                 }
-                if (hoverEvents.size() > 0) {
+                if (!hoverEvents.isEmpty()) {
                     builder.event(hoverEvents.peek());
                 }
-                if (colors.size() > 0) {
+                if (!colors.isEmpty()) {
                     builder.color(colors.peek());
                 }
-                if (decorations.size() > 0) {
+                if (!decorations.isEmpty()) {
                     // no lambda because builder isn't effective final :/
                     for (TextDecoration decor : decorations) {
                         decor.apply(builder);
@@ -219,16 +221,16 @@ public class MiniMessageParser {
             }
 
             // set everything that is not closed yet
-            if (clickEvents.size() > 0) {
+            if (!clickEvents.isEmpty()) {
                 builder.event(clickEvents.peek());
             }
-            if (hoverEvents.size() > 0) {
+            if (!hoverEvents.isEmpty()) {
                 builder.event(hoverEvents.peek());
             }
-            if (colors.size() > 0) {
+            if (!colors.isEmpty()) {
                 builder.color(colors.peek());
             }
-            if (decorations.size() > 0) {
+            if (!decorations.isEmpty()) {
                 // no lambda because builder isn't effective final :/
                 for (TextDecoration decor : decorations) {
                     decor.apply(builder);
@@ -283,13 +285,13 @@ public class MiniMessageParser {
     }
 
     enum TextDecoration {
-        BOLD(builder -> builder.bold(true)),
-        ITALIC(builder -> builder.italic(true)),
-        UNDERLINED(builder -> builder.underlined(true)),
-        STRIKETHROUGH(builder -> builder.strikethrough(true)),
-        OBFUSCATED(builder -> builder.obfuscated(true));
+        BOLD(b -> b.bold(true)),
+        ITALIC(b -> b.italic(true)),
+        UNDERLINED(b -> b.underlined(true)),
+        STRIKETHROUGH(b -> b.strikethrough(true)),
+        OBFUSCATED(b -> b.obfuscated(true));
 
-        private Consumer<ComponentBuilder> builder;
+        private final Consumer<ComponentBuilder> builder;
 
         TextDecoration(@Nonnull Consumer<ComponentBuilder> builder) {
             this.builder = builder;
