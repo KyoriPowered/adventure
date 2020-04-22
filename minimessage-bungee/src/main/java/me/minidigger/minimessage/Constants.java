@@ -1,6 +1,6 @@
 package me.minidigger.minimessage;
 
-public class Constants {
+class Constants {
     public static final String CLICK = "click";
     public static final String HOVER = "hover";
 

@@ -11,7 +11,6 @@ import java.util.Deque;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Stack;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
