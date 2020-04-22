@@ -24,6 +24,8 @@
 package net.kyori.adventure.text.event;
 
 import com.google.common.testing.EqualsTester;
+import java.util.UUID;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.TextComponent;
 import org.junit.jupiter.api.Test;
 
@@ -32,6 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class HoverEventTest {
   @Test
   void testEquality() {
+    final UUID entity = UUID.randomUUID();
     new EqualsTester()
       .addEqualityGroup(
         HoverEvent.showText(TextComponent.empty()),
@@ -42,8 +45,8 @@ class HoverEventTest {
         HoverEvent.of(HoverEvent.Action.SHOW_ITEM, TextComponent.empty())
       )
       .addEqualityGroup(
-        HoverEvent.showEntity(TextComponent.empty()),
-        HoverEvent.of(HoverEvent.Action.SHOW_ENTITY, TextComponent.empty())
+        HoverEvent.showEntity(new HoverEvent.ShowEntity(Key.of("cat"), entity, TextComponent.empty())),
+        HoverEvent.of(HoverEvent.Action.SHOW_ENTITY, new HoverEvent.ShowEntity(Key.of("cat"), entity, TextComponent.empty()))
       )
       .testEquals();
   }

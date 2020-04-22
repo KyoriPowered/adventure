@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.event;
 
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
@@ -31,6 +32,7 @@ import net.kyori.adventure.util.NameMap;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
+import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -144,39 +146,94 @@ public final class HoverEvent implements Examinable {
     return StringExaminer.simpleEscaping().examine(this);
   }
 
-  public static class ShowItem {
+  public static final class ShowItem implements Examinable {
     private final Key item;
     private final int count;
+    // TODO: nbt
 
-    public ShowItem(final Key item, final int count) {
+    public ShowItem(final @NonNull Key item, final @NonNegative int count) {
       this.item = item;
       this.count = count;
     }
 
-    public Key item() {
+    public @NonNull Key item() {
       return this.item;
     }
 
-    public int count() {
+    public @NonNegative int count() {
       return this.count;
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object other) {
+      if(this == other) return true;
+      if(other == null || this.getClass() != other.getClass()) return false;
+      final ShowItem that = (ShowItem) other;
+      return this.item.equals(that.item) && this.count == that.count;
+    }
+
+    @Override
+    public int hashCode() {
+      int result = this.item.hashCode();
+      result = (31 * result) + Integer.hashCode(this.count);
+      return result;
+    }
+
+    @Override
+    public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+      return Stream.of(
+        ExaminableProperty.of("item", this.item),
+        ExaminableProperty.of("count", this.count)
+      );
     }
   }
 
-  public static class ShowEntity {
+  public static final class ShowEntity implements Examinable {
     private final Key type;
     public final UUID id;
+    public final Component name;
 
-    public ShowEntity(final Key type, final UUID id) {
+    public ShowEntity(final @NonNull Key type, final @NonNull UUID id, final @NonNull Component name) {
       this.type = type;
       this.id = id;
+      this.name = name;
     }
 
-    public Key type() {
+    public @NonNull Key type() {
       return this.type;
     }
 
-    public UUID id() {
+    public @NonNull UUID id() {
       return this.id;
+    }
+
+    public @NonNull Component name() {
+      return this.name;
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object other) {
+      if(this == other) return true;
+      if(other == null || this.getClass() != other.getClass()) return false;
+      final ShowEntity that = (ShowEntity) other;
+      return this.type.equals(that.type) && this.id.equals(that.id) && this.name.equals(that.name);
+    }
+
+    @Override
+    public int hashCode() {
+      int result = this.type.hashCode();
+      result = (31 * result) + this.id.hashCode();
+      result = (31 * result) + this.name.hashCode();
+      return result;
+    }
+
+    @Override
+    public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+      return Stream.of(
+        ExaminableProperty.of("type", this.type),
+        ExaminableProperty.of("id", this.id),
+        ExaminableProperty.of("name", this.name)
+      );
     }
   }
 
