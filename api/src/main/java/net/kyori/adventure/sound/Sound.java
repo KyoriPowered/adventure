@@ -27,6 +27,8 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.NameMap;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A sound.
  */
@@ -41,6 +43,8 @@ public interface Sound {
    * @return the sound
    */
   static @NonNull Sound of(final @NonNull Key name, final @NonNull Source source, final float volume, final float pitch) {
+    requireNonNull(name, "name");
+    requireNonNull(source, "source");
     return new SoundImpl(name, source, volume, pitch);
   }
 
