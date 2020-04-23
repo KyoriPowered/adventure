@@ -44,7 +44,7 @@ import static java.util.Objects.requireNonNull;
  * <p>A hover event displays a {@link HoverEvent#value component} when hovered
  * over by a mouse on the client.</p>
  */
-public final class HoverEvent implements Examinable {
+public final class HoverEvent<V> implements Examinable {
   /**
    * Creates a hover event.
    *
@@ -52,8 +52,8 @@ public final class HoverEvent implements Examinable {
    * @param value the value
    * @return a click event
    */
-  public static <V> @NonNull HoverEvent of(final @NonNull Action<V> action, final @NonNull V value) {
-    return new HoverEvent(action, value);
+  public static <V> @NonNull HoverEvent<V> of(final @NonNull Action<V> action, final @NonNull V value) {
+    return new HoverEvent<>(action, value);
   }
 
   /**
@@ -62,7 +62,7 @@ public final class HoverEvent implements Examinable {
    * @param text the text to show on hover
    * @return a hover event
    */
-  public static @NonNull HoverEvent showText(final @NonNull Component text) {
+  public static @NonNull HoverEvent<Component> showText(final @NonNull Component text) {
     return of(Action.SHOW_TEXT, text);
   }
 
@@ -72,7 +72,7 @@ public final class HoverEvent implements Examinable {
    * @param item the item to show on hover
    * @return a hover event
    */
-  public static @NonNull HoverEvent showItem(final @NonNull ShowItem item) {
+  public static @NonNull HoverEvent<ShowItem> showItem(final @NonNull ShowItem item) {
     return of(Action.SHOW_ITEM, item);
   }
 
@@ -82,20 +82,20 @@ public final class HoverEvent implements Examinable {
    * @param entity the entity to show on hover
    * @return a hover event
    */
-  public static @NonNull HoverEvent showEntity(final @NonNull ShowEntity entity) {
+  public static @NonNull HoverEvent<ShowEntity> showEntity(final @NonNull ShowEntity entity) {
     return of(Action.SHOW_ENTITY, entity);
   }
 
   /**
    * The hover event action.
    */
-  private final Action<?> action;
+  private final Action<V> action;
   /**
    * The hover event value.
    */
-  private final Object value;
+  private final V value;
 
-  private HoverEvent(final @NonNull Action<?> action, final @NonNull Object value) {
+  private HoverEvent(final @NonNull Action<V> action, final @NonNull V value) {
     this.action = requireNonNull(action, "action");
     this.value = requireNonNull(value, "value");
   }
@@ -105,7 +105,7 @@ public final class HoverEvent implements Examinable {
    *
    * @return the hover event action
    */
-  public @NonNull Action<?> action() {
+  public @NonNull Action<V> action() {
     return this.action;
   }
 
@@ -114,15 +114,15 @@ public final class HoverEvent implements Examinable {
    *
    * @return the hover event value
    */
-  public <V> @NonNull V value(final Action<V> action) {
-    return action == this.action ? (V) this.value : null; // TODO
+  public @NonNull V value() {
+    return this.value;
   }
 
   @Override
   public boolean equals(final @Nullable Object other) {
     if(this == other) return true;
     if(other == null || this.getClass() != other.getClass()) return false;
-    final HoverEvent that = (HoverEvent) other;
+    final HoverEvent<?> that = (HoverEvent<?>) other;
     return this.action == that.action && this.value.equals(that.value);
   }
 

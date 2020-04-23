@@ -51,7 +51,7 @@ public final class Style implements Examinable {
   private final TextDecoration.State underlined;
   private final TextDecoration.State italic;
   private final @Nullable ClickEvent clickEvent;
-  private final @Nullable HoverEvent hoverEvent;
+  private final @Nullable HoverEvent<?> hoverEvent;
   private final @Nullable String insertion;
 
   /**
@@ -157,7 +157,7 @@ public final class Style implements Examinable {
     return builder.build();
   }
 
-  private Style(final @Nullable TextColor color, final TextDecoration.State obfuscated, final TextDecoration.State bold, final TextDecoration.State strikethrough, final TextDecoration.State underlined, final TextDecoration.State italic, final @Nullable ClickEvent clickEvent, final @Nullable HoverEvent hoverEvent, final @Nullable String insertion) {
+  private Style(final @Nullable TextColor color, final TextDecoration.State obfuscated, final TextDecoration.State bold, final TextDecoration.State strikethrough, final TextDecoration.State underlined, final TextDecoration.State italic, final @Nullable ClickEvent clickEvent, final @Nullable HoverEvent<?> hoverEvent, final @Nullable String insertion) {
     this.color = color;
     this.obfuscated = obfuscated;
     this.bold = bold;
@@ -356,7 +356,7 @@ public final class Style implements Examinable {
    *
    * @return the hover event
    */
-  public @Nullable HoverEvent hoverEvent() {
+  public @Nullable HoverEvent<?> hoverEvent() {
     return this.hoverEvent;
   }
 
@@ -366,7 +366,7 @@ public final class Style implements Examinable {
    * @param event the hover event
    * @return a style
    */
-  public @NonNull Style hoverEvent(final @Nullable HoverEvent event) {
+  public @NonNull Style hoverEvent(final @Nullable HoverEvent<?> event) {
     return new Style(this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, event, this.insertion);
   }
 
@@ -618,7 +618,7 @@ public final class Style implements Examinable {
         @Override boolean mergeColor(final @NonNull Builder target, final @Nullable TextColor color) { return true; }
         @Override boolean mergeDecoration(final @NonNull Builder target, final @NonNull TextDecoration decoration) { return true; }
         @Override boolean mergeClickEvent(final @NonNull Builder target, final @Nullable ClickEvent event) { return true; }
-        @Override boolean mergeHoverEvent(final @NonNull Builder target, final @Nullable HoverEvent event) { return true; }
+        @Override boolean mergeHoverEvent(final @NonNull Builder target, final @Nullable HoverEvent<?> event) { return true; }
         @Override boolean mergeInsertion(final @NonNull Builder target, final @Nullable String insertion) { return true; }
       },
       /**
@@ -628,7 +628,7 @@ public final class Style implements Examinable {
         @Override boolean mergeColor(final @NonNull Builder target, final @Nullable TextColor color) { return false; }
         @Override boolean mergeDecoration(final @NonNull Builder target, final @NonNull TextDecoration decoration) { return false; }
         @Override boolean mergeClickEvent(final @NonNull Builder target, final @Nullable ClickEvent event) { return false; }
-        @Override boolean mergeHoverEvent(final @NonNull Builder target, final @Nullable HoverEvent event) { return false; }
+        @Override boolean mergeHoverEvent(final @NonNull Builder target, final @Nullable HoverEvent<?> event) { return false; }
         @Override boolean mergeInsertion(final @NonNull Builder target, final @Nullable String insertion) { return false; }
       },
       /**
@@ -662,7 +662,7 @@ public final class Style implements Examinable {
         }
 
         @Override
-        boolean mergeHoverEvent(final @NonNull Builder target, final @Nullable HoverEvent event) {
+        boolean mergeHoverEvent(final @NonNull Builder target, final @Nullable HoverEvent<?> event) {
           return target.hoverEvent == null;
         }
 
@@ -675,7 +675,7 @@ public final class Style implements Examinable {
       abstract boolean mergeColor(final @NonNull Builder target, final @Nullable TextColor color);
       abstract boolean mergeDecoration(final @NonNull Builder target, final @NonNull TextDecoration decoration);
       abstract boolean mergeClickEvent(final @NonNull Builder target, final @Nullable ClickEvent event);
-      abstract boolean mergeHoverEvent(final @NonNull Builder target, final @Nullable HoverEvent event);
+      abstract boolean mergeHoverEvent(final @NonNull Builder target, final @Nullable HoverEvent<?> event);
       abstract boolean mergeInsertion(final @NonNull Builder target, final @Nullable String insertion);
     }
   }
@@ -715,7 +715,7 @@ public final class Style implements Examinable {
     /**
      * The hover event to apply to this component.
      */
-    private @Nullable HoverEvent hoverEvent;
+    private @Nullable HoverEvent<?> hoverEvent;
     /**
      * The string to insert when this component is shift-clicked in chat.
      */
@@ -824,7 +824,7 @@ public final class Style implements Examinable {
      * @param event the hover event
      * @return this builder
      */
-    public @NonNull Builder hoverEvent(final @Nullable HoverEvent event) {
+    public @NonNull Builder hoverEvent(final @Nullable HoverEvent<?> event) {
       this.hoverEvent = event;
       return this;
     }
@@ -928,7 +928,7 @@ public final class Style implements Examinable {
         final ClickEvent clickEvent = that.clickEvent();
         if(clickEvent != null && strategy.mergeClickEvent(this, clickEvent)) this.clickEvent(clickEvent);
 
-        final HoverEvent hoverEvent = that.hoverEvent();
+        final HoverEvent<?> hoverEvent = that.hoverEvent();
         if(hoverEvent != null && strategy.mergeHoverEvent(this, hoverEvent)) this.hoverEvent(hoverEvent);
       }
 

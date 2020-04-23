@@ -125,7 +125,7 @@ public interface ScopedComponent<C extends Component> extends Component {
 
   @Override
   @SuppressWarnings("unchecked")
-  default @NonNull C hoverEvent(final @Nullable HoverEvent event) {
+  default @NonNull C hoverEvent(final @Nullable HoverEvent<?> event) {
     return (C) Component.super.hoverEvent(event);
   }
 

@@ -242,7 +242,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param event the hover event
    * @return this builder
    */
-  @NonNull B hoverEvent(final @Nullable HoverEvent event);
+  @NonNull B hoverEvent(final @Nullable HoverEvent<?> event);
 
   /**
    * Sets the string to be inserted when this component is shift-clicked.

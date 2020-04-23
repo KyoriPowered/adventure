@@ -158,11 +158,11 @@ public final class StyleSerializer implements JsonDeserializer<Style>, JsonSeria
       json.add(CLICK_EVENT, eventJson);
     }
 
-    final /* @Nullable */ HoverEvent hoverEvent = src.hoverEvent();
+    final /* @Nullable */ HoverEvent<?> hoverEvent = src.hoverEvent();
     if(hoverEvent != null) {
       final JsonObject eventJson = new JsonObject();
       eventJson.add(HOVER_EVENT_ACTION, context.serialize(hoverEvent.action()));
-      eventJson.add(HOVER_EVENT_CONTENTS, context.serialize(hoverEvent.value(hoverEvent.action())));
+      eventJson.add(HOVER_EVENT_CONTENTS, context.serialize(hoverEvent.value()));
       eventJson.add(HOVER_EVENT_VALUE, JsonNull.INSTANCE); // TODO for legacy versions
       json.add(HOVER_EVENT, eventJson);
     }

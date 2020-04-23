@@ -68,12 +68,14 @@ public interface Component {
     for(final Component child : this.children()) {
       if(child.contains(that)) return true;
     }
-    final /* @Nullable */ HoverEvent hoverEvent = this.hoverEvent();
+    final /* @Nullable */ HoverEvent<?> hoverEvent = this.hoverEvent();
     if(hoverEvent != null) {
-      final Component hover = hoverEvent.value();
-      if(that == hover) return true;
-      for(final Component child : hover.children()) {
-        if(child.contains(that)) return true;
+      if(hoverEvent.action().type().isAssignableFrom(Component.class)) {
+        final Component hover = (Component) hoverEvent.value();
+        if(that == hover) return true;
+        for(final Component child : hover.children()) {
+          if(child.contains(that)) return true;
+        }
       }
     }
     return false;
@@ -308,7 +310,7 @@ public interface Component {
    *
    * @return the hover event
    */
-  default @Nullable HoverEvent hoverEvent() {
+  default @Nullable HoverEvent<?> hoverEvent() {
     return this.style().hoverEvent();
   }
 
@@ -318,8 +320,12 @@ public interface Component {
    * @param event the hover event
    * @return a component
    */
-  default @NonNull Component hoverEvent(final @Nullable HoverEvent event) {
-    if(event != null) this.detectCycle(event.value()); // detect cycle before modifying
+  default @NonNull Component hoverEvent(final @Nullable HoverEvent<?> event) {
+    if(event != null) {
+      if(event.action().type().isAssignableFrom(Component.class)) {
+        this.detectCycle((Component) event.value()); // detect cycle before modifying
+      }
+    }
     return this.style(this.style().hoverEvent(event));
   }
 

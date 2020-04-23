@@ -227,7 +227,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NonNull B hoverEvent(final @Nullable HoverEvent event) {
+  public @NonNull B hoverEvent(final @Nullable HoverEvent<?> event) {
     this.styleBuilder().hoverEvent(event);
     return (B) this;
   }
