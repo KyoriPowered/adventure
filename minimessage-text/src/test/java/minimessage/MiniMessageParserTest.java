@@ -161,6 +161,24 @@ public class MiniMessageParserTest {
         test(comp, expected);
     }
 
+    @Test
+    public void testKeyBind() {
+        String input = "Press <key:key.jump> to jump!";
+        String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Press \"},{\"keybind\":\"key.jump\"},{\"text\":\" to jump!\"}]}";
+        Component comp = MiniMessageParser.parseFormat(input);
+
+        test(comp, expected);
+    }
+
+    @Test
+    public void testKeyBindWithColor() {
+        String input = "Press <red><key:key.jump> to jump!";
+        String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Press \"},{\"keybind\":\"key.jump\",\"color\":\"red\"},{\"text\":\" to jump!\",\"color\":\"red\"}]}";
+        Component comp = MiniMessageParser.parseFormat(input);
+
+        test(comp, expected);
+    }
+
     private void test(@Nonnull String input, @Nonnull String expected) {
         test(MiniMessageParser.parseFormat(input), expected);
     }

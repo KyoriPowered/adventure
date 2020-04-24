@@ -1,6 +1,7 @@
 package me.minidigger.minimessage;
 
 import net.kyori.text.Component;
+import net.kyori.text.KeybindComponent;
 import net.kyori.text.TextComponent;
 import net.kyori.text.TextComponent.Builder;
 import net.kyori.text.event.ClickEvent;
@@ -21,6 +22,7 @@ import javax.annotation.Nonnull;
 import static me.minidigger.minimessage.Constants.CLICK;
 import static me.minidigger.minimessage.Constants.CLOSE_TAG;
 import static me.minidigger.minimessage.Constants.HOVER;
+import static me.minidigger.minimessage.Constants.KEYBIND;
 import static me.minidigger.minimessage.Constants.SEPARATOR;
 import static me.minidigger.minimessage.Constants.TAG_END;
 import static me.minidigger.minimessage.Constants.TAG_START;
@@ -147,23 +149,8 @@ public class MiniMessageParser {
             if (msg != null && msg.length() != 0) {
                 // append message
                 current = TextComponent.of(msg);
+                current = applyFormatting(clickEvents, hoverEvents, colors, (EnumSet<HelperTextDecoration>) decorations, current);
 
-                // set everything that is not closed yet
-                if (!clickEvents.isEmpty()) {
-                    current = current.clickEvent(clickEvents.peek());
-                }
-                if (!hoverEvents.isEmpty()) {
-                    current = current.hoverEvent(hoverEvents.peek());
-                }
-                if (!colors.isEmpty()) {
-                    current = current.color(colors.peek());
-                }
-                if (!decorations.isEmpty()) {
-                    // no lambda because builder isn't effective final :/
-                    for (HelperTextDecoration decor : decorations) {
-                        current = decor.apply(current);
-                    }
-                }
             }
 
             String token = matcher.group(TOKEN);
@@ -195,8 +182,20 @@ public class MiniMessageParser {
                 colors.push(color.get());
             } else if (token.startsWith(CLOSE_TAG) && resolveColor(token.replace(CLOSE_TAG, "")).isPresent()) {
                 colors.pop();
-            } else {
-                // invalid tag
+            }
+            // keybind
+            else if (token.startsWith(KEYBIND + SEPARATOR)) {
+                if (current != null) {
+                    parent.append(current);
+                }
+                current = handleKeybind(token);
+                current = applyFormatting(clickEvents, hoverEvents, colors, decorations, current);
+            }
+            // invalid tag
+            else {
+                if (current != null) {
+                    parent.append(current);
+                }
                 current = TextComponent.of(TAG_START + token + TAG_END);
             }
 
@@ -212,21 +211,7 @@ public class MiniMessageParser {
             Component current = TextComponent.of(msg);
 
             // set everything that is not closed yet
-            if (!clickEvents.isEmpty()) {
-                current = current.clickEvent(clickEvents.peek());
-            }
-            if (!hoverEvents.isEmpty()) {
-                current = current.hoverEvent(hoverEvents.peek());
-            }
-            if (!colors.isEmpty()) {
-                current = current.color(colors.peek());
-            }
-            if (!decorations.isEmpty()) {
-                // no lambda because builder isn't effective final :/
-                for (HelperTextDecoration decor : decorations) {
-                    current = decor.apply(current);
-                }
-            }
+            current = applyFormatting(clickEvents, hoverEvents, colors, decorations, current);
 
             parent.append(current);
         }
@@ -238,6 +223,40 @@ public class MiniMessageParser {
         } else {
             return comp;
         }
+    }
+
+    @Nonnull
+    private static Component applyFormatting(@Nonnull Deque<ClickEvent> clickEvents,
+                                             @Nonnull Deque<HoverEvent> hoverEvents,
+                                             @Nonnull Deque<TextColor> colors,
+                                             @Nonnull EnumSet<HelperTextDecoration> decorations,
+                                             @Nonnull Component current) {
+        // set everything that is not closed yet
+        if (!clickEvents.isEmpty()) {
+            current = current.clickEvent(clickEvents.peek());
+        }
+        if (!hoverEvents.isEmpty()) {
+            current = current.hoverEvent(hoverEvents.peek());
+        }
+        if (!colors.isEmpty()) {
+            current = current.color(colors.peek());
+        }
+        if (!decorations.isEmpty()) {
+            // no lambda because builder isn't effective final :/
+            for (HelperTextDecoration decor : decorations) {
+                current = decor.apply(current);
+            }
+        }
+        return current;
+    }
+
+    @Nonnull
+    private static KeybindComponent handleKeybind(@Nonnull String token) {
+        String[] args = token.split(SEPARATOR);
+        if (args.length < 2) {
+            throw new ParseException("Can't parse keybind (too few args) " + token);
+        }
+        return KeybindComponent.of(args[1]);
     }
 
     @Nonnull
