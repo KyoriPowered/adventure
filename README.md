@@ -1,4 +1,7 @@
 # MiniMessage
+[![CodeFactor](https://www.codefactor.io/repository/github/minidigger/minimessage/badge)](https://www.codefactor.io/repository/github/minidigger/minimessage)
+[![GitHub license](https://img.shields.io/github/license/MiniDigger/MiniMessage?style=flat-square)](https://github.com/MiniDigger/MiniMessage/blob/master/LICENSE)
+![Maven Central](https://img.shields.io/maven-central/v/me.minidigger/MiniMessage?style=flat-square)
 
 Simple library that implements an easy to use textual format to send rich json messages. 
 
@@ -95,7 +98,7 @@ Artifact:
 <dependency>
     <groupId>me.minidigger</groupId>
     <artifactId>MiniMessage</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>2.0.3</version> <!-- see badge on top of the repo for current version -->
     <scope>compile</scope>
 </dependency>
 ```
