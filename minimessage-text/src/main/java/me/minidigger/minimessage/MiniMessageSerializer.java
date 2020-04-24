@@ -3,6 +3,7 @@ package me.minidigger.minimessage;
 import net.kyori.text.Component;
 import net.kyori.text.KeybindComponent;
 import net.kyori.text.TextComponent;
+import net.kyori.text.TranslatableComponent;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
@@ -186,6 +187,8 @@ public final class MiniMessageSerializer {
     private static void handleDifferentComponent(@Nonnull Component component, @Nonnull StringBuilder sb) {
         if (component instanceof KeybindComponent) {
             sb.append(startTag("key" + SEPARATOR + ((KeybindComponent) component).keybind()));
+        } else if (component instanceof TranslatableComponent) {
+            sb.append(startTag("lang" + SEPARATOR + ((TranslatableComponent) component).key()));
         }
     }
 }

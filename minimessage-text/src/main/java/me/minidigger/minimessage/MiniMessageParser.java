@@ -4,6 +4,7 @@ import net.kyori.text.Component;
 import net.kyori.text.KeybindComponent;
 import net.kyori.text.TextComponent;
 import net.kyori.text.TextComponent.Builder;
+import net.kyori.text.TranslatableComponent;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
@@ -26,6 +27,7 @@ import static me.minidigger.minimessage.Constants.KEYBIND;
 import static me.minidigger.minimessage.Constants.SEPARATOR;
 import static me.minidigger.minimessage.Constants.TAG_END;
 import static me.minidigger.minimessage.Constants.TAG_START;
+import static me.minidigger.minimessage.Constants.TRANSLATABLE;
 
 public class MiniMessageParser {
 
@@ -191,6 +193,14 @@ public class MiniMessageParser {
                 current = handleKeybind(token);
                 current = applyFormatting(clickEvents, hoverEvents, colors, decorations, current);
             }
+            // translatable
+            else if (token.startsWith(TRANSLATABLE + SEPARATOR)) {
+                if (current != null) {
+                    parent.append(current);
+                }
+                current = handleTranslatable(token);
+                current = applyFormatting(clickEvents, hoverEvents, colors, decorations, current);
+            }
             // invalid tag
             else {
                 if (current != null) {
@@ -249,6 +259,15 @@ public class MiniMessageParser {
             }
         }
         return current;
+    }
+
+    @Nonnull
+    private static Component handleTranslatable(@Nonnull String token) {
+        String[] args = token.split(SEPARATOR);
+        if (args.length < 2) {
+            throw new ParseException("Can't parse translatable (too few args) " + token);
+        }
+        return TranslatableComponent.of(args[1]);
     }
 
     @Nonnull

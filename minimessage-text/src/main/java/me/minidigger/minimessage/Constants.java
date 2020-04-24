@@ -4,6 +4,7 @@ class Constants {
     public static final String CLICK = "click";
     public static final String HOVER = "hover";
     public static final String KEYBIND = "key";
+    public static final String TRANSLATABLE = "lang";
 
     public static final String UNDERLINED = "underlined";
     public static final String STRIKETHROUGH = "strikethrough";

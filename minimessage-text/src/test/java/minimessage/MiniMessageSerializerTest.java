@@ -3,6 +3,7 @@ package minimessage;
 import net.kyori.text.KeybindComponent;
 import net.kyori.text.TextComponent;
 import net.kyori.text.TextComponent.Builder;
+import net.kyori.text.TranslatableComponent;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.format.TextColor;
@@ -142,6 +143,18 @@ public class MiniMessageSerializerTest {
                 .content("Press ")
                 .append(KeybindComponent.of("key.jump").color(TextColor.RED))
                 .append(" to jump!", TextColor.RED);
+
+        test(builder, expected);
+    }
+
+    @Test
+    public void testTranslatable() {
+        String expected = "You should get a <lang:block.minecraft.diamond_block>!";
+
+        Builder builder = TextComponent.builder()
+                .content("You should get a ")
+                .append(TranslatableComponent.of("block.minecraft.diamond_block"))
+                .append("!");
 
         test(builder, expected);
     }

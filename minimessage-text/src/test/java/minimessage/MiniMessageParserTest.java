@@ -179,6 +179,16 @@ public class MiniMessageParserTest {
         test(comp, expected);
     }
 
+
+    @Test
+    public void testTranslatable() {
+        String input = "You should get a <lang:block.minecraft.diamond_block>!";
+        String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"You should get a \"},{\"translate\":\"block.minecraft.diamond_block\"},{\"text\":\"!\"}]}";
+        Component comp = MiniMessageParser.parseFormat(input);
+
+        test(comp, expected);
+    }
+
     private void test(@Nonnull String input, @Nonnull String expected) {
         test(MiniMessageParser.parseFormat(input), expected);
     }
