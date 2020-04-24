@@ -13,7 +13,7 @@ import java.util.Deque;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
@@ -133,7 +133,7 @@ public class MiniMessageParser {
         Matcher matcher = pattern.matcher(richMessage);
         int lastEnd = 0;
         while (matcher.find()) {
-            Builder current = null;
+            Component current = null;
             int startIndex = matcher.start();
             int endIndex = matcher.end();
 
@@ -146,22 +146,22 @@ public class MiniMessageParser {
             // handle message
             if (msg != null && msg.length() != 0) {
                 // append message
-                current = TextComponent.builder(msg);
+                current = TextComponent.of(msg);
 
                 // set everything that is not closed yet
                 if (!clickEvents.isEmpty()) {
-                    current.clickEvent(clickEvents.peek());
+                    current = current.clickEvent(clickEvents.peek());
                 }
                 if (!hoverEvents.isEmpty()) {
-                    current.hoverEvent(hoverEvents.peek());
+                    current = current.hoverEvent(hoverEvents.peek());
                 }
                 if (!colors.isEmpty()) {
-                    current.color(colors.peek());
+                    current = current.color(colors.peek());
                 }
                 if (!decorations.isEmpty()) {
                     // no lambda because builder isn't effective final :/
                     for (HelperTextDecoration decor : decorations) {
-                        decor.apply(current);
+                        current = decor.apply(current);
                     }
                 }
             }
@@ -197,11 +197,11 @@ public class MiniMessageParser {
                 colors.pop();
             } else {
                 // invalid tag
-                current = TextComponent.builder(TAG_START + token + TAG_END);
+                current = TextComponent.of(TAG_START + token + TAG_END);
             }
 
             if (current != null) {
-                parent.append(current.build());
+                parent.append(current);
             }
         }
 
@@ -209,26 +209,26 @@ public class MiniMessageParser {
         if (richMessage.length() > lastEnd) {
             String msg = richMessage.substring(lastEnd);
             // append message
-            Builder current = TextComponent.builder(msg);
+            Component current = TextComponent.of(msg);
 
             // set everything that is not closed yet
             if (!clickEvents.isEmpty()) {
-                current.clickEvent(clickEvents.peek());
+                current = current.clickEvent(clickEvents.peek());
             }
             if (!hoverEvents.isEmpty()) {
-                current.hoverEvent(hoverEvents.peek());
+                current = current.hoverEvent(hoverEvents.peek());
             }
             if (!colors.isEmpty()) {
-                current.color(colors.peek());
+                current = current.color(colors.peek());
             }
             if (!decorations.isEmpty()) {
                 // no lambda because builder isn't effective final :/
                 for (HelperTextDecoration decor : decorations) {
-                    decor.apply(current);
+                    current = decor.apply(current);
                 }
             }
 
-            parent.append(current.build());
+            parent.append(current);
         }
 
         // optimization, ignore empty parent
@@ -285,14 +285,15 @@ public class MiniMessageParser {
         STRIKETHROUGH(b -> b.decoration(TextDecoration.STRIKETHROUGH, true)),
         OBFUSCATED(b -> b.decoration(TextDecoration.OBFUSCATED, true));
 
-        private final Consumer<Builder> builder;
+        private final UnaryOperator<Component> builder;
 
-        HelperTextDecoration(@Nonnull Consumer<Builder> builder) {
+        HelperTextDecoration(@Nonnull UnaryOperator<Component> builder) {
             this.builder = builder;
         }
 
-        public void apply(@Nonnull Builder comp) {
-            builder.accept(comp);
+        @Nonnull
+        public Component apply(@Nonnull Component comp) {
+            return builder.apply(comp);
         }
     }
 
