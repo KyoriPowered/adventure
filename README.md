@@ -86,6 +86,8 @@ String stripped = MiniMessageParser.stripTokens(minimessage);
 // stripped is 'Hello You!'
 ```
 
+You should look at the parser tests for way more usage examples. The text version supports stuff like keybinds and translatable components for example!
+
 ## Maven Artifact
 
 Artifact:  
