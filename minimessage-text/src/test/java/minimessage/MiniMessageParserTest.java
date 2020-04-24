@@ -197,6 +197,19 @@ public class MiniMessageParserTest {
         test(comp, expected);
     }
 
+    @Test
+    public void testGH5() {
+        String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:<pack_url>><hover:show_text:\"<green>/!\\ install it from Options/ResourcePacks in your game\"><green><bold>CLICK HERE</bold></hover></click>";
+        String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"»\",\"color\":\"dark_gray\"},{\"text\":\" To download it from the internet, \",\"color\":\"gray\"},{\"text\":\"CLICK HERE\",\"color\":\"green\",\"bold\":true,\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://www.google.com\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"/!\\\\ install it from Options/ResourcePacks in your game\",\"color\":\"green\"}}}]}";
+
+        // should work
+        Component comp1 = MiniMessageParser.parseFormat(input, "pack_url", "https://www.google.com");
+        test(comp1, expected);
+
+        // shouldnt throw an error
+        MiniMessageParser.parseFormat(input, "url", "https://www.google.com");
+    }
+
     private void test(@Nonnull String input, @Nonnull String expected) {
         test(MiniMessageParser.parseFormat(input), expected);
     }
