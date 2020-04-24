@@ -60,6 +60,8 @@ Json:
 
 ## Usage
 
+These examples use `minimessage-bungee`, but the api and format is the same between the two, `minimessage-text` just returns a Component instead
+
 ```java
 // simple parsing
 String input = "<red>Hai";
@@ -106,9 +108,9 @@ Releases get deployed to maven central.
 
 ## Upgrading to 2.0
 
-2.0 seperated MiniMessage into two versions, minimessage-bungee and minimessage-text.  
+2.0 seperated MiniMessage into two versions, `minimessage-bungee` and `minimessage-text`.  
 The bungee version continues to use the Bungee Chat Components, like 1.x did, but the new Version uses the kyori text lib, which has support for way more features.  
-If you dont want to change your code, use the old dependency, but you should really consider upgrading to the new one!
+If you don't want to change your code, use the old dependency, but you should really consider upgrading to the new one!
 
 ## Licence
 MIT
