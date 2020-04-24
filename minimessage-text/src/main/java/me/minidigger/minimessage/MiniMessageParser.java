@@ -130,10 +130,10 @@ public class MiniMessageParser {
     public static Component parseFormat(@Nonnull String richMessage) {
         Builder parent = TextComponent.builder("");
 
-        Deque<ClickEvent> clickEvents = new ArrayDeque<>();
-        Deque<HoverEvent> hoverEvents = new ArrayDeque<>();
-        Deque<TextColor> colors = new ArrayDeque<>();
-        Deque<String> insertions = new ArrayDeque<>();
+        ArrayDeque<ClickEvent> clickEvents = new ArrayDeque<>();
+        ArrayDeque<HoverEvent> hoverEvents = new ArrayDeque<>();
+        ArrayDeque<TextColor> colors = new ArrayDeque<>();
+        ArrayDeque<String> insertions = new ArrayDeque<>();
         EnumSet<HelperTextDecoration> decorations = EnumSet.noneOf(HelperTextDecoration.class);
 
         Matcher matcher = pattern.matcher(richMessage);
@@ -167,13 +167,13 @@ public class MiniMessageParser {
             if (token.startsWith(CLICK + SEPARATOR)) {
                 clickEvents.push(handleClick(token, inner));
             } else if (token.equals(CLOSE_TAG + CLICK)) {
-                clickEvents.pop();
+                clickEvents.pollFirst();
             }
             // hover
             else if (token.startsWith(HOVER + SEPARATOR)) {
                 hoverEvents.push(handleHover(token, inner));
             } else if (token.equals(CLOSE_TAG + HOVER)) {
-                hoverEvents.pop();
+                hoverEvents.pollFirst();
             }
             // decoration
             else if ((deco = resolveDecoration(token)).isPresent()) {
@@ -185,7 +185,7 @@ public class MiniMessageParser {
             else if ((color = resolveColor(token)).isPresent()) {
                 colors.push(color.get());
             } else if (token.startsWith(CLOSE_TAG) && resolveColor(token.replace(CLOSE_TAG, "")).isPresent()) {
-                colors.pop();
+                colors.pollFirst();
             }
             // keybind
             else if (token.startsWith(KEYBIND + SEPARATOR)) {
