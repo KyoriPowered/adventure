@@ -19,6 +19,7 @@ import static me.minidigger.minimessage.Constants.BOLD;
 import static me.minidigger.minimessage.Constants.CLICK;
 import static me.minidigger.minimessage.Constants.CLOSE_TAG;
 import static me.minidigger.minimessage.Constants.HOVER;
+import static me.minidigger.minimessage.Constants.INSERTION;
 import static me.minidigger.minimessage.Constants.ITALIC;
 import static me.minidigger.minimessage.Constants.OBFUSCATED;
 import static me.minidigger.minimessage.Constants.SEPARATOR;
@@ -91,6 +92,13 @@ public final class MiniMessageSerializer {
                 sb.append(startTag(String.format("%s" + SEPARATOR + "%s" + SEPARATOR + "\"%s\"", CLICK, click.action().name().toLowerCase(), click.value())));
             }
 
+            // ## insertion
+            // ### only start if prevComp didn't start the same one
+            String insert = comp.insertion();
+            if (insert != null && (prevComp == null ||  !insert.equals(prevComp.insertion()))) {
+                sb.append(startTag(INSERTION + SEPARATOR + insert));
+            }
+
             // # append text
             if (comp instanceof TextComponent) {
                 sb.append(((TextComponent) comp).content());
@@ -147,6 +155,14 @@ public final class MiniMessageSerializer {
             if (nextComp != null && comp.clickEvent() != null) {
                 if (areDifferent(Objects.requireNonNull(comp.clickEvent()), nextComp.clickEvent())) {
                     sb.append(endTag(CLICK));
+                }
+            }
+
+            // ## insertion
+            // ### only end insertion if next tag is different
+            if (nextComp != null && comp.insertion() != null) {
+                if (!Objects.equals(comp.insertion(), nextComp.insertion())) {
+                    sb.append(endTag(INSERTION));
                 }
             }
         }

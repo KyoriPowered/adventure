@@ -159,6 +159,18 @@ public class MiniMessageSerializerTest {
         test(builder, expected);
     }
 
+    @Test
+    public void testInsertion() {
+        String expected = "Click <insert:test>this</insert> to insert!";
+
+        Builder builder = TextComponent.builder()
+                .content("Click ")
+                .append("this", b->b.insertion("test"))
+                .append(" to insert!");
+
+        test(builder, expected);
+    }
+
     private void test(@Nonnull Builder builder, @Nonnull String expected) {
         String string = MiniMessageSerializer.serialize(builder.build());
         assertEquals(expected, string);

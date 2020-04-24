@@ -179,11 +179,19 @@ public class MiniMessageParserTest {
         test(comp, expected);
     }
 
-
     @Test
     public void testTranslatable() {
         String input = "You should get a <lang:block.minecraft.diamond_block>!";
         String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"You should get a \"},{\"translate\":\"block.minecraft.diamond_block\"},{\"text\":\"!\"}]}";
+        Component comp = MiniMessageParser.parseFormat(input);
+
+        test(comp, expected);
+    }
+
+    @Test
+    public void testInsertion() {
+        String input = "Click <insert:test>this</insert> to insert!";
+        String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Click \"},{\"text\":\"this\",\"insertion\":\"test\"},{\"text\":\" to insert!\"}]}";
         Component comp = MiniMessageParser.parseFormat(input);
 
         test(comp, expected);

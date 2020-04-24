@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 import static me.minidigger.minimessage.Constants.CLICK;
 import static me.minidigger.minimessage.Constants.CLOSE_TAG;
 import static me.minidigger.minimessage.Constants.HOVER;
+import static me.minidigger.minimessage.Constants.INSERTION;
 import static me.minidigger.minimessage.Constants.KEYBIND;
 import static me.minidigger.minimessage.Constants.SEPARATOR;
 import static me.minidigger.minimessage.Constants.TAG_END;
@@ -132,6 +133,7 @@ public class MiniMessageParser {
         Deque<ClickEvent> clickEvents = new ArrayDeque<>();
         Deque<HoverEvent> hoverEvents = new ArrayDeque<>();
         Deque<TextColor> colors = new ArrayDeque<>();
+        Deque<String> insertions = new ArrayDeque<>();
         EnumSet<HelperTextDecoration> decorations = EnumSet.noneOf(HelperTextDecoration.class);
 
         Matcher matcher = pattern.matcher(richMessage);
@@ -151,7 +153,7 @@ public class MiniMessageParser {
             if (msg != null && msg.length() != 0) {
                 // append message
                 current = TextComponent.of(msg);
-                current = applyFormatting(clickEvents, hoverEvents, colors, (EnumSet<HelperTextDecoration>) decorations, current);
+                current = applyFormatting(clickEvents, hoverEvents, colors, insertions,decorations, current);
 
             }
 
@@ -191,7 +193,7 @@ public class MiniMessageParser {
                     parent.append(current);
                 }
                 current = handleKeybind(token);
-                current = applyFormatting(clickEvents, hoverEvents, colors, decorations, current);
+                current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current);
             }
             // translatable
             else if (token.startsWith(TRANSLATABLE + SEPARATOR)) {
@@ -199,7 +201,13 @@ public class MiniMessageParser {
                     parent.append(current);
                 }
                 current = handleTranslatable(token);
-                current = applyFormatting(clickEvents, hoverEvents, colors, decorations, current);
+                current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current);
+            }
+            // insertion
+            else if (token.startsWith(INSERTION + SEPARATOR)) {
+                insertions.push(handleInsertion(token));
+            } else if (token.startsWith(CLOSE_TAG + INSERTION)) {
+                insertions.pop();
             }
             // invalid tag
             else {
@@ -207,7 +215,7 @@ public class MiniMessageParser {
                     parent.append(current);
                 }
                 current = TextComponent.of(TAG_START + token + TAG_END);
-                current = applyFormatting(clickEvents, hoverEvents, colors, decorations, current);
+                current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current);
             }
 
             if (current != null) {
@@ -222,7 +230,7 @@ public class MiniMessageParser {
             Component current = TextComponent.of(msg);
 
             // set everything that is not closed yet
-            current = applyFormatting(clickEvents, hoverEvents, colors, decorations, current);
+            current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current);
 
             parent.append(current);
         }
@@ -240,6 +248,7 @@ public class MiniMessageParser {
     private static Component applyFormatting(@Nonnull Deque<ClickEvent> clickEvents,
                                              @Nonnull Deque<HoverEvent> hoverEvents,
                                              @Nonnull Deque<TextColor> colors,
+                                             @Nonnull Deque<String> insertions,
                                              @Nonnull EnumSet<HelperTextDecoration> decorations,
                                              @Nonnull Component current) {
         // set everything that is not closed yet
@@ -258,7 +267,19 @@ public class MiniMessageParser {
                 current = decor.apply(current);
             }
         }
+        if (!insertions.isEmpty()) {
+            current = current.insertion(insertions.peek());
+        }
         return current;
+    }
+
+    @Nonnull
+    private static String handleInsertion(@Nonnull String token) {
+        String[] args = token.split(SEPARATOR);
+        if (args.length < 2) {
+            throw new ParseException("Can't parse insertion (too few args) " + token);
+        }
+        return token.replace(args[0] + SEPARATOR, "");
     }
 
     @Nonnull
