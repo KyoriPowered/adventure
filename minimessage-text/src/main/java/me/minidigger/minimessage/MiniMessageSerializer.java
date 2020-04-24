@@ -1,6 +1,7 @@
 package me.minidigger.minimessage;
 
 import net.kyori.text.Component;
+import net.kyori.text.KeybindComponent;
 import net.kyori.text.TextComponent;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
@@ -27,7 +28,7 @@ import static me.minidigger.minimessage.Constants.UNDERLINED;
 
 public final class MiniMessageSerializer {
 
-    private MiniMessageSerializer(){
+    private MiniMessageSerializer() {
     }
 
     @Nonnull
@@ -53,7 +54,7 @@ public final class MiniMessageSerializer {
 
             // ## color
             // ### white is not important
-            if (!TextColor.WHITE.equals(comp.color()) && comp.color() != null) {
+            if (!TextColor.WHITE.equals(comp.color()) && comp.color() != null && (prevComp == null || prevComp.color() != comp.color())) {
                 sb.append(startColor(Objects.requireNonNull(comp.color())));
             }
 
@@ -92,6 +93,8 @@ public final class MiniMessageSerializer {
             // # append text
             if (comp instanceof TextComponent) {
                 sb.append(((TextComponent) comp).content());
+            } else {
+                handleDifferentComponent(comp, sb);
             }
 
             // # end tags
@@ -178,5 +181,11 @@ public final class MiniMessageSerializer {
     @Nonnull
     private static String endTag(@Nonnull String content) {
         return TAG_START + CLOSE_TAG + content + TAG_END;
+    }
+
+    private static void handleDifferentComponent(@Nonnull Component component, @Nonnull StringBuilder sb) {
+        if (component instanceof KeybindComponent) {
+            sb.append(startTag("key" + SEPARATOR + ((KeybindComponent) component).keybind()));
+        }
     }
 }
