@@ -197,6 +197,7 @@ public class MiniMessageParser {
                     parent.append(current);
                 }
                 current = TextComponent.of(TAG_START + token + TAG_END);
+                current = applyFormatting(clickEvents, hoverEvents, colors, decorations, current);
             }
 
             if (current != null) {
