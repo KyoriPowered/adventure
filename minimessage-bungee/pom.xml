@@ -12,9 +12,10 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.destroystokyo.paper</groupId>
-            <artifactId>paper-api</artifactId>
-            <version>1.15.2-R0.1-SNAPSHOT</version>
+            <groupId>net.md-5</groupId>
+            <artifactId>bungeecord-chat</artifactId>
+            <version>1.15-SNAPSHOT</version>
+            <type>jar</type>
             <scope>provided</scope>
         </dependency>
     </dependencies>

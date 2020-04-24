@@ -1,11 +1,13 @@
-package me.minidigger.minimessage;
+package minimessage;
 
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
+import net.kyori.text.Component;
+import net.kyori.text.serializer.gson.GsonComponentSerializer;
 
 import org.junit.Test;
 
 import javax.annotation.Nonnull;
+
+import me.minidigger.minimessage.MiniMessageParser;
 
 import static org.junit.Assert.assertEquals;
 
@@ -15,8 +17,8 @@ public class MiniMessageParserTest {
     public void test() {
         String input1 = "<yellow>TEST<green> nested</green>Test";
         String input2 = "<yellow>TEST<green> nested<yellow>Test";
-        String out1 = ComponentSerializer.toString(MiniMessageParser.parseFormat(input1));
-        String out2 = ComponentSerializer.toString(MiniMessageParser.parseFormat(input2));
+        String out1 = GsonComponentSerializer.INSTANCE.serialize(MiniMessageParser.parseFormat(input1));
+        String out2 = GsonComponentSerializer.INSTANCE.serialize(MiniMessageParser.parseFormat(input2));
         System.out.println(out1);
         System.out.println(out2);
     }
@@ -68,7 +70,7 @@ public class MiniMessageParserTest {
     public void checkPlaceholder() {
         String input = "<test>";
         String expected = "{\"text\":\"Hello!\"}";
-        BaseComponent[] comp = MiniMessageParser.parseFormat(input, "test", "Hello!");
+        Component comp = MiniMessageParser.parseFormat(input, "test", "Hello!");
 
         test(comp, expected);
     }
@@ -76,8 +78,8 @@ public class MiniMessageParserTest {
     @Test
     public void testNiceMix() {
         String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here</click><blue> to <bold>FEEL</underlined> it";
-        String expected = "{\"extra\":[{\"color\":\"yellow\",\"text\":\"Hello! random \"},{\"color\":\"yellow\",\"bold\":true,\"text\":\"stranger\"},{\"color\":\"red\",\"underlined\":true,\"clickEvent\":{\"action\":\"run_command\",\"value\":\"test command\"},\"text\":\"click here\"},{\"color\":\"blue\",\"underlined\":true,\"text\":\" to \"},{\"color\":\"blue\",\"bold\":true,\"underlined\":true,\"text\":\"FEEL\"},{\"color\":\"blue\",\"bold\":true,\"text\":\" it\"}],\"text\":\"\"}";
-        BaseComponent[] comp = MiniMessageParser.parseFormat(input, "test", "Hello!");
+        String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Hello! random \",\"color\":\"yellow\"},{\"text\":\"stranger\",\"color\":\"yellow\",\"bold\":true},{\"text\":\"click here\",\"color\":\"red\",\"underlined\":true,\"clickEvent\":{\"action\":\"run_command\",\"value\":\"test command\"}},{\"text\":\" to \",\"color\":\"blue\",\"underlined\":true},{\"text\":\"FEEL\",\"color\":\"blue\",\"bold\":true,\"underlined\":true},{\"text\":\" it\",\"color\":\"blue\",\"bold\":true}]}";
+        Component comp = MiniMessageParser.parseFormat(input, "test", "Hello!");
 
         test(comp, expected);
     }
@@ -85,7 +87,7 @@ public class MiniMessageParserTest {
     @Test
     public void testColorSimple() {
         String input = "<yellow>TEST";
-        String expected = "{\"color\":\"yellow\",\"text\":\"TEST\"}";
+        String expected = "{\"text\":\"TEST\",\"color\":\"yellow\"}";
 
         test(input, expected);
     }
@@ -93,7 +95,7 @@ public class MiniMessageParserTest {
     @Test
     public void testColorNested() {
         String input = "<yellow>TEST<green>nested</green>Test";
-        String expected = "{\"extra\":[{\"color\":\"yellow\",\"text\":\"TEST\"},{\"color\":\"green\",\"text\":\"nested\"},{\"color\":\"yellow\",\"text\":\"Test\"}],\"text\":\"\"}";
+        String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"TEST\",\"color\":\"yellow\"},{\"text\":\"nested\",\"color\":\"green\"},{\"text\":\"Test\",\"color\":\"yellow\"}]}";
 
         test(input, expected);
     }
@@ -101,7 +103,7 @@ public class MiniMessageParserTest {
     @Test
     public void testColorNotNested() {
         String input = "<yellow>TEST</yellow><green>nested</green>Test";
-        String expected = "{\"extra\":[{\"color\":\"yellow\",\"text\":\"TEST\"},{\"color\":\"green\",\"text\":\"nested\"},{\"text\":\"Test\"}],\"text\":\"\"}";
+        String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"TEST\",\"color\":\"yellow\"},{\"text\":\"nested\",\"color\":\"green\"},{\"text\":\"Test\"}]}";
 
         test(input, expected);
     }
@@ -109,7 +111,7 @@ public class MiniMessageParserTest {
     @Test
     public void testHover() {
         String input = "<hover:show_text:\"<red>test\">TEST";
-        String expected = "{\"hoverEvent\":{\"action\":\"show_text\",\"value\":[{\"color\":\"red\",\"text\":\"test\"}]},\"text\":\"TEST\"}";
+        String expected = "{\"text\":\"TEST\",\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"test\",\"color\":\"red\"}}}";
 
         test(input, expected);
     }
@@ -117,7 +119,7 @@ public class MiniMessageParserTest {
     @Test
     public void testHoverWithColon() {
         String input = "<hover:show_text:\"<red>test:TEST\">TEST";
-        String expected = "{\"hoverEvent\":{\"action\":\"show_text\",\"value\":[{\"color\":\"red\",\"text\":\"test:TEST\"}]},\"text\":\"TEST\"}";
+        String expected = "{\"text\":\"TEST\",\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"test:TEST\",\"color\":\"red\"}}}";
 
         test(input, expected);
     }
@@ -125,7 +127,7 @@ public class MiniMessageParserTest {
     @Test
     public void testClick() {
         String input = "<click:run_command:test>TEST";
-        String expected = "{\"clickEvent\":{\"action\":\"run_command\",\"value\":\"test\"},\"text\":\"TEST\"}";
+        String expected = "{\"text\":\"TEST\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"test\"}}";
 
         test(input, expected);
     }
@@ -133,7 +135,7 @@ public class MiniMessageParserTest {
     @Test
     public void testClickExtendedCommand() {
         String input = "<click:run_command:test command>TEST";
-        String expected = "{\"clickEvent\":{\"action\":\"run_command\",\"value\":\"test command\"},\"text\":\"TEST\"}";
+        String expected = "{\"text\":\"TEST\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"test command\"}}";
 
         test(input, expected);
     }
@@ -142,7 +144,7 @@ public class MiniMessageParserTest {
     public void testInvalidTag() {
         String input = "<test>";
         String expected = "{\"text\":\"\\u003ctest\\u003e\"}"; // gson makes it html save
-        BaseComponent[] comp = MiniMessageParser.parseFormat(input);
+        Component comp = MiniMessageParser.parseFormat(input);
 
         test(comp, expected);
 
@@ -152,8 +154,8 @@ public class MiniMessageParserTest {
     @Test
     public void testInvalidTagComplex() {
         String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><oof></oof><underlined><red>click here</click><blue> to <bold>FEEL</underlined> it";
-        String expected = "{\"extra\":[{\"text\":\"\\u003ctest\\u003e\"},{\"color\":\"yellow\",\"text\":\" random \"},{\"color\":\"yellow\",\"bold\":true,\"text\":\"stranger\"},{\"text\":\"\\u003coof\\u003e\"},{\"text\":\"\\u003c/oof\\u003e\"},{\"color\":\"red\",\"underlined\":true,\"clickEvent\":{\"action\":\"run_command\",\"value\":\"test command\"},\"text\":\"click here\"},{\"color\":\"blue\",\"underlined\":true,\"text\":\" to \"},{\"color\":\"blue\",\"bold\":true,\"underlined\":true,\"text\":\"FEEL\"},{\"color\":\"blue\",\"bold\":true,\"text\":\" it\"}],\"text\":\"\"}";
-        BaseComponent[] comp = MiniMessageParser.parseFormat(input);
+        String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"\\u003ctest\\u003e\"},{\"text\":\" random \",\"color\":\"yellow\"},{\"text\":\"stranger\",\"color\":\"yellow\",\"bold\":true},{\"text\":\"\\u003coof\\u003e\"},{\"text\":\"\\u003c/oof\\u003e\"},{\"text\":\"click here\",\"color\":\"red\",\"underlined\":true,\"clickEvent\":{\"action\":\"run_command\",\"value\":\"test command\"}},{\"text\":\" to \",\"color\":\"blue\",\"underlined\":true},{\"text\":\"FEEL\",\"color\":\"blue\",\"bold\":true,\"underlined\":true},{\"text\":\" it\",\"color\":\"blue\",\"bold\":true}]}";
+        Component comp = MiniMessageParser.parseFormat(input);
 
         test(comp, expected);
     }
@@ -162,7 +164,7 @@ public class MiniMessageParserTest {
         test(MiniMessageParser.parseFormat(input), expected);
     }
 
-    private void test(@Nonnull BaseComponent[] comp, @Nonnull String expected) {
-        assertEquals(expected, ComponentSerializer.toString(comp));
+    private void test(@Nonnull Component comp, @Nonnull String expected) {
+        assertEquals(expected, GsonComponentSerializer.INSTANCE.serialize(comp));
     }
 }

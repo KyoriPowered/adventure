@@ -17,8 +17,28 @@ public class MiniMarkdownParserTest {
     }
 
     @Test
+    public void testBold2() {
+        String input = "__bold__";
+        String expected = "<bold>bold</bold>";
+
+        String output = MiniMarkdownParser.parse(input);
+
+        assertEquals(expected, output);
+    }
+
+    @Test
     public void testItalic() {
         String input = "*italic*";
+        String expected = "<italic>italic</italic>";
+
+        String output = MiniMarkdownParser.parse(input);
+
+        assertEquals(expected, output);
+    }
+
+    @Test
+    public void testItalic2() {
+        String input = "_italic_";
         String expected = "<italic>italic</italic>";
 
         String output = MiniMarkdownParser.parse(input);
