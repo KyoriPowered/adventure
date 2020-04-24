@@ -20,7 +20,10 @@ import static me.minidigger.minimessage.Constants.TAG_END;
 import static me.minidigger.minimessage.Constants.TAG_START;
 import static me.minidigger.minimessage.Constants.UNDERLINED;
 
-public class MiniMessageSerializer {
+public final class MiniMessageSerializer {
+
+    private MiniMessageSerializer(){
+    }
 
     @Nonnull
     public static String serialize(@Nonnull BaseComponent... components) {

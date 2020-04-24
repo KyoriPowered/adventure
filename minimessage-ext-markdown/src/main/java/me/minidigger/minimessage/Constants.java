@@ -2,12 +2,14 @@ package me.minidigger.minimessage;
 
 class Constants {
 
-    public static char emphasis1 = '*';
-    public static char emphasis2 = '_';
-    public static char underline = '~';
+    public static final char EMPHASIS_1 = '*';
+    public static final char EMPHASIS_2 = '_';
+    public static final char UNDERLINE = '~';
 
-    public static String italicTag  = "italic";
-    public static String boldTag = "bold";
-    public static String underlineTag = "underline";
+    public static final String ITALIC_TAG = "italic";
+    public static final String BOLD_TAG = "bold";
+    public static final String UNDERLINE_TAG = "underline";
 
+    private Constants() {
+    }
 }

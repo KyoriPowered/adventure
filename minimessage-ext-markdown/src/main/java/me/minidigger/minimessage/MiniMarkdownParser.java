@@ -39,15 +39,15 @@ public class MiniMarkdownParser {
             char c = input.charAt(currIndex);
 
             boolean shouldSkip = false;
-            if (c == Constants.emphasis1) {
+            if (c == Constants.EMPHASIS_1) {
                 char n = next(currIndex, input);
-                if (n == Constants.emphasis1) {
+                if (n == Constants.EMPHASIS_1) {
                     if (bold == -1) {
                         bold = sb.length();
                         boldSkip = new Insert(sb.length(), c + "");
                     } else {
-                        inserts.add(new Insert(bold, "<" + Constants.boldTag + ">"));
-                        inserts.add(new Insert(sb.length(), "</" + Constants.boldTag + ">"));
+                        inserts.add(new Insert(bold, "<" + Constants.BOLD_TAG + ">"));
+                        inserts.add(new Insert(sb.length(), "</" + Constants.BOLD_TAG + ">"));
                         bold = -1;
                     }
                     skip++;
@@ -56,21 +56,21 @@ public class MiniMarkdownParser {
                         italic = sb.length();
                         italicSkip = new Insert(sb.length(), c + "");
                     } else {
-                        inserts.add(new Insert(italic, "<" + Constants.italicTag + ">"));
-                        inserts.add(new Insert(sb.length(), "</" + Constants.italicTag + ">"));
+                        inserts.add(new Insert(italic, "<" + Constants.ITALIC_TAG + ">"));
+                        inserts.add(new Insert(sb.length(), "</" + Constants.ITALIC_TAG + ">"));
                         italic = -1;
                     }
                 }
                 shouldSkip = true;
-            } else if (c == Constants.emphasis2) {
+            } else if (c == Constants.EMPHASIS_2) {
                 char n = next(currIndex, input);
-                if (n == Constants.emphasis2) {
+                if (n == Constants.EMPHASIS_2) {
                     if (bold == -1) {
                         bold = sb.length();
                         boldSkip = new Insert(sb.length(), c + "");
                     } else {
-                        inserts.add(new Insert(bold, "<" + Constants.boldTag + ">"));
-                        inserts.add(new Insert(sb.length(), "</" + Constants.boldTag + ">"));
+                        inserts.add(new Insert(bold, "<" + Constants.BOLD_TAG + ">"));
+                        inserts.add(new Insert(sb.length(), "</" + Constants.BOLD_TAG + ">"));
                         bold = -1;
                     }
                     skip++;
@@ -79,21 +79,21 @@ public class MiniMarkdownParser {
                         italic = currIndex;
                         italicSkip = new Insert(sb.length(), c + "");
                     } else {
-                        inserts.add(new Insert(italic, "<" + Constants.italicTag + ">"));
-                        inserts.add(new Insert(currIndex - 1, "</" + Constants.italicTag + ">"));
+                        inserts.add(new Insert(italic, "<" + Constants.ITALIC_TAG + ">"));
+                        inserts.add(new Insert(currIndex - 1, "</" + Constants.ITALIC_TAG + ">"));
                         italic = -1;
                     }
                 }
                 shouldSkip = true;
-            } else if (c == Constants.underline) {
+            } else if (c == Constants.UNDERLINE) {
                 char n = next(currIndex, input);
-                if (n == Constants.underline) {
+                if (n == Constants.UNDERLINE) {
                     if (underline == -1) {
                         underline = sb.length();
                         underlineSkip = new Insert(sb.length(), c + "");
                     } else {
-                        inserts.add(new Insert(underline, "<" + Constants.underlineTag + ">"));
-                        inserts.add(new Insert(sb.length(), "</" + Constants.underlineTag + ">"));
+                        inserts.add(new Insert(underline, "<" + Constants.UNDERLINE_TAG + ">"));
+                        inserts.add(new Insert(sb.length(), "</" + Constants.UNDERLINE_TAG + ">"));
                         underline = -1;
                     }
                     skip++;

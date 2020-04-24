@@ -19,6 +19,7 @@ public class MiniMessageParserTest {
         String out2 = ComponentSerializer.toString(MiniMessageParser.parseFormat(input2));
         System.out.println(out1);
         System.out.println(out2);
+        assertEquals(out1, out2);
     }
 
     @Test

@@ -92,7 +92,7 @@ public class MiniMessageParser {
     @Nonnull
     public static String handlePlaceholders(@Nonnull String richMessage, @Nonnull String... placeholders) {
         if (placeholders.length % 2 != 0) {
-            throw new RuntimeException(
+            throw new ParseException(
                     "Invalid number placeholders defined, usage: parseFormat(format, key, value, key, value...)");
         }
         for (int i = 0; i < placeholders.length; i += 2) {
@@ -167,11 +167,8 @@ public class MiniMessageParser {
                 }
             }
 
-//			String group = matcher.group();
-//			String start = matcher.group(START);
             String token = matcher.group(TOKEN);
             String inner = matcher.group(INNER);
-//			String end = matcher.group(END);
 
             Optional<TextDecoration> deco;
             Optional<ChatColor> color;
@@ -249,7 +246,7 @@ public class MiniMessageParser {
     private static ClickEvent handleClick(@Nonnull String token, @Nonnull String inner) {
         String[] args = token.split(SEPARATOR);
         if (args.length < 2) {
-            throw new RuntimeException("Can't parse click action (too few args) " + token);
+            throw new ParseException("Can't parse click action (too few args) " + token);
         }
         ClickEvent.Action action = ClickEvent.Action.valueOf(args[1].toUpperCase());
         return new ClickEvent(action, token.replace(CLICK + SEPARATOR + args[1] + SEPARATOR, ""));
@@ -259,7 +256,7 @@ public class MiniMessageParser {
     private static HoverEvent handleHover(@Nonnull String token, @Nonnull String inner) {
         String[] args = token.split(SEPARATOR);
         if (args.length < 2) {
-            throw new RuntimeException("Can't parse hover action (too few args) " + token);
+            throw new ParseException("Can't parse hover action (too few args) " + token);
         }
         HoverEvent.Action action = HoverEvent.Action.valueOf(args[1].toUpperCase());
         return new HoverEvent(action, parseFormat(inner));
@@ -298,6 +295,12 @@ public class MiniMessageParser {
 
         public void apply(@Nonnull ComponentBuilder comp) {
             builder.accept(comp);
+        }
+    }
+
+    static class ParseException extends RuntimeException {
+        public ParseException(@Nonnull String message) {
+            super(message);
         }
     }
 }
