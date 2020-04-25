@@ -29,6 +29,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -42,8 +43,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import static java.util.Objects.requireNonNull;
 
 public final class Style implements Examinable {
-  private static final Style EMPTY = new Style(null, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null);
+  public static final Key DEFAULT_FONT = Key.of("default");
+  private static final Style EMPTY = new Style(DEFAULT_FONT, null, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null);
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
+  private final Key font;
   private final @Nullable TextColor color;
   private final TextDecoration.State obfuscated;
   private final TextDecoration.State bold;
@@ -157,7 +160,8 @@ public final class Style implements Examinable {
     return builder.build();
   }
 
-  private Style(final @Nullable TextColor color, final TextDecoration.State obfuscated, final TextDecoration.State bold, final TextDecoration.State strikethrough, final TextDecoration.State underlined, final TextDecoration.State italic, final @Nullable ClickEvent clickEvent, final @Nullable HoverEvent<?> hoverEvent, final @Nullable String insertion) {
+  private Style(final Key font, final @Nullable TextColor color, final TextDecoration.State obfuscated, final TextDecoration.State bold, final TextDecoration.State strikethrough, final TextDecoration.State underlined, final TextDecoration.State italic, final @Nullable ClickEvent clickEvent, final @Nullable HoverEvent<?> hoverEvent, final @Nullable String insertion) {
+    this.font = font;
     this.color = color;
     this.obfuscated = obfuscated;
     this.bold = bold;
@@ -201,6 +205,26 @@ public final class Style implements Examinable {
   }
 
   /**
+   * Gets the font.
+   *
+   * @return the font
+   */
+  public @Nullable Key font() {
+    return this.font;
+  }
+
+  /**
+   * Sets the font.
+   *
+   * @param font the font
+   * @return a style
+   */
+  public @NonNull Style color(final @Nullable Key font) {
+    if(Objects.equals(this.font, font)) return this;
+    return new Style(font, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
+  }
+
+  /**
    * Gets the color.
    *
    * @return the color
@@ -230,7 +254,7 @@ public final class Style implements Examinable {
    */
   public @NonNull Style color(final @Nullable TextColor color) {
     if(Objects.equals(this.color, color)) return this;
-    return new Style(color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
+    return new Style(this.font, color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
   }
 
   /**
@@ -292,15 +316,15 @@ public final class Style implements Examinable {
   public @NonNull Style decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
     requireNonNull(state, "state");
     if(decoration == TextDecoration.BOLD) {
-      return new Style(this.color, this.obfuscated, state, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
+      return new Style(this.font, this.color, this.obfuscated, state, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
     } else if(decoration == TextDecoration.ITALIC) {
-      return new Style(this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, state, this.clickEvent, this.hoverEvent, this.insertion);
+      return new Style(this.font, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, state, this.clickEvent, this.hoverEvent, this.insertion);
     } else if(decoration == TextDecoration.UNDERLINED) {
-      return new Style(this.color, this.obfuscated, this.bold, this.strikethrough, state, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
+      return new Style(this.font, this.color, this.obfuscated, this.bold, this.strikethrough, state, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
     } else if(decoration == TextDecoration.STRIKETHROUGH) {
-      return new Style(this.color, this.obfuscated, this.bold, state, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
+      return new Style(this.font, this.color, this.obfuscated, this.bold, state, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
     } else if(decoration == TextDecoration.OBFUSCATED) {
-      return new Style(this.color, state, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
+      return new Style(this.font, this.color, state, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
     }
     throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
   }
@@ -348,7 +372,7 @@ public final class Style implements Examinable {
    * @return a style
    */
   public @NonNull Style clickEvent(final @Nullable ClickEvent event) {
-    return new Style(this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, event, this.hoverEvent, this.insertion);
+    return new Style(this.font, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, event, this.hoverEvent, this.insertion);
   }
 
   /**
@@ -367,7 +391,7 @@ public final class Style implements Examinable {
    * @return a style
    */
   public @NonNull Style hoverEvent(final @Nullable HoverEvent<?> event) {
-    return new Style(this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, event, this.insertion);
+    return new Style(this.font, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, event, this.insertion);
   }
 
   /**
@@ -387,7 +411,7 @@ public final class Style implements Examinable {
    */
   public @NonNull Style insertion(final @Nullable String insertion) {
     if(Objects.equals(this.insertion, insertion)) return this;
-    return new Style(this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, insertion);
+    return new Style(this.font, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, insertion);
   }
 
   /**
@@ -685,6 +709,10 @@ public final class Style implements Examinable {
    */
   public static final class Builder {
     /**
+     * The font.
+     */
+    private @Nullable Key font;
+    /**
      * The color.
      */
     private @Nullable TextColor color;
@@ -738,6 +766,17 @@ public final class Style implements Examinable {
       this.clickEvent = style.clickEvent;
       this.hoverEvent = style.hoverEvent;
       this.insertion = style.insertion;
+    }
+
+    /**
+     * Sets the font.
+     *
+     * @param font the font
+     * @return this builder
+     */
+    public @NonNull Builder font(final @Nullable Key font) {
+      this.font = font;
+      return this;
     }
 
     /**
@@ -949,7 +988,7 @@ public final class Style implements Examinable {
       if(this.isEmpty()) {
         return EMPTY;
       }
-      return new Style(this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
+      return new Style(this.font, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
     }
 
     @SuppressWarnings("DuplicatedCode")

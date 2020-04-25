@@ -33,6 +33,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -45,6 +46,7 @@ public final class StyleSerializer implements JsonDeserializer<Style>, JsonSeria
 
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
 
+  static final String FONT = "font";
   static final String COLOR = "color";
   static final String INSERTION = "insertion";
   static final String CLICK_EVENT = "clickEvent";
@@ -63,6 +65,10 @@ public final class StyleSerializer implements JsonDeserializer<Style>, JsonSeria
 
   private Style deserialize(final JsonObject json, final JsonDeserializationContext context) throws JsonParseException {
     final Style.Builder style = Style.builder();
+
+    if(json.has(FONT)) {
+      style.font(Key.of(json.get("font").getAsString()));
+    }
 
     if(json.has(COLOR)) {
       final TextColorWrapper color = context.deserialize(json.get(COLOR), TextColorWrapper.class);
@@ -130,6 +136,11 @@ public final class StyleSerializer implements JsonDeserializer<Style>, JsonSeria
   @Override
   public JsonElement serialize(final Style src, final Type typeOfSrc, final JsonSerializationContext context) {
     final JsonObject json = new JsonObject();
+
+    final /* @Nullable */ Key font = src.font();
+    if(font != null) {
+      json.addProperty(FONT, font.asString());
+    }
 
     final /* @Nullable */ TextColor color = src.color();
     if(color != null) {
