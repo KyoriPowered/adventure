@@ -25,8 +25,6 @@ package net.kyori.adventure.text.format;
 
 import org.checkerframework.common.value.qual.IntRange;
 
-import java.util.Objects;
-
 public final class TextColorImpl implements TextColor {
   private final int value;
 
@@ -44,16 +42,16 @@ public final class TextColorImpl implements TextColor {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof TextColorImpl)) return false;
-    TextColorImpl textColor = (TextColorImpl) o;
-    return value == textColor.value;
+  public boolean equals(final Object other) {
+    if (this == other) return true;
+    if (!(other instanceof TextColorImpl)) return false;
+    final TextColorImpl that = (TextColorImpl) other;
+    return value == that.value;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(value);
+    return value;
   }
 
   @Override
