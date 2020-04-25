@@ -219,7 +219,7 @@ public final class Style implements Examinable {
    * @param font the font
    * @return a style
    */
-  public @NonNull Style color(final @Nullable Key font) {
+  public @NonNull Style font(final @Nullable Key font) {
     if(Objects.equals(this.font, font)) return this;
     return new Style(font, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
   }
