@@ -130,6 +130,10 @@ public final class StyleSerializer implements JsonDeserializer<Style>, JsonSeria
       }
     }
 
+    if(json.has(FONT)) {
+      style.font(Key.of(json.get(FONT).getAsString()));
+    }
+
     return style.build();
   }
 

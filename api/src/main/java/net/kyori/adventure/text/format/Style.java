@@ -44,9 +44,10 @@ import static java.util.Objects.requireNonNull;
 
 public final class Style implements Examinable {
   public static final Key DEFAULT_FONT = Key.of("default");
-  private static final Style EMPTY = new Style(DEFAULT_FONT, null, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null);
+  public static final Key UNICODE_FONT = Key.of("uniform");
+  private static final Style EMPTY = new Style(null, null, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null);
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
-  private final Key font;
+  private final @Nullable Key font;
   private final @Nullable TextColor color;
   private final TextDecoration.State obfuscated;
   private final TextDecoration.State bold;
@@ -160,7 +161,7 @@ public final class Style implements Examinable {
     return builder.build();
   }
 
-  private Style(final Key font, final @Nullable TextColor color, final TextDecoration.State obfuscated, final TextDecoration.State bold, final TextDecoration.State strikethrough, final TextDecoration.State underlined, final TextDecoration.State italic, final @Nullable ClickEvent clickEvent, final @Nullable HoverEvent<?> hoverEvent, final @Nullable String insertion) {
+  private Style(final @Nullable Key font, final @Nullable TextColor color, final TextDecoration.State obfuscated, final TextDecoration.State bold, final TextDecoration.State strikethrough, final TextDecoration.State underlined, final TextDecoration.State italic, final @Nullable ClickEvent clickEvent, final @Nullable HoverEvent<?> hoverEvent, final @Nullable String insertion) {
     this.font = font;
     this.color = color;
     this.obfuscated = obfuscated;
@@ -548,7 +549,8 @@ public final class Style implements Examinable {
       ExaminableProperty.of("italic", this.italic),
       ExaminableProperty.of("clickEvent", this.clickEvent),
       ExaminableProperty.of("hoverEvent", this.hoverEvent),
-      ExaminableProperty.of("insertion", this.insertion)
+      ExaminableProperty.of("insertion", this.insertion),
+      ExaminableProperty.of("font", this.font)
     );
   }
 
@@ -570,7 +572,8 @@ public final class Style implements Examinable {
       && this.italic == that.italic
       && Objects.equals(this.clickEvent, that.clickEvent)
       && Objects.equals(this.hoverEvent, that.hoverEvent)
-      && Objects.equals(this.insertion, that.insertion);
+      && Objects.equals(this.insertion, that.insertion)
+      && Objects.equals(this.font, that.font);
   }
 
   @Override
@@ -584,6 +587,7 @@ public final class Style implements Examinable {
     result = (31 * result) + Objects.hashCode(this.clickEvent);
     result = (31 * result) + Objects.hashCode(this.hoverEvent);
     result = (31 * result) + Objects.hashCode(this.insertion);
+    result = (31 * result) + Objects.hashCode(this.font);
     return result;
   }
 
@@ -594,7 +598,8 @@ public final class Style implements Examinable {
     COLOR,
     DECORATIONS,
     EVENTS,
-    INSERTION;
+    INSERTION,
+    FONT;
 
     static final Set<Merge> ALL = of(values());
     static final Set<Merge> COLOR_AND_DECORATIONS = of(COLOR, DECORATIONS);
@@ -644,6 +649,7 @@ public final class Style implements Examinable {
         @Override boolean mergeClickEvent(final @NonNull Builder target, final @Nullable ClickEvent event) { return true; }
         @Override boolean mergeHoverEvent(final @NonNull Builder target, final @Nullable HoverEvent<?> event) { return true; }
         @Override boolean mergeInsertion(final @NonNull Builder target, final @Nullable String insertion) { return true; }
+        @Override boolean mergeFont(@NonNull Builder target, @Nullable Key font) { return true; }
       },
       /**
        * Never merges onto target.
@@ -654,6 +660,7 @@ public final class Style implements Examinable {
         @Override boolean mergeClickEvent(final @NonNull Builder target, final @Nullable ClickEvent event) { return false; }
         @Override boolean mergeHoverEvent(final @NonNull Builder target, final @Nullable HoverEvent<?> event) { return false; }
         @Override boolean mergeInsertion(final @NonNull Builder target, final @Nullable String insertion) { return false; }
+        @Override boolean mergeFont(@NonNull Builder target, @Nullable Key font) { return false; }
       },
       /**
        * Merge onto target when not already set on target.
@@ -694,6 +701,11 @@ public final class Style implements Examinable {
         boolean mergeInsertion(final @NonNull Builder target, final @Nullable String insertion) {
           return target.insertion == null;
         }
+
+        @Override
+        boolean mergeFont(@NonNull Builder target, @Nullable Key font) {
+          return target.font == null;
+        }
       };
 
       abstract boolean mergeColor(final @NonNull Builder target, final @Nullable TextColor color);
@@ -701,6 +713,7 @@ public final class Style implements Examinable {
       abstract boolean mergeClickEvent(final @NonNull Builder target, final @Nullable ClickEvent event);
       abstract boolean mergeHoverEvent(final @NonNull Builder target, final @Nullable HoverEvent<?> event);
       abstract boolean mergeInsertion(final @NonNull Builder target, final @Nullable String insertion);
+      abstract boolean mergeFont(final @NonNull Builder target, final @Nullable Key font);
     }
   }
 
@@ -766,6 +779,7 @@ public final class Style implements Examinable {
       this.clickEvent = style.clickEvent;
       this.hoverEvent = style.hoverEvent;
       this.insertion = style.insertion;
+      this.font = style.font;
     }
 
     /**
@@ -976,6 +990,11 @@ public final class Style implements Examinable {
         if(insertion != null && strategy.mergeInsertion(this, insertion)) this.insertion(insertion);
       }
 
+      if(merges.contains(Merge.FONT)) {
+        final Key font = that.font();
+        if(font != null && strategy.mergeFont(this, font)) this.font(font);
+      }
+
       return this;
     }
 
@@ -1001,7 +1020,8 @@ public final class Style implements Examinable {
         && this.italic == TextDecoration.State.NOT_SET
         && this.clickEvent == null
         && this.hoverEvent == null
-        && this.insertion == null;
+        && this.insertion == null
+        && this.font == null;
     }
   }
 }
