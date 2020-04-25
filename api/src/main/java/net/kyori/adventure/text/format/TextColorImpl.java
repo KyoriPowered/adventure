@@ -32,8 +32,8 @@ public final class TextColorImpl implements TextColor {
     this.value = value;
   }
 
-  TextColorImpl(final @IntRange(from = 0, to = 0xFF) int r, final @IntRange(from = 0, to = 0xFF) int g, final @IntRange(from = 0, to = 0xFF) int b) {
-    this((r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF));
+  TextColorImpl(final @IntRange(from = 0, to = 0xff) int r, final @IntRange(from = 0, to = 0xff) int g, final @IntRange(from = 0, to = 0xff) int b) {
+    this((r & 0xff) << 16 | (g & 0xff) << 8 | (b & 0xff));
   }
 
   @Override
@@ -46,16 +46,16 @@ public final class TextColorImpl implements TextColor {
     if (this == other) return true;
     if (!(other instanceof TextColorImpl)) return false;
     final TextColorImpl that = (TextColorImpl) other;
-    return value == that.value;
+    return this.value == that.value;
   }
 
   @Override
   public int hashCode() {
-    return value;
+    return this.value;
   }
 
   @Override
   public String toString() {
-    return "#" + Integer.toString(value, 16);
+    return "#" + Integer.toString(this.value, 16);
   }
 }

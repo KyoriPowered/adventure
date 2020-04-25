@@ -42,7 +42,7 @@ public interface TextColor extends TextFormat {
    * @param b Blue, as a value from 0 to 255
    * @return A new text colour
    */
-  static @NonNull TextColor of(final @IntRange(from = 0, to = 0xFF) int r, final @IntRange(from = 0, to = 0xFF) int g, final @IntRange(from = 0, to = 0xFF) int b) {
+  static @NonNull TextColor of(final @IntRange(from = 0, to = 0xff) int r, final @IntRange(from = 0, to = 0xff) int g, final @IntRange(from = 0, to = 0xff) int b) {
       return new TextColorImpl(r, g, b);
   }
 
@@ -55,7 +55,7 @@ public interface TextColor extends TextFormat {
    * @return The newly created text colour
    */
   static @NonNull TextColor of(final float r, final float g, final float b) {
-      return of(r * 0xFF, g * 0xFF, b * 0xFF);
+      return of(r * 0xff, g * 0xff, b * 0xff);
   }
 
   /**
@@ -68,28 +68,28 @@ public interface TextColor extends TextFormat {
   /**
    * Get the red component of the text colour
    *
-   * @return The red component, in the range [0, 0xFF]
+   * @return The red component, in the range [0, 0xff]
    */
-  default @IntRange(from = 0, to = 0xFF) short red() {
-      return (short) ((value() >> 16) & 0xFF);
+  default @IntRange(from = 0, to = 0xff) short red() {
+      return (short) ((this.value() >> 16) & 0xff);
   }
 
   /**
    * Get the green component of the text colour
    *
-   * @return The green component, in the range [0, 0xFF]
+   * @return The green component, in the range [0, 0xff]
    */
-  default @IntRange(from = 0, to = 0xFF) short green() {
-      return (short) ((value() >> 8) & 0xFF);
+  default @IntRange(from = 0, to = 0xff) short green() {
+      return (short) ((this.value() >> 8) & 0xff);
   }
 
   /**
    * Get the blue component of the text colour
    *
-   * @return The blue component, in the range [0, 0xFF]
+   * @return The blue component, in the range [0, 0xff]
    */
-  default @IntRange(from = 0, to = 0xFF) short blue() {
-      return (short) (value() & 0xFF);
+  default @IntRange(from = 0, to = 0xff) short blue() {
+      return (short) (this.value() & 0xff);
   }
 
 }
