@@ -23,17 +23,11 @@
  */
 package net.kyori.adventure.text.format;
 
-import org.checkerframework.common.value.qual.IntRange;
-
 public final class TextColorImpl implements TextColor {
   private final int value;
 
   TextColorImpl(final int value) {
     this.value = value;
-  }
-
-  TextColorImpl(final @IntRange(from = 0, to = 0xff) int r, final @IntRange(from = 0, to = 0xff) int g, final @IntRange(from = 0, to = 0xff) int b) {
-    this((r & 0xff) << 16 | (g & 0xff) << 8 | (b & 0xff));
   }
 
   @Override

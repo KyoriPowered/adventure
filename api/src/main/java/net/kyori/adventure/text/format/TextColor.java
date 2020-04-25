@@ -30,6 +30,12 @@ import org.checkerframework.common.value.qual.IntRange;
  * A color which may be applied to a {@link Style}.
  */
 public interface TextColor extends TextFormat {
+  /**
+   * Creates a new text colour.
+   *
+   * @param value the rgb value
+   * @return a new text colour
+   */
   static @NonNull TextColor of(final int value) {
     return new TextColorImpl(value);
   }
@@ -37,13 +43,13 @@ public interface TextColor extends TextFormat {
   /**
    * Create a new text colour with the red, green, and blue components individually
    *
-   * @param r Red, as a value from 0 to 255
-   * @param g Green, as a value from 0 to 255
-   * @param b Blue, as a value from 0 to 255
-   * @return A new text colour
+   * @param r red, as a value from 0 to 255
+   * @param g green, as a value from 0 to 255
+   * @param b blue, as a value from 0 to 255
+   * @return a new text colour
    */
-  static @NonNull TextColor of(final @IntRange(from = 0, to = 0xff) int r, final @IntRange(from = 0, to = 0xff) int g, final @IntRange(from = 0, to = 0xff) int b) {
-      return new TextColorImpl(r, g, b);
+  static @NonNull TextColor of(final @IntRange(from = 0x0, to = 0xff) int r, final @IntRange(from = 0x0, to = 0xff) int g, final @IntRange(from = 0x0, to = 0xff) int b) {
+    return of((r & 0xff) << 16 | (g & 0xff) << 8 | (b & 0xff));
   }
 
   /**
@@ -52,44 +58,43 @@ public interface TextColor extends TextFormat {
    * @param r red, from [0, 1]
    * @param g green, within [0, 1]
    * @param b blue, within [0, 1]
-   * @return The newly created text colour
+   * @return a new text colour
    */
   static @NonNull TextColor of(final float r, final float g, final float b) {
-      return of(r * 0xff, g * 0xff, b * 0xff);
+    return of((int) r * 0xff, (int) (g * 0xff), (int) (b * 0xff));
   }
 
   /**
    * The color, as an RGB value packed into an int
    *
-   * @return The color value
+   * @return the value
    */
   int value();
 
   /**
    * Get the red component of the text colour
    *
-   * @return The red component, in the range [0, 0xff]
+   * @return the red component, in the range [0x0, 0xff]
    */
-  default @IntRange(from = 0, to = 0xff) short red() {
-      return (short) ((this.value() >> 16) & 0xff);
+  default @IntRange(from = 0x0, to = 0xff) short red() {
+    return (short) ((this.value() >> 16) & 0xff);
   }
 
   /**
    * Get the green component of the text colour
    *
-   * @return The green component, in the range [0, 0xff]
+   * @return the green component, in the range [0x0, 0xff]
    */
-  default @IntRange(from = 0, to = 0xff) short green() {
-      return (short) ((this.value() >> 8) & 0xff);
+  default @IntRange(from = 0x0, to = 0xff) short green() {
+    return (short) ((this.value() >> 8) & 0xff);
   }
 
   /**
    * Get the blue component of the text colour
    *
-   * @return The blue component, in the range [0, 0xff]
+   * @return the blue component, in the range [0x0, 0xff]
    */
-  default @IntRange(from = 0, to = 0xff) short blue() {
-      return (short) (this.value() & 0xff);
+  default @IntRange(from = 0x0, to = 0xff) short blue() {
+    return (short) (this.value() & 0xff);
   }
-
 }
