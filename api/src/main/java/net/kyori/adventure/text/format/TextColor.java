@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.format;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.common.value.qual.IntRange;
 
 /**
  * A color which may be applied to a {@link Style}.
@@ -33,5 +34,62 @@ public interface TextColor extends TextFormat {
     return new TextColorImpl(value);
   }
 
+  /**
+   * Create a new text colour with the red, green, and blue components individually
+   *
+   * @param r Red, as a value from 0 to 255
+   * @param g Green, as a value from 0 to 255
+   * @param b Blue, as a value from 0 to 255
+   * @return A new text colour
+   */
+  static @NonNull TextColor of(final @IntRange(from = 0, to = 0xFF) int r, final @IntRange(from = 0, to = 0xFF) int g, final @IntRange(from = 0, to = 0xFF) int b) {
+      return new TextColorImpl(r, g, b);
+  }
+
+  /**
+   * Create a new color with the individual components as floats
+   *
+   * @param r red, from [0, 1]
+   * @param g green, within [0, 1]
+   * @param b blue, within [0, 1]
+   * @return The newly created text colour
+   */
+  static @NonNull TextColor of(final float r, final float g, final float b) {
+      return of(r * 0xFF, g * 0xFF, b * 0xFF);
+  }
+
+  /**
+   * The color, as an RGB value packed into an int
+   *
+   * @return The color value
+   */
   int value();
+
+  /**
+   * Get the red component of the text colour
+   *
+   * @return The red component, in the range [0, 0xFF]
+   */
+  default @IntRange(from = 0, to = 0xFF) short red() {
+      return (short) ((value() >> 16) & 0xFF);
+  }
+
+  /**
+   * Get the green component of the text colour
+   *
+   * @return The green component, in the range [0, 0xFF]
+   */
+  default @IntRange(from = 0, to = 0xFF) short green() {
+      return (short) ((value() >> 8) & 0xFF);
+  }
+
+  /**
+   * Get the blue component of the text colour
+   *
+   * @return The blue component, in the range [0, 0xFF]
+   */
+  default @IntRange(from = 0, to = 0xFF) short blue() {
+      return (short) (value() & 0xFF);
+  }
+
 }

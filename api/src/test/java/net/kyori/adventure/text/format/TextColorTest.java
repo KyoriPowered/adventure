@@ -23,41 +23,37 @@
  */
 package net.kyori.adventure.text.format;
 
-import org.checkerframework.common.value.qual.IntRange;
+import org.junit.jupiter.api.Test;
 
-import java.util.Objects;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public final class TextColorImpl implements TextColor {
-  private final int value;
+public class TextColorTest {
+  @Test
+  public void testPureColors() {
+    final TextColor redInt = TextColor.of(0xFF0000);
+    final TextColor greenInt = TextColor.of(0x00FF00);
+    final TextColor blueInt = TextColor.of(0x0000FF);
 
-  TextColorImpl(final int value) {
-    this.value = value;
+    final TextColor red = TextColor.of(0xFF, 0x00, 0x00);
+    final TextColor green = TextColor.of(0x00, 0xFF, 0x00);
+    final TextColor blue = TextColor.of(0x00, 0x00, 0xFF);
+
+    assertEquals(redInt, red);
+    assertEquals(greenInt, green);
+    assertEquals(blueInt, blue);
   }
 
-  TextColorImpl(final @IntRange(from = 0, to = 0xFF) int r, final @IntRange(from = 0, to = 0xFF) int g, final @IntRange(from = 0, to = 0xFF) int b) {
-    this((r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF));
+  @Test
+  public void testExtractComponents() {
+    final TextColor purple = TextColor.of(0xFF00FF);
+    assertEquals(0xFF, purple.red());
+    assertEquals(0x00, purple.green());
+    assertEquals(0xFF, purple.blue());
+
+    final TextColor color = TextColor.of(0xBADA04);
+    assertEquals(0xBA, color.red());
+    assertEquals(0xDA, color.green());
+    assertEquals(0x04, color.blue());
   }
 
-  @Override
-  public int value() {
-    return this.value;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof TextColorImpl)) return false;
-    TextColorImpl textColor = (TextColorImpl) o;
-    return value == textColor.value;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(value);
-  }
-
-  @Override
-  public String toString() {
-    return "#" + Integer.toString(value, 16);
-  }
 }
