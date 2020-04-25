@@ -44,7 +44,6 @@ import static java.util.Objects.requireNonNull;
 
 public final class Style implements Examinable {
   public static final Key DEFAULT_FONT = Key.of("default");
-  public static final Key UNICODE_FONT = Key.of("uniform");
   private static final Style EMPTY = new Style(null, null, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null);
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
   private final @Nullable Key font;
