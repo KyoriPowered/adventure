@@ -170,7 +170,7 @@ class StyleTest {
     assertEquals(s0, s1.insertion(null));
   }
 
-  private static final Key TEST_FONT = Key.of("kyori", "comicsans");
+  private static final Key TEST_FONT = Key.of("kyori", "kittenmoji");
 
   @Test
   void testMerge_font() {
