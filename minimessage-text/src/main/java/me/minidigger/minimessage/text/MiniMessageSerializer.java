@@ -1,4 +1,4 @@
-package me.minidigger.minimessage;
+package me.minidigger.minimessage.text;
 
 import net.kyori.text.Component;
 import net.kyori.text.KeybindComponent;
@@ -15,18 +15,18 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static me.minidigger.minimessage.Constants.BOLD;
-import static me.minidigger.minimessage.Constants.CLICK;
-import static me.minidigger.minimessage.Constants.CLOSE_TAG;
-import static me.minidigger.minimessage.Constants.HOVER;
-import static me.minidigger.minimessage.Constants.INSERTION;
-import static me.minidigger.minimessage.Constants.ITALIC;
-import static me.minidigger.minimessage.Constants.OBFUSCATED;
-import static me.minidigger.minimessage.Constants.SEPARATOR;
-import static me.minidigger.minimessage.Constants.STRIKETHROUGH;
-import static me.minidigger.minimessage.Constants.TAG_END;
-import static me.minidigger.minimessage.Constants.TAG_START;
-import static me.minidigger.minimessage.Constants.UNDERLINED;
+import static me.minidigger.minimessage.text.Constants.BOLD;
+import static me.minidigger.minimessage.text.Constants.CLICK;
+import static me.minidigger.minimessage.text.Constants.CLOSE_TAG;
+import static me.minidigger.minimessage.text.Constants.HOVER;
+import static me.minidigger.minimessage.text.Constants.INSERTION;
+import static me.minidigger.minimessage.text.Constants.ITALIC;
+import static me.minidigger.minimessage.text.Constants.OBFUSCATED;
+import static me.minidigger.minimessage.text.Constants.SEPARATOR;
+import static me.minidigger.minimessage.text.Constants.STRIKETHROUGH;
+import static me.minidigger.minimessage.text.Constants.TAG_END;
+import static me.minidigger.minimessage.text.Constants.TAG_START;
+import static me.minidigger.minimessage.text.Constants.UNDERLINED;
 
 public final class MiniMessageSerializer {
 

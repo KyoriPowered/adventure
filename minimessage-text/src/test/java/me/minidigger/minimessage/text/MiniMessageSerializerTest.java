@@ -1,4 +1,4 @@
-package minimessage;
+package me.minidigger.minimessage.text;
 
 import net.kyori.text.KeybindComponent;
 import net.kyori.text.TextComponent;
@@ -12,8 +12,6 @@ import net.kyori.text.format.TextDecoration;
 import org.junit.Test;
 
 import javax.annotation.Nonnull;
-
-import me.minidigger.minimessage.MiniMessageSerializer;
 
 import static org.junit.Assert.assertEquals;
 

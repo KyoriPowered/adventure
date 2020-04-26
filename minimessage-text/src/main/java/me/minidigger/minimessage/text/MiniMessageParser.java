@@ -1,4 +1,4 @@
-package me.minidigger.minimessage;
+package me.minidigger.minimessage.text;
 
 import net.kyori.text.Component;
 import net.kyori.text.KeybindComponent;
@@ -20,15 +20,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 
-import static me.minidigger.minimessage.Constants.CLICK;
-import static me.minidigger.minimessage.Constants.CLOSE_TAG;
-import static me.minidigger.minimessage.Constants.HOVER;
-import static me.minidigger.minimessage.Constants.INSERTION;
-import static me.minidigger.minimessage.Constants.KEYBIND;
-import static me.minidigger.minimessage.Constants.SEPARATOR;
-import static me.minidigger.minimessage.Constants.TAG_END;
-import static me.minidigger.minimessage.Constants.TAG_START;
-import static me.minidigger.minimessage.Constants.TRANSLATABLE;
+import static me.minidigger.minimessage.text.Constants.CLICK;
+import static me.minidigger.minimessage.text.Constants.CLOSE_TAG;
+import static me.minidigger.minimessage.text.Constants.HOVER;
+import static me.minidigger.minimessage.text.Constants.INSERTION;
+import static me.minidigger.minimessage.text.Constants.KEYBIND;
+import static me.minidigger.minimessage.text.Constants.SEPARATOR;
+import static me.minidigger.minimessage.text.Constants.TAG_END;
+import static me.minidigger.minimessage.text.Constants.TAG_START;
+import static me.minidigger.minimessage.text.Constants.TRANSLATABLE;
 
 public class MiniMessageParser {
 
