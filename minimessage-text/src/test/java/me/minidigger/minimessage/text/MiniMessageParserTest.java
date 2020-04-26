@@ -1,4 +1,4 @@
-package minimessage;
+package me.minidigger.minimessage.text;
 
 import net.kyori.text.Component;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
@@ -6,8 +6,6 @@ import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import org.junit.Test;
 
 import javax.annotation.Nonnull;
-
-import me.minidigger.minimessage.MiniMessageParser;
 
 import static org.junit.Assert.assertEquals;
 
