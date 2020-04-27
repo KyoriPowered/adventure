@@ -20,7 +20,7 @@
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>text-serializer-gson</artifactId>
-            <version>3.0.3</version>
+            <version>3.0.4</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
