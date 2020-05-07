@@ -25,6 +25,7 @@ package net.kyori.adventure.text.format;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.testing.EqualsTester;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.junit.jupiter.api.Test;
 
@@ -47,6 +48,7 @@ class StyleTest {
     assertNull(s0.clickEvent());
     assertNull(s0.hoverEvent());
     assertNull(s0.insertion());
+    assertNull(s0.font());
   }
 
   @Test
@@ -168,12 +170,25 @@ class StyleTest {
     assertEquals(s0, s1.insertion(null));
   }
 
+  private static final Key TEST_FONT = Key.of("kyori", "kittenmoji");
+
+  @Test
+  void testMerge_font() {
+    final Style s0 = Style.empty();
+    final Style s1 = merge(s0, Style.Merge.FONT);
+    assertNull(s1.color());
+    assertDecorations(s1, ImmutableSet.of(), ImmutableSet.of());
+    assertEquals(TEST_FONT, s1.font());
+    assertEquals(s0, s1.font(null));
+  }
+
   private static Style merge(final Style a, final Style.Merge merge) {
     final Style b = Style.builder()
       .color(NamedTextColor.RED)
       .decoration(TextDecoration.BOLD, true)
       .clickEvent(ClickEvent.runCommand("/foo"))
       .insertion("abc")
+      .font(TEST_FONT)
       .build();
     return a.merge(b, merge);
   }
