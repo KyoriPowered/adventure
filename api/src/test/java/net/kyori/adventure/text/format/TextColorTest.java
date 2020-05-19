@@ -23,33 +23,37 @@
  */
 package net.kyori.adventure.text.format;
 
-public final class TextColorImpl implements TextColor {
-  private final int value;
+import org.junit.jupiter.api.Test;
 
-  TextColorImpl(final int value) {
-    this.value = value;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class TextColorTest {
+  @Test
+  public void testPureColors() {
+    final TextColor redInt = TextColor.of(0xFF0000);
+    final TextColor greenInt = TextColor.of(0x00FF00);
+    final TextColor blueInt = TextColor.of(0x0000FF);
+
+    final TextColor red = TextColor.of(0xFF, 0x00, 0x00);
+    final TextColor green = TextColor.of(0x00, 0xFF, 0x00);
+    final TextColor blue = TextColor.of(0x00, 0x00, 0xFF);
+
+    assertEquals(redInt, red);
+    assertEquals(greenInt, green);
+    assertEquals(blueInt, blue);
   }
 
-  @Override
-  public int value() {
-    return this.value;
+  @Test
+  public void testExtractComponents() {
+    final TextColor purple = TextColor.of(0xFF00FF);
+    assertEquals(0xFF, purple.red());
+    assertEquals(0x00, purple.green());
+    assertEquals(0xFF, purple.blue());
+
+    final TextColor color = TextColor.of(0xBADA04);
+    assertEquals(0xBA, color.red());
+    assertEquals(0xDA, color.green());
+    assertEquals(0x04, color.blue());
   }
 
-  @Override
-  public boolean equals(final Object other) {
-    if (this == other) return true;
-    if (!(other instanceof TextColorImpl)) return false;
-    final TextColorImpl that = (TextColorImpl) other;
-    return this.value == that.value;
-  }
-
-  @Override
-  public int hashCode() {
-    return this.value;
-  }
-
-  @Override
-  public String toString() {
-    return "#" + Integer.toString(this.value, 16);
-  }
 }
