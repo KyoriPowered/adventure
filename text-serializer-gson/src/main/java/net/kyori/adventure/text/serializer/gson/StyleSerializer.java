@@ -34,7 +34,6 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
@@ -63,6 +62,7 @@ public final class StyleSerializer implements JsonDeserializer<Style>, JsonSeria
     return this.deserialize(object, context);
   }
 
+  @SuppressWarnings({"rawtypes", "unchecked"})
   private Style deserialize(final JsonObject json, final JsonDeserializationContext context) throws JsonParseException {
     final Style.Builder style = Style.builder();
 
@@ -118,8 +118,9 @@ public final class StyleSerializer implements JsonDeserializer<Style>, JsonSeria
             final /* @Nullable */ JsonElement rawValue = hoverEvent.get(HOVER_EVENT_CONTENTS);
             value = context.deserialize(rawValue, action.type());
           } else if(hoverEvent.has(HOVER_EVENT_VALUE)) {
-            final /* @Nullable */ JsonElement rawValue = hoverEvent.get(HOVER_EVENT_VALUE);
-            value = rawValue == null ? null : context.deserialize(rawValue, Component.class);
+//            final /* @Nullable */ JsonElement rawValue = hoverEvent.get(HOVER_EVENT_VALUE);
+//            value = rawValue == null ? null : context.deserialize(rawValue, Component.class);
+            throw new UnsupportedOperationException(); // TODO: legacy support
           } else {
             value = null;
           }
@@ -178,7 +179,7 @@ public final class StyleSerializer implements JsonDeserializer<Style>, JsonSeria
       final JsonObject eventJson = new JsonObject();
       eventJson.add(HOVER_EVENT_ACTION, context.serialize(hoverEvent.action()));
       eventJson.add(HOVER_EVENT_CONTENTS, context.serialize(hoverEvent.value()));
-      eventJson.add(HOVER_EVENT_VALUE, JsonNull.INSTANCE); // TODO for legacy versions
+      eventJson.add(HOVER_EVENT_VALUE, JsonNull.INSTANCE); // TODO: legacy support
       json.add(HOVER_EVENT, eventJson);
     }
 

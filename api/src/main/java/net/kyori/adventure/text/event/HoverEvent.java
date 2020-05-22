@@ -156,10 +156,20 @@ public final class HoverEvent<V> implements Examinable {
       this.count = count;
     }
 
+    /**
+     * Gets the item.
+     *
+     * @return the item
+     */
     public @NonNull Key item() {
       return this.item;
     }
 
+    /**
+     * Gets the count.
+     *
+     * @return the count
+     */
     public @NonNegative int count() {
       return this.count;
     }
@@ -190,24 +200,39 @@ public final class HoverEvent<V> implements Examinable {
 
   public static final class ShowEntity implements Examinable {
     private final Key type;
-    public final UUID id;
-    public final Component name;
+    private final UUID id;
+    private final Component name;
 
-    public ShowEntity(final @NonNull Key type, final @NonNull UUID id, final @NonNull Component name) {
+    public ShowEntity(final @NonNull Key type, final @NonNull UUID id, final @Nullable Component name) {
       this.type = type;
       this.id = id;
       this.name = name;
     }
 
+    /**
+     * Gets the type.
+     *
+     * @return the type
+     */
     public @NonNull Key type() {
       return this.type;
     }
 
+    /**
+     * Gets the id.
+     *
+     * @return the id
+     */
     public @NonNull UUID id() {
       return this.id;
     }
 
-    public @NonNull Component name() {
+    /**
+     * Gets the name.
+     *
+     * @return the name
+     */
+    public @Nullable Component name() {
       return this.name;
     }
 
@@ -216,14 +241,14 @@ public final class HoverEvent<V> implements Examinable {
       if(this == other) return true;
       if(other == null || this.getClass() != other.getClass()) return false;
       final ShowEntity that = (ShowEntity) other;
-      return this.type.equals(that.type) && this.id.equals(that.id) && this.name.equals(that.name);
+      return this.type.equals(that.type) && this.id.equals(that.id) && Objects.equals(this.name, that.name);
     }
 
     @Override
     public int hashCode() {
       int result = this.type.hashCode();
       result = (31 * result) + this.id.hashCode();
-      result = (31 * result) + this.name.hashCode();
+      result = (31 * result) + Objects.hashCode(this.name);
       return result;
     }
 
@@ -262,6 +287,9 @@ public final class HoverEvent<V> implements Examinable {
      * The name of this action.
      */
     private final String name;
+    /**
+     * The value type.
+     */
     private final Class<V> type;
     /**
      * If this action is readable.
@@ -276,6 +304,11 @@ public final class HoverEvent<V> implements Examinable {
       this.readable = readable;
     }
 
+    /**
+     * Gets the value type.
+     *
+     * @return the value type
+     */
     public @NonNull Class<V> type() {
       return this.type;
     }
