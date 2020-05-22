@@ -30,7 +30,7 @@ import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
 import net.kyori.adventure.text.event.HoverEvent;
 
-class ShowItemSerializer implements JsonSerializer<HoverEvent.ShowItem> {
+final class ShowItemSerializer implements JsonSerializer<HoverEvent.ShowItem> {
   @Override
   public JsonElement serialize(final HoverEvent.ShowItem src, final Type typeOfSrc, final JsonSerializationContext context) {
     final JsonObject json = new JsonObject();

@@ -31,7 +31,7 @@ import java.lang.reflect.Type;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 
-class ShowEntitySerializer implements JsonSerializer<HoverEvent.ShowEntity> {
+final class ShowEntitySerializer implements JsonSerializer<HoverEvent.ShowEntity> {
   @Override
   public JsonElement serialize(final HoverEvent.ShowEntity src, final Type typeOfSrc, final JsonSerializationContext context) {
     final JsonObject json = new JsonObject();

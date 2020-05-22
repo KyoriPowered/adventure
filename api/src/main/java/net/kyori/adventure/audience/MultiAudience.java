@@ -23,47 +23,51 @@
  */
 package net.kyori.adventure.audience;
 
-import java.util.List;
+import java.util.Arrays;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public class MultiAudience implements Audience {
-  private final List<Audience> audiences;
+public interface MultiAudience extends Audience {
+  static @NonNull MultiAudience of(final Audience... audiences) {
+    return of(Arrays.asList(audiences));
+  }
 
-  public MultiAudience(final List<Audience> audiences) {
-    this.audiences = audiences;
+  static @NonNull MultiAudience of(final Iterable<Audience> audiences) {
+    return () -> audiences;
+  }
+
+  @NonNull Iterable<Audience> audiences();
+
+  @Override
+  default void message(final @NonNull Component message) {
+    this.audiences().forEach(audience -> audience.message(message));
   }
 
   @Override
-  public void message(final @NonNull Component message) {
-    this.audiences.forEach(audience -> audience.message(message));
+  default void showBossBar(final @NonNull BossBar bar) {
+    this.audiences().forEach(audience -> audience.showBossBar(bar));
   }
 
   @Override
-  public void showBossBar(final @NonNull BossBar bar) {
-    this.audiences.forEach(audience -> audience.showBossBar(bar));
+  default void hideBossBar(final @NonNull BossBar bar) {
+    this.audiences().forEach(audience -> audience.hideBossBar(bar));
   }
 
   @Override
-  public void hideBossBar(final @NonNull BossBar bar) {
-    this.audiences.forEach(audience -> audience.hideBossBar(bar));
+  default void showActionBar(final @NonNull Component message) {
+    this.audiences().forEach(audience -> audience.showActionBar(message));
   }
 
   @Override
-  public void showActionBar(final @NonNull Component message) {
-    this.audiences.forEach(audience -> audience.showActionBar(message));
+  default void playSound(final @NonNull Sound sound) {
+    this.audiences().forEach(audience -> audience.playSound(sound));
   }
 
   @Override
-  public void playSound(final @NonNull Sound sound) {
-    this.audiences.forEach(audience -> audience.playSound(sound));
-  }
-
-  @Override
-  public void stopSound(final @NonNull SoundStop stop) {
-    this.audiences.forEach(audience -> audience.stopSound(stop));
+  default void stopSound(final @NonNull SoundStop stop) {
+    this.audiences().forEach(audience -> audience.stopSound(stop));
   }
 }
