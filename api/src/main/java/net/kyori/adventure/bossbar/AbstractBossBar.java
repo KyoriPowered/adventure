@@ -24,7 +24,9 @@
 package net.kyori.adventure.bossbar;
 
 import java.util.EnumSet;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.BiPredicate;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.examination.Examinable;
@@ -57,7 +59,7 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
 
   @Override
   public @NonNull BossBar name(final @NonNull Component name) {
-    if(name != this.name) {
+    if(!Objects.equals(this.name, name)) {
       this.name = requireNonNull(name, "name");
       this.changed(Change.NAME);
     }
@@ -129,13 +131,7 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
 
   @Override
   public @NonNull BossBar addFlags(final @NonNull Flag@NonNull... flags) {
-    boolean changed = false;
-    for(int i = 0, length = flags.length; i < length; i++) {
-      if(this.flags.add(flags[i])) {
-        changed = true;
-      }
-    }
-    if(changed) {
+    if(this.editFlags(Set::add, flags)) {
       this.changed(Change.FLAGS);
     }
     return this;
@@ -143,16 +139,20 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
 
   @Override
   public @NonNull BossBar removeFlags(final @NonNull Flag@NonNull... flags) {
-    boolean changed = false;
-    for(int i = 0, length = flags.length; i < length; i++) {
-      if(this.flags.remove(flags[i])) {
-        changed = true;
-      }
-    }
-    if(changed) {
+    if(this.editFlags(Set::remove, flags)) {
       this.changed(Change.FLAGS);
     }
     return this;
+  }
+
+  private boolean editFlags(final @NonNull BiPredicate<Set<Flag>, Flag> predicate, final @NonNull Flag@NonNull... flags) {
+    boolean changed = false;
+    for(int i = 0, length = flags.length; i < length; i++) {
+      if(predicate.test(this.flags, flags[i])) {
+        changed = true;
+      }
+    }
+    return changed;
   }
 
   protected abstract void changed(final @NonNull Change type);

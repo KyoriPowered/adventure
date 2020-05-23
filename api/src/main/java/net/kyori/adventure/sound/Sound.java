@@ -82,12 +82,12 @@ public interface Sound {
   enum Source {
     MASTER("master"),
     MUSIC("music"),
-    RECORDS("record"),
+    RECORD("record"),
     WEATHER("weather"),
-    BLOCKS("block"),
+    BLOCK("block"),
     HOSTILE("hostile"),
     NEUTRAL("neutral"),
-    PLAYERS("player"),
+    PLAYER("player"),
     AMBIENT("ambient"),
     VOICE("voice");
 

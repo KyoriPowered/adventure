@@ -86,12 +86,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
   @Override
   public boolean equals(final Object other) {
-    if(this == other) {
-      return true;
-    }
-    if(!(other instanceof Key)) {
-      return false;
-    }
+    if(this == other) return true;
+    if(!(other instanceof Key)) return false;
     final Key that = (Key) other;
     return Objects.equals(this.namespace, that.namespace()) && Objects.equals(this.value, that.value());
   }
