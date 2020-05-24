@@ -50,6 +50,7 @@ public final class HoverEvent<V> implements Examinable {
    *
    * @param action the action
    * @param value the value
+   * @param <V> the value type
    * @return a click event
    */
   public static <V> @NonNull HoverEvent<V> of(final @NonNull Action<V> action, final @NonNull V value) {
