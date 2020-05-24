@@ -37,6 +37,7 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
   private static final float MINIMUM_PERCENT_CHANGE = 0.01f;
   private Component name;
   private float percent;
+  private volatile float lastNotifiedPercent;
   private Color color;
   private Overlay overlay;
   private final Set<Flag> flags = EnumSet.noneOf(Flag.class);
@@ -44,6 +45,7 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
   protected AbstractBossBar(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay) {
     this.name = requireNonNull(name, "name");
     this.percent = percent;
+    this.lastNotifiedPercent = percent;
     this.color = requireNonNull(color, "color");
     this.overlay = requireNonNull(overlay, "overlay");
   }
@@ -70,9 +72,10 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
   @Override
   public @NonNull BossBar percent(final float percent) {
     if(percent != this.percent) {
-      final boolean enoughForClientToNotice = enoughForClientToNotice(this.percent, percent);
+      final boolean enoughForClientToNotice = enoughForClientToNotice(this.lastNotifiedPercent, percent);
       this.percent = percent;
       if(enoughForClientToNotice) {
+        this.lastNotifiedPercent = percent;
         this.changed(Change.PERCENT);
       }
     }
