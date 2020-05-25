@@ -90,7 +90,7 @@ class TextComponentTest extends AbstractComponentTest<TextComponent> {
           json.addProperty(StyleSerializer.COLOR, name(NamedTextColor.DARK_PURPLE));
           json.add(StyleSerializer.HOVER_EVENT, object(event -> {
             event.addProperty(StyleSerializer.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_TEXT));
-            event.add(StyleSerializer.HOVER_EVENT_VALUE, object(value -> value.addProperty(ComponentSerializerImpl.TEXT, "A test.")));
+            event.add(StyleSerializer.HOVER_EVENT_CONTENTS, object(value -> value.addProperty(ComponentSerializerImpl.TEXT, "A test.")));
           }));
           json.add(ComponentSerializerImpl.EXTRA, array(extra -> {
             extra.add(object(item -> item.addProperty(ComponentSerializerImpl.TEXT, " ")));

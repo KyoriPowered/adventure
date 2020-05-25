@@ -25,11 +25,11 @@ package net.kyori.adventure.text.serializer.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.util.function.Consumer;
 import net.kyori.adventure.text.BlockNbtComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -37,31 +37,27 @@ import net.kyori.adventure.text.serializer.ComponentSerializer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class GsonComponentSerializer implements ComponentSerializer<Component, Component, String> {
-  /**
-   * A component serializer for JSON-based serialization and deserialization.
-   */
   public static final GsonComponentSerializer INSTANCE = new GsonComponentSerializer();
-  static final Gson GSON = populate(new GsonBuilder()).create();
 
-  /**
-   * Populate a builder with our serializers.
-   *
-   * @param builder the gson builder
-   * @return the gson builder
-   */
-  public static @NonNull GsonBuilder populate(final @NonNull GsonBuilder builder) {
-    builder
-      .registerTypeHierarchyAdapter(Component.class, ComponentSerializerImpl.INSTANCE)
-      .registerTypeAdapter(Style.class, StyleSerializer.INSTANCE)
-      .registerTypeAdapter(ClickEvent.Action.class, new NameMapSerializer<>("click action", ClickEvent.Action.NAMES))
-      .registerTypeAdapter(HoverEvent.Action.class, new NameMapSerializer<>("hover action", HoverEvent.Action.NAMES))
-      .registerTypeAdapter(HoverEvent.ShowItem.class, new ShowItemSerializer())
-      .registerTypeAdapter(HoverEvent.ShowEntity.class, new ShowEntitySerializer())
-      .registerTypeAdapter(TextColorWrapper.class, new TextColorWrapper.Serializer())
-      .registerTypeAdapter(TextColor.class, new NameMapSerializer<>("text color", NamedTextColor.NAMES))
-      .registerTypeAdapter(TextDecoration.class, new NameMapSerializer<>("text decoration", TextDecoration.NAMES))
-      .registerTypeHierarchyAdapter(BlockNbtComponent.Pos.class, BlockNbtComponentPosSerializer.INSTANCE);
-    return builder;
+  public static final Consumer<GsonBuilder> GSON_BUILDER_CONFIGURER = builder -> {
+    builder.registerTypeHierarchyAdapter(Component.class, ComponentSerializerImpl.INSTANCE);
+    builder.registerTypeAdapter(Style.class, StyleSerializer.INSTANCE);
+    builder.registerTypeAdapter(ClickEvent.Action.class, new NameMapSerializer<>("click action", ClickEvent.Action.NAMES));
+    builder.registerTypeAdapter(HoverEvent.Action.class, new NameMapSerializer<>("hover action", HoverEvent.Action.NAMES));
+    builder.registerTypeAdapter(HoverEvent.ShowItem.class, new ShowItemSerializer());
+    builder.registerTypeAdapter(HoverEvent.ShowEntity.class, new ShowEntitySerializer());
+    builder.registerTypeAdapter(TextColorWrapper.class, new TextColorWrapper.Serializer());
+    builder.registerTypeHierarchyAdapter(TextColor.class, new TextColorSerializer());
+    builder.registerTypeAdapter(TextDecoration.class, new NameMapSerializer<>("text decoration", TextDecoration.NAMES));
+    builder.registerTypeHierarchyAdapter(BlockNbtComponent.Pos.class, BlockNbtComponentPosSerializer.INSTANCE);
+  };
+
+  static final Gson GSON = createGson();
+
+  private static Gson createGson() {
+    final GsonBuilder builder = new GsonBuilder();
+    GSON_BUILDER_CONFIGURER.accept(builder);
+    return builder.create();
   }
 
   @Override

@@ -38,7 +38,7 @@ final class TextColorSerializer implements JsonDeserializer<TextColor>, JsonSeri
   @Override
   public TextColor deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
     final JsonPrimitive primitive = json.getAsJsonPrimitive();
-    final String value = json.getAsString();
+    final String value = primitive.getAsString();
     if(value.startsWith("#")) {
       return TextColor.of(Integer.parseInt(value.substring(1), 16));
     } else {

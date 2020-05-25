@@ -55,7 +55,7 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
           KEY,
           TextComponent.builder(WHO)
             .clickEvent(ClickEvent.suggestCommand(COMMAND))
-            .hoverEvent(HoverEvent.showEntity(TextComponent.of(ENTITY)))
+            //.hoverEvent(HoverEvent.showEntity(TextComponent.of(ENTITY))) // TODO
             .build()
         ).color(NamedTextColor.YELLOW),
         json -> {
@@ -67,10 +67,10 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
               event.addProperty(StyleSerializer.CLICK_EVENT_ACTION, name(ClickEvent.Action.SUGGEST_COMMAND));
               event.addProperty(StyleSerializer.CLICK_EVENT_VALUE, COMMAND);
             }));
-            item.add(StyleSerializer.HOVER_EVENT, object(event -> {
+            /*item.add(StyleSerializer.HOVER_EVENT, object(event -> {
               event.addProperty(StyleSerializer.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ENTITY));
               event.add(StyleSerializer.HOVER_EVENT_VALUE, object(value -> value.addProperty(ComponentSerializerImpl.TEXT, ENTITY)));
-            }));
+            }));*/
           }))));
         }
       )

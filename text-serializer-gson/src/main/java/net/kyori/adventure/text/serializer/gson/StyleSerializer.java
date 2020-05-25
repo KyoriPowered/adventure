@@ -54,7 +54,7 @@ public final class StyleSerializer implements JsonDeserializer<Style>, JsonSeria
   static final String HOVER_EVENT = "hoverEvent";
   static final String HOVER_EVENT_ACTION = "action";
   static final String HOVER_EVENT_CONTENTS = "contents";
-  static final String HOVER_EVENT_VALUE = "value";
+  static final @Deprecated String HOVER_EVENT_VALUE = "value";
 
   @Override
   public Style deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
