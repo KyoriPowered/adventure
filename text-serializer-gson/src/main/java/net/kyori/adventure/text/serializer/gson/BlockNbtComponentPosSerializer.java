@@ -36,7 +36,6 @@ import java.util.regex.Pattern;
 import net.kyori.adventure.text.BlockNbtComponent;
 
 final class BlockNbtComponentPosSerializer implements JsonDeserializer<BlockNbtComponent.Pos>, JsonSerializer<BlockNbtComponent.Pos> {
-  public static final BlockNbtComponentPosSerializer INSTANCE = new BlockNbtComponentPosSerializer();
   private static final Pattern LOCAL_PATTERN = Pattern.compile("^\\^(\\d+(\\.\\d+)?) \\^(\\d+(\\.\\d+)?) \\^(\\d+(\\.\\d+)?)$");
   private static final Pattern WORLD_PATTERN = Pattern.compile("^(~?)(\\d+) (~?)(\\d+) (~?)(\\d+)$");
 
@@ -84,9 +83,9 @@ final class BlockNbtComponentPosSerializer implements JsonDeserializer<BlockNbtC
 
   private static BlockNbtComponent.WorldPos.Coordinate deserializeCoordinate(final String prefix, final String value) {
     final int i = Integer.parseInt(value);
-    if(prefix.isEmpty()) {
+    if(prefix.equals(ABSOLUTE_SYMBOL)) {
       return BlockNbtComponent.WorldPos.Coordinate.absolute(i);
-    } else if(prefix.equals("~")) {
+    } else if(prefix.equals(RELATIVE_SYMBOL)) {
       return BlockNbtComponent.WorldPos.Coordinate.relative(i);
     } else {
       throw new AssertionError(); // regex does not allow any other value for prefix.

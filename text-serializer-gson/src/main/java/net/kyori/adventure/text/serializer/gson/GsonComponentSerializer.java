@@ -40,8 +40,8 @@ public final class GsonComponentSerializer implements ComponentSerializer<Compon
   public static final GsonComponentSerializer INSTANCE = new GsonComponentSerializer();
 
   public static final Consumer<GsonBuilder> GSON_BUILDER_CONFIGURER = builder -> {
-    builder.registerTypeHierarchyAdapter(Component.class, ComponentSerializerImpl.INSTANCE);
-    builder.registerTypeAdapter(Style.class, StyleSerializer.INSTANCE);
+    builder.registerTypeHierarchyAdapter(Component.class, new ComponentSerializerImpl());
+    builder.registerTypeAdapter(Style.class, new StyleSerializer());
     builder.registerTypeAdapter(ClickEvent.Action.class, new NameMapSerializer<>("click action", ClickEvent.Action.NAMES));
     builder.registerTypeAdapter(HoverEvent.Action.class, new NameMapSerializer<>("hover action", HoverEvent.Action.NAMES));
     builder.registerTypeAdapter(HoverEvent.ShowItem.class, new ShowItemSerializer());
@@ -49,7 +49,7 @@ public final class GsonComponentSerializer implements ComponentSerializer<Compon
     builder.registerTypeAdapter(TextColorWrapper.class, new TextColorWrapper.Serializer());
     builder.registerTypeHierarchyAdapter(TextColor.class, new TextColorSerializer());
     builder.registerTypeAdapter(TextDecoration.class, new NameMapSerializer<>("text decoration", TextDecoration.NAMES));
-    builder.registerTypeHierarchyAdapter(BlockNbtComponent.Pos.class, BlockNbtComponentPosSerializer.INSTANCE);
+    builder.registerTypeHierarchyAdapter(BlockNbtComponent.Pos.class, new BlockNbtComponentPosSerializer());
   };
 
   static final Gson GSON = createGson();

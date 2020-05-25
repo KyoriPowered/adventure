@@ -52,11 +52,6 @@ import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.Style;
 
 final class ComponentSerializerImpl implements JsonDeserializer<Component>, JsonSerializer<Component> {
-  /**
-   * A component serializer for JSON-based serialization and deserialization.
-   */
-  static final ComponentSerializerImpl INSTANCE = new ComponentSerializerImpl();
-
   static final String TEXT = "text";
   static final String TRANSLATE = "translate";
   static final String TRANSLATE_WITH = "with";

@@ -41,8 +41,6 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
 public final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<Style> {
-  public static final StyleSerializer INSTANCE = new StyleSerializer();
-
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
 
   static final String FONT = "font";
