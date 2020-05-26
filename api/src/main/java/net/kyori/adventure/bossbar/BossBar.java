@@ -32,6 +32,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * A bossbar.
  */
 public interface BossBar {
+  static @NonNull BossBar of(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay) {
+    return new BossBarImpl(name, percent, color, overlay);
+  }
+
   /**
    * Gets the name.
    *
@@ -126,6 +130,25 @@ public interface BossBar {
    * @return the bossbar
    */
   @NonNull BossBar removeFlags(final @NonNull Flag@NonNull... flags);
+
+  @NonNull BossBar addListener(final @NonNull Listener listener);
+
+  @NonNull BossBar removeListener(final @NonNull Listener listener);
+
+  interface Listener {
+    void bossBarChanged(final @NonNull BossBar bar, final @NonNull Change change);
+
+    /**
+     * The type of change.
+     */
+    enum Change {
+      NAME,
+      PERCENT,
+      COLOR,
+      OVERLAY,
+      FLAGS;
+    }
+  }
 
   enum Color {
     PINK("pink"),

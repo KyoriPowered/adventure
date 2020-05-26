@@ -23,7 +23,9 @@
  */
 package net.kyori.adventure.bossbar;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiPredicate;
@@ -35,19 +37,20 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static java.util.Objects.requireNonNull;
 
-public abstract class AbstractBossBar implements BossBar, Examinable {
+final class BossBarImpl implements BossBar, Examinable {
   private static final float MINIMUM_PERCENT_CHANGE = 0.01f;
   private Component name;
   private float percent;
-  private volatile float lastNotifiedPercent;
+  private volatile float lastSentPercent;
   private Color color;
   private Overlay overlay;
   private final Set<Flag> flags = EnumSet.noneOf(Flag.class);
+  private List<Listener> listeners = null;
 
-  protected AbstractBossBar(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay) {
+  protected BossBarImpl(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay) {
     this.name = requireNonNull(name, "name");
     this.percent = percent;
-    this.lastNotifiedPercent = percent;
+    this.lastSentPercent = percent;
     this.color = requireNonNull(color, "color");
     this.overlay = requireNonNull(overlay, "overlay");
   }
@@ -61,7 +64,7 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
   public @NonNull BossBar name(final @NonNull Component name) {
     if(!Objects.equals(this.name, name)) {
       this.name = requireNonNull(name, "name");
-      this.changed(Change.NAME);
+      this.changed(Listener.Change.NAME);
     }
     return this;
   }
@@ -74,11 +77,11 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
   @Override
   public @NonNull BossBar percent(final float percent) {
     if(percent != this.percent) {
-      final boolean enoughForClientToNotice = enoughForClientToNotice(this.lastNotifiedPercent, percent);
+      final boolean enoughForClientToNotice = enoughForClientToNotice(this.lastSentPercent, percent);
       this.percent = percent;
       if(enoughForClientToNotice) {
-        this.lastNotifiedPercent = percent;
-        this.changed(Change.PERCENT);
+        this.lastSentPercent = percent;
+        this.changed(Listener.Change.PERCENT);
       }
     }
     return this;
@@ -98,7 +101,7 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
   public @NonNull BossBar color(final @NonNull Color color) {
     if(color != this.color) {
       this.color = requireNonNull(color, "color");
-      this.changed(Change.COLOR);
+      this.changed(Listener.Change.COLOR);
     }
     return this;
   }
@@ -112,7 +115,7 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
   public @NonNull BossBar overlay(final @NonNull Overlay overlay) {
     if(overlay != this.overlay) {
       this.overlay = requireNonNull(overlay, "overlay");
-      this.changed(Change.OVERLAY);
+      this.changed(Listener.Change.OVERLAY);
     }
     return this;
   }
@@ -132,7 +135,7 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
   @Override
   public @NonNull BossBar addFlags(final @NonNull Flag@NonNull... flags) {
     if(this.editFlags(Set::add, flags)) {
-      this.changed(Change.FLAGS);
+      this.changed(Listener.Change.FLAGS);
     }
     return this;
   }
@@ -140,7 +143,7 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
   @Override
   public @NonNull BossBar removeFlags(final @NonNull Flag@NonNull... flags) {
     if(this.editFlags(Set::remove, flags)) {
-      this.changed(Change.FLAGS);
+      this.changed(Listener.Change.FLAGS);
     }
     return this;
   }
@@ -155,7 +158,32 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
     return changed;
   }
 
-  protected abstract void changed(final @NonNull Change type);
+  @Override
+  public @NonNull BossBar addListener(final @NonNull Listener listener) {
+    if(this.listeners == null) {
+      this.listeners = new ArrayList<>();
+    }
+    this.listeners.add(listener);
+    return this;
+  }
+
+  @Override
+  public @NonNull BossBar removeListener(final @NonNull Listener listener) {
+    if(this.listeners != null) {
+      this.listeners.remove(listener);
+    }
+    return this;
+  }
+
+  protected void changed(final Listener.@NonNull Change change) {
+    final List<Listener> listeners = this.listeners;
+    if(listeners != null) {
+      for(int i = 0, size = listeners.size(); i < size; i++) {
+        final Listener listener = listeners.get(i);
+        listener.bossBarChanged(this, change);
+      }
+    }
+  }
 
   @Override
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
@@ -166,16 +194,5 @@ public abstract class AbstractBossBar implements BossBar, Examinable {
       ExaminableProperty.of("overlay", this.overlay),
       ExaminableProperty.of("flags", this.flags)
     );
-  }
-
-  /**
-   * The type of change.
-   */
-  protected enum Change {
-    NAME,
-    PERCENT,
-    COLOR,
-    OVERLAY,
-    FLAGS;
   }
 }
