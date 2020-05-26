@@ -48,6 +48,35 @@ public enum NamedTextColor implements TextColor {
    * The name map.
    */
   public static final NameMap<NamedTextColor> NAMES = NameMap.create(NamedTextColor.class, constant -> constant.name);
+
+  private static final NamedTextColor[] VALUES = NamedTextColor.values();
+
+  /**
+   * Find the named colour nearest to the provided colour.
+   *
+   * @param any colour to match
+   * @return nearest named colour. will always return a value
+   */
+  public static @NonNull NamedTextColor nearestTo(@NonNull TextColor any) {
+    if(any instanceof NamedTextColor) {
+      return (NamedTextColor) any;
+    }
+    // TODO: This tends to match greys more than it should (rgb averages and all that)
+    int matchedDistance = Integer.MAX_VALUE;
+    NamedTextColor match = VALUES[0];
+    for(NamedTextColor potential : VALUES) {
+      int distance = any.distanceSquared(potential);
+      if(distance < matchedDistance) {
+        match = potential;
+        matchedDistance = distance;
+      }
+      if(distance == 0) { // same colour! whoo!
+        break;
+      }
+    }
+    return match;
+  }
+
   /**
    * The name of this color.
    */

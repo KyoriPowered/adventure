@@ -61,7 +61,7 @@ public interface TextColor extends TextFormat {
    * @return a new text colour
    */
   static @NonNull TextColor of(final float r, final float g, final float b) {
-    return of((int) r * 0xff, (int) (g * 0xff), (int) (b * 0xff));
+    return of((int) (r * 0xff), (int) (g * 0xff), (int) (b * 0xff));
   }
 
   /**
@@ -96,5 +96,21 @@ public interface TextColor extends TextFormat {
    */
   default @IntRange(from = 0x0, to = 0xff) short blue() {
     return (short) (this.value() & 0xff);
+  }
+
+  /**
+   * Returns a distance metric to the other colour.
+   *
+   * <p>This value is unitless and should only be used to compare with other text colours.
+   *
+   * @param other colour to compare to
+   * @return distance metric
+   */
+  default int distanceSquared(@NonNull TextColor other) {
+    final int rAvg = (red() + other.red()) / 2;
+    final int dR = red() - other.red();
+    final int dG = green() - other.green();
+    final int dB = blue() - other.blue();
+    return ((2 + (rAvg / 256)) * (dR * dR)) + (4 * (dG * dG)) + ((2 + ((255 - rAvg) / 256)) * (dB * dB));
   }
 }
