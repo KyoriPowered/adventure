@@ -32,15 +32,15 @@ import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public interface MultiAudience extends Audience {
-  static @NonNull MultiAudience of(final Audience... audiences) {
+  static @NonNull MultiAudience of(final @NonNull Audience@NonNull... audiences) {
     return of(Arrays.asList(audiences));
   }
 
-  static @NonNull MultiAudience of(final Iterable<Audience> audiences) {
+  static @NonNull MultiAudience of(final @NonNull Iterable<Audience> audiences) {
     return () -> audiences;
   }
 
-  @NonNull Iterable<Audience> audiences();
+  @NonNull Iterable<? extends Audience> audiences();
 
   @Override
   default void message(final @NonNull Component message) {
