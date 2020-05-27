@@ -28,6 +28,7 @@ import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public interface MultiAudience extends Audience {
@@ -69,5 +70,20 @@ public interface MultiAudience extends Audience {
   @Override
   default void stopSound(final @NonNull SoundStop stop) {
     this.audiences().forEach(audience -> audience.stopSound(stop));
+  }
+
+  @Override
+  default void showTitle(final @NonNull Title title) {
+    this.audiences().forEach(audience -> audience.showTitle(title));
+  }
+
+  @Override
+  default void clearTitle() {
+    this.audiences().forEach(Audience::clearTitle);
+  }
+
+  @Override
+  default void resetTitle() {
+    this.audiences().forEach(Audience::resetTitle);
   }
 }

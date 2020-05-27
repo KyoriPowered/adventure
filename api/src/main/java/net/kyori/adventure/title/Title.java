@@ -21,75 +21,62 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.audience;
+package net.kyori.adventure.title;
 
-import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.sound.Sound;
-import net.kyori.adventure.sound.SoundStop;
+import java.time.Duration;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * An audience.
+ * A title.
  */
-public interface Audience {
+public interface Title {
   /**
-   * Sends a message.
-   *
-   * @param message the message
-   */
-  void message(final @NonNull Component message);
-
-  /**
-   * Shows a bossbar.
-   *
-   * @param bar the bossbar
-   */
-  void showBossBar(final @NonNull BossBar bar);
-
-  /**
-   * Hides a bossbar.
-   *
-   * @param bar the bossbar
-   */
-  void hideBossBar(final @NonNull BossBar bar);
-
-  /**
-   * Shows a message on the action bar.
-   *
-   * @param message the message
-   */
-  void showActionBar(final @NonNull Component message);
-
-  /**
-   * Plays a sound.
-   *
-   * @param sound the sound
-   */
-  void playSound(final @NonNull Sound sound);
-
-  /**
-   * Stops all sounds.
-   *
-   * @param stop the stop
-   */
-  void stopSound(final @NonNull SoundStop stop);
-
-  /**
-   * Shows a title.
+   * Creates a title.
    *
    * @param title the title
+   * @param subtitle the subtitle
+   * @param fadeInTime the fade-in duration
+   * @param stayTime the stay duration
+   * @param fadeOutTime the fade-out duration
+   * @return the title
    */
-  void showTitle(final @NonNull Title title);
+  static @NonNull Title of(final @NonNull Component title, final @NonNull Component subtitle, final @NonNull Duration fadeInTime, final @NonNull Duration stayTime, final @NonNull Duration fadeOutTime) {
+    return new TitleImpl(title, subtitle, fadeInTime, stayTime, fadeOutTime);
+  }
 
   /**
-   * Clears the title.
+   * Gets the title.
+   *
+   * @return the title
    */
-  void clearTitle();
+  @NonNull Component title();
 
   /**
-   * Resets the title.
+   * Gets the subtitle.
+   *
+   * @return the subtitle
    */
-  void resetTitle();
+  @NonNull Component subtitle();
+
+  /**
+   * Gets the time (in ticks) the title will fade-in.
+   *
+   * @return the time (in ticks) the title will fade-in
+   */
+  @NonNull Duration fadeInTime();
+
+  /**
+   * Gets the time (in ticks) the title will stay.
+   *
+   * @return the time (in ticks) the title will stay
+   */
+  @NonNull Duration stayTime();
+
+  /**
+   * Gets the time (in ticks) the title will fade-out.
+   *
+   * @return the time (in ticks) the title will fade-out
+   */
+  @NonNull Duration fadeOutTime();
 }
