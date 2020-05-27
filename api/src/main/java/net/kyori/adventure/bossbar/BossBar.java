@@ -135,6 +135,7 @@ public interface BossBar {
 
   @NonNull BossBar removeListener(final @NonNull Listener listener);
 
+  @FunctionalInterface
   interface Listener {
     void bossBarChanged(final @NonNull BossBar bar, final @NonNull Change change);
 
