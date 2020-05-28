@@ -23,10 +23,12 @@
  */
 package net.kyori.adventure.text.format;
 
-public final class TextColorImpl implements TextColor {
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+/* package */ final class TextColorImpl implements TextColor {
   private final int value;
 
-  TextColorImpl(final int value) {
+  /* package */ TextColorImpl(final int value) {
     this.value = value;
   }
 
@@ -36,9 +38,9 @@ public final class TextColorImpl implements TextColor {
   }
 
   @Override
-  public boolean equals(final Object other) {
-    if (this == other) return true;
-    if (!(other instanceof TextColorImpl)) return false;
+  public boolean equals(final @Nullable Object other) {
+    if(this == other) return true;
+    if(!(other instanceof TextColorImpl)) return false;
     final TextColorImpl that = (TextColorImpl) other;
     return this.value == that.value;
   }

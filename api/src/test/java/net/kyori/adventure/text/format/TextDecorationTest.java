@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text.format;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class TextDecorationTest {
   @Test
   void testByBoolean() {
-    Assertions.assertEquals(TextDecoration.State.NOT_SET, TextDecoration.State.byBoolean(null));
+    assertEquals(TextDecoration.State.NOT_SET, TextDecoration.State.byBoolean(null));
     assertEquals(TextDecoration.State.FALSE, TextDecoration.State.byBoolean(false));
     assertEquals(TextDecoration.State.TRUE, TextDecoration.State.byBoolean(true));
   }

@@ -24,13 +24,13 @@
 package net.kyori.adventure.title;
 
 import java.time.Duration;
-import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /* package */ final class TitleImpl implements Examinable, Title {
   private final Component title;
@@ -73,24 +73,24 @@ import org.checkerframework.checker.nullness.qual.NonNull;
   }
 
   @Override
-  public boolean equals(final Object other) {
+  public boolean equals(final @Nullable Object other) {
     if(this == other) return true;
     if(other == null || this.getClass() != other.getClass()) return false;
     final TitleImpl that = (TitleImpl) other;
-    return Objects.equals(this.title, that.title)
-      && Objects.equals(this.subtitle, that.subtitle)
-      && Objects.equals(this.fadeInTime, that.fadeInTime)
-      && Objects.equals(this.stayTime, that.stayTime)
-      && Objects.equals(this.fadeOutTime, that.fadeOutTime);
+    return this.title.equals(that.title)
+      && this.subtitle.equals(that.subtitle)
+      && this.fadeInTime.equals(that.fadeInTime)
+      && this.stayTime.equals(that.stayTime)
+      && this.fadeOutTime.equals(that.fadeOutTime);
   }
 
   @Override
   public int hashCode() {
-    int result = Objects.hashCode(this.title);
-    result = (31 * result) + Objects.hashCode(this.subtitle);
-    result = (31 * result) + Objects.hashCode(this.fadeInTime);
-    result = (31 * result) + Objects.hashCode(this.stayTime);
-    result = (31 * result) + Objects.hashCode(this.fadeOutTime);
+    int result = this.title.hashCode();
+    result = (31 * result) + this.subtitle.hashCode();
+    result = (31 * result) + this.fadeInTime.hashCode();
+    result = (31 * result) + this.stayTime.hashCode();
+    result = (31 * result) + this.fadeOutTime.hashCode();
     return result;
   }
 

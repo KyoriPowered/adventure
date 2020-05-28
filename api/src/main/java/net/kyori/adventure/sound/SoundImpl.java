@@ -29,13 +29,13 @@ import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-final class SoundImpl implements Examinable, Sound {
+/* package */ final class SoundImpl implements Examinable, Sound {
   private final Key name;
   private final Source source;
   private final float volume;
   private final float pitch;
 
-  SoundImpl(final @NonNull Key name, final @NonNull Source source, final float volume, final float pitch) {
+  /* package */ SoundImpl(final @NonNull Key name, final @NonNull Source source, final float volume, final float pitch) {
     this.name = name;
     this.source = source;
     this.volume = volume;

@@ -66,19 +66,75 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
     return component;
   }
 
+  /**
+   * Renders a block NBT component.
+   *
+   * @param component the component
+   * @param context the context
+   * @return the rendered component
+   */
   protected abstract @NonNull Component renderBlockNbt(final @NonNull BlockNbtComponent component, final @NonNull C context);
 
+  /**
+   * Renders an entity NBT component.
+   *
+   * @param component the component
+   * @param context the context
+   * @return the rendered component
+   */
   protected abstract @NonNull Component renderEntityNbt(final @NonNull EntityNbtComponent component, final @NonNull C context);
 
+  /**
+   * Renders a storage NBT component.
+   *
+   * @param component the component
+   * @param context the context
+   * @return the rendered component
+   */
   protected abstract @NonNull Component renderStorageNbt(final @NonNull StorageNbtComponent component, final @NonNull C context);
 
+  /**
+   * Renders a keybind component.
+   *
+   * @param component the component
+   * @param context the context
+   * @return the rendered component
+   */
   protected abstract @NonNull Component renderKeybind(final @NonNull KeybindComponent component, final @NonNull C context);
 
+  /**
+   * Renders a score component.
+   *
+   * @param component the component
+   * @param context the context
+   * @return the rendered component
+   */
   protected abstract @NonNull Component renderScore(final @NonNull ScoreComponent component, final @NonNull C context);
 
+  /**
+   * Renders a selector component.
+   *
+   * @param component the component
+   * @param context the context
+   * @return the rendered component
+   */
   protected abstract @NonNull Component renderSelector(final @NonNull SelectorComponent component, final @NonNull C context);
 
+  /**
+   * Renders a text component.
+   *
+   * @param component the component
+   * @param context the context
+   * @return the rendered component
+   */
   protected abstract @NonNull Component renderText(final @NonNull TextComponent component, final @NonNull C context);
 
+  /**
+   * Renders a translatable component.
+   *
+   * @param component the component
+   * @param context the context
+   * @return the rendered component
+   */
   protected abstract @NonNull Component renderTranslatable(final @NonNull TranslatableComponent component, final @NonNull C context);
 }

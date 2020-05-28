@@ -31,15 +31,35 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+/**
+ * An audience full of other audiences.
+ */
 public interface MultiAudience extends Audience {
+  /**
+   * Creates a multi-audience.
+   *
+   * @param audiences the audiences
+   * @return a multi-audience
+   */
   static @NonNull MultiAudience of(final @NonNull Audience@NonNull... audiences) {
     return of(Arrays.asList(audiences));
   }
 
+  /**
+   * Creates a multi-audience.
+   *
+   * @param audiences the audiences
+   * @return a multi-audience
+   */
   static @NonNull MultiAudience of(final @NonNull Iterable<Audience> audiences) {
     return () -> audiences;
   }
 
+  /**
+   * Gets the audiences.
+   *
+   * @return the audiences
+   */
   @NonNull Iterable<? extends Audience> audiences();
 
   @Override

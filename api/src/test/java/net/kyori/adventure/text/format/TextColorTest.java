@@ -23,20 +23,21 @@
  */
 package net.kyori.adventure.text.format;
 
+import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TextColorTest {
+class TextColorTest {
   @Test
   public void testPureColors() {
-    final TextColor redInt = TextColor.of(0xFF0000);
-    final TextColor greenInt = TextColor.of(0x00FF00);
-    final TextColor blueInt = TextColor.of(0x0000FF);
+    final TextColor redInt = TextColor.of(0xff0000);
+    final TextColor greenInt = TextColor.of(0x00ff00);
+    final TextColor blueInt = TextColor.of(0x0000ff);
 
-    final TextColor red = TextColor.of(0xFF, 0x00, 0x00);
-    final TextColor green = TextColor.of(0x00, 0xFF, 0x00);
-    final TextColor blue = TextColor.of(0x00, 0x00, 0xFF);
+    final TextColor red = TextColor.of(0xff, 0x00, 0x00);
+    final TextColor green = TextColor.of(0x00, 0xff, 0x00);
+    final TextColor blue = TextColor.of(0x00, 0x00, 0xff);
 
     assertEquals(redInt, red);
     assertEquals(greenInt, green);
@@ -45,15 +46,28 @@ public class TextColorTest {
 
   @Test
   public void testExtractComponents() {
-    final TextColor purple = TextColor.of(0xFF00FF);
-    assertEquals(0xFF, purple.red());
+    final TextColor purple = TextColor.of(0xff00ff);
+    assertEquals(0xff, purple.red());
     assertEquals(0x00, purple.green());
-    assertEquals(0xFF, purple.blue());
+    assertEquals(0xff, purple.blue());
 
-    final TextColor color = TextColor.of(0xBADA04);
-    assertEquals(0xBA, color.red());
-    assertEquals(0xDA, color.green());
+    final TextColor color = TextColor.of(0xbada04);
+    assertEquals(0xba, color.red());
+    assertEquals(0xda, color.green());
     assertEquals(0x04, color.blue());
   }
 
+  @Test
+  public void testEquality() {
+    new EqualsTester()
+      .addEqualityGroup(
+        TextColor.of(0xff0000),
+        TextColor.of(0xff, 0x00, 0x00)
+      )
+      .addEqualityGroup(
+        TextColor.of(0x00ff00),
+        TextColor.of(0x00, 0xff, 0x00)
+      )
+      .testEquals();
+  }
 }

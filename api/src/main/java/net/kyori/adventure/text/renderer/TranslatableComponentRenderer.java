@@ -26,7 +26,6 @@ package net.kyori.adventure.text.renderer;
 import java.text.AttributedCharacterIterator;
 import java.text.MessageFormat;
 import java.util.List;
-import java.util.function.BiFunction;
 import net.kyori.adventure.text.BlockNbtComponent;
 import net.kyori.adventure.text.BuildableComponent;
 import net.kyori.adventure.text.Component;
@@ -49,12 +48,11 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * A {@link MessageFormat}-based translatable component renderer.
  */
 public abstract class TranslatableComponentRenderer<C> extends AbstractComponentRenderer<C> {
-  // TODO(kashike): move away from BiFunction - maybe TranslationFinder<C>?
-  public static <C> @NonNull TranslatableComponentRenderer<C> from(final @NonNull BiFunction<C, String, /* @Nullable */ MessageFormat> translations) {
+  public static <C> @NonNull TranslatableComponentRenderer<C> from(final @NonNull TranslationFinder<C> finder) {
     return new TranslatableComponentRenderer<C>() {
       @Override
       protected @Nullable MessageFormat translation(final @NonNull C context, final @NonNull String key) {
-        return translations.apply(context, key);
+        return finder.findTranslation(context, key);
       }
     };
   }
@@ -162,11 +160,25 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
     final /* @Nullable */ HoverEvent<?> hoverEvent = component.hoverEvent();
     if(hoverEvent != null) {
       final HoverEvent.Action<?> action = hoverEvent.action();
-      if(action.type().isAssignableFrom(Component.class)) {
-        builder.hoverEvent(HoverEvent.of(
-          (HoverEvent.Action<Component>) action,
-          this.render((Component) hoverEvent.value(), context)
+      if(action == HoverEvent.Action.SHOW_TEXT) {
+        final Component value = (Component) hoverEvent.value();
+        builder.hoverEvent(HoverEvent.showText(
+          this.render(value, context)
         ));
+      } else if(action == HoverEvent.Action.SHOW_ENTITY) {
+        final HoverEvent.ShowEntity value = (HoverEvent.ShowEntity) hoverEvent.value();
+        final Component name = value.name();
+        if(name != null) {
+          builder.hoverEvent(HoverEvent.showEntity(new HoverEvent.ShowEntity(
+            value.type(),
+            value.id(),
+            this.render(name, context)
+          )));
+        } else {
+          builder.hoverEvent(hoverEvent);
+        }
+      } else {
+        builder.hoverEvent(hoverEvent);
       }
     }
   }
@@ -179,4 +191,21 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
    * @return the translation
    */
   protected abstract @Nullable MessageFormat translation(final @NonNull C context, final @NonNull String key);
+
+  /**
+   * A translation finder.
+   *
+   * @param <C> the context type
+   */
+  @FunctionalInterface
+  public interface TranslationFinder<C> {
+    /**
+     * Finds a translation.
+     *
+     * @param context the context
+     * @param key the translation key
+     * @return the translation
+     */
+    @Nullable MessageFormat findTranslation(final @NonNull C context, final @NonNull String key);
+  }
 }

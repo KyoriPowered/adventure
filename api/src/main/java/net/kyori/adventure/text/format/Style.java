@@ -648,7 +648,7 @@ public final class Style implements Examinable {
         @Override boolean mergeClickEvent(final @NonNull Builder target, final @Nullable ClickEvent event) { return true; }
         @Override boolean mergeHoverEvent(final @NonNull Builder target, final @Nullable HoverEvent<?> event) { return true; }
         @Override boolean mergeInsertion(final @NonNull Builder target, final @Nullable String insertion) { return true; }
-        @Override boolean mergeFont(@NonNull Builder target, @Nullable Key font) { return true; }
+        @Override boolean mergeFont(final @NonNull Builder target, final @Nullable Key font) { return true; }
       },
       /**
        * Never merges onto target.
@@ -659,7 +659,7 @@ public final class Style implements Examinable {
         @Override boolean mergeClickEvent(final @NonNull Builder target, final @Nullable ClickEvent event) { return false; }
         @Override boolean mergeHoverEvent(final @NonNull Builder target, final @Nullable HoverEvent<?> event) { return false; }
         @Override boolean mergeInsertion(final @NonNull Builder target, final @Nullable String insertion) { return false; }
-        @Override boolean mergeFont(@NonNull Builder target, @Nullable Key font) { return false; }
+        @Override boolean mergeFont(final @NonNull Builder target, final @Nullable Key font) { return false; }
       },
       /**
        * Merge onto target when not already set on target.
@@ -702,7 +702,7 @@ public final class Style implements Examinable {
         }
 
         @Override
-        boolean mergeFont(@NonNull Builder target, @Nullable Key font) {
+        boolean mergeFont(final @NonNull Builder target, final @Nullable Key font) {
           return target.font == null;
         }
       };
