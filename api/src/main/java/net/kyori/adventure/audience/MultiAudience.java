@@ -63,8 +63,8 @@ public interface MultiAudience extends Audience {
   @NonNull Iterable<? extends Audience> audiences();
 
   @Override
-  default void message(final @NonNull Component message) {
-    this.audiences().forEach(audience -> audience.message(message));
+  default void sendMessage(final @NonNull Component message) {
+    this.audiences().forEach(audience -> audience.sendMessage(message));
   }
 
   @Override
@@ -78,8 +78,8 @@ public interface MultiAudience extends Audience {
   }
 
   @Override
-  default void showActionBar(final @NonNull Component message) {
-    this.audiences().forEach(audience -> audience.showActionBar(message));
+  default void sendActionBar(final @NonNull Component message) {
+    this.audiences().forEach(audience -> audience.sendActionBar(message));
   }
 
   @Override

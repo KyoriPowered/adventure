@@ -42,8 +42,8 @@ public interface ForwardingAudience extends Audience {
   @NonNull Audience audience();
 
   @Override
-  default void message(final @NonNull Component message) {
-    this.audience().message(message);
+  default void sendMessage(final @NonNull Component message) {
+    this.audience().sendMessage(message);
   }
 
   @Override
@@ -57,8 +57,8 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
-  default void showActionBar(final @NonNull Component message) {
-    this.audience().showActionBar(message);
+  default void sendActionBar(final @NonNull Component message) {
+    this.audience().sendActionBar(message);
   }
 
   @Override

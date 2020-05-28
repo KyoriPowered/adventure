@@ -35,11 +35,20 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public interface Audience {
   /**
+   * Returns an audience that does nothing.
+   *
+   * @return an audience
+   */
+  static @NonNull Audience empty() {
+    return EmptyAudience.INSTANCE;
+  }
+
+  /**
    * Sends a message.
    *
    * @param message the message
    */
-  void message(final @NonNull Component message);
+  void sendMessage(final @NonNull Component message);
 
   /**
    * Shows a bossbar.
@@ -56,11 +65,11 @@ public interface Audience {
   void hideBossBar(final @NonNull BossBar bar);
 
   /**
-   * Shows a message on the action bar.
+   * Sends a message on the action bar.
    *
    * @param message the message
    */
-  void showActionBar(final @NonNull Component message);
+  void sendActionBar(final @NonNull Component message);
 
   /**
    * Plays a sound.
@@ -84,12 +93,12 @@ public interface Audience {
   void showTitle(final @NonNull Title title);
 
   /**
-   * Clears the title.
+   * Clears the currently displayed title.
    */
   void clearTitle();
 
   /**
-   * Resets the title.
+   * Resets the title, subtitle, fade-in time, stay time, and fade-out time back to "unset".
    */
   void resetTitle();
 }

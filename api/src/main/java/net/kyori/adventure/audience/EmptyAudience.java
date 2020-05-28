@@ -21,45 +21,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.sound;
+package net.kyori.adventure.audience;
 
-import java.util.Objects;
-import net.kyori.adventure.key.Key;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.sound.Sound;
+import net.kyori.adventure.sound.SoundStop;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-/* package */ final class SoundStopImpl implements SoundStop {
-  static SoundStop ALL = new SoundStopImpl(null, null);
-  private final @Nullable Key sound;
-  private final Sound.@Nullable Source source;
+/* package */ final class EmptyAudience implements Audience {
+  static final EmptyAudience INSTANCE = new EmptyAudience();
 
-  /* package */ SoundStopImpl(final @Nullable Key sound, final Sound.@Nullable Source source) {
-    this.sound = sound;
-    this.source = source;
+  @Override
+  public void sendMessage(final @NonNull Component message) {
   }
 
   @Override
-  public @Nullable Key sound() {
-    return this.sound;
+  public void showBossBar(final @NonNull BossBar bar) {
   }
 
   @Override
-  public Sound.@Nullable Source source() {
-    return this.source;
+  public void hideBossBar(final @NonNull BossBar bar) {
   }
 
   @Override
-  public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(other == null || this.getClass() != other.getClass()) return false;
-    final SoundStopImpl that = (SoundStopImpl) other;
-    return Objects.equals(this.sound, that.sound)
-      && Objects.equals(this.source, that.source);
+  public void sendActionBar(final @NonNull Component message) {
   }
 
   @Override
-  public int hashCode() {
-    int result = Objects.hashCode(this.sound);
-    result = (31 * result) + Objects.hashCode(this.source);
-    return result;
+  public void playSound(final @NonNull Sound sound) {
+  }
+
+  @Override
+  public void stopSound(final @NonNull SoundStop stop) {
+  }
+
+  @Override
+  public void showTitle(final @NonNull Title title) {
+  }
+
+  @Override
+  public void clearTitle() {
+  }
+
+  @Override
+  public void resetTitle() {
   }
 }

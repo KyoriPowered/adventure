@@ -28,6 +28,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /* package */ final class SoundImpl implements Examinable, Sound {
   private final Key name;
@@ -60,6 +61,26 @@ import org.checkerframework.checker.nullness.qual.NonNull;
   @Override
   public float pitch() {
     return this.pitch;
+  }
+
+  @Override
+  public boolean equals(final @Nullable Object other) {
+    if(this == other) return true;
+    if(other == null || this.getClass() != other.getClass()) return false;
+    final SoundImpl that = (SoundImpl) other;
+    return this.name.equals(that.name)
+      && this.source == that.source
+      && Float.floatToIntBits(this.volume) == Float.floatToIntBits(that.volume)
+      && Float.floatToIntBits(this.pitch) == Float.floatToIntBits(that.pitch);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = this.name.hashCode();
+    result = (31 * result) + this.source.hashCode();
+    result = (31 * result) + Float.hashCode(this.volume);
+    result = (31 * result) + Float.hashCode(this.pitch);
+    return result;
   }
 
   @Override
