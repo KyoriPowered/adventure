@@ -23,14 +23,13 @@
  */
 package net.kyori.adventure.bossbar;
 
-import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.util.Listenable;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
@@ -39,7 +38,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-/* package */ final class BossBarImpl implements BossBar, Examinable {
+/* package */ final class BossBarImpl extends Listenable<BossBar.Listener> implements BossBar, Examinable {
   private static final float MINIMUM_PERCENT_CHANGE = 0.01f;
   private Component name;
   private float percent;
@@ -47,7 +46,6 @@ import static java.util.Objects.requireNonNull;
   private Color color;
   private Overlay overlay;
   private final Set<Flag> flags = EnumSet.noneOf(Flag.class);
-  private @Nullable List<Listener> listeners = null;
 
   /* package */ BossBarImpl(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay) {
     this.name = requireNonNull(name, "name");
@@ -174,32 +172,18 @@ import static java.util.Objects.requireNonNull;
 
   @Override
   public @NonNull BossBar addListener(final @NonNull Listener listener) {
-    if(this.listeners == null) {
-      this.listeners = new ArrayList<>();
-    }
-    this.listeners.add(listener);
+    this.addListener0(listener);
     return this;
   }
 
   @Override
   public @NonNull BossBar removeListener(final @NonNull Listener listener) {
-    if(this.listeners != null) {
-      this.listeners.remove(listener);
-      if(this.listeners.isEmpty()) {
-        this.listeners = null;
-      }
-    }
+    this.removeListener0(listener);
     return this;
   }
 
   private void changed(final Listener.@NonNull Change change) {
-    final List<Listener> listeners = this.listeners;
-    if(listeners != null) {
-      for(int i = 0, size = listeners.size(); i < size; i++) {
-        final Listener listener = listeners.get(i);
-        listener.bossBarChanged(this, change);
-      }
-    }
+    this.forEachListener(listener -> listener.bossBarChanged(this, change));
   }
 
   @Override
