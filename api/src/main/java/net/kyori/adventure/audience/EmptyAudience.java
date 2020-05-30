@@ -31,7 +31,7 @@ import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /* package */ final class EmptyAudience implements Audience {
-  static final EmptyAudience INSTANCE = new EmptyAudience();
+  /* package */ static final EmptyAudience INSTANCE = new EmptyAudience();
 
   @Override
   public void sendMessage(final @NonNull Component message) {

@@ -39,7 +39,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-final class BossBarImpl implements BossBar, Examinable {
+/* package */ final class BossBarImpl implements BossBar, Examinable {
   private static final float MINIMUM_PERCENT_CHANGE = 0.01f;
   private Component name;
   private float percent;
@@ -47,14 +47,19 @@ final class BossBarImpl implements BossBar, Examinable {
   private Color color;
   private Overlay overlay;
   private final Set<Flag> flags = EnumSet.noneOf(Flag.class);
-  private List<Listener> listeners = null;
+  private @Nullable List<Listener> listeners = null;
 
-  protected BossBarImpl(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay) {
+  /* package */ BossBarImpl(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay) {
     this.name = requireNonNull(name, "name");
     this.percent = percent;
     this.lastSentPercent = percent;
     this.color = requireNonNull(color, "color");
     this.overlay = requireNonNull(overlay, "overlay");
+  }
+
+  /* package */ BossBarImpl(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay, final @NonNull Set<Flag> flags) {
+    this(name, percent, color, overlay);
+    this.flags.addAll(flags);
   }
 
   @Override
@@ -78,6 +83,7 @@ final class BossBarImpl implements BossBar, Examinable {
 
   @Override
   public @NonNull BossBar percent(final float percent) {
+    checkPercent(percent);
     if(percent != this.percent) {
       final boolean enoughForClientToNotice = enoughForClientToNotice(this.lastSentPercent, percent);
       this.percent = percent;
@@ -92,6 +98,12 @@ final class BossBarImpl implements BossBar, Examinable {
   // https://github.com/KyoriPowered/text/pull/62#discussion_r410790072
   private static boolean enoughForClientToNotice(final float oldValue, final float newValue) {
     return Math.abs(newValue - oldValue) >= MINIMUM_PERCENT_CHANGE;
+  }
+
+  /* package */ static void checkPercent(final float percent) {
+    if(percent < 0f || percent > 1f) {
+      throw new IllegalArgumentException("percent must be between 0 and 1, was " + percent);
+    }
   }
 
   @Override
@@ -136,7 +148,7 @@ final class BossBarImpl implements BossBar, Examinable {
 
   @Override
   public @NonNull BossBar addFlags(final @NonNull Flag@NonNull... flags) {
-    if(this.editFlags(Set::add, flags)) {
+    if(this.editFlags(flags, Set::add)) {
       this.changed(Listener.Change.FLAGS);
     }
     return this;
@@ -144,13 +156,13 @@ final class BossBarImpl implements BossBar, Examinable {
 
   @Override
   public @NonNull BossBar removeFlags(final @NonNull Flag@NonNull... flags) {
-    if(this.editFlags(Set::remove, flags)) {
+    if(this.editFlags(flags, Set::remove)) {
       this.changed(Listener.Change.FLAGS);
     }
     return this;
   }
 
-  private boolean editFlags(final @NonNull BiPredicate<Set<Flag>, Flag> predicate, final @NonNull Flag@NonNull... flags) {
+  private boolean editFlags(final @NonNull Flag @NonNull [] flags, final @NonNull BiPredicate<Set<Flag>, Flag> predicate) {
     boolean changed = false;
     for(int i = 0, length = flags.length; i < length; i++) {
       if(predicate.test(this.flags, flags[i])) {
@@ -173,11 +185,14 @@ final class BossBarImpl implements BossBar, Examinable {
   public @NonNull BossBar removeListener(final @NonNull Listener listener) {
     if(this.listeners != null) {
       this.listeners.remove(listener);
+      if(this.listeners.isEmpty()) {
+        this.listeners = null;
+      }
     }
     return this;
   }
 
-  protected void changed(final Listener.@NonNull Change change) {
+  private void changed(final Listener.@NonNull Change change) {
     final List<Listener> listeners = this.listeners;
     if(listeners != null) {
       for(int i = 0, size = listeners.size(); i < size; i++) {

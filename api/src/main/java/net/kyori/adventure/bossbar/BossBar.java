@@ -32,8 +32,33 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * A bossbar.
  */
 public interface BossBar {
+  /**
+   * Creates a new bossbar.
+   *
+   * @param name the name
+   * @param percent the percent, between 0 and 1
+   * @param color the color
+   * @param overlay the overlay
+   * @return a bossbar
+   */
   static @NonNull BossBar of(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay) {
+    BossBarImpl.checkPercent(percent);
     return new BossBarImpl(name, percent, color, overlay);
+  }
+
+  /**
+   * Creates a new bossbar.
+   *
+   * @param name the name
+   * @param percent the percent, between 0 and 1
+   * @param color the color
+   * @param overlay the overlay
+   * @param flags the flags
+   * @return a bossbar
+   */
+  static @NonNull BossBar of(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay, final @NonNull Set<Flag> flags) {
+    BossBarImpl.checkPercent(percent);
+    return new BossBarImpl(name, percent, color, overlay, flags);
   }
 
   /**
