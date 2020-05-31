@@ -156,10 +156,25 @@ public interface BossBar {
    */
   @NonNull BossBar removeFlags(final @NonNull Flag@NonNull... flags);
 
+  /**
+   * Adds a listener.
+   *
+   * @param listener a listener
+   * @return the bossbar
+   */
   @NonNull BossBar addListener(final @NonNull Listener listener);
 
+  /**
+   * Removes a listener.
+   *
+   * @param listener a listener
+   * @return the bossbar
+   */
   @NonNull BossBar removeListener(final @NonNull Listener listener);
 
+  /**
+   * A listener.
+   */
   @FunctionalInterface
   interface Listener {
     void bossBarChanged(final @NonNull BossBar bar, final @NonNull Change change);
