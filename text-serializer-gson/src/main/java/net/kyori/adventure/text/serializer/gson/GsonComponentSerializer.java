@@ -41,6 +41,9 @@ public final class GsonComponentSerializer implements ComponentSerializer<Compon
   public static final GsonComponentSerializer INSTANCE = new GsonComponentSerializer();
 
   public static final Consumer<GsonBuilder> GSON_BUILDER_CONFIGURER = builder -> {
+    // core
+    builder.registerTypeHierarchyAdapter(Key.class, new KeySerializer());
+    // text
     builder.registerTypeHierarchyAdapter(Component.class, new ComponentSerializerImpl());
     builder.registerTypeAdapter(Style.class, new StyleSerializer());
     builder.registerTypeAdapter(ClickEvent.Action.class, new NameMapSerializer<>("click action", ClickEvent.Action.NAMES));
