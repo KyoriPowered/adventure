@@ -23,27 +23,56 @@
  */
 package net.kyori.adventure.text.serializer.gson;
 
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
+import java.util.UUID;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-final class ShowEntitySerializer implements JsonSerializer<HoverEvent.ShowEntity> {
+final class ShowEntitySerializer implements JsonSerializer<HoverEvent.ShowEntity>, JsonDeserializer<HoverEvent.ShowEntity> {
+  private static final String SHOW_ENTITY_TYPE = "type";
+  private static final String SHOW_ENTITY_ID = "id";
+  private static final String SHOW_ENTITY_NAME = "name";
+
   @Override
   public JsonElement serialize(final HoverEvent.ShowEntity src, final Type typeOfSrc, final JsonSerializationContext context) {
     final JsonObject json = new JsonObject();
 
-    json.addProperty("type", src.type().asString());
-    json.addProperty("id", src.id().toString());
+    json.addProperty(SHOW_ENTITY_TYPE, src.type().asString());
+    json.addProperty(SHOW_ENTITY_ID, src.id().toString());
 
     final /* @Nullable */ Component name = src.name();
     if(name != null) {
-      json.add("name", context.serialize(name));
+      json.add(SHOW_ENTITY_NAME, context.serialize(name));
     }
 
     return json;
+  }
+
+  @Override
+  public HoverEvent.ShowEntity deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
+    final JsonObject object = json.getAsJsonObject();
+
+    if (!object.has(SHOW_ENTITY_TYPE) || !object.has(SHOW_ENTITY_ID)) {
+      throw new JsonParseException("A show entity hover event needs type and id fields to be deserialized");
+    }
+
+    final Key type = Key.of(object.getAsJsonPrimitive(SHOW_ENTITY_TYPE).getAsString());
+    final UUID id = UUID.fromString(object.getAsJsonPrimitive(SHOW_ENTITY_ID).getAsString());
+
+    @Nullable Component name = null;
+    if (object.has(SHOW_ENTITY_NAME)) {
+      name = context.deserialize(object.get(SHOW_ENTITY_NAME), Component.class);
+    }
+
+    return new HoverEvent.ShowEntity(type, id, name);
   }
 }
