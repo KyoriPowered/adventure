@@ -24,6 +24,7 @@
 package net.kyori.adventure.bossbar;
 
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiPredicate;
@@ -39,10 +40,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import static java.util.Objects.requireNonNull;
 
 /* package */ final class BossBarImpl extends Listenable<BossBar.Listener> implements BossBar, Examinable {
-  private static final float MINIMUM_PERCENT_CHANGE = 0.01f;
   private Component name;
   private float percent;
-  private volatile float lastSentPercent;
   private Color color;
   private Overlay overlay;
   private final Set<Flag> flags = EnumSet.noneOf(Flag.class);
@@ -50,7 +49,6 @@ import static java.util.Objects.requireNonNull;
   /* package */ BossBarImpl(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay) {
     this.name = requireNonNull(name, "name");
     this.percent = percent;
-    this.lastSentPercent = percent;
     this.color = requireNonNull(color, "color");
     this.overlay = requireNonNull(overlay, "overlay");
   }
@@ -66,10 +64,11 @@ import static java.util.Objects.requireNonNull;
   }
 
   @Override
-  public @NonNull BossBar name(final @NonNull Component name) {
-    if(!Objects.equals(this.name, name)) {
-      this.name = requireNonNull(name, "name");
-      this.changed(Listener.Change.NAME);
+  public @NonNull BossBar name(final @NonNull Component newName) {
+    final Component oldName = this.name;
+    if(!Objects.equals(newName, oldName)) {
+      this.name = requireNonNull(newName, "name");
+      this.forEachListener(listener -> listener.bossBarNameChanged(this, oldName, newName));
     }
     return this;
   }
@@ -80,22 +79,14 @@ import static java.util.Objects.requireNonNull;
   }
 
   @Override
-  public @NonNull BossBar percent(final float percent) {
-    checkPercent(percent);
-    if(percent != this.percent) {
-      final boolean enoughForClientToNotice = enoughForClientToNotice(this.lastSentPercent, percent);
-      this.percent = percent;
-      if(enoughForClientToNotice) {
-        this.lastSentPercent = percent;
-        this.changed(Listener.Change.PERCENT);
-      }
+  public @NonNull BossBar percent(final float newPercent) {
+    checkPercent(newPercent);
+    final float oldPercent = this.percent;
+    if(newPercent != oldPercent) {
+      this.percent = newPercent;
+      this.forEachListener(listener -> listener.bossBarPercentChanged(this, oldPercent, newPercent));
     }
     return this;
-  }
-
-  // https://github.com/KyoriPowered/text/pull/62#discussion_r410790072
-  private static boolean enoughForClientToNotice(final float oldValue, final float newValue) {
-    return Math.abs(newValue - oldValue) >= MINIMUM_PERCENT_CHANGE;
   }
 
   /* package */ static void checkPercent(final float percent) {
@@ -110,10 +101,11 @@ import static java.util.Objects.requireNonNull;
   }
 
   @Override
-  public @NonNull BossBar color(final @NonNull Color color) {
-    if(color != this.color) {
-      this.color = requireNonNull(color, "color");
-      this.changed(Listener.Change.COLOR);
+  public @NonNull BossBar color(final @NonNull Color newColor) {
+    final Color oldColor = this.color;
+    if(newColor != oldColor) {
+      this.color = requireNonNull(newColor, "color");
+      this.forEachListener(listener -> listener.bossBarColorChanged(this, oldColor, newColor));
     }
     return this;
   }
@@ -124,10 +116,11 @@ import static java.util.Objects.requireNonNull;
   }
 
   @Override
-  public @NonNull BossBar overlay(final @NonNull Overlay overlay) {
-    if(overlay != this.overlay) {
-      this.overlay = requireNonNull(overlay, "overlay");
-      this.changed(Listener.Change.OVERLAY);
+  public @NonNull BossBar overlay(final @NonNull Overlay newOverlay) {
+    final Overlay oldOverlay = this.overlay;
+    if(newOverlay != oldOverlay) {
+      this.overlay = requireNonNull(newOverlay, "overlay");
+      this.forEachListener(listener -> listener.bossBarOverlayChanged(this, oldOverlay, newOverlay));
     }
     return this;
   }
@@ -146,28 +139,27 @@ import static java.util.Objects.requireNonNull;
 
   @Override
   public @NonNull BossBar addFlags(final @NonNull Flag@NonNull... flags) {
-    if(this.editFlags(flags, Set::add)) {
-      this.changed(Listener.Change.FLAGS);
-    }
-    return this;
+    return this.editFlags(flags, Set::add);
   }
 
   @Override
   public @NonNull BossBar removeFlags(final @NonNull Flag@NonNull... flags) {
-    if(this.editFlags(flags, Set::remove)) {
-      this.changed(Listener.Change.FLAGS);
-    }
-    return this;
+    return this.editFlags(flags, Set::remove);
   }
 
-  private boolean editFlags(final @NonNull Flag @NonNull [] flags, final @NonNull BiPredicate<Set<Flag>, Flag> predicate) {
+  private @NonNull BossBar editFlags(final @NonNull Flag @NonNull [] flags, final @NonNull BiPredicate<Set<Flag>, Flag> predicate) {
+    if(flags.length == 0) return this;
+    final Set<Flag> oldFlags = new HashSet<>(this.flags);
     boolean changed = false;
     for(int i = 0, length = flags.length; i < length; i++) {
       if(predicate.test(this.flags, flags[i])) {
         changed = true;
       }
     }
-    return changed;
+    if(changed) {
+      this.forEachListener(listener -> listener.bossBarFlagsChanged(this, oldFlags, this.flags));
+    }
+    return this;
   }
 
   @Override
@@ -180,10 +172,6 @@ import static java.util.Objects.requireNonNull;
   public @NonNull BossBar removeListener(final @NonNull Listener listener) {
     this.removeListener0(listener);
     return this;
-  }
-
-  private void changed(final Listener.@NonNull Change change) {
-    this.forEachListener(listener -> listener.bossBarChanged(this, change));
   }
 
   @Override

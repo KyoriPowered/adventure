@@ -175,19 +175,55 @@ public interface BossBar {
   /**
    * A listener.
    */
-  @FunctionalInterface
   interface Listener {
-    void bossBarChanged(final @NonNull BossBar bar, final @NonNull Change change);
+    /**
+     * Bossbar name changed.
+     *
+     * @param bar the bossbar
+     * @param oldName the old name
+     * @param newName the new name
+     */
+    default void bossBarNameChanged(final @NonNull BossBar bar, final @NonNull Component oldName, final @NonNull Component newName) {
+    }
 
     /**
-     * The type of change.
+     * Bossbar percent changed.
+     *
+     * @param bar the bossbar
+     * @param oldPercent the old percent
+     * @param newPercent the new percent
      */
-    enum Change {
-      NAME,
-      PERCENT,
-      COLOR,
-      OVERLAY,
-      FLAGS;
+    default void bossBarPercentChanged(final @NonNull BossBar bar, final float oldPercent, final float newPercent) {
+    }
+
+    /**
+     * Bossbar color changed.
+     *
+     * @param bar the bossbar
+     * @param oldColor the old color
+     * @param newColor the new color
+     */
+    default void bossBarColorChanged(final @NonNull BossBar bar, final @NonNull Color oldColor, final @NonNull Color newColor) {
+    }
+
+    /**
+     * Bossbar overlay changed.
+     *
+     * @param bar the bossbar
+     * @param oldOverlay the old overlay
+     * @param newOverlay the new overlay
+     */
+    default void bossBarOverlayChanged(final @NonNull BossBar bar, final @NonNull Overlay oldOverlay, final @NonNull Overlay newOverlay) {
+    }
+
+    /**
+     * Bossbar flags changed.
+     *
+     * @param bar the bossbar
+     * @param oldFlags the old flags
+     * @param newFlags the new flags
+     */
+    default void bossBarFlagsChanged(final @NonNull BossBar bar, final @NonNull Set<Flag> oldFlags, final @NonNull Set<Flag> newFlags) {
     }
   }
 
