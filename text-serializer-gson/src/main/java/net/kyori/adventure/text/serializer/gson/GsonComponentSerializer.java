@@ -26,6 +26,7 @@ package net.kyori.adventure.text.serializer.gson;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.util.function.Consumer;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.BlockNbtComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
