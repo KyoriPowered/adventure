@@ -61,7 +61,7 @@ final class ShowEntitySerializer implements JsonSerializer<HoverEvent.ShowEntity
   public HoverEvent.ShowEntity deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
     final JsonObject object = json.getAsJsonObject();
 
-    if (!object.has(SHOW_ENTITY_TYPE) || !object.has(SHOW_ENTITY_ID)) {
+    if(!object.has(SHOW_ENTITY_TYPE) || !object.has(SHOW_ENTITY_ID)) {
       throw new JsonParseException("A show entity hover event needs type and id fields to be deserialized");
     }
 
@@ -69,7 +69,7 @@ final class ShowEntitySerializer implements JsonSerializer<HoverEvent.ShowEntity
     final UUID id = UUID.fromString(object.getAsJsonPrimitive(SHOW_ENTITY_ID).getAsString());
 
     @Nullable Component name = null;
-    if (object.has(SHOW_ENTITY_NAME)) {
+    if(object.has(SHOW_ENTITY_NAME)) {
       name = context.deserialize(object.get(SHOW_ENTITY_NAME), Component.class);
     }
 
