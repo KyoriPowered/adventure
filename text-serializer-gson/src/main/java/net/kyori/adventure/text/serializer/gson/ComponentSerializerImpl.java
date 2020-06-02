@@ -138,7 +138,7 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
       } else if(object.has(NBT_ENTITY)) {
         component = nbt(EntityNbtComponent.builder(), nbt, interpret).selector(object.get(NBT_ENTITY).getAsString());
       } else if(object.has(NBT_STORAGE)) {
-        component = nbt(StorageNbtComponent.builder(), nbt, interpret).storage(Key.of(object.get(NBT_STORAGE).getAsString()));
+        component = nbt(StorageNbtComponent.builder(), nbt, interpret).storage(context.deserialize(object.get(NBT_STORAGE), Key.class));
       } else {
         throw notSureHowToDeserialize(element);
       }
@@ -206,7 +206,7 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
       } else if(src instanceof EntityNbtComponent) {
         object.addProperty(NBT_ENTITY, ((EntityNbtComponent) nc).selector());
       } else if(src instanceof StorageNbtComponent) {
-        object.addProperty(NBT_STORAGE, ((StorageNbtComponent) nc).storage().asString());
+        object.add(NBT_STORAGE, context.serialize(((StorageNbtComponent) nc).storage()));
       } else {
         throw notSureHowToSerialize(src);
       }

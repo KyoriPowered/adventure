@@ -65,7 +65,7 @@ public final class StyleSerializer implements JsonDeserializer<Style>, JsonSeria
     final Style.Builder style = Style.builder();
 
     if(json.has(FONT)) {
-      style.font(Key.of(json.get("font").getAsString()));
+      style.font(context.deserialize(json.get(FONT), Key.class));
     }
 
     if(json.has(COLOR)) {
@@ -130,7 +130,7 @@ public final class StyleSerializer implements JsonDeserializer<Style>, JsonSeria
     }
 
     if(json.has(FONT)) {
-      style.font(Key.of(json.get(FONT).getAsString()));
+      style.font(context.deserialize(json.get(FONT), Key.class));
     }
 
     return style.build();
@@ -142,7 +142,7 @@ public final class StyleSerializer implements JsonDeserializer<Style>, JsonSeria
 
     final /* @Nullable */ Key font = src.font();
     if(font != null) {
-      json.addProperty(FONT, font.asString());
+      json.add(FONT, context.serialize(font));
     }
 
     final /* @Nullable */ TextColor color = src.color();
