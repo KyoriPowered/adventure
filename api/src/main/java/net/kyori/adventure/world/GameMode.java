@@ -21,47 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.skin;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
+package net.kyori.adventure.world;
 
 /**
- * A skin.
+ * A player's game mode.
  */
-public interface Skin {
-  /**
-   * Creates an empty skin.
-   *
-   * @return an empty skin
-   */
-  static Skin empty() {
-    return SkinImpl.EMPTY;
-  }
-
-  /**
-   * Creates a skin.
-   *
-   * @param data the data, or null for empty
-   * @param signature the signature, or null for unsigned
-   * @return a skin
-   */
-  static Skin of(final @Nullable String data, final @Nullable String signature) {
-    return new SkinImpl(data, signature);
-  }
-
-  // TODO: consider fetching Skin from sessionserver URL
-
-  /**
-   * Gets the data.
-   *
-   * @return the data, null if empty
-   */
-  @Nullable String data();
-
-  /**
-   * Gets the signature.
-   *
-   * @return the signature, null if unsigned
-   */
-  @Nullable String signature();
+public enum GameMode {
+  SURVIVAL,
+  CREATIVE,
+  ADVENTURE,
+  SPECTATOR;
 }
