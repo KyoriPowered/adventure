@@ -40,7 +40,7 @@ final class TextColorSerializer implements JsonDeserializer<TextColor>, JsonSeri
     final JsonPrimitive primitive = json.getAsJsonPrimitive();
     final String value = primitive.getAsString();
     if(value.startsWith("#")) {
-      return TextColor.of(Integer.parseInt(value.substring(1), 16));
+      return TextColor.of(Integer.parseInt(value.substring(1), 16)); // TODO: use TextColor.fromHexString once it exists
     } else {
       return NamedTextColor.NAMES.value(value).orElse(null);
     }
@@ -51,7 +51,7 @@ final class TextColorSerializer implements JsonDeserializer<TextColor>, JsonSeri
     if(src instanceof NamedTextColor) {
       return new JsonPrimitive(NamedTextColor.NAMES.name((NamedTextColor) src));
     } else {
-      return new JsonPrimitive(String.format("#%06X", src.value()));
+      return new JsonPrimitive(src.asHexString());
     }
   }
 }
