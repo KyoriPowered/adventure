@@ -161,7 +161,7 @@ public final class StyleSerializer implements JsonDeserializer<Style>, JsonSeria
 
     final /* @Nullable */ String insertion = src.insertion();
     if(insertion != null) {
-      json.add(INSERTION, context.serialize(insertion));
+      json.addProperty(INSERTION, insertion);
     }
 
     final /* @Nullable */ ClickEvent clickEvent = src.clickEvent();

@@ -50,7 +50,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 
     int count = 1;
     if(object.has(COUNT)) {
-      count = context.deserialize(object.get(COUNT), int.class);
+      count = object.get(COUNT).getAsInt();
     }
 
     return new HoverEvent.ShowItem(id, count);

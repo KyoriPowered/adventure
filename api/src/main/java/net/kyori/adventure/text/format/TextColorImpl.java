@@ -52,6 +52,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
   @Override
   public String toString() {
-    return "#" + Integer.toString(this.value, 16);
+    return this.asHexString();
   }
 }

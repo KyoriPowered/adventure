@@ -36,25 +36,10 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 
-/* package */ final class ShowEntitySerializer implements JsonSerializer<HoverEvent.ShowEntity>, JsonDeserializer<HoverEvent.ShowEntity> {
+/* package */ final class ShowEntitySerializer implements JsonDeserializer<HoverEvent.ShowEntity>, JsonSerializer<HoverEvent.ShowEntity> {
   static final String TYPE = "type";
   static final String ID = "id";
   static final String NAME = "name";
-
-  @Override
-  public JsonElement serialize(final HoverEvent.ShowEntity src, final Type typeOfSrc, final JsonSerializationContext context) {
-    final JsonObject json = new JsonObject();
-
-    json.add(TYPE, context.serialize(src.type()));
-    json.addProperty(ID, src.id().toString());
-
-    final /* @Nullable */ Component name = src.name();
-    if(name != null) {
-      json.add(NAME, context.serialize(name));
-    }
-
-    return json;
-  }
 
   @Override
   public HoverEvent.ShowEntity deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
@@ -73,5 +58,20 @@ import net.kyori.adventure.text.event.HoverEvent;
     }
 
     return new HoverEvent.ShowEntity(type, id, name);
+  }
+
+  @Override
+  public JsonElement serialize(final HoverEvent.ShowEntity src, final Type typeOfSrc, final JsonSerializationContext context) {
+    final JsonObject json = new JsonObject();
+
+    json.add(TYPE, context.serialize(src.type()));
+    json.addProperty(ID, src.id().toString());
+
+    final /* @Nullable */ Component name = src.name();
+    if(name != null) {
+      json.add(NAME, context.serialize(name));
+    }
+
+    return json;
   }
 }

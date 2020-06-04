@@ -64,12 +64,23 @@ public interface TextColor extends TextFormat {
     return of((int) (r * 0xff), (int) (g * 0xff), (int) (b * 0xff));
   }
 
+  // TODO: fromHexString
+
   /**
    * The color, as an RGB value packed into an int
    *
    * @return the value
    */
   int value();
+
+  /**
+   * Gets the color, as a hex string.
+   *
+   * @return a hex string
+   */
+  default @NonNull String asHexString() {
+    return "#" + Integer.toString(this.value(), 16);
+  }
 
   /**
    * Get the red component of the text colour
