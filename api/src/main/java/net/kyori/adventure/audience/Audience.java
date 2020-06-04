@@ -79,6 +79,16 @@ public interface Audience {
   void playSound(final @NonNull Sound sound);
 
   /**
+   * Plays a sound.
+   *
+   * @param sound the sound
+   * @param x the x coordinate
+   * @param y the y coordinate
+   * @param z the z coordinate
+   */
+  void playSound(final @NonNull Sound sound, final double x, final double y, final double z);
+
+  /**
    * Stops all sounds.
    *
    * @param stop the stop

@@ -88,6 +88,11 @@ public interface MultiAudience extends Audience {
   }
 
   @Override
+  default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
+    this.audiences().forEach(audience -> audience.playSound(sound, x, y, z));
+  }
+
+  @Override
   default void stopSound(final @NonNull SoundStop stop) {
     this.audiences().forEach(audience -> audience.stopSound(stop));
   }
