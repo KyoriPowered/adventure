@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.tab;
 
-import java.util.SortedSet;
+import java.util.Set;
 
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -31,7 +31,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 /**
  * A tab list.
  */
-public interface TabView extends SortedSet<TabEntry> {
+public interface TabView extends Set<TabEntry> {
   /**
    * Gets the header.
    *
@@ -74,6 +74,28 @@ public interface TabView extends SortedSet<TabEntry> {
    *
    * @param columns the number of columns
    * @return the tab view
+   * @throws IndexOutOfBoundsException if the column is less than 0 or greater than 4
    */
   @NonNull TabView columns(final int columns);
+
+  /**
+   * Gets an entry at a specific location.
+   *
+   * @param column the 0-based column
+   * @param row the 0-based row
+   * @return the tab view
+   * @throws IndexOutOfBoundsException if the column or row are out of range
+   */
+  @NonNull TabEntry get(final int column, final int row);
+
+  /**
+   * Inserts an entry at a specific location.
+   *
+   * @param entry an entry
+   * @param column the 0-based column
+   * @param row the 0-based row
+   * @return the tab view
+   * @throws IndexOutOfBoundsException if the column or row are out of range
+   */
+  @NonNull TabView add(final @NonNull TabEntry entry, final int column, final int row);
 }

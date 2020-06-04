@@ -28,10 +28,19 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.world.GameMode;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.UUID;
+
 /**
  * A tab list entry.
  */
 public interface TabEntry {
+  /**
+   * Gets a unique id, usually a player uuid.
+   *
+   * @return the unique id
+   */
+  @NonNull UUID id();
+
   /**
    * Gets the text.
    *
