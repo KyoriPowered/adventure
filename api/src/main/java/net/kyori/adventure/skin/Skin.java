@@ -39,6 +39,15 @@ public interface Skin {
   }
 
   /**
+   * Creates an space skin.
+   *
+   * @return a gray, square skin
+   */
+  static Skin space() {
+    return SkinImpl.SPACE;
+  }
+
+  /**
    * Creates a skin.
    *
    * @param data the data, or null for empty
@@ -48,8 +57,6 @@ public interface Skin {
   static Skin of(final @Nullable String data, final @Nullable String signature) {
     return new SkinImpl(data, signature);
   }
-
-  // TODO: consider fetching Skin from sessionserver URL
 
   /**
    * Gets the data.

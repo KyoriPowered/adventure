@@ -62,10 +62,20 @@ public interface TabEntry {
    */
   @NonNull TabEntry latency(final int latency);
 
-  // TODO: docs
+
+  /**
+   * Gets the game mode.
+   *
+   * @return the game mode
+   */
   @NonNull GameMode gameMode();
 
-  // TODO: docs
+  /**
+   * Sets the game mode.
+   *
+   * @param gameMode the game mode
+   * @return the tab entry
+   */
   @NonNull TabEntry gameMode(final @NonNull GameMode gameMode);
 
   /**

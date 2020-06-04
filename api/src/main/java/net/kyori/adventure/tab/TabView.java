@@ -23,16 +23,15 @@
  */
 package net.kyori.adventure.tab;
 
-import java.util.Comparator;
-import java.util.List;
+import java.util.SortedSet;
+
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * A tab list header and footer.
+ * A tab list.
  */
-public interface TabView {
+public interface TabView extends SortedSet<TabEntry> {
   /**
    * Gets the header.
    *
@@ -77,50 +76,4 @@ public interface TabView {
    * @return the tab view
    */
   @NonNull TabView columns(final int columns);
-
-  /**
-   * Gets the tab entry list.
-   *
-   * @return the tab entries
-   */
-  @NonNull List<TabEntry> entries();
-
-  /**
-   * Sets the tab entry list.
-   *
-   * @param entries the tab entries, traversal order matters
-   * @return the tab entries
-   */
-  @NonNull TabView entries(final @NonNull Iterable<TabEntry> entries);
-
-  /**
-   * Adds a tab entry.
-   *
-   * @param entry the tab entry
-   * @return the tab view
-   */
-  @NonNull TabView entryAdd(final @NonNull TabEntry entry);
-
-  /**
-   * Removes a tab entry.
-   *
-   * @param entry the tab entry
-   * @return the tab list
-   */
-  @NonNull TabView entryRemove(final @NonNull TabEntry entry);
-
-  /**
-   * Gets the comparator that sorts tab entries.
-   *
-   * @return the tab entry comparator
-   */
-  @NonNull Comparator<TabEntry> comparator();
-
-  /**
-   * Sets the comparator that sorts tab entries.
-   *
-   * @param comparator a comparator, or null for no sorting
-   * @return the tab view
-   */
-  @NonNull TabView comparator(final @Nullable Comparator<TabEntry> comparator);
 }
