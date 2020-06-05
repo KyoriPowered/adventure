@@ -79,7 +79,7 @@ public interface TextColor extends TextFormat {
    * @return a hex string
    */
   default @NonNull String asHexString() {
-    return "#" + Integer.toString(this.value(), 16);
+    return String.format("#%06x", this.value());
   }
 
   /**

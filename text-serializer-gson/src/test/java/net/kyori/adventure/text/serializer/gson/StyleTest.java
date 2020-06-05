@@ -67,7 +67,7 @@ class StyleTest extends AbstractSerializeDeserializeTest<Style> {
     final UUID dolores = UUID.randomUUID();
     return Stream.of(
       entry(Style.empty(), json -> {}),
-      entry(Style.of(TextColor.of(0x0a1ab9)), json -> json.addProperty(StyleSerializer.COLOR, "#0A1AB9")),
+      entry(Style.of(TextColor.of(0x0a1ab9)), json -> json.addProperty(StyleSerializer.COLOR, "#0a1ab9")),
       entry(Style.of(NamedTextColor.LIGHT_PURPLE), json -> json.addProperty(StyleSerializer.COLOR, name(NamedTextColor.LIGHT_PURPLE))),
       entry(Style.of(TextDecoration.BOLD), json -> json.addProperty(name(TextDecoration.BOLD), true)),
       entry(Style.builder().insertion("honk").build(), json -> json.addProperty(StyleSerializer.INSERTION, "honk")),
@@ -104,7 +104,7 @@ class StyleTest extends AbstractSerializeDeserializeTest<Style> {
               contents.addProperty(ShowEntitySerializer.ID, dolores.toString());
               contents.add(ShowEntitySerializer.NAME, object(name -> {
                 name.addProperty(ComponentSerializerImpl.TEXT, "Dolores");
-                name.addProperty(StyleSerializer.COLOR, "#0A1AB9");
+                name.addProperty(StyleSerializer.COLOR, "#0a1ab9");
               }));
             }));
           }));
