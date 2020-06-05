@@ -25,7 +25,9 @@ package net.kyori.adventure.text.serializer.gson;
 
 import com.google.gson.JsonElement;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Stream;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -36,15 +38,12 @@ import static net.kyori.adventure.text.serializer.gson.StyleTest.name;
 
 class TranslatableComponentTest extends AbstractComponentTest<TranslatableComponent> {
   private static final String KEY = "multiplayer.player.left";
-  private static final String WHO = "kashike";
-  private static final String COMMAND = "/msg kashike ";
-  private static final String ENTITY = object(json -> {
-    json.addProperty("name", "kashike");
-    json.addProperty("id", "eb121687-8b1a-4944-bd4d-e0a818d9dfe2");
-  }).toString();
 
   @Override
   Stream<Map.Entry<TranslatableComponent, JsonElement>> tests() {
+    final UUID id = UUID.fromString("eb121687-8b1a-4944-bd4d-e0a818d9dfe2");
+    final String name = "kashike";
+    final String command = String.format("/msg %s ", name);
     return Stream.of(
       entry(
         TranslatableComponent.of(KEY),
@@ -53,24 +52,34 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
       entry(
         TranslatableComponent.of(
           KEY,
-          TextComponent.builder(WHO)
-            .clickEvent(ClickEvent.suggestCommand(COMMAND))
-            //.hoverEvent(HoverEvent.showEntity(TextComponent.of(ENTITY))) // TODO
+          TextComponent.builder(name)
+            .clickEvent(ClickEvent.suggestCommand(command))
+            .hoverEvent(HoverEvent.showEntity(new HoverEvent.ShowEntity(
+              Key.of("minecraft", "player"),
+              id,
+              TextComponent.of(name)
+            )))
             .build()
         ).color(NamedTextColor.YELLOW),
         json -> {
           json.addProperty(ComponentSerializerImpl.TRANSLATE, KEY);
           json.addProperty(StyleSerializer.COLOR, name(NamedTextColor.YELLOW));
           json.add(ComponentSerializerImpl.TRANSLATE_WITH, array(with -> with.add(object(item -> {
-            item.addProperty(ComponentSerializerImpl.TEXT, WHO);
+            item.addProperty(ComponentSerializerImpl.TEXT, name);
             item.add(StyleSerializer.CLICK_EVENT, object(event -> {
               event.addProperty(StyleSerializer.CLICK_EVENT_ACTION, name(ClickEvent.Action.SUGGEST_COMMAND));
-              event.addProperty(StyleSerializer.CLICK_EVENT_VALUE, COMMAND);
+              event.addProperty(StyleSerializer.CLICK_EVENT_VALUE, command);
             }));
-            /*item.add(StyleSerializer.HOVER_EVENT, object(event -> {
+            item.add(StyleSerializer.HOVER_EVENT, object(event -> {
               event.addProperty(StyleSerializer.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ENTITY));
-              event.add(StyleSerializer.HOVER_EVENT_VALUE, object(value -> value.addProperty(ComponentSerializerImpl.TEXT, ENTITY)));
-            }));*/
+              event.add(StyleSerializer.HOVER_EVENT_CONTENTS, object(value -> {
+                value.addProperty(ShowEntitySerializer.TYPE, "minecraft:player");
+                value.addProperty(ShowEntitySerializer.ID, id.toString());
+                value.add(ShowEntitySerializer.NAME, object(namej -> {
+                  namej.addProperty(ComponentSerializerImpl.TEXT, name);
+                }));
+              }));
+            }));
           }))));
         }
       )
