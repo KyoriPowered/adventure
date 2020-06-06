@@ -44,12 +44,12 @@ public enum NamedTextColor implements TextColor {
   YELLOW("yellow", 0xffff55),
   WHITE("white", 0xffffff);
 
+  private static final NamedTextColor[] VALUES = NamedTextColor.values();
   /**
    * The name map.
    */
-  public static final NameMap<NamedTextColor> NAMES = NameMap.create(NamedTextColor.class, constant -> constant.name);
+  public static final NameMap<NamedTextColor> NAMES = NameMap.create(NamedTextColor.class, constant -> constant.name, VALUES);
 
-  private static final NamedTextColor[] VALUES = NamedTextColor.values();
 
   /**
    * Find the named colour nearest to the provided colour.
