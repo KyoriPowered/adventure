@@ -180,7 +180,7 @@ abstract class AbstractLegacyComponentSerializer implements LegacyComponentSeria
       }
     }
 
-    private void append(final @NonNull TextFormat format) {
+    void append(final @NonNull TextFormat format) {
       this.sb.append(this.character).append(getLegacyChar(format));
     }
 

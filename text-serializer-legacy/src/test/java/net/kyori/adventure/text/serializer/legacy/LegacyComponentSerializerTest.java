@@ -26,10 +26,12 @@ package net.kyori.adventure.text.serializer.legacy;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class LegacyComponentSerializerTest {
   @Test
@@ -102,7 +104,7 @@ class LegacyComponentSerializerTest {
       )
       .append(TextComponent.of("baz"))
       .build();
-    assertEquals("§lhi§afoo§9§lbar§r§lbaz", LegacyComponentSerializer.legacy().serialize(c1, '§'));
+    assertEquals("§lhi§afoo§9§lbar§r§lbaz", LegacyComponentSerializer.legacy().serialize(c1, LegacyComponentSerializer.CHARACTER));
 
     final TextComponent c2 = TextComponent.builder()
       .content("")
@@ -119,7 +121,7 @@ class LegacyComponentSerializerTest {
         .build()
       )
       .build();
-    assertEquals("§eHello §aworld§e!", LegacyComponentSerializer.legacy().serialize(c2, '§'));
+    assertEquals("§eHello §aworld§e!", LegacyComponentSerializer.legacy().serialize(c2, LegacyComponentSerializer.CHARACTER));
 
     final TextComponent c3 = TextComponent.builder()
       .content("")
@@ -141,6 +143,12 @@ class LegacyComponentSerializerTest {
           )
           .build())
       .build();
-    assertEquals("§e§lHello §a§lworld§e§l!", LegacyComponentSerializer.legacy().serialize(c3, '§'));
+    assertEquals("§e§lHello §a§lworld§e§l!", LegacyComponentSerializer.legacy().serialize(c3, LegacyComponentSerializer.CHARACTER));
+  }
+
+  @Test
+  void testToLegacyWithHexColor() {
+    final TextComponent c0 = TextComponent.of("Kittens!", TextColor.of(0xaa00aa));
+    assertThrows(IndexOutOfBoundsException.class, () -> LegacyComponentSerializer.legacy().serialize(c0, LegacyComponentSerializer.CHARACTER));
   }
 }
