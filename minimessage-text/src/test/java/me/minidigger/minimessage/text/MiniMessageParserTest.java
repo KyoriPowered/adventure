@@ -116,6 +116,14 @@ public class MiniMessageParserTest {
     }
 
     @Test
+    public void testHover2() {
+        String input = "<hover:show_text:'<red>test'>TEST";
+        String expected = "{\"text\":\"TEST\",\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"test\",\"color\":\"red\"}}}";
+
+        test(input, expected);
+    }
+
+    @Test
     public void testHoverWithColon() {
         String input = "<hover:show_text:\"<red>test:TEST\">TEST";
         String expected = "{\"text\":\"TEST\",\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"test:TEST\",\"color\":\"red\"}}}";

@@ -37,8 +37,8 @@ public class MiniMessageParser {
     private static final String TOKEN = "token";
     private static final String INNER = "inner";
     private static final String END = "end";
-    // https://regex101.com/r/8VZ7uA/5
-    private static final Pattern pattern = Pattern.compile("((?<start><)(?<token>([^<>]+)|([^<>]+\"(?<inner>[^\"]+)\"))(?<end>>))+?");
+    // https://regex101.com/r/8VZ7uA/6
+    private static final Pattern pattern = Pattern.compile("((?<start><)(?<token>([^<>]+)|([^<>]+[\"'](?<inner>[^\"']+)[\"']))(?<end>>))+?");
 
     @Nonnull
     public static String escapeTokens(@Nonnull String richMessage) {
