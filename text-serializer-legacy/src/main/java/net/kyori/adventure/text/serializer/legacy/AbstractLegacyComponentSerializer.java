@@ -59,7 +59,7 @@ abstract class AbstractLegacyComponentSerializer implements LegacyComponentSeria
     return index == -1 ? null : FORMATS.get(index);
   }
 
-  private static char getLegacyChar(final TextFormat legacy) {
+  static char getLegacyChar(final TextFormat legacy) {
     final int index = FORMATS.indexOf(legacy);
     return LEGACY_CHARS.charAt(index);
   }

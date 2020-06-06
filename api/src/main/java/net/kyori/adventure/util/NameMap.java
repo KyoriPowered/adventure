@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -53,19 +54,22 @@ public final class NameMap<E> {
    * @param <E> the type
    * @return the name map
    */
-  @SuppressWarnings("ForLoopReplaceableByForEach")
   public static <E extends Enum<E>> @NonNull NameMap<E> create(final Class<E> type, final @NonNull Function<E, String> namer) {
-    final E[] constants = type.getEnumConstants();
-    final int length = constants.length;
-    final Map<String, E> nameToValue = new HashMap<>(length);
-    final Map<E, String> valueToName = new EnumMap<>(type);
-    for(int i = 0; i < length; i++) {
-      final E constant = constants[i];
-      final String name = namer.apply(constant);
-      nameToValue.put(name, constant);
-      valueToName.put(constant, name);
-    }
-    return new NameMap<>(Collections.unmodifiableMap(nameToValue), Collections.unmodifiableMap(valueToName));
+    return create(type, namer, type.getEnumConstants());
+  }
+
+  /**
+   * Creates a name map.
+   *
+   * @param <E> the type
+   * @param type the type
+   * @param namer the name provider
+   * @param constants the constants
+   * @return the name map
+   */
+  @SafeVarargs
+  public static <E extends Enum<E>> @NonNull NameMap<E> create(final Class<E> type, final @NonNull Function<E, String> namer, final @NonNull E@NonNull... constants) {
+    return create(constants, length -> new EnumMap<>(type), namer);
   }
 
   /**
@@ -76,11 +80,16 @@ public final class NameMap<E> {
    * @param <E> the type
    * @return the name map
    */
-  @SuppressWarnings("ForLoopReplaceableByForEach")
+  @SafeVarargs
   public static <E> @NonNull NameMap<E> create(final @NonNull Function<E, String> namer, final @NonNull E@NonNull... constants) {
+    return create(constants, HashMap::new, namer);
+  }
+
+  @SuppressWarnings("ForLoopReplaceableByForEach")
+  private static <E> @NonNull NameMap<E> create(final E[] constants, final IntFunction<Map<E, String>> valueToNameFactory, final @NonNull Function<E, String> namer) {
     final int length = constants.length;
     final Map<String, E> nameToValue = new HashMap<>(length);
-    final Map<E, String> valueToName = new HashMap<>(length);
+    final Map<E, String> valueToName = valueToNameFactory.apply(length); // to support using EnumMap instead of HashMap when possible
     for(int i = 0; i < length; i++) {
       final E constant = constants[i];
       final String name = namer.apply(constant);

@@ -41,14 +41,6 @@ import static java.util.Objects.requireNonNull;
  */
 public interface LegacyComponentSerializer extends ComponentSerializer<Component, TextComponent, String> {
   /**
-   * A component serializer for legacy-based serialization and deserialization.
-   *
-   * @deprecated use {@link #legacy()}
-   */
-  @Deprecated
-  LegacyComponentSerializer INSTANCE = LegacyComponentSerializerImpl.INSTANCE;
-
-  /**
    * Gets a component serializer for legacy-based serialization and deserialization. Note that this
    * serializer works exactly like vanilla Minecraft and does not detect any links. If you want to
    * detect and make URLs clickable, use {@link #legacyLinking()}.
