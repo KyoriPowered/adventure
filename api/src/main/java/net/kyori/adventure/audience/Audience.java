@@ -65,7 +65,7 @@ public interface Audience {
     switch(audiences.length) {
       case 0: return empty();
       case 1: return (ForwardingAudience) () -> audiences[0];
-      default: return (MultiAudience) () -> Arrays.asList(audiences);
+      default: return of(Arrays.asList(audiences));
     }
   }
 
