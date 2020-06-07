@@ -62,7 +62,11 @@ public interface Audience {
    * @return an audience
    */
   static @NonNull Audience of(final @NonNull Audience@NonNull... audiences) {
-    return of(Arrays.asList(audiences));
+    switch(audiences.length) {
+      case 0: return empty();
+      case 1: return (ForwardingAudience) () -> audiences[0];
+      default: return (MultiAudience) () -> Arrays.asList(audiences);
+    }
   }
 
   /**
