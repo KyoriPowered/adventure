@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.format;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.common.value.qual.IntRange;
 
 /**
@@ -64,7 +65,23 @@ public interface TextColor extends TextFormat {
     return of((int) (r * 0xff), (int) (g * 0xff), (int) (b * 0xff));
   }
 
-  // TODO: fromHexString
+  /**
+   * Create a new color from a hex string.
+   *
+   * @param string the hex string
+   * @return a new text colour
+   */
+  static @Nullable TextColor fromHexString(final @NonNull String string) {
+    if(string.startsWith("#")) {
+      try {
+        final int hex = Integer.parseInt(string.substring(1), 16);
+        return of(hex);
+      } catch(final NumberFormatException e) {
+        return null;
+      }
+    }
+    return null;
+  }
 
   /**
    * The color, as an RGB value packed into an int

@@ -40,7 +40,7 @@ final class TextColorSerializer implements JsonDeserializer<TextColor>, JsonSeri
     final JsonPrimitive primitive = json.getAsJsonPrimitive();
     final String value = primitive.getAsString();
     if(value.startsWith("#")) {
-      return TextColor.of(Integer.parseInt(value.substring(1), 16)); // TODO: use TextColor.fromHexString once it exists
+      return TextColor.fromHexString(value);
     } else {
       return NamedTextColor.NAMES.value(value).orElse(null);
     }
