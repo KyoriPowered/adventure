@@ -23,14 +23,13 @@
  */
 package net.kyori.adventure.audience;
 
+import java.util.Arrays;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.util.Arrays;
 
 /**
  * A receiver of text-based messages.
@@ -46,16 +45,6 @@ public interface Audience {
   }
 
   /**
-   * Creates an audience that forwards to a collection of audiences.
-   *
-   * @param audiences the forwarding audiences
-   * @return an audience
-   */
-  static @NonNull Audience of(final @NonNull Iterable<Audience> audiences) {
-    return (MultiAudience) () -> audiences;
-  }
-
-  /**
    * Creates an audience that forwards to an array of audiences.
    *
    * @param audiences the forwarding audiences
@@ -64,9 +53,19 @@ public interface Audience {
   static @NonNull Audience of(final @NonNull Audience@NonNull... audiences) {
     switch(audiences.length) {
       case 0: return empty();
-      case 1: return (ForwardingAudience) () -> audiences[0];
+      case 1: return audiences[0];
       default: return of(Arrays.asList(audiences));
     }
+  }
+
+  /**
+   * Creates an audience that forwards to a collection of audiences.
+   *
+   * @param audiences the forwarding audiences
+   * @return an audience
+   */
+  static @NonNull Audience of(final @NonNull Iterable<Audience> audiences) {
+    return (MultiAudience) () -> audiences;
   }
 
   /**

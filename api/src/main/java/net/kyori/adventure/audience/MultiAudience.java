@@ -44,51 +44,51 @@ public interface MultiAudience extends Audience {
 
   @Override
   default void sendMessage(final @NonNull Component message) {
-    for (Audience audience : this.audiences()) audience.sendMessage(message);
-  }
-
-  @Override
-  default void showBossBar(final @NonNull BossBar bar) {
-    for (Audience audience : this.audiences()) audience.showBossBar(bar);
-  }
-
-  @Override
-  default void hideBossBar(final @NonNull BossBar bar) {
-    for (Audience audience : this.audiences()) audience.hideBossBar(bar);
+    for(final Audience audience : this.audiences()) audience.sendMessage(message);
   }
 
   @Override
   default void sendActionBar(final @NonNull Component message) {
-    for (Audience audience : this.audiences()) audience.sendActionBar(message);
-  }
-
-  @Override
-  default void playSound(final @NonNull Sound sound) {
-    for (Audience audience : this.audiences())  audience.playSound(sound);
-  }
-
-  @Override
-  default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
-    for (Audience audience : this.audiences()) audience.playSound(sound, x, y, z);
-  }
-
-  @Override
-  default void stopSound(final @NonNull SoundStop stop) {
-    for (Audience audience : this.audiences()) audience.stopSound(stop);
+    for(final Audience audience : this.audiences()) audience.sendActionBar(message);
   }
 
   @Override
   default void showTitle(final @NonNull Title title) {
-    for (Audience audience : this.audiences()) audience.showTitle(title);
+    for(final Audience audience : this.audiences()) audience.showTitle(title);
   }
 
   @Override
   default void clearTitle() {
-    for (Audience audience : this.audiences()) audience.clearTitle();
+    for(final Audience audience : this.audiences()) audience.clearTitle();
   }
 
   @Override
   default void resetTitle() {
-    for (Audience audience : audiences()) audience.resetTitle();
+    for(final Audience audience : this.audiences()) audience.resetTitle();
+  }
+
+  @Override
+  default void showBossBar(final @NonNull BossBar bar) {
+    for(final Audience audience : this.audiences()) audience.showBossBar(bar);
+  }
+
+  @Override
+  default void hideBossBar(final @NonNull BossBar bar) {
+    for(final Audience audience : this.audiences()) audience.hideBossBar(bar);
+  }
+
+  @Override
+  default void playSound(final @NonNull Sound sound) {
+    for(final Audience audience : this.audiences())  audience.playSound(sound);
+  }
+
+  @Override
+  default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
+    for(final Audience audience : this.audiences()) audience.playSound(sound, x, y, z);
+  }
+
+  @Override
+  default void stopSound(final @NonNull SoundStop stop) {
+    for(final Audience audience : this.audiences()) audience.stopSound(stop);
   }
 }
