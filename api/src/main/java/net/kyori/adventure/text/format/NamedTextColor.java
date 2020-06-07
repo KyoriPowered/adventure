@@ -26,6 +26,8 @@ package net.kyori.adventure.text.format;
 import net.kyori.adventure.util.NameMap;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import static java.util.Objects.requireNonNull;
+
 public enum NamedTextColor implements TextColor {
   BLACK("black", 0x000000),
   DARK_BLUE("dark_blue", 0x0000aa),
@@ -61,11 +63,13 @@ public enum NamedTextColor implements TextColor {
     if(any instanceof NamedTextColor) {
       return (NamedTextColor) any;
     }
+    requireNonNull(any, "color");
+
     // TODO: This tends to match greys more than it should (rgb averages and all that)
     int matchedDistance = Integer.MAX_VALUE;
     NamedTextColor match = VALUES[0];
     for(NamedTextColor potential : VALUES) {
-      int distance = any.distanceSquared(potential);
+      int distance = distanceSquared(any, potential);
       if(distance < matchedDistance) {
         match = potential;
         matchedDistance = distance;
@@ -75,6 +79,22 @@ public enum NamedTextColor implements TextColor {
       }
     }
     return match;
+  }
+
+  /**
+   * Returns a distance metric to the other colour.
+   *
+   * <p>This value is unitless and should only be used to compare with other text colours.
+   *
+   * @param other colour to compare to
+   * @return distance metric
+   */
+  private static int distanceSquared(final @NonNull TextColor self, final @NonNull TextColor other) {
+    final int rAvg = (self.red() + other.red()) / 2;
+    final int dR = self.red() - other.red();
+    final int dG = self.green() - other.green();
+    final int dB = self.blue() - other.blue();
+    return ((2 + (rAvg / 256)) * (dR * dR)) + (4 * (dG * dG)) + ((2 + ((255 - rAvg) / 256)) * (dB * dB));
   }
 
   /**
