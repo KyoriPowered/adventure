@@ -31,8 +31,9 @@ import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * An audience that forwards all methods to another audience.
+ * An audience that forwards to another audience.
  */
+@FunctionalInterface
 public interface ForwardingAudience extends Audience {
   /**
    * Gets the forwarded audience.

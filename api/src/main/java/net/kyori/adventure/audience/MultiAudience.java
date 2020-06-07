@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.audience;
 
-import java.util.Arrays;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
@@ -32,83 +31,64 @@ import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * An audience full of other audiences.
+ * An audience that forwards to a collection of audiences.
  */
+@FunctionalInterface
 public interface MultiAudience extends Audience {
-  /**
-   * Creates a multi-audience.
-   *
-   * @param audiences the audiences
-   * @return a multi-audience
-   */
-  static @NonNull MultiAudience of(final @NonNull Audience@NonNull... audiences) {
-    return of(Arrays.asList(audiences));
-  }
-
-  /**
-   * Creates a multi-audience.
-   *
-   * @param audiences the audiences
-   * @return a multi-audience
-   */
-  static @NonNull MultiAudience of(final @NonNull Iterable<Audience> audiences) {
-    return () -> audiences;
-  }
-
   /**
    * Gets the audiences.
    *
-   * @return the audiences
+   * @return the audiences, can be empty
    */
   @NonNull Iterable<? extends Audience> audiences();
 
   @Override
   default void sendMessage(final @NonNull Component message) {
-    this.audiences().forEach(audience -> audience.sendMessage(message));
+    for (Audience audience : this.audiences()) audience.sendMessage(message);
   }
 
   @Override
   default void showBossBar(final @NonNull BossBar bar) {
-    this.audiences().forEach(audience -> audience.showBossBar(bar));
+    for (Audience audience : this.audiences()) audience.showBossBar(bar);
   }
 
   @Override
   default void hideBossBar(final @NonNull BossBar bar) {
-    this.audiences().forEach(audience -> audience.hideBossBar(bar));
+    for (Audience audience : this.audiences()) audience.hideBossBar(bar);
   }
 
   @Override
   default void sendActionBar(final @NonNull Component message) {
-    this.audiences().forEach(audience -> audience.sendActionBar(message));
+    for (Audience audience : this.audiences()) audience.sendActionBar(message);
   }
 
   @Override
   default void playSound(final @NonNull Sound sound) {
-    this.audiences().forEach(audience -> audience.playSound(sound));
+    for (Audience audience : this.audiences())  audience.playSound(sound);
   }
 
   @Override
   default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
-    this.audiences().forEach(audience -> audience.playSound(sound, x, y, z));
+    for (Audience audience : this.audiences()) audience.playSound(sound, x, y, z);
   }
 
   @Override
   default void stopSound(final @NonNull SoundStop stop) {
-    this.audiences().forEach(audience -> audience.stopSound(stop));
+    for (Audience audience : this.audiences()) audience.stopSound(stop);
   }
 
   @Override
   default void showTitle(final @NonNull Title title) {
-    this.audiences().forEach(audience -> audience.showTitle(title));
+    for (Audience audience : this.audiences()) audience.showTitle(title);
   }
 
   @Override
   default void clearTitle() {
-    this.audiences().forEach(Audience::clearTitle);
+    for (Audience audience : this.audiences()) audience.clearTitle();
   }
 
   @Override
   default void resetTitle() {
-    this.audiences().forEach(Audience::resetTitle);
+    for (Audience audience : audiences()) audience.resetTitle();
   }
 }

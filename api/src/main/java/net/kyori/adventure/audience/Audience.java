@@ -30,12 +30,14 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.Arrays;
+
 /**
- * An audience.
+ * A receiver of text-based messages.
  */
 public interface Audience {
   /**
-   * Returns an audience that does nothing.
+   * Gets an audience that does nothing.
    *
    * @return an audience
    */
@@ -44,11 +46,55 @@ public interface Audience {
   }
 
   /**
+   * Creates an audience that forwards to a collection of audiences.
+   *
+   * @param audiences the forwarding audiences
+   * @return an audience
+   */
+  static @NonNull Audience of(final @NonNull Iterable<Audience> audiences) {
+    return (MultiAudience) () -> audiences;
+  }
+
+  /**
+   * Creates an audience that forwards to an array of audiences.
+   *
+   * @param audiences the forwarding audiences
+   * @return an audience
+   */
+  static @NonNull Audience of(final @NonNull Audience@NonNull... audiences) {
+    return of(Arrays.asList(audiences));
+  }
+
+  /**
    * Sends a message.
    *
    * @param message the message
    */
   void sendMessage(final @NonNull Component message);
+
+  /**
+   * Sends a message on the action bar.
+   *
+   * @param message the message
+   */
+  void sendActionBar(final @NonNull Component message);
+
+  /**
+   * Shows a title.
+   *
+   * @param title the title
+   */
+  void showTitle(final @NonNull Title title);
+
+  /**
+   * Clears the currently displayed title.
+   */
+  void clearTitle();
+
+  /**
+   * Resets the title, subtitle, fade-in time, stay time, and fade-out time back to "unset".
+   */
+  void resetTitle();
 
   /**
    * Shows a bossbar.
@@ -63,13 +109,6 @@ public interface Audience {
    * @param bar the bossbar
    */
   void hideBossBar(final @NonNull BossBar bar);
-
-  /**
-   * Sends a message on the action bar.
-   *
-   * @param message the message
-   */
-  void sendActionBar(final @NonNull Component message);
 
   /**
    * Plays a sound.
@@ -94,21 +133,4 @@ public interface Audience {
    * @param stop the stop
    */
   void stopSound(final @NonNull SoundStop stop);
-
-  /**
-   * Shows a title.
-   *
-   * @param title the title
-   */
-  void showTitle(final @NonNull Title title);
-
-  /**
-   * Clears the currently displayed title.
-   */
-  void clearTitle();
-
-  /**
-   * Resets the title, subtitle, fade-in time, stay time, and fade-out time back to "unset".
-   */
-  void resetTitle();
 }
