@@ -23,8 +23,8 @@
  */
 package net.kyori.adventure.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Consumer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -35,8 +35,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @param <L> the listener type
  */
 public abstract class Listenable<L> {
-  private static final int INITIAL_CAPACITY = 1;
-  private @Nullable List<L> listeners = null;
+  private @Nullable Queue<L> listeners = null;
 
   /**
    * Process an action for each listener.
@@ -44,10 +43,9 @@ public abstract class Listenable<L> {
    * @param consumer the consumer
    */
   protected final void forEachListener(final @NonNull Consumer<L> consumer) {
-    final List<L> listeners = this.listeners;
+    final Queue<L> listeners = this.listeners;
     if(listeners != null) {
-      for(int i = 0, size = listeners.size(); i < size; i++) {
-        final L listener = listeners.get(i);
+      for (final L listener : listeners) {
         consumer.accept(listener);
       }
     }
@@ -60,7 +58,7 @@ public abstract class Listenable<L> {
    */
   protected final void addListener0(final @NonNull L listener) {
     if(this.listeners == null) {
-      this.listeners = new ArrayList<>(INITIAL_CAPACITY);
+      this.listeners = new ConcurrentLinkedQueue<>();
     }
     this.listeners.add(listener);
   }
