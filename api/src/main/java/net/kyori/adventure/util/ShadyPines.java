@@ -72,4 +72,14 @@ public final class ShadyPines {
   public static boolean equals(final float a, final float b) {
     return Float.floatToIntBits(a) == Float.floatToIntBits(b);
   }
+
+  public static int floor(final double n) {
+    final int i = (int) n;
+    return n < (double) i ? i - 1 : i;
+  }
+
+  public static int floor(final float n) {
+    final int i = (int) n;
+    return n < (float) i ? i - 1 : i;
+  }
 }
