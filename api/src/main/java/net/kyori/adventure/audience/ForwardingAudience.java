@@ -48,33 +48,8 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
-  default void showBossBar(final @NonNull BossBar bar) {
-    this.audience().showBossBar(bar);
-  }
-
-  @Override
-  default void hideBossBar(final @NonNull BossBar bar) {
-    this.audience().hideBossBar(bar);
-  }
-
-  @Override
   default void sendActionBar(final @NonNull Component message) {
     this.audience().sendActionBar(message);
-  }
-
-  @Override
-  default void playSound(final @NonNull Sound sound) {
-    this.audience().playSound(sound);
-  }
-
-  @Override
-  default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
-    this.audience().playSound(sound, x, y, z);
-  }
-
-  @Override
-  default void stopSound(final @NonNull SoundStop stop) {
-    this.audience().stopSound(stop);
   }
 
   @Override
@@ -90,5 +65,30 @@ public interface ForwardingAudience extends Audience {
   @Override
   default void resetTitle() {
     this.audience().resetTitle();
+  }
+
+  @Override
+  default void showBossBar(final @NonNull BossBar bar) {
+    this.audience().showBossBar(bar);
+  }
+
+  @Override
+  default void hideBossBar(final @NonNull BossBar bar) {
+    this.audience().hideBossBar(bar);
+  }
+
+  @Override
+  default void playSound(final @NonNull Sound sound) {
+    this.audience().playSound(sound);
+  }
+
+  @Override
+  default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
+    this.audience().playSound(sound, x, y, z);
+  }
+
+  @Override
+  default void stopSound(final @NonNull SoundStop stop) {
+    this.audience().stopSound(stop);
   }
 }

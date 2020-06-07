@@ -23,56 +23,30 @@
  */
 package net.kyori.adventure.audience;
 
-import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.sound.Sound;
-import net.kyori.adventure.sound.SoundStop;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.title.Title;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.junit.jupiter.api.Test;
 
-/**
- * An audience that does nothing.
- */
-/* package */ final class EmptyAudience implements Audience {
-  /* package */ static final EmptyAudience INSTANCE = new EmptyAudience();
+import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-  @Override
-  public void sendMessage(final @NonNull Component message) {
+class AudienceTest {
+  @Test
+  void testOf_none() {
+    assertSame(Audience.empty(), Audience.of());
   }
 
-  @Override
-  public void sendActionBar(final @NonNull Component message) {
+  @Test
+  void testOf_one() {
+    final Audience a0 = Audience.empty();
+    assertSame(a0,  Audience.of(a0));
   }
 
-  @Override
-  public void showTitle(final @NonNull Title title) {
-  }
-
-  @Override
-  public void clearTitle() {
-  }
-
-  @Override
-  public void resetTitle() {
-  }
-
-  @Override
-  public void showBossBar(final @NonNull BossBar bar) {
-  }
-
-  @Override
-  public void hideBossBar(final @NonNull BossBar bar) {
-  }
-
-  @Override
-  public void playSound(final @NonNull Sound sound) {
-  }
-
-  @Override
-  public void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
-  }
-
-  @Override
-  public void stopSound(final @NonNull SoundStop stop) {
+  @Test
+  void testOf_many() {
+    final Audience a0 = Audience.empty();
+    final Audience a1 = Audience.empty();
+    final Audience ma = Audience.of(a0, a1);
+    assertTrue(ma instanceof MultiAudience);
+    assertThat(((MultiAudience) ma).audiences()).containsExactly(a0, a1).inOrder();
   }
 }
