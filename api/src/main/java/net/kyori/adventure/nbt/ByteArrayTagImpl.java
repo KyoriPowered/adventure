@@ -23,24 +23,32 @@
  */
 package net.kyori.adventure.nbt;
 
+import java.util.Arrays;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-public interface EndTag extends Tag {
-  static @NonNull EndTag get() {
-    return EndTagImpl.INSTANCE;
+/* package */ final class ByteArrayTagImpl implements ByteArrayTag {
+  final byte[] value;
+
+  /* package */ ByteArrayTagImpl(final byte[] value) {
+    this.value = Arrays.copyOf(value, value.length);
   }
 
   @Override
-  default @NonNull TagType<EndTag> type() {
-    return TagTypes.END;
+  public byte@NonNull[] value() {
+    return Arrays.copyOf(this.value, this.value.length);
   }
-}
-
-/* package */ final class EndTagImpl implements EndTag {
-  /* package */ static final EndTagImpl INSTANCE = new EndTagImpl();
 
   @Override
-  public boolean equals(final Object that) {
-    return this == that;
+  public boolean equals(final @Nullable Object other) {
+    if(this == other) return true;
+    if(other == null || this.getClass() != other.getClass()) return false;
+    final ByteArrayTagImpl that = (ByteArrayTagImpl) other;
+    return Arrays.equals(this.value, that.value);
+  }
+
+  @Override
+  public int hashCode() {
+    return Arrays.hashCode(this.value);
   }
 }

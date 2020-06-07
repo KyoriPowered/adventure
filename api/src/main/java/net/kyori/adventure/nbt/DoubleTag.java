@@ -25,6 +25,7 @@ package net.kyori.adventure.nbt;
 
 import net.kyori.adventure.util.ShadyPines;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public interface DoubleTag extends NumberTag {
   static @NonNull DoubleTag of(final double value) {
@@ -79,5 +80,18 @@ public interface DoubleTag extends NumberTag {
   @Override
   public short shortValue() {
     return (short) (ShadyPines.floor(this.value) & 0xffff);
+  }
+
+  @Override
+  public boolean equals(final @Nullable Object other) {
+    if(this == other) return true;
+    if(other == null || this.getClass() != other.getClass()) return false;
+    final DoubleTagImpl that = (DoubleTagImpl) other;
+    return ShadyPines.equals(this.value, that.value);
+  }
+
+  @Override
+  public int hashCode() {
+    return Double.hashCode(this.value);
   }
 }

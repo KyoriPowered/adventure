@@ -26,8 +26,10 @@ package net.kyori.adventure.nbt;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class CompoundTagImpl implements CompoundTag {
   static final CompoundTag EMPTY = new CompoundTagImpl(Collections.emptyMap());
@@ -44,6 +46,21 @@ final class CompoundTagImpl implements CompoundTag {
   public boolean contains(final @NonNull String key, final @NonNull TagType<?> type) {
     final /* @Nullable */ Tag tag = this.tags.get(key);
     return tag != null && type.test(tag.type());
+  }
+
+  @Override
+  public @NonNull Set<String> keySet() {
+    return Collections.unmodifiableSet(this.tags.keySet());
+  }
+
+  @Override
+  public @Nullable Tag get(final String key) {
+    return this.tags.get(key);
+  }
+
+  @Override
+  public @NonNull CompoundTag put(final @NonNull String key, @NonNull final Tag tag) {
+    return this.edit(map -> map.put(key, tag));
   }
 
   @Override
@@ -125,7 +142,7 @@ final class CompoundTagImpl implements CompoundTag {
   }
 
   @Override
-  public byte @NonNull [] getByteArray(final @NonNull String key) {
+  public byte@NonNull[] getByteArray(final @NonNull String key) {
     if(this.contains(key, TagTypes.BYTE_ARRAY)) {
       return ((ByteArrayTag) this.tags.get(key)).value();
     }
@@ -133,7 +150,7 @@ final class CompoundTagImpl implements CompoundTag {
   }
 
   @Override
-  public byte @NonNull [] getByteArray(final @NonNull String key, final byte @NonNull [] defaultValue) {
+  public byte@NonNull[] getByteArray(final @NonNull String key, final byte@NonNull[] defaultValue) {
     if(this.contains(key, TagTypes.BYTE_ARRAY)) {
       return ((ByteArrayTag) this.tags.get(key)).value();
     }
@@ -141,7 +158,7 @@ final class CompoundTagImpl implements CompoundTag {
   }
 
   @Override
-  public @NonNull CompoundTag putByteArray(final @NonNull String key, final byte @NonNull [] value) {
+  public @NonNull CompoundTag putByteArray(final @NonNull String key, final byte@NonNull[] value) {
     return this.edit(map -> map.put(key, ByteArrayTag.of(value)));
   }
 
@@ -186,7 +203,7 @@ final class CompoundTagImpl implements CompoundTag {
   }
 
   @Override
-  public int @NonNull [] getIntArray(final @NonNull String key) {
+  public int@NonNull[] getIntArray(final @NonNull String key) {
     if(this.contains(key, TagTypes.INT_ARRAY)) {
       return ((IntArrayTag) this.tags.get(key)).value();
     }
@@ -194,7 +211,7 @@ final class CompoundTagImpl implements CompoundTag {
   }
 
   @Override
-  public int @NonNull [] getIntArray(final @NonNull String key, final int @NonNull [] defaultValue) {
+  public int@NonNull[] getIntArray(final @NonNull String key, final int@NonNull[] defaultValue) {
     if(this.contains(key, TagTypes.INT_ARRAY)) {
       return ((IntArrayTag) this.tags.get(key)).value();
     }
@@ -202,12 +219,12 @@ final class CompoundTagImpl implements CompoundTag {
   }
 
   @Override
-  public @NonNull CompoundTag putIntArray(final @NonNull String key, final int @NonNull [] value) {
+  public @NonNull CompoundTag putIntArray(final @NonNull String key, final int@NonNull[] value) {
     return this.edit(map -> map.put(key, IntArrayTag.of(value)));
   }
 
   @Override
-  public long @NonNull [] getLongArray(final @NonNull String key) {
+  public long@NonNull[] getLongArray(final @NonNull String key) {
     if(this.contains(key, TagTypes.LONG_ARRAY)) {
       return ((LongArrayTag) this.tags.get(key)).value();
     }
@@ -215,7 +232,7 @@ final class CompoundTagImpl implements CompoundTag {
   }
 
   @Override
-  public long @NonNull [] getLongArray(final @NonNull String key, final long @NonNull [] defaultValue) {
+  public long@NonNull[] getLongArray(final @NonNull String key, final long@NonNull[] defaultValue) {
     if(this.contains(key, TagTypes.LONG_ARRAY)) {
       return ((LongArrayTag) this.tags.get(key)).value();
     }
@@ -223,7 +240,7 @@ final class CompoundTagImpl implements CompoundTag {
   }
 
   @Override
-  public @NonNull CompoundTag putLongArray(final @NonNull String key, final long @NonNull [] value) {
+  public @NonNull CompoundTag putLongArray(final @NonNull String key, final long@NonNull[] value) {
     return this.edit(map -> map.put(key, LongArrayTag.of(value)));
   }
 
@@ -234,12 +251,12 @@ final class CompoundTagImpl implements CompoundTag {
   }
 
   @Override
-  public int hashCode() {
-    return this.tags.hashCode();
+  public boolean equals(final Object that) {
+    return this == that || (that instanceof CompoundTagImpl && this.tags.equals(((CompoundTagImpl) that).tags));
   }
 
   @Override
-  public boolean equals(final Object that) {
-    return this == that || (that instanceof CompoundTagImpl && this.tags.equals(((CompoundTagImpl) that).tags));
+  public int hashCode() {
+    return this.tags.hashCode();
   }
 }

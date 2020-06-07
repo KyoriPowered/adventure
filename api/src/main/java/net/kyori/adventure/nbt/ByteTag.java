@@ -24,6 +24,7 @@
 package net.kyori.adventure.nbt;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public interface ByteTag extends NumberTag {
   static @NonNull ByteTag of(final byte value) {
@@ -78,5 +79,18 @@ public interface ByteTag extends NumberTag {
   @Override
   public short shortValue() {
     return (short) this.value;
+  }
+
+  @Override
+  public boolean equals(final @Nullable Object other) {
+    if(this == other) return true;
+    if(other == null || this.getClass() != other.getClass()) return false;
+    final ByteTagImpl that = (ByteTagImpl) other;
+    return this.value == that.value;
+  }
+
+  @Override
+  public int hashCode() {
+    return Byte.hashCode(this.value);
   }
 }

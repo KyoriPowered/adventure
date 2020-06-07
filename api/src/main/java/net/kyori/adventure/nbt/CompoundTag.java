@@ -23,17 +23,27 @@
  */
 package net.kyori.adventure.nbt;
 
+import java.util.Set;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
   static @NonNull CompoundTag empty() {
     return CompoundTagImpl.EMPTY;
   }
 
+  static @NonNull Builder builder() {
+    return new CompoundTagBuilder();
+  }
+
   @Override
   default @NonNull TagType<CompoundTag> type() {
     return TagTypes.COMPOUND;
   }
+
+  @NonNull Set<String> keySet();
+
+  @Nullable Tag get(final String key);
 
   /**
    * Gets a byte.
@@ -228,7 +238,7 @@ public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
    * @return the array of bytes, or a zero-length array if this compound does not contain a byte array tag
    *     with the specified key, or has a tag with a different type
    */
-  byte @NonNull [] getByteArray(final @NonNull String key);
+  byte@NonNull[] getByteArray(final @NonNull String key);
 
   /**
    * Gets an array of bytes.
@@ -237,7 +247,7 @@ public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
    * @param defaultValue the default value
    * @return the array of bytes, or {@code defaultValue}
    */
-  byte @NonNull [] getByteArray(final @NonNull String key, final byte @NonNull [] defaultValue);
+  byte@NonNull[] getByteArray(final @NonNull String key, final byte@NonNull[] defaultValue);
 
   /**
    * Inserts an array of bytes.
@@ -247,7 +257,7 @@ public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
    * @return a compound tag
    */
   @Override
-  @NonNull CompoundTag putByteArray(final @NonNull String key, final byte @NonNull [] value);
+  @NonNull CompoundTag putByteArray(final @NonNull String key, final byte@NonNull[] value);
 
   /**
    * Gets a string.
@@ -354,7 +364,7 @@ public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
    * @return the array of ints, or a zero-length array if this compound does not contain a int array tag
    *     with the specified key, or has a tag with a different type
    */
-  int @NonNull [] getIntArray(final @NonNull String key);
+  int@NonNull[] getIntArray(final @NonNull String key);
 
   /**
    * Gets an array of ints.
@@ -363,7 +373,7 @@ public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
    * @param defaultValue the default value
    * @return the array of ints, or {@code defaultValue}
    */
-  int @NonNull [] getIntArray(final @NonNull String key, final int @NonNull [] defaultValue);
+  int@NonNull[] getIntArray(final @NonNull String key, final int@NonNull[] defaultValue);
 
   /**
    * Inserts an array of ints.
@@ -373,7 +383,7 @@ public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
    * @return a compound tag
    */
   @Override
-  @NonNull CompoundTag putIntArray(final @NonNull String key, final int @NonNull [] value);
+  @NonNull CompoundTag putIntArray(final @NonNull String key, final int@NonNull[] value);
 
   /**
    * Gets an array of longs.
@@ -382,7 +392,7 @@ public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
    * @return the array of longs, or a zero-length array if this compound does not contain a long array tag
    *     with the specified key, or has a tag with a different type
    */
-  long @NonNull [] getLongArray(final @NonNull String key);
+  long@NonNull[] getLongArray(final @NonNull String key);
 
   /**
    * Gets an array of longs.
@@ -391,7 +401,7 @@ public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
    * @param defaultValue the default value
    * @return the array of longs, or {@code defaultValue}
    */
-  long @NonNull [] getLongArray(final @NonNull String key, final long @NonNull [] defaultValue);
+  long@NonNull[] getLongArray(final @NonNull String key, final long@NonNull[] defaultValue);
 
   /**
    * Inserts an array of longs.
@@ -401,7 +411,7 @@ public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
    * @return a compound tag
    */
   @Override
-  @NonNull CompoundTag putLongArray(final @NonNull String key, final long @NonNull [] value);
+  @NonNull CompoundTag putLongArray(final @NonNull String key, final long@NonNull[] value);
 
   interface Builder extends CompoundTagSetter<Builder> {
     @NonNull CompoundTag build();

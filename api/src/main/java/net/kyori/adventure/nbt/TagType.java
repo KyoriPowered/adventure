@@ -24,17 +24,28 @@
 package net.kyori.adventure.nbt;
 
 import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 // TODO: write!
 public abstract class TagType<T extends Tag> implements Predicate<TagType<? extends Tag>> {
-  static <T extends Tag> @NonNull TagType<T> create(final byte id, final @NonNull Reader<T> reader) {
-    return new TagType<T>() {
+  private static final List<TagType<? extends Tag>> TYPES = new ArrayList<>();
+
+  static <T extends Tag> @NonNull TagType<T> register(final byte id, final @NonNull Reader<T> reader, final @Nullable Writer<T> writer) {
+    return register(new TagType<T>() {
       @Override
       public @NonNull T read(final @NonNull DataInput input) throws IOException {
         return reader.read(input);
+      }
+
+      @Override
+      public void write(final @NonNull T tag, final @NonNull DataOutput output) throws IOException {
+        if(writer != null) writer.write(tag, output);
       }
 
       @Override
@@ -46,14 +57,19 @@ public abstract class TagType<T extends Tag> implements Predicate<TagType<? exte
       boolean numeric() {
         return false;
       }
-    };
+    });
   }
 
-  static <T extends Tag> @NonNull TagType<T> createNumeric(final byte id, final @NonNull Reader<T> reader) {
-    return new TagType<T>() {
+  static <T extends NumberTag> @NonNull TagType<T> registerNumeric(final byte id, final @NonNull Reader<T> reader, final @NonNull Writer<T> writer) {
+    return register(new TagType<T>() {
       @Override
       public @NonNull T read(final @NonNull DataInput input) throws IOException {
         return reader.read(input);
+      }
+
+      @Override
+      public void write(final @NonNull T tag, final @NonNull DataOutput output) throws IOException {
+        writer.write(tag, output);
       }
 
       @Override
@@ -65,13 +81,36 @@ public abstract class TagType<T extends Tag> implements Predicate<TagType<? exte
       boolean numeric() {
         return true;
       }
-    };
+    });
+  }
+
+  private static <T extends Tag, Y extends TagType<T>> Y register(final Y type) {
+    TYPES.add(type);
+    return type;
+  }
+
+  static @NonNull TagType<? extends Tag> of(final byte id) {
+    for(int i = 0; i < TYPES.size(); i++) {
+      final TagType<? extends Tag> type = TYPES.get(i);
+      if(type.id() == id) {
+        return type;
+      }
+    }
+    throw new IllegalArgumentException(String.valueOf(id));
   }
 
   public abstract @NonNull T read(final @NonNull DataInput input) throws IOException;
+  public abstract void write(final @NonNull T tag, final @NonNull DataOutput output) throws IOException;
 
   interface Reader<T extends Tag> {
     @NonNull T read(final @NonNull DataInput input) throws IOException;
+  }
+
+  interface Writer<T extends Tag> {
+    void write(final @NonNull T tag, final @NonNull DataOutput output) throws IOException;
+  }
+
+  interface ReaderAndWriter<T extends Tag> extends Reader<T>, Writer<T> {
   }
 
   public abstract byte id();

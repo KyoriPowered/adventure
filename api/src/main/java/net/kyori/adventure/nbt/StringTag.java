@@ -24,6 +24,7 @@
 package net.kyori.adventure.nbt;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public interface StringTag extends Tag {
   static @NonNull StringTag of(final @NonNull String value) {
@@ -48,5 +49,18 @@ public interface StringTag extends Tag {
   @Override
   public @NonNull String value() {
     return this.value;
+  }
+
+  @Override
+  public boolean equals(final @Nullable Object other) {
+    if(this == other) return true;
+    if(other == null || this.getClass() != other.getClass()) return false;
+    final StringTagImpl that = (StringTagImpl) other;
+    return this.value.equals(that.value);
+  }
+
+  @Override
+  public int hashCode() {
+    return this.value.hashCode();
   }
 }

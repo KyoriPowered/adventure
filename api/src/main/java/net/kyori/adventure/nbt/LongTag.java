@@ -24,6 +24,7 @@
 package net.kyori.adventure.nbt;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public interface LongTag extends NumberTag {
   static @NonNull LongTag of(final long value) {
@@ -78,5 +79,18 @@ public interface LongTag extends NumberTag {
   @Override
   public short shortValue() {
     return (short) (this.value & 0xffff);
+  }
+
+  @Override
+  public boolean equals(final @Nullable Object other) {
+    if(this == other) return true;
+    if(other == null || this.getClass() != other.getClass()) return false;
+    final LongTagImpl that = (LongTagImpl) other;
+    return this.value == that.value;
+  }
+
+  @Override
+  public int hashCode() {
+    return Long.hashCode(this.value);
   }
 }

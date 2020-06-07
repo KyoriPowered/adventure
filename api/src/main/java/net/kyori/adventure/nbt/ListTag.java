@@ -23,12 +23,21 @@
  */
 package net.kyori.adventure.nbt;
 
+import java.util.List;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public interface ListTag extends Tag {
+public interface ListTag extends ListTagSetter<ListTag>, Tag {
   static @NonNull ListTag empty() {
     return ListTagImpl.EMPTY;
+  }
+
+  static @NonNull Builder builder() {
+    return new ListTagBuilder();
+  }
+
+  static @NonNull ListTag of(final @NonNull TagType<? extends Tag> type, final @NonNull List<Tag> tags) {
+    return new ListTagImpl(type, tags);
   }
 
   @Override
@@ -43,6 +52,8 @@ public interface ListTag extends Tag {
    */
   @NonNull TagType<? extends Tag> listType();
 
+  int size();
+
   /**
    * Gets a tag.
    *
@@ -51,10 +62,6 @@ public interface ListTag extends Tag {
    * @throws IndexOutOfBoundsException if the index is out of range
    */
   @NonNull Tag get(final @NonNegative int index);
-
-  // TOOD: add
-  // TODO: set
-  // TODO: remove
 
   /**
    * Gets a byte.
@@ -341,5 +348,9 @@ public interface ListTag extends Tag {
       return ((LongArrayTag) tag).value();
     }
     return defaultValue;
+  }
+
+  interface Builder extends ListTagSetter<Builder> {
+    @NonNull ListTag build();
   }
 }

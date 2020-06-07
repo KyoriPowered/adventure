@@ -25,22 +25,8 @@ package net.kyori.adventure.nbt;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public interface EndTag extends Tag {
-  static @NonNull EndTag get() {
-    return EndTagImpl.INSTANCE;
-  }
-
-  @Override
-  default @NonNull TagType<EndTag> type() {
-    return TagTypes.END;
-  }
-}
-
-/* package */ final class EndTagImpl implements EndTag {
-  /* package */ static final EndTagImpl INSTANCE = new EndTagImpl();
-
-  @Override
-  public boolean equals(final Object that) {
-    return this == that;
-  }
+public interface ListTagSetter<R> {
+  @NonNull R add(final Tag tag);
+  // TODO: set
+  // TODO: remove
 }

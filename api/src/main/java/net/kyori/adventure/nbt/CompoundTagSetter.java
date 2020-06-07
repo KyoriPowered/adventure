@@ -26,6 +26,8 @@ package net.kyori.adventure.nbt;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public interface CompoundTagSetter<R> {
+  @NonNull R put(final @NonNull String key, @NonNull Tag tag);
+
   /**
    * Inserts a byte.
    *
@@ -87,7 +89,7 @@ public interface CompoundTagSetter<R> {
    * @param value the value
    * @return a compound tag
    */
-  @NonNull R putByteArray(final @NonNull String key, final byte @NonNull [] value);
+  @NonNull R putByteArray(final @NonNull String key, final byte@NonNull[] value);
 
   /**
    * Inserts a string.
@@ -98,10 +100,6 @@ public interface CompoundTagSetter<R> {
    */
   @NonNull R putString(final @NonNull String key, final @NonNull String value);
 
-  // List
-
-  // Compound
-
   /**
    * Inserts an array of ints.
    *
@@ -109,7 +107,7 @@ public interface CompoundTagSetter<R> {
    * @param value the value
    * @return a compound tag
    */
-  @NonNull R putIntArray(final @NonNull String key, final int @NonNull [] value);
+  @NonNull R putIntArray(final @NonNull String key, final int@NonNull[] value);
 
   /**
    * Inserts an array of longs.
@@ -118,5 +116,5 @@ public interface CompoundTagSetter<R> {
    * @param value the value
    * @return a compound tag
    */
-  @NonNull R putLongArray(final @NonNull String key, final long @NonNull [] value);
+  @NonNull R putLongArray(final @NonNull String key, final long@NonNull[] value);
 }

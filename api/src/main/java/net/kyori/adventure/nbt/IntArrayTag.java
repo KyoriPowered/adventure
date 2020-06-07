@@ -23,11 +23,10 @@
  */
 package net.kyori.adventure.nbt;
 
-import java.util.Arrays;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public interface IntArrayTag extends Tag {
-  static @NonNull IntArrayTag of(final int@NonNull[] value) {
+  static @NonNull IntArrayTag of(final int@NonNull... value) {
     return new IntArrayTagImpl(value);
   }
 
@@ -37,17 +36,4 @@ public interface IntArrayTag extends Tag {
   }
 
   int@NonNull[] value();
-}
-
-/* package */ final class IntArrayTagImpl implements IntArrayTag {
-  private final int[] value;
-
-  /* package */ IntArrayTagImpl(final int[] value) {
-    this.value = Arrays.copyOf(value, value.length);
-  }
-
-  @Override
-  public int@NonNull[] value() {
-    return Arrays.copyOf(this.value, this.value.length);
-  }
 }

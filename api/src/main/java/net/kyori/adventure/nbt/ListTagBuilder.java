@@ -23,24 +23,30 @@
  */
 package net.kyori.adventure.nbt;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public interface EndTag extends Tag {
-  static @NonNull EndTag get() {
-    return EndTagImpl.INSTANCE;
+final class ListTagBuilder implements ListTag.Builder {
+  private final List<Tag> tags = new ArrayList<>();
+  private TagType<? extends Tag> type = TagTypes.END;
+
+  @Override
+  public ListTag.@NonNull Builder add(final Tag tag) {
+    // don't allow an end tag to be added
+    if(tag.type() == TagTypes.END) {
+      throw new IllegalArgumentException(String.format("Cannot add a '%s' to a '%s'", EndTag.class.getSimpleName(), ListTag.class.getSimpleName()));
+    }
+    // set the type if it has not yet been set
+    if(this.type == TagTypes.END) {
+      this.type = tag.type();
+    }
+    this.tags.add(tag);
+    return this;
   }
 
   @Override
-  default @NonNull TagType<EndTag> type() {
-    return TagTypes.END;
-  }
-}
-
-/* package */ final class EndTagImpl implements EndTag {
-  /* package */ static final EndTagImpl INSTANCE = new EndTagImpl();
-
-  @Override
-  public boolean equals(final Object that) {
-    return this == that;
+  public @NonNull ListTag build() {
+    return new ListTagImpl(this.type, new ArrayList<>(this.tags));
   }
 }

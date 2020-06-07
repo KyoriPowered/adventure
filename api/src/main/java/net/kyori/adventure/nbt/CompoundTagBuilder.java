@@ -31,6 +31,12 @@ final class CompoundTagBuilder implements CompoundTag.Builder {
   private final Map<String, Tag> tags = new HashMap<>();
 
   @Override
+  public CompoundTag.@NonNull Builder put(final @NonNull String key, @NonNull final Tag tag) {
+    this.tags.put(key, tag);
+    return this;
+  }
+
+  @Override
   public CompoundTag.@NonNull Builder putByte(final @NonNull String key, final byte value) {
     this.tags.put(key, ByteTag.of(value));
     return this;
@@ -67,7 +73,7 @@ final class CompoundTagBuilder implements CompoundTag.Builder {
   }
 
   @Override
-  public CompoundTag.@NonNull Builder putByteArray(final @NonNull String key, final byte @NonNull [] value) {
+  public CompoundTag.@NonNull Builder putByteArray(final @NonNull String key, final byte@NonNull[] value) {
     this.tags.put(key, ByteArrayTag.of(value));
     return this;
   }
@@ -79,13 +85,13 @@ final class CompoundTagBuilder implements CompoundTag.Builder {
   }
 
   @Override
-  public CompoundTag.@NonNull Builder putIntArray(final @NonNull String key, final int @NonNull [] value) {
+  public CompoundTag.@NonNull Builder putIntArray(final @NonNull String key, final int@NonNull[] value) {
     this.tags.put(key, IntArrayTag.of(value));
     return this;
   }
 
   @Override
-  public CompoundTag.@NonNull Builder putLongArray(final @NonNull String key, final long @NonNull [] value) {
+  public CompoundTag.@NonNull Builder putLongArray(final @NonNull String key, final long@NonNull[] value) {
     this.tags.put(key, LongArrayTag.of(value));
     return this;
   }

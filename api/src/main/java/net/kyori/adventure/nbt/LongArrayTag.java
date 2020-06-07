@@ -27,7 +27,7 @@ import java.util.Arrays;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public interface LongArrayTag extends Tag {
-  static @NonNull LongArrayTag of(final long@NonNull[] value) {
+  static @NonNull LongArrayTag of(final long@NonNull... value) {
     return new LongArrayTagImpl(value);
   }
 
@@ -37,17 +37,4 @@ public interface LongArrayTag extends Tag {
   }
 
   long@NonNull[] value();
-}
-
-/* package */ final class LongArrayTagImpl implements LongArrayTag {
-  private final long[] value;
-
-  /* package */ LongArrayTagImpl(final long[] value) {
-    this.value = Arrays.copyOf(value, value.length);
-  }
-
-  @Override
-  public long@NonNull[] value() {
-    return Arrays.copyOf(this.value, this.value.length);
-  }
 }

@@ -24,20 +24,19 @@
 package net.kyori.adventure.nbt;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 final class ListTagImpl implements ListTag {
-  static final ListTag EMPTY = new ListTagImpl(TagTypes.END);
-  private final List<Tag> tags = new ArrayList<>();
-  private @NonNull TagType<? extends Tag> type;
+  static final ListTag EMPTY = new ListTagImpl(TagTypes.END, Collections.emptyList());
+  private final List<? extends Tag> tags;
+  private final TagType<? extends Tag> type;
 
-  public ListTagImpl() {
-    this(TagTypes.END);
-  }
-
-  public ListTagImpl(final @NonNull TagType<? extends Tag> type) {
+  ListTagImpl(final TagType<? extends Tag> type, final List<? extends Tag> tags) {
+    this.tags = tags;
     this.type = type;
   }
 
@@ -47,7 +46,41 @@ final class ListTagImpl implements ListTag {
   }
 
   @Override
+  public int size() {
+    return this.tags.size();
+  }
+
+  @Override
   public @NonNull Tag get(@NonNegative final int index) {
     return this.tags.get(index);
+  }
+
+  @Override
+  public @NonNull ListTag add(final Tag tag) {
+    return this.edit(tags -> tags.add(tag));
+  }
+
+  private ListTag edit(final Consumer<List<Tag>> consumer) {
+    final List<Tag> tags = new ArrayList<>(this.tags);
+    consumer.accept(tags);
+    return new ListTagImpl(this.type, tags);
+  }
+
+  @Override
+  public boolean equals(final Object that) {
+    return this == that || (that instanceof ListTagImpl && this.tags.equals(((ListTagImpl) that).tags));
+  }
+
+  @Override
+  public int hashCode() {
+    return this.tags.hashCode();
+  }
+
+  @Override
+  public String toString() {
+    return "ListTagImpl{" +
+      "tags=" + tags +
+      ", type=" + type +
+      '}';
   }
 }

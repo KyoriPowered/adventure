@@ -23,11 +23,10 @@
  */
 package net.kyori.adventure.nbt;
 
-import java.util.Arrays;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public interface ByteArrayTag extends Tag {
-  static @NonNull ByteArrayTag of(final byte@NonNull[] value) {
+  static @NonNull ByteArrayTag of(final byte@NonNull... value) {
     return new ByteArrayTagImpl(value);
   }
 
@@ -37,17 +36,4 @@ public interface ByteArrayTag extends Tag {
   }
 
   byte@NonNull[] value();
-}
-
-/* package */ final class ByteArrayTagImpl implements ByteArrayTag {
-  private final byte[] value;
-
-  /* package */ ByteArrayTagImpl(final byte[] value) {
-    this.value = Arrays.copyOf(value, value.length);
-  }
-
-  @Override
-  public byte@NonNull[] value() {
-    return Arrays.copyOf(this.value, this.value.length);
-  }
 }
