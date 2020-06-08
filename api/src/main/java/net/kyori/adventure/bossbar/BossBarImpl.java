@@ -147,7 +147,7 @@ import static java.util.Objects.requireNonNull;
     return this.editFlags(flags, Set::remove);
   }
 
-  private @NonNull BossBar editFlags(final @NonNull Flag @NonNull [] flags, final @NonNull BiPredicate<Set<Flag>, Flag> predicate) {
+  private @NonNull BossBar editFlags(final @NonNull Flag@NonNull[] flags, final @NonNull BiPredicate<Set<Flag>, Flag> predicate) {
     if(flags.length == 0) return this;
     final Set<Flag> oldFlags = new HashSet<>(this.flags);
     boolean changed = false;

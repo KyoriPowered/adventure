@@ -52,30 +52,31 @@ public enum NamedTextColor implements TextColor {
    */
   public static final NameMap<NamedTextColor> NAMES = NameMap.create(NamedTextColor.class, constant -> constant.name, VALUES);
 
-
   /**
    * Find the named colour nearest to the provided colour.
    *
    * @param any colour to match
    * @return nearest named colour. will always return a value
    */
-  public static @NonNull NamedTextColor nearestTo(@NonNull TextColor any) {
+  public static @NonNull NamedTextColor nearestTo(final @NonNull TextColor any) {
     if(any instanceof NamedTextColor) {
       return (NamedTextColor) any;
     }
+
     requireNonNull(any, "color");
 
     // TODO: This tends to match greys more than it should (rgb averages and all that)
     int matchedDistance = Integer.MAX_VALUE;
     NamedTextColor match = VALUES[0];
-    for(NamedTextColor potential : VALUES) {
-      int distance = distanceSquared(any, potential);
+    for(int i = 0, length = VALUES.length; i < length; i++) {
+      final NamedTextColor potential = VALUES[i];
+      final int distance = distanceSquared(any, potential);
       if(distance < matchedDistance) {
         match = potential;
         matchedDistance = distance;
       }
-      if(distance == 0) { // same colour! whoo!
-        break;
+      if(distance == 0) {
+        break; // same colour! whoo!
       }
     }
     return match;
@@ -84,7 +85,7 @@ public enum NamedTextColor implements TextColor {
   /**
    * Returns a distance metric to the other colour.
    *
-   * <p>This value is unitless and should only be used to compare with other text colours.
+   * <p>This value is unitless and should only be used to compare with other text colours.</p>
    *
    * @param other colour to compare to
    * @return distance metric

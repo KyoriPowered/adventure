@@ -28,6 +28,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.renderer.ComponentRenderer;
 import net.kyori.adventure.util.NameMap;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
@@ -117,6 +118,21 @@ public final class HoverEvent<V> implements Examinable {
    */
   public @NonNull V value() {
     return this.value;
+  }
+
+  /**
+   * Returns a hover event with the value renderered using {@code renderer} when possible.
+   *
+   * @param renderer the renderer
+   * @param context the render context
+   * @param <C> the context type
+   * @return a hover event
+   */
+  public <C> @NonNull HoverEvent<V> withRendererValue(final @NonNull ComponentRenderer<C> renderer, final @NonNull C context) {
+    final V oldValue = this.value;
+    final V newValue = this.action.renderer.render(renderer, context, oldValue);
+    if(newValue != oldValue) return new HoverEvent<>(this.action, newValue);
+    return this;
   }
 
   @Override
@@ -270,15 +286,31 @@ public final class HoverEvent<V> implements Examinable {
     /**
      * Shows a {@link Component} when hovered over.
      */
-    public static final Action<Component> SHOW_TEXT = new Action<>("show_text", Component.class, true);
+    public static final Action<Component> SHOW_TEXT = new Action<>("show_text", Component.class, true, new Renderer<Component>() {
+      @Override
+      public <C> Component render(final ComponentRenderer<C> renderer, final C context, final Component value) {
+        return renderer.render(value, context);
+      }
+    });
     /**
      * Shows an item instance when hovered over.
      */
-    public static final Action<ShowItem> SHOW_ITEM = new Action<>("show_item", ShowItem.class, true);
+    public static final Action<ShowItem> SHOW_ITEM = new Action<>("show_item", ShowItem.class, true, new Renderer<ShowItem>() {
+      @Override
+      public <C> ShowItem render(final ComponentRenderer<C> renderer, final C context, final ShowItem value) {
+        return value;
+      }
+    });
     /**
      * Shows an entity when hovered over.
      */
-    public static final Action<ShowEntity> SHOW_ENTITY = new Action<>("show_entity", ShowEntity.class, true);
+    public static final Action<ShowEntity> SHOW_ENTITY = new Action<>("show_entity", ShowEntity.class, true, new Renderer<ShowEntity>() {
+      @Override
+      public <C> ShowEntity render(final ComponentRenderer<C> renderer, final C context, final ShowEntity value) {
+        if(value.name == null) return value;
+        return new ShowEntity(value.type, value.id, renderer.render(value.name, context));
+      }
+    });
 
     /**
      * The name map.
@@ -298,11 +330,13 @@ public final class HoverEvent<V> implements Examinable {
      * <p>When an action is not readable it will not be deserialized.</p>
      */
     private final boolean readable;
+    private final Renderer<V> renderer;
 
-    Action(final String name, final Class<V> type, final boolean readable) {
+    Action(final String name, final Class<V> type, final boolean readable, final Renderer<V> renderer) {
       this.name = name;
       this.type = type;
       this.readable = readable;
+      this.renderer = renderer;
     }
 
     /**
@@ -327,6 +361,11 @@ public final class HoverEvent<V> implements Examinable {
     @Override
     public @NonNull String toString() {
       return this.name;
+    }
+
+    @FunctionalInterface
+    interface Renderer<V> {
+      <C> V render(final ComponentRenderer<C> renderer, final C context, final V value);
     }
   }
 }

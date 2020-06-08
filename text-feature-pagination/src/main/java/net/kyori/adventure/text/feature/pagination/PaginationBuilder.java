@@ -50,7 +50,7 @@ final class PaginationBuilder implements Pagination.Builder {
   }
 
   @Override
-  public Pagination.@NonNull Builder resultsPerPage(@NonNegative final int resultsPerPage) {
+  public Pagination.@NonNull Builder resultsPerPage(final @NonNegative int resultsPerPage) {
     this.resultsPerPage = resultsPerPage;
     return this;
   }

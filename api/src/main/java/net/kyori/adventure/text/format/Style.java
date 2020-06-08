@@ -83,7 +83,7 @@ public final class Style implements Examinable {
    */
   public static @NonNull Style of(final @Nullable TextColor color) {
     if(color == null) return empty();
-    return builder().color(color).build();
+    return new Style(null, color, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null);
   }
 
   /**

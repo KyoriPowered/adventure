@@ -153,33 +153,12 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
     return builder.build();
   }
 
-  @SuppressWarnings("unchecked")
   private <B extends ComponentBuilder<?, ?>> void mergeStyle(final Component component, final B builder, final C context) {
     builder.mergeStyle(component, Style.Merge.colorAndDecorations());
     builder.clickEvent(component.clickEvent());
     final /* @Nullable */ HoverEvent<?> hoverEvent = component.hoverEvent();
     if(hoverEvent != null) {
-      final HoverEvent.Action<?> action = hoverEvent.action();
-      if(action == HoverEvent.Action.SHOW_TEXT) {
-        final Component value = (Component) hoverEvent.value();
-        builder.hoverEvent(HoverEvent.showText(
-          this.render(value, context)
-        ));
-      } else if(action == HoverEvent.Action.SHOW_ENTITY) {
-        final HoverEvent.ShowEntity value = (HoverEvent.ShowEntity) hoverEvent.value();
-        final Component name = value.name();
-        if(name != null) {
-          builder.hoverEvent(HoverEvent.showEntity(new HoverEvent.ShowEntity(
-            value.type(),
-            value.id(),
-            this.render(name, context)
-          )));
-        } else {
-          builder.hoverEvent(hoverEvent);
-        }
-      } else {
-        builder.hoverEvent(hoverEvent);
-      }
+      builder.hoverEvent(hoverEvent.withRendererValue(this, context));
     }
   }
 
