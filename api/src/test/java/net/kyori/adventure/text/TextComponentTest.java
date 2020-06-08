@@ -24,6 +24,7 @@
 package net.kyori.adventure.text;
 
 import com.google.common.collect.ImmutableSet;
+import java.util.Collections;
 import java.util.stream.IntStream;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -113,6 +114,8 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
 
   @Test
   void testJoin() {
+    assertEquals(TextComponent.empty(), TextComponent.join(TextComponent.space(), Collections.emptyList()));
+
     final Component c0 = TextComponent.join(
       TextComponent.space(),
       IntStream.range(0, 3)

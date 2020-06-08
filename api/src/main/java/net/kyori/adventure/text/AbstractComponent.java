@@ -82,10 +82,7 @@ public abstract class AbstractComponent implements Component, Examinable {
   public boolean equals(final @Nullable Object other) {
     if(this == other) return true;
     if(!(other instanceof AbstractComponent)) return false;
-    return this.equals((AbstractComponent) other);
-  }
-
-  protected boolean equals(final @NonNull AbstractComponent that) {
+    final AbstractComponent that = (AbstractComponent) other;
     return Objects.equals(this.children, that.children)
       && Objects.equals(this.style, that.style);
   }
