@@ -40,6 +40,7 @@ public interface BossBar {
    * @param color the color
    * @param overlay the overlay
    * @return a bossbar
+   * @throws IllegalArgumentException if percent is less than 0 or greater than 1
    */
   static @NonNull BossBar of(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay) {
     BossBarImpl.checkPercent(percent);
@@ -55,6 +56,7 @@ public interface BossBar {
    * @param overlay the overlay
    * @param flags the flags
    * @return a bossbar
+   * @throws IllegalArgumentException if percent is less than 0 or greater than 1
    */
   static @NonNull BossBar of(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay, final @NonNull Set<Flag> flags) {
     BossBarImpl.checkPercent(percent);
@@ -92,6 +94,7 @@ public interface BossBar {
    *
    * @param percent the percent
    * @return the bossbar
+   * @throws IllegalArgumentException if percent is less than 0 or greater than 1
    */
   @NonNull BossBar percent(final float percent);
 

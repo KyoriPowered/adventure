@@ -51,11 +51,13 @@ public interface Audience {
    * @return an audience
    */
   static @NonNull Audience of(final @NonNull Audience@NonNull... audiences) {
-    switch(audiences.length) {
-      case 0: return empty();
-      case 1: return audiences[0];
-      default: return of(Arrays.asList(audiences));
+    final int length = audiences.length;
+    if(length == 0) {
+      return empty();
+    } else if(length == 1) {
+      return audiences[0];
     }
+    return of(Arrays.asList(audiences));
   }
 
   /**
@@ -68,6 +70,10 @@ public interface Audience {
     return (MultiAudience) () -> audiences;
   }
 
+  // ------------------
+  // ---- Messages ----
+  // ------------------
+
   /**
    * Sends a message.
    *
@@ -75,12 +81,20 @@ public interface Audience {
    */
   void sendMessage(final @NonNull Component message);
 
+  // --------------------
+  // ---- Action Bar ----
+  // --------------------
+
   /**
    * Sends a message on the action bar.
    *
    * @param message the message
    */
   void sendActionBar(final @NonNull Component message);
+
+  // ----------------
+  // ---- Titles ----
+  // ----------------
 
   /**
    * Shows a title.
@@ -99,6 +113,10 @@ public interface Audience {
    */
   void resetTitle();
 
+  // ------------------
+  // ---- Boss Bar ----
+  // ------------------
+
   /**
    * Shows a bossbar.
    *
@@ -112,6 +130,10 @@ public interface Audience {
    * @param bar the bossbar
    */
   void hideBossBar(final @NonNull BossBar bar);
+
+  // ----------------
+  // ---- Sounds ----
+  // ----------------
 
   /**
    * Plays a sound.

@@ -45,7 +45,7 @@ public abstract class Listenable<L> {
   protected final void forEachListener(final @NonNull Consumer<L> consumer) {
     final Queue<L> listeners = this.listeners;
     if(listeners != null) {
-      for (final L listener : listeners) {
+      for(final L listener : listeners) {
         consumer.accept(listener);
       }
     }
