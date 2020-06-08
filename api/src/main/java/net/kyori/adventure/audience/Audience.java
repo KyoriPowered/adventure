@@ -32,7 +32,7 @@ import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * A receiver of text-based messages.
+ * A receiver of text-based media.
  */
 public interface Audience {
   /**
@@ -66,7 +66,7 @@ public interface Audience {
    * @param audiences the forwarding audiences
    * @return an audience
    */
-  static @NonNull Audience of(final @NonNull Iterable<Audience> audiences) {
+  static @NonNull Audience of(final @NonNull Iterable<? extends Audience> audiences) {
     return (MultiAudience) () -> audiences;
   }
 
