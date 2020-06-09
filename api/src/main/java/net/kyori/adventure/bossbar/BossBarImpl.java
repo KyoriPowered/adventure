@@ -31,6 +31,7 @@ import java.util.function.BiPredicate;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Listenable;
+import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
@@ -180,7 +181,7 @@ import static java.util.Objects.requireNonNull;
     if(other == null || this.getClass() != other.getClass()) return false;
     final BossBarImpl that = (BossBarImpl) other;
     return this.name.equals(that.name)
-      && Float.floatToIntBits(this.percent) == Float.floatToIntBits(that.percent)
+      && ShadyPines.equals(this.percent, that.percent)
       && this.color == that.color
       && this.overlay == that.overlay
       && this.flags.equals(that.flags);

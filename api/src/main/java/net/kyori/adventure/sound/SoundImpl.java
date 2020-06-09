@@ -25,6 +25,7 @@ package net.kyori.adventure.sound;
 
 import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -70,8 +71,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
     final SoundImpl that = (SoundImpl) other;
     return this.name.equals(that.name)
       && this.source == that.source
-      && Float.floatToIntBits(this.volume) == Float.floatToIntBits(that.volume)
-      && Float.floatToIntBits(this.pitch) == Float.floatToIntBits(that.pitch);
+      && ShadyPines.equals(this.volume, that.volume)
+      && ShadyPines.equals(this.pitch, that.pitch);
   }
 
   @Override
