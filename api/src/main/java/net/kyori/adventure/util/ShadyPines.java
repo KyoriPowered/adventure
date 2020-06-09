@@ -50,4 +50,26 @@ public final class ShadyPines {
     Collections.addAll(set, constants);
     return Collections.unmodifiableSet(set);
   }
+
+  /**
+   * Checks if {@code a} is equal to {@code b}.
+   *
+   * @param a a double
+   * @param b a double
+   * @return {@code true} if {@code a} is equal to {@code b}, otherwise {@code false}
+   */
+  public static boolean equals(final double a, final double b) {
+    return Double.doubleToLongBits(a) == Double.doubleToLongBits(b);
+  }
+
+  /**
+   * Checks if {@code a} is equal to {@code b}.
+   *
+   * @param a a float
+   * @param b a float
+   * @return {@code true} if {@code a} is equal to {@code b}, otherwise {@code false}
+   */
+  public static boolean equals(final float a, final float b) {
+    return Float.floatToIntBits(a) == Float.floatToIntBits(b);
+  }
 }

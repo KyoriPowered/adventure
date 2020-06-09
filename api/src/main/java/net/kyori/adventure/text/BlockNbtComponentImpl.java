@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -161,13 +162,9 @@ final class BlockNbtComponentImpl extends NbtComponentImpl<BlockNbtComponent, Bl
       if(this == other) return true;
       if(!(other instanceof LocalPos)) return false;
       final LocalPos that = (LocalPos) other;
-      return equals(that.left(), this.left())
-        && equals(that.up(), this.up())
-        && equals(that.forwards(), this.forwards());
-    }
-
-    private static boolean equals(final double a, final double b) {
-      return Double.doubleToLongBits(a) == Double.doubleToLongBits(b);
+      return ShadyPines.equals(that.left(), this.left())
+        && ShadyPines.equals(that.up(), this.up())
+        && ShadyPines.equals(that.forwards(), this.forwards());
     }
 
     @Override
