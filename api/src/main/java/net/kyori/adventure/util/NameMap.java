@@ -82,7 +82,7 @@ public final class NameMap<E> {
    */
   @SafeVarargs
   public static <E> @NonNull NameMap<E> create(final @NonNull Function<E, String> namer, final @NonNull E@NonNull... constants) {
-    return create(constants, HashMap::new, namer);
+    return create(constants, HashMap<E, String>::new /* explicit type params needed to fix build on JDK8 */, namer);
   }
 
   @SuppressWarnings("ForLoopReplaceableByForEach")
