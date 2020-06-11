@@ -33,8 +33,17 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 /**
  * An audience that does nothing.
  */
-/* package */ final class EmptyAudience implements Audience {
+/* package */ final class EmptyAudience implements BatchedAudience {
   /* package */ static final EmptyAudience INSTANCE = new EmptyAudience();
+
+  @Override
+  public int flush() {
+    return 0;
+  }
+
+  @Override
+  public void queue(@NonNull Operation operation) {
+  }
 
   @Override
   public void sendMessage(final @NonNull Component message) {
