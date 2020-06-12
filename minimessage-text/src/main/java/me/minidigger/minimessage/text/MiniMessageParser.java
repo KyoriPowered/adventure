@@ -26,6 +26,7 @@ import static me.minidigger.minimessage.text.Constants.CLOSE_TAG;
 import static me.minidigger.minimessage.text.Constants.HOVER;
 import static me.minidigger.minimessage.text.Constants.INSERTION;
 import static me.minidigger.minimessage.text.Constants.KEYBIND;
+import static me.minidigger.minimessage.text.Constants.RESET;
 import static me.minidigger.minimessage.text.Constants.SEPARATOR;
 import static me.minidigger.minimessage.text.Constants.TAG_END;
 import static me.minidigger.minimessage.text.Constants.TAG_START;
@@ -154,7 +155,7 @@ public class MiniMessageParser {
             if (msg != null && msg.length() != 0) {
                 // append message
                 current = TextComponent.of(msg);
-                current = applyFormatting(clickEvents, hoverEvents, colors, insertions,decorations, current);
+                current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current);
 
             }
 
@@ -209,6 +210,14 @@ public class MiniMessageParser {
                 insertions.push(handleInsertion(token));
             } else if (token.startsWith(CLOSE_TAG + INSERTION)) {
                 insertions.pop();
+            }
+            // reset
+            else if (token.startsWith(RESET)) {
+                clickEvents.clear();
+                hoverEvents.clear();
+                colors.clear();
+                insertions.clear();
+                decorations.clear();
             }
             // invalid tag
             else {

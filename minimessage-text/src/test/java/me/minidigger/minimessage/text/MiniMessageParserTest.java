@@ -216,6 +216,15 @@ public class MiniMessageParserTest {
         MiniMessageParser.parseFormat(input, "url", "https://www.google.com");
     }
 
+    @Test
+    public void testReset() {
+        String input = "Click <yellow><insert:test>this<reset> to insert!";
+        String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Click \"},{\"text\":\"this\",\"color\":\"yellow\",\"insertion\":\"test\"},{\"text\":\" to insert!\"}]}";
+        Component comp = MiniMessageParser.parseFormat(input);
+
+        test(comp, expected);
+    }
+
     private void test(@Nonnull String input, @Nonnull String expected) {
         test(MiniMessageParser.parseFormat(input), expected);
     }
