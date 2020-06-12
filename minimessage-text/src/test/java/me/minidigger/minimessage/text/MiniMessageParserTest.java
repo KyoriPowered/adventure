@@ -3,6 +3,7 @@ package me.minidigger.minimessage.text;
 import net.kyori.text.Component;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.annotation.Nonnull;
@@ -151,8 +152,8 @@ public class MiniMessageParserTest {
 
     @Test
     public void testClickExtendedCommand() {
-        String input = "<click:run_command:test command>TEST";
-        String expected = "{\"text\":\"TEST\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"test command\"}}";
+        String input = "<click:run_command:/test command>TEST";
+        String expected = "{\"text\":\"TEST\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/test command\"}}";
 
         test(input, expected);
     }
@@ -205,6 +206,34 @@ public class MiniMessageParserTest {
     }
 
     @Test
+    public void testTranslatableWith() {
+        String input = "Test: <lang:commands.drop.success.single:'<red>1':'<blue>Stone'>!";
+        String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Test: \"},{\"translate\":\"commands.drop.success.single\",\"with\":[{\"text\":\"1\",\"color\":\"red\"},{\"text\":\"Stone\",\"color\":\"blue\"}]},{\"text\":\"!\"}]}";
+        Component comp = MiniMessageParser.parseFormat(input);
+
+        test(comp, expected);
+    }
+
+    @Test
+    @Ignore  // TODO implement inner with ' or "
+    public void testTranslatableWithHover() {
+        String input = "Test: <lang:commands.drop.success.single:'<red>1<hover:show_text:'<red>dum'>':'<blue>Stone'>!";
+        String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Test: \"},{\"translate\":\"commands.drop.success.single\",\"with\":[{\"text\":\"1\",\"color\":\"red\"},{\"text\":\"Stone\",\"color\":\"blue\"}]},{\"text\":\"!\"}]}";
+        Component comp = MiniMessageParser.parseFormat(input);
+
+        test(comp, expected);
+    }
+
+    @Test
+    public void testKingAlter() {
+        String input = "Ahoy <lang:offset.-40:'<red>mates!'>";
+        String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Ahoy \"},{\"translate\":\"offset.-40\",\"with\":[{\"text\":\"mates!\",\"color\":\"red\"}]}]}";
+        Component comp = MiniMessageParser.parseFormat(input);
+
+        test(comp, expected);
+    }
+
+    @Test
     public void testInsertion() {
         String input = "Click <insert:test>this</insert> to insert!";
         String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Click \"},{\"text\":\"this\",\"insertion\":\"test\"},{\"text\":\" to insert!\"}]}";
@@ -217,6 +246,20 @@ public class MiniMessageParserTest {
     public void testGH5() {
         String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:<pack_url>><hover:show_text:\"<green>/!\\ install it from Options/ResourcePacks in your game\"><green><bold>CLICK HERE</bold></hover></click>";
         String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"»\",\"color\":\"dark_gray\"},{\"text\":\" To download it from the internet, \",\"color\":\"gray\"},{\"text\":\"CLICK HERE\",\"color\":\"green\",\"bold\":true,\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://www.google.com\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"/!\\\\ install it from Options/ResourcePacks in your game\",\"color\":\"green\"}}}]}";
+
+        // should work
+        Component comp1 = MiniMessageParser.parseFormat(input, "pack_url", "https://www.google.com");
+        test(comp1, expected);
+
+        // shouldnt throw an error
+        MiniMessageParser.parseFormat(input, "url", "https://www.google.com");
+    }
+
+    @Test
+    @Ignore // TODO implement inner with ' or "
+    public void testGH5Modified() {
+        String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:<pack_url>><hover:show_text:\"<green>/!\\ install it from 'Options/ResourcePacks' in your game\"><green><bold>CLICK HERE</bold></hover></click>";
+        String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"»\",\"color\":\"dark_gray\"},{\"text\":\" To download it from the internet, \",\"color\":\"gray\"},{\"text\":\"CLICK HERE\",\"color\":\"green\",\"bold\":true,\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://www.google.com\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"/!\\\\ install it from 'Options/ResourcePacks' in your game\",\"color\":\"green\"}}}]}";
 
         // should work
         Component comp1 = MiniMessageParser.parseFormat(input, "pack_url", "https://www.google.com");

@@ -11,8 +11,10 @@ import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
@@ -42,7 +44,9 @@ public class MiniMessageParser {
     private static final String INNER = "inner";
     private static final String END = "end";
     // https://regex101.com/r/8VZ7uA/6
-    private static final Pattern pattern = Pattern.compile("((?<start><)(?<token>([^<>]+)|([^<>]+[\"'](?<inner>[^\"']+)[\"']))(?<end>>))+?");
+    private static final Pattern pattern = Pattern.compile("((?<start><)(?<token>[^<>]+(:(?<inner>['\"]?([^'\"](\\\\['\"])?)+['\"]?))*)(?<end>>))+?");
+
+    private static final Pattern dumSplitPattern = Pattern.compile("['\"]:['\"]");
 
     @Nonnull
     public static String escapeTokens(@Nonnull String richMessage) {
@@ -229,7 +233,7 @@ public class MiniMessageParser {
                 if (current != null) {
                     parent.append(current);
                 }
-                current = handleTranslatable(token);
+                current = handleTranslatable(token, inner);
                 current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current);
             }
             // insertion
@@ -324,12 +328,22 @@ public class MiniMessageParser {
     }
 
     @Nonnull
-    private static Component handleTranslatable(@Nonnull String token) {
+    private static Component handleTranslatable(@Nonnull String token, String inner) {
         String[] args = token.split(SEPARATOR);
         if (args.length < 2) {
             throw new ParseException("Can't parse translatable (too few args) " + token);
         }
-        return TranslatableComponent.of(args[1]);
+        if (inner == null) {
+            return TranslatableComponent.of(args[1]);
+        } else {
+            List<Component> inners = new ArrayList<>();
+            String toSplit = token.replace(args[0] + ":" + args[1] + ":", "");
+            String[] split = dumSplitPattern.split(cleanInner(toSplit));
+            for (String someInner : split) {
+                inners.add(parseFormat(someInner));
+            }
+            return TranslatableComponent.of(args[1], inners);
+        }
     }
 
     @Nonnull
@@ -358,6 +372,7 @@ public class MiniMessageParser {
         if (args.length < 2) {
             throw new ParseException("Can't parse hover action (too few args) " + token);
         }
+        inner = cleanInner(inner);
         HoverEvent.Action action = HoverEvent.Action.NAMES.value(args[1].toLowerCase(Locale.ROOT))
                 .orElseThrow(() -> new ParseException("Can't parse hover action (invalid action) " + token));
         return HoverEvent.of(action, parseFormat(inner));
@@ -390,6 +405,10 @@ public class MiniMessageParser {
         } catch (IllegalArgumentException ex) {
             return Optional.empty();
         }
+    }
+
+    private static String cleanInner(String inner) {
+        return inner.substring(1).substring(0, inner.length() - 2); // cut off first and last "/'
     }
 
     enum HelperTextDecoration {
