@@ -8,6 +8,8 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import java.util.Locale;
+
 import static me.minidigger.minimessage.bungee.Constants.BOLD;
 import static me.minidigger.minimessage.bungee.Constants.CLICK;
 import static me.minidigger.minimessage.bungee.Constants.CLOSE_TAG;
@@ -68,14 +70,14 @@ public final class MiniMessageSerializer {
             // ### only start if prevComp didn't start the same one
             HoverEvent hov = comp.getHoverEvent();
             if (hov != null && (prevComp == null || areDifferent(hov, prevComp.getHoverEvent()))) {
-                sb.append(startTag(String.format("%s" + SEPARATOR + "%s" + SEPARATOR + "\"%s\"", HOVER, hov.getAction().name().toLowerCase(), serialize(hov.getValue()))));
+                sb.append(startTag(String.format("%s" + SEPARATOR + "%s" + SEPARATOR + "\"%s\"", HOVER, hov.getAction().name().toLowerCase(Locale.ROOT), serialize(hov.getValue()))));
             }
 
             // ## click
             // ### only start if prevComp didn't start the same one
             ClickEvent click = comp.getClickEvent();
             if (click != null && (prevComp == null || areDifferent(click, prevComp.getClickEvent()))) {
-                sb.append(startTag(String.format("%s" + SEPARATOR + "%s" + SEPARATOR + "\"%s\"", CLICK, click.getAction().name().toLowerCase(), click.getValue())));
+                sb.append(startTag(String.format("%s" + SEPARATOR + "%s" + SEPARATOR + "\"%s\"", CLICK, click.getAction().name().toLowerCase(Locale.ROOT), click.getValue())));
             }
 
             // # append text
@@ -149,12 +151,12 @@ public final class MiniMessageSerializer {
 
     @Nonnull
     private static String startColor(@Nonnull ChatColor color) {
-        return startTag(color.name().toLowerCase());
+        return startTag(color.getName());
     }
 
     @Nonnull
     private static String endColor(@Nonnull ChatColor color) {
-        return endTag(color.name().toLowerCase());
+        return endTag(color.getName());
     }
 
     @Nonnull

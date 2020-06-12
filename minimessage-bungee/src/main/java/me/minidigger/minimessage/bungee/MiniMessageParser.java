@@ -9,6 +9,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.EnumSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -248,7 +249,7 @@ public class MiniMessageParser {
         if (args.length < 2) {
             throw new ParseException("Can't parse click action (too few args) " + token);
         }
-        ClickEvent.Action action = ClickEvent.Action.valueOf(args[1].toUpperCase());
+        ClickEvent.Action action = ClickEvent.Action.valueOf(args[1].toUpperCase(Locale.ROOT));
         return new ClickEvent(action, token.replace(CLICK + SEPARATOR + args[1] + SEPARATOR, ""));
     }
 
@@ -258,14 +259,14 @@ public class MiniMessageParser {
         if (args.length < 2) {
             throw new ParseException("Can't parse hover action (too few args) " + token);
         }
-        HoverEvent.Action action = HoverEvent.Action.valueOf(args[1].toUpperCase());
+        HoverEvent.Action action = HoverEvent.Action.valueOf(args[1].toUpperCase(Locale.ROOT));
         return new HoverEvent(action, parseFormat(inner));
     }
 
     @Nonnull
     private static Optional<ChatColor> resolveColor(@Nonnull String token) {
         try {
-            return Optional.of(ChatColor.valueOf(token.toUpperCase()));
+            return Optional.of(ChatColor.valueOf(token.toUpperCase(Locale.ROOT)));
         } catch (IllegalArgumentException ex) {
             return Optional.empty();
         }
@@ -274,7 +275,7 @@ public class MiniMessageParser {
     @Nonnull
     private static Optional<TextDecoration> resolveDecoration(@Nonnull String token) {
         try {
-            return Optional.of(TextDecoration.valueOf(token.toUpperCase()));
+            return Optional.of(TextDecoration.valueOf(token.toUpperCase(Locale.ROOT)));
         } catch (IllegalArgumentException ex) {
             return Optional.empty();
         }
