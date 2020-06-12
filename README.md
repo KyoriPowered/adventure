@@ -51,13 +51,13 @@ Json:
 ```
 
 MiniMessage:  
-`<click:run_command:test command>TEST`  
+`<click:run_command:/test command>TEST`  
 Json:  
 ```json
 {
   "clickEvent": {
     "action": "run_command",
-    "value": "test command"
+    "value": "/test command"
   },
   "text": "TEST"
 }
