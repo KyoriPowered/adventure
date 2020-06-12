@@ -100,7 +100,7 @@ Artifact:
 <dependency>
     <groupId>me.minidigger</groupId>
     <artifactId>MiniMessage</artifactId>
-    <version>2.0.3</version> <!-- see badge on top of the repo for current version -->
+    <version>2.1.0</version> <!-- see badge on top of the repo for current version -->
     <scope>compile</scope>
 </dependency>
 ```
