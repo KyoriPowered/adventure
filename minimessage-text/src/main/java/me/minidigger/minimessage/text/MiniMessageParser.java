@@ -43,7 +43,7 @@ public class MiniMessageParser {
     private static final String TOKEN = "token";
     private static final String INNER = "inner";
     private static final String END = "end";
-    // https://regex101.com/r/8VZ7uA/6
+    // https://regex101.com/r/8VZ7uA/10
     private static final Pattern pattern = Pattern.compile("((?<start><)(?<token>[^<>]+(:(?<inner>['\"]?([^'\"](\\\\['\"])?)+['\"]?))*)(?<end>>))+?");
 
     private static final Pattern dumSplitPattern = Pattern.compile("['\"]:['\"]");
