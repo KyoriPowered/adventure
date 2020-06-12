@@ -113,6 +113,10 @@ Repo (for snapshots):
 ```
 Releases get deployed to maven central.
 
+## Changelog
+
+You can find the changelog [here](CHANGELOG.md).
+
 ## Upgrading to 2.0
 
 2.0 seperated MiniMessage into two versions, `minimessage-bungee` and `minimessage-text`.  
