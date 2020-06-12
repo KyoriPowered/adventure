@@ -13,6 +13,7 @@ import net.kyori.text.format.TextDecoration;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.EnumSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
@@ -306,7 +307,8 @@ public class MiniMessageParser {
         if (args.length < 2) {
             throw new ParseException("Can't parse click action (too few args) " + token);
         }
-        ClickEvent.Action action = ClickEvent.Action.valueOf(args[1].toUpperCase());
+        ClickEvent.Action action = ClickEvent.Action.NAMES.value(args[1].toLowerCase(Locale.ROOT))
+                .orElseThrow(() -> new ParseException("Can't parse click action (invalid action) " + token));
         return ClickEvent.of(action, token.replace(CLICK + SEPARATOR + args[1] + SEPARATOR, ""));
     }
 
@@ -316,23 +318,20 @@ public class MiniMessageParser {
         if (args.length < 2) {
             throw new ParseException("Can't parse hover action (too few args) " + token);
         }
-        HoverEvent.Action action = HoverEvent.Action.valueOf(args[1].toUpperCase());
+        HoverEvent.Action action = HoverEvent.Action.NAMES.value(args[1].toLowerCase(Locale.ROOT))
+                .orElseThrow(() -> new ParseException("Can't parse hover action (invalid action) " + token));
         return HoverEvent.of(action, parseFormat(inner));
     }
 
     @Nonnull
     private static Optional<TextColor> resolveColor(@Nonnull String token) {
-        try {
-            return Optional.of(TextColor.valueOf(token.toUpperCase()));
-        } catch (IllegalArgumentException ex) {
-            return Optional.empty();
-        }
+        return TextColor.NAMES.value(token.toLowerCase(Locale.ROOT));
     }
 
     @Nonnull
     private static Optional<HelperTextDecoration> resolveDecoration(@Nonnull String token) {
         try {
-            return Optional.of(HelperTextDecoration.valueOf(token.toUpperCase()));
+            return Optional.of(HelperTextDecoration.valueOf(token.toUpperCase(Locale.ROOT)));
         } catch (IllegalArgumentException ex) {
             return Optional.empty();
         }

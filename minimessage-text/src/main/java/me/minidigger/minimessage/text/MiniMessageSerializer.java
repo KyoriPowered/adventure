@@ -82,14 +82,14 @@ public final class MiniMessageSerializer {
             // ### only start if prevComp didn't start the same one
             HoverEvent hov = comp.hoverEvent();
             if (hov != null && (prevComp == null || areDifferent(hov, prevComp.hoverEvent()))) {
-                sb.append(startTag(String.format("%s" + SEPARATOR + "%s" + SEPARATOR + "\"%s\"", HOVER, hov.action().name().toLowerCase(), serialize(hov.value()))));
+                sb.append(startTag(String.format("%s" + SEPARATOR + "%s" + SEPARATOR + "\"%s\"", HOVER, HoverEvent.Action.NAMES.name(hov.action()), serialize(hov.value()))));
             }
 
             // ## click
             // ### only start if prevComp didn't start the same one
             ClickEvent click = comp.clickEvent();
             if (click != null && (prevComp == null || areDifferent(click, prevComp.clickEvent()))) {
-                sb.append(startTag(String.format("%s" + SEPARATOR + "%s" + SEPARATOR + "\"%s\"", CLICK, click.action().name().toLowerCase(), click.value())));
+                sb.append(startTag(String.format("%s" + SEPARATOR + "%s" + SEPARATOR + "\"%s\"", CLICK, ClickEvent.Action.NAMES.name(click.action()), click.value())));
             }
 
             // ## insertion
@@ -182,12 +182,12 @@ public final class MiniMessageSerializer {
 
     @Nonnull
     private static String startColor(@Nonnull TextColor color) {
-        return startTag(color.name().toLowerCase());
+        return startTag(TextColor.NAMES.name(color));
     }
 
     @Nonnull
     private static String endColor(@Nonnull TextColor color) {
-        return endTag(color.name().toLowerCase());
+        return endTag(TextColor.NAMES.name(color));
     }
 
     @Nonnull
