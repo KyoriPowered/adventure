@@ -26,6 +26,7 @@ import static me.minidigger.minimessage.text.Constants.CLOSE_TAG;
 import static me.minidigger.minimessage.text.Constants.HOVER;
 import static me.minidigger.minimessage.text.Constants.INSERTION;
 import static me.minidigger.minimessage.text.Constants.KEYBIND;
+import static me.minidigger.minimessage.text.Constants.PRE;
 import static me.minidigger.minimessage.text.Constants.RESET;
 import static me.minidigger.minimessage.text.Constants.SEPARATOR;
 import static me.minidigger.minimessage.text.Constants.TAG_END;
@@ -137,6 +138,7 @@ public class MiniMessageParser {
         ArrayDeque<TextColor> colors = new ArrayDeque<>();
         ArrayDeque<String> insertions = new ArrayDeque<>();
         EnumSet<HelperTextDecoration> decorations = EnumSet.noneOf(HelperTextDecoration.class);
+        boolean isPreformatted = false;
 
         Matcher matcher = pattern.matcher(richMessage);
         int lastEnd = 0;
@@ -164,6 +166,24 @@ public class MiniMessageParser {
 
             Optional<HelperTextDecoration> deco;
             Optional<TextColor> color;
+
+            // handle pre
+            if (isPreformatted) {
+                if (token.startsWith(CLOSE_TAG + PRE)) {
+                    isPreformatted = false;
+                    if (current != null) {
+                        parent.append(current);
+                    }
+                } else {
+                    if (current != null) {
+                        parent.append(current);
+                    }
+                    current = TextComponent.of(TAG_START + token + TAG_END);
+                    current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current);
+                    parent.append(current);
+                }
+                continue;
+            }
 
             // click
             if (token.startsWith(CLICK + SEPARATOR)) {
@@ -218,6 +238,10 @@ public class MiniMessageParser {
                 colors.clear();
                 insertions.clear();
                 decorations.clear();
+            }
+            // pre
+            else if (token.startsWith(PRE)) {
+                isPreformatted = true;
             }
             // invalid tag
             else {
