@@ -21,17 +21,27 @@ As you can see, those sometimes contain components, sometimes just strings. Refe
 Color the next parts
 
 Tag: `<_colorname_>`  
-Arguments: All minecraft color constants (check [here](https://github.com/KyoriPowered/adventure/blob/master/api/src/main/java/net/kyori/text/format/TextColor.java))  
+Arguments: `_colorname_`, all minecraft color constants (check [here](https://github.com/KyoriPowered/adventure/blob/master/api/src/main/java/net/kyori/text/format/TextColor.java))  
 Examples:
 * `<yellow>Hello <blue>World</blue>!` ![https://i.imgur.com/wB32YpZ.png](https://i.imgur.com/wB32YpZ.png)
 * `<red>This is a <green>test!` ![https://i.imgur.com/vsN3OHa.png](https://i.imgur.com/vsN3OHa.png)
+
+### Color (2)
+
+A different, more flexible way (supports hex colors!) for colors looks like this
+
+Tag: `<color:_colorNameOrHex_>`  
+Arguments: `_colorNameOrHex_`, can be all the values from above, or hex colors (in 1.16)  
+Examples:
+* `<color:yellow>Hello <color:blue>World</color:blue>!` ![https://i.imgur.com/wB32YpZ.png](https://i.imgur.com/wB32YpZ.png)
+* `<color:#FF5555>This is a <color:#55FF55>test!` ![https://i.imgur.com/vsN3OHa.png](https://i.imgur.com/vsN3OHa.png)
 
 ### Decoration
 
 Decorate the next parts
 
 Tag: `<_decorationname_>`  
-Arguments: All minecraft decorations (check [here](https://github.com/KyoriPowered/adventure/blob/master/api/src/main/java/net/kyori/text/format/TextDecoration.java))  
+Arguments:  `_decorationname_` , all minecraft decorations (check [here](https://github.com/KyoriPowered/adventure/blob/master/api/src/main/java/net/kyori/text/format/TextDecoration.java))  
 Examples:
 * `<underlined>This is <bold>important</bold>!` ![https://i.imgur.com/hREGXQy.png](https://i.imgur.com/hREGXQy.png)
 
@@ -56,8 +66,8 @@ TODO
 
 Allows displaying the configured key for actions
 
-Tag: `<key:_key_>`
-Arguments: `_key_`, the minecraft key of the action
+Tag: `<key:_key_>`  
+Arguments: `_key_`, the minecraft key of the action  
 Examples:
 * `Press <red><key:key.jump> to jump!` ![https://i.imgur.com/iQmNDF6.png](https://i.imgur.com/iQmNDF6.png)
 

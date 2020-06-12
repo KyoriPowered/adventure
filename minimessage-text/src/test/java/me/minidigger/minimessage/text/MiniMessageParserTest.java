@@ -23,6 +23,16 @@ public class MiniMessageParserTest {
     }
 
     @Test
+    public void testNewColor() {
+        String input1 = "<color:yellow>TEST<color:green> nested</color:green>Test";
+        String input2 = "<color:yellow>TEST<color:green> nested<color:yellow>Test";
+        String out1 = GsonComponentSerializer.INSTANCE.serialize(MiniMessageParser.parseFormat(input1));
+        String out2 = GsonComponentSerializer.INSTANCE.serialize(MiniMessageParser.parseFormat(input2));
+
+        assertEquals(out1, out2);
+    }
+
+    @Test
     public void testStripSimple() {
         String input = "<yellow>TEST<green> nested</green>Test";
         String expected = "TEST nestedTest";

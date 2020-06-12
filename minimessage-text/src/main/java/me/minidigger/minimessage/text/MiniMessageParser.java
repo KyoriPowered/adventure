@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 
 import static me.minidigger.minimessage.text.Constants.CLICK;
 import static me.minidigger.minimessage.text.Constants.CLOSE_TAG;
+import static me.minidigger.minimessage.text.Constants.COLOR;
 import static me.minidigger.minimessage.text.Constants.HOVER;
 import static me.minidigger.minimessage.text.Constants.INSERTION;
 import static me.minidigger.minimessage.text.Constants.KEYBIND;
@@ -209,6 +210,12 @@ public class MiniMessageParser {
             } else if (token.startsWith(CLOSE_TAG) && resolveColor(token.replace(CLOSE_TAG, "")).isPresent()) {
                 colors.pollFirst();
             }
+            // color; hex or named syntax
+            else if (token.startsWith(COLOR + SEPARATOR) && (color = resolveColorNew(token)).isPresent()) {
+                colors.push(color.get());
+            } else if (token.startsWith(CLOSE_TAG + COLOR) && resolveColorNew(token.replace(CLOSE_TAG, "")).isPresent()) {
+                colors.pollFirst();
+            }
             // keybind
             else if (token.startsWith(KEYBIND + SEPARATOR)) {
                 if (current != null) {
@@ -359,6 +366,21 @@ public class MiniMessageParser {
     @Nonnull
     private static Optional<TextColor> resolveColor(@Nonnull String token) {
         return TextColor.NAMES.value(token.toLowerCase(Locale.ROOT));
+    }
+
+    @Nonnull
+    private static Optional<TextColor> resolveColorNew(@Nonnull String token) {
+        String[] args = token.split(SEPARATOR);
+        if (args.length < 2) {
+            throw new ParseException("Can't parse color (too few args) " + token);
+        }
+
+        // TODO: hex colors
+        if (args[1].charAt(0) == '#') {
+            throw new ParseException("Hex color codes are not supported yet " + token);
+        } else {
+            return TextColor.NAMES.value(args[1].toLowerCase(Locale.ROOT));
+        }
     }
 
     @Nonnull
