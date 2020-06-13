@@ -31,7 +31,7 @@ import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * An audience that forwards to a collection of audiences.
+ * An audience that contains multiple audiences.
  */
 @FunctionalInterface
 public interface MultiAudience extends Audience {

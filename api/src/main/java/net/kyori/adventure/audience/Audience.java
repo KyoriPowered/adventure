@@ -23,13 +23,21 @@
  */
 package net.kyori.adventure.audience;
 
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A receiver of text-based media.
@@ -45,9 +53,9 @@ public interface Audience {
   }
 
   /**
-   * Creates an audience that forwards to an array of audiences.
+   * Creates an audience that delegates to an array of audiences.
    *
-   * @param audiences the forwarding audiences
+   * @param audiences the delegate audiences
    * @return an audience
    */
   static @NonNull Audience of(final @NonNull Audience@NonNull... audiences) {
@@ -61,13 +69,33 @@ public interface Audience {
   }
 
   /**
-   * Creates an audience that forwards to a collection of audiences.
+   * Creates an audience that delegates to a collection of audiences.
    *
-   * @param audiences the forwarding audiences
+   * @param audiences the delegate audiences
    * @return an audience
    */
   static @NonNull Audience of(final @NonNull Iterable<? extends Audience> audiences) {
     return (MultiAudience) () -> audiences;
+  }
+
+  /**
+   * Creates an audience that weakly delegates to another audience.
+   *
+   * @param audience the delegate audience
+   * @return an audience
+   */
+  static @NonNull Audience weakOf(final @Nullable Audience audience) {
+    return audience instanceof WeakAudience || audience instanceof EmptyAudience ? audience : new WeakAudience(audience);
+  }
+
+  /**
+   * Creates an audience that batches requests to another audience.
+   *
+   * @param audience the delegate audience
+   * @return a batched audience
+   */
+  static @NonNull BatchAudience batchOf(final @NonNull Audience audience) {
+    return audience instanceof BatchAudience ? (BatchAudience) audience : new QueueAudience(audience);
   }
 
   // ------------------
@@ -158,4 +186,64 @@ public interface Audience {
    * @param stop the stop
    */
   void stopSound(final @NonNull SoundStop stop);
+}
+
+/* package */ final class EmptyAudience implements DelegateAudience {
+  /* package */ final static Audience INSTANCE = new EmptyAudience();
+  @Override
+  public @Nullable Audience audience() {
+    return null;
+  }
+}
+
+/* package */ final class WeakAudience implements DelegateAudience {
+  private final WeakReference<Audience> weakDelegate;
+
+  /* package */ WeakAudience(final @Nullable Audience delegate) {
+    this.weakDelegate = new WeakReference<>(delegate);
+  }
+
+  @Override
+  public @Nullable Audience audience() {
+    return weakDelegate.get();
+  }
+}
+
+/* package */ final class QueueAudience implements BatchAudience {
+
+  private final Audience audience;
+  private Queue<Operation> operations;
+
+  /* package */ QueueAudience(final @NonNull Audience audience) {
+    this.audience = requireNonNull(audience, "audience");
+  }
+
+  @Override
+  public void queue(@NonNull Operation operation) {
+    if (this.operations == null) {
+      this.operations = new LinkedBlockingQueue<>();
+    }
+
+    this.operations.offer(requireNonNull(operation, "operation"));
+  }
+
+  @Override
+  public int flush() {
+    int operations = 0;
+
+    if (this.operations == null) {
+      return operations;
+    }
+
+    try {
+      while(operations < Integer.MAX_VALUE) {
+        this.operations.remove().process(this.audience);
+        operations++;
+      }
+    } catch(NoSuchElementException e) {
+      // No-op, end of queue
+    }
+
+    return operations;
+  }
 }
