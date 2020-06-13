@@ -30,26 +30,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.NoSuchElementException;
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
-
 import static java.util.Objects.requireNonNull;
 
 /**
- * An audience that queues operations until explicitly flushed.
+ * An audience that batches operations until explicitly flushed.
  */
-public interface BatchedAudience extends Audience {
-
-    /**
-     * Creates an audience that forwards and batches requests to another audience.
-     *
-     * @param audience the forwarding audience
-     * @return a batched audience
-     */
-    static @NonNull BatchedAudience of(final @NonNull Audience audience) {
-        return audience instanceof BatchedAudience ? (BatchedAudience) audience : new BatchedAudienceImpl(audience);
-    }
+public interface BatchAudience extends Audience {
 
     /**
      * A future operation on an audience.
@@ -279,44 +265,5 @@ public interface BatchedAudience extends Audience {
     @Override
     default void stopSound(@NonNull SoundStop stop) {
         this.queue(new StopSoundOperation(stop));
-    }
-}
-
-/* package */ final class BatchedAudienceImpl implements BatchedAudience {
-
-    private final Audience audience;
-    private Queue<Operation> operations;
-
-    /* package */ BatchedAudienceImpl(final @NonNull Audience audience) {
-        this.audience = requireNonNull(audience, "audience");
-    }
-
-    @Override
-    public void queue(@NonNull Operation operation) {
-        if (this.operations == null) {
-            this.operations = new LinkedBlockingQueue<>();
-        }
-
-        this.operations.offer(requireNonNull(operation, "operation"));
-    }
-
-    @Override
-    public int flush() {
-        int operations = 0;
-
-        if (this.operations == null) {
-            return operations;
-        }
-
-        try {
-            while(operations < Integer.MAX_VALUE) {
-                this.operations.remove().process(this.audience);
-                operations++;
-            }
-        } catch(NoSuchElementException e) {
-            // No-op, end of queue
-        }
-
-        return operations;
     }
 }

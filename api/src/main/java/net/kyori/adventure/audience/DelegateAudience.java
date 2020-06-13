@@ -29,66 +29,77 @@ import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * An audience that forwards to another audience.
+ * An audience that delegates to another audience.
  */
 @FunctionalInterface
-public interface ForwardingAudience extends Audience {
+public interface DelegateAudience extends Audience {
   /**
-   * Gets the forwarded audience.
+   * Gets the delegate audience.
    *
-   * @return the forwarded audience
+   * @return the audience, or null to silently drop
    */
-  @NonNull Audience audience();
+  @Nullable Audience audience();
 
   @Override
   default void sendMessage(final @NonNull Component message) {
-    this.audience().sendMessage(message);
+    final Audience audience = this.audience();
+    if (audience != null) audience.sendMessage(message);
   }
 
   @Override
   default void sendActionBar(final @NonNull Component message) {
-    this.audience().sendActionBar(message);
+    final Audience audience = this.audience();
+    if (audience != null) audience.sendActionBar(message);
   }
 
   @Override
   default void showTitle(final @NonNull Title title) {
-    this.audience().showTitle(title);
+    final Audience audience = this.audience();
+    if (audience != null) audience.showTitle(title);
   }
 
   @Override
   default void clearTitle() {
-    this.audience().clearTitle();
+    final Audience audience = this.audience();
+    if (audience != null) audience.clearTitle();
   }
 
   @Override
   default void resetTitle() {
-    this.audience().resetTitle();
+    final Audience audience = this.audience();
+    if (audience != null) audience.resetTitle();
   }
 
   @Override
   default void showBossBar(final @NonNull BossBar bar) {
-    this.audience().showBossBar(bar);
+    final Audience audience = this.audience();
+    if (audience != null) audience.showBossBar(bar);
   }
 
   @Override
   default void hideBossBar(final @NonNull BossBar bar) {
-    this.audience().hideBossBar(bar);
+    final Audience audience = this.audience();
+    if (audience != null) audience.hideBossBar(bar);
   }
 
   @Override
   default void playSound(final @NonNull Sound sound) {
-    this.audience().playSound(sound);
+    final Audience audience = this.audience();
+    if (audience != null) audience.playSound(sound);
   }
 
   @Override
   default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
-    this.audience().playSound(sound, x, y, z);
+    final Audience audience = this.audience();
+    if (audience != null) audience.playSound(sound, x, y, z);
   }
 
   @Override
   default void stopSound(final @NonNull SoundStop stop) {
-    this.audience().stopSound(stop);
+    final Audience audience = this.audience();
+    if (audience != null) audience.stopSound(stop);
   }
 }

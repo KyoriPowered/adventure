@@ -49,4 +49,11 @@ class AudienceTest {
     assertTrue(ma instanceof MultiAudience);
     assertThat(((MultiAudience) ma).audiences()).containsExactly(a0, a1).inOrder();
   }
+
+  @Test
+  void testBatchOf_none() {
+    final Audience empty = Audience.empty();
+    final Audience batched = Audience.batchOf(empty);
+    assertSame(empty, batched);
+  }
 }
