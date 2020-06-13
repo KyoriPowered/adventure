@@ -23,19 +23,18 @@
  */
 package net.kyori.adventure.text.serializer.gson;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import java.lang.reflect.Type;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.kyori.adventure.text.BlockNbtComponent;
 
-final class BlockNbtComponentPosSerializer implements JsonDeserializer<BlockNbtComponent.Pos>, JsonSerializer<BlockNbtComponent.Pos> {
+final class BlockNbtComponentPosSerializer extends TypeAdapter<BlockNbtComponent.Pos> {
+  static final TypeAdapter<BlockNbtComponent.Pos> INSTANCE = new BlockNbtComponentPosSerializer().nullSafe();
+
   private static final Pattern LOCAL_PATTERN = Pattern.compile("^\\^(\\d+(\\.\\d+)?) \\^(\\d+(\\.\\d+)?) \\^(\\d+(\\.\\d+)?)$");
   private static final Pattern WORLD_PATTERN = Pattern.compile("^(~?)(\\d+) (~?)(\\d+) (~?)(\\d+)$");
 
@@ -43,9 +42,12 @@ final class BlockNbtComponentPosSerializer implements JsonDeserializer<BlockNbtC
   private static final String RELATIVE_SYMBOL = "~";
   private static final String ABSOLUTE_SYMBOL = "";
 
+  private BlockNbtComponentPosSerializer() {
+  }
+
   @Override
-  public BlockNbtComponent.Pos deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
-    final String string = json.getAsString();
+  public BlockNbtComponent.Pos read(final JsonReader in) throws IOException {
+    final String string = in.nextString();
 
     final Matcher localMatch = LOCAL_PATTERN.matcher(string);
     if(localMatch.matches()) {
@@ -69,15 +71,15 @@ final class BlockNbtComponentPosSerializer implements JsonDeserializer<BlockNbtC
   }
 
   @Override
-  public JsonElement serialize(final BlockNbtComponent.Pos src, final Type typeOfSrc, final JsonSerializationContext context) {
-    if(src instanceof BlockNbtComponent.LocalPos) {
-      final BlockNbtComponent.LocalPos local = (BlockNbtComponent.LocalPos) src;
-      return new JsonPrimitive(serializeLocal(local.left()) + ' ' + serializeLocal(local.up()) + ' ' + serializeLocal(local.forwards()));
-    } else if(src instanceof BlockNbtComponent.WorldPos) {
-      final BlockNbtComponent.WorldPos world = (BlockNbtComponent.WorldPos) src;
-      return new JsonPrimitive(serializeCoordinate(world.x()) + ' ' + serializeCoordinate(world.y()) + ' ' + serializeCoordinate(world.z()));
+  public void write(final JsonWriter out, final BlockNbtComponent.Pos value) throws IOException {
+    if(value instanceof BlockNbtComponent.LocalPos) {
+      final BlockNbtComponent.LocalPos local = (BlockNbtComponent.LocalPos) value;
+      out.value(serializeLocal(local.left()) + ' ' + serializeLocal(local.up()) + ' ' + serializeLocal(local.forwards()));
+    } else if(value instanceof BlockNbtComponent.WorldPos) {
+      final BlockNbtComponent.WorldPos world = (BlockNbtComponent.WorldPos) value;
+      out.value(serializeCoordinate(world.x()) + ' ' + serializeCoordinate(world.y()) + ' ' + serializeCoordinate(world.z()));
     } else {
-      throw new IllegalArgumentException("Don't know how to serialize " + src + " as a Position");
+      throw new IllegalArgumentException("Don't know how to serialize " + value + " as a Position");
     }
   }
 

@@ -30,32 +30,40 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Optional;
 import net.kyori.adventure.util.NameMap;
 
-public final class NameMapSerializer<E> implements JsonDeserializer<E>, JsonSerializer<E> {
+public final class NameMapSerializer<E> extends TypeAdapter<E> {
   private final String name;
   private final NameMap<E> map;
+  
+  public static  <E> TypeAdapter<E> of(final String name, final NameMap<E> map) {
+    return new NameMapSerializer<>(name, map).nullSafe();
+  }
 
-  public NameMapSerializer(final String name, final NameMap<E> map) {
+  private NameMapSerializer(final String name, final NameMap<E> map) {
     this.name = name;
     this.map = map;
   }
 
   @Override
-  public E deserialize(final JsonElement json, final Type type, final JsonDeserializationContext context) throws JsonParseException {
-    final String string = json.getAsString();
+  public void write(final JsonWriter out, final E value) throws IOException {
+    out.value(this.map.name(value));
+  }
+
+  @Override
+  public E read(final JsonReader in) throws IOException {
+    final String string = in.nextString();
     final Optional<E> value = this.map.value(string);
     if(value.isPresent()) {
       return value.get();
     } else {
       throw new JsonParseException("invalid " + this.name + ":  " + string);
     }
-  }
-
-  @Override
-  public JsonElement serialize(final E src, final Type typeOfT, final JsonSerializationContext context) {
-    return new JsonPrimitive(this.map.name(src));
   }
 }

@@ -23,25 +23,25 @@
  */
 package net.kyori.adventure.text.serializer.gson;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import java.lang.reflect.Type;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+import java.io.IOException;
 import net.kyori.adventure.key.Key;
 
-/* package */ final class KeySerializer implements JsonDeserializer<Key>, JsonSerializer<Key> {
+/* package */ final class KeySerializer extends TypeAdapter<Key> {
+  /* package */ static final TypeAdapter<Key> INSTANCE = new KeySerializer().nullSafe();
+  
+  private KeySerializer() {
+  }
+  
   @Override
-  public Key deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
-    final JsonPrimitive primitive = json.getAsJsonPrimitive();
-    return Key.of(primitive.getAsString());
+  public void write(final JsonWriter out, final Key value) throws IOException {
+      out.value(value.asString());
   }
 
   @Override
-  public JsonElement serialize(final Key src, final Type typeOfSrc, final JsonSerializationContext context) {
-    return new JsonPrimitive(src.asString());
+  public Key read(final JsonReader in) throws IOException {
+    return Key.of(in.nextString());
   }
 }

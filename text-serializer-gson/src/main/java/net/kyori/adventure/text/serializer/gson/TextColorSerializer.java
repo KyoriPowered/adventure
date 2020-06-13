@@ -23,35 +23,40 @@
  */
 package net.kyori.adventure.text.serializer.gson;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import java.lang.reflect.Type;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+import java.io.IOException;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-final class TextColorSerializer implements JsonDeserializer<TextColor>, JsonSerializer<TextColor> {
+/* package */ final class TextColorSerializer extends TypeAdapter<TextColor> {
+  /* package */ static final TypeAdapter<TextColor> INSTANCE = new TextColorSerializer().nullSafe();
+
+  private TextColorSerializer() {
+  }
+
   @Override
-  public TextColor deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
-    final JsonPrimitive primitive = json.getAsJsonPrimitive();
-    final String value = primitive.getAsString();
-    if(value.startsWith("#")) {
-      return TextColor.fromHexString(value);
+  public void write(final JsonWriter out, final TextColor value) throws IOException {
+    if(value instanceof NamedTextColor) {
+      out.value(NamedTextColor.NAMES.name((NamedTextColor) value));
     } else {
-      return NamedTextColor.NAMES.value(value).orElse(null);
+      out.value(value.asHexString());
     }
   }
 
   @Override
-  public JsonElement serialize(final TextColor src, final Type typeOfSrc, final JsonSerializationContext context) {
-    if(src instanceof NamedTextColor) {
-      return new JsonPrimitive(NamedTextColor.NAMES.name((NamedTextColor) src));
+  public TextColor read(final JsonReader in) throws IOException {
+    return fromString(in.nextString());
+  }
+
+  /* package */ static @Nullable TextColor fromString(final @NonNull String value) {
+    if(value.startsWith("#")) {
+      return TextColor.fromHexString(value);
     } else {
-      return new JsonPrimitive(src.asHexString());
+      return NamedTextColor.NAMES.value(value).orElse(null);
     }
   }
 }

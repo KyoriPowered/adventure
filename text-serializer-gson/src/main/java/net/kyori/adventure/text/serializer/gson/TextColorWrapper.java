@@ -27,7 +27,13 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+import java.io.IOException;
 import java.lang.reflect.Type;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -46,32 +52,22 @@ final class TextColorWrapper {
     this.reset = reset;
   }
 
-  static class Serializer implements JsonDeserializer<TextColorWrapper> {
+  static class Serializer extends TypeAdapter<TextColorWrapper> {
     @Override
-    public TextColorWrapper deserialize(final JsonElement json, final Type type, final JsonDeserializationContext context) throws JsonParseException {
-      final TextColor color = deserializeColor(json, context);
-      final TextDecoration decoration = color == null ? deserializeDecoration(json, context) : null;
-      final boolean reset = decoration == null && (json.isJsonPrimitive() && json.getAsString().equals("reset"));
+    public void write(final JsonWriter out, final TextColorWrapper value) {
+      throw new JsonSyntaxException("Cannot write TextColorWrapper instances");
+    }
+
+    @Override
+    public TextColorWrapper read(final JsonReader in) throws IOException {
+      final String input = in.nextString();
+      final TextColor color = TextColorSerializer.fromString(input);
+      final TextDecoration decoration = TextDecoration.NAMES.value(input).orElse(null);
+      final boolean reset = decoration == null && input.equals("reset");
       if(color == null && decoration == null && !reset) {
-        throw new JsonParseException("Don't know how to parse " + json);
+        throw new JsonParseException("Don't know how to parse " + input + " at " + in.getPath());
       }
       return new TextColorWrapper(color, decoration, reset);
-    }
-  }
-
-  private static @Nullable TextColor deserializeColor(final JsonElement json, final JsonDeserializationContext context) {
-    try {
-      return context.deserialize(json, TextColor.class);
-    } catch(final JsonParseException e) {
-      return null;
-    }
-  }
-
-  private static @Nullable TextDecoration deserializeDecoration(final JsonElement json, final JsonDeserializationContext context) {
-    try {
-      return context.deserialize(json, TextDecoration.class);
-    } catch(final JsonParseException e) {
-      return null;
     }
   }
 }
