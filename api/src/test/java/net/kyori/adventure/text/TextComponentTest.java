@@ -102,19 +102,13 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
   }
 
   @Test
-  void testIsEmpty() {
-    assertTrue(TextComponent.empty().isEmpty());
-    assertFalse(TextComponent.newline().isEmpty());
-  }
-
-  @Test
   void testBuildEmptyIsEmpty() {
-    assertTrue(TextComponent.builder().build().isEmpty());
+    assertSame(EmptyComponent.empty(), TextComponent.builder().build());
   }
 
   @Test
   void testJoin() {
-    assertEquals(TextComponent.empty(), TextComponent.join(TextComponent.space(), Collections.emptyList()));
+    assertEquals(EmptyComponent.empty(), TextComponent.join(TextComponent.space(), Collections.emptyList()));
 
     final Component c0 = TextComponent.join(
       TextComponent.space(),

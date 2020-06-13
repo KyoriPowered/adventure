@@ -35,7 +35,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * An audience that delegates to another audience.
  */
 @FunctionalInterface
-public interface DelegateAudience extends Audience {
+public interface ForwardingAudience extends Audience {
   /**
    * Gets the delegate audience.
    *
@@ -46,60 +46,60 @@ public interface DelegateAudience extends Audience {
   @Override
   default void sendMessage(final @NonNull Component message) {
     final Audience audience = this.audience();
-    if (audience != null) audience.sendMessage(message);
+    if(audience != null) audience.sendMessage(message);
   }
 
   @Override
   default void sendActionBar(final @NonNull Component message) {
     final Audience audience = this.audience();
-    if (audience != null) audience.sendActionBar(message);
+    if(audience != null) audience.sendActionBar(message);
   }
 
   @Override
   default void showTitle(final @NonNull Title title) {
     final Audience audience = this.audience();
-    if (audience != null) audience.showTitle(title);
+    if(audience != null) audience.showTitle(title);
   }
 
   @Override
   default void clearTitle() {
     final Audience audience = this.audience();
-    if (audience != null) audience.clearTitle();
+    if(audience != null) audience.clearTitle();
   }
 
   @Override
   default void resetTitle() {
     final Audience audience = this.audience();
-    if (audience != null) audience.resetTitle();
+    if(audience != null) audience.resetTitle();
   }
 
   @Override
   default void showBossBar(final @NonNull BossBar bar) {
     final Audience audience = this.audience();
-    if (audience != null) audience.showBossBar(bar);
+    if(audience != null) audience.showBossBar(bar);
   }
 
   @Override
   default void hideBossBar(final @NonNull BossBar bar) {
     final Audience audience = this.audience();
-    if (audience != null) audience.hideBossBar(bar);
+    if(audience != null) audience.hideBossBar(bar);
   }
 
   @Override
   default void playSound(final @NonNull Sound sound) {
     final Audience audience = this.audience();
-    if (audience != null) audience.playSound(sound);
+    if(audience != null) audience.playSound(sound);
   }
 
   @Override
   default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
     final Audience audience = this.audience();
-    if (audience != null) audience.playSound(sound, x, y, z);
+    if(audience != null) audience.playSound(sound, x, y, z);
   }
 
   @Override
   default void stopSound(final @NonNull SoundStop stop) {
     final Audience audience = this.audience();
-    if (audience != null) audience.stopSound(stop);
+    if(audience != null) audience.stopSound(stop);
   }
 }

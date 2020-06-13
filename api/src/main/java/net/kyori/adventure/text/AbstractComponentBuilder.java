@@ -87,6 +87,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   @Override
   @SuppressWarnings("unchecked")
   public @NonNull B append(final @NonNull Component component) {
+    if(component == EmptyComponent.empty()) return (B) this;
     this.prepareChildren();
     this.children.add(component);
     return (B) this;
@@ -95,16 +96,33 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   @Override
   @SuppressWarnings("unchecked")
   public @NonNull B append(final @NonNull Component@NonNull... components) {
-    this.prepareChildren();
-    Collections.addAll(this.children, components);
+    boolean prepared = false;
+    for(int i = 0, length = components.length; i < length; i++) {
+      final Component component = components[i];
+      if(component != EmptyComponent.empty()) {
+        if(!prepared) {
+          this.prepareChildren();
+          prepared = true;
+        }
+        this.children.add(component);
+      }
+    }
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public @NonNull B append(final @NonNull Iterable<? extends Component> components) {
-    this.prepareChildren();
-    components.forEach(this.children::add);
+    boolean prepared = false;
+    for(final Component component : components) {
+      if(component != EmptyComponent.empty()) {
+        if(!prepared) {
+          this.prepareChildren();
+          prepared = true;
+        }
+        this.children.add(component);
+      }
+    }
     return (B) this;
   }
 

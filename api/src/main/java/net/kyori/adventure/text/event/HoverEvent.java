@@ -44,6 +44,8 @@ import static java.util.Objects.requireNonNull;
  *
  * <p>A hover event displays a {@link HoverEvent#value component} when hovered
  * over by a mouse on the client.</p>
+ *
+ * @param <V> the value type
  */
 public final class HoverEvent<V> implements Examinable {
   /**
@@ -121,14 +123,14 @@ public final class HoverEvent<V> implements Examinable {
   }
 
   /**
-   * Returns a hover event with the value renderered using {@code renderer} when possible.
+   * Returns a hover event with the value rendered using {@code renderer} when possible.
    *
    * @param renderer the renderer
    * @param context the render context
    * @param <C> the context type
    * @return a hover event
    */
-  public <C> @NonNull HoverEvent<V> withRendererValue(final @NonNull ComponentRenderer<C> renderer, final @NonNull C context) {
+  public <C> @NonNull HoverEvent<V> withRenderedValue(final @NonNull ComponentRenderer<C> renderer, final @NonNull C context) {
     final V oldValue = this.value;
     final V newValue = this.action.renderer.render(renderer, context, oldValue);
     if(newValue != oldValue) return new HoverEvent<>(this.action, newValue);
@@ -288,7 +290,7 @@ public final class HoverEvent<V> implements Examinable {
      */
     public static final Action<Component> SHOW_TEXT = new Action<>("show_text", Component.class, true, new Renderer<Component>() {
       @Override
-      public <C> Component render(final ComponentRenderer<C> renderer, final C context, final Component value) {
+      public <C> @NonNull Component render(final @NonNull ComponentRenderer<C> renderer, final @NonNull C context, final @NonNull Component value) {
         return renderer.render(value, context);
       }
     });
@@ -297,7 +299,7 @@ public final class HoverEvent<V> implements Examinable {
      */
     public static final Action<ShowItem> SHOW_ITEM = new Action<>("show_item", ShowItem.class, true, new Renderer<ShowItem>() {
       @Override
-      public <C> ShowItem render(final ComponentRenderer<C> renderer, final C context, final ShowItem value) {
+      public <C> @NonNull ShowItem render(final @NonNull ComponentRenderer<C> renderer, final @NonNull C context, final @NonNull ShowItem value) {
         return value;
       }
     });
@@ -306,7 +308,7 @@ public final class HoverEvent<V> implements Examinable {
      */
     public static final Action<ShowEntity> SHOW_ENTITY = new Action<>("show_entity", ShowEntity.class, true, new Renderer<ShowEntity>() {
       @Override
-      public <C> ShowEntity render(final ComponentRenderer<C> renderer, final C context, final ShowEntity value) {
+      public <C> @NonNull ShowEntity render(final @NonNull ComponentRenderer<C> renderer, final @NonNull C context, final @NonNull ShowEntity value) {
         if(value.name == null) return value;
         return new ShowEntity(value.type, value.id, renderer.render(value.name, context));
       }
@@ -365,7 +367,7 @@ public final class HoverEvent<V> implements Examinable {
 
     @FunctionalInterface
     interface Renderer<V> {
-      <C> V render(final ComponentRenderer<C> renderer, final C context, final V value);
+      <C> @NonNull V render(final @NonNull ComponentRenderer<C> renderer, final @NonNull C context, final @NonNull V value);
     }
   }
 }

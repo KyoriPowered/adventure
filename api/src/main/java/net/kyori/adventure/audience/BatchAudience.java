@@ -37,233 +37,233 @@ import static java.util.Objects.requireNonNull;
  */
 public interface BatchAudience extends Audience {
 
+  /**
+   * A future operation on an audience.
+   */
+  @FunctionalInterface
+  interface Operation {
     /**
-     * A future operation on an audience.
-     */
-    @FunctionalInterface
-    interface Operation {
-        /**
-         * Processes the operation on an audience.
-         *
-         * @param audience an audience
-         */
-        void process(final @NonNull Audience audience);
-    }
-
-    /**
-     * Queue an operation to be run on the audience later.
+     * Processes the operation on an audience.
      *
-     * @param operation an operation.
+     * @param audience an audience
      */
-    void queue(final @NonNull Operation operation);
+    void process(final @NonNull Audience audience);
+  }
 
-    /**
-     * Process all queued operations on the audience.
-     *
-     * @return the number of operations processed.
-     */
-    int flush();
+  /**
+   * Queue an operation to be run on the audience later.
+   *
+   * @param operation an operation.
+   */
+  void queue(final @NonNull Operation operation);
 
-    /**
-     * Sends a message.
-     */
-    class SendMessageOperation implements Operation {
-        protected final Component message;
+  /**
+   * Process all queued operations on the audience.
+   *
+   * @return the number of operations processed.
+   */
+  int flushBatch();
 
-        protected SendMessageOperation(final @NonNull Component message) {
-            this.message = requireNonNull(message, "message");
-        }
+  /**
+   * Sends a message.
+   */
+  class SendMessageOperation implements Operation {
+    protected final Component message;
 
-        @Override
-        public void process(final @NonNull Audience audience) {
-            audience.sendMessage(this.message);
-        }
+    protected SendMessageOperation(final @NonNull Component message) {
+      this.message = requireNonNull(message, "message");
     }
 
     @Override
-    default void sendMessage(@NonNull Component message) {
-        this.queue(new SendMessageOperation(message));
+    public void process(final @NonNull Audience audience) {
+      audience.sendMessage(this.message);
     }
+  }
 
-    /**
-     * Sends an action bar.
-     */
-    class SendActionBarOperation implements Operation {
-        protected final Component message;
+  @Override
+  default void sendMessage(final @NonNull Component message) {
+    this.queue(new SendMessageOperation(message));
+  }
 
-        protected SendActionBarOperation(final @NonNull Component message) {
-            this.message = requireNonNull(message, "message");
-        }
+  /**
+   * Sends an action bar.
+   */
+  class SendActionBarOperation implements Operation {
+    protected final Component message;
 
-        @Override
-        public void process(final @NonNull Audience audience) {
-            audience.sendActionBar(this.message);
-        }
-    }
-
-    @Override
-    default void sendActionBar(@NonNull Component message) {
-        this.queue(new SendActionBarOperation(message));
-    }
-
-    /**
-     * Shows a title.
-     */
-    class ShowTitleOperation implements Operation {
-        protected final Title title;
-
-        protected ShowTitleOperation(final @NonNull Title title) {
-            this.title = requireNonNull(title, "title");
-        }
-
-        @Override
-        public void process(final @NonNull Audience audience) {
-            audience.showTitle(this.title);
-        }
+    protected SendActionBarOperation(final @NonNull Component message) {
+      this.message = requireNonNull(message, "message");
     }
 
     @Override
-    default void showTitle(@NonNull Title title) {
-        this.queue(new ShowTitleOperation(title));
+    public void process(final @NonNull Audience audience) {
+      audience.sendActionBar(this.message);
     }
+  }
 
-    /**
-     * Clears a title.
-     */
-    class ClearTitleOperation implements Operation {
-        @Override
-        public void process(final @NonNull Audience audience) {
-            audience.clearTitle();
-        }
-    }
+  @Override
+  default void sendActionBar(final @NonNull Component message) {
+    this.queue(new SendActionBarOperation(message));
+  }
 
-    @Override
-    default void clearTitle() {
-        this.queue(new ClearTitleOperation());
-    }
+  /**
+   * Shows a title.
+   */
+  class ShowTitleOperation implements Operation {
+    protected final Title title;
 
-    /**
-     * Resets a title.
-     */
-    class ResetTitleOperation implements Operation {
-        @Override
-        public void process(final @NonNull Audience audience) {
-            audience.resetTitle();
-        }
+    protected ShowTitleOperation(final @NonNull Title title) {
+      this.title = requireNonNull(title, "title");
     }
 
     @Override
-    default void resetTitle() {
-        this.queue(new ResetTitleOperation());
+    public void process(final @NonNull Audience audience) {
+      audience.showTitle(this.title);
     }
+  }
 
-    /**
-     * Shows a boss bar.
-     */
-    class ShowBossBarOperation implements Operation {
-        protected final BossBar bar;
+  @Override
+  default void showTitle(final @NonNull Title title) {
+    this.queue(new ShowTitleOperation(title));
+  }
 
-        protected ShowBossBarOperation(final @NonNull BossBar bar) {
-            this.bar = requireNonNull(bar, "bar");
-        }
+  /**
+   * Clears a title.
+   */
+  class ClearTitleOperation implements Operation {
+    @Override
+    public void process(final @NonNull Audience audience) {
+      audience.clearTitle();
+    }
+  }
 
-        @Override
-        public void process(final @NonNull Audience audience) {
-            audience.showBossBar(this.bar);
-        }
+  @Override
+  default void clearTitle() {
+    this.queue(new ClearTitleOperation());
+  }
+
+  /**
+   * Resets a title.
+   */
+  class ResetTitleOperation implements Operation {
+    @Override
+    public void process(final @NonNull Audience audience) {
+      audience.resetTitle();
+    }
+  }
+
+  @Override
+  default void resetTitle() {
+    this.queue(new ResetTitleOperation());
+  }
+
+  /**
+   * Shows a boss bar.
+   */
+  class ShowBossBarOperation implements Operation {
+    protected final BossBar bar;
+
+    protected ShowBossBarOperation(final @NonNull BossBar bar) {
+      this.bar = requireNonNull(bar, "bar");
     }
 
     @Override
-    default void showBossBar(@NonNull BossBar bar) {
-        this.queue(new ShowBossBarOperation(bar));
+    public void process(final @NonNull Audience audience) {
+      audience.showBossBar(this.bar);
     }
+  }
 
-    /**
-     * Hides a boss bar.
-     */
-    class HideBossBarOperation implements Operation {
-        protected final BossBar bar;
+  @Override
+  default void showBossBar(final @NonNull BossBar bar) {
+    this.queue(new ShowBossBarOperation(bar));
+  }
 
-        protected HideBossBarOperation(final @NonNull BossBar bar) {
-            this.bar = requireNonNull(bar, "bar");
-        }
+  /**
+   * Hides a boss bar.
+   */
+  class HideBossBarOperation implements Operation {
+    protected final BossBar bar;
 
-        @Override
-        public void process(final @NonNull Audience audience) {
-            audience.hideBossBar(this.bar);
-        }
-    }
-
-    @Override
-    default void hideBossBar(@NonNull BossBar bar) {
-        this.queue(new HideBossBarOperation(bar));
-    }
-
-    /**
-     * Plays a sound.
-     */
-    class PlaySoundOperation implements Operation {
-        protected final Sound sound;
-
-        protected PlaySoundOperation(final @NonNull Sound sound) {
-            this.sound = requireNonNull(sound, "sound");
-        }
-
-        @Override
-        public void process(final @NonNull Audience audience) {
-            audience.playSound(this.sound);
-        }
+    protected HideBossBarOperation(final @NonNull BossBar bar) {
+      this.bar = requireNonNull(bar, "bar");
     }
 
     @Override
-    default void playSound(@NonNull Sound sound) {
-        this.queue(new PlaySoundOperation(sound));
+    public void process(final @NonNull Audience audience) {
+      audience.hideBossBar(this.bar);
     }
+  }
 
-    /**
-     * Plays a sound at a location.
-     */
-    class PlaySoundAtOperation extends PlaySoundOperation {
-        protected final double x;
-        protected final double y;
-        protected final double z;
+  @Override
+  default void hideBossBar(final @NonNull BossBar bar) {
+    this.queue(new HideBossBarOperation(bar));
+  }
 
-        protected PlaySoundAtOperation(final @NonNull Sound sound, final double x, final double y, final double z) {
-            super(sound);
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
+  /**
+   * Plays a sound.
+   */
+  class PlaySoundOperation implements Operation {
+    protected final Sound sound;
 
-        @Override
-        public void process(final @NonNull Audience audience) {
-            audience.playSound(this.sound, this.x, this.y, this.z);
-        }
+    protected PlaySoundOperation(final @NonNull Sound sound) {
+      this.sound = requireNonNull(sound, "sound");
     }
 
     @Override
-    default void playSound(@NonNull Sound sound, double x, double y, double z) {
-        this.queue(new PlaySoundAtOperation(sound, x, y, z));
+    public void process(final @NonNull Audience audience) {
+      audience.playSound(this.sound);
     }
+  }
 
-    /**
-     * Stops a sound.
-     */
-    class StopSoundOperation implements Operation {
-        protected final SoundStop stop;
+  @Override
+  default void playSound(final @NonNull Sound sound) {
+    this.queue(new PlaySoundOperation(sound));
+  }
 
-        protected StopSoundOperation(final @NonNull SoundStop stop) {
-            this.stop = requireNonNull(stop, "stop sound");
-        }
+  /**
+   * Plays a sound at a location.
+   */
+  class PlaySoundAtOperation extends PlaySoundOperation {
+    protected final double x;
+    protected final double y;
+    protected final double z;
 
-        @Override
-        public void process(final @NonNull Audience audience) {
-            audience.stopSound(this.stop);
-        }
+    protected PlaySoundAtOperation(final @NonNull Sound sound, final double x, final double y, final double z) {
+      super(sound);
+      this.x = x;
+      this.y = y;
+      this.z = z;
     }
 
     @Override
-    default void stopSound(@NonNull SoundStop stop) {
-        this.queue(new StopSoundOperation(stop));
+    public void process(final @NonNull Audience audience) {
+      audience.playSound(this.sound, this.x, this.y, this.z);
     }
+  }
+
+  @Override
+  default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
+    this.queue(new PlaySoundAtOperation(sound, x, y, z));
+  }
+
+  /**
+   * Stops a sound.
+   */
+  class StopSoundOperation implements Operation {
+    protected final SoundStop stop;
+
+    protected StopSoundOperation(final @NonNull SoundStop stop) {
+      this.stop = requireNonNull(stop, "stop sound");
+    }
+
+    @Override
+    public void process(final @NonNull Audience audience) {
+      audience.stopSound(this.stop);
+    }
+  }
+
+  @Override
+  default void stopSound(final @NonNull SoundStop stop) {
+    this.queue(new StopSoundOperation(stop));
+  }
 }
