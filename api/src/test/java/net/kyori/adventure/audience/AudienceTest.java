@@ -51,9 +51,9 @@ class AudienceTest {
   }
 
   @Test
-  void testBatchOf_none() {
+  void testWeakOf_none() {
     final Audience empty = Audience.empty();
-    final Audience batched = Audience.batchOf(empty);
-    assertSame(empty, batched);
+    final Audience weak = Audience.weakOf(empty);
+    assertSame(empty, weak);
   }
 }
