@@ -33,8 +33,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-final class TextComponentImpl extends AbstractComponent implements TextComponent {
-  static final TextComponent EMPTY = createDirect("");
+class TextComponentImpl extends AbstractComponent implements TextComponent {
   static final TextComponent NEWLINE = createDirect("\n");
   static final TextComponent SPACE = createDirect(" ");
 
@@ -58,11 +57,6 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   public @NonNull TextComponent content(final @NonNull String content) {
     if(Objects.equals(this.content, content)) return this;
     return new TextComponentImpl(this.children, this.style, requireNonNull(content, "content"));
-  }
-
-  @Override
-  public boolean isEmpty() {
-    return this == EMPTY;
   }
 
   @Override
@@ -108,6 +102,11 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   }
 
   static final class BuilderImpl extends AbstractComponentBuilder<TextComponent, Builder> implements TextComponent.Builder {
+    /*
+     * We default to an empty string to avoid needing to manually set the
+     * content of a newly-created builder when we only want to append other
+     * components to the one being built.
+     */
     private String content = "";
 
     BuilderImpl() {
@@ -127,7 +126,7 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
     @Override
     public @NonNull TextComponent build() {
       if(this.isEmpty()) {
-        return EMPTY;
+        return EmptyComponent.empty();
       }
       return new TextComponentImpl(this.children, this.buildStyle(), this.content);
     }

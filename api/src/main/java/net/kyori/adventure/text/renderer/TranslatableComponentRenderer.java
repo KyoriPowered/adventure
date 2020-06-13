@@ -158,7 +158,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
     builder.clickEvent(component.clickEvent());
     final /* @Nullable */ HoverEvent<?> hoverEvent = component.hoverEvent();
     if(hoverEvent != null) {
-      builder.hoverEvent(hoverEvent.withRendererValue(this, context));
+      builder.hoverEvent(hoverEvent.withRenderedValue(this, context));
     }
   }
 
