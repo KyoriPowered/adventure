@@ -23,32 +23,74 @@
  */
 package net.kyori.adventure.nbt;
 
-import java.util.Arrays;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-/* package */ final class ByteArrayTagImpl implements ByteArrayTag {
-  final byte[] value;
-
-  /* package */ ByteArrayTagImpl(final byte[] value) {
-    this.value = Arrays.copyOf(value, value.length);
+public interface ShortBinaryTag extends NumberBinaryTag {
+  static @NonNull ShortBinaryTag of(final short value) {
+    return new ShortBinaryTagImpl(value);
   }
 
   @Override
-  public byte@NonNull[] value() {
-    return Arrays.copyOf(this.value, this.value.length);
+  default @NonNull BinaryTagType<ShortBinaryTag> type() {
+    return BinaryTagTypes.SHORT;
+  }
+
+  short value();
+}
+
+/* package */ final class ShortBinaryTagImpl implements ShortBinaryTag {
+  private final short value;
+
+  /* package */ ShortBinaryTagImpl(final short value) {
+    this.value = value;
+  }
+
+  @Override
+  public short value() {
+    return this.value;
+  }
+
+  @Override
+  public byte byteValue() {
+    return (byte) (this.value & 0xff);
+  }
+
+  @Override
+  public double doubleValue() {
+    return this.value;
+  }
+
+  @Override
+  public float floatValue() {
+    return this.value;
+  }
+
+  @Override
+  public int intValue() {
+    return this.value;
+  }
+
+  @Override
+  public long longValue() {
+    return this.value;
+  }
+
+  @Override
+  public short shortValue() {
+    return this.value;
   }
 
   @Override
   public boolean equals(final @Nullable Object other) {
     if(this == other) return true;
     if(other == null || this.getClass() != other.getClass()) return false;
-    final ByteArrayTagImpl that = (ByteArrayTagImpl) other;
-    return Arrays.equals(this.value, that.value);
+    final ShortBinaryTagImpl that = (ShortBinaryTagImpl) other;
+    return this.value == that.value;
   }
 
   @Override
   public int hashCode() {
-    return Arrays.hashCode(this.value);
+    return Short.hashCode(this.value);
   }
 }

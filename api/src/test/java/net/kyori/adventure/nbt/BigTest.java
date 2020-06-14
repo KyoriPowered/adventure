@@ -39,52 +39,47 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class BigTest {
   private static final double DOUBLE_DELTA = 1e-15;
   private static final byte[] BYTE_ARRAY_TEST = new byte[1000];
-  private static ListTag longList = ListTag.empty();
-  private static ListTag compoundList = ListTag.empty();
-  private static CompoundTag nestedCompound = CompoundTag.empty();
-  private static CompoundTag compound;
+  private static final ListBinaryTag LONG_LIST = ListBinaryTag.builder(BinaryTagTypes.LONG)
+    .add(LongBinaryTag.of(11))
+    .add(LongBinaryTag.of(12))
+    .add(LongBinaryTag.of(13))
+    .add(LongBinaryTag.of(14))
+    .add(LongBinaryTag.of(15))
+    .build();
+  private static final ListBinaryTag COMPOUND_LIST = ListBinaryTag.builder(BinaryTagTypes.COMPOUND)
+    .add(
+      CompoundBinaryTag.builder()
+        .putLong("created-on", 1264099775885L)
+        .putString("name", "Compound tag #0")
+        .build()
+    )
+    .add(
+      CompoundBinaryTag.builder()
+        .putLong("created-on", 1264099775885L)
+        .putString("name", "Compound tag #1")
+        .build()
+    )
+    .build();
+  private static final CompoundBinaryTag NESTED_COMPOUND = CompoundBinaryTag.builder()
+    .put("egg", CompoundBinaryTag.empty()
+      .putString("name", "Eggbert")
+      .putFloat("value", 0.5f))
+    .put("ham", CompoundBinaryTag.empty()
+      .putString("name", "Hampus")
+      .putFloat("value", 0.75f))
+    .build();
+  private static CompoundBinaryTag compound;
 
   static {
     for(int i = 0; i < 1000; i++) {
       BYTE_ARRAY_TEST[i] = (byte) ((i * i * 255 + i * 7) % 100);
     }
-
-    longList = longList
-      .add(LongTag.of(11))
-      .add(LongTag.of(12))
-      .add(LongTag.of(13))
-      .add(LongTag.of(14))
-      .add(LongTag.of(15));
-
-    final CompoundTag listTestCompoundTag0 = CompoundTag.builder()
-      .putLong("created-on", 1264099775885L)
-      .putString("name", "Compound tag #0")
-      .build();
-    final CompoundTag listTestCompoundTag1 = CompoundTag.builder()
-      .putLong("created-on", 1264099775885L)
-      .putString("name", "Compound tag #1")
-      .build();
-
-    compoundList = compoundList
-      .add(listTestCompoundTag0)
-      .add(listTestCompoundTag1);
-
-    final CompoundTag egg = CompoundTag.empty()
-      .putString("name", "Eggbert")
-      .putFloat("value", 0.5f);
-    final CompoundTag ham = CompoundTag.empty()
-      .putString("name", "Hampus")
-      .putFloat("value", 0.75f);
-
-    nestedCompound = nestedCompound
-      .put("egg", egg)
-      .put("ham", ham);
   }
 
   @BeforeAll
   static void before() throws IOException, URISyntaxException {
     final URL url = BigTest.class.getResource("/bigtest.nbt");
-    compound = TagIO.readCompressedPath(Paths.get(url.toURI()));
+    compound = BinaryTagIO.readCompressedPath(Paths.get(url.toURI()));
   }
 
   @Test
@@ -93,12 +88,12 @@ class BigTest {
     assertEquals(Long.MAX_VALUE, compound.getLong("longTest"));
     assertEquals(Byte.MAX_VALUE, compound.getByte("byteTest"));
     assertArrayEquals(BYTE_ARRAY_TEST, compound.getByteArray("byteArrayTest (the first 1000 values of (n*n*255+n*7)%100, starting with n=0 (0, 62, 34, 16, 8, ...))"));
-    assertEquals(longList, compound.getList("listTest (long)"));
+    assertEquals(LONG_LIST, compound.getList("listTest (long)"));
     assertEquals(0.49823147f, compound.getFloat("floatTest"), DOUBLE_DELTA);
     assertEquals(0.4931287132182315d, compound.getDouble("doubleTest"), DOUBLE_DELTA);
     assertEquals(Integer.MAX_VALUE, compound.getInt("intTest"));
-    assertEquals(compoundList, compound.getList("listTest (compound)"));
-    assertEquals(nestedCompound, compound.getCompound("nested compound test"));
+    assertEquals(COMPOUND_LIST, compound.getList("listTest (compound)"));
+    assertEquals(NESTED_COMPOUND, compound.getCompound("nested compound test"));
     assertEquals("HELLO WORLD THIS IS A TEST STRING ÅÄÖ!", compound.getString("stringTest"));
   }
 }

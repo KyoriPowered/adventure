@@ -25,22 +25,20 @@ package net.kyori.adventure.nbt;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public interface EndTag extends Tag {
-  static @NonNull EndTag get() {
-    return EndTagImpl.INSTANCE;
-  }
-
+public interface NumberBinaryTag extends BinaryTag {
   @Override
-  default @NonNull TagType<EndTag> type() {
-    return TagTypes.END;
-  }
-}
+  @NonNull BinaryTagType<? extends NumberBinaryTag> type();
 
-/* package */ final class EndTagImpl implements EndTag {
-  /* package */ static final EndTagImpl INSTANCE = new EndTagImpl();
+  byte byteValue();
 
-  @Override
-  public boolean equals(final Object that) {
-    return this == that;
-  }
+  double doubleValue();
+
+  float floatValue();
+
+  int intValue();
+
+  long longValue();
+
+  short shortValue();
+
 }

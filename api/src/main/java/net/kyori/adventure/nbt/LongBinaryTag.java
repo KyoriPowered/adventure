@@ -26,23 +26,23 @@ package net.kyori.adventure.nbt;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public interface LongTag extends NumberTag {
-  static @NonNull LongTag of(final long value) {
-    return new LongTagImpl(value);
+public interface LongBinaryTag extends NumberBinaryTag {
+  static @NonNull LongBinaryTag of(final long value) {
+    return new LongBinaryTagImpl(value);
   }
 
   @Override
-  default @NonNull TagType<LongTag> type() {
-    return TagTypes.LONG;
+  default @NonNull BinaryTagType<LongBinaryTag> type() {
+    return BinaryTagTypes.LONG;
   }
 
   long value();
 }
 
-/* package */ final class LongTagImpl implements LongTag {
+/* package */ final class LongBinaryTagImpl implements LongBinaryTag {
   private final long value;
 
-  /* package */ LongTagImpl(final long value) {
+  /* package */ LongBinaryTagImpl(final long value) {
     this.value = value;
   }
 
@@ -85,7 +85,7 @@ public interface LongTag extends NumberTag {
   public boolean equals(final @Nullable Object other) {
     if(this == other) return true;
     if(other == null || this.getClass() != other.getClass()) return false;
-    final LongTagImpl that = (LongTagImpl) other;
+    final LongBinaryTagImpl that = (LongBinaryTagImpl) other;
     return this.value == that.value;
   }
 

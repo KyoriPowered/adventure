@@ -26,23 +26,23 @@ package net.kyori.adventure.nbt;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public interface StringTag extends Tag {
-  static @NonNull StringTag of(final @NonNull String value) {
-    return new StringTagImpl(value);
+public interface StringBinaryTag extends BinaryTag {
+  static @NonNull StringBinaryTag of(final @NonNull String value) {
+    return new StringBinaryTagImpl(value);
   }
 
   @Override
-  default @NonNull TagType<StringTag> type() {
-    return TagTypes.STRING;
+  default @NonNull BinaryTagType<StringBinaryTag> type() {
+    return BinaryTagTypes.STRING;
   }
 
   @NonNull String value();
 }
 
-/* package */ final class StringTagImpl implements StringTag {
+/* package */ final class StringBinaryTagImpl implements StringBinaryTag {
   private final String value;
 
-  /* package */ StringTagImpl(final String value) {
+  /* package */ StringBinaryTagImpl(final String value) {
     this.value = value;
   }
 
@@ -55,7 +55,7 @@ public interface StringTag extends Tag {
   public boolean equals(final @Nullable Object other) {
     if(this == other) return true;
     if(other == null || this.getClass() != other.getClass()) return false;
-    final StringTagImpl that = (StringTagImpl) other;
+    final StringBinaryTagImpl that = (StringBinaryTagImpl) other;
     return this.value.equals(that.value);
   }
 

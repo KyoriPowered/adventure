@@ -27,9 +27,9 @@ import java.util.Set;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
-  static @NonNull CompoundTag empty() {
-    return CompoundTagImpl.EMPTY;
+public interface CompoundBinaryTag extends CompoundTagSetter<CompoundBinaryTag>, BinaryTag {
+  static @NonNull CompoundBinaryTag empty() {
+    return CompoundBinaryTagImpl.EMPTY;
   }
 
   static @NonNull Builder builder() {
@@ -37,13 +37,13 @@ public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
   }
 
   @Override
-  default @NonNull TagType<CompoundTag> type() {
-    return TagTypes.COMPOUND;
+  default @NonNull BinaryTagType<CompoundBinaryTag> type() {
+    return BinaryTagTypes.COMPOUND;
   }
 
   @NonNull Set<String> keySet();
 
-  @Nullable Tag get(final String key);
+  @Nullable BinaryTag get(final String key);
 
   /**
    * Gets a byte.
@@ -67,16 +67,6 @@ public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
   byte getByte(final @NonNull String key, final byte defaultValue);
 
   /**
-   * Inserts a byte.
-   *
-   * @param key the key
-   * @param value the value
-   * @return a compound tag
-   */
-  @Override
-  @NonNull CompoundTag putByte(final @NonNull String key, final byte value);
-
-  /**
    * Gets a short.
    *
    * @param key the key
@@ -96,16 +86,6 @@ public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
    *     with the specified key, or has a tag with a different type
    */
   short getShort(final @NonNull String key, final short defaultValue);
-
-  /**
-   * Inserts a short.
-   *
-   * @param key the key
-   * @param value the value
-   * @return a compound tag
-   */
-  @Override
-  @NonNull CompoundTag putShort(final @NonNull String key, final short value);
 
   /**
    * Gets an int.
@@ -129,16 +109,6 @@ public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
   int getInt(final @NonNull String key, final int defaultValue);
 
   /**
-   * Inserts an int.
-   *
-   * @param key the key
-   * @param value the value
-   * @return a compound tag
-   */
-  @Override
-  @NonNull CompoundTag putInt(final @NonNull String key, final int value);
-
-  /**
    * Gets a long.
    *
    * @param key the key
@@ -158,16 +128,6 @@ public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
    *     with the specified key, or has a tag with a different type
    */
   long getLong(final @NonNull String key, final long defaultValue);
-
-  /**
-   * Inserts a long.
-   *
-   * @param key the key
-   * @param value the value
-   * @return a compound tag
-   */
-  @Override
-  @NonNull CompoundTag putLong(final @NonNull String key, final long value);
 
   /**
    * Gets a float.
@@ -191,16 +151,6 @@ public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
   float getFloat(final @NonNull String key, final float defaultValue);
 
   /**
-   * Inserts a float.
-   *
-   * @param key the key
-   * @param value the value
-   * @return a compound tag
-   */
-  @Override
-  @NonNull CompoundTag putFloat(final @NonNull String key, final float value);
-
-  /**
    * Gets a double.
    *
    * @param key the key
@@ -222,16 +172,6 @@ public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
   double getDouble(final @NonNull String key, final double defaultValue);
 
   /**
-   * Inserts a double.
-   *
-   * @param key the key
-   * @param value the value
-   * @return a compound tag
-   */
-  @Override
-  @NonNull CompoundTag putDouble(final @NonNull String key, final double value);
-
-  /**
    * Gets an array of bytes.
    *
    * @param key the key
@@ -248,16 +188,6 @@ public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
    * @return the array of bytes, or {@code defaultValue}
    */
   byte@NonNull[] getByteArray(final @NonNull String key, final byte@NonNull[] defaultValue);
-
-  /**
-   * Inserts an array of bytes.
-   *
-   * @param key the key
-   * @param value the value
-   * @return a compound tag
-   */
-  @Override
-  @NonNull CompoundTag putByteArray(final @NonNull String key, final byte@NonNull[] value);
 
   /**
    * Gets a string.
@@ -281,24 +211,14 @@ public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
   @NonNull String getString(final @NonNull String key, final @NonNull String defaultValue);
 
   /**
-   * Inserts a string.
-   *
-   * @param key the key
-   * @param value the value
-   * @return a compound tag
-   */
-  @Override
-  @NonNull CompoundTag putString(final @NonNull String key, final @NonNull String value);
-
-  /**
    * Gets a list.
    *
    * @param key the key
    * @return the list, or a new list if this compound does not contain a list tag
    *     with the specified key, or has a tag with a different type
    */
-  default @NonNull ListTag getList(final @NonNull String key) {
-    return this.getList(key, ListTag.empty());
+  default @NonNull ListBinaryTag getList(final @NonNull String key) {
+    return this.getList(key, ListBinaryTag.empty());
   }
 
   /**
@@ -309,7 +229,7 @@ public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
    * @return the list, or {@code defaultValue} if this compound does not contain a list tag
    *     with the specified key, or has a tag with a different type
    */
-  @NonNull ListTag getList(final @NonNull String key, final @NonNull ListTag defaultValue);
+  @NonNull ListBinaryTag getList(final @NonNull String key, final @NonNull ListBinaryTag defaultValue);
 
   /**
    * Gets a list, ensuring that the type is the same as {@code type}.
@@ -317,11 +237,11 @@ public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
    * @param key the key
    * @param expectedType the expected list type
    * @return the list, or a new list if this compound does not contain a list tag
-   *     with the specified key, has a tag with a different type, or the {@link ListTag#listType() list type}
+   *     with the specified key, has a tag with a different type, or the {@link ListBinaryTag#listType() list type}
    *     does not match {@code expectedType}
    */
-  default @NonNull ListTag getList(final @NonNull String key, final @NonNull TagType<? extends Tag> expectedType) {
-    return this.getList(key, expectedType, ListTag.empty());
+  default @NonNull ListBinaryTag getList(final @NonNull String key, final @NonNull BinaryTagType<? extends BinaryTag> expectedType) {
+    return this.getList(key, expectedType, ListBinaryTag.empty());
   }
 
   /**
@@ -331,10 +251,10 @@ public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
    * @param expectedType the expected list type
    * @param defaultValue the default value
    * @return the list, or {@code defaultValue} if this compound does not contain a list tag
-   *     with the specified key, has a tag with a different type, or the {@link ListTag#listType() list type}
+   *     with the specified key, has a tag with a different type, or the {@link ListBinaryTag#listType() list type}
    *     does not match {@code expectedType}
    */
-  @NonNull ListTag getList(final @NonNull String key, final @NonNull TagType<? extends Tag> expectedType, final @NonNull ListTag defaultValue);
+  @NonNull ListBinaryTag getList(final @NonNull String key, final @NonNull BinaryTagType<? extends BinaryTag> expectedType, final @NonNull ListBinaryTag defaultValue);
 
   /**
    * Gets a compound.
@@ -343,7 +263,7 @@ public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
    * @return the compound, or a new compound if this compound does not contain a compound tag
    *     with the specified key, or has a tag with a different type
    */
-  default @NonNull CompoundTag getCompound(final @NonNull String key) {
+  default @NonNull CompoundBinaryTag getCompound(final @NonNull String key) {
     return this.getCompound(key, empty());
   }
 
@@ -355,7 +275,7 @@ public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
    * @return the compound, or {@code defaultValue} if this compound does not contain a compound tag
    *     with the specified key, or has a tag with a different type
    */
-  @NonNull CompoundTag getCompound(final @NonNull String key, final @NonNull CompoundTag defaultValue);
+  @NonNull CompoundBinaryTag getCompound(final @NonNull String key, final @NonNull CompoundBinaryTag defaultValue);
 
   /**
    * Gets an array of ints.
@@ -376,16 +296,6 @@ public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
   int@NonNull[] getIntArray(final @NonNull String key, final int@NonNull[] defaultValue);
 
   /**
-   * Inserts an array of ints.
-   *
-   * @param key the key
-   * @param value the value
-   * @return a compound tag
-   */
-  @Override
-  @NonNull CompoundTag putIntArray(final @NonNull String key, final int@NonNull[] value);
-
-  /**
    * Gets an array of longs.
    *
    * @param key the key
@@ -403,17 +313,7 @@ public interface CompoundTag extends CompoundTagSetter<CompoundTag>, Tag {
    */
   long@NonNull[] getLongArray(final @NonNull String key, final long@NonNull[] defaultValue);
 
-  /**
-   * Inserts an array of longs.
-   *
-   * @param key the key
-   * @param value the value
-   * @return a compound tag
-   */
-  @Override
-  @NonNull CompoundTag putLongArray(final @NonNull String key, final long@NonNull[] value);
-
   interface Builder extends CompoundTagSetter<Builder> {
-    @NonNull CompoundTag build();
+    @NonNull CompoundBinaryTag build();
   }
 }

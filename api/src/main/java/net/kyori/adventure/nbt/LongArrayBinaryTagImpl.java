@@ -23,75 +23,32 @@
  */
 package net.kyori.adventure.nbt;
 
-import net.kyori.adventure.util.ShadyPines;
+import java.util.Arrays;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public interface DoubleTag extends NumberTag {
-  static @NonNull DoubleTag of(final double value) {
-    return new DoubleTagImpl(value);
+/* package */ final class LongArrayBinaryTagImpl implements LongArrayBinaryTag {
+  final long[] value;
+
+  /* package */ LongArrayBinaryTagImpl(final long[] value) {
+    this.value = Arrays.copyOf(value, value.length);
   }
 
   @Override
-  default @NonNull TagType<DoubleTag> type() {
-    return TagTypes.DOUBLE;
-  }
-
-  double value();
-}
-
-/* package */ final class DoubleTagImpl implements DoubleTag {
-  private final double value;
-
-  /* package */ DoubleTagImpl(final double value) {
-    this.value = value;
-  }
-
-  @Override
-  public double value() {
-    return this.value;
-  }
-
-  @Override
-  public byte byteValue() {
-    return (byte) (ShadyPines.floor(this.value) & 0xff);
-  }
-
-  @Override
-  public double doubleValue() {
-    return this.value;
-  }
-
-  @Override
-  public float floatValue() {
-    return (float) this.value;
-  }
-
-  @Override
-  public int intValue() {
-    return ShadyPines.floor(this.value);
-  }
-
-  @Override
-  public long longValue() {
-    return (long) Math.floor(this.value);
-  }
-
-  @Override
-  public short shortValue() {
-    return (short) (ShadyPines.floor(this.value) & 0xffff);
+  public long@NonNull[] value() {
+    return Arrays.copyOf(this.value, this.value.length);
   }
 
   @Override
   public boolean equals(final @Nullable Object other) {
     if(this == other) return true;
     if(other == null || this.getClass() != other.getClass()) return false;
-    final DoubleTagImpl that = (DoubleTagImpl) other;
-    return ShadyPines.equals(this.value, that.value);
+    final LongArrayBinaryTagImpl that = (LongArrayBinaryTagImpl) other;
+    return Arrays.equals(this.value, that.value);
   }
 
   @Override
   public int hashCode() {
-    return Double.hashCode(this.value);
+    return Arrays.hashCode(this.value);
   }
 }

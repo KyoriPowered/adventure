@@ -23,32 +23,8 @@
  */
 package net.kyori.adventure.nbt;
 
-import java.util.Arrays;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
-/* package */ final class LongArrayTagImpl implements LongArrayTag {
-  final long[] value;
-
-  /* package */ LongArrayTagImpl(final long[] value) {
-    this.value = Arrays.copyOf(value, value.length);
-  }
-
-  @Override
-  public long@NonNull[] value() {
-    return Arrays.copyOf(this.value, this.value.length);
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(other == null || this.getClass() != other.getClass()) return false;
-    final LongArrayTagImpl that = (LongArrayTagImpl) other;
-    return Arrays.equals(this.value, that.value);
-  }
-
-  @Override
-  public int hashCode() {
-    return Arrays.hashCode(this.value);
-  }
+public interface BinaryTag {
+  @NonNull BinaryTagType<? extends BinaryTag> type();
 }

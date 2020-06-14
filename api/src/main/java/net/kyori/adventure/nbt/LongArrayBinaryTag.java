@@ -25,15 +25,15 @@ package net.kyori.adventure.nbt;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public interface ByteArrayTag extends Tag {
-  static @NonNull ByteArrayTag of(final byte@NonNull... value) {
-    return new ByteArrayTagImpl(value);
+public interface LongArrayBinaryTag extends BinaryTag {
+  static @NonNull LongArrayBinaryTag of(final long@NonNull... value) {
+    return new LongArrayBinaryTagImpl(value);
   }
 
   @Override
-  default @NonNull TagType<ByteArrayTag> type() {
-    return TagTypes.BYTE_ARRAY;
+  default @NonNull BinaryTagType<LongArrayBinaryTag> type() {
+    return BinaryTagTypes.LONG_ARRAY;
   }
 
-  byte@NonNull[] value();
+  long@NonNull[] value();
 }

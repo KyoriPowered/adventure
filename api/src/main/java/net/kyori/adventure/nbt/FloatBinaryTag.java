@@ -23,52 +23,53 @@
  */
 package net.kyori.adventure.nbt;
 
+import net.kyori.adventure.util.ShadyPines;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public interface IntTag extends NumberTag {
-  static @NonNull IntTag of(final int value) {
-    return new IntTagImpl(value);
+public interface FloatBinaryTag extends NumberBinaryTag {
+  static @NonNull FloatBinaryTag of(final float value) {
+    return new FloatBinaryTagImpl(value);
   }
 
   @Override
-  default @NonNull TagType<IntTag> type() {
-    return TagTypes.INT;
+  default @NonNull BinaryTagType<FloatBinaryTag> type() {
+    return BinaryTagTypes.FLOAT;
   }
 
-  int value();
+   float value();
 }
 
-/* package */ final class IntTagImpl implements IntTag {
-  private final int value;
+/* package */ final class FloatBinaryTagImpl implements FloatBinaryTag {
+  private final float value;
 
-  /* package */ IntTagImpl(final int value) {
+  /* package */ FloatBinaryTagImpl(final float value) {
     this.value = value;
   }
 
   @Override
-  public int value() {
+  public float value() {
     return this.value;
   }
 
   @Override
   public byte byteValue() {
-    return (byte) (this.value & 0xff);
+    return (byte) (ShadyPines.floor(this.value) & 0xff);
   }
 
   @Override
   public double doubleValue() {
-    return (double) this.value;
+    return this.value;
   }
 
   @Override
   public float floatValue() {
-    return (float) this.value;
+    return this.value;
   }
 
   @Override
   public int intValue() {
-    return this.value;
+    return ShadyPines.floor(this.value);
   }
 
   @Override
@@ -78,19 +79,19 @@ public interface IntTag extends NumberTag {
 
   @Override
   public short shortValue() {
-    return (short) (this.value & 0xffff);
+    return (short) (ShadyPines.floor(this.value) & 0xffff);
   }
 
   @Override
   public boolean equals(final @Nullable Object other) {
     if(this == other) return true;
     if(other == null || this.getClass() != other.getClass()) return false;
-    final IntTagImpl that = (IntTagImpl) other;
-    return this.value == that.value;
+    final FloatBinaryTagImpl that = (FloatBinaryTagImpl) other;
+    return ShadyPines.equals(this.value, that.value);
   }
 
   @Override
   public int hashCode() {
-    return Integer.hashCode(this.value);
+    return Float.hashCode(this.value);
   }
 }

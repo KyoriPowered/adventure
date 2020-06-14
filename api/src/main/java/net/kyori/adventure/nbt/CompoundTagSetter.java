@@ -26,7 +26,14 @@ package net.kyori.adventure.nbt;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public interface CompoundTagSetter<R> {
-  @NonNull R put(final @NonNull String key, @NonNull Tag tag);
+  /**
+   * Inserts a tag.
+   *
+   * @param key the key
+   * @param tag the tag
+   * @return a compound tag
+   */
+  @NonNull R put(final @NonNull String key, @NonNull BinaryTag tag);
 
   /**
    * Inserts a byte.
@@ -35,7 +42,9 @@ public interface CompoundTagSetter<R> {
    * @param value the value
    * @return a compound tag
    */
-  @NonNull R putByte(final @NonNull String key, final byte value);
+  default @NonNull R putByte(final @NonNull String key, final byte value) {
+    return this.put(key, ByteBinaryTag.of(value));
+  }
 
   /**
    * Inserts a short.
@@ -44,7 +53,9 @@ public interface CompoundTagSetter<R> {
    * @param value the value
    * @return a compound tag
    */
-  @NonNull R putShort(final @NonNull String key, final short value);
+  default @NonNull R putShort(final @NonNull String key, final short value) {
+    return this.put(key, ShortBinaryTag.of(value));
+  }
 
   /**
    * Inserts an int.
@@ -53,7 +64,9 @@ public interface CompoundTagSetter<R> {
    * @param value the value
    * @return a compound tag
    */
-  @NonNull R putInt(final @NonNull String key, final int value);
+  default @NonNull R putInt(final @NonNull String key, final int value) {
+    return this.put(key, IntBinaryTag.of(value));
+  }
 
   /**
    * Inserts a long.
@@ -62,7 +75,9 @@ public interface CompoundTagSetter<R> {
    * @param value the value
    * @return a compound tag
    */
-  @NonNull R putLong(final @NonNull String key, final long value);
+  default @NonNull R putLong(final @NonNull String key, final long value) {
+    return this.put(key, LongBinaryTag.of(value));
+  }
 
   /**
    * Inserts a float.
@@ -71,7 +86,9 @@ public interface CompoundTagSetter<R> {
    * @param value the value
    * @return a compound tag
    */
-  @NonNull R putFloat(final @NonNull String key, final float value);
+  default @NonNull R putFloat(final @NonNull String key, final float value) {
+    return this.put(key, FloatBinaryTag.of(value));
+  }
 
   /**
    * Inserts a double.
@@ -80,7 +97,9 @@ public interface CompoundTagSetter<R> {
    * @param value the value
    * @return a compound tag
    */
-  @NonNull R putDouble(final @NonNull String key, final double value);
+  default @NonNull R putDouble(final @NonNull String key, final double value) {
+    return this.put(key, DoubleBinaryTag.of(value));
+  }
 
   /**
    * Inserts an array of bytes.
@@ -89,7 +108,9 @@ public interface CompoundTagSetter<R> {
    * @param value the value
    * @return a compound tag
    */
-  @NonNull R putByteArray(final @NonNull String key, final byte@NonNull[] value);
+  default @NonNull R putByteArray(final @NonNull String key, final byte@NonNull[] value) {
+    return this.put(key, ByteArrayBinaryTag.of(value));
+  }
 
   /**
    * Inserts a string.
@@ -98,7 +119,9 @@ public interface CompoundTagSetter<R> {
    * @param value the value
    * @return a compound tag
    */
-  @NonNull R putString(final @NonNull String key, final @NonNull String value);
+  default @NonNull R putString(final @NonNull String key, final @NonNull String value) {
+    return this.put(key, StringBinaryTag.of(value));
+  }
 
   /**
    * Inserts an array of ints.
@@ -107,7 +130,9 @@ public interface CompoundTagSetter<R> {
    * @param value the value
    * @return a compound tag
    */
-  @NonNull R putIntArray(final @NonNull String key, final int@NonNull[] value);
+  default @NonNull R putIntArray(final @NonNull String key, final int@NonNull[] value) {
+    return this.put(key, IntArrayBinaryTag.of(value));
+  }
 
   /**
    * Inserts an array of longs.
@@ -116,5 +141,7 @@ public interface CompoundTagSetter<R> {
    * @param value the value
    * @return a compound tag
    */
-  @NonNull R putLongArray(final @NonNull String key, final long@NonNull[] value);
+  default @NonNull R putLongArray(final @NonNull String key, final long@NonNull[] value) {
+    return this.put(key, LongArrayBinaryTag.of(value));
+  }
 }

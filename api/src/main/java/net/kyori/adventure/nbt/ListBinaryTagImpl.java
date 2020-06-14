@@ -30,18 +30,18 @@ import java.util.function.Consumer;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-final class ListTagImpl implements ListTag {
-  static final ListTag EMPTY = new ListTagImpl(TagTypes.END, Collections.emptyList());
-  private final List<? extends Tag> tags;
-  private final TagType<? extends Tag> type;
+final class ListBinaryTagImpl implements ListBinaryTag {
+  static final ListBinaryTag EMPTY = new ListBinaryTagImpl(BinaryTagTypes.END, Collections.emptyList());
+  private final List<? extends BinaryTag> tags;
+  private final BinaryTagType<? extends BinaryTag> type;
 
-  ListTagImpl(final TagType<? extends Tag> type, final List<? extends Tag> tags) {
+  ListBinaryTagImpl(final BinaryTagType<? extends BinaryTag> type, final List<? extends BinaryTag> tags) {
     this.tags = tags;
     this.type = type;
   }
 
   @Override
-  public @NonNull TagType<? extends Tag> listType() {
+  public @NonNull BinaryTagType<? extends BinaryTag> listType() {
     return this.type;
   }
 
@@ -51,24 +51,24 @@ final class ListTagImpl implements ListTag {
   }
 
   @Override
-  public @NonNull Tag get(@NonNegative final int index) {
+  public @NonNull BinaryTag get(@NonNegative final int index) {
     return this.tags.get(index);
   }
 
   @Override
-  public @NonNull ListTag add(final Tag tag) {
+  public @NonNull ListBinaryTag add(final BinaryTag tag) {
     return this.edit(tags -> tags.add(tag));
   }
 
-  private ListTag edit(final Consumer<List<Tag>> consumer) {
-    final List<Tag> tags = new ArrayList<>(this.tags);
+  private ListBinaryTag edit(final Consumer<List<BinaryTag>> consumer) {
+    final List<BinaryTag> tags = new ArrayList<>(this.tags);
     consumer.accept(tags);
-    return new ListTagImpl(this.type, tags);
+    return new ListBinaryTagImpl(this.type, tags);
   }
 
   @Override
   public boolean equals(final Object that) {
-    return this == that || (that instanceof ListTagImpl && this.tags.equals(((ListTagImpl) that).tags));
+    return this == that || (that instanceof ListBinaryTagImpl && this.tags.equals(((ListBinaryTagImpl) that).tags));
   }
 
   @Override

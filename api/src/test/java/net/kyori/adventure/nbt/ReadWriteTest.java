@@ -34,87 +34,87 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ReadWriteTest {
   @Test
   void testByteArray() throws IOException {
-    this.testWriteRead(ByteArrayTag.of(Byte.MIN_VALUE, (byte) -100, (byte) 0, (byte) 100, Byte.MAX_VALUE), TagTypes.BYTE_ARRAY);
+    this.testWriteRead(ByteArrayBinaryTag.of(Byte.MIN_VALUE, (byte) -100, (byte) 0, (byte) 100, Byte.MAX_VALUE), BinaryTagTypes.BYTE_ARRAY);
   }
 
   @Test
   void testByte() throws IOException {
-    this.testWriteRead(ByteTag.of((byte) 2), TagTypes.BYTE);
+    this.testWriteRead(ByteBinaryTag.of((byte) 2), BinaryTagTypes.BYTE);
   }
 
   @Test
   void testCompound() throws IOException {
-    final CompoundTag a = CompoundTag.builder()
+    final CompoundBinaryTag a = CompoundBinaryTag.builder()
       .putByte("AByte", (byte) 0)
       .putInt("AnInt", 1)
       .putIntArray("AnIntArray", new int[]{0, 1, 4, 5, 8, 9})
       .build();
-    this.testWriteRead(a, TagTypes.COMPOUND);
+    this.testWriteRead(a, BinaryTagTypes.COMPOUND);
   }
 
   @Test
   void testDouble() throws IOException {
-    this.testWriteRead(DoubleTag.of(4d), TagTypes.DOUBLE);
+    this.testWriteRead(DoubleBinaryTag.of(4d), BinaryTagTypes.DOUBLE);
   }
 
   @Test
   void testEnd() throws IOException {
-    this.testWriteRead(EndTag.get(), TagTypes.END);
+    this.testWriteRead(EndBinaryTag.get(), BinaryTagTypes.END);
   }
 
   @Test
   void testFloat() throws IOException {
-    this.testWriteRead(FloatTag.of(6f), TagTypes.FLOAT);
+    this.testWriteRead(FloatBinaryTag.of(6f), BinaryTagTypes.FLOAT);
   }
 
   @Test
   void testIntArray() throws IOException {
-    this.testWriteRead(IntArrayTag.of(Integer.MIN_VALUE, -100, 0, 100, Integer.MAX_VALUE), TagTypes.INT_ARRAY);
+    this.testWriteRead(IntArrayBinaryTag.of(Integer.MIN_VALUE, -100, 0, 100, Integer.MAX_VALUE), BinaryTagTypes.INT_ARRAY);
   }
 
   @Test
   void testInt() throws IOException {
-    this.testWriteRead(IntTag.of(8), TagTypes.INT);
+    this.testWriteRead(IntBinaryTag.of(8), BinaryTagTypes.INT);
   }
 
   @Test
   void testList() throws IOException {
-    final ListTag a = ListTag.builder()
-      .add(DoubleTag.of(32d))
-      .add(DoubleTag.of(64d))
+    final ListBinaryTag a = ListBinaryTag.builder()
+      .add(DoubleBinaryTag.of(32d))
+      .add(DoubleBinaryTag.of(64d))
       .build();
-    final ListTag b = this.testWriteRead(a, TagTypes.LIST);
+    final ListBinaryTag b = this.testWriteRead(a, BinaryTagTypes.LIST);
     assertEquals(a.listType(), b.listType());
   }
 
   @Test
   void testLongArray() throws IOException {
-    this.testWriteRead(LongArrayTag.of(Long.MIN_VALUE, -100, 0, 100, Long.MAX_VALUE), TagTypes.LONG_ARRAY);
+    this.testWriteRead(LongArrayBinaryTag.of(Long.MIN_VALUE, -100, 0, 100, Long.MAX_VALUE), BinaryTagTypes.LONG_ARRAY);
   }
 
   @Test
   void testLong() throws IOException {
-    this.testWriteRead(LongTag.of(10), TagTypes.LONG);
+    this.testWriteRead(LongBinaryTag.of(10), BinaryTagTypes.LONG);
   }
 
   @Test
   void testShort() throws IOException {
-    this.testWriteRead(ShortTag.of((short) 12), TagTypes.SHORT);
+    this.testWriteRead(ShortBinaryTag.of((short) 12), BinaryTagTypes.SHORT);
   }
 
   @Test
   void testString() throws IOException {
-    this.testWriteRead(StringTag.of("Hello, world!"), TagTypes.STRING);
+    this.testWriteRead(StringBinaryTag.of("Hello, world!"), BinaryTagTypes.STRING);
   }
 
-  private <T extends Tag> T testWriteRead(final T a, final TagType<T> type) throws IOException {
+  private <T extends BinaryTag> T testWriteRead(final T a, final BinaryTagType<T> type) throws IOException {
     final T b = this.writeRead(a, type);
     assertEquals(a, b);
     return b;
   }
 
   @SuppressWarnings("UnstableApiUsage")
-  private <T extends Tag> T writeRead(final T a, final TagType<T> type) throws IOException {
+  private <T extends BinaryTag> T writeRead(final T a, final BinaryTagType<T> type) throws IOException {
     final ByteArrayDataOutput output = ByteStreams.newDataOutput();
     type.write(a, output);
     final ByteArrayDataInput input = ByteStreams.newDataInput(output.toByteArray());

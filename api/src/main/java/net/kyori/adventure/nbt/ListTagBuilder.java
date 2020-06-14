@@ -27,18 +27,26 @@ import java.util.ArrayList;
 import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-final class ListTagBuilder implements ListTag.Builder {
-  private final List<Tag> tags = new ArrayList<>();
-  private TagType<? extends Tag> type = TagTypes.END;
+final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder<T> {
+  private final List<BinaryTag> tags = new ArrayList<>();
+  private BinaryTagType<? extends BinaryTag> type;
+
+  ListTagBuilder() {
+    this(BinaryTagTypes.END);
+  }
+
+  ListTagBuilder(final BinaryTagType<? extends BinaryTag> type) {
+    this.type = type;
+  }
 
   @Override
-  public ListTag.@NonNull Builder add(final Tag tag) {
+  public ListBinaryTag.@NonNull Builder<T> add(final BinaryTag tag) {
     // don't allow an end tag to be added
-    if(tag.type() == TagTypes.END) {
-      throw new IllegalArgumentException(String.format("Cannot add a '%s' to a '%s'", EndTag.class.getSimpleName(), ListTag.class.getSimpleName()));
+    if(tag.type() == BinaryTagTypes.END) {
+      throw new IllegalArgumentException(String.format("Cannot add a '%s' to a '%s'", EndBinaryTag.class.getSimpleName(), ListBinaryTag.class.getSimpleName()));
     }
     // set the type if it has not yet been set
-    if(this.type == TagTypes.END) {
+    if(this.type == BinaryTagTypes.END) {
       this.type = tag.type();
     }
     this.tags.add(tag);
@@ -46,7 +54,7 @@ final class ListTagBuilder implements ListTag.Builder {
   }
 
   @Override
-  public @NonNull ListTag build() {
-    return new ListTagImpl(this.type, new ArrayList<>(this.tags));
+  public @NonNull ListBinaryTag build() {
+    return new ListBinaryTagImpl(this.type, new ArrayList<>(this.tags));
   }
 }

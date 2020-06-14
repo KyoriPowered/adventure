@@ -23,32 +23,74 @@
  */
 package net.kyori.adventure.nbt;
 
-import java.util.Arrays;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-/* package */ final class IntArrayTagImpl implements IntArrayTag {
-  final int[] value;
-
-  /* package */ IntArrayTagImpl(final int... value) {
-    this.value = Arrays.copyOf(value, value.length);
+public interface ByteBinaryTag extends NumberBinaryTag {
+  static @NonNull ByteBinaryTag of(final byte value) {
+    return new ByteBinaryTagImpl(value);
   }
 
   @Override
-  public int@NonNull[] value() {
-    return Arrays.copyOf(this.value, this.value.length);
+  default @NonNull BinaryTagType<ByteBinaryTag> type() {
+    return BinaryTagTypes.BYTE;
+  }
+
+  byte value();
+}
+
+/* package */ final class ByteBinaryTagImpl implements ByteBinaryTag {
+  private final byte value;
+
+  /* package */ ByteBinaryTagImpl(final byte value) {
+    this.value = value;
+  }
+
+  @Override
+  public byte value() {
+    return this.value;
+  }
+
+  @Override
+  public byte byteValue() {
+    return this.value;
+  }
+
+  @Override
+  public double doubleValue() {
+    return this.value;
+  }
+
+  @Override
+  public float floatValue() {
+    return this.value;
+  }
+
+  @Override
+  public int intValue() {
+    return this.value;
+  }
+
+  @Override
+  public long longValue() {
+    return this.value;
+  }
+
+  @Override
+  public short shortValue() {
+    return this.value;
   }
 
   @Override
   public boolean equals(final @Nullable Object other) {
     if(this == other) return true;
     if(other == null || this.getClass() != other.getClass()) return false;
-    final IntArrayTagImpl that = (IntArrayTagImpl) other;
-    return Arrays.equals(this.value, that.value);
+    final ByteBinaryTagImpl that = (ByteBinaryTagImpl) other;
+    return this.value == that.value;
   }
 
   @Override
   public int hashCode() {
-    return Arrays.hashCode(this.value);
+    return Byte.hashCode(this.value);
   }
 }

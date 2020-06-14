@@ -23,17 +23,32 @@
  */
 package net.kyori.adventure.nbt;
 
+import java.util.Arrays;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-public interface IntArrayTag extends Tag {
-  static @NonNull IntArrayTag of(final int@NonNull... value) {
-    return new IntArrayTagImpl(value);
+/* package */ final class ByteArrayBinaryTagImpl implements ByteArrayBinaryTag {
+  final byte[] value;
+
+  /* package */ ByteArrayBinaryTagImpl(final byte[] value) {
+    this.value = Arrays.copyOf(value, value.length);
   }
 
   @Override
-  default @NonNull TagType<IntArrayTag> type() {
-    return TagTypes.INT_ARRAY;
+  public byte@NonNull[] value() {
+    return Arrays.copyOf(this.value, this.value.length);
   }
 
-  int@NonNull[] value();
+  @Override
+  public boolean equals(final @Nullable Object other) {
+    if(this == other) return true;
+    if(other == null || this.getClass() != other.getClass()) return false;
+    final ByteArrayBinaryTagImpl that = (ByteArrayBinaryTagImpl) other;
+    return Arrays.equals(this.value, that.value);
+  }
+
+  @Override
+  public int hashCode() {
+    return Arrays.hashCode(this.value);
+  }
 }

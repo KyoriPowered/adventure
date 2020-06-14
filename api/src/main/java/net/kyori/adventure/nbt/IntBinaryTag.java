@@ -26,28 +26,28 @@ package net.kyori.adventure.nbt;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public interface ShortTag extends NumberTag {
-  static @NonNull ShortTag of(final short value) {
-    return new ShortTagImpl(value);
+public interface IntBinaryTag extends NumberBinaryTag {
+  static @NonNull IntBinaryTag of(final int value) {
+    return new IntBinaryTagImpl(value);
   }
 
   @Override
-  default @NonNull TagType<ShortTag> type() {
-    return TagTypes.SHORT;
+  default @NonNull BinaryTagType<IntBinaryTag> type() {
+    return BinaryTagTypes.INT;
   }
 
-  short value();
+  int value();
 }
 
-/* package */ final class ShortTagImpl implements ShortTag {
-  private final short value;
+/* package */ final class IntBinaryTagImpl implements IntBinaryTag {
+  private final int value;
 
-  /* package */ ShortTagImpl(final short value) {
+  /* package */ IntBinaryTagImpl(final int value) {
     this.value = value;
   }
 
   @Override
-  public short value() {
+  public int value() {
     return this.value;
   }
 
@@ -58,7 +58,7 @@ public interface ShortTag extends NumberTag {
 
   @Override
   public double doubleValue() {
-    return (double) this.value;
+    return this.value;
   }
 
   @Override
@@ -68,29 +68,29 @@ public interface ShortTag extends NumberTag {
 
   @Override
   public int intValue() {
-    return (int) this.value;
+    return this.value;
   }
 
   @Override
   public long longValue() {
-    return (long) this.value;
+    return this.value;
   }
 
   @Override
   public short shortValue() {
-    return this.value;
+    return (short) (this.value & 0xffff);
   }
 
   @Override
   public boolean equals(final @Nullable Object other) {
     if(this == other) return true;
     if(other == null || this.getClass() != other.getClass()) return false;
-    final ShortTagImpl that = (ShortTagImpl) other;
+    final IntBinaryTagImpl that = (IntBinaryTagImpl) other;
     return this.value == that.value;
   }
 
   @Override
   public int hashCode() {
-    return Short.hashCode(this.value);
+    return Integer.hashCode(this.value);
   }
 }

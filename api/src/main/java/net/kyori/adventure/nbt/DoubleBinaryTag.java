@@ -27,28 +27,28 @@ import net.kyori.adventure.util.ShadyPines;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public interface FloatTag extends NumberTag {
-  static @NonNull FloatTag of(final float value) {
-    return new FloatTagImpl(value);
+public interface DoubleBinaryTag extends NumberBinaryTag {
+  static @NonNull DoubleBinaryTag of(final double value) {
+    return new DoubleBinaryTagImpl(value);
   }
 
   @Override
-  default @NonNull TagType<FloatTag> type() {
-    return TagTypes.FLOAT;
+  default @NonNull BinaryTagType<DoubleBinaryTag> type() {
+    return BinaryTagTypes.DOUBLE;
   }
 
-   float value();
+  double value();
 }
 
-/* package */ final class FloatTagImpl implements FloatTag {
-  private final float value;
+/* package */ final class DoubleBinaryTagImpl implements DoubleBinaryTag {
+  private final double value;
 
-  /* package */ FloatTagImpl(final float value) {
+  /* package */ DoubleBinaryTagImpl(final double value) {
     this.value = value;
   }
 
   @Override
-  public float value() {
+  public double value() {
     return this.value;
   }
 
@@ -59,12 +59,12 @@ public interface FloatTag extends NumberTag {
 
   @Override
   public double doubleValue() {
-    return (double) this.value;
+    return this.value;
   }
 
   @Override
   public float floatValue() {
-    return this.value;
+    return (float) this.value;
   }
 
   @Override
@@ -74,7 +74,7 @@ public interface FloatTag extends NumberTag {
 
   @Override
   public long longValue() {
-    return (long) this.value;
+    return (long) Math.floor(this.value);
   }
 
   @Override
@@ -86,12 +86,12 @@ public interface FloatTag extends NumberTag {
   public boolean equals(final @Nullable Object other) {
     if(this == other) return true;
     if(other == null || this.getClass() != other.getClass()) return false;
-    final FloatTagImpl that = (FloatTagImpl) other;
+    final DoubleBinaryTagImpl that = (DoubleBinaryTagImpl) other;
     return ShadyPines.equals(this.value, that.value);
   }
 
   @Override
   public int hashCode() {
-    return Float.hashCode(this.value);
+    return Double.hashCode(this.value);
   }
 }

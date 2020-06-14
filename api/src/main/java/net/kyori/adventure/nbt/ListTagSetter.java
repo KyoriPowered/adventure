@@ -25,8 +25,8 @@ package net.kyori.adventure.nbt;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public interface ListTagSetter<R> {
-  @NonNull R add(final Tag tag);
+public interface ListTagSetter<R, T extends BinaryTag> {
+  @NonNull R add(final T tag);
   // TODO: set
   // TODO: remove
 }
