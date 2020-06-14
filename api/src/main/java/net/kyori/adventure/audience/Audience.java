@@ -87,8 +87,8 @@ public interface Audience {
    * @param audience the delegate audience
    * @return a batched audience
    */
-  static @NonNull BatchAudience batchOf(final @NonNull Audience audience) {
-    return audience instanceof BatchAudience ? (BatchAudience) audience : new QueueAudience(audience);
+  static @NonNull BatchAudience batching(final @NonNull Audience audience) {
+    return audience instanceof BatchAudience ? (BatchAudience) audience : new QueueingBatchAudience(audience);
   }
 
   // ------------------

@@ -33,6 +33,15 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public interface BossBar {
   /**
+   * The minimum value the percent can be.
+   */
+  float MIN_PERCENT = 0f;
+  /**
+   * The maximum value the percent can be.
+   */
+  float MAX_PERCENT = 1f;
+
+  /**
    * Creates a new bossbar.
    *
    * @param name the name

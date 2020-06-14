@@ -39,7 +39,7 @@ public interface ForwardingAudience extends Audience {
   /**
    * Gets the delegate audience.
    *
-   * @return the audience, or null to silently drop
+   * @return the audience, or {@code null} to silently drop
    */
   @Nullable Audience audience();
 

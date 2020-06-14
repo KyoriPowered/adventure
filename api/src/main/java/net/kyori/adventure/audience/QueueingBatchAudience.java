@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.audience;
 
-import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
@@ -31,11 +30,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static java.util.Objects.requireNonNull;
 
-/* package */ final class QueueAudience implements BatchAudience {
+/* package */ final class QueueingBatchAudience implements BatchAudience {
   private final Audience audience;
   private @MonotonicNonNull Queue<Operation> operations;
 
-  /* package */ QueueAudience(final @NonNull Audience audience) {
+  /* package */ QueueingBatchAudience(final @NonNull Audience audience) {
     this.audience = requireNonNull(audience, "audience");
   }
 
@@ -55,13 +54,10 @@ import static java.util.Objects.requireNonNull;
     }
 
     int operations = 0;
-    try {
-      while(operations < Integer.MAX_VALUE) {
-        this.operations.remove().process(this.audience);
-        operations++;
-      }
-    } catch(final NoSuchElementException e) {
-      // No-op, end of queue
+    Operation operation;
+    while((operation = this.operations.poll()) != null) {
+      operation.process(this.audience);
+      operations++;
     }
 
     return operations;

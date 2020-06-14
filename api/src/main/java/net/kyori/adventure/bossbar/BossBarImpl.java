@@ -66,9 +66,10 @@ import static java.util.Objects.requireNonNull;
 
   @Override
   public @NonNull BossBar name(final @NonNull Component newName) {
+    requireNonNull(newName, "name");
     final Component oldName = this.name;
     if(!Objects.equals(newName, oldName)) {
-      this.name = requireNonNull(newName, "name");
+      this.name = newName;
       this.forEachListener(listener -> listener.bossBarNameChanged(this, oldName, newName));
     }
     return this;
@@ -91,8 +92,8 @@ import static java.util.Objects.requireNonNull;
   }
 
   /* package */ static void checkPercent(final float percent) {
-    if(percent < 0f || percent > 1f) {
-      throw new IllegalArgumentException("percent must be between 0 and 1, was " + percent);
+    if(percent < MIN_PERCENT || percent > MAX_PERCENT) {
+      throw new IllegalArgumentException("percent must be between " + MIN_PERCENT + " and " + MAX_PERCENT + ", was " + percent);
     }
   }
 
@@ -103,9 +104,10 @@ import static java.util.Objects.requireNonNull;
 
   @Override
   public @NonNull BossBar color(final @NonNull Color newColor) {
+    requireNonNull(newColor, "color");
     final Color oldColor = this.color;
     if(newColor != oldColor) {
-      this.color = requireNonNull(newColor, "color");
+      this.color = newColor;
       this.forEachListener(listener -> listener.bossBarColorChanged(this, oldColor, newColor));
     }
     return this;
@@ -118,9 +120,10 @@ import static java.util.Objects.requireNonNull;
 
   @Override
   public @NonNull BossBar overlay(final @NonNull Overlay newOverlay) {
+    requireNonNull(newOverlay, "overlay");
     final Overlay oldOverlay = this.overlay;
     if(newOverlay != oldOverlay) {
-      this.overlay = requireNonNull(newOverlay, "overlay");
+      this.overlay = newOverlay;
       this.forEachListener(listener -> listener.bossBarOverlayChanged(this, oldOverlay, newOverlay));
     }
     return this;
@@ -132,9 +135,13 @@ import static java.util.Objects.requireNonNull;
   }
 
   @Override
-  public @NonNull BossBar flags(final @NonNull Set<Flag> flags) {
-    this.flags.clear();
-    this.flags.addAll(flags);
+  public @NonNull BossBar flags(final @NonNull Set<Flag> newFlags) {
+    if(!this.flags.equals(newFlags)) {
+      final Set<Flag> oldFlags = new HashSet<>(this.flags);
+      this.flags.clear();
+      this.flags.addAll(newFlags);
+      this.forEachListener(listener -> listener.bossBarFlagsChanged(this, oldFlags, this.flags));
+    }
     return this;
   }
 
