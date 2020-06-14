@@ -21,61 +21,62 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.audience;
+package net.kyori.adventure.inventory;
 
-import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.inventory.Book;
-import net.kyori.adventure.inventory.HandType;
-import net.kyori.adventure.sound.Sound;
-import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-/* package */ final class EmptyAudience implements Audience {
-  /* package */ static final EmptyAudience INSTANCE = new EmptyAudience();
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
-  @Override
-  public void sendMessage(final @NonNull Component message) {
+/**
+ * A signed book.
+ */
+public interface Book {
+
+  /**
+   * Creates a book.
+   *
+   * @param title the title
+   * @param author the author
+   * @param pages the collection of pages
+   * @return a book
+   */
+  static Book of(final @NonNull Component title, final @NonNull Component author, final @NonNull Collection<Component> pages) {
+    return new BookImpl(title, author, pages);
   }
 
-  @Override
-  public void sendActionBar(final @NonNull Component message) {
+  /**
+   * Creates a book.
+   *
+   * @param title the title
+   * @param author the author
+   * @param pages an array of pages
+   * @return a book
+   */
+  static Book of(final @NonNull Component title, final @NonNull Component author, final @NonNull Component... pages) {
+    return of(title, author, Arrays.asList(pages));
   }
 
-  @Override
-  public void showTitle(final @NonNull Title title) {
-  }
+  /**
+   * Gets the title.
+   *
+   * @return the title
+   */
+  @NonNull Component title();
 
-  @Override
-  public void clearTitle() {
-  }
+  /**
+   * Gets the author.
+   *
+   * @return the author
+   */
+  @NonNull Component author();
 
-  @Override
-  public void resetTitle() {
-  }
-
-  @Override
-  public void showBossBar(final @NonNull BossBar bar) {
-  }
-
-  @Override
-  public void hideBossBar(final @NonNull BossBar bar) {
-  }
-
-  @Override
-  public void playSound(final @NonNull Sound sound) {
-  }
-
-  @Override
-  public void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
-  }
-
-  @Override
-  public void stopSound(final @NonNull SoundStop stop) {
-  }
-
-  @Override
-  public void openBook(@NonNull Book book, @NonNull HandType hand) {
-  }
+  /**
+   * Gets the list of pages.
+   *
+   * @return the list of pages
+   */
+  @NonNull List<Component> pages();
 }

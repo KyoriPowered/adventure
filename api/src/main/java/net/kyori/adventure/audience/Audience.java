@@ -25,6 +25,8 @@ package net.kyori.adventure.audience;
 
 import java.util.Arrays;
 import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.inventory.Book;
+import net.kyori.adventure.inventory.HandType;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
@@ -179,4 +181,16 @@ public interface Audience {
    * @param stop the stop
    */
   void stopSound(final @NonNull SoundStop stop);
+
+  // -----------------
+  // --- Inventory ---
+  // -----------------
+
+  /**
+   * Opens a book.
+   *
+   * @param book the book
+   * @param hand the hand to place the book item
+   */
+  void openBook(final @NonNull Book book, final @NonNull HandType hand);
 }
