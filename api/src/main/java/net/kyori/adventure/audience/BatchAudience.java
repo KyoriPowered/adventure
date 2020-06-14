@@ -24,6 +24,8 @@
 package net.kyori.adventure.audience;
 
 import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.inventory.Book;
+import net.kyori.adventure.inventory.HandType;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
@@ -265,5 +267,28 @@ public interface BatchAudience extends Audience {
   @Override
   default void stopSound(final @NonNull SoundStop stop) {
     this.queue(new StopSoundOperation(stop));
+  }
+
+  /**
+   * Opens a book.
+   */
+  class OpenBookOperation implements Operation {
+    protected final Book book;
+    protected final HandType hand;
+
+    protected OpenBookOperation(final @NonNull Book book, final @NonNull HandType hand) {
+      this.book = requireNonNull(book, "book");
+      this.hand = requireNonNull(hand, "hand");
+    }
+
+    @Override
+    public void process(final @NonNull Audience audience) {
+      audience.openBook(this.book, this.hand);
+    }
+  }
+
+  @Override
+  default void openBook(final @NonNull Book book, final @NonNull HandType hand) {
+    this.queue(new OpenBookOperation(book, hand));
   }
 }

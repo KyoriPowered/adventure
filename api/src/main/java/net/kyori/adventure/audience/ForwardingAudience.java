@@ -24,6 +24,8 @@
 package net.kyori.adventure.audience;
 
 import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.inventory.Book;
+import net.kyori.adventure.inventory.HandType;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
@@ -101,5 +103,11 @@ public interface ForwardingAudience extends Audience {
   default void stopSound(final @NonNull SoundStop stop) {
     final Audience audience = this.audience();
     if(audience != null) audience.stopSound(stop);
+  }
+
+  @Override
+  default void openBook(final @NonNull Book book, final @NonNull HandType hand) {
+    final Audience audience = this.audience();
+    if(audience != null) audience.openBook(book, hand);
   }
 }
