@@ -25,7 +25,6 @@ package net.kyori.adventure.audience;
 
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.inventory.Book;
-import net.kyori.adventure.inventory.HandType;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
@@ -76,6 +75,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
   }
 
   @Override
-  public void openBook(@NonNull Book book, @NonNull HandType hand) {
+  public void openBook(@NonNull Book book) {
   }
 }
