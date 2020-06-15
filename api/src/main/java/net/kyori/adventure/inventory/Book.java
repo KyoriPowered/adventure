@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.inventory;
 
+import java.util.ArrayList;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -44,7 +45,7 @@ public interface Book {
    * @return a book
    */
   static Book of(final @NonNull Component title, final @NonNull Component author, final @NonNull Collection<Component> pages) {
-    return new BookImpl(title, author, pages);
+    return new BookImpl(title, author, new ArrayList<>(pages));
   }
 
   /**
@@ -60,11 +61,28 @@ public interface Book {
   }
 
   /**
+   * Create a new builder that will create a {@link Book}
+   *
+   * @return a builder
+   */
+  static Book.Builder builder() {
+    return new BookImpl.Builder();
+  }
+
+  /**
    * Gets the title.
    *
    * @return the title
    */
   @NonNull Component title();
+
+  /**
+   * Changes the book's title
+   *
+   * @param title the title
+   * @return a new book with modifications
+   */
+  @NonNull Book title(final @NonNull Component title);
 
   /**
    * Gets the author.
@@ -74,9 +92,107 @@ public interface Book {
   @NonNull Component author();
 
   /**
+   * Changes the book's author
+   *
+   * @param author the author
+   * @return a new book with modifications
+   */
+  @NonNull Book author(final @NonNull Component author);
+
+  /**
    * Gets the list of pages.
+   *
+   * The returned collection will be unmodifiable.
    *
    * @return the list of pages
    */
   @NonNull List<Component> pages();
+
+  /**
+   * Returns an updated book with the provided pages.
+   *
+   * @param pages the pages to set
+   * @return a new book with modifications
+   */
+  @NonNull Book pages(final @NonNull List<Component> pages);
+
+  /**
+   * Returns an updated book with the provided pages.
+   *
+   * @param pages the pages to set
+   * @return a new book with modifications
+   */
+  default @NonNull Book pages(final @NonNull Component@NonNull... pages) {
+    return pages(Arrays.asList(pages));
+  }
+
+  /**
+   * Create a new builder initialized with the attributes of this book.
+   *
+   * @return the builder
+   */
+  default Book.@NonNull Builder toBuilder() {
+    return builder()
+      .title(this.title())
+      .author(this.author())
+      .pages(this.pages());
+  }
+
+  /**
+   * A builder for a {@link Book}
+   */
+  interface Builder {
+
+    /**
+     * Set the title.
+     *
+     * @param title the title
+     * @return this
+     */
+    Builder title(final @NonNull Component title);
+
+    /**
+     * Set the author.
+     *
+     * @param author the author
+     * @return this
+     */
+    Builder author(final @NonNull Component author);
+
+    /**
+     * Add a page to the book.
+     *
+     * <p>Each page's length will be limited by the size of the client's book viewer.
+     * Any text that does not fit will be truncated clientside.</p>
+     *
+     * @param page the page
+     * @return this
+     */
+    Builder page(final @NonNull Component page);
+
+    /**
+     * Add pages to the book.
+     *
+     * @param pages pages to add
+     * @return this
+     * @see #page(Component) for details on page values.
+     */
+    Builder pages(final @NonNull Collection<Component> pages);
+
+    /**
+     * Add pages to the book.
+     *
+     * @param pages pages to add
+     * @return this
+     * @see #page(Component) for details on page values.
+     */
+    Builder pages(final @NonNull Component@NonNull... pages);
+
+    /**
+     * Create a new book from this builder
+     *
+     * @return The new book
+     */
+    Book build();
+  }
 }
