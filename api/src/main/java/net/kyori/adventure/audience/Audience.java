@@ -26,7 +26,6 @@ package net.kyori.adventure.audience;
 import java.util.Arrays;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.inventory.Book;
-import net.kyori.adventure.inventory.HandType;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
@@ -187,10 +186,9 @@ public interface Audience {
   // -----------------
 
   /**
-   * Opens a book.
+   * Opens a book. While a virtual book item will be sent to the client for this operation, no persistent changes will be made.
    *
    * @param book the book
-   * @param hand the hand to place the book item
    */
-  void openBook(final @NonNull Book book, final @NonNull HandType hand);
+  void openBook(final @NonNull Book book);
 }
