@@ -23,22 +23,31 @@
  */
 package net.kyori.adventure.inventory;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.EmptyComponent;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-/* package */ class BookImpl implements Book {
+import static java.util.Objects.requireNonNull;
+
+/* package */ class BookImpl implements Book, Examinable {
   private final Component title;
   private final Component author;
   private final List<Component> pages;
 
-  /* package */ BookImpl(final @NonNull Component title, final @NonNull Component author, final @NonNull Collection<Component> pages) {
-    this.title = title;
-    this.author = author;
-    this.pages = new ArrayList<>(pages);
+  /* package */ BookImpl(final @NonNull Component title, final @NonNull Component author, final @NonNull List<Component> pages) {
+    this.title = requireNonNull(title, "title");
+    this.author = requireNonNull(author, "author");
+    this.pages = Collections.unmodifiableList(requireNonNull(pages, "pages"));
   }
 
   @Override
@@ -47,12 +56,100 @@ import java.util.List;
   }
 
   @Override
+  public @NonNull Book title(final @NonNull Component title) {
+    return new BookImpl(requireNonNull(title, "title"), this.author, this.pages);
+  }
+
+  @Override
   public @NonNull Component author() {
     return this.author;
   }
 
   @Override
+  public @NonNull Book author(final @NonNull Component author) {
+    return new BookImpl(this.title, requireNonNull(author, "author"), this.pages);
+  }
+
+  @Override
   public @NonNull List<Component> pages() {
     return this.pages;
+  }
+
+  @Override
+  public @NonNull Book pages(final @NonNull List<Component> pages) {
+    return new BookImpl(this.title, this.author, new ArrayList<>(requireNonNull(pages, "pages")));
+  }
+
+  @Override
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(
+      ExaminableProperty.of("title", this.title),
+      ExaminableProperty.of("author", this.author),
+      ExaminableProperty.of("pages", this.pages)
+    );
+  }
+
+  @Override
+  public boolean equals(final Object o) {
+    if(this == o) return true;
+    if(!(o instanceof BookImpl)) return false;
+    final BookImpl that = (BookImpl) o;
+    return this.title.equals(that.title)
+      && this.author.equals(that.author)
+      && this.pages.equals(that.pages);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = this.title.hashCode();
+    result = 31 * result + this.author.hashCode();
+    result = 31 * result + this.pages.hashCode();
+    return result;
+  }
+
+  @Override
+  public String toString() {
+    return examine(StringExaminer.simpleEscaping());
+  }
+
+  static class Builder implements Book.Builder {
+    private Component title = EmptyComponent.empty();
+    private Component author = EmptyComponent.empty();
+    private final List<Component> pages = new ArrayList<>();
+
+    @Override
+    public Book.Builder title(final @NonNull Component title) {
+      this.title = requireNonNull(title, "title");
+      return this;
+    }
+
+    @Override
+    public Book.Builder author(final @NonNull Component author) {
+      this.author = requireNonNull(author, "author");
+      return this;
+    }
+
+    @Override
+    public Book.Builder page(final @NonNull Component page) {
+      this.pages.add(requireNonNull(page, "page"));
+      return this;
+    }
+
+    @Override
+    public Book.Builder pages(final @NonNull Collection<Component> pages) {
+      this.pages.addAll(requireNonNull(pages, "pages"));
+      return this;
+    }
+
+    @Override
+    public Book.Builder pages(final @NonNull Component@NonNull... pages) {
+      this.pages.addAll(Arrays.asList(pages));
+      return this;
+    }
+
+    @Override
+    public Book build() {
+      return new BookImpl(this.title, this.author, new ArrayList<>(this.pages));
+    }
   }
 }
