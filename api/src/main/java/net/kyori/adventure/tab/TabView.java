@@ -23,44 +23,43 @@
  */
 package net.kyori.adventure.tab;
 
-import java.util.Set;
-
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * A tab list.
+ * A tab view, aka. the player list.
  */
-public interface TabView extends Set<TabEntry> {
+public interface TabView {
   /**
    * Gets the header.
    *
-   * @return the header
+   * @return the header, or null if not present
    */
-  @NonNull Component header();
+  @Nullable Component header();
 
   /**
    * Sets the header.
    *
-   * @param header the header
+   * @param header the header, or null to respect existing header
    * @return the tab view
    */
-  @NonNull TabView header(final @NonNull Component header);
+  @NonNull TabView header(final @Nullable Component header);
 
   /**
    * Gets the footer.
    *
-   * @return the footer
+   * @return the footer, or null of not preesent
    */
-  @NonNull Component footer();
+  @Nullable Component footer();
 
   /**
    * Sets the footer.
    *
-   * @param footer the footer
+   * @param footer the footer, or null to respect existing footer
    * @return the tab view
    */
-  @NonNull TabView footer(final @NonNull Component footer);
+  @NonNull TabView footer(final @Nullable Component footer);
 
   /**
    * Gets the number of columns.
@@ -70,32 +69,32 @@ public interface TabView extends Set<TabEntry> {
   int columns();
 
   /**
-   * Sets the number of columns.
+   * Gets the number of rows.
    *
-   * @param columns the number of columns
-   * @return the tab view
-   * @throws IndexOutOfBoundsException if the column is less than 0 or greater than 4
+   * @return the number of rows
    */
-  @NonNull TabView columns(final int columns);
+  int rows();
 
   /**
-   * Gets an entry at a specific location.
+   * Gets an entry.
    *
-   * @param column the 0-based column
-   * @param row the 0-based row
+   * @param column the column
+   * @param row the row
    * @return the tab view
    * @throws IndexOutOfBoundsException if the column or row are out of range
    */
-  @NonNull TabEntry get(final int column, final int row);
+  @NonNull TabEntry entry(final int column, final int row);
 
   /**
-   * Inserts an entry at a specific location.
+   * Inserts an entry.
    *
-   * @param entry an entry
-   * @param column the 0-based column
-   * @param row the 0-based row
+   * @param entry an entry, or null to remove
+   * @param column the column
+   * @param row the row
    * @return the tab view
    * @throws IndexOutOfBoundsException if the column or row are out of range
    */
-  @NonNull TabView add(final @NonNull TabEntry entry, final int column, final int row);
+  @NonNull TabView entry(final @Nullable TabEntry entry, final int column, final int row);
+
+  // TODO: resizing, clearing
 }
