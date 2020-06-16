@@ -186,7 +186,9 @@ public interface Audience {
   // -----------------
 
   /**
-   * Opens a book. While a virtual book item will be sent to the client for this operation, no persistent changes will be made.
+   * Opens a book.
+   *
+   * <p>Opens a virtual book for the client, no item will be persisted.</p>
    *
    * @param book the book
    */
