@@ -39,6 +39,15 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public interface TextComponent extends BuildableComponent<TextComponent, TextComponent.Builder>, ScopedComponent<TextComponent> {
   /**
+   * Gets an empty component.
+   *
+   * @return an empty component
+   */
+  static @NonNull TextComponent empty() {
+    return TextComponentImpl.EMPTY;
+  }
+
+  /**
    * Gets a text component with a new line character as the content.
    *
    * @return a text component with a new line character as the content
@@ -77,7 +86,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
   static @NonNull TextComponent join(final @NonNull Component separator, final Iterable<? extends Component> components) {
     final Iterator<? extends Component> it = components.iterator();
     if(!it.hasNext()) {
-      return EmptyComponent.empty();
+      return empty();
     }
     final Builder builder = builder();
     while(it.hasNext()) {
@@ -96,7 +105,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @return the text component
    */
   static @NonNull TextComponent of(final @NonNull String content) {
-    if(content.isEmpty()) return EmptyComponent.empty();
+    if(content.isEmpty()) return empty();
     return builder(content).build();
   }
 

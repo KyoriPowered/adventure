@@ -27,7 +27,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.testing.EqualsTester;
 import java.util.UUID;
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.EmptyComponent;
 import net.kyori.adventure.text.TextComponent;
 import org.junit.jupiter.api.Test;
 
@@ -39,16 +38,16 @@ class HoverEventTest {
     final UUID entity = UUID.randomUUID();
     new EqualsTester()
       .addEqualityGroup(
-        HoverEvent.showText(EmptyComponent.empty()),
-        HoverEvent.of(HoverEvent.Action.SHOW_TEXT, EmptyComponent.empty())
+        HoverEvent.showText(TextComponent.empty()),
+        HoverEvent.of(HoverEvent.Action.SHOW_TEXT, TextComponent.empty())
       )
       .addEqualityGroup(
         HoverEvent.showItem(new HoverEvent.ShowItem(Key.of("air"), 1)),
         HoverEvent.of(HoverEvent.Action.SHOW_ITEM, new HoverEvent.ShowItem(Key.of("air"), 1))
       )
       .addEqualityGroup(
-        HoverEvent.showEntity(new HoverEvent.ShowEntity(Key.of("cat"), entity, EmptyComponent.empty())),
-        HoverEvent.of(HoverEvent.Action.SHOW_ENTITY, new HoverEvent.ShowEntity(Key.of("cat"), entity, EmptyComponent.empty()))
+        HoverEvent.showEntity(new HoverEvent.ShowEntity(Key.of("cat"), entity, TextComponent.empty())),
+        HoverEvent.of(HoverEvent.Action.SHOW_ENTITY, new HoverEvent.ShowEntity(Key.of("cat"), entity, TextComponent.empty()))
       )
       .testEquals();
   }

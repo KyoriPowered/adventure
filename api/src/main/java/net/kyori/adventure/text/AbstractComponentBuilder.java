@@ -24,7 +24,6 @@
 package net.kyori.adventure.text;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
@@ -87,7 +86,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   @Override
   @SuppressWarnings("unchecked")
   public @NonNull B append(final @NonNull Component component) {
-    if(component == EmptyComponent.empty()) return (B) this;
+    if(component == TextComponent.empty()) return (B) this;
     this.prepareChildren();
     this.children.add(component);
     return (B) this;
@@ -99,7 +98,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
     boolean prepared = false;
     for(int i = 0, length = components.length; i < length; i++) {
       final Component component = components[i];
-      if(component != EmptyComponent.empty()) {
+      if(component != TextComponent.empty()) {
         if(!prepared) {
           this.prepareChildren();
           prepared = true;
@@ -115,7 +114,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   public @NonNull B append(final @NonNull Iterable<? extends Component> components) {
     boolean prepared = false;
     for(final Component component : components) {
-      if(component != EmptyComponent.empty()) {
+      if(component != TextComponent.empty()) {
         if(!prepared) {
           this.prepareChildren();
           prepared = true;

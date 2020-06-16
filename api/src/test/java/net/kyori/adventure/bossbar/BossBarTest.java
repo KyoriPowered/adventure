@@ -27,7 +27,6 @@ import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.EmptyComponent;
 import net.kyori.adventure.text.TextComponent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
@@ -68,11 +67,11 @@ public class BossBarTest {
       BossBarTest.this.flags.incrementAndGet();
     }
   };
-  private final BossBar bar = BossBar.of(EmptyComponent.empty(), 1f, BossBar.Color.PURPLE, BossBar.Overlay.PROGRESS);
+  private final BossBar bar = BossBar.of(TextComponent.empty(), 1f, BossBar.Color.PURPLE, BossBar.Overlay.PROGRESS);
 
   @Test
   void testOfFlags() {
-    final BossBar bar = BossBar.of(EmptyComponent.empty(), 1f, BossBar.Color.PURPLE, BossBar.Overlay.PROGRESS, ImmutableSet.of(BossBar.Flag.DARKEN_SCREEN));
+    final BossBar bar = BossBar.of(TextComponent.empty(), 1f, BossBar.Color.PURPLE, BossBar.Overlay.PROGRESS, ImmutableSet.of(BossBar.Flag.DARKEN_SCREEN));
     assertThat(bar.flags()).containsExactly(BossBar.Flag.DARKEN_SCREEN);
   }
 

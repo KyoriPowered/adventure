@@ -23,19 +23,18 @@
  */
 package net.kyori.adventure.inventory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.EmptyComponent;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -113,8 +112,8 @@ import static java.util.Objects.requireNonNull;
   }
 
   static class Builder implements Book.Builder {
-    private Component title = EmptyComponent.empty();
-    private Component author = EmptyComponent.empty();
+    private Component title = TextComponent.empty();
+    private Component author = TextComponent.empty();
     private final List<Component> pages = new ArrayList<>();
 
     @Override
