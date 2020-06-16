@@ -32,7 +32,6 @@ import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.TextAssertions.assertDecorations;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -103,12 +102,12 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
 
   @Test
   void testBuildEmptyIsEmpty() {
-    assertSame(EmptyComponent.empty(), TextComponent.builder().build());
+    assertSame(TextComponent.empty(), TextComponent.builder().build());
   }
 
   @Test
   void testJoin() {
-    assertEquals(EmptyComponent.empty(), TextComponent.join(TextComponent.space(), Collections.emptyList()));
+    assertEquals(TextComponent.empty(), TextComponent.join(TextComponent.space(), Collections.emptyList()));
 
     final Component c0 = TextComponent.join(
       TextComponent.space(),

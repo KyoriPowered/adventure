@@ -24,12 +24,11 @@
 package net.kyori.adventure.inventory;
 
 import java.util.ArrayList;
-import net.kyori.adventure.text.Component;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import net.kyori.adventure.text.Component;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A signed book.

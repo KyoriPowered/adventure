@@ -74,7 +74,7 @@ public interface ScopedComponent<C extends Component> extends Component {
   @Override
   @SuppressWarnings("unchecked")
   default @NonNull C append(final @NonNull Component component) {
-    if(component == EmptyComponent.empty()) return (C) this;
+    if(component == TextComponent.empty()) return (C) this;
     this.detectCycle(component); // detect cycle before modifying
     final List<Component> oldChildren = this.children();
     final List<Component> newChildren = new ArrayList<>(oldChildren.size() + 1);
