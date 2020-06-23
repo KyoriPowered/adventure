@@ -31,7 +31,6 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class LegacyComponentSerializerTest {
   @Test
@@ -149,6 +148,17 @@ class LegacyComponentSerializerTest {
   @Test
   void testToLegacyWithHexColor() {
     final TextComponent c0 = TextComponent.of("Kittens!", TextColor.of(0xaa00aa));
-    assertThrows(IndexOutOfBoundsException.class, () -> LegacyComponentSerializer.legacy().serialize(c0, LegacyComponentSerializer.CHARACTER));
+    assertEquals("§#aa00aaKittens!", LegacyComponentSerializer.legacy().serialize(c0, LegacyComponentSerializer.CHARACTER));
+  }
+
+  @Test
+  void testFromLegacyWithHexColor() {
+    final TextComponent component = TextComponent.builder("")
+      .append(TextComponent.of("pretty").color(TextColor.fromHexString("#ffb6c1")))
+      .append(TextComponent.of("in").color(TextColor.fromHexString("#ff69b4")).decoration(TextDecoration.BOLD, TextDecoration.State.TRUE))
+      .append(TextComponent.of("pink").color(TextColor.fromHexString("#ffc0cb")))
+      .build();
+    assertEquals(component, LegacyComponentSerializer.legacy().deserialize("&#ffb6c1pretty&#ff69b4&lin&#ffc0cbpink", '&'));
+    assertEquals(component, LegacyComponentSerializer.legacyLinking().deserialize("&#ffb6c1pretty&#ff69b4&lin&#ffc0cbpink", '&'));
   }
 }

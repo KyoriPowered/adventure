@@ -54,14 +54,24 @@ abstract class AbstractLegacyComponentSerializer implements LegacyComponentSeria
     }
   }
 
-  private static @Nullable TextFormat formatByLegacyChar(final char legacy) {
+  private static @Nullable TextFormat formatByLegacyChar(final char legacy, final String input, final int pos) {
+    if(legacy == '#' && input.length() >= pos + 7) {
+      return TextColor.fromHexString(input.substring(pos, pos + 7));
+    }
     final int index = LEGACY_CHARS.indexOf(legacy);
     return index == -1 ? null : FORMATS.get(index);
   }
 
-  static char getLegacyChar(final TextFormat legacy) {
-    final int index = FORMATS.indexOf(legacy);
-    return LEGACY_CHARS.charAt(index);
+  static String getLegacyChar(final TextFormat format) {
+    if(isHexTextColor(format)) {
+      return ((TextColor) format).asHexString();
+    }
+    final int index = FORMATS.indexOf(format);
+    return Character.toString(LEGACY_CHARS.charAt(index));
+  }
+
+  private static boolean isHexTextColor(final TextFormat format) {
+    return format instanceof TextColor && !(format instanceof NamedTextColor);
   }
 
   @Override
@@ -78,9 +88,9 @@ abstract class AbstractLegacyComponentSerializer implements LegacyComponentSeria
 
     int pos = input.length();
     do {
-      final TextFormat format = formatByLegacyChar(input.charAt(next + 1));
+      final TextFormat format = formatByLegacyChar(input.charAt(next + 1), input, next + 1);
       if(format != null) {
-        final int from = next + 2;
+        final int from = next + (isHexTextColor(format) ? 8 : 2);
         if(from != pos) {
           if(current != null) {
             if(reset) {
