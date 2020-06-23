@@ -40,6 +40,10 @@ public final class BinaryTagIO {
   private BinaryTagIO() {
   }
 
+  static {
+    BinaryTagTypes.COMPOUND.id(); // initialize tag types
+  }
+
   /**
    * Reads a compound tag from {@code path}.
    *
@@ -163,5 +167,27 @@ public final class BinaryTagIO {
     output.writeByte(BinaryTagTypes.COMPOUND.id());
     output.writeUTF(""); // write empty name
     BinaryTagTypes.COMPOUND.write(tag, output);
+  }
+
+  public static CompoundBinaryTag readString(final String input) throws IOException {
+    try {
+      final CharBuffer buffer = new CharBuffer(input);
+      final TagStringReader parser = new TagStringReader(buffer);
+      final CompoundBinaryTag tag = parser.compound();
+      if(buffer.skipWhitespace().hasMore()) {
+        throw new IOException("Document had trailing content after first CompoundTag");
+      }
+      return tag;
+    } catch(StringTagParseException ex) {
+      throw new IOException(ex);
+    }
+  }
+
+  public static String writeAsString(final CompoundBinaryTag tag) throws IOException {
+    final StringBuilder ret = new StringBuilder();
+    try(final TagStringWriter emit = new TagStringWriter(ret)) {
+      emit.writeTag(tag);
+    }
+    return ret.toString();
   }
 }
