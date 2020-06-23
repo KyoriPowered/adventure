@@ -31,8 +31,6 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * A legacy component serializer.
  *
@@ -43,79 +41,117 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
   /**
    * Gets a component serializer for legacy-based serialization and deserialization. Note that this
    * serializer works exactly like vanilla Minecraft and does not detect any links. If you want to
-   * detect and make URLs clickable, use {@link #legacyLinking()}.
+   * detect and make URLs clickable, use {@link Builder#extractUrls()}.
    *
    * @return a component serializer for legacy serialization and deserialization
    */
   static @NonNull LegacyComponentSerializer legacy() {
-    return LegacyComponentSerializerImpl.INSTANCE;
+    return LegacyComponentSerializerImpl.SECTION_CHAR;
   }
 
   /**
-   * Gets a legacy component serializer for legacy serialization and deserialization that detects
-   * and makes URLs clickable in chat.
+   * Gets a component serializer for legacy-based serialization and deserialization. Note that this
+   * serializer works exactly like vanilla Minecraft and does not detect any links. If you want to
+   * detect and make URLs clickable, use {@link Builder#extractUrls()}.
    *
-   * @return a component serializer for legacy serialization and deserialization that detects and
-   *         makes URLs clickable in chat
+   * @param legacyCharacter the legacy character to use
+   * @return a component serializer for legacy serialization and deserialization
    */
-  static @NonNull LegacyComponentSerializer legacyLinking() {
-    return LinkingLegacyComponentSerializer.NO_STYLE;
+  static @NonNull LegacyComponentSerializer legacy(final char legacyCharacter) {
+    switch(legacyCharacter) {
+      case LEGACY_CHARACTER_SECTION:
+        return LegacyComponentSerializerImpl.SECTION_CHAR;
+      case LEGACY_CHARACTER_AMPERSAND:
+        return LegacyComponentSerializerImpl.AMPERSAND_CHAR;
+      default:
+        return builder().character(legacyCharacter).build();
+    }
   }
 
   /**
-   * Creates a legacy component serializer for legacy-based serialization and deserialization that
-   * detects links and applies {@code style}.
+   * Creates a new {@link LegacyComponentSerializer.Builder}.
    *
-   * @param style the style to use
-   * @return a legacy component serializer for legacy-based serialization and deserialization that
-   *         styles links with the specified {@code style}
+   * @return the builder
    */
-  static @NonNull LegacyComponentSerializer legacyLinking(final @NonNull Style style) {
-    return new LinkingLegacyComponentSerializer(requireNonNull(style));
+  static Builder builder() {
+    return new LegacyComponentSerializerImpl.BuilderImpl();
   }
 
   /**
-   * The legacy character.
+   * The legacy character used by Minecraft. ('§')
    */
-  char CHARACTER = '\u00A7';
+  char LEGACY_CHARACTER_SECTION = '\u00A7';
 
   /**
-   * Deserialize a component from a {@link String} with the {@link #CHARACTER legacy character}.
+   * The legacy character frequently used by configurations and commands. ('&')
+   */
+  char LEGACY_CHARACTER_AMPERSAND = '&';
+
+  /**
+   * The legacy character used to prefix hex colors. ('#')
+   */
+  char LEGACY_HEX_CHARACTER = '#';
+
+  /**
+   * Deserialize a component from a legacy {@link String}.
    *
    * @param input the input
    * @return the component
    */
   @Override
-  default @NonNull TextComponent deserialize(final @NonNull String input) {
-    return this.deserialize(input, CHARACTER);
-  }
+  @NonNull TextComponent deserialize(final @NonNull String input);
 
   /**
-   * Deserialize a component from a {@link String} with the specified {@code character legacy character}.
-   *
-   * @param input the input
-   * @param character the legacy character
-   * @return the component
-   */
-  @NonNull TextComponent deserialize(final @NonNull String input, final char character);
-
-  /**
-   * Serializes a component into a {@link String} with the specified {@link #CHARACTER legacy character}.
+   * Serializes a component into a legacy {@link String}.
    *
    * @param component the component
    * @return the string
    */
   @Override
-  default @NonNull String serialize(final @NonNull Component component) {
-    return this.serialize(component, CHARACTER);
-  }
+  @NonNull String serialize(final @NonNull Component component);
 
   /**
-   * Serializes a component into a {@link String} with the specified {@code character legacy character}.
-   *
-   * @param component the component
-   * @param character the legacy character
-   * @return the string
+   * A builder for {@link LegacyComponentSerializer}.
    */
-  @NonNull String serialize(final @NonNull Component component, final char character);
+  interface Builder {
+    /**
+     * Sets the legacy character used by the serializer.
+     *
+     * @param legacyCharacter the legacy character
+     * @return this builder
+     */
+    @NonNull Builder character(final char legacyCharacter);
+
+    /**
+     * Sets the legacy hex character used by the serializer.
+     *
+     * @param legacyHexCharacter the legacy hex character.
+     * @return this builder
+     */
+    @NonNull Builder hexCharacter(final char legacyHexCharacter);
+
+    /**
+     * Sets that the serializer should extract URLs into {@link ClickEvent}s
+     * when deserializing.
+     *
+     * @return this builder
+     */
+    @NonNull Builder extractUrls();
+
+    /**
+     * Sets that the serializer should extract URLs into {@link ClickEvent}s
+     * when deserializing.
+     *
+     * @param style the style to use for extracted links
+     * @return this builder
+     */
+    @NonNull Builder extractUrls(final @NonNull Style style);
+
+    /**
+     * Builds the serializer.
+     *
+     * @return the built serializer
+     */
+    @NonNull LegacyComponentSerializer build();
+  }
 }
