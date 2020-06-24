@@ -47,7 +47,7 @@ class StyleTest extends AbstractSerializeDeserializeTest<Style> {
   @Test
   void testWithDecorationAsColor() {
     final Style s0 = GsonComponentSerializer.GSON.fromJson(AbstractComponentTest.object(object -> {
-      object.addProperty(StyleSerializer.COLOR, TextDecoration.NAMES.name(TextDecoration.BOLD));
+      object.addProperty(StyleSerializer.COLOR, TextDecoration.NAMES.key(TextDecoration.BOLD));
     }), Style.class);
     assertNull(s0.color());
     assertTrue(s0.hasDecoration(TextDecoration.BOLD));
@@ -138,19 +138,19 @@ class StyleTest extends AbstractSerializeDeserializeTest<Style> {
   }
 
   static String name(final NamedTextColor color) {
-    return NamedTextColor.NAMES.name(color);
+    return NamedTextColor.NAMES.key(color);
   }
 
   static String name(final TextDecoration decoration) {
-    return TextDecoration.NAMES.name(decoration);
+    return TextDecoration.NAMES.key(decoration);
   }
 
   static String name(final ClickEvent.Action action) {
-    return ClickEvent.Action.NAMES.name(action);
+    return ClickEvent.Action.NAMES.key(action);
   }
 
   static <V> String name(final HoverEvent.Action<V> action) {
-    return HoverEvent.Action.NAMES.name(action);
+    return HoverEvent.Action.NAMES.key(action);
   }
 
   @Override

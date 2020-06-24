@@ -64,7 +64,7 @@ public enum NamedTextColor implements TextColor {
    * @return the matched color, or null
    */
   public static @Nullable NamedTextColor ofExact(final int value) {
-    return COLOR_VALUES.value(value).orElse(null);
+    return COLOR_VALUES.value(value);
   }
 
   /**

@@ -27,10 +27,10 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An index map.
@@ -56,7 +56,7 @@ public final class Index<K, E> {
    * @param <E> the type
    * @return the key map
    */
-  public static <K, E extends Enum<E>> @NonNull Index<K, E> create(final Class<E> type, final @NonNull Function<E, K> indexFunction) {
+  public static <K, E extends Enum<E>> @NonNull Index<K, E> create(final Class<E> type, final @NonNull Function<? super E, ? extends K> indexFunction) {
     return create(type, indexFunction, type.getEnumConstants());
   }
 
@@ -71,7 +71,7 @@ public final class Index<K, E> {
    * @return the key map
    */
   @SafeVarargs
-  public static <K, E extends Enum<E>> @NonNull Index<K, E> create(final Class<E> type, final @NonNull Function<E, K> indexFunction, final @NonNull E@NonNull... constants) {
+  public static <K, E extends Enum<E>> @NonNull Index<K, E> create(final Class<E> type, final @NonNull Function<? super E, ? extends K> indexFunction, final @NonNull E@NonNull... constants) {
     return create(constants, length -> new EnumMap<>(type), indexFunction);
   }
 
@@ -85,12 +85,12 @@ public final class Index<K, E> {
    * @return the key map
    */
   @SafeVarargs
-  public static <K, E> @NonNull Index<K, E> create(final @NonNull Function<E, K> indexFunction, final @NonNull E@NonNull... constants) {
+  public static <K, E> @NonNull Index<K, E> create(final @NonNull Function<? super E, ? extends K> indexFunction, final @NonNull E@NonNull... constants) {
     return create(constants, HashMap<E, K>::new /* explicit type params needed to fix build on JDK8 */, indexFunction);
   }
 
   @SuppressWarnings("ForLoopReplaceableByForEach")
-  private static <K, E> @NonNull Index<K, E> create(final E[] constants, final IntFunction<Map<E, K>> valueToKeyFactory, final @NonNull Function<E, K> indexFunction) {
+  private static <K, E> @NonNull Index<K, E> create(final E[] constants, final IntFunction<Map<E, K>> valueToKeyFactory, final @NonNull Function<? super E, ? extends K> indexFunction) {
     final int length = constants.length;
     final Map<K, E> keyToValue = new HashMap<>(length);
     final Map<E, K> valueToKey = valueToKeyFactory.apply(length); // to support using EnumMap instead of HashMap when possible
@@ -109,7 +109,7 @@ public final class Index<K, E> {
    * @param value the value
    * @return the key
    */
-  public @NonNull K key(final @NonNull E value) {
+  public @Nullable K key(final @NonNull E value) {
     return this.valueToKey.get(value);
   }
 
@@ -119,7 +119,7 @@ public final class Index<K, E> {
    * @param key the key
    * @return the value
    */
-  public @NonNull Optional<E> value(final @NonNull K key) {
-    return Optional.ofNullable(this.keyToValue.get(key));
+  public @Nullable E value(final @NonNull K key) {
+    return this.keyToValue.get(key);
   }
 }

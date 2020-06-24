@@ -41,7 +41,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
   @Override
   public void write(final JsonWriter out, final TextColor value) throws IOException {
     if(value instanceof NamedTextColor) {
-      out.value(NamedTextColor.NAMES.name((NamedTextColor) value));
+      out.value(NamedTextColor.NAMES.key((NamedTextColor) value));
     } else {
       out.value(value.asHexString());
     }
@@ -56,7 +56,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
     if(value.startsWith("#")) {
       return TextColor.fromHexString(value);
     } else {
-      return NamedTextColor.NAMES.value(value).orElse(null);
+      return NamedTextColor.NAMES.value(value);
     }
   }
 }

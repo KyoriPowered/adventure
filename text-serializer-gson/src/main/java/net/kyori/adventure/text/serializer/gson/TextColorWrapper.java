@@ -62,7 +62,7 @@ final class TextColorWrapper {
     public TextColorWrapper read(final JsonReader in) throws IOException {
       final String input = in.nextString();
       final TextColor color = TextColorSerializer.fromString(input);
-      final TextDecoration decoration = TextDecoration.NAMES.value(input).orElse(null);
+      final TextDecoration decoration = TextDecoration.NAMES.value(input);
       final boolean reset = decoration == null && input.equals("reset");
       if(color == null && decoration == null && !reset) {
         throw new JsonParseException("Don't know how to parse " + input + " at " + in.getPath());

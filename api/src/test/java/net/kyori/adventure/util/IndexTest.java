@@ -40,7 +40,7 @@ class IndexTest {
   @Test
   void testValue() {
     for(final Thing thing : Thing.values()) {
-      assertEquals(thing, THINGS.value(thing.name).orElse(null));
+      assertEquals(thing, THINGS.value(thing.name));
     }
   }
 

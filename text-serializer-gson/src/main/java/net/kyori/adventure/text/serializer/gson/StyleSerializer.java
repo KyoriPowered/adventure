@@ -80,7 +80,7 @@ public final class StyleSerializer implements JsonDeserializer<Style>, JsonSeria
 
     for(int i = 0, length = DECORATIONS.length; i < length; i++) {
       final TextDecoration decoration = DECORATIONS[i];
-      final String name = TextDecoration.NAMES.name(decoration);
+      final String name = TextDecoration.NAMES.key(decoration);
       if(json.has(name)) {
         style.decoration(decoration, json.get(name).getAsBoolean());
       }
@@ -154,7 +154,7 @@ public final class StyleSerializer implements JsonDeserializer<Style>, JsonSeria
       final TextDecoration decoration = DECORATIONS[i];
       final TextDecoration.State state = src.decoration(decoration);
       if(state != TextDecoration.State.NOT_SET) {
-        final String name = TextDecoration.NAMES.name(decoration);
+        final String name = TextDecoration.NAMES.key(decoration);
         json.addProperty(name, state == TextDecoration.State.TRUE);
       }
     }
