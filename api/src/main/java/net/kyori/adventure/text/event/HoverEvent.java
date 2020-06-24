@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.renderer.ComponentRenderer;
-import net.kyori.adventure.util.NameMap;
+import net.kyori.adventure.util.Index;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
@@ -317,7 +317,7 @@ public final class HoverEvent<V> implements Examinable {
     /**
      * The name map.
      */
-    public static final NameMap<Action<?>> NAMES = NameMap.create(constant -> constant.name, SHOW_TEXT, SHOW_ITEM, SHOW_ENTITY);
+    public static final Index<String, Action<?>> NAMES = Index.create(constant -> constant.name, SHOW_TEXT, SHOW_ITEM, SHOW_ENTITY);
     /**
      * The name of this action.
      */

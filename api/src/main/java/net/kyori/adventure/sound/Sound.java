@@ -24,7 +24,7 @@
 package net.kyori.adventure.sound;
 
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.util.NameMap;
+import net.kyori.adventure.util.Index;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static java.util.Objects.requireNonNull;
@@ -91,7 +91,7 @@ public interface Sound {
     AMBIENT("ambient"),
     VOICE("voice");
 
-    public static final NameMap<Source> NAMES = NameMap.create(Source.class, source -> source.name);
+    public static final Index<String, Source> NAMES = Index.create(Source.class, source -> source.name);
     private final String name;
 
     Source(final String name) {

@@ -24,7 +24,7 @@
 package net.kyori.adventure.text.format;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.util.NameMap;
+import net.kyori.adventure.util.Index;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -53,7 +53,7 @@ public enum TextDecoration implements TextFormat {
    */
   ITALIC("italic");
 
-  public static final NameMap<TextDecoration> NAMES = NameMap.create(TextDecoration.class, constant -> constant.name);
+  public static final Index<String, TextDecoration> NAMES = Index.create(TextDecoration.class, constant -> constant.name);
   /**
    * The name of this decoration.
    */

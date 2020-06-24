@@ -25,11 +25,9 @@ package net.kyori.adventure.text.serializer.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapter;
-import com.google.gson.TypeAdapterFactory;
-import com.google.gson.reflect.TypeToken;
+
 import java.util.function.Consumer;
-import java.util.function.Function;
+
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.BlockNbtComponent;
 import net.kyori.adventure.text.Component;
@@ -39,9 +37,7 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
-import net.kyori.adventure.util.NameMap;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 public final class GsonComponentSerializer implements ComponentSerializer<Component, Component, String> {
   public static final GsonComponentSerializer INSTANCE = new GsonComponentSerializer();
@@ -52,13 +48,13 @@ public final class GsonComponentSerializer implements ComponentSerializer<Compon
     // text
     builder.registerTypeHierarchyAdapter(Component.class, new ComponentSerializerImpl());
     builder.registerTypeAdapter(Style.class, new StyleSerializer());
-    builder.registerTypeAdapter(ClickEvent.Action.class, NameMapSerializer.of("click action", ClickEvent.Action.NAMES));
-    builder.registerTypeAdapter(HoverEvent.Action.class, NameMapSerializer.of("hover action", HoverEvent.Action.NAMES));
+    builder.registerTypeAdapter(ClickEvent.Action.class, IndexedSerializer.of("click action", ClickEvent.Action.NAMES));
+    builder.registerTypeAdapter(HoverEvent.Action.class, IndexedSerializer.of("hover action", HoverEvent.Action.NAMES));
     builder.registerTypeAdapter(HoverEvent.ShowItem.class, new ShowItemSerializer());
     builder.registerTypeAdapter(HoverEvent.ShowEntity.class, new ShowEntitySerializer());
     builder.registerTypeAdapter(TextColorWrapper.class, new TextColorWrapper.Serializer());
     builder.registerTypeHierarchyAdapter(TextColor.class, TextColorSerializer.INSTANCE);
-    builder.registerTypeAdapter(TextDecoration.class, NameMapSerializer.of("text decoration", TextDecoration.NAMES));
+    builder.registerTypeAdapter(TextDecoration.class, IndexedSerializer.of("text decoration", TextDecoration.NAMES));
     builder.registerTypeHierarchyAdapter(BlockNbtComponent.Pos.class, BlockNbtComponentPosSerializer.INSTANCE);
   };
 

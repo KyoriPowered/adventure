@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.text.format;
 
-import net.kyori.adventure.util.NameMap;
+import net.kyori.adventure.util.Index;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static java.util.Objects.requireNonNull;
@@ -50,7 +50,7 @@ public enum NamedTextColor implements TextColor {
   /**
    * The name map.
    */
-  public static final NameMap<NamedTextColor> NAMES = NameMap.create(NamedTextColor.class, constant -> constant.name, VALUES);
+  public static final Index<String, NamedTextColor> NAMES = Index.create(NamedTextColor.class, constant -> constant.name, VALUES);
 
   /**
    * Find the named colour nearest to the provided colour.

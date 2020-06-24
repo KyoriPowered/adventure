@@ -25,7 +25,7 @@ package net.kyori.adventure.bossbar;
 
 import java.util.Set;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.util.NameMap;
+import net.kyori.adventure.util.Index;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -248,7 +248,7 @@ public interface BossBar {
     PURPLE("purple"),
     WHITE("white");
 
-    public static final NameMap<Color> NAMES = NameMap.create(Color.class, color -> color.name);
+    public static final Index<String, Color> NAMES = Index.create(Color.class, color -> color.name);
     private final String name;
 
     Color(final String name) {
@@ -278,7 +278,7 @@ public interface BossBar {
     NOTCHED_12("notched_12"),
     NOTCHED_20("notched_20");
 
-    public static final NameMap<Overlay> NAMES = NameMap.create(Overlay.class, overlay -> overlay.name);
+    public static final Index<String, Overlay> NAMES = Index.create(Overlay.class, overlay -> overlay.name);
     private final String name;
 
     Overlay(final String name) {

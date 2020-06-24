@@ -25,7 +25,7 @@ package net.kyori.adventure.text.event;
 
 import java.util.Objects;
 import java.util.stream.Stream;
-import net.kyori.adventure.util.NameMap;
+import net.kyori.adventure.util.Index;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
@@ -217,7 +217,7 @@ public final class ClickEvent implements Examinable {
     /**
      * The name map.
      */
-    public static final NameMap<Action> NAMES = NameMap.create(Action.class, constant -> constant.name);
+    public static final Index<String, Action> NAMES = Index.create(Action.class, constant -> constant.name);
     /**
      * The name of this action.
      */

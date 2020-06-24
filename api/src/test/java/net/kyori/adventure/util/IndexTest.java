@@ -27,13 +27,13 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class NameMapTest {
-  private static final NameMap<Thing> THINGS = NameMap.create(Thing.class, thing -> thing.name);
+class IndexTest {
+  private static final Index<String, Thing> THINGS = Index.create(Thing.class, thing -> thing.name);
 
   @Test
   void testName() {
     for(final Thing thing : Thing.values()) {
-      assertEquals(thing.name, THINGS.name(thing));
+      assertEquals(thing.name, THINGS.key(thing));
     }
   }
 

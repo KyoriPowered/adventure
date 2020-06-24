@@ -23,37 +23,30 @@
  */
 package net.kyori.adventure.text.serializer.gson;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.Optional;
-import net.kyori.adventure.util.NameMap;
+import net.kyori.adventure.util.Index;
 
-public final class NameMapSerializer<E> extends TypeAdapter<E> {
+public final class IndexedSerializer<E> extends TypeAdapter<E> {
   private final String name;
-  private final NameMap<E> map;
+  private final Index<String, E> map;
   
-  public static  <E> TypeAdapter<E> of(final String name, final NameMap<E> map) {
-    return new NameMapSerializer<>(name, map).nullSafe();
+  public static <E> TypeAdapter<E> of(final String name, final Index<String, E> map) {
+    return new IndexedSerializer<>(name, map).nullSafe();
   }
 
-  private NameMapSerializer(final String name, final NameMap<E> map) {
+  private IndexedSerializer(final String name, final Index<String, E> map) {
     this.name = name;
     this.map = map;
   }
 
   @Override
   public void write(final JsonWriter out, final E value) throws IOException {
-    out.value(this.map.name(value));
+    out.value(this.map.key(value));
   }
 
   @Override
