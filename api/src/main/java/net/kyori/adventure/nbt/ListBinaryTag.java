@@ -27,7 +27,7 @@ import java.util.List;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, BinaryTag {
+public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, BinaryTag, Iterable<BinaryTag> {
   static @NonNull ListBinaryTag empty() {
     return ListBinaryTagImpl.EMPTY;
   }

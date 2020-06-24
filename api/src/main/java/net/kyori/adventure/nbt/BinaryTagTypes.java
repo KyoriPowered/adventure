@@ -60,8 +60,7 @@ public final class BinaryTagTypes {
     output.writeByte(tag.listType().id());
     final int size = tag.size();
     output.writeInt(size);
-    for(int i = 0; i < size; i++) {
-      final BinaryTag item = tag.get(i);
+    for(BinaryTag item : tag) {
       ((BinaryTagType<BinaryTag>) item.type()).write(item, output);
     }
   });
@@ -76,14 +75,13 @@ public final class BinaryTagTypes {
     }
     return new CompoundBinaryTagImpl(tags);
   }, (tag, output) -> {
-    for(final String key : tag.keySet()) {
-      final BinaryTag item = tag.get(key);
-      if(item != null) {
-        final BinaryTagType<? extends BinaryTag> type = item.type();
+    for(Map.Entry<String, ? extends BinaryTag> entry : tag) {
+      if(entry.getValue() != null) {
+        final BinaryTagType<? extends BinaryTag> type = entry.getValue().type();
         output.writeByte(type.id());
         if(type != BinaryTagTypes.END) {
-          output.writeUTF(key);
-          ((BinaryTagType<BinaryTag>) type).write(item, output);
+          output.writeUTF(entry.getKey());
+          ((BinaryTagType<BinaryTag>) type).write(entry.getValue(), output);
         }
       }
     }

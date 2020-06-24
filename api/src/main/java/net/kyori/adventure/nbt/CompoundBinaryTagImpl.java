@@ -25,11 +25,14 @@ package net.kyori.adventure.nbt;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import static java.util.Objects.requireNonNull;
 
 final class CompoundBinaryTagImpl implements CompoundBinaryTag {
   static final CompoundBinaryTag EMPTY = new CompoundBinaryTagImpl(Collections.emptyMap());
@@ -40,7 +43,7 @@ final class CompoundBinaryTagImpl implements CompoundBinaryTag {
   }
 
   CompoundBinaryTagImpl(final Map<String, BinaryTag> tags) {
-    this.tags = tags;
+    this.tags = Collections.unmodifiableMap(tags);
   }
 
   public boolean contains(final @NonNull String key, final @NonNull BinaryTagType<?> type) {
@@ -208,5 +211,16 @@ final class CompoundBinaryTagImpl implements CompoundBinaryTag {
   @Override
   public int hashCode() {
     return this.tags.hashCode();
+  }
+
+  @Override
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  public Iterator<Map.Entry<String, ? extends BinaryTag>> iterator() {
+    return (Iterator) this.tags.entrySet().iterator();
+  }
+
+  @Override
+  public void forEach(final @NonNull Consumer<? super Map.Entry<String, ? extends BinaryTag>> action) {
+    this.tags.entrySet().forEach(requireNonNull(action, "action"));
   }
 }

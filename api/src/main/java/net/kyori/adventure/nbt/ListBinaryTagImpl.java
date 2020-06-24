@@ -25,8 +25,12 @@ package net.kyori.adventure.nbt;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.Consumer;
+import net.kyori.adventure.util.ShadyPines;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -82,5 +86,20 @@ final class ListBinaryTagImpl implements ListBinaryTag {
       "tags=" + tags +
       ", type=" + type +
       '}';
+  }
+
+  @Override
+  public Iterator<BinaryTag> iterator() {
+    return ShadyPines.unmodifiableIterator(this.tags.iterator());
+  }
+
+  @Override
+  public void forEach(final Consumer<? super BinaryTag> action) {
+    this.tags.forEach(action);
+  }
+
+  @Override
+  public Spliterator<BinaryTag> spliterator() {
+    return Spliterators.spliterator(this.tags, Spliterator.ORDERED | Spliterator.IMMUTABLE);
   }
 }

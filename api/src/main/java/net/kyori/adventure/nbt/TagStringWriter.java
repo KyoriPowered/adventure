@@ -25,6 +25,7 @@ package net.kyori.adventure.nbt;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Map;
 
 /**
  * An emmitter for the SNBT format.
@@ -80,9 +81,9 @@ import java.io.Writer;
 
   private TagStringWriter writeCompound(final CompoundBinaryTag tag) throws IOException {
     beginCompound();
-    for(final String key : tag.keySet()) {
-      key(key);
-      writeTag(tag.get(key));
+    for(final Map.Entry<String, ? extends BinaryTag> entry : tag) {
+      key(entry.getKey());
+      writeTag(entry.getValue());
     }
     endCompound();
     return this;
@@ -90,9 +91,9 @@ import java.io.Writer;
 
   private TagStringWriter writeList(final ListBinaryTag tag) throws IOException {
     beginList();
-    for(int i = 0; i < tag.size(); ++i) {
+    for(BinaryTag el : tag) {
       printAndResetSeparator();
-      writeTag(tag.get(i));
+      writeTag(el);
     }
     endList();
     return this;

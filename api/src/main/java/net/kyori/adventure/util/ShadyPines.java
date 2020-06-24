@@ -25,7 +25,9 @@ package net.kyori.adventure.util;
 
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.Set;
+import java.util.function.Consumer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -81,5 +83,31 @@ public final class ShadyPines {
   public static int floor(final float n) {
     final int i = (int) n;
     return n < (float) i ? i - 1 : i;
+  }
+
+  /**
+   * Wrap an existing iterator so it cannot be modified
+   *
+   * @param orig The original iterator
+   * @param <T> value type
+   * @return wrapped iterator delegating all operations except {@link Iterator#remove()} to {@code orig}
+   */
+  public static <T> Iterator<T> unmodifiableIterator(final Iterator<? extends T> orig)  {
+    return new Iterator<T>() {
+      @Override
+      public boolean hasNext() {
+        return orig.hasNext();
+      }
+
+      @Override
+      public T next() {
+        return  orig.next();
+      }
+
+      @Override
+      public void forEachRemaining(final Consumer<? super T> action) {
+        orig.forEachRemaining(action);
+      }
+    };
   }
 }

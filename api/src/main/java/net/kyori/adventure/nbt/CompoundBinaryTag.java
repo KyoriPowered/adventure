@@ -23,11 +23,12 @@
  */
 package net.kyori.adventure.nbt;
 
+import java.util.Map;
 import java.util.Set;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public interface CompoundBinaryTag extends CompoundTagSetter<CompoundBinaryTag>, BinaryTag {
+public interface CompoundBinaryTag extends CompoundTagSetter<CompoundBinaryTag>, BinaryTag, Iterable<Map.Entry<String, ? extends BinaryTag>> {
   static @NonNull CompoundBinaryTag empty() {
     return CompoundBinaryTagImpl.EMPTY;
   }
