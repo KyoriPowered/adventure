@@ -8,7 +8,6 @@ import net.kyori.adventure.title.Title;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -52,30 +51,32 @@ public final class MiniMessagePlugin extends JavaPlugin {
     }
 
     private void minispam(CommandSender sender) {
-        BossBar bar = BossBar.of(getWithProgress(0), 1, BossBar.Color.BLUE, BossBar.Overlay.PROGRESS);
         if (task != null) {
             task.cancel();
+        } else {
+            BossBar bar = BossBar.of(getWithProgress(0), 1, BossBar.Color.BLUE, BossBar.Overlay.PROGRESS);
+            Audience audience = platform.audience(sender);
+            task = Bukkit.getScheduler().runTaskTimer(this, () -> {
+                Component message = getWithProgress(progress++);
+                bar.name(message);
+                audience.sendActionBar(message);
+                audience.sendMessage(message);
+                audience.showTitle(Title.of(message, message, Duration.ZERO, Duration.of(20, ChronoUnit.MILLIS), Duration.ZERO));
+            }, 1, 1);
+            audience.showBossBar(bar);
         }
-        Audience audience = platform.audience(sender);
-        task = Bukkit.getScheduler().runTaskTimer(this, () -> {
-            Component message = getWithProgress(progress++);
-            bar.name(message);
-            audience.sendActionBar(message);
-            audience.sendMessage(message);
-            audience.showTitle(Title.of(message, message, Duration.ZERO, Duration.of(20, ChronoUnit.MILLIS), Duration.ZERO));
-        }, 1, 1);
-        audience.showBossBar(bar);
     }
 
     private void minibossbar(CommandSender sender) {
-        BossBar bar = BossBar.of(getWithProgress(0), 1, BossBar.Color.BLUE, BossBar.Overlay.PROGRESS);
         if (task != null) {
             task.cancel();
+        } else {
+            BossBar bar = BossBar.of(getWithProgress(0), 1, BossBar.Color.BLUE, BossBar.Overlay.PROGRESS);
+            task = Bukkit.getScheduler().runTaskTimer(this, () -> {
+                bar.name(getWithProgress(progress++));
+            }, 1, 1);
+            platform.audience(sender).showBossBar(bar);
         }
-        task = Bukkit.getScheduler().runTaskTimer(this, () -> {
-            bar.name(getWithProgress(progress++));
-        }, 1, 1);
-        platform.audience(sender).showBossBar(bar);
     }
 
     private void minimessage(CommandSender sender, String args) {
