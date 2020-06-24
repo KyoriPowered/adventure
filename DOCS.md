@@ -142,3 +142,13 @@ Tag: `<pre>`
 Arguments: non  
 Examples: 
 * `<gray><<yellow><player><gray>> <reset><pre><message></pre>` ![https://i.imgur.com/pQqaJnD.png](https://i.imgur.com/pQqaJnD.png)
+
+### Rainbow
+
+Rainbow colored text?!
+
+Tag: `<rainbow>`  
+Arguments: phase, optional  
+Examples:    
+* `<yellow>Woo: <rainbow>||||||||||||||||||||||||</rainbow>!` 
+* `<yellow>Woo: <rainbow:2>||||||||||||||||||||||||</rainbow>!` ![https://i.imgur.com/uNbyoYk.png](https://i.imgur.com/uNbyoYk.png)

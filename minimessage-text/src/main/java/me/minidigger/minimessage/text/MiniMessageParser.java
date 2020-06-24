@@ -8,7 +8,6 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -18,7 +17,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
@@ -30,6 +28,7 @@ import static me.minidigger.minimessage.text.Constants.HOVER;
 import static me.minidigger.minimessage.text.Constants.INSERTION;
 import static me.minidigger.minimessage.text.Constants.KEYBIND;
 import static me.minidigger.minimessage.text.Constants.PRE;
+import static me.minidigger.minimessage.text.Constants.RAINBOW;
 import static me.minidigger.minimessage.text.Constants.RESET;
 import static me.minidigger.minimessage.text.Constants.SEPARATOR;
 import static me.minidigger.minimessage.text.Constants.TAG_END;
@@ -139,11 +138,12 @@ public class MiniMessageParser {
         TextComponent.Builder parent = TextComponent.builder("");
 
         ArrayDeque<ClickEvent> clickEvents = new ArrayDeque<>();
-        ArrayDeque<HoverEvent> hoverEvents = new ArrayDeque<>();
+        ArrayDeque<HoverEvent<?>> hoverEvents = new ArrayDeque<>();
         ArrayDeque<TextColor> colors = new ArrayDeque<>();
         ArrayDeque<String> insertions = new ArrayDeque<>();
         EnumSet<HelperTextDecoration> decorations = EnumSet.noneOf(HelperTextDecoration.class);
         boolean isPreformatted = false;
+        Rainbow rainbow = null;
 
         Matcher matcher = pattern.matcher(richMessage);
         int lastEnd = 0;
@@ -162,7 +162,7 @@ public class MiniMessageParser {
             if (msg != null && msg.length() != 0) {
                 // append message
                 current = TextComponent.of(msg);
-                current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current);
+                current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, rainbow);
 
             }
 
@@ -184,7 +184,7 @@ public class MiniMessageParser {
                         parent.append(current);
                     }
                     current = TextComponent.of(TAG_START + token + TAG_END);
-                    current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current);
+                    current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, rainbow);
                     parent.append(current);
                 }
                 continue;
@@ -226,7 +226,7 @@ public class MiniMessageParser {
                     parent.append(current);
                 }
                 current = handleKeybind(token);
-                current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current);
+                current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, rainbow);
             }
             // translatable
             else if (token.startsWith(TRANSLATABLE + SEPARATOR)) {
@@ -234,7 +234,7 @@ public class MiniMessageParser {
                     parent.append(current);
                 }
                 current = handleTranslatable(token, inner);
-                current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current);
+                current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, rainbow);
             }
             // insertion
             else if (token.startsWith(INSERTION + SEPARATOR)) {
@@ -254,13 +254,19 @@ public class MiniMessageParser {
             else if (token.startsWith(PRE)) {
                 isPreformatted = true;
             }
+            // rainbow
+            else if (token.startsWith(RAINBOW)) {
+                rainbow = handleRainbow(token);
+            } else if (token.startsWith(CLOSE_TAG + RAINBOW)) {
+                rainbow = null;
+            }
             // invalid tag
             else {
                 if (current != null) {
                     parent.append(current);
                 }
                 current = TextComponent.of(TAG_START + token + TAG_END);
-                current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current);
+                current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, rainbow);
             }
 
             if (current != null) {
@@ -275,7 +281,7 @@ public class MiniMessageParser {
             Component current = TextComponent.of(msg);
 
             // set everything that is not closed yet
-            current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current);
+            current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, rainbow);
 
             parent.append(current);
         }
@@ -291,11 +297,11 @@ public class MiniMessageParser {
 
     @Nonnull
     private static Component applyFormatting(@Nonnull Deque<ClickEvent> clickEvents,
-                                             @Nonnull Deque<HoverEvent> hoverEvents,
+                                             @Nonnull Deque<HoverEvent<?>> hoverEvents,
                                              @Nonnull Deque<TextColor> colors,
                                              @Nonnull Deque<String> insertions,
                                              @Nonnull EnumSet<HelperTextDecoration> decorations,
-                                             @Nonnull Component current) {
+                                             @Nonnull Component current, Rainbow rainbow) {
         // set everything that is not closed yet
         if (!clickEvents.isEmpty()) {
             current = current.clickEvent(clickEvents.peek());
@@ -315,7 +321,43 @@ public class MiniMessageParser {
         if (!insertions.isEmpty()) {
             current = current.insertion(insertions.peek());
         }
+
+        if (rainbow != null && current instanceof TextComponent) {
+            Component parent = null;
+            TextComponent bigComponent = (TextComponent) current;
+            rainbow.init(bigComponent.content().length());
+            // split into multiple components
+            for (int i = 0; i < bigComponent.content().length(); i++) {
+                Component smallComponent = TextComponent.of(bigComponent.content().charAt(i));
+                // apply formatting
+                smallComponent = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, smallComponent, null);
+                smallComponent = rainbow.apply(smallComponent);
+                // append
+                if (parent == null) {
+                    parent = smallComponent;
+                } else {
+                    parent = parent.append(smallComponent);
+                }
+            }
+            if (parent != null) {
+                current = parent;
+            }
+        }
+
         return current;
+    }
+
+    @Nonnull
+    private static Rainbow handleRainbow(String token) {
+        if (token.contains(SEPARATOR)) {
+            String phase = token.substring(token.indexOf(SEPARATOR) + 1);
+            try {
+                return new Rainbow(Integer.parseInt(phase));
+            } catch (NumberFormatException ex) {
+                throw new ParseException("Can't parse rainbow phase (not a int) " + token);
+            }
+        }
+        return new Rainbow();
     }
 
     @Nonnull
@@ -367,7 +409,7 @@ public class MiniMessageParser {
     }
 
     @Nonnull
-    private static HoverEvent handleHover(@Nonnull String token, @Nonnull String inner) {
+    private static HoverEvent<?> handleHover(@Nonnull String token, @Nonnull String inner) {
         String[] args = token.split(SEPARATOR);
         if (args.length < 2) {
             throw new ParseException("Can't parse hover action (too few args) " + token);
@@ -408,25 +450,6 @@ public class MiniMessageParser {
 
     private static String cleanInner(String inner) {
         return inner.substring(1).substring(0, inner.length() - 2); // cut off first and last "/'
-    }
-
-    enum HelperTextDecoration {
-        BOLD(b -> b.decoration(TextDecoration.BOLD, true)),
-        ITALIC(b -> b.decoration(TextDecoration.ITALIC, true)),
-        UNDERLINED(b -> b.decoration(TextDecoration.UNDERLINED, true)),
-        STRIKETHROUGH(b -> b.decoration(TextDecoration.STRIKETHROUGH, true)),
-        OBFUSCATED(b -> b.decoration(TextDecoration.OBFUSCATED, true));
-
-        private final UnaryOperator<Component> builder;
-
-        HelperTextDecoration(@Nonnull UnaryOperator<Component> builder) {
-            this.builder = builder;
-        }
-
-        @Nonnull
-        public Component apply(@Nonnull Component comp) {
-            return builder.apply(comp);
-        }
     }
 
     static class ParseException extends RuntimeException {

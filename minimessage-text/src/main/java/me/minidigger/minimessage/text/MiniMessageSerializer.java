@@ -178,7 +178,7 @@ public final class MiniMessageSerializer {
         return !c1.equals(c2) && (!c1.action().equals(c2.action()) || !c1.value().equals(c2.value()));
     }
 
-    private static boolean areDifferent(@Nonnull HoverEvent h1, @Nullable HoverEvent h2) {
+    private static boolean areDifferent(@Nonnull HoverEvent<?> h1, @Nullable HoverEvent<?> h2) {
         if (h2 == null) return true;
         return !h1.equals(h2) && (!h1.action().equals(h2.action()));// TODO also compare value
     }
