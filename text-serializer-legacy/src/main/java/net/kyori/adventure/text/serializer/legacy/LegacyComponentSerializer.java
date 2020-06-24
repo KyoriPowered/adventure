@@ -83,7 +83,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
   char LEGACY_CHARACTER_SECTION = '\u00A7';
 
   /**
-   * The legacy character frequently used by configurations and commands. ('&')
+   * The legacy character frequently used by configurations and commands. ('&amp;')
    */
   char LEGACY_CHARACTER_AMPERSAND = '&';
 
