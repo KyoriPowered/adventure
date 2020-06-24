@@ -152,3 +152,13 @@ Arguments: phase, optional
 Examples:    
 * `<yellow>Woo: <rainbow>||||||||||||||||||||||||</rainbow>!` 
 * `<yellow>Woo: <rainbow:2>||||||||||||||||||||||||</rainbow>!` ![https://i.imgur.com/uNbyoYk.png](https://i.imgur.com/uNbyoYk.png)
+
+### Gradient
+
+Gradient colored text  
+Tag: `<gradient:[color1]:[color2]>`  
+Arguments: color1 and 2, either hex or named colors  
+Examples:  
+* `<yellow>Woo: <gradient>||||||||||||||||||||||||</gradient>!`
+* `<yellow>Woo: <gradient:#5e4fa2:#f79459>||||||||||||||||||||||||</gradient>!`
+* `<yellow>Woo: <gradient:green:blue>||||||||||||||||||||||||</gradient>!` ![https://i.imgur.com/8qYHCWk.png](https://i.imgur.com/8qYHCWk.png)

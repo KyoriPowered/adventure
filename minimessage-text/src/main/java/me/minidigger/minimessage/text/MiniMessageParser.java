@@ -13,6 +13,8 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -21,9 +23,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 
+import me.minidigger.minimessage.text.fancy.Fancy;
+import me.minidigger.minimessage.text.fancy.Gradient;
+import me.minidigger.minimessage.text.fancy.Rainbow;
+
 import static me.minidigger.minimessage.text.Constants.CLICK;
 import static me.minidigger.minimessage.text.Constants.CLOSE_TAG;
 import static me.minidigger.minimessage.text.Constants.COLOR;
+import static me.minidigger.minimessage.text.Constants.GRADIENT;
 import static me.minidigger.minimessage.text.Constants.HOVER;
 import static me.minidigger.minimessage.text.Constants.INSERTION;
 import static me.minidigger.minimessage.text.Constants.KEYBIND;
@@ -46,6 +53,8 @@ public class MiniMessageParser {
     private static final Pattern pattern = Pattern.compile("((?<start><)(?<token>[^<>]+(:(?<inner>['\"]?([^'\"](\\\\['\"])?)+['\"]?))*)(?<end>>))+?");
 
     private static final Pattern dumSplitPattern = Pattern.compile("['\"]:['\"]");
+
+    private static final Map<Class<? extends Fancy>, Fancy> empty = new HashMap<>();
 
     @Nonnull
     public static String escapeTokens(@Nonnull String richMessage) {
@@ -143,7 +152,7 @@ public class MiniMessageParser {
         ArrayDeque<String> insertions = new ArrayDeque<>();
         EnumSet<HelperTextDecoration> decorations = EnumSet.noneOf(HelperTextDecoration.class);
         boolean isPreformatted = false;
-        Rainbow rainbow = null;
+        Map<Class<? extends Fancy>, Fancy> fancy = new LinkedHashMap<>();
 
         Matcher matcher = pattern.matcher(richMessage);
         int lastEnd = 0;
@@ -162,7 +171,7 @@ public class MiniMessageParser {
             if (msg != null && msg.length() != 0) {
                 // append message
                 current = TextComponent.of(msg);
-                current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, rainbow);
+                current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, fancy);
 
             }
 
@@ -184,7 +193,7 @@ public class MiniMessageParser {
                         parent.append(current);
                     }
                     current = TextComponent.of(TAG_START + token + TAG_END);
-                    current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, rainbow);
+                    current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, fancy);
                     parent.append(current);
                 }
                 continue;
@@ -226,7 +235,7 @@ public class MiniMessageParser {
                     parent.append(current);
                 }
                 current = handleKeybind(token);
-                current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, rainbow);
+                current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, fancy);
             }
             // translatable
             else if (token.startsWith(TRANSLATABLE + SEPARATOR)) {
@@ -234,7 +243,7 @@ public class MiniMessageParser {
                     parent.append(current);
                 }
                 current = handleTranslatable(token, inner);
-                current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, rainbow);
+                current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, fancy);
             }
             // insertion
             else if (token.startsWith(INSERTION + SEPARATOR)) {
@@ -256,9 +265,15 @@ public class MiniMessageParser {
             }
             // rainbow
             else if (token.startsWith(RAINBOW)) {
-                rainbow = handleRainbow(token);
+                fancy.put(Rainbow.class, handleRainbow(token));
             } else if (token.startsWith(CLOSE_TAG + RAINBOW)) {
-                rainbow = null;
+                fancy.remove(Rainbow.class);
+            }
+            // gradient
+            else if (token.startsWith(GRADIENT)) {
+                fancy.put(Gradient.class, handleGradient(token));
+            } else if (token.startsWith(CLOSE_TAG + GRADIENT)) {
+                fancy.remove(Gradient.class);
             }
             // invalid tag
             else {
@@ -266,7 +281,7 @@ public class MiniMessageParser {
                     parent.append(current);
                 }
                 current = TextComponent.of(TAG_START + token + TAG_END);
-                current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, rainbow);
+                current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, fancy);
             }
 
             if (current != null) {
@@ -281,7 +296,7 @@ public class MiniMessageParser {
             Component current = TextComponent.of(msg);
 
             // set everything that is not closed yet
-            current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, rainbow);
+            current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, fancy);
 
             parent.append(current);
         }
@@ -301,7 +316,8 @@ public class MiniMessageParser {
                                              @Nonnull Deque<TextColor> colors,
                                              @Nonnull Deque<String> insertions,
                                              @Nonnull EnumSet<HelperTextDecoration> decorations,
-                                             @Nonnull Component current, Rainbow rainbow) {
+                                             @Nonnull Component current,
+                                             @Nonnull Map<Class<? extends Fancy>, Fancy> fancy) {
         // set everything that is not closed yet
         if (!clickEvents.isEmpty()) {
             current = current.clickEvent(clickEvents.peek());
@@ -322,16 +338,18 @@ public class MiniMessageParser {
             current = current.insertion(insertions.peek());
         }
 
-        if (rainbow != null && current instanceof TextComponent) {
+        if (current instanceof TextComponent && fancy.size() != 0) {
             Component parent = null;
             TextComponent bigComponent = (TextComponent) current;
-            rainbow.init(bigComponent.content().length());
+
+            Fancy next = fancy.entrySet().iterator().next().getValue();
+            next.init(bigComponent.content().length());
             // split into multiple components
             for (int i = 0; i < bigComponent.content().length(); i++) {
                 Component smallComponent = TextComponent.of(bigComponent.content().charAt(i));
                 // apply formatting
-                smallComponent = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, smallComponent, null);
-                smallComponent = rainbow.apply(smallComponent);
+                smallComponent = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, smallComponent, empty);
+                smallComponent = next.apply(smallComponent);
                 // append
                 if (parent == null) {
                     parent = smallComponent;
@@ -358,6 +376,21 @@ public class MiniMessageParser {
             }
         }
         return new Rainbow();
+    }
+
+    @Nonnull
+    private static Gradient handleGradient(String token) {
+        if (token.contains(SEPARATOR)) {
+            String[] split = token.split(":");
+            if (split.length == 3) {
+                TextColor c1 = parseColor(split[1]).orElseThrow(() -> new ParseException("Can't parse gradient phase (not a color 1) " + token));
+                TextColor c2 = parseColor(split[2]).orElseThrow(() -> new ParseException("Can't parse gradient phase (not a color 2) " + token));
+                return new Gradient(c1, c2);
+            } else {
+                throw new ParseException("Can't parse gradient (wrong args) " + token);
+            }
+        }
+        return new Gradient();
     }
 
     @Nonnull
@@ -432,10 +465,15 @@ public class MiniMessageParser {
             throw new ParseException("Can't parse color (too few args) " + token);
         }
 
-        if (args[1].charAt(0) == '#') {
-            return Optional.ofNullable(TextColor.fromHexString(args[1]));
+        return parseColor(args[1]);
+    }
+
+    @Nonnull
+    private static Optional<TextColor> parseColor(String color) {
+        if (color.charAt(0) == '#') {
+            return Optional.ofNullable(TextColor.fromHexString(color));
         } else {
-            return Optional.ofNullable(NamedTextColor.NAMES.value(args[1].toLowerCase(Locale.ROOT)));
+            return Optional.ofNullable(NamedTextColor.NAMES.value(color.toLowerCase(Locale.ROOT)));
         }
     }
 

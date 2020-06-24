@@ -1,9 +1,9 @@
-package me.minidigger.minimessage.text;
+package me.minidigger.minimessage.text.fancy;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
-public class Rainbow {
+public class Rainbow implements Fancy {
 
     private int colorIndex = 0;
 
@@ -11,7 +11,7 @@ public class Rainbow {
     private float width = 127;
     private double frequency = 1;
 
-    private int phase;
+    private final int phase;
 
     public Rainbow() {
         this(0);
@@ -21,12 +21,14 @@ public class Rainbow {
         this.phase = phase;
     }
 
-    public void init(int steps) {
+    @Override
+    public void init(int size) {
         center = 128;
         width = 127;
-        frequency = Math.PI * 2 / steps;
+        frequency = Math.PI * 2 / size;
     }
 
+    @Override
     public Component apply(Component current) {
         return current.color(getColor(phase));
     }

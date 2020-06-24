@@ -20,6 +20,7 @@ class Constants {
 
     // minimessage components
     public static final String RAINBOW = "rainbow";
+    public static final String GRADIENT = "gradient";
 
     // minimessage tags
     public static final String TAG_START = "<";
