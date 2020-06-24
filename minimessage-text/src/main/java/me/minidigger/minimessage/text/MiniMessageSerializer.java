@@ -1,13 +1,14 @@
 package me.minidigger.minimessage.text;
 
-import net.kyori.text.Component;
-import net.kyori.text.KeybindComponent;
-import net.kyori.text.TextComponent;
-import net.kyori.text.TranslatableComponent;
-import net.kyori.text.event.ClickEvent;
-import net.kyori.text.event.HoverEvent;
-import net.kyori.text.format.TextColor;
-import net.kyori.text.format.TextDecoration;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.KeybindComponent;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ import javax.annotation.Nullable;
 import static me.minidigger.minimessage.text.Constants.BOLD;
 import static me.minidigger.minimessage.text.Constants.CLICK;
 import static me.minidigger.minimessage.text.Constants.CLOSE_TAG;
+import static me.minidigger.minimessage.text.Constants.COLOR;
 import static me.minidigger.minimessage.text.Constants.HOVER;
 import static me.minidigger.minimessage.text.Constants.INSERTION;
 import static me.minidigger.minimessage.text.Constants.ITALIC;
@@ -56,7 +58,7 @@ public final class MiniMessageSerializer {
 
             // ## color
             // ### white is not important
-            if (!TextColor.WHITE.equals(comp.color()) && comp.color() != null && (prevComp == null || prevComp.color() != comp.color())) {
+            if (!NamedTextColor.WHITE.equals(comp.color()) && comp.color() != null && (prevComp == null || prevComp.color() != comp.color())) {
                 sb.append(startColor(Objects.requireNonNull(comp.color())));
             }
 
@@ -80,16 +82,17 @@ public final class MiniMessageSerializer {
 
             // ## hover
             // ### only start if prevComp didn't start the same one
-            HoverEvent hov = comp.hoverEvent();
+            HoverEvent<?> hov = comp.hoverEvent();
             if (hov != null && (prevComp == null || areDifferent(hov, prevComp.hoverEvent()))) {
-                sb.append(startTag(String.format("%s" + SEPARATOR + "%s" + SEPARATOR + "\"%s\"", HOVER, HoverEvent.Action.NAMES.name(hov.action()), serialize(hov.value()))));
+                // TODO make sure the value cast is right
+                sb.append(startTag(String.format("%s" + SEPARATOR + "%s" + SEPARATOR + "\"%s\"", HOVER, HoverEvent.Action.NAMES.key(hov.action()), serialize((Component) hov.value()))));
             }
 
             // ## click
             // ### only start if prevComp didn't start the same one
             ClickEvent click = comp.clickEvent();
             if (click != null && (prevComp == null || areDifferent(click, prevComp.clickEvent()))) {
-                sb.append(startTag(String.format("%s" + SEPARATOR + "%s" + SEPARATOR + "\"%s\"", CLICK, ClickEvent.Action.NAMES.name(click.action()), click.value())));
+                sb.append(startTag(String.format("%s" + SEPARATOR + "%s" + SEPARATOR + "\"%s\"", CLICK, ClickEvent.Action.NAMES.key(click.action()), click.value())));
             }
 
             // ## insertion
@@ -116,8 +119,8 @@ public final class MiniMessageSerializer {
 
             // ## color
             // ### only end color if next comp is white and current isn't
-            if (nextComp != null && comp.color() != TextColor.WHITE && comp.color() != null) {
-                if (nextComp.color() == TextColor.WHITE || nextComp.color() == null) {
+            if (nextComp != null && comp.color() != NamedTextColor.WHITE && comp.color() != null) {
+                if (nextComp.color() == NamedTextColor.WHITE || nextComp.color() == null) {
                     sb.append(endColor(Objects.requireNonNull(comp.color())));
                 }
             }
@@ -182,12 +185,20 @@ public final class MiniMessageSerializer {
 
     @Nonnull
     private static String startColor(@Nonnull TextColor color) {
-        return startTag(TextColor.NAMES.name(color));
+        if (color instanceof NamedTextColor) {
+            return startTag(Objects.requireNonNull(NamedTextColor.NAMES.key((NamedTextColor) color)));
+        } else {
+            return startTag(COLOR + SEPARATOR + color.asHexString());
+        }
     }
 
     @Nonnull
     private static String endColor(@Nonnull TextColor color) {
-        return endTag(TextColor.NAMES.name(color));
+        if (color instanceof NamedTextColor) {
+            return endTag(Objects.requireNonNull(NamedTextColor.NAMES.key((NamedTextColor) color)));
+        } else {
+            return endTag(COLOR + SEPARATOR + color.asHexString());
+        }
     }
 
     @Nonnull

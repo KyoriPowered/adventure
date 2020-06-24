@@ -1,13 +1,14 @@
 package me.minidigger.minimessage.text;
 
-import net.kyori.text.KeybindComponent;
-import net.kyori.text.TextComponent;
-import net.kyori.text.TextComponent.Builder;
-import net.kyori.text.TranslatableComponent;
-import net.kyori.text.event.ClickEvent;
-import net.kyori.text.event.HoverEvent;
-import net.kyori.text.format.TextColor;
-import net.kyori.text.format.TextDecoration;
+import net.kyori.adventure.text.KeybindComponent;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TextComponent.Builder;
+import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 
 import org.junit.Test;
 
@@ -21,7 +22,7 @@ public class MiniMessageSerializerTest {
     public void testColor() {
         String expected = "<red>This is a test";
 
-        Builder builder = TextComponent.builder().content("This is a test").color(TextColor.RED);
+        Builder builder = TextComponent.builder().content("This is a test").color(NamedTextColor.RED);
 
         test(builder, expected);
     }
@@ -31,7 +32,7 @@ public class MiniMessageSerializerTest {
         String expected = "<red>This is a </red>test";
 
         Builder builder = TextComponent.builder()
-                .content("This is a ").color(TextColor.RED)
+                .content("This is a ").color(NamedTextColor.RED)
                 .append("test");
 
         test(builder, expected);
@@ -42,9 +43,9 @@ public class MiniMessageSerializerTest {
         String expected = "<red>This is a <blue>blue <red>test";
 
         Builder builder = TextComponent.builder()
-                .content("This is a ").color(TextColor.RED)
-                .append("blue ", TextColor.BLUE)
-                .append("test", TextColor.RED);
+                .content("This is a ").color(NamedTextColor.RED)
+                .append("blue ", NamedTextColor.BLUE)
+                .append("test", NamedTextColor.RED);
 
         test(builder, expected);
     }
@@ -79,8 +80,8 @@ public class MiniMessageSerializerTest {
 
         Builder builder = TextComponent.builder()
                 .content("Some hover").hoverEvent(HoverEvent.showText(TextComponent.builder()
-                        .content("---").color(TextColor.RED)
-                        .append("-", TextColor.BLUE, TextDecoration.BOLD)
+                        .content("---").color(NamedTextColor.RED)
+                        .append("-", NamedTextColor.BLUE, TextDecoration.BOLD)
                         .build()))
                 .append(" that ends here");
 
@@ -105,7 +106,7 @@ public class MiniMessageSerializerTest {
         Builder builder = TextComponent.builder()
                 .content("Some click").clickEvent(ClickEvent.runCommand("test"))
                 // TODO figure out how to avoid repeating the click event here
-                .append(" that doesn't end here", b -> b.color(TextColor.RED).clickEvent(ClickEvent.runCommand("test")));
+                .append(" that doesn't end here", b -> b.color(NamedTextColor.RED).clickEvent(ClickEvent.runCommand("test")));
 
         test(builder, expected);
     }
@@ -116,7 +117,7 @@ public class MiniMessageSerializerTest {
 
         Builder builder = TextComponent.builder()
                 .content("Some click").clickEvent(ClickEvent.runCommand("test"))
-                .append(" that doesn't end here", b -> b.color(TextColor.RED).clickEvent(ClickEvent.runCommand("test")));
+                .append(" that doesn't end here", b -> b.color(NamedTextColor.RED).clickEvent(ClickEvent.runCommand("test")));
 
         test(builder, expected);
     }
@@ -139,8 +140,8 @@ public class MiniMessageSerializerTest {
 
         Builder builder = TextComponent.builder()
                 .content("Press ")
-                .append(KeybindComponent.of("key.jump").color(TextColor.RED))
-                .append(" to jump!", TextColor.RED);
+                .append(KeybindComponent.of("key.jump").color(NamedTextColor.RED))
+                .append(" to jump!", NamedTextColor.RED);
 
         test(builder, expected);
     }
@@ -165,6 +166,17 @@ public class MiniMessageSerializerTest {
                 .content("Click ")
                 .append("this", b->b.insertion("test"))
                 .append(" to insert!");
+
+        test(builder, expected);
+    }
+
+    @Test
+    public void testHexColor() {
+        String expected = "<color:#ff0000>This is a </color:#ff0000>test";
+
+        Builder builder = TextComponent.builder()
+                .content("This is a ").color(TextColor.fromHexString("#ff0000"))
+                .append("test");
 
         test(builder, expected);
     }

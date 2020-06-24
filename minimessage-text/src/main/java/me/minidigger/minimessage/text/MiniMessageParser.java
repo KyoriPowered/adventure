@@ -1,14 +1,14 @@
 package me.minidigger.minimessage.text;
 
-import net.kyori.text.Component;
-import net.kyori.text.KeybindComponent;
-import net.kyori.text.TextComponent;
-import net.kyori.text.TextComponent.Builder;
-import net.kyori.text.TranslatableComponent;
-import net.kyori.text.event.ClickEvent;
-import net.kyori.text.event.HoverEvent;
-import net.kyori.text.format.TextColor;
-import net.kyori.text.format.TextDecoration;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.KeybindComponent;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -136,7 +136,7 @@ public class MiniMessageParser {
 
     @Nonnull
     public static Component parseFormat(@Nonnull String richMessage) {
-        Builder parent = TextComponent.builder("");
+        TextComponent.Builder parent = TextComponent.builder("");
 
         ArrayDeque<ClickEvent> clickEvents = new ArrayDeque<>();
         ArrayDeque<HoverEvent> hoverEvents = new ArrayDeque<>();
@@ -361,7 +361,7 @@ public class MiniMessageParser {
         if (args.length < 2) {
             throw new ParseException("Can't parse click action (too few args) " + token);
         }
-        ClickEvent.Action action = ClickEvent.Action.NAMES.value(args[1].toLowerCase(Locale.ROOT))
+        ClickEvent.Action action = Optional.ofNullable(ClickEvent.Action.NAMES.value(args[1].toLowerCase(Locale.ROOT)))
                 .orElseThrow(() -> new ParseException("Can't parse click action (invalid action) " + token));
         return ClickEvent.of(action, token.replace(CLICK + SEPARATOR + args[1] + SEPARATOR, ""));
     }
@@ -373,14 +373,14 @@ public class MiniMessageParser {
             throw new ParseException("Can't parse hover action (too few args) " + token);
         }
         inner = cleanInner(inner);
-        HoverEvent.Action action = HoverEvent.Action.NAMES.value(args[1].toLowerCase(Locale.ROOT))
+        HoverEvent.Action action = Optional.ofNullable(HoverEvent.Action.NAMES.value(args[1].toLowerCase(Locale.ROOT)))
                 .orElseThrow(() -> new ParseException("Can't parse hover action (invalid action) " + token));
         return HoverEvent.of(action, parseFormat(inner));
     }
 
     @Nonnull
     private static Optional<TextColor> resolveColor(@Nonnull String token) {
-        return TextColor.NAMES.value(token.toLowerCase(Locale.ROOT));
+        return Optional.ofNullable(NamedTextColor.NAMES.value(token.toLowerCase(Locale.ROOT)));
     }
 
     @Nonnull
@@ -390,11 +390,10 @@ public class MiniMessageParser {
             throw new ParseException("Can't parse color (too few args) " + token);
         }
 
-        // TODO: hex colors
         if (args[1].charAt(0) == '#') {
-            throw new ParseException("Hex color codes are not supported yet " + token);
+            return Optional.ofNullable(TextColor.fromHexString(args[1]));
         } else {
-            return TextColor.NAMES.value(args[1].toLowerCase(Locale.ROOT));
+            return Optional.ofNullable(NamedTextColor.NAMES.value(args[1].toLowerCase(Locale.ROOT)));
         }
     }
 

@@ -1,7 +1,7 @@
 package me.minidigger.minimessage.text;
 
-import net.kyori.text.Component;
-import net.kyori.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -27,6 +27,16 @@ public class MiniMessageParserTest {
     public void testNewColor() {
         String input1 = "<color:yellow>TEST<color:green> nested</color:green>Test";
         String input2 = "<color:yellow>TEST<color:green> nested<color:yellow>Test";
+        String out1 = GsonComponentSerializer.INSTANCE.serialize(MiniMessageParser.parseFormat(input1));
+        String out2 = GsonComponentSerializer.INSTANCE.serialize(MiniMessageParser.parseFormat(input2));
+
+        assertEquals(out1, out2);
+    }
+
+    @Test
+    public void testHexColor() {
+        String input1 = "<color:#ff00ff>TEST<color:#00ff00> nested</color:#00ff00>Test";
+        String input2 = "<color:#ff00ff>TEST<color:#00ff00> nested<color:#ff00ff>Test";
         String out1 = GsonComponentSerializer.INSTANCE.serialize(MiniMessageParser.parseFormat(input1));
         String out2 = GsonComponentSerializer.INSTANCE.serialize(MiniMessageParser.parseFormat(input2));
 
@@ -121,7 +131,7 @@ public class MiniMessageParserTest {
     @Test
     public void testHover() {
         String input = "<hover:show_text:\"<red>test\">TEST";
-        String expected = "{\"text\":\"TEST\",\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"test\",\"color\":\"red\"}}}";
+        String expected = "{\"text\":\"TEST\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"test\",\"color\":\"red\"}}}";
 
         test(input, expected);
     }
@@ -129,7 +139,7 @@ public class MiniMessageParserTest {
     @Test
     public void testHover2() {
         String input = "<hover:show_text:'<red>test'>TEST";
-        String expected = "{\"text\":\"TEST\",\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"test\",\"color\":\"red\"}}}";
+        String expected = "{\"text\":\"TEST\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"test\",\"color\":\"red\"}}}";
 
         test(input, expected);
     }
@@ -137,7 +147,7 @@ public class MiniMessageParserTest {
     @Test
     public void testHoverWithColon() {
         String input = "<hover:show_text:\"<red>test:TEST\">TEST";
-        String expected = "{\"text\":\"TEST\",\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"test:TEST\",\"color\":\"red\"}}}";
+        String expected = "{\"text\":\"TEST\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"test:TEST\",\"color\":\"red\"}}}";
 
         test(input, expected);
     }
@@ -245,7 +255,7 @@ public class MiniMessageParserTest {
     @Test
     public void testGH5() {
         String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:<pack_url>><hover:show_text:\"<green>/!\\ install it from Options/ResourcePacks in your game\"><green><bold>CLICK HERE</bold></hover></click>";
-        String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"»\",\"color\":\"dark_gray\"},{\"text\":\" To download it from the internet, \",\"color\":\"gray\"},{\"text\":\"CLICK HERE\",\"color\":\"green\",\"bold\":true,\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://www.google.com\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"/!\\\\ install it from Options/ResourcePacks in your game\",\"color\":\"green\"}}}]}";
+        String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"»\",\"color\":\"dark_gray\"},{\"text\":\" To download it from the internet, \",\"color\":\"gray\"},{\"text\":\"CLICK HERE\",\"color\":\"green\",\"bold\":true,\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://www.google.com\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"/!\\\\ install it from Options/ResourcePacks in your game\",\"color\":\"green\"}}}]}";
 
         // should work
         Component comp1 = MiniMessageParser.parseFormat(input, "pack_url", "https://www.google.com");
