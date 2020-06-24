@@ -36,8 +36,8 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public final class BinaryTagIO {
-  private BinaryTagIO() {
+public final class BinaryTagIo {
+  private BinaryTagIo() {
   }
 
   static {
