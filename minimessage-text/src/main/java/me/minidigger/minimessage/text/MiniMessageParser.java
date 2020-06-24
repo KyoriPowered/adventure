@@ -490,9 +490,4 @@ public class MiniMessageParser {
         return inner.substring(1).substring(0, inner.length() - 2); // cut off first and last "/'
     }
 
-    static class ParseException extends RuntimeException {
-        public ParseException(@Nonnull String message) {
-            super(message);
-        }
-    }
 }
