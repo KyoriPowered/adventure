@@ -25,6 +25,7 @@ package net.kyori.adventure.text.format;
 
 import net.kyori.adventure.util.Index;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -48,9 +49,23 @@ public enum NamedTextColor implements TextColor {
 
   private static final NamedTextColor[] VALUES = NamedTextColor.values();
   /**
-   * The name map.
+   * An index of name to color.
    */
   public static final Index<String, NamedTextColor> NAMES = Index.create(NamedTextColor.class, constant -> constant.name, VALUES);
+  /**
+   * An index of color value to color.
+   */
+  private static final Index<Integer, NamedTextColor> COLOR_VALUES = Index.create(NamedTextColor.class, constant -> constant.value, VALUES);
+
+  /**
+   * Gets the named color exactly matching the provided color.
+   *
+   * @param value the color to match
+   * @return the matched color, or null
+   */
+  public static @Nullable NamedTextColor ofExact(final int value) {
+    return COLOR_VALUES.value(value).orElse(null);
+  }
 
   /**
    * Find the named colour nearest to the provided colour.

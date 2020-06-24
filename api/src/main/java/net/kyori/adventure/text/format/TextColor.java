@@ -27,6 +27,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.common.value.qual.IntRange;
 
+import java.util.Optional;
+
 /**
  * A color which may be applied to a {@link Style}.
  */
@@ -38,7 +40,8 @@ public interface TextColor extends TextFormat {
    * @return a new text colour
    */
   static @NonNull TextColor of(final int value) {
-    return new TextColorImpl(value);
+    final NamedTextColor named = NamedTextColor.ofExact(value);
+    return named != null ? named : new TextColorImpl(value);
   }
 
   /**
