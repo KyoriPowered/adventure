@@ -27,6 +27,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.renderer.ComponentRenderer;
 import net.kyori.adventure.util.Index;
@@ -168,11 +169,12 @@ public final class HoverEvent<V> implements Examinable {
   public static final class ShowItem implements Examinable {
     private final Key item;
     private final int count;
-    // TODO: nbt
+    private final CompoundBinaryTag tag;
 
-    public ShowItem(final @NonNull Key item, final @NonNegative int count) {
+    public ShowItem(final @NonNull Key item, final @NonNegative int count, final @Nullable CompoundBinaryTag tag) {
       this.item = item;
       this.count = count;
+      this.tag = tag;
     }
 
     /**
@@ -191,6 +193,10 @@ public final class HoverEvent<V> implements Examinable {
      */
     public @NonNegative int count() {
       return this.count;
+    }
+
+    public @Nullable CompoundBinaryTag tag() {
+      return this.tag;
     }
 
     @Override

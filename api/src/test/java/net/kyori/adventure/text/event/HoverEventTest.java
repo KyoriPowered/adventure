@@ -42,8 +42,8 @@ class HoverEventTest {
         HoverEvent.of(HoverEvent.Action.SHOW_TEXT, TextComponent.empty())
       )
       .addEqualityGroup(
-        HoverEvent.showItem(new HoverEvent.ShowItem(Key.of("air"), 1)),
-        HoverEvent.of(HoverEvent.Action.SHOW_ITEM, new HoverEvent.ShowItem(Key.of("air"), 1))
+        HoverEvent.showItem(new HoverEvent.ShowItem(Key.of("air"), 1, null)),
+        HoverEvent.of(HoverEvent.Action.SHOW_ITEM, new HoverEvent.ShowItem(Key.of("air"), 1, null))
       )
       .addEqualityGroup(
         HoverEvent.showEntity(new HoverEvent.ShowEntity(Key.of("cat"), entity, TextComponent.empty())),
