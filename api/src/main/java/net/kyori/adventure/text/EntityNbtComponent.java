@@ -24,6 +24,7 @@
 package net.kyori.adventure.text;
 
 import java.util.function.Consumer;
+import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -58,7 +59,7 @@ public interface EntityNbtComponent extends NbtComponent<EntityNbtComponent, Ent
    */
   static @NonNull EntityNbtComponent make(final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder();
-    return AbstractComponentBuilder.configureAndBuild(builder, consumer);
+    return Buildable.configureAndBuild(builder, consumer);
   }
 
   /**

@@ -21,23 +21,50 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text;
+package net.kyori.adventure.util;
 
-import net.kyori.adventure.util.Buildable;
+import java.util.function.Consumer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * A component which may be built.
+ * Something that can be built.
  *
- * @param <C> the component type
+ * @param <R> the type that can be built
  * @param <B> the builder type
  */
-public interface BuildableComponent<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends Buildable<C, B>, Component {
+public interface Buildable<R, B extends Buildable.AbstractBuilder<R>> {
   /**
-   * Create a builder from this component.
+   * Configures {@code builder} using {@code consumer} and then builds.
    *
-   * @return the builder
+   * @param builder the builder
+   * @param consumer the builder consume
+   * @param <R> the type to be built
+   * @param <B> the builder type
+   * @return the built thing
    */
-  @Override
+  static <R extends Buildable<R, B>, B extends AbstractBuilder<R>> @NonNull R configureAndBuild(final @NonNull B builder, final @NonNull Consumer<? super B> consumer) {
+    consumer.accept(builder);
+    return builder.build();
+  }
+
+  /**
+   * Create a builder from this thing.
+   *
+   * @return a builder
+   */
   @NonNull B toBuilder();
+
+  /**
+   * A builder.
+   *
+   * @param <R> the type to be built
+   */
+  interface AbstractBuilder<R> {
+    /**
+     * Builds.
+     *
+     * @return the built thing
+     */
+    @NonNull R build();
+  }
 }

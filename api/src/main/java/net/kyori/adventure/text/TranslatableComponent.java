@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.ShadyPines;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -182,7 +183,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    */
   static @NonNull TranslatableComponent make(final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder();
-    return AbstractComponentBuilder.configureAndBuild(builder, consumer);
+    return Buildable.configureAndBuild(builder, consumer);
   }
 
   /**
@@ -194,7 +195,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    */
   static @NonNull TranslatableComponent make(final @NonNull String key, final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder(key);
-    return AbstractComponentBuilder.configureAndBuild(builder, consumer);
+    return Buildable.configureAndBuild(builder, consumer);
   }
 
   /**
@@ -207,7 +208,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    */
   static @NonNull TranslatableComponent make(final @NonNull String key, final @NonNull List<? extends Component> args, final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder(key).args(args);
-    return AbstractComponentBuilder.configureAndBuild(builder, consumer);
+    return Buildable.configureAndBuild(builder, consumer);
   }
 
   /**

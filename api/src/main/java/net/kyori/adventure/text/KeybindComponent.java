@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.ShadyPines;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -108,7 +109,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    */
   static @NonNull KeybindComponent make(final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder();
-    return AbstractComponentBuilder.configureAndBuild(builder, consumer);
+    return Buildable.configureAndBuild(builder, consumer);
   }
 
   /**
@@ -120,7 +121,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    */
   static @NonNull KeybindComponent make(final @NonNull String keybind, final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder(keybind);
-    return AbstractComponentBuilder.configureAndBuild(builder, consumer);
+    return Buildable.configureAndBuild(builder, consumer);
   }
 
   /**

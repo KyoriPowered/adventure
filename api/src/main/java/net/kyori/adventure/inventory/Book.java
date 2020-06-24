@@ -28,12 +28,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A signed book.
  */
-public interface Book {
+public interface Book extends Buildable<Book, Book.Builder> {
 
   /**
    * Creates a book.
@@ -130,6 +131,7 @@ public interface Book {
    *
    * @return the builder
    */
+  @Override
   default @NonNull Builder toBuilder() {
     return builder()
       .title(this.title())
@@ -140,7 +142,7 @@ public interface Book {
   /**
    * A builder for a {@link Book}
    */
-  interface Builder {
+  interface Builder extends Buildable.AbstractBuilder<Book> {
 
     /**
      * Set the title.
@@ -190,8 +192,9 @@ public interface Book {
     /**
      * Create a new book from this builder
      *
-     * @return The new book
+     * @return the new book
      */
+    @Override
     @NonNull Book build();
   }
 }

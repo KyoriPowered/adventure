@@ -30,6 +30,7 @@ import java.util.function.Consumer;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.ShadyPines;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -531,7 +532,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    */
   static @NonNull TextComponent make(final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder();
-    return AbstractComponentBuilder.configureAndBuild(builder, consumer);
+    return Buildable.configureAndBuild(builder, consumer);
   }
 
   /**
@@ -543,7 +544,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    */
   static @NonNull TextComponent make(final @NonNull String content, final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder(content);
-    return AbstractComponentBuilder.configureAndBuild(builder, consumer);
+    return Buildable.configureAndBuild(builder, consumer);
   }
 
   /**

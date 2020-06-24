@@ -31,6 +31,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -40,7 +41,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @param <C> the component type
  * @param <B> the builder type
  */
-public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> {
+public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends Buildable.AbstractBuilder<C> {
   /**
    * Appends a text component to this component.
    *
@@ -294,5 +295,6 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    *
    * @return the component
    */
+  @Override
   @NonNull C build();
 }

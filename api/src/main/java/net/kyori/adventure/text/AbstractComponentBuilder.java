@@ -44,11 +44,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @param <B> the builder type
  */
 abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> implements ComponentBuilder<C, B> {
-  static <C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> C configureAndBuild(final B builder, final Consumer<? super B> consumer) {
-    consumer.accept(builder);
-    return builder.build();
-  }
-
   /**
    * The list of children.
    *

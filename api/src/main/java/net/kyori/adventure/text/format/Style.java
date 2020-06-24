@@ -33,6 +33,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
@@ -42,7 +43,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-public final class Style implements Examinable {
+public final class Style implements Buildable<Style, Style.Builder>, Examinable {
   public static final Key DEFAULT_FONT = Key.of("default");
   private static final Style EMPTY = new Style(null, null, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null);
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
@@ -155,9 +156,7 @@ public final class Style implements Examinable {
    * @return a style
    */
   public static @NonNull Style make(final @NonNull Consumer<Builder> consumer) {
-    final Builder builder = builder();
-    consumer.accept(builder);
-    return builder.build();
+    return Buildable.configureAndBuild(builder(), consumer);
   }
 
   private Style(final @Nullable Key font, final @Nullable TextColor color, final TextDecoration.State obfuscated, final TextDecoration.State bold, final TextDecoration.State strikethrough, final TextDecoration.State underlined, final TextDecoration.State italic, final @Nullable ClickEvent clickEvent, final @Nullable HoverEvent<?> hoverEvent, final @Nullable String insertion) {
@@ -532,6 +531,7 @@ public final class Style implements Examinable {
    *
    * @return a builder
    */
+  @Override
   public @NonNull Builder toBuilder() {
     return new Builder(this);
   }
@@ -718,7 +718,7 @@ public final class Style implements Examinable {
   /**
    * A style builder.
    */
-  public static final class Builder {
+  public static final class Builder implements Buildable.AbstractBuilder<Style> {
     /**
      * The font.
      */
@@ -1001,6 +1001,7 @@ public final class Style implements Examinable {
      *
      * @return the style
      */
+    @Override
     public @NonNull Style build() {
       if(this.isEmpty()) {
         return EMPTY;

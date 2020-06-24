@@ -24,6 +24,7 @@
 package net.kyori.adventure.text;
 
 import java.util.function.Consumer;
+import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -86,7 +87,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    */
   static @NonNull ScoreComponent make(final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder();
-    return AbstractComponentBuilder.configureAndBuild(builder, consumer);
+    return Buildable.configureAndBuild(builder, consumer);
   }
 
   /**
@@ -99,7 +100,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    */
   static @NonNull ScoreComponent make(final @NonNull String name, final @NonNull String objective, final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder(name, objective);
-    return AbstractComponentBuilder.configureAndBuild(builder, consumer);
+    return Buildable.configureAndBuild(builder, consumer);
   }
 
   /**
