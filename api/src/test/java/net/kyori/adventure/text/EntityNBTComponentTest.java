@@ -29,15 +29,15 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-class EntityNbtComponentTest extends AbstractNbtComponentTest<EntityNbtComponent, EntityNbtComponent.Builder> {
+class EntityNBTComponentTest extends AbstractNBTComponentTest<EntityNBTComponent, EntityNBTComponent.Builder> {
   @Override
-  EntityNbtComponent.Builder builder() {
-    return EntityNbtComponent.builder().nbtPath("abc").selector("def");
+  EntityNBTComponent.Builder builder() {
+    return EntityNBTComponent.builder().nbtPath("abc").selector("def");
   }
 
   @Test
   void testOf() {
-    final EntityNbtComponent component = EntityNbtComponent.of("abc", "def");
+    final EntityNBTComponent component = EntityNBTComponent.of("abc", "def");
     assertEquals("abc", component.nbtPath());
     assertEquals("def", component.selector());
     assertNull(component.color());
@@ -46,8 +46,8 @@ class EntityNbtComponentTest extends AbstractNbtComponentTest<EntityNbtComponent
 
   @Test
   void testSelector() {
-    final EntityNbtComponent c0 = EntityNbtComponent.of("abc", "def");
-    final EntityNbtComponent c1 = c0.selector("ghi");
+    final EntityNBTComponent c0 = EntityNBTComponent.of("abc", "def");
+    final EntityNBTComponent c1 = c0.selector("ghi");
     assertEquals("def", c0.selector());
     assertEquals("ghi", c1.selector());
     assertEquals("abc", c1.nbtPath());

@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.nbt;
 
-/* package */ class Tokens {
+/* package */ final class Tokens {
   // Compounds
   static final char COMPOUND_BEGIN = '{';
   static final char COMPOUND_END = '}';
@@ -49,7 +49,8 @@ package net.kyori.adventure.nbt;
 
   static final char EOF = '\0';
 
-  private Tokens() {}
+  private Tokens() {
+  }
 
   /**
    * Get the type signature character based on the scalar provided tag type

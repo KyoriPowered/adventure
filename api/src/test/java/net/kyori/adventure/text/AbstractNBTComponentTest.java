@@ -21,34 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.serializer.gson;
+package net.kyori.adventure.text;
 
-import com.google.gson.JsonElement;
-import java.util.Map;
-import java.util.stream.Stream;
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.StorageNbtComponent;
+import org.junit.jupiter.api.Test;
 
-class StorageNbtComponentTest extends AbstractComponentTest<StorageNbtComponent> {
-  @Override
-  Stream<Map.Entry<StorageNbtComponent, JsonElement>> tests() {
-    return Stream.of(
-      entry(
-        StorageNbtComponent.builder().nbtPath("abc").storage(Key.of("doom:apple")).build(),
-        json -> {
-          json.addProperty(ComponentSerializerImpl.NBT, "abc");
-          json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
-          json.addProperty(ComponentSerializerImpl.NBT_STORAGE, "doom:apple");
-        }
-      ),
-      entry(
-        StorageNbtComponent.builder().nbtPath("abc[].def").storage(Key.of("diamond")).interpret(true).build(),
-        json -> {
-          json.addProperty(ComponentSerializerImpl.NBT, "abc[].def");
-          json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, true);
-          json.addProperty(ComponentSerializerImpl.NBT_STORAGE, "minecraft:diamond");
-        }
-      )
-    );
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+abstract class AbstractNBTComponentTest<C extends NBTComponent<C, B> & ScopedComponent<C>, B extends NBTComponentBuilder<C, B>> extends AbstractComponentTest<C, B> {
+  @Test
+  void testBuildWithInterpret() {
+    final C c0 = this.buildOne();
+    assertFalse(c0.interpret());
+    final C c1 = this.builder().interpret(true).build();
+    assertTrue(c1.interpret());
+  }
+
+  @Test
+  void testInterpret() {
+    final C c0 = this.buildOne();
+    final C c1 = c0.interpret(true);
+    assertFalse(c0.interpret());
+    assertTrue(c1.interpret());
+  }
+
+  @Test
+  void testNbtPath() {
+    final C c0 = this.buildOne();
+    final C c1 = c0.nbtPath("ghi");
+    assertEquals("abc", c0.nbtPath());
+    assertEquals("ghi", c1.nbtPath());
+    assertEquals(c0, c1.nbtPath(c0.nbtPath()));
   }
 }

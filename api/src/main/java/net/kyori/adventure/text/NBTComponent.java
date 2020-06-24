@@ -23,34 +23,39 @@
  */
 package net.kyori.adventure.text;
 
-import com.google.common.collect.ImmutableSet;
-import net.kyori.adventure.key.Key;
-import org.junit.jupiter.api.Test;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+/**
+ * An NBT component.
+ */
+public interface NBTComponent<C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> extends BuildableComponent<C, B> {
+  /**
+   * Gets the NBT path.
+   *
+   * @return the NBT path
+   */
+  @NonNull String nbtPath();
 
-class StorageNbtComponentTest extends AbstractNbtComponentTest<StorageNbtComponent, StorageNbtComponent.Builder> {
-  @Override
-  StorageNbtComponent.Builder builder() {
-    return StorageNbtComponent.builder().nbtPath("abc").storage(Key.of("def"));
-  }
+  /**
+   * Sets the NBT path.
+   *
+   * @param nbtPath the NBT path
+   * @return a component
+   */
+  @NonNull C nbtPath(final @NonNull String nbtPath);
 
-  @Test
-  void testOf() {
-    final StorageNbtComponent component = StorageNbtComponent.of("abc", Key.of("def"));
-    assertEquals("abc", component.nbtPath());
-    assertEquals(Key.of("def"), component.storage());
-    assertNull(component.color());
-    TextAssertions.assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
-  }
+  /**
+   * Gets if we should be interpreting.
+   *
+   * @return if we should be interpreting
+   */
+  boolean interpret();
 
-  @Test
-  void testSelector() {
-    final StorageNbtComponent c0 = StorageNbtComponent.of("abc", Key.of("def:ghi"));
-    final StorageNbtComponent c1 = c0.storage(Key.of("ghi:jkl"));
-    assertEquals(Key.of("def:ghi"), c0.storage());
-    assertEquals(Key.of("ghi:jkl"), c1.storage());
-    assertEquals("abc", c1.nbtPath());
-  }
+  /**
+   * Sets if we should be interpreting.
+   *
+   * @param interpret if we should be interpreting.
+   * @return a component
+   */
+  @NonNull C interpret(final boolean interpret);
 }

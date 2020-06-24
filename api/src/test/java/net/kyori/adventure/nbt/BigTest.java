@@ -79,7 +79,7 @@ class BigTest {
   @BeforeAll
   static void before() throws IOException, URISyntaxException {
     final URL url = BigTest.class.getResource("/bigtest.nbt");
-    compound = BinaryTagIo.readCompressedPath(Paths.get(url.toURI()));
+    compound = BinaryTagIO.readCompressedPath(Paths.get(url.toURI()));
   }
 
   @Test

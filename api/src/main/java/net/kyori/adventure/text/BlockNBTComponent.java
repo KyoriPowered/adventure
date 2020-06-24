@@ -30,14 +30,14 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 /**
  * A block NBT component.
  */
-public interface BlockNbtComponent extends NbtComponent<BlockNbtComponent, BlockNbtComponent.Builder>, ScopedComponent<BlockNbtComponent> {
+public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, BlockNBTComponent.Builder>, ScopedComponent<BlockNBTComponent> {
   /**
    * Creates a block NBT component builder.
    *
    * @return a builder
    */
   static @NonNull Builder builder() {
-    return new BlockNbtComponentImpl.BuilderImpl();
+    return new BlockNBTComponentImpl.BuilderImpl();
   }
 
   /**
@@ -47,7 +47,7 @@ public interface BlockNbtComponent extends NbtComponent<BlockNbtComponent, Block
    * @param pos the block position
    * @return the block NBT component
    */
-  static @NonNull BlockNbtComponent of(final @NonNull String nbtPath, final @NonNull Pos pos) {
+  static @NonNull BlockNBTComponent of(final @NonNull String nbtPath, final @NonNull Pos pos) {
     return builder().nbtPath(nbtPath).pos(pos).build();
   }
 
@@ -57,7 +57,7 @@ public interface BlockNbtComponent extends NbtComponent<BlockNbtComponent, Block
    * @param consumer the builder configurator
    * @return the block NBT component
    */
-  static @NonNull BlockNbtComponent make(final @NonNull Consumer<? super Builder> consumer) {
+  static @NonNull BlockNBTComponent make(final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder();
     return Buildable.configureAndBuild(builder, consumer);
   }
@@ -75,7 +75,7 @@ public interface BlockNbtComponent extends NbtComponent<BlockNbtComponent, Block
    * @param pos the block position
    * @return a component
    */
-  @NonNull BlockNbtComponent pos(final @NonNull Pos pos);
+  @NonNull BlockNBTComponent pos(final @NonNull Pos pos);
 
   /**
    * Sets the block position to a {@link LocalPos} with the given coordinates.
@@ -85,7 +85,7 @@ public interface BlockNbtComponent extends NbtComponent<BlockNbtComponent, Block
    * @param forwards the forwards coordinate
    * @return a component
    */
-  default @NonNull BlockNbtComponent localPos(final double left, final double up, final double forwards) {
+  default @NonNull BlockNBTComponent localPos(final double left, final double up, final double forwards) {
     return this.pos(LocalPos.of(left, up, forwards));
   }
 
@@ -97,7 +97,7 @@ public interface BlockNbtComponent extends NbtComponent<BlockNbtComponent, Block
    * @param z the z coordinate
    * @return a component
    */
-  default @NonNull BlockNbtComponent worldPos(final WorldPos.@NonNull Coordinate x, final WorldPos.@NonNull Coordinate y, final WorldPos.@NonNull Coordinate z) {
+  default @NonNull BlockNBTComponent worldPos(final WorldPos.@NonNull Coordinate x, final WorldPos.@NonNull Coordinate y, final WorldPos.@NonNull Coordinate z) {
     return this.pos(WorldPos.of(x, y, z));
   }
 
@@ -109,7 +109,7 @@ public interface BlockNbtComponent extends NbtComponent<BlockNbtComponent, Block
    * @param z the z coordinate
    * @return a component
    */
-  default @NonNull BlockNbtComponent absoluteWorldPos(final int x, final int y, final int z) {
+  default @NonNull BlockNBTComponent absoluteWorldPos(final int x, final int y, final int z) {
     return this.worldPos(WorldPos.Coordinate.absolute(x), WorldPos.Coordinate.absolute(y), WorldPos.Coordinate.absolute(z));
   }
 
@@ -121,14 +121,14 @@ public interface BlockNbtComponent extends NbtComponent<BlockNbtComponent, Block
    * @param z the z coordinate
    * @return a component
    */
-  default @NonNull BlockNbtComponent relativeWorldPos(final int x, final int y, final int z) {
+  default @NonNull BlockNBTComponent relativeWorldPos(final int x, final int y, final int z) {
     return this.worldPos(WorldPos.Coordinate.relative(x), WorldPos.Coordinate.relative(y), WorldPos.Coordinate.relative(z));
   }
 
   /**
    * An NBT component builder.
    */
-  interface Builder extends NbtComponentBuilder<BlockNbtComponent, Builder> {
+  interface Builder extends NBTComponentBuilder<BlockNBTComponent, Builder> {
     /**
      * Sets the block position.
      *
@@ -205,7 +205,7 @@ public interface BlockNbtComponent extends NbtComponent<BlockNbtComponent, Block
      * @return a local position
      */
     static @NonNull LocalPos of(final double left, final double up, final double forwards) {
-      return new BlockNbtComponentImpl.LocalPosImpl(left, up, forwards);
+      return new BlockNBTComponentImpl.LocalPosImpl(left, up, forwards);
     }
 
     /**
@@ -243,7 +243,7 @@ public interface BlockNbtComponent extends NbtComponent<BlockNbtComponent, Block
      * @return a world position
      */
     static @NonNull WorldPos of(final @NonNull Coordinate x, final @NonNull Coordinate y, final @NonNull Coordinate z) {
-      return new BlockNbtComponentImpl.WorldPosImpl(x, y, z);
+      return new BlockNBTComponentImpl.WorldPosImpl(x, y, z);
     }
 
     /**
@@ -299,7 +299,7 @@ public interface BlockNbtComponent extends NbtComponent<BlockNbtComponent, Block
        * @return a coordinate
        */
       static @NonNull Coordinate of(final int value, final @NonNull Type type) {
-        return new BlockNbtComponentImpl.WorldPosImpl.CoordinateImpl(value, type);
+        return new BlockNBTComponentImpl.WorldPosImpl.CoordinateImpl(value, type);
       }
 
       /**

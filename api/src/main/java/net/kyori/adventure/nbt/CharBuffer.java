@@ -23,11 +23,11 @@
  */
 package net.kyori.adventure.nbt;
 
-/* package */ class CharBuffer {
+/* package */ final class CharBuffer {
   private final CharSequence sequence;
   private int index;
 
-  public CharBuffer(final CharSequence sequence) {
+  CharBuffer(final CharSequence sequence) {
     this.sequence = sequence;
   }
 

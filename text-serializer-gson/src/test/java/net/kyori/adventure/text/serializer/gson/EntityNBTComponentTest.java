@@ -21,37 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text;
+package net.kyori.adventure.text.serializer.gson;
 
-import org.junit.jupiter.api.Test;
+import com.google.gson.JsonElement;
+import java.util.Map;
+import java.util.stream.Stream;
+import net.kyori.adventure.text.EntityNBTComponent;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-abstract class AbstractNbtComponentTest<C extends NbtComponent<C, B> & ScopedComponent<C>, B extends NbtComponentBuilder<C, B>> extends AbstractComponentTest<C, B> {
-  @Test
-  void testBuildWithInterpret() {
-    final C c0 = this.buildOne();
-    assertFalse(c0.interpret());
-    final C c1 = this.builder().interpret(true).build();
-    assertTrue(c1.interpret());
-  }
-
-  @Test
-  void testInterpret() {
-    final C c0 = this.buildOne();
-    final C c1 = c0.interpret(true);
-    assertFalse(c0.interpret());
-    assertTrue(c1.interpret());
-  }
-
-  @Test
-  void testNbtPath() {
-    final C c0 = this.buildOne();
-    final C c1 = c0.nbtPath("ghi");
-    assertEquals("abc", c0.nbtPath());
-    assertEquals("ghi", c1.nbtPath());
-    assertEquals(c0, c1.nbtPath(c0.nbtPath()));
+class EntityNBTComponentTest extends AbstractComponentTest<EntityNBTComponent> {
+  @Override
+  Stream<Map.Entry<EntityNBTComponent, JsonElement>> tests() {
+    return Stream.of(
+      entry(
+        EntityNBTComponent.builder().nbtPath("abc").selector("test").build(),
+        json -> {
+          json.addProperty(ComponentSerializerImpl.NBT, "abc");
+          json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
+          json.addProperty(ComponentSerializerImpl.NBT_ENTITY, "test");
+        }
+      ),
+      entry(
+        EntityNBTComponent.builder().nbtPath("abc").selector("test").interpret(true).build(),
+        json -> {
+          json.addProperty(ComponentSerializerImpl.NBT, "abc");
+          json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, true);
+          json.addProperty(ComponentSerializerImpl.NBT_ENTITY, "test");
+        }
+      )
+    );
   }
 }

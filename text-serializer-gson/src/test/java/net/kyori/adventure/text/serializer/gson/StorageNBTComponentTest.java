@@ -21,41 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text;
+package net.kyori.adventure.text.serializer.gson;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import com.google.gson.JsonElement;
+import java.util.Map;
+import java.util.stream.Stream;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.StorageNBTComponent;
 
-/**
- * An NBT component.
- */
-public interface NbtComponent<C extends NbtComponent<C, B>, B extends NbtComponentBuilder<C, B>> extends BuildableComponent<C, B> {
-  /**
-   * Gets the NBT path.
-   *
-   * @return the NBT path
-   */
-  @NonNull String nbtPath();
-
-  /**
-   * Sets the NBT path.
-   *
-   * @param nbtPath the NBT path
-   * @return a component
-   */
-  @NonNull C nbtPath(final @NonNull String nbtPath);
-
-  /**
-   * Gets if we should be interpreting.
-   *
-   * @return if we should be interpreting
-   */
-  boolean interpret();
-
-  /**
-   * Sets if we should be interpreting.
-   *
-   * @param interpret if we should be interpreting.
-   * @return a component
-   */
-  @NonNull C interpret(final boolean interpret);
+class StorageNBTComponentTest extends AbstractComponentTest<StorageNBTComponent> {
+  @Override
+  Stream<Map.Entry<StorageNBTComponent, JsonElement>> tests() {
+    return Stream.of(
+      entry(
+        StorageNBTComponent.builder().nbtPath("abc").storage(Key.of("doom:apple")).build(),
+        json -> {
+          json.addProperty(ComponentSerializerImpl.NBT, "abc");
+          json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
+          json.addProperty(ComponentSerializerImpl.NBT_STORAGE, "doom:apple");
+        }
+      ),
+      entry(
+        StorageNBTComponent.builder().nbtPath("abc[].def").storage(Key.of("diamond")).interpret(true).build(),
+        json -> {
+          json.addProperty(ComponentSerializerImpl.NBT, "abc[].def");
+          json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, true);
+          json.addProperty(ComponentSerializerImpl.NBT_STORAGE, "minecraft:diamond");
+        }
+      )
+    );
+  }
 }

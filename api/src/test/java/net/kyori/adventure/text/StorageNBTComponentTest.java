@@ -21,33 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.serializer.gson;
+package net.kyori.adventure.text;
 
-import com.google.gson.JsonElement;
-import java.util.Map;
-import java.util.stream.Stream;
-import net.kyori.adventure.text.EntityNbtComponent;
+import com.google.common.collect.ImmutableSet;
+import net.kyori.adventure.key.Key;
+import org.junit.jupiter.api.Test;
 
-class EntityNbtComponentTest extends AbstractComponentTest<EntityNbtComponent> {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+class StorageNBTComponentTest extends AbstractNBTComponentTest<StorageNBTComponent, StorageNBTComponent.Builder> {
   @Override
-  Stream<Map.Entry<EntityNbtComponent, JsonElement>> tests() {
-    return Stream.of(
-      entry(
-        EntityNbtComponent.builder().nbtPath("abc").selector("test").build(),
-        json -> {
-          json.addProperty(ComponentSerializerImpl.NBT, "abc");
-          json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
-          json.addProperty(ComponentSerializerImpl.NBT_ENTITY, "test");
-        }
-      ),
-      entry(
-        EntityNbtComponent.builder().nbtPath("abc").selector("test").interpret(true).build(),
-        json -> {
-          json.addProperty(ComponentSerializerImpl.NBT, "abc");
-          json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, true);
-          json.addProperty(ComponentSerializerImpl.NBT_ENTITY, "test");
-        }
-      )
-    );
+  StorageNBTComponent.Builder builder() {
+    return StorageNBTComponent.builder().nbtPath("abc").storage(Key.of("def"));
+  }
+
+  @Test
+  void testOf() {
+    final StorageNBTComponent component = StorageNBTComponent.of("abc", Key.of("def"));
+    assertEquals("abc", component.nbtPath());
+    assertEquals(Key.of("def"), component.storage());
+    assertNull(component.color());
+    TextAssertions.assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
+  }
+
+  @Test
+  void testSelector() {
+    final StorageNBTComponent c0 = StorageNBTComponent.of("abc", Key.of("def:ghi"));
+    final StorageNBTComponent c1 = c0.storage(Key.of("ghi:jkl"));
+    assertEquals(Key.of("def:ghi"), c0.storage());
+    assertEquals(Key.of("ghi:jkl"), c1.storage());
+    assertEquals("abc", c1.nbtPath());
   }
 }

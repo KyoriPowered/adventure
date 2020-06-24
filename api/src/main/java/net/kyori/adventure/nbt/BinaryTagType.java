@@ -32,11 +32,10 @@ import java.util.function.Predicate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-// TODO: write!
 public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<BinaryTagType<? extends BinaryTag>> {
   private static final List<BinaryTagType<? extends BinaryTag>> TYPES = new ArrayList<>();
 
-  static <T extends BinaryTag> @NonNull BinaryTagType<T> register(final byte id, final @NonNull Reader<T> reader, final @Nullable Writer<T> writer) {
+  static <T extends BinaryTag> @NonNull BinaryTagType<T> register(final @NonNull Class<T> type, final byte id, final @NonNull Reader<T> reader, final @Nullable Writer<T> writer) {
     return register(new BinaryTagType<T>() {
       @Override
       public @NonNull T read(final @NonNull DataInput input) throws IOException {
@@ -57,10 +56,15 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
       boolean numeric() {
         return false;
       }
+
+      @Override
+      public String toString() {
+        return this.getClass().getSimpleName() + '{' + type.getSimpleName() + " (" + id + ")}";
+      }
     });
   }
 
-  static <T extends NumberBinaryTag> @NonNull BinaryTagType<T> registerNumeric(final byte id, final @NonNull Reader<T> reader, final @NonNull Writer<T> writer) {
+  static <T extends NumberBinaryTag> @NonNull BinaryTagType<T> registerNumeric(final @NonNull Class<T> type, final byte id, final @NonNull Reader<T> reader, final @NonNull Writer<T> writer) {
     return register(new BinaryTagType<T>() {
       @Override
       public @NonNull T read(final @NonNull DataInput input) throws IOException {
@@ -80,6 +84,11 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
       @Override
       boolean numeric() {
         return true;
+      }
+
+      @Override
+      public String toString() {
+        return this.getClass().getSimpleName() + '{' + type.getSimpleName() + " (" + id + ")}";
       }
     });
   }

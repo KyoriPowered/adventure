@@ -27,18 +27,18 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import java.util.Map;
 import java.util.stream.Stream;
-import net.kyori.adventure.text.BlockNbtComponent;
-import net.kyori.adventure.text.BlockNbtComponent.WorldPos.Coordinate;
+import net.kyori.adventure.text.BlockNBTComponent;
+import net.kyori.adventure.text.BlockNBTComponent.WorldPos.Coordinate;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class BlockNbtComponentTest extends AbstractComponentTest<BlockNbtComponent> {
+class BlockNBTComponentTest extends AbstractComponentTest<BlockNBTComponent> {
   @Override
-  Stream<Map.Entry<BlockNbtComponent, JsonElement>> tests() {
+  Stream<Map.Entry<BlockNBTComponent, JsonElement>> tests() {
     return Stream.of(
       entry(
-        BlockNbtComponent.builder().nbtPath("abc").localPos(1.23d, 2.0d, 3.89d).build(),
+        BlockNBTComponent.builder().nbtPath("abc").localPos(1.23d, 2.0d, 3.89d).build(),
         json -> {
           json.addProperty(ComponentSerializerImpl.NBT, "abc");
           json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
@@ -46,7 +46,7 @@ class BlockNbtComponentTest extends AbstractComponentTest<BlockNbtComponent> {
         }
       ),
       entry(
-        BlockNbtComponent.builder().nbtPath("xyz").absoluteWorldPos(4, 5, 6).interpret(true).build(),
+        BlockNBTComponent.builder().nbtPath("xyz").absoluteWorldPos(4, 5, 6).interpret(true).build(),
         json -> {
           json.addProperty(ComponentSerializerImpl.NBT, "xyz");
           json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, true);
@@ -54,7 +54,7 @@ class BlockNbtComponentTest extends AbstractComponentTest<BlockNbtComponent> {
         }
       ),
       entry(
-        BlockNbtComponent.builder().nbtPath("eeee").relativeWorldPos(7, 83, 900).build(),
+        BlockNBTComponent.builder().nbtPath("eeee").relativeWorldPos(7, 83, 900).build(),
         json -> {
           json.addProperty(ComponentSerializerImpl.NBT, "eeee");
           json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
@@ -62,7 +62,7 @@ class BlockNbtComponentTest extends AbstractComponentTest<BlockNbtComponent> {
         }
       ),
       entry(
-        BlockNbtComponent.builder().nbtPath("qwert").worldPos(Coordinate.absolute(12), Coordinate.relative(3), Coordinate.absolute(1200)).build(),
+        BlockNBTComponent.builder().nbtPath("qwert").worldPos(Coordinate.absolute(12), Coordinate.relative(3), Coordinate.absolute(1200)).build(),
         json -> {
           json.addProperty(ComponentSerializerImpl.NBT, "qwert");
           json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
@@ -75,8 +75,8 @@ class BlockNbtComponentTest extends AbstractComponentTest<BlockNbtComponent> {
   @Test
   void testLocalPosNoDecimal() {
     assertEquals(
-      BlockNbtComponent.LocalPos.of(1.0d, 2.0d, 3.89d),
-      GsonComponentSerializer.GSON.fromJson(new JsonPrimitive("^1 ^2 ^3.89"), BlockNbtComponent.Pos.class)
+      BlockNBTComponent.LocalPos.of(1.0d, 2.0d, 3.89d),
+      GsonComponentSerializer.GSON.fromJson(new JsonPrimitive("^1 ^2 ^3.89"), BlockNBTComponent.Pos.class)
     );
   }
 }

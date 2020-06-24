@@ -34,7 +34,7 @@ import com.google.gson.JsonSyntaxException;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.nbt.BinaryTagIo;
+import net.kyori.adventure.nbt.BinaryTagIO;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.text.event.HoverEvent;
 
@@ -61,7 +61,7 @@ import net.kyori.adventure.text.event.HoverEvent;
     CompoundBinaryTag tag = null;
     if(object.has(TAG)) {
       try {
-        tag = BinaryTagIo.readString(object.get(TAG).getAsString());
+        tag = BinaryTagIO.readString(object.get(TAG).getAsString());
       } catch(IOException e) {
         throw new JsonParseException(e);
       }
@@ -84,7 +84,7 @@ import net.kyori.adventure.text.event.HoverEvent;
     final /* @Nullable */ CompoundBinaryTag tag = src.tag();
     if(tag != null) {
       try {
-        json.addProperty(TAG, BinaryTagIo.writeAsString(tag));
+        json.addProperty(TAG, BinaryTagIO.writeAsString(tag));
       } catch(IOException e) {
         throw new JsonSyntaxException(e);
       }

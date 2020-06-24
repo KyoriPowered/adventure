@@ -32,7 +32,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 /**
  * An NBT component builder.
  */
-public interface NbtComponentBuilder<C extends NbtComponent<C, B>, B extends NbtComponentBuilder<C, B>> extends ComponentBuilder<C, B> {
+public interface NBTComponentBuilder<C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> extends ComponentBuilder<C, B> {
   /**
    * Sets the NBT path content.
    *

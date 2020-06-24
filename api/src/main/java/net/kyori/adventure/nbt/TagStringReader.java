@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-/* package */ class TagStringReader {
+/* package */ final class TagStringReader {
   private final CharBuffer buffer;
 
   public TagStringReader(final CharBuffer buffer) {

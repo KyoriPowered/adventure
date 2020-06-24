@@ -74,8 +74,8 @@ public class StringIoTest {
         .build())
       .build();
 
-    final String serialized = BinaryTagIo.writeAsString(tag);
-    final CompoundBinaryTag deserialized = BinaryTagIo.readString(serialized);
+    final String serialized = BinaryTagIO.writeAsString(tag);
+    final CompoundBinaryTag deserialized = BinaryTagIO.readString(serialized);
     assertEquals(tag, deserialized);
   }
 
@@ -84,9 +84,9 @@ public class StringIoTest {
     // Read and write
     final CompoundBinaryTag bigTest;
     try(InputStream is = getClass().getResourceAsStream("/bigtest.nbt")) {
-      bigTest = BinaryTagIo.readCompressedInputStream(is);
-      final String written = BinaryTagIo.writeAsString(bigTest);
-      assertEquals(bigTest, BinaryTagIo.readString(written));
+      bigTest = BinaryTagIO.readCompressedInputStream(is);
+      final String written = BinaryTagIO.writeAsString(bigTest);
+      assertEquals(bigTest, BinaryTagIO.readString(written));
     }
 
     // Read snbt equivalent
