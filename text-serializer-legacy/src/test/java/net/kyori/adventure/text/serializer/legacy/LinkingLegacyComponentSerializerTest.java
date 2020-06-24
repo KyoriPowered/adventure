@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class LinkingLegacyComponentSerializerTest {
   @Test
   void testSimpleFrom() {
-    assertEquals(TextComponent.of("foo"), LegacyComponentSerializer.legacyLinking().deserialize("foo"));
+    assertEquals(TextComponent.of("foo"), LegacyComponentSerializer.builder().extractUrls().build().deserialize("foo"));
   }
 
   @Test
@@ -46,7 +46,7 @@ class LinkingLegacyComponentSerializerTest {
     assertEquals(expectedNonLinkify, LegacyComponentSerializer.legacy().deserialize(bareUrl));
     final TextComponent expectedBareUrl = TextComponent.of(bareUrl)
       .clickEvent(ClickEvent.openUrl(bareUrl));
-    assertEquals(expectedBareUrl, LegacyComponentSerializer.legacyLinking().deserialize(bareUrl));
+    assertEquals(expectedBareUrl, LegacyComponentSerializer.builder().extractUrls().build().deserialize(bareUrl));
   }
 
   @Test
@@ -56,7 +56,7 @@ class LinkingLegacyComponentSerializerTest {
     final TextComponent expectedHasPrefix = TextComponent.builder("did you hear about ")
       .append(TextComponent.of(bareUrl).clickEvent(ClickEvent.openUrl(bareUrl)))
       .build();
-    assertEquals(expectedHasPrefix, LegacyComponentSerializer.legacyLinking().deserialize(hasPrefix, '&'));
+    assertEquals(expectedHasPrefix, LegacyComponentSerializer.builder().character('&').extractUrls().build().deserialize(hasPrefix));
   }
 
   @Test
@@ -67,7 +67,7 @@ class LinkingLegacyComponentSerializerTest {
       .append(TextComponent.of(bareUrl).clickEvent(ClickEvent.openUrl(bareUrl)))
       .append(TextComponent.of("? they're really cool"))
       .build();
-    assertEquals(expectedHasPrefixSuffix, LegacyComponentSerializer.legacyLinking().deserialize(hasPrefixSuffix, '&'));
+    assertEquals(expectedHasPrefixSuffix, LegacyComponentSerializer.builder().character('&').extractUrls().build().deserialize(hasPrefixSuffix));
   }
 
   @Test
@@ -80,7 +80,7 @@ class LinkingLegacyComponentSerializerTest {
       .append(TextComponent.of("? ", NamedTextColor.RED))
       .append(TextComponent.of("they're really cool", NamedTextColor.BLUE))
       .build();
-    assertEquals(expectedHasPrefixSuffixColors, LegacyComponentSerializer.legacyLinking().deserialize(hasPrefixSuffixColors, '&'));
+    assertEquals(expectedHasPrefixSuffixColors, LegacyComponentSerializer.builder().character('&').extractUrls().build().deserialize(hasPrefixSuffixColors));
   }
 
   @Test
@@ -92,13 +92,13 @@ class LinkingLegacyComponentSerializerTest {
       .append(TextComponent.of("https://www.example.net").clickEvent(ClickEvent.openUrl("https://www.example.net")))
       .append(TextComponent.of(" for cat videos"))
       .build();
-    assertEquals(expectedManyUrls, LegacyComponentSerializer.legacyLinking().deserialize(manyUrls, '&'));
+    assertEquals(expectedManyUrls, LegacyComponentSerializer.builder().character('&').extractUrls().build().deserialize(manyUrls));
   }
 
   @Test
   void testLinkifyWithStyle() {
     final Style testStyle = Style.of(NamedTextColor.GREEN, TextDecoration.UNDERLINED);
-    final LegacyComponentSerializer serializer = LegacyComponentSerializer.legacyLinking(testStyle);
+    final LegacyComponentSerializer serializer = LegacyComponentSerializer.builder().character('&').extractUrls(testStyle).build();
 
     final String bareUrl = "https://www.example.com";
     final Component expectedBareUrl = TextComponent.of(bareUrl).style(testStyle.clickEvent(ClickEvent.openUrl(bareUrl)));
@@ -109,7 +109,7 @@ class LinkingLegacyComponentSerializerTest {
       .append(TextComponent.of(bareUrl).style(testStyle.clickEvent(ClickEvent.openUrl(bareUrl))))
       .append(TextComponent.of("? they're really cool"))
       .build();
-    assertEquals(expectedHasPrefixSuffix, serializer.deserialize(hasPrefixSuffix, '&'));
+    assertEquals(expectedHasPrefixSuffix, serializer.deserialize(hasPrefixSuffix));
 
     final String manyUrls = "go to https://www.example.com and https://www.example.net for cat videos";
     final TextComponent expectedManyUrls = TextComponent.builder("go to ")
@@ -118,6 +118,6 @@ class LinkingLegacyComponentSerializerTest {
       .append(TextComponent.of("https://www.example.net").style(testStyle.clickEvent(ClickEvent.openUrl("https://www.example.net"))))
       .append(TextComponent.of(" for cat videos"))
       .build();
-    assertEquals(expectedManyUrls, serializer.deserialize(manyUrls, '&'));
+    assertEquals(expectedManyUrls, serializer.deserialize(manyUrls));
   }
 }
