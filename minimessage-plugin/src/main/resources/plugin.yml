@@ -5,3 +5,5 @@ api-version: 1.15
 authors: [MiniDigger]
 commands:
   minimessage:
+  minibossbar:
+  minispam:
