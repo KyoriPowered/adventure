@@ -23,6 +23,8 @@
  */
 package net.kyori.adventure.nbt;
 
+import java.util.stream.Stream;
+import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -92,5 +94,10 @@ public interface IntBinaryTag extends NumberBinaryTag {
   @Override
   public int hashCode() {
     return Integer.hashCode(this.value);
+  }
+
+  @Override
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(ExaminableProperty.of("value", this.value));
   }
 }

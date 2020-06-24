@@ -30,7 +30,9 @@ import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 import net.kyori.adventure.util.ShadyPines;
+import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -81,14 +83,6 @@ final class ListBinaryTagImpl implements ListBinaryTag {
   }
 
   @Override
-  public String toString() {
-    return "ListTagImpl{" +
-      "tags=" + tags +
-      ", type=" + type +
-      '}';
-  }
-
-  @Override
   public Iterator<BinaryTag> iterator() {
     return ShadyPines.unmodifiableIterator(this.tags.iterator());
   }
@@ -101,5 +95,13 @@ final class ListBinaryTagImpl implements ListBinaryTag {
   @Override
   public Spliterator<BinaryTag> spliterator() {
     return Spliterators.spliterator(this.tags, Spliterator.ORDERED | Spliterator.IMMUTABLE);
+  }
+
+  @Override
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(
+      ExaminableProperty.of("tags", this.tags),
+      ExaminableProperty.of("type", this.type)
+    );
   }
 }
