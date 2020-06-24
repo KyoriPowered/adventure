@@ -108,7 +108,7 @@ import static java.util.Objects.requireNonNull;
 
   @Override
   public String toString() {
-    return examine(StringExaminer.simpleEscaping());
+    return this.examine(StringExaminer.simpleEscaping());
   }
 
   static class Builder implements Book.Builder {
@@ -117,37 +117,37 @@ import static java.util.Objects.requireNonNull;
     private final List<Component> pages = new ArrayList<>();
 
     @Override
-    public Book.Builder title(final @NonNull Component title) {
+    public Book.@NonNull Builder title(final @NonNull Component title) {
       this.title = requireNonNull(title, "title");
       return this;
     }
 
     @Override
-    public Book.Builder author(final @NonNull Component author) {
+    public Book.@NonNull Builder author(final @NonNull Component author) {
       this.author = requireNonNull(author, "author");
       return this;
     }
 
     @Override
-    public Book.Builder page(final @NonNull Component page) {
+    public Book.@NonNull Builder page(final @NonNull Component page) {
       this.pages.add(requireNonNull(page, "page"));
       return this;
     }
 
     @Override
-    public Book.Builder pages(final @NonNull Collection<Component> pages) {
+    public Book.@NonNull Builder pages(final @NonNull Collection<Component> pages) {
       this.pages.addAll(requireNonNull(pages, "pages"));
       return this;
     }
 
     @Override
-    public Book.Builder pages(final @NonNull Component@NonNull... pages) {
+    public Book.@NonNull Builder pages(final @NonNull Component@NonNull... pages) {
       this.pages.addAll(Arrays.asList(pages));
       return this;
     }
 
     @Override
-    public Book build() {
+    public @NonNull Book build() {
       return new BookImpl(this.title, this.author, new ArrayList<>(this.pages));
     }
   }

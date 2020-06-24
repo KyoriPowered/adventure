@@ -28,7 +28,7 @@ import net.kyori.adventure.key.Key;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /* package */ final class SoundStopImpl implements SoundStop {
-  /* package */ static SoundStop ALL = new SoundStopImpl(null, null);
+  /* package */ static final SoundStop ALL = new SoundStopImpl(null, null);
   private final @Nullable Key sound;
   private final Sound.@Nullable Source source;
 

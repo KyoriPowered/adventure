@@ -122,7 +122,7 @@ public interface Book {
    * @return a new book with modifications
    */
   default @NonNull Book pages(final @NonNull Component@NonNull... pages) {
-    return pages(Arrays.asList(pages));
+    return this.pages(Arrays.asList(pages));
   }
 
   /**
@@ -130,7 +130,7 @@ public interface Book {
    *
    * @return the builder
    */
-  default Book.@NonNull Builder toBuilder() {
+  default @NonNull Builder toBuilder() {
     return builder()
       .title(this.title())
       .author(this.author())
@@ -148,7 +148,7 @@ public interface Book {
      * @param title the title
      * @return this
      */
-    Builder title(final @NonNull Component title);
+    @NonNull Builder title(final @NonNull Component title);
 
     /**
      * Set the author.
@@ -156,7 +156,7 @@ public interface Book {
      * @param author the author
      * @return this
      */
-    Builder author(final @NonNull Component author);
+    @NonNull Builder author(final @NonNull Component author);
 
     /**
      * Add a page to the book.
@@ -167,7 +167,7 @@ public interface Book {
      * @param page the page
      * @return this
      */
-    Builder page(final @NonNull Component page);
+    @NonNull Builder page(final @NonNull Component page);
 
     /**
      * Add pages to the book.
@@ -176,7 +176,7 @@ public interface Book {
      * @return this
      * @see #page(Component) for details on page values.
      */
-    Builder pages(final @NonNull Collection<Component> pages);
+    @NonNull Builder pages(final @NonNull Collection<Component> pages);
 
     /**
      * Add pages to the book.
@@ -185,13 +185,13 @@ public interface Book {
      * @return this
      * @see #page(Component) for details on page values.
      */
-    Builder pages(final @NonNull Component@NonNull... pages);
+    @NonNull Builder pages(final @NonNull Component@NonNull... pages);
 
     /**
      * Create a new book from this builder
      *
      * @return The new book
      */
-    Book build();
+    @NonNull Book build();
   }
 }

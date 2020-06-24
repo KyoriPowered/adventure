@@ -523,7 +523,6 @@ public final class Style implements Examinable {
    * @return {@code true} if this style is empty, {@code false} if this
    *     style is not empty
    */
-  @SuppressWarnings("DuplicatedCode")
   public boolean isEmpty() {
     return this == EMPTY;
   }
@@ -1009,7 +1008,6 @@ public final class Style implements Examinable {
       return new Style(this.font, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
     }
 
-    @SuppressWarnings("DuplicatedCode")
     private boolean isEmpty() {
       return this.color == null
         && this.obfuscated == TextDecoration.State.NOT_SET

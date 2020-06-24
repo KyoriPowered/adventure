@@ -40,7 +40,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * @param <C> the context type
  */
-@SuppressWarnings("Duplicates")
 public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<C> {
   @Override
   public @NonNull Component render(final @NonNull Component component, final @NonNull C context) {
