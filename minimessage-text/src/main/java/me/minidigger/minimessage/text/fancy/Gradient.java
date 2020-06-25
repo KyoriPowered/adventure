@@ -7,7 +7,7 @@ public class Gradient implements Fancy {
 
     private int colorIndex = 0;
 
-    private float factorStep = 0.5f;
+    private float factorStep = 0;
     private final TextColor color1;
     private final TextColor color2;
 
@@ -22,7 +22,8 @@ public class Gradient implements Fancy {
 
     @Override
     public void init(int size) {
-        this.factorStep = (float) (1. / (size - 1));
+        this.factorStep = (float) (1. / (size + this.colorIndex - 1));
+        this.colorIndex = 0;
     }
 
     @Override
