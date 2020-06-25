@@ -1,10 +1,12 @@
 dependencies {
+  api 'net.kyori:examination-api:1.0.0-SNAPSHOT'
+  api 'net.kyori:examination-string:1.0.0-SNAPSHOT'
   api 'org.checkerframework:checker-qual:2.5.8'
   testImplementation 'com.google.guava:guava:21.0'
 }
 
 jar {
   manifest.attributes(
-    'Automatic-Module-Name': 'net.kyori.text'
+    'Automatic-Module-Name': 'net.kyori.adventure'
   )
 }

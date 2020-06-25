@@ -1,13 +1,5 @@
-buildscript {
-  repositories {
-    maven {
-      url 'https://plugins.gradle.org/m2/'
-    }
-  }
-
-  dependencies {
-    classpath 'gradle.plugin.net.minecrell:licenser:0.4.1'
-  }
+plugins {
+  id 'net.minecrell.licenser' version "0.4.1" apply false
 }
 
 subprojects {
@@ -17,7 +9,7 @@ subprojects {
   apply plugin: 'net.minecrell.licenser'
 
   group 'net.kyori'
-  version '3.0.5-SNAPSHOT'
+  version '4.0.0-SNAPSHOT'
 
   sourceCompatibility = 1.8
   targetCompatibility = 1.8
@@ -41,6 +33,9 @@ subprojects {
   repositories {
     mavenLocal()
     mavenCentral()
+    maven {
+      url 'https://oss.sonatype.org/content/groups/public/'
+    }
   }
 
   dependencies {
