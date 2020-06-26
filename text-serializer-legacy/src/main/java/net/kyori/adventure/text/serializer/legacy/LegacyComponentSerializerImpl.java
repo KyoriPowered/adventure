@@ -174,9 +174,8 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     throw new IllegalArgumentException(String.format("unknown format '%s'", format.getClass()));
   }
 
-  @NonNull
   @Override
-  public Builder toBuilder() {
+  public @NonNull Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
@@ -316,7 +315,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
     }
 
-    BuilderImpl(LegacyComponentSerializerImpl serializer) {
+    BuilderImpl(final @NonNull LegacyComponentSerializerImpl serializer) {
       this.character = serializer.character;
       this.hexCharacter = serializer.hexCharacter;
       this.urlStyle = serializer.urlStyle;

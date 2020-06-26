@@ -580,18 +580,18 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    */
   interface Builder extends ComponentBuilder<TextComponent, Builder> {
     /**
+     * Gets the plain text content.
+     *
+     * @return the plain text content
+     */
+    @NonNull String content();
+
+    /**
      * Sets the plain text content.
      *
      * @param content the plain text content
      * @return this builder
      */
     @NonNull Builder content(final @NonNull String content);
-
-    /**
-     * Gets the plain text content.
-     *
-     * @return the plain text content
-     */
-    @NonNull String content();
   }
 }
