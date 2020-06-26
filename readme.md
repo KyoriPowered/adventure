@@ -1,15 +1,15 @@
-# text [![License](https://img.shields.io/github/license/KyoriPowered/text.svg)](https://github.com/KyoriPowered/text/blob/master/license.txt) [![Build Status](https://travis-ci.org/KyoriPowered/text.svg?branch=master)](https://travis-ci.org/KyoriPowered/text)
+# adventure [![License](https://img.shields.io/github/license/KyoriPowered/adventure.svg)](https://github.com/KyoriPowered/adventure/blob/master/license.txt) [![Build Status](https://travis-ci.org/KyoriPowered/adventure.svg?branch=master)](https://travis-ci.org/KyoriPowered/adventure)
 
-A text library for Minecraft.
+A serverside user interface library for Minecraft.
 
 #### Artifacts
 
 There are various artifacts:
 
-* `text-api` is the core project - you will always want to import this.
-* `text-serializer-gson` is a GSON-based JSON serializer.
-* `text-serializer-legacy` is a legacy character text serializer.
-* `text-serializer-plain` is a plain text serializer.
+* `adventure-api` is the core project - you will always want to import this.
+* `adventure-text-serializer-gson` is a GSON-based JSON serializer.
+* `adventure-text-serializer-legacy` is a legacy character text serializer.
+* `adventure-text-serializer-plain` is a plain text serializer.
 
 #### Importing text into your project
 
@@ -17,8 +17,8 @@ There are various artifacts:
 ```xml
 <dependency>
   <groupId>net.kyori</groupId>
-  <artifactId>text-api</artifactId>
-  <version>3.0.3</version>
+  <artifactId>adventure-api</artifactId>
+  <version>4.0.0-SNAPSHOT</version>
 </dependency>
 ```
 * Gradle
@@ -28,7 +28,7 @@ repositories {
 }
 
 dependencies {
-  compile 'net.kyori:text-api:3.0.3'
+  compile 'net.kyori:adventure-api:4.0.0-SNAPSHOT'
 }
 ```
 
@@ -88,7 +88,7 @@ final TextComponent textComponent = TextComponent.of("Hello ")
 String json = GsonComponentSerializer.INSTANCE.serialize(textComponent);
 
 // Converts textComponent to a legacy string - "&6Hello &b&lworld&c!"
-String legacy = LegacyComponentSerializer.INSTANCE.serialize(textComponent, '&');
+String legacy = LegacyComponentSerializer.legacy().serialize(textComponent, '&');
 
 // Converts textComponent to a plain string - "Hello world!"
 String plain = PlainComponentSerializer.INSTANCE.serialize(textComponent);
@@ -101,7 +101,7 @@ The same is of course also possible in reverse for deserialization.
 Component component = GsonComponentSerializer.INSTANCE.deserialize(json);
 
 // Converts a legacy string (using formatting codes) to a TextComponent
-TextComponent component = LegacyComponentSerializer.INSTANCE.deserialize("&6Hello &b&lworld&c!", '&');
+TextComponent component = LegacyComponentSerializer.legacy().deserialize("&6Hello &b&lworld&c!", '&');
 
 // Converts a plain string to a TextComponent
 TextComponent component = PlainComponentSerializer.INSTANCE.deserialize("Hello world!");
@@ -113,4 +113,4 @@ The way you use components within your application will of course vary depending
 
 However, the most common task is likely to be sending a component to some sort of Minecraft client. The method for doing this will depend on the platform your program is running on, however it is likely to involve serializing the component to Minecraft's JSON format, and then sending the JSON through another method provided by the platform.
 
-The text library is platform agnostic and therefore doesn't provide any way to send components to clients. However, some platform adapters (which make this easy!) can be found in the [text-extras](https://github.com/KyoriPowered/text-extras) project.
+The text library is platform agnostic and therefore doesn't provide any way to send components to clients. However, some platform adapters (which make this easy!) can be found in the [adventure-platform](https://github.com/KyoriPowered/adventure-platform) project.
