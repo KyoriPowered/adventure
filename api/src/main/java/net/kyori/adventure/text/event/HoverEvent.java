@@ -171,6 +171,10 @@ public final class HoverEvent<V> implements Examinable {
     private final int count;
     private final CompoundBinaryTag nbt;
 
+    public ShowItem(final @NonNull Key item, final @NonNegative int count) {
+      this(item, count, null);
+    }
+
     public ShowItem(final @NonNull Key item, final @NonNegative int count, final @Nullable CompoundBinaryTag nbt) {
       this.item = item;
       this.count = count;
@@ -209,13 +213,14 @@ public final class HoverEvent<V> implements Examinable {
       if(this == other) return true;
       if(other == null || this.getClass() != other.getClass()) return false;
       final ShowItem that = (ShowItem) other;
-      return this.item.equals(that.item) && this.count == that.count;
+      return this.item.equals(that.item) && this.count == that.count && Objects.equals(this.nbt, that.nbt);
     }
 
     @Override
     public int hashCode() {
       int result = this.item.hashCode();
       result = (31 * result) + Integer.hashCode(this.count);
+      result = (31 * result) + Objects.hashCode(this.nbt);
       return result;
     }
 

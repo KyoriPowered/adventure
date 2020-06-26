@@ -33,6 +33,12 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * A binary tag holding a {@code double} value.
  */
 public interface DoubleBinaryTag extends NumberBinaryTag {
+  /**
+   * Creates a binary tag holding a {@code double} value.
+   *
+   * @param value the value
+   * @return a binary tag
+   */
   static @NonNull DoubleBinaryTag of(final double value) {
     return new DoubleBinaryTagImpl(value);
   }

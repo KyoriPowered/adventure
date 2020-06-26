@@ -39,9 +39,11 @@ import static java.util.Objects.requireNonNull;
 /* package */ final class CompoundBinaryTagImpl implements CompoundBinaryTag {
   static final CompoundBinaryTag EMPTY = new CompoundBinaryTagImpl(Collections.emptyMap());
   private final Map<String, BinaryTag> tags;
+  private final int hashCode;
 
   /* package */ CompoundBinaryTagImpl(final Map<String, BinaryTag> tags) {
     this.tags = Collections.unmodifiableMap(tags);
+    this.hashCode = tags.hashCode();
   }
 
   public boolean contains(final @NonNull String key, final @NonNull BinaryTagType<?> type) {
@@ -208,7 +210,7 @@ import static java.util.Objects.requireNonNull;
 
   @Override
   public int hashCode() {
-    return this.tags.hashCode();
+    return this.hashCode;
   }
 
   @Override

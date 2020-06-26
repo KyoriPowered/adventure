@@ -35,15 +35,18 @@ import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /* package */ final class ListBinaryTagImpl implements ListBinaryTag {
   static final ListBinaryTag EMPTY = new ListBinaryTagImpl(BinaryTagTypes.END, Collections.emptyList());
   private final List<? extends BinaryTag> tags;
   private final BinaryTagType<? extends BinaryTag> type;
+  private final int hashCode;
 
   /* package */ ListBinaryTagImpl(final BinaryTagType<? extends BinaryTag> type, final List<? extends BinaryTag> tags) {
     this.tags = tags;
     this.type = type;
+    this.hashCode = tags.hashCode();
   }
 
   @Override
@@ -59,6 +62,26 @@ import org.checkerframework.checker.nullness.qual.NonNull;
   @Override
   public @NonNull BinaryTag get(@NonNegative final int index) {
     return this.tags.get(index);
+  }
+
+  @Override
+  public @NonNull ListBinaryTag set(final int index, final @NonNull BinaryTag newTag, final @Nullable Consumer<BinaryTag> removedConsumer) {
+    return this.edit(tags -> {
+      final BinaryTag oldTag = tags.set(index, newTag);
+      if(removedConsumer != null) {
+        removedConsumer.accept(oldTag);
+      }
+    });
+  }
+
+  @Override
+  public @NonNull ListBinaryTag remove(final int index, final @Nullable Consumer<BinaryTag> removedConsumer) {
+    return this.edit(tags -> {
+      final BinaryTag tag = tags.remove(index);
+      if(removedConsumer != null) {
+        removedConsumer.accept(tag);
+      }
+    });
   }
 
   @Override
@@ -79,7 +102,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
   @Override
   public int hashCode() {
-    return this.tags.hashCode();
+    return this.hashCode;
   }
 
   @Override

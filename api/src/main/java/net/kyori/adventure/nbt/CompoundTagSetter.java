@@ -25,6 +25,11 @@ package net.kyori.adventure.nbt;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+/**
+ * Common methods between {@link CompoundBinaryTag} and {@link CompoundBinaryTag.Builder}.
+ *
+ * @param <R> the return type
+ */
 public interface CompoundTagSetter<R> {
   /**
    * Inserts a tag.

@@ -25,8 +25,18 @@ package net.kyori.adventure.nbt;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+/**
+ * Common methods between {@link ListBinaryTag} and {@link ListBinaryTag.Builder}.
+ *
+ * @param <R> the return type
+ * @param <T> the element type
+ */
 public interface ListTagSetter<R, T extends BinaryTag> {
+  /**
+   * Adds a tag.
+   *
+   * @param tag the tag
+   * @return a list tag
+   */
   @NonNull R add(final T tag);
-  // TODO: set
-  // TODO: remove
 }

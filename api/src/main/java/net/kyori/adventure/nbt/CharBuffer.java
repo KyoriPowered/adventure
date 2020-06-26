@@ -64,6 +64,7 @@ package net.kyori.adventure.nbt;
 
   /**
    * Search for the provided token, and advance the reader index past the {@code until} character.
+   *
    * @param until Case-insensitive token
    * @return the string starting at the current position (inclusive) and going until the location of {@code until}, exclusive
    */
@@ -72,7 +73,7 @@ package net.kyori.adventure.nbt;
     int endIdx = -1;
     for(int idx = this.index; idx < this.sequence.length(); ++idx) {
       if(this.sequence.charAt(idx) == Tokens.ESCAPE_MARKER) {
-        ++idx;
+        idx++;
       } else if(Character.toLowerCase(this.sequence.charAt(idx)) == until) {
         endIdx = idx;
         break;

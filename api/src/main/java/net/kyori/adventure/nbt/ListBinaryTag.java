@@ -24,8 +24,10 @@
 package net.kyori.adventure.nbt;
 
 import java.util.List;
+import java.util.function.Consumer;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, BinaryTag, Iterable<BinaryTag> {
   /**
@@ -94,6 +96,25 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @throws IndexOutOfBoundsException if the index is out of range
    */
   @NonNull BinaryTag get(final @NonNegative int index);
+
+  /**
+   * Sets the tag at index {@code index} to {@code tag}, optionally providing {@code removedConsumer} with the tag previously at index {@code index}.
+   *
+   * @param index the index
+   * @param tag the tag
+   * @param removedConsumer a consumer which receives the tag being removed at index {@code index}
+   * @return a list tag
+   */
+  @NonNull ListBinaryTag set(final int index, final @NonNull BinaryTag tag, final @Nullable Consumer<BinaryTag> removedConsumer);
+
+  /**
+   * Removes the tag at index {@code index}, optionally providing {@code removedConsumer} with the tag previously at index {@code index}.
+   *
+   * @param index the index
+   * @param removedConsumer a consumer which receives the tag being removed at index {@code index}
+   * @return a list tag
+   */
+  @NonNull ListBinaryTag remove(final int index, final @Nullable Consumer<BinaryTag> removedConsumer);
 
   /**
    * Gets a byte.
@@ -382,7 +403,17 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
     return defaultValue;
   }
 
+  /**
+   * A list tag builder.
+   *
+   * @param <T> the element type
+   */
   interface Builder<T extends BinaryTag> extends ListTagSetter<Builder<T>, T> {
+    /**
+     * Builds.
+     *
+     * @return a list tag
+     */
     @NonNull ListBinaryTag build();
   }
 }
