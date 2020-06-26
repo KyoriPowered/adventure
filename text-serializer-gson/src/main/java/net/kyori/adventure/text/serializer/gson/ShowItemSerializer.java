@@ -58,16 +58,16 @@ import net.kyori.adventure.text.event.HoverEvent;
       count = object.get(COUNT).getAsInt();
     }
 
-    CompoundBinaryTag tag = null;
+    CompoundBinaryTag nbt = null;
     if(object.has(TAG)) {
       try {
-        tag = BinaryTagIO.readString(object.get(TAG).getAsString());
-      } catch(IOException e) {
+        nbt = BinaryTagIO.readString(object.get(TAG).getAsString());
+      } catch(final IOException e) {
         throw new JsonParseException(e);
       }
     }
 
-    return new HoverEvent.ShowItem(id, count, tag);
+    return new HoverEvent.ShowItem(id, count, nbt);
   }
 
   @Override
@@ -81,11 +81,11 @@ import net.kyori.adventure.text.event.HoverEvent;
       json.addProperty(COUNT, count);
     }
 
-    final /* @Nullable */ CompoundBinaryTag tag = src.tag();
-    if(tag != null) {
+    final /* @Nullable */ CompoundBinaryTag nbt = src.nbt();
+    if(nbt != null) {
       try {
-        json.addProperty(TAG, BinaryTagIO.writeString(tag));
-      } catch(IOException e) {
+        json.addProperty(TAG, BinaryTagIO.writeString(nbt));
+      } catch(final IOException e) {
         throw new JsonSyntaxException(e);
       }
     }

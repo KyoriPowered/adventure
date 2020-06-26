@@ -169,12 +169,12 @@ public final class HoverEvent<V> implements Examinable {
   public static final class ShowItem implements Examinable {
     private final Key item;
     private final int count;
-    private final CompoundBinaryTag tag;
+    private final CompoundBinaryTag nbt;
 
-    public ShowItem(final @NonNull Key item, final @NonNegative int count, final @Nullable CompoundBinaryTag tag) {
+    public ShowItem(final @NonNull Key item, final @NonNegative int count, final @Nullable CompoundBinaryTag nbt) {
       this.item = item;
       this.count = count;
-      this.tag = tag;
+      this.nbt = nbt;
     }
 
     /**
@@ -195,8 +195,13 @@ public final class HoverEvent<V> implements Examinable {
       return this.count;
     }
 
-    public @Nullable CompoundBinaryTag tag() {
-      return this.tag;
+    /**
+     * Gets the nbt.
+     *
+     * @return the nbt
+     */
+    public @Nullable CompoundBinaryTag nbt() {
+      return this.nbt;
     }
 
     @Override
@@ -218,7 +223,8 @@ public final class HoverEvent<V> implements Examinable {
     public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
         ExaminableProperty.of("item", this.item),
-        ExaminableProperty.of("count", this.count)
+        ExaminableProperty.of("count", this.count),
+        ExaminableProperty.of("nbt", this.nbt)
       );
     }
   }
