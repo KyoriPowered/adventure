@@ -37,6 +37,7 @@ import net.kyori.adventure.text.format.Style;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+@FunctionalInterface
 interface UrlClickEventExtractor {
   /**
    * Extracts URLs in the given component.
@@ -62,8 +63,8 @@ interface UrlClickEventExtractor {
    * @param style the style
    * @return the extractor instance
    */
-  static UrlClickEventExtractor withStyle(final @NonNull Style style) {
-    return new Impl(style);
+  static UrlClickEventExtractor withStyle(final @Nullable Style style) {
+    return style == null ? NO_OP : new Impl(style);
   }
 
   class Impl implements UrlClickEventExtractor {

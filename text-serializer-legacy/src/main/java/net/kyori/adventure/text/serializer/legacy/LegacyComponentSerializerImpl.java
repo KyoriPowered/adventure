@@ -57,8 +57,8 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
   }
 
-  static final LegacyComponentSerializer SECTION_CHAR = new LegacyComponentSerializerImpl(LEGACY_CHARACTER_SECTION, LEGACY_HEX_CHARACTER, UrlClickEventExtractor.NO_OP);
-  static final LegacyComponentSerializer AMPERSAND_CHAR = new LegacyComponentSerializerImpl(LEGACY_CHARACTER_AMPERSAND, LEGACY_HEX_CHARACTER, UrlClickEventExtractor.NO_OP);
+  static final LegacyComponentSerializer SECTION_SERIALIZER = new LegacyComponentSerializerImpl(SECTION_CHAR, HEX_CHAR, UrlClickEventExtractor.NO_OP);
+  static final LegacyComponentSerializer AMPERSAND_SERIALIZER = new LegacyComponentSerializerImpl(AMPERSAND_CHAR, HEX_CHAR, UrlClickEventExtractor.NO_OP);
 
   private final char character;
   private final char hexCharacter;
@@ -163,6 +163,12 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       return true;
     }
     throw new IllegalArgumentException(String.format("unknown format '%s'", format.getClass()));
+  }
+
+  @NonNull
+  @Override
+  public Builder toBuilder() {
+    return new BuilderImpl(this);
   }
 
   private enum Reset implements TextFormat {
@@ -292,12 +298,18 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   }
 
   static final class BuilderImpl implements Builder {
-    private char character = LegacyComponentSerializer.LEGACY_CHARACTER_SECTION;
-    private char hexCharacter = LegacyComponentSerializer.LEGACY_HEX_CHARACTER;
+    private char character = LegacyComponentSerializer.SECTION_CHAR;
+    private char hexCharacter = LegacyComponentSerializer.HEX_CHAR;
     private UrlClickEventExtractor urlExtractor = UrlClickEventExtractor.NO_OP;
 
     BuilderImpl() {
 
+    }
+
+    BuilderImpl(LegacyComponentSerializerImpl serializer) {
+      this.character = serializer.character;
+      this.hexCharacter = serializer.hexCharacter;
+      this.urlExtractor = serializer.urlExtractor;
     }
 
     @Override

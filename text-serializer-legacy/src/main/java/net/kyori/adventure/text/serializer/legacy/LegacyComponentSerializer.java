@@ -29,6 +29,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
+import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -37,7 +38,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * <p>Legacy does <b>not</b> support more complex features such as, but not limited
  * to, {@link ClickEvent} and {@link HoverEvent}.</p>
  */
-public interface LegacyComponentSerializer extends ComponentSerializer<Component, TextComponent, String> {
+public interface LegacyComponentSerializer extends ComponentSerializer<Component, TextComponent, String>, Buildable<LegacyComponentSerializer, LegacyComponentSerializer.Builder> {
   /**
    * Gets a component serializer for legacy-based serialization and deserialization. Note that this
    * serializer works exactly like vanilla Minecraft and does not detect any links. If you want to
@@ -46,7 +47,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * @return a component serializer for legacy serialization and deserialization
    */
   static @NonNull LegacyComponentSerializer legacy() {
-    return LegacyComponentSerializerImpl.SECTION_CHAR;
+    return LegacyComponentSerializerImpl.SECTION_SERIALIZER;
   }
 
   /**
@@ -59,10 +60,10 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    */
   static @NonNull LegacyComponentSerializer legacy(final char legacyCharacter) {
     switch(legacyCharacter) {
-      case LEGACY_CHARACTER_SECTION:
-        return LegacyComponentSerializerImpl.SECTION_CHAR;
-      case LEGACY_CHARACTER_AMPERSAND:
-        return LegacyComponentSerializerImpl.AMPERSAND_CHAR;
+      case SECTION_CHAR:
+        return LegacyComponentSerializerImpl.SECTION_SERIALIZER;
+      case AMPERSAND_CHAR:
+        return LegacyComponentSerializerImpl.AMPERSAND_SERIALIZER;
       default:
         return builder().character(legacyCharacter).build();
     }
@@ -80,17 +81,17 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
   /**
    * The legacy character used by Minecraft. ('§')
    */
-  char LEGACY_CHARACTER_SECTION = '\u00A7';
+  char SECTION_CHAR = '\u00A7';
 
   /**
    * The legacy character frequently used by configurations and commands. ('&amp;')
    */
-  char LEGACY_CHARACTER_AMPERSAND = '&';
+  char AMPERSAND_CHAR = '&';
 
   /**
    * The legacy character used to prefix hex colors. ('#')
    */
-  char LEGACY_HEX_CHARACTER = '#';
+  char HEX_CHAR = '#';
 
   /**
    * Deserialize a component from a legacy {@link String}.
@@ -113,7 +114,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
   /**
    * A builder for {@link LegacyComponentSerializer}.
    */
-  interface Builder {
+  interface Builder extends Buildable.AbstractBuilder<LegacyComponentSerializer> {
     /**
      * Sets the legacy character used by the serializer.
      *
@@ -152,6 +153,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      *
      * @return the built serializer
      */
+    @Override
     @NonNull LegacyComponentSerializer build();
   }
 }
