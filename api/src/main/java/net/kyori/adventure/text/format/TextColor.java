@@ -30,7 +30,7 @@ import org.checkerframework.common.value.qual.IntRange;
 /**
  * A color which may be applied to a {@link Style}.
  */
-public interface TextColor extends TextFormat {
+public interface TextColor extends Comparable<TextColor>, TextFormat {
   /**
    * Creates a new text colour.
    *
@@ -125,5 +125,10 @@ public interface TextColor extends TextFormat {
    */
   default @IntRange(from = 0x0, to = 0xff) short blue() {
     return (short) (this.value() & 0xff);
+  }
+
+  @Override
+  default int compareTo(final TextColor that) {
+    return Integer.compare(this.value(), that.value());
   }
 }
