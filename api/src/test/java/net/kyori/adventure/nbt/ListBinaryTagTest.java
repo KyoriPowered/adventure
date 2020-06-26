@@ -27,8 +27,33 @@ import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ListBinaryTagTest {
+  @Test
+  void testCreateEndBuilder() {
+    assertThrows(IllegalArgumentException.class, () -> ListBinaryTag.builder(BinaryTagTypes.END));
+  }
+
+  @Test
+  void testAddEnd() {
+    final ListBinaryTag l0 = ListBinaryTag.empty();
+    assertThrows(IllegalArgumentException.class, () -> l0.add(EndBinaryTag.get()));
+  }
+
+  @Test
+  void testAddOtherToEndChangesType() {
+    final ListBinaryTag l0 = ListBinaryTag.empty();
+    final ListBinaryTag l1 = l0.add(IntBinaryTag.of(13));
+    assertEquals(BinaryTagTypes.INT, l1.listType());
+  }
+
+  @Test
+  void testMismatchedAdd() {
+    final ListBinaryTag l0 = ListBinaryTag.of(BinaryTagTypes.BYTE, ImmutableList.of(ByteBinaryTag.of((byte) 0)));
+    assertThrows(IllegalArgumentException.class, () -> l0.add(IntBinaryTag.of(1)));
+  }
+
   @Test
   void testSet() {
     final IntBinaryTag i0 = IntBinaryTag.of(0);

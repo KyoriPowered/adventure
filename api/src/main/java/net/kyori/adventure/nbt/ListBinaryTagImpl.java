@@ -71,7 +71,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
       if(removedConsumer != null) {
         removedConsumer.accept(oldTag);
       }
-    });
+    }, newTag.type());
   }
 
   @Override
@@ -81,28 +81,43 @@ import org.checkerframework.checker.nullness.qual.Nullable;
       if(removedConsumer != null) {
         removedConsumer.accept(tag);
       }
-    });
+    }, null);
   }
 
   @Override
   public @NonNull ListBinaryTag add(final BinaryTag tag) {
-    return this.edit(tags -> tags.add(tag));
+    return this.edit(tags -> {
+      noAddEnd(tag);
+      if(this.type != BinaryTagTypes.END) {
+        mustBeSameType(tag, this.type);
+      }
+      tags.add(tag);
+    }, tag.type());
   }
 
-  private ListBinaryTag edit(final Consumer<List<BinaryTag>> consumer) {
+  // An end tag cannot be an element in a list tag
+  /* package */ static void noAddEnd(final BinaryTag tag) {
+    if(tag.type() == BinaryTagTypes.END) {
+      throw new IllegalArgumentException(String.format("Cannot add a %s to a %s", BinaryTagTypes.END, BinaryTagTypes.LIST));
+    }
+  }
+
+  // Cannot have different element types in a list tag
+  /* package */ static void mustBeSameType(final BinaryTag tag, final BinaryTagType<? extends BinaryTag> type) {
+    if(tag.type() != type) {
+      throw new IllegalArgumentException(String.format("Trying to add tag of type %s to list of %s", tag.type(), type));
+    }
+  }
+
+  private ListBinaryTag edit(final Consumer<List<BinaryTag>> consumer, final @Nullable BinaryTagType<? extends BinaryTag> maybeType) {
     final List<BinaryTag> tags = new ArrayList<>(this.tags);
     consumer.accept(tags);
-    return new ListBinaryTagImpl(this.type, tags);
-  }
-
-  @Override
-  public boolean equals(final Object that) {
-    return this == that || (that instanceof ListBinaryTagImpl && this.tags.equals(((ListBinaryTagImpl) that).tags));
-  }
-
-  @Override
-  public int hashCode() {
-    return this.hashCode;
+    BinaryTagType<? extends BinaryTag> type = this.type;
+    // set the type if it has not yet been set
+    if(maybeType != null && type == BinaryTagTypes.END) {
+      type = maybeType;
+    }
+    return new ListBinaryTagImpl(type, tags);
   }
 
   @Override
@@ -118,6 +133,16 @@ import org.checkerframework.checker.nullness.qual.Nullable;
   @Override
   public Spliterator<BinaryTag> spliterator() {
     return Spliterators.spliterator(this.tags, Spliterator.ORDERED | Spliterator.IMMUTABLE);
+  }
+
+  @Override
+  public boolean equals(final Object that) {
+    return this == that || (that instanceof ListBinaryTagImpl && this.tags.equals(((ListBinaryTagImpl) that).tags));
+  }
+
+  @Override
+  public int hashCode() {
+    return this.hashCode;
   }
 
   @Override

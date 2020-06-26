@@ -55,6 +55,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return a new builder
    */
   static <T extends BinaryTag> @NonNull Builder<T> builder(final @NonNull BinaryTagType<T> type) {
+    if(type == BinaryTagTypes.END) throw new IllegalArgumentException("Cannot create a list of " + BinaryTagTypes.END);
     return new ListTagBuilder<>(type);
   }
 
@@ -66,6 +67,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return a tag
    */
   static @NonNull ListBinaryTag of(final @NonNull BinaryTagType<? extends BinaryTag> type, final @NonNull List<BinaryTag> tags) {
+    if(type == BinaryTagTypes.END) throw new IllegalArgumentException("Cannot create a list of " + BinaryTagTypes.END);
     return new ListBinaryTagImpl(type, tags);
   }
 

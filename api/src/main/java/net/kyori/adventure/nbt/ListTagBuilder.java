@@ -42,14 +42,13 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
   @Override
   public ListBinaryTag.@NonNull Builder<T> add(final BinaryTag tag) {
-    // don't allow an end tag to be added
-    if(tag.type() == BinaryTagTypes.END) {
-      throw new IllegalArgumentException(String.format("Cannot add a '%s' to a '%s'", EndBinaryTag.class.getSimpleName(), ListBinaryTag.class.getSimpleName()));
-    }
+    ListBinaryTagImpl.noAddEnd(tag);
     // set the type if it has not yet been set
     if(this.type == BinaryTagTypes.END) {
       this.type = tag.type();
     }
+    // check after changing from an empty tag
+    ListBinaryTagImpl.mustBeSameType(tag, this.type);
     if(this.tags == null) {
       this.tags = new ArrayList<>();
     }
