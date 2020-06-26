@@ -52,10 +52,6 @@ public enum NamedTextColor implements TextColor {
    * An index of name to color.
    */
   public static final Index<String, NamedTextColor> NAMES = Index.create(NamedTextColor.class, constant -> constant.name, VALUES);
-  /**
-   * An index of color value to color.
-   */
-  private static final Index<Integer, NamedTextColor> COLOR_VALUES = Index.create(NamedTextColor.class, constant -> constant.value, VALUES);
 
   /**
    * Gets the named color exactly matching the provided color.
@@ -64,7 +60,25 @@ public enum NamedTextColor implements TextColor {
    * @return the matched color, or null
    */
   public static @Nullable NamedTextColor ofExact(final int value) {
-    return COLOR_VALUES.value(value);
+    switch(value) {
+      case 0x000000: return BLACK;
+      case 0x0000aa: return DARK_BLUE;
+      case 0x00aa00: return DARK_GREEN;
+      case 0x00aaaa: return DARK_AQUA;
+      case 0xaa0000: return DARK_RED;
+      case 0xaa00aa: return DARK_PURPLE;
+      case 0xffaa00: return GOLD;
+      case 0xaaaaaa: return GRAY;
+      case 0x555555: return DARK_GRAY;
+      case 0x5555ff: return BLUE;
+      case 0x55ff55: return GREEN;
+      case 0x55ffff: return AQUA;
+      case 0xff5555: return RED;
+      case 0xff55ff: return LIGHT_PURPLE;
+      case 0xffff55: return YELLOW;
+      case 0xffffff: return WHITE;
+      default: return null;
+    }
   }
 
   /**
