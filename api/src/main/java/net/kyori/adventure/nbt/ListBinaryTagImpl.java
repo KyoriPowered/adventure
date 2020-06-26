@@ -36,7 +36,7 @@ import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-final class ListBinaryTagImpl implements ListBinaryTag {
+/* package */ final class ListBinaryTagImpl implements ListBinaryTag {
   static final ListBinaryTag EMPTY = new ListBinaryTagImpl(BinaryTagTypes.END, Collections.emptyList());
   private final List<? extends BinaryTag> tags;
   private final BinaryTagType<? extends BinaryTag> type;

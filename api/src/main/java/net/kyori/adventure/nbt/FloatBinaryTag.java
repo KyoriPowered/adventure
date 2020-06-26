@@ -29,6 +29,9 @@ import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+/**
+ * A binary tag holding a {@code float} value.
+ */
 public interface FloatBinaryTag extends NumberBinaryTag {
   static @NonNull FloatBinaryTag of(final float value) {
     return new FloatBinaryTagImpl(value);
@@ -39,6 +42,11 @@ public interface FloatBinaryTag extends NumberBinaryTag {
     return BinaryTagTypes.FLOAT;
   }
 
+  /**
+   * Gets the value.
+   *
+   * @return the value
+   */
    float value();
 }
 

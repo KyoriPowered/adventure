@@ -37,12 +37,11 @@ package net.kyori.adventure.nbt;
    * @return The current character
    */
   public char peek() {
-    if(!hasMore()) return Tokens.EOF;
-    return sequence.charAt(index);
+    return this.sequence.charAt(this.index);
   }
 
-  public char peek(int offset) {
-    return sequence.charAt(index + offset);
+  public char peek(final int offset) {
+    return this.sequence.charAt(this.index + offset);
   }
 
   /**
@@ -56,7 +55,7 @@ package net.kyori.adventure.nbt;
 
   public boolean advance() {
     this.index++;
-    return hasMore();
+    return this.hasMore();
   }
 
   public boolean hasMore() {
@@ -80,10 +79,10 @@ package net.kyori.adventure.nbt;
       }
     }
     if(endIdx == -1) {
-      throw makeError("No occurrence of " + until + " was found");
+      throw this.makeError("No occurrence of " + until + " was found");
     }
 
-    CharSequence result =  this.sequence.subSequence(this.index, endIdx);
+    final CharSequence result =  this.sequence.subSequence(this.index, endIdx);
     this.index = endIdx + 1;
     return result;
   }
@@ -98,19 +97,19 @@ package net.kyori.adventure.nbt;
    * @throws StringTagParseException if EOF or non-matching value is found
    */
   public CharBuffer expect(final char expectedChar) throws StringTagParseException {
-    skipWhitespace();
-    if(!hasMore()) {
-      throw makeError("Expected character '" + expectedChar + "' but got EOF");
+    this.skipWhitespace();
+    if(!this.hasMore()) {
+      throw this.makeError("Expected character '" + expectedChar + "' but got EOF");
     }
-    if(peek() != expectedChar) {
-      throw makeError("Expected character '" + expectedChar + "' but got '" + peek() + "'");
+    if(this.peek() != expectedChar) {
+      throw this.makeError("Expected character '" + expectedChar + "' but got '" + this.peek() + "'");
     }
-    take();
+    this.take();
     return this;
   }
 
   public CharBuffer skipWhitespace() {
-    while(this.peek() != Tokens.EOF && Character.isWhitespace(this.peek())) this.advance();
+    while(this.hasMore() && Character.isWhitespace(this.peek())) this.advance();
     return this;
   }
 

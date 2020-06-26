@@ -28,6 +28,9 @@ import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+/**
+ * A binary tag holding a {@code long} value.
+ */
 public interface LongBinaryTag extends NumberBinaryTag {
   static @NonNull LongBinaryTag of(final long value) {
     return new LongBinaryTagImpl(value);
@@ -38,6 +41,11 @@ public interface LongBinaryTag extends NumberBinaryTag {
     return BinaryTagTypes.LONG;
   }
 
+  /**
+   * Gets the value.
+   *
+   * @return the value
+   */
   long value();
 }
 

@@ -40,10 +40,6 @@ final class CompoundBinaryTagImpl implements CompoundBinaryTag {
   static final CompoundBinaryTag EMPTY = new CompoundBinaryTagImpl(Collections.emptyMap());
   private final Map<String, BinaryTag> tags;
 
-  CompoundBinaryTagImpl() {
-    this(new HashMap<>());
-  }
-
   CompoundBinaryTagImpl(final Map<String, BinaryTag> tags) {
     this.tags = Collections.unmodifiableMap(tags);
   }

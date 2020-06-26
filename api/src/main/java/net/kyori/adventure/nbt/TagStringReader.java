@@ -38,8 +38,8 @@ import java.util.stream.IntStream;
     this.buffer.expect(Tokens.COMPOUND_BEGIN);
     final CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder();
     while(this.buffer.hasMore()) {
-      builder.put(key(), tag());
-      if(separatorOrCompleteWith(Tokens.COMPOUND_END)) {
+      builder.put(this.key(), this.tag());
+      if(this.separatorOrCompleteWith(Tokens.COMPOUND_END)) {
         return builder.build();
       }
     }
@@ -50,10 +50,10 @@ import java.util.stream.IntStream;
     final ListBinaryTag.Builder<BinaryTag> builder = ListBinaryTag.builder();
     this.buffer.expect(Tokens.ARRAY_BEGIN);
     while (this.buffer.hasMore()) {
-      final BinaryTag next = tag();
+      final BinaryTag next = this.tag();
       // TODO: validate type
       builder.add(next);
-      if(separatorOrCompleteWith(Tokens.ARRAY_END)) {
+      if(this.separatorOrCompleteWith(Tokens.ARRAY_END)) {
         return builder.build();
       }
     }
@@ -71,11 +71,11 @@ import java.util.stream.IntStream;
       .expect(Tokens.ARRAY_SIGNATURE_SEPARATOR);
 
     if(elementType == Tokens.TYPE_BYTE) {
-      return ByteArrayBinaryTag.of(byteArray());
+      return ByteArrayBinaryTag.of(this.byteArray());
     } else if(elementType == Tokens.TYPE_INT) {
-      return IntArrayBinaryTag.of(intArray());
+      return IntArrayBinaryTag.of(this.intArray());
     } else if(elementType == Tokens.TYPE_LONG) {
-      return LongArrayBinaryTag.of(longArray());
+      return LongArrayBinaryTag.of(this.longArray());
     } else {
       throw this.buffer.makeError("Type " + elementType + " is not a valid element type in an array!");
     }
@@ -84,14 +84,14 @@ import java.util.stream.IntStream;
   private byte[] byteArray() throws StringTagParseException {
     final List<Byte> bytes = new ArrayList<>();
     while(this.buffer.hasMore()) {
-      CharSequence value = this.buffer.skipWhitespace().takeUntil(Tokens.TYPE_BYTE);
+      final CharSequence value = this.buffer.skipWhitespace().takeUntil(Tokens.TYPE_BYTE);
       try {
         bytes.add(Byte.valueOf(value.toString()));
-      } catch(NumberFormatException ex) {
+      } catch(final NumberFormatException ex) {
         throw this.buffer.makeError("All elements of a byte array must be bytes!");
       }
 
-      if(separatorOrCompleteWith(Tokens.ARRAY_END)) {
+      if(this.separatorOrCompleteWith(Tokens.ARRAY_END)) {
         final byte[] result = new byte[bytes.size()];
         for (int i = 0; i < bytes.size(); ++i) { // todo yikes, let's do less boxing
           result[i] = bytes.get(i);
@@ -105,12 +105,12 @@ import java.util.stream.IntStream;
   private int[] intArray() throws StringTagParseException {
     final IntStream.Builder builder = IntStream.builder();
     while(this.buffer.hasMore()) {
-      BinaryTag value = this.tag();
+      final BinaryTag value = this.tag();
       if(!(value instanceof IntBinaryTag)) {
         throw this.buffer.makeError("All elements of an int array must be ints!");
       }
       builder.add(((IntBinaryTag) value).intValue());
-      if(separatorOrCompleteWith(Tokens.ARRAY_END)) {
+      if(this.separatorOrCompleteWith(Tokens.ARRAY_END)) {
         return builder.build().toArray();
       }
     }
@@ -120,14 +120,14 @@ import java.util.stream.IntStream;
   private long[] longArray() throws StringTagParseException {
     final List<Long> longs = new ArrayList<>();
     while(this.buffer.hasMore()) {
-      CharSequence value = this.buffer.skipWhitespace().takeUntil(Tokens.TYPE_LONG);
+      final CharSequence value = this.buffer.skipWhitespace().takeUntil(Tokens.TYPE_LONG);
       try {
         longs.add(Long.valueOf(value.toString()));
-      } catch(NumberFormatException ex) {
+      } catch(final NumberFormatException ex) {
         throw this.buffer.makeError("All elements of a long array must be longs!");
       }
 
-      if(separatorOrCompleteWith(Tokens.ARRAY_END)) {
+      if(this.separatorOrCompleteWith(Tokens.ARRAY_END)) {
         final long[] result = new long[longs.size()];
         for (int i = 0; i < longs.size(); ++i) { // todo yikes
           result[i] = longs.get(i);
@@ -160,12 +160,12 @@ import java.util.stream.IntStream;
     final char startToken = this.buffer.skipWhitespace().peek();
     switch(startToken) {
       case Tokens.COMPOUND_BEGIN:
-        return compound();
+        return this.compound();
       case Tokens.ARRAY_BEGIN:
         if(this.buffer.peek(2) == ';') { // we know we're an array tag
-          return array(this.buffer.peek(1));
+          return this.array(this.buffer.peek(1));
         } else {
-          return list();
+          return this.list();
         }
       case Tokens.SINGLE_QUOTE:
       case Tokens.DOUBLE_QUOTE:
@@ -173,7 +173,7 @@ import java.util.stream.IntStream;
         this.buffer.advance();
         return StringBinaryTag.of(unescape(this.buffer.takeUntil(startToken).toString()));
       default: // scalar
-        return scalar();
+        return this.scalar();
     }
   }
 
@@ -210,7 +210,7 @@ import java.util.stream.IntStream;
                 result = DoubleBinaryTag.of(Double.parseDouble(builder.toString()));
                 break;
             }
-          } catch(NumberFormatException ex) {
+          } catch(final NumberFormatException ex) {
             possiblyNumeric = false; // fallback to treating as a String
           }
           if(result != null) {
@@ -233,7 +233,7 @@ import java.util.stream.IntStream;
     if(possiblyNumeric) {
       try {
         return IntBinaryTag.of(Integer.parseInt(built));
-      } catch(NumberFormatException ex) {
+      } catch(final NumberFormatException ex) {
         // ignore
       }
     }

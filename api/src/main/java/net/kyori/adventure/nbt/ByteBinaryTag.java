@@ -28,6 +28,9 @@ import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+/**
+ * A binary tag holding a {@code byte} value.
+ */
 public interface ByteBinaryTag extends NumberBinaryTag {
   static @NonNull ByteBinaryTag of(final byte value) {
     return new ByteBinaryTagImpl(value);
@@ -38,6 +41,11 @@ public interface ByteBinaryTag extends NumberBinaryTag {
     return BinaryTagTypes.BYTE;
   }
 
+  /**
+   * Gets the value.
+   *
+   * @return the value
+   */
   byte value();
 }
 

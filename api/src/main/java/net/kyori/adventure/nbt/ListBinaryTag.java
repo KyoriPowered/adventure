@@ -28,18 +28,41 @@ import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, BinaryTag, Iterable<BinaryTag> {
+  /**
+   * Gets an empty list tag.
+   *
+   * @return an empty tag
+   */
   static @NonNull ListBinaryTag empty() {
     return ListBinaryTagImpl.EMPTY;
   }
 
+  /**
+   * Creates a builder.
+   *
+   * @return a new builder
+   */
   static @NonNull Builder<BinaryTag> builder() {
     return new ListTagBuilder<>();
   }
 
+  /**
+   * Creates a builder.
+   *
+   * @param type the element type
+   * @return a new builder
+   */
   static <T extends BinaryTag> @NonNull Builder<T> builder(final @NonNull BinaryTagType<T> type) {
     return new ListTagBuilder<>(type);
   }
 
+  /**
+   * Creates a tag.
+   *
+   * @param type the element type
+   * @param tags the elements
+   * @return a tag
+   */
   static @NonNull ListBinaryTag of(final @NonNull BinaryTagType<? extends BinaryTag> type, final @NonNull List<BinaryTag> tags) {
     return new ListBinaryTagImpl(type, tags);
   }
@@ -56,6 +79,11 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    */
   @NonNull BinaryTagType<? extends BinaryTag> listType();
 
+  /**
+   * Gets the size.
+   *
+   * @return the size
+   */
   int size();
 
   /**
@@ -223,7 +251,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @param index the index
    * @return the array of bytes, or a zero-length array
    */
-  default @NonNull byte[] getByteArray(final @NonNegative int index) {
+  default byte@NonNull[] getByteArray(final @NonNegative int index) {
     final BinaryTag tag = this.get(index);
     if(tag.type() == BinaryTagTypes.BYTE_ARRAY) {
       return ((ByteArrayBinaryTag) tag).value();
@@ -238,7 +266,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @param defaultValue the default value
    * @return the array of bytes, or {@code defaultValue}
    */
-  default @NonNull byte[] getByteArray(final @NonNegative int index, final byte@NonNull[] defaultValue) {
+  default byte@NonNull[] getByteArray(final @NonNegative int index, final byte@NonNull[] defaultValue) {
     final BinaryTag tag = this.get(index);
     if(tag.type() == BinaryTagTypes.BYTE_ARRAY) {
       return ((ByteArrayBinaryTag) tag).value();

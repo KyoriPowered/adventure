@@ -29,6 +29,9 @@ import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+/**
+ * A binary tag holding a {@code double} value.
+ */
 public interface DoubleBinaryTag extends NumberBinaryTag {
   static @NonNull DoubleBinaryTag of(final double value) {
     return new DoubleBinaryTagImpl(value);
@@ -39,6 +42,11 @@ public interface DoubleBinaryTag extends NumberBinaryTag {
     return BinaryTagTypes.DOUBLE;
   }
 
+  /**
+   * Gets the value.
+   *
+   * @return the value
+   */
   double value();
 }
 

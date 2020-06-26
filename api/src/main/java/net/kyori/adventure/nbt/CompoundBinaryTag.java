@@ -29,10 +29,20 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 public interface CompoundBinaryTag extends CompoundTagSetter<CompoundBinaryTag>, BinaryTag, Iterable<Map.Entry<String, ? extends BinaryTag>> {
+  /**
+   * Gets an empty compound tag.
+   *
+   * @return an empty tag
+   */
   static @NonNull CompoundBinaryTag empty() {
     return CompoundBinaryTagImpl.EMPTY;
   }
 
+  /**
+   * Creates a builder.
+   *
+   * @return a new builder
+   */
   static @NonNull Builder builder() {
     return new CompoundTagBuilder();
   }

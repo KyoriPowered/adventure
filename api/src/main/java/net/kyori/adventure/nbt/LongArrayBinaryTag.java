@@ -25,6 +25,9 @@ package net.kyori.adventure.nbt;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+/**
+ * A binary tag holding a {@code long}-array value.
+ */
 public interface LongArrayBinaryTag extends BinaryTag {
   static @NonNull LongArrayBinaryTag of(final long@NonNull... value) {
     return new LongArrayBinaryTagImpl(value);
@@ -35,5 +38,12 @@ public interface LongArrayBinaryTag extends BinaryTag {
     return BinaryTagTypes.LONG_ARRAY;
   }
 
+  /**
+   * Gets the value.
+   *
+   * <p>The returned array is a copy.</p>
+   *
+   * @return the value
+   */
   long@NonNull[] value();
 }

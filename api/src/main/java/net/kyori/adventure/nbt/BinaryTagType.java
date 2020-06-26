@@ -32,6 +32,11 @@ import java.util.function.Predicate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+/**
+ * A binary tag type.
+ *
+ * @param <T> the tag type
+ */
 public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<BinaryTagType<? extends BinaryTag>> {
   private static final List<BinaryTagType<? extends BinaryTag>> TYPES = new ArrayList<>();
 

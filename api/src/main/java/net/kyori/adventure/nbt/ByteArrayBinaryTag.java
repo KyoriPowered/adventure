@@ -25,6 +25,9 @@ package net.kyori.adventure.nbt;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+/**
+ * A binary tag holding a {@code byte}-array value.
+ */
 public interface ByteArrayBinaryTag extends BinaryTag {
   static @NonNull ByteArrayBinaryTag of(final byte@NonNull... value) {
     return new ByteArrayBinaryTagImpl(value);
@@ -35,5 +38,12 @@ public interface ByteArrayBinaryTag extends BinaryTag {
     return BinaryTagTypes.BYTE_ARRAY;
   }
 
+  /**
+   * Gets the value.
+   *
+   * <p>The returned array is a copy.</p>
+   *
+   * @return the value
+   */
   byte@NonNull[] value();
 }

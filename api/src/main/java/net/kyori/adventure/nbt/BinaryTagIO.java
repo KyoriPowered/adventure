@@ -169,7 +169,14 @@ public final class BinaryTagIO {
     BinaryTagTypes.COMPOUND.write(tag, output);
   }
 
-  public static CompoundBinaryTag readString(final String input) throws IOException {
+  /**
+   * Reads a compound tag from a {@link String}.
+   *
+   * @param input the string
+   * @return the compound tag
+   * @throws IOException if an exception was encountered while reading a compound tag
+   */
+  public static @NonNull CompoundBinaryTag readString(final @NonNull String input) throws IOException {
     try {
       final CharBuffer buffer = new CharBuffer(input);
       final TagStringReader parser = new TagStringReader(buffer);
@@ -178,16 +185,23 @@ public final class BinaryTagIO {
         throw new IOException("Document had trailing content after first CompoundTag");
       }
       return tag;
-    } catch(StringTagParseException ex) {
+    } catch(final StringTagParseException ex) {
       throw new IOException(ex);
     }
   }
 
-  public static String writeAsString(final CompoundBinaryTag tag) throws IOException {
-    final StringBuilder ret = new StringBuilder();
-    try(final TagStringWriter emit = new TagStringWriter(ret)) {
+  /**
+   * Writes a compound tag to a {@link String}.
+   *
+   * @param tag the compound tag
+   * @return the string
+   * @throws IOException if an exception was encountered while writing the compound tag
+   */
+  public static @NonNull String writeString(final @NonNull CompoundBinaryTag tag) throws IOException {
+    final StringBuilder sb = new StringBuilder();
+    try(final TagStringWriter emit = new TagStringWriter(sb)) {
       emit.writeTag(tag);
     }
-    return ret.toString();
+    return sb.toString();
   }
 }

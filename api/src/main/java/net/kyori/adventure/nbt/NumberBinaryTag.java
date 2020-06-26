@@ -25,20 +25,52 @@ package net.kyori.adventure.nbt;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+/**
+ * A numeric binary tag.
+ */
 public interface NumberBinaryTag extends BinaryTag {
   @Override
   @NonNull BinaryTagType<? extends NumberBinaryTag> type();
 
+  /**
+   * Gets the value as a {@code byte}.
+   *
+   * @return the value as a {@code byte}
+   */
   byte byteValue();
 
+  /**
+   * Gets the value as a {@code double}.
+   *
+   * @return the value as a {@code double}
+   */
   double doubleValue();
 
+  /**
+   * Gets the value as a {@code float}.
+   *
+   * @return the value as a {@code float}
+   */
   float floatValue();
 
+  /**
+   * Gets the value as a {@code int}.
+   *
+   * @return the value as a {@code int}
+   */
   int intValue();
 
+  /**
+   * Gets the value as a {@code long}.
+   *
+   * @return the value as a {@code long}
+   */
   long longValue();
 
+  /**
+   * Gets the value as a {@code short}.
+   *
+   * @return the value as a {@code short}
+   */
   short shortValue();
-
 }

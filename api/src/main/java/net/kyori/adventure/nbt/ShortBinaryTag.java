@@ -28,6 +28,9 @@ import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+/**
+ * A binary tag holding a {@code short} value.
+ */
 public interface ShortBinaryTag extends NumberBinaryTag {
   static @NonNull ShortBinaryTag of(final short value) {
     return new ShortBinaryTagImpl(value);
@@ -38,6 +41,11 @@ public interface ShortBinaryTag extends NumberBinaryTag {
     return BinaryTagTypes.SHORT;
   }
 
+  /**
+   * Gets the value.
+   *
+   * @return the value
+   */
   short value();
 }
 

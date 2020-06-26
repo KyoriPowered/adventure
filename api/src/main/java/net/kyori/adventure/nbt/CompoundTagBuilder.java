@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
+/* package */ final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
   private final Map<String, BinaryTag> tags = new HashMap<>();
 
   @Override

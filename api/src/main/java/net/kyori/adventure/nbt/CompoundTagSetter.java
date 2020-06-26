@@ -33,7 +33,7 @@ public interface CompoundTagSetter<R> {
    * @param tag the tag
    * @return a compound tag
    */
-  @NonNull R put(final @NonNull String key, @NonNull BinaryTag tag);
+  @NonNull R put(final @NonNull String key, final @NonNull BinaryTag tag);
 
   /**
    * Inserts a byte.

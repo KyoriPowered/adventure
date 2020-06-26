@@ -84,7 +84,7 @@ import net.kyori.adventure.text.event.HoverEvent;
     final /* @Nullable */ CompoundBinaryTag tag = src.tag();
     if(tag != null) {
       try {
-        json.addProperty(TAG, BinaryTagIO.writeAsString(tag));
+        json.addProperty(TAG, BinaryTagIO.writeString(tag));
       } catch(IOException e) {
         throw new JsonSyntaxException(e);
       }

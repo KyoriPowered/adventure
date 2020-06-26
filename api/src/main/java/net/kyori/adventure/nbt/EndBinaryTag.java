@@ -25,7 +25,15 @@ package net.kyori.adventure.nbt;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+/**
+ * An end tag.
+ */
 public interface EndBinaryTag extends BinaryTag {
+  /**
+   * Gets the end tag.
+   *
+   * @return the end tag
+   */
   static @NonNull EndBinaryTag get() {
     return EndBinaryTagImpl.INSTANCE;
   }

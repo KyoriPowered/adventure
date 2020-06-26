@@ -28,7 +28,7 @@ import java.io.Writer;
 import java.util.Map;
 
 /**
- * An emmitter for the SNBT format.
+ * An emitter for the SNBT format.
  *
  * Details on the format are described in the package documentation.
  */
@@ -50,29 +50,29 @@ import java.util.Map;
   public TagStringWriter writeTag(final BinaryTag tag) throws IOException {
     final BinaryTagType<?> type = tag.type();
     if(type == BinaryTagTypes.COMPOUND) {
-      return writeCompound((CompoundBinaryTag) tag);
+      return this.writeCompound((CompoundBinaryTag) tag);
     } else if(type == BinaryTagTypes.LIST) {
-      return writeList((ListBinaryTag) tag);
+      return this.writeList((ListBinaryTag) tag);
     } else if(type == BinaryTagTypes.BYTE_ARRAY) {
-      return writeByteArray((ByteArrayBinaryTag) tag);
+      return this.writeByteArray((ByteArrayBinaryTag) tag);
     } else if(type == BinaryTagTypes.INT_ARRAY) {
-      return writeIntArray((IntArrayBinaryTag) tag);
+      return this.writeIntArray((IntArrayBinaryTag) tag);
     } else if(type == BinaryTagTypes.LONG_ARRAY) {
-      return writeLongArray((LongArrayBinaryTag) tag);
+      return this.writeLongArray((LongArrayBinaryTag) tag);
     } else if(type == BinaryTagTypes.STRING) {
-      return value(((StringBinaryTag) tag).value(), Tokens.EOF);
+      return this.value(((StringBinaryTag) tag).value(), Tokens.EOF);
     } else if(type == BinaryTagTypes.BYTE) {
-      return value(Byte.toString(((ByteBinaryTag) tag).value()), Tokens.TYPE_BYTE);
+      return this.value(Byte.toString(((ByteBinaryTag) tag).value()), Tokens.TYPE_BYTE);
     } else if(type == BinaryTagTypes.SHORT) {
-      return value(Short.toString(((ShortBinaryTag) tag).value()), Tokens.TYPE_SHORT);
+      return this.value(Short.toString(((ShortBinaryTag) tag).value()), Tokens.TYPE_SHORT);
     } else if(type == BinaryTagTypes.INT) {
-      return value(Integer.toString(((IntBinaryTag) tag).value()), Tokens.TYPE_INT);
+      return this.value(Integer.toString(((IntBinaryTag) tag).value()), Tokens.TYPE_INT);
     } else if(type == BinaryTagTypes.LONG) {
-      return value(Long.toString(((LongBinaryTag) tag).value()), Tokens.TYPE_LONG);
+      return this.value(Long.toString(((LongBinaryTag) tag).value()), Tokens.TYPE_LONG);
     } else if(type == BinaryTagTypes.FLOAT) {
-      return value(Float.toString(((FloatBinaryTag) tag).value()), Tokens.TYPE_FLOAT);
+      return this.value(Float.toString(((FloatBinaryTag) tag).value()), Tokens.TYPE_FLOAT);
     } else if(type == BinaryTagTypes.DOUBLE) {
-      return value(Double.toString(((DoubleBinaryTag) tag).value()), Tokens.TYPE_DOUBLE);
+      return this.value(Double.toString(((DoubleBinaryTag) tag).value()), Tokens.TYPE_DOUBLE);
     } else {
       throw new IOException("Unknown tag type: " + type);
       // unknown!
@@ -80,22 +80,22 @@ import java.util.Map;
   }
 
   private TagStringWriter writeCompound(final CompoundBinaryTag tag) throws IOException {
-    beginCompound();
+    this.beginCompound();
     for(final Map.Entry<String, ? extends BinaryTag> entry : tag) {
-      key(entry.getKey());
-      writeTag(entry.getValue());
+      this.key(entry.getKey());
+      this.writeTag(entry.getValue());
     }
-    endCompound();
+    this.endCompound();
     return this;
   }
 
   private TagStringWriter writeList(final ListBinaryTag tag) throws IOException {
-    beginList();
-    for(BinaryTag el : tag) {
-      printAndResetSeparator();
-      writeTag(el);
+    this.beginList();
+    for(final BinaryTag el : tag) {
+      this.printAndResetSeparator();
+      this.writeTag(el);
     }
-    endList();
+    this.endList();
     return this;
   }
 
@@ -104,9 +104,9 @@ import java.util.Map;
     .out.append(Tokens.TYPE_BYTE)
     .append(Tokens.ARRAY_SIGNATURE_SEPARATOR);
 
-    for (byte b : tag.value()) {
-      printAndResetSeparator();
-      value(Byte.toString(b), Tokens.TYPE_BYTE);
+    for (final byte b : tag.value()) {
+      this.printAndResetSeparator();
+      this.value(Byte.toString(b), Tokens.TYPE_BYTE);
     }
     this.endList();
     return this;
@@ -117,9 +117,9 @@ import java.util.Map;
       .out.append(Tokens.TYPE_INT)
       .append(Tokens.ARRAY_SIGNATURE_SEPARATOR);
 
-    for (int i : tag.value()) {
-      printAndResetSeparator();
-      value(Integer.toString(i), Tokens.TYPE_INT);
+    for (final int i : tag.value()) {
+      this.printAndResetSeparator();
+      this.value(Integer.toString(i), Tokens.TYPE_INT);
     }
     this.endList();
     return this;
@@ -130,9 +130,9 @@ import java.util.Map;
       .out.append(Tokens.TYPE_LONG)
       .append(Tokens.ARRAY_SIGNATURE_SEPARATOR);
 
-    for (long l : tag.value()) {
-      printAndResetSeparator();
-      value(Long.toString(l), Tokens.TYPE_LONG);
+    for (final long l : tag.value()) {
+      this.printAndResetSeparator();
+      this.value(Long.toString(l), Tokens.TYPE_LONG);
     }
     this.endList();
     return this;
@@ -141,29 +141,29 @@ import java.util.Map;
   // Value types
 
   public TagStringWriter beginCompound() throws IOException {
-    printAndResetSeparator();
-    ++this.level;
+    this.printAndResetSeparator();
+    this.level++;
     this.out.append(Tokens.COMPOUND_BEGIN);
     return this;
   }
 
   public TagStringWriter endCompound() throws IOException {
-    out.append(Tokens.COMPOUND_END);
-    --this.level;
+    this.out.append(Tokens.COMPOUND_END);
+    this.level--;
     this.needsSeparator = true;
     return this;
   }
 
   public TagStringWriter key(final String key) throws IOException {
-    printAndResetSeparator();
-    writeMaybeQuoted(key, false);
+    this.printAndResetSeparator();
+    this.writeMaybeQuoted(key, false);
     this.out.append(Tokens.COMPOUND_KEY_TERMINATOR); // TODO: spacing/pretty-printing
     return this;
   }
 
   public TagStringWriter value(final String value, final char valueType) throws IOException {
     if(valueType == Tokens.EOF) { // string doesn't have its type
-      writeMaybeQuoted(value, true);
+      this.writeMaybeQuoted(value, true);
     } else {
       this.out.append(value);
       if(valueType != Tokens.TYPE_INT) {
@@ -175,7 +175,7 @@ import java.util.Map;
   }
 
   public TagStringWriter beginList() throws IOException {
-    printAndResetSeparator();
+    this.printAndResetSeparator();
     ++this.level;
     this.out.append(Tokens.ARRAY_BEGIN);
     return this;

@@ -28,6 +28,9 @@ import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+/**
+ * A binary tag holding a {@link String} value.
+ */
 public interface StringBinaryTag extends BinaryTag {
   static @NonNull StringBinaryTag of(final @NonNull String value) {
     return new StringBinaryTagImpl(value);
@@ -38,6 +41,11 @@ public interface StringBinaryTag extends BinaryTag {
     return BinaryTagTypes.STRING;
   }
 
+  /**
+   * Gets the value.
+   *
+   * @return the value
+   */
   @NonNull String value();
 }
 

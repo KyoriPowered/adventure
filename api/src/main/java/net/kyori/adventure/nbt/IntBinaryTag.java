@@ -28,6 +28,9 @@ import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+/**
+ * A binary tag holding an {@code int} value.
+ */
 public interface IntBinaryTag extends NumberBinaryTag {
   static @NonNull IntBinaryTag of(final int value) {
     return new IntBinaryTagImpl(value);
@@ -38,6 +41,11 @@ public interface IntBinaryTag extends NumberBinaryTag {
     return BinaryTagTypes.INT;
   }
 
+  /**
+   * Gets the value.
+   *
+   * @return the value
+   */
   int value();
 }
 

@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder<T> {
+/* package */ final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder<T> {
   private final List<BinaryTag> tags = new ArrayList<>();
   private BinaryTagType<? extends BinaryTag> type;
 
