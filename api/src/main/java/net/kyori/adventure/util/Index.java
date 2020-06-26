@@ -23,9 +23,11 @@
  */
 package net.kyori.adventure.util;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.IntFunction;
@@ -89,13 +91,30 @@ public final class Index<K, E> {
     return create(constants, HashMap<E, K>::new /* explicit type params needed to fix build on JDK8 */, indexFunction);
   }
 
-  @SuppressWarnings("ForLoopReplaceableByForEach")
+  /**
+   * Creates an index map.
+   *
+   * @param indexFunction the key provider
+   * @param constants the constants
+   * @param <K> the key type used for indexing
+   * @param <E> the type
+   * @return the key map
+   */
+  public static <K, E> @NonNull Index<K, E> create(final @NonNull Function<? super E, ? extends K> indexFunction, final @NonNull List<E> constants) {
+    return create(constants, HashMap<E, K>::new /* explicit type params needed to fix build on JDK8 */, indexFunction);
+  }
+
   private static <K, E> @NonNull Index<K, E> create(final E[] constants, final IntFunction<Map<E, K>> valueToKeyFactory, final @NonNull Function<? super E, ? extends K> indexFunction) {
-    final int length = constants.length;
+    return create(Arrays.asList(constants), valueToKeyFactory, indexFunction);
+  }
+
+  @SuppressWarnings("ForLoopReplaceableByForEach")
+  private static <K, E> @NonNull Index<K, E> create(final List<E> constants, final IntFunction<Map<E, K>> valueToKeyFactory, final @NonNull Function<? super E, ? extends K> indexFunction) {
+    final int length = constants.size();
     final Map<K, E> keyToValue = new HashMap<>(length);
     final Map<E, K> valueToKey = valueToKeyFactory.apply(length); // to support using EnumMap instead of HashMap when possible
     for(int i = 0; i < length; i++) {
-      final E constant = constants[i];
+      final E constant = constants.get(i);
       final K key = indexFunction.apply(constant);
       keyToValue.put(key, constant);
       valueToKey.put(constant, key);

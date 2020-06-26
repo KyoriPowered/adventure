@@ -23,6 +23,9 @@
  */
 package net.kyori.adventure.text.format;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import net.kyori.adventure.util.Index;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -67,7 +70,7 @@ public final class NamedTextColor implements TextColor {
   public static final NamedTextColor YELLOW = new NamedTextColor("yellow", YELLOW_VALUE);
   public static final NamedTextColor WHITE = new NamedTextColor("white", WHITE_VALUE);
 
-  private static final NamedTextColor[] VALUES = values();
+  private static final List<NamedTextColor> VALUES = Collections.unmodifiableList(Arrays.asList(BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW, WHITE));
   /**
    * An index of name to color.
    */
@@ -114,9 +117,9 @@ public final class NamedTextColor implements TextColor {
 
     // TODO: This tends to match greys more than it should (rgb averages and all that)
     int matchedDistance = Integer.MAX_VALUE;
-    NamedTextColor match = VALUES[0];
-    for(int i = 0, length = VALUES.length; i < length; i++) {
-      final NamedTextColor potential = VALUES[i];
+    NamedTextColor match = VALUES.get(0);
+    for(int i = 0, length = VALUES.size(); i < length; i++) {
+      final NamedTextColor potential = VALUES.get(i);
       final int distance = distanceSquared(any, potential);
       if(distance < matchedDistance) {
         match = potential;
@@ -167,7 +170,7 @@ public final class NamedTextColor implements TextColor {
   }
 
   // Enum-like
-  public static @NonNull NamedTextColor[] values() {
-    return new NamedTextColor[]{BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW, WHITE};
+  public static @NonNull List<NamedTextColor> values() {
+    return VALUES;
   }
 }
