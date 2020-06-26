@@ -26,6 +26,7 @@ package net.kyori.adventure.nbt;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
+import java.util.function.IntFunction;
 
 /**
  * An emitter for the SNBT format.
@@ -100,41 +101,38 @@ import java.util.Map;
   }
 
   private TagStringWriter writeByteArray(final ByteArrayBinaryTag tag) throws IOException {
-    this.beginList()
-    .out.append(Tokens.TYPE_BYTE)
-    .append(Tokens.ARRAY_SIGNATURE_SEPARATOR);
+    this.beginArray(Tokens.TYPE_BYTE);
 
-    for (final byte b : tag.value()) {
+    final byte[] value = ByteArrayBinaryTagImpl.value(tag);
+    for(int i = 0, length = value.length; i < length; i++) {
       this.printAndResetSeparator();
-      this.value(Byte.toString(b), Tokens.TYPE_BYTE);
+      this.value(Byte.toString(value[i]), Tokens.TYPE_BYTE);
     }
-    this.endList();
+    this.endArray();
     return this;
   }
 
   private TagStringWriter writeIntArray(final IntArrayBinaryTag tag) throws IOException {
-    this.beginList()
-      .out.append(Tokens.TYPE_INT)
-      .append(Tokens.ARRAY_SIGNATURE_SEPARATOR);
+    this.beginArray(Tokens.TYPE_INT);
 
-    for (final int i : tag.value()) {
+    final int[] value = IntArrayBinaryTagImpl.value(tag);
+    for(int i = 0, length = value.length; i < length; i++) {
       this.printAndResetSeparator();
-      this.value(Integer.toString(i), Tokens.TYPE_INT);
+      this.value(Integer.toString(value[i]), Tokens.TYPE_INT);
     }
-    this.endList();
+    this.endArray();
     return this;
   }
 
   private TagStringWriter writeLongArray(final LongArrayBinaryTag tag) throws IOException {
-    this.beginList()
-      .out.append(Tokens.TYPE_LONG)
-      .append(Tokens.ARRAY_SIGNATURE_SEPARATOR);
+    this.beginArray(Tokens.TYPE_LONG);
 
-    for (final long l : tag.value()) {
+    final long[] value = LongArrayBinaryTagImpl.value(tag);
+    for(int i = 0, length = value.length; i < length; i++) {
       this.printAndResetSeparator();
-      this.value(Long.toString(l), Tokens.TYPE_LONG);
+      this.value(Long.toString(value[i]), Tokens.TYPE_LONG);
     }
-    this.endList();
+    this.endArray();
     return this;
   }
 
@@ -176,22 +174,33 @@ import java.util.Map;
 
   public TagStringWriter beginList() throws IOException {
     this.printAndResetSeparator();
-    ++this.level;
+    this.level++;
     this.out.append(Tokens.ARRAY_BEGIN);
     return this;
   }
 
   public TagStringWriter endList() throws IOException {
     this.out.append(Tokens.ARRAY_END);
-    --this.level;
+    this.level--;
     this.needsSeparator = true;
     return this;
+  }
+
+  private TagStringWriter beginArray(final char type) throws IOException {
+    this.beginList()
+      .out.append(type)
+      .append(Tokens.ARRAY_SIGNATURE_SEPARATOR);
+    return this;
+  }
+
+  private TagStringWriter endArray() throws IOException {
+    return this.endList();
   }
 
   private void writeMaybeQuoted(final String content, boolean requireQuotes) throws IOException {
     if(!requireQuotes) {
       for(int i = 0; i < content.length(); ++i) {
-        if (!Tokens.id(content.charAt(i))) {
+        if(!Tokens.id(content.charAt(i))) {
           requireQuotes = true;
           break;
         }
@@ -231,7 +240,7 @@ import java.util.Map;
     if(this.level != 0) {
       throw new IllegalStateException("Document finished with unbalanced start and end objects");
     }
-    if (this.out instanceof Writer) {
+    if(this.out instanceof Writer) {
       ((Writer) this.out).flush();
     }
   }

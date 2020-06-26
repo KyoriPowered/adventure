@@ -28,7 +28,7 @@ import java.util.Set;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-public interface CompoundBinaryTag extends CompoundTagSetter<CompoundBinaryTag>, BinaryTag, Iterable<Map.Entry<String, ? extends BinaryTag>> {
+public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<CompoundBinaryTag>, Iterable<Map.Entry<String, ? extends BinaryTag>> {
   /**
    * Gets an empty compound tag.
    *
@@ -52,8 +52,19 @@ public interface CompoundBinaryTag extends CompoundTagSetter<CompoundBinaryTag>,
     return BinaryTagTypes.COMPOUND;
   }
 
+  /**
+   * Gets a set of all keys.
+   *
+   * @return the keys
+   */
   @NonNull Set<String> keySet();
 
+  /**
+   * Gets a tag.
+   *
+   * @param key the key
+   * @return a tag
+   */
   @Nullable BinaryTag get(final String key);
 
   /**
@@ -324,7 +335,15 @@ public interface CompoundBinaryTag extends CompoundTagSetter<CompoundBinaryTag>,
    */
   long@NonNull[] getLongArray(final @NonNull String key, final long@NonNull[] defaultValue);
 
+  /**
+   * A compound tag builder.
+   */
   interface Builder extends CompoundTagSetter<Builder> {
+    /**
+     * Builds.
+     *
+     * @return a compound tag
+     */
     @NonNull CompoundBinaryTag build();
   }
 }

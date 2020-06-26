@@ -78,7 +78,7 @@ public interface LongBinaryTag extends NumberBinaryTag {
 
   @Override
   public int intValue() {
-    return Math.toIntExact(this.value);
+    return (int) this.value;
   }
 
   @Override

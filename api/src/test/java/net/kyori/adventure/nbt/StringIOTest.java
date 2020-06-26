@@ -33,26 +33,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class StringIOTest {
-
-  private String tagToString(final BinaryTag tag) throws IOException {
-    final StringWriter writer = new StringWriter();
-    try(final TagStringWriter emitter = new TagStringWriter(writer)) {
-      emitter.writeTag(tag);
-    }
-    return writer.toString();
-  }
-
-  private BinaryTag stringToTag(final String input) throws StringTagParseException {
-    final CharBuffer buffer = new CharBuffer(input);
-    final TagStringReader parser = new TagStringReader(buffer);
-    final BinaryTag ret = parser.tag();
-    if(buffer.skipWhitespace().hasMore()) {
-      throw buffer.makeError("Trailing content after parse!");
-    }
-    return ret;
-  }
-
+class StringIOTest {
   @Test
   public void testReadKeyValuePair() throws StringTagParseException {
     final TagStringReader keyRead = new TagStringReader(new CharBuffer("testKey: \"hello\""));
@@ -185,7 +166,7 @@ public class StringIOTest {
     assertEquals(FloatBinaryTag.of(4.3e-4f), this.stringToTag("4.3e-4f"));
     assertEquals(FloatBinaryTag.of(-4.3e-4f), this.stringToTag("-4.3e-4F"));
     assertEquals(FloatBinaryTag.of(4.3e-4f), this.stringToTag("+4.3e-4F"));
-    assertEquals(FloatBinaryTag.of(.3f), this.stringToTag(".3F"));
+    assertEquals(FloatBinaryTag.of(0.3f), this.stringToTag(".3F"));
   }
 
   @Test
@@ -214,5 +195,23 @@ public class StringIOTest {
   public void testLongArrayTag() throws IOException {
     assertEquals("[L;1L,2L,3L]", this.tagToString(LongArrayBinaryTag.of(1, 2, 3)));
     assertEquals(LongArrayBinaryTag.of(2, 4, 6, -8, 10, 12), this.stringToTag("[L; 2l, 4l, 6l, -8l, 10l, 12l]"));
+  }
+
+  private String tagToString(final BinaryTag tag) throws IOException {
+    final StringWriter writer = new StringWriter();
+    try(final TagStringWriter emitter = new TagStringWriter(writer)) {
+      emitter.writeTag(tag);
+    }
+    return writer.toString();
+  }
+
+  private BinaryTag stringToTag(final String input) throws StringTagParseException {
+    final CharBuffer buffer = new CharBuffer(input);
+    final TagStringReader parser = new TagStringReader(buffer);
+    final BinaryTag ret = parser.tag();
+    if(buffer.skipWhitespace().hasMore()) {
+      throw buffer.makeError("Trailing content after parse!");
+    }
+    return ret;
   }
 }

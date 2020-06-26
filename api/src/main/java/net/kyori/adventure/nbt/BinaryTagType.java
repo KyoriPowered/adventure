@@ -40,70 +40,39 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<BinaryTagType<? extends BinaryTag>> {
   private static final List<BinaryTagType<? extends BinaryTag>> TYPES = new ArrayList<>();
 
-  static <T extends BinaryTag> @NonNull BinaryTagType<T> register(final @NonNull Class<T> type, final byte id, final @NonNull Reader<T> reader, final @Nullable Writer<T> writer) {
-    return register(new BinaryTagType<T>() {
-      @Override
-      public @NonNull T read(final @NonNull DataInput input) throws IOException {
-        return reader.read(input);
-      }
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
+  public abstract byte id();
 
-      @Override
-      public void write(final @NonNull T tag, final @NonNull DataOutput output) throws IOException {
-        if(writer != null) writer.write(tag, output);
-      }
+  /* package */ abstract boolean numeric();
 
-      @Override
-      public byte id() {
-        return id;
-      }
+  /**
+   * Reads a tag.
+   *
+   * @param input the input
+   * @return the tag
+   * @throws IOException if an exception was encountered while reading
+   */
+  public abstract @NonNull T read(final @NonNull DataInput input) throws IOException;
 
-      @Override
-      boolean numeric() {
-        return false;
-      }
+  /**
+   * Writes a tag.
+   *
+   * @param tag the tag
+   * @param output the output
+   * @throws IOException if an exception was encountered while writing
+   */
+  public abstract void write(final @NonNull T tag, final @NonNull DataOutput output) throws IOException;
 
-      @Override
-      public String toString() {
-        return this.getClass().getSimpleName() + '{' + type.getSimpleName() + " (" + id + ")}";
-      }
-    });
+  @SuppressWarnings("unchecked") // HACK: generics suck
+  /* package */ static <T extends BinaryTag> void write(final BinaryTagType<? extends BinaryTag> type, final T tag, final DataOutput output) throws IOException {
+    ((BinaryTagType<T>) type).write(tag, output);
   }
 
-  static <T extends NumberBinaryTag> @NonNull BinaryTagType<T> registerNumeric(final @NonNull Class<T> type, final byte id, final @NonNull Reader<T> reader, final @NonNull Writer<T> writer) {
-    return register(new BinaryTagType<T>() {
-      @Override
-      public @NonNull T read(final @NonNull DataInput input) throws IOException {
-        return reader.read(input);
-      }
-
-      @Override
-      public void write(final @NonNull T tag, final @NonNull DataOutput output) throws IOException {
-        writer.write(tag, output);
-      }
-
-      @Override
-      public byte id() {
-        return id;
-      }
-
-      @Override
-      boolean numeric() {
-        return true;
-      }
-
-      @Override
-      public String toString() {
-        return this.getClass().getSimpleName() + '{' + type.getSimpleName() + " (" + id + ")}";
-      }
-    });
-  }
-
-  private static <T extends BinaryTag, Y extends BinaryTagType<T>> Y register(final Y type) {
-    TYPES.add(type);
-    return type;
-  }
-
-  static @NonNull BinaryTagType<? extends BinaryTag> of(final byte id) {
+  /* package */ static @NonNull BinaryTagType<? extends BinaryTag> of(final byte id) {
     for(int i = 0; i < TYPES.size(); i++) {
       final BinaryTagType<? extends BinaryTag> type = TYPES.get(i);
       if(type.id() == id) {
@@ -113,26 +82,94 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
     throw new IllegalArgumentException(String.valueOf(id));
   }
 
-  public abstract @NonNull T read(final @NonNull DataInput input) throws IOException;
-  public abstract void write(final @NonNull T tag, final @NonNull DataOutput output) throws IOException;
+  /* package */ static <T extends BinaryTag> @NonNull BinaryTagType<T> register(final Class<T> type, final byte id, final Reader<T> reader, final @Nullable Writer<T> writer) {
+    return register(new Impl<>(type, id, reader, writer));
+  }
 
-  interface Reader<T extends BinaryTag> {
+  /* package */ static <T extends NumberBinaryTag> @NonNull BinaryTagType<T> registerNumeric(final Class<T> type, final byte id, final Reader<T> reader, final Writer<T> writer) {
+    return register(new Impl.Numeric<>(type, id, reader, writer));
+  }
+
+  private static <T extends BinaryTag, Y extends BinaryTagType<T>> Y register(final Y type) {
+    TYPES.add(type);
+    return type;
+  }
+
+  /**
+   * A binary tag reader.
+   *
+   * @param <T> the tag type
+   */
+  /* package */ interface Reader<T extends BinaryTag> {
     @NonNull T read(final @NonNull DataInput input) throws IOException;
   }
 
-  interface Writer<T extends BinaryTag> {
+  /**
+   * A binary tag writer.
+   *
+   * @param <T> the tag type
+   */
+  /* package */ interface Writer<T extends BinaryTag> {
     void write(final @NonNull T tag, final @NonNull DataOutput output) throws IOException;
   }
-
-  interface ReaderAndWriter<T extends BinaryTag> extends Reader<T>, Writer<T> {
-  }
-
-  public abstract byte id();
-
-  abstract boolean numeric();
 
   @Override
   public boolean test(final BinaryTagType<? extends BinaryTag> that) {
     return this == that || (this.numeric() && that.numeric());
+  }
+
+  /* package */ static class Impl<T extends BinaryTag> extends BinaryTagType<T> {
+    final Class<T> type;
+    final byte id;
+    private final Reader<T> reader;
+    private final @Nullable Writer<T> writer;
+
+    /* package */ Impl(final Class<T> type, final byte id, final Reader<T> reader, final @Nullable Writer<T> writer) {
+      this.type = type;
+      this.id = id;
+      this.reader = reader;
+      this.writer = writer;
+    }
+
+    @Override
+    public final @NonNull T read(final @NonNull DataInput input) throws IOException {
+      return this.reader.read(input);
+    }
+
+    @Override
+    public final void write(final @NonNull T tag, final @NonNull DataOutput output) throws IOException {
+      if(this.writer != null) this.writer.write(tag, output);
+    }
+
+    @Override
+    public final byte id() {
+      return this.id;
+    }
+
+    @Override
+    /* package */ boolean numeric() {
+      return false;
+    }
+
+    @Override
+    public String toString() {
+      return BinaryTagType.class.getSimpleName() + '[' + this.type.getSimpleName() + " " + this.id + "]";
+    }
+
+    /* package */ static class Numeric<T extends BinaryTag> extends Impl<T> {
+      /* package */ Numeric(final Class<T> type, final byte id, final Reader<T> reader, final @Nullable Writer<T> writer) {
+        super(type, id, reader, writer);
+      }
+
+      @Override
+      /* package */ boolean numeric() {
+        return true;
+      }
+
+      @Override
+      public String toString() {
+        return BinaryTagType.class.getSimpleName() + '[' + this.type.getSimpleName() + " " + this.id + " (numeric)]";
+      }
+    }
   }
 }

@@ -41,6 +41,11 @@ import org.checkerframework.checker.nullness.qual.Nullable;
     return Arrays.copyOf(this.value, this.value.length);
   }
 
+  // to avoid copying array internally
+  /* package */ static byte[] value(final ByteArrayBinaryTag tag) {
+    return (tag instanceof ByteArrayBinaryTagImpl) ? ((ByteArrayBinaryTagImpl) tag).value : tag.value();
+  }
+
   @Override
   public boolean equals(final @Nullable Object other) {
     if(this == other) return true;

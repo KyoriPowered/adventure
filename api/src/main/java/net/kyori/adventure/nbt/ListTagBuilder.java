@@ -25,17 +25,18 @@ package net.kyori.adventure.nbt;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /* package */ final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder<T> {
-  private final List<BinaryTag> tags = new ArrayList<>();
+  private @MonotonicNonNull List<BinaryTag> tags;
   private BinaryTagType<? extends BinaryTag> type;
 
-  ListTagBuilder() {
+  /* package */ ListTagBuilder() {
     this(BinaryTagTypes.END);
   }
 
-  ListTagBuilder(final BinaryTagType<? extends BinaryTag> type) {
+  /* package */ ListTagBuilder(final BinaryTagType<? extends BinaryTag> type) {
     this.type = type;
   }
 
@@ -49,12 +50,16 @@ import org.checkerframework.checker.nullness.qual.NonNull;
     if(this.type == BinaryTagTypes.END) {
       this.type = tag.type();
     }
+    if(this.tags == null) {
+      this.tags = new ArrayList<>();
+    }
     this.tags.add(tag);
     return this;
   }
 
   @Override
   public @NonNull ListBinaryTag build() {
+    if(this.tags == null) return ListBinaryTag.empty();
     return new ListBinaryTagImpl(this.type, new ArrayList<>(this.tags));
   }
 }

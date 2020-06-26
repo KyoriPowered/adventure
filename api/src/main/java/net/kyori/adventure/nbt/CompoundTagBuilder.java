@@ -25,19 +25,24 @@ package net.kyori.adventure.nbt;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /* package */ final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
-  private final Map<String, BinaryTag> tags = new HashMap<>();
+  private @MonotonicNonNull Map<String, BinaryTag> tags;
 
   @Override
   public CompoundBinaryTag.@NonNull Builder put(final @NonNull String key, @NonNull final BinaryTag tag) {
+    if(this.tags == null) {
+      this.tags = new HashMap<>();
+    }
     this.tags.put(key, tag);
     return this;
   }
 
   @Override
   public @NonNull CompoundBinaryTag build() {
+    if(this.tags == null) return CompoundBinaryTag.empty();
     return new CompoundBinaryTagImpl(new HashMap<>(this.tags));
   }
 }

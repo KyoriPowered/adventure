@@ -45,12 +45,11 @@ public final class BinaryTagTypes {
     input.readFully(value);
     return ByteArrayBinaryTag.of(value);
   }, (tag, output) -> {
-    final byte[] value = (tag instanceof ByteArrayBinaryTagImpl) ? ((ByteArrayBinaryTagImpl) tag).value : tag.value();
+    final byte[] value = ByteArrayBinaryTagImpl.value(tag);
     output.writeInt(value.length);
     output.write(value);
   });
   public static final BinaryTagType<StringBinaryTag> STRING = BinaryTagType.register(StringBinaryTag.class, (byte) 8, input -> StringBinaryTag.of(input.readUTF()), (tag, output) -> output.writeUTF(tag.value()));
-  @SuppressWarnings("unchecked")
   public static final BinaryTagType<ListBinaryTag> LIST = BinaryTagType.register(ListBinaryTag.class, (byte) 9, input -> {
     final BinaryTagType<? extends BinaryTag> type = BinaryTagType.of(input.readByte());
     final int length = input.readInt();
@@ -63,11 +62,10 @@ public final class BinaryTagTypes {
     output.writeByte(tag.listType().id());
     final int size = tag.size();
     output.writeInt(size);
-    for(BinaryTag item : tag) {
-      ((BinaryTagType<BinaryTag>) item.type()).write(item, output);
+    for(final BinaryTag item : tag) {
+      BinaryTagType.write(item.type(), item, output);
     }
   });
-  @SuppressWarnings("unchecked")
   public static final BinaryTagType<CompoundBinaryTag> COMPOUND = BinaryTagType.register(CompoundBinaryTag.class, (byte) 10, input -> {
     final Map<String, BinaryTag> tags = new HashMap<>();
     BinaryTagType<? extends BinaryTag> type;
@@ -78,13 +76,14 @@ public final class BinaryTagTypes {
     }
     return new CompoundBinaryTagImpl(tags);
   }, (tag, output) -> {
-    for(Map.Entry<String, ? extends BinaryTag> entry : tag) {
-      if(entry.getValue() != null) {
-        final BinaryTagType<? extends BinaryTag> type = entry.getValue().type();
+    for(final Map.Entry<String, ? extends BinaryTag> entry : tag) {
+      final BinaryTag value = entry.getValue();
+      if(value != null) {
+        final BinaryTagType<? extends BinaryTag> type = value.type();
         output.writeByte(type.id());
         if(type != BinaryTagTypes.END) {
           output.writeUTF(entry.getKey());
-          ((BinaryTagType<BinaryTag>) type).write(entry.getValue(), output);
+          BinaryTagType.write(type, value, output);
         }
       }
     }
@@ -98,9 +97,10 @@ public final class BinaryTagTypes {
     }
     return IntArrayBinaryTag.of(value);
   }, (tag, output) -> {
-    final int[] value = (tag instanceof IntArrayBinaryTagImpl) ? ((IntArrayBinaryTagImpl) tag).value : tag.value();
-    output.writeInt(value.length);
-    for(int i = 0, length = value.length; i < length; i++) {
+    final int[] value = IntArrayBinaryTagImpl.value(tag);
+    final int length = value.length;
+    output.writeInt(length);
+    for(int i = 0; i < length; i++) {
       output.writeInt(value[i]);
     }
   });
@@ -112,9 +112,10 @@ public final class BinaryTagTypes {
     }
     return LongArrayBinaryTag.of(value);
   }, (tag, output) -> {
-    final long[] value = (tag instanceof LongArrayBinaryTagImpl) ? ((LongArrayBinaryTagImpl) tag).value : tag.value();
-    output.writeInt(value.length);
-    for(int i = 0, length = value.length; i < length; i++) {
+    final long[] value = LongArrayBinaryTagImpl.value(tag);
+    final int length = value.length;
+    output.writeInt(length);
+    for(int i = 0; i < length; i++) {
       output.writeLong(value[i]);
     }
   });

@@ -41,7 +41,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
   private final List<? extends BinaryTag> tags;
   private final BinaryTagType<? extends BinaryTag> type;
 
-  ListBinaryTagImpl(final BinaryTagType<? extends BinaryTag> type, final List<? extends BinaryTag> tags) {
+  /* package */ ListBinaryTagImpl(final BinaryTagType<? extends BinaryTag> type, final List<? extends BinaryTag> tags) {
     this.tags = tags;
     this.type = type;
   }
