@@ -120,7 +120,8 @@ class StyleTest extends AbstractSerializeDeserializeTest<Style> {
       Style.builder()
         .hoverEvent(HoverEvent.showItem(new HoverEvent.ShowItem(
           Key.of(Key.MINECRAFT_NAMESPACE, "stone"),
-          count
+          count,
+          null // TODO: test for NBT?
         )))
         .build(),
       json -> {

@@ -30,13 +30,18 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.google.gson.JsonSyntaxException;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.nbt.BinaryTagIO;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.text.event.HoverEvent;
 
 /* package */ final class ShowItemSerializer implements JsonDeserializer<HoverEvent.ShowItem>, JsonSerializer<HoverEvent.ShowItem> {
   static final String ID = "id";
   static final String COUNT = "count";
+  static final String TAG = "tag";
 
   @Override
   public HoverEvent.ShowItem deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
@@ -53,7 +58,16 @@ import net.kyori.adventure.text.event.HoverEvent;
       count = object.get(COUNT).getAsInt();
     }
 
-    return new HoverEvent.ShowItem(id, count);
+    CompoundBinaryTag tag = null;
+    if(object.has(TAG)) {
+      try {
+        tag = BinaryTagIO.readString(object.get(TAG).getAsString());
+      } catch(IOException e) {
+        throw new JsonParseException(e);
+      }
+    }
+
+    return new HoverEvent.ShowItem(id, count, tag);
   }
 
   @Override
@@ -67,7 +81,14 @@ import net.kyori.adventure.text.event.HoverEvent;
       json.addProperty(COUNT, count);
     }
 
-    // TODO(kashike): nbt
+    final /* @Nullable */ CompoundBinaryTag tag = src.tag();
+    if(tag != null) {
+      try {
+        json.addProperty(TAG, BinaryTagIO.writeAsString(tag));
+      } catch(IOException e) {
+        throw new JsonSyntaxException(e);
+      }
+    }
 
     return json;
   }

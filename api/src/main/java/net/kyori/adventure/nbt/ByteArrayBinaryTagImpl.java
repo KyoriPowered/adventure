@@ -21,41 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text;
+package net.kyori.adventure.nbt;
 
+import java.util.Arrays;
+import java.util.stream.Stream;
+import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-/**
- * An NBT component.
- */
-public interface NbtComponent<C extends NbtComponent<C, B>, B extends NbtComponentBuilder<C, B>> extends BuildableComponent<C, B> {
-  /**
-   * Gets the NBT path.
-   *
-   * @return the NBT path
-   */
-  @NonNull String nbtPath();
+/* package */ final class ByteArrayBinaryTagImpl implements ByteArrayBinaryTag {
+  final byte[] value;
 
-  /**
-   * Sets the NBT path.
-   *
-   * @param nbtPath the NBT path
-   * @return a component
-   */
-  @NonNull C nbtPath(final @NonNull String nbtPath);
+  /* package */ ByteArrayBinaryTagImpl(final byte[] value) {
+    this.value = Arrays.copyOf(value, value.length);
+  }
 
-  /**
-   * Gets if we should be interpreting.
-   *
-   * @return if we should be interpreting
-   */
-  boolean interpret();
+  @Override
+  public byte@NonNull[] value() {
+    return Arrays.copyOf(this.value, this.value.length);
+  }
 
-  /**
-   * Sets if we should be interpreting.
-   *
-   * @param interpret if we should be interpreting.
-   * @return a component
-   */
-  @NonNull C interpret(final boolean interpret);
+  @Override
+  public boolean equals(final @Nullable Object other) {
+    if(this == other) return true;
+    if(other == null || this.getClass() != other.getClass()) return false;
+    final ByteArrayBinaryTagImpl that = (ByteArrayBinaryTagImpl) other;
+    return Arrays.equals(this.value, that.value);
+  }
+
+  @Override
+  public int hashCode() {
+    return Arrays.hashCode(this.value);
+  }
+
+  @Override
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(ExaminableProperty.of("value", this.value));
+  }
 }

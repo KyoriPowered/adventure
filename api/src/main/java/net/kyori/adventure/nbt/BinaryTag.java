@@ -21,36 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text;
+package net.kyori.adventure.nbt;
 
-import com.google.common.collect.ImmutableSet;
-import net.kyori.adventure.key.Key;
-import org.junit.jupiter.api.Test;
+import net.kyori.examination.Examinable;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-class StorageNbtComponentTest extends AbstractNbtComponentTest<StorageNbtComponent, StorageNbtComponent.Builder> {
-  @Override
-  StorageNbtComponent.Builder builder() {
-    return StorageNbtComponent.builder().nbtPath("abc").storage(Key.of("def"));
-  }
-
-  @Test
-  void testOf() {
-    final StorageNbtComponent component = StorageNbtComponent.of("abc", Key.of("def"));
-    assertEquals("abc", component.nbtPath());
-    assertEquals(Key.of("def"), component.storage());
-    assertNull(component.color());
-    TextAssertions.assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
-  }
-
-  @Test
-  void testSelector() {
-    final StorageNbtComponent c0 = StorageNbtComponent.of("abc", Key.of("def:ghi"));
-    final StorageNbtComponent c1 = c0.storage(Key.of("ghi:jkl"));
-    assertEquals(Key.of("def:ghi"), c0.storage());
-    assertEquals(Key.of("ghi:jkl"), c1.storage());
-    assertEquals("abc", c1.nbtPath());
-  }
+public interface BinaryTag extends Examinable {
+  @NonNull BinaryTagType<? extends BinaryTag> type();
 }

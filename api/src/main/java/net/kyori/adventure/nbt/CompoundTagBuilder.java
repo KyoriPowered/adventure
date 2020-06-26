@@ -21,34 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.serializer.gson;
+package net.kyori.adventure.nbt;
 
-import com.google.gson.JsonElement;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Stream;
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.StorageNbtComponent;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-class StorageNbtComponentTest extends AbstractComponentTest<StorageNbtComponent> {
+final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
+  private final Map<String, BinaryTag> tags = new HashMap<>();
+
   @Override
-  Stream<Map.Entry<StorageNbtComponent, JsonElement>> tests() {
-    return Stream.of(
-      entry(
-        StorageNbtComponent.builder().nbtPath("abc").storage(Key.of("doom:apple")).build(),
-        json -> {
-          json.addProperty(ComponentSerializerImpl.NBT, "abc");
-          json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
-          json.addProperty(ComponentSerializerImpl.NBT_STORAGE, "doom:apple");
-        }
-      ),
-      entry(
-        StorageNbtComponent.builder().nbtPath("abc[].def").storage(Key.of("diamond")).interpret(true).build(),
-        json -> {
-          json.addProperty(ComponentSerializerImpl.NBT, "abc[].def");
-          json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, true);
-          json.addProperty(ComponentSerializerImpl.NBT_STORAGE, "minecraft:diamond");
-        }
-      )
-    );
+  public CompoundBinaryTag.@NonNull Builder put(final @NonNull String key, @NonNull final BinaryTag tag) {
+    this.tags.put(key, tag);
+    return this;
+  }
+
+  @Override
+  public @NonNull CompoundBinaryTag build() {
+    return new CompoundBinaryTagImpl(new HashMap<>(this.tags));
   }
 }

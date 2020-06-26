@@ -33,24 +33,24 @@ import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-final class StorageNbtComponentImpl extends NbtComponentImpl<StorageNbtComponent, StorageNbtComponent.Builder> implements StorageNbtComponent {
+final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent, StorageNBTComponent.Builder> implements StorageNBTComponent {
   private final Key storage;
 
-  protected StorageNbtComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final String nbtPath, final boolean interpret, final Key storage) {
+  protected StorageNBTComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final String nbtPath, final boolean interpret, final Key storage) {
     super(children, style, nbtPath, interpret);
     this.storage = storage;
   }
 
   @Override
-  public @NonNull StorageNbtComponent nbtPath(final @NonNull String nbtPath) {
+  public @NonNull StorageNBTComponent nbtPath(final @NonNull String nbtPath) {
     if(Objects.equals(this.nbtPath, nbtPath)) return this;
-    return new StorageNbtComponentImpl(this.children, this.style, nbtPath, this.interpret, this.storage);
+    return new StorageNBTComponentImpl(this.children, this.style, nbtPath, this.interpret, this.storage);
   }
 
   @Override
-  public @NonNull StorageNbtComponent interpret(final boolean interpret) {
+  public @NonNull StorageNBTComponent interpret(final boolean interpret) {
     if(this.interpret == interpret) return this;
-    return new StorageNbtComponentImpl(this.children, this.style, this.nbtPath, interpret, this.storage);
+    return new StorageNBTComponentImpl(this.children, this.style, this.nbtPath, interpret, this.storage);
   }
 
   @Override
@@ -59,28 +59,28 @@ final class StorageNbtComponentImpl extends NbtComponentImpl<StorageNbtComponent
   }
 
   @Override
-  public @NonNull StorageNbtComponent storage(final @NonNull Key storage) {
+  public @NonNull StorageNBTComponent storage(final @NonNull Key storage) {
     if(Objects.equals(this.storage, storage)) return this;
-    return new StorageNbtComponentImpl(this.children, this.style, this.nbtPath, this.interpret, storage);
+    return new StorageNBTComponentImpl(this.children, this.style, this.nbtPath, this.interpret, storage);
   }
 
   @Override
-  public @NonNull StorageNbtComponent children(final @NonNull List<Component> children) {
-    return new StorageNbtComponentImpl(children, this.style, this.nbtPath, this.interpret, this.storage);
+  public @NonNull StorageNBTComponent children(final @NonNull List<Component> children) {
+    return new StorageNBTComponentImpl(children, this.style, this.nbtPath, this.interpret, this.storage);
   }
 
   @Override
-  public @NonNull StorageNbtComponent style(final @NonNull Style style) {
+  public @NonNull StorageNBTComponent style(final @NonNull Style style) {
     if(Objects.equals(this.style, style)) return this;
-    return new StorageNbtComponentImpl(this.children, style, this.nbtPath, this.interpret, this.storage);
+    return new StorageNBTComponentImpl(this.children, style, this.nbtPath, this.interpret, this.storage);
   }
 
   @Override
   public boolean equals(final @Nullable Object other) {
     if(this == other) return true;
-    if(!(other instanceof StorageNbtComponent)) return false;
+    if(!(other instanceof StorageNBTComponent)) return false;
     if(!super.equals(other)) return false;
-    final StorageNbtComponentImpl that = (StorageNbtComponentImpl) other;
+    final StorageNBTComponentImpl that = (StorageNBTComponentImpl) other;
     return Objects.equals(this.storage, that.storage());
   }
 
@@ -106,13 +106,13 @@ final class StorageNbtComponentImpl extends NbtComponentImpl<StorageNbtComponent
     return new BuilderImpl(this);
   }
 
-  static class BuilderImpl extends NbtComponentImpl.BuilderImpl<StorageNbtComponent, Builder> implements Builder {
+  static class BuilderImpl extends NBTComponentImpl.BuilderImpl<StorageNBTComponent, Builder> implements Builder {
     private @MonotonicNonNull Key storage;
 
     BuilderImpl() {
     }
 
-    BuilderImpl(final @NonNull StorageNbtComponent component) {
+    BuilderImpl(final @NonNull StorageNBTComponent component) {
       super(component);
       this.storage = component.storage();
     }
@@ -124,10 +124,10 @@ final class StorageNbtComponentImpl extends NbtComponentImpl<StorageNbtComponent
     }
 
     @Override
-    public @NonNull StorageNbtComponent build() {
+    public @NonNull StorageNBTComponent build() {
       if(this.nbtPath == null) throw new IllegalStateException("nbt path must be set");
       if(this.storage == null) throw new IllegalStateException("storage must be set");
-      return new StorageNbtComponentImpl(this.children, this.buildStyle(), this.nbtPath, this.interpret, this.storage);
+      return new StorageNBTComponentImpl(this.children, this.buildStyle(), this.nbtPath, this.interpret, this.storage);
     }
   }
 }

@@ -21,33 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.serializer.gson;
+package net.kyori.adventure.nbt;
 
-import com.google.gson.JsonElement;
-import java.util.Map;
+import java.util.Arrays;
 import java.util.stream.Stream;
-import net.kyori.adventure.text.EntityNbtComponent;
+import net.kyori.examination.ExaminableProperty;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-class EntityNbtComponentTest extends AbstractComponentTest<EntityNbtComponent> {
+/* package */ final class IntArrayBinaryTagImpl implements IntArrayBinaryTag {
+  final int[] value;
+
+  /* package */ IntArrayBinaryTagImpl(final int... value) {
+    this.value = Arrays.copyOf(value, value.length);
+  }
+
   @Override
-  Stream<Map.Entry<EntityNbtComponent, JsonElement>> tests() {
-    return Stream.of(
-      entry(
-        EntityNbtComponent.builder().nbtPath("abc").selector("test").build(),
-        json -> {
-          json.addProperty(ComponentSerializerImpl.NBT, "abc");
-          json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
-          json.addProperty(ComponentSerializerImpl.NBT_ENTITY, "test");
-        }
-      ),
-      entry(
-        EntityNbtComponent.builder().nbtPath("abc").selector("test").interpret(true).build(),
-        json -> {
-          json.addProperty(ComponentSerializerImpl.NBT, "abc");
-          json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, true);
-          json.addProperty(ComponentSerializerImpl.NBT_ENTITY, "test");
-        }
-      )
-    );
+  public int@NonNull[] value() {
+    return Arrays.copyOf(this.value, this.value.length);
+  }
+
+  @Override
+  public boolean equals(final @Nullable Object other) {
+    if(this == other) return true;
+    if(other == null || this.getClass() != other.getClass()) return false;
+    final IntArrayBinaryTagImpl that = (IntArrayBinaryTagImpl) other;
+    return Arrays.equals(this.value, that.value);
+  }
+
+  @Override
+  public int hashCode() {
+    return Arrays.hashCode(this.value);
+  }
+
+  @Override
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(ExaminableProperty.of("value", this.value));
   }
 }

@@ -21,41 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.event;
+package net.kyori.adventure.text;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.testing.EqualsTester;
-import java.util.UUID;
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.TextComponent;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-class HoverEventTest {
-  @Test
-  void testEquality() {
-    final UUID entity = UUID.randomUUID();
-    new EqualsTester()
-      .addEqualityGroup(
-        HoverEvent.showText(TextComponent.empty()),
-        HoverEvent.of(HoverEvent.Action.SHOW_TEXT, TextComponent.empty())
-      )
-      .addEqualityGroup(
-        HoverEvent.showItem(new HoverEvent.ShowItem(Key.of("air"), 1, null)),
-        HoverEvent.of(HoverEvent.Action.SHOW_ITEM, new HoverEvent.ShowItem(Key.of("air"), 1, null))
-      )
-      .addEqualityGroup(
-        HoverEvent.showEntity(new HoverEvent.ShowEntity(Key.of("cat"), entity, TextComponent.empty())),
-        HoverEvent.of(HoverEvent.Action.SHOW_ENTITY, new HoverEvent.ShowEntity(Key.of("cat"), entity, TextComponent.empty()))
-      )
-      .testEquals();
+class StorageNBTComponentTest extends AbstractNBTComponentTest<StorageNBTComponent, StorageNBTComponent.Builder> {
+  @Override
+  StorageNBTComponent.Builder builder() {
+    return StorageNBTComponent.builder().nbtPath("abc").storage(Key.of("def"));
   }
 
   @Test
-  void assertReadable() {
-    for(final HoverEvent.Action<?> action : ImmutableSet.of(HoverEvent.Action.SHOW_TEXT, HoverEvent.Action.SHOW_ITEM, HoverEvent.Action.SHOW_ENTITY)) {
-      assertTrue(action.readable());
-    }
+  void testOf() {
+    final StorageNBTComponent component = StorageNBTComponent.of("abc", Key.of("def"));
+    assertEquals("abc", component.nbtPath());
+    assertEquals(Key.of("def"), component.storage());
+    assertNull(component.color());
+    TextAssertions.assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
+  }
+
+  @Test
+  void testSelector() {
+    final StorageNBTComponent c0 = StorageNBTComponent.of("abc", Key.of("def:ghi"));
+    final StorageNBTComponent c1 = c0.storage(Key.of("ghi:jkl"));
+    assertEquals(Key.of("def:ghi"), c0.storage());
+    assertEquals(Key.of("ghi:jkl"), c1.storage());
+    assertEquals("abc", c1.nbtPath());
   }
 }

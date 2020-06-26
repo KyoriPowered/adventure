@@ -34,24 +34,24 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-final class BlockNbtComponentImpl extends NbtComponentImpl<BlockNbtComponent, BlockNbtComponent.Builder> implements BlockNbtComponent {
+final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, BlockNBTComponent.Builder> implements BlockNBTComponent {
   private final Pos pos;
 
-  BlockNbtComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final String nbtPath, final boolean interpret, final @NonNull Pos pos) {
+  BlockNBTComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final String nbtPath, final boolean interpret, final @NonNull Pos pos) {
     super(children, style, nbtPath, interpret);
     this.pos = pos;
   }
 
   @Override
-  public @NonNull BlockNbtComponent nbtPath(final @NonNull String nbtPath) {
+  public @NonNull BlockNBTComponent nbtPath(final @NonNull String nbtPath) {
     if(Objects.equals(this.nbtPath, nbtPath)) return this;
-    return new BlockNbtComponentImpl(this.children, this.style, nbtPath, this.interpret, this.pos);
+    return new BlockNBTComponentImpl(this.children, this.style, nbtPath, this.interpret, this.pos);
   }
 
   @Override
-  public @NonNull BlockNbtComponent interpret(final boolean interpret) {
+  public @NonNull BlockNBTComponent interpret(final boolean interpret) {
     if(this.interpret == interpret) return this;
-    return new BlockNbtComponentImpl(this.children, this.style, this.nbtPath, interpret, this.pos);
+    return new BlockNBTComponentImpl(this.children, this.style, this.nbtPath, interpret, this.pos);
   }
 
   @Override
@@ -60,27 +60,27 @@ final class BlockNbtComponentImpl extends NbtComponentImpl<BlockNbtComponent, Bl
   }
 
   @Override
-  public @NonNull BlockNbtComponent pos(final @NonNull Pos pos) {
-    return new BlockNbtComponentImpl(this.children, this.style, this.nbtPath, this.interpret, pos);
+  public @NonNull BlockNBTComponent pos(final @NonNull Pos pos) {
+    return new BlockNBTComponentImpl(this.children, this.style, this.nbtPath, this.interpret, pos);
   }
 
   @Override
-  public @NonNull BlockNbtComponent children(final @NonNull List<Component> children) {
-    return new BlockNbtComponentImpl(children, this.style, this.nbtPath, this.interpret, this.pos);
+  public @NonNull BlockNBTComponent children(final @NonNull List<Component> children) {
+    return new BlockNBTComponentImpl(children, this.style, this.nbtPath, this.interpret, this.pos);
   }
 
   @Override
-  public @NonNull BlockNbtComponent style(final @NonNull Style style) {
+  public @NonNull BlockNBTComponent style(final @NonNull Style style) {
     if(Objects.equals(this.style, style)) return this;
-    return new BlockNbtComponentImpl(this.children, style, this.nbtPath, this.interpret, this.pos);
+    return new BlockNBTComponentImpl(this.children, style, this.nbtPath, this.interpret, this.pos);
   }
 
   @Override
   public boolean equals(final @Nullable Object other) {
     if(this == other) return true;
-    if(!(other instanceof BlockNbtComponent)) return false;
+    if(!(other instanceof BlockNBTComponent)) return false;
     if(!super.equals(other)) return false;
-    final BlockNbtComponent that = (BlockNbtComponent) other;
+    final BlockNBTComponent that = (BlockNBTComponent) other;
     return Objects.equals(this.pos, that.pos());
   }
 
@@ -106,13 +106,13 @@ final class BlockNbtComponentImpl extends NbtComponentImpl<BlockNbtComponent, Bl
     return new BuilderImpl(this);
   }
 
-  static final class BuilderImpl extends NbtComponentImpl.BuilderImpl<BlockNbtComponent, Builder> implements Builder {
+  static final class BuilderImpl extends NBTComponentImpl.BuilderImpl<BlockNBTComponent, Builder> implements Builder {
     private @Nullable Pos pos;
 
     BuilderImpl() {
     }
 
-    BuilderImpl(final @NonNull BlockNbtComponent component) {
+    BuilderImpl(final @NonNull BlockNBTComponent component) {
       super(component);
       this.pos = component.pos();
     }
@@ -124,10 +124,10 @@ final class BlockNbtComponentImpl extends NbtComponentImpl<BlockNbtComponent, Bl
     }
 
     @Override
-    public @NonNull BlockNbtComponent build() {
+    public @NonNull BlockNBTComponent build() {
       if(this.nbtPath == null) throw new IllegalStateException("nbt path must be set");
       if(this.pos == null) throw new IllegalStateException("pos must be set");
-      return new BlockNbtComponentImpl(this.children, this.buildStyle(), this.nbtPath, this.interpret, this.pos);
+      return new BlockNBTComponentImpl(this.children, this.buildStyle(), this.nbtPath, this.interpret, this.pos);
     }
   }
 

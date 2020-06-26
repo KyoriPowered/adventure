@@ -36,17 +36,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.BlockNbtComponent;
+import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.BuildableComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentBuilder;
-import net.kyori.adventure.text.EntityNbtComponent;
+import net.kyori.adventure.text.EntityNBTComponent;
 import net.kyori.adventure.text.KeybindComponent;
-import net.kyori.adventure.text.NbtComponent;
-import net.kyori.adventure.text.NbtComponentBuilder;
+import net.kyori.adventure.text.NBTComponent;
+import net.kyori.adventure.text.NBTComponentBuilder;
 import net.kyori.adventure.text.ScoreComponent;
 import net.kyori.adventure.text.SelectorComponent;
-import net.kyori.adventure.text.StorageNbtComponent;
+import net.kyori.adventure.text.StorageNBTComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.Style;
@@ -133,12 +133,12 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
       final String nbt = object.get(NBT).getAsString();
       final boolean interpret = object.has(NBT_INTERPRET) && object.getAsJsonPrimitive(NBT_INTERPRET).getAsBoolean();
       if(object.has(NBT_BLOCK)) {
-        final BlockNbtComponent.Pos pos = context.deserialize(object.get(NBT_BLOCK), BlockNbtComponent.Pos.class);
-        component = nbt(BlockNbtComponent.builder(), nbt, interpret).pos(pos);
+        final BlockNBTComponent.Pos pos = context.deserialize(object.get(NBT_BLOCK), BlockNBTComponent.Pos.class);
+        component = nbt(BlockNBTComponent.builder(), nbt, interpret).pos(pos);
       } else if(object.has(NBT_ENTITY)) {
-        component = nbt(EntityNbtComponent.builder(), nbt, interpret).selector(object.get(NBT_ENTITY).getAsString());
+        component = nbt(EntityNBTComponent.builder(), nbt, interpret).selector(object.get(NBT_ENTITY).getAsString());
       } else if(object.has(NBT_STORAGE)) {
-        component = nbt(StorageNbtComponent.builder(), nbt, interpret).storage(context.deserialize(object.get(NBT_STORAGE), Key.class));
+        component = nbt(StorageNBTComponent.builder(), nbt, interpret).storage(context.deserialize(object.get(NBT_STORAGE), Key.class));
       } else {
         throw notSureHowToDeserialize(element);
       }
@@ -162,7 +162,7 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
     return component.build();
   }
 
-  private static <C extends NbtComponent<C, B>, B extends NbtComponentBuilder<C, B>> B nbt(final B builder, final String nbt, final boolean interpret) {
+  private static <C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> B nbt(final B builder, final String nbt, final boolean interpret) {
     return builder
       .nbtPath(nbt)
       .interpret(interpret);
@@ -196,17 +196,17 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
       object.addProperty(SELECTOR, ((SelectorComponent) src).pattern());
     } else if(src instanceof KeybindComponent) {
       object.addProperty(KEYBIND, ((KeybindComponent) src).keybind());
-    } else if(src instanceof NbtComponent) {
-      final NbtComponent<?, ?> nc = (NbtComponent<?, ?>) src;
+    } else if(src instanceof NBTComponent) {
+      final NBTComponent<?, ?> nc = (NBTComponent<?, ?>) src;
       object.addProperty(NBT, nc.nbtPath());
       object.addProperty(NBT_INTERPRET, nc.interpret());
-      if(src instanceof BlockNbtComponent) {
-        final JsonElement position = context.serialize(((BlockNbtComponent) nc).pos());
+      if(src instanceof BlockNBTComponent) {
+        final JsonElement position = context.serialize(((BlockNBTComponent) nc).pos());
         object.add(NBT_BLOCK, position);
-      } else if(src instanceof EntityNbtComponent) {
-        object.addProperty(NBT_ENTITY, ((EntityNbtComponent) nc).selector());
-      } else if(src instanceof StorageNbtComponent) {
-        object.add(NBT_STORAGE, context.serialize(((StorageNbtComponent) nc).storage()));
+      } else if(src instanceof EntityNBTComponent) {
+        object.addProperty(NBT_ENTITY, ((EntityNBTComponent) nc).selector());
+      } else if(src instanceof StorageNBTComponent) {
+        object.add(NBT_STORAGE, context.serialize(((StorageNBTComponent) nc).storage()));
       } else {
         throw notSureHowToSerialize(src);
       }

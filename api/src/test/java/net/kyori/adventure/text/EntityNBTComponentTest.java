@@ -23,29 +23,33 @@
  */
 package net.kyori.adventure.text;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import com.google.common.collect.ImmutableSet;
+import org.junit.jupiter.api.Test;
 
-/*
- * This can't be a child of NbtComponent.
- */
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-/**
- * An NBT component builder.
- */
-public interface NbtComponentBuilder<C extends NbtComponent<C, B>, B extends NbtComponentBuilder<C, B>> extends ComponentBuilder<C, B> {
-  /**
-   * Sets the NBT path content.
-   *
-   * @param nbtPath the NBT path
-   * @return this builder
-   */
-  @NonNull B nbtPath(final @NonNull String nbtPath);
+class EntityNBTComponentTest extends AbstractNBTComponentTest<EntityNBTComponent, EntityNBTComponent.Builder> {
+  @Override
+  EntityNBTComponent.Builder builder() {
+    return EntityNBTComponent.builder().nbtPath("abc").selector("def");
+  }
 
-  /**
-   * Sets whether to interpret.
-   *
-   * @param interpret if we should be interpreting
-   * @return this builder
-   */
-  @NonNull B interpret(final boolean interpret);
+  @Test
+  void testOf() {
+    final EntityNBTComponent component = EntityNBTComponent.of("abc", "def");
+    assertEquals("abc", component.nbtPath());
+    assertEquals("def", component.selector());
+    assertNull(component.color());
+    TextAssertions.assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
+  }
+
+  @Test
+  void testSelector() {
+    final EntityNBTComponent c0 = EntityNBTComponent.of("abc", "def");
+    final EntityNBTComponent c1 = c0.selector("ghi");
+    assertEquals("def", c0.selector());
+    assertEquals("ghi", c1.selector());
+    assertEquals("abc", c1.nbtPath());
+  }
 }

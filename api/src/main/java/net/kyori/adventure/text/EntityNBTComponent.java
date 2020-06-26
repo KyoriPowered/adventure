@@ -24,70 +24,69 @@
 package net.kyori.adventure.text;
 
 import java.util.function.Consumer;
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * An storage NBT component.
+ * An entity NBT component.
  */
-public interface StorageNbtComponent extends NbtComponent<StorageNbtComponent, StorageNbtComponent.Builder>, ScopedComponent<StorageNbtComponent> {
+public interface EntityNBTComponent extends NBTComponent<EntityNBTComponent, EntityNBTComponent.Builder>, ScopedComponent<EntityNBTComponent> {
   /**
-   * Creates an storage NBT component builder.
+   * Creates an entity NBT component builder.
    *
    * @return a builder
    */
   static @NonNull Builder builder() {
-    return new StorageNbtComponentImpl.BuilderImpl();
+    return new EntityNBTComponentImpl.BuilderImpl();
   }
 
   /**
-   * Creates a storage NBT component with a path and an storage ID.
+   * Creates a entity NBT component with a position.
    *
    * @param nbtPath the nbt path
-   * @param storage the identifier of the storage
-   * @return the storage NBT component
+   * @param selector the selector
+   * @return the entity NBT component
    */
-  static @NonNull StorageNbtComponent of(final @NonNull String nbtPath, final @NonNull Key storage) {
-    return builder().nbtPath(nbtPath).storage(storage).build();
+  static @NonNull EntityNBTComponent of(final @NonNull String nbtPath, final @NonNull String selector) {
+    return builder().nbtPath(nbtPath).selector(selector).build();
   }
 
   /**
-   * Creates a storage NBT component by applying configuration from {@code consumer}.
+   * Creates a entity NBT component by applying configuration from {@code consumer}.
    *
    * @param consumer the builder configurator
-   * @return the storage NBT component
+   * @return the entity NBT component
    */
-  static @NonNull StorageNbtComponent make(final @NonNull Consumer<? super Builder> consumer) {
+  static @NonNull EntityNBTComponent make(final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder();
     return Buildable.configureAndBuild(builder, consumer);
   }
 
   /**
-   * Gets the NBT storage's ID.
+   * Gets the entity selector.
    *
-   * @return the NBT storage
+   * @return the entity selector
    */
-  @NonNull Key storage();
+  @NonNull String selector();
 
   /**
-   * Sets the NBT storage.
+   * Sets the entity selector.
    *
-   * @param storage the identifier of the NBT storage
+   * @param selector the entity selector
    * @return a component
    */
-  @NonNull StorageNbtComponent storage(final @NonNull Key storage);
+  @NonNull EntityNBTComponent selector(final @NonNull String selector);
 
   /**
-   * A command storage NBT component builder.
+   * An entity NBT component builder.
    */
-  interface Builder extends NbtComponentBuilder<StorageNbtComponent, Builder> {
+  interface Builder extends NBTComponentBuilder<EntityNBTComponent, Builder> {
     /**
-     * Sets the NBT storage.
+     * Sets the entity selector.
      *
-     * @param storage the id of the NBT storage
+     * @param selector the entity selector
      * @return this builder
      */
-    @NonNull Builder storage(final @NonNull Key storage);
+    @NonNull Builder selector(final @NonNull String selector);
   }
 }

@@ -21,41 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.event;
+package net.kyori.adventure.text;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.testing.EqualsTester;
-import java.util.UUID;
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.TextComponent;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class HoverEventTest {
+abstract class AbstractNBTComponentTest<C extends NBTComponent<C, B> & ScopedComponent<C>, B extends NBTComponentBuilder<C, B>> extends AbstractComponentTest<C, B> {
   @Test
-  void testEquality() {
-    final UUID entity = UUID.randomUUID();
-    new EqualsTester()
-      .addEqualityGroup(
-        HoverEvent.showText(TextComponent.empty()),
-        HoverEvent.of(HoverEvent.Action.SHOW_TEXT, TextComponent.empty())
-      )
-      .addEqualityGroup(
-        HoverEvent.showItem(new HoverEvent.ShowItem(Key.of("air"), 1, null)),
-        HoverEvent.of(HoverEvent.Action.SHOW_ITEM, new HoverEvent.ShowItem(Key.of("air"), 1, null))
-      )
-      .addEqualityGroup(
-        HoverEvent.showEntity(new HoverEvent.ShowEntity(Key.of("cat"), entity, TextComponent.empty())),
-        HoverEvent.of(HoverEvent.Action.SHOW_ENTITY, new HoverEvent.ShowEntity(Key.of("cat"), entity, TextComponent.empty()))
-      )
-      .testEquals();
+  void testBuildWithInterpret() {
+    final C c0 = this.buildOne();
+    assertFalse(c0.interpret());
+    final C c1 = this.builder().interpret(true).build();
+    assertTrue(c1.interpret());
   }
 
   @Test
-  void assertReadable() {
-    for(final HoverEvent.Action<?> action : ImmutableSet.of(HoverEvent.Action.SHOW_TEXT, HoverEvent.Action.SHOW_ITEM, HoverEvent.Action.SHOW_ENTITY)) {
-      assertTrue(action.readable());
-    }
+  void testInterpret() {
+    final C c0 = this.buildOne();
+    final C c1 = c0.interpret(true);
+    assertFalse(c0.interpret());
+    assertTrue(c1.interpret());
+  }
+
+  @Test
+  void testNbtPath() {
+    final C c0 = this.buildOne();
+    final C c1 = c0.nbtPath("ghi");
+    assertEquals("abc", c0.nbtPath());
+    assertEquals("ghi", c1.nbtPath());
+    assertEquals(c0, c1.nbtPath(c0.nbtPath()));
   }
 }

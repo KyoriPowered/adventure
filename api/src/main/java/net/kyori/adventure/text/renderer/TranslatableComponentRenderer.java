@@ -26,17 +26,17 @@ package net.kyori.adventure.text.renderer;
 import java.text.AttributedCharacterIterator;
 import java.text.MessageFormat;
 import java.util.List;
-import net.kyori.adventure.text.BlockNbtComponent;
+import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.BuildableComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentBuilder;
-import net.kyori.adventure.text.EntityNbtComponent;
+import net.kyori.adventure.text.EntityNBTComponent;
 import net.kyori.adventure.text.KeybindComponent;
-import net.kyori.adventure.text.NbtComponent;
-import net.kyori.adventure.text.NbtComponentBuilder;
+import net.kyori.adventure.text.NBTComponent;
+import net.kyori.adventure.text.NBTComponentBuilder;
 import net.kyori.adventure.text.ScoreComponent;
 import net.kyori.adventure.text.SelectorComponent;
-import net.kyori.adventure.text.StorageNbtComponent;
+import net.kyori.adventure.text.StorageNBTComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -58,27 +58,27 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   }
 
   @Override
-  protected @NonNull Component renderBlockNbt(final @NonNull BlockNbtComponent component, final @NonNull C context) {
-    final BlockNbtComponent.Builder builder = nbt(BlockNbtComponent.builder(), component)
+  protected @NonNull Component renderBlockNbt(final @NonNull BlockNBTComponent component, final @NonNull C context) {
+    final BlockNBTComponent.Builder builder = nbt(BlockNBTComponent.builder(), component)
       .pos(component.pos());
     return this.deepRender(component, builder, context);
   }
 
   @Override
-  protected @NonNull Component renderEntityNbt(final @NonNull EntityNbtComponent component, final @NonNull C context) {
-    final EntityNbtComponent.Builder builder = nbt(EntityNbtComponent.builder(), component)
+  protected @NonNull Component renderEntityNbt(final @NonNull EntityNBTComponent component, final @NonNull C context) {
+    final EntityNBTComponent.Builder builder = nbt(EntityNBTComponent.builder(), component)
       .selector(component.selector());
     return this.deepRender(component, builder, context);
   }
 
   @Override
-  protected @NonNull Component renderStorageNbt(final @NonNull StorageNbtComponent component, final @NonNull C context) {
-    final StorageNbtComponent.Builder builder = nbt(StorageNbtComponent.builder(), component)
+  protected @NonNull Component renderStorageNbt(final @NonNull StorageNBTComponent component, final @NonNull C context) {
+    final StorageNBTComponent.Builder builder = nbt(StorageNBTComponent.builder(), component)
       .storage(component.storage());
     return this.deepRender(component, builder, context);
   }
 
-  private static <C extends NbtComponent<C, B>, B extends NbtComponentBuilder<C, B>> B nbt(final B builder, final C oldComponent) {
+  private static <C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> B nbt(final B builder, final C oldComponent) {
     return builder
       .nbtPath(oldComponent.nbtPath())
       .interpret(oldComponent.interpret());

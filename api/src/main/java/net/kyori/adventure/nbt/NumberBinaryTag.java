@@ -21,35 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text;
+package net.kyori.adventure.nbt;
 
-import com.google.common.collect.ImmutableSet;
-import org.junit.jupiter.api.Test;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-class EntityNbtComponentTest extends AbstractNbtComponentTest<EntityNbtComponent, EntityNbtComponent.Builder> {
+public interface NumberBinaryTag extends BinaryTag {
   @Override
-  EntityNbtComponent.Builder builder() {
-    return EntityNbtComponent.builder().nbtPath("abc").selector("def");
-  }
+  @NonNull BinaryTagType<? extends NumberBinaryTag> type();
 
-  @Test
-  void testOf() {
-    final EntityNbtComponent component = EntityNbtComponent.of("abc", "def");
-    assertEquals("abc", component.nbtPath());
-    assertEquals("def", component.selector());
-    assertNull(component.color());
-    TextAssertions.assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
-  }
+  byte byteValue();
 
-  @Test
-  void testSelector() {
-    final EntityNbtComponent c0 = EntityNbtComponent.of("abc", "def");
-    final EntityNbtComponent c1 = c0.selector("ghi");
-    assertEquals("def", c0.selector());
-    assertEquals("ghi", c1.selector());
-    assertEquals("abc", c1.nbtPath());
-  }
+  double doubleValue();
+
+  float floatValue();
+
+  int intValue();
+
+  long longValue();
+
+  short shortValue();
+
 }

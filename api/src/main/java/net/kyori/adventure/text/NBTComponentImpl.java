@@ -31,11 +31,11 @@ import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-abstract class NbtComponentImpl<C extends NbtComponent<C, B>, B extends NbtComponentBuilder<C, B>> extends AbstractComponent implements NbtComponent<C, B> {
+abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> extends AbstractComponent implements NBTComponent<C, B> {
   final String nbtPath;
   final boolean interpret;
 
-  NbtComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final String nbtPath, final boolean interpret) {
+  NBTComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final String nbtPath, final boolean interpret) {
     super(children, style);
     this.nbtPath = nbtPath;
     this.interpret = interpret;
@@ -54,9 +54,9 @@ abstract class NbtComponentImpl<C extends NbtComponent<C, B>, B extends NbtCompo
   @Override
   public boolean equals(final @Nullable Object other) {
     if(this == other) return true;
-    if(!(other instanceof NbtComponent)) return false;
+    if(!(other instanceof NBTComponent)) return false;
     if(!super.equals(other)) return false;
-    final NbtComponent<?, ?> that = (NbtComponent<?, ?>) other;
+    final NBTComponent<?, ?> that = (NBTComponent<?, ?>) other;
     return Objects.equals(this.nbtPath, that.nbtPath()) && this.interpret == that.interpret();
   }
 
@@ -79,7 +79,7 @@ abstract class NbtComponentImpl<C extends NbtComponent<C, B>, B extends NbtCompo
     );
   }
 
-  static abstract class BuilderImpl<C extends NbtComponent<C, B>, B extends NbtComponentBuilder<C, B>> extends AbstractComponentBuilder<C, B> implements NbtComponentBuilder<C, B> {
+  static abstract class BuilderImpl<C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> extends AbstractComponentBuilder<C, B> implements NBTComponentBuilder<C, B> {
     @Nullable String nbtPath;
     boolean interpret;
 

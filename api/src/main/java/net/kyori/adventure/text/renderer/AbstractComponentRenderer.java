@@ -23,14 +23,14 @@
  */
 package net.kyori.adventure.text.renderer;
 
-import net.kyori.adventure.text.BlockNbtComponent;
+import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.EntityNbtComponent;
+import net.kyori.adventure.text.EntityNBTComponent;
 import net.kyori.adventure.text.KeybindComponent;
-import net.kyori.adventure.text.NbtComponent;
+import net.kyori.adventure.text.NBTComponent;
 import net.kyori.adventure.text.ScoreComponent;
 import net.kyori.adventure.text.SelectorComponent;
-import net.kyori.adventure.text.StorageNbtComponent;
+import net.kyori.adventure.text.StorageNBTComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -53,13 +53,13 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
       return this.renderScore((ScoreComponent) component, context);
     } else if(component instanceof SelectorComponent) {
       return this.renderSelector((SelectorComponent) component, context);
-    } else if(component instanceof NbtComponent<?, ?>) {
-      if(component instanceof BlockNbtComponent) {
-        return this.renderBlockNbt((BlockNbtComponent) component, context);
-      } else if(component instanceof EntityNbtComponent) {
-        return this.renderEntityNbt((EntityNbtComponent) component, context);
-      } else if(component instanceof StorageNbtComponent) {
-        return this.renderStorageNbt((StorageNbtComponent) component, context);
+    } else if(component instanceof NBTComponent<?, ?>) {
+      if(component instanceof BlockNBTComponent) {
+        return this.renderBlockNbt((BlockNBTComponent) component, context);
+      } else if(component instanceof EntityNBTComponent) {
+        return this.renderEntityNbt((EntityNBTComponent) component, context);
+      } else if(component instanceof StorageNBTComponent) {
+        return this.renderStorageNbt((StorageNBTComponent) component, context);
       }
     }
     return component;
@@ -72,7 +72,7 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
    * @param context the context
    * @return the rendered component
    */
-  protected abstract @NonNull Component renderBlockNbt(final @NonNull BlockNbtComponent component, final @NonNull C context);
+  protected abstract @NonNull Component renderBlockNbt(final @NonNull BlockNBTComponent component, final @NonNull C context);
 
   /**
    * Renders an entity NBT component.
@@ -81,7 +81,7 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
    * @param context the context
    * @return the rendered component
    */
-  protected abstract @NonNull Component renderEntityNbt(final @NonNull EntityNbtComponent component, final @NonNull C context);
+  protected abstract @NonNull Component renderEntityNbt(final @NonNull EntityNBTComponent component, final @NonNull C context);
 
   /**
    * Renders a storage NBT component.
@@ -90,7 +90,7 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
    * @param context the context
    * @return the rendered component
    */
-  protected abstract @NonNull Component renderStorageNbt(final @NonNull StorageNbtComponent component, final @NonNull C context);
+  protected abstract @NonNull Component renderStorageNbt(final @NonNull StorageNBTComponent component, final @NonNull C context);
 
   /**
    * Renders a keybind component.
