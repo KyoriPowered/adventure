@@ -67,7 +67,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   private final Style urlStyle;
   private final boolean urlLink;
 
-  LegacyComponentSerializerImpl(char character, char hexCharacter, final @Nullable Style urlStyle, final boolean urlLink) {
+  LegacyComponentSerializerImpl(final char character, final char hexCharacter, final @Nullable Style urlStyle, final boolean urlLink) {
     this.character = character;
     this.hexCharacter = hexCharacter;
     this.urlStyle = urlStyle;
@@ -336,11 +336,11 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
     @Override
     public @NonNull Builder extractUrls() {
-      return extractUrls(null);
+      return this.extractUrls(null);
     }
 
     @Override
-    public @NonNull Builder extractUrls(@Nullable Style style) {
+    public @NonNull Builder extractUrls(final @Nullable Style style) {
       this.urlLink = true;
       this.urlStyle = style;
       return this;

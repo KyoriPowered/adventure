@@ -26,7 +26,6 @@ package net.kyori.adventure.nbt;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
-import java.util.function.IntFunction;
 
 /**
  * An emitter for the SNBT format.

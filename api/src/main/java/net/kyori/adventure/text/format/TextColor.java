@@ -27,8 +27,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.common.value.qual.IntRange;
 
-import java.util.Optional;
-
 /**
  * A color which may be applied to a {@link Style}.
  */

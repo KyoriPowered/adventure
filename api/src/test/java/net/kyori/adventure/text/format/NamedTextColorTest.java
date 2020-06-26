@@ -28,8 +28,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class NamedTextColorTest {
-
+class NamedTextColorTest {
   @Test
   public void testNullRejected() {
     assertThrows(NullPointerException.class, () -> NamedTextColor.nearestTo(null), "color");
@@ -37,7 +36,7 @@ public class NamedTextColorTest {
 
   @Test
   public void testNamedColorsResolveToSelf() {
-    for(NamedTextColor named : NamedTextColor.values()) {
+    for(final NamedTextColor named : NamedTextColor.values()) {
       final TextColor nonNamed = TextColor.of(named.value());
       assertEquals(named, NamedTextColor.nearestTo(nonNamed));
     }
@@ -57,5 +56,4 @@ public class NamedTextColorTest {
     final NamedTextColor nearest = NamedTextColor.nearestTo(TextColor.of(value));
     assertEquals(expected, nearest);
   }
-
 }

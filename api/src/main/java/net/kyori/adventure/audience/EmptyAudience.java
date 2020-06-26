@@ -75,6 +75,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
   }
 
   @Override
-  public void openBook(@NonNull Book book) {
+  public void openBook(final @NonNull Book book) {
   }
 }

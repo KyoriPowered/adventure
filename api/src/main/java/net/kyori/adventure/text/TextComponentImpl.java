@@ -29,13 +29,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Queue;
-import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-
-import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -71,7 +68,7 @@ class TextComponentImpl extends AbstractComponent implements TextComponent {
   }
 
   @Override
-  public @NonNull TextComponent replace(@NonNull Pattern pattern, @NonNull UnaryOperator<Builder> replacement) {
+  public @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement) {
     final List<Component> produced = new ArrayList<>();
     final Queue<TextComponent> queue = new ArrayDeque<>();
     queue.add(this);
@@ -107,7 +104,7 @@ class TextComponentImpl extends AbstractComponent implements TextComponent {
       }
 
       for(final Component child : current.children()) {
-        if (child instanceof TextComponent) {
+        if(child instanceof TextComponent) {
           queue.add((TextComponent) child);
         } else {
           produced.add(child);

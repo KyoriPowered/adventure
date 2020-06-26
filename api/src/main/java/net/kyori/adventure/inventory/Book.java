@@ -44,7 +44,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
    * @param pages the collection of pages
    * @return a book
    */
-  static Book of(final @NonNull Component title, final @NonNull Component author, final @NonNull Collection<Component> pages) {
+  static @NonNull Book of(final @NonNull Component title, final @NonNull Component author, final @NonNull Collection<Component> pages) {
     return new BookImpl(title, author, new ArrayList<>(pages));
   }
 
@@ -56,7 +56,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
    * @param pages an array of pages
    * @return a book
    */
-  static Book of(final @NonNull Component title, final @NonNull Component author, final @NonNull Component... pages) {
+  static @NonNull Book of(final @NonNull Component title, final @NonNull Component author, final @NonNull Component... pages) {
     return of(title, author, Arrays.asList(pages));
   }
 
@@ -65,7 +65,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
    *
    * @return a builder
    */
-  static Book.Builder builder() {
+  static @NonNull Builder builder() {
     return new BookImpl.Builder();
   }
 
@@ -143,7 +143,6 @@ public interface Book extends Buildable<Book, Book.Builder> {
    * A builder for a {@link Book}
    */
   interface Builder extends Buildable.AbstractBuilder<Book> {
-
     /**
      * Set the title.
      *

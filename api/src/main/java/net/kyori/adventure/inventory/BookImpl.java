@@ -111,7 +111,7 @@ import static java.util.Objects.requireNonNull;
     return this.examine(StringExaminer.simpleEscaping());
   }
 
-  static class Builder implements Book.Builder {
+  /* package */ static class Builder implements Book.Builder {
     private Component title = TextComponent.empty();
     private Component author = TextComponent.empty();
     private final List<Component> pages = new ArrayList<>();

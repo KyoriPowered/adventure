@@ -181,9 +181,9 @@ public interface Audience {
    */
   void stopSound(final @NonNull SoundStop stop);
 
-  // -----------------
-  // --- Inventory ---
-  // -----------------
+  // -------------------
+  // ---- Inventory ----
+  // -------------------
 
   /**
    * Opens a book.
