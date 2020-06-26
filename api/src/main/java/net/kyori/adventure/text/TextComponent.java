@@ -27,6 +27,10 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
+
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -563,9 +567,25 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
   @NonNull TextComponent content(final @NonNull String content);
 
   /**
+   * Finds and replaces text using a regex pattern.
+   *
+   * @param pattern a regex pattern
+   * @param replacement a function to replace each match
+   * @return a modified copy of this component
+   */
+  @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement);
+
+  /**
    * A text component builder.
    */
   interface Builder extends ComponentBuilder<TextComponent, Builder> {
+    /**
+     * Gets the plain text content.
+     *
+     * @return the plain text content
+     */
+    @NonNull String content();
+
     /**
      * Sets the plain text content.
      *

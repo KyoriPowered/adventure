@@ -25,6 +25,7 @@ package net.kyori.adventure.text;
 
 import com.google.common.collect.ImmutableSet;
 import java.util.Collections;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -98,6 +99,21 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
     final TextComponent c1 = c0.content("bar");
     assertEquals("foo", c0.content());
     assertEquals("bar", c1.content());
+  }
+
+  @Test
+  void testReplace() {
+    final TextComponent component = TextComponent.builder()
+      .content("cat says ")
+      .append(TranslatableComponent.of("cat.meow")) // or any non-text component
+      .build();
+    final TextComponent replaced = component.replace(Pattern.compile("says"), match -> match.color(NamedTextColor.DARK_PURPLE));
+    assertEquals(TextComponent.builder()
+      .content("cat ")
+      .append("says", NamedTextColor.DARK_PURPLE)
+      .append(" ")
+      .append(TranslatableComponent.of("cat.meow"))
+      .build(), replaced);
   }
 
   @Test

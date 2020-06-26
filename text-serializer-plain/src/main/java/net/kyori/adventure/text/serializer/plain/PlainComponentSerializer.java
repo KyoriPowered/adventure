@@ -34,6 +34,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A plain component serializer.
@@ -46,14 +47,15 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
    * A component serializer for plain-based serialization and deserialization.
    */
   public static final PlainComponentSerializer INSTANCE = new PlainComponentSerializer();
-  private final Function<KeybindComponent, String> keybind;
-  private final Function<TranslatableComponent, String> translatable;
+
+  private final @Nullable Function<KeybindComponent, String> keybind;
+  private final @Nullable Function<TranslatableComponent, String> translatable;
 
   public PlainComponentSerializer() {
-    this(component -> "", component -> "");
+    this(null, null);
   }
 
-  public PlainComponentSerializer(final @NonNull Function<KeybindComponent, String> keybind, final @NonNull Function<TranslatableComponent, String> translatable) {
+  public PlainComponentSerializer(final @Nullable Function<KeybindComponent, String> keybind, final @Nullable Function<TranslatableComponent, String> translatable) {
     this.keybind = keybind;
     this.translatable = translatable;
   }
@@ -72,7 +74,7 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
 
   public void serialize(final @NonNull StringBuilder sb, final @NonNull Component component) {
     if(component instanceof KeybindComponent) {
-      sb.append(this.keybind.apply((KeybindComponent) component));
+      if(this.keybind != null) sb.append(this.keybind.apply((KeybindComponent) component));
     } else if(component instanceof ScoreComponent) {
       sb.append(((ScoreComponent) component).value());
     } else if(component instanceof SelectorComponent) {
@@ -80,9 +82,9 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
     } else if(component instanceof TextComponent) {
       sb.append(((TextComponent) component).content());
     } else if(component instanceof TranslatableComponent) {
-      sb.append(this.translatable.apply((TranslatableComponent) component));
+      if (this.translatable != null) sb.append(this.translatable.apply((TranslatableComponent) component));
     } else {
-      throw new IllegalArgumentException("Don't know how to turn " + component + " into a string");
+      throw new UnsupportedOperationException("Don't know how to turn " + component.getClass().getSimpleName() + " into a string");
     }
 
     for(final Component child : component.children()) {
