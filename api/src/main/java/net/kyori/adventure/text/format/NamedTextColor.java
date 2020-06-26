@@ -29,29 +29,49 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-public enum NamedTextColor implements TextColor {
-  BLACK("black", 0x000000),
-  DARK_BLUE("dark_blue", 0x0000aa),
-  DARK_GREEN("dark_green", 0x00aa00),
-  DARK_AQUA("dark_aqua", 0x00aaaa),
-  DARK_RED("dark_red", 0xaa0000),
-  DARK_PURPLE("dark_purple", 0xaa00aa),
-  GOLD("gold", 0xffaa00),
-  GRAY("gray", 0xaaaaaa),
-  DARK_GRAY("dark_gray", 0x555555),
-  BLUE("blue", 0x5555ff),
-  GREEN("green", 0x55ff55),
-  AQUA("aqua", 0x55ffff),
-  RED("red", 0xff5555),
-  LIGHT_PURPLE("light_purple", 0xff55ff),
-  YELLOW("yellow", 0xffff55),
-  WHITE("white", 0xffffff);
+/**
+ * The named text colours in Minecraft: Java Edition.
+ */
+public final class NamedTextColor implements TextColor {
+  private static final int BLACK_VALUE = 0x000000;
+  private static final int DARK_BLUE_VALUE = 0x0000aa;
+  private static final int DARK_GREEN_VALUE = 0x00aa00;
+  private static final int DARK_AQUA_VALUE = 0x00aaaa;
+  private static final int DARK_RED_VALUE = 0xaa0000;
+  private static final int DARK_PURPLE_VALUE = 0xaa00aa;
+  private static final int GOLD_VALUE = 0xffaa00;
+  private static final int GRAY_VALUE = 0xaaaaaa;
+  private static final int DARK_GRAY_VALUE = 0x555555;
+  private static final int BLUE_VALUE = 0x5555ff;
+  private static final int GREEN_VALUE = 0x55ff55;
+  private static final int AQUA_VALUE = 0x55ffff;
+  private static final int RED_VALUE = 0xff5555;
+  private static final int LIGHT_PURPLE_VALUE = 0xff55ff;
+  private static final int YELLOW_VALUE = 0xffff55;
+  private static final int WHITE_VALUE = 0xffffff;
 
-  private static final NamedTextColor[] VALUES = NamedTextColor.values();
+  public static final NamedTextColor BLACK = new NamedTextColor("black", BLACK_VALUE);
+  public static final NamedTextColor DARK_BLUE = new NamedTextColor("dark_blue", DARK_BLUE_VALUE);
+  public static final NamedTextColor DARK_GREEN = new NamedTextColor("dark_green", DARK_GREEN_VALUE);
+  public static final NamedTextColor DARK_AQUA = new NamedTextColor("dark_aqua", DARK_AQUA_VALUE);
+  public static final NamedTextColor DARK_RED = new NamedTextColor("dark_red", DARK_RED_VALUE);
+  public static final NamedTextColor DARK_PURPLE = new NamedTextColor("dark_purple", DARK_PURPLE_VALUE);
+  public static final NamedTextColor GOLD = new NamedTextColor("gold", GOLD_VALUE);
+  public static final NamedTextColor GRAY = new NamedTextColor("gray", GRAY_VALUE);
+  public static final NamedTextColor DARK_GRAY = new NamedTextColor("dark_gray", DARK_GRAY_VALUE);
+  public static final NamedTextColor BLUE = new NamedTextColor("blue", BLUE_VALUE);
+  public static final NamedTextColor GREEN = new NamedTextColor("green", GREEN_VALUE);
+  public static final NamedTextColor AQUA = new NamedTextColor("aqua", AQUA_VALUE);
+  public static final NamedTextColor RED = new NamedTextColor("red", RED_VALUE);
+  public static final NamedTextColor LIGHT_PURPLE = new NamedTextColor("light_purple", LIGHT_PURPLE_VALUE);
+  public static final NamedTextColor YELLOW = new NamedTextColor("yellow", YELLOW_VALUE);
+  public static final NamedTextColor WHITE = new NamedTextColor("white", WHITE_VALUE);
+
+  private static final NamedTextColor[] VALUES = values();
   /**
    * An index of name to color.
    */
-  public static final Index<String, NamedTextColor> NAMES = Index.create(NamedTextColor.class, constant -> constant.name, VALUES);
+  public static final Index<String, NamedTextColor> NAMES = Index.create(constant -> constant.name, VALUES);
 
   /**
    * Gets the named color exactly matching the provided color.
@@ -60,25 +80,23 @@ public enum NamedTextColor implements TextColor {
    * @return the matched color, or null
    */
   public static @Nullable NamedTextColor ofExact(final int value) {
-    switch(value) {
-      case 0x000000: return BLACK;
-      case 0x0000aa: return DARK_BLUE;
-      case 0x00aa00: return DARK_GREEN;
-      case 0x00aaaa: return DARK_AQUA;
-      case 0xaa0000: return DARK_RED;
-      case 0xaa00aa: return DARK_PURPLE;
-      case 0xffaa00: return GOLD;
-      case 0xaaaaaa: return GRAY;
-      case 0x555555: return DARK_GRAY;
-      case 0x5555ff: return BLUE;
-      case 0x55ff55: return GREEN;
-      case 0x55ffff: return AQUA;
-      case 0xff5555: return RED;
-      case 0xff55ff: return LIGHT_PURPLE;
-      case 0xffff55: return YELLOW;
-      case 0xffffff: return WHITE;
-      default: return null;
-    }
+    if(value == BLACK_VALUE) return BLACK;
+    else if(value == DARK_BLUE_VALUE) return DARK_BLUE;
+    else if(value == DARK_GREEN_VALUE) return DARK_GREEN;
+    else if(value == DARK_AQUA_VALUE) return DARK_AQUA;
+    else if(value == DARK_RED_VALUE) return DARK_RED;
+    else if(value == DARK_PURPLE_VALUE) return DARK_PURPLE;
+    else if(value == GOLD_VALUE) return GOLD;
+    else if(value == GRAY_VALUE) return GRAY;
+    else if(value == DARK_GRAY_VALUE) return DARK_GRAY;
+    else if(value == BLUE_VALUE) return BLUE;
+    else if(value == GREEN_VALUE) return GREEN;
+    else if(value == AQUA_VALUE) return AQUA;
+    else if(value == RED_VALUE) return RED;
+    else if(value == LIGHT_PURPLE_VALUE) return LIGHT_PURPLE;
+    else if(value == YELLOW_VALUE) return YELLOW;
+    else if(value == WHITE_VALUE) return WHITE;
+    return null;
   }
 
   /**
@@ -146,5 +164,10 @@ public enum NamedTextColor implements TextColor {
   @Override
   public @NonNull String toString() {
     return this.name;
+  }
+
+  // Enum-like
+  public static @NonNull NamedTextColor[] values() {
+    return new NamedTextColor[]{BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW, WHITE};
   }
 }
