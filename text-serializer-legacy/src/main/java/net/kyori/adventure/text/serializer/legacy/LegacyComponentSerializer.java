@@ -31,6 +31,7 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A legacy component serializer.
@@ -146,7 +147,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * @param style the style to use for extracted links
      * @return this builder
      */
-    @NonNull Builder extractUrls(final @NonNull Style style);
+    @NonNull Builder extractUrls(final @Nullable Style style);
 
     /**
      * Builds the serializer.

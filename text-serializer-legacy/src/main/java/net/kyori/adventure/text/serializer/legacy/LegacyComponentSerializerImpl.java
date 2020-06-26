@@ -28,8 +28,11 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
@@ -38,9 +41,8 @@ import net.kyori.adventure.text.format.TextFormat;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import static java.util.Objects.requireNonNull;
-
 class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
+  private static final Pattern URL_PATTERN = Pattern.compile("(?:(https?)://)?([-\\w_.]+\\.\\w{2,})(/\\S*)?");
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
   private static final String LEGACY_CHARS = "0123456789abcdefklmnor";
   private static final List<TextFormat> FORMATS;
@@ -57,17 +59,19 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
   }
 
-  static final LegacyComponentSerializer SECTION_SERIALIZER = new LegacyComponentSerializerImpl(SECTION_CHAR, HEX_CHAR, UrlClickEventExtractor.NO_OP);
-  static final LegacyComponentSerializer AMPERSAND_SERIALIZER = new LegacyComponentSerializerImpl(AMPERSAND_CHAR, HEX_CHAR, UrlClickEventExtractor.NO_OP);
+  static final LegacyComponentSerializer SECTION_SERIALIZER = new LegacyComponentSerializerImpl(SECTION_CHAR, HEX_CHAR, null, false);
+  static final LegacyComponentSerializer AMPERSAND_SERIALIZER = new LegacyComponentSerializerImpl(AMPERSAND_CHAR, HEX_CHAR, null, false);
 
   private final char character;
   private final char hexCharacter;
-  private final UrlClickEventExtractor urlExtractor;
+  private final Style urlStyle;
+  private final boolean urlLink;
 
-  LegacyComponentSerializerImpl(char character, char hexCharacter, UrlClickEventExtractor urlExtractor) {
+  LegacyComponentSerializerImpl(char character, char hexCharacter, final @Nullable Style urlStyle, final boolean urlLink) {
     this.character = character;
     this.hexCharacter = hexCharacter;
-    this.urlExtractor = urlExtractor;
+    this.urlStyle = urlStyle;
+    this.urlLink = urlLink;
   }
 
   private @Nullable TextFormat fromLegacyCode(final char legacy, final String input, final int pos) {
@@ -78,6 +82,10 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     return index == -1 ? null : FORMATS.get(index);
   }
 
+  private static boolean isHexTextColor(final TextFormat format) {
+    return format instanceof TextColor && !(format instanceof NamedTextColor);
+  }
+
   private String toLegacyCode(final TextFormat format) {
     if(isHexTextColor(format)) {
       return this.hexCharacter + String.format("%06x", ((TextColor) format).value());
@@ -86,15 +94,16 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     return Character.toString(LEGACY_CHARS.charAt(index));
   }
 
-  private static boolean isHexTextColor(final TextFormat format) {
-    return format instanceof TextColor && !(format instanceof NamedTextColor);
+  private TextComponent extractUrl(final TextComponent component) {
+    return !this.urlLink ? component : component.replace(URL_PATTERN, url ->
+      (this.urlStyle == null ? url : url.style(this.urlStyle)).clickEvent(ClickEvent.openUrl(url.content())));
   }
 
   @Override
   public @NonNull TextComponent deserialize(final @NonNull String input) {
     int next = input.lastIndexOf(this.character, input.length() - 2);
     if(next == -1) {
-      return this.urlExtractor.extract(TextComponent.of(input));
+      return extractUrl(TextComponent.of(input));
     }
 
     final List<TextComponent> parts = new ArrayList<>();
@@ -137,7 +146,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     Collections.reverse(parts);
-    return this.urlExtractor.extract(TextComponent.builder(pos > 0 ? input.substring(0, pos) : "").append(parts).build());
+    return extractUrl(TextComponent.builder(pos > 0 ? input.substring(0, pos) : "").append(parts).build());
   }
 
   @Override
@@ -300,7 +309,8 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   static final class BuilderImpl implements Builder {
     private char character = LegacyComponentSerializer.SECTION_CHAR;
     private char hexCharacter = LegacyComponentSerializer.HEX_CHAR;
-    private UrlClickEventExtractor urlExtractor = UrlClickEventExtractor.NO_OP;
+    private Style urlStyle = null;
+    private boolean urlLink = false;
 
     BuilderImpl() {
 
@@ -309,7 +319,8 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     BuilderImpl(LegacyComponentSerializerImpl serializer) {
       this.character = serializer.character;
       this.hexCharacter = serializer.hexCharacter;
-      this.urlExtractor = serializer.urlExtractor;
+      this.urlStyle = serializer.urlStyle;
+      this.urlLink = serializer.urlLink;
     }
 
     @Override
@@ -326,20 +337,19 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
     @Override
     public @NonNull Builder extractUrls() {
-      this.urlExtractor = UrlClickEventExtractor.NO_STYLE;
-      return this;
+      return extractUrls(null);
     }
 
     @Override
-    public @NonNull Builder extractUrls(@NonNull Style style) {
-      requireNonNull(style, "style");
-      this.urlExtractor = UrlClickEventExtractor.withStyle(style);
+    public @NonNull Builder extractUrls(@Nullable Style style) {
+      this.urlLink = true;
+      this.urlStyle = style;
       return this;
     }
 
     @Override
     public @NonNull LegacyComponentSerializer build() {
-      return new LegacyComponentSerializerImpl(this.character, this.hexCharacter, this.urlExtractor);
+      return new LegacyComponentSerializerImpl(this.character, this.hexCharacter, this.urlStyle, this.urlLink);
     }
   }
 }
