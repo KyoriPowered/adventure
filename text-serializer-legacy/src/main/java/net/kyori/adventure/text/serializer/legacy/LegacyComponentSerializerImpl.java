@@ -45,6 +45,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   private static final Pattern URL_PATTERN = Pattern.compile("(?:(https?)://)?([-\\w_.]+\\.\\w{2,})(/\\S*)?");
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
   private static final String LEGACY_CHARS = "0123456789abcdefklmnor";
+  private static final char LEGACY_BUNGEE_HEX_CHAR = 'x';
   private static final List<TextFormat> FORMATS;
   static {
     final List<TextFormat> formats = new ArrayList<>();
@@ -59,21 +60,23 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
   }
 
-  static final LegacyComponentSerializer SECTION_SERIALIZER = new LegacyComponentSerializerImpl(SECTION_CHAR, HEX_CHAR, null, false, true);
-  static final LegacyComponentSerializer AMPERSAND_SERIALIZER = new LegacyComponentSerializerImpl(AMPERSAND_CHAR, HEX_CHAR, null, false, true);
+  static final LegacyComponentSerializer SECTION_SERIALIZER = new LegacyComponentSerializerImpl(SECTION_CHAR, HEX_CHAR, null, false, true, false);
+  static final LegacyComponentSerializer AMPERSAND_SERIALIZER = new LegacyComponentSerializerImpl(AMPERSAND_CHAR, HEX_CHAR, null, false, true, false);
 
   private final char character;
   private final char hexCharacter;
   private final Style urlStyle;
   private final boolean urlLink;
   private final boolean colorDownsample;
+  private final boolean terribleHexFormat;
 
-  LegacyComponentSerializerImpl(final char character, final char hexCharacter, final @Nullable Style urlStyle, final boolean urlLink, final boolean colorDownsample) {
+  LegacyComponentSerializerImpl(final char character, final char hexCharacter, final @Nullable Style urlStyle, final boolean urlLink, final boolean colorDownsample, final boolean terribleHexFormat) {
     this.character = character;
     this.hexCharacter = hexCharacter;
     this.urlStyle = urlStyle;
     this.urlLink = urlLink;
     this.colorDownsample = colorDownsample;
+    this.terribleHexFormat = terribleHexFormat;
   }
 
   private @Nullable TextFormat fromLegacyCode(final char legacy, final String input, final int pos) {
@@ -90,10 +93,20 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
   private String toLegacyCode(TextFormat format) {
     if(isHexTextColor(format)) {
+      final TextColor color = (TextColor) format;
       if(this.colorDownsample) {
-        format = NamedTextColor.nearestTo((TextColor) format);
+        format = NamedTextColor.nearestTo(color);
       } else {
-        return this.hexCharacter + String.format("%06x", ((TextColor) format).value());
+        final String hex = String.format("%06x", color.value());
+        if(this.terribleHexFormat) {
+          final StringBuilder legacy = new StringBuilder(String.valueOf(LEGACY_BUNGEE_HEX_CHAR));
+          for(char c : hex.toCharArray()) {
+            legacy.append(this.character).append(c);
+          }
+          return legacy.toString();
+        } else {
+          return this.hexCharacter + hex;
+        }
       }
     }
     final int index = FORMATS.indexOf(format);
@@ -317,6 +330,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     private Style urlStyle = null;
     private boolean urlLink = false;
     private boolean colorDownsample = true;
+    private boolean terribleHexFormat = false;
 
     BuilderImpl() {
 
@@ -361,8 +375,14 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     @Override
+    public @NonNull Builder useXRepeatedCodeHexFormat() {
+      this.terribleHexFormat = true;
+      return this;
+    }
+
+    @Override
     public @NonNull LegacyComponentSerializer build() {
-      return new LegacyComponentSerializerImpl(this.character, this.hexCharacter, this.urlStyle, this.urlLink, this.colorDownsample);
+      return new LegacyComponentSerializerImpl(this.character, this.hexCharacter, this.urlStyle, this.urlLink, this.colorDownsample, this.terribleHexFormat);
     }
   }
 }

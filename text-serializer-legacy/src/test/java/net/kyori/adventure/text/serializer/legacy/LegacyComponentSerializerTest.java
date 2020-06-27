@@ -162,4 +162,10 @@ class LegacyComponentSerializerTest {
       .build();
     assertEquals(component, LegacyComponentSerializer.builder().character('&').hexColors().build().deserialize("&#ffb6c1pretty&#ff69b4&lin&#ffc0cbpink"));
   }
+
+  @Test
+  void testToLegacyWithHexColorTerribleFormat() {
+    final TextComponent c0 = TextComponent.of("Kittens!", TextColor.of(0xffefd5));
+    assertEquals("§x§f§f§e§f§d§5Kittens!", LegacyComponentSerializer.builder().hexColors().useXRepeatedCodeHexFormat().build().serialize(c0));
+  }
 }
