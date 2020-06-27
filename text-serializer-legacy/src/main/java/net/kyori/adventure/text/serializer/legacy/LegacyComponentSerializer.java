@@ -159,13 +159,21 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
     @NonNull Builder hexColors();
 
     /**
-     * Sets that the serializer should use the '&amp;x' repeated code format when serializing hex colors.
+     * Sets that the serializer should use the '&amp;x' repeated code format when serializing hex
+     * colors.
      *
      * <p>This is the format adopted by the BungeeCord (and by usage, Spigot) text API.</p>
      *
+     * <p>The format is hard to manipulate and read, and really, is horrible in every way. Support
+     * is provided for it, only to allow plugin developers to use this library alongside parts of
+     * the Spigot API which expect legacy strings in this format.</p>
+     *
+     * <p>It is recommended to use only when absolutely necessary, and when no better alternatives
+     * are available.</p>
+     *
      * @return this builder
      */
-    @NonNull Builder useXRepeatedCodeHexFormat();
+    @NonNull Builder useUnusualXRepeatedCharacterHexFormat();
 
     /**
      * Builds the serializer.

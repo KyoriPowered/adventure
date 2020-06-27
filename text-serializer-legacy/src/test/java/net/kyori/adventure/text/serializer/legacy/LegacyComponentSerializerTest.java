@@ -166,6 +166,6 @@ class LegacyComponentSerializerTest {
   @Test
   void testToLegacyWithHexColorTerribleFormat() {
     final TextComponent c0 = TextComponent.of("Kittens!", TextColor.of(0xffefd5));
-    assertEquals("§x§f§f§e§f§d§5Kittens!", LegacyComponentSerializer.builder().hexColors().useXRepeatedCodeHexFormat().build().serialize(c0));
+    assertEquals("§x§f§f§e§f§d§5Kittens!", LegacyComponentSerializer.builder().hexColors().useUnusualXRepeatedCharacterHexFormat().build().serialize(c0));
   }
 }

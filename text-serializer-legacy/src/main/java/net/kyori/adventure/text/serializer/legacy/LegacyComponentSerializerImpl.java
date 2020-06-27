@@ -68,15 +68,15 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   private final Style urlStyle;
   private final boolean urlLink;
   private final boolean colorDownsample;
-  private final boolean terribleHexFormat;
+  private final boolean useTerriblyStupidHexFormat; // (╯°□°)╯︵ ┻━┻
 
-  LegacyComponentSerializerImpl(final char character, final char hexCharacter, final @Nullable Style urlStyle, final boolean urlLink, final boolean colorDownsample, final boolean terribleHexFormat) {
+  LegacyComponentSerializerImpl(final char character, final char hexCharacter, final @Nullable Style urlStyle, final boolean urlLink, final boolean colorDownsample, final boolean useTerriblyStupidHexFormat) {
     this.character = character;
     this.hexCharacter = hexCharacter;
     this.urlStyle = urlStyle;
     this.urlLink = urlLink;
     this.colorDownsample = colorDownsample;
-    this.terribleHexFormat = terribleHexFormat;
+    this.useTerriblyStupidHexFormat = useTerriblyStupidHexFormat;
   }
 
   private @Nullable TextFormat fromLegacyCode(final char legacy, final String input, final int pos) {
@@ -98,13 +98,15 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         format = NamedTextColor.nearestTo(color);
       } else {
         final String hex = String.format("%06x", color.value());
-        if(this.terribleHexFormat) {
+        if(this.useTerriblyStupidHexFormat) {
+          // ah yes, wonderful. A 14 digit long completely unreadable string.
           final StringBuilder legacy = new StringBuilder(String.valueOf(LEGACY_BUNGEE_HEX_CHAR));
           for(char c : hex.toCharArray()) {
             legacy.append(this.character).append(c);
           }
           return legacy.toString();
         } else {
+          // this is a bit nicer, hey?
           return this.hexCharacter + hex;
         }
       }
@@ -330,7 +332,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     private Style urlStyle = null;
     private boolean urlLink = false;
     private boolean colorDownsample = true;
-    private boolean terribleHexFormat = false;
+    private boolean useTerriblyStupidHexFormat = false;
 
     BuilderImpl() {
 
@@ -375,14 +377,14 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     @Override
-    public @NonNull Builder useXRepeatedCodeHexFormat() {
-      this.terribleHexFormat = true;
+    public @NonNull Builder useUnusualXRepeatedCharacterHexFormat() {
+      this.useTerriblyStupidHexFormat = true; // :(
       return this;
     }
 
     @Override
     public @NonNull LegacyComponentSerializer build() {
-      return new LegacyComponentSerializerImpl(this.character, this.hexCharacter, this.urlStyle, this.urlLink, this.colorDownsample, this.terribleHexFormat);
+      return new LegacyComponentSerializerImpl(this.character, this.hexCharacter, this.urlStyle, this.urlLink, this.colorDownsample, this.useTerriblyStupidHexFormat);
     }
   }
 }
