@@ -59,21 +59,21 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
   }
 
-  static final LegacyComponentSerializer SECTION_SERIALIZER = new LegacyComponentSerializerImpl(SECTION_CHAR, HEX_CHAR, null, false, false);
-  static final LegacyComponentSerializer AMPERSAND_SERIALIZER = new LegacyComponentSerializerImpl(AMPERSAND_CHAR, HEX_CHAR, null, false, false);
+  static final LegacyComponentSerializer SECTION_SERIALIZER = new LegacyComponentSerializerImpl(SECTION_CHAR, HEX_CHAR, null, false, true);
+  static final LegacyComponentSerializer AMPERSAND_SERIALIZER = new LegacyComponentSerializerImpl(AMPERSAND_CHAR, HEX_CHAR, null, false, true);
 
   private final char character;
   private final char hexCharacter;
   private final Style urlStyle;
   private final boolean urlLink;
-  private final boolean downsample;
+  private final boolean colorDownsample;
 
-  LegacyComponentSerializerImpl(final char character, final char hexCharacter, final @Nullable Style urlStyle, final boolean urlLink, final boolean downsample) {
+  LegacyComponentSerializerImpl(final char character, final char hexCharacter, final @Nullable Style urlStyle, final boolean urlLink, final boolean colorDownsample) {
     this.character = character;
     this.hexCharacter = hexCharacter;
     this.urlStyle = urlStyle;
     this.urlLink = urlLink;
-    this.downsample = downsample;
+    this.colorDownsample = colorDownsample;
   }
 
   private @Nullable TextFormat fromLegacyCode(final char legacy, final String input, final int pos) {
@@ -90,7 +90,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
   private String toLegacyCode(TextFormat format) {
     if(isHexTextColor(format)) {
-      if(this.downsample) {
+      if(this.colorDownsample) {
         format = NamedTextColor.nearestTo((TextColor) format);
       } else {
         return this.hexCharacter + String.format("%06x", ((TextColor) format).value());
@@ -316,7 +316,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     private char hexCharacter = LegacyComponentSerializer.HEX_CHAR;
     private Style urlStyle = null;
     private boolean urlLink = false;
-    private boolean downsample = false;
+    private boolean colorDownsample = true;
 
     BuilderImpl() {
 
@@ -327,6 +327,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       this.hexCharacter = serializer.hexCharacter;
       this.urlStyle = serializer.urlStyle;
       this.urlLink = serializer.urlLink;
+      this.colorDownsample = serializer.colorDownsample;
     }
 
     @Override
@@ -354,14 +355,14 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     @Override
-    public @NonNull Builder downsampleColors() {
-      this.downsample = true;
+    public @NonNull Builder hexColors() {
+      this.colorDownsample = false;
       return this;
     }
 
     @Override
     public @NonNull LegacyComponentSerializer build() {
-      return new LegacyComponentSerializerImpl(this.character, this.hexCharacter, this.urlStyle, this.urlLink, this.downsample);
+      return new LegacyComponentSerializerImpl(this.character, this.hexCharacter, this.urlStyle, this.urlLink, this.colorDownsample);
     }
   }
 }

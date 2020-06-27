@@ -150,12 +150,13 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
     @NonNull Builder extractUrls(final @Nullable Style style);
 
     /**
-     * Set that the builder should downsample any colors to their closest
-     * {@link net.kyori.adventure.text.format.NamedTextColor named color}.
+     * Sets that the serializer should support hex colors.
+     *
+     * <p>Otherwise, hex colors are downsampled to the nearest named color.</p>
      *
      * @return this builder
      */
-    @NonNull Builder downsampleColors();
+    @NonNull Builder hexColors();
 
     /**
      * Builds the serializer.

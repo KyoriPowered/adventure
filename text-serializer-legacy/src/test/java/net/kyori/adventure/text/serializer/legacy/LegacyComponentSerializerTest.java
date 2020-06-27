@@ -144,13 +144,13 @@ class LegacyComponentSerializerTest {
   @Test
   void testToLegacyWithHexColor() {
     final TextComponent c0 = TextComponent.of("Kittens!", TextColor.of(0xffefd5));
-    assertEquals("§#ffefd5Kittens!", LegacyComponentSerializer.legacy().serialize(c0));
+    assertEquals("§#ffefd5Kittens!", LegacyComponentSerializer.builder().hexColors().build().serialize(c0));
   }
 
   @Test
   void testToLegacyWithHexColorDownsampling() {
     final TextComponent comp = TextComponent.of("purr", TextColor.of(0xff0000));
-    assertEquals("§4purr", LegacyComponentSerializer.builder().downsampleColors().build().serialize(comp));
+    assertEquals("§4purr", LegacyComponentSerializer.builder().build().serialize(comp));
   }
 
   @Test
@@ -160,6 +160,6 @@ class LegacyComponentSerializerTest {
       .append(TextComponent.of("in").color(TextColor.fromHexString("#ff69b4")).decoration(TextDecoration.BOLD, TextDecoration.State.TRUE))
       .append(TextComponent.of("pink").color(TextColor.fromHexString("#ffc0cb")))
       .build();
-    assertEquals(component, LegacyComponentSerializer.legacy('&').deserialize("&#ffb6c1pretty&#ff69b4&lin&#ffc0cbpink"));
+    assertEquals(component, LegacyComponentSerializer.builder().character('&').hexColors().build().deserialize("&#ffb6c1pretty&#ff69b4&lin&#ffc0cbpink"));
   }
 }
