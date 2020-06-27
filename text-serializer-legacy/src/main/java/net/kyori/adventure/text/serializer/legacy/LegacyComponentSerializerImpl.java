@@ -59,19 +59,21 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
   }
 
-  static final LegacyComponentSerializer SECTION_SERIALIZER = new LegacyComponentSerializerImpl(SECTION_CHAR, HEX_CHAR, null, false);
-  static final LegacyComponentSerializer AMPERSAND_SERIALIZER = new LegacyComponentSerializerImpl(AMPERSAND_CHAR, HEX_CHAR, null, false);
+  static final LegacyComponentSerializer SECTION_SERIALIZER = new LegacyComponentSerializerImpl(SECTION_CHAR, HEX_CHAR, null, false, false);
+  static final LegacyComponentSerializer AMPERSAND_SERIALIZER = new LegacyComponentSerializerImpl(AMPERSAND_CHAR, HEX_CHAR, null, false, false);
 
   private final char character;
   private final char hexCharacter;
   private final Style urlStyle;
   private final boolean urlLink;
+  private final boolean downsample;
 
-  LegacyComponentSerializerImpl(final char character, final char hexCharacter, final @Nullable Style urlStyle, final boolean urlLink) {
+  LegacyComponentSerializerImpl(final char character, final char hexCharacter, final @Nullable Style urlStyle, final boolean urlLink, final boolean downsample) {
     this.character = character;
     this.hexCharacter = hexCharacter;
     this.urlStyle = urlStyle;
     this.urlLink = urlLink;
+    this.downsample = downsample;
   }
 
   private @Nullable TextFormat fromLegacyCode(final char legacy, final String input, final int pos) {
@@ -86,9 +88,13 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     return format instanceof TextColor && !(format instanceof NamedTextColor);
   }
 
-  private String toLegacyCode(final TextFormat format) {
+  private String toLegacyCode(TextFormat format) {
     if(isHexTextColor(format)) {
-      return this.hexCharacter + String.format("%06x", ((TextColor) format).value());
+      if(this.downsample) {
+        format = NamedTextColor.nearestTo((TextColor) format);
+      } else {
+        return this.hexCharacter + String.format("%06x", ((TextColor) format).value());
+      }
     }
     final int index = FORMATS.indexOf(format);
     return Character.toString(LEGACY_CHARS.charAt(index));
@@ -310,6 +316,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     private char hexCharacter = LegacyComponentSerializer.HEX_CHAR;
     private Style urlStyle = null;
     private boolean urlLink = false;
+    private boolean downsample = false;
 
     BuilderImpl() {
 
@@ -347,8 +354,14 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     @Override
+    public @NonNull Builder downsampleColors() {
+      this.downsample = true;
+      return this;
+    }
+
+    @Override
     public @NonNull LegacyComponentSerializer build() {
-      return new LegacyComponentSerializerImpl(this.character, this.hexCharacter, this.urlStyle, this.urlLink);
+      return new LegacyComponentSerializerImpl(this.character, this.hexCharacter, this.urlStyle, this.urlLink, this.downsample);
     }
   }
 }

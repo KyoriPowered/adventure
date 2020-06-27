@@ -148,6 +148,12 @@ class LegacyComponentSerializerTest {
   }
 
   @Test
+  void testToLegacyWithHexColorDownsampling() {
+    final TextComponent comp = TextComponent.of("purr", TextColor.of(0xff0000));
+    assertEquals("§4purr", LegacyComponentSerializer.builder().downsampleColors().build().serialize(comp));
+  }
+
+  @Test
   void testFromLegacyWithHexColor() {
     final TextComponent component = TextComponent.builder("")
       .append(TextComponent.of("pretty").color(TextColor.fromHexString("#ffb6c1")))
