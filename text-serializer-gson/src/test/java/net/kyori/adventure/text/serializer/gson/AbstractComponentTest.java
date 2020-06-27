@@ -34,11 +34,11 @@ abstract class AbstractComponentTest<C extends Component> extends AbstractSerial
   @Override
   @SuppressWarnings("unchecked")
   C deserialize(final JsonElement json) {
-    return GsonComponentSerializer.GSON.fromJson(json, (Class<C>) this.type.getRawType());
+    return GsonComponentSerializerImpl.INSTANCE.serializer().fromJson(json, (Class<C>) this.type.getRawType());
   }
 
   @Override
   JsonElement serialize(final C object) {
-    return GsonComponentSerializer.GSON.toJsonTree(object);
+    return GsonComponentSerializerImpl.INSTANCE.serializer().toJsonTree(object);
   }
 }

@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.util.Optional;
 import net.kyori.adventure.util.Index;
 
-public final class IndexedSerializer<E> extends TypeAdapter<E> {
+/* package */ final class IndexedSerializer<E> extends TypeAdapter<E> {
   private final String name;
   private final Index<String, E> map;
   

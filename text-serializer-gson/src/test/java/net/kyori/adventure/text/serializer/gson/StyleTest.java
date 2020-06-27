@@ -46,7 +46,7 @@ class StyleTest extends AbstractSerializeDeserializeTest<Style> {
 
   @Test
   void testWithDecorationAsColor() {
-    final Style s0 = GsonComponentSerializer.GSON.fromJson(AbstractComponentTest.object(object -> {
+    final Style s0 = GsonComponentSerializerImpl.INSTANCE.serializer().fromJson(AbstractComponentTest.object(object -> {
       object.addProperty(StyleSerializer.COLOR, TextDecoration.NAMES.key(TextDecoration.BOLD));
     }), Style.class);
     assertNull(s0.color());
@@ -55,7 +55,7 @@ class StyleTest extends AbstractSerializeDeserializeTest<Style> {
 
   @Test
   void testWithResetAsColor() {
-    final Style s0 = GsonComponentSerializer.GSON.fromJson(AbstractComponentTest.object(object -> {
+    final Style s0 = GsonComponentSerializerImpl.INSTANCE.serializer().fromJson(AbstractComponentTest.object(object -> {
       object.addProperty(StyleSerializer.COLOR, "reset");
     }), Style.class);
     assertNull(s0.color());
@@ -156,11 +156,11 @@ class StyleTest extends AbstractSerializeDeserializeTest<Style> {
 
   @Override
   Style deserialize(final JsonElement json) {
-    return GsonComponentSerializer.GSON.fromJson(json, Style.class);
+    return GsonComponentSerializerImpl.INSTANCE.serializer().fromJson(json, Style.class);
   }
 
   @Override
   JsonElement serialize(final Style object) {
-    return GsonComponentSerializer.GSON.toJsonTree(object);
+    return GsonComponentSerializerImpl.INSTANCE.serializer().toJsonTree(object);
   }
 }

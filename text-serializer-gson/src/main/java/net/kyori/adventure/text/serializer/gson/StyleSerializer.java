@@ -40,7 +40,7 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
-public final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<Style> {
+/* package */ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<Style> {
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
 
   static final String FONT = "font";
