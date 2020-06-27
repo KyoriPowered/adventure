@@ -35,7 +35,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
   final String nbtPath;
   final boolean interpret;
 
-  NBTComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final String nbtPath, final boolean interpret) {
+  NBTComponentImpl(final @NonNull List<? extends ComponentLike> children, final @NonNull Style style, final String nbtPath, final boolean interpret) {
     super(children, style);
     this.nbtPath = nbtPath;
     this.interpret = interpret;

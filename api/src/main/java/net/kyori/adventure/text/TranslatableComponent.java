@@ -239,7 +239,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param args the translation arguments
    * @return this component
    */
-  @NonNull TranslatableComponent args(final @NonNull Component@NonNull... args);
+  @NonNull TranslatableComponent args(final @NonNull ComponentLike@NonNull... args);
 
   /**
    * Sets the translation arguments for this component.
@@ -247,7 +247,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param args the translation arguments
    * @return this component
    */
-  @NonNull TranslatableComponent args(final @NonNull List<? extends Component> args);
+  @NonNull TranslatableComponent args(final @NonNull List<? extends ComponentLike> args);
 
   /**
    * A text component builder.

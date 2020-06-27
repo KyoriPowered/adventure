@@ -41,7 +41,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @param <C> the component type
  * @param <B> the builder type
  */
-public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends Buildable.AbstractBuilder<C> {
+public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends Buildable.AbstractBuilder<C>, ComponentLike {
   /**
    * Appends a text component to this component.
    *
@@ -97,6 +97,16 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
   /**
    * Appends a component to this component.
    *
+   * @param component the component to append
+   * @return this builder
+   */
+  default @NonNull B append(final @NonNull ComponentLike component) {
+    return this.append(component.asComponent());
+  }
+
+  /**
+   * Appends a component to this component.
+   *
    * @param builder the component to append
    * @return this builder
    */
@@ -118,7 +128,15 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param components the components to append
    * @return this builder
    */
-  @NonNull B append(final @NonNull Iterable<? extends Component> components);
+  @NonNull B append(final @NonNull ComponentLike@NonNull... components);
+
+  /**
+   * Appends components to this component.
+   *
+   * @param components the components to append
+   * @return this builder
+   */
+  @NonNull B append(final @NonNull Iterable<? extends ComponentLike> components);
 
   /**
    * Applies an action to this builder.
@@ -297,4 +315,9 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    */
   @Override
   @NonNull C build();
+
+  @Override
+  default @NonNull Component asComponent() {
+    return this.build();
+  }
 }

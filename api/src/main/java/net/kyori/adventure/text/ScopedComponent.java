@@ -42,7 +42,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public interface ScopedComponent<C extends Component> extends Component {
   @Override
-  @NonNull C children(final @NonNull List<Component> children);
+  @NonNull C children(final @NonNull List<? extends ComponentLike> children);
 
   @Override
   @NonNull C style(final @NonNull Style style);
@@ -81,6 +81,12 @@ public interface ScopedComponent<C extends Component> extends Component {
     newChildren.addAll(oldChildren);
     newChildren.add(component);
     return this.children(newChildren);
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  default @NonNull C append(final @NonNull ComponentLike component) {
+    return (C) Component.super.append(component);
   }
 
   @Override

@@ -34,7 +34,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /* package */ final class EntityNBTComponentImpl extends NBTComponentImpl<EntityNBTComponent, EntityNBTComponent.Builder> implements EntityNBTComponent {
   private final String selector;
 
-  EntityNBTComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final String nbtPath, final boolean interpret, final String selector) {
+  EntityNBTComponentImpl(final @NonNull List<? extends ComponentLike> children, final @NonNull Style style, final String nbtPath, final boolean interpret, final String selector) {
     super(children, style, nbtPath, interpret);
     this.selector = selector;
   }
@@ -63,7 +63,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
   }
 
   @Override
-  public @NonNull EntityNBTComponent children(final @NonNull List<Component> children) {
+  public @NonNull EntityNBTComponent children(final @NonNull List<? extends ComponentLike> children) {
     return new EntityNBTComponentImpl(children, this.style, this.nbtPath, this.interpret, this.selector);
   }
 

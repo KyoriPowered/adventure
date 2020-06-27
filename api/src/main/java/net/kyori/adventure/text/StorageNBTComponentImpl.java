@@ -36,7 +36,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /* package */ final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent, StorageNBTComponent.Builder> implements StorageNBTComponent {
   private final Key storage;
 
-  protected StorageNBTComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final String nbtPath, final boolean interpret, final Key storage) {
+  protected StorageNBTComponentImpl(final @NonNull List<? extends ComponentLike> children, final @NonNull Style style, final String nbtPath, final boolean interpret, final Key storage) {
     super(children, style, nbtPath, interpret);
     this.storage = storage;
   }
@@ -65,7 +65,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
   }
 
   @Override
-  public @NonNull StorageNBTComponent children(final @NonNull List<Component> children) {
+  public @NonNull StorageNBTComponent children(final @NonNull List<? extends ComponentLike> children) {
     return new StorageNBTComponentImpl(children, this.style, this.nbtPath, this.interpret, this.storage);
   }
 

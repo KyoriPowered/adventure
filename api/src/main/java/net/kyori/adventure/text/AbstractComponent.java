@@ -39,19 +39,21 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * An abstract implementation of a text component.
  */
 public abstract class AbstractComponent implements Component, Examinable {
-  /**
-   * An empty, unmodifiable, list of components.
-   */
-  protected static final List<Component> EMPTY_COMPONENT_LIST = Collections.emptyList();
-
-  /*
-   * We do not need to create a new list if the one we are copying is empty - we can
-   * simply just return our known-empty list instead.
-   */
-  /* package */ static List<Component> unmodifiableCopy(final List<? extends Component> list) {
-    return list.isEmpty()
-      ? EMPTY_COMPONENT_LIST
-      : Collections.unmodifiableList(new ArrayList<>(list));
+  /* package */ static List<Component> asComponents(final List<? extends ComponentLike> list) {
+    if(list.isEmpty()) {
+      // We do not need to create a new list if the one we are copying is empty - we can
+      // simply just return our known-empty list instead.
+      return Collections.emptyList();
+    }
+    final List<Component> components = new ArrayList<>(list.size());
+    for(int i = 0, size = list.size(); i < size; i++) {
+      final ComponentLike like = list.get(i);
+      final Component component = like.asComponent();
+      if(component != TextComponent.empty()) {
+        components.add(component);
+      }
+    }
+    return Collections.unmodifiableList(components);
   }
 
   /**
@@ -63,8 +65,8 @@ public abstract class AbstractComponent implements Component, Examinable {
    */
   protected final Style style;
 
-  protected AbstractComponent(final @NonNull List<Component> children, final @NonNull Style style) {
-    this.children = unmodifiableCopy(children);
+  protected AbstractComponent(final @NonNull List<? extends ComponentLike> children, final @NonNull Style style) {
+    this.children = asComponents(children);
     this.style = style;
   }
 

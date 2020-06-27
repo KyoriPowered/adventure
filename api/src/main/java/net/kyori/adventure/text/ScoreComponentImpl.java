@@ -38,7 +38,7 @@ import static java.util.Objects.requireNonNull;
   private final String objective;
   private final @Nullable String value;
 
-  ScoreComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String name, final @NonNull String objective, final @Nullable String value) {
+  ScoreComponentImpl(final @NonNull List<? extends ComponentLike> children, final @NonNull Style style, final @NonNull String name, final @NonNull String objective, final @Nullable String value) {
     super(children, style);
     this.name = name;
     this.objective = objective;
@@ -79,7 +79,7 @@ import static java.util.Objects.requireNonNull;
   }
 
   @Override
-  public @NonNull ScoreComponent children(final @NonNull List<Component> children) {
+  public @NonNull ScoreComponent children(final @NonNull List<? extends ComponentLike> children) {
     return new ScoreComponentImpl(children, this.style, this.name, this.objective, this.value);
   }
 

@@ -24,6 +24,7 @@
 package net.kyori.adventure.text;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
@@ -44,13 +45,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @param <B> the builder type
  */
 /* package */ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> implements ComponentBuilder<C, B> {
-  /**
-   * The list of children.
-   *
-   * <p>This list is set to {@link AbstractComponent#EMPTY_COMPONENT_LIST an empty list of components}
-   * by default to prevent unnecessary list creation for components with no children.</p>
-   */
-  protected List<Component> children = AbstractComponent.EMPTY_COMPONENT_LIST;
+  // We use an empty list by default to prevent unnecessary list creation for components with no children
+  protected List<Component> children = Collections.emptyList();
   /*
    * We maintain two separate fields here - a style, and style builder. If we're creating this component builder from
    * another component, or someone provides a style via style(Style), then we don't need a builder - unless someone later
@@ -106,9 +102,27 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NonNull B append(final @NonNull Iterable<? extends Component> components) {
+  public @NonNull B append(final @NonNull ComponentLike@NonNull... components) {
     boolean prepared = false;
-    for(final Component component : components) {
+    for(int i = 0, length = components.length; i < length; i++) {
+      final Component component = components[i].asComponent();
+      if(component != TextComponent.empty()) {
+        if(!prepared) {
+          this.prepareChildren();
+          prepared = true;
+        }
+        this.children.add(component);
+      }
+    }
+    return (B) this;
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public @NonNull B append(final @NonNull Iterable<? extends ComponentLike> components) {
+    boolean prepared = false;
+    for(final ComponentLike like : components) {
+      final Component component = like.asComponent();
       if(component != TextComponent.empty()) {
         if(!prepared) {
           this.prepareChildren();
@@ -121,7 +135,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
   }
 
   private void prepareChildren() {
-    if(this.children == AbstractComponent.EMPTY_COMPONENT_LIST) {
+    if(this.children == Collections.<Component>emptyList()) {
       this.children = new ArrayList<>();
     }
   }
@@ -130,7 +144,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
   @SuppressWarnings("unchecked")
   public @NonNull B applyDeep(final @NonNull Consumer<? super ComponentBuilder<?, ?>> consumer) {
     this.apply(consumer);
-    if(this.children == AbstractComponent.EMPTY_COMPONENT_LIST) {
+    if(this.children == Collections.<Component>emptyList()) {
       return (B) this;
     }
     final ListIterator<Component> it = this.children.listIterator();
@@ -149,7 +163,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
   @Override
   @SuppressWarnings("unchecked")
   public @NonNull B mapChildren(final @NonNull Function<BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function) {
-    if(this.children == AbstractComponent.EMPTY_COMPONENT_LIST) {
+    if(this.children == Collections.<Component>emptyList()) {
       return (B) this;
     }
     final ListIterator<Component> it = this.children.listIterator();
@@ -170,7 +184,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
   @Override
   @SuppressWarnings("unchecked")
   public @NonNull B mapChildrenDeep(final @NonNull Function<BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function) {
-    if(this.children == AbstractComponent.EMPTY_COMPONENT_LIST) {
+    if(this.children == Collections.<Component>emptyList()) {
       return (B) this;
     }
     final ListIterator<Component> it = this.children.listIterator();

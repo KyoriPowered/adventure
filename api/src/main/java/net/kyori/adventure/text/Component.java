@@ -38,7 +38,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  * A text component.
  */
-public interface Component {
+public interface Component extends ComponentLike {
   /**
    * Gets the unmodifiable list of children.
    *
@@ -54,7 +54,7 @@ public interface Component {
    * @param children the children
    * @return the unmodifiable list of children
    */
-  @NonNull Component children(final @NonNull List<Component> children);
+  @NonNull Component children(final @NonNull List<? extends ComponentLike> children);
 
   /**
    * Checks if this component contains a component.
@@ -99,6 +99,16 @@ public interface Component {
    * @return a component with the component added
    */
   @NonNull Component append(final @NonNull Component component);
+
+  /**
+   * Appends a component to this component.
+   *
+   * @param component the component to append
+   * @return a component with the component added
+   */
+  default @NonNull Component append(final @NonNull ComponentLike component) {
+    return this.append(component.asComponent());
+  }
 
   /**
    * Appends a component to this component.
@@ -356,5 +366,10 @@ public interface Component {
    */
   default boolean hasStyling() {
     return !this.style().isEmpty();
+  }
+
+  @Override
+  default @NonNull Component asComponent() {
+    return this;
   }
 }
