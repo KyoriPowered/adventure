@@ -24,15 +24,18 @@
 package net.kyori.adventure.text.serializer.gson;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.function.UnaryOperator;
+
 /**
  * A gson component serializer.
  *
- * <p>Use {@link GsonComponentSerializer.Builder#downsampleColor()} to support platforms
+ * <p>Use {@link GsonComponentSerializer#gsonDownsampleColor()} to support platforms
  * that do not understand hex colors that were introduced in Minecraft 1.16.</p>
  */
 public interface GsonComponentSerializer extends ComponentSerializer<Component, Component, String>, Buildable<GsonComponentSerializer, GsonComponentSerializer.Builder> {
@@ -41,8 +44,19 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
    *
    * @return a gson component serializer
    */
-  static @NonNull GsonComponentSerializer get() {
+  static @NonNull GsonComponentSerializer gson() {
     return GsonComponentSerializerImpl.INSTANCE;
+  }
+
+  /**
+   * Gets a component serializer for gson serialization and deserialization.
+   *
+   * <p>Hex colors are coerced to the nearest named color.</p>
+   *
+   * @return a gson component serializer
+   */
+  static @NonNull GsonComponentSerializer gsonDownsampleColor() {
+    return GsonComponentSerializerImpl.DOWNSAMPLE_COLOR;
   }
 
   /**
@@ -53,12 +67,20 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
   static Builder builder() {
     return new GsonComponentSerializerImpl.BuilderImpl();
   }
+
   /**
-   * Gets the underlying gson instance.
+   * Gets the underlying gson serializer.
    *
-   * @return a gson instance
+   * @return a gson serializer
    */
-  Gson gson();
+  Gson serializer();
+
+  /**
+   * Gets the underlying gson populator.
+   *
+   * @return a gson populator
+   */
+  UnaryOperator<GsonBuilder> populator();
 
   /**
    * A builder for {@link GsonComponentSerializer}.

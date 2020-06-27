@@ -40,17 +40,17 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class GsonComponentSerializerTest {
   @Test
   void testDeserializePrimitive() {
-    assertEquals(TextComponent.of("potato"), GsonComponentSerializerImpl.INSTANCE.gson().fromJson(new JsonPrimitive("potato"), Component.class));
+    assertEquals(TextComponent.of("potato"), GsonComponentSerializerImpl.INSTANCE.serializer().fromJson(new JsonPrimitive("potato"), Component.class));
   }
 
   @Test
   void testDeserializeArray_empty() {
-    assertThrows(JsonParseException.class, () -> GsonComponentSerializerImpl.INSTANCE.gson().fromJson(new JsonArray(), Component.class));
+    assertThrows(JsonParseException.class, () -> GsonComponentSerializerImpl.INSTANCE.serializer().fromJson(new JsonArray(), Component.class));
   }
 
   @Test
   void testDeserializeArray() {
-    assertEquals(TextComponent.of("Hello, ").append(TextComponent.of("world.")), GsonComponentSerializerImpl.INSTANCE.gson().fromJson(array(array -> {
+    assertEquals(TextComponent.of("Hello, ").append(TextComponent.of("world.")), GsonComponentSerializerImpl.INSTANCE.serializer().fromJson(array(array -> {
       array.add(object(object -> object.addProperty(ComponentSerializerImpl.TEXT, "Hello, ")));
       array.add(object(object -> object.addProperty(ComponentSerializerImpl.TEXT, "world.")));
     }), Component.class));

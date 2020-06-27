@@ -36,45 +36,53 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.function.UnaryOperator;
+
 /* package */ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
   /* package */ static final GsonComponentSerializer INSTANCE = new GsonComponentSerializerImpl(false);
   /* package */ static final GsonComponentSerializer DOWNSAMPLE_COLOR = new GsonComponentSerializerImpl(true);
 
-  private final Gson gson;
+  private final Gson serializer;
+  private final UnaryOperator<GsonBuilder> populator;
   private final boolean downsampleColor;
 
   GsonComponentSerializerImpl(final boolean downsampleColor) {
-    final GsonBuilder builder = new GsonBuilder();
-
-    builder.registerTypeHierarchyAdapter(Key.class, KeySerializer.INSTANCE);
-    builder.registerTypeHierarchyAdapter(Component.class, new ComponentSerializerImpl());
-    builder.registerTypeAdapter(Style.class, new StyleSerializer());
-    builder.registerTypeAdapter(ClickEvent.Action.class, IndexedSerializer.of("click action", ClickEvent.Action.NAMES));
-    builder.registerTypeAdapter(HoverEvent.Action.class, IndexedSerializer.of("hover action", HoverEvent.Action.NAMES));
-    builder.registerTypeAdapter(HoverEvent.ShowItem.class, new ShowItemSerializer());
-    builder.registerTypeAdapter(HoverEvent.ShowEntity.class, new ShowEntitySerializer());
-    builder.registerTypeAdapter(TextColorWrapper.class, new TextColorWrapper.Serializer());
-    builder.registerTypeHierarchyAdapter(TextColor.class, downsampleColor ? TextColorSerializer.DOWNSAMPLE_COLOR : TextColorSerializer.INSTANCE);
-    builder.registerTypeAdapter(TextDecoration.class, IndexedSerializer.of("text decoration", TextDecoration.NAMES));
-    builder.registerTypeHierarchyAdapter(BlockNBTComponent.Pos.class, BlockNBTComponentPosSerializer.INSTANCE);
-
     this.downsampleColor = downsampleColor;
-    this.gson = builder.create();
+    this.populator = builder -> {
+      builder.registerTypeHierarchyAdapter(Key.class, KeySerializer.INSTANCE);
+      builder.registerTypeHierarchyAdapter(Component.class, new ComponentSerializerImpl());
+      builder.registerTypeAdapter(Style.class, new StyleSerializer());
+      builder.registerTypeAdapter(ClickEvent.Action.class, IndexedSerializer.of("click action", ClickEvent.Action.NAMES));
+      builder.registerTypeAdapter(HoverEvent.Action.class, IndexedSerializer.of("hover action", HoverEvent.Action.NAMES));
+      builder.registerTypeAdapter(HoverEvent.ShowItem.class, new ShowItemSerializer());
+      builder.registerTypeAdapter(HoverEvent.ShowEntity.class, new ShowEntitySerializer());
+      builder.registerTypeAdapter(TextColorWrapper.class, new TextColorWrapper.Serializer());
+      builder.registerTypeHierarchyAdapter(TextColor.class, downsampleColor ? TextColorSerializer.DOWNSAMPLE_COLOR : TextColorSerializer.INSTANCE);
+      builder.registerTypeAdapter(TextDecoration.class, IndexedSerializer.of("text decoration", TextDecoration.NAMES));
+      builder.registerTypeHierarchyAdapter(BlockNBTComponent.Pos.class, BlockNBTComponentPosSerializer.INSTANCE);
+      return builder;
+    };
+    this.serializer = populator.apply(new GsonBuilder()).create();
   }
 
   @Override
-  public Gson gson() {
-    return this.gson;
+  public Gson serializer() {
+    return this.serializer;
+  }
+
+  @Override
+  public UnaryOperator<GsonBuilder> populator() {
+    return this.populator;
   }
 
   @Override
   public @NonNull Component deserialize(final @NonNull String string) {
-    return this.gson().fromJson(string, Component.class);
+    return this.serializer().fromJson(string, Component.class);
   }
 
   @Override
   public @NonNull String serialize(final @NonNull Component component) {
-    return this.gson().toJson(component);
+    return this.serializer().toJson(component);
   }
 
   @NonNull
