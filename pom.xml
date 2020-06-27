@@ -20,6 +20,7 @@
         <module>minimessage-text</module>
         <module>minimessage-bungee</module>
         <module>minimessage-ext-markdown</module>
+        <module>minimessage-plugin</module>
     </modules>
 
     <repositories>

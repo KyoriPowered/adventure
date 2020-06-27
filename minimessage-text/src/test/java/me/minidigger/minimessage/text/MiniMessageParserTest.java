@@ -16,8 +16,8 @@ public class MiniMessageParserTest {
     public void test() {
         String input1 = "<yellow>TEST<green> nested</green>Test";
         String input2 = "<yellow>TEST<green> nested<yellow>Test";
-        String out1 = GsonComponentSerializer.INSTANCE.serialize(MiniMessageParser.parseFormat(input1));
-        String out2 = GsonComponentSerializer.INSTANCE.serialize(MiniMessageParser.parseFormat(input2));
+        String out1 = GsonComponentSerializer.gson().serialize(MiniMessageParser.parseFormat(input1));
+        String out2 = GsonComponentSerializer.gson().serialize(MiniMessageParser.parseFormat(input2));
         System.out.println(out1);
         System.out.println(out2);
         assertEquals(out1, out2);
@@ -27,8 +27,8 @@ public class MiniMessageParserTest {
     public void testNewColor() {
         String input1 = "<color:yellow>TEST<color:green> nested</color:green>Test";
         String input2 = "<color:yellow>TEST<color:green> nested<color:yellow>Test";
-        String out1 = GsonComponentSerializer.INSTANCE.serialize(MiniMessageParser.parseFormat(input1));
-        String out2 = GsonComponentSerializer.INSTANCE.serialize(MiniMessageParser.parseFormat(input2));
+        String out1 = GsonComponentSerializer.gson().serialize(MiniMessageParser.parseFormat(input1));
+        String out2 = GsonComponentSerializer.gson().serialize(MiniMessageParser.parseFormat(input2));
 
         assertEquals(out1, out2);
     }
@@ -37,8 +37,8 @@ public class MiniMessageParserTest {
     public void testHexColor() {
         String input1 = "<color:#ff00ff>TEST<color:#00ff00> nested</color:#00ff00>Test";
         String input2 = "<color:#ff00ff>TEST<color:#00ff00> nested<color:#ff00ff>Test";
-        String out1 = GsonComponentSerializer.INSTANCE.serialize(MiniMessageParser.parseFormat(input1));
-        String out2 = GsonComponentSerializer.INSTANCE.serialize(MiniMessageParser.parseFormat(input2));
+        String out1 = GsonComponentSerializer.gson().serialize(MiniMessageParser.parseFormat(input1));
+        String out2 = GsonComponentSerializer.gson().serialize(MiniMessageParser.parseFormat(input2));
 
         assertEquals(out1, out2);
     }
@@ -347,6 +347,6 @@ public class MiniMessageParserTest {
     }
 
     private void test(@Nonnull Component comp, @Nonnull String expected) {
-        assertEquals(expected, GsonComponentSerializer.INSTANCE.serialize(comp));
+        assertEquals(expected, GsonComponentSerializer.gson().serialize(comp));
     }
 }
