@@ -24,55 +24,59 @@
 package net.kyori.adventure.text.serializer.gson;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import java.util.function.Consumer;
-
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
+import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public final class GsonComponentSerializer implements ComponentSerializer<Component, Component, String> {
-  public static final GsonComponentSerializer INSTANCE = new GsonComponentSerializer();
-
-  public static final Consumer<GsonBuilder> GSON_BUILDER_CONFIGURER = builder -> {
-    // core
-    builder.registerTypeHierarchyAdapter(Key.class, KeySerializer.INSTANCE);
-    // text
-    builder.registerTypeHierarchyAdapter(Component.class, new ComponentSerializerImpl());
-    builder.registerTypeAdapter(Style.class, new StyleSerializer());
-    builder.registerTypeAdapter(ClickEvent.Action.class, IndexedSerializer.of("click action", ClickEvent.Action.NAMES));
-    builder.registerTypeAdapter(HoverEvent.Action.class, IndexedSerializer.of("hover action", HoverEvent.Action.NAMES));
-    builder.registerTypeAdapter(HoverEvent.ShowItem.class, new ShowItemSerializer());
-    builder.registerTypeAdapter(HoverEvent.ShowEntity.class, new ShowEntitySerializer());
-    builder.registerTypeAdapter(TextColorWrapper.class, new TextColorWrapper.Serializer());
-    builder.registerTypeHierarchyAdapter(TextColor.class, TextColorSerializer.INSTANCE);
-    builder.registerTypeAdapter(TextDecoration.class, IndexedSerializer.of("text decoration", TextDecoration.NAMES));
-    builder.registerTypeHierarchyAdapter(BlockNBTComponent.Pos.class, BlockNBTComponentPosSerializer.INSTANCE);
-  };
-
-  static final Gson GSON = createGson();
-
-  private static Gson createGson() {
-    final GsonBuilder builder = new GsonBuilder();
-    GSON_BUILDER_CONFIGURER.accept(builder);
-    return builder.create();
+/**
+ * A gson component serializer.
+ *
+ * <p>Use {@link GsonComponentSerializer.Builder#downsampleColor()} to support platforms
+ * that do not understand hex colors that were introduced in Minecraft 1.16.</p>
+ */
+public interface GsonComponentSerializer extends ComponentSerializer<Component, Component, String>, Buildable<GsonComponentSerializer, GsonComponentSerializer.Builder> {
+  /**
+   * Gets a component serializer for gson serialization and deserialization.
+   *
+   * @return a gson component serializer
+   */
+  static @NonNull GsonComponentSerializer get() {
+    return GsonComponentSerializerImpl.INSTANCE;
   }
 
-  @Override
-  public @NonNull Component deserialize(final @NonNull String string) {
-    return GSON.fromJson(string, Component.class);
+  /**
+   * Creates a new {@link GsonComponentSerializer.Builder}.
+   *
+   * @return a builder
+   */
+  static Builder builder() {
+    return new GsonComponentSerializerImpl.BuilderImpl();
   }
+  /**
+   * Gets the underlying gson instance.
+   *
+   * @return a gson instance
+   */
+  Gson gson();
 
-  @Override
-  public @NonNull String serialize(final @NonNull Component component) {
-    return GSON.toJson(component);
+  /**
+   * A builder for {@link GsonComponentSerializer}.
+   */
+  interface Builder extends Buildable.AbstractBuilder<GsonComponentSerializer> {
+    /**
+     * Sets that the serializer should downsample hex colors to named colors.
+     *
+     * @return this builder
+     */
+    Builder downsampleColor();
+
+    /**
+     * Builds the serializer.
+     *
+     * @return the built serializer
+     */
+    @Override
+    @NonNull GsonComponentSerializer build();
   }
 }

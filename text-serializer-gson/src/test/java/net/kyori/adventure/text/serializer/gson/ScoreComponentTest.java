@@ -55,6 +55,6 @@ class ScoreComponentTest extends AbstractComponentTest<ScoreComponent> {
 
   @Test
   void testDeserialize_withoutObjective() {
-    assertThrows(JsonParseException.class, () -> GsonComponentSerializer.GSON.fromJson(object(json -> json.add(ComponentSerializerImpl.SCORE, object(score -> score.addProperty(ComponentSerializerImpl.SCORE_NAME, NAME)))), Component.class));
+    assertThrows(JsonParseException.class, () -> GsonComponentSerializerImpl.INSTANCE.gson().fromJson(object(json -> json.add(ComponentSerializerImpl.SCORE, object(score -> score.addProperty(ComponentSerializerImpl.SCORE_NAME, NAME)))), Component.class));
   }
 }

@@ -39,9 +39,9 @@ import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.text.event.HoverEvent;
 
 /* package */ final class ShowItemSerializer implements JsonDeserializer<HoverEvent.ShowItem>, JsonSerializer<HoverEvent.ShowItem> {
-  static final String ID = "id";
-  static final String COUNT = "count";
-  static final String TAG = "tag";
+  /* package */ static final String ID = "id";
+  /* package */ static final String COUNT = "count";
+  /* package */ static final String TAG = "tag";
 
   @Override
   public HoverEvent.ShowItem deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {

@@ -37,9 +37,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 
 /* package */ final class ShowEntitySerializer implements JsonDeserializer<HoverEvent.ShowEntity>, JsonSerializer<HoverEvent.ShowEntity> {
-  static final String TYPE = "type";
-  static final String ID = "id";
-  static final String NAME = "name";
+  /* package */ static final String TYPE = "type";
+  /* package */ static final String ID = "id";
+  /* package */ static final String NAME = "name";
 
   @Override
   public HoverEvent.ShowEntity deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
