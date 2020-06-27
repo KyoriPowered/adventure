@@ -91,7 +91,7 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
      *
      * @return this builder
      */
-    Builder downsampleColor();
+    Builder downsampleColors();
 
     /**
      * Builds the serializer.

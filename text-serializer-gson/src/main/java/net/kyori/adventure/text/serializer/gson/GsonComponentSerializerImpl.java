@@ -102,7 +102,7 @@ import java.util.function.UnaryOperator;
     }
 
     @Override
-    public @NonNull Builder downsampleColor() {
+    public @NonNull Builder downsampleColors() {
       this.downsampleColor = true;
       return this;
     }
