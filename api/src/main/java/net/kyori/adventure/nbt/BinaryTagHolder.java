@@ -31,14 +31,13 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Holds a compound binary tag.
+ *
+ * <p>Instead of including an entire NBT implementation in Adventure, it was decided to
+ * use this "holder" interface instead. This opens the door for platform specific implementations.</p>
+ *
+ * <p>See {@code net.kyori.adventure.nbt.impl} for a platform agnostic implementation.</p>
  */
 public interface BinaryTagHolder {
-  /*
-   * Instead of including an entire NBT implementation in adventure-api, we have decided to
-   * use this "holder" interface instead, allowing for either our own NBT API to be used, or
-   * one from a specific platform (when possible).
-   */
-
   /**
    * Encodes {@code nbt} using {@code codec}.
    *
