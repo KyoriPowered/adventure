@@ -48,7 +48,7 @@ public interface BinaryTagHolder {
    * @return the encoded binary tag holder
    * @throws IOException if an error occurred while encoding the binary tag
    */
-  static <T> @NonNull BinaryTagHolder encode(final @NonNull T nbt, final @NonNull Codec<T, String, IOException, IOException> codec) throws IOException {
+  static <T> @NonNull BinaryTagHolder encode(final @NonNull T nbt, final @NonNull Codec<? super T, String, ? extends IOException, ? extends IOException> codec) throws IOException {
     return new BinaryTagHolderImpl(codec.encode(nbt));
   }
 
