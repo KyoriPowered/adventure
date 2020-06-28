@@ -29,7 +29,7 @@ import net.kyori.adventure.util.Index;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * A bossbar.
+ * A boss bar.
  */
 public interface BossBar {
   /**
@@ -225,7 +225,7 @@ public interface BossBar {
   @NonNull BossBar removeListener(final @NonNull Listener listener);
 
   /**
-   * A listener.
+   * A listener for changes that happen on a {@link BossBar}.
    */
   interface Listener {
     /**
@@ -279,6 +279,13 @@ public interface BossBar {
     }
   }
 
+  /**
+   * One of the colors the bar component of a {@link BossBar}.
+   *
+   * <p>This color does <em>not</em> affect the color of the bar's name text.</p>
+   *
+   * <p>The exact color for each named value may vary slightly based on game version.</p>
+   */
   enum Color {
     PINK("pink"),
     BLUE("blue"),
@@ -296,6 +303,9 @@ public interface BossBar {
     }
   }
 
+  /**
+   * Flags to control toggleable effects of a boss bar.
+   */
   enum Flag {
     /**
      * If the screen should be darkened.
@@ -319,6 +329,9 @@ public interface BossBar {
     }
   }
 
+  /**
+   * An overlay on the bar component of a boss bar.
+   */
   enum Overlay {
     PROGRESS("progress"),
     NOTCHED_6("notched_6"),

@@ -39,12 +39,12 @@ dependencies {
 ```java
 // Creates a line of text saying "You're a Bunny! Press <key> to jump!", with some colouring and styling.
 final TextComponent textComponent = TextComponent.of("You're a ")
-  .color(TextColor.GRAY)
-  .append(TextComponent.of("Bunny").color(TextColor.LIGHT_PURPLE))
+  .color(NamedTextColor.GRAY)
+  .append(TextComponent.of("Bunny").color(NamedTextColor.LIGHT_PURPLE))
   .append(TextComponent.of("! Press "))
   .append(
     KeybindComponent.of("key.jump")
-      .color(TextColor.LIGHT_PURPLE)
+      .color(NamedTextColor.LIGHT_PURPLE)
       .decoration(TextDecoration.BOLD, true)
   )
   .append(TextComponent.of(" to jump!"));
@@ -55,12 +55,12 @@ You can also use a builder, which is mutable, and creates one final component wi
 ```java
 // Creates a line of text saying "You're a Bunny! Press <key> to jump!", with some colouring and styling.
 final TextComponent textComponent2 = TextComponent.builder().content("You're a ")
-  .color(TextColor.GRAY)
-  .append(TextComponent.builder("Bunny").color(TextColor.LIGHT_PURPLE).build())
+  .color(NamedTextColor.GRAY)
+  .append(TextComponent.builder("Bunny").color(NamedTextColor.LIGHT_PURPLE).build())
   .append(TextComponent.of("! Press "))
   .append(
     KeybindComponent.builder("key.jump")
-      .color(TextColor.LIGHT_PURPLE)
+      .color(NamedTextColor.LIGHT_PURPLE)
       .decoration(TextDecoration.BOLD, true)
       .build()
   )
@@ -76,13 +76,13 @@ Serialization to JSON, legacy and plain representations is also supported.
 ```java
 // Creates a text component
 final TextComponent textComponent = TextComponent.of("Hello ")
-  .color(TextColor.GOLD)
+  .color(NamedTextColor.GOLD)
   .append(
     TextComponent.of("world")
-      .color(TextColor.AQUA).
+      .color(NamedTextColor.AQUA).
       decoration(TextDecoration.BOLD, true)
   )
-  .append(TextComponent.of("!").color(TextColor.RED));
+  .append(TextComponent.of("!").color(NamedTextColor.RED));
 
 // Converts textComponent to the JSON form used for serialization by Minecraft.
 String json = GsonComponentSerializer.INSTANCE.serialize(textComponent);

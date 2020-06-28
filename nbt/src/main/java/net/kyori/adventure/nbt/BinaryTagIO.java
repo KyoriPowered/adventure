@@ -40,6 +40,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static net.kyori.adventure.nbt.IOStreamUtil.closeShield;
 
+/**
+ * Serialization operations for binary tags.
+ */
 public final class BinaryTagIO {
   private BinaryTagIO() {
   }
