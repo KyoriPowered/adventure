@@ -39,6 +39,26 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public interface GsonComponentSerializer extends ComponentSerializer<Component, Component, String>, Buildable<GsonComponentSerializer, GsonComponentSerializer.Builder> {
   /**
+   * Gets a component serializer for gson serialization and deserialization.
+   *
+   * @return a gson component serializer
+   */
+  static @NonNull GsonComponentSerializer gson() {
+    return GsonComponentSerializerImpl.INSTANCE;
+  }
+
+  /**
+   * Gets a component serializer for gson serialization and deserialization.
+   *
+   * <p>Hex colors are coerced to the nearest named color.</p>
+   *
+   * @return a gson component serializer
+   */
+  static @NonNull GsonComponentSerializer colorDownsamplingGson() {
+    return GsonComponentSerializerImpl.DOWNSAMPLE_COLOR;
+  }
+
+  /**
    * Creates a new {@link GsonComponentSerializer.Builder}.
    *
    * @return a builder
