@@ -34,22 +34,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-import net.kyori.adventure.nbt.BinaryTagHolder;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class BinaryTagIO {
-  public static final BinaryTagHolder.Codec<CompoundBinaryTag> CODEC = new BinaryTagHolder.Codec<CompoundBinaryTag>() {
-    @Override
-    public @NonNull CompoundBinaryTag readBinaryTag(final @NonNull String string) throws IOException {
-      return readString(string);
-    }
-
-    @Override
-    public @NonNull String writeBinaryTag(final @NonNull CompoundBinaryTag nbt) throws IOException {
-      return writeString(nbt);
-    }
-  };
-
   private BinaryTagIO() {
   }
 

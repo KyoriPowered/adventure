@@ -24,6 +24,7 @@
 package net.kyori.adventure.nbt;
 
 import java.io.IOException;
+import net.kyori.adventure.util.Codec;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static java.util.Objects.requireNonNull;
@@ -47,8 +48,8 @@ public interface BinaryTagHolder {
    * @return the encoded binary tag holder
    * @throws IOException if an error occurred while encoding the binary tag
    */
-  static <T> @NonNull BinaryTagHolder encode(final @NonNull T nbt, final @NonNull Codec<T> codec) throws IOException {
-    return new BinaryTagHolderImpl(codec.writeBinaryTag(nbt));
+  static <T> @NonNull BinaryTagHolder encode(final @NonNull T nbt, final @NonNull Codec<T, String, IOException, IOException> codec) throws IOException {
+    return new BinaryTagHolderImpl(codec.encode(nbt));
   }
 
   /**
@@ -76,30 +77,7 @@ public interface BinaryTagHolder {
    * @return the binary tag
    * @throws IOException if an error occurred while retrieving the binary tag
    */
-  <T> @NonNull T get(final @NonNull Codec<T> codec) throws IOException;
-
-  /**
-   * Something that can read and write a binary tag from a {@link String}.
-   */
-  interface Codec<T> {
-    /**
-     * Reads a binary tag from a {@link String}.
-     *
-     * @param string the string
-     * @return the binary tag
-     * @throws IOException if an error occurred while reading
-     */
-    @NonNull T readBinaryTag(final @NonNull String string) throws IOException;
-
-    /**
-     * Writes a binary tag to a {@link String}.
-     *
-     * @param nbt the binary tag
-     * @return the string
-     * @throws IOException if an error occurred while reading
-     */
-    @NonNull String writeBinaryTag(final @NonNull T nbt) throws IOException;
-  }
+  <T> @NonNull T get(final @NonNull Codec<T, String, IOException, IOException> codec) throws IOException;
 }
 
 /* package */ final class BinaryTagHolderImpl implements BinaryTagHolder {
@@ -115,7 +93,7 @@ public interface BinaryTagHolder {
   }
 
   @Override
-  public <T> @NonNull T get(final @NonNull Codec<T> codec) throws IOException {
-    return codec.readBinaryTag(this.string);
+  public <T> @NonNull T get(final @NonNull Codec<T, String, IOException, IOException> codec) throws IOException {
+    return codec.decode(this.string);
   }
 }

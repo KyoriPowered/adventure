@@ -30,7 +30,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import java.io.IOException;
 import java.lang.reflect.Type;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.BinaryTagHolder;
@@ -61,11 +60,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 
     BinaryTagHolder nbt = null;
     if(object.has(TAG)) {
-      try {
-        nbt = BinaryTagHolder.of(object.get(TAG).getAsString());
-      } catch(final IOException e) {
-        throw new JsonParseException(e);
-      }
+      nbt = BinaryTagHolder.of(object.get(TAG).getAsString());
     }
 
     return new HoverEvent.ShowItem(id, count, nbt);
