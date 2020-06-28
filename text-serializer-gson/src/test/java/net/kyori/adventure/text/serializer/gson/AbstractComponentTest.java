@@ -26,19 +26,11 @@ package net.kyori.adventure.text.serializer.gson;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import net.kyori.adventure.nbt.impl.BinaryTagIO;
 import net.kyori.adventure.text.Component;
 
 abstract class AbstractComponentTest<C extends Component> extends AbstractSerializeDeserializeTest<C> {
-  static final Gson GSON = GsonComponentSerializer.builder()
-    .nbtCodec(BinaryTagIO.STRING_CODEC)
-    .build()
-    .serializer();
-  static final Gson GSON_DOWNSAMPLING = GsonComponentSerializer.builder()
-    .nbtCodec(BinaryTagIO.STRING_CODEC)
-    .downsampleColors()
-    .build()
-    .serializer();
+  static final Gson GSON = GsonComponentSerializerImpl.INSTANCE.serializer();
+  static final Gson GSON_DOWNSAMPLING = GsonComponentSerializerImpl.DOWNSAMPLE_COLOR.serializer();
 
   @SuppressWarnings("serial")
   private final TypeToken<C> type = new TypeToken<C>(this.getClass()) {};

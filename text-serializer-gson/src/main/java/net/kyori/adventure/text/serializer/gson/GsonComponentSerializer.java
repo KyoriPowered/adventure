@@ -25,13 +25,11 @@ package net.kyori.adventure.text.serializer.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.kyori.adventure.nbt.CompoundBinaryTag;
+import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.util.function.UnaryOperator;
 
 /**
  * A gson component serializer.
@@ -67,8 +65,6 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
    * A builder for {@link GsonComponentSerializer}.
    */
   interface Builder extends Buildable.AbstractBuilder<GsonComponentSerializer> {
-    @NonNull Builder nbtCodec(final CompoundBinaryTag.@NonNull Codec codec);
-
     /**
      * Sets that the serializer should downsample hex colors to named colors.
      *

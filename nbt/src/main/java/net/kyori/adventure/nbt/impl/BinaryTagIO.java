@@ -34,17 +34,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import net.kyori.adventure.nbt.BinaryTagHolder;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class BinaryTagIO {
-  public static final net.kyori.adventure.nbt.CompoundBinaryTag.Codec STRING_CODEC = new net.kyori.adventure.nbt.CompoundBinaryTag.Codec() {
+  public static final BinaryTagHolder.Codec<CompoundBinaryTag> CODEC = new BinaryTagHolder.Codec<CompoundBinaryTag>() {
     @Override
-    public net.kyori.adventure.nbt.@NonNull CompoundBinaryTag fromString(final @NonNull String string) throws IOException {
+    public @NonNull CompoundBinaryTag readBinaryTag(final @NonNull String string) throws IOException {
       return readString(string);
     }
 
     @Override
-    public @NonNull String asString(final net.kyori.adventure.nbt.@NonNull CompoundBinaryTag nbt) throws IOException {
+    public @NonNull String writeBinaryTag(final @NonNull CompoundBinaryTag nbt) throws IOException {
       return writeString(nbt);
     }
   };
@@ -209,10 +210,10 @@ public final class BinaryTagIO {
    * @return the string
    * @throws IOException if an exception was encountered while writing the compound tag
    */
-  public static @NonNull String writeString(final net.kyori.adventure.nbt.@NonNull CompoundBinaryTag tag) throws IOException {
+  public static @NonNull String writeString(final @NonNull CompoundBinaryTag tag) throws IOException {
     final StringBuilder sb = new StringBuilder();
     try(final TagStringWriter emit = new TagStringWriter(sb)) {
-      emit.writeTag((net.kyori.adventure.nbt.impl.CompoundBinaryTag) tag);
+      emit.writeTag(tag);
     }
     return sb.toString();
   }

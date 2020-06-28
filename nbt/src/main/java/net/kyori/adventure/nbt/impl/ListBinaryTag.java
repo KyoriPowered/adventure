@@ -52,6 +52,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * Creates a builder.
    *
    * @param type the element type
+   * @param <T> the element type
    * @return a new builder
    */
   static <T extends BinaryTag> @NonNull Builder<T> builder(final @NonNull BinaryTagType<T> type) {

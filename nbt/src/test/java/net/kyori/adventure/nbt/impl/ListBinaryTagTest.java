@@ -24,11 +24,6 @@
 package net.kyori.adventure.nbt.impl;
 
 import com.google.common.collect.ImmutableList;
-import net.kyori.adventure.nbt.impl.BinaryTagTypes;
-import net.kyori.adventure.nbt.impl.ByteBinaryTag;
-import net.kyori.adventure.nbt.impl.EndBinaryTag;
-import net.kyori.adventure.nbt.impl.IntBinaryTag;
-import net.kyori.adventure.nbt.impl.ListBinaryTag;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
