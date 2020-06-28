@@ -31,7 +31,6 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -122,7 +121,23 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
   @Override
   public Iterator<BinaryTag> iterator() {
-    return ShadyPines.unmodifiableIterator(this.tags.iterator());
+    final Iterator<? extends BinaryTag> iterator = this.tags.iterator();
+    return new Iterator<BinaryTag>() {
+      @Override
+      public boolean hasNext() {
+        return iterator.hasNext();
+      }
+
+      @Override
+      public BinaryTag next() {
+        return  iterator.next();
+      }
+
+      @Override
+      public void forEachRemaining(final Consumer<? super BinaryTag> action) {
+        iterator.forEachRemaining(action);
+      }
+    };
   }
 
   @Override

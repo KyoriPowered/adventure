@@ -24,7 +24,6 @@
 package net.kyori.adventure.nbt.impl;
 
 import java.util.stream.Stream;
-import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -103,7 +102,7 @@ public interface DoubleBinaryTag extends NumberBinaryTag {
     if(this == other) return true;
     if(other == null || this.getClass() != other.getClass()) return false;
     final DoubleBinaryTagImpl that = (DoubleBinaryTagImpl) other;
-    return ShadyPines.equals(this.value, that.value);
+    return Double.doubleToLongBits(this.value) == Double.doubleToLongBits(that.value);
   }
 
   @Override
