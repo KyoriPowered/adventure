@@ -27,8 +27,20 @@ import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class TextColorTest {
+  @Test
+  void testFromHexString() {
+    assertEquals(TextColor.of(0xaa00aa), TextColor.fromHexString("#aa00aa"));
+  }
+
+  @Test
+  void testFromMalformedHexString() {
+    assertNull(TextColor.fromHexString("aa00aa")); // does not begin with #
+    assertNull(TextColor.fromHexString("#aa00az"));
+  }
+
   @Test
   public void testPureColors() {
     final TextColor redInt = TextColor.of(0xff0000);
