@@ -21,28 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.serializer.gson;
+package net.kyori.adventure.nbt.impl;
 
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import net.kyori.adventure.text.Component;
+import java.io.IOException;
 
-abstract class AbstractComponentTest<C extends Component> extends AbstractSerializeDeserializeTest<C> {
-  static final Gson GSON = GsonComponentSerializerImpl.INSTANCE.serializer();
-  static final Gson GSON_DOWNSAMPLING = GsonComponentSerializerImpl.DOWNSAMPLE_COLOR.serializer();
+/**
+ * An exception thrown when parsing a string tag
+ */
+/* package */ class StringTagParseException extends IOException {
+  private static final long serialVersionUID = -3001637554903912905l;
+  private final CharSequence buffer;
+  private final int position;
 
-  @SuppressWarnings("serial")
-  private final TypeToken<C> type = new TypeToken<C>(this.getClass()) {};
-
-  @Override
-  @SuppressWarnings("unchecked")
-  C deserialize(final JsonElement json) {
-    return GSON.fromJson(json, (Class<C>) this.type.getRawType());
+  public StringTagParseException(final String message, final CharSequence buffer, final int position) {
+    super(message);
+    this.buffer = buffer;
+    this.position = position;
   }
 
+  // TODO: Provide more specific position information
+
   @Override
-  JsonElement serialize(final C object) {
-    return GSON.toJsonTree(object);
+  public String getMessage() {
+    return super.getMessage() + "(at position " + this.position + ")";
   }
 }

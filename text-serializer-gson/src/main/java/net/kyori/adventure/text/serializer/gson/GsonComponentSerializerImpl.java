@@ -25,7 +25,7 @@ package net.kyori.adventure.text.serializer.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
+import java.util.function.UnaryOperator;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.Component;
@@ -35,8 +35,6 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.util.function.UnaryOperator;
 
 /* package */ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
   /* package */ static final GsonComponentSerializer INSTANCE = new GsonComponentSerializerImpl(false);
@@ -62,7 +60,7 @@ import java.util.function.UnaryOperator;
       builder.registerTypeHierarchyAdapter(BlockNBTComponent.Pos.class, BlockNBTComponentPosSerializer.INSTANCE);
       return builder;
     };
-    this.serializer = populator.apply(new GsonBuilder()).create();
+    this.serializer = this.populator.apply(new GsonBuilder()).create();
   }
 
   @Override

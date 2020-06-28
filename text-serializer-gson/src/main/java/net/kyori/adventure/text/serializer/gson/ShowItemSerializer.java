@@ -30,18 +30,18 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.google.gson.JsonSyntaxException;
-import java.io.IOException;
 import java.lang.reflect.Type;
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.nbt.BinaryTagIO;
-import net.kyori.adventure.nbt.CompoundBinaryTag;
+import net.kyori.adventure.nbt.BinaryTagHolder;
 import net.kyori.adventure.text.event.HoverEvent;
 
 /* package */ final class ShowItemSerializer implements JsonDeserializer<HoverEvent.ShowItem>, JsonSerializer<HoverEvent.ShowItem> {
   /* package */ static final String ID = "id";
   /* package */ static final String COUNT = "count";
   /* package */ static final String TAG = "tag";
+
+  ShowItemSerializer() {
+  }
 
   @Override
   public HoverEvent.ShowItem deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
@@ -58,13 +58,9 @@ import net.kyori.adventure.text.event.HoverEvent;
       count = object.get(COUNT).getAsInt();
     }
 
-    CompoundBinaryTag nbt = null;
+    BinaryTagHolder nbt = null;
     if(object.has(TAG)) {
-      try {
-        nbt = BinaryTagIO.readString(object.get(TAG).getAsString());
-      } catch(final IOException e) {
-        throw new JsonParseException(e);
-      }
+      nbt = BinaryTagHolder.of(object.get(TAG).getAsString());
     }
 
     return new HoverEvent.ShowItem(id, count, nbt);
@@ -81,13 +77,9 @@ import net.kyori.adventure.text.event.HoverEvent;
       json.addProperty(COUNT, count);
     }
 
-    final /* @Nullable */ CompoundBinaryTag nbt = src.nbt();
+    final /* @Nullable */ BinaryTagHolder nbt = src.nbt();
     if(nbt != null) {
-      try {
-        json.addProperty(TAG, BinaryTagIO.writeString(nbt));
-      } catch(final IOException e) {
-        throw new JsonSyntaxException(e);
-      }
+      json.addProperty(TAG, nbt.string());
     }
 
     return json;

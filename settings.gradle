@@ -3,6 +3,8 @@ rootProject.name = 'adventure-parent'
 include 'api'
 findProject(':api')?.name = 'adventure-api'
 
+include 'nbt'
+findProject(':nbt')?.name = 'adventure-nbt'
 include 'text-feature-pagination'
 findProject(':text-feature-pagination')?.name = 'adventure-text-feature-pagination'
 

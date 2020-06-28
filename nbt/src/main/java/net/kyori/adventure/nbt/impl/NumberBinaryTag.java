@@ -21,28 +21,56 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.serializer.gson;
+package net.kyori.adventure.nbt.impl;
 
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import net.kyori.adventure.text.Component;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-abstract class AbstractComponentTest<C extends Component> extends AbstractSerializeDeserializeTest<C> {
-  static final Gson GSON = GsonComponentSerializerImpl.INSTANCE.serializer();
-  static final Gson GSON_DOWNSAMPLING = GsonComponentSerializerImpl.DOWNSAMPLE_COLOR.serializer();
-
-  @SuppressWarnings("serial")
-  private final TypeToken<C> type = new TypeToken<C>(this.getClass()) {};
-
+/**
+ * A numeric binary tag.
+ */
+public interface NumberBinaryTag extends BinaryTag {
   @Override
-  @SuppressWarnings("unchecked")
-  C deserialize(final JsonElement json) {
-    return GSON.fromJson(json, (Class<C>) this.type.getRawType());
-  }
+  @NonNull BinaryTagType<? extends NumberBinaryTag> type();
 
-  @Override
-  JsonElement serialize(final C object) {
-    return GSON.toJsonTree(object);
-  }
+  /**
+   * Gets the value as a {@code byte}.
+   *
+   * @return the value as a {@code byte}
+   */
+  byte byteValue();
+
+  /**
+   * Gets the value as a {@code double}.
+   *
+   * @return the value as a {@code double}
+   */
+  double doubleValue();
+
+  /**
+   * Gets the value as a {@code float}.
+   *
+   * @return the value as a {@code float}
+   */
+  float floatValue();
+
+  /**
+   * Gets the value as a {@code int}.
+   *
+   * @return the value as a {@code int}
+   */
+  int intValue();
+
+  /**
+   * Gets the value as a {@code long}.
+   *
+   * @return the value as a {@code long}
+   */
+  long longValue();
+
+  /**
+   * Gets the value as a {@code short}.
+   *
+   * @return the value as a {@code short}
+   */
+  short shortValue();
 }

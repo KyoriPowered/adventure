@@ -21,28 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.serializer.gson;
+package net.kyori.adventure.nbt.impl;
 
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import net.kyori.adventure.text.Component;
+import java.util.ArrayList;
+import java.util.List;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-abstract class AbstractComponentTest<C extends Component> extends AbstractSerializeDeserializeTest<C> {
-  static final Gson GSON = GsonComponentSerializerImpl.INSTANCE.serializer();
-  static final Gson GSON_DOWNSAMPLING = GsonComponentSerializerImpl.DOWNSAMPLE_COLOR.serializer();
+/* package */ final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder<T> {
+  private @MonotonicNonNull List<BinaryTag> tags;
+  private BinaryTagType<? extends BinaryTag> type;
 
-  @SuppressWarnings("serial")
-  private final TypeToken<C> type = new TypeToken<C>(this.getClass()) {};
+  /* package */ ListTagBuilder() {
+    this(BinaryTagTypes.END);
+  }
 
-  @Override
-  @SuppressWarnings("unchecked")
-  C deserialize(final JsonElement json) {
-    return GSON.fromJson(json, (Class<C>) this.type.getRawType());
+  /* package */ ListTagBuilder(final BinaryTagType<? extends BinaryTag> type) {
+    this.type = type;
   }
 
   @Override
-  JsonElement serialize(final C object) {
-    return GSON.toJsonTree(object);
+  public ListBinaryTag.@NonNull Builder<T> add(final BinaryTag tag) {
+    ListBinaryTagImpl.noAddEnd(tag);
+    // set the type if it has not yet been set
+    if(this.type == BinaryTagTypes.END) {
+      this.type = tag.type();
+    }
+    // check after changing from an empty tag
+    ListBinaryTagImpl.mustBeSameType(tag, this.type);
+    if(this.tags == null) {
+      this.tags = new ArrayList<>();
+    }
+    this.tags.add(tag);
+    return this;
+  }
+
+  @Override
+  public @NonNull ListBinaryTag build() {
+    if(this.tags == null) return ListBinaryTag.empty();
+    return new ListBinaryTagImpl(this.type, new ArrayList<>(this.tags));
   }
 }

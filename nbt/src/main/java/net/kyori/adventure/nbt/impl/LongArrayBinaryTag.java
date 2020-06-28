@@ -21,28 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.serializer.gson;
+package net.kyori.adventure.nbt.impl;
 
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import net.kyori.adventure.text.Component;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-abstract class AbstractComponentTest<C extends Component> extends AbstractSerializeDeserializeTest<C> {
-  static final Gson GSON = GsonComponentSerializerImpl.INSTANCE.serializer();
-  static final Gson GSON_DOWNSAMPLING = GsonComponentSerializerImpl.DOWNSAMPLE_COLOR.serializer();
-
-  @SuppressWarnings("serial")
-  private final TypeToken<C> type = new TypeToken<C>(this.getClass()) {};
-
-  @Override
-  @SuppressWarnings("unchecked")
-  C deserialize(final JsonElement json) {
-    return GSON.fromJson(json, (Class<C>) this.type.getRawType());
+/**
+ * A binary tag holding a {@code long}-array value.
+ */
+public interface LongArrayBinaryTag extends BinaryTag {
+  /**
+   * Creates a binary tag holding a {@code long}-array value.
+   *
+   * @param value the value
+   * @return a binary tag
+   */
+  static @NonNull LongArrayBinaryTag of(final long@NonNull... value) {
+    return new LongArrayBinaryTagImpl(value);
   }
 
   @Override
-  JsonElement serialize(final C object) {
-    return GSON.toJsonTree(object);
+  default @NonNull BinaryTagType<LongArrayBinaryTag> type() {
+    return BinaryTagTypes.LONG_ARRAY;
   }
+
+  /**
+   * Gets the value.
+   *
+   * <p>The returned array is a copy.</p>
+   *
+   * @return the value
+   */
+  long@NonNull[] value();
 }

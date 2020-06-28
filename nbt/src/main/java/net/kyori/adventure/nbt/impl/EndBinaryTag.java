@@ -21,28 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.serializer.gson;
+package net.kyori.adventure.nbt.impl;
 
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import net.kyori.adventure.text.Component;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-abstract class AbstractComponentTest<C extends Component> extends AbstractSerializeDeserializeTest<C> {
-  static final Gson GSON = GsonComponentSerializerImpl.INSTANCE.serializer();
-  static final Gson GSON_DOWNSAMPLING = GsonComponentSerializerImpl.DOWNSAMPLE_COLOR.serializer();
-
-  @SuppressWarnings("serial")
-  private final TypeToken<C> type = new TypeToken<C>(this.getClass()) {};
-
-  @Override
-  @SuppressWarnings("unchecked")
-  C deserialize(final JsonElement json) {
-    return GSON.fromJson(json, (Class<C>) this.type.getRawType());
+/**
+ * An end tag.
+ */
+public interface EndBinaryTag extends BinaryTag {
+  /**
+   * Gets the end tag.
+   *
+   * @return the end tag
+   */
+  static @NonNull EndBinaryTag get() {
+    return EndBinaryTagImpl.INSTANCE;
   }
 
   @Override
-  JsonElement serialize(final C object) {
-    return GSON.toJsonTree(object);
+  default @NonNull BinaryTagType<EndBinaryTag> type() {
+    return BinaryTagTypes.END;
+  }
+}
+
+/* package */ final class EndBinaryTagImpl implements EndBinaryTag {
+  /* package */ static final EndBinaryTagImpl INSTANCE = new EndBinaryTagImpl();
+
+  @Override
+  public boolean equals(final Object that) {
+    return this == that;
+  }
+
+  @Override
+  public int hashCode() {
+    return 0;
   }
 }
