@@ -82,16 +82,6 @@ public interface Audience {
     return audience instanceof WeakAudience || audience instanceof EmptyAudience ? audience : new WeakAudience(audience);
   }
 
-  /**
-   * Creates an audience that batches requests to another audience.
-   *
-   * @param audience the delegate audience
-   * @return a batched audience
-   */
-  static @NonNull BatchAudience batching(final @NonNull Audience audience) {
-    return audience instanceof BatchAudience ? (BatchAudience) audience : new QueueingBatchAudience(audience);
-  }
-
   // ------------------
   // ---- Messages ----
   // ------------------
