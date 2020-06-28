@@ -21,41 +21,56 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.nbt;
+package net.kyori.adventure.nbt.impl;
 
-import java.io.IOException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * Represents a compound binary tag.
+ * A numeric binary tag.
  */
-public interface CompoundBinaryTag {
-  /*
-   * Instead of including an entire NBT implementation in adventure-api, we have decided to
-   * use this "empty" interface instead, allowing for either our own NBT API to be used, or
-   * one from a specific platform (when possible).
-   */
+public interface NumberBinaryTag extends BinaryTag {
+  @Override
+  @NonNull BinaryTagType<? extends NumberBinaryTag> type();
 
   /**
-   * Something that can read and write a compound binary tag from a {@link String}.
+   * Gets the value as a {@code byte}.
+   *
+   * @return the value as a {@code byte}
    */
-  interface Codec {
-    /**
-     * Reads a compound binary tag from a {@link String}.
-     *
-     * @param string the string
-     * @return the compound binary tag
-     * @throws IOException if an error occurred while reading
-     */
-    @NonNull CompoundBinaryTag fromString(final @NonNull String string) throws IOException;
+  byte byteValue();
 
-    /**
-     * Writes a compound binary tag to a {@link String}.
-     *
-     * @param nbt the compound binary tag
-     * @return the string
-     * @throws IOException if an error occurred while reading
-     */
-    @NonNull String asString(final @NonNull CompoundBinaryTag nbt) throws IOException;
-  }
+  /**
+   * Gets the value as a {@code double}.
+   *
+   * @return the value as a {@code double}
+   */
+  double doubleValue();
+
+  /**
+   * Gets the value as a {@code float}.
+   *
+   * @return the value as a {@code float}
+   */
+  float floatValue();
+
+  /**
+   * Gets the value as a {@code int}.
+   *
+   * @return the value as a {@code int}
+   */
+  int intValue();
+
+  /**
+   * Gets the value as a {@code long}.
+   *
+   * @return the value as a {@code long}
+   */
+  long longValue();
+
+  /**
+   * Gets the value as a {@code short}.
+   *
+   * @return the value as a {@code short}
+   */
+  short shortValue();
 }

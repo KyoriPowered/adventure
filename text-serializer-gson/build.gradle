@@ -1,6 +1,7 @@
 dependencies {
   api project(':adventure-api')
   api 'com.google.code.gson:gson:2.8.0'
+  testImplementation project(':adventure-nbt')
 }
 
 jar {

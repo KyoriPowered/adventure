@@ -21,41 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.nbt;
+package net.kyori.adventure.nbt.impl;
 
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-/**
- * Represents a compound binary tag.
- */
-public interface CompoundBinaryTag {
-  /*
-   * Instead of including an entire NBT implementation in adventure-api, we have decided to
-   * use this "empty" interface instead, allowing for either our own NBT API to be used, or
-   * one from a specific platform (when possible).
-   */
+/* package */ final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
+  private @MonotonicNonNull Map<String, BinaryTag> tags;
 
-  /**
-   * Something that can read and write a compound binary tag from a {@link String}.
-   */
-  interface Codec {
-    /**
-     * Reads a compound binary tag from a {@link String}.
-     *
-     * @param string the string
-     * @return the compound binary tag
-     * @throws IOException if an error occurred while reading
-     */
-    @NonNull CompoundBinaryTag fromString(final @NonNull String string) throws IOException;
+  @Override
+  public CompoundBinaryTag.@NonNull Builder put(final @NonNull String key, @NonNull final BinaryTag tag) {
+    if(this.tags == null) {
+      this.tags = new HashMap<>();
+    }
+    this.tags.put(key, tag);
+    return this;
+  }
 
-    /**
-     * Writes a compound binary tag to a {@link String}.
-     *
-     * @param nbt the compound binary tag
-     * @return the string
-     * @throws IOException if an error occurred while reading
-     */
-    @NonNull String asString(final @NonNull CompoundBinaryTag nbt) throws IOException;
+  @Override
+  public @NonNull CompoundBinaryTag build() {
+    if(this.tags == null) return CompoundBinaryTag.empty();
+    return new CompoundBinaryTagImpl(new HashMap<>(this.tags));
   }
 }

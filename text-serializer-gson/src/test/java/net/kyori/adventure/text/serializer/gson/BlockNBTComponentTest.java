@@ -76,7 +76,7 @@ class BlockNBTComponentTest extends AbstractComponentTest<BlockNBTComponent> {
   void testLocalPosNoDecimal() {
     assertEquals(
       BlockNBTComponent.LocalPos.of(1.0d, 2.0d, 3.89d),
-      GsonComponentSerializerImpl.INSTANCE.serializer().fromJson(new JsonPrimitive("^1 ^2 ^3.89"), BlockNBTComponent.Pos.class)
+      AbstractComponentTest.GSON.fromJson(new JsonPrimitive("^1 ^2 ^3.89"), BlockNBTComponent.Pos.class)
     );
   }
 }

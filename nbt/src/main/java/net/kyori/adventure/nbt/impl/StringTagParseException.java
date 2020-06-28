@@ -21,41 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.nbt;
+package net.kyori.adventure.nbt.impl;
 
 import java.io.IOException;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * Represents a compound binary tag.
+ * An exception thrown when parsing a string tag
  */
-public interface CompoundBinaryTag {
-  /*
-   * Instead of including an entire NBT implementation in adventure-api, we have decided to
-   * use this "empty" interface instead, allowing for either our own NBT API to be used, or
-   * one from a specific platform (when possible).
-   */
+/* package */ class StringTagParseException extends IOException {
+  private static final long serialVersionUID = -3001637554903912905l;
+  private final CharSequence buffer;
+  private final int position;
 
-  /**
-   * Something that can read and write a compound binary tag from a {@link String}.
-   */
-  interface Codec {
-    /**
-     * Reads a compound binary tag from a {@link String}.
-     *
-     * @param string the string
-     * @return the compound binary tag
-     * @throws IOException if an error occurred while reading
-     */
-    @NonNull CompoundBinaryTag fromString(final @NonNull String string) throws IOException;
+  public StringTagParseException(final String message, final CharSequence buffer, final int position) {
+    super(message);
+    this.buffer = buffer;
+    this.position = position;
+  }
 
-    /**
-     * Writes a compound binary tag to a {@link String}.
-     *
-     * @param nbt the compound binary tag
-     * @return the string
-     * @throws IOException if an error occurred while reading
-     */
-    @NonNull String asString(final @NonNull CompoundBinaryTag nbt) throws IOException;
+  // TODO: Provide more specific position information
+
+  @Override
+  public String getMessage() {
+    return super.getMessage() + "(at position " + this.position + ")";
   }
 }

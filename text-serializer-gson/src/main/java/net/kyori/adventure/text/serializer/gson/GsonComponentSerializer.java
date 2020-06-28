@@ -25,6 +25,7 @@ package net.kyori.adventure.text.serializer.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Buildable;
@@ -35,30 +36,10 @@ import java.util.function.UnaryOperator;
 /**
  * A gson component serializer.
  *
- * <p>Use {@link GsonComponentSerializer#gsonDownsampleColor()} to support platforms
+ * <p>Use {@link Builder#downsampleColors()} to support platforms
  * that do not understand hex colors that were introduced in Minecraft 1.16.</p>
  */
 public interface GsonComponentSerializer extends ComponentSerializer<Component, Component, String>, Buildable<GsonComponentSerializer, GsonComponentSerializer.Builder> {
-  /**
-   * Gets a component serializer for gson serialization and deserialization.
-   *
-   * @return a gson component serializer
-   */
-  static @NonNull GsonComponentSerializer gson() {
-    return GsonComponentSerializerImpl.INSTANCE;
-  }
-
-  /**
-   * Gets a component serializer for gson serialization and deserialization.
-   *
-   * <p>Hex colors are coerced to the nearest named color.</p>
-   *
-   * @return a gson component serializer
-   */
-  static @NonNull GsonComponentSerializer gsonDownsampleColor() {
-    return GsonComponentSerializerImpl.DOWNSAMPLE_COLOR;
-  }
-
   /**
    * Creates a new {@link GsonComponentSerializer.Builder}.
    *
@@ -86,12 +67,14 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
    * A builder for {@link GsonComponentSerializer}.
    */
   interface Builder extends Buildable.AbstractBuilder<GsonComponentSerializer> {
+    @NonNull Builder nbtCodec(final CompoundBinaryTag.@NonNull Codec codec);
+
     /**
      * Sets that the serializer should downsample hex colors to named colors.
      *
      * @return this builder
      */
-    Builder downsampleColors();
+    @NonNull Builder downsampleColors();
 
     /**
      * Builds the serializer.

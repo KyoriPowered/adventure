@@ -21,41 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.nbt;
+package net.kyori.adventure.nbt.impl;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-/**
- * Represents a compound binary tag.
- */
-public interface CompoundBinaryTag {
-  /*
-   * Instead of including an entire NBT implementation in adventure-api, we have decided to
-   * use this "empty" interface instead, allowing for either our own NBT API to be used, or
-   * one from a specific platform (when possible).
-   */
+/* package */ final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder<T> {
+  private @MonotonicNonNull List<BinaryTag> tags;
+  private BinaryTagType<? extends BinaryTag> type;
 
-  /**
-   * Something that can read and write a compound binary tag from a {@link String}.
-   */
-  interface Codec {
-    /**
-     * Reads a compound binary tag from a {@link String}.
-     *
-     * @param string the string
-     * @return the compound binary tag
-     * @throws IOException if an error occurred while reading
-     */
-    @NonNull CompoundBinaryTag fromString(final @NonNull String string) throws IOException;
+  /* package */ ListTagBuilder() {
+    this(BinaryTagTypes.END);
+  }
 
-    /**
-     * Writes a compound binary tag to a {@link String}.
-     *
-     * @param nbt the compound binary tag
-     * @return the string
-     * @throws IOException if an error occurred while reading
-     */
-    @NonNull String asString(final @NonNull CompoundBinaryTag nbt) throws IOException;
+  /* package */ ListTagBuilder(final BinaryTagType<? extends BinaryTag> type) {
+    this.type = type;
+  }
+
+  @Override
+  public ListBinaryTag.@NonNull Builder<T> add(final BinaryTag tag) {
+    ListBinaryTagImpl.noAddEnd(tag);
+    // set the type if it has not yet been set
+    if(this.type == BinaryTagTypes.END) {
+      this.type = tag.type();
+    }
+    // check after changing from an empty tag
+    ListBinaryTagImpl.mustBeSameType(tag, this.type);
+    if(this.tags == null) {
+      this.tags = new ArrayList<>();
+    }
+    this.tags.add(tag);
+    return this;
+  }
+
+  @Override
+  public @NonNull ListBinaryTag build() {
+    if(this.tags == null) return ListBinaryTag.empty();
+    return new ListBinaryTagImpl(this.type, new ArrayList<>(this.tags));
   }
 }

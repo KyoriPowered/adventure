@@ -3,6 +3,9 @@
 /api/build/
 /api/out/
 /api/run/
+/nbt/build/
+/nbt/out/
+/run/
 /text-feature-pagination/build/
 /text-feature-pagination/out/
 /text-serializer-gson/build/

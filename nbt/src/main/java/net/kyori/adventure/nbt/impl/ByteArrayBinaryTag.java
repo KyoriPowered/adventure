@@ -21,41 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.nbt;
+package net.kyori.adventure.nbt.impl;
 
-import java.io.IOException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * Represents a compound binary tag.
+ * A binary tag holding a {@code byte}-array value.
  */
-public interface CompoundBinaryTag {
-  /*
-   * Instead of including an entire NBT implementation in adventure-api, we have decided to
-   * use this "empty" interface instead, allowing for either our own NBT API to be used, or
-   * one from a specific platform (when possible).
+public interface ByteArrayBinaryTag extends BinaryTag {
+  /**
+   * Creates a binary tag holding a {@code byte}-array value.
+   *
+   * @param value the value
+   * @return a binary tag
    */
+  static @NonNull ByteArrayBinaryTag of(final byte@NonNull... value) {
+    return new ByteArrayBinaryTagImpl(value);
+  }
+
+  @Override
+  default @NonNull BinaryTagType<ByteArrayBinaryTag> type() {
+    return BinaryTagTypes.BYTE_ARRAY;
+  }
 
   /**
-   * Something that can read and write a compound binary tag from a {@link String}.
+   * Gets the value.
+   *
+   * <p>The returned array is a copy.</p>
+   *
+   * @return the value
    */
-  interface Codec {
-    /**
-     * Reads a compound binary tag from a {@link String}.
-     *
-     * @param string the string
-     * @return the compound binary tag
-     * @throws IOException if an error occurred while reading
-     */
-    @NonNull CompoundBinaryTag fromString(final @NonNull String string) throws IOException;
-
-    /**
-     * Writes a compound binary tag to a {@link String}.
-     *
-     * @param nbt the compound binary tag
-     * @return the string
-     * @throws IOException if an error occurred while reading
-     */
-    @NonNull String asString(final @NonNull CompoundBinaryTag nbt) throws IOException;
-  }
+  byte@NonNull[] value();
 }

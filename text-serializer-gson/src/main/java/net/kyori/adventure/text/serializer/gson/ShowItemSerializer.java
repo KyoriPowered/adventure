@@ -34,7 +34,6 @@ import com.google.gson.JsonSyntaxException;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.nbt.BinaryTagIO;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.text.event.HoverEvent;
 
@@ -42,6 +41,11 @@ import net.kyori.adventure.text.event.HoverEvent;
   /* package */ static final String ID = "id";
   /* package */ static final String COUNT = "count";
   /* package */ static final String TAG = "tag";
+  private final CompoundBinaryTag.Codec nbtCodec;
+
+  ShowItemSerializer(final CompoundBinaryTag.Codec nbtCodec) {
+    this.nbtCodec = nbtCodec;
+  }
 
   @Override
   public HoverEvent.ShowItem deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
@@ -61,7 +65,7 @@ import net.kyori.adventure.text.event.HoverEvent;
     CompoundBinaryTag nbt = null;
     if(object.has(TAG)) {
       try {
-        nbt = BinaryTagIO.readString(object.get(TAG).getAsString());
+        nbt = this.nbtCodec.fromString(object.get(TAG).getAsString());
       } catch(final IOException e) {
         throw new JsonParseException(e);
       }
@@ -84,7 +88,7 @@ import net.kyori.adventure.text.event.HoverEvent;
     final /* @Nullable */ CompoundBinaryTag nbt = src.nbt();
     if(nbt != null) {
       try {
-        json.addProperty(TAG, BinaryTagIO.writeString(nbt));
+        json.addProperty(TAG, this.nbtCodec.asString(nbt));
       } catch(final IOException e) {
         throw new JsonSyntaxException(e);
       }
