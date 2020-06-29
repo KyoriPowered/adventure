@@ -45,15 +45,33 @@ public interface ForwardingAudience extends Audience {
   @Nullable Audience audience();
 
   @Override
+  default boolean canSendMessage() {
+    final Audience audience = this.audience();
+    return audience != null && audience.canSendMessage();
+  }
+
+  @Override
   default void sendMessage(final @NonNull Component message) {
     final Audience audience = this.audience();
     if(audience != null) audience.sendMessage(message);
   }
 
   @Override
+  default boolean canSendActionBar() {
+    final Audience audience = this.audience();
+    return audience != null && audience.canSendActionBar();
+  }
+
+  @Override
   default void sendActionBar(final @NonNull Component message) {
     final Audience audience = this.audience();
     if(audience != null) audience.sendActionBar(message);
+  }
+
+  @Override
+  default boolean canShowTitle() {
+    final Audience audience = this.audience();
+    return audience != null && audience.canShowTitle();
   }
 
   @Override
@@ -75,6 +93,12 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
+  default boolean canShowBossBar() {
+    final Audience audience = this.audience();
+    return audience != null && audience.canShowBossBar();
+  }
+
+  @Override
   default void showBossBar(final @NonNull BossBar bar) {
     final Audience audience = this.audience();
     if(audience != null) audience.showBossBar(bar);
@@ -84,6 +108,12 @@ public interface ForwardingAudience extends Audience {
   default void hideBossBar(final @NonNull BossBar bar) {
     final Audience audience = this.audience();
     if(audience != null) audience.hideBossBar(bar);
+  }
+
+  @Override
+  default boolean canPlaySound() {
+    final Audience audience = this.audience();
+    return audience != null && audience.canPlaySound();
   }
 
   @Override
@@ -102,6 +132,12 @@ public interface ForwardingAudience extends Audience {
   default void stopSound(final @NonNull SoundStop stop) {
     final Audience audience = this.audience();
     if(audience != null) audience.stopSound(stop);
+  }
+  
+  @Override
+  default boolean canOpenBook() {
+    final Audience audience = this.audience();
+    return audience != null && audience.canOpenBook();
   }
 
   @Override

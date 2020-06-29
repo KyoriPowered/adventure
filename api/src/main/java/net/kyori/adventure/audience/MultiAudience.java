@@ -44,13 +44,37 @@ public interface MultiAudience extends Audience {
   @NonNull Iterable<? extends Audience> audiences();
 
   @Override
+  default boolean canSendMessage() {
+    for(final Audience audience : this.audiences()) {
+      if(audience.canSendMessage()) return true;
+    }
+    return false;
+  }
+
+  @Override
   default void sendMessage(final @NonNull Component message) {
     for(final Audience audience : this.audiences()) audience.sendMessage(message);
+  }
+  
+  @Override
+  default boolean canSendActionBar() {
+    for(final Audience audience : this.audiences()) {
+      if(audience.canSendActionBar()) return true;
+    }
+    return false;
   }
 
   @Override
   default void sendActionBar(final @NonNull Component message) {
     for(final Audience audience : this.audiences()) audience.sendActionBar(message);
+  }
+  
+  @Override
+  default boolean canShowTitle() {
+    for(final Audience audience : this.audiences()) {
+      if(audience.canShowTitle()) return true;
+    }
+    return false;
   }
 
   @Override
@@ -67,6 +91,14 @@ public interface MultiAudience extends Audience {
   default void resetTitle() {
     for(final Audience audience : this.audiences()) audience.resetTitle();
   }
+  
+  @Override
+  default boolean canShowBossBar() {
+    for(final Audience audience : this.audiences()) {
+      if(audience.canShowBossBar()) return true;
+    }
+    return false;
+  }
 
   @Override
   default void showBossBar(final @NonNull BossBar bar) {
@@ -76,6 +108,14 @@ public interface MultiAudience extends Audience {
   @Override
   default void hideBossBar(final @NonNull BossBar bar) {
     for(final Audience audience : this.audiences()) audience.hideBossBar(bar);
+  }
+  
+  @Override
+  default boolean canPlaySound() {
+    for(final Audience audience : this.audiences()) {
+      if(audience.canPlaySound()) return true;
+    }
+    return false;
   }
 
   @Override
@@ -91,6 +131,14 @@ public interface MultiAudience extends Audience {
   @Override
   default void stopSound(final @NonNull SoundStop stop) {
     for(final Audience audience : this.audiences()) audience.stopSound(stop);
+  }
+  
+  @Override
+  default boolean canOpenBook() {
+    for(final Audience audience : this.audiences()) {
+      if(audience.canOpenBook()) return true;
+    }
+    return false;
   }
 
   @Override

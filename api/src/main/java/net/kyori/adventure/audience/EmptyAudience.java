@@ -35,11 +35,26 @@ import org.checkerframework.checker.nullness.qual.NonNull;
   /* package */ static final EmptyAudience INSTANCE = new EmptyAudience();
 
   @Override
+  public boolean canSendMessage() {
+    return false;
+  }
+
+  @Override
   public void sendMessage(final @NonNull Component message) {
   }
 
   @Override
+  public boolean canSendActionBar() {
+    return false;
+  }
+
+  @Override
   public void sendActionBar(final @NonNull Component message) {
+  }
+
+  @Override
+  public boolean canShowTitle() {
+    return false;
   }
 
   @Override
@@ -55,11 +70,21 @@ import org.checkerframework.checker.nullness.qual.NonNull;
   }
 
   @Override
+  public boolean canShowBossBar() {
+    return false;
+  }
+
+  @Override
   public void showBossBar(final @NonNull BossBar bar) {
   }
 
   @Override
   public void hideBossBar(final @NonNull BossBar bar) {
+  }
+
+  @Override
+  public boolean canPlaySound() {
+    return false;
   }
 
   @Override
@@ -72,6 +97,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
   @Override
   public void stopSound(final @NonNull SoundStop stop) {
+  }
+
+  @Override
+  public boolean canOpenBook() {
+    return false;
   }
 
   @Override

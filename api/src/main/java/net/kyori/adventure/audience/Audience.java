@@ -87,6 +87,16 @@ public interface Audience {
   // ------------------
 
   /**
+   * Get if there is any way this audience can receive a message.
+   *
+   * <p>Sending a message when this method returns {@code false} will be a no-op.
+   * This method returning true does not guarantee that a message send will succeed.</p>
+   *
+   * @return false if messages cannot be sent to this source
+   */
+  boolean canSendMessage();
+
+  /**
    * Sends a message.
    *
    * @param message the message
@@ -98,6 +108,16 @@ public interface Audience {
   // --------------------
 
   /**
+   * Get if there is any way this audience can receive an action bar.
+   *
+   * <p>Sending to the action bar when this method returns {@code false} will be a no-op.
+   * This method returning true does not guarantee that an action bar send will succeed.</p>
+   *
+   * @return false if this source cannot receive action bars
+   */
+  boolean canSendActionBar();
+
+  /**
    * Sends a message on the action bar.
    *
    * @param message the message
@@ -107,6 +127,16 @@ public interface Audience {
   // ----------------
   // ---- Titles ----
   // ----------------
+
+  /**
+   * Get if there is any way this audience can receive a title.
+   *
+   * <p>Sending a title when this method returns {@code false} will be a no-op.
+   * This method returning true does not guarantee that a title send will succeed.</p>
+   *
+   * @return false if titles cannot be sent to this source
+   */
+  boolean canShowTitle();
 
   /**
    * Shows a title.
@@ -130,6 +160,16 @@ public interface Audience {
   // ------------------
 
   /**
+   * Get if there is any way this audience can receive a boss bar.
+   *
+   * <p>Showing or hiding a boss bar when this method returns {@code false} will be a no-op.
+   * This method returning true does not guarantee that showing a boss bar will succeed.</p>
+   *
+   * @return false if boss bars cannot be received by this source
+   */
+  boolean canShowBossBar();
+
+  /**
    * Shows a bossbar.
    *
    * @param bar the bossbar
@@ -146,6 +186,16 @@ public interface Audience {
   // ----------------
   // ---- Sounds ----
   // ----------------
+
+  /**
+   * Get if there is any way this audience can receive a sound.
+   *
+   * <p>Playing or stopping a sound when this method returns {@code false} will be a no-op.
+   * This method returning true does not guarantee that playing or stopping a sound will succeed.</p>
+   *
+   * @return false if sounds cannot be received by this source
+   */
+  boolean canPlaySound();
 
   /**
    * Plays a sound.
@@ -174,6 +224,16 @@ public interface Audience {
   // -------------------
   // ---- Inventory ----
   // -------------------
+
+  /**
+   * Get if there is any way this audience can receive a book.
+   *
+   * <p>Opening a book when this method returns {@code false} will be a no-op.
+   * This method returning true does not guarantee that opening a book will succeed.</p>
+   *
+   * @return false if books cannot be received by this source
+   */
+  boolean canOpenBook();
 
   /**
    * Opens a book.
