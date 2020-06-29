@@ -186,6 +186,17 @@ class StringIOTest {
   }
 
   @Test
+  public void testLegacyListTag() throws IOException {
+    final BinaryTag tag = stringToTag("[0:\"Tag #1\",1:\"Tag #2\"]");
+    assertEquals("[\"Tag #1\",\"Tag #2\"]", tagToString(tag));
+
+    final ListTagBuilder<BinaryTag> builder = new ListTagBuilder<>();
+    builder.add(StringBinaryTag.of("Tag #1"));
+    builder.add(StringBinaryTag.of("Tag #2"));
+    assertEquals(builder.build(), tag);
+  }
+
+  @Test
   public void testIntArrayTag() throws IOException {
     assertEquals("[I;1,2,3]", this.tagToString(IntArrayBinaryTag.of(1, 2, 3)));
     assertEquals(IntArrayBinaryTag.of(2, 4, 6, 8, 10, 12), this.stringToTag("[I; 2, 4, 6, 8, 10, 12]"));

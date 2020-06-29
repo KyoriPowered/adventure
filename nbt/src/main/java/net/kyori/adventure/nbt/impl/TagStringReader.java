@@ -49,7 +49,12 @@ import java.util.stream.IntStream;
   public ListBinaryTag list() throws StringTagParseException {
     final ListBinaryTag.Builder<BinaryTag> builder = ListBinaryTag.builder();
     this.buffer.expect(Tokens.ARRAY_BEGIN);
+    final boolean prefixedIndex = this.buffer.peek() == '0' && this.buffer.peek(1) == ':';
     while (this.buffer.hasMore()) {
+      if(prefixedIndex) {
+        this.buffer.takeUntil(':');
+      }
+
       final BinaryTag next = this.tag();
       // TODO: validate type
       builder.add(next);
