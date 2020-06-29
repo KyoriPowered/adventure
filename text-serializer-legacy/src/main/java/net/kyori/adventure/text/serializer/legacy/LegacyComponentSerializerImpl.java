@@ -432,15 +432,15 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
   }
 
-  private enum ColorFormatGuess {
+  enum ColorFormatGuess {
     MOJANG_LEGACY,
     KYORI_HEX,
     BUNGEECORD_UNUSUAL_HEX
   }
 
-  private static class DecodedFormat {
-    private final ColorFormatGuess encodedFormat;
-    private final TextFormat format;
+  static final class DecodedFormat {
+    final ColorFormatGuess encodedFormat;
+    final TextFormat format;
 
     private DecodedFormat(final ColorFormatGuess encodedFormat, final TextFormat format) {
       if(format == null) {
