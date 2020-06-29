@@ -79,12 +79,44 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     this.useTerriblyStupidHexFormat = useTerriblyStupidHexFormat;
   }
 
-  private @Nullable TextFormat fromLegacyCode(final char legacy, final String input, final int pos) {
-    if(legacy == this.hexCharacter && input.length() >= pos + 6) {
-      return TextColor.fromHexString('#' + input.substring(pos, pos + 6));
+  private @Nullable ColorFormatGuess determineFormat(final char legacy, final String input, final int pos) {
+    if(this.useTerriblyStupidHexFormat) {
+      // We must look ahead to determine if this is really a BungeeCord RGB string or merely a repeating
+      // sequence of overriding color codes.
+      final String bungeeRgbIndicator = this.character + "" + LEGACY_BUNGEE_HEX_CHAR;
+      final int last = input.lastIndexOf(bungeeRgbIndicator, pos);
+      if(last != -1 && pos - last == 14) {
+        return ColorFormatGuess.BUNGEECORD_UNUSUAL_HEX;
+      }
     }
-    final int index = LEGACY_CHARS.indexOf(legacy);
-    return index == -1 ? null : FORMATS.get(index);
+    if(legacy == this.hexCharacter) {
+      return ColorFormatGuess.KYORI_HEX;
+    } else if(LEGACY_CHARS.indexOf(legacy) != -1) {
+      return ColorFormatGuess.MOJANG_LEGACY;
+    }
+    return null;
+  }
+
+  private @Nullable DecodedFormat fromLegacyCode(final char legacy, final String input, final int pos) {
+    ColorFormatGuess guess = this.determineFormat(legacy, input, pos);
+    if (guess == null) {
+      return null;
+    }
+    switch (guess) {
+      case BUNGEECORD_UNUSUAL_HEX:
+        StringBuilder foundHex = new StringBuilder();
+        for(int i = pos - 1; i >= pos - 11; i -= 2) {
+          foundHex.append(input.charAt(i));
+        }
+        foundHex.append('#');
+        return new DecodedFormat(guess, TextColor.fromHexString(foundHex.reverse().toString()));
+      case KYORI_HEX:
+        return new DecodedFormat(guess, TextColor.fromHexString('#' + input.substring(pos, pos + 6)));
+      case MOJANG_LEGACY:
+        return new DecodedFormat(guess, FORMATS.get(LEGACY_CHARS.indexOf(legacy)));
+      default:
+        return null;
+    }
   }
 
   private static boolean isHexTextColor(final TextFormat format) {
@@ -134,9 +166,9 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
     int pos = input.length();
     do {
-      final TextFormat format = fromLegacyCode(input.charAt(next + 1), input, next + 2);
-      if(format != null) {
-        final int from = next + (isHexTextColor(format) ? 8 : 2);
+      final DecodedFormat decoded = fromLegacyCode(input.charAt(next + 1), input, next + 2);
+      if(decoded != null) {
+        final int from = next + (decoded.encodedFormat == ColorFormatGuess.KYORI_HEX ? 8 : 2);
         if(from != pos) {
           if(current != null) {
             if(reset) {
@@ -155,7 +187,13 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
           current = TextComponent.builder();
         }
 
-        reset |= applyFormat(current, format);
+        reset |= applyFormat(current, decoded.format);
+        if (decoded.encodedFormat == ColorFormatGuess.BUNGEECORD_UNUSUAL_HEX) {
+          // BungeeCord hex characters are a repeating set of characters, all of which are also valid
+          // legacy Mojang chat colors. Subtract the number of characters in the format, and only then
+          // skip ahead.
+          next -= 12;
+        }
         pos = next;
       }
 
@@ -166,8 +204,12 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       parts.add(current.build());
     }
 
-    Collections.reverse(parts);
-    return extractUrl(TextComponent.builder(pos > 0 ? input.substring(0, pos) : "").append(parts).build());
+    if(parts.size() == 1) {
+      return extractUrl(parts.get(0));
+    } else {
+      Collections.reverse(parts);
+      return extractUrl(TextComponent.builder(pos > 0 ? input.substring(0, pos) : "").append(parts).build());
+    }
   }
 
   @Override
@@ -385,6 +427,25 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     @Override
     public @NonNull LegacyComponentSerializer build() {
       return new LegacyComponentSerializerImpl(this.character, this.hexCharacter, this.urlStyle, this.urlLink, this.colorDownsample, this.useTerriblyStupidHexFormat);
+    }
+  }
+
+  private enum ColorFormatGuess {
+    MOJANG_LEGACY,
+    KYORI_HEX,
+    BUNGEECORD_UNUSUAL_HEX
+  }
+
+  private static class DecodedFormat {
+    private final ColorFormatGuess encodedFormat;
+    private final TextFormat format;
+
+    private DecodedFormat(ColorFormatGuess encodedFormat, TextFormat format) {
+      if(format == null) {
+        throw new IllegalStateException("No format found");
+      }
+      this.encodedFormat = encodedFormat;
+      this.format = format;
     }
   }
 }
