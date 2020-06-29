@@ -80,12 +80,14 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   }
 
   private @Nullable ColorFormatGuess determineFormat(final char legacy, final String input, final int pos) {
-    if(this.useTerriblyStupidHexFormat) {
-      // We must look ahead to determine if this is really a BungeeCord RGB string or merely a repeating
-      // sequence of overriding color codes.
-      final String bungeeRgbIndicator = this.character + "" + LEGACY_BUNGEE_HEX_CHAR;
-      final int last = input.lastIndexOf(bungeeRgbIndicator, pos);
-      if(last != -1 && pos - last == 14) {
+    if(pos >= 14) {
+      // The BungeeCord RGB color format uses a repeating sequence of RGB values, each character formatted
+      // as their own color format string, and to make things interesting, all the colors are also valid
+      // Mojang colors. We check if we're in the 15th character or the string or later as if we try to lookback
+      // earlier then it's not going to produce a valid result.
+      final int expectedCharacterPosition = pos - 14;
+      final int expectedIndicatorPosition = pos - 13;
+      if(input.charAt(expectedCharacterPosition) == character && input.charAt(expectedIndicatorPosition) == LEGACY_BUNGEE_HEX_CHAR) {
         return ColorFormatGuess.BUNGEECORD_UNUSUAL_HEX;
       }
     }
