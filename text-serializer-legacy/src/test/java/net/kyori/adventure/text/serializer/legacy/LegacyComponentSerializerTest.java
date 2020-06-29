@@ -168,4 +168,26 @@ class LegacyComponentSerializerTest {
     final TextComponent c0 = TextComponent.of("Kittens!", TextColor.of(0xffefd5));
     assertEquals("§x§f§f§e§f§d§5Kittens!", LegacyComponentSerializer.builder().hexColors().useUnusualXRepeatedCharacterHexFormat().build().serialize(c0));
   }
+
+  @Test
+  void testFromLegacyNesting() {
+    // https://github.com/KyoriPowered/adventure/issues/81
+    final String input = "Your link code is &l4000&r. PM the bot on Discord (&l3XP3R1M3N2L B0T&r) containing just this &lcode&r as the &bmessage&r to link your accounts.";
+    final TextComponent deserialized = LegacyComponentSerializer.legacy(LegacyComponentSerializer.AMPERSAND_CHAR).deserialize(input);
+    System.out.println(deserialized);
+    final TextComponent constructed = TextComponent.builder("Your link code is ")
+      .append(TextComponent.of("4000", Style.of(TextDecoration.BOLD)))
+      .append(TextComponent.make(". PM the bot on Discord (", c -> {
+        c.append(TextComponent.of("3XP3R1M3N2L B0T", Style.of(TextDecoration.BOLD)));
+      }))
+      .append(TextComponent.make(") containing just this ", c -> {
+        c.append(TextComponent.of("code", Style.of(TextDecoration.BOLD)));
+      }))
+      .append(" as the ")
+      .append("message", NamedTextColor.AQUA)
+      .append(" to link your accounts.")
+      .build();
+
+    assertEquals(constructed, deserialized);
+  }
 }
