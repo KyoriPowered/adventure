@@ -98,13 +98,13 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   }
 
   private @Nullable DecodedFormat fromLegacyCode(final char legacy, final String input, final int pos) {
-    ColorFormatGuess guess = this.determineFormat(legacy, input, pos);
+    final ColorFormatGuess guess = this.determineFormat(legacy, input, pos);
     if (guess == null) {
       return null;
     }
     switch (guess) {
       case BUNGEECORD_UNUSUAL_HEX:
-        StringBuilder foundHex = new StringBuilder();
+        final StringBuilder foundHex = new StringBuilder();
         for(int i = pos - 1; i >= pos - 11; i -= 2) {
           foundHex.append(input.charAt(i));
         }
@@ -188,7 +188,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         }
 
         reset |= applyFormat(current, decoded.format);
-        if (decoded.encodedFormat == ColorFormatGuess.BUNGEECORD_UNUSUAL_HEX) {
+        if(decoded.encodedFormat == ColorFormatGuess.BUNGEECORD_UNUSUAL_HEX) {
           // BungeeCord hex characters are a repeating set of characters, all of which are also valid
           // legacy Mojang chat colors. Subtract the number of characters in the format, and only then
           // skip ahead.
@@ -440,7 +440,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     private final ColorFormatGuess encodedFormat;
     private final TextFormat format;
 
-    private DecodedFormat(ColorFormatGuess encodedFormat, TextFormat format) {
+    private DecodedFormat(final ColorFormatGuess encodedFormat, final TextFormat format) {
       if(format == null) {
         throw new IllegalStateException("No format found");
       }
