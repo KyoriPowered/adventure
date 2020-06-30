@@ -38,7 +38,6 @@ import static java.util.Objects.requireNonNull;
  * A receiver of text-based media.
  */
 public interface Viewer {
-
   /**
    * Applies the given {@code action} to the viewer, and returns an
    * {@link Audience} encapsulating the sub-viewers (if any) which didn't support

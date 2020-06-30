@@ -34,7 +34,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * supported by the viewer.</p>
  */
 public interface Audience extends Viewer, Viewer.Messages, Viewer.ActionBars, Viewer.Titles, Viewer.BossBars, Viewer.Sounds, Viewer.Books {
-
   /**
    * Gets an audience with no viewers.
    *
@@ -53,5 +52,4 @@ public interface Audience extends Viewer, Viewer.Messages, Viewer.ActionBars, Vi
   static @NonNull Audience weakOf(final @Nullable Audience audience) {
     return audience instanceof WeakAudience || audience instanceof EmptyAudience ? audience : new WeakAudience(audience);
   }
-
 }

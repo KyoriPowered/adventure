@@ -61,7 +61,7 @@ import java.util.function.Consumer;
   }
 
   @Override
-  public void showBossBar(@NonNull final BossBar bar) {
+  public void showBossBar(final @NonNull BossBar bar) {
   }
 
   @Override

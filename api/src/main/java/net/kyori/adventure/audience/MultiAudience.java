@@ -40,7 +40,6 @@ import java.util.function.Consumer;
  */
 @FunctionalInterface
 public interface MultiAudience extends Audience {
-
   /**
    * Creates an audience that delegates to an array of viewers.
    *
