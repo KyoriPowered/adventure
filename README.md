@@ -5,6 +5,8 @@
 
 Simple library that implements an easy to use textual format to send rich json messages. 
 
+## TODO Update readme, this is still for 2.x and even 1.x
+
 ## Examples
 
 You can find a full breakdown of all supported components [here](DOCS.md).

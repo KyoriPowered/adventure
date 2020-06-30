@@ -1,0 +1,131 @@
+plugins {
+    id 'net.minecrell.licenser' version '0.4.1' apply false
+}
+
+// Adventure version
+ext.adventure = "4.0.0-SNAPSHOT"
+
+apply plugin: 'java-library'
+apply plugin: 'maven'
+apply plugin: 'signing'
+apply plugin: 'net.minecrell.licenser'
+
+group 'net.kyori'
+version '3.0.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    api 'net.kyori:adventure-api:4.0.0-SNAPSHOT'
+    testCompile 'net.kyori:adventure-text-serializer-gson:4.0.0-SNAPSHOT'
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs += ['-Xlint:all', '-Xlint:-path', '-parameters']
+    options.deprecation = true
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Test) {
+    useJUnitPlatform()
+}
+
+license {
+    header rootProject.file('header.txt')
+    include '**/*.java'
+    newLine false
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url 'https://oss.sonatype.org/content/groups/public/'
+    }
+    maven {
+        name = 'viaversion'
+        url = 'https://repo.viaversion.com'
+    }
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.0-M1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.3.0-M1'
+}
+
+task javadocJar(type: Jar) {
+    classifier 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+signing {
+    required { !project.version.endsWith('-SNAPSHOT') && gradle.taskGraph.hasTask(':uploadArchives') && project.hasProperty('signing.keyId') }
+    sign configurations.archives
+}
+
+jar {
+    manifest.attributes(
+            'Automatic-Module-Name': 'net.kyori.adventure.text.minimessage'
+    )
+}
+
+if (project.hasProperty('sonatypeUsername') && project.hasProperty('sonatypePassword')) {
+    uploadArchives {
+        enabled = System.getenv('TRAVIS') == null || project.version.endsWith('-SNAPSHOT')
+
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
+                    authentication(userName: sonatypeUsername, password: sonatypePassword)
+                }
+
+                snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
+                    authentication(userName: sonatypeUsername, password: sonatypePassword)
+                }
+
+                pom.project {
+                    description 'Textual representation for components.'
+                    name project.name
+                    url 'https://github.com/KyoriPowered/MiniMessage/'
+
+                    developers {
+                        developer {
+                            name 'Luck'
+                        }
+                    }
+
+                    issueManagement {
+                        system 'GitHub Issues'
+                        url 'https://github.com/KyoriPowered/MiniMessage/issues'
+                    }
+
+                    licenses {
+                        license {
+                            name 'MIT License'
+                            url 'https://opensource.org/licenses/MIT'
+                        }
+                    }
+
+                    scm {
+                        connection 'scm:git@github.com:KyoriPowered/MiniMessage.git'
+                        developerConnection 'scm:git@github.com:KyoriPowered/MiniMessage.git'
+                        url 'https://github.com/KyoriPowered/MiniMessage/'
+                    }
+                }
+            }
+        }
+    }
+}
