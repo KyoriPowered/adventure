@@ -31,14 +31,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AudienceTest {
   @Test
   void testMultiOf_many() {
     final Audience a0 = Audience.empty();
     final Audience a1 = Audience.empty();
-    final MultiAudience ma = MultiAudience.of(a0, a1);
-    assertThat(ma.viewers()).containsExactly(a0, a1).inOrder();
+    final Audience ma = Audience.of(a0, a1);
+    assertTrue(ma instanceof MultiAudience);
+    assertThat(((MultiAudience) ma).viewers()).containsExactly(a0, a1).inOrder();
   }
 
   @Test
@@ -109,7 +111,7 @@ class AudienceTest {
     final MsgActionViewer v0 = new MsgActionViewer();
     final MsgViewer v1 = new MsgViewer();
 
-    final MultiAudience ma = MultiAudience.of(v0, v1);
+    final Audience ma = Audience.of(v0, v1);
     final TextComponent c = TextComponent.of("hi");
 
     ma.sendMessage(c);

@@ -25,6 +25,7 @@ package net.kyori.adventure.audience;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import java.util.Arrays;
 
 /**
  * An audience is a collection of {@link Viewer}s, supporting all
@@ -41,6 +42,32 @@ public interface Audience extends Viewer, Viewer.Messages, Viewer.ActionBars, Vi
    */
   static @NonNull Audience empty() {
     return EmptyAudience.INSTANCE;
+  }
+
+  /**
+   * Creates an audience that delegates to an array of viewers.
+   *
+   * @param viewers the delegate viewers
+   * @return an audience
+   */
+  static @NonNull Audience of(final @NonNull Viewer@NonNull... viewers) {
+    final int length = viewers.length;
+    if(length == 0) {
+      return empty();
+    } else if(length == 1) {
+      return viewers[0].asAudience();
+    }
+    return of(Arrays.asList(viewers));
+  }
+
+  /**
+   * Creates an audience that delegates to a collection of viewers.
+   *
+   * @param viewers the delegate viewers
+   * @return an audience
+   */
+  static @NonNull Audience of(final @NonNull Iterable<? extends Viewer> viewers) {
+    return (MultiAudience) () -> viewers;
   }
 
   /**

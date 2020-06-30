@@ -31,7 +31,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -40,26 +39,6 @@ import java.util.function.Consumer;
  */
 @FunctionalInterface
 public interface MultiAudience extends Audience {
-  /**
-   * Creates an audience that delegates to an array of viewers.
-   *
-   * @param viewers the delegate viewers
-   * @return an audience
-   */
-  static @NonNull MultiAudience of(final @NonNull Viewer @NonNull... viewers) {
-    return of(Arrays.asList(viewers));
-  }
-
-  /**
-   * Creates an audience that delegates to a collection of viewers.
-   *
-   * @param viewers the delegate viewers
-   * @return an audience
-   */
-  static @NonNull MultiAudience of(final @NonNull Iterable<? extends Viewer> viewers) {
-    return () -> viewers;
-  }
-
   /**
    * Gets the viewers.
    *
@@ -85,7 +64,7 @@ public interface MultiAudience extends Audience {
         failed.add(result);
       }
     }
-    return failed.isEmpty() ? Audience.empty() : MultiAudience.of(failed);
+    return failed.isEmpty() ? Audience.empty() : Audience.of(failed);
   }
 
   @Override
