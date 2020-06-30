@@ -51,6 +51,11 @@ class Constants {
   public static final String CLOSE_TAG = "/";
   public static final String SEPARATOR = ":";
 
+  // markdown
+  public static final char MD_EMPHASIS_1 = '*';
+  public static final char MD_EMPHASIS_2 = '_';
+  public static final char MD_UNDERLINE = '~';
+
   private Constants() {
   }
 }
