@@ -27,7 +27,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.nbt.BinaryTagHolder;
+import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.renderer.ComponentRenderer;
 import net.kyori.adventure.util.Index;
