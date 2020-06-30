@@ -73,7 +73,7 @@ public interface MultiAudience extends StubAudience {
    */
   @Override
   default <T extends Audience> @NonNull Audience perform(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
-    List<Audience> failed = new ArrayList<>();
+    final List<Audience> failed = new ArrayList<>();
     for(final Audience audience : this.audiences()) {
       final Audience result = audience.perform(type, action);
       if(result != Audience.empty()) {

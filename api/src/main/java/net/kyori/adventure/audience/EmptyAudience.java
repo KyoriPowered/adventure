@@ -32,7 +32,7 @@ import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.function.Consumer;
 
-/* package */ final class EmptyAudience implements Audience.Everything {
+/* package */ final class EmptyAudience implements StubAudience {
   /* package */ static final EmptyAudience INSTANCE = new EmptyAudience();
 
   @Override

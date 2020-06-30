@@ -44,23 +44,8 @@ public interface Audience {
    *
    * @return an audience
    */
-  static @NonNull Everything empty() {
+  static @NonNull StubAudience empty() {
     return EmptyAudience.INSTANCE;
-  }
-
-  /**
-   * Widens {@code audience} to implement {@link Audience.Everything all operations},
-   * failing silently with a no-op when a method isn't supported.
-   *
-   * @param audience the audience
-   * @return a forwarding audience
-   */
-  static @NonNull Everything of(final @NonNull Audience audience) {
-    requireNonNull(audience, "audience");
-    if(audience instanceof Everything) {
-      return (Everything) audience;
-    }
-    return (ForwardingAudience) () -> audience;
   }
 
   /**
@@ -95,6 +80,19 @@ public interface Audience {
     } else {
       return this;
     }
+  }
+
+  /**
+   * Widens this audience to implement {@link Audience.Everything all operations},
+   * failing silently with a no-op when a method isn't supported.
+   *
+   * @return a stub audience
+   */
+  default StubAudience stub() {
+    if(this instanceof StubAudience) {
+      return (StubAudience) this;
+    }
+    return (ForwardingAudience) () -> this;
   }
 
   /**

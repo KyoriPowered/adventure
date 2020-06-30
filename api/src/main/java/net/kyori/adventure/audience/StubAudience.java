@@ -38,6 +38,7 @@ import java.util.function.Consumer;
  * <p>Stub audiences must override {@link #perform(Class, Consumer)}.</p>
  */
 public interface StubAudience extends Audience.Everything {
+  @Override
   default void sendMessage(final @NonNull Component message) {
     this.perform(Audience.Messages.class, a -> a.sendMessage(message));
   }
