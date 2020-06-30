@@ -37,7 +37,7 @@ public interface Audience {
    *
    * @return an audience
    */
-  static @NonNull Audience empty() {
+  static Audience.@NonNull Everything empty() {
     return EmptyAudience.INSTANCE;
   }
 

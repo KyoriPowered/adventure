@@ -26,71 +26,39 @@ package net.kyori.adventure.audience;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.function.Consumer;
 
 /**
- * An audience that contains multiple audiences.
+ * An audience that delegates to another audience.
  */
 @FunctionalInterface
-public interface MultiAudience extends Audience.Everything {
-
+public interface ForwardingAudience extends Audience.Everything {
   /**
-   * Creates an audience that delegates to an array of audiences.
+   * Gets the delegate audience.
    *
-   * @param audiences the delegate audiences
-   * @return an audience
+   * @return the audience, or {@code null} to silently drop
    */
-  static @NonNull MultiAudience of(final @NonNull Audience@NonNull... audiences) {
-    return of(Arrays.asList(audiences));
-  }
+  @Nullable Audience audience();
 
   /**
-   * Creates an audience that delegates to a collection of audiences.
-   *
-   * @param audiences the delegate audiences
-   * @return an audience
-   */
-  static @NonNull MultiAudience of(final @NonNull Iterable<? extends Audience> audiences) {
-    return () -> audiences;
-  }
-
-  /**
-   * Gets the audiences.
-   *
-   * @return the audiences, can be empty
-   */
-  @NonNull Iterable<? extends Audience> audiences();
-
-  /**
-   * Forwards the given {@code action} onto the delegate audiences, and returns a
-   * {@link MultiAudience} encapsulating the audiences which didn't support the action.
+   * Forwards the given {@code action} onto the delegate audiences, and returns either
+   * an {@link Audience#empty() empty audience} or {@code this}, depending on whether
+   * the action was supported or not, respectively.
    *
    * @param type the type of audience the action requires
    * @param action the action
    * @param <T> the type of audience
-   * @return a {@link MultiAudience} of the audiences the action couldn't be applied to
+   * @return an audience
    */
-  default <T extends Audience> MultiAudience forward(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
-    List<Audience> failed = new ArrayList<>();
-    for(final Audience audience : this.audiences()) {
-      if(audience instanceof ForwardingAudience) {
-        final ForwardingAudience forwardingAudience = (ForwardingAudience) audience;
-        if (forwardingAudience.forward(type, action) != Audience.empty()) {
-          failed.add(audience);
-        }
-      } else {
-        if(type.isInstance(audience)) {
-          action.accept(type.cast(audience));
-        } else {
-          failed.add(audience);
-        }
-      }
+  default <T extends Audience> Audience.Everything forward(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
+    final /* @Nullable */ Audience audience = audience();
+    if(type.isInstance(audience)) {
+      action.accept(type.cast(audience));
+      return Audience.empty();
+    } else {
+      return this;
     }
-    return () -> failed;
   }
 
   @Override
