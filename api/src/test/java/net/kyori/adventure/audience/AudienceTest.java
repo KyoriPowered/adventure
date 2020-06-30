@@ -81,8 +81,8 @@ class AudienceTest {
     assertEquals(1, a1.msgCount);
     assertEquals(1, a0.actionCount);
 
-    ma.forward(Audience.ActionBar.class, a -> a.sendActionBar(c))
-      .forward(Audience.Message.class, a -> a.sendMessage(c));
+    ma.perform(Audience.ActionBar.class, a -> a.sendActionBar(c))
+      .perform(Audience.Message.class, a -> a.sendMessage(c));
     assertEquals(1, a0.msgCount);
     assertEquals(2, a1.msgCount);
     assertEquals(2, a0.actionCount);

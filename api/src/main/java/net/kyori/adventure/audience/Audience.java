@@ -27,6 +27,7 @@ import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import java.util.function.Consumer;
 
 /**
  * A receiver of text-based media.
@@ -42,6 +43,17 @@ public interface Audience {
   }
 
   /**
+   * Widens {@code audience} to implement {@link Audience.Everything all operations},
+   * failing silently with a no-op when a method isn't supported.
+   *
+   * @param audience the audience
+   * @return a forwarding audience
+   */
+  static Audience.@NonNull Everything of(final @NonNull Audience audience) {
+    return (ForwardingAudience) () -> audience;
+  }
+
+  /**
    * Creates an audience that weakly delegates to another audience.
    *
    * @param audience the delegate audience
@@ -51,6 +63,31 @@ public interface Audience {
     return audience instanceof WeakAudience || audience == EmptyAudience.INSTANCE ? audience : new WeakAudience(audience);
   }
 
+  /**
+   * Applies the given {@code action} onto the audience, and returns an
+   * {@link Audience} encapsulating the sub-audiences (if any) which didn't support
+   * the action.
+   *
+   * @param type the type of audience the action requires
+   * @param action the action
+   * @param <T> the type of audience
+   * @return a {@link Audience} of the sub-audiences the action couldn't be applied to
+   */
+  default <T extends Audience> @NonNull Audience perform(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
+    if(this instanceof StubAudience) {
+      throw new RuntimeException("StubAudience implementations must override this method");
+    }
+    if(type.isInstance(this)) {
+      action.accept(type.cast(this));
+      return Audience.empty();
+    } else {
+      return this;
+    }
+  }
+
+  /**
+   * An audience that supports everything.
+   */
   interface Everything extends
     Audience,
     Audience.Message,
@@ -61,10 +98,9 @@ public interface Audience {
     Audience.Book {
   }
 
-  // ------------------
-  // ---- Messages ----
-  // ------------------
-
+  /**
+   * An audience that supports messages.
+   */
   interface Message extends Audience {
     /**
      * Sends a message.
@@ -74,10 +110,9 @@ public interface Audience {
     void sendMessage(final @NonNull Component message);
   }
 
-  // --------------------
-  // ---- Action Bar ----
-  // --------------------
-
+  /**
+   * An audience that supports action bars.
+   */
   interface ActionBar extends Audience {
     /**
      * Sends a message on the action bar.
@@ -87,10 +122,9 @@ public interface Audience {
     void sendActionBar(final @NonNull Component message);
   }
 
-  // ----------------
-  // ---- Titles ----
-  // ----------------
-
+  /**
+   * An audience that supports titles.
+   */
   interface Title extends Audience {
     /**
      * Shows a title.
@@ -110,10 +144,9 @@ public interface Audience {
     void resetTitle();
   }
 
-  // ------------------
-  // ---- Boss Bar ----
-  // ------------------
-
+  /**
+   * An audience that supports boss bars.
+   */
   interface BossBar extends Audience {
     /**
      * Shows a bossbar.
@@ -130,10 +163,9 @@ public interface Audience {
     void hideBossBar(final @NonNull BossBar bar);
   }
 
-  // ----------------
-  // ---- Sounds ----
-  // ----------------
-
+  /**
+   * An audience that supports sounds.
+   */
   interface Sound extends Audience {
     /**
      * Plays a sound.
@@ -160,10 +192,9 @@ public interface Audience {
     void stopSound(final @NonNull SoundStop stop);
   }
 
-  // -------------------
-  // ---- Inventory ----
-  // -------------------
-
+  /**
+   * An audience that supports books.
+   */
   interface Book extends Audience {
     /**
      * Opens a book.

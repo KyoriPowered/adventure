@@ -28,55 +28,63 @@ import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.function.Consumer;
 
-/* package */ interface EmptyAudience extends Audience.Everything {
-  Audience.Everything INSTANCE = new EmptyAudience() {};
-
-  @Override
-  default <T extends Audience> @NonNull Audience perform(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
-    return this;
-  }
-
-  @Override
+/**
+ * An audience that fails silently if an operation is not supported.
+ *
+ * <p>Stub audiences must override {@link #perform(Class, Consumer)}.</p>
+ */
+public interface StubAudience extends Audience.Everything {
   default void sendMessage(final @NonNull Component message) {
+    perform(Audience.Message.class, a -> a.sendMessage(message));
   }
 
   @Override
   default void sendActionBar(final @NonNull Component message) {
+    perform(Audience.ActionBar.class, a -> a.sendActionBar(message));
   }
 
   @Override
   default void showTitle(final @NonNull Title title) {
+    perform(Audience.Title.class, a -> a.showTitle(title));
   }
 
   @Override
   default void clearTitle() {
+    perform(Audience.Title.class, Title::clearTitle);
   }
 
   @Override
   default void resetTitle() {
+    perform(Audience.Title.class, Title::resetTitle);
   }
 
   @Override
   default void showBossBar(final @NonNull BossBar bar) {
+    perform(Audience.BossBar.class, a -> a.showBossBar(bar));
   }
 
   @Override
   default void hideBossBar(final @NonNull BossBar bar) {
+    perform(Audience.BossBar.class, a -> a.hideBossBar(bar));
   }
 
   @Override
   default void playSound(final @NonNull Sound sound) {
+    perform(Audience.Sound.class, a -> a.playSound(sound));
   }
 
   @Override
   default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
+    perform(Audience.Sound.class, a -> a.playSound(sound, x, y, z));
   }
 
   @Override
   default void stopSound(final @NonNull SoundStop stop) {
+    perform(Audience.Sound.class, a -> a.stopSound(stop));
   }
 
   @Override
   default void openBook(final @NonNull Book book) {
+    perform(Audience.Book.class, a -> a.openBook(book));
   }
 }

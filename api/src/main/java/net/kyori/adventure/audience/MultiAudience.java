@@ -23,10 +23,7 @@
  */
 package net.kyori.adventure.audience;
 
-import net.kyori.adventure.sound.SoundStop;
-import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +33,7 @@ import java.util.function.Consumer;
  * An audience that contains multiple audiences.
  */
 @FunctionalInterface
-public interface MultiAudience extends Audience.Everything {
+public interface MultiAudience extends StubAudience {
 
   /**
    * Creates an audience that delegates to an array of audiences.
@@ -74,77 +71,14 @@ public interface MultiAudience extends Audience.Everything {
    * @param <T> the type of audience
    * @return a {@link MultiAudience} of the audiences the action couldn't be applied to
    */
-  default <T extends Audience> MultiAudience forward(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
+  default <T extends Audience> @NonNull Audience perform(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
     List<Audience> failed = new ArrayList<>();
     for(final Audience audience : this.audiences()) {
-      if(audience instanceof ForwardingAudience) {
-        final ForwardingAudience forwardingAudience = (ForwardingAudience) audience;
-        if (forwardingAudience.forward(type, action) != Audience.empty()) {
-          failed.add(audience);
-        }
-      } else {
-        if(type.isInstance(audience)) {
-          action.accept(type.cast(audience));
-        } else {
-          failed.add(audience);
-        }
+      final Audience result = audience.perform(type, action);
+      if(result != Audience.empty()) {
+        failed.add(result);
       }
     }
-    return () -> failed;
-  }
-
-  @Override
-  default void sendMessage(final @NonNull Component message) {
-    forward(Audience.Message.class, a -> a.sendMessage(message));
-  }
-
-  @Override
-  default void sendActionBar(final @NonNull Component message) {
-    forward(Audience.ActionBar.class, a -> a.sendActionBar(message));
-  }
-
-  @Override
-  default void showTitle(final @NonNull Title title) {
-    forward(Audience.Title.class, a -> a.showTitle(title));
-  }
-
-  @Override
-  default void clearTitle() {
-    forward(Audience.Title.class, Title::clearTitle);
-  }
-
-  @Override
-  default void resetTitle() {
-    forward(Audience.Title.class, Title::resetTitle);
-  }
-
-  @Override
-  default void showBossBar(final @NonNull BossBar bar) {
-    forward(Audience.BossBar.class, a -> a.showBossBar(bar));
-  }
-
-  @Override
-  default void hideBossBar(final @NonNull BossBar bar) {
-    forward(Audience.BossBar.class, a -> a.hideBossBar(bar));
-  }
-
-  @Override
-  default void playSound(final @NonNull Sound sound) {
-    forward(Audience.Sound.class, a -> a.playSound(sound));
-  }
-
-  @Override
-  default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
-    forward(Audience.Sound.class, a -> a.playSound(sound, x, y, z));
-  }
-
-  @Override
-  default void stopSound(final @NonNull SoundStop stop) {
-    forward(Audience.Sound.class, a -> a.stopSound(stop));
-  }
-
-  @Override
-  default void openBook(final @NonNull Book book) {
-    forward(Audience.Book.class, a -> a.openBook(book));
+    return failed.isEmpty() ? Audience.empty() : MultiAudience.of(failed);
   }
 }
