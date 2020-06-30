@@ -35,7 +35,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AudienceTest {
   @Test
-  void testMultiOf_many() {
+  void testOf_none() {
+    assertSame(Audience.empty(), Audience.of());
+  }
+
+  @Test
+  void testOf_one() {
+    final Audience a0 = Audience.empty();
+    assertSame(a0,  Audience.of(a0));
+  }
+
+  @Test
+  void testOf_many() {
     final Audience a0 = Audience.empty();
     final Audience a1 = Audience.empty();
     final Audience ma = Audience.of(a0, a1);
