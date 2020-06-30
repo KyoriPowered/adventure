@@ -24,7 +24,7 @@
 package net.kyori.adventure.audience;
 
 import java.util.Arrays;
-import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.bossbar.BossBarContainer;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
@@ -134,14 +134,14 @@ public interface Audience {
    *
    * @param bar the bossbar
    */
-  void showBossBar(final @NonNull BossBar bar);
+  void showBossBar(final @NonNull BossBarContainer bar);
 
   /**
    * Hides a bossbar.
    *
    * @param bar the bossbar
    */
-  void hideBossBar(final @NonNull BossBar bar);
+  void hideBossBar(final @NonNull BossBarContainer bar);
 
   // ----------------
   // ---- Sounds ----

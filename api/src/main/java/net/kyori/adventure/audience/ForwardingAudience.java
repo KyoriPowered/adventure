@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.audience;
 
-import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.bossbar.BossBarContainer;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
@@ -75,13 +75,13 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
-  default void showBossBar(final @NonNull BossBar bar) {
+  default void showBossBar(final @NonNull BossBarContainer bar) {
     final Audience audience = this.audience();
     if(audience != null) audience.showBossBar(bar);
   }
 
   @Override
-  default void hideBossBar(final @NonNull BossBar bar) {
+  default void hideBossBar(final @NonNull BossBarContainer bar) {
     final Audience audience = this.audience();
     if(audience != null) audience.hideBossBar(bar);
   }

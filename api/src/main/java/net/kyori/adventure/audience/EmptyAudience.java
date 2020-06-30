@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.audience;
 
-import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.bossbar.BossBarContainer;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
@@ -55,11 +55,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
   }
 
   @Override
-  public void showBossBar(final @NonNull BossBar bar) {
+  public void showBossBar(final @NonNull BossBarContainer bar) {
   }
 
   @Override
-  public void hideBossBar(final @NonNull BossBar bar) {
+  public void hideBossBar(final @NonNull BossBarContainer bar) {
   }
 
   @Override
