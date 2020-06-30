@@ -27,6 +27,9 @@ import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -34,6 +37,27 @@ import java.util.function.Consumer;
  */
 @FunctionalInterface
 public interface MultiAudience extends Audience.Everything {
+
+  /**
+   * Creates an audience that delegates to an array of audiences.
+   *
+   * @param audiences the delegate audiences
+   * @return an audience
+   */
+  static @NonNull MultiAudience of(final @NonNull Audience@NonNull... audiences) {
+    return of(Arrays.asList(audiences));
+  }
+
+  /**
+   * Creates an audience that delegates to a collection of audiences.
+   *
+   * @param audiences the delegate audiences
+   * @return an audience
+   */
+  static @NonNull MultiAudience of(final @NonNull Iterable<? extends Audience> audiences) {
+    return () -> audiences;
+  }
+
   /**
    * Gets the audiences.
    *
@@ -41,12 +65,25 @@ public interface MultiAudience extends Audience.Everything {
    */
   @NonNull Iterable<? extends Audience> audiences();
 
-  default <T extends Audience> void forward(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
+  /**
+   * Forwards the given {@code action} onto the delegate audiences, and returns a
+   * {@link MultiAudience} encapsulating the audiences which didn't support the action.
+   *
+   * @param type the type of audience the action requires
+   * @param action the action
+   * @param <T> the type of audience
+   * @return a {@link MultiAudience} of the audiences the action couldn't be applied to
+   */
+  default <T extends Audience> MultiAudience forward(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
+    List<Audience> failed = new ArrayList<>();
     for(final Audience audience : this.audiences()) {
       if(type.isInstance(audience)) {
         action.accept(type.cast(audience));
+      } else {
+        failed.add(audience);
       }
     }
+    return () -> failed;
   }
 
   @Override

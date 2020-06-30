@@ -27,8 +27,8 @@ import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public interface StubAudience extends Audience.Everything {
-  Audience.Everything EMPTY = new StubAudience() {};
+/* package */ interface EmptyAudience extends Audience.Everything {
+  Audience.Everything INSTANCE = new EmptyAudience() {};
 
   @Override
   default void sendMessage(final @NonNull Component message) {

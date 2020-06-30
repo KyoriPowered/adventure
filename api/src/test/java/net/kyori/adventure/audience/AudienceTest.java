@@ -23,31 +23,22 @@
  */
 package net.kyori.adventure.audience;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AudienceTest {
   @Test
-  void testOf_none() {
-    assertSame(Audience.empty(), Audience.of());
-  }
-
-  @Test
-  void testOf_one() {
-    final Audience a0 = Audience.empty();
-    assertSame(a0,  Audience.of(a0));
-  }
-
-  @Test
-  void testOf_many() {
+  void testMultiOf_many() {
     final Audience a0 = Audience.empty();
     final Audience a1 = Audience.empty();
-    final Audience ma = Audience.of(a0, a1);
-    assertTrue(ma instanceof MultiAudience);
-    assertThat(((MultiAudience) ma).audiences()).containsExactly(a0, a1).inOrder();
+    final MultiAudience ma = MultiAudience.of(a0, a1);
+    assertThat(ma.audiences()).containsExactly(a0, a1).inOrder();
   }
 
   @Test
@@ -55,5 +46,45 @@ class AudienceTest {
     final Audience empty = Audience.empty();
     final Audience weak = Audience.weakOf(empty);
     assertSame(empty, weak);
+  }
+
+  @Test
+  void testMultiForward() {
+    class MsgAudience implements Audience.Message {
+      int msgCount = 0;
+      @Override
+      public void sendMessage(@NonNull Component message) {
+        this.msgCount++;
+      }
+    }
+    class MsgActionAudience extends MsgAudience implements Audience.ActionBar {
+      int actionCount = 0;
+      @Override
+      public void sendActionBar(@NonNull Component message) {
+        this.actionCount++;
+      }
+    }
+
+    final MsgActionAudience a0 = new MsgActionAudience();
+    final MsgAudience a1 = new MsgAudience();
+
+    final MultiAudience ma = MultiAudience.of(a0, a1);
+    final TextComponent c = TextComponent.of("hi");
+
+    ma.sendMessage(c);
+    assertEquals(1, a0.msgCount);
+    assertEquals(1, a1.msgCount);
+    assertEquals(0, a0.actionCount);
+
+    ma.sendActionBar(c);
+    assertEquals(1, a0.msgCount);
+    assertEquals(1, a1.msgCount);
+    assertEquals(1, a0.actionCount);
+
+    ma.forward(Audience.ActionBar.class, a -> a.sendActionBar(c))
+      .forward(Audience.Message.class, a -> a.sendMessage(c));
+    assertEquals(1, a0.msgCount);
+    assertEquals(2, a1.msgCount);
+    assertEquals(2, a0.actionCount);
   }
 }

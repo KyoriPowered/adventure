@@ -24,9 +24,12 @@
 package net.kyori.adventure.audience;
 
 import java.lang.ref.WeakReference;
+import java.util.Collections;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-/* package */ final class WeakAudience implements ForwardingAudience {
+/* package */ final class WeakAudience implements MultiAudience {
   private final WeakReference<Audience> audience;
 
   /* package */ WeakAudience(final @Nullable Audience audience) {
@@ -34,7 +37,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
   }
 
   @Override
-  public @Nullable Audience audience() {
-    return this.audience.get();
+  public @NonNull Iterable<? extends Audience> audiences() {
+    final /* @Nullable */ Audience audience = this.audience.get();
+    return audience == null ? Collections.emptyList() : Collections.singleton(audience);
   }
 }

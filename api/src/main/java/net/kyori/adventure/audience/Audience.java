@@ -23,13 +23,8 @@
  */
 package net.kyori.adventure.audience;
 
-import java.util.Arrays;
-import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.inventory.Book;
-import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -43,33 +38,7 @@ public interface Audience {
    * @return an audience
    */
   static @NonNull Audience empty() {
-    return StubAudience.EMPTY;
-  }
-
-  /**
-   * Creates an audience that delegates to an array of audiences.
-   *
-   * @param audiences the delegate audiences
-   * @return an audience
-   */
-  static @NonNull Audience of(final @NonNull Audience@NonNull... audiences) {
-    final int length = audiences.length;
-    if(length == 0) {
-      return empty();
-    } else if(length == 1) {
-      return audiences[0];
-    }
-    return of(Arrays.asList(audiences));
-  }
-
-  /**
-   * Creates an audience that delegates to a collection of audiences.
-   *
-   * @param audiences the delegate audiences
-   * @return an audience
-   */
-  static @NonNull Audience of(final @NonNull Iterable<? extends Audience> audiences) {
-    return (MultiAudience) () -> audiences;
+    return EmptyAudience.INSTANCE;
   }
 
   /**
@@ -79,7 +48,7 @@ public interface Audience {
    * @return an audience
    */
   static @NonNull Audience weakOf(final @Nullable Audience audience) {
-    return audience instanceof WeakAudience || audience == StubAudience.EMPTY ? audience : new WeakAudience(audience);
+    return audience instanceof WeakAudience || audience == EmptyAudience.INSTANCE ? audience : new WeakAudience(audience);
   }
 
   interface Everything extends
