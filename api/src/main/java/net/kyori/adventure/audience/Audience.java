@@ -43,7 +43,7 @@ public interface Audience {
    * @return an audience
    */
   static @NonNull Audience empty() {
-    return EmptyAudience.INSTANCE;
+    return StubAudience.EMPTY;
   }
 
   /**
@@ -79,108 +79,130 @@ public interface Audience {
    * @return an audience
    */
   static @NonNull Audience weakOf(final @Nullable Audience audience) {
-    return audience instanceof WeakAudience || audience instanceof EmptyAudience ? audience : new WeakAudience(audience);
+    return audience instanceof WeakAudience || audience == StubAudience.EMPTY ? audience : new WeakAudience(audience);
+  }
+
+  interface Everything extends
+    Audience,
+    Audience.Message,
+    Audience.ActionBar,
+    Audience.Title,
+    Audience.BossBar,
+    Audience.Sound,
+    Audience.Book {
   }
 
   // ------------------
   // ---- Messages ----
   // ------------------
 
-  /**
-   * Sends a message.
-   *
-   * @param message the message
-   */
-  void sendMessage(final @NonNull Component message);
+  interface Message extends Audience {
+    /**
+     * Sends a message.
+     *
+     * @param message the message
+     */
+    void sendMessage(final @NonNull Component message);
+  }
 
   // --------------------
   // ---- Action Bar ----
   // --------------------
 
-  /**
-   * Sends a message on the action bar.
-   *
-   * @param message the message
-   */
-  void sendActionBar(final @NonNull Component message);
+  interface ActionBar extends Audience {
+    /**
+     * Sends a message on the action bar.
+     *
+     * @param message the message
+     */
+    void sendActionBar(final @NonNull Component message);
+  }
 
   // ----------------
   // ---- Titles ----
   // ----------------
 
-  /**
-   * Shows a title.
-   *
-   * @param title the title
-   */
-  void showTitle(final @NonNull Title title);
+  interface Title extends Audience {
+    /**
+     * Shows a title.
+     *
+     * @param title the title
+     */
+    void showTitle(final @NonNull Title title);
 
-  /**
-   * Clears the currently displayed title.
-   */
-  void clearTitle();
+    /**
+     * Clears the currently displayed title.
+     */
+    void clearTitle();
 
-  /**
-   * Resets the title, subtitle, fade-in time, stay time, and fade-out time back to "unset".
-   */
-  void resetTitle();
+    /**
+     * Resets the title, subtitle, fade-in time, stay time, and fade-out time back to "unset".
+     */
+    void resetTitle();
+  }
 
   // ------------------
   // ---- Boss Bar ----
   // ------------------
 
-  /**
-   * Shows a bossbar.
-   *
-   * @param bar the bossbar
-   */
-  void showBossBar(final @NonNull BossBar bar);
+  interface BossBar extends Audience {
+    /**
+     * Shows a bossbar.
+     *
+     * @param bar the bossbar
+     */
+    void showBossBar(final @NonNull BossBar bar);
 
-  /**
-   * Hides a bossbar.
-   *
-   * @param bar the bossbar
-   */
-  void hideBossBar(final @NonNull BossBar bar);
+    /**
+     * Hides a bossbar.
+     *
+     * @param bar the bossbar
+     */
+    void hideBossBar(final @NonNull BossBar bar);
+  }
 
   // ----------------
   // ---- Sounds ----
   // ----------------
 
-  /**
-   * Plays a sound.
-   *
-   * @param sound the sound
-   */
-  void playSound(final @NonNull Sound sound);
+  interface Sound extends Audience {
+    /**
+     * Plays a sound.
+     *
+     * @param sound the sound
+     */
+    void playSound(final @NonNull Sound sound);
 
-  /**
-   * Plays a sound.
-   *
-   * @param sound the sound
-   * @param x the x coordinate
-   * @param y the y coordinate
-   * @param z the z coordinate
-   */
-  void playSound(final @NonNull Sound sound, final double x, final double y, final double z);
+    /**
+     * Plays a sound.
+     *
+     * @param sound the sound
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
+     */
+    void playSound(final @NonNull Sound sound, final double x, final double y, final double z);
 
-  /**
-   * Stops all sounds.
-   *
-   * @param stop the stop
-   */
-  void stopSound(final @NonNull SoundStop stop);
+    /**
+     * Stops all sounds.
+     *
+     * @param stop the stop
+     */
+    void stopSound(final @NonNull SoundStop stop);
+  }
 
   // -------------------
   // ---- Inventory ----
   // -------------------
 
-  /**
-   * Opens a book.
-   *
-   * <p>Opens a virtual book for the client, no item will be persisted.</p>
-   *
-   * @param book the book
-   */
-  void openBook(final @NonNull Book book);
+  interface Book extends Audience {
+    /**
+     * Opens a book.
+     *
+     * <p>Opens a virtual book for the client, no item will be persisted.</p>
+     *
+     * @param book the book
+     */
+    void openBook(final @NonNull Book book);
+  }
 }

@@ -23,20 +23,18 @@
  */
 package net.kyori.adventure.audience;
 
-import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.inventory.Book;
-import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import java.util.function.Consumer;
 
 /**
  * An audience that delegates to another audience.
  */
 @FunctionalInterface
-public interface ForwardingAudience extends Audience {
+public interface ForwardingAudience extends Audience.Everything {
   /**
    * Gets the delegate audience.
    *
@@ -44,69 +42,65 @@ public interface ForwardingAudience extends Audience {
    */
   @Nullable Audience audience();
 
+  default <T extends Audience> void forward(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
+    final /* @Nullable */ Audience audience = this.audience();
+    if(audience != null && type.isInstance(audience)) {
+      action.accept(type.cast(audience));
+    }
+  }
+
   @Override
   default void sendMessage(final @NonNull Component message) {
-    final Audience audience = this.audience();
-    if(audience != null) audience.sendMessage(message);
+    forward(Audience.Message.class, a -> a.sendMessage(message));
   }
 
   @Override
   default void sendActionBar(final @NonNull Component message) {
-    final Audience audience = this.audience();
-    if(audience != null) audience.sendActionBar(message);
+    forward(Audience.ActionBar.class, a -> a.sendActionBar(message));
   }
 
   @Override
   default void showTitle(final @NonNull Title title) {
-    final Audience audience = this.audience();
-    if(audience != null) audience.showTitle(title);
+    forward(Audience.Title.class, a -> a.showTitle(title));
   }
 
   @Override
   default void clearTitle() {
-    final Audience audience = this.audience();
-    if(audience != null) audience.clearTitle();
+    forward(Audience.Title.class, Title::clearTitle);
   }
 
   @Override
   default void resetTitle() {
-    final Audience audience = this.audience();
-    if(audience != null) audience.resetTitle();
+    forward(Audience.Title.class, Title::resetTitle);
   }
 
   @Override
   default void showBossBar(final @NonNull BossBar bar) {
-    final Audience audience = this.audience();
-    if(audience != null) audience.showBossBar(bar);
+    forward(Audience.BossBar.class, a -> a.showBossBar(bar));
   }
 
   @Override
   default void hideBossBar(final @NonNull BossBar bar) {
-    final Audience audience = this.audience();
-    if(audience != null) audience.hideBossBar(bar);
+    forward(Audience.BossBar.class, a -> a.hideBossBar(bar));
   }
 
   @Override
   default void playSound(final @NonNull Sound sound) {
-    final Audience audience = this.audience();
-    if(audience != null) audience.playSound(sound);
+    forward(Audience.Sound.class, a -> a.playSound(sound));
   }
 
   @Override
   default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
-    final Audience audience = this.audience();
-    if(audience != null) audience.playSound(sound, x, y, z);
+    forward(Audience.Sound.class, a -> a.playSound(sound, x, y, z));
   }
 
   @Override
   default void stopSound(final @NonNull SoundStop stop) {
-    final Audience audience = this.audience();
-    if(audience != null) audience.stopSound(stop);
+    forward(Audience.Sound.class, a -> a.stopSound(stop));
   }
 
   @Override
   default void openBook(final @NonNull Book book) {
-    final Audience audience = this.audience();
-    if(audience != null) audience.openBook(book);
+    forward(Audience.Book.class, a -> a.openBook(book));
   }
 }

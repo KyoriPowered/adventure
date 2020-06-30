@@ -23,58 +23,54 @@
  */
 package net.kyori.adventure.audience;
 
-import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.inventory.Book;
-import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-/* package */ final class EmptyAudience implements Audience {
-  /* package */ static final EmptyAudience INSTANCE = new EmptyAudience();
+public interface StubAudience extends Audience.Everything {
+  Audience.Everything EMPTY = new StubAudience() {};
 
   @Override
-  public void sendMessage(final @NonNull Component message) {
+  default void sendMessage(final @NonNull Component message) {
   }
 
   @Override
-  public void sendActionBar(final @NonNull Component message) {
+  default void sendActionBar(final @NonNull Component message) {
   }
 
   @Override
-  public void showTitle(final @NonNull Title title) {
+  default void showTitle(final @NonNull Title title) {
   }
 
   @Override
-  public void clearTitle() {
+  default void clearTitle() {
   }
 
   @Override
-  public void resetTitle() {
+  default void resetTitle() {
   }
 
   @Override
-  public void showBossBar(final @NonNull BossBar bar) {
+  default void showBossBar(final @NonNull BossBar bar) {
   }
 
   @Override
-  public void hideBossBar(final @NonNull BossBar bar) {
+  default void hideBossBar(final @NonNull BossBar bar) {
   }
 
   @Override
-  public void playSound(final @NonNull Sound sound) {
+  default void playSound(final @NonNull Sound sound) {
   }
 
   @Override
-  public void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
+  default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
   }
 
   @Override
-  public void stopSound(final @NonNull SoundStop stop) {
+  default void stopSound(final @NonNull SoundStop stop) {
   }
 
   @Override
-  public void openBook(final @NonNull Book book) {
+  default void openBook(final @NonNull Book book) {
   }
 }

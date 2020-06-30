@@ -23,19 +23,17 @@
  */
 package net.kyori.adventure.audience;
 
-import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.inventory.Book;
-import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import java.util.function.Consumer;
 
 /**
  * An audience that contains multiple audiences.
  */
 @FunctionalInterface
-public interface MultiAudience extends Audience {
+public interface MultiAudience extends Audience.Everything {
   /**
    * Gets the audiences.
    *
@@ -43,58 +41,66 @@ public interface MultiAudience extends Audience {
    */
   @NonNull Iterable<? extends Audience> audiences();
 
+  default <T extends Audience> void forward(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
+    for(final Audience audience : this.audiences()) {
+      if(type.isInstance(audience)) {
+        action.accept(type.cast(audience));
+      }
+    }
+  }
+
   @Override
   default void sendMessage(final @NonNull Component message) {
-    for(final Audience audience : this.audiences()) audience.sendMessage(message);
+    forward(Audience.Message.class, a -> a.sendMessage(message));
   }
 
   @Override
   default void sendActionBar(final @NonNull Component message) {
-    for(final Audience audience : this.audiences()) audience.sendActionBar(message);
+    forward(Audience.ActionBar.class, a -> a.sendActionBar(message));
   }
 
   @Override
   default void showTitle(final @NonNull Title title) {
-    for(final Audience audience : this.audiences()) audience.showTitle(title);
+    forward(Audience.Title.class, a -> a.showTitle(title));
   }
 
   @Override
   default void clearTitle() {
-    for(final Audience audience : this.audiences()) audience.clearTitle();
+    forward(Audience.Title.class, Title::clearTitle);
   }
 
   @Override
   default void resetTitle() {
-    for(final Audience audience : this.audiences()) audience.resetTitle();
+    forward(Audience.Title.class, Title::resetTitle);
   }
 
   @Override
   default void showBossBar(final @NonNull BossBar bar) {
-    for(final Audience audience : this.audiences()) audience.showBossBar(bar);
+    forward(Audience.BossBar.class, a -> a.showBossBar(bar));
   }
 
   @Override
   default void hideBossBar(final @NonNull BossBar bar) {
-    for(final Audience audience : this.audiences()) audience.hideBossBar(bar);
+    forward(Audience.BossBar.class, a -> a.hideBossBar(bar));
   }
 
   @Override
   default void playSound(final @NonNull Sound sound) {
-    for(final Audience audience : this.audiences())  audience.playSound(sound);
+    forward(Audience.Sound.class, a -> a.playSound(sound));
   }
 
   @Override
   default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
-    for(final Audience audience : this.audiences()) audience.playSound(sound, x, y, z);
+    forward(Audience.Sound.class, a -> a.playSound(sound, x, y, z));
   }
 
   @Override
   default void stopSound(final @NonNull SoundStop stop) {
-    for(final Audience audience : this.audiences()) audience.stopSound(stop);
+    forward(Audience.Sound.class, a -> a.stopSound(stop));
   }
 
   @Override
   default void openBook(final @NonNull Book book) {
-    for(final Audience audience : this.audiences()) audience.openBook(book);
+    forward(Audience.Book.class, a -> a.openBook(book));
   }
 }
