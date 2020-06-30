@@ -36,37 +36,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BossBarTest {
-  private final AtomicInteger name = new AtomicInteger();
-  private final AtomicInteger percent = new AtomicInteger();
-  private final AtomicInteger color = new AtomicInteger();
-  private final AtomicInteger overlay = new AtomicInteger();
-  private final AtomicInteger flags = new AtomicInteger();
-  private final BossBar.Listener listener = new BossBar.Listener() {
-    @Override
-    public void bossBarNameChanged(final @NonNull BossBar bar, final @NonNull Component oldName, final @NonNull Component newName) {
-      BossBarTest.this.name.incrementAndGet();
-    }
-
-    @Override
-    public void bossBarPercentChanged(final @NonNull BossBar bar, final float oldPercent, final float newPercent) {
-      BossBarTest.this.percent.incrementAndGet();
-    }
-
-    @Override
-    public void bossBarColorChanged(final @NonNull BossBar bar, final BossBar.@NonNull Color oldColor, final BossBar.@NonNull Color newColor) {
-      BossBarTest.this.color.incrementAndGet();
-    }
-
-    @Override
-    public void bossBarOverlayChanged(final @NonNull BossBar bar, final BossBar.@NonNull Overlay oldOverlay, final BossBar.@NonNull Overlay newOverlay) {
-      BossBarTest.this.overlay.incrementAndGet();
-    }
-
-    @Override
-    public void bossBarFlagsChanged(final @NonNull BossBar bar, final @NonNull Set<BossBar.Flag> oldFlags, final @NonNull Set<BossBar.Flag> newFlags) {
-      BossBarTest.this.flags.incrementAndGet();
-    }
-  };
   private final BossBar bar = BossBar.of(TextComponent.empty(), 1f, BossBar.Color.PURPLE, BossBar.Overlay.PROGRESS);
 
   @Test
@@ -80,27 +49,15 @@ public class BossBarTest {
   @Test
   void testName() {
     assertEquals(TextComponent.of("A"), this.bar.name(TextComponent.of("A")).name());
-    assertEquals(0, this.name.get());
-
-    this.bar.addListener(this.listener);
     assertEquals(TextComponent.of("B"), this.bar.name(TextComponent.of("B")).name());
-    assertEquals(1, this.name.get());
-
     assertEquals(TextComponent.of("B"), this.bar.name(TextComponent.of("B")).name());
-    assertEquals(1, this.name.get()); // value has not changed, should not have incremented
   }
 
   @Test
   void testPercent() {
     assertEquals(0f, this.bar.percent(0f).percent());
-    assertEquals(0, this.percent.get());
-
-    this.bar.addListener(this.listener);
     assertEquals(0.1f, this.bar.percent(0.1f).percent());
-    assertEquals(1, this.percent.get());
-
     assertEquals(0.1f, this.bar.percent(0.1f).percent());
-    assertEquals(1, this.percent.get()); // value has not changed, should not have incremented
   }
 
   @Test
@@ -112,45 +69,20 @@ public class BossBarTest {
   @Test
   void testColor() {
     assertEquals(BossBar.Color.PINK, this.bar.color(BossBar.Color.PINK).color());
-    assertEquals(0, this.color.get());
-
-    this.bar.addListener(this.listener);
     assertEquals(BossBar.Color.PURPLE, this.bar.color(BossBar.Color.PURPLE).color());
-    assertEquals(1, this.color.get());
-
-    assertEquals(BossBar.Color.PURPLE, this.bar.color(BossBar.Color.PURPLE).color());
-    assertEquals(1, this.color.get()); // value has not changed, should not have incremented
   }
 
   @Test
   void testOverlay() {
     assertEquals(BossBar.Overlay.NOTCHED_6, this.bar.overlay(BossBar.Overlay.NOTCHED_6).overlay());
-    assertEquals(0, this.overlay.get());
-
-    this.bar.addListener(this.listener);
     assertEquals(BossBar.Overlay.PROGRESS, this.bar.overlay(BossBar.Overlay.PROGRESS).overlay());
-    assertEquals(1, this.overlay.get());
-
-    assertEquals(BossBar.Overlay.PROGRESS, this.bar.overlay(BossBar.Overlay.PROGRESS).overlay());
-    assertEquals(1, this.overlay.get()); // value has not changed, should not have incremented
   }
 
   @Test
   void testFlags() {
     assertEquals(ImmutableSet.of(), this.bar.flags(ImmutableSet.of()).flags());
-    assertEquals(0, this.flags.get());
-
-    this.bar.addListener(this.listener);
     assertEquals(ImmutableSet.of(BossBar.Flag.DARKEN_SCREEN), this.bar.flags(ImmutableSet.of(BossBar.Flag.DARKEN_SCREEN)).flags());
-    assertEquals(1, this.flags.get());
-
-    assertEquals(ImmutableSet.of(BossBar.Flag.DARKEN_SCREEN), this.bar.flags(ImmutableSet.of(BossBar.Flag.DARKEN_SCREEN)).flags());
-    assertEquals(1, this.flags.get()); // value has not changed, should not have incremented
-
-    assertEquals(ImmutableSet.of(BossBar.Flag.DARKEN_SCREEN, BossBar.Flag.CREATE_WORLD_FOG), this.bar.addFlags(BossBar.Flag.CREATE_WORLD_FOG).flags());
-    assertEquals(2, this.flags.get());
-
-    assertEquals(ImmutableSet.of(BossBar.Flag.DARKEN_SCREEN), this.bar.removeFlags(BossBar.Flag.CREATE_WORLD_FOG).flags());
-    assertEquals(3, this.flags.get());
+    assertEquals(ImmutableSet.of(BossBar.Flag.DARKEN_SCREEN, BossBar.Flag.CREATE_WORLD_FOG), this.bar.flags(ImmutableSet.of(BossBar.Flag.DARKEN_SCREEN)).addFlags(BossBar.Flag.CREATE_WORLD_FOG).flags());
+    assertEquals(ImmutableSet.of(BossBar.Flag.DARKEN_SCREEN), this.bar.flags(ImmutableSet.of(BossBar.Flag.DARKEN_SCREEN)).addFlags(BossBar.Flag.CREATE_WORLD_FOG).removeFlags(BossBar.Flag.CREATE_WORLD_FOG).flags());
   }
 }

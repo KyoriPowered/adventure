@@ -83,7 +83,7 @@ public interface BossBar {
    * Sets the name.
    *
    * @param name the name
-   * @return the bossbar
+   * @return a new bossbar
    */
   @NonNull BossBar name(final @NonNull Component name);
 
@@ -102,7 +102,7 @@ public interface BossBar {
    * <p>The percent is a value between 0 and 1.</p>
    *
    * @param percent the percent
-   * @return the bossbar
+   * @return a new bossbar
    * @throws IllegalArgumentException if percent is less than 0 or greater than 1
    */
   @NonNull BossBar percent(final float percent);
@@ -118,7 +118,7 @@ public interface BossBar {
    * Sets the color.
    *
    * @param color the color
-   * @return the bossbar
+   * @return a new bossbar
    */
   @NonNull BossBar color(final @NonNull Color color);
 
@@ -133,7 +133,7 @@ public interface BossBar {
    * Sets the overlay.
    *
    * @param overlay the overlay
-   * @return the bossbar
+   * @return a new bossbar
    */
   @NonNull BossBar overlay(final @NonNull Overlay overlay);
 
@@ -148,7 +148,7 @@ public interface BossBar {
    * Sets the flags.
    *
    * @param flags the flags
-   * @return the bossbar
+   * @return a new bossbar
    */
   @NonNull BossBar flags(final @NonNull Set<Flag> flags);
 
@@ -156,7 +156,7 @@ public interface BossBar {
    * Sets the flags.
    *
    * @param flags the flags
-   * @return the bossbar
+   * @return a new bossbar
    */
   @NonNull BossBar addFlags(final @NonNull Flag@NonNull... flags);
 
@@ -164,80 +164,9 @@ public interface BossBar {
    * Sets the flags.
    *
    * @param flags the flags
-   * @return the bossbar
+   * @return a new bossbar
    */
   @NonNull BossBar removeFlags(final @NonNull Flag@NonNull... flags);
-
-  /**
-   * Adds a listener.
-   *
-   * @param listener a listener
-   * @return the bossbar
-   */
-  @NonNull BossBar addListener(final @NonNull Listener listener);
-
-  /**
-   * Removes a listener.
-   *
-   * @param listener a listener
-   * @return the bossbar
-   */
-  @NonNull BossBar removeListener(final @NonNull Listener listener);
-
-  /**
-   * A listener.
-   */
-  interface Listener {
-    /**
-     * Bossbar name changed.
-     *
-     * @param bar the bossbar
-     * @param oldName the old name
-     * @param newName the new name
-     */
-    default void bossBarNameChanged(final @NonNull BossBar bar, final @NonNull Component oldName, final @NonNull Component newName) {
-    }
-
-    /**
-     * Bossbar percent changed.
-     *
-     * @param bar the bossbar
-     * @param oldPercent the old percent
-     * @param newPercent the new percent
-     */
-    default void bossBarPercentChanged(final @NonNull BossBar bar, final float oldPercent, final float newPercent) {
-    }
-
-    /**
-     * Bossbar color changed.
-     *
-     * @param bar the bossbar
-     * @param oldColor the old color
-     * @param newColor the new color
-     */
-    default void bossBarColorChanged(final @NonNull BossBar bar, final @NonNull Color oldColor, final @NonNull Color newColor) {
-    }
-
-    /**
-     * Bossbar overlay changed.
-     *
-     * @param bar the bossbar
-     * @param oldOverlay the old overlay
-     * @param newOverlay the new overlay
-     */
-    default void bossBarOverlayChanged(final @NonNull BossBar bar, final @NonNull Overlay oldOverlay, final @NonNull Overlay newOverlay) {
-    }
-
-    /**
-     * Bossbar flags changed.
-     *
-     * @param bar the bossbar
-     * @param oldFlags the old flags
-     * @param newFlags the new flags
-     */
-    default void bossBarFlagsChanged(final @NonNull BossBar bar, final @NonNull Set<Flag> oldFlags, final @NonNull Set<Flag> newFlags) {
-    }
-  }
 
   enum Color {
     PINK("pink"),
