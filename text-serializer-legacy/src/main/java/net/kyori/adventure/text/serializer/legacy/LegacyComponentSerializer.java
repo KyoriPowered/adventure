@@ -160,12 +160,13 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
 
     /**
      * Sets that the serializer should use the '&amp;x' repeated code format when serializing hex
-     * colors.
+     * colors. Note that messages in this format can still be deserialized, even with this option
+     * disabled.
      *
      * <p>This is the format adopted by the BungeeCord (and by usage, Spigot) text API.</p>
      *
-     * <p>The format is hard to manipulate and read, and really, is horrible in every way. Support
-     * is provided for it, only to allow plugin developers to use this library alongside parts of
+     * <p>The format is difficult to manipulate and read, and its use is not recommended. Support
+     * is provided for it only to allow plugin developers to use this library alongside parts of
      * the Spigot API which expect legacy strings in this format.</p>
      *
      * <p>It is recommended to use only when absolutely necessary, and when no better alternatives
