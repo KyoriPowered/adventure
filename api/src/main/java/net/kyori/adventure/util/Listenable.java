@@ -42,7 +42,7 @@ public abstract class Listenable<L> {
    * @param consumer the consumer
    */
   protected final void forEachListener(final @NonNull Consumer<L> consumer) {
-    for(final L listener : listeners) {
+    for(final L listener : this.listeners) {
       consumer.accept(listener);
     }
   }

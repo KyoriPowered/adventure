@@ -86,7 +86,7 @@ package net.kyori.adventure.nbt;
       throw this.makeError("No occurrence of " + until + " was found");
     }
 
-    final CharSequence result =  this.sequence.subSequence(this.index, endIdx);
+    final CharSequence result = this.sequence.subSequence(this.index, endIdx);
     this.index = endIdx + 1;
     return result;
   }

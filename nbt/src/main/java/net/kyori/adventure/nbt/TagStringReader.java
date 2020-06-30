@@ -30,7 +30,7 @@ import java.util.stream.IntStream;
 /* package */ final class TagStringReader {
   private final CharBuffer buffer;
 
-  public TagStringReader(final CharBuffer buffer) {
+  TagStringReader(final CharBuffer buffer) {
     this.buffer = buffer;
   }
 
@@ -254,7 +254,6 @@ import java.util.stream.IntStream;
     this.buffer.expect(Tokens.VALUE_SEPARATOR);
     return false;
   }
-
 
   /**
    * Remove simple escape sequences from a string

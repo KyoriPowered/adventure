@@ -28,7 +28,6 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
-import java.util.Optional;
 import net.kyori.adventure.util.Index;
 
 /* package */ final class IndexedSerializer<E> extends TypeAdapter<E> {

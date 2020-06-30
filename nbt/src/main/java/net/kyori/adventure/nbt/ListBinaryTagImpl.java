@@ -130,7 +130,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
       @Override
       public BinaryTag next() {
-        return  iterator.next();
+        return iterator.next();
       }
 
       @Override

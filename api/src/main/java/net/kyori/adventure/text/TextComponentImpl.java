@@ -186,7 +186,7 @@ class TextComponentImpl extends AbstractComponent implements TextComponent {
 
     @Override
     public @NonNull String content() {
-      return content;
+      return this.content;
     }
 
     @Override

@@ -41,7 +41,7 @@ import java.util.Map;
    */
   private boolean needsSeparator;
 
-  public TagStringWriter(final Appendable out) {
+  TagStringWriter(final Appendable out) {
     this.out = out;
   }
 
@@ -232,7 +232,6 @@ import java.util.Map;
       this.needsSeparator = false;
     }
   }
-
 
   @Override
   public void close() throws IOException {

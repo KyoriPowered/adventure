@@ -638,6 +638,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
      * A merge strategy.
      */
     public enum Strategy {
+      // CHECKSTYLE:OFF
       /**
        * Always merge onto target.
        */
@@ -660,6 +661,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
         @Override boolean mergeInsertion(final @NonNull Builder target, final @Nullable String insertion) { return false; }
         @Override boolean mergeFont(final @NonNull Builder target, final @Nullable Key font) { return false; }
       },
+      // CHECKSTYLE:ON
       /**
        * Merge onto target when not already set on target.
        */
@@ -706,12 +708,14 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
         }
       };
 
+      // CHECKSTYLE:OFF
       abstract boolean mergeColor(final @NonNull Builder target, final @Nullable TextColor color);
       abstract boolean mergeDecoration(final @NonNull Builder target, final @NonNull TextDecoration decoration);
       abstract boolean mergeClickEvent(final @NonNull Builder target, final @Nullable ClickEvent event);
       abstract boolean mergeHoverEvent(final @NonNull Builder target, final @Nullable HoverEvent<?> event);
       abstract boolean mergeInsertion(final @NonNull Builder target, final @Nullable String insertion);
       abstract boolean mergeFont(final @NonNull Builder target, final @Nullable Key font);
+      // CHECKSTYLE:ON
     }
   }
 
