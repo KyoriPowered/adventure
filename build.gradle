@@ -99,7 +99,7 @@ if (project.hasProperty('sonatypeUsername') && project.hasProperty('sonatypePass
                 pom.project {
                     description 'Textual representation for components.'
                     name project.name
-                    url 'https://github.com/KyoriPowered/MiniMessage/'
+                    url 'https://github.com/KyoriPowered/adventure-text-minimessage/'
 
                     developers {
                         developer {
@@ -109,7 +109,7 @@ if (project.hasProperty('sonatypeUsername') && project.hasProperty('sonatypePass
 
                     issueManagement {
                         system 'GitHub Issues'
-                        url 'https://github.com/KyoriPowered/MiniMessage/issues'
+                        url 'https://github.com/KyoriPowered/adventure-text-minimessage/issues'
                     }
 
                     licenses {
@@ -120,9 +120,9 @@ if (project.hasProperty('sonatypeUsername') && project.hasProperty('sonatypePass
                     }
 
                     scm {
-                        connection 'scm:git@github.com:KyoriPowered/MiniMessage.git'
-                        developerConnection 'scm:git@github.com:KyoriPowered/MiniMessage.git'
-                        url 'https://github.com/KyoriPowered/MiniMessage/'
+                        connection 'scm:git@github.com:KyoriPowered/adventure-text-minimessage.git'
+                        developerConnection 'scm:git@github.com:KyoriPowered/adventure-text-minimessage.git'
+                        url 'https://github.com/KyoriPowered/adventure-text-minimessage/'
                     }
                 }
             }
