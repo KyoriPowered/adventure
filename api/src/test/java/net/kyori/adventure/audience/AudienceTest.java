@@ -27,7 +27,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
-
+import java.util.concurrent.atomic.AtomicInteger;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -46,6 +46,47 @@ class AudienceTest {
     final Audience empty = Audience.empty();
     final Audience weak = Audience.weakOf(empty);
     assertSame(empty, weak);
+  }
+
+  @Test
+  void testPerform() {
+    final AtomicInteger i = new AtomicInteger();
+    final Audience a0 = (Audience.Message) message -> i.incrementAndGet();
+
+    a0.perform(Audience.Message.class, a -> a.sendMessage(TextComponent.of("hi")));
+    assertEquals(1, i.get());
+  }
+
+  @Test
+  void testWiden() {
+    final AtomicInteger i = new AtomicInteger();
+    final Audience a0 = (Audience.Message) message -> i.incrementAndGet();
+    final Audience.Everything a1 = Audience.of(a0);
+
+    a1.clearTitle(); // just make sure unsupported things don't throw an exception
+
+    a1.sendMessage(TextComponent.of("hi"));
+    assertEquals(1, i.get());
+
+    assertEquals(Audience.empty(), a1.perform(Audience.Message.class, a -> a.sendMessage(TextComponent.of("hi"))));
+    assertEquals(a1, a1.perform(Audience.Title.class, Audience.Title::clearTitle));
+    assertEquals(2, i.get());
+  }
+
+  @Test
+  void testForward() {
+    final AtomicInteger i = new AtomicInteger();
+    final Audience a0 = (Audience.Message) message -> i.incrementAndGet();
+    final ForwardingAudience a1 = () -> a0;
+
+    a1.clearTitle(); // just make sure unsupported things don't throw an exception
+
+    a1.sendMessage(TextComponent.of("hi"));
+    assertEquals(1, i.get());
+
+    assertEquals(Audience.empty(), a1.perform(Audience.Message.class, a -> a.sendMessage(TextComponent.of("hi"))));
+    assertEquals(a1, a1.perform(Audience.Title.class, Audience.Title::clearTitle));
+    assertEquals(2, i.get());
   }
 
   @Test

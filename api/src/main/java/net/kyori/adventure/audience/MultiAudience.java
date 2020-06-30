@@ -71,6 +71,7 @@ public interface MultiAudience extends StubAudience {
    * @param <T> the type of audience
    * @return a {@link MultiAudience} of the audiences the action couldn't be applied to
    */
+  @Override
   default <T extends Audience> @NonNull Audience perform(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
     List<Audience> failed = new ArrayList<>();
     for(final Audience audience : this.audiences()) {

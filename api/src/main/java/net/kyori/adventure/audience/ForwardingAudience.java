@@ -40,17 +40,22 @@ public interface ForwardingAudience extends StubAudience {
   @Nullable Audience audience();
 
   /**
-   * Forwards the given {@code action} onto the delegate audiences, and returns either
-   * an {@link Audience#empty() empty audience} or {@code this}, depending on whether
-   * the action was supported or not, respectively.
+   * Forwards the given {@code action} onto the delegate audience, and returns the result
+   * of calling {@code perform} on the delegate, or an empty audience if {@link #audience()}
+   * returned null.
    *
    * @param type the type of audience the action requires
    * @param action the action
    * @param <T> the type of audience
    * @return an audience
    */
+  @Override
   default <T extends Audience> @NonNull Audience perform(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
-    final /* @Nullable */ Audience audience = audience();
-    return audience == null ? Audience.empty() : audience.perform(type, action);
+    final /* @Nullable */ Audience audience = this.audience();
+    if(audience == null) {
+      return Audience.empty();
+    }
+    final Audience result = audience.perform(type, action);
+    return result == audience ? this : result;
   }
 }

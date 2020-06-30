@@ -50,6 +50,9 @@ public interface Audience {
    * @return a forwarding audience
    */
   static Audience.@NonNull Everything of(final @NonNull Audience audience) {
+    if(audience instanceof Everything) {
+      return (Everything) audience;
+    }
     return (ForwardingAudience) () -> audience;
   }
 
@@ -64,7 +67,7 @@ public interface Audience {
   }
 
   /**
-   * Applies the given {@code action} onto the audience, and returns an
+   * Applies the given {@code action} to the audience, and returns an
    * {@link Audience} encapsulating the sub-audiences (if any) which didn't support
    * the action.
    *

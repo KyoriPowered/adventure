@@ -35,56 +35,56 @@ import java.util.function.Consumer;
  */
 public interface StubAudience extends Audience.Everything {
   default void sendMessage(final @NonNull Component message) {
-    perform(Audience.Message.class, a -> a.sendMessage(message));
+    this.perform(Audience.Message.class, a -> a.sendMessage(message));
   }
 
   @Override
   default void sendActionBar(final @NonNull Component message) {
-    perform(Audience.ActionBar.class, a -> a.sendActionBar(message));
+    this.perform(Audience.ActionBar.class, a -> a.sendActionBar(message));
   }
 
   @Override
   default void showTitle(final @NonNull Title title) {
-    perform(Audience.Title.class, a -> a.showTitle(title));
+    this.perform(Audience.Title.class, a -> a.showTitle(title));
   }
 
   @Override
   default void clearTitle() {
-    perform(Audience.Title.class, Title::clearTitle);
+    this.perform(Audience.Title.class, Title::clearTitle);
   }
 
   @Override
   default void resetTitle() {
-    perform(Audience.Title.class, Title::resetTitle);
+    this.perform(Audience.Title.class, Title::resetTitle);
   }
 
   @Override
   default void showBossBar(final @NonNull BossBar bar) {
-    perform(Audience.BossBar.class, a -> a.showBossBar(bar));
+    this.perform(Audience.BossBar.class, a -> a.showBossBar(bar));
   }
 
   @Override
   default void hideBossBar(final @NonNull BossBar bar) {
-    perform(Audience.BossBar.class, a -> a.hideBossBar(bar));
+    this.perform(Audience.BossBar.class, a -> a.hideBossBar(bar));
   }
 
   @Override
   default void playSound(final @NonNull Sound sound) {
-    perform(Audience.Sound.class, a -> a.playSound(sound));
+    this.perform(Audience.Sound.class, a -> a.playSound(sound));
   }
 
   @Override
   default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
-    perform(Audience.Sound.class, a -> a.playSound(sound, x, y, z));
+    this.perform(Audience.Sound.class, a -> a.playSound(sound, x, y, z));
   }
 
   @Override
   default void stopSound(final @NonNull SoundStop stop) {
-    perform(Audience.Sound.class, a -> a.stopSound(stop));
+    this.perform(Audience.Sound.class, a -> a.stopSound(stop));
   }
 
   @Override
   default void openBook(final @NonNull Book book) {
-    perform(Audience.Book.class, a -> a.openBook(book));
+    this.perform(Audience.Book.class, a -> a.openBook(book));
   }
 }
