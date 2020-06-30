@@ -33,6 +33,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.function.Consumer;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * An audience that delegates to a single viewer.
  */
@@ -45,27 +47,24 @@ public interface ForwardingAudience extends Audience {
    */
   @Nullable Viewer viewer();
 
-  /**
-   * Forwards the given {@code action} onto the delegate viewer, and returns the result
-   * of calling {@code perform} on the delegate, or an empty audience if {@link #viewer()}
-   * returned null.
-   *
-   * @param type the type of viewer the action requires
-   * @param action the action
-   * @param <T> the type of viewer
-   * @return an audience
-   */
   @Override
   default <T extends Viewer> @NonNull Audience perform(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
+    requireNonNull(type, "type");
+    requireNonNull(action, "action");
     final /* @Nullable */ Viewer viewer = this.viewer();
     if(viewer == null) {
       return Audience.empty();
     }
-    final Audience result = viewer.perform(type, action);
-    if(result instanceof ForwardingAudience && ((ForwardingAudience) result).viewer() == viewer) {
+    if(viewer instanceof Audience) {
+      final Audience audience = (Audience) viewer;
+      return audience.perform(type, action);
+    }
+    if(type.isInstance(viewer)) {
+      action.accept(type.cast(viewer));
+      return Audience.empty();
+    } else {
       return this;
     }
-    return result;
   }
 
   @Override

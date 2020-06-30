@@ -26,6 +26,7 @@ package net.kyori.adventure.audience;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.Arrays;
+import java.util.function.Consumer;
 
 /**
  * An audience is a collection of {@link Viewer}s, supporting all
@@ -79,4 +80,16 @@ public interface Audience extends Viewer, Viewer.Messages, Viewer.ActionBars, Vi
   static @NonNull Audience weakOf(final @Nullable Audience audience) {
     return audience instanceof WeakAudience || audience instanceof EmptyAudience ? audience : new WeakAudience(audience);
   }
+
+  /**
+   * Applies the given {@code action} to the audience, and returns an
+   * {@link Audience} encapsulating the sub-viewers (if any) which didn't support
+   * the action.
+   *
+   * @param type the type of viewer the action requires
+   * @param action the action
+   * @param <T> the type of viewer
+   * @return a {@link Viewer} of the sub-viewers the action couldn't be applied to
+   */
+  <T extends Viewer> @NonNull Audience perform(final @NonNull Class<T> type, final @NonNull Consumer<T> action);
 }

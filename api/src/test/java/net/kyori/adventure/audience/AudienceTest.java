@@ -65,8 +65,9 @@ class AudienceTest {
   void testPerform() {
     final AtomicInteger i = new AtomicInteger();
     final Viewer v = (Viewer.Messages) message -> i.incrementAndGet();
+    final Audience a = v.asAudience();
 
-    v.perform(Viewer.Messages.class, a -> a.sendMessage(TextComponent.of("hi")));
+    a.perform(Viewer.Messages.class, x -> x.sendMessage(TextComponent.of("hi")));
     assertEquals(1, i.get());
   }
 

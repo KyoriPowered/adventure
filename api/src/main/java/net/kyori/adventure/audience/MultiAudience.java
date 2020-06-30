@@ -34,6 +34,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * An audience that forwards to multiple viewers.
  */
@@ -46,22 +48,24 @@ public interface MultiAudience extends Audience {
    */
   @NonNull Iterable<? extends Viewer> viewers();
 
-  /**
-   * Forwards the given {@code action} onto the delegate viewers, and returns a
-   * {@link MultiAudience} encapsulating the viewers which didn't support the action.
-   *
-   * @param type the type of viewer the action requires
-   * @param action the action
-   * @param <T> the type of viewer
-   * @return a {@link MultiAudience} of the audiences the action couldn't be applied to
-   */
   @Override
   default <T extends Viewer> @NonNull Audience perform(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
+    requireNonNull(type, "type");
+    requireNonNull(action, "action");
     final List<Viewer> failed = new ArrayList<>();
-    for(final Viewer audience : this.viewers()) {
-      final Viewer result = audience.perform(type, action);
-      if(result != Audience.empty()) {
-        failed.add(result);
+    for(final Viewer viewer : this.viewers()) {
+      if(viewer instanceof Audience) {
+        final Audience audience = (Audience) viewer;
+        final Audience resulting = audience.perform(type, action);
+        if(resulting != Audience.empty()) {
+          failed.add(resulting);
+        }
+      } else {
+        if(type.isInstance(viewer)) {
+          action.accept(type.cast(viewer));
+        } else {
+          failed.add(viewer.asAudience());
+        }
       }
     }
     return failed.isEmpty() ? Audience.empty() : Audience.of(failed);

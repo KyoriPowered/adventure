@@ -30,35 +30,11 @@ import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import java.util.function.Consumer;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * A receiver of text-based media.
  */
 public interface Viewer {
-  /**
-   * Applies the given {@code action} to the viewer, and returns an
-   * {@link Audience} encapsulating the sub-viewers (if any) which didn't support
-   * the action.
-   *
-   * @param type the type of viewer the action requires
-   * @param action the action
-   * @param <T> the type of viewer
-   * @return a {@link Viewer} of the sub-viewers the action couldn't be applied to
-   */
-  default <T extends Viewer> @NonNull Audience perform(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
-    requireNonNull(type, "type");
-    requireNonNull(action, "action");
-    if(type.isInstance(this)) {
-      action.accept(type.cast(this));
-      return Audience.empty();
-    } else {
-      return this.asAudience();
-    }
-  }
-
   /**
    * Widens this viewer to implement {@link Audience all operations},
    * failing silently with a no-op when a method isn't supported.
