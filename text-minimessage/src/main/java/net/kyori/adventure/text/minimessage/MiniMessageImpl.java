@@ -27,6 +27,7 @@ import net.kyori.adventure.text.Component;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.List;
 import java.util.Map;
 
 /* package */ class MiniMessageImpl implements MiniMessage {
@@ -64,6 +65,22 @@ import java.util.Map;
 
   @Override
   public @NonNull Component parse(@NonNull String input, @NonNull Map<String, String> placeholders) {
+    if (markdown) {
+      input = MiniMarkdownParser.parse(input);
+    }
+    return MiniMessageParser.parseFormat(input, placeholders);
+  }
+
+  @Override
+  public @NonNull Component parse(@NonNull String input, @NonNull Template... placeholders) {
+    if (markdown) {
+      input = MiniMarkdownParser.parse(input);
+    }
+    return MiniMessageParser.parseFormat(input, placeholders);
+  }
+
+  @Override
+  public @NonNull Component parse(@NonNull String input, @NonNull List<Template> placeholders) {
     if (markdown) {
       input = MiniMarkdownParser.parse(input);
     }

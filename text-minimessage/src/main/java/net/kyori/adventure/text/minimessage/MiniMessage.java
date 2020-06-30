@@ -29,6 +29,7 @@ import net.kyori.adventure.util.Buildable;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -61,7 +62,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @param input the input message, with tokens
    * @return the output, with escaped tokens
    */
-  @NonNull String escapeTokens(@NonNull String input);
+  @NonNull String escapeTokens(final @NonNull String input);
 
   /**
    * Removes all tokens in the input message. Useful for untrusted input.
@@ -69,7 +70,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @param input the input message, with tokens
    * @return the output, without tokens
    */
-  @NonNull String stripTokens(@NonNull String input);
+  @NonNull String stripTokens(final @NonNull String input);
 
   /**
    * Parses a string into an component.
@@ -77,7 +78,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @param input the input string
    * @return the output component
    */
-  default Component parse(@NonNull String input) {
+  default Component parse(final @NonNull String input) {
     return deserialize(input);
   }
 
@@ -88,7 +89,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @param placeholders the placeholders
    * @return the output component
    */
-  @NonNull Component parse(@NonNull String input, final @NonNull String... placeholders);
+  @NonNull Component parse(final @NonNull String input, final @NonNull String... placeholders);
 
   /**
    * Parses a string into an component, allows passing placeholders in key value pairs
@@ -97,7 +98,25 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @param placeholders the placeholders
    * @return the output component
    */
-  @NonNull Component parse(@NonNull String input, final @NonNull Map<String, String> placeholders);
+  @NonNull Component parse(final @NonNull String input, final @NonNull Map<String, String> placeholders);
+
+  /**
+   * Parses a string into an component, allows passing placeholders using templates (which support components)
+   *
+   * @param input the input string
+   * @param placeholders the placeholders
+   * @return the output component
+   */
+  @NonNull Component parse(final @NonNull String input, final @NonNull Template... placeholders);
+
+  /**
+   * Parses a string into an component, allows passing placeholders using templates (which support components)
+   *
+   * @param input the input string
+   * @param placeholders the placeholders
+   * @return the output component
+   */
+  @NonNull Component parse(final @NonNull String input, final @NonNull List<Template> placeholders);
 
   /**
    * Creates a new {@link MiniMessage.Builder}.

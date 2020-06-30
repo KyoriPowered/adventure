@@ -31,6 +31,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.fancy.Fancy;
 import net.kyori.adventure.text.minimessage.fancy.Gradient;
 import net.kyori.adventure.text.minimessage.fancy.Rainbow;
@@ -43,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -150,25 +152,54 @@ import static net.kyori.adventure.text.minimessage.Tokens.TRANSLATABLE;
     return richMessage;
   }
 
-
   /* package */ static @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull String... placeholders) {
     return parseFormat(handlePlaceholders(richMessage, placeholders));
   }
-
 
   /* package */ static @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull Map<String, String> placeholders) {
     return parseFormat(handlePlaceholders(richMessage, placeholders));
   }
 
+  /* package */ static @NonNull Component parseFormat(@NonNull String input, final @NonNull Template... placeholders) {
+    Map<String, Template.ComponentTemplate> map = new HashMap<>();
+    for (Template placeholder : placeholders) {
+      if (placeholder instanceof Template.StringTemplate) {
+        Template.StringTemplate stringTemplate = (Template.StringTemplate) placeholder;
+        input = input.replace(TAG_START + stringTemplate.getKey() + TAG_END, stringTemplate.getValue());
+      } else if (placeholder instanceof Template.ComponentTemplate) {
+        Template.ComponentTemplate componentTemplate = (Template.ComponentTemplate) placeholder;
+        map.put(componentTemplate.getKey(), componentTemplate);
+      }
+    }
+    return parseFormat0(input, map);
+  }
+
+  /* package */ static @NonNull Component parseFormat(@NonNull String input, final @NonNull List<Template> placeholders) {
+    Map<String, Template.ComponentTemplate> map = new HashMap<>();
+    for (Template placeholder : placeholders) {
+      if (placeholder instanceof Template.StringTemplate) {
+        Template.StringTemplate stringTemplate = (Template.StringTemplate) placeholder;
+        input = input.replace(TAG_START + stringTemplate.getKey() + TAG_END, stringTemplate.getValue());
+      } else if (placeholder instanceof Template.ComponentTemplate) {
+        Template.ComponentTemplate componentTemplate = (Template.ComponentTemplate) placeholder;
+        map.put(componentTemplate.getKey(), componentTemplate);
+      }
+    }
+    return parseFormat0(input, map);
+  }
 
   /* package */ static @NonNull Component parseFormat(final @NonNull String richMessage) {
+    return parseFormat0(richMessage, Collections.emptyMap());
+  }
+
+  /* package */ static @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates) {
     final TextComponent.Builder parent = TextComponent.builder("");
 
     final ArrayDeque<ClickEvent> clickEvents = new ArrayDeque<>();
     final ArrayDeque<HoverEvent<?>> hoverEvents = new ArrayDeque<>();
     final ArrayDeque<TextColor> colors = new ArrayDeque<>();
     final ArrayDeque<String> insertions = new ArrayDeque<>();
-    final EnumSet<HelperTextDecoration> decorations = EnumSet.noneOf(HelperTextDecoration.class);
+    final EnumSet<TextDecoration> decorations = EnumSet.noneOf(TextDecoration.class);
     boolean isPreformatted = false;
     final Map<Class<? extends Fancy>, Fancy> fancy = new LinkedHashMap<>();
 
@@ -196,7 +227,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.TRANSLATABLE;
       final String token = matcher.group(TOKEN);
       final String inner = matcher.group(INNER);
 
-      HelperTextDecoration deco;
+      TextDecoration deco;
       TextColor color;
 
       // handle pre
@@ -293,6 +324,11 @@ import static net.kyori.adventure.text.minimessage.Tokens.TRANSLATABLE;
       } else if (token.startsWith(CLOSE_TAG + GRADIENT)) {
         fancy.remove(Gradient.class);
       }
+      // templae
+      else if (templates.containsKey(token)) {
+        current = templates.get(token).getValue();
+        current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, fancy);
+      }
       // invalid tag
       else {
         if (current != null) {
@@ -332,23 +368,24 @@ import static net.kyori.adventure.text.minimessage.Tokens.TRANSLATABLE;
                                                     @NonNull final Deque<HoverEvent<?>> hoverEvents,
                                                     @NonNull final Deque<TextColor> colors,
                                                     @NonNull final Deque<String> insertions,
-                                                    @NonNull final EnumSet<HelperTextDecoration> decorations,
+                                                    @NonNull final EnumSet<TextDecoration> decorations,
                                                     @NonNull Component current,
                                                     @NonNull final Map<Class<? extends Fancy>, Fancy> fancy) {
     // set everything that is not closed yet
-    if (!clickEvents.isEmpty()) {
+    if (!clickEvents.isEmpty() && current.clickEvent() == null) {
       current = current.clickEvent(clickEvents.peek());
     }
-    if (!hoverEvents.isEmpty()) {
+    if (!hoverEvents.isEmpty() && current.hoverEvent() == null) {
       current = current.hoverEvent(hoverEvents.peek());
     }
     if (!colors.isEmpty()) {
-      current = current.color(colors.peek());
+      current = current.colorIfAbsent(colors.peek());
     }
     if (!decorations.isEmpty()) {
-      // no lambda because builder isn't effective final :/
-      for (HelperTextDecoration decor : decorations) {
-        current = decor.apply(current);
+      for (TextDecoration decor : decorations) {
+        if (!current.hasDecoration(decor)) {
+          current = current.decoration(decor, true);
+        }
       }
     }
     if (!insertions.isEmpty()) {
@@ -492,9 +529,9 @@ import static net.kyori.adventure.text.minimessage.Tokens.TRANSLATABLE;
     }
   }
 
-  private static @Nullable HelperTextDecoration resolveDecoration(final @NonNull String token) {
+  private static @Nullable TextDecoration resolveDecoration(final @NonNull String token) {
     try {
-      return HelperTextDecoration.valueOf(token.toUpperCase(Locale.ROOT));
+      return TextDecoration.NAMES.value(token.toLowerCase(Locale.ROOT));
     } catch (IllegalArgumentException ex) {
       return null;
     }

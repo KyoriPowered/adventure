@@ -89,4 +89,53 @@ public class MiniMessageTest {
 
     assertEquals(out1, out2);
   }
+
+  @Test
+  public void testTemplateSimple() {
+    Component expected = TextComponent.of("TEST");
+    Component result = MiniMessage.instance().parse("<test>", Template.of("test", "TEST"));
+
+    final String out1 = GsonComponentSerializer.gson().serialize(expected);
+    final String out2 = GsonComponentSerializer.gson().serialize(result);
+
+    assertEquals(out1, out2);
+  }
+
+  @Test
+  public void testTemplateComponent() {
+    Component expected = TextComponent.of("TEST").color(NamedTextColor.RED);
+    Component result = MiniMessage.instance().parse("<test>", Template.of("test", TextComponent.of("TEST").color(NamedTextColor.RED)));
+
+    final String out1 = GsonComponentSerializer.gson().serialize(expected);
+    final String out2 = GsonComponentSerializer.gson().serialize(result);
+
+    assertEquals(out1, out2);
+  }
+
+  @Test
+  public void testTemplateComponentInheritedStyle() {
+    Component expected = TextComponent.of("TEST").color(NamedTextColor.RED).decoration(TextDecoration.UNDERLINED, true).decoration(TextDecoration.BOLD, true);
+    Component result = MiniMessage.instance().parse("<green><bold><test>", Template.of("test", TextComponent.of("TEST").color(NamedTextColor.RED).decoration(TextDecoration.UNDERLINED, true)));
+
+    final String out1 = GsonComponentSerializer.gson().serialize(expected);
+    final String out2 = GsonComponentSerializer.gson().serialize(result);
+
+    assertEquals(out1, out2);
+  }
+
+  @Test
+  public void testTemplateComponentMixed() {
+    Component root = TextComponent.of("");
+    root = root.append(TextComponent.of("TEST").color(NamedTextColor.RED).decoration(TextDecoration.UNDERLINED, true).decoration(TextDecoration.BOLD, true));
+    root = root.append(TextComponent.of("Test2").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true));
+
+    final Template t1 = Template.of("test", TextComponent.of("TEST").color(NamedTextColor.RED).decoration(TextDecoration.UNDERLINED, true));
+    final Template t2 = Template.of("test2", "Test2");
+    final Component result = MiniMessage.instance().parse("<green><bold><test><test2>", t1, t2);
+
+    final String out1 = GsonComponentSerializer.gson().serialize(root);
+    final String out2 = GsonComponentSerializer.gson().serialize(result);
+
+    assertEquals(out1, out2);
+  }
 }
