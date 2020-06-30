@@ -23,30 +23,34 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.StringJoiner;
+import java.util.stream.Stream;
 
-public class MiniMarkdownParser {
+/* package */ class MiniMarkdownParser {
 
   private MiniMarkdownParser() {
   }
 
   @NonNull
-  public static String stripMarkdown(@NonNull String input) {
+  /* package */ static String stripMarkdown(final @NonNull String input) {
     return handle(input, true);
   }
 
   @NonNull
-  public static String parse(@NonNull String input) {
+  /* package */ static String parse(final @NonNull String input) {
     return handle(input, false);
   }
 
   @NonNull
-  private static String handle(@NonNull String input, boolean strip) {
+  private static String handle(final @NonNull String input, final boolean strip) {
     StringBuilder sb = new StringBuilder();
 
     int bold = -1;
@@ -63,15 +67,15 @@ public class MiniMarkdownParser {
       char c = input.charAt(currIndex);
 
       boolean shouldSkip = false;
-      if (c == Constants.MD_EMPHASIS_1) {
+      if (c == Tokens.MD_EMPHASIS_1) {
         char n = next(currIndex, input);
-        if (n == Constants.MD_EMPHASIS_1) {
+        if (n == Tokens.MD_EMPHASIS_1) {
           if (bold == -1) {
             bold = sb.length();
             boldSkip = new Insert(sb.length(), c + "");
           } else {
-            inserts.add(new Insert(bold, "<" + Constants.BOLD + ">"));
-            inserts.add(new Insert(sb.length(), "</" + Constants.BOLD + ">"));
+            inserts.add(new Insert(bold, "<" + Tokens.BOLD + ">"));
+            inserts.add(new Insert(sb.length(), "</" + Tokens.BOLD + ">"));
             bold = -1;
           }
           skip++;
@@ -80,21 +84,21 @@ public class MiniMarkdownParser {
             italic = sb.length();
             italicSkip = new Insert(sb.length(), c + "");
           } else {
-            inserts.add(new Insert(italic, "<" + Constants.ITALIC + ">"));
-            inserts.add(new Insert(sb.length(), "</" + Constants.ITALIC + ">"));
+            inserts.add(new Insert(italic, "<" + Tokens.ITALIC + ">"));
+            inserts.add(new Insert(sb.length(), "</" + Tokens.ITALIC + ">"));
             italic = -1;
           }
         }
         shouldSkip = true;
-      } else if (c == Constants.MD_EMPHASIS_2) {
+      } else if (c == Tokens.MD_EMPHASIS_2) {
         char n = next(currIndex, input);
-        if (n == Constants.MD_EMPHASIS_2) {
+        if (n == Tokens.MD_EMPHASIS_2) {
           if (bold == -1) {
             bold = sb.length();
             boldSkip = new Insert(sb.length(), c + "");
           } else {
-            inserts.add(new Insert(bold, "<" + Constants.BOLD + ">"));
-            inserts.add(new Insert(sb.length(), "</" + Constants.BOLD + ">"));
+            inserts.add(new Insert(bold, "<" + Tokens.BOLD + ">"));
+            inserts.add(new Insert(sb.length(), "</" + Tokens.BOLD + ">"));
             bold = -1;
           }
           skip++;
@@ -103,21 +107,21 @@ public class MiniMarkdownParser {
             italic = currIndex;
             italicSkip = new Insert(sb.length(), c + "");
           } else {
-            inserts.add(new Insert(italic, "<" + Constants.ITALIC + ">"));
-            inserts.add(new Insert(currIndex - 1, "</" + Constants.ITALIC + ">"));
+            inserts.add(new Insert(italic, "<" + Tokens.ITALIC + ">"));
+            inserts.add(new Insert(currIndex - 1, "</" + Tokens.ITALIC + ">"));
             italic = -1;
           }
         }
         shouldSkip = true;
-      } else if (c == Constants.MD_UNDERLINE) {
+      } else if (c == Tokens.MD_UNDERLINE) {
         char n = next(currIndex, input);
-        if (n == Constants.MD_UNDERLINE) {
+        if (n == Tokens.MD_UNDERLINE) {
           if (underline == -1) {
             underline = sb.length();
             underlineSkip = new Insert(sb.length(), c + "");
           } else {
-            inserts.add(new Insert(underline, "<" + Constants.UNDERLINED + ">"));
-            inserts.add(new Insert(sb.length(), "</" + Constants.UNDERLINED + ">"));
+            inserts.add(new Insert(underline, "<" + Tokens.UNDERLINED + ">"));
+            inserts.add(new Insert(sb.length(), "</" + Tokens.UNDERLINED + ">"));
             underline = -1;
           }
           skip++;
@@ -153,7 +157,7 @@ public class MiniMarkdownParser {
     return sb.toString();
   }
 
-  private static char next(int index, @NonNull String input) {
+  private static char next(final int index, final @NonNull String input) {
     if (index < input.length() - 1) {
       return input.charAt(index + 1);
     } else {
@@ -161,31 +165,35 @@ public class MiniMarkdownParser {
     }
   }
 
-  static class Insert {
+  /* package */ static class Insert implements Examinable {
     private final int pos;
     private final String value;
 
-    public int getPos() {
-      return pos;
-    }
-
-    @NonNull
-    public String getValue() {
-      return value;
-    }
-
-    public Insert(int pos, @NonNull String value) {
+    private Insert(final int pos, final @NonNull String value) {
       this.pos = pos;
       this.value = value;
     }
 
-    @Override
+    private int getPos() {
+      return pos;
+    }
+
     @NonNull
+    private String getValue() {
+      return value;
+    }
+
+    @Override
+    public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+      return Stream.of(
+        ExaminableProperty.of("pos", this.pos),
+        ExaminableProperty.of("value", this.value)
+      );
+    }
+
+    @Override
     public String toString() {
-      return new StringJoiner(", ", Insert.class.getSimpleName() + "[", "]")
-        .add("pos=" + pos)
-        .add("value='" + value + "'")
-        .toString();
+      return this.examine(StringExaminer.simpleEscaping());
     }
   }
 }

@@ -40,36 +40,36 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static net.kyori.adventure.text.minimessage.Constants.BOLD;
-import static net.kyori.adventure.text.minimessage.Constants.CLICK;
-import static net.kyori.adventure.text.minimessage.Constants.CLOSE_TAG;
-import static net.kyori.adventure.text.minimessage.Constants.COLOR;
-import static net.kyori.adventure.text.minimessage.Constants.HOVER;
-import static net.kyori.adventure.text.minimessage.Constants.INSERTION;
-import static net.kyori.adventure.text.minimessage.Constants.ITALIC;
-import static net.kyori.adventure.text.minimessage.Constants.KEYBIND;
-import static net.kyori.adventure.text.minimessage.Constants.OBFUSCATED;
-import static net.kyori.adventure.text.minimessage.Constants.SEPARATOR;
-import static net.kyori.adventure.text.minimessage.Constants.STRIKETHROUGH;
-import static net.kyori.adventure.text.minimessage.Constants.TAG_END;
-import static net.kyori.adventure.text.minimessage.Constants.TAG_START;
-import static net.kyori.adventure.text.minimessage.Constants.TRANSLATABLE;
-import static net.kyori.adventure.text.minimessage.Constants.UNDERLINED;
+import static net.kyori.adventure.text.minimessage.Tokens.BOLD;
+import static net.kyori.adventure.text.minimessage.Tokens.CLICK;
+import static net.kyori.adventure.text.minimessage.Tokens.CLOSE_TAG;
+import static net.kyori.adventure.text.minimessage.Tokens.COLOR;
+import static net.kyori.adventure.text.minimessage.Tokens.HOVER;
+import static net.kyori.adventure.text.minimessage.Tokens.INSERTION;
+import static net.kyori.adventure.text.minimessage.Tokens.ITALIC;
+import static net.kyori.adventure.text.minimessage.Tokens.KEYBIND;
+import static net.kyori.adventure.text.minimessage.Tokens.OBFUSCATED;
+import static net.kyori.adventure.text.minimessage.Tokens.SEPARATOR;
+import static net.kyori.adventure.text.minimessage.Tokens.STRIKETHROUGH;
+import static net.kyori.adventure.text.minimessage.Tokens.TAG_END;
+import static net.kyori.adventure.text.minimessage.Tokens.TAG_START;
+import static net.kyori.adventure.text.minimessage.Tokens.TRANSLATABLE;
+import static net.kyori.adventure.text.minimessage.Tokens.UNDERLINED;
 
-public final class MiniMessageSerializer {
+/* package */ class MiniMessageSerializer {
 
   private MiniMessageSerializer() {
   }
 
   @NonNull
-  public static String serialize(@NonNull Component component) {
-    StringBuilder sb = new StringBuilder();
+  /* package */ static String serialize(final @NonNull Component component) {
+    final StringBuilder sb = new StringBuilder();
 
-    List<Component> components = new ArrayList<>();
+    final List<Component> components = new ArrayList<>();
     components.add(component);
 
     for (int i = 0; i < components.size(); i++) {
-      Component comp = components.get(i);
+      final Component comp = components.get(i);
 
       // add childs
       components.addAll(comp.children());
@@ -108,7 +108,7 @@ public final class MiniMessageSerializer {
 
       // ## hover
       // ### only start if prevComp didn't start the same one
-      HoverEvent<?> hov = comp.hoverEvent();
+      final HoverEvent<?> hov = comp.hoverEvent();
       if (hov != null && (prevComp == null || areDifferent(hov, prevComp.hoverEvent()))) {
         // TODO make sure the value cast is right
         sb.append(startTag(String.format("%s" + SEPARATOR + "%s" + SEPARATOR + "\"%s\"", HOVER, HoverEvent.Action.NAMES.key(hov.action()), serialize((Component) hov.value()))));
@@ -116,14 +116,14 @@ public final class MiniMessageSerializer {
 
       // ## click
       // ### only start if prevComp didn't start the same one
-      ClickEvent click = comp.clickEvent();
+      final ClickEvent click = comp.clickEvent();
       if (click != null && (prevComp == null || areDifferent(click, prevComp.clickEvent()))) {
         sb.append(startTag(String.format("%s" + SEPARATOR + "%s" + SEPARATOR + "\"%s\"", CLICK, ClickEvent.Action.NAMES.key(click.action()), click.value())));
       }
 
       // ## insertion
       // ### only start if prevComp didn't start the same one
-      String insert = comp.insertion();
+      final String insert = comp.insertion();
       if (insert != null && (prevComp == null || !insert.equals(prevComp.insertion()))) {
         sb.append(startTag(INSERTION + SEPARATOR + insert));
       }
@@ -199,18 +199,17 @@ public final class MiniMessageSerializer {
     return sb.toString();
   }
 
-  private static boolean areDifferent(@NonNull ClickEvent c1, @Nullable ClickEvent c2) {
+  private static boolean areDifferent(final @NonNull ClickEvent c1, final @Nullable ClickEvent c2) {
     if (c2 == null) return true;
     return !c1.equals(c2) && (!c1.action().equals(c2.action()) || !c1.value().equals(c2.value()));
   }
 
-  private static boolean areDifferent(@NonNull HoverEvent<?> h1, @Nullable HoverEvent<?> h2) {
+  private static boolean areDifferent(final @NonNull HoverEvent<?> h1, final @Nullable HoverEvent<?> h2) {
     if (h2 == null) return true;
     return !h1.equals(h2) && (!h1.action().equals(h2.action()));// TODO also compare value
   }
 
-  @NonNull
-  private static String startColor(@NonNull TextColor color) {
+  private static @NonNull String startColor(final @NonNull TextColor color) {
     if (color instanceof NamedTextColor) {
       return startTag(Objects.requireNonNull(NamedTextColor.NAMES.key((NamedTextColor) color)));
     } else {
@@ -218,8 +217,7 @@ public final class MiniMessageSerializer {
     }
   }
 
-  @NonNull
-  private static String endColor(@NonNull TextColor color) {
+  private static @NonNull String endColor(final @NonNull TextColor color) {
     if (color instanceof NamedTextColor) {
       return endTag(Objects.requireNonNull(NamedTextColor.NAMES.key((NamedTextColor) color)));
     } else {
@@ -227,17 +225,17 @@ public final class MiniMessageSerializer {
     }
   }
 
-  @NonNull
-  private static String startTag(@NonNull String content) {
+
+  private static @NonNull String startTag(final @NonNull String content) {
     return TAG_START + content + TAG_END;
   }
 
-  @NonNull
-  private static String endTag(@NonNull String content) {
+
+  private static @NonNull String endTag(final @NonNull String content) {
     return TAG_START + CLOSE_TAG + content + TAG_END;
   }
 
-  private static void handleDifferentComponent(@NonNull Component component, @NonNull StringBuilder sb) {
+  private static void handleDifferentComponent(final @NonNull Component component, final @NonNull StringBuilder sb) {
     if (component instanceof KeybindComponent) {
       sb.append(startTag(KEYBIND + SEPARATOR + ((KeybindComponent) component).keybind()));
     } else if (component instanceof TranslatableComponent) {

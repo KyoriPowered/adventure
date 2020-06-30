@@ -30,7 +30,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.function.UnaryOperator;
 
-enum HelperTextDecoration {
+/* package */ enum HelperTextDecoration {
   BOLD(b -> b.decoration(TextDecoration.BOLD, true)),
   ITALIC(b -> b.decoration(TextDecoration.ITALIC, true)),
   UNDERLINED(b -> b.decoration(TextDecoration.UNDERLINED, true)),
@@ -39,12 +39,12 @@ enum HelperTextDecoration {
 
   private final UnaryOperator<Component> builder;
 
-  HelperTextDecoration(@NonNull UnaryOperator<Component> builder) {
+  HelperTextDecoration(final @NonNull UnaryOperator<Component> builder) {
     this.builder = builder;
   }
 
   @NonNull
-  public Component apply(@NonNull Component comp) {
+    /* package */ Component apply(final @NonNull Component comp) {
     return builder.apply(comp);
   }
 }

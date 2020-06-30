@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage;
 
-class Constants {
+/* package */ class Tokens {
   // vanilla components
   public static final String CLICK = "click";
   public static final String HOVER = "hover";
@@ -56,6 +56,6 @@ class Constants {
   public static final char MD_EMPHASIS_2 = '_';
   public static final char MD_UNDERLINE = '~';
 
-  private Constants() {
+  private Tokens() {
   }
 }

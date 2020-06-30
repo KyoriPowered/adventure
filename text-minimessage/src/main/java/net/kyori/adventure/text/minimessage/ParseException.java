@@ -25,11 +25,14 @@ package net.kyori.adventure.text.minimessage;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+/**
+ * Exception that is thrown whenever the parser isn't happy. The message will include information about what went wrong.
+ */
 public class ParseException extends RuntimeException {
 
   private static final long serialVersionUID = 42L;
 
-  public ParseException(@NonNull String message) {
+  public ParseException(final @NonNull String message) {
     super(message);
   }
 }

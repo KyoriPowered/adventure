@@ -50,22 +50,22 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static net.kyori.adventure.text.minimessage.Constants.CLICK;
-import static net.kyori.adventure.text.minimessage.Constants.CLOSE_TAG;
-import static net.kyori.adventure.text.minimessage.Constants.COLOR;
-import static net.kyori.adventure.text.minimessage.Constants.GRADIENT;
-import static net.kyori.adventure.text.minimessage.Constants.HOVER;
-import static net.kyori.adventure.text.minimessage.Constants.INSERTION;
-import static net.kyori.adventure.text.minimessage.Constants.KEYBIND;
-import static net.kyori.adventure.text.minimessage.Constants.PRE;
-import static net.kyori.adventure.text.minimessage.Constants.RAINBOW;
-import static net.kyori.adventure.text.minimessage.Constants.RESET;
-import static net.kyori.adventure.text.minimessage.Constants.SEPARATOR;
-import static net.kyori.adventure.text.minimessage.Constants.TAG_END;
-import static net.kyori.adventure.text.minimessage.Constants.TAG_START;
-import static net.kyori.adventure.text.minimessage.Constants.TRANSLATABLE;
+import static net.kyori.adventure.text.minimessage.Tokens.CLICK;
+import static net.kyori.adventure.text.minimessage.Tokens.CLOSE_TAG;
+import static net.kyori.adventure.text.minimessage.Tokens.COLOR;
+import static net.kyori.adventure.text.minimessage.Tokens.GRADIENT;
+import static net.kyori.adventure.text.minimessage.Tokens.HOVER;
+import static net.kyori.adventure.text.minimessage.Tokens.INSERTION;
+import static net.kyori.adventure.text.minimessage.Tokens.KEYBIND;
+import static net.kyori.adventure.text.minimessage.Tokens.PRE;
+import static net.kyori.adventure.text.minimessage.Tokens.RAINBOW;
+import static net.kyori.adventure.text.minimessage.Tokens.RESET;
+import static net.kyori.adventure.text.minimessage.Tokens.SEPARATOR;
+import static net.kyori.adventure.text.minimessage.Tokens.TAG_END;
+import static net.kyori.adventure.text.minimessage.Tokens.TAG_START;
+import static net.kyori.adventure.text.minimessage.Tokens.TRANSLATABLE;
 
-public class MiniMessageParser {
+/* package */ class MiniMessageParser {
 
   // regex group names
   private static final String START = "start";
@@ -79,10 +79,10 @@ public class MiniMessageParser {
 
   private static final Map<Class<? extends Fancy>, Fancy> empty = new HashMap<>();
 
-  @NonNull
-  public static String escapeTokens(@NonNull String richMessage) {
-    StringBuilder sb = new StringBuilder();
-    Matcher matcher = pattern.matcher(richMessage);
+
+  /* package */ static @NonNull String escapeTokens(final @NonNull String richMessage) {
+    final StringBuilder sb = new StringBuilder();
+    final Matcher matcher = pattern.matcher(richMessage);
     int lastEnd = 0;
     while (matcher.find()) {
       int startIndex = matcher.start();
@@ -93,10 +93,10 @@ public class MiniMessageParser {
       }
       lastEnd = endIndex;
 
-      String start = matcher.group(START);
+      final String start = matcher.group(START);
       String token = matcher.group(TOKEN);
-      String inner = matcher.group(INNER);
-      String end = matcher.group(END);
+      final String inner = matcher.group(INNER);
+      final String end = matcher.group(END);
 
       // also escape inner
       if (inner != null) {
@@ -113,14 +113,13 @@ public class MiniMessageParser {
     return sb.toString();
   }
 
-  @NonNull
-  public static String stripTokens(@NonNull String richMessage) {
-    StringBuilder sb = new StringBuilder();
-    Matcher matcher = pattern.matcher(richMessage);
+  /* package */ static @NonNull String stripTokens(final @NonNull String richMessage) {
+    final StringBuilder sb = new StringBuilder();
+    final Matcher matcher = pattern.matcher(richMessage);
     int lastEnd = 0;
     while (matcher.find()) {
-      int startIndex = matcher.start();
-      int endIndex = matcher.end();
+      final int startIndex = matcher.start();
+      final int endIndex = matcher.end();
 
       if (startIndex > lastEnd) {
         sb.append(richMessage, lastEnd, startIndex);
@@ -135,8 +134,7 @@ public class MiniMessageParser {
     return sb.toString();
   }
 
-  @NonNull
-  public static String handlePlaceholders(@NonNull String richMessage, @NonNull String... placeholders) {
+  /* package */ static @NonNull String handlePlaceholders(@NonNull String richMessage, final @NonNull String... placeholders) {
     if (placeholders.length % 2 != 0) {
       throw new ParseException(
         "Invalid number placeholders defined, usage: parseFormat(format, key, value, key, value...)");
@@ -147,37 +145,37 @@ public class MiniMessageParser {
     return richMessage;
   }
 
-  @NonNull
-  public static String handlePlaceholders(@NonNull String richMessage, @NonNull Map<String, String> placeholders) {
+
+  /* package */ static @NonNull String handlePlaceholders(@NonNull String richMessage, final @NonNull Map<String, String> placeholders) {
     for (Map.Entry<String, String> entry : placeholders.entrySet()) {
       richMessage = richMessage.replace(TAG_START + entry.getKey() + TAG_END, entry.getValue());
     }
     return richMessage;
   }
 
-  @NonNull
-  public static Component parseFormat(@NonNull String richMessage, @NonNull String... placeholders) {
+
+  /* package */ static @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull String... placeholders) {
     return parseFormat(handlePlaceholders(richMessage, placeholders));
   }
 
-  @NonNull
-  public static Component parseFormat(@NonNull String richMessage, @NonNull Map<String, String> placeholders) {
+
+  /* package */ static @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull Map<String, String> placeholders) {
     return parseFormat(handlePlaceholders(richMessage, placeholders));
   }
 
-  @NonNull
-  public static Component parseFormat(@NonNull String richMessage) {
-    TextComponent.Builder parent = TextComponent.builder("");
 
-    ArrayDeque<ClickEvent> clickEvents = new ArrayDeque<>();
-    ArrayDeque<HoverEvent<?>> hoverEvents = new ArrayDeque<>();
-    ArrayDeque<TextColor> colors = new ArrayDeque<>();
-    ArrayDeque<String> insertions = new ArrayDeque<>();
-    EnumSet<HelperTextDecoration> decorations = EnumSet.noneOf(HelperTextDecoration.class);
+  /* package */ static @NonNull Component parseFormat(final @NonNull String richMessage) {
+    final TextComponent.Builder parent = TextComponent.builder("");
+
+    final ArrayDeque<ClickEvent> clickEvents = new ArrayDeque<>();
+    final ArrayDeque<HoverEvent<?>> hoverEvents = new ArrayDeque<>();
+    final ArrayDeque<TextColor> colors = new ArrayDeque<>();
+    final ArrayDeque<String> insertions = new ArrayDeque<>();
+    final EnumSet<HelperTextDecoration> decorations = EnumSet.noneOf(HelperTextDecoration.class);
     boolean isPreformatted = false;
-    Map<Class<? extends Fancy>, Fancy> fancy = new LinkedHashMap<>();
+    final Map<Class<? extends Fancy>, Fancy> fancy = new LinkedHashMap<>();
 
-    Matcher matcher = pattern.matcher(richMessage);
+    final Matcher matcher = pattern.matcher(richMessage);
     int lastEnd = 0;
     while (matcher.find()) {
       Component current = null;
@@ -198,8 +196,8 @@ public class MiniMessageParser {
 
       }
 
-      String token = matcher.group(TOKEN);
-      String inner = matcher.group(INNER);
+      final String token = matcher.group(TOKEN);
+      final String inner = matcher.group(INNER);
 
       Optional<HelperTextDecoration> deco;
       Optional<TextColor> color;
@@ -314,7 +312,7 @@ public class MiniMessageParser {
 
     // handle last message part
     if (richMessage.length() > lastEnd) {
-      String msg = richMessage.substring(lastEnd);
+      final String msg = richMessage.substring(lastEnd);
       // append message
       Component current = TextComponent.of(msg);
 
@@ -325,7 +323,7 @@ public class MiniMessageParser {
     }
 
     // optimization, ignore empty parent
-    TextComponent comp = parent.build();
+    final TextComponent comp = parent.build();
     if (comp.content().equals("") && comp.children().size() == 1) {
       return comp.children().get(0);
     } else {
@@ -333,14 +331,13 @@ public class MiniMessageParser {
     }
   }
 
-  @NonNull
-  private static Component applyFormatting(@NonNull Deque<ClickEvent> clickEvents,
-                                           @NonNull Deque<HoverEvent<?>> hoverEvents,
-                                           @NonNull Deque<TextColor> colors,
-                                           @NonNull Deque<String> insertions,
-                                           @NonNull EnumSet<HelperTextDecoration> decorations,
-                                           @NonNull Component current,
-                                           @NonNull Map<Class<? extends Fancy>, Fancy> fancy) {
+  private static @NonNull Component applyFormatting(@NonNull final Deque<ClickEvent> clickEvents,
+                                                    @NonNull final Deque<HoverEvent<?>> hoverEvents,
+                                                    @NonNull final Deque<TextColor> colors,
+                                                    @NonNull final Deque<String> insertions,
+                                                    @NonNull final EnumSet<HelperTextDecoration> decorations,
+                                                    @NonNull Component current,
+                                                    @NonNull final Map<Class<? extends Fancy>, Fancy> fancy) {
     // set everything that is not closed yet
     if (!clickEvents.isEmpty()) {
       current = current.clickEvent(clickEvents.peek());
@@ -363,9 +360,9 @@ public class MiniMessageParser {
 
     if (current instanceof TextComponent && fancy.size() != 0) {
       Component parent = null;
-      TextComponent bigComponent = (TextComponent) current;
+      final TextComponent bigComponent = (TextComponent) current;
 
-      Fancy next = fancy.entrySet().iterator().next().getValue();
+      final Fancy next = fancy.entrySet().iterator().next().getValue();
       next.init(bigComponent.content().length());
       // split into multiple components
       for (int i = 0; i < bigComponent.content().length(); i++) {
@@ -388,10 +385,9 @@ public class MiniMessageParser {
     return current;
   }
 
-  @NonNull
-  private static Rainbow handleRainbow(String token) {
+  private static @NonNull Rainbow handleRainbow(final @NonNull String token) {
     if (token.contains(SEPARATOR)) {
-      String phase = token.substring(token.indexOf(SEPARATOR) + 1);
+      final String phase = token.substring(token.indexOf(SEPARATOR) + 1);
       try {
         return new Rainbow(Integer.parseInt(phase));
       } catch (NumberFormatException ex) {
@@ -401,13 +397,12 @@ public class MiniMessageParser {
     return new Rainbow();
   }
 
-  @NonNull
-  private static Gradient handleGradient(String token) {
+  private static @NonNull Gradient handleGradient(final @NonNull String token) {
     if (token.contains(SEPARATOR)) {
-      String[] split = token.split(":");
+      final String[] split = token.split(":");
       if (split.length == 3) {
-        TextColor c1 = parseColor(split[1]).orElseThrow(() -> new ParseException("Can't parse gradient phase (not a color 1) " + token));
-        TextColor c2 = parseColor(split[2]).orElseThrow(() -> new ParseException("Can't parse gradient phase (not a color 2) " + token));
+        final TextColor c1 = parseColor(split[1]).orElseThrow(() -> new ParseException("Can't parse gradient phase (not a color 1) " + token));
+        final TextColor c2 = parseColor(split[2]).orElseThrow(() -> new ParseException("Can't parse gradient phase (not a color 2) " + token));
         return new Gradient(c1, c2);
       } else {
         throw new ParseException("Can't parse gradient (wrong args) " + token);
@@ -416,27 +411,27 @@ public class MiniMessageParser {
     return new Gradient();
   }
 
-  @NonNull
-  private static String handleInsertion(@NonNull String token) {
-    String[] args = token.split(SEPARATOR);
+
+  private static @NonNull String handleInsertion(final @NonNull String token) {
+    final String[] args = token.split(SEPARATOR);
     if (args.length < 2) {
       throw new ParseException("Can't parse insertion (too few args) " + token);
     }
     return token.replace(args[0] + SEPARATOR, "");
   }
 
-  @NonNull
-  private static Component handleTranslatable(@NonNull String token, String inner) {
-    String[] args = token.split(SEPARATOR);
+
+  private static @NonNull Component handleTranslatable(final @NonNull String token, final String inner) {
+    final String[] args = token.split(SEPARATOR);
     if (args.length < 2) {
       throw new ParseException("Can't parse translatable (too few args) " + token);
     }
     if (inner == null) {
       return TranslatableComponent.of(args[1]);
     } else {
-      List<Component> inners = new ArrayList<>();
-      String toSplit = token.replace(args[0] + ":" + args[1] + ":", "");
-      String[] split = dumSplitPattern.split(cleanInner(toSplit));
+      final List<Component> inners = new ArrayList<>();
+      final String toSplit = token.replace(args[0] + ":" + args[1] + ":", "");
+      final String[] split = dumSplitPattern.split(cleanInner(toSplit));
       for (String someInner : split) {
         inners.add(parseFormat(someInner));
       }
@@ -444,29 +439,28 @@ public class MiniMessageParser {
     }
   }
 
-  @NonNull
-  private static KeybindComponent handleKeybind(@NonNull String token) {
-    String[] args = token.split(SEPARATOR);
+
+  private static @NonNull KeybindComponent handleKeybind(final @NonNull String token) {
+    final String[] args = token.split(SEPARATOR);
     if (args.length < 2) {
       throw new ParseException("Can't parse keybind (too few args) " + token);
     }
     return KeybindComponent.of(args[1]);
   }
 
-  @NonNull
-  private static ClickEvent handleClick(@NonNull String token, @NonNull String inner) {
-    String[] args = token.split(SEPARATOR);
+  private static @NonNull ClickEvent handleClick(final @NonNull String token, final @NonNull String inner) {
+    final String[] args = token.split(SEPARATOR);
     if (args.length < 2) {
       throw new ParseException("Can't parse click action (too few args) " + token);
     }
-    ClickEvent.Action action = Optional.ofNullable(ClickEvent.Action.NAMES.value(args[1].toLowerCase(Locale.ROOT)))
+    final ClickEvent.Action action = Optional.ofNullable(ClickEvent.Action.NAMES.value(args[1].toLowerCase(Locale.ROOT)))
       .orElseThrow(() -> new ParseException("Can't parse click action (invalid action) " + token));
     return ClickEvent.of(action, token.replace(CLICK + SEPARATOR + args[1] + SEPARATOR, ""));
   }
 
-  @NonNull
-  private static HoverEvent<?> handleHover(@NonNull String token, @NonNull String inner) {
-    String[] args = token.split(SEPARATOR);
+
+  private static @NonNull HoverEvent<?> handleHover(final @NonNull String token, @NonNull String inner) {
+    final String[] args = token.split(SEPARATOR);
     if (args.length < 2) {
       throw new ParseException("Can't parse hover action (too few args) " + token);
     }
@@ -477,14 +471,13 @@ public class MiniMessageParser {
     return HoverEvent.of(action, parseFormat(inner));
   }
 
-  @NonNull
-  private static Optional<TextColor> resolveColor(@NonNull String token) {
+
+  private static @NonNull Optional<TextColor> resolveColor(final @NonNull String token) {
     return Optional.ofNullable(NamedTextColor.NAMES.value(token.toLowerCase(Locale.ROOT)));
   }
 
-  @NonNull
-  private static Optional<TextColor> resolveColorNew(@NonNull String token) {
-    String[] args = token.split(SEPARATOR);
+  private static @NonNull Optional<TextColor> resolveColorNew(final @NonNull String token) {
+    final String[] args = token.split(SEPARATOR);
     if (args.length < 2) {
       throw new ParseException("Can't parse color (too few args) " + token);
     }
@@ -492,8 +485,7 @@ public class MiniMessageParser {
     return parseColor(args[1]);
   }
 
-  @NonNull
-  private static Optional<TextColor> parseColor(String color) {
+  private static @NonNull Optional<TextColor> parseColor(final String color) {
     if (color.charAt(0) == '#') {
       return Optional.ofNullable(TextColor.fromHexString(color));
     } else {
@@ -501,8 +493,7 @@ public class MiniMessageParser {
     }
   }
 
-  @NonNull
-  private static Optional<HelperTextDecoration> resolveDecoration(@NonNull String token) {
+  private static @NonNull Optional<HelperTextDecoration> resolveDecoration(final @NonNull String token) {
     try {
       return Optional.of(HelperTextDecoration.valueOf(token.toUpperCase(Locale.ROOT)));
     } catch (IllegalArgumentException ex) {
@@ -510,7 +501,7 @@ public class MiniMessageParser {
     }
   }
 
-  private static String cleanInner(String inner) {
+  private static String cleanInner(final String inner) {
     return inner.substring(1).substring(0, inner.length() - 2); // cut off first and last "/'
   }
 

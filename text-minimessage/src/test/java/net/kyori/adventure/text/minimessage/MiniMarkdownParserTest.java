@@ -31,180 +31,180 @@ public class MiniMarkdownParserTest {
 
   @Test
   public void testBold() {
-    String input = "**bold**";
-    String expected = "<bold>bold</bold>";
+    final String input = "**bold**";
+    final String expected = "<bold>bold</bold>";
 
-    String output = MiniMarkdownParser.parse(input);
+    final String output = MiniMarkdownParser.parse(input);
 
     assertEquals(expected, output);
   }
 
   @Test
   public void testBold2() {
-    String input = "__bold__";
-    String expected = "<bold>bold</bold>";
+    final String input = "__bold__";
+    final String expected = "<bold>bold</bold>";
 
-    String output = MiniMarkdownParser.parse(input);
+    final String output = MiniMarkdownParser.parse(input);
 
     assertEquals(expected, output);
   }
 
   @Test
   public void testItalic() {
-    String input = "*italic*";
-    String expected = "<italic>italic</italic>";
+    final String input = "*italic*";
+    final String expected = "<italic>italic</italic>";
 
-    String output = MiniMarkdownParser.parse(input);
+    final String output = MiniMarkdownParser.parse(input);
 
     assertEquals(expected, output);
   }
 
   @Test
   public void testItalic2() {
-    String input = "_italic_";
-    String expected = "<italic>italic</italic>";
+    final String input = "_italic_";
+    final String expected = "<italic>italic</italic>";
 
-    String output = MiniMarkdownParser.parse(input);
+    final String output = MiniMarkdownParser.parse(input);
 
     assertEquals(expected, output);
   }
 
   @Test
   public void testUnderline() {
-    String input = "~~underline~~";
-    String expected = "<underlined>underline</underlined>";
+    final String input = "~~underline~~";
+    final String expected = "<underlined>underline</underlined>";
 
-    String output = MiniMarkdownParser.parse(input);
+    final String output = MiniMarkdownParser.parse(input);
 
     assertEquals(expected, output);
   }
 
   @Test
   public void testBoldWithSpaces() {
-    String input = "AaA** bold **AaA";
-    String expected = "AaA<bold> bold </bold>AaA";
+    final String input = "AaA** bold **AaA";
+    final String expected = "AaA<bold> bold </bold>AaA";
 
-    String output = MiniMarkdownParser.parse(input);
+    final String output = MiniMarkdownParser.parse(input);
 
     assertEquals(expected, output);
   }
 
   @Test
   public void testMixed() {
-    String input = "*italic*~~underline~~**bold**";
-    String expected = "<italic>italic</italic><underlined>underline</underlined><bold>bold</bold>";
+    final String input = "*italic*~~underline~~**bold**";
+    final String expected = "<italic>italic</italic><underlined>underline</underlined><bold>bold</bold>";
 
-    String output = MiniMarkdownParser.parse(input);
+    final String output = MiniMarkdownParser.parse(input);
 
     assertEquals(expected, output);
   }
 
   @Test
   public void testMushedTogether() {
-    String input = "*a***a**";
-    String expected = "<italic>a</italic><bold>a</bold>";
+    final String input = "*a***a**";
+    final String expected = "<italic>a</italic><bold>a</bold>";
 
-    String output = MiniMarkdownParser.parse(input);
+    final String output = MiniMarkdownParser.parse(input);
 
     assertEquals(expected, output);
   }
 
   @Test
   public void testWithFake() {
-    String input = "*a~*a~";
-    String expected = "<italic>a~</italic>a~";
+    final String input = "*a~*a~";
+    final String expected = "<italic>a~</italic>a~";
 
-    String output = MiniMarkdownParser.parse(input);
+    final String output = MiniMarkdownParser.parse(input);
 
     assertEquals(expected, output);
   }
 
   @Test
   public void testCrossed() {
-    String input = "*a~~*a~~";
-    String expected = "<italic>a</italic><underlined>a</underlined>";
+    final String input = "*a~~*a~~";
+    final String expected = "<italic>a</italic><underlined>a</underlined>";
 
-    String output = MiniMarkdownParser.parse(input);
+    final String output = MiniMarkdownParser.parse(input);
 
     assertEquals(expected, output);
   }
 
   @Test
   public void testCrossedWithSpace() {
-    String input = "*a~~ *a~~";
-    String expected = "<italic>a<underlined> </italic>a</underlined>";
+    final String input = "*a~~ *a~~";
+    final String expected = "<italic>a<underlined> </italic>a</underlined>";
 
-    String output = MiniMarkdownParser.parse(input);
+    final String output = MiniMarkdownParser.parse(input);
 
     assertEquals(expected, output);
   }
 
   @Test
   public void testNoEnd() {
-    String input = "*a";
-    String expected = "*a";
+    final String input = "*a";
+    final String expected = "*a";
 
-    String output = MiniMarkdownParser.parse(input);
+    final String output = MiniMarkdownParser.parse(input);
 
     assertEquals(expected, output);
   }
 
   @Test
   public void testStripMixed() {
-    String input = "*italic*~~underline~~**bold**";
-    String expected = "italicunderlinebold";
+    final String input = "*italic*~~underline~~**bold**";
+    final String expected = "italicunderlinebold";
 
-    String output = MiniMarkdownParser.stripMarkdown(input);
+    final String output = MiniMarkdownParser.stripMarkdown(input);
 
     assertEquals(expected, output);
   }
 
   @Test
   public void testStripMushedTogether() {
-    String input = "*a***a**";
-    String expected = "aa";
+    final String input = "*a***a**";
+    final String expected = "aa";
 
-    String output = MiniMarkdownParser.stripMarkdown(input);
+    final String output = MiniMarkdownParser.stripMarkdown(input);
 
     assertEquals(expected, output);
   }
 
   @Test
   public void testStripWithFake() {
-    String input = "*a~*a~";
-    String expected = "a~a~";
+    final String input = "*a~*a~";
+    final String expected = "a~a~";
 
-    String output = MiniMarkdownParser.stripMarkdown(input);
+    final String output = MiniMarkdownParser.stripMarkdown(input);
 
     assertEquals(expected, output);
   }
 
   @Test
   public void testStripCrossed() {
-    String input = "*a~~*a~~";
-    String expected = "aa";
+    final String input = "*a~~*a~~";
+    final String expected = "aa";
 
-    String output = MiniMarkdownParser.stripMarkdown(input);
+    final String output = MiniMarkdownParser.stripMarkdown(input);
 
     assertEquals(expected, output);
   }
 
   @Test
   public void testStripCrossedWithSpace() {
-    String input = "*a~~ *a~~";
-    String expected = "a a";
+    final String input = "*a~~ *a~~";
+    final String expected = "a a";
 
-    String output = MiniMarkdownParser.stripMarkdown(input);
+    final String output = MiniMarkdownParser.stripMarkdown(input);
 
     assertEquals(expected, output);
   }
 
   @Test
   public void testStripNoEnd() {
-    String input = "*a";
-    String expected = "*a";
+    final String input = "*a";
+    final String expected = "*a";
 
-    String output = MiniMarkdownParser.stripMarkdown(input);
+    final String output = MiniMarkdownParser.stripMarkdown(input);
 
     assertEquals(expected, output);
   }
