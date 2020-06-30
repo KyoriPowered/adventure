@@ -82,4 +82,10 @@ class TextColorTest {
       )
       .testEquals();
   }
+
+  @Test
+  public void testCssStyleRgbColors() {
+    final TextColor original = TextColor.of(0x77ff11);
+    assertEquals(original, TextColor.fromHexString("#7f1"));
+  }
 }

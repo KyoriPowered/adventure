@@ -67,18 +67,31 @@ public interface TextColor extends Comparable<TextColor>, TextFormat {
   }
 
   /**
-   * Create a new color from a hex string.
+   * Create a color from a CSS hex string ({@code #rrggbb} or {@code #rgb}).
    *
    * @param string the hex string
    * @return a new text colour
    */
   static @Nullable TextColor fromHexString(final @NonNull String string) {
     if(string.startsWith("#")) {
+      final String hexString = string.substring(1);
+      if(hexString.length() != 3 && hexString.length() != 6) {
+        return null;
+      }
+      final int hex;
       try {
-        final int hex = Integer.parseInt(string.substring(1), 16);
-        return of(hex);
+        hex = Integer.parseInt(hexString, 16);
       } catch(final NumberFormatException e) {
         return null;
+      }
+
+      if(hexString.length() == 6) {
+        return of(hex);
+      } else {
+        final int red = (hex & 0xf00) >> 8 | (hex & 0xf00) >> 4;
+        final int green = (hex & 0x0f0) >> 4 | (hex & 0x0f0);
+        final int blue = (hex & 0x00f) << 4 | (hex & 0x00f);
+        return of(red, green, blue);
       }
     }
     return null;
