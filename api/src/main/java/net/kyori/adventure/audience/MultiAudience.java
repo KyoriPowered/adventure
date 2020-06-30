@@ -54,18 +54,10 @@ public interface MultiAudience extends Audience {
     requireNonNull(action, "action");
     final List<Viewer> failed = new ArrayList<>();
     for(final Viewer viewer : this.viewers()) {
-      if(viewer instanceof Audience) {
-        final Audience audience = (Audience) viewer;
-        final Audience resulting = audience.perform(type, action);
-        if(resulting != Audience.empty()) {
-          failed.add(resulting);
-        }
-      } else {
-        if(type.isInstance(viewer)) {
-          action.accept(type.cast(viewer));
-        } else {
-          failed.add(viewer.asAudience());
-        }
+      final Audience audience = viewer.asAudience();
+      final Audience resulting = audience.perform(type, action);
+      if(resulting != Audience.empty()) {
+        failed.add(resulting);
       }
     }
     return failed.isEmpty() ? Audience.empty() : Audience.of(failed);

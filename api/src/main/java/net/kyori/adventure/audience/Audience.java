@@ -92,4 +92,10 @@ public interface Audience extends Viewer, Viewer.Messages, Viewer.ActionBars, Vi
    * @return a {@link Viewer} of the sub-viewers the action couldn't be applied to
    */
   <T extends Viewer> @NonNull Audience perform(final @NonNull Class<T> type, final @NonNull Consumer<T> action);
+
+  @Override
+  @NonNull
+  default Audience asAudience() {
+    return this;
+  }
 }

@@ -42,10 +42,7 @@ public interface Viewer {
    * @return a stub audience
    */
   default @NonNull Audience asAudience() {
-    if(this instanceof Audience) {
-      return (Audience) this;
-    }
-    return (ForwardingAudience) () -> this;
+    return ForwardingAudience.of(this);
   }
 
   /**

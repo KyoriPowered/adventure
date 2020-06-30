@@ -31,6 +31,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
@@ -40,6 +41,16 @@ import static java.util.Objects.requireNonNull;
  */
 @FunctionalInterface
 public interface ForwardingAudience extends Audience {
+  /**
+   * Creates a {@link ForwardingAudience} which delegates to {@code viewer}.
+   *
+   * @param viewer the viewer
+   * @return the forwarding audience
+   */
+  static ForwardingAudience of(final @Nullable Viewer viewer) {
+    return new ForwardingAudienceImpl(viewer);
+  }
+
   /**
    * Gets the delegate viewer.
    *
@@ -51,7 +62,7 @@ public interface ForwardingAudience extends Audience {
   default <T extends Viewer> @NonNull Audience perform(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
     requireNonNull(type, "type");
     requireNonNull(action, "action");
-    final /* @Nullable */ Viewer viewer = this.viewer();
+    final Viewer viewer = this.viewer();
     if(viewer == null) {
       return Audience.empty();
     }
@@ -69,56 +80,93 @@ public interface ForwardingAudience extends Audience {
 
   @Override
   default void sendMessage(final @NonNull Component message) {
-    this.perform(Viewer.Messages.class, a -> a.sendMessage(message));
+    final Viewer viewer = this.viewer();
+    if(viewer instanceof Viewer.Messages) ((Viewer.Messages) viewer).sendMessage(message);
   }
 
   @Override
   default void sendActionBar(final @NonNull Component message) {
-    this.perform(Viewer.ActionBars.class, a -> a.sendActionBar(message));
+    final Viewer viewer = this.viewer();
+    if(viewer instanceof Viewer.ActionBars) ((Viewer.ActionBars) viewer).sendActionBar(message);
   }
 
   @Override
   default void showTitle(final @NonNull Title title) {
-    this.perform(Viewer.Titles.class, a -> a.showTitle(title));
+    final Viewer viewer = this.viewer();
+    if(viewer instanceof Viewer.Titles) ((Viewer.Titles) viewer).showTitle(title);
   }
 
   @Override
   default void clearTitle() {
-    this.perform(Viewer.Titles.class, Titles::clearTitle);
+    final Viewer viewer = this.viewer();
+    if(viewer instanceof Viewer.Titles) ((Viewer.Titles) viewer).clearTitle();
   }
 
   @Override
   default void resetTitle() {
-    this.perform(Viewer.Titles.class, Titles::resetTitle);
+    final Viewer viewer = this.viewer();
+    if(viewer instanceof Viewer.Titles) ((Viewer.Titles) viewer).resetTitle();
   }
 
   @Override
   default void showBossBar(final @NonNull BossBar bar) {
-    this.perform(Viewer.BossBars.class, a -> a.showBossBar(bar));
+    final Viewer viewer = this.viewer();
+    if(viewer instanceof Viewer.BossBars) ((Viewer.BossBars) viewer).showBossBar(bar);
   }
 
   @Override
   default void hideBossBar(final @NonNull BossBar bar) {
-    this.perform(Viewer.BossBars.class, a -> a.hideBossBar(bar));
+    final Viewer viewer = this.viewer();
+    if(viewer instanceof Viewer.BossBars) ((Viewer.BossBars) viewer).hideBossBar(bar);
   }
 
   @Override
   default void playSound(final @NonNull Sound sound) {
-    this.perform(Viewer.Sounds.class, a -> a.playSound(sound));
+    final Viewer viewer = this.viewer();
+    if(viewer instanceof Viewer.Sounds) ((Viewer.Sounds) viewer).playSound(sound);
   }
 
   @Override
   default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
-    this.perform(Viewer.Sounds.class, a -> a.playSound(sound, x, y, z));
+    final Viewer viewer = this.viewer();
+    if(viewer instanceof Viewer.Sounds) ((Viewer.Sounds) viewer).playSound(sound, x, y, z);
   }
 
   @Override
   default void stopSound(final @NonNull SoundStop stop) {
-    this.perform(Viewer.Sounds.class, a -> a.stopSound(stop));
+    final Viewer viewer = this.viewer();
+    if(viewer instanceof Viewer.Sounds) ((Viewer.Sounds) viewer).stopSound(stop);
   }
 
   @Override
   default void openBook(final @NonNull Book book) {
-    this.perform(Viewer.Books.class, a -> a.openBook(book));
+    final Viewer viewer = this.viewer();
+    if(viewer instanceof Viewer.Books) ((Viewer.Books) viewer).openBook(book);
+  }
+}
+
+/* package */ final class ForwardingAudienceImpl implements ForwardingAudience {
+  private final Viewer viewer;
+
+  /* package */ ForwardingAudienceImpl(final @Nullable Viewer viewer) {
+    this.viewer = viewer;
+  }
+
+  @Override
+  public @Nullable Viewer viewer() {
+    return this.viewer;
+  }
+
+  @Override
+  public boolean equals(final @Nullable Object other) {
+    if(this == other) return true;
+    if(other == null || this.getClass() != other.getClass()) return false;
+    final ForwardingAudienceImpl that = (ForwardingAudienceImpl) other;
+    return Objects.equals(this.viewer, that.viewer);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(this.viewer);
   }
 }
