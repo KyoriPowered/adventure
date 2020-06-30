@@ -6,6 +6,8 @@ import net.kyori.adventure.util.Buildable;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.Map;
+
 /**
  * MiniMessage is a textual representation of components. This class allows you to serialize and deserialize them, strip
  * or escape them, and even supports a markdown like format.
@@ -55,6 +57,24 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
   default Component parse(@NonNull String input) {
     return deserialize(input);
   }
+
+  /**
+   * Parses a string into an component, allows passing placeholders in key value pairs
+   *
+   * @param input the input string
+   * @param placeholders the placeholders
+   * @return the output component
+   */
+  @NonNull Component parse(@NonNull String input, final @NonNull String... placeholders);
+
+  /**
+   * Parses a string into an component, allows passing placeholders in key value pairs
+   *
+   * @param input the input string
+   * @param placeholders the placeholders
+   * @return the output component
+   */
+  @NonNull Component parse(@NonNull String input, final @NonNull Map<String, String> placeholders);
 
   /**
    * Creates a new {@link MiniMessage.Builder}.

@@ -4,6 +4,8 @@ import net.kyori.adventure.text.Component;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.Map;
+
 /* package */ class MiniMessageImpl implements MiniMessage {
 
   /* package */ static final MiniMessage INSTANCE = new MiniMessageImpl(false);
@@ -27,6 +29,22 @@ import org.checkerframework.checker.nullness.qual.NonNull;
   @Override
   public @NonNull String serialize(@NonNull Component component) {
     return MiniMessageSerializer.serialize(component);
+  }
+
+  @Override
+  public @NonNull Component parse(@NonNull String input, @NonNull String... placeholders) {
+    if (markdown) {
+      input = MiniMarkdownParser.parse(input);
+    }
+    return MiniMessageParser.parseFormat(input, placeholders);
+  }
+
+  @Override
+  public @NonNull Component parse(@NonNull String input, @NonNull Map<String, String> placeholders) {
+    if (markdown) {
+      input = MiniMarkdownParser.parse(input);
+    }
+    return MiniMessageParser.parseFormat(input, placeholders);
   }
 
   @Override

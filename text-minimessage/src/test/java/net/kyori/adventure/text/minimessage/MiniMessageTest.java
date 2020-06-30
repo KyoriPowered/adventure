@@ -46,6 +46,17 @@ public class MiniMessageTest {
   }
 
   @Test
+  public void testNormalPlaceholders() {
+    Component expected = TextComponent.of("TEST").color(NamedTextColor.RED);
+    Component result = MiniMessage.instance().parse("<red><test>", "test", "TEST");
+
+    final String out1 = GsonComponentSerializer.gson().serialize(expected);
+    final String out2 = GsonComponentSerializer.gson().serialize(result);
+
+    assertEquals(out1, out2);
+  }
+
+  @Test
   public void testMarkdown() {
     Component expected = TextComponent.of("BOLD").decoration(TextDecoration.BOLD, true).color(NamedTextColor.RED);
     Component result = MiniMessage.withMarkDown().deserialize("**<red>BOLD**");
