@@ -36,18 +36,17 @@ import net.kyori.adventure.text.minimessage.fancy.Gradient;
 import net.kyori.adventure.text.minimessage.fancy.Rainbow;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -197,8 +196,8 @@ import static net.kyori.adventure.text.minimessage.Tokens.TRANSLATABLE;
       final String token = matcher.group(TOKEN);
       final String inner = matcher.group(INNER);
 
-      Optional<HelperTextDecoration> deco;
-      Optional<TextColor> color;
+      HelperTextDecoration deco;
+      TextColor color;
 
       // handle pre
       if (isPreformatted) {
@@ -231,21 +230,21 @@ import static net.kyori.adventure.text.minimessage.Tokens.TRANSLATABLE;
         hoverEvents.pollFirst();
       }
       // decoration
-      else if ((deco = resolveDecoration(token)).isPresent()) {
-        decorations.add(deco.get());
-      } else if (token.startsWith(CLOSE_TAG) && (deco = resolveDecoration(token.replace(CLOSE_TAG, ""))).isPresent()) {
-        decorations.remove(deco.get());
+      else if ((deco = resolveDecoration(token)) != null) {
+        decorations.add(deco);
+      } else if (token.startsWith(CLOSE_TAG) && (deco = resolveDecoration(token.replace(CLOSE_TAG, ""))) != null) {
+        decorations.remove(deco);
       }
       // color
-      else if ((color = resolveColor(token)).isPresent()) {
-        colors.push(color.get());
-      } else if (token.startsWith(CLOSE_TAG) && resolveColor(token.replace(CLOSE_TAG, "")).isPresent()) {
+      else if ((color = resolveColor(token)) != null) {
+        colors.push(color);
+      } else if (token.startsWith(CLOSE_TAG) && resolveColor(token.replace(CLOSE_TAG, "")) != null) {
         colors.pollFirst();
       }
       // color; hex or named syntax
-      else if (token.startsWith(COLOR + SEPARATOR) && (color = resolveColorNew(token)).isPresent()) {
-        colors.push(color.get());
-      } else if (token.startsWith(CLOSE_TAG + COLOR) && resolveColorNew(token.replace(CLOSE_TAG, "")).isPresent()) {
+      else if (token.startsWith(COLOR + SEPARATOR) && (color = resolveColorNew(token)) != null) {
+        colors.push(color);
+      } else if (token.startsWith(CLOSE_TAG + COLOR) && resolveColorNew(token.replace(CLOSE_TAG, "")) != null) {
         colors.pollFirst();
       }
       // keybind
@@ -399,8 +398,10 @@ import static net.kyori.adventure.text.minimessage.Tokens.TRANSLATABLE;
     if (token.contains(SEPARATOR)) {
       final String[] split = token.split(":");
       if (split.length == 3) {
-        final TextColor c1 = parseColor(split[1]).orElseThrow(() -> new ParseException("Can't parse gradient phase (not a color 1) " + token));
-        final TextColor c2 = parseColor(split[2]).orElseThrow(() -> new ParseException("Can't parse gradient phase (not a color 2) " + token));
+        final TextColor c1 = parseColor(split[1]);
+        if (c1 == null) throw new ParseException("Can't parse gradient phase (not a color 1) " + token);
+        final TextColor c2 = parseColor(split[2]);
+        if (c2 == null) throw new ParseException("Can't parse gradient phase (not a color 2) " + token);
         return new Gradient(c1, c2);
       } else {
         throw new ParseException("Can't parse gradient (wrong args) " + token);
@@ -451,8 +452,8 @@ import static net.kyori.adventure.text.minimessage.Tokens.TRANSLATABLE;
     if (args.length < 2) {
       throw new ParseException("Can't parse click action (too few args) " + token);
     }
-    final ClickEvent.Action action = Optional.ofNullable(ClickEvent.Action.NAMES.value(args[1].toLowerCase(Locale.ROOT)))
-      .orElseThrow(() -> new ParseException("Can't parse click action (invalid action) " + token));
+    final ClickEvent.Action action = ClickEvent.Action.NAMES.value(args[1].toLowerCase(Locale.ROOT));
+    if (action == null) throw new ParseException("Can't parse click action (invalid action) " + token);
     return ClickEvent.of(action, token.replace(CLICK + SEPARATOR + args[1] + SEPARATOR, ""));
   }
 
@@ -464,17 +465,17 @@ import static net.kyori.adventure.text.minimessage.Tokens.TRANSLATABLE;
     }
     inner = cleanInner(inner);
     // TODO figure out support for all hover actions
-    HoverEvent.Action action = Optional.ofNullable(HoverEvent.Action.NAMES.value(args[1].toLowerCase(Locale.ROOT)))
-      .orElseThrow(() -> new ParseException("Can't parse hover action (invalid action) " + token));
+    final HoverEvent.Action action = HoverEvent.Action.NAMES.value(args[1].toLowerCase(Locale.ROOT));
+    if (action == null) throw new ParseException("Can't parse hover action (invalid action) " + token);
     return HoverEvent.of(action, parseFormat(inner));
   }
 
 
-  private static @NonNull Optional<TextColor> resolveColor(final @NonNull String token) {
-    return Optional.ofNullable(NamedTextColor.NAMES.value(token.toLowerCase(Locale.ROOT)));
+  private static @Nullable TextColor resolveColor(final @NonNull String token) {
+    return NamedTextColor.NAMES.value(token.toLowerCase(Locale.ROOT));
   }
 
-  private static @NonNull Optional<TextColor> resolveColorNew(final @NonNull String token) {
+  private static @Nullable TextColor resolveColorNew(final @NonNull String token) {
     final String[] args = token.split(SEPARATOR);
     if (args.length < 2) {
       throw new ParseException("Can't parse color (too few args) " + token);
@@ -483,24 +484,23 @@ import static net.kyori.adventure.text.minimessage.Tokens.TRANSLATABLE;
     return parseColor(args[1]);
   }
 
-  private static @NonNull Optional<TextColor> parseColor(final String color) {
+  private static @Nullable TextColor parseColor(final String color) {
     if (color.charAt(0) == '#') {
-      return Optional.ofNullable(TextColor.fromHexString(color));
+      return TextColor.fromHexString(color);
     } else {
-      return Optional.ofNullable(NamedTextColor.NAMES.value(color.toLowerCase(Locale.ROOT)));
+      return NamedTextColor.NAMES.value(color.toLowerCase(Locale.ROOT));
     }
   }
 
-  private static @NonNull Optional<HelperTextDecoration> resolveDecoration(final @NonNull String token) {
+  private static @Nullable HelperTextDecoration resolveDecoration(final @NonNull String token) {
     try {
-      return Optional.of(HelperTextDecoration.valueOf(token.toUpperCase(Locale.ROOT)));
+      return HelperTextDecoration.valueOf(token.toUpperCase(Locale.ROOT));
     } catch (IllegalArgumentException ex) {
-      return Optional.empty();
+      return null;
     }
   }
 
   private static String cleanInner(final String inner) {
     return inner.substring(1).substring(0, inner.length() - 2); // cut off first and last "/'
   }
-
 }
