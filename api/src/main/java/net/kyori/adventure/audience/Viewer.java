@@ -52,9 +52,6 @@ public interface Viewer {
   default <T extends Viewer> @NonNull Audience perform(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
     requireNonNull(type, "type");
     requireNonNull(action, "action");
-    if(this instanceof Audience) {
-      throw new RuntimeException("Audience implementations must override this method");
-    }
     if(type.isInstance(this)) {
       action.accept(type.cast(this));
       return Audience.empty();

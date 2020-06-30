@@ -23,6 +23,12 @@
  */
 package net.kyori.adventure.audience;
 
+import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.inventory.Book;
+import net.kyori.adventure.sound.Sound;
+import net.kyori.adventure.sound.SoundStop;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,5 +87,60 @@ public interface MultiAudience extends Audience {
       }
     }
     return failed.isEmpty() ? Audience.empty() : MultiAudience.of(failed);
+  }
+
+  @Override
+  default void sendMessage(final @NonNull Component message) {
+    this.perform(Viewer.Messages.class, a -> a.sendMessage(message));
+  }
+
+  @Override
+  default void sendActionBar(final @NonNull Component message) {
+    this.perform(Viewer.ActionBars.class, a -> a.sendActionBar(message));
+  }
+
+  @Override
+  default void showTitle(final @NonNull Title title) {
+    this.perform(Viewer.Titles.class, a -> a.showTitle(title));
+  }
+
+  @Override
+  default void clearTitle() {
+    this.perform(Viewer.Titles.class, Titles::clearTitle);
+  }
+
+  @Override
+  default void resetTitle() {
+    this.perform(Viewer.Titles.class, Titles::resetTitle);
+  }
+
+  @Override
+  default void showBossBar(final @NonNull BossBar bar) {
+    this.perform(Viewer.BossBars.class, a -> a.showBossBar(bar));
+  }
+
+  @Override
+  default void hideBossBar(final @NonNull BossBar bar) {
+    this.perform(Viewer.BossBars.class, a -> a.hideBossBar(bar));
+  }
+
+  @Override
+  default void playSound(final @NonNull Sound sound) {
+    this.perform(Viewer.Sounds.class, a -> a.playSound(sound));
+  }
+
+  @Override
+  default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
+    this.perform(Viewer.Sounds.class, a -> a.playSound(sound, x, y, z));
+  }
+
+  @Override
+  default void stopSound(final @NonNull SoundStop stop) {
+    this.perform(Viewer.Sounds.class, a -> a.stopSound(stop));
+  }
+
+  @Override
+  default void openBook(final @NonNull Book book) {
+    this.perform(Viewer.Books.class, a -> a.openBook(book));
   }
 }
