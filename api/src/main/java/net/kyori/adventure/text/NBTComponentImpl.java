@@ -79,7 +79,7 @@ abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTCompo
     );
   }
 
-  abstract static class BuilderImpl<C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> extends AbstractComponentBuilder<C, B> implements NBTComponentBuilder<C, B> {
+  static abstract class BuilderImpl<C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> extends AbstractComponentBuilder<C, B> implements NBTComponentBuilder<C, B> {
     @Nullable String nbtPath;
     boolean interpret;
 

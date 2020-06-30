@@ -13,8 +13,8 @@
   </module>
   <!-- https://checkstyle.org/config_filters.html#SuppressionFilter -->
   <module name="SuppressionFilter">
-    <property name="file" value="${basedir}/checkstyle/checkstyle-suppressions.xml"
-              default="checkstyle-suppressions.xml" />
+    <property name="file" value="${basedir}/suppressions.xml"
+              default=".checkstyle/suppressions.xm" />
     <property name="optional" value="true"/>
   </module>
 
@@ -106,6 +106,7 @@
       <property name="lineWrappingIndentation" value="0"/>
       <property name="arrayInitIndent" value="2"/>
     </module>
+    <module name="CommentsIndentation"/>
 
     <!-- misc formatting based on Google style -->
     <!-- match filenames, don't use unicode escapes, no star imports -->
@@ -127,7 +128,6 @@
     <module name="MultipleVariableDeclarations"/>
     <module name="ArrayTypeStyle"/>
     <module name="FallThrough"/>
-    <module name="ModifierOrder"/>
     <module name="NoFinalizer"/>
     <module name="MethodParamPad">
       <property name="tokens"

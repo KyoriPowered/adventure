@@ -36,9 +36,10 @@ subprojects {
   }
 
   checkstyle {
+    def configRoot = new File(rootProject.projectDir, ".checkstyle")
     toolVersion = "8.34"
-    configDirectory = new File(rootProject.projectDir, "/etc/checkstyle")
-    configProperties= [basedir: rootProject.projectDir]
+    configDirectory = configRoot
+    configProperties= [basedir: configRoot.getAbsolutePath()]
   }
 
   repositories {

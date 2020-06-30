@@ -116,8 +116,8 @@ import net.kyori.adventure.text.format.TextDecoration;
             final /* @Nullable */ JsonElement rawValue = hoverEvent.get(HOVER_EVENT_CONTENTS);
             value = context.deserialize(rawValue, action.type());
           } else if(hoverEvent.has(HOVER_EVENT_VALUE)) {
-//            final /* @Nullable */ JsonElement rawValue = hoverEvent.get(HOVER_EVENT_VALUE);
-//            value = rawValue == null ? null : context.deserialize(rawValue, Component.class);
+            // final /* @Nullable */ JsonElement rawValue = hoverEvent.get(HOVER_EVENT_VALUE);
+            // value = rawValue == null ? null : context.deserialize(rawValue, Component.class);
             throw new UnsupportedOperationException(); // TODO: legacy support
           } else {
             value = null;
