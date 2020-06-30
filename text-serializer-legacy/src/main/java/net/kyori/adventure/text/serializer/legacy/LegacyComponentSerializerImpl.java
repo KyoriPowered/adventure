@@ -79,7 +79,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     this.useTerriblyStupidHexFormat = useTerriblyStupidHexFormat;
   }
 
-  private @Nullable ColorFormatGuess determineFormat(final char legacy, final String input, final int pos) {
+  private @Nullable FormatCodeType determineFormatType(final char legacy, final String input, final int pos) {
     if(pos >= 14) {
       // The BungeeCord RGB color format uses a repeating sequence of RGB values, each character formatted
       // as their own color format string, and to make things interesting, all the colors are also valid
@@ -88,19 +88,19 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       final int expectedCharacterPosition = pos - 14;
       final int expectedIndicatorPosition = pos - 13;
       if(input.charAt(expectedCharacterPosition) == character && input.charAt(expectedIndicatorPosition) == LEGACY_BUNGEE_HEX_CHAR) {
-        return ColorFormatGuess.BUNGEECORD_UNUSUAL_HEX;
+        return FormatCodeType.BUNGEECORD_UNUSUAL_HEX;
       }
     }
     if(legacy == this.hexCharacter) {
-      return ColorFormatGuess.KYORI_HEX;
+      return FormatCodeType.KYORI_HEX;
     } else if(LEGACY_CHARS.indexOf(legacy) != -1) {
-      return ColorFormatGuess.MOJANG_LEGACY;
+      return FormatCodeType.MOJANG_LEGACY;
     }
     return null;
   }
 
-  private @Nullable DecodedFormat fromLegacyCode(final char legacy, final String input, final int pos) {
-    final ColorFormatGuess guess = this.determineFormat(legacy, input, pos);
+  private @Nullable DecodedFormat decodeTextFormat(final char legacy, final String input, final int pos) {
+    final FormatCodeType guess = this.determineFormatType(legacy, input, pos);
     if (guess == null) {
       return null;
     }
@@ -168,9 +168,9 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
     int pos = input.length();
     do {
-      final DecodedFormat decoded = fromLegacyCode(input.charAt(next + 1), input, next + 2);
+      final DecodedFormat decoded = decodeTextFormat(input.charAt(next + 1), input, next + 2);
       if(decoded != null) {
-        final int from = next + (decoded.encodedFormat == ColorFormatGuess.KYORI_HEX ? 8 : 2);
+        final int from = next + (decoded.encodedFormat == FormatCodeType.KYORI_HEX ? 8 : 2);
         if(from != pos) {
           if(current != null) {
             if(reset) {
@@ -190,7 +190,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         }
 
         reset |= applyFormat(current, decoded.format);
-        if(decoded.encodedFormat == ColorFormatGuess.BUNGEECORD_UNUSUAL_HEX) {
+        if(decoded.encodedFormat == FormatCodeType.BUNGEECORD_UNUSUAL_HEX) {
           // BungeeCord hex characters are a repeating set of characters, all of which are also valid
           // legacy Mojang chat colors. Subtract the number of characters in the format, and only then
           // skip ahead.
@@ -432,17 +432,17 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
   }
 
-  enum ColorFormatGuess {
+  enum FormatCodeType {
     MOJANG_LEGACY,
     KYORI_HEX,
     BUNGEECORD_UNUSUAL_HEX
   }
 
   static final class DecodedFormat {
-    final ColorFormatGuess encodedFormat;
+    final FormatCodeType encodedFormat;
     final TextFormat format;
 
-    private DecodedFormat(final ColorFormatGuess encodedFormat, final TextFormat format) {
+    private DecodedFormat(final FormatCodeType encodedFormat, final TextFormat format) {
       if(format == null) {
         throw new IllegalStateException("No format found");
       }
