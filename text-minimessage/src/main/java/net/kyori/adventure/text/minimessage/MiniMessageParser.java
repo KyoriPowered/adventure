@@ -39,6 +39,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -76,9 +77,6 @@ import static net.kyori.adventure.text.minimessage.Tokens.TRANSLATABLE;
   private static final Pattern pattern = Pattern.compile("((?<start><)(?<token>[^<>]+(:(?<inner>['\"]?([^'\"](\\\\['\"])?)+['\"]?))*)(?<end>>))+?");
 
   private static final Pattern dumSplitPattern = Pattern.compile("['\"]:['\"]");
-
-  private static final Map<Class<? extends Fancy>, Fancy> empty = new HashMap<>();
-
 
   /* package */ static @NonNull String escapeTokens(final @NonNull String richMessage) {
     final StringBuilder sb = new StringBuilder();
@@ -368,7 +366,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.TRANSLATABLE;
       for (int i = 0; i < bigComponent.content().length(); i++) {
         Component smallComponent = TextComponent.of(bigComponent.content().charAt(i));
         // apply formatting
-        smallComponent = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, smallComponent, empty);
+        smallComponent = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, smallComponent, Collections.emptyMap());
         smallComponent = next.apply(smallComponent);
         // append
         if (parent == null) {
