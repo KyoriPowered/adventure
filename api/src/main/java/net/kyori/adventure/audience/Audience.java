@@ -44,7 +44,7 @@ public interface Audience {
    *
    * @return an audience
    */
-  static Audience.@NonNull Everything empty() {
+  static @NonNull Everything empty() {
     return EmptyAudience.INSTANCE;
   }
 
@@ -55,7 +55,7 @@ public interface Audience {
    * @param audience the audience
    * @return a forwarding audience
    */
-  static Audience.@NonNull Everything of(final @NonNull Audience audience) {
+  static @NonNull Everything of(final @NonNull Audience audience) {
     requireNonNull(audience, "audience");
     if(audience instanceof Everything) {
       return (Everything) audience;

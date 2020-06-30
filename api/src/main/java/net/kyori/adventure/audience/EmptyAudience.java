@@ -23,14 +23,64 @@
  */
 package net.kyori.adventure.audience;
 
+import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.inventory.Book;
+import net.kyori.adventure.sound.Sound;
+import net.kyori.adventure.sound.SoundStop;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.function.Consumer;
 
-/* package */ final class EmptyAudience implements StubAudience {
+/* package */ final class EmptyAudience implements Audience.Everything {
   /* package */ static final EmptyAudience INSTANCE = new EmptyAudience();
 
   @Override
   public @NonNull <T extends Audience> Audience perform(@NonNull Class<T> type, @NonNull Consumer<T> action) {
     return this;
+  }
+
+  @Override
+  public void sendMessage(@NonNull Component message) {
+  }
+
+  @Override
+  public void sendActionBar(@NonNull Component message) {
+  }
+
+  @Override
+  public void showTitle(@NonNull Title title) {
+  }
+
+  @Override
+  public void clearTitle() {
+  }
+
+  @Override
+  public void resetTitle() {
+  }
+
+  @Override
+  public void showBossBar(@NonNull BossBar bar) {
+  }
+
+  @Override
+  public void hideBossBar(@NonNull BossBar bar) {
+  }
+
+  @Override
+  public void playSound(@NonNull Sound sound) {
+  }
+
+  @Override
+  public void playSound(@NonNull Sound sound, double x, double y, double z) {
+  }
+
+  @Override
+  public void stopSound(@NonNull SoundStop stop) {
+  }
+
+  @Override
+  public void openBook(@NonNull Book book) {
   }
 }
