@@ -23,11 +23,17 @@
  */
 package net.kyori.adventure.audience;
 
+import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.inventory.Book;
+import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.function.Consumer;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A receiver of text-based media.
@@ -50,6 +56,7 @@ public interface Audience {
    * @return a forwarding audience
    */
   static Audience.@NonNull Everything of(final @NonNull Audience audience) {
+    requireNonNull(audience, "audience");
     if(audience instanceof Everything) {
       return (Everything) audience;
     }
@@ -77,6 +84,8 @@ public interface Audience {
    * @return a {@link Audience} of the sub-audiences the action couldn't be applied to
    */
   default <T extends Audience> @NonNull Audience perform(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
+    requireNonNull(type, "type");
+    requireNonNull(action, "action");
     if(this instanceof StubAudience) {
       throw new RuntimeException("StubAudience implementations must override this method");
     }
@@ -93,18 +102,18 @@ public interface Audience {
    */
   interface Everything extends
     Audience,
-    Audience.Message,
-    Audience.ActionBar,
-    Audience.Title,
-    Audience.BossBar,
-    Audience.Sound,
-    Audience.Book {
+    Audience.Messages,
+    Audience.ActionBars,
+    Audience.Titles,
+    Audience.BossBars,
+    Audience.Sounds,
+    Audience.Books {
   }
 
   /**
    * An audience that supports messages.
    */
-  interface Message extends Audience {
+  interface Messages extends Audience {
     /**
      * Sends a message.
      *
@@ -116,7 +125,7 @@ public interface Audience {
   /**
    * An audience that supports action bars.
    */
-  interface ActionBar extends Audience {
+  interface ActionBars extends Audience {
     /**
      * Sends a message on the action bar.
      *
@@ -128,7 +137,7 @@ public interface Audience {
   /**
    * An audience that supports titles.
    */
-  interface Title extends Audience {
+  interface Titles extends Audience {
     /**
      * Shows a title.
      *
@@ -150,7 +159,7 @@ public interface Audience {
   /**
    * An audience that supports boss bars.
    */
-  interface BossBar extends Audience {
+  interface BossBars extends Audience {
     /**
      * Shows a bossbar.
      *
@@ -169,7 +178,7 @@ public interface Audience {
   /**
    * An audience that supports sounds.
    */
-  interface Sound extends Audience {
+  interface Sounds extends Audience {
     /**
      * Plays a sound.
      *
@@ -198,7 +207,7 @@ public interface Audience {
   /**
    * An audience that supports books.
    */
-  interface Book extends Audience {
+  interface Books extends Audience {
     /**
      * Opens a book.
      *

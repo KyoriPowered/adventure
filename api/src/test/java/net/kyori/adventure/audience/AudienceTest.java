@@ -51,16 +51,16 @@ class AudienceTest {
   @Test
   void testPerform() {
     final AtomicInteger i = new AtomicInteger();
-    final Audience a0 = (Audience.Message) message -> i.incrementAndGet();
+    final Audience a0 = (Audience.Messages) message -> i.incrementAndGet();
 
-    a0.perform(Audience.Message.class, a -> a.sendMessage(TextComponent.of("hi")));
+    a0.perform(Audience.Messages.class, a -> a.sendMessage(TextComponent.of("hi")));
     assertEquals(1, i.get());
   }
 
   @Test
   void testWiden() {
     final AtomicInteger i = new AtomicInteger();
-    final Audience a0 = (Audience.Message) message -> i.incrementAndGet();
+    final Audience a0 = (Audience.Messages) message -> i.incrementAndGet();
     final Audience.Everything a1 = Audience.of(a0);
 
     a1.clearTitle(); // just make sure unsupported things don't throw an exception
@@ -68,15 +68,15 @@ class AudienceTest {
     a1.sendMessage(TextComponent.of("hi"));
     assertEquals(1, i.get());
 
-    assertEquals(Audience.empty(), a1.perform(Audience.Message.class, a -> a.sendMessage(TextComponent.of("hi"))));
-    assertEquals(a1, a1.perform(Audience.Title.class, Audience.Title::clearTitle));
+    assertEquals(Audience.empty(), a1.perform(Audience.Messages.class, a -> a.sendMessage(TextComponent.of("hi"))));
+    assertEquals(a1, a1.perform(Audience.Titles.class, Audience.Titles::clearTitle));
     assertEquals(2, i.get());
   }
 
   @Test
   void testForward() {
     final AtomicInteger i = new AtomicInteger();
-    final Audience a0 = (Audience.Message) message -> i.incrementAndGet();
+    final Audience a0 = (Audience.Messages) message -> i.incrementAndGet();
     final ForwardingAudience a1 = () -> a0;
 
     a1.clearTitle(); // just make sure unsupported things don't throw an exception
@@ -84,21 +84,21 @@ class AudienceTest {
     a1.sendMessage(TextComponent.of("hi"));
     assertEquals(1, i.get());
 
-    assertEquals(Audience.empty(), a1.perform(Audience.Message.class, a -> a.sendMessage(TextComponent.of("hi"))));
-    assertEquals(a1, a1.perform(Audience.Title.class, Audience.Title::clearTitle));
+    assertEquals(Audience.empty(), a1.perform(Audience.Messages.class, a -> a.sendMessage(TextComponent.of("hi"))));
+    assertEquals(a1, a1.perform(Audience.Titles.class, Audience.Titles::clearTitle));
     assertEquals(2, i.get());
   }
 
   @Test
   void testMultiForward() {
-    class MsgAudience implements Audience.Message {
+    class MsgAudience implements Audience.Messages {
       int msgCount = 0;
       @Override
       public void sendMessage(@NonNull Component message) {
         this.msgCount++;
       }
     }
-    class MsgActionAudience extends MsgAudience implements Audience.ActionBar {
+    class MsgActionAudience extends MsgAudience implements Audience.ActionBars {
       int actionCount = 0;
       @Override
       public void sendActionBar(@NonNull Component message) {
@@ -122,8 +122,8 @@ class AudienceTest {
     assertEquals(1, a1.msgCount);
     assertEquals(1, a0.actionCount);
 
-    ma.perform(Audience.ActionBar.class, a -> a.sendActionBar(c))
-      .perform(Audience.Message.class, a -> a.sendMessage(c));
+    ma.perform(Audience.ActionBars.class, a -> a.sendActionBar(c))
+      .perform(Audience.Messages.class, a -> a.sendMessage(c));
     assertEquals(1, a0.msgCount);
     assertEquals(2, a1.msgCount);
     assertEquals(2, a0.actionCount);
