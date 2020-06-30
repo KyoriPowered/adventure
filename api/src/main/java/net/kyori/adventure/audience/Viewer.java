@@ -64,7 +64,7 @@ public interface Viewer {
   }
 
   /**
-   * Widens this audience to implement {@link Audience all operations},
+   * Widens this viewer to implement {@link Audience all operations},
    * failing silently with a no-op when a method isn't supported.
    *
    * @return a stub audience
@@ -77,7 +77,7 @@ public interface Viewer {
   }
 
   /**
-   * An audience that supports messages.
+   * A viewer that supports messages.
    */
   interface Messages extends Viewer {
     /**
@@ -89,7 +89,7 @@ public interface Viewer {
   }
 
   /**
-   * An audience that supports action bars.
+   * A viewer that supports action bars.
    */
   interface ActionBars extends Viewer {
     /**
@@ -101,7 +101,7 @@ public interface Viewer {
   }
 
   /**
-   * An audience that supports titles.
+   * A viewer that supports titles.
    */
   interface Titles extends Viewer {
     /**
@@ -123,7 +123,7 @@ public interface Viewer {
   }
 
   /**
-   * An audience that supports boss bars.
+   * A viewer that supports boss bars.
    */
   interface BossBars extends Viewer {
     /**
@@ -142,7 +142,7 @@ public interface Viewer {
   }
 
   /**
-   * An audience that supports sounds.
+   * A viewer that supports sounds.
    */
   interface Sounds extends Viewer {
     /**
@@ -171,7 +171,7 @@ public interface Viewer {
   }
 
   /**
-   * An audience that supports books.
+   * A viewer that supports books.
    */
   interface Books extends Viewer {
     /**
