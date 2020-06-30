@@ -38,7 +38,7 @@ class AudienceTest {
     final Audience a0 = Audience.empty();
     final Audience a1 = Audience.empty();
     final MultiAudience ma = MultiAudience.of(a0, a1);
-    assertThat(ma.audiences()).containsExactly(a0, a1).inOrder();
+    assertThat(ma.viewers()).containsExactly(a0, a1).inOrder();
   }
 
   @Test
@@ -51,81 +51,81 @@ class AudienceTest {
   @Test
   void testPerform() {
     final AtomicInteger i = new AtomicInteger();
-    final Audience a0 = (Audience.Messages) message -> i.incrementAndGet();
+    final Viewer v = (Viewer.Messages) message -> i.incrementAndGet();
 
-    a0.perform(Audience.Messages.class, a -> a.sendMessage(TextComponent.of("hi")));
+    v.perform(Viewer.Messages.class, a -> a.sendMessage(TextComponent.of("hi")));
     assertEquals(1, i.get());
   }
 
   @Test
   void testWiden() {
     final AtomicInteger i = new AtomicInteger();
-    final Audience a0 = (Audience.Messages) message -> i.incrementAndGet();
-    final Audience.Everything a1 = Audience.of(a0);
+    final Viewer v = (Viewer.Messages) message -> i.incrementAndGet();
+    final Audience a = v.asAudience();
 
-    a1.clearTitle(); // just make sure unsupported things don't throw an exception
+    a.clearTitle(); // just make sure unsupported things don't throw an exception
 
-    a1.sendMessage(TextComponent.of("hi"));
+    a.sendMessage(TextComponent.of("hi"));
     assertEquals(1, i.get());
 
-    assertEquals(Audience.empty(), a1.perform(Audience.Messages.class, a -> a.sendMessage(TextComponent.of("hi"))));
-    assertEquals(a1, a1.perform(Audience.Titles.class, Audience.Titles::clearTitle));
+    assertEquals(Audience.empty(), a.perform(Viewer.Messages.class, x -> x.sendMessage(TextComponent.of("hi"))));
+    assertEquals(a, a.perform(Viewer.Titles.class, Viewer.Titles::clearTitle));
     assertEquals(2, i.get());
   }
 
   @Test
   void testForward() {
     final AtomicInteger i = new AtomicInteger();
-    final Audience a0 = (Audience.Messages) message -> i.incrementAndGet();
-    final ForwardingAudience a1 = () -> a0;
+    final Viewer v = (Viewer.Messages) message -> i.incrementAndGet();
+    final ForwardingAudience a = () -> v;
 
-    a1.clearTitle(); // just make sure unsupported things don't throw an exception
+    a.clearTitle(); // just make sure unsupported things don't throw an exception
 
-    a1.sendMessage(TextComponent.of("hi"));
+    a.sendMessage(TextComponent.of("hi"));
     assertEquals(1, i.get());
 
-    assertEquals(Audience.empty(), a1.perform(Audience.Messages.class, a -> a.sendMessage(TextComponent.of("hi"))));
-    assertEquals(a1, a1.perform(Audience.Titles.class, Audience.Titles::clearTitle));
+    assertEquals(Audience.empty(), a.perform(Viewer.Messages.class, x -> x.sendMessage(TextComponent.of("hi"))));
+    assertEquals(a, a.perform(Viewer.Titles.class, Viewer.Titles::clearTitle));
     assertEquals(2, i.get());
   }
 
   @Test
   void testMultiForward() {
-    class MsgAudience implements Audience.Messages {
+    class MsgViewer implements Viewer.Messages {
       int msgCount = 0;
       @Override
-      public void sendMessage(@NonNull Component message) {
+      public void sendMessage(final @NonNull Component message) {
         this.msgCount++;
       }
     }
-    class MsgActionAudience extends MsgAudience implements Audience.ActionBars {
+    class MsgActionViewer extends MsgViewer implements Viewer.ActionBars {
       int actionCount = 0;
       @Override
-      public void sendActionBar(@NonNull Component message) {
+      public void sendActionBar(final @NonNull Component message) {
         this.actionCount++;
       }
     }
 
-    final MsgActionAudience a0 = new MsgActionAudience();
-    final MsgAudience a1 = new MsgAudience();
+    final MsgActionViewer v0 = new MsgActionViewer();
+    final MsgViewer v1 = new MsgViewer();
 
-    final MultiAudience ma = MultiAudience.of(a0, a1);
+    final MultiAudience ma = MultiAudience.of(v0, v1);
     final TextComponent c = TextComponent.of("hi");
 
     ma.sendMessage(c);
-    assertEquals(1, a0.msgCount);
-    assertEquals(1, a1.msgCount);
-    assertEquals(0, a0.actionCount);
+    assertEquals(1, v0.msgCount);
+    assertEquals(1, v1.msgCount);
+    assertEquals(0, v0.actionCount);
 
     ma.sendActionBar(c);
-    assertEquals(1, a0.msgCount);
-    assertEquals(1, a1.msgCount);
-    assertEquals(1, a0.actionCount);
+    assertEquals(1, v0.msgCount);
+    assertEquals(1, v1.msgCount);
+    assertEquals(1, v0.actionCount);
 
-    ma.perform(Audience.ActionBars.class, a -> a.sendActionBar(c))
-      .perform(Audience.Messages.class, a -> a.sendMessage(c));
-    assertEquals(1, a0.msgCount);
-    assertEquals(2, a1.msgCount);
-    assertEquals(2, a0.actionCount);
+    ma.perform(Viewer.ActionBars.class, a -> a.sendActionBar(c))
+      .perform(Viewer.Messages.class, a -> a.sendMessage(c));
+    assertEquals(1, v0.msgCount);
+    assertEquals(2, v1.msgCount);
+    assertEquals(2, v0.actionCount);
   }
 }

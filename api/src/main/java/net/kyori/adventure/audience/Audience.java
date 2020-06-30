@@ -33,18 +33,23 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.function.Consumer;
 
-import static java.util.Objects.requireNonNull;
-
 /**
- * A receiver of text-based media.
+ * An audience is a collection of {@link Viewer}s, supporting all
+ * operations.
+ *
+ * <p>Actions are only passed onto contained viewers if they are
+ * supported by the viewer.</p>
+ *
+ * <p>Implementations must override {@link #perform(Class, Consumer)}.</p>
  */
-public interface Audience {
+public interface Audience extends Viewer, Viewer.Messages, Viewer.ActionBars, Viewer.Titles, Viewer.BossBars, Viewer.Sounds, Viewer.Books {
+
   /**
-   * Gets an audience that does nothing.
+   * Gets an audience with no viewers.
    *
    * @return an audience
    */
-  static @NonNull StubAudience empty() {
+  static @NonNull Audience empty() {
     return EmptyAudience.INSTANCE;
   }
 
@@ -58,161 +63,60 @@ public interface Audience {
     return audience instanceof WeakAudience || audience instanceof EmptyAudience ? audience : new WeakAudience(audience);
   }
 
-  /**
-   * Applies the given {@code action} to the audience, and returns an
-   * {@link Audience} encapsulating the sub-audiences (if any) which didn't support
-   * the action.
-   *
-   * @param type the type of audience the action requires
-   * @param action the action
-   * @param <T> the type of audience
-   * @return a {@link Audience} of the sub-audiences the action couldn't be applied to
-   */
-  default <T extends Audience> @NonNull Audience perform(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
-    requireNonNull(type, "type");
-    requireNonNull(action, "action");
-    if(this instanceof StubAudience) {
-      throw new RuntimeException("StubAudience implementations must override this method");
-    }
-    if(type.isInstance(this)) {
-      action.accept(type.cast(this));
-      return Audience.empty();
-    } else {
-      return this;
-    }
+  // Delegate all operations to this.perform(...)
+
+  @Override
+  default void sendMessage(final @NonNull Component message) {
+    this.perform(Viewer.Messages.class, a -> a.sendMessage(message));
   }
 
-  /**
-   * Widens this audience to implement {@link Audience.Everything all operations},
-   * failing silently with a no-op when a method isn't supported.
-   *
-   * @return a stub audience
-   */
-  default @NonNull StubAudience stub() {
-    if(this instanceof StubAudience) {
-      return (StubAudience) this;
-    }
-    return (ForwardingAudience) () -> this;
+  @Override
+  default void sendActionBar(final @NonNull Component message) {
+    this.perform(Viewer.ActionBars.class, a -> a.sendActionBar(message));
   }
 
-  /**
-   * An audience that supports everything.
-   */
-  interface Everything extends
-    Audience,
-    Audience.Messages,
-    Audience.ActionBars,
-    Audience.Titles,
-    Audience.BossBars,
-    Audience.Sounds,
-    Audience.Books {
+  @Override
+  default void showTitle(final @NonNull Title title) {
+    this.perform(Viewer.Titles.class, a -> a.showTitle(title));
   }
 
-  /**
-   * An audience that supports messages.
-   */
-  interface Messages extends Audience {
-    /**
-     * Sends a message.
-     *
-     * @param message the message
-     */
-    void sendMessage(final @NonNull Component message);
+  @Override
+  default void clearTitle() {
+    this.perform(Viewer.Titles.class, Titles::clearTitle);
   }
 
-  /**
-   * An audience that supports action bars.
-   */
-  interface ActionBars extends Audience {
-    /**
-     * Sends a message on the action bar.
-     *
-     * @param message the message
-     */
-    void sendActionBar(final @NonNull Component message);
+  @Override
+  default void resetTitle() {
+    this.perform(Viewer.Titles.class, Titles::resetTitle);
   }
 
-  /**
-   * An audience that supports titles.
-   */
-  interface Titles extends Audience {
-    /**
-     * Shows a title.
-     *
-     * @param title the title
-     */
-    void showTitle(final @NonNull Title title);
-
-    /**
-     * Clears the currently displayed title.
-     */
-    void clearTitle();
-
-    /**
-     * Resets the title, subtitle, fade-in time, stay time, and fade-out time back to "unset".
-     */
-    void resetTitle();
+  @Override
+  default void showBossBar(final @NonNull BossBar bar) {
+    this.perform(Viewer.BossBars.class, a -> a.showBossBar(bar));
   }
 
-  /**
-   * An audience that supports boss bars.
-   */
-  interface BossBars extends Audience {
-    /**
-     * Shows a bossbar.
-     *
-     * @param bar the bossbar
-     */
-    void showBossBar(final @NonNull BossBar bar);
-
-    /**
-     * Hides a bossbar.
-     *
-     * @param bar the bossbar
-     */
-    void hideBossBar(final @NonNull BossBar bar);
+  @Override
+  default void hideBossBar(final @NonNull BossBar bar) {
+    this.perform(Viewer.BossBars.class, a -> a.hideBossBar(bar));
   }
 
-  /**
-   * An audience that supports sounds.
-   */
-  interface Sounds extends Audience {
-    /**
-     * Plays a sound.
-     *
-     * @param sound the sound
-     */
-    void playSound(final @NonNull Sound sound);
-
-    /**
-     * Plays a sound.
-     *
-     * @param sound the sound
-     * @param x the x coordinate
-     * @param y the y coordinate
-     * @param z the z coordinate
-     */
-    void playSound(final @NonNull Sound sound, final double x, final double y, final double z);
-
-    /**
-     * Stops all sounds.
-     *
-     * @param stop the stop
-     */
-    void stopSound(final @NonNull SoundStop stop);
+  @Override
+  default void playSound(final @NonNull Sound sound) {
+    this.perform(Viewer.Sounds.class, a -> a.playSound(sound));
   }
 
-  /**
-   * An audience that supports books.
-   */
-  interface Books extends Audience {
-    /**
-     * Opens a book.
-     *
-     * <p>Opens a virtual book for the client, no item will be persisted.</p>
-     *
-     * @param book the book
-     */
-    void openBook(final @NonNull Book book);
+  @Override
+  default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
+    this.perform(Viewer.Sounds.class, a -> a.playSound(sound, x, y, z));
+  }
+
+  @Override
+  default void stopSound(final @NonNull SoundStop stop) {
+    this.perform(Viewer.Sounds.class, a -> a.stopSound(stop));
+  }
+
+  @Override
+  default void openBook(final @NonNull Book book) {
+    this.perform(Viewer.Books.class, a -> a.openBook(book));
   }
 }

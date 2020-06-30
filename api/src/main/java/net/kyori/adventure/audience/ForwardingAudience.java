@@ -28,34 +28,37 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.function.Consumer;
 
 /**
- * An audience that delegates to another audience.
+ * An audience that delegates to a single viewer.
  */
 @FunctionalInterface
-public interface ForwardingAudience extends StubAudience {
+public interface ForwardingAudience extends Audience {
   /**
-   * Gets the delegate audience.
+   * Gets the delegate viewer.
    *
-   * @return the audience, or {@code null} to silently drop
+   * @return the viewer, or {@code null} to silently drop
    */
-  @Nullable Audience audience();
+  @Nullable Viewer viewer();
 
   /**
-   * Forwards the given {@code action} onto the delegate audience, and returns the result
-   * of calling {@code perform} on the delegate, or an empty audience if {@link #audience()}
+   * Forwards the given {@code action} onto the delegate viewer, and returns the result
+   * of calling {@code perform} on the delegate, or an empty audience if {@link #viewer()}
    * returned null.
    *
-   * @param type the type of audience the action requires
+   * @param type the type of viewer the action requires
    * @param action the action
-   * @param <T> the type of audience
+   * @param <T> the type of viewer
    * @return an audience
    */
   @Override
-  default <T extends Audience> @NonNull Audience perform(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
-    final /* @Nullable */ Audience audience = this.audience();
-    if(audience == null) {
+  default <T extends Viewer> @NonNull Audience perform(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
+    final /* @Nullable */ Viewer viewer = this.viewer();
+    if(viewer == null) {
       return Audience.empty();
     }
-    final Audience result = audience.perform(type, action);
-    return result == audience ? this : result;
+    final Audience result = viewer.perform(type, action);
+    if(result instanceof ForwardingAudience && ((ForwardingAudience) result).viewer() == viewer) {
+      return this;
+    }
+    return result;
   }
 }

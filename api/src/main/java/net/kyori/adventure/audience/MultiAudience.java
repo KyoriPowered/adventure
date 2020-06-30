@@ -30,52 +30,52 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * An audience that contains multiple audiences.
+ * An audience that forwards to multiple viewers.
  */
 @FunctionalInterface
-public interface MultiAudience extends StubAudience {
+public interface MultiAudience extends Audience {
 
   /**
-   * Creates an audience that delegates to an array of audiences.
+   * Creates an audience that delegates to an array of viewers.
    *
-   * @param audiences the delegate audiences
+   * @param viewers the delegate viewers
    * @return an audience
    */
-  static @NonNull MultiAudience of(final @NonNull Audience@NonNull... audiences) {
-    return of(Arrays.asList(audiences));
+  static @NonNull MultiAudience of(final @NonNull Viewer @NonNull... viewers) {
+    return of(Arrays.asList(viewers));
   }
 
   /**
-   * Creates an audience that delegates to a collection of audiences.
+   * Creates an audience that delegates to a collection of viewers.
    *
-   * @param audiences the delegate audiences
+   * @param viewers the delegate viewers
    * @return an audience
    */
-  static @NonNull MultiAudience of(final @NonNull Iterable<? extends Audience> audiences) {
-    return () -> audiences;
+  static @NonNull MultiAudience of(final @NonNull Iterable<? extends Viewer> viewers) {
+    return () -> viewers;
   }
 
   /**
-   * Gets the audiences.
+   * Gets the viewers.
    *
-   * @return the audiences, can be empty
+   * @return the viewers, can be empty
    */
-  @NonNull Iterable<? extends Audience> audiences();
+  @NonNull Iterable<? extends Viewer> viewers();
 
   /**
-   * Forwards the given {@code action} onto the delegate audiences, and returns a
-   * {@link MultiAudience} encapsulating the audiences which didn't support the action.
+   * Forwards the given {@code action} onto the delegate viewers, and returns a
+   * {@link MultiAudience} encapsulating the viewers which didn't support the action.
    *
-   * @param type the type of audience the action requires
+   * @param type the type of viewer the action requires
    * @param action the action
-   * @param <T> the type of audience
+   * @param <T> the type of viewer
    * @return a {@link MultiAudience} of the audiences the action couldn't be applied to
    */
   @Override
-  default <T extends Audience> @NonNull Audience perform(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
-    final List<Audience> failed = new ArrayList<>();
-    for(final Audience audience : this.audiences()) {
-      final Audience result = audience.perform(type, action);
+  default <T extends Viewer> @NonNull Audience perform(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
+    final List<Viewer> failed = new ArrayList<>();
+    for(final Viewer audience : this.viewers()) {
+      final Viewer result = audience.perform(type, action);
       if(result != Audience.empty()) {
         failed.add(result);
       }

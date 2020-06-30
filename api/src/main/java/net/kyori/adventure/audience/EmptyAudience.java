@@ -32,11 +32,11 @@ import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.function.Consumer;
 
-/* package */ final class EmptyAudience implements StubAudience {
+/* package */ final class EmptyAudience implements Audience {
   /* package */ static final EmptyAudience INSTANCE = new EmptyAudience();
 
   @Override
-  public @NonNull <T extends Audience> Audience perform(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
+  public <T extends Viewer> @NonNull Audience perform(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
     return this;
   }
 

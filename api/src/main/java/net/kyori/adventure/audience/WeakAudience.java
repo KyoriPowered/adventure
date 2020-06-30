@@ -34,7 +34,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
   }
 
   @Override
-  public @Nullable Audience audience() {
+  public @Nullable Viewer viewer() {
     return this.audience.get();
   }
 }
