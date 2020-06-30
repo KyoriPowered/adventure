@@ -23,60 +23,14 @@
  */
 package net.kyori.adventure.audience;
 
-import net.kyori.adventure.sound.SoundStop;
-import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.function.Consumer;
 
-/* package */ interface EmptyAudience extends Audience.Everything {
-  Audience.Everything INSTANCE = new EmptyAudience() {};
+/* package */ final class EmptyAudience implements StubAudience {
+  /* package */ static final EmptyAudience INSTANCE = new EmptyAudience();
 
   @Override
-  default <T extends Audience> @NonNull Audience perform(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
+  public @NonNull <T extends Audience> Audience perform(@NonNull Class<T> type, @NonNull Consumer<T> action) {
     return this;
-  }
-
-  @Override
-  default void sendMessage(final @NonNull Component message) {
-  }
-
-  @Override
-  default void sendActionBar(final @NonNull Component message) {
-  }
-
-  @Override
-  default void showTitle(final @NonNull Title title) {
-  }
-
-  @Override
-  default void clearTitle() {
-  }
-
-  @Override
-  default void resetTitle() {
-  }
-
-  @Override
-  default void showBossBar(final @NonNull BossBar bar) {
-  }
-
-  @Override
-  default void hideBossBar(final @NonNull BossBar bar) {
-  }
-
-  @Override
-  default void playSound(final @NonNull Sound sound) {
-  }
-
-  @Override
-  default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
-  }
-
-  @Override
-  default void stopSound(final @NonNull SoundStop stop) {
-  }
-
-  @Override
-  default void openBook(final @NonNull Book book) {
   }
 }

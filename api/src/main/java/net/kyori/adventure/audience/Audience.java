@@ -60,7 +60,7 @@ public interface Audience {
    * @return an audience
    */
   static @NonNull Audience weakOf(final @Nullable Audience audience) {
-    return audience instanceof WeakAudience || audience == EmptyAudience.INSTANCE ? audience : new WeakAudience(audience);
+    return audience instanceof WeakAudience || audience instanceof EmptyAudience ? audience : new WeakAudience(audience);
   }
 
   /**
