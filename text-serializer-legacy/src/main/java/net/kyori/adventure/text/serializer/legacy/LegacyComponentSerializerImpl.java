@@ -83,8 +83,8 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     if(pos >= 14) {
       // The BungeeCord RGB color format uses a repeating sequence of RGB values, each character formatted
       // as their own color format string, and to make things interesting, all the colors are also valid
-      // Mojang colors. We check if we're in the 15th character or the string or later as if we try to lookback
-      // earlier then it's not going to produce a valid result.
+      // Mojang colors. To differentiate this, we do a lookback check for &x (or equivalent) for its position
+      // in the string if it is indeed a BungeeCord-style RGB color.
       final int expectedCharacterPosition = pos - 14;
       final int expectedIndicatorPosition = pos - 13;
       if(input.charAt(expectedCharacterPosition) == character && input.charAt(expectedIndicatorPosition) == LEGACY_BUNGEE_HEX_CHAR) {
@@ -100,22 +100,22 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   }
 
   private @Nullable DecodedFormat decodeTextFormat(final char legacy, final String input, final int pos) {
-    final FormatCodeType guess = this.determineFormatType(legacy, input, pos);
-    if (guess == null) {
+    final FormatCodeType foundFormat = this.determineFormatType(legacy, input, pos);
+    if(foundFormat == null) {
       return null;
     }
-    switch (guess) {
+    switch(foundFormat) {
       case BUNGEECORD_UNUSUAL_HEX:
         final StringBuilder foundHex = new StringBuilder();
         for(int i = pos - 1; i >= pos - 11; i -= 2) {
           foundHex.append(input.charAt(i));
         }
         foundHex.append('#');
-        return new DecodedFormat(guess, TextColor.fromHexString(foundHex.reverse().toString()));
+        return new DecodedFormat(foundFormat, TextColor.fromHexString(foundHex.reverse().toString()));
       case KYORI_HEX:
-        return new DecodedFormat(guess, TextColor.fromHexString('#' + input.substring(pos, pos + 6)));
+        return new DecodedFormat(foundFormat, TextColor.fromHexString('#' + input.substring(pos, pos + 6)));
       case MOJANG_LEGACY:
-        return new DecodedFormat(guess, FORMATS.get(LEGACY_CHARS.indexOf(legacy)));
+        return new DecodedFormat(foundFormat, FORMATS.get(LEGACY_CHARS.indexOf(legacy)));
       default:
         return null;
     }
