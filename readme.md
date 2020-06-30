@@ -7,6 +7,7 @@ A serverside user interface library for Minecraft.
 There are various artifacts:
 
 * `adventure-api` is the core project - you will always want to import this.
+* `adventure-text-minimessage` is a string based representation of components.
 * `adventure-text-serializer-gson` is a GSON-based JSON serializer.
 * `adventure-text-serializer-legacy` is a legacy character text serializer.
 * `adventure-text-serializer-plain` is a plain text serializer.
