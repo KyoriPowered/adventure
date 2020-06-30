@@ -36,20 +36,20 @@ import java.util.function.Consumer;
   /* package */ static final EmptyAudience INSTANCE = new EmptyAudience();
 
   @Override
-  public @NonNull <T extends Audience> Audience perform(@NonNull Class<T> type, @NonNull Consumer<T> action) {
+  public @NonNull <T extends Audience> Audience perform(final @NonNull Class<T> type, final @NonNull Consumer<T> action) {
     return this;
   }
 
   @Override
-  public void sendMessage(@NonNull Component message) {
+  public void sendMessage(final @NonNull Component message) {
   }
 
   @Override
-  public void sendActionBar(@NonNull Component message) {
+  public void sendActionBar(final @NonNull Component message) {
   }
 
   @Override
-  public void showTitle(@NonNull Title title) {
+  public void showTitle(final @NonNull Title title) {
   }
 
   @Override
@@ -61,26 +61,26 @@ import java.util.function.Consumer;
   }
 
   @Override
-  public void showBossBar(@NonNull BossBar bar) {
+  public void showBossBar(@NonNull final BossBar bar) {
   }
 
   @Override
-  public void hideBossBar(@NonNull BossBar bar) {
+  public void hideBossBar(final @NonNull BossBar bar) {
   }
 
   @Override
-  public void playSound(@NonNull Sound sound) {
+  public void playSound(final @NonNull Sound sound) {
   }
 
   @Override
-  public void playSound(@NonNull Sound sound, double x, double y, double z) {
+  public void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
   }
 
   @Override
-  public void stopSound(@NonNull SoundStop stop) {
+  public void stopSound(final @NonNull SoundStop stop) {
   }
 
   @Override
-  public void openBook(@NonNull Book book) {
+  public void openBook(final @NonNull Book book) {
   }
 }
