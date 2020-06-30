@@ -88,7 +88,7 @@ public interface Audience {
    *
    * @return a stub audience
    */
-  default StubAudience stub() {
+  default @NonNull StubAudience stub() {
     if(this instanceof StubAudience) {
       return (StubAudience) this;
     }
