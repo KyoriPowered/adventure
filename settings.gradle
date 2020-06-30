@@ -5,6 +5,10 @@ findProject(':api')?.name = 'adventure-api'
 
 include 'nbt'
 findProject(':nbt')?.name = 'adventure-nbt'
+
+include 'text-minimessage'
+findProject(':text-minimessage')?.name = 'adventure-text-minimessage'
+
 include 'text-feature-pagination'
 findProject(':text-feature-pagination')?.name = 'adventure-text-feature-pagination'
 

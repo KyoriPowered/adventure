@@ -8,6 +8,8 @@
 /run/
 /text-feature-pagination/build/
 /text-feature-pagination/out/
+/text-minimessage/build/
+/text-minimessage/out/
 /text-serializer-gson/build/
 /text-serializer-gson/out/
 /text-serializer-legacy/build/

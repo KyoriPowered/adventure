@@ -1,0 +1,10 @@
+dependencies {
+  api project(':adventure-api')
+  testCompile project(':adventure-text-serializer-gson')
+}
+
+jar {
+  manifest.attributes(
+    'Automatic-Module-Name': 'net.kyori.adventure.text.minimessage'
+  )
+}
