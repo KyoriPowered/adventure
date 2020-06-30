@@ -84,8 +84,20 @@ class TextColorTest {
   }
 
   @Test
-  public void testCssStyleRgbColors() {
+  public void testCSSHexStringMalformedHexString() {
+    assertNull(TextColor.fromCSSHexString("7f1e2d")); // no # in front
+    assertNull(TextColor.fromCSSHexString("#7f1e2")); // only five characters
+    assertNull(TextColor.fromCSSHexString("#7fze2d")); // invalid hex character
+  }
+
+  @Test
+  public void testCSSHexStringIsSameAsHexStringForSixDigitRGB() {
+    assertEquals(TextColor.fromHexString("#7f1e2d"), TextColor.fromCSSHexString("#7f1e2d"));
+  }
+
+  @Test
+  public void testCSSHexStringThreeDigit() {
     final TextColor original = TextColor.of(0x77ff11);
-    assertEquals(original, TextColor.fromHexString("#7f1"));
+    assertEquals(original, TextColor.fromCSSHexString("#7f1"));
   }
 }
