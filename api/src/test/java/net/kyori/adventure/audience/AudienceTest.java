@@ -49,11 +49,4 @@ class AudienceTest {
     assertTrue(ma instanceof ForwardingAudience);
     assertThat(((ForwardingAudience) ma).audiences()).containsExactly(a0, a1).inOrder();
   }
-
-  @Test
-  void testWeakOf_none() {
-    final Audience empty = Audience.empty();
-    final Audience weak = Audience.weakOf(empty);
-    assertSame(empty, weak);
-  }
 }
