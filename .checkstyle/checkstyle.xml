@@ -33,10 +33,9 @@
     <module name="EmptyForInitializerPad"/>
     <module name="EmptyForIteratorPad"/>
 
-    <!-- waiting on https://github.com/checkstyle/checkstyle/issues/8312
-    <module name="NoWhitespaceAfter">
-      <property name="tokens" value="LITERAL_IF, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO"/>
-    </module> -->
+    <module name="ca.stellardrift.stylecheck.StatementNoWhitespaceAfter">
+      <property name="tokens" value="LITERAL_IF, LITERAL_FOR, LITERAL_WHILE, LITERAL_CATCH"/>
+    </module>
 
     <!-- one empty line between each class element -->
     <module name="EmptyLineSeparator">
@@ -80,6 +79,11 @@
     <module name="UnusedImports"/>
     <module name="HideUtilityClassConstructor"/>
     <module name="FinalClass"/>
+    <!-- explicit visibility modifier, as first modifier -->
+    <module name="ca.stellardrift.stylecheck.RequireExplicitVisibilityModifier">
+      <property name="anchoredToBeginning" value="true"/>
+      <property name="checkedElementTypes" value="CLASS, METHOD"/>
+    </module>
 
     <!-- braces and parentheses on block statements on same line -->
     <module name="LeftCurly"/>

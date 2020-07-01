@@ -4,4 +4,5 @@
   "http://checkstyle.org/dtds/suppressions_1_2.dtd">
 <suppressions>
   <!-- add any necessary suppressions here -->
+  <suppress files="src/test/java/.*" checks="RequireExplicitVisibilityModifier"/>
 </suppressions>

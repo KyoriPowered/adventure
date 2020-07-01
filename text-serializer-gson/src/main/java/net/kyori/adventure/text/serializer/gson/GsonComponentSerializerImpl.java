@@ -89,7 +89,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
     return new BuilderImpl(this);
   }
 
-  static final class BuilderImpl implements Builder {
+  /* package */ static final class BuilderImpl implements Builder {
     private boolean downsampleColor = false;
 
     BuilderImpl() {

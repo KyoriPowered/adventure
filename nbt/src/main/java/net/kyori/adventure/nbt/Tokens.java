@@ -60,7 +60,7 @@ package net.kyori.adventure.nbt;
    * @param c the character
    * @return identifier
    */
-  static boolean id(final char c) {
+  /* package */ static boolean id(final char c) {
     return (c >= 'a' && c <= 'z')
       || (c >= 'A' && c <= 'Z')
       || (c >= '0' && c <= '9')
@@ -76,7 +76,7 @@ package net.kyori.adventure.nbt;
    * @param c character to check
    * @return if possibly part of a number
    */
-  static boolean numeric(final char c) {
+  /* package */ static boolean numeric(final char c) {
     return (c >= '0' && c <= '9') // digit
       || c == '+' || c == '-' // positive or negative
       || c == 'e' || c == 'E' // exponent

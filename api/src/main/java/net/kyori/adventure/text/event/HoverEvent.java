@@ -383,7 +383,7 @@ public final class HoverEvent<V> implements Examinable {
     }
 
     @FunctionalInterface
-    interface Renderer<V> {
+    /* package */ interface Renderer<V> {
       <C> @NonNull V render(final @NonNull ComponentRenderer<C> renderer, final @NonNull C context, final @NonNull V value);
     }
   }

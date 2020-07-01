@@ -41,7 +41,7 @@ import net.kyori.adventure.text.format.TextFormat;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
+/* package */ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   private static final Pattern URL_PATTERN = Pattern.compile("(?:(https?)://)?([-\\w_.]+\\.\\w{2,})(/\\S*)?");
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
   private static final String LEGACY_CHARS = "0123456789abcdefklmnor";
@@ -215,7 +215,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       this.character = character;
     }
 
-    void append(final @NonNull Component component) {
+    /* package */ void append(final @NonNull Component component) {
       this.append(component, new Style());
     }
 
@@ -240,7 +240,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       }
     }
 
-    void append(final @NonNull TextFormat format) {
+    /* package */ void append(final @NonNull TextFormat format) {
       this.sb.append(this.character).append(LegacyComponentSerializerImpl.this.toLegacyCode(format));
     }
 
@@ -262,13 +262,13 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         this.decorations = EnumSet.copyOf(that.decorations);
       }
 
-      void set(final @NonNull Style that) {
+      /* package */ void set(final @NonNull Style that) {
         this.color = that.color;
         this.decorations.clear();
         this.decorations.addAll(that.decorations);
       }
 
-      void apply(final @NonNull Component component) {
+      /* package */ void apply(final @NonNull Component component) {
         final TextColor color = component.color();
         if(color != null) {
           this.color = color;
@@ -287,7 +287,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         }
       }
 
-      void applyFormat() {
+      /* package */ void applyFormat() {
         // If color changes, we need to do a full reset
         if(this.color != Cereal.this.style.color) {
           this.applyFullFormat();
@@ -327,7 +327,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
   }
 
-  static final class BuilderImpl implements Builder {
+  /* package */ static final class BuilderImpl implements Builder {
     private char character = LegacyComponentSerializer.SECTION_CHAR;
     private char hexCharacter = LegacyComponentSerializer.HEX_CHAR;
     private Style urlStyle = null;

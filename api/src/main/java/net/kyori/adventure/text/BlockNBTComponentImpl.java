@@ -34,7 +34,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, BlockNBTComponent.Builder> implements BlockNBTComponent {
+/* package */ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, BlockNBTComponent.Builder> implements BlockNBTComponent {
   private final Pos pos;
 
   BlockNBTComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final String nbtPath, final boolean interpret, final @NonNull Pos pos) {
@@ -106,7 +106,7 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
     return new BuilderImpl(this);
   }
 
-  static final class BuilderImpl extends NBTComponentImpl.BuilderImpl<BlockNBTComponent, Builder> implements Builder {
+  /* package */ static final class BuilderImpl extends NBTComponentImpl.BuilderImpl<BlockNBTComponent, Builder> implements Builder {
     private @Nullable Pos pos;
 
     BuilderImpl() {
@@ -131,7 +131,7 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
     }
   }
 
-  static final class LocalPosImpl implements LocalPos {
+  /* package */ static final class LocalPosImpl implements LocalPos {
     private final double left;
     private final double up;
     private final double forwards;
@@ -181,7 +181,7 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
     }
   }
 
-  static final class WorldPosImpl implements WorldPos {
+  /* package */ static final class WorldPosImpl implements WorldPos {
     private final Coordinate x;
     private final Coordinate y;
     private final Coordinate z;
@@ -230,7 +230,7 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
       return this.x.toString() + ' ' + this.y.toString() + ' ' + this.z.toString();
     }
 
-    static final class CoordinateImpl implements Coordinate {
+    /* package */ static final class CoordinateImpl implements Coordinate {
       private final int value;
       private final Type type;
 

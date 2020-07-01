@@ -31,7 +31,7 @@ import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-final class EntityNBTComponentImpl extends NBTComponentImpl<EntityNBTComponent, EntityNBTComponent.Builder> implements EntityNBTComponent {
+/* package */ final class EntityNBTComponentImpl extends NBTComponentImpl<EntityNBTComponent, EntityNBTComponent.Builder> implements EntityNBTComponent {
   private final String selector;
 
   EntityNBTComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final String nbtPath, final boolean interpret, final String selector) {
@@ -104,7 +104,7 @@ final class EntityNBTComponentImpl extends NBTComponentImpl<EntityNBTComponent, 
     return new BuilderImpl(this);
   }
 
-  static final class BuilderImpl extends NBTComponentImpl.BuilderImpl<EntityNBTComponent, Builder> implements Builder {
+  /* package */ static final class BuilderImpl extends NBTComponentImpl.BuilderImpl<EntityNBTComponent, Builder> implements Builder {
     private @Nullable String selector;
 
     BuilderImpl() {

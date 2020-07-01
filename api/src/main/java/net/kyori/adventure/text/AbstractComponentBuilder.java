@@ -43,7 +43,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @param <C> the component type
  * @param <B> the builder type
  */
-abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> implements ComponentBuilder<C, B> {
+/* package */ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> implements ComponentBuilder<C, B> {
   /**
    * The list of children.
    *

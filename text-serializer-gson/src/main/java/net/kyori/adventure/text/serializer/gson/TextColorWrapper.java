@@ -36,18 +36,18 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /*
  * This is a hack.
  */
-final class TextColorWrapper {
+/* package */ final class TextColorWrapper {
   final @Nullable TextColor color;
   final @Nullable TextDecoration decoration;
   final boolean reset;
 
-  TextColorWrapper(final @Nullable TextColor color, final @Nullable TextDecoration decoration, final boolean reset) {
+  /* package */ TextColorWrapper(final @Nullable TextColor color, final @Nullable TextDecoration decoration, final boolean reset) {
     this.color = color;
     this.decoration = decoration;
     this.reset = reset;
   }
 
-  static class Serializer extends TypeAdapter<TextColorWrapper> {
+  /* package */ static class Serializer extends TypeAdapter<TextColorWrapper> {
     @Override
     public void write(final JsonWriter out, final TextColorWrapper value) {
       throw new JsonSyntaxException("Cannot write TextColorWrapper instances");

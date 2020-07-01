@@ -40,10 +40,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-class TextComponentImpl extends AbstractComponent implements TextComponent {
-  static final TextComponent EMPTY = createDirect("");
-  static final TextComponent NEWLINE = createDirect("\n");
-  static final TextComponent SPACE = createDirect(" ");
+/* package */ class TextComponentImpl extends AbstractComponent implements TextComponent {
+  /* package */ static final TextComponent EMPTY = createDirect("");
+  /* package */ static final TextComponent NEWLINE = createDirect("\n");
+  /* package */ static final TextComponent SPACE = createDirect(" ");
 
   private static @NonNull TextComponent createDirect(final @NonNull String content) {
     return new TextComponentImpl(EMPTY_COMPONENT_LIST, Style.empty(), content);
@@ -162,7 +162,7 @@ class TextComponentImpl extends AbstractComponent implements TextComponent {
     return new BuilderImpl(this);
   }
 
-  static final class BuilderImpl extends AbstractComponentBuilder<TextComponent, Builder> implements TextComponent.Builder {
+  /* package */ static final class BuilderImpl extends AbstractComponentBuilder<TextComponent, Builder> implements TextComponent.Builder {
     /*
      * We default to an empty string to avoid needing to manually set the
      * content of a newly-created builder when we only want to append other

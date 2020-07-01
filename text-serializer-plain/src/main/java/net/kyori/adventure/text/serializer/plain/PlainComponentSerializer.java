@@ -82,7 +82,7 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
     } else if(component instanceof TextComponent) {
       sb.append(((TextComponent) component).content());
     } else if(component instanceof TranslatableComponent) {
-      if (this.translatable != null) sb.append(this.translatable.apply((TranslatableComponent) component));
+      if(this.translatable != null) sb.append(this.translatable.apply((TranslatableComponent) component));
     } else {
       throw new UnsupportedOperationException("Don't know how to turn " + component.getClass().getSimpleName() + " into a string");
     }
