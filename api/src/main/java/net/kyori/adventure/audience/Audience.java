@@ -125,7 +125,7 @@ public interface Audience {
    * @see Component
    * @param message a message
    */
-  void sendMessage(final @NonNull Component message);
+  default void sendMessage(final @NonNull Component message) {}
 
   /**
    * Sends a message on the action bar.
