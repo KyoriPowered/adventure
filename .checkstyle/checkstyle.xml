@@ -115,6 +115,11 @@
     </module>
     <module name="CommentsIndentation"/>
 
+    <!-- some generally unwanted imports -->
+    <module name="IllegalImport">
+      <property name="illegalPkgs" value="sun, jdk, com.sun"/>
+    </module>
+
     <!-- misc formatting based on Google style -->
     <!-- match filenames, don't use unicode escapes, no star imports -->
     <module name="OuterTypeFilename"/>
