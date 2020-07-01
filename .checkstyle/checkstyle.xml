@@ -6,7 +6,7 @@
   <property name="charset" value="UTF-8"/>
   <property name="severity" value="error"/>
   <property name="fileExtensions" value="java, properties, xml"/>
-  <!-- Excludes all 'module-info.java' files              -->
+  <!-- Excludes all 'module-info.java' files -->
   <!-- See https://checkstyle.org/config_filefilters.html -->
   <module name="BeforeExecutionExclusionFileFilter">
     <property name="fileNamePattern" value="module\-info\.java$"/>
@@ -21,7 +21,7 @@
   <!-- allow // CHECKSTYLE:OFF and // CHECKSTYLE:ON comments -->
   <module name="SuppressWithPlainTextCommentFilter"/>
 
-  <!-- Checks for whitespace                               -->
+  <!-- Checks for whitespace -->
   <!-- See http://checkstyle.org/config_whitespace.html -->
   <module name="FileTabCharacter">
     <property name="eachLine" value="true"/>
@@ -33,8 +33,8 @@
     <module name="EmptyForInitializerPad"/>
     <module name="EmptyForIteratorPad"/>
 
-    <module name="ca.stellardrift.stylecheck.StatementNoWhitespaceAfter">
-      <property name="tokens" value="LITERAL_IF, LITERAL_FOR, LITERAL_WHILE, LITERAL_CATCH"/>
+    <module name="StatementNoWhitespaceAfter">
+      <property name="tokens" value="LITERAL_IF, LITERAL_FOR, LITERAL_WHILE, LITERAL_CATCH, LITERAL_TRY"/>
     </module>
 
     <!-- one empty line between each class element -->
@@ -80,10 +80,13 @@
     <module name="HideUtilityClassConstructor"/>
     <module name="FinalClass"/>
     <!-- explicit visibility modifier, as first modifier -->
-    <module name="ca.stellardrift.stylecheck.RequireExplicitVisibilityModifier">
+    <module name="RequireExplicitVisibilityModifier">
       <property name="anchoredToBeginning" value="true"/>
       <property name="checkedElementTypes" value="CLASS, METHOD"/>
     </module>
+
+    <!-- no local variable type annotations -->
+    <module name="NoLvTypeAnnotations"/>
 
     <!-- braces and parentheses on block statements on same line -->
     <module name="LeftCurly"/>
