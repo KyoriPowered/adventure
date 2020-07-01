@@ -39,8 +39,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * use {@link java.util.Collections#singleton(Object)}.</p>
  *
  * @see Audience
- * @since 1.0
- * @version 1.0
+ * @since 4.0.0
+ * @version 4.0.0
  */
 @FunctionalInterface
 public interface ForwardingAudience extends Audience {

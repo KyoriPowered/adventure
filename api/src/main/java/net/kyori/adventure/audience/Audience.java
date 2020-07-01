@@ -73,14 +73,14 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * and any new methods will be stubbed by default.</p>
  *
  * @see ForwardingAudience
- * @since 1.0
- * @version 1.0
+ * @since 4.0.0
+ * @version 4.0.0
  */
 public interface Audience {
   /**
    * Gets an audience that does nothing.
    *
-   * @since 1.0
+   * @since 4.0.0
    * @return a do-nothing audience
    */
   static @NonNull Audience empty() {
@@ -90,16 +90,19 @@ public interface Audience {
   /**
    * Creates an audience that forwards to many other audiences.
    *
-   * @since 1.0
+   * @since 4.0.0
    * @see ForwardingAudience
    * @param audiences an array of audiences, can be empty
    * @return an audience
    */
   static @NonNull Audience of(final @NonNull Audience@NonNull... audiences) {
-    switch(audiences.length) {
-      case 0: return empty();
-      case 1: return audiences[0];
-      default: return of(Arrays.asList(audiences));
+    final int length = audiences.length;
+    if(length == 0) {
+      return empty();
+    } else if(length == 1) {
+      return audiences[0];
+    } else {
+      return of(Arrays.asList(audiences));
     }
   }
 
@@ -109,7 +112,7 @@ public interface Audience {
    * <p>The underlying <tt>Iterable</tt> is not copied, therefore any changes
    * made will be reflected in <tt>Audience</tt>.</p>
    *
-   * @since 1.0
+   * @since 4.0.0
    * @see ForwardingAudience
    * @param audiences an iterable of audiences, can be empty
    * @return an audience
@@ -121,7 +124,7 @@ public interface Audience {
   /**
    * Sends a chat message.
    *
-   * @since 1.0
+   * @since 4.0.0
    * @see Component
    * @param message a message
    */
@@ -130,7 +133,7 @@ public interface Audience {
   /**
    * Sends a message on the action bar.
    *
-   * @since 1.0
+   * @since 4.0.0
    * @see Component
    * @param message a message
    */
@@ -139,7 +142,7 @@ public interface Audience {
   /**
    * Shows a title.
    *
-   * @since 1.0
+   * @since 4.0.0
    * @see Title
    * @param title a title
    */
@@ -148,7 +151,7 @@ public interface Audience {
   /**
    * Clears the title, if one is being displayed.
    *
-   * @since 1.0
+   * @since 4.0.0
    * @see Title
    */
   default void clearTitle() {}
@@ -156,7 +159,7 @@ public interface Audience {
   /**
    * Resets the title and timings back to their default.
    *
-   * @since 1.0
+   * @since 4.0.0
    * @see Title
    */
   default void resetTitle() {}
@@ -164,7 +167,7 @@ public interface Audience {
   /**
    * Shows a boss bar.
    *
-   * @since 1.0
+   * @since 4.0.0
    * @see BossBar
    * @param bar a boss bar
    */
@@ -173,7 +176,7 @@ public interface Audience {
   /**
    * Hides a boss bar.
    *
-   * @since 1.0
+   * @since 4.0.0
    * @see BossBar
    * @param bar a boss bar
    */
@@ -182,7 +185,7 @@ public interface Audience {
   /**
    * Plays a sound.
    *
-   * @since 1.0
+   * @since 4.0.0
    * @see Sound
    * @param sound a sound
    */
@@ -191,7 +194,7 @@ public interface Audience {
   /**
    * Plays a sound at a location.
    *
-   * @since 1.0
+   * @since 4.0.0
    * @see Sound
    * @param sound a sound
    * @param x x coordinate
@@ -203,7 +206,7 @@ public interface Audience {
   /**
    * Stops a sound, or many sounds.
    *
-   * @since 1.0
+   * @since 4.0.0
    * @see SoundStop
    * @param stop a sound stop
    */
@@ -214,7 +217,7 @@ public interface Audience {
    *
    * <p>When possible, no item should persist after closing the book.</p>
    *
-   * @since 1.0
+   * @since 4.0.0
    * @see Book
    * @param book a book
    */

@@ -30,7 +30,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
   /* package */ static final EmptyAudience INSTANCE = new EmptyAudience();
 
   @Override
-  public void sendMessage(@NonNull Component message) {
+  public void sendMessage(final @NonNull Component message) {
     // No-op, all messages are silently dropped
   }
 
