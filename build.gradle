@@ -15,7 +15,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    api "net.kyori:adventure-api:${adventure}'
+    api "net.kyori:adventure-api:${adventure}"
     testCompile "net.kyori:adventure-text-serializer-gson:${adventure}"
 }
 
