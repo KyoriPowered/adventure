@@ -1,14 +1,12 @@
 plugins {
-    id 'net.minecrell.licenser' version '0.4.1' apply false
+    id 'net.minecrell.licenser' version '0.4.1'
+    id 'java-library'
+    id 'maven'
+    id 'signing'
 }
 
 // Adventure version
 ext.adventure = "4.0.0-SNAPSHOT"
-
-apply plugin: 'java-library'
-apply plugin: 'maven'
-apply plugin: 'signing'
-apply plugin: 'net.minecrell.licenser'
 
 group 'net.kyori'
 version '3.0.0-SNAPSHOT'
@@ -17,8 +15,8 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    api 'net.kyori:adventure-api:4.0.0-SNAPSHOT'
-    testCompile 'net.kyori:adventure-text-serializer-gson:4.0.0-SNAPSHOT'
+    api "net.kyori:adventure-api:${adventure}'
+    testCompile "net.kyori:adventure-text-serializer-gson:${adventure}"
 }
 
 tasks.withType(JavaCompile) {
@@ -42,10 +40,6 @@ repositories {
     mavenCentral()
     maven {
         url 'https://oss.sonatype.org/content/groups/public/'
-    }
-    maven {
-        name = 'viaversion'
-        url = 'https://repo.viaversion.com'
     }
 }
 
@@ -103,7 +97,7 @@ if (project.hasProperty('sonatypeUsername') && project.hasProperty('sonatypePass
 
                     developers {
                         developer {
-                            name 'Luck'
+                            name 'MiniDigger'
                         }
                     }
 
