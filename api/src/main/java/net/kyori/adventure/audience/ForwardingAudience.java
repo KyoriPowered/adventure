@@ -33,9 +33,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A receiver that wraps one or more receivers.
- * <p><tt>ForwardingAudience</tt> is designed to easily allow users or
- * implementations wrap an existing collection of <tt>Audience</tt>s. When
- * forwarding to a single <tt>Audience</tt>,
+ * <p><code>ForwardingAudience</code> is designed to easily allow users or
+ * implementations wrap an existing collection of <code>Audience</code>s. When
+ * forwarding to a single <code>Audience</code>,
  * use {@link java.util.Collections#singleton(Object)}.</p>
  *
  * @see Audience

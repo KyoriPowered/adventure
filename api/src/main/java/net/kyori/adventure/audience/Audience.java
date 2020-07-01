@@ -35,18 +35,18 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A receiver of Minecraft media.
- * <p><tt>Audience</tt> is designed to be a universal interface for any player,
+ * <p><code>Audience</code> is designed to be a universal interface for any player,
  * command sender, console, or otherwise who can receive text, titles,
  * boss bars, and other Minecraft media. It is also designed for a group of
  * receivers such as a team, server, world, or permission.</p>
  * <p>In the past, Minecraft platforms have typically reserved methods such as
- * <tt>showTitle</tt> for a <tt>Player</tt> interface. While this is good
+ * <code>showTitle</code> for a <code>Player</code> interface. While this is good
  * textbook object-oriented design, it presents two key drawbacks: 1) there
- * is no abstraction for groups of players, such as a <tt>Server</tt> or a
- * <tt>Team</tt> and 2) it add boilerplate for handling special cases like
+ * is no abstraction for groups of players, such as a <code>Server</code> or a
+ * <code>Team</code> and 2) it add boilerplate for handling special cases like
  * console or command senders.</p>
  * <p>Consider the use-case of sending a message and title to every player on a
- * server, and also sending a message to console. Without an <tt>Audience</tt>,
+ * server, and also sending a message to console. Without an <code>Audience</code>,
  * the code might look like this:</p>
  * <pre>
  *   Server server;
@@ -55,18 +55,18 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *     player.showTitle(...);
  *   }
  *   server.getConsole().sendMessage(...);</pre>
- * <p>Now, if <tt>Server</tt> implemented <tt>Audience</tt>, its unified interface
+ * <p>Now, if <code>Server</code> implemented <code>Audience</code>, its unified interface
  * would allow users to easily send media without if-guarding console or
  * iterating through the list of players:</p>
  * <pre>
  *   Server server;
  *   server.sendMessage(...); // Sends a message to players and console
  *   server.showTitle(...); // Shows a title to players, silently ignored by console</pre>
- * <p>When an <tt>Audience</tt> is unable to perform an operation, such as sending
+ * <p>When an <code>Audience</code> is unable to perform an operation, such as sending
  * a boss bar to console, it will silently fail, without logging. This
  * requirement allows users to easily send media to a group of
- * <tt>Audience</tt>s without checking each for compatibility.</p>
- * <p>While the scope of <tt>Audience</tt> may be expanded in the future to support
+ * <code>Audience</code>s without checking each for compatibility.</p>
+ * <p>While the scope of <code>Audience</code> may be expanded in the future to support
  * new Minecraft media such as the player list, its interface will remain stateless
  * and any new methods will be stubbed by default.</p>
  *
@@ -106,8 +106,8 @@ public interface Audience {
   /**
    * Creates an audience that forwards to many other audiences.
    *
-   * <p>The underlying <tt>Iterable</tt> is not copied, therefore any changes
-   * made will be reflected in <tt>Audience</tt>.</p>
+   * <p>The underlying <code>Iterable</code> is not copied, therefore any changes
+   * made will be reflected in <code>Audience</code>.</p>
    *
    * @since 4.0.0
    * @see ForwardingAudience
