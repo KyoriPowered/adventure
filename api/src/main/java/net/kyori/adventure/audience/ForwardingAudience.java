@@ -30,83 +30,80 @@ import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * An audience that delegates to another audience.
+ * A receiver that wraps one or more receivers.
+ * <p><tt>ForwardingAudience</tt> is designed to easily allow users or
+ * implementations wrap an existing collection of <tt>Audience</tt>s. When
+ * forwarding to a single <tt>Audience</tt>,
+ * use {@link java.util.Collections#singleton(Object)}.</p>
+ *
+ * @see Audience
+ * @since 1.0
+ * @version 1.0
  */
 @FunctionalInterface
 public interface ForwardingAudience extends Audience {
   /**
-   * Gets the delegate audience.
+   * Gets the audiences.
    *
-   * @return the audience, or {@code null} to silently drop
+   * @since 1.0
+   * @return the audiences
    */
-  @Nullable Audience audience();
+  @NonNull Iterable<? extends Audience> audiences();
 
   @Override
   default void sendMessage(final @NonNull Component message) {
-    final Audience audience = this.audience();
-    if(audience != null) audience.sendMessage(message);
+    for(final Audience audience : this.audiences()) audience.sendMessage(message);
   }
 
   @Override
   default void sendActionBar(final @NonNull Component message) {
-    final Audience audience = this.audience();
-    if(audience != null) audience.sendActionBar(message);
+    for(final Audience audience : this.audiences()) audience.sendActionBar(message);
   }
 
   @Override
   default void showTitle(final @NonNull Title title) {
-    final Audience audience = this.audience();
-    if(audience != null) audience.showTitle(title);
+    for(final Audience audience : this.audiences()) audience.showTitle(title);
   }
 
   @Override
   default void clearTitle() {
-    final Audience audience = this.audience();
-    if(audience != null) audience.clearTitle();
+    for(final Audience audience : this.audiences()) audience.clearTitle();
   }
 
   @Override
   default void resetTitle() {
-    final Audience audience = this.audience();
-    if(audience != null) audience.resetTitle();
+    for(final Audience audience : this.audiences()) audience.resetTitle();
   }
 
   @Override
   default void showBossBar(final @NonNull BossBar bar) {
-    final Audience audience = this.audience();
-    if(audience != null) audience.showBossBar(bar);
+    for(final Audience audience : this.audiences()) audience.showBossBar(bar);
   }
 
   @Override
   default void hideBossBar(final @NonNull BossBar bar) {
-    final Audience audience = this.audience();
-    if(audience != null) audience.hideBossBar(bar);
+    for(final Audience audience : this.audiences()) audience.hideBossBar(bar);
   }
 
   @Override
   default void playSound(final @NonNull Sound sound) {
-    final Audience audience = this.audience();
-    if(audience != null) audience.playSound(sound);
+    for(final Audience audience : this.audiences())  audience.playSound(sound);
   }
 
   @Override
   default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
-    final Audience audience = this.audience();
-    if(audience != null) audience.playSound(sound, x, y, z);
+    for(final Audience audience : this.audiences()) audience.playSound(sound, x, y, z);
   }
 
   @Override
   default void stopSound(final @NonNull SoundStop stop) {
-    final Audience audience = this.audience();
-    if(audience != null) audience.stopSound(stop);
+    for(final Audience audience : this.audiences()) audience.stopSound(stop);
   }
 
   @Override
   default void openBook(final @NonNull Book book) {
-    final Audience audience = this.audience();
-    if(audience != null) audience.openBook(book);
+    for(final Audience audience : this.audiences()) audience.openBook(book);
   }
 }

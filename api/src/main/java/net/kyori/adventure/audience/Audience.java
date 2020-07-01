@@ -24,6 +24,7 @@
 package net.kyori.adventure.audience;
 
 import java.util.Arrays;
+
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.sound.Sound;
@@ -31,156 +32,191 @@ import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * A receiver of text-based media.
+ * A receiver of Minecraft media.
+ * <p><tt>Audience</tt> is designed to be a universal interface for any player,
+ * command sender, console, or otherwise who can receive text, titles,
+ * boss bars, and other Minecraft media. It is also designed for a group of
+ * receivers such as a team, server, world, or permission.</p>
+ * <p>In the past, Minecraft platforms have typically reserved methods such as
+ * <tt>showTitle</tt> for a <tt>Player</tt> interface. While this is good
+ * textbook object-oriented design, it presents two key drawbacks: 1) there
+ * is no abstraction for groups of players, such as a <tt>Server</tt> or a
+ * <tt>Team</tt> and 2) it add boilerplate for handling special cases like
+ * console or command senders.</p>
+ * <p>Consider the use-case of sending a message and title to every player on a
+ * server, and also sending a message to console. Without an <tt>Audience</tt>,
+ * the code might look like this:</p>
+ * <pre>
+ *   Server server;
+ *   for (Player player : server.getPlayers()) {
+ *     player.sendMessage(...);
+ *     player.showTitle(...);
+ *   }
+ *   server.getConsole().sendMessage(...);</pre>
+ * <p>Now, if <tt>Server</tt> implemented <tt>Audience</tt>, its unified interface
+ * would allow users to easily send media without if-guarding console or
+ * iterating through the list of players:</p>
+ * <pre>
+ *   Server server;
+ *   server.sendMessage(...); // Sends a message to players and console
+ *   server.showTitle(...); // Shows a title to players, silently ignored by console</pre>
+ * <p>When an <tt>Audience</tt> is unable to perform an operation, such as sending
+ * a boss bar to console, it will silently fail, without logging. This
+ * requirement allows users to easily send media to a group of
+ * <tt>Audience</tt>s without checking each for compatibility. The only
+ * required implementation is {@link #sendMessage(Component)}, which does not
+ * provide a default stub.</p>
+ * <p>While the scope of <tt>Audience</tt> may be expanded in the future to support
+ * new Minecraft media such as the player list, its interface will remain stateless
+ * and any new methods will be stubbed by default.</p>
+ *
+ * @see ForwardingAudience
+ * @since 1.0
+ * @version 1.0
  */
 public interface Audience {
   /**
    * Gets an audience that does nothing.
    *
-   * @return an audience
+   * @since 1.0
+   * @return a do-nothing audience
    */
   static @NonNull Audience empty() {
     return EmptyAudience.INSTANCE;
   }
 
   /**
-   * Creates an audience that delegates to an array of audiences.
+   * Creates an audience that forwards to many other audiences.
    *
-   * @param audiences the delegate audiences
+   * @since 1.0
+   * @see ForwardingAudience
+   * @param audiences an array of audiences, can be empty
    * @return an audience
    */
   static @NonNull Audience of(final @NonNull Audience@NonNull... audiences) {
-    final int length = audiences.length;
-    if(length == 0) {
-      return empty();
-    } else if(length == 1) {
-      return audiences[0];
+    switch(audiences.length) {
+      case 0: return empty();
+      case 1: return audiences[0];
+      default: return of(Arrays.asList(audiences));
     }
-    return of(Arrays.asList(audiences));
   }
 
   /**
-   * Creates an audience that delegates to a collection of audiences.
+   * Creates an audience that forwards to many other audiences.
    *
-   * @param audiences the delegate audiences
+   * <p>The underlying <tt>Iterable</tt> is not copied, therefore any changes
+   * made will be reflected in <tt>Audience</tt>.</p>
+   *
+   * @since 1.0
+   * @see ForwardingAudience
+   * @param audiences an iterable of audiences, can be empty
    * @return an audience
    */
   static @NonNull Audience of(final @NonNull Iterable<? extends Audience> audiences) {
-    return (MultiAudience) () -> audiences;
+    return (ForwardingAudience) audiences;
   }
 
   /**
-   * Creates an audience that weakly delegates to another audience.
+   * Sends a chat message.
    *
-   * @param audience the delegate audience
-   * @return an audience
-   */
-  static @NonNull Audience weakOf(final @Nullable Audience audience) {
-    return audience instanceof WeakAudience || audience instanceof EmptyAudience ? audience : new WeakAudience(audience);
-  }
-
-  // ------------------
-  // ---- Messages ----
-  // ------------------
-
-  /**
-   * Sends a message.
-   *
-   * @param message the message
+   * @since 1.0
+   * @see Component
+   * @param message a message
    */
   void sendMessage(final @NonNull Component message);
-
-  // --------------------
-  // ---- Action Bar ----
-  // --------------------
 
   /**
    * Sends a message on the action bar.
    *
-   * @param message the message
+   * @since 1.0
+   * @see Component
+   * @param message a message
    */
-  void sendActionBar(final @NonNull Component message);
-
-  // ----------------
-  // ---- Titles ----
-  // ----------------
+  default void sendActionBar(final @NonNull Component message) {}
 
   /**
    * Shows a title.
    *
-   * @param title the title
+   * @since 1.0
+   * @see Title
+   * @param title a title
    */
-  void showTitle(final @NonNull Title title);
+  default void showTitle(final @NonNull Title title) {}
 
   /**
-   * Clears the currently displayed title.
-   */
-  void clearTitle();
-
-  /**
-   * Resets the title, subtitle, fade-in time, stay time, and fade-out time back to "unset".
-   */
-  void resetTitle();
-
-  // ------------------
-  // ---- Boss Bar ----
-  // ------------------
-
-  /**
-   * Shows a bossbar.
+   * Clears the title, if one is being displayed.
    *
-   * @param bar the bossbar
+   * @since 1.0
+   * @see Title
    */
-  void showBossBar(final @NonNull BossBar bar);
+  default void clearTitle() {}
 
   /**
-   * Hides a bossbar.
+   * Resets the title and timings back to their default.
    *
-   * @param bar the bossbar
+   * @since 1.0
+   * @see Title
    */
-  void hideBossBar(final @NonNull BossBar bar);
+  default void resetTitle() {}
 
-  // ----------------
-  // ---- Sounds ----
-  // ----------------
+  /**
+   * Shows a boss bar.
+   *
+   * @since 1.0
+   * @see BossBar
+   * @param bar a boss bar
+   */
+  default void showBossBar(final @NonNull BossBar bar) {}
+
+  /**
+   * Hides a boss bar.
+   *
+   * @since 1.0
+   * @see BossBar
+   * @param bar a boss bar
+   */
+  default void hideBossBar(final @NonNull BossBar bar) {}
 
   /**
    * Plays a sound.
    *
-   * @param sound the sound
+   * @since 1.0
+   * @see Sound
+   * @param sound a sound
    */
-  void playSound(final @NonNull Sound sound);
+  default void playSound(final @NonNull Sound sound) {}
 
   /**
-   * Plays a sound.
+   * Plays a sound at a location.
    *
-   * @param sound the sound
-   * @param x the x coordinate
-   * @param y the y coordinate
-   * @param z the z coordinate
+   * @since 1.0
+   * @see Sound
+   * @param sound a sound
+   * @param x x coordinate
+   * @param y y coordinate
+   * @param z z coordinate
    */
-  void playSound(final @NonNull Sound sound, final double x, final double y, final double z);
+  default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {}
 
   /**
-   * Stops all sounds.
+   * Stops a sound, or many sounds.
    *
-   * @param stop the stop
+   * @since 1.0
+   * @see SoundStop
+   * @param stop a sound stop
    */
-  void stopSound(final @NonNull SoundStop stop);
-
-  // -------------------
-  // ---- Inventory ----
-  // -------------------
+  default void stopSound(final @NonNull SoundStop stop) {}
 
   /**
    * Opens a book.
    *
-   * <p>Opens a virtual book for the client, no item will be persisted.</p>
+   * <p>When possible, no item should persist after closing the book.</p>
    *
-   * @param book the book
+   * @since 1.0
+   * @see Book
+   * @param book a book
    */
-  void openBook(final @NonNull Book book);
+  default void openBook(final @NonNull Book book) {}
 }

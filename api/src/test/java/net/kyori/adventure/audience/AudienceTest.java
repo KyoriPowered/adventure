@@ -46,8 +46,8 @@ class AudienceTest {
     final Audience a0 = Audience.empty();
     final Audience a1 = Audience.empty();
     final Audience ma = Audience.of(a0, a1);
-    assertTrue(ma instanceof MultiAudience);
-    assertThat(((MultiAudience) ma).audiences()).containsExactly(a0, a1).inOrder();
+    assertTrue(ma instanceof ForwardingAudience);
+    assertThat(((ForwardingAudience) ma).audiences()).containsExactly(a0, a1).inOrder();
   }
 
   @Test
