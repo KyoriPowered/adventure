@@ -65,9 +65,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * <p>When an <tt>Audience</tt> is unable to perform an operation, such as sending
  * a boss bar to console, it will silently fail, without logging. This
  * requirement allows users to easily send media to a group of
- * <tt>Audience</tt>s without checking each for compatibility. The only
- * required implementation is {@link #sendMessage(Component)}, which does not
- * provide a default stub.</p>
+ * <tt>Audience</tt>s without checking each for compatibility.</p>
  * <p>While the scope of <tt>Audience</tt> may be expanded in the future to support
  * new Minecraft media such as the player list, its interface will remain stateless
  * and any new methods will be stubbed by default.</p>
@@ -101,9 +99,8 @@ public interface Audience {
       return empty();
     } else if(length == 1) {
       return audiences[0];
-    } else {
-      return of(Arrays.asList(audiences));
     }
+    return of(Arrays.asList(audiences));
   }
 
   /**
@@ -118,7 +115,7 @@ public interface Audience {
    * @return an audience
    */
   static @NonNull Audience of(final @NonNull Iterable<? extends Audience> audiences) {
-    return (ForwardingAudience) audiences;
+    return (ForwardingAudience) () -> audiences;
   }
 
   /**

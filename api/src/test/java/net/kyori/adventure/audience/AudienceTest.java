@@ -38,7 +38,7 @@ class AudienceTest {
   @Test
   void testOf_one() {
     final Audience a0 = Audience.empty();
-    assertSame(a0,  Audience.of(a0));
+    assertSame(a0, Audience.of(a0));
   }
 
   @Test
