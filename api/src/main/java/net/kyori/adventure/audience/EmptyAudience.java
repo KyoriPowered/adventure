@@ -23,9 +23,6 @@
  */
 package net.kyori.adventure.audience;
 
-import net.kyori.adventure.text.Component;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 /* package */ final class EmptyAudience implements Audience {
   /* package */ static final EmptyAudience INSTANCE = new EmptyAudience();
 
