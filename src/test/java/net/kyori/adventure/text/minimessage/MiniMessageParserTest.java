@@ -27,9 +27,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import jdk.nashorn.internal.ir.annotations.Ignore;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -247,7 +246,7 @@ public class MiniMessageParserTest {
   }
 
   @Test
-  @Ignore  // TODO implement inner with ' or "
+  @Disabled("Need to implement inner with ' or \"")  // TODO 
   public void testTranslatableWithHover() {
     final String input = "Test: <lang:commands.drop.success.single:'<red>1<hover:show_text:'<red>dum'>':'<blue>Stone'>!";
     final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Test: \"},{\"translate\":\"commands.drop.success.single\",\"with\":[{\"text\":\"1\",\"color\":\"red\"},{\"text\":\"Stone\",\"color\":\"blue\"}]},{\"text\":\"!\"}]}";
@@ -288,7 +287,7 @@ public class MiniMessageParserTest {
   }
 
   @Test
-  @Ignore // TODO implement inner with ' or "
+  @Disabled("Need to implement inner with ' or \"")  // TODO 
   public void testGH5Modified() {
     final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:<pack_url>><hover:show_text:\"<green>/!\\ install it from 'Options/ResourcePacks' in your game\"><green><bold>CLICK HERE</bold></hover></click>";
     final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"»\",\"color\":\"dark_gray\"},{\"text\":\" To download it from the internet, \",\"color\":\"gray\"},{\"text\":\"CLICK HERE\",\"color\":\"green\",\"bold\":true,\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://www.google.com\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"/!\\\\ install it from 'Options/ResourcePacks' in your game\",\"color\":\"green\"}}}]}";
