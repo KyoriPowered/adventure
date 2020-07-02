@@ -120,6 +120,11 @@
       <property name="illegalPkgs" value="sun, jdk, com.sun"/>
     </module>
 
+    <!-- no get* or set* method names -->
+    <module name="MethodName">
+      <property name="format" value="^(?:(?:.{1,3})|(?:[gs]et[^A-Z].*)|(?:(?:[^gsA-Z]..|.[^e].|..[^t]).+))$"/>
+    </module>
+
     <!-- misc formatting based on Google style -->
     <!-- match filenames, don't use unicode escapes, no star imports -->
     <module name="OuterTypeFilename"/>
