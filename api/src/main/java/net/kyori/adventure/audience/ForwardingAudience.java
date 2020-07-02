@@ -32,6 +32,8 @@ import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.UUID;
+
 /**
  * An audience that delegates to another audience.
  */
@@ -81,9 +83,9 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
-  default void hideBossBar(final @NonNull BossBar bar) {
+  default void hideBossBar(final @NonNull UUID barId) {
     final Audience audience = this.audience();
-    if(audience != null) audience.hideBossBar(bar);
+    if(audience != null) audience.hideBossBar(barId);
   }
 
   @Override

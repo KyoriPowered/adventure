@@ -31,6 +31,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.UUID;
+
 /**
  * An audience that contains multiple audiences.
  */
@@ -74,8 +76,8 @@ public interface MultiAudience extends Audience {
   }
 
   @Override
-  default void hideBossBar(final @NonNull BossBar bar) {
-    for(final Audience audience : this.audiences()) audience.hideBossBar(bar);
+  default void hideBossBar(final @NonNull UUID barId) {
+    for(final Audience audience : this.audiences()) audience.hideBossBar(barId);
   }
 
   @Override

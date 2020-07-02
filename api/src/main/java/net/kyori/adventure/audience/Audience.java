@@ -24,6 +24,8 @@
 package net.kyori.adventure.audience;
 
 import java.util.Arrays;
+import java.util.UUID;
+
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.sound.Sound;
@@ -139,9 +141,9 @@ public interface Audience {
   /**
    * Hides a bossbar.
    *
-   * @param bar the bossbar
+   * @param barId the bossbar id
    */
-  void hideBossBar(final @NonNull BossBar bar);
+  void hideBossBar(final @NonNull UUID barId);
 
   // ----------------
   // ---- Sounds ----

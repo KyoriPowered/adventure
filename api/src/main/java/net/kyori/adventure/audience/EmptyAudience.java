@@ -31,6 +31,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.UUID;
+
 /* package */ final class EmptyAudience implements Audience {
   /* package */ static final EmptyAudience INSTANCE = new EmptyAudience();
 
@@ -59,7 +61,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
   }
 
   @Override
-  public void hideBossBar(final @NonNull BossBar bar) {
+  public void hideBossBar(final @NonNull UUID barId) {
   }
 
   @Override
