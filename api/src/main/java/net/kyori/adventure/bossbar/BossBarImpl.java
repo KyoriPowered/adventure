@@ -27,6 +27,7 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.BiPredicate;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
@@ -41,6 +42,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import static java.util.Objects.requireNonNull;
 
 /* package */ final class BossBarImpl extends Listenable<BossBar.Listener> implements BossBar, Examinable {
+  private final UUID id;
   private Component name;
   private float percent;
   private Color color;
@@ -48,8 +50,9 @@ import static java.util.Objects.requireNonNull;
   private final Set<Flag> flags = EnumSet.noneOf(Flag.class);
 
   /* package */ BossBarImpl(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay) {
+    this.id = UUID.randomUUID();
     this.name = requireNonNull(name, "name");
-    this.percent = percent;
+    this.percent = checkPercent(percent);
     this.color = requireNonNull(color, "color");
     this.overlay = requireNonNull(overlay, "overlay");
   }
@@ -57,6 +60,11 @@ import static java.util.Objects.requireNonNull;
   /* package */ BossBarImpl(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay, final @NonNull Set<Flag> flags) {
     this(name, percent, color, overlay);
     this.flags.addAll(flags);
+  }
+
+  @Override
+  public UUID id() {
+    return this.id;
   }
 
   @Override
@@ -91,10 +99,11 @@ import static java.util.Objects.requireNonNull;
     return this;
   }
 
-  /* package */ static void checkPercent(final float percent) {
+  /* package */ static float checkPercent(final float percent) {
     if(percent < MIN_PERCENT || percent > MAX_PERCENT) {
       throw new IllegalArgumentException("percent must be between " + MIN_PERCENT + " and " + MAX_PERCENT + ", was " + percent);
     }
+    return percent;
   }
 
   @Override
@@ -187,26 +196,18 @@ import static java.util.Objects.requireNonNull;
     if(this == other) return true;
     if(other == null || this.getClass() != other.getClass()) return false;
     final BossBarImpl that = (BossBarImpl) other;
-    return this.name.equals(that.name)
-      && ShadyPines.equals(this.percent, that.percent)
-      && this.color == that.color
-      && this.overlay == that.overlay
-      && this.flags.equals(that.flags);
+    return this.id.equals(that.id);
   }
 
   @Override
   public int hashCode() {
-    int result = this.name.hashCode();
-    result = (31 * result) + Float.hashCode(this.percent);
-    result = (31 * result) + this.color.hashCode();
-    result = (31 * result) + this.overlay.hashCode();
-    result = (31 * result) + this.flags.hashCode();
-    return result;
+    return this.id.hashCode();
   }
 
   @Override
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
+      ExaminableProperty.of("id", this.id),
       ExaminableProperty.of("name", this.name),
       ExaminableProperty.of("percent", this.percent),
       ExaminableProperty.of("color", this.color),

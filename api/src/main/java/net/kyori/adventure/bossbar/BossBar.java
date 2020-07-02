@@ -26,12 +26,13 @@ package net.kyori.adventure.bossbar;
 import java.util.Set;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Index;
+import net.kyori.adventure.util.View;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A bossbar.
  */
-public interface BossBar {
+public interface BossBar extends View {
   /**
    * The minimum value the percent can be.
    */
@@ -52,7 +53,6 @@ public interface BossBar {
    * @throws IllegalArgumentException if percent is less than 0 or greater than 1
    */
   static @NonNull BossBar of(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay) {
-    BossBarImpl.checkPercent(percent);
     return new BossBarImpl(name, percent, color, overlay);
   }
 
@@ -68,7 +68,6 @@ public interface BossBar {
    * @throws IllegalArgumentException if percent is less than 0 or greater than 1
    */
   static @NonNull BossBar of(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay, final @NonNull Set<Flag> flags) {
-    BossBarImpl.checkPercent(percent);
     return new BossBarImpl(name, percent, color, overlay, flags);
   }
 
