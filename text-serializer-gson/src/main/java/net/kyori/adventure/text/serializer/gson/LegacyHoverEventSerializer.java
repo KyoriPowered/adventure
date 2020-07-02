@@ -23,26 +23,20 @@
  */
 package net.kyori.adventure.text.serializer.gson;
 
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
+import java.io.IOException;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.util.Codec;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-abstract class AbstractComponentTest<C extends Component> extends AbstractSerializeDeserializeTest<C> {
-  static final Gson GSON = GsonComponentSerializerImpl.INSTANCE.serializer();
-  static final Gson GSON_DOWNSAMPLING = GsonComponentSerializerImpl.LEGACY_INSTANCE.serializer();
-
-  @SuppressWarnings("serial")
-  private final TypeToken<C> type = new TypeToken<C>(this.getClass()) {};
-
-  @Override
-  @SuppressWarnings("unchecked")
-  C deserialize(final JsonElement json) {
-    return GSON.fromJson(json, (Class<C>) this.type.getRawType());
-  }
-
-  @Override
-  JsonElement serialize(final C object) {
-    return GSON.toJsonTree(object);
-  }
+public interface LegacyHoverEventSerializer {
+  
+  HoverEvent.@NonNull ShowItem deserializeShowItem(final @NonNull Component input) throws IOException;
+  
+  HoverEvent.@NonNull ShowEntity deserializeShowEntity(final @NonNull Component input, final Codec.Decoder<Component, String, ? extends RuntimeException> componentDecoder) throws IOException;
+  
+  @NonNull Component serializeShowItem(final HoverEvent.@NonNull ShowItem input) throws IOException;
+  
+  @NonNull Component serializeShowEntity(final HoverEvent.@NonNull ShowEntity input, final Codec.Encoder<Component, String, ? extends RuntimeException> componentEncoder) throws IOException;
+  
 }

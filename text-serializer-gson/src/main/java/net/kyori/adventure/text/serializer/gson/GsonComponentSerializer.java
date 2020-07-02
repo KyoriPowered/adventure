@@ -50,12 +50,13 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
   /**
    * Gets a component serializer for gson serialization and deserialization.
    *
-   * <p>Hex colors are coerced to the nearest named color.</p>
+   * <p>Hex colors are coerced to the nearest named color, and legacy hover events are
+   * emitted for action {@link net.kyori.adventure.text.event.HoverEvent.Action#SHOW_TEXT}.</p>
    *
    * @return a gson component serializer
    */
   static @NonNull GsonComponentSerializer colorDownsamplingGson() {
-    return GsonComponentSerializerImpl.DOWNSAMPLE_COLOR;
+    return GsonComponentSerializerImpl.LEGACY_INSTANCE;
   }
 
   /**
@@ -91,6 +92,23 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
      * @return this builder
      */
     @NonNull Builder downsampleColors();
+
+    /**
+     * Sets a serializer that will be used to interpret legacy hover event {@code value} payloads
+     * @param serializer serializer
+     * @return this builder
+     */
+    @NonNull Builder legacyHoverEventSerializer(final @NonNull LegacyHoverEventSerializer serializer);
+
+    /**
+     * Output a legacy hover event {@code value} in addition to the modern {@code contents}
+     *
+     * <p>Calling {@link #build()} after calling this method will only succeed if a
+     * {@link #legacyHoverEventSerializer(LegacyHoverEventSerializer)  hover event adapter} has been set</p>
+     *
+     * @return this builder
+     */
+    @NonNull Builder emitLegacyHoverEvent();
 
     /**
      * Builds the serializer.
