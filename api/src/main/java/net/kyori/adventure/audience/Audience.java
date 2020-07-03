@@ -35,6 +35,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A receiver of Minecraft media.
+ *
  * <p><code>Audience</code> is designed to be a universal interface for any player,
  * command sender, console, or otherwise who can receive text, titles,
  * boss bars, and other Minecraft media. It is also designed for a group of
@@ -78,8 +79,8 @@ public interface Audience {
   /**
    * Gets an audience that does nothing.
    *
-   * @since 4.0.0
    * @return a do-nothing audience
+   * @since 4.0.0
    */
   static @NonNull Audience empty() {
     return EmptyAudience.INSTANCE;
@@ -88,10 +89,10 @@ public interface Audience {
   /**
    * Creates an audience that forwards to many other audiences.
    *
-   * @since 4.0.0
-   * @see ForwardingAudience
    * @param audiences an array of audiences, can be empty
    * @return an audience
+   * @see ForwardingAudience
+   * @since 4.0.0
    */
   static @NonNull Audience of(final @NonNull Audience@NonNull... audiences) {
     final int length = audiences.length;
@@ -109,10 +110,10 @@ public interface Audience {
    * <p>The underlying <code>Iterable</code> is not copied, therefore any changes
    * made will be reflected in <code>Audience</code>.</p>
    *
-   * @since 4.0.0
-   * @see ForwardingAudience
    * @param audiences an iterable of audiences, can be empty
    * @return an audience
+   * @see ForwardingAudience
+   * @since 4.0.0
    */
   static @NonNull Audience of(final @NonNull Iterable<? extends Audience> audiences) {
     return (ForwardingAudience) () -> audiences;
@@ -121,102 +122,113 @@ public interface Audience {
   /**
    * Sends a chat message.
    *
-   * @since 4.0.0
-   * @see Component
    * @param message a message
+   * @see Component
+   * @since 4.0.0
    */
-  default void sendMessage(final @NonNull Component message) {}
+  default void sendMessage(final @NonNull Component message) {
+  }
 
   /**
    * Sends a message on the action bar.
    *
-   * @since 4.0.0
-   * @see Component
    * @param message a message
+   * @see Component
+   * @since 4.0.0
    */
-  default void sendActionBar(final @NonNull Component message) {}
+  default void sendActionBar(final @NonNull Component message) {
+  }
 
   /**
    * Shows a title.
    *
-   * @since 4.0.0
-   * @see Title
    * @param title a title
+   * @see Title
+   * @since 4.0.0
    */
-  default void showTitle(final @NonNull Title title) {}
+  default void showTitle(final @NonNull Title title) {
+  }
 
   /**
    * Clears the title, if one is being displayed.
    *
-   * @since 4.0.0
    * @see Title
+   * @since 4.0.0
    */
-  default void clearTitle() {}
+  default void clearTitle() {
+  }
 
   /**
    * Resets the title and timings back to their default.
    *
-   * @since 4.0.0
    * @see Title
+   * @since 4.0.0
    */
-  default void resetTitle() {}
+  default void resetTitle() {
+  }
 
   /**
    * Shows a boss bar.
    *
-   * @since 4.0.0
-   * @see BossBar
    * @param bar a boss bar
+   * @see BossBar
+   * @since 4.0.0
    */
-  default void showBossBar(final @NonNull BossBar bar) {}
+  default void showBossBar(final @NonNull BossBar bar) {
+  }
 
   /**
    * Hides a boss bar.
    *
-   * @since 4.0.0
-   * @see BossBar
    * @param bar a boss bar
+   * @see BossBar
+   * @since 4.0.0
    */
-  default void hideBossBar(final @NonNull BossBar bar) {}
+  default void hideBossBar(final @NonNull BossBar bar) {
+  }
 
   /**
    * Plays a sound.
    *
-   * @since 4.0.0
-   * @see Sound
    * @param sound a sound
+   * @see Sound
+   * @since 4.0.0
    */
-  default void playSound(final @NonNull Sound sound) {}
+  default void playSound(final @NonNull Sound sound) {
+  }
 
   /**
    * Plays a sound at a location.
    *
-   * @since 4.0.0
-   * @see Sound
    * @param sound a sound
    * @param x x coordinate
    * @param y y coordinate
    * @param z z coordinate
+   * @see Sound
+   * @since 4.0.0
    */
-  default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {}
+  default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
+  }
 
   /**
    * Stops a sound, or many sounds.
    *
-   * @since 4.0.0
-   * @see SoundStop
    * @param stop a sound stop
+   * @see SoundStop
+   * @since 4.0.0
    */
-  default void stopSound(final @NonNull SoundStop stop) {}
+  default void stopSound(final @NonNull SoundStop stop) {
+  }
 
   /**
    * Opens a book.
    *
    * <p>When possible, no item should persist after closing the book.</p>
    *
-   * @since 4.0.0
-   * @see Book
    * @param book a book
+   * @see Book
+   * @since 4.0.0
    */
-  default void openBook(final @NonNull Book book) {}
+  default void openBook(final @NonNull Book book) {
+  }
 }

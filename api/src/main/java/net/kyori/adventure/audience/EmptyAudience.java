@@ -27,8 +27,8 @@ package net.kyori.adventure.audience;
   /* package */ static final EmptyAudience INSTANCE = new EmptyAudience();
 
   @Override
-  public boolean equals(Object obj) {
-    return this == obj;
+  public boolean equals(final Object that) {
+    return this == that;
   }
 
   @Override
