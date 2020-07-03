@@ -21,20 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+/**
+ * A receiver of Minecraft media.
+ */
 package net.kyori.adventure.audience;
-
-import java.lang.ref.WeakReference;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
-/* package */ final class WeakAudience implements ForwardingAudience {
-  private final WeakReference<Audience> audience;
-
-  /* package */ WeakAudience(final @Nullable Audience audience) {
-    this.audience = new WeakReference<>(audience);
-  }
-
-  @Override
-  public @Nullable Audience audience() {
-    return this.audience.get();
-  }
-}
