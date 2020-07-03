@@ -92,7 +92,6 @@ class StringIOTest {
     assertEquals(bigTest, parsedSnbt);
   }
 
-
   @Test
   public void testStringTag() throws IOException {
     final StringBinaryTag basic = StringBinaryTag.of("hello");
@@ -104,7 +103,6 @@ class StringIOTest {
     final String withEscapesStr = this.tagToString(withEscapes);
     assertEquals("\"hello \\\\world\"", withEscapesStr);
     assertEquals(withEscapes, this.stringToTag(withEscapesStr));
-
 
     // single quotes
     assertEquals(StringBinaryTag.of("something single-quoted"), this.stringToTag("'something single-quoted'"));
@@ -187,8 +185,8 @@ class StringIOTest {
 
   @Test
   public void testLegacyListTag() throws IOException {
-    final BinaryTag tag = stringToTag("[0:\"Tag #1\",1:\"Tag #2\"]");
-    assertEquals("[\"Tag #1\",\"Tag #2\"]", tagToString(tag));
+    final BinaryTag tag = this.stringToTag("[0:\"Tag #1\",1:\"Tag #2\"]");
+    assertEquals("[\"Tag #1\",\"Tag #2\"]", this.tagToString(tag));
 
     final ListTagBuilder<BinaryTag> builder = new ListTagBuilder<>();
     builder.add(StringBinaryTag.of("Tag #1"));

@@ -37,7 +37,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /* package */ final class ListBinaryTagImpl implements ListBinaryTag {
-  static final ListBinaryTag EMPTY = new ListBinaryTagImpl(BinaryTagTypes.END, Collections.emptyList());
+  /* package */ static final ListBinaryTag EMPTY = new ListBinaryTagImpl(BinaryTagTypes.END, Collections.emptyList());
   private final List<? extends BinaryTag> tags;
   private final BinaryTagType<? extends BinaryTag> type;
   private final int hashCode;
@@ -130,7 +130,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
       @Override
       public BinaryTag next() {
-        return  iterator.next();
+        return iterator.next();
       }
 
       @Override

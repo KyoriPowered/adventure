@@ -33,7 +33,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-final class ScoreComponentImpl extends AbstractComponent implements ScoreComponent {
+/* package */ final class ScoreComponentImpl extends AbstractComponent implements ScoreComponent {
   private final String name;
   private final String objective;
   private final @Nullable String value;
@@ -126,7 +126,7 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
     return new BuilderImpl(this);
   }
 
-  static final class BuilderImpl extends AbstractComponentBuilder<ScoreComponent, Builder> implements ScoreComponent.Builder {
+  /* package */ static final class BuilderImpl extends AbstractComponentBuilder<ScoreComponent, Builder> implements ScoreComponent.Builder {
     private @Nullable String name;
     private @Nullable String objective;
     private @Nullable String value;

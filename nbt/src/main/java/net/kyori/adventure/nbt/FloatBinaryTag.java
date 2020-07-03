@@ -52,7 +52,7 @@ public interface FloatBinaryTag extends NumberBinaryTag {
    *
    * @return the value
    */
-   float value();
+  float value();
 }
 
 /* package */ final class FloatBinaryTagImpl implements FloatBinaryTag {

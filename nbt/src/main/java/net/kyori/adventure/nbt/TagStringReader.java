@@ -30,7 +30,7 @@ import java.util.stream.IntStream;
 /* package */ final class TagStringReader {
   private final CharBuffer buffer;
 
-  public TagStringReader(final CharBuffer buffer) {
+  TagStringReader(final CharBuffer buffer) {
     this.buffer = buffer;
   }
 
@@ -50,7 +50,7 @@ import java.util.stream.IntStream;
     final ListBinaryTag.Builder<BinaryTag> builder = ListBinaryTag.builder();
     this.buffer.expect(Tokens.ARRAY_BEGIN);
     final boolean prefixedIndex = this.buffer.peek() == '0' && this.buffer.peek(1) == ':';
-    while (this.buffer.hasMore()) {
+    while(this.buffer.hasMore()) {
       if(prefixedIndex) {
         this.buffer.takeUntil(':');
       }
@@ -98,7 +98,7 @@ import java.util.stream.IntStream;
 
       if(this.separatorOrCompleteWith(Tokens.ARRAY_END)) {
         final byte[] result = new byte[bytes.size()];
-        for (int i = 0; i < bytes.size(); ++i) { // todo yikes, let's do less boxing
+        for(int i = 0; i < bytes.size(); ++i) { // todo yikes, let's do less boxing
           result[i] = bytes.get(i);
         }
         return result;
@@ -134,7 +134,7 @@ import java.util.stream.IntStream;
 
       if(this.separatorOrCompleteWith(Tokens.ARRAY_END)) {
         final long[] result = new long[longs.size()];
-        for (int i = 0; i < longs.size(); ++i) { // todo yikes
+        for(int i = 0; i < longs.size(); ++i) { // todo yikes
           result[i] = longs.get(i);
         }
         return result;
@@ -227,7 +227,7 @@ import java.util.stream.IntStream;
       if(current == '\\') { // escape -- we are significantly more lenient than original format at the moment
         this.buffer.advance();
         builder.append(this.buffer.take());
-      } else if (Tokens.id(current)) {
+      } else if(Tokens.id(current)) {
         builder.append(this.buffer.take());
       } else { // end of value
         break;
@@ -255,7 +255,6 @@ import java.util.stream.IntStream;
     return false;
   }
 
-
   /**
    * Remove simple escape sequences from a string
    *
@@ -264,7 +263,7 @@ import java.util.stream.IntStream;
    */
   private static String unescape(final String withEscapes) {
     int escapeIdx = withEscapes.indexOf(Tokens.ESCAPE_MARKER);
-    if (escapeIdx == -1) { // nothing to unescape
+    if(escapeIdx == -1) { // nothing to unescape
       return withEscapes;
     }
     int lastEscape = 0;

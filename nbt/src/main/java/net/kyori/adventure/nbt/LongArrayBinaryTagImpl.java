@@ -30,7 +30,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /* package */ final class LongArrayBinaryTagImpl implements LongArrayBinaryTag {
-  final long[] value;
+  /* package */ final long[] value;
 
   /* package */ LongArrayBinaryTagImpl(final long[] value) {
     this.value = Arrays.copyOf(value, value.length);

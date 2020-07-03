@@ -33,7 +33,7 @@ import java.io.IOException;
   private final CharSequence buffer;
   private final int position;
 
-  public StringTagParseException(final String message, final CharSequence buffer, final int position) {
+  StringTagParseException(final String message, final CharSequence buffer, final int position) {
     super(message);
     this.buffer = buffer;
     this.position = position;

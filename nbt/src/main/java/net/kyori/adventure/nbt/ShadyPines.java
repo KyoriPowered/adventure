@@ -24,12 +24,16 @@
 package net.kyori.adventure.nbt;
 
 /* package */ final class ShadyPines {
-  static int floor(final double dv) {
+  
+  private ShadyPines() {
+  }
+  
+  /* package */ static int floor(final double dv) {
     final int iv = (int) dv;
     return dv < (double) iv ? iv - 1 : iv;
   }
 
-  static int floor(final float fv) {
+  /* package */ static int floor(final float fv) {
     final int iv = (int) fv;
     return fv < (float) iv ? iv - 1 : iv;
   }

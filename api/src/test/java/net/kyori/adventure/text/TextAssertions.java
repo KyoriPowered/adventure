@@ -31,8 +31,11 @@ import net.kyori.adventure.text.format.TextDecoration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TextAssertions {
+public final class TextAssertions {
   private static final Set<TextDecoration> DECORATIONS = ImmutableSet.copyOf(TextDecoration.values());
+
+  private TextAssertions() {
+  }
 
   public static void assertDecorations(final Component component, final Set<TextDecoration> trues, final Set<TextDecoration> falses) {
     assertDecorations(component.style(), trues, falses);

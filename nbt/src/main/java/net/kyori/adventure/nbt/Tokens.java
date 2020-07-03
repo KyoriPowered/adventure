@@ -53,29 +53,6 @@ package net.kyori.adventure.nbt;
   }
 
   /**
-   * Get the type signature character based on the scalar provided tag type
-   *
-   * @param type tag type
-   * @return a type signature, or {@code 0} if an unknown tag type was provided
-   */
-  static char tagType(final BinaryTagType<?> type) {
-   if(type == BinaryTagTypes.BYTE) {
-     return TYPE_BYTE;
-   } else if(type == BinaryTagTypes.SHORT) {
-     return TYPE_SHORT;
-   } else if(type == BinaryTagTypes.INT) {
-     return TYPE_INT;
-   } else if(type == BinaryTagTypes.LONG) {
-     return TYPE_LONG;
-   } else if(type == BinaryTagTypes.FLOAT) {
-     return TYPE_FLOAT;
-   } else if(type == BinaryTagTypes.DOUBLE) {
-     return TYPE_DOUBLE;
-   }
-   return '\0';
- }
-
-  /**
    * Return if a character is a valid component in an identifier
    *
    * <p>An identifier character must match the expression {@code [a-zA-Z0-9_+.-]}</p>
@@ -83,7 +60,7 @@ package net.kyori.adventure.nbt;
    * @param c the character
    * @return identifier
    */
-  static boolean id(final char c) {
+  /* package */ static boolean id(final char c) {
     return (c >= 'a' && c <= 'z')
       || (c >= 'A' && c <= 'Z')
       || (c >= '0' && c <= '9')
@@ -99,7 +76,7 @@ package net.kyori.adventure.nbt;
    * @param c character to check
    * @return if possibly part of a number
    */
-  static boolean numeric(final char c) {
+  /* package */ static boolean numeric(final char c) {
     return (c >= '0' && c <= '9') // digit
       || c == '+' || c == '-' // positive or negative
       || c == 'e' || c == 'E' // exponent
