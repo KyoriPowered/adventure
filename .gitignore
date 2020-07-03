@@ -6,6 +6,8 @@
 /nbt/build/
 /nbt/out/
 /run/
+/serializer-configurate3/build/
+/serializer-configurate3/out/
 /text-serializer-gson/build/
 /text-serializer-gson/out/
 /text-serializer-legacy/build/
