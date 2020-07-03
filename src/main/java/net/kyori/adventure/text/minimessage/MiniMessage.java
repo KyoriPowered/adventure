@@ -43,7 +43,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    *
    * @return a simple instance
    */
-  static @NonNull MiniMessage instance() {
+  static @NonNull MiniMessage get() {
     return MiniMessageImpl.INSTANCE;
   }
 
@@ -52,7 +52,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    *
    * @return a instance of markdown support
    */
-  static @NonNull MiniMessage withMarkDown() {
+  static @NonNull MiniMessage markdown() {
     return MiniMessageImpl.MARKDOWN;
   }
 

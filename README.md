@@ -41,20 +41,20 @@ MiniMessage uses a really simple tag system. For a full breakdown, please refer 
 To parse a MiniMessage into a Component, use the MiniMessage#parse methods. You can send a component via [the adventure adapters](https://github.com/KyoriPowered/adventure-platform)
 
 ```java
-Component result = MiniMessage.instance().parse("<red>Test");
+Component result = MiniMessage.get().parse("<red>Test");
 BukkitPlatform.of(plugin).player(player).sendMessage(result)
 ```
 
 There is also placeholder support available, either using simple strings, or other components:
 
 ```java
-Component result = MiniMessage.instance().parse("<red>Hello<bold><reader></bold>", "reader", "You!");
-Component result = MiniMessage.instance().parse("<red>Hello<bold><reader></bold>", Template.of("reader", TextComponent.of("You!").color(NamedTextColor.BLUE)));
+Component result = MiniMessage.get().parse("<red>Hello<bold><reader></bold>", "reader", "You!");
+Component result = MiniMessage.get().parse("<red>Hello<bold><reader></bold>", Template.of("reader", TextComponent.of("You!").color(NamedTextColor.BLUE)));
 ```
 
 Additionally, there is simple markdown suport available
 ```java
-Component result = MiniMessage.withMarkDown().parse("**<red>BOLD**");
+Component result = MiniMessage.markdown().parse("**<red>BOLD**");
 ```
 
 #### Components -> MiniMessage
@@ -63,9 +63,9 @@ MiniMessage also allows you to convert any component into a string representatio
 
 ```java
 Component component = TextComponent.of("Hello!").color(NamedTextColor.RED);
-String result = MiniMessage.instance().serialize(component);
+String result = MiniMessage.get().serialize(component);
 result = result.replace("Hello", "Hi");
-component = MiniMessage.instance().parse(result);
+component = MiniMessage.get().parse(result);
 BukkitPlatform.of(plugin).player(player).sendMessage(result);
 ```
 
