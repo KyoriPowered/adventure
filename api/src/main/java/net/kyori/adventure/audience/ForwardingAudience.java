@@ -48,7 +48,7 @@ public interface ForwardingAudience extends Audience {
   /**
    * Gets the audiences.
    *
-   * @since 1.0
+   * @since 4.0.0
    * @return the audiences
    */
   @NonNull Iterable<? extends Audience> audiences();
