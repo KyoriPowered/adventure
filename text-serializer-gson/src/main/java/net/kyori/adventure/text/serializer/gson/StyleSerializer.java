@@ -153,23 +153,21 @@ import org.checkerframework.checker.nullness.qual.Nullable;
   }
 
   private Object legacyHoverEventContents(final HoverEvent.Action<?> action, final Component rawValue, final JsonDeserializationContext context) {
-    Object value = null;
     if(action == HoverEvent.Action.SHOW_TEXT) { // Passthrough -- no serialization needed
-      value = rawValue;
+      return rawValue;
     } else if(this.legacyHover != null) {
       try {
         if(action == HoverEvent.Action.SHOW_ENTITY) {
-          value = this.legacyHover.deserializeShowEntity(rawValue, this.decoder(context));
+          return this.legacyHover.deserializeShowEntity(rawValue, this.decoder(context));
         } else if(action == HoverEvent.Action.SHOW_ITEM) {
-          value = this.legacyHover.deserializeShowItem(rawValue);
+          return this.legacyHover.deserializeShowItem(rawValue);
         }
       } catch(final IOException ex) {
         throw new JsonParseException(ex);
       }
-    } else {
-      throw new UnsupportedOperationException();
     }
-    return value;
+    // if we can't handle
+    throw new UnsupportedOperationException();
   }
 
   private Codec.Decoder<Component, String, JsonParseException> decoder(final JsonDeserializationContext ctx) {

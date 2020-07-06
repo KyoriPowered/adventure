@@ -73,14 +73,14 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
    *
    * @return a gson serializer
    */
-  Gson serializer();
+  @NonNull Gson serializer();
 
   /**
    * Gets the underlying gson populator.
    *
    * @return a gson populator
    */
-  UnaryOperator<GsonBuilder> populator();
+  @NonNull UnaryOperator<GsonBuilder> populator();
 
   /**
    * A builder for {@link GsonComponentSerializer}.
@@ -103,8 +103,9 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
     /**
      * Output a legacy hover event {@code value} in addition to the modern {@code contents}
      *
-     * <p>Calling {@link #build()} after calling this method will only succeed if a
-     * {@link #legacyHoverEventSerializer(LegacyHoverEventSerializer)  hover event adapter} has been set</p>
+     *
+     * <p>A {@link #legacyHoverEventSerializer(LegacyHoverEventSerializer) legacy hover serializer} must also be set
+     * to serialize any hover events beyond those with action {@link net.kyori.adventure.text.event.HoverEvent.Action#SHOW_TEXT}</p>
      *
      * @return this builder
      */
