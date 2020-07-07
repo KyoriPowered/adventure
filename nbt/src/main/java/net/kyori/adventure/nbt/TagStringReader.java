@@ -242,6 +242,12 @@ import java.util.stream.IntStream;
         // ignore
       }
     }
+
+    if(built.equalsIgnoreCase(Tokens.LITERAL_TRUE)) {
+      return ByteBinaryTag.of((byte) 1);
+    } else if(built.equalsIgnoreCase(Tokens.LITERAL_FALSE)) {
+      return ByteBinaryTag.of((byte) 0);
+    }
     return StringBinaryTag.of(built);
 
   }

@@ -46,6 +46,9 @@ package net.kyori.adventure.nbt;
   static final char TYPE_LONG = 'L';
   static final char TYPE_FLOAT = 'F';
   static final char TYPE_DOUBLE = 'D';
+  
+  static final String LITERAL_TRUE = "true";
+  static final String LITERAL_FALSE = "false";
 
   static final char EOF = '\0';
 

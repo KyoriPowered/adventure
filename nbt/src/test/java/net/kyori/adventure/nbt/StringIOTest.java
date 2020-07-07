@@ -146,6 +146,12 @@ class StringIOTest {
     assertEquals(IntBinaryTag.of(4482828), this.stringToTag("4482828"));
     assertEquals(IntBinaryTag.of(-24), this.stringToTag("-24"));
   }
+  
+  @Test
+  public void testReadLiteralBoolean() throws IOException {
+    assertEquals(ByteBinaryTag.of((byte) 1), this.stringToTag("true"));
+    assertEquals(ByteBinaryTag.of((byte) 0), this.stringToTag("false"));
+  }
 
   @Test
   public void testLongTag() throws IOException {
