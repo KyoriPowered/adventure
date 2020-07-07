@@ -30,7 +30,7 @@ import net.kyori.adventure.text.Component;
 
 abstract class AbstractComponentTest<C extends Component> extends AbstractSerializeDeserializeTest<C> {
   static final Gson GSON = GsonComponentSerializerImpl.INSTANCE.serializer();
-  static final Gson GSON_DOWNSAMPLING = GsonComponentSerializerImpl.DOWNSAMPLE_COLOR.serializer();
+  static final Gson GSON_DOWNSAMPLING = GsonComponentSerializerImpl.LEGACY_INSTANCE.serializer();
 
   @SuppressWarnings("serial")
   private final TypeToken<C> type = new TypeToken<C>(this.getClass()) {};

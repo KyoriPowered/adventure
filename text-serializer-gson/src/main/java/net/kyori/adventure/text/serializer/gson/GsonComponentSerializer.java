@@ -50,12 +50,13 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
   /**
    * Gets a component serializer for gson serialization and deserialization.
    *
-   * <p>Hex colors are coerced to the nearest named color.</p>
+   * <p>Hex colors are coerced to the nearest named color, and legacy hover events are
+   * emitted for action {@link net.kyori.adventure.text.event.HoverEvent.Action#SHOW_TEXT}.</p>
    *
    * @return a gson component serializer
    */
   static @NonNull GsonComponentSerializer colorDownsamplingGson() {
-    return GsonComponentSerializerImpl.DOWNSAMPLE_COLOR;
+    return GsonComponentSerializerImpl.LEGACY_INSTANCE;
   }
 
   /**
@@ -72,14 +73,14 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
    *
    * @return a gson serializer
    */
-  Gson serializer();
+  @NonNull Gson serializer();
 
   /**
    * Gets the underlying gson populator.
    *
    * @return a gson populator
    */
-  UnaryOperator<GsonBuilder> populator();
+  @NonNull UnaryOperator<GsonBuilder> populator();
 
   /**
    * A builder for {@link GsonComponentSerializer}.
@@ -91,6 +92,24 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
      * @return this builder
      */
     @NonNull Builder downsampleColors();
+
+    /**
+     * Sets a serializer that will be used to interpret legacy hover event {@code value} payloads
+     * @param serializer serializer
+     * @return this builder
+     */
+    @NonNull Builder legacyHoverEventSerializer(final @NonNull LegacyHoverEventSerializer serializer);
+
+    /**
+     * Output a legacy hover event {@code value} in addition to the modern {@code contents}
+     *
+     *
+     * <p>A {@link #legacyHoverEventSerializer(LegacyHoverEventSerializer) legacy hover serializer} must also be set
+     * to serialize any hover events beyond those with action {@link net.kyori.adventure.text.event.HoverEvent.Action#SHOW_TEXT}</p>
+     *
+     * @return this builder
+     */
+    @NonNull Builder emitLegacyHoverEvent();
 
     /**
      * Builds the serializer.
