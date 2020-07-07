@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.format;
 
+import net.kyori.adventure.util.RGBLike;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.common.value.qual.IntRange;
@@ -30,7 +31,7 @@ import org.checkerframework.common.value.qual.IntRange;
 /**
  * A color which may be applied to a {@link Style}.
  */
-public interface TextColor extends Comparable<TextColor>, TextFormat {
+public interface TextColor extends Comparable<TextColor>, RGBLike, TextFormat {
   /**
    * Creates a new text colour.
    *
@@ -40,6 +41,16 @@ public interface TextColor extends Comparable<TextColor>, TextFormat {
   static @NonNull TextColor of(final int value) {
     final NamedTextColor named = NamedTextColor.ofExact(value);
     return named != null ? named : new TextColorImpl(value);
+  }
+
+  /**
+   * Creates a new text colour.
+   *
+   * @param rgb the rgb value
+   * @return a new text colour
+   */
+  static @NonNull TextColor from(final RGBLike rgb) {
+    return of(rgb.red(), rgb.green(), rgb.blue());
   }
 
   /**
@@ -136,8 +147,9 @@ public interface TextColor extends Comparable<TextColor>, TextFormat {
    *
    * @return the red component, in the range [0x0, 0xff]
    */
-  default @IntRange(from = 0x0, to = 0xff) short red() {
-    return (short) ((this.value() >> 16) & 0xff);
+  @Override
+  default @IntRange(from = 0x0, to = 0xff) int red() {
+    return (this.value() >> 16) & 0xff;
   }
 
   /**
@@ -145,8 +157,9 @@ public interface TextColor extends Comparable<TextColor>, TextFormat {
    *
    * @return the green component, in the range [0x0, 0xff]
    */
-  default @IntRange(from = 0x0, to = 0xff) short green() {
-    return (short) ((this.value() >> 8) & 0xff);
+  @Override
+  default @IntRange(from = 0x0, to = 0xff) int green() {
+    return (this.value() >> 8) & 0xff;
   }
 
   /**
@@ -154,8 +167,9 @@ public interface TextColor extends Comparable<TextColor>, TextFormat {
    *
    * @return the blue component, in the range [0x0, 0xff]
    */
-  default @IntRange(from = 0x0, to = 0xff) short blue() {
-    return (short) (this.value() & 0xff);
+  @Override
+  default @IntRange(from = 0x0, to = 0xff) int blue() {
+    return this.value() & 0xff;
   }
 
   @Override

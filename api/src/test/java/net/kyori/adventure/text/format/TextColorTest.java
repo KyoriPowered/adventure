@@ -24,6 +24,8 @@
 package net.kyori.adventure.text.format;
 
 import com.google.common.testing.EqualsTester;
+import net.kyori.adventure.util.RGBLike;
+import org.checkerframework.common.value.qual.IntRange;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,6 +35,26 @@ class TextColorTest {
   @Test
   void testFromHexString() {
     assertEquals(TextColor.of(0xaa00aa), TextColor.fromHexString("#aa00aa"));
+  }
+
+  @Test
+  void testFromRGBLike() {
+    assertEquals(TextColor.of(0xaa00aa), TextColor.from(new RGBLike() {
+      @Override
+      public @IntRange(from = 0x0, to = 0xff) int red() {
+        return 0xaa;
+      }
+
+      @Override
+      public @IntRange(from = 0x0, to = 0xff) int green() {
+        return 0x00;
+      }
+
+      @Override
+      public @IntRange(from = 0x0, to = 0xff) int blue() {
+        return 0xaa;
+      }
+    }));
   }
 
   @Test
