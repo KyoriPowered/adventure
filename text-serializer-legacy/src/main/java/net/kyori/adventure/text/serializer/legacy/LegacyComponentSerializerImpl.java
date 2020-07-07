@@ -80,12 +80,46 @@ import org.checkerframework.checker.nullness.qual.Nullable;
     this.useTerriblyStupidHexFormat = useTerriblyStupidHexFormat;
   }
 
-  private @Nullable TextFormat fromLegacyCode(final char legacy, final String input, final int pos) {
-    if(legacy == this.hexCharacter && input.length() >= pos + 6) {
-      return TextColor.fromHexString('#' + input.substring(pos, pos + 6));
+  private @Nullable FormatCodeType determineFormatType(final char legacy, final String input, final int pos) {
+    if(pos >= 14) {
+      // The BungeeCord RGB color format uses a repeating sequence of RGB values, each character formatted
+      // as their own color format string, and to make things interesting, all the colors are also valid
+      // Mojang colors. To differentiate this, we do a lookback check for &x (or equivalent) for its position
+      // in the string if it is indeed a BungeeCord-style RGB color.
+      final int expectedCharacterPosition = pos - 14;
+      final int expectedIndicatorPosition = pos - 13;
+      if(input.charAt(expectedCharacterPosition) == this.character && input.charAt(expectedIndicatorPosition) == LEGACY_BUNGEE_HEX_CHAR) {
+        return FormatCodeType.BUNGEECORD_UNUSUAL_HEX;
+      }
     }
-    final int index = LEGACY_CHARS.indexOf(legacy);
-    return index == -1 ? null : FORMATS.get(index);
+    if(legacy == this.hexCharacter) {
+      return FormatCodeType.KYORI_HEX;
+    } else if(LEGACY_CHARS.indexOf(legacy) != -1) {
+      return FormatCodeType.MOJANG_LEGACY;
+    }
+    return null;
+  }
+
+  private @Nullable DecodedFormat decodeTextFormat(final char legacy, final String input, final int pos) {
+    final FormatCodeType foundFormat = this.determineFormatType(legacy, input, pos);
+    if(foundFormat == null) {
+      return null;
+    }
+    switch(foundFormat) {
+      case BUNGEECORD_UNUSUAL_HEX:
+        final StringBuilder foundHex = new StringBuilder();
+        for(int i = pos - 1; i >= pos - 11; i -= 2) {
+          foundHex.append(input.charAt(i));
+        }
+        foundHex.append('#');
+        return new DecodedFormat(foundFormat, TextColor.fromHexString(foundHex.reverse().toString()));
+      case KYORI_HEX:
+        return new DecodedFormat(foundFormat, TextColor.fromHexString('#' + input.substring(pos, pos + 6)));
+      case MOJANG_LEGACY:
+        return new DecodedFormat(foundFormat, FORMATS.get(LEGACY_CHARS.indexOf(legacy)));
+      default:
+        return null;
+    }
   }
 
   private static boolean isHexTextColor(final TextFormat format) {
@@ -135,9 +169,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
     int pos = input.length();
     do {
-      final TextFormat format = this.fromLegacyCode(input.charAt(next + 1), input, next + 2);
-      if(format != null) {
-        final int from = next + (isHexTextColor(format) ? 8 : 2);
+      final DecodedFormat decoded = this.decodeTextFormat(input.charAt(next + 1), input, next + 2);
+      if(decoded != null) {
+        final int from = next + (decoded.encodedFormat == FormatCodeType.KYORI_HEX ? 8 : 2);
         if(from != pos) {
           if(current != null) {
             if(reset) {
@@ -156,7 +190,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
           current = TextComponent.builder();
         }
 
-        reset |= applyFormat(current, format);
+        reset |= applyFormat(current, decoded.format);
+        if(decoded.encodedFormat == FormatCodeType.BUNGEECORD_UNUSUAL_HEX) {
+          // BungeeCord hex characters are a repeating set of characters, all of which are also valid
+          // legacy Mojang chat colors. Subtract the number of characters in the format, and only then
+          // skip ahead.
+          next -= 12;
+        }
         pos = next;
       }
 
@@ -167,8 +207,12 @@ import org.checkerframework.checker.nullness.qual.Nullable;
       parts.add(current.build());
     }
 
-    Collections.reverse(parts);
-    return this.extractUrl(TextComponent.builder(pos > 0 ? input.substring(0, pos) : "").append(parts).build());
+    if(parts.size() == 1) {
+      return this.extractUrl(parts.get(0));
+    } else {
+      Collections.reverse(parts);
+      return this.extractUrl(TextComponent.builder(pos > 0 ? input.substring(0, pos) : "").append(parts).build());
+    }
   }
 
   @Override
@@ -386,6 +430,25 @@ import org.checkerframework.checker.nullness.qual.Nullable;
     @Override
     public @NonNull LegacyComponentSerializer build() {
       return new LegacyComponentSerializerImpl(this.character, this.hexCharacter, this.urlStyle, this.urlLink, this.colorDownsample, this.useTerriblyStupidHexFormat);
+    }
+  }
+
+  /* package */ enum FormatCodeType {
+    MOJANG_LEGACY,
+    KYORI_HEX,
+    BUNGEECORD_UNUSUAL_HEX
+  }
+
+  /* package */ static final class DecodedFormat {
+    final FormatCodeType encodedFormat;
+    final TextFormat format;
+
+    private DecodedFormat(final FormatCodeType encodedFormat, final TextFormat format) {
+      if(format == null) {
+        throw new IllegalStateException("No format found");
+      }
+      this.encodedFormat = encodedFormat;
+      this.format = format;
     }
   }
 }
