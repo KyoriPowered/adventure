@@ -31,12 +31,10 @@ import java.util.function.BiPredicate;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Listenable;
-import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -180,28 +178,6 @@ import static java.util.Objects.requireNonNull;
   public @NonNull BossBar removeListener(final @NonNull Listener listener) {
     this.removeListener0(listener);
     return this;
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(other == null || this.getClass() != other.getClass()) return false;
-    final BossBarImpl that = (BossBarImpl) other;
-    return this.name.equals(that.name)
-      && ShadyPines.equals(this.percent, that.percent)
-      && this.color == that.color
-      && this.overlay == that.overlay
-      && this.flags.equals(that.flags);
-  }
-
-  @Override
-  public int hashCode() {
-    int result = this.name.hashCode();
-    result = (31 * result) + Float.hashCode(this.percent);
-    result = (31 * result) + this.color.hashCode();
-    result = (31 * result) + this.overlay.hashCode();
-    result = (31 * result) + this.flags.hashCode();
-    return result;
   }
 
   @Override
