@@ -88,7 +88,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
       // in the string if it is indeed a BungeeCord-style RGB color.
       final int expectedCharacterPosition = pos - 14;
       final int expectedIndicatorPosition = pos - 13;
-      if(input.charAt(expectedCharacterPosition) == character && input.charAt(expectedIndicatorPosition) == LEGACY_BUNGEE_HEX_CHAR) {
+      if(input.charAt(expectedCharacterPosition) == this.character && input.charAt(expectedIndicatorPosition) == LEGACY_BUNGEE_HEX_CHAR) {
         return FormatCodeType.BUNGEECORD_UNUSUAL_HEX;
       }
     }
@@ -169,7 +169,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
     int pos = input.length();
     do {
-      final DecodedFormat decoded = decodeTextFormat(input.charAt(next + 1), input, next + 2);
+      final DecodedFormat decoded = this.decodeTextFormat(input.charAt(next + 1), input, next + 2);
       if(decoded != null) {
         final int from = next + (decoded.encodedFormat == FormatCodeType.KYORI_HEX ? 8 : 2);
         if(from != pos) {
@@ -208,10 +208,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
     }
 
     if(parts.size() == 1) {
-      return extractUrl(parts.get(0));
+      return this.extractUrl(parts.get(0));
     } else {
       Collections.reverse(parts);
-      return extractUrl(TextComponent.builder(pos > 0 ? input.substring(0, pos) : "").append(parts).build());
+      return this.extractUrl(TextComponent.builder(pos > 0 ? input.substring(0, pos) : "").append(parts).build());
     }
   }
 
@@ -433,13 +433,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
     }
   }
 
-  enum FormatCodeType {
+  /* package */ enum FormatCodeType {
     MOJANG_LEGACY,
     KYORI_HEX,
     BUNGEECORD_UNUSUAL_HEX
   }
 
-  static final class DecodedFormat {
+  /* package */ static final class DecodedFormat {
     final FormatCodeType encodedFormat;
     final TextFormat format;
 
