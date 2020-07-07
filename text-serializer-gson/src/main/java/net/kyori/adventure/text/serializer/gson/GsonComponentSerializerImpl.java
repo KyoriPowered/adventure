@@ -35,21 +35,24 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import static java.util.Objects.requireNonNull;
 
 /* package */ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
-  /* package */ static final GsonComponentSerializer INSTANCE = new GsonComponentSerializerImpl(false);
-  /* package */ static final GsonComponentSerializer DOWNSAMPLE_COLOR = new GsonComponentSerializerImpl(true);
+  /* package */ static final GsonComponentSerializer INSTANCE = new GsonComponentSerializerImpl(false, null, false);
+  /* package */ static final GsonComponentSerializer LEGACY_INSTANCE = new GsonComponentSerializerImpl(true, null, true);
 
   private final Gson serializer;
   private final UnaryOperator<GsonBuilder> populator;
   private final boolean downsampleColor;
 
-  GsonComponentSerializerImpl(final boolean downsampleColor) {
+  GsonComponentSerializerImpl(final boolean downsampleColor, final @Nullable LegacyHoverEventSerializer legacy, final boolean emitLegacy) {
     this.downsampleColor = downsampleColor;
     this.populator = builder -> {
       builder.registerTypeHierarchyAdapter(Key.class, KeySerializer.INSTANCE);
       builder.registerTypeHierarchyAdapter(Component.class, new ComponentSerializerImpl());
-      builder.registerTypeAdapter(Style.class, new StyleSerializer());
+      builder.registerTypeAdapter(Style.class, new StyleSerializer(legacy, emitLegacy));
       builder.registerTypeAdapter(ClickEvent.Action.class, IndexedSerializer.of("click action", ClickEvent.Action.NAMES));
       builder.registerTypeAdapter(HoverEvent.Action.class, IndexedSerializer.of("hover action", HoverEvent.Action.NAMES));
       builder.registerTypeAdapter(HoverEvent.ShowItem.class, new ShowItemSerializer());
@@ -89,8 +92,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
     return new BuilderImpl(this);
   }
 
-  static final class BuilderImpl implements Builder {
+  /* package */ static final class BuilderImpl implements Builder {
     private boolean downsampleColor = false;
+    private @Nullable LegacyHoverEventSerializer legacyHoverSerializer;
+    private boolean emitLegacyHover = false;
 
     BuilderImpl() {
     }
@@ -106,8 +111,24 @@ import org.checkerframework.checker.nullness.qual.NonNull;
     }
 
     @Override
+    public @NonNull Builder legacyHoverEventSerializer(final @NonNull LegacyHoverEventSerializer serializer) {
+      this.legacyHoverSerializer = requireNonNull(serializer, "serializer");
+      return this;
+    }
+
+    @Override
+    public @NonNull Builder emitLegacyHoverEvent() {
+      this.emitLegacyHover = true;
+      return this;
+    }
+
+    @Override
     public @NonNull GsonComponentSerializer build() {
-      return this.downsampleColor ? DOWNSAMPLE_COLOR : INSTANCE;
+      if(this.legacyHoverSerializer == null) {
+        return this.downsampleColor ? LEGACY_INSTANCE : INSTANCE;
+      } else {
+        return new GsonComponentSerializerImpl(this.downsampleColor, this.legacyHoverSerializer, this.emitLegacyHover);
+      }
     }
   }
 }

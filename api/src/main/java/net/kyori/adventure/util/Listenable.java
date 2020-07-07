@@ -23,11 +23,10 @@
  */
 package net.kyori.adventure.util;
 
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Something that has listeners.
@@ -35,7 +34,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @param <L> the listener type
  */
 public abstract class Listenable<L> {
-  private @Nullable Queue<L> listeners = null;
+  private final List<L> listeners = new CopyOnWriteArrayList<>();
 
   /**
    * Process an action for each listener.
@@ -43,11 +42,8 @@ public abstract class Listenable<L> {
    * @param consumer the consumer
    */
   protected final void forEachListener(final @NonNull Consumer<L> consumer) {
-    final Queue<L> listeners = this.listeners;
-    if(listeners != null) {
-      for(final L listener : listeners) {
-        consumer.accept(listener);
-      }
+    for(final L listener : this.listeners) {
+      consumer.accept(listener);
     }
   }
 
@@ -57,9 +53,6 @@ public abstract class Listenable<L> {
    * @param listener the listener
    */
   protected final void addListener0(final @NonNull L listener) {
-    if(this.listeners == null) {
-      this.listeners = new ConcurrentLinkedQueue<>();
-    }
     this.listeners.add(listener);
   }
 
@@ -69,11 +62,6 @@ public abstract class Listenable<L> {
    * @param listener the listener
    */
   protected final void removeListener0(final @NonNull L listener) {
-    if(this.listeners != null) {
-      this.listeners.remove(listener);
-      if(this.listeners.isEmpty()) {
-        this.listeners = null;
-      }
-    }
+    this.listeners.remove(listener);
   }
 }

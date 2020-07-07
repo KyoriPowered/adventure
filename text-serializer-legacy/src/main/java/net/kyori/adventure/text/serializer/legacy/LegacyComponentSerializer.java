@@ -82,7 +82,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
   /**
    * The legacy character used by Minecraft. ('§')
    */
-  char SECTION_CHAR = '\u00A7';
+  char SECTION_CHAR = '§';
 
   /**
    * The legacy character frequently used by configurations and commands. ('&amp;')

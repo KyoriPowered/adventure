@@ -73,7 +73,7 @@ class GsonComponentSerializerTest {
     assertEquals("{\"text\":\"hey\",\"extra\":[{\"text\":\"there\",\"color\":\"" + name(downsampled) + "\"}]}", AbstractComponentTest.GSON_DOWNSAMPLING.toJson(test));
   }
 
-  private static String name(NamedTextColor color) {
+  private static String name(final NamedTextColor color) {
     return NamedTextColor.NAMES.key(color);
   }
 }

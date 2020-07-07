@@ -213,7 +213,7 @@ public interface Component {
    * @param color the color
    * @return this builder
    */
-  default  @NonNull Component colorIfAbsent(final @Nullable TextColor color) {
+  default @NonNull Component colorIfAbsent(final @Nullable TextColor color) {
     if(this.color() == null) return this.color(color);
     return this;
   }

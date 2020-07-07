@@ -37,7 +37,7 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-final class PaginationImpl<T> implements Examinable, Pagination<T> {
+/* package */ final class PaginationImpl<T> implements Examinable, Pagination<T> {
   private static final int LINE_CHARACTER_LENGTH = 1;
 
   private final int width;
@@ -147,7 +147,7 @@ final class PaginationImpl<T> implements Examinable, Pagination<T> {
     return TextComponent.of(repeat(String.valueOf(this.lineCharacter), characters), this.lineStyle);
   }
 
-  static int length(final @NonNull Component component) {
+  /* package */ static int length(final @NonNull Component component) {
     int length = 0;
     if(component instanceof TextComponent) {
       length += ((TextComponent) component).content().length();
@@ -158,11 +158,11 @@ final class PaginationImpl<T> implements Examinable, Pagination<T> {
     return length;
   }
 
-  static @NonNull String repeat(final @NonNull String character, final int count) {
+  /* package */ static @NonNull String repeat(final @NonNull String character, final int count) {
     return String.join("", Collections.nCopies(count, character));
   }
 
-  static int pages(final int pageSize, final int count) {
+  /* package */ static int pages(final int pageSize, final int count) {
     final int pages = count / pageSize + 1;
     if(count % pageSize == 0) {
       return pages - 1;
@@ -170,7 +170,7 @@ final class PaginationImpl<T> implements Examinable, Pagination<T> {
     return pages;
   }
 
-  static boolean pageInRange(final int page, final int pages) {
+  /* package */ static boolean pageInRange(final int page, final int pages) {
     return page > 0 && page <= pages;
   }
 

@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.format;
 
+import net.kyori.adventure.util.RGBLike;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.common.value.qual.IntRange;
@@ -30,7 +31,7 @@ import org.checkerframework.common.value.qual.IntRange;
 /**
  * A color which may be applied to a {@link Style}.
  */
-public interface TextColor extends Comparable<TextColor>, TextFormat {
+public interface TextColor extends Comparable<TextColor>, RGBLike, TextFormat {
   /**
    * Creates a new text colour.
    *
@@ -40,6 +41,16 @@ public interface TextColor extends Comparable<TextColor>, TextFormat {
   static @NonNull TextColor of(final int value) {
     final NamedTextColor named = NamedTextColor.ofExact(value);
     return named != null ? named : new TextColorImpl(value);
+  }
+
+  /**
+   * Creates a new text colour.
+   *
+   * @param rgb the rgb value
+   * @return a new text colour
+   */
+  static @NonNull TextColor from(final RGBLike rgb) {
+    return of(rgb.red(), rgb.green(), rgb.blue());
   }
 
   /**
@@ -85,6 +96,37 @@ public interface TextColor extends Comparable<TextColor>, TextFormat {
   }
 
   /**
+   * Create a color from a CSS hex string ({@code #rrggbb} or {@code #rgb}).
+   *
+   * @param string the hex string
+   * @return a new text colour
+   */
+  static @Nullable TextColor fromCSSHexString(final @NonNull String string) {
+    if(string.startsWith("#")) {
+      final String hexString = string.substring(1);
+      if(hexString.length() != 3 && hexString.length() != 6) {
+        return null;
+      }
+      final int hex;
+      try {
+        hex = Integer.parseInt(hexString, 16);
+      } catch(final NumberFormatException e) {
+        return null;
+      }
+
+      if(hexString.length() == 6) {
+        return of(hex);
+      } else {
+        final int red = (hex & 0xf00) >> 8 | (hex & 0xf00) >> 4;
+        final int green = (hex & 0x0f0) >> 4 | (hex & 0x0f0);
+        final int blue = (hex & 0x00f) << 4 | (hex & 0x00f);
+        return of(red, green, blue);
+      }
+    }
+    return null;
+  }
+
+  /**
    * The color, as an RGB value packed into an int
    *
    * @return the value
@@ -105,8 +147,9 @@ public interface TextColor extends Comparable<TextColor>, TextFormat {
    *
    * @return the red component, in the range [0x0, 0xff]
    */
-  default @IntRange(from = 0x0, to = 0xff) short red() {
-    return (short) ((this.value() >> 16) & 0xff);
+  @Override
+  default @IntRange(from = 0x0, to = 0xff) int red() {
+    return (this.value() >> 16) & 0xff;
   }
 
   /**
@@ -114,8 +157,9 @@ public interface TextColor extends Comparable<TextColor>, TextFormat {
    *
    * @return the green component, in the range [0x0, 0xff]
    */
-  default @IntRange(from = 0x0, to = 0xff) short green() {
-    return (short) ((this.value() >> 8) & 0xff);
+  @Override
+  default @IntRange(from = 0x0, to = 0xff) int green() {
+    return (this.value() >> 8) & 0xff;
   }
 
   /**
@@ -123,8 +167,9 @@ public interface TextColor extends Comparable<TextColor>, TextFormat {
    *
    * @return the blue component, in the range [0x0, 0xff]
    */
-  default @IntRange(from = 0x0, to = 0xff) short blue() {
-    return (short) (this.value() & 0xff);
+  @Override
+  default @IntRange(from = 0x0, to = 0xff) int blue() {
+    return this.value() & 0xff;
   }
 
   @Override

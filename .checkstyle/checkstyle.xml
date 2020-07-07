@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE module PUBLIC
+  "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+  "https://checkstyle.org/dtds/configuration_1_3.dtd">
+<module name="Checker">
+  <property name="charset" value="UTF-8"/>
+  <property name="severity" value="error"/>
+  <property name="fileExtensions" value="java, properties, xml"/>
+  <!-- Excludes all 'module-info.java' files -->
+  <!-- See https://checkstyle.org/config_filefilters.html -->
+  <module name="BeforeExecutionExclusionFileFilter">
+    <property name="fileNamePattern" value="module\-info\.java$"/>
+  </module>
+  <!-- https://checkstyle.org/config_filters.html#SuppressionFilter -->
+  <module name="SuppressionFilter">
+    <property name="file" value="${basedir}/suppressions.xml"
+              default=".checkstyle/suppressions.xm" />
+    <property name="optional" value="true"/>
+  </module>
+
+  <!-- allow // CHECKSTYLE:OFF and // CHECKSTYLE:ON comments -->
+  <module name="SuppressWithPlainTextCommentFilter"/>
+
+  <!-- Checks for whitespace -->
+  <!-- See http://checkstyle.org/config_whitespace.html -->
+  <module name="FileTabCharacter">
+    <property name="eachLine" value="true"/>
+  </module>
+  <module name="NewlineAtEndOfFile"/>
+
+  <module name="TreeWalker">
+    <!-- no space between parameters and parenthesis -->
+    <module name="EmptyForInitializerPad"/>
+    <module name="EmptyForIteratorPad"/>
+
+    <module name="StatementNoWhitespaceAfter">
+      <property name="tokens" value="LITERAL_IF, LITERAL_FOR, LITERAL_WHILE, LITERAL_CATCH, LITERAL_TRY"/>
+    </module>
+
+    <!-- one empty line between each class element -->
+    <module name="EmptyLineSeparator">
+      <!-- No new line after the license header -->
+      <property name="tokens"
+                value="IMPORT, STATIC_IMPORT, CLASS_DEF, INTERFACE_DEF, ENUM_DEF,
+                    STATIC_INIT, INSTANCE_INIT, METHOD_DEF, CTOR_DEF, VARIABLE_DEF"/>
+      <property name="allowNoEmptyLineBetweenFields" value="true"/>
+      <property name="allowMultipleEmptyLines" value="false"/>
+      <property name="allowMultipleEmptyLinesInsideClassMembers" value="false"/>
+    </module>
+    <module name="GenericWhitespace"/>
+    <!-- packages and imports must be on one line each -->
+    <module name="NoLineWrap"/>
+    <module name="NoWhitespaceAfter">
+      <property name="allowLineBreaks" value="false"/>
+    </module>
+    <module name="SingleSpaceSeparator">
+      <property name="validateComments" value="true"/>
+    </module>
+    <module name="TypecastParenPad"/>
+    <module name="UnnecessaryParentheses"/>
+
+    <!-- field and method access qualified with `this` -->
+
+    <module name="FinalLocalVariable">
+      <property name="validateEnhancedForLoopVariable" value="true"/>
+      <property name="tokens" value="VARIABLE_DEF, PARAMETER_DEF"/>
+    </module>
+    <module name="RequireThis">
+      <property name="validateOnlyOverlapping" value="false"/>
+    </module>
+
+    <!-- coding practices -->
+    <module name="RedundantImport"/>
+    <module name="RedundantModifier">
+      <!-- Take out METHOD_DEF and RESOURCE so we can have finals -->
+      <property name="tokens"
+                value="VARIABLE_DEF, ANNOTATION_FIELD_DEF, INTERFACE_DEF, CTOR_DEF, CLASS_DEF, ENUM_DEF"/>
+    </module>
+    <module name="UnusedImports"/>
+    <module name="HideUtilityClassConstructor"/>
+    <module name="FinalClass"/>
+    <!-- explicit visibility modifier, as first modifier -->
+    <module name="RequireExplicitVisibilityModifier">
+      <property name="anchoredToBeginning" value="true"/>
+      <property name="checkedElementTypes" value="CLASS, METHOD"/>
+    </module>
+
+    <!-- no local variable type annotations -->
+    <module name="NoLvTypeAnnotations"/>
+
+    <!-- braces and parentheses on block statements on same line -->
+    <module name="LeftCurly"/>
+    <module name="RightCurly">
+      <property name="id" value="RightCurlySame"/>
+      <property name="tokens"
+            value="LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE,
+                LITERAL_DO"/>
+    </module>
+    <module name="RightCurly">
+      <property name="id" value="RightCurlyAlone"/>
+      <property name="option" value="alone"/>
+      <property name="tokens"
+            value="CLASS_DEF, METHOD_DEF, CTOR_DEF, LITERAL_FOR, LITERAL_WHILE, STATIC_INIT,
+                INSTANCE_INIT, ANNOTATION_DEF, ENUM_DEF"/>
+    </module>
+
+    <!-- 2 space indentation -->
+    <module name="Indentation">
+      <property name="basicOffset" value="2"/>
+      <property name="braceAdjustment" value="0"/>
+      <property name="caseIndent" value="2"/>
+      <property name="throwsIndent" value="2"/>
+      <property name="lineWrappingIndentation" value="0"/>
+      <property name="arrayInitIndent" value="2"/>
+    </module>
+    <module name="CommentsIndentation"/>
+
+    <!-- some generally unwanted imports -->
+    <module name="IllegalImport">
+      <property name="illegalPkgs" value="sun, jdk, com.sun"/>
+    </module>
+
+    <!-- no get* or set* method names -->
+    <module name="MethodName">
+      <property name="format" value="^(?:(?:.{1,3})|(?:[gs]et[^A-Z].*)|(?:(?:[^gsA-Z]..|.[^e].|..[^t]).+))$"/>
+    </module>
+
+    <!-- misc formatting based on Google style -->
+    <!-- match filenames, don't use unicode escapes, no star imports -->
+    <module name="OuterTypeFilename"/>
+    <module name="IllegalTokenText">
+      <property name="tokens" value="STRING_LITERAL, CHAR_LITERAL"/>
+      <property name="format"
+                value="\\u00(09|0(a|A)|0(c|C)|0(d|D)|22|27|5(C|c))|\\(0(10|11|12|14|15|42|47)|134)"/>
+      <property name="message"
+                value="Consider using special escape sequence instead of octal value or Unicode escaped value."/>
+    </module>
+    <module name="AvoidEscapedUnicodeCharacters">
+      <property name="allowEscapesForControlCharacters" value="true"/>
+      <property name="allowByTailComment" value="true"/>
+      <property name="allowNonPrintableEscapes" value="true"/>
+    </module>
+    <module name="AvoidStarImport"/>
+    <module name="OneStatementPerLine"/>
+    <module name="MultipleVariableDeclarations"/>
+    <module name="ArrayTypeStyle"/>
+    <module name="FallThrough"/>
+    <module name="NoFinalizer"/>
+    <module name="MethodParamPad">
+      <property name="tokens"
+                value="CTOR_DEF, LITERAL_NEW, METHOD_CALL, METHOD_DEF,
+                    SUPER_CTOR_CALL, ENUM_CONSTANT_DEF"/>
+    </module>
+    <module name="NoWhitespaceBefore">
+      <property name="tokens"
+                value="COMMA, SEMI, POST_INC, POST_DEC, DOT,
+                    LABELED_STAT, METHOD_REF"/>
+      <property name="allowLineBreaks" value="true"/>
+    </module>
+  </module>
+</module>

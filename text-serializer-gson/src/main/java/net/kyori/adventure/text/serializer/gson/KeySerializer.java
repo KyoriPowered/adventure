@@ -37,7 +37,7 @@ import net.kyori.adventure.key.Key;
   
   @Override
   public void write(final JsonWriter out, final Key value) throws IOException {
-      out.value(value.asString());
+    out.value(value.asString());
   }
 
   @Override

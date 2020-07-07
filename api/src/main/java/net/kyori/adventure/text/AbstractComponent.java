@@ -48,7 +48,7 @@ public abstract class AbstractComponent implements Component, Examinable {
    * We do not need to create a new list if the one we are copying is empty - we can
    * simply just return our known-empty list instead.
    */
-  static List<Component> unmodifiableCopy(final List<? extends Component> list) {
+  /* package */ static List<Component> unmodifiableCopy(final List<? extends Component> list) {
     return list.isEmpty()
       ? EMPTY_COMPONENT_LIST
       : Collections.unmodifiableList(new ArrayList<>(list));

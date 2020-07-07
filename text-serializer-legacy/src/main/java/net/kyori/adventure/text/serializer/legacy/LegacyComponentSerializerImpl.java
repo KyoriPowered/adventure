@@ -41,12 +41,13 @@ import net.kyori.adventure.text.format.TextFormat;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
+/* package */ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   private static final Pattern URL_PATTERN = Pattern.compile("(?:(https?)://)?([-\\w_.]+\\.\\w{2,})(/\\S*)?");
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
   private static final String LEGACY_CHARS = "0123456789abcdefklmnor";
   private static final char LEGACY_BUNGEE_HEX_CHAR = 'x';
   private static final List<TextFormat> FORMATS;
+
   static {
     final List<TextFormat> formats = new ArrayList<>();
     formats.addAll(NamedTextColor.values());
@@ -135,7 +136,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         if(this.useTerriblyStupidHexFormat) {
           // ah yes, wonderful. A 14 digit long completely unreadable string.
           final StringBuilder legacy = new StringBuilder(String.valueOf(LEGACY_BUNGEE_HEX_CHAR));
-          for(char c : hex.toCharArray()) {
+          for(final char c : hex.toCharArray()) {
             legacy.append(this.character).append(c);
           }
           return legacy.toString();
@@ -158,7 +159,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   public @NonNull TextComponent deserialize(final @NonNull String input) {
     int next = input.lastIndexOf(this.character, input.length() - 2);
     if(next == -1) {
-      return extractUrl(TextComponent.of(input));
+      return this.extractUrl(TextComponent.of(input));
     }
 
     final List<TextComponent> parts = new ArrayList<>();
@@ -258,7 +259,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       this.character = character;
     }
 
-    void append(final @NonNull Component component) {
+    /* package */ void append(final @NonNull Component component) {
       this.append(component, new Style());
     }
 
@@ -283,8 +284,8 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       }
     }
 
-    void append(final @NonNull TextFormat format) {
-      this.sb.append(this.character).append(toLegacyCode(format));
+    /* package */ void append(final @NonNull TextFormat format) {
+      this.sb.append(this.character).append(LegacyComponentSerializerImpl.this.toLegacyCode(format));
     }
 
     @Override
@@ -305,13 +306,13 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         this.decorations = EnumSet.copyOf(that.decorations);
       }
 
-      void set(final @NonNull Style that) {
+      /* package */ void set(final @NonNull Style that) {
         this.color = that.color;
         this.decorations.clear();
         this.decorations.addAll(that.decorations);
       }
 
-      void apply(final @NonNull Component component) {
+      /* package */ void apply(final @NonNull Component component) {
         final TextColor color = component.color();
         if(color != null) {
           this.color = color;
@@ -330,7 +331,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         }
       }
 
-      void applyFormat() {
+      /* package */ void applyFormat() {
         // If color changes, we need to do a full reset
         if(this.color != Cereal.this.style.color) {
           this.applyFullFormat();
@@ -370,7 +371,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
   }
 
-  static final class BuilderImpl implements Builder {
+  /* package */ static final class BuilderImpl implements Builder {
     private char character = LegacyComponentSerializer.SECTION_CHAR;
     private char hexCharacter = LegacyComponentSerializer.HEX_CHAR;
     private Style urlStyle = null;

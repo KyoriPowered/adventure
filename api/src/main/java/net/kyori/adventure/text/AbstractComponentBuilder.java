@@ -43,7 +43,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @param <C> the component type
  * @param <B> the builder type
  */
-abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> implements ComponentBuilder<C, B> {
+/* package */ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> implements ComponentBuilder<C, B> {
   /**
    * The list of children.
    *
@@ -148,7 +148,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NonNull B mapChildren(final @NonNull Function<BuildableComponent<? ,?>, ? extends BuildableComponent<? ,?>> function) {
+  public @NonNull B mapChildren(final @NonNull Function<BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function) {
     if(this.children == AbstractComponent.EMPTY_COMPONENT_LIST) {
       return (B) this;
     }
@@ -169,7 +169,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NonNull B mapChildrenDeep(final @NonNull Function<BuildableComponent<? ,?>, ? extends BuildableComponent<? ,?>> function) {
+  public @NonNull B mapChildrenDeep(final @NonNull Function<BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function) {
     if(this.children == AbstractComponent.EMPTY_COMPONENT_LIST) {
       return (B) this;
     }

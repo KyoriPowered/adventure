@@ -38,7 +38,7 @@ class AudienceTest {
   @Test
   void testOf_one() {
     final Audience a0 = Audience.empty();
-    assertSame(a0,  Audience.of(a0));
+    assertSame(a0, Audience.of(a0));
   }
 
   @Test
@@ -46,14 +46,7 @@ class AudienceTest {
     final Audience a0 = Audience.empty();
     final Audience a1 = Audience.empty();
     final Audience ma = Audience.of(a0, a1);
-    assertTrue(ma instanceof MultiAudience);
-    assertThat(((MultiAudience) ma).audiences()).containsExactly(a0, a1).inOrder();
-  }
-
-  @Test
-  void testWeakOf_none() {
-    final Audience empty = Audience.empty();
-    final Audience weak = Audience.weakOf(empty);
-    assertSame(empty, weak);
+    assertTrue(ma instanceof ForwardingAudience);
+    assertThat(((ForwardingAudience) ma).audiences()).containsExactly(a0, a1).inOrder();
   }
 }
