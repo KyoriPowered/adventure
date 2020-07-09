@@ -36,7 +36,7 @@ import static java.util.Objects.requireNonNull;
 /* package */ final class SelectorComponentImpl extends AbstractComponent implements SelectorComponent {
   private final String pattern;
 
-  SelectorComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String pattern) {
+  SelectorComponentImpl(final @NonNull List<? extends ComponentLike> children, final @NonNull Style style, final @NonNull String pattern) {
     super(children, style);
     this.pattern = pattern;
   }
@@ -53,7 +53,7 @@ import static java.util.Objects.requireNonNull;
   }
 
   @Override
-  public @NonNull SelectorComponent children(final @NonNull List<Component> children) {
+  public @NonNull SelectorComponent children(final @NonNull List<? extends ComponentLike> children) {
     return new SelectorComponentImpl(children, this.style, this.pattern);
   }
 

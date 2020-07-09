@@ -46,12 +46,12 @@ import static java.util.Objects.requireNonNull;
   /* package */ static final TextComponent SPACE = createDirect(" ");
 
   private static @NonNull TextComponent createDirect(final @NonNull String content) {
-    return new TextComponentImpl(EMPTY_COMPONENT_LIST, Style.empty(), content);
+    return new TextComponentImpl(Collections.emptyList(), Style.empty(), content);
   }
 
   private final String content;
 
-  TextComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String content) {
+  TextComponentImpl(final @NonNull List<? extends ComponentLike> children, final @NonNull Style style, final @NonNull String content) {
     super(children, style);
     this.content = content;
   }
@@ -121,7 +121,7 @@ import static java.util.Objects.requireNonNull;
   }
 
   @Override
-  public @NonNull TextComponent children(final @NonNull List<Component> children) {
+  public @NonNull TextComponent children(final @NonNull List<? extends ComponentLike> children) {
     return new TextComponentImpl(children, this.style, this.content);
   }
 

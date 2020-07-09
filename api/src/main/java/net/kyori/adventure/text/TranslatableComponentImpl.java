@@ -40,14 +40,14 @@ import static java.util.Objects.requireNonNull;
   private final String key;
   private final List<Component> args;
 
-  TranslatableComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String key, final @NonNull Component@NonNull[] args) {
+  TranslatableComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String key, final @NonNull ComponentLike@NonNull[] args) {
     this(children, style, key, Arrays.asList(args));
   }
 
-  TranslatableComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final @NonNull String key, final @NonNull List<? extends Component> args) {
+  TranslatableComponentImpl(final @NonNull List<? extends ComponentLike> children, final @NonNull Style style, final @NonNull String key, final @NonNull List<? extends ComponentLike> args) {
     super(children, style);
     this.key = key;
-    this.args = unmodifiableCopy(args);
+    this.args = AbstractComponent.asComponents(args);
   }
 
   @Override
@@ -67,17 +67,17 @@ import static java.util.Objects.requireNonNull;
   }
 
   @Override
-  public @NonNull TranslatableComponent args(final @NonNull Component@NonNull... args) {
+  public @NonNull TranslatableComponent args(final @NonNull ComponentLike@NonNull... args) {
     return new TranslatableComponentImpl(this.children, this.style, this.key, args);
   }
 
   @Override
-  public @NonNull TranslatableComponent args(final @NonNull List<? extends Component> args) {
+  public @NonNull TranslatableComponent args(final @NonNull List<? extends ComponentLike> args) {
     return new TranslatableComponentImpl(this.children, this.style, this.key, args);
   }
 
   @Override
-  public @NonNull TranslatableComponent children(final @NonNull List<Component> children) {
+  public @NonNull TranslatableComponent children(final @NonNull List<? extends ComponentLike> children) {
     return new TranslatableComponentImpl(children, this.style, this.key, this.args);
   }
 
@@ -122,7 +122,7 @@ import static java.util.Objects.requireNonNull;
 
   /* package */ static final class BuilderImpl extends AbstractComponentBuilder<TranslatableComponent, Builder> implements TranslatableComponent.Builder {
     private @Nullable String key;
-    private List<? extends Component> args = EMPTY_COMPONENT_LIST;
+    private List<? extends Component> args = Collections.emptyList();
 
     BuilderImpl() {
     }
@@ -146,7 +146,7 @@ import static java.util.Objects.requireNonNull;
 
     @Override
     public @NonNull Builder args(final @NonNull ComponentBuilder<?, ?>... args) {
-      if(args.length == 0) return this.args(EMPTY_COMPONENT_LIST);
+      if(args.length == 0) return this.args(Collections.emptyList());
       return this.args(Stream.of(args).map(ComponentBuilder::build).collect(Collectors.toList()));
     }
 
@@ -157,7 +157,7 @@ import static java.util.Objects.requireNonNull;
 
     @Override
     public @NonNull Builder args(final @NonNull Component... args) {
-      if(args.length == 0) return this.args(EMPTY_COMPONENT_LIST);
+      if(args.length == 0) return this.args(Collections.emptyList());
       return this.args(Arrays.asList(args));
     }
 

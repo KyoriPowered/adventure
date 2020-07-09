@@ -37,7 +37,7 @@ import static java.util.Objects.requireNonNull;
 /* package */ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, BlockNBTComponent.Builder> implements BlockNBTComponent {
   private final Pos pos;
 
-  BlockNBTComponentImpl(final @NonNull List<Component> children, final @NonNull Style style, final String nbtPath, final boolean interpret, final @NonNull Pos pos) {
+  BlockNBTComponentImpl(final @NonNull List<? extends ComponentLike> children, final @NonNull Style style, final String nbtPath, final boolean interpret, final @NonNull Pos pos) {
     super(children, style, nbtPath, interpret);
     this.pos = pos;
   }
@@ -65,7 +65,7 @@ import static java.util.Objects.requireNonNull;
   }
 
   @Override
-  public @NonNull BlockNBTComponent children(final @NonNull List<Component> children) {
+  public @NonNull BlockNBTComponent children(final @NonNull List<? extends ComponentLike> children) {
     return new BlockNBTComponentImpl(children, this.style, this.nbtPath, this.interpret, this.pos);
   }
 
