@@ -1,18 +1,16 @@
 rootProject.name = 'adventure-parent'
 
-include 'api'
-findProject(':api')?.name = 'adventure-api'
+['api', 'nbt'].each {
+  include "$it"
+  findProject(":$it")?.name = "adventure-$it"
+}
 
-include 'nbt'
-findProject(':nbt')?.name = 'adventure-nbt'
-include 'text-feature-pagination'
-findProject(':text-feature-pagination')?.name = 'adventure-text-feature-pagination'
+['plain', 'legacy', 'gson'].each {
+  include "text-serializer-$it"
+  findProject(":text-serializer$it")?.name = "adventure-text-serializer-$it"
+}
 
-include 'text-serializer-gson'
-findProject(':text-serializer-gson')?.name = 'adventure-text-serializer-gson'
-
-include 'text-serializer-legacy'
-findProject(':text-serializer-legacy')?.name = 'adventure-text-serializer-legacy'
-
-include 'text-serializer-plain'
-findProject(':text-serializer-plain')?.name = 'adventure-text-serializer-plain'
+['pagination'].each {
+  include "text-feature-$it"
+  findProject(":text-feature-$it")?.name = "adventure-text-feature-$it"
+}
