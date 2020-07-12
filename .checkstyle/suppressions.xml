@@ -4,6 +4,6 @@
   "http://checkstyle.org/dtds/suppressions_1_2.dtd">
 <suppressions>
   <!-- add any necessary suppressions here -->
-  <suppress files="src/test/java/.*" checks="RequireExplicitVisibilityModifier"/>
-  <suppress files=".*/nbt/(List|Compound)BinaryTag.java" checks="MethodName"/>
+  <suppress files="src[\\/]test[\\/]java[\\/].*" checks="RequireExplicitVisibilityModifier"/>
+  <suppress files=".*[\\/]nbt[\\/](List|Compound)BinaryTag.java" checks="MethodName"/>
 </suppressions>
