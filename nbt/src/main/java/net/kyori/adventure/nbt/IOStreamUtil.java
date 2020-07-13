@@ -29,7 +29,6 @@ import java.io.OutputStream;
 
 /* package */ final class IOStreamUtil {
   private IOStreamUtil() {
-    throw new AssertionError();
   }
 
   /* package */ static InputStream closeShield(final InputStream stream) {
