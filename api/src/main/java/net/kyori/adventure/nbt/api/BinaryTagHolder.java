@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.nbt.api;
 
-import java.io.IOException;
 import net.kyori.adventure.util.Codec;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -44,10 +43,11 @@ public interface BinaryTagHolder {
    * @param nbt the binary tag
    * @param codec the codec
    * @param <T> the binary tag type
+   * @param <EX> encode exception type
    * @return the encoded binary tag holder
-   * @throws IOException if an error occurred while encoding the binary tag
+   * @throws EX if an error occurred while encoding the binary tag
    */
-  static <T> @NonNull BinaryTagHolder encode(final @NonNull T nbt, final @NonNull Codec<? super T, String, ? extends IOException, ? extends IOException> codec) throws IOException {
+  static <T, EX extends Exception> @NonNull BinaryTagHolder encode(final @NonNull T nbt, final @NonNull Codec<? super T, String, ?, EX> codec) throws EX {
     return new BinaryTagHolderImpl(codec.encode(nbt));
   }
 
@@ -73,10 +73,11 @@ public interface BinaryTagHolder {
    *
    * @param codec the codec
    * @param <T> the binary tag type
+   * @param <DX> decode thrown exception type
    * @return the binary tag
-   * @throws IOException if an error occurred while retrieving the binary tag
+   * @throws DX if an error occurred while retrieving the binary tag
    */
-  <T> @NonNull T get(final @NonNull Codec<T, String, IOException, IOException> codec) throws IOException;
+  <T, DX extends Exception> @NonNull T get(final @NonNull Codec<T, String, DX, ?> codec) throws DX;
 }
 
 /* package */ final class BinaryTagHolderImpl implements BinaryTagHolder {
@@ -92,7 +93,7 @@ public interface BinaryTagHolder {
   }
 
   @Override
-  public <T> @NonNull T get(final @NonNull Codec<T, String, IOException, IOException> codec) throws IOException {
+  public <T, DX extends Exception> @NonNull T get(final @NonNull Codec<T, String, DX, ?> codec) throws DX {
     return codec.decode(this.string);
   }
 }
