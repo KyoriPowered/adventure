@@ -24,29 +24,22 @@
 package net.kyori.adventure.sound;
 
 import java.util.stream.Stream;
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-/* package */ final class SoundImpl implements Examinable, Sound {
-  private final Key name;
+/* package */ abstract class SoundImpl implements Examinable, Sound {
   private final Source source;
   private final float volume;
   private final float pitch;
 
-  /* package */ SoundImpl(final @NonNull Key name, final @NonNull Source source, final float volume, final float pitch) {
-    this.name = name;
+  /* package */ SoundImpl(final @NonNull Source source, final float volume, final float pitch) {
     this.source = source;
     this.volume = volume;
     this.pitch = pitch;
-  }
-
-  @Override
-  public @NonNull Key name() {
-    return this.name;
   }
 
   @Override
@@ -69,7 +62,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
     if(this == other) return true;
     if(other == null || this.getClass() != other.getClass()) return false;
     final SoundImpl that = (SoundImpl) other;
-    return this.name.equals(that.name)
+    return this.name().equals(that.name())
       && this.source == that.source
       && ShadyPines.equals(this.volume, that.volume)
       && ShadyPines.equals(this.pitch, that.pitch);
@@ -77,7 +70,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
   @Override
   public int hashCode() {
-    int result = this.name.hashCode();
+    int result = this.name().hashCode();
     result = (31 * result) + this.source.hashCode();
     result = (31 * result) + Float.hashCode(this.volume);
     result = (31 * result) + Float.hashCode(this.pitch);
@@ -87,10 +80,15 @@ import org.checkerframework.checker.nullness.qual.Nullable;
   @Override
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
-      ExaminableProperty.of("name", this.name),
+      ExaminableProperty.of("name", this.name()),
       ExaminableProperty.of("source", this.source),
       ExaminableProperty.of("volume", this.volume),
       ExaminableProperty.of("pitch", this.pitch)
     );
+  }
+
+  @Override
+  public String toString() {
+    return this.examine(StringExaminer.simpleEscaping());
   }
 }

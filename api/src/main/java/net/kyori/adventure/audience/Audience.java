@@ -127,6 +127,18 @@ public interface Audience {
    * @since 4.0.0
    */
   default void sendMessage(final @NonNull Component message) {
+    this.sendMessage(message, MessageType.SYSTEM);
+  }
+
+  /**
+   * Sends a chat message.
+   *
+   * @param message a message
+   * @param type the type
+   * @see Component
+   * @since 4.0.0
+   */
+  default void sendMessage(final @NonNull Component message, final @NonNull MessageType type) {
   }
 
   /**

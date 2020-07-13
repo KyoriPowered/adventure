@@ -71,12 +71,12 @@ public abstract class AbstractComponent implements Component, Examinable {
   }
 
   @Override
-  public @NonNull List<Component> children() {
+  public final @NonNull List<Component> children() {
     return this.children;
   }
 
   @Override
-  public @NonNull Style style() {
+  public final @NonNull Style style() {
     return this.style;
   }
 
