@@ -54,8 +54,8 @@ public interface ForwardingAudience extends Audience {
   @NonNull Iterable<? extends Audience> audiences();
 
   @Override
-  default void sendMessage(final @NonNull Component message) {
-    for(final Audience audience : this.audiences()) audience.sendMessage(message);
+  default void sendMessage(final @NonNull Component message, final @NonNull MessageType type) {
+    for(final Audience audience : this.audiences()) audience.sendMessage(message, type);
   }
 
   @Override

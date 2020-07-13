@@ -24,22 +24,25 @@
 package net.kyori.adventure.sound;
 
 import java.util.Objects;
+import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-/* package */ final class SoundStopImpl implements SoundStop {
-  /* package */ static final SoundStop ALL = new SoundStopImpl(null, null);
-  private final @Nullable Key sound;
+/* package */ abstract class SoundStopImpl implements Examinable, SoundStop {
+  /* package */ static final SoundStop ALL = new SoundStopImpl(null) {
+    @Override
+    public @Nullable Key sound() {
+      return null; // all
+    }
+  };
   private final Sound.@Nullable Source source;
 
-  /* package */ SoundStopImpl(final @Nullable Key sound, final Sound.@Nullable Source source) {
-    this.sound = sound;
+  /* package */ SoundStopImpl(final Sound.@Nullable Source source) {
     this.source = source;
-  }
-
-  @Override
-  public @Nullable Key sound() {
-    return this.sound;
   }
 
   @Override
@@ -52,14 +55,27 @@ import org.checkerframework.checker.nullness.qual.Nullable;
     if(this == other) return true;
     if(other == null || this.getClass() != other.getClass()) return false;
     final SoundStopImpl that = (SoundStopImpl) other;
-    return Objects.equals(this.sound, that.sound)
+    return Objects.equals(this.sound(), that.sound())
       && Objects.equals(this.source, that.source);
   }
 
   @Override
   public int hashCode() {
-    int result = Objects.hashCode(this.sound);
+    int result = Objects.hashCode(this.sound());
     result = (31 * result) + Objects.hashCode(this.source);
     return result;
+  }
+
+  @Override
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(
+      ExaminableProperty.of("name", this.sound()),
+      ExaminableProperty.of("source", this.source)
+    );
+  }
+
+  @Override
+  public String toString() {
+    return this.examine(StringExaminer.simpleEscaping());
   }
 }

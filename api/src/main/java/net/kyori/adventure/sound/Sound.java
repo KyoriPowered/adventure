@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.sound;
 
+import java.util.function.Supplier;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.Index;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -45,7 +46,46 @@ public interface Sound {
   static @NonNull Sound of(final @NonNull Key name, final @NonNull Source source, final float volume, final float pitch) {
     requireNonNull(name, "name");
     requireNonNull(source, "source");
-    return new SoundImpl(name, source, volume, pitch);
+    return new SoundImpl(source, volume, pitch) {
+      @Override
+      public @NonNull Key name() {
+        return name;
+      }
+    };
+  }
+
+  /**
+   * Creates a new sound.
+   *
+   * @param type the type
+   * @param source the source
+   * @param volume the volume
+   * @param pitch the pitch
+   * @return the sound
+   */
+  static @NonNull Sound of(final @NonNull Type type, final @NonNull Source source, final float volume, final float pitch) {
+    requireNonNull(type, "type");
+    return of(type.key(), source, volume, pitch);
+  }
+
+  /**
+   * Creates a new sound.
+   *
+   * @param type the type
+   * @param source the source
+   * @param volume the volume
+   * @param pitch the pitch
+   * @return the sound
+   */
+  static @NonNull Sound of(final @NonNull Supplier<? extends Type> type, final @NonNull Source source, final float volume, final float pitch) {
+    requireNonNull(type, "type");
+    requireNonNull(source, "source");
+    return new SoundImpl(source, volume, pitch) {
+      @Override
+      public @NonNull Key name() {
+        return type.get().key();
+      }
+    };
   }
 
   /**
@@ -97,5 +137,17 @@ public interface Sound {
     Source(final String name) {
       this.name = name;
     }
+  }
+
+  /**
+   * A sound type.
+   */
+  interface Type {
+    /**
+     * Gets the key.
+     *
+     * @return the key
+     */
+    @NonNull Key key();
   }
 }
