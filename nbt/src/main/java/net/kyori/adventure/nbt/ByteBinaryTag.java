@@ -49,10 +49,12 @@ public interface ByteBinaryTag extends NumberBinaryTag {
    * @return a binary tag
    */
   static @NonNull ByteBinaryTag of(final byte value) {
-    switch(value) {
-      case 0: return ZERO;
-      case 1: return ONE;
-      default: return new ByteBinaryTagImpl(value);
+    if(value == 0) {
+      return ZERO;
+    } else if(value == 1) {
+      return ONE;
+    } else {
+      return new ByteBinaryTagImpl(value);
     }
   }
 
