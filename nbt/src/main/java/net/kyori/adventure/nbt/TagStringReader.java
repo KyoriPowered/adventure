@@ -26,6 +26,7 @@ package net.kyori.adventure.nbt;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 /* package */ final class TagStringReader {
   private final CharBuffer buffer;
@@ -71,11 +72,12 @@ import java.util.stream.IntStream;
    *
    * @return array-typed tag
    */
-  public BinaryTag array(final char elementType) throws StringTagParseException {
+  public BinaryTag array(char elementType) throws StringTagParseException {
     this.buffer.expect(Tokens.ARRAY_BEGIN)
       .expect(elementType)
       .expect(Tokens.ARRAY_SIGNATURE_SEPARATOR);
-
+    
+    elementType = Character.toLowerCase(elementType);
     if(elementType == Tokens.TYPE_BYTE) {
       return ByteArrayBinaryTag.of(this.byteArray());
     } else if(elementType == Tokens.TYPE_INT) {
@@ -124,21 +126,17 @@ import java.util.stream.IntStream;
   }
 
   private long[] longArray() throws StringTagParseException {
-    final List<Long> longs = new ArrayList<>();
+    final LongStream.Builder longs = LongStream.builder();
     while(this.buffer.hasMore()) {
       final CharSequence value = this.buffer.skipWhitespace().takeUntil(Tokens.TYPE_LONG);
       try {
-        longs.add(Long.valueOf(value.toString()));
+        longs.add(Long.parseLong(value.toString()));
       } catch(final NumberFormatException ex) {
         throw this.buffer.makeError("All elements of a long array must be longs!");
       }
 
       if(this.separatorOrCompleteWith(Tokens.ARRAY_END)) {
-        final long[] result = new long[longs.size()];
-        for(int i = 0; i < longs.size(); ++i) { // todo yikes
-          result[i] = longs.get(i);
-        }
-        return result;
+        return longs.build().toArray();
       }
     }
     throw this.buffer.makeError("Reached end of document without array close");
@@ -214,7 +212,7 @@ import java.util.stream.IntStream;
         if(builder.length() != 0) {
           BinaryTag result = null;
           try {
-            switch(Character.toUpperCase(current)) { // try to read and return as a number
+            switch(Character.toLowerCase(current)) { // try to read and return as a number
               // case Tokens.TYPE_INTEGER: // handled below, ints are ~special~
               case Tokens.TYPE_BYTE:
                 result = ByteBinaryTag.of(Byte.parseByte(builder.toString()));

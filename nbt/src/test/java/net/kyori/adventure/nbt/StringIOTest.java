@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.nbt;
 
+import com.google.common.io.Resources;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -84,13 +85,19 @@ class StringIOTest {
     }
 
     final CompoundBinaryTag parsedSnbt = (CompoundBinaryTag) this.stringToTag(result);
-    for(final String key : parsedSnbt.keySet()) {
-      if(!parsedSnbt.get(key).equals(bigTest.get(key))) {
-        System.out.println(key + " not equal");
-      }
+    assertEquals(bigTest, parsedSnbt);
+  }
+
+  @Test
+  public void testBigTestPrettyPrinting() throws IOException {
+    final CompoundBinaryTag bigTest;
+    try(final InputStream is = this.getClass().getResourceAsStream("/bigtest.nbt")) {
+      bigTest = BinaryTagIO.readCompressedInputStream(is);
     }
 
-    assertEquals(bigTest, parsedSnbt);
+    final String rawTest = Resources.toString(this.getClass().getResource("/bigtest.snbt"), StandardCharsets.UTF_8);
+    assertEquals(rawTest.trim(), TagStringIO.builder().indent(4).build().asString(bigTest).trim());
+
   }
 
   @Test
@@ -124,8 +131,8 @@ class StringIOTest {
 
   @Test
   public void testByteTag() throws IOException {
-    assertEquals("0B", this.tagToString(ByteBinaryTag.of((byte) 0)));
-    assertEquals("112B", this.tagToString(ByteBinaryTag.of((byte) 112)));
+    assertEquals("0b", this.tagToString(ByteBinaryTag.of((byte) 0)));
+    assertEquals("112b", this.tagToString(ByteBinaryTag.of((byte) 112)));
 
     assertEquals(ByteBinaryTag.of((byte) 12), this.stringToTag("12b"));
     assertEquals(ByteBinaryTag.of((byte) 13), this.stringToTag("13B"));
@@ -133,7 +140,7 @@ class StringIOTest {
 
   @Test
   public void testShortTag() throws IOException {
-    assertEquals("14883S", this.tagToString(ShortBinaryTag.of((short) 14883)));
+    assertEquals("14883s", this.tagToString(ShortBinaryTag.of((short) 14883)));
 
     assertEquals(ShortBinaryTag.of((short) -28), this.stringToTag("-28S"));
     assertEquals(ShortBinaryTag.of((short) 2229), this.stringToTag("+2229S"));
@@ -165,7 +172,7 @@ class StringIOTest {
 
   @Test
   public void testFloatTag() throws IOException {
-    assertEquals("1.204F", this.tagToString(FloatBinaryTag.of(1.204f)));
+    assertEquals("1.204f", this.tagToString(FloatBinaryTag.of(1.204f)));
 
     assertEquals(FloatBinaryTag.of(1.2e4f), this.stringToTag("1.2e4f"));
     assertEquals(FloatBinaryTag.of(4.3e-4f), this.stringToTag("4.3e-4f"));
@@ -176,7 +183,7 @@ class StringIOTest {
 
   @Test
   public void testDoubleTag() throws IOException {
-    assertEquals("1.204D", this.tagToString(DoubleBinaryTag.of(1.204d)));
+    assertEquals("1.204d", this.tagToString(DoubleBinaryTag.of(1.204d)));
 
     assertEquals(DoubleBinaryTag.of(1.2e4d), this.stringToTag("1.2e4d"));
     assertEquals(DoubleBinaryTag.of(4.3e-4d), this.stringToTag("4.3e-4d"));
@@ -231,7 +238,7 @@ class StringIOTest {
 
   @Test
   public void testLongArrayTag() throws IOException {
-    assertEquals("[L;1L,2L,3L]", this.tagToString(LongArrayBinaryTag.of(1, 2, 3)));
+    assertEquals("[L;1l,2l,3l]", this.tagToString(LongArrayBinaryTag.of(1, 2, 3)));
     assertEquals(LongArrayBinaryTag.of(2, 4, 6, -8, 10, 12), this.stringToTag("[L; 2l, 4l, 6l, -8l, 10l, 12l]"));
   }
 

@@ -75,7 +75,7 @@ import java.util.Map;
     } else if(type == BinaryTagTypes.INT) {
       return this.value(Integer.toString(((IntBinaryTag) tag).value()), Tokens.TYPE_INT);
     } else if(type == BinaryTagTypes.LONG) {
-      return this.value(Long.toString(((LongBinaryTag) tag).value()), Tokens.TYPE_LONG);
+      return this.value(Long.toString(((LongBinaryTag) tag).value()), Character.toUpperCase(Tokens.TYPE_LONG)); // special-case
     } else if(type == BinaryTagTypes.FLOAT) {
       return this.value(Float.toString(((FloatBinaryTag) tag).value()), Tokens.TYPE_FLOAT);
     } else if(type == BinaryTagTypes.DOUBLE) {
@@ -99,8 +99,12 @@ import java.util.Map;
   private TagStringWriter writeList(final ListBinaryTag tag) throws IOException {
     this.beginList();
     int idx = 0;
+    final boolean lineBreaks = this.prettyPrinting() && this.breakListElement(tag.listType());
     for(final BinaryTag el : tag) {
-      this.printAndResetSeparator();
+      this.printAndResetSeparator(!lineBreaks);
+      if(lineBreaks) {
+        this.newlineIndent();
+      }
       if(this.legacy) {
         this.out.append(String.valueOf(idx++));
         this.appendSeparator(Tokens.COMPOUND_KEY_TERMINATOR);
@@ -108,7 +112,7 @@ import java.util.Map;
 
       this.writeTag(el);
     }
-    this.endList();
+    this.endList(lineBreaks);
     return this;
   }
 
@@ -118,10 +122,11 @@ import java.util.Map;
     }
     this.beginArray(Tokens.TYPE_BYTE);
 
+    final char byteArrayType = Character.toUpperCase(Tokens.TYPE_BYTE); // special case to match vanilla format
     final byte[] value = ByteArrayBinaryTagImpl.value(tag);
     for(int i = 0, length = value.length; i < length; i++) {
-      this.printAndResetSeparator();
-      this.value(Byte.toString(value[i]), Tokens.TYPE_BYTE);
+      this.printAndResetSeparator(true);
+      this.value(Byte.toString(value[i]), byteArrayType);
     }
     this.endArray();
     return this;
@@ -136,7 +141,7 @@ import java.util.Map;
 
     final int[] value = IntArrayBinaryTagImpl.value(tag);
     for(int i = 0, length = value.length; i < length; i++) {
-      this.printAndResetSeparator();
+      this.printAndResetSeparator(true);
       this.value(Integer.toString(value[i]), Tokens.TYPE_INT);
     }
     this.endArray();
@@ -151,7 +156,7 @@ import java.util.Map;
 
     final long[] value = LongArrayBinaryTagImpl.value(tag);
     for(int i = 0, length = value.length; i < length; i++) {
-      this.printAndResetSeparator();
+      this.printAndResetSeparator(true);
       this.value(Long.toString(value[i]), Tokens.TYPE_LONG);
     }
     this.endArray();
@@ -161,21 +166,23 @@ import java.util.Map;
   // Value types
 
   public TagStringWriter beginCompound() throws IOException {
-    this.printAndResetSeparator();
+    this.printAndResetSeparator(false);
     this.level++;
     this.out.append(Tokens.COMPOUND_BEGIN);
     return this;
   }
 
   public TagStringWriter endCompound() throws IOException {
-    this.out.append(Tokens.COMPOUND_END);
     this.level--;
+    this.newlineIndent();
+    this.out.append(Tokens.COMPOUND_END);
     this.needsSeparator = true;
     return this;
   }
 
   public TagStringWriter key(final String key) throws IOException {
-    this.printAndResetSeparator();
+    this.printAndResetSeparator(false);
+    this.newlineIndent();
     this.writeMaybeQuoted(key, false);
     this.appendSeparator(Tokens.COMPOUND_KEY_TERMINATOR);
     return this;
@@ -195,28 +202,36 @@ import java.util.Map;
   }
 
   public TagStringWriter beginList() throws IOException {
-    this.printAndResetSeparator();
+    this.printAndResetSeparator(false);
     this.level++;
     this.out.append(Tokens.ARRAY_BEGIN);
     return this;
   }
 
-  public TagStringWriter endList() throws IOException {
-    this.out.append(Tokens.ARRAY_END);
+  public TagStringWriter endList(final boolean lineBreak) throws IOException {
     this.level--;
+    if(lineBreak) {
+      this.newlineIndent();
+    }
+    this.out.append(Tokens.ARRAY_END);
     this.needsSeparator = true;
     return this;
   }
 
   private TagStringWriter beginArray(final char type) throws IOException {
     this.beginList()
-      .out.append(type)
+      .out.append(Character.toUpperCase(type))
       .append(Tokens.ARRAY_SIGNATURE_SEPARATOR);
+
+    if(this.prettyPrinting()) {
+      this.out.append(' ');
+    }
+
     return this;
   }
 
   private TagStringWriter endArray() throws IOException {
-    return this.endList();
+    return this.endList(false);
   }
 
   private void writeMaybeQuoted(final String content, boolean requireQuotes) throws IOException {
@@ -249,18 +264,43 @@ import java.util.Map;
     return output.toString();
   }
 
-  private void printAndResetSeparator() throws IOException {
+  private void printAndResetSeparator(final boolean pad) throws IOException {
     if(this.needsSeparator) {
-      this.appendSeparator(Tokens.VALUE_SEPARATOR);
+      this.out.append(Tokens.VALUE_SEPARATOR);
+      if(pad && this.prettyPrinting()) {
+        this.out.append(' ');
+      }
       this.needsSeparator = false;
     }
   }
 
   // Pretty printing
 
+  private boolean breakListElement(final BinaryTagType<?> type) {
+    // lists should break between elements on any non-scalar element
+    return type == BinaryTagTypes.COMPOUND
+      || type == BinaryTagTypes.LIST
+      || type == BinaryTagTypes.BYTE_ARRAY
+      || type == BinaryTagTypes.INT_ARRAY
+      || type == BinaryTagTypes.LONG_ARRAY;
+  }
+
+  private boolean prettyPrinting() {
+    return this.indent.length() > 0;
+  }
+
+  private void newlineIndent() throws IOException {
+    if(this.prettyPrinting()) {
+      this.out.append(Tokens.NEWLINE);
+      for(int i = 0; i < this.level; ++i) {
+        this.out.append(this.indent);
+      }
+    }
+  }
+
   private Appendable appendSeparator(final char separatorChar) throws IOException {
     this.out.append(separatorChar);
-    if(this.indent.length() > 0) {
+    if(this.prettyPrinting()) {
       this.out.append(' ');
     }
     return this.out;
