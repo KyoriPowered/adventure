@@ -256,7 +256,11 @@ import java.util.stream.IntStream;
       try {
         return IntBinaryTag.of(Integer.parseInt(built));
       } catch(final NumberFormatException ex) {
-        // ignore
+        try {
+          return DoubleBinaryTag.of(Double.parseDouble(built));
+        } catch(final NumberFormatException ex2) {
+          // ignore
+        }
       }
     }
 

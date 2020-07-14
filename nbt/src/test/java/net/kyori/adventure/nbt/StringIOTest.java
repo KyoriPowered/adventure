@@ -185,6 +185,14 @@ class StringIOTest {
   }
 
   @Test
+  public void testUnsuffixedDoubleTag() throws IOException {
+    // we can read this, but will never write it
+    assertEquals(DoubleBinaryTag.of(2.55e5), this.stringToTag("2.55e5"));
+    assertEquals(DoubleBinaryTag.of(9.0), this.stringToTag("9."));
+    assertEquals(DoubleBinaryTag.of(-9.5), this.stringToTag("-9.5"));
+  }
+
+  @Test
   public void testByteArrayTag() throws IOException {
     assertEquals("[B;1B,2B,3B]", this.tagToString(ByteArrayBinaryTag.of((byte) 1, (byte) 2, (byte) 3)));
     assertEquals(ByteArrayBinaryTag.of((byte) 1, (byte) 1, (byte) 2, (byte) 3, (byte) 5, (byte) 8), this.stringToTag("[B; 1b, 1b, 2b, 3b, 5b, 8b]"));
@@ -234,7 +242,7 @@ class StringIOTest {
     }
     return writer.toString();
   }
-  
+
   private BinaryTag stringToTag(final String input) throws StringTagParseException {
     return this.stringToTag(input, true);
   }
