@@ -32,6 +32,7 @@ import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class StringIOTest {
   @Test
@@ -55,8 +56,8 @@ class StringIOTest {
         .build())
       .build();
 
-    final String serialized = BinaryTagIO.writeString(tag);
-    final CompoundBinaryTag deserialized = BinaryTagIO.readString(serialized);
+    final String serialized = TagStringIO.get().asString(tag);
+    final CompoundBinaryTag deserialized = TagStringIO.get().asCompound(serialized);
     assertEquals(tag, deserialized);
   }
 
@@ -66,8 +67,8 @@ class StringIOTest {
     final CompoundBinaryTag bigTest;
     try(final InputStream is = this.getClass().getResourceAsStream("/bigtest.nbt")) {
       bigTest = BinaryTagIO.readCompressedInputStream(is);
-      final String written = BinaryTagIO.writeString(bigTest);
-      assertEquals(bigTest, BinaryTagIO.readString(written));
+      final String written = TagStringIO.get().asString(bigTest);
+      assertEquals(bigTest, TagStringIO.get().asCompound(written));
     }
 
     // Read snbt equivalent
@@ -146,7 +147,7 @@ class StringIOTest {
     assertEquals(IntBinaryTag.of(4482828), this.stringToTag("4482828"));
     assertEquals(IntBinaryTag.of(-24), this.stringToTag("-24"));
   }
-  
+
   @Test
   public void testReadLiteralBoolean() throws IOException {
     assertEquals(ByteBinaryTag.of((byte) 1), this.stringToTag("true"));
@@ -191,13 +192,27 @@ class StringIOTest {
 
   @Test
   public void testLegacyListTag() throws IOException {
-    final BinaryTag tag = this.stringToTag("[0:\"Tag #1\",1:\"Tag #2\"]");
+    final String legacyInput = "[0:\"Tag #1\",1:\"Tag #2\"]";
+    final BinaryTag tag = this.stringToTag(legacyInput);
     assertEquals("[\"Tag #1\",\"Tag #2\"]", this.tagToString(tag));
+    final StringWriter output = new StringWriter();
+    try(final TagStringWriter writer = new TagStringWriter(output, "").legacy(true)) {
+      writer.writeTag(tag);
+    }
+    assertEquals(legacyInput, output.toString());
 
     final ListTagBuilder<BinaryTag> builder = new ListTagBuilder<>();
     builder.add(StringBinaryTag.of("Tag #1"));
     builder.add(StringBinaryTag.of("Tag #2"));
     assertEquals(builder.build(), tag);
+  }
+
+  @Test
+  public void testReadsLegacyCompoundKey() throws IOException {
+    final String input = "{test*compound: \"hello world\"}";
+    assertThrows(IOException.class, () -> this.stringToTag(input, false));
+    assertEquals(CompoundBinaryTag.builder().putString("test*compound", "hello world").build(), this.stringToTag(input));
+
   }
 
   @Test
@@ -214,15 +229,20 @@ class StringIOTest {
 
   private String tagToString(final BinaryTag tag) throws IOException {
     final StringWriter writer = new StringWriter();
-    try(final TagStringWriter emitter = new TagStringWriter(writer)) {
+    try(final TagStringWriter emitter = new TagStringWriter(writer, "")) {
       emitter.writeTag(tag);
     }
     return writer.toString();
   }
-
+  
   private BinaryTag stringToTag(final String input) throws StringTagParseException {
+    return this.stringToTag(input, true);
+  }
+
+  private BinaryTag stringToTag(final String input, final boolean acceptLegacy) throws StringTagParseException {
     final CharBuffer buffer = new CharBuffer(input);
     final TagStringReader parser = new TagStringReader(buffer);
+    parser.legacy(acceptLegacy);
     final BinaryTag ret = parser.tag();
     if(buffer.skipWhitespace().hasMore()) {
       throw buffer.makeError("Trailing content after parse!");

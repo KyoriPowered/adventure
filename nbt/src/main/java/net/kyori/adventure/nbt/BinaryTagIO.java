@@ -168,40 +168,4 @@ public final class BinaryTagIO {
     output.writeUTF(""); // write empty name
     BinaryTagTypes.COMPOUND.write(tag, output);
   }
-
-  /**
-   * Reads a compound tag from a {@link String}.
-   *
-   * @param input the string
-   * @return the compound tag
-   * @throws IOException if an exception was encountered while reading a compound tag
-   */
-  public static @NonNull CompoundBinaryTag readString(final @NonNull String input) throws IOException {
-    try {
-      final CharBuffer buffer = new CharBuffer(input);
-      final TagStringReader parser = new TagStringReader(buffer);
-      final CompoundBinaryTag tag = parser.compound();
-      if(buffer.skipWhitespace().hasMore()) {
-        throw new IOException("Document had trailing content after first CompoundTag");
-      }
-      return tag;
-    } catch(final StringTagParseException ex) {
-      throw new IOException(ex);
-    }
-  }
-
-  /**
-   * Writes a compound tag to a {@link String}.
-   *
-   * @param tag the compound tag
-   * @return the string
-   * @throws IOException if an exception was encountered while writing the compound tag
-   */
-  public static @NonNull String writeString(final @NonNull CompoundBinaryTag tag) throws IOException {
-    final StringBuilder sb = new StringBuilder();
-    try(final TagStringWriter emit = new TagStringWriter(sb)) {
-      emit.writeTag(tag);
-    }
-    return sb.toString();
-  }
 }

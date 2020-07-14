@@ -29,6 +29,7 @@ import java.util.stream.IntStream;
 
 /* package */ final class TagStringReader {
   private final CharBuffer buffer;
+  private boolean acceptLegacy;
 
   TagStringReader(final CharBuffer buffer) {
     this.buffer = buffer;
@@ -49,7 +50,7 @@ import java.util.stream.IntStream;
   public ListBinaryTag list() throws StringTagParseException {
     final ListBinaryTag.Builder<BinaryTag> builder = ListBinaryTag.builder();
     this.buffer.expect(Tokens.ARRAY_BEGIN);
-    final boolean prefixedIndex = this.buffer.peek() == '0' && this.buffer.peek(1) == ':';
+    final boolean prefixedIndex = this.acceptLegacy && this.buffer.peek() == '0' && this.buffer.peek(1) == ':';
     while(this.buffer.hasMore()) {
       if(prefixedIndex) {
         this.buffer.takeUntil(':');
@@ -152,7 +153,21 @@ import java.util.stream.IntStream;
       }
 
       final StringBuilder builder = new StringBuilder();
-      while(Tokens.id(this.buffer.peek())) {
+      while(this.buffer.hasMore()) {
+        final char peek = this.buffer.peek();
+        if(!Tokens.id(peek)) {
+          if(this.acceptLegacy) {
+            // In legacy format, a key is any non-colon character, with escapes allowed
+            if(peek == Tokens.ESCAPE_MARKER) {
+              this.buffer.take(); // skip
+              continue;
+            } else if(peek != Tokens.COMPOUND_KEY_TERMINATOR) {
+              builder.append(this.buffer.take());
+              continue;
+            }
+          }
+          break;
+        }
         builder.append(this.buffer.take());
       }
       return builder.toString();
@@ -167,6 +182,8 @@ import java.util.stream.IntStream;
       case Tokens.COMPOUND_BEGIN:
         return this.compound();
       case Tokens.ARRAY_BEGIN:
+        // TODO: legacy-format int arrays are ambiguous with new format int lists
+        // Maybe add in a legacy-only mode to read those?
         if(this.buffer.peek(2) == ';') { // we know we're an array tag
           return this.array(this.buffer.peek(1));
         } else {
@@ -280,5 +297,9 @@ import java.util.stream.IntStream;
     } while ((escapeIdx = withEscapes.indexOf(Tokens.ESCAPE_MARKER, lastEscape + 1)) != -1); // add one extra character to make sure we don't include escaped backslashes
     output.append(withEscapes.substring(lastEscape));
     return output.toString();
+  }
+
+  public void legacy(final boolean acceptLegacy) {
+    this.acceptLegacy = acceptLegacy;
   }
 }

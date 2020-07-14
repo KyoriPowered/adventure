@@ -34,15 +34,22 @@ import java.util.Map;
  */
 /* package */ final class TagStringWriter implements AutoCloseable {
   private final Appendable out;
-  private final String indent = "  "; // TODO: pretty-printing
+  private final String indent; // TODO: pretty-printing
   private int level;
   /**
    * Whether a {@link Tokens#VALUE_SEPARATOR} needs to be printed before the beginning of the next object.
    */
   private boolean needsSeparator;
+  private boolean legacy;
 
-  TagStringWriter(final Appendable out) {
+  TagStringWriter(final Appendable out, final String indent) {
     this.out = out;
+    this.indent = indent;
+  }
+
+  public TagStringWriter legacy(final boolean legacy) {
+    this.legacy = legacy;
+    return this;
   }
 
   // NBT-specific
@@ -91,8 +98,14 @@ import java.util.Map;
 
   private TagStringWriter writeList(final ListBinaryTag tag) throws IOException {
     this.beginList();
+    int idx = 0;
     for(final BinaryTag el : tag) {
       this.printAndResetSeparator();
+      if(this.legacy) {
+        this.out.append(String.valueOf(idx++));
+        this.appendSeparator(Tokens.COMPOUND_KEY_TERMINATOR);
+      }
+
       this.writeTag(el);
     }
     this.endList();
@@ -100,6 +113,9 @@ import java.util.Map;
   }
 
   private TagStringWriter writeByteArray(final ByteArrayBinaryTag tag) throws IOException {
+    if(this.legacy) {
+      throw new IOException("Legacy Mojangson only supports integer arrays!");
+    }
     this.beginArray(Tokens.TYPE_BYTE);
 
     final byte[] value = ByteArrayBinaryTagImpl.value(tag);
@@ -112,7 +128,11 @@ import java.util.Map;
   }
 
   private TagStringWriter writeIntArray(final IntArrayBinaryTag tag) throws IOException {
-    this.beginArray(Tokens.TYPE_INT);
+    if(this.legacy) {
+      this.beginList();
+    } else {
+      this.beginArray(Tokens.TYPE_INT);
+    }
 
     final int[] value = IntArrayBinaryTagImpl.value(tag);
     for(int i = 0, length = value.length; i < length; i++) {
@@ -124,6 +144,9 @@ import java.util.Map;
   }
 
   private TagStringWriter writeLongArray(final LongArrayBinaryTag tag) throws IOException {
+    if(this.legacy) {
+      throw new IOException("Legacy Mojangson only supports integer arrays!");
+    }
     this.beginArray(Tokens.TYPE_LONG);
 
     final long[] value = LongArrayBinaryTagImpl.value(tag);
@@ -154,7 +177,7 @@ import java.util.Map;
   public TagStringWriter key(final String key) throws IOException {
     this.printAndResetSeparator();
     this.writeMaybeQuoted(key, false);
-    this.out.append(Tokens.COMPOUND_KEY_TERMINATOR); // TODO: spacing/pretty-printing
+    this.appendSeparator(Tokens.COMPOUND_KEY_TERMINATOR);
     return this;
   }
 
@@ -228,9 +251,19 @@ import java.util.Map;
 
   private void printAndResetSeparator() throws IOException {
     if(this.needsSeparator) {
-      this.out.append(Tokens.VALUE_SEPARATOR);
+      this.appendSeparator(Tokens.VALUE_SEPARATOR);
       this.needsSeparator = false;
     }
+  }
+
+  // Pretty printing
+
+  private Appendable appendSeparator(final char separatorChar) throws IOException {
+    this.out.append(separatorChar);
+    if(this.indent.length() > 0) {
+      this.out.append(' ');
+    }
+    return this.out;
   }
 
   @Override
