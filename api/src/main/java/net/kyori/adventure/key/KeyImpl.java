@@ -108,7 +108,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
     return clampCompare(this.namespace.compareTo(that.namespace()));
   }
 
-  private static int clampCompare(final int value) {
+  static int clampCompare(final int value) {
     if(value < 0) return -1;
     if(value > 0) return 1;
     return value;

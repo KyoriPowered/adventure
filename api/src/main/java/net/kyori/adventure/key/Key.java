@@ -96,6 +96,15 @@ public interface Key extends Comparable<Key> {
    */
   @NonNull String asString();
 
+  @Override
+  default int compareTo(final @NonNull Key that) {
+    final int value = this.value().compareTo(that.value());
+    if(value != 0) {
+      return KeyImpl.clampCompare(value);
+    }
+    return KeyImpl.clampCompare(this.namespace().compareTo(that.namespace()));
+  }
+
   /**
    * An exception thrown when there is an error parsing a key.
    */
