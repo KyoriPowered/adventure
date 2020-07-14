@@ -263,9 +263,9 @@ import java.util.stream.LongStream;
     }
 
     if(built.equalsIgnoreCase(Tokens.LITERAL_TRUE)) {
-      return ByteBinaryTag.of((byte) 1);
+      return ByteBinaryTag.ONE;
     } else if(built.equalsIgnoreCase(Tokens.LITERAL_FALSE)) {
-      return ByteBinaryTag.of((byte) 0);
+      return ByteBinaryTag.ZERO;
     }
     return StringBinaryTag.of(built);
 
