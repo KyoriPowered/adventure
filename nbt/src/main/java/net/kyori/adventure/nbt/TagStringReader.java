@@ -26,9 +26,11 @@ package net.kyori.adventure.nbt;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 /* package */ final class TagStringReader {
   private final CharBuffer buffer;
+  private boolean acceptLegacy;
 
   TagStringReader(final CharBuffer buffer) {
     this.buffer = buffer;
@@ -49,7 +51,7 @@ import java.util.stream.IntStream;
   public ListBinaryTag list() throws StringTagParseException {
     final ListBinaryTag.Builder<BinaryTag> builder = ListBinaryTag.builder();
     this.buffer.expect(Tokens.ARRAY_BEGIN);
-    final boolean prefixedIndex = this.buffer.peek() == '0' && this.buffer.peek(1) == ':';
+    final boolean prefixedIndex = this.acceptLegacy && this.buffer.peek() == '0' && this.buffer.peek(1) == ':';
     while(this.buffer.hasMore()) {
       if(prefixedIndex) {
         this.buffer.takeUntil(':');
@@ -70,11 +72,12 @@ import java.util.stream.IntStream;
    *
    * @return array-typed tag
    */
-  public BinaryTag array(final char elementType) throws StringTagParseException {
+  public BinaryTag array(char elementType) throws StringTagParseException {
     this.buffer.expect(Tokens.ARRAY_BEGIN)
       .expect(elementType)
       .expect(Tokens.ARRAY_SIGNATURE_SEPARATOR);
-
+    
+    elementType = Character.toLowerCase(elementType);
     if(elementType == Tokens.TYPE_BYTE) {
       return ByteArrayBinaryTag.of(this.byteArray());
     } else if(elementType == Tokens.TYPE_INT) {
@@ -123,21 +126,17 @@ import java.util.stream.IntStream;
   }
 
   private long[] longArray() throws StringTagParseException {
-    final List<Long> longs = new ArrayList<>();
+    final LongStream.Builder longs = LongStream.builder();
     while(this.buffer.hasMore()) {
       final CharSequence value = this.buffer.skipWhitespace().takeUntil(Tokens.TYPE_LONG);
       try {
-        longs.add(Long.valueOf(value.toString()));
+        longs.add(Long.parseLong(value.toString()));
       } catch(final NumberFormatException ex) {
         throw this.buffer.makeError("All elements of a long array must be longs!");
       }
 
       if(this.separatorOrCompleteWith(Tokens.ARRAY_END)) {
-        final long[] result = new long[longs.size()];
-        for(int i = 0; i < longs.size(); ++i) { // todo yikes
-          result[i] = longs.get(i);
-        }
-        return result;
+        return longs.build().toArray();
       }
     }
     throw this.buffer.makeError("Reached end of document without array close");
@@ -152,7 +151,21 @@ import java.util.stream.IntStream;
       }
 
       final StringBuilder builder = new StringBuilder();
-      while(Tokens.id(this.buffer.peek())) {
+      while(this.buffer.hasMore()) {
+        final char peek = this.buffer.peek();
+        if(!Tokens.id(peek)) {
+          if(this.acceptLegacy) {
+            // In legacy format, a key is any non-colon character, with escapes allowed
+            if(peek == Tokens.ESCAPE_MARKER) {
+              this.buffer.take(); // skip
+              continue;
+            } else if(peek != Tokens.COMPOUND_KEY_TERMINATOR) {
+              builder.append(this.buffer.take());
+              continue;
+            }
+          }
+          break;
+        }
         builder.append(this.buffer.take());
       }
       return builder.toString();
@@ -167,6 +180,8 @@ import java.util.stream.IntStream;
       case Tokens.COMPOUND_BEGIN:
         return this.compound();
       case Tokens.ARRAY_BEGIN:
+        // TODO: legacy-format int arrays are ambiguous with new format int lists
+        // Maybe add in a legacy-only mode to read those?
         if(this.buffer.peek(2) == ';') { // we know we're an array tag
           return this.array(this.buffer.peek(1));
         } else {
@@ -197,7 +212,7 @@ import java.util.stream.IntStream;
         if(builder.length() != 0) {
           BinaryTag result = null;
           try {
-            switch(Character.toUpperCase(current)) { // try to read and return as a number
+            switch(Character.toLowerCase(current)) { // try to read and return as a number
               // case Tokens.TYPE_INTEGER: // handled below, ints are ~special~
               case Tokens.TYPE_BYTE:
                 result = ByteBinaryTag.of(Byte.parseByte(builder.toString()));
@@ -239,8 +254,18 @@ import java.util.stream.IntStream;
       try {
         return IntBinaryTag.of(Integer.parseInt(built));
       } catch(final NumberFormatException ex) {
-        // ignore
+        try {
+          return DoubleBinaryTag.of(Double.parseDouble(built));
+        } catch(final NumberFormatException ex2) {
+          // ignore
+        }
       }
+    }
+
+    if(built.equalsIgnoreCase(Tokens.LITERAL_TRUE)) {
+      return ByteBinaryTag.ONE;
+    } else if(built.equalsIgnoreCase(Tokens.LITERAL_FALSE)) {
+      return ByteBinaryTag.ZERO;
     }
     return StringBinaryTag.of(built);
 
@@ -274,5 +299,9 @@ import java.util.stream.IntStream;
     } while ((escapeIdx = withEscapes.indexOf(Tokens.ESCAPE_MARKER, lastEscape + 1)) != -1); // add one extra character to make sure we don't include escaped backslashes
     output.append(withEscapes.substring(lastEscape));
     return output.toString();
+  }
+
+  public void legacy(final boolean acceptLegacy) {
+    this.acceptLegacy = acceptLegacy;
   }
 }

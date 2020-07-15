@@ -33,13 +33,29 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public interface ByteBinaryTag extends NumberBinaryTag {
   /**
+   * A tag with the value {@code 0}.
+   */
+  ByteBinaryTag ZERO = new ByteBinaryTagImpl((byte) 0);
+  
+  /**
+   * A tag with the value {@code 1}.
+   */
+  ByteBinaryTag ONE = new ByteBinaryTagImpl((byte) 1);
+  
+  /**
    * Creates a binary tag holding a {@code byte} value.
    *
    * @param value the value
    * @return a binary tag
    */
   static @NonNull ByteBinaryTag of(final byte value) {
-    return new ByteBinaryTagImpl(value);
+    if(value == 0) {
+      return ZERO;
+    } else if(value == 1) {
+      return ONE;
+    } else {
+      return new ByteBinaryTagImpl(value);
+    }
   }
 
   @Override

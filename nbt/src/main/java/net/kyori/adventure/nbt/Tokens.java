@@ -40,13 +40,17 @@ package net.kyori.adventure.nbt;
   static final char DOUBLE_QUOTE = '"';
   static final char ESCAPE_MARKER = '\\';
 
-  static final char TYPE_BYTE = 'B';
-  static final char TYPE_SHORT = 'S';
-  static final char TYPE_INT = 'I'; // array only
-  static final char TYPE_LONG = 'L';
-  static final char TYPE_FLOAT = 'F';
-  static final char TYPE_DOUBLE = 'D';
+  static final char TYPE_BYTE = 'b';
+  static final char TYPE_SHORT = 's';
+  static final char TYPE_INT = 'i'; // array only
+  static final char TYPE_LONG = 'l';
+  static final char TYPE_FLOAT = 'f';
+  static final char TYPE_DOUBLE = 'd';
+  
+  static final String LITERAL_TRUE = "true";
+  static final String LITERAL_FALSE = "false";
 
+  static final String NEWLINE = System.getProperty("line.separator", "\n");
   static final char EOF = '\0';
 
   private Tokens() {
