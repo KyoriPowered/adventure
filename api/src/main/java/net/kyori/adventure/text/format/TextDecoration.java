@@ -31,7 +31,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  * An enumeration of decorations which may be applied to a {@link Component}.
  */
-public enum TextDecoration implements TextFormat {
+public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
   /**
    * A decoration which makes text obfuscated/unreadable.
    */
@@ -61,6 +61,11 @@ public enum TextDecoration implements TextFormat {
 
   TextDecoration(final String name) {
     this.name = name;
+  }
+
+  @Override
+  public void styleApply(final Style.@NonNull Builder style) {
+    style.decorate(this);
   }
 
   @Override

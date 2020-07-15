@@ -25,6 +25,8 @@ package net.kyori.adventure.text.event;
 
 import java.util.Objects;
 import java.util.stream.Stream;
+import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import net.kyori.adventure.util.Index;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
@@ -39,7 +41,7 @@ import static java.util.Objects.requireNonNull;
  *
  * <p>A click event processes an {@link Action} when clicked on.</p>
  */
-public final class ClickEvent implements Examinable {
+public final class ClickEvent implements Examinable, StyleBuilderApplicable {
   /**
    * Creates a click event.
    *
@@ -153,6 +155,11 @@ public final class ClickEvent implements Examinable {
    */
   public @NonNull String value() {
     return this.value;
+  }
+
+  @Override
+  public void styleApply(final Style.@NonNull Builder style) {
+    style.clickEvent(this);
   }
 
   @Override

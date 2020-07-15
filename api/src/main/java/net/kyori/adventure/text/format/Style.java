@@ -99,19 +99,6 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
   }
 
   /**
-   * Creates a style with decorations.
-   *
-   * @param decorations the decorations
-   * @return a style
-   */
-  public static @NonNull Style of(final TextDecoration@NonNull... decorations) {
-    if(decorations.length == 0) return empty();
-    final Builder builder = builder();
-    decorate(builder, decorations);
-    return builder.build();
-  }
-
-  /**
    * Creates a style with color and decorations.
    *
    * @param color the style
@@ -146,6 +133,35 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
       for(final TextDecoration decoration : decorations) {
         builder.decoration(decoration, true);
       }
+    }
+    return builder.build();
+  }
+
+  /**
+   * Creates a style with {@code applicables} applied.
+   *
+   * @param applicables the applicables
+   * @return a style
+   */
+  public static @NonNull Style of(final StyleBuilderApplicable@NonNull... applicables) {
+    if(applicables.length == 0) return empty();
+    final Builder builder = builder();
+    for(int i = 0, length = applicables.length; i < length; i++) {
+      applicables[i].styleApply(builder);
+    }
+    return builder.build();
+  }
+
+  /**
+   * Creates a style with {@code applicables} applied.
+   *
+   * @param applicables the applicables
+   * @return a style
+   */
+  public static @NonNull Style of(final @NonNull Iterable<? extends StyleBuilderApplicable> applicables) {
+    final Builder builder = builder();
+    for(final StyleBuilderApplicable applicable : applicables) {
+      applicable.styleApply(builder);
     }
     return builder.build();
   }
@@ -821,6 +837,29 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
     public @NonNull Builder colorIfAbsent(final @Nullable TextColor color) {
       if(this.color == null) {
         this.color = color;
+      }
+      return this;
+    }
+
+    /**
+     * Sets {@code decoration} to {@link TextDecoration.State#TRUE}.
+     *
+     * @param decoration the decoration
+     * @return a style
+     */
+    public @NonNull Builder decorate(final @NonNull TextDecoration decoration) {
+      return this.decoration(decoration, TextDecoration.State.TRUE);
+    }
+
+    /**
+     * Sets {@code decorations} to {@link TextDecoration.State#TRUE}.
+     *
+     * @param decorations the decorations
+     * @return a style
+     */
+    public @NonNull Builder decorate(final @NonNull TextDecoration@NonNull... decorations) {
+      for(int i = 0; i < decorations.length; i++) {
+        this.decorate(decorations[i]);
       }
       return this;
     }

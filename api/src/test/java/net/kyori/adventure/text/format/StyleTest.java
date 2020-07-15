@@ -23,13 +23,16 @@
  */
 package net.kyori.adventure.text.format;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.testing.EqualsTester;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -52,6 +55,24 @@ class StyleTest {
     assertNull(s0.hoverEvent());
     assertNull(s0.insertion());
     assertNull(s0.font());
+  }
+
+  @Test
+  void testOfApplicables() {
+    assertEquals(Style.empty(), Style.of());
+    final Style s0 = Style.of(
+      TextColor.of(0x00aa00),
+      TextDecoration.BOLD,
+      HoverEvent.showText(TextComponent.empty())
+    );
+    final Style s1 = Style.of(ImmutableList.of(
+      TextColor.of(0x00aa00),
+      TextDecoration.BOLD,
+      HoverEvent.showText(TextComponent.empty())
+    ));
+    assertEquals(TextColor.of(0x00aa00), s0.color());
+    assertThat(s0.decorations()).containsEntry(TextDecoration.BOLD, TextDecoration.State.TRUE);
+    assertEquals(s0, s1);
   }
 
   @Test

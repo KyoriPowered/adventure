@@ -31,7 +31,7 @@ import org.checkerframework.common.value.qual.IntRange;
 /**
  * A color which may be applied to a {@link Style}.
  */
-public interface TextColor extends Comparable<TextColor>, RGBLike, TextFormat {
+public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderApplicable, TextFormat {
   /**
    * Creates a new text colour.
    *
@@ -170,6 +170,11 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, TextFormat {
   @Override
   default @IntRange(from = 0x0, to = 0xff) int blue() {
     return this.value() & 0xff;
+  }
+
+  @Override
+  default void styleApply(final Style.@NonNull Builder style) {
+    style.color(this);
   }
 
   @Override
