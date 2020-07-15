@@ -50,7 +50,7 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
    *
    * @return serializer instance
    */
-  public static PlainComponentSerializer plain() {
+  public static @NonNull PlainComponentSerializer plain() {
     return INSTANCE;
   }
 
