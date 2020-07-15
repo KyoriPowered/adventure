@@ -25,6 +25,9 @@ package net.kyori.adventure.text.format;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.testing.EqualsTester;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.junit.jupiter.api.Test;
@@ -106,8 +109,8 @@ class StyleTest {
 
   @Test
   void testDecorations() {
-    assertThat(Style.empty().decorations()).isEmpty();
-    assertThat(Style.of(TextDecoration.BOLD).decorations()).containsExactly(TextDecoration.BOLD);
+    assertThat(Style.empty().decorations()).containsExactlyEntriesIn(Stream.of(TextDecoration.values()).collect(Collectors.toMap(Function.identity(), decoration -> TextDecoration.State.NOT_SET)));
+    assertThat(Style.of(TextDecoration.BOLD).decorations()).containsEntry(TextDecoration.BOLD, TextDecoration.State.TRUE);
   }
 
   @Test

@@ -23,8 +23,8 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -282,18 +282,20 @@ public interface Component extends ComponentLike {
    *
    * @return a set of decorations this component has
    */
-  default @NonNull Set<TextDecoration> decorations() {
-    return this.decorations(Collections.emptySet());
+  default @NonNull Map<TextDecoration, TextDecoration.State> decorations() {
+    return this.style().decorations();
   }
 
   /**
-   * Gets a set of decorations this component has.
+   * Sets decorations for this component's style using the specified {@code decorations} map.
    *
-   * @param defaultValues a set of default values
-   * @return a set of decorations this component has
+   * <p>If a given decoration does not have a value explicitly set, the value of that particular decoration is not changed.</p>
+   *
+   * @param decorations a set of default values
+   * @return a component
    */
-  default @NonNull Set<TextDecoration> decorations(final @NonNull Set<TextDecoration> defaultValues) {
-    return this.style().decorations(defaultValues);
+  default @NonNull Component decorations(final @NonNull Map<TextDecoration, TextDecoration.State> decorations) {
+    return this.style(this.style().decorations(decorations));
   }
 
   /**

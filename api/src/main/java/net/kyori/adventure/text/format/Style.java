@@ -24,7 +24,8 @@
 package net.kyori.adventure.text.format;
 
 import java.util.Collections;
-import java.util.EnumSet;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -333,26 +334,31 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    *
    * @return a set of decorations this style has
    */
-  public @NonNull Set<TextDecoration> decorations() {
-    return this.decorations(Collections.emptySet());
-  }
-
-  /**
-   * Gets a set of decorations this style has.
-   *
-   * @param defaultValues a set of default values
-   * @return a set of decorations this style has
-   */
-  public @NonNull Set<TextDecoration> decorations(final @NonNull Set<TextDecoration> defaultValues) {
-    final Set<TextDecoration> decorations = EnumSet.noneOf(TextDecoration.class);
+  public @NonNull Map<TextDecoration, TextDecoration.State> decorations() {
+    final Map<TextDecoration, TextDecoration.State> decorations = new EnumMap<>(TextDecoration.class);
     for(int i = 0, length = DECORATIONS.length; i < length; i++) {
       final TextDecoration decoration = DECORATIONS[i];
       final TextDecoration.State value = this.decoration(decoration);
-      if(value == TextDecoration.State.TRUE || (value == TextDecoration.State.NOT_SET && defaultValues.contains(decoration))) {
-        decorations.add(decoration);
-      }
+      decorations.put(decoration, value);
     }
     return decorations;
+  }
+
+  /**
+   * Sets decorations for this style using the specified {@code decorations} map.
+   *
+   * <p>If a given decoration does not have a value explicitly set, the value of that particular decoration is not changed.</p>
+   *
+   * @param decorations the decorations
+   * @return a style
+   */
+  public @NonNull Style decorations(final @NonNull Map<TextDecoration, TextDecoration.State> decorations) {
+    final TextDecoration.State obfuscated = decorations.getOrDefault(TextDecoration.OBFUSCATED, this.obfuscated);
+    final TextDecoration.State bold = decorations.getOrDefault(TextDecoration.BOLD, this.bold);
+    final TextDecoration.State strikethrough = decorations.getOrDefault(TextDecoration.STRIKETHROUGH, this.strikethrough);
+    final TextDecoration.State underlined = decorations.getOrDefault(TextDecoration.UNDERLINED, this.underlined);
+    final TextDecoration.State italic = decorations.getOrDefault(TextDecoration.ITALIC, this.italic);
+    return new Style(this.font, this.color, obfuscated, bold, strikethrough, underlined, italic, this.clickEvent, this.hoverEvent, this.insertion);
   }
 
   /**

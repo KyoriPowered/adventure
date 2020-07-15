@@ -28,7 +28,7 @@ import com.google.common.testing.EqualsTester;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -90,14 +90,14 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B> & Scoped
 
     component = component.decoration(TextDecoration.BOLD, TextDecoration.State.TRUE);
 
-    final Set<TextDecoration> decorations = component.decorations();
+    final Map<TextDecoration, TextDecoration.State> decorations = component.decorations();
 
     // The bold decoration should be set and true at this point.
     assertTrue(component.hasDecoration(TextDecoration.BOLD));
     assertEquals(TextDecoration.State.TRUE, component.decoration(TextDecoration.BOLD));
-    assertEquals(component.decoration(TextDecoration.BOLD) == TextDecoration.State.TRUE, decorations.contains(TextDecoration.BOLD));
-    assertTrue(decorations.contains(TextDecoration.BOLD));
-    assertFalse(decorations.contains(TextDecoration.OBFUSCATED));
+    assertEquals(component.decoration(TextDecoration.BOLD), decorations.get(TextDecoration.BOLD));
+    assertEquals(TextDecoration.State.TRUE, decorations.get(TextDecoration.BOLD));
+    assertEquals(TextDecoration.State.NOT_SET, decorations.get(TextDecoration.OBFUSCATED));
   }
 
   @Test
