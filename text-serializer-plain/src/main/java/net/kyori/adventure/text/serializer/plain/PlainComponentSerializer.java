@@ -43,10 +43,16 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * to, colours, decorations, {@link ClickEvent}, and {@link HoverEvent}.</p>
  */
 public class PlainComponentSerializer implements ComponentSerializer<Component, TextComponent, String> {
+  private static final PlainComponentSerializer INSTANCE = new PlainComponentSerializer();
+
   /**
    * A component serializer for plain-based serialization and deserialization.
+   *
+   * @return serializer instance
    */
-  public static final PlainComponentSerializer INSTANCE = new PlainComponentSerializer();
+  public static @NonNull PlainComponentSerializer plain() {
+    return INSTANCE;
+  }
 
   private final @Nullable Function<KeybindComponent, String> keybind;
   private final @Nullable Function<TranslatableComponent, String> translatable;
