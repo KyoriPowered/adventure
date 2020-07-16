@@ -26,6 +26,8 @@ package net.kyori.adventure.text.serializer.gson;
 import com.google.gson.JsonElement;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.TextComponent;
@@ -59,7 +61,7 @@ class StyleTest extends AbstractSerializeDeserializeTest<Style> {
       object.addProperty(StyleSerializer.COLOR, "reset");
     }), Style.class);
     assertNull(s0.color());
-    assertThat(s0.decorations()).isEmpty();
+    assertThat(Style.empty().decorations()).containsExactlyEntriesIn(Stream.of(TextDecoration.values()).collect(Collectors.toMap(Function.identity(), decoration -> TextDecoration.State.NOT_SET)));
   }
 
   @Override
