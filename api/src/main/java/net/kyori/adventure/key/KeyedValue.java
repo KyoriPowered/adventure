@@ -25,14 +25,30 @@ package net.kyori.adventure.key;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import static java.util.Objects.requireNonNull;
+
 /**
- * Something that has an associated {@link Key}.
+ * A {@code T} value with an associated {@link Key}.
+ *
+ * @param <T> the value type
  */
-public interface Keyed {
+public interface KeyedValue<T> extends Keyed {
   /**
-   * Gets the key.
+   * Creates a link.
    *
-   * @return the key
+   * @param key the key
+   * @param value the value
+   * @param <T> the value type
+   * @return the keyed
    */
-  @NonNull Key key();
+  static <T> @NonNull KeyedValue<T> of(final @NonNull Key key, final @NonNull T value) {
+    return new KeyedValueImpl<>(key, requireNonNull(value, "value"));
+  }
+
+  /**
+   * Gets the value.
+   *
+   * @return the value
+   */
+  @NonNull T value();
 }

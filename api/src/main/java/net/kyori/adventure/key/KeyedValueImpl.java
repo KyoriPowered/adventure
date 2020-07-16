@@ -30,11 +30,11 @@ import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-/* package */ final class KeyedImpl<T> implements Examinable, Keyed<T> {
+/* package */ final class KeyedValueImpl<T> implements Examinable, KeyedValue<T> {
   private final Key key;
   private final T value;
 
-  /* package */ KeyedImpl(final Key key, final T value) {
+  /* package */ KeyedValueImpl(final Key key, final T value) {
     this.key = key;
     this.value = value;
   }
@@ -53,7 +53,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
   public boolean equals(final @Nullable Object other) {
     if(this == other) return true;
     if(other == null || this.getClass() != other.getClass()) return false;
-    final KeyedImpl<?> that = (KeyedImpl<?>) other;
+    final KeyedValueImpl<?> that = (KeyedValueImpl<?>) other;
     return this.key.equals(that.key) && this.value.equals(that.value);
   }
 
