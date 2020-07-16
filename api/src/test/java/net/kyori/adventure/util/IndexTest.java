@@ -25,6 +25,7 @@ package net.kyori.adventure.util;
 
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class IndexTest {
@@ -42,6 +43,11 @@ class IndexTest {
     for(final Thing thing : Thing.values()) {
       assertEquals(thing, THINGS.value(thing.name));
     }
+  }
+
+  @Test
+  void testKeys() {
+    assertThat(THINGS.keys()).containsExactly("abc", "def");
   }
 
   private enum Thing {

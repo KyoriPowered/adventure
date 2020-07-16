@@ -29,6 +29,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -140,5 +141,14 @@ public final class Index<K, E> {
    */
   public @Nullable E value(final @NonNull K key) {
     return this.keyToValue.get(key);
+  }
+
+  /**
+   * Gets the keys.
+   *
+   * @return the keys
+   */
+  public @NonNull Set<K> keys() {
+    return Collections.unmodifiableSet(this.keyToValue.keySet());
   }
 }
