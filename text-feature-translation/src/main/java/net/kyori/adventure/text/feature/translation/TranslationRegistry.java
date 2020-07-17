@@ -72,17 +72,17 @@ public interface TranslationRegistry extends Translator {
    */
   default void registerAll(final @NonNull Locale locale, final @NonNull Map<String, MessageFormat> formats) {
     final List<IllegalArgumentException> errors = new LinkedList<>();
-    for (final Map.Entry<String, MessageFormat> entry : formats.entrySet()) {
+    for(final Map.Entry<String, MessageFormat> entry : formats.entrySet()) {
       try {
         this.register(entry.getKey(), locale, entry.getValue());
-      } catch(IllegalArgumentException e) {
+      } catch(final IllegalArgumentException e) {
         errors.add(e);
       }
     }
     final int size = errors.size();
-    if (size == 1) {
+    if(size == 1) {
       throw errors.get(0);
-    } else if (size > 1) {
+    } else if(size > 1) {
       throw new IllegalArgumentException(String.format("Invalid key (and %d more)", size - 1), errors.get(0));
     }
   }
@@ -97,18 +97,21 @@ public interface TranslationRegistry extends Translator {
    */
   default void registerAll(final @NonNull Locale locale, final @NonNull ResourceBundle resourceBundle, final boolean escapeSingleQuotes) {
     final List<IllegalArgumentException> errors = new LinkedList<>();
-    for (final String key : resourceBundle.keySet()) {
-      final MessageFormat format = new MessageFormat(resourceBundle.getString(key).replaceAll(escapeSingleQuotes ?  "'" : "", "''"), locale);
+    for(final String key : resourceBundle.keySet()) {
+      String format = resourceBundle.getString(key);
+      if(escapeSingleQuotes) {
+        format = format.replaceAll("'", "''");
+      }
       try {
-        register(key, locale, format);
+        this.register(key, locale, new MessageFormat(format, locale));
       } catch(final IllegalArgumentException e) {
         errors.add(e);
       }
     }
     final int size = errors.size();
-    if (size == 1) {
+    if(size == 1) {
       throw errors.get(0);
-    } else if (size > 1) {
+    } else if(size > 1) {
       throw new IllegalArgumentException(String.format("Invalid key (and %d more)", size - 1), errors.get(0));
     }
   }

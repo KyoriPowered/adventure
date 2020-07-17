@@ -30,34 +30,37 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 class TranslationRegistryTest {
   static final TranslationRegistry REGISTRY = TranslationRegistry.get();
   static final TranslatableComponentRenderer RENDERER = new TranslatableComponentRenderer();
 
-  @Test
   @BeforeAll
-  static void testRegister() {
-    REGISTRY.register("test", Locale.US, new MessageFormat("This is a test."));
-    REGISTRY.register("cats", Locale.US, new MessageFormat("{0} and {1} are cats."));
-    assertEquals(new MessageFormat("{0} and {1} are cats."), REGISTRY.translate("cats", Locale.US));
+  static void testRegisterAll() {
+    REGISTRY.registerAll(Locale.US, Locale.US.toLanguageTag(), true);
   }
 
   @Test
-  @AfterAll
-  static void testUnregister() {
-    REGISTRY.unregister("test");
-    assertNull(REGISTRY.translate("test", Locale.US));
+  void testTranslate() {
+    assertEquals(new MessageFormat("{0} and ''{1}'' are cats.", Locale.US), REGISTRY.translate("cats", Locale.US));
   }
 
   @Test
-  void testSimple() {
+  void testTranslate_escapeQuotes() {
+    assertEquals(new MessageFormat("☃", Locale.US), REGISTRY.translate("snowperson", Locale.US));
+  }
+
+  @Test
+  void testTranslate_utf8() {
+    assertEquals(new MessageFormat("☃", Locale.US), REGISTRY.translate("snowperson", Locale.US));
+  }
+
+  @Test
+  void testRender_simple() {
     assertEquals(
       TextComponent.of("This is a test.", NamedTextColor.YELLOW),
       RENDERER.render(
@@ -72,14 +75,14 @@ class TranslationRegistryTest {
   }
 
   @Test
-  void testComplex() {
+  void testRender_complex() {
     assertEquals(
       TextComponent.builder("")
         .color(NamedTextColor.YELLOW)
         .append(TextComponent.of("kashike"))
-        .append(TextComponent.of(" and "))
+        .append(TextComponent.of(" and '"))
         .append(TextComponent.of("lucko"))
-        .append(TextComponent.of(" are cats."))
+        .append(TextComponent.of("' are cats."))
         .build(),
       RENDERER.render(
         TranslatableComponent
@@ -97,7 +100,7 @@ class TranslationRegistryTest {
   }
 
   @Test
-  void testVeryComplex() {
+  void testRender_veryComplex() {
     assertEquals(
       TextComponent.builder("")
         .color(NamedTextColor.YELLOW)
@@ -105,9 +108,9 @@ class TranslationRegistryTest {
         .append(
           TextComponent.of("")
             .append(TextComponent.of("kashike"))
-            .append(TextComponent.of(" and "))
+            .append(TextComponent.of(" and '"))
             .append(TextComponent.of("lucko"))
-            .append(TextComponent.of(" are cats."))
+            .append(TextComponent.of("' are cats."))
             .append(TextComponent.space())
             .append(TextComponent.of("Meow!"))
             .hoverEvent(HoverEvent.showText(TextComponent.of("This is a test.")))
