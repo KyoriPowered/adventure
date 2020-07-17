@@ -23,6 +23,8 @@
  */
 package net.kyori.adventure.nbt;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.DataOutput;
@@ -35,6 +37,8 @@ import java.nio.file.Path;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import static net.kyori.adventure.nbt.IOStreamUtil.closeShield;
 
 public final class BinaryTagIO {
   private BinaryTagIO() {
@@ -52,20 +56,20 @@ public final class BinaryTagIO {
    * @throws IOException if an exception was encountered while reading a compound tag
    */
   public static @NonNull CompoundBinaryTag readPath(final @NonNull Path path) throws IOException {
-    return readInputStream(Files.newInputStream(path));
+    try(final InputStream is = new BufferedInputStream(Files.newInputStream(path))) {
+      return readInputStream(is);
+    }
   }
 
   /**
-   * Reads a compound tag from an input stream.
+   * Reads a compound tag from an input stream. The stream is not closed afterwards.
    *
    * @param input the input stream
    * @return the compound tag
    * @throws IOException if an exception was encountered while reading a compound tag
    */
   public static @NonNull CompoundBinaryTag readInputStream(final @NonNull InputStream input) throws IOException {
-    try(final DataInputStream dis = new DataInputStream(input)) {
-      return readDataInput(dis);
-    }
+    return readDataInput(new DataInputStream(closeShield(input)));
   }
 
   /**
@@ -76,18 +80,20 @@ public final class BinaryTagIO {
    * @throws IOException if an exception was encountered while reading a compound tag
    */
   public static @NonNull CompoundBinaryTag readCompressedPath(final @NonNull Path path) throws IOException {
-    return readCompressedInputStream(Files.newInputStream(path));
+    try(final InputStream is = Files.newInputStream(path)) {
+      return readCompressedInputStream(is);
+    }
   }
 
   /**
-   * Reads a compound tag from an input stream using GZIP decompression.
+   * Reads a compound tag from an input stream using GZIP decompression. The stream is not closed afterwards.
    *
    * @param input the input stream
    * @return the compound tag
    * @throws IOException if an exception was encountered while reading a compound tag
    */
   public static @NonNull CompoundBinaryTag readCompressedInputStream(final @NonNull InputStream input) throws IOException {
-    try(final DataInputStream dis = new DataInputStream(new GZIPInputStream(input))) {
+    try(final DataInputStream dis = new DataInputStream(new BufferedInputStream(new GZIPInputStream(closeShield(input))))) {
       return readDataInput(dis);
     }
   }
@@ -116,20 +122,20 @@ public final class BinaryTagIO {
    * @throws IOException if an exception was encountered while writing the compound tag
    */
   public static void writePath(final @NonNull CompoundBinaryTag tag, final @NonNull Path path) throws IOException {
-    writeOutputStream(tag, Files.newOutputStream(path));
+    try(final OutputStream os = new BufferedOutputStream(Files.newOutputStream(path))) {
+      writeOutputStream(tag, os);
+    }
   }
 
   /**
-   * Writes a compound tag to an output stream.
+   * Writes a compound tag to an output stream. The output stream will not be closed.
    *
    * @param tag the compound tag
    * @param output the output stream
    * @throws IOException if an exception was encountered while writing the compound tag
    */
   public static void writeOutputStream(final @NonNull CompoundBinaryTag tag, final @NonNull OutputStream output) throws IOException {
-    try(final DataOutputStream dos = new DataOutputStream(output)) {
-      writeDataOutput(tag, dos);
-    }
+    writeDataOutput(tag, new DataOutputStream(output));
   }
 
   /**
@@ -144,14 +150,14 @@ public final class BinaryTagIO {
   }
 
   /**
-   * Writes a compound tag to an output stream using GZIP compression.
+   * Writes a compound tag to an output stream using GZIP compression. The output stream is not closed afterwards.
    *
    * @param tag the compound tag
    * @param output the output stream
    * @throws IOException if an exception was encountered while writing the compound tag
    */
   public static void writeCompressedOutputStream(final @NonNull CompoundBinaryTag tag, final @NonNull OutputStream output) throws IOException {
-    try(final DataOutputStream dos = new DataOutputStream(new GZIPOutputStream(output))) {
+    try(final DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new GZIPOutputStream(closeShield(output))))) {
       writeDataOutput(tag, dos);
     }
   }
