@@ -24,6 +24,7 @@
 package net.kyori.adventure.text;
 
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
 import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -79,7 +80,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
 
   /**
    * Sets the block position to a {@link LocalPos} with the given coordinates.
-   * 
+   *
    * @param left the left coordinate
    * @param up the up coordinate
    * @param forwards the forwards coordinate
@@ -190,6 +191,48 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
    * A position.
    */
   interface Pos {
+    /**
+     * Attempt to parse a position from the input string.
+     * 
+     * <p>
+     *   The input string must refer to a local position (with 3 {@code ^}-prefixed digits),
+     *   or a world position (with 3 digits that are global if unprefixed, or relative to the 
+     *   current position if {@code ~}-prefixed).
+     * </p>
+     * 
+     * @param input input
+     * @return a new pos
+     * @throws IllegalArgumentException if the position was in an invalid format
+     */
+    static @NonNull Pos fromString(final @NonNull String input) throws IllegalArgumentException {
+      final Matcher localMatch = BlockNBTComponentImpl.Tokens.LOCAL_PATTERN.matcher(input);
+      if(localMatch.matches()) {
+        return BlockNBTComponent.LocalPos.of(
+          Double.parseDouble(localMatch.group(1)),
+          Double.parseDouble(localMatch.group(3)),
+          Double.parseDouble(localMatch.group(5))
+        );
+      }
+
+      final Matcher worldMatch = BlockNBTComponentImpl.Tokens.WORLD_PATTERN.matcher(input);
+      if(worldMatch.matches()) {
+        return BlockNBTComponent.WorldPos.of(
+          BlockNBTComponentImpl.Tokens.deserializeCoordinate(worldMatch.group(1), worldMatch.group(2)),
+          BlockNBTComponentImpl.Tokens.deserializeCoordinate(worldMatch.group(3), worldMatch.group(4)),
+          BlockNBTComponentImpl.Tokens.deserializeCoordinate(worldMatch.group(5), worldMatch.group(6))
+        );
+      }
+
+      throw new IllegalArgumentException("Cannot convert position specification '" + input + "' into a position");
+    }
+
+    /**
+     * Get a parseable string representation of this position.
+     * 
+     * @return a string representation
+     * @see #fromString(String)
+     */
+    @NonNull String asString();
   }
 
   /**
@@ -210,7 +253,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
 
     /**
      * Gets the left value.
-     * 
+     *
      * @return the left value
      */
     double left();
@@ -236,7 +279,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
   interface WorldPos extends Pos {
     /**
      * Creates a world position with the given coordinates.
-     * 
+     *
      * @param x the x coordinate
      * @param y the y coordinate
      * @param z the z coordinate
@@ -248,7 +291,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
 
     /**
      * Gets the x coordinate.
-     * 
+     *
      * @return the x coordinate
      */
     @NonNull Coordinate x();

@@ -25,6 +25,7 @@ package net.kyori.adventure.text;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.util.ShadyPines;
@@ -179,6 +180,11 @@ import static java.util.Objects.requireNonNull;
     public String toString() {
       return String.format("^%f ^%f ^%f", this.left, this.up, this.forwards);
     }
+
+    @Override
+    public @NonNull String asString() {
+      return Tokens.serializeLocal(this.left()) + ' ' + Tokens.serializeLocal(this.up()) + ' ' + Tokens.serializeLocal(this.forwards());
+    }
   }
 
   /* package */ static final class WorldPosImpl implements WorldPos {
@@ -230,6 +236,11 @@ import static java.util.Objects.requireNonNull;
       return this.x.toString() + ' ' + this.y.toString() + ' ' + this.z.toString();
     }
 
+    @Override
+    public @NonNull String asString() {
+      return Tokens.serializeCoordinate(this.x()) + ' ' + Tokens.serializeCoordinate(this.y()) + ' ' + Tokens.serializeCoordinate(this.z());
+    }
+
     /* package */ static final class CoordinateImpl implements Coordinate {
       private final int value;
       private final Type type;
@@ -269,6 +280,37 @@ import static java.util.Objects.requireNonNull;
       public String toString() {
         return (this.type == Type.RELATIVE ? "~" : "") + this.value;
       }
+    }
+  }
+
+  /* package */ static final class Tokens {
+    static final Pattern LOCAL_PATTERN = Pattern.compile("^\\^(\\d+(\\.\\d+)?) \\^(\\d+(\\.\\d+)?) \\^(\\d+(\\.\\d+)?)$");
+    static final Pattern WORLD_PATTERN = Pattern.compile("^(~?)(\\d+) (~?)(\\d+) (~?)(\\d+)$");
+  
+    static final String LOCAL_SYMBOL = "^";
+    static final String RELATIVE_SYMBOL = "~";
+    static final String ABSOLUTE_SYMBOL = "";
+  
+    private Tokens() {
+    }
+  
+    /* package */ static WorldPos.Coordinate deserializeCoordinate(final String prefix, final String value) {
+      final int i = Integer.parseInt(value);
+      if(prefix.equals(ABSOLUTE_SYMBOL)) {
+        return WorldPos.Coordinate.absolute(i);
+      } else if(prefix.equals(RELATIVE_SYMBOL)) {
+        return WorldPos.Coordinate.relative(i);
+      } else {
+        throw new AssertionError(); // regex does not allow any other value for prefix.
+      }
+    }
+  
+    /* package */ static String serializeLocal(final double value) {
+      return LOCAL_SYMBOL + value;
+    }
+  
+    /* package */ static String serializeCoordinate(final WorldPos.Coordinate coordinate) {
+      return (coordinate.type() == WorldPos.Coordinate.Type.RELATIVE ? RELATIVE_SYMBOL : ABSOLUTE_SYMBOL) + coordinate.value();
     }
   }
 }
