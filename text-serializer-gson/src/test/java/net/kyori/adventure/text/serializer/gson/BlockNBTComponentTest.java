@@ -24,14 +24,10 @@
 package net.kyori.adventure.text.serializer.gson;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
 import java.util.Map;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.BlockNBTComponent.WorldPos.Coordinate;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BlockNBTComponentTest extends AbstractComponentTest<BlockNBTComponent> {
   @Override
@@ -69,14 +65,6 @@ class BlockNBTComponentTest extends AbstractComponentTest<BlockNBTComponent> {
           json.addProperty(ComponentSerializerImpl.NBT_BLOCK, "12 ~3 1200");
         }
       )
-    );
-  }
-
-  @Test
-  void testLocalPosNoDecimal() {
-    assertEquals(
-      BlockNBTComponent.LocalPos.of(1.0d, 2.0d, 3.89d),
-      AbstractComponentTest.GSON.fromJson(new JsonPrimitive("^1 ^2 ^3.89"), BlockNBTComponent.Pos.class)
     );
   }
 }

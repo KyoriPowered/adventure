@@ -28,19 +28,10 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import net.kyori.adventure.text.BlockNBTComponent;
 
 /* package */ final class BlockNBTComponentPosSerializer extends TypeAdapter<BlockNBTComponent.Pos> {
   static final TypeAdapter<BlockNBTComponent.Pos> INSTANCE = new BlockNBTComponentPosSerializer().nullSafe();
-
-  private static final Pattern LOCAL_PATTERN = Pattern.compile("^\\^(\\d+(\\.\\d+)?) \\^(\\d+(\\.\\d+)?) \\^(\\d+(\\.\\d+)?)$");
-  private static final Pattern WORLD_PATTERN = Pattern.compile("^(~?)(\\d+) (~?)(\\d+) (~?)(\\d+)$");
-
-  private static final String LOCAL_SYMBOL = "^";
-  private static final String RELATIVE_SYMBOL = "~";
-  private static final String ABSOLUTE_SYMBOL = "";
 
   private BlockNBTComponentPosSerializer() {
   }
@@ -48,57 +39,15 @@ import net.kyori.adventure.text.BlockNBTComponent;
   @Override
   public BlockNBTComponent.Pos read(final JsonReader in) throws IOException {
     final String string = in.nextString();
-
-    final Matcher localMatch = LOCAL_PATTERN.matcher(string);
-    if(localMatch.matches()) {
-      return BlockNBTComponent.LocalPos.of(
-        Double.parseDouble(localMatch.group(1)),
-        Double.parseDouble(localMatch.group(3)),
-        Double.parseDouble(localMatch.group(5))
-      );
+    try {
+      return BlockNBTComponent.Pos.fromString(string);
+    } catch(final IllegalArgumentException ex) {
+      throw new JsonParseException("Don't know how to turn " + string + " into a Position");
     }
-
-    final Matcher worldMatch = WORLD_PATTERN.matcher(string);
-    if(worldMatch.matches()) {
-      return BlockNBTComponent.WorldPos.of(
-        deserializeCoordinate(worldMatch.group(1), worldMatch.group(2)),
-        deserializeCoordinate(worldMatch.group(3), worldMatch.group(4)),
-        deserializeCoordinate(worldMatch.group(5), worldMatch.group(6))
-      );
-    }
-
-    throw new JsonParseException("Don't know how to turn " + string + " into a Position");
   }
 
   @Override
   public void write(final JsonWriter out, final BlockNBTComponent.Pos value) throws IOException {
-    if(value instanceof BlockNBTComponent.LocalPos) {
-      final BlockNBTComponent.LocalPos local = (BlockNBTComponent.LocalPos) value;
-      out.value(serializeLocal(local.left()) + ' ' + serializeLocal(local.up()) + ' ' + serializeLocal(local.forwards()));
-    } else if(value instanceof BlockNBTComponent.WorldPos) {
-      final BlockNBTComponent.WorldPos world = (BlockNBTComponent.WorldPos) value;
-      out.value(serializeCoordinate(world.x()) + ' ' + serializeCoordinate(world.y()) + ' ' + serializeCoordinate(world.z()));
-    } else {
-      throw new IllegalArgumentException("Don't know how to serialize " + value + " as a Position");
-    }
-  }
-
-  private static BlockNBTComponent.WorldPos.Coordinate deserializeCoordinate(final String prefix, final String value) {
-    final int i = Integer.parseInt(value);
-    if(prefix.equals(ABSOLUTE_SYMBOL)) {
-      return BlockNBTComponent.WorldPos.Coordinate.absolute(i);
-    } else if(prefix.equals(RELATIVE_SYMBOL)) {
-      return BlockNBTComponent.WorldPos.Coordinate.relative(i);
-    } else {
-      throw new AssertionError(); // regex does not allow any other value for prefix.
-    }
-  }
-
-  private static String serializeLocal(final double value) {
-    return LOCAL_SYMBOL + value;
-  }
-
-  private static String serializeCoordinate(final BlockNBTComponent.WorldPos.Coordinate coordinate) {
-    return (coordinate.type() == BlockNBTComponent.WorldPos.Coordinate.Type.RELATIVE ? RELATIVE_SYMBOL : ABSOLUTE_SYMBOL) + coordinate.value();
+    out.value(value.asString());
   }
 }
