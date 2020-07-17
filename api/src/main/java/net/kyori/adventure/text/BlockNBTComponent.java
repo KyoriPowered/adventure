@@ -204,7 +204,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      * @return a new pos
      * @throws IllegalArgumentException if the position was in an invalid format
      */
-    static Pos fromString(final @NonNull String input) throws IllegalArgumentException {
+    static @NonNull Pos fromString(final @NonNull String input) throws IllegalArgumentException {
       final Matcher localMatch = BlockNBTComponentImpl.Tokens.LOCAL_PATTERN.matcher(input);
       if(localMatch.matches()) {
         return BlockNBTComponent.LocalPos.of(
