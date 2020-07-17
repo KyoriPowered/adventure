@@ -23,49 +23,21 @@
  */
 package net.kyori.adventure.text.feature.translation;
 
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
 /* package */ final class TranslationRegistryImpl extends TranslatableComponentRenderer implements TranslationRegistry {
   /* package */ static final TranslationRegistry INSTANCE = new TranslationRegistryImpl();
   /* package */ static final Translation EMPTY = new Translation("");
-
-  /* package */ static final class Translation implements Examinable {
-    private final String key;
-    private final Map<Locale, MessageFormat> formats;
-
-    private Translation(final @NonNull String key) {
-      this.key = requireNonNull(key, "translation key");
-      this.formats = new ConcurrentHashMap<>();
-    }
-
-    @Override
-    public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
-      return Stream.of(
-        ExaminableProperty.of("key", this.key),
-        ExaminableProperty.of("formats", this.formats)
-      );
-    }
-
-    private void register(final @NonNull Locale locale, final @NonNull MessageFormat format) {
-      this.formats.put(locale, format);
-    }
-
-    private @Nullable MessageFormat translate(final @NonNull Locale locale) {
-      return this.formats.get(locale);
-    }
-  }
-
   private final Map<String, Translation> translations = new ConcurrentHashMap<>();
 
   @Override
@@ -81,5 +53,33 @@ import static java.util.Objects.requireNonNull;
   @Override
   public @Nullable MessageFormat translate(final @NonNull String key, final @NonNull Locale locale) {
     return this.translations.getOrDefault(key, EMPTY).translate(locale);
+  }
+
+  /* package */ static final class Translation implements Examinable {
+    private final String key;
+    private final Map<Locale, MessageFormat> formats;
+
+    /* package */ Translation(final @NonNull String key) {
+      this.key = requireNonNull(key, "translation key");
+      this.formats = new ConcurrentHashMap<>();
+    }
+
+    /* package */ void register(final @NonNull Locale locale, final @NonNull MessageFormat format) {
+      this.formats.put(locale, format);
+    }
+
+    // CHECKSTYLE:OFF
+    /* package */ @Nullable MessageFormat translate(final @NonNull Locale locale) {
+      return this.formats.get(locale);
+    }
+    // CHECKSTYLE:ON
+
+    @Override
+    public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+      return Stream.of(
+        ExaminableProperty.of("key", this.key),
+        ExaminableProperty.of("formats", this.formats)
+      );
+    }
   }
 }

@@ -25,7 +25,6 @@ package net.kyori.adventure.text.feature.translation;
 
 import java.text.MessageFormat;
 import java.util.Locale;
-
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.HoverEvent;

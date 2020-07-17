@@ -23,11 +23,10 @@
  */
 package net.kyori.adventure.text.feature.translation;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import java.text.MessageFormat;
 import java.util.Locale;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A message format translator.

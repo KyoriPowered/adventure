@@ -23,9 +23,6 @@
  */
 package net.kyori.adventure.text.feature.translation;
 
-import net.kyori.adventure.util.UTF8;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,17 +30,25 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
+import net.kyori.adventure.util.UTF8ResourceBundleControl;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A registry of translations.
  */
 public interface TranslationRegistry extends Translator {
   /**
+   * A pattern which matches a single quote.
+   */
+  Pattern SINGLE_QUOTE_PATTERN = Pattern.compile("'");
+
+  /**
    * Gets the shared, global translation registry.
    *
    * @return the translation registry
    */
-  static TranslationRegistry get() {
+  static @NonNull TranslationRegistry get() {
     return TranslationRegistryImpl.INSTANCE;
   }
 
@@ -100,7 +105,7 @@ public interface TranslationRegistry extends Translator {
     for(final String key : resourceBundle.keySet()) {
       String format = resourceBundle.getString(key);
       if(escapeSingleQuotes) {
-        format = format.replaceAll("'", "''");
+        format = SINGLE_QUOTE_PATTERN.matcher(format).replaceAll("''");
       }
       try {
         this.register(key, locale, new MessageFormat(format, locale));
@@ -128,7 +133,7 @@ public interface TranslationRegistry extends Translator {
   default void registerAll(final @NonNull Locale locale, final @NonNull String resourceBundlePath, final boolean escapeSingleQuotes) {
     final ResourceBundle resourceBundle;
     try {
-      resourceBundle = ResourceBundle.getBundle(resourceBundlePath, locale, new UTF8());
+      resourceBundle = ResourceBundle.getBundle(resourceBundlePath, locale, UTF8ResourceBundleControl.get());
     } catch(final MissingResourceException e) {
       return;
     }

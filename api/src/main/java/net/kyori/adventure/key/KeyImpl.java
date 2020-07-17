@@ -42,8 +42,8 @@ import static java.util.Objects.requireNonNull;
     this.namespace = requireNonNull(namespace, "namespace");
     this.value = requireNonNull(value, "value");
 
-    if(!namespaceValid(namespace)) throw new InvalidKeyException(this, "Non [a-z0-9_.-] character in namespace of location");
-    if(!valueValid(value)) throw new InvalidKeyException(this, "Non [a-z0-9/._-] character in path of location");
+    if(!namespaceValid(namespace)) throw new InvalidKeyException(this, "Non [a-z0-9_.-] character in namespace of Key");
+    if(!valueValid(value)) throw new InvalidKeyException(this, "Non [a-z0-9/._-] character in value of Key");
   }
 
   /* package */ static boolean namespaceValid(final @NonNull String namespace) {

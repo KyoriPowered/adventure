@@ -25,7 +25,6 @@ package net.kyori.adventure.text;
 
 import com.google.common.collect.ImmutableSet;
 import java.util.Collections;
-
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
