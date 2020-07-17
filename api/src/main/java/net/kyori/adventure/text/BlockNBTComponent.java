@@ -223,7 +223,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
         );
       }
 
-      throw new IllegalArgumentException("Cannot convert position specification " + input + " into a position");
+      throw new IllegalArgumentException("Cannot convert position specification '" + input + "' into a position");
     }
 
     /**
