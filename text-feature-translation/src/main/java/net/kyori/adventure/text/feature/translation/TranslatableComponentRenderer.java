@@ -28,7 +28,6 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Locale;
 
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.BuildableComponent;
 import net.kyori.adventure.text.Component;

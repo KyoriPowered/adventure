@@ -50,8 +50,6 @@ public interface TranslationRegistry extends Translator {
   /**
    * Registers a translation.
    *
-   * <p>The key namespace should be the name of the owning plugin or platform.</p>
-   *
    * <pre>
    *   final TranslationRegistry registry;
    *   registry.register("myplugin.hello", Locale.US, new MessageFormat("Hi, {0}. How are you?"));

@@ -26,22 +26,34 @@ package net.kyori.adventure.text.feature.translation;
 import java.text.MessageFormat;
 import java.util.Locale;
 
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class TranslationRegistryTest {
   static final TranslationRegistry REGISTRY = TranslationRegistry.get();
   static final TranslatableComponentRenderer RENDERER = new TranslatableComponentRenderer();
 
-  static {
+  @Test
+  @BeforeAll
+  static void testRegister() {
     REGISTRY.register("test", Locale.US, new MessageFormat("This is a test."));
     REGISTRY.register("cats", Locale.US, new MessageFormat("{0} and {1} are cats."));
+    assertEquals(new MessageFormat("{0} and {1} are cats."), REGISTRY.translate("cats", Locale.US));
+  }
+
+  @Test
+  @AfterAll
+  static void testUnregister() {
+    REGISTRY.unregister("test");
+    assertNull(REGISTRY.translate("test", Locale.US));
   }
 
   @Test
