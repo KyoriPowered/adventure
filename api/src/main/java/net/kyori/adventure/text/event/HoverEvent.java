@@ -29,6 +29,8 @@ import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import net.kyori.adventure.text.renderer.ComponentRenderer;
 import net.kyori.adventure.util.Index;
 import net.kyori.examination.Examinable;
@@ -48,7 +50,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @param <V> the value type
  */
-public final class HoverEvent<V> implements Examinable {
+public final class HoverEvent<V> implements Examinable, StyleBuilderApplicable {
   /**
    * Creates a hover event.
    *
@@ -136,6 +138,11 @@ public final class HoverEvent<V> implements Examinable {
     final V newValue = this.action.renderer.render(renderer, context, oldValue);
     if(newValue != oldValue) return new HoverEvent<>(this.action, newValue);
     return this;
+  }
+
+  @Override
+  public void styleApply(final Style.@NonNull Builder style) {
+    style.hoverEvent(this);
   }
 
   @Override
