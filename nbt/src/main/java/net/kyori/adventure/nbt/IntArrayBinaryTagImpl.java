@@ -24,12 +24,17 @@
 package net.kyori.adventure.nbt;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
+import java.util.PrimitiveIterator;
+import java.util.Spliterator;
+import java.util.function.IntConsumer;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-final class IntArrayBinaryTagImpl implements IntArrayBinaryTag {
+final class IntArrayBinaryTagImpl extends ArrayBinaryTagImpl implements IntArrayBinaryTag {
   final int[] value;
 
   IntArrayBinaryTagImpl(final int... value) {
@@ -39,6 +44,54 @@ final class IntArrayBinaryTagImpl implements IntArrayBinaryTag {
   @Override
   public int@NonNull[] value() {
     return Arrays.copyOf(this.value, this.value.length);
+  }
+
+  @Override
+  public int size() {
+    return this.value.length;
+  }
+
+  @Override
+  public int get(final int index) {
+    checkIndex(index, this.value.length);
+    return this.value[index];
+  }
+
+  @Override
+  public PrimitiveIterator.@NonNull OfInt iterator() {
+    return new PrimitiveIterator.OfInt() {
+      private int index;
+
+      @Override
+      public boolean hasNext() {
+        return this.index < (IntArrayBinaryTagImpl.this.value.length - 1);
+      }
+
+      @Override
+      public int nextInt() {
+        if(!this.hasNext()) {
+          throw new NoSuchElementException();
+        }
+        return IntArrayBinaryTagImpl.this.value[this.index++];
+      }
+    };
+  }
+
+  @Override
+  public Spliterator.@NonNull OfInt spliterator() {
+    return Arrays.spliterator(this.value);
+  }
+
+  @Override
+  public @NonNull IntStream stream() {
+    return Arrays.stream(this.value);
+  }
+
+  @Override
+  public void forEachInt(final @NonNull IntConsumer action) {
+    for(int i = 0, length = this.value.length; i < length; i++) {
+      action.accept(this.value[i]);
+    }
   }
 
   // to avoid copying array internally

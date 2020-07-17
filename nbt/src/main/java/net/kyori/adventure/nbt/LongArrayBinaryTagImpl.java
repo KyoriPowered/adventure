@@ -24,12 +24,17 @@
 package net.kyori.adventure.nbt;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
+import java.util.PrimitiveIterator;
+import java.util.Spliterator;
+import java.util.function.LongConsumer;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-final class LongArrayBinaryTagImpl implements LongArrayBinaryTag {
+final class LongArrayBinaryTagImpl extends ArrayBinaryTagImpl implements LongArrayBinaryTag {
   final long[] value;
 
   LongArrayBinaryTagImpl(final long[] value) {
@@ -39,6 +44,54 @@ final class LongArrayBinaryTagImpl implements LongArrayBinaryTag {
   @Override
   public long@NonNull[] value() {
     return Arrays.copyOf(this.value, this.value.length);
+  }
+  
+  @Override
+  public int size() {
+    return this.value.length;
+  }
+
+  @Override
+  public long get(final int index) {
+    checkIndex(index, this.value.length);
+    return this.value[index];
+  }
+
+  @Override
+  public PrimitiveIterator.@NonNull OfLong iterator() {
+    return new PrimitiveIterator.OfLong() {
+      private int index;
+
+      @Override
+      public boolean hasNext() {
+        return this.index < (LongArrayBinaryTagImpl.this.value.length - 1);
+      }
+
+      @Override
+      public long nextLong() {
+        if(!this.hasNext()) {
+          throw new NoSuchElementException();
+        }
+        return LongArrayBinaryTagImpl.this.value[this.index++];
+      }
+    };
+  }
+
+  @Override
+  public Spliterator.@NonNull OfLong spliterator() {
+    return Arrays.spliterator(this.value);
+  }
+
+  @Override
+  public @NonNull LongStream stream() {
+    return Arrays.stream(this.value);
+  }
+
+  @Override
+  public void forEachLong(final @NonNull LongConsumer action) {
+    for(int i = 0, length = this.value.length; i < length; i++) {
+      action.accept(this.value[i]);
+    }
   }
 
   // to avoid copying array internally

@@ -25,6 +25,7 @@ package net.kyori.adventure.nbt;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -441,6 +442,14 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
     }
     return defaultValue;
   }
+
+  /**
+   * Creates a stream of the tags contained within this list.
+   *
+   * @return a new stream
+   * @since 4.2.0
+   */
+  @NonNull Stream<BinaryTag> stream();
 
   /**
    * A list tag builder.
