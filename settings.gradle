@@ -10,7 +10,7 @@ rootProject.name = 'adventure-parent'
   findProject(":text-serializer-$it")?.name = "adventure-text-serializer-$it"
 }
 
-['pagination'].each {
+['pagination', 'translation'].each {
   include "text-feature-$it"
   findProject(":text-feature-$it")?.name = "adventure-text-feature-$it"
 }

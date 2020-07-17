@@ -30,6 +30,8 @@ import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import static java.util.Objects.requireNonNull;
+
 /* package */ final class KeyImpl implements Examinable, Key {
   private static final IntPredicate NAMESPACE_PREDICATE = value -> value == '_' || value == '-' || (value >= 'a' && value <= 'z') || (value >= '0' && value <= '9') || value == '.';
   private static final IntPredicate VALUE_PREDICATE = value -> value == '_' || value == '-' || (value >= 'a' && value <= 'z') || (value >= '0' && value <= '9') || value == '/' || value == '.';
@@ -37,11 +39,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
   private final String value;
 
   /* package */ KeyImpl(final @NonNull String namespace, final @NonNull String value) {
-    if(!namespaceValid(namespace)) throw new ParseException("Non [a-z0-9_.-] character in namespace of location: " + asString(namespace, value));
-    if(!valueValid(value)) throw new ParseException("Non [a-z0-9/._-] character in path of location: " + asString(namespace, value));
+    this.namespace = requireNonNull(namespace, "namespace");
+    this.value = requireNonNull(value, "value");
 
-    this.namespace = namespace;
-    this.value = value;
+    if(!namespaceValid(namespace)) throw new InvalidKeyException(this, "Non [a-z0-9_.-] character in namespace of location");
+    if(!valueValid(value)) throw new InvalidKeyException(this, "Non [a-z0-9/._-] character in path of location");
   }
 
   /* package */ static boolean namespaceValid(final @NonNull String namespace) {

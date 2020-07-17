@@ -39,8 +39,7 @@ public interface Key extends Comparable<Key> {
    *
    * @param string the string
    * @return the key
-   * @throws ParseException if the namespace contains an invalid character
-   * @throws ParseException if the value contains an invalid character
+   * @throws InvalidKeyException if the namespace or value contains an invalid character
    */
   static @NonNull Key of(final @NonNull String string) {
     return of(string, ':');
@@ -52,8 +51,7 @@ public interface Key extends Comparable<Key> {
    * @param string the string
    * @param character the character
    * @return the key
-   * @throws ParseException if the namespace contains an invalid character
-   * @throws ParseException if the value contains an invalid character
+   * @throws InvalidKeyException if the namespace or value contains an invalid character
    */
   static @NonNull Key of(final @NonNull String string, final char character) {
     final int index = string.indexOf(character);
@@ -68,8 +66,7 @@ public interface Key extends Comparable<Key> {
    * @param namespace the namespace
    * @param value the value
    * @return the key
-   * @throws ParseException if the namespace contains an invalid character
-   * @throws ParseException if the value contains an invalid character
+   * @throws InvalidKeyException if the namespace or value contains an invalid character
    */
   static @NonNull Key of(final @NonNull String namespace, final @NonNull String value) {
     return new KeyImpl(namespace, value);
@@ -103,15 +100,5 @@ public interface Key extends Comparable<Key> {
       return KeyImpl.clampCompare(value);
     }
     return KeyImpl.clampCompare(this.namespace().compareTo(that.namespace()));
-  }
-
-  /**
-   * An exception thrown when there is an error parsing a key.
-   */
-  @SuppressWarnings("serial")
-  final class ParseException extends RuntimeException {
-    ParseException(final String message) {
-      super(message);
-    }
   }
 }
