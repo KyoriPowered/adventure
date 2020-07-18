@@ -382,6 +382,15 @@ public class MiniMessageParserTest {
     test(comp, expected);
   }
 
+  @Test
+  public void testFont() {
+    final String input = "Nothing <font:minecraft:uniform>Uniform <font:minecraft:alt>Alt  </font> Uniform";
+    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Nothing \"},{\"text\":\"Uniform \",\"font\":\"minecraft:uniform\"},{\"text\":\"Alt  \",\"font\":\"minecraft:alt\"},{\"text\":\" Uniform\",\"font\":\"minecraft:uniform\"}]}";
+    final Component comp = MiniMessageParser.parseFormat(input);
+
+    test(comp, expected);
+  }
+
   private void test(final @NonNull String input, final @NonNull String expected) {
     test(MiniMessageParser.parseFormat(input), expected);
   }

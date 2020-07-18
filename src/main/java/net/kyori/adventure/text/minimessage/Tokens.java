@@ -32,6 +32,7 @@ package net.kyori.adventure.text.minimessage;
   public static final String INSERTION = "insert";
   public static final String COLOR = "color";
   public static final String HEX = "#";
+  public static final String FONT = "font";
 
   // vanilla decoration
   public static final String UNDERLINED = "underlined";
