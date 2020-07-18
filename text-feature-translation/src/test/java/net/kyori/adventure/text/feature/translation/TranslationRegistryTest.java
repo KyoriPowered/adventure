@@ -33,14 +33,20 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TranslationRegistryTest {
   static final TranslationRegistry REGISTRY = TranslationRegistry.get();
   static final TranslatableComponentRenderer RENDERER = new TranslatableComponentRenderer();
 
   @BeforeAll
-  static void testRegisterAll() {
+  static void testRegister() {
     REGISTRY.registerAll(Locale.US, Locale.US.toLanguageTag(), true);
+  }
+
+  @Test
+  void testRegister_duplicate() {
+    assertThrows(IllegalArgumentException.class, () -> REGISTRY.register("test", Locale.US, new MessageFormat("Another test.")));
   }
 
   @Test
