@@ -542,7 +542,12 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
     if (args.length < 2) {
       throw new ParseException("Can't parse hover action (too few args) " + token);
     }
-    inner = cleanInner(inner);
+    // regex doesnt seem to match inner if it contains a multiline, so lets get it ourself
+    if (inner == null) {
+      inner = cleanInner(token.replace(args[0] + SEPARATOR + args[1] + SEPARATOR, ""));
+    } else {
+      inner = cleanInner(inner);
+    }
     // TODO figure out support for all hover actions
     final HoverEvent.Action action = HoverEvent.Action.NAMES.value(args[1].toLowerCase(Locale.ROOT));
     if (action == null) throw new ParseException("Can't parse hover action (invalid action) " + token);

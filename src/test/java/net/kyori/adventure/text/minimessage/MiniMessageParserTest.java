@@ -184,6 +184,14 @@ public class MiniMessageParserTest {
   }
 
   @Test
+  public void testHoverMultiline() {
+    final String input = "<hover:show_text:'<red>test\ntest2'>TEST";
+    final String expected = "{\"text\":\"TEST\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"test\\ntest2\",\"color\":\"red\"}}}";
+
+    test(input, expected);
+  }
+
+  @Test
   public void testClick() {
     final String input = "<click:run_command:test>TEST";
     final String expected = "{\"text\":\"TEST\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"test\"}}";
@@ -376,7 +384,7 @@ public class MiniMessageParserTest {
   @Test
   public void testGradientPhase() {
     final String input = "<yellow>Woo: <gradient:green:blue:10>||||||||||||||||||||||||</gradient>!";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Woo: \",\"color\":\"yellow\"},{\"text\":\"|\",\"extra\":[{\"text\":\"|\",\"color\":\"#55f85c\"},{\"text\":\"|\",\"color\":\"#55f064\"},{\"text\":\"|\",\"color\":\"#55e96b\"},{\"text\":\"|\",\"color\":\"#55e173\"},{\"text\":\"|\",\"color\":\"#55da7a\"},{\"text\":\"|\",\"color\":\"#55d381\"},{\"text\":\"|\",\"color\":\"#55cb89\"},{\"text\":\"|\",\"color\":\"#55c490\"},{\"text\":\"|\",\"color\":\"#55bc98\"},{\"text\":\"|\",\"color\":\"#55b59f\"},{\"text\":\"|\",\"color\":\"#55aea6\"},{\"text\":\"|\",\"color\":\"#55a6ae\"},{\"text\":\"|\",\"color\":\"#559fb5\"},{\"text\":\"|\",\"color\":\"#5598bc\"},{\"text\":\"|\",\"color\":\"#5590c4\"},{\"text\":\"|\",\"color\":\"#5589cb\"},{\"text\":\"|\",\"color\":\"#5581d3\"},{\"text\":\"|\",\"color\":\"#557ada\"},{\"text\":\"|\",\"color\":\"#5573e1\"},{\"text\":\"|\",\"color\":\"#556be9\"},{\"text\":\"|\",\"color\":\"#5564f0\"},{\"text\":\"|\",\"color\":\"#555cf8\"},{\"text\":\"|\",\"color\":\"blue\"}],\"color\":\"green\"},{\"text\":\"!\",\"color\":\"yellow\"}]}";
+    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Woo: \",\"color\":\"yellow\"},{\"text\":\"|\",\"extra\":[{\"text\":\"|\",\"color\":\"#55aea6\"},{\"text\":\"|\",\"color\":\"#55a6ae\"},{\"text\":\"|\",\"color\":\"#559fb5\"},{\"text\":\"|\",\"color\":\"#5598bc\"},{\"text\":\"|\",\"color\":\"#5590c4\"},{\"text\":\"|\",\"color\":\"#5589cb\"},{\"text\":\"|\",\"color\":\"#5581d3\"},{\"text\":\"|\",\"color\":\"#557ada\"},{\"text\":\"|\",\"color\":\"#5573e1\"},{\"text\":\"|\",\"color\":\"#556be9\"},{\"text\":\"|\",\"color\":\"#5564f0\"},{\"text\":\"|\",\"color\":\"#555cf8\"},{\"text\":\"|\",\"color\":\"blue\"},{\"text\":\"|\",\"color\":\"#555cf8\"},{\"text\":\"|\",\"color\":\"#5564f0\"},{\"text\":\"|\",\"color\":\"#556be9\"},{\"text\":\"|\",\"color\":\"#5573e1\"},{\"text\":\"|\",\"color\":\"#557ada\"},{\"text\":\"|\",\"color\":\"#5581d3\"},{\"text\":\"|\",\"color\":\"#5589cb\"},{\"text\":\"|\",\"color\":\"#5590c4\"},{\"text\":\"|\",\"color\":\"#5598bc\"},{\"text\":\"|\",\"color\":\"#559fb5\"}],\"color\":\"#55b59f\"},{\"text\":\"!\",\"color\":\"yellow\"}]}";
     final Component comp = MiniMessageParser.parseFormat(input);
 
     test(comp, expected);
