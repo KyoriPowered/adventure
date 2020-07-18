@@ -28,6 +28,7 @@ import net.kyori.adventure.text.format.TextColor;
 
 public class Gradient implements Fancy {
 
+  private int index = 0;
   private int colorIndex = 0;
 
   private float factorStep = 0;
@@ -45,8 +46,9 @@ public class Gradient implements Fancy {
 
   @Override
   public void init(int size) {
-    this.factorStep = (float) (1. / (size + this.colorIndex - 1));
-    this.colorIndex = 0;
+    size = size / (colors.length - 1);
+    this.factorStep = (float) (1. / (size + this.index - 1));
+    this.index = 0;
   }
 
   @Override
@@ -55,14 +57,19 @@ public class Gradient implements Fancy {
   }
 
   private TextColor getColor() {
-    float factor = factorStep * (colorIndex++ + phase);
+    // color switch needed?
+    if (factorStep * index > 1.1) {
+      colorIndex++;
+      index = 0;
+    }
+
+    float factor = factorStep * (index++ + phase);
     // loop around if needed
     if (factor > 1) {
-        factor = 1 - (factor - 1);
-        return interpolate(colors[0], colors[1], factor);
-    } else {
-        return interpolate(colors[0], colors[1], factor);
+      factor = 1 - (factor - 1);
     }
+
+    return interpolate(colors[colorIndex], colors[colorIndex + 1], factor);
   }
 
   private TextColor interpolate(TextColor color1, TextColor color2, float factor) {

@@ -42,6 +42,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.EnumSet;
@@ -454,7 +455,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
     if (token.contains(SEPARATOR)) {
       final String[] split = token.split(":");
       if (split.length >= 3) {
-        final TextColor[] colors = new TextColor[split.length - 1];
+        TextColor[] colors = new TextColor[split.length - 1];
         int phase = 0;
         for (int i = 1; i < split.length; i++) {
           final TextColor color = parseColor(split[i]);
@@ -463,14 +464,17 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
             if (i == split.length - 1) {
               try {
                 phase = Integer.parseInt(split[i]);
+                // we created one entry to much, lets get rid of it
+                colors = Arrays.copyOfRange(colors, 0, colors.length - 1);
               } catch (NumberFormatException ex) {
                 throw new ParseException("Can't parse gradient phase (not a color nor a phase " + i + ") " + token);
               }
             } else {
               throw new ParseException("Can't parse gradient phase (not a color " + i + ") " + token);
             }
+          } else {
+            colors[i - 1] = color;
           }
-          colors[i - 1] = color;
         }
         return new Gradient(phase, colors);
       } else {
