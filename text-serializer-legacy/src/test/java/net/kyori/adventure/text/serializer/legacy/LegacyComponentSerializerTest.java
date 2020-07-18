@@ -208,9 +208,9 @@ class LegacyComponentSerializerTest {
     assertEquals(expected, LegacyComponentSerializer.builder().hexColors().build().deserialize("§x§eKittens!"));
   }
 
+  // https://github.com/KyoriPowered/adventure/issues/108
   @Test
   void testFromLegacyWithNewline() {
-    // https://github.com/KyoriPowered/adventure/issues/108
     final TextComponent comp = TextComponent.builder("One: Test ")
       .append(TextComponent.of("String\nTwo: ", NamedTextColor.GREEN))
       .append(TextComponent.of("Test ", NamedTextColor.AQUA))
@@ -220,14 +220,33 @@ class LegacyComponentSerializerTest {
     assertEquals(comp, LegacyComponentSerializer.legacy('&').deserialize(in));
   }
 
+  // https://github.com/KyoriPowered/adventure/issues/108
   @Test
   void testBeginningTextUnformatted() {
-    // https://github.com/KyoriPowered/adventure/issues/108
     final String input = "Test &cString";
     final TextComponent expected = TextComponent.builder("Test ")
       .append(TextComponent.of("String", NamedTextColor.RED))
       .build();
 
     assertEquals(expected, LegacyComponentSerializer.legacy(LegacyComponentSerializer.AMPERSAND_CHAR).deserialize(input));
+  }
+
+  // https://github.com/KyoriPowered/adventure/issues/92
+  @Test
+  void testStackedFormattingFlags() {
+    final String input = "§r§r§c§k||§e§lProfile§c§k||";
+    final TextComponent output = TextComponent.builder().append(
+      TextComponent.of("||", Style.of(NamedTextColor.RED, TextDecoration.OBFUSCATED)),
+      TextComponent.of("Profile", Style.of(NamedTextColor.YELLOW, TextDecoration.BOLD)),
+      TextComponent.of("||", Style.of(NamedTextColor.RED, TextDecoration.OBFUSCATED))
+    ).build();
+    assertEquals(output, LegacyComponentSerializer.legacy().deserialize(input));
+  }
+
+  @Test
+  void testResetClearsColorInSameBlock() {
+    final String input = "§c§rCleared";
+    final TextComponent output = TextComponent.of("Cleared");
+    assertEquals(output, LegacyComponentSerializer.legacy().deserialize(input));
   }
 }

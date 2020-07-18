@@ -190,7 +190,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
           current = TextComponent.builder();
         }
 
-        reset |= applyFormat(current, decoded.format);
+        if(!reset) {
+          reset = applyFormat(current, decoded.format);
+        }
         if(decoded.encodedFormat == FormatCodeType.BUNGEECORD_UNUSUAL_HEX) {
           // BungeeCord hex characters are a repeating set of characters, all of which are also valid
           // legacy Mojang chat colors. Subtract the number of characters in the format, and only then
@@ -231,11 +233,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
       builder.decoration((TextDecoration) format, TextDecoration.State.TRUE);
       return false;
     } else if(format instanceof Reset) {
-      builder.colorIfAbsent(null);
-      for(int i = 0, length = DECORATIONS.length; i < length; i++) {
-        final TextDecoration decoration = DECORATIONS[i];
-        builder.decoration(decoration, TextDecoration.State.NOT_SET);
-      }
       return true;
     }
     throw new IllegalArgumentException(String.format("unknown format '%s'", format.getClass()));
