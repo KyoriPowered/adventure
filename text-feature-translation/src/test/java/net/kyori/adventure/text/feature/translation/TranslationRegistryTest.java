@@ -45,12 +45,12 @@ class TranslationRegistryTest {
 
   @Test
   void testTranslate() {
-    assertEquals(new MessageFormat("{0} and ''{1}'' are cats.", Locale.US), REGISTRY.translate("cats", Locale.US));
+    assertEquals(new MessageFormat("This is a test.", Locale.US), REGISTRY.translate("test", Locale.US));
   }
 
   @Test
   void testTranslate_escapeQuotes() {
-    assertEquals(new MessageFormat("☃", Locale.US), REGISTRY.translate("snowperson", Locale.US));
+    assertEquals(new MessageFormat("{0} and ''{1}'' are cats.", Locale.US), REGISTRY.translate("cats", Locale.US));
   }
 
   @Test
