@@ -31,6 +31,7 @@ package net.kyori.adventure.text.minimessage;
   public static final String TRANSLATABLE = "lang";
   public static final String INSERTION = "insert";
   public static final String COLOR = "color";
+  public static final String HEX = "#";
 
   // vanilla decoration
   public static final String UNDERLINED = "underlined";

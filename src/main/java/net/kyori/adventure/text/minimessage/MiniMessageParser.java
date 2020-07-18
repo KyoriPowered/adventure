@@ -56,6 +56,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.CLICK;
 import static net.kyori.adventure.text.minimessage.Tokens.CLOSE_TAG;
 import static net.kyori.adventure.text.minimessage.Tokens.COLOR;
 import static net.kyori.adventure.text.minimessage.Tokens.GRADIENT;
+import static net.kyori.adventure.text.minimessage.Tokens.HEX;
 import static net.kyori.adventure.text.minimessage.Tokens.HOVER;
 import static net.kyori.adventure.text.minimessage.Tokens.INSERTION;
 import static net.kyori.adventure.text.minimessage.Tokens.KEYBIND;
@@ -272,10 +273,16 @@ import static net.kyori.adventure.text.minimessage.Tokens.TRANSLATABLE;
       } else if (token.startsWith(CLOSE_TAG) && resolveColor(token.replace(CLOSE_TAG, "")) != null) {
         colors.pollFirst();
       }
-      // color; hex or named syntax
+      // color hex or named syntax
       else if (token.startsWith(COLOR + SEPARATOR) && (color = resolveColorNew(token)) != null) {
         colors.push(color);
       } else if (token.startsWith(CLOSE_TAG + COLOR) && resolveColorNew(token.replace(CLOSE_TAG, "")) != null) {
+        colors.pollFirst();
+      }
+      // color: short hex
+      else if (token.startsWith(HEX) && (color = parseColor(token)) != null) {
+        colors.push(color);
+      } else if (token.startsWith(CLOSE_TAG + HEX) && parseColor(token.replace(CLOSE_TAG, "")) != null) {
         colors.pollFirst();
       }
       // keybind

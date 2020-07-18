@@ -65,6 +65,16 @@ public class MiniMessageParserTest {
   }
 
   @Test
+  public void testHexColorShort() {
+      final String input1 = "<#ff00ff>TEST<#00ff00> nested</#00ff00>Test";
+      final String input2 = "<#ff00ff>TEST<#00ff00> nested<#ff00ff>Test";
+      final String out1 = GsonComponentSerializer.gson().serialize(MiniMessageParser.parseFormat(input1));
+      final String out2 = GsonComponentSerializer.gson().serialize(MiniMessageParser.parseFormat(input2));
+
+      assertEquals(out1, out2);
+  }
+
+  @Test
   public void testStripSimple() {
     final String input = "<yellow>TEST<green> nested</green>Test";
     final String expected = "TEST nestedTest";
@@ -246,7 +256,7 @@ public class MiniMessageParserTest {
   }
 
   @Test
-  @Disabled("Need to implement inner with ' or \"")  // TODO 
+  @Disabled("Need to implement inner with ' or \"")  // TODO
   public void testTranslatableWithHover() {
     final String input = "Test: <lang:commands.drop.success.single:'<red>1<hover:show_text:'<red>dum'>':'<blue>Stone'>!";
     final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Test: \"},{\"translate\":\"commands.drop.success.single\",\"with\":[{\"text\":\"1\",\"color\":\"red\"},{\"text\":\"Stone\",\"color\":\"blue\"}]},{\"text\":\"!\"}]}";
@@ -287,7 +297,7 @@ public class MiniMessageParserTest {
   }
 
   @Test
-  @Disabled("Need to implement inner with ' or \"")  // TODO 
+  @Disabled("Need to implement inner with ' or \"")  // TODO
   public void testGH5Modified() {
     final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:<pack_url>><hover:show_text:\"<green>/!\\ install it from 'Options/ResourcePacks' in your game\"><green><bold>CLICK HERE</bold></hover></click>";
     final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"»\",\"color\":\"dark_gray\"},{\"text\":\" To download it from the internet, \",\"color\":\"gray\"},{\"text\":\"CLICK HERE\",\"color\":\"green\",\"bold\":true,\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://www.google.com\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"/!\\\\ install it from 'Options/ResourcePacks' in your game\",\"color\":\"green\"}}}]}";
