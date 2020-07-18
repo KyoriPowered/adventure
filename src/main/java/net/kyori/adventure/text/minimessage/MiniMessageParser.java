@@ -441,12 +441,26 @@ import static net.kyori.adventure.text.minimessage.Tokens.TRANSLATABLE;
   private static @NonNull Gradient handleGradient(final @NonNull String token) {
     if (token.contains(SEPARATOR)) {
       final String[] split = token.split(":");
-      if (split.length == 3) {
-        final TextColor c1 = parseColor(split[1]);
-        if (c1 == null) throw new ParseException("Can't parse gradient phase (not a color 1) " + token);
-        final TextColor c2 = parseColor(split[2]);
-        if (c2 == null) throw new ParseException("Can't parse gradient phase (not a color 2) " + token);
-        return new Gradient(c1, c2);
+      if (split.length >= 3) {
+        final TextColor[] colors = new TextColor[split.length - 1];
+        int phase = 0;
+        for (int i = 1; i < split.length; i++) {
+          final TextColor color = parseColor(split[i]);
+          if (color == null) {
+            // might be the phase
+            if (i == split.length - 1) {
+              try {
+                phase = Integer.parseInt(split[i]);
+              } catch (NumberFormatException ex) {
+                throw new ParseException("Can't parse gradient phase (not a color nor a phase " + i + ") " + token);
+              }
+            } else {
+              throw new ParseException("Can't parse gradient phase (not a color " + i + ") " + token);
+            }
+          }
+          colors[i - 1] = color;
+        }
+        return new Gradient(phase, colors);
       } else {
         throw new ParseException("Can't parse gradient (wrong args) " + token);
       }

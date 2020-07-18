@@ -31,16 +31,16 @@ public class Gradient implements Fancy {
   private int colorIndex = 0;
 
   private float factorStep = 0;
-  private final TextColor color1;
-  private final TextColor color2;
+  private final TextColor[] colors;
+  private final int phase;
 
   public Gradient() {
-    this(TextColor.fromHexString("#ffffff"), TextColor.fromHexString("#000000"));
+    this(0, TextColor.fromHexString("#ffffff"), TextColor.fromHexString("#000000"));
   }
 
-  public Gradient(TextColor c1, TextColor c2) {
-    this.color1 = c1;
-    this.color2 = c2;
+  public Gradient(int phase, TextColor... colors) {
+    this.colors = colors;
+    this.phase = phase;
   }
 
   @Override
@@ -55,8 +55,14 @@ public class Gradient implements Fancy {
   }
 
   private TextColor getColor() {
-    float factor = factorStep * colorIndex++;
-    return interpolate(color1, color2, factor);
+    float factor = factorStep * (colorIndex++ + phase);
+    // loop around if needed
+    if (factor > 1) {
+        factor = 1 - (factor - 1);
+        return interpolate(colors[0], colors[1], factor);
+    } else {
+        return interpolate(colors[0], colors[1], factor);
+    }
   }
 
   private TextColor interpolate(TextColor color1, TextColor color2, float factor) {
