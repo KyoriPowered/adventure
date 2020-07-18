@@ -29,9 +29,11 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -145,5 +147,12 @@ class TranslationRegistryTest {
         Locale.US
       )
     );
+  }
+
+  @Test
+  @AfterAll
+  static void testUnregister() {
+    REGISTRY.unregister("test");
+    assertNull(REGISTRY.translate("test", Locale.US));
   }
 }

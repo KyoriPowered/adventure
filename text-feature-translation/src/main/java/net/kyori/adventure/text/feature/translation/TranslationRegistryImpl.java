@@ -65,7 +65,7 @@ import static java.util.Objects.requireNonNull;
     }
 
     /* package */ void register(final @NonNull Locale locale, final @NonNull MessageFormat format) {
-      if (this.formats.containsKey(requireNonNull(locale, "locale"))) {
+      if(this.formats.containsKey(requireNonNull(locale, "locale"))) {
         throw new IllegalArgumentException(String.format("Translation already exists: %s for %s", this.key, locale));
       }
       this.formats.putIfAbsent(locale, requireNonNull(format, "message format"));
