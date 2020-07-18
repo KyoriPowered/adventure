@@ -1,4 +1,8 @@
-# adventure-text-minimessage [![License](https://img.shields.io/github/license/KyoriPowered/adventure-text-minimessage.svg)](https://github.com/KyoriPowered/adventure-text-minimessage/blob/master/license.txt) [![Build Status](https://travis-ci.org/KyoriPowered/adventure-text-minimessage.svg?branch=master)](https://travis-ci.org/KyoriPowered/adventure-text-minimessage)
+# adventure-text-minimessage 
+[![License](https://img.shields.io/github/license/KyoriPowered/adventure-text-minimessage.svg)](https://github.com/KyoriPowered/adventure-text-minimessage/blob/master/license.txt)
+[![Build Status](https://travis-ci.org/KyoriPowered/adventure-text-minimessage.svg?branch=master)](https://travis-ci.org/KyoriPowered/adventure-text-minimessage)
+[![Maven Central](https://img.shields.io/maven-central/v/net.kyori/adventure-text-minimessage)](https://mvnrepository.com/artifact/net.kyori/adventure-text-minimessage)
+[![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/net.kyori/adventure-text-minimessage?server=https%3A%2F%2Foss.sonatype.org&label=sonatype)](https://mvnrepository.com/artifact/net.kyori/adventure-text-minimessage)
 
 Simple library that implements an easy to use textual format on top of components, with optional markdown like formatting
 
