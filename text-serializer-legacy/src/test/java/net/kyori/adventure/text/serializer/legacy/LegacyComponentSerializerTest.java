@@ -205,4 +205,25 @@ class LegacyComponentSerializerTest {
     final TextComponent expected = TextComponent.of("Kittens!", NamedTextColor.YELLOW);
     assertEquals(expected, LegacyComponentSerializer.builder().hexColors().build().deserialize("§x§eKittens!"));
   }
+
+  @Test
+  void testFromLegacyWithNewline() {
+    final TextComponent comp = TextComponent.builder("One: Test ")
+      .append(TextComponent.of("String\nTwo: ", NamedTextColor.GREEN))
+      .append(TextComponent.of("Test ", NamedTextColor.AQUA))
+      .append(TextComponent.of("String", NamedTextColor.GREEN))
+      .build();
+    final String in = "One: Test &aString\nTwo: &bTest &aString";
+    assertEquals(comp, LegacyComponentSerializer.legacy('&').deserialize(in));
+  }
+
+  @Test
+  void testBeginningTextUnformatted() {
+    final String input = "Test &cString";
+    final TextComponent expected = TextComponent.builder("Test ")
+      .append(TextComponent.of("String", NamedTextColor.RED))
+      .build();
+
+    assertEquals(expected, LegacyComponentSerializer.legacy(LegacyComponentSerializer.AMPERSAND_CHAR).deserialize(input));
+  }
 }
