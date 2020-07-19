@@ -207,7 +207,7 @@ class LegacyComponentSerializerTest {
   }
 
   @Test
-  void testFromLegacyWithNewline() {
+  void testFromLegacyWithNewline() { // https://github.com/KyoriPowered/adventure/issues/108
     final TextComponent comp = TextComponent.builder("One: Test ")
       .append(TextComponent.of("String\nTwo: ", NamedTextColor.GREEN))
       .append(TextComponent.of("Test ", NamedTextColor.AQUA))
@@ -218,7 +218,7 @@ class LegacyComponentSerializerTest {
   }
 
   @Test
-  void testBeginningTextUnformatted() {
+  void testBeginningTextUnformatted() { // https://github.com/KyoriPowered/adventure/issues/108
     final String input = "Test &cString";
     final TextComponent expected = TextComponent.builder("Test ")
       .append(TextComponent.of("String", NamedTextColor.RED))
