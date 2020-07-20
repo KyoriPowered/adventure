@@ -260,15 +260,23 @@ public interface BossBar {
     /**
      * If the screen should be darkened.
      */
-    DARKEN_SCREEN,
+    DARKEN_SCREEN("darken_screen"),
     /**
      * If boss music should be played.
      */
-    PLAY_BOSS_MUSIC,
+    PLAY_BOSS_MUSIC("play_boss_music"),
     /**
      * If world fog should be created.
      */
-    CREATE_WORLD_FOG;
+    CREATE_WORLD_FOG("create_world_fog");
+
+    // These names are not "official", but we want to provide them to allow serializers to be consistent
+    public static final Index<String, Flag> NAMES = Index.create(Flag.class, flag -> flag.name);
+    private final String name;
+
+    Flag(final String name) {
+      this.name = name;
+    }
   }
 
   enum Overlay {
