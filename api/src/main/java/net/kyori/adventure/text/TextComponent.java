@@ -533,7 +533,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @return the text component
    */
   static @NonNull TextComponent make(final @NonNull Consumer<? super Builder> consumer) {
-    final Builder builder = builder();
+    final Builder builder = builder("");
     return Buildable.configureAndBuild(builder, consumer);
   }
 
