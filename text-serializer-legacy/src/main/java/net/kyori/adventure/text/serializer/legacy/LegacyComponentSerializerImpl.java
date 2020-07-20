@@ -206,15 +206,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
     if(current != null) {
       parts.add(current.build());
     }
-    if(pos > 0) {
-      parts.add(TextComponent.of(input.substring(0, pos)));
-    }
 
-    if(parts.size() == 1) {
+    final String remaining = pos > 0 ? input.substring(0, pos) : "";
+    if(parts.size() == 1 && remaining.isEmpty()) {
       return this.extractUrl(parts.get(0));
     } else {
       Collections.reverse(parts);
-      return this.extractUrl(parts.get(0).children(parts.subList(1, parts.size())));
+      return this.extractUrl(TextComponent.builder(remaining).append(parts).build());
     }
   }
 
