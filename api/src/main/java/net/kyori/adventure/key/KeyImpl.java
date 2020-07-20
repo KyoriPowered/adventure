@@ -45,11 +45,21 @@ import org.checkerframework.checker.nullness.qual.NonNull;
   }
 
   /* package */ static boolean namespaceValid(final @NonNull String namespace) {
-    return namespace.chars().allMatch(NAMESPACE_PREDICATE);
+    for(int i = 0, length = namespace.length(); i < length; i++) {
+      if(!NAMESPACE_PREDICATE.test(namespace.charAt(i))) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /* package */ static boolean valueValid(final @NonNull String value) {
-    return value.chars().allMatch(VALUE_PREDICATE);
+    for(int i = 0, length = value.length(); i < length; i++) {
+      if(!VALUE_PREDICATE.test(value.charAt(i))) {
+        return false;
+      }
+    }
+    return true;
   }
 
   @Override
