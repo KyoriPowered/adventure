@@ -24,8 +24,11 @@
 package net.kyori.adventure.text.format;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.testing.EqualsTester;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -46,6 +49,16 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class StyleTest {
+  private static final Map<TextDecoration, TextDecoration.State> NOT_SET = Stream.of(TextDecoration.values())
+    .collect(Collectors.toMap(Function.identity(), decoration -> TextDecoration.State.NOT_SET));
+
+  private static Map<TextDecoration, TextDecoration.State> overrideNotSet(final Map<TextDecoration, TextDecoration.State> overrides) {
+    final Map<TextDecoration, TextDecoration.State> map = new HashMap<>();
+    map.putAll(NOT_SET);
+    map.putAll(overrides);
+    return map;
+  }
+
   @Test
   void testEmptyIsActuallyEmpty() {
     final Style s0 = Style.empty();
@@ -100,6 +113,15 @@ class StyleTest {
   }
 
   @Test
+  void testDecorate() {
+    final Style s0 = Style.empty();
+    assertDecorations(s0, ImmutableSet.of(), ImmutableSet.of());
+    for(final TextDecoration decoration : TextDecoration.values()) {
+      assertDecorations(Style.empty().decorate(decoration), ImmutableSet.of(decoration), ImmutableSet.of());
+    }
+  }
+
+  @Test
   void testOf_decorations() {
     final Style s0 = Style.of(TextDecoration.BOLD, TextDecoration.ITALIC);
     assertNull(s0.color());
@@ -130,8 +152,16 @@ class StyleTest {
 
   @Test
   void testDecorations() {
-    assertThat(Style.empty().decorations()).containsExactlyEntriesIn(Stream.of(TextDecoration.values()).collect(Collectors.toMap(Function.identity(), decoration -> TextDecoration.State.NOT_SET)));
+    assertThat(Style.empty().decorations()).containsExactlyEntriesIn(NOT_SET);
     assertThat(Style.of(TextDecoration.BOLD).decorations()).containsEntry(TextDecoration.BOLD, TextDecoration.State.TRUE);
+  }
+
+  @Test
+  void testSetDecorations() {
+    final Style s0 = Style.empty().decorations(ImmutableMap.of(
+      TextDecoration.BOLD, TextDecoration.State.TRUE
+    ));
+    assertThat(s0.decorations()).containsExactlyEntriesIn(overrideNotSet(ImmutableMap.of(TextDecoration.BOLD, TextDecoration.State.TRUE)));
   }
 
   @Test

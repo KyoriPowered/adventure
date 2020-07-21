@@ -285,6 +285,16 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
   }
 
   /**
+   * Sets the state of {@code decoration} to {@link TextDecoration.State#TRUE} on this style.
+   *
+   * @param decoration the decoration
+   * @return a style
+   */
+  public @NonNull Style decorate(final @NonNull TextDecoration decoration) {
+    return this.decoration(decoration, TextDecoration.State.TRUE);
+  }
+
+  /**
    * Gets the state of a decoration on this style.
    *
    * @param decoration the decoration

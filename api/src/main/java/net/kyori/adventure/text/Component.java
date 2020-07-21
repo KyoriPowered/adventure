@@ -240,6 +240,16 @@ public interface Component extends ComponentLike {
   }
 
   /**
+   * Sets the state of {@code decoration} to {@link TextDecoration.State#TRUE} on this component.
+   *
+   * @param decoration the decoration
+   * @return a component
+   */
+  default @NonNull Component decorate(final @NonNull TextDecoration decoration) {
+    return this.decoration(decoration, TextDecoration.State.TRUE);
+  }
+
+  /**
    * Gets the state of a decoration on this component.
    *
    * @param decoration the decoration
