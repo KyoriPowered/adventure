@@ -81,7 +81,7 @@ import static java.util.Objects.requireNonNull;
       final Matcher matcher = pattern.matcher(content);
       final TextComponent withoutChildren = current.children(Collections.emptyList());
 
-      if((numberOfReplacements > -1 && replaced < numberOfReplacements) && matcher.find()) {
+      if((numberOfReplacements <= -1 || replaced < numberOfReplacements) && matcher.find()) {
         int lastEnd = 0;
         replaced++;
         do {
