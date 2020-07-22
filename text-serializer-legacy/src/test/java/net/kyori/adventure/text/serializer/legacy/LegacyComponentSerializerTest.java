@@ -36,7 +36,7 @@ class LegacyComponentSerializerTest {
   @Test
   void testSimpleFrom() {
     final TextComponent component = TextComponent.of("foo");
-    assertEquals(component, LegacyComponentSerializer.legacy().deserialize("foo"));
+    assertEquals(component, LegacyComponentSerializer.legacySection().deserialize("foo"));
   }
 
   @Test
@@ -97,7 +97,7 @@ class LegacyComponentSerializerTest {
       )
       .append(TextComponent.of("baz"))
       .build();
-    assertEquals("§lhi§afoo§9§lbar§r§lbaz", LegacyComponentSerializer.legacy().serialize(c1));
+    assertEquals("§lhi§afoo§9§lbar§r§lbaz", LegacyComponentSerializer.legacySection().serialize(c1));
 
     final TextComponent c2 = TextComponent.builder()
       .content("")
@@ -114,7 +114,7 @@ class LegacyComponentSerializerTest {
         .build()
       )
       .build();
-    assertEquals("§eHello §aworld§e!", LegacyComponentSerializer.legacy().serialize(c2));
+    assertEquals("§eHello §aworld§e!", LegacyComponentSerializer.legacySection().serialize(c2));
 
     final TextComponent c3 = TextComponent.builder()
       .content("")
@@ -136,7 +136,7 @@ class LegacyComponentSerializerTest {
           )
           .build())
       .build();
-    assertEquals("§e§lHello §a§lworld§e§l!", LegacyComponentSerializer.legacy().serialize(c3));
+    assertEquals("§e§lHello §a§lworld§e§l!", LegacyComponentSerializer.legacySection().serialize(c3));
   }
 
   @Test
@@ -240,13 +240,13 @@ class LegacyComponentSerializerTest {
       TextComponent.of("Profile", Style.of(NamedTextColor.YELLOW, TextDecoration.BOLD)),
       TextComponent.of("||", Style.of(NamedTextColor.RED, TextDecoration.OBFUSCATED))
     ).build();
-    assertEquals(output, LegacyComponentSerializer.legacy().deserialize(input));
+    assertEquals(output, LegacyComponentSerializer.legacySection().deserialize(input));
   }
 
   @Test
   void testResetClearsColorInSameBlock() {
     final String input = "§c§rCleared";
     final TextComponent output = TextComponent.of("Cleared");
-    assertEquals(output, LegacyComponentSerializer.legacy().deserialize(input));
+    assertEquals(output, LegacyComponentSerializer.legacySection().deserialize(input));
   }
 }

@@ -43,7 +43,7 @@ class LinkingLegacyComponentSerializerTest {
   void testBareUrl() {
     final String bareUrl = "https://www.example.com";
     final TextComponent expectedNonLinkify = TextComponent.of(bareUrl);
-    assertEquals(expectedNonLinkify, LegacyComponentSerializer.legacy().deserialize(bareUrl));
+    assertEquals(expectedNonLinkify, LegacyComponentSerializer.legacySection().deserialize(bareUrl));
     final TextComponent expectedBareUrl = TextComponent.of(bareUrl)
       .clickEvent(ClickEvent.openUrl(bareUrl));
     assertEquals(expectedBareUrl, LegacyComponentSerializer.builder().extractUrls().build().deserialize(bareUrl));
