@@ -68,7 +68,7 @@ import static java.util.Objects.requireNonNull;
   }
 
   @Override
-  public @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement, int numberOfReplacements) {
+  public @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement, final int numberOfReplacements) {
     final List<Component> produced = new ArrayList<>();
     final Queue<TextComponent> queue = new ArrayDeque<>();
     queue.add(this);

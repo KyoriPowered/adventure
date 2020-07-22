@@ -581,7 +581,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param numberOfReplacements the amount of matches that should be replaced
    * @return a modified copy of this component
    */
-  @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement, int numberOfReplacements);
+  @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement, final int numberOfReplacements);
 
   /**
    * Finds and replaces the first occurence of text using a regex pattern.
