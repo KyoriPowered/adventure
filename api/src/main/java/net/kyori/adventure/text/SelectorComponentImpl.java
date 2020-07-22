@@ -59,7 +59,6 @@ import static java.util.Objects.requireNonNull;
 
   @Override
   public @NonNull SelectorComponent style(final @NonNull Style style) {
-    if(Objects.equals(this.style, style)) return this;
     return new SelectorComponentImpl(this.children, style, this.pattern);
   }
 

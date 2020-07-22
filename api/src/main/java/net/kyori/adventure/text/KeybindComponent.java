@@ -26,10 +26,10 @@ package net.kyori.adventure.text;
 import java.util.Collections;
 import java.util.Set;
 import java.util.function.Consumer;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.util.Buildable;
-import net.kyori.adventure.util.ShadyPines;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -63,34 +63,45 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    * @return the keybind component
    */
   static @NonNull KeybindComponent of(final @NonNull String keybind) {
-    return builder(keybind).build();
+    return of(keybind, Style.empty());
   }
 
   /**
-   * Creates a keybind component with content, and optional color.
+   * Creates a keybind component with a keybind and styling.
+   *
+   * @param keybind the keybind
+   * @param style the style
+   * @return the keybind component
+   */
+  static @NonNull KeybindComponent of(final @NonNull String keybind, final @NonNull Style style) {
+    return new KeybindComponentImpl(Collections.emptyList(), style, keybind);
+  }
+
+  /**
+   * Creates a keybind component with a keybind, and optional color.
    *
    * @param keybind the keybind
    * @param color the color
    * @return the keybind component
    */
   static @NonNull KeybindComponent of(final @NonNull String keybind, final @Nullable TextColor color) {
-    return of(keybind, color, Collections.emptySet());
+    return of(keybind, Style.of(color));
   }
 
   /**
-   * Creates a keybind component with content, and optional color and decorations.
+   * Creates a keybind component with a keybind, and optional color and decorations.
    *
-   * @param content the plain text content
+   * @param keybind the keybind
    * @param color the color
    * @param decorations the decorations
    * @return the keybind component
    */
-  static @NonNull KeybindComponent of(final @NonNull String content, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
-    return of(content, color, ShadyPines.enumSet(TextDecoration.class, decorations));
+  static @NonNull KeybindComponent of(final @NonNull String keybind, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
+    return of(keybind, Style.of(color, decorations));
   }
 
   /**
-   * Creates a keybind component with content, and optional color and decorations.
+   * Creates a keybind component with a keybind, and optional color and decorations.
    *
    * @param keybind the keybind
    * @param color the color
@@ -98,7 +109,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    * @return the keybind component
    */
   static @NonNull KeybindComponent of(final @NonNull String keybind, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
-    return builder(keybind).color(color).decorations(decorations, true).build();
+    return of(keybind, Style.of(color, decorations));
   }
 
   /**

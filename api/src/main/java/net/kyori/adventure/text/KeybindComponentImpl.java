@@ -38,7 +38,7 @@ import static java.util.Objects.requireNonNull;
 
   KeybindComponentImpl(final @NonNull List<? extends ComponentLike> children, final @NonNull Style style, final @NonNull String keybind) {
     super(children, style);
-    this.keybind = keybind;
+    this.keybind = requireNonNull(keybind, "keybind");
   }
 
   @Override
@@ -59,7 +59,6 @@ import static java.util.Objects.requireNonNull;
 
   @Override
   public @NonNull KeybindComponent style(final @NonNull Style style) {
-    if(Objects.equals(this.style, style)) return this;
     return new KeybindComponentImpl(this.children, style, this.keybind);
   }
 
