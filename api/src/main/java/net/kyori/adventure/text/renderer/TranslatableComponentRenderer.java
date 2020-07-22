@@ -21,12 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.feature.translation;
+package net.kyori.adventure.text.renderer;
 
 import java.text.AttributedCharacterIterator;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Locale;
+
 import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.BuildableComponent;
 import net.kyori.adventure.text.Component;
@@ -42,54 +43,78 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.text.renderer.AbstractComponentRenderer;
+import net.kyori.adventure.translate.TranslationRegistry;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A component renderer that does server-side translation rendering.
+ *
+ * @param <C> the context type, usually {@link java.util.Locale}.
+ * @see #get()
  */
-public class TranslatableComponentRenderer extends AbstractComponentRenderer<Locale> implements Translator {
-  @Override
-  public @Nullable MessageFormat translate(final @NonNull String key, final @NonNull Locale locale) {
-    return TranslationRegistry.get().translate(key, locale);
+public abstract class TranslatableComponentRenderer<C> extends AbstractComponentRenderer<C> {
+  /* package */ static final TranslatableComponentRenderer<Locale> INSTANCE = new TranslatableComponentRenderer<Locale>() {
+    @Override
+    public MessageFormat translate(final @NonNull Locale locale, final @NonNull String key) {
+      return TranslationRegistry.get().translate(key, locale);
+    }
+  };
+
+  /**
+   * Gets the default translatable component renderer.
+   *
+   * @return a translatable component renderer
+   * @see TranslationRegistry
+   */
+  public static TranslatableComponentRenderer<Locale> get() {
+    return INSTANCE;
   }
 
+  /**
+   * Gets a message format from a key and context.
+   *
+   * @param context a context
+   * @param key a translation key
+   * @return a message format or {@code null} to skip translation
+   */
+  protected abstract @Nullable MessageFormat translate(final @NonNull C context, final @NonNull String key);
+
   @Override
-  protected @NonNull Component renderBlockNbt(final @NonNull BlockNBTComponent component, final @NonNull Locale context) {
+  protected @NonNull Component renderBlockNbt(final @NonNull BlockNBTComponent component, final @NonNull C context) {
     final BlockNBTComponent.Builder builder = nbt(BlockNBTComponent.builder(), component)
       .pos(component.pos());
     return this.deepRender(component, builder, context);
   }
 
   @Override
-  protected @NonNull Component renderEntityNbt(final @NonNull EntityNBTComponent component, final @NonNull Locale context) {
+  protected @NonNull Component renderEntityNbt(final @NonNull EntityNBTComponent component, final @NonNull C context) {
     final EntityNBTComponent.Builder builder = nbt(EntityNBTComponent.builder(), component)
       .selector(component.selector());
     return this.deepRender(component, builder, context);
   }
 
   @Override
-  protected @NonNull Component renderStorageNbt(final @NonNull StorageNBTComponent component, final @NonNull Locale context) {
+  protected @NonNull Component renderStorageNbt(final @NonNull StorageNBTComponent component, final @NonNull C context) {
     final StorageNBTComponent.Builder builder = nbt(StorageNBTComponent.builder(), component)
       .storage(component.storage());
     return this.deepRender(component, builder, context);
   }
 
-  private static <C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> B nbt(final B builder, final C oldComponent) {
+  protected static <C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> B nbt(final B builder, final C oldComponent) {
     return builder
       .nbtPath(oldComponent.nbtPath())
       .interpret(oldComponent.interpret());
   }
 
   @Override
-  protected @NonNull Component renderKeybind(final @NonNull KeybindComponent component, final @NonNull Locale context) {
+  protected @NonNull Component renderKeybind(final @NonNull KeybindComponent component, final @NonNull C context) {
     final KeybindComponent.Builder builder = KeybindComponent.builder(component.keybind());
     return this.deepRender(component, builder, context);
   }
 
   @Override
-  protected @NonNull Component renderScore(final @NonNull ScoreComponent component, final @NonNull Locale context) {
+  protected @NonNull Component renderScore(final @NonNull ScoreComponent component, final @NonNull C context) {
     final ScoreComponent.Builder builder = ScoreComponent.builder()
       .name(component.name())
       .objective(component.objective())
@@ -98,20 +123,20 @@ public class TranslatableComponentRenderer extends AbstractComponentRenderer<Loc
   }
 
   @Override
-  protected @NonNull Component renderSelector(final @NonNull SelectorComponent component, final @NonNull Locale context) {
+  protected @NonNull Component renderSelector(final @NonNull SelectorComponent component, final @NonNull C context) {
     final SelectorComponent.Builder builder = SelectorComponent.builder(component.pattern());
     return this.deepRender(component, builder, context);
   }
 
   @Override
-  protected @NonNull Component renderText(final @NonNull TextComponent component, final @NonNull Locale context) {
+  protected @NonNull Component renderText(final @NonNull TextComponent component, final @NonNull C context) {
     final TextComponent.Builder builder = TextComponent.builder(component.content());
     return this.deepRender(component, builder, context);
   }
 
   @Override
-  protected @NonNull Component renderTranslatable(final @NonNull TranslatableComponent component, final @NonNull Locale context) {
-    final /* @Nullable */ MessageFormat format = this.translate(component.key(), context);
+  protected @NonNull Component renderTranslatable(final @NonNull TranslatableComponent component, final @NonNull C context) {
+    final /* @Nullable */ MessageFormat format = this.translate(context, component.key());
     if(format == null) {
       return component;
     }
@@ -144,14 +169,13 @@ public class TranslatableComponentRenderer extends AbstractComponentRenderer<Loc
     return this.deepRender(component, builder, context);
   }
 
-  // TODO(kashike): expose?
-  private <O extends BuildableComponent<O, B>, B extends ComponentBuilder<O, B>> O deepRender(final Component component, final B builder, final Locale context) {
+  protected <O extends BuildableComponent<O, B>, B extends ComponentBuilder<O, B>> O deepRender(final Component component, final B builder, final C context) {
     this.mergeStyle(component, builder, context);
     component.children().forEach(child -> builder.append(this.render(child, context)));
     return builder.build();
   }
 
-  private <B extends ComponentBuilder<?, ?>> void mergeStyle(final Component component, final B builder, final Locale context) {
+  protected <B extends ComponentBuilder<?, ?>> void mergeStyle(final Component component, final B builder, final C context) {
     builder.mergeStyle(component, Style.Merge.colorAndDecorations());
     builder.clickEvent(component.clickEvent());
     final /* @Nullable */ HoverEvent<?> hoverEvent = component.hoverEvent();

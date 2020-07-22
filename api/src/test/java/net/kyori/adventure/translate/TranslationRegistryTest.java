@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.feature.translation;
+package net.kyori.adventure.translate;
 
 import java.text.MessageFormat;
 import java.util.Locale;
@@ -29,6 +29,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TranslationRegistryTest {
   static final TranslationRegistry REGISTRY = TranslationRegistry.get();
-  static final TranslatableComponentRenderer RENDERER = new TranslatableComponentRenderer();
+  static final TranslatableComponentRenderer<Locale> RENDERER = TranslatableComponentRenderer.get();
 
   @BeforeAll
   static void testRegister() {

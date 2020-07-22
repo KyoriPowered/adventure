@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.feature.translation;
+package net.kyori.adventure.translate;
 
 import java.text.MessageFormat;
 import java.util.Locale;
@@ -35,7 +35,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-/* package */ final class TranslationRegistryImpl extends TranslatableComponentRenderer implements TranslationRegistry {
+/* package */ final class TranslationRegistryImpl implements TranslationRegistry {
   /* package */ static final TranslationRegistry INSTANCE = new TranslationRegistryImpl();
   /* package */ static final Translation EMPTY = new Translation("");
   private final Map<String, Translation> translations = new ConcurrentHashMap<>();
