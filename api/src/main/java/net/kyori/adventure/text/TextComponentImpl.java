@@ -83,8 +83,8 @@ import static java.util.Objects.requireNonNull;
 
       if((numberOfReplacements <= -1 || replaced < numberOfReplacements) && matcher.find()) {
         int lastEnd = 0;
-        replaced++;
         do {
+          replaced++;
           final int start = matcher.start();
           final int end = matcher.end();
           final String matched = matcher.group();
@@ -96,7 +96,7 @@ import static java.util.Objects.requireNonNull;
 
           produced.add(replacement.apply(withoutChildren.toBuilder().content(matched)).build());
           lastEnd = end;
-        } while(matcher.find());
+        } while((numberOfReplacements <= -1 || replaced < numberOfReplacements) && matcher.find());
 
         if(content.length() - lastEnd > 0) {
           produced.add(withoutChildren.content(content.substring(lastEnd)));
