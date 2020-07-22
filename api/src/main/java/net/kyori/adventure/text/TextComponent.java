@@ -102,6 +102,17 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
   }
 
   /**
+   * Creates a component with {@code components} as the children.
+   *
+   * @param components the children
+   * @return a component
+   */
+  static @NonNull TextComponent ofChildren(final @NonNull ComponentLike@NonNull... components) {
+    if(components.length == 0) return empty();
+    return empty().children(Arrays.asList(components));
+  }
+
+  /**
    * Creates a text component with content.
    *
    * @param content the plain text content

@@ -44,6 +44,21 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
   }
 
   @Test
+  void testOfChildren() {
+    assertSame(TextComponent.empty(), TextComponent.ofChildren()); // empty array
+    assertEquals(
+      TextComponent.builder()
+        .append(TextComponent.of("a"))
+        .append(TextComponent.builder("b"))
+        .build(),
+      TextComponent.ofChildren(
+        TextComponent.of("a"),
+        TextComponent.builder("b")
+      )
+    );
+  }
+
+  @Test
   void testOf() {
     final TextComponent component = TextComponent.of("foo");
     assertEquals("foo", component.content());
