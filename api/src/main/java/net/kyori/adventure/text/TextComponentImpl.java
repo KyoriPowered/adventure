@@ -125,12 +125,12 @@ import static java.util.Objects.requireNonNull;
 
   @Override
   public @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement) {
-    return replace(pattern, replacement, -1);
+    return this.replace(pattern, replacement, -1);
   }
 
   @Override
   public @NonNull TextComponent replaceFirst(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement) {
-    return replace(pattern, replacement, 1);
+    return this.replace(pattern, replacement, 1);
   }
 
   @Override
