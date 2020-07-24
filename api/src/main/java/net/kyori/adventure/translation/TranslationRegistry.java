@@ -30,6 +30,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import net.kyori.adventure.util.UTF8ResourceBundleControl;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -76,19 +78,35 @@ public interface TranslationRegistry extends TranslationSource {
    * @see #register(String, Locale, MessageFormat)
    */
   default void registerAll(final @NonNull Locale locale, final @NonNull Map<String, MessageFormat> formats) {
-    final List<IllegalArgumentException> errors = new LinkedList<>();
-    for(final Map.Entry<String, MessageFormat> entry : formats.entrySet()) {
+    this.registerAll(locale, formats.keySet(), formats::get);
+  }
+
+  /**
+   * Registers a resource bundle of translations.
+   *
+   * @param locale a locale
+   * @param function a function to transform a key into a message format
+   * @throws IllegalArgumentException if a translation key is already exists
+   */
+  default void registerAll(final @NonNull Locale locale, final @NonNull Set<String> keys, final Function<String, MessageFormat> function) {
+    List<IllegalArgumentException> errors = null;
+    for(final String key : keys) {
       try {
-        this.register(entry.getKey(), locale, entry.getValue());
+        this.register(key, locale, function.apply(key));
       } catch(final IllegalArgumentException e) {
+        if(errors == null) {
+          errors = new LinkedList<>();
+        }
         errors.add(e);
       }
     }
-    final int size = errors.size();
-    if(size == 1) {
-      throw errors.get(0);
-    } else if(size > 1) {
-      throw new IllegalArgumentException(String.format("Invalid key (and %d more)", size - 1), errors.get(0));
+    if(errors != null) {
+      final int size = errors.size();
+      if(size == 1) {
+        throw errors.get(0);
+      } else if(size > 1) {
+        throw new IllegalArgumentException(String.format("Invalid key (and %d more)", size - 1), errors.get(0));
+      }
     }
   }
 
@@ -101,24 +119,15 @@ public interface TranslationRegistry extends TranslationSource {
    * @throws IllegalArgumentException if a translation key is already exists
    */
   default void registerAll(final @NonNull Locale locale, final @NonNull ResourceBundle resourceBundle, final boolean escapeSingleQuotes) {
-    final List<IllegalArgumentException> errors = new LinkedList<>();
-    for(final String key : resourceBundle.keySet()) {
-      String format = resourceBundle.getString(key);
-      if(escapeSingleQuotes) {
-        format = SINGLE_QUOTE_PATTERN.matcher(format).replaceAll("''");
-      }
-      try {
-        this.register(key, locale, new MessageFormat(format, locale));
-      } catch(final IllegalArgumentException e) {
-        errors.add(e);
-      }
-    }
-    final int size = errors.size();
-    if(size == 1) {
-      throw errors.get(0);
-    } else if(size > 1) {
-      throw new IllegalArgumentException(String.format("Invalid key (and %d more)", size - 1), errors.get(0));
-    }
+    this.registerAll(locale, resourceBundle.keySet(), key -> {
+      final String format = resourceBundle.getString(key);
+      return new MessageFormat(
+        escapeSingleQuotes
+          ? SINGLE_QUOTE_PATTERN.matcher(format).replaceAll("''")
+          : format,
+        locale
+      );
+    });
   }
 
   /**

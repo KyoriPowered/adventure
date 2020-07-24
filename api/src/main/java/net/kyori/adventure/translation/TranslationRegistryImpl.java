@@ -35,7 +35,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-/* package */ final class TranslationRegistryImpl implements TranslationRegistry {
+/* package */ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
   /* package */ static final TranslationRegistry INSTANCE = new TranslationRegistryImpl();
   /* package */ static final Translation EMPTY = new Translation("");
   private final Map<String, Translation> translations = new ConcurrentHashMap<>();
@@ -55,6 +55,11 @@ import static java.util.Objects.requireNonNull;
     return this.translations.getOrDefault(key, EMPTY).translate(locale);
   }
 
+  @Override
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(ExaminableProperty.of("translations", this.translations));
+  }
+
   /* package */ static final class Translation implements Examinable {
     private final String key;
     private final Map<Locale, MessageFormat> formats;
@@ -65,10 +70,9 @@ import static java.util.Objects.requireNonNull;
     }
 
     /* package */ void register(final @NonNull Locale locale, final @NonNull MessageFormat format) {
-      if(this.formats.containsKey(requireNonNull(locale, "locale"))) {
+      if(this.formats.putIfAbsent(requireNonNull(locale, "locale"), requireNonNull(format, "message format")) != null) {
         throw new IllegalArgumentException(String.format("Translation already exists: %s for %s", this.key, locale));
       }
-      this.formats.putIfAbsent(locale, requireNonNull(format, "message format"));
     }
 
     // CHECKSTYLE:OFF
