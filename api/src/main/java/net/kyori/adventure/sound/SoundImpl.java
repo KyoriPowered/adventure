@@ -60,7 +60,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
   @Override
   public boolean equals(final @Nullable Object other) {
     if(this == other) return true;
-    if(other == null || this.getClass() != other.getClass()) return false;
+    if(!(other instanceof SoundImpl)) return false;
     final SoundImpl that = (SoundImpl) other;
     return this.name().equals(that.name())
       && this.source == that.source
