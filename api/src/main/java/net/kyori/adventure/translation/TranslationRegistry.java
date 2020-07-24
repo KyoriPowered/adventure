@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.translate;
+package net.kyori.adventure.translation;
 
 import java.text.MessageFormat;
 import java.util.LinkedList;
@@ -37,7 +37,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 /**
  * A registry of translations.
  */
-public interface TranslationRegistry extends Translator {
+public interface TranslationRegistry extends TranslationSource {
   /**
    * A pattern which matches a single quote.
    */

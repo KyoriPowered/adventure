@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.translate;
+package net.kyori.adventure.translation;
 
 import java.text.MessageFormat;
 import java.util.Locale;
@@ -32,7 +32,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * A message format translator.
  */
 @FunctionalInterface
-public interface Translator {
+public interface TranslationSource {
   /**
    * Gets a message format from a key and locale.
    *

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.translate;
+package net.kyori.adventure.translation;
 
 import java.text.MessageFormat;
 import java.util.Locale;
