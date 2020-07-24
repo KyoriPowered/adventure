@@ -34,6 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.util.IntPredicate2;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -68,11 +69,12 @@ import static java.util.Objects.requireNonNull;
   }
 
   @Override
-  public @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement, final int numberOfReplacements) {
+  public @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement, final @NonNull IntPredicate2 predicate) {
     final List<Component> produced = new ArrayList<>();
     final Queue<TextComponent> queue = new ArrayDeque<>();
     queue.add(this);
 
+    int index = 0;
     int replaced = 0;
 
     while(!queue.isEmpty()) {
@@ -81,22 +83,26 @@ import static java.util.Objects.requireNonNull;
       final Matcher matcher = pattern.matcher(content);
       final TextComponent withoutChildren = current.children(Collections.emptyList());
 
-      if((numberOfReplacements <= -1 || replaced < numberOfReplacements) && matcher.find()) {
+      if(matcher.find()) {
         int lastEnd = 0;
         do {
-          replaced++;
-          final int start = matcher.start();
-          final int end = matcher.end();
-          final String matched = matcher.group();
+          index++;
 
-          final String prefix = content.substring(lastEnd, start);
-          if(!prefix.isEmpty()) {
-            produced.add(withoutChildren.content(prefix));
+          if(predicate.test(index, replaced)) {
+            replaced++;
+            final int start = matcher.start();
+            final int end = matcher.end();
+            final String matched = matcher.group();
+
+            final String prefix = content.substring(lastEnd, start);
+            if(!prefix.isEmpty()) {
+              produced.add(withoutChildren.content(prefix));
+            }
+
+            produced.add(replacement.apply(withoutChildren.toBuilder().content(matched)).build());
+            lastEnd = end;
           }
-
-          produced.add(replacement.apply(withoutChildren.toBuilder().content(matched)).build());
-          lastEnd = end;
-        } while((numberOfReplacements <= -1 || replaced < numberOfReplacements) && matcher.find());
+        } while(matcher.find());
 
         if(content.length() - lastEnd > 0) {
           produced.add(withoutChildren.content(content.substring(lastEnd)));
@@ -121,16 +127,6 @@ import static java.util.Objects.requireNonNull;
       final List<Component> children = produced.subList(1, produced.size());
       return (TextComponent) produced.get(0).children(children);
     }
-  }
-
-  @Override
-  public @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement) {
-    return this.replace(pattern, replacement, -1);
-  }
-
-  @Override
-  public @NonNull TextComponent replaceFirst(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement) {
-    return this.replace(pattern, replacement, 1);
   }
 
   @Override
