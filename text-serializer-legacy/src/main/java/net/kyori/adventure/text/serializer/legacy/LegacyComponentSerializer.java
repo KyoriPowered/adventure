@@ -45,10 +45,25 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * serializer works exactly like vanilla Minecraft and does not detect any links. If you want to
    * detect and make URLs clickable, use {@link Builder#extractUrls()}.
    *
+   * <p>The returned serializer uses the {@link #SECTION_CHAR section} character.</p>
+   *
    * @return a component serializer for legacy serialization and deserialization
    */
-  static @NonNull LegacyComponentSerializer legacy() {
+  static @NonNull LegacyComponentSerializer legacySection() {
     return LegacyComponentSerializerImpl.SECTION_SERIALIZER;
+  }
+
+  /**
+   * Gets a component serializer for legacy-based serialization and deserialization. Note that this
+   * serializer works exactly like vanilla Minecraft and does not detect any links. If you want to
+   * detect and make URLs clickable, use {@link Builder#extractUrls()}.
+   *
+   * <p>The returned serializer uses the {@link #AMPERSAND_CHAR ampersand} character.</p>
+   *
+   * @return a component serializer for legacy serialization and deserialization
+   */
+  static @NonNull LegacyComponentSerializer legacyAmpersand() {
+    return LegacyComponentSerializerImpl.AMPERSAND_SERIALIZER;
   }
 
   /**
@@ -60,14 +75,12 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * @return a component serializer for legacy serialization and deserialization
    */
   static @NonNull LegacyComponentSerializer legacy(final char legacyCharacter) {
-    switch(legacyCharacter) {
-      case SECTION_CHAR:
-        return LegacyComponentSerializerImpl.SECTION_SERIALIZER;
-      case AMPERSAND_CHAR:
-        return LegacyComponentSerializerImpl.AMPERSAND_SERIALIZER;
-      default:
-        return builder().character(legacyCharacter).build();
+    if(legacyCharacter == SECTION_CHAR) {
+      return legacySection();
+    } else if(legacyCharacter == AMPERSAND_CHAR) {
+      return legacyAmpersand();
     }
+    return builder().character(legacyCharacter).build();
   }
 
   /**
@@ -75,7 +88,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    *
    * @return the builder
    */
-  static Builder builder() {
+  static @NonNull Builder builder() {
     return new LegacyComponentSerializerImpl.BuilderImpl();
   }
 

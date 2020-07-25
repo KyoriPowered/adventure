@@ -24,7 +24,6 @@
 package net.kyori.adventure.audience;
 
 import java.util.Arrays;
-
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.sound.Sound;

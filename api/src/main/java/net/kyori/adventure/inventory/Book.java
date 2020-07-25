@@ -56,7 +56,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
    * @param pages an array of pages
    * @return a book
    */
-  static @NonNull Book of(final @NonNull Component title, final @NonNull Component author, final @NonNull Component... pages) {
+  static @NonNull Book of(final @NonNull Component title, final @NonNull Component author, final @NonNull Component@NonNull... pages) {
     return of(title, author, Arrays.asList(pages));
   }
 

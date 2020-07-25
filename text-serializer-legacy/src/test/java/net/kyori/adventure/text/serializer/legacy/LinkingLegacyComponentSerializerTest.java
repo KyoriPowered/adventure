@@ -43,7 +43,7 @@ class LinkingLegacyComponentSerializerTest {
   void testBareUrl() {
     final String bareUrl = "https://www.example.com";
     final TextComponent expectedNonLinkify = TextComponent.of(bareUrl);
-    assertEquals(expectedNonLinkify, LegacyComponentSerializer.legacy().deserialize(bareUrl));
+    assertEquals(expectedNonLinkify, LegacyComponentSerializer.legacySection().deserialize(bareUrl));
     final TextComponent expectedBareUrl = TextComponent.of(bareUrl)
       .clickEvent(ClickEvent.openUrl(bareUrl));
     assertEquals(expectedBareUrl, LegacyComponentSerializer.builder().extractUrls().build().deserialize(bareUrl));
@@ -74,7 +74,8 @@ class LinkingLegacyComponentSerializerTest {
   void testPrefixSuffixUrlAndColors() {
     final String bareUrl = "https://www.example.com";
     final String hasPrefixSuffixColors = "&adid you hear about &chttps://www.example.com? &9they're really cool";
-    final TextComponent expectedHasPrefixSuffixColors = TextComponent.builder("did you hear about ", NamedTextColor.GREEN)
+    final TextComponent expectedHasPrefixSuffixColors = TextComponent.builder("")
+      .append(TextComponent.of("did you hear about ", NamedTextColor.GREEN))
       .append(TextComponent.of("https://www.example.com", NamedTextColor.RED).clickEvent(ClickEvent.openUrl(bareUrl)))
       .append(TextComponent.of("? ", NamedTextColor.RED))
       .append(TextComponent.of("they're really cool", NamedTextColor.BLUE))

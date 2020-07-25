@@ -28,10 +28,13 @@ import java.util.Collections;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.TextAssertions.assertDecorations;
+import static net.kyori.test.WeirdAssertions.assertAllEqualToEachOther;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -44,11 +47,40 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
   }
 
   @Test
+  void testOfChildren() {
+    assertSame(TextComponent.empty(), TextComponent.ofChildren()); // empty array
+    assertEquals(
+      TextComponent.builder()
+        .append(TextComponent.of("a"))
+        .append(TextComponent.builder("b"))
+        .build(),
+      TextComponent.ofChildren(
+        TextComponent.of("a"),
+        TextComponent.builder("b")
+      )
+    );
+  }
+
+  @Test
   void testOf() {
     final TextComponent component = TextComponent.of("foo");
     assertEquals("foo", component.content());
     assertNull(component.color());
     assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
+  }
+
+  @Test
+  void testOfSameResult() {
+    assertAllEqualToEachOther(
+      TextComponent.of("foo", Style.of(TextColor.of(0x0a1ab9))),
+      TextComponent.of("foo", TextColor.of(0x0a1ab9)),
+      TextComponent.of("foo", TextColor.of(0x0a1ab9), ImmutableSet.<TextDecoration>of())
+    );
+    assertAllEqualToEachOther(
+      TextComponent.of("foo", Style.of(TextColor.of(0x0a1ab9), TextDecoration.BOLD)),
+      TextComponent.of("foo", TextColor.of(0x0a1ab9), TextDecoration.BOLD),
+      TextComponent.of("foo", TextColor.of(0x0a1ab9), ImmutableSet.of(TextDecoration.BOLD))
+    );
   }
 
   @Test

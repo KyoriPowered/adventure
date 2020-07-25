@@ -69,7 +69,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
   @Override
   public @NonNull EntityNBTComponent style(final @NonNull Style style) {
-    if(Objects.equals(this.style, style)) return this;
     return new EntityNBTComponentImpl(this.children, style, this.nbtPath, this.interpret, this.selector);
   }
 

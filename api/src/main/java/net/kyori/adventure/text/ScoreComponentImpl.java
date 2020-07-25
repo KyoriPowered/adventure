@@ -85,7 +85,6 @@ import static java.util.Objects.requireNonNull;
 
   @Override
   public @NonNull ScoreComponent style(final @NonNull Style style) {
-    if(Objects.equals(this.style, style)) return this;
     return new ScoreComponentImpl(this.children, style, this.name, this.objective, this.value);
   }
 

@@ -26,6 +26,7 @@ package net.kyori.adventure.text.renderer;
 import java.text.AttributedCharacterIterator;
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Locale;
 import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.BuildableComponent;
 import net.kyori.adventure.text.Component;
@@ -41,21 +42,42 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.translation.TranslationRegistry;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * A {@link MessageFormat}-based translatable component renderer.
+ * A component renderer that does server-side translation rendering.
+ *
+ * @param <C> the context type, usually {@link java.util.Locale}.
+ * @see #get()
  */
 public abstract class TranslatableComponentRenderer<C> extends AbstractComponentRenderer<C> {
-  public static <C> @NonNull TranslatableComponentRenderer<C> from(final @NonNull TranslationFinder<C> finder) {
-    return new TranslatableComponentRenderer<C>() {
-      @Override
-      protected @Nullable MessageFormat translation(final @NonNull C context, final @NonNull String key) {
-        return finder.findTranslation(context, key);
-      }
-    };
+  /* package */ static final TranslatableComponentRenderer<Locale> INSTANCE = new TranslatableComponentRenderer<Locale>() {
+    @Override
+    public MessageFormat translate(final @NonNull Locale locale, final @NonNull String key) {
+      return TranslationRegistry.get().translate(key, locale);
+    }
+  };
+
+  /**
+   * Gets the default translatable component renderer.
+   *
+   * @return a translatable component renderer
+   * @see TranslationRegistry
+   */
+  public static @NonNull TranslatableComponentRenderer<Locale> get() {
+    return INSTANCE;
   }
+
+  /**
+   * Gets a message format from a key and context.
+   *
+   * @param context a context
+   * @param key a translation key
+   * @return a message format or {@code null} to skip translation
+   */
+  protected abstract @Nullable MessageFormat translate(final @NonNull C context, final @NonNull String key);
 
   @Override
   protected @NonNull Component renderBlockNbt(final @NonNull BlockNBTComponent component, final @NonNull C context) {
@@ -78,7 +100,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
     return this.deepRender(component, builder, context);
   }
 
-  private static <C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> B nbt(final B builder, final C oldComponent) {
+  protected static <C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> B nbt(final B builder, final C oldComponent) {
     return builder
       .nbtPath(oldComponent.nbtPath())
       .interpret(oldComponent.interpret());
@@ -113,7 +135,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
 
   @Override
   protected @NonNull Component renderTranslatable(final @NonNull TranslatableComponent component, final @NonNull C context) {
-    final /* @Nullable */ MessageFormat format = this.translation(context, component.key());
+    final /* @Nullable */ MessageFormat format = this.translate(context, component.key());
     if(format == null) {
       return component;
     }
@@ -146,45 +168,18 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
     return this.deepRender(component, builder, context);
   }
 
-  // TODO(kashike): expose?
-  private <O extends BuildableComponent<O, B>, B extends ComponentBuilder<O, B>> O deepRender(final Component component, final B builder, final C context) {
+  protected <O extends BuildableComponent<O, B>, B extends ComponentBuilder<O, B>> O deepRender(final Component component, final B builder, final C context) {
     this.mergeStyle(component, builder, context);
     component.children().forEach(child -> builder.append(this.render(child, context)));
     return builder.build();
   }
 
-  private <B extends ComponentBuilder<?, ?>> void mergeStyle(final Component component, final B builder, final C context) {
+  protected <B extends ComponentBuilder<?, ?>> void mergeStyle(final Component component, final B builder, final C context) {
     builder.mergeStyle(component, Style.Merge.colorAndDecorations());
     builder.clickEvent(component.clickEvent());
     final /* @Nullable */ HoverEvent<?> hoverEvent = component.hoverEvent();
     if(hoverEvent != null) {
       builder.hoverEvent(hoverEvent.withRenderedValue(this, context));
     }
-  }
-
-  /**
-   * Gets a translation for a translation key in the given context.
-   *
-   * @param context the context
-   * @param key the translation key
-   * @return the translation
-   */
-  protected abstract @Nullable MessageFormat translation(final @NonNull C context, final @NonNull String key);
-
-  /**
-   * A translation finder.
-   *
-   * @param <C> the context type
-   */
-  @FunctionalInterface
-  public interface TranslationFinder<C> {
-    /**
-     * Finds a translation.
-     *
-     * @param context the context
-     * @param key the translation key
-     * @return the translation
-     */
-    @Nullable MessageFormat findTranslation(final @NonNull C context, final @NonNull String key);
   }
 }

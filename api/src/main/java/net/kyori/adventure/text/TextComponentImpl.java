@@ -41,7 +41,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-/* package */ class TextComponentImpl extends AbstractComponent implements TextComponent {
+/* package */ final class TextComponentImpl extends AbstractComponent implements TextComponent {
   /* package */ static final TextComponent EMPTY = createDirect("");
   /* package */ static final TextComponent NEWLINE = createDirect("\n");
   /* package */ static final TextComponent SPACE = createDirect(" ");
@@ -136,7 +136,6 @@ import static java.util.Objects.requireNonNull;
 
   @Override
   public @NonNull TextComponent style(final @NonNull Style style) {
-    if(Objects.equals(this.style, style)) return this;
     return new TextComponentImpl(this.children, style, this.content);
   }
 

@@ -21,38 +21,57 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.renderer;
+package net.kyori.adventure.translation;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import java.text.MessageFormat;
 import java.util.Locale;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class TranslatableComponentRendererTest {
-  static final Table<Locale, String, String> TRANSLATIONS = HashBasedTable.create();
-  private final TranslatableComponentRenderer<Locale> renderer = TranslatableComponentRenderer.from((locale, key) -> new MessageFormat(TRANSLATIONS.get(locale, key), locale));
+class TranslationRegistryTest {
+  static final TranslationRegistry REGISTRY = TranslationRegistry.get();
+  static final TranslatableComponentRenderer<Locale> RENDERER = TranslatableComponentRenderer.get();
 
-  static {
-    TRANSLATIONS.put(Locale.US, "test", "This is a test.");
-    TRANSLATIONS.put(Locale.US, "cats", "{0} and {1} are cats.");
+  @BeforeAll
+  static void testRegister() {
+    REGISTRY.registerAll(Locale.US, Locale.US.toLanguageTag(), true);
   }
 
   @Test
-  void testSimple() {
-    testSimple(this.renderer);
+  void testRegister_duplicate() {
+    assertThrows(IllegalArgumentException.class, () -> REGISTRY.register("test", Locale.US, new MessageFormat("Another test.")));
   }
 
-  static void testSimple(final ComponentRenderer<Locale> renderer) {
+  @Test
+  void testTranslate() {
+    assertEquals(new MessageFormat("This is a test.", Locale.US), REGISTRY.translate("test", Locale.US));
+  }
+
+  @Test
+  void testTranslate_escapeQuotes() {
+    assertEquals(new MessageFormat("{0} and ''{1}'' are cats.", Locale.US), REGISTRY.translate("cats", Locale.US));
+  }
+
+  @Test
+  void testTranslate_utf8() {
+    assertEquals(new MessageFormat("☃", Locale.US), REGISTRY.translate("snowperson", Locale.US));
+  }
+
+  @Test
+  void testRender_simple() {
     assertEquals(
       TextComponent.of("This is a test.", NamedTextColor.YELLOW),
-      renderer.render(
+      RENDERER.render(
         TranslatableComponent
           .builder()
           .key("test")
@@ -64,20 +83,16 @@ class TranslatableComponentRendererTest {
   }
 
   @Test
-  void testComplex() {
-    testComplex(this.renderer);
-  }
-
-  static void testComplex(final ComponentRenderer<Locale> renderer) {
+  void testRender_complex() {
     assertEquals(
       TextComponent.builder("")
         .color(NamedTextColor.YELLOW)
         .append(TextComponent.of("kashike"))
-        .append(TextComponent.of(" and "))
+        .append(TextComponent.of(" and '"))
         .append(TextComponent.of("lucko"))
-        .append(TextComponent.of(" are cats."))
+        .append(TextComponent.of("' are cats."))
         .build(),
-      renderer.render(
+      RENDERER.render(
         TranslatableComponent
           .builder()
           .key("cats")
@@ -93,11 +108,7 @@ class TranslatableComponentRendererTest {
   }
 
   @Test
-  void testVeryComplex() {
-    testVeryComplex(this.renderer);
-  }
-
-  static void testVeryComplex(final ComponentRenderer<Locale> renderer) {
+  void testRender_veryComplex() {
     assertEquals(
       TextComponent.builder("")
         .color(NamedTextColor.YELLOW)
@@ -105,15 +116,15 @@ class TranslatableComponentRendererTest {
         .append(
           TextComponent.of("")
             .append(TextComponent.of("kashike"))
-            .append(TextComponent.of(" and "))
+            .append(TextComponent.of(" and '"))
             .append(TextComponent.of("lucko"))
-            .append(TextComponent.of(" are cats."))
+            .append(TextComponent.of("' are cats."))
             .append(TextComponent.space())
             .append(TextComponent.of("Meow!"))
             .hoverEvent(HoverEvent.showText(TextComponent.of("This is a test.")))
         )
         .build(),
-      renderer.render(
+      RENDERER.render(
         TextComponent
           .builder("")
           .append(
@@ -137,5 +148,12 @@ class TranslatableComponentRendererTest {
         Locale.US
       )
     );
+  }
+
+  @Test
+  @AfterAll
+  static void testUnregister() {
+    REGISTRY.unregister("test");
+    assertNull(REGISTRY.translate("test", Locale.US));
   }
 }
