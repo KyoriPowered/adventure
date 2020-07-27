@@ -616,7 +616,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    *
    * @param pattern a regex pattern
    * @param replacement a function to replace the first match
-   * @param predicate a predicate used to determine if matches should be replaced
+   * @param predicate a predicate of (index, replaced) used to determine if matches should be replaced, where "replaced" is the number of successful replacements
    * @return a modified copy of this component
    */
   @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement, final @NonNull IntPredicate2 predicate);
