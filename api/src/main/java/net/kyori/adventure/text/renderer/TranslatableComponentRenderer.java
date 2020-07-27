@@ -25,6 +25,7 @@ package net.kyori.adventure.text.renderer;
 
 import java.text.AttributedCharacterIterator;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import net.kyori.adventure.text.BlockNBTComponent;
@@ -55,7 +56,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public abstract class TranslatableComponentRenderer<C> extends AbstractComponentRenderer<C> {
   /* package */ static final TranslatableComponentRenderer<Locale> INSTANCE = new TranslatableComponentRenderer<Locale>() {
     @Override
-    public MessageFormat translate(final @NonNull Locale locale, final @NonNull String key) {
+    public MessageFormat translate(final @NonNull String key, final @NonNull Locale locale) {
       return TranslationRegistry.get().translate(key, locale);
     }
   };
@@ -73,31 +74,31 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   /**
    * Gets a message format from a key and context.
    *
-   * @param context a context
    * @param key a translation key
+   * @param context a context
    * @return a message format or {@code null} to skip translation
    */
-  protected abstract @Nullable MessageFormat translate(final @NonNull C context, final @NonNull String key);
+  protected abstract @Nullable MessageFormat translate(final @NonNull String key, final @NonNull C context);
 
   @Override
   protected @NonNull Component renderBlockNbt(final @NonNull BlockNBTComponent component, final @NonNull C context) {
     final BlockNBTComponent.Builder builder = nbt(BlockNBTComponent.builder(), component)
       .pos(component.pos());
-    return this.deepRender(component, builder, context);
+    return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
   @Override
   protected @NonNull Component renderEntityNbt(final @NonNull EntityNBTComponent component, final @NonNull C context) {
     final EntityNBTComponent.Builder builder = nbt(EntityNBTComponent.builder(), component)
       .selector(component.selector());
-    return this.deepRender(component, builder, context);
+    return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
   @Override
   protected @NonNull Component renderStorageNbt(final @NonNull StorageNBTComponent component, final @NonNull C context) {
     final StorageNBTComponent.Builder builder = nbt(StorageNBTComponent.builder(), component)
       .storage(component.storage());
-    return this.deepRender(component, builder, context);
+    return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
   protected static <C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> B nbt(final B builder, final C oldComponent) {
@@ -109,7 +110,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   @Override
   protected @NonNull Component renderKeybind(final @NonNull KeybindComponent component, final @NonNull C context) {
     final KeybindComponent.Builder builder = KeybindComponent.builder(component.keybind());
-    return this.deepRender(component, builder, context);
+    return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
   @Override
@@ -118,26 +119,38 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
       .name(component.name())
       .objective(component.objective())
       .value(component.value());
-    return this.deepRender(component, builder, context);
+    return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
   @Override
   protected @NonNull Component renderSelector(final @NonNull SelectorComponent component, final @NonNull C context) {
     final SelectorComponent.Builder builder = SelectorComponent.builder(component.pattern());
-    return this.deepRender(component, builder, context);
+    return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
   @Override
   protected @NonNull Component renderText(final @NonNull TextComponent component, final @NonNull C context) {
     final TextComponent.Builder builder = TextComponent.builder(component.content());
-    return this.deepRender(component, builder, context);
+    return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
   @Override
   protected @NonNull Component renderTranslatable(final @NonNull TranslatableComponent component, final @NonNull C context) {
-    final /* @Nullable */ MessageFormat format = this.translate(context, component.key());
+    final /* @Nullable */ MessageFormat format = this.translate(component.key(), context);
     if(format == null) {
-      return component;
+      // we don't have a translation for this component, but the arguments or children
+      // of this component might need additional rendering
+
+      final TranslatableComponent.Builder builder = TranslatableComponent.builder()
+        .key(component.key());
+      if(!component.args().isEmpty()) {
+        final List<Component> args = new ArrayList<>(component.args());
+        for(int i = 0, size = args.size(); i < size; i++) {
+          args.set(i, this.render(args.get(i), context));
+        }
+        builder.args(args);
+      }
+      return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
     }
 
     final List<Component> args = component.args();
@@ -165,12 +178,18 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
       it.setIndex(end);
     }
 
-    return this.deepRender(component, builder, context);
+    return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
-  protected <O extends BuildableComponent<O, B>, B extends ComponentBuilder<O, B>> O deepRender(final Component component, final B builder, final C context) {
+  protected <O extends BuildableComponent<O, B>, B extends ComponentBuilder<O, B>> O mergeStyleAndOptionallyDeepRender(final Component component, final B builder, final C context) {
     this.mergeStyle(component, builder, context);
-    component.children().forEach(child -> builder.append(this.render(child, context)));
+    return this.optionallyRenderChildrenAppendAndBuild(component.children(), builder, context);
+  }
+
+  protected <O extends BuildableComponent<O, B>, B extends ComponentBuilder<O, B>> O optionallyRenderChildrenAppendAndBuild(final List<Component> children, final B builder, final C context) {
+    if(!children.isEmpty()) {
+      children.forEach(child -> builder.append(this.render(child, context)));
+    }
     return builder.build();
   }
 

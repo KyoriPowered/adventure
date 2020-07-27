@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.translation;
 
+import com.google.common.collect.ImmutableList;
 import java.text.MessageFormat;
 import java.util.Locale;
 import net.kyori.adventure.text.TextComponent;
@@ -145,6 +146,35 @@ class TranslationRegistryTest {
           )
           .color(NamedTextColor.YELLOW)
           .build(),
+        Locale.US
+      )
+    );
+  }
+
+  @Test
+  void testUnknownTranslatableWithKnownArgsAndChildren() {
+    assertEquals(
+      TranslatableComponent.of("some.unknown.key")
+        .args(
+          TextComponent.of("")
+            .append(TextComponent.of("kashike"))
+            .append(TextComponent.of(" and '"))
+            .append(TextComponent.of("lucko"))
+            .append(TextComponent.of("' are cats."))
+        )
+        .append(TextComponent.of("This is a test.")),
+      RENDERER.render(
+        TranslatableComponent.of("some.unknown.key")
+          .args(ImmutableList.of(
+            TranslatableComponent.of("cats")
+              .args(
+                TextComponent.of("kashike"),
+                TextComponent.of("lucko")
+              )
+          ))
+          .children(ImmutableList.of(
+            TranslatableComponent.of("test")
+          )),
         Locale.US
       )
     );
