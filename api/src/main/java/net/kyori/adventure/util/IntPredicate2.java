@@ -25,13 +25,12 @@ package net.kyori.adventure.util;
 
 @FunctionalInterface
 public interface IntPredicate2 {
-
   /**
    * Evaluates this predicate on the given arguments.
+   *
    * @param first the first input argument
    * @param second the second input argument
    * @return true if the input argument matches the predicate, otherwise false
    */
   boolean test(int first, int second);
-
 }
