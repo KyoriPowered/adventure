@@ -308,6 +308,16 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B> & Scoped
   }
 
   @Test
+  void testAsHoverEvent() {
+    final C c0 = this.buildOne().color(null);
+    final HoverEvent<Component> e0 = HoverEvent.showText(c0);
+    assertSame(c0, e0.value()); // value should be untouched
+    final HoverEvent<Component> e1 = c0.asHoverEvent(component -> component.color(NamedTextColor.RED));
+    assertEquals(c0, e1.value().color(null));
+    assertEquals(e0, e1.value(e1.value().color(null)));
+  }
+
+  @Test
   void testBasicEquals() {
     new EqualsTester()
       .addEqualityGroup(this.builder().build())

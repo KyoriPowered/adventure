@@ -34,6 +34,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.Examinable;
@@ -423,6 +424,16 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    */
   public @NonNull Style hoverEvent(final @Nullable HoverEvent<?> event) {
     return new Style(this.font, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, event, this.insertion);
+  }
+
+  /**
+   * Sets the hover event.
+   *
+   * @param source the hover event source
+   * @return a style
+   */
+  public @NonNull Style hoverEvent(final @NonNull HoverEventSource<?> source) {
+    return this.hoverEvent(source.asHoverEvent());
   }
 
   /**
@@ -937,6 +948,16 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
     public @NonNull Builder hoverEvent(final @Nullable HoverEvent<?> event) {
       this.hoverEvent = event;
       return this;
+    }
+
+    /**
+     * Sets the hover event.
+     *
+     * @param source the hover event source
+     * @return this builder
+     */
+    public @NonNull Builder hoverEvent(final @NonNull HoverEventSource<?> source) {
+      return this.hoverEvent(source.asHoverEvent());
     }
 
     /**

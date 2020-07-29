@@ -25,6 +25,7 @@ package net.kyori.adventure.text.event;
 
 import java.util.Objects;
 import java.util.UUID;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
@@ -50,7 +51,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @param <V> the value type
  */
-public final class HoverEvent<V> implements Examinable, StyleBuilderApplicable {
+public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, StyleBuilderApplicable {
   /**
    * Creates a hover event.
    *
@@ -126,6 +127,16 @@ public final class HoverEvent<V> implements Examinable, StyleBuilderApplicable {
   }
 
   /**
+   * Sets the hover event value.
+   *
+   * @param value the hover event value
+   * @return a hover event
+   */
+  public @NonNull HoverEvent<V> value(final @NonNull V value) {
+    return new HoverEvent<>(this.action, value);
+  }
+
+  /**
    * Returns a hover event with the value rendered using {@code renderer} when possible.
    *
    * @param renderer the renderer
@@ -138,6 +149,16 @@ public final class HoverEvent<V> implements Examinable, StyleBuilderApplicable {
     final V newValue = this.action.renderer.render(renderer, context, oldValue);
     if(newValue != oldValue) return new HoverEvent<>(this.action, newValue);
     return this;
+  }
+
+  @Override
+  public @NonNull HoverEvent<V> asHoverEvent() {
+    return this; // i already am a hover event! hehehehe
+  }
+
+  @Override
+  public @NonNull HoverEvent<V> asHoverEvent(final @NonNull UnaryOperator<V> op) {
+    return new HoverEvent<>(this.action, op.apply(this.value));
   }
 
   @Override
@@ -176,7 +197,7 @@ public final class HoverEvent<V> implements Examinable, StyleBuilderApplicable {
   public static final class ShowItem implements Examinable {
     private final Key item;
     private final int count;
-    private final BinaryTagHolder nbt;
+    private final @Nullable BinaryTagHolder nbt;
 
     public ShowItem(final @NonNull Key item, final @NonNegative int count) {
       this(item, count, null);
@@ -198,6 +219,16 @@ public final class HoverEvent<V> implements Examinable, StyleBuilderApplicable {
     }
 
     /**
+     * Sets the item.
+     *
+     * @param item the item
+     * @return a {@code ShowItem}
+     */
+    public @NonNull ShowItem item(final @NonNull Key item) {
+      return new ShowItem(item, this.count, this.nbt);
+    }
+
+    /**
      * Gets the count.
      *
      * @return the count
@@ -207,12 +238,32 @@ public final class HoverEvent<V> implements Examinable, StyleBuilderApplicable {
     }
 
     /**
+     * Sets the count.
+     *
+     * @param count the count
+     * @return a {@code ShowItem}
+     */
+    public @NonNull ShowItem count(final @NonNegative int count) {
+      return new ShowItem(this.item, count, this.nbt);
+    }
+
+    /**
      * Gets the nbt.
      *
      * @return the nbt
      */
     public @Nullable BinaryTagHolder nbt() {
       return this.nbt;
+    }
+
+    /**
+     * Sets the nbt.
+     *
+     * @param nbt the nbt
+     * @return a {@code ShowItem}
+     */
+    public @NonNull ShowItem count(final @Nullable BinaryTagHolder nbt) {
+      return new ShowItem(this.item, this.count, nbt);
     }
 
     @Override
@@ -262,6 +313,16 @@ public final class HoverEvent<V> implements Examinable, StyleBuilderApplicable {
     }
 
     /**
+     * Sets the type.
+     *
+     * @param type the type
+     * @return a {@code ShowEntity}
+     */
+    public @NonNull ShowEntity type(final @NonNull Key type) {
+      return new ShowEntity(type, this.id, this.name);
+    }
+
+    /**
      * Gets the id.
      *
      * @return the id
@@ -271,12 +332,32 @@ public final class HoverEvent<V> implements Examinable, StyleBuilderApplicable {
     }
 
     /**
+     * Sets the id.
+     *
+     * @param id the id
+     * @return a {@code ShowEntity}
+     */
+    public @NonNull ShowEntity count(final @NonNull UUID id) {
+      return new ShowEntity(this.type, id, this.name);
+    }
+
+    /**
      * Gets the name.
      *
      * @return the name
      */
     public @Nullable Component name() {
       return this.name;
+    }
+
+    /**
+     * Sets the name.
+     *
+     * @param name the name
+     * @return a {@code ShowEntity}
+     */
+    public @NonNull ShowEntity count(final @Nullable Component name) {
+      return new ShowEntity(this.type, this.id, name);
     }
 
     @Override

@@ -85,6 +85,7 @@ public interface TranslationRegistry extends TranslationSource {
    * Registers a resource bundle of translations.
    *
    * @param locale a locale
+   * @param keys the translation keys to register
    * @param function a function to transform a key into a message format
    * @throws IllegalArgumentException if a translation key is already exists
    */

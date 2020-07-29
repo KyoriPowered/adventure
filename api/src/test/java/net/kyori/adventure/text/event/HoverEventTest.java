@@ -27,12 +27,20 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.testing.EqualsTester;
 import java.util.UUID;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class HoverEventTest {
+  @Test
+  void testAsHoverEvent() {
+    final HoverEvent<Component> event = HoverEvent.showText(TextComponent.of("kittens"));
+    assertSame(event, event.asHoverEvent());
+  }
+
   @Test
   void testEquality() {
     final UUID entity = UUID.randomUUID();

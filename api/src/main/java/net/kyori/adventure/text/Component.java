@@ -27,8 +27,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -38,7 +40,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  * A text component.
  */
-public interface Component extends ComponentLike {
+public interface Component extends ComponentLike, HoverEventSource<Component> {
   /**
    * Gets the unmodifiable list of children.
    *
@@ -352,6 +354,16 @@ public interface Component extends ComponentLike {
   }
 
   /**
+   * Sets the hover event of this component.
+   *
+   * @param source the hover event source
+   * @return a component
+   */
+  default @NonNull Component hoverEvent(final @NonNull HoverEventSource<?> source) {
+    return this.hoverEvent(source.asHoverEvent());
+  }
+
+  /**
    * Gets the string to be inserted when this component is shift-clicked.
    *
    * @return the insertion string
@@ -383,5 +395,10 @@ public interface Component extends ComponentLike {
   @Override
   default @NonNull Component asComponent() {
     return this;
+  }
+
+  @Override
+  default @NonNull HoverEvent<Component> asHoverEvent(final @NonNull UnaryOperator<Component> op) {
+    return HoverEvent.showText(op.apply(this));
   }
 }
