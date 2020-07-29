@@ -39,11 +39,10 @@ import static java.util.Objects.requireNonNull;
   private final String value;
 
   /* package */ KeyImpl(final @NonNull String namespace, final @NonNull String value) {
+    if(!namespaceValid(namespace)) throw new InvalidKeyException(namespace, value, String.format("Non [a-z0-9_.-] character in namespace of Key[%s]", asString(namespace, value)));
+    if(!valueValid(value)) throw new InvalidKeyException(namespace, value, String.format("Non [a-z0-9/._-] character in value of Key[%s]", asString(namespace, value)));
     this.namespace = requireNonNull(namespace, "namespace");
     this.value = requireNonNull(value, "value");
-
-    if(!namespaceValid(namespace)) throw new InvalidKeyException(this, "Non [a-z0-9_.-] character in namespace of Key");
-    if(!valueValid(value)) throw new InvalidKeyException(this, "Non [a-z0-9/._-] character in value of Key");
   }
 
   /* package */ static boolean namespaceValid(final @NonNull String namespace) {

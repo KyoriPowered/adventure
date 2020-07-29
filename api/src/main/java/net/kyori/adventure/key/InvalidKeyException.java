@@ -26,30 +26,35 @@ package net.kyori.adventure.key;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import static java.util.Objects.requireNonNull;
-
 /**
- * This exception is thrown when an invalid key has been created.
+ * This exception is thrown when an invalid namespace and/or value has been detected while creating a {@link Key}.
  */
-public class InvalidKeyException extends RuntimeException {
-  private static final long serialVersionUID = -1343011737942568519L;
-  private final Key key;
+public final class InvalidKeyException extends RuntimeException {
+  private static final long serialVersionUID = -5413304087321449434L;
+  private final String keyNamespace;
+  private final String keyValue;
 
-  public InvalidKeyException(final @NonNull Key key, final @Nullable String reason) {
-    this(key, reason, null);
-  }
-
-  public InvalidKeyException(final @NonNull Key key, final @Nullable String reason, final @Nullable Throwable cause) {
-    super(String.format("%s: %s", reason == null ? "Invalid key" : reason, requireNonNull(key, "key").asString()), cause);
-    this.key = key;
+  /* package */ InvalidKeyException(final @NonNull String keyNamespace, final @NonNull String keyValue, final @Nullable String message) {
+    super(message);
+    this.keyNamespace = keyNamespace;
+    this.keyValue = keyValue;
   }
 
   /**
-   * Gets the invalid key.
+   * Gets the invalid key, as a string.
    *
    * @return a key
    */
-  public final @NonNull Key key() {
-    return this.key;
+  public final @NonNull String keyNamespace() {
+    return this.keyNamespace;
+  }
+
+  /**
+   * Gets the invalid key, as a string.
+   *
+   * @return a key
+   */
+  public final @NonNull String keyValue() {
+    return this.keyValue;
   }
 }
