@@ -23,10 +23,11 @@
  */
 package net.kyori.adventure.bossbar;
 
+import java.util.Collections;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
@@ -39,6 +40,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import static java.util.Objects.requireNonNull;
 
 /* package */ final class BossBarImpl extends Listenable<BossBar.Listener> implements BossBar, Examinable {
+  private static final BossBar.Flag[] FLAGS = BossBar.Flag.values();
+  private static final BiConsumer<BossBarImpl, Set<Flag>> FLAGS_ADDED = (bar, flagsAdded) -> bar.forEachListener(listener -> listener.bossBarFlagsChanged(bar, flagsAdded, Collections.emptySet()));
+  private static final BiConsumer<BossBarImpl, Set<Flag>> FLAGS_REMOVED = (bar, flagsRemoved) -> bar.forEachListener(listener -> listener.bossBarFlagsChanged(bar, Collections.emptySet(), flagsRemoved));
   private Component name;
   private float percent;
   private Color color;
@@ -134,36 +138,94 @@ import static java.util.Objects.requireNonNull;
 
   @Override
   public @NonNull BossBar flags(final @NonNull Set<Flag> newFlags) {
-    if(!this.flags.equals(newFlags)) {
-      final Set<Flag> oldFlags = new HashSet<>(this.flags);
+    if(newFlags.isEmpty()) {
+      final Set<Flag> oldFlags = EnumSet.copyOf(this.flags);
+      this.flags.clear();
+      this.forEachListener(listener -> listener.bossBarFlagsChanged(this, Collections.emptySet(), oldFlags));
+    } else if(!this.flags.equals(newFlags)) {
+      final Set<Flag> oldFlags = EnumSet.copyOf(this.flags);
       this.flags.clear();
       this.flags.addAll(newFlags);
-      this.forEachListener(listener -> listener.bossBarFlagsChanged(this, oldFlags, this.flags));
+      final Set<BossBar.Flag> added = EnumSet.copyOf(newFlags);
+      added.removeIf(oldFlags::contains);
+      final Set<BossBar.Flag> removed = EnumSet.copyOf(oldFlags);
+      removed.removeIf(this.flags::contains);
+      this.forEachListener(listener -> listener.bossBarFlagsChanged(this, added, removed));
+    }
+    return this;
+  }
+
+  @Override
+  public boolean hasFlag(final @NonNull Flag flag) {
+    return this.flags.contains(flag);
+  }
+
+  @Override
+  public @NonNull BossBar addFlag(final @NonNull Flag flag) {
+    return this.editFlags(flag, Set::add, FLAGS_ADDED);
+  }
+
+  @Override
+  public @NonNull BossBar removeFlag(final @NonNull Flag flag) {
+    return this.editFlags(flag, Set::remove, FLAGS_REMOVED);
+  }
+
+  private @NonNull BossBar editFlags(final @NonNull Flag flag, final @NonNull BiPredicate<Set<Flag>, Flag> predicate, final BiConsumer<BossBarImpl, Set<Flag>> onChange) {
+    if(predicate.test(this.flags, flag)) {
+      onChange.accept(this, Collections.singleton(flag));
     }
     return this;
   }
 
   @Override
   public @NonNull BossBar addFlags(final @NonNull Flag@NonNull... flags) {
-    return this.editFlags(flags, Set::add);
+    return this.editFlags(flags, Set::add, FLAGS_ADDED);
   }
 
   @Override
   public @NonNull BossBar removeFlags(final @NonNull Flag@NonNull... flags) {
-    return this.editFlags(flags, Set::remove);
+    return this.editFlags(flags, Set::remove, FLAGS_REMOVED);
   }
 
-  private @NonNull BossBar editFlags(final @NonNull Flag@NonNull[] flags, final @NonNull BiPredicate<Set<Flag>, Flag> predicate) {
+  private @NonNull BossBar editFlags(final Flag[] flags, final BiPredicate<Set<Flag>, Flag> predicate, final BiConsumer<BossBarImpl, Set<Flag>> onChange) {
     if(flags.length == 0) return this;
-    final Set<Flag> oldFlags = new HashSet<>(this.flags);
-    boolean changed = false;
+    Set<Flag> changes = null;
     for(int i = 0, length = flags.length; i < length; i++) {
       if(predicate.test(this.flags, flags[i])) {
-        changed = true;
+        if(changes == null) {
+          changes = EnumSet.noneOf(Flag.class);
+        }
+        changes.add(flags[i]);
       }
     }
-    if(changed) {
-      this.forEachListener(listener -> listener.bossBarFlagsChanged(this, oldFlags, this.flags));
+    if(changes != null) {
+      onChange.accept(this, changes);
+    }
+    return this;
+  }
+
+  @Override
+  public @NonNull BossBar addFlags(final @NonNull Iterable<Flag> flags) {
+    return this.editFlags(flags, Set::add, FLAGS_ADDED);
+  }
+
+  @Override
+  public @NonNull BossBar removeFlags(final @NonNull Iterable<Flag> flags) {
+    return this.editFlags(flags, Set::remove, FLAGS_REMOVED);
+  }
+
+  private @NonNull BossBar editFlags(final Iterable<Flag> flags, final BiPredicate<Set<Flag>, Flag> predicate, final BiConsumer<BossBarImpl, Set<Flag>> onChange) {
+    Set<Flag> changes = null;
+    for(final Flag flag : flags) {
+      if(predicate.test(this.flags, flag)) {
+        if(changes == null) {
+          changes = EnumSet.noneOf(Flag.class);
+        }
+        changes.add(flag);
+      }
+    }
+    if(changes != null) {
+      onChange.accept(this, changes);
     }
     return this;
   }

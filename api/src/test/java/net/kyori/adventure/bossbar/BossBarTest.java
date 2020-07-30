@@ -24,8 +24,10 @@
 package net.kyori.adventure.bossbar;
 
 import com.google.common.collect.ImmutableSet;
+import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -140,17 +142,102 @@ public class BossBarTest {
     assertEquals(ImmutableSet.of(), this.bar.flags(ImmutableSet.of()).flags());
     assertEquals(0, this.flags.get());
 
+    final Changes changes = new Changes();
+
     this.bar.addListener(this.listener);
-    assertEquals(ImmutableSet.of(BossBar.Flag.DARKEN_SCREEN), this.bar.flags(ImmutableSet.of(BossBar.Flag.DARKEN_SCREEN)).flags());
-    assertEquals(1, this.flags.get());
+    this.bar.addListener(changes);
 
-    assertEquals(ImmutableSet.of(BossBar.Flag.DARKEN_SCREEN), this.bar.flags(ImmutableSet.of(BossBar.Flag.DARKEN_SCREEN)).flags());
-    assertEquals(1, this.flags.get()); // value has not changed, should not have incremented
+    // set flags to new from empty
+    changes.resetAndThen(() -> {
+      assertEquals(ImmutableSet.of(BossBar.Flag.DARKEN_SCREEN), this.bar.flags(ImmutableSet.of(BossBar.Flag.DARKEN_SCREEN)).flags());
+      assertEquals(1, this.flags.get());
+      assertThat(changes.flagsAdded.get()).containsExactly(BossBar.Flag.DARKEN_SCREEN);
+      assertThat(changes.flagsRemoved.get()).isEmpty();
+    });
 
-    assertEquals(ImmutableSet.of(BossBar.Flag.DARKEN_SCREEN, BossBar.Flag.CREATE_WORLD_FOG), this.bar.addFlags(BossBar.Flag.CREATE_WORLD_FOG).flags());
-    assertEquals(2, this.flags.get());
+    // set flags to same as existing
+    changes.resetAndThen(() -> {
+      assertEquals(ImmutableSet.of(BossBar.Flag.DARKEN_SCREEN), this.bar.flags(ImmutableSet.of(BossBar.Flag.DARKEN_SCREEN)).flags());
+      assertEquals(1, this.flags.get()); // value has not changed, should not have incremented
+      assertThat(changes.flagsAdded.get()).isEmpty();
+      assertThat(changes.flagsRemoved.get()).isEmpty();
+    });
 
-    assertEquals(ImmutableSet.of(BossBar.Flag.DARKEN_SCREEN), this.bar.removeFlags(BossBar.Flag.CREATE_WORLD_FOG).flags());
-    assertEquals(3, this.flags.get());
+    // set flags to new from existing
+    changes.resetAndThen(() -> {
+      assertEquals(ImmutableSet.of(BossBar.Flag.PLAY_BOSS_MUSIC), this.bar.flags(ImmutableSet.of(BossBar.Flag.PLAY_BOSS_MUSIC)).flags());
+      assertEquals(2, this.flags.get());
+      assertThat(changes.flagsAdded.get()).containsExactly(BossBar.Flag.PLAY_BOSS_MUSIC);
+      assertThat(changes.flagsRemoved.get()).containsExactly(BossBar.Flag.DARKEN_SCREEN);
+    });
+
+    // add flags
+    changes.resetAndThen(() -> {
+      assertEquals(ImmutableSet.of(BossBar.Flag.PLAY_BOSS_MUSIC, BossBar.Flag.CREATE_WORLD_FOG), this.bar.addFlag(BossBar.Flag.CREATE_WORLD_FOG).flags());
+      assertEquals(3, this.flags.get());
+      assertThat(changes.flagsAdded.get()).containsExactly(BossBar.Flag.CREATE_WORLD_FOG);
+      assertThat(changes.flagsRemoved.get()).isEmpty();
+    });
+    assertEquals(ImmutableSet.of(BossBar.Flag.PLAY_BOSS_MUSIC), this.bar.flags(ImmutableSet.of(BossBar.Flag.PLAY_BOSS_MUSIC)).flags());
+    changes.resetAndThen(() -> {
+      assertEquals(ImmutableSet.of(BossBar.Flag.PLAY_BOSS_MUSIC, BossBar.Flag.CREATE_WORLD_FOG), this.bar.addFlags(BossBar.Flag.CREATE_WORLD_FOG).flags());
+      assertEquals(5, this.flags.get());
+      assertThat(changes.flagsAdded.get()).containsExactly(BossBar.Flag.CREATE_WORLD_FOG);
+      assertThat(changes.flagsRemoved.get()).isEmpty();
+    });
+    assertEquals(ImmutableSet.of(BossBar.Flag.PLAY_BOSS_MUSIC), this.bar.flags(ImmutableSet.of(BossBar.Flag.PLAY_BOSS_MUSIC)).flags());
+    changes.resetAndThen(() -> {
+      assertEquals(ImmutableSet.of(BossBar.Flag.PLAY_BOSS_MUSIC, BossBar.Flag.CREATE_WORLD_FOG), this.bar.addFlags(ImmutableSet.of(BossBar.Flag.CREATE_WORLD_FOG)).flags());
+      assertEquals(7, this.flags.get());
+      assertThat(changes.flagsAdded.get()).containsExactly(BossBar.Flag.CREATE_WORLD_FOG);
+      assertThat(changes.flagsRemoved.get()).isEmpty();
+    });
+
+    // remove flags
+    changes.resetAndThen(() -> {
+      assertEquals(ImmutableSet.of(BossBar.Flag.PLAY_BOSS_MUSIC), this.bar.removeFlag(BossBar.Flag.CREATE_WORLD_FOG).flags());
+      assertEquals(8, this.flags.get());
+      assertThat(changes.flagsAdded.get()).isEmpty();
+      assertThat(changes.flagsRemoved.get()).containsExactly(BossBar.Flag.CREATE_WORLD_FOG);
+    });
+    assertEquals(ImmutableSet.of(BossBar.Flag.PLAY_BOSS_MUSIC, BossBar.Flag.CREATE_WORLD_FOG), this.bar.addFlags(BossBar.Flag.CREATE_WORLD_FOG).flags());
+    changes.resetAndThen(() -> {
+      assertEquals(ImmutableSet.of(BossBar.Flag.PLAY_BOSS_MUSIC), this.bar.removeFlags(BossBar.Flag.CREATE_WORLD_FOG).flags());
+      assertEquals(10, this.flags.get());
+      assertThat(changes.flagsAdded.get()).isEmpty();
+      assertThat(changes.flagsRemoved.get()).containsExactly(BossBar.Flag.CREATE_WORLD_FOG);
+    });
+    assertEquals(ImmutableSet.of(BossBar.Flag.PLAY_BOSS_MUSIC, BossBar.Flag.CREATE_WORLD_FOG), this.bar.addFlags(BossBar.Flag.CREATE_WORLD_FOG).flags());
+    changes.resetAndThen(() -> {
+      assertEquals(ImmutableSet.of(BossBar.Flag.PLAY_BOSS_MUSIC), this.bar.removeFlags(ImmutableSet.of(BossBar.Flag.CREATE_WORLD_FOG)).flags());
+      assertEquals(12, this.flags.get());
+      assertThat(changes.flagsAdded.get()).isEmpty();
+      assertThat(changes.flagsRemoved.get()).containsExactly(BossBar.Flag.CREATE_WORLD_FOG);
+    });
+
+    // clear flags
+    changes.resetAndThen(() -> {
+      assertEquals(ImmutableSet.of(), this.bar.flags(ImmutableSet.of()).flags());
+      assertEquals(13, this.flags.get());
+      assertThat(changes.flagsAdded.get()).isEmpty();
+      assertThat(changes.flagsRemoved.get()).containsExactly(BossBar.Flag.PLAY_BOSS_MUSIC);
+    });
+  }
+
+  static class Changes implements BossBar.Listener {
+    final AtomicReference<Set<BossBar.Flag>> flagsAdded = new AtomicReference<>(Collections.emptySet());
+    final AtomicReference<Set<BossBar.Flag>> flagsRemoved = new AtomicReference<>(Collections.emptySet());
+
+    @Override
+    public void bossBarFlagsChanged(final @NonNull BossBar bar, final @NonNull Set<BossBar.Flag> flagsAdded, final @NonNull Set<BossBar.Flag> flagsRemoved) {
+      this.flagsAdded.set(flagsAdded);
+      this.flagsRemoved.set(flagsRemoved);
+    }
+
+    public void resetAndThen(final Runnable runnable) {
+      this.flagsAdded.set(Collections.emptySet());
+      this.flagsRemoved.set(Collections.emptySet());
+      runnable.run();
+    }
   }
 }

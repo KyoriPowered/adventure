@@ -153,7 +153,31 @@ public interface BossBar {
   @NonNull BossBar flags(final @NonNull Set<Flag> flags);
 
   /**
-   * Sets the flags.
+   * Checks if this bossbar has a flag.
+   *
+   * @param flag the flag
+   * @return {@code true} if this bossbar has the flag, {@code false} otherwise
+   */
+  boolean hasFlag(final @NonNull Flag flag);
+
+  /**
+   * Adds a flag to this bossbar.
+   *
+   * @param flag the flag
+   * @return the bossbar
+   */
+  @NonNull BossBar addFlag(final @NonNull Flag flag);
+
+  /**
+   * Removes a flag from this bossbar.
+   *
+   * @param flag the flag
+   * @return the bossbar
+   */
+  @NonNull BossBar removeFlag(final @NonNull Flag flag);
+
+  /**
+   * Adds flags to this bossbar.
    *
    * @param flags the flags
    * @return the bossbar
@@ -161,12 +185,28 @@ public interface BossBar {
   @NonNull BossBar addFlags(final @NonNull Flag@NonNull... flags);
 
   /**
-   * Sets the flags.
+   * Removes flags from this bossbar.
    *
    * @param flags the flags
    * @return the bossbar
    */
   @NonNull BossBar removeFlags(final @NonNull Flag@NonNull... flags);
+
+  /**
+   * Adds flags to this bossbar.
+   *
+   * @param flags the flags
+   * @return the bossbar
+   */
+  @NonNull BossBar addFlags(final @NonNull Iterable<Flag> flags);
+
+  /**
+   * Removes flags from this bossbar.
+   *
+   * @param flags the flags
+   * @return the bossbar
+   */
+  @NonNull BossBar removeFlags(final @NonNull Iterable<Flag> flags);
 
   /**
    * Adds a listener.
@@ -232,10 +272,10 @@ public interface BossBar {
      * Bossbar flags changed.
      *
      * @param bar the bossbar
-     * @param oldFlags the old flags
-     * @param newFlags the new flags
+     * @param flagsAdded the flags added to the bossbar
+     * @param flagsRemoved the flags removed from the bossbar
      */
-    default void bossBarFlagsChanged(final @NonNull BossBar bar, final @NonNull Set<Flag> oldFlags, final @NonNull Set<Flag> newFlags) {
+    default void bossBarFlagsChanged(final @NonNull BossBar bar, final @NonNull Set<Flag> flagsAdded, final @NonNull Set<Flag> flagsRemoved) {
     }
   }
 
