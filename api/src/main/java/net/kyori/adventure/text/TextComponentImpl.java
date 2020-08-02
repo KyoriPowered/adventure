@@ -34,6 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.util.IntPredicate2;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -68,10 +69,13 @@ import static java.util.Objects.requireNonNull;
   }
 
   @Override
-  public @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement) {
+  public @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement, final @NonNull IntPredicate2 predicate) {
     final List<Component> produced = new ArrayList<>();
     final Queue<TextComponent> queue = new ArrayDeque<>();
     queue.add(this);
+
+    int index = 0;
+    int replaced = 0;
 
     while(!queue.isEmpty()) {
       final TextComponent current = queue.remove();
@@ -82,17 +86,22 @@ import static java.util.Objects.requireNonNull;
       if(matcher.find()) {
         int lastEnd = 0;
         do {
-          final int start = matcher.start();
-          final int end = matcher.end();
-          final String matched = matcher.group();
+          index++;
 
-          final String prefix = content.substring(lastEnd, start);
-          if(!prefix.isEmpty()) {
-            produced.add(withoutChildren.content(prefix));
+          if(predicate.test(index, replaced)) {
+            replaced++;
+            final int start = matcher.start();
+            final int end = matcher.end();
+            final String matched = matcher.group();
+
+            final String prefix = content.substring(lastEnd, start);
+            if(!prefix.isEmpty()) {
+              produced.add(withoutChildren.content(prefix));
+            }
+
+            produced.add(replacement.apply(withoutChildren.toBuilder().content(matched)).build());
+            lastEnd = end;
           }
-
-          produced.add(replacement.apply(withoutChildren.toBuilder().content(matched)).build());
-          lastEnd = end;
         } while(matcher.find());
 
         if(content.length() - lastEnd > 0) {

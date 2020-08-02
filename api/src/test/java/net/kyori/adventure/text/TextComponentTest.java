@@ -149,6 +149,46 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
   }
 
   @Test
+  void testReplaceN() {
+    final TextComponent component = TextComponent.builder()
+      .content("Buffalo buffalo Buffalo buffalo buffalo buffalo Buffalo buffalo ")
+      .append(TranslatableComponent.of("buffalo.buffalo")) // or any non-text component
+      .build();
+    final TextComponent replaced = component.replace(Pattern.compile("buffalo"), match -> match.color(NamedTextColor.DARK_PURPLE), 2);
+    assertEquals(TextComponent.builder()
+      .content("Buffalo ")
+      .append("buffalo", NamedTextColor.DARK_PURPLE)
+      .append(" Buffalo ")
+      .append("buffalo", NamedTextColor.DARK_PURPLE)
+      .append(" buffalo buffalo Buffalo buffalo ")
+      .append(TranslatableComponent.of("buffalo.buffalo"))
+      .build(), replaced);
+  }
+
+  @Test
+  void testReplaceEveryOther() {
+    final TextComponent component = TextComponent.builder()
+      .content("purple purple purple purple purple purple purple purple ")
+      .append(TranslatableComponent.of("purple.purple")) // or any non-text component
+      .build();
+
+    final TextComponent replaced = component.replace(Pattern.compile("purple"), match -> match.color(NamedTextColor.DARK_PURPLE), (index, replace) -> index % 2 == 0);
+
+    assertEquals(TextComponent.builder()
+      .content("purple ")
+      .append("purple", NamedTextColor.DARK_PURPLE)
+      .append(" purple ")
+      .append("purple", NamedTextColor.DARK_PURPLE)
+      .append(" purple ")
+      .append("purple", NamedTextColor.DARK_PURPLE)
+      .append(" purple ")
+      .append("purple", NamedTextColor.DARK_PURPLE)
+      .append(" ")
+      .append(TranslatableComponent.of("purple.purple"))
+      .build(), replaced);
+  }
+
+  @Test
   void testBuildEmptyIsEmpty() {
     assertSame(TextComponent.empty(), TextComponent.builder().build());
   }

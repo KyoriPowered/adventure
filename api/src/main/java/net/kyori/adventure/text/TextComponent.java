@@ -34,6 +34,7 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.util.Buildable;
+import net.kyori.adventure.util.IntPredicate2;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -582,7 +583,43 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param replacement a function to replace each match
    * @return a modified copy of this component
    */
-  @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement);
+  default @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement) {
+    return this.replace(pattern, replacement, (index, replaced) -> true);
+  }
+
+  /**
+   * Finds and replaces n instances of text using a regex pattern.
+   *
+   * @param pattern a regex pattern
+   * @param replacement a function to replace each match
+   * @param numberOfReplacements the amount of matches that should be replaced
+   * @return a modified copy of this component
+   */
+  default @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement, final int numberOfReplacements) {
+    return this.replace(pattern, replacement, (index, replaced) -> replaced < numberOfReplacements);
+  }
+
+  /**
+   * Finds and replaces the first occurence of text using a regex pattern.
+   *
+   * @param pattern a regex pattern
+   * @param replacement a function to replace the first match
+   * @return a modified copy of this component
+   */
+  default @NonNull TextComponent replaceFirst(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement) {
+    return this.replace(pattern, replacement, (index, replaced) -> replaced == 0);
+  }
+
+  /**
+   * Finds and replaces text using a regex pattern.
+   * Utilises an {@link IntPredicate2} to determine if each instance should be replaced.
+   *
+   * @param pattern a regex pattern
+   * @param replacement a function to replace the first match
+   * @param predicate a predicate of (index, replaced) used to determine if matches should be replaced, where "replaced" is the number of successful replacements
+   * @return a modified copy of this component
+   */
+  @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement, final @NonNull IntPredicate2 predicate);
 
   /**
    * A text component builder.
