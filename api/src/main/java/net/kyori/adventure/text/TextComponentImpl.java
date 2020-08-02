@@ -34,7 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.util.IntPredicate2;
+import net.kyori.adventure.util.IntFunction2;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -69,7 +69,7 @@ import static java.util.Objects.requireNonNull;
   }
 
   @Override
-  public @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement, final @NonNull IntPredicate2 predicate) {
+  public @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement, final @NonNull IntFunction2<PatternReplacementResult> fn) {
     final List<Component> produced = new ArrayList<>();
     final Queue<TextComponent> queue = new ArrayDeque<>();
     queue.add(this);
@@ -85,10 +85,12 @@ import static java.util.Objects.requireNonNull;
 
       if(matcher.find()) {
         int lastEnd = 0;
+        boolean running = true;
         do {
           index++;
 
-          if(predicate.test(index, replaced)) {
+          final PatternReplacementResult result = fn.apply(index, replaced);
+          if(result == PatternReplacementResult.REPLACE) {
             replaced++;
             final int start = matcher.start();
             final int end = matcher.end();
@@ -101,8 +103,10 @@ import static java.util.Objects.requireNonNull;
 
             produced.add(replacement.apply(withoutChildren.toBuilder().content(matched)).build());
             lastEnd = end;
+          } else if(result == PatternReplacementResult.STOP) {
+            running = false;
           }
-        } while(matcher.find());
+        } while(running && matcher.find());
 
         if(content.length() - lastEnd > 0) {
           produced.add(withoutChildren.content(content.substring(lastEnd)));

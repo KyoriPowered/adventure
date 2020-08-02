@@ -149,6 +149,21 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
   }
 
   @Test
+  void testReplaceFirst() {
+    final TextComponent component = TextComponent.builder()
+      .content("Buffalo buffalo Buffalo buffalo buffalo buffalo Buffalo buffalo ")
+      .append(TranslatableComponent.of("buffalo.buffalo")) // or any non-text component
+      .build();
+    final TextComponent replaced = component.replaceFirst(Pattern.compile("buffalo"), match -> match.color(NamedTextColor.DARK_PURPLE));
+    assertEquals(TextComponent.builder()
+      .content("Buffalo ")
+      .append("buffalo", NamedTextColor.DARK_PURPLE)
+      .append(" Buffalo buffalo buffalo buffalo Buffalo buffalo ")
+      .append(TranslatableComponent.of("buffalo.buffalo"))
+      .build(), replaced);
+  }
+
+  @Test
   void testReplaceN() {
     final TextComponent component = TextComponent.builder()
       .content("Buffalo buffalo Buffalo buffalo buffalo buffalo Buffalo buffalo ")
@@ -172,7 +187,7 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
       .append(TranslatableComponent.of("purple.purple")) // or any non-text component
       .build();
 
-    final TextComponent replaced = component.replace(Pattern.compile("purple"), match -> match.color(NamedTextColor.DARK_PURPLE), (index, replace) -> index % 2 == 0);
+    final TextComponent replaced = component.replace(Pattern.compile("purple"), match -> match.color(NamedTextColor.DARK_PURPLE), (index, replace) -> index % 2 == 0 ? TextComponent.PatternReplacementResult.REPLACE : TextComponent.PatternReplacementResult.CONTINUE);
 
     assertEquals(TextComponent.builder()
       .content("purple ")
