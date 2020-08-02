@@ -26,8 +26,6 @@ package net.kyori.adventure.nbt.api;
 import net.kyori.adventure.util.Codec;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * Holds a compound binary tag.
  *
@@ -78,22 +76,4 @@ public interface BinaryTagHolder {
    * @throws DX if an error occurred while retrieving the binary tag
    */
   <T, DX extends Exception> @NonNull T get(final @NonNull Codec<T, String, DX, ?> codec) throws DX;
-}
-
-/* package */ final class BinaryTagHolderImpl implements BinaryTagHolder {
-  private final String string;
-
-  /* package */ BinaryTagHolderImpl(final String string) {
-    this.string = requireNonNull(string, "string");
-  }
-
-  @Override
-  public @NonNull String string() {
-    return this.string;
-  }
-
-  @Override
-  public <T, DX extends Exception> @NonNull T get(final @NonNull Codec<T, String, DX, ?> codec) throws DX {
-    return codec.decode(this.string);
-  }
 }

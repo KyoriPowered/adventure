@@ -111,37 +111,37 @@ import static java.util.Objects.requireNonNull;
     return this.examine(StringExaminer.simpleEscaping());
   }
 
-  /* package */ static class Builder implements Book.Builder {
+  /* package */ static class BuilderImpl implements Book.Builder {
     private Component title = TextComponent.empty();
     private Component author = TextComponent.empty();
     private final List<Component> pages = new ArrayList<>();
 
     @Override
-    public Book.@NonNull Builder title(final @NonNull Component title) {
+    public @NonNull Builder title(final @NonNull Component title) {
       this.title = requireNonNull(title, "title");
       return this;
     }
 
     @Override
-    public Book.@NonNull Builder author(final @NonNull Component author) {
+    public @NonNull Builder author(final @NonNull Component author) {
       this.author = requireNonNull(author, "author");
       return this;
     }
 
     @Override
-    public Book.@NonNull Builder page(final @NonNull Component page) {
+    public @NonNull Builder addPage(final @NonNull Component page) {
       this.pages.add(requireNonNull(page, "page"));
       return this;
     }
 
     @Override
-    public Book.@NonNull Builder pages(final @NonNull Collection<Component> pages) {
+    public @NonNull Builder pages(final @NonNull Collection<Component> pages) {
       this.pages.addAll(requireNonNull(pages, "pages"));
       return this;
     }
 
     @Override
-    public Book.@NonNull Builder pages(final @NonNull Component@NonNull... pages) {
+    public @NonNull Builder pages(final @NonNull Component@NonNull... pages) {
       this.pages.addAll(Arrays.asList(pages));
       return this;
     }

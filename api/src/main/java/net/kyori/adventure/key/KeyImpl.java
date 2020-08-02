@@ -112,11 +112,7 @@ import static java.util.Objects.requireNonNull;
 
   @Override
   public int compareTo(final @NonNull Key that) {
-    final int value = this.value.compareTo(that.value());
-    if(value != 0) {
-      return clampCompare(value);
-    }
-    return clampCompare(this.namespace.compareTo(that.namespace()));
+    return Key.super.compareTo(that);
   }
 
   /* package */ static int clampCompare(final int value) {

@@ -21,10 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-/**
- * An implementation of the <a href="https://wiki.vg/NBT">NBT</a> format.
- *
- * <p>Adventure supports serializing to both binary and string representations
- * of the tags, both through {@link net.kyori.adventure.nbt.BinaryTagIO}</p>
- */
-package net.kyori.adventure.nbt;
+package net.kyori.adventure.sound;
+
+import com.google.common.testing.EqualsTester;
+import net.kyori.adventure.key.Key;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class SoundTest {
+  private static final Key SOUND_KEY = Key.of("minecraft", "block.fence_gate.open");
+  private static final Sound.Type SOUND_TYPE = () -> SOUND_KEY;
+
+  @Test
+  void testGetters() {
+    final Sound sound = Sound.of(SOUND_KEY, Sound.Source.HOSTILE, 1f, 1f);
+    assertEquals(SOUND_KEY, sound.name());
+    assertEquals(Sound.Source.HOSTILE, sound.source());
+    assertEquals(1f, sound.volume());
+    assertEquals(1f, sound.pitch());
+  }
+
+  @Test
+  void testOfIsEqual() {
+    new EqualsTester()
+      .addEqualityGroup(
+        Sound.of(SOUND_KEY, Sound.Source.HOSTILE, 1f, 1f),
+        Sound.of(SOUND_TYPE, Sound.Source.HOSTILE, 1f, 1f),
+        Sound.of(() -> SOUND_TYPE, Sound.Source.HOSTILE, 1f, 1f)
+      )
+      .testEquals();
+  }
+}

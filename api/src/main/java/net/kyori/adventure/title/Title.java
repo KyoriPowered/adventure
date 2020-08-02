@@ -39,6 +39,17 @@ public interface Title {
   Duration KEEP = Duration.ofSeconds(-1);
 
   /**
+   * Creates a title that maintains each client's existing title times.
+   *
+   * @param title the title
+   * @param subtitle the subtitle
+   * @return the title
+   */
+  static @NonNull Title of(final @NonNull Component title, final @NonNull Component subtitle) {
+    return of(title, subtitle, KEEP, KEEP, KEEP);
+  }
+
+  /**
    * Creates a title.
    *
    * @param title the title
@@ -50,17 +61,6 @@ public interface Title {
    */
   static @NonNull Title of(final @NonNull Component title, final @NonNull Component subtitle, final @NonNull Duration fadeInTime, final @NonNull Duration stayTime, final @NonNull Duration fadeOutTime) {
     return new TitleImpl(title, subtitle, fadeInTime, stayTime, fadeOutTime);
-  }
-
-  /**
-   * Creates a title that maintains each client's existing title times.
-   *
-   * @param title the title
-   * @param subtitle the subtitle
-   * @return the title
-   */
-  static @NonNull Title of(final @NonNull Component title, final @NonNull Component subtitle) {
-    return of(title, subtitle, KEEP, KEEP, KEEP);
   }
 
   /**

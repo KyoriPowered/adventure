@@ -66,7 +66,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
    * @return a builder
    */
   static @NonNull Builder builder() {
-    return new BookImpl.Builder();
+    return new BookImpl.BuilderImpl();
   }
 
   /**
@@ -168,14 +168,14 @@ public interface Book extends Buildable<Book, Book.Builder> {
      * @param page the page
      * @return this
      */
-    @NonNull Builder page(final @NonNull Component page);
+    @NonNull Builder addPage(final @NonNull Component page);
 
     /**
      * Add pages to the book.
      *
      * @param pages pages to add
      * @return this
-     * @see #page(Component) for details on page values.
+     * @see #addPage(Component) for details on page values.
      */
     @NonNull Builder pages(final @NonNull Collection<Component> pages);
 
@@ -184,7 +184,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
      *
      * @param pages pages to add
      * @return this
-     * @see #page(Component) for details on page values.
+     * @see #addPage(Component) for details on page values.
      */
     @NonNull Builder pages(final @NonNull Component@NonNull... pages);
 

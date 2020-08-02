@@ -58,10 +58,10 @@ class KeyTest {
 
   @Test
   void testOfInvalid() {
-    assertThrows(InvalidKeyException.class, () -> Key.of("!"));
-    assertThrows(InvalidKeyException.class, () -> Key.of("Thing:abc"));
-    assertThrows(InvalidKeyException.class, () -> Key.of("abc:Thing"));
-    assertThrows(InvalidKeyException.class, () -> Key.of("a/b:empty"));
+    assertEquals("!", assertThrows(InvalidKeyException.class, () -> Key.of("!")).keyValue());
+    assertEquals("Thing", assertThrows(InvalidKeyException.class, () -> Key.of("Thing:abc")).keyNamespace());
+    assertEquals("Thing", assertThrows(InvalidKeyException.class, () -> Key.of("abc:Thing")).keyValue());
+    assertEquals("a/b", assertThrows(InvalidKeyException.class, () -> Key.of("a/b:empty")).keyNamespace());
   }
 
   @Test
