@@ -1,16 +1,21 @@
 rootProject.name = 'adventure-parent'
 
-['api', 'nbt'].each {
-  include "$it"
+// Unfortunately, we cannot make this any nicer really
+
+include 'api'
+include 'nbt'
+include 'text-feature-pagination'
+include 'text-serializer-gson'
+include 'text-serializer-legacy'
+include 'text-serializer-plain'
+
+[
+  'api',
+  'nbt',
+  'text-feature-pagination',
+  'text-serializer-gson',
+  'text-serializer-legacy',
+  'text-serializer-plain'
+].each {
   findProject(":$it")?.name = "adventure-$it"
-}
-
-['plain', 'legacy', 'gson'].each {
-  include "text-serializer-$it"
-  findProject(":text-serializer-$it")?.name = "adventure-text-serializer-$it"
-}
-
-['pagination'].each {
-  include "text-feature-$it"
-  findProject(":text-feature-$it")?.name = "adventure-text-feature-$it"
 }
