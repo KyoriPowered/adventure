@@ -28,6 +28,9 @@ import java.util.Set;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+/**
+ * Binary tag holding a mapping of string keys to {@link BinaryTag} values.
+ */
 public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<CompoundBinaryTag>, Iterable<Map.Entry<String, ? extends BinaryTag>> {
   /**
    * Gets an empty compound tag.
