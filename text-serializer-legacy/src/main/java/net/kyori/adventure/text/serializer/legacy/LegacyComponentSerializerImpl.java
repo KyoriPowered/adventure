@@ -100,6 +100,21 @@ import org.checkerframework.checker.nullness.qual.Nullable;
     return null;
   }
 
+  /* package */ static @Nullable LegacyFormat legacyFormat(final char character) {
+    final int index = LEGACY_CHARS.indexOf(character);
+    if(index != -1) {
+      final TextFormat format = FORMATS.get(index);
+      if(format instanceof NamedTextColor) {
+        return new LegacyFormat((NamedTextColor) format);
+      } else if(format instanceof TextDecoration) {
+        return new LegacyFormat((TextDecoration) format);
+      } else if(format instanceof Reset) {
+        return LegacyFormat.RESET;
+      }
+    }
+    return null;
+  }
+
   private @Nullable DecodedFormat decodeTextFormat(final char legacy, final String input, final int pos) {
     final FormatCodeType foundFormat = this.determineFormatType(legacy, input, pos);
     if(foundFormat == null) {

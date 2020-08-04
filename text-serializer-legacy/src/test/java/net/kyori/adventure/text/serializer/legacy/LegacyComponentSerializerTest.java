@@ -31,6 +31,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LegacyComponentSerializerTest {
   @Test
@@ -248,5 +249,12 @@ class LegacyComponentSerializerTest {
     final String input = "§c§rCleared";
     final TextComponent output = TextComponent.of("Cleared");
     assertEquals(output, LegacyComponentSerializer.legacySection().deserialize(input));
+  }
+
+  @Test
+  void testLegacyFormat() {
+    assertEquals(NamedTextColor.DARK_PURPLE, LegacyComponentSerializer.parseChar('5').color());
+    assertEquals(TextDecoration.BOLD, LegacyComponentSerializer.parseChar('l').decoration());
+    assertTrue(LegacyComponentSerializer.parseChar('r').reset());
   }
 }

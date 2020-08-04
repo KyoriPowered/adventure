@@ -84,6 +84,16 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
   }
 
   /**
+   * Converts a legacy character ({@code 0123456789abcdefklmnor}) to a legacy format, when possible.
+   *
+   * @param character the legacy character
+   * @return the legacy format
+   */
+  static @Nullable LegacyFormat parseChar(final char character) {
+    return LegacyComponentSerializerImpl.legacyFormat(character);
+  }
+
+  /**
    * Creates a new {@link LegacyComponentSerializer.Builder}.
    *
    * @return the builder
