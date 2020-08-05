@@ -8,7 +8,7 @@
 * Dropped bungee impl
 * Moved markdown ext into the main project
 * Refactored the project, MiniMessage is now the main api
-* Moved docs to the adventure docs page https://adventure.docs.kyori.net/
+* Moved docs to the adventure docs page https://docs.adventure.kyori.net/minimessage.html
 * Moved the project to gradle to align with other kyori projects
 
 # 2.1.0 (12.06.2020)

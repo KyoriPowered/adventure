@@ -33,7 +33,7 @@ MiniMessage depends on `adventure-text`, so you don't need to provide that, but 
 
 #### Intro
 
-MiniMessage uses a really simple tag system. For a full breakdown, please refer to [the documentation](https://adventure.docs.kyori.net/), but you can find a few examples below:
+MiniMessage uses a really simple tag system. For a full breakdown, please refer to [the documentation](https://docs.adventure.kyori.net/minimessage.html), but you can find a few examples below:
 
 `<yellow>Hello <blue>World</blue>!"` -> ![https://i.imgur.com/wB32YpZ.png](https://i.imgur.com/wB32YpZ.png)  
 `<red>This is a <green>test!"` ->  ![https://i.imgur.com/vsN3OHa.png](https://i.imgur.com/vsN3OHa.png)  
@@ -73,7 +73,7 @@ component = MiniMessage.get().parse(result);
 BukkitPlatform.of(plugin).player(player).sendMessage(result);
 ```
 
-For more examples and a break down of all supported components, please refer to [the documentation](https://adventure.docs.kyori.net/)
+For more examples and a break down of all supported components, please refer to [the documentation](https://docs.adventure.kyori.net/minimessage.html)
 
 ### Changelog
 
