@@ -35,9 +35,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-/* package */ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
-  /* package */ static final TranslationRegistry INSTANCE = new TranslationRegistryImpl();
-  /* package */ static final Translation EMPTY = new Translation("");
+final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
+  static final TranslationRegistry INSTANCE = new TranslationRegistryImpl();
+  static final Translation EMPTY = new Translation("");
   private final Map<String, Translation> translations = new ConcurrentHashMap<>();
 
   @Override
@@ -60,26 +60,24 @@ import static java.util.Objects.requireNonNull;
     return Stream.of(ExaminableProperty.of("translations", this.translations));
   }
 
-  /* package */ static final class Translation implements Examinable {
+  static final class Translation implements Examinable {
     private final String key;
     private final Map<Locale, MessageFormat> formats;
 
-    /* package */ Translation(final @NonNull String key) {
+    Translation(final @NonNull String key) {
       this.key = requireNonNull(key, "translation key");
       this.formats = new ConcurrentHashMap<>();
     }
 
-    /* package */ void register(final @NonNull Locale locale, final @NonNull MessageFormat format) {
+    void register(final @NonNull Locale locale, final @NonNull MessageFormat format) {
       if(this.formats.putIfAbsent(requireNonNull(locale, "locale"), requireNonNull(format, "message format")) != null) {
         throw new IllegalArgumentException(String.format("Translation already exists: %s for %s", this.key, locale));
       }
     }
 
-    // CHECKSTYLE:OFF
-    /* package */ @Nullable MessageFormat translate(final @NonNull Locale locale) {
+    @Nullable MessageFormat translate(final @NonNull Locale locale) {
       return this.formats.get(locale);
     }
-    // CHECKSTYLE:ON
 
     @Override
     public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {

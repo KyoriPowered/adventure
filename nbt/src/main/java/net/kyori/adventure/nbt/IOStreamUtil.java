@@ -27,11 +27,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-/* package */ final class IOStreamUtil {
+final class IOStreamUtil {
   private IOStreamUtil() {
   }
 
-  /* package */ static InputStream closeShield(final InputStream stream) {
+  static InputStream closeShield(final InputStream stream) {
     return new InputStream() {
       @Override
       public int read() throws IOException {
@@ -50,7 +50,7 @@ import java.io.OutputStream;
     };
   }
 
-  /* package */ static OutputStream closeShield(final OutputStream stream) {
+  static OutputStream closeShield(final OutputStream stream) {
     return new OutputStream() {
       @Override
       public void write(final int b) throws IOException {

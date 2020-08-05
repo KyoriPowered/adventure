@@ -31,12 +31,12 @@ import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-/* package */ abstract class SoundImpl implements Examinable, Sound {
+abstract class SoundImpl implements Examinable, Sound {
   private final Source source;
   private final float volume;
   private final float pitch;
 
-  /* package */ SoundImpl(final @NonNull Source source, final float volume, final float pitch) {
+  SoundImpl(final @NonNull Source source, final float volume, final float pitch) {
     this.source = source;
     this.volume = volume;
     this.pitch = pitch;

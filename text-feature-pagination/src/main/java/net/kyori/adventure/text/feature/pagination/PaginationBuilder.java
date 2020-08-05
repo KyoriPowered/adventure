@@ -29,7 +29,7 @@ import net.kyori.adventure.text.format.Style;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-/* package */ final class PaginationBuilder implements Pagination.Builder {
+final class PaginationBuilder implements Pagination.Builder {
   private int width = Pagination.WIDTH;
   private int resultsPerPage = Pagination.RESULTS_PER_PAGE;
 

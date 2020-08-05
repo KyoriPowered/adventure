@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
-/* package */ final class TagStringReader {
+final class TagStringReader {
   private final CharBuffer buffer;
   private boolean acceptLegacy;
 

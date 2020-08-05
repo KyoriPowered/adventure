@@ -34,7 +34,7 @@ public final class InvalidKeyException extends RuntimeException {
   private final String keyNamespace;
   private final String keyValue;
 
-  /* package */ InvalidKeyException(final @NonNull String keyNamespace, final @NonNull String keyValue, final @Nullable String message) {
+  InvalidKeyException(final @NonNull String keyNamespace, final @NonNull String keyValue, final @Nullable String message) {
     super(message);
     this.keyNamespace = keyNamespace;
     this.keyValue = keyValue;

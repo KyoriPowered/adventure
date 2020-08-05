@@ -32,9 +32,9 @@ import net.kyori.adventure.text.format.TextColor;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-/* package */ final class TextColorSerializer extends TypeAdapter<TextColor> {
-  /* package */ static final TypeAdapter<TextColor> INSTANCE = new TextColorSerializer(false).nullSafe();
-  /* package */ static final TypeAdapter<TextColor> DOWNSAMPLE_COLOR = new TextColorSerializer(true).nullSafe();
+final class TextColorSerializer extends TypeAdapter<TextColor> {
+  static final TypeAdapter<TextColor> INSTANCE = new TextColorSerializer(false).nullSafe();
+  static final TypeAdapter<TextColor> DOWNSAMPLE_COLOR = new TextColorSerializer(true).nullSafe();
 
   private final boolean downsampleColor;
 
@@ -59,7 +59,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
     return this.downsampleColor ? NamedTextColor.nearestTo(color) : color;
   }
 
-  /* package */ static @Nullable TextColor fromString(final @NonNull String value) {
+  static @Nullable TextColor fromString(final @NonNull String value) {
     if(value.startsWith("#")) {
       return TextColor.fromHexString(value);
     } else {

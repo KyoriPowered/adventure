@@ -26,7 +26,7 @@ package net.kyori.adventure.nbt;
 /**
  * A character buffer designed to be inspected by a parser
  */
-/* package */ final class CharBuffer {
+final class CharBuffer {
   private final CharSequence sequence;
   private int index;
 

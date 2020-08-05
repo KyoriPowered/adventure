@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.nbt;
 
-/* package */ final class Tokens {
+final class Tokens {
   // Compounds
   static final char COMPOUND_BEGIN = '{';
   static final char COMPOUND_END = '}';
@@ -64,7 +64,7 @@ package net.kyori.adventure.nbt;
    * @param c the character
    * @return identifier
    */
-  /* package */ static boolean id(final char c) {
+  static boolean id(final char c) {
     return (c >= 'a' && c <= 'z')
       || (c >= 'A' && c <= 'Z')
       || (c >= '0' && c <= '9')
@@ -80,7 +80,7 @@ package net.kyori.adventure.nbt;
    * @param c character to check
    * @return if possibly part of a number
    */
-  /* package */ static boolean numeric(final char c) {
+  static boolean numeric(final char c) {
     return (c >= '0' && c <= '9') // digit
       || c == '+' || c == '-' // positive or negative
       || c == 'e' || c == 'E' // exponent

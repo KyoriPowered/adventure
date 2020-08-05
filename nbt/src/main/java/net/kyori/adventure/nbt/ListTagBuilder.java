@@ -28,15 +28,15 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-/* package */ final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder<T> {
+final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder<T> {
   private @MonotonicNonNull List<BinaryTag> tags;
   private BinaryTagType<? extends BinaryTag> type;
 
-  /* package */ ListTagBuilder() {
+  ListTagBuilder() {
     this(BinaryTagTypes.END);
   }
 
-  /* package */ ListTagBuilder(final BinaryTagType<? extends BinaryTag> type) {
+  ListTagBuilder(final BinaryTagType<? extends BinaryTag> type) {
     this.type = type;
   }
 

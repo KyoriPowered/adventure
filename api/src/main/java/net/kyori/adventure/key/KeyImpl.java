@@ -32,20 +32,20 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static java.util.Objects.requireNonNull;
 
-/* package */ final class KeyImpl implements Examinable, Key {
+final class KeyImpl implements Examinable, Key {
   private static final IntPredicate NAMESPACE_PREDICATE = value -> value == '_' || value == '-' || (value >= 'a' && value <= 'z') || (value >= '0' && value <= '9') || value == '.';
   private static final IntPredicate VALUE_PREDICATE = value -> value == '_' || value == '-' || (value >= 'a' && value <= 'z') || (value >= '0' && value <= '9') || value == '/' || value == '.';
   private final String namespace;
   private final String value;
 
-  /* package */ KeyImpl(final @NonNull String namespace, final @NonNull String value) {
+  KeyImpl(final @NonNull String namespace, final @NonNull String value) {
     if(!namespaceValid(namespace)) throw new InvalidKeyException(namespace, value, String.format("Non [a-z0-9_.-] character in namespace of Key[%s]", asString(namespace, value)));
     if(!valueValid(value)) throw new InvalidKeyException(namespace, value, String.format("Non [a-z0-9/._-] character in value of Key[%s]", asString(namespace, value)));
     this.namespace = requireNonNull(namespace, "namespace");
     this.value = requireNonNull(value, "value");
   }
 
-  /* package */ static boolean namespaceValid(final @NonNull String namespace) {
+  static boolean namespaceValid(final @NonNull String namespace) {
     for(int i = 0, length = namespace.length(); i < length; i++) {
       if(!NAMESPACE_PREDICATE.test(namespace.charAt(i))) {
         return false;
@@ -54,7 +54,7 @@ import static java.util.Objects.requireNonNull;
     return true;
   }
 
-  /* package */ static boolean valueValid(final @NonNull String value) {
+  static boolean valueValid(final @NonNull String value) {
     for(int i = 0, length = value.length(); i < length; i++) {
       if(!VALUE_PREDICATE.test(value.charAt(i))) {
         return false;
@@ -115,7 +115,7 @@ import static java.util.Objects.requireNonNull;
     return Key.super.compareTo(that);
   }
 
-  /* package */ static int clampCompare(final int value) {
+  static int clampCompare(final int value) {
     if(value < 0) return -1;
     if(value > 0) return 1;
     return value;

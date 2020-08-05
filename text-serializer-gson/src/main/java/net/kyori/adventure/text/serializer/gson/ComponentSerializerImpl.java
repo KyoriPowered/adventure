@@ -51,7 +51,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.Style;
 
-/* package */ final class ComponentSerializerImpl implements JsonDeserializer<Component>, JsonSerializer<Component> {
+final class ComponentSerializerImpl implements JsonDeserializer<Component>, JsonSerializer<Component> {
   static final String TEXT = "text";
   static final String TRANSLATE = "translate";
   static final String TRANSLATE_WITH = "with";

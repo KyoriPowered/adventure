@@ -44,8 +44,8 @@ public interface EndBinaryTag extends BinaryTag {
   }
 }
 
-/* package */ final class EndBinaryTagImpl implements EndBinaryTag {
-  /* package */ static final EndBinaryTagImpl INSTANCE = new EndBinaryTagImpl();
+final class EndBinaryTagImpl implements EndBinaryTag {
+  static final EndBinaryTagImpl INSTANCE = new EndBinaryTagImpl();
 
   @Override
   public boolean equals(final Object that) {

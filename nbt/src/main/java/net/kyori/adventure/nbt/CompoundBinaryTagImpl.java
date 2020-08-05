@@ -36,12 +36,12 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-/* package */ final class CompoundBinaryTagImpl implements CompoundBinaryTag {
+final class CompoundBinaryTagImpl implements CompoundBinaryTag {
   static final CompoundBinaryTag EMPTY = new CompoundBinaryTagImpl(Collections.emptyMap());
   private final Map<String, BinaryTag> tags;
   private final int hashCode;
 
-  /* package */ CompoundBinaryTagImpl(final Map<String, BinaryTag> tags) {
+  CompoundBinaryTagImpl(final Map<String, BinaryTag> tags) {
     this.tags = Collections.unmodifiableMap(tags);
     this.hashCode = tags.hashCode();
   }

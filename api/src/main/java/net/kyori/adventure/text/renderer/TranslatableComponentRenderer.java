@@ -54,7 +54,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @see #get()
  */
 public abstract class TranslatableComponentRenderer<C> extends AbstractComponentRenderer<C> {
-  /* package */ static final TranslatableComponentRenderer<Locale> INSTANCE = new TranslatableComponentRenderer<Locale>() {
+  static final TranslatableComponentRenderer<Locale> INSTANCE = new TranslatableComponentRenderer<Locale>() {
     @Override
     public MessageFormat translate(final @NonNull String key, final @NonNull Locale locale) {
       return TranslationRegistry.get().translate(key, locale);

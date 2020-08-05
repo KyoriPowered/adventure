@@ -35,10 +35,10 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.event.HoverEvent;
 
-/* package */ final class ShowItemSerializer implements JsonDeserializer<HoverEvent.ShowItem>, JsonSerializer<HoverEvent.ShowItem> {
-  /* package */ static final String ID = "id";
-  /* package */ static final String COUNT = "count";
-  /* package */ static final String TAG = "tag";
+final class ShowItemSerializer implements JsonDeserializer<HoverEvent.ShowItem>, JsonSerializer<HoverEvent.ShowItem> {
+  static final String ID = "id";
+  static final String COUNT = "count";
+  static final String TAG = "tag";
 
   ShowItemSerializer() {
   }

@@ -55,10 +55,10 @@ public interface StringBinaryTag extends BinaryTag {
   @NonNull String value();
 }
 
-/* package */ final class StringBinaryTagImpl implements StringBinaryTag {
+final class StringBinaryTagImpl implements StringBinaryTag {
   private final String value;
 
-  /* package */ StringBinaryTagImpl(final String value) {
+  StringBinaryTagImpl(final String value) {
     this.value = value;
   }
 

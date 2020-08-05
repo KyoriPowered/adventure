@@ -41,7 +41,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * A <b>legacy</b> format.
  */
 public final class LegacyFormat implements Examinable {
-  /* package */ static final LegacyFormat RESET = new LegacyFormat(true);
+  static final LegacyFormat RESET = new LegacyFormat(true);
   private final @Nullable NamedTextColor color;
   private final @Nullable TextDecoration decoration;
   private final boolean reset;
@@ -50,19 +50,19 @@ public final class LegacyFormat implements Examinable {
    * Separate constructors to ensure a format can never be more than one thing.
    */
 
-  /* package */ LegacyFormat(final @Nullable NamedTextColor color) {
+  LegacyFormat(final @Nullable NamedTextColor color) {
     this.color = color;
     this.decoration = null;
     this.reset = false;
   }
 
-  /* package */ LegacyFormat(final @Nullable TextDecoration decoration) {
+  LegacyFormat(final @Nullable TextDecoration decoration) {
     this.color = null;
     this.decoration = decoration;
     this.reset = false;
   }
 
-  /* package */ LegacyFormat(final boolean reset) {
+  LegacyFormat(final boolean reset) {
     this.color = null;
     this.decoration = null;
     this.reset = reset;

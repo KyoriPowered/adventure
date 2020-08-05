@@ -36,13 +36,13 @@ import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-/* package */ final class ListBinaryTagImpl implements ListBinaryTag {
-  /* package */ static final ListBinaryTag EMPTY = new ListBinaryTagImpl(BinaryTagTypes.END, Collections.emptyList());
+final class ListBinaryTagImpl implements ListBinaryTag {
+  static final ListBinaryTag EMPTY = new ListBinaryTagImpl(BinaryTagTypes.END, Collections.emptyList());
   private final List<? extends BinaryTag> tags;
   private final BinaryTagType<? extends BinaryTag> type;
   private final int hashCode;
 
-  /* package */ ListBinaryTagImpl(final BinaryTagType<? extends BinaryTag> type, final List<? extends BinaryTag> tags) {
+  ListBinaryTagImpl(final BinaryTagType<? extends BinaryTag> type, final List<? extends BinaryTag> tags) {
     this.tags = tags;
     this.type = type;
     this.hashCode = tags.hashCode();
@@ -95,14 +95,14 @@ import org.checkerframework.checker.nullness.qual.Nullable;
   }
 
   // An end tag cannot be an element in a list tag
-  /* package */ static void noAddEnd(final BinaryTag tag) {
+  static void noAddEnd(final BinaryTag tag) {
     if(tag.type() == BinaryTagTypes.END) {
       throw new IllegalArgumentException(String.format("Cannot add a %s to a %s", BinaryTagTypes.END, BinaryTagTypes.LIST));
     }
   }
 
   // Cannot have different element types in a list tag
-  /* package */ static void mustBeSameType(final BinaryTag tag, final BinaryTagType<? extends BinaryTag> type) {
+  static void mustBeSameType(final BinaryTag tag, final BinaryTagType<? extends BinaryTag> type) {
     if(tag.type() != type) {
       throw new IllegalArgumentException(String.format("Trying to add tag of type %s to list of %s", tag.type(), type));
     }

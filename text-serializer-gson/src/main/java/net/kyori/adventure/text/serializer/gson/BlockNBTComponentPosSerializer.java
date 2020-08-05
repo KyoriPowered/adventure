@@ -30,7 +30,7 @@ import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import net.kyori.adventure.text.BlockNBTComponent;
 
-/* package */ final class BlockNBTComponentPosSerializer extends TypeAdapter<BlockNBTComponent.Pos> {
+final class BlockNBTComponentPosSerializer extends TypeAdapter<BlockNBTComponent.Pos> {
   static final TypeAdapter<BlockNBTComponent.Pos> INSTANCE = new BlockNBTComponentPosSerializer().nullSafe();
 
   private BlockNBTComponentPosSerializer() {

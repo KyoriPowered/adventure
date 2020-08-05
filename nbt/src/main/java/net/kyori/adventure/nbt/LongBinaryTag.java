@@ -55,10 +55,10 @@ public interface LongBinaryTag extends NumberBinaryTag {
   long value();
 }
 
-/* package */ final class LongBinaryTagImpl implements LongBinaryTag {
+final class LongBinaryTagImpl implements LongBinaryTag {
   private final long value;
 
-  /* package */ LongBinaryTagImpl(final long value) {
+  LongBinaryTagImpl(final long value) {
     this.value = value;
   }
 

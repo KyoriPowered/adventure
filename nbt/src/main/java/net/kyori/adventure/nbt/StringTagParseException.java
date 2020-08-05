@@ -28,7 +28,7 @@ import java.io.IOException;
 /**
  * An exception thrown when parsing a string tag
  */
-/* package */ class StringTagParseException extends IOException {
+class StringTagParseException extends IOException {
   private static final long serialVersionUID = -3001637554903912905l;
   private final CharSequence buffer;
   private final int position;

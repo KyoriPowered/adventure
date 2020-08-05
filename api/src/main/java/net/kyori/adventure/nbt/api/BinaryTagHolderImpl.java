@@ -28,10 +28,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static java.util.Objects.requireNonNull;
 
-/* package */ final class BinaryTagHolderImpl implements BinaryTagHolder {
+final class BinaryTagHolderImpl implements BinaryTagHolder {
   private final String string;
 
-  /* package */ BinaryTagHolderImpl(final String string) {
+  BinaryTagHolderImpl(final String string) {
     this.string = requireNonNull(string, "string");
   }
 

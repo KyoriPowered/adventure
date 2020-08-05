@@ -642,8 +642,8 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
     INSERTION,
     FONT;
 
-    /* package */ static final Set<Merge> ALL = of(values());
-    /* package */ static final Set<Merge> COLOR_AND_DECORATIONS = of(COLOR, DECORATIONS);
+    static final Set<Merge> ALL = of(values());
+    static final Set<Merge> COLOR_AND_DECORATIONS = of(COLOR, DECORATIONS);
 
     /**
      * Gets a merge set of all merge types.
@@ -673,7 +673,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
       return ShadyPines.enumSet(Merge.class, merges);
     }
 
-    /* package */ static boolean hasAll(final @NonNull Set<Merge> merges) {
+    static boolean hasAll(final @NonNull Set<Merge> merges) {
       return merges.size() == ALL.size();
     }
 
@@ -686,23 +686,23 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
        * Always merge onto target.
        */
       ALWAYS {
-        @Override /* package */ boolean mergeColor(final @NonNull Builder target, final @Nullable TextColor color) { return true; }
-        @Override /* package */ boolean mergeDecoration(final @NonNull Builder target, final @NonNull TextDecoration decoration) { return true; }
-        @Override /* package */ boolean mergeClickEvent(final @NonNull Builder target, final @Nullable ClickEvent event) { return true; }
-        @Override /* package */ boolean mergeHoverEvent(final @NonNull Builder target, final @Nullable HoverEvent<?> event) { return true; }
-        @Override /* package */ boolean mergeInsertion(final @NonNull Builder target, final @Nullable String insertion) { return true; }
-        @Override /* package */ boolean mergeFont(final @NonNull Builder target, final @Nullable Key font) { return true; }
+        @Override boolean mergeColor(final @NonNull Builder target, final @Nullable TextColor color) { return true; }
+        @Override boolean mergeDecoration(final @NonNull Builder target, final @NonNull TextDecoration decoration) { return true; }
+        @Override boolean mergeClickEvent(final @NonNull Builder target, final @Nullable ClickEvent event) { return true; }
+        @Override boolean mergeHoverEvent(final @NonNull Builder target, final @Nullable HoverEvent<?> event) { return true; }
+        @Override boolean mergeInsertion(final @NonNull Builder target, final @Nullable String insertion) { return true; }
+        @Override boolean mergeFont(final @NonNull Builder target, final @Nullable Key font) { return true; }
       },
       /**
        * Never merges onto target.
        */
       NEVER {
-        @Override /* package */ boolean mergeColor(final @NonNull Builder target, final @Nullable TextColor color) { return false; }
-        @Override /* package */ boolean mergeDecoration(final @NonNull Builder target, final @NonNull TextDecoration decoration) { return false; }
-        @Override /* package */ boolean mergeClickEvent(final @NonNull Builder target, final @Nullable ClickEvent event) { return false; }
-        @Override /* package */ boolean mergeHoverEvent(final @NonNull Builder target, final @Nullable HoverEvent<?> event) { return false; }
-        @Override /* package */ boolean mergeInsertion(final @NonNull Builder target, final @Nullable String insertion) { return false; }
-        @Override /* package */ boolean mergeFont(final @NonNull Builder target, final @Nullable Key font) { return false; }
+        @Override boolean mergeColor(final @NonNull Builder target, final @Nullable TextColor color) { return false; }
+        @Override boolean mergeDecoration(final @NonNull Builder target, final @NonNull TextDecoration decoration) { return false; }
+        @Override boolean mergeClickEvent(final @NonNull Builder target, final @Nullable ClickEvent event) { return false; }
+        @Override boolean mergeHoverEvent(final @NonNull Builder target, final @Nullable HoverEvent<?> event) { return false; }
+        @Override boolean mergeInsertion(final @NonNull Builder target, final @Nullable String insertion) { return false; }
+        @Override boolean mergeFont(final @NonNull Builder target, final @Nullable Key font) { return false; }
       },
       // CHECKSTYLE:ON
       /**
@@ -710,12 +710,12 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
        */
       IF_ABSENT_ON_TARGET {
         @Override
-        /* package */ boolean mergeColor(final @NonNull Builder target, final @Nullable TextColor color) {
+        boolean mergeColor(final @NonNull Builder target, final @Nullable TextColor color) {
           return target.color == null;
         }
 
         @Override
-        /* package */ boolean mergeDecoration(final @NonNull Builder target, final @NonNull TextDecoration decoration) {
+        boolean mergeDecoration(final @NonNull Builder target, final @NonNull TextDecoration decoration) {
           if(decoration == TextDecoration.OBFUSCATED) {
             return target.obfuscated == TextDecoration.State.NOT_SET;
           } else if(decoration == TextDecoration.BOLD) {
@@ -731,33 +731,33 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
         }
 
         @Override
-        /* package */ boolean mergeClickEvent(final @NonNull Builder target, final @Nullable ClickEvent event) {
+        boolean mergeClickEvent(final @NonNull Builder target, final @Nullable ClickEvent event) {
           return target.clickEvent == null;
         }
 
         @Override
-        /* package */ boolean mergeHoverEvent(final @NonNull Builder target, final @Nullable HoverEvent<?> event) {
+        boolean mergeHoverEvent(final @NonNull Builder target, final @Nullable HoverEvent<?> event) {
           return target.hoverEvent == null;
         }
 
         @Override
-        /* package */ boolean mergeInsertion(final @NonNull Builder target, final @Nullable String insertion) {
+        boolean mergeInsertion(final @NonNull Builder target, final @Nullable String insertion) {
           return target.insertion == null;
         }
 
         @Override
-        /* package */ boolean mergeFont(final @NonNull Builder target, final @Nullable Key font) {
+        boolean mergeFont(final @NonNull Builder target, final @Nullable Key font) {
           return target.font == null;
         }
       };
 
       // CHECKSTYLE:OFF
-      /* package */ abstract boolean mergeColor(final @NonNull Builder target, final @Nullable TextColor color);
-      /* package */ abstract boolean mergeDecoration(final @NonNull Builder target, final @NonNull TextDecoration decoration);
-      /* package */ abstract boolean mergeClickEvent(final @NonNull Builder target, final @Nullable ClickEvent event);
-      /* package */ abstract boolean mergeHoverEvent(final @NonNull Builder target, final @Nullable HoverEvent<?> event);
-      /* package */ abstract boolean mergeInsertion(final @NonNull Builder target, final @Nullable String insertion);
-      /* package */ abstract boolean mergeFont(final @NonNull Builder target, final @Nullable Key font);
+      abstract boolean mergeColor(final @NonNull Builder target, final @Nullable TextColor color);
+      abstract boolean mergeDecoration(final @NonNull Builder target, final @NonNull TextDecoration decoration);
+      abstract boolean mergeClickEvent(final @NonNull Builder target, final @Nullable ClickEvent event);
+      abstract boolean mergeHoverEvent(final @NonNull Builder target, final @Nullable HoverEvent<?> event);
+      abstract boolean mergeInsertion(final @NonNull Builder target, final @Nullable String insertion);
+      abstract boolean mergeFont(final @NonNull Builder target, final @Nullable Key font);
       // CHECKSTYLE:ON
     }
   }

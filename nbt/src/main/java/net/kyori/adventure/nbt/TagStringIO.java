@@ -124,7 +124,7 @@ public final class TagStringIO {
     private boolean emitLegacy = false;
     private String indent = "";
 
-    /* package */ Builder() {
+    Builder() {
     }
 
     /**

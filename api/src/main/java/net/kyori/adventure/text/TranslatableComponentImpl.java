@@ -36,7 +36,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-/* package */ final class TranslatableComponentImpl extends AbstractComponent implements TranslatableComponent {
+final class TranslatableComponentImpl extends AbstractComponent implements TranslatableComponent {
   private final String key;
   private final List<Component> args;
 
@@ -119,7 +119,7 @@ import static java.util.Objects.requireNonNull;
     return new BuilderImpl(this);
   }
 
-  /* package */ static final class BuilderImpl extends AbstractComponentBuilder<TranslatableComponent, Builder> implements TranslatableComponent.Builder {
+  static final class BuilderImpl extends AbstractComponentBuilder<TranslatableComponent, Builder> implements TranslatableComponent.Builder {
     private @Nullable String key;
     private List<? extends Component> args = Collections.emptyList();
 

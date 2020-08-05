@@ -23,8 +23,8 @@
  */
 package net.kyori.adventure.audience;
 
-/* package */ final class EmptyAudience implements Audience {
-  /* package */ static final EmptyAudience INSTANCE = new EmptyAudience();
+final class EmptyAudience implements Audience {
+  static final EmptyAudience INSTANCE = new EmptyAudience();
 
   @Override
   public boolean equals(final Object that) {

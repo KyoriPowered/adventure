@@ -25,10 +25,10 @@ package net.kyori.adventure.text.format;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-/* package */ final class TextColorImpl implements TextColor {
+final class TextColorImpl implements TextColor {
   private final int value;
 
-  /* package */ TextColorImpl(final int value) {
+  TextColorImpl(final int value) {
     this.value = value;
   }
 

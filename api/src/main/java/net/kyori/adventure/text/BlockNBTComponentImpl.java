@@ -35,7 +35,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-/* package */ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, BlockNBTComponent.Builder> implements BlockNBTComponent {
+final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, BlockNBTComponent.Builder> implements BlockNBTComponent {
   private final Pos pos;
 
   BlockNBTComponentImpl(final @NonNull List<? extends ComponentLike> children, final @NonNull Style style, final String nbtPath, final boolean interpret, final @NonNull Pos pos) {
@@ -106,7 +106,7 @@ import static java.util.Objects.requireNonNull;
     return new BuilderImpl(this);
   }
 
-  /* package */ static final class BuilderImpl extends NBTComponentImpl.BuilderImpl<BlockNBTComponent, Builder> implements Builder {
+  static final class BuilderImpl extends NBTComponentImpl.BuilderImpl<BlockNBTComponent, Builder> implements Builder {
     private @Nullable Pos pos;
 
     BuilderImpl() {
@@ -131,7 +131,7 @@ import static java.util.Objects.requireNonNull;
     }
   }
 
-  /* package */ static final class LocalPosImpl implements LocalPos {
+  static final class LocalPosImpl implements LocalPos {
     private final double left;
     private final double up;
     private final double forwards;
@@ -186,7 +186,7 @@ import static java.util.Objects.requireNonNull;
     }
   }
 
-  /* package */ static final class WorldPosImpl implements WorldPos {
+  static final class WorldPosImpl implements WorldPos {
     private final Coordinate x;
     private final Coordinate y;
     private final Coordinate z;
@@ -240,7 +240,7 @@ import static java.util.Objects.requireNonNull;
       return Tokens.serializeCoordinate(this.x()) + ' ' + Tokens.serializeCoordinate(this.y()) + ' ' + Tokens.serializeCoordinate(this.z());
     }
 
-    /* package */ static final class CoordinateImpl implements Coordinate {
+    static final class CoordinateImpl implements Coordinate {
       private final int value;
       private final Type type;
 
@@ -282,7 +282,7 @@ import static java.util.Objects.requireNonNull;
     }
   }
 
-  /* package */ static final class Tokens {
+  static final class Tokens {
     static final Pattern LOCAL_PATTERN = Pattern.compile("^\\^(\\d+(\\.\\d+)?) \\^(\\d+(\\.\\d+)?) \\^(\\d+(\\.\\d+)?)$");
     static final Pattern WORLD_PATTERN = Pattern.compile("^(~?)(\\d+) (~?)(\\d+) (~?)(\\d+)$");
   
@@ -293,7 +293,7 @@ import static java.util.Objects.requireNonNull;
     private Tokens() {
     }
   
-    /* package */ static WorldPos.Coordinate deserializeCoordinate(final String prefix, final String value) {
+    static WorldPos.Coordinate deserializeCoordinate(final String prefix, final String value) {
       final int i = Integer.parseInt(value);
       if(prefix.equals(ABSOLUTE_SYMBOL)) {
         return WorldPos.Coordinate.absolute(i);
@@ -304,11 +304,11 @@ import static java.util.Objects.requireNonNull;
       }
     }
   
-    /* package */ static String serializeLocal(final double value) {
+    static String serializeLocal(final double value) {
       return LOCAL_SYMBOL + value;
     }
   
-    /* package */ static String serializeCoordinate(final WorldPos.Coordinate coordinate) {
+    static String serializeCoordinate(final WorldPos.Coordinate coordinate) {
       return (coordinate.type() == WorldPos.Coordinate.Type.RELATIVE ? RELATIVE_SYMBOL : ABSOLUTE_SYMBOL) + coordinate.value();
     }
   }

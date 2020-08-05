@@ -79,11 +79,6 @@
     <module name="UnusedImports"/>
     <module name="HideUtilityClassConstructor"/>
     <module name="FinalClass"/>
-    <!-- explicit visibility modifier, as first modifier -->
-    <module name="RequireExplicitVisibilityModifier">
-      <property name="anchoredToBeginning" value="true"/>
-      <property name="checkedElementTypes" value="CLASS, METHOD"/>
-    </module>
 
     <!-- no local variable type annotations -->
     <module name="NoLvTypeAnnotations"/>

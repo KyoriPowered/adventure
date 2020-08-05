@@ -55,10 +55,10 @@ public interface IntBinaryTag extends NumberBinaryTag {
   int value();
 }
 
-/* package */ final class IntBinaryTagImpl implements IntBinaryTag {
+final class IntBinaryTagImpl implements IntBinaryTag {
   private final int value;
 
-  /* package */ IntBinaryTagImpl(final int value) {
+  IntBinaryTagImpl(final int value) {
     this.value = value;
   }
 

@@ -39,9 +39,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-/* package */ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
-  /* package */ static final GsonComponentSerializer INSTANCE = new GsonComponentSerializerImpl(false, null, false);
-  /* package */ static final GsonComponentSerializer LEGACY_INSTANCE = new GsonComponentSerializerImpl(true, null, true);
+final class GsonComponentSerializerImpl implements GsonComponentSerializer {
+  static final GsonComponentSerializer INSTANCE = new GsonComponentSerializerImpl(false, null, false);
+  static final GsonComponentSerializer LEGACY_INSTANCE = new GsonComponentSerializerImpl(true, null, true);
 
   private final Gson serializer;
   private final UnaryOperator<GsonBuilder> populator;
@@ -92,7 +92,7 @@ import static java.util.Objects.requireNonNull;
     return new BuilderImpl(this);
   }
 
-  /* package */ static final class BuilderImpl implements Builder {
+  static final class BuilderImpl implements Builder {
     private boolean downsampleColor = false;
     private @Nullable LegacyHoverEventSerializer legacyHoverSerializer;
     private boolean emitLegacyHover = false;

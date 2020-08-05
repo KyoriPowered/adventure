@@ -48,7 +48,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.util.Codec;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-/* package */ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<Style> {
+final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<Style> {
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
 
   static final String FONT = "font";
@@ -65,7 +65,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
   private final LegacyHoverEventSerializer legacyHover;
   private final boolean emitLegacyHover;
 
-  /* package */ StyleSerializer(final @Nullable LegacyHoverEventSerializer legacyHover, final boolean emitLegacyHover) {
+  StyleSerializer(final @Nullable LegacyHoverEventSerializer legacyHover, final boolean emitLegacyHover) {
     this.legacyHover = legacyHover;
     this.emitLegacyHover = emitLegacyHover;
   }

@@ -71,10 +71,10 @@ public interface ByteBinaryTag extends NumberBinaryTag {
   byte value();
 }
 
-/* package */ final class ByteBinaryTagImpl implements ByteBinaryTag {
+final class ByteBinaryTagImpl implements ByteBinaryTag {
   private final byte value;
 
-  /* package */ ByteBinaryTagImpl(final byte value) {
+  ByteBinaryTagImpl(final byte value) {
     this.value = value;
   }
 

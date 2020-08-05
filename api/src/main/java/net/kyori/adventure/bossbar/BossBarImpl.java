@@ -39,7 +39,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static java.util.Objects.requireNonNull;
 
-/* package */ final class BossBarImpl extends Listenable<BossBar.Listener> implements BossBar, Examinable {
+final class BossBarImpl extends Listenable<BossBar.Listener> implements BossBar, Examinable {
   private static final BossBar.Flag[] FLAGS = BossBar.Flag.values();
   private static final BiConsumer<BossBarImpl, Set<Flag>> FLAGS_ADDED = (bar, flagsAdded) -> bar.forEachListener(listener -> listener.bossBarFlagsChanged(bar, flagsAdded, Collections.emptySet()));
   private static final BiConsumer<BossBarImpl, Set<Flag>> FLAGS_REMOVED = (bar, flagsRemoved) -> bar.forEachListener(listener -> listener.bossBarFlagsChanged(bar, Collections.emptySet(), flagsRemoved));
@@ -49,14 +49,14 @@ import static java.util.Objects.requireNonNull;
   private Overlay overlay;
   private final Set<Flag> flags = EnumSet.noneOf(Flag.class);
 
-  /* package */ BossBarImpl(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay) {
+  BossBarImpl(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay) {
     this.name = requireNonNull(name, "name");
     this.percent = percent;
     this.color = requireNonNull(color, "color");
     this.overlay = requireNonNull(overlay, "overlay");
   }
 
-  /* package */ BossBarImpl(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay, final @NonNull Set<Flag> flags) {
+  BossBarImpl(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay, final @NonNull Set<Flag> flags) {
     this(name, percent, color, overlay);
     this.flags.addAll(flags);
   }
@@ -93,7 +93,7 @@ import static java.util.Objects.requireNonNull;
     return this;
   }
 
-  /* package */ static void checkPercent(final float percent) {
+  static void checkPercent(final float percent) {
     if(percent < MIN_PERCENT || percent > MAX_PERCENT) {
       throw new IllegalArgumentException("percent must be between " + MIN_PERCENT + " and " + MAX_PERCENT + ", was " + percent);
     }

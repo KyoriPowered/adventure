@@ -32,14 +32,14 @@ import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-/* package */ final class TitleImpl implements Examinable, Title {
+final class TitleImpl implements Examinable, Title {
   private final Component title;
   private final Component subtitle;
   private final Duration fadeInTime;
   private final Duration stayTime;
   private final Duration fadeOutTime;
 
-  /* package */ TitleImpl(final @NonNull Component title, final @NonNull Component subtitle, final @NonNull Duration fadeInTime, final @NonNull Duration stayTime, final @NonNull Duration fadeOutTime) {
+  TitleImpl(final @NonNull Component title, final @NonNull Component subtitle, final @NonNull Duration fadeInTime, final @NonNull Duration stayTime, final @NonNull Duration fadeOutTime) {
     this.title = title;
     this.subtitle = subtitle;
     this.fadeInTime = fadeInTime;

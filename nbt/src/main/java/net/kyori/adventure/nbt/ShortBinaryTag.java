@@ -55,10 +55,10 @@ public interface ShortBinaryTag extends NumberBinaryTag {
   short value();
 }
 
-/* package */ final class ShortBinaryTagImpl implements ShortBinaryTag {
+final class ShortBinaryTagImpl implements ShortBinaryTag {
   private final short value;
 
-  /* package */ ShortBinaryTagImpl(final short value) {
+  ShortBinaryTagImpl(final short value) {
     this.value = value;
   }
 

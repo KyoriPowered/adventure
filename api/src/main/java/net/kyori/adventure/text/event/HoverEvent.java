@@ -475,7 +475,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
     }
 
     @FunctionalInterface
-    /* package */ interface Renderer<V> {
+    interface Renderer<V> {
       <C> @NonNull V render(final @NonNull ComponentRenderer<C> renderer, final @NonNull C context, final @NonNull V value);
     }
   }

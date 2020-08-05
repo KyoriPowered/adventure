@@ -41,7 +41,7 @@ import net.kyori.adventure.text.format.TextFormat;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-/* package */ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
+class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   private static final Pattern URL_PATTERN = Pattern.compile("(?:(https?)://)?([-\\w_.]+\\.\\w{2,})(/\\S*)?");
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
   private static final String LEGACY_CHARS = "0123456789abcdefklmnor";
@@ -100,7 +100,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
     return null;
   }
 
-  /* package */ static @Nullable LegacyFormat legacyFormat(final char character) {
+  static @Nullable LegacyFormat legacyFormat(final char character) {
     final int index = LEGACY_CHARS.indexOf(character);
     if(index != -1) {
       final TextFormat format = FORMATS.get(index);
@@ -272,7 +272,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
       this.character = character;
     }
 
-    /* package */ void append(final @NonNull Component component) {
+    void append(final @NonNull Component component) {
       this.append(component, new Style());
     }
 
@@ -297,7 +297,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
       }
     }
 
-    /* package */ void append(final @NonNull TextFormat format) {
+    void append(final @NonNull TextFormat format) {
       this.sb.append(this.character).append(LegacyComponentSerializerImpl.this.toLegacyCode(format));
     }
 
@@ -319,13 +319,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
         this.decorations = EnumSet.copyOf(that.decorations);
       }
 
-      /* package */ void set(final @NonNull Style that) {
+      void set(final @NonNull Style that) {
         this.color = that.color;
         this.decorations.clear();
         this.decorations.addAll(that.decorations);
       }
 
-      /* package */ void apply(final @NonNull Component component) {
+      void apply(final @NonNull Component component) {
         final TextColor color = component.color();
         if(color != null) {
           this.color = color;
@@ -344,7 +344,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
         }
       }
 
-      /* package */ void applyFormat() {
+      void applyFormat() {
         // If color changes, we need to do a full reset
         if(this.color != Cereal.this.style.color) {
           this.applyFullFormat();
@@ -384,7 +384,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
     }
   }
 
-  /* package */ static final class BuilderImpl implements Builder {
+  static final class BuilderImpl implements Builder {
     private char character = LegacyComponentSerializer.SECTION_CHAR;
     private char hexCharacter = LegacyComponentSerializer.HEX_CHAR;
     private Style urlStyle = null;
@@ -446,13 +446,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
     }
   }
 
-  /* package */ enum FormatCodeType {
+  enum FormatCodeType {
     MOJANG_LEGACY,
     KYORI_HEX,
     BUNGEECORD_UNUSUAL_HEX
   }
 
-  /* package */ static final class DecodedFormat {
+  static final class DecodedFormat {
     final FormatCodeType encodedFormat;
     final TextFormat format;
 

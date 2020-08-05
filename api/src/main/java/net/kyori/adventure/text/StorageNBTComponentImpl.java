@@ -33,7 +33,7 @@ import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-/* package */ final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent, StorageNBTComponent.Builder> implements StorageNBTComponent {
+final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent, StorageNBTComponent.Builder> implements StorageNBTComponent {
   private final Key storage;
 
   protected StorageNBTComponentImpl(final @NonNull List<? extends ComponentLike> children, final @NonNull Style style, final String nbtPath, final boolean interpret, final Key storage) {
@@ -105,7 +105,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
     return new BuilderImpl(this);
   }
 
-  /* package */ static class BuilderImpl extends NBTComponentImpl.BuilderImpl<StorageNBTComponent, Builder> implements Builder {
+  static class BuilderImpl extends NBTComponentImpl.BuilderImpl<StorageNBTComponent, Builder> implements Builder {
     private @MonotonicNonNull Key storage;
 
     BuilderImpl() {

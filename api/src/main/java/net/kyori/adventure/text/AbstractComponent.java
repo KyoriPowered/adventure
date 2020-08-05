@@ -39,7 +39,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * An abstract implementation of a text component.
  */
 public abstract class AbstractComponent implements Component, Examinable {
-  /* package */ static List<Component> asComponents(final List<? extends ComponentLike> list) {
+  static List<Component> asComponents(final List<? extends ComponentLike> list) {
     if(list.isEmpty()) {
       // We do not need to create a new list if the one we are copying is empty - we can
       // simply just return our known-empty list instead.

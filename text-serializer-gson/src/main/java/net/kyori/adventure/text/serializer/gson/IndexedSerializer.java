@@ -30,7 +30,7 @@ import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import net.kyori.adventure.util.Index;
 
-/* package */ final class IndexedSerializer<E> extends TypeAdapter<E> {
+final class IndexedSerializer<E> extends TypeAdapter<E> {
   private final String name;
   private final Index<String, E> map;
   

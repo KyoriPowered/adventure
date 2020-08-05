@@ -28,7 +28,7 @@ import java.util.Map;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-/* package */ final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
+final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
   private @MonotonicNonNull Map<String, BinaryTag> tags;
 
   @Override

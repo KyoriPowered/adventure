@@ -30,7 +30,7 @@ import java.util.RandomAccess;
 import java.util.function.ObjIntConsumer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-/* package */ interface Paginator {
+interface Paginator {
   @SuppressWarnings("unchecked")
   static <T> void forEachPageEntry(final @NonNull Collection<? extends T> content, final int pageSize, final int page, final @NonNull ObjIntConsumer<? super T> consumer) {
     final int size = content.size();

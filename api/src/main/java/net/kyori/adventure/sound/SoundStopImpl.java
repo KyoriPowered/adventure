@@ -32,8 +32,8 @@ import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-/* package */ abstract class SoundStopImpl implements Examinable, SoundStop {
-  /* package */ static final SoundStop ALL = new SoundStopImpl(null) {
+abstract class SoundStopImpl implements Examinable, SoundStop {
+  static final SoundStop ALL = new SoundStopImpl(null) {
     @Override
     public @Nullable Key sound() {
       return null; // all
@@ -41,7 +41,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
   };
   private final Sound.@Nullable Source source;
 
-  /* package */ SoundStopImpl(final Sound.@Nullable Source source) {
+  SoundStopImpl(final Sound.@Nullable Source source) {
     this.source = source;
   }
 

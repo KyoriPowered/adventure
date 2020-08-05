@@ -29,10 +29,10 @@ import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-/* package */ final class ByteArrayBinaryTagImpl implements ByteArrayBinaryTag {
+final class ByteArrayBinaryTagImpl implements ByteArrayBinaryTag {
   final byte[] value;
 
-  /* package */ ByteArrayBinaryTagImpl(final byte[] value) {
+  ByteArrayBinaryTagImpl(final byte[] value) {
     this.value = Arrays.copyOf(value, value.length);
   }
 
@@ -42,7 +42,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
   }
 
   // to avoid copying array internally
-  /* package */ static byte[] value(final ByteArrayBinaryTag tag) {
+  static byte[] value(final ByteArrayBinaryTag tag) {
     return (tag instanceof ByteArrayBinaryTagImpl) ? ((ByteArrayBinaryTagImpl) tag).value : tag.value();
   }
 

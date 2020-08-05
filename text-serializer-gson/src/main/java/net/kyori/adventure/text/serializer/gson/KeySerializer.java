@@ -29,8 +29,8 @@ import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import net.kyori.adventure.key.Key;
 
-/* package */ final class KeySerializer extends TypeAdapter<Key> {
-  /* package */ static final TypeAdapter<Key> INSTANCE = new KeySerializer().nullSafe();
+final class KeySerializer extends TypeAdapter<Key> {
+  static final TypeAdapter<Key> INSTANCE = new KeySerializer().nullSafe();
   
   private KeySerializer() {
   }

@@ -38,12 +38,12 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static java.util.Objects.requireNonNull;
 
-/* package */ class BookImpl implements Book, Examinable {
+class BookImpl implements Book, Examinable {
   private final Component title;
   private final Component author;
   private final List<Component> pages;
 
-  /* package */ BookImpl(final @NonNull Component title, final @NonNull Component author, final @NonNull List<Component> pages) {
+  BookImpl(final @NonNull Component title, final @NonNull Component author, final @NonNull List<Component> pages) {
     this.title = requireNonNull(title, "title");
     this.author = requireNonNull(author, "author");
     this.pages = Collections.unmodifiableList(requireNonNull(pages, "pages"));
@@ -111,7 +111,7 @@ import static java.util.Objects.requireNonNull;
     return this.examine(StringExaminer.simpleEscaping());
   }
 
-  /* package */ static class BuilderImpl implements Book.Builder {
+  static class BuilderImpl implements Book.Builder {
     private Component title = TextComponent.empty();
     private Component author = TextComponent.empty();
     private final List<Component> pages = new ArrayList<>();
