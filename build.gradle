@@ -1,32 +1,28 @@
 plugins {
-  id 'net.minecrell.licenser' version "0.4.1" apply false
+  id 'net.kyori.invent' version '1.0.4' apply false
+  id 'net.kyori.invent-javadoc-jar' version '1.0.4' apply false
+  id 'net.kyori.invent-sonatype-repository' version '1.0.4' apply false
+  id 'net.kyori.invent-sources-jar' version '1.0.4' apply false
+  id 'net.minecrell.licenser' version '0.4.1' apply false
 }
 
 subprojects {
-  apply plugin: 'java-library'
-  apply plugin: 'maven'
-  apply plugin: 'signing'
-  apply plugin: 'net.minecrell.licenser'
   apply plugin: 'checkstyle'
+  apply plugin: 'java-library'
+  apply plugin: 'maven-publish'
+  apply plugin: 'signing'
+  apply plugin: 'net.kyori.invent'
+  apply plugin: 'net.kyori.invent-javadoc-jar'
+  apply plugin: 'net.kyori.invent-sonatype-repository'
+  apply plugin: 'net.kyori.invent-sources-jar'
+  apply plugin: 'net.minecrell.licenser'
 
   group 'net.kyori'
   version '4.0.0-SNAPSHOT'
-
-  sourceCompatibility = 1.8
-  targetCompatibility = 1.8
+  description 'A user-interface library for Minecraft: Java Edition.'
 
   tasks.withType(JavaCompile) {
-    options.compilerArgs += ['-Xlint:all', '-Xlint:-path', '-parameters']
-    options.deprecation = true
-    options.encoding = 'UTF-8'
-  }
-
-  javadoc {
-    options.encoding = 'UTF-8'
-  }
-
-  test {
-    useJUnitPlatform()
+    options.compilerArgs += ['-Xlint:all']
   }
 
   license {
@@ -36,10 +32,10 @@ subprojects {
   }
 
   checkstyle {
-    def configRoot = new File(rootProject.projectDir, ".checkstyle")
-    toolVersion = "8.34"
+    def configRoot = new File(rootProject.projectDir, '.checkstyle')
+    toolVersion = '8.34'
     configDirectory = configRoot
-    configProperties= [basedir: configRoot.getAbsolutePath()]
+    configProperties = [basedir: configRoot.getAbsolutePath()]
   }
 
   repositories {
@@ -59,82 +55,69 @@ subprojects {
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
   }
 
-  task javadocJar(type: Jar) {
-    classifier 'javadoc'
-    from javadoc
-  }
+  inventSonatypeRepository.enabled = System.getenv('GITHUB_ACTIONS') == null || project.version.endsWith('-SNAPSHOT')
 
-  task sourcesJar(type: Jar) {
-    classifier 'sources'
-    from sourceSets.main.allSource
-  }
+  publishing {
+    publications {
+      maven(MavenPublication) {
+        from components.java
 
-  artifacts {
-    archives javadocJar
-    archives sourcesJar
-  }
+        artifact javadocJar
+        artifact sourcesJar
 
-  signing {
-    required { !project.version.endsWith('-SNAPSHOT') && gradle.taskGraph.hasTask(':uploadArchives') && project.hasProperty('signing.keyId') }
-    sign configurations.archives
-  }
+        pom {
+          name = project.name
+          url = 'https://github.com/KyoriPowered/adventure'
+          description = project.description
 
-  if(project.hasProperty('sonatypeUsername') && project.hasProperty('sonatypePassword')) {
-    uploadArchives {
-      enabled = System.getenv('TRAVIS') == null || project.version.endsWith('-SNAPSHOT')
+          developers {
+            developer {
+              id = 'kashike'
+              timezone = 'America/Vancouver'
+            }
 
-      repositories {
-        mavenDeployer {
-          beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+            developer {
+              id = 'lucko'
+              name = 'Luck'
+              url = 'https://lucko.me'
+              email = 'git@lucko.me'
+            }
 
-          repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
-            authentication(userName: sonatypeUsername, password: sonatypePassword)
+            developer {
+              id = 'zml'
+              name = 'zml'
+              timezone = 'America/Vancouver'
+            }
+
+            developer {
+              id = 'Electroid'
+            }
           }
 
-          snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
-            authentication(userName: sonatypeUsername, password: sonatypePassword)
+          issueManagement {
+            system = 'GitHub Issues'
+            url = 'https://github.com/KyoriPowered/adventure/issues'
           }
 
-          pom.project {
-            description 'A text library for Minecraft.'
-            name project.name
-            url 'https://github.com/KyoriPowered/text'
-
-            developers {
-              developer {
-                id 'kashike'
-                name 'kashike'
-                timezone 'America/Vancouver'
-              }
-
-              developer {
-                id 'lucko'
-                name 'Luck'
-                url 'https://lucko.me'
-                email 'git@lucko.me'
-              }
+          licenses {
+            license {
+              name = 'MIT License'
+              url = 'https://opensource.org/licenses/MIT'
             }
+          }
 
-            issueManagement {
-              system 'GitHub Issues'
-              url 'https://github.com/KyoriPowered/text/issues'
-            }
-
-            licenses {
-              license {
-                name 'MIT License'
-                url 'https://opensource.org/licenses/MIT'
-              }
-            }
-
-            scm {
-              connection 'scm:git@github.com:KyoriPowered/text.git'
-              developerConnection 'scm:git@github.com:KyoriPowered/text.git'
-              url 'https://github.com/KyoriPowered/text'
-            }
+          scm {
+            connection = 'scm:git@github.com:KyoriPowered/adventure.git'
+            developerConnection = 'scm:git@github.com:KyoriPowered/adventure.git'
+            url = 'https://github.com/KyoriPowered/adventure/'
           }
         }
       }
     }
+  }
+
+  signing {
+    required { project.hasProperty('signing.keyId') && gradle.taskGraph.hasTask(':publish') && !project.version.endsWith('-SNAPSHOT') }
+    sign publishing.publications.maven
   }
 }
