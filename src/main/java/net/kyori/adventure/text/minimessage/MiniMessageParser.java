@@ -311,18 +311,6 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
       } else if (token.startsWith(CLOSE_TAG + INSERTION)) {
         insertions.pop();
       }
-      // reset
-      else if (token.startsWith(RESET)) {
-        clickEvents.clear();
-        hoverEvents.clear();
-        colors.clear();
-        insertions.clear();
-        decorations.clear();
-      }
-      // pre
-      else if (token.startsWith(PRE)) {
-        isPreformatted = true;
-      }
       // rainbow
       else if (token.startsWith(RAINBOW)) {
         fancy.put(Rainbow.class, handleRainbow(token));
@@ -340,6 +328,20 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
         fonts.push(handleFont(token));
       } else if (token.startsWith(CLOSE_TAG + FONT)) {
         fonts.pop();
+      }
+      // reset
+      else if (token.startsWith(RESET)) {
+        clickEvents.clear();
+        hoverEvents.clear();
+        colors.clear();
+        insertions.clear();
+        decorations.clear();
+        fancy.clear();
+        fonts.clear();
+      }
+      // pre
+      else if (token.startsWith(PRE)) {
+        isPreformatted = true;
       }
       // template
       else if (templates.containsKey(token)) {
