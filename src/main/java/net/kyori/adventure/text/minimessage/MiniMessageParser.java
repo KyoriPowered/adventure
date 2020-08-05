@@ -329,6 +329,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
       } else if (token.startsWith(CLOSE_TAG + FONT)) {
         fonts.pop();
       }
+      // don't add new components below this!
       // reset
       else if (token.startsWith(RESET)) {
         clickEvents.clear();
