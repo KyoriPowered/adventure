@@ -297,6 +297,10 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
     private final UUID id;
     private final Component name;
 
+    public ShowEntity(final @NonNull Key type, final @NonNull UUID id) {
+      this(type, id, null);
+    }
+
     public ShowEntity(final @NonNull Key type, final @NonNull UUID id, final @Nullable Component name) {
       this.type = type;
       this.id = id;

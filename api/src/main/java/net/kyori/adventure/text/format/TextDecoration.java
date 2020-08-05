@@ -77,18 +77,19 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
    * A state that a {@link TextDecoration} can be in.
    */
   public enum State {
-    NOT_SET {
-      @Override
-      public String toString() {
-        return "null";
-      }
-    },
-    FALSE,
-    TRUE;
+    NOT_SET("not_set"),
+    FALSE("false"),
+    TRUE("true");
+
+    private final String name;
+
+    State(final String name) {
+      this.name = name;
+    }
 
     @Override
     public String toString() {
-      return this.name().toLowerCase();
+      return this.name;
     }
 
     /**

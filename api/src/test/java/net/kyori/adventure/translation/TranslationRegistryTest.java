@@ -45,7 +45,7 @@ class TranslationRegistryTest {
 
   @BeforeAll
   static void testRegister() {
-    REGISTRY.registerAll(Locale.US, Locale.US.toLanguageTag(), true);
+    REGISTRY.registerAll(Locale.US, "adventure-test", true);
   }
 
   @Test

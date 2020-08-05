@@ -54,6 +54,12 @@ class HoverEventTest {
         HoverEvent.of(HoverEvent.Action.SHOW_ITEM, new HoverEvent.ShowItem(Key.of("air"), 1, null))
       )
       .addEqualityGroup(
+        HoverEvent.showEntity(new HoverEvent.ShowEntity(Key.of("cat"), entity)),
+        HoverEvent.showEntity(new HoverEvent.ShowEntity(Key.of("cat"), entity, null)),
+        HoverEvent.of(HoverEvent.Action.SHOW_ENTITY, new HoverEvent.ShowEntity(Key.of("cat"), entity)),
+        HoverEvent.of(HoverEvent.Action.SHOW_ENTITY, new HoverEvent.ShowEntity(Key.of("cat"), entity, null))
+      )
+      .addEqualityGroup(
         HoverEvent.showEntity(new HoverEvent.ShowEntity(Key.of("cat"), entity, TextComponent.empty())),
         HoverEvent.of(HoverEvent.Action.SHOW_ENTITY, new HoverEvent.ShowEntity(Key.of("cat"), entity, TextComponent.empty()))
       )
@@ -62,7 +68,11 @@ class HoverEventTest {
 
   @Test
   void assertReadable() {
-    for(final HoverEvent.Action<?> action : ImmutableSet.of(HoverEvent.Action.SHOW_TEXT, HoverEvent.Action.SHOW_ITEM, HoverEvent.Action.SHOW_ENTITY)) {
+    for(final HoverEvent.Action<?> action : ImmutableSet.of(
+      HoverEvent.Action.SHOW_TEXT,
+      HoverEvent.Action.SHOW_ITEM,
+      HoverEvent.Action.SHOW_ENTITY
+    )) {
       assertTrue(action.readable());
     }
   }

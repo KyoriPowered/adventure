@@ -88,8 +88,9 @@ public final class Index<K, E> {
    * @return the key map
    */
   @SafeVarargs
+  @SuppressWarnings("RedundantTypeArguments") // explicit type parameters needed to fix build on JDK 1.8
   public static <K, E> @NonNull Index<K, E> create(final @NonNull Function<? super E, ? extends K> indexFunction, final @NonNull E@NonNull... constants) {
-    return create(constants, HashMap<E, K>::new /* explicit type params needed to fix build on JDK8 */, indexFunction);
+    return create(constants, HashMap<E, K>::new, indexFunction);
   }
 
   /**
@@ -101,8 +102,9 @@ public final class Index<K, E> {
    * @param <E> the type
    * @return the key map
    */
+  @SuppressWarnings("RedundantTypeArguments") // explicit type parameters needed to fix build on JDK 1.8
   public static <K, E> @NonNull Index<K, E> create(final @NonNull Function<? super E, ? extends K> indexFunction, final @NonNull List<E> constants) {
-    return create(constants, HashMap<E, K>::new /* explicit type params needed to fix build on JDK8 */, indexFunction);
+    return create(constants, HashMap<E, K>::new, indexFunction);
   }
 
   private static <K, E> @NonNull Index<K, E> create(final E[] constants, final IntFunction<Map<E, K>> valueToKeyFactory, final @NonNull Function<? super E, ? extends K> indexFunction) {
@@ -124,6 +126,15 @@ public final class Index<K, E> {
   }
 
   /**
+   * Gets the keys.
+   *
+   * @return the keys
+   */
+  public @NonNull Set<K> keys() {
+    return Collections.unmodifiableSet(this.keyToValue.keySet());
+  }
+
+  /**
    * Gets the key for a value.
    *
    * @param value the value
@@ -141,14 +152,5 @@ public final class Index<K, E> {
    */
   public @Nullable E value(final @NonNull K key) {
     return this.keyToValue.get(key);
-  }
-
-  /**
-   * Gets the keys.
-   *
-   * @return the keys
-   */
-  public @NonNull Set<K> keys() {
-    return Collections.unmodifiableSet(this.keyToValue.keySet());
   }
 }

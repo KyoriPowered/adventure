@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.audience;
 
+import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -48,5 +49,15 @@ class AudienceTest {
     final Audience ma = Audience.of(a0, a1);
     assertTrue(ma instanceof ForwardingAudience);
     assertThat(((ForwardingAudience) ma).audiences()).containsExactly(a0, a1).inOrder();
+  }
+
+  @Test
+  void testEquality() {
+    new EqualsTester()
+      .addEqualityGroup(
+        Audience.empty(),
+        Audience.of() // of() with no args returns empty
+      )
+      .testEquals();
   }
 }

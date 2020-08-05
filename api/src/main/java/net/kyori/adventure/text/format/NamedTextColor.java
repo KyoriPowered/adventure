@@ -154,7 +154,7 @@ public final class NamedTextColor implements TextColor {
   private final String name;
   private final int value;
 
-  NamedTextColor(final String name, final int value) {
+  private NamedTextColor(final String name, final int value) {
     this.name = name;
     this.value = value;
   }

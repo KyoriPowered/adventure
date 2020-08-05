@@ -69,6 +69,16 @@ import static java.util.Objects.requireNonNull;
   }
 
   @Override
+  public @NonNull TextComponent children(final @NonNull List<? extends ComponentLike> children) {
+    return new TextComponentImpl(children, this.style, this.content);
+  }
+
+  @Override
+  public @NonNull TextComponent style(final @NonNull Style style) {
+    return new TextComponentImpl(this.children, style, this.content);
+  }
+
+  @Override
   public @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement, final @NonNull IntFunction2<PatternReplacementResult> fn) {
     final List<Component> produced = new ArrayList<>();
     final Queue<TextComponent> queue = new ArrayDeque<>();
@@ -131,16 +141,6 @@ import static java.util.Objects.requireNonNull;
       final List<Component> children = produced.subList(1, produced.size());
       return (TextComponent) produced.get(0).children(children);
     }
-  }
-
-  @Override
-  public @NonNull TextComponent children(final @NonNull List<? extends ComponentLike> children) {
-    return new TextComponentImpl(children, this.style, this.content);
-  }
-
-  @Override
-  public @NonNull TextComponent style(final @NonNull Style style) {
-    return new TextComponentImpl(this.children, style, this.content);
   }
 
   @Override

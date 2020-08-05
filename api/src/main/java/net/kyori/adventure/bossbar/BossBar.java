@@ -29,7 +29,7 @@ import net.kyori.adventure.util.Index;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * A boss bar.
+ * A bossbar.
  */
 public interface BossBar {
   /**
