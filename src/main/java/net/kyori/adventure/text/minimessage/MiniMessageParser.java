@@ -225,7 +225,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
       if (msg != null && msg.length() != 0) {
         // append message
         current = TextComponent.of(msg);
-        current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, fancy, fonts);
+        current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, parent, fancy, fonts);
 
       }
 
@@ -247,7 +247,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
             parent.append(current);
           }
           current = TextComponent.of(TAG_START + token + TAG_END);
-          current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, fancy, fonts);
+          current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, parent, fancy, fonts);
           parent.append(current);
         }
         continue;
@@ -295,7 +295,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
           parent.append(current);
         }
         current = handleKeybind(token);
-        current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, fancy, fonts);
+        current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, parent, fancy, fonts);
       }
       // translatable
       else if (token.startsWith(TRANSLATABLE + SEPARATOR)) {
@@ -303,7 +303,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
           parent.append(current);
         }
         current = handleTranslatable(token, inner);
-        current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, fancy, fonts);
+        current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, parent, fancy, fonts);
       }
       // insertion
       else if (token.startsWith(INSERTION + SEPARATOR)) {
@@ -347,7 +347,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
       // template
       else if (templates.containsKey(token)) {
         current = templates.get(token).getValue();
-        current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, fancy, fonts);
+        current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, parent, fancy, fonts);
       }
       // invalid tag
       else {
@@ -355,7 +355,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
           parent.append(current);
         }
         current = TextComponent.of(TAG_START + token + TAG_END);
-        current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, fancy, fonts);
+        current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, parent, fancy, fonts);
       }
 
       if (current != null) {
@@ -370,7 +370,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
       Component current = TextComponent.of(msg);
 
       // set everything that is not closed yet
-      current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, fancy, fonts);
+      current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, parent, fancy, fonts);
 
       parent.append(current);
     }
@@ -390,7 +390,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
                                                     @NonNull final Deque<String> insertions,
                                                     @NonNull final EnumSet<TextDecoration> decorations,
                                                     @NonNull Component current,
-                                                    @NonNull final Map<Class<? extends Fancy>, Fancy> fancy, ArrayDeque<Key> fonts) {
+                                                    TextComponent.Builder parent, @NonNull final Map<Class<? extends Fancy>, Fancy> fancy, ArrayDeque<Key> fonts) {
     // set everything that is not closed yet
     if (!clickEvents.isEmpty() && current.clickEvent() == null) {
       current = current.clickEvent(clickEvents.peek());
@@ -416,26 +416,24 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
     }
 
     if (current instanceof TextComponent && fancy.size() != 0) {
-      Component parent = null;
       final TextComponent bigComponent = (TextComponent) current;
+      Component smallComponent = null;
 
-      final Fancy next = fancy.entrySet().iterator().next().getValue();
-      next.init(bigComponent.content().length());
+      final Fancy nextFancy = fancy.entrySet().iterator().next().getValue();
+      nextFancy.init(bigComponent.content().length());
       // split into multiple components
       for (int i = 0; i < bigComponent.content().length(); i++) {
-        Component smallComponent = TextComponent.of(bigComponent.content().charAt(i));
+        smallComponent = TextComponent.of(bigComponent.content().charAt(i));
         // apply formatting
-        smallComponent = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, smallComponent, Collections.emptyMap(), fonts);
-        smallComponent = next.apply(smallComponent);
+        smallComponent = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, smallComponent, parent, Collections.emptyMap(), fonts);
+        smallComponent = nextFancy.apply(smallComponent);
         // append
-        if (parent == null) {
-          parent = smallComponent;
-        } else {
-          parent = parent.append(smallComponent);
+        if (i != bigComponent.content().length() - 1)  {
+          parent.append(smallComponent);
         }
       }
-      if (parent != null) {
-        current = parent;
+      if (smallComponent != null) {
+        current = smallComponent;
       }
     }
 

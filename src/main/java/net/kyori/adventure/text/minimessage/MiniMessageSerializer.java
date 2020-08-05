@@ -72,7 +72,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.UNDERLINED;
       final Component comp = components.get(i);
 
       // add childs
-      components.addAll(comp.children());
+      components.addAll(i + 1, comp.children());
 
       // # start tags
 

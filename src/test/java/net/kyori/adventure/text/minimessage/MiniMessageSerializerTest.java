@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.KeybindComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TextComponent.Builder;
@@ -32,8 +33,10 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -201,6 +204,24 @@ public class MiniMessageSerializerTest {
       .append("test");
 
     test(builder, expected);
+  }
+
+  @Disabled // TODO make this test actually work
+  @Test
+  public void testRainbow() {
+    final String expected = "<rainbow>test</rainbow> >> reeeeeeeee";
+
+    final Component parsed = MiniMessage.get().parse(expected);
+    final String parsedJson = GsonComponentSerializer.gson().serialize(parsed);
+    System.out.println(parsedJson);
+
+    final String serialized = MiniMessage.get().serialize(parsed);
+    System.out.println(serialized);
+    final Component reparsed = MiniMessage.get().parse(serialized);
+    final String reparsedJson = GsonComponentSerializer.gson().serialize(reparsed);
+    System.out.println(reparsedJson);
+
+    assertEquals(parsed, reparsed);
   }
 
   private void test(final @NonNull Builder builder, final @NonNull String expected) {
