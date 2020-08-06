@@ -341,7 +341,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @param id the id
      * @return a {@code ShowEntity}
      */
-    public @NonNull ShowEntity count(final @NonNull UUID id) {
+    public @NonNull ShowEntity id(final @NonNull UUID id) {
       return new ShowEntity(this.type, id, this.name);
     }
 
@@ -360,7 +360,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @param name the name
      * @return a {@code ShowEntity}
      */
-    public @NonNull ShowEntity count(final @Nullable Component name) {
+    public @NonNull ShowEntity name(final @Nullable Component name) {
       return new ShowEntity(this.type, this.id, name);
     }
 
