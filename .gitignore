@@ -6,8 +6,6 @@
 /nbt/build/
 /nbt/out/
 /run/
-/text-feature-pagination/build/
-/text-feature-pagination/out/
 /text-serializer-gson/build/
 /text-serializer-gson/out/
 /text-serializer-legacy/build/

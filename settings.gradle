@@ -4,7 +4,6 @@ rootProject.name = 'adventure-parent'
 
 include 'api'
 include 'nbt'
-include 'text-feature-pagination'
 include 'text-serializer-gson'
 include 'text-serializer-legacy'
 include 'text-serializer-plain'
@@ -12,7 +11,6 @@ include 'text-serializer-plain'
 [
   'api',
   'nbt',
-  'text-feature-pagination',
   'text-serializer-gson',
   'text-serializer-legacy',
   'text-serializer-plain'
