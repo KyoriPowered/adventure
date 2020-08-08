@@ -1,4 +1,4 @@
-# adventure [![License](https://img.shields.io/github/license/KyoriPowered/adventure.svg)](https://github.com/KyoriPowered/adventure/blob/master/license.txt) [![Build Status](https://travis-ci.org/KyoriPowered/adventure.svg?branch=master)](https://travis-ci.org/KyoriPowered/adventure)
+# adventure [![License](https://img.shields.io/github/license/KyoriPowered/adventure.svg)](https://github.com/KyoriPowered/adventure/blob/master/license.txt) ![build](https://github.com/KyoriPowered/adventure/workflows/build/badge.svg?branch=master)
 
 A serverside user interface library for Minecraft.
 
