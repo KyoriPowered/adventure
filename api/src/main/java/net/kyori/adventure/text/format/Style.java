@@ -1077,6 +1077,17 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
     }
 
     /**
+     * Applies {@code applicable} to this builder
+     *
+     * @param applicable the applicable
+     * @return this builder
+     */
+    public @NonNull Builder apply(final @NonNull StyleBuilderApplicable applicable) {
+      applicable.styleApply(this);
+      return this;
+    }
+
+    /**
      * Builds the style.
      *
      * @return the style

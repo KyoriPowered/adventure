@@ -21,26 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.format;
+package net.kyori.adventure.text;
 
-import net.kyori.adventure.text.ComponentBuilder;
-import net.kyori.adventure.text.ComponentBuilderApplicable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * Something that can be applied to a {@link Style} builder.
+ * Something that can be applied to a {@link Component}.
  */
 @FunctionalInterface
-public interface StyleBuilderApplicable extends ComponentBuilderApplicable {
+public interface ComponentApplicable {
   /**
-   * Applies to {@code style}.
+   * Applies to {@code component}.
    *
-   * @param style the style builder
+   * @param component the component
+   * @return a component with something applied.
    */
-  void styleApply(final Style.@NonNull Builder style);
-
-  @Override
-  default void componentBuilderApply(final @NonNull ComponentBuilder<?, ?> component) {
-    component.style(this::styleApply);
-  }
+  @NonNull Component componentApply(final @NonNull Component component);
 }

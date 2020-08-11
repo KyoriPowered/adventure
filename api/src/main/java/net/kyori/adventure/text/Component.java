@@ -40,7 +40,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  * A text component.
  */
-public interface Component extends ComponentLike, HoverEventSource<Component> {
+public interface Component extends ComponentBuilderApplicable, ComponentLike, HoverEventSource<Component> {
   /**
    * Gets the unmodifiable list of children.
    *
@@ -390,6 +390,11 @@ public interface Component extends ComponentLike, HoverEventSource<Component> {
    */
   default boolean hasStyling() {
     return !this.style().isEmpty();
+  }
+
+  @Override
+  default void componentBuilderApply(final @NonNull ComponentBuilder<?, ?> component) {
+    component.append(this);
   }
 
   @Override

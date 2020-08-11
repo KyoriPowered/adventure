@@ -41,7 +41,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @param <C> the component type
  * @param <B> the builder type
  */
-public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends Buildable.AbstractBuilder<C>, ComponentLike {
+public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends Buildable.AbstractBuilder<C>, ComponentBuilderApplicable, ComponentLike {
   /**
    * Appends a text component to this component.
    *
@@ -315,6 +315,23 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    */
   @Override
   @NonNull C build();
+
+  /**
+   * Applies {@code applicable}.
+   *
+   * @param applicable the thing to apply
+   * @return this builder
+   */
+  @SuppressWarnings("unchecked")
+  default @NonNull B applicableApply(final @NonNull ComponentBuilderApplicable applicable) {
+    applicable.componentBuilderApply(this);
+    return (B) this;
+  }
+
+  @Override
+  default void componentBuilderApply(final @NonNull ComponentBuilder<?, ?> component) {
+    component.append(this);
+  }
 
   @Override
   default @NonNull Component asComponent() {
