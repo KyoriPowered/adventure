@@ -35,6 +35,7 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 import net.kyori.adventure.util.UTF8ResourceBundleControl;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A registry of translations.
@@ -53,6 +54,18 @@ public interface TranslationRegistry extends TranslationSource {
   static @NonNull TranslationRegistry get() {
     return TranslationRegistryImpl.INSTANCE;
   }
+
+  /**
+   * Gets a message format from a key and locale.
+   *
+   * <p>If a translation for {@code locale} is not found, we will then try {@code locale} without a country code, and then finally fallback to {@link Locale#US en_us}.</p>
+   *
+   * @param locale a locale
+   * @param key a translation key
+   * @return a message format or {@code null} to skip translation
+   */
+  @Override
+  @Nullable MessageFormat translate(final @NonNull String key, final @NonNull Locale locale);
 
   /**
    * Registers a translation.

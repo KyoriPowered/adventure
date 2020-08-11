@@ -37,7 +37,6 @@ import static java.util.Objects.requireNonNull;
 
 final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
   static final TranslationRegistry INSTANCE = new TranslationRegistryImpl();
-  static final Translation EMPTY = new Translation("");
   private final Map<String, Translation> translations = new ConcurrentHashMap<>();
 
   @Override
@@ -52,7 +51,9 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
 
   @Override
   public @Nullable MessageFormat translate(final @NonNull String key, final @NonNull Locale locale) {
-    return this.translations.getOrDefault(key, EMPTY).translate(locale);
+    final Translation translation = this.translations.get(key);
+    if(translation == null) return null;
+    return translation.translate(locale);
   }
 
   @Override
@@ -76,7 +77,14 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
     }
 
     @Nullable MessageFormat translate(final @NonNull Locale locale) {
-      return this.formats.get(locale);
+      MessageFormat format =  this.formats.get(locale);
+      if(format == null) {
+        format = this.formats.get(new Locale(locale.getLanguage())); // without country
+        if(format == null) {
+          format = this.formats.get(Locale.US); // fallback to en_us
+        }
+      }
+      return format;
     }
 
     @Override

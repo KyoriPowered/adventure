@@ -45,6 +45,7 @@ class TranslationRegistryTest {
 
   @BeforeAll
   static void testRegister() {
+    REGISTRY.register("what", Locale.CANADA, new MessageFormat("A what?", Locale.CANADA));
     REGISTRY.registerAll(Locale.US, "adventure-test", true);
   }
 
@@ -55,7 +56,18 @@ class TranslationRegistryTest {
 
   @Test
   void testTranslate() {
-    assertEquals(new MessageFormat("This is a test.", Locale.US), REGISTRY.translate("test", Locale.US));
+    final MessageFormat expected = new MessageFormat("A what?", Locale.CANADA);
+    assertEquals(expected, REGISTRY.translate("what", Locale.CANADA)); // "en_CA"
+    assertNull(REGISTRY.translate("what", Locale.ENGLISH)); // "en"
+    assertNull(REGISTRY.translate("what", Locale.US)); // "en_US"
+  }
+
+  @Test
+  void testTranslateDelegatingDown() {
+    final MessageFormat expected = new MessageFormat("This is a test.", Locale.US);
+    assertEquals(expected, REGISTRY.translate("test", Locale.CANADA)); // "en_CA"
+    assertEquals(expected, REGISTRY.translate("test", Locale.ENGLISH)); // "en"
+    assertEquals(expected, REGISTRY.translate("test", Locale.US));
   }
 
   @Test
