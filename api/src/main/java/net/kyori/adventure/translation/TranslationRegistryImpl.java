@@ -77,7 +77,7 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
     }
 
     @Nullable MessageFormat translate(final @NonNull Locale locale) {
-      MessageFormat format =  this.formats.get(locale);
+      MessageFormat format = this.formats.get(locale);
       if(format == null) {
         format = this.formats.get(new Locale(locale.getLanguage())); // without country
         if(format == null) {
