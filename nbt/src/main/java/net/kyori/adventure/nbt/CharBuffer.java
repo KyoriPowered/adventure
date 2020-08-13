@@ -65,6 +65,10 @@ final class CharBuffer {
     return this.index < this.sequence.length();
   }
 
+  public boolean hasMore(final int offset) {
+    return this.index + offset < this.sequence.length();
+  }
+
   /**
    * Search for the provided token, and advance the reader index past the {@code until} character.
    *
@@ -110,6 +114,23 @@ final class CharBuffer {
     }
     this.take();
     return this;
+  }
+
+  /**
+   * If the next non-whitespace character is {@code token}, advance past it.
+   *
+   * <p>This method always consumes whitespace.</p>
+   *
+   * @param token next non-whitespace character to query
+   * @return if the next non-whitespace character is {@code token}
+   */
+  public boolean takeIf(final char token) {
+    this.skipWhitespace();
+    if(this.hasMore() && this.peek() == token) {
+      this.advance();
+      return true;
+    }
+    return false;
   }
 
   public CharBuffer skipWhitespace() {
