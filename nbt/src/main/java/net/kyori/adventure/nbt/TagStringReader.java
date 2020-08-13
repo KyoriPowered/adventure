@@ -41,7 +41,7 @@ final class TagStringReader {
     this.buffer.expect(Tokens.COMPOUND_BEGIN);
     if(this.buffer.peek() == Tokens.COMPOUND_END) {
       this.buffer.take();
-      return new CompoundBinaryTagImpl(new HashMap<>());
+      return CompoundBinaryTag.empty();
     }
 
     final CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder();
