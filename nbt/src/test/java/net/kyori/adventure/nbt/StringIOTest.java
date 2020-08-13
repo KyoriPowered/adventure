@@ -34,6 +34,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class StringIOTest {
   @Test
@@ -240,6 +241,12 @@ class StringIOTest {
   public void testLongArrayTag() throws IOException {
     assertEquals("[L;1l,2l,3l]", this.tagToString(LongArrayBinaryTag.of(1, 2, 3)));
     assertEquals(LongArrayBinaryTag.of(2, 4, 6, -8, 10, 12), this.stringToTag("[L; 2l, 4l, 6l, -8l, 10l, 12l]"));
+  }
+
+  @Test
+  public void testEmptyCompoundTag() throws StringTagParseException {
+    final TagStringReader read = new TagStringReader(new CharBuffer("{}"));
+    assertTrue(read.compound().keySet().isEmpty());
   }
 
   private String tagToString(final BinaryTag tag) throws IOException {

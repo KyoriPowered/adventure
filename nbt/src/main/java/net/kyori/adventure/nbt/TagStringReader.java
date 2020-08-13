@@ -38,6 +38,11 @@ final class TagStringReader {
 
   public CompoundBinaryTag compound() throws StringTagParseException {
     this.buffer.expect(Tokens.COMPOUND_BEGIN);
+    if(this.buffer.peek() == Tokens.COMPOUND_END) {
+      this.buffer.take();
+      return CompoundBinaryTag.empty();
+    }
+
     final CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder();
     while(this.buffer.hasMore()) {
       builder.put(this.key(), this.tag());
