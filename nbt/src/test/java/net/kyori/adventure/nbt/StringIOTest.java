@@ -34,6 +34,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class StringIOTest {
   @Test
@@ -245,7 +246,7 @@ class StringIOTest {
   @Test
   public void testEmptyCompoundTag() throws StringTagParseException {
     final TagStringReader read = new TagStringReader(new CharBuffer("{}"));
-    assert read.compound().keySet().isEmpty();
+    assertTrue(read.compound().keySet().isEmpty());
   }
 
   private String tagToString(final BinaryTag tag) throws IOException {
