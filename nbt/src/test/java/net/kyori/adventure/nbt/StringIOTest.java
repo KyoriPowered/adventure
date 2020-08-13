@@ -242,6 +242,12 @@ class StringIOTest {
     assertEquals(LongArrayBinaryTag.of(2, 4, 6, -8, 10, 12), this.stringToTag("[L; 2l, 4l, 6l, -8l, 10l, 12l]"));
   }
 
+  @Test
+  public void testEmptyCompoundTag() throws StringTagParseException {
+    final TagStringReader read = new TagStringReader(new CharBuffer("{}"));
+    assert read.compound().keySet().isEmpty();
+  }
+
   private String tagToString(final BinaryTag tag) throws IOException {
     final StringWriter writer = new StringWriter();
     try(final TagStringWriter emitter = new TagStringWriter(writer, "")) {

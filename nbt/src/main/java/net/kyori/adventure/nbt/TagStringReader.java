@@ -24,6 +24,7 @@
 package net.kyori.adventure.nbt;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -38,6 +39,11 @@ final class TagStringReader {
 
   public CompoundBinaryTag compound() throws StringTagParseException {
     this.buffer.expect(Tokens.COMPOUND_BEGIN);
+    if(this.buffer.peek() == Tokens.COMPOUND_END) {
+      this.buffer.take();
+      return new CompoundBinaryTagImpl(new HashMap<>());
+    }
+
     final CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder();
     while(this.buffer.hasMore()) {
       builder.put(this.key(), this.tag());
