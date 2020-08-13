@@ -114,8 +114,8 @@ public interface Audience {
    * @see ForwardingAudience
    * @since 4.0.0
    */
-  static @NonNull Audience of(final @NonNull Iterable<? extends Audience> audiences) {
-    return (ForwardingAudience) () -> audiences;
+  static @NonNull ForwardingAudience of(final @NonNull Iterable<? extends Audience> audiences) {
+    return () -> audiences;
   }
 
   /**

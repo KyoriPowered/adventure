@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.audience;
 
+import java.util.Collections;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.sound.Sound;
@@ -35,9 +36,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * A receiver that wraps one or more receivers.
  *
  * <p><code>ForwardingAudience</code> is designed to easily allow users or
- * implementations wrap an existing collection of <code>Audience</code>s. When
- * forwarding to a single <code>Audience</code>,
- * use {@link java.util.Collections#singleton(Object)}.</p>
+ * implementations wrap an existing (collection of) <code>Audience</code>(s).</p>
  *
  * @see Audience
  * @since 4.0.0
@@ -106,5 +105,85 @@ public interface ForwardingAudience extends Audience {
   @Override
   default void openBook(final @NonNull Book book) {
     for(final Audience audience : this.audiences()) audience.openBook(book);
+  }
+
+  /**
+   * An audience that forwards everything to a single other audience.
+   */
+  interface Single extends ForwardingAudience {
+    /**
+     * Gets the audience.
+     *
+     * @return the audience
+     * @since 4.0.0
+     */
+    @NonNull Audience audience();
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@link #audience()}
+     * @deprecated this audience only supports forwarding to a single audience
+     */
+    @Deprecated(/* forRemoval = false */)
+    @Override
+    default @NonNull Iterable<? extends Audience> audiences() {
+      return Collections.singleton(this.audience());
+    }
+
+    @Override
+    default void sendMessage(final @NonNull Component message, final @NonNull MessageType type) {
+      this.audience().sendMessage(message, type);
+    }
+
+    @Override
+    default void sendActionBar(final @NonNull Component message) {
+      this.audience().sendActionBar(message);
+    }
+
+    @Override
+    default void showTitle(final @NonNull Title title) {
+      this.audience().showTitle(title);
+    }
+
+    @Override
+    default void clearTitle() {
+      this.audience().clearTitle();
+    }
+
+    @Override
+    default void resetTitle() {
+      this.audience().resetTitle();
+    }
+
+    @Override
+    default void showBossBar(final @NonNull BossBar bar) {
+      this.audience().showBossBar(bar);
+    }
+
+    @Override
+    default void hideBossBar(final @NonNull BossBar bar) {
+      this.audience().hideBossBar(bar);
+    }
+
+    @Override
+    default void playSound(final @NonNull Sound sound) {
+      this.audience().playSound(sound);
+    }
+
+    @Override
+    default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
+      this.audience().playSound(sound, x, y, z);
+    }
+
+    @Override
+    default void stopSound(final @NonNull SoundStop stop) {
+      this.audience().stopSound(stop);
+    }
+
+    @Override
+    default void openBook(final @NonNull Book book) {
+      this.audience().openBook(book);
+    }
   }
 }
