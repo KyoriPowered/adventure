@@ -25,7 +25,6 @@ package net.kyori.adventure.title;
 
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.time.DurationOrTicks;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
@@ -91,46 +90,46 @@ final class TitleImpl implements Examinable, Title {
   }
 
   static class TimesImpl implements Examinable, Times {
-    private final DurationOrTicks fadeIn;
-    private final DurationOrTicks stay;
-    private final DurationOrTicks fadeOut;
+    private final int fadeIn;
+    private final int stay;
+    private final int fadeOut;
 
-    TimesImpl(final DurationOrTicks fadeIn, final DurationOrTicks stay, final DurationOrTicks fadeOut) {
+    TimesImpl(final int fadeIn, final int stay, final int fadeOut) {
       this.fadeIn = fadeIn;
       this.stay = stay;
       this.fadeOut = fadeOut;
     }
 
     @Override
-    public @NonNull DurationOrTicks fadeIn() {
+    public int fadeIn() {
       return this.fadeIn;
     }
 
     @Override
-    public @NonNull DurationOrTicks stay() {
+    public int stay() {
       return this.stay;
     }
 
     @Override
-    public @NonNull DurationOrTicks fadeOut() {
+    public int fadeOut() {
       return this.fadeOut;
     }
 
     @Override
     public boolean equals(final @Nullable Object other) {
       if(this == other) return true;
-      if(other == null || this.getClass() != other.getClass()) return false;
-      final TimesImpl that = (TimesImpl) other;
-      return this.fadeIn.equals(that.fadeIn)
-        && this.stay.equals(that.stay)
-        && this.fadeOut.equals(that.fadeOut);
+      if(!(other instanceof Times)) return false;
+      final Times that = (Times) other;
+      return this.fadeIn == that.fadeIn()
+        && this.stay == that.stay()
+        && this.fadeOut == that.fadeOut();
     }
 
     @Override
     public int hashCode() {
-      int result = this.fadeIn.hashCode();
-      result = (31 * result) + this.stay.hashCode();
-      result = (31 * result) + this.fadeOut.hashCode();
+      int result = this.fadeIn;
+      result = (31 * result) + this.stay;
+      result = (31 * result) + this.fadeOut;
       return result;
     }
 

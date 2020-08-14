@@ -25,7 +25,7 @@ package net.kyori.adventure.title;
 
 import java.time.Duration;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.time.DurationOrTicks;
+import net.kyori.adventure.util.ShadyPines;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -36,7 +36,7 @@ public interface Title {
   /**
    * The default times.
    */
-  Times DEFAULT_TIMES = Times.of(DurationOrTicks.ticks(10), DurationOrTicks.ticks(70), DurationOrTicks.ticks(20));
+  Times DEFAULT_TIMES = Times.of(10, 70, 20);
 
   /**
    * Creates a title.
@@ -81,18 +81,18 @@ public interface Title {
      * @return times
      */
     static @NonNull Times of(final @NonNull Duration fadeIn, final @NonNull Duration stay, final @NonNull Duration fadeOut) {
-      return of(DurationOrTicks.duration(fadeIn), DurationOrTicks.duration(stay), DurationOrTicks.duration(fadeOut));
+      return of(ShadyPines.ticks(fadeIn), ShadyPines.ticks(stay), ShadyPines.ticks(fadeOut));
     }
 
     /**
      * Creates times.
      *
-     * @param fadeIn the fade-in time
-     * @param stay the stay time
-     * @param fadeOut the fade-eut time
+     * @param fadeIn the fade-in time, in ticks
+     * @param stay the stay time, in ticks
+     * @param fadeOut the fade-eut time, in ticks
      * @return times
      */
-    static @NonNull Times of(final @NonNull DurationOrTicks fadeIn, final @NonNull DurationOrTicks stay, final @NonNull DurationOrTicks fadeOut) {
+    static @NonNull Times of(final int fadeIn, final int stay, final int fadeOut) {
       return new TitleImpl.TimesImpl(fadeIn, stay, fadeOut);
     }
 
@@ -101,20 +101,20 @@ public interface Title {
      *
      * @return the time the title will fade-in
      */
-    @NonNull DurationOrTicks fadeIn();
+    int fadeIn();
 
     /**
      * Gets the time the title will stay.
      *
      * @return the time the title will stay
      */
-    @NonNull DurationOrTicks stay();
+    int stay();
 
     /**
      * Gets the time the title will fade-out.
      *
      * @return the time the title will fade-out
      */
-    @NonNull DurationOrTicks fadeOut();
+    int fadeOut();
   }
 }

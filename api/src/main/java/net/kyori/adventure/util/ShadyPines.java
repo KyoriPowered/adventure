@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.util;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
@@ -32,7 +33,19 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * Various utilities.
  */
 public final class ShadyPines {
+  private static final long TICK_DURATION = 50L;
+
   private ShadyPines() {
+  }
+
+  /**
+   * Converts a {@link Duration} to ticks.
+   *
+   * @param duration the duration
+   * @return the ticks
+   */
+  public static int ticks(final Duration duration) {
+    return (int) (duration.toMillis() / TICK_DURATION);
   }
 
   /**
