@@ -23,23 +23,30 @@
  */
 package net.kyori.adventure.util;
 
-import java.util.function.BiFunction;
+import java.time.Duration;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * A function that takes two {@code int}s as input and produces a {@code R} result.
- *
- * <p>This is the {@code int}-consuming primitive specialization for {@link BiFunction}.</p>
- *
- * @param <R> the result type
+ * Game tick utilities.
  */
-@FunctionalInterface
-public interface IntFunction2<R> {
+public interface Ticks {
   /**
-   * Evaluates this predicate on the given arguments.
-   *
-   * @param first the first input argument
-   * @param second the second input argument
-   * @return a result
+   * The number of ticks that occur in one second.
    */
-  R apply(final int first, final int second);
+  int TICKS_PER_SECOND = 20;
+
+  /**
+   * A single tick duration, in milliseconds.
+   */
+  long SINGLE_TICK_DURATION_MS = 1000 / TICKS_PER_SECOND;
+
+  /**
+   * Converts ticks into a {@link Duration}.
+   *
+   * @param ticks the number of ticks
+   * @return a duration
+   */
+  static @NonNull Duration duration(final long ticks) {
+    return Duration.ofMillis(ticks * SINGLE_TICK_DURATION_MS);
+  }
 }
