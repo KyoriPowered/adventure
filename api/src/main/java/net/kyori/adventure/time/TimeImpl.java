@@ -21,8 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.util;
+package net.kyori.adventure.time;
 
+import java.time.Duration;
 import java.util.stream.Stream;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
@@ -30,38 +31,38 @@ import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-final class TicksImpl implements Examinable, Ticks {
-  private final int ticks;
+final class TimeImpl implements Examinable, DurationOrTicks.OfDuration {
+  private final Duration duration;
 
-  TicksImpl(final int ticks) {
-    this.ticks = ticks;
+  TimeImpl(final Duration duration) {
+    this.duration = duration;
   }
 
   @Override
-  public int ticks() {
-    return this.ticks;
+  public @NonNull Duration duration() {
+    return this.duration;
   }
 
   @Override
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(ExaminableProperty.of("ticks", this.ticks));
+    return Stream.of(ExaminableProperty.of("duration", this.duration));
   }
 
   @Override
   public String toString() {
-    return StringExaminer.simpleEscaping().examine(this);
+    return this.examine(StringExaminer.simpleEscaping());
   }
 
   @Override
   public boolean equals(final @Nullable Object other) {
     if(this == other) return true;
-    if(!(other instanceof Ticks)) return false;
-    final Ticks that = (Ticks) other;
-    return this.ticks == that.ticks();
+    if(!(other instanceof OfDuration)) return false;
+    final OfDuration that = (OfDuration) other;
+    return this.duration.equals(that.duration());
   }
 
   @Override
   public int hashCode() {
-    return this.ticks;
+    return this.duration.hashCode();
   }
 }

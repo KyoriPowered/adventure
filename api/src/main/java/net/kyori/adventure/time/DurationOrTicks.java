@@ -21,40 +21,56 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.util;
+package net.kyori.adventure.time;
 
 import java.time.Duration;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * Representation of game ticks.
+ * {@link Duration} or ticks.
  */
-@FunctionalInterface
-public interface Ticks {
+public interface DurationOrTicks {
   /**
-   * Creates a {@code Ticks} from a {@link Duration}.
+   * Creates an {@code Ticks}.
+   *
+   * @param ticks the number of ticks
+   * @return an {@code OfTicks}
+   */
+  static @NonNull OfTicks ticks(final int ticks) {
+    return new TicksImpl(ticks);
+  }
+
+  /**
+   * Creates an {@code OfDuration}.
    *
    * @param duration the duration
-   * @return a {@code Ticks} object
+   * @return an {@code OfDuration}
    */
-  static @NonNull Ticks from(final Duration duration) {
-    return of((int) (duration.toMillis() / 50L));
+  static @NonNull OfDuration duration(final @NonNull Duration duration) {
+    return new TimeImpl(duration);
   }
 
   /**
-   * Creates a {@code Ticks}.
-   *
-   * @param value the number of ticks
-   * @return a {@code Ticks} object
+   * {@link Duration}-based duration.
    */
-  static @NonNull Ticks of(final int value) {
-    return new TicksImpl(value);
+  interface OfDuration extends DurationOrTicks {
+    /**
+     * Gets the duration.
+     *
+     * @return the duration
+     */
+    @NonNull Duration duration();
   }
 
   /**
-   * Gets the number of ticks.
-   *
-   * @return the number of ticks
+   * Tick-based duration.
    */
-  int ticks();
+  interface OfTicks extends DurationOrTicks {
+    /**
+     * Gets the number of ticks.
+     *
+     * @return the number of ticks
+     */
+    int ticks();
+  }
 }

@@ -25,7 +25,7 @@ package net.kyori.adventure.title;
 
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.util.Ticks;
+import net.kyori.adventure.time.DurationOrTicks;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
@@ -91,28 +91,28 @@ final class TitleImpl implements Examinable, Title {
   }
 
   static class TimesImpl implements Examinable, Times {
-    private final Ticks fadeIn;
-    private final Ticks stay;
-    private final Ticks fadeOut;
+    private final DurationOrTicks fadeIn;
+    private final DurationOrTicks stay;
+    private final DurationOrTicks fadeOut;
 
-    TimesImpl(final Ticks fadeIn, final Ticks stay, final Ticks fadeOut) {
+    TimesImpl(final DurationOrTicks fadeIn, final DurationOrTicks stay, final DurationOrTicks fadeOut) {
       this.fadeIn = fadeIn;
       this.stay = stay;
       this.fadeOut = fadeOut;
     }
 
     @Override
-    public @NonNull Ticks fadeIn() {
+    public @NonNull DurationOrTicks fadeIn() {
       return this.fadeIn;
     }
 
     @Override
-    public @NonNull Ticks stay() {
+    public @NonNull DurationOrTicks stay() {
       return this.stay;
     }
 
     @Override
-    public @NonNull Ticks fadeOut() {
+    public @NonNull DurationOrTicks fadeOut() {
       return this.fadeOut;
     }
 

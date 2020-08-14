@@ -25,7 +25,7 @@ package net.kyori.adventure.title;
 
 import java.time.Duration;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.util.Ticks;
+import net.kyori.adventure.time.DurationOrTicks;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -36,7 +36,7 @@ public interface Title {
   /**
    * The default times.
    */
-  Times DEFAULT_TIMES = Times.of(Ticks.of(10), Ticks.of(70), Ticks.of(20));
+  Times DEFAULT_TIMES = Times.of(DurationOrTicks.ticks(10), DurationOrTicks.ticks(70), DurationOrTicks.ticks(20));
 
   /**
    * Creates a title.
@@ -81,7 +81,7 @@ public interface Title {
      * @return times
      */
     static @NonNull Times of(final @NonNull Duration fadeIn, final @NonNull Duration stay, final @NonNull Duration fadeOut) {
-      return of(Ticks.from(fadeIn), Ticks.from(stay), Ticks.from(fadeOut));
+      return of(DurationOrTicks.duration(fadeIn), DurationOrTicks.duration(stay), DurationOrTicks.duration(fadeOut));
     }
 
     /**
@@ -92,7 +92,7 @@ public interface Title {
      * @param fadeOut the fade-eut time
      * @return times
      */
-    static @NonNull Times of(final @NonNull Ticks fadeIn, final @NonNull Ticks stay, final @NonNull Ticks fadeOut) {
+    static @NonNull Times of(final @NonNull DurationOrTicks fadeIn, final @NonNull DurationOrTicks stay, final @NonNull DurationOrTicks fadeOut) {
       return new TitleImpl.TimesImpl(fadeIn, stay, fadeOut);
     }
 
@@ -101,20 +101,20 @@ public interface Title {
      *
      * @return the time the title will fade-in
      */
-    @NonNull Ticks fadeIn();
+    @NonNull DurationOrTicks fadeIn();
 
     /**
      * Gets the time the title will stay.
      *
      * @return the time the title will stay
      */
-    @NonNull Ticks stay();
+    @NonNull DurationOrTicks stay();
 
     /**
      * Gets the time the title will fade-out.
      *
      * @return the time the title will fade-out
      */
-    @NonNull Ticks fadeOut();
+    @NonNull DurationOrTicks fadeOut();
   }
 }
