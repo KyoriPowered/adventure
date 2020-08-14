@@ -23,9 +23,9 @@
  */
 package net.kyori.adventure.title;
 
-import java.time.Duration;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.util.Ticks;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
@@ -35,16 +35,12 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 final class TitleImpl implements Examinable, Title {
   private final Component title;
   private final Component subtitle;
-  private final Duration fadeInTime;
-  private final Duration stayTime;
-  private final Duration fadeOutTime;
+  private final @Nullable Times times;
 
-  TitleImpl(final @NonNull Component title, final @NonNull Component subtitle, final @NonNull Duration fadeInTime, final @NonNull Duration stayTime, final @NonNull Duration fadeOutTime) {
+  TitleImpl(final @NonNull Component title, final @NonNull Component subtitle, final @Nullable Times times) {
     this.title = title;
     this.subtitle = subtitle;
-    this.fadeInTime = fadeInTime;
-    this.stayTime = stayTime;
-    this.fadeOutTime = fadeOutTime;
+    this.times = times;
   }
 
   @Override
@@ -58,18 +54,8 @@ final class TitleImpl implements Examinable, Title {
   }
 
   @Override
-  public @NonNull Duration fadeInTime() {
-    return this.fadeInTime;
-  }
-
-  @Override
-  public @NonNull Duration stayTime() {
-    return this.stayTime;
-  }
-
-  @Override
-  public @NonNull Duration fadeOutTime() {
-    return this.fadeOutTime;
+  public @Nullable Times times() {
+    return this.times;
   }
 
   @Override
@@ -79,18 +65,14 @@ final class TitleImpl implements Examinable, Title {
     final TitleImpl that = (TitleImpl) other;
     return this.title.equals(that.title)
       && this.subtitle.equals(that.subtitle)
-      && this.fadeInTime.equals(that.fadeInTime)
-      && this.stayTime.equals(that.stayTime)
-      && this.fadeOutTime.equals(that.fadeOutTime);
+      && this.times.equals(that.times);
   }
 
   @Override
   public int hashCode() {
     int result = this.title.hashCode();
     result = (31 * result) + this.subtitle.hashCode();
-    result = (31 * result) + this.fadeInTime.hashCode();
-    result = (31 * result) + this.stayTime.hashCode();
-    result = (31 * result) + this.fadeOutTime.hashCode();
+    result = (31 * result) + this.times.hashCode();
     return result;
   }
 
@@ -99,14 +81,71 @@ final class TitleImpl implements Examinable, Title {
     return Stream.of(
       ExaminableProperty.of("title", this.title),
       ExaminableProperty.of("subtitle", this.subtitle),
-      ExaminableProperty.of("fadeInTime", this.fadeInTime),
-      ExaminableProperty.of("stayTime", this.stayTime),
-      ExaminableProperty.of("fadeOutTime", this.fadeOutTime)
+      ExaminableProperty.of("times", this.times)
     );
   }
 
   @Override
   public String toString() {
     return this.examine(StringExaminer.simpleEscaping());
+  }
+
+  static class TimesImpl implements Examinable, Times {
+    private final Ticks fadeIn;
+    private final Ticks stay;
+    private final Ticks fadeOut;
+
+    TimesImpl(final Ticks fadeIn, final Ticks stay, final Ticks fadeOut) {
+      this.fadeIn = fadeIn;
+      this.stay = stay;
+      this.fadeOut = fadeOut;
+    }
+
+    @Override
+    public @NonNull Ticks fadeIn() {
+      return this.fadeIn;
+    }
+
+    @Override
+    public @NonNull Ticks stay() {
+      return this.stay;
+    }
+
+    @Override
+    public @NonNull Ticks fadeOut() {
+      return this.fadeOut;
+    }
+
+    @Override
+    public boolean equals(final @Nullable Object other) {
+      if(this == other) return true;
+      if(other == null || this.getClass() != other.getClass()) return false;
+      final TimesImpl that = (TimesImpl) other;
+      return this.fadeIn.equals(that.fadeIn)
+        && this.stay.equals(that.stay)
+        && this.fadeOut.equals(that.fadeOut);
+    }
+
+    @Override
+    public int hashCode() {
+      int result = this.fadeIn.hashCode();
+      result = (31 * result) + this.stay.hashCode();
+      result = (31 * result) + this.fadeOut.hashCode();
+      return result;
+    }
+
+    @Override
+    public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+      return Stream.of(
+        ExaminableProperty.of("fadeIn", this.fadeIn),
+        ExaminableProperty.of("stay", this.stay),
+        ExaminableProperty.of("fadeOut", this.fadeOut)
+      );
+    }
+
+    @Override
+    public String toString() {
+      return this.examine(StringExaminer.simpleEscaping());
+    }
   }
 }

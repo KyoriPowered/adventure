@@ -23,23 +23,45 @@
  */
 package net.kyori.adventure.util;
 
-import java.util.function.BiFunction;
+import java.util.stream.Stream;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-/**
- * A function that takes two {@code int}s as input and produces a {@code R} result.
- *
- * <p>This is the {@code int}-consuming primitive specialization for {@link BiFunction}.</p>
- *
- * @param <R> the result type
- */
-@FunctionalInterface
-public interface IntFunction2<R> {
-  /**
-   * Evaluates this predicate on the given arguments.
-   *
-   * @param first the first input argument
-   * @param second the second input argument
-   * @return a result
-   */
-  R apply(final int first, final int second);
+final class TicksImpl implements Examinable, Ticks {
+  private final int ticks;
+
+  TicksImpl(final int ticks) {
+    this.ticks = ticks;
+  }
+
+  @Override
+  public int ticks() {
+    return this.ticks;
+  }
+
+  @Override
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(ExaminableProperty.of("ticks", this.ticks));
+  }
+
+  @Override
+  public String toString() {
+    return StringExaminer.simpleEscaping().examine(this);
+  }
+
+  @Override
+  public boolean equals(final @Nullable Object other) {
+    if(this == other) return true;
+    if(!(other instanceof Ticks)) return false;
+    final Ticks that = (Ticks) other;
+    return this.ticks == that.ticks();
+  }
+
+  @Override
+  public int hashCode() {
+    return this.ticks;
+  }
 }
