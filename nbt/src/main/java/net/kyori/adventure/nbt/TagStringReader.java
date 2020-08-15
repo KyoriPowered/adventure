@@ -29,6 +29,10 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
 final class TagStringReader {
+  private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
+  private static final int[] EMPTY_INT_ARRAY = new int[0];
+  private static final long[] EMPTY_LONG_ARRAY = new long[0];
+
   private final CharBuffer buffer;
   private boolean acceptLegacy;
 
@@ -38,8 +42,7 @@ final class TagStringReader {
 
   public CompoundBinaryTag compound() throws StringTagParseException {
     this.buffer.expect(Tokens.COMPOUND_BEGIN);
-    if(this.buffer.peek() == Tokens.COMPOUND_END) {
-      this.buffer.take();
+    if(this.buffer.takeIf(Tokens.COMPOUND_END)) {
       return CompoundBinaryTag.empty();
     }
 
@@ -57,6 +60,9 @@ final class TagStringReader {
     final ListBinaryTag.Builder<BinaryTag> builder = ListBinaryTag.builder();
     this.buffer.expect(Tokens.ARRAY_BEGIN);
     final boolean prefixedIndex = this.acceptLegacy && this.buffer.peek() == '0' && this.buffer.peek(1) == ':';
+    if(!prefixedIndex && this.buffer.takeIf(Tokens.ARRAY_END)) {
+      return ListBinaryTag.empty();
+    }
     while(this.buffer.hasMore()) {
       if(prefixedIndex) {
         this.buffer.takeUntil(':');
@@ -95,6 +101,10 @@ final class TagStringReader {
   }
 
   private byte[] byteArray() throws StringTagParseException {
+    if(this.buffer.takeIf(Tokens.ARRAY_END)) {
+      return EMPTY_BYTE_ARRAY;
+    }
+
     final List<Byte> bytes = new ArrayList<>();
     while(this.buffer.hasMore()) {
       final CharSequence value = this.buffer.skipWhitespace().takeUntil(Tokens.TYPE_BYTE);
@@ -116,6 +126,10 @@ final class TagStringReader {
   }
 
   private int[] intArray() throws StringTagParseException {
+    if(this.buffer.takeIf(Tokens.ARRAY_END)) {
+      return EMPTY_INT_ARRAY;
+    }
+
     final IntStream.Builder builder = IntStream.builder();
     while(this.buffer.hasMore()) {
       final BinaryTag value = this.tag();
@@ -131,6 +145,10 @@ final class TagStringReader {
   }
 
   private long[] longArray() throws StringTagParseException {
+    if(this.buffer.takeIf(Tokens.ARRAY_END)) {
+      return EMPTY_LONG_ARRAY;
+    }
+
     final LongStream.Builder longs = LongStream.builder();
     while(this.buffer.hasMore()) {
       final CharSequence value = this.buffer.skipWhitespace().takeUntil(Tokens.TYPE_LONG);
@@ -187,7 +205,7 @@ final class TagStringReader {
       case Tokens.ARRAY_BEGIN:
         // TODO: legacy-format int arrays are ambiguous with new format int lists
         // Maybe add in a legacy-only mode to read those?
-        if(this.buffer.peek(2) == ';') { // we know we're an array tag
+        if(this.buffer.hasMore(2) && this.buffer.peek(2) == ';') { // we know we're an array tag
           return this.array(this.buffer.peek(1));
         } else {
           return this.list();
@@ -277,8 +295,7 @@ final class TagStringReader {
   }
 
   private boolean separatorOrCompleteWith(final char endCharacter) throws StringTagParseException {
-    if(this.buffer.skipWhitespace().peek() == endCharacter) {
-      this.buffer.take();
+    if(this.buffer.takeIf(endCharacter)) {
       return true;
     }
     this.buffer.expect(Tokens.VALUE_SEPARATOR);
