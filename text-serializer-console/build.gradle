@@ -1,0 +1,11 @@
+jar {
+  manifest.attributes(
+    'Automatic-Module-Name': 'net.kyori.adventure.text.serializer.console'
+  )
+}
+
+dependencies {
+  api project(':adventure-api')
+  api 'org.fusesource.jansi:jansi:1.18'
+
+}

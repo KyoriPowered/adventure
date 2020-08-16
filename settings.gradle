@@ -7,13 +7,15 @@ include 'nbt'
 include 'text-serializer-gson'
 include 'text-serializer-legacy'
 include 'text-serializer-plain'
+include 'text-serializer-console'
 
 [
   'api',
   'nbt',
   'text-serializer-gson',
   'text-serializer-legacy',
-  'text-serializer-plain'
+  'text-serializer-plain',
+  'text-serializer-console'
 ].each {
   findProject(":$it")?.name = "adventure-$it"
 }
