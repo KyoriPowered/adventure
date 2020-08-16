@@ -402,6 +402,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       this.urlStyle = serializer.urlStyle;
       this.urlLink = serializer.urlLink;
       this.colorDownsample = serializer.colorDownsample;
+      this.useTerriblyStupidHexFormat = serializer.useTerriblyStupidHexFormat;
     }
 
     @Override
