@@ -39,6 +39,9 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
   static final TranslationRegistry INSTANCE = new TranslationRegistryImpl();
   private final Map<String, Translation> translations = new ConcurrentHashMap<>();
 
+  TranslationRegistryImpl() {
+  }
+
   @Override
   public void register(final @NonNull String key, final @NonNull Locale locale, final @NonNull MessageFormat format) {
     this.translations.computeIfAbsent(key, Translation::new).register(locale, format);
