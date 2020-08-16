@@ -30,6 +30,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A gson component serializer.
@@ -94,15 +95,17 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
     @NonNull Builder downsampleColors();
 
     /**
-     * Sets a serializer that will be used to interpret legacy hover event {@code value} payloads
+     * Sets a serializer that will be used to interpret legacy hover event {@code value} payloads.
+     * If the serializer is {@code null}, then only {@link net.kyori.adventure.text.event.HoverEvent.Action#SHOW_TEXT}
+     * legacy hover events can be deserialized.
+     *
      * @param serializer serializer
      * @return this builder
      */
-    @NonNull Builder legacyHoverEventSerializer(final @NonNull LegacyHoverEventSerializer serializer);
+    @NonNull Builder legacyHoverEventSerializer(final @Nullable LegacyHoverEventSerializer serializer);
 
     /**
-     * Output a legacy hover event {@code value} in addition to the modern {@code contents}
-     *
+     * Output a legacy hover event {@code value} in addition to the modern {@code contents}.
      *
      * <p>A {@link #legacyHoverEventSerializer(LegacyHoverEventSerializer) legacy hover serializer} must also be set
      * to serialize any hover events beyond those with action {@link net.kyori.adventure.text.event.HoverEvent.Action#SHOW_TEXT}</p>
