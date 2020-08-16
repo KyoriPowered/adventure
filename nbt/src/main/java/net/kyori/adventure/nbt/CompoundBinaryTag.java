@@ -71,6 +71,34 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
   @Nullable BinaryTag get(final String key);
 
   /**
+   * Gets a boolean.
+   *
+   * <p>Booleans are stored as a {@link ByteBinaryTag} with a value of {@code 0} for {@code false} and {@code 1} for {@code true}.</p>
+   *
+   * @param key the key
+   * @return the boolean value, or {@code false} if this compound does not contain a boolean tag
+   *     with the specified key, or has a tag with a different type
+   */
+  default boolean getBoolean(final @NonNull String key) {
+    return this.getBoolean(key, false);
+  }
+
+  /**
+   * Gets a boolean.
+   *
+   * <p>Booleans are stored as a {@link ByteBinaryTag} with a value of {@code 0} for {@code false} and {@code 1} for {@code true}.</p>
+   *
+   * @param key the key
+   * @param defaultValue the default value
+   * @return the boolean value, or {@code defaultValue} if this compound does not contain a boolean tag
+   *     with the specified key, or has a tag with a different type
+   */
+  default boolean getBoolean(final @NonNull String key, final boolean defaultValue) {
+    // != 0 might look weird, but it is what vanilla does
+    return this.getByte(key) != 0 || defaultValue;
+  }
+
+  /**
    * Gets a byte.
    *
    * @param key the key

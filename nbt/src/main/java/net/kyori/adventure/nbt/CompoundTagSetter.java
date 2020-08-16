@@ -41,6 +41,19 @@ public interface CompoundTagSetter<R> {
   @NonNull R put(final @NonNull String key, final @NonNull BinaryTag tag);
 
   /**
+   * Inserts a boolean.
+   *
+   * <p>Booleans are stored as a {@link ByteBinaryTag} with a value of {@code 0} for {@code false} and {@code 1} for {@code true}.</p>
+   *
+   * @param key the key
+   * @param value the value
+   * @return a compound tag
+   */
+  default @NonNull R putBoolean(final @NonNull String key, final boolean value) {
+    return this.put(key, value ? ByteBinaryTag.ONE : ByteBinaryTag.ZERO);
+  }
+
+  /**
    * Inserts a byte.
    *
    * @param key the key
