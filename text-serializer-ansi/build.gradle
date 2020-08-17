@@ -1,6 +1,6 @@
 jar {
   manifest.attributes(
-    'Automatic-Module-Name': 'net.kyori.adventure.text.serializer.console'
+    'Automatic-Module-Name': 'net.kyori.adventure.text.serializer.ansi'
   )
 }
 
