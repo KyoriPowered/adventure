@@ -32,7 +32,7 @@ import org.fusesource.jansi.Ansi;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class AnsiComponentSerializerTest {
 
@@ -47,7 +47,7 @@ class AnsiComponentSerializerTest {
   @Test
   void testSimpleTo() {
     final TextComponent component = TextComponent.of("foo");
-    Ansi expected = Ansi.ansi().a("foo").reset();
+    final Ansi expected = Ansi.ansi().a("foo").reset();
     assertEquals(expected.toString(),
       AnsiComponentSerializer.fullColour().serialize(component));
   }
@@ -58,13 +58,13 @@ class AnsiComponentSerializerTest {
       .append(TextComponent.of("foo").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, TextDecoration.State.TRUE))
       .append(TextComponent.of("bar").color(NamedTextColor.BLUE))
       .build();
-    Ansi expected  = Ansi.ansi().a(Ansi.ansi().fgBright(Ansi.Color.GREEN)).a(Ansi.Attribute.UNDERLINE_DOUBLE).a("foo").reset().a(Ansi.ansi().fgBright(Ansi.Color.BLUE)).a("bar").reset();
+    final Ansi expected = Ansi.ansi().a(Ansi.ansi().fgBright(Ansi.Color.GREEN)).a(Ansi.Attribute.UNDERLINE_DOUBLE).a("foo").reset().a(Ansi.ansi().fgBright(Ansi.Color.BLUE)).a("bar").reset();
     assertEquals(expected.toString(), AnsiComponentSerializer.fullColour().serialize(component));
   }
 
   @Test
   void testFromColor() {
-    String input = Ansi.ansi().a(Ansi.ansi().fgBright(Ansi.Color.GREEN)).a(Ansi.Attribute.UNDERLINE_DOUBLE).a("foo").reset().fg(Ansi.Color.DEFAULT).a(Ansi.ansi().fgBright(Ansi.Color.BLUE)).a("bar").reset().fg(Ansi.Color.DEFAULT).toString();
+    final String input = Ansi.ansi().a(Ansi.ansi().fgBright(Ansi.Color.GREEN)).a(Ansi.Attribute.UNDERLINE_DOUBLE).a("foo").reset().fg(Ansi.Color.DEFAULT).a(Ansi.ansi().fgBright(Ansi.Color.BLUE)).a("bar").reset().fg(Ansi.Color.DEFAULT).toString();
     assertEquals(TextComponent.of("foobar"), AnsiComponentSerializer.fullColour().deserialize(input));
   }
 
@@ -80,7 +80,7 @@ class AnsiComponentSerializerTest {
         .color(NamedTextColor.GREEN)
         .build())
       .build();
-    Ansi expected = Ansi.ansi()
+    final Ansi expected = Ansi.ansi()
       .a("hi there ").reset()
       .a(Ansi.ansi().fgBright(Ansi.Color.GREEN))
       .a("this bit is green ").reset()
@@ -105,7 +105,7 @@ class AnsiComponentSerializerTest {
       )
       .append(TextComponent.of("baz"))
       .build();
-    String expected = Ansi.ansi()
+    final String expected = Ansi.ansi()
       .a(Ansi.Attribute.UNDERLINE_DOUBLE)
       .a("hi").a(Ansi.Attribute.RESET)
       .a(Ansi.ansi().fgBright(Ansi.Color.GREEN))
@@ -133,7 +133,7 @@ class AnsiComponentSerializerTest {
         .build()
       )
       .build();
-    Ansi ansi = Ansi.ansi()
+    final Ansi ansi = Ansi.ansi()
       .fgBright(Ansi.Color.YELLOW)
       .a("Hello ").a(Ansi.ansi().a(Ansi.Attribute.RESET))
       .fgBright(Ansi.Color.GREEN)
@@ -162,7 +162,7 @@ class AnsiComponentSerializerTest {
           )
           .build())
       .build();
-    Ansi expected3 = Ansi.ansi()
+    final Ansi expected3 = Ansi.ansi()
       .fgBright(Ansi.Color.YELLOW).a(Ansi.ansi().a(Ansi.Attribute.UNDERLINE_DOUBLE))
       .a("Hello ").a(Ansi.ansi().a(Ansi.Attribute.RESET))
       .fgBright(Ansi.Color.GREEN).a(Ansi.ansi().a(Ansi.Attribute.UNDERLINE_DOUBLE))
@@ -174,14 +174,14 @@ class AnsiComponentSerializerTest {
 
   @Test
   void testHexColor(){
-    TextColor color = TextColor.of(0x77ff33);
+    final TextColor color = TextColor.of(0x77ff33);
     final TextComponent c0 = TextComponent.of("Kittens!", color);
     final int red = color.red();
     final int blue = color.blue();
     final int green = color.green();
-    Ansi ansiColor = Ansi.ansi().format("\u001b[38;2;%d;%d;%dm", red, green, blue);
-    Ansi expected = Ansi.ansi().a(ansiColor).a("Kittens!").reset();
-    Ansi expectedDown = Ansi.ansi().fgBrightGreen().a("Kittens!").reset();
+    final Ansi ansiColor = Ansi.ansi().format("\u001b[38;2;%d;%d;%dm", red, green, blue);
+    final Ansi expected = Ansi.ansi().a(ansiColor).a("Kittens!").reset();
+    final Ansi expectedDown = Ansi.ansi().fgBrightGreen().a("Kittens!").reset();
     assertEquals(expected.toString(), AnsiComponentSerializer.builder().downSample(false).build().serialize(c0));
     assertEquals(expectedDown.toString(), AnsiComponentSerializer.builder().downSample(true).build().serialize(c0));
 

@@ -67,7 +67,7 @@ enum Formats {
 
   static {
     for(final Formats format : values()) {
-      mMap.put(format.getTextFormat(), format);
+      mMap.put(format.textFormat(), format);
       for(final String name : format.mNames) {
         mNameMap.put(name, format);
       }
@@ -81,11 +81,11 @@ enum Formats {
     this.mIsFormat = isFormat;
   }
 
-  public TextFormat getTextFormat() {
+  public TextFormat textFormat() {
     return this.format;
   }
 
-  public Ansi getAnsi() {
+  public Ansi ansi() {
     return this.escapeString;
   }
 
@@ -98,11 +98,11 @@ enum Formats {
     return this.escapeString.toString();
   }
 
-  public static Formats getByFormat(final TextFormat c) {
+  public static Formats byFormat(final TextFormat c) {
     return mMap.get(c);
   }
 
-  public static Formats getByName(final String name) {
+  public static Formats byName(final String name) {
     return mNameMap.get(name.toLowerCase());
   }
 

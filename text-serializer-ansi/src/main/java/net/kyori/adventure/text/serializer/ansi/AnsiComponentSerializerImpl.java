@@ -70,14 +70,14 @@ public final class AnsiComponentSerializerImpl implements AnsiComponentSerialize
 
   private Ansi toAnsi(final TextFormat format) {
     if(format instanceof NamedTextColor) {
-      return Formats.getByFormat(format).getAnsi();
+      return Formats.byFormat(format).ansi();
     }
     if(format instanceof TextDecoration) {
-      return Formats.getByFormat(format).getAnsi();
+      return Formats.byFormat(format).ansi();
     }
     if(format instanceof TextColor) {
       if(this.colorDownSample) {
-        return Formats.getByFormat(NamedTextColor.nearestTo((TextColor) format)).getAnsi();
+        return Formats.byFormat(NamedTextColor.nearestTo((TextColor) format)).ansi();
       }
       final int red = ((TextColor) format).red();
       final int blue = ((TextColor) format).blue();
