@@ -3,6 +3,8 @@
 /api/build/
 /api/out/
 /api/run/
+/api-kotlin/build/
+/api-kotlin/out/
 /nbt/build/
 /nbt/out/
 /run/
