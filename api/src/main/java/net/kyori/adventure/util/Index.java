@@ -36,16 +36,16 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * An index map.
+ * A bi-directional map in which keys and values must be unique.
  *
- * @param <K> the key type used for indexing
- * @param <E> the type
+ * @param <K> the key type
+ * @param <V> the value type
  */
-public final class Index<K, E> {
-  private final Map<K, E> keyToValue;
-  private final Map<E, K> valueToKey;
+public final class Index<K, V> {
+  private final Map<K, V> keyToValue;
+  private final Map<V, K> valueToKey;
 
-  private Index(final Map<K, E> keyToValue, final Map<E, K> valueToKey) {
+  private Index(final Map<K, V> keyToValue, final Map<V, K> valueToKey) {
     this.keyToValue = keyToValue;
     this.valueToKey = valueToKey;
   }
@@ -53,74 +53,77 @@ public final class Index<K, E> {
   /**
    * Creates an index map.
    *
-   * @param type the type
-   * @param indexFunction the index function
-   * @param <K> the key type used for indexing
-   * @param <E> the type
+   * @param type the value type
+   * @param keyFunction the key function
+   * @param <K> the key type
+   * @param <V> the value type
    * @return the key map
    */
-  public static <K, E extends Enum<E>> @NonNull Index<K, E> create(final Class<E> type, final @NonNull Function<? super E, ? extends K> indexFunction) {
-    return create(type, indexFunction, type.getEnumConstants());
+  public static <K, V extends Enum<V>> @NonNull Index<K, V> create(final Class<V> type, final @NonNull Function<? super V, ? extends K> keyFunction) {
+    return create(type, keyFunction, type.getEnumConstants());
   }
 
   /**
    * Creates an index map.
    *
-   * @param type the type
-   * @param indexFunction the index function
-   * @param constants the constants
-   * @param <K> the key type used for indexing
-   * @param <E> the type
+   * @param type the value type
+   * @param keyFunction the key function
+   * @param values the values
+   * @param <K> the key type
+   * @param <V> the value type
    * @return the key map
    */
   @SafeVarargs
-  public static <K, E extends Enum<E>> @NonNull Index<K, E> create(final Class<E> type, final @NonNull Function<? super E, ? extends K> indexFunction, final @NonNull E@NonNull... constants) {
-    return create(constants, length -> new EnumMap<>(type), indexFunction);
+  public static <K, V extends Enum<V>> @NonNull Index<K, V> create(final Class<V> type, final @NonNull Function<? super V, ? extends K> keyFunction, final @NonNull V @NonNull... values) {
+    return create(values, length -> new EnumMap<>(type), keyFunction);
   }
 
   /**
    * Creates an index map.
    *
-   * @param indexFunction the key provider
-   * @param constants the constants
-   * @param <K> the key type used for indexing
-   * @param <E> the type
+   * @param keyFunction the key function
+   * @param values the values
+   * @param <K> the key type
+   * @param <V> the value type
    * @return the key map
    */
   @SafeVarargs
   @SuppressWarnings("RedundantTypeArguments") // explicit type parameters needed to fix build on JDK 1.8
-  public static <K, E> @NonNull Index<K, E> create(final @NonNull Function<? super E, ? extends K> indexFunction, final @NonNull E@NonNull... constants) {
-    return create(constants, HashMap<E, K>::new, indexFunction);
+  public static <K, V> @NonNull Index<K, V> create(final @NonNull Function<? super V, ? extends K> keyFunction, final @NonNull V @NonNull... values) {
+    return create(values, HashMap<V, K>::new, keyFunction);
   }
 
   /**
    * Creates an index map.
    *
-   * @param indexFunction the key provider
+   * @param keyFunction the key function
    * @param constants the constants
-   * @param <K> the key type used for indexing
-   * @param <E> the type
+   * @param <K> the key type
+   * @param <V> the value type
    * @return the key map
    */
   @SuppressWarnings("RedundantTypeArguments") // explicit type parameters needed to fix build on JDK 1.8
-  public static <K, E> @NonNull Index<K, E> create(final @NonNull Function<? super E, ? extends K> indexFunction, final @NonNull List<E> constants) {
-    return create(constants, HashMap<E, K>::new, indexFunction);
+  public static <K, V> @NonNull Index<K, V> create(final @NonNull Function<? super V, ? extends K> keyFunction, final @NonNull List<V> constants) {
+    return create(constants, HashMap<V, K>::new, keyFunction);
   }
 
-  private static <K, E> @NonNull Index<K, E> create(final E[] constants, final IntFunction<Map<E, K>> valueToKeyFactory, final @NonNull Function<? super E, ? extends K> indexFunction) {
-    return create(Arrays.asList(constants), valueToKeyFactory, indexFunction);
+  private static <K, V> @NonNull Index<K, V> create(final V[] values, final IntFunction<Map<V, K>> valueToKeyFactory, final @NonNull Function<? super V, ? extends K> keyFunction) {
+    return create(Arrays.asList(values), valueToKeyFactory, keyFunction);
   }
 
-  @SuppressWarnings("ForLoopReplaceableByForEach")
-  private static <K, E> @NonNull Index<K, E> create(final List<E> constants, final IntFunction<Map<E, K>> valueToKeyFactory, final @NonNull Function<? super E, ? extends K> indexFunction) {
-    final int length = constants.size();
-    final Map<K, E> keyToValue = new HashMap<>(length);
-    final Map<E, K> valueToKey = valueToKeyFactory.apply(length); // to support using EnumMap instead of HashMap when possible
+  private static <K, V> @NonNull Index<K, V> create(final List<V> values, final IntFunction<Map<V, K>> valueToKeyFactory, final @NonNull Function<? super V, ? extends K> keyFunction) {
+    final int length = values.size();
+    final Map<K, V> keyToValue = new HashMap<>(length);
+    final Map<V, K> valueToKey = valueToKeyFactory.apply(length); // to support using EnumMap instead of HashMap when possible
     for(int i = 0; i < length; i++) {
-      final E constant = constants.get(i);
-      final K key = indexFunction.apply(constant);
-      keyToValue.put(key, constant);
-      valueToKey.put(constant, key);
+      final V value = values.get(i);
+      final K key = keyFunction.apply(value);
+      if(keyToValue.putIfAbsent(key, value) != null) {
+        throw new IllegalStateException(String.format("Key %s already mapped to value %s", key, keyToValue.get(key)));
+      }
+      if(valueToKey.putIfAbsent(value, key) != null) {
+        throw new IllegalStateException(String.format("Value %s already mapped to key %s", value, valueToKey.get(value)));
+      }
     }
     return new Index<>(Collections.unmodifiableMap(keyToValue), Collections.unmodifiableMap(valueToKey));
   }
@@ -140,8 +143,17 @@ public final class Index<K, E> {
    * @param value the value
    * @return the key
    */
-  public @Nullable K key(final @NonNull E value) {
+  public @Nullable K key(final @NonNull V value) {
     return this.valueToKey.get(value);
+  }
+
+  /**
+   * Gets the keys.
+   *
+   * @return the keys
+   */
+  public @NonNull Set<V> values() {
+    return Collections.unmodifiableSet(this.valueToKey.keySet());
   }
 
   /**
@@ -150,7 +162,7 @@ public final class Index<K, E> {
    * @param key the key
    * @return the value
    */
-  public @Nullable E value(final @NonNull K key) {
+  public @Nullable V value(final @NonNull K key) {
     return this.keyToValue.get(key);
   }
 }
