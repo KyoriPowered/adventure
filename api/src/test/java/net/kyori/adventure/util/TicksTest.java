@@ -23,23 +23,20 @@
  */
 package net.kyori.adventure.util;
 
-import java.util.function.BiFunction;
+import java.time.Duration;
+import org.junit.jupiter.api.Test;
 
-/**
- * A function that takes two {@code int}s as input and produces a {@code R} result.
- *
- * <p>This is the {@code int}-consuming primitive specialization for {@link BiFunction}.</p>
- *
- * @param <R> the result type
- */
-@FunctionalInterface
-public interface IntFunction2<R> {
-  /**
-   * Evaluates this predicate on the given arguments.
-   *
-   * @param first the first input argument
-   * @param second the second input argument
-   * @return a result
-   */
-  R apply(final int first, final int second);
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class TicksTest {
+  @Test
+  void testTicks() {
+    final Duration d0 = Ticks.duration(10);
+    assertEquals(500, d0.toMillis());
+    assertEquals(0, d0.getSeconds());
+
+    final Duration d1 = Ticks.duration(70);
+    assertEquals(3500, d1.toMillis());
+    assertEquals(3, d1.getSeconds());
+  }
 }
