@@ -40,7 +40,7 @@ class ComponentTest {
   @Test
   fun `joining an empty collection should just append the barriers`() {
     assertEquals(TextComponent.empty(), emptyList<Component>().join())
-    assertEquals(TextComponent.builder().append("[".text(), "]".text()).build(), emptyList<Component>().join(prefix = "[".text(), suffix = "]".text()))
+    assertEquals(TextComponent.builder().append("[".text(), "]".text()).build(), emptyList<Component>().join(prefix = "[".text(), postfix = "]".text()))
   }
 
   @Test

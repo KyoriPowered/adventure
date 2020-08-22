@@ -77,12 +77,12 @@ public operator fun ComponentLike.unaryPlus(): Component = asComponent()
  */
 public fun <T : ComponentLike, B : ComponentBuilder<*, B>> Iterable<T>.joinTo(
   builder: B,
-  joiner: Component = COMMA_SPACE,
+  separator: Component = COMMA_SPACE,
   prefix: Component = empty(),
-  suffix: Component = empty(),
-  transform: (Component) -> Component = { it },
+  postfix: Component = empty(),
   limit: Int = -1,
-  truncateWith: Component = TRUNCATE_MARK
+  truncated: Component = TRUNCATE_MARK,
+  transform: (Component) -> Component = { it }
 ): B {
   val iter = iterator()
   builder.append(prefix)
@@ -92,16 +92,16 @@ public fun <T : ComponentLike, B : ComponentBuilder<*, B>> Iterable<T>.joinTo(
     if(limit <= 0 || count++ < limit) {
       builder.append(transform(iter.next().asComponent()))
     } else {
-      builder.append(truncateWith)
+      builder.append(truncated)
       break
     }
 
     if(iter.hasNext()) {
-      builder.append(joiner)
+      builder.append(separator)
     }
   }
 
-  builder.append(suffix)
+  builder.append(postfix)
   return builder
 }
 
@@ -111,13 +111,13 @@ public fun <T : ComponentLike, B : ComponentBuilder<*, B>> Iterable<T>.joinTo(
  * @see [joinTo] for parameter descriptions
  */
 public fun <T : ComponentLike> Iterable<T>.join(
-  joiner: Component = COMMA_SPACE,
+  separator: Component = COMMA_SPACE,
   prefix: Component = empty(),
-  suffix: Component = empty(),
-  transform: (Component) -> Component = { it },
+  postfix: Component = empty(),
   limit: Int = -1,
-  truncateWith: Component = TRUNCATE_MARK
-): Component = joinTo(TextComponent.builder(), joiner, prefix, suffix, transform, limit, truncateWith).build()
+  truncated: Component = TRUNCATE_MARK,
+  transform: (Component) -> Component = { it }
+): Component = joinTo(TextComponent.builder(), separator, prefix, postfix, limit, truncated, transform).build()
 
 // Factory methods //
 
