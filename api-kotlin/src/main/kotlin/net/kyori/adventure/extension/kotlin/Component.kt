@@ -105,6 +105,11 @@ fun <T: ComponentLike, B: ComponentBuilder<*, B>> Iterable<T>.joinTo(
   return builder
 }
 
+/**
+ * Join an iterable of components into a new [TextComponent]
+ *
+ * @see [joinTo] for parameter descriptions
+ */
 fun <T: ComponentLike> Iterable<T>.join(
   joiner: Component = COMMA_SPACE,
   prefix: Component = empty(),

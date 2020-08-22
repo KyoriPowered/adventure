@@ -71,6 +71,7 @@ subprojects {
     mavenLocal()
     mavenCentral()
     sonatypeSnapshots()
+    jcenter()
   }
 
   dependencies {

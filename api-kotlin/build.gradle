@@ -1,5 +1,8 @@
+import org.jetbrains.dokka.gradle.DokkaTask
+
 plugins {
-  id 'org.jetbrains.kotlin.jvm' version '1.3.72'
+  id 'org.jetbrains.kotlin.jvm' version '1.4.0'
+  id 'org.jetbrains.dokka' version '1.4.0-rc'
 }
 
 dependencies {
@@ -8,13 +11,29 @@ dependencies {
   testImplementation "org.jetbrains.kotlin:kotlin-test-junit5"
 }
 
+// Docs
+
+// TODO once https://github.com/Kotlin/dokka/issues/1339, add Adventure logo
+
+javadocJar {
+  from dokkaHtml
+}
+
+tasks.withType(DokkaTask).configureEach {
+  dokkaSourceSets {
+    main {
+      includes = [ layout.projectDirectory.file("src/main/dokka/descriptions.md").toString()]
+      /*externalDocumentationLink { // TODO: javadoc publication
+        url = new URL("https://jd.adventure.kyori.net")
+      }*/
+    }
+  }
+}
+
 jar {
   manifest.attributes(
     'Automatic-Module-Name': 'net.kyori.adventure.extension.kotlin'
   )
-}
-repositories {
-  mavenCentral()
 }
 
 compileKotlin {

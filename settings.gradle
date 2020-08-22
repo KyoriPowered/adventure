@@ -1,3 +1,10 @@
+pluginManagement {
+  repositories {
+    gradlePluginPortal()
+    jcenter() // for dokka
+  }
+}
+
 rootProject.name = "adventure-parent"
 
 // Unfortunately, we cannot make this any nicer really
