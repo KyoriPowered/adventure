@@ -75,7 +75,7 @@ public operator fun ComponentLike.unaryPlus(): Component = asComponent()
  * This method should match the specification of [kotlin.collections.joinTo], but
  * acting on [Component]s rather than on Strings.
  */
-public fun <T: ComponentLike, B: ComponentBuilder<*, B>> Iterable<T>.joinTo(
+public fun <T : ComponentLike, B : ComponentBuilder<*, B>> Iterable<T>.joinTo(
   builder: B,
   joiner: Component = COMMA_SPACE,
   prefix: Component = empty(),
@@ -110,7 +110,7 @@ public fun <T: ComponentLike, B: ComponentBuilder<*, B>> Iterable<T>.joinTo(
  *
  * @see [joinTo] for parameter descriptions
  */
-public fun <T: ComponentLike> Iterable<T>.join(
+public fun <T : ComponentLike> Iterable<T>.join(
   joiner: Component = COMMA_SPACE,
   prefix: Component = empty(),
   suffix: Component = empty(),

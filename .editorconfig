@@ -6,3 +6,6 @@ indent_size = 2
 indent_style = space
 insert_final_newline = true
 max_line_length = off
+
+[*.{kt,kts}]
+disabled_rules=keyword-spacing # ktlint, allow `if(...)` and such
