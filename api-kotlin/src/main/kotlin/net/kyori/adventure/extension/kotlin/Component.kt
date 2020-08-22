@@ -79,7 +79,7 @@ public fun <T : ComponentLike, B : ComponentBuilder<*, B>> Iterable<T>.joinTo(
   builder: B,
   separator: Component = COMMA_SPACE,
   prefix: Component = empty(),
-  postfix: Component = empty(),
+  suffix: Component = empty(),
   limit: Int = -1,
   truncated: Component = TRUNCATE_MARK,
   transform: (Component) -> Component = { it }
@@ -101,7 +101,7 @@ public fun <T : ComponentLike, B : ComponentBuilder<*, B>> Iterable<T>.joinTo(
     }
   }
 
-  builder.append(postfix)
+  builder.append(suffix)
   return builder
 }
 
@@ -113,11 +113,11 @@ public fun <T : ComponentLike, B : ComponentBuilder<*, B>> Iterable<T>.joinTo(
 public fun <T : ComponentLike> Iterable<T>.join(
   separator: Component = COMMA_SPACE,
   prefix: Component = empty(),
-  postfix: Component = empty(),
+  suffix: Component = empty(),
   limit: Int = -1,
   truncated: Component = TRUNCATE_MARK,
   transform: (Component) -> Component = { it }
-): Component = joinTo(TextComponent.builder(), separator, prefix, postfix, limit, truncated, transform).build()
+): Component = joinTo(TextComponent.builder(), separator, prefix, suffix, limit, truncated, transform).build()
 
 // Factory methods //
 
