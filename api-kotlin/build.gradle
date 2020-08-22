@@ -12,7 +12,6 @@ dependencies {
 }
 
 // Docs
-
 // TODO once https://github.com/Kotlin/dokka/issues/1339, add Adventure logo
 
 javadocJar {
@@ -34,6 +33,10 @@ jar {
   manifest.attributes(
     'Automatic-Module-Name': 'net.kyori.adventure.extension.kotlin'
   )
+}
+
+kotlin {
+  explicitApi()
 }
 
 compileKotlin {

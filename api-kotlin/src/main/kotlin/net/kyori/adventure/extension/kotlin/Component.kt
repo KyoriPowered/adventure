@@ -48,26 +48,26 @@ internal val COMMA_SPACE = TextComponent.of(", ")
 /**
  * Add [that] as a child component.
  */
-operator fun Component.plus(that: ComponentLike): Component = this.append(that)
+public operator fun Component.plus(that: ComponentLike): Component = this.append(that)
 
 /**
  * Append [that] as a child of the component being built.
  */
-operator fun ComponentBuilder<*, *>.plusAssign(that: ComponentLike) {
+public operator fun ComponentBuilder<*, *>.plusAssign(that: ComponentLike) {
   this.append(that)
 }
 
 /**
  * Append all components in [that] as children of the component being built.
  */
-operator fun ComponentBuilder<*, *>.plusAssign(that: Iterable<ComponentLike>) {
+public operator fun ComponentBuilder<*, *>.plusAssign(that: Iterable<ComponentLike>) {
   this.append(that)
 }
 
 /**
  * Convert this object into a component
  */
-operator fun ComponentLike.unaryPlus(): Component = asComponent()
+public operator fun ComponentLike.unaryPlus(): Component = asComponent()
 
 /**
  * Append the [Iterable] of components to an existing builder, returning the built component
@@ -75,7 +75,7 @@ operator fun ComponentLike.unaryPlus(): Component = asComponent()
  * This method should match the specification of [kotlin.collections.joinTo], but
  * acting on [Component]s rather than on Strings.
  */
-fun <T: ComponentLike, B: ComponentBuilder<*, B>> Iterable<T>.joinTo(
+public fun <T: ComponentLike, B: ComponentBuilder<*, B>> Iterable<T>.joinTo(
   builder: B,
   joiner: Component = COMMA_SPACE,
   prefix: Component = empty(),
@@ -110,7 +110,7 @@ fun <T: ComponentLike, B: ComponentBuilder<*, B>> Iterable<T>.joinTo(
  *
  * @see [joinTo] for parameter descriptions
  */
-fun <T: ComponentLike> Iterable<T>.join(
+public fun <T: ComponentLike> Iterable<T>.join(
   joiner: Component = COMMA_SPACE,
   prefix: Component = empty(),
   suffix: Component = empty(),
@@ -122,22 +122,22 @@ fun <T: ComponentLike> Iterable<T>.join(
 // Factory methods //
 
 /** Create a new text component from `this` */
-fun String.text(vararg styles: StyleBuilderApplicable): TextComponent = TextComponent.of(this, Style.of(*styles))
+public fun String.text(vararg styles: StyleBuilderApplicable): TextComponent = TextComponent.of(this, Style.of(*styles))
 
 /** Create a new translatable component from `this` */
-fun String.tr(vararg args: ComponentLike): TranslatableComponent = TranslatableComponent.of(this, *args)
+public fun String.tr(vararg args: ComponentLike): TranslatableComponent = TranslatableComponent.of(this, *args)
 
 /** Create a new keybind component using the key sequence from `this` */
-fun String.keybind(vararg styles: StyleBuilderApplicable): KeybindComponent = KeybindComponent.of(this, Style.of(*styles))
+public fun String.keybind(vararg styles: StyleBuilderApplicable): KeybindComponent = KeybindComponent.of(this, Style.of(*styles))
 
 /** Create a new selector component, using `this` as a selector. */
-fun String.selector(vararg styles: StyleBuilderApplicable): SelectorComponent = SelectorComponent.builder(this).style(Style.of(*styles)).build()
+public fun String.selector(vararg styles: StyleBuilderApplicable): SelectorComponent = SelectorComponent.builder(this).style(Style.of(*styles)).build()
 
 /** Create a new score component, with the score at `this` from [objective] */
-fun String.score(objective: String, vararg styles: StyleBuilderApplicable): ScoreComponent = ScoreComponent.builder(this, objective).style(Style.of(*styles)).build()
+public fun String.score(objective: String, vararg styles: StyleBuilderApplicable): ScoreComponent = ScoreComponent.builder(this, objective).style(Style.of(*styles)).build()
 
 /** Create a new block NBT component, with nbt path from `this` gotten at [pos] */
-fun String.blockNBT(pos: BlockNBTComponent.Pos, interpret: Boolean = false, vararg styles: StyleBuilderApplicable): BlockNBTComponent = BlockNBTComponent.builder()
+public fun String.blockNBT(pos: BlockNBTComponent.Pos, interpret: Boolean = false, vararg styles: StyleBuilderApplicable): BlockNBTComponent = BlockNBTComponent.builder()
   .nbtPath(this)
   .pos(pos)
   .interpret(interpret)
@@ -145,7 +145,7 @@ fun String.blockNBT(pos: BlockNBTComponent.Pos, interpret: Boolean = false, vara
   .build()
 
 /** Create a new entity NBT component, with nbt path from `this` gotten from the entity marked by [entitySelector] */
-fun String.entityNBT(entitySelector: String, interpret: Boolean = false, vararg styles: StyleBuilderApplicable): EntityNBTComponent = EntityNBTComponent.builder()
+public fun String.entityNBT(entitySelector: String, interpret: Boolean = false, vararg styles: StyleBuilderApplicable): EntityNBTComponent = EntityNBTComponent.builder()
   .nbtPath(this)
   .selector(entitySelector)
   .interpret(interpret)
@@ -153,7 +153,7 @@ fun String.entityNBT(entitySelector: String, interpret: Boolean = false, vararg 
   .build()
 
 /** Create a new storage NBT component, with nbt path from `this` gotten from the named storage at [storage] */
-fun String.storageNBT(storage: Key, interpret: Boolean = false, vararg styles: StyleBuilderApplicable): StorageNBTComponent = StorageNBTComponent.builder()
+public fun String.storageNBT(storage: Key, interpret: Boolean = false, vararg styles: StyleBuilderApplicable): StorageNBTComponent = StorageNBTComponent.builder()
   .nbtPath(this)
   .storage(storage)
   .interpret(interpret)
