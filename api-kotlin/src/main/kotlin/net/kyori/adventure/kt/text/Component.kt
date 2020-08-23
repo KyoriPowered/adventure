@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.extension.kotlin
+package net.kyori.adventure.kt.text
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.BlockNBTComponent
@@ -76,13 +76,13 @@ public operator fun ComponentLike.unaryPlus(): Component = asComponent()
  * acting on [Component]s rather than on Strings.
  */
 public fun <T: ComponentLike, B: ComponentBuilder<*, B>> Iterable<T>.joinTo(
-  builder: B,
-  separator: Component = COMMA_SPACE,
-  prefix: Component = empty(),
-  suffix: Component = empty(),
-  limit: Int = -1,
-  truncated: Component = TRUNCATE_MARK,
-  transform: (Component) -> Component = { it }
+        builder: B,
+        separator: Component = COMMA_SPACE,
+        prefix: Component = empty(),
+        suffix: Component = empty(),
+        limit: Int = -1,
+        truncated: Component = TRUNCATE_MARK,
+        transform: (Component) -> Component = { it }
 ): B {
   val iter = iterator()
   builder.append(prefix)
@@ -111,20 +111,28 @@ public fun <T: ComponentLike, B: ComponentBuilder<*, B>> Iterable<T>.joinTo(
  * @see [joinTo] for parameter descriptions
  */
 public fun <T: ComponentLike> Iterable<T>.join(
-  separator: Component = COMMA_SPACE,
-  prefix: Component = empty(),
-  suffix: Component = empty(),
-  limit: Int = -1,
-  truncated: Component = TRUNCATE_MARK,
-  transform: (Component) -> Component = { it }
+        separator: Component = COMMA_SPACE,
+        prefix: Component = empty(),
+        suffix: Component = empty(),
+        limit: Int = -1,
+        truncated: Component = TRUNCATE_MARK,
+        transform: (Component) -> Component = { it }
 ): Component = joinTo(TextComponent.builder(), separator, prefix, suffix, limit, truncated, transform).build()
 
 // Factory methods //
 
-/** Create a new text component from [contents] */
+/**
+ * Create a new text component from [contents]
+ *
+ * @sample [net.kyori.adventure.examples.kt.componentDsl]
+ */
 public fun text(contents: String, vararg styles: StyleBuilderApplicable): TextComponent = TextComponent.of(contents, Style.of(*styles))
 
-/** Create a new translatable component from [key] */
+/**
+ * Create a new translatable component from [key]
+ *
+ * @sample [net.kyori.adventure.examples.kt.componentDsl]
+ */
 public fun translatable(key: String, vararg args: ComponentLike): TranslatableComponent = TranslatableComponent.of(key, *args)
 
 /** Create a new keybind component using the key sequence identified by [key] */
@@ -160,10 +168,18 @@ public fun storageNBT(path: String, storage: Key, interpret: Boolean = false, va
   .style(Style.of(*styles))
   .build()
 
-/** Create a new text component from [contents] */
+/**
+ * Create a new text component from [contents]
+ *
+ * @sample [net.kyori.adventure.examples.kt.componentDsl]
+ */
 public fun text(contents: String, maker: TextComponent.Builder.() -> Unit): TextComponent = TextComponent.builder(contents).also(maker).build()
 
-/** Create a new translatable component from [key] */
+/**
+ * Create a new translatable component from [key]
+ *
+ * @sample [net.kyori.adventure.examples.kt.componentDsl]
+ */
 public fun translatable(key: String, maker: TranslatableComponent.Builder.() -> Unit): TranslatableComponent = TranslatableComponent.builder(key).also(maker).build()
 
 /** Create a new keybind component using the key sequence identified by [key] */

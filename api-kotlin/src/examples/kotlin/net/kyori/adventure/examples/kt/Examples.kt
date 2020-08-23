@@ -21,16 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.examples.kotlin
+package net.kyori.adventure.examples.kt
 
 import net.kyori.adventure.audience.Audience
-import net.kyori.adventure.extension.kotlin.asAudience
-import net.kyori.adventure.extension.kotlin.component1
-import net.kyori.adventure.extension.kotlin.component2
-import net.kyori.adventure.extension.kotlin.component3
-import net.kyori.adventure.extension.kotlin.openBook
-import net.kyori.adventure.extension.kotlin.text
-import net.kyori.adventure.extension.kotlin.translatable
+import net.kyori.adventure.kt.audience.asAudience
+import net.kyori.adventure.kt.util.component1
+import net.kyori.adventure.kt.util.component2
+import net.kyori.adventure.kt.util.component3
+import net.kyori.adventure.kt.audience.openBook
+import net.kyori.adventure.kt.text.text
+import net.kyori.adventure.kt.text.translatable
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration

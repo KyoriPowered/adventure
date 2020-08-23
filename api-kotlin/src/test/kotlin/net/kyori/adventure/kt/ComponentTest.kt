@@ -21,47 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.extension.kotlin
+package net.kyori.adventure.kt
 
-import net.kyori.adventure.audience.Audience
-import net.kyori.adventure.inventory.Book
+import net.kyori.adventure.kt.text.*
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.LinearComponents.linear
+import net.kyori.adventure.text.TextComponent
+import net.kyori.adventure.text.TranslatableComponent
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
-/**
- * Create an [Audience] sending to every member of the receiver.
- *
- * @sample [net.kyori.adventure.examples.kotlin.audiences]
- */
-public fun Iterable<Audience>.asAudience(): Audience {
-  return Audience.of(this)
-}
+class ComponentTest {
+  @Test
+  fun `joining components together`() {
+    val expected = TextComponent.builder().append(TextComponent.of("one"), COMMA_SPACE, TranslatableComponent.of("kyori.meow")).build()
+    val input = listOf(text("one"), translatable("kyori.meow"))
+    assertEquals(expected, input.join())
+  }
 
-/**
- * Creates an [Audience] from this sequence.
- *
- * The sequence will be iterated for every audience operation.
- *
- * @sample [net.kyori.adventure.examples.kotlin.audiences]
- */
-public fun Sequence<Audience>.asAudience(): Audience {
-  return Audience.of(Iterable { this.iterator() })
-}
+  @Test
+  fun `joining an empty collection should just append the barriers`() {
+    assertEquals(TextComponent.empty(), emptyList<Component>().join())
+    assertEquals(linear(text("["), text("]")), emptyList<Component>().join(prefix = text("["), suffix = text("]")))
+  }
 
-/**
- * Creates an [Audience] from this sequence.
- *
- * The sequence will be eagerly evaluated at call time. This option may be
- * preferred over [asAudience] when working with a [Sequence] than can only
- * be iterated once.
- */
-public fun Sequence<Audience>.toEagerAudience(): Audience {
-  return Audience.of(toList())
-}
-
-/**
- * Create and open a [Book].
- *
- * @sample [net.kyori.adventure.examples.kotlin.openBookExample]
- */
-public fun Audience.openBook(maker: Book.Builder.() -> Unit) {
-  this.openBook(Book.builder().also(maker).build())
+  @Test
+  fun `joining over the limit`() {
+    val expected = linear(text("one"), COMMA_SPACE, text("two"), COMMA_SPACE, TRUNCATE_MARK)
+    val input = listOf(text("one"), text("two"), text("three"))
+    assertEquals(expected, input.join(limit = 2))
+  }
 }

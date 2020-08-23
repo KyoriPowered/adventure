@@ -21,30 +21,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.extension.kotlin
+package net.kyori.adventure.kt.audience
 
-import net.kyori.adventure.util.RGBLike
-
-/**
- * The [RGBLike.red] component.
- *
- * Allows for `(r, g, b)` value decomposition.
- * @sample [net.kyori.adventure.examples.kotlin.darken]
- */
-public operator fun RGBLike.component1(): Int = this.red()
+import net.kyori.adventure.audience.Audience
+import net.kyori.adventure.inventory.Book
 
 /**
- * The [RGBLike.green] component.
+ * Create an [Audience] sending to every member of the receiver.
  *
- * Allows for `(r, g, b)` value decomposition.
- * @sample [net.kyori.adventure.examples.kotlin.darken]
+ * @sample [net.kyori.adventure.examples.kt.audiences]
  */
-public operator fun RGBLike.component2(): Int = this.green()
+public fun Iterable<Audience>.asAudience(): Audience {
+  return Audience.of(this)
+}
 
 /**
- * The [RGBLike.blue] component.
+ * Creates an [Audience] from this sequence.
  *
- * Allows for `(r, g, b)` value decomposition.
- * @sample [net.kyori.adventure.examples.kotlin.darken]
+ * The sequence will be iterated for every audience operation.
+ *
+ * @sample [net.kyori.adventure.examples.kt.audiences]
  */
-public operator fun RGBLike.component3(): Int = this.blue()
+public fun Sequence<Audience>.asAudience(): Audience {
+  return Audience.of(Iterable { this.iterator() })
+}
+
+/**
+ * Creates an [Audience] from this sequence.
+ *
+ * The sequence will be eagerly evaluated at call time. This option may be
+ * preferred over [asAudience] when working with a [Sequence] than can only
+ * be iterated once.
+ */
+public fun Sequence<Audience>.toEagerAudience(): Audience {
+  return Audience.of(toList())
+}
+
+/**
+ * Create and open a [Book].
+ *
+ * @sample [net.kyori.adventure.examples.kt.openBookExample]
+ */
+public fun Audience.openBook(maker: Book.Builder.() -> Unit) {
+  this.openBook(Book.builder().also(maker).build())
+}

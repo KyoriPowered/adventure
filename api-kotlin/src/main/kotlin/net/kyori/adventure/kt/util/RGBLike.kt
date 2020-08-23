@@ -21,33 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.extension.kotlin
+package net.kyori.adventure.kt.util
 
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.LinearComponents.linear
-import net.kyori.adventure.text.TextComponent
-import net.kyori.adventure.text.TranslatableComponent
-import kotlin.test.Test
-import kotlin.test.assertEquals
+import net.kyori.adventure.util.RGBLike
 
-class ComponentTest {
-  @Test
-  fun `joining components together`() {
-    val expected = TextComponent.builder().append(TextComponent.of("one"), COMMA_SPACE, TranslatableComponent.of("kyori.meow")).build()
-    val input = listOf(text("one"), translatable("kyori.meow"))
-    assertEquals(expected, input.join())
-  }
+/**
+ * The [RGBLike.red] component.
+ *
+ * Allows for `(r, g, b)` value decomposition.
+ * @sample [net.kyori.adventure.examples.kt.darken]
+ */
+public operator fun RGBLike.component1(): Int = this.red()
 
-  @Test
-  fun `joining an empty collection should just append the barriers`() {
-    assertEquals(TextComponent.empty(), emptyList<Component>().join())
-    assertEquals(linear(text("["), text("]")), emptyList<Component>().join(prefix = text("["), suffix = text("]")))
-  }
+/**
+ * The [RGBLike.green] component.
+ *
+ * Allows for `(r, g, b)` value decomposition.
+ * @sample [net.kyori.adventure.examples.kt.darken]
+ */
+public operator fun RGBLike.component2(): Int = this.green()
 
-  @Test
-  fun `joining over the limit`() {
-    val expected = linear(text("one"), COMMA_SPACE, text("two"), COMMA_SPACE, TRUNCATE_MARK)
-    val input = listOf(text("one"), text("two"), text("three"))
-    assertEquals(expected, input.join(limit = 2))
-  }
-}
+/**
+ * The [RGBLike.blue] component.
+ *
+ * Allows for `(r, g, b)` value decomposition.
+ * @sample [net.kyori.adventure.examples.kt.darken]
+ */
+public operator fun RGBLike.component3(): Int = this.blue()
