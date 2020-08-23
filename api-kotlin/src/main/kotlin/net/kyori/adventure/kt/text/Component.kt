@@ -124,14 +124,14 @@ public fun <T: ComponentLike> Iterable<T>.join(
 /**
  * Create a new text component from [contents]
  *
- * @sample [net.kyori.adventure.examples.kt.componentDsl]
+ * @sample [net.kyori.adventure.example.kt.componentDsl]
  */
 public fun text(contents: String, vararg styles: StyleBuilderApplicable): TextComponent = TextComponent.of(contents, Style.of(*styles))
 
 /**
  * Create a new translatable component from [key]
  *
- * @sample [net.kyori.adventure.examples.kt.componentDsl]
+ * @sample [net.kyori.adventure.example.kt.componentDsl]
  */
 public fun translatable(key: String, vararg args: ComponentLike): TranslatableComponent = TranslatableComponent.of(key, *args)
 
@@ -171,14 +171,14 @@ public fun storageNBT(path: String, storage: Key, interpret: Boolean = false, va
 /**
  * Create a new text component from [contents]
  *
- * @sample [net.kyori.adventure.examples.kt.componentDsl]
+ * @sample [net.kyori.adventure.example.kt.componentDsl]
  */
 public fun text(contents: String, maker: TextComponent.Builder.() -> Unit): TextComponent = TextComponent.builder(contents).also(maker).build()
 
 /**
  * Create a new translatable component from [key]
  *
- * @sample [net.kyori.adventure.examples.kt.componentDsl]
+ * @sample [net.kyori.adventure.example.kt.componentDsl]
  */
 public fun translatable(key: String, maker: TranslatableComponent.Builder.() -> Unit): TranslatableComponent = TranslatableComponent.builder(key).also(maker).build()
 

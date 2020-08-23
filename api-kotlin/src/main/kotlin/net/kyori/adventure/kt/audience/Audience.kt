@@ -29,7 +29,7 @@ import net.kyori.adventure.inventory.Book
 /**
  * Create an [Audience] sending to every member of the receiver.
  *
- * @sample [net.kyori.adventure.examples.kt.audiences]
+ * @sample [net.kyori.adventure.example.kt.audiences]
  */
 public fun Iterable<Audience>.asAudience(): Audience {
   return Audience.of(this)
@@ -40,7 +40,7 @@ public fun Iterable<Audience>.asAudience(): Audience {
  *
  * The sequence will be iterated for every audience operation.
  *
- * @sample [net.kyori.adventure.examples.kt.audiences]
+ * @sample [net.kyori.adventure.example.kt.audiences]
  */
 public fun Sequence<Audience>.asAudience(): Audience {
   return Audience.of(Iterable { this.iterator() })
@@ -60,7 +60,7 @@ public fun Sequence<Audience>.toEagerAudience(): Audience {
 /**
  * Create and open a [Book].
  *
- * @sample [net.kyori.adventure.examples.kt.openBookExample]
+ * @sample [net.kyori.adventure.example.kt.openBookExample]
  */
 public fun Audience.openBook(maker: Book.Builder.() -> Unit) {
   this.openBook(Book.builder().also(maker).build())
