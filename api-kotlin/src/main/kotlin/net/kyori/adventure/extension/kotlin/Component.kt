@@ -75,7 +75,7 @@ public operator fun ComponentLike.unaryPlus(): Component = asComponent()
  * This method should match the specification of [kotlin.collections.joinTo], but
  * acting on [Component]s rather than on Strings.
  */
-public fun <T : ComponentLike, B : ComponentBuilder<*, B>> Iterable<T>.joinTo(
+public fun <T: ComponentLike, B: ComponentBuilder<*, B>> Iterable<T>.joinTo(
   builder: B,
   separator: Component = COMMA_SPACE,
   prefix: Component = empty(),
@@ -110,7 +110,7 @@ public fun <T : ComponentLike, B : ComponentBuilder<*, B>> Iterable<T>.joinTo(
  *
  * @see [joinTo] for parameter descriptions
  */
-public fun <T : ComponentLike> Iterable<T>.join(
+public fun <T: ComponentLike> Iterable<T>.join(
   separator: Component = COMMA_SPACE,
   prefix: Component = empty(),
   suffix: Component = empty(),
@@ -121,41 +121,77 @@ public fun <T : ComponentLike> Iterable<T>.join(
 
 // Factory methods //
 
-/** Create a new text component from `this` */
-public fun String.text(vararg styles: StyleBuilderApplicable): TextComponent = TextComponent.of(this, Style.of(*styles))
+/** Create a new text component from [contents] */
+public fun text(contents: String, vararg styles: StyleBuilderApplicable): TextComponent = TextComponent.of(contents, Style.of(*styles))
 
-/** Create a new translatable component from `this` */
-public fun String.tr(vararg args: ComponentLike): TranslatableComponent = TranslatableComponent.of(this, *args)
+/** Create a new translatable component from [key] */
+public fun translatable(key: String, vararg args: ComponentLike): TranslatableComponent = TranslatableComponent.of(key, *args)
 
-/** Create a new keybind component using the key sequence from `this` */
-public fun String.keybind(vararg styles: StyleBuilderApplicable): KeybindComponent = KeybindComponent.of(this, Style.of(*styles))
+/** Create a new keybind component using the key sequence identified by [key] */
+public fun keybind(key: String, vararg styles: StyleBuilderApplicable): KeybindComponent = KeybindComponent.of(key, Style.of(*styles))
 
-/** Create a new selector component, using `this` as a selector. */
-public fun String.selector(vararg styles: StyleBuilderApplicable): SelectorComponent = SelectorComponent.builder(this).style(Style.of(*styles)).build()
+/** Create a new selector component, using [selector] as a selector. */
+public fun selector(selector: String, vararg styles: StyleBuilderApplicable): SelectorComponent = SelectorComponent.builder(selector).style(Style.of(*styles)).build()
 
-/** Create a new score component, with the score at `this` from [objective] */
-public fun String.score(objective: String, vararg styles: StyleBuilderApplicable): ScoreComponent = ScoreComponent.builder(this, objective).style(Style.of(*styles)).build()
+/** Create a new score component, with the [score] in [objective] */
+public fun score(score: String, objective: String, vararg styles: StyleBuilderApplicable): ScoreComponent = ScoreComponent.builder(score, objective).style(Style.of(*styles)).build()
 
-/** Create a new block NBT component, with nbt path from `this` gotten at [pos] */
-public fun String.blockNBT(pos: BlockNBTComponent.Pos, interpret: Boolean = false, vararg styles: StyleBuilderApplicable): BlockNBTComponent = BlockNBTComponent.builder()
-  .nbtPath(this)
+/** Create a new block NBT component, with nbt path from [path] gotten at [pos] */
+public fun blockNBT(path: String, pos: BlockNBTComponent.Pos, interpret: Boolean = false, vararg styles: StyleBuilderApplicable): BlockNBTComponent = BlockNBTComponent.builder()
+  .nbtPath(path)
   .pos(pos)
   .interpret(interpret)
   .style(Style.of(*styles))
   .build()
 
-/** Create a new entity NBT component, with nbt path from `this` gotten from the entity marked by [entitySelector] */
-public fun String.entityNBT(entitySelector: String, interpret: Boolean = false, vararg styles: StyleBuilderApplicable): EntityNBTComponent = EntityNBTComponent.builder()
-  .nbtPath(this)
+/** Create a new entity NBT component, with nbt path [path] gotten from the entity marked by [entitySelector] */
+public fun entityNBT(path: String, entitySelector: String, interpret: Boolean = false, vararg styles: StyleBuilderApplicable): EntityNBTComponent = EntityNBTComponent.builder()
+  .nbtPath(path)
   .selector(entitySelector)
   .interpret(interpret)
   .style(Style.of(*styles))
   .build()
 
-/** Create a new storage NBT component, with nbt path from `this` gotten from the named storage at [storage] */
-public fun String.storageNBT(storage: Key, interpret: Boolean = false, vararg styles: StyleBuilderApplicable): StorageNBTComponent = StorageNBTComponent.builder()
-  .nbtPath(this)
+/** Create a new storage NBT component, with nbt path [path] gotten from the named storage at [storage] */
+public fun storageNBT(path: String, storage: Key, interpret: Boolean = false, vararg styles: StyleBuilderApplicable): StorageNBTComponent = StorageNBTComponent.builder()
+  .nbtPath(path)
   .storage(storage)
   .interpret(interpret)
   .style(Style.of(*styles))
+  .build()
+
+/** Create a new text component from [contents] */
+public fun text(contents: String, maker: TextComponent.Builder.() -> Unit): TextComponent = TextComponent.builder(contents).also(maker).build()
+
+/** Create a new translatable component from [key] */
+public fun translatable(key: String, maker: TranslatableComponent.Builder.() -> Unit): TranslatableComponent = TranslatableComponent.builder(key).also(maker).build()
+
+/** Create a new keybind component using the key sequence identified by [key] */
+public fun keybind(key: String, maker: KeybindComponent.Builder.() -> Unit): KeybindComponent = KeybindComponent.builder(key).also(maker).build()
+
+/** Create a new selector component, using [selector] as a selector. */
+public fun selector(selector: String, maker: SelectorComponent.Builder.() -> Unit): SelectorComponent = SelectorComponent.builder(selector).also(maker).build()
+
+/** Create a new score component, with [score] in [objective] */
+public fun score(score: String, objective: String, maker: ScoreComponent.Builder.() -> Unit): ScoreComponent = ScoreComponent.builder(score, objective).also(maker).build()
+
+/** Create a new block NBT component, with nbt path [path] gotten at [pos] */
+public fun blockNBT(path: String, pos: BlockNBTComponent.Pos, maker: BlockNBTComponent.Builder.() -> Unit): BlockNBTComponent = BlockNBTComponent.builder()
+  .nbtPath(path)
+  .pos(pos)
+  .also(maker)
+  .build()
+
+/** Create a new entity NBT component, with nbt path [path] gotten from the entity marked by [entitySelector] */
+public fun entityNBT(path: String, entitySelector: String, maker: EntityNBTComponent.Builder.() -> Unit): EntityNBTComponent = EntityNBTComponent.builder()
+  .nbtPath(path)
+  .selector(entitySelector)
+  .also(maker)
+  .build()
+
+/** Create a new storage NBT component, with nbt path [path] gotten from the named storage at [storage] */
+public fun storageNBT(path: String, storage: Key, maker: StorageNBTComponent.Builder.() -> Unit): StorageNBTComponent = StorageNBTComponent.builder()
+  .nbtPath(path)
+  .storage(storage)
+  .also(maker)
   .build()

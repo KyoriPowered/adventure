@@ -24,6 +24,7 @@
 package net.kyori.adventure.extension.kotlin
 
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.LinearComponents.linear
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.TranslatableComponent
 import kotlin.test.Test
@@ -33,20 +34,20 @@ class ComponentTest {
   @Test
   fun `joining components together`() {
     val expected = TextComponent.builder().append(TextComponent.of("one"), COMMA_SPACE, TranslatableComponent.of("kyori.meow")).build()
-    val input = listOf("one".text(), "kyori.meow".tr())
+    val input = listOf(text("one"), translatable("kyori.meow"))
     assertEquals(expected, input.join())
   }
 
   @Test
   fun `joining an empty collection should just append the barriers`() {
     assertEquals(TextComponent.empty(), emptyList<Component>().join())
-    assertEquals(TextComponent.builder().append("[".text(), "]".text()).build(), emptyList<Component>().join(prefix = "[".text(), suffix = "]".text()))
+    assertEquals(linear(text("["), text("]")), emptyList<Component>().join(prefix = text("["), suffix = text("]")))
   }
 
   @Test
   fun `joining over the limit`() {
-    val expected = TextComponent.builder().append("one".text(), COMMA_SPACE, "two".text(), COMMA_SPACE, TRUNCATE_MARK).build()
-    val input = listOf("one".text(), "two".text(), "three".text())
+    val expected = linear(text("one"), COMMA_SPACE, text("two"), COMMA_SPACE, TRUNCATE_MARK)
+    val input = listOf(text("one"), text("two"), text("three"))
     assertEquals(expected, input.join(limit = 2))
   }
 }

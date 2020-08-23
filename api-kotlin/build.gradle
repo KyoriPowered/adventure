@@ -3,18 +3,20 @@ import org.jetbrains.dokka.gradle.DokkaTask
 plugins {
   id 'org.jetbrains.kotlin.jvm' version '1.4.0'
   id 'org.jetbrains.dokka' version '1.4.0-rc'
-  id 'org.jlleitschuh.gradle.ktlint' version '9.3.0'
+}
+
+sourceSets {
+  examples {
+    compileClasspath += main.compileClasspath
+    runtimeClasspath += main.runtimeClasspath
+  }
 }
 
 dependencies {
   api project(':adventure-api')
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
   testImplementation "org.jetbrains.kotlin:kotlin-test-junit5"
-}
-
-// Kotlin standard codestyle enforcement, with kyori-specific rules enabled
-ktlint {
-  version.set("0.38.0")
+  examplesImplementation sourceSets.main.output
 }
 
 // Docs
@@ -28,6 +30,7 @@ tasks.withType(DokkaTask).configureEach {
   dokkaSourceSets {
     main {
       includes = [ layout.projectDirectory.file("src/main/dokka/descriptions.md").toString()]
+      samples = sourceSets.examples.kotlin.sourceDirectories.files.collect { it.toString() }
       /*externalDocumentationLink { // TODO: javadoc publication
         url = new URL("https://jd.adventure.kyori.net")
       }*/
@@ -46,6 +49,12 @@ kotlin {
 }
 
 compileKotlin {
+  kotlinOptions {
+    jvmTarget = '1.8'
+  }
+}
+
+compileExamplesKotlin {
   kotlinOptions {
     jvmTarget = '1.8'
   }
