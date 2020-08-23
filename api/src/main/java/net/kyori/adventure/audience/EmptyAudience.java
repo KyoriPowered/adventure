@@ -23,8 +23,28 @@
  */
 package net.kyori.adventure.audience;
 
+import net.kyori.adventure.inventory.Book;
+import net.kyori.adventure.text.ComponentLike;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 final class EmptyAudience implements Audience {
   static final EmptyAudience INSTANCE = new EmptyAudience();
+
+  @Override
+  public void sendMessage(final @NonNull ComponentLike message) {
+  }
+
+  @Override
+  public void sendMessage(final @NonNull ComponentLike message, final @NonNull MessageType type) {
+  }
+
+  @Override
+  public void sendActionBar(final @NonNull ComponentLike message) {
+  }
+
+  @Override
+  public void openBook(final Book.@NonNull Builder book) {
+  }
 
   @Override
   public boolean equals(final Object that) {

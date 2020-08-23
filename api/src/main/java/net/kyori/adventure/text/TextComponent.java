@@ -110,7 +110,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    */
   static @NonNull TextComponent ofChildren(final @NonNull ComponentLike@NonNull... components) {
     if(components.length == 0) return empty();
-    return empty().children(Arrays.asList(components));
+    return new TextComponentImpl(Arrays.asList(components), Style.empty(), "");
   }
 
   /**

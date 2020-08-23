@@ -29,6 +29,7 @@ import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -125,6 +126,17 @@ public interface Audience {
    * @see Component
    * @since 4.0.0
    */
+  default void sendMessage(final @NonNull ComponentLike message) {
+    this.sendMessage(message.asComponent());
+  }
+
+  /**
+   * Sends a chat message.
+   *
+   * @param message a message
+   * @see Component
+   * @since 4.0.0
+   */
   default void sendMessage(final @NonNull Component message) {
     this.sendMessage(message, MessageType.SYSTEM);
   }
@@ -137,7 +149,30 @@ public interface Audience {
    * @see Component
    * @since 4.0.0
    */
+  default void sendMessage(final @NonNull ComponentLike message, final @NonNull MessageType type) {
+    this.sendMessage(message.asComponent(), type);
+  }
+
+  /**
+   * Sends a chat message.
+   *
+   * @param message a message
+   * @param type the type
+   * @see Component
+   * @since 4.0.0
+   */
   default void sendMessage(final @NonNull Component message, final @NonNull MessageType type) {
+  }
+
+  /**
+   * Sends a message on the action bar.
+   *
+   * @param message a message
+   * @see Component
+   * @since 4.0.0
+   */
+  default void sendActionBar(final @NonNull ComponentLike message) {
+    this.sendActionBar(message.asComponent());
   }
 
   /**
@@ -229,6 +264,19 @@ public interface Audience {
    * @since 4.0.0
    */
   default void stopSound(final @NonNull SoundStop stop) {
+  }
+
+  /**
+   * Opens a book.
+   *
+   * <p>When possible, no item should persist after closing the book.</p>
+   *
+   * @param book a book
+   * @see Book
+   * @since 4.0.0
+   */
+  default void openBook(final Book.@NonNull Builder book) {
+    this.openBook(book.build());
   }
 
   /**
