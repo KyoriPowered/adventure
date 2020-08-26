@@ -72,7 +72,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param decorations the decorations
    * @return this builder
    */
-  default @NonNull B append(final @NonNull String content, final @NonNull TextColor color, final TextDecoration@NonNull... decorations) {
+  default @NonNull B append(final @NonNull String content, final @NonNull TextColor color, final TextDecoration @NonNull ... decorations) {
     return this.append(TextComponent.of(content, color, decorations));
   }
 
@@ -121,7 +121,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param components the components to append
    * @return this builder
    */
-  @NonNull B append(final @NonNull Component@NonNull... components);
+  @NonNull B append(final @NonNull Component @NonNull ... components);
 
   /**
    * Appends components to this component.
@@ -129,7 +129,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param components the components to append
    * @return this builder
    */
-  @NonNull B append(final @NonNull ComponentLike@NonNull... components);
+  @NonNull B append(final @NonNull ComponentLike @NonNull ... components);
 
   /**
    * Appends components to this component.
@@ -264,15 +264,15 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    */
   @NonNull B hoverEvent(final @Nullable HoverEvent<?> event);
 
-    /**
-     * Sets the hover event.
-     *
-     * @param source the hover event source
-     * @return this builder
-     */
-    default @NonNull B hoverEvent(final @NonNull HoverEventSource<?> source) {
-      return this.hoverEvent(source.asHoverEvent());
-    }
+  /**
+   * Sets the hover event.
+   *
+   * @param source the hover event source
+   * @return this builder
+   */
+  default @NonNull B hoverEvent(final @NonNull HoverEventSource<?> source) {
+    return this.hoverEvent(source.asHoverEvent());
+  }
 
   /**
    * Sets the string to be inserted when this component is shift-clicked.
@@ -299,7 +299,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param merges the parts to merge
    * @return this builder
    */
-  default @NonNull B mergeStyle(final @NonNull Component that, final Style.@NonNull Merge@NonNull... merges) {
+  default @NonNull B mergeStyle(final @NonNull Component that, final Style.@NonNull Merge @NonNull ... merges) {
     return this.mergeStyle(that, Style.Merge.of(merges));
   }
 
