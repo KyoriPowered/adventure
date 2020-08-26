@@ -28,6 +28,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -262,6 +263,16 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    */
   @NonNull B hoverEvent(final @Nullable HoverEvent<?> event);
+
+    /**
+     * Sets the hover event.
+     *
+     * @param source the hover event source
+     * @return this builder
+     */
+    default @NonNull B hoverEvent(final @NonNull HoverEventSource<?> source) {
+      return this.hoverEvent(source.asHoverEvent());
+    }
 
   /**
    * Sets the string to be inserted when this component is shift-clicked.
