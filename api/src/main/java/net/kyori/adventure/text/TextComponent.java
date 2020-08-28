@@ -583,7 +583,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param replacement a function to replace each match
    * @return a modified copy of this component
    */
-  default @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement) {
+  default @NonNull Component replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement) {
     return this.replace(pattern, replacement, (index, replaced) -> PatternReplacementResult.REPLACE);
   }
 
@@ -594,7 +594,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param replacement a function to replace the first match
    * @return a modified copy of this component
    */
-  default @NonNull TextComponent replaceFirst(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement) {
+  default @NonNull Component replaceFirst(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement) {
     return this.replace(pattern, replacement, 1);
   }
 
@@ -606,7 +606,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param numberOfReplacements the amount of matches that should be replaced
    * @return a modified copy of this component
    */
-  default @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement, final int numberOfReplacements) {
+  default @NonNull Component replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement, final int numberOfReplacements) {
     return this.replace(pattern, replacement, (index, replaced) -> replaced < numberOfReplacements ? PatternReplacementResult.REPLACE : PatternReplacementResult.STOP);
   }
 
@@ -620,7 +620,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param fn a function of (index, replaced) used to determine if matches should be replaced, where "replaced" is the number of successful replacements
    * @return a modified copy of this component
    */
-  @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement, final @NonNull IntFunction2<PatternReplacementResult> fn);
+  @NonNull Component replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement, final @NonNull IntFunction2<PatternReplacementResult> fn);
 
   /**
    * A result for {@link #replace(Pattern, UnaryOperator, IntFunction2) pattern-based replacements}.

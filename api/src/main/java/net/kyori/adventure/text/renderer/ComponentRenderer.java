@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.renderer;
 
+import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -40,4 +41,15 @@ public interface ComponentRenderer<C> {
    * @return the rendered component
    */
   @NonNull Component render(final @NonNull Component component, final @NonNull C context);
+
+  /**
+   * Return a {@link ComponentRenderer} that takes a different context type
+   *
+   * @param transformer context type transformer
+   * @param <T> transformation function
+   * @return mapping renderer
+   */
+  default <T> ComponentRenderer<T> mapContext(final Function<T, C> transformer) {
+    return (component, ctx) -> this.render(component, transformer.apply(ctx));
+  }
 }

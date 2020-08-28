@@ -27,6 +27,7 @@ import com.google.common.collect.ImmutableSet;
 import java.util.Collections;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
@@ -139,7 +140,7 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
       .content("cat says ")
       .append(TranslatableComponent.of("cat.meow")) // or any non-text component
       .build();
-    final TextComponent replaced = component.replace(Pattern.compile("says"), match -> match.color(NamedTextColor.DARK_PURPLE));
+    final Component replaced = component.replace(Pattern.compile("says"), match -> match.color(NamedTextColor.DARK_PURPLE));
     assertEquals(TextComponent.builder()
       .content("cat ")
       .append("says", NamedTextColor.DARK_PURPLE)
@@ -154,7 +155,7 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
       .content("Buffalo buffalo Buffalo buffalo buffalo buffalo Buffalo buffalo ")
       .append(TranslatableComponent.of("buffalo.buffalo")) // or any non-text component
       .build();
-    final TextComponent replaced = component.replaceFirst(Pattern.compile("buffalo"), match -> match.color(NamedTextColor.DARK_PURPLE));
+    final Component replaced = component.replaceFirst(Pattern.compile("buffalo"), match -> match.color(NamedTextColor.DARK_PURPLE));
     assertEquals(TextComponent.builder()
       .content("Buffalo ")
       .append("buffalo", NamedTextColor.DARK_PURPLE)
@@ -169,7 +170,7 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
       .content("Buffalo buffalo Buffalo buffalo buffalo buffalo Buffalo buffalo ")
       .append(TranslatableComponent.of("buffalo.buffalo")) // or any non-text component
       .build();
-    final TextComponent replaced = component.replace(Pattern.compile("buffalo"), match -> match.color(NamedTextColor.DARK_PURPLE), 2);
+    final Component replaced = component.replace(Pattern.compile("buffalo"), match -> match.color(NamedTextColor.DARK_PURPLE), 2);
     assertEquals(TextComponent.builder()
       .content("Buffalo ")
       .append("buffalo", NamedTextColor.DARK_PURPLE)
@@ -187,7 +188,8 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
       .append(TranslatableComponent.of("purple.purple")) // or any non-text component
       .build();
 
-    final TextComponent replaced = component.replace(Pattern.compile("purple"), match -> match.color(NamedTextColor.DARK_PURPLE), (index, replace) -> index % 2 == 0 ? TextComponent.PatternReplacementResult.REPLACE : TextComponent.PatternReplacementResult.CONTINUE);
+    final Component replaced = component.replace(Pattern.compile("purple"), match -> match.color(NamedTextColor.DARK_PURPLE),
+      (index, replace) -> index % 2 == 0 ? TextComponent.PatternReplacementResult.REPLACE : TextComponent.PatternReplacementResult.CONTINUE);
 
     assertEquals(TextComponent.builder()
       .content("purple ")
@@ -201,6 +203,76 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
       .append(" ")
       .append(TranslatableComponent.of("purple.purple"))
       .build(), replaced);
+  }
+
+  @Test
+  void testReplaceNonStringComponents() {
+    final TextComponent original = TextComponent.builder("Hello world")
+      .append(TextComponent.of("Child 1"), KeybindComponent.of("key.adventure.purr"), TextComponent.of("Child 3"))
+      .build();
+    final TextComponent expectedReplacement = TextComponent.builder("Hello world")
+      .append(TextComponent.builder().append("Parent").append(" 1"), KeybindComponent.of("key.adventure.purr"), TextComponent.builder().append("Parent").append(" 3"))
+      .build();
+
+    assertEquals(expectedReplacement, original.replace(Pattern.compile("Child"), match -> match.content("Parent")));
+  }
+
+  // https://github.com/KyoriPowered/adventure/issues/129
+  @Test
+  void testReplaceWithChildren() {
+    final TextComponent component = TextComponent.builder()
+      .append(TextComponent.of("This ").color(NamedTextColor.GRAY))
+      .append(TextComponent.of("is").color(NamedTextColor.BLUE)
+        .append(TextComponent.of(" the ").decoration(TextDecoration.BOLD, TextDecoration.State.TRUE)))
+      .append(TextComponent.of("string").color(NamedTextColor.DARK_BLUE))
+      .append(TextComponent.of(" under test").color(NamedTextColor.DARK_AQUA))
+      .build();
+    final TextComponent expectedReplacement = TextComponent.builder()
+      .append(TextComponent.of("This ").color(NamedTextColor.GRAY))
+      .append(TextComponent.of("is").color(NamedTextColor.BLUE)
+        .append(TextComponent.of(" the ").decoration(TextDecoration.BOLD, TextDecoration.State.TRUE)))
+      .append(TextComponent.of("string").color(NamedTextColor.DARK_BLUE))
+      .append(TextComponent.of(" under ").color(NamedTextColor.DARK_AQUA).append(TextComponent.of("me")))
+      .build();
+
+    assertEquals(expectedReplacement, component.replace(Pattern.compile("test"), match -> match.content("me")));
+  }
+
+  @Test
+  void testReplaceInStyle() {
+    final TextComponent component = TextComponent.builder("Hover on me")
+      .hoverEvent(HoverEvent.showText(TextComponent.of("meep", NamedTextColor.DARK_AQUA)))
+      .build();
+    final Component expectedReplacement = TextComponent.builder("Hover on me")
+      .hoverEvent(HoverEvent.showText(TextComponent.of("meow", NamedTextColor.DARK_RED)))
+      .build();
+
+    assertEquals(expectedReplacement, component.replace(Pattern.compile("meep"), builder -> builder.content("meow").color(NamedTextColor.DARK_RED)));
+  }
+
+  @Test
+  void testReplaceTranslatableArgs() {
+    final TextComponent component = TextComponent.builder("hello ")
+      .append(TranslatableComponent.of("my.translation", TextComponent.of("cats bad")))
+      .build();
+    final TextComponent expectedReplacement = TextComponent.builder("hello ")
+      .append(TranslatableComponent.of("my.translation", TextComponent.builder("cats ").append(TextComponent.of("good"))))
+      .build();
+
+    assertEquals(expectedReplacement, component.replace(Pattern.compile("bad"), builder -> builder.content("good")));
+  }
+
+  @Test
+  void testPartialReplaceHasIsolatedStyle() {
+    final TextComponent component = TextComponent.of("Hello world", NamedTextColor.DARK_PURPLE);
+    final TextComponent expectedReplacement = TextComponent.make(b -> {
+      b.color(NamedTextColor.DARK_PURPLE)
+        .append(TextComponent.of("Goodbye", NamedTextColor.LIGHT_PURPLE))
+        .append(" world");
+    });
+
+    assertEquals(expectedReplacement, component.replace(Pattern.compile("Hello"), builder -> builder.content("Goodbye").color(NamedTextColor.LIGHT_PURPLE)));
+
   }
 
   @Test

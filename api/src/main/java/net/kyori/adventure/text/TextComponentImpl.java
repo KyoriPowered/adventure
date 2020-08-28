@@ -23,16 +23,17 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Queue;
+import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
+import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.util.IntFunction2;
 import net.kyori.examination.ExaminableProperty;
@@ -79,67 +80,152 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   }
 
   @Override
-  public @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement, final @NonNull IntFunction2<PatternReplacementResult> fn) {
-    final List<Component> produced = new ArrayList<>();
-    final Queue<TextComponent> queue = new ArrayDeque<>();
-    queue.add(this);
+  public @NonNull Component replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement,
+          final @NonNull IntFunction2<PatternReplacementResult> fn) {
+    return new Replacer(pattern, (result, build) -> replacement.apply(build), fn).replace(this);
+  }
 
-    int index = 0;
-    int replaced = 0;
+  static class Replacer {
+    private final Pattern pattern;
+    private final BiFunction<MatchResult, Builder, @Nullable Builder> replacement;
+    private final IntFunction2<PatternReplacementResult> continuer;
+    private boolean running = true;
+    private int matchCount = 0;
+    private int replaceCount = 0;
 
-    while(!queue.isEmpty()) {
-      final TextComponent current = queue.remove();
-      final String content = current.content();
-      final Matcher matcher = pattern.matcher(content);
-      final TextComponent withoutChildren = current.children(Collections.emptyList());
-
-      if(matcher.find()) {
-        int lastEnd = 0;
-        boolean running = true;
-        do {
-          index++;
-
-          final PatternReplacementResult result = fn.apply(index, replaced);
-          if(result == PatternReplacementResult.REPLACE) {
-            replaced++;
-            final int start = matcher.start();
-            final int end = matcher.end();
-            final String matched = matcher.group();
-
-            final String prefix = content.substring(lastEnd, start);
-            if(!prefix.isEmpty()) {
-              produced.add(withoutChildren.content(prefix));
-            }
-
-            produced.add(replacement.apply(withoutChildren.toBuilder().content(matched)).build());
-            lastEnd = end;
-          } else if(result == PatternReplacementResult.STOP) {
-            running = false;
-          }
-        } while(running && matcher.find());
-
-        if(content.length() - lastEnd > 0) {
-          produced.add(withoutChildren.content(content.substring(lastEnd)));
-        }
-      } else {
-        // children are handled separately
-        produced.add(withoutChildren);
-      }
-
-      for(final Component child : current.children()) {
-        if(child instanceof TextComponent) {
-          queue.add((TextComponent) child);
-        } else {
-          produced.add(child);
-        }
-      }
+    Replacer(final @NonNull Pattern pattern, final @NonNull BiFunction<MatchResult, Builder, @Nullable Builder> replacement, final @NonNull IntFunction2<PatternReplacementResult> continuer) {
+      this.pattern = pattern;
+      this.replacement = replacement;
+      this.continuer = continuer;
     }
 
-    if(produced.size() == 1) {
-      return (TextComponent) produced.get(0);
-    } else {
-      final List<Component> children = produced.subList(1, produced.size());
-      return (TextComponent) produced.get(0).children(children);
+    @SuppressWarnings("unchecked") // for hover events
+    private Component replace(final Component component) {
+      if(!this.running) return component;
+
+      List<Component> children = null;
+      Component modified = component;
+      // replace the component itself
+      if(component instanceof TextComponent) {
+        final String content = ((TextComponent) component).content();
+        final Matcher matcher = this.pattern.matcher(content);
+        int replacedUntil = 0; // last index handled
+        while(matcher.find()) {
+          final PatternReplacementResult result = this.continuer.apply(++this.matchCount, this.replaceCount);
+          if(result == PatternReplacementResult.CONTINUE) {
+            // ignore this replacement
+            continue;
+          } else if(result == PatternReplacementResult.STOP) {
+            // end replacement
+            this.running = false;
+            break;
+          }
+
+          if(matcher.start() == 0) {
+            // if we're a full match, modify the component directly
+            if(matcher.end() == content.length()) {
+              final TextComponent.Builder replacement = this.replacement.apply(matcher, TextComponent.builder(matcher.group())
+                .style(component.style()));
+
+              modified = replacement == null ? TextComponent.empty() : replacement.build();
+            } else {
+              // otherwise, work on a child of the root node
+              modified = TextComponent.of("", component.style());
+              final TextComponent.Builder child = this.replacement.apply(matcher, TextComponent.builder(matcher.group()));
+              if(child != null) {
+                children = this.listOrNew(children, component.children().size() + 1);
+                children.add(child.build());
+              }
+            }
+          } else {
+            children = this.listOrNew(children, component.children().size() + 2);
+            if(this.replaceCount == 0) {
+              // truncate parent to content before match
+              modified = ((TextComponent) component).content(content.substring(0, matcher.start()));
+            } else if(replacedUntil < matcher.start()) {
+              children.add(TextComponent.of(content.substring(replacedUntil, matcher.start())));
+            }
+            final TextComponent.Builder builder = this.replacement.apply(matcher, TextComponent.builder(matcher.group()));
+            if(builder != null) {
+              children.add(builder.build());
+            }
+          }
+          this.replaceCount++;
+          replacedUntil = matcher.end();
+        }
+        if(replacedUntil < content.length()) {
+          // append trailing content
+          if(replacedUntil > 0) {
+            children = this.listOrNew(children, component.children().size());
+            children.add(TextComponent.of(content.substring(replacedUntil)));
+          }
+          // otherwise, we haven't modified the component, so nothing to change
+        }
+      } else if(modified instanceof TranslatableComponent) { // get TranslatableComponent with() args
+        final List<Component> args = ((TranslatableComponent) modified).args();
+        List<Component> newArgs = null;
+        for(int i = 0; i < args.size(); i++) {
+          final Component original = args.get(i);
+          final Component replaced = this.replace(original);
+          if(replaced != component) {
+            if(newArgs == null) {
+              newArgs = new ArrayList<>(args.size());
+              if(i > 0) {
+                newArgs.addAll(args.subList(0, i));
+              }
+            }
+          }
+          if(newArgs != null) {
+            newArgs.add(replaced);
+          }
+        }
+        if(newArgs != null) {
+          modified = ((TranslatableComponent) modified).args(newArgs);
+        }
+      }
+      // Only visit children if we're running
+      if(this.running) {
+        // hover event
+        final HoverEvent<?> event = modified.style().hoverEvent();
+        if(event != null && event.value() instanceof Component) {
+          final Component original = (Component) event.value();
+          final Component replaced = this.replace(original);
+          if(original != replaced) {
+            modified = modified.style(s -> s.hoverEvent(((HoverEvent<Component>) event).value(replaced)));
+          }
+        }
+        // Children
+        boolean first = true;
+        for(int i = 0; i < component.children().size(); ++i) {
+          final Component child = component.children().get(i);
+          final Component replaced = this.replace(child);
+          if(replaced != child) {
+            children = this.listOrNew(children, component.children().size());
+            if(first) {
+              children.addAll(component.children().subList(0, i));
+            }
+            first = false;
+          }
+          if(children != null) {
+            children.add(replaced);
+          }
+        }
+      } else {
+        // we're not visiting children, re-add original children if necessary
+        if(children != null) {
+          children.addAll(component.children());
+        }
+      }
+
+      // Update the modified component with new children
+      if(children != null) {
+        return modified.children(children);
+      }
+      return modified;
+    }
+
+    private <T> @NonNull List<T> listOrNew(final @Nullable List<T> init, final int size) {
+      return init == null ? new ArrayList<>(size) : init;
     }
   }
 
