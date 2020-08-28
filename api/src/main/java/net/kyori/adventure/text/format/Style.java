@@ -419,21 +419,11 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
   /**
    * Sets the hover event.
    *
-   * @param event the hover event
-   * @return a style
-   */
-  public @NonNull Style hoverEvent(final @Nullable HoverEvent<?> event) {
-    return new Style(this.font, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, event, this.insertion);
-  }
-
-  /**
-   * Sets the hover event.
-   *
    * @param source the hover event source
    * @return a style
    */
-  public @NonNull Style hoverEvent(final @NonNull HoverEventSource<?> source) {
-    return this.hoverEvent(source.asHoverEvent());
+  public @NonNull Style hoverEvent(final @Nullable HoverEventSource<?> source) {
+    return new Style(this.font, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, HoverEventSource.unbox(source), this.insertion);
   }
 
   /**
@@ -942,22 +932,12 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
     /**
      * Sets the hover event.
      *
-     * @param event the hover event
-     * @return this builder
-     */
-    public @NonNull Builder hoverEvent(final @Nullable HoverEvent<?> event) {
-      this.hoverEvent = event;
-      return this;
-    }
-
-    /**
-     * Sets the hover event.
-     *
      * @param source the hover event source
      * @return this builder
      */
-    public @NonNull Builder hoverEvent(final @NonNull HoverEventSource<?> source) {
-      return this.hoverEvent(source.asHoverEvent());
+    public @NonNull Builder hoverEvent(final @Nullable HoverEventSource<?> source) {
+      this.hoverEvent = HoverEventSource.unbox(source);
+      return this;
     }
 
     /**

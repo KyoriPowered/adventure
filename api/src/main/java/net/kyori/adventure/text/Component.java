@@ -341,26 +341,17 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
   /**
    * Sets the hover event of this component.
    *
-   * @param event the hover event
+   * @param source the hover event source
    * @return a component
    */
-  default @NonNull Component hoverEvent(final @Nullable HoverEvent<?> event) {
+  default @NonNull Component hoverEvent(final @Nullable HoverEventSource<?> source) {
+    final HoverEvent<?> event = HoverEventSource.unbox(source);
     if(event != null) {
       if(event.action().type().isAssignableFrom(Component.class)) {
         this.detectCycle((Component) event.value()); // detect cycle before modifying
       }
     }
     return this.style(this.style().hoverEvent(event));
-  }
-
-  /**
-   * Sets the hover event of this component.
-   *
-   * @param source the hover event source
-   * @return a component
-   */
-  default @NonNull Component hoverEvent(final @NonNull HoverEventSource<?> source) {
-    return this.hoverEvent(source.asHoverEvent());
   }
 
   /**

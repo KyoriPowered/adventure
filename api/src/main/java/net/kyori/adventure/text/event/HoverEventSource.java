@@ -25,19 +25,31 @@ package net.kyori.adventure.text.event;
 
 import java.util.function.UnaryOperator;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Something that can provide a {@link HoverEvent}.
  *
- * @param <T> the value type
+ * @param <V> the value type
  */
-public interface HoverEventSource<T> {
+public interface HoverEventSource<V> {
+  /**
+   * Fetches a {@link HoverEvent} from a {@code HoverEventSource}.
+   *
+   * @param source the hover event source
+   * @param <V> the value type
+   * @return a hover event, or {@code null}
+   */
+  static <V> @Nullable HoverEvent<V> unbox(final @Nullable HoverEventSource<V> source) {
+    return source != null ? source.asHoverEvent() : null;
+  }
+
   /**
    * Represent this object as a hover event.
    *
    * @return a hover event
    */
-  default @NonNull HoverEvent<T> asHoverEvent() {
+  default @NonNull HoverEvent<V> asHoverEvent() {
     return this.asHoverEvent(UnaryOperator.identity());
   }
 
@@ -50,5 +62,5 @@ public interface HoverEventSource<T> {
    * @param op transformation on value
    * @return a hover event
    */
-  @NonNull HoverEvent<T> asHoverEvent(final @NonNull UnaryOperator<T> op);
+  @NonNull HoverEvent<V> asHoverEvent(final @NonNull UnaryOperator<V> op);
 }
