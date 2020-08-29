@@ -225,7 +225,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return a {@code ShowItem}
      */
     public @NonNull ShowItem item(final @NonNull Key item) {
-      if(requireNonNull(item, "time").equals(this.item)) return this;
+      if(requireNonNull(item, "item").equals(this.item)) return this;
       return new ShowItem(item, this.count, this.nbt);
     }
 

@@ -85,7 +85,7 @@ public abstract class AbstractComponent implements Component, Examinable {
 
   @Override
   public @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull UnaryOperator<TextComponent.Builder> replacement, final @NonNull IntFunction2<PatternReplacementResult> fn) {
-    return TextReplacementRenderer.INSTANCE.render(this, new TextReplacementRenderer.State(pattern, (result, build) -> replacement.apply(build), fn));
+    return TextReplacementRenderer.INSTANCE.render(this, new TextReplacementRenderer.State(pattern, (result, builder) -> replacement.apply(builder), fn));
   }
 
   @Override
