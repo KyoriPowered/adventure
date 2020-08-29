@@ -189,7 +189,7 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
       .build();
 
     final Component replaced = component.replaceText(Pattern.compile("purple"), match -> match.color(NamedTextColor.DARK_PURPLE),
-      (index, replace) -> index % 2 == 0 ? TextComponent.PatternReplacementResult.REPLACE : TextComponent.PatternReplacementResult.CONTINUE);
+      (index, replace) -> index % 2 == 0 ? PatternReplacementResult.REPLACE : PatternReplacementResult.CONTINUE);
 
     assertEquals(TextComponent.builder()
       .content("purple ")
