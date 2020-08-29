@@ -869,7 +869,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
      * @return a style
      */
     public @NonNull Builder decorate(final @NonNull TextDecoration@NonNull... decorations) {
-      for(int i = 0; i < decorations.length; i++) {
+      for(int i = 0, length = decorations.length; i < length; i++) {
         this.decorate(decorations[i]);
       }
       return this;

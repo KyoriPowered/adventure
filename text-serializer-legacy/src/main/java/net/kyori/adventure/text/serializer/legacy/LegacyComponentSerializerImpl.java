@@ -29,7 +29,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
-
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -120,21 +119,19 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     if(foundFormat == null) {
       return null;
     }
-    switch(foundFormat) {
-      case BUNGEECORD_UNUSUAL_HEX:
-        final StringBuilder foundHex = new StringBuilder();
-        for(int i = pos - 1; i >= pos - 11; i -= 2) {
-          foundHex.append(input.charAt(i));
-        }
-        foundHex.append('#');
-        return new DecodedFormat(foundFormat, TextColor.fromHexString(foundHex.reverse().toString()));
-      case KYORI_HEX:
-        return new DecodedFormat(foundFormat, TextColor.fromHexString('#' + input.substring(pos, pos + 6)));
-      case MOJANG_LEGACY:
-        return new DecodedFormat(foundFormat, FORMATS.get(LEGACY_CHARS.indexOf(legacy)));
-      default:
-        return null;
+    if(foundFormat == FormatCodeType.KYORI_HEX) {
+      return new DecodedFormat(foundFormat, TextColor.fromHexString('#' + input.substring(pos, pos + 6)));
+    } else if(foundFormat == FormatCodeType.MOJANG_LEGACY) {
+      return new DecodedFormat(foundFormat, FORMATS.get(LEGACY_CHARS.indexOf(legacy)));
+    } else if(foundFormat == FormatCodeType.BUNGEECORD_UNUSUAL_HEX) {
+      final StringBuilder foundHex = new StringBuilder();
+      for(int i = pos - 1; i >= pos - 11; i -= 2) {
+        foundHex.append(input.charAt(i));
+      }
+      foundHex.append('#');
+      return new DecodedFormat(foundFormat, TextColor.fromHexString(foundHex.reverse().toString()));
     }
+    return null;
   }
 
   private static boolean isHexTextColor(final TextFormat format) {
@@ -151,8 +148,8 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         if(this.useTerriblyStupidHexFormat) {
           // ah yes, wonderful. A 14 digit long completely unreadable string.
           final StringBuilder legacy = new StringBuilder(String.valueOf(LEGACY_BUNGEE_HEX_CHAR));
-          for(final char c : hex.toCharArray()) {
-            legacy.append(this.character).append(c);
+          for(final char character : hex.toCharArray()) {
+            legacy.append(this.character).append(character);
           }
           return legacy.toString();
         } else {
@@ -166,8 +163,8 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   }
 
   private TextComponent extractUrl(final TextComponent component) {
-    return !this.urlLink ? component : component.replace(URL_PATTERN, url ->
-      (this.urlStyle == null ? url : url.style(this.urlStyle)).clickEvent(ClickEvent.openUrl(url.content())));
+    if(!this.urlLink) return component;
+    return component.replace(URL_PATTERN, url -> (this.urlStyle == null ? url : url.style(this.urlStyle)).clickEvent(ClickEvent.openUrl(url.content())));
   }
 
   @Override
@@ -235,7 +232,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
   @Override
   public @NonNull String serialize(final @NonNull Component component) {
-    final Cereal state = new Cereal(this.character);
+    final Cereal state = new Cereal();
     state.append(component);
     return state.toString();
   }
@@ -266,11 +263,6 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   private final class Cereal {
     private final StringBuilder sb = new StringBuilder();
     private final Style style = new Style();
-    private final char character;
-
-    Cereal(final char character) {
-      this.character = character;
-    }
 
     void append(final @NonNull Component component) {
       this.append(component, new Style());
@@ -298,7 +290,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     void append(final @NonNull TextFormat format) {
-      this.sb.append(this.character).append(LegacyComponentSerializerImpl.this.toLegacyCode(format));
+      this.sb.append(LegacyComponentSerializerImpl.this.character).append(LegacyComponentSerializerImpl.this.toLegacyCode(format));
     }
 
     @Override
@@ -393,7 +385,6 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     private boolean useTerriblyStupidHexFormat = false;
 
     BuilderImpl() {
-
     }
 
     BuilderImpl(final @NonNull LegacyComponentSerializerImpl serializer) {
@@ -450,7 +441,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   enum FormatCodeType {
     MOJANG_LEGACY,
     KYORI_HEX,
-    BUNGEECORD_UNUSUAL_HEX
+    BUNGEECORD_UNUSUAL_HEX;
   }
 
   static final class DecodedFormat {
