@@ -80,8 +80,8 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   }
 
   @Override
-  public @NonNull Component replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement,
-          final @NonNull IntFunction2<PatternReplacementResult> fn) {
+  public @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement,
+                                        final @NonNull IntFunction2<PatternReplacementResult> fn) {
     return new Replacer(pattern, (result, build) -> replacement.apply(build), fn).replace(this);
   }
 

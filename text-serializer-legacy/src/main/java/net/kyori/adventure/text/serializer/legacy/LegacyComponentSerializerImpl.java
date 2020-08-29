@@ -164,7 +164,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
   private Component extractUrl(final TextComponent component) {
     if(!this.urlLink) return component;
-    return component.replace(URL_PATTERN, url -> (this.urlStyle == null ? url : url.style(this.urlStyle)).clickEvent(ClickEvent.openUrl(url.content())));
+    return component.replaceText(URL_PATTERN, url -> (this.urlStyle == null ? url : url.style(this.urlStyle)).clickEvent(ClickEvent.openUrl(url.content())));
   }
 
   @Override
