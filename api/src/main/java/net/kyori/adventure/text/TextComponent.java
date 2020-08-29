@@ -28,13 +28,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.UnaryOperator;
-import java.util.regex.Pattern;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.util.Buildable;
-import net.kyori.adventure.util.IntFunction2;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -575,70 +572,6 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @return a copy of this component
    */
   @NonNull TextComponent content(final @NonNull String content);
-
-  /**
-   * Finds and replaces text using a regex pattern.
-   *
-   * @param pattern a regex pattern
-   * @param replacement a function to replace each match
-   * @return a modified copy of this component
-   */
-  default @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement) {
-    return this.replace(pattern, replacement, (index, replaced) -> PatternReplacementResult.REPLACE);
-  }
-
-  /**
-   * Finds and replaces the first occurrence of text using a regex pattern.
-   *
-   * @param pattern a regex pattern
-   * @param replacement a function to replace the first match
-   * @return a modified copy of this component
-   */
-  default @NonNull TextComponent replaceFirst(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement) {
-    return this.replace(pattern, replacement, 1);
-  }
-
-  /**
-   * Finds and replaces n instances of text using a regex pattern.
-   *
-   * @param pattern a regex pattern
-   * @param replacement a function to replace each match
-   * @param numberOfReplacements the amount of matches that should be replaced
-   * @return a modified copy of this component
-   */
-  default @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement, final int numberOfReplacements) {
-    return this.replace(pattern, replacement, (index, replaced) -> replaced < numberOfReplacements ? PatternReplacementResult.REPLACE : PatternReplacementResult.STOP);
-  }
-
-  /**
-   * Finds and replaces text using a regex pattern.
-   *
-   * <p>Utilises an {@link IntFunction2} to determine if each instance should be replaced.</p>
-   *
-   * @param pattern a regex pattern
-   * @param replacement a function to replace the first match
-   * @param fn a function of (index, replaced) used to determine if matches should be replaced, where "replaced" is the number of successful replacements
-   * @return a modified copy of this component
-   */
-  @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement, final @NonNull IntFunction2<PatternReplacementResult> fn);
-
-  /**
-   * A result for {@link #replace(Pattern, UnaryOperator, IntFunction2) pattern-based replacements}.
-   */
-  enum PatternReplacementResult {
-    /**
-     * Replace the current match.
-     */
-    REPLACE,
-    /**
-     * Skip the current match, but continue searching for others.
-     */
-    CONTINUE,
-    /**
-     * Stop matching.
-     */
-    STOP;
-  }
 
   /**
    * A text component builder.

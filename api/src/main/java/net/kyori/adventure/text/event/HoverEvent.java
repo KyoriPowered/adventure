@@ -225,6 +225,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return a {@code ShowItem}
      */
     public @NonNull ShowItem item(final @NonNull Key item) {
+      if(requireNonNull(item, "item").equals(this.item)) return this;
       return new ShowItem(item, this.count, this.nbt);
     }
 
@@ -244,6 +245,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return a {@code ShowItem}
      */
     public @NonNull ShowItem count(final @NonNegative int count) {
+      if(count == this.count) return this;
       return new ShowItem(this.item, count, this.nbt);
     }
 
@@ -263,6 +265,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return a {@code ShowItem}
      */
     public @NonNull ShowItem count(final @Nullable BinaryTagHolder nbt) {
+      if(Objects.equals(nbt, this.nbt)) return this;
       return new ShowItem(this.item, this.count, nbt);
     }
 
@@ -323,6 +326,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return a {@code ShowEntity}
      */
     public @NonNull ShowEntity type(final @NonNull Key type) {
+      if(requireNonNull(type, "type").equals(this.type)) return this;
       return new ShowEntity(type, this.id, this.name);
     }
 
@@ -342,6 +346,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return a {@code ShowEntity}
      */
     public @NonNull ShowEntity id(final @NonNull UUID id) {
+      if(requireNonNull(id).equals(this.id)) return this;
       return new ShowEntity(this.type, id, this.name);
     }
 
@@ -361,6 +366,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return a {@code ShowEntity}
      */
     public @NonNull ShowEntity name(final @Nullable Component name) {
+      if(Objects.equals(name, this.name)) return this;
       return new ShowEntity(this.type, this.id, name);
     }
 
@@ -419,7 +425,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
       @Override
       public <C> @NonNull ShowEntity render(final @NonNull ComponentRenderer<C> renderer, final @NonNull C context, final @NonNull ShowEntity value) {
         if(value.name == null) return value;
-        return new ShowEntity(value.type, value.id, renderer.render(value.name, context));
+        return value.name(renderer.render(value.name, context));
       }
     });
 

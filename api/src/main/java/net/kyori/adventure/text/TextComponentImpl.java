@@ -23,18 +23,11 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Queue;
-import java.util.function.UnaryOperator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.util.IntFunction2;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -76,71 +69,6 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   @Override
   public @NonNull TextComponent style(final @NonNull Style style) {
     return new TextComponentImpl(this.children, style, this.content);
-  }
-
-  @Override
-  public @NonNull TextComponent replace(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement, final @NonNull IntFunction2<PatternReplacementResult> fn) {
-    final List<Component> produced = new ArrayList<>();
-    final Queue<TextComponent> queue = new ArrayDeque<>();
-    queue.add(this);
-
-    int index = 0;
-    int replaced = 0;
-
-    while(!queue.isEmpty()) {
-      final TextComponent current = queue.remove();
-      final String content = current.content();
-      final Matcher matcher = pattern.matcher(content);
-      final TextComponent withoutChildren = current.children(Collections.emptyList());
-
-      if(matcher.find()) {
-        int lastEnd = 0;
-        boolean running = true;
-        do {
-          index++;
-
-          final PatternReplacementResult result = fn.apply(index, replaced);
-          if(result == PatternReplacementResult.REPLACE) {
-            replaced++;
-            final int start = matcher.start();
-            final int end = matcher.end();
-            final String matched = matcher.group();
-
-            final String prefix = content.substring(lastEnd, start);
-            if(!prefix.isEmpty()) {
-              produced.add(withoutChildren.content(prefix));
-            }
-
-            produced.add(replacement.apply(withoutChildren.toBuilder().content(matched)).build());
-            lastEnd = end;
-          } else if(result == PatternReplacementResult.STOP) {
-            running = false;
-          }
-        } while(running && matcher.find());
-
-        if(content.length() - lastEnd > 0) {
-          produced.add(withoutChildren.content(content.substring(lastEnd)));
-        }
-      } else {
-        // children are handled separately
-        produced.add(withoutChildren);
-      }
-
-      for(final Component child : current.children()) {
-        if(child instanceof TextComponent) {
-          queue.add((TextComponent) child);
-        } else {
-          produced.add(child);
-        }
-      }
-    }
-
-    if(produced.size() == 1) {
-      return (TextComponent) produced.get(0);
-    } else {
-      final List<Component> children = produced.subList(1, produced.size());
-      return (TextComponent) produced.get(0).children(children);
-    }
   }
 
   @Override

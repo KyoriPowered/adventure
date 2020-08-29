@@ -76,8 +76,9 @@ class LinkingLegacyComponentSerializerTest {
     final String hasPrefixSuffixColors = "&adid you hear about &chttps://www.example.com? &9they're really cool";
     final TextComponent expectedHasPrefixSuffixColors = TextComponent.builder("")
       .append(TextComponent.of("did you hear about ", NamedTextColor.GREEN))
-      .append(TextComponent.of("https://www.example.com", NamedTextColor.RED).clickEvent(ClickEvent.openUrl(bareUrl)))
-      .append(TextComponent.of("? ", NamedTextColor.RED))
+      .append(TextComponent.make(b -> b.append(TextComponent.of("https://www.example.com").clickEvent(ClickEvent.openUrl(bareUrl)))
+        .append(TextComponent.of("? "))
+        .color(NamedTextColor.RED)))
       .append(TextComponent.of("they're really cool", NamedTextColor.BLUE))
       .build();
     assertEquals(expectedHasPrefixSuffixColors, LegacyComponentSerializer.builder().character('&').extractUrls().build().deserialize(hasPrefixSuffixColors));

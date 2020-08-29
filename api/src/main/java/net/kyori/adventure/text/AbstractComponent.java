@@ -27,8 +27,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.util.IntFunction2;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
@@ -78,6 +81,11 @@ public abstract class AbstractComponent implements Component, Examinable {
   @Override
   public final @NonNull Style style() {
     return this.style;
+  }
+
+  @Override
+  public @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull UnaryOperator<TextComponent.Builder> replacement, final @NonNull IntFunction2<PatternReplacementResult> fn) {
+    return TextReplacementRenderer.INSTANCE.render(this, new TextReplacementRenderer.State(pattern, (result, builder) -> replacement.apply(builder), fn));
   }
 
   @Override

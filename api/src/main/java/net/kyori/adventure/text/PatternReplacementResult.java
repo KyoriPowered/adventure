@@ -21,35 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.renderer;
+package net.kyori.adventure.text;
 
-import java.util.function.Function;
-import net.kyori.adventure.text.Component;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
+import net.kyori.adventure.util.IntFunction2;
 
 /**
- * A component renderer.
- *
- * @param <C> the context type
+ * A result for {@link Component#replaceText(Pattern, UnaryOperator, IntFunction2) pattern-based replacements}.
  */
-public interface ComponentRenderer<C> {
+public enum PatternReplacementResult {
   /**
-   * Renders a component.
-   *
-   * @param component the component
-   * @param context the context
-   * @return the rendered component
+   * Replace the current match.
    */
-  @NonNull Component render(final @NonNull Component component, final @NonNull C context);
-
+  REPLACE,
   /**
-   * Return a {@link ComponentRenderer} that takes a different context type.
-   *
-   * @param transformer context type transformer
-   * @param <T> transformation function
-   * @return mapping renderer
+   * Skip the current match, but continue searching for others.
    */
-  default <T> ComponentRenderer<T> mapContext(final Function<T, C> transformer) {
-    return (component, ctx) -> this.render(component, transformer.apply(ctx));
-  }
+  CONTINUE,
+  /**
+   * Stop matching.
+   */
+  STOP;
 }
