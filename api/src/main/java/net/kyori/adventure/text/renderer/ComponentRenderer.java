@@ -43,7 +43,7 @@ public interface ComponentRenderer<C> {
   @NonNull Component render(final @NonNull Component component, final @NonNull C context);
 
   /**
-   * Return a {@link ComponentRenderer} that takes a different context type
+   * Return a {@link ComponentRenderer} that takes a different context type.
    *
    * @param transformer context type transformer
    * @param <T> transformation function

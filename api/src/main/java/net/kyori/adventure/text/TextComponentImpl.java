@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.renderer.ComponentRenderer;
 import net.kyori.adventure.util.IntFunction2;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -82,56 +83,63 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   @Override
   public @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull UnaryOperator<Builder> replacement,
                                         final @NonNull IntFunction2<PatternReplacementResult> fn) {
-    return new Replacer(pattern, (result, build) -> replacement.apply(build), fn).replace(this);
+    return Replacer.INSTANCE.render(this, new ReplaceState(pattern, (result, build) -> replacement.apply(build), fn));
   }
 
-  static class Replacer {
-    private final Pattern pattern;
-    private final BiFunction<MatchResult, Builder, @Nullable Builder> replacement;
-    private final IntFunction2<PatternReplacementResult> continuer;
-    private boolean running = true;
-    private int matchCount = 0;
-    private int replaceCount = 0;
+  static final class ReplaceState {
+    final Pattern pattern;
+    final BiFunction<MatchResult, Builder, @Nullable Builder> replacement;
+    final IntFunction2<PatternReplacementResult> continuer;
+    boolean running = true;
+    int matchCount = 0;
+    int replaceCount = 0;
 
-    Replacer(final @NonNull Pattern pattern, final @NonNull BiFunction<MatchResult, Builder, @Nullable Builder> replacement, final @NonNull IntFunction2<PatternReplacementResult> continuer) {
+    ReplaceState(final @NonNull Pattern pattern, final @NonNull BiFunction<MatchResult, Builder, @Nullable Builder> replacement, final @NonNull IntFunction2<PatternReplacementResult> continuer) {
       this.pattern = pattern;
       this.replacement = replacement;
       this.continuer = continuer;
     }
+  }
 
-    @SuppressWarnings("unchecked") // for hover events
-    private Component replace(final Component component) {
-      if(!this.running) return component;
+  static final class Replacer implements ComponentRenderer<ReplaceState> {
+    static Replacer INSTANCE = new Replacer();
+
+    private Replacer() {
+    }
+
+    @Override
+    public @NonNull Component render(final @NonNull Component component, final @NonNull ReplaceState state) {
+      if(!state.running) return component;
 
       List<Component> children = null;
       Component modified = component;
       // replace the component itself
       if(component instanceof TextComponent) {
         final String content = ((TextComponent) component).content();
-        final Matcher matcher = this.pattern.matcher(content);
+        final Matcher matcher = state.pattern.matcher(content);
         int replacedUntil = 0; // last index handled
         while(matcher.find()) {
-          final PatternReplacementResult result = this.continuer.apply(++this.matchCount, this.replaceCount);
+          final PatternReplacementResult result = state.continuer.apply(++state.matchCount, state.replaceCount);
           if(result == PatternReplacementResult.CONTINUE) {
             // ignore this replacement
             continue;
           } else if(result == PatternReplacementResult.STOP) {
             // end replacement
-            this.running = false;
+            state.running = false;
             break;
           }
 
           if(matcher.start() == 0) {
             // if we're a full match, modify the component directly
             if(matcher.end() == content.length()) {
-              final TextComponent.Builder replacement = this.replacement.apply(matcher, TextComponent.builder(matcher.group())
+              final TextComponent.Builder replacement = state.replacement.apply(matcher, TextComponent.builder(matcher.group())
                 .style(component.style()));
 
               modified = replacement == null ? TextComponent.empty() : replacement.build();
             } else {
               // otherwise, work on a child of the root node
               modified = TextComponent.of("", component.style());
-              final TextComponent.Builder child = this.replacement.apply(matcher, TextComponent.builder(matcher.group()));
+              final TextComponent.Builder child = state.replacement.apply(matcher, TextComponent.builder(matcher.group()));
               if(child != null) {
                 children = this.listOrNew(children, component.children().size() + 1);
                 children.add(child.build());
@@ -139,18 +147,18 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
             }
           } else {
             children = this.listOrNew(children, component.children().size() + 2);
-            if(this.replaceCount == 0) {
+            if(state.replaceCount == 0) {
               // truncate parent to content before match
               modified = ((TextComponent) component).content(content.substring(0, matcher.start()));
             } else if(replacedUntil < matcher.start()) {
               children.add(TextComponent.of(content.substring(replacedUntil, matcher.start())));
             }
-            final TextComponent.Builder builder = this.replacement.apply(matcher, TextComponent.builder(matcher.group()));
+            final TextComponent.Builder builder = state.replacement.apply(matcher, TextComponent.builder(matcher.group()));
             if(builder != null) {
               children.add(builder.build());
             }
           }
-          this.replaceCount++;
+          state.replaceCount++;
           replacedUntil = matcher.end();
         }
         if(replacedUntil < content.length()) {
@@ -166,7 +174,7 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
         List<Component> newArgs = null;
         for(int i = 0; i < args.size(); i++) {
           final Component original = args.get(i);
-          final Component replaced = this.replace(original);
+          final Component replaced = this.render(original, state);
           if(replaced != component) {
             if(newArgs == null) {
               newArgs = new ArrayList<>(args.size());
@@ -184,21 +192,20 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
         }
       }
       // Only visit children if we're running
-      if(this.running) {
+      if(state.running) {
         // hover event
         final HoverEvent<?> event = modified.style().hoverEvent();
-        if(event != null && event.value() instanceof Component) {
-          final Component original = (Component) event.value();
-          final Component replaced = this.replace(original);
-          if(original != replaced) {
-            modified = modified.style(s -> s.hoverEvent(((HoverEvent<Component>) event).value(replaced)));
+        if(event != null) {
+          final HoverEvent<?> rendered = event.withRenderedValue(this, state);
+          if(event != rendered) {
+            modified = modified.style(s -> s.hoverEvent(rendered));
           }
         }
         // Children
         boolean first = true;
         for(int i = 0; i < component.children().size(); ++i) {
           final Component child = component.children().get(i);
-          final Component replaced = this.replace(child);
+          final Component replaced = this.render(child, state);
           if(replaced != child) {
             children = this.listOrNew(children, component.children().size());
             if(first) {
