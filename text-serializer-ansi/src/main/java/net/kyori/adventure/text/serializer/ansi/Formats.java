@@ -48,7 +48,7 @@ enum Formats {
   YELLOW(NamedTextColor.YELLOW, Ansi.ansi().fgBright(Ansi.Color.YELLOW), false, "yellow"),
   WHITE(NamedTextColor.WHITE, Ansi.ansi().fgBright(Ansi.Color.WHITE), false, "white"),
 
-  MAGIC(TextDecoration.OBFUSCATED, Ansi.ansi().a(Ansi.Attribute.BLINK_SLOW), true, "magic"),
+  OBFUSCATED(TextDecoration.OBFUSCATED, Ansi.ansi().a(Ansi.Attribute.BLINK_SLOW), true, "obfuscated"),
   BOLD(TextDecoration.BOLD, Ansi.ansi().a(Ansi.Attribute.UNDERLINE_DOUBLE), true, "bold"),
   STRIKETHROUGH(TextDecoration.STRIKETHROUGH, Ansi.ansi().a(Ansi.Attribute.STRIKETHROUGH_ON), true, "strikethrough", "strike"),
   UNDERLINE(TextDecoration.UNDERLINED, Ansi.ansi().a(Ansi.Attribute.UNDERLINE), true, "underline"),
@@ -74,8 +74,8 @@ enum Formats {
     }
   }
 
-  Formats(final TextFormat c, final Ansi ansi, final boolean isFormat, final String... names) {
-    this.format = c;
+  Formats(final TextFormat textFormat, final Ansi ansi, final boolean isFormat, final String... names) {
+    this.format = textFormat;
     this.escapeString = ansi;
     this.mNames = names;
     this.mIsFormat = isFormat;
@@ -98,8 +98,8 @@ enum Formats {
     return this.escapeString.toString();
   }
 
-  public static Formats byFormat(final TextFormat c) {
-    return mMap.get(c);
+  public static Formats byFormat(final TextFormat textFormat) {
+    return mMap.get(textFormat);
   }
 
   public static Formats byName(final String name) {
