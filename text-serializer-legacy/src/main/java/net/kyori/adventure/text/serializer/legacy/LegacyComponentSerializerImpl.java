@@ -162,13 +162,13 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     return Character.toString(LEGACY_CHARS.charAt(index));
   }
 
-  private Component extractUrl(final TextComponent component) {
+  private TextComponent extractUrl(final TextComponent component) {
     if(!this.urlLink) return component;
     return component.replaceText(URL_PATTERN, url -> (this.urlStyle == null ? url : url.style(this.urlStyle)).clickEvent(ClickEvent.openUrl(url.content())));
   }
 
   @Override
-  public @NonNull Component deserialize(final @NonNull String input) {
+  public @NonNull TextComponent deserialize(final @NonNull String input) {
     int next = input.lastIndexOf(this.character, input.length() - 2);
     if(next == -1) {
       return this.extractUrl(TextComponent.of(input));

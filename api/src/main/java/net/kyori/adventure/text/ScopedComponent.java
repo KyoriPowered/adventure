@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.Style;
@@ -147,5 +149,23 @@ public interface ScopedComponent<C extends Component> extends Component {
   @SuppressWarnings("unchecked")
   default @NonNull C insertion(final @Nullable String insertion) {
     return (C) Component.super.insertion(insertion);
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  default @NonNull C replaceText(final @NonNull Pattern pattern, final @NonNull UnaryOperator<TextComponent.Builder> replacement) {
+    return (C) Component.super.replaceText(pattern, replacement);
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  default @NonNull Component replaceFirstText(final @NonNull Pattern pattern, final @NonNull UnaryOperator<TextComponent.Builder> replacement) {
+    return (C) Component.super.replaceFirstText(pattern, replacement);
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  default @NonNull C replaceText(final @NonNull Pattern pattern, final @NonNull UnaryOperator<TextComponent.Builder> replacement, final int numberOfReplacements) {
+    return (C) Component.super.replaceText(pattern, replacement, numberOfReplacements);
   }
 }

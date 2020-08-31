@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.serializer.legacy;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
@@ -38,7 +39,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * <p>Legacy does <b>not</b> support more complex features such as, but not limited
  * to, {@link ClickEvent} and {@link HoverEvent}.</p>
  */
-public interface LegacyComponentSerializer extends ComponentSerializer<Component, Component, String>, Buildable<LegacyComponentSerializer, LegacyComponentSerializer.Builder> {
+public interface LegacyComponentSerializer extends ComponentSerializer<Component, TextComponent, String>, Buildable<LegacyComponentSerializer, LegacyComponentSerializer.Builder> {
   /**
    * Gets a component serializer for legacy-based serialization and deserialization. Note that this
    * serializer works exactly like vanilla Minecraft and does not detect any links. If you want to
@@ -123,7 +124,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * @return the component
    */
   @Override
-  @NonNull Component deserialize(final @NonNull String input);
+  @NonNull TextComponent deserialize(final @NonNull String input);
 
   /**
    * Serializes a component into a legacy {@link String}.
