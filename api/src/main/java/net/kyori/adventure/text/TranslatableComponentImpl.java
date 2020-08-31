@@ -171,6 +171,7 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
     @Override
     public @NonNull TranslatableComponentImpl build() {
       if(this.key == null) throw new IllegalStateException("key must be set");
+      if(this.key.isEmpty()) throw new IllegalStateException("key must not be empty");
       return new TranslatableComponentImpl(this.children, this.buildStyle(), this.key, this.args);
     }
   }

@@ -26,11 +26,13 @@ package net.kyori.adventure.text.event;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.testing.EqualsTester;
 import java.util.UUID;
+import java.util.function.UnaryOperator;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -39,6 +41,58 @@ class HoverEventTest {
   void testAsHoverEvent() {
     final HoverEvent<Component> event = HoverEvent.showText(TextComponent.of("kittens"));
     assertSame(event, event.asHoverEvent());
+    assertSame(event, event.asHoverEvent(UnaryOperator.identity()));
+    assertEquals(HoverEvent.showText(TextComponent.of("cats")), event.asHoverEvent(old -> TextComponent.of("cats")));
+  }
+
+  @Test
+  void testShowItemItem() {
+    final HoverEvent.ShowItem si0 = new HoverEvent.ShowItem(Key.of("stone"), 1);
+    assertEquals(Key.of("stone"), si0.item());
+    final HoverEvent.ShowItem si1 = si0.item(Key.of("dirt"));
+    assertEquals(Key.of("stone"), si0.item()); // original should be unmodified
+    assertEquals(Key.of("dirt"), si1.item());
+  }
+
+  @Test
+  void testShowItemCount() {
+    final HoverEvent.ShowItem si0 = new HoverEvent.ShowItem(Key.of("stone"), 1);
+    assertEquals(1, si0.count());
+    assertSame(si0, si0.count(1)); // unmodified
+    final HoverEvent.ShowItem si1 = si0.count(2);
+    assertEquals(1, si0.count()); // original should be unmodified
+    assertEquals(2, si1.count());
+  }
+
+  @Test
+  void testShowEntityType() {
+    final HoverEvent.ShowEntity se0 = new HoverEvent.ShowEntity(Key.of("cow"), UUID.randomUUID());
+    assertEquals(Key.of("cow"), se0.type());
+    final HoverEvent.ShowEntity se1 = se0.type(Key.of("chicken"));
+    assertEquals(Key.of("cow"), se0.type()); // original should be unmodified
+    assertEquals(Key.of("chicken"), se1.type());
+  }
+
+  @Test
+  void testShowEntityId() {
+    final UUID id0 = UUID.randomUUID();
+    final HoverEvent.ShowEntity se0 = new HoverEvent.ShowEntity(Key.of("cow"), id0);
+    assertEquals(id0, se0.id());
+    final UUID id1 = UUID.randomUUID();
+    final HoverEvent.ShowEntity se1 = se0.id(id1);
+    assertEquals(id0, se0.id()); // original should be unmodified
+    assertEquals(id1, se1.id());
+  }
+
+  @Test
+  void testShowEntityName() {
+    final Component n0 = TextComponent.of("Cow");
+    final HoverEvent.ShowEntity se0 = new HoverEvent.ShowEntity(Key.of("cow"), UUID.randomUUID(), n0);
+    assertEquals(n0, se0.name());
+    final Component n1 = TextComponent.of("Chicken");
+    final HoverEvent.ShowEntity se1 = se0.name(n1);
+    assertEquals(n0, se0.name()); // original should be unmodified
+    assertEquals(n1, se1.name());
   }
 
   @Test

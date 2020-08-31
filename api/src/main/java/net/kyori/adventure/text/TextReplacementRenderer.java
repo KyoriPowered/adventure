@@ -78,12 +78,12 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
             modified = TextComponent.of("", component.style());
             final TextComponent.Builder child = state.replacement.apply(matcher, TextComponent.builder(matcher.group()));
             if(child != null) {
-              children = this.listOrNew(children, component.children().size() + 1);
+              children = listOrNew(children, component.children().size() + 1);
               children.add(child.build());
             }
           }
         } else {
-          children = this.listOrNew(children, component.children().size() + 2);
+          children = listOrNew(children, component.children().size() + 2);
           if(state.replaceCount == 0) {
             // truncate parent to content before match
             modified = ((TextComponent) component).content(content.substring(0, matcher.start()));
@@ -101,7 +101,7 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
       if(replacedUntil < content.length()) {
         // append trailing content
         if(replacedUntil > 0) {
-          children = this.listOrNew(children, component.children().size());
+          children = listOrNew(children, component.children().size());
           children.add(TextComponent.of(content.substring(replacedUntil)));
         }
         // otherwise, we haven't modified the component, so nothing to change
@@ -139,14 +139,15 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
         }
       }
       // Children
+      final List<Component> oldChildren = component.children();
       boolean first = true;
-      for(int i = 0; i < component.children().size(); ++i) {
-        final Component child = component.children().get(i);
+      for(int i = 0, size = oldChildren.size(); i < size; i++) {
+        final Component child = oldChildren.get(i);
         final Component replaced = this.render(child, state);
         if(replaced != child) {
-          children = this.listOrNew(children, component.children().size());
+          children = listOrNew(children, size);
           if(first) {
-            children.addAll(component.children().subList(0, i));
+            children.addAll(oldChildren.subList(0, i));
           }
           first = false;
         }
@@ -168,7 +169,7 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
     return modified;
   }
 
-  private <T> @NonNull List<T> listOrNew(final @Nullable List<T> init, final int size) {
+  private static <T> @NonNull List<T> listOrNew(final @Nullable List<T> init, final int size) {
     return init == null ? new ArrayList<>(size) : init;
   }
 

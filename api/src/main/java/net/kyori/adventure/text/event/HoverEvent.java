@@ -158,6 +158,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
 
   @Override
   public @NonNull HoverEvent<V> asHoverEvent(final @NonNull UnaryOperator<V> op) {
+    if(op == UnaryOperator.<V>identity()) return this; // nothing to do, can return ourself
     return new HoverEvent<>(this.action, op.apply(this.value));
   }
 
@@ -264,7 +265,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @param nbt the nbt
      * @return a {@code ShowItem}
      */
-    public @NonNull ShowItem count(final @Nullable BinaryTagHolder nbt) {
+    public @NonNull ShowItem nbt(final @Nullable BinaryTagHolder nbt) {
       if(Objects.equals(nbt, this.nbt)) return this;
       return new ShowItem(this.item, this.count, nbt);
     }

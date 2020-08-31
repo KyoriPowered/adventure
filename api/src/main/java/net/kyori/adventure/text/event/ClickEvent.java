@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.event;
 
+import java.net.URL;
 import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
@@ -43,14 +44,13 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ClickEvent implements Examinable, StyleBuilderApplicable {
   /**
-   * Creates a click event.
+   * Creates a click event that opens a url.
    *
-   * @param action the action
-   * @param value the value
+   * @param url the url to open
    * @return a click event
    */
-  public static @NonNull ClickEvent of(final @NonNull Action action, final @NonNull String value) {
-    return new ClickEvent(action, value);
+  public static @NonNull ClickEvent openUrl(final @NonNull String url) {
+    return of(Action.OPEN_URL, url);
   }
 
   /**
@@ -59,8 +59,8 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @param url the url to open
    * @return a click event
    */
-  public static @NonNull ClickEvent openUrl(final @NonNull String url) {
-    return of(Action.OPEN_URL, url);
+  public static @NonNull ClickEvent openUrl(final @NonNull URL url) {
+    return openUrl(url.toExternalForm());
   }
 
   /**
@@ -123,6 +123,17 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    */
   public static @NonNull ClickEvent copyToClipboard(final @NonNull String text) {
     return of(Action.COPY_TO_CLIPBOARD, text);
+  }
+
+  /**
+   * Creates a click event.
+   *
+   * @param action the action
+   * @param value the value
+   * @return a click event
+   */
+  public static @NonNull ClickEvent of(final @NonNull Action action, final @NonNull String value) {
+    return new ClickEvent(action, value);
   }
 
   /**
