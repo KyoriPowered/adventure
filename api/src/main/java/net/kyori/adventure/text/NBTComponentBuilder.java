@@ -26,7 +26,7 @@ package net.kyori.adventure.text;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /*
- * This can't be a child of NbtComponent.
+ * This can't be a child of NBTComponent.
  */
 
 /**

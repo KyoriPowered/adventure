@@ -59,6 +59,14 @@ public abstract class AbstractComponent implements Component, Examinable {
     return Collections.unmodifiableList(components);
   }
 
+  static <T> List<T> addOne(final List<T> oldList, final T newElement) {
+    if(oldList.isEmpty()) return Collections.singletonList(newElement);
+    final List<T> newList = new ArrayList<>(oldList.size() + 1);
+    newList.addAll(oldList);
+    newList.add(newElement);
+    return newList;
+  }
+
   /**
    * The list of children.
    */

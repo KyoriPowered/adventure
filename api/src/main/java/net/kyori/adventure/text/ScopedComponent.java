@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -77,10 +76,7 @@ public interface ScopedComponent<C extends Component> extends Component {
     if(component == TextComponent.empty()) return (C) this;
     this.detectCycle(component); // detect cycle before modifying
     final List<Component> oldChildren = this.children();
-    final List<Component> newChildren = new ArrayList<>(oldChildren.size() + 1);
-    newChildren.addAll(oldChildren);
-    newChildren.add(component);
-    return this.children(newChildren);
+    return this.children(AbstractComponent.addOne(oldChildren, component));
   }
 
   @Override

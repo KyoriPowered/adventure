@@ -28,7 +28,7 @@ import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * A scoreboard selector component.
+ * A selector component.
  */
 public interface SelectorComponent extends BuildableComponent<SelectorComponent, SelectorComponent.Builder>, ScopedComponent<SelectorComponent> {
   /**

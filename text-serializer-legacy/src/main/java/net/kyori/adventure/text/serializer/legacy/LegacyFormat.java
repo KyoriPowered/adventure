@@ -62,7 +62,7 @@ public final class LegacyFormat implements Examinable {
     this.reset = false;
   }
 
-  LegacyFormat(final boolean reset) {
+  private LegacyFormat(final boolean reset) {
     this.color = null;
     this.decoration = null;
     this.reset = reset;

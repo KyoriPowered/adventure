@@ -31,7 +31,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
@@ -797,14 +796,10 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
      */
     private @Nullable String insertion;
 
-    protected Builder() {
+    Builder() {
     }
 
-    protected Builder(final @NonNull Component component) {
-      this(component.style());
-    }
-
-    protected Builder(final @NonNull Style style) {
+    Builder(final @NonNull Style style) {
       this.color = style.color;
       this.obfuscated = style.obfuscated;
       this.bold = style.bold;

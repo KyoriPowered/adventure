@@ -40,7 +40,16 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * A text component.
+ * A component.
+ *
+ * @see BlockNBTComponent
+ * @see EntityNBTComponent
+ * @see KeybindComponent
+ * @see ScoreComponent
+ * @see SelectorComponent
+ * @see StorageNBTComponent
+ * @see TextComponent
+ * @see TranslatableComponent
  */
 public interface Component extends ComponentBuilderApplicable, ComponentLike, HoverEventSource<Component> {
   /**
