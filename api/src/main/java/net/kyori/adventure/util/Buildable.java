@@ -25,6 +25,7 @@ package net.kyori.adventure.util;
 
 import java.util.function.Consumer;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Something that can be built.
@@ -42,8 +43,8 @@ public interface Buildable<R, B extends Buildable.AbstractBuilder<R>> {
    * @param <B> the builder type
    * @return the built thing
    */
-  static <R extends Buildable<R, B>, B extends AbstractBuilder<R>> @NonNull R configureAndBuild(final @NonNull B builder, final @NonNull Consumer<? super B> consumer) {
-    consumer.accept(builder);
+  static <R extends Buildable<R, B>, B extends AbstractBuilder<R>> @NonNull R configureAndBuild(final @NonNull B builder, final @Nullable Consumer<? super B> consumer) {
+    if(consumer != null) consumer.accept(builder);
     return builder.build();
   }
 
