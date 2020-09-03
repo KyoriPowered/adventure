@@ -40,6 +40,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An abstract implementation of a text component.
+ *
+ * @since 4.0.0
  */
 public abstract class AbstractComponent implements Component, Examinable {
   static List<Component> asComponents(final List<? extends ComponentLike> list) {

@@ -27,6 +27,8 @@ import net.kyori.adventure.text.Component;
 
 /**
  * A format which may be applied to a {@link Component}.
+ *
+ * @since 4.0.0
  */
 public interface TextFormat {
 }

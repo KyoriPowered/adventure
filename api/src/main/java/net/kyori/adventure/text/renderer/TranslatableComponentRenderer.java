@@ -52,6 +52,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * @param <C> the context type, usually {@link java.util.Locale}.
  * @see #get()
+ * @since 4.0.0
  */
 public abstract class TranslatableComponentRenderer<C> extends AbstractComponentRenderer<C> {
   static final TranslatableComponentRenderer<Locale> INSTANCE = new TranslatableComponentRenderer<Locale>() {
@@ -66,6 +67,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
    *
    * @return a translatable component renderer
    * @see TranslationRegistry
+   * @since 4.0.0
    */
   public static @NonNull TranslatableComponentRenderer<Locale> get() {
     return INSTANCE;

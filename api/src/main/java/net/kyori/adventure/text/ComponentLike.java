@@ -27,6 +27,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Something that can be represented as a {@link Component}.
+ *
+ * @since 4.0.0
  */
 @FunctionalInterface
 public interface ComponentLike {
@@ -34,6 +36,7 @@ public interface ComponentLike {
    * Gets a {@link Component} representation.
    *
    * @return a component
+   * @since 4.0.0
    */
   @NonNull Component asComponent();
 }

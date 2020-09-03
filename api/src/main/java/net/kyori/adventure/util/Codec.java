@@ -31,18 +31,31 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @param <D> the decoded type
  * @param <E> the encoded type
  * @param <DX> the exception type
+ * @since 4.0.0
  */
 public interface Codec<D, E, DX extends Throwable, EX extends Throwable> {
-  static <D, E, DX extends Throwable, EX extends Throwable> @NonNull Codec<D, E, DX, EX> of(final @NonNull Decoder<D, E, DX> decode, final @NonNull Encoder<D, E, EX> encode) {
+  /**
+   * Creates a codec.
+   *
+   * @param decoder the decoder
+   * @param encoder the encoder
+   * @param <D> the decoded type
+   * @param <E> the encoded type
+   * @param <DX> the decode exception type
+   * @param <EX> the encode exception type
+   * @return a codec
+   * @since 4.0.0
+   */
+  static <D, E, DX extends Throwable, EX extends Throwable> @NonNull Codec<D, E, DX, EX> of(final @NonNull Decoder<D, E, DX> decoder, final @NonNull Encoder<D, E, EX> encoder) {
     return new Codec<D, E, DX, EX>() {
       @Override
       public @NonNull D decode(@NonNull final E encoded) throws DX {
-        return decode.decode(encoded);
+        return decoder.decode(encoded);
       }
 
       @Override
       public @NonNull E encode(@NonNull final D decoded) throws EX {
-        return encode.encode(decoded);
+        return encoder.encode(decoded);
       }
     };
   }
@@ -53,6 +66,7 @@ public interface Codec<D, E, DX extends Throwable, EX extends Throwable> {
    * @param encoded the encoded input
    * @return the decoded value
    * @throws DX if an exception is encountered while decoding
+   * @since 4.0.0
    */
   @NonNull D decode(final @NonNull E encoded) throws DX;
 
@@ -62,6 +76,7 @@ public interface Codec<D, E, DX extends Throwable, EX extends Throwable> {
    * @param <D> the decoded type
    * @param <E> the encoded type
    * @param <X> the exception type
+   * @since 4.0.0
    */
   interface Decoder<D, E, X extends Throwable> {
     /**
@@ -70,6 +85,7 @@ public interface Codec<D, E, DX extends Throwable, EX extends Throwable> {
      * @param encoded the encoded input
      * @return the decoded value
      * @throws X if an exception is encountered while decoding
+     * @since 4.0.0
      */
     @NonNull D decode(final @NonNull E encoded) throws X;
   }
@@ -80,6 +96,7 @@ public interface Codec<D, E, DX extends Throwable, EX extends Throwable> {
    * @param decoded the decoded value
    * @return the encoded output
    * @throws EX if an exception is encountered while encoding
+   * @since 4.0.0
    */
   @NonNull E encode(final @NonNull D decoded) throws EX;
 
@@ -89,6 +106,7 @@ public interface Codec<D, E, DX extends Throwable, EX extends Throwable> {
    * @param <D> the decoded type
    * @param <E> the encoded type
    * @param <X> the exception type
+   * @since 4.0.0
    */
   interface Encoder<D, E, X extends Throwable> {
     /**
@@ -97,6 +115,7 @@ public interface Codec<D, E, DX extends Throwable, EX extends Throwable> {
      * @param decoded the decoded value
      * @return the encoded output
      * @throws X if an exception is encountered while encoding
+     * @since 4.0.0
      */
     @NonNull E encode(final @NonNull D decoded) throws X;
   }

@@ -32,6 +32,8 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A sound.
+ *
+ * @since 4.0.0
  */
 public interface Sound {
   /**
@@ -42,6 +44,7 @@ public interface Sound {
    * @param volume the volume
    * @param pitch the pitch
    * @return the sound
+   * @since 4.0.0
    */
   static @NonNull Sound of(final @NonNull Key name, final @NonNull Source source, final float volume, final float pitch) {
     requireNonNull(name, "name");
@@ -62,6 +65,7 @@ public interface Sound {
    * @param volume the volume
    * @param pitch the pitch
    * @return the sound
+   * @since 4.0.0
    */
   static @NonNull Sound of(final @NonNull Type type, final @NonNull Source source, final float volume, final float pitch) {
     requireNonNull(type, "type");
@@ -76,6 +80,7 @@ public interface Sound {
    * @param volume the volume
    * @param pitch the pitch
    * @return the sound
+   * @since 4.0.0
    */
   static @NonNull Sound of(final @NonNull Supplier<? extends Type> type, final @NonNull Source source, final float volume, final float pitch) {
     requireNonNull(type, "type");
@@ -92,6 +97,7 @@ public interface Sound {
    * Gets the name.
    *
    * @return the name
+   * @since 4.0.0
    */
   @NonNull Key name();
 
@@ -99,6 +105,7 @@ public interface Sound {
    * Gets the source.
    *
    * @return the source
+   * @since 4.0.0
    */
   @NonNull Source source();
 
@@ -106,6 +113,7 @@ public interface Sound {
    * Gets the volume.
    *
    * @return the volume
+   * @since 4.0.0
    */
   float volume();
 
@@ -113,11 +121,14 @@ public interface Sound {
    * Gets the pitch.
    *
    * @return the pitch
+   * @since 4.0.0
    */
   float pitch();
 
   /**
    * The sound source.
+   *
+   * @since 4.0.0
    */
   enum Source {
     MASTER("master"),
@@ -131,6 +142,11 @@ public interface Sound {
     AMBIENT("ambient"),
     VOICE("voice");
 
+    /**
+     * The name map.
+     *
+     * @since 4.0.0
+     */
     public static final Index<String, Source> NAMES = Index.create(Source.class, source -> source.name);
     private final String name;
 
@@ -141,12 +157,15 @@ public interface Sound {
 
   /**
    * A sound type.
+   *
+   * @since 4.0.0
    */
   interface Type {
     /**
      * Gets the key.
      *
      * @return the key
+     * @since 4.0.0
      */
     @NonNull Key key();
   }

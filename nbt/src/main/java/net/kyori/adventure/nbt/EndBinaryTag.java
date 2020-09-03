@@ -27,12 +27,15 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * An end tag.
+ *
+ * @since 4.0.0
  */
 public interface EndBinaryTag extends BinaryTag {
   /**
    * Gets the end tag.
    *
    * @return the end tag
+   * @since 4.0.0
    */
   static @NonNull EndBinaryTag get() {
     return EndBinaryTagImpl.INSTANCE;

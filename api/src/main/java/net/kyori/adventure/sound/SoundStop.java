@@ -32,12 +32,15 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A sound stop.
+ *
+ * @since 4.0.0
  */
 public interface SoundStop {
   /**
    * Stops all sounds.
    *
    * @return a sound stopper
+   * @since 4.0.0
    */
   static @NonNull SoundStop all() {
     return SoundStopImpl.ALL;
@@ -48,6 +51,7 @@ public interface SoundStop {
    *
    * @param sound the sound
    * @return a sound stopper
+   * @since 4.0.0
    */
   static @NonNull SoundStop named(final @NonNull Key sound) {
     requireNonNull(sound, "sound");
@@ -64,6 +68,7 @@ public interface SoundStop {
    *
    * @param sound the sound
    * @return a sound stopper
+   * @since 4.0.0
    */
   static @NonNull SoundStop named(final Sound.@NonNull Type sound) {
     requireNonNull(sound, "sound");
@@ -80,6 +85,7 @@ public interface SoundStop {
    *
    * @param sound the sound
    * @return a sound stopper
+   * @since 4.0.0
    */
   static @NonNull SoundStop named(final @NonNull Supplier<? extends Sound.Type> sound) {
     requireNonNull(sound, "sound");
@@ -96,6 +102,7 @@ public interface SoundStop {
    *
    * @param source the source
    * @return a sound stopper
+   * @since 4.0.0
    */
   static @NonNull SoundStop source(final Sound.@NonNull Source source) {
     requireNonNull(source, "source");
@@ -113,6 +120,7 @@ public interface SoundStop {
    * @param sound the sound
    * @param source the source
    * @return a sound stopper
+   * @since 4.0.0
    */
   static @NonNull SoundStop namedOnSource(final @NonNull Key sound, final Sound.@NonNull Source source) {
     requireNonNull(sound, "sound");
@@ -131,6 +139,7 @@ public interface SoundStop {
    * @param sound the sound
    * @param source the source
    * @return a sound stopper
+   * @since 4.0.0
    */
   static @NonNull SoundStop namedOnSource(final Sound.@NonNull Type sound, final Sound.@NonNull Source source) {
     requireNonNull(sound, "sound");
@@ -143,6 +152,7 @@ public interface SoundStop {
    * @param sound the sound
    * @param source the source
    * @return a sound stopper
+   * @since 4.0.0
    */
   static @NonNull SoundStop namedOnSource(final @NonNull Supplier<? extends Sound.Type> sound, final Sound.@NonNull Source source) {
     requireNonNull(sound, "sound");
@@ -159,6 +169,7 @@ public interface SoundStop {
    * Gets the sound.
    *
    * @return the sound
+   * @since 4.0.0
    */
   @Nullable Key sound();
 
@@ -166,6 +177,7 @@ public interface SoundStop {
    * Gets the source.
    *
    * @return the source
+   * @since 4.0.0
    */
   Sound.@Nullable Source source();
 }

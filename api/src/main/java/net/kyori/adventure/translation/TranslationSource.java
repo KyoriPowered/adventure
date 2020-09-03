@@ -30,6 +30,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A message format translator.
+ *
+ * @since 4.0.0
  */
 @FunctionalInterface
 public interface TranslationSource {
@@ -39,6 +41,7 @@ public interface TranslationSource {
    * @param locale a locale
    * @param key a translation key
    * @return a message format or {@code null} to skip translation
+   * @since 4.0.0
    */
   @Nullable MessageFormat translate(final @NonNull String key, final @NonNull Locale locale);
 }

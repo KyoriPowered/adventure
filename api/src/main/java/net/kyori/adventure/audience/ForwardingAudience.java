@@ -40,7 +40,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * @see Audience
  * @since 4.0.0
- * @version 4.0.0
  */
 @FunctionalInterface
 public interface ForwardingAudience extends Audience {
@@ -109,6 +108,8 @@ public interface ForwardingAudience extends Audience {
 
   /**
    * An audience that forwards everything to a single other audience.
+   *
+   * @since 4.0.0
    */
   interface Single extends ForwardingAudience {
     /**

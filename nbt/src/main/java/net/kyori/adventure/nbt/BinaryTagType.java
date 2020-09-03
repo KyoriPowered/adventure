@@ -36,6 +36,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * A binary tag type.
  *
  * @param <T> the tag type
+ * @since 4.0.0
  */
 public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<BinaryTagType<? extends BinaryTag>> {
   private static final List<BinaryTagType<? extends BinaryTag>> TYPES = new ArrayList<>();
@@ -44,6 +45,7 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
    * Gets the id.
    *
    * @return the id
+   * @since 4.0.0
    */
   public abstract byte id();
 
@@ -55,6 +57,7 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
    * @param input the input
    * @return the tag
    * @throws IOException if an exception was encountered while reading
+   * @since 4.0.0
    */
   public abstract @NonNull T read(final @NonNull DataInput input) throws IOException;
 
@@ -64,6 +67,7 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
    * @param tag the tag
    * @param output the output
    * @throws IOException if an exception was encountered while writing
+   * @since 4.0.0
    */
   public abstract void write(final @NonNull T tag, final @NonNull DataOutput output) throws IOException;
 

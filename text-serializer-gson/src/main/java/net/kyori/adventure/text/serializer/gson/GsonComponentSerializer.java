@@ -37,12 +37,15 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * <p>Use {@link Builder#downsampleColors()} to support platforms
  * that do not understand hex colors that were introduced in Minecraft 1.16.</p>
+ *
+ * @since 4.0.0
  */
 public interface GsonComponentSerializer extends ComponentSerializer<Component, Component, String>, Buildable<GsonComponentSerializer, GsonComponentSerializer.Builder> {
   /**
    * Gets a component serializer for gson serialization and deserialization.
    *
    * @return a gson component serializer
+   * @since 4.0.0
    */
   static @NonNull GsonComponentSerializer gson() {
     return GsonComponentSerializerImpl.INSTANCE;
@@ -55,6 +58,7 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
    * emitted for action {@link net.kyori.adventure.text.event.HoverEvent.Action#SHOW_TEXT}.</p>
    *
    * @return a gson component serializer
+   * @since 4.0.0
    */
   static @NonNull GsonComponentSerializer colorDownsamplingGson() {
     return GsonComponentSerializerImpl.LEGACY_INSTANCE;
@@ -64,6 +68,7 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
    * Creates a new {@link GsonComponentSerializer.Builder}.
    *
    * @return a builder
+   * @since 4.0.0
    */
   static Builder builder() {
     return new GsonComponentSerializerImpl.BuilderImpl();
@@ -73,6 +78,7 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
    * Gets the underlying gson serializer.
    *
    * @return a gson serializer
+   * @since 4.0.0
    */
   @NonNull Gson serializer();
 
@@ -80,17 +86,21 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
    * Gets the underlying gson populator.
    *
    * @return a gson populator
+   * @since 4.0.0
    */
   @NonNull UnaryOperator<GsonBuilder> populator();
 
   /**
    * A builder for {@link GsonComponentSerializer}.
+   *
+   * @since 4.0.0
    */
   interface Builder extends Buildable.AbstractBuilder<GsonComponentSerializer> {
     /**
      * Sets that the serializer should downsample hex colors to named colors.
      *
      * @return this builder
+     * @since 4.0.0
      */
     @NonNull Builder downsampleColors();
 
@@ -101,6 +111,7 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
      *
      * @param serializer serializer
      * @return this builder
+     * @since 4.0.0
      */
     @NonNull Builder legacyHoverEventSerializer(final @Nullable LegacyHoverEventSerializer serializer);
 
@@ -111,6 +122,7 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
      * to serialize any hover events beyond those with action {@link net.kyori.adventure.text.event.HoverEvent.Action#SHOW_TEXT}</p>
      *
      * @return this builder
+     * @since 4.0.0
      */
     @NonNull Builder emitLegacyHoverEvent();
 

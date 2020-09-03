@@ -35,12 +35,15 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A keybind component.
+ *
+ * @since 4.0.0
  */
 public interface KeybindComponent extends BuildableComponent<KeybindComponent, KeybindComponent.Builder>, ScopedComponent<KeybindComponent> {
   /**
    * Creates a keybind component builder.
    *
    * @return a builder
+   * @since 4.0.0
    */
   static @NonNull Builder builder() {
     return new KeybindComponentImpl.BuilderImpl();
@@ -51,6 +54,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    *
    * @param keybind the keybind
    * @return a builder
+   * @since 4.0.0
    */
   static @NonNull Builder builder(final @NonNull String keybind) {
     return builder().keybind(keybind);
@@ -61,6 +65,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    *
    * @param keybind the keybind
    * @return the keybind component
+   * @since 4.0.0
    */
   static @NonNull KeybindComponent of(final @NonNull String keybind) {
     return of(keybind, Style.empty());
@@ -72,6 +77,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    * @param keybind the keybind
    * @param style the style
    * @return the keybind component
+   * @since 4.0.0
    */
   static @NonNull KeybindComponent of(final @NonNull String keybind, final @NonNull Style style) {
     return new KeybindComponentImpl(Collections.emptyList(), style, keybind);
@@ -83,6 +89,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    * @param keybind the keybind
    * @param color the color
    * @return the keybind component
+   * @since 4.0.0
    */
   static @NonNull KeybindComponent of(final @NonNull String keybind, final @Nullable TextColor color) {
     return of(keybind, Style.of(color));
@@ -95,6 +102,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    * @param color the color
    * @param decorations the decorations
    * @return the keybind component
+   * @since 4.0.0
    */
   static @NonNull KeybindComponent of(final @NonNull String keybind, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
     return of(keybind, Style.of(color, decorations));
@@ -107,6 +115,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    * @param color the color
    * @param decorations the decorations
    * @return the keybind component
+   * @since 4.0.0
    */
   static @NonNull KeybindComponent of(final @NonNull String keybind, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
     return of(keybind, Style.of(color, decorations));
@@ -117,6 +126,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    *
    * @param consumer the builder configurator
    * @return the keybind component
+   * @since 4.0.0
    */
   static @NonNull KeybindComponent make(final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder();
@@ -129,6 +139,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    * @param keybind the keybind
    * @param consumer the builder configurator
    * @return the keybind component
+   * @since 4.0.0
    */
   static @NonNull KeybindComponent make(final @NonNull String keybind, final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder(keybind);
@@ -139,6 +150,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    * Gets the keybind.
    *
    * @return the keybind
+   * @since 4.0.0
    */
   @NonNull String keybind();
 
@@ -147,11 +159,14 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    *
    * @param keybind the keybind
    * @return a copy of this component
+   * @since 4.0.0
    */
   @NonNull KeybindComponent keybind(final @NonNull String keybind);
 
   /**
    * A keybind component builder.
+   *
+   * @since 4.0.0
    */
   interface Builder extends ComponentBuilder<KeybindComponent, Builder> {
     /**
@@ -159,6 +174,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
      *
      * @param keybind the keybind
      * @return this builder
+     * @since 4.0.0
      */
     @NonNull Builder keybind(final @NonNull String keybind);
   }

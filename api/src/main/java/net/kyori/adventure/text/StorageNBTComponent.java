@@ -30,12 +30,15 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * An storage NBT component.
+ *
+ * @since 4.0.0
  */
 public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent, StorageNBTComponent.Builder>, ScopedComponent<StorageNBTComponent> {
   /**
    * Creates an storage NBT component builder.
    *
    * @return a builder
+   * @since 4.0.0
    */
   static @NonNull Builder builder() {
     return new StorageNBTComponentImpl.BuilderImpl();
@@ -46,7 +49,8 @@ public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent, S
    *
    * @param nbtPath the nbt path
    * @param storage the identifier of the storage
-   * @return the storage NBT component
+   * @return a storage NBT component
+   * @since 4.0.0
    */
   static @NonNull StorageNBTComponent of(final @NonNull String nbtPath, final @NonNull Key storage) {
     return builder().nbtPath(nbtPath).storage(storage).build();
@@ -56,7 +60,8 @@ public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent, S
    * Creates a storage NBT component by applying configuration from {@code consumer}.
    *
    * @param consumer the builder configurator
-   * @return the storage NBT component
+   * @return a storage NBT component
+   * @since 4.0.0
    */
   static @NonNull StorageNBTComponent make(final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder();
@@ -67,6 +72,7 @@ public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent, S
    * Gets the NBT storage's ID.
    *
    * @return the NBT storage
+   * @since 4.0.0
    */
   @NonNull Key storage();
 
@@ -74,12 +80,15 @@ public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent, S
    * Sets the NBT storage.
    *
    * @param storage the identifier of the NBT storage
-   * @return a component
+   * @return a storage NBT component
+   * @since 4.0.0
    */
   @NonNull StorageNBTComponent storage(final @NonNull Key storage);
 
   /**
    * A command storage NBT component builder.
+   *
+   * @since 4.0.0
    */
   interface Builder extends NBTComponentBuilder<StorageNBTComponent, Builder> {
     /**
@@ -87,6 +96,7 @@ public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent, S
      *
      * @param storage the id of the NBT storage
      * @return this builder
+     * @since 4.0.0
      */
     @NonNull Builder storage(final @NonNull Key storage);
   }

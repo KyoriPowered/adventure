@@ -38,6 +38,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * <p>Legacy does <b>not</b> support more complex features such as, but not limited
  * to, {@link ClickEvent} and {@link HoverEvent}.</p>
+ *
+ * @since 4.0.0
  */
 public interface LegacyComponentSerializer extends ComponentSerializer<Component, TextComponent, String>, Buildable<LegacyComponentSerializer, LegacyComponentSerializer.Builder> {
   /**
@@ -48,6 +50,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * <p>The returned serializer uses the {@link #SECTION_CHAR section} character.</p>
    *
    * @return a component serializer for legacy serialization and deserialization
+   * @since 4.0.0
    */
   static @NonNull LegacyComponentSerializer legacySection() {
     return LegacyComponentSerializerImpl.SECTION_SERIALIZER;
@@ -61,6 +64,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * <p>The returned serializer uses the {@link #AMPERSAND_CHAR ampersand} character.</p>
    *
    * @return a component serializer for legacy serialization and deserialization
+   * @since 4.0.0
    */
   static @NonNull LegacyComponentSerializer legacyAmpersand() {
     return LegacyComponentSerializerImpl.AMPERSAND_SERIALIZER;
@@ -73,6 +77,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    *
    * @param legacyCharacter the legacy character to use
    * @return a component serializer for legacy serialization and deserialization
+   * @since 4.0.0
    */
   static @NonNull LegacyComponentSerializer legacy(final char legacyCharacter) {
     if(legacyCharacter == SECTION_CHAR) {
@@ -88,6 +93,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    *
    * @param character the legacy character
    * @return the legacy format
+   * @since 4.0.0
    */
   static @Nullable LegacyFormat parseChar(final char character) {
     return LegacyComponentSerializerImpl.legacyFormat(character);
@@ -97,6 +103,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * Creates a new {@link LegacyComponentSerializer.Builder}.
    *
    * @return the builder
+   * @since 4.0.0
    */
   static @NonNull Builder builder() {
     return new LegacyComponentSerializerImpl.BuilderImpl();
@@ -104,16 +111,22 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
 
   /**
    * The legacy character used by Minecraft. ('§')
+   *
+   * @since 4.0.0
    */
   char SECTION_CHAR = '§';
 
   /**
    * The legacy character frequently used by configurations and commands. ('&amp;')
+   *
+   * @since 4.0.0
    */
   char AMPERSAND_CHAR = '&';
 
   /**
    * The legacy character used to prefix hex colors. ('#')
+   *
+   * @since 4.0.0
    */
   char HEX_CHAR = '#';
 
@@ -137,6 +150,8 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
 
   /**
    * A builder for {@link LegacyComponentSerializer}.
+   *
+   * @since 4.0.0
    */
   interface Builder extends Buildable.AbstractBuilder<LegacyComponentSerializer> {
     /**
@@ -144,6 +159,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      *
      * @param legacyCharacter the legacy character
      * @return this builder
+     * @since 4.0.0
      */
     @NonNull Builder character(final char legacyCharacter);
 
@@ -152,6 +168,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      *
      * @param legacyHexCharacter the legacy hex character.
      * @return this builder
+     * @since 4.0.0
      */
     @NonNull Builder hexCharacter(final char legacyHexCharacter);
 
@@ -160,6 +177,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * when deserializing.
      *
      * @return this builder
+     * @since 4.0.0
      */
     @NonNull Builder extractUrls();
 
@@ -169,6 +187,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      *
      * @param style the style to use for extracted links
      * @return this builder
+     * @since 4.0.0
      */
     @NonNull Builder extractUrls(final @Nullable Style style);
 
@@ -178,6 +197,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * <p>Otherwise, hex colors are downsampled to the nearest named color.</p>
      *
      * @return this builder
+     * @since 4.0.0
      */
     @NonNull Builder hexColors();
 
@@ -196,6 +216,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * are available.</p>
      *
      * @return this builder
+     * @since 4.0.0
      */
     @NonNull Builder useUnusualXRepeatedCharacterHexFormat();
 

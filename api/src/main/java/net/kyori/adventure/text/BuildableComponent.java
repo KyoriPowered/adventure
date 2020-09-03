@@ -31,6 +31,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * @param <C> the component type
  * @param <B> the builder type
+ * @since 4.0.0
  */
 public interface BuildableComponent<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends Buildable<C, B>, Component {
   /**

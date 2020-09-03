@@ -31,6 +31,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * An NBT component builder.
+ *
+ * @since 4.0.0
  */
 public interface NBTComponentBuilder<C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> extends ComponentBuilder<C, B> {
   /**
@@ -38,6 +40,7 @@ public interface NBTComponentBuilder<C extends NBTComponent<C, B>, B extends NBT
    *
    * @param nbtPath the NBT path
    * @return this builder
+   * @since 4.0.0
    */
   @NonNull B nbtPath(final @NonNull String nbtPath);
 
@@ -46,6 +49,7 @@ public interface NBTComponentBuilder<C extends NBTComponent<C, B>, B extends NBT
    *
    * @param interpret if we should be interpreting
    * @return this builder
+   * @since 4.0.0
    */
   @NonNull B interpret(final boolean interpret);
 }

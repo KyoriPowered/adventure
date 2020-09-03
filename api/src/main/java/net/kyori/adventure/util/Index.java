@@ -40,6 +40,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * @param <K> the key type
  * @param <V> the value type
+ * @since 4.0.0
  */
 public final class Index<K, V> {
   private final Map<K, V> keyToValue;
@@ -58,6 +59,7 @@ public final class Index<K, V> {
    * @param <K> the key type
    * @param <V> the value type
    * @return the key map
+   * @since 4.0.0
    */
   public static <K, V extends Enum<V>> @NonNull Index<K, V> create(final Class<V> type, final @NonNull Function<? super V, ? extends K> keyFunction) {
     return create(type, keyFunction, type.getEnumConstants());
@@ -72,6 +74,7 @@ public final class Index<K, V> {
    * @param <K> the key type
    * @param <V> the value type
    * @return the key map
+   * @since 4.0.0
    */
   @SafeVarargs
   public static <K, V extends Enum<V>> @NonNull Index<K, V> create(final Class<V> type, final @NonNull Function<? super V, ? extends K> keyFunction, final @NonNull V @NonNull... values) {
@@ -86,6 +89,7 @@ public final class Index<K, V> {
    * @param <K> the key type
    * @param <V> the value type
    * @return the key map
+   * @since 4.0.0
    */
   @SafeVarargs
   @SuppressWarnings("RedundantTypeArguments") // explicit type parameters needed to fix build on JDK 1.8
@@ -101,6 +105,7 @@ public final class Index<K, V> {
    * @param <K> the key type
    * @param <V> the value type
    * @return the key map
+   * @since 4.0.0
    */
   @SuppressWarnings("RedundantTypeArguments") // explicit type parameters needed to fix build on JDK 1.8
   public static <K, V> @NonNull Index<K, V> create(final @NonNull Function<? super V, ? extends K> keyFunction, final @NonNull List<V> constants) {
@@ -132,6 +137,7 @@ public final class Index<K, V> {
    * Gets the keys.
    *
    * @return the keys
+   * @since 4.0.0
    */
   public @NonNull Set<K> keys() {
     return Collections.unmodifiableSet(this.keyToValue.keySet());
@@ -142,6 +148,7 @@ public final class Index<K, V> {
    *
    * @param value the value
    * @return the key
+   * @since 4.0.0
    */
   public @Nullable K key(final @NonNull V value) {
     return this.valueToKey.get(value);
@@ -151,6 +158,7 @@ public final class Index<K, V> {
    * Gets the keys.
    *
    * @return the keys
+   * @since 4.0.0
    */
   public @NonNull Set<V> values() {
     return Collections.unmodifiableSet(this.valueToKey.keySet());
@@ -161,6 +169,7 @@ public final class Index<K, V> {
    *
    * @param key the key
    * @return the value
+   * @since 4.0.0
    */
   public @Nullable V value(final @NonNull K key) {
     return this.keyToValue.get(key);

@@ -24,7 +24,6 @@
 package net.kyori.adventure.inventory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -142,7 +141,7 @@ class BookImpl implements Book, Examinable {
 
     @Override
     public @NonNull Builder pages(final @NonNull Component@NonNull... pages) {
-      this.pages.addAll(Arrays.asList(pages));
+      Collections.addAll(this.pages, pages);
       return this;
     }
 

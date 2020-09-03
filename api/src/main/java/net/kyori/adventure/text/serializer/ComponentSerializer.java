@@ -32,6 +32,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @param <I> the input component type
  * @param <O> the output component type
  * @param <R> the serialized type
+ * @since 4.0.0
  */
 public interface ComponentSerializer<I extends Component, O extends Component, R> {
   /**
@@ -39,6 +40,7 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
    *
    * @param input the input
    * @return the component
+   * @since 4.0.0
    */
   @NonNull O deserialize(final @NonNull R input);
 
@@ -47,6 +49,7 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
    *
    * @param component the component
    * @return the output
+   * @since 4.0.0
    */
   @NonNull R serialize(final @NonNull I component);
 }

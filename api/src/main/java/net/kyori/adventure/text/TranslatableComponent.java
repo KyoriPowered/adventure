@@ -36,12 +36,15 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A translatable component.
+ *
+ * @since 4.0.0
  */
 public interface TranslatableComponent extends BuildableComponent<TranslatableComponent, TranslatableComponent.Builder>, ScopedComponent<TranslatableComponent> {
   /**
    * Creates a translatable component builder.
    *
    * @return a builder
+   * @since 4.0.0
    */
   static @NonNull Builder builder() {
     return new TranslatableComponentImpl.BuilderImpl();
@@ -52,6 +55,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    *
    * @param key the translation key
    * @return a builder
+   * @since 4.0.0
    */
   static @NonNull Builder builder(final @NonNull String key) {
     return builder().key(key);
@@ -61,7 +65,8 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * Creates a translatable component with a translation key.
    *
    * @param key the translation key
-   * @return the translatable component
+   * @return a translatable component
+   * @since 4.0.0
    */
   static @NonNull TranslatableComponent of(final @NonNull String key) {
     return of(key, Style.empty());
@@ -72,7 +77,8 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    *
    * @param key the translation key
    * @param style the style
-   * @return the text component
+   * @return a translatable component
+   * @since 4.0.0
    */
   static @NonNull TranslatableComponent of(final @NonNull String key, final @NonNull Style style) {
     return new TranslatableComponentImpl(Collections.emptyList(), style, key, Collections.emptyList());
@@ -83,7 +89,8 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    *
    * @param key the translation key
    * @param color the color
-   * @return the translatable component
+   * @return a translatable component
+   * @since 4.0.0
    */
   static @NonNull TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color) {
     return of(key, Style.of(color));
@@ -95,7 +102,8 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param key the translation key
    * @param color the color
    * @param decorations the decorations
-   * @return the text component
+   * @return a translatable component
+   * @since 4.0.0
    */
   static @NonNull TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
     return of(key, Style.of(color, decorations));
@@ -107,7 +115,8 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param key the translation key
    * @param color the color
    * @param decorations the decorations
-   * @return the translatable component
+   * @return a translatable component
+   * @since 4.0.0
    */
   static @NonNull TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
     return of(key, Style.of(color, decorations));
@@ -118,7 +127,8 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    *
    * @param key the translation key
    * @param args the translation arguments
-   * @return the translatable component
+   * @return a translatable component
+   * @since 4.0.0
    */
   static @NonNull TranslatableComponent of(final @NonNull String key, final @NonNull ComponentLike@NonNull... args) {
     return of(key, Style.empty(), args);
@@ -130,7 +140,8 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param key the translation key
    * @param style the style
    * @param args the translation arguments
-   * @return the text component
+   * @return a translatable component
+   * @since 4.0.0
    */
   static @NonNull TranslatableComponent of(final @NonNull String key, final @NonNull Style style, final @NonNull ComponentLike@NonNull... args) {
     return new TranslatableComponentImpl(Collections.emptyList(), style, key, args);
@@ -142,7 +153,8 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param key the translation key
    * @param color the color
    * @param args the translation arguments
-   * @return the translatable component
+   * @return a translatable component
+   * @since 4.0.0
    */
   static @NonNull TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final @NonNull ComponentLike@NonNull... args) {
     return of(key, Style.of(color), args);
@@ -155,7 +167,8 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param color the color
    * @param decorations the decorations
    * @param args the translation arguments
-   * @return the translatable component
+   * @return a translatable component
+   * @since 4.0.0
    */
   static @NonNull TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations, final @NonNull ComponentLike@NonNull... args) {
     return of(key, Style.of(color, decorations), args);
@@ -166,7 +179,8 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    *
    * @param key the translation key
    * @param args the translation arguments
-   * @return the translatable component
+   * @return a translatable component
+   * @since 4.0.0
    */
   static @NonNull TranslatableComponent of(final @NonNull String key, final @NonNull List<? extends ComponentLike> args) {
     return new TranslatableComponentImpl(Collections.emptyList(), Style.empty(), key, args);
@@ -178,7 +192,8 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param key the translation key
    * @param style the style
    * @param args the translation arguments
-   * @return the text component
+   * @return a translatable component
+   * @since 4.0.0
    */
   static @NonNull TranslatableComponent of(final @NonNull String key, final @NonNull Style style, final @NonNull List<? extends ComponentLike> args) {
     return new TranslatableComponentImpl(Collections.emptyList(), style, key, args);
@@ -190,7 +205,8 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param key the translation key
    * @param color the color
    * @param args the translation arguments
-   * @return the translatable component
+   * @return a translatable component
+   * @since 4.0.0
    */
   static TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final @NonNull List<? extends ComponentLike> args) {
     return of(key, Style.of(color), args);
@@ -203,7 +219,8 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param color the color
    * @param decorations the decorations
    * @param args the translation arguments
-   * @return the translatable component
+   * @return a translatable component
+   * @since 4.0.0
    */
   static @NonNull TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations, final @NonNull List<? extends ComponentLike> args) {
     return of(key, Style.of(color, decorations), args);
@@ -213,7 +230,8 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * Creates a translatable component by applying configuration from {@code consumer}.
    *
    * @param consumer the builder configurator
-   * @return the translatable component
+   * @return a translatable component
+   * @since 4.0.0
    */
   static @NonNull TranslatableComponent make(final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder();
@@ -225,7 +243,8 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    *
    * @param key the translation key
    * @param consumer the builder configurator
-   * @return the translatable component
+   * @return a translatable component
+   * @since 4.0.0
    */
   static @NonNull TranslatableComponent make(final @NonNull String key, final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder(key);
@@ -238,7 +257,8 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param key the translation key
    * @param args the translation arguments
    * @param consumer the builder configurator
-   * @return the translatable component
+   * @return a translatable component
+   * @since 4.0.0
    */
   static @NonNull TranslatableComponent make(final @NonNull String key, final @NonNull List<? extends ComponentLike> args, final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder(key).args(args);
@@ -249,6 +269,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * Gets the translation key.
    *
    * @return the translation key
+   * @since 4.0.0
    */
   @NonNull String key();
 
@@ -256,7 +277,8 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * Sets the translation key.
    *
    * @param key the translation key
-   * @return a copy of this component
+   * @return a translatable component
+   * @since 4.0.0
    */
   @NonNull TranslatableComponent key(final @NonNull String key);
 
@@ -264,6 +286,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * Gets the unmodifiable list of translation arguments.
    *
    * @return the unmodifiable list of translation arguments
+   * @since 4.0.0
    */
   @NonNull List<Component> args();
 
@@ -271,7 +294,8 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * Sets the translation arguments for this component.
    *
    * @param args the translation arguments
-   * @return this component
+   * @return a translatable component
+   * @since 4.0.0
    */
   @NonNull TranslatableComponent args(final @NonNull ComponentLike@NonNull... args);
 
@@ -279,12 +303,15 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * Sets the translation arguments for this component.
    *
    * @param args the translation arguments
-   * @return this component
+   * @return a translatable component
+   * @since 4.0.0
    */
   @NonNull TranslatableComponent args(final @NonNull List<? extends ComponentLike> args);
 
   /**
    * A text component builder.
+   *
+   * @since 4.0.0
    */
   interface Builder extends ComponentBuilder<TranslatableComponent, Builder> {
     /**
@@ -292,6 +319,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      *
      * @param key the translation key
      * @return this builder
+     * @since 4.0.0
      */
     @NonNull Builder key(final @NonNull String key);
 
@@ -300,6 +328,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      *
      * @param arg the translation arg
      * @return this builder
+     * @since 4.0.0
      */
     @NonNull Builder args(final @NonNull ComponentBuilder<?, ?> arg);
 
@@ -308,6 +337,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      *
      * @param args the translation args
      * @return this builder
+     * @since 4.0.0
      */
     // CHECKSTYLE:OFF
     @NonNull Builder args(final @NonNull ComponentBuilder<?, ?>@NonNull... args);
@@ -318,6 +348,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      *
      * @param arg the translation arg
      * @return this builder
+     * @since 4.0.0
      */
     @NonNull Builder args(final @NonNull Component arg);
 
@@ -326,6 +357,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      *
      * @param args the translation args
      * @return this builder
+     * @since 4.0.0
      */
     @NonNull Builder args(final @NonNull ComponentLike@NonNull... args);
 
@@ -334,6 +366,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      *
      * @param args the translation args
      * @return this builder
+     * @since 4.0.0
      */
     @NonNull Builder args(final @NonNull List<? extends ComponentLike> args);
   }

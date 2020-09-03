@@ -31,10 +31,14 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A title.
+ *
+ * @since 4.0.0
  */
 public interface Title {
   /**
    * The default times.
+   *
+   * @since 4.0.0
    */
   Times DEFAULT_TIMES = Times.of(Ticks.duration(10), Ticks.duration(70), Ticks.duration(20));
 
@@ -44,6 +48,7 @@ public interface Title {
    * @param title the title
    * @param subtitle the subtitle
    * @return the title
+   * @since 4.0.0
    */
   static @NonNull Title of(final @NonNull Component title, final @NonNull Component subtitle) {
     return of(title, subtitle, DEFAULT_TIMES);
@@ -56,6 +61,7 @@ public interface Title {
    * @param subtitle the subtitle
    * @param times the times
    * @return the title
+   * @since 4.0.0
    */
   static @NonNull Title of(final @NonNull Component title, final @NonNull Component subtitle, final @Nullable Times times) {
     return new TitleImpl(title, subtitle, times);
@@ -65,6 +71,7 @@ public interface Title {
    * Gets the title.
    *
    * @return the title
+   * @since 4.0.0
    */
   @NonNull Component title();
 
@@ -72,6 +79,7 @@ public interface Title {
    * Gets the subtitle.
    *
    * @return the subtitle
+   * @since 4.0.0
    */
   @NonNull Component subtitle();
 
@@ -79,11 +87,14 @@ public interface Title {
    * Gets the times.
    *
    * @return the times
+   * @since 4.0.0
    */
   @Nullable Times times();
 
   /**
    * Title times.
+   *
+   * @since 4.0.0
    */
   interface Times {
     /**
@@ -93,6 +104,7 @@ public interface Title {
      * @param stay the stay time
      * @param fadeOut the fade-eut time
      * @return times
+     * @since 4.0.0
      */
     static @NonNull Times of(final @NonNull Duration fadeIn, final @NonNull Duration stay, final @NonNull Duration fadeOut) {
       return new TitleImpl.TimesImpl(fadeIn, stay, fadeOut);
@@ -102,6 +114,7 @@ public interface Title {
      * Gets the time the title will fade-in.
      *
      * @return the time the title will fade-in
+     * @since 4.0.0
      */
     @NonNull Duration fadeIn();
 
@@ -109,6 +122,7 @@ public interface Title {
      * Gets the time the title will stay.
      *
      * @return the time the title will stay
+     * @since 4.0.0
      */
     @NonNull Duration stay();
 
@@ -116,6 +130,7 @@ public interface Title {
      * Gets the time the title will fade-out.
      *
      * @return the time the title will fade-out
+     * @since 4.0.0
      */
     @NonNull Duration fadeOut();
   }

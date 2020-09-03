@@ -29,12 +29,15 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * An entity NBT component.
+ *
+ * @since 4.0.0
  */
 public interface EntityNBTComponent extends NBTComponent<EntityNBTComponent, EntityNBTComponent.Builder>, ScopedComponent<EntityNBTComponent> {
   /**
    * Creates an entity NBT component builder.
    *
    * @return a builder
+   * @since 4.0.0
    */
   static @NonNull Builder builder() {
     return new EntityNBTComponentImpl.BuilderImpl();
@@ -45,7 +48,8 @@ public interface EntityNBTComponent extends NBTComponent<EntityNBTComponent, Ent
    *
    * @param nbtPath the nbt path
    * @param selector the selector
-   * @return the entity NBT component
+   * @return an entity NBT component
+   * @since 4.0.0
    */
   static @NonNull EntityNBTComponent of(final @NonNull String nbtPath, final @NonNull String selector) {
     return builder().nbtPath(nbtPath).selector(selector).build();
@@ -55,7 +59,8 @@ public interface EntityNBTComponent extends NBTComponent<EntityNBTComponent, Ent
    * Creates a entity NBT component by applying configuration from {@code consumer}.
    *
    * @param consumer the builder configurator
-   * @return the entity NBT component
+   * @return an entity NBT component
+   * @since 4.0.0
    */
   static @NonNull EntityNBTComponent make(final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder();
@@ -66,6 +71,7 @@ public interface EntityNBTComponent extends NBTComponent<EntityNBTComponent, Ent
    * Gets the entity selector.
    *
    * @return the entity selector
+   * @since 4.0.0
    */
   @NonNull String selector();
 
@@ -73,12 +79,15 @@ public interface EntityNBTComponent extends NBTComponent<EntityNBTComponent, Ent
    * Sets the entity selector.
    *
    * @param selector the entity selector
-   * @return a component
+   * @return an entity NBT component
+   * @since 4.0.0
    */
   @NonNull EntityNBTComponent selector(final @NonNull String selector);
 
   /**
    * An entity NBT component builder.
+   *
+   * @since 4.0.0
    */
   interface Builder extends NBTComponentBuilder<EntityNBTComponent, Builder> {
     /**
@@ -86,6 +95,7 @@ public interface EntityNBTComponent extends NBTComponent<EntityNBTComponent, Ent
      *
      * @param selector the entity selector
      * @return this builder
+     * @since 4.0.0
      */
     @NonNull Builder selector(final @NonNull String selector);
   }

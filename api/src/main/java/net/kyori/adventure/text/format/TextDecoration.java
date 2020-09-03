@@ -30,33 +30,47 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An enumeration of decorations which may be applied to a {@link Component}.
+ *
+ * @since 4.0.0
  */
 public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
   /**
    * A decoration which makes text obfuscated/unreadable.
+   *
+   * @since 4.0.0
    */
   OBFUSCATED("obfuscated"),
   /**
    * A decoration which makes text appear bold.
+   *
+   * @since 4.0.0
    */
   BOLD("bold"),
   /**
    * A decoration which makes text have a strike through it.
+   *
+   * @since 4.0.0
    */
   STRIKETHROUGH("strikethrough"),
   /**
    * A decoration which makes text have an underline.
+   *
+   * @since 4.0.0
    */
   UNDERLINED("underlined"),
   /**
    * A decoration which makes text appear in italics.
+   *
+   * @since 4.0.0
    */
   ITALIC("italic");
 
-  public static final Index<String, TextDecoration> NAMES = Index.create(TextDecoration.class, constant -> constant.name);
   /**
-   * The name of this decoration.
+   * The name map.
+   *
+   * @since 4.0.0
    */
+  public static final Index<String, TextDecoration> NAMES = Index.create(TextDecoration.class, constant -> constant.name);
   private final String name;
 
   TextDecoration(final String name) {
@@ -75,10 +89,27 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
 
   /**
    * A state that a {@link TextDecoration} can be in.
+   *
+   * @since 4.0.0
    */
   public enum State {
+    /**
+     * State describing the absence of a value.
+     *
+     * @since 4.0.0
+     */
     NOT_SET("not_set"),
+    /**
+     * State describing a {@code false} value.
+     *
+     * @since 4.0.0
+     */
     FALSE("false"),
+    /**
+     * State describing a {@code true} value.
+     *
+     * @since 4.0.0
+     */
     TRUE("true");
 
     private final String name;
@@ -97,6 +128,7 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
      *
      * @param flag the boolean
      * @return the state
+     * @since 4.0.0
      */
     public static @NonNull State byBoolean(final boolean flag) {
       return flag ? TRUE : FALSE;
@@ -107,6 +139,7 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
      *
      * @param flag the boolean
      * @return the state
+     * @since 4.0.0
      */
     public static @NonNull State byBoolean(final @Nullable Boolean flag) {
       return flag == null ? NOT_SET : byBoolean(flag.booleanValue());
