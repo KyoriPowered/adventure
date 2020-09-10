@@ -13,7 +13,7 @@ Simple library that implements an easy to use textual format on top of component
 <dependency>
   <groupId>net.kyori</groupId>
   <artifactId>adventure-text-minimessage</artifactId>
-  <version>3.0.0-SNAPSHOT</version>
+  <version>4.0.0-SNAPSHOT</version>
 </dependency>
 ```
 * Gradle
@@ -23,7 +23,7 @@ repositories {
 }
 
 dependencies {
-  compile 'net.kyori:adventure-text-minimessage:3.0.0-SNAPSHOT'
+  compile 'net.kyori:adventure-text-minimessage:4.0.0-SNAPSHOT'
 }
 ```
 

@@ -9,7 +9,7 @@ plugins {
 ext.adventure = "4.0.0-SNAPSHOT"
 
 group 'net.kyori'
-version '3.0.0-SNAPSHOT'
+version '4.0.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
