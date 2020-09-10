@@ -47,7 +47,7 @@ class HoverEventTest {
 
   @Test
   void testShowItemItem() {
-    final HoverEvent.ShowItem si0 = new HoverEvent.ShowItem(Key.of("stone"), 1);
+    final HoverEvent.ShowItem si0 = HoverEvent.ShowItem.of(Key.of("stone"), 1);
     assertEquals(Key.of("stone"), si0.item());
     final HoverEvent.ShowItem si1 = si0.item(Key.of("dirt"));
     assertEquals(Key.of("stone"), si0.item()); // original should be unmodified
@@ -56,7 +56,7 @@ class HoverEventTest {
 
   @Test
   void testShowItemCount() {
-    final HoverEvent.ShowItem si0 = new HoverEvent.ShowItem(Key.of("stone"), 1);
+    final HoverEvent.ShowItem si0 = HoverEvent.ShowItem.of(Key.of("stone"), 1);
     assertEquals(1, si0.count());
     assertSame(si0, si0.count(1)); // unmodified
     final HoverEvent.ShowItem si1 = si0.count(2);
@@ -66,7 +66,7 @@ class HoverEventTest {
 
   @Test
   void testShowEntityType() {
-    final HoverEvent.ShowEntity se0 = new HoverEvent.ShowEntity(Key.of("cow"), UUID.randomUUID());
+    final HoverEvent.ShowEntity se0 = HoverEvent.ShowEntity.of(Key.of("cow"), UUID.randomUUID());
     assertEquals(Key.of("cow"), se0.type());
     final HoverEvent.ShowEntity se1 = se0.type(Key.of("chicken"));
     assertEquals(Key.of("cow"), se0.type()); // original should be unmodified
@@ -76,7 +76,7 @@ class HoverEventTest {
   @Test
   void testShowEntityId() {
     final UUID id0 = UUID.randomUUID();
-    final HoverEvent.ShowEntity se0 = new HoverEvent.ShowEntity(Key.of("cow"), id0);
+    final HoverEvent.ShowEntity se0 = HoverEvent.ShowEntity.of(Key.of("cow"), id0);
     assertEquals(id0, se0.id());
     final UUID id1 = UUID.randomUUID();
     final HoverEvent.ShowEntity se1 = se0.id(id1);
@@ -87,7 +87,7 @@ class HoverEventTest {
   @Test
   void testShowEntityName() {
     final Component n0 = TextComponent.of("Cow");
-    final HoverEvent.ShowEntity se0 = new HoverEvent.ShowEntity(Key.of("cow"), UUID.randomUUID(), n0);
+    final HoverEvent.ShowEntity se0 = HoverEvent.ShowEntity.of(Key.of("cow"), UUID.randomUUID(), n0);
     assertEquals(n0, se0.name());
     final Component n1 = TextComponent.of("Chicken");
     final HoverEvent.ShowEntity se1 = se0.name(n1);
@@ -104,18 +104,18 @@ class HoverEventTest {
         HoverEvent.of(HoverEvent.Action.SHOW_TEXT, TextComponent.empty())
       )
       .addEqualityGroup(
-        HoverEvent.showItem(new HoverEvent.ShowItem(Key.of("air"), 1, null)),
-        HoverEvent.of(HoverEvent.Action.SHOW_ITEM, new HoverEvent.ShowItem(Key.of("air"), 1, null))
+        HoverEvent.showItem(HoverEvent.ShowItem.of(Key.of("air"), 1, null)),
+        HoverEvent.of(HoverEvent.Action.SHOW_ITEM, HoverEvent.ShowItem.of(Key.of("air"), 1, null))
       )
       .addEqualityGroup(
-        HoverEvent.showEntity(new HoverEvent.ShowEntity(Key.of("cat"), entity)),
-        HoverEvent.showEntity(new HoverEvent.ShowEntity(Key.of("cat"), entity, null)),
-        HoverEvent.of(HoverEvent.Action.SHOW_ENTITY, new HoverEvent.ShowEntity(Key.of("cat"), entity)),
-        HoverEvent.of(HoverEvent.Action.SHOW_ENTITY, new HoverEvent.ShowEntity(Key.of("cat"), entity, null))
+        HoverEvent.showEntity(HoverEvent.ShowEntity.of(Key.of("cat"), entity)),
+        HoverEvent.showEntity(HoverEvent.ShowEntity.of(Key.of("cat"), entity, null)),
+        HoverEvent.of(HoverEvent.Action.SHOW_ENTITY, HoverEvent.ShowEntity.of(Key.of("cat"), entity)),
+        HoverEvent.of(HoverEvent.Action.SHOW_ENTITY, HoverEvent.ShowEntity.of(Key.of("cat"), entity, null))
       )
       .addEqualityGroup(
-        HoverEvent.showEntity(new HoverEvent.ShowEntity(Key.of("cat"), entity, TextComponent.empty())),
-        HoverEvent.of(HoverEvent.Action.SHOW_ENTITY, new HoverEvent.ShowEntity(Key.of("cat"), entity, TextComponent.empty()))
+        HoverEvent.showEntity(HoverEvent.ShowEntity.of(Key.of("cat"), entity, TextComponent.empty())),
+        HoverEvent.of(HoverEvent.Action.SHOW_ENTITY, HoverEvent.ShowEntity.of(Key.of("cat"), entity, TextComponent.empty()))
       )
       .testEquals();
   }
