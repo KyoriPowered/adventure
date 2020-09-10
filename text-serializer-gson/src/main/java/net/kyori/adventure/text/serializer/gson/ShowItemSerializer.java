@@ -63,7 +63,7 @@ final class ShowItemSerializer implements JsonDeserializer<HoverEvent.ShowItem>,
       nbt = BinaryTagHolder.of(object.get(TAG).getAsString());
     }
 
-    return new HoverEvent.ShowItem(id, count, nbt);
+    return HoverEvent.ShowItem.of(id, count, nbt);
   }
 
   @Override

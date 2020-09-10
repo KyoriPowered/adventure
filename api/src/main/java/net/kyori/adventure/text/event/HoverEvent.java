@@ -200,11 +200,15 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
     private final int count;
     private final @Nullable BinaryTagHolder nbt;
 
-    public ShowItem(final @NonNull Key item, final @NonNegative int count) {
-      this(item, count, null);
+    public static @NonNull ShowItem of(final @NonNull Key item, final @NonNegative int count) {
+      return of(item, count, null);
     }
 
-    public ShowItem(final @NonNull Key item, final @NonNegative int count, final @Nullable BinaryTagHolder nbt) {
+    public static @NonNull ShowItem of(final @NonNull Key item, final @NonNegative int count, final @Nullable BinaryTagHolder nbt) {
+      return new ShowItem(requireNonNull(item, "item"), count, nbt);
+    }
+
+    private ShowItem(final @NonNull Key item, final @NonNegative int count, final @Nullable BinaryTagHolder nbt) {
       this.item = item;
       this.count = count;
       this.nbt = nbt;
@@ -301,11 +305,15 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
     private final UUID id;
     private final Component name;
 
-    public ShowEntity(final @NonNull Key type, final @NonNull UUID id) {
-      this(type, id, null);
+    public static @NonNull ShowEntity of(final @NonNull Key type, final @NonNull UUID id) {
+      return of(type, id, null);
     }
 
-    public ShowEntity(final @NonNull Key type, final @NonNull UUID id, final @Nullable Component name) {
+    public static @NonNull ShowEntity of(final @NonNull Key type, final @NonNull UUID id, final @Nullable Component name) {
+      return new ShowEntity(requireNonNull(type, "type"), requireNonNull(id, "id"), name);
+    }
+
+    private ShowEntity(final @NonNull Key type, final @NonNull UUID id, final @Nullable Component name) {
       this.type = type;
       this.id = id;
       this.name = name;

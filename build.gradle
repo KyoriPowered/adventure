@@ -46,6 +46,10 @@ subprojects {
     }
   }
 
+  configurations.testCompileClasspath {
+    exclude group: 'junit' // brought in by google's libs
+  }
+
   dependencies {
     checkstyle 'ca.stellardrift:stylecheck:0.1-SNAPSHOT'
     testImplementation 'com.google.guava:guava-testlib:29.0-jre'

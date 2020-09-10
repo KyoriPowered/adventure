@@ -44,4 +44,23 @@ final class BinaryTagHolderImpl implements BinaryTagHolder {
   public <T, DX extends Exception> @NonNull T get(final @NonNull Codec<T, String, DX, ?> codec) throws DX {
     return codec.decode(this.string);
   }
+
+  @Override
+  public int hashCode() {
+    return 31 * this.string.hashCode();
+  }
+
+  @Override
+  public boolean equals(final Object that) {
+    if(!(that instanceof BinaryTagHolderImpl)) {
+      return false;
+    }
+
+    return this.string.equals(((BinaryTagHolderImpl) that).string);
+  }
+
+  @Override
+  public String toString() {
+    return this.string;
+  }
 }

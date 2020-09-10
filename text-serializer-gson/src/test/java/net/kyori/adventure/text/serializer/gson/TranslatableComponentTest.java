@@ -54,7 +54,7 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
           KEY,
           TextComponent.builder(name)
             .clickEvent(ClickEvent.suggestCommand(command))
-            .hoverEvent(HoverEvent.showEntity(new HoverEvent.ShowEntity(
+            .hoverEvent(HoverEvent.showEntity(HoverEvent.ShowEntity.of(
               Key.of("minecraft", "player"),
               id,
               TextComponent.of(name)
