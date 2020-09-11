@@ -73,7 +73,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * @see ForwardingAudience
  * @since 4.0.0
- * @version 4.0.0
  */
 public interface Audience {
   /**

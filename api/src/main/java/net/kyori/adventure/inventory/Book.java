@@ -33,9 +33,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A signed book.
+ *
+ * @since 4.0.0
  */
 public interface Book extends Buildable<Book, Book.Builder> {
-
   /**
    * Creates a book.
    *
@@ -43,6 +44,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
    * @param author the author
    * @param pages the collection of pages
    * @return a book
+   * @since 4.0.0
    */
   static @NonNull Book of(final @NonNull Component title, final @NonNull Component author, final @NonNull Collection<Component> pages) {
     return new BookImpl(title, author, new ArrayList<>(pages));
@@ -55,6 +57,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
    * @param author the author
    * @param pages an array of pages
    * @return a book
+   * @since 4.0.0
    */
   static @NonNull Book of(final @NonNull Component title, final @NonNull Component author, final @NonNull Component@NonNull... pages) {
     return of(title, author, Arrays.asList(pages));
@@ -64,6 +67,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
    * Create a new builder that will create a {@link Book}
    *
    * @return a builder
+   * @since 4.0.0
    */
   static @NonNull Builder builder() {
     return new BookImpl.BuilderImpl();
@@ -73,6 +77,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
    * Gets the title.
    *
    * @return the title
+   * @since 4.0.0
    */
   @NonNull Component title();
 
@@ -81,6 +86,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
    *
    * @param title the title
    * @return a new book with modifications
+   * @since 4.0.0
    */
   @NonNull Book title(final @NonNull Component title);
 
@@ -88,6 +94,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
    * Gets the author.
    *
    * @return the author
+   * @since 4.0.0
    */
   @NonNull Component author();
 
@@ -96,6 +103,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
    *
    * @param author the author
    * @return a new book with modifications
+   * @since 4.0.0
    */
   @NonNull Book author(final @NonNull Component author);
 
@@ -105,6 +113,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
    * The returned collection will be unmodifiable.
    *
    * @return the list of pages
+   * @since 4.0.0
    */
   @NonNull List<Component> pages();
 
@@ -113,18 +122,20 @@ public interface Book extends Buildable<Book, Book.Builder> {
    *
    * @param pages the pages to set
    * @return a new book with modifications
+   * @since 4.0.0
    */
-  @NonNull Book pages(final @NonNull List<Component> pages);
+  default @NonNull Book pages(final @NonNull Component@NonNull... pages) {
+    return this.pages(Arrays.asList(pages));
+  }
 
   /**
    * Returns an updated book with the provided pages.
    *
    * @param pages the pages to set
    * @return a new book with modifications
+   * @since 4.0.0
    */
-  default @NonNull Book pages(final @NonNull Component@NonNull... pages) {
-    return this.pages(Arrays.asList(pages));
-  }
+  @NonNull Book pages(final @NonNull List<Component> pages);
 
   /**
    * Create a new builder initialized with the attributes of this book.
@@ -140,7 +151,9 @@ public interface Book extends Buildable<Book, Book.Builder> {
   }
 
   /**
-   * A builder for a {@link Book}
+   * A builder for a {@link Book}.
+   *
+   * @since 4.0.0
    */
   interface Builder extends Buildable.AbstractBuilder<Book> {
     /**
@@ -148,6 +161,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
      *
      * @param title the title
      * @return this
+     * @since 4.0.0
      */
     @NonNull Builder title(final @NonNull Component title);
 
@@ -156,6 +170,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
      *
      * @param author the author
      * @return this
+     * @since 4.0.0
      */
     @NonNull Builder author(final @NonNull Component author);
 
@@ -167,6 +182,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
      *
      * @param page the page
      * @return this
+     * @since 4.0.0
      */
     @NonNull Builder addPage(final @NonNull Component page);
 
@@ -175,23 +191,25 @@ public interface Book extends Buildable<Book, Book.Builder> {
      *
      * @param pages pages to add
      * @return this
-     * @see #addPage(Component) for details on page values.
+     * @see #addPage(Component) for details on page values
+     * @since 4.0.0
      */
-    @NonNull Builder pages(final @NonNull Collection<Component> pages);
+    @NonNull Builder pages(final @NonNull Component@NonNull... pages);
 
     /**
      * Add pages to the book.
      *
      * @param pages pages to add
      * @return this
-     * @see #addPage(Component) for details on page values.
+     * @see #addPage(Component) for details on page values
+     * @since 4.0.0
      */
-    @NonNull Builder pages(final @NonNull Component@NonNull... pages);
+    @NonNull Builder pages(final @NonNull Collection<Component> pages);
 
     /**
-     * Create a new book from this builder
+     * Builds.
      *
-     * @return the new book
+     * @return a new book
      */
     @Override
     @NonNull Book build();

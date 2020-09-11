@@ -32,6 +32,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * Something that has listeners.
  *
  * @param <L> the listener type
+ * @since 4.0.0
  */
 public abstract class Listenable<L> {
   private final List<L> listeners = new CopyOnWriteArrayList<>();
@@ -40,6 +41,7 @@ public abstract class Listenable<L> {
    * Process an action for each listener.
    *
    * @param consumer the consumer
+   * @since 4.0.0
    */
   protected final void forEachListener(final @NonNull Consumer<L> consumer) {
     for(final L listener : this.listeners) {
@@ -51,6 +53,7 @@ public abstract class Listenable<L> {
    * Adds a listener.
    *
    * @param listener the listener
+   * @since 4.0.0
    */
   protected final void addListener0(final @NonNull L listener) {
     this.listeners.add(listener);
@@ -60,6 +63,7 @@ public abstract class Listenable<L> {
    * Removes a listener.
    *
    * @param listener the listener
+   * @since 4.0.0
    */
   protected final void removeListener0(final @NonNull L listener) {
     this.listeners.remove(listener);

@@ -27,10 +27,14 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A key.
+ *
+ * @since 4.0.0
  */
 public interface Key extends Comparable<Key> {
   /**
    * The namespace for Minecraft.
+   *
+   * @since 4.0.0
    */
   String MINECRAFT_NAMESPACE = "minecraft";
 
@@ -40,6 +44,7 @@ public interface Key extends Comparable<Key> {
    * @param string the string
    * @return the key
    * @throws InvalidKeyException if the namespace or value contains an invalid character
+   * @since 4.0.0
    */
   static @NonNull Key of(final @NonNull String string) {
     return of(string, ':');
@@ -52,6 +57,7 @@ public interface Key extends Comparable<Key> {
    * @param character the character
    * @return the key
    * @throws InvalidKeyException if the namespace or value contains an invalid character
+   * @since 4.0.0
    */
   static @NonNull Key of(final @NonNull String string, final char character) {
     final int index = string.indexOf(character);
@@ -67,6 +73,7 @@ public interface Key extends Comparable<Key> {
    * @param value the value
    * @return the key
    * @throws InvalidKeyException if the namespace or value contains an invalid character
+   * @since 4.0.0
    */
   static @NonNull Key of(final @NonNull String namespace, final @NonNull String value) {
     return new KeyImpl(namespace, value);
@@ -76,6 +83,7 @@ public interface Key extends Comparable<Key> {
    * Gets the namespace.
    *
    * @return the namespace
+   * @since 4.0.0
    */
   @NonNull String namespace();
 
@@ -83,6 +91,7 @@ public interface Key extends Comparable<Key> {
    * Gets the value.
    *
    * @return the value
+   * @since 4.0.0
    */
   @NonNull String value();
 
@@ -90,6 +99,7 @@ public interface Key extends Comparable<Key> {
    * Returns the string representation of this key.
    *
    * @return the string representation
+   * @since 4.0.0
    */
   @NonNull String asString();
 

@@ -31,6 +31,7 @@ import static java.util.Objects.requireNonNull;
  * A {@code T} value with an associated {@link Key}.
  *
  * @param <T> the value type
+ * @since 4.0.0
  */
 public interface KeyedValue<T> extends Keyed {
   /**
@@ -40,6 +41,7 @@ public interface KeyedValue<T> extends Keyed {
    * @param value the value
    * @param <T> the value type
    * @return the keyed
+   * @since 4.0.0
    */
   static <T> @NonNull KeyedValue<T> of(final @NonNull Key key, final @NonNull T value) {
     return new KeyedValueImpl<>(key, requireNonNull(value, "value"));
@@ -49,6 +51,7 @@ public interface KeyedValue<T> extends Keyed {
    * Gets the value.
    *
    * @return the value
+   * @since 4.0.0
    */
   @NonNull T value();
 }

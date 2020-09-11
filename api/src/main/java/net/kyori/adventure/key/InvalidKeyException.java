@@ -28,6 +28,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * This exception is thrown when an invalid namespace and/or value has been detected while creating a {@link Key}.
+ *
+ * @since 4.0.0
  */
 public final class InvalidKeyException extends RuntimeException {
   private static final long serialVersionUID = -5413304087321449434L;
@@ -44,6 +46,7 @@ public final class InvalidKeyException extends RuntimeException {
    * Gets the invalid key, as a string.
    *
    * @return a key
+   * @since 4.0.0
    */
   public final @NonNull String keyNamespace() {
     return this.keyNamespace;
@@ -53,6 +56,7 @@ public final class InvalidKeyException extends RuntimeException {
    * Gets the invalid key, as a string.
    *
    * @return a key
+   * @since 4.0.0
    */
   public final @NonNull String keyValue() {
     return this.keyValue;

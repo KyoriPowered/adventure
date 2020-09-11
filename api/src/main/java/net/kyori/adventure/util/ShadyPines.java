@@ -30,6 +30,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Various utilities.
+ *
+ * @since 4.0.0
  */
 public final class ShadyPines {
   private ShadyPines() {
@@ -42,6 +44,7 @@ public final class ShadyPines {
    * @param constants the enum constants
    * @param <E> the enum type
    * @return the set
+   * @since 4.0.0
    */
   @SafeVarargs
   @SuppressWarnings("varargs")
@@ -57,6 +60,7 @@ public final class ShadyPines {
    * @param a a double
    * @param b a double
    * @return {@code true} if {@code a} is equal to {@code b}, otherwise {@code false}
+   * @since 4.0.0
    */
   public static boolean equals(final double a, final double b) {
     return Double.doubleToLongBits(a) == Double.doubleToLongBits(b);
@@ -68,6 +72,7 @@ public final class ShadyPines {
    * @param a a float
    * @param b a float
    * @return {@code true} if {@code a} is equal to {@code b}, otherwise {@code false}
+   * @since 4.0.0
    */
   public static boolean equals(final float a, final float b) {
     return Float.floatToIntBits(a) == Float.floatToIntBits(b);

@@ -39,10 +39,14 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A registry of translations.
+ *
+ * @since 4.0.0
  */
 public interface TranslationRegistry extends TranslationSource {
   /**
    * A pattern which matches a single quote.
+   *
+   * @since 4.0.0
    */
   Pattern SINGLE_QUOTE_PATTERN = Pattern.compile("'");
 
@@ -50,6 +54,7 @@ public interface TranslationRegistry extends TranslationSource {
    * Gets the shared, global translation registry.
    *
    * @return the translation registry
+   * @since 4.0.0
    */
   static @NonNull TranslationRegistry get() {
     return TranslationRegistryImpl.INSTANCE;
@@ -61,6 +66,7 @@ public interface TranslationRegistry extends TranslationSource {
    * <p>You most likely want {@link #get() the global registry} instead.</p>
    *
    * @return a translation registry
+   * @since 4.0.0
    */
   static @NonNull TranslationRegistry create() {
     return new TranslationRegistryImpl();
@@ -74,6 +80,7 @@ public interface TranslationRegistry extends TranslationSource {
    * @param locale a locale
    * @param key a translation key
    * @return a message format or {@code null} to skip translation
+   * @since 4.0.0
    */
   @Override
   @Nullable MessageFormat translate(final @NonNull String key, final @NonNull Locale locale);
@@ -90,6 +97,7 @@ public interface TranslationRegistry extends TranslationSource {
    * @param locale a locale
    * @param format a translation format
    * @throws IllegalArgumentException if the translation key is already exists
+   * @since 4.0.0
    */
   void register(final @NonNull String key, final @NonNull Locale locale, final @NonNull MessageFormat format);
 
@@ -100,6 +108,7 @@ public interface TranslationRegistry extends TranslationSource {
    * @param formats a map of translation keys to formats
    * @throws IllegalArgumentException if a translation key is already exists
    * @see #register(String, Locale, MessageFormat)
+   * @since 4.0.0
    */
   default void registerAll(final @NonNull Locale locale, final @NonNull Map<String, MessageFormat> formats) {
     this.registerAll(locale, formats.keySet(), formats::get);
@@ -112,6 +121,7 @@ public interface TranslationRegistry extends TranslationSource {
    * @param keys the translation keys to register
    * @param function a function to transform a key into a message format
    * @throws IllegalArgumentException if a translation key is already exists
+   * @since 4.0.0
    */
   default void registerAll(final @NonNull Locale locale, final @NonNull Set<String> keys, final Function<String, MessageFormat> function) {
     List<IllegalArgumentException> errors = null;
@@ -163,6 +173,7 @@ public interface TranslationRegistry extends TranslationSource {
    * @param escapeSingleQuotes whether to escape single quotes
    * @throws IllegalArgumentException if a translation key is already exists
    * @see #registerAll(Locale, ResourceBundle, boolean)
+   * @since 4.0.0
    */
   default void registerAll(final @NonNull Locale locale, final @NonNull String resourceBundlePath, final boolean escapeSingleQuotes) {
     final ResourceBundle resourceBundle;
@@ -178,6 +189,7 @@ public interface TranslationRegistry extends TranslationSource {
    * Unregisters a translation key.
    *
    * @param key a translation key
+   * @since 4.0.0
    */
   void unregister(final @NonNull String key);
 }

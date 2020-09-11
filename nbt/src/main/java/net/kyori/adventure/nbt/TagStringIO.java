@@ -30,6 +30,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A holder for string tag format options.
+ *
+ * @since 4.0.0
  */
 public final class TagStringIO {
   private static final TagStringIO INSTANCE = new TagStringIO(new Builder());
@@ -38,6 +40,7 @@ public final class TagStringIO {
    * Get an instance of {@link TagStringIO} that creates reads and writes using standard options.
    *
    * @return the basic instance
+   * @since 4.0.0
    */
   public static @NonNull TagStringIO get() {
     return INSTANCE;
@@ -47,6 +50,7 @@ public final class TagStringIO {
    * Create an new builder to configure IO.
    *
    * @return a builder
+   * @since 4.0.0
    */
   public static @NonNull Builder builder() {
     return new Builder();
@@ -68,6 +72,7 @@ public final class TagStringIO {
    * @param input Input data
    * @return this
    * @throws IOException on any syntax errors
+   * @since 4.0.0
    */
   public CompoundBinaryTag asCompound(final String input) throws IOException {
     try {
@@ -90,6 +95,7 @@ public final class TagStringIO {
    * @param input tag to serialize
    * @return serialized form
    * @throws IOException if any errors occur writing to string
+   * @since 4.0.0
    */
   public String asString(final CompoundBinaryTag input) throws IOException {
     final StringBuilder sb = new StringBuilder();
@@ -108,6 +114,7 @@ public final class TagStringIO {
    * @param input Tag to write
    * @param dest Writer to write to
    * @throws IOException if any IO or syntax errors occur while parsing
+   * @since 4.0.0
    */
   public void toWriter(final CompoundBinaryTag input, final Writer dest) throws IOException {
     try(final TagStringWriter emit = new TagStringWriter(dest, this.indent)) {
@@ -118,6 +125,8 @@ public final class TagStringIO {
 
   /**
    * Builder for a SNBT I/O handler.
+   *
+   * @since 4.0.0
    */
   public static class Builder {
     private boolean acceptLegacy = true;
@@ -134,6 +143,7 @@ public final class TagStringIO {
      *
      * @param spaces Spaces to indent each level with
      * @return this builder
+     * @since 4.0.0
      */
     public @NonNull Builder indent(final int spaces) {
       if(spaces == 0) {
@@ -153,6 +163,7 @@ public final class TagStringIO {
      *
      * @param tabs Tabs to indent each level with
      * @return this builder
+     * @since 4.0.0
      */
     public @NonNull Builder indentTab(final int tabs) {
       if(tabs == 0) {
@@ -175,6 +186,7 @@ public final class TagStringIO {
      * 
      * @param legacy whether to accept legacy formatting
      * @return this builder
+     * @since 4.0.0
      */
     public @NonNull Builder acceptLegacy(final boolean legacy) {
       this.acceptLegacy = legacy;
@@ -186,6 +198,7 @@ public final class TagStringIO {
      *
      * @param legacy whether to emit legacy formatting
      * @return this builder
+     * @since 4.0.0
      */
     public @NonNull Builder emitLegacy(final boolean legacy) {
       this.emitLegacy = legacy;
@@ -196,6 +209,7 @@ public final class TagStringIO {
      * Create a new IO configuration from this builder.
      * 
      * @return new IO configuration
+     * @since 4.0.0
      */
     public @NonNull TagStringIO build() {
       return new TagStringIO(this);

@@ -41,6 +41,8 @@ import static java.util.Objects.requireNonNull;
  * A click event.
  *
  * <p>A click event processes an {@link Action} when clicked on.</p>
+ *
+ * @since 4.0.0
  */
 public final class ClickEvent implements Examinable, StyleBuilderApplicable {
   /**
@@ -48,6 +50,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    *
    * @param url the url to open
    * @return a click event
+   * @since 4.0.0
    */
   public static @NonNull ClickEvent openUrl(final @NonNull String url) {
     return of(Action.OPEN_URL, url);
@@ -58,6 +61,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    *
    * @param url the url to open
    * @return a click event
+   * @since 4.0.0
    */
   public static @NonNull ClickEvent openUrl(final @NonNull URL url) {
     return openUrl(url.toExternalForm());
@@ -70,6 +74,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    *
    * @param file the file to open
    * @return a click event
+   * @since 4.0.0
    */
   public static @NonNull ClickEvent openFile(final @NonNull String file) {
     return of(Action.OPEN_FILE, file);
@@ -80,6 +85,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    *
    * @param command the command to run
    * @return a click event
+   * @since 4.0.0
    */
   public static @NonNull ClickEvent runCommand(final @NonNull String command) {
     return of(Action.RUN_COMMAND, command);
@@ -90,6 +96,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    *
    * @param command the command to suggest
    * @return a click event
+   * @since 4.0.0
    */
   public static @NonNull ClickEvent suggestCommand(final @NonNull String command) {
     return of(Action.SUGGEST_COMMAND, command);
@@ -100,6 +107,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    *
    * @param page the page to change to
    * @return a click event
+   * @since 4.0.0
    */
   public static @NonNull ClickEvent changePage(final @NonNull String page) {
     return of(Action.CHANGE_PAGE, page);
@@ -110,6 +118,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    *
    * @param page the page to change to
    * @return a click event
+   * @since 4.0.0
    */
   public static @NonNull ClickEvent changePage(final int page) {
     return changePage(String.valueOf(page));
@@ -120,6 +129,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    *
    * @param text the text to copy to the clipboard
    * @return a click event
+   * @since 4.0.0
    */
   public static @NonNull ClickEvent copyToClipboard(final @NonNull String text) {
     return of(Action.COPY_TO_CLIPBOARD, text);
@@ -131,18 +141,13 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @param action the action
    * @param value the value
    * @return a click event
+   * @since 4.0.0
    */
   public static @NonNull ClickEvent of(final @NonNull Action action, final @NonNull String value) {
     return new ClickEvent(action, value);
   }
 
-  /**
-   * The click event action.
-   */
   private final Action action;
-  /**
-   * The click event value.
-   */
   private final String value;
 
   private ClickEvent(final @NonNull Action action, final @NonNull String value) {
@@ -154,6 +159,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * Gets the click event action.
    *
    * @return the click event action
+   * @since 4.0.0
    */
   public @NonNull Action action() {
     return this.action;
@@ -163,6 +169,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * Gets the click event value.
    *
    * @return the click event value
+   * @since 4.0.0
    */
   public @NonNull String value() {
     return this.value;
@@ -203,42 +210,55 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
 
   /**
    * An enumeration of click event actions.
+   *
+   * @since 4.0.0
    */
   public enum Action {
     /**
      * Opens a url when clicked.
+     *
+     * @since 4.0.0
      */
     OPEN_URL("open_url", true),
     /**
      * Opens a file when clicked.
      *
      * <p>This action is not readable, and may only be used locally on the client.</p>
+     *
+     * @since 4.0.0
      */
     OPEN_FILE("open_file", false),
     /**
      * Runs a command when clicked.
+     *
+     * @since 4.0.0
      */
     RUN_COMMAND("run_command", true),
     /**
      * Suggests a command into the chat box.
+     *
+     * @since 4.0.0
      */
     SUGGEST_COMMAND("suggest_command", true),
     /**
      * Changes the page of a book.
+     *
+     * @since 4.0.0
      */
     CHANGE_PAGE("change_page", true),
     /**
      * Copies text to the clipboard.
+     *
+     * @since 4.0.0
      */
     COPY_TO_CLIPBOARD("copy_to_clipboard", true);
 
     /**
      * The name map.
+     *
+     * @since 4.0.0
      */
     public static final Index<String, Action> NAMES = Index.create(Action.class, constant -> constant.name);
-    /**
-     * The name of this action.
-     */
     private final String name;
     /**
      * If this action is readable.
@@ -257,6 +277,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
      *
      * @return {@code true} if this action is readable, {@code false} if this
      *     action is not readable
+     * @since 4.0.0
      */
     public boolean readable() {
       return this.readable;

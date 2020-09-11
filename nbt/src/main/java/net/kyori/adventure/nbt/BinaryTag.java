@@ -28,12 +28,15 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A binary tag.
+ *
+ * @since 4.0.0
  */
 public interface BinaryTag extends Examinable {
   /**
    * Gets the tag type.
    *
    * @return the tag type
+   * @since 4.0.0
    */
   @NonNull BinaryTagType<? extends BinaryTag> type();
 }

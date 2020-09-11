@@ -30,6 +30,8 @@ import org.checkerframework.common.value.qual.IntRange;
 
 /**
  * A color which may be applied to a {@link Style}.
+ *
+ * @since 4.0.0
  */
 public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderApplicable, TextFormat {
   /**
@@ -37,6 +39,7 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
    *
    * @param value the rgb value
    * @return a new text colour
+   * @since 4.0.0
    */
   static @NonNull TextColor of(final int value) {
     final NamedTextColor named = NamedTextColor.ofExact(value);
@@ -48,6 +51,7 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
    *
    * @param rgb the rgb value
    * @return a new text colour
+   * @since 4.0.0
    */
   static @NonNull TextColor from(final RGBLike rgb) {
     return of(rgb.red(), rgb.green(), rgb.blue());
@@ -60,6 +64,7 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
    * @param g green, as a value from 0 to 255
    * @param b blue, as a value from 0 to 255
    * @return a new text colour
+   * @since 4.0.0
    */
   static @NonNull TextColor of(final @IntRange(from = 0x0, to = 0xff) int r, final @IntRange(from = 0x0, to = 0xff) int g, final @IntRange(from = 0x0, to = 0xff) int b) {
     return of((r & 0xff) << 16 | (g & 0xff) << 8 | (b & 0xff));
@@ -72,6 +77,7 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
    * @param g green, within [0, 1]
    * @param b blue, within [0, 1]
    * @return a new text colour
+   * @since 4.0.0
    */
   static @NonNull TextColor of(final float r, final float g, final float b) {
     return of((int) (r * 0xff), (int) (g * 0xff), (int) (b * 0xff));
@@ -82,6 +88,7 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
    *
    * @param string the hex string
    * @return a new text colour
+   * @since 4.0.0
    */
   static @Nullable TextColor fromHexString(final @NonNull String string) {
     if(string.startsWith("#")) {
@@ -100,6 +107,7 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
    *
    * @param string the hex string
    * @return a new text colour
+   * @since 4.0.0
    */
   static @Nullable TextColor fromCSSHexString(final @NonNull String string) {
     if(string.startsWith("#")) {
@@ -130,6 +138,7 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
    * The color, as an RGB value packed into an int
    *
    * @return the value
+   * @since 4.0.0
    */
   int value();
 
@@ -137,6 +146,7 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
    * Gets the color, as a hex string.
    *
    * @return a hex string
+   * @since 4.0.0
    */
   default @NonNull String asHexString() {
     return String.format("#%06x", this.value());
@@ -146,6 +156,7 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
    * Get the red component of the text colour
    *
    * @return the red component, in the range [0x0, 0xff]
+   * @since 4.0.0
    */
   @Override
   default @IntRange(from = 0x0, to = 0xff) int red() {
@@ -156,6 +167,7 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
    * Get the green component of the text colour
    *
    * @return the green component, in the range [0x0, 0xff]
+   * @since 4.0.0
    */
   @Override
   default @IntRange(from = 0x0, to = 0xff) int green() {
@@ -166,6 +178,7 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
    * Get the blue component of the text colour
    *
    * @return the blue component, in the range [0x0, 0xff]
+   * @since 4.0.0
    */
   @Override
   default @IntRange(from = 0x0, to = 0xff) int blue() {

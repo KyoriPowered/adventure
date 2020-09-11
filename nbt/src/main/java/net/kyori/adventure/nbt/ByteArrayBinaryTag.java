@@ -27,6 +27,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A binary tag holding a {@code byte}-array value.
+ *
+ * @since 4.0.0
  */
 public interface ByteArrayBinaryTag extends BinaryTag {
   /**
@@ -34,6 +36,7 @@ public interface ByteArrayBinaryTag extends BinaryTag {
    *
    * @param value the value
    * @return a binary tag
+   * @since 4.0.0
    */
   static @NonNull ByteArrayBinaryTag of(final byte@NonNull... value) {
     return new ByteArrayBinaryTagImpl(value);
@@ -50,6 +53,7 @@ public interface ByteArrayBinaryTag extends BinaryTag {
    * <p>The returned array is a copy.</p>
    *
    * @return the value
+   * @since 4.0.0
    */
   byte@NonNull[] value();
 }

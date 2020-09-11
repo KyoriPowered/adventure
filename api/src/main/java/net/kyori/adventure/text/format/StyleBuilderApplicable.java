@@ -28,7 +28,9 @@ import net.kyori.adventure.text.ComponentBuilderApplicable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * Something that can be applied to a {@link Style} builder.
+ * Something that can be applied to a {@link Style}
+ *
+ * @since 4.0.0
  */
 @FunctionalInterface
 public interface StyleBuilderApplicable extends ComponentBuilderApplicable {
@@ -36,6 +38,7 @@ public interface StyleBuilderApplicable extends ComponentBuilderApplicable {
    * Applies to {@code style}.
    *
    * @param style the style builder
+   * @since 4.0.0
    */
   void styleApply(final Style.@NonNull Builder style);
 

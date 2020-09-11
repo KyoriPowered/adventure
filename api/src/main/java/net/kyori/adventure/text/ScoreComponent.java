@@ -30,12 +30,15 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A scoreboard score component.
+ *
+ * @since 4.0.0
  */
 public interface ScoreComponent extends BuildableComponent<ScoreComponent, ScoreComponent.Builder>, ScopedComponent<ScoreComponent> {
   /**
    * Creates a score component builder.
    *
    * @return a builder
+   * @since 4.0.0
    */
   static @NonNull Builder builder() {
     return new ScoreComponentImpl.BuilderImpl();
@@ -47,6 +50,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @param name the score name
    * @param objective the score objective
    * @return a builder
+   * @since 4.0.0
    */
   static @NonNull Builder builder(final @NonNull String name, final @NonNull String objective) {
     return builder().name(name).objective(objective);
@@ -57,7 +61,8 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    *
    * @param name the score name
    * @param objective the score objective
-   * @return the score component
+   * @return a score component
+   * @since 4.0.0
    */
   static @NonNull ScoreComponent of(final @NonNull String name, final @NonNull String objective) {
     return of(name, objective, null);
@@ -69,7 +74,8 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @param name the score name
    * @param objective the score objective
    * @param value the value
-   * @return the score component
+   * @return a score component
+   * @since 4.0.0
    */
   static @NonNull ScoreComponent of(final @NonNull String name, final @NonNull String objective, final @Nullable String value) {
     return builder()
@@ -83,7 +89,8 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * Creates a score component by applying configuration from {@code consumer}.
    *
    * @param consumer the builder configurator
-   * @return the score component
+   * @return a score component
+   * @since 4.0.0
    */
   static @NonNull ScoreComponent make(final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder();
@@ -96,7 +103,8 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @param name the score name
    * @param objective the score objective
    * @param consumer the builder configurator
-   * @return the score component
+   * @return a score component
+   * @since 4.0.0
    */
   static @NonNull ScoreComponent make(final @NonNull String name, final @NonNull String objective, final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder(name, objective);
@@ -107,6 +115,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * Gets the score name.
    *
    * @return the score name
+   * @since 4.0.0
    */
   @NonNull String name();
 
@@ -114,7 +123,8 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * Sets the score name.
    *
    * @param name the score name
-   * @return a copy of this component
+   * @return a score component
+   * @since 4.0.0
    */
   @NonNull ScoreComponent name(final @NonNull String name);
 
@@ -122,6 +132,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * Gets the objective name.
    *
    * @return the objective name
+   * @since 4.0.0
    */
   @NonNull String objective();
 
@@ -129,7 +140,8 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * Sets the score objective.
    *
    * @param objective the score objective
-   * @return a copy of this component
+   * @return a score component
+   * @since 4.0.0
    */
   @NonNull ScoreComponent objective(final @NonNull String objective);
 
@@ -137,6 +149,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * Gets the value.
    *
    * @return the value
+   * @since 4.0.0
    */
   @Nullable String value();
 
@@ -144,12 +157,15 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * Sets the value.
    *
    * @param value the value
-   * @return a copy of this component
+   * @return a score component
+   * @since 4.0.0
    */
   @NonNull ScoreComponent value(final @Nullable String value);
 
   /**
    * A score component builder.
+   *
+   * @since 4.0.0
    */
   interface Builder extends ComponentBuilder<ScoreComponent, Builder> {
     /**
@@ -157,6 +173,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
      *
      * @param name the score name
      * @return this builder
+     * @since 4.0.0
      */
     @NonNull Builder name(final @NonNull String name);
 
@@ -165,6 +182,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
      *
      * @param objective the score objective
      * @return this builder
+     * @since 4.0.0
      */
     @NonNull Builder objective(final @NonNull String objective);
 
@@ -173,6 +191,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
      *
      * @param value the value
      * @return this builder
+     * @since 4.0.0
      */
     @NonNull Builder value(final @Nullable String value);
   }

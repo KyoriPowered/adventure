@@ -30,15 +30,57 @@ import java.util.Map;
 
 /**
  * All known binary tag types.
+ *
+ * @since 4.0.0
  */
 public final class BinaryTagTypes {
+  /**
+   * {@link EndBinaryTag}.
+   *
+   * @since 4.0.0
+   */
   public static final BinaryTagType<EndBinaryTag> END = BinaryTagType.register(EndBinaryTag.class, (byte) 0, input -> EndBinaryTag.get(), null); // nothing to write
+  /**
+   * {@link ByteBinaryTag}.
+   *
+   * @since 4.0.0
+   */
   public static final BinaryTagType<ByteBinaryTag> BYTE = BinaryTagType.registerNumeric(ByteBinaryTag.class, (byte) 1, input -> ByteBinaryTag.of(input.readByte()), (tag, output) -> output.writeByte(tag.value()));
+  /**
+   * {@link ShortBinaryTag}.
+   *
+   * @since 4.0.0
+   */
   public static final BinaryTagType<ShortBinaryTag> SHORT = BinaryTagType.registerNumeric(ShortBinaryTag.class, (byte) 2, input -> ShortBinaryTag.of(input.readShort()), (tag, output) -> output.writeShort(tag.value()));
+  /**
+   * {@link IntBinaryTag}.
+   *
+   * @since 4.0.0
+   */
   public static final BinaryTagType<IntBinaryTag> INT = BinaryTagType.registerNumeric(IntBinaryTag.class, (byte) 3, input -> IntBinaryTag.of(input.readInt()), (tag, output) -> output.writeInt(tag.value()));
+  /**
+   * {@link LongBinaryTag}.
+   *
+   * @since 4.0.0
+   */
   public static final BinaryTagType<LongBinaryTag> LONG = BinaryTagType.registerNumeric(LongBinaryTag.class, (byte) 4, input -> LongBinaryTag.of(input.readLong()), (tag, output) -> output.writeLong(tag.value()));
+  /**
+   * {@link FloatBinaryTag}.
+   *
+   * @since 4.0.0
+   */
   public static final BinaryTagType<FloatBinaryTag> FLOAT = BinaryTagType.registerNumeric(FloatBinaryTag.class, (byte) 5, input -> FloatBinaryTag.of(input.readFloat()), (tag, output) -> output.writeFloat(tag.value()));
+  /**
+   * {@link DoubleBinaryTag}.
+   *
+   * @since 4.0.0
+   */
   public static final BinaryTagType<DoubleBinaryTag> DOUBLE = BinaryTagType.registerNumeric(DoubleBinaryTag.class, (byte) 6, input -> DoubleBinaryTag.of(input.readDouble()), (tag, output) -> output.writeDouble(tag.value()));
+  /**
+   * {@link ByteArrayBinaryTag}.
+   *
+   * @since 4.0.0
+   */
   public static final BinaryTagType<ByteArrayBinaryTag> BYTE_ARRAY = BinaryTagType.register(ByteArrayBinaryTag.class, (byte) 7, input -> {
     final int length = input.readInt();
     final byte[] value = new byte[length];
@@ -49,7 +91,17 @@ public final class BinaryTagTypes {
     output.writeInt(value.length);
     output.write(value);
   });
+  /**
+   * {@link StringBinaryTag}.
+   *
+   * @since 4.0.0
+   */
   public static final BinaryTagType<StringBinaryTag> STRING = BinaryTagType.register(StringBinaryTag.class, (byte) 8, input -> StringBinaryTag.of(input.readUTF()), (tag, output) -> output.writeUTF(tag.value()));
+  /**
+   * {@link ListBinaryTag}.
+   *
+   * @since 4.0.0
+   */
   public static final BinaryTagType<ListBinaryTag> LIST = BinaryTagType.register(ListBinaryTag.class, (byte) 9, input -> {
     final BinaryTagType<? extends BinaryTag> type = BinaryTagType.of(input.readByte());
     final int length = input.readInt();
@@ -66,6 +118,11 @@ public final class BinaryTagTypes {
       BinaryTagType.write(item.type(), item, output);
     }
   });
+  /**
+   * {@link CompoundBinaryTag}.
+   *
+   * @since 4.0.0
+   */
   public static final BinaryTagType<CompoundBinaryTag> COMPOUND = BinaryTagType.register(CompoundBinaryTag.class, (byte) 10, input -> {
     final Map<String, BinaryTag> tags = new HashMap<>();
     BinaryTagType<? extends BinaryTag> type;
@@ -89,6 +146,11 @@ public final class BinaryTagTypes {
     }
     output.writeByte(BinaryTagTypes.END.id());
   });
+  /**
+   * {@link IntArrayBinaryTag}.
+   *
+   * @since 4.0.0
+   */
   public static final BinaryTagType<IntArrayBinaryTag> INT_ARRAY = BinaryTagType.register(IntArrayBinaryTag.class, (byte) 11, input -> {
     final int length = input.readInt();
     final int[] value = new int[length];
@@ -104,6 +166,11 @@ public final class BinaryTagTypes {
       output.writeInt(value[i]);
     }
   });
+  /**
+   * {@link LongArrayBinaryTag}.
+   *
+   * @since 4.0.0
+   */
   public static final BinaryTagType<LongArrayBinaryTag> LONG_ARRAY = BinaryTagType.register(LongArrayBinaryTag.class, (byte) 12, input -> {
     final int length = input.readInt();
     final long[] value = new long[length];

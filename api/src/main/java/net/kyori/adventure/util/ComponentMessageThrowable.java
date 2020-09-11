@@ -29,6 +29,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An extension interface for {@link Throwable}s to provide a {@link Component}-based message.
+ *
+ * @since 4.0.0
  */
 public interface ComponentMessageThrowable {
   /**
@@ -36,6 +38,7 @@ public interface ComponentMessageThrowable {
    *
    * @param throwable the throwable
    * @return the message
+   * @since 4.0.0
    */
   // CHECKSTYLE:OFF
   static @Nullable Component getMessage(final @Nullable Throwable throwable) {
@@ -51,6 +54,7 @@ public interface ComponentMessageThrowable {
    *
    * @param throwable the throwable
    * @return the message
+   * @since 4.0.0
    */
   // CHECKSTYLE:OFF
   static @Nullable Component getOrConvertMessage(final @Nullable Throwable throwable) {
@@ -70,6 +74,7 @@ public interface ComponentMessageThrowable {
    * Gets the message.
    *
    * @return the message
+   * @since 4.0.0
    */
   @Nullable Component componentMessage();
 }

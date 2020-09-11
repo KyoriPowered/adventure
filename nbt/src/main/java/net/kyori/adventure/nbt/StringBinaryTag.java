@@ -30,6 +30,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A binary tag holding a {@link String} value.
+ *
+ * @since 4.0.0
  */
 public interface StringBinaryTag extends BinaryTag {
   /**
@@ -37,6 +39,7 @@ public interface StringBinaryTag extends BinaryTag {
    *
    * @param value the value
    * @return a binary tag
+   * @since 4.0.0
    */
   static @NonNull StringBinaryTag of(final @NonNull String value) {
     return new StringBinaryTagImpl(value);
@@ -51,6 +54,7 @@ public interface StringBinaryTag extends BinaryTag {
    * Gets the value.
    *
    * @return the value
+   * @since 4.0.0
    */
   @NonNull String value();
 }

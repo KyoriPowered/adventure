@@ -29,18 +29,26 @@ import net.kyori.adventure.util.IntFunction2;
 
 /**
  * A result for {@link Component#replaceText(Pattern, UnaryOperator, IntFunction2) pattern-based replacements}.
+ *
+ * @since 4.0.0
  */
 public enum PatternReplacementResult {
   /**
    * Replace the current match.
+   *
+   * @since 4.0.0
    */
   REPLACE,
   /**
    * Skip the current match, but continue searching for others.
+   *
+   * @since 4.0.0
    */
   CONTINUE,
   /**
    * Stop matching.
+   *
+   * @since 4.0.0
    */
   STOP;
 }

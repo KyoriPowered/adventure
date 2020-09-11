@@ -31,6 +31,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * Something that can provide a {@link HoverEvent}.
  *
  * @param <V> the value type
+ * @since 4.0.0
  */
 public interface HoverEventSource<V> {
   /**
@@ -39,6 +40,7 @@ public interface HoverEventSource<V> {
    * @param source the hover event source
    * @param <V> the value type
    * @return a hover event, or {@code null}
+   * @since 4.0.0
    */
   static <V> @Nullable HoverEvent<V> unbox(final @Nullable HoverEventSource<V> source) {
     return source != null ? source.asHoverEvent() : null;
@@ -48,6 +50,7 @@ public interface HoverEventSource<V> {
    * Represent this object as a hover event.
    *
    * @return a hover event
+   * @since 4.0.0
    */
   default @NonNull HoverEvent<V> asHoverEvent() {
     return this.asHoverEvent(UnaryOperator.identity());
@@ -61,6 +64,7 @@ public interface HoverEventSource<V> {
    *
    * @param op transformation on value
    * @return a hover event
+   * @since 4.0.0
    */
   @NonNull HoverEvent<V> asHoverEvent(final @NonNull UnaryOperator<V> op);
 }

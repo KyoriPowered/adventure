@@ -30,6 +30,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * @param <R> the return type
  * @param <T> the element type
+ * @since 4.0.0
  */
 public interface ListTagSetter<R, T extends BinaryTag> {
   /**
@@ -37,6 +38,7 @@ public interface ListTagSetter<R, T extends BinaryTag> {
    *
    * @param tag the tag
    * @return a list tag
+   * @since 4.0.0
    */
   @NonNull R add(final T tag);
 }

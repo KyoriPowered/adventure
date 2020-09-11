@@ -27,6 +27,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Something that can be applied to a {@link Component}.
+ *
+ * @since 4.0.0
  */
 @FunctionalInterface
 public interface ComponentApplicable {
@@ -35,6 +37,7 @@ public interface ComponentApplicable {
    *
    * @param component the component
    * @return a component with something applied.
+   * @since 4.0.0
    */
   @NonNull Component componentApply(final @NonNull Component component);
 }
