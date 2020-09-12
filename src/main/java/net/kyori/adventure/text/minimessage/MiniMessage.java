@@ -130,7 +130,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
   /**
    * A builder for {@link MiniMessage}.
    */
-  interface Builder extends Buildable.AbstractBuilder<MiniMessage> {
+  interface Builder extends Buildable.Builder<MiniMessage> {
 
     /**
      * Adds markdown support
