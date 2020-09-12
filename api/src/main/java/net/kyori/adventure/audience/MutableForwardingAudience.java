@@ -28,6 +28,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * An audience that wraps a collection.
  *
@@ -63,7 +65,7 @@ public class MutableForwardingAudience implements ForwardingAudience {
    * @since 4.0.0
    */
   public MutableForwardingAudience(final @NonNull Collection<Audience> audiences) {
-    this.audiences = audiences;
+    this.audiences = requireNonNull(audiences);
   }
 
   @Override
