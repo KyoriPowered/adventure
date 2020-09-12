@@ -153,7 +153,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    *
    * @since 4.0.0
    */
-  interface Builder extends Buildable.AbstractBuilder<LegacyComponentSerializer> {
+  interface Builder extends Buildable.Builder<LegacyComponentSerializer> {
     /**
      * Sets the legacy character used by the serializer.
      *

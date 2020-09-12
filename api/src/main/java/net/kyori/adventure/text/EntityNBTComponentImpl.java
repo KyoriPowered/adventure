@@ -99,11 +99,11 @@ final class EntityNBTComponentImpl extends NBTComponentImpl<EntityNBTComponent, 
   }
 
   @Override
-  public @NonNull Builder toBuilder() {
+  public EntityNBTComponent.@NonNull Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
-  static final class BuilderImpl extends NBTComponentImpl.BuilderImpl<EntityNBTComponent, Builder> implements Builder {
+  static final class BuilderImpl extends NBTComponentImpl.BuilderImpl<EntityNBTComponent, EntityNBTComponent.Builder> implements EntityNBTComponent.Builder {
     private @Nullable String selector;
 
     BuilderImpl() {
@@ -115,7 +115,7 @@ final class EntityNBTComponentImpl extends NBTComponentImpl<EntityNBTComponent, 
     }
 
     @Override
-    public @NonNull Builder selector(final @NonNull String selector) {
+    public EntityNBTComponent.@NonNull Builder selector(final @NonNull String selector) {
       this.selector = selector;
       return this;
     }

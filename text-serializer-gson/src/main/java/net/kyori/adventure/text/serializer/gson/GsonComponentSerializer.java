@@ -95,7 +95,7 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
    *
    * @since 4.0.0
    */
-  interface Builder extends Buildable.AbstractBuilder<GsonComponentSerializer> {
+  interface Builder extends Buildable.Builder<GsonComponentSerializer> {
     /**
      * Sets that the serializer should downsample hex colors to named colors.
      *

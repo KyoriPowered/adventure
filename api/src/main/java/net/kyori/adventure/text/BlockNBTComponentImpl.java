@@ -102,11 +102,11 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
   }
 
   @Override
-  public @NonNull Builder toBuilder() {
+  public BlockNBTComponent.@NonNull Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
-  static final class BuilderImpl extends NBTComponentImpl.BuilderImpl<BlockNBTComponent, Builder> implements Builder {
+  static final class BuilderImpl extends NBTComponentImpl.BuilderImpl<BlockNBTComponent, BlockNBTComponent.Builder> implements BlockNBTComponent.Builder {
     private @Nullable Pos pos;
 
     BuilderImpl() {
@@ -118,7 +118,7 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
     }
 
     @Override
-    public @NonNull Builder pos(final @NonNull Pos pos) {
+    public BlockNBTComponent.@NonNull Builder pos(final @NonNull Pos pos) {
       this.pos = pos;
       return this;
     }

@@ -34,7 +34,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @param <B> the builder type
  * @since 4.0.0
  */
-public interface Buildable<R, B extends Buildable.AbstractBuilder<R>> {
+public interface Buildable<R, B extends Buildable.Builder<R>> {
   /**
    * Configures {@code builder} using {@code consumer} and then builds.
    *
@@ -45,7 +45,7 @@ public interface Buildable<R, B extends Buildable.AbstractBuilder<R>> {
    * @return the built thing
    * @since 4.0.0
    */
-  static <R extends Buildable<R, B>, B extends AbstractBuilder<R>> @NonNull R configureAndBuild(final @NonNull B builder, final @Nullable Consumer<? super B> consumer) {
+  static <R extends Buildable<R, B>, B extends Builder<R>> @NonNull R configureAndBuild(final @NonNull B builder, final @Nullable Consumer<? super B> consumer) {
     if(consumer != null) consumer.accept(builder);
     return builder.build();
   }
@@ -64,7 +64,7 @@ public interface Buildable<R, B extends Buildable.AbstractBuilder<R>> {
    * @param <R> the type to be built
    * @since 4.0.0
    */
-  interface AbstractBuilder<R> {
+  interface Builder<R> {
     /**
      * Builds.
      *
