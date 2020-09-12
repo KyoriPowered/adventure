@@ -842,7 +842,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    *
    * @since 4.0.0
    */
-  public static final class Builder implements Buildable.AbstractBuilder<Style> {
+  public static final class Builder implements Buildable.Builder<Style> {
     private @Nullable Key font;
     private @Nullable TextColor color;
     /**

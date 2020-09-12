@@ -155,7 +155,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
    *
    * @since 4.0.0
    */
-  interface Builder extends Buildable.AbstractBuilder<Book> {
+  interface Builder extends Buildable.Builder<Book> {
     /**
      * Set the title.
      *

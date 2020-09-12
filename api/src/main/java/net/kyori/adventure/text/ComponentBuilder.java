@@ -42,7 +42,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @param <B> the builder type
  * @since 4.0.0
  */
-public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends Buildable.AbstractBuilder<C>, ComponentBuilderApplicable, ComponentLike {
+public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends Buildable.Builder<C>, ComponentBuilderApplicable, ComponentLike {
   /**
    * Appends a text component to this component.
    *
