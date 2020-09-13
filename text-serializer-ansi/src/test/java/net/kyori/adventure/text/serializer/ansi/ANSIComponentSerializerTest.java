@@ -34,12 +34,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class AnsiComponentSerializerTest {
+class ANSIComponentSerializerTest {
 
   @Test
   void testSimpleFrom() {
     Assertions.assertEquals(TextComponent.of("foo"),
-      AnsiComponentSerializer.builder()
+      ANSIComponentSerializer.builder()
       .downSample(true)
       .build().deserialize("foo"));
   }
@@ -49,7 +49,7 @@ class AnsiComponentSerializerTest {
     final TextComponent component = TextComponent.of("foo");
     final Ansi expected = Ansi.ansi().a("foo").reset();
     assertEquals(expected.toString(),
-      AnsiComponentSerializer.fullColour().serialize(component));
+      ANSIComponentSerializer.fullColour().serialize(component));
   }
 
   @Test
@@ -59,13 +59,13 @@ class AnsiComponentSerializerTest {
       .append(TextComponent.of("bar").color(NamedTextColor.BLUE))
       .build();
     final Ansi expected = Ansi.ansi().a(Ansi.ansi().fgBright(Ansi.Color.GREEN)).a(Ansi.Attribute.UNDERLINE_DOUBLE).a("foo").reset().a(Ansi.ansi().fgBright(Ansi.Color.BLUE)).a("bar").reset();
-    assertEquals(expected.toString(), AnsiComponentSerializer.fullColour().serialize(component));
+    assertEquals(expected.toString(), ANSIComponentSerializer.fullColour().serialize(component));
   }
 
   @Test
   void testFromColor() {
     final String input = Ansi.ansi().a(Ansi.ansi().fgBright(Ansi.Color.GREEN)).a(Ansi.Attribute.UNDERLINE_DOUBLE).a("foo").reset().fg(Ansi.Color.DEFAULT).a(Ansi.ansi().fgBright(Ansi.Color.BLUE)).a("bar").reset().fg(Ansi.Color.DEFAULT).toString();
-    assertEquals(TextComponent.of("foobar"), AnsiComponentSerializer.fullColour().deserialize(input));
+    assertEquals(TextComponent.of("foobar"), ANSIComponentSerializer.fullColour().deserialize(input));
   }
 
   @Test
@@ -87,7 +87,7 @@ class AnsiComponentSerializerTest {
       .a("this isn't ").reset()
       .a(Ansi.ansi().fgBright(Ansi.Color.GREEN))
       .a("and woa, this is again").reset();
-    assertEquals(expected.toString(), AnsiComponentSerializer.fullColour().serialize(component));
+    assertEquals(expected.toString(), ANSIComponentSerializer.fullColour().serialize(component));
   }
 
   @Test
@@ -116,7 +116,7 @@ class AnsiComponentSerializerTest {
       .a(Ansi.Attribute.UNDERLINE_DOUBLE)
       .a("baz").a(Ansi.Attribute.RESET)
       .toString();
-    assertEquals(expected, AnsiComponentSerializer.fullColour().serialize(c1));
+    assertEquals(expected, ANSIComponentSerializer.fullColour().serialize(c1));
 
     final TextComponent c2 = TextComponent.builder()
       .content("")
@@ -140,7 +140,7 @@ class AnsiComponentSerializerTest {
       .a("world").a(Ansi.ansi().a(Ansi.Attribute.RESET))
       .fgBright(Ansi.Color.YELLOW)
       .a("!").reset();
-    assertEquals(ansi.toString(), AnsiComponentSerializer.fullColour().serialize(c2));
+    assertEquals(ansi.toString(), ANSIComponentSerializer.fullColour().serialize(c2));
 
     final TextComponent c3 = TextComponent.builder()
       .content("")
@@ -169,7 +169,7 @@ class AnsiComponentSerializerTest {
       .a("world").a(Ansi.ansi().a(Ansi.Attribute.RESET))
       .fgBright(Ansi.Color.YELLOW).a(Ansi.ansi().a(Ansi.Attribute.UNDERLINE_DOUBLE))
       .a("!").reset();
-    assertEquals(expected3.toString(), AnsiComponentSerializer.fullColour().serialize(c3));
+    assertEquals(expected3.toString(), ANSIComponentSerializer.fullColour().serialize(c3));
   }
 
   @Test
@@ -182,8 +182,8 @@ class AnsiComponentSerializerTest {
     final Ansi ansiColor = Ansi.ansi().format("\u001b[38;2;%d;%d;%dm", red, green, blue);
     final Ansi expected = Ansi.ansi().a(ansiColor).a("Kittens!").reset();
     final Ansi expectedDown = Ansi.ansi().fgBrightGreen().a("Kittens!").reset();
-    assertEquals(expected.toString(), AnsiComponentSerializer.builder().downSample(false).build().serialize(c0));
-    assertEquals(expectedDown.toString(), AnsiComponentSerializer.builder().downSample(true).build().serialize(c0));
+    assertEquals(expected.toString(), ANSIComponentSerializer.builder().downSample(false).build().serialize(c0));
+    assertEquals(expectedDown.toString(), ANSIComponentSerializer.builder().downSample(true).build().serialize(c0));
 
   }
 

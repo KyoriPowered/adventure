@@ -42,11 +42,11 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-final class AnsiComponentSerializerImpl implements AnsiComponentSerializer {
+final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
   private final boolean colorDownSample;
-  protected static AnsiComponentSerializer TRUE_COLOR = new AnsiComponentSerializerImpl(false);
+  protected static ANSIComponentSerializer TRUE_COLOR = new ANSIComponentSerializerImpl(false);
 
-  private AnsiComponentSerializerImpl(final boolean colorDownSample) {
+  private ANSIComponentSerializerImpl(final boolean colorDownSample) {
     this.colorDownSample = colorDownSample;
   }
 
@@ -54,7 +54,7 @@ final class AnsiComponentSerializerImpl implements AnsiComponentSerializer {
   protected static final String RGB_FORMAT = ESC_CHAR + "[38;2;%d;%d;%dm";
   private static final Pattern STRIP_ESC_CODES = Pattern.compile(ESC_CHAR + "\\[[;\\d]*m");
 
-  private Ansi toAnsi(final TextFormat format){
+  private Ansi toANSI(final TextFormat format){
     if(format instanceof NamedTextColor || format instanceof TextDecoration){
       return this.ansiFormat(Formats.byFormat(format));
     }
@@ -117,7 +117,7 @@ final class AnsiComponentSerializerImpl implements AnsiComponentSerializer {
 
     }
 
-    BuilderImpl(final @NonNull AnsiComponentSerializerImpl serializer) {
+    BuilderImpl(final @NonNull ANSIComponentSerializerImpl serializer) {
       this.colorDownSample = serializer.colorDownSample;
     }
 
@@ -128,8 +128,8 @@ final class AnsiComponentSerializerImpl implements AnsiComponentSerializer {
     }
 
     @Override
-    public @NonNull AnsiComponentSerializer build() {
-      return new AnsiComponentSerializerImpl(this.colorDownSample);
+    public @NonNull ANSIComponentSerializer build() {
+      return new ANSIComponentSerializerImpl(this.colorDownSample);
     }
   }
 
@@ -179,7 +179,7 @@ final class AnsiComponentSerializerImpl implements AnsiComponentSerializer {
     }
 
     void append(final @NonNull TextFormat format) {
-      final Ansi a = AnsiComponentSerializerImpl.this.toAnsi(format);
+      final Ansi a = ANSIComponentSerializerImpl.this.toANSI(format);
       if(a != null){
         this.ansi.a(a);
       }
