@@ -1,6 +1,6 @@
 dependencies {
-  api 'net.kyori:examination-api:1.0.0-SNAPSHOT'
-  api 'net.kyori:examination-string:1.0.0-SNAPSHOT'
+  api 'net.kyori:examination-api:1.0.0'
+  api 'net.kyori:examination-string:1.0.0'
   api 'org.checkerframework:checker-qual:3.6.1'
   testImplementation 'com.google.guava:guava:23.0'
 }
