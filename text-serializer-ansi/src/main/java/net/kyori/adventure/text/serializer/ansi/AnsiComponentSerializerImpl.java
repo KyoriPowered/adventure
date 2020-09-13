@@ -54,27 +54,27 @@ final class AnsiComponentSerializerImpl implements AnsiComponentSerializer {
   protected static final String RGB_FORMAT = ESC_CHAR + "[38;2;%d;%d;%dm";
   private static final Pattern STRIP_ESC_CODES = Pattern.compile(ESC_CHAR + "\\[[;\\d]*m");
 
-  private Ansi toAnsi(final TextFormat format) {
-    if(format instanceof NamedTextColor || format instanceof TextDecoration) {
-      return getAnsiFormat(Formats.byFormat(format));
+  private Ansi toAnsi(final TextFormat format){
+    if(format instanceof NamedTextColor || format instanceof TextDecoration){
+      return this.ansiFormat(Formats.byFormat(format));
     }
-    if(format instanceof TextColor) {
-      if(this.colorDownSample) {
-       return getAnsiFormat(Formats.byFormat(NamedTextColor.nearestTo((TextColor) format)));
+    if(format instanceof TextColor){
+      if(this.colorDownSample){
+        return this.ansiFormat(Formats.byFormat(NamedTextColor.nearestTo((TextColor) format)));
       }
       final int red = ((TextColor) format).red();
       final int blue = ((TextColor) format).blue();
       final int green = ((TextColor) format).green();
       return Ansi.ansi().format(RGB_FORMAT, red, green, blue);
-    } else {
+    }else{
       return null;
     }
   }
 
-  private @Nullable Ansi getAnsiFormat(final @Nullable Formats formats){
-    if(formats == null) {
+  private @Nullable Ansi ansiFormat(final @Nullable Formats formats){
+    if(formats == null){
       return null;
-    } else {
+    }else{
       return formats.ansi();
     }
   }
@@ -88,7 +88,7 @@ final class AnsiComponentSerializerImpl implements AnsiComponentSerializer {
   public @NonNull Component deserialize(final @NonNull String input) {
     final Matcher matcher = STRIP_ESC_CODES.matcher(input);
     String out = input;
-    while(matcher.find()) {
+    while(matcher.find()){
       out = out.replace(matcher.group(), "");
     }
     return TextComponent.of(out);
@@ -138,20 +138,20 @@ final class AnsiComponentSerializerImpl implements AnsiComponentSerializer {
     private final Style style = new Style();
 
     @Override
-    public String toString() {
+    public String toString(){
       return this.ansi.toString();
     }
 
-    void append(final @NonNull Component component) {
+    void append(final @NonNull Component component){
       this.append(component, new Style());
     }
 
-    private void append(final @NonNull Component component, final @NonNull Style style) {
+    private void append(final @NonNull Component component, final @NonNull Style style){
       style.apply(component);
 
       if(component instanceof TextComponent){
         final String content = ((TextComponent) component).content();
-        if (!content.isEmpty()) {
+        if(!content.isEmpty()){
           style.applyFormat();
           this.ansi.a(content);
           this.ansi.a(Formats.SOFT_RESET);
@@ -161,7 +161,7 @@ final class AnsiComponentSerializerImpl implements AnsiComponentSerializer {
         final Component c = TranslatableComponentRenderer.get().render(component, Locale.getDefault());
         if(c instanceof TextComponent){
           final String translatedContent = ((TextComponent) c).content();
-          if (!translatedContent.isEmpty()) {
+          if(!translatedContent.isEmpty()){
             style.applyFormat();
             this.ansi.a(translatedContent);
             this.ansi.a(Formats.SOFT_RESET);
@@ -190,7 +190,7 @@ final class AnsiComponentSerializerImpl implements AnsiComponentSerializer {
       private @Nullable TextColor color;
       private final Set<TextDecoration> decorations;
 
-      Style() {
+      Style(){
         this.decorations = EnumSet.noneOf(TextDecoration.class);
       }
 
@@ -211,8 +211,8 @@ final class AnsiComponentSerializerImpl implements AnsiComponentSerializer {
           this.color = color;
         }
 
-        for (final TextDecoration decoration : DECORATIONS) {
-          switch (component.decoration(decoration)) {
+        for (final TextDecoration decoration : DECORATIONS){
+          switch(component.decoration(decoration)){
             case TRUE:
               this.decorations.add(decoration);
               break;
@@ -225,35 +225,35 @@ final class AnsiComponentSerializerImpl implements AnsiComponentSerializer {
 
       void applyFormat() {
         // If color changes, we need to do a full reset
-        if (this.color != Porridge.this.style.color) {
+        if(this.color != Porridge.this.style.color){
           this.applyFullFormat();
           return;
         }
 
         // Does current have any decorations we don't have?
         // Since there is no way to undo decorations, we need to reset these cases
-        if (!this.decorations.containsAll(Porridge.this.style.decorations)) {
+        if(!this.decorations.containsAll(Porridge.this.style.decorations)){
           this.applyFullFormat();
           return;
         }
 
         // Apply new decorations
-        for (final TextDecoration decoration : this.decorations) {
-          if (Porridge.this.style.decorations.add(decoration)) {
+        for(final TextDecoration decoration : this.decorations){
+          if(Porridge.this.style.decorations.add(decoration)){
             Porridge.this.append(decoration);
           }
         }
       }
 
       private void applyFullFormat() {
-        if (this.color != null) {
+        if(this.color != null){
           Porridge.this.append(this.color);
-        } else {
+        }else{
           Porridge.this.append(Reset.INSTANCE);
         }
         Porridge.this.style.color = this.color;
 
-        for (final TextDecoration decoration : this.decorations) {
+        for(final TextDecoration decoration : this.decorations){
           Porridge.this.append(decoration);
         }
 
