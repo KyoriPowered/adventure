@@ -1,6 +1,6 @@
 dependencies {
   api project(':adventure-api')
-  api 'org.fusesource.jansi:jansi:1.18'
+  implementation('org.fusesource.jansi:jansi:1.18')
 
 }
 

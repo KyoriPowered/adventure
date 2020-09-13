@@ -29,23 +29,33 @@ import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public interface AnsiComponentSerializer extends ComponentSerializer<Component, Component, String>, Buildable<AnsiComponentSerializer, AnsiComponentSerializer.Builder> {
-
   char ESC_CHAR = '\u001B';
 
+  /**
+   * This AnsiComponentSerializer produces full colour RGB codes and supports True colour terminals.  Otherwise colours are down sampled to the nearest Named Colour.
+   *
+   * @return {@link AnsiComponentSerializer}
+   */
   static @NonNull AnsiComponentSerializer fullColour() {
-    return AnsiComponentSerializerImpl.trueColor;
+    return AnsiComponentSerializerImpl.TRUE_COLOR;
   }
 
+  /**
+   * Construct the Builder
+   * @return {@link AnsiComponentSerializer.Builder}
+   */
   static @NonNull Builder builder() {
     return new AnsiComponentSerializerImpl.BuilderImpl();
   }
 
-  interface Builder extends Buildable.AbstractBuilder<AnsiComponentSerializer> {
+  /**
+   * A builder for {@link AnsiComponentSerializer}.
+   */
+  interface Builder extends Buildable.Builder<AnsiComponentSerializer> {
 
     @NonNull Builder downSample(final boolean downSample);
 
-    @NonNull
     @Override
-    AnsiComponentSerializer build();
+    @NonNull AnsiComponentSerializer build();
   }
 }

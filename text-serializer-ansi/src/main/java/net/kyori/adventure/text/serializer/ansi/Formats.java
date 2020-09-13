@@ -26,6 +26,7 @@ package net.kyori.adventure.text.serializer.ansi;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextFormat;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.fusesource.jansi.Ansi;
 
 import java.util.HashMap;
@@ -63,7 +64,7 @@ enum Formats {
   private final TextFormat format;
   private final Ansi escapeString;
   private final String[] mNames;
-  private final boolean mIsFormat;
+  private final boolean isDecoration;
 
   static {
     for(final Formats format : values()) {
@@ -74,11 +75,11 @@ enum Formats {
     }
   }
 
-  Formats(final TextFormat textFormat, final Ansi ansi, final boolean isFormat, final String... names) {
+  Formats(final TextFormat textFormat, final Ansi ansi, final boolean isDecoration, final String... names) {
     this.format = textFormat;
     this.escapeString = ansi;
     this.mNames = names;
-    this.mIsFormat = isFormat;
+    this.isDecoration = isDecoration;
   }
 
   public TextFormat textFormat() {
@@ -89,8 +90,8 @@ enum Formats {
     return this.escapeString;
   }
 
-  public boolean isFormat() {
-    return this.mIsFormat;
+  public boolean isDecoration() {
+    return this.isDecoration;
   }
 
   @Override
@@ -98,11 +99,11 @@ enum Formats {
     return this.escapeString.toString();
   }
 
-  public static Formats byFormat(final TextFormat textFormat) {
+  public @Nullable static Formats byFormat(final TextFormat textFormat) {
     return mMap.get(textFormat);
   }
 
-  public static Formats byName(final String name) {
+  public @Nullable static Formats byName(final String name) {
     return mNameMap.get(name.toLowerCase());
   }
 

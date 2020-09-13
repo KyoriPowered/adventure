@@ -35,8 +35,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.fusesource.jansi.Ansi;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
@@ -44,12 +42,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class AnsiComponentSerializerImpl implements AnsiComponentSerializer {
-
+final class AnsiComponentSerializerImpl implements AnsiComponentSerializer {
   private final boolean colorDownSample;
-
-  @SuppressWarnings({"WeakerAccess"})
-  public static AnsiComponentSerializer trueColor = new AnsiComponentSerializerImpl(false);
+  protected static AnsiComponentSerializer TRUE_COLOR = new AnsiComponentSerializerImpl(false);
 
   private AnsiComponentSerializerImpl(final boolean colorDownSample) {
     this.colorDownSample = colorDownSample;
@@ -58,26 +53,14 @@ public final class AnsiComponentSerializerImpl implements AnsiComponentSerialize
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
   protected static final String RGB_FORMAT = ESC_CHAR + "[38;2;%d;%d;%dm";
   private static final Pattern STRIP_ESC_CODES = Pattern.compile(ESC_CHAR + "\\[[;\\d]*m");
-  private static final List<TextFormat> FORMATS;
-
-  static {
-    final List<TextFormat> formats = new ArrayList<>(NamedTextColor.values());
-    Collections.addAll(formats, DECORATIONS);
-    formats.add(Reset.INSTANCE);
-    FORMATS = Collections.unmodifiableList(formats);
-
-  }
 
   private Ansi toAnsi(final TextFormat format) {
-    if(format instanceof NamedTextColor) {
-      return Formats.byFormat(format).ansi();
-    }
-    if(format instanceof TextDecoration) {
-      return Formats.byFormat(format).ansi();
+    if(format instanceof NamedTextColor || format instanceof TextDecoration) {
+      return getAnsiFormat(Formats.byFormat(format));
     }
     if(format instanceof TextColor) {
       if(this.colorDownSample) {
-        return Formats.byFormat(NamedTextColor.nearestTo((TextColor) format)).ansi();
+       return getAnsiFormat(Formats.byFormat(NamedTextColor.nearestTo((TextColor) format)));
       }
       final int red = ((TextColor) format).red();
       final int blue = ((TextColor) format).blue();
@@ -88,9 +71,21 @@ public final class AnsiComponentSerializerImpl implements AnsiComponentSerialize
     }
   }
 
-  @NonNull
+  private @Nullable Ansi getAnsiFormat(final @Nullable Formats formats){
+    if(formats == null) {
+      return null;
+    } else {
+      return formats.ansi();
+    }
+  }
+
+  /**
+   * This method does not convert ansi codes to Component colors or decorations it simply strips them and returns plain TextComponent with the content.
+   * @param input the input
+   * @return {@link TextComponent}
+   */
   @Override
-  public Component deserialize(final @NonNull String input) {
+  public @NonNull Component deserialize(final @NonNull String input) {
     final Matcher matcher = STRIP_ESC_CODES.matcher(input);
     String out = input;
     while(matcher.find()) {
@@ -99,17 +94,19 @@ public final class AnsiComponentSerializerImpl implements AnsiComponentSerialize
     return TextComponent.of(out);
   }
 
-  @NonNull
+  /**
+   * Serializes the component into a String that contains Ansi colour codes.
+   * @return String {@link Ansi} formatted string.
+   */
   @Override
-  public String serialize(final @NonNull Component component) {
+  public @NonNull String serialize(final @NonNull Component component) {
     final Porridge state = new Porridge();
     state.append(component);
     return state.toString();
   }
 
-  @NonNull
   @Override
-  public Builder toBuilder() {
+  public @NonNull Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
@@ -152,30 +149,29 @@ public final class AnsiComponentSerializerImpl implements AnsiComponentSerialize
     private void append(final @NonNull Component component, final @NonNull Style style) {
       style.apply(component);
 
-      if(component instanceof TextComponent) {
+      if(component instanceof TextComponent){
         final String content = ((TextComponent) component).content();
-        if(!content.isEmpty()) {
+        if (!content.isEmpty()) {
           style.applyFormat();
           this.ansi.a(content);
           this.ansi.a(Formats.SOFT_RESET);
         }
       }
-      if(component instanceof TranslatableComponent) {
+      if(component instanceof TranslatableComponent){
         final Component c = TranslatableComponentRenderer.get().render(component, Locale.getDefault());
-        if(c instanceof TextComponent) {
+        if(c instanceof TextComponent){
           final String translatedContent = ((TextComponent) c).content();
-          if(!translatedContent.isEmpty()) {
+          if (!translatedContent.isEmpty()) {
             style.applyFormat();
             this.ansi.a(translatedContent);
             this.ansi.a(Formats.SOFT_RESET);
           }
         }
       }
-
       final List<Component> children = component.children();
-      if(!children.isEmpty()) {
+      if(!children.isEmpty()){
         final Style childrenStyle = new Style(style);
-        for(final Component child : children) {
+        for(final Component child : children){
           this.append(child, childrenStyle);
           childrenStyle.set(style);
         }
@@ -184,7 +180,7 @@ public final class AnsiComponentSerializerImpl implements AnsiComponentSerialize
 
     void append(final @NonNull TextFormat format) {
       final Ansi a = AnsiComponentSerializerImpl.this.toAnsi(format);
-      if(a != null) {
+      if(a != null){
         this.ansi.a(a);
       }
     }
@@ -198,24 +194,24 @@ public final class AnsiComponentSerializerImpl implements AnsiComponentSerialize
         this.decorations = EnumSet.noneOf(TextDecoration.class);
       }
 
-      Style(final @NonNull Style that) {
+      Style(final @NonNull Style that){
         this.color = that.color;
         this.decorations = EnumSet.copyOf(that.decorations);
       }
 
-      void set(final @NonNull Style that) {
+      void set(final @NonNull Style that){
         this.color = that.color;
         this.decorations.clear();
         this.decorations.addAll(that.decorations);
       }
 
-      void apply(final @NonNull Component component) {
+      void apply(final @NonNull Component component){
         final TextColor color = component.color();
-        if(color != null) {
+        if (color != null) {
           this.color = color;
         }
 
-        for(final TextDecoration decoration : DECORATIONS) {
+        for (final TextDecoration decoration : DECORATIONS) {
           switch (component.decoration(decoration)) {
             case TRUE:
               this.decorations.add(decoration);
@@ -229,35 +225,35 @@ public final class AnsiComponentSerializerImpl implements AnsiComponentSerialize
 
       void applyFormat() {
         // If color changes, we need to do a full reset
-        if(this.color != Porridge.this.style.color) {
+        if (this.color != Porridge.this.style.color) {
           this.applyFullFormat();
           return;
         }
 
         // Does current have any decorations we don't have?
         // Since there is no way to undo decorations, we need to reset these cases
-        if(!this.decorations.containsAll(Porridge.this.style.decorations)) {
+        if (!this.decorations.containsAll(Porridge.this.style.decorations)) {
           this.applyFullFormat();
           return;
         }
 
         // Apply new decorations
-        for(final TextDecoration decoration : this.decorations) {
-          if(Porridge.this.style.decorations.add(decoration)) {
+        for (final TextDecoration decoration : this.decorations) {
+          if (Porridge.this.style.decorations.add(decoration)) {
             Porridge.this.append(decoration);
           }
         }
       }
 
       private void applyFullFormat() {
-        if(this.color != null) {
+        if (this.color != null) {
           Porridge.this.append(this.color);
         } else {
           Porridge.this.append(Reset.INSTANCE);
         }
         Porridge.this.style.color = this.color;
 
-        for(final TextDecoration decoration : this.decorations) {
+        for (final TextDecoration decoration : this.decorations) {
           Porridge.this.append(decoration);
         }
 
