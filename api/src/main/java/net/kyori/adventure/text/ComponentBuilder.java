@@ -27,7 +27,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -40,13 +40,15 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * @param <C> the component type
  * @param <B> the builder type
+ * @since 4.0.0
  */
-public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends Buildable.AbstractBuilder<C>, ComponentBuilderApplicable, ComponentLike {
+public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends Buildable.Builder<C>, ComponentBuilderApplicable, ComponentLike {
   /**
    * Appends a text component to this component.
    *
    * @param content the content
    * @return this builder
+   * @since 4.0.0
    */
   default @NonNull B append(final @NonNull String content) {
     return this.append(TextComponent.of(content));
@@ -58,6 +60,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param content the content
    * @param color the color
    * @return this builder
+   * @since 4.0.0
    */
   default @NonNull B append(final @NonNull String content, final @NonNull TextColor color) {
     return this.append(TextComponent.of(content, color));
@@ -70,8 +73,9 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param color the color
    * @param decorations the decorations
    * @return this builder
+   * @since 4.0.0
    */
-  default @NonNull B append(final @NonNull String content, final @NonNull TextColor color, final TextDecoration@NonNull... decorations) {
+  default @NonNull B append(final @NonNull String content, final @NonNull TextColor color, final TextDecoration @NonNull ... decorations) {
     return this.append(TextComponent.of(content, color, decorations));
   }
 
@@ -81,6 +85,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param content the content
    * @param builder the builder
    * @return this builder
+   * @since 4.0.0
    */
   default @NonNull B append(final @NonNull String content, final @NonNull Consumer<? super TextComponent.Builder> builder) {
     return this.append(TextComponent.make(content, builder));
@@ -91,6 +96,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    *
    * @param component the component to append
    * @return this builder
+   * @since 4.0.0
    */
   @NonNull B append(final @NonNull Component component);
 
@@ -99,6 +105,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    *
    * @param component the component to append
    * @return this builder
+   * @since 4.0.0
    */
   default @NonNull B append(final @NonNull ComponentLike component) {
     return this.append(component.asComponent());
@@ -109,6 +116,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    *
    * @param builder the component to append
    * @return this builder
+   * @since 4.0.0
    */
   default @NonNull B append(final @NonNull ComponentBuilder<?, ?> builder) {
     return this.append(builder.build());
@@ -119,22 +127,25 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    *
    * @param components the components to append
    * @return this builder
+   * @since 4.0.0
    */
-  @NonNull B append(final @NonNull Component@NonNull... components);
+  @NonNull B append(final @NonNull Component @NonNull ... components);
 
   /**
    * Appends components to this component.
    *
    * @param components the components to append
    * @return this builder
+   * @since 4.0.0
    */
-  @NonNull B append(final @NonNull ComponentLike@NonNull... components);
+  @NonNull B append(final @NonNull ComponentLike @NonNull ... components);
 
   /**
    * Appends components to this component.
    *
    * @param components the components to append
    * @return this builder
+   * @since 4.0.0
    */
   @NonNull B append(final @NonNull Iterable<? extends ComponentLike> components);
 
@@ -143,6 +154,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    *
    * @param consumer the action
    * @return this builder
+   * @since 4.0.0
    */
   @SuppressWarnings("unchecked")
   default @NonNull B apply(final @NonNull Consumer<? super ComponentBuilder<?, ?>> consumer) {
@@ -156,6 +168,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    *
    * @param action the action
    * @return this builder
+   * @since 4.0.0
    */
   @NonNull B applyDeep(final @NonNull Consumer<? super ComponentBuilder<?, ?>> action);
 
@@ -164,6 +177,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    *
    * @param function the mapping function
    * @return this builder
+   * @since 4.0.0
    */
   @NonNull B mapChildren(final @NonNull Function<BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function);
 
@@ -173,6 +187,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    *
    * @param function the mapping function
    * @return this builder
+   * @since 4.0.0
    */
   @NonNull B mapChildrenDeep(final @NonNull Function<BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function);
 
@@ -181,6 +196,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    *
    * @param style the style
    * @return this builder
+   * @since 4.0.0
    */
   @NonNull B style(final @NonNull Style style);
 
@@ -189,6 +205,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    *
    * @param consumer the style consumer
    * @return this builder
+   * @since 4.0.0
    */
   @NonNull B style(final @NonNull Consumer<Style.Builder> consumer);
 
@@ -197,6 +214,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    *
    * @param color the color
    * @return this builder
+   * @since 4.0.0
    */
   @NonNull B color(final @Nullable TextColor color);
 
@@ -205,6 +223,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    *
    * @param color the color
    * @return this builder
+   * @since 4.0.0
    */
   @NonNull B colorIfAbsent(final @Nullable TextColor color);
 
@@ -215,6 +234,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param flag {@code true} if this component should have the decorations, {@code false} if
    *     this component should not have the decorations
    * @return this builder
+   * @since 4.0.0
    */
   @SuppressWarnings("unchecked")
   default @NonNull B decorations(final @NonNull Set<TextDecoration> decorations, final boolean flag) {
@@ -230,6 +250,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param flag {@code true} if this component should have the decoration, {@code false} if
    *     this component should not have the decoration
    * @return this builder
+   * @since 4.0.0
    */
   default @NonNull B decoration(final @NonNull TextDecoration decoration, final boolean flag) {
     return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
@@ -244,6 +265,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    *     have the decoration, and {@link TextDecoration.State#NOT_SET} if the decoration
    *     should not have a set value
    * @return this builder
+   * @since 4.0.0
    */
   @NonNull B decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state);
 
@@ -252,22 +274,25 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    *
    * @param event the click event
    * @return this builder
+   * @since 4.0.0
    */
   @NonNull B clickEvent(final @Nullable ClickEvent event);
 
   /**
    * Sets the hover event of this component.
    *
-   * @param event the hover event
+   * @param source the hover event source
    * @return this builder
+   * @since 4.0.0
    */
-  @NonNull B hoverEvent(final @Nullable HoverEvent<?> event);
+  @NonNull B hoverEvent(final @Nullable HoverEventSource<?> source);
 
   /**
    * Sets the string to be inserted when this component is shift-clicked.
    *
    * @param insertion the insertion string
    * @return this builder
+   * @since 4.0.0
    */
   @NonNull B insertion(final @Nullable String insertion);
 
@@ -276,6 +301,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    *
    * @param that the other component
    * @return this builder
+   * @since 4.0.0
    */
   default @NonNull B mergeStyle(final @NonNull Component that) {
     return this.mergeStyle(that, Style.Merge.all());
@@ -287,8 +313,9 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param that the other component
    * @param merges the parts to merge
    * @return this builder
+   * @since 4.0.0
    */
-  default @NonNull B mergeStyle(final @NonNull Component that, final Style.@NonNull Merge@NonNull... merges) {
+  default @NonNull B mergeStyle(final @NonNull Component that, final Style.@NonNull Merge @NonNull ... merges) {
     return this.mergeStyle(that, Style.Merge.of(merges));
   }
 
@@ -298,6 +325,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param that the other component
    * @param merges the parts to merge
    * @return this builder
+   * @since 4.0.0
    */
   @NonNull B mergeStyle(final @NonNull Component that, final @NonNull Set<Style.Merge> merges);
 
@@ -305,6 +333,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * Resets all styling on this component.
    *
    * @return this builder
+   * @since 4.0.0
    */
   @NonNull B resetStyle();
 
@@ -321,6 +350,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    *
    * @param applicable the thing to apply
    * @return this builder
+   * @since 4.0.0
    */
   @SuppressWarnings("unchecked")
   default @NonNull B applicableApply(final @NonNull ComponentBuilderApplicable applicable) {

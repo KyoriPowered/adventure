@@ -39,6 +39,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A <b>legacy</b> format.
+ *
+ * @since 4.0.0
  */
 public final class LegacyFormat implements Examinable {
   static final LegacyFormat RESET = new LegacyFormat(true);
@@ -62,7 +64,7 @@ public final class LegacyFormat implements Examinable {
     this.reset = false;
   }
 
-  LegacyFormat(final boolean reset) {
+  private LegacyFormat(final boolean reset) {
     this.color = null;
     this.decoration = null;
     this.reset = reset;
@@ -72,6 +74,7 @@ public final class LegacyFormat implements Examinable {
    * Gets the color.
    *
    * @return the color
+   * @since 4.0.0
    */
   public @Nullable TextColor color() {
     return this.color;
@@ -81,6 +84,7 @@ public final class LegacyFormat implements Examinable {
    * Gets the decoration.
    *
    * @return the decoration
+   * @since 4.0.0
    */
   public @Nullable TextDecoration decoration() {
     return this.decoration;
@@ -90,6 +94,7 @@ public final class LegacyFormat implements Examinable {
    * Gets if this format is a reset.
    *
    * @return {@code true} if a reset, {@code false} otherwise
+   * @since 4.0.0
    */
   public boolean reset() {
     return this.reset;

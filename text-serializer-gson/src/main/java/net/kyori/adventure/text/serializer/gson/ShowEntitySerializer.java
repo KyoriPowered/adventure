@@ -57,7 +57,7 @@ final class ShowEntitySerializer implements JsonDeserializer<HoverEvent.ShowEnti
       name = context.deserialize(object.get(NAME), Component.class);
     }
 
-    return new HoverEvent.ShowEntity(type, id, name);
+    return HoverEvent.ShowEntity.of(type, id, name);
   }
 
   @Override

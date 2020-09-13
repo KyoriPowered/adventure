@@ -42,6 +42,8 @@ import static net.kyori.adventure.nbt.IOStreamUtil.closeShield;
 
 /**
  * Serialization operations for binary tags.
+ *
+ * @since 4.0.0
  */
 public final class BinaryTagIO {
   private BinaryTagIO() {
@@ -57,6 +59,7 @@ public final class BinaryTagIO {
    * @param path the path
    * @return the compound tag
    * @throws IOException if an exception was encountered while reading a compound tag
+   * @since 4.0.0
    */
   public static @NonNull CompoundBinaryTag readPath(final @NonNull Path path) throws IOException {
     try(final InputStream is = new BufferedInputStream(Files.newInputStream(path))) {
@@ -70,6 +73,7 @@ public final class BinaryTagIO {
    * @param input the input stream
    * @return the compound tag
    * @throws IOException if an exception was encountered while reading a compound tag
+   * @since 4.0.0
    */
   public static @NonNull CompoundBinaryTag readInputStream(final @NonNull InputStream input) throws IOException {
     return readDataInput(new DataInputStream(closeShield(input)));
@@ -81,6 +85,7 @@ public final class BinaryTagIO {
    * @param path the path
    * @return the compound tag
    * @throws IOException if an exception was encountered while reading a compound tag
+   * @since 4.0.0
    */
   public static @NonNull CompoundBinaryTag readCompressedPath(final @NonNull Path path) throws IOException {
     try(final InputStream is = Files.newInputStream(path)) {
@@ -94,6 +99,7 @@ public final class BinaryTagIO {
    * @param input the input stream
    * @return the compound tag
    * @throws IOException if an exception was encountered while reading a compound tag
+   * @since 4.0.0
    */
   public static @NonNull CompoundBinaryTag readCompressedInputStream(final @NonNull InputStream input) throws IOException {
     try(final DataInputStream dis = new DataInputStream(new BufferedInputStream(new GZIPInputStream(closeShield(input))))) {
@@ -107,6 +113,7 @@ public final class BinaryTagIO {
    * @param input the input
    * @return the compound tag
    * @throws IOException if an exception was encountered while reading a compound tag
+   * @since 4.0.0
    */
   public static @NonNull CompoundBinaryTag readDataInput(final @NonNull DataInput input) throws IOException {
     final BinaryTagType<? extends BinaryTag> type = BinaryTagType.of(input.readByte());
@@ -123,6 +130,7 @@ public final class BinaryTagIO {
    * @param tag the compound tag
    * @param path the path
    * @throws IOException if an exception was encountered while writing the compound tag
+   * @since 4.0.0
    */
   public static void writePath(final @NonNull CompoundBinaryTag tag, final @NonNull Path path) throws IOException {
     try(final OutputStream os = new BufferedOutputStream(Files.newOutputStream(path))) {
@@ -136,6 +144,7 @@ public final class BinaryTagIO {
    * @param tag the compound tag
    * @param output the output stream
    * @throws IOException if an exception was encountered while writing the compound tag
+   * @since 4.0.0
    */
   public static void writeOutputStream(final @NonNull CompoundBinaryTag tag, final @NonNull OutputStream output) throws IOException {
     writeDataOutput(tag, new DataOutputStream(output));
@@ -147,6 +156,7 @@ public final class BinaryTagIO {
    * @param tag the compound tag
    * @param path the path
    * @throws IOException if an exception was encountered while writing the compound tag
+   * @since 4.0.0
    */
   public static void writeCompressedPath(final @NonNull CompoundBinaryTag tag, final @NonNull Path path) throws IOException {
     writeCompressedOutputStream(tag, Files.newOutputStream(path));
@@ -158,6 +168,7 @@ public final class BinaryTagIO {
    * @param tag the compound tag
    * @param output the output stream
    * @throws IOException if an exception was encountered while writing the compound tag
+   * @since 4.0.0
    */
   public static void writeCompressedOutputStream(final @NonNull CompoundBinaryTag tag, final @NonNull OutputStream output) throws IOException {
     try(final DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new GZIPOutputStream(closeShield(output))))) {
@@ -171,6 +182,7 @@ public final class BinaryTagIO {
    * @param tag the compound tag
    * @param output the output
    * @throws IOException if an exception was encountered while writing the compound tag
+   * @since 4.0.0
    */
   public static void writeDataOutput(final @NonNull CompoundBinaryTag tag, final @NonNull DataOutput output) throws IOException {
     output.writeByte(BinaryTagTypes.COMPOUND.id());

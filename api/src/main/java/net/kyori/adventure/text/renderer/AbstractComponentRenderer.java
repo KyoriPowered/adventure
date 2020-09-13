@@ -39,6 +39,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * An abstract implementation of a component renderer.
  *
  * @param <C> the context type
+ * @since 4.0.0
  */
 public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<C> {
   @Override

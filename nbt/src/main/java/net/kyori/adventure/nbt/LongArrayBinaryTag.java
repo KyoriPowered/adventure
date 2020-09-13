@@ -27,6 +27,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A binary tag holding a {@code long}-array value.
+ *
+ * @since 4.0.0
  */
 public interface LongArrayBinaryTag extends BinaryTag {
   /**
@@ -34,6 +36,7 @@ public interface LongArrayBinaryTag extends BinaryTag {
    *
    * @param value the value
    * @return a binary tag
+   * @since 4.0.0
    */
   static @NonNull LongArrayBinaryTag of(final long@NonNull... value) {
     return new LongArrayBinaryTagImpl(value);
@@ -50,6 +53,7 @@ public interface LongArrayBinaryTag extends BinaryTag {
    * <p>The returned array is a copy.</p>
    *
    * @return the value
+   * @since 4.0.0
    */
   long@NonNull[] value();
 }

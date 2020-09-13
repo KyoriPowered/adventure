@@ -31,6 +31,7 @@ import java.util.function.BiFunction;
  * <p>This is the {@code int}-consuming primitive specialization for {@link BiFunction}.</p>
  *
  * @param <R> the result type
+ * @since 4.0.0
  */
 @FunctionalInterface
 public interface IntFunction2<R> {
@@ -40,6 +41,7 @@ public interface IntFunction2<R> {
    * @param first the first input argument
    * @param second the second input argument
    * @return a result
+   * @since 4.0.0
    */
-  /* @Nullable */ R apply(int first, int second);
+  R apply(final int first, final int second);
 }

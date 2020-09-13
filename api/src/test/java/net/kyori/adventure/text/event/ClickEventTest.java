@@ -24,6 +24,8 @@
 package net.kyori.adventure.text.event;
 
 import com.google.common.testing.EqualsTester;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
@@ -32,10 +34,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ClickEventTest {
   @Test
-  void testEquality() {
+  void testEquality() throws MalformedURLException {
     new EqualsTester()
       .addEqualityGroup(
         ClickEvent.openUrl("https://google.com/"),
+        ClickEvent.openUrl(new URL("https://google.com/")),
         ClickEvent.of(ClickEvent.Action.OPEN_URL, "https://google.com/")
       )
       .addEqualityGroup(

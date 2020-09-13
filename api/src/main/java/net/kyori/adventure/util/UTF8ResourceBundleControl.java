@@ -38,13 +38,21 @@ import java.util.ResourceBundle;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * A {@link java.util.ResourceBundle.Control} that enforces UTF-8 string encoding.
+ * A {@link ResourceBundle.Control} that enforces UTF-8 string encoding.
  *
  * <p>See https://stackoverflow.com/a/4660195 for more details.</p>
+ *
+ * @since 4.0.0
  */
 public final class UTF8ResourceBundleControl extends ResourceBundle.Control {
   private static final UTF8ResourceBundleControl INSTANCE = new UTF8ResourceBundleControl();
 
+  /**
+   * Gets the shared instance.
+   *
+   * @return a resource bundle control
+   * @since 4.0.0
+   */
   public static ResourceBundle.@NonNull Control get() {
     return INSTANCE;
   }

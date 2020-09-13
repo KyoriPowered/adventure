@@ -27,12 +27,15 @@ import org.checkerframework.common.value.qual.IntRange;
 
 /**
  * Something that can provide red, green, and blue colour components.
+ *
+ * @since 4.0.0
  */
 public interface RGBLike {
   /**
    * Gets the red component.
    *
    * @return the red component
+   * @since 4.0.0
    */
   @IntRange(from = 0x0, to = 0xff) int red();
 
@@ -40,6 +43,7 @@ public interface RGBLike {
    * Gets the green component.
    *
    * @return the green component
+   * @since 4.0.0
    */
   @IntRange(from = 0x0, to = 0xff) int green();
 
@@ -47,6 +51,7 @@ public interface RGBLike {
    * Gets the blue component.
    *
    * @return the blue component
+   * @since 4.0.0
    */
   @IntRange(from = 0x0, to = 0xff) int blue();
 }

@@ -25,8 +25,20 @@ package net.kyori.adventure.audience;
 
 /**
  * Message types.
+ *
+ * @since 4.0.0
  */
 public enum MessageType {
+  /**
+   * Chat message type.
+   *
+   * @since 4.0.0
+   */
   CHAT,
+  /**
+   * System message type.
+   *
+   * @since 4.0.0
+   */
   SYSTEM;
 }

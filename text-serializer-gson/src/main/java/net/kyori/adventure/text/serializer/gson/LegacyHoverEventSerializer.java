@@ -31,6 +31,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Adapter to convert between modern and legacy hover event formats.
+ *
+ * @since 4.0.0
  */
 public interface LegacyHoverEventSerializer {
   /**
@@ -39,6 +41,7 @@ public interface LegacyHoverEventSerializer {
    * @param input component whose plain-text value is a SNBT string
    * @return the deserialized event
    * @throws IOException if the input is improperly formatted
+   * @since 4.0.0
    */
   HoverEvent.@NonNull ShowItem deserializeShowItem(final @NonNull Component input) throws IOException;
 
@@ -49,6 +52,7 @@ public interface LegacyHoverEventSerializer {
    * @param componentDecoder A decoder that can take a JSON string and return a deserialized component
    * @return the deserialized event
    * @throws IOException if the input is improperly formatted
+   * @since 4.0.0
    */
   HoverEvent.@NonNull ShowEntity deserializeShowEntity(final @NonNull Component input, final Codec.Decoder<Component, String, ? extends RuntimeException> componentDecoder) throws IOException;
 
@@ -58,6 +62,7 @@ public interface LegacyHoverEventSerializer {
    * @param input modern hover event
    * @return component with the legacy value as a SNBT string
    * @throws IOException if the input is improperly formatted
+   * @since 4.0.0
    */
   @NonNull Component serializeShowItem(final HoverEvent.@NonNull ShowItem input) throws IOException;
 
@@ -68,6 +73,7 @@ public interface LegacyHoverEventSerializer {
    * @param componentEncoder An encoder that can take a {@link Component} and return a JSON string
    * @return component with the legacy value as a SNBT string
    * @throws IOException if the input is improperly formatted
+   * @since 4.0.0
    */
   @NonNull Component serializeShowEntity(final HoverEvent.@NonNull ShowEntity input, final Codec.Encoder<Component, String, ? extends RuntimeException> componentEncoder) throws IOException;
 }

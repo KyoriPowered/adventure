@@ -69,12 +69,12 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
   }
 
   @Override
-  public Gson serializer() {
+  public @NonNull Gson serializer() {
     return this.serializer;
   }
 
   @Override
-  public UnaryOperator<GsonBuilder> populator() {
+  public @NonNull UnaryOperator<GsonBuilder> populator() {
     return this.populator;
   }
 

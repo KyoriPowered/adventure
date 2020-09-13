@@ -29,6 +29,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * Common methods between {@link CompoundBinaryTag} and {@link CompoundBinaryTag.Builder}.
  *
  * @param <R> the return type
+ * @since 4.0.0
  */
 public interface CompoundTagSetter<R> {
   /**
@@ -37,6 +38,7 @@ public interface CompoundTagSetter<R> {
    * @param key the key
    * @param tag the tag
    * @return a compound tag
+   * @since 4.0.0
    */
   @NonNull R put(final @NonNull String key, final @NonNull BinaryTag tag);
 
@@ -48,6 +50,7 @@ public interface CompoundTagSetter<R> {
    * @param key the key
    * @param value the value
    * @return a compound tag
+   * @since 4.0.0
    */
   default @NonNull R putBoolean(final @NonNull String key, final boolean value) {
     return this.put(key, value ? ByteBinaryTag.ONE : ByteBinaryTag.ZERO);
@@ -59,6 +62,7 @@ public interface CompoundTagSetter<R> {
    * @param key the key
    * @param value the value
    * @return a compound tag
+   * @since 4.0.0
    */
   default @NonNull R putByte(final @NonNull String key, final byte value) {
     return this.put(key, ByteBinaryTag.of(value));
@@ -70,6 +74,7 @@ public interface CompoundTagSetter<R> {
    * @param key the key
    * @param value the value
    * @return a compound tag
+   * @since 4.0.0
    */
   default @NonNull R putShort(final @NonNull String key, final short value) {
     return this.put(key, ShortBinaryTag.of(value));
@@ -81,6 +86,7 @@ public interface CompoundTagSetter<R> {
    * @param key the key
    * @param value the value
    * @return a compound tag
+   * @since 4.0.0
    */
   default @NonNull R putInt(final @NonNull String key, final int value) {
     return this.put(key, IntBinaryTag.of(value));
@@ -92,6 +98,7 @@ public interface CompoundTagSetter<R> {
    * @param key the key
    * @param value the value
    * @return a compound tag
+   * @since 4.0.0
    */
   default @NonNull R putLong(final @NonNull String key, final long value) {
     return this.put(key, LongBinaryTag.of(value));
@@ -103,6 +110,7 @@ public interface CompoundTagSetter<R> {
    * @param key the key
    * @param value the value
    * @return a compound tag
+   * @since 4.0.0
    */
   default @NonNull R putFloat(final @NonNull String key, final float value) {
     return this.put(key, FloatBinaryTag.of(value));
@@ -114,6 +122,7 @@ public interface CompoundTagSetter<R> {
    * @param key the key
    * @param value the value
    * @return a compound tag
+   * @since 4.0.0
    */
   default @NonNull R putDouble(final @NonNull String key, final double value) {
     return this.put(key, DoubleBinaryTag.of(value));
@@ -125,6 +134,7 @@ public interface CompoundTagSetter<R> {
    * @param key the key
    * @param value the value
    * @return a compound tag
+   * @since 4.0.0
    */
   default @NonNull R putByteArray(final @NonNull String key, final byte@NonNull[] value) {
     return this.put(key, ByteArrayBinaryTag.of(value));
@@ -136,6 +146,7 @@ public interface CompoundTagSetter<R> {
    * @param key the key
    * @param value the value
    * @return a compound tag
+   * @since 4.0.0
    */
   default @NonNull R putString(final @NonNull String key, final @NonNull String value) {
     return this.put(key, StringBinaryTag.of(value));
@@ -147,6 +158,7 @@ public interface CompoundTagSetter<R> {
    * @param key the key
    * @param value the value
    * @return a compound tag
+   * @since 4.0.0
    */
   default @NonNull R putIntArray(final @NonNull String key, final int@NonNull[] value) {
     return this.put(key, IntArrayBinaryTag.of(value));
@@ -158,6 +170,7 @@ public interface CompoundTagSetter<R> {
    * @param key the key
    * @param value the value
    * @return a compound tag
+   * @since 4.0.0
    */
   default @NonNull R putLongArray(final @NonNull String key, final long@NonNull[] value) {
     return this.put(key, LongArrayBinaryTag.of(value));

@@ -31,7 +31,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -253,8 +253,8 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NonNull B hoverEvent(final @Nullable HoverEvent<?> event) {
-    this.styleBuilder().hoverEvent(event);
+  public @NonNull B hoverEvent(final @Nullable HoverEventSource<?> source) {
+    this.styleBuilder().hoverEvent(source);
     return (B) this;
   }
 

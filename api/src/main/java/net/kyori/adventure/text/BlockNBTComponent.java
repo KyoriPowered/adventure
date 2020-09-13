@@ -30,12 +30,15 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A block NBT component.
+ *
+ * @since 4.0.0
  */
 public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, BlockNBTComponent.Builder>, ScopedComponent<BlockNBTComponent> {
   /**
    * Creates a block NBT component builder.
    *
    * @return a builder
+   * @since 4.0.0
    */
   static @NonNull Builder builder() {
     return new BlockNBTComponentImpl.BuilderImpl();
@@ -46,7 +49,8 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
    *
    * @param nbtPath the nbt path
    * @param pos the block position
-   * @return the block NBT component
+   * @return a block NBT component
+   * @since 4.0.0
    */
   static @NonNull BlockNBTComponent of(final @NonNull String nbtPath, final @NonNull Pos pos) {
     return builder().nbtPath(nbtPath).pos(pos).build();
@@ -56,7 +60,8 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
    * Creates a block NBT component by applying configuration from {@code consumer}.
    *
    * @param consumer the builder configurator
-   * @return the block NBT component
+   * @return a block NBT component
+   * @since 4.0.0
    */
   static @NonNull BlockNBTComponent make(final @NonNull Consumer<? super Builder> consumer) {
     final Builder builder = builder();
@@ -67,6 +72,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
    * Gets the block position.
    *
    * @return the block position
+   * @since 4.0.0
    */
   @NonNull Pos pos();
 
@@ -74,7 +80,8 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
    * Sets the block position.
    *
    * @param pos the block position
-   * @return a component
+   * @return a block NBT component
+   * @since 4.0.0
    */
   @NonNull BlockNBTComponent pos(final @NonNull Pos pos);
 
@@ -84,7 +91,8 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
    * @param left the left coordinate
    * @param up the up coordinate
    * @param forwards the forwards coordinate
-   * @return a component
+   * @return a block NBT component
+   * @since 4.0.0
    */
   default @NonNull BlockNBTComponent localPos(final double left, final double up, final double forwards) {
     return this.pos(LocalPos.of(left, up, forwards));
@@ -96,7 +104,8 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
    * @param x the x coordinate
    * @param y the y coordinate
    * @param z the z coordinate
-   * @return a component
+   * @return a block NBT component
+   * @since 4.0.0
    */
   default @NonNull BlockNBTComponent worldPos(final WorldPos.@NonNull Coordinate x, final WorldPos.@NonNull Coordinate y, final WorldPos.@NonNull Coordinate z) {
     return this.pos(WorldPos.of(x, y, z));
@@ -108,7 +117,8 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
    * @param x the x coordinate
    * @param y the y coordinate
    * @param z the z coordinate
-   * @return a component
+   * @return a block NBT component
+   * @since 4.0.0
    */
   default @NonNull BlockNBTComponent absoluteWorldPos(final int x, final int y, final int z) {
     return this.worldPos(WorldPos.Coordinate.absolute(x), WorldPos.Coordinate.absolute(y), WorldPos.Coordinate.absolute(z));
@@ -120,7 +130,8 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
    * @param x the x coordinate
    * @param y the y coordinate
    * @param z the z coordinate
-   * @return a component
+   * @return a block NBT component
+   * @since 4.0.0
    */
   default @NonNull BlockNBTComponent relativeWorldPos(final int x, final int y, final int z) {
     return this.worldPos(WorldPos.Coordinate.relative(x), WorldPos.Coordinate.relative(y), WorldPos.Coordinate.relative(z));
@@ -128,6 +139,8 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
 
   /**
    * An NBT component builder.
+   *
+   * @since 4.0.0
    */
   interface Builder extends NBTComponentBuilder<BlockNBTComponent, Builder> {
     /**
@@ -135,6 +148,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      *
      * @param pos the block position
      * @return this builder
+     * @since 4.0.0
      */
     @NonNull Builder pos(final @NonNull Pos pos);
 
@@ -145,6 +159,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      * @param up the up value
      * @param forwards the forwards value
      * @return this builder
+     * @since 4.0.0
      */
     default @NonNull Builder localPos(final double left, final double up, final double forwards) {
       return this.pos(LocalPos.of(left, up, forwards));
@@ -157,6 +172,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      * @param y the y coordinate
      * @param z the z coordinate
      * @return this builder
+     * @since 4.0.0
      */
     default @NonNull Builder worldPos(final WorldPos.@NonNull Coordinate x, final WorldPos.@NonNull Coordinate y, final WorldPos.@NonNull Coordinate z) {
       return this.pos(WorldPos.of(x, y, z));
@@ -169,6 +185,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      * @param y the y coordinate
      * @param z the z coordinate
      * @return this builder
+     * @since 4.0.0
      */
     default @NonNull Builder absoluteWorldPos(final int x, final int y, final int z) {
       return this.worldPos(WorldPos.Coordinate.absolute(x), WorldPos.Coordinate.absolute(y), WorldPos.Coordinate.absolute(z));
@@ -181,6 +198,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      * @param y the y coordinate
      * @param z the z coordinate
      * @return this builder
+     * @since 4.0.0
      */
     default @NonNull Builder relativeWorldPos(final int x, final int y, final int z) {
       return this.worldPos(WorldPos.Coordinate.relative(x), WorldPos.Coordinate.relative(y), WorldPos.Coordinate.relative(z));
@@ -189,6 +207,8 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
 
   /**
    * A position.
+   *
+   * @since 4.0.0
    */
   interface Pos {
     /**
@@ -203,6 +223,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      * @param input input
      * @return a new pos
      * @throws IllegalArgumentException if the position was in an invalid format
+     * @since 4.0.0
      */
     static @NonNull Pos fromString(final @NonNull String input) throws IllegalArgumentException {
       final Matcher localMatch = BlockNBTComponentImpl.Tokens.LOCAL_PATTERN.matcher(input);
@@ -231,12 +252,15 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      * 
      * @return a string representation
      * @see #fromString(String)
+     * @since 4.0.0
      */
     @NonNull String asString();
   }
 
   /**
    * A local position.
+   *
+   * @since 4.0.0
    */
   interface LocalPos extends Pos {
     /**
@@ -246,6 +270,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      * @param up the up value
      * @param forwards the forwards value
      * @return a local position
+     * @since 4.0.0
      */
     static @NonNull LocalPos of(final double left, final double up, final double forwards) {
       return new BlockNBTComponentImpl.LocalPosImpl(left, up, forwards);
@@ -255,6 +280,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      * Gets the left value.
      *
      * @return the left value
+     * @since 4.0.0
      */
     double left();
 
@@ -262,6 +288,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      * Gets the up value.
      *
      * @return the up value
+     * @since 4.0.0
      */
     double up();
 
@@ -269,12 +296,15 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      * Gets the forwards value.
      *
      * @return the forwards value
+     * @since 4.0.0
      */
     double forwards();
   }
 
   /**
    * A world position.
+   *
+   * @since 4.0.0
    */
   interface WorldPos extends Pos {
     /**
@@ -284,6 +314,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      * @param y the y coordinate
      * @param z the z coordinate
      * @return a world position
+     * @since 4.0.0
      */
     static @NonNull WorldPos of(final @NonNull Coordinate x, final @NonNull Coordinate y, final @NonNull Coordinate z) {
       return new BlockNBTComponentImpl.WorldPosImpl(x, y, z);
@@ -293,6 +324,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      * Gets the x coordinate.
      *
      * @return the x coordinate
+     * @since 4.0.0
      */
     @NonNull Coordinate x();
 
@@ -300,6 +332,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      * Gets the y coordinate.
      *
      * @return the y coordinate
+     * @since 4.0.0
      */
     @NonNull Coordinate y();
 
@@ -307,11 +340,14 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      * Gets the z coordinate.
      *
      * @return the z coordinate
+     * @since 4.0.0
      */
     @NonNull Coordinate z();
 
     /**
      * A coordinate component within a {@link WorldPos}.
+     *
+     * @since 4.0.0
      */
     interface Coordinate {
       /**
@@ -319,6 +355,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
        *
        * @param value the value
        * @return a coordinate
+       * @since 4.0.0
        */
       static @NonNull Coordinate absolute(final int value) {
         return of(value, Type.ABSOLUTE);
@@ -329,6 +366,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
        *
        * @param value the value
        * @return a coordinate
+       * @since 4.0.0
        */
       static @NonNull Coordinate relative(final int value) {
         return of(value, Type.RELATIVE);
@@ -340,6 +378,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
        * @param value the value
        * @param type the type
        * @return a coordinate
+       * @since 4.0.0
        */
       static @NonNull Coordinate of(final int value, final @NonNull Type type) {
         return new BlockNBTComponentImpl.WorldPosImpl.CoordinateImpl(value, type);
@@ -349,6 +388,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
        * Gets the value.
        *
        * @return the value
+       * @since 4.0.0
        */
       int value();
 
@@ -356,14 +396,27 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
        * Gets the type.
        *
        * @return the type
+       * @since 4.0.0
        */
       @NonNull Type type();
 
       /**
        * The type of a coordinate.
+       *
+       * @since 4.0.0
        */
       enum Type {
+        /**
+         * An absolute coordinate.
+         *
+         * @since 4.0.0
+         */
         ABSOLUTE,
+        /**
+         * A relative coordinate.
+         *
+         * @since 4.0.0
+         */
         RELATIVE;
       }
     }

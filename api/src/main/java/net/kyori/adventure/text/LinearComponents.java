@@ -29,6 +29,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Utilities for creating a {@link Component} "linearly".
+ *
+ * @since 4.0.0
  */
 public final class LinearComponents {
   private LinearComponents() {
@@ -39,6 +41,7 @@ public final class LinearComponents {
    *
    * @param applicables the things used to make the component
    * @return a component
+   * @since 4.0.0
    */
   public static @NonNull Component linear(final @NonNull ComponentBuilderApplicable @NonNull ... applicables) {
     final int length = applicables.length;

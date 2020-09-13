@@ -34,6 +34,8 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * The named text colours in Minecraft: Java Edition.
+ *
+ * @since 4.0.0
  */
 public final class NamedTextColor implements TextColor {
   private static final int BLACK_VALUE = 0x000000;
@@ -53,26 +55,108 @@ public final class NamedTextColor implements TextColor {
   private static final int YELLOW_VALUE = 0xffff55;
   private static final int WHITE_VALUE = 0xffffff;
 
+  /**
+   * The standard {@code black} colour.
+   *
+   * @since 4.0.0
+   */
   public static final NamedTextColor BLACK = new NamedTextColor("black", BLACK_VALUE);
+  /**
+   * The standard {@code dark_blue} colour.
+   *
+   * @since 4.0.0
+   */
   public static final NamedTextColor DARK_BLUE = new NamedTextColor("dark_blue", DARK_BLUE_VALUE);
+  /**
+   * The standard {@code dark_green} colour.
+   *
+   * @since 4.0.0
+   */
   public static final NamedTextColor DARK_GREEN = new NamedTextColor("dark_green", DARK_GREEN_VALUE);
+  /**
+   * The standard {@code dark_aqua} colour.
+   *
+   * @since 4.0.0
+   */
   public static final NamedTextColor DARK_AQUA = new NamedTextColor("dark_aqua", DARK_AQUA_VALUE);
+  /**
+   * The standard {@code dark_red} colour.
+   *
+   * @since 4.0.0
+   */
   public static final NamedTextColor DARK_RED = new NamedTextColor("dark_red", DARK_RED_VALUE);
+  /**
+   * The standard {@code dark_purple} colour.
+   *
+   * @since 4.0.0
+   */
   public static final NamedTextColor DARK_PURPLE = new NamedTextColor("dark_purple", DARK_PURPLE_VALUE);
+  /**
+   * The standard {@code gold} colour.
+   *
+   * @since 4.0.0
+   */
   public static final NamedTextColor GOLD = new NamedTextColor("gold", GOLD_VALUE);
+  /**
+   * The standard {@code gray} colour.
+   *
+   * @since 4.0.0
+   */
   public static final NamedTextColor GRAY = new NamedTextColor("gray", GRAY_VALUE);
+  /**
+   * The standard {@code dark_gray} colour.
+   *
+   * @since 4.0.0
+   */
   public static final NamedTextColor DARK_GRAY = new NamedTextColor("dark_gray", DARK_GRAY_VALUE);
+  /**
+   * The standard {@code blue} colour.
+   *
+   * @since 4.0.0
+   */
   public static final NamedTextColor BLUE = new NamedTextColor("blue", BLUE_VALUE);
+  /**
+   * The standard {@code green} colour.
+   *
+   * @since 4.0.0
+   */
   public static final NamedTextColor GREEN = new NamedTextColor("green", GREEN_VALUE);
+  /**
+   * The standard {@code aqua} colour.
+   *
+   * @since 4.0.0
+   */
   public static final NamedTextColor AQUA = new NamedTextColor("aqua", AQUA_VALUE);
+  /**
+   * The standard {@code red} colour.
+   *
+   * @since 4.0.0
+   */
   public static final NamedTextColor RED = new NamedTextColor("red", RED_VALUE);
+  /**
+   * The standard {@code light_purple} colour.
+   *
+   * @since 4.0.0
+   */
   public static final NamedTextColor LIGHT_PURPLE = new NamedTextColor("light_purple", LIGHT_PURPLE_VALUE);
+  /**
+   * The standard {@code yellow} colour.
+   *
+   * @since 4.0.0
+   */
   public static final NamedTextColor YELLOW = new NamedTextColor("yellow", YELLOW_VALUE);
+  /**
+   * The standard {@code white} colour.
+   *
+   * @since 4.0.0
+   */
   public static final NamedTextColor WHITE = new NamedTextColor("white", WHITE_VALUE);
 
   private static final List<NamedTextColor> VALUES = Collections.unmodifiableList(Arrays.asList(BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW, WHITE));
   /**
    * An index of name to color.
+   *
+   * @since 4.0.0
    */
   public static final Index<String, NamedTextColor> NAMES = Index.create(constant -> constant.name, VALUES);
 
@@ -81,6 +165,7 @@ public final class NamedTextColor implements TextColor {
    *
    * @param value the color to match
    * @return the matched color, or null
+   * @since 4.0.0
    */
   public static @Nullable NamedTextColor ofExact(final int value) {
     if(value == BLACK_VALUE) return BLACK;
@@ -107,6 +192,7 @@ public final class NamedTextColor implements TextColor {
    *
    * @param any colour to match
    * @return nearest named colour. will always return a value
+   * @since 4.0.0
    */
   public static @NonNull NamedTextColor nearestTo(final @NonNull TextColor any) {
     if(any instanceof NamedTextColor) {
@@ -148,9 +234,6 @@ public final class NamedTextColor implements TextColor {
     return ((2 + (rAvg / 256)) * (dR * dR)) + (4 * (dG * dG)) + ((2 + ((255 - rAvg) / 256)) * (dB * dB));
   }
 
-  /**
-   * The name of this color.
-   */
   private final String name;
   private final int value;
 

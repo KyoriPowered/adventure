@@ -25,28 +25,33 @@ package net.kyori.adventure.title;
 
 import java.time.Duration;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.util.Ticks;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A title.
+ *
+ * @since 4.0.0
  */
 public interface Title {
   /**
-   * A duration which will preserve a client's existing time for the specific parameter.
+   * The default times.
    *
-   * <p>Exact value subject to change.</p>
+   * @since 4.0.0
    */
-  Duration KEEP = Duration.ofSeconds(-1);
+  Times DEFAULT_TIMES = Times.of(Ticks.duration(10), Ticks.duration(70), Ticks.duration(20));
 
   /**
-   * Creates a title that maintains each client's existing title times.
+   * Creates a title.
    *
    * @param title the title
    * @param subtitle the subtitle
    * @return the title
+   * @since 4.0.0
    */
   static @NonNull Title of(final @NonNull Component title, final @NonNull Component subtitle) {
-    return of(title, subtitle, KEEP, KEEP, KEEP);
+    return of(title, subtitle, DEFAULT_TIMES);
   }
 
   /**
@@ -54,19 +59,19 @@ public interface Title {
    *
    * @param title the title
    * @param subtitle the subtitle
-   * @param fadeInTime the fade-in duration
-   * @param stayTime the stay duration
-   * @param fadeOutTime the fade-out duration
+   * @param times the times
    * @return the title
+   * @since 4.0.0
    */
-  static @NonNull Title of(final @NonNull Component title, final @NonNull Component subtitle, final @NonNull Duration fadeInTime, final @NonNull Duration stayTime, final @NonNull Duration fadeOutTime) {
-    return new TitleImpl(title, subtitle, fadeInTime, stayTime, fadeOutTime);
+  static @NonNull Title of(final @NonNull Component title, final @NonNull Component subtitle, final @Nullable Times times) {
+    return new TitleImpl(title, subtitle, times);
   }
 
   /**
    * Gets the title.
    *
    * @return the title
+   * @since 4.0.0
    */
   @NonNull Component title();
 
@@ -74,27 +79,59 @@ public interface Title {
    * Gets the subtitle.
    *
    * @return the subtitle
+   * @since 4.0.0
    */
   @NonNull Component subtitle();
 
   /**
-   * Gets the time (in ticks) the title will fade-in.
+   * Gets the times.
    *
-   * @return the time (in ticks) the title will fade-in
+   * @return the times
+   * @since 4.0.0
    */
-  @NonNull Duration fadeInTime();
+  @Nullable Times times();
 
   /**
-   * Gets the time (in ticks) the title will stay.
+   * Title times.
    *
-   * @return the time (in ticks) the title will stay
+   * @since 4.0.0
    */
-  @NonNull Duration stayTime();
+  interface Times {
+    /**
+     * Creates times.
+     *
+     * @param fadeIn the fade-in time
+     * @param stay the stay time
+     * @param fadeOut the fade-eut time
+     * @return times
+     * @since 4.0.0
+     */
+    static @NonNull Times of(final @NonNull Duration fadeIn, final @NonNull Duration stay, final @NonNull Duration fadeOut) {
+      return new TitleImpl.TimesImpl(fadeIn, stay, fadeOut);
+    }
 
-  /**
-   * Gets the time (in ticks) the title will fade-out.
-   *
-   * @return the time (in ticks) the title will fade-out
-   */
-  @NonNull Duration fadeOutTime();
+    /**
+     * Gets the time the title will fade-in.
+     *
+     * @return the time the title will fade-in
+     * @since 4.0.0
+     */
+    @NonNull Duration fadeIn();
+
+    /**
+     * Gets the time the title will stay.
+     *
+     * @return the time the title will stay
+     * @since 4.0.0
+     */
+    @NonNull Duration stay();
+
+    /**
+     * Gets the time the title will fade-out.
+     *
+     * @return the time the title will fade-out
+     * @since 4.0.0
+     */
+    @NonNull Duration fadeOut();
+  }
 }

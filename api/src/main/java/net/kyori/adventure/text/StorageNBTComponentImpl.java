@@ -101,11 +101,11 @@ final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent
   }
 
   @Override
-  public @NonNull Builder toBuilder() {
+  public StorageNBTComponent.@NonNull Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
-  static class BuilderImpl extends NBTComponentImpl.BuilderImpl<StorageNBTComponent, Builder> implements Builder {
+  static class BuilderImpl extends NBTComponentImpl.BuilderImpl<StorageNBTComponent, StorageNBTComponent.Builder> implements StorageNBTComponent.Builder {
     private @MonotonicNonNull Key storage;
 
     BuilderImpl() {
@@ -117,7 +117,7 @@ final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent
     }
 
     @Override
-    public @NonNull Builder storage(final @NonNull Key storage) {
+    public StorageNBTComponent.@NonNull Builder storage(final @NonNull Key storage) {
       this.storage = storage;
       return this;
     }

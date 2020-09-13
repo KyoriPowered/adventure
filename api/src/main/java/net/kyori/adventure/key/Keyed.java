@@ -27,12 +27,15 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Something that has an associated {@link Key}.
+ *
+ * @since 4.0.0
  */
 public interface Keyed {
   /**
    * Gets the key.
    *
    * @return the key
+   * @since 4.0.0
    */
   @NonNull Key key();
 }

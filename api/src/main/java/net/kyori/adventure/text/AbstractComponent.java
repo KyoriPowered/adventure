@@ -27,8 +27,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.util.IntFunction2;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
@@ -37,6 +40,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An abstract implementation of a text component.
+ *
+ * @since 4.0.0
  */
 public abstract class AbstractComponent implements Component, Examinable {
   static List<Component> asComponents(final List<? extends ComponentLike> list) {
@@ -54,6 +59,14 @@ public abstract class AbstractComponent implements Component, Examinable {
       }
     }
     return Collections.unmodifiableList(components);
+  }
+
+  static <T> List<T> addOne(final List<T> oldList, final T newElement) {
+    if(oldList.isEmpty()) return Collections.singletonList(newElement);
+    final List<T> newList = new ArrayList<>(oldList.size() + 1);
+    newList.addAll(oldList);
+    newList.add(newElement);
+    return newList;
   }
 
   /**
@@ -78,6 +91,11 @@ public abstract class AbstractComponent implements Component, Examinable {
   @Override
   public final @NonNull Style style() {
     return this.style;
+  }
+
+  @Override
+  public @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull UnaryOperator<TextComponent.Builder> replacement, final @NonNull IntFunction2<PatternReplacementResult> fn) {
+    return TextReplacementRenderer.INSTANCE.render(this, new TextReplacementRenderer.State(pattern, (result, builder) -> replacement.apply(builder), fn));
   }
 
   @Override

@@ -30,14 +30,20 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A bossbar.
+ *
+ * @since 4.0.0
  */
 public interface BossBar {
   /**
    * The minimum value the percent can be.
+   *
+   * @since 4.0.0
    */
   float MIN_PERCENT = 0f;
   /**
    * The maximum value the percent can be.
+   *
+   * @since 4.0.0
    */
   float MAX_PERCENT = 1f;
 
@@ -50,6 +56,7 @@ public interface BossBar {
    * @param overlay the overlay
    * @return a bossbar
    * @throws IllegalArgumentException if percent is less than 0 or greater than 1
+   * @since 4.0.0
    */
   static @NonNull BossBar of(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay) {
     BossBarImpl.checkPercent(percent);
@@ -66,6 +73,7 @@ public interface BossBar {
    * @param flags the flags
    * @return a bossbar
    * @throws IllegalArgumentException if percent is less than 0 or greater than 1
+   * @since 4.0.0
    */
   static @NonNull BossBar of(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay, final @NonNull Set<Flag> flags) {
     BossBarImpl.checkPercent(percent);
@@ -76,6 +84,7 @@ public interface BossBar {
    * Gets the name.
    *
    * @return the name
+   * @since 4.0.0
    */
   @NonNull Component name();
 
@@ -84,6 +93,7 @@ public interface BossBar {
    *
    * @param name the name
    * @return the bossbar
+   * @since 4.0.0
    */
   @NonNull BossBar name(final @NonNull Component name);
 
@@ -93,6 +103,7 @@ public interface BossBar {
    * <p>The percent is a value between 0 and 1.</p>
    *
    * @return the percent
+   * @since 4.0.0
    */
   float percent();
 
@@ -104,6 +115,7 @@ public interface BossBar {
    * @param percent the percent
    * @return the bossbar
    * @throws IllegalArgumentException if percent is less than 0 or greater than 1
+   * @since 4.0.0
    */
   @NonNull BossBar percent(final float percent);
 
@@ -111,6 +123,7 @@ public interface BossBar {
    * Gets the color.
    *
    * @return the color
+   * @since 4.0.0
    */
   @NonNull Color color();
 
@@ -119,6 +132,7 @@ public interface BossBar {
    *
    * @param color the color
    * @return the bossbar
+   * @since 4.0.0
    */
   @NonNull BossBar color(final @NonNull Color color);
 
@@ -126,6 +140,7 @@ public interface BossBar {
    * Gets the overlay.
    *
    * @return the overlay
+   * @since 4.0.0
    */
   @NonNull Overlay overlay();
 
@@ -134,6 +149,7 @@ public interface BossBar {
    *
    * @param overlay the overlay
    * @return the bossbar
+   * @since 4.0.0
    */
   @NonNull BossBar overlay(final @NonNull Overlay overlay);
 
@@ -141,6 +157,7 @@ public interface BossBar {
    * Gets the flags.
    *
    * @return the flags
+   * @since 4.0.0
    */
   @NonNull Set<Flag> flags();
 
@@ -149,6 +166,7 @@ public interface BossBar {
    *
    * @param flags the flags
    * @return the bossbar
+   * @since 4.0.0
    */
   @NonNull BossBar flags(final @NonNull Set<Flag> flags);
 
@@ -157,6 +175,7 @@ public interface BossBar {
    *
    * @param flag the flag
    * @return {@code true} if this bossbar has the flag, {@code false} otherwise
+   * @since 4.0.0
    */
   boolean hasFlag(final @NonNull Flag flag);
 
@@ -165,6 +184,7 @@ public interface BossBar {
    *
    * @param flag the flag
    * @return the bossbar
+   * @since 4.0.0
    */
   @NonNull BossBar addFlag(final @NonNull Flag flag);
 
@@ -173,6 +193,7 @@ public interface BossBar {
    *
    * @param flag the flag
    * @return the bossbar
+   * @since 4.0.0
    */
   @NonNull BossBar removeFlag(final @NonNull Flag flag);
 
@@ -181,6 +202,7 @@ public interface BossBar {
    *
    * @param flags the flags
    * @return the bossbar
+   * @since 4.0.0
    */
   @NonNull BossBar addFlags(final @NonNull Flag@NonNull... flags);
 
@@ -189,6 +211,7 @@ public interface BossBar {
    *
    * @param flags the flags
    * @return the bossbar
+   * @since 4.0.0
    */
   @NonNull BossBar removeFlags(final @NonNull Flag@NonNull... flags);
 
@@ -197,6 +220,7 @@ public interface BossBar {
    *
    * @param flags the flags
    * @return the bossbar
+   * @since 4.0.0
    */
   @NonNull BossBar addFlags(final @NonNull Iterable<Flag> flags);
 
@@ -205,6 +229,7 @@ public interface BossBar {
    *
    * @param flags the flags
    * @return the bossbar
+   * @since 4.0.0
    */
   @NonNull BossBar removeFlags(final @NonNull Iterable<Flag> flags);
 
@@ -213,6 +238,7 @@ public interface BossBar {
    *
    * @param listener a listener
    * @return the bossbar
+   * @since 4.0.0
    */
   @NonNull BossBar addListener(final @NonNull Listener listener);
 
@@ -221,11 +247,14 @@ public interface BossBar {
    *
    * @param listener a listener
    * @return the bossbar
+   * @since 4.0.0
    */
   @NonNull BossBar removeListener(final @NonNull Listener listener);
 
   /**
    * A listener for changes that happen on a {@link BossBar}.
+   *
+   * @since 4.0.0
    */
   interface Listener {
     /**
@@ -234,6 +263,7 @@ public interface BossBar {
      * @param bar the bossbar
      * @param oldName the old name
      * @param newName the new name
+     * @since 4.0.0
      */
     default void bossBarNameChanged(final @NonNull BossBar bar, final @NonNull Component oldName, final @NonNull Component newName) {
     }
@@ -244,6 +274,7 @@ public interface BossBar {
      * @param bar the bossbar
      * @param oldPercent the old percent
      * @param newPercent the new percent
+     * @since 4.0.0
      */
     default void bossBarPercentChanged(final @NonNull BossBar bar, final float oldPercent, final float newPercent) {
     }
@@ -254,6 +285,7 @@ public interface BossBar {
      * @param bar the bossbar
      * @param oldColor the old color
      * @param newColor the new color
+     * @since 4.0.0
      */
     default void bossBarColorChanged(final @NonNull BossBar bar, final @NonNull Color oldColor, final @NonNull Color newColor) {
     }
@@ -264,6 +296,7 @@ public interface BossBar {
      * @param bar the bossbar
      * @param oldOverlay the old overlay
      * @param newOverlay the new overlay
+     * @since 4.0.0
      */
     default void bossBarOverlayChanged(final @NonNull BossBar bar, final @NonNull Overlay oldOverlay, final @NonNull Overlay newOverlay) {
     }
@@ -274,6 +307,7 @@ public interface BossBar {
      * @param bar the bossbar
      * @param flagsAdded the flags added to the bossbar
      * @param flagsRemoved the flags removed from the bossbar
+     * @since 4.0.0
      */
     default void bossBarFlagsChanged(final @NonNull BossBar bar, final @NonNull Set<Flag> flagsAdded, final @NonNull Set<Flag> flagsRemoved) {
     }
@@ -285,16 +319,58 @@ public interface BossBar {
    * <p>This color does <em>not</em> affect the color of the bar's name text.</p>
    *
    * <p>The exact color for each named value may vary slightly based on game version.</p>
+   *
+   * @since 4.0.0
    */
   enum Color {
+    /**
+     * Pink.
+     *
+     * @since 4.0.0
+     */
     PINK("pink"),
+    /**
+     * Blue.
+     *
+     * @since 4.0.0
+     */
     BLUE("blue"),
+    /**
+     * Red.
+     *
+     * @since 4.0.0
+     */
     RED("red"),
+    /**
+     * Green.
+     *
+     * @since 4.0.0
+     */
     GREEN("green"),
+    /**
+     * Yellow.
+     *
+     * @since 4.0.0
+     */
     YELLOW("yellow"),
+    /**
+     * Purple.
+     *
+     * @since 4.0.0
+     */
     PURPLE("purple"),
+    /**
+     * White.
+     *
+     * @since 4.0.0
+     */
     WHITE("white");
 
+    /**
+     * The name map.
+     *
+     * @since 4.0.0
+     */
     public static final Index<String, Color> NAMES = Index.create(Color.class, color -> color.name);
     private final String name;
 
@@ -305,22 +381,36 @@ public interface BossBar {
 
   /**
    * Flags to control toggleable effects of a boss bar.
+   *
+   * @since 4.0.0
    */
   enum Flag {
     /**
      * If the screen should be darkened.
+     *
+     * @since 4.0.0
      */
     DARKEN_SCREEN("darken_screen"),
     /**
      * If boss music should be played.
+     *
+     * @since 4.0.0
      */
     PLAY_BOSS_MUSIC("play_boss_music"),
     /**
      * If world fog should be created.
+     *
+     * @since 4.0.0
      */
     CREATE_WORLD_FOG("create_world_fog");
 
-    // These names are not "official", but we want to provide them to allow serializers to be consistent
+    /**
+     * The name map.
+     *
+     * <p>These names are not "official", but we want to provide them to allow serializers to be consistent.</p>
+     *
+     * @since 4.0.0
+     */
     public static final Index<String, Flag> NAMES = Index.create(Flag.class, flag -> flag.name);
     private final String name;
 
@@ -331,14 +421,46 @@ public interface BossBar {
 
   /**
    * An overlay on the bar component of a boss bar.
+   *
+   * @since 4.0.0
    */
   enum Overlay {
+    /**
+     * A progress bar.
+     *
+     * @since 4.0.0
+     */
     PROGRESS("progress"),
+    /**
+     * A bar with {@code 6} notches.
+     *
+     * @since 4.0.0
+     */
     NOTCHED_6("notched_6"),
+    /**
+     * A bar with {@code 10} notches.
+     *
+     * @since 4.0.0
+     */
     NOTCHED_10("notched_10"),
+    /**
+     * A bar with {@code 12} notches.
+     *
+     * @since 4.0.0
+     */
     NOTCHED_12("notched_12"),
+    /**
+     * A bar with {@code 20} notches.
+     *
+     * @since 4.0.0
+     */
     NOTCHED_20("notched_20");
 
+    /**
+     * The name map.
+     *
+     * @since 4.0.0
+     */
     public static final Index<String, Overlay> NAMES = Index.create(Overlay.class, overlay -> overlay.name);
     private final String name;
 

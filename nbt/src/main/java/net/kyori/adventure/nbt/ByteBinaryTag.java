@@ -30,15 +30,21 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A binary tag holding a {@code byte} value.
+ *
+ * @since 4.0.0
  */
 public interface ByteBinaryTag extends NumberBinaryTag {
   /**
    * A tag with the value {@code 0}.
+   *
+   * @since 4.0.0
    */
   ByteBinaryTag ZERO = new ByteBinaryTagImpl((byte) 0);
   
   /**
    * A tag with the value {@code 1}.
+   *
+   * @since 4.0.0
    */
   ByteBinaryTag ONE = new ByteBinaryTagImpl((byte) 1);
   
@@ -47,6 +53,7 @@ public interface ByteBinaryTag extends NumberBinaryTag {
    *
    * @param value the value
    * @return a binary tag
+   * @since 4.0.0
    */
   static @NonNull ByteBinaryTag of(final byte value) {
     if(value == 0) {
@@ -67,6 +74,7 @@ public interface ByteBinaryTag extends NumberBinaryTag {
    * Gets the value.
    *
    * @return the value
+   * @since 4.0.0
    */
   byte value();
 }

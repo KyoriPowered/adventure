@@ -109,8 +109,7 @@ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<S
     if(json.has(CLICK_EVENT)) {
       final JsonObject clickEvent = json.getAsJsonObject(CLICK_EVENT);
       if(clickEvent != null) {
-        final /* @Nullable */ JsonPrimitive rawAction = clickEvent.getAsJsonPrimitive(CLICK_EVENT_ACTION);
-        final ClickEvent./*@Nullable*/ Action action = rawAction == null ? null : context.deserialize(rawAction, ClickEvent.Action.class);
+        final ClickEvent./*@Nullable*/ Action action = optionallyDeserialize(clickEvent.getAsJsonPrimitive(CLICK_EVENT_ACTION), context, ClickEvent.Action.class);
         if(action != null && action.readable()) {
           final /* @Nullable */ JsonPrimitive rawValue = clickEvent.getAsJsonPrimitive(CLICK_EVENT_VALUE);
           final /* @Nullable */ String value = rawValue == null ? null : rawValue.getAsString();
@@ -124,8 +123,7 @@ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<S
     if(json.has(HOVER_EVENT)) {
       final JsonObject hoverEvent = json.getAsJsonObject(HOVER_EVENT);
       if(hoverEvent != null) {
-        final /* @Nullable */ JsonPrimitive rawAction = hoverEvent.getAsJsonPrimitive(HOVER_EVENT_ACTION);
-        final HoverEvent./*@Nullable*/ Action action = rawAction == null ? null : context.deserialize(rawAction, HoverEvent.Action.class);
+        final HoverEvent./*@Nullable*/ Action action = optionallyDeserialize(hoverEvent.getAsJsonPrimitive(HOVER_EVENT_ACTION), context, HoverEvent.Action.class);
         if(action != null && action.readable()) {
           final /* @Nullable */ Object value;
           if(hoverEvent.has(HOVER_EVENT_CONTENTS)) {
@@ -152,9 +150,13 @@ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<S
     return style.build();
   }
 
+  private static <T> T optionallyDeserialize(final JsonElement json, final JsonDeserializationContext context, final Class<T> type) {
+    return json == null ? null : context.deserialize(json, type);
+  }
+
   private Object legacyHoverEventContents(final HoverEvent.Action<?> action, final Component rawValue, final JsonDeserializationContext context) {
-    if(action == HoverEvent.Action.SHOW_TEXT) { // Passthrough -- no serialization needed
-      return rawValue;
+    if(action == HoverEvent.Action.SHOW_TEXT) {
+      return rawValue; // Passthrough -- no serialization needed
     } else if(this.legacyHover != null) {
       try {
         if(action == HoverEvent.Action.SHOW_ENTITY) {
@@ -171,8 +173,8 @@ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<S
   }
 
   private Codec.Decoder<Component, String, JsonParseException> decoder(final JsonDeserializationContext ctx) {
-    return str -> {
-      final JsonReader reader = new JsonReader(new StringReader(str));
+    return string -> {
+      final JsonReader reader = new JsonReader(new StringReader(string));
       return ctx.deserialize(Streams.parse(reader), Component.class);
     };
   }
@@ -196,6 +198,7 @@ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<S
       final TextDecoration.State state = src.decoration(decoration);
       if(state != TextDecoration.State.NOT_SET) {
         final String name = TextDecoration.NAMES.key(decoration);
+        assert name != null; // should never be null
         json.addProperty(name, state == TextDecoration.State.TRUE);
       }
     }

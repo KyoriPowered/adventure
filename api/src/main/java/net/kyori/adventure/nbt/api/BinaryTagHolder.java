@@ -33,6 +33,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * use this "holder" interface instead. This opens the door for platform specific implementations.</p>
  *
  * <p>See {@code net.kyori.adventure.nbt.impl} for a platform agnostic implementation.</p>
+ *
+ * @since 4.0.0
  */
 public interface BinaryTagHolder {
   /**
@@ -44,6 +46,7 @@ public interface BinaryTagHolder {
    * @param <EX> encode exception type
    * @return the encoded binary tag holder
    * @throws EX if an error occurred while encoding the binary tag
+   * @since 4.0.0
    */
   static <T, EX extends Exception> @NonNull BinaryTagHolder encode(final @NonNull T nbt, final @NonNull Codec<? super T, String, ?, EX> codec) throws EX {
     return new BinaryTagHolderImpl(codec.encode(nbt));
@@ -54,6 +57,7 @@ public interface BinaryTagHolder {
    *
    * @param string the encoded binary tag value
    * @return the encoded binary tag
+   * @since 4.0.0
    */
   static @NonNull BinaryTagHolder of(final @NonNull String string) {
     return new BinaryTagHolderImpl(string);
@@ -63,6 +67,7 @@ public interface BinaryTagHolder {
    * Gets the raw string value.
    *
    * @return the raw string value
+   * @since 4.0.0
    */
   @NonNull String string();
 
@@ -74,6 +79,7 @@ public interface BinaryTagHolder {
    * @param <DX> decode thrown exception type
    * @return the binary tag
    * @throws DX if an error occurred while retrieving the binary tag
+   * @since 4.0.0
    */
   <T, DX extends Exception> @NonNull T get(final @NonNull Codec<T, String, DX, ?> codec) throws DX;
 }

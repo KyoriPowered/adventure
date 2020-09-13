@@ -21,42 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.nbt;
+package net.kyori.adventure.util;
 
+import java.time.Duration;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * An end tag.
+ * Game tick utilities.
  *
  * @since 4.0.0
  */
-public interface EndBinaryTag extends BinaryTag {
+public interface Ticks {
   /**
-   * Gets the end tag.
+   * The number of ticks that occur in one second.
    *
-   * @return the end tag
    * @since 4.0.0
    */
-  static @NonNull EndBinaryTag get() {
-    return EndBinaryTagImpl.INSTANCE;
-  }
+  int TICKS_PER_SECOND = 20;
 
-  @Override
-  default @NonNull BinaryTagType<EndBinaryTag> type() {
-    return BinaryTagTypes.END;
-  }
-}
+  /**
+   * A single tick duration, in milliseconds.
+   *
+   * @since 4.0.0
+   */
+  long SINGLE_TICK_DURATION_MS = 1000 / TICKS_PER_SECOND;
 
-final class EndBinaryTagImpl implements EndBinaryTag {
-  static final EndBinaryTagImpl INSTANCE = new EndBinaryTagImpl();
-
-  @Override
-  public boolean equals(final Object that) {
-    return this == that;
-  }
-
-  @Override
-  public int hashCode() {
-    return 0;
+  /**
+   * Converts ticks into a {@link Duration}.
+   *
+   * @param ticks the number of ticks
+   * @return a duration
+   * @since 4.0.0
+   */
+  static @NonNull Duration duration(final long ticks) {
+    return Duration.ofMillis(ticks * SINGLE_TICK_DURATION_MS);
   }
 }

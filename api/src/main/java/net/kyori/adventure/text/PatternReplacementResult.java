@@ -21,42 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.nbt;
+package net.kyori.adventure.text;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
+import net.kyori.adventure.util.IntFunction2;
 
 /**
- * An end tag.
+ * A result for {@link Component#replaceText(Pattern, UnaryOperator, IntFunction2) pattern-based replacements}.
  *
  * @since 4.0.0
  */
-public interface EndBinaryTag extends BinaryTag {
+public enum PatternReplacementResult {
   /**
-   * Gets the end tag.
+   * Replace the current match.
    *
-   * @return the end tag
    * @since 4.0.0
    */
-  static @NonNull EndBinaryTag get() {
-    return EndBinaryTagImpl.INSTANCE;
-  }
-
-  @Override
-  default @NonNull BinaryTagType<EndBinaryTag> type() {
-    return BinaryTagTypes.END;
-  }
-}
-
-final class EndBinaryTagImpl implements EndBinaryTag {
-  static final EndBinaryTagImpl INSTANCE = new EndBinaryTagImpl();
-
-  @Override
-  public boolean equals(final Object that) {
-    return this == that;
-  }
-
-  @Override
-  public int hashCode() {
-    return 0;
-  }
+  REPLACE,
+  /**
+   * Skip the current match, but continue searching for others.
+   *
+   * @since 4.0.0
+   */
+  CONTINUE,
+  /**
+   * Stop matching.
+   *
+   * @since 4.0.0
+   */
+  STOP;
 }

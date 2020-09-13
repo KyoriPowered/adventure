@@ -31,7 +31,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
@@ -45,7 +44,17 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * A style.
+ *
+ * @since 4.0.0
+ */
 public final class Style implements Buildable<Style, Style.Builder>, Examinable {
+  /**
+   * The default font.
+   *
+   * @since 4.0.0
+   */
   public static final Key DEFAULT_FONT = Key.of("default");
   private static final Style EMPTY = new Style(null, null, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null);
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
@@ -64,6 +73,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    * Creates a builder.
    *
    * @return a builder
+   * @since 4.0.0
    */
   public static @NonNull Builder builder() {
     return new Builder();
@@ -73,6 +83,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    * Gets an empty style.
    *
    * @return empty style
+   * @since 4.0.0
    */
   public static @NonNull Style empty() {
     return EMPTY;
@@ -83,6 +94,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    *
    * @param color the style
    * @return a style
+   * @since 4.0.0
    */
   public static @NonNull Style of(final @Nullable TextColor color) {
     if(color == null) return empty();
@@ -94,6 +106,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    *
    * @param decoration the decoration
    * @return a style
+   * @since 4.0.0
    */
   public static @NonNull Style of(final @NonNull TextDecoration decoration) {
     return builder().decoration(decoration, true).build();
@@ -105,6 +118,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    * @param color the style
    * @param decorations the decorations
    * @return a style
+   * @since 4.0.0
    */
   public static @NonNull Style of(final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
     final Builder builder = builder();
@@ -126,6 +140,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    * @param color the style
    * @param decorations the decorations
    * @return a style
+   * @since 4.0.0
    */
   public static @NonNull Style of(final @Nullable TextColor color, final Set<TextDecoration> decorations) {
     final Builder builder = builder();
@@ -143,6 +158,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    *
    * @param applicables the applicables
    * @return a style
+   * @since 4.0.0
    */
   public static @NonNull Style of(final StyleBuilderApplicable@NonNull... applicables) {
     if(applicables.length == 0) return empty();
@@ -158,6 +174,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    *
    * @param applicables the applicables
    * @return a style
+   * @since 4.0.0
    */
   public static @NonNull Style of(final @NonNull Iterable<? extends StyleBuilderApplicable> applicables) {
     final Builder builder = builder();
@@ -172,6 +189,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    *
    * @param consumer the builder consumer
    * @return a style
+   * @since 4.0.0
    */
   public static @NonNull Style make(final @NonNull Consumer<Builder> consumer) {
     return Buildable.configureAndBuild(builder(), consumer);
@@ -197,6 +215,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    *
    * @param consumer the consumer
    * @return a new style
+   * @since 4.0.0
    */
   public @NonNull Style edit(final @NonNull Consumer<Builder> consumer) {
     return this.edit(consumer, Merge.Strategy.ALWAYS);
@@ -208,6 +227,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    * @param consumer the consumer
    * @param strategy the merge strategy
    * @return a new style
+   * @since 4.0.0
    */
   public @NonNull Style edit(final @NonNull Consumer<Builder> consumer, final Style.Merge.@NonNull Strategy strategy) {
     return make(style -> {
@@ -225,6 +245,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    * Gets the font.
    *
    * @return the font
+   * @since 4.0.0
    */
   public @Nullable Key font() {
     return this.font;
@@ -235,6 +256,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    *
    * @param font the font
    * @return a style
+   * @since 4.0.0
    */
   public @NonNull Style font(final @Nullable Key font) {
     if(Objects.equals(this.font, font)) return this;
@@ -245,6 +267,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    * Gets the color.
    *
    * @return the color
+   * @since 4.0.0
    */
   public @Nullable TextColor color() {
     return this.color;
@@ -255,6 +278,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    *
    * @param color the color
    * @return this builder
+   * @since 4.0.0
    */
   public @NonNull Style colorIfAbsent(final @Nullable TextColor color) {
     if(this.color == null) {
@@ -268,6 +292,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    *
    * @param color the color
    * @return a style
+   * @since 4.0.0
    */
   public @NonNull Style color(final @Nullable TextColor color) {
     if(Objects.equals(this.color, color)) return this;
@@ -280,6 +305,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    * @param decoration the decoration
    * @return {@code true} if this style has the decoration, {@code false} if this
    *     style does not have the decoration
+   * @since 4.0.0
    */
   public boolean hasDecoration(final @NonNull TextDecoration decoration) {
     return this.decoration(decoration) == TextDecoration.State.TRUE;
@@ -290,6 +316,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    *
    * @param decoration the decoration
    * @return a style
+   * @since 4.0.0
    */
   public @NonNull Style decorate(final @NonNull TextDecoration decoration) {
     return this.decoration(decoration, TextDecoration.State.TRUE);
@@ -302,6 +329,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    * @return {@link TextDecoration.State#TRUE} if this style has the decoration,
    *     {@link TextDecoration.State#FALSE} if this style does not have the decoration,
    *     and {@link TextDecoration.State#NOT_SET} if not set
+   * @since 4.0.0
    */
   public TextDecoration.@NonNull State decoration(final @NonNull TextDecoration decoration) {
     if(decoration == TextDecoration.BOLD) {
@@ -325,6 +353,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    * @param flag {@code true} if this style should have the decoration, {@code false} if
    *     this style should not have the decoration
    * @return a style
+   * @since 4.0.0
    */
   public @NonNull Style decoration(final @NonNull TextDecoration decoration, final boolean flag) {
     return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
@@ -339,6 +368,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    *     have the decoration, and {@link TextDecoration.State#NOT_SET} if the decoration
    *     should not have a set value
    * @return a style
+   * @since 4.0.0
    */
   public @NonNull Style decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
     requireNonNull(state, "state");
@@ -360,6 +390,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    * Gets a set of decorations this style has.
    *
    * @return a set of decorations this style has
+   * @since 4.0.0
    */
   public @NonNull Map<TextDecoration, TextDecoration.State> decorations() {
     final Map<TextDecoration, TextDecoration.State> decorations = new EnumMap<>(TextDecoration.class);
@@ -378,6 +409,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    *
    * @param decorations the decorations
    * @return a style
+   * @since 4.0.0
    */
   public @NonNull Style decorations(final @NonNull Map<TextDecoration, TextDecoration.State> decorations) {
     final TextDecoration.State obfuscated = decorations.getOrDefault(TextDecoration.OBFUSCATED, this.obfuscated);
@@ -392,6 +424,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    * Gets the click event.
    *
    * @return the click event
+   * @since 4.0.0
    */
   public @Nullable ClickEvent clickEvent() {
     return this.clickEvent;
@@ -402,6 +435,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    *
    * @param event the click event
    * @return a style
+   * @since 4.0.0
    */
   public @NonNull Style clickEvent(final @Nullable ClickEvent event) {
     return new Style(this.font, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, event, this.hoverEvent, this.insertion);
@@ -411,6 +445,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    * Gets the hover event.
    *
    * @return the hover event
+   * @since 4.0.0
    */
   public @Nullable HoverEvent<?> hoverEvent() {
     return this.hoverEvent;
@@ -419,27 +454,19 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
   /**
    * Sets the hover event.
    *
-   * @param event the hover event
-   * @return a style
-   */
-  public @NonNull Style hoverEvent(final @Nullable HoverEvent<?> event) {
-    return new Style(this.font, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, event, this.insertion);
-  }
-
-  /**
-   * Sets the hover event.
-   *
    * @param source the hover event source
    * @return a style
+   * @since 4.0.0
    */
-  public @NonNull Style hoverEvent(final @NonNull HoverEventSource<?> source) {
-    return this.hoverEvent(source.asHoverEvent());
+  public @NonNull Style hoverEvent(final @Nullable HoverEventSource<?> source) {
+    return new Style(this.font, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, HoverEventSource.unbox(source), this.insertion);
   }
 
   /**
    * Gets the string to be inserted when this style is shift-clicked.
    *
    * @return the insertion string
+   * @since 4.0.0
    */
   public @Nullable String insertion() {
     return this.insertion;
@@ -450,6 +477,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    *
    * @param insertion the insertion string
    * @return a style
+   * @since 4.0.0
    */
   public @NonNull Style insertion(final @Nullable String insertion) {
     if(Objects.equals(this.insertion, insertion)) return this;
@@ -461,6 +489,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    *
    * @param that the other style
    * @return a style
+   * @since 4.0.0
    */
   public @NonNull Style merge(final @NonNull Style that) {
     return this.merge(that, Merge.all());
@@ -472,6 +501,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    * @param that the other style
    * @param strategy the merge strategy
    * @return a style
+   * @since 4.0.0
    */
   public @NonNull Style merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy) {
     return this.merge(that, strategy, Merge.all());
@@ -483,6 +513,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    * @param that the other style
    * @param merge the part to merge
    * @return a style
+   * @since 4.0.0
    */
   public @NonNull Style merge(final @NonNull Style that, final @NonNull Merge merge) {
     return this.merge(that, Collections.singleton(merge));
@@ -495,6 +526,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    * @param strategy the merge strategy
    * @param merge the part to merge
    * @return a style
+   * @since 4.0.0
    */
   public @NonNull Style merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy, final @NonNull Merge merge) {
     return this.merge(that, strategy, Collections.singleton(merge));
@@ -506,6 +538,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    * @param that the other style
    * @param merges the parts to merge
    * @return a style
+   * @since 4.0.0
    */
   public @NonNull Style merge(final @NonNull Style that, final @NonNull Merge@NonNull... merges) {
     return this.merge(that, Merge.of(merges));
@@ -518,6 +551,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    * @param strategy the merge strategy
    * @param merges the parts to merge
    * @return a style
+   * @since 4.0.0
    */
   public @NonNull Style merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy, final @NonNull Merge@NonNull... merges) {
     return this.merge(that, strategy, Merge.of(merges));
@@ -529,6 +563,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    * @param that the other style
    * @param merges the parts to merge
    * @return a style
+   * @since 4.0.0
    */
   public @NonNull Style merge(final @NonNull Style that, final @NonNull Set<Merge> merges) {
     return this.merge(that, Merge.Strategy.ALWAYS, merges);
@@ -541,6 +576,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    * @param strategy the merge strategy
    * @param merges the parts to merge
    * @return a style
+   * @since 4.0.0
    */
   public @NonNull Style merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy, final @NonNull Set<Merge> merges) {
     if(that.isEmpty() || strategy == Merge.Strategy.NEVER || merges.isEmpty()) {
@@ -564,6 +600,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
    *
    * @return {@code true} if this style is empty, {@code false} if this
    *     style is not empty
+   * @since 4.0.0
    */
   public boolean isEmpty() {
     return this == EMPTY;
@@ -634,12 +671,39 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
 
   /**
    * A merge choice.
+   *
+   * @since 4.0.0
    */
   public enum Merge {
+    /**
+     * Merges {@link Style#color()}.
+     *
+     * @since 4.0.0
+     */
     COLOR,
+    /**
+     * Merges {@link Style#decorations()}.
+     *
+     * @since 4.0.0
+     */
     DECORATIONS,
+    /**
+     * Merges {@link Style#clickEvent()} and {@link Style#hoverEvent()}.
+     *
+     * @since 4.0.0
+     */
     EVENTS,
+    /**
+     * Merges {@link Style#insertion()}.
+     *
+     * @since 4.0.0
+     */
     INSERTION,
+    /**
+     * Merges {@link Style#font()}.
+     *
+     * @since 4.0.0
+     */
     FONT;
 
     static final Set<Merge> ALL = of(values());
@@ -649,6 +713,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
      * Gets a merge set of all merge types.
      *
      * @return a merge set
+     * @since 4.0.0
      */
     public static @NonNull Set<Merge> all() {
       return ALL;
@@ -658,6 +723,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
      * Gets a merge set containing {@link #COLOR} and {@link #DECORATIONS}.
      *
      * @return a merge set
+     * @since 4.0.0
      */
     public static @NonNull Set<Merge> colorAndDecorations() {
       return COLOR_AND_DECORATIONS;
@@ -668,6 +734,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
      *
      * @param merges the merge parts
      * @return a merge set
+     * @since 4.0.0
      */
     public static @NonNull Set<Merge> of(final Merge@NonNull... merges) {
       return ShadyPines.enumSet(Merge.class, merges);
@@ -679,11 +746,15 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
 
     /**
      * A merge strategy.
+     *
+     * @since 4.0.0
      */
     public enum Strategy {
       // CHECKSTYLE:OFF
       /**
        * Always merge onto target.
+       *
+       * @since 4.0.0
        */
       ALWAYS {
         @Override boolean mergeColor(final @NonNull Builder target, final @Nullable TextColor color) { return true; }
@@ -695,6 +766,8 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
       },
       /**
        * Never merges onto target.
+       *
+       * @since 4.0.0
        */
       NEVER {
         @Override boolean mergeColor(final @NonNull Builder target, final @Nullable TextColor color) { return false; }
@@ -707,6 +780,8 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
       // CHECKSTYLE:ON
       /**
        * Merge onto target when not already set on target.
+       *
+       * @since 4.0.0
        */
       IF_ABSENT_ON_TARGET {
         @Override
@@ -764,15 +839,11 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
 
   /**
    * A style builder.
+   *
+   * @since 4.0.0
    */
-  public static final class Builder implements Buildable.AbstractBuilder<Style> {
-    /**
-     * The font.
-     */
+  public static final class Builder implements Buildable.Builder<Style> {
     private @Nullable Key font;
-    /**
-     * The color.
-     */
     private @Nullable TextColor color;
     /**
      * If this component should have the {@link TextDecoration#OBFUSCATED obfuscated} decoration.
@@ -807,14 +878,10 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
      */
     private @Nullable String insertion;
 
-    protected Builder() {
+    Builder() {
     }
 
-    protected Builder(final @NonNull Component component) {
-      this(component.style());
-    }
-
-    protected Builder(final @NonNull Style style) {
+    Builder(final @NonNull Style style) {
       this.color = style.color;
       this.obfuscated = style.obfuscated;
       this.bold = style.bold;
@@ -832,6 +899,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
      *
      * @param font the font
      * @return this builder
+     * @since 4.0.0
      */
     public @NonNull Builder font(final @Nullable Key font) {
       this.font = font;
@@ -843,6 +911,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
      *
      * @param color the color
      * @return this builder
+     * @since 4.0.0
      */
     public @NonNull Builder color(final @Nullable TextColor color) {
       this.color = color;
@@ -854,6 +923,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
      *
      * @param color the color
      * @return this builder
+     * @since 4.0.0
      */
     public @NonNull Builder colorIfAbsent(final @Nullable TextColor color) {
       if(this.color == null) {
@@ -867,6 +937,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
      *
      * @param decoration the decoration
      * @return a style
+     * @since 4.0.0
      */
     public @NonNull Builder decorate(final @NonNull TextDecoration decoration) {
       return this.decoration(decoration, TextDecoration.State.TRUE);
@@ -877,9 +948,10 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
      *
      * @param decorations the decorations
      * @return a style
+     * @since 4.0.0
      */
     public @NonNull Builder decorate(final @NonNull TextDecoration@NonNull... decorations) {
-      for(int i = 0; i < decorations.length; i++) {
+      for(int i = 0, length = decorations.length; i < length; i++) {
         this.decorate(decorations[i]);
       }
       return this;
@@ -892,6 +964,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
      * @param flag {@code true} if this style should have the decoration, {@code false} if
      *     this style should not have the decoration
      * @return a style
+     * @since 4.0.0
      */
     public @NonNull Builder decoration(final @NonNull TextDecoration decoration, final boolean flag) {
       return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
@@ -906,6 +979,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
      *     have the decoration, and {@link TextDecoration.State#NOT_SET} if the decoration
      *     should not have a set value
      * @return this builder
+     * @since 4.0.0
      */
     public @NonNull Builder decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
       requireNonNull(state, "state");
@@ -933,6 +1007,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
      *
      * @param event the click event
      * @return this builder
+     * @since 4.0.0
      */
     public @NonNull Builder clickEvent(final @Nullable ClickEvent event) {
       this.clickEvent = event;
@@ -942,22 +1017,13 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
     /**
      * Sets the hover event.
      *
-     * @param event the hover event
-     * @return this builder
-     */
-    public @NonNull Builder hoverEvent(final @Nullable HoverEvent<?> event) {
-      this.hoverEvent = event;
-      return this;
-    }
-
-    /**
-     * Sets the hover event.
-     *
      * @param source the hover event source
      * @return this builder
+     * @since 4.0.0
      */
-    public @NonNull Builder hoverEvent(final @NonNull HoverEventSource<?> source) {
-      return this.hoverEvent(source.asHoverEvent());
+    public @NonNull Builder hoverEvent(final @Nullable HoverEventSource<?> source) {
+      this.hoverEvent = HoverEventSource.unbox(source);
+      return this;
     }
 
     /**
@@ -965,6 +1031,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
      *
      * @param insertion the insertion string
      * @return this builder
+     * @since 4.0.0
      */
     public @NonNull Builder insertion(final @Nullable String insertion) {
       this.insertion = insertion;
@@ -976,6 +1043,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
      *
      * @param that the other style
      * @return a style
+     * @since 4.0.0
      */
     public @NonNull Builder merge(final @NonNull Style that) {
       return this.merge(that, Merge.all());
@@ -987,6 +1055,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
      * @param that the other style
      * @param strategy the merge strategy
      * @return a style
+     * @since 4.0.0
      */
     public @NonNull Builder merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy) {
       return this.merge(that, strategy, Merge.all());
@@ -998,6 +1067,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
      * @param that the other style
      * @param merges the parts to merge
      * @return a style
+     * @since 4.0.0
      */
     public @NonNull Builder merge(final @NonNull Style that, final @NonNull Merge@NonNull... merges) {
       if(merges.length == 0) return this;
@@ -1011,6 +1081,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
      * @param strategy the merge strategy
      * @param merges the parts to merge
      * @return a style
+     * @since 4.0.0
      */
     public @NonNull Builder merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy, final @NonNull Merge@NonNull... merges) {
       if(merges.length == 0) return this;
@@ -1023,6 +1094,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
      * @param that the other style
      * @param merges the parts to merge
      * @return a style
+     * @since 4.0.0
      */
     public @NonNull Builder merge(final @NonNull Style that, final @NonNull Set<Merge> merges) {
       return this.merge(that, Merge.Strategy.ALWAYS, merges);
@@ -1035,6 +1107,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
      * @param strategy the merge strategy
      * @param merges the parts to merge
      * @return a style
+     * @since 4.0.0
      */
     public @NonNull Builder merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy, final @NonNull Set<Merge> merges) {
       if(that.isEmpty() || strategy == Merge.Strategy.NEVER || merges.isEmpty()) {
@@ -1081,6 +1154,7 @@ public final class Style implements Buildable<Style, Style.Builder>, Examinable 
      *
      * @param applicable the applicable
      * @return this builder
+     * @since 4.0.0
      */
     public @NonNull Builder apply(final @NonNull StyleBuilderApplicable applicable) {
       applicable.styleApply(this);

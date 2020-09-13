@@ -25,14 +25,16 @@ package net.kyori.adventure.util;
 
 import java.util.function.Consumer;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Something that can be built.
  *
  * @param <R> the type that can be built
  * @param <B> the builder type
+ * @since 4.0.0
  */
-public interface Buildable<R, B extends Buildable.AbstractBuilder<R>> {
+public interface Buildable<R, B extends Buildable.Builder<R>> {
   /**
    * Configures {@code builder} using {@code consumer} and then builds.
    *
@@ -41,9 +43,10 @@ public interface Buildable<R, B extends Buildable.AbstractBuilder<R>> {
    * @param <R> the type to be built
    * @param <B> the builder type
    * @return the built thing
+   * @since 4.0.0
    */
-  static <R extends Buildable<R, B>, B extends AbstractBuilder<R>> @NonNull R configureAndBuild(final @NonNull B builder, final @NonNull Consumer<? super B> consumer) {
-    consumer.accept(builder);
+  static <R extends Buildable<R, B>, B extends Builder<R>> @NonNull R configureAndBuild(final @NonNull B builder, final @Nullable Consumer<? super B> consumer) {
+    if(consumer != null) consumer.accept(builder);
     return builder.build();
   }
 
@@ -51,6 +54,7 @@ public interface Buildable<R, B extends Buildable.AbstractBuilder<R>> {
    * Create a builder from this thing.
    *
    * @return a builder
+   * @since 4.0.0
    */
   @NonNull B toBuilder();
 
@@ -58,12 +62,14 @@ public interface Buildable<R, B extends Buildable.AbstractBuilder<R>> {
    * A builder.
    *
    * @param <R> the type to be built
+   * @since 4.0.0
    */
-  interface AbstractBuilder<R> {
+  interface Builder<R> {
     /**
      * Builds.
      *
      * @return the built thing
+     * @since 4.0.0
      */
     @NonNull R build();
   }

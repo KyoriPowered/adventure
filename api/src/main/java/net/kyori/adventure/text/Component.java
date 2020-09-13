@@ -28,23 +28,36 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.util.IntFunction2;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * A text component.
+ * A component.
+ *
+ * @see BlockNBTComponent
+ * @see EntityNBTComponent
+ * @see KeybindComponent
+ * @see ScoreComponent
+ * @see SelectorComponent
+ * @see StorageNBTComponent
+ * @see TextComponent
+ * @see TranslatableComponent
+ * @since 4.0.0
  */
 public interface Component extends ComponentBuilderApplicable, ComponentLike, HoverEventSource<Component> {
   /**
    * Gets the unmodifiable list of children.
    *
    * @return the unmodifiable list of children
+   * @since 4.0.0
    */
   @NonNull List<Component> children();
 
@@ -55,6 +68,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    *
    * @param children the children
    * @return the unmodifiable list of children
+   * @since 4.0.0
    */
   @NonNull Component children(final @NonNull List<? extends ComponentLike> children);
 
@@ -64,6 +78,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @param that the other component
    * @return {@code true} if this component contains the provided
    *     component, {@code false} otherwise
+   * @since 4.0.0
    */
   default boolean contains(final @NonNull Component that) {
     if(this == that) return true;
@@ -87,6 +102,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * Prevents a cycle between this component and the provided component.
    *
    * @param that the other component
+   * @since 4.0.0
    */
   default void detectCycle(final @NonNull Component that) {
     if(that.contains(this)) {
@@ -99,6 +115,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    *
    * @param component the component to append
    * @return a component with the component added
+   * @since 4.0.0
    */
   @NonNull Component append(final @NonNull Component component);
 
@@ -107,6 +124,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    *
    * @param component the component to append
    * @return a component with the component added
+   * @since 4.0.0
    */
   default @NonNull Component append(final @NonNull ComponentLike component) {
     return this.append(component.asComponent());
@@ -117,6 +135,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    *
    * @param builder the component to append
    * @return a component with the component added
+   * @since 4.0.0
    */
   default @NonNull Component append(final @NonNull ComponentBuilder<?, ?> builder) {
     return this.append(builder.build());
@@ -126,6 +145,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * Gets the style of this component.
    *
    * @return the style of this component
+   * @since 4.0.0
    */
   @NonNull Style style();
 
@@ -134,6 +154,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    *
    * @param style the style
    * @return a component
+   * @since 4.0.0
    */
   @NonNull Component style(final @NonNull Style style);
 
@@ -142,6 +163,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    *
    * @param consumer the style consumer
    * @return a component
+   * @since 4.0.0
    */
   default @NonNull Component style(final @NonNull Consumer<Style.Builder> consumer) {
     return this.style(this.style().edit(consumer));
@@ -153,6 +175,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @param consumer the style consumer
    * @param strategy the merge strategy
    * @return a component
+   * @since 4.0.0
    */
   default @NonNull Component style(final @NonNull Consumer<Style.Builder> consumer, final Style.Merge.@NonNull Strategy strategy) {
     return this.style(this.style().edit(consumer, strategy));
@@ -163,6 +186,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    *
    * @param style the style
    * @return a component
+   * @since 4.0.0
    */
   default @NonNull Component style(final Style.@NonNull Builder style) {
     return this.style(style.build());
@@ -173,6 +197,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    *
    * @param that the other style
    * @return a component
+   * @since 4.0.0
    */
   default @NonNull Component mergeStyle(final @NonNull Component that) {
     return this.mergeStyle(that, Style.Merge.all());
@@ -184,6 +209,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @param that the other style
    * @param merges the style parts to merge
    * @return a component
+   * @since 4.0.0
    */
   default @NonNull Component mergeStyle(final @NonNull Component that, final Style.@NonNull Merge@NonNull... merges) {
     return this.mergeStyle(that, Style.Merge.of(merges));
@@ -195,6 +221,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @param that the other style
    * @param merges the style parts to merge
    * @return a component
+   * @since 4.0.0
    */
   default @NonNull Component mergeStyle(final @NonNull Component that, final @NonNull Set<Style.Merge> merges) {
     return this.style(this.style().merge(that.style(), merges));
@@ -204,6 +231,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * Gets the color of this component.
    *
    * @return the color of this component
+   * @since 4.0.0
    */
   default @Nullable TextColor color() {
     return this.style().color();
@@ -214,6 +242,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    *
    * @param color the color
    * @return a component
+   * @since 4.0.0
    */
   default @NonNull Component color(final @Nullable TextColor color) {
     return this.style(this.style().color(color));
@@ -224,6 +253,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    *
    * @param color the color
    * @return this builder
+   * @since 4.0.0
    */
   default @NonNull Component colorIfAbsent(final @Nullable TextColor color) {
     if(this.color() == null) return this.color(color);
@@ -236,6 +266,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @param decoration the decoration
    * @return {@code true} if this component has the decoration, {@code false} if this
    *     component does not have the decoration
+   * @since 4.0.0
    */
   default boolean hasDecoration(final @NonNull TextDecoration decoration) {
     return this.decoration(decoration) == TextDecoration.State.TRUE;
@@ -246,6 +277,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    *
    * @param decoration the decoration
    * @return a component
+   * @since 4.0.0
    */
   default @NonNull Component decorate(final @NonNull TextDecoration decoration) {
     return this.decoration(decoration, TextDecoration.State.TRUE);
@@ -258,6 +290,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @return {@link TextDecoration.State#TRUE} if this component has the decoration,
    *     {@link TextDecoration.State#FALSE} if this component does not have the decoration,
    *     and {@link TextDecoration.State#NOT_SET} if not set
+   * @since 4.0.0
    */
   default TextDecoration.@NonNull State decoration(final @NonNull TextDecoration decoration) {
     return this.style().decoration(decoration);
@@ -270,6 +303,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @param flag {@code true} if this component should have the decoration, {@code false} if
    *     this component should not have the decoration
    * @return a component
+   * @since 4.0.0
    */
   default @NonNull Component decoration(final @NonNull TextDecoration decoration, final boolean flag) {
     return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
@@ -284,6 +318,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    *     have the decoration, and {@link TextDecoration.State#NOT_SET} if the decoration
    *     should not have a set value
    * @return a component
+   * @since 4.0.0
    */
   default @NonNull Component decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
     return this.style(this.style().decoration(decoration, state));
@@ -293,6 +328,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * Gets a set of decorations this component has.
    *
    * @return a set of decorations this component has
+   * @since 4.0.0
    */
   default @NonNull Map<TextDecoration, TextDecoration.State> decorations() {
     return this.style().decorations();
@@ -305,6 +341,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    *
    * @param decorations a set of default values
    * @return a component
+   * @since 4.0.0
    */
   default @NonNull Component decorations(final @NonNull Map<TextDecoration, TextDecoration.State> decorations) {
     return this.style(this.style().decorations(decorations));
@@ -314,6 +351,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * Gets the click event of this component.
    *
    * @return the click event
+   * @since 4.0.0
    */
   default @Nullable ClickEvent clickEvent() {
     return this.style().clickEvent();
@@ -324,6 +362,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    *
    * @param event the click event
    * @return a component
+   * @since 4.0.0
    */
   default @NonNull Component clickEvent(final @Nullable ClickEvent event) {
     return this.style(this.style().clickEvent(event));
@@ -333,6 +372,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * Gets the hover event of this component.
    *
    * @return the hover event
+   * @since 4.0.0
    */
   default @Nullable HoverEvent<?> hoverEvent() {
     return this.style().hoverEvent();
@@ -341,10 +381,12 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
   /**
    * Sets the hover event of this component.
    *
-   * @param event the hover event
+   * @param source the hover event source
    * @return a component
+   * @since 4.0.0
    */
-  default @NonNull Component hoverEvent(final @Nullable HoverEvent<?> event) {
+  default @NonNull Component hoverEvent(final @Nullable HoverEventSource<?> source) {
+    final HoverEvent<?> event = HoverEventSource.unbox(source);
     if(event != null) {
       if(event.action().type().isAssignableFrom(Component.class)) {
         this.detectCycle((Component) event.value()); // detect cycle before modifying
@@ -354,19 +396,10 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
   }
 
   /**
-   * Sets the hover event of this component.
-   *
-   * @param source the hover event source
-   * @return a component
-   */
-  default @NonNull Component hoverEvent(final @NonNull HoverEventSource<?> source) {
-    return this.hoverEvent(source.asHoverEvent());
-  }
-
-  /**
    * Gets the string to be inserted when this component is shift-clicked.
    *
    * @return the insertion string
+   * @since 4.0.0
    */
   default @Nullable String insertion() {
     return this.style().insertion();
@@ -377,6 +410,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    *
    * @param insertion the insertion string
    * @return a component
+   * @since 4.0.0
    */
   default @NonNull Component insertion(final @Nullable String insertion) {
     return this.style(this.style().insertion(insertion));
@@ -387,10 +421,61 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    *
    * @return {@code true} if this component has any styling, {@code false} if this
    *     component does not have any styling
+   * @since 4.0.0
    */
   default boolean hasStyling() {
     return !this.style().isEmpty();
   }
+
+  /**
+   * Finds and replaces text within any {@link TextComponent}s using a regex pattern.
+   *
+   * @param pattern a regex pattern
+   * @param replacement a function to replace each match
+   * @return a modified copy of this component
+   * @since 4.0.0
+   */
+  default @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull UnaryOperator<TextComponent.Builder> replacement) {
+    return this.replaceText(pattern, replacement, (index, replaced) -> PatternReplacementResult.REPLACE);
+  }
+
+  /**
+   * Finds and replaces the first occurrence of text within any {@link TextComponent}s using a regex pattern.
+   *
+   * @param pattern a regex pattern
+   * @param replacement a function to replace the first match
+   * @return a modified copy of this component
+   * @since 4.0.0
+   */
+  default @NonNull Component replaceFirstText(final @NonNull Pattern pattern, final @NonNull UnaryOperator<TextComponent.Builder> replacement) {
+    return this.replaceText(pattern, replacement, 1);
+  }
+
+  /**
+   * Finds and replaces {@code n} instances of text within any {@link TextComponent}s using a regex pattern.
+   *
+   * @param pattern a regex pattern
+   * @param replacement a function to replace each match
+   * @param numberOfReplacements the amount of matches that should be replaced
+   * @return a modified copy of this component
+   * @since 4.0.0
+   */
+  default @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull UnaryOperator<TextComponent.Builder> replacement, final int numberOfReplacements) {
+    return this.replaceText(pattern, replacement, (index, replaced) -> replaced < numberOfReplacements ? PatternReplacementResult.REPLACE : PatternReplacementResult.STOP);
+  }
+
+  /**
+   * Finds and replaces text using a regex pattern.
+   *
+   * <p>Utilises an {@link IntFunction2} to determine if each instance should be replaced.</p>
+   *
+   * @param pattern a regex pattern
+   * @param replacement a function to replace the first match
+   * @param fn a function of (index, replaced) used to determine if matches should be replaced, where "replaced" is the number of successful replacements
+   * @return a modified copy of this component
+   * @since 4.0.0
+   */
+  @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull UnaryOperator<TextComponent.Builder> replacement, final @NonNull IntFunction2<PatternReplacementResult> fn);
 
   @Override
   default void componentBuilderApply(final @NonNull ComponentBuilder<?, ?> component) {

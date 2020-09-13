@@ -92,7 +92,7 @@ class StyleTest extends AbstractSerializeDeserializeTest<Style> {
       ),
       entry(
         Style.builder()
-          .hoverEvent(HoverEvent.showEntity(new HoverEvent.ShowEntity(
+          .hoverEvent(HoverEvent.showEntity(HoverEvent.ShowEntity.of(
             Key.of(Key.MINECRAFT_NAMESPACE, "pig"),
             dolores,
             TextComponent.of("Dolores", TextColor.of(0x0a1ab9))
@@ -120,7 +120,7 @@ class StyleTest extends AbstractSerializeDeserializeTest<Style> {
   private static Map.Entry<Style, JsonElement> showItem(final int count) {
     return entry(
       Style.builder()
-        .hoverEvent(HoverEvent.showItem(new HoverEvent.ShowItem(
+        .hoverEvent(HoverEvent.showItem(HoverEvent.ShowItem.of(
           Key.of(Key.MINECRAFT_NAMESPACE, "stone"),
           count,
           null // TODO: test for NBT?

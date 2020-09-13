@@ -21,42 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.nbt;
+package net.kyori.adventure.util;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import java.time.Duration;
+import org.junit.jupiter.api.Test;
 
-/**
- * An end tag.
- *
- * @since 4.0.0
- */
-public interface EndBinaryTag extends BinaryTag {
-  /**
-   * Gets the end tag.
-   *
-   * @return the end tag
-   * @since 4.0.0
-   */
-  static @NonNull EndBinaryTag get() {
-    return EndBinaryTagImpl.INSTANCE;
-  }
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-  @Override
-  default @NonNull BinaryTagType<EndBinaryTag> type() {
-    return BinaryTagTypes.END;
-  }
-}
+class TicksTest {
+  @Test
+  void testTicks() {
+    final Duration d0 = Ticks.duration(10);
+    assertEquals(500, d0.toMillis());
+    assertEquals(0, d0.getSeconds());
 
-final class EndBinaryTagImpl implements EndBinaryTag {
-  static final EndBinaryTagImpl INSTANCE = new EndBinaryTagImpl();
-
-  @Override
-  public boolean equals(final Object that) {
-    return this == that;
-  }
-
-  @Override
-  public int hashCode() {
-    return 0;
+    final Duration d1 = Ticks.duration(70);
+    assertEquals(3500, d1.toMillis());
+    assertEquals(3, d1.getSeconds());
   }
 }

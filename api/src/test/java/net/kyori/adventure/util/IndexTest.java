@@ -23,16 +23,28 @@
  */
 package net.kyori.adventure.util;
 
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class IndexTest {
   private static final Index<String, Thing> THINGS = Index.create(Thing.class, thing -> thing.name);
 
   @Test
-  void testName() {
+  void testCreateWithNonUniqueKey() {
+    assertThrows(IllegalStateException.class, () -> Index.create(NonUniqueThing.class, thing -> thing.name));
+  }
+
+  @Test
+  void testCreateWithNonUniqueValue() {
+    assertThrows(IllegalStateException.class, () -> Index.create(Thing.class, thing -> UUID.randomUUID().toString(), Thing.ABC, Thing.ABC));
+  }
+
+  @Test
+  void testKey() {
     for(final Thing thing : Thing.values()) {
       assertEquals(thing.name, THINGS.key(thing));
     }
@@ -50,6 +62,11 @@ class IndexTest {
     assertThat(THINGS.keys()).containsExactly("abc", "def");
   }
 
+  @Test
+  void testValues() {
+    assertThat(THINGS.values()).containsExactly(Thing.ABC, Thing.DEF);
+  }
+
   private enum Thing {
     ABC("abc"),
     DEF("def");
@@ -57,6 +74,17 @@ class IndexTest {
     private final String name;
 
     Thing(final String name) {
+      this.name = name;
+    }
+  }
+
+  private enum NonUniqueThing {
+    ABC("abc"),
+    DEF("abc"); // ABC is also "abc"
+
+    private final String name;
+
+    NonUniqueThing(final String name) {
       this.name = name;
     }
   }

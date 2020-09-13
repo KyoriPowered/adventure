@@ -41,6 +41,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * <p>Plain does <b>not</b> support more complex features such as, but not limited
  * to, colours, decorations, {@link ClickEvent}, and {@link HoverEvent}.</p>
+ *
+ * @since 4.0.0
  */
 public class PlainComponentSerializer implements ComponentSerializer<Component, TextComponent, String> {
   private static final PlainComponentSerializer INSTANCE = new PlainComponentSerializer();
@@ -49,6 +51,7 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
    * A component serializer for plain-based serialization and deserialization.
    *
    * @return serializer instance
+   * @since 4.0.0
    */
   public static @NonNull PlainComponentSerializer plain() {
     return INSTANCE;
@@ -57,10 +60,22 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
   private final @Nullable Function<KeybindComponent, String> keybind;
   private final @Nullable Function<TranslatableComponent, String> translatable;
 
+  /**
+   * Constructs.
+   *
+   * @since 4.0.0
+   */
   public PlainComponentSerializer() {
     this(null, null);
   }
 
+  /**
+   * Constructs.
+   *
+   * @param keybind the keybind renderer
+   * @param translatable the translatable renderer
+   * @since 4.0.0
+   */
   public PlainComponentSerializer(final @Nullable Function<KeybindComponent, String> keybind, final @Nullable Function<TranslatableComponent, String> translatable) {
     this.keybind = keybind;
     this.translatable = translatable;
@@ -78,6 +93,13 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
     return sb.toString();
   }
 
+  /**
+   * Serializes.
+   *
+   * @param sb the string builder
+   * @param component the component
+   * @since 4.0.0
+   */
   public void serialize(final @NonNull StringBuilder sb, final @NonNull Component component) {
     if(component instanceof KeybindComponent) {
       if(this.keybind != null) sb.append(this.keybind.apply((KeybindComponent) component));
