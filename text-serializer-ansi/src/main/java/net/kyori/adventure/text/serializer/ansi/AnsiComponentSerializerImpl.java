@@ -207,11 +207,11 @@ final class AnsiComponentSerializerImpl implements AnsiComponentSerializer {
 
       void apply(final @NonNull Component component){
         final TextColor color = component.color();
-        if (color != null) {
+        if(color != null){
           this.color = color;
         }
 
-        for (final TextDecoration decoration : DECORATIONS){
+        for(final TextDecoration decoration : DECORATIONS){
           switch(component.decoration(decoration)){
             case TRUE:
               this.decorations.add(decoration);
