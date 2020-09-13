@@ -30,9 +30,6 @@ import net.kyori.adventure.util.Index;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.fusesource.jansi.Ansi;
 
-import java.util.HashMap;
-import java.util.function.Function;
-
 enum Formats {
   //NamedColours
   BLACK(NamedTextColor.BLACK, Ansi.ansi().fg(Ansi.Color.BLACK).boldOff()),
