@@ -24,6 +24,7 @@
 package net.kyori.adventure.audience;
 
 import java.util.Arrays;
+import java.util.stream.Collector;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.sound.Sound;
@@ -116,6 +117,18 @@ public interface Audience {
    */
   static @NonNull ForwardingAudience audience(final @NonNull Iterable<? extends Audience> audiences) {
     return () -> audiences;
+  }
+
+  /**
+   * Provides a collector to create a forwarding audience from a stream of audiences.
+   *
+   * <p>The audience produced is immutable and can be reused as desired.</p>
+   *
+   * @return a collector to create a forwarding audience
+   * @since 4.0.0
+   */
+  static @NonNull Collector<? super Audience, ?, ForwardingAudience> toAudience() {
+    return Audiences.COLLECTOR;
   }
 
   /**
