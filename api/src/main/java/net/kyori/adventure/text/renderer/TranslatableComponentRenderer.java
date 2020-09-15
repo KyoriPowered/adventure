@@ -63,7 +63,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
     }
   };
 
-  private final Set<Style.Merge> MERGES = Style.Merge.of(Style.Merge.COLOR, Style.Merge.DECORATIONS, Style.Merge.INSERTION, Style.Merge.FONT);
+  private static final Set<Style.Merge> MERGES = Style.Merge.of(Style.Merge.COLOR, Style.Merge.DECORATIONS, Style.Merge.INSERTION, Style.Merge.FONT);
 
   /**
    * Gets the default translatable component renderer.
