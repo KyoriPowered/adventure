@@ -54,7 +54,7 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
     this.populator = builder -> {
       builder.registerTypeHierarchyAdapter(Key.class, KeySerializer.INSTANCE);
       builder.registerTypeHierarchyAdapter(Component.class, new ComponentSerializerImpl());
-      builder.registerTypeAdapter(Style.class, new StyleSerializer(legacyHoverSerializer, emitLegacyHover));
+      builder.registerTypeHierarchyAdapter(Style.class, new StyleSerializer(legacyHoverSerializer, emitLegacyHover));
       builder.registerTypeAdapter(ClickEvent.Action.class, IndexedSerializer.of("click action", ClickEvent.Action.NAMES));
       builder.registerTypeAdapter(HoverEvent.Action.class, IndexedSerializer.of("hover action", HoverEvent.Action.NAMES));
       builder.registerTypeAdapter(HoverEvent.ShowItem.class, new ShowItemSerializer());
