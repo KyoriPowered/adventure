@@ -28,6 +28,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.BuildableComponent;
 import net.kyori.adventure.text.Component;
@@ -61,6 +62,8 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
       return TranslationRegistry.get().translate(key, locale);
     }
   };
+
+  private static final Set<Style.Merge> MERGES = Style.Merge.of(Style.Merge.COLOR, Style.Merge.DECORATIONS, Style.Merge.INSERTION, Style.Merge.FONT);
 
   /**
    * Gets the default translatable component renderer.
@@ -196,7 +199,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   }
 
   protected <B extends ComponentBuilder<?, ?>> void mergeStyle(final Component component, final B builder, final C context) {
-    builder.mergeStyle(component, Style.Merge.colorAndDecorations());
+    builder.mergeStyle(component, MERGES);
     builder.clickEvent(component.clickEvent());
     final /* @Nullable */ HoverEvent<?> hoverEvent = component.hoverEvent();
     if(hoverEvent != null) {
