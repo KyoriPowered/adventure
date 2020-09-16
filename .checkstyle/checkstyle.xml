@@ -1,156 +1,195 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!DOCTYPE module PUBLIC
-  "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
-  "https://checkstyle.org/dtds/configuration_1_3.dtd">
+<!DOCTYPE module PUBLIC "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN" "https://checkstyle.org/dtds/configuration_1_3.dtd">
 <module name="Checker">
   <property name="charset" value="UTF-8"/>
-  <property name="severity" value="error"/>
   <property name="fileExtensions" value="java, properties, xml"/>
-  <!-- Excludes all 'module-info.java' files -->
-  <!-- See https://checkstyle.org/config_filefilters.html -->
+  <property name="severity" value="error"/>
+
+  <!-- https://checkstyle.org/config_filefilters.html#BeforeExecutionExclusionFileFilter -->
   <module name="BeforeExecutionExclusionFileFilter">
     <property name="fileNamePattern" value="module\-info\.java$"/>
   </module>
-  <!-- https://checkstyle.org/config_filters.html#SuppressionFilter -->
-  <module name="SuppressionFilter">
-    <property name="file" value="${basedir}/suppressions.xml"
-              default=".checkstyle/suppressions.xm" />
-    <property name="optional" value="true"/>
-  </module>
 
-  <!-- allow // CHECKSTYLE:OFF and // CHECKSTYLE:ON comments -->
-  <module name="SuppressWithPlainTextCommentFilter"/>
-
-  <!-- Checks for whitespace -->
-  <!-- See http://checkstyle.org/config_whitespace.html -->
+  <!-- https://checkstyle.org/config_whitespace.html#FileTabCharacter -->
   <module name="FileTabCharacter">
     <property name="eachLine" value="true"/>
   </module>
+
+  <!-- https://checkstyle.org/config_misc.html#NewlineAtEndOfFile -->
   <module name="NewlineAtEndOfFile"/>
 
+  <!-- https://checkstyle.org/config_filters.html#SuppressionFilter -->
+  <module name="SuppressionFilter">
+    <property name="file" value="${basedir}/suppressions.xml"/>
+  </module>
+
+  <!-- https://checkstyle.org/config_filters.html#SuppressWithPlainTextCommentFilter -->
+  <module name="SuppressWithPlainTextCommentFilter"/>
+
   <module name="TreeWalker">
-    <!-- no space between parameters and parenthesis -->
-    <module name="EmptyForInitializerPad"/>
-    <module name="EmptyForIteratorPad"/>
+    <!-- https://checkstyle.org/config_misc.html#ArrayTypeStyle -->
+    <module name="ArrayTypeStyle"/>
 
-    <module name="StatementNoWhitespaceAfter">
-      <property name="tokens" value="LITERAL_IF, LITERAL_FOR, LITERAL_WHILE, LITERAL_CATCH, LITERAL_TRY"/>
-    </module>
+    <!-- https://checkstyle.org/config_imports.html#AvoidStarImport -->
+    <module name="AvoidStarImport"/>
 
-    <!-- one empty line between each class element -->
-    <module name="EmptyLineSeparator">
-      <!-- No new line after the license header -->
-      <property name="tokens"
-                value="IMPORT, STATIC_IMPORT, CLASS_DEF, INTERFACE_DEF, ENUM_DEF,
-                    STATIC_INIT, INSTANCE_INIT, METHOD_DEF, CTOR_DEF, VARIABLE_DEF"/>
-      <property name="allowNoEmptyLineBetweenFields" value="true"/>
-      <property name="allowMultipleEmptyLines" value="false"/>
-      <property name="allowMultipleEmptyLinesInsideClassMembers" value="false"/>
-    </module>
-    <module name="GenericWhitespace"/>
-    <!-- packages and imports must be on one line each -->
-    <module name="NoLineWrap"/>
-    <module name="NoWhitespaceAfter">
-      <property name="allowLineBreaks" value="false"/>
-    </module>
-    <module name="SingleSpaceSeparator">
-      <property name="validateComments" value="true"/>
-    </module>
-    <module name="TypecastParenPad"/>
-    <module name="UnnecessaryParentheses"/>
-
-    <!-- field and method access qualified with `this` -->
-
-    <module name="FinalLocalVariable">
-      <property name="validateEnhancedForLoopVariable" value="true"/>
-      <property name="tokens" value="VARIABLE_DEF, PARAMETER_DEF"/>
-    </module>
-    <module name="RequireThis">
-      <property name="validateOnlyOverlapping" value="false"/>
+    <!-- https://checkstyle.org/config_misc.html#AvoidEscapedUnicodeCharacters -->
+    <module name="AvoidEscapedUnicodeCharacters">
+      <property name="allowByTailComment" value="true"/>
+      <property name="allowEscapesForControlCharacters" value="true"/>
+      <property name="allowNonPrintableEscapes" value="true"/>
     </module>
 
-    <!-- coding practices -->
-    <module name="RedundantImport"/>
-    <module name="RedundantModifier">
-      <!-- Take out METHOD_DEF and RESOURCE so we can have finals -->
-      <property name="tokens"
-                value="VARIABLE_DEF, ANNOTATION_FIELD_DEF, INTERFACE_DEF, CTOR_DEF, CLASS_DEF, ENUM_DEF"/>
-    </module>
-    <module name="UnusedImports"/>
-    <module name="HideUtilityClassConstructor"/>
-    <module name="FinalClass"/>
-
-    <!-- no local variable type annotations -->
-    <module name="NoLvTypeAnnotations"/>
-
-    <!-- braces and parentheses on block statements on same line -->
-    <module name="LeftCurly"/>
-    <module name="RightCurly">
-      <property name="id" value="RightCurlySame"/>
-      <property name="tokens"
-            value="LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE,
-                LITERAL_DO"/>
-    </module>
-    <module name="RightCurly">
-      <property name="id" value="RightCurlyAlone"/>
-      <property name="option" value="alone"/>
-      <property name="tokens"
-            value="CLASS_DEF, METHOD_DEF, CTOR_DEF, LITERAL_FOR, LITERAL_WHILE, STATIC_INIT,
-                INSTANCE_INIT, ANNOTATION_DEF, ENUM_DEF"/>
-    </module>
-
-    <!-- 2 space indentation -->
-    <module name="Indentation">
-      <property name="basicOffset" value="2"/>
-      <property name="braceAdjustment" value="0"/>
-      <property name="caseIndent" value="2"/>
-      <property name="throwsIndent" value="2"/>
-      <property name="lineWrappingIndentation" value="0"/>
-      <property name="arrayInitIndent" value="2"/>
-    </module>
+    <!-- https://checkstyle.org/config_misc.html#CommentsIndentation -->
     <module name="CommentsIndentation"/>
 
-    <!-- some generally unwanted imports -->
+    <!-- https://checkstyle.org/config_whitespace.html#EmptyForInitializerPad -->
+    <module name="EmptyForInitializerPad"/>
+
+    <!-- https://checkstyle.org/config_whitespace.html#EmptyForIteratorPad -->
+    <module name="EmptyForIteratorPad"/>
+
+    <!-- https://checkstyle.org/config_whitespace.html#EmptyLineSeparator -->
+    <module name="EmptyLineSeparator">
+      <property name="allowMultipleEmptyLines" value="false"/>
+      <property name="allowMultipleEmptyLinesInsideClassMembers" value="false"/>
+      <property name="allowNoEmptyLineBetweenFields" value="true"/>
+      <property name="tokens" value="CLASS_DEF, CTOR_DEF, ENUM_DEF, IMPORT, INSTANCE_INIT, INTERFACE_DEF, METHOD_DEF, STATIC_IMPORT, STATIC_INIT, VARIABLE_DEF"/> <!-- remove PACKAGE_DEF, temporarily remove COMPACT_CTOR_DEF, RECORD_DEF -->
+    </module>
+
+    <!-- https://checkstyle.org/config_coding.html#FallThrough -->
+    <module name="FallThrough">
+      <property name="checkLastCaseGroup" value="true"/>
+    </module>
+
+    <!-- https://checkstyle.org/config_design.html#FinalClass -->
+    <module name="FinalClass"/>
+
+    <!-- https://checkstyle.org/config_coding.html#FinalLocalVariable -->
+    <module name="FinalLocalVariable">
+      <property name="tokens" value="PARAMETER_DEF, VARIABLE_DEF"/> <!-- add PARAMETER_DEF -->
+      <property name="validateEnhancedForLoopVariable" value="true"/>
+    </module>
+
+    <!-- https://checkstyle.org/config_whitespace.html#GenericWhitespace -->
+    <module name="GenericWhitespace"/>
+
+    <!-- https://checkstyle.org/config_design.html#HideUtilityClassConstructor -->
+    <module name="HideUtilityClassConstructor"/>
+
+    <!-- https://checkstyle.org/config_imports.html#IllegalImport -->
     <module name="IllegalImport">
       <property name="illegalPkgs" value="sun, jdk, com.sun"/>
     </module>
 
-    <!-- no get* or set* method names -->
+    <!-- https://checkstyle.org/config_coding.html#IllegalTokenText -->
+    <module name="IllegalTokenText">
+      <property name="format" value="\\u00(09|0(a|A)|0(c|C)|0(d|D)|22|27|5(C|c))|\\(0(10|11|12|14|15|42|47)|134)"/>
+      <property name="message" value="Consider using special escape sequence instead of octal value or Unicode escaped value."/>
+      <property name="tokens" value="CHAR_LITERAL, STRING_LITERAL"/>
+    </module>
+
+    <!-- https://checkstyle.org/config_misc.html#Indentation -->
+    <module name="Indentation">
+      <property name="arrayInitIndent" value="2"/>
+      <property name="basicOffset" value="2"/>
+      <property name="braceAdjustment" value="0"/>
+      <property name="caseIndent" value="2"/>
+      <property name="lineWrappingIndentation" value="0"/>
+      <property name="throwsIndent" value="2"/>
+    </module>
+
+    <!-- https://checkstyle.org/config_blocks.html#LeftCurly -->
+    <module name="LeftCurly"/>
+
+    <!-- https://checkstyle.org/config_naming.html#MethodName -->
     <module name="MethodName">
       <property name="format" value="^(?:(?:.{1,3})|(?:[gs]et[^A-Z].*)|(?:(?:[^gsA-Z]..|.[^e].|..[^t]).+))$"/>
     </module>
 
-    <!-- misc formatting based on Google style -->
-    <!-- match filenames, don't use unicode escapes, no star imports -->
-    <module name="OuterTypeFilename"/>
-    <module name="IllegalTokenText">
-      <property name="tokens" value="STRING_LITERAL, CHAR_LITERAL"/>
-      <property name="format"
-                value="\\u00(09|0(a|A)|0(c|C)|0(d|D)|22|27|5(C|c))|\\(0(10|11|12|14|15|42|47)|134)"/>
-      <property name="message"
-                value="Consider using special escape sequence instead of octal value or Unicode escaped value."/>
-    </module>
-    <module name="AvoidEscapedUnicodeCharacters">
-      <property name="allowEscapesForControlCharacters" value="true"/>
-      <property name="allowByTailComment" value="true"/>
-      <property name="allowNonPrintableEscapes" value="true"/>
-    </module>
-    <module name="AvoidStarImport"/>
-    <module name="OneStatementPerLine"/>
+    <!-- https://checkstyle.org/config_whitespace.html#MethodParamPad -->
+    <module name="MethodParamPad"/>
+
+    <!-- https://checkstyle.org/config_coding.html#MultipleVariableDeclarations -->
     <module name="MultipleVariableDeclarations"/>
-    <module name="ArrayTypeStyle"/>
-    <module name="FallThrough"/>
+
+    <!-- https://checkstyle.org/config_coding.html#NoFinalizer -->
     <module name="NoFinalizer"/>
-    <module name="MethodParamPad">
-      <property name="tokens"
-                value="CTOR_DEF, LITERAL_NEW, METHOD_CALL, METHOD_DEF,
-                    SUPER_CTOR_CALL, ENUM_CONSTANT_DEF"/>
+
+    <!-- https://checkstyle.org/config_whitespace.html#NoLineWrap -->
+    <module name="NoLineWrap"/>
+
+    <!-- https://checkstyle.org/config_whitespace.html#NoWhitespaceAfter -->
+    <module name="NoWhitespaceAfter">
+      <property name="allowLineBreaks" value="false"/>
     </module>
+
+    <!-- https://checkstyle.org/config_whitespace.html#NoWhitespaceBefore -->
     <module name="NoWhitespaceBefore">
-      <property name="tokens"
-                value="COMMA, SEMI, POST_INC, POST_DEC, DOT,
-                    LABELED_STAT, METHOD_REF"/>
       <property name="allowLineBreaks" value="true"/>
+      <property name="tokens" value="COMMA, DOT, LABELED_STAT, METHOD_REF, POST_DEC, POST_INC, SEMI"/> <!-- remove ELLIPSIS -->
+    </module>
+
+    <!-- https://checkstyle.org/config_coding.html#OneStatementPerLine -->
+    <module name="OneStatementPerLine"/>
+
+    <!-- https://checkstyle.org/config_misc.html#OuterTypeFilename -->
+    <module name="OuterTypeFilename"/>
+
+    <!-- https://checkstyle.org/config_imports.html#RedundantImport -->
+    <module name="RedundantImport"/>
+
+    <!-- https://checkstyle.org/config_modifier.html#RedundantModifier -->
+    <module name="RedundantModifier">
+      <property name="tokens" value="ANNOTATION_FIELD_DEF, CLASS_DEF, CTOR_DEF, ENUM_DEF, INTERFACE_DEF, VARIABLE_DEF"/> <!-- remove METHOD_DEF and RESOURCE -->
+    </module>
+
+    <!-- https://checkstyle.org/config_coding.html#RequireThis -->
+    <module name="RequireThis">
+      <property name="validateOnlyOverlapping" value="false"/>
+    </module>
+
+    <!-- https://checkstyle.org/config_blocks.html#RightCurly -->
+    <module name="RightCurly">
+      <property name="id" value="RightCurlyAlone"/>
+      <property name="option" value="alone"/>
+      <property name="tokens" value="ANNOTATION_DEF, CLASS_DEF, CTOR_DEF, ENUM_DEF, INSTANCE_INIT, LITERAL_FOR, LITERAL_WHILE, METHOD_DEF, STATIC_INIT"/>
+    </module>
+    <module name="RightCurly">
+      <property name="id" value="RightCurlySame"/>
+      <property name="option" value="same"/>
+      <property name="tokens" value="LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_IF, LITERAL_TRY"/> <!-- add LITERAL_DO -->
+    </module>
+
+    <!-- https://checkstyle.org/config_whitespace.html#SingleSpaceSeparator -->
+    <module name="SingleSpaceSeparator">
+      <property name="validateComments" value="true"/>
+    </module>
+
+    <!-- https://checkstyle.org/config_whitespace.html#TypecastParenPad -->
+    <module name="TypecastParenPad"/>
+
+    <!-- https://checkstyle.org/config_coding.html#UnnecessaryParentheses -->
+    <module name="UnnecessaryParentheses"/>
+
+    <!-- https://checkstyle.org/config_imports.html#UnusedImports -->
+    <module name="UnusedImports"/>
+
+    <!-- https://checkstyle.org/config_javadoc.html#WriteTag -->
+    <!-- TODO: check for @since tag on public members -->
+
+    <!--
+    #####################
+    #### third-party ####
+    #####################
+    -->
+
+    <!-- https://gitlab.com/stellardrift/stylecheck/-/blob/dev/src/main/java/ca/stellardrift/stylecheck/NoLvTypeAnnotations.java -->
+    <module name="NoLvTypeAnnotations"/>
+
+    <!-- https://gitlab.com/stellardrift/stylecheck/-/blob/dev/src/main/java/ca/stellardrift/stylecheck/StatementNoWhitespaceAfter.java -->
+    <module name="StatementNoWhitespaceAfter">
+      <property name="tokens" value="LITERAL_CATCH, LITERAL_FOR, LITERAL_IF, LITERAL_TRY, LITERAL_WHILE"/>
     </module>
   </module>
 </module>

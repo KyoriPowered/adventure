@@ -36,7 +36,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static java.util.Objects.requireNonNull;
 
-class BookImpl implements Book, Examinable {
+final class BookImpl implements Book, Examinable {
   private final Component title;
   private final Component author;
   private final List<Component> pages;
@@ -109,7 +109,7 @@ class BookImpl implements Book, Examinable {
     return this.examine(StringExaminer.simpleEscaping());
   }
 
-  static class BuilderImpl implements Book.Builder {
+  static final class BuilderImpl implements Book.Builder {
     private Component title = Component.empty();
     private Component author = Component.empty();
     private final List<Component> pages = new ArrayList<>();

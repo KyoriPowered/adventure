@@ -35,11 +35,11 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 @SuppressWarnings("UnstableApiUsage") // TypeToken
 final class BookTypeSerializer implements TypeSerializer<Book> {
-  static TypeToken<Book> TYPE = TypeToken.of(Book.class);
-  static BookTypeSerializer INSTANCE = new BookTypeSerializer();
-  static String TITLE = "title";
-  static String AUTHOR = "author";
-  static String PAGES = "pages";
+  static final TypeToken<Book> TYPE = TypeToken.of(Book.class);
+  static final BookTypeSerializer INSTANCE = new BookTypeSerializer();
+  static final String TITLE = "title";
+  static final String AUTHOR = "author";
+  static final String PAGES = "pages";
 
   private BookTypeSerializer() {
   }

@@ -80,7 +80,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
     return this.deserialize0(type, value);
   }
 
-  public @NonNull BuildableComponent<?, ?> deserialize0(final @NonNull TypeToken<?> type, final @NonNull ConfigurationNode value) throws ObjectMappingException {
+  private @NonNull BuildableComponent<?, ?> deserialize0(final @NonNull TypeToken<?> type, final @NonNull ConfigurationNode value) throws ObjectMappingException {
     // Try to read as a string
     if(!value.isList() && !value.isMap()) {
       final String str = value.getString();

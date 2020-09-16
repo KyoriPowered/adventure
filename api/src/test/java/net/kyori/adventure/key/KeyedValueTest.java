@@ -39,10 +39,6 @@ class KeyedValueTest {
   }
 
   @Test
-  void testValue() {
-  }
-
-  @Test
   void testEquality() {
     final Foo foo = new Foo();
     new EqualsTester()
