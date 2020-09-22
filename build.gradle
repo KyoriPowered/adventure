@@ -1,8 +1,12 @@
 plugins {
-    id 'net.minecrell.licenser' version '0.4.1'
-    id 'java-library'
-    id 'maven'
-    id 'signing'
+  id 'net.kyori.invent' version '1.0.4'
+  id 'net.kyori.invent-javadoc-jar' version '1.0.4'
+  id 'net.kyori.invent-sonatype-repository' version '1.0.4'
+  id 'net.kyori.invent-sources-jar' version '1.0.4'
+  id 'net.minecrell.licenser' version '0.4.1'
+  id 'java-library'
+  id 'maven-publish'
+  id 'signing'
 }
 
 // Adventure version
@@ -10,116 +14,84 @@ ext.adventure = "4.0.0-SNAPSHOT"
 
 group 'net.kyori'
 version '4.0.0-SNAPSHOT'
+description 'A string-based, user-friendly format for representing Minecraft: Java Edition chat components.'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+repositories {
+  mavenLocal()
+  mavenCentral()
+  maven {
+    url 'https://oss.sonatype.org/content/groups/public/'
+  }
+}
 
 dependencies {
-    api "net.kyori:adventure-api:${adventure}"
-    testCompile "net.kyori:adventure-text-serializer-gson:${adventure}"
+  api "net.kyori:adventure-api:${adventure}"
+  testImplementation "net.kyori:adventure-text-serializer-gson:${adventure}"
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+  testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }
 
 tasks.withType(JavaCompile) {
-    options.compilerArgs += ['-Xlint:all', '-Xlint:-path', '-parameters']
-    options.deprecation = true
-    options.encoding = 'UTF-8'
-}
-
-tasks.withType(Test) {
-    useJUnitPlatform()
+  options.compilerArgs += ['-Xlint:all']
 }
 
 license {
-    header rootProject.file('header.txt')
-    include '**/*.java'
-    newLine false
-}
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-    maven {
-        url 'https://oss.sonatype.org/content/groups/public/'
-    }
-}
-
-dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.0-M1'
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.3.0-M1'
-}
-
-task javadocJar(type: Jar) {
-    classifier 'javadoc'
-    from javadoc
-}
-
-task sourcesJar(type: Jar) {
-    classifier 'sources'
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    archives javadocJar
-    archives sourcesJar
-}
-
-signing {
-    required { !project.version.endsWith('-SNAPSHOT') && gradle.taskGraph.hasTask(':uploadArchives') && project.hasProperty('signing.keyId') }
-    sign configurations.archives
+  header rootProject.file('header.txt')
+  include '**/*.java'
+  newLine false
 }
 
 jar {
-    manifest.attributes(
-            'Automatic-Module-Name': 'net.kyori.adventure.text.minimessage'
-    )
+  manifest.attributes(
+    'Automatic-Module-Name': 'net.kyori.adventure.text.minimessage'
+  )
 }
 
-if (project.hasProperty('sonatypeUsername') && project.hasProperty('sonatypePassword')) {
-    uploadArchives {
-        enabled = System.getenv('TRAVIS') == null || project.version.endsWith('-SNAPSHOT')
+inventSonatypeRepository.enabled = System.getenv('GITHUB_ACTIONS') == null || project.version.endsWith('-SNAPSHOT')
 
-        repositories {
-            mavenDeployer {
-                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+publishing {
+  publications {
+    maven(MavenPublication) {
+      from components.java
 
-                repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
-                    authentication(userName: sonatypeUsername, password: sonatypePassword)
-                }
+      artifact javadocJar
+      artifact sourcesJar
 
-                snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
-                    authentication(userName: sonatypeUsername, password: sonatypePassword)
-                }
+      pom {
+        name = project.name
+        url = 'https://github.com/KyoriPowered/adventure-text-minimessage'
+        description = project.description
 
-                pom.project {
-                    description 'Textual representation for components.'
-                    name project.name
-                    url 'https://github.com/KyoriPowered/adventure-text-minimessage/'
-
-                    developers {
-                        developer {
-                            name 'MiniDigger'
-                        }
-                    }
-
-                    issueManagement {
-                        system 'GitHub Issues'
-                        url 'https://github.com/KyoriPowered/adventure-text-minimessage/issues'
-                    }
-
-                    licenses {
-                        license {
-                            name 'MIT License'
-                            url 'https://opensource.org/licenses/MIT'
-                        }
-                    }
-
-                    scm {
-                        connection 'scm:git@github.com:KyoriPowered/adventure-text-minimessage.git'
-                        developerConnection 'scm:git@github.com:KyoriPowered/adventure-text-minimessage.git'
-                        url 'https://github.com/KyoriPowered/adventure-text-minimessage/'
-                    }
-                }
-            }
+        developers {
+          developer {
+            id = 'minidigger'
+            name = 'MiniDigger'
+          }
         }
+
+        issueManagement {
+          system = 'GitHub Issues'
+          url = 'https://github.com/KyoriPowered/adventure-text-minimessage/issues'
+        }
+
+        licenses {
+          license {
+            name = 'MIT License'
+            url = 'https://opensource.org/licenses/MIT'
+          }
+        }
+
+        scm {
+          connection = 'scm:git@github.com:KyoriPowered/adventure-text-minimessage.git'
+          developerConnection = 'scm:git@github.com:KyoriPowered/adventure-text-minimessage.git'
+          url = 'https://github.com/KyoriPowered/adventure-text-minimessage/'
+        }
+      }
     }
+  }
+}
+
+signing {
+  required { project.hasProperty('signing.keyId') && gradle.taskGraph.hasTask(':publish') && !project.version.endsWith('-SNAPSHOT') }
+  sign publishing.publications.maven
 }
