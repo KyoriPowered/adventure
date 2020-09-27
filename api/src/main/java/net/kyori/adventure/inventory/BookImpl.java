@@ -29,7 +29,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
@@ -111,8 +110,8 @@ class BookImpl implements Book, Examinable {
   }
 
   static class BuilderImpl implements Book.Builder {
-    private Component title = TextComponent.empty();
-    private Component author = TextComponent.empty();
+    private Component title = Component.empty();
+    private Component author = Component.empty();
     private final List<Component> pages = new ArrayList<>();
 
     @Override

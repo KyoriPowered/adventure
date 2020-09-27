@@ -38,7 +38,9 @@ public interface SelectorComponent extends BuildableComponent<SelectorComponent,
    *
    * @return a builder
    * @since 4.0.0
+   * @deprecated use {@link Component#selector()}
    */
+  @Deprecated
   static @NonNull Builder builder() {
     return new SelectorComponentImpl.BuilderImpl();
   }
@@ -49,9 +51,11 @@ public interface SelectorComponent extends BuildableComponent<SelectorComponent,
    * @param pattern the selector pattern
    * @return a builder
    * @since 4.0.0
+   * @deprecated no replacement
    */
+  @Deprecated
   static @NonNull Builder builder(final @NonNull String pattern) {
-    return builder().pattern(pattern);
+    return Component.selector().pattern(pattern);
   }
 
   /**
@@ -60,9 +64,11 @@ public interface SelectorComponent extends BuildableComponent<SelectorComponent,
    * @param pattern the selector pattern
    * @return a selector component
    * @since 4.0.0
+   * @deprecated use {@link Component#selector(String)}
    */
+  @Deprecated
   static @NonNull SelectorComponent of(final @NonNull String pattern) {
-    return builder(pattern).build();
+    return Component.selector(pattern);
   }
 
   /**
@@ -71,10 +77,11 @@ public interface SelectorComponent extends BuildableComponent<SelectorComponent,
    * @param consumer the builder configurator
    * @return a selector component
    * @since 4.0.0
+   * @deprecated use {@link Component#selector(Consumer)}
    */
+  @Deprecated
   static @NonNull SelectorComponent make(final @NonNull Consumer<? super Builder> consumer) {
-    final Builder builder = builder();
-    return Buildable.configureAndBuild(builder, consumer);
+    return Component.selector(consumer);
   }
 
   /**
@@ -84,9 +91,11 @@ public interface SelectorComponent extends BuildableComponent<SelectorComponent,
    * @param consumer the builder configurator
    * @return a selector component
    * @since 4.0.0
+   * @deprecated no replacement
    */
+  @Deprecated
   static @NonNull SelectorComponent make(final @NonNull String pattern, final @NonNull Consumer<? super Builder> consumer) {
-    final Builder builder = builder(pattern);
+    final Builder builder = Component.selector().pattern(pattern);
     return Buildable.configureAndBuild(builder, consumer);
   }
 

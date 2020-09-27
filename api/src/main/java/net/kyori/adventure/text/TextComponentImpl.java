@@ -132,7 +132,7 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
     @Override
     public @NonNull TextComponent build() {
       if(this.isEmpty()) {
-        return TextComponent.empty();
+        return Component.empty();
       }
       return new TextComponentImpl(this.children, this.buildStyle(), this.content);
     }

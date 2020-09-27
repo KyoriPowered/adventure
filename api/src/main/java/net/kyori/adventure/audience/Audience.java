@@ -93,14 +93,14 @@ public interface Audience {
    * @see ForwardingAudience
    * @since 4.0.0
    */
-  static @NonNull Audience of(final @NonNull Audience@NonNull... audiences) {
+  static @NonNull Audience audience(final @NonNull Audience@NonNull... audiences) {
     final int length = audiences.length;
     if(length == 0) {
       return empty();
     } else if(length == 1) {
       return audiences[0];
     }
-    return of(Arrays.asList(audiences));
+    return audience(Arrays.asList(audiences));
   }
 
   /**
@@ -114,8 +114,39 @@ public interface Audience {
    * @see ForwardingAudience
    * @since 4.0.0
    */
-  static @NonNull ForwardingAudience of(final @NonNull Iterable<? extends Audience> audiences) {
+  static @NonNull ForwardingAudience audience(final @NonNull Iterable<? extends Audience> audiences) {
     return () -> audiences;
+  }
+
+  /**
+   * Creates an audience that forwards to many other audiences.
+   *
+   * @param audiences an array of audiences, can be empty
+   * @return an audience
+   * @see ForwardingAudience
+   * @since 4.0.0
+   * @deprecated use {@link #audience(Audience...)}
+   */
+  @Deprecated
+  static @NonNull Audience of(final @NonNull Audience@NonNull... audiences) {
+    return audience(audiences);
+  }
+
+  /**
+   * Creates an audience that forwards to many other audiences.
+   *
+   * <p>The underlying <code>Iterable</code> is not copied, therefore any changes
+   * made will be reflected in <code>Audience</code>.</p>
+   *
+   * @param audiences an iterable of audiences, can be empty
+   * @return an audience
+   * @see ForwardingAudience
+   * @since 4.0.0
+   * @deprecated use {@link #audience(Iterable)}
+   */
+  @Deprecated
+  static @NonNull ForwardingAudience of(final @NonNull Iterable<? extends Audience> audiences) {
+    return audience(audiences);
   }
 
   /**

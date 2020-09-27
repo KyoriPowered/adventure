@@ -27,6 +27,7 @@ import com.google.gson.JsonElement;
 import java.util.Map;
 import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.StorageNBTComponent;
 
 class StorageNBTComponentTest extends AbstractComponentTest<StorageNBTComponent> {
@@ -34,7 +35,7 @@ class StorageNBTComponentTest extends AbstractComponentTest<StorageNBTComponent>
   Stream<Map.Entry<StorageNBTComponent, JsonElement>> tests() {
     return Stream.of(
       entry(
-        StorageNBTComponent.builder().nbtPath("abc").storage(Key.of("doom:apple")).build(),
+        Component.storageNBT().nbtPath("abc").storage(Key.key("doom:apple")).build(),
         json -> {
           json.addProperty(ComponentSerializerImpl.NBT, "abc");
           json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
@@ -42,7 +43,7 @@ class StorageNBTComponentTest extends AbstractComponentTest<StorageNBTComponent>
         }
       ),
       entry(
-        StorageNBTComponent.builder().nbtPath("abc[].def").storage(Key.of("diamond")).interpret(true).build(),
+        Component.storageNBT().nbtPath("abc[].def").storage(Key.key("diamond")).interpret(true).build(),
         json -> {
           json.addProperty(ComponentSerializerImpl.NBT, "abc[].def");
           json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, true);

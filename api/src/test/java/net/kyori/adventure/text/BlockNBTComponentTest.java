@@ -34,12 +34,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class BlockNBTComponentTest extends AbstractNBTComponentTest<BlockNBTComponent, BlockNBTComponent.Builder> {
   @Override
   BlockNBTComponent.Builder builder() {
-    return BlockNBTComponent.builder().nbtPath("abc").absoluteWorldPos(1, 2, 3);
+    return Component.blockNBT().nbtPath("abc").absoluteWorldPos(1, 2, 3);
   }
 
   @Test
   void testOf() {
-    final BlockNBTComponent component = BlockNBTComponent.of("abc", BlockNBTComponent.LocalPos.of(1d, 2d, 3d));
+    final BlockNBTComponent component = Component.blockNBT("abc", BlockNBTComponent.LocalPos.of(1d, 2d, 3d));
     assertEquals("abc", component.nbtPath());
     assertEquals(BlockNBTComponent.LocalPos.of(1d, 2d, 3d), component.pos());
     assertNull(component.color());
@@ -48,7 +48,7 @@ class BlockNBTComponentTest extends AbstractNBTComponentTest<BlockNBTComponent, 
 
   @Test
   void testPos() {
-    final BlockNBTComponent c0 = BlockNBTComponent.of("abc", BlockNBTComponent.LocalPos.of(1d, 2d, 3d));
+    final BlockNBTComponent c0 = Component.blockNBT("abc", BlockNBTComponent.LocalPos.of(1d, 2d, 3d));
     final BlockNBTComponent c1 = c0.pos(BlockNBTComponent.WorldPos.of(BlockNBTComponent.WorldPos.Coordinate.absolute(1), BlockNBTComponent.WorldPos.Coordinate.relative(2), BlockNBTComponent.WorldPos.Coordinate.absolute(3)));
     assertEquals(BlockNBTComponent.LocalPos.of(1d, 2d, 3d), c0.pos());
     assertEquals(BlockNBTComponent.WorldPos.of(BlockNBTComponent.WorldPos.Coordinate.absolute(1), BlockNBTComponent.WorldPos.Coordinate.relative(2), BlockNBTComponent.WorldPos.Coordinate.absolute(3)), c1.pos());

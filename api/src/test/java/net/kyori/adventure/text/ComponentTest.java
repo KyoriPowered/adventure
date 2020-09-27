@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 class ComponentTest {
   @Test
   void testStyleReset() {
-    Component component = TextComponent.of("kittens");
+    Component component = Component.text("kittens");
     assertFalse(component.hasStyling());
     component = component.decoration(TextDecoration.BOLD, TextDecoration.State.TRUE);
     assertTrue(component.hasStyling());
@@ -47,8 +47,8 @@ class ComponentTest {
   @Test
   void testCycleHoverRoot() {
     assertThrows(IllegalStateException.class, () -> {
-      final Component hoverComponent = TextComponent.of("hover");
-      final Component component = TextComponent.builder()
+      final Component hoverComponent = Component.text("hover");
+      final Component component = Component.text()
         .content("cat")
         .hoverEvent(HoverEvent.showText(hoverComponent))
         .build();
@@ -61,9 +61,9 @@ class ComponentTest {
   @Test
   void testCycleHoverChild() {
     assertThrows(IllegalStateException.class, () -> {
-      final Component hoverComponent = TextComponent.of("hover child");
-      final Component component = TextComponent.builder().content("cat")
-        .hoverEvent(HoverEvent.showText(TextComponent.of("hover").append(hoverComponent)))
+      final Component hoverComponent = Component.text("hover child");
+      final Component component = Component.text().content("cat")
+        .hoverEvent(HoverEvent.showText(Component.text("hover").append(hoverComponent)))
         .build();
       // component's hover event value contains hoverComponent, we should not be able to add it
       hoverComponent.append(component);

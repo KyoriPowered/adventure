@@ -66,7 +66,7 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B> & Scoped
   void testChildren() {
     final C c0 = this.buildOne();
     assertThat(c0.children()).isEmpty();
-    final Component child = TextComponent.of("foo");
+    final Component child = Component.text("foo");
     final Component c1 = c0.children(Collections.singletonList(child));
     assertThat(c1.children()).containsExactly(child).inOrder();
   }
@@ -181,7 +181,7 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B> & Scoped
   void testHoverEvent() {
     final C c0 = this.buildOne();
     assertNull(c0.hoverEvent());
-    final C c1 = c0.hoverEvent(HoverEvent.showText(TextComponent.of("hover")));
+    final C c1 = c0.hoverEvent(HoverEvent.showText(Component.text("hover")));
     assertNotNull(c1.hoverEvent());
     assertEquals(c0, c1.hoverEvent(null));
   }
@@ -201,7 +201,7 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B> & Scoped
     assertNull(c0.color());
     TextAssertions.assertDecorations(c0, ImmutableSet.of(), ImmutableSet.of());
     assertNull(c0.clickEvent());
-    final C c1 = c0.mergeStyle(TextComponent.of("xyz", NamedTextColor.RED, ImmutableSet.of(TextDecoration.BOLD)).clickEvent(ClickEvent.runCommand("/foo")), Collections.singleton(Style.Merge.COLOR));
+    final C c1 = c0.mergeStyle(Component.text("xyz", NamedTextColor.RED, ImmutableSet.of(TextDecoration.BOLD)).clickEvent(ClickEvent.runCommand("/foo")), Collections.singleton(Style.Merge.COLOR));
     assertEquals(NamedTextColor.RED, c1.color());
     TextAssertions.assertDecorations(c1, ImmutableSet.of(), ImmutableSet.of());
     assertNull(c1.clickEvent());
@@ -214,7 +214,7 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B> & Scoped
     assertNull(c0.color());
     TextAssertions.assertDecorations(c0, ImmutableSet.of(), ImmutableSet.of());
     assertNull(c0.clickEvent());
-    final C c1 = c0.mergeStyle(TextComponent.of("xyz", NamedTextColor.RED, ImmutableSet.of(TextDecoration.BOLD)).clickEvent(ClickEvent.runCommand("/foo")), Collections.singleton(Style.Merge.DECORATIONS));
+    final C c1 = c0.mergeStyle(Component.text("xyz", NamedTextColor.RED, ImmutableSet.of(TextDecoration.BOLD)).clickEvent(ClickEvent.runCommand("/foo")), Collections.singleton(Style.Merge.DECORATIONS));
     assertNull(c1.color());
     TextAssertions.assertDecorations(c1, ImmutableSet.of(TextDecoration.BOLD), ImmutableSet.of());
     assertNull(c1.clickEvent());
@@ -227,7 +227,7 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B> & Scoped
     assertNull(c0.color());
     TextAssertions.assertDecorations(c0, ImmutableSet.of(), ImmutableSet.of());
     assertNull(c0.clickEvent());
-    final C c1 = c0.mergeStyle(TextComponent.of("xyz", NamedTextColor.RED, ImmutableSet.of(TextDecoration.BOLD)).clickEvent(ClickEvent.runCommand("/foo")), Collections.singleton(Style.Merge.EVENTS));
+    final C c1 = c0.mergeStyle(Component.text("xyz", NamedTextColor.RED, ImmutableSet.of(TextDecoration.BOLD)).clickEvent(ClickEvent.runCommand("/foo")), Collections.singleton(Style.Merge.EVENTS));
     assertNull(c1.color());
     TextAssertions.assertDecorations(c1, ImmutableSet.of(), ImmutableSet.of());
     assertNotNull(c1.clickEvent());
@@ -239,7 +239,7 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B> & Scoped
     assertNull(c0.color());
     TextAssertions.assertDecorations(c0, ImmutableSet.of(), ImmutableSet.of());
     assertNull(c0.clickEvent());
-    final C c1 = c0.style(TextComponent.of("xyz", NamedTextColor.RED, ImmutableSet.of(TextDecoration.BOLD)).clickEvent(ClickEvent.runCommand("/foo")).style());
+    final C c1 = c0.style(Component.text("xyz", NamedTextColor.RED, ImmutableSet.of(TextDecoration.BOLD)).clickEvent(ClickEvent.runCommand("/foo")).style());
     assertEquals(NamedTextColor.RED, c1.color());
     TextAssertions.assertDecorations(c1, ImmutableSet.of(TextDecoration.BOLD), ImmutableSet.of());
     assertNotNull(c1.clickEvent());
@@ -251,7 +251,7 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B> & Scoped
     final B b0 = this.builder();
     b0.color(NamedTextColor.RED);
     final C c0 = b0.build();
-    b0.style(Style.of(NamedTextColor.GREEN));
+    b0.style(Style.style(NamedTextColor.GREEN));
     final C c1 = b0.build();
     assertEquals(NamedTextColor.RED, c0.color());
     assertEquals(NamedTextColor.GREEN, c1.color());
@@ -285,7 +285,7 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B> & Scoped
 
   @Test
   void testRebuildChild() {
-    final Component child = TextComponent.of("abc");
+    final Component child = Component.text("abc");
     final C c0 = this.builder().append(child).build();
     final B b0 = c0.toBuilder();
     final C c1 = b0.build();
@@ -295,8 +295,8 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B> & Scoped
 
   @Test
   void testRebuildChildren() {
-    final Component child1 = TextComponent.of("abc");
-    final Component child2 = TextComponent.of("def");
+    final Component child1 = Component.text("abc");
+    final Component child2 = Component.text("def");
     final C c0 = this.builder().append(child1, child2).build();
     final C c1 = this.builder().append(Arrays.asList(child1, child2)).build();
     final B b0 = c0.toBuilder();
@@ -332,8 +332,8 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B> & Scoped
   @Test
   void testBuilderApplyDeep() {
     final C c0 = this.builder()
-      .append(TextComponent.of("a", NamedTextColor.RED))
-      .append(TextComponent.of("b", NamedTextColor.RED))
+      .append(Component.text("a", NamedTextColor.RED))
+      .append(Component.text("b", NamedTextColor.RED))
       .applyDeep(builder -> builder.color(NamedTextColor.GREEN))
       .build();
     final List<Component> children = c0.children();

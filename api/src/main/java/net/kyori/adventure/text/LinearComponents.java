@@ -43,9 +43,9 @@ public final class LinearComponents {
    * @return a component
    * @since 4.0.0
    */
-  public static @NonNull Component linear(final @NonNull ComponentBuilderApplicable @NonNull ... applicables) {
+  public static @NonNull Component linear(final @NonNull ComponentBuilderApplicable@NonNull... applicables) {
     final int length = applicables.length;
-    if(length == 0) return TextComponent.empty();
+    if(length == 0) return Component.empty();
     if(length == 1) {
       final ComponentBuilderApplicable ap0 = applicables[0];
       if(ap0 instanceof ComponentLike) {

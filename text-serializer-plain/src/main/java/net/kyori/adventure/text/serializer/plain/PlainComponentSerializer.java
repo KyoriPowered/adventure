@@ -83,7 +83,7 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
 
   @Override
   public @NonNull TextComponent deserialize(final @NonNull String input) {
-    return TextComponent.of(input);
+    return Component.text(input);
   }
 
   @Override

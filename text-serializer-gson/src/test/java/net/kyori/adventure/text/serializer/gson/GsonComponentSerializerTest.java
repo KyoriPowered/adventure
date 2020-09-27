@@ -27,7 +27,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.junit.jupiter.api.Test;
@@ -40,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class GsonComponentSerializerTest {
   @Test
   void testDeserializePrimitive() {
-    assertEquals(TextComponent.of("potato"), AbstractComponentTest.GSON.fromJson(new JsonPrimitive("potato"), Component.class));
+    assertEquals(Component.text("potato"), AbstractComponentTest.GSON.fromJson(new JsonPrimitive("potato"), Component.class));
   }
 
   @Test
@@ -50,7 +49,7 @@ class GsonComponentSerializerTest {
 
   @Test
   void testDeserializeArray() {
-    assertEquals(TextComponent.of("Hello, ").append(TextComponent.of("world.")), AbstractComponentTest.GSON.fromJson(array(array -> {
+    assertEquals(Component.text("Hello, ").append(Component.text("world.")), AbstractComponentTest.GSON.fromJson(array(array -> {
       array.add(object(object -> object.addProperty(ComponentSerializerImpl.TEXT, "Hello, ")));
       array.add(object(object -> object.addProperty(ComponentSerializerImpl.TEXT, "world.")));
     }), Component.class));
@@ -58,17 +57,17 @@ class GsonComponentSerializerTest {
 
   @Test
   public void testPre116Downsamples() {
-    final TextColor original = TextColor.of(0xAB2211);
+    final TextColor original = TextColor.color(0xAB2211);
     final NamedTextColor downsampled = NamedTextColor.nearestTo(original);
-    final Component test = TextComponent.of("meow", original);
+    final Component test = Component.text("meow", original);
     assertEquals("{\"text\":\"meow\",\"color\":\"" + name(downsampled) + "\"}", AbstractComponentTest.GSON_DOWNSAMPLING.toJson(test));
   }
 
   @Test
   public void testPre116DownsamplesInChildren() {
-    final TextColor original = TextColor.of(0xEC41AA);
+    final TextColor original = TextColor.color(0xEC41AA);
     final NamedTextColor downsampled = NamedTextColor.nearestTo(original);
-    final Component test = TextComponent.make("hey", builder -> builder.append(TextComponent.of("there", original)));
+    final Component test = Component.text(builder -> builder.content("hey").append(Component.text("there", original)));
 
     assertEquals("{\"text\":\"hey\",\"extra\":[{\"text\":\"there\",\"color\":\"" + name(downsampled) + "\"}]}", AbstractComponentTest.GSON_DOWNSAMPLING.toJson(test));
   }

@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.serializer.legacy;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
@@ -36,15 +37,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class LegacyComponentSerializerTest {
   @Test
   void testSimpleFrom() {
-    final TextComponent component = TextComponent.of("foo");
+    final TextComponent component = Component.text("foo");
     assertEquals(component, LegacyComponentSerializer.legacySection().deserialize("foo"));
   }
 
   @Test
   void testFromColor() {
-    final TextComponent component = TextComponent.builder("")
-      .append(TextComponent.of("foo").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, TextDecoration.State.TRUE))
-      .append(TextComponent.of("bar").color(NamedTextColor.BLUE))
+    final TextComponent component = Component.text().content("")
+      .append(Component.text("foo").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, TextDecoration.State.TRUE))
+      .append(Component.text("bar").color(NamedTextColor.BLUE))
       .build();
 
     assertEquals(component, LegacyComponentSerializer.legacy('&').deserialize("&a&lfoo&9bar"));
@@ -52,16 +53,16 @@ class LegacyComponentSerializerTest {
 
   @Test
   void testFromColorOverride() {
-    final TextComponent component = TextComponent.of("foo").color(NamedTextColor.BLUE);
+    final TextComponent component = Component.text("foo").color(NamedTextColor.BLUE);
 
     assertEquals(component, LegacyComponentSerializer.legacy('&').deserialize("&a&9foo"));
   }
 
   @Test
   void testResetOverride() {
-    final TextComponent component = TextComponent.builder("")
-      .append(TextComponent.of("foo").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, TextDecoration.State.TRUE))
-      .append(TextComponent.of("bar").color(NamedTextColor.DARK_GRAY))
+    final TextComponent component = Component.text().content("")
+      .append(Component.text("foo").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, TextDecoration.State.TRUE))
+      .append(Component.text("bar").color(NamedTextColor.DARK_GRAY))
       .build();
 
     assertEquals(component, LegacyComponentSerializer.legacy('&').deserialize("&a&lfoo&r&8bar"));
@@ -69,13 +70,13 @@ class LegacyComponentSerializerTest {
 
   @Test
   void testCompound() {
-    final TextComponent component = TextComponent.builder()
+    final TextComponent component = Component.text()
       .content("hi there ")
-      .append(TextComponent.builder("this bit is green ")
+      .append(Component.text().content("this bit is green ")
         .color(NamedTextColor.GREEN)
         .build())
-      .append(TextComponent.of("this isn't ").style(Style.empty()))
-      .append(TextComponent.builder("and woa, this is again")
+      .append(Component.text("this isn't ").style(Style.empty()))
+      .append(Component.text().content("and woa, this is again")
         .color(NamedTextColor.GREEN)
         .build())
       .build();
@@ -85,54 +86,54 @@ class LegacyComponentSerializerTest {
 
   @Test
   void testToLegacy() {
-    final TextComponent c1 = TextComponent.builder("hi")
+    final TextComponent c1 = Component.text().content("hi")
       .decoration(TextDecoration.BOLD, TextDecoration.State.TRUE)
       .append(
-        TextComponent.of("foo")
+        Component.text("foo")
           .color(NamedTextColor.GREEN)
           .decoration(TextDecoration.BOLD, TextDecoration.State.FALSE)
       )
       .append(
-        TextComponent.of("bar")
+        Component.text("bar")
           .color(NamedTextColor.BLUE)
       )
-      .append(TextComponent.of("baz"))
+      .append(Component.text("baz"))
       .build();
     assertEquals("§lhi§afoo§9§lbar§r§lbaz", LegacyComponentSerializer.legacySection().serialize(c1));
 
-    final TextComponent c2 = TextComponent.builder()
+    final TextComponent c2 = Component.text()
       .content("")
       .color(NamedTextColor.YELLOW)
-      .append(TextComponent.builder()
+      .append(Component.text()
         .content("Hello ")
         .append(
-          TextComponent.builder()
+          Component.text()
             .content("world")
             .color(NamedTextColor.GREEN)
             .build()
         )
-        .append(TextComponent.of("!")) // Should be yellow
+        .append(Component.text("!")) // Should be yellow
         .build()
       )
       .build();
     assertEquals("§eHello §aworld§e!", LegacyComponentSerializer.legacySection().serialize(c2));
 
-    final TextComponent c3 = TextComponent.builder()
+    final TextComponent c3 = Component.text()
       .content("")
       .decoration(TextDecoration.BOLD, true)
       .append(
-        TextComponent.builder()
+        Component.text()
           .content("")
           .color(NamedTextColor.YELLOW)
-          .append(TextComponent.builder()
+          .append(Component.text()
             .content("Hello ")
             .append(
-              TextComponent.builder()
+              Component.text()
                 .content("world")
                 .color(NamedTextColor.GREEN)
                 .build()
             )
-            .append(TextComponent.of("!"))
+            .append(Component.text("!"))
             .build()
           )
           .build())
@@ -142,69 +143,69 @@ class LegacyComponentSerializerTest {
 
   @Test
   void testToLegacyWithHexColor() {
-    final TextComponent c0 = TextComponent.of("Kittens!", TextColor.of(0xffefd5));
+    final TextComponent c0 = Component.text("Kittens!", TextColor.color(0xffefd5));
     assertEquals("§#ffefd5Kittens!", LegacyComponentSerializer.builder().hexColors().build().serialize(c0));
   }
 
   @Test
   void testToLegacyWithHexColorDownsampling() {
-    final TextComponent comp = TextComponent.of("purr", TextColor.of(0xff0000));
+    final TextComponent comp = Component.text("purr", TextColor.color(0xff0000));
     assertEquals("§4purr", LegacyComponentSerializer.builder().build().serialize(comp));
   }
 
   @Test
   void testFromLegacyWithHexColor() {
-    final TextComponent component = TextComponent.builder("")
-      .append(TextComponent.of("pretty").color(TextColor.fromHexString("#ffb6c1")))
-      .append(TextComponent.of("in").color(TextColor.fromHexString("#ff69b4")).decoration(TextDecoration.BOLD, TextDecoration.State.TRUE))
-      .append(TextComponent.of("pink").color(TextColor.fromHexString("#ffc0cb")))
+    final TextComponent component = Component.text().content("")
+      .append(Component.text("pretty").color(TextColor.fromHexString("#ffb6c1")))
+      .append(Component.text("in").color(TextColor.fromHexString("#ff69b4")).decoration(TextDecoration.BOLD, TextDecoration.State.TRUE))
+      .append(Component.text("pink").color(TextColor.fromHexString("#ffc0cb")))
       .build();
     assertEquals(component, LegacyComponentSerializer.builder().character('&').hexColors().build().deserialize("&#ffb6c1pretty&#ff69b4&lin&#ffc0cbpink"));
   }
 
   @Test
   void testToLegacyWithHexColorTerribleFormat() {
-    final TextComponent c0 = TextComponent.of("Kittens!", TextColor.of(0xffefd5));
+    final TextComponent c0 = Component.text("Kittens!", TextColor.color(0xffefd5));
     assertEquals("§x§f§f§e§f§d§5Kittens!", LegacyComponentSerializer.builder().hexColors().useUnusualXRepeatedCharacterHexFormat().build().serialize(c0));
   }
 
   @Test
   void testFromLegacyWithHexColorTerribleFormat() {
-    final TextComponent expected = TextComponent.of("Kittens!", TextColor.of(0xffefd5));
+    final TextComponent expected = Component.text("Kittens!", TextColor.color(0xffefd5));
     assertEquals(expected, LegacyComponentSerializer.builder().hexColors().build().deserialize("§x§f§f§e§f§d§5Kittens!"));
   }
 
   @Test
   void testFromLegacyWithHexColorTerribleFormatMixed() {
-    final TextComponent expected = TextComponent.builder("")
-      .append(TextComponent.of("Hugs and ", NamedTextColor.RED))
-      .append(TextComponent.of("Kittens!", TextColor.of(0xffefd5)))
+    final TextComponent expected = Component.text().content("")
+      .append(Component.text("Hugs and ", NamedTextColor.RED))
+      .append(Component.text("Kittens!", TextColor.color(0xffefd5)))
       .build();
     assertEquals(expected, LegacyComponentSerializer.builder().hexColors().build().deserialize("§cHugs and §x§f§f§e§f§d§5Kittens!"));
   }
 
   @Test
   void testFromLegacyWithHexColorTerribleFormatEnsureProperLookahead() {
-    final TextComponent expected = TextComponent.builder("")
-      .append(TextComponent.of("Hugs and ", NamedTextColor.RED))
-      .append(TextComponent.of("Kittens!", NamedTextColor.DARK_PURPLE))
+    final TextComponent expected = Component.text().content("")
+      .append(Component.text("Hugs and ", NamedTextColor.RED))
+      .append(Component.text("Kittens!", NamedTextColor.DARK_PURPLE))
       .build();
     assertEquals(expected, LegacyComponentSerializer.builder().hexColors().build().deserialize("§cHugs and §f§f§e§f§d§5Kittens!"));
   }
 
   @Test
   void testFromLegacyWithHexColorTerribleFormatEnsureMultipleColorsWork() {
-    final TextComponent expected = TextComponent.builder("Happy with ")
-      .append(TextComponent.of("Lavender and ", TextColor.of(0x6b4668)))
-      .append(TextComponent.of("Cyan!", TextColor.of(0xffefd5)))
+    final TextComponent expected = Component.text().content("Happy with ")
+      .append(Component.text("Lavender and ", TextColor.color(0x6b4668)))
+      .append(Component.text("Cyan!", TextColor.color(0xffefd5)))
       .build();
     assertEquals(expected, LegacyComponentSerializer.builder().hexColors().build().deserialize("Happy with §x§6§b§4§6§6§8Lavender and §x§f§f§e§f§d§5Cyan!"));
   }
 
   @Test
   void testFromLegacyWithHexColorTerribleFormatHangingCharacter() {
-    final TextComponent expected = TextComponent.builder("§x")
-      .append("Kittens!", NamedTextColor.YELLOW)
+    final TextComponent expected = Component.text().content("§x")
+      .append(Component.text("Kittens!", NamedTextColor.YELLOW))
       .build();
     assertEquals(expected, LegacyComponentSerializer.builder().hexColors().build().deserialize("§x§eKittens!"));
   }
@@ -212,10 +213,10 @@ class LegacyComponentSerializerTest {
   // https://github.com/KyoriPowered/adventure/issues/108
   @Test
   void testFromLegacyWithNewline() {
-    final TextComponent comp = TextComponent.builder("One: Test ")
-      .append(TextComponent.of("String\nTwo: ", NamedTextColor.GREEN))
-      .append(TextComponent.of("Test ", NamedTextColor.AQUA))
-      .append(TextComponent.of("String", NamedTextColor.GREEN))
+    final TextComponent comp = Component.text().content("One: Test ")
+      .append(Component.text("String\nTwo: ", NamedTextColor.GREEN))
+      .append(Component.text("Test ", NamedTextColor.AQUA))
+      .append(Component.text("String", NamedTextColor.GREEN))
       .build();
     final String in = "One: Test &aString\nTwo: &bTest &aString";
     assertEquals(comp, LegacyComponentSerializer.legacy('&').deserialize(in));
@@ -225,8 +226,8 @@ class LegacyComponentSerializerTest {
   @Test
   void testBeginningTextUnformatted() {
     final String input = "Test &cString";
-    final TextComponent expected = TextComponent.builder("Test ")
-      .append(TextComponent.of("String", NamedTextColor.RED))
+    final TextComponent expected = Component.text().content("Test ")
+      .append(Component.text("String", NamedTextColor.RED))
       .build();
 
     assertEquals(expected, LegacyComponentSerializer.legacy(LegacyComponentSerializer.AMPERSAND_CHAR).deserialize(input));
@@ -236,10 +237,10 @@ class LegacyComponentSerializerTest {
   @Test
   void testStackedFormattingFlags() {
     final String input = "§r§r§c§k||§e§lProfile§c§k||";
-    final TextComponent output = TextComponent.builder().append(
-      TextComponent.of("||", Style.of(NamedTextColor.RED, TextDecoration.OBFUSCATED)),
-      TextComponent.of("Profile", Style.of(NamedTextColor.YELLOW, TextDecoration.BOLD)),
-      TextComponent.of("||", Style.of(NamedTextColor.RED, TextDecoration.OBFUSCATED))
+    final TextComponent output = Component.text().append(
+      Component.text("||", Style.style(NamedTextColor.RED, TextDecoration.OBFUSCATED)),
+      Component.text("Profile", Style.style(NamedTextColor.YELLOW, TextDecoration.BOLD)),
+      Component.text("||", Style.style(NamedTextColor.RED, TextDecoration.OBFUSCATED))
     ).build();
     assertEquals(output, LegacyComponentSerializer.legacySection().deserialize(input));
   }
@@ -247,7 +248,7 @@ class LegacyComponentSerializerTest {
   @Test
   void testResetClearsColorInSameBlock() {
     final String input = "§c§rCleared";
-    final TextComponent output = TextComponent.of("Cleared");
+    final TextComponent output = Component.text("Cleared");
     assertEquals(output, LegacyComponentSerializer.legacySection().deserialize(input));
   }
 

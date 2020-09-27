@@ -46,8 +46,8 @@ public interface Key extends Comparable<Key> {
    * @throws InvalidKeyException if the namespace or value contains an invalid character
    * @since 4.0.0
    */
-  static @NonNull Key of(final @NonNull String string) {
-    return of(string, ':');
+  static @NonNull Key key(final @NonNull String string) {
+    return key(string, ':');
   }
 
   /**
@@ -59,11 +59,11 @@ public interface Key extends Comparable<Key> {
    * @throws InvalidKeyException if the namespace or value contains an invalid character
    * @since 4.0.0
    */
-  static @NonNull Key of(final @NonNull String string, final char character) {
+  static @NonNull Key key(final @NonNull String string, final char character) {
     final int index = string.indexOf(character);
     final String namespace = index >= 1 ? string.substring(0, index) : MINECRAFT_NAMESPACE;
     final String value = index >= 0 ? string.substring(index + 1) : string;
-    return of(namespace, value);
+    return key(namespace, value);
   }
 
   /**
@@ -75,8 +75,52 @@ public interface Key extends Comparable<Key> {
    * @throws InvalidKeyException if the namespace or value contains an invalid character
    * @since 4.0.0
    */
-  static @NonNull Key of(final @NonNull String namespace, final @NonNull String value) {
+  static @NonNull Key key(final @NonNull String namespace, final @NonNull String value) {
     return new KeyImpl(namespace, value);
+  }
+
+  /**
+   * Creates a key.
+   *
+   * @param string the string
+   * @return the key
+   * @throws InvalidKeyException if the namespace or value contains an invalid character
+   * @since 4.0.0
+   * @deprecated use {@link #key(String)}
+   */
+  @Deprecated
+  static @NonNull Key of(final @NonNull String string) {
+    return key(string);
+  }
+
+  /**
+   * Creates a key.
+   *
+   * @param string the string
+   * @param character the character
+   * @return the key
+   * @throws InvalidKeyException if the namespace or value contains an invalid character
+   * @since 4.0.0
+   * @deprecated use {@link #key(String, char)}
+   */
+  @Deprecated
+  static @NonNull Key of(final @NonNull String string, final char character) {
+    return key(string, character);
+  }
+
+  /**
+   * Creates a key.
+   *
+   * @param namespace the namespace
+   * @param value the value
+   * @return the key
+   * @throws InvalidKeyException if the namespace or value contains an invalid character
+   * @since 4.0.0
+   * @deprecated use {@link #key(String, String)}
+   */
+  @Deprecated
+  static @NonNull Key of(final @NonNull String namespace, final @NonNull String value) {
+    return key(namespace, value);
   }
 
   /**

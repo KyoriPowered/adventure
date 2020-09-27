@@ -47,7 +47,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
    *
    * @since 4.0.0
    */
-  Key DEFAULT_FONT = Key.of("default");
+  Key DEFAULT_FONT = Key.key("default");
 
   /**
    * Creates a builder.
@@ -76,7 +76,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
    * @return a style
    * @since 4.0.0
    */
-  static @NonNull Style of(final @Nullable TextColor color) {
+  static @NonNull Style style(final @Nullable TextColor color) {
     if(color == null) return empty();
     return new StyleImpl(null, color, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null);
   }
@@ -88,7 +88,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
    * @return a style
    * @since 4.0.0
    */
-  static @NonNull Style of(final @NonNull TextDecoration decoration) {
+  static @NonNull Style style(final @NonNull TextDecoration decoration) {
     return builder().decoration(decoration, true).build();
   }
 
@@ -100,7 +100,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
    * @return a style
    * @since 4.0.0
    */
-  static @NonNull Style of(final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
+  static @NonNull Style style(final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
     final Builder builder = builder();
     builder.color(color);
     StyleImpl.decorate(builder, decorations);
@@ -115,7 +115,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
    * @return a style
    * @since 4.0.0
    */
-  static @NonNull Style of(final @Nullable TextColor color, final Set<TextDecoration> decorations) {
+  static @NonNull Style style(final @Nullable TextColor color, final Set<TextDecoration> decorations) {
     final Builder builder = builder();
     builder.color(color);
     if(!decorations.isEmpty()) {
@@ -133,7 +133,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
    * @return a style
    * @since 4.0.0
    */
-  static @NonNull Style of(final StyleBuilderApplicable @NonNull ... applicables) {
+  static @NonNull Style style(final StyleBuilderApplicable@NonNull... applicables) {
     if(applicables.length == 0) return empty();
     final Builder builder = builder();
     for(int i = 0, length = applicables.length; i < length; i++) {
@@ -149,7 +149,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
    * @return a style
    * @since 4.0.0
    */
-  static @NonNull Style of(final @NonNull Iterable<? extends StyleBuilderApplicable> applicables) {
+  static @NonNull Style style(final @NonNull Iterable<? extends StyleBuilderApplicable> applicables) {
     final Builder builder = builder();
     for(final StyleBuilderApplicable applicable : applicables) {
       applicable.styleApply(builder);
@@ -164,6 +164,99 @@ public interface Style extends Buildable<Style, Style.Builder> {
    * @return a style
    * @since 4.0.0
    */
+  static @NonNull Style style(final @NonNull Consumer<Builder> consumer) {
+    return Buildable.configureAndBuild(builder(), consumer);
+  }
+
+  /**
+   * Creates a style with color.
+   *
+   * @param color the style
+   * @return a style
+   * @since 4.0.0
+   * @deprecated use {@link #style(TextColor)}
+   */
+  @Deprecated
+  static @NonNull Style of(final @Nullable TextColor color) {
+    return style(color);
+  }
+
+  /**
+   * Creates a style with decoration.
+   *
+   * @param decoration the decoration
+   * @return a style
+   * @since 4.0.0
+   * @deprecated use {@link #style(TextDecoration)}
+   */
+  @Deprecated
+  static @NonNull Style of(final @NonNull TextDecoration decoration) {
+    return style(decoration);
+  }
+
+  /**
+   * Creates a style with color and decorations.
+   *
+   * @param color the style
+   * @param decorations the decorations
+   * @return a style
+   * @since 4.0.0
+   * @deprecated use {@link #style(TextColor, TextDecoration...)}
+   */
+  @Deprecated
+  static @NonNull Style of(final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
+    return style(color, decorations);
+  }
+
+  /**
+   * Creates a style with color and decorations.
+   *
+   * @param color the style
+   * @param decorations the decorations
+   * @return a style
+   * @since 4.0.0
+   * @deprecated use {@link #style(TextColor, Set)}
+   */
+  @Deprecated
+  static @NonNull Style of(final @Nullable TextColor color, final Set<TextDecoration> decorations) {
+    return style(color, decorations);
+  }
+
+  /**
+   * Creates a style with {@code applicables} applied.
+   *
+   * @param applicables the applicables
+   * @return a style
+   * @since 4.0.0
+   * @deprecated use {@link #style(StyleBuilderApplicable...)}
+   */
+  @Deprecated
+  static @NonNull Style of(final StyleBuilderApplicable@NonNull... applicables) {
+    return style(applicables);
+  }
+
+  /**
+   * Creates a style with {@code applicables} applied.
+   *
+   * @param applicables the applicables
+   * @return a style
+   * @since 4.0.0
+   * @deprecated use {@link #style(Iterable)}
+   */
+  @Deprecated
+  static @NonNull Style of(final @NonNull Iterable<? extends StyleBuilderApplicable> applicables) {
+    return style(applicables);
+  }
+
+  /**
+   * Creates a style.
+   *
+   * @param consumer the builder consumer
+   * @return a style
+   * @since 4.0.0
+   * @deprecated use {@link #style(Consumer)}
+   */
+  @Deprecated
   static @NonNull Style make(final @NonNull Consumer<Builder> consumer) {
     return Buildable.configureAndBuild(builder(), consumer);
   }
@@ -190,7 +283,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
    * @since 4.0.0
    */
   default @NonNull Style edit(final @NonNull Consumer<Builder> consumer, final Merge.@NonNull Strategy strategy) {
-    return make(style -> {
+    return style(style -> {
       if(strategy == Merge.Strategy.ALWAYS) {
         style.merge(this, strategy);
       }
@@ -430,7 +523,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
    * @return a style
    * @since 4.0.0
    */
-  default @NonNull Style merge(final @NonNull Style that, final @NonNull Merge @NonNull ... merges) {
+  default @NonNull Style merge(final @NonNull Style that, final @NonNull Merge@NonNull... merges) {
     return this.merge(that, Merge.of(merges));
   }
 
@@ -443,7 +536,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
    * @return a style
    * @since 4.0.0
    */
-  default @NonNull Style merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy, final @NonNull Merge @NonNull ... merges) {
+  default @NonNull Style merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy, final @NonNull Merge@NonNull... merges) {
     return this.merge(that, strategy, Merge.of(merges));
   }
 

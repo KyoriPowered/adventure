@@ -38,12 +38,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class TranslatableComponentTest extends AbstractComponentTest<TranslatableComponent, TranslatableComponent.Builder> {
   @Override
   TranslatableComponent.Builder builder() {
-    return TranslatableComponent.builder("multiplayer.player.left");
+    return Component.translatable().key("multiplayer.player.left");
   }
 
   @Test
   void testOf() {
-    final TranslatableComponent component = TranslatableComponent.of("multiplayer.player.left");
+    final TranslatableComponent component = Component.translatable("multiplayer.player.left");
     assertEquals("multiplayer.player.left", component.key());
     assertNull(component.color());
     assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
@@ -51,7 +51,7 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
 
   @Test
   void testOf_color() {
-    final TranslatableComponent component = TranslatableComponent.of("multiplayer.player.left", NamedTextColor.GREEN);
+    final TranslatableComponent component = Component.translatable("multiplayer.player.left", NamedTextColor.GREEN);
     assertEquals("multiplayer.player.left", component.key());
     assertEquals(NamedTextColor.GREEN, component.color());
     assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
@@ -59,8 +59,8 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
 
   @Test
   void testOf_color_decorations() {
-    final TranslatableComponent c0 = TranslatableComponent.of("multiplayer.player.left", NamedTextColor.GREEN, TextDecoration.BOLD);
-    final TranslatableComponent c1 = TranslatableComponent.of("multiplayer.player.left", NamedTextColor.GREEN, ImmutableSet.of(TextDecoration.BOLD));
+    final TranslatableComponent c0 = Component.translatable("multiplayer.player.left", NamedTextColor.GREEN, TextDecoration.BOLD);
+    final TranslatableComponent c1 = Component.translatable("multiplayer.player.left", NamedTextColor.GREEN, ImmutableSet.of(TextDecoration.BOLD));
     assertEquals("multiplayer.player.left", c1.key());
     assertEquals(NamedTextColor.GREEN, c0.color());
     assertEquals(NamedTextColor.GREEN, c1.color());
@@ -70,7 +70,7 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
 
   @Test
   void testMake() {
-    final TranslatableComponent component = TranslatableComponent.make(builder -> {
+    final TranslatableComponent component = Component.translatable(builder -> {
       builder.key("multiplayer.player.left");
       builder.color(NamedTextColor.DARK_PURPLE);
     });
@@ -80,15 +80,15 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
 
   @Test
   void testMake_content() {
-    final TranslatableComponent component = TranslatableComponent.make("multiplayer.player.left", builder -> builder.color(NamedTextColor.DARK_PURPLE));
+    final TranslatableComponent component = Component.translatable(builder -> builder.key("multiplayer.player.left").color(NamedTextColor.DARK_PURPLE));
     assertEquals("multiplayer.player.left", component.key());
     assertEquals(NamedTextColor.DARK_PURPLE, component.color());
   }
 
   @Test
   void testContains() {
-    final Component child = TranslatableComponent.of("multiplayer.player.left");
-    final Component component = TranslatableComponent.builder()
+    final Component child = Component.translatable("multiplayer.player.left");
+    final Component component = Component.translatable()
       .key("multiplayer.player.left")
       .append(child)
       .build();
@@ -97,7 +97,7 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
 
   @Test
   void testKey() {
-    final TranslatableComponent c0 = TranslatableComponent.of("multiplayer.player.left");
+    final TranslatableComponent c0 = Component.translatable("multiplayer.player.left");
     final TranslatableComponent c1 = c0.key("multiplayer.player.joined");
     assertEquals("multiplayer.player.left", c0.key());
     assertEquals("multiplayer.player.joined", c1.key());
@@ -105,8 +105,8 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
 
   @Test
   void testArgs_array() {
-    final TranslatableComponent c0 = TranslatableComponent.of("multiplayer.player.left");
-    final Component a0 = TextComponent.of("foo");
+    final TranslatableComponent c0 = Component.translatable("multiplayer.player.left");
+    final Component a0 = Component.text("foo");
     final TranslatableComponent c1 = c0.args(a0);
     assertThat(c0.args()).isEmpty();
     assertThat(c1.args()).containsExactly(a0).inOrder();
@@ -114,8 +114,8 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
 
   @Test
   void testArgs_list() {
-    final TranslatableComponent c0 = TranslatableComponent.of("multiplayer.player.left");
-    final Component a0 = TextComponent.of("foo");
+    final TranslatableComponent c0 = Component.translatable("multiplayer.player.left");
+    final Component a0 = Component.text("foo");
     final TranslatableComponent c1 = c0.args(Collections.singletonList(a0));
     assertThat(c0.args()).isEmpty();
     assertThat(c1.args()).containsExactly(a0).inOrder();
@@ -123,37 +123,37 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
 
   @Test
   void testBuilderArgs_singleBuilder() {
-    final TranslatableComponent c0 = TranslatableComponent.builder()
+    final TranslatableComponent c0 = Component.translatable()
       .key("multiplayer.player.left")
-      .args(TextComponent.builder("kashike"))
+      .args(Component.text().content("kashike"))
       .build();
     assertThat(c0.args()).hasSize(1);
-    assertThat(c0.args()).containsExactly(TextComponent.of("kashike")).inOrder();
+    assertThat(c0.args()).containsExactly(Component.text("kashike")).inOrder();
   }
 
   @Test
   void testBuilderArgs_singleComponent() {
-    final TranslatableComponent c0 = TranslatableComponent.builder()
+    final TranslatableComponent c0 = Component.translatable()
       .key("multiplayer.player.left")
-      .args(TextComponent.of("kashike"))
+      .args(Component.text("kashike"))
       .build();
     assertThat(c0.args()).hasSize(1);
-    assertThat(c0.args()).containsExactly(TextComponent.of("kashike")).inOrder();
+    assertThat(c0.args()).containsExactly(Component.text("kashike")).inOrder();
   }
 
   @Test
   void testBuilderArgs_multiple() {
-    final TranslatableComponent c0 = TranslatableComponent.builder()
+    final TranslatableComponent c0 = Component.translatable()
       .key("multiplayer.player.left")
       .args(
-        TextComponent.builder("kashike"),
-        TextComponent.builder("lucko")
+        Component.text().content("kashike"),
+        Component.text().content("lucko")
       )
       .build();
     assertThat(c0.args()).hasSize(2);
     assertThat(c0.args()).containsExactly(
-      TextComponent.of("kashike"),
-      TextComponent.of("lucko")
+      Component.text("kashike"),
+      Component.text("lucko")
     ).inOrder();
   }
 }

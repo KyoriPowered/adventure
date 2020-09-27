@@ -53,7 +53,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @since 4.0.0
    */
   public static @NonNull ClickEvent openUrl(final @NonNull String url) {
-    return of(Action.OPEN_URL, url);
+    return new ClickEvent(Action.OPEN_URL, url);
   }
 
   /**
@@ -77,7 +77,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @since 4.0.0
    */
   public static @NonNull ClickEvent openFile(final @NonNull String file) {
-    return of(Action.OPEN_FILE, file);
+    return new ClickEvent(Action.OPEN_FILE, file);
   }
 
   /**
@@ -88,7 +88,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @since 4.0.0
    */
   public static @NonNull ClickEvent runCommand(final @NonNull String command) {
-    return of(Action.RUN_COMMAND, command);
+    return new ClickEvent(Action.RUN_COMMAND, command);
   }
 
   /**
@@ -99,7 +99,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @since 4.0.0
    */
   public static @NonNull ClickEvent suggestCommand(final @NonNull String command) {
-    return of(Action.SUGGEST_COMMAND, command);
+    return new ClickEvent(Action.SUGGEST_COMMAND, command);
   }
 
   /**
@@ -110,7 +110,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @since 4.0.0
    */
   public static @NonNull ClickEvent changePage(final @NonNull String page) {
-    return of(Action.CHANGE_PAGE, page);
+    return new ClickEvent(Action.CHANGE_PAGE, page);
   }
 
   /**
@@ -132,7 +132,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @since 4.0.0
    */
   public static @NonNull ClickEvent copyToClipboard(final @NonNull String text) {
-    return of(Action.COPY_TO_CLIPBOARD, text);
+    return new ClickEvent(Action.COPY_TO_CLIPBOARD, text);
   }
 
   /**
@@ -143,8 +143,22 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a click event
    * @since 4.0.0
    */
-  public static @NonNull ClickEvent of(final @NonNull Action action, final @NonNull String value) {
+  public static @NonNull ClickEvent clickEvent(final @NonNull Action action, final @NonNull String value) {
     return new ClickEvent(action, value);
+  }
+
+  /**
+   * Creates a click event.
+   *
+   * @param action the action
+   * @param value the value
+   * @return a click event
+   * @since 4.0.0
+   * @deprecated use {@link #clickEvent(Action, String)}
+   */
+  @Deprecated
+  public static @NonNull ClickEvent of(final @NonNull Action action, final @NonNull String value) {
+    return clickEvent(action, value);
   }
 
   private final Action action;

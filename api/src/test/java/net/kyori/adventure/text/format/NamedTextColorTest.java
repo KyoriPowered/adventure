@@ -37,7 +37,7 @@ class NamedTextColorTest {
   @Test
   public void testNamedColorsResolveToSelf() {
     for(final NamedTextColor named : NamedTextColor.values()) {
-      final TextColor nonNamed = TextColor.of(named.value());
+      final TextColor nonNamed = TextColor.color(named.value());
       assertEquals(named, NamedTextColor.nearestTo(nonNamed));
     }
   }
@@ -53,7 +53,7 @@ class NamedTextColorTest {
   }
 
   private static void assertNearest(final NamedTextColor expected, final int value) {
-    final NamedTextColor nearest = NamedTextColor.nearestTo(TextColor.of(value));
+    final NamedTextColor nearest = NamedTextColor.nearestTo(TextColor.color(value));
     assertEquals(expected, nearest);
   }
 }

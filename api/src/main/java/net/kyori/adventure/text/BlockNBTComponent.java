@@ -25,7 +25,6 @@ package net.kyori.adventure.text;
 
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
-import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -39,9 +38,11 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
    *
    * @return a builder
    * @since 4.0.0
+   * @deprecated use {@link Component#blockNBT()}
    */
+  @Deprecated
   static @NonNull Builder builder() {
-    return new BlockNBTComponentImpl.BuilderImpl();
+    return Component.blockNBT();
   }
 
   /**
@@ -51,9 +52,11 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
    * @param pos the block position
    * @return a block NBT component
    * @since 4.0.0
+   * @deprecated use {@link Component#blockNBT(String, Pos)}
    */
+  @Deprecated
   static @NonNull BlockNBTComponent of(final @NonNull String nbtPath, final @NonNull Pos pos) {
-    return builder().nbtPath(nbtPath).pos(pos).build();
+    return Component.blockNBT(nbtPath, pos);
   }
 
   /**
@@ -62,10 +65,11 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
    * @param consumer the builder configurator
    * @return a block NBT component
    * @since 4.0.0
+   * @deprecated use {@link Component#blockNBT(Consumer)}
    */
+  @Deprecated
   static @NonNull BlockNBTComponent make(final @NonNull Consumer<? super Builder> consumer) {
-    final Builder builder = builder();
-    return Buildable.configureAndBuild(builder, consumer);
+    return Component.blockNBT(consumer);
   }
 
   /**

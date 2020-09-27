@@ -25,7 +25,6 @@ package net.kyori.adventure.text;
 
 import java.util.function.Consumer;
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -39,9 +38,11 @@ public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent, S
    *
    * @return a builder
    * @since 4.0.0
+   * @deprecated use {@link Component#storageNBT()}
    */
+  @Deprecated
   static @NonNull Builder builder() {
-    return new StorageNBTComponentImpl.BuilderImpl();
+    return Component.storageNBT();
   }
 
   /**
@@ -51,9 +52,11 @@ public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent, S
    * @param storage the identifier of the storage
    * @return a storage NBT component
    * @since 4.0.0
+   * @deprecated use {@link Component#storageNBT(String, Key)}
    */
+  @Deprecated
   static @NonNull StorageNBTComponent of(final @NonNull String nbtPath, final @NonNull Key storage) {
-    return builder().nbtPath(nbtPath).storage(storage).build();
+    return Component.storageNBT(nbtPath, storage);
   }
 
   /**
@@ -62,10 +65,11 @@ public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent, S
    * @param consumer the builder configurator
    * @return a storage NBT component
    * @since 4.0.0
+   * @deprecated use {@link Component#storageNBT(Consumer)}
    */
+  @Deprecated
   static @NonNull StorageNBTComponent make(final @NonNull Consumer<? super Builder> consumer) {
-    final Builder builder = builder();
-    return Buildable.configureAndBuild(builder, consumer);
+    return Component.storageNBT(consumer);
   }
 
   /**

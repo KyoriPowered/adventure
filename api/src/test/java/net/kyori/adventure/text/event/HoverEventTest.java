@@ -29,7 +29,6 @@ import java.util.UUID;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,24 +38,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class HoverEventTest {
   @Test
   void testAsHoverEvent() {
-    final HoverEvent<Component> event = HoverEvent.showText(TextComponent.of("kittens"));
+    final HoverEvent<Component> event = HoverEvent.showText(Component.text("kittens"));
     assertSame(event, event.asHoverEvent());
     assertSame(event, event.asHoverEvent(UnaryOperator.identity()));
-    assertEquals(HoverEvent.showText(TextComponent.of("cats")), event.asHoverEvent(old -> TextComponent.of("cats")));
+    assertEquals(HoverEvent.showText(Component.text("cats")), event.asHoverEvent(old -> Component.text("cats")));
   }
 
   @Test
   void testShowItemItem() {
-    final HoverEvent.ShowItem si0 = HoverEvent.ShowItem.of(Key.of("stone"), 1);
-    assertEquals(Key.of("stone"), si0.item());
-    final HoverEvent.ShowItem si1 = si0.item(Key.of("dirt"));
-    assertEquals(Key.of("stone"), si0.item()); // original should be unmodified
-    assertEquals(Key.of("dirt"), si1.item());
+    final HoverEvent.ShowItem si0 = HoverEvent.ShowItem.of(Key.key("stone"), 1);
+    assertEquals(Key.key("stone"), si0.item());
+    final HoverEvent.ShowItem si1 = si0.item(Key.key("dirt"));
+    assertEquals(Key.key("stone"), si0.item()); // original should be unmodified
+    assertEquals(Key.key("dirt"), si1.item());
   }
 
   @Test
   void testShowItemCount() {
-    final HoverEvent.ShowItem si0 = HoverEvent.ShowItem.of(Key.of("stone"), 1);
+    final HoverEvent.ShowItem si0 = HoverEvent.ShowItem.of(Key.key("stone"), 1);
     assertEquals(1, si0.count());
     assertSame(si0, si0.count(1)); // unmodified
     final HoverEvent.ShowItem si1 = si0.count(2);
@@ -66,17 +65,17 @@ class HoverEventTest {
 
   @Test
   void testShowEntityType() {
-    final HoverEvent.ShowEntity se0 = HoverEvent.ShowEntity.of(Key.of("cow"), UUID.randomUUID());
-    assertEquals(Key.of("cow"), se0.type());
-    final HoverEvent.ShowEntity se1 = se0.type(Key.of("chicken"));
-    assertEquals(Key.of("cow"), se0.type()); // original should be unmodified
-    assertEquals(Key.of("chicken"), se1.type());
+    final HoverEvent.ShowEntity se0 = HoverEvent.ShowEntity.of(Key.key("cow"), UUID.randomUUID());
+    assertEquals(Key.key("cow"), se0.type());
+    final HoverEvent.ShowEntity se1 = se0.type(Key.key("chicken"));
+    assertEquals(Key.key("cow"), se0.type()); // original should be unmodified
+    assertEquals(Key.key("chicken"), se1.type());
   }
 
   @Test
   void testShowEntityId() {
     final UUID id0 = UUID.randomUUID();
-    final HoverEvent.ShowEntity se0 = HoverEvent.ShowEntity.of(Key.of("cow"), id0);
+    final HoverEvent.ShowEntity se0 = HoverEvent.ShowEntity.of(Key.key("cow"), id0);
     assertEquals(id0, se0.id());
     final UUID id1 = UUID.randomUUID();
     final HoverEvent.ShowEntity se1 = se0.id(id1);
@@ -86,10 +85,10 @@ class HoverEventTest {
 
   @Test
   void testShowEntityName() {
-    final Component n0 = TextComponent.of("Cow");
-    final HoverEvent.ShowEntity se0 = HoverEvent.ShowEntity.of(Key.of("cow"), UUID.randomUUID(), n0);
+    final Component n0 = Component.text("Cow");
+    final HoverEvent.ShowEntity se0 = HoverEvent.ShowEntity.of(Key.key("cow"), UUID.randomUUID(), n0);
     assertEquals(n0, se0.name());
-    final Component n1 = TextComponent.of("Chicken");
+    final Component n1 = Component.text("Chicken");
     final HoverEvent.ShowEntity se1 = se0.name(n1);
     assertEquals(n0, se0.name()); // original should be unmodified
     assertEquals(n1, se1.name());
@@ -100,22 +99,24 @@ class HoverEventTest {
     final UUID entity = UUID.randomUUID();
     new EqualsTester()
       .addEqualityGroup(
-        HoverEvent.showText(TextComponent.empty()),
-        HoverEvent.of(HoverEvent.Action.SHOW_TEXT, TextComponent.empty())
+        HoverEvent.showText(Component.empty()),
+        HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.empty())
       )
       .addEqualityGroup(
-        HoverEvent.showItem(HoverEvent.ShowItem.of(Key.of("air"), 1, null)),
-        HoverEvent.of(HoverEvent.Action.SHOW_ITEM, HoverEvent.ShowItem.of(Key.of("air"), 1, null))
+        HoverEvent.showItem(HoverEvent.ShowItem.of(Key.key("air"), 1, null)),
+        HoverEvent.hoverEvent(HoverEvent.Action.SHOW_ITEM, HoverEvent.ShowItem.of(Key.key("air"), 1, null))
       )
       .addEqualityGroup(
-        HoverEvent.showEntity(HoverEvent.ShowEntity.of(Key.of("cat"), entity)),
-        HoverEvent.showEntity(HoverEvent.ShowEntity.of(Key.of("cat"), entity, null)),
-        HoverEvent.of(HoverEvent.Action.SHOW_ENTITY, HoverEvent.ShowEntity.of(Key.of("cat"), entity)),
-        HoverEvent.of(HoverEvent.Action.SHOW_ENTITY, HoverEvent.ShowEntity.of(Key.of("cat"), entity, null))
+        HoverEvent.showEntity(HoverEvent.ShowEntity.of(Key.key("cat"), entity)),
+        HoverEvent.showEntity(HoverEvent.ShowEntity.of(Key.key("cat"), entity, null)),
+        HoverEvent.hoverEvent(HoverEvent.Action.SHOW_ENTITY, HoverEvent.ShowEntity.of(Key.key("cat"), entity)),
+        HoverEvent.hoverEvent(HoverEvent.Action.SHOW_ENTITY, HoverEvent.ShowEntity.of(Key.key("cat"), entity, null)),
+        HoverEvent.showEntity(Key.key("cat"), entity, null)
       )
       .addEqualityGroup(
-        HoverEvent.showEntity(HoverEvent.ShowEntity.of(Key.of("cat"), entity, TextComponent.empty())),
-        HoverEvent.of(HoverEvent.Action.SHOW_ENTITY, HoverEvent.ShowEntity.of(Key.of("cat"), entity, TextComponent.empty()))
+        HoverEvent.showEntity(HoverEvent.ShowEntity.of(Key.key("cat"), entity, Component.empty())),
+        HoverEvent.hoverEvent(HoverEvent.Action.SHOW_ENTITY, HoverEvent.ShowEntity.of(Key.key("cat"), entity, Component.empty())),
+        HoverEvent.showEntity(Key.key("cat"), entity, Component.empty())
       )
       .testEquals();
   }

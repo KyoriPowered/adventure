@@ -30,12 +30,12 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SoundTest {
-  private static final Key SOUND_KEY = Key.of("minecraft", "block.fence_gate.open");
+  private static final Key SOUND_KEY = Key.key("minecraft", "block.fence_gate.open");
   private static final Sound.Type SOUND_TYPE = () -> SOUND_KEY;
 
   @Test
   void testGetters() {
-    final Sound sound = Sound.of(SOUND_KEY, Sound.Source.HOSTILE, 1f, 1f);
+    final Sound sound = Sound.sound(SOUND_KEY, Sound.Source.HOSTILE, 1f, 1f);
     assertEquals(SOUND_KEY, sound.name());
     assertEquals(Sound.Source.HOSTILE, sound.source());
     assertEquals(1f, sound.volume());
@@ -46,9 +46,9 @@ class SoundTest {
   void testOfIsEqual() {
     new EqualsTester()
       .addEqualityGroup(
-        Sound.of(SOUND_KEY, Sound.Source.HOSTILE, 1f, 1f),
-        Sound.of(SOUND_TYPE, Sound.Source.HOSTILE, 1f, 1f),
-        Sound.of(() -> SOUND_TYPE, Sound.Source.HOSTILE, 1f, 1f)
+        Sound.sound(SOUND_KEY, Sound.Source.HOSTILE, 1f, 1f),
+        Sound.sound(SOUND_TYPE, Sound.Source.HOSTILE, 1f, 1f),
+        Sound.sound(() -> SOUND_TYPE, Sound.Source.HOSTILE, 1f, 1f)
       )
       .testEquals();
   }

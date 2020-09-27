@@ -173,7 +173,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   public @NonNull TextComponent deserialize(final @NonNull String input) {
     int next = input.lastIndexOf(this.character, input.length() - 2);
     if(next == -1) {
-      return this.extractUrl(TextComponent.of(input));
+      return this.extractUrl(Component.text(input));
     }
 
     final List<TextComponent> parts = new ArrayList<>();
@@ -191,17 +191,17 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
             if(reset) {
               parts.add(current.build());
               reset = false;
-              current = TextComponent.builder();
+              current = Component.text();
             } else {
-              current = TextComponent.builder().append(current.build());
+              current = Component.text().append(current.build());
             }
           } else {
-            current = TextComponent.builder();
+            current = Component.text();
           }
 
           current.content(input.substring(from, pos));
         } else if(current == null) {
-          current = TextComponent.builder();
+          current = Component.text();
         }
 
         if(!reset) {
@@ -228,7 +228,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       return this.extractUrl(parts.get(0));
     } else {
       Collections.reverse(parts);
-      return this.extractUrl(TextComponent.builder(remaining).append(parts).build());
+      return this.extractUrl(Component.text().content(remaining).append(parts).build());
     }
   }
 
