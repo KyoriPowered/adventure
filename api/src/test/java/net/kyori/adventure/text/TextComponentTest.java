@@ -282,9 +282,9 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
 
   @Test
   void testJoin() {
-    assertEquals(Component.empty(), TextComponent.join(Component.space(), Collections.emptyList()));
+    assertEquals(Component.empty(), Component.join(Component.space(), Collections.emptyList()));
 
-    final Component c0 = TextComponent.join(
+    final Component c0 = Component.join(
       Component.space(),
       IntStream.range(0, 3)
         .mapToObj(Component::text)

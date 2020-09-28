@@ -23,7 +23,9 @@
  */
 package net.kyori.adventure.text;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -86,6 +88,41 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
     return TextComponentImpl.SPACE;
   }
 
+  /**
+   * Joins {@code components} using {@code separator}.
+   *
+   * @param separator the separator
+   * @param components the components
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent join(final @NonNull ComponentLike separator, final @NonNull ComponentLike@NonNull... components) {
+    return join(separator, Arrays.asList(components));
+  }
+
+  /**
+   * Joins {@code components} using {@code separator}.
+   *
+   * @param separator the separator
+   * @param components the components
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent join(final @NonNull ComponentLike separator, final Iterable<? extends ComponentLike> components) {
+    final Iterator<? extends ComponentLike> it = components.iterator();
+    if(!it.hasNext()) {
+      return Component.empty();
+    }
+    final TextComponent.Builder builder = text();
+    while(it.hasNext()) {
+      builder.append(it.next());
+      if(it.hasNext()) {
+        builder.append(separator);
+      }
+    }
+    return builder.build();
+  }
+
   /*
    * ---------------------------
    * ---- BlockNBTComponent ----
@@ -122,7 +159,20 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @since 4.0.0
    */
   static @NonNull BlockNBTComponent blockNBT(final @NonNull String nbtPath, final BlockNBTComponent.@NonNull Pos pos) {
-    return blockNBT().nbtPath(nbtPath).pos(pos).build();
+    return blockNBT(nbtPath, NBTComponentImpl.INTERPRET_DEFAULT, pos);
+  }
+
+  /**
+   * Creates a block NBT component with a position.
+   *
+   * @param nbtPath the nbt path
+   * @param interpret whether to interpret
+   * @param pos the block position
+   * @return a block NBT component
+   * @since 4.0.0
+   */
+  static @NonNull BlockNBTComponent blockNBT(final @NonNull String nbtPath, final boolean interpret, final BlockNBTComponent.@NonNull Pos pos) {
+    return new BlockNBTComponentImpl(Collections.emptyList(), Style.empty(), nbtPath, interpret, pos);
   }
 
   /*
@@ -235,7 +285,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @return the keybind component
    * @since 4.0.0
    */
-  static @NonNull KeybindComponent keybind(final @NonNull String keybind, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
+  static @NonNull KeybindComponent keybind(final @NonNull String keybind, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
     return keybind(keybind, Style.style(color, decorations));
   }
 
@@ -301,11 +351,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @since 4.0.0
    */
   static @NonNull ScoreComponent score(final @NonNull String name, final @NonNull String objective, final @Nullable String value) {
-    return score()
-      .name(name)
-      .objective(objective)
-      .value(value)
-      .build();
+    return new ScoreComponentImpl(Collections.emptyList(), Style.empty(), name, objective, value);
   }
 
   /*
@@ -382,7 +428,20 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @since 4.0.0
    */
   static @NonNull StorageNBTComponent storageNBT(final @NonNull String nbtPath, final @NonNull Key storage) {
-    return storageNBT().nbtPath(nbtPath).storage(storage).build();
+    return storageNBT(nbtPath, NBTComponentImpl.INTERPRET_DEFAULT, storage);
+  }
+
+  /**
+   * Creates a storage NBT component with a path and an storage ID.
+   *
+   * @param nbtPath the nbt path
+   * @param interpret whether to interpret
+   * @param storage the identifier of the storage
+   * @return a storage NBT component
+   * @since 4.0.0
+   */
+  static @NonNull StorageNBTComponent storageNBT(final @NonNull String nbtPath, final boolean interpret, final @NonNull Key storage) {
+    return new StorageNBTComponentImpl(Collections.emptyList(), Style.empty(), nbtPath, interpret, storage);
   }
 
   /*
@@ -457,7 +516,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @return a text component
    * @since 4.0.0
    */
-  static @NonNull TextComponent text(final @NonNull String content, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
+  static @NonNull TextComponent text(final @NonNull String content, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
     return new TextComponentImpl(Collections.emptyList(), Style.style(color, decorations), content);
   }
 
@@ -518,7 +577,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @return a text component
    * @since 4.0.0
    */
-  static @NonNull TextComponent text(final boolean value, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
+  static @NonNull TextComponent text(final boolean value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
     return text(String.valueOf(value), color, decorations);
   }
 
@@ -581,7 +640,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @return a text component
    * @since 4.0.0
    */
-  static @NonNull TextComponent text(final char value, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
+  static @NonNull TextComponent text(final char value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
     return text(String.valueOf(value), color, decorations);
   }
 
@@ -642,7 +701,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @return a text component
    * @since 4.0.0
    */
-  static @NonNull TextComponent text(final double value, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
+  static @NonNull TextComponent text(final double value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
     return text(String.valueOf(value), color, decorations);
   }
 
@@ -703,7 +762,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @return a text component
    * @since 4.0.0
    */
-  static @NonNull TextComponent text(final float value, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
+  static @NonNull TextComponent text(final float value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
     return text(String.valueOf(value), color, decorations);
   }
 
@@ -764,7 +823,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @return a text component
    * @since 4.0.0
    */
-  static @NonNull TextComponent text(final int value, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
+  static @NonNull TextComponent text(final int value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
     return text(String.valueOf(value), color, decorations);
   }
 
@@ -825,7 +884,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @return a text component
    * @since 4.0.0
    */
-  static @NonNull TextComponent text(final long value, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
+  static @NonNull TextComponent text(final long value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
     return text(String.valueOf(value), color, decorations);
   }
 
@@ -913,7 +972,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @return a translatable component
    * @since 4.0.0
    */
-  static @NonNull TranslatableComponent translatable(final @NonNull String key, final @Nullable TextColor color, final TextDecoration @NonNull ... decorations) {
+  static @NonNull TranslatableComponent translatable(final @NonNull String key, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
     return translatable(key, Style.style(color, decorations));
   }
 
@@ -938,7 +997,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @return a translatable component
    * @since 4.0.0
    */
-  static @NonNull TranslatableComponent translatable(final @NonNull String key, final @NonNull ComponentLike @NonNull ... args) {
+  static @NonNull TranslatableComponent translatable(final @NonNull String key, final @NonNull ComponentLike@NonNull... args) {
     return translatable(key, Style.empty(), args);
   }
 
@@ -951,7 +1010,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @return a translatable component
    * @since 4.0.0
    */
-  static @NonNull TranslatableComponent translatable(final @NonNull String key, final @NonNull Style style, final @NonNull ComponentLike @NonNull ... args) {
+  static @NonNull TranslatableComponent translatable(final @NonNull String key, final @NonNull Style style, final @NonNull ComponentLike@NonNull... args) {
     return new TranslatableComponentImpl(Collections.emptyList(), style, key, args);
   }
 
@@ -964,7 +1023,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @return a translatable component
    * @since 4.0.0
    */
-  static @NonNull TranslatableComponent translatable(final @NonNull String key, final @Nullable TextColor color, final @NonNull ComponentLike @NonNull ... args) {
+  static @NonNull TranslatableComponent translatable(final @NonNull String key, final @Nullable TextColor color, final @NonNull ComponentLike@NonNull... args) {
     return translatable(key, Style.style(color), args);
   }
 
@@ -978,7 +1037,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @return a translatable component
    * @since 4.0.0
    */
-  static @NonNull TranslatableComponent translatable(final @NonNull String key, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations, final @NonNull ComponentLike @NonNull ... args) {
+  static @NonNull TranslatableComponent translatable(final @NonNull String key, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations, final @NonNull ComponentLike@NonNull... args) {
     return translatable(key, Style.style(color, decorations), args);
   }
 

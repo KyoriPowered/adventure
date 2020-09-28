@@ -24,7 +24,6 @@
 package net.kyori.adventure.text;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.function.Consumer;
 import net.kyori.adventure.text.format.Style;
@@ -83,9 +82,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param components the components
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#join(ComponentLike, ComponentLike...)}
    */
+  @Deprecated
   static @NonNull TextComponent join(final @NonNull ComponentLike separator, final @NonNull ComponentLike@NonNull... components) {
-    return join(separator, Arrays.asList(components));
+    return Component.join(separator, components);
   }
 
   /**
@@ -95,20 +96,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param components the components
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#join(ComponentLike, Iterable)}
    */
+  @Deprecated
   static @NonNull TextComponent join(final @NonNull ComponentLike separator, final Iterable<? extends ComponentLike> components) {
-    final Iterator<? extends ComponentLike> it = components.iterator();
-    if(!it.hasNext()) {
-      return Component.empty();
-    }
-    final Builder builder = Component.text();
-    while(it.hasNext()) {
-      builder.append(it.next());
-      if(it.hasNext()) {
-        builder.append(separator);
-      }
-    }
-    return builder.build();
+    return Component.join(separator, components);
   }
 
   /**

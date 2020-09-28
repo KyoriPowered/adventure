@@ -59,7 +59,7 @@ public final class LinearComponents {
       final ComponentBuilderApplicable applicable = applicables[i];
       if(applicable instanceof StyleBuilderApplicable) {
         if(style == null) {
-          style = Style.builder();
+          style = Style.style();
         }
         style.apply((StyleBuilderApplicable) applicable);
       } else if(style != null && applicable instanceof ComponentLike) {

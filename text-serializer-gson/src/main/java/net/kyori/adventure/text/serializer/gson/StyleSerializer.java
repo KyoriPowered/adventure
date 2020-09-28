@@ -78,7 +78,7 @@ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<S
 
   @SuppressWarnings({"rawtypes", "unchecked"})
   private Style deserialize(final JsonObject json, final JsonDeserializationContext context) throws JsonParseException {
-    final Style.Builder style = Style.builder();
+    final Style.Builder style = Style.style();
 
     if(json.has(FONT)) {
       style.font(context.deserialize(json.get(FONT), Key.class));

@@ -72,9 +72,9 @@ class StyleTest extends AbstractSerializeDeserializeTest<Style> {
       entry(Style.style(TextColor.color(0x0a1ab9)), json -> json.addProperty(StyleSerializer.COLOR, "#0a1ab9")),
       entry(Style.style(NamedTextColor.LIGHT_PURPLE), json -> json.addProperty(StyleSerializer.COLOR, name(NamedTextColor.LIGHT_PURPLE))),
       entry(Style.style(TextDecoration.BOLD), json -> json.addProperty(name(TextDecoration.BOLD), true)),
-      entry(Style.builder().insertion("honk").build(), json -> json.addProperty(StyleSerializer.INSERTION, "honk")),
+      entry(Style.style().insertion("honk").build(), json -> json.addProperty(StyleSerializer.INSERTION, "honk")),
       entry(
-        Style.builder()
+        Style.style()
           .font(FANCY_FONT)
           .color(NamedTextColor.RED)
           .decoration(TextDecoration.BOLD, true)
@@ -91,7 +91,7 @@ class StyleTest extends AbstractSerializeDeserializeTest<Style> {
         }
       ),
       entry(
-        Style.builder()
+        Style.style()
           .hoverEvent(HoverEvent.showEntity(HoverEvent.ShowEntity.of(
             Key.key(Key.MINECRAFT_NAMESPACE, "pig"),
             dolores,
@@ -119,7 +119,7 @@ class StyleTest extends AbstractSerializeDeserializeTest<Style> {
 
   private static Map.Entry<Style, JsonElement> showItem(final int count) {
     return entry(
-      Style.builder()
+      Style.style()
         .hoverEvent(HoverEvent.showItem(HoverEvent.ShowItem.of(
           Key.key(Key.MINECRAFT_NAMESPACE, "stone"),
           count,

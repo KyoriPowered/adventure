@@ -50,16 +50,6 @@ public interface Style extends Buildable<Style, Style.Builder> {
   Key DEFAULT_FONT = Key.key("default");
 
   /**
-   * Creates a builder.
-   *
-   * @return a builder
-   * @since 4.0.0
-   */
-  static @NonNull Builder builder() {
-    return new StyleImpl.BuilderImpl();
-  }
-
-  /**
    * Gets an empty style.
    *
    * @return empty style
@@ -67,6 +57,27 @@ public interface Style extends Buildable<Style, Style.Builder> {
    */
   static @NonNull Style empty() {
     return StyleImpl.EMPTY;
+  }
+
+  /**
+   * Creates a builder.
+   *
+   * @return a builder
+   * @since 4.0.0
+   */
+  static @NonNull Builder style() {
+    return new StyleImpl.BuilderImpl();
+  }
+
+  /**
+   * Creates a style.
+   *
+   * @param consumer the builder consumer
+   * @return a style
+   * @since 4.0.0
+   */
+  static @NonNull Style style(final @NonNull Consumer<Builder> consumer) {
+    return Buildable.configureAndBuild(style(), consumer);
   }
 
   /**
@@ -89,7 +100,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
    * @since 4.0.0
    */
   static @NonNull Style style(final @NonNull TextDecoration decoration) {
-    return builder().decoration(decoration, true).build();
+    return style().decoration(decoration, true).build();
   }
 
   /**
@@ -101,7 +112,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
    * @since 4.0.0
    */
   static @NonNull Style style(final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
-    final Builder builder = builder();
+    final Builder builder = style();
     builder.color(color);
     StyleImpl.decorate(builder, decorations);
     return builder.build();
@@ -116,7 +127,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
    * @since 4.0.0
    */
   static @NonNull Style style(final @Nullable TextColor color, final Set<TextDecoration> decorations) {
-    final Builder builder = builder();
+    final Builder builder = style();
     builder.color(color);
     if(!decorations.isEmpty()) {
       for(final TextDecoration decoration : decorations) {
@@ -135,7 +146,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
    */
   static @NonNull Style style(final StyleBuilderApplicable@NonNull... applicables) {
     if(applicables.length == 0) return empty();
-    final Builder builder = builder();
+    final Builder builder = style();
     for(int i = 0, length = applicables.length; i < length; i++) {
       applicables[i].styleApply(builder);
     }
@@ -150,7 +161,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
    * @since 4.0.0
    */
   static @NonNull Style style(final @NonNull Iterable<? extends StyleBuilderApplicable> applicables) {
-    final Builder builder = builder();
+    final Builder builder = style();
     for(final StyleBuilderApplicable applicable : applicables) {
       applicable.styleApply(builder);
     }
@@ -158,14 +169,15 @@ public interface Style extends Buildable<Style, Style.Builder> {
   }
 
   /**
-   * Creates a style.
+   * Creates a builder.
    *
-   * @param consumer the builder consumer
-   * @return a style
+   * @return a builder
    * @since 4.0.0
+   * @deprecated use {@link #style()}
    */
-  static @NonNull Style style(final @NonNull Consumer<Builder> consumer) {
-    return Buildable.configureAndBuild(builder(), consumer);
+  @Deprecated
+  static @NonNull Builder builder() {
+    return new StyleImpl.BuilderImpl();
   }
 
   /**
@@ -258,7 +270,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
    */
   @Deprecated
   static @NonNull Style make(final @NonNull Consumer<Builder> consumer) {
-    return Buildable.configureAndBuild(builder(), consumer);
+    return Buildable.configureAndBuild(style(), consumer);
   }
 
   /**

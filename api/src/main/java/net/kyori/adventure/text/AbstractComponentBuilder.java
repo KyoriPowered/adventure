@@ -286,7 +286,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
         this.styleBuilder = this.style.toBuilder();
         this.style = null;
       } else {
-        this.styleBuilder = Style.builder();
+        this.styleBuilder = Style.style();
       }
     }
     return this.styleBuilder;
