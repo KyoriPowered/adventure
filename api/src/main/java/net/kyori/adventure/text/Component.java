@@ -1048,7 +1048,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * <p>The contents of {@code children} will be copied.</p>
    *
    * @param children the children
-   * @return the unmodifiable list of children
+   * @return a component with the children set
    * @since 4.0.0
    */
   @NonNull Component children(final @NonNull List<? extends ComponentLike> children);
