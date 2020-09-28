@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.serializer.plain;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -33,35 +34,35 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class PlainComponentSerializerTest {
   @Test
   void testSimpleFrom() {
-    assertEquals(TextComponent.of("foo"), PlainComponentSerializer.plain().deserialize("foo"));
+    assertEquals(Component.text("foo"), PlainComponentSerializer.plain().deserialize("foo"));
   }
 
   @Test
   void testToLegacy() {
-    final TextComponent c1 = TextComponent.builder("hi")
+    final TextComponent c1 = Component.text().content("hi")
       .decoration(TextDecoration.BOLD, TextDecoration.State.TRUE)
       .append(
-        TextComponent.of("foo")
+        Component.text("foo")
           .color(NamedTextColor.GREEN)
           .decoration(TextDecoration.BOLD, TextDecoration.State.FALSE)
       )
       .append(
-        TextComponent.of("bar")
+        Component.text("bar")
           .color(NamedTextColor.BLUE)
       )
-      .append(TextComponent.of("baz"))
+      .append(Component.text("baz"))
       .build();
     assertEquals("hifoobarbaz", PlainComponentSerializer.plain().serialize(c1));
 
-    final TextComponent c2 = TextComponent.builder("Hello there, ")
+    final TextComponent c2 = Component.text().content("Hello there, ")
       .decoration(TextDecoration.BOLD, TextDecoration.State.TRUE)
       .append(
-        TextComponent.of("you")
+        Component.text("you")
           .color(NamedTextColor.GREEN)
           .decoration(TextDecoration.BOLD, TextDecoration.State.FALSE)
       )
       .append(
-        TextComponent.of("!")
+        Component.text("!")
           .color(NamedTextColor.BLUE)
       )
       .build();

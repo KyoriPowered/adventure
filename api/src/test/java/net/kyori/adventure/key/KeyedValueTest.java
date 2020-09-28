@@ -33,8 +33,8 @@ class KeyedValueTest {
   @Test
   void testGetters() {
     final Foo foo = new Foo();
-    final KeyedValue<Foo> kv = KeyedValue.of(Key.of("foo"), foo);
-    assertEquals(Key.of("foo"), kv.key());
+    final KeyedValue<Foo> kv = KeyedValue.of(Key.key("foo"), foo);
+    assertEquals(Key.key("foo"), kv.key());
     assertSame(foo, kv.value());
   }
 
@@ -47,8 +47,8 @@ class KeyedValueTest {
     final Foo foo = new Foo();
     new EqualsTester()
       .addEqualityGroup(
-        KeyedValue.of(Key.of("foo"), foo),
-        KeyedValue.of(Key.of("foo"), foo)
+        KeyedValue.of(Key.key("foo"), foo),
+        KeyedValue.of(Key.key("foo"), foo)
       )
       .testEquals();
   }

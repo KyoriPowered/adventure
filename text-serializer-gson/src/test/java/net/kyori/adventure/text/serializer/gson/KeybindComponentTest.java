@@ -26,6 +26,7 @@ package net.kyori.adventure.text.serializer.gson;
 import com.google.gson.JsonElement;
 import java.util.Map;
 import java.util.stream.Stream;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.KeybindComponent;
 
 class KeybindComponentTest extends AbstractComponentTest<KeybindComponent> {
@@ -34,7 +35,7 @@ class KeybindComponentTest extends AbstractComponentTest<KeybindComponent> {
   @Override
   Stream<Map.Entry<KeybindComponent, JsonElement>> tests() {
     return Stream.of(
-      entry(KeybindComponent.of(KEY), json -> json.addProperty(ComponentSerializerImpl.KEYBIND, KEY))
+      entry(Component.keybind(KEY), json -> json.addProperty(ComponentSerializerImpl.KEYBIND, KEY))
     );
   }
 }

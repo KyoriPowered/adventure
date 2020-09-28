@@ -36,15 +36,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class LinkingLegacyComponentSerializerTest {
   @Test
   void testSimpleFrom() {
-    assertEquals(TextComponent.of("foo"), LegacyComponentSerializer.builder().extractUrls().build().deserialize("foo"));
+    assertEquals(Component.text("foo"), LegacyComponentSerializer.builder().extractUrls().build().deserialize("foo"));
   }
 
   @Test
   void testBareUrl() {
     final String bareUrl = "https://www.example.com";
-    final TextComponent expectedNonLinkify = TextComponent.of(bareUrl);
+    final TextComponent expectedNonLinkify = Component.text(bareUrl);
     assertEquals(expectedNonLinkify, LegacyComponentSerializer.legacySection().deserialize(bareUrl));
-    final TextComponent expectedBareUrl = TextComponent.of(bareUrl)
+    final TextComponent expectedBareUrl = Component.text(bareUrl)
       .clickEvent(ClickEvent.openUrl(bareUrl));
     assertEquals(expectedBareUrl, LegacyComponentSerializer.builder().extractUrls().build().deserialize(bareUrl));
   }
@@ -53,8 +53,8 @@ class LinkingLegacyComponentSerializerTest {
   void testPrefixUrl() {
     final String bareUrl = "https://www.example.com";
     final String hasPrefix = "did you hear about https://www.example.com";
-    final TextComponent expectedHasPrefix = TextComponent.builder("did you hear about ")
-      .append(TextComponent.of(bareUrl).clickEvent(ClickEvent.openUrl(bareUrl)))
+    final TextComponent expectedHasPrefix = Component.text().content("did you hear about ")
+      .append(Component.text(bareUrl).clickEvent(ClickEvent.openUrl(bareUrl)))
       .build();
     assertEquals(expectedHasPrefix, LegacyComponentSerializer.builder().character('&').extractUrls().build().deserialize(hasPrefix));
   }
@@ -63,9 +63,9 @@ class LinkingLegacyComponentSerializerTest {
   void testPrefixSuffixUrl() {
     final String bareUrl = "https://www.example.com";
     final String hasPrefixSuffix = "did you hear about https://www.example.com? they're really cool";
-    final TextComponent expectedHasPrefixSuffix = TextComponent.builder("did you hear about ")
-      .append(TextComponent.of(bareUrl).clickEvent(ClickEvent.openUrl(bareUrl)))
-      .append(TextComponent.of("? they're really cool"))
+    final TextComponent expectedHasPrefixSuffix = Component.text().content("did you hear about ")
+      .append(Component.text(bareUrl).clickEvent(ClickEvent.openUrl(bareUrl)))
+      .append(Component.text("? they're really cool"))
       .build();
     assertEquals(expectedHasPrefixSuffix, LegacyComponentSerializer.builder().character('&').extractUrls().build().deserialize(hasPrefixSuffix));
   }
@@ -74,12 +74,12 @@ class LinkingLegacyComponentSerializerTest {
   void testPrefixSuffixUrlAndColors() {
     final String bareUrl = "https://www.example.com";
     final String hasPrefixSuffixColors = "&adid you hear about &chttps://www.example.com? &9they're really cool";
-    final TextComponent expectedHasPrefixSuffixColors = TextComponent.builder("")
-      .append(TextComponent.of("did you hear about ", NamedTextColor.GREEN))
-      .append(TextComponent.make(b -> b.append(TextComponent.of("https://www.example.com").clickEvent(ClickEvent.openUrl(bareUrl)))
-        .append(TextComponent.of("? "))
+    final TextComponent expectedHasPrefixSuffixColors = Component.text().content("")
+      .append(Component.text("did you hear about ", NamedTextColor.GREEN))
+      .append(Component.text(b -> b.append(Component.text("https://www.example.com").clickEvent(ClickEvent.openUrl(bareUrl)))
+        .append(Component.text("? "))
         .color(NamedTextColor.RED)))
-      .append(TextComponent.of("they're really cool", NamedTextColor.BLUE))
+      .append(Component.text("they're really cool", NamedTextColor.BLUE))
       .build();
     assertEquals(expectedHasPrefixSuffixColors, LegacyComponentSerializer.builder().character('&').extractUrls().build().deserialize(hasPrefixSuffixColors));
   }
@@ -87,37 +87,37 @@ class LinkingLegacyComponentSerializerTest {
   @Test
   void testMultipleUrls() {
     final String manyUrls = "go to https://www.example.com and https://www.example.net for cat videos";
-    final TextComponent expectedManyUrls = TextComponent.builder("go to ")
-      .append(TextComponent.of("https://www.example.com").clickEvent(ClickEvent.openUrl("https://www.example.com")))
-      .append(TextComponent.of(" and "))
-      .append(TextComponent.of("https://www.example.net").clickEvent(ClickEvent.openUrl("https://www.example.net")))
-      .append(TextComponent.of(" for cat videos"))
+    final TextComponent expectedManyUrls = Component.text().content("go to ")
+      .append(Component.text("https://www.example.com").clickEvent(ClickEvent.openUrl("https://www.example.com")))
+      .append(Component.text(" and "))
+      .append(Component.text("https://www.example.net").clickEvent(ClickEvent.openUrl("https://www.example.net")))
+      .append(Component.text(" for cat videos"))
       .build();
     assertEquals(expectedManyUrls, LegacyComponentSerializer.builder().character('&').extractUrls().build().deserialize(manyUrls));
   }
 
   @Test
   void testLinkifyWithStyle() {
-    final Style testStyle = Style.of(NamedTextColor.GREEN, TextDecoration.UNDERLINED);
+    final Style testStyle = Style.style(NamedTextColor.GREEN, TextDecoration.UNDERLINED);
     final LegacyComponentSerializer serializer = LegacyComponentSerializer.builder().character('&').extractUrls(testStyle).build();
 
     final String bareUrl = "https://www.example.com";
-    final Component expectedBareUrl = TextComponent.of(bareUrl).style(testStyle.clickEvent(ClickEvent.openUrl(bareUrl)));
+    final Component expectedBareUrl = Component.text(bareUrl).style(testStyle.clickEvent(ClickEvent.openUrl(bareUrl)));
     assertEquals(expectedBareUrl, serializer.deserialize(bareUrl));
 
     final String hasPrefixSuffix = "did you hear about https://www.example.com? they're really cool";
-    final TextComponent expectedHasPrefixSuffix = TextComponent.builder("did you hear about ")
-      .append(TextComponent.of(bareUrl).style(testStyle.clickEvent(ClickEvent.openUrl(bareUrl))))
-      .append(TextComponent.of("? they're really cool"))
+    final TextComponent expectedHasPrefixSuffix = Component.text().content("did you hear about ")
+      .append(Component.text(bareUrl).style(testStyle.clickEvent(ClickEvent.openUrl(bareUrl))))
+      .append(Component.text("? they're really cool"))
       .build();
     assertEquals(expectedHasPrefixSuffix, serializer.deserialize(hasPrefixSuffix));
 
     final String manyUrls = "go to https://www.example.com and https://www.example.net for cat videos";
-    final TextComponent expectedManyUrls = TextComponent.builder("go to ")
-      .append(TextComponent.of("https://www.example.com").style(testStyle.clickEvent(ClickEvent.openUrl("https://www.example.com"))))
-      .append(TextComponent.of(" and "))
-      .append(TextComponent.of("https://www.example.net").style(testStyle.clickEvent(ClickEvent.openUrl("https://www.example.net"))))
-      .append(TextComponent.of(" for cat videos"))
+    final TextComponent expectedManyUrls = Component.text().content("go to ")
+      .append(Component.text("https://www.example.com").style(testStyle.clickEvent(ClickEvent.openUrl("https://www.example.com"))))
+      .append(Component.text(" and "))
+      .append(Component.text("https://www.example.net").style(testStyle.clickEvent(ClickEvent.openUrl("https://www.example.net"))))
+      .append(Component.text(" for cat videos"))
       .build();
     assertEquals(expectedManyUrls, serializer.deserialize(manyUrls));
   }

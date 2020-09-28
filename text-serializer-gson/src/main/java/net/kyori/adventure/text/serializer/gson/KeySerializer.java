@@ -42,6 +42,6 @@ final class KeySerializer extends TypeAdapter<Key> {
 
   @Override
   public Key read(final JsonReader in) throws IOException {
-    return Key.of(in.nextString());
+    return Key.key(in.nextString());
   }
 }

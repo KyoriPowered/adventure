@@ -33,20 +33,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class AudienceTest {
   @Test
   void testOf_none() {
-    assertSame(Audience.empty(), Audience.of());
+    assertSame(Audience.empty(), Audience.audience());
   }
 
   @Test
   void testOf_one() {
     final Audience a0 = Audience.empty();
-    assertSame(a0, Audience.of(a0));
+    assertSame(a0, Audience.audience(a0));
   }
 
   @Test
   void testOf_many() {
     final Audience a0 = Audience.empty();
     final Audience a1 = Audience.empty();
-    final Audience ma = Audience.of(a0, a1);
+    final Audience ma = Audience.audience(a0, a1);
     assertTrue(ma instanceof ForwardingAudience);
     assertThat(((ForwardingAudience) ma).audiences()).containsExactly(a0, a1).inOrder();
   }
@@ -56,7 +56,7 @@ class AudienceTest {
     new EqualsTester()
       .addEqualityGroup(
         Audience.empty(),
-        Audience.of() // of() with no args returns empty
+        Audience.audience() // of() with no args returns empty
       )
       .testEquals();
   }

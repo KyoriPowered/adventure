@@ -69,14 +69,14 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
         if(matcher.start() == 0) {
           // if we're a full match, modify the component directly
           if(matcher.end() == content.length()) {
-            final TextComponent.Builder replacement = state.replacement.apply(matcher, TextComponent.builder(matcher.group())
+            final TextComponent.Builder replacement = state.replacement.apply(matcher, Component.text().content(matcher.group())
               .style(component.style()));
 
-            modified = replacement == null ? TextComponent.empty() : replacement.build();
+            modified = replacement == null ? Component.empty() : replacement.build();
           } else {
             // otherwise, work on a child of the root node
-            modified = TextComponent.of("", component.style());
-            final TextComponent.Builder child = state.replacement.apply(matcher, TextComponent.builder(matcher.group()));
+            modified = Component.text("", component.style());
+            final TextComponent.Builder child = state.replacement.apply(matcher, Component.text().content(matcher.group()));
             if(child != null) {
               children = listOrNew(children, component.children().size() + 1);
               children.add(child.build());
@@ -88,9 +88,9 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
             // truncate parent to content before match
             modified = ((TextComponent) component).content(content.substring(0, matcher.start()));
           } else if(replacedUntil < matcher.start()) {
-            children.add(TextComponent.of(content.substring(replacedUntil, matcher.start())));
+            children.add(Component.text(content.substring(replacedUntil, matcher.start())));
           }
-          final TextComponent.Builder builder = state.replacement.apply(matcher, TextComponent.builder(matcher.group()));
+          final TextComponent.Builder builder = state.replacement.apply(matcher, Component.text().content(matcher.group()));
           if(builder != null) {
             children.add(builder.build());
           }
@@ -102,7 +102,7 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
         // append trailing content
         if(replacedUntil > 0) {
           children = listOrNew(children, component.children().size());
-          children.add(TextComponent.of(content.substring(replacedUntil)));
+          children.add(Component.text(content.substring(replacedUntil)));
         }
         // otherwise, we haven't modified the component, so nothing to change
       }

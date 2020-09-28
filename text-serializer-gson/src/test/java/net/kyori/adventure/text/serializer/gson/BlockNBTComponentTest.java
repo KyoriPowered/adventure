@@ -28,13 +28,14 @@ import java.util.Map;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.BlockNBTComponent.WorldPos.Coordinate;
+import net.kyori.adventure.text.Component;
 
 class BlockNBTComponentTest extends AbstractComponentTest<BlockNBTComponent> {
   @Override
   Stream<Map.Entry<BlockNBTComponent, JsonElement>> tests() {
     return Stream.of(
       entry(
-        BlockNBTComponent.builder().nbtPath("abc").localPos(1.23d, 2.0d, 3.89d).build(),
+        Component.blockNBT().nbtPath("abc").localPos(1.23d, 2.0d, 3.89d).build(),
         json -> {
           json.addProperty(ComponentSerializerImpl.NBT, "abc");
           json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
@@ -42,7 +43,7 @@ class BlockNBTComponentTest extends AbstractComponentTest<BlockNBTComponent> {
         }
       ),
       entry(
-        BlockNBTComponent.builder().nbtPath("xyz").absoluteWorldPos(4, 5, 6).interpret(true).build(),
+        Component.blockNBT().nbtPath("xyz").absoluteWorldPos(4, 5, 6).interpret(true).build(),
         json -> {
           json.addProperty(ComponentSerializerImpl.NBT, "xyz");
           json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, true);
@@ -50,7 +51,7 @@ class BlockNBTComponentTest extends AbstractComponentTest<BlockNBTComponent> {
         }
       ),
       entry(
-        BlockNBTComponent.builder().nbtPath("eeee").relativeWorldPos(7, 83, 900).build(),
+        Component.blockNBT().nbtPath("eeee").relativeWorldPos(7, 83, 900).build(),
         json -> {
           json.addProperty(ComponentSerializerImpl.NBT, "eeee");
           json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
@@ -58,7 +59,7 @@ class BlockNBTComponentTest extends AbstractComponentTest<BlockNBTComponent> {
         }
       ),
       entry(
-        BlockNBTComponent.builder().nbtPath("qwert").worldPos(Coordinate.absolute(12), Coordinate.relative(3), Coordinate.absolute(1200)).build(),
+        Component.blockNBT().nbtPath("qwert").worldPos(Coordinate.absolute(12), Coordinate.relative(3), Coordinate.absolute(1200)).build(),
         json -> {
           json.addProperty(ComponentSerializerImpl.NBT, "qwert");
           json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);

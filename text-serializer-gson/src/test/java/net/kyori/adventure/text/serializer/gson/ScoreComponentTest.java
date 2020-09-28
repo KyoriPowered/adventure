@@ -41,11 +41,11 @@ class ScoreComponentTest extends AbstractComponentTest<ScoreComponent> {
   @Override
   Stream<Map.Entry<ScoreComponent, JsonElement>> tests() {
     return Stream.of(
-      entry(ScoreComponent.of(NAME, OBJECTIVE), json -> json.add(ComponentSerializerImpl.SCORE, object(score -> {
+      entry(Component.score(NAME, OBJECTIVE), json -> json.add(ComponentSerializerImpl.SCORE, object(score -> {
         score.addProperty(ComponentSerializerImpl.SCORE_NAME, NAME);
         score.addProperty(ComponentSerializerImpl.SCORE_OBJECTIVE, OBJECTIVE);
       }))),
-      entry(ScoreComponent.of(NAME, OBJECTIVE, VALUE), json -> json.add(ComponentSerializerImpl.SCORE, object(score -> {
+      entry(Component.score(NAME, OBJECTIVE, VALUE), json -> json.add(ComponentSerializerImpl.SCORE, object(score -> {
         score.addProperty(ComponentSerializerImpl.SCORE_NAME, NAME);
         score.addProperty(ComponentSerializerImpl.SCORE_OBJECTIVE, OBJECTIVE);
         score.addProperty(ComponentSerializerImpl.SCORE_VALUE, VALUE);

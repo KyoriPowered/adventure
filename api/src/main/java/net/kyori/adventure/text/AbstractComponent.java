@@ -54,7 +54,7 @@ public abstract class AbstractComponent implements Component, Examinable {
     for(int i = 0, size = list.size(); i < size; i++) {
       final ComponentLike like = list.get(i);
       final Component component = like.asComponent();
-      if(component != TextComponent.empty()) {
+      if(component != Component.empty()) {
         components.add(component);
       }
     }

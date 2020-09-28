@@ -39,24 +39,24 @@ class ClickEventTest {
       .addEqualityGroup(
         ClickEvent.openUrl("https://google.com/"),
         ClickEvent.openUrl(new URL("https://google.com/")),
-        ClickEvent.of(ClickEvent.Action.OPEN_URL, "https://google.com/")
+        ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, "https://google.com/")
       )
       .addEqualityGroup(
         ClickEvent.runCommand("/test"),
-        ClickEvent.of(ClickEvent.Action.RUN_COMMAND, "/test")
+        ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/test")
       )
       .addEqualityGroup(
         ClickEvent.suggestCommand("/test"),
-        ClickEvent.of(ClickEvent.Action.SUGGEST_COMMAND, "/test")
+        ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/test")
       )
       .addEqualityGroup(
         ClickEvent.changePage(1),
         ClickEvent.changePage("1"),
-        ClickEvent.of(ClickEvent.Action.CHANGE_PAGE, "1")
+        ClickEvent.clickEvent(ClickEvent.Action.CHANGE_PAGE, "1")
       )
       .addEqualityGroup(
         ClickEvent.copyToClipboard("test"),
-        ClickEvent.of(ClickEvent.Action.COPY_TO_CLIPBOARD, "test")
+        ClickEvent.clickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, "test")
       )
       .testEquals();
   }

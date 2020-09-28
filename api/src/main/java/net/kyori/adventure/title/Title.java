@@ -50,8 +50,8 @@ public interface Title {
    * @return the title
    * @since 4.0.0
    */
-  static @NonNull Title of(final @NonNull Component title, final @NonNull Component subtitle) {
-    return of(title, subtitle, DEFAULT_TIMES);
+  static @NonNull Title title(final @NonNull Component title, final @NonNull Component subtitle) {
+    return title(title, subtitle, DEFAULT_TIMES);
   }
 
   /**
@@ -63,8 +63,37 @@ public interface Title {
    * @return the title
    * @since 4.0.0
    */
-  static @NonNull Title of(final @NonNull Component title, final @NonNull Component subtitle, final @Nullable Times times) {
+  static @NonNull Title title(final @NonNull Component title, final @NonNull Component subtitle, final @Nullable Times times) {
     return new TitleImpl(title, subtitle, times);
+  }
+
+  /**
+   * Creates a title.
+   *
+   * @param title the title
+   * @param subtitle the subtitle
+   * @return the title
+   * @since 4.0.0
+   * @deprecated use {@link #title(Component, Component)}
+   */
+  @Deprecated
+  static @NonNull Title of(final @NonNull Component title, final @NonNull Component subtitle) {
+    return title(title, subtitle);
+  }
+
+  /**
+   * Creates a title.
+   *
+   * @param title the title
+   * @param subtitle the subtitle
+   * @param times the times
+   * @return the title
+   * @since 4.0.0
+   * @deprecated use {@link #title(Component, Component, Times)}
+   */
+  @Deprecated
+  static @NonNull Title of(final @NonNull Component title, final @NonNull Component subtitle, final @Nullable Times times) {
+    return title(title, subtitle, times);
   }
 
   /**

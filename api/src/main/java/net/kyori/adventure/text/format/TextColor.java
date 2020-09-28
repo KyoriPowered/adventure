@@ -41,7 +41,7 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
    * @return a new text colour
    * @since 4.0.0
    */
-  static @NonNull TextColor of(final int value) {
+  static @NonNull TextColor color(final int value) {
     final NamedTextColor named = NamedTextColor.ofExact(value);
     return named != null ? named : new TextColorImpl(value);
   }
@@ -53,8 +53,8 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
    * @return a new text colour
    * @since 4.0.0
    */
-  static @NonNull TextColor from(final RGBLike rgb) {
-    return of(rgb.red(), rgb.green(), rgb.blue());
+  static @NonNull TextColor color(final RGBLike rgb) {
+    return color(rgb.red(), rgb.green(), rgb.blue());
   }
 
   /**
@@ -66,8 +66,8 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
    * @return a new text colour
    * @since 4.0.0
    */
-  static @NonNull TextColor of(final @IntRange(from = 0x0, to = 0xff) int r, final @IntRange(from = 0x0, to = 0xff) int g, final @IntRange(from = 0x0, to = 0xff) int b) {
-    return of((r & 0xff) << 16 | (g & 0xff) << 8 | (b & 0xff));
+  static @NonNull TextColor color(final @IntRange(from = 0x0, to = 0xff) int r, final @IntRange(from = 0x0, to = 0xff) int g, final @IntRange(from = 0x0, to = 0xff) int b) {
+    return color((r & 0xff) << 16 | (g & 0xff) << 8 | (b & 0xff));
   }
 
   /**
@@ -79,8 +79,64 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
    * @return a new text colour
    * @since 4.0.0
    */
+  static @NonNull TextColor color(final float r, final float g, final float b) {
+    return color((int) (r * 0xff), (int) (g * 0xff), (int) (b * 0xff));
+  }
+
+  /**
+   * Creates a new text colour.
+   *
+   * @param value the rgb value
+   * @return a new text colour
+   * @since 4.0.0
+   * @deprecated use {@link #color(int)}
+   */
+  @Deprecated
+  static @NonNull TextColor of(final int value) {
+    return color(value);
+  }
+
+  /**
+   * Creates a new text colour.
+   *
+   * @param rgb the rgb value
+   * @return a new text colour
+   * @since 4.0.0
+   * @deprecated use {@link #color(RGBLike)}
+   */
+  @Deprecated
+  static @NonNull TextColor from(final RGBLike rgb) {
+    return color(rgb.red(), rgb.green(), rgb.blue());
+  }
+
+  /**
+   * Create a new text colour with the red, green, and blue components individually
+   *
+   * @param r red, as a value from 0 to 255
+   * @param g green, as a value from 0 to 255
+   * @param b blue, as a value from 0 to 255
+   * @return a new text colour
+   * @since 4.0.0
+   * @deprecated use {@link #color(int, int, int)}
+   */
+  @Deprecated
+  static @NonNull TextColor of(final @IntRange(from = 0x0, to = 0xff) int r, final @IntRange(from = 0x0, to = 0xff) int g, final @IntRange(from = 0x0, to = 0xff) int b) {
+    return color(r, g, b);
+  }
+
+  /**
+   * Create a new color with the individual components as floats
+   *
+   * @param r red, from [0, 1]
+   * @param g green, within [0, 1]
+   * @param b blue, within [0, 1]
+   * @return a new text colour
+   * @since 4.0.0
+   * @deprecated use {@link #color(float, float, float)}
+   */
+  @Deprecated
   static @NonNull TextColor of(final float r, final float g, final float b) {
-    return of((int) (r * 0xff), (int) (g * 0xff), (int) (b * 0xff));
+    return color(r, g, b);
   }
 
   /**
@@ -94,7 +150,7 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
     if(string.startsWith("#")) {
       try {
         final int hex = Integer.parseInt(string.substring(1), 16);
-        return of(hex);
+        return color(hex);
       } catch(final NumberFormatException e) {
         return null;
       }
@@ -123,12 +179,12 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
       }
 
       if(hexString.length() == 6) {
-        return of(hex);
+        return color(hex);
       } else {
         final int red = (hex & 0xf00) >> 8 | (hex & 0xf00) >> 4;
         final int green = (hex & 0x0f0) >> 4 | (hex & 0x0f0);
         final int blue = (hex & 0x00f) << 4 | (hex & 0x00f);
-        return of(red, green, blue);
+        return color(red, green, blue);
       }
     }
     return null;

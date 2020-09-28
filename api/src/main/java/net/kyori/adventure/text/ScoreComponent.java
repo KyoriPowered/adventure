@@ -39,9 +39,11 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    *
    * @return a builder
    * @since 4.0.0
+   * @deprecated use {@link Component#score()}
    */
+  @Deprecated
   static @NonNull Builder builder() {
-    return new ScoreComponentImpl.BuilderImpl();
+    return Component.score();
   }
 
   /**
@@ -51,7 +53,9 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @param objective the score objective
    * @return a builder
    * @since 4.0.0
+   * @deprecated no replacement
    */
+  @Deprecated
   static @NonNull Builder builder(final @NonNull String name, final @NonNull String objective) {
     return builder().name(name).objective(objective);
   }
@@ -63,9 +67,11 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @param objective the score objective
    * @return a score component
    * @since 4.0.0
+   * @deprecated use {@link Component#score(String, String)}
    */
+  @Deprecated
   static @NonNull ScoreComponent of(final @NonNull String name, final @NonNull String objective) {
-    return of(name, objective, null);
+    return Component.score(name, objective);
   }
 
   /**
@@ -76,13 +82,11 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @param value the value
    * @return a score component
    * @since 4.0.0
+   * @deprecated use {@link Component#score(String, String, String)}
    */
+  @Deprecated
   static @NonNull ScoreComponent of(final @NonNull String name, final @NonNull String objective, final @Nullable String value) {
-    return builder()
-      .name(name)
-      .objective(objective)
-      .value(value)
-      .build();
+    return Component.score(name, objective, value);
   }
 
   /**
@@ -91,10 +95,11 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @param consumer the builder configurator
    * @return a score component
    * @since 4.0.0
+   * @deprecated use {@link Component#score(Consumer)}
    */
+  @Deprecated
   static @NonNull ScoreComponent make(final @NonNull Consumer<? super Builder> consumer) {
-    final Builder builder = builder();
-    return Buildable.configureAndBuild(builder, consumer);
+    return Component.score(consumer);
   }
 
   /**
@@ -105,9 +110,11 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @param consumer the builder configurator
    * @return a score component
    * @since 4.0.0
+   * @deprecated no replacement
    */
+  @Deprecated
   static @NonNull ScoreComponent make(final @NonNull String name, final @NonNull String objective, final @NonNull Consumer<? super Builder> consumer) {
-    final Builder builder = builder(name, objective);
+    final Builder builder = Component.score().name(name).objective(objective);
     return Buildable.configureAndBuild(builder, consumer);
   }
 

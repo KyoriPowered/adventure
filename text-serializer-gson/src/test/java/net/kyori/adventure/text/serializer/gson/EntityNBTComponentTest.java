@@ -26,6 +26,7 @@ package net.kyori.adventure.text.serializer.gson;
 import com.google.gson.JsonElement;
 import java.util.Map;
 import java.util.stream.Stream;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.EntityNBTComponent;
 
 class EntityNBTComponentTest extends AbstractComponentTest<EntityNBTComponent> {
@@ -33,7 +34,7 @@ class EntityNBTComponentTest extends AbstractComponentTest<EntityNBTComponent> {
   Stream<Map.Entry<EntityNBTComponent, JsonElement>> tests() {
     return Stream.of(
       entry(
-        EntityNBTComponent.builder().nbtPath("abc").selector("test").build(),
+        Component.entityNBT().nbtPath("abc").selector("test").build(),
         json -> {
           json.addProperty(ComponentSerializerImpl.NBT, "abc");
           json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
@@ -41,7 +42,7 @@ class EntityNBTComponentTest extends AbstractComponentTest<EntityNBTComponent> {
         }
       ),
       entry(
-        EntityNBTComponent.builder().nbtPath("abc").selector("test").interpret(true).build(),
+        Component.entityNBT().nbtPath("abc").selector("test").interpret(true).build(),
         json -> {
           json.addProperty(ComponentSerializerImpl.NBT, "abc");
           json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, true);

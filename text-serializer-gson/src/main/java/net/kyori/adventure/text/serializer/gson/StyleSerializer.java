@@ -114,7 +114,7 @@ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<S
           final /* @Nullable */ JsonPrimitive rawValue = clickEvent.getAsJsonPrimitive(CLICK_EVENT_VALUE);
           final /* @Nullable */ String value = rawValue == null ? null : rawValue.getAsString();
           if(value != null) {
-            style.clickEvent(ClickEvent.of(action, value));
+            style.clickEvent(ClickEvent.clickEvent(action, value));
           }
         }
       }
@@ -137,7 +137,7 @@ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<S
           }
 
           if(value != null) {
-            style.hoverEvent(HoverEvent.of(action, value));
+            style.hoverEvent(HoverEvent.hoverEvent(action, value));
           }
         }
       }
