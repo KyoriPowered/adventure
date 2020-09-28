@@ -61,6 +61,6 @@ public class Rainbow implements Fancy {
     int red = (int) (Math.sin(frequency * index + 2 + phase) * width + center);
     int green = (int) (Math.sin(frequency * index + 0 + phase) * width + center);
     int blue = (int) (Math.sin(frequency * index + 4 + phase) * width + center);
-    return TextColor.of(red, green, blue);
+    return TextColor.color(red, green, blue);
   }
 }

@@ -47,7 +47,7 @@ public class MiniMessageSerializerTest {
   public void testColor() {
     final String expected = "<red>This is a test";
 
-    final Builder builder = TextComponent.builder().content("This is a test").color(NamedTextColor.RED);
+    final Builder builder = Component.text().content("This is a test").color(NamedTextColor.RED);
 
     test(builder, expected);
   }
@@ -56,9 +56,9 @@ public class MiniMessageSerializerTest {
   public void testColorClosing() {
     final String expected = "<red>This is a </red>test";
 
-    final Builder builder = TextComponent.builder()
+    final Builder builder = Component.text()
       .content("This is a ").color(NamedTextColor.RED)
-      .append("test");
+      .append(Component.text("test"));
 
     test(builder, expected);
   }
@@ -67,10 +67,10 @@ public class MiniMessageSerializerTest {
   public void testNestedColor() {
     final String expected = "<red>This is a <blue>blue <red>test";
 
-    final Builder builder = TextComponent.builder()
+    final Builder builder = Component.text()
       .content("This is a ").color(NamedTextColor.RED)
-      .append("blue ", NamedTextColor.BLUE)
-      .append("test", NamedTextColor.RED);
+      .append(Component.text("blue ", NamedTextColor.BLUE))
+      .append(Component.text("test", NamedTextColor.RED));
 
     test(builder, expected);
   }
@@ -79,11 +79,11 @@ public class MiniMessageSerializerTest {
   public void testDecoration() {
     final String expected = "<underlined>This is <bold>underlined</underlined>, this</bold> isn't";
 
-    final Builder builder = TextComponent.builder()
+    final Builder builder = Component.text()
       .content("This is ").decoration(TextDecoration.UNDERLINED, true)
-      .append("underlined", b -> b.decoration(TextDecoration.UNDERLINED, true).decoration(TextDecoration.BOLD, true))
-      .append(", this", b -> b.decoration(TextDecoration.BOLD, true))
-      .append(" isn't");
+      .append(Component.text(b -> b.content("underlined").decoration(TextDecoration.UNDERLINED, true).decoration(TextDecoration.BOLD, true)))
+      .append(Component.text(b -> b.content(", this").decoration(TextDecoration.BOLD, true)))
+      .append(Component.text(" isn't"));
 
     test(builder, expected);
   }
@@ -92,9 +92,9 @@ public class MiniMessageSerializerTest {
   public void testHover() {
     final String expected = "<hover:show_text:\"---\">Some hover</hover> that ends here";
 
-    final Builder builder = TextComponent.builder()
-      .content("Some hover").hoverEvent(HoverEvent.showText(TextComponent.of("---")))
-      .append(" that ends here");
+    final Builder builder = Component.text()
+      .content("Some hover").hoverEvent(HoverEvent.showText(Component.text("---")))
+      .append(Component.text(" that ends here"));
 
     test(builder, expected);
   }
@@ -103,12 +103,12 @@ public class MiniMessageSerializerTest {
   public void testHoverWithNested() {
     final String expected = "<hover:show_text:\"<red>---<blue><bold>-\">Some hover</hover> that ends here";
 
-    final Builder builder = TextComponent.builder()
-      .content("Some hover").hoverEvent(HoverEvent.showText(TextComponent.builder()
+    final Builder builder = Component.text()
+      .content("Some hover").hoverEvent(HoverEvent.showText(Component.text()
         .content("---").color(NamedTextColor.RED)
-        .append("-", NamedTextColor.BLUE, TextDecoration.BOLD)
+        .append(Component.text("-", NamedTextColor.BLUE, TextDecoration.BOLD))
         .build()))
-      .append(" that ends here");
+      .append(Component.text(" that ends here"));
 
     test(builder, expected);
   }
@@ -117,9 +117,9 @@ public class MiniMessageSerializerTest {
   public void testClick() {
     final String expected = "<click:run_command:\"test\">Some click</click> that ends here";
 
-    final Builder builder = TextComponent.builder()
+    final Builder builder = Component.text()
       .content("Some click").clickEvent(ClickEvent.runCommand("test"))
-      .append(" that ends here");
+      .append(Component.text(" that ends here"));
 
     test(builder, expected);
   }
@@ -128,10 +128,10 @@ public class MiniMessageSerializerTest {
   public void testContinuedClick() {
     final String expected = "<click:run_command:\"test\">Some click<red> that doesn't end here";
 
-    final Builder builder = TextComponent.builder()
+    final Builder builder = Component.text()
       .content("Some click").clickEvent(ClickEvent.runCommand("test"))
       // TODO figure out how to avoid repeating the click event here
-      .append(" that doesn't end here", b -> b.color(NamedTextColor.RED).clickEvent(ClickEvent.runCommand("test")));
+      .append(Component.text(b -> b.content(" that doesn't end here").color(NamedTextColor.RED).clickEvent(ClickEvent.runCommand("test"))));
 
     test(builder, expected);
   }
@@ -140,9 +140,9 @@ public class MiniMessageSerializerTest {
   public void testContinuedClick2() {
     final String expected = "<click:run_command:\"test\">Some click<red> that doesn't end here";
 
-    final Builder builder = TextComponent.builder()
+    final Builder builder = Component.text()
       .content("Some click").clickEvent(ClickEvent.runCommand("test"))
-      .append(" that doesn't end here", b -> b.color(NamedTextColor.RED).clickEvent(ClickEvent.runCommand("test")));
+      .append(Component.text(b -> b.content(" that doesn't end here").color(NamedTextColor.RED).clickEvent(ClickEvent.runCommand("test"))));
 
     test(builder, expected);
   }
@@ -151,10 +151,10 @@ public class MiniMessageSerializerTest {
   public void testKeyBind() {
     final String expected = "Press <key:key.jump> to jump!";
 
-    final Builder builder = TextComponent.builder()
+    final Builder builder = Component.text()
       .content("Press ")
-      .append(KeybindComponent.of("key.jump"))
-      .append(" to jump!");
+      .append(Component.keybind("key.jump"))
+      .append(Component.text(" to jump!"));
 
     test(builder, expected);
   }
@@ -163,10 +163,10 @@ public class MiniMessageSerializerTest {
   public void testKeyBindWithColor() {
     final String expected = "Press <red><key:key.jump> to jump!";
 
-    final Builder builder = TextComponent.builder()
+    final Builder builder = Component.text()
       .content("Press ")
-      .append(KeybindComponent.of("key.jump").color(NamedTextColor.RED))
-      .append(" to jump!", NamedTextColor.RED);
+      .append(Component.keybind("key.jump").color(NamedTextColor.RED))
+      .append(Component.text(" to jump!", NamedTextColor.RED));
 
     test(builder, expected);
   }
@@ -175,10 +175,10 @@ public class MiniMessageSerializerTest {
   public void testTranslatable() {
     final String expected = "You should get a <lang:block.minecraft.diamond_block>!";
 
-    final Builder builder = TextComponent.builder()
+    final Builder builder = Component.text()
       .content("You should get a ")
-      .append(TranslatableComponent.of("block.minecraft.diamond_block"))
-      .append("!");
+      .append(Component.translatable("block.minecraft.diamond_block"))
+      .append(Component.text("!"));
 
     test(builder, expected);
   }
@@ -187,10 +187,10 @@ public class MiniMessageSerializerTest {
   public void testInsertion() {
     final String expected = "Click <insert:test>this</insert> to insert!";
 
-    final Builder builder = TextComponent.builder()
+    final Builder builder = Component.text()
       .content("Click ")
-      .append("this", b -> b.insertion("test"))
-      .append(" to insert!");
+      .append(Component.text(b -> b.content("this").insertion("test")))
+      .append(Component.text(" to insert!"));
 
     test(builder, expected);
   }
@@ -199,9 +199,9 @@ public class MiniMessageSerializerTest {
   public void testHexColor() {
     final String expected = "<color:#ff0000>This is a </color:#ff0000>test";
 
-    final Builder builder = TextComponent.builder()
+    final Builder builder = Component.text()
       .content("This is a ").color(TextColor.fromHexString("#ff0000"))
-      .append("test");
+      .append(Component.text("test"));
 
     test(builder, expected);
   }

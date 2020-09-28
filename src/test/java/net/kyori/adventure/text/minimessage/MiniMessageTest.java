@@ -38,7 +38,7 @@ public class MiniMessageTest {
 
   @Test
   public void testMarkdownBuilder() {
-    Component expected = TextComponent.of("BOLD").decoration(TextDecoration.BOLD, true).color(NamedTextColor.RED);
+    Component expected = Component.text("BOLD").decoration(TextDecoration.BOLD, true).color(NamedTextColor.RED);
     Component result = MiniMessage.builder().markdown().build().deserialize("**<red>BOLD**");
 
     final String out1 = GsonComponentSerializer.gson().serialize(expected);
@@ -49,7 +49,7 @@ public class MiniMessageTest {
 
   @Test
   public void testNormalBuilder() {
-    Component expected = TextComponent.of("Test").color(NamedTextColor.RED);
+    Component expected = Component.text("Test").color(NamedTextColor.RED);
     Component result = MiniMessage.builder().build().deserialize("<red>Test");
 
     final String out1 = GsonComponentSerializer.gson().serialize(expected);
@@ -60,7 +60,7 @@ public class MiniMessageTest {
 
   @Test
   public void testNormal() {
-    Component expected = TextComponent.of("Test").color(NamedTextColor.RED);
+    Component expected = Component.text("Test").color(NamedTextColor.RED);
     Component result = MiniMessage.get().deserialize("<red>Test");
 
     final String out1 = GsonComponentSerializer.gson().serialize(expected);
@@ -71,7 +71,7 @@ public class MiniMessageTest {
 
   @Test
   public void testNormalPlaceholders() {
-    Component expected = TextComponent.of("TEST").color(NamedTextColor.RED);
+    Component expected = Component.text("TEST").color(NamedTextColor.RED);
     Component result = MiniMessage.get().parse("<red><test>", "test", "TEST");
 
     final String out1 = GsonComponentSerializer.gson().serialize(expected);
@@ -82,7 +82,7 @@ public class MiniMessageTest {
 
   @Test
   public void testMarkdown() {
-    Component expected = TextComponent.of("BOLD").decoration(TextDecoration.BOLD, true).color(NamedTextColor.RED);
+    Component expected = Component.text("BOLD").decoration(TextDecoration.BOLD, true).color(NamedTextColor.RED);
     Component result = MiniMessage.markdown().deserialize("**<red>BOLD**");
 
     final String out1 = GsonComponentSerializer.gson().serialize(expected);
@@ -93,7 +93,7 @@ public class MiniMessageTest {
 
   @Test
   public void testTemplateSimple() {
-    Component expected = TextComponent.of("TEST");
+    Component expected = Component.text("TEST");
     Component result = MiniMessage.get().parse("<test>", Template.of("test", "TEST"));
 
     final String out1 = GsonComponentSerializer.gson().serialize(expected);
@@ -104,8 +104,8 @@ public class MiniMessageTest {
 
   @Test
   public void testTemplateComponent() {
-    Component expected = TextComponent.of("TEST").color(NamedTextColor.RED);
-    Component result = MiniMessage.get().parse("<test>", Template.of("test", TextComponent.of("TEST").color(NamedTextColor.RED)));
+    Component expected = Component.text("TEST").color(NamedTextColor.RED);
+    Component result = MiniMessage.get().parse("<test>", Template.of("test", Component.text("TEST").color(NamedTextColor.RED)));
 
     final String out1 = GsonComponentSerializer.gson().serialize(expected);
     final String out2 = GsonComponentSerializer.gson().serialize(result);
@@ -115,8 +115,8 @@ public class MiniMessageTest {
 
   @Test
   public void testTemplateComponentInheritedStyle() {
-    Component expected = TextComponent.of("TEST").color(NamedTextColor.RED).decoration(TextDecoration.UNDERLINED, true).decoration(TextDecoration.BOLD, true);
-    Component result = MiniMessage.get().parse("<green><bold><test>", Template.of("test", TextComponent.of("TEST").color(NamedTextColor.RED).decoration(TextDecoration.UNDERLINED, true)));
+    Component expected = Component.text("TEST").color(NamedTextColor.RED).decoration(TextDecoration.UNDERLINED, true).decoration(TextDecoration.BOLD, true);
+    Component result = MiniMessage.get().parse("<green><bold><test>", Template.of("test", Component.text("TEST").color(NamedTextColor.RED).decoration(TextDecoration.UNDERLINED, true)));
 
     final String out1 = GsonComponentSerializer.gson().serialize(expected);
     final String out2 = GsonComponentSerializer.gson().serialize(result);
@@ -126,11 +126,11 @@ public class MiniMessageTest {
 
   @Test
   public void testTemplateComponentMixed() {
-    Component root = TextComponent.of("");
-    root = root.append(TextComponent.of("TEST").color(NamedTextColor.RED).decoration(TextDecoration.UNDERLINED, true).decoration(TextDecoration.BOLD, true));
-    root = root.append(TextComponent.of("Test2").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true));
+    Component root = Component.text("");
+    root = root.append(Component.text("TEST").color(NamedTextColor.RED).decoration(TextDecoration.UNDERLINED, true).decoration(TextDecoration.BOLD, true));
+    root = root.append(Component.text("Test2").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true));
 
-    final Template t1 = Template.of("test", TextComponent.of("TEST").color(NamedTextColor.RED).decoration(TextDecoration.UNDERLINED, true));
+    final Template t1 = Template.of("test", Component.text("TEST").color(NamedTextColor.RED).decoration(TextDecoration.UNDERLINED, true));
     final Template t2 = Template.of("test2", "Test2");
     final Component result = MiniMessage.get().parse("<green><bold><test><test2>", t1, t2);
 

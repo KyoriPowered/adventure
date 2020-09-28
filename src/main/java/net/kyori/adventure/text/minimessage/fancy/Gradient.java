@@ -73,7 +73,7 @@ public class Gradient implements Fancy {
   }
 
   private TextColor interpolate(TextColor color1, TextColor color2, float factor) {
-    return TextColor.of(
+    return TextColor.color(
       Math.round(color1.red() + factor * (color2.red() - color1.red())),
       Math.round(color1.green() + factor * (color2.green() - color1.green())),
       Math.round(color1.blue() + factor * (color2.blue() - color1.blue()))

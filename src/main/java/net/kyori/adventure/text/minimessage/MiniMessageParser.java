@@ -197,7 +197,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
   }
 
   /* package */ static @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates) {
-    final TextComponent.Builder parent = TextComponent.builder("");
+    final TextComponent.Builder parent = Component.text();
 
     final ArrayDeque<ClickEvent> clickEvents = new ArrayDeque<>();
     final ArrayDeque<HoverEvent<?>> hoverEvents = new ArrayDeque<>();
@@ -224,7 +224,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
       // handle message
       if (msg != null && msg.length() != 0) {
         // append message
-        current = TextComponent.of(msg);
+        current = Component.text(msg);
         current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, parent, fancy, fonts);
 
       }
@@ -246,7 +246,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
           if (current != null) {
             parent.append(current);
           }
-          current = TextComponent.of(TAG_START + token + TAG_END);
+          current = Component.text(TAG_START + token + TAG_END);
           current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, parent, fancy, fonts);
           parent.append(current);
         }
@@ -354,7 +354,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
         if (current != null) {
           parent.append(current);
         }
-        current = TextComponent.of(TAG_START + token + TAG_END);
+        current = Component.text(TAG_START + token + TAG_END);
         current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, parent, fancy, fonts);
       }
 
@@ -367,7 +367,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
     if (richMessage.length() > lastEnd) {
       final String msg = richMessage.substring(lastEnd);
       // append message
-      Component current = TextComponent.of(msg);
+      Component current = Component.text(msg);
 
       // set everything that is not closed yet
       current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, parent, fancy, fonts);
@@ -423,7 +423,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
       nextFancy.init(bigComponent.content().length());
       // split into multiple components
       for (int i = 0; i < bigComponent.content().length(); i++) {
-        smallComponent = TextComponent.of(bigComponent.content().charAt(i));
+        smallComponent = Component.text(bigComponent.content().charAt(i));
         // apply formatting
         smallComponent = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, smallComponent, parent, Collections.emptyMap(), fonts);
         smallComponent = nextFancy.apply(smallComponent);
@@ -491,7 +491,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
     if (args.length < 2) {
       throw new ParseException("Can't parse font (too few args) " + token);
     }
-    return Key.of(token.replace(args[0] + SEPARATOR, ""));
+    return Key.key(token.replace(args[0] + SEPARATOR, ""));
   }
 
 
@@ -510,7 +510,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
       throw new ParseException("Can't parse translatable (too few args) " + token);
     }
     if (inner == null) {
-      return TranslatableComponent.of(args[1]);
+      return Component.translatable(args[1]);
     } else {
       final List<Component> inners = new ArrayList<>();
       final String toSplit = token.replace(args[0] + ":" + args[1] + ":", "");
@@ -518,7 +518,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
       for (String someInner : split) {
         inners.add(parseFormat(someInner));
       }
-      return TranslatableComponent.of(args[1], inners);
+      return Component.translatable(args[1], inners);
     }
   }
 
@@ -528,7 +528,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
     if (args.length < 2) {
       throw new ParseException("Can't parse keybind (too few args) " + token);
     }
-    return KeybindComponent.of(args[1]);
+    return Component.keybind(args[1]);
   }
 
   private static @NonNull ClickEvent handleClick(final @NonNull String token, final @NonNull String inner) {
@@ -538,7 +538,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
     }
     final ClickEvent.Action action = ClickEvent.Action.NAMES.value(args[1].toLowerCase(Locale.ROOT));
     if (action == null) throw new ParseException("Can't parse click action (invalid action) " + token);
-    return ClickEvent.of(action, token.replace(CLICK + SEPARATOR + args[1] + SEPARATOR, ""));
+    return ClickEvent.clickEvent(action, token.replace(CLICK + SEPARATOR + args[1] + SEPARATOR, ""));
   }
 
 
@@ -556,7 +556,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.FONT;
     // TODO figure out support for all hover actions
     final HoverEvent.Action action = HoverEvent.Action.NAMES.value(args[1].toLowerCase(Locale.ROOT));
     if (action == null) throw new ParseException("Can't parse hover action (invalid action) " + token);
-    return HoverEvent.of(action, parseFormat(inner));
+    return HoverEvent.hoverEvent(action, parseFormat(inner));
   }
 
 
