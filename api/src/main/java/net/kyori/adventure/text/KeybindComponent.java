@@ -23,14 +23,7 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.Set;
-import java.util.function.Consumer;
-import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A keybind component.
@@ -38,130 +31,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @since 4.0.0
  */
 public interface KeybindComponent extends BuildableComponent<KeybindComponent, KeybindComponent.Builder>, ScopedComponent<KeybindComponent> {
-  /**
-   * Creates a keybind component builder.
-   *
-   * @return a builder
-   * @since 4.0.0
-   * @deprecated use {@link Component#keybind()}
-   */
-  @Deprecated
-  static @NonNull Builder builder() {
-    return Component.keybind();
-  }
-
-  /**
-   * Creates a keybind component builder with a keybind.
-   *
-   * @param keybind the keybind
-   * @return a builder
-   * @since 4.0.0
-   * @deprecated no replacement
-   */
-  @Deprecated
-  static @NonNull Builder builder(final @NonNull String keybind) {
-    return builder().keybind(keybind);
-  }
-
-  /**
-   * Creates a keybind component with a keybind.
-   *
-   * @param keybind the keybind
-   * @return the keybind component
-   * @since 4.0.0
-   * @deprecated use {@link Component#keybind(String)}
-   */
-  @Deprecated
-  static @NonNull KeybindComponent of(final @NonNull String keybind) {
-    return Component.keybind(keybind);
-  }
-
-  /**
-   * Creates a keybind component with a keybind and styling.
-   *
-   * @param keybind the keybind
-   * @param style the style
-   * @return the keybind component
-   * @since 4.0.0
-   * @deprecated use {@link Component#keybind(String, Style)}
-   */
-  @Deprecated
-  static @NonNull KeybindComponent of(final @NonNull String keybind, final @NonNull Style style) {
-    return Component.keybind(keybind, style);
-  }
-
-  /**
-   * Creates a keybind component with a keybind, and optional color.
-   *
-   * @param keybind the keybind
-   * @param color the color
-   * @return the keybind component
-   * @since 4.0.0
-   * @deprecated use {@link Component#keybind(String, TextColor)}
-   */
-  @Deprecated
-  static @NonNull KeybindComponent of(final @NonNull String keybind, final @Nullable TextColor color) {
-    return Component.keybind(keybind, color);
-  }
-
-  /**
-   * Creates a keybind component with a keybind, and optional color and decorations.
-   *
-   * @param keybind the keybind
-   * @param color the color
-   * @param decorations the decorations
-   * @return the keybind component
-   * @since 4.0.0
-   * @deprecated use {@link Component#keybind(String, TextColor, TextDecoration...)}
-   */
-  @Deprecated
-  static @NonNull KeybindComponent of(final @NonNull String keybind, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
-    return Component.keybind(keybind, color, decorations);
-  }
-
-  /**
-   * Creates a keybind component with a keybind, and optional color and decorations.
-   *
-   * @param keybind the keybind
-   * @param color the color
-   * @param decorations the decorations
-   * @return the keybind component
-   * @since 4.0.0
-   * @deprecated use {@link Component#keybind(String, TextColor, Set)}
-   */
-  @Deprecated
-  static @NonNull KeybindComponent of(final @NonNull String keybind, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
-    return Component.keybind(keybind, color, decorations);
-  }
-
-  /**
-   * Creates a keybind component by applying configuration from {@code consumer}.
-   *
-   * @param consumer the builder configurator
-   * @return the keybind component
-   * @since 4.0.0
-   * @deprecated use {@link Component#keybind(Consumer)}
-   */
-  @Deprecated
-  static @NonNull KeybindComponent make(final @NonNull Consumer<? super Builder> consumer) {
-    return Component.keybind(consumer);
-  }
-
-  /**
-   * Creates a keybind component by applying configuration from {@code consumer}.
-   *
-   * @param keybind the keybind
-   * @param consumer the builder configurator
-   * @return the keybind component
-   * @since 4.0.0
-   * @deprecated no replacement
-   */
-  @Deprecated
-  static @NonNull KeybindComponent make(final @NonNull String keybind, final @NonNull Consumer<? super Builder> consumer) {
-    final Builder builder = Component.keybind().keybind(keybind);
-    return Buildable.configureAndBuild(builder, consumer);
-  }
-
   /**
    * Gets the keybind.
    *

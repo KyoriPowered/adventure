@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.function.Consumer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -32,45 +31,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @since 4.0.0
  */
 public interface EntityNBTComponent extends NBTComponent<EntityNBTComponent, EntityNBTComponent.Builder>, ScopedComponent<EntityNBTComponent> {
-  /**
-   * Creates an entity NBT component builder.
-   *
-   * @return a builder
-   * @since 4.0.0
-   * @deprecated use {@link Component#entityNBT()}
-   */
-  @Deprecated
-  static @NonNull Builder builder() {
-    return Component.entityNBT();
-  }
-
-  /**
-   * Creates a entity NBT component with a position.
-   *
-   * @param nbtPath the nbt path
-   * @param selector the selector
-   * @return an entity NBT component
-   * @since 4.0.0
-   * @deprecated use {@link Component#entityNBT(String, String)}
-   */
-  @Deprecated
-  static @NonNull EntityNBTComponent of(final @NonNull String nbtPath, final @NonNull String selector) {
-    return Component.entityNBT(nbtPath, selector);
-  }
-
-  /**
-   * Creates a entity NBT component by applying configuration from {@code consumer}.
-   *
-   * @param consumer the builder configurator
-   * @return an entity NBT component
-   * @since 4.0.0
-   * @deprecated use {@link Component#entityNBT(Consumer)}
-   */
-  @Deprecated
-  static @NonNull EntityNBTComponent make(final @NonNull Consumer<? super Builder> consumer) {
-    return Component.entityNBT(consumer);
-  }
-
   /**
    * Gets the entity selector.
    *

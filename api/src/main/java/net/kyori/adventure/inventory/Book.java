@@ -65,36 +65,6 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
   }
 
   /**
-   * Creates a book.
-   *
-   * @param title the title
-   * @param author the author
-   * @param pages the collection of pages
-   * @return a book
-   * @since 4.0.0
-   * @deprecated use {@link #book(Component, Component, Collection)}
-   */
-  @Deprecated
-  static @NonNull Book of(final @NonNull Component title, final @NonNull Component author, final @NonNull Collection<Component> pages) {
-    return book(title, author, pages);
-  }
-
-  /**
-   * Creates a book.
-   *
-   * @param title the title
-   * @param author the author
-   * @param pages an array of pages
-   * @return a book
-   * @since 4.0.0
-   * @deprecated use {@link #book(Component, Component, Component...)}
-   */
-  @Deprecated
-  static @NonNull Book of(final @NonNull Component title, final @NonNull Component author, final @NonNull Component@NonNull... pages) {
-    return book(title, author, pages);
-  }
-
-  /**
    * Create a new builder that will create a {@link Book}.
    *
    * @return a builder

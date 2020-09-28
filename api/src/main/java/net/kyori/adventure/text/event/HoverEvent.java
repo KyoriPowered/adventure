@@ -149,21 +149,6 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
     return new HoverEvent<>(action, value);
   }
 
-  /**
-   * Creates a hover event.
-   *
-   * @param action the action
-   * @param value the value
-   * @param <V> the value type
-   * @return a click event
-   * @since 4.0.0
-   * @deprecated use {@link #hoverEvent(Action, Object)}
-   */
-  @Deprecated
-  public static <V> @NonNull HoverEvent<V> of(final @NonNull Action<V> action, final @NonNull V value) {
-    return new HoverEvent<>(action, value);
-  }
-
   private final Action<V> action;
   private final V value;
 

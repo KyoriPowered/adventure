@@ -134,37 +134,6 @@ public interface Audience {
   }
 
   /**
-   * Creates an audience that forwards to many other audiences.
-   *
-   * @param audiences an array of audiences, can be empty
-   * @return an audience
-   * @see ForwardingAudience
-   * @since 4.0.0
-   * @deprecated use {@link #audience(Audience...)}
-   */
-  @Deprecated
-  static @NonNull Audience of(final @NonNull Audience@NonNull... audiences) {
-    return audience(audiences);
-  }
-
-  /**
-   * Creates an audience that forwards to many other audiences.
-   *
-   * <p>The underlying <code>Iterable</code> is not copied, therefore any changes
-   * made will be reflected in <code>Audience</code>.</p>
-   *
-   * @param audiences an iterable of audiences, can be empty
-   * @return an audience
-   * @see ForwardingAudience
-   * @since 4.0.0
-   * @deprecated use {@link #audience(Iterable)}
-   */
-  @Deprecated
-  static @NonNull ForwardingAudience of(final @NonNull Iterable<? extends Audience> audiences) {
-    return audience(audiences);
-  }
-
-  /**
    * Sends a chat message.
    *
    * @param message a message

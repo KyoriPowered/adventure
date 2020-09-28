@@ -95,54 +95,6 @@ public interface Sound extends Examinable {
   }
 
   /**
-   * Creates a new sound.
-   *
-   * @param name the name
-   * @param source the source
-   * @param volume the volume
-   * @param pitch the pitch
-   * @return the sound
-   * @since 4.0.0
-   * @deprecated use {@link #sound(Key, Source, float, float)}
-   */
-  @Deprecated
-  static @NonNull Sound of(final @NonNull Key name, final @NonNull Source source, final float volume, final float pitch) {
-    return sound(name, source, volume, pitch);
-  }
-
-  /**
-   * Creates a new sound.
-   *
-   * @param type the type
-   * @param source the source
-   * @param volume the volume
-   * @param pitch the pitch
-   * @return the sound
-   * @since 4.0.0
-   * @deprecated use {@link #sound(Type, Source, float, float)}
-   */
-  @Deprecated
-  static @NonNull Sound of(final @NonNull Type type, final @NonNull Source source, final float volume, final float pitch) {
-    return sound(type, source, volume, pitch);
-  }
-
-  /**
-   * Creates a new sound.
-   *
-   * @param type the type
-   * @param source the source
-   * @param volume the volume
-   * @param pitch the pitch
-   * @return the sound
-   * @since 4.0.0
-   * @deprecated use {@link #sound(Supplier, Source, float, float)}
-   */
-  @Deprecated
-  static @NonNull Sound of(final @NonNull Supplier<? extends Type> type, final @NonNull Source source, final float volume, final float pitch) {
-    return sound(type, source, volume, pitch);
-  }
-
-  /**
    * Gets the name.
    *
    * @return the name

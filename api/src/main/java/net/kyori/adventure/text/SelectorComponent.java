@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.function.Consumer;
-import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -33,72 +31,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @since 4.0.0
  */
 public interface SelectorComponent extends BuildableComponent<SelectorComponent, SelectorComponent.Builder>, ScopedComponent<SelectorComponent> {
-  /**
-   * Creates a selector component builder.
-   *
-   * @return a builder
-   * @since 4.0.0
-   * @deprecated use {@link Component#selector()}
-   */
-  @Deprecated
-  static @NonNull Builder builder() {
-    return new SelectorComponentImpl.BuilderImpl();
-  }
-
-  /**
-   * Creates a selector component builder with a pattern.
-   *
-   * @param pattern the selector pattern
-   * @return a builder
-   * @since 4.0.0
-   * @deprecated no replacement
-   */
-  @Deprecated
-  static @NonNull Builder builder(final @NonNull String pattern) {
-    return Component.selector().pattern(pattern);
-  }
-
-  /**
-   * Creates a selector component with a pattern.
-   *
-   * @param pattern the selector pattern
-   * @return a selector component
-   * @since 4.0.0
-   * @deprecated use {@link Component#selector(String)}
-   */
-  @Deprecated
-  static @NonNull SelectorComponent of(final @NonNull String pattern) {
-    return Component.selector(pattern);
-  }
-
-  /**
-   * Creates a selector component by applying configuration from {@code consumer}.
-   *
-   * @param consumer the builder configurator
-   * @return a selector component
-   * @since 4.0.0
-   * @deprecated use {@link Component#selector(Consumer)}
-   */
-  @Deprecated
-  static @NonNull SelectorComponent make(final @NonNull Consumer<? super Builder> consumer) {
-    return Component.selector(consumer);
-  }
-
-  /**
-   * Creates a selector component by applying configuration from {@code consumer}.
-   *
-   * @param pattern the selector pattern
-   * @param consumer the builder configurator
-   * @return a selector component
-   * @since 4.0.0
-   * @deprecated no replacement
-   */
-  @Deprecated
-  static @NonNull SelectorComponent make(final @NonNull String pattern, final @NonNull Consumer<? super Builder> consumer) {
-    final Builder builder = Component.selector().pattern(pattern);
-    return Buildable.configureAndBuild(builder, consumer);
-  }
-
   /**
    * Gets the selector pattern.
    *

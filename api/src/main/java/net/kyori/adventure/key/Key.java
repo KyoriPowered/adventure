@@ -83,50 +83,6 @@ public interface Key extends Comparable<Key>, Examinable {
   }
 
   /**
-   * Creates a key.
-   *
-   * @param string the string
-   * @return the key
-   * @throws InvalidKeyException if the namespace or value contains an invalid character
-   * @since 4.0.0
-   * @deprecated use {@link #key(String)}
-   */
-  @Deprecated
-  static @NonNull Key of(final @NonNull String string) {
-    return key(string);
-  }
-
-  /**
-   * Creates a key.
-   *
-   * @param string the string
-   * @param character the character
-   * @return the key
-   * @throws InvalidKeyException if the namespace or value contains an invalid character
-   * @since 4.0.0
-   * @deprecated use {@link #key(String, char)}
-   */
-  @Deprecated
-  static @NonNull Key of(final @NonNull String string, final char character) {
-    return key(string, character);
-  }
-
-  /**
-   * Creates a key.
-   *
-   * @param namespace the namespace
-   * @param value the value
-   * @return the key
-   * @throws InvalidKeyException if the namespace or value contains an invalid character
-   * @since 4.0.0
-   * @deprecated use {@link #key(String, String)}
-   */
-  @Deprecated
-  static @NonNull Key of(final @NonNull String namespace, final @NonNull String value) {
-    return key(namespace, value);
-  }
-
-  /**
    * Gets the namespace.
    *
    * @return the namespace

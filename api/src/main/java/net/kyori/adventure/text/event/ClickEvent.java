@@ -147,20 +147,6 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
     return new ClickEvent(action, value);
   }
 
-  /**
-   * Creates a click event.
-   *
-   * @param action the action
-   * @param value the value
-   * @return a click event
-   * @since 4.0.0
-   * @deprecated use {@link #clickEvent(Action, String)}
-   */
-  @Deprecated
-  public static @NonNull ClickEvent of(final @NonNull Action action, final @NonNull String value) {
-    return clickEvent(action, value);
-  }
-
   private final Action action;
   private final String value;
 

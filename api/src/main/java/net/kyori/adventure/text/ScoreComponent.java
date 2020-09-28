@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.function.Consumer;
-import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -34,90 +32,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @since 4.0.0
  */
 public interface ScoreComponent extends BuildableComponent<ScoreComponent, ScoreComponent.Builder>, ScopedComponent<ScoreComponent> {
-  /**
-   * Creates a score component builder.
-   *
-   * @return a builder
-   * @since 4.0.0
-   * @deprecated use {@link Component#score()}
-   */
-  @Deprecated
-  static @NonNull Builder builder() {
-    return Component.score();
-  }
-
-  /**
-   * Creates a score component builder with a name and objective.
-   *
-   * @param name the score name
-   * @param objective the score objective
-   * @return a builder
-   * @since 4.0.0
-   * @deprecated no replacement
-   */
-  @Deprecated
-  static @NonNull Builder builder(final @NonNull String name, final @NonNull String objective) {
-    return builder().name(name).objective(objective);
-  }
-
-  /**
-   * Creates a score component with a name and objective.
-   *
-   * @param name the score name
-   * @param objective the score objective
-   * @return a score component
-   * @since 4.0.0
-   * @deprecated use {@link Component#score(String, String)}
-   */
-  @Deprecated
-  static @NonNull ScoreComponent of(final @NonNull String name, final @NonNull String objective) {
-    return Component.score(name, objective);
-  }
-
-  /**
-   * Creates a score component with a name, objective, and optional value.
-   *
-   * @param name the score name
-   * @param objective the score objective
-   * @param value the value
-   * @return a score component
-   * @since 4.0.0
-   * @deprecated use {@link Component#score(String, String, String)}
-   */
-  @Deprecated
-  static @NonNull ScoreComponent of(final @NonNull String name, final @NonNull String objective, final @Nullable String value) {
-    return Component.score(name, objective, value);
-  }
-
-  /**
-   * Creates a score component by applying configuration from {@code consumer}.
-   *
-   * @param consumer the builder configurator
-   * @return a score component
-   * @since 4.0.0
-   * @deprecated use {@link Component#score(Consumer)}
-   */
-  @Deprecated
-  static @NonNull ScoreComponent make(final @NonNull Consumer<? super Builder> consumer) {
-    return Component.score(consumer);
-  }
-
-  /**
-   * Creates a score component by applying configuration from {@code consumer}.
-   *
-   * @param name the score name
-   * @param objective the score objective
-   * @param consumer the builder configurator
-   * @return a score component
-   * @since 4.0.0
-   * @deprecated no replacement
-   */
-  @Deprecated
-  static @NonNull ScoreComponent make(final @NonNull String name, final @NonNull String objective, final @NonNull Consumer<? super Builder> consumer) {
-    final Builder builder = Component.score().name(name).objective(objective);
-    return Buildable.configureAndBuild(builder, consumer);
-  }
-
   /**
    * Gets the score name.
    *

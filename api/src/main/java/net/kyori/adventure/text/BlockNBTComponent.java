@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -34,45 +33,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @since 4.0.0
  */
 public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, BlockNBTComponent.Builder>, ScopedComponent<BlockNBTComponent> {
-  /**
-   * Creates a block NBT component builder.
-   *
-   * @return a builder
-   * @since 4.0.0
-   * @deprecated use {@link Component#blockNBT()}
-   */
-  @Deprecated
-  static @NonNull Builder builder() {
-    return Component.blockNBT();
-  }
-
-  /**
-   * Creates a block NBT component with a position.
-   *
-   * @param nbtPath the nbt path
-   * @param pos the block position
-   * @return a block NBT component
-   * @since 4.0.0
-   * @deprecated use {@link Component#blockNBT(String, BlockNBTComponent.Pos)}
-   */
-  @Deprecated
-  static @NonNull BlockNBTComponent of(final @NonNull String nbtPath, final @NonNull Pos pos) {
-    return Component.blockNBT(nbtPath, pos);
-  }
-
-  /**
-   * Creates a block NBT component by applying configuration from {@code consumer}.
-   *
-   * @param consumer the builder configurator
-   * @return a block NBT component
-   * @since 4.0.0
-   * @deprecated use {@link Component#blockNBT(Consumer)}
-   */
-  @Deprecated
-  static @NonNull BlockNBTComponent make(final @NonNull Consumer<? super Builder> consumer) {
-    return Component.blockNBT(consumer);
-  }
-
   /**
    * Gets the block position.
    *

@@ -87,62 +87,6 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
   }
 
   /**
-   * Creates a new text colour.
-   *
-   * @param value the rgb value
-   * @return a new text colour
-   * @since 4.0.0
-   * @deprecated use {@link #color(int)}
-   */
-  @Deprecated
-  static @NonNull TextColor of(final int value) {
-    return color(value);
-  }
-
-  /**
-   * Creates a new text colour.
-   *
-   * @param rgb the rgb value
-   * @return a new text colour
-   * @since 4.0.0
-   * @deprecated use {@link #color(RGBLike)}
-   */
-  @Deprecated
-  static @NonNull TextColor from(final RGBLike rgb) {
-    return color(rgb.red(), rgb.green(), rgb.blue());
-  }
-
-  /**
-   * Create a new text colour with the red, green, and blue components individually.
-   *
-   * @param r red, as a value from 0 to 255
-   * @param g green, as a value from 0 to 255
-   * @param b blue, as a value from 0 to 255
-   * @return a new text colour
-   * @since 4.0.0
-   * @deprecated use {@link #color(int, int, int)}
-   */
-  @Deprecated
-  static @NonNull TextColor of(final @IntRange(from = 0x0, to = 0xff) int r, final @IntRange(from = 0x0, to = 0xff) int g, final @IntRange(from = 0x0, to = 0xff) int b) {
-    return color(r, g, b);
-  }
-
-  /**
-   * Create a new color with the individual components as floats.
-   *
-   * @param r red, from [0, 1]
-   * @param g green, within [0, 1]
-   * @param b blue, within [0, 1]
-   * @return a new text colour
-   * @since 4.0.0
-   * @deprecated use {@link #color(float, float, float)}
-   */
-  @Deprecated
-  static @NonNull TextColor of(final float r, final float g, final float b) {
-    return color(r, g, b);
-  }
-
-  /**
    * Create a new color from a hex string.
    *
    * @param string the hex string

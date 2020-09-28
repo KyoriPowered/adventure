@@ -45,65 +45,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends Buildable.Builder<C>, ComponentBuilderApplicable, ComponentLike {
   /**
-   * Appends a text component to this component.
-   *
-   * @param content the content
-   * @return this builder
-   * @since 4.0.0
-   * @deprecated no replacement
-   */
-  @Deprecated
-  default @NonNull B append(final @NonNull String content) {
-    return this.append(Component.text(content));
-  }
-
-  /**
-   * Appends a text component to this component.
-   *
-   * @param content the content
-   * @param color the color
-   * @return this builder
-   * @since 4.0.0
-   * @deprecated no replacement
-   */
-  @Deprecated
-  default @NonNull B append(final @NonNull String content, final @NonNull TextColor color) {
-    return this.append(Component.text(content, color));
-  }
-
-  /**
-   * Appends a text component to this component.
-   *
-   * @param content the content
-   * @param color the color
-   * @param decorations the decorations
-   * @return this builder
-   * @since 4.0.0
-   * @deprecated no replacement
-   */
-  @Deprecated
-  default @NonNull B append(final @NonNull String content, final @NonNull TextColor color, final TextDecoration@NonNull... decorations) {
-    return this.append(Component.text(content, color, decorations));
-  }
-
-  /**
-   * Appends a text component to this component.
-   *
-   * @param content the content
-   * @param builder the builder
-   * @return this builder
-   * @since 4.0.0
-   * @deprecated no replacement
-   */
-  @Deprecated
-  default @NonNull B append(final @NonNull String content, final @NonNull Consumer<? super TextComponent.Builder> builder) {
-    return this.append(Component.text(text -> {
-      text.content(content);
-      builder.accept(text);
-    }));
-  }
-
-  /**
    * Appends a component to this component.
    *
    * @param component the component to append

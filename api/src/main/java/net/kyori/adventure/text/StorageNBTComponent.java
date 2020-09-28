@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.function.Consumer;
 import net.kyori.adventure.key.Key;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -33,45 +32,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @since 4.0.0
  */
 public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent, StorageNBTComponent.Builder>, ScopedComponent<StorageNBTComponent> {
-  /**
-   * Creates an storage NBT component builder.
-   *
-   * @return a builder
-   * @since 4.0.0
-   * @deprecated use {@link Component#storageNBT()}
-   */
-  @Deprecated
-  static @NonNull Builder builder() {
-    return Component.storageNBT();
-  }
-
-  /**
-   * Creates a storage NBT component with a path and an storage ID.
-   *
-   * @param nbtPath the nbt path
-   * @param storage the identifier of the storage
-   * @return a storage NBT component
-   * @since 4.0.0
-   * @deprecated use {@link Component#storageNBT(String, Key)}
-   */
-  @Deprecated
-  static @NonNull StorageNBTComponent of(final @NonNull String nbtPath, final @NonNull Key storage) {
-    return Component.storageNBT(nbtPath, storage);
-  }
-
-  /**
-   * Creates a storage NBT component by applying configuration from {@code consumer}.
-   *
-   * @param consumer the builder configurator
-   * @return a storage NBT component
-   * @since 4.0.0
-   * @deprecated use {@link Component#storageNBT(Consumer)}
-   */
-  @Deprecated
-  static @NonNull StorageNBTComponent make(final @NonNull Consumer<? super Builder> consumer) {
-    return Component.storageNBT(consumer);
-  }
-
   /**
    * Gets the NBT storage's ID.
    *
