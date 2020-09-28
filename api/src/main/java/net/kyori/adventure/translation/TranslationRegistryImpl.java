@@ -27,6 +27,7 @@ import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
@@ -36,8 +37,24 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import static java.util.Objects.requireNonNull;
 
 final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
+  private static final Supplier<Locale> SYSTEM_DEFAULT_LOCALE;
   static final TranslationRegistry INSTANCE = new TranslationRegistryImpl();
+
+  static {
+    final String property = System.getProperty("net.kyo".concat("ri.adventure.defaultLocale"));
+    if(property == null || property.isEmpty()) {
+      SYSTEM_DEFAULT_LOCALE = () -> Locale.US;
+    } else if(property.equals("system")) {
+      SYSTEM_DEFAULT_LOCALE = Locale::getDefault;
+    } else {
+      final String[] split = property.split("_", 2);
+      final Locale locale = split.length == 1 ? new Locale(property) : new Locale(split[0], split[1]);
+      SYSTEM_DEFAULT_LOCALE = () -> locale;
+    }
+  }
+
   private final Map<String, Translation> translations = new ConcurrentHashMap<>();
+  private Locale defaultLocale = Locale.US; // en_us
 
   TranslationRegistryImpl() {
   }
@@ -60,11 +77,16 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
   }
 
   @Override
+  public void defaultLocale(final @NonNull Locale defaultLocale) {
+    this.defaultLocale = requireNonNull(defaultLocale, "defaultLocale");
+  }
+
+  @Override
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("translations", this.translations));
   }
 
-  static final class Translation implements Examinable {
+  final class Translation implements Examinable {
     private final String key;
     private final Map<Locale, MessageFormat> formats;
 
@@ -80,11 +102,14 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
     }
 
     @Nullable MessageFormat translate(final @NonNull Locale locale) {
-      MessageFormat format = this.formats.get(locale);
+      MessageFormat format = this.formats.get(requireNonNull(locale, "locale"));
       if(format == null) {
-        format = this.formats.get(new Locale(locale.getLanguage())); // without country
+        format = this.formats.get(new Locale(locale.getLanguage())); // try without country
         if(format == null) {
-          format = this.formats.get(Locale.US); // fallback to en_us
+          format = this.formats.get(TranslationRegistryImpl.this.defaultLocale); // try default locale
+          if(format == null) {
+            format = this.formats.get(SYSTEM_DEFAULT_LOCALE.get()); // try system default locale
+          }
         }
       }
       return format;
