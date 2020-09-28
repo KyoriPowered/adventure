@@ -75,7 +75,7 @@ public interface TranslationRegistry extends TranslationSource {
   /**
    * Gets a message format from a key and locale.
    *
-   * <p>If a translation for {@code locale} is not found, we will then try {@code locale} without a country code, and then finally fallback to {@link Locale#US en_us}.</p>
+   * <p>If a translation for {@code locale} is not found, we will then try {@code locale} without a country code, and then finally fallback to a default locale.</p>
    *
    * @param locale a locale
    * @param key a translation key
@@ -84,6 +84,14 @@ public interface TranslationRegistry extends TranslationSource {
    */
   @Override
   @Nullable MessageFormat translate(final @NonNull String key, final @NonNull Locale locale);
+
+  /**
+   * Sets the default locale used by this registry.
+   *
+   * @param locale the locale to use a default
+   * @since 4.0.0
+   */
+  void defaultLocale(final @NonNull Locale locale);
 
   /**
    * Registers a translation.
