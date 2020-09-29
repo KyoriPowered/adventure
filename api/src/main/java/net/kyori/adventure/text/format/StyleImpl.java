@@ -485,7 +485,8 @@ final class StyleImpl implements Style, Examinable {
         this.value = value;
       }
 
-      @Override boolean mergeColor(final BuilderImpl target, final @Nullable TextColor color) {
+      @Override
+      boolean mergeColor(final BuilderImpl target, final @Nullable TextColor color) {
         return this.value;
       }
 

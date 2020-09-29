@@ -217,13 +217,11 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
   interface Pos {
     /**
      * Attempt to parse a position from the input string.
-     * 
-     * <p>
-     *   The input string must refer to a local position (with 3 {@code ^}-prefixed digits),
-     *   or a world position (with 3 digits that are global if unprefixed, or relative to the 
-     *   current position if {@code ~}-prefixed).
-     * </p>
-     * 
+     *
+     * <p>The input string must refer to a local position (with 3 {@code ^}-prefixed digits),
+     * or a world position (with 3 digits that are global if unprefixed, or relative to the
+     * current position if {@code ~}-prefixed).</p>
+     *
      * @param input input
      * @return a new pos
      * @throws IllegalArgumentException if the position was in an invalid format
@@ -252,8 +250,8 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
     }
 
     /**
-     * Get a parseable string representation of this position.
-     * 
+     * Gets a parseable string representation of this position.
+     *
      * @return a string representation
      * @see #fromString(String)
      * @since 4.0.0

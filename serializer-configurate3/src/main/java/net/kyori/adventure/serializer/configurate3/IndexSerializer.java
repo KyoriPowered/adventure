@@ -33,12 +33,12 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 @SuppressWarnings("UnstableApiUsage") // TypeToken
 final class IndexSerializer<T> extends ScalarSerializer<T> {
   private final Index<String, T> idx;
-  
+
   IndexSerializer(final @NonNull TypeToken<T> type, final @NonNull Index<String, T> idx) {
     super(type);
     this.idx = idx;
   }
-  
+
   @Override
   public @NonNull T deserialize(final @NonNull TypeToken<?> type, final @NonNull Object obj) throws ObjectMappingException {
     final T value = this.idx.value(obj.toString());

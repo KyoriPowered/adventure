@@ -124,7 +124,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
       } else {
         final ConfigurationNode with = children.get(TRANSLATE_WITH);
         if(!with.isList()) {
-          throw new ObjectMappingException("Expected "+ TRANSLATE_WITH + " to be a list");
+          throw new ObjectMappingException("Expected " + TRANSLATE_WITH + " to be a list");
         }
         final List<Component> args = with.getValue(LIST_TYPE);
         component = Component.translatable().key(key).args(args);

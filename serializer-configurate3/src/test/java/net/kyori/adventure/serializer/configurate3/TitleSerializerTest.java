@@ -30,8 +30,7 @@ import net.kyori.adventure.title.Title;
 import ninja.leaping.configurate.ConfigurationNode;
 import org.junit.jupiter.api.Test;
 
-public class TitleSerializerTest implements ConfigurateTestBase {
-
+class TitleSerializerTest implements ConfigurateTestBase {
   @Test
   void testTitleNoTimes() {
     final ConfigurationNode node = this.node(n -> {

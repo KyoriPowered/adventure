@@ -593,7 +593,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @deprecated use {@link Component#text(long, TextColor, TextDecoration...)}
    */
   @Deprecated
-  static @NonNull TextComponent of(final long value, final @Nullable TextColor color, final TextDecoration @NonNull... decorations) {
+  static @NonNull TextComponent of(final long value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
     return Component.text(value, color, decorations);
   }
 

@@ -46,7 +46,7 @@ final class Tokens {
   static final char TYPE_LONG = 'l';
   static final char TYPE_FLOAT = 'f';
   static final char TYPE_DOUBLE = 'd';
-  
+
   static final String LITERAL_TRUE = "true";
   static final String LITERAL_FALSE = "false";
 

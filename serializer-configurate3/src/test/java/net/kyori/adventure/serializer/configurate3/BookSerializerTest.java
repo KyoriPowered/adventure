@@ -34,10 +34,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class BookSerializerTest implements ConfigurateTestBase {
+class BookSerializerTest implements ConfigurateTestBase {
   @Test
   void testBook() throws ObjectMappingException {
-    final ConfigurationNode node = node(n -> {
+    final ConfigurationNode node = this.node(n -> {
       n.getNode(BookTypeSerializer.TITLE, ComponentTypeSerializer.TEXT).setValue("My book");
       n.getNode(BookTypeSerializer.AUTHOR).act(author -> {
         author.getNode(StyleSerializer.FONT).setValue("minecraft:uniform");
@@ -64,7 +64,7 @@ public class BookSerializerTest implements ConfigurateTestBase {
 
   @Test
   void testNoTitleFails() {
-    final ConfigurationNode node = node(n -> {
+    final ConfigurationNode node = this.node(n -> {
       n.getNode(BookTypeSerializer.AUTHOR).act(author -> {
         author.getNode(StyleSerializer.FONT).setValue("minecraft:uniform");
         author.getNode(ComponentTypeSerializer.TEXT).setValue("myself");
@@ -77,7 +77,7 @@ public class BookSerializerTest implements ConfigurateTestBase {
 
   @Test
   void testNoAuthorFails() {
-    final ConfigurationNode node = node(n -> {
+    final ConfigurationNode node = this.node(n -> {
       n.getNode(BookTypeSerializer.TITLE, ComponentTypeSerializer.TEXT).setValue("My book");
       n.getNode(BookTypeSerializer.PAGES).appendListNode().getNode(ComponentTypeSerializer.TEXT).setValue("Page 1");
     });

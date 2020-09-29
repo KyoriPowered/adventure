@@ -33,10 +33,10 @@ import net.kyori.adventure.text.format.Style;
 import ninja.leaping.configurate.ConfigurationNode;
 import org.junit.jupiter.api.Test;
 
-public class HoverEventSerializersTest implements ConfigurateTestBase {
+class HoverEventSerializersTest implements ConfigurateTestBase {
   @Test
   void testShowEntity() {
-    final ConfigurationNode node = node(n -> {
+    final ConfigurationNode node = this.node(n -> {
       n.getNode(ComponentTypeSerializer.TEXT).setValue("kashike");
       n.getNode(StyleSerializer.HOVER_EVENT).act(event -> {
         event.getNode(StyleSerializer.HOVER_EVENT_ACTION).setValue("show_entity");
@@ -55,7 +55,7 @@ public class HoverEventSerializersTest implements ConfigurateTestBase {
 
   @Test
   void testShowEntityCustomName() {
-    final ConfigurationNode node = node(n -> {
+    final ConfigurationNode node = this.node(n -> {
       n.getNode(ComponentTypeSerializer.TEXT).setValue("kashike");
       n.getNode(StyleSerializer.HOVER_EVENT).act(event -> {
         event.getNode(StyleSerializer.HOVER_EVENT_ACTION).setValue("show_entity");
@@ -75,7 +75,7 @@ public class HoverEventSerializersTest implements ConfigurateTestBase {
 
   @Test
   void testShowItem() {
-    final ConfigurationNode node = node(n -> {
+    final ConfigurationNode node = this.node(n -> {
       n.getNode(ComponentTypeSerializer.TEXT).setValue("[");
       n.getNode(StyleSerializer.COLOR).setValue("aqua");
       n.getNode(ComponentTypeSerializer.EXTRA).act(extra -> {
@@ -103,7 +103,7 @@ public class HoverEventSerializersTest implements ConfigurateTestBase {
 
   @Test
   void testShowItemNoTag() {
-    final ConfigurationNode node = node(n -> {
+    final ConfigurationNode node = this.node(n -> {
       n.getNode(ComponentTypeSerializer.TEXT).setValue("[");
       n.getNode(StyleSerializer.COLOR).setValue("aqua");
       n.getNode(ComponentTypeSerializer.EXTRA).act(extra -> {
@@ -130,7 +130,7 @@ public class HoverEventSerializersTest implements ConfigurateTestBase {
 
   @Test
   void testShowText() {
-    final ConfigurationNode node = node(n -> {
+    final ConfigurationNode node = this.node(n -> {
       n.getNode(StyleSerializer.HOVER_EVENT).act(event -> {
         event.getNode(StyleSerializer.HOVER_EVENT_ACTION).setValue("show_text");
         event.getNode(StyleSerializer.HOVER_EVENT_CONTENTS, ComponentTypeSerializer.TEXT).setValue("i'm hovering");

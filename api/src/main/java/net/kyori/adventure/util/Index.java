@@ -77,7 +77,7 @@ public final class Index<K, V> {
    * @since 4.0.0
    */
   @SafeVarargs
-  public static <K, V extends Enum<V>> @NonNull Index<K, V> create(final Class<V> type, final @NonNull Function<? super V, ? extends K> keyFunction, final @NonNull V @NonNull... values) {
+  public static <K, V extends Enum<V>> @NonNull Index<K, V> create(final Class<V> type, final @NonNull Function<? super V, ? extends K> keyFunction, final @NonNull V@NonNull... values) {
     return create(values, length -> new EnumMap<>(type), keyFunction);
   }
 
@@ -93,7 +93,7 @@ public final class Index<K, V> {
    */
   @SafeVarargs
   @SuppressWarnings("RedundantTypeArguments") // explicit type parameters needed to fix build on JDK 1.8
-  public static <K, V> @NonNull Index<K, V> create(final @NonNull Function<? super V, ? extends K> keyFunction, final @NonNull V @NonNull... values) {
+  public static <K, V> @NonNull Index<K, V> create(final @NonNull Function<? super V, ? extends K> keyFunction, final @NonNull V@NonNull... values) {
     return create(values, HashMap<V, K>::new, keyFunction);
   }
 

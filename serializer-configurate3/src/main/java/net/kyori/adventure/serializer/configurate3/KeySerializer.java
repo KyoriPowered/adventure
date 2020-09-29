@@ -35,7 +35,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 @SuppressWarnings("UnstableApiUsage") // TypeToken
 final class KeySerializer extends ScalarSerializer<Key> {
   static final KeySerializer INSTANCE = new KeySerializer();
-  
+
   private KeySerializer() {
     super(Key.class);
   }

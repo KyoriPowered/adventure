@@ -24,6 +24,7 @@
 package net.kyori.adventure.title;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.examination.Examinable;
@@ -65,14 +66,14 @@ final class TitleImpl implements Examinable, Title {
     final TitleImpl that = (TitleImpl) other;
     return this.title.equals(that.title)
       && this.subtitle.equals(that.subtitle)
-      && this.times.equals(that.times);
+      && Objects.equals(this.times, that.times);
   }
 
   @Override
   public int hashCode() {
     int result = this.title.hashCode();
     result = (31 * result) + this.subtitle.hashCode();
-    result = (31 * result) + this.times.hashCode();
+    result = (31 * result) + Objects.hashCode(this.times);
     return result;
   }
 

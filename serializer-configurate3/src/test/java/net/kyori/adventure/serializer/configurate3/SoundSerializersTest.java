@@ -34,11 +34,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class SoundSerializersTest implements ConfigurateTestBase {
-
+class SoundSerializersTest implements ConfigurateTestBase {
   @Test
   void testSound() {
-    final ConfigurationNode sound = node(n -> {
+    final ConfigurationNode sound = this.node(n -> {
       n.getNode(SoundSerializer.NAME).setValue("minecraft:music_disc.cat");
       n.getNode(SoundSerializer.SOURCE).setValue("ambient");
       n.getNode(SoundSerializer.VOLUME).setValue(0.8f);
@@ -50,7 +49,7 @@ public class SoundSerializersTest implements ConfigurateTestBase {
 
   @Test
   void testSoundNoVolume() throws ObjectMappingException {
-    final ConfigurationNode sound = node(n -> {
+    final ConfigurationNode sound = this.node(n -> {
       n.getNode(SoundSerializer.NAME).setValue("minecraft:music_disc.cat");
       n.getNode(SoundSerializer.SOURCE).setValue("ambient");
       n.getNode(SoundSerializer.PITCH).setValue(2.0f);
@@ -61,7 +60,7 @@ public class SoundSerializersTest implements ConfigurateTestBase {
 
   @Test
   void testSoundNoPitch() throws ObjectMappingException {
-    final ConfigurationNode sound = node(n -> {
+    final ConfigurationNode sound = this.node(n -> {
       n.getNode(SoundSerializer.NAME).setValue("minecraft:music_disc.cat");
       n.getNode(SoundSerializer.SOURCE).setValue("ambient");
       n.getNode(SoundSerializer.VOLUME).setValue(0.8f);
@@ -72,17 +71,17 @@ public class SoundSerializersTest implements ConfigurateTestBase {
 
   @Test
   void testNoNameThrows() {
-    assertThrows(ObjectMappingException.class, () -> node(n -> n.getNode(SoundSerializer.SOURCE).setValue("music")).getValue(SoundSerializer.TYPE));
+    assertThrows(ObjectMappingException.class, () -> this.node(n -> n.getNode(SoundSerializer.SOURCE).setValue("music")).getValue(SoundSerializer.TYPE));
   }
 
   @Test
   void testNoSourceThrows() {
-    assertThrows(ObjectMappingException.class, () -> node(n -> n.getNode(SoundSerializer.NAME).setValue("music_disc.13")).getValue(SoundSerializer.TYPE));
+    assertThrows(ObjectMappingException.class, () -> this.node(n -> n.getNode(SoundSerializer.NAME).setValue("music_disc.13")).getValue(SoundSerializer.TYPE));
   }
 
   @Test
   void testSoundStopAll() {
-    final ConfigurationNode node = node(ImmutableMap.of());
+    final ConfigurationNode node = this.node(ImmutableMap.of());
     final SoundStop stop = SoundStop.all();
 
     this.assertRoundtrippable(SoundStopSerializer.TYPE, stop, node);
@@ -90,7 +89,7 @@ public class SoundSerializersTest implements ConfigurateTestBase {
 
   @Test
   void testSoundStopName() {
-    final ConfigurationNode node = node(n -> {
+    final ConfigurationNode node = this.node(n -> {
       n.getNode(SoundStopSerializer.SOUND).setValue("minecraft:music_disc.pigstep"); // jk who would want to stop pigstep
     });
     final SoundStop stop = SoundStop.named(Key.key("minecraft:music_disc.pigstep"));
@@ -100,7 +99,7 @@ public class SoundSerializersTest implements ConfigurateTestBase {
 
   @Test
   void testSoundStopSource() {
-    final ConfigurationNode node = node(n -> {
+    final ConfigurationNode node = this.node(n -> {
       n.getNode(SoundStopSerializer.SOURCE).setValue("hostile");
     });
     final SoundStop stop = SoundStop.source(Sound.Source.HOSTILE);
@@ -110,7 +109,7 @@ public class SoundSerializersTest implements ConfigurateTestBase {
 
   @Test
   void testSoundStopNameAndSource() {
-    final ConfigurationNode node = node(n -> {
+    final ConfigurationNode node = this.node(n -> {
       n.getNode(SoundStopSerializer.SOUND).setValue("minecraft:entity.cat.hiss");
       n.getNode(SoundStopSerializer.SOURCE).setValue("ambient");
     });

@@ -31,10 +31,9 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class WeirdAssertions {
-  
   private WeirdAssertions() {
   }
-  
+
   public static <T> void doWith(final T value, final Consumer<T> consumer) {
     consumer.accept(value);
   }

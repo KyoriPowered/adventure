@@ -107,7 +107,7 @@ class BlockNBTComponentTest extends AbstractNBTComponentTest<BlockNBTComponent, 
       BlockNBTComponent.Pos.fromString("~7 ~83 ~900")
     );
   }
-  
+
   @Test
   void testWorldPosParsing() {
     assertEquals(

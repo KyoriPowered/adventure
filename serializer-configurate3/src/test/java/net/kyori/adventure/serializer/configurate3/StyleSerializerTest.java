@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class StyleSerializerTest implements ConfigurateTestBase {
+class StyleSerializerTest implements ConfigurateTestBase {
   @Test
   void testSerializeFont() {
     final ConfigurationNode node = this.node(n -> {

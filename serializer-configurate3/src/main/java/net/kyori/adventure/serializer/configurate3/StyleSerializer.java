@@ -146,11 +146,12 @@ final class StyleSerializer implements TypeSerializer<Style> {
     value.getNode(INSERTION).setValue(obj.insertion());
 
     final ConfigurationNode clickNode = value.getNode(CLICK_EVENT);
-    if(obj.clickEvent() == null) {
+    final ClickEvent clickEvent = obj.clickEvent();
+    if(clickEvent == null) {
       clickNode.setValue(null);
     } else {
-      clickNode.getNode(CLICK_EVENT_ACTION).setValue(CLICK_EVENT_ACTION_TYPE, obj.clickEvent().action());
-      clickNode.getNode(CLICK_EVENT_VALUE).setValue(obj.clickEvent().value());
+      clickNode.getNode(CLICK_EVENT_ACTION).setValue(CLICK_EVENT_ACTION_TYPE, clickEvent.action());
+      clickNode.getNode(CLICK_EVENT_VALUE).setValue(clickEvent.value());
     }
 
     final ConfigurationNode hoverNode = value.getNode(HOVER_EVENT);

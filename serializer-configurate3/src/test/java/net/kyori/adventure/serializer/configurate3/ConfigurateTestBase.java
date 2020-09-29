@@ -35,7 +35,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public interface ConfigurateTestBase {
-
   ConfigurationOptions OPTIONS = ConfigurationOptions.defaults()
     .withSerializers(s -> ConfigurateComponentSerializer.builder().build().addSerializersTo(s))
     .withNativeTypes(ImmutableSet.of(String.class, Integer.class, Boolean.class, Double.class, Float.class));
@@ -65,7 +64,7 @@ public interface ConfigurateTestBase {
     try {
       assertEquals(holder, this.node().setValue(type, value));
       assertEquals(value, holder.getValue(type));
-    } catch(ObjectMappingException ex) {
+    } catch(final ObjectMappingException ex) {
       fail(ex);
     }
   }
