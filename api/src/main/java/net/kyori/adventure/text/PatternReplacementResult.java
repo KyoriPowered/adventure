@@ -23,12 +23,12 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.function.UnaryOperator;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import net.kyori.adventure.util.IntFunction2;
 
 /**
- * A result for {@link Component#replaceText(Pattern, UnaryOperator, IntFunction2) pattern-based replacements}.
+ * A result for {@link Component#replaceText(Pattern, Function, IntFunction2) pattern-based replacements}.
  *
  * @since 4.0.0
  */

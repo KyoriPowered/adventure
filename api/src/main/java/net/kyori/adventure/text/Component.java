@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 import net.kyori.adventure.key.Key;
@@ -1475,7 +1476,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @return a modified copy of this component
    * @since 4.0.0
    */
-  default @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull UnaryOperator<TextComponent.Builder> replacement) {
+  default @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement) {
     return this.replaceText(pattern, replacement, (index, replaced) -> PatternReplacementResult.REPLACE);
   }
 
@@ -1487,7 +1488,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @return a modified copy of this component
    * @since 4.0.0
    */
-  default @NonNull Component replaceFirstText(final @NonNull Pattern pattern, final @NonNull UnaryOperator<TextComponent.Builder> replacement) {
+  default @NonNull Component replaceFirstText(final @NonNull Pattern pattern, final @NonNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement) {
     return this.replaceText(pattern, replacement, 1);
   }
 
@@ -1500,7 +1501,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @return a modified copy of this component
    * @since 4.0.0
    */
-  default @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull UnaryOperator<TextComponent.Builder> replacement, final int numberOfReplacements) {
+  default @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement, final int numberOfReplacements) {
     return this.replaceText(pattern, replacement, (index, replaced) -> replaced < numberOfReplacements ? PatternReplacementResult.REPLACE : PatternReplacementResult.STOP);
   }
 
@@ -1515,7 +1516,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @return a modified copy of this component
    * @since 4.0.0
    */
-  @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull UnaryOperator<TextComponent.Builder> replacement, final @NonNull IntFunction2<PatternReplacementResult> fn);
+  @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement, final @NonNull IntFunction2<PatternReplacementResult> fn);
 
   @Override
   default void componentBuilderApply(final @NonNull ComponentBuilder<?, ?> component) {
