@@ -51,19 +51,7 @@ public interface TranslationRegistry extends TranslationSource {
   Pattern SINGLE_QUOTE_PATTERN = Pattern.compile("'");
 
   /**
-   * Gets the shared, global translation registry.
-   *
-   * @return the translation registry
-   * @since 4.0.0
-   */
-  static @NonNull TranslationRegistry get() {
-    return TranslationRegistryImpl.INSTANCE;
-  }
-
-  /**
    * Creates a new standalone translation registry.
-   *
-   * <p>You most likely want {@link #get() the global registry} instead.</p>
    *
    * @return a translation registry
    * @since 4.0.0

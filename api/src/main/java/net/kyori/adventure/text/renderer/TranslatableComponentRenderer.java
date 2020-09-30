@@ -44,36 +44,36 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.translation.TranslationRegistry;
+import net.kyori.adventure.translation.TranslationSource;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A component renderer that does server-side translation rendering.
  *
  * @param <C> the context type, usually {@link java.util.Locale}.
- * @see #get()
  * @since 4.0.0
  */
 public abstract class TranslatableComponentRenderer<C> extends AbstractComponentRenderer<C> {
-  static final TranslatableComponentRenderer<Locale> INSTANCE = new TranslatableComponentRenderer<Locale>() {
-    @Override
-    public MessageFormat translate(final @NonNull String key, final @NonNull Locale locale) {
-      return TranslationRegistry.get().translate(key, locale);
-    }
-  };
-
   private static final Set<Style.Merge> MERGES = Style.Merge.of(Style.Merge.COLOR, Style.Merge.DECORATIONS, Style.Merge.INSERTION, Style.Merge.FONT);
 
   /**
-   * Gets the default translatable component renderer.
+   * Creates a {@link TranslatableComponentRenderer} using the {@link TranslationSource} to translate.
    *
-   * @return a translatable component renderer
-   * @see TranslationRegistry
+   * @param source the translation source
+   * @return the renderer
    * @since 4.0.0
    */
-  public static @NonNull TranslatableComponentRenderer<Locale> get() {
-    return INSTANCE;
+  public static @NonNull TranslatableComponentRenderer<Locale> usingTranslationSource(final @NonNull TranslationSource source) {
+    requireNonNull(source, "source");
+    return new TranslatableComponentRenderer<Locale>() {
+      @Override
+      protected @Nullable MessageFormat translate(final @NonNull String key, final @NonNull Locale context) {
+        return source.translate(key, context);
+      }
+    };
   }
 
   /**
