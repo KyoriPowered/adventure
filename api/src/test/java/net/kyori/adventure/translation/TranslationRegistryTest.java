@@ -39,8 +39,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TranslationRegistryTest {
-  static final TranslationRegistry REGISTRY = TranslationRegistry.get();
-  static final TranslatableComponentRenderer<Locale> RENDERER = TranslatableComponentRenderer.get();
+  static final TranslationRegistry REGISTRY = TranslationRegistry.create();
+  static final TranslatableComponentRenderer<Locale> RENDERER = TranslatableComponentRenderer.usingTranslationSource(REGISTRY);
 
   @BeforeAll
   static void testRegister() {

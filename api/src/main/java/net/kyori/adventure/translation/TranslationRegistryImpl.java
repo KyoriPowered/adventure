@@ -36,7 +36,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import static java.util.Objects.requireNonNull;
 
 final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
-  static final TranslationRegistry INSTANCE = new TranslationRegistryImpl();
   private final Map<String, Translation> translations = new ConcurrentHashMap<>();
 
   TranslationRegistryImpl() {
