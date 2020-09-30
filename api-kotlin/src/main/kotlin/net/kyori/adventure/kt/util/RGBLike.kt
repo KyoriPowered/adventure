@@ -29,7 +29,10 @@ import net.kyori.adventure.util.RGBLike
  * The [RGBLike.red] component.
  *
  * Allows for `(r, g, b)` value decomposition.
+ *
+ * @return the [RGBLike.red] component
  * @sample [net.kyori.adventure.example.kt.darken]
+ * @since 4.0.0
  */
 public operator fun RGBLike.component1(): Int = this.red()
 
@@ -37,7 +40,10 @@ public operator fun RGBLike.component1(): Int = this.red()
  * The [RGBLike.green] component.
  *
  * Allows for `(r, g, b)` value decomposition.
+ *
+ * @return the [RGBLike.green] component
  * @sample [net.kyori.adventure.example.kt.darken]
+ * @since 4.0.0
  */
 public operator fun RGBLike.component2(): Int = this.green()
 
@@ -45,6 +51,9 @@ public operator fun RGBLike.component2(): Int = this.green()
  * The [RGBLike.blue] component.
  *
  * Allows for `(r, g, b)` value decomposition.
+ *
+ * @return the [RGBLike.blue] component
  * @sample [net.kyori.adventure.example.kt.darken]
+ * @since 4.0.0
  */
 public operator fun RGBLike.component3(): Int = this.blue()

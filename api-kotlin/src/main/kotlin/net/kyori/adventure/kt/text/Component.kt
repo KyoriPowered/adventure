@@ -34,7 +34,6 @@ import net.kyori.adventure.text.ScoreComponent
 import net.kyori.adventure.text.SelectorComponent
 import net.kyori.adventure.text.StorageNBTComponent
 import net.kyori.adventure.text.TextComponent
-import net.kyori.adventure.text.TextComponent.empty
 import net.kyori.adventure.text.TranslatableComponent
 import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.StyleBuilderApplicable
@@ -47,11 +46,16 @@ internal val COMMA_SPACE = TextComponent.of(", ")
 
 /**
  * Add [that] as a child component.
+ *
+ * @return a component
+ * @since 4.0.0
  */
 public operator fun Component.plus(that: ComponentLike): Component = this.append(that)
 
 /**
  * Append [that] as a child of the component being built.
+ *
+ * @since 4.0.0
  */
 public operator fun ComponentBuilder<*, *>.plusAssign(that: ComponentLike) {
   this.append(that)
@@ -59,13 +63,17 @@ public operator fun ComponentBuilder<*, *>.plusAssign(that: ComponentLike) {
 
 /**
  * Append all components in [that] as children of the component being built.
+ *
+ * @since 4.0.0
  */
 public operator fun ComponentBuilder<*, *>.plusAssign(that: Iterable<ComponentLike>) {
   this.append(that)
 }
 
 /**
- * Convert this object into a component
+ * Convert this object into a component.
+ *
+ * @since 4.0.0
  */
 public operator fun ComponentLike.unaryPlus(): Component = asComponent()
 
@@ -74,15 +82,17 @@ public operator fun ComponentLike.unaryPlus(): Component = asComponent()
  *
  * This method should match the specification of [kotlin.collections.joinTo], but
  * acting on [Component]s rather than on Strings.
+ *
+ * @since 4.0.0
  */
-public fun <T: ComponentLike, B: ComponentBuilder<*, B>> Iterable<T>.joinTo(
-        builder: B,
-        separator: Component = COMMA_SPACE,
-        prefix: Component = empty(),
-        suffix: Component = empty(),
-        limit: Int = -1,
-        truncated: Component = TRUNCATE_MARK,
-        transform: (Component) -> Component = { it }
+public fun <T : ComponentLike, B : ComponentBuilder<*, B>> Iterable<T>.joinTo(
+  builder: B,
+  separator: Component = COMMA_SPACE,
+  prefix: Component = Component.empty(),
+  suffix: Component = Component.empty(),
+  limit: Int = -1,
+  truncated: Component = TRUNCATE_MARK,
+  transform: (Component) -> Component = { it }
 ): B {
   val iter = iterator()
   builder.append(prefix)
@@ -110,13 +120,13 @@ public fun <T: ComponentLike, B: ComponentBuilder<*, B>> Iterable<T>.joinTo(
  *
  * @see [joinTo] for parameter descriptions
  */
-public fun <T: ComponentLike> Iterable<T>.join(
-        separator: Component = COMMA_SPACE,
-        prefix: Component = empty(),
-        suffix: Component = empty(),
-        limit: Int = -1,
-        truncated: Component = TRUNCATE_MARK,
-        transform: (Component) -> Component = { it }
+public fun <T : ComponentLike> Iterable<T>.join(
+  separator: Component = COMMA_SPACE,
+  prefix: Component = Component.empty(),
+  suffix: Component = Component.empty(),
+  limit: Int = -1,
+  truncated: Component = TRUNCATE_MARK,
+  transform: (Component) -> Component = { it }
 ): Component = joinTo(TextComponent.builder(), separator, prefix, suffix, limit, truncated, transform).build()
 
 // Factory methods //
@@ -126,20 +136,20 @@ public fun <T: ComponentLike> Iterable<T>.join(
  *
  * @sample [net.kyori.adventure.example.kt.componentDsl]
  */
-public fun text(contents: String, vararg styles: StyleBuilderApplicable): TextComponent = TextComponent.of(contents, Style.of(*styles))
+public fun text(contents: String, vararg styles: StyleBuilderApplicable): TextComponent = Component.text(contents, Style.style(*styles))
 
 /**
  * Create a new translatable component from [key]
  *
  * @sample [net.kyori.adventure.example.kt.componentDsl]
  */
-public fun translatable(key: String, vararg args: ComponentLike): TranslatableComponent = TranslatableComponent.of(key, *args)
+public fun translatable(key: String, vararg args: ComponentLike): TranslatableComponent = Component.translatable(key, *args)
 
 /** Create a new keybind component using the key sequence identified by [key] */
-public fun keybind(key: String, vararg styles: StyleBuilderApplicable): KeybindComponent = KeybindComponent.of(key, Style.of(*styles))
+public fun keybind(key: String, vararg styles: StyleBuilderApplicable): KeybindComponent = Component.keybind(key, Style.style(*styles))
 
 /** Create a new selector component, using [selector] as a selector. */
-public fun selector(selector: String, vararg styles: StyleBuilderApplicable): SelectorComponent = SelectorComponent.builder(selector).style(Style.of(*styles)).build()
+public fun selector(selector: String, vararg styles: StyleBuilderApplicable): SelectorComponent = Component.selector().pattern(selector).style(Style.style(*styles)).build()
 
 /** Create a new score component, with the [score] in [objective] */
 public fun score(score: String, objective: String, vararg styles: StyleBuilderApplicable): ScoreComponent = ScoreComponent.builder(score, objective).style(Style.of(*styles)).build()

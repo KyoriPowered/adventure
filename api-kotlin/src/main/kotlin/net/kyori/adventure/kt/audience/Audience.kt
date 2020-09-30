@@ -29,10 +29,12 @@ import net.kyori.adventure.inventory.Book
 /**
  * Create an [Audience] sending to every member of the receiver.
  *
+ * @return an audience
  * @sample [net.kyori.adventure.example.kt.audiences]
+ * @since 4.0.0
  */
 public fun Iterable<Audience>.asAudience(): Audience {
-  return Audience.of(this)
+  return Audience.audience(this)
 }
 
 /**
@@ -40,10 +42,12 @@ public fun Iterable<Audience>.asAudience(): Audience {
  *
  * The sequence will be iterated for every audience operation.
  *
+ * @return an audience
  * @sample [net.kyori.adventure.example.kt.audiences]
+ * @since 4.0.0
  */
 public fun Sequence<Audience>.asAudience(): Audience {
-  return Audience.of(Iterable { this.iterator() })
+  return Audience.audience(Iterable { this.iterator() })
 }
 
 /**
@@ -52,15 +56,19 @@ public fun Sequence<Audience>.asAudience(): Audience {
  * The sequence will be eagerly evaluated at call time. This option may be
  * preferred over [asAudience] when working with a [Sequence] than can only
  * be iterated once.
+ *
+ * @return an audience
+ * @since 4.0.0
  */
 public fun Sequence<Audience>.toEagerAudience(): Audience {
-  return Audience.of(toList())
+  return Audience.audience(toList())
 }
 
 /**
  * Create and open a [Book].
  *
  * @sample [net.kyori.adventure.example.kt.openBookExample]
+ * @since 4.0.0
  */
 public fun Audience.openBook(maker: Book.Builder.() -> Unit) {
   this.openBook(Book.builder().also(maker).build())
