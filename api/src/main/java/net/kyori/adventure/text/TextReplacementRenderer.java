@@ -69,17 +69,17 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
         if(matcher.start() == 0) {
           // if we're a full match, modify the component directly
           if(matcher.end() == content.length()) {
-            final TextComponent.Builder replacement = state.replacement.apply(matcher, Component.text().content(matcher.group())
+            final ComponentLike replacement = state.replacement.apply(matcher, Component.text().content(matcher.group())
               .style(component.style()));
 
-            modified = replacement == null ? Component.empty() : replacement.build();
+            modified = replacement == null ? Component.empty() : replacement.asComponent();
           } else {
             // otherwise, work on a child of the root node
             modified = Component.text("", component.style());
-            final TextComponent.Builder child = state.replacement.apply(matcher, Component.text().content(matcher.group()));
+            final ComponentLike child = state.replacement.apply(matcher, Component.text().content(matcher.group()));
             if(child != null) {
               children = listOrNew(children, component.children().size() + 1);
-              children.add(child.build());
+              children.add(child.asComponent());
             }
           }
         } else {
@@ -90,9 +90,9 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
           } else if(replacedUntil < matcher.start()) {
             children.add(Component.text(content.substring(replacedUntil, matcher.start())));
           }
-          final TextComponent.Builder builder = state.replacement.apply(matcher, Component.text().content(matcher.group()));
+          final ComponentLike builder = state.replacement.apply(matcher, Component.text().content(matcher.group()));
           if(builder != null) {
-            children.add(builder.build());
+            children.add(builder.asComponent());
           }
         }
         state.replaceCount++;
@@ -175,13 +175,13 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
 
   static final class State {
     final Pattern pattern;
-    final BiFunction<MatchResult, TextComponent.Builder, TextComponent.@Nullable Builder> replacement;
+    final BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement;
     final IntFunction2<PatternReplacementResult> continuer;
     boolean running = true;
     int matchCount = 0;
     int replaceCount = 0;
 
-    State(final @NonNull Pattern pattern, final @NonNull BiFunction<MatchResult, TextComponent.Builder, TextComponent.@Nullable Builder> replacement, final @NonNull IntFunction2<PatternReplacementResult> continuer) {
+    State(final @NonNull Pattern pattern, final @NonNull BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement, final @NonNull IntFunction2<PatternReplacementResult> continuer) {
       this.pattern = pattern;
       this.replacement = replacement;
       this.continuer = continuer;
