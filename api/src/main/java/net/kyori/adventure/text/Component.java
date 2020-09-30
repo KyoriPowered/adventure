@@ -1469,6 +1469,18 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
   }
 
   /**
+   * Finds and replaces text within any {@link Component}s using a string literal.
+   *
+   * @param search a string literal
+   * @param replacement a {@link ComponentLike} to replace each match
+   * @return a modified copy of this component
+   * @since 4.0.0
+   */
+  default @NonNull Component replaceText(final @NonNull String search, final @Nullable ComponentLike replacement) {
+    return this.replaceText(Pattern.compile(search, Pattern.LITERAL), old -> replacement);
+  }
+
+  /**
    * Finds and replaces text within any {@link TextComponent}s using a regex pattern.
    *
    * @param pattern a regex pattern
@@ -1478,6 +1490,18 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    */
   default @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement) {
     return this.replaceText(pattern, replacement, (index, replaced) -> PatternReplacementResult.REPLACE);
+  }
+
+  /**
+   * Finds and replaces the first occurrence of text within any {@link Component}s using a string literal.
+   *
+   * @param search a string literal
+   * @param replacement a {@link ComponentLike} to replace the first match
+   * @return a modified copy of this component
+   * @since 4.0.0
+   */
+  default @NonNull Component replaceFirstText(final @NonNull String search, final @Nullable ComponentLike replacement) {
+    return this.replaceText(search, replacement, 1);
   }
 
   /**
@@ -1493,6 +1517,19 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
   }
 
   /**
+   * Finds and replaces {@code n} instances of text within any {@link TextComponent}s using a string literal.
+   *
+   * @param search a string literal
+   * @param replacement a {@link ComponentLike} to replace the first match
+   * @param numberOfReplacements the amount of matches that should be replaced
+   * @return a modified copy of this component
+   * @since 4.0.0
+   */
+  default @NonNull Component replaceText(final @NonNull String search, final @Nullable ComponentLike replacement, final int numberOfReplacements) {
+    return this.replaceText(search, replacement, (index, replaced) -> replaced < numberOfReplacements ? PatternReplacementResult.REPLACE : PatternReplacementResult.STOP);
+  }
+
+  /**
    * Finds and replaces {@code n} instances of text within any {@link TextComponent}s using a regex pattern.
    *
    * @param pattern a regex pattern
@@ -1503,6 +1540,21 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    */
   default @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement, final int numberOfReplacements) {
     return this.replaceText(pattern, replacement, (index, replaced) -> replaced < numberOfReplacements ? PatternReplacementResult.REPLACE : PatternReplacementResult.STOP);
+  }
+
+  /**
+   * Finds and replaces {@code n} instances of text within any {@link TextComponent}s using a string literal.
+   *
+   * <p>Utilises an {@link IntFunction2} to determine if each instance should be replaced.</p>
+   *
+   * @param search a string literal
+   * @param replacement a {@link ComponentLike} to replace the first match
+   * @param fn a function of (index, replaced) used to determine if matches should be replaced, where "replaced" is the number of successful replacements
+   * @return a modified copy of this component
+   * @since 4.0.0
+   */
+  default @NonNull Component replaceText(final @NonNull String search, final @Nullable ComponentLike replacement, final @NonNull IntFunction2<PatternReplacementResult> fn) {
+    return this.replaceText(Pattern.compile(search, Pattern.LITERAL), old -> replacement, fn);
   }
 
   /**
