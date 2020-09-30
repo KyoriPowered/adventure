@@ -1,21 +1,21 @@
-rootProject.name = 'adventure-parent'
+rootProject.name = "adventure-parent"
 
 // Unfortunately, we cannot make this any nicer really
 
-include 'api'
-include 'nbt'
-include 'serializer-configurate3'
-include 'text-serializer-gson'
-include 'text-serializer-legacy'
-include 'text-serializer-plain'
+include "api"
+include "nbt"
+include "serializer-configurate3"
+include "text-serializer-gson"
+include "text-serializer-legacy"
+include "text-serializer-plain"
 
 [
-  'api',
-  'nbt',
-  'serializer-configurate3',
-  'text-serializer-gson',
-  'text-serializer-legacy',
-  'text-serializer-plain'
+  "api",
+  "nbt",
+  "serializer-configurate3",
+  "text-serializer-gson",
+  "text-serializer-legacy",
+  "text-serializer-plain"
 ].each {
   findProject(":$it")?.name = "adventure-$it"
 }

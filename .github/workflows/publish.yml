@@ -16,4 +16,4 @@ jobs:
         with:
           java-version: "1.8"
       - name: "build and publish"
-        run: './gradlew -Psonatype.username="${{ secrets.SONATYPE_USERNAME }}" -Psonatype.password="${{ secrets.SONATYPE_PASSWORD }}" build publish'
+        run: './gradlew -PsonatypeUsername="${{ secrets.SONATYPE_USERNAME }}" -PsonatypePassword="${{ secrets.SONATYPE_PASSWORD }}" build publish'

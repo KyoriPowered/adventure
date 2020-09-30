@@ -81,6 +81,7 @@ final class ConfigurateComponentSerializerImpl implements ConfigurateComponentSe
   }
 
   @Override
+  @SuppressWarnings("serial")
   public @NonNull TypeSerializerCollection addSerializersTo(final @NonNull TypeSerializerCollection serializers) {
     return serializers
       .register(BookTypeSerializer.TYPE, BookTypeSerializer.INSTANCE)
