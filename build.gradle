@@ -3,6 +3,7 @@ plugins {
   id 'net.kyori.invent-javadoc-jar' version '1.0.4'
   id 'net.kyori.invent-sonatype-repository' version '1.0.4'
   id 'net.kyori.invent-sources-jar' version '1.0.4'
+  id 'org.xbib.gradle.plugin.jflex' version '1.4.0'
   id 'net.minecrell.licenser' version '0.4.1'
   id 'java-library'
   id 'maven-publish'
@@ -13,7 +14,7 @@ plugins {
 ext.adventure = "4.0.0-SNAPSHOT"
 
 group 'net.kyori'
-version '4.0.0-SNAPSHOT'
+version '4.1.0-SNAPSHOT'
 description 'A string-based, user-friendly format for representing Minecraft: Java Edition chat components.'
 
 repositories {
@@ -21,6 +22,14 @@ repositories {
   mavenCentral()
   maven {
     url 'https://oss.sonatype.org/content/groups/public/'
+  }
+}
+
+sourceSets {
+  main {
+    java {
+      srcDirs += 'build/generated-src'
+    }
   }
 }
 
