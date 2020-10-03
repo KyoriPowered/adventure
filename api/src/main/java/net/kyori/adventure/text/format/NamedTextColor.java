@@ -251,9 +251,4 @@ public final class NamedTextColor implements TextColor {
   public @NonNull String toString() {
     return this.name;
   }
-
-  // Enum-like
-  public static @NonNull List<NamedTextColor> values() {
-    return VALUES;
-  }
 }
