@@ -48,8 +48,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   private static final List<TextFormat> FORMATS;
 
   static {
-    final List<TextFormat> formats = new ArrayList<>();
-    formats.addAll(NamedTextColor.values());
+    final List<TextFormat> formats = new ArrayList<>(NamedTextColor.values());
     Collections.addAll(formats, DECORATIONS);
     formats.add(Reset.INSTANCE);
     FORMATS = Collections.unmodifiableList(formats);
