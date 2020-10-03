@@ -31,6 +31,9 @@ tagStart = <
 tagEnd = >
 tagClose = \/
 tagSeperator = :
+hex = #
+
+hover = hover
 
 color = (BLACK)|(DARK_BLUE)|(DARK_GREEN)|(DARK_AQUA)|(DARK_RED)|(DARK_PURPLE)|(GOLD)|(GRAY)|(DARK_GRAY)|(BLUE)|(GREEN)|(AQUA)|(RED)|(LIGHT_PURPLE)|(YELLOW)|(WHITE)
 
@@ -43,11 +46,16 @@ color = (BLACK)|(DARK_BLUE)|(DARK_GREEN)|(DARK_AQUA)|(DARK_RED)|(DARK_PURPLE)|(G
 
 <TOKEN> {
     {color}                        { yybegin(EXPECT_END); return new MiniMessageToken.Color(yytext(), false); }
+    {hex}[\d]{6}                   { yybegin(EXPECT_END); return new MiniMessageToken.HexColor(yytext(), false); }
+    {hover}                        { yybegin(EXPECT_END); return new MiniMessageToken.Hover(false); }
+
     {tagClose}                     { yybegin(TOKEN_CLOSE); }
 }
 
 <TOKEN_CLOSE> {
     {color}                        { yybegin(EXPECT_END); return new MiniMessageToken.Color(yytext(), true); }
+    {hex}[\d]{6}                   { yybegin(EXPECT_END); return new MiniMessageToken.HexColor(yytext(), true); }
+    {hover}                        { yybegin(EXPECT_END); return new MiniMessageToken.Hover(true); }
 }
 
 <EXPECT_END> {

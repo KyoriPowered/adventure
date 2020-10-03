@@ -27,17 +27,25 @@ import net.kyori.adventure.text.minimessage.tokens.Token;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.io.StringReader;
 
 public class MiniMessageLexerTest {
 
     @Test
-    public void test() throws IOException {
-        MiniMessageLexer lexer = new MiniMessageLexer(new StringReader("<RED>This is a test</red><yellow>Wooo"));
+    public void test() throws Exception {
+        test("<RED>This is a test</red><yellow>Wooo<#112233>hex!</#112233>");
+        test("<hover:show_text:'<red>test'>TEST</hover>");
+    }
+
+    private void test(String input) throws Exception {
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println("Testing: " + input);
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        MiniMessageLexer lexer = new MiniMessageLexer(new StringReader(input));
         Token token;
         while((token = lexer.scan()) != null) {
             System.out.println("token: " + token);
         }
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     }
 }

@@ -24,11 +24,14 @@
 package net.kyori.adventure.text.minimessage.tokens;
 
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 
 import java.util.Locale;
 import java.util.StringJoiner;
 
 public class MiniMessageToken {
+
+    // TODO add a closeable token
 
     public static class Color extends Token {
 
@@ -45,6 +48,43 @@ public class MiniMessageToken {
         public String toString() {
             return new StringJoiner(", ", Color.class.getSimpleName() + "[", "]")
                     .add("color=" + color)
+                    .add("closed=" + closed)
+                    .toString();
+        }
+    }
+
+    public static class HexColor extends Token {
+
+        private TextColor color;
+        private boolean closed;
+
+        public HexColor(String color, boolean closed) {
+            super(0, "", 0);
+            this.color = TextColor.fromHexString(color);
+            this.closed = closed;
+        }
+
+        @Override
+        public String toString() {
+            return new StringJoiner(", ", HexColor.class.getSimpleName() + "[", "]")
+                    .add("color=" + color)
+                    .add("closed=" + closed)
+                    .toString();
+        }
+    }
+
+    public static class Hover extends Token {
+
+        private boolean closed;
+
+        public Hover(boolean closed) {
+            super(0, "", 0);
+            this.closed = closed;
+        }
+
+        @Override
+        public String toString() {
+            return new StringJoiner(", ", Hover.class.getSimpleName() + "[", "]")
                     .add("closed=" + closed)
                     .toString();
         }
