@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class BookSerializerTest implements ConfigurateTestBase {
   @Test
-  void testBook() throws ObjectMappingException {
+  void testBook() {
     final ConfigurationNode node = this.node(n -> {
       n.getNode(BookTypeSerializer.TITLE, ComponentTypeSerializer.TEXT).setValue("My book");
       n.getNode(BookTypeSerializer.AUTHOR).act(author -> {

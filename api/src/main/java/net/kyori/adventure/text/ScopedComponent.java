@@ -38,6 +38,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * Some magic to change return types.
  *
  * @param <C> the component type
+ * @since 4.0.0
  */
 public interface ScopedComponent<C extends Component> extends Component {
   @Override
