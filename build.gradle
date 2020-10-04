@@ -33,7 +33,7 @@ subprojects {
 
   checkstyle {
     def configRoot = new File(rootProject.projectDir, '.checkstyle')
-    toolVersion = '8.36.1'
+    toolVersion = '8.36.2'
     configDirectory = configRoot
     configProperties = [basedir: configRoot.getAbsolutePath()]
   }

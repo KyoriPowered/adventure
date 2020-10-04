@@ -30,6 +30,12 @@
     <!-- https://checkstyle.org/config_misc.html#ArrayTypeStyle -->
     <module name="ArrayTypeStyle"/>
 
+    <!-- https://checkstyle.org/config_javadoc.html#AtclauseOrder -->
+    <module name="AtclauseOrder">
+      <property name="violateExecutionOnNonTightHtml" value="true"/>
+      <property name="tagOrder" value="@author, @deprecated, @exception, @param, @return, @serial, @serialData, @serialField, @throws, @see, @since, @version"/>
+    </module>
+
     <!-- https://checkstyle.org/config_imports.html#AvoidStarImport -->
     <module name="AvoidStarImport"/>
 
@@ -99,6 +105,21 @@
       <property name="throwsIndent" value="2"/>
     </module>
 
+    <!-- https://checkstyle.org/config_javadoc.html#InvalidJavadocPosition -->
+    <module name="InvalidJavadocPosition"/>
+
+    <!-- https://checkstyle.org/config_javadoc.html#JavadocContentLocation -->
+    <module name="JavadocContentLocation"/>
+
+    <!-- https://checkstyle.org/config_javadoc.html#JavadocMissingWhitespaceAfterAsterisk -->
+    <module name="JavadocMissingWhitespaceAfterAsterisk"/>
+
+    <!-- https://checkstyle.org/config_javadoc.html#JavadocParagraph -->
+    <module name="JavadocParagraph"/>
+
+    <!-- https://checkstyle.org/config_javadoc.html#JavadocMissingWhitespaceAfterAsterisk -->
+    <module name="JavadocTagContinuationIndentation"/>
+
     <!-- https://checkstyle.org/config_blocks.html#LeftCurly -->
     <module name="LeftCurly"/>
 
@@ -110,6 +131,15 @@
     <!-- https://checkstyle.org/config_whitespace.html#MethodParamPad -->
     <module name="MethodParamPad"/>
 
+    <!-- https://checkstyle.org/config_javadoc.html#MissingJavadocMethod -->
+    <module name="MissingJavadocMethod"/>
+
+    <!-- https://checkstyle.org/config_javadoc.html#MissingJavadocPackage -->
+    <module name="MissingJavadocPackage"/>
+
+    <!-- https://checkstyle.org/config_javadoc.html#MissingJavadocType -->
+    <module name="MissingJavadocType"/>
+
     <!-- https://checkstyle.org/config_coding.html#MultipleVariableDeclarations -->
     <module name="MultipleVariableDeclarations"/>
 
@@ -118,6 +148,9 @@
 
     <!-- https://checkstyle.org/config_whitespace.html#NoLineWrap -->
     <module name="NoLineWrap"/>
+
+    <!-- https://checkstyle.org/config_javadoc.html#NonEmptyAtclauseDescription -->
+    <module name="NonEmptyAtclauseDescription"/>
 
     <!-- https://checkstyle.org/config_whitespace.html#NoWhitespaceAfter -->
     <module name="NoWhitespaceAfter">
@@ -144,6 +177,9 @@
       <property name="tokens" value="ANNOTATION_FIELD_DEF, CLASS_DEF, CTOR_DEF, ENUM_DEF, INTERFACE_DEF, VARIABLE_DEF"/> <!-- remove METHOD_DEF and RESOURCE -->
     </module>
 
+    <!-- https://checkstyle.org/config_javadoc.html#RequireEmptyLineBeforeBlockTagGroup -->
+    <module name="RequireEmptyLineBeforeBlockTagGroup"/>
+
     <!-- https://checkstyle.org/config_coding.html#RequireThis -->
     <module name="RequireThis">
       <property name="validateOnlyOverlapping" value="false"/>
@@ -161,10 +197,19 @@
       <property name="tokens" value="LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_IF, LITERAL_TRY"/> <!-- add LITERAL_DO -->
     </module>
 
+    <!-- https://checkstyle.org/config_coding.html#SimplifyBooleanExpression -->
+    <module name="SimplifyBooleanExpression"/>
+
+    <!-- https://checkstyle.org/config_coding.html#SimplifyBooleanReturn -->
+    <module name="SimplifyBooleanReturn"/>
+
     <!-- https://checkstyle.org/config_whitespace.html#SingleSpaceSeparator -->
     <module name="SingleSpaceSeparator">
       <property name="validateComments" value="true"/>
     </module>
+
+    <!-- https://checkstyle.org/config_javadoc.html#SummaryJavadoc -->
+    <module name="SummaryJavadoc"/>
 
     <!-- https://checkstyle.org/config_whitespace.html#TypecastParenPad -->
     <module name="TypecastParenPad"/>
@@ -175,14 +220,21 @@
     <!-- https://checkstyle.org/config_imports.html#UnusedImports -->
     <module name="UnusedImports"/>
 
-    <!-- https://checkstyle.org/config_javadoc.html#WriteTag -->
-    <!-- TODO: check for @since tag on public members -->
-
     <!--
     #####################
     #### third-party ####
     #####################
     -->
+
+    <!-- https://checkstyle.org/config_javadoc.html#WriteTag -->
+    <!-- https://gitlab.com/stellardrift/stylecheck/-/blob/dev/src/main/java/ca/stellardrift/stylecheck/FilteringWriteTag.java -->
+    <module name="FilteringWriteTag">
+      <property name="tag" value="@since"/>
+      <property name="tagFormat" value="\d\.\d+\.\d+"/>
+      <property name="tagSeverity" value="ignore"/>
+      <property name="minimumScope" value="public"/>
+      <property name="tokens" value="INTERFACE_DEF, CLASS_DEF, ENUM_DEF, ANNOTATION_DEF, RECORD_DEF, METHOD_DEF, CTOR_DEF, ANNOTATION_FIELD_DEF, RECORD_DEF, COMPACT_CTOR_DEF"/>
+    </module>
 
     <!-- https://gitlab.com/stellardrift/stylecheck/-/blob/dev/src/main/java/ca/stellardrift/stylecheck/NoLvTypeAnnotations.java -->
     <module name="NoLvTypeAnnotations"/>

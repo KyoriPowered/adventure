@@ -221,9 +221,10 @@ final class TagStringReader {
   }
 
   /**
-   * A tag that is definitely some sort of scalar
+   * A tag that is definitely some sort of scalar.
    *
-   * <p>Does not detect quoted strings, so </p>
+   * <p>Does not detect quoted strings, so those should have been parsed already.</p>
+   *
    * @return a parsed tag
    */
   private BinaryTag scalar() {
@@ -303,7 +304,7 @@ final class TagStringReader {
   }
 
   /**
-   * Remove simple escape sequences from a string
+   * Remove simple escape sequences from a string.
    *
    * @param withEscapes input string with escapes
    * @return string with escapes processed

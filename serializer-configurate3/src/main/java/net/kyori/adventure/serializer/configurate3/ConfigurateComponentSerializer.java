@@ -54,7 +54,7 @@ public interface ConfigurateComponentSerializer extends ComponentSerializer<Comp
   }
 
   /**
-   * Create a new builder for a customized Configurate serializer
+   * Create a new builder for a customized Configurate serializer.
    *
    * @return a new builder
    * @since 4.0.0
@@ -107,7 +107,7 @@ public interface ConfigurateComponentSerializer extends ComponentSerializer<Comp
     @NonNull Builder outputStringComponents(final boolean stringComponents);
 
     /**
-     * Create a new component serializer instance
+     * Create a new component serializer instance.
      *
      * @return new serializer
      * @since 4.0.0

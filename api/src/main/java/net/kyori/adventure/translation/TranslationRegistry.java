@@ -152,6 +152,7 @@ public interface TranslationRegistry extends TranslationSource {
    * @param resourceBundle a resource bundle
    * @param escapeSingleQuotes whether to escape single quotes
    * @throws IllegalArgumentException if a translation key is already exists
+   * @since 4.0.0
    */
   default void registerAll(final @NonNull Locale locale, final @NonNull ResourceBundle resourceBundle, final boolean escapeSingleQuotes) {
     this.registerAll(locale, resourceBundle.keySet(), key -> {
