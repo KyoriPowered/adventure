@@ -94,7 +94,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
   }
 
   /**
-   * Create a new builder that will create a {@link Book}
+   * Create a new builder that will create a {@link Book}.
    *
    * @return a builder
    * @since 4.0.0
@@ -112,7 +112,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
   @NonNull Component title();
 
   /**
-   * Changes the book's title
+   * Changes the book's title.
    *
    * @param title the title
    * @return a new book with modifications
@@ -129,7 +129,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
   @NonNull Component author();
 
   /**
-   * Changes the book's author
+   * Changes the book's author.
    *
    * @param author the author
    * @return a new book with modifications
@@ -140,7 +140,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
   /**
    * Gets the list of pages.
    *
-   * The returned collection will be unmodifiable.
+   * <p>The returned collection will be unmodifiable.</p>
    *
    * @return the list of pages
    * @since 4.0.0

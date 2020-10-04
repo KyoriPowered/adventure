@@ -24,7 +24,7 @@
 package net.kyori.adventure.nbt;
 
 /**
- * A character buffer designed to be inspected by a parser
+ * A character buffer designed to be inspected by a parser.
  */
 final class CharBuffer {
   private final CharSequence sequence;
@@ -35,7 +35,7 @@ final class CharBuffer {
   }
 
   /**
-   * Get the character at the current position
+   * Get the character at the current position.
    *
    * @return The current character
    */
@@ -48,7 +48,7 @@ final class CharBuffer {
   }
 
   /**
-   * Get the current character and advance
+   * Get the current character and advance.
    *
    * @return current character
    */

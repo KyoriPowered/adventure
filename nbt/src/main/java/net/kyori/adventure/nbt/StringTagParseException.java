@@ -26,7 +26,7 @@ package net.kyori.adventure.nbt;
 import java.io.IOException;
 
 /**
- * An exception thrown when parsing a string tag
+ * An exception thrown when parsing a string tag.
  */
 class StringTagParseException extends IOException {
   private static final long serialVersionUID = -3001637554903912905l;

@@ -28,7 +28,7 @@ import net.kyori.adventure.text.ComponentBuilderApplicable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * Something that can be applied to a {@link Style}
+ * Something that can be applied to a {@link Style}.
  *
  * @since 4.0.0
  */

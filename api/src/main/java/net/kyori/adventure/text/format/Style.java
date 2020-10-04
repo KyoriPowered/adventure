@@ -879,7 +879,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
     @NonNull Builder merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy, final @NonNull Set<Merge> merges);
 
     /**
-     * Applies {@code applicable} to this builder
+     * Applies {@code applicable} to this builder.
      *
      * @param applicable the applicable
      * @return this builder

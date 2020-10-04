@@ -57,7 +57,7 @@ final class Tokens {
   }
 
   /**
-   * Return if a character is a valid component in an identifier
+   * Return if a character is a valid component in an identifier.
    *
    * <p>An identifier character must match the expression {@code [a-zA-Z0-9_+.-]}</p>
    *
@@ -75,7 +75,7 @@ final class Tokens {
   /**
    * Return whether a character could be at some position in a number.
    *
-   * A string passing this check does not necessarily mean it is syntactically valid
+   * <p>A string passing this check does not necessarily mean it is syntactically valid.</p>
    *
    * @param c character to check
    * @return if possibly part of a number

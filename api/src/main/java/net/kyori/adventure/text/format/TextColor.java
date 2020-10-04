@@ -58,7 +58,7 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
   }
 
   /**
-   * Create a new text colour with the red, green, and blue components individually
+   * Create a new text colour with the red, green, and blue components individually.
    *
    * @param r red, as a value from 0 to 255
    * @param g green, as a value from 0 to 255
@@ -71,7 +71,7 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
   }
 
   /**
-   * Create a new color with the individual components as floats
+   * Create a new color with the individual components as floats.
    *
    * @param r red, from [0, 1]
    * @param g green, within [0, 1]
@@ -110,7 +110,7 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
   }
 
   /**
-   * Create a new text colour with the red, green, and blue components individually
+   * Create a new text colour with the red, green, and blue components individually.
    *
    * @param r red, as a value from 0 to 255
    * @param g green, as a value from 0 to 255
@@ -125,7 +125,7 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
   }
 
   /**
-   * Create a new color with the individual components as floats
+   * Create a new color with the individual components as floats.
    *
    * @param r red, from [0, 1]
    * @param g green, within [0, 1]
@@ -191,7 +191,7 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
   }
 
   /**
-   * The color, as an RGB value packed into an int
+   * The color, as an RGB value packed into an int.
    *
    * @return the value
    * @since 4.0.0
@@ -209,7 +209,7 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
   }
 
   /**
-   * Get the red component of the text colour
+   * Get the red component of the text colour.
    *
    * @return the red component, in the range [0x0, 0xff]
    * @since 4.0.0
@@ -220,7 +220,7 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
   }
 
   /**
-   * Get the green component of the text colour
+   * Get the green component of the text colour.
    *
    * @return the green component, in the range [0x0, 0xff]
    * @since 4.0.0
@@ -231,7 +231,7 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
   }
 
   /**
-   * Get the blue component of the text colour
+   * Get the blue component of the text colour.
    *
    * @return the blue component, in the range [0x0, 0xff]
    * @since 4.0.0
