@@ -197,6 +197,12 @@
       <property name="tokens" value="LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_IF, LITERAL_TRY"/> <!-- add LITERAL_DO -->
     </module>
 
+    <!-- https://checkstyle.org/config_coding.html#SimplifyBooleanExpression -->
+    <module name="SimplifyBooleanExpression"/>
+
+    <!-- https://checkstyle.org/config_coding.html#SimplifyBooleanReturn -->
+    <module name="SimplifyBooleanReturn"/>
+
     <!-- https://checkstyle.org/config_whitespace.html#SingleSpaceSeparator -->
     <module name="SingleSpaceSeparator">
       <property name="validateComments" value="true"/>
