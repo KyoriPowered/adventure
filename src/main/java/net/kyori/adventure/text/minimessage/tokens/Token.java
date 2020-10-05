@@ -23,11 +23,30 @@
  */
 package net.kyori.adventure.text.minimessage.tokens;
 
-public class Token {
-    public Token(int type, String line, int column) {
-        this(type, line, column, null);
+import java.util.StringJoiner;
+
+public class Token<T> {
+
+    private T value;
+    private boolean closed;
+    private Token inner;
+
+    public Token(T value, boolean closed) {
+        this(value, closed, null);
     }
 
-    public Token(int type, String line, int column, Object value) {
+    public Token(T value, boolean closed, Token inner) {
+        this.value = value;
+        this.closed = closed;
+        this.inner = inner;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", getClass().getSimpleName() + "[", "]")
+                .add("value=" + value)
+                .add("closed=" + closed)
+                .add("inner=" + inner)
+                .toString();
     }
 }

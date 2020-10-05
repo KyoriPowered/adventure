@@ -10,7 +10,7 @@ import net.kyori.adventure.text.minimessage.tokens.MiniMessageToken;import net.k
 %final
 %unicode
 %ignorecase
-//%debug
+%debug
 //%line
 //%column
 
@@ -18,6 +18,7 @@ import net.kyori.adventure.text.minimessage.tokens.MiniMessageToken;import net.k
 %state TOKEN
 %state TOKEN_CLOSE
 %state EXPECT_END
+%state INNER
 
 %{
   private StringBuffer string = new StringBuffer();
@@ -33,6 +34,8 @@ tagClose = \/
 tagSeperator = :
 hex = #
 
+quotes = \"|'
+
 hover = hover
 
 color = (BLACK)|(DARK_BLUE)|(DARK_GREEN)|(DARK_AQUA)|(DARK_RED)|(DARK_PURPLE)|(GOLD)|(GRAY)|(DARK_GRAY)|(BLUE)|(GREEN)|(AQUA)|(RED)|(LIGHT_PURPLE)|(YELLOW)|(WHITE)
@@ -47,15 +50,22 @@ color = (BLACK)|(DARK_BLUE)|(DARK_GREEN)|(DARK_AQUA)|(DARK_RED)|(DARK_PURPLE)|(G
 <TOKEN> {
     {color}                        { yybegin(EXPECT_END); return new MiniMessageToken.Color(yytext(), false); }
     {hex}[\d]{6}                   { yybegin(EXPECT_END); return new MiniMessageToken.HexColor(yytext(), false); }
-    {hover}                        { yybegin(EXPECT_END); return new MiniMessageToken.Hover(false); }
+    {hover}:[a-zA-Z_]+:            { return new MiniMessageToken.Hover(yytext(), false); }
+    {quotes}                       { yybegin(INNER); }
 
     {tagClose}                     { yybegin(TOKEN_CLOSE); }
+}
+
+<INNER> {
+    {tagStart}                     { yybegin(TOKEN); }
+    {quotes}                       { yybegin(EXPECT_END); }
+    [^]                            { string.setLength(0); string.append(yytext()); yybegin(STRING); }
 }
 
 <TOKEN_CLOSE> {
     {color}                        { yybegin(EXPECT_END); return new MiniMessageToken.Color(yytext(), true); }
     {hex}[\d]{6}                   { yybegin(EXPECT_END); return new MiniMessageToken.HexColor(yytext(), true); }
-    {hover}                        { yybegin(EXPECT_END); return new MiniMessageToken.Hover(true); }
+    {hover}                        { yybegin(EXPECT_END); return new MiniMessageToken.Hover(null, true); }
 }
 
 <EXPECT_END> {

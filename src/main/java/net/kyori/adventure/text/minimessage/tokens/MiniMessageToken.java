@@ -27,83 +27,34 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 
 import java.util.Locale;
-import java.util.StringJoiner;
 
 public class MiniMessageToken {
 
-    // TODO add a closeable token
-
-    public static class Color extends Token {
-
-        private NamedTextColor color;
-        private boolean closed;
+    public static class Color extends Token<NamedTextColor> {
 
         public Color(String color, boolean closed) {
-            super(0, "", 0);
-            this.color = NamedTextColor.NAMES.value(color.toLowerCase(Locale.ROOT));
-            this.closed = closed;
-        }
-
-        @Override
-        public String toString() {
-            return new StringJoiner(", ", Color.class.getSimpleName() + "[", "]")
-                    .add("color=" + color)
-                    .add("closed=" + closed)
-                    .toString();
+            super(NamedTextColor.NAMES.value(color.toLowerCase(Locale.ROOT)), closed);
         }
     }
 
-    public static class HexColor extends Token {
-
-        private TextColor color;
-        private boolean closed;
+    public static class HexColor extends Token<TextColor> {
 
         public HexColor(String color, boolean closed) {
-            super(0, "", 0);
-            this.color = TextColor.fromHexString(color);
-            this.closed = closed;
-        }
-
-        @Override
-        public String toString() {
-            return new StringJoiner(", ", HexColor.class.getSimpleName() + "[", "]")
-                    .add("color=" + color)
-                    .add("closed=" + closed)
-                    .toString();
+            super(TextColor.fromHexString(color), closed);
         }
     }
 
-    public static class Hover extends Token {
+    public static class Hover extends Token<String> {
 
-        private boolean closed;
-
-        public Hover(boolean closed) {
-            super(0, "", 0);
-            this.closed = closed;
-        }
-
-        @Override
-        public String toString() {
-            return new StringJoiner(", ", Hover.class.getSimpleName() + "[", "]")
-                    .add("closed=" + closed)
-                    .toString();
+        public Hover(String arg, boolean closed) {
+            super(arg.substring(6, arg.length() - 1), closed);
         }
     }
 
-    public static class Text extends Token {
-
-        private String line;
+    public static class Text extends Token<String> {
 
         public Text(String line) {
-            super(0, "", 0);
-            this.line = line;
-        }
-
-        @Override
-        public String toString() {
-            return new StringJoiner(", ", Text.class.getSimpleName() + "[", "]")
-                    .add("line='" + line + "'")
-                    .toString();
+            super(line, false);
         }
     }
 }
