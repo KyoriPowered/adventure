@@ -51,9 +51,9 @@ subprojects {
   }
 
   // TODO: indra?
-  signing {
-    required {
-      gradle.taskGraph.hasTask(':publish') && (project.hasProperty("forceSign") || !project.version.endsWith('-SNAPSHOT'))
+  tasks.withType(Sign) {
+    onlyIf {
+      (project.hasProperty("forceSign") || gradle.taskGraph.hasTask(':publish')) && !project.version.endsWith('-SNAPSHOT')
     }
   }
 
