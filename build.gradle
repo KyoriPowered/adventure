@@ -52,7 +52,7 @@ subprojects {
 
   // TODO: indra?
   signing {
-    onlyIf {
+    required {
       gradle.taskGraph.hasTask(':publish') && (project.hasProperty("forceSign") || !project.version.endsWith('-SNAPSHOT'))
     }
   }
