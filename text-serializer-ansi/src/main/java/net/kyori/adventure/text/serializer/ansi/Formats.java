@@ -30,6 +30,11 @@ import net.kyori.adventure.util.Index;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.fusesource.jansi.Ansi;
 
+/**
+ * This utility class converts between {@link Ansi} escape codes to ({@link TextDecoration} and {@link NamedTextColor}).
+ *
+ * @since 4.0.0
+ */
 enum Formats {
   //NamedColours
   BLACK(NamedTextColor.BLACK, Ansi.ansi().fg(Ansi.Color.BLACK).boldOff()),
@@ -58,15 +63,18 @@ enum Formats {
 
   static final Ansi SOFT_RESET = Ansi.ansi().reset();
 
-  private static final Index<TextFormat, Formats> textFormatIndex;
+  private static final Index<TextFormat, Formats> textFormatIndex = Index.create(Formats.class, formats -> formats.format);
 
   private final TextFormat format;
   private final Ansi escapeString;
 
-  static {
-    textFormatIndex = Index.create(Formats::textFormat,Formats.values());
-  }
-
+  /**
+   * Construct the enum.
+   *
+   * @param textFormat {@link TextFormat}
+   * @param ansi {@link Ansi}
+   * @since 4.0.0
+   */
   Formats(final TextFormat textFormat, final Ansi ansi){
     this.format = textFormat;
     this.escapeString = ansi;
@@ -76,6 +84,12 @@ enum Formats {
     return this.format;
   }
 
+  /**
+   *  Returns the ansi escape of a format.
+   *
+   * @return {@link Ansi} format of a Format
+   * @since 4.0.0
+   */
   public Ansi ansi() {
     return this.escapeString;
   }

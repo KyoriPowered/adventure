@@ -42,16 +42,19 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * {@inheritDoc}
+ */
 final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
   private final boolean colorDownSample;
-  protected static ANSIComponentSerializer TRUE_COLOR = new ANSIComponentSerializerImpl(false);
+  static ANSIComponentSerializer TRUE_COLOR = new ANSIComponentSerializerImpl(false);
 
   private ANSIComponentSerializerImpl(final boolean colorDownSample) {
     this.colorDownSample = colorDownSample;
   }
 
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
-  protected static final String RGB_FORMAT = ESC_CHAR + "[38;2;%d;%d;%dm";
+  private static final String RGB_FORMAT = ESC_CHAR + "[38;2;%d;%d;%dm";
   private static final Pattern STRIP_ESC_CODES = Pattern.compile(ESC_CHAR + "\\[[;\\d]*m");
 
   private Ansi toANSI(final TextFormat format){
@@ -80,7 +83,9 @@ final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
   }
 
   /**
-   * This method does not convert ansi codes to Component colors or decorations it simply strips them and returns plain TextComponent with the content.
+   * Deserializes a ansi string into an output of type {@link Component}. This
+   * <b>does not</b> covert ansi colours to styles.
+   *
    * @param input the input
    * @return {@link TextComponent}
    */
@@ -91,33 +96,35 @@ final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
     while(matcher.find()){
       out = out.replace(matcher.group(), "");
     }
-    return TextComponent.of(out);
+    return Component.text(out);
   }
 
   /**
-   * Serializes the component into a String that contains Ansi colour codes.
-   * @return String {@link Ansi} formatted string.
+   * Serializes a component into an output of type {@link ANSIComponentSerializer}.
+   *
+   * @param component the component
+   * @return the output
    */
   @Override
-  public @NonNull String serialize(final @NonNull Component component) {
+  public @NonNull String serialize(final @NonNull Component component){
     final Porridge state = new Porridge();
     state.append(component);
     return state.toString();
   }
 
   @Override
-  public @NonNull Builder toBuilder() {
+  public @NonNull Builder toBuilder(){
     return new BuilderImpl(this);
   }
 
   static final class BuilderImpl implements Builder {
     private boolean colorDownSample = true;
 
-    BuilderImpl() {
+    BuilderImpl(){
 
     }
 
-    BuilderImpl(final @NonNull ANSIComponentSerializerImpl serializer) {
+    BuilderImpl(final @NonNull ANSIComponentSerializerImpl serializer){
       this.colorDownSample = serializer.colorDownSample;
     }
 

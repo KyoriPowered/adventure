@@ -28,6 +28,14 @@ import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+/**
+ * A ansi component serializer.
+ *
+ * <p>Use {@link Builder#downSample(boolean)} to support consoles that cannot render
+ * 256 colours.</p>
+ *
+ * @since 4.0.0
+ */
 public interface ANSIComponentSerializer extends ComponentSerializer<Component, Component, String>, Buildable<ANSIComponentSerializer, ANSIComponentSerializer.Builder> {
   char ESC_CHAR = '\u001B';
 
@@ -35,26 +43,42 @@ public interface ANSIComponentSerializer extends ComponentSerializer<Component, 
    * This AnsiComponentSerializer produces full colour RGB codes and supports True colour terminals.  Otherwise colours are down sampled to the nearest Named Colour.
    *
    * @return {@link ANSIComponentSerializer}
+   * @since 4.0.0
    */
-  static @NonNull ANSIComponentSerializer fullColour() {
+  static @NonNull ANSIComponentSerializer fullColour(){
     return ANSIComponentSerializerImpl.TRUE_COLOR;
   }
 
   /**
-   * Construct the Builder
-   * @return {@link ANSIComponentSerializer.Builder}
+   * Creates a new {@link ANSIComponentSerializer.Builder}.
+   *
+   * @return a builder
+   * @since 4.0.0
    */
-  static @NonNull Builder builder() {
+  static @NonNull Builder builder(){
     return new ANSIComponentSerializerImpl.BuilderImpl();
   }
 
   /**
    * A builder for {@link ANSIComponentSerializer}.
+   *
+   * @since 4.0.0
    */
   interface Builder extends Buildable.Builder<ANSIComponentSerializer> {
 
+    /**
+     * Sets that the serializer should down sample hex colors to named colors.
+     *
+     * @param downSample if true down sample the colour.
+     * @return this builder
+     */
     @NonNull Builder downSample(final boolean downSample);
 
+    /**
+     * Creates a new {@link ANSIComponentSerializer.Builder}.
+     *
+     * @return a builder
+     */
     @Override
     @NonNull ANSIComponentSerializer build();
   }

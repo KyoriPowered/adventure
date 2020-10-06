@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.serializer.ansi;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
@@ -38,7 +39,7 @@ class ANSIComponentSerializerTest {
 
   @Test
   void testSimpleFrom() {
-    Assertions.assertEquals(TextComponent.of("foo"),
+    Assertions.assertEquals(Component.text("foo"),
       ANSIComponentSerializer.builder()
       .downSample(true)
       .build().deserialize("foo"));
@@ -46,7 +47,7 @@ class ANSIComponentSerializerTest {
 
   @Test
   void testSimpleTo() {
-    final TextComponent component = TextComponent.of("foo");
+    final TextComponent component = Component.text("foo");
     final Ansi expected = Ansi.ansi().a("foo").reset();
     assertEquals(expected.toString(),
       ANSIComponentSerializer.fullColour().serialize(component));
@@ -54,10 +55,9 @@ class ANSIComponentSerializerTest {
 
   @Test
   void testToColor() {
-    final TextComponent component = TextComponent.builder("")
-      .append(TextComponent.of("foo").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, TextDecoration.State.TRUE))
-      .append(TextComponent.of("bar").color(NamedTextColor.BLUE))
-      .build();
+    final TextComponent component = Component.text("")
+      .append(Component.text("foo").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, TextDecoration.State.TRUE))
+      .append(Component.text("bar").color(NamedTextColor.BLUE));
     final Ansi expected = Ansi.ansi().a(Ansi.ansi().fgBright(Ansi.Color.GREEN)).a(Ansi.Attribute.UNDERLINE_DOUBLE).a("foo").reset().a(Ansi.ansi().fgBright(Ansi.Color.BLUE)).a("bar").reset();
     assertEquals(expected.toString(), ANSIComponentSerializer.fullColour().serialize(component));
   }
@@ -65,21 +65,17 @@ class ANSIComponentSerializerTest {
   @Test
   void testFromColor() {
     final String input = Ansi.ansi().a(Ansi.ansi().fgBright(Ansi.Color.GREEN)).a(Ansi.Attribute.UNDERLINE_DOUBLE).a("foo").reset().fg(Ansi.Color.DEFAULT).a(Ansi.ansi().fgBright(Ansi.Color.BLUE)).a("bar").reset().fg(Ansi.Color.DEFAULT).toString();
-    assertEquals(TextComponent.of("foobar"), ANSIComponentSerializer.fullColour().deserialize(input));
+    assertEquals(Component.text("foobar"), ANSIComponentSerializer.fullColour().deserialize(input));
   }
 
   @Test
   void testComplex(){
-    final TextComponent component = TextComponent.builder()
-      .content("hi there ")
-      .append(TextComponent.builder("this bit is green ")
-        .color(NamedTextColor.GREEN)
-        .build())
-      .append(TextComponent.of("this isn't ").style(Style.empty()))
-      .append(TextComponent.builder("and woa, this is again")
-        .color(NamedTextColor.GREEN)
-        .build())
-      .build();
+    final TextComponent component = Component.text("hi there ")
+      .append(Component.text("this bit is green ")
+        .color(NamedTextColor.GREEN))
+      .append(Component.text("this isn't ").style(Style.empty()))
+      .append(Component.text("and woa, this is again")
+        .color(NamedTextColor.GREEN));
     final Ansi expected = Ansi.ansi()
       .a("hi there ").reset()
       .a(Ansi.ansi().fgBright(Ansi.Color.GREEN))
@@ -92,19 +88,18 @@ class ANSIComponentSerializerTest {
 
   @Test
   void testToConsole(){
-    final TextComponent c1 = TextComponent.builder("hi")
+    final TextComponent c1 = Component.text("hi")
       .decoration(TextDecoration.BOLD, TextDecoration.State.TRUE)
       .append(
-        TextComponent.of("foo")
+        Component.text("foo")
           .color(NamedTextColor.GREEN)
           .decoration(TextDecoration.BOLD, TextDecoration.State.FALSE)
       )
       .append(
-        TextComponent.of("bar")
+        Component.text("bar")
           .color(NamedTextColor.BLUE)
       )
-      .append(TextComponent.of("baz"))
-      .build();
+      .append(Component.text("baz"));
     final String expected = Ansi.ansi()
       .a(Ansi.Attribute.UNDERLINE_DOUBLE)
       .a("hi").a(Ansi.Attribute.RESET)
@@ -118,21 +113,13 @@ class ANSIComponentSerializerTest {
       .toString();
     assertEquals(expected, ANSIComponentSerializer.fullColour().serialize(c1));
 
-    final TextComponent c2 = TextComponent.builder()
-      .content("")
+    final TextComponent c2 = Component.text("")
       .color(NamedTextColor.YELLOW)
-      .append(TextComponent.builder()
-        .content("Hello ")
+      .append(Component.text("Hello ")
         .append(
-          TextComponent.builder()
-            .content("world")
-            .color(NamedTextColor.GREEN)
-            .build()
-        )
-        .append(TextComponent.of("!")) // Should be yellow
-        .build()
-      )
-      .build();
+          Component.text("world")
+            .color(NamedTextColor.GREEN))
+        .append(Component.text("!"))); // Should be yellow
     final Ansi ansi = Ansi.ansi()
       .fgBright(Ansi.Color.YELLOW)
       .a("Hello ").a(Ansi.ansi().a(Ansi.Attribute.RESET))
@@ -142,26 +129,15 @@ class ANSIComponentSerializerTest {
       .a("!").reset();
     assertEquals(ansi.toString(), ANSIComponentSerializer.fullColour().serialize(c2));
 
-    final TextComponent c3 = TextComponent.builder()
-      .content("")
+    final TextComponent c3 = Component.text("")
       .decoration(TextDecoration.BOLD, true)
-      .append(
-        TextComponent.builder()
-          .content("")
+      .append(Component.text("")
           .color(NamedTextColor.YELLOW)
-          .append(TextComponent.builder()
-            .content("Hello ")
+          .append(Component.text("Hello ")
             .append(
-              TextComponent.builder()
-                .content("world")
-                .color(NamedTextColor.GREEN)
-                .build()
-            )
-            .append(TextComponent.of("!"))
-            .build()
-          )
-          .build())
-      .build();
+              Component.text("world")
+                .color(NamedTextColor.GREEN))
+            .append(Component.text("!"))));
     final Ansi expected3 = Ansi.ansi()
       .fgBright(Ansi.Color.YELLOW).a(Ansi.ansi().a(Ansi.Attribute.UNDERLINE_DOUBLE))
       .a("Hello ").a(Ansi.ansi().a(Ansi.Attribute.RESET))
@@ -174,8 +150,8 @@ class ANSIComponentSerializerTest {
 
   @Test
   void testHexColor(){
-    final TextColor color = TextColor.of(0x77ff33);
-    final TextComponent c0 = TextComponent.of("Kittens!", color);
+    final TextColor color = TextColor.color(0x77ff33);
+    final TextComponent c0 = Component.text("Kittens!", color);
     final int red = color.red();
     final int blue = color.blue();
     final int green = color.green();
