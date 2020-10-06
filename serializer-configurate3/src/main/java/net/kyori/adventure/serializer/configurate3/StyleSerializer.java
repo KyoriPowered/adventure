@@ -54,6 +54,7 @@ final class StyleSerializer implements TypeSerializer<Style> {
   static final String CLICK_EVENT_VALUE = "value";
   static final String HOVER_EVENT = "hoverEvent";
   static final String HOVER_EVENT_ACTION = "action";
+  @SuppressWarnings("serial")
   static final TypeToken<HoverEvent.Action<?>> HOVER_EVENT_ACTION_TYPE = new TypeToken<HoverEvent.Action<?>>() {};
   static final String HOVER_EVENT_CONTENTS = "contents";
   static final @Deprecated String HOVER_EVENT_VALUE = "value";

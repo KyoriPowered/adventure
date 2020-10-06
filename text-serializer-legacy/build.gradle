@@ -1,9 +1,9 @@
 dependencies {
-  api project(':adventure-api')
+  api(project(":adventure-api"))
 }
 
 jar {
   manifest.attributes(
-    'Automatic-Module-Name': 'net.kyori.adventure.text.serializer.legacy'
+    "Automatic-Module-Name": "net.kyori.adventure.text.serializer.legacy"
   )
 }

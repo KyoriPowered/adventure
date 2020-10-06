@@ -50,6 +50,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 @SuppressWarnings("UnstableApiUsage") // TypeToken
 final class ComponentTypeSerializer implements TypeSerializer<Component> {
   static final TypeToken<Component> TYPE = TypeToken.of(Component.class);
+  @SuppressWarnings("serial")
   static final TypeToken<List<Component>> LIST_TYPE = new TypeToken<List<Component>>() {};
   static final String TEXT = "text";
   static final String TRANSLATE = "translate";

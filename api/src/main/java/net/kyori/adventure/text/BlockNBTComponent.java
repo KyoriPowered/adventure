@@ -52,7 +52,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
    * @param pos the block position
    * @return a block NBT component
    * @since 4.0.0
-   * @deprecated use {@link Component#blockNBT(String, Pos)}
+   * @deprecated use {@link Component#blockNBT(String, BlockNBTComponent.Pos)}
    */
   @Deprecated
   static @NonNull BlockNBTComponent of(final @NonNull String nbtPath, final @NonNull Pos pos) {

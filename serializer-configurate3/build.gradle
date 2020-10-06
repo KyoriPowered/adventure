@@ -1,11 +1,11 @@
 dependencies {
-  api project(":adventure-api")
-  api 'org.spongepowered:configurate-core:3.7.1'
-  testImplementation project(":adventure-text-serializer-gson")
+  api(project(":adventure-api"))
+  api("org.spongepowered:configurate-core:3.7.1")
+  testImplementation(project(":adventure-text-serializer-gson"))
 }
 
 jar {
   manifest.attributes(
-    'Automatic-Module-Name': 'net.kyori.adventure.serializer.configurate3'
+    "Automatic-Module-Name": "net.kyori.adventure.serializer.configurate3"
   )
 }

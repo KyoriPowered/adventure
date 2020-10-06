@@ -1,11 +1,11 @@
 dependencies {
-  api 'net.kyori:examination-api:1.0.0'
-  api 'net.kyori:examination-string:1.0.0'
-  api 'org.checkerframework:checker-qual:3.7.0'
+  api("net.kyori:examination-api:1.0.0")
+  api("net.kyori:examination-string:1.0.0")
+  api("org.checkerframework:checker-qual:3.7.0")
 }
 
 jar {
   manifest.attributes(
-    'Automatic-Module-Name': 'net.kyori.adventure.nbt'
+    "Automatic-Module-Name": "net.kyori.adventure.nbt"
   )
 }
