@@ -26,6 +26,7 @@ package net.kyori.adventure.text;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.Style;
@@ -219,6 +220,15 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @NonNull B style(final @NonNull Consumer<Style.Builder> consumer);
+
+  /**
+   * Sets the font of this component.
+   *
+   * @param font the font
+   * @return this builder
+   * @since 4.0.0
+   */
+  @NonNull B font(final @Nullable Key font);
 
   /**
    * Sets the color of this component.

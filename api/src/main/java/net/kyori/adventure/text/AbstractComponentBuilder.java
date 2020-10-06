@@ -30,6 +30,7 @@ import java.util.ListIterator;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.Style;
@@ -220,6 +221,13 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   @SuppressWarnings("unchecked")
   public @NonNull B style(final @NonNull Consumer<Style.Builder> consumer) {
     consumer.accept(this.styleBuilder());
+    return (B) this;
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public @NonNull B font(final @Nullable Key font) {
+    this.styleBuilder().font(font);
     return (B) this;
   }
 
