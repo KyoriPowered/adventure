@@ -50,6 +50,13 @@ subprojects {
     }
   }
 
+  // TODO: indra?
+  signing {
+    onlyIf {
+      gradle.taskGraph.hasTask(':publish') && (project.hasProperty("forceSign") || !project.version.endsWith('-SNAPSHOT'))
+    }
+  }
+
   configurations.testCompileClasspath {
     exclude group: "junit" // brought in by google's libs
   }
