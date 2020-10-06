@@ -30,6 +30,7 @@ import net.kyori.adventure.kt.util.component2
 import net.kyori.adventure.kt.util.component3
 import net.kyori.adventure.kt.audience.openBook
 import net.kyori.adventure.kt.text.text
+import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.kt.text.translatable
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor
@@ -39,9 +40,11 @@ import net.kyori.adventure.text.format.TextDecoration
  * A simple example of using extensions to build a component
  */
 fun componentDsl() {
-  text("Welcome to ") {
+  text {
+    content("foo")
     color(NamedTextColor.DARK_PURPLE)
-    append(translatable("kyori.test") {
+    append(translatable {
+      key("kyori.test")
       decoration(TextDecoration.BOLD, true)
       args(text("meow"), text("purr"))
     })
@@ -66,7 +69,8 @@ fun openBookExample(audience: Audience) {
     title(text("Come on an adventure!", NamedTextColor.LIGHT_PURPLE))
     author(text("The Kyori Team"))
 
-    addPage(text("This is a demonstration of the ") {
+    addPage(text {
+      content("This is a demonstration of the ")
       append(text("Kotlin", NamedTextColor.DARK_AQUA))
       append(text(" extension functions"))
     })

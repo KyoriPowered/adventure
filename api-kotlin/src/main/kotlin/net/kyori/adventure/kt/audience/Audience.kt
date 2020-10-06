@@ -54,7 +54,7 @@ public fun Sequence<Audience>.asAudience(): Audience {
  * Creates an [Audience] from this sequence.
  *
  * The sequence will be eagerly evaluated at call time. This option may be
- * preferred over [asAudience] when working with a [Sequence] than can only
+ * preferred over [asAudience] when working with a [Sequence] that can only
  * be iterated once.
  *
  * @return an audience
@@ -70,6 +70,4 @@ public fun Sequence<Audience>.toEagerAudience(): Audience {
  * @sample [net.kyori.adventure.example.kt.openBookExample]
  * @since 4.0.0
  */
-public fun Audience.openBook(maker: Book.Builder.() -> Unit) {
-  this.openBook(Book.builder().also(maker).build())
-}
+public fun Audience.openBook(maker: Book.Builder.() -> Unit): Unit = this.openBook(Book.builder().also(maker).build())
