@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -46,18 +46,18 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
     final String command = String.format("/msg %s ", name);
     return Stream.of(
       entry(
-        TranslatableComponent.of(KEY),
+        Component.translatable(KEY),
         json -> json.addProperty(ComponentSerializerImpl.TRANSLATE, KEY)
       ),
       entry(
-        TranslatableComponent.of(
+        Component.translatable(
           KEY,
-          TextComponent.builder(name)
+          Component.text().content(name)
             .clickEvent(ClickEvent.suggestCommand(command))
             .hoverEvent(HoverEvent.showEntity(HoverEvent.ShowEntity.of(
-              Key.of("minecraft", "player"),
+              Key.key("minecraft", "player"),
               id,
-              TextComponent.of(name)
+              Component.text(name)
             )))
             .build()
         ).color(NamedTextColor.YELLOW),

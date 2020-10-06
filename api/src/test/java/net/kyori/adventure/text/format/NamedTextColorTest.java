@@ -29,21 +29,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class NamedTextColorTest {
+  @SuppressWarnings("ConstantConditions") // intentionally passing 'null'
   @Test
-  public void testNullRejected() {
+  void testNullRejected() {
     assertThrows(NullPointerException.class, () -> NamedTextColor.nearestTo(null), "color");
   }
 
   @Test
-  public void testNamedColorsResolveToSelf() {
-    for(final NamedTextColor named : NamedTextColor.values()) {
-      final TextColor nonNamed = TextColor.of(named.value());
+  void testNamedColorsResolveToSelf() {
+    for(final NamedTextColor named : NamedTextColor.NAMES.values()) {
+      final TextColor nonNamed = TextColor.color(named.value());
       assertEquals(named, NamedTextColor.nearestTo(nonNamed));
     }
   }
 
   @Test
-  public void testSimple() {
+  void testSimple() {
     // These are fairly subjective values, any changes to the matching should be compared visually
     // We just want to avoid any unintended changes
     assertNearest(NamedTextColor.DARK_RED, 0xff0000);
@@ -53,7 +54,7 @@ class NamedTextColorTest {
   }
 
   private static void assertNearest(final NamedTextColor expected, final int value) {
-    final NamedTextColor nearest = NamedTextColor.nearestTo(TextColor.of(value));
+    final NamedTextColor nearest = NamedTextColor.nearestTo(TextColor.color(value));
     assertEquals(expected, nearest);
   }
 }

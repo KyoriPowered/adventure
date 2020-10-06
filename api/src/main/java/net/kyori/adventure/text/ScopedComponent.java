@@ -38,6 +38,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * Some magic to change return types.
  *
  * @param <C> the component type
+ * @since 4.0.0
  */
 public interface ScopedComponent<C extends Component> extends Component {
   @Override
@@ -73,7 +74,7 @@ public interface ScopedComponent<C extends Component> extends Component {
   @Override
   @SuppressWarnings("unchecked")
   default @NonNull C append(final @NonNull Component component) {
-    if(component == TextComponent.empty()) return (C) this;
+    if(component == Component.empty()) return (C) this;
     this.detectCycle(component); // detect cycle before modifying
     final List<Component> oldChildren = this.children();
     return this.children(AbstractComponent.addOne(oldChildren, component));

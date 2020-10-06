@@ -24,8 +24,6 @@
 package net.kyori.adventure.text;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.function.Consumer;
 import net.kyori.adventure.text.format.Style;
@@ -46,9 +44,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    *
    * @return an empty component
    * @since 4.0.0
+   * @deprecated use {@link Component#empty()}
    */
+  @Deprecated
   static @NonNull TextComponent empty() {
-    return TextComponentImpl.EMPTY;
+    return Component.empty();
   }
 
   /**
@@ -56,9 +56,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    *
    * @return a text component with a new line character as the content
    * @since 4.0.0
+   * @deprecated use {@link Component#newline()}
    */
+  @Deprecated
   static @NonNull TextComponent newline() {
-    return TextComponentImpl.NEWLINE;
+    return Component.newline();
   }
 
   /**
@@ -66,9 +68,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    *
    * @return a text component with a single space as the content
    * @since 4.0.0
+   * @deprecated use {@link Component#space()}
    */
+  @Deprecated
   static @NonNull TextComponent space() {
-    return TextComponentImpl.SPACE;
+    return Component.space();
   }
 
   /**
@@ -78,9 +82,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param components the components
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#join(ComponentLike, ComponentLike...)}
    */
+  @Deprecated
   static @NonNull TextComponent join(final @NonNull ComponentLike separator, final @NonNull ComponentLike@NonNull... components) {
-    return join(separator, Arrays.asList(components));
+    return Component.join(separator, components);
   }
 
   /**
@@ -90,20 +96,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param components the components
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#join(ComponentLike, Iterable)}
    */
+  @Deprecated
   static @NonNull TextComponent join(final @NonNull ComponentLike separator, final Iterable<? extends ComponentLike> components) {
-    final Iterator<? extends ComponentLike> it = components.iterator();
-    if(!it.hasNext()) {
-      return empty();
-    }
-    final Builder builder = builder();
-    while(it.hasNext()) {
-      builder.append(it.next());
-      if(it.hasNext()) {
-        builder.append(separator);
-      }
-    }
-    return builder.build();
+    return Component.join(separator, components);
   }
 
   /**
@@ -114,7 +111,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @since 4.0.0
    */
   static @NonNull TextComponent ofChildren(final @NonNull ComponentLike@NonNull... components) {
-    if(components.length == 0) return empty();
+    if(components.length == 0) return Component.empty();
     return new TextComponentImpl(Arrays.asList(components), Style.empty(), "");
   }
 
@@ -124,10 +121,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param content the plain text content
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(String)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final @NonNull String content) {
-    if(content.isEmpty()) return empty();
-    return new TextComponentImpl(Collections.emptyList(), Style.empty(), content);
+    return Component.text(content);
   }
 
   /**
@@ -137,9 +135,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param color the color
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(String, TextColor)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final @NonNull String content, final @Nullable TextColor color) {
-    return new TextComponentImpl(Collections.emptyList(), Style.of(color), content);
+    return Component.text(content, color);
   }
 
   /**
@@ -150,9 +150,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(String, TextColor, TextDecoration...)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final @NonNull String content, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
-    return new TextComponentImpl(Collections.emptyList(), Style.of(color, decorations), content);
+    return Component.text(content, color, decorations);
   }
 
   /**
@@ -163,9 +165,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(String, TextColor, Set)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final @NonNull String content, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
-    return new TextComponentImpl(Collections.emptyList(), Style.of(color, decorations), content);
+    return Component.text(content, color, decorations);
   }
 
   /**
@@ -175,9 +179,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param style the style
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(String, Style)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final @NonNull String content, final @NonNull Style style) {
-    return new TextComponentImpl(Collections.emptyList(), style, content);
+    return Component.text(content, style);
   }
 
   /**
@@ -186,9 +192,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param value the boolean value
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(boolean)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final boolean value) {
-    return of(String.valueOf(value));
+    return Component.text(value);
   }
 
   /**
@@ -198,9 +206,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param style the style
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(boolean, Style)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final boolean value, final @NonNull Style style) {
-    return of(String.valueOf(value), style);
+    return Component.text(value, style);
   }
 
   /**
@@ -210,9 +220,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param color the color
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(boolean, TextColor)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final boolean value, final @Nullable TextColor color) {
-    return of(String.valueOf(value), color);
+    return Component.text(value, color);
   }
 
   /**
@@ -223,9 +235,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(boolean, TextColor, TextDecoration...)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final boolean value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
-    return of(String.valueOf(value), color, decorations);
+    return Component.text(value, color, decorations);
   }
 
   /**
@@ -236,9 +250,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(boolean, TextColor, Set)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final boolean value, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
-    return of(String.valueOf(value), color, decorations);
+    return Component.text(value, color, decorations);
   }
 
   /**
@@ -247,11 +263,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param value the char value
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(char)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final char value) {
-    if(value == '\n') return newline();
-    if(value == ' ') return space();
-    return of(String.valueOf(value));
+    return Component.text(value);
   }
 
   /**
@@ -261,9 +277,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param style the style
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(char, Style)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final char value, final @NonNull Style style) {
-    return of(String.valueOf(value), style);
+    return Component.text(value, style);
   }
 
   /**
@@ -273,9 +291,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param color the color
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(char, TextColor)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final char value, final @Nullable TextColor color) {
-    return of(String.valueOf(value), color);
+    return Component.text(value, color);
   }
 
   /**
@@ -286,9 +306,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(char, TextColor, TextDecoration...)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final char value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
-    return of(String.valueOf(value), color, decorations);
+    return Component.text(value, color, decorations);
   }
 
   /**
@@ -299,9 +321,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(char, TextColor, Set)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final char value, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
-    return of(String.valueOf(value), color, decorations);
+    return Component.text(value, color, decorations);
   }
 
   /**
@@ -310,9 +334,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param value the double value
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(double)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final double value) {
-    return of(String.valueOf(value));
+    return Component.text(value);
   }
 
   /**
@@ -322,9 +348,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param style the style
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(double, Style)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final double value, final @NonNull Style style) {
-    return of(String.valueOf(value), style);
+    return Component.text(value, style);
   }
 
   /**
@@ -334,9 +362,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param color the color
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(double, TextColor)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final double value, final @Nullable TextColor color) {
-    return of(String.valueOf(value), color);
+    return Component.text(value, color);
   }
 
   /**
@@ -347,9 +377,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(double, TextColor, TextDecoration...)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final double value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
-    return of(String.valueOf(value), color, decorations);
+    return Component.text(value, color, decorations);
   }
 
   /**
@@ -360,9 +392,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(double, TextColor, Set)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final double value, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
-    return of(String.valueOf(value), color, decorations);
+    return Component.text(value, color, decorations);
   }
 
   /**
@@ -371,9 +405,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param value the float value
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(float)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final float value) {
-    return of(String.valueOf(value));
+    return Component.text(value);
   }
 
   /**
@@ -383,9 +419,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param style the style
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(float, Style)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final float value, final @NonNull Style style) {
-    return of(String.valueOf(value), style);
+    return Component.text(value, style);
   }
 
   /**
@@ -395,9 +433,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param color the color
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(float, TextColor)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final float value, final @Nullable TextColor color) {
-    return of(String.valueOf(value), color);
+    return Component.text(value, color);
   }
 
   /**
@@ -408,9 +448,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(float, TextColor, TextDecoration...)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final float value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
-    return of(String.valueOf(value), color, decorations);
+    return Component.text(value, color, decorations);
   }
 
   /**
@@ -421,9 +463,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(float, TextColor, Set)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final float value, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
-    return of(String.valueOf(value), color, decorations);
+    return Component.text(value, color, decorations);
   }
 
   /**
@@ -432,9 +476,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param value the int value
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(int)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final int value) {
-    return of(String.valueOf(value));
+    return Component.text(value);
   }
 
   /**
@@ -444,9 +490,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param style the style
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(int, Style)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final int value, final @NonNull Style style) {
-    return of(String.valueOf(value), style);
+    return Component.text(value, style);
   }
 
   /**
@@ -456,9 +504,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param color the color
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(int, TextColor)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final int value, final @Nullable TextColor color) {
-    return of(String.valueOf(value), color);
+    return Component.text(value, color);
   }
 
   /**
@@ -469,9 +519,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(int, TextColor, TextDecoration...)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final int value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
-    return of(String.valueOf(value), color, decorations);
+    return Component.text(value, color, decorations);
   }
 
   /**
@@ -482,9 +534,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(int, TextColor, Set)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final int value, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
-    return of(String.valueOf(value), color, decorations);
+    return Component.text(value, color, decorations);
   }
 
   /**
@@ -493,9 +547,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param value the long value
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(long)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final long value) {
-    return of(String.valueOf(value));
+    return Component.text(value);
   }
 
   /**
@@ -505,9 +561,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param style the style
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(long, Style)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final long value, final @NonNull Style style) {
-    return of(String.valueOf(value), style);
+    return Component.text(value, style);
   }
 
   /**
@@ -517,9 +575,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param color the color
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(long, TextColor)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final long value, final @Nullable TextColor color) {
-    return of(String.valueOf(value), color);
+    return Component.text(value, color);
   }
 
   /**
@@ -530,9 +590,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(long, TextColor, TextDecoration...)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final long value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
-    return of(String.valueOf(value), color, decorations);
+    return Component.text(value, color, decorations);
   }
 
   /**
@@ -543,9 +605,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param decorations the decorations
    * @return a text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(long, TextColor, Set)}
    */
+  @Deprecated
   static @NonNull TextComponent of(final long value, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
-    return of(String.valueOf(value), color, decorations);
+    return Component.text(value, color, decorations);
   }
 
   /**
@@ -553,9 +617,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    *
    * @return a builder
    * @since 4.0.0
+   * @deprecated use {@link Component#text()}
    */
+  @Deprecated
   static @NonNull Builder builder() {
-    return new TextComponentImpl.BuilderImpl();
+    return Component.text();
   }
 
   /**
@@ -564,9 +630,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param content the plain text content
    * @return a builder
    * @since 4.0.0
+   * @deprecated no replacement
    */
+  @Deprecated
   static @NonNull Builder builder(final @NonNull String content) {
-    return builder().content(content);
+    return Component.text().content(content);
   }
 
   /**
@@ -576,9 +644,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param color the color
    * @return a builder
    * @since 4.0.0
+   * @deprecated no replacement
    */
+  @Deprecated
   static @NonNull Builder builder(final @NonNull String content, final @Nullable TextColor color) {
-    return builder(content).color(color);
+    return Component.text().content(content).color(color);
   }
 
   /**
@@ -587,10 +657,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param consumer the builder configurator
    * @return the text component
    * @since 4.0.0
+   * @deprecated use {@link Component#text(Consumer)}
    */
+  @Deprecated
   static @NonNull TextComponent make(final @NonNull Consumer<? super Builder> consumer) {
-    final Builder builder = builder();
-    return Buildable.configureAndBuild(builder, consumer);
+    return Component.text(consumer);
   }
 
   /**
@@ -600,9 +671,11 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param consumer the builder configurator
    * @return the text component
    * @since 4.0.0
+   * @deprecated no replacement
    */
+  @Deprecated
   static @NonNull TextComponent make(final @NonNull String content, final @NonNull Consumer<? super Builder> consumer) {
-    final Builder builder = builder(content);
+    final Builder builder = Component.text().content(content);
     return Buildable.configureAndBuild(builder, consumer);
   }
 

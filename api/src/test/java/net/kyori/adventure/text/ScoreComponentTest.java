@@ -32,12 +32,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class ScoreComponentTest extends AbstractComponentTest<ScoreComponent, ScoreComponent.Builder> {
   @Override
   ScoreComponent.Builder builder() {
-    return ScoreComponent.builder("test", "test");
+    return Component.score().name("test").objective("test");
   }
 
   @Test
   void testOf() {
-    final ScoreComponent component = ScoreComponent.of("abc", "def");
+    final ScoreComponent component = Component.score("abc", "def");
     assertEquals("abc", component.name());
     assertEquals("def", component.objective());
     assertNull(component.color());
@@ -46,7 +46,7 @@ class ScoreComponentTest extends AbstractComponentTest<ScoreComponent, ScoreComp
 
   @Test
   void testName() {
-    final ScoreComponent c0 = ScoreComponent.of("abc", "def");
+    final ScoreComponent c0 = Component.score("abc", "def");
     final ScoreComponent c1 = c0.name("ghi");
     assertEquals("abc", c0.name());
     assertEquals("ghi", c1.name());
@@ -55,7 +55,7 @@ class ScoreComponentTest extends AbstractComponentTest<ScoreComponent, ScoreComp
 
   @Test
   void testObjective() {
-    final ScoreComponent c0 = ScoreComponent.of("abc", "def");
+    final ScoreComponent c0 = Component.score("abc", "def");
     final ScoreComponent c1 = c0.objective("ghi");
     assertEquals("def", c0.objective());
     assertEquals("ghi", c1.objective());
@@ -64,7 +64,7 @@ class ScoreComponentTest extends AbstractComponentTest<ScoreComponent, ScoreComp
 
   @Test
   void testValue() {
-    final ScoreComponent c0 = ScoreComponent.of("abc", "def");
+    final ScoreComponent c0 = Component.score("abc", "def");
     final ScoreComponent c1 = c0.value("ghi");
     assertNull(c0.value());
     assertEquals("ghi", c1.value());

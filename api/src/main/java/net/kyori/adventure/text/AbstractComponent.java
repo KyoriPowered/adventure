@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.UnaryOperator;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
@@ -54,7 +54,7 @@ public abstract class AbstractComponent implements Component, Examinable {
     for(int i = 0, size = list.size(); i < size; i++) {
       final ComponentLike like = list.get(i);
       final Component component = like.asComponent();
-      if(component != TextComponent.empty()) {
+      if(component != Component.empty()) {
         components.add(component);
       }
     }
@@ -94,7 +94,7 @@ public abstract class AbstractComponent implements Component, Examinable {
   }
 
   @Override
-  public @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull UnaryOperator<TextComponent.Builder> replacement, final @NonNull IntFunction2<PatternReplacementResult> fn) {
+  public @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement, final @NonNull IntFunction2<PatternReplacementResult> fn) {
     return TextReplacementRenderer.INSTANCE.render(this, new TextReplacementRenderer.State(pattern, (result, builder) -> replacement.apply(builder), fn));
   }
 

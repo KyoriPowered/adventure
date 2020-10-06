@@ -49,9 +49,11 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param content the content
    * @return this builder
    * @since 4.0.0
+   * @deprecated no replacement
    */
+  @Deprecated
   default @NonNull B append(final @NonNull String content) {
-    return this.append(TextComponent.of(content));
+    return this.append(Component.text(content));
   }
 
   /**
@@ -61,9 +63,11 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param color the color
    * @return this builder
    * @since 4.0.0
+   * @deprecated no replacement
    */
+  @Deprecated
   default @NonNull B append(final @NonNull String content, final @NonNull TextColor color) {
-    return this.append(TextComponent.of(content, color));
+    return this.append(Component.text(content, color));
   }
 
   /**
@@ -74,9 +78,11 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param decorations the decorations
    * @return this builder
    * @since 4.0.0
+   * @deprecated no replacement
    */
-  default @NonNull B append(final @NonNull String content, final @NonNull TextColor color, final TextDecoration @NonNull ... decorations) {
-    return this.append(TextComponent.of(content, color, decorations));
+  @Deprecated
+  default @NonNull B append(final @NonNull String content, final @NonNull TextColor color, final TextDecoration@NonNull... decorations) {
+    return this.append(Component.text(content, color, decorations));
   }
 
   /**
@@ -86,9 +92,14 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @param builder the builder
    * @return this builder
    * @since 4.0.0
+   * @deprecated no replacement
    */
+  @Deprecated
   default @NonNull B append(final @NonNull String content, final @NonNull Consumer<? super TextComponent.Builder> builder) {
-    return this.append(TextComponent.make(content, builder));
+    return this.append(Component.text(text -> {
+      text.content(content);
+      builder.accept(text);
+    }));
   }
 
   /**
@@ -129,7 +140,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
-  @NonNull B append(final @NonNull Component @NonNull ... components);
+  @NonNull B append(final @NonNull Component@NonNull... components);
 
   /**
    * Appends components to this component.
@@ -138,7 +149,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
-  @NonNull B append(final @NonNull ComponentLike @NonNull ... components);
+  @NonNull B append(final @NonNull ComponentLike@NonNull... components);
 
   /**
    * Appends components to this component.
@@ -244,6 +255,32 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
   }
 
   /**
+   * Sets the state of {@code decoration} to {@link TextDecoration.State#TRUE}.
+   *
+   * @param decoration the decoration
+   * @return this builder
+   * @since 4.0.0
+   */
+  default @NonNull B decorate(final @NonNull TextDecoration decoration) {
+    return this.decoration(decoration, TextDecoration.State.TRUE);
+  }
+
+  /**
+   * Sets {@code decorations} to {@link TextDecoration.State#TRUE}.
+   *
+   * @param decorations the decorations
+   * @return this builder
+   * @since 4.0.0
+   */
+  @SuppressWarnings("unchecked")
+  default @NonNull B decorate(final @NonNull TextDecoration@NonNull... decorations) {
+    for(int i = 0, length = decorations.length; i < length; i++) {
+      this.decorate(decorations[i]);
+    }
+    return (B) this;
+  }
+
+  /**
    * Sets the state of a decoration on this component.
    *
    * @param decoration the decoration
@@ -315,7 +352,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
-  default @NonNull B mergeStyle(final @NonNull Component that, final Style.@NonNull Merge @NonNull ... merges) {
+  default @NonNull B mergeStyle(final @NonNull Component that, final Style.@NonNull Merge@NonNull... merges) {
     return this.mergeStyle(that, Style.Merge.of(merges));
   }
 

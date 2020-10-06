@@ -40,14 +40,14 @@ public interface ByteBinaryTag extends NumberBinaryTag {
    * @since 4.0.0
    */
   ByteBinaryTag ZERO = new ByteBinaryTagImpl((byte) 0);
-  
+
   /**
    * A tag with the value {@code 1}.
    *
    * @since 4.0.0
    */
   ByteBinaryTag ONE = new ByteBinaryTagImpl((byte) 1);
-  
+
   /**
    * Creates a binary tag holding a {@code byte} value.
    *

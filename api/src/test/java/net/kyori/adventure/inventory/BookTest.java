@@ -29,18 +29,17 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BookTest {
-  private static final Component TITLE = TextComponent.of("title");
-  private static final Component AUTHOR = TextComponent.of("author");
+  private static final Component TITLE = Component.text("title");
+  private static final Component AUTHOR = Component.text("author");
 
   private static Component page(final int index) {
-    return TextComponent.of("page." + index);
+    return Component.text("page." + index);
   }
 
   private static Stream<Component> pages(final int quantity) {
@@ -58,7 +57,7 @@ class BookTest {
 
   @Test
   void testTitle() {
-    final Book b0 = Book.of(TITLE, AUTHOR, arrayOfPages(1));
+    final Book b0 = Book.book(TITLE, AUTHOR, arrayOfPages(1));
     final Book b1 = b0.title(TITLE.color(NamedTextColor.RED));
     assertEquals(TITLE, b0.title());
     assertEquals(TITLE.color(NamedTextColor.RED), b1.title());
@@ -66,7 +65,7 @@ class BookTest {
 
   @Test
   void testAuthor() {
-    final Book b0 = Book.of(TITLE, AUTHOR, arrayOfPages(1));
+    final Book b0 = Book.book(TITLE, AUTHOR, arrayOfPages(1));
     final Book b1 = b0.author(AUTHOR.color(NamedTextColor.RED));
     assertEquals(AUTHOR, b0.author());
     assertEquals(AUTHOR.color(NamedTextColor.RED), b1.author());
@@ -74,7 +73,7 @@ class BookTest {
 
   @Test
   void testPages() {
-    final Book b0 = Book.of(TITLE, AUTHOR, arrayOfPages(1));
+    final Book b0 = Book.book(TITLE, AUTHOR, arrayOfPages(1));
     final Book b1 = b0.pages(arrayOfPages(2));
     assertEquals(listOfPages(1), b0.pages());
     assertEquals(listOfPages(2), b1.pages());
@@ -82,7 +81,7 @@ class BookTest {
 
   @Test
   void testRebuild() {
-    final Book book = Book.of(TITLE, AUTHOR, arrayOfPages(1));
+    final Book book = Book.book(TITLE, AUTHOR, arrayOfPages(1));
     assertEquals(book, book.toBuilder().build());
   }
 
@@ -93,26 +92,26 @@ class BookTest {
       .author(AUTHOR)
       .pages(arrayOfPages(2))
       .build();
-    assertEquals(Book.of(TITLE, AUTHOR, arrayOfPages(2)), b0);
+    assertEquals(Book.book(TITLE, AUTHOR, arrayOfPages(2)), b0);
     final Book b1 = Book.builder()
       .title(TITLE)
       .author(AUTHOR)
       .addPage(page(0))
       .addPage(page(1))
       .build();
-    assertEquals(Book.of(TITLE, AUTHOR, arrayOfPages(2)), b1);
+    assertEquals(Book.book(TITLE, AUTHOR, arrayOfPages(2)), b1);
   }
 
   @Test
   void testEquality() {
     new EqualsTester()
       .addEqualityGroup(
-        Book.of(TITLE, AUTHOR, arrayOfPages(1)),
-        Book.of(TITLE, AUTHOR, listOfPages(1))
+        Book.book(TITLE, AUTHOR, arrayOfPages(1)),
+        Book.book(TITLE, AUTHOR, listOfPages(1))
       )
       .addEqualityGroup(
-        Book.of(TITLE, AUTHOR, arrayOfPages(2)),
-        Book.of(TITLE, AUTHOR, listOfPages(2))
+        Book.book(TITLE, AUTHOR, arrayOfPages(2)),
+        Book.book(TITLE, AUTHOR, listOfPages(2))
       )
       .testEquals();
   }

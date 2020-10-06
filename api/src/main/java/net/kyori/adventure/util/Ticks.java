@@ -27,7 +27,7 @@ import java.time.Duration;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * Game tick utilities.
+ * Standard game tick utilities.
  *
  * @since 4.0.0
  */

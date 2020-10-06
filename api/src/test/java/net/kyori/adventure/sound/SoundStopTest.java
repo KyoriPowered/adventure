@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SoundStopTest {
-  private static final Key SOUND_KEY = Key.of("minecraft", "block.fence_gate.open");
+  private static final Key SOUND_KEY = Key.key("minecraft", "block.fence_gate.open");
   private static final Sound.Type SOUND_TYPE = () -> SOUND_KEY;
 
   @Test

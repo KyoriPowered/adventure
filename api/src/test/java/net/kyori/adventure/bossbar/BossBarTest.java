@@ -29,7 +29,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
@@ -69,11 +68,11 @@ public class BossBarTest {
       BossBarTest.this.flags.incrementAndGet();
     }
   };
-  private final BossBar bar = BossBar.of(TextComponent.empty(), 1f, BossBar.Color.PURPLE, BossBar.Overlay.PROGRESS);
+  private final BossBar bar = BossBar.bossBar(Component.empty(), 1f, BossBar.Color.PURPLE, BossBar.Overlay.PROGRESS);
 
   @Test
   void testOfFlags() {
-    final BossBar bar = BossBar.of(TextComponent.empty(), 1f, BossBar.Color.PURPLE, BossBar.Overlay.PROGRESS, ImmutableSet.of(BossBar.Flag.DARKEN_SCREEN));
+    final BossBar bar = BossBar.bossBar(Component.empty(), 1f, BossBar.Color.PURPLE, BossBar.Overlay.PROGRESS, ImmutableSet.of(BossBar.Flag.DARKEN_SCREEN));
     assertThat(bar.flags()).containsExactly(BossBar.Flag.DARKEN_SCREEN);
   }
 
@@ -81,14 +80,14 @@ public class BossBarTest {
 
   @Test
   void testName() {
-    assertEquals(TextComponent.of("A"), this.bar.name(TextComponent.of("A")).name());
+    assertEquals(Component.text("A"), this.bar.name(Component.text("A")).name());
     assertEquals(0, this.name.get());
 
     this.bar.addListener(this.listener);
-    assertEquals(TextComponent.of("B"), this.bar.name(TextComponent.of("B")).name());
+    assertEquals(Component.text("B"), this.bar.name(Component.text("B")).name());
     assertEquals(1, this.name.get());
 
-    assertEquals(TextComponent.of("B"), this.bar.name(TextComponent.of("B")).name());
+    assertEquals(Component.text("B"), this.bar.name(Component.text("B")).name());
     assertEquals(1, this.name.get()); // value has not changed, should not have incremented
   }
 

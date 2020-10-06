@@ -26,8 +26,7 @@ package net.kyori.adventure.translation;
 import com.google.common.collect.ImmutableList;
 import java.text.MessageFormat;
 import java.util.Locale;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
@@ -83,10 +82,9 @@ class TranslationRegistryTest {
   @Test
   void testRender_simple() {
     assertEquals(
-      TextComponent.of("This is a test.", NamedTextColor.YELLOW),
+      Component.text("This is a test.", NamedTextColor.YELLOW),
       RENDERER.render(
-        TranslatableComponent
-          .builder()
+        Component.translatable()
           .key("test")
           .color(NamedTextColor.YELLOW)
           .build(),
@@ -98,20 +96,19 @@ class TranslationRegistryTest {
   @Test
   void testRender_complex() {
     assertEquals(
-      TextComponent.builder("")
+      Component.text().content("")
         .color(NamedTextColor.YELLOW)
-        .append(TextComponent.of("kashike"))
-        .append(TextComponent.of(" and '"))
-        .append(TextComponent.of("lucko"))
-        .append(TextComponent.of("' are cats."))
+        .append(Component.text("kashike"))
+        .append(Component.text(" and '"))
+        .append(Component.text("lucko"))
+        .append(Component.text("' are cats."))
         .build(),
       RENDERER.render(
-        TranslatableComponent
-          .builder()
+        Component.translatable()
           .key("cats")
           .args(
-            TextComponent.of("kashike"),
-            TextComponent.of("lucko")
+            Component.text("kashike"),
+            Component.text("lucko")
           )
           .color(NamedTextColor.YELLOW)
           .build(),
@@ -123,37 +120,36 @@ class TranslationRegistryTest {
   @Test
   void testRender_veryComplex() {
     assertEquals(
-      TextComponent.builder("")
+      Component.text().content("")
         .color(NamedTextColor.YELLOW)
-        .append(TextComponent.of("This is a test."))
+        .append(Component.text("This is a test."))
         .append(
-          TextComponent.of("")
-            .append(TextComponent.of("kashike"))
-            .append(TextComponent.of(" and '"))
-            .append(TextComponent.of("lucko"))
-            .append(TextComponent.of("' are cats."))
-            .append(TextComponent.space())
-            .append(TextComponent.of("Meow!"))
-            .hoverEvent(HoverEvent.showText(TextComponent.of("This is a test.")))
+          Component.text("")
+            .append(Component.text("kashike"))
+            .append(Component.text(" and '"))
+            .append(Component.text("lucko"))
+            .append(Component.text("' are cats."))
+            .append(Component.space())
+            .append(Component.text("Meow!"))
+            .hoverEvent(HoverEvent.showText(Component.text("This is a test.")))
         )
         .build(),
       RENDERER.render(
-        TextComponent
-          .builder("")
+        Component.text()
+          .content("")
           .append(
-            TranslatableComponent.of("test")
+            Component.translatable("test")
           )
           .append(
-            TranslatableComponent
-              .builder()
+            Component.translatable()
               .key("cats")
               .args(
-                TextComponent.of("kashike"),
-                TextComponent.of("lucko")
+                Component.text("kashike"),
+                Component.text("lucko")
               )
-              .hoverEvent(HoverEvent.showText(TranslatableComponent.of("test")))
-              .append(TextComponent.space())
-              .append(TextComponent.of("Meow!"))
+              .hoverEvent(HoverEvent.showText(Component.translatable("test")))
+              .append(Component.space())
+              .append(Component.text("Meow!"))
               .build()
           )
           .color(NamedTextColor.YELLOW)
@@ -166,26 +162,26 @@ class TranslationRegistryTest {
   @Test
   void testUnknownTranslatableWithKnownArgsAndChildren() {
     assertEquals(
-      TranslatableComponent.of("some.unknown.key")
+      Component.translatable("some.unknown.key")
         .args(
-          TextComponent.of("")
-            .append(TextComponent.of("kashike"))
-            .append(TextComponent.of(" and '"))
-            .append(TextComponent.of("lucko"))
-            .append(TextComponent.of("' are cats."))
+          Component.text("")
+            .append(Component.text("kashike"))
+            .append(Component.text(" and '"))
+            .append(Component.text("lucko"))
+            .append(Component.text("' are cats."))
         )
-        .append(TextComponent.of("This is a test.")),
+        .append(Component.text("This is a test.")),
       RENDERER.render(
-        TranslatableComponent.of("some.unknown.key")
+        Component.translatable("some.unknown.key")
           .args(ImmutableList.of(
-            TranslatableComponent.of("cats")
+            Component.translatable("cats")
               .args(
-                TextComponent.of("kashike"),
-                TextComponent.of("lucko")
+                Component.text("kashike"),
+                Component.text("lucko")
               )
           ))
           .children(ImmutableList.of(
-            TranslatableComponent.of("test")
+            Component.translatable("test")
           )),
         Locale.US
       )

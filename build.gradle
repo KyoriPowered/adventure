@@ -33,7 +33,7 @@ subprojects {
 
   checkstyle {
     def configRoot = new File(rootProject.projectDir, '.checkstyle')
-    toolVersion = '8.34'
+    toolVersion = '8.36.2'
     configDirectory = configRoot
     configProperties = [basedir: configRoot.getAbsolutePath()]
   }
@@ -55,8 +55,8 @@ subprojects {
     testImplementation 'com.google.guava:guava-testlib:29.0-jre'
     testImplementation 'com.google.truth:truth:1.0.1'
     testImplementation 'com.google.truth.extensions:truth-java8-extension:1.0.1'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
   }
 
   inventSonatypeRepository.enabled = System.getenv('GITHUB_ACTIONS') == null || project.version.endsWith('-SNAPSHOT')

@@ -58,7 +58,7 @@ public interface BossBar {
    * @throws IllegalArgumentException if percent is less than 0 or greater than 1
    * @since 4.0.0
    */
-  static @NonNull BossBar of(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay) {
+  static @NonNull BossBar bossBar(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay) {
     BossBarImpl.checkPercent(percent);
     return new BossBarImpl(name, percent, color, overlay);
   }
@@ -75,9 +75,44 @@ public interface BossBar {
    * @throws IllegalArgumentException if percent is less than 0 or greater than 1
    * @since 4.0.0
    */
-  static @NonNull BossBar of(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay, final @NonNull Set<Flag> flags) {
+  static @NonNull BossBar bossBar(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay, final @NonNull Set<Flag> flags) {
     BossBarImpl.checkPercent(percent);
     return new BossBarImpl(name, percent, color, overlay, flags);
+  }
+
+  /**
+   * Creates a new bossbar.
+   *
+   * @param name the name
+   * @param percent the percent, between 0 and 1
+   * @param color the color
+   * @param overlay the overlay
+   * @return a bossbar
+   * @throws IllegalArgumentException if percent is less than 0 or greater than 1
+   * @since 4.0.0
+   * @deprecated use {@link #bossBar(Component, float, Color, Overlay)}
+   */
+  @Deprecated
+  static @NonNull BossBar of(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay) {
+    return bossBar(name, percent, color, overlay);
+  }
+
+  /**
+   * Creates a new bossbar.
+   *
+   * @param name the name
+   * @param percent the percent, between 0 and 1
+   * @param color the color
+   * @param overlay the overlay
+   * @param flags the flags
+   * @return a bossbar
+   * @throws IllegalArgumentException if percent is less than 0 or greater than 1
+   * @since 4.0.0
+   * @deprecated use {@link #bossBar(Component, float, Color, Overlay, Set)}
+   */
+  @Deprecated
+  static @NonNull BossBar of(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay, final @NonNull Set<Flag> flags) {
+    return bossBar(name, percent, color, overlay, flags);
   }
 
   /**

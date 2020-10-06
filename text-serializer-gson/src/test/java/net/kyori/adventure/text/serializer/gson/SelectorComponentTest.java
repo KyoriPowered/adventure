@@ -26,6 +26,7 @@ package net.kyori.adventure.text.serializer.gson;
 import com.google.gson.JsonElement;
 import java.util.Map;
 import java.util.stream.Stream;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.SelectorComponent;
 
 class SelectorComponentTest extends AbstractComponentTest<SelectorComponent> {
@@ -34,7 +35,7 @@ class SelectorComponentTest extends AbstractComponentTest<SelectorComponent> {
   @Override
   Stream<Map.Entry<SelectorComponent, JsonElement>> tests() {
     return Stream.of(
-      entry(SelectorComponent.of(SELECTOR), json -> json.addProperty(ComponentSerializerImpl.SELECTOR, SELECTOR))
+      entry(Component.selector(SELECTOR), json -> json.addProperty(ComponentSerializerImpl.SELECTOR, SELECTOR))
     );
   }
 }

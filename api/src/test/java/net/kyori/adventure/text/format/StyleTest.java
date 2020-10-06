@@ -33,7 +33,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.junit.jupiter.api.Test;
@@ -72,31 +72,30 @@ class StyleTest {
 
   @Test
   void testOfApplicables() {
-    assertEquals(Style.empty(), Style.of());
-    final Style s0 = Style.of(
-      TextColor.of(0x00aa00),
+    final Style s0 = Style.style(
+      TextColor.color(0x00aa00),
       TextDecoration.BOLD,
-      HoverEvent.showText(TextComponent.empty())
+      HoverEvent.showText(Component.empty())
     );
-    final Style s1 = Style.of(ImmutableList.of(
-      TextColor.of(0x00aa00),
+    final Style s1 = Style.style(ImmutableList.of(
+      TextColor.color(0x00aa00),
       TextDecoration.BOLD,
-      HoverEvent.showText(TextComponent.empty())
+      HoverEvent.showText(Component.empty())
     ));
-    assertEquals(TextColor.of(0x00aa00), s0.color());
+    assertEquals(TextColor.color(0x00aa00), s0.color());
     assertThat(s0.decorations()).containsEntry(TextDecoration.BOLD, TextDecoration.State.TRUE);
     assertEquals(s0, s1);
   }
 
   @Test
   void testOfColor() {
-    assertSame(Style.empty(), Style.of((TextColor) null));
-    assertEquals(NamedTextColor.GREEN, Style.of(NamedTextColor.GREEN).color());
+    assertSame(Style.empty(), Style.style((TextColor) null));
+    assertEquals(NamedTextColor.GREEN, Style.style(NamedTextColor.GREEN).color());
   }
 
   @Test
-  void testMake() {
-    final Style s0 = Style.make(builder -> {
+  void testStyle_Consumer() {
+    final Style s0 = Style.style(builder -> {
       builder.color(NamedTextColor.RED);
       builder.decoration(TextDecoration.BOLD, true);
     });
@@ -108,7 +107,7 @@ class StyleTest {
   void testHasDecoration() {
     final Style s0 = Style.empty();
     assertFalse(s0.hasDecoration(TextDecoration.BOLD));
-    final Style s1 = Style.of(TextDecoration.BOLD);
+    final Style s1 = Style.style(TextDecoration.BOLD);
     assertTrue(s1.hasDecoration(TextDecoration.BOLD));
   }
 
@@ -123,21 +122,21 @@ class StyleTest {
 
   @Test
   void testOf_decorations() {
-    final Style s0 = Style.of(TextDecoration.BOLD, TextDecoration.ITALIC);
+    final Style s0 = Style.style(TextDecoration.BOLD, TextDecoration.ITALIC);
     assertNull(s0.color());
     assertDecorations(s0, ImmutableSet.of(TextDecoration.BOLD, TextDecoration.ITALIC), ImmutableSet.of());
   }
 
   @Test
   void testOf_colorAndDecorations() {
-    final Style s0 = Style.of(NamedTextColor.GREEN, TextDecoration.BOLD, TextDecoration.ITALIC);
+    final Style s0 = Style.style(NamedTextColor.GREEN, TextDecoration.BOLD, TextDecoration.ITALIC);
     assertEquals(NamedTextColor.GREEN, s0.color());
     assertDecorations(s0, ImmutableSet.of(TextDecoration.BOLD, TextDecoration.ITALIC), ImmutableSet.of());
   }
 
   @Test
   void testColorIfAbsent() {
-    assertEquals(NamedTextColor.GREEN, Style.of(NamedTextColor.GREEN).colorIfAbsent(NamedTextColor.RED).color());
+    assertEquals(NamedTextColor.GREEN, Style.style(NamedTextColor.GREEN).colorIfAbsent(NamedTextColor.RED).color());
     assertEquals(NamedTextColor.RED, Style.empty().colorIfAbsent(NamedTextColor.RED).color());
   }
 
@@ -153,7 +152,7 @@ class StyleTest {
   @Test
   void testDecorations() {
     assertThat(Style.empty().decorations()).containsExactlyEntriesIn(NOT_SET);
-    assertThat(Style.of(TextDecoration.BOLD).decorations()).containsEntry(TextDecoration.BOLD, TextDecoration.State.TRUE);
+    assertThat(Style.style(TextDecoration.BOLD).decorations()).containsEntry(TextDecoration.BOLD, TextDecoration.State.TRUE);
   }
 
   @Test
@@ -167,7 +166,7 @@ class StyleTest {
   @Test
   void testMerge() {
     final Style s0 = Style.empty();
-    final Style s1 = s0.merge(Style.of(NamedTextColor.DARK_PURPLE));
+    final Style s1 = s0.merge(Style.style(NamedTextColor.DARK_PURPLE));
     assertEquals(NamedTextColor.DARK_PURPLE, s1.color());
     assertDecorations(s1, ImmutableSet.of(), ImmutableSet.of());
     assertNull(s1.clickEvent());
@@ -177,7 +176,7 @@ class StyleTest {
   @Test
   void testMerge_none() {
     final Style s0 = Style.empty();
-    final Style s1 = s0.merge(Style.of(NamedTextColor.DARK_PURPLE), Style.Merge.of());
+    final Style s1 = s0.merge(Style.style(NamedTextColor.DARK_PURPLE), Style.Merge.of());
     assertNull(s1.color());
     assertDecorations(s1, ImmutableSet.of(), ImmutableSet.of());
     assertNull(s1.clickEvent());
@@ -224,7 +223,7 @@ class StyleTest {
     assertEquals(s0, s1.insertion(null));
   }
 
-  private static final Key TEST_FONT = Key.of("kyori", "kittenmoji");
+  private static final Key TEST_FONT = Key.key("kyori", "kittenmoji");
 
   @Test
   void testMerge_font() {
@@ -237,7 +236,7 @@ class StyleTest {
   }
 
   private static Style merge(final Style a, final Style.Merge merge) {
-    final Style b = Style.builder()
+    final Style b = Style.style()
       .color(NamedTextColor.RED)
       .decoration(TextDecoration.BOLD, true)
       .clickEvent(ClickEvent.runCommand("/foo"))
@@ -249,34 +248,34 @@ class StyleTest {
 
   @Test
   void testMergeStrategy() {
-    final Style s0 = Style.of(NamedTextColor.BLACK);
-    final Style s1 = s0.merge(Style.of(NamedTextColor.DARK_PURPLE), Style.Merge.Strategy.ALWAYS);
+    final Style s0 = Style.style(NamedTextColor.BLACK);
+    final Style s1 = s0.merge(Style.style(NamedTextColor.DARK_PURPLE), Style.Merge.Strategy.ALWAYS);
     assertEquals(NamedTextColor.DARK_PURPLE, s1.color());
-    final Style s2 = s0.merge(Style.of(NamedTextColor.DARK_PURPLE), Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
+    final Style s2 = s0.merge(Style.style(NamedTextColor.DARK_PURPLE), Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
     assertEquals(NamedTextColor.BLACK, s2.color());
   }
 
   @Test
   void testBuilderColorIfAbsent() {
-    assertEquals(NamedTextColor.GREEN, Style.builder().colorIfAbsent(NamedTextColor.GREEN).build().color());
-    assertEquals(NamedTextColor.GREEN, Style.builder().color(NamedTextColor.GREEN).colorIfAbsent(NamedTextColor.RED).build().color());
+    assertEquals(NamedTextColor.GREEN, Style.style().colorIfAbsent(NamedTextColor.GREEN).build().color());
+    assertEquals(NamedTextColor.GREEN, Style.style().color(NamedTextColor.GREEN).colorIfAbsent(NamedTextColor.RED).build().color());
   }
 
   @Test
   void testBuilderDecoration() {
     for(final TextDecoration decoration : TextDecoration.values()) {
-      assertDecorations(Style.builder().decoration(decoration, true).build(), ImmutableSet.of(decoration), ImmutableSet.of());
+      assertDecorations(Style.style().decoration(decoration, true).build(), ImmutableSet.of(decoration), ImmutableSet.of());
     }
   }
 
   @Test
   void testBuilderMerge_none() {
-    final Style style = Style.of(NamedTextColor.DARK_PURPLE);
-    doWith(Style.builder(), builder -> {
+    final Style style = Style.style(NamedTextColor.DARK_PURPLE);
+    doWith(Style.style(), builder -> {
       builder.merge(style, new Style.Merge[0]);
       assertEquals(Style.empty(), builder.build());
     });
-    doWith(Style.builder(), builder -> {
+    doWith(Style.style(), builder -> {
       builder.merge(style, ImmutableSet.of());
       assertEquals(Style.empty(), builder.build());
     });
@@ -284,8 +283,8 @@ class StyleTest {
 
   @Test
   void testBuilderMerge_all() {
-    final Style style = Style.of(NamedTextColor.DARK_PURPLE, TextDecoration.BOLD);
-    doWith(Style.builder(), builder -> {
+    final Style style = Style.style(NamedTextColor.DARK_PURPLE, TextDecoration.BOLD);
+    doWith(Style.style(), builder -> {
       builder.merge(style);
       assertEquals(style, builder.build());
     });
@@ -293,14 +292,14 @@ class StyleTest {
 
   @Test
   void testBuilderMerge_color() {
-    final Style style = Style.of(NamedTextColor.DARK_PURPLE, TextDecoration.BOLD);
-    doWith(Style.builder(), builder -> {
+    final Style style = Style.style(NamedTextColor.DARK_PURPLE, TextDecoration.BOLD);
+    doWith(Style.style(), builder -> {
       builder.merge(style, Style.Merge.COLOR);
-      assertEquals(Style.of(NamedTextColor.DARK_PURPLE), builder.build());
+      assertEquals(Style.style(NamedTextColor.DARK_PURPLE), builder.build());
     });
-    doWith(Style.builder(), builder -> {
+    doWith(Style.style(), builder -> {
       builder.merge(style, ImmutableSet.of(Style.Merge.COLOR));
-      assertEquals(Style.of(NamedTextColor.DARK_PURPLE), builder.build());
+      assertEquals(Style.style(NamedTextColor.DARK_PURPLE), builder.build());
     });
   }
 
@@ -309,16 +308,16 @@ class StyleTest {
     new EqualsTester()
       .addEqualityGroup(
         Style.empty(),
-        Style.builder().build(),
-        Style.builder().color(NamedTextColor.DARK_PURPLE).color(null).build()
+        Style.style().build(),
+        Style.style().color(NamedTextColor.DARK_PURPLE).color(null).build()
       )
       .addEqualityGroup(
-        Style.of(NamedTextColor.LIGHT_PURPLE),
-        Style.of(NamedTextColor.LIGHT_PURPLE, ImmutableSet.of())
+        Style.style(NamedTextColor.LIGHT_PURPLE),
+        Style.style(NamedTextColor.LIGHT_PURPLE, ImmutableSet.of())
       )
       .addEqualityGroup(
-        Style.of(NamedTextColor.DARK_PURPLE, TextDecoration.BOLD),
-        Style.of(NamedTextColor.DARK_PURPLE, ImmutableSet.of(TextDecoration.BOLD))
+        Style.style(NamedTextColor.DARK_PURPLE, TextDecoration.BOLD),
+        Style.style(NamedTextColor.DARK_PURPLE, ImmutableSet.of(TextDecoration.BOLD))
       )
       .testEquals();
   }

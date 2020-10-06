@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -45,9 +44,11 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    *
    * @return a builder
    * @since 4.0.0
+   * @deprecated use {@link Component#translatable()}
    */
+  @Deprecated
   static @NonNull Builder builder() {
-    return new TranslatableComponentImpl.BuilderImpl();
+    return Component.translatable();
   }
 
   /**
@@ -56,9 +57,11 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param key the translation key
    * @return a builder
    * @since 4.0.0
+   * @deprecated no replacement
    */
+  @Deprecated
   static @NonNull Builder builder(final @NonNull String key) {
-    return builder().key(key);
+    return Component.translatable().key(key);
   }
 
   /**
@@ -67,9 +70,11 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param key the translation key
    * @return a translatable component
    * @since 4.0.0
+   * @deprecated use {@link Component#translatable(String)}
    */
+  @Deprecated
   static @NonNull TranslatableComponent of(final @NonNull String key) {
-    return of(key, Style.empty());
+    return Component.translatable(key);
   }
 
   /**
@@ -79,9 +84,11 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param style the style
    * @return a translatable component
    * @since 4.0.0
+   * @deprecated use {@link Component#translatable(String, Style)}
    */
+  @Deprecated
   static @NonNull TranslatableComponent of(final @NonNull String key, final @NonNull Style style) {
-    return new TranslatableComponentImpl(Collections.emptyList(), style, key, Collections.emptyList());
+    return Component.translatable(key, style);
   }
 
   /**
@@ -91,9 +98,11 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param color the color
    * @return a translatable component
    * @since 4.0.0
+   * @deprecated use {@link Component#translatable(String, TextColor)}
    */
+  @Deprecated
   static @NonNull TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color) {
-    return of(key, Style.of(color));
+    return Component.translatable(key, color);
   }
 
   /**
@@ -104,9 +113,11 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param decorations the decorations
    * @return a translatable component
    * @since 4.0.0
+   * @deprecated use {@link Component#translatable(String, TextColor, TextDecoration...)}
    */
+  @Deprecated
   static @NonNull TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
-    return of(key, Style.of(color, decorations));
+    return Component.translatable(key, color, decorations);
   }
 
   /**
@@ -117,9 +128,11 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param decorations the decorations
    * @return a translatable component
    * @since 4.0.0
+   * @deprecated use {@link Component#translatable(String, TextColor, Set)}
    */
+  @Deprecated
   static @NonNull TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
-    return of(key, Style.of(color, decorations));
+    return Component.translatable(key, color, decorations);
   }
 
   /**
@@ -129,9 +142,11 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.0.0
+   * @deprecated use {@link Component#translatable(String, ComponentLike...)}
    */
+  @Deprecated
   static @NonNull TranslatableComponent of(final @NonNull String key, final @NonNull ComponentLike@NonNull... args) {
-    return of(key, Style.empty(), args);
+    return Component.translatable(key, args);
   }
 
   /**
@@ -142,9 +157,11 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.0.0
+   * @deprecated use {@link Component#translatable(String, Style, ComponentLike...)}
    */
+  @Deprecated
   static @NonNull TranslatableComponent of(final @NonNull String key, final @NonNull Style style, final @NonNull ComponentLike@NonNull... args) {
-    return new TranslatableComponentImpl(Collections.emptyList(), style, key, args);
+    return Component.translatable(key, style, args);
   }
 
   /**
@@ -155,9 +172,11 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.0.0
+   * @deprecated use {@link Component#translatable(String, TextColor, ComponentLike...)}
    */
+  @Deprecated
   static @NonNull TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final @NonNull ComponentLike@NonNull... args) {
-    return of(key, Style.of(color), args);
+    return Component.translatable(key, color, args);
   }
 
   /**
@@ -169,9 +188,11 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.0.0
+   * @deprecated use {@link Component#translatable(String, TextColor, Set, ComponentLike...)}
    */
+  @Deprecated
   static @NonNull TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations, final @NonNull ComponentLike@NonNull... args) {
-    return of(key, Style.of(color, decorations), args);
+    return Component.translatable(key, color, decorations, args);
   }
 
   /**
@@ -181,9 +202,11 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.0.0
+   * @deprecated use {@link Component#translatable(String, List)}
    */
+  @Deprecated
   static @NonNull TranslatableComponent of(final @NonNull String key, final @NonNull List<? extends ComponentLike> args) {
-    return new TranslatableComponentImpl(Collections.emptyList(), Style.empty(), key, args);
+    return Component.translatable(key, args);
   }
 
   /**
@@ -194,9 +217,11 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.0.0
+   * @deprecated use {@link Component#translatable(String, Style, List)}
    */
+  @Deprecated
   static @NonNull TranslatableComponent of(final @NonNull String key, final @NonNull Style style, final @NonNull List<? extends ComponentLike> args) {
-    return new TranslatableComponentImpl(Collections.emptyList(), style, key, args);
+    return Component.translatable(key, style, args);
   }
 
   /**
@@ -207,9 +232,11 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.0.0
+   * @deprecated use {@link Component#translatable(String, TextColor, List)}
    */
+  @Deprecated
   static TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final @NonNull List<? extends ComponentLike> args) {
-    return of(key, Style.of(color), args);
+    return Component.translatable(key, color, args);
   }
 
   /**
@@ -221,9 +248,11 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.0.0
+   * @deprecated use {@link Component#translatable(String, TextColor, Set, List)}
    */
+  @Deprecated
   static @NonNull TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations, final @NonNull List<? extends ComponentLike> args) {
-    return of(key, Style.of(color, decorations), args);
+    return Component.translatable(key, color, decorations, args);
   }
 
   /**
@@ -232,10 +261,11 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param consumer the builder configurator
    * @return a translatable component
    * @since 4.0.0
+   * @deprecated use {@link Component#translatable(Consumer)}
    */
+  @Deprecated
   static @NonNull TranslatableComponent make(final @NonNull Consumer<? super Builder> consumer) {
-    final Builder builder = builder();
-    return Buildable.configureAndBuild(builder, consumer);
+    return Component.translatable(consumer);
   }
 
   /**
@@ -245,9 +275,11 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param consumer the builder configurator
    * @return a translatable component
    * @since 4.0.0
+   * @deprecated no replacement
    */
+  @Deprecated
   static @NonNull TranslatableComponent make(final @NonNull String key, final @NonNull Consumer<? super Builder> consumer) {
-    final Builder builder = builder(key);
+    final Builder builder = Component.translatable().key(key);
     return Buildable.configureAndBuild(builder, consumer);
   }
 
@@ -259,9 +291,11 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param consumer the builder configurator
    * @return a translatable component
    * @since 4.0.0
+   * @deprecated no replacement
    */
+  @Deprecated
   static @NonNull TranslatableComponent make(final @NonNull String key, final @NonNull List<? extends ComponentLike> args, final @NonNull Consumer<? super Builder> consumer) {
-    final Builder builder = builder(key).args(args);
+    final Builder builder = Component.translatable().key(key).args(args);
     return Buildable.configureAndBuild(builder, consumer);
   }
 

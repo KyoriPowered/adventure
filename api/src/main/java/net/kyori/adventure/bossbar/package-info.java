@@ -22,6 +22,6 @@
  * SOFTWARE.
  */
 /**
- * Boss bars
+ * Boss bars.
  */
 package net.kyori.adventure.bossbar;

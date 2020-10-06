@@ -33,7 +33,7 @@ import net.kyori.adventure.util.Index;
 final class IndexedSerializer<E> extends TypeAdapter<E> {
   private final String name;
   private final Index<String, E> map;
-  
+
   public static <E> TypeAdapter<E> of(final String name, final Index<String, E> map) {
     return new IndexedSerializer<>(name, map).nullSafe();
   }

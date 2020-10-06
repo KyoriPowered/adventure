@@ -33,24 +33,24 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class StorageNBTComponentTest extends AbstractNBTComponentTest<StorageNBTComponent, StorageNBTComponent.Builder> {
   @Override
   StorageNBTComponent.Builder builder() {
-    return StorageNBTComponent.builder().nbtPath("abc").storage(Key.of("def"));
+    return Component.storageNBT().nbtPath("abc").storage(Key.key("def"));
   }
 
   @Test
   void testOf() {
-    final StorageNBTComponent component = StorageNBTComponent.of("abc", Key.of("def"));
+    final StorageNBTComponent component = Component.storageNBT("abc", Key.key("def"));
     assertEquals("abc", component.nbtPath());
-    assertEquals(Key.of("def"), component.storage());
+    assertEquals(Key.key("def"), component.storage());
     assertNull(component.color());
     TextAssertions.assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
   }
 
   @Test
   void testSelector() {
-    final StorageNBTComponent c0 = StorageNBTComponent.of("abc", Key.of("def:ghi"));
-    final StorageNBTComponent c1 = c0.storage(Key.of("ghi:jkl"));
-    assertEquals(Key.of("def:ghi"), c0.storage());
-    assertEquals(Key.of("ghi:jkl"), c1.storage());
+    final StorageNBTComponent c0 = Component.storageNBT("abc", Key.key("def:ghi"));
+    final StorageNBTComponent c1 = c0.storage(Key.key("ghi:jkl"));
+    assertEquals(Key.key("def:ghi"), c0.storage());
+    assertEquals(Key.key("ghi:jkl"), c1.storage());
     assertEquals("abc", c1.nbtPath());
   }
 }

@@ -30,7 +30,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class StyleTest extends AbstractSerializeDeserializeTest<Style> {
-  private static final Key FANCY_FONT = Key.of("kyori", "kittens");
+  private static final Key FANCY_FONT = Key.key("kyori", "kittens");
 
   @Test
   void testWithDecorationAsColor() {
@@ -69,12 +69,12 @@ class StyleTest extends AbstractSerializeDeserializeTest<Style> {
     final UUID dolores = UUID.randomUUID();
     return Stream.of(
       entry(Style.empty(), json -> {}),
-      entry(Style.of(TextColor.of(0x0a1ab9)), json -> json.addProperty(StyleSerializer.COLOR, "#0a1ab9")),
-      entry(Style.of(NamedTextColor.LIGHT_PURPLE), json -> json.addProperty(StyleSerializer.COLOR, name(NamedTextColor.LIGHT_PURPLE))),
-      entry(Style.of(TextDecoration.BOLD), json -> json.addProperty(name(TextDecoration.BOLD), true)),
-      entry(Style.builder().insertion("honk").build(), json -> json.addProperty(StyleSerializer.INSERTION, "honk")),
+      entry(Style.style(TextColor.color(0x0a1ab9)), json -> json.addProperty(StyleSerializer.COLOR, "#0a1ab9")),
+      entry(Style.style(NamedTextColor.LIGHT_PURPLE), json -> json.addProperty(StyleSerializer.COLOR, name(NamedTextColor.LIGHT_PURPLE))),
+      entry(Style.style(TextDecoration.BOLD), json -> json.addProperty(name(TextDecoration.BOLD), true)),
+      entry(Style.style().insertion("honk").build(), json -> json.addProperty(StyleSerializer.INSERTION, "honk")),
       entry(
-        Style.builder()
+        Style.style()
           .font(FANCY_FONT)
           .color(NamedTextColor.RED)
           .decoration(TextDecoration.BOLD, true)
@@ -91,11 +91,11 @@ class StyleTest extends AbstractSerializeDeserializeTest<Style> {
         }
       ),
       entry(
-        Style.builder()
+        Style.style()
           .hoverEvent(HoverEvent.showEntity(HoverEvent.ShowEntity.of(
-            Key.of(Key.MINECRAFT_NAMESPACE, "pig"),
+            Key.key(Key.MINECRAFT_NAMESPACE, "pig"),
             dolores,
-            TextComponent.of("Dolores", TextColor.of(0x0a1ab9))
+            Component.text("Dolores", TextColor.color(0x0a1ab9))
           )))
           .build(),
         json -> {
@@ -119,9 +119,9 @@ class StyleTest extends AbstractSerializeDeserializeTest<Style> {
 
   private static Map.Entry<Style, JsonElement> showItem(final int count) {
     return entry(
-      Style.builder()
+      Style.style()
         .hoverEvent(HoverEvent.showItem(HoverEvent.ShowItem.of(
-          Key.of(Key.MINECRAFT_NAMESPACE, "stone"),
+          Key.key(Key.MINECRAFT_NAMESPACE, "stone"),
           count,
           null // TODO: test for NBT?
         )))

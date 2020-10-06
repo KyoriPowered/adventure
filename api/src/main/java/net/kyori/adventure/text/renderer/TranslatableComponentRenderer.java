@@ -28,6 +28,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.BuildableComponent;
 import net.kyori.adventure.text.Component;
@@ -62,6 +63,8 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
     }
   };
 
+  private static final Set<Style.Merge> MERGES = Style.Merge.of(Style.Merge.COLOR, Style.Merge.DECORATIONS, Style.Merge.INSERTION, Style.Merge.FONT);
+
   /**
    * Gets the default translatable component renderer.
    *
@@ -84,21 +87,21 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
 
   @Override
   protected @NonNull Component renderBlockNbt(final @NonNull BlockNBTComponent component, final @NonNull C context) {
-    final BlockNBTComponent.Builder builder = nbt(BlockNBTComponent.builder(), component)
+    final BlockNBTComponent.Builder builder = nbt(Component.blockNBT(), component)
       .pos(component.pos());
     return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
   @Override
   protected @NonNull Component renderEntityNbt(final @NonNull EntityNBTComponent component, final @NonNull C context) {
-    final EntityNBTComponent.Builder builder = nbt(EntityNBTComponent.builder(), component)
+    final EntityNBTComponent.Builder builder = nbt(Component.entityNBT(), component)
       .selector(component.selector());
     return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
   @Override
   protected @NonNull Component renderStorageNbt(final @NonNull StorageNBTComponent component, final @NonNull C context) {
-    final StorageNBTComponent.Builder builder = nbt(StorageNBTComponent.builder(), component)
+    final StorageNBTComponent.Builder builder = nbt(Component.storageNBT(), component)
       .storage(component.storage());
     return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
@@ -111,13 +114,13 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
 
   @Override
   protected @NonNull Component renderKeybind(final @NonNull KeybindComponent component, final @NonNull C context) {
-    final KeybindComponent.Builder builder = KeybindComponent.builder(component.keybind());
+    final KeybindComponent.Builder builder = Component.keybind().keybind(component.keybind());
     return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
   @Override
   protected @NonNull Component renderScore(final @NonNull ScoreComponent component, final @NonNull C context) {
-    final ScoreComponent.Builder builder = ScoreComponent.builder()
+    final ScoreComponent.Builder builder = Component.score()
       .name(component.name())
       .objective(component.objective())
       .value(component.value());
@@ -126,13 +129,13 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
 
   @Override
   protected @NonNull Component renderSelector(final @NonNull SelectorComponent component, final @NonNull C context) {
-    final SelectorComponent.Builder builder = SelectorComponent.builder(component.pattern());
+    final SelectorComponent.Builder builder = Component.selector().pattern(component.pattern());
     return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
   @Override
   protected @NonNull Component renderText(final @NonNull TextComponent component, final @NonNull C context) {
-    final TextComponent.Builder builder = TextComponent.builder(component.content());
+    final TextComponent.Builder builder = Component.text().content(component.content());
     return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
@@ -143,7 +146,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
       // we don't have a translation for this component, but the arguments or children
       // of this component might need additional rendering
 
-      final TranslatableComponent.Builder builder = TranslatableComponent.builder()
+      final TranslatableComponent.Builder builder = Component.translatable()
         .key(component.key());
       if(!component.args().isEmpty()) {
         final List<Component> args = new ArrayList<>(component.args());
@@ -157,7 +160,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
 
     final List<Component> args = component.args();
 
-    final TextComponent.Builder builder = TextComponent.builder();
+    final TextComponent.Builder builder = Component.text();
     this.mergeStyle(component, builder, context);
 
     // no arguments makes this render very simple
@@ -175,7 +178,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
       if(index != null) {
         builder.append(this.render(args.get(index), context));
       } else {
-        builder.append(TextComponent.of(sb.substring(it.getIndex(), end)));
+        builder.append(Component.text(sb.substring(it.getIndex(), end)));
       }
       it.setIndex(end);
     }
@@ -196,7 +199,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   }
 
   protected <B extends ComponentBuilder<?, ?>> void mergeStyle(final Component component, final B builder, final C context) {
-    builder.mergeStyle(component, Style.Merge.colorAndDecorations());
+    builder.mergeStyle(component, MERGES);
     builder.clickEvent(component.clickEvent());
     final /* @Nullable */ HoverEvent<?> hoverEvent = component.hoverEvent();
     if(hoverEvent != null) {

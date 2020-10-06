@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE suppressions PUBLIC
-  "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
-  "http://checkstyle.org/dtds/suppressions_1_2.dtd">
+<!DOCTYPE suppressions PUBLIC "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN" "http://checkstyle.org/dtds/suppressions_1_2.dtd">
 <suppressions>
-  <!-- add any necessary suppressions here -->
-  <suppress files="src[\\/]test[\\/]java[\\/].*" checks="RequireExplicitVisibilityModifier"/>
+  <!-- no javadoc on test classes -->
+  <suppress files="src[\\/]test[\\/]java[\\/].*" checks="FilteringWriteTag"/>
+  <suppress files="src[\\/]test[\\/]java[\\/].*" checks="MissingJavadoc.*"/>
+
   <suppress files=".*[\\/]nbt[\\/](List|Compound)BinaryTag.java" checks="MethodName"/>
 </suppressions>

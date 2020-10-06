@@ -26,6 +26,7 @@ package net.kyori.adventure.text.serializer.gson;
 import com.google.gson.JsonElement;
 import java.util.Map;
 import java.util.stream.Stream;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -36,16 +37,16 @@ class TextComponentTest extends AbstractComponentTest<TextComponent> {
   @Override
   Stream<Map.Entry<TextComponent, JsonElement>> tests() {
     return Stream.of(
-      entry(TextComponent.of("Hello, world."), json -> json.addProperty(ComponentSerializerImpl.TEXT, "Hello, world.")),
+      entry(Component.text("Hello, world."), json -> json.addProperty(ComponentSerializerImpl.TEXT, "Hello, world.")),
       entry(
-        TextComponent.builder("c")
+        Component.text().content("c")
           .color(NamedTextColor.GOLD)
-          .append(TextComponent.of("o", NamedTextColor.DARK_AQUA))
-          .append(TextComponent.of("l", NamedTextColor.LIGHT_PURPLE))
-          .append(TextComponent.of("o", NamedTextColor.DARK_PURPLE))
-          .append(TextComponent.of("u", NamedTextColor.BLUE))
-          .append(TextComponent.of("r", NamedTextColor.DARK_GREEN))
-          .append(TextComponent.of("s", NamedTextColor.RED))
+          .append(Component.text("o", NamedTextColor.DARK_AQUA))
+          .append(Component.text("l", NamedTextColor.LIGHT_PURPLE))
+          .append(Component.text("o", NamedTextColor.DARK_PURPLE))
+          .append(Component.text("u", NamedTextColor.BLUE))
+          .append(Component.text("r", NamedTextColor.DARK_GREEN))
+          .append(Component.text("s", NamedTextColor.RED))
           .build(),
         json -> {
           json.addProperty(ComponentSerializerImpl.TEXT, "c");
@@ -79,11 +80,11 @@ class TextComponentTest extends AbstractComponentTest<TextComponent> {
         }
       ),
       entry(
-        TextComponent.builder("This is a test.")
+        Component.text().content("This is a test.")
           .color(NamedTextColor.DARK_PURPLE)
-          .hoverEvent(HoverEvent.showText(TextComponent.of("A test.")))
-          .append(TextComponent.of(" "))
-          .append(TextComponent.of("A what?", NamedTextColor.DARK_AQUA))
+          .hoverEvent(HoverEvent.showText(Component.text("A test.")))
+          .append(Component.text(" "))
+          .append(Component.text("A what?", NamedTextColor.DARK_AQUA))
           .build(),
         json -> {
           json.addProperty(ComponentSerializerImpl.TEXT, "This is a test.");

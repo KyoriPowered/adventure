@@ -32,12 +32,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class SelectorComponentTest extends AbstractComponentTest<SelectorComponent, SelectorComponent.Builder> {
   @Override
   SelectorComponent.Builder builder() {
-    return SelectorComponent.builder("@p");
+    return Component.selector().pattern("@p");
   }
 
   @Test
   void testOf() {
-    final SelectorComponent component = SelectorComponent.of("@p");
+    final SelectorComponent component = Component.selector("@p");
     assertEquals("@p", component.pattern());
     assertNull(component.color());
     TextAssertions.assertDecorations(component, ImmutableSet.of(), ImmutableSet.of());
@@ -45,7 +45,7 @@ class SelectorComponentTest extends AbstractComponentTest<SelectorComponent, Sel
 
   @Test
   void testPattern() {
-    final SelectorComponent c0 = SelectorComponent.of("@p");
+    final SelectorComponent c0 = Component.selector("@p");
     final SelectorComponent c1 = c0.pattern("@a");
     assertEquals("@p", c0.pattern());
     assertEquals("@a", c1.pattern());

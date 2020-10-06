@@ -24,7 +24,6 @@
 package net.kyori.adventure.text;
 
 import java.util.function.Consumer;
-import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -38,9 +37,11 @@ public interface EntityNBTComponent extends NBTComponent<EntityNBTComponent, Ent
    *
    * @return a builder
    * @since 4.0.0
+   * @deprecated use {@link Component#entityNBT()}
    */
+  @Deprecated
   static @NonNull Builder builder() {
-    return new EntityNBTComponentImpl.BuilderImpl();
+    return Component.entityNBT();
   }
 
   /**
@@ -50,9 +51,11 @@ public interface EntityNBTComponent extends NBTComponent<EntityNBTComponent, Ent
    * @param selector the selector
    * @return an entity NBT component
    * @since 4.0.0
+   * @deprecated use {@link Component#entityNBT(String, String)}
    */
+  @Deprecated
   static @NonNull EntityNBTComponent of(final @NonNull String nbtPath, final @NonNull String selector) {
-    return builder().nbtPath(nbtPath).selector(selector).build();
+    return Component.entityNBT(nbtPath, selector);
   }
 
   /**
@@ -61,10 +64,11 @@ public interface EntityNBTComponent extends NBTComponent<EntityNBTComponent, Ent
    * @param consumer the builder configurator
    * @return an entity NBT component
    * @since 4.0.0
+   * @deprecated use {@link Component#entityNBT(Consumer)}
    */
+  @Deprecated
   static @NonNull EntityNBTComponent make(final @NonNull Consumer<? super Builder> consumer) {
-    final Builder builder = builder();
-    return Buildable.configureAndBuild(builder, consumer);
+    return Component.entityNBT(consumer);
   }
 
   /**

@@ -24,10 +24,9 @@
 package net.kyori.adventure.nbt;
 
 final class ShadyPines {
-  
   private ShadyPines() {
   }
-  
+
   static int floor(final double dv) {
     final int iv = (int) dv;
     return dv < (double) iv ? iv - 1 : iv;

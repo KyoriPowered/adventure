@@ -77,7 +77,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   @Override
   @SuppressWarnings("unchecked")
   public @NonNull B append(final @NonNull Component component) {
-    if(component == TextComponent.empty()) return (B) this;
+    if(component == Component.empty()) return (B) this;
     this.prepareChildren();
     this.children.add(component);
     return (B) this;
@@ -89,7 +89,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
     boolean prepared = false;
     for(int i = 0, length = components.length; i < length; i++) {
       final Component component = components[i];
-      if(component != TextComponent.empty()) {
+      if(component != Component.empty()) {
         if(!prepared) {
           this.prepareChildren();
           prepared = true;
@@ -106,7 +106,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
     boolean prepared = false;
     for(int i = 0, length = components.length; i < length; i++) {
       final Component component = components[i].asComponent();
-      if(component != TextComponent.empty()) {
+      if(component != Component.empty()) {
         if(!prepared) {
           this.prepareChildren();
           prepared = true;
@@ -123,7 +123,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
     boolean prepared = false;
     for(final ComponentLike like : components) {
       final Component component = like.asComponent();
-      if(component != TextComponent.empty()) {
+      if(component != Component.empty()) {
         if(!prepared) {
           this.prepareChildren();
           prepared = true;
@@ -286,7 +286,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
         this.styleBuilder = this.style.toBuilder();
         this.style = null;
       } else {
-        this.styleBuilder = Style.builder();
+        this.styleBuilder = Style.style();
       }
     }
     return this.styleBuilder;

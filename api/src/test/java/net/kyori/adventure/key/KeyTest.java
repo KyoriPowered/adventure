@@ -35,22 +35,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class KeyTest {
   @Test
   void testOf() {
-    doWith(Key.of("empty"), key -> {
+    doWith(Key.key("empty"), key -> {
       assertEquals(Key.MINECRAFT_NAMESPACE, key.namespace());
       assertEquals("empty", key.value());
     });
 
-    doWith(Key.of(Key.MINECRAFT_NAMESPACE + ":empty"), key -> {
+    doWith(Key.key(Key.MINECRAFT_NAMESPACE + ":empty"), key -> {
       assertEquals(Key.MINECRAFT_NAMESPACE, key.namespace());
       assertEquals("empty", key.value());
     });
 
-    doWith(Key.of(Key.MINECRAFT_NAMESPACE, "empty"), key -> {
+    doWith(Key.key(Key.MINECRAFT_NAMESPACE, "empty"), key -> {
       assertEquals(Key.MINECRAFT_NAMESPACE, key.namespace());
       assertEquals("empty", key.value());
     });
 
-    doWith(Key.of("realms", "empty"), key -> {
+    doWith(Key.key("realms", "empty"), key -> {
       assertEquals("realms", key.namespace());
       assertEquals("empty", key.value());
     });
@@ -58,38 +58,38 @@ class KeyTest {
 
   @Test
   void testOfInvalid() {
-    assertEquals("!", assertThrows(InvalidKeyException.class, () -> Key.of("!")).keyValue());
-    assertEquals("Thing", assertThrows(InvalidKeyException.class, () -> Key.of("Thing:abc")).keyNamespace());
-    assertEquals("Thing", assertThrows(InvalidKeyException.class, () -> Key.of("abc:Thing")).keyValue());
-    assertEquals("a/b", assertThrows(InvalidKeyException.class, () -> Key.of("a/b:empty")).keyNamespace());
+    assertEquals("!", assertThrows(InvalidKeyException.class, () -> Key.key("!")).keyValue());
+    assertEquals("Thing", assertThrows(InvalidKeyException.class, () -> Key.key("Thing:abc")).keyNamespace());
+    assertEquals("Thing", assertThrows(InvalidKeyException.class, () -> Key.key("abc:Thing")).keyValue());
+    assertEquals("a/b", assertThrows(InvalidKeyException.class, () -> Key.key("a/b:empty")).keyNamespace());
   }
 
   @Test
   void testStringRepresentation() {
-    assertEquals("minecraft:empty", Key.of("empty").asString());
-    assertEquals("minecraft:empty", Key.of("empty").toString());
+    assertEquals("minecraft:empty", Key.key("empty").asString());
+    assertEquals("minecraft:empty", Key.key("empty").toString());
   }
 
   @Test
   void testEquality() {
     new EqualsTester()
       .addEqualityGroup(
-        Key.of("minecraft", "air"),
-        Key.of("air"),
-        Key.of("minecraft:air")
+        Key.key("minecraft", "air"),
+        Key.key("air"),
+        Key.key("minecraft:air")
       )
       .addEqualityGroup(
-        Key.of("realms", "empty"),
-        Key.of("realms:empty")
+        Key.key("realms", "empty"),
+        Key.key("realms:empty")
       )
       .testEquals();
   }
 
   @Test
   void testCompare() {
-    assertEquals(-1, Key.of("air").compareTo(Key.of("stone")));
-    assertEquals(0, Key.of("empty").compareTo(Key.of("empty")));
-    assertEquals(1, Key.of("stone").compareTo(Key.of("air")));
+    assertEquals(-1, Key.key("air").compareTo(Key.key("stone")));
+    assertEquals(0, Key.key("empty").compareTo(Key.key("empty")));
+    assertEquals(1, Key.key("stone").compareTo(Key.key("air")));
   }
 
   @Test

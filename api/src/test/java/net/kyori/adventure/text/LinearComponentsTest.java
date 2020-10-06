@@ -37,36 +37,36 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class LinearComponentsTest {
   @Test
   void testEmpty() {
-    assertSame(TextComponent.empty(), LinearComponents.linear());
+    assertSame(Component.empty(), LinearComponents.linear());
   }
 
   @Test
   void testNothingComponentLike() {
     assertThrows(IllegalStateException.class, () -> LinearComponents.linear(TextDecoration.BOLD));
-    assertThrows(IllegalStateException.class, () -> LinearComponents.linear(TextDecoration.BOLD, TextColor.of(0xaa0000)));
+    assertThrows(IllegalStateException.class, () -> LinearComponents.linear(TextDecoration.BOLD, TextColor.color(0xaa0000)));
   }
 
   @Test
   void testSingleComponentLike() {
-    final Component c0 = TextComponent.of("kittens");
+    final Component c0 = Component.text("kittens");
     assertSame(c0, LinearComponents.linear(c0));
   }
 
   @Test
   void testSimpleText() {
-    final Component c0 = TextComponent.of("kittens", NamedTextColor.DARK_PURPLE);
-    assertEquals(c0, LinearComponents.linear(NamedTextColor.DARK_PURPLE, TextComponent.builder("kittens")));
+    final Component c0 = Component.text("kittens", NamedTextColor.DARK_PURPLE);
+    assertEquals(c0, LinearComponents.linear(NamedTextColor.DARK_PURPLE, Component.text().content("kittens")));
   }
 
   @Test
   void testAdvancedText() {
-    final Component c0 = TextComponent.builder()
-      .append(TextComponent.of("kittens", NamedTextColor.DARK_PURPLE))
-      .append(TextComponent.of("cats", Style.of(NamedTextColor.DARK_AQUA, TextDecoration.BOLD, HoverEvent.showText(TextComponent.of("are adorable!")))))
+    final Component c0 = Component.text()
+      .append(Component.text("kittens", NamedTextColor.DARK_PURPLE))
+      .append(Component.text("cats", Style.style(NamedTextColor.DARK_AQUA, TextDecoration.BOLD, HoverEvent.showText(Component.text("are adorable!")))))
       .build();
     assertEquals(c0, LinearComponents.linear(
-      NamedTextColor.DARK_PURPLE, TextComponent.builder("kittens"),
-      NamedTextColor.DARK_AQUA, TextDecoration.BOLD, HoverEvent.showText(TextComponent.of("are adorable!")), TextComponent.builder("cats")
+      NamedTextColor.DARK_PURPLE, Component.text().content("kittens"),
+      NamedTextColor.DARK_AQUA, TextDecoration.BOLD, HoverEvent.showText(Component.text("are adorable!")), Component.text().content("cats")
     ));
   }
 }

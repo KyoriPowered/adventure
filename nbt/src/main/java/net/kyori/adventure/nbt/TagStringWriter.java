@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  * An emitter for the SNBT format.
  *
- * Details on the format are described in the package documentation.
+ * <p>Details on the format are described in the package documentation.</p>
  */
 final class TagStringWriter implements AutoCloseable {
   private final Appendable out;

@@ -24,7 +24,6 @@
 package net.kyori.adventure.util;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.junit.jupiter.api.Test;
 
@@ -35,14 +34,14 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 class ComponentMessageThrowableTest {
   @Test
   void testGetMessage() {
-    final Component c0 = TextComponent.of("uh oh");
+    final Component c0 = Component.text("uh oh");
     assertSame(c0, ComponentMessageThrowable.getMessage(new Checked(c0)));
     assertNull(ComponentMessageThrowable.getMessage(new IllegalStateException("uh oh")));
   }
 
   @Test
   void testGetOrConvertMessage() {
-    final Component c0 = TextComponent.of("uh oh");
+    final Component c0 = Component.text("uh oh");
     assertSame(c0, ComponentMessageThrowable.getOrConvertMessage(new Checked(c0)));
     assertEquals(c0, ComponentMessageThrowable.getOrConvertMessage(new IllegalStateException("uh oh")));
     assertNull(ComponentMessageThrowable.getOrConvertMessage(new IllegalStateException((String) null)));

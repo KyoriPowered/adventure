@@ -24,7 +24,6 @@
 package net.kyori.adventure.util;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -64,7 +63,7 @@ public interface ComponentMessageThrowable {
     } else if(throwable != null) {
       final String message = throwable.getMessage();
       if(message != null) {
-        return TextComponent.of(message);
+        return Component.text(message);
       }
     }
     return null;

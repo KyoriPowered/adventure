@@ -23,18 +23,24 @@
  */
 package net.kyori.adventure.text;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.IntFunction2;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -54,6 +60,1041 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public interface Component extends ComponentBuilderApplicable, ComponentLike, HoverEventSource<Component> {
   /**
+   * Gets an empty component.
+   *
+   * @return an empty component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent empty() {
+    return TextComponentImpl.EMPTY;
+  }
+
+  /**
+   * Gets a text component with a new line character as the content.
+   *
+   * @return a text component with a new line character as the content
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent newline() {
+    return TextComponentImpl.NEWLINE;
+  }
+
+  /**
+   * Gets a text immutable component with a single space as the content.
+   *
+   * @return a text component with a single space as the content
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent space() {
+    return TextComponentImpl.SPACE;
+  }
+
+  /**
+   * Joins {@code components} using {@code separator}.
+   *
+   * @param separator the separator
+   * @param components the components
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent join(final @NonNull ComponentLike separator, final @NonNull ComponentLike@NonNull... components) {
+    return join(separator, Arrays.asList(components));
+  }
+
+  /**
+   * Joins {@code components} using {@code separator}.
+   *
+   * @param separator the separator
+   * @param components the components
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent join(final @NonNull ComponentLike separator, final Iterable<? extends ComponentLike> components) {
+    final Iterator<? extends ComponentLike> it = components.iterator();
+    if(!it.hasNext()) {
+      return Component.empty();
+    }
+    final TextComponent.Builder builder = text();
+    while(it.hasNext()) {
+      builder.append(it.next());
+      if(it.hasNext()) {
+        builder.append(separator);
+      }
+    }
+    return builder.build();
+  }
+
+  /*
+   * ---------------------------
+   * ---- BlockNBTComponent ----
+   * ---------------------------
+   */
+
+  /**
+   * Creates a block NBT component builder.
+   *
+   * @return a builder
+   * @since 4.0.0
+   */
+  static BlockNBTComponent.@NonNull Builder blockNBT() {
+    return new BlockNBTComponentImpl.BuilderImpl();
+  }
+
+  /**
+   * Creates a block NBT component by applying configuration from {@code consumer}.
+   *
+   * @param consumer the builder configurator
+   * @return a block NBT component
+   * @since 4.0.0
+   */
+  static @NonNull BlockNBTComponent blockNBT(final @NonNull Consumer<? super BlockNBTComponent.Builder> consumer) {
+    return Buildable.configureAndBuild(blockNBT(), consumer);
+  }
+
+  /**
+   * Creates a block NBT component with a position.
+   *
+   * @param nbtPath the nbt path
+   * @param pos the block position
+   * @return a block NBT component
+   * @since 4.0.0
+   */
+  static @NonNull BlockNBTComponent blockNBT(final @NonNull String nbtPath, final BlockNBTComponent.@NonNull Pos pos) {
+    return blockNBT(nbtPath, NBTComponentImpl.INTERPRET_DEFAULT, pos);
+  }
+
+  /**
+   * Creates a block NBT component with a position.
+   *
+   * @param nbtPath the nbt path
+   * @param interpret whether to interpret
+   * @param pos the block position
+   * @return a block NBT component
+   * @since 4.0.0
+   */
+  static @NonNull BlockNBTComponent blockNBT(final @NonNull String nbtPath, final boolean interpret, final BlockNBTComponent.@NonNull Pos pos) {
+    return new BlockNBTComponentImpl(Collections.emptyList(), Style.empty(), nbtPath, interpret, pos);
+  }
+
+  /*
+   * ----------------------------
+   * ---- EntityNBTComponent ----
+   * ----------------------------
+   */
+
+  /**
+   * Creates an entity NBT component builder.
+   *
+   * @return a builder
+   * @since 4.0.0
+   */
+  static EntityNBTComponent.@NonNull Builder entityNBT() {
+    return new EntityNBTComponentImpl.BuilderImpl();
+  }
+
+  /**
+   * Creates a entity NBT component by applying configuration from {@code consumer}.
+   *
+   * @param consumer the builder configurator
+   * @return an entity NBT component
+   * @since 4.0.0
+   */
+  static @NonNull EntityNBTComponent entityNBT(final @NonNull Consumer<? super EntityNBTComponent.Builder> consumer) {
+    return Buildable.configureAndBuild(entityNBT(), consumer);
+  }
+
+  /**
+   * Creates a entity NBT component with a position.
+   *
+   * @param nbtPath the nbt path
+   * @param selector the selector
+   * @return an entity NBT component
+   * @since 4.0.0
+   */
+  static @NonNull EntityNBTComponent entityNBT(final @NonNull String nbtPath, final @NonNull String selector) {
+    return entityNBT().nbtPath(nbtPath).selector(selector).build();
+  }
+
+  /*
+   * --------------------------
+   * ---- KeybindComponent ----
+   * --------------------------
+   */
+
+  /**
+   * Creates a keybind component builder.
+   *
+   * @return a builder
+   * @since 4.0.0
+   */
+  static KeybindComponent.@NonNull Builder keybind() {
+    return new KeybindComponentImpl.BuilderImpl();
+  }
+
+  /**
+   * Creates a keybind component by applying configuration from {@code consumer}.
+   *
+   * @param consumer the builder configurator
+   * @return the keybind component
+   * @since 4.0.0
+   */
+  static @NonNull KeybindComponent keybind(final @NonNull Consumer<? super KeybindComponent.Builder> consumer) {
+    return Buildable.configureAndBuild(keybind(), consumer);
+  }
+
+  /**
+   * Creates a keybind component with a keybind.
+   *
+   * @param keybind the keybind
+   * @return the keybind component
+   * @since 4.0.0
+   */
+  static @NonNull KeybindComponent keybind(final @NonNull String keybind) {
+    return keybind(keybind, Style.empty());
+  }
+
+  /**
+   * Creates a keybind component with a keybind and styling.
+   *
+   * @param keybind the keybind
+   * @param style the style
+   * @return the keybind component
+   * @since 4.0.0
+   */
+  static @NonNull KeybindComponent keybind(final @NonNull String keybind, final @NonNull Style style) {
+    return new KeybindComponentImpl(Collections.emptyList(), style, keybind);
+  }
+
+  /**
+   * Creates a keybind component with a keybind, and optional color.
+   *
+   * @param keybind the keybind
+   * @param color the color
+   * @return the keybind component
+   * @since 4.0.0
+   */
+  static @NonNull KeybindComponent keybind(final @NonNull String keybind, final @Nullable TextColor color) {
+    return keybind(keybind, Style.style(color));
+  }
+
+  /**
+   * Creates a keybind component with a keybind, and optional color and decorations.
+   *
+   * @param keybind the keybind
+   * @param color the color
+   * @param decorations the decorations
+   * @return the keybind component
+   * @since 4.0.0
+   */
+  static @NonNull KeybindComponent keybind(final @NonNull String keybind, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
+    return keybind(keybind, Style.style(color, decorations));
+  }
+
+  /**
+   * Creates a keybind component with a keybind, and optional color and decorations.
+   *
+   * @param keybind the keybind
+   * @param color the color
+   * @param decorations the decorations
+   * @return the keybind component
+   * @since 4.0.0
+   */
+  static @NonNull KeybindComponent keybind(final @NonNull String keybind, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
+    return keybind(keybind, Style.style(color, decorations));
+  }
+
+  /*
+   * ------------------------
+   * ---- ScoreComponent ----
+   * ------------------------
+   */
+
+  /**
+   * Creates a score component builder.
+   *
+   * @return a builder
+   * @since 4.0.0
+   */
+  static ScoreComponent.@NonNull Builder score() {
+    return new ScoreComponentImpl.BuilderImpl();
+  }
+
+  /**
+   * Creates a score component by applying configuration from {@code consumer}.
+   *
+   * @param consumer the builder configurator
+   * @return a score component
+   * @since 4.0.0
+   */
+  static @NonNull ScoreComponent score(final @NonNull Consumer<? super ScoreComponent.Builder> consumer) {
+    return Buildable.configureAndBuild(score(), consumer);
+  }
+
+  /**
+   * Creates a score component with a name and objective.
+   *
+   * @param name the score name
+   * @param objective the score objective
+   * @return a score component
+   * @since 4.0.0
+   */
+  static @NonNull ScoreComponent score(final @NonNull String name, final @NonNull String objective) {
+    return score(name, objective, null);
+  }
+
+  /**
+   * Creates a score component with a name, objective, and optional value.
+   *
+   * @param name the score name
+   * @param objective the score objective
+   * @param value the value
+   * @return a score component
+   * @since 4.0.0
+   */
+  static @NonNull ScoreComponent score(final @NonNull String name, final @NonNull String objective, final @Nullable String value) {
+    return new ScoreComponentImpl(Collections.emptyList(), Style.empty(), name, objective, value);
+  }
+
+  /*
+   * ---------------------------
+   * ---- SelectorComponent ----
+   * ---------------------------
+   */
+
+  /**
+   * Creates a selector component builder.
+   *
+   * @return a builder
+   * @since 4.0.0
+   */
+  static SelectorComponent.@NonNull Builder selector() {
+    return new SelectorComponentImpl.BuilderImpl();
+  }
+
+  /**
+   * Creates a selector component by applying configuration from {@code consumer}.
+   *
+   * @param consumer the builder configurator
+   * @return a selector component
+   * @since 4.0.0
+   */
+  static @NonNull SelectorComponent selector(final @NonNull Consumer<? super SelectorComponent.Builder> consumer) {
+    return Buildable.configureAndBuild(selector(), consumer);
+  }
+
+  /**
+   * Creates a selector component with a pattern.
+   *
+   * @param pattern the selector pattern
+   * @return a selector component
+   * @since 4.0.0
+   */
+  static @NonNull SelectorComponent selector(final @NonNull String pattern) {
+    return new SelectorComponentImpl(Collections.emptyList(), Style.empty(), pattern);
+  }
+
+  /*
+   * -----------------------------
+   * ---- StorageNBTComponent ----
+   * -----------------------------
+   */
+
+  /**
+   * Creates an storage NBT component builder.
+   *
+   * @return a builder
+   * @since 4.0.0
+   */
+  static StorageNBTComponent.@NonNull Builder storageNBT() {
+    return new StorageNBTComponentImpl.BuilderImpl();
+  }
+
+  /**
+   * Creates a storage NBT component by applying configuration from {@code consumer}.
+   *
+   * @param consumer the builder configurator
+   * @return a storage NBT component
+   * @since 4.0.0
+   */
+  static @NonNull StorageNBTComponent storageNBT(final @NonNull Consumer<? super StorageNBTComponent.Builder> consumer) {
+    return Buildable.configureAndBuild(storageNBT(), consumer);
+  }
+
+  /**
+   * Creates a storage NBT component with a path and an storage ID.
+   *
+   * @param nbtPath the nbt path
+   * @param storage the identifier of the storage
+   * @return a storage NBT component
+   * @since 4.0.0
+   */
+  static @NonNull StorageNBTComponent storageNBT(final @NonNull String nbtPath, final @NonNull Key storage) {
+    return storageNBT(nbtPath, NBTComponentImpl.INTERPRET_DEFAULT, storage);
+  }
+
+  /**
+   * Creates a storage NBT component with a path and an storage ID.
+   *
+   * @param nbtPath the nbt path
+   * @param interpret whether to interpret
+   * @param storage the identifier of the storage
+   * @return a storage NBT component
+   * @since 4.0.0
+   */
+  static @NonNull StorageNBTComponent storageNBT(final @NonNull String nbtPath, final boolean interpret, final @NonNull Key storage) {
+    return new StorageNBTComponentImpl(Collections.emptyList(), Style.empty(), nbtPath, interpret, storage);
+  }
+
+  /*
+   * -----------------------
+   * ---- TextComponent ----
+   * -----------------------
+   */
+
+  /**
+   * Creates a text component builder.
+   *
+   * @return a builder
+   * @since 4.0.0
+   */
+  static TextComponent.@NonNull Builder text() {
+    return new TextComponentImpl.BuilderImpl();
+  }
+
+  /**
+   * Creates a text component by applying configuration from {@code consumer}.
+   *
+   * @param consumer the builder configurator
+   * @return the text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final @NonNull Consumer<? super TextComponent.Builder> consumer) {
+    return Buildable.configureAndBuild(text(), consumer);
+  }
+
+  /**
+   * Creates a text component with content.
+   *
+   * @param content the plain text content
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final @NonNull String content) {
+    if(content.isEmpty()) return empty();
+    return new TextComponentImpl(Collections.emptyList(), Style.empty(), content);
+  }
+
+  /**
+   * Creates a text component with content and styling.
+   *
+   * @param content the plain text content
+   * @param style the style
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final @NonNull String content, final @NonNull Style style) {
+    return new TextComponentImpl(Collections.emptyList(), style, content);
+  }
+
+  /**
+   * Creates a text component with content, and optional color.
+   *
+   * @param content the plain text content
+   * @param color the color
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final @NonNull String content, final @Nullable TextColor color) {
+    return new TextComponentImpl(Collections.emptyList(), Style.style(color), content);
+  }
+
+  /**
+   * Creates a text component with content, and optional color and decorations.
+   *
+   * @param content the plain text content
+   * @param color the color
+   * @param decorations the decorations
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final @NonNull String content, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
+    return new TextComponentImpl(Collections.emptyList(), Style.style(color, decorations), content);
+  }
+
+  /**
+   * Creates a text component with content, and optional color and decorations.
+   *
+   * @param content the plain text content
+   * @param color the color
+   * @param decorations the decorations
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final @NonNull String content, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
+    return new TextComponentImpl(Collections.emptyList(), Style.style(color, decorations), content);
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(boolean)}.
+   *
+   * @param value the boolean value
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final boolean value) {
+    return text(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(boolean)} and styling.
+   *
+   * @param value the boolean value
+   * @param style the style
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final boolean value, final @NonNull Style style) {
+    return text(String.valueOf(value), style);
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(boolean)}, and optional color.
+   *
+   * @param value the boolean value
+   * @param color the color
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final boolean value, final @Nullable TextColor color) {
+    return text(String.valueOf(value), color);
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(boolean)}, and optional color and decorations.
+   *
+   * @param value the boolean value
+   * @param color the color
+   * @param decorations the decorations
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final boolean value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
+    return text(String.valueOf(value), color, decorations);
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(boolean)}, and optional color and decorations.
+   *
+   * @param value the boolean value
+   * @param color the color
+   * @param decorations the decorations
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final boolean value, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
+    return text(String.valueOf(value), color, decorations);
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(char)}.
+   *
+   * @param value the char value
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final char value) {
+    if(value == '\n') return newline();
+    if(value == ' ') return space();
+    return text(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(char)} and styling.
+   *
+   * @param value the char value
+   * @param style the style
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final char value, final @NonNull Style style) {
+    return text(String.valueOf(value), style);
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(char)}, and optional color.
+   *
+   * @param value the char value
+   * @param color the color
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final char value, final @Nullable TextColor color) {
+    return text(String.valueOf(value), color);
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(char)}, and optional color and decorations.
+   *
+   * @param value the char value
+   * @param color the color
+   * @param decorations the decorations
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final char value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
+    return text(String.valueOf(value), color, decorations);
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(char)}, and optional color and decorations.
+   *
+   * @param value the char value
+   * @param color the color
+   * @param decorations the decorations
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final char value, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
+    return text(String.valueOf(value), color, decorations);
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(double)}.
+   *
+   * @param value the double value
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final double value) {
+    return text(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(double)} and styling.
+   *
+   * @param value the double value
+   * @param style the style
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final double value, final @NonNull Style style) {
+    return text(String.valueOf(value), style);
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(double)}, and optional color.
+   *
+   * @param value the double value
+   * @param color the color
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final double value, final @Nullable TextColor color) {
+    return text(String.valueOf(value), color);
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(double)}, and optional color and decorations.
+   *
+   * @param value the double value
+   * @param color the color
+   * @param decorations the decorations
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final double value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
+    return text(String.valueOf(value), color, decorations);
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(double)}, and optional color and decorations.
+   *
+   * @param value the double value
+   * @param color the color
+   * @param decorations the decorations
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final double value, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
+    return text(String.valueOf(value), color, decorations);
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(float)}.
+   *
+   * @param value the float value
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final float value) {
+    return text(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(float)} and styling.
+   *
+   * @param value the float value
+   * @param style the style
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final float value, final @NonNull Style style) {
+    return text(String.valueOf(value), style);
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(float)}, and optional color.
+   *
+   * @param value the float value
+   * @param color the color
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final float value, final @Nullable TextColor color) {
+    return text(String.valueOf(value), color);
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(float)}, and optional color and decorations.
+   *
+   * @param value the float value
+   * @param color the color
+   * @param decorations the decorations
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final float value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
+    return text(String.valueOf(value), color, decorations);
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(float)}, and optional color and decorations.
+   *
+   * @param value the float value
+   * @param color the color
+   * @param decorations the decorations
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final float value, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
+    return text(String.valueOf(value), color, decorations);
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(int)}.
+   *
+   * @param value the int value
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final int value) {
+    return text(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(int)} and styling.
+   *
+   * @param value the int value
+   * @param style the style
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final int value, final @NonNull Style style) {
+    return text(String.valueOf(value), style);
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(int)}, and optional color.
+   *
+   * @param value the int value
+   * @param color the color
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final int value, final @Nullable TextColor color) {
+    return text(String.valueOf(value), color);
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(int)}, and optional color and decorations.
+   *
+   * @param value the int value
+   * @param color the color
+   * @param decorations the decorations
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final int value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
+    return text(String.valueOf(value), color, decorations);
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(int)}, and optional color and decorations.
+   *
+   * @param value the int value
+   * @param color the color
+   * @param decorations the decorations
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final int value, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
+    return text(String.valueOf(value), color, decorations);
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(long)}.
+   *
+   * @param value the long value
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final long value) {
+    return text(String.valueOf(value));
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(long)} and styling.
+   *
+   * @param value the long value
+   * @param style the style
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final long value, final @NonNull Style style) {
+    return text(String.valueOf(value), style);
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(long)}, and optional color.
+   *
+   * @param value the long value
+   * @param color the color
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final long value, final @Nullable TextColor color) {
+    return text(String.valueOf(value), color);
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(long)}, and optional color and decorations.
+   *
+   * @param value the long value
+   * @param color the color
+   * @param decorations the decorations
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final long value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
+    return text(String.valueOf(value), color, decorations);
+  }
+
+  /**
+   * Creates a text component with the content of {@link String#valueOf(long)}, and optional color and decorations.
+   *
+   * @param value the long value
+   * @param color the color
+   * @param decorations the decorations
+   * @return a text component
+   * @since 4.0.0
+   */
+  static @NonNull TextComponent text(final long value, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
+    return text(String.valueOf(value), color, decorations);
+  }
+
+  /*
+   * -------------------------------
+   * ---- TranslatableComponent ----
+   * -------------------------------
+   */
+
+  /**
+   * Creates a translatable component builder.
+   *
+   * @return a builder
+   * @since 4.0.0
+   */
+  static TranslatableComponent.@NonNull Builder translatable() {
+    return new TranslatableComponentImpl.BuilderImpl();
+  }
+
+  /**
+   * Creates a translatable component by applying configuration from {@code consumer}.
+   *
+   * @param consumer the builder configurator
+   * @return a translatable component
+   * @since 4.0.0
+   */
+  static @NonNull TranslatableComponent translatable(final @NonNull Consumer<? super TranslatableComponent.Builder> consumer) {
+    return Buildable.configureAndBuild(translatable(), consumer);
+  }
+
+  /**
+   * Creates a translatable component with a translation key.
+   *
+   * @param key the translation key
+   * @return a translatable component
+   * @since 4.0.0
+   */
+  static @NonNull TranslatableComponent translatable(final @NonNull String key) {
+    return translatable(key, Style.empty());
+  }
+
+  /**
+   * Creates a translatable component with a translation key and styling.
+   *
+   * @param key the translation key
+   * @param style the style
+   * @return a translatable component
+   * @since 4.0.0
+   */
+  static @NonNull TranslatableComponent translatable(final @NonNull String key, final @NonNull Style style) {
+    return new TranslatableComponentImpl(Collections.emptyList(), style, key, Collections.emptyList());
+  }
+
+  /**
+   * Creates a translatable component with a translation key, and optional color.
+   *
+   * @param key the translation key
+   * @param color the color
+   * @return a translatable component
+   * @since 4.0.0
+   */
+  static @NonNull TranslatableComponent translatable(final @NonNull String key, final @Nullable TextColor color) {
+    return translatable(key, Style.style(color));
+  }
+
+  /**
+   * Creates a translatable component with a translation key, and optional color and decorations.
+   *
+   * @param key the translation key
+   * @param color the color
+   * @param decorations the decorations
+   * @return a translatable component
+   * @since 4.0.0
+   */
+  static @NonNull TranslatableComponent translatable(final @NonNull String key, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
+    return translatable(key, Style.style(color, decorations));
+  }
+
+  /**
+   * Creates a translatable component with a translation key, and optional color and decorations.
+   *
+   * @param key the translation key
+   * @param color the color
+   * @param decorations the decorations
+   * @return a translatable component
+   * @since 4.0.0
+   */
+  static @NonNull TranslatableComponent translatable(final @NonNull String key, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
+    return translatable(key, Style.style(color, decorations));
+  }
+
+  /**
+   * Creates a translatable component with a translation key and arguments.
+   *
+   * @param key the translation key
+   * @param args the translation arguments
+   * @return a translatable component
+   * @since 4.0.0
+   */
+  static @NonNull TranslatableComponent translatable(final @NonNull String key, final @NonNull ComponentLike@NonNull... args) {
+    return translatable(key, Style.empty(), args);
+  }
+
+  /**
+   * Creates a translatable component with a translation key and styling.
+   *
+   * @param key the translation key
+   * @param style the style
+   * @param args the translation arguments
+   * @return a translatable component
+   * @since 4.0.0
+   */
+  static @NonNull TranslatableComponent translatable(final @NonNull String key, final @NonNull Style style, final @NonNull ComponentLike@NonNull... args) {
+    return new TranslatableComponentImpl(Collections.emptyList(), style, key, args);
+  }
+
+  /**
+   * Creates a translatable component with a translation key, arguments, and optional color.
+   *
+   * @param key the translation key
+   * @param color the color
+   * @param args the translation arguments
+   * @return a translatable component
+   * @since 4.0.0
+   */
+  static @NonNull TranslatableComponent translatable(final @NonNull String key, final @Nullable TextColor color, final @NonNull ComponentLike@NonNull... args) {
+    return translatable(key, Style.style(color), args);
+  }
+
+  /**
+   * Creates a translatable component with a translation key, arguments, and optional color and decorations.
+   *
+   * @param key the translation key
+   * @param color the color
+   * @param decorations the decorations
+   * @param args the translation arguments
+   * @return a translatable component
+   * @since 4.0.0
+   */
+  static @NonNull TranslatableComponent translatable(final @NonNull String key, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations, final @NonNull ComponentLike@NonNull... args) {
+    return translatable(key, Style.style(color, decorations), args);
+  }
+
+  /**
+   * Creates a translatable component with a translation key and arguments.
+   *
+   * @param key the translation key
+   * @param args the translation arguments
+   * @return a translatable component
+   * @since 4.0.0
+   */
+  static @NonNull TranslatableComponent translatable(final @NonNull String key, final @NonNull List<? extends ComponentLike> args) {
+    return new TranslatableComponentImpl(Collections.emptyList(), Style.empty(), key, args);
+  }
+
+  /**
+   * Creates a translatable component with a translation key and styling.
+   *
+   * @param key the translation key
+   * @param style the style
+   * @param args the translation arguments
+   * @return a translatable component
+   * @since 4.0.0
+   */
+  static @NonNull TranslatableComponent translatable(final @NonNull String key, final @NonNull Style style, final @NonNull List<? extends ComponentLike> args) {
+    return new TranslatableComponentImpl(Collections.emptyList(), style, key, args);
+  }
+
+  /**
+   * Creates a translatable component with a translation key, arguments, and optional color.
+   *
+   * @param key the translation key
+   * @param color the color
+   * @param args the translation arguments
+   * @return a translatable component
+   * @since 4.0.0
+   */
+  static TranslatableComponent translatable(final @NonNull String key, final @Nullable TextColor color, final @NonNull List<? extends ComponentLike> args) {
+    return translatable(key, Style.style(color), args);
+  }
+
+  /**
+   * Creates a translatable component with a translation key, arguments, and optional color and decorations.
+   *
+   * @param key the translation key
+   * @param color the color
+   * @param decorations the decorations
+   * @param args the translation arguments
+   * @return a translatable component
+   * @since 4.0.0
+   */
+  static @NonNull TranslatableComponent translatable(final @NonNull String key, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations, final @NonNull List<? extends ComponentLike> args) {
+    return translatable(key, Style.style(color, decorations), args);
+  }
+
+  /**
    * Gets the unmodifiable list of children.
    *
    * @return the unmodifiable list of children
@@ -67,7 +1108,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * <p>The contents of {@code children} will be copied.</p>
    *
    * @param children the children
-   * @return the unmodifiable list of children
+   * @return a component with the children set
    * @since 4.0.0
    */
   @NonNull Component children(final @NonNull List<? extends ComponentLike> children);
@@ -428,6 +1469,18 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
   }
 
   /**
+   * Finds and replaces text within any {@link Component}s using a string literal.
+   *
+   * @param search a string literal
+   * @param replacement a {@link ComponentLike} to replace each match
+   * @return a modified copy of this component
+   * @since 4.0.0
+   */
+  default @NonNull Component replaceText(final @NonNull String search, final @Nullable ComponentLike replacement) {
+    return this.replaceText(Pattern.compile(search, Pattern.LITERAL), old -> replacement);
+  }
+
+  /**
    * Finds and replaces text within any {@link TextComponent}s using a regex pattern.
    *
    * @param pattern a regex pattern
@@ -435,8 +1488,20 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @return a modified copy of this component
    * @since 4.0.0
    */
-  default @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull UnaryOperator<TextComponent.Builder> replacement) {
+  default @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement) {
     return this.replaceText(pattern, replacement, (index, replaced) -> PatternReplacementResult.REPLACE);
+  }
+
+  /**
+   * Finds and replaces the first occurrence of text within any {@link Component}s using a string literal.
+   *
+   * @param search a string literal
+   * @param replacement a {@link ComponentLike} to replace the first match
+   * @return a modified copy of this component
+   * @since 4.0.0
+   */
+  default @NonNull Component replaceFirstText(final @NonNull String search, final @Nullable ComponentLike replacement) {
+    return this.replaceText(search, replacement, 1);
   }
 
   /**
@@ -447,8 +1512,21 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @return a modified copy of this component
    * @since 4.0.0
    */
-  default @NonNull Component replaceFirstText(final @NonNull Pattern pattern, final @NonNull UnaryOperator<TextComponent.Builder> replacement) {
+  default @NonNull Component replaceFirstText(final @NonNull Pattern pattern, final @NonNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement) {
     return this.replaceText(pattern, replacement, 1);
+  }
+
+  /**
+   * Finds and replaces {@code n} instances of text within any {@link TextComponent}s using a string literal.
+   *
+   * @param search a string literal
+   * @param replacement a {@link ComponentLike} to replace the first match
+   * @param numberOfReplacements the amount of matches that should be replaced
+   * @return a modified copy of this component
+   * @since 4.0.0
+   */
+  default @NonNull Component replaceText(final @NonNull String search, final @Nullable ComponentLike replacement, final int numberOfReplacements) {
+    return this.replaceText(search, replacement, (index, replaced) -> replaced < numberOfReplacements ? PatternReplacementResult.REPLACE : PatternReplacementResult.STOP);
   }
 
   /**
@@ -460,8 +1538,23 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @return a modified copy of this component
    * @since 4.0.0
    */
-  default @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull UnaryOperator<TextComponent.Builder> replacement, final int numberOfReplacements) {
+  default @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement, final int numberOfReplacements) {
     return this.replaceText(pattern, replacement, (index, replaced) -> replaced < numberOfReplacements ? PatternReplacementResult.REPLACE : PatternReplacementResult.STOP);
+  }
+
+  /**
+   * Finds and replaces {@code n} instances of text within any {@link TextComponent}s using a string literal.
+   *
+   * <p>Utilises an {@link IntFunction2} to determine if each instance should be replaced.</p>
+   *
+   * @param search a string literal
+   * @param replacement a {@link ComponentLike} to replace the first match
+   * @param fn a function of (index, replaced) used to determine if matches should be replaced, where "replaced" is the number of successful replacements
+   * @return a modified copy of this component
+   * @since 4.0.0
+   */
+  default @NonNull Component replaceText(final @NonNull String search, final @Nullable ComponentLike replacement, final @NonNull IntFunction2<PatternReplacementResult> fn) {
+    return this.replaceText(Pattern.compile(search, Pattern.LITERAL), old -> replacement, fn);
   }
 
   /**
@@ -475,7 +1568,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ho
    * @return a modified copy of this component
    * @since 4.0.0
    */
-  @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull UnaryOperator<TextComponent.Builder> replacement, final @NonNull IntFunction2<PatternReplacementResult> fn);
+  @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement, final @NonNull IntFunction2<PatternReplacementResult> fn);
 
   @Override
   default void componentBuilderApply(final @NonNull ComponentBuilder<?, ?> component) {

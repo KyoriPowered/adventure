@@ -54,19 +54,6 @@ import static java.util.Objects.requireNonNull;
  */
 public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, StyleBuilderApplicable {
   /**
-   * Creates a hover event.
-   *
-   * @param action the action
-   * @param value the value
-   * @param <V> the value type
-   * @return a click event
-   * @since 4.0.0
-   */
-  public static <V> @NonNull HoverEvent<V> of(final @NonNull Action<V> action, final @NonNull V value) {
-    return new HoverEvent<>(action, value);
-  }
-
-  /**
    * Creates a hover event that shows text on hover.
    *
    * @param text the text to show on hover
@@ -74,7 +61,32 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @since 4.0.0
    */
   public static @NonNull HoverEvent<Component> showText(final @NonNull Component text) {
-    return of(Action.SHOW_TEXT, text);
+    return new HoverEvent<>(Action.SHOW_TEXT, text);
+  }
+
+  /**
+   * Creates a hover event that shows an item on hover.
+   *
+   * @param item the item
+   * @param count the count
+   * @return a hover event
+   * @since 4.0.0
+   */
+  public static @NonNull HoverEvent<ShowItem> showItem(final @NonNull Key item, final @NonNegative int count) {
+    return showItem(item, count, null);
+  }
+
+  /**
+   * Creates a hover event that shows an item on hover.
+   *
+   * @param item the item
+   * @param count the count
+   * @param nbt the nbt
+   * @return a hover event
+   * @since 4.0.0
+   */
+  public static @NonNull HoverEvent<ShowItem> showItem(final @NonNull Key item, final @NonNegative int count, final @Nullable BinaryTagHolder nbt) {
+    return showItem(ShowItem.of(item, count, nbt));
   }
 
   /**
@@ -85,7 +97,32 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @since 4.0.0
    */
   public static @NonNull HoverEvent<ShowItem> showItem(final @NonNull ShowItem item) {
-    return of(Action.SHOW_ITEM, item);
+    return new HoverEvent<>(Action.SHOW_ITEM, item);
+  }
+
+  /**
+   * Creates.
+   *
+   * @param type the type
+   * @param id the id
+   * @return a {@code ShowEntity}
+   * @since 4.0.0
+   */
+  public static @NonNull HoverEvent<ShowEntity> showEntity(final @NonNull Key type, final @NonNull UUID id) {
+    return showEntity(type, id, null);
+  }
+
+  /**
+   * Creates.
+   *
+   * @param type the type
+   * @param id the id
+   * @param name the name
+   * @return a {@code ShowEntity}
+   * @since 4.0.0
+   */
+  public static @NonNull HoverEvent<ShowEntity> showEntity(final @NonNull Key type, final @NonNull UUID id, final @Nullable Component name) {
+    return showEntity(ShowEntity.of(type, id, name));
   }
 
   /**
@@ -96,7 +133,35 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @since 4.0.0
    */
   public static @NonNull HoverEvent<ShowEntity> showEntity(final @NonNull ShowEntity entity) {
-    return of(Action.SHOW_ENTITY, entity);
+    return new HoverEvent<>(Action.SHOW_ENTITY, entity);
+  }
+
+  /**
+   * Creates a hover event.
+   *
+   * @param action the action
+   * @param value the value
+   * @param <V> the value type
+   * @return a click event
+   * @since 4.0.0
+   */
+  public static <V> @NonNull HoverEvent<V> hoverEvent(final @NonNull Action<V> action, final @NonNull V value) {
+    return new HoverEvent<>(action, value);
+  }
+
+  /**
+   * Creates a hover event.
+   *
+   * @param action the action
+   * @param value the value
+   * @param <V> the value type
+   * @return a click event
+   * @since 4.0.0
+   * @deprecated use {@link #hoverEvent(Action, Object)}
+   */
+  @Deprecated
+  public static <V> @NonNull HoverEvent<V> of(final @NonNull Action<V> action, final @NonNull V value) {
+    return new HoverEvent<>(action, value);
   }
 
   private final Action<V> action;
@@ -466,6 +531,8 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
 
   /**
    * An enumeration of hover event actions.
+   *
+   * @since 4.0.0
    */
   public static final class Action<V> {
     /**

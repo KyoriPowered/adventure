@@ -34,12 +34,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class TextColorTest {
   @Test
   void testFromHexString() {
-    assertEquals(TextColor.of(0xaa00aa), TextColor.fromHexString("#aa00aa"));
+    assertEquals(TextColor.color(0xaa00aa), TextColor.fromHexString("#aa00aa"));
   }
 
   @Test
   void testFromRGBLike() {
-    assertEquals(TextColor.of(0xaa00aa), TextColor.from(new RGBLike() {
+    assertEquals(TextColor.color(0xaa00aa), TextColor.color(new RGBLike() {
       @Override
       public @IntRange(from = 0x0, to = 0xff) int red() {
         return 0xaa;
@@ -65,13 +65,13 @@ class TextColorTest {
 
   @Test
   public void testPureColors() {
-    final TextColor redInt = TextColor.of(0xff0000);
-    final TextColor greenInt = TextColor.of(0x00ff00);
-    final TextColor blueInt = TextColor.of(0x0000ff);
+    final TextColor redInt = TextColor.color(0xff0000);
+    final TextColor greenInt = TextColor.color(0x00ff00);
+    final TextColor blueInt = TextColor.color(0x0000ff);
 
-    final TextColor red = TextColor.of(0xff, 0x00, 0x00);
-    final TextColor green = TextColor.of(0x00, 0xff, 0x00);
-    final TextColor blue = TextColor.of(0x00, 0x00, 0xff);
+    final TextColor red = TextColor.color(0xff, 0x00, 0x00);
+    final TextColor green = TextColor.color(0x00, 0xff, 0x00);
+    final TextColor blue = TextColor.color(0x00, 0x00, 0xff);
 
     assertEquals(redInt, red);
     assertEquals(greenInt, green);
@@ -80,12 +80,12 @@ class TextColorTest {
 
   @Test
   public void testExtractComponents() {
-    final TextColor purple = TextColor.of(0xff00ff);
+    final TextColor purple = TextColor.color(0xff00ff);
     assertEquals(0xff, purple.red());
     assertEquals(0x00, purple.green());
     assertEquals(0xff, purple.blue());
 
-    final TextColor color = TextColor.of(0xbada04);
+    final TextColor color = TextColor.color(0xbada04);
     assertEquals(0xba, color.red());
     assertEquals(0xda, color.green());
     assertEquals(0x04, color.blue());
@@ -95,12 +95,12 @@ class TextColorTest {
   public void testEquality() {
     new EqualsTester()
       .addEqualityGroup(
-        TextColor.of(0xff0000),
-        TextColor.of(0xff, 0x00, 0x00)
+        TextColor.color(0xff0000),
+        TextColor.color(0xff, 0x00, 0x00)
       )
       .addEqualityGroup(
-        TextColor.of(0x00ff00),
-        TextColor.of(0x00, 0xff, 0x00)
+        TextColor.color(0x00ff00),
+        TextColor.color(0x00, 0xff, 0x00)
       )
       .testEquals();
   }
@@ -119,7 +119,7 @@ class TextColorTest {
 
   @Test
   public void testCSSHexStringThreeDigit() {
-    final TextColor original = TextColor.of(0x77ff11);
+    final TextColor original = TextColor.color(0x77ff11);
     assertEquals(original, TextColor.fromCSSHexString("#7f1"));
   }
 }

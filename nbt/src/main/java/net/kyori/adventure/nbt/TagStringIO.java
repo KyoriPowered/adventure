@@ -68,7 +68,7 @@ public final class TagStringIO {
 
   /**
    * Read the string into a compound tag structure.
-   * 
+   *
    * @param input Input data
    * @return this
    * @throws IOException on any syntax errors
@@ -91,7 +91,7 @@ public final class TagStringIO {
 
   /**
    * Get a string representation of the provided tag.
-   * 
+   *
    * @param input tag to serialize
    * @return serialized form
    * @throws IOException if any errors occur writing to string
@@ -108,9 +108,9 @@ public final class TagStringIO {
 
   /**
    * Writes a tag to in string format.
-   * 
+   *
    * <p>The provided {@link Writer} will remain open after reading a tag.</p>
-   * 
+   *
    * @param input Tag to write
    * @param dest Writer to write to
    * @throws IOException if any IO or syntax errors occur while parsing
@@ -178,12 +178,12 @@ public final class TagStringIO {
 
     /**
      * Configure whether or not the resulting IO configuration will accept legacy-formatted data.
-     * 
+     *
      * <p>The legacy format was used in versions of Minecraft prior to 1.13</p>
-     * 
+     *
      * <p>Be aware that because the legacy int array and modern list are ambiguous with each other, 
      * the deserializer will always return legacy-format integer arrays as a list tag.</p>
-     * 
+     *
      * @param legacy whether to accept legacy formatting
      * @return this builder
      * @since 4.0.0
@@ -207,7 +207,7 @@ public final class TagStringIO {
 
     /**
      * Create a new IO configuration from this builder.
-     * 
+     *
      * @return new IO configuration
      * @since 4.0.0
      */

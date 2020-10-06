@@ -31,10 +31,10 @@ import net.kyori.adventure.key.Key;
 
 final class KeySerializer extends TypeAdapter<Key> {
   static final TypeAdapter<Key> INSTANCE = new KeySerializer().nullSafe();
-  
+
   private KeySerializer() {
   }
-  
+
   @Override
   public void write(final JsonWriter out, final Key value) throws IOException {
     out.value(value.asString());
@@ -42,6 +42,6 @@ final class KeySerializer extends TypeAdapter<Key> {
 
   @Override
   public Key read(final JsonReader in) throws IOException {
-    return Key.of(in.nextString());
+    return Key.key(in.nextString());
   }
 }

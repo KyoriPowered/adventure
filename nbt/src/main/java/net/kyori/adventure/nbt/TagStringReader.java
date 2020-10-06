@@ -87,7 +87,7 @@ final class TagStringReader {
     this.buffer.expect(Tokens.ARRAY_BEGIN)
       .expect(elementType)
       .expect(Tokens.ARRAY_SIGNATURE_SEPARATOR);
-    
+
     elementType = Character.toLowerCase(elementType);
     if(elementType == Tokens.TYPE_BYTE) {
       return ByteArrayBinaryTag.of(this.byteArray());
@@ -221,9 +221,10 @@ final class TagStringReader {
   }
 
   /**
-   * A tag that is definitely some sort of scalar
+   * A tag that is definitely some sort of scalar.
    *
-   * <p>Does not detect quoted strings, so </p>
+   * <p>Does not detect quoted strings, so those should have been parsed already.</p>
+   *
    * @return a parsed tag
    */
   private BinaryTag scalar() {
@@ -303,7 +304,7 @@ final class TagStringReader {
   }
 
   /**
-   * Remove simple escape sequences from a string
+   * Remove simple escape sequences from a string.
    *
    * @param withEscapes input string with escapes
    * @return string with escapes processed
@@ -318,7 +319,7 @@ final class TagStringReader {
     do {
       output.append(withEscapes, lastEscape, escapeIdx);
       lastEscape = escapeIdx + 1;
-    } while ((escapeIdx = withEscapes.indexOf(Tokens.ESCAPE_MARKER, lastEscape + 1)) != -1); // add one extra character to make sure we don't include escaped backslashes
+    } while((escapeIdx = withEscapes.indexOf(Tokens.ESCAPE_MARKER, lastEscape + 1)) != -1); // add one extra character to make sure we don't include escaped backslashes
     output.append(withEscapes.substring(lastEscape));
     return output.toString();
   }
