@@ -1,9 +1,15 @@
+buildscript {
+  ext {
+    indraVersion = "1.0.2"
+  }
+}
+
 plugins {
-  id "net.kyori.indra" version "1.0.1" apply false
-  id "net.kyori.indra.checkstyle" version "1.0.1" apply false
-  id "net.kyori.indra.license-header" version "1.0.1" apply false
-  id "net.kyori.indra.publishing" version "1.0.2" apply false
-  id "net.kyori.indra.publishing.sonatype" version "1.0.1" apply false
+  id "net.kyori.indra" version "$indraVersion" apply false
+  id "net.kyori.indra.checkstyle" version "$indraVersion" apply false
+  id "net.kyori.indra.license-header" version "$indraVersion" apply false
+  id "net.kyori.indra.publishing" version "$indraVersion" apply false
+  id "net.kyori.indra.publishing.sonatype" version "$indraVersion" apply false
 }
 
 group "net.kyori"
