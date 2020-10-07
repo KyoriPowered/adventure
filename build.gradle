@@ -1,5 +1,5 @@
 plugins {
-  id "net.kyori.indra" version "1.0.1" apply false
+  id "net.kyori.indra" version "1.0.2" apply false
   id "net.kyori.indra.checkstyle" version "1.0.1" apply false
   id "net.kyori.indra.license-header" version "1.0.1" apply false
   id "net.kyori.indra.publishing" version "1.0.2" apply false
