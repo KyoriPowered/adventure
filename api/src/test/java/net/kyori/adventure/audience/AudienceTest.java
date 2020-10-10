@@ -24,6 +24,7 @@
 package net.kyori.adventure.audience;
 
 import com.google.common.testing.EqualsTester;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -59,5 +60,15 @@ class AudienceTest {
         Audience.audience() // of() with no args returns empty
       )
       .testEquals();
+  }
+
+  @Test
+  void testCollectorEmpty() {
+    assertThat(Stream.<Audience>empty().collect(Audience.toAudience()).audiences()).isEmpty();
+  }
+
+  @Test
+  void testCollectorSingleItem() {
+    assertThat(Stream.of(Audience.empty()).collect(Audience.toAudience()).audiences()).containsExactly(Audience.empty());
   }
 }
