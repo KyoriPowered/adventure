@@ -5,6 +5,7 @@ rootProject.name = "adventure-parent"
 include "api"
 include "nbt"
 include "serializer-configurate3"
+include "serializer-configurate4"
 include "text-serializer-gson"
 include "text-serializer-legacy"
 include "text-serializer-plain"
@@ -13,6 +14,7 @@ include "text-serializer-plain"
   "api",
   "nbt",
   "serializer-configurate3",
+  "serializer-configurate4",
   "text-serializer-gson",
   "text-serializer-legacy",
   "text-serializer-plain"

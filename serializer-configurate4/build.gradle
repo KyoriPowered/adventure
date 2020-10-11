@@ -1,0 +1,15 @@
+dependencies {
+  api(project(":adventure-api"))
+  api("org.spongepowered:configurate-core:4.0.0-SNAPSHOT")
+  testImplementation(project(":adventure-text-serializer-gson"))
+}
+
+repositories {
+  sonatypeSnapshots()
+}
+
+jar {
+  manifest.attributes(
+    "Automatic-Module-Name": "net.kyori.adventure.serializer.configurate4"
+  )
+}
