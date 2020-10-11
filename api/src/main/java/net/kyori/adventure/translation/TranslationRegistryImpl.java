@@ -24,13 +24,18 @@
 package net.kyori.adventure.translation;
 
 import java.text.MessageFormat;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -38,7 +43,6 @@ import static java.util.Objects.requireNonNull;
 
 final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
   private static final Supplier<Locale> SYSTEM_DEFAULT_LOCALE;
-  static final TranslationRegistry INSTANCE = new TranslationRegistryImpl();
 
   static {
     final String property = System.getProperty("net.kyo".concat("ri.adventure.defaultLocale"));
@@ -53,10 +57,12 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
     }
   }
 
+  private final Key name;
   private final Map<String, Translation> translations = new ConcurrentHashMap<>();
   private Locale defaultLocale = Locale.US; // en_us
 
-  TranslationRegistryImpl() {
+  TranslationRegistryImpl(final Key name) {
+    this.name = name;
   }
 
   @Override
@@ -70,10 +76,20 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
   }
 
   @Override
+  public @NonNull Key name() {
+    return this.name;
+  }
+
+  @Override
   public @Nullable MessageFormat translate(final @NonNull String key, final @NonNull Locale locale) {
     final Translation translation = this.translations.get(key);
     if(translation == null) return null;
     return translation.translate(locale);
+  }
+
+  @Override
+  public @NonNull Collection<String> keys() {
+    return Collections.unmodifiableSet(this.translations.keySet());
   }
 
   @Override
@@ -84,6 +100,28 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
   @Override
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("translations", this.translations));
+  }
+
+  @Override
+  public boolean equals(final Object other) {
+    if(this == other) return true;
+    if(!(other instanceof TranslationRegistryImpl)) return false;
+
+    final TranslationRegistryImpl that = (TranslationRegistryImpl) other;
+
+    return this.name.equals(that.name)
+      && this.translations.equals(that.translations)
+      && this.defaultLocale.equals(that.defaultLocale);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.name, this.translations, this.defaultLocale);
+  }
+
+  @Override
+  public String toString() {
+    return StringExaminer.simpleEscaping().examine(this);
   }
 
   final class Translation implements Examinable {
@@ -121,6 +159,25 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
         ExaminableProperty.of("key", this.key),
         ExaminableProperty.of("formats", this.formats)
       );
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+      if(this == other) return true;
+      if(!(other instanceof Translation)) return false;
+      final Translation that = (Translation) other;
+      return this.key.equals(that.key) &&
+        this.formats.equals(that.formats);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(this.key, this.formats);
+    }
+
+    @Override
+    public String toString() {
+      return StringExaminer.simpleEscaping().examine(this);
     }
   }
 }

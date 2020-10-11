@@ -24,14 +24,11 @@
 package net.kyori.adventure.translation;
 
 import java.text.MessageFormat;
-import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
@@ -42,50 +39,59 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import static java.util.Objects.requireNonNull;
 
 final class GlobalTranslationSourceImpl implements GlobalTranslationSource {
+  private static final Key NAME = Key.key("adventure", "global");
   static final GlobalTranslationSourceImpl INSTANCE = new GlobalTranslationSourceImpl();
   final TranslatableComponentRenderer<Locale> renderer = TranslatableComponentRenderer.usingTranslationSource(this);
-  private final Set<Key> keys = Collections.synchronizedSet(new HashSet<>());
-  private final List<Map.Entry<Key, TranslationSource>> sources = new CopyOnWriteArrayList<>();
+  private final Map<String, TranslationSource> keys = new ConcurrentHashMap<>();
 
   private GlobalTranslationSourceImpl() {
   }
 
   @Override
-  public void register(final @NonNull Key key, final @NonNull TranslationSource source) {
-    requireNonNull(key, "key");
+  public void register(final @NonNull TranslationSource source) {
     requireNonNull(source, "source");
     if(source == this) {
       throw new IllegalArgumentException("cannot register GlobalTranslationSource to itself");
     }
-    if(!this.keys.add(key)) {
-      throw new IllegalStateException("translation source already registered for " + key);
+    for(final String key : source.keys()) {
+      final TranslationSource existing = this.keys.putIfAbsent(key, source);
+      if(existing != null && !existing.equals(source)) {
+        throw new IllegalArgumentException("Cannot register translation key '" + key + "' from " + source + " as it is already registered from " + existing + "!");
+      }
     }
-    this.sources.add(new SimpleImmutableEntry<>(key, source));
   }
 
   @Override
-  public void unregister(final @NonNull Key key) {
-    requireNonNull(key, "key");
-    if(this.keys.remove(key)) {
-      this.sources.removeIf(e -> e.getKey().equals(key));
-    }
+  public void unregister(final @NonNull TranslationSource source) {
+    requireNonNull(source, "source");
+    this.keys.values().remove(source);
+  }
+
+  @Override
+  public @NonNull Key name() {
+    return NAME;
   }
 
   @Override
   public @Nullable MessageFormat translate(final @NonNull String key, final @NonNull Locale locale) {
     requireNonNull(key, "key");
     requireNonNull(locale, "locale");
-    for(final Map.Entry<Key, TranslationSource> translation : this.sources) {
-      final MessageFormat result = translation.getValue().translate(key, locale);
-      if(result != null) {
-        return result;
-      }
-    }
-    return null;
+    final TranslationSource source = this.keys.get(key);
+    if(source == null) return null;
+
+    return source.translate(key, locale);
+  }
+
+  @Override
+  public @NonNull Collection<String> keys() {
+    return Collections.unmodifiableSet(this.keys.keySet());
   }
 
   @Override
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(ExaminableProperty.of("sources", this.sources));
+    return Stream.of(
+      ExaminableProperty.of("name", NAME),
+      ExaminableProperty.of("keys", this.keys)
+    );
   }
 }

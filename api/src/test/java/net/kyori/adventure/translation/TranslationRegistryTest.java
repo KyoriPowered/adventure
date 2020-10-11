@@ -26,6 +26,7 @@ package net.kyori.adventure.translation;
 import com.google.common.collect.ImmutableList;
 import java.text.MessageFormat;
 import java.util.Locale;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -39,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TranslationRegistryTest {
-  static final TranslationRegistry REGISTRY = TranslationRegistry.create();
+  static final TranslationRegistry REGISTRY = TranslationRegistry.create(Key.key("adventure", "test"));
   static final TranslatableComponentRenderer<Locale> RENDERER = TranslatableComponentRenderer.usingTranslationSource(REGISTRY);
 
   @BeforeAll

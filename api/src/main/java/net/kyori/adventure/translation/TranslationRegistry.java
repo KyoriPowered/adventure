@@ -33,9 +33,12 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.UTF8ResourceBundleControl;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A registry of translations.
@@ -56,8 +59,8 @@ public interface TranslationRegistry extends TranslationSource {
    * @return a translation registry
    * @since 4.0.0
    */
-  static @NonNull TranslationRegistry create() {
-    return new TranslationRegistryImpl();
+  static @NonNull TranslationRegistry create(final Key name) {
+    return new TranslationRegistryImpl(requireNonNull(name, "name"));
   }
 
   /**

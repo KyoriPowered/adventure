@@ -24,7 +24,6 @@
 package net.kyori.adventure.translation;
 
 import java.util.Locale;
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
 import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -58,11 +57,13 @@ public interface GlobalTranslationSource extends TranslationSource, Examinable {
   /**
    * Registers a translation source.
    *
-   * @param key the key which identifies the source
+   * <p>The global source may not respond to keys that are registered or unregistered in the sub-source
+   * after registration. However, sources may be re-registered at any time.</p>
+   *
    * @param source the source
    * @since 4.0.0
    */
-  void register(final @NonNull Key key, final @NonNull TranslationSource source);
+  void register(final @NonNull TranslationSource source);
 
   /**
    * Unregisters a translation source.
@@ -70,5 +71,5 @@ public interface GlobalTranslationSource extends TranslationSource, Examinable {
    * @param key the key to unregister
    * @since 4.0.0
    */
-  void unregister(final @NonNull Key key);
+  void unregister(final @NonNull TranslationSource key);
 }
