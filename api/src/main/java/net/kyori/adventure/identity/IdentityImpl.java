@@ -21,63 +21,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.audience;
+package net.kyori.adventure.identity;
 
-import net.kyori.adventure.identity.Identity;
-import net.kyori.adventure.inventory.Book;
-import net.kyori.adventure.text.ComponentLike;
-import net.kyori.adventure.identity.Identified;
+import java.util.UUID;
+import java.util.stream.Stream;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-final class EmptyAudience implements Audience {
-  static final EmptyAudience INSTANCE = new EmptyAudience();
+final class IdentityImpl implements Examinable, Identity {
+  private final UUID uuid;
 
-  @Deprecated
-  @Override
-  public void sendMessage(final @NonNull ComponentLike message) {
-  }
-
-  @Deprecated
-  @Override
-  public void sendMessage(final @NonNull ComponentLike message, final @NonNull MessageType type) {
+  IdentityImpl(final UUID uuid) {
+    this.uuid = uuid;
   }
 
   @Override
-  public void sendMessage(final @NonNull Identified identified, final @NonNull ComponentLike message) {
+  public @NonNull UUID uuid() {
+    return this.uuid;
   }
 
   @Override
-  public void sendMessage(final @NonNull Identity identity, final @NonNull ComponentLike message) {
-  }
-
-  @Override
-  public void sendMessage(final @NonNull Identified identified, final @NonNull ComponentLike message, final @NonNull MessageType type) {
-  }
-
-  @Override
-  public void sendMessage(final @NonNull Identity identity, final @NonNull ComponentLike message, final @NonNull MessageType type) {
-  }
-
-  @Override
-  public void sendActionBar(final @NonNull ComponentLike message) {
-  }
-
-  @Override
-  public void openBook(final Book.@NonNull Builder book) {
-  }
-
-  @Override
-  public boolean equals(final Object that) {
-    return this == that;
-  }
-
-  @Override
-  public int hashCode() {
-    return 0;
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(ExaminableProperty.of("uuid", this.uuid));
   }
 
   @Override
   public String toString() {
-    return "EmptyAudience";
+    return "Identity[" + this.uuid + "]";
+  }
+
+  @Override
+  public boolean equals(final @Nullable Object other) {
+    if(this == other) return true;
+    if(!(other instanceof Identity)) return false;
+    final Identity that = (Identity) other;
+    return this.uuid.equals(that.uuid());
+  }
+
+  @Override
+  public int hashCode() {
+    return this.uuid.hashCode();
   }
 }
