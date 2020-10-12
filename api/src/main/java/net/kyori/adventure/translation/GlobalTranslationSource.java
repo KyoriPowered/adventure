@@ -24,6 +24,7 @@
 package net.kyori.adventure.translation;
 
 import java.util.Locale;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
 import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -52,6 +53,18 @@ public interface GlobalTranslationSource extends TranslationSource, Examinable {
    */
   static @NonNull TranslatableComponentRenderer<Locale> globalRenderer() {
     return GlobalTranslationSourceImpl.INSTANCE.renderer;
+  }
+
+  /**
+   * Renders a component using the {@link #globalRenderer() global renderer}.
+   *
+   * @param component the component to render
+   * @param locale the locale to use when rendering
+   * @return the rendered component
+   * @since 4.0.0
+   */
+  static @NonNull Component render(final @NonNull Component component, final @NonNull Locale locale) {
+    return globalRenderer().render(component, locale);
   }
 
   /**
