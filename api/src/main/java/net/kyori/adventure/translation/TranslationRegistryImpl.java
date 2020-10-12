@@ -28,7 +28,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
@@ -40,21 +39,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import static java.util.Objects.requireNonNull;
 
 final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
-  private static final Supplier<Locale> SYSTEM_DEFAULT_LOCALE;
-
-  static {
-    final String property = System.getProperty("net.kyo".concat("ri.adventure.defaultLocale"));
-    if(property == null || property.isEmpty()) {
-      SYSTEM_DEFAULT_LOCALE = () -> Locale.US;
-    } else if(property.equals("system")) {
-      SYSTEM_DEFAULT_LOCALE = Locale::getDefault;
-    } else {
-      final String[] split = property.split("_", 2);
-      final Locale locale = split.length == 1 ? new Locale(property) : new Locale(split[0], split[1]);
-      SYSTEM_DEFAULT_LOCALE = () -> locale;
-    }
-  }
-
   private final Key name;
   private final Map<String, Translation> translations = new ConcurrentHashMap<>();
   private Locale defaultLocale = Locale.US; // en_us
@@ -137,9 +121,9 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
       if(format == null) {
         format = this.formats.get(new Locale(locale.getLanguage())); // try without country
         if(format == null) {
-          format = this.formats.get(TranslationRegistryImpl.this.defaultLocale); // try default locale
+          format = this.formats.get(TranslationRegistryImpl.this.defaultLocale); // try local default locale
           if(format == null) {
-            format = this.formats.get(SYSTEM_DEFAULT_LOCALE.get()); // try system default locale
+            format = this.formats.get(TranslationLocales.global()); // try global default locale
           }
         }
       }
