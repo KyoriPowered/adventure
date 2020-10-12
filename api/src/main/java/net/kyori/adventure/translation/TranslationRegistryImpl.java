@@ -24,8 +24,6 @@
 package net.kyori.adventure.translation;
 
 import java.text.MessageFormat;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -85,11 +83,6 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
     final Translation translation = this.translations.get(key);
     if(translation == null) return null;
     return translation.translate(locale);
-  }
-
-  @Override
-  public @NonNull Collection<String> keys() {
-    return Collections.unmodifiableSet(this.translations.keySet());
   }
 
   @Override

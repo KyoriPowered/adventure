@@ -24,7 +24,6 @@
 package net.kyori.adventure.translation;
 
 import java.text.MessageFormat;
-import java.util.Collection;
 import java.util.Locale;
 import net.kyori.adventure.key.Key;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -55,12 +54,4 @@ public interface TranslationSource {
    * @since 4.0.0
    */
   @Nullable MessageFormat translate(final @NonNull String key, final @NonNull Locale locale);
-
-  /**
-   * Get the keys this source can translate.
-   *
-   * @return an unmodifiable collection containing this source's keys.
-   * @since 4.0.0
-   */
-  @NonNull Collection<String> keys();
 }
