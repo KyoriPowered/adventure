@@ -26,11 +26,13 @@ package net.kyori.adventure.translation;
 import com.google.common.collect.ImmutableList;
 import java.text.MessageFormat;
 import java.util.Locale;
+import java.util.ResourceBundle;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
+import net.kyori.adventure.util.UTF8ResourceBundleControl;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -46,7 +48,9 @@ class TranslationRegistryTest {
   @BeforeAll
   static void testRegister() {
     REGISTRY.register("what", Locale.CANADA, new MessageFormat("A what?", Locale.CANADA));
-    REGISTRY.registerAll(Locale.US, "adventure-test", true);
+
+    final ResourceBundle bundle = ResourceBundle.getBundle("adventure-test", Locale.US, UTF8ResourceBundleControl.get());
+    REGISTRY.registerAll(Locale.US, bundle, true);
   }
 
   @Test

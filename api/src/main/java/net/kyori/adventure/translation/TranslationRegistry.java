@@ -23,18 +23,22 @@
  */
 package net.kyori.adventure.translation;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.MissingResourceException;
+import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.util.UTF8ResourceBundleControl;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -169,20 +173,20 @@ public interface TranslationRegistry extends TranslationSource {
    * Registers a resource bundle of translations.
    *
    * @param locale a locale
-   * @param resourceBundlePath a resource bundle path
+   * @param path a path to the resource bundle
    * @param escapeSingleQuotes whether to escape single quotes
    * @throws IllegalArgumentException if a translation key is already exists
    * @see #registerAll(Locale, ResourceBundle, boolean)
    * @since 4.0.0
    */
-  default void registerAll(final @NonNull Locale locale, final @NonNull String resourceBundlePath, final boolean escapeSingleQuotes) {
-    final ResourceBundle resourceBundle;
-    try {
-      resourceBundle = ResourceBundle.getBundle(resourceBundlePath, locale, UTF8ResourceBundleControl.get());
-    } catch(final MissingResourceException e) {
+  default void registerAll(final @NonNull Locale locale, final @NonNull Path path, final boolean escapeSingleQuotes) {
+    final PropertyResourceBundle bundle;
+    try(final BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+      bundle = new PropertyResourceBundle(reader);
+    } catch(final IOException e) {
       return;
     }
-    this.registerAll(locale, resourceBundle, escapeSingleQuotes);
+    this.registerAll(locale, bundle, escapeSingleQuotes);
   }
 
   /**
