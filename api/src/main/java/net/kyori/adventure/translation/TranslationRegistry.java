@@ -39,6 +39,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.util.UTF8ResourceBundleControl;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -49,7 +50,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.0.0
  */
-public interface TranslationRegistry extends TranslationSource {
+public interface TranslationRegistry extends Translator {
   /**
    * A pattern which matches a single quote.
    *
@@ -93,7 +94,7 @@ public interface TranslationRegistry extends TranslationSource {
    *
    * <pre>
    *   final TranslationRegistry registry;
-   *   registry.register("myplugin.hello", Locale.US, new MessageFormat("Hi, {0}. How are you?"));
+   *   registry.register("example.hello", Locale.US, new MessageFormat("Hi, {0}. How are you?"));
    * </pre>
    *
    * @param key a translation key
@@ -115,6 +116,53 @@ public interface TranslationRegistry extends TranslationSource {
    */
   default void registerAll(final @NonNull Locale locale, final @NonNull Map<String, MessageFormat> formats) {
     this.registerAll(locale, formats.keySet(), formats::get);
+  }
+
+  /**
+   * Registers a resource bundle of translations.
+   *
+   * @param locale a locale
+   * @param path a path to the resource bundle
+   * @param escapeSingleQuotes whether to escape single quotes
+   * @throws IllegalArgumentException if a translation key is already exists
+   * @see #registerAll(Locale, ResourceBundle, boolean)
+   * @since 4.0.0
+   */
+  default void registerAll(final @NonNull Locale locale, final @NonNull Path path, final boolean escapeSingleQuotes) {
+    try(final BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+      this.registerAll(locale, new PropertyResourceBundle(reader), escapeSingleQuotes);
+    } catch(final IOException e) {
+      // ignored
+    }
+  }
+
+  /**
+   * Registers a resource bundle of translations.
+   *
+   * <p>It is highly recommended to create your bundle using {@link UTF8ResourceBundleControl} as your bundle control for UTF-8 support - for example:</p>
+   *
+   * <pre>
+   *   final ResourceBundle bundle = ResourceBundle.getBundle("my_bundle", Locale.GERMANY, UTF8ResourceBundleControl.get());
+   *   registry.registerAll(Locale.GERMANY, bundle, false);
+   * </pre>
+   *
+   * @param locale a locale
+   * @param bundle a resource bundle
+   * @param escapeSingleQuotes whether to escape single quotes
+   * @throws IllegalArgumentException if a translation key is already exists
+   * @see UTF8ResourceBundleControl
+   * @since 4.0.0
+   */
+  default void registerAll(final @NonNull Locale locale, final @NonNull ResourceBundle bundle, final boolean escapeSingleQuotes) {
+    this.registerAll(locale, bundle.keySet(), key -> {
+      final String format = bundle.getString(key);
+      return new MessageFormat(
+        escapeSingleQuotes
+          ? SINGLE_QUOTE_PATTERN.matcher(format).replaceAll("''")
+          : format,
+        locale
+      );
+    });
   }
 
   /**
@@ -146,47 +194,6 @@ public interface TranslationRegistry extends TranslationSource {
         throw new IllegalArgumentException(String.format("Invalid key (and %d more)", size - 1), errors.get(0));
       }
     }
-  }
-
-  /**
-   * Registers a resource bundle of translations.
-   *
-   * @param locale a locale
-   * @param resourceBundle a resource bundle
-   * @param escapeSingleQuotes whether to escape single quotes
-   * @throws IllegalArgumentException if a translation key is already exists
-   * @since 4.0.0
-   */
-  default void registerAll(final @NonNull Locale locale, final @NonNull ResourceBundle resourceBundle, final boolean escapeSingleQuotes) {
-    this.registerAll(locale, resourceBundle.keySet(), key -> {
-      final String format = resourceBundle.getString(key);
-      return new MessageFormat(
-        escapeSingleQuotes
-          ? SINGLE_QUOTE_PATTERN.matcher(format).replaceAll("''")
-          : format,
-        locale
-      );
-    });
-  }
-
-  /**
-   * Registers a resource bundle of translations.
-   *
-   * @param locale a locale
-   * @param path a path to the resource bundle
-   * @param escapeSingleQuotes whether to escape single quotes
-   * @throws IllegalArgumentException if a translation key is already exists
-   * @see #registerAll(Locale, ResourceBundle, boolean)
-   * @since 4.0.0
-   */
-  default void registerAll(final @NonNull Locale locale, final @NonNull Path path, final boolean escapeSingleQuotes) {
-    final PropertyResourceBundle bundle;
-    try(final BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
-      bundle = new PropertyResourceBundle(reader);
-    } catch(final IOException e) {
-      return;
-    }
-    this.registerAll(locale, bundle, escapeSingleQuotes);
   }
 
   /**

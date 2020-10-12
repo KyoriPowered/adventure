@@ -34,7 +34,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * @since 4.0.0
  */
-public interface TranslationSource {
+public interface Translator {
   /**
    * Parses a {@link Locale} from a {@link String}.
    *

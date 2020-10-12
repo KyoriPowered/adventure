@@ -37,13 +37,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-final class GlobalTranslationSourceImpl implements GlobalTranslationSource {
+final class GlobalTranslatorImpl implements GlobalTranslator {
   private static final Key NAME = Key.key("adventure", "global");
-  static final GlobalTranslationSourceImpl INSTANCE = new GlobalTranslationSourceImpl();
+  static final GlobalTranslatorImpl INSTANCE = new GlobalTranslatorImpl();
   final TranslatableComponentRenderer<Locale> renderer = TranslatableComponentRenderer.usingTranslationSource(this);
-  private final Set<TranslationSource> sources = Collections.newSetFromMap(new ConcurrentHashMap<>());
+  private final Set<Translator> sources = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
-  private GlobalTranslationSourceImpl() {
+  private GlobalTranslatorImpl() {
   }
 
   @Override
@@ -52,21 +52,19 @@ final class GlobalTranslationSourceImpl implements GlobalTranslationSource {
   }
 
   @Override
-  public @NonNull Iterable<? extends TranslationSource> sources() {
+  public @NonNull Iterable<? extends Translator> sources() {
     return Collections.unmodifiableSet(this.sources);
   }
 
   @Override
-  public boolean register(final @NonNull TranslationSource source) {
+  public boolean addSource(final @NonNull Translator source) {
     requireNonNull(source, "source");
-    if(source == this) {
-      throw new IllegalArgumentException("GlobalTranslationSource");
-    }
+    if(source == this) throw new IllegalArgumentException("GlobalTranslationSource");
     return this.sources.add(source);
   }
 
   @Override
-  public boolean unregister(final @NonNull TranslationSource source) {
+  public boolean removeSource(final @NonNull Translator source) {
     requireNonNull(source, "source");
     return this.sources.remove(source);
   }
@@ -75,7 +73,7 @@ final class GlobalTranslationSourceImpl implements GlobalTranslationSource {
   public @Nullable MessageFormat translate(final @NonNull String key, final @NonNull Locale locale) {
     requireNonNull(key, "key");
     requireNonNull(locale, "locale");
-    for(final TranslationSource source : this.sources) {
+    for(final Translator source : this.sources) {
       final MessageFormat translation = source.translate(key, locale);
       if(translation != null) return translation;
     }
@@ -84,8 +82,6 @@ final class GlobalTranslationSourceImpl implements GlobalTranslationSource {
 
   @Override
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("sources", this.sources)
-    );
+    return Stream.of(ExaminableProperty.of("sources", this.sources));
   }
 }

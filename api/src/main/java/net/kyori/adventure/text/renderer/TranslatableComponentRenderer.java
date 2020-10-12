@@ -44,7 +44,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.translation.TranslationSource;
+import net.kyori.adventure.translation.Translator;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -60,13 +60,13 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   private static final Set<Style.Merge> MERGES = Style.Merge.of(Style.Merge.COLOR, Style.Merge.DECORATIONS, Style.Merge.INSERTION, Style.Merge.FONT);
 
   /**
-   * Creates a {@link TranslatableComponentRenderer} using the {@link TranslationSource} to translate.
+   * Creates a {@link TranslatableComponentRenderer} using the {@link Translator} to translate.
    *
    * @param source the translation source
    * @return the renderer
    * @since 4.0.0
    */
-  public static @NonNull TranslatableComponentRenderer<Locale> usingTranslationSource(final @NonNull TranslationSource source) {
+  public static @NonNull TranslatableComponentRenderer<Locale> usingTranslationSource(final @NonNull Translator source) {
     requireNonNull(source, "source");
     return new TranslatableComponentRenderer<Locale>() {
       @Override

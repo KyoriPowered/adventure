@@ -34,15 +34,15 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * @since 4.0.0
  */
-public interface GlobalTranslationSource extends TranslationSource, Examinable {
+public interface GlobalTranslator extends Translator, Examinable {
   /**
    * Gets the global translation source.
    *
    * @return the source
    * @since 4.0.0
    */
-  static @NonNull GlobalTranslationSource global() {
-    return GlobalTranslationSourceImpl.INSTANCE;
+  static @NonNull GlobalTranslator get() {
+    return GlobalTranslatorImpl.INSTANCE;
   }
 
   /**
@@ -51,12 +51,12 @@ public interface GlobalTranslationSource extends TranslationSource, Examinable {
    * @return a renderer
    * @since 4.0.0
    */
-  static @NonNull TranslatableComponentRenderer<Locale> globalRenderer() {
-    return GlobalTranslationSourceImpl.INSTANCE.renderer;
+  static @NonNull TranslatableComponentRenderer<Locale> renderer() {
+    return GlobalTranslatorImpl.INSTANCE.renderer;
   }
 
   /**
-   * Renders a component using the {@link #globalRenderer() global renderer}.
+   * Renders a component using the {@link #renderer() global renderer}.
    *
    * @param component the component to render
    * @param locale the locale to use when rendering
@@ -64,7 +64,7 @@ public interface GlobalTranslationSource extends TranslationSource, Examinable {
    * @since 4.0.0
    */
   static @NonNull Component render(final @NonNull Component component, final @NonNull Locale locale) {
-    return globalRenderer().render(component, locale);
+    return renderer().render(component, locale);
   }
 
   /**
@@ -73,26 +73,26 @@ public interface GlobalTranslationSource extends TranslationSource, Examinable {
    * @return the sources
    * @since 4.0.0
    */
-  @NonNull Iterable<? extends TranslationSource> sources();
+  @NonNull Iterable<? extends Translator> sources();
 
   /**
-   * Registers a translation source.
+   * Adds a translation source.
    *
    * <p>Duplicate sources will be ignored.</p>
    *
    * @param source the source
    * @return {@code true} if registered, {@code false} otherwise
-   * @throws IllegalArgumentException if source is {@link GlobalTranslationSource}
+   * @throws IllegalArgumentException if source is {@link GlobalTranslator}
    * @since 4.0.0
    */
-  boolean register(final @NonNull TranslationSource source);
+  boolean addSource(final @NonNull Translator source);
 
   /**
-   * Unregisters a translation source.
+   * Removes a translation source.
    *
-   * @param key the key to unregister
+   * @param source the source to unregister
    * @return {@code true} if unregistered, {@code false} otherwise
    * @since 4.0.0
    */
-  boolean unregister(final @NonNull TranslationSource key);
+  boolean removeSource(final @NonNull Translator source);
 }

@@ -36,7 +36,7 @@ final class TranslationLocales {
     } else if(property.equals("system")) {
       GLOBAL = Locale::getDefault;
     } else {
-      final Locale locale = TranslationSource.parseLocale(property);
+      final Locale locale = Translator.parseLocale(property);
       GLOBAL = () -> locale;
     }
   }
