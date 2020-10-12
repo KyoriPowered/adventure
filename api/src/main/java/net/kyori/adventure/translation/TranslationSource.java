@@ -36,6 +36,26 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public interface TranslationSource {
   /**
+   * Parses a {@link Locale} from a {@link String}.
+   *
+   * @param string the string
+   * @return a locale
+   * @since 4.0.0
+   */
+  static @Nullable Locale parseLocale(final @NonNull String string) {
+    final String[] segments = string.split("_", 3); // language_country_variant
+    final int length = segments.length;
+    if(length == 1) {
+      return new Locale(string); // language
+    } else if(length == 2) {
+      return new Locale(segments[0], segments[1]); // language + country
+    } else if(length == 3) {
+      return new Locale(segments[0], segments[1], segments[2]); // language + country + variant
+    }
+    return null;
+  }
+
+  /**
    * A key identifying this translation source.
    *
    * <p>Intended to be used for display to users.</p>
