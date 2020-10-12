@@ -24,10 +24,9 @@
 package net.kyori.adventure.translation;
 
 import java.text.MessageFormat;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Locale;
-import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
@@ -42,29 +41,9 @@ final class GlobalTranslationSourceImpl implements GlobalTranslationSource {
   private static final Key NAME = Key.key("adventure", "global");
   static final GlobalTranslationSourceImpl INSTANCE = new GlobalTranslationSourceImpl();
   final TranslatableComponentRenderer<Locale> renderer = TranslatableComponentRenderer.usingTranslationSource(this);
-  private final Map<String, TranslationSource> keys = new ConcurrentHashMap<>();
+  private final Set<TranslationSource> sources = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
   private GlobalTranslationSourceImpl() {
-  }
-
-  @Override
-  public void register(final @NonNull TranslationSource source) {
-    requireNonNull(source, "source");
-    if(source == this) {
-      throw new IllegalArgumentException("cannot register GlobalTranslationSource to itself");
-    }
-    for(final String key : source.keys()) {
-      final TranslationSource existing = this.keys.putIfAbsent(key, source);
-      if(existing != null && !existing.equals(source)) {
-        throw new IllegalArgumentException("Cannot register translation key '" + key + "' from " + source + " as it is already registered from " + existing + "!");
-      }
-    }
-  }
-
-  @Override
-  public void unregister(final @NonNull TranslationSource source) {
-    requireNonNull(source, "source");
-    this.keys.values().remove(source);
   }
 
   @Override
@@ -73,25 +52,40 @@ final class GlobalTranslationSourceImpl implements GlobalTranslationSource {
   }
 
   @Override
-  public @Nullable MessageFormat translate(final @NonNull String key, final @NonNull Locale locale) {
-    requireNonNull(key, "key");
-    requireNonNull(locale, "locale");
-    final TranslationSource source = this.keys.get(key);
-    if(source == null) return null;
-
-    return source.translate(key, locale);
+  public @NonNull Iterable<? extends TranslationSource> sources() {
+    return Collections.unmodifiableSet(this.sources);
   }
 
   @Override
-  public @NonNull Collection<String> keys() {
-    return Collections.unmodifiableSet(this.keys.keySet());
+  public boolean register(final @NonNull TranslationSource source) {
+    requireNonNull(source, "source");
+    if(source == this) {
+      throw new IllegalArgumentException("GlobalTranslationSource");
+    }
+    return this.sources.add(source);
+  }
+
+  @Override
+  public boolean unregister(final @NonNull TranslationSource source) {
+    requireNonNull(source, "source");
+    return this.sources.remove(source);
+  }
+
+  @Override
+  public @Nullable MessageFormat translate(final @NonNull String key, final @NonNull Locale locale) {
+    requireNonNull(key, "key");
+    requireNonNull(locale, "locale");
+    for(final TranslationSource source : this.sources) {
+      final MessageFormat translation = source.translate(key, locale);
+      if(translation != null) return translation;
+    }
+    return null;
   }
 
   @Override
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
-      ExaminableProperty.of("name", NAME),
-      ExaminableProperty.of("keys", this.keys)
+      ExaminableProperty.of("sources", this.sources)
     );
   }
 }

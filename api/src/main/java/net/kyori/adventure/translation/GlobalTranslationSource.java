@@ -40,7 +40,7 @@ public interface GlobalTranslationSource extends TranslationSource, Examinable {
    * @return the source
    * @since 4.0.0
    */
-  static @NonNull GlobalTranslationSource get() {
+  static @NonNull GlobalTranslationSource global() {
     return GlobalTranslationSourceImpl.INSTANCE;
   }
 
@@ -50,26 +50,36 @@ public interface GlobalTranslationSource extends TranslationSource, Examinable {
    * @return a renderer
    * @since 4.0.0
    */
-  static @NonNull TranslatableComponentRenderer<Locale> renderer() {
+  static @NonNull TranslatableComponentRenderer<Locale> globalRenderer() {
     return GlobalTranslationSourceImpl.INSTANCE.renderer;
   }
 
   /**
-   * Registers a translation source.
+   * Gets the sources.
    *
-   * <p>The global source may not respond to keys that are registered or unregistered in the sub-source
-   * after registration. However, sources may be re-registered at any time.</p>
-   *
-   * @param source the source
+   * @return the sources
    * @since 4.0.0
    */
-  void register(final @NonNull TranslationSource source);
+  @NonNull Iterable<? extends TranslationSource> sources();
+
+  /**
+   * Registers a translation source.
+   *
+   * <p>Duplicate sources will be ignored.</p>
+   *
+   * @param source the source
+   * @return {@code true} if registered, {@code false} otherwise
+   * @throws IllegalArgumentException if source is {@link GlobalTranslationSource}
+   * @since 4.0.0
+   */
+  boolean register(final @NonNull TranslationSource source);
 
   /**
    * Unregisters a translation source.
    *
    * @param key the key to unregister
+   * @return {@code true} if unregistered, {@code false} otherwise
    * @since 4.0.0
    */
-  void unregister(final @NonNull TranslationSource key);
+  boolean unregister(final @NonNull TranslationSource key);
 }
