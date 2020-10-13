@@ -25,6 +25,7 @@ package net.kyori.adventure.sound;
 
 import java.util.function.Supplier;
 import net.kyori.adventure.key.Key;
+import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -35,7 +36,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.0.0
  */
-public interface SoundStop {
+public interface SoundStop extends Examinable {
   /**
    * Stops all sounds.
    *

@@ -26,6 +26,7 @@ package net.kyori.adventure.sound;
 import java.util.function.Supplier;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.Index;
+import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static java.util.Objects.requireNonNull;
@@ -35,7 +36,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.0.0
  */
-public interface Sound {
+public interface Sound extends Examinable {
   /**
    * Creates a new sound.
    *

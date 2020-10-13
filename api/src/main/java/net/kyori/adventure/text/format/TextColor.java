@@ -23,7 +23,10 @@
  */
 package net.kyori.adventure.text.format;
 
+import java.util.stream.Stream;
 import net.kyori.adventure.util.RGBLike;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.common.value.qual.IntRange;
@@ -33,7 +36,7 @@ import org.checkerframework.common.value.qual.IntRange;
  *
  * @since 4.0.0
  */
-public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderApplicable, TextFormat {
+public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, StyleBuilderApplicable, TextFormat {
   /**
    * Creates a new text colour.
    *
@@ -249,5 +252,10 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
   @Override
   default int compareTo(final TextColor that) {
     return Integer.compare(this.value(), that.value());
+  }
+
+  @Override
+  default @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(ExaminableProperty.of("value", this.asHexString()));
   }
 }

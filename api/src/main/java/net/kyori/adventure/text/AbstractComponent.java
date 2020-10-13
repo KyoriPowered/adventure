@@ -32,7 +32,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.util.IntFunction2;
-import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -43,7 +42,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * @since 4.0.0
  */
-public abstract class AbstractComponent implements Component, Examinable {
+public abstract class AbstractComponent implements Component {
   static List<Component> asComponents(final List<? extends ComponentLike> list) {
     if(list.isEmpty()) {
       // We do not need to create a new list if the one we are copying is empty - we can

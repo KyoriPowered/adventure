@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Buildable;
+import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -36,7 +37,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * @since 4.0.0
  */
-public interface Book extends Buildable<Book, Book.Builder> {
+public interface Book extends Buildable<Book, Book.Builder>, Examinable {
   /**
    * Creates a book.
    *

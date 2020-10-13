@@ -158,6 +158,15 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
     }
 
     @Override
+    public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+      return Stream.of(
+        ExaminableProperty.of("left", this.left),
+        ExaminableProperty.of("up", this.up),
+        ExaminableProperty.of("forwards", this.forwards)
+      );
+    }
+
+    @Override
     public boolean equals(final @Nullable Object other) {
       if(this == other) return true;
       if(!(other instanceof LocalPos)) return false;
@@ -182,7 +191,7 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
 
     @Override
     public @NonNull String asString() {
-      return Tokens.serializeLocal(this.left()) + ' ' + Tokens.serializeLocal(this.up()) + ' ' + Tokens.serializeLocal(this.forwards());
+      return Tokens.serializeLocal(this.left) + ' ' + Tokens.serializeLocal(this.up) + ' ' + Tokens.serializeLocal(this.forwards);
     }
   }
 
@@ -210,6 +219,15 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
     @Override
     public @NonNull Coordinate z() {
       return this.z;
+    }
+
+    @Override
+    public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+      return Stream.of(
+        ExaminableProperty.of("x", this.x),
+        ExaminableProperty.of("y", this.y),
+        ExaminableProperty.of("z", this.z)
+      );
     }
 
     @Override
@@ -257,6 +275,14 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
       @Override
       public @NonNull Type type() {
         return this.type;
+      }
+
+      @Override
+      public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+        return Stream.of(
+          ExaminableProperty.of("value", this.value),
+          ExaminableProperty.of("type", this.type)
+        );
       }
 
       @Override

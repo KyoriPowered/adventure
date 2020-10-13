@@ -26,13 +26,12 @@ package net.kyori.adventure.sound;
 import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
-import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-abstract class SoundStopImpl implements Examinable, SoundStop {
+abstract class SoundStopImpl implements SoundStop {
   static final SoundStop ALL = new SoundStopImpl(null) {
     @Override
     public @Nullable Key sound() {

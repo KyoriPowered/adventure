@@ -26,13 +26,12 @@ package net.kyori.adventure.key;
 import java.util.Objects;
 import java.util.function.IntPredicate;
 import java.util.stream.Stream;
-import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static java.util.Objects.requireNonNull;
 
-final class KeyImpl implements Examinable, Key {
+final class KeyImpl implements Key {
   private static final IntPredicate NAMESPACE_PREDICATE = value -> value == '_' || value == '-' || (value >= 'a' && value <= 'z') || (value >= '0' && value <= '9') || value == '.';
   private static final IntPredicate VALUE_PREDICATE = value -> value == '_' || value == '-' || (value >= 'a' && value <= 'z') || (value >= '0' && value <= '9') || value == '/' || value == '.';
   private final String namespace;

@@ -25,6 +25,7 @@ package net.kyori.adventure.text;
 
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
+import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -214,7 +215,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
    *
    * @since 4.0.0
    */
-  interface Pos {
+  interface Pos extends Examinable {
     /**
      * Attempt to parse a position from the input string.
      *
@@ -351,7 +352,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      *
      * @since 4.0.0
      */
-    interface Coordinate {
+    interface Coordinate extends Examinable {
       /**
        * Creates a absolute coordinate with the given value.
        *

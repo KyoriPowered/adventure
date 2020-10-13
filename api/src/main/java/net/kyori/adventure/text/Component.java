@@ -42,6 +42,7 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.IntFunction2;
+import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -58,7 +59,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @see TranslatableComponent
  * @since 4.0.0
  */
-public interface Component extends ComponentBuilderApplicable, ComponentLike, HoverEventSource<Component> {
+public interface Component extends ComponentBuilderApplicable, ComponentLike, Examinable, HoverEventSource<Component> {
   /**
    * Gets an empty component.
    *

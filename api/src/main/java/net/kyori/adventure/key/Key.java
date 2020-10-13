@@ -23,6 +23,9 @@
  */
 package net.kyori.adventure.key;
 
+import java.util.stream.Stream;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -30,7 +33,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * @since 4.0.0
  */
-public interface Key extends Comparable<Key> {
+public interface Key extends Comparable<Key>, Examinable {
   /**
    * The namespace for Minecraft.
    *
@@ -146,6 +149,14 @@ public interface Key extends Comparable<Key> {
    * @since 4.0.0
    */
   @NonNull String asString();
+
+  @Override
+  default @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(
+      ExaminableProperty.of("namespace", this.namespace()),
+      ExaminableProperty.of("value", this.value())
+    );
+  }
 
   @Override
   default int compareTo(final @NonNull Key that) {

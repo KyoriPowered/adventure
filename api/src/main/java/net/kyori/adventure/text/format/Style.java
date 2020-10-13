@@ -33,6 +33,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.ShadyPines;
+import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -41,7 +42,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * @since 4.0.0
  */
-public interface Style extends Buildable<Style, Style.Builder> {
+public interface Style extends Buildable<Style, Style.Builder>, Examinable {
   /**
    * The default font.
    *

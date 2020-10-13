@@ -26,6 +26,7 @@ package net.kyori.adventure.bossbar;
 import java.util.Set;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Index;
+import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -33,7 +34,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * @since 4.0.0
  */
-public interface BossBar {
+public interface BossBar extends Examinable {
   /**
    * The minimum value the percent can be.
    *

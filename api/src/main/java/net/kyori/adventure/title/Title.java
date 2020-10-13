@@ -26,6 +26,7 @@ package net.kyori.adventure.title;
 import java.time.Duration;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Ticks;
+import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -34,7 +35,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * @since 4.0.0
  */
-public interface Title {
+public interface Title extends Examinable {
   /**
    * The default times.
    *
@@ -125,7 +126,7 @@ public interface Title {
    *
    * @since 4.0.0
    */
-  interface Times {
+  interface Times extends Examinable {
     /**
      * Creates times.
      *
