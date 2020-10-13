@@ -23,39 +23,30 @@
  */
 package net.kyori.adventure.identity;
 
+import com.google.common.testing.EqualsTester;
 import java.util.UUID;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.string.StringExaminer;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.junit.jupiter.api.Test;
 
-final class IdentityImpl implements Examinable, Identity {
-  private final UUID uuid;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-  IdentityImpl(final UUID uuid) {
-    this.uuid = uuid;
+class IdentityTest {
+  @Test
+  void testIdentity_0_0() {
+    assertSame(Identity.nil(), Identity.identity(new UUID(0, 0)));
   }
 
-  @Override
-  public @NonNull UUID uuid() {
-    return this.uuid;
+  @Test
+  void testIdentity() {
+    final UUID uuid = UUID.randomUUID();
+    final Identity identity = Identity.identity(uuid);
+    assertSame(uuid, identity.uuid());
   }
 
-  @Override
-  public String toString() {
-    return this.examine(StringExaminer.simpleEscaping());
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(!(other instanceof Identity)) return false;
-    final Identity that = (Identity) other;
-    return this.uuid.equals(that.uuid());
-  }
-
-  @Override
-  public int hashCode() {
-    return this.uuid.hashCode();
+  @Test
+  void testEquality() {
+    final UUID uuid = UUID.randomUUID();
+    new EqualsTester()
+      .addEqualityGroup(Identity.identity(uuid), Identity.identity(uuid))
+      .testEquals();
   }
 }

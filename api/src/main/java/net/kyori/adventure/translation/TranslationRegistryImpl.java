@@ -98,7 +98,7 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
 
   @Override
   public String toString() {
-    return StringExaminer.simpleEscaping().examine(this);
+    return this.examine(StringExaminer.simpleEscaping());
   }
 
   final class Translation implements Examinable {
@@ -154,7 +154,7 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
 
     @Override
     public String toString() {
-      return StringExaminer.simpleEscaping().examine(this);
+      return this.examine(StringExaminer.simpleEscaping());
     }
   }
 }
