@@ -220,100 +220,100 @@ public interface Audience {
   /**
    * Sends a chat message.
    *
-   * @param identified the source of the message
+   * @param source the source of the message
    * @param message a message
    * @see Component
    * @since 4.0.0
    */
-  default void sendMessage(final @NonNull Identified identified, final @NonNull ComponentLike message) {
-    this.sendMessage(identified, message.asComponent());
+  default void sendMessage(final @NonNull Identified source, final @NonNull ComponentLike message) {
+    this.sendMessage(source, message.asComponent());
   }
 
   /**
    * Sends a chat message.
    *
-   * @param identity the identity of the source of the message
+   * @param source the identity of the source of the message
    * @param message a message
    * @see Component
    * @since 4.0.0
    */
-  default void sendMessage(final @NonNull Identity identity, final @NonNull ComponentLike message) {
-    this.sendMessage(identity, message.asComponent());
+  default void sendMessage(final @NonNull Identity source, final @NonNull ComponentLike message) {
+    this.sendMessage(source, message.asComponent());
   }
 
   /**
    * Sends a chat message.
    *
-   * @param identified the source of the message
+   * @param source the source of the message
    * @param message a message
    * @see Component
    * @since 4.0.0
    */
-  default void sendMessage(final @NonNull Identified identified, final @NonNull Component message) {
-    this.sendMessage(identified, message, MessageType.SYSTEM);
+  default void sendMessage(final @NonNull Identified source, final @NonNull Component message) {
+    this.sendMessage(source, message, MessageType.SYSTEM);
   }
 
   /**
    * Sends a chat message.
    *
-   * @param identity the identity of the source of the message
+   * @param source the identity of the source of the message
    * @param message a message
    * @see Component
    * @since 4.0.0
    */
-  default void sendMessage(final @NonNull Identity identity, final @NonNull Component message) {
-    this.sendMessage(identity, message, MessageType.SYSTEM);
+  default void sendMessage(final @NonNull Identity source, final @NonNull Component message) {
+    this.sendMessage(source, message, MessageType.SYSTEM);
   }
 
   /**
    * Sends a chat message.
    *
-   * @param identified the source of the message
+   * @param source the source of the message
    * @param message a message
    * @param type the type
    * @see Component
    * @since 4.0.0
    */
-  default void sendMessage(final @NonNull Identified identified, final @NonNull ComponentLike message, final @NonNull MessageType type) {
-    this.sendMessage(identified, message.asComponent(), type);
+  default void sendMessage(final @NonNull Identified source, final @NonNull ComponentLike message, final @NonNull MessageType type) {
+    this.sendMessage(source, message.asComponent(), type);
   }
 
   /**
    * Sends a chat message.
    *
-   * @param identity the identity of the source of the message
+   * @param source the identity of the source of the message
    * @param message a message
    * @param type the type
    * @see Component
    * @since 4.0.0
    */
-  default void sendMessage(final @NonNull Identity identity, final @NonNull ComponentLike message, final @NonNull MessageType type) {
-    this.sendMessage(identity, message.asComponent(), type);
+  default void sendMessage(final @NonNull Identity source, final @NonNull ComponentLike message, final @NonNull MessageType type) {
+    this.sendMessage(source, message.asComponent(), type);
   }
 
   /**
    * Sends a chat message.
    *
-   * @param identified the source of the message
+   * @param source the source of the message
    * @param message a message
    * @param type the type
    * @see Component
    * @since 4.0.0
    */
-  default void sendMessage(final @NonNull Identified identified, final @NonNull Component message, final @NonNull MessageType type) {
-    this.sendMessage(identified.identity(), message, type);
+  default void sendMessage(final @NonNull Identified source, final @NonNull Component message, final @NonNull MessageType type) {
+    this.sendMessage(source.identity(), message, type);
   }
 
   /**
    * Sends a chat message.
    *
-   * @param identity the identity of the source of the message
+   * @param source the identity of the source of the message
    * @param message a message
    * @param type the type
    * @see Component
    * @since 4.0.0
    */
-  default void sendMessage(final @NonNull Identity identity, final @NonNull Component message, final @NonNull MessageType type) {
+  default void sendMessage(final @NonNull Identity source, final @NonNull Component message, final @NonNull MessageType type) {
   }
 
   /**

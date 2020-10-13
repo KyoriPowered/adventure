@@ -61,13 +61,13 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
-  default void sendMessage(final @NonNull Identified identified, final @NonNull Component message, final @NonNull MessageType type) {
-    for(final Audience audience : this.audiences()) audience.sendMessage(identified, message, type);
+  default void sendMessage(final @NonNull Identified source, final @NonNull Component message, final @NonNull MessageType type) {
+    for(final Audience audience : this.audiences()) audience.sendMessage(source, message, type);
   }
 
   @Override
-  default void sendMessage(final @NonNull Identity identity, final @NonNull ComponentLike message, final @NonNull MessageType type) {
-    for(final Audience audience : this.audiences()) audience.sendMessage(identity, message, type);
+  default void sendMessage(final @NonNull Identity source, final @NonNull ComponentLike message, final @NonNull MessageType type) {
+    for(final Audience audience : this.audiences()) audience.sendMessage(source, message, type);
   }
 
   @Override
@@ -153,13 +153,13 @@ public interface ForwardingAudience extends Audience {
     }
 
     @Override
-    default void sendMessage(final @NonNull Identified identified, final @NonNull ComponentLike message, final @NonNull MessageType type) {
-      this.audience().sendMessage(identified, message, type);
+    default void sendMessage(final @NonNull Identified source, final @NonNull ComponentLike message, final @NonNull MessageType type) {
+      this.audience().sendMessage(source, message, type);
     }
 
     @Override
-    default void sendMessage(final @NonNull Identity identity, final @NonNull ComponentLike message, final @NonNull MessageType type) {
-      this.audience().sendMessage(identity, message, type);
+    default void sendMessage(final @NonNull Identity source, final @NonNull ComponentLike message, final @NonNull MessageType type) {
+      this.audience().sendMessage(source, message, type);
     }
 
     @Override

@@ -43,19 +43,19 @@ final class EmptyAudience implements Audience {
   }
 
   @Override
-  public void sendMessage(final @NonNull Identified identified, final @NonNull ComponentLike message) {
+  public void sendMessage(final @NonNull Identified source, final @NonNull ComponentLike message) {
   }
 
   @Override
-  public void sendMessage(final @NonNull Identity identity, final @NonNull ComponentLike message) {
+  public void sendMessage(final @NonNull Identity source, final @NonNull ComponentLike message) {
   }
 
   @Override
-  public void sendMessage(final @NonNull Identified identified, final @NonNull ComponentLike message, final @NonNull MessageType type) {
+  public void sendMessage(final @NonNull Identified source, final @NonNull ComponentLike message, final @NonNull MessageType type) {
   }
 
   @Override
-  public void sendMessage(final @NonNull Identity identity, final @NonNull ComponentLike message, final @NonNull MessageType type) {
+  public void sendMessage(final @NonNull Identity source, final @NonNull ComponentLike message, final @NonNull MessageType type) {
   }
 
   @Override
