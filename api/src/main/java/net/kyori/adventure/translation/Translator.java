@@ -25,6 +25,7 @@ package net.kyori.adventure.translation;
 
 import java.text.MessageFormat;
 import java.util.Locale;
+import net.kyori.adventure.key.Key;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -33,8 +34,37 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * @since 4.0.0
  */
-@FunctionalInterface
-public interface TranslationSource {
+public interface Translator {
+  /**
+   * Parses a {@link Locale} from a {@link String}.
+   *
+   * @param string the string
+   * @return a locale
+   * @since 4.0.0
+   */
+  static @Nullable Locale parseLocale(final @NonNull String string) {
+    final String[] segments = string.split("_", 3); // language_country_variant
+    final int length = segments.length;
+    if(length == 1) {
+      return new Locale(string); // language
+    } else if(length == 2) {
+      return new Locale(segments[0], segments[1]); // language + country
+    } else if(length == 3) {
+      return new Locale(segments[0], segments[1], segments[2]); // language + country + variant
+    }
+    return null;
+  }
+
+  /**
+   * A key identifying this translation source.
+   *
+   * <p>Intended to be used for display to users.</p>
+   *
+   * @return an identifier for this translation source
+   * @since 4.0.0
+   */
+  @NonNull Key name();
+
   /**
    * Gets a message format from a key and locale.
    *

@@ -26,20 +26,25 @@ package net.kyori.adventure.translation;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
+import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
 final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
-  static final TranslationRegistry INSTANCE = new TranslationRegistryImpl();
+  private final Key name;
   private final Map<String, Translation> translations = new ConcurrentHashMap<>();
+  private Locale defaultLocale = Locale.US; // en_us
 
-  TranslationRegistryImpl() {
+  TranslationRegistryImpl(final Key name) {
+    this.name = name;
   }
 
   @Override
@@ -53,6 +58,11 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
   }
 
   @Override
+  public @NonNull Key name() {
+    return this.name;
+  }
+
+  @Override
   public @Nullable MessageFormat translate(final @NonNull String key, final @NonNull Locale locale) {
     final Translation translation = this.translations.get(key);
     if(translation == null) return null;
@@ -60,11 +70,38 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
   }
 
   @Override
+  public void defaultLocale(final @NonNull Locale defaultLocale) {
+    this.defaultLocale = requireNonNull(defaultLocale, "defaultLocale");
+  }
+
+  @Override
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("translations", this.translations));
   }
 
-  static final class Translation implements Examinable {
+  @Override
+  public boolean equals(final Object other) {
+    if(this == other) return true;
+    if(!(other instanceof TranslationRegistryImpl)) return false;
+
+    final TranslationRegistryImpl that = (TranslationRegistryImpl) other;
+
+    return this.name.equals(that.name)
+      && this.translations.equals(that.translations)
+      && this.defaultLocale.equals(that.defaultLocale);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.name, this.translations, this.defaultLocale);
+  }
+
+  @Override
+  public String toString() {
+    return StringExaminer.simpleEscaping().examine(this);
+  }
+
+  final class Translation implements Examinable {
     private final String key;
     private final Map<Locale, MessageFormat> formats;
 
@@ -80,11 +117,14 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
     }
 
     @Nullable MessageFormat translate(final @NonNull Locale locale) {
-      MessageFormat format = this.formats.get(locale);
+      MessageFormat format = this.formats.get(requireNonNull(locale, "locale"));
       if(format == null) {
-        format = this.formats.get(new Locale(locale.getLanguage())); // without country
+        format = this.formats.get(new Locale(locale.getLanguage())); // try without country
         if(format == null) {
-          format = this.formats.get(Locale.US); // fallback to en_us
+          format = this.formats.get(TranslationRegistryImpl.this.defaultLocale); // try local default locale
+          if(format == null) {
+            format = this.formats.get(TranslationLocales.global()); // try global default locale
+          }
         }
       }
       return format;
@@ -96,6 +136,25 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
         ExaminableProperty.of("key", this.key),
         ExaminableProperty.of("formats", this.formats)
       );
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+      if(this == other) return true;
+      if(!(other instanceof Translation)) return false;
+      final Translation that = (Translation) other;
+      return this.key.equals(that.key) &&
+        this.formats.equals(that.formats);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(this.key, this.formats);
+    }
+
+    @Override
+    public String toString() {
+      return StringExaminer.simpleEscaping().examine(this);
     }
   }
 }
