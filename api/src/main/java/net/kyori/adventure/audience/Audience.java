@@ -134,7 +134,7 @@ public interface Audience {
   }
 
   /**
-   * Sends a chat message.
+   * Sends a chat message from the given {@link Identified} to this {@link Audience}.
    *
    * @param source the source of the message
    * @param message a message
@@ -146,7 +146,7 @@ public interface Audience {
   }
 
   /**
-   * Sends a chat message.
+   * Sends a chat message from the entity represented by the given {@link Identity} (or the game using {@link Identity#nil()}) to this {@link Audience}.
    *
    * @param source the identity of the source of the message
    * @param message a message
@@ -158,7 +158,7 @@ public interface Audience {
   }
 
   /**
-   * Sends a chat message.
+   * Sends a chat message from the given {@link Identified} to this {@link Audience}.
    *
    * @param source the source of the message
    * @param message a message
@@ -170,7 +170,7 @@ public interface Audience {
   }
 
   /**
-   * Sends a chat message.
+   * Sends a chat message from the entity represented by the given {@link Identity} (or the game using {@link Identity#nil()}) to this {@link Audience}.
    *
    * @param source the identity of the source of the message
    * @param message a message
@@ -182,7 +182,7 @@ public interface Audience {
   }
 
   /**
-   * Sends a chat message.
+   * Sends a chat message from the given {@link Identified} to this {@link Audience}.
    *
    * @param source the source of the message
    * @param message a message
@@ -195,7 +195,7 @@ public interface Audience {
   }
 
   /**
-   * Sends a chat message.
+   * Sends a chat message from the entity represented by the given {@link Identity} (or the game using {@link Identity#nil()}) to this {@link Audience}.
    *
    * @param source the identity of the source of the message
    * @param message a message
