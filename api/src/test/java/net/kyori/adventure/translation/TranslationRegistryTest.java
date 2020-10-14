@@ -127,7 +127,10 @@ class TranslationRegistryTest {
     assertEquals(
       Component.text().content("")
         .color(NamedTextColor.YELLOW)
-        .append(Component.text("This is a test."))
+        .append(
+          Component.text("This is a test.")
+            .append(Component.text("I promise."))
+        )
         .append(
           Component.text("")
             .append(Component.text("kashike"))
@@ -144,6 +147,7 @@ class TranslationRegistryTest {
           .content("")
           .append(
             Component.translatable("test")
+              .append(Component.text("I promise."))
           )
           .append(
             Component.translatable()
