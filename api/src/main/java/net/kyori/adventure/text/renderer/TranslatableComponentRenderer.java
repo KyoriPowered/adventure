@@ -165,7 +165,8 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
 
     // no arguments makes this render very simple
     if(args.isEmpty()) {
-      return builder.content(format.format(null, new StringBuffer(), null).toString()).build();
+      builder.content(format.format(null, new StringBuffer(), null).toString());
+      return this.optionallyRenderChildrenAppendAndBuild(component.children(), builder, context);
     }
 
     final Object[] nulls = new Object[args.size()];
@@ -183,7 +184,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
       it.setIndex(end);
     }
 
-    return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
+    return this.optionallyRenderChildrenAppendAndBuild(component.children(), builder, context);
   }
 
   protected <O extends BuildableComponent<O, B>, B extends ComponentBuilder<O, B>> O mergeStyleAndOptionallyDeepRender(final Component component, final B builder, final C context) {
