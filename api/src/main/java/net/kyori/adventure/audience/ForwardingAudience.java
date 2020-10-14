@@ -54,12 +54,6 @@ public interface ForwardingAudience extends Audience {
    */
   @NonNull Iterable<? extends Audience> audiences();
 
-  @Deprecated
-  @Override
-  default void sendMessage(final @NonNull Component message, final @NonNull MessageType type) {
-    for(final Audience audience : this.audiences()) audience.sendMessage(message, type);
-  }
-
   @Override
   default void sendMessage(final @NonNull Identified source, final @NonNull Component message, final @NonNull MessageType type) {
     for(final Audience audience : this.audiences()) audience.sendMessage(source, message, type);
@@ -144,12 +138,6 @@ public interface ForwardingAudience extends Audience {
     @Override
     default @NonNull Iterable<? extends Audience> audiences() {
       return Collections.singleton(this.audience());
-    }
-
-    @Deprecated
-    @Override
-    default void sendMessage(final @NonNull Component message, final @NonNull MessageType type) {
-      this.audience().sendMessage(message, type);
     }
 
     @Override

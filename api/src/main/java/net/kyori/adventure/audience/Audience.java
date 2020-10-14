@@ -136,59 +136,6 @@ public interface Audience {
   /**
    * Sends a chat message.
    *
-   * @param message a message
-   * @see Component
-   * @since 4.0.0
-   * @deprecated use {@link #sendMessage(Identified, ComponentLike)} or {@link #sendMessage(Identity, ComponentLike)}
-   */
-  @Deprecated
-  default void sendMessage(final @NonNull ComponentLike message) {
-    this.sendMessage(message.asComponent());
-  }
-
-  /**
-   * Sends a chat message.
-   *
-   * @param message a message
-   * @see Component
-   * @since 4.0.0
-   * @deprecated use {@link #sendMessage(Identified, Component)} or {@link #sendMessage(Identity, Component)}
-   */
-  @Deprecated
-  default void sendMessage(final @NonNull Component message) {
-    this.sendMessage(message, MessageType.SYSTEM);
-  }
-
-  /**
-   * Sends a chat message.
-   *
-   * @param message a message
-   * @param type the type
-   * @see Component
-   * @since 4.0.0
-   * @deprecated use {@link #sendMessage(Identified, ComponentLike, MessageType)} or {@link #sendMessage(Identity, ComponentLike, MessageType)}
-   */
-  @Deprecated
-  default void sendMessage(final @NonNull ComponentLike message, final @NonNull MessageType type) {
-    this.sendMessage(message.asComponent(), type);
-  }
-
-  /**
-   * Sends a chat message.
-   *
-   * @param message a message
-   * @param type the type
-   * @see Component
-   * @since 4.0.0
-   * @deprecated use {@link #sendMessage(Identified, Component, MessageType)} or {@link #sendMessage(Identity, Component, MessageType)}
-   */
-  @Deprecated
-  default void sendMessage(final @NonNull Component message, final @NonNull MessageType type) {
-  }
-
-  /**
-   * Sends a chat message.
-   *
    * @param source the source of the message
    * @param message a message
    * @see Component
