@@ -144,9 +144,8 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
     }
 
     @Override
-    // CHECKSTYLE:OFF
+    @SuppressWarnings("checkstyle:GenericWhitespace")
     public @NonNull Builder args(final @NonNull ComponentBuilder<?, ?>@NonNull... args) {
-      // CHECKSTYLE:ON
       if(args.length == 0) return this.args(Collections.emptyList());
       return this.args(Stream.of(args).map(ComponentBuilder::build).collect(Collectors.toList()));
     }

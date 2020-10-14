@@ -373,9 +373,8 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @return this builder
      * @since 4.0.0
      */
-    // CHECKSTYLE:OFF
+    @SuppressWarnings("checkstyle:GenericWhitespace")
     @NonNull Builder args(final @NonNull ComponentBuilder<?, ?>@NonNull... args);
-    // CHECKSTYLE:ON
 
     /**
      * Sets the translation args.

@@ -23,6 +23,9 @@
     <property name="file" value="${configDirectory}/suppressions.xml"/>
   </module>
 
+  <!-- https://checkstyle.org/config_filters.html#SuppressWarningsFilter -->
+  <module name="SuppressWarningsFilter"/>
+
   <!-- https://checkstyle.org/config_filters.html#SuppressWithPlainTextCommentFilter -->
   <module name="SuppressWithPlainTextCommentFilter"/>
 
@@ -210,6 +213,9 @@
 
     <!-- https://checkstyle.org/config_javadoc.html#SummaryJavadoc -->
     <module name="SummaryJavadoc"/>
+
+    <!-- https://checkstyle.org/config_annotation.html#SuppressWarningsHolder -->
+    <module name="SuppressWarningsHolder"/>
 
     <!-- https://checkstyle.org/config_whitespace.html#TypecastParenPad -->
     <module name="TypecastParenPad"/>
