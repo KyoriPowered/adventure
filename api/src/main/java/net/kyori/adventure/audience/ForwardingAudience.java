@@ -25,11 +25,14 @@ package net.kyori.adventure.audience;
 
 import java.util.Collections;
 import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.title.Title;
+import net.kyori.adventure.identity.Identified;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -51,9 +54,20 @@ public interface ForwardingAudience extends Audience {
    */
   @NonNull Iterable<? extends Audience> audiences();
 
+  @Deprecated
   @Override
   default void sendMessage(final @NonNull Component message, final @NonNull MessageType type) {
     for(final Audience audience : this.audiences()) audience.sendMessage(message, type);
+  }
+
+  @Override
+  default void sendMessage(final @NonNull Identified source, final @NonNull Component message, final @NonNull MessageType type) {
+    for(final Audience audience : this.audiences()) audience.sendMessage(source, message, type);
+  }
+
+  @Override
+  default void sendMessage(final @NonNull Identity source, final @NonNull ComponentLike message, final @NonNull MessageType type) {
+    for(final Audience audience : this.audiences()) audience.sendMessage(source, message, type);
   }
 
   @Override
@@ -132,9 +146,20 @@ public interface ForwardingAudience extends Audience {
       return Collections.singleton(this.audience());
     }
 
+    @Deprecated
     @Override
     default void sendMessage(final @NonNull Component message, final @NonNull MessageType type) {
       this.audience().sendMessage(message, type);
+    }
+
+    @Override
+    default void sendMessage(final @NonNull Identified source, final @NonNull ComponentLike message, final @NonNull MessageType type) {
+      this.audience().sendMessage(source, message, type);
+    }
+
+    @Override
+    default void sendMessage(final @NonNull Identity source, final @NonNull ComponentLike message, final @NonNull MessageType type) {
+      this.audience().sendMessage(source, message, type);
     }
 
     @Override

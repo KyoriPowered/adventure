@@ -26,12 +26,14 @@ package net.kyori.adventure.audience;
 import java.util.Arrays;
 import java.util.stream.Collector;
 import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.title.Title;
+import net.kyori.adventure.identity.Identified;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -168,7 +170,9 @@ public interface Audience {
    * @param message a message
    * @see Component
    * @since 4.0.0
+   * @deprecated use {@link #sendMessage(Identified, ComponentLike)} or {@link #sendMessage(Identity, ComponentLike)}
    */
+  @Deprecated
   default void sendMessage(final @NonNull ComponentLike message) {
     this.sendMessage(message.asComponent());
   }
@@ -179,7 +183,9 @@ public interface Audience {
    * @param message a message
    * @see Component
    * @since 4.0.0
+   * @deprecated use {@link #sendMessage(Identified, Component)} or {@link #sendMessage(Identity, Component)}
    */
+  @Deprecated
   default void sendMessage(final @NonNull Component message) {
     this.sendMessage(message, MessageType.SYSTEM);
   }
@@ -191,7 +197,9 @@ public interface Audience {
    * @param type the type
    * @see Component
    * @since 4.0.0
+   * @deprecated use {@link #sendMessage(Identified, ComponentLike, MessageType)} or {@link #sendMessage(Identity, ComponentLike, MessageType)}
    */
+  @Deprecated
   default void sendMessage(final @NonNull ComponentLike message, final @NonNull MessageType type) {
     this.sendMessage(message.asComponent(), type);
   }
@@ -203,8 +211,109 @@ public interface Audience {
    * @param type the type
    * @see Component
    * @since 4.0.0
+   * @deprecated use {@link #sendMessage(Identified, Component, MessageType)} or {@link #sendMessage(Identity, Component, MessageType)}
    */
+  @Deprecated
   default void sendMessage(final @NonNull Component message, final @NonNull MessageType type) {
+  }
+
+  /**
+   * Sends a chat message.
+   *
+   * @param source the source of the message
+   * @param message a message
+   * @see Component
+   * @since 4.0.0
+   */
+  default void sendMessage(final @NonNull Identified source, final @NonNull ComponentLike message) {
+    this.sendMessage(source, message.asComponent());
+  }
+
+  /**
+   * Sends a chat message.
+   *
+   * @param source the identity of the source of the message
+   * @param message a message
+   * @see Component
+   * @since 4.0.0
+   */
+  default void sendMessage(final @NonNull Identity source, final @NonNull ComponentLike message) {
+    this.sendMessage(source, message.asComponent());
+  }
+
+  /**
+   * Sends a chat message.
+   *
+   * @param source the source of the message
+   * @param message a message
+   * @see Component
+   * @since 4.0.0
+   */
+  default void sendMessage(final @NonNull Identified source, final @NonNull Component message) {
+    this.sendMessage(source, message, MessageType.SYSTEM);
+  }
+
+  /**
+   * Sends a chat message.
+   *
+   * @param source the identity of the source of the message
+   * @param message a message
+   * @see Component
+   * @since 4.0.0
+   */
+  default void sendMessage(final @NonNull Identity source, final @NonNull Component message) {
+    this.sendMessage(source, message, MessageType.SYSTEM);
+  }
+
+  /**
+   * Sends a chat message.
+   *
+   * @param source the source of the message
+   * @param message a message
+   * @param type the type
+   * @see Component
+   * @since 4.0.0
+   */
+  default void sendMessage(final @NonNull Identified source, final @NonNull ComponentLike message, final @NonNull MessageType type) {
+    this.sendMessage(source, message.asComponent(), type);
+  }
+
+  /**
+   * Sends a chat message.
+   *
+   * @param source the identity of the source of the message
+   * @param message a message
+   * @param type the type
+   * @see Component
+   * @since 4.0.0
+   */
+  default void sendMessage(final @NonNull Identity source, final @NonNull ComponentLike message, final @NonNull MessageType type) {
+    this.sendMessage(source, message.asComponent(), type);
+  }
+
+  /**
+   * Sends a chat message.
+   *
+   * @param source the source of the message
+   * @param message a message
+   * @param type the type
+   * @see Component
+   * @since 4.0.0
+   */
+  default void sendMessage(final @NonNull Identified source, final @NonNull Component message, final @NonNull MessageType type) {
+    this.sendMessage(source.identity(), message, type);
+  }
+
+  /**
+   * Sends a chat message.
+   *
+   * @param source the identity of the source of the message
+   * @param message a message
+   * @param type the type
+   * @see Component
+   * @since 4.0.0
+   */
+  default void sendMessage(final @NonNull Identity source, final @NonNull Component message, final @NonNull MessageType type) {
   }
 
   /**

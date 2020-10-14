@@ -260,7 +260,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
 
   @Override
   public String toString() {
-    return StringExaminer.simpleEscaping().examine(this);
+    return this.examine(StringExaminer.simpleEscaping());
   }
 
   /**

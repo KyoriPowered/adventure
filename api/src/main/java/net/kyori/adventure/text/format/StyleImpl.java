@@ -250,7 +250,7 @@ final class StyleImpl implements Style {
 
   @Override
   public @NonNull String toString() {
-    return StringExaminer.simpleEscaping().examine(this);
+    return this.examine(StringExaminer.simpleEscaping());
   }
 
   @Override

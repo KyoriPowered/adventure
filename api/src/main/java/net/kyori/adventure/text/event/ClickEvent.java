@@ -219,7 +219,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
 
   @Override
   public String toString() {
-    return StringExaminer.simpleEscaping().examine(this);
+    return this.examine(StringExaminer.simpleEscaping());
   }
 
   /**
