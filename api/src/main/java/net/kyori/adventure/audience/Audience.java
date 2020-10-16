@@ -134,6 +134,19 @@ public interface Audience {
   }
 
   /**
+   * Sends a chat message with a {@link Identity#nil() nil} identity to this {@link Audience}.
+   *
+   * @param message a message
+   * @see Component
+   * @see #sendMessage(Identified, ComponentLike)
+   * @see #sendMessage(Identity, ComponentLike)
+   * @since 4.1.0
+   */
+  default void sendMessage(final @NonNull ComponentLike message) {
+    this.sendMessage(Identity.nil(), message);
+  }
+
+  /**
    * Sends a chat message from the given {@link Identified} to this {@link Audience}.
    *
    * @param source the source of the message
@@ -155,6 +168,19 @@ public interface Audience {
    */
   default void sendMessage(final @NonNull Identity source, final @NonNull ComponentLike message) {
     this.sendMessage(source, message.asComponent());
+  }
+
+  /**
+   * Sends a chat message with a {@link Identity#nil() nil} identity to this {@link Audience}.
+   *
+   * @param message a message
+   * @see Component
+   * @see #sendMessage(Identified, Component)
+   * @see #sendMessage(Identity, Component)
+   * @since 4.1.0
+   */
+  default void sendMessage(final @NonNull Component message) {
+    this.sendMessage(Identity.nil(), message);
   }
 
   /**
@@ -182,6 +208,20 @@ public interface Audience {
   }
 
   /**
+   * Sends a chat message with a {@link Identity#nil() nil} identity to this {@link Audience}.
+   *
+   * @param message a message
+   * @param type the type
+   * @see Component
+   * @see #sendMessage(Identified, ComponentLike, MessageType)
+   * @see #sendMessage(Identity, ComponentLike, MessageType)
+   * @since 4.1.0
+   */
+  default void sendMessage(final @NonNull ComponentLike message, final @NonNull MessageType type) {
+    this.sendMessage(Identity.nil(), message, type);
+  }
+
+  /**
    * Sends a chat message from the given {@link Identified} to this {@link Audience}.
    *
    * @param source the source of the message
@@ -205,6 +245,20 @@ public interface Audience {
    */
   default void sendMessage(final @NonNull Identity source, final @NonNull ComponentLike message, final @NonNull MessageType type) {
     this.sendMessage(source, message.asComponent(), type);
+  }
+
+  /**
+   * Sends a chat message with a {@link Identity#nil() nil} identity to this {@link Audience}.
+   *
+   * @param message a message
+   * @param type the type
+   * @see Component
+   * @see #sendMessage(Identified, Component, MessageType)
+   * @see #sendMessage(Identity, Component, MessageType)
+   * @since 4.1.0
+   */
+  default void sendMessage(final @NonNull Component message, final @NonNull MessageType type) {
+    this.sendMessage(Identity.nil(), message, type);
   }
 
   /**

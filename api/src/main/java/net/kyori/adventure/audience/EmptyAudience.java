@@ -33,11 +33,19 @@ final class EmptyAudience implements Audience {
   static final EmptyAudience INSTANCE = new EmptyAudience();
 
   @Override
+  public void sendMessage(final @NonNull ComponentLike message) {
+  }
+
+  @Override
   public void sendMessage(final @NonNull Identified source, final @NonNull ComponentLike message) {
   }
 
   @Override
   public void sendMessage(final @NonNull Identity source, final @NonNull ComponentLike message) {
+  }
+
+  @Override
+  public void sendMessage(final @NonNull ComponentLike message, final @NonNull MessageType type) {
   }
 
   @Override
