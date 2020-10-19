@@ -28,6 +28,10 @@ import net.kyori.adventure.text.minimessage.tokens.Token;
 import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MiniMessageLexerTest {
 
@@ -35,17 +39,44 @@ public class MiniMessageLexerTest {
     public void test() throws Exception {
         test("<RED>This is a test</red><yellow>Wooo<#112233>hex!</#112233>");
         test("<hover:show_text:'<red>test'>TEST</hover>");
+        test("<rainbow><treerev> <click:open_url:'https://github.com'>https://github.com</click></rainbow>");
+        test("<rainbow><treerev> <click:open_url:https://github.com>https://github.com</click></rainbow>");
     }
 
     private void test(String input) throws Exception {
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         System.out.println("Testing: " + input);
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        MiniMessageLexer lexer = new MiniMessageLexer(new StringReader(input));
-        Token token;
-        while((token = lexer.scan()) != null) {
-            System.out.println("token: " + token);
+        MiniMessageLexer lexer = new MiniMessageLexer(input);
+        lexer.scan();
+        lexer.clean();
+        List<Token> tokens = lexer.getTokens();
+
+        StringBuilder result = new StringBuilder();
+        StringBuilder split  = new StringBuilder();
+        StringBuilder types  = new StringBuilder();
+        for (Token token : tokens) {
+            result.append(token.getValue());
+
+            int length = Math.max(token.getValue().length(), token.getType().name().length());
+
+            split.append(token.getValue()).append(padding(length - token.getValue().length())).append(" ");
+            types.append(token.getType().name()).append(padding(length - token.getType().name().length())).append(" ");
         }
+
+        System.out.println("Result:  " + result.toString());
+        System.out.println("Split:   " + split.toString());
+        System.out.println("Types:   " + types.toString());
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
+        assertEquals(result.toString(), input);
+    }
+
+    private String padding(int length) {
+        if (length > 0) {
+            char[] array = new char[length];
+            Arrays.fill(array, ' ');
+            return new String(array);
+        }
+        return "";
     }
 }

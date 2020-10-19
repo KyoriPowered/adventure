@@ -25,28 +25,39 @@ package net.kyori.adventure.text.minimessage.tokens;
 
 import java.util.StringJoiner;
 
-public class Token<T> {
+public class Token {
 
-    private T value;
-    private boolean closed;
-    private Token inner;
+    private String value;
+    private TokenType type;
 
-    public Token(T value, boolean closed) {
-        this(value, closed, null);
+    public Token(TokenType type) {
+        this.type = type;
+        this.value = type.getValue();
     }
 
-    public Token(T value, boolean closed, Token inner) {
+    public Token(String value) {
+        this.type = TokenType.STRING;
         this.value = value;
-        this.closed = closed;
-        this.inner = inner;
+    }
+
+    public Token(String value, TokenType type) {
+        this.type = type;
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public TokenType getType() {
+        return type;
     }
 
     @Override
     public String toString() {
         return new StringJoiner(", ", getClass().getSimpleName() + "[", "]")
                 .add("value=" + value)
-                .add("closed=" + closed)
-                .add("inner=" + inner)
+                .add("type=" + type)
                 .toString();
     }
 }
