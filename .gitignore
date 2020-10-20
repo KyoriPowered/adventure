@@ -6,12 +6,8 @@
 /nbt/build/
 /nbt/out/
 /run/
-/serializer-configurate3/build/
-/serializer-configurate3/out/
-/text-serializer-gson/build/
-/text-serializer-gson/out/
-/text-serializer-legacy/build/
-/text-serializer-legacy/out/
-/text-serializer-plain/build/
-/text-serializer-plain/out/
+/serializer-configurate*/build/
+/serializer-configurate*/out/
+/text-serializer-*/build/
+/text-serializer-*/out/
 /*.iml
