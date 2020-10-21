@@ -94,14 +94,14 @@ quote = '|\"
 }
 
 <TAG> {
-  {paramSeperator}        { yybegin(PARAM); tokens.add(new Token(getString(), TokenType.NAME)); tokens.add(new Token(TokenType.PARAM_SEPERATOR)); }
+  {paramSeperator}        { yybegin(PARAM); tokens.add(new Token(getString(), TokenType.NAME)); tokens.add(new Token(TokenType.PARAM_SEPARATOR)); }
   {tagEnd}                { yybegin(YYINITIAL); tokens.add(new Token(getString(), TokenType.NAME)); tokens.add(new Token(TokenType.TAG_END)); }
   {identifier}            { string.append(yytext()); }
   [^]                     { throw new ParsingException("Illegal character '" + yytext() + "'. Only alphanumeric + _-# are allowed as token names", yycolumn); }
 }
 
 <PARAM> {
-  {paramSeperator}        { tokens.add(new Token(getString())); tokens.add(new Token(TokenType.PARAM_SEPERATOR)); }
+  {paramSeperator}        { tokens.add(new Token(getString())); tokens.add(new Token(TokenType.PARAM_SEPARATOR)); }
   {tagEnd}                { yybegin(YYINITIAL); tokens.add(new Token(getString())); tokens.add(new Token(TokenType.TAG_END)); }
   {quote}                 { yybegin(QUOTED); tokens.add(new Token(TokenType.QUOTE_START)); }
   {identifier}            { string.append(yytext()); }

@@ -54,22 +54,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static net.kyori.adventure.text.minimessage.Tokens.CLICK;
-import static net.kyori.adventure.text.minimessage.Tokens.CLOSE_TAG;
-import static net.kyori.adventure.text.minimessage.Tokens.COLOR;
-import static net.kyori.adventure.text.minimessage.Tokens.GRADIENT;
-import static net.kyori.adventure.text.minimessage.Tokens.HEX;
-import static net.kyori.adventure.text.minimessage.Tokens.HOVER;
-import static net.kyori.adventure.text.minimessage.Tokens.INSERTION;
-import static net.kyori.adventure.text.minimessage.Tokens.KEYBIND;
-import static net.kyori.adventure.text.minimessage.Tokens.PRE;
-import static net.kyori.adventure.text.minimessage.Tokens.RAINBOW;
-import static net.kyori.adventure.text.minimessage.Tokens.RESET;
-import static net.kyori.adventure.text.minimessage.Tokens.SEPARATOR;
-import static net.kyori.adventure.text.minimessage.Tokens.TAG_END;
-import static net.kyori.adventure.text.minimessage.Tokens.TAG_START;
-import static net.kyori.adventure.text.minimessage.Tokens.TRANSLATABLE;
-import static net.kyori.adventure.text.minimessage.Tokens.FONT;
+import static net.kyori.adventure.text.minimessage.Tokens.*;
 
 /* package */ class MiniMessageParser {
 

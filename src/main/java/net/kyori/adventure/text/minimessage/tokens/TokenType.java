@@ -1,14 +1,12 @@
 package net.kyori.adventure.text.minimessage.tokens;
 
-import java.util.StringJoiner;
-
 public enum TokenType {
 
     OPEN_TAG_START("<"),
     CLOSE_TAG_START("</"),
     TAG_END(">"),
 
-    PARAM_SEPERATOR(":"),
+    PARAM_SEPARATOR(":"),
 
     QUOTE_START("'"),
     QUOTE_END("'"),
@@ -25,13 +23,5 @@ public enum TokenType {
 
     public String getValue() {
         return value;
-    }
-
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", TokenType.class.getSimpleName() + "[", "]")
-                .add("name='" + name() + "'")
-                .add("value='" + value + "'")
-                .toString();
     }
 }
