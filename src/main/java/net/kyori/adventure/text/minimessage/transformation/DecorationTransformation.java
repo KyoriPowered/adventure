@@ -23,57 +23,56 @@
  */
 package net.kyori.adventure.text.minimessage.transformation;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
-
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.StringJoiner;
+import net.kyori.examination.ExaminableProperty;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class DecorationTransformation extends Transformation {
+  public static boolean canParse(final String name) {
+    return TextDecoration.NAMES.value(name.toLowerCase(Locale.ROOT)) != null;
+  }
 
-    private TextDecoration decoration;
+  private TextDecoration decoration;
 
-    @Override
-    public void load(String name, List<Token> args) {
-        super.load(name, args);
-        this.decoration = TextDecoration.NAMES.value(name.toLowerCase(Locale.ROOT));
+  @Override
+  public void load(final String name, final List<Token> args) {
+    super.load(name, args);
 
-        if (decoration == null) {
-            throw new ParsingException("Don't know how to turn '" + name + "' into a decoration", -1);
-        }
+    this.decoration = TextDecoration.NAMES.value(name.toLowerCase(Locale.ROOT));
+
+    if(this.decoration == null) {
+      throw new ParsingException("Don't know how to turn '" + name + "' into a decoration", -1);
     }
+  }
 
-    public static boolean isApplicable(String name) {
-        return TextDecoration.NAMES.value(name.toLowerCase(Locale.ROOT)) != null;
-    }
+  @Override
+  public Component apply(final Component component, final TextComponent.Builder parent) {
+    return component.decorate(this.decoration);
+  }
 
-    @Override
-    public Component apply(Component component, TextComponent.Builder parent) {
-        return component.decorate(decoration);
-    }
+  @Override
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(ExaminableProperty.of("decoration", this.decoration));
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        DecorationTransformation that = (DecorationTransformation) o;
-        return decoration == that.decoration;
-    }
+  @Override
+  public boolean equals(final Object other) {
+    if(this == other) return true;
+    if(other == null || this.getClass() != other.getClass()) return false;
+    final DecorationTransformation that = (DecorationTransformation) other;
+    return this.decoration == that.decoration;
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(decoration);
-    }
-
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", DecorationTransformation.class.getSimpleName() + "[", "]")
-                .add("decoration=" + decoration)
-                .toString();
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.decoration);
+  }
 }

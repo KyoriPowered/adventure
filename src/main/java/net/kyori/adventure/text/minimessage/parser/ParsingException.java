@@ -24,25 +24,24 @@
 package net.kyori.adventure.text.minimessage.parser;
 
 public class ParsingException extends RuntimeException {
+  private String message;
+  private final int column;
 
-    private final int column;
-    private String msg;
+  public ParsingException(final String message, final int column) {
+    this.message = message;
+    this.column = column;
+  }
 
-    public ParsingException(String msg, int column) {
-        this.msg = msg;
-        this.column = column;
-    }
+  @Override
+  public String getMessage() {
+    return this.message;
+  }
 
-    public int getColumn() {
-        return column;
-    }
+  public void setMessage(final String message) {
+    this.message = message;
+  }
 
-    public void setMessage(String msg) {
-        this.msg = msg;
-    }
-
-    @Override
-    public String getMessage() {
-        return msg;
-    }
+  public int getColumn() {
+    return this.column;
+  }
 }

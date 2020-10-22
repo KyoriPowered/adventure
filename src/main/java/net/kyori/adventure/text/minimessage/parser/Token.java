@@ -23,41 +23,54 @@
  */
 package net.kyori.adventure.text.minimessage.parser;
 
-import java.util.StringJoiner;
+import java.util.List;
+import java.util.stream.Stream;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-public class Token {
+public class Token implements Examinable {
+  private final String value;
+  private final TokenType type;
 
-    private String value;
-    private TokenType type;
+  public Token(final TokenType type) {
+    this.type = type;
+    this.value = type.value();
+  }
 
-    public Token(TokenType type) {
-        this.type = type;
-        this.value = type.getValue();
-    }
+  public Token(final String value) {
+    this.type = TokenType.STRING;
+    this.value = value;
+  }
 
-    public Token(String value) {
-        this.type = TokenType.STRING;
-        this.value = value;
-    }
+  public Token(final TokenType type, final String value) {
+    this.type = type;
+    this.value = value;
+  }
 
-    public Token(String value, TokenType type) {
-        this.type = type;
-        this.value = value;
-    }
+  public TokenType type() {
+    return this.type;
+  }
 
-    public String getValue() {
-        return value;
-    }
+  public String value() {
+    return this.value;
+  }
 
-    public TokenType getType() {
-        return type;
-    }
+  public static boolean oneString(final List<Token> tokens) {
+    return tokens.size() == 1 && tokens.get(0).type() == TokenType.STRING;
+  }
 
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", getClass().getSimpleName() + "[", "]")
-                .add("value=" + value)
-                .add("type=" + type)
-                .toString();
-    }
+  @Override
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(
+      ExaminableProperty.of("type", this.type),
+      ExaminableProperty.of("value", this.value)
+    );
+  }
+
+  @Override
+  public String toString() {
+    return this.examine(StringExaminer.simpleEscaping());
+  }
 }

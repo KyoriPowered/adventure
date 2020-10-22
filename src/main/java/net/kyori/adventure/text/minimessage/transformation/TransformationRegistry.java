@@ -26,33 +26,33 @@ package net.kyori.adventure.text.minimessage.transformation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import net.kyori.adventure.text.minimessage.parser.Token;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-public class TransformationRegistry {
+public final class TransformationRegistry {
   private final List<Entry<? extends Transformation>> transformations = new ArrayList<>();
 
   public TransformationRegistry() {
-    this.register(ColorTransformation::new, ColorTransformation::isApplicable);
-    this.register(DecorationTransformation::new, DecorationTransformation::isApplicable);
-    this.register(HoverTransformation::new, HoverTransformation::isApplicable);
-    this.register(ClickTransformation::new, ClickTransformation::isApplicable);
-    this.register(KeybindTransformation::new, KeybindTransformation::isApplicable);
-    this.register(TranslatableTransformation::new, TranslatableTransformation::isApplicable);
-    this.register(InsertionTransformation::new, InsertionTransformation::isApplicable);
-    this.register(FontTransformation::new, FontTransformation::isApplicable);
-    this.register(GradientTransformation::new, GradientTransformation::isApplicable);
-    this.register(RainbowTransformation::new, RainbowTransformation::isApplicable);
+    this.register(ColorTransformation::canParse, ColorTransformation::new);
+    this.register(DecorationTransformation::canParse, DecorationTransformation::new);
+    this.register(HoverTransformation::canParse, HoverTransformation::new);
+    this.register(ClickTransformation::canParse, ClickTransformation::new);
+    this.register(KeybindTransformation::canParse, KeybindTransformation::new);
+    this.register(TranslatableTransformation::canParse, TranslatableTransformation::new);
+    this.register(InsertionTransformation::canParse, InsertionTransformation::new);
+    this.register(FontTransformation::canParse, FontTransformation::new);
+    this.register(GradientTransformation::canParse, GradientTransformation::new);
+    this.register(RainbowTransformation::canParse, RainbowTransformation::new);
   }
 
-  private <T extends Transformation> void register(final Supplier<T> factory, final Predicate<String> applicable) {
-    this.transformations.add(new Entry<>(applicable, factory));
+  private <T extends Transformation> void register(final Predicate<String> canParse, final TransformationParser<T> parser) {
+    this.transformations.add(new Entry<>(canParse, parser));
   }
 
-  public Transformation get(final String name, final List<Token> inners) {
+  public @Nullable Transformation get(final String name, final List<Token> inners) {
     for(final Entry<? extends Transformation> entry : this.transformations) {
-      if(entry.applicable.test(name)) {
-        final Transformation transformation = entry.factory.get();
+      if(entry.canParse.test(name)) {
+        final Transformation transformation = entry.parser.parse();
         transformation.load(name, inners);
         return transformation;
       }
@@ -62,12 +62,12 @@ public class TransformationRegistry {
   }
 
   static class Entry<T extends Transformation> {
-    final Predicate<String> applicable;
-    final Supplier<T> factory;
+    final Predicate<String> canParse;
+    final TransformationParser<T> parser;
 
-    Entry(final Predicate<String> applicable, final Supplier<T> factory) {
-      this.applicable = applicable;
-      this.factory = factory;
+    Entry(final Predicate<String> canParse, final TransformationParser<T> parser) {
+      this.canParse = canParse;
+      this.parser = parser;
     }
   }
 }

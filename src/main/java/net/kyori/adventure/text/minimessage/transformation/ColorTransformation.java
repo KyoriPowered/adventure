@@ -23,6 +23,10 @@
  */
 package net.kyori.adventure.text.minimessage.transformation;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -30,65 +34,61 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
-import net.kyori.adventure.text.minimessage.parser.TokenType;
-
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.StringJoiner;
+import net.kyori.examination.ExaminableProperty;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class ColorTransformation extends Transformation {
+  public static boolean canParse(final String name) {
+    return name.equalsIgnoreCase(Tokens.COLOR)
+      || TextColor.fromHexString(name) != null
+      || NamedTextColor.NAMES.value(name.toLowerCase(Locale.ROOT)) != null;
+  }
 
-    private TextColor color;
+  private TextColor color;
 
-    @Override
-    public void load(String name, List<Token> args) {
-        super.load(name, args);
+  @Override
+  public void load(String name, final List<Token> args) {
+    super.load(name, args);
 
-        if (name.equalsIgnoreCase(Tokens.COLOR)) {
-            if (args.size() != 1 || args.get(0).getType() != TokenType.STRING) {
-                throw new ParsingException("Expected to find a color parameter, but found " + args, -1);
-            }
-            name = args.get(0).getValue();
-        }
-
-        if (name.charAt(0) == '#') {
-            this.color = TextColor.fromHexString(name);
-        } else {
-            this.color = NamedTextColor.NAMES.value(name.toLowerCase(Locale.ROOT));
-        }
-
-        if (color == null) {
-            throw new ParsingException("Don't know how to turn '" + name + "' into a color", -1);
-        }
+    if(name.equalsIgnoreCase(Tokens.COLOR)) {
+      if(Token.oneString(args)) {
+        name = args.get(0).value();
+      } else {
+        throw new ParsingException("Expected to find a color parameter, but found " + args, -1);
+      }
     }
 
-    public static boolean isApplicable(String name) {
-        return name.equalsIgnoreCase(Tokens.COLOR) || TextColor.fromHexString(name) != null || NamedTextColor.NAMES.value(name.toLowerCase(Locale.ROOT)) != null;
+    if(name.charAt(0) == '#') {
+      this.color = TextColor.fromHexString(name);
+    } else {
+      this.color = NamedTextColor.NAMES.value(name.toLowerCase(Locale.ROOT));
     }
 
-    @Override
-    public Component apply(Component component, TextComponent.Builder parent) {
-        return component.color(color);
+    if(this.color == null) {
+      throw new ParsingException("Don't know how to turn '" + name + "' into a color", -1);
     }
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ColorTransformation that = (ColorTransformation) o;
-        return Objects.equals(color, that.color);
-    }
+  @Override
+  public Component apply(final Component component, final TextComponent.Builder parent) {
+    return component.color(this.color);
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(color);
-    }
+  @Override
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(ExaminableProperty.of("color", this.color));
+  }
 
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", ColorTransformation.class.getSimpleName() + "[", "]")
-                .add("color=" + color)
-                .toString();
-    }
+  @Override
+  public boolean equals(final Object other) {
+    if(this == other) return true;
+    if(other == null || this.getClass() != other.getClass()) return false;
+    final ColorTransformation that = (ColorTransformation) other;
+    return Objects.equals(this.color, that.color);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.color);
+  }
 }

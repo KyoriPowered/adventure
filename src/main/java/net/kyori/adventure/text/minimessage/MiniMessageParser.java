@@ -23,19 +23,8 @@
  */
 package net.kyori.adventure.text.minimessage;
 
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.KeybindComponent;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.TranslatableComponent;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.minimessage.fancy.Fancy;
-import net.kyori.adventure.text.minimessage.fancy.Gradient;
-import net.kyori.adventure.text.minimessage.fancy.Rainbow;
 import net.kyori.adventure.text.minimessage.parser.MiniMessageLexer;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
@@ -44,20 +33,14 @@ import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Deque;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -65,7 +48,8 @@ import java.util.regex.Pattern;
 
 import static net.kyori.adventure.text.minimessage.Tokens.*;
 
-/* package */ class MiniMessageParser {
+class MiniMessageParser {
+  private static final TransformationRegistry REGISTRY = new TransformationRegistry();
 
   // regex group names
   private static final String START = "start";
@@ -77,7 +61,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.*;
 
   private static final Pattern dumSplitPattern = Pattern.compile("['\"]:['\"]");
 
-  /* package */ static @NonNull String escapeTokens(final @NonNull String richMessage) {
+  static @NonNull String escapeTokens(final @NonNull String richMessage) {
     final StringBuilder sb = new StringBuilder();
     final Matcher matcher = pattern.matcher(richMessage);
     int lastEnd = 0;
@@ -110,7 +94,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.*;
     return sb.toString();
   }
 
-  /* package */ static @NonNull String stripTokens(final @NonNull String richMessage) {
+  static @NonNull String stripTokens(final @NonNull String richMessage) {
     final StringBuilder sb = new StringBuilder();
     final Matcher matcher = pattern.matcher(richMessage);
     int lastEnd = 0;
@@ -131,7 +115,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.*;
     return sb.toString();
   }
 
-  /* package */ static @NonNull String handlePlaceholders(@NonNull String richMessage, final @NonNull String... placeholders) {
+  static @NonNull String handlePlaceholders(@NonNull String richMessage, final @NonNull String... placeholders) {
     if (placeholders.length % 2 != 0) {
       throw new ParseException(
         "Invalid number placeholders defined, usage: parseFormat(format, key, value, key, value...)");
@@ -143,22 +127,22 @@ import static net.kyori.adventure.text.minimessage.Tokens.*;
   }
 
 
-  /* package */ static @NonNull String handlePlaceholders(@NonNull String richMessage, final @NonNull Map<String, String> placeholders) {
+  static @NonNull String handlePlaceholders(@NonNull String richMessage, final @NonNull Map<String, String> placeholders) {
     for (Map.Entry<String, String> entry : placeholders.entrySet()) {
       richMessage = richMessage.replace(TAG_START + entry.getKey() + TAG_END, entry.getValue());
     }
     return richMessage;
   }
 
-  /* package */ static @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull String... placeholders) {
+  static @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull String... placeholders) {
     return parseFormat(handlePlaceholders(richMessage, placeholders));
   }
 
-  /* package */ static @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull Map<String, String> placeholders) {
+  static @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull Map<String, String> placeholders) {
     return parseFormat(handlePlaceholders(richMessage, placeholders));
   }
 
-  /* package */ static @NonNull Component parseFormat(@NonNull String input, final @NonNull Template... placeholders) {
+  static @NonNull Component parseFormat(@NonNull String input, final @NonNull Template... placeholders) {
     Map<String, Template.ComponentTemplate> map = new HashMap<>();
     for (Template placeholder : placeholders) {
       if (placeholder instanceof Template.StringTemplate) {
@@ -172,7 +156,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.*;
     return parseFormat0(input, map);
   }
 
-  /* package */ static @NonNull Component parseFormat(@NonNull String input, final @NonNull List<Template> placeholders) {
+  static @NonNull Component parseFormat(@NonNull String input, final @NonNull List<Template> placeholders) {
     Map<String, Template.ComponentTemplate> map = new HashMap<>();
     for (Template placeholder : placeholders) {
       if (placeholder instanceof Template.StringTemplate) {
@@ -186,11 +170,11 @@ import static net.kyori.adventure.text.minimessage.Tokens.*;
     return parseFormat0(input, map);
   }
 
-  /* package */ static @NonNull Component parseFormat(final @NonNull String richMessage) {
+  static @NonNull Component parseFormat(final @NonNull String richMessage) {
     return parseFormat0(richMessage, Collections.emptyMap());
   }
 
-  /* package */ static @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates) {
+  static @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates) {
     MiniMessageLexer lexer = new MiniMessageLexer(richMessage);
     try {
       lexer.scan();
@@ -199,52 +183,52 @@ import static net.kyori.adventure.text.minimessage.Tokens.*;
     }
     lexer.clean();
     List<Token> tokens = lexer.getTokens();
-    return parse(tokens, new TransformationRegistry(), templates);
+    return parse(tokens, REGISTRY, templates);
   }
 
-  /* package */ @NonNull static Component parse(final @NonNull List<Token> tokens, final @NonNull TransformationRegistry registry, final @NonNull Map<String, Template.ComponentTemplate> templates) {
+  @NonNull static Component parse(final @NonNull List<Token> tokens, final @NonNull TransformationRegistry registry, final @NonNull Map<String, Template.ComponentTemplate> templates) {
     final TextComponent.Builder parent = Component.text();
     ArrayDeque<Transformation> transformations = new ArrayDeque<>();
 
     int i = 0;
     while (i < tokens.size()) {
       Token token = tokens.get(i);
-      switch (token.getType()) {
+      switch (token.type()) {
         case OPEN_TAG_START:
           // next has to be name
           Token name = tokens.get(++i);
-          if (name.getType() != TokenType.NAME) {
+          if (name.type() != TokenType.NAME) {
             throw new ParsingException("Expected name after open tag, but got " + name, -1);
           }
           // after that, we get a param seperator or the end
           Token paramOrEnd = tokens.get(++i);
-          if (paramOrEnd.getType() == TokenType.PARAM_SEPARATOR) {
+          if (paramOrEnd.type() == TokenType.PARAM_SEPARATOR) {
             // we need to handle params, so read till end of tag
             List<Token> inners = new ArrayList<>();
             Token next;
-            while ((next = tokens.get(++i)).getType() != TokenType.TAG_END) {
+            while ((next = tokens.get(++i)).type() != TokenType.TAG_END) {
               inners.add(next);
             }
 
-            Transformation transformation = registry.get(name.getValue(), inners);
-            System.out.println("got start of " + name.getValue() + " with params " + inners + " -> " + transformation);
+            Transformation transformation = registry.get(name.value(), inners);
+            System.out.println("got start of " + name.value() + " with params " + inners + " -> " + transformation);
             if (transformation == null) {
               // TODO unknown tag -> turn into string
               System.out.println("no transformation found");
             } else {
               transformations.addLast(transformation);
             }
-          } else if (paramOrEnd.getType() == TokenType.TAG_END) {
+          } else if (paramOrEnd.type() == TokenType.TAG_END) {
             // we finished
-            Transformation transformation = registry.get(name.getValue(), Collections.emptyList());
-            System.out.println("got start of " + name.getValue() + " -> " + transformation);
+            Transformation transformation = registry.get(name.value(), Collections.emptyList());
+            System.out.println("got start of " + name.value() + " -> " + transformation);
             if (transformation == null) {
               // this isn't a known tag, oh no!
               // lets take a step back, first, create a string
               i -= 2;
-              String string = tokens.get(i).getValue() + name.getValue() + paramOrEnd.getValue();
+              String string = tokens.get(i).value() + name.value() + paramOrEnd.value();
               // set back the counter and insert our string
-              tokens.set(i, new Token(string, TokenType.STRING));
+              tokens.set(i, new Token(TokenType.STRING, string));
               // remove the others
               tokens.remove(i + 1);
               tokens.remove(i + 1);
@@ -260,33 +244,33 @@ import static net.kyori.adventure.text.minimessage.Tokens.*;
         case CLOSE_TAG_START:
           // next has to be name
           name = tokens.get(++i);
-          if (name.getType() != TokenType.NAME) {
+          if (name.type() != TokenType.NAME) {
             throw new ParsingException("Expected name after close tag start, but got " + name, -1);
           }
           // after that, we just want end, sometimes end has params tho
           paramOrEnd = tokens.get(++i);
-          if (paramOrEnd.getType() == TokenType.TAG_END) {
+          if (paramOrEnd.type() == TokenType.TAG_END) {
             // we finished, gotta remove name out of the stack
-            System.out.println("got end of " + name.getValue());
-            removeFirst(transformations, t -> t.name().equals(name.getValue()));
-          } else if (paramOrEnd.getType() == TokenType.PARAM_SEPARATOR) {
+            System.out.println("got end of " + name.value());
+            removeFirst(transformations, t -> t.name().equals(name.value()));
+          } else if (paramOrEnd.type() == TokenType.PARAM_SEPARATOR) {
             // read all params
             List<Token> inners = new ArrayList<>();
             Token next;
-            while ((next = tokens.get(++i)).getType() != TokenType.TAG_END) {
+            while ((next = tokens.get(++i)).type() != TokenType.TAG_END) {
               inners.add(next);
             }
 
             // check what we need to close, so we create a transformation and try to remove it
-            Transformation transformation = registry.get(name.getValue(), inners);
+            Transformation transformation = registry.get(name.value(), inners);
             transformations.removeFirstOccurrence(transformation);
           } else {
             throw new ParsingException("Expected tag end or param separator after tag name, but got " + paramOrEnd, -1);
           }
           break;
         case STRING:
-          System.out.println("got: " + token.getValue() + " with transformations " + transformations);
-          Component current = Component.text(token.getValue());
+          System.out.println("got: " + token.value() + " with transformations " + transformations);
+          Component current = Component.text(token.value());
 
           for (Transformation transformation : transformations) {
             System.out.println("applying " + transformation);

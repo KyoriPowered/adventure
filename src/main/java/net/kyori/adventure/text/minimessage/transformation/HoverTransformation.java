@@ -23,42 +23,35 @@
  */
 package net.kyori.adventure.text.minimessage.transformation;
 
+import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.minimessage.parser.Token;
+import net.kyori.examination.ExaminableProperty;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.List;
-
+// TODO hover
 public class HoverTransformation extends Transformation {
+  public static boolean canParse(final String name) {
+    return false;
+  }
 
-    // TODO hover
+  @Override
+  public Component apply(final Component component, final TextComponent.Builder parent) {
+    return null;
+  }
 
-    @Override
-    public void load(String name, List<Token> args) {
-        super.load(name, args);
-    }
+  @Override
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.empty();
+  }
 
-    @Override
-    public Component apply(Component component, TextComponent.Builder parent) {
-        return null;
-    }
+  @Override
+  public boolean equals(final Object other) {
+    return false;
+  }
 
-    public static boolean isApplicable(String name) {
-        return false;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return 0;
-    }
-
-    @Override
-    public String toString() {
-        return super.toString();
-    }
+  @Override
+  public int hashCode() {
+    return 0;
+  }
 }

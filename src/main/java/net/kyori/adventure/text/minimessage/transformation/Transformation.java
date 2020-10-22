@@ -23,29 +23,34 @@
  */
 package net.kyori.adventure.text.minimessage.transformation;
 
+import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.parser.Token;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.string.StringExaminer;
 
-import java.util.List;
+public abstract class Transformation implements Examinable {
+  private String name;
 
-public abstract class Transformation {
+  public void load(final String name, final List<Token> args) {
+    this.name = name;
+  }
 
-    private String name;
+  public final String name() {
+    return this.name;
+  }
 
-    public abstract Component apply(Component component, TextComponent.Builder parent);
+  public abstract Component apply(final Component component, final TextComponent.Builder parent);
 
-    public void load(String name, List<Token> args) {
-        this.name = name;
-    }
+  @Override
+  public final String toString() {
+    return this.examine(StringExaminer.simpleEscaping());
+  }
 
-    public String name() {
-        return name;
-    }
+  @Override
+  public abstract boolean equals(final Object o);
 
-    @Override
-    public abstract boolean equals(Object o);
-
-    @Override
-    public abstract int hashCode();
+  @Override
+  public abstract int hashCode();
 }

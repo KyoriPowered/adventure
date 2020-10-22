@@ -51,12 +51,12 @@ public class MiniMessageLexerTest {
         StringBuilder split = new StringBuilder();
         StringBuilder types = new StringBuilder();
         for (Token token : tokens) {
-            result.append(token.getValue());
+            result.append(token.value());
 
-            int length = Math.max(token.getValue().length(), token.getType().name().length());
+            int length = Math.max(token.value().length(), token.type().name().length());
 
-            split.append(token.getValue()).append(padding(length - token.getValue().length())).append(" ");
-            types.append(token.getType().name()).append(padding(length - token.getType().name().length())).append(" ");
+            split.append(token.value()).append(padding(length - token.value().length())).append(" ");
+            types.append(token.type().name()).append(padding(length - token.type().name().length())).append(" ");
         }
 
         System.out.println("Result:  " + result.toString());

@@ -23,6 +23,9 @@
  */
 package net.kyori.adventure.text.minimessage.transformation;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -30,56 +33,51 @@ import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenType;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.StringJoiner;
+import net.kyori.examination.ExaminableProperty;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class FontTransformation extends Transformation {
+  public static boolean canParse(final String name) {
+    return name.equalsIgnoreCase(Tokens.FONT);
+  }
 
-    private Key font;
+  private Key font;
 
-    @Override
-    public void load(String name, List<Token> args) {
-        super.load(name, args);
+  @Override
+  public void load(final String name, final List<Token> args) {
+    super.load(name, args);
 
-        if (args.size() == 1 && args.get(0).getType() == TokenType.STRING) {
-            font = Key.key(args.get(0).getValue());
-        }
-
-        if (args.size() != 3 || args.get(0).getType() != TokenType.STRING || args.get(2).getType() != TokenType.STRING) {
-            throw new ParsingException("Doesn't know how to turn " + args + " into a click event", -1);
-        }
-
-        font = Key.key(args.get(0).getValue(), args.get(2).getValue());
+    if(Token.oneString(args)) {
+      this.font = Key.key(args.get(0).value());
     }
 
-    @Override
-    public Component apply(Component component, TextComponent.Builder parent) {
-        return component.style(component.style().font(font));
+    if(args.size() != 3 || args.get(0).type() != TokenType.STRING || args.get(2).type() != TokenType.STRING) {
+      throw new ParsingException("Doesn't know how to turn " + args + " into a click event", -1);
     }
 
-    public static boolean isApplicable(String name) {
-        return name.equalsIgnoreCase(Tokens.FONT);
-    }
+    this.font = Key.key(args.get(0).value(), args.get(2).value());
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        FontTransformation that = (FontTransformation) o;
-        return Objects.equals(font, that.font);
-    }
+  @Override
+  public Component apply(final Component component, final TextComponent.Builder parent) {
+    return component.style(component.style().font(this.font));
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(font);
-    }
+  @Override
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(ExaminableProperty.of("font", this.font));
+  }
 
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", FontTransformation.class.getSimpleName() + "[", "]")
-                .add("font=" + font)
-                .toString();
-    }
+  @Override
+  public boolean equals(final Object other) {
+    if(this == other) return true;
+    if(other == null || this.getClass() != other.getClass()) return false;
+    final FontTransformation that = (FontTransformation) other;
+    return Objects.equals(this.font, that.font);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.font);
+  }
 }

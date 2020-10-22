@@ -23,56 +23,53 @@
  */
 package net.kyori.adventure.text.minimessage.transformation;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.Token;
-import net.kyori.adventure.text.minimessage.parser.TokenType;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.StringJoiner;
+import net.kyori.examination.ExaminableProperty;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class KeybindTransformation extends Transformation {
+  public static boolean canParse(final String name) {
+    return name.equalsIgnoreCase(Tokens.KEYBIND);
+  }
 
-    private String keybind;
+  private String keybind;
 
-    @Override
-    public void load(String name, List<Token> args) {
-        super.load(name, args);
+  @Override
+  public void load(final String name, final List<Token> args) {
+    super.load(name, args);
 
-        if (args.size() == 1 && args.get(0).getType() == TokenType.STRING) {
-            this.keybind = args.get(0).getValue();
-        }
+    if(Token.oneString(args)) {
+      this.keybind = args.get(0).value();
     }
+  }
 
-    @Override
-    public Component apply(Component component, TextComponent.Builder parent) {
-        parent.append(Component.keybind(keybind).mergeStyle(component));
-        return component;
-    }
+  @Override
+  public Component apply(final Component component, final TextComponent.Builder parent) {
+    parent.append(Component.keybind(this.keybind).mergeStyle(component));
+    return component;
+  }
 
-    public static boolean isApplicable(String name) {
-        return name.equalsIgnoreCase(Tokens.KEYBIND);
-    }
+  @Override
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(ExaminableProperty.of("keybind", this.keybind));
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        KeybindTransformation that = (KeybindTransformation) o;
-        return Objects.equals(keybind, that.keybind);
-    }
+  @Override
+  public boolean equals(final Object other) {
+    if(this == other) return true;
+    if(other == null || this.getClass() != other.getClass()) return false;
+    final KeybindTransformation that = (KeybindTransformation) other;
+    return Objects.equals(this.keybind, that.keybind);
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(keybind);
-    }
-
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", KeybindTransformation.class.getSimpleName() + "[", "]")
-                .add("keybind='" + keybind + "'")
-                .toString();
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.keybind);
+  }
 }

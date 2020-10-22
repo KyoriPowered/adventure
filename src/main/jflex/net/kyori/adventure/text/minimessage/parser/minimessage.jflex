@@ -37,7 +37,7 @@ import java.io.IOException;
     }
 
     public void clean() {
-        tokens.removeIf(t -> t.getValue().length() == 0);
+        tokens.removeIf(t -> t.value().length() == 0);
     }
 
     public List<Token> getTokens() {
@@ -61,7 +61,7 @@ import java.io.IOException;
             ex.setMessage(msg.toString());
             throw ex;
         }
-        tokens.removeIf(t -> t.getValue().length() == 0);
+        tokens.removeIf(t -> t.value().length() == 0);
         return tokens;
     }
 
@@ -94,8 +94,8 @@ quote = '|\"
 }
 
 <TAG> {
-  {paramSeperator}        { yybegin(PARAM); tokens.add(new Token(getString(), TokenType.NAME)); tokens.add(new Token(TokenType.PARAM_SEPARATOR)); }
-  {tagEnd}                { yybegin(YYINITIAL); tokens.add(new Token(getString(), TokenType.NAME)); tokens.add(new Token(TokenType.TAG_END)); }
+  {paramSeperator}        { yybegin(PARAM); tokens.add(new Token(TokenType.NAME, getString())); tokens.add(new Token(TokenType.PARAM_SEPARATOR)); }
+  {tagEnd}                { yybegin(YYINITIAL); tokens.add(new Token(TokenType.NAME, getString())); tokens.add(new Token(TokenType.TAG_END)); }
   {identifier}            { string.append(yytext()); }
   [^]                     { throw new ParsingException("Illegal character '" + yytext() + "'. Only alphanumeric + ._-#/ are allowed as token names", yycolumn); }
 }

@@ -23,55 +23,52 @@
  */
 package net.kyori.adventure.text.minimessage.transformation;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.Token;
-import net.kyori.adventure.text.minimessage.parser.TokenType;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.StringJoiner;
+import net.kyori.examination.ExaminableProperty;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class InsertionTransformation extends Transformation {
+  public static boolean canParse(final String name) {
+    return name.equalsIgnoreCase(Tokens.INSERTION);
+  }
 
-    private String insertion;
+  private String insertion;
 
-    @Override
-    public void load(String name, List<Token> args) {
-        super.load(name, args);
+  @Override
+  public void load(final String name, final List<Token> args) {
+    super.load(name, args);
 
-        if (args.size() == 1 && args.get(0).getType() == TokenType.STRING) {
-            this.insertion = args.get(0).getValue();
-        }
+    if(Token.oneString(args)) {
+      this.insertion = args.get(0).value();
     }
+  }
 
-    @Override
-    public Component apply(Component component, TextComponent.Builder parent) {
-        return component.insertion(insertion);
-    }
+  @Override
+  public Component apply(final Component component, final TextComponent.Builder parent) {
+    return component.insertion(this.insertion);
+  }
 
-    public static boolean isApplicable(String name) {
-        return name.equalsIgnoreCase(Tokens.INSERTION);
-    }
+  @Override
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(ExaminableProperty.of("insertion", this.insertion));
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        InsertionTransformation that = (InsertionTransformation) o;
-        return Objects.equals(insertion, that.insertion);
-    }
+  @Override
+  public boolean equals(final Object other) {
+    if(this == other) return true;
+    if(other == null || this.getClass() != other.getClass()) return false;
+    final InsertionTransformation that = (InsertionTransformation) other;
+    return Objects.equals(this.insertion, that.insertion);
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(insertion);
-    }
-
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", InsertionTransformation.class.getSimpleName() + "[", "]")
-                .add("insertion='" + insertion + "'")
-                .toString();
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.insertion);
+  }
 }
