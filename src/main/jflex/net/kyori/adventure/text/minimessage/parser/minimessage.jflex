@@ -79,7 +79,7 @@ openTagStart = <
 closeTagStart = <\/
 tagEnd = >
 
-identifier = [a-zA-Z0-9_\-#]
+identifier = [a-zA-Z0-9_\-#\./ ]
 
 paramSeperator = :
 
@@ -97,7 +97,7 @@ quote = '|\"
   {paramSeperator}        { yybegin(PARAM); tokens.add(new Token(getString(), TokenType.NAME)); tokens.add(new Token(TokenType.PARAM_SEPARATOR)); }
   {tagEnd}                { yybegin(YYINITIAL); tokens.add(new Token(getString(), TokenType.NAME)); tokens.add(new Token(TokenType.TAG_END)); }
   {identifier}            { string.append(yytext()); }
-  [^]                     { throw new ParsingException("Illegal character '" + yytext() + "'. Only alphanumeric + _-# are allowed as token names", yycolumn); }
+  [^]                     { throw new ParsingException("Illegal character '" + yytext() + "'. Only alphanumeric + ._-#/ are allowed as token names", yycolumn); }
 }
 
 <PARAM> {
@@ -105,7 +105,7 @@ quote = '|\"
   {tagEnd}                { yybegin(YYINITIAL); tokens.add(new Token(getString())); tokens.add(new Token(TokenType.TAG_END)); }
   {quote}                 { yybegin(QUOTED); tokens.add(new Token(TokenType.QUOTE_START)); }
   {identifier}            { string.append(yytext()); }
-  [^]                     { throw new ParsingException("Illegal character '" + yytext() + "'. Only alphanumeric + _-# are allowed as params", yycolumn); }
+  [^]                     { throw new ParsingException("Illegal character '" + yytext() + "'. Only alphanumeric + ._-#/ and spaces are allowed as params", yycolumn); }
 }
 
 <QUOTED> {

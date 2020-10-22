@@ -36,10 +36,17 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.fancy.Fancy;
 import net.kyori.adventure.text.minimessage.fancy.Gradient;
 import net.kyori.adventure.text.minimessage.fancy.Rainbow;
+import net.kyori.adventure.text.minimessage.parser.MiniMessageLexer;
+import net.kyori.adventure.text.minimessage.parser.ParsingException;
+import net.kyori.adventure.text.minimessage.parser.Token;
+import net.kyori.adventure.text.minimessage.parser.TokenType;
+import net.kyori.adventure.text.minimessage.transformation.Transformation;
+import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,10 +54,12 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -182,182 +191,118 @@ import static net.kyori.adventure.text.minimessage.Tokens.*;
   }
 
   /* package */ static @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates) {
-    final TextComponent.Builder parent = Component.text();
-
-    final ArrayDeque<ClickEvent> clickEvents = new ArrayDeque<>();
-    final ArrayDeque<HoverEvent<?>> hoverEvents = new ArrayDeque<>();
-    final ArrayDeque<TextColor> colors = new ArrayDeque<>();
-    final ArrayDeque<String> insertions = new ArrayDeque<>();
-    final ArrayDeque<Key> fonts = new ArrayDeque<>();
-    final EnumSet<TextDecoration> decorations = EnumSet.noneOf(TextDecoration.class);
-    boolean isPreformatted = false;
-    final Map<Class<? extends Fancy>, Fancy> fancy = new LinkedHashMap<>();
-
-    final Matcher matcher = pattern.matcher(richMessage);
-    int lastEnd = 0;
-    while (matcher.find()) {
-      Component current = null;
-      int startIndex = matcher.start();
-      int endIndex = matcher.end();
-
-      String msg = null;
-      if (startIndex > lastEnd) {
-        msg = richMessage.substring(lastEnd, startIndex);
-      }
-      lastEnd = endIndex;
-
-      // handle message
-      if (msg != null && msg.length() != 0) {
-        // append message
-        current = Component.text(msg);
-        current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, parent, fancy, fonts);
-
-      }
-
-      final String token = matcher.group(TOKEN);
-      final String inner = matcher.group(INNER);
-
-      TextDecoration deco;
-      TextColor color;
-
-      // handle pre
-      if (isPreformatted) {
-        if (token.startsWith(CLOSE_TAG + PRE)) {
-          isPreformatted = false;
-          if (current != null) {
-            parent.append(current);
-          }
-        } else {
-          if (current != null) {
-            parent.append(current);
-          }
-          current = Component.text(TAG_START + token + TAG_END);
-          current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, parent, fancy, fonts);
-          parent.append(current);
-        }
-        continue;
-      }
-
-      // click
-      if (token.startsWith(CLICK + SEPARATOR)) {
-        clickEvents.push(handleClick(token, inner));
-      } else if (token.equals(CLOSE_TAG + CLICK)) {
-        clickEvents.pollFirst();
-      }
-      // hover
-      else if (token.startsWith(HOVER + SEPARATOR)) {
-        hoverEvents.push(handleHover(token, inner));
-      } else if (token.equals(CLOSE_TAG + HOVER)) {
-        hoverEvents.pollFirst();
-      }
-      // decoration
-      else if ((deco = resolveDecoration(token)) != null) {
-        decorations.add(deco);
-      } else if (token.startsWith(CLOSE_TAG) && (deco = resolveDecoration(token.replace(CLOSE_TAG, ""))) != null) {
-        decorations.remove(deco);
-      }
-      // color
-      else if ((color = resolveColor(token)) != null) {
-        colors.push(color);
-      } else if (token.startsWith(CLOSE_TAG) && resolveColor(token.replace(CLOSE_TAG, "")) != null) {
-        colors.pollFirst();
-      }
-      // color hex or named syntax
-      else if (token.startsWith(COLOR + SEPARATOR) && (color = resolveColorNew(token)) != null) {
-        colors.push(color);
-      } else if (token.startsWith(CLOSE_TAG + COLOR) && resolveColorNew(token.replace(CLOSE_TAG, "")) != null) {
-        colors.pollFirst();
-      }
-      // color: short hex
-      else if (token.startsWith(HEX) && (color = parseColor(token)) != null) {
-        colors.push(color);
-      } else if (token.startsWith(CLOSE_TAG + HEX) && parseColor(token.replace(CLOSE_TAG, "")) != null) {
-        colors.pollFirst();
-      }
-      // keybind
-      else if (token.startsWith(KEYBIND + SEPARATOR)) {
-        if (current != null) {
-          parent.append(current);
-        }
-        current = handleKeybind(token);
-        current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, parent, fancy, fonts);
-      }
-      // translatable
-      else if (token.startsWith(TRANSLATABLE + SEPARATOR)) {
-        if (current != null) {
-          parent.append(current);
-        }
-        current = handleTranslatable(token, inner);
-        current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, parent, fancy, fonts);
-      }
-      // insertion
-      else if (token.startsWith(INSERTION + SEPARATOR)) {
-        insertions.push(handleInsertion(token));
-      } else if (token.startsWith(CLOSE_TAG + INSERTION)) {
-        insertions.pop();
-      }
-      // rainbow
-      else if (token.startsWith(RAINBOW)) {
-        fancy.put(Rainbow.class, handleRainbow(token));
-      } else if (token.startsWith(CLOSE_TAG + RAINBOW)) {
-        fancy.remove(Rainbow.class);
-      }
-      // gradient
-      else if (token.startsWith(GRADIENT)) {
-        fancy.put(Gradient.class, handleGradient(token));
-      } else if (token.startsWith(CLOSE_TAG + GRADIENT)) {
-        fancy.remove(Gradient.class);
-      }
-      // font
-      else if (token.startsWith(FONT)) {
-        fonts.push(handleFont(token));
-      } else if (token.startsWith(CLOSE_TAG + FONT)) {
-        fonts.pop();
-      }
-      // don't add new components below this!
-      // reset
-      else if (token.startsWith(RESET)) {
-        clickEvents.clear();
-        hoverEvents.clear();
-        colors.clear();
-        insertions.clear();
-        decorations.clear();
-        fancy.clear();
-        fonts.clear();
-      }
-      // pre
-      else if (token.startsWith(PRE)) {
-        isPreformatted = true;
-      }
-      // template
-      else if (templates.containsKey(token)) {
-        current = templates.get(token).getValue();
-        current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, parent, fancy, fonts);
-      }
-      // invalid tag
-      else {
-        if (current != null) {
-          parent.append(current);
-        }
-        current = Component.text(TAG_START + token + TAG_END);
-        current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, parent, fancy, fonts);
-      }
-
-      if (current != null) {
-        parent.append(current);
-      }
+    MiniMessageLexer lexer = new MiniMessageLexer(richMessage);
+    try {
+      lexer.scan();
+    } catch (IOException e) {
+      e.printStackTrace(); // TODO idk how to deal with this
     }
+    lexer.clean();
+    List<Token> tokens = lexer.getTokens();
+    return parse(tokens, new TransformationRegistry(), templates);
+  }
 
-    // handle last message part
-    if (richMessage.length() > lastEnd) {
-      final String msg = richMessage.substring(lastEnd);
-      // append message
-      Component current = Component.text(msg);
+  /* package */ @NonNull static Component parse(final @NonNull List<Token> tokens, final @NonNull TransformationRegistry registry, final @NonNull Map<String, Template.ComponentTemplate> templates) {
+    final TextComponent.Builder parent = Component.text();
+    ArrayDeque<Transformation> transformations = new ArrayDeque<>();
 
-      // set everything that is not closed yet
-      current = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, current, parent, fancy, fonts);
+    int i = 0;
+    while (i < tokens.size()) {
+      Token token = tokens.get(i);
+      switch (token.getType()) {
+        case OPEN_TAG_START:
+          // next has to be name
+          Token name = tokens.get(++i);
+          if (name.getType() != TokenType.NAME) {
+            throw new ParsingException("Expected name after open tag, but got " + name, -1);
+          }
+          // after that, we get a param seperator or the end
+          Token paramOrEnd = tokens.get(++i);
+          if (paramOrEnd.getType() == TokenType.PARAM_SEPARATOR) {
+            // we need to handle params, so read till end of tag
+            List<Token> inners = new ArrayList<>();
+            Token next;
+            while ((next = tokens.get(++i)).getType() != TokenType.TAG_END) {
+              inners.add(next);
+            }
 
-      parent.append(current);
+            Transformation transformation = registry.get(name.getValue(), inners);
+            System.out.println("got start of " + name.getValue() + " with params " + inners + " -> " + transformation);
+            if (transformation == null) {
+              // TODO unknown tag -> turn into string
+              System.out.println("no transformation found");
+            } else {
+              transformations.addLast(transformation);
+            }
+          } else if (paramOrEnd.getType() == TokenType.TAG_END) {
+            // we finished
+            Transformation transformation = registry.get(name.getValue(), Collections.emptyList());
+            System.out.println("got start of " + name.getValue() + " -> " + transformation);
+            if (transformation == null) {
+              // this isn't a known tag, oh no!
+              // lets take a step back, first, create a string
+              i -= 2;
+              String string = tokens.get(i).getValue() + name.getValue() + paramOrEnd.getValue();
+              // set back the counter and insert our string
+              tokens.set(i, new Token(string, TokenType.STRING));
+              // remove the others
+              tokens.remove(i + 1);
+              tokens.remove(i + 1);
+              System.out.println("no transformation found " + string);
+              continue;
+            } else {
+              transformations.addLast(transformation);
+            }
+          } else {
+            throw new ParsingException("Expected tag end or param separator after tag name, but got " + paramOrEnd, -1);
+          }
+          break;
+        case CLOSE_TAG_START:
+          // next has to be name
+          name = tokens.get(++i);
+          if (name.getType() != TokenType.NAME) {
+            throw new ParsingException("Expected name after close tag start, but got " + name, -1);
+          }
+          // after that, we just want end, sometimes end has params tho
+          paramOrEnd = tokens.get(++i);
+          if (paramOrEnd.getType() == TokenType.TAG_END) {
+            // we finished, gotta remove name out of the stack
+            System.out.println("got end of " + name.getValue());
+            removeFirst(transformations, t -> t.name().equals(name.getValue()));
+          } else if (paramOrEnd.getType() == TokenType.PARAM_SEPARATOR) {
+            // read all params
+            List<Token> inners = new ArrayList<>();
+            Token next;
+            while ((next = tokens.get(++i)).getType() != TokenType.TAG_END) {
+              inners.add(next);
+            }
+
+            // check what we need to close, so we create a transformation and try to remove it
+            Transformation transformation = registry.get(name.getValue(), inners);
+            transformations.removeFirstOccurrence(transformation);
+          } else {
+            throw new ParsingException("Expected tag end or param separator after tag name, but got " + paramOrEnd, -1);
+          }
+          break;
+        case STRING:
+          System.out.println("got: " + token.getValue() + " with transformations " + transformations);
+          Component current = Component.text(token.getValue());
+
+          for (Transformation transformation : transformations) {
+            System.out.println("applying " + transformation);
+            current = transformation.apply(current, parent);
+          }
+
+          parent.append(current);
+          break;
+        case TAG_END:
+        case PARAM_SEPARATOR:
+        case QUOTE_START:
+        case QUOTE_END:
+        case NAME:
+          throw new ParsingException("Unexpected token " + token, -1);
+      }
+      i++;
     }
 
     // optimization, ignore empty parent
@@ -369,212 +314,14 @@ import static net.kyori.adventure.text.minimessage.Tokens.*;
     }
   }
 
-  private static @NonNull Component applyFormatting(@NonNull final Deque<ClickEvent> clickEvents,
-                                                    @NonNull final Deque<HoverEvent<?>> hoverEvents,
-                                                    @NonNull final Deque<TextColor> colors,
-                                                    @NonNull final Deque<String> insertions,
-                                                    @NonNull final EnumSet<TextDecoration> decorations,
-                                                    @NonNull Component current,
-                                                    TextComponent.Builder parent, @NonNull final Map<Class<? extends Fancy>, Fancy> fancy, ArrayDeque<Key> fonts) {
-    // set everything that is not closed yet
-    if (!clickEvents.isEmpty() && current.clickEvent() == null) {
-      current = current.clickEvent(clickEvents.peek());
-    }
-    if (!hoverEvents.isEmpty() && current.hoverEvent() == null) {
-      current = current.hoverEvent(hoverEvents.peek());
-    }
-    if (!colors.isEmpty()) {
-      current = current.colorIfAbsent(colors.peek());
-    }
-    if (!decorations.isEmpty()) {
-      for (TextDecoration decor : decorations) {
-        if (!current.hasDecoration(decor)) {
-          current = current.decoration(decor, true);
-        }
+  private static boolean removeFirst(ArrayDeque<Transformation> transformations, Predicate<Transformation> filter) {
+    final Iterator<Transformation> each = transformations.descendingIterator();
+    while (each.hasNext()) {
+      if (filter.test(each.next())) {
+        each.remove();
+        return true;
       }
     }
-    if (!insertions.isEmpty()) {
-      current = current.insertion(insertions.peek());
-    }
-    if (!fonts.isEmpty()) {
-      current = current.style(current.style().font(fonts.peek()));
-    }
-
-    if (current instanceof TextComponent && fancy.size() != 0) {
-      final TextComponent bigComponent = (TextComponent) current;
-      Component smallComponent = null;
-
-      final Fancy nextFancy = fancy.entrySet().iterator().next().getValue();
-      nextFancy.init(bigComponent.content().length());
-      // split into multiple components
-      for (int i = 0; i < bigComponent.content().length(); i++) {
-        smallComponent = Component.text(bigComponent.content().charAt(i));
-        // apply formatting
-        smallComponent = applyFormatting(clickEvents, hoverEvents, colors, insertions, decorations, smallComponent, parent, Collections.emptyMap(), fonts);
-        smallComponent = nextFancy.apply(smallComponent);
-        // append
-        if (i != bigComponent.content().length() - 1)  {
-          parent.append(smallComponent);
-        }
-      }
-      if (smallComponent != null) {
-        current = smallComponent;
-      }
-    }
-
-    return current;
-  }
-
-  private static @NonNull Rainbow handleRainbow(final @NonNull String token) {
-    if (token.contains(SEPARATOR)) {
-      final String phase = token.substring(token.indexOf(SEPARATOR) + 1);
-      try {
-        return new Rainbow(Integer.parseInt(phase));
-      } catch (NumberFormatException ex) {
-        throw new ParseException("Can't parse rainbow phase (not a int) " + token);
-      }
-    }
-    return new Rainbow();
-  }
-
-  private static @NonNull Gradient handleGradient(final @NonNull String token) {
-    if (token.contains(SEPARATOR)) {
-      final String[] split = token.split(":");
-      if (split.length >= 3) {
-        TextColor[] colors = new TextColor[split.length - 1];
-        int phase = 0;
-        for (int i = 1; i < split.length; i++) {
-          final TextColor color = parseColor(split[i]);
-          if (color == null) {
-            // might be the phase
-            if (i == split.length - 1) {
-              try {
-                phase = Integer.parseInt(split[i]);
-                // we created one entry to much, lets get rid of it
-                colors = Arrays.copyOfRange(colors, 0, colors.length - 1);
-              } catch (NumberFormatException ex) {
-                throw new ParseException("Can't parse gradient phase (not a color nor a phase " + i + ") " + token);
-              }
-            } else {
-              throw new ParseException("Can't parse gradient phase (not a color " + i + ") " + token);
-            }
-          } else {
-            colors[i - 1] = color;
-          }
-        }
-        return new Gradient(phase, colors);
-      } else {
-        throw new ParseException("Can't parse gradient (wrong args) " + token);
-      }
-    }
-    return new Gradient();
-  }
-
-
-  private static @NonNull Key handleFont(final @NonNull String token) {
-    final String[] args = token.split(SEPARATOR);
-    if (args.length < 2) {
-      throw new ParseException("Can't parse font (too few args) " + token);
-    }
-    return Key.key(token.replace(args[0] + SEPARATOR, ""));
-  }
-
-
-  private static @NonNull String handleInsertion(final @NonNull String token) {
-    final String[] args = token.split(SEPARATOR);
-    if (args.length < 2) {
-      throw new ParseException("Can't parse insertion (too few args) " + token);
-    }
-    return token.replace(args[0] + SEPARATOR, "");
-  }
-
-
-  private static @NonNull Component handleTranslatable(final @NonNull String token, final String inner) {
-    final String[] args = token.split(SEPARATOR);
-    if (args.length < 2) {
-      throw new ParseException("Can't parse translatable (too few args) " + token);
-    }
-    if (inner == null) {
-      return Component.translatable(args[1]);
-    } else {
-      final List<Component> inners = new ArrayList<>();
-      final String toSplit = token.replace(args[0] + ":" + args[1] + ":", "");
-      final String[] split = dumSplitPattern.split(cleanInner(toSplit));
-      for (String someInner : split) {
-        inners.add(parseFormat(someInner));
-      }
-      return Component.translatable(args[1], inners);
-    }
-  }
-
-
-  private static @NonNull KeybindComponent handleKeybind(final @NonNull String token) {
-    final String[] args = token.split(SEPARATOR);
-    if (args.length < 2) {
-      throw new ParseException("Can't parse keybind (too few args) " + token);
-    }
-    return Component.keybind(args[1]);
-  }
-
-  private static @NonNull ClickEvent handleClick(final @NonNull String token, final @NonNull String inner) {
-    final String[] args = token.split(SEPARATOR);
-    if (args.length < 2) {
-      throw new ParseException("Can't parse click action (too few args) " + token);
-    }
-    final ClickEvent.Action action = ClickEvent.Action.NAMES.value(args[1].toLowerCase(Locale.ROOT));
-    if (action == null) throw new ParseException("Can't parse click action (invalid action) " + token);
-    return ClickEvent.clickEvent(action, token.replace(CLICK + SEPARATOR + args[1] + SEPARATOR, ""));
-  }
-
-
-  private static @NonNull HoverEvent<?> handleHover(final @NonNull String token, @NonNull String inner) {
-    final String[] args = token.split(SEPARATOR);
-    if (args.length < 2) {
-      throw new ParseException("Can't parse hover action (too few args) " + token);
-    }
-    // regex doesnt seem to match inner if it contains a multiline, so lets get it ourself
-    if (inner == null) {
-      inner = cleanInner(token.replace(args[0] + SEPARATOR + args[1] + SEPARATOR, ""));
-    } else {
-      inner = cleanInner(inner);
-    }
-    // TODO figure out support for all hover actions
-    final HoverEvent.Action action = HoverEvent.Action.NAMES.value(args[1].toLowerCase(Locale.ROOT));
-    if (action == null) throw new ParseException("Can't parse hover action (invalid action) " + token);
-    return HoverEvent.hoverEvent(action, parseFormat(inner));
-  }
-
-
-  private static @Nullable TextColor resolveColor(final @NonNull String token) {
-    return NamedTextColor.NAMES.value(token.toLowerCase(Locale.ROOT));
-  }
-
-  private static @Nullable TextColor resolveColorNew(final @NonNull String token) {
-    final String[] args = token.split(SEPARATOR);
-    if (args.length < 2) {
-      throw new ParseException("Can't parse color (too few args) " + token);
-    }
-
-    return parseColor(args[1]);
-  }
-
-  private static @Nullable TextColor parseColor(final String color) {
-    if (color.charAt(0) == '#') {
-      return TextColor.fromHexString(color);
-    } else {
-      return NamedTextColor.NAMES.value(color.toLowerCase(Locale.ROOT));
-    }
-  }
-
-  private static @Nullable TextDecoration resolveDecoration(final @NonNull String token) {
-    try {
-      return TextDecoration.NAMES.value(token.toLowerCase(Locale.ROOT));
-    } catch (IllegalArgumentException ex) {
-      return null;
-    }
-  }
-
-  private static String cleanInner(final String inner) {
-    return inner.substring(1).substring(0, inner.length() - 2); // cut off first and last "/'
+    return false;
   }
 }
