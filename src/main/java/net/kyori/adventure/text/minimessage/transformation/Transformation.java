@@ -33,6 +33,9 @@ import net.kyori.examination.string.StringExaminer;
 public abstract class Transformation implements Examinable {
   private String name;
 
+  protected Transformation() {
+  }
+
   public void load(final String name, final List<Token> args) {
     this.name = name;
   }

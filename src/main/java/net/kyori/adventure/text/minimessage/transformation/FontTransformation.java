@@ -43,6 +43,9 @@ public class FontTransformation extends Transformation {
 
   private Key font;
 
+  private FontTransformation() {
+  }
+
   @Override
   public void load(final String name, final List<Token> args) {
     super.load(name, args);
@@ -79,5 +82,12 @@ public class FontTransformation extends Transformation {
   @Override
   public int hashCode() {
     return Objects.hash(this.font);
+  }
+
+  static class Parser implements TransformationParser<FontTransformation> {
+    @Override
+    public FontTransformation parse() {
+      return new FontTransformation();
+    }
   }
 }

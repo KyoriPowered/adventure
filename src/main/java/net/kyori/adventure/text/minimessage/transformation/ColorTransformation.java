@@ -46,6 +46,9 @@ public class ColorTransformation extends Transformation {
 
   private TextColor color;
 
+  private ColorTransformation() {
+  }
+
   @Override
   public void load(String name, final List<Token> args) {
     super.load(name, args);
@@ -90,5 +93,12 @@ public class ColorTransformation extends Transformation {
   @Override
   public int hashCode() {
     return Objects.hash(this.color);
+  }
+
+  static class Parser implements TransformationParser<ColorTransformation> {
+    @Override
+    public ColorTransformation parse() {
+      return new ColorTransformation();
+    }
   }
 }

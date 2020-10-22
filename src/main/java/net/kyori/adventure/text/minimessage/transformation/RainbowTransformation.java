@@ -35,6 +35,9 @@ public class RainbowTransformation extends Transformation {
     return false;
   }
 
+  private RainbowTransformation() {
+  }
+
   @Override
   public Component apply(final Component component, final TextComponent.Builder parent) {
     return null;
@@ -53,5 +56,12 @@ public class RainbowTransformation extends Transformation {
   @Override
   public int hashCode() {
     return 0;
+  }
+
+  static class Parser implements TransformationParser<RainbowTransformation> {
+    @Override
+    public RainbowTransformation parse() {
+      return new RainbowTransformation();
+    }
   }
 }

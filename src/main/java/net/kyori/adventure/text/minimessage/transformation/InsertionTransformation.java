@@ -40,6 +40,9 @@ public class InsertionTransformation extends Transformation {
 
   private String insertion;
 
+  private InsertionTransformation() {
+  }
+
   @Override
   public void load(final String name, final List<Token> args) {
     super.load(name, args);
@@ -70,5 +73,12 @@ public class InsertionTransformation extends Transformation {
   @Override
   public int hashCode() {
     return Objects.hash(this.insertion);
+  }
+
+  static class Parser implements TransformationParser<InsertionTransformation> {
+    @Override
+    public InsertionTransformation parse() {
+      return new InsertionTransformation();
+    }
   }
 }

@@ -54,4 +54,11 @@ public class TranslatableTransformation extends Transformation {
   public int hashCode() {
     return 0;
   }
+
+  static class Parser implements TransformationParser<TranslatableTransformation> {
+    @Override
+    public TranslatableTransformation parse() {
+      return new TranslatableTransformation();
+    }
+  }
 }

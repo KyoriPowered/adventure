@@ -35,6 +35,9 @@ public class GradientTransformation extends Transformation {
     return false;
   }
 
+  private GradientTransformation() {
+  }
+
   @Override
   public Component apply(final Component component, final TextComponent.Builder parent) {
     return null;
@@ -53,5 +56,12 @@ public class GradientTransformation extends Transformation {
   @Override
   public int hashCode() {
     return 0;
+  }
+
+  static class Parser implements TransformationParser<GradientTransformation> {
+    @Override
+    public GradientTransformation parse() {
+      return new GradientTransformation();
+    }
   }
 }

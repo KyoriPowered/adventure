@@ -40,6 +40,9 @@ public class KeybindTransformation extends Transformation {
 
   private String keybind;
 
+  private KeybindTransformation() {
+  }
+
   @Override
   public void load(final String name, final List<Token> args) {
     super.load(name, args);
@@ -71,5 +74,12 @@ public class KeybindTransformation extends Transformation {
   @Override
   public int hashCode() {
     return Objects.hash(this.keybind);
+  }
+
+  static class Parser implements TransformationParser<KeybindTransformation> {
+    @Override
+    public KeybindTransformation parse() {
+      return new KeybindTransformation();
+    }
   }
 }

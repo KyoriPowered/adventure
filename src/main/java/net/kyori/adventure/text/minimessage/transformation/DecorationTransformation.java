@@ -42,6 +42,9 @@ public class DecorationTransformation extends Transformation {
 
   private TextDecoration decoration;
 
+  private DecorationTransformation() {
+  }
+
   @Override
   public void load(final String name, final List<Token> args) {
     super.load(name, args);
@@ -74,5 +77,12 @@ public class DecorationTransformation extends Transformation {
   @Override
   public int hashCode() {
     return Objects.hash(this.decoration);
+  }
+
+  static class Parser implements TransformationParser<DecorationTransformation> {
+    @Override
+    public DecorationTransformation parse() {
+      return new DecorationTransformation();
+    }
   }
 }

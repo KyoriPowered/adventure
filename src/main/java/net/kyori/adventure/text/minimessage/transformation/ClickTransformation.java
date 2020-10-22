@@ -45,6 +45,9 @@ public class ClickTransformation extends Transformation {
   private ClickEvent.Action action;
   private String value;
 
+  private ClickTransformation() {
+  }
+
   @Override
   public void load(final String name, final List<Token> args) {
     super.load(name, args);
@@ -81,5 +84,12 @@ public class ClickTransformation extends Transformation {
   @Override
   public int hashCode() {
     return Objects.hash(this.action, this.value);
+  }
+
+  static class Parser implements TransformationParser<ClickTransformation> {
+    @Override
+    public ClickTransformation parse() {
+      return new ClickTransformation();
+    }
   }
 }

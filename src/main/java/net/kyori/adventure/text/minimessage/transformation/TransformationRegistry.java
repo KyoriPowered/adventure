@@ -25,49 +25,38 @@ package net.kyori.adventure.text.minimessage.transformation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 public final class TransformationRegistry {
-  private final List<Entry<? extends Transformation>> transformations = new ArrayList<>();
+  private final List<TransformationType<? extends Transformation>> types = new ArrayList<>();
 
   public TransformationRegistry() {
-    this.register(ColorTransformation::canParse, ColorTransformation::new);
-    this.register(DecorationTransformation::canParse, DecorationTransformation::new);
-    this.register(HoverTransformation::canParse, HoverTransformation::new);
-    this.register(ClickTransformation::canParse, ClickTransformation::new);
-    this.register(KeybindTransformation::canParse, KeybindTransformation::new);
-    this.register(TranslatableTransformation::canParse, TranslatableTransformation::new);
-    this.register(InsertionTransformation::canParse, InsertionTransformation::new);
-    this.register(FontTransformation::canParse, FontTransformation::new);
-    this.register(GradientTransformation::canParse, GradientTransformation::new);
-    this.register(RainbowTransformation::canParse, RainbowTransformation::new);
+    this.register(TransformationType.COLOR);
+    this.register(TransformationType.DECORATION);
+    this.register(TransformationType.HOVER_EVENT);
+    this.register(TransformationType.CLICK_EVENT);
+    this.register(TransformationType.KEYBIND);
+    this.register(TransformationType.TRANSLATABLE);
+    this.register(TransformationType.INSERTION);
+    this.register(TransformationType.FONT);
+    this.register(TransformationType.GRADIENT);
+    this.register(TransformationType.RAINBOW);
   }
 
-  private <T extends Transformation> void register(final Predicate<String> canParse, final TransformationParser<T> parser) {
-    this.transformations.add(new Entry<>(canParse, parser));
+  private <T extends Transformation> void register(final TransformationType<T> type) {
+    this.types.add(type);
   }
 
   public @Nullable Transformation get(final String name, final List<Token> inners) {
-    for(final Entry<? extends Transformation> entry : this.transformations) {
-      if(entry.canParse.test(name)) {
-        final Transformation transformation = entry.parser.parse();
+    for(final TransformationType<? extends Transformation> type : this.types) {
+      if(type.canParse.test(name)) {
+        final Transformation transformation = type.parser.parse();
         transformation.load(name, inners);
         return transformation;
       }
     }
 
     return null;
-  }
-
-  static class Entry<T extends Transformation> {
-    final Predicate<String> canParse;
-    final TransformationParser<T> parser;
-
-    Entry(final Predicate<String> canParse, final TransformationParser<T> parser) {
-      this.canParse = canParse;
-      this.parser = parser;
-    }
   }
 }

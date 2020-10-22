@@ -35,6 +35,9 @@ public class HoverTransformation extends Transformation {
     return false;
   }
 
+  private HoverTransformation() {
+  }
+
   @Override
   public Component apply(final Component component, final TextComponent.Builder parent) {
     return null;
@@ -53,5 +56,12 @@ public class HoverTransformation extends Transformation {
   @Override
   public int hashCode() {
     return 0;
+  }
+
+  static class Parser implements TransformationParser<HoverTransformation> {
+    @Override
+    public HoverTransformation parse() {
+      return new HoverTransformation();
+    }
   }
 }
