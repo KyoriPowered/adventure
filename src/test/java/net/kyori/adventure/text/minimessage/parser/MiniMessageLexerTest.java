@@ -23,8 +23,10 @@
  */
 package net.kyori.adventure.text.minimessage.parser;
 
-import net.kyori.adventure.text.minimessage.tokens.Parser;
-import net.kyori.adventure.text.minimessage.tokens.Token;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.parser.Parser;
+import net.kyori.adventure.text.minimessage.parser.Token;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import org.junit.jupiter.api.Test;
 
@@ -38,14 +40,14 @@ public class MiniMessageLexerTest {
 
     @Test
     public void test() throws Exception {
-        test("<red>This is a test</red><yellow>Wooo<#112233>hex!</#112233>");
+        test("<red>This is a test</red><yellow>Wooo<#112233>hex!</#112233><color:blue>Named color</color>");
         test("<hover:show_text:'<red>test'>TEST</hover>");
         test("<rainbow><treerev> <click:open_url:'https://github.com'>https://github.com</click></rainbow>");
     }
 
     @Test
     public void test2() throws IOException {
-        test2("<red>This is a test</red><yellow>Wooo<#112233>hex!</#112233>");
+        test2("<red>This is a test</red><yellow>Wooo<#112233>hex!</#112233><color:blue>Named color</color>Am yellow!");
         test2("<hover:show_text:'<red>test'>TEST</hover>");
     }
 
@@ -58,7 +60,9 @@ public class MiniMessageLexerTest {
         List<Token> tokens = lexer.getTokens();
 
         Parser parser = new Parser();
-        parser.parse(tokens);
+        Component result = parser.parse(tokens);
+        String json = GsonComponentSerializer.gson().serialize(result);
+        System.out.println("json: " + json);
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     }
 

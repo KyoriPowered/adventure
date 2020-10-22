@@ -1,4 +1,4 @@
-package net.kyori.adventure.text.minimessage.tokens;
+package net.kyori.adventure.text.minimessage.parser;
 
 public class ParsingException extends RuntimeException {
 

@@ -1,8 +1,8 @@
 package net.kyori.adventure.text.minimessage.parser;
 
-import net.kyori.adventure.text.minimessage.tokens.Token;
-import net.kyori.adventure.text.minimessage.tokens.TokenType;
-import net.kyori.adventure.text.minimessage.tokens.ParsingException;
+import net.kyori.adventure.text.minimessage.parser.Token;
+import net.kyori.adventure.text.minimessage.parser.TokenType;
+import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import java.io.StringReader;
 import java.util.Arrays;
 import java.util.ArrayList;

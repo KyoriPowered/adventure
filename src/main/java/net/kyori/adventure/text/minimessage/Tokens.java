@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage;
 
-/* package */ class Tokens {
+public class Tokens {
   // vanilla components
   public static final String CLICK = "click";
   public static final String HOVER = "hover";
