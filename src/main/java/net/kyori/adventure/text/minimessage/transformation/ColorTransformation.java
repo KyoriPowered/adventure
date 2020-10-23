@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.transformation;
 
+import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;

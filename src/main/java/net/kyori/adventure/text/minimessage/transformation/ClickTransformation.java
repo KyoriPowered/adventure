@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.transformation;
 
+import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -52,12 +53,13 @@ public class ClickTransformation extends Transformation {
   public void load(final String name, final List<Token> args) {
     super.load(name, args);
 
-    if(args.size() != 3 || args.get(0).type() != TokenType.STRING || args.get(2).type() != TokenType.STRING) {
+    if(args.size() < 3 || args.get(0).type() != TokenType.STRING || args.get(2).type() != TokenType.STRING) {
       throw new ParsingException("Doesn't know how to turn " + args + " into a click event", -1);
     }
 
+
     this.action = ClickEvent.Action.NAMES.value(args.get(0).value().toLowerCase(Locale.ROOT));
-    this.value = args.get(2).value(); // TODO: this is broken
+    this.value = Token.asValueString(args.subList(2, args.size()));
   }
 
   @Override

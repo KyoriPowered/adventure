@@ -42,6 +42,7 @@ public final class TransformationRegistry {
     this.register(TransformationType.FONT);
     this.register(TransformationType.GRADIENT);
     this.register(TransformationType.RAINBOW);
+    this.register(TransformationType.RESET);
   }
 
   private <T extends Transformation> void register(final TransformationType<T> type) {
@@ -58,5 +59,14 @@ public final class TransformationRegistry {
     }
 
     return null;
+  }
+
+  public boolean exists(final String name) {
+    for(final TransformationType<? extends Transformation> type : this.types) {
+      if (type.canParse.test(name)) {
+        return true;
+      }
+    }
+    return false;
   }
 }

@@ -23,36 +23,83 @@
  */
 package net.kyori.adventure.text.minimessage.transformation;
 
-import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.Tokens;
+import net.kyori.adventure.text.minimessage.parser.ParsingException;
+import net.kyori.adventure.text.minimessage.parser.Token;
+import net.kyori.adventure.text.minimessage.parser.TokenType;
 import net.kyori.examination.ExaminableProperty;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-// TODO translatable
-public class TranslatableTransformation extends Transformation {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
+
+public class TranslatableTransformation extends InsertingTransformation {
+
+  private static final Pattern dumSplitPattern = Pattern.compile("['\"]:['\"]");
+
   public static boolean canParse(final String name) {
-    return false;
+    return name.equalsIgnoreCase(Tokens.TRANSLATABLE);
+  }
+
+  private String key;
+  private List<Component> inners = new ArrayList<>();
+
+  @Override
+  public void load(String name, List<Token> args) {
+    super.load(name, args);
+
+    if (args.isEmpty() || args.get(0).type() != TokenType.STRING) {
+      throw new ParsingException("Doesn't know how to turn " + args + " into a click event", -1);
+    }
+
+    this.key = args.get(0).value();
+    if (args.size() > 1) {
+      String string = Token.asValueString(args.subList(2, args.size()));
+      if (string.startsWith("'") || string.startsWith("\"")) {
+        string = string.substring(1).substring(0, string.length() - 2);
+      }
+      for (String in : dumSplitPattern.split(string)) {
+        inners.add(MiniMessage.get().parse(in)); // TODO this uses a hardcoded instance, there gotta be a better way
+      }
+    }
   }
 
   @Override
   public Component apply(final Component component, final TextComponent.Builder parent) {
-    return null;
+    if (inners.size() > 0) {
+      parent.append(Component.translatable(key, inners).mergeStyle(component));
+    } else {
+      parent.append(Component.translatable(key).mergeStyle(component));
+    }
+    return component;
   }
 
   @Override
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.empty();
+    return Stream.of(
+            ExaminableProperty.of("key", this.key),
+            ExaminableProperty.of("inners", this.inners)
+    );
   }
 
   @Override
-  public boolean equals(final Object other) {
-    return false;
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    TranslatableTransformation that = (TranslatableTransformation) o;
+    return Objects.equals(key, that.key) && Objects.equals(inners, that.inners);
   }
 
   @Override
   public int hashCode() {
-    return 0;
+    return Objects.hash(key, inners);
   }
 
   static class Parser implements TransformationParser<TranslatableTransformation> {

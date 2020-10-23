@@ -23,39 +23,75 @@
  */
 package net.kyori.adventure.text.minimessage.transformation;
 
-import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.Tokens;
+import net.kyori.adventure.text.minimessage.parser.ParsingException;
+import net.kyori.adventure.text.minimessage.parser.Token;
+import net.kyori.adventure.text.minimessage.parser.TokenType;
 import net.kyori.examination.ExaminableProperty;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-// TODO hover
+import java.util.ArrayDeque;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
+
 public class HoverTransformation extends Transformation {
   public static boolean canParse(final String name) {
-    return false;
+    return name.equalsIgnoreCase(Tokens.HOVER);
   }
+
+  private HoverEvent.Action<Object> action;
+  private Object value;
 
   private HoverTransformation() {
   }
 
   @Override
+  public void load(String name, List<Token> args) {
+    super.load(name, args);
+
+    if (args.size() < 3 || args.get(0).type() != TokenType.STRING) {
+      throw new ParsingException("Doesn't know how to turn " + args + " into a hover event", -1);
+    }
+
+    //noinspection unchecked
+    this.action = (HoverEvent.Action<Object>) HoverEvent.Action.NAMES.value(args.get(0).value());
+    String string = Token.asValueString(args.subList(2, args.size()));
+    if (string.startsWith("'") || string.startsWith("\"")) {
+      string = string.substring(1).substring(0, string.length() - 2);
+    }
+    this.value = MiniMessage.get().parse(string); // TODO this uses a hardcoded instance, there gotta be a better way
+  }
+
+  @Override
   public Component apply(final Component component, final TextComponent.Builder parent) {
-    return null;
+    return component.hoverEvent(HoverEvent.hoverEvent(action, value));
   }
 
   @Override
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.empty();
+    return Stream.of(
+            ExaminableProperty.of("action", this.action),
+            ExaminableProperty.of("value", this.value)
+    );
   }
 
   @Override
-  public boolean equals(final Object other) {
-    return false;
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    HoverTransformation that = (HoverTransformation) o;
+    return Objects.equals(action, that.action) && Objects.equals(value, that.value);
   }
 
   @Override
   public int hashCode() {
-    return 0;
+    return Objects.hash(action, value);
   }
 
   static class Parser implements TransformationParser<HoverTransformation> {

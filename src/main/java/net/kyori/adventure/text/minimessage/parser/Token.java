@@ -24,12 +24,14 @@
 package net.kyori.adventure.text.minimessage.parser;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+// TODO token should have a char pointer/counter to point to the index where it begins, for nice error messages
 public class Token implements Examinable {
   private final String value;
   private final TokenType type;
@@ -59,6 +61,10 @@ public class Token implements Examinable {
 
   public static boolean oneString(final List<Token> tokens) {
     return tokens.size() == 1 && tokens.get(0).type() == TokenType.STRING;
+  }
+
+  public static String asValueString(List<Token> args) {
+    return args.stream().map(Token::value).collect(Collectors.joining());
   }
 
   @Override

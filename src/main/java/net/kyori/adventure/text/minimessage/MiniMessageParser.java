@@ -29,6 +29,8 @@ import net.kyori.adventure.text.minimessage.parser.MiniMessageLexer;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenType;
+import net.kyori.adventure.text.minimessage.transformation.InsertingTransformation;
+import net.kyori.adventure.text.minimessage.transformation.OneTimeTransformation;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
 
@@ -189,6 +191,7 @@ class MiniMessageParser {
   @NonNull static Component parse(final @NonNull List<Token> tokens, final @NonNull TransformationRegistry registry, final @NonNull Map<String, Template.ComponentTemplate> templates) {
     final TextComponent.Builder parent = Component.text();
     ArrayDeque<Transformation> transformations = new ArrayDeque<>();
+    ArrayDeque<OneTimeTransformation> oneTimeTransformations = new ArrayDeque<>();
 
     int i = 0;
     while (i < tokens.size()) {
@@ -213,10 +216,26 @@ class MiniMessageParser {
             Transformation transformation = registry.get(name.value(), inners);
             System.out.println("got start of " + name.value() + " with params " + inners + " -> " + transformation);
             if (transformation == null) {
-              // TODO unknown tag -> turn into string
-              System.out.println("no transformation found");
+              // this isn't a known tag, oh no!
+              // lets take a step back, first, create a string
+              i -= 3 + inners.size();
+              StringBuilder string = new StringBuilder(tokens.get(i).value()).append(name.value()).append(paramOrEnd.value());
+              inners.forEach(t -> string.append(t.value()));
+              string.append(next.value());
+              // insert our string
+              tokens.set(i, new Token(TokenType.STRING, string.toString()));
+              // remove the others
+              for (int c = 0; c < inners.size() + 3; c++) {
+                tokens.remove(i + 1);
+              }
+              System.out.println("no transformation found " + string);
+              continue;
             } else {
-              transformations.addLast(transformation);
+              if (transformation instanceof OneTimeTransformation) {
+                oneTimeTransformations.addLast((OneTimeTransformation) transformation);
+              } else {
+                transformations.addLast(transformation);
+              }
             }
           } else if (paramOrEnd.type() == TokenType.TAG_END) {
             // we finished
@@ -227,7 +246,7 @@ class MiniMessageParser {
               // lets take a step back, first, create a string
               i -= 2;
               String string = tokens.get(i).value() + name.value() + paramOrEnd.value();
-              // set back the counter and insert our string
+              // insert our string
               tokens.set(i, new Token(TokenType.STRING, string));
               // remove the others
               tokens.remove(i + 1);
@@ -235,7 +254,11 @@ class MiniMessageParser {
               System.out.println("no transformation found " + string);
               continue;
             } else {
-              transformations.addLast(transformation);
+              if (transformation instanceof OneTimeTransformation) {
+                oneTimeTransformations.addLast((OneTimeTransformation) transformation);
+              } else {
+                transformations.addLast(transformation);
+              }
             }
           } else {
             throw new ParsingException("Expected tag end or param separator after tag name, but got " + paramOrEnd, -1);
@@ -252,7 +275,21 @@ class MiniMessageParser {
           if (paramOrEnd.type() == TokenType.TAG_END) {
             // we finished, gotta remove name out of the stack
             System.out.println("got end of " + name.value());
-            removeFirst(transformations, t -> t.name().equals(name.value()));
+            if (!registry.exists(name.value())) {
+              // invalid end
+              // lets take a step back, first, create a string
+              i -= 2;
+              String string = tokens.get(i).value() + name.value() + paramOrEnd.value();
+              // insert our string
+              tokens.set(i, new Token(TokenType.STRING, string));
+              // remove the others
+              tokens.remove(i + 1);
+              tokens.remove(i + 1);
+              System.out.println("invalid end " + name.value() + ", string " + string);
+              continue;
+            } else {
+              removeFirst(transformations, t -> t.name().equals(name.value()));
+            }
           } else if (paramOrEnd.type() == TokenType.PARAM_SEPARATOR) {
             // read all params
             List<Token> inners = new ArrayList<>();
@@ -272,6 +309,10 @@ class MiniMessageParser {
           System.out.println("got: " + token.value() + " with transformations " + transformations);
           Component current = Component.text(token.value());
 
+          while (oneTimeTransformations.size() != 0) {
+            oneTimeTransformations.removeLast().applyOneTime(current, parent, transformations);
+          }
+
           for (Transformation transformation : transformations) {
             System.out.println("applying " + transformation);
             current = transformation.apply(current, parent);
@@ -287,6 +328,16 @@ class MiniMessageParser {
           throw new ParsingException("Unexpected token " + token, -1);
       }
       i++;
+    }
+
+    // at last, go thru all transformations that insert something
+    // TODO not sure I like this
+    List<Component> children = parent.asComponent().children();
+    Component last = children.get(children.size() - 1);
+    for (Transformation transformation : transformations) {
+      if(transformation instanceof InsertingTransformation) {
+        transformation.apply(last, parent);
+      }
     }
 
     // optimization, ignore empty parent

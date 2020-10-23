@@ -23,17 +23,19 @@
  */
 package net.kyori.adventure.text.minimessage.transformation;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.examination.ExaminableProperty;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public class KeybindTransformation extends Transformation {
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
+
+public class KeybindTransformation extends InsertingTransformation {
   public static boolean canParse(final String name) {
     return name.equalsIgnoreCase(Tokens.KEYBIND);
   }
