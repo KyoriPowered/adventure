@@ -184,7 +184,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
   }
 
   @Override
-  public void serialize(@NonNull final TypeToken<?> type, @Nullable final Component src, @NonNull final ConfigurationNode value) throws ObjectMappingException {
+  public void serialize(final @NonNull TypeToken<?> type, final @Nullable Component src, final @NonNull ConfigurationNode value) throws ObjectMappingException {
     value.setValue(null);
     if(src == null) {
       return;

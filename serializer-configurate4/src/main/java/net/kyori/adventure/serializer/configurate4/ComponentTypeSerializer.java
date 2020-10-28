@@ -183,7 +183,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
   }
 
   @Override
-  public void serialize(@NonNull final Type type, @Nullable final Component src, @NonNull final ConfigurationNode value) throws SerializationException {
+  public void serialize(final @NonNull Type type, final @Nullable Component src, final @NonNull ConfigurationNode value) throws SerializationException {
     value.set(null);
     if(src == null) {
       return;

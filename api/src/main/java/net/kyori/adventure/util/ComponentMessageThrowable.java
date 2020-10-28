@@ -54,9 +54,8 @@ public interface ComponentMessageThrowable {
    * @return the message
    * @since 4.0.0
    */
-  // CHECKSTYLE:OFF
+  @SuppressWarnings("checkstyle:MethodName")
   static @Nullable Component getOrConvertMessage(final @Nullable Throwable throwable) {
-    // CHECKSTYLE:ON
     if(throwable instanceof ComponentMessageThrowable) {
       return ((ComponentMessageThrowable) throwable).componentMessage();
     } else if(throwable != null) {

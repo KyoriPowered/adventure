@@ -32,7 +32,7 @@ final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
   private @MonotonicNonNull Map<String, BinaryTag> tags;
 
   @Override
-  public CompoundBinaryTag.@NonNull Builder put(final @NonNull String key, @NonNull final BinaryTag tag) {
+  public CompoundBinaryTag.@NonNull Builder put(final @NonNull String key, final @NonNull BinaryTag tag) {
     if(this.tags == null) {
       this.tags = new HashMap<>();
     }

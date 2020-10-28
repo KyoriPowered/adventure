@@ -62,7 +62,7 @@ final class CompoundBinaryTagImpl implements CompoundBinaryTag {
   }
 
   @Override
-  public @NonNull CompoundBinaryTag put(final @NonNull String key, @NonNull final BinaryTag tag) {
+  public @NonNull CompoundBinaryTag put(final @NonNull String key, final @NonNull BinaryTag tag) {
     return this.edit(map -> map.put(key, tag));
   }
 

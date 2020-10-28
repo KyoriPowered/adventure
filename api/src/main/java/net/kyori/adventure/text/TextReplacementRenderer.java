@@ -48,6 +48,8 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
   public @NonNull Component render(final @NonNull Component component, final @NonNull State state) {
     if(!state.running) return component;
 
+    final List<Component> oldChildren = component.children();
+    final int oldChildrenSize = oldChildren.size();
     List<Component> children = null;
     Component modified = component;
     // replace the component itself
@@ -78,12 +80,16 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
             modified = Component.text("", component.style());
             final ComponentLike child = state.replacement.apply(matcher, Component.text().content(matcher.group()));
             if(child != null) {
-              children = listOrNew(children, component.children().size() + 1);
+              if(children == null) {
+                children = new ArrayList<>(oldChildrenSize + 1);
+              }
               children.add(child.asComponent());
             }
           }
         } else {
-          children = listOrNew(children, component.children().size() + 2);
+          if(children == null) {
+            children = new ArrayList<>(oldChildrenSize + 2);
+          }
           if(state.replaceCount == 0) {
             // truncate parent to content before match
             modified = ((TextComponent) component).content(content.substring(0, matcher.start()));
@@ -101,7 +107,9 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
       if(replacedUntil < content.length()) {
         // append trailing content
         if(replacedUntil > 0) {
-          children = listOrNew(children, component.children().size());
+          if(children == null) {
+            children = new ArrayList<>(oldChildrenSize);
+          }
           children.add(Component.text(content.substring(replacedUntil)));
         }
         // otherwise, we haven't modified the component, so nothing to change
@@ -109,12 +117,12 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
     } else if(modified instanceof TranslatableComponent) { // get TranslatableComponent with() args
       final List<Component> args = ((TranslatableComponent) modified).args();
       List<Component> newArgs = null;
-      for(int i = 0; i < args.size(); i++) {
+      for(int i = 0, size = args.size(); i < size; i++) {
         final Component original = args.get(i);
         final Component replaced = this.render(original, state);
         if(replaced != component) {
           if(newArgs == null) {
-            newArgs = new ArrayList<>(args.size());
+            newArgs = new ArrayList<>(size);
             if(i > 0) {
               newArgs.addAll(args.subList(0, i));
             }
@@ -139,13 +147,14 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
         }
       }
       // Children
-      final List<Component> oldChildren = component.children();
       boolean first = true;
-      for(int i = 0, size = oldChildren.size(); i < size; i++) {
+      for(int i = 0; i < oldChildrenSize; i++) {
         final Component child = oldChildren.get(i);
         final Component replaced = this.render(child, state);
         if(replaced != child) {
-          children = listOrNew(children, size);
+          if(children == null) {
+            children = new ArrayList<>(oldChildrenSize);
+          }
           if(first) {
             children.addAll(oldChildren.subList(0, i));
           }
@@ -158,7 +167,7 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
     } else {
       // we're not visiting children, re-add original children if necessary
       if(children != null) {
-        children.addAll(component.children());
+        children.addAll(oldChildren);
       }
     }
 
@@ -167,10 +176,6 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
       return modified.children(children);
     }
     return modified;
-  }
-
-  private static <T> @NonNull List<T> listOrNew(final @Nullable List<T> init, final int size) {
-    return init == null ? new ArrayList<>(size) : init;
   }
 
   static final class State {
