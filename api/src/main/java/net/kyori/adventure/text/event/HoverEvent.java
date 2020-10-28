@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import net.kyori.adventure.text.renderer.ComponentRenderer;
@@ -53,6 +54,17 @@ import static java.util.Objects.requireNonNull;
  * @since 4.0.0
  */
 public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, StyleBuilderApplicable {
+  /**
+   * Creates a hover event that shows text on hover.
+   *
+   * @param text the text to show on hover
+   * @return a hover event
+   * @since 4.2.0
+   */
+  public static @NonNull HoverEvent<Component> showText(final @NonNull ComponentLike text) {
+    return showText(text.asComponent());
+  }
+
   /**
    * Creates a hover event that shows text on hover.
    *
@@ -101,7 +113,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
   }
 
   /**
-   * Creates.
+   * Creates a hover event that show information about an entity on hover.
    *
    * @param type the type
    * @param id the id
@@ -113,7 +125,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
   }
 
   /**
-   * Creates.
+   * Creates a hover event that show information about an entity on hover.
    *
    * @param type the type
    * @param id the id
@@ -126,7 +138,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
   }
 
   /**
-   * Creates a hover event that shows an entity on hover.
+   * Creates a hover event that show information about an entity on hover.
    *
    * @param entity the entity to show on hover
    * @return a hover event

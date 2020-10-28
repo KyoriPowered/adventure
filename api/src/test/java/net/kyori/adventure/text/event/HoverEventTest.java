@@ -99,6 +99,7 @@ class HoverEventTest {
     final UUID entity = UUID.randomUUID();
     new EqualsTester()
       .addEqualityGroup(
+        HoverEvent.showText(Component::empty), // ComponentLike
         HoverEvent.showText(Component.empty()),
         HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.empty())
       )
