@@ -26,6 +26,7 @@ package net.kyori.adventure.text.serializer.gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
@@ -59,7 +60,7 @@ final class ShowItemSerializer implements JsonDeserializer<HoverEvent.ShowItem>,
     }
 
     BinaryTagHolder nbt = null;
-    if(object.has(TAG)) {
+    if(object.has(TAG) && !(object.get(TAG) instanceof JsonNull)) {
       nbt = BinaryTagHolder.of(object.get(TAG).getAsString());
     }
 
