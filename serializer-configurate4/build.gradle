@@ -4,10 +4,6 @@ dependencies {
   testImplementation(project(":adventure-text-serializer-gson"))
 }
 
-repositories {
-  sonatypeSnapshots()
-}
-
 jar {
   manifest.attributes(
     "Automatic-Module-Name": "net.kyori.adventure.serializer.configurate4"

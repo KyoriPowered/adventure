@@ -70,9 +70,7 @@ subprojects {
   repositories {
     mavenLocal()
     mavenCentral()
-    maven {
-      url "https://oss.sonatype.org/content/groups/public/"
-    }
+    sonatypeSnapshots()
   }
 
   dependencies {
