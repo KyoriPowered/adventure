@@ -138,7 +138,7 @@ class LegacyComponentSerializerTest {
           )
           .build())
       .build();
-    assertEquals("§e§lHello §a§lworld§e§l!", LegacyComponentSerializer.legacySection().serialize(c3));
+    assertEquals("§e§lHello §a§lworld§r§e§l!§r", LegacyComponentSerializer.legacySection().serialize(c3));
   }
 
   @Test
