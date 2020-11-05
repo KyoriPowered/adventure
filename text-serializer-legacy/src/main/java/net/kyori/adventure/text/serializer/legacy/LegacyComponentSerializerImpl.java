@@ -293,6 +293,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   private final class Cereal {
     private final StringBuilder sb = new StringBuilder();
     private final Style style = new Style();
+    private @Nullable TextFormat format;
 
     void append(final @NonNull Component component) {
       this.append(component, new Style());
@@ -317,10 +318,17 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
           childrenStyle.set(style);
         }
       }
+
+      if(!style.noColorOrDecorations()) {
+        this.append(Reset.INSTANCE);
+      }
     }
 
     void append(final @NonNull TextFormat format) {
-      this.sb.append(LegacyComponentSerializerImpl.this.character).append(LegacyComponentSerializerImpl.this.toLegacyCode(format));
+      if(this.format != format) {
+        this.sb.append(LegacyComponentSerializerImpl.this.character).append(LegacyComponentSerializerImpl.this.toLegacyCode(format));
+      }
+      this.format = format;
     }
 
     @Override
@@ -339,6 +347,10 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       Style(final @NonNull Style that) {
         this.color = that.color;
         this.decorations = EnumSet.copyOf(that.decorations);
+      }
+
+      boolean noColorOrDecorations() {
+        return this.color == null || this.decorations.isEmpty();
       }
 
       void set(final @NonNull Style that) {
