@@ -28,7 +28,6 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
@@ -60,8 +59,13 @@ final class ShowItemSerializer implements JsonDeserializer<HoverEvent.ShowItem>,
     }
 
     BinaryTagHolder nbt = null;
-    if(object.has(TAG) && object.get(TAG) instanceof JsonPrimitive) {
-      nbt = BinaryTagHolder.of(object.get(TAG).getAsString());
+    if(object.has(TAG)) {
+      final JsonElement tag = object.get(TAG);
+      if(tag.isJsonPrimitive()) {
+        nbt = BinaryTagHolder.of(tag.getAsString());
+      } else if(!tag.isJsonNull()) {
+        throw new JsonParseException("Expected " + TAG + " to be a string");
+      }
     }
 
     return HoverEvent.ShowItem.of(id, count, nbt);

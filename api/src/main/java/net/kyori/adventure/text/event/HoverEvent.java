@@ -391,6 +391,11 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
         ExaminableProperty.of("nbt", this.nbt)
       );
     }
+
+    @Override
+    public String toString() {
+      return this.examine(StringExaminer.simpleEscaping());
+    }
   }
 
   /**
@@ -523,6 +528,11 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
         ExaminableProperty.of("id", this.id),
         ExaminableProperty.of("name", this.name)
       );
+    }
+
+    @Override
+    public String toString() {
+      return this.examine(StringExaminer.simpleEscaping());
     }
   }
 
