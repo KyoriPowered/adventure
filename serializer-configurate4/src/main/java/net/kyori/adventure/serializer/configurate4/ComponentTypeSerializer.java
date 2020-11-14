@@ -43,7 +43,6 @@ import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import org.spongepowered.configurate.ConfigurationNode;
-import org.spongepowered.configurate.ConfigurationOptions;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -257,10 +256,5 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
 
   private static SerializationException notSureHowToSerialize(final Component component) {
     return new SerializationException("Don't know how to serialize " + component + " as a Component");
-  }
-
-  @Override
-  public Component emptyValue(final Type specificType, final ConfigurationOptions options) {
-    return Component.empty();
   }
 }
