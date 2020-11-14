@@ -70,7 +70,6 @@ subprojects {
   repositories {
     mavenLocal()
     mavenCentral()
-    sonatypeSnapshots()
   }
 
   dependencies {
