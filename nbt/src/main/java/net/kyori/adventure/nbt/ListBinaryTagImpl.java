@@ -38,11 +38,11 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class ListBinaryTagImpl implements ListBinaryTag {
   static final ListBinaryTag EMPTY = new ListBinaryTagImpl(BinaryTagTypes.END, Collections.emptyList());
-  private final List<? extends BinaryTag> tags;
+  private final List<BinaryTag> tags;
   private final BinaryTagType<? extends BinaryTag> type;
   private final int hashCode;
 
-  ListBinaryTagImpl(final BinaryTagType<? extends BinaryTag> type, final List<? extends BinaryTag> tags) {
+  ListBinaryTagImpl(final BinaryTagType<? extends BinaryTag> type, final List<BinaryTag> tags) {
     this.tags = tags;
     this.type = type;
     this.hashCode = tags.hashCode();
@@ -120,8 +120,13 @@ final class ListBinaryTagImpl implements ListBinaryTag {
   }
 
   @Override
+  public @NonNull Stream<BinaryTag> stream() {
+    return this.tags.stream();
+  }
+
+  @Override
   public Iterator<BinaryTag> iterator() {
-    final Iterator<? extends BinaryTag> iterator = this.tags.iterator();
+    final Iterator<BinaryTag> iterator = this.tags.iterator();
     return new Iterator<BinaryTag>() {
       @Override
       public boolean hasNext() {

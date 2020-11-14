@@ -26,52 +26,11 @@ package net.kyori.adventure.nbt;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * A binary tag holding a {@code byte}-array value.
+ * An array binary tag.
  *
- * @since 4.0.0
+ * @since 4.2.0
  */
-public interface ByteArrayBinaryTag extends ArrayBinaryTag, Iterable<Byte> {
-  /**
-   * Creates a binary tag holding a {@code byte}-array value.
-   *
-   * @param value the value
-   * @return a binary tag
-   * @since 4.0.0
-   */
-  static @NonNull ByteArrayBinaryTag of(final byte@NonNull... value) {
-    return new ByteArrayBinaryTagImpl(value);
-  }
-
+public interface ArrayBinaryTag extends BinaryTag {
   @Override
-  default @NonNull BinaryTagType<ByteArrayBinaryTag> type() {
-    return BinaryTagTypes.BYTE_ARRAY;
-  }
-
-  /**
-   * Gets the value.
-   *
-   * <p>The returned array is a copy.</p>
-   *
-   * @return the value
-   * @since 4.0.0
-   */
-  byte@NonNull[] value();
-
-  /**
-   * Get the size of the array.
-   *
-   * @return array size
-   * @since 4.2.0
-   */
-  int size();
-
-  /**
-   * Gets the value at {@code index} in this tag.
-   *
-   * @param index the index in the array
-   * @return the byte at the index in the array
-   * @throws IndexOutOfBoundsException if index is &lt; 0 or &ge; {@link #size()}
-   * @since 4.2.0
-   */
-  byte get(final int index);
+  @NonNull BinaryTagType<? extends ArrayBinaryTag> type();
 }
