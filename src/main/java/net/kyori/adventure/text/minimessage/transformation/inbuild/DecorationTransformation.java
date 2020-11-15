@@ -21,9 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.transformation;
+package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
-import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -33,6 +32,8 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
+import net.kyori.adventure.text.minimessage.transformation.Transformation;
+import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -80,7 +81,7 @@ public class DecorationTransformation extends Transformation {
     return Objects.hash(this.decoration);
   }
 
-  static class Parser implements TransformationParser<DecorationTransformation> {
+  public static class Parser implements TransformationParser<DecorationTransformation> {
     @Override
     public DecorationTransformation parse() {
       return new DecorationTransformation();

@@ -23,6 +23,6 @@
  */
 package net.kyori.adventure.text.minimessage.transformation;
 
-interface TransformationParser<T extends Transformation> {
+public interface TransformationParser<T extends Transformation> {
   T parse();
 }

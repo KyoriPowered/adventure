@@ -1,8 +1,11 @@
-package net.kyori.adventure.text.minimessage.transformation;
+package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.Tokens;
+import net.kyori.adventure.text.minimessage.transformation.OneTimeTransformation;
+import net.kyori.adventure.text.minimessage.transformation.Transformation;
+import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -38,7 +41,7 @@ public class ResetTransformation extends OneTimeTransformation {
         return 0;
     }
 
-    static class Parser implements TransformationParser<ResetTransformation> {
+    public static class Parser implements TransformationParser<ResetTransformation> {
         @Override
         public ResetTransformation parse() {
             return new ResetTransformation();

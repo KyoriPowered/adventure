@@ -21,30 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.transformation;
+package net.kyori.adventure.text.minimessage.transformation.inbuild;
+
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.minimessage.Tokens;
+import net.kyori.adventure.text.minimessage.parser.Token;
+import net.kyori.adventure.text.minimessage.transformation.Inserting;
+import net.kyori.adventure.text.minimessage.transformation.OneTimeTransformation;
+import net.kyori.adventure.text.minimessage.transformation.Transformation;
+import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
+import net.kyori.examination.ExaminableProperty;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.minimessage.Tokens;
-import net.kyori.adventure.text.minimessage.parser.ParsingException;
-import net.kyori.adventure.text.minimessage.parser.Token;
-import net.kyori.adventure.text.minimessage.parser.TokenType;
-import net.kyori.examination.ExaminableProperty;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
-public class FontTransformation extends Transformation {
+public class KeybindTransformation extends OneTimeTransformation implements Inserting {
   public static boolean canParse(final String name) {
-    return name.equalsIgnoreCase(Tokens.FONT);
+    return name.equalsIgnoreCase(Tokens.KEYBIND);
   }
 
-  private Key font;
+  private String keybind;
 
-  private FontTransformation() {
+  private KeybindTransformation() {
   }
 
   @Override
@@ -52,43 +55,37 @@ public class FontTransformation extends Transformation {
     super.load(name, args);
 
     if(Token.oneString(args)) {
-      this.font = Key.key(args.get(0).value());
+      this.keybind = args.get(0).value();
     }
-
-    if(args.size() != 3 || args.get(0).type() != TokenType.STRING || args.get(2).type() != TokenType.STRING) {
-      throw new ParsingException("Doesn't know how to turn " + args + " into a click event", -1);
-    }
-
-    this.font = Key.key(args.get(0).value(), args.get(2).value());
   }
 
   @Override
-  public Component apply(final Component component, final TextComponent.Builder parent) {
-    return component.style(component.style().font(this.font));
+  public void applyOneTime(Component current, TextComponent.Builder parent, ArrayDeque<Transformation> transformations) {
+    parent.append(Component.keybind(this.keybind).mergeStyle(current));
   }
 
   @Override
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(ExaminableProperty.of("font", this.font));
+    return Stream.of(ExaminableProperty.of("keybind", this.keybind));
   }
 
   @Override
   public boolean equals(final Object other) {
     if(this == other) return true;
     if(other == null || this.getClass() != other.getClass()) return false;
-    final FontTransformation that = (FontTransformation) other;
-    return Objects.equals(this.font, that.font);
+    final KeybindTransformation that = (KeybindTransformation) other;
+    return Objects.equals(this.keybind, that.keybind);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.font);
+    return Objects.hash(this.keybind);
   }
 
-  static class Parser implements TransformationParser<FontTransformation> {
+  public static class Parser implements TransformationParser<KeybindTransformation> {
     @Override
-    public FontTransformation parse() {
-      return new FontTransformation();
+    public KeybindTransformation parse() {
+      return new KeybindTransformation();
     }
   }
 }

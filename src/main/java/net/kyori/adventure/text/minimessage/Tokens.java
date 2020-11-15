@@ -29,6 +29,7 @@ public class Tokens {
   public static final String HOVER = "hover";
   public static final String KEYBIND = "key";
   public static final String TRANSLATABLE = "lang";
+  public static final String TRANSLATABLE_2 = "translate";
   public static final String INSERTION = "insert";
   public static final String COLOR = "color";
   public static final String HEX = "#";

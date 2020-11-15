@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.transformation;
+package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -31,11 +31,12 @@ import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenType;
+import net.kyori.adventure.text.minimessage.transformation.Transformation;
+import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -94,7 +95,7 @@ public class HoverTransformation extends Transformation {
     return Objects.hash(action, value);
   }
 
-  static class Parser implements TransformationParser<HoverTransformation> {
+  public static class Parser implements TransformationParser<HoverTransformation> {
     @Override
     public HoverTransformation parse() {
       return new HoverTransformation();

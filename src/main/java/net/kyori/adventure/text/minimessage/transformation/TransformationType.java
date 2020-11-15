@@ -23,6 +23,18 @@
  */
 package net.kyori.adventure.text.minimessage.transformation;
 
+import net.kyori.adventure.text.minimessage.transformation.inbuild.ClickTransformation;
+import net.kyori.adventure.text.minimessage.transformation.inbuild.ColorTransformation;
+import net.kyori.adventure.text.minimessage.transformation.inbuild.DecorationTransformation;
+import net.kyori.adventure.text.minimessage.transformation.inbuild.FontTransformation;
+import net.kyori.adventure.text.minimessage.transformation.inbuild.GradientTransformation;
+import net.kyori.adventure.text.minimessage.transformation.inbuild.HoverTransformation;
+import net.kyori.adventure.text.minimessage.transformation.inbuild.InsertionTransformation;
+import net.kyori.adventure.text.minimessage.transformation.inbuild.KeybindTransformation;
+import net.kyori.adventure.text.minimessage.transformation.inbuild.RainbowTransformation;
+import net.kyori.adventure.text.minimessage.transformation.inbuild.ResetTransformation;
+import net.kyori.adventure.text.minimessage.transformation.inbuild.TranslatableTransformation;
+
 import java.util.function.Predicate;
 
 final class TransformationType<T extends Transformation> {

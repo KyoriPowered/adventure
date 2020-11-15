@@ -84,6 +84,7 @@ identifier = [a-zA-Z0-9_\-#\./ ]
 paramSeperator = :
 
 quote = '|\"
+escapedQuote = \\'|\\\"
 
 %%
 
@@ -109,6 +110,7 @@ quote = '|\"
 }
 
 <QUOTED> {
+  {escapedQuote}          { string.append(yytext().substring(1)); }
   {quote}                 { yybegin(PARAM); tokens.add(new Token(getString())); tokens.add(new Token(TokenType.QUOTE_END)); }
   [^]                     { string.append(yytext()); }
 }

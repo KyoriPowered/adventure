@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.transformation;
+package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -30,26 +30,31 @@ import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenType;
+import net.kyori.adventure.text.minimessage.transformation.Inserting;
+import net.kyori.adventure.text.minimessage.transformation.OneTimeTransformation;
+import net.kyori.adventure.text.minimessage.transformation.Transformation;
+import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-public class TranslatableTransformation extends InsertingTransformation {
+public class TranslatableTransformation extends OneTimeTransformation implements Inserting {
 
   private static final Pattern dumSplitPattern = Pattern.compile("['\"]:['\"]");
 
   public static boolean canParse(final String name) {
-    return name.equalsIgnoreCase(Tokens.TRANSLATABLE);
+    return name.equalsIgnoreCase(Tokens.TRANSLATABLE) || name.equalsIgnoreCase(Tokens.TRANSLATABLE_2);
   }
 
   private String key;
-  private List<Component> inners = new ArrayList<>();
+  private final List<Component> inners = new ArrayList<>();
 
   @Override
   public void load(String name, List<Token> args) {
@@ -72,13 +77,12 @@ public class TranslatableTransformation extends InsertingTransformation {
   }
 
   @Override
-  public Component apply(final Component component, final TextComponent.Builder parent) {
-    if (inners.size() > 0) {
-      parent.append(Component.translatable(key, inners).mergeStyle(component));
+  public void applyOneTime(Component current, TextComponent.Builder parent, ArrayDeque<Transformation> transformations) {
+    if (!inners.isEmpty()) {
+      parent.append(Component.translatable(key, inners).mergeStyle(current));
     } else {
-      parent.append(Component.translatable(key).mergeStyle(component));
+      parent.append(Component.translatable(key).mergeStyle(current));
     }
-    return component;
   }
 
   @Override
@@ -102,7 +106,7 @@ public class TranslatableTransformation extends InsertingTransformation {
     return Objects.hash(key, inners);
   }
 
-  static class Parser implements TransformationParser<TranslatableTransformation> {
+  public static class Parser implements TransformationParser<TranslatableTransformation> {
     @Override
     public TranslatableTransformation parse() {
       return new TranslatableTransformation();

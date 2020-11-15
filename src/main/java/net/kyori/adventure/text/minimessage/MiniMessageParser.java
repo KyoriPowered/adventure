@@ -29,7 +29,7 @@ import net.kyori.adventure.text.minimessage.parser.MiniMessageLexer;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenType;
-import net.kyori.adventure.text.minimessage.transformation.InsertingTransformation;
+import net.kyori.adventure.text.minimessage.transformation.Inserting;
 import net.kyori.adventure.text.minimessage.transformation.OneTimeTransformation;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
@@ -309,13 +309,13 @@ class MiniMessageParser {
           System.out.println("got: " + token.value() + " with transformations " + transformations);
           Component current = Component.text(token.value());
 
-          while (oneTimeTransformations.size() != 0) {
-            oneTimeTransformations.removeLast().applyOneTime(current, parent, transformations);
-          }
-
           for (Transformation transformation : transformations) {
             System.out.println("applying " + transformation);
             current = transformation.apply(current, parent);
+          }
+
+          while (!oneTimeTransformations.isEmpty()) {
+            oneTimeTransformations.removeLast().applyOneTime(current, parent, transformations);
           }
 
           parent.append(current);
@@ -335,9 +335,12 @@ class MiniMessageParser {
     List<Component> children = parent.asComponent().children();
     Component last = children.get(children.size() - 1);
     for (Transformation transformation : transformations) {
-      if(transformation instanceof InsertingTransformation) {
+      if(transformation instanceof Inserting) {
         transformation.apply(last, parent);
       }
+    }
+    while (!oneTimeTransformations.isEmpty()) {
+      oneTimeTransformations.removeLast().applyOneTime(last, parent, transformations);
     }
 
     // optimization, ignore empty parent

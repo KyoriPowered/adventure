@@ -21,85 +21,75 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.transformation;
+package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
-import java.util.ArrayDeque;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Stream;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
+import net.kyori.adventure.text.minimessage.parser.TokenType;
+import net.kyori.adventure.text.minimessage.transformation.Transformation;
+import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public class ColorTransformation extends Transformation {
+public class FontTransformation extends Transformation {
   public static boolean canParse(final String name) {
-    return name.equalsIgnoreCase(Tokens.COLOR)
-      || TextColor.fromHexString(name) != null
-      || NamedTextColor.NAMES.value(name.toLowerCase(Locale.ROOT)) != null;
+    return name.equalsIgnoreCase(Tokens.FONT);
   }
 
-  private TextColor color;
+  private Key font;
 
-  private ColorTransformation() {
+  private FontTransformation() {
   }
 
   @Override
-  public void load(String name, final List<Token> args) {
+  public void load(final String name, final List<Token> args) {
     super.load(name, args);
 
-    if(name.equalsIgnoreCase(Tokens.COLOR)) {
-      if(Token.oneString(args)) {
-        name = args.get(0).value();
-      } else {
-        throw new ParsingException("Expected to find a color parameter, but found " + args, -1);
-      }
+    if(Token.oneString(args)) {
+      this.font = Key.key(args.get(0).value());
     }
 
-    if(name.charAt(0) == '#') {
-      this.color = TextColor.fromHexString(name);
-    } else {
-      this.color = NamedTextColor.NAMES.value(name.toLowerCase(Locale.ROOT));
+    if(args.size() != 3 || args.get(0).type() != TokenType.STRING || args.get(2).type() != TokenType.STRING) {
+      throw new ParsingException("Doesn't know how to turn " + args + " into a click event", -1);
     }
 
-    if(this.color == null) {
-      throw new ParsingException("Don't know how to turn '" + name + "' into a color", -1);
-    }
+    this.font = Key.key(args.get(0).value(), args.get(2).value());
   }
 
   @Override
   public Component apply(final Component component, final TextComponent.Builder parent) {
-    return component.color(this.color);
+    return component.style(component.style().font(this.font));
   }
 
   @Override
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(ExaminableProperty.of("color", this.color));
+    return Stream.of(ExaminableProperty.of("font", this.font));
   }
 
   @Override
   public boolean equals(final Object other) {
     if(this == other) return true;
     if(other == null || this.getClass() != other.getClass()) return false;
-    final ColorTransformation that = (ColorTransformation) other;
-    return Objects.equals(this.color, that.color);
+    final FontTransformation that = (FontTransformation) other;
+    return Objects.equals(this.font, that.font);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.color);
+    return Objects.hash(this.font);
   }
 
-  static class Parser implements TransformationParser<ColorTransformation> {
+  public static class Parser implements TransformationParser<FontTransformation> {
     @Override
-    public ColorTransformation parse() {
-      return new ColorTransformation();
+    public FontTransformation parse() {
+      return new FontTransformation();
     }
   }
 }

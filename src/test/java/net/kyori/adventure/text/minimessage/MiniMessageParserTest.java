@@ -264,10 +264,9 @@ public class MiniMessageParserTest {
   }
 
   @Test
-  @Disabled("Need to implement inner with ' or \"")  // TODO
   public void testTranslatableWithHover() {
-    final String input = "Test: <lang:commands.drop.success.single:'<red>1<hover:show_text:'<red>dum'>':'<blue>Stone'>!";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Test: \"},{\"translate\":\"commands.drop.success.single\",\"with\":[{\"text\":\"1\",\"color\":\"red\"},{\"text\":\"Stone\",\"color\":\"blue\"}]},{\"text\":\"!\"}]}";
+    final String input = "Test: <lang:commands.drop.success.single:'<hover:show_text:\\'<red>dum\\'><red>1':'<blue>Stone'>!";
+    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Test: \"},{\"translate\":\"commands.drop.success.single\",\"with\":[{\"text\":\"1\",\"color\":\"red\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"dum\",\"color\":\"red\"}}},{\"text\":\"Stone\",\"color\":\"blue\"}]},{\"text\":\"!\"}]}";
     final Component comp = MiniMessageParser.parseFormat(input);
 
     test(comp, expected);
@@ -296,26 +295,19 @@ public class MiniMessageParserTest {
     final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:<pack_url>><hover:show_text:\"<green>/!\\ install it from Options/ResourcePacks in your game\"><green><bold>CLICK HERE</bold></hover></click>";
     final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"»\",\"color\":\"dark_gray\"},{\"text\":\" To download it from the internet, \",\"color\":\"gray\"},{\"text\":\"CLICK HERE\",\"color\":\"green\",\"bold\":true,\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://www.google.com\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"/!\\\\ install it from Options/ResourcePacks in your game\",\"color\":\"green\"}}}]}";
 
-    // should work
     final Component comp1 = MiniMessageParser.parseFormat(input, "pack_url", "https://www.google.com");
     test(comp1, expected);
-
-    // shouldnt throw an error
-    MiniMessageParser.parseFormat(input, "url", "https://www.google.com");
   }
 
   @Test
-  @Disabled("Need to implement inner with ' or \"")  // TODO
+//  @Disabled("Need to implement inner with ' or \"")  // TODO
   public void testGH5Modified() {
-    final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:<pack_url>><hover:show_text:\"<green>/!\\ install it from 'Options/ResourcePacks' in your game\"><green><bold>CLICK HERE</bold></hover></click>";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"»\",\"color\":\"dark_gray\"},{\"text\":\" To download it from the internet, \",\"color\":\"gray\"},{\"text\":\"CLICK HERE\",\"color\":\"green\",\"bold\":true,\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://www.google.com\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"/!\\\\ install it from 'Options/ResourcePacks' in your game\",\"color\":\"green\"}}}]}";
+    final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:<pack_url>><hover:show_text:'<green>/!\\ install it from \\'Options/ResourcePacks\\' in your game'><green><bold>CLICK HERE</bold></hover></click>";
+    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"»\",\"color\":\"dark_gray\"},{\"text\":\" To download it from the internet, \",\"color\":\"gray\"},{\"text\":\"CLICK HERE\",\"color\":\"green\",\"bold\":true,\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://www.google.com\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"/!\\\\ install it from \\u0027Options/ResourcePacks\\u0027 in your game\",\"color\":\"green\"}}}]}";
 
     // should work
     final Component comp1 = MiniMessageParser.parseFormat(input, "pack_url", "https://www.google.com");
     test(comp1, expected);
-
-    // shouldnt throw an error
-    MiniMessageParser.parseFormat(input, "url", "https://www.google.com");
   }
 
   @Test
