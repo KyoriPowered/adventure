@@ -24,6 +24,8 @@
 package net.kyori.adventure.text.minimessage;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -31,6 +33,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class MiniMessageParserTest {
 
@@ -444,6 +447,21 @@ public class MiniMessageParserTest {
     final Component comp = parser.parseFormat(input);
 
     test(comp, expected);
+  }
+
+  @Test
+  public void testNonBmpCharactersInGradient() {
+    assertFalse(Character.isBmpCodePoint("𐌰".codePointAt(0)));
+
+    final String input = "Something <gradient:green:blue:3>𐌰𐌱𐌲</gradient>";
+    final Component expected = Component.text()
+            .append(Component.text("Something "))
+            .append(Component.text("𐌰", TextColor.color(0x5599bb)))
+            .append(Component.text("𐌱", TextColor.color(0x5577dd)))
+            .append(Component.text("𐌲", NamedTextColor.BLUE))
+            .build();
+
+    assertEquals(parser.parseFormat(input), expected);
   }
 
   private void test(final @NonNull String input, final @NonNull String expected) {

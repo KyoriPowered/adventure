@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.PrimitiveIterator;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -104,8 +105,11 @@ public class GradientTransformation extends OneTimeTransformation implements Ins
       this.index = 0;
 
       // apply
-      for (char c : content.toCharArray()) {
-        Component comp = Component.text(c);
+      int charSize;
+      final char[] holder = new char[2];
+      for (PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
+        charSize = Character.toChars(it.nextInt(), holder, 0);
+        Component comp = Component.text(new String(holder, 0, charSize));
         comp = merge(comp, current);
         comp = comp.color(getColor());
         parent.append(comp);
