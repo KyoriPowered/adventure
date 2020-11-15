@@ -40,7 +40,7 @@ import java.io.IOException;
 %final
 %unicode
 %ignorecase
-//%debug
+%debug
 %line
 %column
 
@@ -102,6 +102,10 @@ openTagStart = <
 closeTagStart = <\/
 tagEnd = >
 
+escapedOpenTagStart = \\<
+escapedCloseTagStart = \\<\/
+escapedTagEnd = \\>
+
 identifier = [a-zA-Z0-9_\-#\./ ]
 
 paramSeperator = :
@@ -112,6 +116,8 @@ escapedQuote = \\'|\\\"
 %%
 
 <YYINITIAL> {
+  {escapedOpenTagStart}   { string.setLength(0); string.append("<"); yybegin(STRING); }
+  {escapedCloseTagStart}  { string.setLength(0); string.append("</"); yybegin(STRING); }
   {openTagStart}          { yybegin(TAG); string.setLength(0); tokens.add(new Token(TokenType.OPEN_TAG_START)); }
   {closeTagStart}         { yybegin(TAG); string.setLength(0); tokens.add(new Token(TokenType.CLOSE_TAG_START)); }
   [^]                     { string.setLength(0); string.append(yytext()); yybegin(STRING); }
@@ -139,6 +145,9 @@ escapedQuote = \\'|\\\"
 }
 
 <STRING> {
+  {escapedOpenTagStart}   { string.append("<"); }
+  {escapedCloseTagStart}  { string.append("</"); }
+  {escapedTagEnd}         { string.append(">"); }
   {tagEnd}                { yybegin(YYINITIAL); tokens.add(new Token(getString())); tokens.add(new Token(TokenType.TAG_END)); }
   {closeTagStart}         { yybegin(TAG); tokens.add(new Token(getString())); tokens.add(new Token(TokenType.CLOSE_TAG_START)); }
   {openTagStart}          { yybegin(TAG); tokens.add(new Token(getString())); tokens.add(new Token(TokenType.OPEN_TAG_START)); }
