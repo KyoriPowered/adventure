@@ -1,9 +1,8 @@
 package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.minimessage.transformation.InstantApplyTransformation;
 import net.kyori.adventure.text.minimessage.Tokens;
-import net.kyori.adventure.text.minimessage.transformation.OneTimeTransformation;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
@@ -13,7 +12,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.ArrayDeque;
 import java.util.stream.Stream;
 
-public class ResetTransformation extends OneTimeTransformation {
+public class ResetTransformation extends InstantApplyTransformation {
     public static boolean canParse(final String name) {
         return name.equalsIgnoreCase(Tokens.RESET);
     }
@@ -22,9 +21,8 @@ public class ResetTransformation extends OneTimeTransformation {
     }
 
     @Override
-    public Component applyOneTime(Component current, TextComponent.Builder parent, ArrayDeque<Transformation> transformations) {
+    public void applyInstant(TextComponent.Builder parent, ArrayDeque<Transformation> transformations) {
         transformations.clear();
-        return current;
     }
 
     @Override

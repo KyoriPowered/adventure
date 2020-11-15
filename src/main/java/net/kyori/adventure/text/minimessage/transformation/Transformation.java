@@ -56,4 +56,19 @@ public abstract class Transformation implements Examinable {
 
   @Override
   public abstract int hashCode();
+
+  protected Component merge(Component target, Component template) {
+    Component result = target.mergeStyle(template);
+    if (template.hoverEvent() != null) {
+      result = result.hoverEvent(template.hoverEvent());
+    }
+    if (template.clickEvent() != null) {
+      result = result.clickEvent(template.clickEvent());
+    }
+    if (template.insertion() != null) {
+      result = result.insertion(template.insertion());
+    }
+
+    return result;
+  }
 }

@@ -43,6 +43,7 @@ public final class TransformationRegistry {
     this.register(TransformationType.GRADIENT);
     this.register(TransformationType.RAINBOW);
     this.register(TransformationType.RESET);
+    this.register(TransformationType.PRE);
   }
 
   private <T extends Transformation> void register(final TransformationType<T> type) {

@@ -31,6 +31,7 @@ import net.kyori.adventure.text.minimessage.transformation.inbuild.GradientTrans
 import net.kyori.adventure.text.minimessage.transformation.inbuild.HoverTransformation;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.InsertionTransformation;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.KeybindTransformation;
+import net.kyori.adventure.text.minimessage.transformation.inbuild.PreTransformation;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.RainbowTransformation;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.ResetTransformation;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.TranslatableTransformation;
@@ -49,6 +50,7 @@ final class TransformationType<T extends Transformation> {
   public static final TransformationType<GradientTransformation> GRADIENT = new TransformationType<>(GradientTransformation::canParse, new GradientTransformation.Parser());
   public static final TransformationType<RainbowTransformation> RAINBOW = new TransformationType<>(RainbowTransformation::canParse, new RainbowTransformation.Parser());
   public static final TransformationType<ResetTransformation> RESET = new TransformationType<>(ResetTransformation::canParse, new ResetTransformation.Parser());
+  public static final TransformationType<PreTransformation> PRE = new TransformationType<>(PreTransformation::canParse, new PreTransformation.Parser());
 
   final Predicate<String> canParse;
   final TransformationParser<T> parser;

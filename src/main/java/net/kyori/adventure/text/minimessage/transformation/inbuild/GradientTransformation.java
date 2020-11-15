@@ -105,7 +105,9 @@ public class GradientTransformation extends OneTimeTransformation implements Ins
 
       // apply
       for (char c : content.toCharArray()) {
-        TextComponent comp = Component.text(c, getColor());
+        Component comp = Component.text(c);
+        comp = merge(comp, current);
+        comp = comp.color(getColor());
         parent.append(comp);
       }
 

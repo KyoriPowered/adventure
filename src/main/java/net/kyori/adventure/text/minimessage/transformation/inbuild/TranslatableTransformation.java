@@ -79,9 +79,9 @@ public class TranslatableTransformation extends OneTimeTransformation implements
   @Override
   public Component applyOneTime(Component current, TextComponent.Builder parent, ArrayDeque<Transformation> transformations) {
     if (!inners.isEmpty()) {
-      parent.append(Component.translatable(key, inners).mergeStyle(current));
+      parent.append(merge(Component.translatable(key, inners), current));
     } else {
-      parent.append(Component.translatable(key).mergeStyle(current));
+      parent.append(merge(Component.translatable(key), current));
     }
     return current;
   }

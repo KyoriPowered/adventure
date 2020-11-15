@@ -82,7 +82,9 @@ public class RainbowTransformation extends OneTimeTransformation implements Inse
 
       // apply
       for (char c : content.toCharArray()) {
-        TextComponent comp = Component.text(c, getColor(phase));
+        Component comp = Component.text(c);
+        comp = merge(comp, current);
+        comp = comp.color(getColor(phase));
         parent.append(comp);
       }
 

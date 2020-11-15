@@ -30,9 +30,11 @@ import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenType;
 import net.kyori.adventure.text.minimessage.transformation.Inserting;
+import net.kyori.adventure.text.minimessage.transformation.InstantApplyTransformation;
 import net.kyori.adventure.text.minimessage.transformation.OneTimeTransformation;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
+import net.kyori.adventure.text.minimessage.transformation.inbuild.PreTransformation;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -60,8 +62,6 @@ class MiniMessageParser {
   private static final String END = "end";
   // https://regex101.com/r/8VZ7uA/10
   private static final Pattern pattern = Pattern.compile("((?<start><)(?<token>[^<>]+(:(?<inner>['\"]?([^'\"](\\\\['\"])?)+['\"]?))*)(?<end>>))+?");
-
-  private static final Pattern dumSplitPattern = Pattern.compile("['\"]:['\"]");
 
   static @NonNull String escapeTokens(final @NonNull String richMessage) {
     final StringBuilder sb = new StringBuilder();
@@ -192,6 +192,7 @@ class MiniMessageParser {
     final TextComponent.Builder parent = Component.text();
     ArrayDeque<Transformation> transformations = new ArrayDeque<>();
     ArrayDeque<OneTimeTransformation> oneTimeTransformations = new ArrayDeque<>();
+    boolean preActive = false;
 
     int i = 0;
     while (i < tokens.size()) {
@@ -215,7 +216,7 @@ class MiniMessageParser {
 
             Transformation transformation = registry.get(name.value(), inners);
             System.out.println("got start of " + name.value() + " with params " + inners + " -> " + transformation);
-            if (transformation == null) {
+            if (transformation == null || preActive) {
               // this isn't a known tag, oh no!
               // lets take a step back, first, create a string
               i -= 3 + inners.size();
@@ -231,9 +232,14 @@ class MiniMessageParser {
               System.out.println("no transformation found " + string);
               continue;
             } else {
-              if (transformation instanceof OneTimeTransformation) {
+              if (transformation instanceof InstantApplyTransformation) {
+                ((InstantApplyTransformation) transformation).applyInstant(parent, transformations);
+              } else if (transformation instanceof OneTimeTransformation) {
                 oneTimeTransformations.addLast((OneTimeTransformation) transformation);
               } else {
+                if (transformation instanceof PreTransformation) {
+                  preActive = true;
+                }
                 transformations.addLast(transformation);
               }
             }
@@ -241,7 +247,7 @@ class MiniMessageParser {
             // we finished
             Transformation transformation = registry.get(name.value(), Collections.emptyList());
             System.out.println("got start of " + name.value() + " -> " + transformation);
-            if (transformation == null) {
+            if (transformation == null || preActive) {
               // this isn't a known tag, oh no!
               // lets take a step back, first, create a string
               i -= 2;
@@ -254,9 +260,14 @@ class MiniMessageParser {
               System.out.println("no transformation found " + string);
               continue;
             } else {
-              if (transformation instanceof OneTimeTransformation) {
+              if (transformation instanceof InstantApplyTransformation) {
+                ((InstantApplyTransformation) transformation).applyInstant(parent, transformations);
+              } else if (transformation instanceof OneTimeTransformation) {
                 oneTimeTransformations.addLast((OneTimeTransformation) transformation);
               } else {
+                if (transformation instanceof PreTransformation) {
+                  preActive = true;
+                }
                 transformations.addLast(transformation);
               }
             }
@@ -275,7 +286,7 @@ class MiniMessageParser {
           if (paramOrEnd.type() == TokenType.TAG_END) {
             // we finished, gotta remove name out of the stack
             System.out.println("got end of " + name.value());
-            if (!registry.exists(name.value())) {
+            if (!registry.exists(name.value()) || (preActive && !name.value().equalsIgnoreCase(PRE))) {
               // invalid end
               // lets take a step back, first, create a string
               i -= 2;
@@ -288,7 +299,10 @@ class MiniMessageParser {
               System.out.println("invalid end " + name.value() + ", string " + string);
               continue;
             } else {
-              removeFirst(transformations, t -> t.name().equals(name.value()));
+              Transformation removed = removeFirst(transformations, t -> t.name().equals(name.value()));
+              if (removed instanceof PreTransformation) {
+                preActive = false;
+              }
             }
           } else if (paramOrEnd.type() == TokenType.PARAM_SEPARATOR) {
             // read all params
@@ -333,16 +347,18 @@ class MiniMessageParser {
     }
 
     // at last, go thru all transformations that insert something
-    // TODO not sure I like this
     List<Component> children = parent.asComponent().children();
-    Component last = children.get(children.size() - 1);
-    for (Transformation transformation : transformations) {
-      if(transformation instanceof Inserting) {
-        transformation.apply(last, parent);
+    if (!children.isEmpty()) {
+      Component last = children.get(children.size() - 1);
+      for (Transformation transformation : transformations) {
+        if (transformation instanceof Inserting) {
+          transformation.apply(last, parent);
+        }
       }
-    }
-    while (!oneTimeTransformations.isEmpty()) {
-      oneTimeTransformations.removeLast().applyOneTime(last, parent, transformations);
+
+      while (!oneTimeTransformations.isEmpty()) {
+        oneTimeTransformations.removeLast().applyOneTime(last, parent, transformations);
+      }
     }
 
     // optimization, ignore empty parent
@@ -354,14 +370,15 @@ class MiniMessageParser {
     }
   }
 
-  private static boolean removeFirst(ArrayDeque<Transformation> transformations, Predicate<Transformation> filter) {
+  private static Transformation removeFirst(ArrayDeque<Transformation> transformations, Predicate<Transformation> filter) {
     final Iterator<Transformation> each = transformations.descendingIterator();
     while (each.hasNext()) {
-      if (filter.test(each.next())) {
+      Transformation next = each.next();
+      if (filter.test(next)) {
         each.remove();
-        return true;
+        return next;
       }
     }
-    return false;
+    return null;
   }
 }
