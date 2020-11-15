@@ -141,7 +141,7 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
       .content("cat says ")
       .append(Component.translatable("cat.meow")) // or any non-text component
       .build();
-    final Component replaced = component.replaceText(Pattern.compile("says"), match -> match.color(NamedTextColor.DARK_PURPLE));
+    final Component replaced = component.replaceText(b -> b.match("says").replacement(match -> match.color(NamedTextColor.DARK_PURPLE)));
     assertEquals(Component.text()
       .content("cat ")
       .append(Component.text("says", NamedTextColor.DARK_PURPLE))
@@ -156,7 +156,7 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
       .content("Buffalo buffalo Buffalo buffalo buffalo buffalo Buffalo buffalo ")
       .append(Component.translatable("buffalo.buffalo")) // or any non-text component
       .build();
-    final Component replaced = component.replaceFirstText(Pattern.compile("buffalo"), match -> match.color(NamedTextColor.DARK_PURPLE));
+    final Component replaced = component.replaceText(b -> b.match("buffalo").once().replacement(match -> match.color(NamedTextColor.DARK_PURPLE)));
     assertEquals(Component.text()
       .content("Buffalo ")
       .append(Component.text("buffalo", NamedTextColor.DARK_PURPLE))
@@ -171,7 +171,7 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
       .content("Buffalo buffalo Buffalo buffalo buffalo buffalo Buffalo buffalo ")
       .append(Component.translatable("buffalo.buffalo")) // or any non-text component
       .build();
-    final Component replaced = component.replaceText(Pattern.compile("buffalo"), match -> match.color(NamedTextColor.DARK_PURPLE), 2);
+    final Component replaced = component.replaceText(b -> b.match("buffalo").replacement(match -> match.color(NamedTextColor.DARK_PURPLE)).times(2));
     assertEquals(Component.text()
       .content("Buffalo ")
       .append(Component.text("buffalo", NamedTextColor.DARK_PURPLE))
@@ -189,8 +189,9 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
       .append(Component.translatable("purple.purple")) // or any non-text component
       .build();
 
-    final Component replaced = component.replaceText(Pattern.compile("purple"), match -> match.color(NamedTextColor.DARK_PURPLE),
-      (index, replace) -> index % 2 == 0 ? PatternReplacementResult.REPLACE : PatternReplacementResult.CONTINUE);
+    final Component replaced = component.replaceText(b -> b.match("purple")
+      .replacement(match -> match.color(NamedTextColor.DARK_PURPLE))
+      .condition((index, replace) -> index % 2 == 0 ? PatternReplacementResult.REPLACE : PatternReplacementResult.CONTINUE));
 
     assertEquals(Component.text()
       .content("purple ")
@@ -215,7 +216,7 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
       .append(Component.text().append(Component.text("Parent")).append(Component.text(" 1")), Component.keybind("key.adventure.purr"), Component.text().append(Component.text("Parent")).append(Component.text(" 3")))
       .build();
 
-    assertEquals(expectedReplacement, original.replaceText(Pattern.compile("Child"), match -> match.content("Parent")));
+    assertEquals(expectedReplacement, original.replaceText(b -> b.match("Child").replacement(match -> match.content("Parent"))));
   }
 
   // https://github.com/KyoriPowered/adventure/issues/129
@@ -236,7 +237,7 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
       .append(Component.text(" under ").color(NamedTextColor.DARK_AQUA).append(Component.text("me")))
       .build();
 
-    assertEquals(expectedReplacement, component.replaceText(Pattern.compile("test"), match -> match.content("me")));
+    assertEquals(expectedReplacement, component.replaceText(b -> b.match("test").replacement("me")));
   }
 
   @Test
@@ -248,7 +249,7 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
       .hoverEvent(HoverEvent.showText(Component.text("meow", NamedTextColor.DARK_RED)))
       .build();
 
-    assertEquals(expectedReplacement, component.replaceText(Pattern.compile("meep"), builder -> builder.content("meow").color(NamedTextColor.DARK_RED)));
+    assertEquals(expectedReplacement, component.replaceText(b -> b.match("meep").replacement(builder -> builder.content("meow").color(NamedTextColor.DARK_RED))));
   }
 
   @Test
@@ -260,7 +261,7 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
       .append(Component.translatable("my.translation", Component.text().content("cats ").append(Component.text("good"))))
       .build();
 
-    assertEquals(expectedReplacement, component.replaceText(Pattern.compile("bad"), builder -> builder.content("good")));
+    assertEquals(expectedReplacement, component.replaceText(b -> b.match(Pattern.compile("bad")).replacement(builder -> builder.content("good"))));
   }
 
   @Test
@@ -272,7 +273,7 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
         .append(Component.text(" world"));
     });
 
-    assertEquals(expectedReplacement, component.replaceText(Pattern.compile("Hello"), builder -> builder.content("Goodbye").color(NamedTextColor.LIGHT_PURPLE)));
+    assertEquals(expectedReplacement, component.replaceText(b -> b.match(Pattern.compile("Hello")).replacement(builder -> builder.content("Goodbye").color(NamedTextColor.LIGHT_PURPLE))));
   }
 
   // https://github.com/KyoriPowered/adventure/issues/197
