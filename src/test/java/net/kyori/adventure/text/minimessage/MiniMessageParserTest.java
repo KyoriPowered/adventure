@@ -141,6 +141,14 @@ public class MiniMessageParserTest {
   }
 
   @Test
+  public void testEscapeParse() {
+    String expected = "<red>test</red>";
+    TextComponent comp =  (TextComponent) MiniMessage.get().parse(MiniMessage.get().escapeTokens("<red>test</red>"));
+
+    assertEquals(expected, comp.content());
+  }
+
+  @Test
   public void checkPlaceholder() {
     final String input = "<test>";
     final String expected = "{\"text\":\"Hello!\"}";

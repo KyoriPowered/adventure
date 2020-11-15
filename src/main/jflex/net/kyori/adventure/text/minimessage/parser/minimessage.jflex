@@ -40,7 +40,7 @@ import java.io.IOException;
 %final
 %unicode
 %ignorecase
-%debug
+//%debug
 %line
 %column
 
