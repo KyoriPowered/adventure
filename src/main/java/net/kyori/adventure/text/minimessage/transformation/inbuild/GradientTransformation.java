@@ -26,6 +26,7 @@ package net.kyori.adventure.text.minimessage.transformation.inbuild;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -35,6 +36,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.minimessage.ParseException;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
@@ -57,7 +59,8 @@ public class GradientTransformation extends OneTimeTransformation implements Ins
 
   private float factorStep = 0;
   private TextColor[] colors;
-  private int phase = 0;
+  private float phase = 0;
+  private boolean negativePhase = false;
 
   private GradientTransformation() {
   }
@@ -74,7 +77,14 @@ public class GradientTransformation extends OneTimeTransformation implements Ins
           // last argument? maybe this is the phase?
           if (i == args.size() - 1) {
             try {
-              this.phase = Integer.parseInt(arg.value());
+              this.phase = Float.parseFloat(arg.value());
+              if (phase < -1f || phase > 1f) {
+                throw new ParseException(String.format("Gradient phase is out of range (%s). Must be in the range [-1.0f, 1.0f] (inclusive).", phase));
+              }
+              if (phase < 0) {
+                this.negativePhase = true;
+                this.phase = 1 + phase;
+              }
               break;
             } catch (NumberFormatException ignored) {}
           }
@@ -87,6 +97,9 @@ public class GradientTransformation extends OneTimeTransformation implements Ins
         }
       }
       this.colors = textColors.toArray(new TextColor[0]);
+      if (this.negativePhase) {
+        Collections.reverse(Arrays.asList(this.colors));
+      }
     } else {
       colors = new TextColor[] { TextColor.fromHexString("#ffffff"), TextColor.fromHexString("#000000")};
     }
@@ -100,8 +113,9 @@ public class GradientTransformation extends OneTimeTransformation implements Ins
 
       // init
       int size = content.length();
-      size = size / (colors.length - 1);
-      this.factorStep = (float) (1. / (size + this.index - 1));
+      final int sectorLength = size / (this.colors.length - 1);
+      this.factorStep = 1.0f / (sectorLength + this.index);
+      this.phase = this.phase * (sectorLength);
       this.index = 0;
 
       // apply
@@ -123,7 +137,7 @@ public class GradientTransformation extends OneTimeTransformation implements Ins
 
   private TextColor getColor() {
     // color switch needed?
-    if (factorStep * index > 1.1) {
+    if (factorStep * index > 1) {
       colorIndex++;
       index = 0;
     }
@@ -134,7 +148,12 @@ public class GradientTransformation extends OneTimeTransformation implements Ins
       factor = 1 - (factor - 1);
     }
 
-    return interpolate(colors[colorIndex], colors[colorIndex + 1], factor);
+    if (negativePhase && colors.length % 2 != 0) {
+      // flip the gradient segment for to allow for looping phase -1 through 1
+      return interpolate(colors[colorIndex + 1], colors[colorIndex], factor);
+    } else {
+      return interpolate(colors[colorIndex], colors[colorIndex + 1], factor);
+    }
   }
 
   private TextColor interpolate(TextColor color1, TextColor color2, float factor) {
