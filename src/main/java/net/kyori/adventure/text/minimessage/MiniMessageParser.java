@@ -315,10 +315,12 @@ class MiniMessageParser {
           }
 
           while (!oneTimeTransformations.isEmpty()) {
-            oneTimeTransformations.removeLast().applyOneTime(current, parent, transformations);
+            current = oneTimeTransformations.removeLast().applyOneTime(current, parent, transformations);
           }
 
-          parent.append(current);
+          if (current != null) {
+            parent.append(current);
+          }
           break;
         case TAG_END:
         case PARAM_SEPARATOR:

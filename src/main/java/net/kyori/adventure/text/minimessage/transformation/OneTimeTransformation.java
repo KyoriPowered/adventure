@@ -7,7 +7,7 @@ import java.util.ArrayDeque;
 
 public abstract class OneTimeTransformation extends Transformation {
 
-    public abstract void applyOneTime(Component current, TextComponent.Builder parent, ArrayDeque<Transformation> transformations);
+    public abstract Component applyOneTime(Component current, TextComponent.Builder parent, ArrayDeque<Transformation> transformations);
 
     @Override
     public Component apply(Component component, TextComponent.Builder parent) {

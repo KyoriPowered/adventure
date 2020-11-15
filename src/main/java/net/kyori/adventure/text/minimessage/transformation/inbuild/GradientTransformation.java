@@ -23,41 +23,143 @@
  */
 package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.minimessage.Tokens;
+import net.kyori.adventure.text.minimessage.parser.ParsingException;
+import net.kyori.adventure.text.minimessage.parser.Token;
+import net.kyori.adventure.text.minimessage.parser.TokenType;
+import net.kyori.adventure.text.minimessage.transformation.Inserting;
+import net.kyori.adventure.text.minimessage.transformation.OneTimeTransformation;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 // TODO gradient
-public class GradientTransformation extends Transformation {
+public class GradientTransformation extends OneTimeTransformation implements Inserting {
   public static boolean canParse(final String name) {
-    return false;
+    return name.equalsIgnoreCase(Tokens.GRADIENT);
   }
+
+  private int index = 0;
+  private int colorIndex = 0;
+
+  private float factorStep = 0;
+  private TextColor[] colors;
+  private int phase = 0;
 
   private GradientTransformation() {
   }
 
   @Override
-  public Component apply(final Component component, final TextComponent.Builder parent) {
-    return null;
+  public void load(String name, List<Token> args) {
+    super.load(name, args);
+
+    if (!args.isEmpty()) {
+      List<TextColor> textColors = new ArrayList<>();
+      for (int i = 0; i < args.size(); i++) {
+        Token arg = args.get(i);
+        if (arg.type() == TokenType.STRING) {
+          // last argument? maybe this is the phase?
+          if (i == args.size() - 1) {
+            try {
+              this.phase = Integer.parseInt(arg.value());
+              break;
+            } catch (NumberFormatException ignored) {}
+          }
+
+          if(arg.value().charAt(0) == '#') {
+            textColors.add(TextColor.fromHexString(arg.value()));
+          } else {
+            textColors.add(NamedTextColor.NAMES.value(arg.value().toLowerCase(Locale.ROOT)));
+          }
+        }
+      }
+      this.colors = textColors.toArray(new TextColor[0]);
+    } else {
+      colors = new TextColor[] { TextColor.fromHexString("#ffffff"), TextColor.fromHexString("#000000")};
+    }
+  }
+
+  @Override
+  public Component applyOneTime(Component current, TextComponent.Builder parent, ArrayDeque<Transformation> transformations) {
+    if (current instanceof TextComponent) {
+      TextComponent textComponent = (TextComponent) current;
+      String content = textComponent.content();
+
+      // init
+      int size = content.length();
+      size = size / (colors.length - 1);
+      this.factorStep = (float) (1. / (size + this.index - 1));
+      this.index = 0;
+
+      // apply
+      for (char c : content.toCharArray()) {
+        TextComponent comp = Component.text(c, getColor());
+        parent.append(comp);
+      }
+
+      return null;
+    }
+
+    throw new ParsingException("Expected Text Comp", -1);
+  }
+
+  private TextColor getColor() {
+    // color switch needed?
+    if (factorStep * index > 1.1) {
+      colorIndex++;
+      index = 0;
+    }
+
+    float factor = factorStep * (index++ + phase);
+    // loop around if needed
+    if (factor > 1) {
+      factor = 1 - (factor - 1);
+    }
+
+    return interpolate(colors[colorIndex], colors[colorIndex + 1], factor);
+  }
+
+  private TextColor interpolate(TextColor color1, TextColor color2, float factor) {
+    return TextColor.color(
+            Math.round(color1.red() + factor * (color2.red() - color1.red())),
+            Math.round(color1.green() + factor * (color2.green() - color1.green())),
+            Math.round(color1.blue() + factor * (color2.blue() - color1.blue()))
+    );
   }
 
   @Override
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.empty();
+    return Stream.of(
+            ExaminableProperty.of("phase", this.phase),
+            ExaminableProperty.of("colors", this.colors)
+    );
   }
 
   @Override
-  public boolean equals(final Object other) {
-    return false;
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    GradientTransformation that = (GradientTransformation) o;
+    return index == that.index && colorIndex == that.colorIndex && Float.compare(that.factorStep, factorStep) == 0 && phase == that.phase && Arrays.equals(colors, that.colors);
   }
 
   @Override
   public int hashCode() {
-    return 0;
+    int result = Objects.hash(index, colorIndex, factorStep, phase);
+    result = 31 * result + Arrays.hashCode(colors);
+    return result;
   }
 
   public static class Parser implements TransformationParser<GradientTransformation> {

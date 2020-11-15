@@ -22,8 +22,9 @@ public class ResetTransformation extends OneTimeTransformation {
     }
 
     @Override
-    public void applyOneTime(Component current, TextComponent.Builder parent, ArrayDeque<Transformation> transformations) {
+    public Component applyOneTime(Component current, TextComponent.Builder parent, ArrayDeque<Transformation> transformations) {
         transformations.clear();
+        return current;
     }
 
     @Override
@@ -33,7 +34,7 @@ public class ResetTransformation extends OneTimeTransformation {
 
     @Override
     public boolean equals(final Object other) {
-        return false;
+        return true;
     }
 
     @Override

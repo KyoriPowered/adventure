@@ -60,8 +60,9 @@ public class KeybindTransformation extends OneTimeTransformation implements Inse
   }
 
   @Override
-  public void applyOneTime(Component current, TextComponent.Builder parent, ArrayDeque<Transformation> transformations) {
+  public Component applyOneTime(Component current, TextComponent.Builder parent, ArrayDeque<Transformation> transformations) {
     parent.append(Component.keybind(this.keybind).mergeStyle(current));
+    return current;
   }
 
   @Override
