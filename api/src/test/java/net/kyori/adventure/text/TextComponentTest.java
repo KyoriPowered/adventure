@@ -25,6 +25,7 @@ package net.kyori.adventure.text;
 
 import com.google.common.collect.ImmutableSet;
 import java.util.Collections;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -272,7 +273,35 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
     });
 
     assertEquals(expectedReplacement, component.replaceText(Pattern.compile("Hello"), builder -> builder.content("Goodbye").color(NamedTextColor.LIGHT_PURPLE)));
+  }
 
+  // https://github.com/KyoriPowered/adventure/issues/197
+  @Test
+  void testReplaceSameInComponentAndEvent() {
+    final Component original = Component.text("/{0}", NamedTextColor.RED)
+      .hoverEvent(Component.text()
+        .append(Component.text("Click to run"))
+        .append(Component.space())
+        .append(Component.text("/{0}", NamedTextColor.RED)).build());
+
+    final Component expected = Component.text("/", NamedTextColor.RED)
+      .append(Component.text("mycommand"))
+      .hoverEvent(Component.text()
+        .append(Component.text("Click to run"))
+        .append(Component.space())
+      .append(Component.text("/", NamedTextColor.RED).append(Component.text("mycommand"))).build());
+
+    final Pattern replaceWith = Pattern.compile("\\{(\\d+)}");
+
+    final Component replaced = original.replaceText(replaceWith, b -> {
+      final Matcher matcher = replaceWith.matcher(b.content());
+      assertTrue(matcher.find());
+      assertEquals(0, Integer.parseInt(matcher.group(1))); // only one index in our test case
+
+      return Component.text("mycommand");
+    });
+
+    assertEquals(expected, replaced);
   }
 
   @Test

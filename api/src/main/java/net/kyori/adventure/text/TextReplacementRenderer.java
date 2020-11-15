@@ -47,6 +47,8 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
   @Override
   public @NonNull Component render(final @NonNull Component component, final @NonNull State state) {
     if(!state.running) return component;
+    final boolean prevFirstMatch = state.firstMatch;
+    state.firstMatch = true;
 
     final List<Component> oldChildren = component.children();
     final int oldChildrenSize = oldChildren.size();
@@ -90,7 +92,7 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
           if(children == null) {
             children = new ArrayList<>(oldChildrenSize + 2);
           }
-          if(state.replaceCount == 0) {
+          if(state.firstMatch) {
             // truncate parent to content before match
             modified = ((TextComponent) component).content(content.substring(0, matcher.start()));
           } else if(replacedUntil < matcher.start()) {
@@ -102,6 +104,7 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
           }
         }
         state.replaceCount++;
+        state.firstMatch = false;
         replacedUntil = matcher.end();
       }
       if(replacedUntil < content.length()) {
@@ -171,6 +174,7 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
       }
     }
 
+    state.firstMatch = prevFirstMatch;
     // Update the modified component with new children
     if(children != null) {
       return modified.children(children);
@@ -185,6 +189,7 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
     boolean running = true;
     int matchCount = 0;
     int replaceCount = 0;
+    boolean firstMatch = true;
 
     State(final @NonNull Pattern pattern, final @NonNull BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement, final @NonNull IntFunction2<PatternReplacementResult> continuer) {
       this.pattern = pattern;
