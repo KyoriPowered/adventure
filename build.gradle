@@ -1,6 +1,6 @@
 buildscript {
   ext {
-    indraVersion = "1.0.2"
+    indraVersion = "1.1.1"
   }
 }
 
@@ -29,6 +29,10 @@ subprojects {
   indra {
     github("KyoriPowered", "adventure")
     mitLicense()
+
+    javaVersions {
+      testWith(8, 11, 15)
+    }
 
     configurePublications {
       pom {
