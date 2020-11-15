@@ -27,6 +27,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.transformation.TransformationType;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import org.junit.jupiter.api.Test;
@@ -133,6 +134,32 @@ public class MiniMessageTest {
     final Template t1 = Template.of("test", Component.text("TEST").color(NamedTextColor.RED).decoration(TextDecoration.UNDERLINED, true));
     final Template t2 = Template.of("test2", "Test2");
     final Component result = MiniMessage.get().parse("<green><bold><test><test2>", t1, t2);
+
+    final String out1 = GsonComponentSerializer.gson().serialize(root);
+    final String out2 = GsonComponentSerializer.gson().serialize(result);
+
+    assertEquals(out1, out2);
+  }
+
+  @Test
+  public void testCustomRegistry() {
+    Component root = Component.text("");
+    root = root.append(Component.text("<bold>").color(NamedTextColor.GREEN));
+    root = root.append(Component.text("TEST").color(NamedTextColor.GREEN));
+    Component result = MiniMessage.withTransformations(TransformationType.COLOR).parse("<green><bold><test>", "test", "TEST");
+
+    final String out1 = GsonComponentSerializer.gson().serialize(root);
+    final String out2 = GsonComponentSerializer.gson().serialize(result);
+
+    assertEquals(out1, out2);
+  }
+
+  @Test
+  public void testCustomRegistryBuilder() {
+    Component root = Component.text("");
+    root = root.append(Component.text("<bold>").color(NamedTextColor.GREEN));
+    root = root.append(Component.text("TEST").color(NamedTextColor.GREEN));
+    Component result = MiniMessage.builder().removeDefaultTransformations().transformation(TransformationType.COLOR).build().parse("<green><bold><test>", "test", "TEST");
 
     final String out1 = GsonComponentSerializer.gson().serialize(root);
     final String out2 = GsonComponentSerializer.gson().serialize(result);

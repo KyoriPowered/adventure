@@ -24,6 +24,9 @@
 package net.kyori.adventure.text.minimessage;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.transformation.Transformation;
+import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
+import net.kyori.adventure.text.minimessage.transformation.TransformationType;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -32,15 +35,15 @@ import java.util.Map;
 
 /* package */ class MiniMessageImpl implements MiniMessage {
 
-  /* package */ static final MiniMessage INSTANCE = new MiniMessageImpl(false);
-  /* package */ static final MiniMessage MARKDOWN = new MiniMessageImpl(true);
+  /* package */ static final MiniMessage INSTANCE = new MiniMessageImpl(false, new TransformationRegistry());
+  /* package */ static final MiniMessage MARKDOWN = new MiniMessageImpl(true, new TransformationRegistry());
 
   private final boolean markdown;
   private final MiniMessageParser parser;
 
-  MiniMessageImpl(boolean markdown) {
+  MiniMessageImpl(boolean markdown, TransformationRegistry registry) {
     this.markdown = markdown;
-    this.parser = new MiniMessageParser();
+    this.parser = new MiniMessageParser(registry);
   }
 
   @Override
@@ -109,6 +112,7 @@ import java.util.Map;
 
   /* package */ static final class BuilderImpl implements Builder {
     private boolean markdown = false;
+    private final TransformationRegistry registry = new TransformationRegistry();
 
     BuilderImpl() {
     }
@@ -125,8 +129,34 @@ import java.util.Map;
     }
 
     @Override
+    public @NonNull Builder removeDefaultTransformations() {
+      this.registry.clear();
+      return this;
+    }
+
+    @Override
+    public @NonNull Builder transformation(TransformationType<? extends Transformation> type) {
+      this.registry.register(type);
+      return this;
+    }
+
+    @SafeVarargs
+    @Override
+    public @NonNull
+    final Builder transformations(TransformationType<? extends Transformation>... types) {
+      for (TransformationType<? extends Transformation> type : types) {
+        this.registry.register(type);
+      }
+      return this;
+    }
+
+    @Override
     public @NonNull MiniMessage build() {
-      return this.markdown ? MARKDOWN : INSTANCE;
+      if (this.markdown) {
+        return new MiniMessageImpl(true, registry);
+      } else {
+        return new MiniMessageImpl(false, registry);
+      }
     }
   }
 }

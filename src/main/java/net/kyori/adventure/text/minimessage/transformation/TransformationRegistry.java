@@ -51,7 +51,17 @@ public final class TransformationRegistry {
     this.register(TransformationType.PRE);
   }
 
-  private <T extends Transformation> void register(final TransformationType<T> type) {
+  public TransformationRegistry(TransformationType<? extends Transformation>... types) {
+    for (TransformationType<? extends Transformation> type : types) {
+      this.register(type);
+    }
+  }
+
+  public void clear() {
+    this.types.clear();
+  }
+
+  public <T extends Transformation> void register(final TransformationType<T> type) {
     this.types.add(type);
   }
 

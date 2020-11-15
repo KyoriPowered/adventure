@@ -38,7 +38,7 @@ import net.kyori.adventure.text.minimessage.transformation.inbuild.TranslatableT
 
 import java.util.function.Predicate;
 
-final class TransformationType<T extends Transformation> {
+public final class TransformationType<T extends Transformation> {
   public static final TransformationType<ColorTransformation> COLOR = new TransformationType<>(ColorTransformation::canParse, new ColorTransformation.Parser());
   public static final TransformationType<DecorationTransformation> DECORATION = new TransformationType<>(DecorationTransformation::canParse, new DecorationTransformation.Parser());
   public static final TransformationType<HoverTransformation> HOVER_EVENT = new TransformationType<>(HoverTransformation::canParse, new HoverTransformation.Parser());

@@ -24,6 +24,9 @@
 package net.kyori.adventure.text.minimessage;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.transformation.Transformation;
+import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
+import net.kyori.adventure.text.minimessage.transformation.TransformationType;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Buildable;
 
@@ -54,6 +57,26 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    */
   static @NonNull MiniMessage markdown() {
     return MiniMessageImpl.MARKDOWN;
+  }
+
+  /**
+   * Creates an custom instances without markdown support and the given transformations
+   * @param types the transformations
+   * @return your very own custom MiniMessage instance
+   */
+  @SafeVarargs
+  static @NonNull MiniMessage withTransformations(TransformationType<? extends Transformation>... types) {
+    return new MiniMessageImpl(false, new TransformationRegistry(types));
+  }
+
+  /**
+   * Creates an custom instances with markdown support and the given transformations
+   * @param types the transformations
+   * @return your very own custom MiniMessage instance
+   */
+  @SafeVarargs
+  static @NonNull MiniMessage markdownWithTransformations(TransformationType<? extends Transformation>... types) {
+    return new MiniMessageImpl(false, new TransformationRegistry(types));
   }
 
   /**
@@ -138,6 +161,31 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      * @return this builder
      */
     @NonNull Builder markdown();
+
+    /**
+     * Removes all default transformations, allowing you to create a customized set of transformations
+     *
+     * @return this builder
+     */
+    @NonNull Builder removeDefaultTransformations();
+
+    /**
+     * Adds the given transformation
+     *
+     * @param type the type of transformation to add
+     *
+     * @return this builder
+     */
+    @NonNull Builder transformation(TransformationType<? extends Transformation> type);
+
+    /**
+     * Adds the given transformations
+     *
+     * @param types the types of transformations to add
+     *
+     * @return this builder
+     */
+    @NonNull Builder transformations(TransformationType<? extends Transformation>... types);
 
     /**
      * Builds the serializer.
