@@ -224,7 +224,6 @@ class MiniMessageParser {
             }
 
             Transformation transformation = registry.get(name.value(), inners, templates);
-            System.out.println("got start of " + name.value() + " with params " + inners + " -> " + transformation);
             if (transformation == null || preActive) {
               // this isn't a known tag, oh no!
               // lets take a step back, first, create a string
@@ -238,7 +237,6 @@ class MiniMessageParser {
               for (int c = 0; c < inners.size() + 3; c++) {
                 tokens.remove(i + 1);
               }
-              System.out.println("no transformation found " + string);
               continue;
             } else {
               if (transformation instanceof InstantApplyTransformation) {
@@ -255,7 +253,6 @@ class MiniMessageParser {
           } else if (paramOrEnd.type() == TokenType.TAG_END) {
             // we finished
             Transformation transformation = registry.get(name.value(), Collections.emptyList(), templates);
-            System.out.println("got start of " + name.value() + " -> " + transformation);
             if (transformation == null || preActive) {
               // this isn't a known tag, oh no!
               // lets take a step back, first, create a string
@@ -266,7 +263,6 @@ class MiniMessageParser {
               // remove the others
               tokens.remove(i + 1);
               tokens.remove(i + 1);
-              System.out.println("no transformation found " + string);
               continue;
             } else {
               if (transformation instanceof InstantApplyTransformation) {
@@ -294,7 +290,6 @@ class MiniMessageParser {
           paramOrEnd = tokens.get(++i);
           if (paramOrEnd.type() == TokenType.TAG_END) {
             // we finished, gotta remove name out of the stack
-            System.out.println("got end of " + name.value());
             if (!registry.exists(name.value()) || (preActive && !name.value().equalsIgnoreCase(PRE))) {
               // invalid end
               // lets take a step back, first, create a string
@@ -305,7 +300,6 @@ class MiniMessageParser {
               // remove the others
               tokens.remove(i + 1);
               tokens.remove(i + 1);
-              System.out.println("invalid end " + name.value() + ", string " + string);
               continue;
             } else {
               Transformation removed = removeFirst(transformations, t -> t.name().equals(name.value()));
@@ -334,11 +328,9 @@ class MiniMessageParser {
         case QUOTE_END:
         case NAME:
         case STRING:
-          System.out.println("got: " + token.value() + " with transformations " + transformations);
           Component current = Component.text(token.value());
 
           for (Transformation transformation : transformations) {
-            System.out.println("applying " + transformation);
             current = transformation.apply(current, parent);
           }
 
