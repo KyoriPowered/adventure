@@ -4,6 +4,8 @@ on: ["pull_request", "push"]
 
 jobs:
   build:
+    # Only run on PRs if the source branch is on someone else's repo
+    if: ${{ github.event_name != 'pull_request' || github.repository != github.event.repository.full_name }}
     strategy:
       matrix:
         java: ["1.8", "11", "15"]
