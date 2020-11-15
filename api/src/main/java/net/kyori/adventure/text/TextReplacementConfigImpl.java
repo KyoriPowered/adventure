@@ -52,7 +52,7 @@ final class TextReplacementConfigImpl implements TextReplacementConfig {
     return this.matchPattern;
   }
 
-  TextReplacementRenderer.State toState() {
+  TextReplacementRenderer.State createState() {
     return new TextReplacementRenderer.State(this.matchPattern, this.replacement, this.continuer);
   }
 
@@ -77,7 +77,7 @@ final class TextReplacementConfigImpl implements TextReplacementConfig {
 
   static final class Builder implements TextReplacementConfig.Builder {
     @MonotonicNonNull Pattern matchPattern;
-    BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement;
+    @MonotonicNonNull BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement;
     IntFunction2<PatternReplacementResult> continuer = (index, replacement) -> PatternReplacementResult.REPLACE;
 
     Builder() {
@@ -107,24 +107,10 @@ final class TextReplacementConfigImpl implements TextReplacementConfig {
       return this;
     }
 
-    private void validate() {
-      if(this.matchPattern == null) {
-        throw new IllegalStateException("A pattern must be provided to match against");
-      }
-      if(this.replacement == null) {
-        throw new IllegalStateException("A replacement action must be provided");
-      }
-    }
-
-    TextReplacementRenderer.State toState() {
-      this.validate();
-      return new TextReplacementRenderer.State(this.matchPattern, this.replacement, this.continuer);
-    }
-
     @Override
     public TextReplacementConfig build() {
-      this.validate();
-
+      if(this.matchPattern == null) throw new IllegalStateException("A pattern must be provided to match against");
+      if(this.replacement == null) throw new IllegalStateException("A replacement action must be provided");
       return new TextReplacementConfigImpl(this);
     }
   }

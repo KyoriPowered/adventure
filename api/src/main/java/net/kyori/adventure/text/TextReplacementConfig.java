@@ -131,7 +131,7 @@ public interface TextReplacementConfig extends Buildable<TextReplacementConfig, 
      * @return this builder
      * @since 4.2.0
      */
-    default @NonNull Builder times(int times) {
+    default @NonNull Builder times(final int times) {
       return this.condition((index, replaced) -> replaced < times ? PatternReplacementResult.REPLACE : PatternReplacementResult.STOP);
     }
 

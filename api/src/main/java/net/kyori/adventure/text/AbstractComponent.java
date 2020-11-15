@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.util.Buildable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -95,9 +96,7 @@ public abstract class AbstractComponent implements Component {
   @Override
   public @NonNull Component replaceText(final @NonNull Consumer<TextReplacementConfig.Builder> configurer) {
     requireNonNull(configurer, "configurer");
-    final TextReplacementConfigImpl.Builder builder = new TextReplacementConfigImpl.Builder();
-    configurer.accept(builder);
-    return TextReplacementRenderer.INSTANCE.render(this, builder.toState());
+    return this.replaceText(Buildable.configureAndBuild(TextReplacementConfig.builder(), configurer));
   }
 
   @Override
@@ -106,7 +105,7 @@ public abstract class AbstractComponent implements Component {
     if(!(config instanceof TextReplacementConfigImpl)) {
       throw new IllegalArgumentException("Provided replacement was a custom TextReplacementConfig implementation, which is not supported.");
     }
-    return TextReplacementRenderer.INSTANCE.render(this, ((TextReplacementConfigImpl) config).toState());
+    return TextReplacementRenderer.INSTANCE.render(this, ((TextReplacementConfigImpl) config).createState());
   }
 
   @Override
