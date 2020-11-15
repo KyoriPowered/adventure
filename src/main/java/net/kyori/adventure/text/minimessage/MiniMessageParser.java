@@ -53,7 +53,6 @@ import java.util.regex.Pattern;
 import static net.kyori.adventure.text.minimessage.Tokens.*;
 
 class MiniMessageParser {
-  private static final TransformationRegistry REGISTRY = new TransformationRegistry();
 
   // regex group names
   private static final String START = "start";
@@ -63,7 +62,17 @@ class MiniMessageParser {
   // https://regex101.com/r/8VZ7uA/10
   private static final Pattern pattern = Pattern.compile("((?<start><)(?<token>[^<>]+(:(?<inner>['\"]?([^'\"](\\\\['\"])?)+['\"]?))*)(?<end>>))+?");
 
-  static @NonNull String escapeTokens(final @NonNull String richMessage) {
+  private final TransformationRegistry registry;
+
+  public MiniMessageParser() {
+    this.registry = new TransformationRegistry();
+  }
+
+  public MiniMessageParser(TransformationRegistry registry) {
+    this.registry = registry;
+  }
+
+  @NonNull String escapeTokens(final @NonNull String richMessage) {
     final StringBuilder sb = new StringBuilder();
     final Matcher matcher = pattern.matcher(richMessage);
     int lastEnd = 0;
@@ -96,7 +105,7 @@ class MiniMessageParser {
     return sb.toString();
   }
 
-  static @NonNull String stripTokens(final @NonNull String richMessage) {
+  @NonNull String stripTokens(final @NonNull String richMessage) {
     final StringBuilder sb = new StringBuilder();
     final Matcher matcher = pattern.matcher(richMessage);
     int lastEnd = 0;
@@ -117,7 +126,7 @@ class MiniMessageParser {
     return sb.toString();
   }
 
-  static @NonNull String handlePlaceholders(@NonNull String richMessage, final @NonNull String... placeholders) {
+  @NonNull String handlePlaceholders(@NonNull String richMessage, final @NonNull String... placeholders) {
     if (placeholders.length % 2 != 0) {
       throw new ParseException(
         "Invalid number placeholders defined, usage: parseFormat(format, key, value, key, value...)");
@@ -129,22 +138,22 @@ class MiniMessageParser {
   }
 
 
-  static @NonNull String handlePlaceholders(@NonNull String richMessage, final @NonNull Map<String, String> placeholders) {
+  @NonNull String handlePlaceholders(@NonNull String richMessage, final @NonNull Map<String, String> placeholders) {
     for (Map.Entry<String, String> entry : placeholders.entrySet()) {
       richMessage = richMessage.replace(TAG_START + entry.getKey() + TAG_END, entry.getValue());
     }
     return richMessage;
   }
 
-  static @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull String... placeholders) {
+  @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull String... placeholders) {
     return parseFormat(handlePlaceholders(richMessage, placeholders));
   }
 
-  static @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull Map<String, String> placeholders) {
+  @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull Map<String, String> placeholders) {
     return parseFormat(handlePlaceholders(richMessage, placeholders));
   }
 
-  static @NonNull Component parseFormat(@NonNull String input, final @NonNull Template... placeholders) {
+  @NonNull Component parseFormat(@NonNull String input, final @NonNull Template... placeholders) {
     Map<String, Template.ComponentTemplate> map = new HashMap<>();
     for (Template placeholder : placeholders) {
       if (placeholder instanceof Template.StringTemplate) {
@@ -158,7 +167,7 @@ class MiniMessageParser {
     return parseFormat0(input, map);
   }
 
-  static @NonNull Component parseFormat(@NonNull String input, final @NonNull List<Template> placeholders) {
+  @NonNull Component parseFormat(@NonNull String input, final @NonNull List<Template> placeholders) {
     Map<String, Template.ComponentTemplate> map = new HashMap<>();
     for (Template placeholder : placeholders) {
       if (placeholder instanceof Template.StringTemplate) {
@@ -172,11 +181,11 @@ class MiniMessageParser {
     return parseFormat0(input, map);
   }
 
-  static @NonNull Component parseFormat(final @NonNull String richMessage) {
+  @NonNull Component parseFormat(final @NonNull String richMessage) {
     return parseFormat0(richMessage, Collections.emptyMap());
   }
 
-  static @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates) {
+  @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates) {
     MiniMessageLexer lexer = new MiniMessageLexer(richMessage);
     try {
       lexer.scan();
@@ -185,10 +194,10 @@ class MiniMessageParser {
     }
     lexer.clean();
     List<Token> tokens = lexer.getTokens();
-    return parse(tokens, REGISTRY, templates);
+    return parse(tokens, registry, templates);
   }
 
-  @NonNull static Component parse(final @NonNull List<Token> tokens, final @NonNull TransformationRegistry registry, final @NonNull Map<String, Template.ComponentTemplate> templates) {
+  @NonNull Component parse(final @NonNull List<Token> tokens, final @NonNull TransformationRegistry registry, final @NonNull Map<String, Template.ComponentTemplate> templates) {
     final TextComponent.Builder parent = Component.text();
     ArrayDeque<Transformation> transformations = new ArrayDeque<>();
     ArrayDeque<OneTimeTransformation> oneTimeTransformations = new ArrayDeque<>();
@@ -214,7 +223,7 @@ class MiniMessageParser {
               inners.add(next);
             }
 
-            Transformation transformation = registry.get(name.value(), inners);
+            Transformation transformation = registry.get(name.value(), inners, templates);
             System.out.println("got start of " + name.value() + " with params " + inners + " -> " + transformation);
             if (transformation == null || preActive) {
               // this isn't a known tag, oh no!
@@ -245,7 +254,7 @@ class MiniMessageParser {
             }
           } else if (paramOrEnd.type() == TokenType.TAG_END) {
             // we finished
-            Transformation transformation = registry.get(name.value(), Collections.emptyList());
+            Transformation transformation = registry.get(name.value(), Collections.emptyList(), templates);
             System.out.println("got start of " + name.value() + " -> " + transformation);
             if (transformation == null || preActive) {
               // this isn't a known tag, oh no!
@@ -313,12 +322,17 @@ class MiniMessageParser {
             }
 
             // check what we need to close, so we create a transformation and try to remove it
-            Transformation transformation = registry.get(name.value(), inners);
+            Transformation transformation = registry.get(name.value(), inners, templates);
             transformations.removeFirstOccurrence(transformation);
           } else {
             throw new ParsingException("Expected tag end or param separator after tag name, but got " + paramOrEnd, -1);
           }
           break;
+        case TAG_END:
+        case PARAM_SEPARATOR:
+        case QUOTE_START:
+        case QUOTE_END:
+        case NAME:
         case STRING:
           System.out.println("got: " + token.value() + " with transformations " + transformations);
           Component current = Component.text(token.value());
@@ -336,29 +350,21 @@ class MiniMessageParser {
             parent.append(current);
           }
           break;
-        case TAG_END:
-        case PARAM_SEPARATOR:
-        case QUOTE_START:
-        case QUOTE_END:
-        case NAME:
-          throw new ParsingException("Unexpected token " + token, -1);
       }
       i++;
     }
 
     // at last, go thru all transformations that insert something
     List<Component> children = parent.asComponent().children();
-    if (!children.isEmpty()) {
-      Component last = children.get(children.size() - 1);
-      for (Transformation transformation : transformations) {
-        if (transformation instanceof Inserting) {
-          transformation.apply(last, parent);
-        }
+    Component last = children.isEmpty() ? Component.empty() : children.get(children.size() - 1);
+    for (Transformation transformation : transformations) {
+      if (transformation instanceof Inserting) {
+        transformation.apply(last, parent);
       }
+    }
 
-      while (!oneTimeTransformations.isEmpty()) {
-        oneTimeTransformations.removeLast().applyOneTime(last, parent, transformations);
-      }
+    while (!oneTimeTransformations.isEmpty()) {
+      oneTimeTransformations.removeLast().applyOneTime(last, parent, transformations);
     }
 
     // optimization, ignore empty parent
@@ -370,7 +376,7 @@ class MiniMessageParser {
     }
   }
 
-  private static Transformation removeFirst(ArrayDeque<Transformation> transformations, Predicate<Transformation> filter) {
+  private Transformation removeFirst(ArrayDeque<Transformation> transformations, Predicate<Transformation> filter) {
     final Iterator<Transformation> each = transformations.descendingIterator();
     while (each.hasNext()) {
       Transformation next = each.next();

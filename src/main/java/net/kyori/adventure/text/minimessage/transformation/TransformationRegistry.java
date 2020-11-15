@@ -25,7 +25,12 @@ package net.kyori.adventure.text.minimessage.transformation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import net.kyori.adventure.text.minimessage.Template;
 import net.kyori.adventure.text.minimessage.parser.Token;
+import net.kyori.adventure.text.minimessage.transformation.inbuild.TemplateTransformation;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 public final class TransformationRegistry {
@@ -50,10 +55,14 @@ public final class TransformationRegistry {
     this.types.add(type);
   }
 
-  public @Nullable Transformation get(final String name, final List<Token> inners) {
-    for(final TransformationType<? extends Transformation> type : this.types) {
-      if(type.canParse.test(name)) {
+  public @Nullable Transformation get(final String name, final List<Token> inners, final Map<String, Template.ComponentTemplate> templates) {
+    for (final TransformationType<? extends Transformation> type : this.types) {
+      if (type.canParse.test(name)) {
         final Transformation transformation = type.parser.parse();
+        transformation.load(name, inners);
+        return transformation;
+      } else if (templates.containsKey(name)) {
+        final TemplateTransformation transformation = new TemplateTransformation(templates.get(name));
         transformation.load(name, inners);
         return transformation;
       }
@@ -63,7 +72,7 @@ public final class TransformationRegistry {
   }
 
   public boolean exists(final String name) {
-    for(final TransformationType<? extends Transformation> type : this.types) {
+    for (final TransformationType<? extends Transformation> type : this.types) {
       if (type.canParse.test(name)) {
         return true;
       }

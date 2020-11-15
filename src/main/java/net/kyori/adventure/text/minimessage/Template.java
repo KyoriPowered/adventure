@@ -24,13 +24,18 @@
 package net.kyori.adventure.text.minimessage;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import java.util.stream.Stream;
 
 /**
  * A placeholder in a message, that can be either replaced by a string or a component
  */
-public interface Template {
+public interface Template extends Examinable {
 
   /**
    * Constructs a template that gets replaced with a string
@@ -70,6 +75,19 @@ public interface Template {
     public @NonNull String getValue() {
       return value;
     }
+
+    @Override
+    public final String toString() {
+      return this.examine(StringExaminer.simpleEscaping());
+    }
+
+    @Override
+    public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+      return Stream.of(
+              ExaminableProperty.of("key", key),
+              ExaminableProperty.of("value", value)
+      );
+    }
   }
 
   class ComponentTemplate implements Template {
@@ -87,6 +105,19 @@ public interface Template {
 
     public @NonNull Component getValue() {
       return value;
+    }
+
+    @Override
+    public final String toString() {
+      return this.examine(StringExaminer.simpleEscaping());
+    }
+
+    @Override
+    public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+      return Stream.of(
+              ExaminableProperty.of("key", key),
+              ExaminableProperty.of("value", value)
+      );
     }
   }
 }

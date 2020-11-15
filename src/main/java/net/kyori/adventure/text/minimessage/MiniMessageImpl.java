@@ -36,9 +36,11 @@ import java.util.Map;
   /* package */ static final MiniMessage MARKDOWN = new MiniMessageImpl(true);
 
   private final boolean markdown;
+  private final MiniMessageParser parser;
 
   MiniMessageImpl(boolean markdown) {
     this.markdown = markdown;
+    this.parser = new MiniMessageParser();
   }
 
   @Override
@@ -46,7 +48,7 @@ import java.util.Map;
     if (markdown) {
       input = MiniMarkdownParser.parse(input);
     }
-    return MiniMessageParser.parseFormat(input);
+    return parser.parseFormat(input);
   }
 
 
@@ -60,7 +62,7 @@ import java.util.Map;
     if (markdown) {
       input = MiniMarkdownParser.parse(input);
     }
-    return MiniMessageParser.parseFormat(input, placeholders);
+    return parser.parseFormat(input, placeholders);
   }
 
   @Override
@@ -68,7 +70,7 @@ import java.util.Map;
     if (markdown) {
       input = MiniMarkdownParser.parse(input);
     }
-    return MiniMessageParser.parseFormat(input, placeholders);
+    return parser.parseFormat(input, placeholders);
   }
 
   @Override
@@ -76,7 +78,7 @@ import java.util.Map;
     if (markdown) {
       input = MiniMarkdownParser.parse(input);
     }
-    return MiniMessageParser.parseFormat(input, placeholders);
+    return parser.parseFormat(input, placeholders);
   }
 
   @Override
@@ -84,12 +86,12 @@ import java.util.Map;
     if (markdown) {
       input = MiniMarkdownParser.parse(input);
     }
-    return MiniMessageParser.parseFormat(input, placeholders);
+    return parser.parseFormat(input, placeholders);
   }
 
   @Override
   public @NonNull String escapeTokens(@NonNull String input) {
-    return MiniMessageParser.escapeTokens(input);
+    return parser.escapeTokens(input);
   }
 
   @Override
@@ -97,7 +99,7 @@ import java.util.Map;
     if (markdown) {
       input = MiniMarkdownParser.stripMarkdown(input);
     }
-    return MiniMessageParser.stripTokens(input);
+    return parser.stripTokens(input);
   }
 
   @Override
