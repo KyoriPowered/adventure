@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.serializer.legacy;
 
+import java.util.regex.Pattern;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -185,11 +186,31 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * Sets that the serializer should extract URLs into {@link ClickEvent}s
      * when deserializing.
      *
+     * @param pattern the url pattern
+     * @return this builder
+     * @since 4.2.0
+     */
+    @NonNull Builder extractUrls(final @NonNull Pattern pattern);
+
+    /**
+     * Sets that the serializer should extract URLs into {@link ClickEvent}s
+     * when deserializing.
+     *
      * @param style the style to use for extracted links
      * @return this builder
      * @since 4.0.0
      */
     @NonNull Builder extractUrls(final @Nullable Style style);
+
+    /**
+     * Sets that the serializer should extract URLs into {@link ClickEvent}s
+     * when deserializing.
+     *
+     * @param pattern the url pattern
+     * @return this builder
+     * @since 4.2.0
+     */
+    @NonNull Builder extractUrls(final @NonNull Pattern pattern, final @Nullable Style style);
 
     /**
      * Sets that the serializer should support hex colors.
