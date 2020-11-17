@@ -44,7 +44,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
+final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   static final Pattern DEFAULT_URL_PATTERN = Pattern.compile("(?:(https?)://)?([-\\w_.]+\\.\\w{2,})(/\\S*)?");
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
   private static final char LEGACY_BUNGEE_HEX_CHAR = 'x';
@@ -98,17 +98,17 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   private final boolean urlLink;
   private final Pattern urlPattern;
   private final Style urlStyle;
-  private final boolean colorDownsample;
+  private final boolean hexColours;
   private final boolean useTerriblyStupidHexFormat; // (╯°□°)╯︵ ┻━┻
 
-  LegacyComponentSerializerImpl(final char character, final char hexCharacter, final boolean urlLink, final @Nullable Pattern urlPattern, final @Nullable Style urlStyle, final boolean colorDownsample, final boolean useTerriblyStupidHexFormat) {
+  LegacyComponentSerializerImpl(final char character, final char hexCharacter, final boolean urlLink, final @Nullable Pattern urlPattern, final @Nullable Style urlStyle, final boolean hexColours, final boolean useTerriblyStupidHexFormat) {
     if(urlLink) requireNonNull(urlPattern, "url pattern must be non-null when linking");
     this.character = character;
     this.hexCharacter = hexCharacter;
     this.urlLink = urlLink;
     this.urlPattern = urlPattern;
     this.urlStyle = urlStyle;
-    this.colorDownsample = colorDownsample;
+    this.hexColours = hexColours;
     this.useTerriblyStupidHexFormat = useTerriblyStupidHexFormat;
   }
 
@@ -174,9 +174,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   private String toLegacyCode(TextFormat format) {
     if(isHexTextColor(format)) {
       final TextColor color = (TextColor) format;
-      if(this.colorDownsample) {
-        format = NamedTextColor.nearestTo(color);
-      } else {
+      if(this.hexColours) {
         final String hex = String.format("%06x", color.value());
         if(this.useTerriblyStupidHexFormat) {
           // ah yes, wonderful. A 14 digit long completely unreadable string.
@@ -189,6 +187,10 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
           // this is a bit nicer, hey?
           return this.hexCharacter + hex;
         }
+      } else {
+        // if we are not using hex colours, then convert the hex colour
+        // to the "nearest" possible named/standard text colour
+        format = NamedTextColor.nearestTo(color);
       }
     }
     final int index = FORMATS.indexOf(format);
@@ -430,7 +432,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     private boolean urlLink = false;
     private Pattern urlPattern = DEFAULT_URL_PATTERN;
     private Style urlStyle = null;
-    private boolean colorDownsample = true;
+    private boolean hexColours = false;
     private boolean useTerriblyStupidHexFormat = false;
 
     BuilderImpl() {
@@ -441,7 +443,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       this.hexCharacter = serializer.hexCharacter;
       this.urlStyle = serializer.urlStyle;
       this.urlLink = serializer.urlLink;
-      this.colorDownsample = serializer.colorDownsample;
+      this.hexColours = serializer.hexColours;
       this.useTerriblyStupidHexFormat = serializer.useTerriblyStupidHexFormat;
     }
 
@@ -482,7 +484,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
     @Override
     public @NonNull Builder hexColors() {
-      this.colorDownsample = false;
+      this.hexColours = true;
       return this;
     }
 
@@ -499,7 +501,7 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
           throw new IllegalStateException("url pattern must be non-null when creating a linking serializer");
         }
       }
-      return new LegacyComponentSerializerImpl(this.character, this.hexCharacter, this.urlLink, this.urlPattern, this.urlStyle, this.colorDownsample, this.useTerriblyStupidHexFormat);
+      return new LegacyComponentSerializerImpl(this.character, this.hexCharacter, this.urlLink, this.urlPattern, this.urlStyle, this.hexColours, this.useTerriblyStupidHexFormat);
     }
   }
 
