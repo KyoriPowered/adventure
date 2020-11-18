@@ -384,8 +384,9 @@ class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       }
 
       void applyFormat() {
-        // If color changes, we need to do a full reset
-        if(this.color != Cereal.this.style.color) {
+        // If color changes, we need to do a full reset.
+        // Additionally, if the last thing to be appended was a reset then we need to re-apply everything.
+        if(this.color != Cereal.this.style.color || Cereal.this.format == Reset.INSTANCE) {
           this.applyFullFormat();
           return;
         }
