@@ -90,8 +90,8 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
   }
 
-  static final LegacyComponentSerializer SECTION_SERIALIZER = new LegacyComponentSerializerImpl(SECTION_CHAR, HEX_CHAR, false, null, null, true, false);
-  static final LegacyComponentSerializer AMPERSAND_SERIALIZER = new LegacyComponentSerializerImpl(AMPERSAND_CHAR, HEX_CHAR, false, null, null, true, false);
+  static final LegacyComponentSerializer SECTION_SERIALIZER = new LegacyComponentSerializerImpl(SECTION_CHAR, HEX_CHAR, false, null, null, false, false);
+  static final LegacyComponentSerializer AMPERSAND_SERIALIZER = new LegacyComponentSerializerImpl(AMPERSAND_CHAR, HEX_CHAR, false, null, null, false, false);
 
   private final char character;
   private final char hexCharacter;
