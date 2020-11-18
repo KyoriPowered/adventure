@@ -299,14 +299,14 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   // Are you hungry?
   private final class Cereal {
     private final StringBuilder sb = new StringBuilder();
-    private final Style style = new Style();
+    private final StyleState style = new StyleState();
     private @Nullable TextFormat format;
 
     void append(final @NonNull Component component) {
-      this.append(component, new Style());
+      this.append(component, new StyleState());
     }
 
-    private void append(final @NonNull Component component, final @NonNull Style style) {
+    private void append(final @NonNull Component component, final @NonNull StyleState style) {
       style.apply(component);
 
       if(component instanceof TextComponent) {
@@ -319,7 +319,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
       final List<Component> children = component.children();
       if(!children.isEmpty()) {
-        final Style childrenStyle = new Style(style);
+        final StyleState childrenStyle = new StyleState(style);
         for(final Component child : children) {
           this.append(child, childrenStyle);
           childrenStyle.set(style);
@@ -343,15 +343,15 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       return this.sb.toString();
     }
 
-    private final class Style {
+    private final class StyleState {
       private @Nullable TextColor color;
       private final Set<TextDecoration> decorations;
 
-      Style() {
+      StyleState() {
         this.decorations = EnumSet.noneOf(TextDecoration.class);
       }
 
-      Style(final @NonNull Style that) {
+      StyleState(final @NonNull StyleState that) {
         this.color = that.color;
         this.decorations = EnumSet.copyOf(that.decorations);
       }
@@ -360,7 +360,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         return this.color == null || this.decorations.isEmpty();
       }
 
-      void set(final @NonNull Style that) {
+      void set(final @NonNull StyleState that) {
         this.color = that.color;
         this.decorations.clear();
         this.decorations.addAll(that.decorations);
