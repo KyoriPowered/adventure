@@ -26,6 +26,7 @@ package net.kyori.adventure.text.minimessage.transformation;
 import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.string.StringExaminer;
@@ -58,7 +59,7 @@ public abstract class Transformation implements Examinable {
   public abstract int hashCode();
 
   protected Component merge(Component target, Component template) {
-    Component result = target.mergeStyle(template);
+    Component result = target.style(target.style().merge(template.style(), Style.Merge.Strategy.IF_ABSENT_ON_TARGET, Style.Merge.all()));;
     if (template.hoverEvent() != null) {
       result = result.hoverEvent(template.hoverEvent());
     }

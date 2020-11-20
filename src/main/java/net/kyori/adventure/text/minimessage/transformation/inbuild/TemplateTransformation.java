@@ -47,7 +47,15 @@ public class TemplateTransformation extends OneTimeTransformation implements Ins
 
     @Override
     public Component applyOneTime(Component current, TextComponent.Builder parent, ArrayDeque<Transformation> transformations) {
-        parent.append(merge( template.getValue(), current));
+        Component comp = template.getValue();
+        // first apply transformations
+        for (Transformation transformation : transformations) {
+            comp = transformation.apply(comp, parent);
+        }
+        // then fix style again
+        comp = merge(template.getValue(), comp);
+
+        parent.append(comp);
         return current;
     }
 
