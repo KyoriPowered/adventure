@@ -24,7 +24,6 @@
 package net.kyori.adventure.text.serializer.gson;
 
 import com.google.gson.JsonElement;
-import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -43,12 +42,17 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class StyleTest extends AbstractSerializeDeserializeTest<Style> {
+@SuppressWarnings("CodeBlock2Expr")
+class StyleTest extends GsonTest<Style> {
   private static final Key FANCY_FONT = Key.key("kyori", "kittens");
+
+  StyleTest() {
+    super(GsonComponentSerializer.gson().serializer(), Style.class);
+  }
 
   @Test
   void testWithDecorationAsColor() {
-    final Style s0 = AbstractComponentTest.GSON.fromJson(AbstractComponentTest.object(object -> {
+    final Style s0 = GsonComponentSerializer.gson().serializer().fromJson(object(object -> {
       object.addProperty(StyleSerializer.COLOR, TextDecoration.NAMES.key(TextDecoration.BOLD));
     }), Style.class);
     assertNull(s0.color());
@@ -57,87 +61,115 @@ class StyleTest extends AbstractSerializeDeserializeTest<Style> {
 
   @Test
   void testWithResetAsColor() {
-    final Style s0 = AbstractComponentTest.GSON.fromJson(AbstractComponentTest.object(object -> {
+    final Style s0 = GsonComponentSerializer.gson().serializer().fromJson(object(object -> {
       object.addProperty(StyleSerializer.COLOR, "reset");
     }), Style.class);
     assertNull(s0.color());
     assertThat(Style.empty().decorations()).containsExactlyEntriesIn(Stream.of(TextDecoration.values()).collect(Collectors.toMap(Function.identity(), decoration -> TextDecoration.State.NOT_SET)));
   }
 
-  @Override
-  Stream<Map.Entry<Style, JsonElement>> tests() {
-    final UUID dolores = UUID.randomUUID();
-    return Stream.of(
-      entry(Style.empty(), json -> {}),
-      entry(Style.style(TextColor.color(0x0a1ab9)), json -> json.addProperty(StyleSerializer.COLOR, "#0a1ab9")),
-      entry(Style.style(NamedTextColor.LIGHT_PURPLE), json -> json.addProperty(StyleSerializer.COLOR, name(NamedTextColor.LIGHT_PURPLE))),
-      entry(Style.style(TextDecoration.BOLD), json -> json.addProperty(name(TextDecoration.BOLD), true)),
-      entry(Style.style().insertion("honk").build(), json -> json.addProperty(StyleSerializer.INSERTION, "honk")),
-      entry(
-        Style.style()
-          .font(FANCY_FONT)
-          .color(NamedTextColor.RED)
-          .decoration(TextDecoration.BOLD, true)
-          .clickEvent(ClickEvent.openUrl("https://github.com"))
-          .build(),
-        json -> {
-          json.addProperty(StyleSerializer.FONT, "kyori:kittens");
-          json.addProperty(StyleSerializer.COLOR, name(NamedTextColor.RED));
-          json.addProperty(name(TextDecoration.BOLD), true);
-          json.add(StyleSerializer.CLICK_EVENT, object(clickEvent -> {
-            clickEvent.addProperty(StyleSerializer.CLICK_EVENT_ACTION, name(ClickEvent.Action.OPEN_URL));
-            clickEvent.addProperty(StyleSerializer.CLICK_EVENT_VALUE, "https://github.com");
-          }));
-        }
-      ),
-      entry(
-        Style.style()
-          .hoverEvent(HoverEvent.showEntity(HoverEvent.ShowEntity.of(
-            Key.key(Key.MINECRAFT_NAMESPACE, "pig"),
-            dolores,
-            Component.text("Dolores", TextColor.color(0x0a1ab9))
-          )))
-          .build(),
-        json -> {
-          json.add(StyleSerializer.HOVER_EVENT, object(hoverEvent -> {
-            hoverEvent.addProperty(StyleSerializer.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ENTITY));
-            hoverEvent.add(StyleSerializer.HOVER_EVENT_CONTENTS, object(contents -> {
-              contents.addProperty(ShowEntitySerializer.TYPE, "minecraft:pig");
-              contents.addProperty(ShowEntitySerializer.ID, dolores.toString());
-              contents.add(ShowEntitySerializer.NAME, object(name -> {
-                name.addProperty(ComponentSerializerImpl.TEXT, "Dolores");
-                name.addProperty(StyleSerializer.COLOR, "#0a1ab9");
-              }));
-            }));
-          }));
-        }
-      ),
-      showItem(1),
-      showItem(2)
+  @Test
+  void testEmpty() {
+    this.test(Style.empty(), object(json -> {
+    }));
+  }
+
+  @Test
+  void testHexColor() {
+    this.test(Style.style(TextColor.color(0x0a1ab9)), object(json -> json.addProperty(StyleSerializer.COLOR, "#0a1ab9")));
+  }
+
+  @Test
+  void testNamedColor() {
+    this.test(Style.style(NamedTextColor.LIGHT_PURPLE), object(json -> json.addProperty(StyleSerializer.COLOR, name(NamedTextColor.LIGHT_PURPLE))));
+  }
+
+  @Test
+  void testDecoration() {
+    this.test(Style.style(TextDecoration.BOLD), object(json -> json.addProperty(name(TextDecoration.BOLD), true)));
+  }
+
+  @Test
+  void testInsertion() {
+    this.test(Style.style().insertion("honk").build(), object(json -> json.addProperty(StyleSerializer.INSERTION, "honk")));
+  }
+
+  @Test
+  void testMixedFontColorDecorationClickEvent() {
+    this.test(
+      Style.style()
+        .font(FANCY_FONT)
+        .color(NamedTextColor.RED)
+        .decoration(TextDecoration.BOLD, true)
+        .clickEvent(ClickEvent.openUrl("https://github.com"))
+        .build(),
+      object(json -> {
+        json.addProperty(StyleSerializer.FONT, "kyori:kittens");
+        json.addProperty(StyleSerializer.COLOR, name(NamedTextColor.RED));
+        json.addProperty(name(TextDecoration.BOLD), true);
+        json.add(StyleSerializer.CLICK_EVENT, object(clickEvent -> {
+          clickEvent.addProperty(StyleSerializer.CLICK_EVENT_ACTION, name(ClickEvent.Action.OPEN_URL));
+          clickEvent.addProperty(StyleSerializer.CLICK_EVENT_VALUE, "https://github.com");
+        }));
+      })
     );
   }
 
-  private static Map.Entry<Style, JsonElement> showItem(final int count) {
-    return entry(
+  @Test
+  void testShowEntityHoverEvent() {
+    final UUID dolores = UUID.randomUUID();
+    this.test(
       Style.style()
-        .hoverEvent(HoverEvent.showItem(HoverEvent.ShowItem.of(
-          Key.key(Key.MINECRAFT_NAMESPACE, "stone"),
-          count,
-          null // TODO: test for NBT?
+        .hoverEvent(HoverEvent.showEntity(HoverEvent.ShowEntity.of(
+          Key.key(Key.MINECRAFT_NAMESPACE, "pig"),
+          dolores,
+          Component.text("Dolores", TextColor.color(0x0a1ab9))
         )))
         .build(),
-      json -> {
+      object(json -> {
         json.add(StyleSerializer.HOVER_EVENT, object(hoverEvent -> {
-          hoverEvent.addProperty(StyleSerializer.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ITEM));
+          hoverEvent.addProperty(StyleSerializer.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ENTITY));
           hoverEvent.add(StyleSerializer.HOVER_EVENT_CONTENTS, object(contents -> {
-            contents.addProperty(ShowItemSerializer.ID, "minecraft:stone");
-            if(count != 1) {
-              contents.addProperty(ShowItemSerializer.COUNT, count);
-            }
+            contents.addProperty(ShowEntitySerializer.TYPE, "minecraft:pig");
+            contents.addProperty(ShowEntitySerializer.ID, dolores.toString());
+            contents.add(ShowEntitySerializer.NAME, object(name -> {
+              name.addProperty(ComponentSerializerImpl.TEXT, "Dolores");
+              name.addProperty(StyleSerializer.COLOR, "#0a1ab9");
+            }));
           }));
         }));
-      }
+      })
     );
+  }
+
+  @Test
+  void testShowItemHoverEvent() {
+    this.test(showItemStyle(1), showItemJson(1));
+    this.test(showItemStyle(2), showItemJson(2));
+  }
+
+  private static Style showItemStyle(final int count) {
+    return Style.style()
+      .hoverEvent(HoverEvent.showItem(HoverEvent.ShowItem.of(
+        Key.key(Key.MINECRAFT_NAMESPACE, "stone"),
+        count,
+        null // TODO: test for NBT?
+      )))
+      .build();
+  }
+
+  private static JsonElement showItemJson(final int count) {
+    return object(json -> {
+      json.add(StyleSerializer.HOVER_EVENT, object(hoverEvent -> {
+        hoverEvent.addProperty(StyleSerializer.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ITEM));
+        hoverEvent.add(StyleSerializer.HOVER_EVENT_CONTENTS, object(contents -> {
+          contents.addProperty(ShowItemSerializer.ID, "minecraft:stone");
+          if(count != 1) { // default count is 1, we don't serialize the value in this case
+            contents.addProperty(ShowItemSerializer.COUNT, count);
+          }
+        }));
+      }));
+    });
   }
 
   static String name(final NamedTextColor color) {
@@ -154,15 +186,5 @@ class StyleTest extends AbstractSerializeDeserializeTest<Style> {
 
   static <V> String name(final HoverEvent.Action<V> action) {
     return HoverEvent.Action.NAMES.key(action);
-  }
-
-  @Override
-  Style deserialize(final JsonElement json) {
-    return AbstractComponentTest.GSON.fromJson(json, Style.class);
-  }
-
-  @Override
-  JsonElement serialize(final Style object) {
-    return AbstractComponentTest.GSON.toJsonTree(object);
   }
 }

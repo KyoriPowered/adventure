@@ -23,49 +23,60 @@
  */
 package net.kyori.adventure.text.serializer.gson;
 
-import com.google.gson.JsonElement;
-import java.util.Map;
-import java.util.stream.Stream;
 import net.kyori.adventure.text.BlockNBTComponent;
-import net.kyori.adventure.text.BlockNBTComponent.WorldPos.Coordinate;
 import net.kyori.adventure.text.Component;
+import org.junit.jupiter.api.Test;
 
-class BlockNBTComponentTest extends AbstractComponentTest<BlockNBTComponent> {
-  @Override
-  Stream<Map.Entry<BlockNBTComponent, JsonElement>> tests() {
-    return Stream.of(
-      entry(
-        Component.blockNBT().nbtPath("abc").localPos(1.23d, 2.0d, 3.89d).build(),
-        json -> {
-          json.addProperty(ComponentSerializerImpl.NBT, "abc");
-          json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
-          json.addProperty(ComponentSerializerImpl.NBT_BLOCK, "^1.23 ^2.0 ^3.89");
-        }
-      ),
-      entry(
-        Component.blockNBT().nbtPath("xyz").absoluteWorldPos(4, 5, 6).interpret(true).build(),
-        json -> {
-          json.addProperty(ComponentSerializerImpl.NBT, "xyz");
-          json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, true);
-          json.addProperty(ComponentSerializerImpl.NBT_BLOCK, "4 5 6");
-        }
-      ),
-      entry(
-        Component.blockNBT().nbtPath("eeee").relativeWorldPos(7, 83, 900).build(),
-        json -> {
-          json.addProperty(ComponentSerializerImpl.NBT, "eeee");
-          json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
-          json.addProperty(ComponentSerializerImpl.NBT_BLOCK, "~7 ~83 ~900");
-        }
-      ),
-      entry(
-        Component.blockNBT().nbtPath("qwert").worldPos(Coordinate.absolute(12), Coordinate.relative(3), Coordinate.absolute(1200)).build(),
-        json -> {
-          json.addProperty(ComponentSerializerImpl.NBT, "qwert");
-          json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
-          json.addProperty(ComponentSerializerImpl.NBT_BLOCK, "12 ~3 1200");
-        }
-      )
+class BlockNBTComponentTest extends ComponentTest {
+  @Test
+  void testLocal() {
+    this.test(
+      Component.blockNBT().nbtPath("abc").localPos(1.23d, 2.0d, 3.89d).build(),
+      object(json -> {
+        json.addProperty(ComponentSerializerImpl.NBT, "abc");
+        json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
+        json.addProperty(ComponentSerializerImpl.NBT_BLOCK, "^1.23 ^2.0 ^3.89");
+      })
+    );
+  }
+
+  @Test
+  void testAbsoluteWorld() {
+    this.test(
+      Component.blockNBT().nbtPath("xyz").absoluteWorldPos(4, 5, 6).interpret(true).build(),
+      object(json -> {
+        json.addProperty(ComponentSerializerImpl.NBT, "xyz");
+        json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, true);
+        json.addProperty(ComponentSerializerImpl.NBT_BLOCK, "4 5 6");
+      })
+    );
+  }
+
+  @Test
+  void testRelativeWorld() {
+    this.test(
+      Component.blockNBT().nbtPath("eeee").relativeWorldPos(7, 83, 900).build(),
+      object(json -> {
+        json.addProperty(ComponentSerializerImpl.NBT, "eeee");
+        json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
+        json.addProperty(ComponentSerializerImpl.NBT_BLOCK, "~7 ~83 ~900");
+      })
+    );
+  }
+
+  @Test
+  void testMixedAbsoluteAndRelative() {
+    this.test(
+      Component.blockNBT().nbtPath("qwert").worldPos(
+        BlockNBTComponent.WorldPos.Coordinate.absolute(12),
+        BlockNBTComponent.WorldPos.Coordinate.relative(3),
+        BlockNBTComponent.WorldPos.Coordinate.absolute(1200)
+      ).build(),
+      object(json -> {
+        json.addProperty(ComponentSerializerImpl.NBT, "qwert");
+        json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
+        json.addProperty(ComponentSerializerImpl.NBT_BLOCK, "12 ~3 1200");
+      })
     );
   }
 }

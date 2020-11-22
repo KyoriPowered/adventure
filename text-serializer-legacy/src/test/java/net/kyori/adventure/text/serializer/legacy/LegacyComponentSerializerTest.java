@@ -32,6 +32,9 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LegacyComponentSerializerTest {
@@ -253,9 +256,29 @@ class LegacyComponentSerializerTest {
   }
 
   @Test
-  void testLegacyFormat() {
-    assertEquals(NamedTextColor.DARK_PURPLE, LegacyComponentSerializer.parseChar('5').color());
-    assertEquals(TextDecoration.BOLD, LegacyComponentSerializer.parseChar('l').decoration());
-    assertTrue(LegacyComponentSerializer.parseChar('r').reset());
+  void testParseColourChar() {
+    final LegacyFormat lf = LegacyComponentSerializer.parseChar('5');
+    assertNotNull(lf);
+    assertEquals(NamedTextColor.DARK_PURPLE, lf.color());
+    assertNull(lf.decoration());
+    assertFalse(lf.reset());
+  }
+
+  @Test
+  void testParseDecorationChar() {
+    final LegacyFormat lf = LegacyComponentSerializer.parseChar('l');
+    assertNotNull(lf);
+    assertNull(lf.color());
+    assertEquals(TextDecoration.BOLD, lf.decoration());
+    assertFalse(lf.reset());
+  }
+
+  @Test
+  void testParseResetChar() {
+    final LegacyFormat lf = LegacyComponentSerializer.parseChar('r');
+    assertNotNull(lf);
+    assertNull(lf.color());
+    assertNull(lf.decoration());
+    assertTrue(lf.reset());
   }
 }

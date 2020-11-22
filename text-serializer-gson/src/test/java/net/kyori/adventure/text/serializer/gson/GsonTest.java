@@ -23,26 +23,45 @@
  */
 package net.kyori.adventure.text.serializer.gson;
 
-import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import net.kyori.adventure.text.Component;
+import com.google.gson.JsonObject;
+import java.util.function.Consumer;
 
-abstract class AbstractComponentTest<C extends Component> extends AbstractSerializeDeserializeTest<C> {
-  static final Gson GSON = GsonComponentSerializerImpl.INSTANCE.serializer();
-  static final Gson GSON_DOWNSAMPLING = GsonComponentSerializerImpl.LEGACY_INSTANCE.serializer();
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-  @SuppressWarnings("serial")
-  private final TypeToken<C> type = new TypeToken<C>(this.getClass()) {};
+abstract class GsonTest<T> {
+  private final Gson gson;
+  private final Class<T> type;
 
-  @Override
-  @SuppressWarnings("unchecked")
-  C deserialize(final JsonElement json) {
-    return GSON.fromJson(json, (Class<C>) this.type.getRawType());
+  GsonTest(final Gson gson, final Class<T> type) {
+    this.gson = gson;
+    this.type = type;
   }
 
-  @Override
-  JsonElement serialize(final C object) {
-    return GSON.toJsonTree(object);
+  final void test(final T object, final JsonElement json) {
+    assertEquals(json, this.serialize(object));
+    assertEquals(object, this.deserialize(json));
+  }
+
+  final JsonElement serialize(final T object) {
+    return this.gson.toJsonTree(object);
+  }
+
+  final T deserialize(final JsonElement json) {
+    return this.gson.fromJson(json, this.type);
+  }
+
+  static JsonArray array(final Consumer<? super JsonArray> consumer) {
+    final JsonArray json = new JsonArray();
+    consumer.accept(json);
+    return json;
+  }
+
+  static JsonObject object(final Consumer<? super JsonObject> consumer) {
+    final JsonObject json = new JsonObject();
+    consumer.accept(json);
+    return json;
   }
 }

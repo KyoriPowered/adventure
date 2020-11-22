@@ -30,13 +30,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TranslatorTest {
   @Test
-  void testParseLocale() {
+  void testParseLocaleWithLanguage() {
     assertEquals(Locale.GERMAN, Translator.parseLocale("de"));
     assertEquals(Locale.ENGLISH, Translator.parseLocale("en"));
+  }
 
+  @Test
+  void testParseLocaleWithLanguageAndCountry() {
     assertEquals(Locale.GERMANY, Translator.parseLocale("de_de"));
     assertEquals(Locale.US, Translator.parseLocale("en_us"));
+  }
 
+  @Test
+  void testParseLocaleWithLanguageAndCountryAndVariant() {
     assertEquals(new Locale("en", "ie", "euro"), Translator.parseLocale("en_ie_euro"));
     assertEquals(new Locale("de", "de", "euro"), Translator.parseLocale("de_de_euro"));
   }

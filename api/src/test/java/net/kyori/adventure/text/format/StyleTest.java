@@ -282,12 +282,27 @@ class StyleTest {
   }
 
   @Test
-  void testBuilderMerge_all() {
+  void testBuilderMergeEmptyArray() {
+    final Style style = Style.style(NamedTextColor.DARK_PURPLE);
+    final Style.Builder builder = Style.style();
+    builder.merge(style, new Style.Merge[0]);
+    assertEquals(Style.empty(), builder.build());
+  }
+
+  @Test
+  void testBuilderMergeEmptySet() {
+    final Style style = Style.style(NamedTextColor.DARK_PURPLE);
+    final Style.Builder builder = Style.style();
+    builder.merge(style, ImmutableSet.of());
+    assertEquals(Style.empty(), builder.build());
+  }
+
+  @Test
+  void testBuilderMergeDefaults() {
     final Style style = Style.style(NamedTextColor.DARK_PURPLE, TextDecoration.BOLD);
-    doWith(Style.style(), builder -> {
-      builder.merge(style);
-      assertEquals(style, builder.build());
-    });
+    final Style.Builder builder = Style.style();
+    builder.merge(style);
+    assertEquals(style, builder.build());
   }
 
   @Test
