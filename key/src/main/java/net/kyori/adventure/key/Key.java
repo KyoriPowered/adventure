@@ -94,6 +94,19 @@ public interface Key extends Comparable<Key>, Examinable {
   /**
    * Creates a key.
    *
+   * @param namespaced the namespace source
+   * @param value the value
+   * @return the key
+   * @throws InvalidKeyException if the namespace or value contains an invalid character
+   * @since 4.4.0
+   */
+  static @NonNull Key key(final @NonNull Namespaced namespaced, final @NonNull @Pattern(KeyImpl.VALUE_PATTERN) String value) {
+    return key(namespaced.namespace(), value);
+  }
+
+  /**
+   * Creates a key.
+   *
    * @param namespace the namespace
    * @param value the value
    * @return the key
