@@ -26,7 +26,6 @@ package net.kyori.adventure.key;
 import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Test;
 
-import static net.kyori.test.WeirdAssertions.doWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -34,26 +33,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class KeyTest {
   @Test
-  void testOf() {
-    doWith(Key.key("empty"), key -> {
-      assertEquals(Key.MINECRAFT_NAMESPACE, key.namespace());
-      assertEquals("empty", key.value());
-    });
+  void testOfValueOnly() {
+    final Key key = Key.key("empty");
+    assertEquals(Key.MINECRAFT_NAMESPACE, key.namespace());
+    assertEquals("empty", key.value());
+  }
 
-    doWith(Key.key(Key.MINECRAFT_NAMESPACE + ":empty"), key -> {
-      assertEquals(Key.MINECRAFT_NAMESPACE, key.namespace());
-      assertEquals("empty", key.value());
-    });
+  @Test
+  void testOfNamespaceAndValue() {
+    final Key key = Key.key(Key.MINECRAFT_NAMESPACE, "empty");
+    assertEquals(Key.MINECRAFT_NAMESPACE, key.namespace());
+    assertEquals("empty", key.value());
+  }
 
-    doWith(Key.key(Key.MINECRAFT_NAMESPACE, "empty"), key -> {
-      assertEquals(Key.MINECRAFT_NAMESPACE, key.namespace());
-      assertEquals("empty", key.value());
-    });
-
-    doWith(Key.key("realms", "empty"), key -> {
-      assertEquals("realms", key.namespace());
-      assertEquals("empty", key.value());
-    });
+  @Test
+  void testOfNamespaceAndValueParsed() {
+    final Key key = Key.key(Key.MINECRAFT_NAMESPACE + ":empty");
+    assertEquals(Key.MINECRAFT_NAMESPACE, key.namespace());
+    assertEquals("empty", key.value());
   }
 
   @Test

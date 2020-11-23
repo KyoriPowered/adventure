@@ -23,29 +23,33 @@
  */
 package net.kyori.adventure.text.serializer.gson;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import java.util.Map;
-import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ScoreComponent;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class ScoreComponentTest extends AbstractComponentTest<ScoreComponent> {
+class ScoreComponentTest extends ComponentTest {
   private static final String NAME = "abc";
   private static final String OBJECTIVE = "def";
   private static final String VALUE = "ghi";
 
-  @Override
-  Stream<Map.Entry<ScoreComponent, JsonElement>> tests() {
-    return Stream.of(
-      entry(Component.score(NAME, OBJECTIVE), json -> json.add(ComponentSerializerImpl.SCORE, object(score -> {
+  @Test
+  void test() {
+    this.test(
+      Component.score(NAME, OBJECTIVE),
+      object(json -> json.add(ComponentSerializerImpl.SCORE, object(score -> {
         score.addProperty(ComponentSerializerImpl.SCORE_NAME, NAME);
         score.addProperty(ComponentSerializerImpl.SCORE_OBJECTIVE, OBJECTIVE);
-      }))),
-      entry(Component.score(NAME, OBJECTIVE, VALUE), json -> json.add(ComponentSerializerImpl.SCORE, object(score -> {
+      })))
+    );
+  }
+
+  @Test
+  void testWithValue() {
+    this.test(
+      Component.score(NAME, OBJECTIVE, VALUE),
+      object(json -> json.add(ComponentSerializerImpl.SCORE, object(score -> {
         score.addProperty(ComponentSerializerImpl.SCORE_NAME, NAME);
         score.addProperty(ComponentSerializerImpl.SCORE_OBJECTIVE, OBJECTIVE);
         score.addProperty(ComponentSerializerImpl.SCORE_VALUE, VALUE);
@@ -54,7 +58,7 @@ class ScoreComponentTest extends AbstractComponentTest<ScoreComponent> {
   }
 
   @Test
-  void testDeserialize_withoutObjective() {
-    assertThrows(JsonParseException.class, () -> AbstractComponentTest.GSON.fromJson(object(json -> json.add(ComponentSerializerImpl.SCORE, object(score -> score.addProperty(ComponentSerializerImpl.SCORE_NAME, NAME)))), Component.class));
+  void testWithoutObjective() {
+    assertThrows(JsonParseException.class, () -> this.deserialize(object(json -> json.add(ComponentSerializerImpl.SCORE, object(score -> score.addProperty(ComponentSerializerImpl.SCORE_NAME, NAME))))));
   }
 }

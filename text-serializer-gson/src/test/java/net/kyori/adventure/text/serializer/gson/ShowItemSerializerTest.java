@@ -47,7 +47,7 @@ class ShowItemSerializerTest {
           .build()
       ))),
       GsonComponentSerializer.gson().serializer().fromJson(
-        AbstractSerializeDeserializeTest.object(json -> {
+        GsonTest.object(json -> {
           json.addProperty(ShowItemSerializer.ID, "minecraft:diamond");
           json.addProperty(ShowItemSerializer.COUNT, 1);
           json.addProperty(ShowItemSerializer.TAG, "{display:{Name:\"A test!\"}}");
@@ -62,7 +62,7 @@ class ShowItemSerializerTest {
     assertEquals(
       HoverEvent.ShowItem.of(Key.key("minecraft", "diamond"), 1, null),
       GsonComponentSerializer.gson().serializer().fromJson(
-        AbstractSerializeDeserializeTest.object(json -> {
+        GsonTest.object(json -> {
           json.addProperty(ShowItemSerializer.ID, "minecraft:diamond");
           json.addProperty(ShowItemSerializer.COUNT, 1);
           json.add(ShowItemSerializer.TAG, JsonNull.INSTANCE);

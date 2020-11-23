@@ -23,14 +23,15 @@
  */
 package net.kyori.adventure.text.serializer.gson;
 
+import com.google.gson.Gson;
 import net.kyori.adventure.text.Component;
-import org.junit.jupiter.api.Test;
 
-class KeybindComponentTest extends ComponentTest {
-  private static final String KEY = "key.jump";
+abstract class ComponentTest extends GsonTest<Component> {
+  ComponentTest() {
+    this(GsonComponentSerializer.gson().serializer());
+  }
 
-  @Test
-  void test() {
-    this.test(Component.keybind(KEY), object(json -> json.addProperty(ComponentSerializerImpl.KEYBIND, KEY)));
+  ComponentTest(final Gson gson) {
+    super(gson, Component.class);
   }
 }

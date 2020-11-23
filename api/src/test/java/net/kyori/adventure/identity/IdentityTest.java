@@ -31,8 +31,9 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 class IdentityTest {
   @Test
-  void testIdentity_0_0() {
+  void testNilIdentity() {
     assertSame(Identity.nil(), Identity.identity(new UUID(0, 0)));
+    assertSame(Identity.nil(), Identity.identity(UUID.fromString("00000000-0000-0000-0000-000000000000")));
   }
 
   @Test
@@ -46,6 +47,7 @@ class IdentityTest {
   void testEquality() {
     final UUID uuid = UUID.randomUUID();
     new EqualsTester()
+      .addEqualityGroup(Identity.nil())
       .addEqualityGroup(Identity.identity(uuid), Identity.identity(uuid))
       .testEquals();
   }

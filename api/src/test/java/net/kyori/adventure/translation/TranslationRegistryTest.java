@@ -24,6 +24,7 @@
 package net.kyori.adventure.translation;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.testing.EqualsTester;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -195,6 +196,14 @@ class TranslationRegistryTest {
         Locale.US
       )
     );
+  }
+
+  @Test
+  void testEquality() {
+    new EqualsTester()
+      .addEqualityGroup(REGISTRY)
+      .addEqualityGroup(TranslationRegistry.create(Key.key("adventure", "test_2")))
+      .testEquals();
   }
 
   @Test
