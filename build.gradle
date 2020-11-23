@@ -27,12 +27,12 @@ subprojects {
   apply plugin: "com.adarshr.test-logger"
 
   indra {
-    github("KyoriPowered", "adventure")
-    mitLicense()
-
     javaVersions {
       testWith(8, 11, 15)
     }
+
+    github("KyoriPowered", "adventure")
+    mitLicense()
 
     configurePublications {
       pom {
