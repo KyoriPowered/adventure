@@ -45,6 +45,7 @@ import java.io.IOException;
 %column
 
 %state TAG
+%state TAG_DUMMY
 %state PARAM
 %state QUOTED
 %state STRING
@@ -104,20 +105,21 @@ tagEnd = >
 
 escapedOpenTagStart = \\<
 escapedCloseTagStart = \\<\/
-escapedTagEnd = \\>
 
-identifier = [a-zA-Z0-9_\-#\./ ]
+identifier = [a-zA-Z0-9_\-#\./ ]+
 
 paramSeperator = :
 
 quote = '|\"
 escapedQuote = \\'|\\\"
 
+whitespace = [ \n\t\r]+
+
 %%
 
 <YYINITIAL> {
-  {escapedOpenTagStart}   { string.setLength(0); string.append("<"); yybegin(STRING); }
-  {escapedCloseTagStart}  { string.setLength(0); string.append("</"); yybegin(STRING); }
+  {escapedOpenTagStart}   { yybegin(TAG_DUMMY); string.setLength(0); tokens.add(new Token(TokenType.ESCAPED_OPEN_TAG_START)); }
+  {escapedCloseTagStart}  { yybegin(TAG_DUMMY); string.setLength(0); tokens.add(new Token(TokenType.ESCAPED_CLOSE_TAG_START)); }
   {openTagStart}          { yybegin(TAG); string.setLength(0); tokens.add(new Token(TokenType.OPEN_TAG_START)); }
   {closeTagStart}         { yybegin(TAG); string.setLength(0); tokens.add(new Token(TokenType.CLOSE_TAG_START)); }
   [^]                     { string.setLength(0); string.append(yytext()); yybegin(STRING); }
@@ -128,6 +130,13 @@ escapedQuote = \\'|\\\"
   {tagEnd}                { yybegin(YYINITIAL); tokens.add(new Token(TokenType.NAME, getString())); tokens.add(new Token(TokenType.TAG_END)); }
   {identifier}            { string.append(yytext()); }
   [^]                     { throw new ParsingException("Illegal character '" + yytext() + "'. Only alphanumeric + ._-#/ are allowed as token names", yycolumn); }
+}
+
+<TAG_DUMMY> {
+  {paramSeperator}        { yybegin(PARAM); tokens.add(new Token(TokenType.NAME, getString())); tokens.add(new Token(TokenType.PARAM_SEPARATOR)); }
+  {tagEnd}                { yybegin(YYINITIAL); tokens.add(new Token(TokenType.NAME, getString())); tokens.add(new Token(TokenType.TAG_END)); }
+  {whitespace}            { yybegin(YYINITIAL); tokens.add(new Token(getString())); }
+  [^]                     { string.append(yytext()); }
 }
 
 <PARAM> {
@@ -145,9 +154,8 @@ escapedQuote = \\'|\\\"
 }
 
 <STRING> {
-  {escapedOpenTagStart}   { string.append("<"); }
-  {escapedCloseTagStart}  { string.append("</"); }
-  {escapedTagEnd}         { string.append(">"); }
+  {escapedOpenTagStart}   { yybegin(TAG_DUMMY); tokens.add(new Token(getString())); tokens.add(new Token(TokenType.ESCAPED_OPEN_TAG_START)); }
+  {escapedCloseTagStart}  { yybegin(TAG_DUMMY); tokens.add(new Token(getString())); tokens.add(new Token(TokenType.ESCAPED_CLOSE_TAG_START)); }
   {tagEnd}                { yybegin(YYINITIAL); tokens.add(new Token(getString())); tokens.add(new Token(TokenType.TAG_END)); }
   {closeTagStart}         { yybegin(TAG); tokens.add(new Token(getString())); tokens.add(new Token(TokenType.CLOSE_TAG_START)); }
   {openTagStart}          { yybegin(TAG); tokens.add(new Token(getString())); tokens.add(new Token(TokenType.OPEN_TAG_START)); }

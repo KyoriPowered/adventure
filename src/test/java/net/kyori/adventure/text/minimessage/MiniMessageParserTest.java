@@ -28,6 +28,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Disabled;
@@ -104,48 +105,49 @@ public class MiniMessageParserTest {
   @Test
   public void testEscapeSimple() {
     final String input = "<yellow>TEST<green> nested</green>Test";
-    final String expected = "\\<yellow\\>TEST\\<green\\> nested\\</green\\>Test";
+    final String expected = "\\<yellow>TEST\\<green> nested\\</green>Test";
     assertEquals(expected, parser.escapeTokens(input));
   }
 
   @Test
   public void testEscapeComplex() {
     final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here</click><blue> to <bold>FEEL</underlined> it";
-    final String expected = "\\<yellow\\>\\<test\\> random \\<bold\\>stranger\\</bold\\>\\<click:run_command:test command\\>\\<underlined\\>\\<red\\>click here\\</click\\>\\<blue\\> to \\<bold\\>FEEL\\</underlined\\> it";
+    final String expected = "\\<yellow>\\<test> random \\<bold>stranger\\</bold>\\<click:run_command:test command>\\<underlined>\\<red>click here\\</click>\\<blue> to \\<bold>FEEL\\</underlined> it";
     assertEquals(expected, parser.escapeTokens(input));
   }
 
   @Test
   public void testEscapeInner() {
     final String input = "<hover:show_text:\"<red>test:TEST\">TEST";
-    final String expected = "\\<hover:show_text:\"\\<red\\>test:TEST\"\\>TEST";
+    final String expected = "\\<hover:show_text:\"\\<red>test:TEST\">TEST";
     assertEquals(expected, parser.escapeTokens(input));
   }
 
   @Test
   public void testUnescape() {
-    final String input ="<yellow>TEST\\<green\\> nested\\</green\\>Test";
+    final String input ="<yellow>TEST\\<green> nested\\</green>Test";
     final String expected = "TEST<green> nested</green>Test";
     TextComponent comp = (TextComponent) parser.parseFormat(input);
 
-    assertEquals(expected, comp.content());
+    assertEquals(expected, PlainComponentSerializer.plain().serialize(comp));
   }
 
   @Test
   public void testNoUnescape() {
-    final String input ="<yellow>TEST\\<green\\>\\> \\< nested\\</green\\>Test";
-    final String expected = "TEST<green>\\> \\< nested</green>Test";
+    final String input ="<yellow>TEST\\<green> \\< nested\\</green>Test";
+    final String expected = "TEST<green> \\< nested</green>Test";
     TextComponent comp = (TextComponent) parser.parseFormat(input);
 
-    assertEquals(expected, comp.content());
+    assertEquals(expected, PlainComponentSerializer.plain().serialize(comp));
   }
 
   @Test
   public void testEscapeParse() {
     String expected = "<red>test</red>";
-    TextComponent comp =  (TextComponent) MiniMessage.get().parse(MiniMessage.get().escapeTokens("<red>test</red>"));
+    String escaped = MiniMessage.get().escapeTokens(expected);
+    TextComponent comp =  (TextComponent) MiniMessage.get().parse(escaped);
 
-    assertEquals(expected, comp.content());
+    assertEquals(expected, PlainComponentSerializer.plain().serialize(comp));
   }
 
   @Test

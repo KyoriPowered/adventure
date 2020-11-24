@@ -28,6 +28,9 @@ public enum TokenType {
   CLOSE_TAG_START("</"),
   TAG_END(">"),
 
+  ESCAPED_OPEN_TAG_START("<"),
+  ESCAPED_CLOSE_TAG_START("</"),
+
   PARAM_SEPARATOR(":"),
 
   QUOTE_START("'"),

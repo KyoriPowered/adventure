@@ -34,6 +34,13 @@ import net.kyori.adventure.text.minimessage.transformation.inbuild.TemplateTrans
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 public final class TransformationRegistry {
+
+  public static TransformationRegistry EMPTY = new TransformationRegistry();
+
+  static {
+    EMPTY.clear();
+  }
+
   private final List<TransformationType<? extends Transformation>> types = new ArrayList<>();
 
   public TransformationRegistry() {

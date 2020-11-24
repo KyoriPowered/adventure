@@ -95,7 +95,7 @@ class MiniMessageParser {
         token = token.replace(inner, escapeTokens(inner));
       }
 
-      sb.append("\\").append(start).append(token).append("\\").append(end);
+      sb.append("\\").append(start).append(token).append(end);
     }
 
     if (richMessage.length() > lastEnd) {
@@ -186,6 +186,10 @@ class MiniMessageParser {
   }
 
   @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates) {
+    return parseFormat0(richMessage, templates, registry);
+  }
+
+  @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull TransformationRegistry registry) {
     MiniMessageLexer lexer = new MiniMessageLexer(richMessage);
     try {
       lexer.scan();
@@ -207,10 +211,11 @@ class MiniMessageParser {
     while (i < tokens.size()) {
       Token token = tokens.get(i);
       switch (token.type()) {
+        case ESCAPED_OPEN_TAG_START:
         case OPEN_TAG_START:
           // next has to be name
           Token name = tokens.get(++i);
-          if (name.type() != TokenType.NAME) {
+          if (name.type() != TokenType.NAME && token.type() != TokenType.ESCAPED_OPEN_TAG_START) {
             throw new ParsingException("Expected name after open tag, but got " + name, -1);
           }
           // after that, we get a param seperator or the end
@@ -224,7 +229,7 @@ class MiniMessageParser {
             }
 
             Transformation transformation = registry.get(name.value(), inners, templates);
-            if (transformation == null || preActive) {
+            if (transformation == null || preActive || token.type() == TokenType.ESCAPED_OPEN_TAG_START) {
               // this isn't a known tag, oh no!
               // lets take a step back, first, create a string
               i -= 3 + inners.size();
@@ -250,10 +255,10 @@ class MiniMessageParser {
                 transformations.addLast(transformation);
               }
             }
-          } else if (paramOrEnd.type() == TokenType.TAG_END) {
+          } else if (paramOrEnd.type() == TokenType.TAG_END || paramOrEnd.type() == TokenType.ESCAPED_CLOSE_TAG_START) {
             // we finished
             Transformation transformation = registry.get(name.value(), Collections.emptyList(), templates);
-            if (transformation == null || preActive) {
+            if (transformation == null || preActive || token.type() == TokenType.ESCAPED_OPEN_TAG_START) {
               // this isn't a known tag, oh no!
               // lets take a step back, first, create a string
               i -= 2;
@@ -280,17 +285,18 @@ class MiniMessageParser {
             throw new ParsingException("Expected tag end or param separator after tag name, but got " + paramOrEnd, -1);
           }
           break;
+        case ESCAPED_CLOSE_TAG_START:
         case CLOSE_TAG_START:
           // next has to be name
           name = tokens.get(++i);
-          if (name.type() != TokenType.NAME) {
+          if (name.type() != TokenType.NAME && token.type() != TokenType.ESCAPED_CLOSE_TAG_START) {
             throw new ParsingException("Expected name after close tag start, but got " + name, -1);
           }
           // after that, we just want end, sometimes end has params tho
           paramOrEnd = tokens.get(++i);
           if (paramOrEnd.type() == TokenType.TAG_END) {
             // we finished, gotta remove name out of the stack
-            if (!registry.exists(name.value()) || (preActive && !name.value().equalsIgnoreCase(PRE))) {
+            if (!registry.exists(name.value()) || (preActive && !name.value().equalsIgnoreCase(PRE)) || token.type() == TokenType.ESCAPED_CLOSE_TAG_START) {
               // invalid end
               // lets take a step back, first, create a string
               i -= 2;
