@@ -82,6 +82,20 @@ public class MiniMessageTest {
   }
 
   @Test
+  public void testObjectPlaceholders() {
+    Component expected = Component.text("")
+            .append(Component.text("ONE").color(NamedTextColor.RED))
+            .append(Component.text("TWO").color(NamedTextColor.GREEN))
+            .append(Component.text("THREE").color(NamedTextColor.BLUE));
+    Component result = MiniMessage.get().parse("<red>ONE</red><test><blue>THREE", "test", Component.text("TWO").color(NamedTextColor.GREEN));
+
+    final String out1 = GsonComponentSerializer.gson().serialize(expected);
+    final String out2 = GsonComponentSerializer.gson().serialize(result);
+
+    assertEquals(out1, out2);
+  }
+
+  @Test
   public void testMarkdown() {
     Component expected = Component.text("BOLD").decoration(TextDecoration.BOLD, true).color(NamedTextColor.RED);
     Component result = MiniMessage.markdown().deserialize("**<red>BOLD**");

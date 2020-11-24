@@ -124,6 +124,15 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
   @NonNull Component parse(final @NonNull String input, final @NonNull Map<String, String> placeholders);
 
   /**
+   * Parses a string into an component, allows passing placeholders using key component pairs
+   *
+   * @param input the input string
+   * @param placeholders the placeholders
+   * @return the output component
+   */
+  @NonNull Component parse(@NonNull String input, @NonNull Object... placeholders);
+
+  /**
    * Parses a string into an component, allows passing placeholders using templates (which support components)
    *
    * @param input the input string
