@@ -1,6 +1,6 @@
 buildscript {
   ext {
-    indraVersion = "1.1.1"
+    indraVersion = "1.2.0"
   }
 }
 
@@ -8,7 +8,6 @@ plugins {
   id "net.kyori.indra" version "$indraVersion" apply false
   id "net.kyori.indra.checkstyle" version "$indraVersion" apply false
   id "net.kyori.indra.license-header" version "$indraVersion" apply false
-  id "net.kyori.indra.publishing" version "$indraVersion" apply false
   id "net.kyori.indra.publishing.sonatype" version "$indraVersion" apply false
 
   id "com.adarshr.test-logger" version "2.1.1" apply false
@@ -22,7 +21,6 @@ subprojects {
   apply plugin: "net.kyori.indra"
   apply plugin: "net.kyori.indra.checkstyle"
   apply plugin: "net.kyori.indra.license-header"
-  apply plugin: "net.kyori.indra.publishing"
   apply plugin: "net.kyori.indra.publishing.sonatype"
   apply plugin: "com.adarshr.test-logger"
 
@@ -31,7 +29,9 @@ subprojects {
       testWith(8, 11, 15)
     }
 
-    github("KyoriPowered", "adventure")
+    github("KyoriPowered", "adventure") {
+      ci = true
+    }
     mitLicense()
 
     configurePublications {
@@ -66,13 +66,6 @@ subprojects {
   testlogger {
     theme("mocha-parallel")
     showPassed(false)
-  }
-
-  // TODO: indra?
-  tasks.withType(Sign) {
-    onlyIf {
-      (project.hasProperty("forceSign") || gradle.taskGraph.hasTask(':publish')) && !project.version.endsWith('-SNAPSHOT')
-    }
   }
 
   configurations.testCompileClasspath {
