@@ -1,107 +1,78 @@
+buildscript {
+  ext {
+    indraVersion = "1.2.1"
+  }
+}
+
 plugins {
-  id 'net.kyori.invent' version '1.0.4'
-  id 'net.kyori.invent-javadoc-jar' version '1.0.4'
-  id 'net.kyori.invent-sonatype-repository' version '1.0.4'
-  id 'net.kyori.invent-sources-jar' version '1.0.4'
-  id 'org.xbib.gradle.plugin.jflex' version '1.4.0'
-  id 'net.minecrell.licenser' version '0.4.1'
-  id 'java-library'
-  id 'maven-publish'
-  id 'signing'
+  id "net.kyori.indra" version "$indraVersion"
+  id "net.kyori.indra.publishing.sonatype" version "$indraVersion"
+  id "net.kyori.indra.license-header" version "$indraVersion"
+  id "org.xbib.gradle.plugin.jflex" version "1.5.0"
 }
 
 // Adventure version
 ext.adventure = "4.1.1"
 
-group 'net.kyori'
-version '4.1.0-SNAPSHOT'
-description 'A string-based, user-friendly format for representing Minecraft: Java Edition chat components.'
+group "net.kyori"
+version "4.1.0-SNAPSHOT"
+description "A string-based, user-friendly format for representing Minecraft: Java Edition chat components."
 
 repositories {
   mavenLocal()
   mavenCentral()
-  maven {
-    url 'https://oss.sonatype.org/content/groups/public/'
-  }
-}
-
-sourceSets {
-  main {
-    java {
-      srcDirs += 'build/generated-src'
-    }
-  }
+  sonatypeSnapshots()
 }
 
 dependencies {
   api "net.kyori:adventure-api:${adventure}"
   testImplementation "net.kyori:adventure-text-serializer-gson:${adventure}"
-  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-  testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+  testImplementation "org.junit.jupiter:junit-jupiter-api:5.7.0"
+  testImplementation "org.junit.jupiter:junit-jupiter-engine:5.7.0"
 }
 
-tasks.withType(JavaCompile) {
-  options.compilerArgs += ['-Xlint:all']
-}
+indra {
+  javaVersions {
+    testWith(8, 11, 15)
+  }
 
-license {
-  header rootProject.file('header.txt')
-  include '**/*.java'
-  newLine false
-  exclude("**/MiniMessageLexer.java")
-}
+  github("KyoriPowered", "adventure-text-minimessage") {
+    ci = true
+  }
+  mitLicense()
 
-jar {
-  manifest.attributes(
-    'Automatic-Module-Name': 'net.kyori.adventure.text.minimessage'
-  )
-}
-
-inventSonatypeRepository.enabled = System.getenv('GITHUB_ACTIONS') == null || project.version.endsWith('-SNAPSHOT')
-
-publishing {
-  publications {
-    maven(MavenPublication) {
-      from components.java
-
-      artifact javadocJar
-      artifact sourcesJar
-
-      pom {
-        name = project.name
-        url = 'https://github.com/KyoriPowered/adventure-text-minimessage'
-        description = project.description
-
-        developers {
-          developer {
-            id = 'minidigger'
-            name = 'MiniDigger'
-          }
-        }
-
-        issueManagement {
-          system = 'GitHub Issues'
-          url = 'https://github.com/KyoriPowered/adventure-text-minimessage/issues'
-        }
-
-        licenses {
-          license {
-            name = 'MIT License'
-            url = 'https://opensource.org/licenses/MIT'
-          }
-        }
-
-        scm {
-          connection = 'scm:git@github.com:KyoriPowered/adventure-text-minimessage.git'
-          developerConnection = 'scm:git@github.com:KyoriPowered/adventure-text-minimessage.git'
-          url = 'https://github.com/KyoriPowered/adventure-text-minimessage/'
+  configurePublications {
+    pom {
+      developers {
+        developer {
+          id = "minidigger"
+          name = "MiniDigger"
         }
       }
     }
   }
 }
 
-signing {
-  required { project.hasProperty('signing.keyId') && gradle.taskGraph.hasTask(':publish') && !project.version.endsWith('-SNAPSHOT') }
-  sign publishing.publications.maven
+sourceSets {
+  main {
+    java {
+      // JFlex output
+      srcDir "build/generated-src"
+    }
+  }
+}
+
+tasks.compileJava {
+    // Generated JFlex source uses fall-throughs heavily
+    options.compilerArgs << "-Xlint:-fallthrough"
+}
+
+license {
+  exclude("**/MiniMessageLexer.java")
+}
+
+jar {
+  manifest.attributes(
+    "Automatic-Module-Name": "net.kyori.adventure.text.minimessage"
+  )
 }
