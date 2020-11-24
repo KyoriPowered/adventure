@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
@@ -90,24 +91,19 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
   }
 
-  static final LegacyComponentSerializer SECTION_SERIALIZER = new LegacyComponentSerializerImpl(SECTION_CHAR, HEX_CHAR, false, null, null, false, false);
-  static final LegacyComponentSerializer AMPERSAND_SERIALIZER = new LegacyComponentSerializerImpl(AMPERSAND_CHAR, HEX_CHAR, false, null, null, false, false);
+  static final LegacyComponentSerializer SECTION_SERIALIZER = new LegacyComponentSerializerImpl(SECTION_CHAR, HEX_CHAR, null, false, false);
+  static final LegacyComponentSerializer AMPERSAND_SERIALIZER = new LegacyComponentSerializerImpl(AMPERSAND_CHAR, HEX_CHAR, null, false, false);
 
   private final char character;
   private final char hexCharacter;
-  private final boolean urlLink;
-  private final Pattern urlPattern;
-  private final Style urlStyle;
+  private final @Nullable TextReplacementConfig urlReplacementConfig;
   private final boolean hexColours;
   private final boolean useTerriblyStupidHexFormat; // (╯°□°)╯︵ ┻━┻
 
-  LegacyComponentSerializerImpl(final char character, final char hexCharacter, final boolean urlLink, final @Nullable Pattern urlPattern, final @Nullable Style urlStyle, final boolean hexColours, final boolean useTerriblyStupidHexFormat) {
-    if(urlLink) requireNonNull(urlPattern, "url pattern must be non-null when linking");
+  LegacyComponentSerializerImpl(final char character, final char hexCharacter, final @Nullable TextReplacementConfig urlReplacementConfig, final boolean hexColours, final boolean useTerriblyStupidHexFormat) {
     this.character = character;
     this.hexCharacter = hexCharacter;
-    this.urlLink = urlLink;
-    this.urlPattern = urlPattern;
-    this.urlStyle = urlStyle;
+    this.urlReplacementConfig = urlReplacementConfig;
     this.hexColours = hexColours;
     this.useTerriblyStupidHexFormat = useTerriblyStupidHexFormat;
   }
@@ -198,8 +194,8 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   }
 
   private TextComponent extractUrl(final TextComponent component) {
-    if(!this.urlLink) return component;
-    final Component newComponent = component.replaceText(this.urlPattern, url -> (this.urlStyle == null ? url : url.style(this.urlStyle)).clickEvent(ClickEvent.openUrl(url.content())));
+    if(this.urlReplacementConfig == null) return component;
+    final Component newComponent = component.replaceText(this.urlReplacementConfig);
     if(newComponent instanceof TextComponent) return (TextComponent) newComponent;
     return TextComponent.ofChildren(newComponent);
   }
@@ -429,9 +425,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   static final class BuilderImpl implements Builder {
     private char character = LegacyComponentSerializer.SECTION_CHAR;
     private char hexCharacter = LegacyComponentSerializer.HEX_CHAR;
-    private boolean urlLink = false;
-    private Pattern urlPattern = DEFAULT_URL_PATTERN;
-    private Style urlStyle = null;
+    private TextReplacementConfig urlReplacementConfig = null;
     private boolean hexColours = false;
     private boolean useTerriblyStupidHexFormat = false;
 
@@ -441,8 +435,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     BuilderImpl(final @NonNull LegacyComponentSerializerImpl serializer) {
       this.character = serializer.character;
       this.hexCharacter = serializer.hexCharacter;
-      this.urlStyle = serializer.urlStyle;
-      this.urlLink = serializer.urlLink;
+      this.urlReplacementConfig = serializer.urlReplacementConfig;
       this.hexColours = serializer.hexColours;
       this.useTerriblyStupidHexFormat = serializer.useTerriblyStupidHexFormat;
     }
@@ -476,9 +469,11 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
     @Override
     public @NonNull Builder extractUrls(final @NonNull Pattern pattern, final @Nullable Style style) {
-      this.urlLink = true;
-      this.urlPattern = pattern;
-      this.urlStyle = style;
+      requireNonNull(pattern, "pattern");
+      this.urlReplacementConfig = TextReplacementConfig.builder()
+        .match(pattern)
+        .replacement(url -> (style == null ? url : url.style(style)).clickEvent(ClickEvent.openUrl(url.content())))
+        .build();
       return this;
     }
 
@@ -496,12 +491,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
     @Override
     public @NonNull LegacyComponentSerializer build() {
-      if(this.urlLink) {
-        if(this.urlPattern == null) {
-          throw new IllegalStateException("url pattern must be non-null when creating a linking serializer");
-        }
-      }
-      return new LegacyComponentSerializerImpl(this.character, this.hexCharacter, this.urlLink, this.urlPattern, this.urlStyle, this.hexColours, this.useTerriblyStupidHexFormat);
+      return new LegacyComponentSerializerImpl(this.character, this.hexCharacter, this.urlReplacementConfig, this.hexColours, this.useTerriblyStupidHexFormat);
     }
   }
 
