@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage;
+package net.kyori.adventure.text.minimessage.markdown;
 
 import org.junit.jupiter.api.Test;
 
@@ -29,12 +29,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MiniMarkdownParserTest {
 
+  private MarkdownFlavor markdownFlavor = LegacyFlavor.get();
+
   @Test
   public void testBold() {
     final String input = "**bold**";
     final String expected = "<bold>bold</bold>";
 
-    final String output = MiniMarkdownParser.parse(input);
+    final String output = MiniMarkdownParser.parse(input, markdownFlavor);
 
     assertEquals(expected, output);
   }
@@ -44,7 +46,7 @@ public class MiniMarkdownParserTest {
     final String input = "__bold__";
     final String expected = "<bold>bold</bold>";
 
-    final String output = MiniMarkdownParser.parse(input);
+    final String output = MiniMarkdownParser.parse(input, markdownFlavor);
 
     assertEquals(expected, output);
   }
@@ -54,7 +56,7 @@ public class MiniMarkdownParserTest {
     final String input = "*italic*";
     final String expected = "<italic>italic</italic>";
 
-    final String output = MiniMarkdownParser.parse(input);
+    final String output = MiniMarkdownParser.parse(input, markdownFlavor);
 
     assertEquals(expected, output);
   }
@@ -64,7 +66,7 @@ public class MiniMarkdownParserTest {
     final String input = "_italic_";
     final String expected = "<italic>italic</italic>";
 
-    final String output = MiniMarkdownParser.parse(input);
+    final String output = MiniMarkdownParser.parse(input, markdownFlavor);
 
     assertEquals(expected, output);
   }
@@ -74,7 +76,17 @@ public class MiniMarkdownParserTest {
     final String input = "~~underline~~";
     final String expected = "<underlined>underline</underlined>";
 
-    final String output = MiniMarkdownParser.parse(input);
+    final String output = MiniMarkdownParser.parse(input, markdownFlavor);
+
+    assertEquals(expected, output);
+  }
+
+  @Test
+  public void testObfuscated() {
+    final String input = "||obfuscate||";
+    final String expected = "<obfuscated>obfuscate</obfuscated>";
+
+    final String output = MiniMarkdownParser.parse(input, markdownFlavor);
 
     assertEquals(expected, output);
   }
@@ -84,7 +96,7 @@ public class MiniMarkdownParserTest {
     final String input = "AaA** bold **AaA";
     final String expected = "AaA<bold> bold </bold>AaA";
 
-    final String output = MiniMarkdownParser.parse(input);
+    final String output = MiniMarkdownParser.parse(input, markdownFlavor);
 
     assertEquals(expected, output);
   }
@@ -94,7 +106,7 @@ public class MiniMarkdownParserTest {
     final String input = "*italic*~~underline~~**bold**";
     final String expected = "<italic>italic</italic><underlined>underline</underlined><bold>bold</bold>";
 
-    final String output = MiniMarkdownParser.parse(input);
+    final String output = MiniMarkdownParser.parse(input, markdownFlavor);
 
     assertEquals(expected, output);
   }
@@ -104,7 +116,7 @@ public class MiniMarkdownParserTest {
     final String input = "*a***a**";
     final String expected = "<italic>a</italic><bold>a</bold>";
 
-    final String output = MiniMarkdownParser.parse(input);
+    final String output = MiniMarkdownParser.parse(input, markdownFlavor);
 
     assertEquals(expected, output);
   }
@@ -114,7 +126,7 @@ public class MiniMarkdownParserTest {
     final String input = "*a~*a~";
     final String expected = "<italic>a~</italic>a~";
 
-    final String output = MiniMarkdownParser.parse(input);
+    final String output = MiniMarkdownParser.parse(input, markdownFlavor);
 
     assertEquals(expected, output);
   }
@@ -124,7 +136,7 @@ public class MiniMarkdownParserTest {
     final String input = "*a~~*a~~";
     final String expected = "<italic>a</italic><underlined>a</underlined>";
 
-    final String output = MiniMarkdownParser.parse(input);
+    final String output = MiniMarkdownParser.parse(input, markdownFlavor);
 
     assertEquals(expected, output);
   }
@@ -134,7 +146,7 @@ public class MiniMarkdownParserTest {
     final String input = "*a~~ *a~~";
     final String expected = "<italic>a<underlined> </italic>a</underlined>";
 
-    final String output = MiniMarkdownParser.parse(input);
+    final String output = MiniMarkdownParser.parse(input, markdownFlavor);
 
     assertEquals(expected, output);
   }
@@ -144,7 +156,7 @@ public class MiniMarkdownParserTest {
     final String input = "*a";
     final String expected = "*a";
 
-    final String output = MiniMarkdownParser.parse(input);
+    final String output = MiniMarkdownParser.parse(input, markdownFlavor);
 
     assertEquals(expected, output);
   }
@@ -154,7 +166,7 @@ public class MiniMarkdownParserTest {
     final String input = "*italic*~~underline~~**bold**";
     final String expected = "italicunderlinebold";
 
-    final String output = MiniMarkdownParser.stripMarkdown(input);
+    final String output = MiniMarkdownParser.stripMarkdown(input, markdownFlavor);
 
     assertEquals(expected, output);
   }
@@ -164,7 +176,7 @@ public class MiniMarkdownParserTest {
     final String input = "*a***a**";
     final String expected = "aa";
 
-    final String output = MiniMarkdownParser.stripMarkdown(input);
+    final String output = MiniMarkdownParser.stripMarkdown(input, markdownFlavor);
 
     assertEquals(expected, output);
   }
@@ -174,7 +186,7 @@ public class MiniMarkdownParserTest {
     final String input = "*a~*a~";
     final String expected = "a~a~";
 
-    final String output = MiniMarkdownParser.stripMarkdown(input);
+    final String output = MiniMarkdownParser.stripMarkdown(input, markdownFlavor);
 
     assertEquals(expected, output);
   }
@@ -184,7 +196,7 @@ public class MiniMarkdownParserTest {
     final String input = "*a~~*a~~";
     final String expected = "aa";
 
-    final String output = MiniMarkdownParser.stripMarkdown(input);
+    final String output = MiniMarkdownParser.stripMarkdown(input, markdownFlavor);
 
     assertEquals(expected, output);
   }
@@ -194,7 +206,7 @@ public class MiniMarkdownParserTest {
     final String input = "*a~~ *a~~";
     final String expected = "a a";
 
-    final String output = MiniMarkdownParser.stripMarkdown(input);
+    final String output = MiniMarkdownParser.stripMarkdown(input, markdownFlavor);
 
     assertEquals(expected, output);
   }
@@ -204,7 +216,7 @@ public class MiniMarkdownParserTest {
     final String input = "*a";
     final String expected = "*a";
 
-    final String output = MiniMarkdownParser.stripMarkdown(input);
+    final String output = MiniMarkdownParser.stripMarkdown(input, markdownFlavor);
 
     assertEquals(expected, output);
   }

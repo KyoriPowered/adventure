@@ -21,8 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage;
+package net.kyori.adventure.text.minimessage.markdown;
 
+import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
@@ -34,23 +35,23 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
-/* package */ class MiniMarkdownParser {
+public class MiniMarkdownParser {
 
   private MiniMarkdownParser() {
   }
 
   @NonNull
-  /* package */ static String stripMarkdown(final @NonNull String input) {
-    return handle(input, true);
+  public static String stripMarkdown(final @NonNull String input, @NonNull MarkdownFlavor markdownFlavor) {
+    return handle(input, true, markdownFlavor);
   }
 
   @NonNull
-  /* package */ static String parse(final @NonNull String input) {
-    return handle(input, false);
+  public static String parse(final @NonNull String input, final @NonNull MarkdownFlavor markdownFlavor) {
+    return handle(input, false, markdownFlavor);
   }
 
   @NonNull
-  private static String handle(final @NonNull String input, final boolean strip) {
+  private static String handle(final @NonNull String input, final boolean strip, @NonNull MarkdownFlavor markdownFlavor) {
     StringBuilder sb = new StringBuilder();
 
     int bold = -1;
@@ -59,74 +60,74 @@ import java.util.stream.Stream;
     Insert italicSkip = null;
     int underline = -1;
     Insert underlineSkip = null;
+    int strikeThrough = -1;
+    Insert strikeThroughSkip = null;
+    int obfuscate = -1;
+    Insert obfuscateSkip = null;
 
     List<Insert> inserts = new ArrayList<>();
     int skip = 0;
     for (int i = 0; i + skip < input.length(); i++) {
       int currIndex = i + skip;
       char c = input.charAt(currIndex);
+      char n = next(currIndex, input);
 
       boolean shouldSkip = false;
-      if (c == Tokens.MD_EMPHASIS_1) {
-        char n = next(currIndex, input);
-        if (n == Tokens.MD_EMPHASIS_1) {
-          if (bold == -1) {
-            bold = sb.length();
-            boldSkip = new Insert(sb.length(), c + "");
-          } else {
-            inserts.add(new Insert(bold, "<" + Tokens.BOLD + ">"));
-            inserts.add(new Insert(sb.length(), "</" + Tokens.BOLD + ">"));
-            bold = -1;
-          }
-          skip++;
+      if (markdownFlavor.isBold(c, n)) {
+        if (bold == -1) {
+          bold = sb.length();
+          boldSkip = new Insert(sb.length(), c + "");
         } else {
-          if (italic == -1) {
-            italic = sb.length();
-            italicSkip = new Insert(sb.length(), c + "");
-          } else {
-            inserts.add(new Insert(italic, "<" + Tokens.ITALIC + ">"));
-            inserts.add(new Insert(sb.length(), "</" + Tokens.ITALIC + ">"));
-            italic = -1;
-          }
+          inserts.add(new Insert(bold, "<" + Tokens.BOLD + ">"));
+          inserts.add(new Insert(sb.length(), "</" + Tokens.BOLD + ">"));
+          bold = -1;
         }
+        skip += c == n ? 1 : 0;
         shouldSkip = true;
-      } else if (c == Tokens.MD_EMPHASIS_2) {
-        char n = next(currIndex, input);
-        if (n == Tokens.MD_EMPHASIS_2) {
-          if (bold == -1) {
-            bold = sb.length();
-            boldSkip = new Insert(sb.length(), c + "");
-          } else {
-            inserts.add(new Insert(bold, "<" + Tokens.BOLD + ">"));
-            inserts.add(new Insert(sb.length(), "</" + Tokens.BOLD + ">"));
-            bold = -1;
-          }
-          skip++;
+      } else if (markdownFlavor.isItalic(c, n)) {
+        if (italic == -1) {
+          italic = sb.length();
+          italicSkip = new Insert(sb.length(), c + "");
         } else {
-          if (italic == -1) {
-            italic = currIndex;
-            italicSkip = new Insert(sb.length(), c + "");
-          } else {
-            inserts.add(new Insert(italic, "<" + Tokens.ITALIC + ">"));
-            inserts.add(new Insert(currIndex - 1, "</" + Tokens.ITALIC + ">"));
-            italic = -1;
-          }
+          inserts.add(new Insert(italic, "<" + Tokens.ITALIC + ">"));
+          inserts.add(new Insert(sb.length(), "</" + Tokens.ITALIC + ">"));
+          italic = -1;
         }
+        skip += c == n ? 1 : 0;
         shouldSkip = true;
-      } else if (c == Tokens.MD_UNDERLINE) {
-        char n = next(currIndex, input);
-        if (n == Tokens.MD_UNDERLINE) {
-          if (underline == -1) {
-            underline = sb.length();
-            underlineSkip = new Insert(sb.length(), c + "");
-          } else {
-            inserts.add(new Insert(underline, "<" + Tokens.UNDERLINED + ">"));
-            inserts.add(new Insert(sb.length(), "</" + Tokens.UNDERLINED + ">"));
-            underline = -1;
-          }
-          skip++;
-          shouldSkip = true;
+      } else if (markdownFlavor.isUnderline(c, n)) {
+        if (underline == -1) {
+          underline = sb.length();
+          underlineSkip = new Insert(sb.length(), c + "");
+        } else {
+          inserts.add(new Insert(underline, "<" + Tokens.UNDERLINED + ">"));
+          inserts.add(new Insert(sb.length(), "</" + Tokens.UNDERLINED + ">"));
+          underline = -1;
         }
+        skip += c == n ? 1 : 0;
+        shouldSkip = true;
+      } else if (markdownFlavor.isStrikeThrough(c, n)) {
+        if (strikeThrough == -1) {
+          strikeThrough = sb.length();
+          strikeThroughSkip = new Insert(sb.length(), c + "");
+        } else {
+          inserts.add(new Insert(strikeThrough, "<" + Tokens.STRIKETHROUGH + ">"));
+          inserts.add(new Insert(sb.length(), "</" + Tokens.STRIKETHROUGH + ">"));
+          strikeThrough = -1;
+        }
+        skip += c == n ? 1 : 0;
+        shouldSkip = true;
+      } else if (markdownFlavor.isObfuscate(c, n)) {
+        if (obfuscate == -1) {
+          obfuscate = sb.length();
+          obfuscateSkip = new Insert(sb.length(), c + "");
+        } else {
+          inserts.add(new Insert(obfuscate, "<" + Tokens.OBFUSCATED + ">"));
+          inserts.add(new Insert(sb.length(), "</" + Tokens.OBFUSCATED + ">"));
+          obfuscate = -1;
+        }
+        skip += c == n ? 1 : 0;
+        shouldSkip = true;
       }
 
       if (!shouldSkip) {
@@ -148,6 +149,12 @@ import java.util.stream.Stream;
     }
     if (italic != -1) {
       inserts.add(italicSkip);
+    }
+    if (strikeThrough != -1) {
+      inserts.add(strikeThroughSkip);
+    }
+    if (obfuscate != -1) {
+      inserts.add(obfuscateSkip);
     }
 
     for (Insert el : inserts) {

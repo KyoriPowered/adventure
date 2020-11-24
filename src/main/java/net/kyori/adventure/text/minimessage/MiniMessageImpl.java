@@ -25,32 +25,38 @@ package net.kyori.adventure.text.minimessage;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.minimessage.markdown.GithubFlavor;
+import net.kyori.adventure.text.minimessage.markdown.MarkdownFlavor;
+import net.kyori.adventure.text.minimessage.markdown.MiniMarkdownParser;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
 import net.kyori.adventure.text.minimessage.transformation.TransformationType;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.List;
 import java.util.Map;
 
 /* package */ class MiniMessageImpl implements MiniMessage {
 
-  /* package */ static final MiniMessage INSTANCE = new MiniMessageImpl(false, new TransformationRegistry());
-  /* package */ static final MiniMessage MARKDOWN = new MiniMessageImpl(true, new TransformationRegistry());
+  /* package */ static final MiniMessage INSTANCE = new MiniMessageImpl(false, null,new TransformationRegistry());
+  /* package */ static final MiniMessage MARKDOWN = new MiniMessageImpl(true, GithubFlavor.get(), new TransformationRegistry());
 
   private final boolean markdown;
+  private final MarkdownFlavor markdownFlavor;
   private final MiniMessageParser parser;
 
-  MiniMessageImpl(boolean markdown, TransformationRegistry registry) {
+  MiniMessageImpl(boolean markdown, @Nullable MarkdownFlavor markdownFlavor, @NonNull TransformationRegistry registry) {
     this.markdown = markdown;
+    this.markdownFlavor = markdownFlavor;
     this.parser = new MiniMessageParser(registry);
   }
 
   @Override
   public @NonNull Component deserialize(@NonNull String input) {
     if (markdown) {
-      input = MiniMarkdownParser.parse(input);
+      input = MiniMarkdownParser.parse(input, markdownFlavor);
     }
     return parser.parseFormat(input);
   }
@@ -64,7 +70,7 @@ import java.util.Map;
   @Override
   public @NonNull Component parse(@NonNull String input, @NonNull String... placeholders) {
     if (markdown) {
-      input = MiniMarkdownParser.parse(input);
+      input = MiniMarkdownParser.parse(input, markdownFlavor);
     }
     return parser.parseFormat(input, placeholders);
   }
@@ -72,7 +78,7 @@ import java.util.Map;
   @Override
   public @NonNull Component parse(@NonNull String input, @NonNull Map<String, String> placeholders) {
     if (markdown) {
-      input = MiniMarkdownParser.parse(input);
+      input = MiniMarkdownParser.parse(input, markdownFlavor);
     }
     return parser.parseFormat(input, placeholders);
   }
@@ -108,7 +114,7 @@ import java.util.Map;
   @Override
   public @NonNull Component parse(@NonNull String input, @NonNull Template... placeholders) {
     if (markdown) {
-      input = MiniMarkdownParser.parse(input);
+      input = MiniMarkdownParser.parse(input, markdownFlavor);
     }
     return parser.parseFormat(input, placeholders);
   }
@@ -116,7 +122,7 @@ import java.util.Map;
   @Override
   public @NonNull Component parse(@NonNull String input, @NonNull List<Template> placeholders) {
     if (markdown) {
-      input = MiniMarkdownParser.parse(input);
+      input = MiniMarkdownParser.parse(input, markdownFlavor);
     }
     return parser.parseFormat(input, placeholders);
   }
@@ -129,7 +135,7 @@ import java.util.Map;
   @Override
   public @NonNull String stripTokens(@NonNull String input) {
     if (markdown) {
-      input = MiniMarkdownParser.stripMarkdown(input);
+      input = MiniMarkdownParser.stripMarkdown(input, markdownFlavor);
     }
     return parser.stripTokens(input);
   }
@@ -141,6 +147,7 @@ import java.util.Map;
 
   /* package */ static final class BuilderImpl implements Builder {
     private boolean markdown = false;
+    private MarkdownFlavor markdownFlavor = GithubFlavor.get();
     private final TransformationRegistry registry = new TransformationRegistry();
 
     BuilderImpl() {
@@ -180,11 +187,17 @@ import java.util.Map;
     }
 
     @Override
+    public @NonNull Builder markdownFlavor(MarkdownFlavor markdownFlavor) {
+      this.markdownFlavor = markdownFlavor;
+      return this;
+    }
+
+    @Override
     public @NonNull MiniMessage build() {
       if (this.markdown) {
-        return new MiniMessageImpl(true, registry);
+        return new MiniMessageImpl(true, markdownFlavor, registry);
       } else {
-        return new MiniMessageImpl(false, registry);
+        return new MiniMessageImpl(false, null, registry);
       }
     }
   }

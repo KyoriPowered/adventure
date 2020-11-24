@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.minimessage;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.markdown.MarkdownFlavor;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
 import net.kyori.adventure.text.minimessage.transformation.TransformationType;
@@ -51,12 +52,22 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
   }
 
   /**
-   * Gets an instance with markdown support
+   * Gets an instance with markdown support. Uses {@link net.kyori.adventure.text.minimessage.markdown.GithubFlavor}.<br>
+   * For other flavors, see {@link #withMarkdownFlavor(MarkdownFlavor)} or the builder.
    *
    * @return a instance of markdown support
    */
   static @NonNull MiniMessage markdown() {
     return MiniMessageImpl.MARKDOWN;
+  }
+
+  /**
+   * Creates an custom instances with markdown supported by the given markdown flavor
+   * @param markdownFlavor the markdown flavor
+   * @return your very own custom MiniMessage instance
+   */
+  static @NonNull MiniMessage withMarkdownFlavor(MarkdownFlavor markdownFlavor) {
+    return new MiniMessageImpl(true, markdownFlavor, new TransformationRegistry());
   }
 
   /**
@@ -66,7 +77,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    */
   @SafeVarargs
   static @NonNull MiniMessage withTransformations(TransformationType<? extends Transformation>... types) {
-    return new MiniMessageImpl(false, new TransformationRegistry(types));
+    return new MiniMessageImpl(false, null,new TransformationRegistry(types));
   }
 
   /**
@@ -76,7 +87,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    */
   @SafeVarargs
   static @NonNull MiniMessage markdownWithTransformations(TransformationType<? extends Transformation>... types) {
-    return new MiniMessageImpl(false, new TransformationRegistry(types));
+    return new MiniMessageImpl(false, null,new TransformationRegistry(types));
   }
 
   /**
@@ -195,6 +206,15 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      * @return this builder
      */
     @NonNull Builder transformations(TransformationType<? extends Transformation>... types);
+
+    /**
+     * Sets the markdown flavor that should be used to parse markdown
+     *
+     * @param markdownFlavor the markdown flavor to use
+     *
+     * @return this builder
+     */
+    @NonNull Builder markdownFlavor(MarkdownFlavor markdownFlavor);
 
     /**
      * Builds the serializer.
