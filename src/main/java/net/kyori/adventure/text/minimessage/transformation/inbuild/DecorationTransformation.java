@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
@@ -39,7 +40,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class DecorationTransformation extends Transformation {
   public static boolean canParse(final String name) {
-    return TextDecoration.NAMES.value(name.toLowerCase(Locale.ROOT)) != null;
+    return parseDecoration(name) != null;
   }
 
   private TextDecoration decoration;
@@ -51,11 +52,21 @@ public class DecorationTransformation extends Transformation {
   public void load(final String name, final List<Token> args) {
     super.load(name, args);
 
-    this.decoration = TextDecoration.NAMES.value(name.toLowerCase(Locale.ROOT));
+    this.decoration = parseDecoration(name);
 
     if(this.decoration == null) {
       throw new ParsingException("Don't know how to turn '" + name + "' into a decoration", -1);
     }
+  }
+
+  private static TextDecoration parseDecoration(String name) {
+    name = name.toLowerCase(Locale.ROOT);
+    if(name.equals(Tokens.BOLD_2)) {
+      name = Tokens.BOLD;
+    } else if (name.equals(Tokens.ITALIC_2) || name.equals(Tokens.ITALIC_3)) {
+      name = Tokens.ITALIC;
+    }
+    return TextDecoration.NAMES.value(name);
   }
 
   @Override

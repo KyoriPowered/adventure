@@ -50,7 +50,9 @@ public class TranslatableTransformation extends OneTimeTransformation implements
   private static final Pattern dumSplitPattern = Pattern.compile("['\"]:['\"]");
 
   public static boolean canParse(final String name) {
-    return name.equalsIgnoreCase(Tokens.TRANSLATABLE) || name.equalsIgnoreCase(Tokens.TRANSLATABLE_2);
+    return name.equalsIgnoreCase(Tokens.TRANSLATABLE)
+           || name.equalsIgnoreCase(Tokens.TRANSLATABLE_2)
+           || name.equalsIgnoreCase(Tokens.TRANSLATABLE_3);
   }
 
   private String key;

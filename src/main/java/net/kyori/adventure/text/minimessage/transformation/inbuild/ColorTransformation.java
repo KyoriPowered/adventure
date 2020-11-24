@@ -42,6 +42,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public class ColorTransformation extends Transformation {
   public static boolean canParse(final String name) {
     return name.equalsIgnoreCase(Tokens.COLOR)
+      || name.equalsIgnoreCase(Tokens.COLOR_2)
+      || name.equalsIgnoreCase(Tokens.COLOR_3)
       || TextColor.fromHexString(name) != null
       || NamedTextColor.NAMES.value(name.toLowerCase(Locale.ROOT)) != null;
   }

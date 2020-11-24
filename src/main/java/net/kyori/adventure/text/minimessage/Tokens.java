@@ -30,8 +30,11 @@ public class Tokens {
   public static final String KEYBIND = "key";
   public static final String TRANSLATABLE = "lang";
   public static final String TRANSLATABLE_2 = "translate";
+  public static final String TRANSLATABLE_3 = "tr";
   public static final String INSERTION = "insert";
   public static final String COLOR = "color";
+  public static final String COLOR_2 = "colour";
+  public static final String COLOR_3 = "c";
   public static final String HEX = "#";
   public static final String FONT = "font";
 
@@ -40,7 +43,10 @@ public class Tokens {
   public static final String STRIKETHROUGH = "strikethrough";
   public static final String OBFUSCATED = "obfuscated";
   public static final String ITALIC = "italic";
+  public static final String ITALIC_2 = "em";
+  public static final String ITALIC_3 = "i";
   public static final String BOLD = "bold";
+  public static final String BOLD_2 = "b";
   public static final String RESET = "reset";
   public static final String PRE = "pre";
 
