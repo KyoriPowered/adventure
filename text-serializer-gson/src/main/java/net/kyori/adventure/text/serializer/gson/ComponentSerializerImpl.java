@@ -235,7 +235,7 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
     return object;
   }
 
-  private static JsonParseException notSureHowToDeserialize(final JsonElement element) {
+  static JsonParseException notSureHowToDeserialize(final Object element) {
     return new JsonParseException("Don't know how to turn " + element + " into a Component");
   }
 

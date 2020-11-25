@@ -80,7 +80,9 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
 
   @Override
   public @NonNull Component deserialize(final @NonNull String string) {
-    return this.serializer().fromJson(string, Component.class);
+    final Component component = this.serializer().fromJson(string, Component.class);
+    if(component == null) throw ComponentSerializerImpl.notSureHowToDeserialize(string);
+    return component;
   }
 
   @Override
