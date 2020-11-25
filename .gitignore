@@ -3,6 +3,7 @@
 /api/build/
 /api/out/
 /api/run/
+/bom/build/
 /nbt/build/
 /nbt/out/
 /run/

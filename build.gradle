@@ -18,11 +18,40 @@ version "4.2.0-SNAPSHOT"
 description "A user-interface library for Minecraft: Java Edition."
 
 subprojects {
-  apply plugin: "net.kyori.indra"
-  apply plugin: "net.kyori.indra.checkstyle"
-  apply plugin: "net.kyori.indra.license-header"
+  // The bom is special... this is a bit ugly, but not much more we can do without making our own script plugin
+  if(name != "adventure-bom") {
+    apply plugin: "net.kyori.indra"
+    apply plugin: "net.kyori.indra.checkstyle"
+    apply plugin: "net.kyori.indra.license-header"
+    apply plugin: "com.adarshr.test-logger"
+
+    testlogger {
+      theme("mocha-parallel")
+      showPassed(false)
+    }
+
+    configurations.testCompileClasspath {
+      exclude group: "junit" // brought in by google's libs
+    }
+
+    repositories {
+      mavenLocal()
+      mavenCentral()
+    }
+
+    dependencies {
+      api(platform(project(":adventure-bom")))
+      checkstyle("ca.stellardrift:stylecheck:0.1")
+      testImplementation("com.google.guava:guava-testlib:30.0-jre")
+      testImplementation("com.google.truth:truth:1.1")
+      testImplementation("com.google.truth.extensions:truth-java8-extension:1.1")
+      testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
+      testImplementation("org.junit.jupiter:junit-jupiter-engine:5.7.0")
+    }
+  }
+
+  // All projects
   apply plugin: "net.kyori.indra.publishing.sonatype"
-  apply plugin: "com.adarshr.test-logger"
 
   indra {
     javaVersions {
@@ -63,26 +92,4 @@ subprojects {
     }
   }
 
-  testlogger {
-    theme("mocha-parallel")
-    showPassed(false)
-  }
-
-  configurations.testCompileClasspath {
-    exclude group: "junit" // brought in by google's libs
-  }
-
-  repositories {
-    mavenLocal()
-    mavenCentral()
-  }
-
-  dependencies {
-    checkstyle("ca.stellardrift:stylecheck:0.1")
-    testImplementation("com.google.guava:guava-testlib:30.0-jre")
-    testImplementation("com.google.truth:truth:1.1")
-    testImplementation("com.google.truth.extensions:truth-java8-extension:1.1")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.7.0")
-  }
 }
