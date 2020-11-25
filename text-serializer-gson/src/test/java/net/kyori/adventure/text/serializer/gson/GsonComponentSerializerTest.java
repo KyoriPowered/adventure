@@ -35,8 +35,15 @@ import static net.kyori.adventure.text.serializer.gson.GsonTest.array;
 import static net.kyori.adventure.text.serializer.gson.GsonTest.object;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GsonComponentSerializerTest {
+  @Test
+  void testDeserializeNull() {
+    final JsonParseException jpe = assertThrows(JsonParseException.class, () -> GsonComponentSerializer.gson().deserialize("null"));
+    assertTrue(jpe.getMessage().contains("turn null into a Component"));
+  }
+
   @Test
   void testDeserializePrimitive() {
     assertEquals(Component.text("potato"), GsonComponentSerializer.gson().serializer().fromJson(new JsonPrimitive("potato"), Component.class));
