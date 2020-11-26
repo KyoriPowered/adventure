@@ -35,20 +35,23 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /* package */ class MiniMessageImpl implements MiniMessage {
 
-  /* package */ static final MiniMessage INSTANCE = new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(),new TransformationRegistry());
-  /* package */ static final MiniMessage MARKDOWN = new MiniMessageImpl(true, MarkdownFlavor.defaultFlavor(), new TransformationRegistry());
+  /* package */ static final Function<String, ComponentLike> DEFAULT_PLACEHOLDER_RESOLVER = (s) -> null;
+
+  /* package */ static final MiniMessage INSTANCE = new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(),new TransformationRegistry(), DEFAULT_PLACEHOLDER_RESOLVER);
+  /* package */ static final MiniMessage MARKDOWN = new MiniMessageImpl(true, MarkdownFlavor.defaultFlavor(), new TransformationRegistry(), DEFAULT_PLACEHOLDER_RESOLVER);
 
   private final boolean markdown;
   private final MarkdownFlavor markdownFlavor;
   private final MiniMessageParser parser;
 
-  MiniMessageImpl(boolean markdown, @NonNull MarkdownFlavor markdownFlavor, @NonNull TransformationRegistry registry) {
+  MiniMessageImpl(boolean markdown, @NonNull MarkdownFlavor markdownFlavor, @NonNull TransformationRegistry registry, Function<String, ComponentLike> placeholderResolver) {
     this.markdown = markdown;
     this.markdownFlavor = markdownFlavor;
-    this.parser = new MiniMessageParser(registry);
+    this.parser = new MiniMessageParser(registry, placeholderResolver);
   }
 
   @Override
@@ -147,6 +150,7 @@ import java.util.Map;
     private boolean markdown = false;
     private MarkdownFlavor markdownFlavor = MarkdownFlavor.defaultFlavor();
     private final TransformationRegistry registry = new TransformationRegistry();
+    private Function<String, ComponentLike> placeholderResolver = DEFAULT_PLACEHOLDER_RESOLVER;
 
     BuilderImpl() {
     }
@@ -191,11 +195,17 @@ import java.util.Map;
     }
 
     @Override
+    public @NonNull Builder placeholderResolver(Function<String, ComponentLike> placeholderResolver) {
+      this.placeholderResolver = placeholderResolver;
+      return this;
+    }
+
+    @Override
     public @NonNull MiniMessage build() {
       if (this.markdown) {
-        return new MiniMessageImpl(true, markdownFlavor, registry);
+        return new MiniMessageImpl(true, markdownFlavor, registry, placeholderResolver);
       } else {
-        return new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(), registry);
+        return new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(), registry, placeholderResolver);
       }
     }
   }

@@ -24,13 +24,15 @@
 package net.kyori.adventure.text.minimessage;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.transformation.TransformationType;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import org.junit.jupiter.api.Test;
+
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -176,6 +178,25 @@ public class MiniMessageTest {
     Component result = MiniMessage.builder().removeDefaultTransformations().transformation(TransformationType.COLOR).build().parse("<green><bold><test>", "test", "TEST");
 
     final String out1 = GsonComponentSerializer.gson().serialize(root);
+    final String out2 = GsonComponentSerializer.gson().serialize(result);
+
+    assertEquals(out1, out2);
+  }
+
+  @Test
+  public void testPlaceholderResolver() {
+    Component expected = Component.text("TEST").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true);
+
+    Function<String, ComponentLike> resolver = (name) -> {
+      if (name.equalsIgnoreCase("test")) {
+        return Component.text("TEST").color(NamedTextColor.RED);
+      }
+      return null;
+    };
+
+    Component result = MiniMessage.builder().placeholderResolver(resolver).build().parse("<green><bold><test>");
+
+    final String out1 = GsonComponentSerializer.gson().serialize(expected);
     final String out2 = GsonComponentSerializer.gson().serialize(result);
 
     assertEquals(out1, out2);

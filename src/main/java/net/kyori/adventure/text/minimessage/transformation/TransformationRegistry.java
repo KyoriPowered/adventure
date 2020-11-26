@@ -26,7 +26,9 @@ package net.kyori.adventure.text.minimessage.transformation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.Template;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.TemplateTransformation;
@@ -72,7 +74,7 @@ public final class TransformationRegistry {
     this.types.add(type);
   }
 
-  public @Nullable Transformation get(final String name, final List<Token> inners, final Map<String, Template.ComponentTemplate> templates) {
+  public @Nullable Transformation get(final String name, final List<Token> inners, final Map<String, Template.ComponentTemplate> templates, final Function<String, ComponentLike> placeholderResolver) {
     for (final TransformationType<? extends Transformation> type : this.types) {
       if (type.canParse.test(name)) {
         final Transformation transformation = type.parser.parse();
@@ -82,6 +84,13 @@ public final class TransformationRegistry {
         final TemplateTransformation transformation = new TemplateTransformation(templates.get(name));
         transformation.load(name, inners);
         return transformation;
+      } else {
+        ComponentLike potentialTemplate = placeholderResolver.apply(name);
+        if (potentialTemplate != null) {
+          final TemplateTransformation transformation = new TemplateTransformation(new Template.ComponentTemplate(name, potentialTemplate.asComponent()));
+          transformation.load(name, inners);
+          return transformation;
+        }
       }
     }
 

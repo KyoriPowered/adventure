@@ -94,7 +94,7 @@ public interface Template extends Examinable {
     private final String key;
     private final Component value;
 
-    ComponentTemplate(final @NonNull String key, final @NonNull Component value) {
+    public ComponentTemplate(final @NonNull String key, final @NonNull Component value) {
       this.key = key;
       this.value = value;
     }

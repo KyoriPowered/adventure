@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.minimessage;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.parser.MiniMessageLexer;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
@@ -46,6 +47,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -63,13 +65,16 @@ class MiniMessageParser {
   private static final Pattern pattern = Pattern.compile("((?<start><)(?<token>[^<>]+(:(?<inner>['\"]?([^'\"](\\\\['\"])?)+['\"]?))*)(?<end>>))+?");
 
   private final TransformationRegistry registry;
+  private final Function<String, ComponentLike> placeholderResolver;
 
   public MiniMessageParser() {
     this.registry = new TransformationRegistry();
+    this.placeholderResolver = MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER;
   }
 
-  public MiniMessageParser(TransformationRegistry registry) {
+  public MiniMessageParser(TransformationRegistry registry, Function<String, ComponentLike> placeholderResolver) {
     this.registry = registry;
+    this.placeholderResolver = placeholderResolver;
   }
 
   @NonNull String escapeTokens(final @NonNull String richMessage) {
@@ -186,10 +191,10 @@ class MiniMessageParser {
   }
 
   @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates) {
-    return parseFormat0(richMessage, templates, registry);
+    return parseFormat0(richMessage, templates, registry, placeholderResolver);
   }
 
-  @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull TransformationRegistry registry) {
+  @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull TransformationRegistry registry, final @NonNull Function<String, ComponentLike> placeholderResolver) {
     MiniMessageLexer lexer = new MiniMessageLexer(richMessage);
     try {
       lexer.scan();
@@ -198,10 +203,10 @@ class MiniMessageParser {
     }
     lexer.clean();
     List<Token> tokens = lexer.getTokens();
-    return parse(tokens, registry, templates);
+    return parse(tokens, registry, templates, placeholderResolver);
   }
 
-  @NonNull Component parse(final @NonNull List<Token> tokens, final @NonNull TransformationRegistry registry, final @NonNull Map<String, Template.ComponentTemplate> templates) {
+  @NonNull Component parse(final @NonNull List<Token> tokens, final @NonNull TransformationRegistry registry, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull Function<String, ComponentLike> placeholderResolver) {
     final TextComponent.Builder parent = Component.text();
     ArrayDeque<Transformation> transformations = new ArrayDeque<>();
     ArrayDeque<OneTimeTransformation> oneTimeTransformations = new ArrayDeque<>();
@@ -228,7 +233,7 @@ class MiniMessageParser {
               inners.add(next);
             }
 
-            Transformation transformation = registry.get(name.value(), inners, templates);
+            Transformation transformation = registry.get(name.value(), inners, templates, placeholderResolver);
             if (transformation == null || preActive || token.type() == TokenType.ESCAPED_OPEN_TAG_START) {
               // this isn't a known tag, oh no!
               // lets take a step back, first, create a string
@@ -257,7 +262,7 @@ class MiniMessageParser {
             }
           } else if (paramOrEnd.type() == TokenType.TAG_END || paramOrEnd.type() == TokenType.ESCAPED_CLOSE_TAG_START) {
             // we finished
-            Transformation transformation = registry.get(name.value(), Collections.emptyList(), templates);
+            Transformation transformation = registry.get(name.value(), Collections.emptyList(), templates, placeholderResolver);
             if (transformation == null || preActive || token.type() == TokenType.ESCAPED_OPEN_TAG_START) {
               // this isn't a known tag, oh no!
               // lets take a step back, first, create a string
@@ -322,7 +327,7 @@ class MiniMessageParser {
             }
 
             // check what we need to close, so we create a transformation and try to remove it
-            Transformation transformation = registry.get(name.value(), inners, templates);
+            Transformation transformation = registry.get(name.value(), inners, templates, placeholderResolver);
             transformations.removeFirstOccurrence(transformation);
           } else {
             throw new ParsingException("Expected tag end or param separator after tag name, but got " + paramOrEnd, -1);

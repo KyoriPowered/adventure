@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.minimessage;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.markdown.MarkdownFlavor;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
@@ -35,6 +36,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * MiniMessage is a textual representation of components. This class allows you to serialize and deserialize them, strip
@@ -67,7 +69,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @return your very own custom MiniMessage instance
    */
   static @NonNull MiniMessage withMarkdownFlavor(MarkdownFlavor markdownFlavor) {
-    return new MiniMessageImpl(true, markdownFlavor, new TransformationRegistry());
+    return new MiniMessageImpl(true, markdownFlavor, new TransformationRegistry(), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER);
   }
 
   /**
@@ -77,7 +79,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    */
   @SafeVarargs
   static @NonNull MiniMessage withTransformations(TransformationType<? extends Transformation>... types) {
-    return new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(),new TransformationRegistry(types));
+    return new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(),new TransformationRegistry(types), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER);
   }
 
   /**
@@ -87,7 +89,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    */
   @SafeVarargs
   static @NonNull MiniMessage markdownWithTransformations(TransformationType<? extends Transformation>... types) {
-    return new MiniMessageImpl(true, MarkdownFlavor.defaultFlavor(),new TransformationRegistry(types));
+    return new MiniMessageImpl(true, MarkdownFlavor.defaultFlavor(),new TransformationRegistry(types), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER);
   }
 
   /**
@@ -98,7 +100,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    */
   @SafeVarargs
   static @NonNull MiniMessage markdownWithTransformations(MarkdownFlavor markdownFlavor, TransformationType<? extends Transformation>... types) {
-    return new MiniMessageImpl(true, markdownFlavor,new TransformationRegistry(types));
+    return new MiniMessageImpl(true, markdownFlavor,new TransformationRegistry(types), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER);
   }
 
   /**
@@ -226,6 +228,17 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      * @return this builder
      */
     @NonNull Builder markdownFlavor(MarkdownFlavor markdownFlavor);
+
+    /**
+     * Sets the placeholder resolve that should handle all (unresolved) placeholders.
+     * <br>
+     * It needs to return a component
+     *
+     * @param placeholderResolver the markdown flavor to use
+     *
+     * @return this builder
+     */
+    @NonNull Builder placeholderResolver(Function<String, ComponentLike> placeholderResolver);
 
     /**
      * Builds the serializer.
