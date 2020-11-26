@@ -12,16 +12,14 @@ plugins {
 }
 
 // Adventure version
-ext.adventure = "4.1.1"
+ext.adventure = "4.2.0"
 
 group "net.kyori"
 version "4.1.0-SNAPSHOT"
 description "A string-based, user-friendly format for representing Minecraft: Java Edition chat components."
 
 repositories {
-  mavenLocal()
   mavenCentral()
-  sonatypeSnapshots()
 }
 
 dependencies {
