@@ -25,7 +25,6 @@ package net.kyori.adventure.text.minimessage;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
-import net.kyori.adventure.text.minimessage.markdown.GithubFlavor;
 import net.kyori.adventure.text.minimessage.markdown.MarkdownFlavor;
 import net.kyori.adventure.text.minimessage.markdown.MiniMarkdownParser;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
@@ -33,21 +32,20 @@ import net.kyori.adventure.text.minimessage.transformation.TransformationRegistr
 import net.kyori.adventure.text.minimessage.transformation.TransformationType;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.List;
 import java.util.Map;
 
 /* package */ class MiniMessageImpl implements MiniMessage {
 
-  /* package */ static final MiniMessage INSTANCE = new MiniMessageImpl(false, null,new TransformationRegistry());
-  /* package */ static final MiniMessage MARKDOWN = new MiniMessageImpl(true, GithubFlavor.get(), new TransformationRegistry());
+  /* package */ static final MiniMessage INSTANCE = new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(),new TransformationRegistry());
+  /* package */ static final MiniMessage MARKDOWN = new MiniMessageImpl(true, MarkdownFlavor.defaultFlavor(), new TransformationRegistry());
 
   private final boolean markdown;
   private final MarkdownFlavor markdownFlavor;
   private final MiniMessageParser parser;
 
-  MiniMessageImpl(boolean markdown, @Nullable MarkdownFlavor markdownFlavor, @NonNull TransformationRegistry registry) {
+  MiniMessageImpl(boolean markdown, @NonNull MarkdownFlavor markdownFlavor, @NonNull TransformationRegistry registry) {
     this.markdown = markdown;
     this.markdownFlavor = markdownFlavor;
     this.parser = new MiniMessageParser(registry);
@@ -147,7 +145,7 @@ import java.util.Map;
 
   /* package */ static final class BuilderImpl implements Builder {
     private boolean markdown = false;
-    private MarkdownFlavor markdownFlavor = GithubFlavor.get();
+    private MarkdownFlavor markdownFlavor = MarkdownFlavor.defaultFlavor();
     private final TransformationRegistry registry = new TransformationRegistry();
 
     BuilderImpl() {
@@ -197,7 +195,7 @@ import java.util.Map;
       if (this.markdown) {
         return new MiniMessageImpl(true, markdownFlavor, registry);
       } else {
-        return new MiniMessageImpl(false, null, registry);
+        return new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(), registry);
       }
     }
   }

@@ -77,7 +77,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    */
   @SafeVarargs
   static @NonNull MiniMessage withTransformations(TransformationType<? extends Transformation>... types) {
-    return new MiniMessageImpl(false, null,new TransformationRegistry(types));
+    return new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(),new TransformationRegistry(types));
   }
 
   /**
@@ -87,7 +87,18 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    */
   @SafeVarargs
   static @NonNull MiniMessage markdownWithTransformations(TransformationType<? extends Transformation>... types) {
-    return new MiniMessageImpl(false, null,new TransformationRegistry(types));
+    return new MiniMessageImpl(true, MarkdownFlavor.defaultFlavor(),new TransformationRegistry(types));
+  }
+
+  /**
+   * Creates an custom instances with markdown support (with the given flavor) and the given transformations
+   * @param markdownFlavor the markdown flavor to use
+   * @param types the transformations
+   * @return your very own custom MiniMessage instance
+   */
+  @SafeVarargs
+  static @NonNull MiniMessage markdownWithTransformations(MarkdownFlavor markdownFlavor, TransformationType<? extends Transformation>... types) {
+    return new MiniMessageImpl(true, markdownFlavor,new TransformationRegistry(types));
   }
 
   /**
