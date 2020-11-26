@@ -40,7 +40,9 @@ public class Tokens {
 
   // vanilla decoration
   public static final String UNDERLINED = "underlined";
+  public static final String UNDERLINED_2 = "u";
   public static final String STRIKETHROUGH = "strikethrough";
+  public static final String STRIKETHROUGH_2 = "st";
   public static final String OBFUSCATED = "obfuscated";
   public static final String ITALIC = "italic";
   public static final String ITALIC_2 = "em";
@@ -48,6 +50,7 @@ public class Tokens {
   public static final String BOLD = "bold";
   public static final String BOLD_2 = "b";
   public static final String RESET = "reset";
+  public static final String RESET_2 = "r";
   public static final String PRE = "pre";
 
   // minimessage components

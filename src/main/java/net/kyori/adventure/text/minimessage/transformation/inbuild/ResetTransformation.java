@@ -37,7 +37,7 @@ import java.util.stream.Stream;
 
 public class ResetTransformation extends InstantApplyTransformation {
     public static boolean canParse(final String name) {
-        return name.equalsIgnoreCase(Tokens.RESET);
+        return name.equalsIgnoreCase(Tokens.RESET) || name.equalsIgnoreCase(Tokens.RESET_2);
     }
 
     private ResetTransformation() {

@@ -61,10 +61,22 @@ public class DecorationTransformation extends Transformation {
 
   private static TextDecoration parseDecoration(String name) {
     name = name.toLowerCase(Locale.ROOT);
-    if(name.equals(Tokens.BOLD_2)) {
-      name = Tokens.BOLD;
-    } else if (name.equals(Tokens.ITALIC_2) || name.equals(Tokens.ITALIC_3)) {
-      name = Tokens.ITALIC;
+    switch (name) {
+      case Tokens.BOLD_2:
+        name = Tokens.BOLD;
+        break;
+      case Tokens.ITALIC_2:
+      case Tokens.ITALIC_3:
+        name = Tokens.ITALIC;
+        break;
+      case Tokens.UNDERLINED_2:
+        name = Tokens.UNDERLINED;
+        break;
+      case Tokens.STRIKETHROUGH_2:
+        name = Tokens.STRIKETHROUGH;
+        break;
+      default:
+        break;
     }
     return TextDecoration.NAMES.value(name);
   }
