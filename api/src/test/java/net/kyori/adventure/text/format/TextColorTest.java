@@ -97,7 +97,13 @@ class TextColorTest {
   }
 
   @Test
-  void testEquality() {
+  void testLerp() {
+    assertEquals(TextColor.color(0x808080), TextColor.lerp(0.50f, TextColor.color(0xffffff), TextColor.color(0x000000)));
+    assertEquals(TextColor.color(0x3399FF), TextColor.lerp(0.50f, TextColor.color(0x3366FF), TextColor.color(0x33CCFF)));
+  }
+
+  @Test
+  public void testEquality() {
     new EqualsTester()
       .addEqualityGroup(
         TextColor.color(0xff0000),
