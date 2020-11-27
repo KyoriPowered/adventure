@@ -169,9 +169,8 @@ public interface TextReplacementConfig extends Buildable<TextReplacementConfig, 
      * @return this builder
      * @since 4.2.0
      */
-    default @NonNull Builder replacement(final @NonNull ComponentLike replacement) {
-      requireNonNull(replacement, "replacement");
-      final Component baked = replacement.asComponent();
+    default @NonNull Builder replacement(final @Nullable ComponentLike replacement) {
+      final @Nullable Component baked = replacement == null ? null : replacement.asComponent();
       return this.replacement((result, input) -> baked);
     }
 

@@ -93,7 +93,7 @@
 
     <!-- https://checkstyle.org/config_coding.html#IllegalTokenText -->
     <module name="IllegalTokenText">
-      <property name="format" value="\\u00(09|0(a|A)|0(c|C)|0(d|D)|22|27|5(C|c))|\\(0(10|11|12|14|15|42|47)|134)"/>
+      <property name="format" value="($|[^\\])\\u00(09|0(a|A)|0(c|C)|0(d|D)|22|27|5(C|c))|\\(0(10|11|12|14|15|42|47)|134)"/>
       <property name="message" value="Consider using special escape sequence instead of octal value or Unicode escaped value."/>
       <property name="tokens" value="CHAR_LITERAL, STRING_LITERAL"/>
     </module>
@@ -200,6 +200,18 @@
       <property name="tokens" value="LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_IF, LITERAL_TRY"/> <!-- add LITERAL_DO -->
     </module>
 
+    <!-- https://checkstyle.org/config_whitespace.html#SeparatorWrap -->
+    <module name="SeparatorWrap">
+      <property name="id" value="SeparatorWrapEol"/>
+      <property name="option" value="eol"/>
+      <property name="tokens" value="COMMA, SEMI, ELLIPSIS, RBRACK, ARRAY_DECLARATOR, METHOD_REF"/>
+    </module>
+    <module name="SeparatorWrap">
+      <property name="id" value="SeparatorWrapNl"/>
+      <property name="option" value="nl"/>
+      <property name="tokens" value="DOT, AT"/>
+    </module>
+
     <!-- https://checkstyle.org/config_coding.html#SimplifyBooleanExpression -->
     <module name="SimplifyBooleanExpression"/>
 
@@ -226,6 +238,11 @@
     <!-- https://checkstyle.org/config_imports.html#UnusedImports -->
     <module name="UnusedImports"/>
 
+    <!-- https://checkstyle.org/config_whitespace.html#WhitespaceAfter -->
+    <module name="WhitespaceAfter">
+      <property name="tokens" value="COMMA, SEMI, TYPECAST"/>
+    </module>
+
     <!--
     #####################
     #### third-party ####
@@ -241,9 +258,6 @@
       <property name="minimumScope" value="public"/>
       <property name="tokens" value="INTERFACE_DEF, CLASS_DEF, ENUM_DEF, ANNOTATION_DEF, RECORD_DEF, METHOD_DEF, CTOR_DEF, ANNOTATION_FIELD_DEF, RECORD_DEF, COMPACT_CTOR_DEF"/>
     </module>
-
-    <!-- https://gitlab.com/stellardrift/stylecheck/-/blob/dev/src/main/java/ca/stellardrift/stylecheck/NoLvTypeAnnotations.java -->
-    <module name="NoLvTypeAnnotations"/>
 
     <!-- https://gitlab.com/stellardrift/stylecheck/-/blob/dev/src/main/java/ca/stellardrift/stylecheck/StatementNoWhitespaceAfter.java -->
     <module name="StatementNoWhitespaceAfter">

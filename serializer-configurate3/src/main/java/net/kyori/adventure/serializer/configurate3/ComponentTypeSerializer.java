@@ -212,7 +212,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
       score.getNode(SCORE_NAME).setValue(sc.name());
       score.getNode(SCORE_OBJECTIVE).setValue(sc.objective());
       // score component value is optional
-      final /* @Nullable */ String scoreValue = sc.value();
+      final @Nullable String scoreValue = sc.value();
       if(scoreValue != null) score.getNode(SCORE_VALUE).setValue(scoreValue);
     } else if(src instanceof SelectorComponent) {
       value.getNode(SELECTOR).setValue(((SelectorComponent) src).pattern());

@@ -67,11 +67,11 @@ final class StyleSerializer implements TypeSerializer<Style> {
 
     final Style.Builder builder = Style.style();
 
-    final /* @Nullable */ Key font = value.node(FONT).get(Key.class);
+    final @Nullable Key font = value.node(FONT).get(Key.class);
     if(font != null) {
       builder.font(font);
     }
-    final /* @Nullable */ TextColor color = value.node(COLOR).get(TextColor.class);
+    final @Nullable TextColor color = value.node(COLOR).get(TextColor.class);
     if(color != null) {
       builder.color(color);
     }
@@ -83,7 +83,7 @@ final class StyleSerializer implements TypeSerializer<Style> {
       }
     }
 
-    final /* @Nullable */ String insertion = value.node(INSERTION).getString();
+    final @Nullable String insertion = value.node(INSERTION).getString();
     if(insertion != null) {
       builder.insertion(insertion);
     }

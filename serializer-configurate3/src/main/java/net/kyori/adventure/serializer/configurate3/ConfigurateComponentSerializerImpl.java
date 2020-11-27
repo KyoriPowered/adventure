@@ -59,7 +59,7 @@ final class ConfigurateComponentSerializerImpl implements ConfigurateComponentSe
   @Override
   public @NonNull Component deserialize(final @NonNull ConfigurationNode input) {
     try {
-      final /* @Nullable */ Component deserialized = input.getValue(ComponentTypeSerializer.TYPE);
+      final @Nullable Component deserialized = input.getValue(ComponentTypeSerializer.TYPE);
       if(deserialized != null) {
         return deserialized;
       }

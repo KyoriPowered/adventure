@@ -34,6 +34,7 @@ import java.lang.reflect.Type;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.event.HoverEvent;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class ShowItemSerializer implements JsonDeserializer<HoverEvent.ShowItem>, JsonSerializer<HoverEvent.ShowItem> {
   static final String ID = "id";
@@ -82,7 +83,7 @@ final class ShowItemSerializer implements JsonDeserializer<HoverEvent.ShowItem>,
       json.addProperty(COUNT, count);
     }
 
-    final /* @Nullable */ BinaryTagHolder nbt = src.nbt();
+    final @Nullable BinaryTagHolder nbt = src.nbt();
     if(nbt != null) {
       json.addProperty(TAG, nbt.string());
     }

@@ -50,6 +50,7 @@ import net.kyori.adventure.text.StorageNBTComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.Style;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class ComponentSerializerImpl implements JsonDeserializer<Component>, JsonSerializer<Component> {
   static final String TEXT = "text";
@@ -189,7 +190,7 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
       score.addProperty(SCORE_NAME, sc.name());
       score.addProperty(SCORE_OBJECTIVE, sc.objective());
       // score component value is optional
-      final /* @Nullable */ String value = sc.value();
+      final @Nullable String value = sc.value();
       if(value != null) score.addProperty(SCORE_VALUE, value);
       object.add(SCORE, score);
     } else if(src instanceof SelectorComponent) {

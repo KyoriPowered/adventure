@@ -54,8 +54,10 @@ final class TextColorSerializer extends TypeAdapter<TextColor> {
   }
 
   @Override
-  public TextColor read(final JsonReader in) throws IOException {
-    final TextColor color = fromString(in.nextString());
+  public @Nullable TextColor read(final JsonReader in) throws IOException {
+    final @Nullable TextColor color = fromString(in.nextString());
+    if(color == null) return null;
+
     return this.downsampleColor ? NamedTextColor.nearestTo(color) : color;
   }
 

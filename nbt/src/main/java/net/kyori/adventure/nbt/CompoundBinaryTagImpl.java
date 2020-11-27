@@ -47,7 +47,7 @@ final class CompoundBinaryTagImpl implements CompoundBinaryTag {
   }
 
   public boolean contains(final @NonNull String key, final @NonNull BinaryTagType<?> type) {
-    final /* @Nullable */ BinaryTag tag = this.tags.get(key);
+    final @Nullable BinaryTag tag = this.tags.get(key);
     return tag != null && type.test(tag.type());
   }
 
