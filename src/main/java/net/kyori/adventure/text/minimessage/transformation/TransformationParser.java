@@ -23,6 +23,18 @@
  */
 package net.kyori.adventure.text.minimessage.transformation;
 
+/**
+ * A supplier of new transformation instances.
+ *
+ * @param <T> the transformation type
+ * @since 4.1.0
+ */
 public interface TransformationParser<T extends Transformation> {
+  /**
+   * Create a new instance of the transformation.
+   *
+   * @return the new instance
+   * @since 4.1.0
+   */
   T parse();
 }

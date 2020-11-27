@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
-import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 import java.util.Objects;
 import java.util.PrimitiveIterator;
@@ -41,11 +41,12 @@ import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public class RainbowTransformation extends OneTimeTransformation implements Inserting {
-  public static boolean canParse(final String name) {
-    return name.equalsIgnoreCase(Tokens.RAINBOW);
-  }
-
+/**
+ * Applies rainbow color to a component.
+ *
+ * @since 4.1.0
+ */
+public final class RainbowTransformation extends OneTimeTransformation implements Inserting {
   private int colorIndex = 0;
 
   private float center = 128;
@@ -54,41 +55,52 @@ public class RainbowTransformation extends OneTimeTransformation implements Inse
 
   private int phase;
 
+  /**
+   * Get if this transformation can handle the provided tag name.
+   *
+   * @param name tag name to test
+   * @return if this transformation is applicable
+   * @since 4.1.0
+   */
+  public static boolean canParse(final String name) {
+    return name.equalsIgnoreCase(Tokens.RAINBOW);
+  }
+
   private RainbowTransformation() {
   }
 
   @Override
-  public void load(String name, List<Token> args) {
+  public void load(final String name, final List<Token> args) {
     super.load(name, args);
 
-    if (Token.oneString(args)) {
+    if(Token.oneString(args)) {
       try {
-        phase = Integer.parseInt(args.get(0).value());
-      } catch (NumberFormatException ex) {
+        this.phase = Integer.parseInt(args.get(0).value());
+      } catch(final NumberFormatException ex) {
         throw new ParsingException("Expected phase, got " + args.get(0).value(), -1);
       }
     }
   }
 
   @Override
-  public Component applyOneTime(Component current, TextComponent.Builder parent, ArrayDeque<Transformation> transformations) {
-    if (current instanceof TextComponent) {
-      TextComponent textComponent = (TextComponent) current;
-      String content = textComponent.content();
+  public Component applyOneTime(final @NonNull Component current, final TextComponent.@NonNull Builder parent, final @NonNull Deque<Transformation> transformations) {
+    if(current instanceof TextComponent) {
+      final TextComponent textComponent = (TextComponent) current;
+      final String content = textComponent.content();
 
       // init
-      center = 128;
-      width = 127;
-      frequency = Math.PI * 2 / content.length();
+      this.center = 128;
+      this.width = 127;
+      this.frequency = Math.PI * 2 / content.length();
 
       // apply
       int charSize;
       final char[] holder = new char[2];
-      for (PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
+      for(final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
         charSize = Character.toChars(it.nextInt(), holder, 0);
         Component comp = Component.text(new String(holder, 0, charSize));
-        comp = merge(comp, current);
-        comp = comp.color(getColor(phase));
+        comp = this.merge(comp, current);
+        comp = comp.color(this.color(this.phase));
         parent.append(comp);
       }
 
@@ -98,11 +110,11 @@ public class RainbowTransformation extends OneTimeTransformation implements Inse
     throw new ParsingException("Expected Text Comp", -1);
   }
 
-  private TextColor getColor(float phase) {
-    int index = colorIndex++;
-    int red = (int) (Math.sin(frequency * index + 2 + phase) * width + center);
-    int green = (int) (Math.sin(frequency * index + 0 + phase) * width + center);
-    int blue = (int) (Math.sin(frequency * index + 4 + phase) * width + center);
+  private TextColor color(final float phase) {
+    final int index = this.colorIndex++;
+    final int red = (int) (Math.sin(this.frequency * index + 2 + phase) * this.width + this.center);
+    final int green = (int) (Math.sin(this.frequency * index + 0 + phase) * this.width + this.center);
+    final int blue = (int) (Math.sin(this.frequency * index + 4 + phase) * this.width + this.center);
     return TextColor.color(red, green, blue);
   }
 
@@ -112,18 +124,27 @@ public class RainbowTransformation extends OneTimeTransformation implements Inse
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    RainbowTransformation that = (RainbowTransformation) o;
-    return colorIndex == that.colorIndex && Float.compare(that.center, center) == 0 && Float.compare(that.width, width) == 0 && Double.compare(that.frequency, frequency) == 0 && phase == that.phase;
+  public boolean equals(final Object other) {
+    if(this == other) return true;
+    if(other == null || this.getClass() != other.getClass()) return false;
+    final RainbowTransformation that = (RainbowTransformation) other;
+    return this.colorIndex == that.colorIndex
+      && Float.compare(that.center, this.center) == 0
+      && Float.compare(that.width, this.width) == 0
+      && Double.compare(that.frequency, this.frequency) == 0
+      && this.phase == that.phase;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(colorIndex, center, width, frequency, phase);
+    return Objects.hash(this.colorIndex, this.center, this.width, this.frequency, this.phase);
   }
 
+  /**
+   * Factory for {@link RainbowTransformation} instances.
+   *
+   * @since 4.1.0
+   */
   public static class Parser implements TransformationParser<RainbowTransformation> {
     @Override
     public RainbowTransformation parse() {

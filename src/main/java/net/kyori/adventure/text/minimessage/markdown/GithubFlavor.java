@@ -23,37 +23,49 @@
  */
 package net.kyori.adventure.text.minimessage.markdown;
 
-public class GithubFlavor implements MarkdownFlavor {
+/**
+ * An implementation of supported elements of <em>GitHub-Flavored Markdown</em>.
+ *
+ * @since 4.1.0
+ */
+public final class GithubFlavor implements MarkdownFlavor {
+  private static final GithubFlavor INSTANCE = new GithubFlavor();
 
-    private GithubFlavor() {
-    }
+  private GithubFlavor() {
+  }
 
-    public static MarkdownFlavor get() {
-        return new GithubFlavor();
-    }
+  /**
+   * Get an instance of this markdown flavour.
+   *
+   * @return the flavour instance
+   * @since 4.1.0
+   */
+  public static MarkdownFlavor get() {
+    return INSTANCE;
+  }
 
-    @Override
-    public boolean isBold(char current, char next) {
-        return (current == '*' && next == current) || (current == '_' && next == current);
-    }
+  @Override
+  public boolean isBold(final char current, final char next) {
+    return (current == '*' && next == current) || (current == '_' && next == current);
+  }
 
-    @Override
-    public boolean isItalic(char current, char next) {
-        return (current == '*' && next != current) || (current == '_' && next != current);
-    }
+  @Override
+  public boolean isItalic(final char current, final char next) {
+    return (current == '*' && next != current) || (current == '_' && next != current);
+  }
 
-    @Override
-    public boolean isUnderline(char current, char next) {
-        return false;
-    }
+  @Override
+  public boolean isUnderline(final char current, final char next) {
+    return false;
+  }
 
-    @Override
-    public boolean isStrikeThrough(char current, char next) {
-        return current == '~' && next == current;
-    }
+  @Override
+  public boolean isStrikeThrough(final char current, final char next) {
+    return current == '~' && next == current;
+  }
 
-    @Override
-    public boolean isObfuscate(char current, char next) {
-        return false;
-    }
+  @Override
+  public boolean isObfuscate(final char current, final char next) {
+    return false;
+  }
 }

@@ -23,17 +23,32 @@
  */
 package net.kyori.adventure.text.minimessage.transformation;
 
+import java.util.Deque;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 
-import java.util.ArrayDeque;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
+/**
+ * A transformation that is only applied once, rather than being inherited by sibling components.
+ *
+ * @since 4.1.0
+ */
 public abstract class OneTimeTransformation extends Transformation {
 
-    public abstract Component applyOneTime(Component current, TextComponent.Builder parent, ArrayDeque<Transformation> transformations);
+  /**
+   * Apply the transformation based on the provided state.
+   *
+   * @param current the component being acted on
+   * @param parent builder that will accept {@code current} after all other transformations have been executed
+   * @param transformations transformations being tracked
+   * @return the transformed {@code current}
+   * @since 4.1.0
+   */
+  public abstract Component applyOneTime(final @NonNull Component current, final TextComponent.@NonNull Builder parent, final @NonNull Deque<Transformation> transformations);
 
-    @Override
-    public Component apply(Component component, TextComponent.Builder parent) {
-        return null;
-    }
+  @Override
+  public Component apply(final @NonNull Component component, final TextComponent.@NonNull Builder parent) {
+    return null;
+  }
 }

@@ -23,37 +23,49 @@
  */
 package net.kyori.adventure.text.minimessage.markdown;
 
-public class DiscordFlavor implements MarkdownFlavor {
+/**
+ * The discord flavour of markdown.
+ *
+ * @since 4.1.0
+ */
+public final class DiscordFlavor implements MarkdownFlavor {
+  private static final DiscordFlavor INSTANCE = new DiscordFlavor();
 
-    private DiscordFlavor() {
-    }
+  private DiscordFlavor() {
+  }
 
-    public static MarkdownFlavor get() {
-        return new DiscordFlavor();
-    }
+  /**
+   * Get an instance of discord-flavoured Markdown.
+   *
+   * @return an instance
+   * @since 4.1.0
+   */
+  public static MarkdownFlavor get() {
+    return INSTANCE;
+  }
 
-    @Override
-    public boolean isBold(char current, char next) {
-        return (current == '*' && next == current);
-    }
+  @Override
+  public boolean isBold(final char current, final char next) {
+    return current == '*' && next == current;
+  }
 
-    @Override
-    public boolean isItalic(char current, char next) {
-        return (current == '*' && next != current);
-    }
+  @Override
+  public boolean isItalic(final char current, final char next) {
+    return current == '*' && next != current;
+  }
 
-    @Override
-    public boolean isUnderline(char current, char next) {
-        return current == '_' && next == current;
-    }
+  @Override
+  public boolean isUnderline(final char current, final char next) {
+    return current == '_' && next == current;
+  }
 
-    @Override
-    public boolean isStrikeThrough(char current, char next) {
-        return current == '~' && next == current;
-    }
+  @Override
+  public boolean isStrikeThrough(final char current, final char next) {
+    return current == '~' && next == current;
+  }
 
-    @Override
-    public boolean isObfuscate(char current, char next) {
-        return current == '|' && next == current;
-    }
+  @Override
+  public boolean isObfuscate(final char current, final char next) {
+    return current == '|' && next == current;
+  }
 }

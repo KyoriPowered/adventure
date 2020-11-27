@@ -23,6 +23,11 @@
  */
 package net.kyori.adventure.text.minimessage.parser;
 
+/**
+ * A type of token understood by the MiniMessage lexer.
+ *
+ * @since 4.1.0
+ */
 public enum TokenType {
   OPEN_TAG_START("<"),
   CLOSE_TAG_START("</"),
@@ -45,6 +50,12 @@ public enum TokenType {
     this.value = value;
   }
 
+  /**
+   * Get the literal text matched by this token.
+   *
+   * @return token text
+   * @since 4.1.0
+   */
   public String value() {
     return this.value;
   }

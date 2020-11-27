@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
+import java.util.Deque;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.Tokens;
@@ -35,12 +36,23 @@ import net.kyori.examination.ExaminableProperty;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-public class KeybindTransformation extends OneTimeTransformation implements Inserting {
+/**
+ * A transformation that inserts a key binding component.
+ *
+ * @since 4.1.0
+ */
+public final class KeybindTransformation extends OneTimeTransformation implements Inserting {
+  /**
+   * Get if this transformation can handle the provided tag name.
+   *
+   * @param name tag name to test
+   * @return if this transformation is applicable
+   * @since 4.1.0
+   */
   public static boolean canParse(final String name) {
     return name.equalsIgnoreCase(Tokens.KEYBIND);
   }
@@ -60,8 +72,8 @@ public class KeybindTransformation extends OneTimeTransformation implements Inse
   }
 
   @Override
-  public Component applyOneTime(Component current, TextComponent.Builder parent, ArrayDeque<Transformation> transformations) {
-    parent.append(merge(Component.keybind(this.keybind), current));
+  public Component applyOneTime(final @NonNull Component current, final TextComponent.@NonNull Builder parent, final @NonNull Deque<Transformation> transformations) {
+    parent.append(this.merge(Component.keybind(this.keybind), current));
     return current;
   }
 
@@ -83,6 +95,11 @@ public class KeybindTransformation extends OneTimeTransformation implements Inse
     return Objects.hash(this.keybind);
   }
 
+  /**
+   * Factory for {@link KeybindTransformation} instances.
+   *
+   * @since 4.1.0
+   */
   public static class Parser implements TransformationParser<KeybindTransformation> {
     @Override
     public KeybindTransformation parse() {

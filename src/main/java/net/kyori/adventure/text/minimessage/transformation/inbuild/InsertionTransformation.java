@@ -35,12 +35,24 @@ import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public class InsertionTransformation extends Transformation {
+/**
+ * A transformation that applies an insertion (shift-click) event.
+ *
+ * @since 4.1.0
+ */
+public final class InsertionTransformation extends Transformation {
+  private String insertion;
+
+  /**
+   * Get if this transformation can handle the provided tag name.
+   *
+   * @param name tag name to test
+   * @return if this transformation is applicable
+   * @since 4.1.0
+   */
   public static boolean canParse(final String name) {
     return name.equalsIgnoreCase(Tokens.INSERTION);
   }
-
-  private String insertion;
 
   private InsertionTransformation() {
   }
@@ -77,6 +89,11 @@ public class InsertionTransformation extends Transformation {
     return Objects.hash(this.insertion);
   }
 
+  /**
+   * Factory for {@link InsertionTransformation} instances.
+   *
+   * @since 4.1.0
+   */
   public static class Parser implements TransformationParser<InsertionTransformation> {
     @Override
     public InsertionTransformation parse() {

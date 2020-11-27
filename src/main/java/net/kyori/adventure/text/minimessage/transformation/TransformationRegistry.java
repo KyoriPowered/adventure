@@ -35,9 +35,14 @@ import net.kyori.adventure.text.minimessage.transformation.inbuild.TemplateTrans
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+/**
+ * A registry of transformation types understood by the MiniMessage parser.
+ *
+ * @since 4.1.0
+ */
 public final class TransformationRegistry {
 
-  public static TransformationRegistry EMPTY = new TransformationRegistry();
+  public static final TransformationRegistry EMPTY = new TransformationRegistry();
 
   static {
     EMPTY.clear();
@@ -45,6 +50,11 @@ public final class TransformationRegistry {
 
   private final List<TransformationType<? extends Transformation>> types = new ArrayList<>();
 
+  /**
+   * Create a transformation registry with default transformations.
+   *
+   * @since 4.1.0
+   */
   public TransformationRegistry() {
     this.register(TransformationType.COLOR);
     this.register(TransformationType.DECORATION);
@@ -60,33 +70,62 @@ public final class TransformationRegistry {
     this.register(TransformationType.PRE);
   }
 
-  public TransformationRegistry(TransformationType<? extends Transformation>... types) {
-    for (TransformationType<? extends Transformation> type : types) {
+  /**
+   * Create a transformation registry with only the specified transformation types.
+   *
+   * @param types known transformation types
+   * @since 4.1.0
+   */
+  @SafeVarargs
+  public TransformationRegistry(final TransformationType<? extends Transformation>... types) {
+    for(final TransformationType<? extends Transformation> type : types) {
       this.register(type);
     }
   }
 
+  /**
+   * Remove all entries from this registry.
+   *
+   * @since 4.1.0
+   */
   public void clear() {
     this.types.clear();
   }
 
+  /**
+   * Register a new transformation type.
+   *
+   * @param type the type of transformation to register
+   * @param <T> transformation
+   * @since 4.1.0
+   */
   public <T extends Transformation> void register(final TransformationType<T> type) {
     this.types.add(type);
   }
 
+  /**
+   * Get a transformation from this registry based on the current state.
+   *
+   * @param name tag name
+   * @param inners tokens that make up the tag arguments
+   * @param templates available templates
+   * @param placeholderResolver function to resolve other component types
+   * @return a possible transformation
+   * @since 4.1.0
+   */
   public @Nullable Transformation get(final String name, final List<Token> inners, final Map<String, Template.ComponentTemplate> templates, final Function<String, ComponentLike> placeholderResolver) {
-    for (final TransformationType<? extends Transformation> type : this.types) {
-      if (type.canParse.test(name)) {
+    for(final TransformationType<? extends Transformation> type : this.types) {
+      if(type.canParse.test(name)) {
         final Transformation transformation = type.parser.parse();
         transformation.load(name, inners);
         return transformation;
-      } else if (templates.containsKey(name)) {
+      } else if(templates.containsKey(name)) {
         final TemplateTransformation transformation = new TemplateTransformation(templates.get(name));
         transformation.load(name, inners);
         return transformation;
       } else {
-        ComponentLike potentialTemplate = placeholderResolver.apply(name);
-        if (potentialTemplate != null) {
+        final ComponentLike potentialTemplate = placeholderResolver.apply(name);
+        if(potentialTemplate != null) {
           final TemplateTransformation transformation = new TemplateTransformation(new Template.ComponentTemplate(name, potentialTemplate.asComponent()));
           transformation.load(name, inners);
           return transformation;
@@ -97,9 +136,16 @@ public final class TransformationRegistry {
     return null;
   }
 
+  /**
+   * Test if any registered transformation type matches the provided key.
+   *
+   * @param name tag name
+   * @return whether any transformation exists
+   * @since 4.1.0
+   */
   public boolean exists(final String name) {
-    for (final TransformationType<? extends Transformation> type : this.types) {
-      if (type.canParse.test(name)) {
+    for(final TransformationType<? extends Transformation> type : this.types) {
+      if(type.canParse.test(name)) {
         return true;
       }
     }

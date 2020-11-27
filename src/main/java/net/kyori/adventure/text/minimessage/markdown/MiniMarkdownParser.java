@@ -35,24 +35,42 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class MiniMarkdownParser {
+/**
+ * Internal class for markdown handling.
+ *
+ * @since 4.0.0
+ */
+public final class MiniMarkdownParser {
 
   private MiniMarkdownParser() {
   }
 
-  @NonNull
-  public static String stripMarkdown(final @NonNull String input, @NonNull MarkdownFlavor markdownFlavor) {
+  /**
+   * Strip any markdown formatting that would be interpreted by {@code markdownFlavor}.
+   *
+   * @param input the input string
+   * @param markdownFlavor markdown flavor to test against
+   * @return the stripped input
+   * @since 4.1.0
+   */
+  public static @NonNull String stripMarkdown(final @NonNull String input, final @NonNull MarkdownFlavor markdownFlavor) {
     return handle(input, true, markdownFlavor);
   }
 
-  @NonNull
-  public static String parse(final @NonNull String input, final @NonNull MarkdownFlavor markdownFlavor) {
+  /**
+   * Parse the markdown input and return it as a MiniMessage string.
+   *
+   * @param input the input string
+   * @param markdownFlavor the flavour of markdown to recognize
+   * @return a modified string
+   * @since 4.1.0
+   */
+  public static @NonNull String parse(final @NonNull String input, final @NonNull MarkdownFlavor markdownFlavor) {
     return handle(input, false, markdownFlavor);
   }
 
-  @NonNull
-  private static String handle(final @NonNull String input, final boolean strip, @NonNull MarkdownFlavor markdownFlavor) {
-    StringBuilder sb = new StringBuilder();
+  private static @NonNull String handle(final @NonNull String input, final boolean strip, final @NonNull MarkdownFlavor markdownFlavor) {
+    final StringBuilder sb = new StringBuilder();
 
     int bold = -1;
     Insert boldSkip = null;
@@ -65,16 +83,16 @@ public class MiniMarkdownParser {
     int obfuscate = -1;
     Insert obfuscateSkip = null;
 
-    List<Insert> inserts = new ArrayList<>();
+    final List<Insert> inserts = new ArrayList<>();
     int skip = 0;
-    for (int i = 0; i + skip < input.length(); i++) {
-      int currIndex = i + skip;
-      char c = input.charAt(currIndex);
-      char n = next(currIndex, input);
+    for(int i = 0; i + skip < input.length(); i++) {
+      final int currIndex = i + skip;
+      final char c = input.charAt(currIndex);
+      final char n = next(currIndex, input);
 
       boolean shouldSkip = false;
-      if (markdownFlavor.isBold(c, n)) {
-        if (bold == -1) {
+      if(markdownFlavor.isBold(c, n)) {
+        if(bold == -1) {
           bold = sb.length();
           boldSkip = new Insert(sb.length(), c + "");
         } else {
@@ -84,8 +102,8 @@ public class MiniMarkdownParser {
         }
         skip += c == n ? 1 : 0;
         shouldSkip = true;
-      } else if (markdownFlavor.isItalic(c, n)) {
-        if (italic == -1) {
+      } else if(markdownFlavor.isItalic(c, n)) {
+        if(italic == -1) {
           italic = sb.length();
           italicSkip = new Insert(sb.length(), c + "");
         } else {
@@ -95,8 +113,8 @@ public class MiniMarkdownParser {
         }
         skip += c == n ? 1 : 0;
         shouldSkip = true;
-      } else if (markdownFlavor.isUnderline(c, n)) {
-        if (underline == -1) {
+      } else if(markdownFlavor.isUnderline(c, n)) {
+        if(underline == -1) {
           underline = sb.length();
           underlineSkip = new Insert(sb.length(), c + "");
         } else {
@@ -106,8 +124,8 @@ public class MiniMarkdownParser {
         }
         skip += c == n ? 1 : 0;
         shouldSkip = true;
-      } else if (markdownFlavor.isStrikeThrough(c, n)) {
-        if (strikeThrough == -1) {
+      } else if(markdownFlavor.isStrikeThrough(c, n)) {
+        if(strikeThrough == -1) {
           strikeThrough = sb.length();
           strikeThroughSkip = new Insert(sb.length(), c + "");
         } else {
@@ -117,8 +135,8 @@ public class MiniMarkdownParser {
         }
         skip += c == n ? 1 : 0;
         shouldSkip = true;
-      } else if (markdownFlavor.isObfuscate(c, n)) {
-        if (obfuscate == -1) {
+      } else if(markdownFlavor.isObfuscate(c, n)) {
+        if(obfuscate == -1) {
           obfuscate = sb.length();
           obfuscateSkip = new Insert(sb.length(), c + "");
         } else {
@@ -130,64 +148,63 @@ public class MiniMarkdownParser {
         shouldSkip = true;
       }
 
-      if (!shouldSkip) {
+      if(!shouldSkip) {
         sb.append(c);
       }
     }
 
-    if (strip) {
+    if(strip) {
       inserts.clear();
     } else {
-      inserts.sort(Comparator.comparing(Insert::getPos).thenComparing(Insert::getValue).reversed());
+      inserts.sort(Comparator.comparing(Insert::pos).thenComparing(Insert::value).reversed());
     }
 
-    if (underline != -1) {
+    if(underline != -1) {
       inserts.add(underlineSkip);
     }
-    if (bold != -1) {
+    if(bold != -1) {
       inserts.add(boldSkip);
     }
-    if (italic != -1) {
+    if(italic != -1) {
       inserts.add(italicSkip);
     }
-    if (strikeThrough != -1) {
+    if(strikeThrough != -1) {
       inserts.add(strikeThroughSkip);
     }
-    if (obfuscate != -1) {
+    if(obfuscate != -1) {
       inserts.add(obfuscateSkip);
     }
 
-    for (Insert el : inserts) {
-      sb.insert(el.getPos(), el.getValue());
+    for(final Insert el : inserts) {
+      sb.insert(el.pos(), el.value());
     }
 
     return sb.toString();
   }
 
   private static char next(final int index, final @NonNull String input) {
-    if (index < input.length() - 1) {
+    if(index < input.length() - 1) {
       return input.charAt(index + 1);
     } else {
       return ' ';
     }
   }
 
-  /* package */ static class Insert implements Examinable {
+  static final class Insert implements Examinable {
     private final int pos;
     private final String value;
 
-    private Insert(final int pos, final @NonNull String value) {
+    Insert(final int pos, final @NonNull String value) {
       this.pos = pos;
       this.value = value;
     }
 
-    private int getPos() {
-      return pos;
+    private int pos() {
+      return this.pos;
     }
 
-    @NonNull
-    private String getValue() {
-      return value;
+    private @NonNull String value() {
+      return this.value;
     }
 
     @Override

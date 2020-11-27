@@ -32,47 +32,47 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MiniMessageLexerTest {
 
-    @Test
-    public void test() throws Exception {
-        test("<red>This is a test</red><yellow>Wooo<#112233>hex!</#112233><color:blue>Named color</color>");
-        test("<hover:show_text:'<red>test'>TEST</hover>");
-        test("<rainbow><treerev> <click:open_url:'https://github.com'>https://github.com</click></rainbow>");
+  @Test
+  void test() throws Exception {
+    this.test("<red>This is a test</red><yellow>Wooo<#112233>hex!</#112233><color:blue>Named color</color>");
+    this.test("<hover:show_text:'<red>test'>TEST</hover>");
+    this.test("<rainbow><treerev> <click:open_url:'https://github.com'>https://github.com</click></rainbow>");
+  }
+
+  private void test(final String input) throws Exception {
+    System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    System.out.println("Testing: " + input);
+    final MiniMessageLexer lexer = new MiniMessageLexer(input);
+    lexer.scan();
+    lexer.clean();
+    final List<Token> tokens = lexer.getTokens();
+
+    final StringBuilder result = new StringBuilder();
+    final StringBuilder split = new StringBuilder();
+    final StringBuilder types = new StringBuilder();
+    for(final Token token : tokens) {
+      result.append(token.value());
+
+      final int length = Math.max(token.value().length(), token.type().name().length());
+
+      split.append(token.value()).append(this.padding(length - token.value().length())).append(" ");
+      types.append(token.type().name()).append(this.padding(length - token.type().name().length())).append(" ");
     }
 
-    private void test(String input) throws Exception {
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println("Testing: " + input);
-        MiniMessageLexer lexer = new MiniMessageLexer(input);
-        lexer.scan();
-        lexer.clean();
-        List<Token> tokens = lexer.getTokens();
+    System.out.println("Result:  " + result.toString());
+    System.out.println("Split:   " + split.toString());
+    System.out.println("Types:   " + types.toString());
+    System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
-        StringBuilder result = new StringBuilder();
-        StringBuilder split = new StringBuilder();
-        StringBuilder types = new StringBuilder();
-        for (Token token : tokens) {
-            result.append(token.value());
+    assertEquals(result.toString(), input);
+  }
 
-            int length = Math.max(token.value().length(), token.type().name().length());
-
-            split.append(token.value()).append(padding(length - token.value().length())).append(" ");
-            types.append(token.type().name()).append(padding(length - token.type().name().length())).append(" ");
-        }
-
-        System.out.println("Result:  " + result.toString());
-        System.out.println("Split:   " + split.toString());
-        System.out.println("Types:   " + types.toString());
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-
-        assertEquals(result.toString(), input);
+  private String padding(final int length) {
+    if(length > 0) {
+      final char[] array = new char[length];
+      Arrays.fill(array, ' ');
+      return new String(array);
     }
-
-    private String padding(int length) {
-        if (length > 0) {
-            char[] array = new char[length];
-            Arrays.fill(array, ' ');
-            return new String(array);
-        }
-        return "";
-    }
+    return "";
+  }
 }

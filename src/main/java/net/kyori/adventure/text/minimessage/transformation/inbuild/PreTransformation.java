@@ -34,38 +34,57 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.stream.Stream;
 
-public class PreTransformation extends Transformation {
-    public static boolean canParse(final String name) {
-        return name.equalsIgnoreCase(Tokens.PRE);
-    }
+/**
+ * A transformation that returns its contents, not handling any extra parameters.
+ *
+ * @since 4.1.0
+ */
+public final class PreTransformation extends Transformation {
+  private static final PreTransformation INSTANCE = new PreTransformation();
 
-    private PreTransformation() {
-    }
+  /**
+   * Get if this transformation can handle the provided tag name.
+   *
+   * @param name tag name to test
+   * @return if this transformation is applicable
+   * @since 4.1.0
+   */
+  public static boolean canParse(final String name) {
+    return name.equalsIgnoreCase(Tokens.PRE);
+  }
 
+  private PreTransformation() {
+  }
+
+  @Override
+  public Component apply(final Component component, final TextComponent.Builder parent) {
+    return component;
+  }
+
+  @Override
+  public boolean equals(final Object other) {
+    return other instanceof PreTransformation;
+  }
+
+  @Override
+  public int hashCode() {
+    return 0;
+  }
+
+  @Override
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.empty();
+  }
+
+  /**
+   * Factory for {@link PreTransformation} instances.
+   *
+   * @since 4.1.0
+   */
+  public static class Parser implements TransformationParser<PreTransformation> {
     @Override
-    public Component apply(Component component, TextComponent.Builder parent) {
-        return component;
+    public PreTransformation parse() {
+      return PreTransformation.INSTANCE;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        return o instanceof PreTransformation;
-    }
-
-    @Override
-    public int hashCode() {
-        return 0;
-    }
-
-    @Override
-    public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.empty();
-    }
-
-    public static class Parser implements TransformationParser<PreTransformation> {
-        @Override
-        public PreTransformation parse() {
-            return new PreTransformation();
-        }
-    }
+  }
 }

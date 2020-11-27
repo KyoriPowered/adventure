@@ -23,10 +23,10 @@
  */
 package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -48,12 +48,13 @@ import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-// TODO gradient
-public class GradientTransformation extends OneTimeTransformation implements Inserting {
-  public static boolean canParse(final String name) {
-    return name.equalsIgnoreCase(Tokens.GRADIENT);
-  }
-
+/**
+ * A transformation that applies a colour gradient.
+ *
+ * @since 4.1.0
+ */
+public final class GradientTransformation extends OneTimeTransformation implements Inserting {
+  // TODO gradient
   private int index = 0;
   private int colorIndex = 0;
 
@@ -62,31 +63,43 @@ public class GradientTransformation extends OneTimeTransformation implements Ins
   private float phase = 0;
   private boolean negativePhase = false;
 
+  /**
+   * Get if this transformation can handle the provided tag name.
+   *
+   * @param name tag name to test
+   * @return if this transformation is applicable
+   * @since 4.1.0
+   */
+  public static boolean canParse(final String name) {
+    return name.equalsIgnoreCase(Tokens.GRADIENT);
+  }
+
   private GradientTransformation() {
   }
 
   @Override
-  public void load(String name, List<Token> args) {
+  public void load(final String name, final List<Token> args) {
     super.load(name, args);
 
-    if (!args.isEmpty()) {
-      List<TextColor> textColors = new ArrayList<>();
-      for (int i = 0; i < args.size(); i++) {
-        Token arg = args.get(i);
-        if (arg.type() == TokenType.STRING) {
+    if(!args.isEmpty()) {
+      final List<TextColor> textColors = new ArrayList<>();
+      for(int i = 0; i < args.size(); i++) {
+        final Token arg = args.get(i);
+        if(arg.type() == TokenType.STRING) {
           // last argument? maybe this is the phase?
-          if (i == args.size() - 1) {
+          if(i == args.size() - 1) {
             try {
               this.phase = Float.parseFloat(arg.value());
-              if (phase < -1f || phase > 1f) {
-                throw new ParseException(String.format("Gradient phase is out of range (%s). Must be in the range [-1.0f, 1.0f] (inclusive).", phase));
+              if(this.phase < -1f || this.phase > 1f) {
+                throw new ParseException(String.format("Gradient phase is out of range (%s). Must be in the range [-1.0f, 1.0f] (inclusive).", this.phase));
               }
-              if (phase < 0) {
+              if(this.phase < 0) {
                 this.negativePhase = true;
-                this.phase = 1 + phase;
+                this.phase = 1 + this.phase;
               }
               break;
-            } catch (NumberFormatException ignored) {}
+            } catch(final NumberFormatException ignored) {
+            }
           }
 
           if(arg.value().charAt(0) == '#') {
@@ -97,35 +110,35 @@ public class GradientTransformation extends OneTimeTransformation implements Ins
         }
       }
       this.colors = textColors.toArray(new TextColor[0]);
-      if (this.negativePhase) {
+      if(this.negativePhase) {
         Collections.reverse(Arrays.asList(this.colors));
       }
     } else {
-      colors = new TextColor[] { TextColor.fromHexString("#ffffff"), TextColor.fromHexString("#000000")};
+      this.colors = new TextColor[] {TextColor.fromHexString("#ffffff"), TextColor.fromHexString("#000000")};
     }
   }
 
   @Override
-  public Component applyOneTime(Component current, TextComponent.Builder parent, ArrayDeque<Transformation> transformations) {
-    if (current instanceof TextComponent) {
-      TextComponent textComponent = (TextComponent) current;
-      String content = textComponent.content();
+  public Component applyOneTime(final @NonNull Component current, final TextComponent.@NonNull Builder parent, final @NonNull Deque<Transformation> transformations) {
+    if(current instanceof TextComponent) {
+      final TextComponent textComponent = (TextComponent) current;
+      final String content = textComponent.content();
 
       // init
-      int size = content.length();
+      final int size = content.length();
       final int sectorLength = size / (this.colors.length - 1);
       this.factorStep = 1.0f / (sectorLength + this.index);
-      this.phase = this.phase * (sectorLength);
+      this.phase = this.phase * sectorLength;
       this.index = 0;
 
       // apply
       int charSize;
       final char[] holder = new char[2];
-      for (PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
+      for(final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
         charSize = Character.toChars(it.nextInt(), holder, 0);
         Component comp = Component.text(new String(holder, 0, charSize));
-        comp = merge(comp, current);
-        comp = comp.color(getColor());
+        comp = this.merge(comp, current);
+        comp = comp.color(this.color());
         parent.append(comp);
       }
 
@@ -135,28 +148,28 @@ public class GradientTransformation extends OneTimeTransformation implements Ins
     throw new ParsingException("Expected Text Comp", -1);
   }
 
-  private TextColor getColor() {
+  private TextColor color() {
     // color switch needed?
-    if (factorStep * index > 1) {
-      colorIndex++;
-      index = 0;
+    if(this.factorStep * this.index > 1) {
+      this.colorIndex++;
+      this.index = 0;
     }
 
-    float factor = factorStep * (index++ + phase);
+    float factor = this.factorStep * (this.index++ + this.phase);
     // loop around if needed
-    if (factor > 1) {
+    if(factor > 1) {
       factor = 1 - (factor - 1);
     }
 
-    if (negativePhase && colors.length % 2 != 0) {
+    if(this.negativePhase && this.colors.length % 2 != 0) {
       // flip the gradient segment for to allow for looping phase -1 through 1
-      return interpolate(colors[colorIndex + 1], colors[colorIndex], factor);
+      return this.interpolate(this.colors[this.colorIndex + 1], this.colors[this.colorIndex], factor);
     } else {
-      return interpolate(colors[colorIndex], colors[colorIndex + 1], factor);
+      return this.interpolate(this.colors[this.colorIndex], this.colors[this.colorIndex + 1], factor);
     }
   }
 
-  private TextColor interpolate(TextColor color1, TextColor color2, float factor) {
+  private TextColor interpolate(final TextColor color1, final TextColor color2, final float factor) {
     return TextColor.color(
             Math.round(color1.red() + factor * (color2.red() - color1.red())),
             Math.round(color1.green() + factor * (color2.green() - color1.green())),
@@ -173,20 +186,28 @@ public class GradientTransformation extends OneTimeTransformation implements Ins
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    GradientTransformation that = (GradientTransformation) o;
-    return index == that.index && colorIndex == that.colorIndex && Float.compare(that.factorStep, factorStep) == 0 && phase == that.phase && Arrays.equals(colors, that.colors);
+  public boolean equals(final Object other) {
+    if(this == other) return true;
+    if(other == null || this.getClass() != other.getClass()) return false;
+    final GradientTransformation that = (GradientTransformation) other;
+    return this.index == that.index
+      && this.colorIndex == that.colorIndex
+      && Float.compare(that.factorStep, this.factorStep) == 0
+      && this.phase == that.phase && Arrays.equals(this.colors, that.colors);
   }
 
   @Override
   public int hashCode() {
-    int result = Objects.hash(index, colorIndex, factorStep, phase);
-    result = 31 * result + Arrays.hashCode(colors);
+    int result = Objects.hash(this.index, this.colorIndex, this.factorStep, this.phase);
+    result = 31 * result + Arrays.hashCode(this.colors);
     return result;
   }
 
+  /**
+   * Factory for {@link GradientTransformation} instances.
+   *
+   * @since 4.1.0
+   */
   public static class Parser implements TransformationParser<GradientTransformation> {
     @Override
     public GradientTransformation parse() {

@@ -8,6 +8,7 @@ plugins {
   id "net.kyori.indra" version "$indraVersion"
   id "net.kyori.indra.publishing.sonatype" version "$indraVersion"
   id "net.kyori.indra.license-header" version "$indraVersion"
+  id "net.kyori.indra.checkstyle" version "$indraVersion"
   id "org.xbib.gradle.plugin.jflex" version "1.5.0"
 }
 
@@ -28,6 +29,7 @@ dependencies {
   testImplementation "net.kyori:adventure-text-serializer-gson:${adventure}"
   testImplementation "org.junit.jupiter:junit-jupiter-api:5.7.0"
   testImplementation "org.junit.jupiter:junit-jupiter-engine:5.7.0"
+  checkstyle "ca.stellardrift:stylecheck:0.1"
 }
 
 indra {

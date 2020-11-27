@@ -23,6 +23,9 @@
  */
 package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
+import java.util.Deque;
+import java.util.Objects;
+import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.Template;
@@ -30,51 +33,57 @@ import net.kyori.adventure.text.minimessage.transformation.Inserting;
 import net.kyori.adventure.text.minimessage.transformation.OneTimeTransformation;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.examination.ExaminableProperty;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.ArrayDeque;
-import java.util.Objects;
-import java.util.stream.Stream;
+/**
+ * Inserts a formatted template component into the result.
+ *
+ * @since 4.1.0
+ */
+public final class TemplateTransformation extends OneTimeTransformation implements Inserting {
 
-public class TemplateTransformation extends OneTimeTransformation implements Inserting {
+  private final Template.ComponentTemplate template;
 
-    private final Template.ComponentTemplate template;
+  /**
+   * Create a new template transformation applying {@code template}.
+   *
+   * @param template the template to apply
+   * @since 4.1.0
+   */
+  public TemplateTransformation(final Template.@NonNull ComponentTemplate template) {
+    this.template = template;
+  }
 
-    public TemplateTransformation(Template.ComponentTemplate template) {
-        this.template = template;
+  @Override
+  public Component applyOneTime(final @NonNull Component current, final TextComponent.@NonNull Builder parent, final @NonNull Deque<Transformation> transformations) {
+    Component comp = this.template.value();
+    // first apply transformations
+    for(final Transformation transformation : transformations) {
+      comp = transformation.apply(comp, parent);
     }
+    // then fix style again
+    comp = this.merge(this.template.value(), comp);
 
-    @Override
-    public Component applyOneTime(Component current, TextComponent.Builder parent, ArrayDeque<Transformation> transformations) {
-        Component comp = template.getValue();
-        // first apply transformations
-        for (Transformation transformation : transformations) {
-            comp = transformation.apply(comp, parent);
-        }
-        // then fix style again
-        comp = merge(template.getValue(), comp);
+    parent.append(comp);
+    return current;
+  }
 
-        parent.append(comp);
-        return current;
-    }
+  @Override
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(ExaminableProperty.of("template", this.template));
+  }
 
-    @Override
-    public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(ExaminableProperty.of("template", this.template));
-    }
+  @Override
+  public boolean equals(final Object other) {
+    if(this == other) return true;
+    if(other == null || this.getClass() != other.getClass()) return false;
+    final TemplateTransformation that = (TemplateTransformation) other;
+    return Objects.equals(this.template, that.template);
+  }
 
-    @Override
-    public boolean equals(final Object other) {
-        if(this == other) return true;
-        if(other == null || this.getClass() != other.getClass()) return false;
-        final TemplateTransformation that = (TemplateTransformation) other;
-        return Objects.equals(this.template, that.template);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.template);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.template);
+  }
 
 }

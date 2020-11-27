@@ -81,8 +81,8 @@ import java.io.IOException;
             StringBuilder msg = new StringBuilder();
             msg.append(ex.getMessage()).append("\n");
             msg.append(input).append("\n");
-            msg.append(padding(ex.getColumn())).append("^--- HERE");
-            ex.setMessage(msg.toString());
+            msg.append(padding(ex.column())).append("^--- HERE");
+            ex.message(msg.toString());
             throw ex;
         }
         tokens.removeIf(t -> t.value().length() == 0);

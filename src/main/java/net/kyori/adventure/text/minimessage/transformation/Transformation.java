@@ -31,20 +31,49 @@ import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.string.StringExaminer;
 
+/**
+ * A transformation that can be applied while parsing a message.
+ *
+ * <p>A transformation instance is created for each instance of a tag in a parsed string.</p>
+ *
+ * @see TransformationRegistry to access and register available transformations
+ * @since 4.1.0
+ */
 public abstract class Transformation implements Examinable {
   private String name;
 
   protected Transformation() {
   }
 
+  /**
+   * Initialize this transformation with a tag name and tokens.
+   *
+   * @param name the alias for this transformation
+   * @param args tokens within the tags, used to define arguments. Each
+   * @since 4.1.0
+   */
   public void load(final String name, final List<Token> args) {
     this.name = name;
   }
 
+  /**
+   * The tag alias used to refer to this instance.
+   *
+   * @return the name
+   * @since 4.1.0
+   */
   public final String name() {
     return this.name;
   }
 
+  /**
+   * Return a transformed {@code component} based on the applied parameters.
+   *
+   * @param component component to transform
+   * @param parent the holder being used to configure this component
+   * @return the transformed component
+   * @since 4.1.0
+   */
   public abstract Component apply(final Component component, final TextComponent.Builder parent);
 
   @Override
@@ -58,15 +87,16 @@ public abstract class Transformation implements Examinable {
   @Override
   public abstract int hashCode();
 
-  protected Component merge(Component target, Component template) {
-    Component result = target.style(target.style().merge(template.style(), Style.Merge.Strategy.IF_ABSENT_ON_TARGET, Style.Merge.all()));;
-    if (template.hoverEvent() != null) {
+  protected Component merge(final Component target, final Component template) {
+    Component result = target.style(target.style().merge(template.style(), Style.Merge.Strategy.IF_ABSENT_ON_TARGET, Style.Merge.all()));
+
+    if(template.hoverEvent() != null) {
       result = result.hoverEvent(template.hoverEvent());
     }
-    if (template.clickEvent() != null) {
+    if(template.clickEvent() != null) {
       result = result.clickEvent(template.clickEvent());
     }
-    if (template.insertion() != null) {
+    if(template.insertion() != null) {
       result = result.insertion(template.insertion());
     }
 

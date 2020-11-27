@@ -39,13 +39,25 @@ import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public class ClickTransformation extends Transformation {
+/**
+ * A transformation applying a click event.
+ *
+ * @since 4.1.0
+ */
+public final class ClickTransformation extends Transformation {
+  private ClickEvent.Action action;
+  private String value;
+
+  /**
+   * Get if this transformation can handle the provided tag name.
+   *
+   * @param name tag name to test
+   * @return if this transformation is applicable
+   * @since 4.1.0
+   */
   public static boolean canParse(final String name) {
     return name.equalsIgnoreCase(Tokens.CLICK);
   }
-
-  private ClickEvent.Action action;
-  private String value;
 
   private ClickTransformation() {
   }
@@ -54,10 +66,10 @@ public class ClickTransformation extends Transformation {
   public void load(final String name, final List<Token> args) {
     super.load(name, args);
 
-    if (args.size() >= 3 && args.get(0).type() == TokenType.STRING && args.get(2).type() == TokenType.STRING) {
+    if(args.size() >= 3 && args.get(0).type() == TokenType.STRING && args.get(2).type() == TokenType.STRING) {
       this.action = ClickEvent.Action.NAMES.value(args.get(0).value().toLowerCase(Locale.ROOT));
       this.value = Token.asValueString(args.subList(2, args.size()));
-    } else if (args.size() >= 5 && args.get(0).type() == TokenType.STRING && args.get(2).type() == TokenType.QUOTE_START && args.get(args.size() - 1).type() == TokenType.QUOTE_END) {
+    } else if(args.size() >= 5 && args.get(0).type() == TokenType.STRING && args.get(2).type() == TokenType.QUOTE_START && args.get(args.size() - 1).type() == TokenType.QUOTE_END) {
       this.action = ClickEvent.Action.NAMES.value(args.get(0).value().toLowerCase(Locale.ROOT));
       this.value = Token.asValueString(args.subList(3, args.size() - 1));
     } else {
@@ -91,6 +103,11 @@ public class ClickTransformation extends Transformation {
     return Objects.hash(this.action, this.value);
   }
 
+  /**
+   * Factory for {@link ClickTransformation} instances.
+   *
+   * @since 4.1.0
+   */
   public static class Parser implements TransformationParser<ClickTransformation> {
     @Override
     public ClickTransformation parse() {

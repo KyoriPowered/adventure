@@ -27,11 +27,19 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Exception that is thrown whenever the parser isn't happy. The message will include information about what went wrong.
+ *
+ * @since 4.1.0
  */
 public class ParseException extends RuntimeException {
 
   private static final long serialVersionUID = 42L;
 
+  /**
+   * Create a new pares exception.
+   *
+   * @param message the detail message
+   * @since 4.1.0
+   */
   public ParseException(final @NonNull String message) {
     super(message);
   }

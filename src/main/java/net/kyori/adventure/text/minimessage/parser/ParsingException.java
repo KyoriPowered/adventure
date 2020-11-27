@@ -23,10 +23,26 @@
  */
 package net.kyori.adventure.text.minimessage.parser;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+/**
+ * An exception that happens while parsing.
+ *
+ * @since 4.1.0
+ */
 public class ParsingException extends RuntimeException {
+  private static final long serialVersionUID = 2507190809441787201l;
+
   private String message;
   private final int column;
 
+  /**
+   * Create a new parsing exception.
+   *
+   * @param message the detail message
+   * @param column character index into the text where the parse error occurred.
+   * @since 4.1.0
+   */
   public ParsingException(final String message, final int column) {
     this.message = message;
     this.column = column;
@@ -37,11 +53,25 @@ public class ParsingException extends RuntimeException {
     return this.message;
   }
 
-  public void setMessage(final String message) {
+  /**
+   * Set this exception's message.
+   *
+   * @param message the new message
+   * @since 4.1.0
+   */
+  public void message(final @Nullable String message) {
     this.message = message;
   }
 
-  public int getColumn() {
+  /**
+   * Get the column this exception was triggered at.
+   *
+   * <p>If the column is unknown, {@code -1} will be returned.</p>
+   *
+   * @return the context column
+   * @since 4.1.0
+   */
+  public int column() {
     return this.column;
   }
 }

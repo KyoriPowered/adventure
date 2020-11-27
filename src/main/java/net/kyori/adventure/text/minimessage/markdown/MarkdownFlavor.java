@@ -23,19 +23,75 @@
  */
 package net.kyori.adventure.text.minimessage.markdown;
 
+/**
+ * A type of markdown.
+ *
+ * @since 4.1.0
+ */
 public interface MarkdownFlavor {
 
-    static MarkdownFlavor defaultFlavor() {
-        return LegacyFlavor.get(); // TODO: change the default to DiscordFlavor in a few releases
-    }
+  /**
+   * Get the default markdown flavour.
+   *
+   * <p>This is currently the {@link LegacyFlavor} for backwards compatibility,
+   * but will be changed to {@link DiscordFlavor in the near future}.</p>
+   *
+   * @return the default flavour
+   * @since 4.1.0
+   */
+  static MarkdownFlavor defaultFlavor() {
+    return LegacyFlavor.get(); // TODO: change the default to DiscordFlavor in a few releases
+  }
 
-    boolean isBold(char current, char next);
+  /**
+   * Whether a pair of format characters indicate bolding.
+   *
+   * @param current the character being inspected
+   * @param next the next character
+   * @return whether the characters delimit a bold block
+   * @since 4.1.0
+   */
+  boolean isBold(final char current, final char next);
 
-    boolean isItalic(char current, char next);
+  /**
+   * Whether a pair of format characters indicate italics.
+   *
+   * @param current the character being inspected
+   * @param next the next character
+   * @return whether the characters delimit an italics block
+   * @since 4.1.0
+   */
+  boolean isItalic(final char current, final char next);
 
-    boolean isUnderline(char current, char next);
+  /**
+   * Whether a pair of format characters indicate an underline.
+   *
+   * @param current the character being inspected
+   * @param next the next character
+   * @return whether the characters delimit an underlined block
+   * @since 4.1.0
+   */
+  boolean isUnderline(final char current, final char next);
 
-    boolean isStrikeThrough(char current, char next);
+  /**
+   * Whether a pair of format characters indicate a strikethrough.
+   *
+   * @param current the character being inspected
+   * @param next the next character
+   * @return whether the characters delimit a strikethrough block
+   * @since 4.1.0
+   */
+  boolean isStrikeThrough(final char current, final char next);
 
-    boolean isObfuscate(char current, char next);
+  /**
+   * Whether a pair of format characters indicate an obfuscated block.
+   *
+   * <p>These may also be described as spoiler blocks.</p>
+   *
+   * @param current the character being inspected
+   * @param next the next character
+   * @return whether the characters delimit an obfuscated block
+   * @since 4.1.0
+   */
+  boolean isObfuscate(final char current, final char next);
 }

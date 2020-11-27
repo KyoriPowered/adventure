@@ -33,32 +33,41 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.stream.Stream;
 
 /**
- * A placeholder in a message, that can be either replaced by a string or a component
+ * A placeholder in a message, that can be either replaced by a string or a component.
+ *
+ * @since 4.0.0
  */
 public interface Template extends Examinable {
 
   /**
-   * Constructs a template that gets replaced with a string
+   * Constructs a template that gets replaced with a string.
    *
    * @param key the placeholder
    * @param value the value to replace the key with
    * @return the constructed template
+   * @since 4.0.0
    */
   static @NonNull Template of(final @NonNull String key, final @NonNull String value) {
     return new StringTemplate(key, value);
   }
 
   /**
-   * Constructs a template that gets replaced with a component
+   * Constructs a template that gets replaced with a component.
    *
    * @param key the placeholder
    * @param value the component to replace the key with
    * @return the constructed template
+   * @since 4.0.0
    */
   static @NonNull Template of(final @NonNull String key, final @NonNull Component value) {
     return new ComponentTemplate(key, value);
   }
 
+  /**
+   * A template with a value that will be parsed as a MiniMessage string.
+   *
+   * @since 4.0.0
+   */
   class StringTemplate implements Template {
     private final String key;
     private final String value;
@@ -68,12 +77,12 @@ public interface Template extends Examinable {
       this.value = value;
     }
 
-    public @NonNull String getKey() {
-      return key;
+    public @NonNull String key() {
+      return this.key;
     }
 
-    public @NonNull String getValue() {
-      return value;
+    public @NonNull String value() {
+      return this.value;
     }
 
     @Override
@@ -84,12 +93,17 @@ public interface Template extends Examinable {
     @Override
     public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
-              ExaminableProperty.of("key", key),
-              ExaminableProperty.of("value", value)
+              ExaminableProperty.of("key", this.key),
+              ExaminableProperty.of("value", this.value)
       );
     }
   }
 
+  /**
+   * A template with a {@link Component} value that will be inserted directly.
+   *
+   * @since 4.0.0
+   */
   class ComponentTemplate implements Template {
     private final String key;
     private final Component value;
@@ -99,12 +113,12 @@ public interface Template extends Examinable {
       this.value = value;
     }
 
-    public @NonNull String getKey() {
-      return key;
+    public @NonNull String key() {
+      return this.key;
     }
 
-    public @NonNull Component getValue() {
-      return value;
+    public @NonNull Component value() {
+      return this.value;
     }
 
     @Override
@@ -115,8 +129,8 @@ public interface Template extends Examinable {
     @Override
     public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
-              ExaminableProperty.of("key", key),
-              ExaminableProperty.of("value", value)
+              ExaminableProperty.of("key", this.key),
+              ExaminableProperty.of("value", this.value)
       );
     }
   }

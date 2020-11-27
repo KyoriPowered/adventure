@@ -24,10 +24,7 @@
 package net.kyori.adventure.text.minimessage;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.KeybindComponent;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TextComponent.Builder;
-import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -44,27 +41,27 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class MiniMessageSerializerTest {
 
   @Test
-  public void testColor() {
+  void testColor() {
     final String expected = "<red>This is a test";
 
     final Builder builder = Component.text().content("This is a test").color(NamedTextColor.RED);
 
-    test(builder, expected);
+    this.test(builder, expected);
   }
 
   @Test
-  public void testColorClosing() {
+  void testColorClosing() {
     final String expected = "<red>This is a </red>test";
 
     final Builder builder = Component.text()
       .content("This is a ").color(NamedTextColor.RED)
       .append(Component.text("test"));
 
-    test(builder, expected);
+    this.test(builder, expected);
   }
 
   @Test
-  public void testNestedColor() {
+  void testNestedColor() {
     final String expected = "<red>This is a <blue>blue <red>test";
 
     final Builder builder = Component.text()
@@ -72,11 +69,11 @@ public class MiniMessageSerializerTest {
       .append(Component.text("blue ", NamedTextColor.BLUE))
       .append(Component.text("test", NamedTextColor.RED));
 
-    test(builder, expected);
+    this.test(builder, expected);
   }
 
   @Test
-  public void testDecoration() {
+  void testDecoration() {
     final String expected = "<underlined>This is <bold>underlined</underlined>, this</bold> isn't";
 
     final Builder builder = Component.text()
@@ -85,22 +82,22 @@ public class MiniMessageSerializerTest {
       .append(Component.text(b -> b.content(", this").decoration(TextDecoration.BOLD, true)))
       .append(Component.text(" isn't"));
 
-    test(builder, expected);
+    this.test(builder, expected);
   }
 
   @Test
-  public void testHover() {
+  void testHover() {
     final String expected = "<hover:show_text:\"---\">Some hover</hover> that ends here";
 
     final Builder builder = Component.text()
       .content("Some hover").hoverEvent(HoverEvent.showText(Component.text("---")))
       .append(Component.text(" that ends here"));
 
-    test(builder, expected);
+    this.test(builder, expected);
   }
 
   @Test
-  public void testHoverWithNested() {
+  void testHoverWithNested() {
     final String expected = "<hover:show_text:\"<red>---<blue><bold>-\">Some hover</hover> that ends here";
 
     final Builder builder = Component.text()
@@ -110,22 +107,22 @@ public class MiniMessageSerializerTest {
         .build()))
       .append(Component.text(" that ends here"));
 
-    test(builder, expected);
+    this.test(builder, expected);
   }
 
   @Test
-  public void testClick() {
+  void testClick() {
     final String expected = "<click:run_command:\"test\">Some click</click> that ends here";
 
     final Builder builder = Component.text()
       .content("Some click").clickEvent(ClickEvent.runCommand("test"))
       .append(Component.text(" that ends here"));
 
-    test(builder, expected);
+    this.test(builder, expected);
   }
 
   @Test
-  public void testContinuedClick() {
+  void testContinuedClick() {
     final String expected = "<click:run_command:\"test\">Some click<red> that doesn't end here";
 
     final Builder builder = Component.text()
@@ -133,22 +130,22 @@ public class MiniMessageSerializerTest {
       // TODO figure out how to avoid repeating the click event here
       .append(Component.text(b -> b.content(" that doesn't end here").color(NamedTextColor.RED).clickEvent(ClickEvent.runCommand("test"))));
 
-    test(builder, expected);
+    this.test(builder, expected);
   }
 
   @Test
-  public void testContinuedClick2() {
+  void testContinuedClick2() {
     final String expected = "<click:run_command:\"test\">Some click<red> that doesn't end here";
 
     final Builder builder = Component.text()
       .content("Some click").clickEvent(ClickEvent.runCommand("test"))
       .append(Component.text(b -> b.content(" that doesn't end here").color(NamedTextColor.RED).clickEvent(ClickEvent.runCommand("test"))));
 
-    test(builder, expected);
+    this.test(builder, expected);
   }
 
   @Test
-  public void testKeyBind() {
+  void testKeyBind() {
     final String expected = "Press <key:key.jump> to jump!";
 
     final Builder builder = Component.text()
@@ -156,11 +153,11 @@ public class MiniMessageSerializerTest {
       .append(Component.keybind("key.jump"))
       .append(Component.text(" to jump!"));
 
-    test(builder, expected);
+    this.test(builder, expected);
   }
 
   @Test
-  public void testKeyBindWithColor() {
+  void testKeyBindWithColor() {
     final String expected = "Press <red><key:key.jump> to jump!";
 
     final Builder builder = Component.text()
@@ -168,11 +165,11 @@ public class MiniMessageSerializerTest {
       .append(Component.keybind("key.jump").color(NamedTextColor.RED))
       .append(Component.text(" to jump!", NamedTextColor.RED));
 
-    test(builder, expected);
+    this.test(builder, expected);
   }
 
   @Test
-  public void testTranslatable() {
+  void testTranslatable() {
     final String expected = "You should get a <lang:block.minecraft.diamond_block>!";
 
     final Builder builder = Component.text()
@@ -180,11 +177,11 @@ public class MiniMessageSerializerTest {
       .append(Component.translatable("block.minecraft.diamond_block"))
       .append(Component.text("!"));
 
-    test(builder, expected);
+    this.test(builder, expected);
   }
 
   @Test
-  public void testInsertion() {
+  void testInsertion() {
     final String expected = "Click <insert:test>this</insert> to insert!";
 
     final Builder builder = Component.text()
@@ -192,23 +189,23 @@ public class MiniMessageSerializerTest {
       .append(Component.text(b -> b.content("this").insertion("test")))
       .append(Component.text(" to insert!"));
 
-    test(builder, expected);
+    this.test(builder, expected);
   }
 
   @Test
-  public void testHexColor() {
+  void testHexColor() {
     final String expected = "<color:#ff0000>This is a </color:#ff0000>test";
 
     final Builder builder = Component.text()
       .content("This is a ").color(TextColor.fromHexString("#ff0000"))
       .append(Component.text("test"));
 
-    test(builder, expected);
+    this.test(builder, expected);
   }
 
   @Disabled // TODO make this test actually work
   @Test
-  public void testRainbow() {
+  void testRainbow() {
     final String expected = "<rainbow>test</rainbow> >> reeeeeeeee";
 
     final Component parsed = MiniMessage.get().parse(expected);

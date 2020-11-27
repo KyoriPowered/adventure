@@ -39,7 +39,19 @@ import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public class ColorTransformation extends Transformation {
+/**
+ * A transformation applying a single text color.
+ *
+ * @since 4.1.0
+ */
+public final class ColorTransformation extends Transformation {
+  /**
+   * Get if this transformation can handle the provided tag name.
+   *
+   * @param name tag name to test
+   * @return if this transformation is applicable
+   * @since 4.1.0
+   */
   public static boolean canParse(final String name) {
     return name.equalsIgnoreCase(Tokens.COLOR)
       || name.equalsIgnoreCase(Tokens.COLOR_2)
@@ -99,6 +111,11 @@ public class ColorTransformation extends Transformation {
     return Objects.hash(this.color);
   }
 
+  /**
+   * Factory for {@link ColorTransformation} instances.
+   *
+   * @since 4.1.0
+   */
   public static class Parser implements TransformationParser<ColorTransformation> {
     @Override
     public ColorTransformation parse() {

@@ -39,83 +39,105 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * MiniMessage is a textual representation of components. This class allows you to serialize and deserialize them, strip
- * or escape them, and even supports a markdown like format.
+ * MiniMessage is a textual representation of components.
+ *
+ * <p>This class allows you to serialize and deserialize them, strip
+ * or escape them, and even supports a markdown like format.</p>
+ *
+ * @since 4.0.0
  */
 public interface MiniMessage extends ComponentSerializer<Component, Component, String>, Buildable<MiniMessage, MiniMessage.Builder> {
 
   /**
-   * Gets a simple instance without markdown support
+   * Gets a simple instance without markdown support.
    *
    * @return a simple instance
+   * @since 4.0.0
    */
   static @NonNull MiniMessage get() {
     return MiniMessageImpl.INSTANCE;
   }
 
   /**
-   * Gets an instance with markdown support. Uses {@link net.kyori.adventure.text.minimessage.markdown.GithubFlavor}.<br>
-   * For other flavors, see {@link #withMarkdownFlavor(MarkdownFlavor)} or the builder.
+   * Gets an instance with markdown support.
+   *
+   * <p>Uses {@link net.kyori.adventure.text.minimessage.markdown.GithubFlavor}.<br>
+   * For other flavors, see {@link #withMarkdownFlavor(MarkdownFlavor)} or the builder.</p>
    *
    * @return a instance of markdown support
+   * @since 4.0.0
    */
   static @NonNull MiniMessage markdown() {
     return MiniMessageImpl.MARKDOWN;
   }
 
   /**
-   * Creates an custom instances with markdown supported by the given markdown flavor
+   * Creates an custom instances with markdown supported by the given markdown flavor.
+   *
    * @param markdownFlavor the markdown flavor
    * @return your very own custom MiniMessage instance
+   * @since 4.0.0
    */
-  static @NonNull MiniMessage withMarkdownFlavor(MarkdownFlavor markdownFlavor) {
+  static @NonNull MiniMessage withMarkdownFlavor(final MarkdownFlavor markdownFlavor) {
     return new MiniMessageImpl(true, markdownFlavor, new TransformationRegistry(), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER);
   }
 
   /**
-   * Creates an custom instances without markdown support and the given transformations
+   * Creates an custom instances without markdown support and the given transformations.
+   *
    * @param types the transformations
    * @return your very own custom MiniMessage instance
+   * @since 4.1.0
    */
   @SafeVarargs
-  static @NonNull MiniMessage withTransformations(TransformationType<? extends Transformation>... types) {
-    return new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(),new TransformationRegistry(types), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER);
+  static @NonNull MiniMessage withTransformations(final TransformationType<? extends Transformation>... types) {
+    return new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(), new TransformationRegistry(types), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER);
   }
 
   /**
-   * Creates an custom instances with markdown support and the given transformations
+   * Creates an custom instances with markdown support and the given transformations.
+   *
    * @param types the transformations
    * @return your very own custom MiniMessage instance
+   * @since 4.1.0
    */
   @SafeVarargs
-  static @NonNull MiniMessage markdownWithTransformations(TransformationType<? extends Transformation>... types) {
-    return new MiniMessageImpl(true, MarkdownFlavor.defaultFlavor(),new TransformationRegistry(types), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER);
+  static @NonNull MiniMessage markdownWithTransformations(final TransformationType<? extends Transformation>... types) {
+    return new MiniMessageImpl(true, MarkdownFlavor.defaultFlavor(), new TransformationRegistry(types), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER);
   }
 
   /**
-   * Creates an custom instances with markdown support (with the given flavor) and the given transformations
+   * Creates an custom instances with markdown support (with the given flavor) and the given transformations.
+   *
    * @param markdownFlavor the markdown flavor to use
    * @param types the transformations
    * @return your very own custom MiniMessage instance
+   * @since 4.1.0
    */
   @SafeVarargs
-  static @NonNull MiniMessage markdownWithTransformations(MarkdownFlavor markdownFlavor, TransformationType<? extends Transformation>... types) {
-    return new MiniMessageImpl(true, markdownFlavor,new TransformationRegistry(types), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER);
+  static @NonNull MiniMessage markdownWithTransformations(final MarkdownFlavor markdownFlavor, final TransformationType<? extends Transformation>... types) {
+    return new MiniMessageImpl(true, markdownFlavor, new TransformationRegistry(types), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER);
   }
 
   /**
-   * Escapes all tokens in the input message, so that they are ignored in deserialization. Useful for untrusted input.
+   * Escapes all tokens in the input message, so that they are ignored in deserialization.
+   *
+   * <p>Useful for untrusted input.</p>
    *
    * @param input the input message, with tokens
    * @return the output, with escaped tokens
+   * @since 4.0.0
    */
   @NonNull String escapeTokens(final @NonNull String input);
 
   /**
-   * Removes all tokens in the input message. Useful for untrusted input.
+   * Removes all tokens in the input message.
+   *
+   * <p>Useful for untrusted input.</p>
    *
    * @param input the input message, with tokens
    * @return the output, without tokens
+   * @since 4.0.0
    */
   @NonNull String stripTokens(final @NonNull String input);
 
@@ -124,53 +146,59 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    *
    * @param input the input string
    * @return the output component
+   * @since 4.0.0
    */
   default Component parse(final @NonNull String input) {
-    return deserialize(input);
+    return this.deserialize(input);
   }
 
   /**
-   * Parses a string into an component, allows passing placeholders in key value pairs
+   * Parses a string into an component, allows passing placeholders in key value pairs.
    *
    * @param input the input string
    * @param placeholders the placeholders
    * @return the output component
+   * @since 4.1.0
    */
   @NonNull Component parse(final @NonNull String input, final @NonNull String... placeholders);
 
   /**
-   * Parses a string into an component, allows passing placeholders in key value pairs
+   * Parses a string into an component, allows passing placeholders in key value pairs.
    *
    * @param input the input string
    * @param placeholders the placeholders
    * @return the output component
+   * @since 4.1.0
    */
   @NonNull Component parse(final @NonNull String input, final @NonNull Map<String, String> placeholders);
 
   /**
-   * Parses a string into an component, allows passing placeholders using key component pairs
+   * Parses a string into an component, allows passing placeholders using key component pairs.
    *
    * @param input the input string
    * @param placeholders the placeholders
    * @return the output component
+   * @since 4.1.0
    */
   @NonNull Component parse(@NonNull String input, @NonNull Object... placeholders);
 
   /**
-   * Parses a string into an component, allows passing placeholders using templates (which support components)
+   * Parses a string into an component, allows passing placeholders using templates (which support components).
    *
    * @param input the input string
    * @param placeholders the placeholders
    * @return the output component
+   * @since 4.0.0
    */
   @NonNull Component parse(final @NonNull String input, final @NonNull Template... placeholders);
 
   /**
-   * Parses a string into an component, allows passing placeholders using templates (which support components)
+   * Parses a string into an component, allows passing placeholders using templates (which support components).
    *
    * @param input the input string
    * @param placeholders the placeholders
    * @return the output component
+   * @since 4.0.0
    */
   @NonNull Component parse(final @NonNull String input, final @NonNull List<Template> placeholders);
 
@@ -178,6 +206,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * Creates a new {@link MiniMessage.Builder}.
    *
    * @return a builder
+   * @since 4.0.0
    */
   static Builder builder() {
     return new MiniMessageImpl.BuilderImpl();
@@ -185,49 +214,54 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
 
   /**
    * A builder for {@link MiniMessage}.
+   *
+   * @since 4.0.0
    */
   interface Builder extends Buildable.Builder<MiniMessage> {
 
     /**
-     * Adds markdown support
+     * Adds markdown support.
      *
      * @return this builder
+     * @since 4.0.0
      */
     @NonNull Builder markdown();
 
     /**
-     * Removes all default transformations, allowing you to create a customized set of transformations
+     * Removes all default transformations, allowing you to create a customized set of transformations.
      *
      * @return this builder
+     * @since 4.1.0
      */
     @NonNull Builder removeDefaultTransformations();
 
     /**
-     * Adds the given transformation
+     * Adds the given transformation.
      *
      * @param type the type of transformation to add
-     *
      * @return this builder
+     * @since 4.1.0
      */
-    @NonNull Builder transformation(TransformationType<? extends Transformation> type);
+    @NonNull Builder transformation(final TransformationType<? extends Transformation> type);
 
     /**
-     * Adds the given transformations
+     * Adds the given transformations.
      *
      * @param types the types of transformations to add
-     *
      * @return this builder
+     * @since 4.1.0
      */
-    @NonNull Builder transformations(TransformationType<? extends Transformation>... types);
+    @SuppressWarnings("unchecked")
+    @NonNull Builder transformations(final TransformationType<? extends Transformation>... types);
 
     /**
-     * Sets the markdown flavor that should be used to parse markdown
+     * Sets the markdown flavor that should be used to parse markdown.
      *
      * @param markdownFlavor the markdown flavor to use
-     *
      * @return this builder
+     * @since 4.1.0
      */
-    @NonNull Builder markdownFlavor(MarkdownFlavor markdownFlavor);
+    @NonNull Builder markdownFlavor(final MarkdownFlavor markdownFlavor);
 
     /**
      * Sets the placeholder resolve that should handle all (unresolved) placeholders.
@@ -235,15 +269,16 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      * It needs to return a component
      *
      * @param placeholderResolver the markdown flavor to use
-     *
      * @return this builder
+     * @since 4.1.0
      */
-    @NonNull Builder placeholderResolver(Function<String, ComponentLike> placeholderResolver);
+    @NonNull Builder placeholderResolver(final Function<String, ComponentLike> placeholderResolver);
 
     /**
      * Builds the serializer.
      *
      * @return the built serializer
+     * @since 4.0.0
      */
     @Override
     @NonNull MiniMessage build();

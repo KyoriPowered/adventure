@@ -37,18 +37,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-/* package */ class MiniMessageImpl implements MiniMessage {
+class MiniMessageImpl implements MiniMessage {
 
-  /* package */ static final Function<String, ComponentLike> DEFAULT_PLACEHOLDER_RESOLVER = (s) -> null;
+  static final Function<String, ComponentLike> DEFAULT_PLACEHOLDER_RESOLVER = s -> null;
 
-  /* package */ static final MiniMessage INSTANCE = new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(),new TransformationRegistry(), DEFAULT_PLACEHOLDER_RESOLVER);
-  /* package */ static final MiniMessage MARKDOWN = new MiniMessageImpl(true, MarkdownFlavor.defaultFlavor(), new TransformationRegistry(), DEFAULT_PLACEHOLDER_RESOLVER);
+  static final MiniMessage INSTANCE = new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(), new TransformationRegistry(), DEFAULT_PLACEHOLDER_RESOLVER);
+  static final MiniMessage MARKDOWN = new MiniMessageImpl(true, MarkdownFlavor.defaultFlavor(), new TransformationRegistry(), DEFAULT_PLACEHOLDER_RESOLVER);
 
   private final boolean markdown;
   private final MarkdownFlavor markdownFlavor;
   private final MiniMessageParser parser;
 
-  MiniMessageImpl(boolean markdown, @NonNull MarkdownFlavor markdownFlavor, @NonNull TransformationRegistry registry, Function<String, ComponentLike> placeholderResolver) {
+  MiniMessageImpl(final boolean markdown, final @NonNull MarkdownFlavor markdownFlavor, final @NonNull TransformationRegistry registry, final Function<String, ComponentLike> placeholderResolver) {
     this.markdown = markdown;
     this.markdownFlavor = markdownFlavor;
     this.parser = new MiniMessageParser(registry, placeholderResolver);
@@ -56,52 +56,51 @@ import java.util.function.Function;
 
   @Override
   public @NonNull Component deserialize(@NonNull String input) {
-    if (markdown) {
-      input = MiniMarkdownParser.parse(input, markdownFlavor);
+    if(this.markdown) {
+      input = MiniMarkdownParser.parse(input, this.markdownFlavor);
     }
-    return parser.parseFormat(input);
+    return this.parser.parseFormat(input);
   }
 
-
   @Override
-  public @NonNull String serialize(@NonNull Component component) {
+  public @NonNull String serialize(final @NonNull Component component) {
     return MiniMessageSerializer.serialize(component);
   }
 
   @Override
-  public @NonNull Component parse(@NonNull String input, @NonNull String... placeholders) {
-    if (markdown) {
-      input = MiniMarkdownParser.parse(input, markdownFlavor);
+  public @NonNull Component parse(@NonNull String input, final @NonNull String... placeholders) {
+    if(this.markdown) {
+      input = MiniMarkdownParser.parse(input, this.markdownFlavor);
     }
-    return parser.parseFormat(input, placeholders);
+    return this.parser.parseFormat(input, placeholders);
   }
 
   @Override
-  public @NonNull Component parse(@NonNull String input, @NonNull Map<String, String> placeholders) {
-    if (markdown) {
-      input = MiniMarkdownParser.parse(input, markdownFlavor);
+  public @NonNull Component parse(@NonNull String input, final @NonNull Map<String, String> placeholders) {
+    if(this.markdown) {
+      input = MiniMarkdownParser.parse(input, this.markdownFlavor);
     }
-    return parser.parseFormat(input, placeholders);
+    return this.parser.parseFormat(input, placeholders);
   }
 
   @Override
-  public @NonNull Component parse(@NonNull String input, @NonNull Object... placeholders) {
-    if (placeholders.length % 2 != 0) {
+  public @NonNull Component parse(final @NonNull String input, final @NonNull Object... placeholders) {
+    if(placeholders.length % 2 != 0) {
       throw new IllegalArgumentException("Each placeholder must have a key and value");
     }
 
-    Template[] templates = new Template[placeholders.length / 2];
-    for (int i = 0; i < placeholders.length; i += 2) {
-      if (!(placeholders[i] instanceof String)) {
+    final Template[] templates = new Template[placeholders.length / 2];
+    for(int i = 0; i < placeholders.length; i += 2) {
+      if(!(placeholders[i] instanceof String)) {
         throw new IllegalArgumentException("Argument " + i + " in placeholders must be String: is key");
       }
-      String key = (String) placeholders[i];
+      final String key = (String) placeholders[i];
 
-      Object rawValue = placeholders[i + 1];
-      Component value;
-      if (rawValue instanceof String) {
+      final Object rawValue = placeholders[i + 1];
+      final Component value;
+      if(rawValue instanceof String) {
         value = Component.text((String) rawValue);
-      } else if (rawValue instanceof ComponentLike) {
+      } else if(rawValue instanceof ComponentLike) {
         value = ((ComponentLike) rawValue).asComponent();
       } else {
         throw new IllegalArgumentException("Argument " + (i + 1) + " in placeholders must be Component or String: is value");
@@ -109,36 +108,36 @@ import java.util.function.Function;
       templates[i / 2] = Template.of(key, value);
     }
 
-    return parse(input, templates);
+    return this.parse(input, templates);
   }
 
   @Override
-  public @NonNull Component parse(@NonNull String input, @NonNull Template... placeholders) {
-    if (markdown) {
-      input = MiniMarkdownParser.parse(input, markdownFlavor);
+  public @NonNull Component parse(@NonNull String input, final @NonNull Template... placeholders) {
+    if(this.markdown) {
+      input = MiniMarkdownParser.parse(input, this.markdownFlavor);
     }
-    return parser.parseFormat(input, placeholders);
+    return this.parser.parseFormat(input, placeholders);
   }
 
   @Override
-  public @NonNull Component parse(@NonNull String input, @NonNull List<Template> placeholders) {
-    if (markdown) {
-      input = MiniMarkdownParser.parse(input, markdownFlavor);
+  public @NonNull Component parse(@NonNull String input, final @NonNull List<Template> placeholders) {
+    if(this.markdown) {
+      input = MiniMarkdownParser.parse(input, this.markdownFlavor);
     }
-    return parser.parseFormat(input, placeholders);
+    return this.parser.parseFormat(input, placeholders);
   }
 
   @Override
-  public @NonNull String escapeTokens(@NonNull String input) {
-    return parser.escapeTokens(input);
+  public @NonNull String escapeTokens(final @NonNull String input) {
+    return this.parser.escapeTokens(input);
   }
 
   @Override
   public @NonNull String stripTokens(@NonNull String input) {
-    if (markdown) {
-      input = MiniMarkdownParser.stripMarkdown(input, markdownFlavor);
+    if(this.markdown) {
+      input = MiniMarkdownParser.stripMarkdown(input, this.markdownFlavor);
     }
-    return parser.stripTokens(input);
+    return this.parser.stripTokens(input);
   }
 
   @Override
@@ -159,7 +158,6 @@ import java.util.function.Function;
       this.markdown = serializer.markdown;
     }
 
-
     @Override
     public @NonNull Builder markdown() {
       this.markdown = true;
@@ -173,39 +171,38 @@ import java.util.function.Function;
     }
 
     @Override
-    public @NonNull Builder transformation(TransformationType<? extends Transformation> type) {
+    public @NonNull Builder transformation(final TransformationType<? extends Transformation> type) {
       this.registry.register(type);
       return this;
     }
 
     @SafeVarargs
     @Override
-    public @NonNull
-    final Builder transformations(TransformationType<? extends Transformation>... types) {
-      for (TransformationType<? extends Transformation> type : types) {
+    public final @NonNull Builder transformations(final TransformationType<? extends Transformation>... types) {
+      for(final TransformationType<? extends Transformation> type : types) {
         this.registry.register(type);
       }
       return this;
     }
 
     @Override
-    public @NonNull Builder markdownFlavor(MarkdownFlavor markdownFlavor) {
+    public @NonNull Builder markdownFlavor(final MarkdownFlavor markdownFlavor) {
       this.markdownFlavor = markdownFlavor;
       return this;
     }
 
     @Override
-    public @NonNull Builder placeholderResolver(Function<String, ComponentLike> placeholderResolver) {
+    public @NonNull Builder placeholderResolver(final Function<String, ComponentLike> placeholderResolver) {
       this.placeholderResolver = placeholderResolver;
       return this;
     }
 
     @Override
     public @NonNull MiniMessage build() {
-      if (this.markdown) {
-        return new MiniMessageImpl(true, markdownFlavor, registry, placeholderResolver);
+      if(this.markdown) {
+        return new MiniMessageImpl(true, this.markdownFlavor, this.registry, this.placeholderResolver);
       } else {
-        return new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(), registry, placeholderResolver);
+        return new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(), this.registry, this.placeholderResolver);
       }
     }
   }

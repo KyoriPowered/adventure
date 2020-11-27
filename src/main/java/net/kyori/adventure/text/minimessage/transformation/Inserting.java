@@ -23,5 +23,10 @@
  */
 package net.kyori.adventure.text.minimessage.transformation;
 
+/**
+ * Marker for transformations that add additional {@link net.kyori.adventure.text.Component Components}.
+ *
+ * @since 4.1.0
+ */
 public interface Inserting {
 }

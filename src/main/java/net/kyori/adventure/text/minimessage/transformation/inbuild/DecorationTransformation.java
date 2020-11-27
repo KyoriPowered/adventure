@@ -38,7 +38,19 @@ import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public class DecorationTransformation extends Transformation {
+/**
+ * A transformation that applies any {@link TextDecoration}.
+ *
+ * @since 4.1.0
+ */
+public final class DecorationTransformation extends Transformation {
+  /**
+   * Get if this transformation can handle the provided tag name.
+   *
+   * @param name tag name to test
+   * @return if this transformation is applicable
+   * @since 4.1.0
+   */
   public static boolean canParse(final String name) {
     return parseDecoration(name) != null;
   }
@@ -61,7 +73,7 @@ public class DecorationTransformation extends Transformation {
 
   private static TextDecoration parseDecoration(String name) {
     name = name.toLowerCase(Locale.ROOT);
-    switch (name) {
+    switch(name) {
       case Tokens.BOLD_2:
         name = Tokens.BOLD;
         break;
@@ -104,6 +116,11 @@ public class DecorationTransformation extends Transformation {
     return Objects.hash(this.decoration);
   }
 
+  /**
+   * Factory for {@link DecorationTransformation} instances.
+   *
+   * @since 4.1.0
+   */
   public static class Parser implements TransformationParser<DecorationTransformation> {
     @Override
     public DecorationTransformation parse() {

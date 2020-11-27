@@ -24,40 +24,50 @@
 package net.kyori.adventure.text.minimessage.markdown;
 
 /**
+ * MiniMessage's original markdown flavour.
+ *
  * @deprecated The legacy flavor never made any sense, don't use
+ * @since 4.1.0
  */
 @Deprecated
-public class LegacyFlavor implements MarkdownFlavor {
+public final class LegacyFlavor implements MarkdownFlavor {
+  private static final LegacyFlavor INSTANCE = new LegacyFlavor();
 
-    private LegacyFlavor() {
-    }
+  private LegacyFlavor() {
+  }
 
-    public static MarkdownFlavor get() {
-        return new LegacyFlavor();
-    }
+  /**
+   * Get an instance of the legacy markdown flavour.
+   *
+   * @return the flavour instance
+   * @since 4.1.0
+   */
+  public static MarkdownFlavor get() {
+    return INSTANCE;
+  }
 
-    @Override
-    public boolean isBold(char current, char next) {
-        return (current == '*' && next == current) || (current == '_' && next == current);
-    }
+  @Override
+  public boolean isBold(final char current, final char next) {
+    return (current == '*' && next == current) || (current == '_' && next == current);
+  }
 
-    @Override
-    public boolean isItalic(char current, char next) {
-        return (current == '*' && next != current) || (current == '_' && next != current);
-    }
+  @Override
+  public boolean isItalic(final char current, final char next) {
+    return (current == '*' && next != current) || (current == '_' && next != current);
+  }
 
-    @Override
-    public boolean isUnderline(char current, char next) {
-        return current == '~' && next == current;
-    }
+  @Override
+  public boolean isUnderline(final char current, final char next) {
+    return current == '~' && next == current;
+  }
 
-    @Override
-    public boolean isStrikeThrough(char current, char next) {
-        return false;
-    }
+  @Override
+  public boolean isStrikeThrough(final char current, final char next) {
+    return false;
+  }
 
-    @Override
-    public boolean isObfuscate(char current, char next) {
-        return current == '|' && next == current;
-    }
+  @Override
+  public boolean isObfuscate(final char current, final char next) {
+    return current == '|' && next == current;
+  }
 }

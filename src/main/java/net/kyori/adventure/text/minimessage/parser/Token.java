@@ -31,39 +31,89 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-// TODO token should have a char pointer/counter to point to the index where it begins, for nice error messages
-public class Token implements Examinable {
+/**
+ * A parsed token from the lexer.
+ *
+ * @since 4.1.0
+ */
+public final class Token implements Examinable {
+  // TODO token should have a char pointer/counter to point to the index where it begins, for nice error messages
   private final String value;
   private final TokenType type;
 
+  /**
+   * Create a new value-less token of the provided type.
+   *
+   * @param type the token type
+   * @since 4.1.0
+   */
   public Token(final TokenType type) {
-    this.type = type;
-    this.value = type.value();
+    this(type, type.value());
   }
 
+  /**
+   * Create a new plain text token of the provided value.
+   *
+   * @param value the content of the token
+   * @since 4.1.0
+   */
   public Token(final String value) {
-    this.type = TokenType.STRING;
-    this.value = value;
+    this(TokenType.STRING, value);
   }
 
+  /**
+   * Create a new token of the provided type with a customized value.
+   *
+   * @param type the type of token
+   * @param value the contents of the token
+   * @since 4.1.0
+   */
   public Token(final TokenType type, final String value) {
     this.type = type;
     this.value = value;
   }
 
+  /**
+   * Get the type of token matched.
+   *
+   * @return the token type
+   * @since 4.1.0
+   */
   public TokenType type() {
     return this.type;
   }
 
+  /**
+   * Get the literal matched value.
+   *
+   * <p>This may be different than the {@link TokenType#value() default value} for the token type</p>
+   *
+   * @return the token value
+   * @since 4.1.0
+   */
   public String value() {
     return this.value;
   }
 
+  /**
+   * Test if a token list contains one single string token.
+   *
+   * @param tokens tokens to test
+   * @return if the token list contains only one single string
+   * @since 4.1.0
+   */
   public static boolean oneString(final List<Token> tokens) {
     return tokens.size() == 1 && tokens.get(0).type() == TokenType.STRING;
   }
 
-  public static String asValueString(List<Token> args) {
+  /**
+   * Get the plain-text values of tokens joined together.
+   *
+   * @param args the tokens
+   * @return a joined token string
+   * @since 4.1.0
+   */
+  public static String asValueString(final List<Token> args) {
     return args.stream().map(Token::value).collect(Collectors.joining());
   }
 

@@ -23,17 +23,32 @@
  */
 package net.kyori.adventure.text.minimessage.transformation;
 
+import java.util.Deque;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 
-import java.util.ArrayDeque;
-
+/**
+ * A transformation that is applied directly to the parent builder.
+ *
+ * <p>Rather than normal transformations which are stored and applied to every component,
+ * instant transformations are executed the moment the tag is found, and don't have any effect
+ * on further components.</p>
+ *
+ * @since 4.1.0
+ */
 public abstract class InstantApplyTransformation extends Transformation {
 
-    public abstract void applyInstant(TextComponent.Builder parent, ArrayDeque<Transformation> transformations);
+  /**
+   * Apply the child transformations to the provided builder.
+   *
+   * @param parent component to act on
+   * @param transformations the stack of transformations that the parser is tracking. can be modified.
+   * @since 4.1.0
+   */
+  public abstract void applyInstant(final TextComponent.Builder parent, final Deque<Transformation> transformations);
 
-    @Override
-    public Component apply(Component component, TextComponent.Builder parent) {
-        return null;
-    }
+  @Override
+  public Component apply(final Component component, final TextComponent.Builder parent) {
+    return null;
+  }
 }

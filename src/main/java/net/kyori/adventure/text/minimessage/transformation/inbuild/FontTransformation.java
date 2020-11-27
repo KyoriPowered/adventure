@@ -38,7 +38,19 @@ import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public class FontTransformation extends Transformation {
+/**
+ * A decoration that applies a font name.
+ *
+ * @since 4.1.0
+ */
+public final class FontTransformation extends Transformation {
+  /**
+   * Get if this transformation can handle the provided tag name.
+   *
+   * @param name tag name to test
+   * @return if this transformation is applicable
+   * @since 4.1.0
+   */
   public static boolean canParse(final String name) {
     return name.equalsIgnoreCase(Tokens.FONT);
   }
@@ -86,6 +98,11 @@ public class FontTransformation extends Transformation {
     return Objects.hash(this.font);
   }
 
+  /**
+   * Factory for {@link FontTransformation} instances.
+   *
+   * @since 4.1.0
+   */
   public static class Parser implements TransformationParser<FontTransformation> {
     @Override
     public FontTransformation parse() {

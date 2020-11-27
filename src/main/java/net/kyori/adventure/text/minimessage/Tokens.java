@@ -23,7 +23,12 @@
  */
 package net.kyori.adventure.text.minimessage;
 
-public class Tokens {
+/**
+ * Tokens used in the MiniMessage format.
+ *
+ * @since 4.0.0
+ */
+public final class Tokens {
   // vanilla components
   public static final String CLICK = "click";
   public static final String HOVER = "hover";

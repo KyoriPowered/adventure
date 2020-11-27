@@ -41,7 +41,19 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-public class HoverTransformation extends Transformation {
+/**
+ * A transformation that applies a {@link HoverEvent}.
+ *
+ * @since 4.1.0
+ */
+public final class HoverTransformation extends Transformation {
+  /**
+   * Get if this transformation can handle the provided tag name.
+   *
+   * @param name tag name to test
+   * @return if this transformation is applicable
+   * @since 4.1.0
+   */
   public static boolean canParse(final String name) {
     return name.equalsIgnoreCase(Tokens.HOVER);
   }
@@ -53,17 +65,17 @@ public class HoverTransformation extends Transformation {
   }
 
   @Override
-  public void load(String name, List<Token> args) {
+  public void load(final String name, final List<Token> args) {
     super.load(name, args);
 
-    if (args.size() < 3 || args.get(0).type() != TokenType.STRING) {
+    if(args.size() < 3 || args.get(0).type() != TokenType.STRING) {
       throw new ParsingException("Doesn't know how to turn " + args + " into a hover event", -1);
     }
 
     //noinspection unchecked
     this.action = (HoverEvent.Action<Object>) HoverEvent.Action.NAMES.value(args.get(0).value());
     String string = Token.asValueString(args.subList(2, args.size()));
-    if (string.startsWith("'") || string.startsWith("\"")) {
+    if(string.startsWith("'") || string.startsWith("\"")) {
       string = string.substring(1).substring(0, string.length() - 2);
     }
     this.value = MiniMessage.get().parse(string); // TODO this uses a hardcoded instance, there gotta be a better way
@@ -71,7 +83,7 @@ public class HoverTransformation extends Transformation {
 
   @Override
   public Component apply(final Component component, final TextComponent.Builder parent) {
-    return component.hoverEvent(HoverEvent.hoverEvent(action, value));
+    return component.hoverEvent(HoverEvent.hoverEvent(this.action, this.value));
   }
 
   @Override
@@ -83,18 +95,24 @@ public class HoverTransformation extends Transformation {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    HoverTransformation that = (HoverTransformation) o;
-    return Objects.equals(action, that.action) && Objects.equals(value, that.value);
+  public boolean equals(final Object other) {
+    if(this == other) return true;
+    if(other == null || this.getClass() != other.getClass()) return false;
+    final HoverTransformation that = (HoverTransformation) other;
+    return Objects.equals(this.action, that.action)
+      && Objects.equals(this.value, that.value);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(action, value);
+    return Objects.hash(this.action, this.value);
   }
 
+  /**
+   * Factory for {@link HoverTransformation} instances.
+   *
+   * @since 4.1.0
+   */
   public static class Parser implements TransformationParser<HoverTransformation> {
     @Override
     public HoverTransformation parse() {

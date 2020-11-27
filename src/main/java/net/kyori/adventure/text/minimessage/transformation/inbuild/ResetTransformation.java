@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
+import java.util.Deque;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.transformation.InstantApplyTransformation;
 import net.kyori.adventure.text.minimessage.Tokens;
@@ -32,41 +33,59 @@ import net.kyori.examination.ExaminableProperty;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.ArrayDeque;
 import java.util.stream.Stream;
 
-public class ResetTransformation extends InstantApplyTransformation {
-    public static boolean canParse(final String name) {
-        return name.equalsIgnoreCase(Tokens.RESET) || name.equalsIgnoreCase(Tokens.RESET_2);
-    }
+/**
+ * Ends any ongoing formatting.
+ *
+ * @since 4.1.0
+ */
+public final class ResetTransformation extends InstantApplyTransformation {
+  private static final ResetTransformation INSTANCE = new ResetTransformation();
 
-    private ResetTransformation() {
-    }
+  /**
+   * Get if this transformation can handle the provided tag name.
+   *
+   * @param name tag name to test
+   * @return if this transformation is applicable
+   * @since 4.1.0
+   */
+  public static boolean canParse(final String name) {
+    return name.equalsIgnoreCase(Tokens.RESET) || name.equalsIgnoreCase(Tokens.RESET_2);
+  }
 
+  private ResetTransformation() {
+  }
+
+  @Override
+  public void applyInstant(final TextComponent.Builder parent, final Deque<Transformation> transformations) {
+    transformations.clear();
+  }
+
+  @Override
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.empty();
+  }
+
+  @Override
+  public boolean equals(final Object other) {
+    return other instanceof ResetTransformation;
+  }
+
+  @Override
+  public int hashCode() {
+    return 0;
+  }
+
+  /**
+   * Factory for {@link ResetTransformation} instances.
+   *
+   * @since 4.1.0
+   */
+  public static final class Parser implements TransformationParser<ResetTransformation> {
     @Override
-    public void applyInstant(TextComponent.Builder parent, ArrayDeque<Transformation> transformations) {
-        transformations.clear();
+    public ResetTransformation parse() {
+      return ResetTransformation.INSTANCE;
     }
-
-    @Override
-    public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.empty();
-    }
-
-    @Override
-    public boolean equals(final Object other) {
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return 0;
-    }
-
-    public static class Parser implements TransformationParser<ResetTransformation> {
-        @Override
-        public ResetTransformation parse() {
-            return new ResetTransformation();
-        }
-    }
+  }
 }
