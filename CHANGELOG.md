@@ -8,6 +8,7 @@ This means, that the whole parser is much more robust now.
 * Added placeholder resolvers, to better integrate placeholder apis!
 * Added markdown flavors, to allow supporting multiple ones. DiscordFlavor for example supports ||sploilers||!
 * Added a bunch of convenience aliases, `<strikethrough>` becomes `<st>`. For the full list, see the docs.
+* Added ability to handle malformed input lenient or strict  
 * Slightly better escape handling (more work to come...)
 * More unit tests!
 * Updated adventure to 4.2

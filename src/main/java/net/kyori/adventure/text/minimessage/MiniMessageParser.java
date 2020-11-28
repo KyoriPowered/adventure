@@ -134,7 +134,7 @@ class MiniMessageParser {
     return sb.toString();
   }
 
-  @NonNull String handlePlaceholders(@NonNull String richMessage, final @NonNull String... placeholders) {
+  @NonNull String handlePlaceholders(@NonNull String richMessage, final @NonNull DebugContext debugContext, final @NonNull String... placeholders) {
     if(placeholders.length % 2 != 0) {
       throw new ParseException(
         "Invalid number placeholders defined, usage: parseFormat(format, key, value, key, value...)");
@@ -142,25 +142,27 @@ class MiniMessageParser {
     for(int i = 0; i < placeholders.length; i += 2) {
       richMessage = richMessage.replace(TAG_START + placeholders[i] + TAG_END, placeholders[i + 1]);
     }
+    debugContext.replacedMessage(richMessage);
     return richMessage;
   }
 
-  @NonNull String handlePlaceholders(@NonNull String richMessage, final @NonNull Map<String, String> placeholders) {
+  @NonNull String handlePlaceholders(@NonNull String richMessage, final @NonNull DebugContext debugContext, final @NonNull Map<String, String> placeholders) {
     for(final Map.Entry<String, String> entry : placeholders.entrySet()) {
       richMessage = richMessage.replace(TAG_START + entry.getKey() + TAG_END, entry.getValue());
     }
+    debugContext.replacedMessage(richMessage);
     return richMessage;
   }
 
-  @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull String... placeholders) {
-    return this.parseFormat(this.handlePlaceholders(richMessage, placeholders));
+  @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull DebugContext debugContext, final @NonNull String... placeholders) {
+    return this.parseFormat(this.handlePlaceholders(richMessage, debugContext, placeholders), debugContext);
   }
 
-  @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull Map<String, String> placeholders) {
-    return this.parseFormat(this.handlePlaceholders(richMessage, placeholders));
+  @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull Map<String, String> placeholders, final DebugContext debugContext) {
+    return this.parseFormat(this.handlePlaceholders(richMessage, debugContext, placeholders), debugContext);
   }
 
-  @NonNull Component parseFormat(@NonNull String input, final @NonNull Template... placeholders) {
+  @NonNull Component parseFormat(@NonNull String input, final DebugContext debugContext, final @NonNull Template... placeholders) {
     final Map<String, Template.ComponentTemplate> map = new HashMap<>();
     for(final Template placeholder : placeholders) {
       if(placeholder instanceof Template.StringTemplate) {
@@ -171,10 +173,10 @@ class MiniMessageParser {
         map.put(componentTemplate.key(), componentTemplate);
       }
     }
-    return this.parseFormat0(input, map);
+    return this.parseFormat0(input, map, debugContext);
   }
 
-  @NonNull Component parseFormat(@NonNull String input, final @NonNull List<Template> placeholders) {
+  @NonNull Component parseFormat(@NonNull String input, final @NonNull List<Template> placeholders, final @NonNull DebugContext debugContext) {
     final Map<String, Template.ComponentTemplate> map = new HashMap<>();
     for(final Template placeholder : placeholders) {
       if(placeholder instanceof Template.StringTemplate) {
@@ -185,19 +187,19 @@ class MiniMessageParser {
         map.put(componentTemplate.key(), componentTemplate);
       }
     }
-    return this.parseFormat0(input, map);
+    return this.parseFormat0(input, map, debugContext);
   }
 
-  @NonNull Component parseFormat(final @NonNull String richMessage) {
-    return this.parseFormat0(richMessage, Collections.emptyMap());
+  @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull DebugContext debugContext) {
+    return this.parseFormat0(richMessage, Collections.emptyMap(), debugContext);
   }
 
-  @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates) {
-    return this.parseFormat0(richMessage, templates, this.registry, this.placeholderResolver);
+  @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull DebugContext debugContext) {
+    return this.parseFormat0(richMessage, templates, this.registry, this.placeholderResolver, debugContext);
   }
 
-  @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull TransformationRegistry registry, final @NonNull Function<String, ComponentLike> placeholderResolver) {
-    final MiniMessageLexer lexer = new MiniMessageLexer(richMessage);
+  @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull TransformationRegistry registry, final @NonNull Function<String, ComponentLike> placeholderResolver, final DebugContext debugContext) {
+    final MiniMessageLexer lexer = new MiniMessageLexer(richMessage, debugContext);
     try {
       lexer.scan();
     } catch(final IOException e) {
@@ -205,10 +207,11 @@ class MiniMessageParser {
     }
     lexer.clean();
     final List<Token> tokens = lexer.getTokens();
-    return this.parse(tokens, registry, templates, placeholderResolver);
+    debugContext.tokens(tokens);
+    return this.parse(tokens, registry, templates, placeholderResolver, debugContext);
   }
 
-  @NonNull Component parse(final @NonNull List<Token> tokens, final @NonNull TransformationRegistry registry, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull Function<String, ComponentLike> placeholderResolver) {
+  @NonNull Component parse(final @NonNull List<Token> tokens, final @NonNull TransformationRegistry registry, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull Function<String, ComponentLike> placeholderResolver, final @NonNull DebugContext debugContext) {
     final TextComponent.Builder parent = Component.text();
     final Deque<Transformation> transformations = new ArrayDeque<>();
     final Deque<OneTimeTransformation> oneTimeTransformations = new ArrayDeque<>();
@@ -235,7 +238,7 @@ class MiniMessageParser {
               inners.add(next);
             }
 
-            final Transformation transformation = registry.get(name.value(), inners, templates, placeholderResolver);
+            final Transformation transformation = registry.get(name.value(), inners, templates, placeholderResolver, debugContext);
             if(transformation == null || preActive || token.type() == TokenType.ESCAPED_OPEN_TAG_START) {
               // this isn't a known tag, oh no!
               // lets take a step back, first, create a string
@@ -264,7 +267,7 @@ class MiniMessageParser {
             }
           } else if(paramOrEnd.type() == TokenType.TAG_END || paramOrEnd.type() == TokenType.ESCAPED_CLOSE_TAG_START) {
             // we finished
-            final Transformation transformation = registry.get(name.value(), Collections.emptyList(), templates, placeholderResolver);
+            final Transformation transformation = registry.get(name.value(), Collections.emptyList(), templates, placeholderResolver, debugContext);
             if(transformation == null || preActive || token.type() == TokenType.ESCAPED_OPEN_TAG_START) {
               // this isn't a known tag, oh no!
               // lets take a step back, first, create a string
@@ -329,7 +332,7 @@ class MiniMessageParser {
             }
 
             // check what we need to close, so we create a transformation and try to remove it
-            final Transformation transformation = registry.get(name.value(), inners, templates, placeholderResolver);
+            final Transformation transformation = registry.get(name.value(), inners, templates, placeholderResolver, debugContext);
             transformations.removeFirstOccurrence(transformation);
           } else {
             throw new ParsingException("Expected tag end or param separator after tag name, but got " + paramOrEnd, -1);

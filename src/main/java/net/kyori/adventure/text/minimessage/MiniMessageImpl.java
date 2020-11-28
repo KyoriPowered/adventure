@@ -35,23 +35,34 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
-class MiniMessageImpl implements MiniMessage {
+/**
+ * not public api.
+ *
+ * @since 4.0.0
+ */
+public class MiniMessageImpl implements MiniMessage {
 
   static final Function<String, ComponentLike> DEFAULT_PLACEHOLDER_RESOLVER = s -> null;
+  static final Consumer<String> DEFAULT_ERROR_CONSUMER = System.out::println;
 
-  static final MiniMessage INSTANCE = new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(), new TransformationRegistry(), DEFAULT_PLACEHOLDER_RESOLVER);
-  static final MiniMessage MARKDOWN = new MiniMessageImpl(true, MarkdownFlavor.defaultFlavor(), new TransformationRegistry(), DEFAULT_PLACEHOLDER_RESOLVER);
+  static final MiniMessage INSTANCE = new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(), new TransformationRegistry(), DEFAULT_PLACEHOLDER_RESOLVER, false, DEFAULT_ERROR_CONSUMER);
+  static final MiniMessage MARKDOWN = new MiniMessageImpl(true, MarkdownFlavor.defaultFlavor(), new TransformationRegistry(), DEFAULT_PLACEHOLDER_RESOLVER, false, DEFAULT_ERROR_CONSUMER);
 
   private final boolean markdown;
   private final MarkdownFlavor markdownFlavor;
   private final MiniMessageParser parser;
+  private final boolean strict;
+  private final Consumer<String> parsingErrorMessageConsumer;
 
-  MiniMessageImpl(final boolean markdown, final @NonNull MarkdownFlavor markdownFlavor, final @NonNull TransformationRegistry registry, final Function<String, ComponentLike> placeholderResolver) {
+  MiniMessageImpl(final boolean markdown, final @NonNull MarkdownFlavor markdownFlavor, final @NonNull TransformationRegistry registry, final @NonNull Function<String, ComponentLike> placeholderResolver, final boolean strict, final @NonNull Consumer<String> parsingErrorMessageConsumer) {
     this.markdown = markdown;
     this.markdownFlavor = markdownFlavor;
     this.parser = new MiniMessageParser(registry, placeholderResolver);
+    this.strict = strict;
+    this.parsingErrorMessageConsumer = parsingErrorMessageConsumer;
   }
 
   @Override
@@ -59,7 +70,7 @@ class MiniMessageImpl implements MiniMessage {
     if(this.markdown) {
       input = MiniMarkdownParser.parse(input, this.markdownFlavor);
     }
-    return this.parser.parseFormat(input);
+    return this.parser.parseFormat(input, DebugContext.of(this.strict, input, this));
   }
 
   @Override
@@ -72,7 +83,7 @@ class MiniMessageImpl implements MiniMessage {
     if(this.markdown) {
       input = MiniMarkdownParser.parse(input, this.markdownFlavor);
     }
-    return this.parser.parseFormat(input, placeholders);
+    return this.parser.parseFormat(input, DebugContext.of(this.strict, input, this), placeholders);
   }
 
   @Override
@@ -80,7 +91,7 @@ class MiniMessageImpl implements MiniMessage {
     if(this.markdown) {
       input = MiniMarkdownParser.parse(input, this.markdownFlavor);
     }
-    return this.parser.parseFormat(input, placeholders);
+    return this.parser.parseFormat(input, placeholders, DebugContext.of(this.strict, input, this));
   }
 
   @Override
@@ -116,7 +127,7 @@ class MiniMessageImpl implements MiniMessage {
     if(this.markdown) {
       input = MiniMarkdownParser.parse(input, this.markdownFlavor);
     }
-    return this.parser.parseFormat(input, placeholders);
+    return this.parser.parseFormat(input, DebugContext.of(this.strict, input, this), placeholders);
   }
 
   @Override
@@ -124,7 +135,7 @@ class MiniMessageImpl implements MiniMessage {
     if(this.markdown) {
       input = MiniMarkdownParser.parse(input, this.markdownFlavor);
     }
-    return this.parser.parseFormat(input, placeholders);
+    return this.parser.parseFormat(input, placeholders, DebugContext.of(this.strict, input, this));
   }
 
   @Override
@@ -140,6 +151,16 @@ class MiniMessageImpl implements MiniMessage {
     return this.parser.stripTokens(input);
   }
 
+  /**
+   * not public api.
+   *
+   * @return huhu.
+   * @since 4.1.0
+   */
+  public @NonNull Consumer<String> parsingErrorMessageConsumer() {
+    return this.parsingErrorMessageConsumer;
+  }
+
   @Override
   public @NonNull Builder toBuilder() {
     return new BuilderImpl(this);
@@ -150,6 +171,8 @@ class MiniMessageImpl implements MiniMessage {
     private MarkdownFlavor markdownFlavor = MarkdownFlavor.defaultFlavor();
     private final TransformationRegistry registry = new TransformationRegistry();
     private Function<String, ComponentLike> placeholderResolver = DEFAULT_PLACEHOLDER_RESOLVER;
+    private boolean strict = false;
+    private Consumer<String> parsingErrorMessageConsumer = DEFAULT_ERROR_CONSUMER;
 
     BuilderImpl() {
     }
@@ -198,11 +221,23 @@ class MiniMessageImpl implements MiniMessage {
     }
 
     @Override
+    public @NonNull Builder strict(final boolean strict) {
+      this.strict = strict;
+      return this;
+    }
+
+    @Override
+    public @NonNull Builder parsingErrorMessageConsumer(final Consumer<String> consumer) {
+      this.parsingErrorMessageConsumer = consumer;
+      return this;
+    }
+
+    @Override
     public @NonNull MiniMessage build() {
       if(this.markdown) {
-        return new MiniMessageImpl(true, this.markdownFlavor, this.registry, this.placeholderResolver);
+        return new MiniMessageImpl(true, this.markdownFlavor, this.registry, this.placeholderResolver, this.strict, this.parsingErrorMessageConsumer);
       } else {
-        return new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(), this.registry, this.placeholderResolver);
+        return new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(), this.registry, this.placeholderResolver, this.strict, this.parsingErrorMessageConsumer);
       }
     }
   }

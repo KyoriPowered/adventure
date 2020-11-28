@@ -26,6 +26,7 @@ package net.kyori.adventure.text.minimessage.parser;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenType;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
+import net.kyori.adventure.text.minimessage.DebugContext;
 import java.io.StringReader;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -54,10 +55,12 @@ import java.io.IOException;
     private final StringBuffer string = new StringBuffer();
     private final List<Token> tokens = new ArrayList<>();
     private String input = "error";
+    private DebugContext debugContext;
 
-    public MiniMessageLexer(String input) {
+    public MiniMessageLexer(String input, DebugContext debugContext) {
       this(new StringReader(input));
       this.input = input;
+      this.debugContext = debugContext;
     }
 
     public void clean() {
@@ -97,6 +100,15 @@ import java.io.IOException;
         }
         return "";
     }
+
+    public void checkStrict(ParsingException ex) {
+        if (debugContext.isStrict()) {
+          throw ex;
+        } else {
+          // TODO: maybe instead log something here?
+          string.append(yytext());
+        }
+    }
 %}
 
 openTagStart = <
@@ -129,7 +141,7 @@ whitespace = [ \n\t\r]+
   {paramSeperator}        { yybegin(PARAM); tokens.add(new Token(TokenType.NAME, getString())); tokens.add(new Token(TokenType.PARAM_SEPARATOR)); }
   {tagEnd}                { yybegin(YYINITIAL); tokens.add(new Token(TokenType.NAME, getString())); tokens.add(new Token(TokenType.TAG_END)); }
   {identifier}            { string.append(yytext()); }
-  [^]                     { throw new ParsingException("Illegal character '" + yytext() + "'. Only alphanumeric + ._-#/ are allowed as token names", yycolumn); }
+  [^]                     { checkStrict(new ParsingException("Illegal character '" + yytext() + "'. Only alphanumeric + ._-#/ are allowed as token names", yycolumn)); }
 }
 
 <TAG_DUMMY> {
@@ -144,7 +156,7 @@ whitespace = [ \n\t\r]+
   {tagEnd}                { yybegin(YYINITIAL); tokens.add(new Token(getString())); tokens.add(new Token(TokenType.TAG_END)); }
   {quote}                 { yybegin(QUOTED); tokens.add(new Token(TokenType.QUOTE_START)); }
   {identifier}            { string.append(yytext()); }
-  [^]                     { throw new ParsingException("Illegal character '" + yytext() + "'. Only alphanumeric + ._-#/ and spaces are allowed as params", yycolumn); }
+  [^]                     { checkStrict(new ParsingException("Illegal character '" + yytext() + "'. Only alphanumeric + ._-#/ and spaces are allowed as params", yycolumn)); }
 }
 
 <QUOTED> {
@@ -165,4 +177,4 @@ whitespace = [ \n\t\r]+
 }
 
 /* error fallback */
-[^]                       { throw new ParsingException("Illegal character '" + yytext() + "'", yycolumn); }
+[^]                       { checkStrict(new ParsingException("Illegal character '" + yytext() + "'", yycolumn)); }

@@ -23,6 +23,8 @@
  */
 package net.kyori.adventure.text.minimessage.parser;
 
+import net.kyori.adventure.text.minimessage.ParseException;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -30,7 +32,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * @since 4.1.0
  */
-public class ParsingException extends RuntimeException {
+public class ParsingException extends ParseException {
   private static final long serialVersionUID = 2507190809441787201l;
 
   private String message;
@@ -44,6 +46,7 @@ public class ParsingException extends RuntimeException {
    * @since 4.1.0
    */
   public ParsingException(final String message, final int column) {
+    super(message);
     this.message = message;
     this.column = column;
   }

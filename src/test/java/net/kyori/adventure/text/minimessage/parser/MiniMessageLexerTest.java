@@ -23,6 +23,8 @@
  */
 package net.kyori.adventure.text.minimessage.parser;
 
+import net.kyori.adventure.text.minimessage.DebugContext;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -42,7 +44,7 @@ public class MiniMessageLexerTest {
   private void test(final String input) throws Exception {
     System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     System.out.println("Testing: " + input);
-    final MiniMessageLexer lexer = new MiniMessageLexer(input);
+    final MiniMessageLexer lexer = new MiniMessageLexer(input, DebugContext.of(false, null, null));
     lexer.scan();
     lexer.clean();
     final List<Token> tokens = lexer.getTokens();

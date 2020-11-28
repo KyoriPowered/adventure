@@ -36,6 +36,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -79,7 +80,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @since 4.0.0
    */
   static @NonNull MiniMessage withMarkdownFlavor(final MarkdownFlavor markdownFlavor) {
-    return new MiniMessageImpl(true, markdownFlavor, new TransformationRegistry(), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER);
+    return new MiniMessageImpl(true, markdownFlavor, new TransformationRegistry(), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER, false, MiniMessageImpl.DEFAULT_ERROR_CONSUMER);
   }
 
   /**
@@ -91,7 +92,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    */
   @SafeVarargs
   static @NonNull MiniMessage withTransformations(final TransformationType<? extends Transformation>... types) {
-    return new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(), new TransformationRegistry(types), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER);
+    return new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(), new TransformationRegistry(types), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER, false, MiniMessageImpl.DEFAULT_ERROR_CONSUMER);
   }
 
   /**
@@ -103,7 +104,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    */
   @SafeVarargs
   static @NonNull MiniMessage markdownWithTransformations(final TransformationType<? extends Transformation>... types) {
-    return new MiniMessageImpl(true, MarkdownFlavor.defaultFlavor(), new TransformationRegistry(types), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER);
+    return new MiniMessageImpl(true, MarkdownFlavor.defaultFlavor(), new TransformationRegistry(types), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER, false, MiniMessageImpl.DEFAULT_ERROR_CONSUMER);
   }
 
   /**
@@ -116,7 +117,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    */
   @SafeVarargs
   static @NonNull MiniMessage markdownWithTransformations(final MarkdownFlavor markdownFlavor, final TransformationType<? extends Transformation>... types) {
-    return new MiniMessageImpl(true, markdownFlavor, new TransformationRegistry(types), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER);
+    return new MiniMessageImpl(true, markdownFlavor, new TransformationRegistry(types), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER, false, MiniMessageImpl.DEFAULT_ERROR_CONSUMER);
   }
 
   /**
@@ -273,6 +274,27 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      * @since 4.1.0
      */
     @NonNull Builder placeholderResolver(final Function<String, ComponentLike> placeholderResolver);
+
+    /**
+     * Allows to enable strict mode (disabled by default)
+     * <br>
+     * By default, MiniMessage will try to catch some common mistakes and print helpful messages to the console instead of aborting the parse.
+     * This will lead to message that are most likely slightly broken, but don't crash your whole plugin when a user writes slightly malformed syntax into a config.
+     *
+     * @param strict if strict mode should be enabled
+     * @return this builder
+     * @since 4.1.0
+     */
+    @NonNull Builder strict(boolean strict);
+
+    /**
+     * If in lenient mode, MiniMessage will output helpful messages. This method allows you to change how they should be printed. By default, they will be printed to standard out.
+     *
+     * @param consumer the error message consumer
+     * @return this builder
+     * @since 4.1.0
+     */
+    @NonNull Builder parsingErrorMessageConsumer(final Consumer<String> consumer);
 
     /**
      * Builds the serializer.
