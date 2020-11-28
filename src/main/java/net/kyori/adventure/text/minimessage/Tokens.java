@@ -49,6 +49,7 @@ public final class Tokens {
   public static final String STRIKETHROUGH = "strikethrough";
   public static final String STRIKETHROUGH_2 = "st";
   public static final String OBFUSCATED = "obfuscated";
+  public static final String OBFUSCATED_2 = "obf";
   public static final String ITALIC = "italic";
   public static final String ITALIC_2 = "em";
   public static final String ITALIC_3 = "i";

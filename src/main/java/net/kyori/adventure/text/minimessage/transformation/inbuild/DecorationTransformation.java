@@ -87,6 +87,8 @@ public final class DecorationTransformation extends Transformation {
       case Tokens.STRIKETHROUGH_2:
         name = Tokens.STRIKETHROUGH;
         break;
+      case Tokens.OBFUSCATED_2:
+        name = Tokens.OBFUSCATED;
       default:
         break;
     }
