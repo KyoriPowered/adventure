@@ -89,6 +89,7 @@ public final class DecorationTransformation extends Transformation {
         break;
       case Tokens.OBFUSCATED_2:
         name = Tokens.OBFUSCATED;
+        break;
       default:
         break;
     }
