@@ -25,22 +25,25 @@ package net.kyori.adventure.bossbar;
 
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.util.Listenable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static java.util.Objects.requireNonNull;
 
-final class BossBarImpl extends Listenable<BossBar.Listener> implements BossBar {
+final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
   private static final BiConsumer<BossBarImpl, Set<Flag>> FLAGS_ADDED = (bar, flagsAdded) -> bar.forEachListener(listener -> listener.bossBarFlagsChanged(bar, flagsAdded, Collections.emptySet()));
   private static final BiConsumer<BossBarImpl, Set<Flag>> FLAGS_REMOVED = (bar, flagsRemoved) -> bar.forEachListener(listener -> listener.bossBarFlagsChanged(bar, Collections.emptySet(), flagsRemoved));
+  private final List<Listener> listeners = new CopyOnWriteArrayList<>();
   private Component name;
   private float progress;
   private Color color;
@@ -230,14 +233,20 @@ final class BossBarImpl extends Listenable<BossBar.Listener> implements BossBar 
 
   @Override
   public @NonNull BossBar addListener(final @NonNull Listener listener) {
-    this.addListener0(listener);
+    this.listeners.add(listener);
     return this;
   }
 
   @Override
   public @NonNull BossBar removeListener(final @NonNull Listener listener) {
-    this.removeListener0(listener);
+    this.listeners.remove(listener);
     return this;
+  }
+
+  private void forEachListener(final @NonNull Consumer<Listener> consumer) {
+    for(final Listener listener : this.listeners) {
+      consumer.accept(listener);
+    }
   }
 
   @Override
