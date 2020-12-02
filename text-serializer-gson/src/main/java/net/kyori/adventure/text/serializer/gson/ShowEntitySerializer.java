@@ -35,6 +35,7 @@ import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class ShowEntitySerializer implements JsonDeserializer<HoverEvent.ShowEntity>, JsonSerializer<HoverEvent.ShowEntity> {
   static final String TYPE = "type";
@@ -52,7 +53,7 @@ final class ShowEntitySerializer implements JsonDeserializer<HoverEvent.ShowEnti
     final Key type = context.deserialize(object.getAsJsonPrimitive(TYPE), Key.class);
     final UUID id = UUID.fromString(object.getAsJsonPrimitive(ID).getAsString());
 
-    /* @Nullable */ Component name = null;
+    @Nullable Component name = null;
     if(object.has(NAME)) {
       name = context.deserialize(object.get(NAME), Component.class);
     }
@@ -67,7 +68,7 @@ final class ShowEntitySerializer implements JsonDeserializer<HoverEvent.ShowEnti
     json.add(TYPE, context.serialize(src.type()));
     json.addProperty(ID, src.id().toString());
 
-    final /* @Nullable */ Component name = src.name();
+    final @Nullable Component name = src.name();
     if(name != null) {
       json.add(NAME, context.serialize(name));
     }

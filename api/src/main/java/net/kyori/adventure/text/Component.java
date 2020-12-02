@@ -1127,7 +1127,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
     for(final Component child : this.children()) {
       if(child.contains(that)) return true;
     }
-    final /* @Nullable */ HoverEvent<?> hoverEvent = this.hoverEvent();
+    final @Nullable HoverEvent<?> hoverEvent = this.hoverEvent();
     if(hoverEvent != null) {
       if(hoverEvent.action().type().isAssignableFrom(Component.class)) {
         final Component hover = (Component) hoverEvent.value();

@@ -78,7 +78,7 @@ final class TitleSerializer implements TypeSerializer<Title> {
 
     value.getNode(TITLE).setValue(ComponentTypeSerializer.TYPE, obj.title());
     value.getNode(SUBTITLE).setValue(ComponentTypeSerializer.TYPE, obj.subtitle());
-    final Title./* @Nullable */ Times times = obj.times();
+    final Title.@Nullable Times times = obj.times();
     value.getNode(TIMES, FADE_IN).setValue(DurationSerializer.INSTANCE.type(), times == null || times == Title.DEFAULT_TIMES ? null : times.fadeIn());
     value.getNode(TIMES, STAY).setValue(DurationSerializer.INSTANCE.type(), times == null || times == Title.DEFAULT_TIMES ? null : times.stay());
     value.getNode(TIMES, FADE_OUT).setValue(DurationSerializer.INSTANCE.type(), times == null || times == Title.DEFAULT_TIMES ? null : times.fadeOut());

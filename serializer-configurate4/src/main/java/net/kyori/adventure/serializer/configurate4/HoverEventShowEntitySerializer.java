@@ -51,7 +51,7 @@ final class HoverEventShowEntitySerializer implements TypeSerializer<HoverEvent.
     if(typeId == null || id == null) {
       throw new SerializationException("A show entity hover event needs type and id fields to be deserialized");
     }
-    final /* @Nullable */ Component name = value.node(NAME).get(Component.class);
+    final @Nullable Component name = value.node(NAME).get(Component.class);
 
     return HoverEvent.ShowEntity.of(typeId, id, name);
   }

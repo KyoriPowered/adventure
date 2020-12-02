@@ -27,7 +27,7 @@ import java.util.UUID;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 final class Identities {
-  static Identity NIL = new Identity() {
+  static final Identity NIL = new Identity() {
     private final UUID uuid = new UUID(0, 0);
 
     @Override

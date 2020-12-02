@@ -25,7 +25,6 @@ package net.kyori.adventure.text;
 
 import com.google.common.collect.ImmutableSet;
 import java.util.Collections;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -76,7 +75,7 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
     assertAllEqualToEachOther(
       Component.text("foo", Style.style(TextColor.color(0x0a1ab9))),
       Component.text("foo", TextColor.color(0x0a1ab9)),
-      Component.text("foo", TextColor.color(0x0a1ab9), ImmutableSet.<TextDecoration>of())
+      Component.text("foo", TextColor.color(0x0a1ab9), ImmutableSet.of())
     );
     assertAllEqualToEachOther(
       Component.text("foo", Style.style(TextColor.color(0x0a1ab9), TextDecoration.BOLD)),
@@ -267,11 +266,10 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
   @Test
   void testPartialReplaceHasIsolatedStyle() {
     final TextComponent component = Component.text("Hello world", NamedTextColor.DARK_PURPLE);
-    final TextComponent expectedReplacement = Component.text(b -> {
+    final TextComponent expectedReplacement = Component.text(b ->
       b.color(NamedTextColor.DARK_PURPLE)
-        .append(Component.text("Goodbye", NamedTextColor.LIGHT_PURPLE))
-        .append(Component.text(" world"));
-    });
+      .append(Component.text("Goodbye", NamedTextColor.LIGHT_PURPLE))
+      .append(Component.text(" world")));
 
     assertEquals(expectedReplacement, component.replaceText(b -> b.match(Pattern.compile("Hello")).replacement(builder -> builder.content("Goodbye").color(NamedTextColor.LIGHT_PURPLE))));
   }
@@ -294,13 +292,13 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
 
     final Pattern replaceWith = Pattern.compile("\\{(\\d+)}");
 
-    final Component replaced = original.replaceText(replaceWith, b -> {
-      final Matcher matcher = replaceWith.matcher(b.content());
-      assertTrue(matcher.find());
-      assertEquals(0, Integer.parseInt(matcher.group(1))); // only one index in our test case
+    final Component replaced = original.replaceText(builder ->
+      builder.match(replaceWith)
+        .replacement((matcher, comp) -> {
+          assertEquals(0, Integer.parseInt(matcher.group(1))); // only one index in our test case
 
-      return Component.text("mycommand");
-    });
+          return Component.text("mycommand");
+        }));
 
     assertEquals(expected, replaced);
   }

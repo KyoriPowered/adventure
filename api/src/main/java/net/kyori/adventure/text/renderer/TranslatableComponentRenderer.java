@@ -141,7 +141,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
 
   @Override
   protected @NonNull Component renderTranslatable(final @NonNull TranslatableComponent component, final @NonNull C context) {
-    final /* @Nullable */ MessageFormat format = this.translate(component.key(), context);
+    final @Nullable MessageFormat format = this.translate(component.key(), context);
     if(format == null) {
       // we don't have a translation for this component, but the arguments or children
       // of this component might need additional rendering
@@ -202,7 +202,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   protected <B extends ComponentBuilder<?, ?>> void mergeStyle(final Component component, final B builder, final C context) {
     builder.mergeStyle(component, MERGES);
     builder.clickEvent(component.clickEvent());
-    final /* @Nullable */ HoverEvent<?> hoverEvent = component.hoverEvent();
+    final @Nullable HoverEvent<?> hoverEvent = component.hoverEvent();
     if(hoverEvent != null) {
       builder.hoverEvent(hoverEvent.withRenderedValue(this, context));
     }
