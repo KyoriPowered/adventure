@@ -8,6 +8,7 @@ include "nbt"
 include "serializer-configurate3"
 include "serializer-configurate4"
 include "text-serializer-gson"
+include "text-serializer-gson-legacy-impl"
 include "text-serializer-legacy"
 include "text-serializer-plain"
 
@@ -18,6 +19,7 @@ include "text-serializer-plain"
   "serializer-configurate3",
   "serializer-configurate4",
   "text-serializer-gson",
+  "text-serializer-gson-legacy-impl",
   "text-serializer-legacy",
   "text-serializer-plain"
 ].each {
