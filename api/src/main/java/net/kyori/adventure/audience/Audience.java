@@ -308,6 +308,79 @@ public interface Audience {
   }
 
   /**
+   * Sends the player list header.
+   *
+   * <p>Depending on the implementation of this {@code Audience}, an existing footer may be displayed. If you wish
+   * to set both the header and the footer, please use {@link #sendPlayerListHeaderAndFooter(ComponentLike, ComponentLike)}.</p>
+   *
+   * @param header the header
+   * @since 4.3.0
+   */
+  default void sendPlayerListHeader(final @NonNull ComponentLike header) {
+    this.sendPlayerListHeader(header.asComponent());
+  }
+
+  /**
+   * Sends the player list header.
+   *
+   * <p>Depending on the implementation of this {@code Audience}, an existing footer may be displayed. If you wish
+   * to set both the header and the footer, please use {@link #sendPlayerListHeaderAndFooter(Component, Component)}.</p>
+   *
+   * @param header the header
+   * @since 4.3.0
+   */
+  default void sendPlayerListHeader(final @NonNull Component header) {
+    this.sendPlayerListHeaderAndFooter(header, Component.empty());
+  }
+
+  /**
+   * Sends the player list footer.
+   *
+   * <p>Depending on the implementation of this {@code Audience}, an existing footer may be displayed. If you wish
+   * to set both the header and the footer, please use {@link #sendPlayerListHeaderAndFooter(ComponentLike, ComponentLike)}.</p>
+   *
+   * @param footer the footer
+   * @since 4.3.0
+   */
+  default void sendPlayerListFooter(final @NonNull ComponentLike footer) {
+    this.sendPlayerListFooter(footer.asComponent());
+  }
+
+  /**
+   * Sends the player list footer.
+   *
+   * <p>Depending on the implementation of this {@code Audience}, an existing footer may be displayed. If you wish
+   * to set both the header and the footer, please use {@link #sendPlayerListHeaderAndFooter(Component, Component)}.</p>
+   *
+   * @param footer the footer
+   * @since 4.3.0
+   */
+  default void sendPlayerListFooter(final @NonNull Component footer) {
+    this.sendPlayerListHeaderAndFooter(Component.empty(), footer);
+  }
+
+  /**
+   * Sends the player list header and footer.
+   *
+   * @param header the header
+   * @param footer the footer
+   * @since 4.3.0
+   */
+  default void sendPlayerListHeaderAndFooter(final @NonNull ComponentLike header, final @NonNull ComponentLike footer) {
+    this.sendPlayerListHeaderAndFooter(header.asComponent(), footer.asComponent());
+  }
+
+  /**
+   * Sends the player list header and footer.
+   *
+   * @param header the header
+   * @param footer the footer
+   * @since 4.3.0
+   */
+  default void sendPlayerListHeaderAndFooter(final @NonNull Component header, final @NonNull Component footer) {
+  }
+
+  /**
    * Shows a title.
    *
    * @param title a title

@@ -61,6 +61,18 @@ final class EmptyAudience implements Audience {
   }
 
   @Override
+  public void sendPlayerListHeader(final @NonNull ComponentLike header) {
+  }
+
+  @Override
+  public void sendPlayerListFooter(final @NonNull ComponentLike footer) {
+  }
+
+  @Override
+  public void sendPlayerListHeaderAndFooter(final @NonNull ComponentLike header, final @NonNull ComponentLike footer) {
+  }
+
+  @Override
   public void openBook(final Book.@NonNull Builder book) {
   }
 

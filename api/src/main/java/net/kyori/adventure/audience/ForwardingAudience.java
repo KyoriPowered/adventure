@@ -25,13 +25,13 @@ package net.kyori.adventure.audience;
 
 import java.util.Collections;
 import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
-import net.kyori.adventure.identity.Identified;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -66,6 +66,21 @@ public interface ForwardingAudience extends Audience {
   @Override
   default void sendActionBar(final @NonNull Component message) {
     for(final Audience audience : this.audiences()) audience.sendActionBar(message);
+  }
+
+  @Override
+  default void sendPlayerListHeader(final @NonNull Component header) {
+    for(final Audience audience : this.audiences()) audience.sendPlayerListHeader(header);
+  }
+
+  @Override
+  default void sendPlayerListFooter(final @NonNull Component footer) {
+    for(final Audience audience : this.audiences()) audience.sendPlayerListFooter(footer);
+  }
+
+  @Override
+  default void sendPlayerListHeaderAndFooter(final @NonNull Component header, final @NonNull Component footer) {
+    for(final Audience audience : this.audiences()) audience.sendPlayerListHeaderAndFooter(header, footer);
   }
 
   @Override
@@ -152,6 +167,21 @@ public interface ForwardingAudience extends Audience {
     @Override
     default void sendActionBar(final @NonNull Component message) {
       this.audience().sendActionBar(message);
+    }
+
+    @Override
+    default void sendPlayerListHeader(final @NonNull Component header) {
+      this.audience().sendPlayerListHeader(header);
+    }
+
+    @Override
+    default void sendPlayerListFooter(final @NonNull Component footer) {
+      this.audience().sendPlayerListFooter(footer);
+    }
+
+    @Override
+    default void sendPlayerListHeaderAndFooter(final @NonNull Component header, final @NonNull Component footer) {
+      this.audience().sendPlayerListHeaderAndFooter(header, footer);
     }
 
     @Override
