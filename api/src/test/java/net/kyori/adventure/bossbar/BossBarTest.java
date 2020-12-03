@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
@@ -68,7 +69,7 @@ public class BossBarTest {
       BossBarTest.this.flags.incrementAndGet();
     }
   };
-  private final BossBar bar = BossBar.bossBar(Component.empty(), 1f, BossBar.Color.PURPLE, BossBar.Overlay.PROGRESS);
+  private final BossBar bar = BossBar.bossBar((ComponentLike) Component.empty(), 1f, BossBar.Color.PURPLE, BossBar.Overlay.PROGRESS);
 
   @Test
   void testOfFlags() {

@@ -25,6 +25,7 @@ package net.kyori.adventure.bossbar;
 
 import java.util.Set;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.util.Index;
 import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -73,11 +74,44 @@ public interface BossBar extends Examinable {
    * @param overlay the overlay
    * @return a bossbar
    * @throws IllegalArgumentException if progress is less than 0 or greater than 1
+   * @since 4.3.0
+   */
+  static @NonNull BossBar bossBar(final @NonNull ComponentLike name, final float progress, final @NonNull Color color, final @NonNull Overlay overlay) {
+    BossBarImpl.checkProgress(progress);
+    return bossBar(name.asComponent(), progress, color, overlay);
+  }
+
+  /**
+   * Creates a new bossbar.
+   *
+   * @param name the name
+   * @param progress the progress, between 0 and 1
+   * @param color the color
+   * @param overlay the overlay
+   * @return a bossbar
+   * @throws IllegalArgumentException if progress is less than 0 or greater than 1
    * @since 4.0.0
    */
   static @NonNull BossBar bossBar(final @NonNull Component name, final float progress, final @NonNull Color color, final @NonNull Overlay overlay) {
     BossBarImpl.checkProgress(progress);
     return new BossBarImpl(name, progress, color, overlay);
+  }
+
+  /**
+   * Creates a new bossbar.
+   *
+   * @param name the name
+   * @param progress the progress, between 0 and 1
+   * @param color the color
+   * @param overlay the overlay
+   * @param flags the flags
+   * @return a bossbar
+   * @throws IllegalArgumentException if progress is less than 0 or greater than 1
+   * @since 4.3.0
+   */
+  static @NonNull BossBar bossBar(final @NonNull ComponentLike name, final float progress, final @NonNull Color color, final @NonNull Overlay overlay, final @NonNull Set<Flag> flags) {
+    BossBarImpl.checkProgress(progress);
+    return bossBar(name.asComponent(), progress, color, overlay, flags);
   }
 
   /**
@@ -104,6 +138,17 @@ public interface BossBar extends Examinable {
    * @since 4.0.0
    */
   @NonNull Component name();
+
+  /**
+   * Sets the name.
+   *
+   * @param name the name
+   * @return the bossbar
+   * @since 4.3.0
+   */
+  default @NonNull BossBar name(final @NonNull ComponentLike name) {
+    return this.name(name.asComponent());
+  }
 
   /**
    * Sets the name.
