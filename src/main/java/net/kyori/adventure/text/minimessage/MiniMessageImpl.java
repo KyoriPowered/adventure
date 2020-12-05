@@ -47,7 +47,7 @@ import java.util.function.Function;
 public class MiniMessageImpl implements MiniMessage {
 
   static final Function<String, ComponentLike> DEFAULT_PLACEHOLDER_RESOLVER = s -> null;
-  static final Consumer<String> DEFAULT_ERROR_CONSUMER = System.out::println;
+  static final Consumer<List<String>> DEFAULT_ERROR_CONSUMER = message -> message.forEach(System.out::println);
 
   static final MiniMessage INSTANCE = new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(), new TransformationRegistry(), DEFAULT_PLACEHOLDER_RESOLVER, false, DEFAULT_ERROR_CONSUMER);
   static final MiniMessage MARKDOWN = new MiniMessageImpl(true, MarkdownFlavor.defaultFlavor(), new TransformationRegistry(), DEFAULT_PLACEHOLDER_RESOLVER, false, DEFAULT_ERROR_CONSUMER);
@@ -56,9 +56,9 @@ public class MiniMessageImpl implements MiniMessage {
   private final MarkdownFlavor markdownFlavor;
   private final MiniMessageParser parser;
   private final boolean strict;
-  private final Consumer<String> parsingErrorMessageConsumer;
+  private final Consumer<List<String>> parsingErrorMessageConsumer;
 
-  MiniMessageImpl(final boolean markdown, final @NonNull MarkdownFlavor markdownFlavor, final @NonNull TransformationRegistry registry, final @NonNull Function<String, ComponentLike> placeholderResolver, final boolean strict, final @NonNull Consumer<String> parsingErrorMessageConsumer) {
+  MiniMessageImpl(final boolean markdown, final @NonNull MarkdownFlavor markdownFlavor, final @NonNull TransformationRegistry registry, final @NonNull Function<String, ComponentLike> placeholderResolver, final boolean strict, final @NonNull Consumer<List<String>> parsingErrorMessageConsumer) {
     this.markdown = markdown;
     this.markdownFlavor = markdownFlavor;
     this.parser = new MiniMessageParser(registry, placeholderResolver);
@@ -168,7 +168,7 @@ public class MiniMessageImpl implements MiniMessage {
    * @return huhu.
    * @since 4.1.0
    */
-  public @NonNull Consumer<String> parsingErrorMessageConsumer() {
+  public @NonNull Consumer<List<String>> parsingErrorMessageConsumer() {
     return this.parsingErrorMessageConsumer;
   }
 
@@ -183,7 +183,7 @@ public class MiniMessageImpl implements MiniMessage {
     private final TransformationRegistry registry = new TransformationRegistry();
     private Function<String, ComponentLike> placeholderResolver = DEFAULT_PLACEHOLDER_RESOLVER;
     private boolean strict = false;
-    private Consumer<String> parsingErrorMessageConsumer = DEFAULT_ERROR_CONSUMER;
+    private Consumer<List<String>> parsingErrorMessageConsumer = DEFAULT_ERROR_CONSUMER;
 
     BuilderImpl() {
     }
@@ -238,7 +238,7 @@ public class MiniMessageImpl implements MiniMessage {
     }
 
     @Override
-    public @NonNull Builder parsingErrorMessageConsumer(final Consumer<String> consumer) {
+    public @NonNull Builder parsingErrorMessageConsumer(final Consumer<List<String>> consumer) {
       this.parsingErrorMessageConsumer = consumer;
       return this;
     }

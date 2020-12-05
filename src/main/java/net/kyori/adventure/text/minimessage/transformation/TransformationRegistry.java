@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.minimessage.transformation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -143,17 +144,19 @@ public final class TransformationRegistry {
         throw exception;
       }
       // TODO nicer message format?
-      final Consumer<String> consumer = debugContext.miniMessage().parsingErrorMessageConsumer();
-      consumer.accept("[MiniMessage] Encountered parse exception while trying to load " + transformation.getClass().getSimpleName());
-      consumer.accept("\tmsg=" + exception.getMessage());
-      consumer.accept("\twith name=" + name + " and inners=" + inners + "");
-      consumer.accept("\tinput=" + debugContext.ogMessage());
+      final List<String> errorMessage = new ArrayList<>(Arrays.asList(
+              "[MiniMessage] Encountered parse exception while trying to load " + transformation.getClass().getSimpleName(),
+              "\tmsg=" + exception.getMessage(),
+              "\twith name=" + name + " and inners=" + inners + "",
+              "\tinput=" + debugContext.ogMessage()
+      ));
       if(debugContext.replacedMessage() != null) {
-        consumer.accept("\twith placeholders=" + debugContext.replacedMessage());
+        errorMessage.add("\twith placeholders=" + debugContext.replacedMessage());
       }
       if(inners != null && inners.isEmpty()) {
-        consumer.accept("\thint: did you meant to enter '</" + name + ">'?");
+        errorMessage.add("\thint: did you mean to enter '</" + name + ">'?");
       }
+      debugContext.miniMessage().parsingErrorMessageConsumer().accept(errorMessage);
       return null;
     }
   }

@@ -296,7 +296,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      * @return this builder
      * @since 4.1.0
      */
-    @NonNull Builder parsingErrorMessageConsumer(final Consumer<String> consumer);
+    @NonNull Builder parsingErrorMessageConsumer(final Consumer<List<String>> consumer);
 
     /**
      * Builds the serializer.
