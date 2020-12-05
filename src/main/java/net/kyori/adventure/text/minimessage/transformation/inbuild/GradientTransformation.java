@@ -36,7 +36,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.minimessage.ParseException;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
@@ -91,7 +90,7 @@ public final class GradientTransformation extends OneTimeTransformation implemen
             try {
               this.phase = Float.parseFloat(arg.value());
               if(this.phase < -1f || this.phase > 1f) {
-                throw new ParseException(String.format("Gradient phase is out of range (%s). Must be in the range [-1.0f, 1.0f] (inclusive).", this.phase));
+                throw new ParsingException(String.format("Gradient phase is out of range (%s). Must be in the range [-1.0f, 1.0f] (inclusive).", this.phase), -1);
               }
               if(this.phase < 0) {
                 this.negativePhase = true;
@@ -102,12 +101,20 @@ public final class GradientTransformation extends OneTimeTransformation implemen
             }
           }
 
+          final TextColor parsedColor;
           if(arg.value().charAt(0) == '#') {
-            textColors.add(TextColor.fromHexString(arg.value()));
+            parsedColor = TextColor.fromHexString(arg.value());
           } else {
-            textColors.add(NamedTextColor.NAMES.value(arg.value().toLowerCase(Locale.ROOT)));
+            parsedColor = NamedTextColor.NAMES.value(arg.value().toLowerCase(Locale.ROOT));
           }
+          if(parsedColor == null) {
+            throw new ParsingException(String.format("Unable to parse a color from '%s'. Please use NamedTextColors or Hex colors.", arg.value()), -1);
+          }
+          textColors.add(parsedColor);
         }
+      }
+      if(textColors.size() < 2) {
+        throw new ParsingException("Invalid gradient, not enough colors. Gradients must have at least two colors.", -1);
       }
       this.colors = textColors.toArray(new TextColor[0]);
       if(this.negativePhase) {
@@ -145,7 +152,7 @@ public final class GradientTransformation extends OneTimeTransformation implemen
       return null;
     }
 
-    throw new ParsingException("Expected Text Comp", -1);
+    throw new ParsingException("Expected TextComponent, got: " + current.getClass().toString(), -1);
   }
 
   private TextColor color() {
