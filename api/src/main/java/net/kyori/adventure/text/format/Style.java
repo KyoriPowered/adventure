@@ -37,6 +37,7 @@ import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * A style.
@@ -312,7 +313,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    * @return a set of decorations this style has
    * @since 4.0.0
    */
-  @NonNull Map<TextDecoration, TextDecoration.State> decorations();
+  @Unmodifiable @NonNull Map<TextDecoration, TextDecoration.State> decorations();
 
   /**
    * Sets decorations for this style using the specified {@code decorations} map.
@@ -535,7 +536,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @return a merge set
      * @since 4.0.0
      */
-    public static @NonNull Set<Merge> all() {
+    public static @Unmodifiable @NonNull Set<Merge> all() {
       return ALL;
     }
 
@@ -545,7 +546,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @return a merge set
      * @since 4.0.0
      */
-    public static @NonNull Set<Merge> colorAndDecorations() {
+    public static @Unmodifiable @NonNull Set<Merge> colorAndDecorations() {
       return COLOR_AND_DECORATIONS;
     }
 
@@ -556,7 +557,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @return a merge set
      * @since 4.0.0
      */
-    public static @NonNull Set<Merge> of(final Merge@NonNull... merges) {
+    public static @Unmodifiable @NonNull Set<Merge> of(final Merge@NonNull... merges) {
       return ShadyPines.enumSet(Merge.class, merges);
     }
 

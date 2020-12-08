@@ -134,7 +134,7 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
 
   @Override
   public @NonNull Set<Flag> flags() {
-    return this.flags;
+    return Collections.unmodifiableSet(this.flags);
   }
 
   @Override

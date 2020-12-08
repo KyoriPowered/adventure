@@ -46,6 +46,7 @@ import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * A component.
@@ -1102,7 +1103,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return the unmodifiable list of children
    * @since 4.0.0
    */
-  @NonNull List<Component> children();
+  @Unmodifiable @NonNull List<Component> children();
 
   /**
    * Sets the list of children.

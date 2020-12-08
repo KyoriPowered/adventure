@@ -33,6 +33,7 @@ import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * A receiver that wraps one or more receivers.
@@ -51,6 +52,7 @@ public interface ForwardingAudience extends Audience {
    * @return the audiences
    * @since 4.0.0
    */
+  @ApiStatus.OverrideOnly
   @NonNull Iterable<? extends Audience> audiences();
 
   @Override
@@ -140,6 +142,7 @@ public interface ForwardingAudience extends Audience {
      * @return the audience
      * @since 4.0.0
      */
+    @ApiStatus.OverrideOnly
     @NonNull Audience audience();
 
     /**

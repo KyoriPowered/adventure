@@ -29,7 +29,9 @@ import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.util.Index;
 import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.UnmodifiableView;
 
 /**
  * A bossbar.
@@ -258,7 +260,7 @@ public interface BossBar extends Examinable {
    * @return the flags
    * @since 4.0.0
    */
-  @NonNull Set<Flag> flags();
+  @UnmodifiableView @NonNull Set<Flag> flags();
 
   /**
    * Sets the flags.
@@ -364,6 +366,7 @@ public interface BossBar extends Examinable {
    *
    * @since 4.0.0
    */
+  @ApiStatus.OverrideOnly
   interface Listener {
     /**
      * Bossbar name changed.

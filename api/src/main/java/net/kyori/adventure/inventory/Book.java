@@ -32,6 +32,7 @@ import net.kyori.adventure.util.Buildable;
 import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * A signed book.
@@ -119,7 +120,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
    * @return the list of pages
    * @since 4.0.0
    */
-  @NonNull List<Component> pages();
+  @Unmodifiable @NonNull List<Component> pages();
 
   /**
    * Returns an updated book with the provided pages.
