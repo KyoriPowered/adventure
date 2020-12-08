@@ -36,6 +36,7 @@ import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.Contract;
 
 /**
  * A style.
@@ -603,6 +604,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder font(final @Nullable Key font);
 
     /**
@@ -612,6 +614,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder color(final @Nullable TextColor color);
 
     /**
@@ -621,6 +624,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder colorIfAbsent(final @Nullable TextColor color);
 
     /**
@@ -630,6 +634,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @return a style
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     default @NonNull Builder decorate(final @NonNull TextDecoration decoration) {
       return this.decoration(decoration, TextDecoration.State.TRUE);
     }
@@ -641,6 +646,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @return a style
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     default @NonNull Builder decorate(final @NonNull TextDecoration@NonNull... decorations) {
       for(int i = 0, length = decorations.length; i < length; i++) {
         this.decorate(decorations[i]);
@@ -657,6 +663,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @return a style
      * @since 4.0.0
      */
+    @Contract("_, _ -> this")
     default @NonNull Builder decoration(final @NonNull TextDecoration decoration, final boolean flag) {
       return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
     }
@@ -672,6 +679,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_, _ -> this")
     @NonNull Builder decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state);
 
     /**
@@ -681,6 +689,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder clickEvent(final @Nullable ClickEvent event);
 
     /**
@@ -690,6 +699,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder hoverEvent(final @Nullable HoverEventSource<?> source);
 
     /**
@@ -699,15 +709,17 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder insertion(final @Nullable String insertion);
 
     /**
      * Merges from another style into this style.
      *
      * @param that the other style
-     * @return a style
+     * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     default @NonNull Builder merge(final @NonNull Style that) {
       return this.merge(that, Merge.all());
     }
@@ -717,9 +729,10 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      *
      * @param that the other style
      * @param strategy the merge strategy
-     * @return a style
+     * @return this builder
      * @since 4.0.0
      */
+    @Contract("_, _ -> this")
     default @NonNull Builder merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy) {
       return this.merge(that, strategy, Merge.all());
     }
@@ -729,9 +742,10 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      *
      * @param that the other style
      * @param merges the parts to merge
-     * @return a style
+     * @return this builder
      * @since 4.0.0
      */
+    @Contract("_, _ -> this")
     default @NonNull Builder merge(final @NonNull Style that, final @NonNull Merge@NonNull... merges) {
       if(merges.length == 0) return this;
       return this.merge(that, Merge.of(merges));
@@ -743,9 +757,10 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @param that the other style
      * @param strategy the merge strategy
      * @param merges the parts to merge
-     * @return a style
+     * @return this builder
      * @since 4.0.0
      */
+    @Contract("_, _, _ -> this")
     default @NonNull Builder merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy, final @NonNull Merge@NonNull... merges) {
       if(merges.length == 0) return this;
       return this.merge(that, strategy, Merge.of(merges));
@@ -756,9 +771,10 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      *
      * @param that the other style
      * @param merges the parts to merge
-     * @return a style
+     * @return this builder
      * @since 4.0.0
      */
+    @Contract("_, _ -> this")
     default @NonNull Builder merge(final @NonNull Style that, final @NonNull Set<Merge> merges) {
       return this.merge(that, Merge.Strategy.ALWAYS, merges);
     }
@@ -769,9 +785,10 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @param that the other style
      * @param strategy the merge strategy
      * @param merges the parts to merge
-     * @return a style
+     * @return this builder
      * @since 4.0.0
      */
+    @Contract("_, _, _ -> this")
     @NonNull Builder merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy, final @NonNull Set<Merge> merges);
 
     /**
@@ -781,6 +798,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     default @NonNull Builder apply(final @NonNull StyleBuilderApplicable applicable) {
       applicable.styleApply(this);
       return this;

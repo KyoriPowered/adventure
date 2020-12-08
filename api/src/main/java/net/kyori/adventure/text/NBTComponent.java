@@ -24,6 +24,7 @@
 package net.kyori.adventure.text;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.Contract;
 
 /**
  * An NBT component.
@@ -46,6 +47,7 @@ public interface NBTComponent<C extends NBTComponent<C, B>, B extends NBTCompone
    * @return an NBT component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull C nbtPath(final @NonNull String nbtPath);
 
   /**
@@ -63,5 +65,6 @@ public interface NBTComponent<C extends NBTComponent<C, B>, B extends NBTCompone
    * @return an NBT component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull C interpret(final boolean interpret);
 }

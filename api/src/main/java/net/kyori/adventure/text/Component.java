@@ -45,6 +45,7 @@ import net.kyori.adventure.util.IntFunction2;
 import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.Contract;
 
 /**
  * A component.
@@ -1112,6 +1113,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a component with the children set
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull Component children(final @NonNull List<? extends ComponentLike> children);
 
   /**
@@ -1159,6 +1161,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a component with the component added
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull Component append(final @NonNull Component component);
 
   /**
@@ -1179,6 +1182,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a component with the component added
    * @since 4.0.0
    */
+  @Contract(pure = true)
   default @NonNull Component append(final @NonNull ComponentBuilder<?, ?> builder) {
     return this.append(builder.build());
   }
@@ -1198,6 +1202,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull Component style(final @NonNull Style style);
 
   /**
@@ -1207,6 +1212,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   default @NonNull Component style(final @NonNull Consumer<Style.Builder> consumer) {
     return this.style(this.style().edit(consumer));
   }
@@ -1219,6 +1225,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   default @NonNull Component style(final @NonNull Consumer<Style.Builder> consumer, final Style.Merge.@NonNull Strategy strategy) {
     return this.style(this.style().edit(consumer, strategy));
   }
@@ -1230,6 +1237,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   default @NonNull Component style(final Style.@NonNull Builder style) {
     return this.style(style.build());
   }
@@ -1241,6 +1249,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   default @NonNull Component mergeStyle(final @NonNull Component that) {
     return this.mergeStyle(that, Style.Merge.all());
   }
@@ -1253,6 +1262,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   default @NonNull Component mergeStyle(final @NonNull Component that, final Style.@NonNull Merge@NonNull... merges) {
     return this.mergeStyle(that, Style.Merge.of(merges));
   }
@@ -1265,6 +1275,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   default @NonNull Component mergeStyle(final @NonNull Component that, final @NonNull Set<Style.Merge> merges) {
     return this.style(this.style().merge(that.style(), merges));
   }
@@ -1286,6 +1297,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   default @NonNull Component color(final @Nullable TextColor color) {
     return this.style(this.style().color(color));
   }
@@ -1294,9 +1306,10 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * Sets the color if there isn't one set already.
    *
    * @param color the color
-   * @return this builder
+   * @return a component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   default @NonNull Component colorIfAbsent(final @Nullable TextColor color) {
     if(this.color() == null) return this.color(color);
     return this;
@@ -1321,6 +1334,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   default @NonNull Component decorate(final @NonNull TextDecoration decoration) {
     return this.decoration(decoration, TextDecoration.State.TRUE);
   }
@@ -1347,6 +1361,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   default @NonNull Component decoration(final @NonNull TextDecoration decoration, final boolean flag) {
     return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
   }
@@ -1362,6 +1377,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   default @NonNull Component decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
     return this.style(this.style().decoration(decoration, state));
   }
@@ -1385,6 +1401,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   default @NonNull Component decorations(final @NonNull Map<TextDecoration, TextDecoration.State> decorations) {
     return this.style(this.style().decorations(decorations));
   }
@@ -1406,6 +1423,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   default @NonNull Component clickEvent(final @Nullable ClickEvent event) {
     return this.style(this.style().clickEvent(event));
   }
@@ -1427,6 +1445,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   default @NonNull Component hoverEvent(final @Nullable HoverEventSource<?> source) {
     final HoverEvent<?> event = HoverEventSource.unbox(source);
     if(event != null) {
@@ -1454,6 +1473,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   default @NonNull Component insertion(final @Nullable String insertion) {
     return this.style(this.style().insertion(insertion));
   }
@@ -1476,6 +1496,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a modified copy of this component
    * @since 4.2.0
    */
+  @Contract(pure = true)
   @NonNull Component replaceText(final @NonNull Consumer<TextReplacementConfig.Builder> configurer);
 
   /**
@@ -1485,6 +1506,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a modified copy of this component
    * @since 4.2.0
    */
+  @Contract(pure = true)
   @NonNull Component replaceText(final @NonNull TextReplacementConfig config);
 
   /**
@@ -1496,6 +1518,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
    */
+  @Contract(pure = true)
   @Deprecated
   default @NonNull Component replaceText(final @NonNull String search, final @Nullable ComponentLike replacement) {
     return this.replaceText(b -> b.matchLiteral(search).replacement(replacement));
@@ -1510,6 +1533,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
    */
+  @Contract(pure = true)
   @Deprecated
   default @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement) {
     return this.replaceText(b -> b.match(pattern).replacement(replacement));
@@ -1524,6 +1548,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
    */
+  @Contract(pure = true)
   @Deprecated
   default @NonNull Component replaceFirstText(final @NonNull String search, final @Nullable ComponentLike replacement) {
     return this.replaceText(b -> b.matchLiteral(search).once().replacement(replacement));
@@ -1538,6 +1563,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
    */
+  @Contract(pure = true)
   @Deprecated
   default @NonNull Component replaceFirstText(final @NonNull Pattern pattern, final @NonNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement) {
     return this.replaceText(b -> b.match(pattern).once().replacement(replacement));
@@ -1553,6 +1579,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
    */
+  @Contract(pure = true)
   @Deprecated
   default @NonNull Component replaceText(final @NonNull String search, final @Nullable ComponentLike replacement, final int numberOfReplacements) {
     return this.replaceText(b -> b.matchLiteral(search).times(numberOfReplacements).replacement(replacement));
@@ -1568,6 +1595,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
    */
+  @Contract(pure = true)
   @Deprecated
   default @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement, final int numberOfReplacements) {
     return this.replaceText(b -> b.match(pattern).times(numberOfReplacements).replacement(replacement));
@@ -1585,6 +1613,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
    */
+  @Contract(pure = true)
   @Deprecated
   default @NonNull Component replaceText(final @NonNull String search, final @Nullable ComponentLike replacement, final @NonNull IntFunction2<PatternReplacementResult> fn) {
     return this.replaceText(b -> b.matchLiteral(search).replacement(replacement).condition(fn));
@@ -1602,6 +1631,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
    */
+  @Contract(pure = true)
   @Deprecated
   default @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement, final @NonNull IntFunction2<PatternReplacementResult> fn) {
     return this.replaceText(b -> b.match(pattern).replacement(replacement).condition(fn));

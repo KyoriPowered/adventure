@@ -24,6 +24,7 @@
 package net.kyori.adventure.text;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.Contract;
 
 /**
  * Something that can be represented as a {@link Component}.
@@ -38,5 +39,6 @@ public interface ComponentLike {
    * @return a component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull Component asComponent();
 }

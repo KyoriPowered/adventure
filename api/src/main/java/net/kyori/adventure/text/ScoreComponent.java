@@ -25,6 +25,7 @@ package net.kyori.adventure.text;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.Contract;
 
 /**
  * A scoreboard score component.
@@ -47,6 +48,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @return a score component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull ScoreComponent name(final @NonNull String name);
 
   /**
@@ -64,6 +66,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @return a score component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull ScoreComponent objective(final @NonNull String objective);
 
   /**
@@ -81,6 +84,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @return a score component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull ScoreComponent value(final @Nullable String value);
 
   /**
@@ -96,6 +100,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder name(final @NonNull String name);
 
     /**
@@ -105,6 +110,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder objective(final @NonNull String objective);
 
     /**
@@ -114,6 +120,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder value(final @Nullable String value);
   }
 }

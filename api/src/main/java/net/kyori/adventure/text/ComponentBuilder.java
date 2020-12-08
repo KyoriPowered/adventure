@@ -35,6 +35,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.Contract;
 
 /**
  * A component builder.
@@ -51,6 +52,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull B append(final @NonNull Component component);
 
   /**
@@ -60,6 +62,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   default @NonNull B append(final @NonNull ComponentLike component) {
     return this.append(component.asComponent());
   }
@@ -71,6 +74,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   default @NonNull B append(final @NonNull ComponentBuilder<?, ?> builder) {
     return this.append(builder.build());
   }
@@ -82,6 +86,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull B append(final @NonNull Component@NonNull... components);
 
   /**
@@ -91,6 +96,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull B append(final @NonNull ComponentLike@NonNull... components);
 
   /**
@@ -100,6 +106,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull B append(final @NonNull Iterable<? extends ComponentLike> components);
 
   /**
@@ -109,6 +116,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @SuppressWarnings("unchecked")
   default @NonNull B apply(final @NonNull Consumer<? super ComponentBuilder<?, ?>> consumer) {
     consumer.accept(this);
@@ -123,6 +131,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull B applyDeep(final @NonNull Consumer<? super ComponentBuilder<?, ?>> action);
 
   /**
@@ -132,6 +141,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull B mapChildren(final @NonNull Function<BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function);
 
   /**
@@ -142,6 +152,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull B mapChildrenDeep(final @NonNull Function<BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function);
 
   /**
@@ -151,6 +162,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull B style(final @NonNull Style style);
 
   /**
@@ -160,6 +172,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull B style(final @NonNull Consumer<Style.Builder> consumer);
 
   /**
@@ -169,6 +182,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull B font(final @Nullable Key font);
 
   /**
@@ -178,6 +192,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull B color(final @Nullable TextColor color);
 
   /**
@@ -187,6 +202,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull B colorIfAbsent(final @Nullable TextColor color);
 
   /**
@@ -198,6 +214,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @SuppressWarnings("unchecked")
   default @NonNull B decorations(final @NonNull Set<TextDecoration> decorations, final boolean flag) {
     final TextDecoration.State state = TextDecoration.State.byBoolean(flag);
@@ -212,6 +229,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   default @NonNull B decorate(final @NonNull TextDecoration decoration) {
     return this.decoration(decoration, TextDecoration.State.TRUE);
   }
@@ -223,6 +241,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @SuppressWarnings("unchecked")
   default @NonNull B decorate(final @NonNull TextDecoration@NonNull... decorations) {
     for(int i = 0, length = decorations.length; i < length; i++) {
@@ -240,6 +259,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_, _ -> this")
   default @NonNull B decoration(final @NonNull TextDecoration decoration, final boolean flag) {
     return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
   }
@@ -255,6 +275,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_, _ -> this")
   @NonNull B decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state);
 
   /**
@@ -264,6 +285,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull B clickEvent(final @Nullable ClickEvent event);
 
   /**
@@ -273,6 +295,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull B hoverEvent(final @Nullable HoverEventSource<?> source);
 
   /**
@@ -282,6 +305,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull B insertion(final @Nullable String insertion);
 
   /**
@@ -291,6 +315,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   default @NonNull B mergeStyle(final @NonNull Component that) {
     return this.mergeStyle(that, Style.Merge.all());
   }
@@ -303,6 +328,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_, _ -> this")
   default @NonNull B mergeStyle(final @NonNull Component that, final Style.@NonNull Merge@NonNull... merges) {
     return this.mergeStyle(that, Style.Merge.of(merges));
   }
@@ -315,6 +341,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_, _ -> this")
   @NonNull B mergeStyle(final @NonNull Component that, final @NonNull Set<Style.Merge> merges);
 
   /**
@@ -323,6 +350,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("-> this")
   @NonNull B resetStyle();
 
   /**
@@ -340,6 +368,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @SuppressWarnings("unchecked")
   default @NonNull B applicableApply(final @NonNull ComponentBuilderApplicable applicable) {
     applicable.componentBuilderApply(this);

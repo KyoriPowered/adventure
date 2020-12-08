@@ -31,6 +31,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.Contract;
 
 /**
  * A signed book.
@@ -89,6 +90,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
    * @return a new book with modifications
    * @since 4.0.0
    */
+  @Contract(value = "_ -> new", pure = true)
   @NonNull Book title(final @NonNull Component title);
 
   /**
@@ -106,6 +108,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
    * @return a new book with modifications
    * @since 4.0.0
    */
+  @Contract(value = "_ -> new", pure = true)
   @NonNull Book author(final @NonNull Component author);
 
   /**
@@ -125,6 +128,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
    * @return a new book with modifications
    * @since 4.0.0
    */
+  @Contract(value = "_ -> new", pure = true)
   default @NonNull Book pages(final @NonNull Component@NonNull... pages) {
     return this.pages(Arrays.asList(pages));
   }
@@ -136,6 +140,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
    * @return a new book with modifications
    * @since 4.0.0
    */
+  @Contract(value = "_ -> new", pure = true)
   @NonNull Book pages(final @NonNull List<Component> pages);
 
   /**
@@ -164,6 +169,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
      * @return this
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder title(final @NonNull Component title);
 
     /**
@@ -173,6 +179,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
      * @return this
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder author(final @NonNull Component author);
 
     /**
@@ -185,6 +192,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
      * @return this
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder addPage(final @NonNull Component page);
 
     /**
@@ -195,6 +203,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
      * @see #addPage(Component) for details on page values
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder pages(final @NonNull Component@NonNull... pages);
 
     /**
@@ -205,6 +214,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
      * @see #addPage(Component) for details on page values
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder pages(final @NonNull Collection<Component> pages);
 
     /**

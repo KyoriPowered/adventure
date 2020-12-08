@@ -24,6 +24,7 @@
 package net.kyori.adventure.text;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.Contract;
 
 /**
  * A keybind component.
@@ -46,6 +47,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    * @return a copy of this component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull KeybindComponent keybind(final @NonNull String keybind);
 
   /**
@@ -61,6 +63,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder keybind(final @NonNull String keybind);
   }
 }
