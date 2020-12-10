@@ -1,3 +1,7 @@
+configurations.testCompileOnly {
+  extendsFrom(configurations.compileOnlyApi)
+}
+
 dependencies {
   api("net.kyori:examination-api:1.0.0")
   api("net.kyori:examination-string:1.0.0")

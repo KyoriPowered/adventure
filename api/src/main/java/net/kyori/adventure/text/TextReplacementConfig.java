@@ -32,7 +32,7 @@ import net.kyori.adventure.util.IntFunction2;
 import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.checkerframework.checker.regex.qual.Regex;
+import org.intellij.lang.annotations.RegExp;
 import org.jetbrains.annotations.Contract;
 
 import static java.util.Objects.requireNonNull;
@@ -98,7 +98,7 @@ public interface TextReplacementConfig extends Buildable<TextReplacementConfig, 
      * @since 4.2.0
      */
     @Contract("_ -> this")
-    default @NonNull Builder match(final @NonNull @Regex String pattern) {
+    default @NonNull Builder match(final @NonNull @RegExp String pattern) {
       return this.match(Pattern.compile(pattern));
     }
 

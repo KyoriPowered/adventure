@@ -33,6 +33,9 @@ import org.jetbrains.annotations.VisibleForTesting;
 import static java.util.Objects.requireNonNull;
 
 final class KeyImpl implements Key {
+  static final String NAMESPACE_PATTERN = "[a-z0-9_\\-.]+";
+  static final String VALUE_PATTERN = "[a-z0-9_\\-./]+";
+
   private static final IntPredicate NAMESPACE_PREDICATE = value -> value == '_' || value == '-' || (value >= 'a' && value <= 'z') || (value >= '0' && value <= '9') || value == '.';
   private static final IntPredicate VALUE_PREDICATE = value -> value == '_' || value == '-' || (value >= 'a' && value <= 'z') || (value >= '0' && value <= '9') || value == '/' || value == '.';
   private final String namespace;

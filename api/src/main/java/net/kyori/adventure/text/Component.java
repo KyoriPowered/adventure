@@ -100,6 +100,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TextComponent join(final @NonNull ComponentLike separator, final @NonNull ComponentLike@NonNull... components) {
     return join(separator, Arrays.asList(components));
   }
@@ -112,6 +113,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TextComponent join(final @NonNull ComponentLike separator, final Iterable<? extends ComponentLike> components) {
     final Iterator<? extends ComponentLike> it = components.iterator();
     if(!it.hasNext()) {
@@ -139,6 +141,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a builder
    * @since 4.0.0
    */
+  @Contract(pure = true)
   static BlockNBTComponent.@NonNull Builder blockNBT() {
     return new BlockNBTComponentImpl.BuilderImpl();
   }
@@ -150,6 +153,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a block NBT component
    * @since 4.0.0
    */
+  @Contract("_ -> new")
   static @NonNull BlockNBTComponent blockNBT(final @NonNull Consumer<? super BlockNBTComponent.Builder> consumer) {
     return Buildable.configureAndBuild(blockNBT(), consumer);
   }
@@ -162,6 +166,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a block NBT component
    * @since 4.0.0
    */
+  @Contract(value = "_, _ -> new", pure = true)
   static @NonNull BlockNBTComponent blockNBT(final @NonNull String nbtPath, final BlockNBTComponent.@NonNull Pos pos) {
     return blockNBT(nbtPath, NBTComponentImpl.INTERPRET_DEFAULT, pos);
   }
@@ -175,6 +180,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a block NBT component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _ -> new", pure = true)
   static @NonNull BlockNBTComponent blockNBT(final @NonNull String nbtPath, final boolean interpret, final BlockNBTComponent.@NonNull Pos pos) {
     return new BlockNBTComponentImpl(Collections.emptyList(), Style.empty(), nbtPath, interpret, pos);
   }
@@ -191,6 +197,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a builder
    * @since 4.0.0
    */
+  @Contract(pure = true)
   static EntityNBTComponent.@NonNull Builder entityNBT() {
     return new EntityNBTComponentImpl.BuilderImpl();
   }
@@ -202,6 +209,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return an entity NBT component
    * @since 4.0.0
    */
+  @Contract("_ -> new")
   static @NonNull EntityNBTComponent entityNBT(final @NonNull Consumer<? super EntityNBTComponent.Builder> consumer) {
     return Buildable.configureAndBuild(entityNBT(), consumer);
   }
@@ -214,6 +222,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return an entity NBT component
    * @since 4.0.0
    */
+  @Contract("_, _ -> new")
   static @NonNull EntityNBTComponent entityNBT(final @NonNull String nbtPath, final @NonNull String selector) {
     return entityNBT().nbtPath(nbtPath).selector(selector).build();
   }
@@ -230,6 +239,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a builder
    * @since 4.0.0
    */
+  @Contract(pure = true)
   static KeybindComponent.@NonNull Builder keybind() {
     return new KeybindComponentImpl.BuilderImpl();
   }
@@ -241,6 +251,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return the keybind component
    * @since 4.0.0
    */
+  @Contract("_ -> new")
   static @NonNull KeybindComponent keybind(final @NonNull Consumer<? super KeybindComponent.Builder> consumer) {
     return Buildable.configureAndBuild(keybind(), consumer);
   }
@@ -252,6 +263,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return the keybind component
    * @since 4.0.0
    */
+  @Contract(value = "_ -> new", pure = true)
   static @NonNull KeybindComponent keybind(final @NonNull String keybind) {
     return keybind(keybind, Style.empty());
   }
@@ -264,6 +276,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return the keybind component
    * @since 4.0.0
    */
+  @Contract(value = "_, _ -> new", pure = true)
   static @NonNull KeybindComponent keybind(final @NonNull String keybind, final @NonNull Style style) {
     return new KeybindComponentImpl(Collections.emptyList(), style, keybind);
   }
@@ -276,6 +289,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return the keybind component
    * @since 4.0.0
    */
+  @Contract(value = "_, _ -> new", pure = true)
   static @NonNull KeybindComponent keybind(final @NonNull String keybind, final @Nullable TextColor color) {
     return keybind(keybind, Style.style(color));
   }
@@ -289,6 +303,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return the keybind component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _ -> new", pure = true)
   static @NonNull KeybindComponent keybind(final @NonNull String keybind, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
     return keybind(keybind, Style.style(color, decorations));
   }
@@ -302,6 +317,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return the keybind component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _ -> new", pure = true)
   static @NonNull KeybindComponent keybind(final @NonNull String keybind, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
     return keybind(keybind, Style.style(color, decorations));
   }
@@ -318,6 +334,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a builder
    * @since 4.0.0
    */
+  @Contract(pure = true)
   static ScoreComponent.@NonNull Builder score() {
     return new ScoreComponentImpl.BuilderImpl();
   }
@@ -329,6 +346,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a score component
    * @since 4.0.0
    */
+  @Contract("_ -> new")
   static @NonNull ScoreComponent score(final @NonNull Consumer<? super ScoreComponent.Builder> consumer) {
     return Buildable.configureAndBuild(score(), consumer);
   }
@@ -341,6 +359,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a score component
    * @since 4.0.0
    */
+  @Contract(value = "_, _ -> new", pure = true)
   static @NonNull ScoreComponent score(final @NonNull String name, final @NonNull String objective) {
     return score(name, objective, null);
   }
@@ -354,6 +373,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a score component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _ -> new", pure = true)
   static @NonNull ScoreComponent score(final @NonNull String name, final @NonNull String objective, final @Nullable String value) {
     return new ScoreComponentImpl(Collections.emptyList(), Style.empty(), name, objective, value);
   }
@@ -370,6 +390,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a builder
    * @since 4.0.0
    */
+  @Contract(pure = true)
   static SelectorComponent.@NonNull Builder selector() {
     return new SelectorComponentImpl.BuilderImpl();
   }
@@ -381,6 +402,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a selector component
    * @since 4.0.0
    */
+  @Contract("_ -> new")
   static @NonNull SelectorComponent selector(final @NonNull Consumer<? super SelectorComponent.Builder> consumer) {
     return Buildable.configureAndBuild(selector(), consumer);
   }
@@ -392,6 +414,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a selector component
    * @since 4.0.0
    */
+  @Contract(value = "_ -> new", pure = true)
   static @NonNull SelectorComponent selector(final @NonNull String pattern) {
     return new SelectorComponentImpl(Collections.emptyList(), Style.empty(), pattern);
   }
@@ -408,6 +431,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a builder
    * @since 4.0.0
    */
+  @Contract(pure = true)
   static StorageNBTComponent.@NonNull Builder storageNBT() {
     return new StorageNBTComponentImpl.BuilderImpl();
   }
@@ -419,6 +443,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a storage NBT component
    * @since 4.0.0
    */
+  @Contract("_ -> new")
   static @NonNull StorageNBTComponent storageNBT(final @NonNull Consumer<? super StorageNBTComponent.Builder> consumer) {
     return Buildable.configureAndBuild(storageNBT(), consumer);
   }
@@ -431,6 +456,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a storage NBT component
    * @since 4.0.0
    */
+  @Contract(value = "_, _ -> new", pure = true)
   static @NonNull StorageNBTComponent storageNBT(final @NonNull String nbtPath, final @NonNull Key storage) {
     return storageNBT(nbtPath, NBTComponentImpl.INTERPRET_DEFAULT, storage);
   }
@@ -444,6 +470,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a storage NBT component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _ -> new", pure = true)
   static @NonNull StorageNBTComponent storageNBT(final @NonNull String nbtPath, final boolean interpret, final @NonNull Key storage) {
     return new StorageNBTComponentImpl(Collections.emptyList(), Style.empty(), nbtPath, interpret, storage);
   }
@@ -460,6 +487,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a builder
    * @since 4.0.0
    */
+  @Contract(pure = true)
   static TextComponent.@NonNull Builder text() {
     return new TextComponentImpl.BuilderImpl();
   }
@@ -471,6 +499,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return the text component
    * @since 4.0.0
    */
+  @Contract("_ -> new")
   static @NonNull TextComponent text(final @NonNull Consumer<? super TextComponent.Builder> consumer) {
     return Buildable.configureAndBuild(text(), consumer);
   }
@@ -482,6 +511,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_ -> new", pure = true)
   static @NonNull TextComponent text(final @NonNull String content) {
     if(content.isEmpty()) return empty();
     return new TextComponentImpl(Collections.emptyList(), Style.empty(), content);
@@ -495,6 +525,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TextComponent text(final @NonNull String content, final @NonNull Style style) {
     return new TextComponentImpl(Collections.emptyList(), style, content);
   }
@@ -507,6 +538,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TextComponent text(final @NonNull String content, final @Nullable TextColor color) {
     return new TextComponentImpl(Collections.emptyList(), Style.style(color), content);
   }
@@ -520,6 +552,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _ -> new", pure = true)
   static @NonNull TextComponent text(final @NonNull String content, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
     return new TextComponentImpl(Collections.emptyList(), Style.style(color, decorations), content);
   }
@@ -533,6 +566,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _ -> new", pure = true)
   static @NonNull TextComponent text(final @NonNull String content, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
     return new TextComponentImpl(Collections.emptyList(), Style.style(color, decorations), content);
   }
@@ -544,6 +578,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_ -> new", pure = true)
   static @NonNull TextComponent text(final boolean value) {
     return text(String.valueOf(value));
   }
@@ -556,6 +591,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TextComponent text(final boolean value, final @NonNull Style style) {
     return text(String.valueOf(value), style);
   }
@@ -568,6 +604,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TextComponent text(final boolean value, final @Nullable TextColor color) {
     return text(String.valueOf(value), color);
   }
@@ -581,6 +618,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _ -> new", pure = true)
   static @NonNull TextComponent text(final boolean value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
     return text(String.valueOf(value), color, decorations);
   }
@@ -594,6 +632,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _ -> new", pure = true)
   static @NonNull TextComponent text(final boolean value, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
     return text(String.valueOf(value), color, decorations);
   }
@@ -605,6 +644,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   static @NonNull TextComponent text(final char value) {
     if(value == '\n') return newline();
     if(value == ' ') return space();
@@ -619,6 +659,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TextComponent text(final char value, final @NonNull Style style) {
     return text(String.valueOf(value), style);
   }
@@ -631,6 +672,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TextComponent text(final char value, final @Nullable TextColor color) {
     return text(String.valueOf(value), color);
   }
@@ -644,6 +686,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _ -> new", pure = true)
   static @NonNull TextComponent text(final char value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
     return text(String.valueOf(value), color, decorations);
   }
@@ -657,6 +700,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _ -> new", pure = true)
   static @NonNull TextComponent text(final char value, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
     return text(String.valueOf(value), color, decorations);
   }
@@ -668,6 +712,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_ -> new", pure = true)
   static @NonNull TextComponent text(final double value) {
     return text(String.valueOf(value));
   }
@@ -680,6 +725,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TextComponent text(final double value, final @NonNull Style style) {
     return text(String.valueOf(value), style);
   }
@@ -692,6 +738,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TextComponent text(final double value, final @Nullable TextColor color) {
     return text(String.valueOf(value), color);
   }
@@ -705,6 +752,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _ -> new", pure = true)
   static @NonNull TextComponent text(final double value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
     return text(String.valueOf(value), color, decorations);
   }
@@ -718,6 +766,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _ -> new", pure = true)
   static @NonNull TextComponent text(final double value, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
     return text(String.valueOf(value), color, decorations);
   }
@@ -729,6 +778,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_ -> new", pure = true)
   static @NonNull TextComponent text(final float value) {
     return text(String.valueOf(value));
   }
@@ -741,6 +791,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TextComponent text(final float value, final @NonNull Style style) {
     return text(String.valueOf(value), style);
   }
@@ -753,6 +804,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TextComponent text(final float value, final @Nullable TextColor color) {
     return text(String.valueOf(value), color);
   }
@@ -766,6 +818,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _ -> new", pure = true)
   static @NonNull TextComponent text(final float value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
     return text(String.valueOf(value), color, decorations);
   }
@@ -779,6 +832,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _ -> new", pure = true)
   static @NonNull TextComponent text(final float value, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
     return text(String.valueOf(value), color, decorations);
   }
@@ -790,6 +844,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_ -> new", pure = true)
   static @NonNull TextComponent text(final int value) {
     return text(String.valueOf(value));
   }
@@ -802,6 +857,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TextComponent text(final int value, final @NonNull Style style) {
     return text(String.valueOf(value), style);
   }
@@ -814,6 +870,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TextComponent text(final int value, final @Nullable TextColor color) {
     return text(String.valueOf(value), color);
   }
@@ -827,6 +884,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _ -> new", pure = true)
   static @NonNull TextComponent text(final int value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
     return text(String.valueOf(value), color, decorations);
   }
@@ -840,6 +898,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _ -> new", pure = true)
   static @NonNull TextComponent text(final int value, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
     return text(String.valueOf(value), color, decorations);
   }
@@ -851,6 +910,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_ -> new", pure = true)
   static @NonNull TextComponent text(final long value) {
     return text(String.valueOf(value));
   }
@@ -863,6 +923,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TextComponent text(final long value, final @NonNull Style style) {
     return text(String.valueOf(value), style);
   }
@@ -875,6 +936,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TextComponent text(final long value, final @Nullable TextColor color) {
     return text(String.valueOf(value), color);
   }
@@ -888,6 +950,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _ -> new", pure = true)
   static @NonNull TextComponent text(final long value, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
     return text(String.valueOf(value), color, decorations);
   }
@@ -901,6 +964,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a text component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _ -> new", pure = true)
   static @NonNull TextComponent text(final long value, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
     return text(String.valueOf(value), color, decorations);
   }
@@ -917,6 +981,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a builder
    * @since 4.0.0
    */
+  @Contract(pure = true)
   static TranslatableComponent.@NonNull Builder translatable() {
     return new TranslatableComponentImpl.BuilderImpl();
   }
@@ -928,6 +993,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a translatable component
    * @since 4.0.0
    */
+  @Contract("_ -> new")
   static @NonNull TranslatableComponent translatable(final @NonNull Consumer<? super TranslatableComponent.Builder> consumer) {
     return Buildable.configureAndBuild(translatable(), consumer);
   }
@@ -939,6 +1005,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a translatable component
    * @since 4.0.0
    */
+  @Contract(value = "_ -> new", pure = true)
   static @NonNull TranslatableComponent translatable(final @NonNull String key) {
     return translatable(key, Style.empty());
   }
@@ -951,6 +1018,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a translatable component
    * @since 4.0.0
    */
+  @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TranslatableComponent translatable(final @NonNull String key, final @NonNull Style style) {
     return new TranslatableComponentImpl(Collections.emptyList(), style, key, Collections.emptyList());
   }
@@ -963,6 +1031,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a translatable component
    * @since 4.0.0
    */
+  @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TranslatableComponent translatable(final @NonNull String key, final @Nullable TextColor color) {
     return translatable(key, Style.style(color));
   }
@@ -976,6 +1045,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a translatable component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _ -> new", pure = true)
   static @NonNull TranslatableComponent translatable(final @NonNull String key, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
     return translatable(key, Style.style(color, decorations));
   }
@@ -989,6 +1059,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a translatable component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _ -> new", pure = true)
   static @NonNull TranslatableComponent translatable(final @NonNull String key, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
     return translatable(key, Style.style(color, decorations));
   }
@@ -1001,6 +1072,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a translatable component
    * @since 4.0.0
    */
+  @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TranslatableComponent translatable(final @NonNull String key, final @NonNull ComponentLike@NonNull... args) {
     return translatable(key, Style.empty(), args);
   }
@@ -1014,6 +1086,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a translatable component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _ -> new", pure = true)
   static @NonNull TranslatableComponent translatable(final @NonNull String key, final @NonNull Style style, final @NonNull ComponentLike@NonNull... args) {
     return new TranslatableComponentImpl(Collections.emptyList(), style, key, args);
   }
@@ -1027,6 +1100,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a translatable component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _ -> new", pure = true)
   static @NonNull TranslatableComponent translatable(final @NonNull String key, final @Nullable TextColor color, final @NonNull ComponentLike@NonNull... args) {
     return translatable(key, Style.style(color), args);
   }
@@ -1041,6 +1115,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a translatable component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _, _ -> new", pure = true)
   static @NonNull TranslatableComponent translatable(final @NonNull String key, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations, final @NonNull ComponentLike@NonNull... args) {
     return translatable(key, Style.style(color, decorations), args);
   }
@@ -1053,6 +1128,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a translatable component
    * @since 4.0.0
    */
+  @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TranslatableComponent translatable(final @NonNull String key, final @NonNull List<? extends ComponentLike> args) {
     return new TranslatableComponentImpl(Collections.emptyList(), Style.empty(), key, args);
   }
@@ -1066,6 +1142,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a translatable component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _ -> new", pure = true)
   static @NonNull TranslatableComponent translatable(final @NonNull String key, final @NonNull Style style, final @NonNull List<? extends ComponentLike> args) {
     return new TranslatableComponentImpl(Collections.emptyList(), style, key, args);
   }
@@ -1079,6 +1156,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a translatable component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _ -> new", pure = true)
   static TranslatableComponent translatable(final @NonNull String key, final @Nullable TextColor color, final @NonNull List<? extends ComponentLike> args) {
     return translatable(key, Style.style(color), args);
   }
@@ -1093,6 +1171,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a translatable component
    * @since 4.0.0
    */
+  @Contract(value = "_, _, _, _ -> new", pure = true)
   static @NonNull TranslatableComponent translatable(final @NonNull String key, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations, final @NonNull List<? extends ComponentLike> args) {
     return translatable(key, Style.style(color, decorations), args);
   }

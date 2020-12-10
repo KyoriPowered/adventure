@@ -50,7 +50,7 @@ public interface Key extends Comparable<Key>, Examinable {
    * @throws InvalidKeyException if the namespace or value contains an invalid character
    * @since 4.0.0
    */
-  static @NonNull Key key(final @NonNull @Pattern("([a-z0-9_\\-.]+:)?[a-z0-9_\\-./]+") String string) {
+  static @NonNull Key key(final @NonNull @Pattern("(" + KeyImpl.NAMESPACE_PATTERN + ":)?" + KeyImpl.VALUE_PATTERN) String string) {
     return key(string, ':');
   }
 
@@ -80,7 +80,7 @@ public interface Key extends Comparable<Key>, Examinable {
    * @throws InvalidKeyException if the namespace or value contains an invalid character
    * @since 4.0.0
    */
-  static @NonNull Key key(final @NonNull @Pattern("[a-z0-9_\\-.]+") String namespace, final @NonNull @Pattern("[a-z0-9_\\-./]+") String value) {
+  static @NonNull Key key(final @NonNull @Pattern(KeyImpl.NAMESPACE_PATTERN) String namespace, final @NonNull @Pattern(KeyImpl.VALUE_PATTERN) String value) {
     return new KeyImpl(namespace, value);
   }
 
