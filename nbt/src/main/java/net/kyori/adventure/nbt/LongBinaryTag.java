@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.Debug;
 
 /**
  * A binary tag holding a {@code long} value.
@@ -59,6 +60,7 @@ public interface LongBinaryTag extends NumberBinaryTag {
   long value();
 }
 
+@Debug.Renderer(text = "String.valueOf(this.value) + \"l\"", hasChildren = "false")
 final class LongBinaryTagImpl extends AbstractBinaryTag implements LongBinaryTag {
   private final long value;
 

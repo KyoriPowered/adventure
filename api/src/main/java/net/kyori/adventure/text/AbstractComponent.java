@@ -143,7 +143,7 @@ public abstract class AbstractComponent implements Component {
     return Stream.concat(
       this.examinablePropertiesWithoutChildren(),
       Stream.of(
-        ExaminableProperty.of("style", this.style)
+        ExaminableProperty.of("children", this.children)
       )
     );
   }

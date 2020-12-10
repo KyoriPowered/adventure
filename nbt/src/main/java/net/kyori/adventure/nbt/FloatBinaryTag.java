@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.Debug;
 
 /**
  * A binary tag holding a {@code float} value.
@@ -59,6 +60,7 @@ public interface FloatBinaryTag extends NumberBinaryTag {
   float value();
 }
 
+@Debug.Renderer(text = "String.valueOf(this.value) + \"f\"", hasChildren = "false")
 final class FloatBinaryTagImpl extends AbstractBinaryTag implements FloatBinaryTag {
   private final float value;
 

@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.Debug;
 
 /**
  * A binary tag holding a {@link String} value.
@@ -59,6 +60,7 @@ public interface StringBinaryTag extends BinaryTag {
   @NonNull String value();
 }
 
+@Debug.Renderer(text = "\"\\\"\" + this.value + \"\\\"\"", hasChildren = "false")
 final class StringBinaryTagImpl extends AbstractBinaryTag implements StringBinaryTag {
   private final String value;
 

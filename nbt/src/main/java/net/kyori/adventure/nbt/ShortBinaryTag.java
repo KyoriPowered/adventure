@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.Debug;
 
 /**
  * A binary tag holding a {@code short} value.
@@ -59,6 +60,7 @@ public interface ShortBinaryTag extends NumberBinaryTag {
   short value();
 }
 
+@Debug.Renderer(text = "String.valueOf(this.value) + \"s\"", hasChildren = "false")
 final class ShortBinaryTagImpl extends AbstractBinaryTag implements ShortBinaryTag {
   private final short value;
 
