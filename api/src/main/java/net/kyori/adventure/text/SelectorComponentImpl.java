@@ -79,12 +79,12 @@ final class SelectorComponentImpl extends AbstractComponent implements SelectorC
   }
 
   @Override
-  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  protected @NonNull Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
     return Stream.concat(
       Stream.of(
         ExaminableProperty.of("pattern", this.pattern)
       ),
-      super.examinableProperties()
+      super.examinablePropertiesWithoutChildren()
     );
   }
 

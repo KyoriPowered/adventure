@@ -88,12 +88,12 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   }
 
   @Override
-  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  protected @NonNull Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
     return Stream.concat(
       Stream.of(
         ExaminableProperty.of("content", this.content)
       ),
-      super.examinableProperties()
+      super.examinablePropertiesWithoutChildren()
     );
   }
 

@@ -35,6 +35,7 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.Debug;
 
 import static java.util.Objects.requireNonNull;
 
@@ -43,6 +44,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.0.0
  */
+@Debug.Renderer(text = "this.debuggerString()", childrenArray = "this.children().toArray()", hasChildren = "!this.children().isEmpty()")
 public abstract class AbstractComponent implements Component {
   static List<Component> asComponents(final List<? extends ComponentLike> list) {
     return asComponents(list, false);
@@ -128,11 +130,21 @@ public abstract class AbstractComponent implements Component {
     return result;
   }
 
+  private String debuggerString() {
+    return StringExaminer.simpleEscaping().examine(this.examinableName(), this.examinablePropertiesWithoutChildren());
+  }
+
+  protected Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
+    return Stream.of(ExaminableProperty.of("style", this.style));
+  }
+
   @Override
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("children", this.children),
-      ExaminableProperty.of("style", this.style)
+    return Stream.concat(
+      this.examinablePropertiesWithoutChildren(),
+      Stream.of(
+        ExaminableProperty.of("style", this.style)
+      )
     );
   }
 

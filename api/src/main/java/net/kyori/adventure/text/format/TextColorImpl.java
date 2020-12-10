@@ -24,7 +24,9 @@
 package net.kyori.adventure.text.format;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.Debug;
 
+@Debug.Renderer(text = "asHexString()")
 final class TextColorImpl implements TextColor {
   private final int value;
 
