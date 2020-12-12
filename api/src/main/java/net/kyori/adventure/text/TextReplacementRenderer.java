@@ -78,7 +78,8 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
 
             modified = replacement == null ? Component.empty() : replacement.asComponent();
             if(children == null) { // Prepare children
-              children = new ArrayList<>(oldChildrenSize);
+              children = new ArrayList<>(oldChildrenSize + modified.children().size());
+              children.addAll(modified.children());
             }
           } else {
             // otherwise, work on a child of the root node

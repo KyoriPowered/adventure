@@ -213,4 +213,18 @@ public class TextReplacementRendererTest {
 
     assertEquals(expected, original.replaceText(c -> c.match("value").replacement("1.99")));
   }
+
+  @Test
+  void testReplaceAtStartReturnsChild() {
+    final Component base = Component.text("value");
+
+    final Component replaced = base.replaceText(c -> c.match("value").replacement((matchResult, builder) -> {
+      return Component.text("").append(Component.text("1337"));
+    }).build());
+
+    final Component expected = Component.text()
+      .append(Component.text("1337"))
+      .build();
+    assertEquals(expected, replaced);
+  }
 }
