@@ -24,6 +24,7 @@
 package net.kyori.adventure.text;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.Contract;
 
 /**
  * Something that can be applied to a {@link ComponentBuilder}.
@@ -38,5 +39,6 @@ public interface ComponentBuilderApplicable {
    * @param component the component builder
    * @since 4.0.0
    */
+  @Contract(mutates = "param")
   void componentBuilderApply(final @NonNull ComponentBuilder<?, ?> component);
 }

@@ -24,6 +24,7 @@
 package net.kyori.adventure.text;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.Contract;
 
 /**
  * A selector component.
@@ -46,6 +47,7 @@ public interface SelectorComponent extends BuildableComponent<SelectorComponent,
    * @return a selector component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull SelectorComponent pattern(final @NonNull String pattern);
 
   /**
@@ -61,6 +63,7 @@ public interface SelectorComponent extends BuildableComponent<SelectorComponent,
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder pattern(final @NonNull String pattern);
   }
 }

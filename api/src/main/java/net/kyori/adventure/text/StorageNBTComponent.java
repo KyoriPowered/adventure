@@ -25,6 +25,7 @@ package net.kyori.adventure.text;
 
 import net.kyori.adventure.key.Key;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.Contract;
 
 /**
  * An storage NBT component.
@@ -47,6 +48,7 @@ public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent, S
    * @return a storage NBT component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull StorageNBTComponent storage(final @NonNull Key storage);
 
   /**
@@ -62,6 +64,7 @@ public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent, S
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder storage(final @NonNull Key storage);
   }
 }

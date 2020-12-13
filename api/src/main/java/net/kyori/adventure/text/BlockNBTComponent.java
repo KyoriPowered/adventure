@@ -26,6 +26,7 @@ package net.kyori.adventure.text;
 import java.util.regex.Matcher;
 import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.Contract;
 
 /**
  * A block NBT component.
@@ -48,6 +49,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
    * @return a block NBT component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull BlockNBTComponent pos(final @NonNull Pos pos);
 
   /**
@@ -59,6 +61,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
    * @return a block NBT component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   default @NonNull BlockNBTComponent localPos(final double left, final double up, final double forwards) {
     return this.pos(LocalPos.of(left, up, forwards));
   }
@@ -72,6 +75,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
    * @return a block NBT component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   default @NonNull BlockNBTComponent worldPos(final WorldPos.@NonNull Coordinate x, final WorldPos.@NonNull Coordinate y, final WorldPos.@NonNull Coordinate z) {
     return this.pos(WorldPos.of(x, y, z));
   }
@@ -85,6 +89,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
    * @return a block NBT component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   default @NonNull BlockNBTComponent absoluteWorldPos(final int x, final int y, final int z) {
     return this.worldPos(WorldPos.Coordinate.absolute(x), WorldPos.Coordinate.absolute(y), WorldPos.Coordinate.absolute(z));
   }
@@ -98,6 +103,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
    * @return a block NBT component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   default @NonNull BlockNBTComponent relativeWorldPos(final int x, final int y, final int z) {
     return this.worldPos(WorldPos.Coordinate.relative(x), WorldPos.Coordinate.relative(y), WorldPos.Coordinate.relative(z));
   }
@@ -115,6 +121,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder pos(final @NonNull Pos pos);
 
     /**
@@ -126,6 +133,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_, _, _ -> this")
     default @NonNull Builder localPos(final double left, final double up, final double forwards) {
       return this.pos(LocalPos.of(left, up, forwards));
     }
@@ -139,6 +147,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_, _, _ -> this")
     default @NonNull Builder worldPos(final WorldPos.@NonNull Coordinate x, final WorldPos.@NonNull Coordinate y, final WorldPos.@NonNull Coordinate z) {
       return this.pos(WorldPos.of(x, y, z));
     }
@@ -152,6 +161,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_, _, _ -> this")
     default @NonNull Builder absoluteWorldPos(final int x, final int y, final int z) {
       return this.worldPos(WorldPos.Coordinate.absolute(x), WorldPos.Coordinate.absolute(y), WorldPos.Coordinate.absolute(z));
     }
@@ -165,6 +175,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_, _, _ -> this")
     default @NonNull Builder relativeWorldPos(final int x, final int y, final int z) {
       return this.worldPos(WorldPos.Coordinate.relative(x), WorldPos.Coordinate.relative(y), WorldPos.Coordinate.relative(z));
     }

@@ -24,6 +24,7 @@
 package net.kyori.adventure.text;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.Contract;
 
 /**
  * An entity NBT component.
@@ -46,6 +47,7 @@ public interface EntityNBTComponent extends NBTComponent<EntityNBTComponent, Ent
    * @return an entity NBT component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull EntityNBTComponent selector(final @NonNull String selector);
 
   /**
@@ -61,6 +63,7 @@ public interface EntityNBTComponent extends NBTComponent<EntityNBTComponent, Ent
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder selector(final @NonNull String selector);
   }
 }

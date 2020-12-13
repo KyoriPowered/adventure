@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.intellij.lang.annotations.Pattern;
 
 /**
  * A key.
@@ -49,7 +50,7 @@ public interface Key extends Comparable<Key>, Examinable {
    * @throws InvalidKeyException if the namespace or value contains an invalid character
    * @since 4.0.0
    */
-  static @NonNull Key key(final @NonNull String string) {
+  static @NonNull Key key(final @NonNull @Pattern("(" + KeyImpl.NAMESPACE_PATTERN + ":)?" + KeyImpl.VALUE_PATTERN) String string) {
     return key(string, ':');
   }
 
@@ -62,6 +63,7 @@ public interface Key extends Comparable<Key>, Examinable {
    * @throws InvalidKeyException if the namespace or value contains an invalid character
    * @since 4.0.0
    */
+  @SuppressWarnings("PatternValidation") // impossible to validate since the character is variable
   static @NonNull Key key(final @NonNull String string, final char character) {
     final int index = string.indexOf(character);
     final String namespace = index >= 1 ? string.substring(0, index) : MINECRAFT_NAMESPACE;
@@ -78,7 +80,7 @@ public interface Key extends Comparable<Key>, Examinable {
    * @throws InvalidKeyException if the namespace or value contains an invalid character
    * @since 4.0.0
    */
-  static @NonNull Key key(final @NonNull String namespace, final @NonNull String value) {
+  static @NonNull Key key(final @NonNull @Pattern(KeyImpl.NAMESPACE_PATTERN) String namespace, final @NonNull @Pattern(KeyImpl.VALUE_PATTERN) String value) {
     return new KeyImpl(namespace, value);
   }
 

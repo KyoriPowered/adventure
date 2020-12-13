@@ -25,6 +25,7 @@ package net.kyori.adventure.text;
 
 import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.Contract;
 
 /**
  * A translatable component.
@@ -47,6 +48,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @return a translatable component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull TranslatableComponent key(final @NonNull String key);
 
   /**
@@ -64,6 +66,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @return a translatable component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull TranslatableComponent args(final @NonNull ComponentLike@NonNull... args);
 
   /**
@@ -73,6 +76,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @return a translatable component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull TranslatableComponent args(final @NonNull List<? extends ComponentLike> args);
 
   /**
@@ -88,6 +92,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder key(final @NonNull String key);
 
     /**
@@ -97,6 +102,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder args(final @NonNull ComponentBuilder<?, ?> arg);
 
     /**
@@ -106,6 +112,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @SuppressWarnings("checkstyle:GenericWhitespace")
     @NonNull Builder args(final @NonNull ComponentBuilder<?, ?>@NonNull... args);
 
@@ -116,6 +123,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder args(final @NonNull Component arg);
 
     /**
@@ -125,6 +133,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder args(final @NonNull ComponentLike@NonNull... args);
 
     /**
@@ -134,6 +143,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder args(final @NonNull List<? extends ComponentLike> args);
   }
 }

@@ -32,7 +32,8 @@ import net.kyori.adventure.util.IntFunction2;
 import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.checkerframework.checker.regex.qual.Regex;
+import org.intellij.lang.annotations.RegExp;
+import org.jetbrains.annotations.Contract;
 
 import static java.util.Objects.requireNonNull;
 
@@ -84,6 +85,7 @@ public interface TextReplacementConfig extends Buildable<TextReplacementConfig, 
      * @return this builder
      * @since 4.2.0
      */
+    @Contract("_ -> this")
     default Builder matchLiteral(final String literal) {
       return this.match(Pattern.compile(literal, Pattern.LITERAL));
     }
@@ -95,7 +97,8 @@ public interface TextReplacementConfig extends Buildable<TextReplacementConfig, 
      * @return this builder
      * @since 4.2.0
      */
-    default @NonNull Builder match(final @NonNull @Regex String pattern) {
+    @Contract("_ -> this")
+    default @NonNull Builder match(final @NonNull @RegExp String pattern) {
       return this.match(Pattern.compile(pattern));
     }
 
@@ -106,6 +109,7 @@ public interface TextReplacementConfig extends Buildable<TextReplacementConfig, 
      * @return this builder
      * @since 4.2.0
      */
+    @Contract("_ -> this")
     @NonNull Builder match(final @NonNull Pattern pattern);
 
     /*
@@ -120,6 +124,7 @@ public interface TextReplacementConfig extends Buildable<TextReplacementConfig, 
      * @return this builder
      * @since 4.2.0
      */
+    @Contract("-> this")
     default @NonNull Builder once() {
       return this.times(1);
     }
@@ -131,6 +136,7 @@ public interface TextReplacementConfig extends Buildable<TextReplacementConfig, 
      * @return this builder
      * @since 4.2.0
      */
+    @Contract("_ -> this")
     default @NonNull Builder times(final int times) {
       return this.condition((index, replaced) -> replaced < times ? PatternReplacementResult.REPLACE : PatternReplacementResult.STOP);
     }
@@ -142,6 +148,7 @@ public interface TextReplacementConfig extends Buildable<TextReplacementConfig, 
      * @return this builder
      * @since 4.2.0
      */
+    @Contract("_ -> this")
     @NonNull Builder condition(final @NonNull IntFunction2<PatternReplacementResult> condition);
 
     /*
@@ -157,6 +164,7 @@ public interface TextReplacementConfig extends Buildable<TextReplacementConfig, 
      * @return this builder
      * @since 4.2.0
      */
+    @Contract("_ -> this")
     default @NonNull Builder replacement(final @NonNull String replacement) {
       requireNonNull(replacement, "replacement");
       return this.replacement(builder -> builder.content(replacement));
@@ -169,6 +177,7 @@ public interface TextReplacementConfig extends Buildable<TextReplacementConfig, 
      * @return this builder
      * @since 4.2.0
      */
+    @Contract("_ -> this")
     default @NonNull Builder replacement(final @Nullable ComponentLike replacement) {
       final @Nullable Component baked = replacement == null ? null : replacement.asComponent();
       return this.replacement((result, input) -> baked);
@@ -181,6 +190,7 @@ public interface TextReplacementConfig extends Buildable<TextReplacementConfig, 
      * @return this builder
      * @since 4.2.0
      */
+    @Contract("_ -> this")
     default @NonNull Builder replacement(final @NonNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement) {
       requireNonNull(replacement, "replacement");
       return this.replacement((result, input) -> replacement.apply(input));
@@ -194,6 +204,7 @@ public interface TextReplacementConfig extends Buildable<TextReplacementConfig, 
      * @return this builder
      * @since 4.2.0
      */
+    @Contract("_ -> this")
     @NonNull Builder replacement(final @NonNull BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement);
   }
 }

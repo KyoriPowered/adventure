@@ -29,6 +29,9 @@ import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.util.Index;
 import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.UnmodifiableView;
 
 /**
  * A bossbar.
@@ -146,6 +149,7 @@ public interface BossBar extends Examinable {
    * @return the bossbar
    * @since 4.3.0
    */
+  @Contract("_ -> this")
   default @NonNull BossBar name(final @NonNull ComponentLike name) {
     return this.name(name.asComponent());
   }
@@ -157,6 +161,7 @@ public interface BossBar extends Examinable {
    * @return the bossbar
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull BossBar name(final @NonNull Component name);
 
   /**
@@ -179,6 +184,7 @@ public interface BossBar extends Examinable {
    * @throws IllegalArgumentException if progress is less than 0 or greater than 1
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull BossBar progress(final float progress);
 
   /**
@@ -206,6 +212,7 @@ public interface BossBar extends Examinable {
    * @deprecated for removal since 4.2.0, use {@link #progress(float)}
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @Deprecated
   default @NonNull BossBar percent(final float progress) {
     return this.progress(progress);
@@ -226,6 +233,7 @@ public interface BossBar extends Examinable {
    * @return the bossbar
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull BossBar color(final @NonNull Color color);
 
   /**
@@ -243,6 +251,7 @@ public interface BossBar extends Examinable {
    * @return the bossbar
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull BossBar overlay(final @NonNull Overlay overlay);
 
   /**
@@ -251,7 +260,7 @@ public interface BossBar extends Examinable {
    * @return the flags
    * @since 4.0.0
    */
-  @NonNull Set<Flag> flags();
+  @UnmodifiableView @NonNull Set<Flag> flags();
 
   /**
    * Sets the flags.
@@ -260,6 +269,7 @@ public interface BossBar extends Examinable {
    * @return the bossbar
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull BossBar flags(final @NonNull Set<Flag> flags);
 
   /**
@@ -278,6 +288,7 @@ public interface BossBar extends Examinable {
    * @return the bossbar
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull BossBar addFlag(final @NonNull Flag flag);
 
   /**
@@ -287,6 +298,7 @@ public interface BossBar extends Examinable {
    * @return the bossbar
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull BossBar removeFlag(final @NonNull Flag flag);
 
   /**
@@ -296,6 +308,7 @@ public interface BossBar extends Examinable {
    * @return the bossbar
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull BossBar addFlags(final @NonNull Flag@NonNull... flags);
 
   /**
@@ -305,6 +318,7 @@ public interface BossBar extends Examinable {
    * @return the bossbar
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull BossBar removeFlags(final @NonNull Flag@NonNull... flags);
 
   /**
@@ -314,6 +328,7 @@ public interface BossBar extends Examinable {
    * @return the bossbar
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull BossBar addFlags(final @NonNull Iterable<Flag> flags);
 
   /**
@@ -323,6 +338,7 @@ public interface BossBar extends Examinable {
    * @return the bossbar
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull BossBar removeFlags(final @NonNull Iterable<Flag> flags);
 
   /**
@@ -332,6 +348,7 @@ public interface BossBar extends Examinable {
    * @return the bossbar
    * @since 4.0.0
    */
+  @Contract(value = "_ -> this")
   @NonNull BossBar addListener(final @NonNull Listener listener);
 
   /**
@@ -341,6 +358,7 @@ public interface BossBar extends Examinable {
    * @return the bossbar
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull BossBar removeListener(final @NonNull Listener listener);
 
   /**
@@ -348,6 +366,7 @@ public interface BossBar extends Examinable {
    *
    * @since 4.0.0
    */
+  @ApiStatus.OverrideOnly
   interface Listener {
     /**
      * Bossbar name changed.

@@ -28,10 +28,14 @@ import java.util.function.IntPredicate;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import static java.util.Objects.requireNonNull;
 
 final class KeyImpl implements Key {
+  static final String NAMESPACE_PATTERN = "[a-z0-9_\\-.]+";
+  static final String VALUE_PATTERN = "[a-z0-9_\\-./]+";
+
   private static final IntPredicate NAMESPACE_PREDICATE = value -> value == '_' || value == '-' || (value >= 'a' && value <= 'z') || (value >= '0' && value <= '9') || value == '.';
   private static final IntPredicate VALUE_PREDICATE = value -> value == '_' || value == '-' || (value >= 'a' && value <= 'z') || (value >= '0' && value <= '9') || value == '/' || value == '.';
   private final String namespace;
@@ -44,6 +48,7 @@ final class KeyImpl implements Key {
     this.value = requireNonNull(value, "value");
   }
 
+  @VisibleForTesting
   static boolean namespaceValid(final @NonNull String namespace) {
     for(int i = 0, length = namespace.length(); i < length; i++) {
       if(!NAMESPACE_PREDICATE.test(namespace.charAt(i))) {
@@ -53,6 +58,7 @@ final class KeyImpl implements Key {
     return true;
   }
 
+  @VisibleForTesting
   static boolean valueValid(final @NonNull String value) {
     for(int i = 0, length = value.length(); i < length; i++) {
       if(!VALUE_PREDICATE.test(value.charAt(i))) {

@@ -26,6 +26,7 @@ package net.kyori.adventure.text;
 import java.util.Arrays;
 import net.kyori.adventure.text.format.Style;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.Contract;
 
 /**
  * A text component.
@@ -60,6 +61,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @return a copy of this component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull TextComponent content(final @NonNull String content);
 
   /**
@@ -83,6 +85,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder content(final @NonNull String content);
   }
 }
