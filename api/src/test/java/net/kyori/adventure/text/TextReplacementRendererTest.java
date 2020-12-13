@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TextReplacementRendererTest {
+class TextReplacementRendererTest {
   @Test
   void testReplace() {
     final TextComponent component = Component.text()
