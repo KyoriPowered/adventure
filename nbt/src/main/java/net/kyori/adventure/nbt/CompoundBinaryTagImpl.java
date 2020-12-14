@@ -72,6 +72,19 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
   }
 
   @Override
+  public @NonNull CompoundBinaryTag remove(final @NonNull String key, final @Nullable Consumer<? super BinaryTag> removed) {
+    if(!this.tags.containsKey(key)) {
+      return this;
+    }
+    return this.edit(map -> {
+      final BinaryTag tag = map.remove(key);
+      if(removed != null) {
+        removed.accept(tag);
+      }
+    });
+  }
+
+  @Override
   public byte getByte(final @NonNull String key, final byte defaultValue) {
     if(this.contains(key, BinaryTagTypes.BYTE)) {
       return ((NumberBinaryTag) this.tags.get(key)).byteValue();

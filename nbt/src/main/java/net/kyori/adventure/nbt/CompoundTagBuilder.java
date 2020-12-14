@@ -25,8 +25,10 @@ package net.kyori.adventure.nbt;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
   private @MonotonicNonNull Map<String, BinaryTag> tags;
@@ -47,6 +49,17 @@ final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
   @Override
   public CompoundBinaryTag.@NonNull Builder put(final @NonNull Map<String, ? extends BinaryTag> tags) {
     this.tags().putAll(tags);
+    return this;
+  }
+
+  @Override
+  public CompoundBinaryTag.@NonNull Builder remove(final @NonNull String key, final @Nullable Consumer<? super BinaryTag> removed) {
+    if(this.tags != null) {
+      final BinaryTag tag = this.tags.remove(key);
+      if(removed != null) {
+        removed.accept(tag);
+      }
+    }
     return this;
   }
 
