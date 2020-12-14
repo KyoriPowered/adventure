@@ -23,25 +23,19 @@
  */
 package net.kyori.adventure.nbt;
 
-import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * A binary tag.
+ * Something that can be represented as a binary tag.
  *
- * @since 4.0.0
+ * @since 4.4.0
  */
-public interface BinaryTag extends BinaryTagLike, Examinable {
+public interface BinaryTagLike {
   /**
-   * Gets the tag type.
+   * Gets a {@link BinaryTag} representation.
    *
-   * @return the tag type
-   * @since 4.0.0
+   * @return a binary tag
+   * @since 4.4.0
    */
-  @NonNull BinaryTagType<? extends BinaryTag> type();
-
-  @Override
-  default @NonNull BinaryTag asBinaryTag() {
-    return this;
-  }
+  @NonNull BinaryTag asBinaryTag();
 }
