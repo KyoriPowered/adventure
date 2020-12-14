@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.nbt;
 
+import java.util.Map;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -41,6 +42,15 @@ public interface CompoundTagSetter<R> {
    * @since 4.0.0
    */
   @NonNull R put(final @NonNull String key, final @NonNull BinaryTag tag);
+
+  /**
+   * Inserts some tags.
+   *
+   * @param tags the tags
+   * @return a compound tag
+   * @since 4.4.0
+   */
+  @NonNull R put(final @NonNull Map<String, ? extends BinaryTag> tags);
 
   /**
    * Inserts a boolean.

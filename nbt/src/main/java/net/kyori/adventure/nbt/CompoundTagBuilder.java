@@ -31,12 +31,22 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
   private @MonotonicNonNull Map<String, BinaryTag> tags;
 
-  @Override
-  public CompoundBinaryTag.@NonNull Builder put(final @NonNull String key, final @NonNull BinaryTag tag) {
+  private Map<String, BinaryTag> tags() {
     if(this.tags == null) {
       this.tags = new HashMap<>();
     }
-    this.tags.put(key, tag);
+    return this.tags;
+  }
+
+  @Override
+  public CompoundBinaryTag.@NonNull Builder put(final @NonNull String key, final @NonNull BinaryTag tag) {
+    this.tags().put(key, tag);
+    return this;
+  }
+
+  @Override
+  public CompoundBinaryTag.@NonNull Builder put(final @NonNull Map<String, ? extends BinaryTag> tags) {
+    this.tags().putAll(tags);
     return this;
   }
 

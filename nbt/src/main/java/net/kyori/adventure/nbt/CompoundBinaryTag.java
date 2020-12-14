@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.nbt;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -42,6 +43,19 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    */
   static @NonNull CompoundBinaryTag empty() {
     return CompoundBinaryTagImpl.EMPTY;
+  }
+
+  /**
+   * Creates a compound tag populated with {@code tags}.
+   *
+   * <p>If {@code tags} is empty, {@link #empty()} will be returned.</p>
+   *
+   * @return a compound tag
+   * @since 4.4.0
+   */
+  static @NonNull CompoundBinaryTag from(final @NonNull Map<String, ? extends BinaryTag> tags) {
+    if(tags.isEmpty()) return empty();
+    return new CompoundBinaryTagImpl(new HashMap<>(tags)); // explicitly copy
   }
 
   /**
