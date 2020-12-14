@@ -23,10 +23,17 @@
  */
 package net.kyori.adventure.nbt;
 
-abstract class ArrayBinaryTagImpl extends AbstractBinaryTag implements ArrayBinaryTag {
-  static void checkIndex(final int index, final int length) {
-    if(index < 0 || index >= length) {
-      throw new IndexOutOfBoundsException("Index out of bounds: " + index);
-    }
+import net.kyori.examination.string.StringExaminer;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+abstract class AbstractBinaryTag implements BinaryTag {
+  @Override
+  public final @NonNull String examinableName() {
+    return this.type().toString();
+  }
+
+  @Override
+  public final String toString() {
+    return this.examine(StringExaminer.simpleEscaping());
   }
 }

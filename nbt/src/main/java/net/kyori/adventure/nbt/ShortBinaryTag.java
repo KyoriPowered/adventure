@@ -59,7 +59,7 @@ public interface ShortBinaryTag extends NumberBinaryTag {
   short value();
 }
 
-final class ShortBinaryTagImpl implements ShortBinaryTag {
+final class ShortBinaryTagImpl extends AbstractBinaryTag implements ShortBinaryTag {
   private final short value;
 
   ShortBinaryTagImpl(final short value) {

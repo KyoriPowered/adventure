@@ -79,7 +79,7 @@ public interface ByteBinaryTag extends NumberBinaryTag {
   byte value();
 }
 
-final class ByteBinaryTagImpl implements ByteBinaryTag {
+final class ByteBinaryTagImpl extends AbstractBinaryTag implements ByteBinaryTag {
   private final byte value;
 
   ByteBinaryTagImpl(final byte value) {

@@ -59,7 +59,7 @@ public interface FloatBinaryTag extends NumberBinaryTag {
   float value();
 }
 
-final class FloatBinaryTagImpl implements FloatBinaryTag {
+final class FloatBinaryTagImpl extends AbstractBinaryTag implements FloatBinaryTag {
   private final float value;
 
   FloatBinaryTagImpl(final float value) {

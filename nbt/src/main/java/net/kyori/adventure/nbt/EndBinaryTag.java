@@ -47,7 +47,7 @@ public interface EndBinaryTag extends BinaryTag {
   }
 }
 
-final class EndBinaryTagImpl implements EndBinaryTag {
+final class EndBinaryTagImpl extends AbstractBinaryTag implements EndBinaryTag {
   static final EndBinaryTagImpl INSTANCE = new EndBinaryTagImpl();
 
   @Override

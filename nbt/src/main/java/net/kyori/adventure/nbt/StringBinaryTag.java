@@ -59,7 +59,7 @@ public interface StringBinaryTag extends BinaryTag {
   @NonNull String value();
 }
 
-final class StringBinaryTagImpl implements StringBinaryTag {
+final class StringBinaryTagImpl extends AbstractBinaryTag implements StringBinaryTag {
   private final String value;
 
   StringBinaryTagImpl(final String value) {

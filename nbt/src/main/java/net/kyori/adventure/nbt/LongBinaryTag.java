@@ -59,7 +59,7 @@ public interface LongBinaryTag extends NumberBinaryTag {
   long value();
 }
 
-final class LongBinaryTagImpl implements LongBinaryTag {
+final class LongBinaryTagImpl extends AbstractBinaryTag implements LongBinaryTag {
   private final long value;
 
   LongBinaryTagImpl(final long value) {

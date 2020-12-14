@@ -59,7 +59,7 @@ public interface DoubleBinaryTag extends NumberBinaryTag {
   double value();
 }
 
-final class DoubleBinaryTagImpl implements DoubleBinaryTag {
+final class DoubleBinaryTagImpl extends AbstractBinaryTag implements DoubleBinaryTag {
   private final double value;
 
   DoubleBinaryTagImpl(final double value) {
