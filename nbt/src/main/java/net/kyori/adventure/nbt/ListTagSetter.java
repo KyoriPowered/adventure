@@ -41,4 +41,13 @@ public interface ListTagSetter<R, T extends BinaryTag> {
    * @since 4.0.0
    */
   @NonNull R add(final T tag);
+
+  /**
+   * Adds multiple tags.
+   *
+   * @param tags the tags
+   * @return a list tag
+   * @since 4.4.0
+   */
+  @NonNull R add(final Iterable<? extends T> tags);
 }
