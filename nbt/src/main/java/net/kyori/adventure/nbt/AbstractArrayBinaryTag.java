@@ -23,35 +23,10 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-/**
- * A binary tag holding a {@code float} value.
- *
- * @since 4.0.0
- */
-public interface FloatBinaryTag extends NumberBinaryTag {
-  /**
-   * Creates a binary tag holding a {@code float} value.
-   *
-   * @param value the value
-   * @return a binary tag
-   * @since 4.0.0
-   */
-  static @NonNull FloatBinaryTag of(final float value) {
-    return new FloatBinaryTagImpl(value);
+abstract class AbstractArrayBinaryTag extends AbstractBinaryTag implements ArrayBinaryTag {
+  static void checkIndex(final int index, final int length) {
+    if(index < 0 || index >= length) {
+      throw new IndexOutOfBoundsException("Index out of bounds: " + index);
+    }
   }
-
-  @Override
-  default @NonNull BinaryTagType<FloatBinaryTag> type() {
-    return BinaryTagTypes.FLOAT;
-  }
-
-  /**
-   * Gets the value.
-   *
-   * @return the value
-   * @since 4.0.0
-   */
-  float value();
 }

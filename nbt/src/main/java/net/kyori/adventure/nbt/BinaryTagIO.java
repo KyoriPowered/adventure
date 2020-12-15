@@ -116,7 +116,7 @@ public final class BinaryTagIO {
    * @since 4.0.0
    */
   public static @NonNull CompoundBinaryTag readDataInput(final @NonNull DataInput input) throws IOException {
-    final BinaryTagType<? extends BinaryTag> type = BinaryTagType.of(input.readByte());
+    final BinaryTagType<? extends BinaryTag> type = BinaryTagType.byId(input.readByte());
     if(type != BinaryTagTypes.COMPOUND) {
       throw new IOException(String.format("Expected root tag to be a %s, was %s", BinaryTagTypes.COMPOUND, type));
     }

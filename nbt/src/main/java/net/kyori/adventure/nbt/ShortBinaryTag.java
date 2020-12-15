@@ -23,10 +23,7 @@
  */
 package net.kyori.adventure.nbt;
 
-import java.util.stream.Stream;
-import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A binary tag holding a {@code short} value.
@@ -59,63 +56,3 @@ public interface ShortBinaryTag extends NumberBinaryTag {
   short value();
 }
 
-final class ShortBinaryTagImpl extends AbstractBinaryTag implements ShortBinaryTag {
-  private final short value;
-
-  ShortBinaryTagImpl(final short value) {
-    this.value = value;
-  }
-
-  @Override
-  public short value() {
-    return this.value;
-  }
-
-  @Override
-  public byte byteValue() {
-    return (byte) (this.value & 0xff);
-  }
-
-  @Override
-  public double doubleValue() {
-    return this.value;
-  }
-
-  @Override
-  public float floatValue() {
-    return this.value;
-  }
-
-  @Override
-  public int intValue() {
-    return this.value;
-  }
-
-  @Override
-  public long longValue() {
-    return this.value;
-  }
-
-  @Override
-  public short shortValue() {
-    return this.value;
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(other == null || this.getClass() != other.getClass()) return false;
-    final ShortBinaryTagImpl that = (ShortBinaryTagImpl) other;
-    return this.value == that.value;
-  }
-
-  @Override
-  public int hashCode() {
-    return Short.hashCode(this.value);
-  }
-
-  @Override
-  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(ExaminableProperty.of("value", this.value));
-  }
-}

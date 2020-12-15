@@ -37,6 +37,30 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import static java.util.Objects.requireNonNull;
 
 final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundBinaryTag {
+  static final BinaryTagReader<CompoundBinaryTag> READER = input -> {
+    final Map<String, BinaryTag> tags = new HashMap<>();
+    BinaryTagType<? extends BinaryTag> type;
+    while((type = BinaryTagType.byId(input.readByte())) != BinaryTagTypes.END) {
+      final String key = input.readUTF();
+      final BinaryTag tag = type.read(input);
+      tags.put(key, tag);
+    }
+    return new CompoundBinaryTagImpl(tags);
+  };
+  static final BinaryTagWriter<CompoundBinaryTag> WRITER = (tag, output) -> {
+    for(final Map.Entry<String, ? extends BinaryTag> entry : tag) {
+      final BinaryTag value = entry.getValue();
+      if(value != null) {
+        final BinaryTagType<? extends BinaryTag> type = value.type();
+        output.writeByte(type.id());
+        if(type != BinaryTagTypes.END) {
+          output.writeUTF(entry.getKey());
+          BinaryTagType.write(type, value, output);
+        }
+      }
+    }
+    output.writeByte(BinaryTagTypes.END.id());
+  };
   static final CompoundBinaryTag EMPTY = new CompoundBinaryTagImpl(Collections.emptyMap());
   private final Map<String, BinaryTag> tags;
   private final int hashCode;

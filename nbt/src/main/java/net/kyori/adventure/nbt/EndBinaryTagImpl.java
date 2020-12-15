@@ -23,35 +23,18 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+final class EndBinaryTagImpl extends AbstractBinaryTag implements EndBinaryTag {
+  static final BinaryTagReader<EndBinaryTag> READER = input -> EndBinaryTag.get();
+  static final BinaryTagWriter<EndBinaryTag> WRITER = null; // nothing to write
+  static final EndBinaryTagImpl INSTANCE = new EndBinaryTagImpl();
 
-/**
- * A binary tag holding a {@code float} value.
- *
- * @since 4.0.0
- */
-public interface FloatBinaryTag extends NumberBinaryTag {
-  /**
-   * Creates a binary tag holding a {@code float} value.
-   *
-   * @param value the value
-   * @return a binary tag
-   * @since 4.0.0
-   */
-  static @NonNull FloatBinaryTag of(final float value) {
-    return new FloatBinaryTagImpl(value);
+  @Override
+  public boolean equals(final Object that) {
+    return this == that;
   }
 
   @Override
-  default @NonNull BinaryTagType<FloatBinaryTag> type() {
-    return BinaryTagTypes.FLOAT;
+  public int hashCode() {
+    return 0;
   }
-
-  /**
-   * Gets the value.
-   *
-   * @return the value
-   * @since 4.0.0
-   */
-  float value();
 }

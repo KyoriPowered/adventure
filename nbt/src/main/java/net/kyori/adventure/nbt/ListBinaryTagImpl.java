@@ -37,6 +37,23 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag {
+  static final BinaryTagReader<ListBinaryTag> READER = input -> {
+    final BinaryTagType<? extends BinaryTag> type = BinaryTagType.byId(input.readByte());
+    final int length = input.readInt();
+    final List<BinaryTag> tags = new ArrayList<>(length);
+    for(int i = 0; i < length; i++) {
+      tags.add(type.read(input));
+    }
+    return ListBinaryTag.of(type, tags);
+  };
+  static final BinaryTagWriter<ListBinaryTag> WRITER = (tag, output) -> {
+    output.writeByte(tag.listType().id());
+    final int size = tag.size();
+    output.writeInt(size);
+    for(final BinaryTag item : tag) {
+      BinaryTagType.write(item.type(), item, output);
+    }
+  };
   static final ListBinaryTag EMPTY = new ListBinaryTagImpl(BinaryTagTypes.END, Collections.emptyList());
   private final List<BinaryTag> tags;
   private final BinaryTagType<? extends BinaryTag> type;

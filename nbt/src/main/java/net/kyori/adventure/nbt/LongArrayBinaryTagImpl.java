@@ -34,7 +34,23 @@ import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-final class LongArrayBinaryTagImpl extends ArrayBinaryTagImpl implements LongArrayBinaryTag {
+final class LongArrayBinaryTagImpl extends AbstractArrayBinaryTag implements LongArrayBinaryTag {
+  static final BinaryTagReader<LongArrayBinaryTag> READER = input -> {
+    final int length = input.readInt();
+    final long[] value = new long[length];
+    for(int i = 0; i < length; i++) {
+      value[i] = input.readLong();
+    }
+    return LongArrayBinaryTag.of(value);
+  };
+  static final BinaryTagWriter<LongArrayBinaryTag> WRITER = (tag, output) -> {
+    final long[] value = LongArrayBinaryTagImpl.value(tag);
+    final int length = value.length;
+    output.writeInt(length);
+    for(int i = 0; i < length; i++) {
+      output.writeLong(value[i]);
+    }
+  };
   final long[] value;
 
   LongArrayBinaryTagImpl(final long[] value) {

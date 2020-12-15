@@ -23,84 +23,70 @@
  */
 package net.kyori.adventure.nbt;
 
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-final class ByteArrayBinaryTagImpl extends AbstractArrayBinaryTag implements ByteArrayBinaryTag {
-  static final BinaryTagReader<ByteArrayBinaryTag> READER = input -> {
-    final int length = input.readInt();
-    final byte[] value = new byte[length];
-    input.readFully(value);
-    return ByteArrayBinaryTag.of(value);
-  };
-  static final BinaryTagWriter<ByteArrayBinaryTag> WRITER = (tag, output) -> {
-    final byte[] value = ByteArrayBinaryTagImpl.value(tag);
-    output.writeInt(value.length);
-    output.write(value);
-  };
-  final byte[] value;
+final class DoubleBinaryTagImpl extends AbstractBinaryTag implements DoubleBinaryTag {
+  static final BinaryTagReader<DoubleBinaryTag> READER = input -> DoubleBinaryTag.of(input.readDouble());
+  static final BinaryTagWriter<DoubleBinaryTag> WRITER = (tag, output) -> output.writeDouble(tag.value());
+  private final double value;
 
-  ByteArrayBinaryTagImpl(final byte[] value) {
-    this.value = Arrays.copyOf(value, value.length);
+  DoubleBinaryTagImpl(final double value) {
+    this.value = value;
   }
 
   @Override
-  public byte@NonNull[] value() {
-    return Arrays.copyOf(this.value, this.value.length);
+  public double value() {
+    return this.value;
   }
 
   @Override
-  public int size() {
-    return this.value.length;
+  public byte byteValue() {
+    return (byte) (ShadyPines.floor(this.value) & 0xff);
   }
 
   @Override
-  public byte get(final int index) {
-    checkIndex(index, this.value.length);
-    return this.value[index];
+  public double doubleValue() {
+    return this.value;
   }
 
-  // to avoid copying array internally
-  static byte[] value(final ByteArrayBinaryTag tag) {
-    return (tag instanceof ByteArrayBinaryTagImpl) ? ((ByteArrayBinaryTagImpl) tag).value : tag.value();
+  @Override
+  public float floatValue() {
+    return (float) this.value;
+  }
+
+  @Override
+  public int intValue() {
+    return ShadyPines.floor(this.value);
+  }
+
+  @Override
+  public long longValue() {
+    return (long) Math.floor(this.value);
+  }
+
+  @Override
+  public short shortValue() {
+    return (short) (ShadyPines.floor(this.value) & 0xffff);
   }
 
   @Override
   public boolean equals(final @Nullable Object other) {
     if(this == other) return true;
     if(other == null || this.getClass() != other.getClass()) return false;
-    final ByteArrayBinaryTagImpl that = (ByteArrayBinaryTagImpl) other;
-    return Arrays.equals(this.value, that.value);
+    final DoubleBinaryTagImpl that = (DoubleBinaryTagImpl) other;
+    return Double.doubleToLongBits(this.value) == Double.doubleToLongBits(that.value);
   }
 
   @Override
   public int hashCode() {
-    return Arrays.hashCode(this.value);
+    return Double.hashCode(this.value);
   }
 
   @Override
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("value", this.value));
-  }
-
-  @Override
-  public Iterator<Byte> iterator() {
-    return new Iterator<Byte>() {
-      private int index;
-
-      @Override
-      public boolean hasNext() {
-        return this.index < ByteArrayBinaryTagImpl.this.value.length - 1;
-      }
-
-      @Override
-      public Byte next() {
-        return ByteArrayBinaryTagImpl.this.value[this.index++];
-      }
-    };
   }
 }

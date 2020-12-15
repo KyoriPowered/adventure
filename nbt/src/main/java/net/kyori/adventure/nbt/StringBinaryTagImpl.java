@@ -23,10 +23,40 @@
  */
 package net.kyori.adventure.nbt;
 
-abstract class ArrayBinaryTagImpl extends AbstractBinaryTag implements ArrayBinaryTag {
-  static void checkIndex(final int index, final int length) {
-    if(index < 0 || index >= length) {
-      throw new IndexOutOfBoundsException("Index out of bounds: " + index);
-    }
+import java.util.stream.Stream;
+import net.kyori.examination.ExaminableProperty;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+final class StringBinaryTagImpl extends AbstractBinaryTag implements StringBinaryTag {
+  static final BinaryTagReader<StringBinaryTag> READER = input -> StringBinaryTag.of(input.readUTF());
+  static final BinaryTagWriter<StringBinaryTag> WRITER = (tag, output) -> output.writeUTF(tag.value());
+  private final String value;
+
+  StringBinaryTagImpl(final String value) {
+    this.value = value;
+  }
+
+  @Override
+  public @NonNull String value() {
+    return this.value;
+  }
+
+  @Override
+  public boolean equals(final @Nullable Object other) {
+    if(this == other) return true;
+    if(other == null || this.getClass() != other.getClass()) return false;
+    final StringBinaryTagImpl that = (StringBinaryTagImpl) other;
+    return this.value.equals(that.value);
+  }
+
+  @Override
+  public int hashCode() {
+    return this.value.hashCode();
+  }
+
+  @Override
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(ExaminableProperty.of("value", this.value));
   }
 }
