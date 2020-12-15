@@ -39,18 +39,18 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag {
   static final ListBinaryTag EMPTY = new ListBinaryTagImpl(BinaryTagTypes.END, Collections.emptyList());
   private final List<BinaryTag> tags;
-  private final BinaryTagType<? extends BinaryTag> type;
+  private final BinaryTagType<? extends BinaryTag> elementType;
   private final int hashCode;
 
-  ListBinaryTagImpl(final BinaryTagType<? extends BinaryTag> type, final List<BinaryTag> tags) {
+  ListBinaryTagImpl(final BinaryTagType<? extends BinaryTag> elementType, final List<BinaryTag> tags) {
     this.tags = tags;
-    this.type = type;
+    this.elementType = elementType;
     this.hashCode = tags.hashCode();
   }
 
   @Override
-  public @NonNull BinaryTagType<? extends BinaryTag> listType() {
-    return this.type;
+  public @NonNull BinaryTagType<? extends BinaryTag> elementType() {
+    return this.elementType;
   }
 
   @Override
@@ -87,8 +87,8 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   public @NonNull ListBinaryTag add(final BinaryTag tag) {
     return this.edit(tags -> {
       noAddEnd(tag);
-      if(this.type != BinaryTagTypes.END) {
-        mustBeSameType(tag, this.type);
+      if(this.elementType != BinaryTagTypes.END) {
+        mustBeSameType(tag, this.elementType);
       }
       tags.add(tag);
     }, tag.type());
@@ -111,7 +111,7 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   private ListBinaryTag edit(final Consumer<List<BinaryTag>> consumer, final @Nullable BinaryTagType<? extends BinaryTag> maybeType) {
     final List<BinaryTag> tags = new ArrayList<>(this.tags);
     consumer.accept(tags);
-    BinaryTagType<? extends BinaryTag> type = this.type;
+    BinaryTagType<? extends BinaryTag> type = this.elementType;
     // set the type if it has not yet been set
     if(maybeType != null && type == BinaryTagTypes.END) {
       type = maybeType;
@@ -169,7 +169,7 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("tags", this.tags),
-      ExaminableProperty.of("type", this.type)
+      ExaminableProperty.of("type", this.elementType)
     );
   }
 }

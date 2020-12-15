@@ -84,7 +84,7 @@ class ReadWriteTest {
       .add(DoubleBinaryTag.of(64d))
       .build();
     final ListBinaryTag b = this.testWriteRead(a, BinaryTagTypes.LIST);
-    assertEquals(a.listType(), b.listType());
+    assertEquals(a.elementType(), b.elementType());
   }
 
   @Test

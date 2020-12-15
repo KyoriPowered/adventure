@@ -155,7 +155,7 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
   public @NonNull ListBinaryTag getList(final @NonNull String key, final @NonNull BinaryTagType<? extends BinaryTag> expectedType, final @NonNull ListBinaryTag defaultValue) {
     if(this.contains(key, BinaryTagTypes.LIST)) {
       final ListBinaryTag tag = (ListBinaryTag) this.tags.get(key);
-      if(expectedType.test(tag.listType())) {
+      if(expectedType.test(tag.elementType())) {
         return tag;
       }
     }

@@ -92,8 +92,20 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    *
    * @return the type
    * @since 4.0.0
+   * @deprecated since 4.4.0, use {@link #elementType()} instead
    */
-  @NonNull BinaryTagType<? extends BinaryTag> listType();
+  @Deprecated
+  default @NonNull BinaryTagType<? extends BinaryTag> listType() {
+    return this.elementType();
+  }
+
+  /**
+   * Gets the type of element stored in this list.
+   *
+   * @return the type
+   * @since 4.4.0
+   */
+  @NonNull BinaryTagType<? extends BinaryTag> elementType();
 
   /**
    * Gets the size.

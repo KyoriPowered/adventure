@@ -45,7 +45,7 @@ class ListBinaryTagTest {
   void testAddOtherToEndChangesType() {
     final ListBinaryTag l0 = ListBinaryTag.empty();
     final ListBinaryTag l1 = l0.add(IntBinaryTag.of(13));
-    assertEquals(BinaryTagTypes.INT, l1.listType());
+    assertEquals(BinaryTagTypes.INT, l1.elementType());
   }
 
   @Test

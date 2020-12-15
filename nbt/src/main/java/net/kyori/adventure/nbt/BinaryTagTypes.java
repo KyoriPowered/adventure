@@ -111,7 +111,7 @@ public final class BinaryTagTypes {
     }
     return ListBinaryTag.of(type, tags);
   }, (tag, output) -> {
-    output.writeByte(tag.listType().id());
+    output.writeByte(tag.elementType().id());
     final int size = tag.size();
     output.writeInt(size);
     for(final BinaryTag item : tag) {

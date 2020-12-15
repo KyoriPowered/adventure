@@ -330,7 +330,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @param key the key
    * @param expectedType the expected list type
    * @return the list, or a new list if this compound does not contain a list tag
-   *     with the specified key, has a tag with a different type, or the {@link ListBinaryTag#listType() list type}
+   *     with the specified key, has a tag with a different type, or the {@link ListBinaryTag#elementType() list type}
    *     does not match {@code expectedType}
    * @since 4.0.0
    */
@@ -345,7 +345,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @param expectedType the expected list type
    * @param defaultValue the default value
    * @return the list, or {@code defaultValue} if this compound does not contain a list tag
-   *     with the specified key, has a tag with a different type, or the {@link ListBinaryTag#listType() list type}
+   *     with the specified key, has a tag with a different type, or the {@link ListBinaryTag#elementType() list type}
    *     does not match {@code expectedType}
    * @since 4.0.0
    */
