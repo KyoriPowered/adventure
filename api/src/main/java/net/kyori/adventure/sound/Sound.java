@@ -25,6 +25,7 @@ package net.kyori.adventure.sound;
 
 import java.util.function.Supplier;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.util.Index;
 import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -161,13 +162,14 @@ public interface Sound extends Examinable {
    *
    * @since 4.0.0
    */
-  interface Type {
+  interface Type extends Keyed {
     /**
      * Gets the key.
      *
      * @return the key
      * @since 4.0.0
      */
+    @Override
     @NonNull Key key();
   }
 }
