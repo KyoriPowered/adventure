@@ -367,6 +367,63 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
   }
 
   /**
+   * Gets a list.
+   *
+   * @param index the index
+   * @return the list, or an empty list if the tag at index {@code index} is not a list tag
+   * @since 4.4.0
+   */
+  default @NonNull ListBinaryTag getList(final @NonNegative int index) {
+    return this.getList(index, null, ListBinaryTag.empty());
+  }
+
+  /**
+   * Gets a list.
+   *
+   * @param index the index
+   * @param elementType the expected element type of the list at index {@code index}
+   * @return the list, or an empty list if the tag at index {@code index} is not a list tag, or if the list tag's element type is not {@code elementType}
+   * @since 4.4.0
+   */
+  default @NonNull ListBinaryTag getList(final @NonNegative int index, final @Nullable BinaryTagType<?> elementType) {
+    return this.getList(index, elementType, ListBinaryTag.empty());
+  }
+
+  /**
+   * Gets a list.
+   *
+   * @param index the index
+   * @param defaultValue the default value
+   * @return the list, or {@code defaultValue} if the tag at index {@code index} is not a list tag
+   * @since 4.4.0
+   */
+  default @NonNull ListBinaryTag getList(final @NonNegative int index, final @NonNull ListBinaryTag defaultValue) {
+    return this.getList(index, null, defaultValue);
+  }
+
+  /**
+   * Gets a list.
+   *
+   * <p>If {@code elementType} is non-{@code null} and the {@link ListBinaryTag} at index {@code index} does not match, {@code defaultValue} will be returned.</p>
+   *
+   * @param index the index
+   * @param elementType the expected element type of the list at index {@code index}
+   * @param defaultValue the default value
+   * @return the list, or {@code defaultValue} if the tag at index {@code index} is not a list tag, or if the list tag's element type is not {@code elementType}
+   * @since 4.4.0
+   */
+  default @NonNull ListBinaryTag getList(final @NonNegative int index, final @Nullable BinaryTagType<?> elementType, final @NonNull ListBinaryTag defaultValue) {
+    final BinaryTag tag = this.get(index);
+    if(tag.type() == BinaryTagTypes.LIST) {
+      final ListBinaryTag list = (ListBinaryTag) tag;
+      if(elementType == null || list.elementType() == elementType) {
+        return list;
+      }
+    }
+    return defaultValue;
+  }
+
+  /**
    * Gets a compound.
    *
    * @param index the index
