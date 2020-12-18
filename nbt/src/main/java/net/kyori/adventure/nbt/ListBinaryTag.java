@@ -47,6 +47,19 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
   }
 
   /**
+   * Creates a list tag from {@code tags}.
+   *
+   * <p>The {@link #elementType() element type} of the returned list tag is determined from {@code tags}.</p>
+   *
+   * @return a list tag
+   * @throws IllegalArgumentException if {@code tags} has different tag types within
+   * @since 4.4.0
+   */
+  static @NonNull ListBinaryTag from(final @NonNull Iterable<? extends BinaryTag> tags) {
+    return builder().add(tags).build();
+  }
+
+  /**
    * Creates a builder.
    *
    * @return a new builder
@@ -130,21 +143,21 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    *
    * @param index the index
    * @param tag the tag
-   * @param removedConsumer a consumer which receives the tag being removed at index {@code index}
+   * @param removed a consumer which receives the tag being removed at index {@code index}
    * @return a list tag
    * @since 4.0.0
    */
-  @NonNull ListBinaryTag set(final int index, final @NonNull BinaryTag tag, final @Nullable Consumer<BinaryTag> removedConsumer);
+  @NonNull ListBinaryTag set(final int index, final @NonNull BinaryTag tag, final @Nullable Consumer<? super BinaryTag> removed);
 
   /**
    * Removes the tag at index {@code index}, optionally providing {@code removedConsumer} with the tag previously at index {@code index}.
    *
    * @param index the index
-   * @param removedConsumer a consumer which receives the tag being removed at index {@code index}
+   * @param removed a consumer which receives the tag being removed at index {@code index}
    * @return a list tag
    * @since 4.0.0
    */
-  @NonNull ListBinaryTag remove(final int index, final @Nullable Consumer<BinaryTag> removedConsumer);
+  @NonNull ListBinaryTag remove(final int index, final @Nullable Consumer<? super BinaryTag> removed);
 
   /**
    * Gets a byte.
