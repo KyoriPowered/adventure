@@ -185,6 +185,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
 
   /**
    * Parses a string into an component, allows passing placeholders using templates (which support components).
+   * MiniMessage parses placeholders from following syntax: {@code <placeholder_name>} where placeholder_name is {@link Template.StringTemplate#key()}
    *
    * @param input the input string
    * @param placeholders the placeholders
@@ -195,6 +196,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
 
   /**
    * Parses a string into an component, allows passing placeholders using templates (which support components).
+   * MiniMessage parses placeholders from following syntax: {@code <placeholder_name>} where placeholder_name is {@link Template.StringTemplate#key()}
    *
    * @param input the input string
    * @param placeholders the placeholders
