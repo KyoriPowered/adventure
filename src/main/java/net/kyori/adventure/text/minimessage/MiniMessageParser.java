@@ -224,11 +224,17 @@ class MiniMessageParser {
         case ESCAPED_OPEN_TAG_START:
         case OPEN_TAG_START:
           // next has to be name
+          if (tokens.size() - 1 == i) {
+            throw new ParsingException("Expected name after open tag, but got nothing", -1);
+          }
           Token name = tokens.get(++i);
           if(name.type() != TokenType.NAME && token.type() != TokenType.ESCAPED_OPEN_TAG_START) {
             throw new ParsingException("Expected name after open tag, but got " + name, -1);
           }
           // after that, we get a param seperator or the end
+          if (tokens.size() - 1 == i) {
+            throw new ParsingException("Expected param or end after open tag + name, but got nothing", -1);
+          }
           Token paramOrEnd = tokens.get(++i);
           if(paramOrEnd.type() == TokenType.PARAM_SEPARATOR) {
             // we need to handle params, so read till end of tag
@@ -298,11 +304,17 @@ class MiniMessageParser {
         case ESCAPED_CLOSE_TAG_START:
         case CLOSE_TAG_START:
           // next has to be name
+          if (tokens.size() - 1 == i) {
+            throw new ParsingException("Expected name after open tag, but got nothing", -1);
+          }
           name = tokens.get(++i);
           if(name.type() != TokenType.NAME && token.type() != TokenType.ESCAPED_CLOSE_TAG_START) {
             throw new ParsingException("Expected name after close tag start, but got " + name, -1);
           }
           // after that, we just want end, sometimes end has params tho
+          if (tokens.size() - 1 == i) {
+            throw new ParsingException("Expected param or end after open tag + name, but got nothing", -1);
+          }
           paramOrEnd = tokens.get(++i);
           if(paramOrEnd.type() == TokenType.TAG_END) {
             // we finished, gotta remove name out of the stack

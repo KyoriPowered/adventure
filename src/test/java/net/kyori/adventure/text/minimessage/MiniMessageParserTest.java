@@ -522,6 +522,12 @@ public class MiniMessageParserTest {
     assertThrows(ParseException.class, () -> MiniMessage.builder().strict(true).build().parse(input));
   }
 
+  @Test
+  void testMissingCloseOfHover() {
+    final String input = "<hover:show_text:'<blue>Hello</blue>'<red>TEST</red></hover><click:suggest_command:'/msg <user>'><user></click> <reset>: <hover:show_text:'<date>'><message></hover>";
+    assertThrows(ParseException.class, () -> MiniMessage.builder().strict(true).build().parse(input));
+  }
+
   private void test(final @NonNull String input, final @NonNull String expected) {
     this.test(this.parser.parse(input), expected);
   }
