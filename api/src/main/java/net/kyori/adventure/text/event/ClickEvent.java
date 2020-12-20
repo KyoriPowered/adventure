@@ -130,6 +130,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @param text the text to copy to the clipboard
    * @return a click event
    * @since 4.0.0
+   * @sinceMinecraft 1.15
    */
   public static @NonNull ClickEvent copyToClipboard(final @NonNull String text) {
     return new ClickEvent(Action.COPY_TO_CLIPBOARD, text);
@@ -250,6 +251,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
      * Copies text to the clipboard.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.15
      */
     COPY_TO_CLIPBOARD("copy_to_clipboard", true);
 

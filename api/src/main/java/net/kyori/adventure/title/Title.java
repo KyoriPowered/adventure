@@ -31,8 +31,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * A title.
+ * Represents an in-game title, which can be displayed across the centre of the screen.
  *
+ * @see Times
  * @since 4.0.0
  */
 public interface Title extends Examinable {

@@ -28,6 +28,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.sound.Sound;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
@@ -38,7 +40,18 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * A style.
+ * A style applies visual effects or extra functionality to {@link Component}s,
+ * such as {@link TextColor}s, {@link TextDecoration}s, {@link ClickEvent}s etc.
+ *
+ * <p>Some examples of valid styles:</p>
+ *   <pre>
+ *     Style myStyle = Style.style(ClickEvent.openUrl(url), NamedTextColor.RED, TextDecoration.BOLD);
+ *     Style yourStyle = Style.style(TextColor.color(20, 30, 40), HoverEvent.showText(Component.text("Wow!"));
+ *     Style ourStyle = Style.style().color(NamedTextColor.WHITE).build();
+ *   </pre>
+ *
+ * <p>A note about fonts: the {@link Key} in this context represents the resource location
+ * of the font in the same way as {@link Sound}s</p>
  *
  * @since 4.0.0
  */
@@ -47,6 +60,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    * The default font.
    *
    * @since 4.0.0
+   * @sinceMinecraft 1.16
    */
   Key DEFAULT_FONT = Key.key("default");
 
@@ -207,15 +221,18 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    *
    * @return the font
    * @since 4.0.0
+   * @sinceMinecraft 1.16
    */
   @Nullable Key font();
 
   /**
    * Sets the font.
    *
+   *
    * @param font the font
    * @return a style
    * @since 4.0.0
+   * @sinceMinecraft 1.16
    */
   @NonNull Style font(final @Nullable Key font);
 
@@ -602,6 +619,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @param font the font
      * @return this builder
      * @since 4.0.0
+     * @sinceMinecraft 1.16
      */
     @NonNull Builder font(final @Nullable Key font);
 

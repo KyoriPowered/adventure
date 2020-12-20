@@ -26,9 +26,19 @@ package net.kyori.adventure.text;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * An entity NBT component.
+ * Given a Minecraft selector, this component reads the NBT of the associated entity and displays that information.
  *
+ * <p>This component consists of:</p>
+ * <dl>
+ *   <dt>selector</dt>
+ *   <dd>a Minecraft selector.(e.g {@code @p}, {@code @r})</dd>
+ *   <dt>everything in</dt>
+ *   <dd>{@link NBTComponent}</dd>
+ * </dl>
+ *
+ * @see NBTComponent
  * @since 4.0.0
+ * @sinceMinecraft 1.14
  */
 public interface EntityNBTComponent extends NBTComponent<EntityNBTComponent, EntityNBTComponent.Builder>, ScopedComponent<EntityNBTComponent> {
   /**

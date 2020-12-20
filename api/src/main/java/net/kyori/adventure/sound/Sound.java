@@ -32,8 +32,23 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A sound.
+ * Represents an in-game sound which can be played to the client.
  *
+ * <p>A sound consists of:</p>
+ * <dl>
+ *   <dt>key/type</dt>
+ *   <dd>the resource location of this sound (e.g minecraft:ambient.cave or my_plugin:custom_sound</dd>
+ *   <dt>source</dt>
+ *   <dd>a {@link Source} telling the game where the sound is coming from</dd>
+ *   <dt>volume</dt>
+ *   <dd>a number in the range [0,∞) representing how loud the sound should be played.
+ *   Increasing volume does not actually play the sound louder, but increases the radius
+ *   of where it can be heard</dd>
+ *   <dt>pitch</dt>
+ *   <dd>a number in the range [0,2] representing which pitch the sound should be played at</dd>
+ * </dl>
+ *
+ * @see SoundStop
  * @since 4.0.0
  */
 public interface Sound extends Examinable {

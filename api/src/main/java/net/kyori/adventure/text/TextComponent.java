@@ -28,7 +28,13 @@ import net.kyori.adventure.text.format.Style;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * A text component.
+ * A component that displays a string.
+ *
+ * <p>This component consists of:</p>
+ * <dl>
+ *   <dt>content</dt>
+ *   <dd>string to be displayed</dd>
+ * </dl>
  *
  * @since 4.0.0
  */

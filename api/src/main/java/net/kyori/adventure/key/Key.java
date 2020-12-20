@@ -29,7 +29,27 @@ import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * A key.
+ * An identifying object used to fetch and/or store unique objects.
+ *
+ * <p>A key consists of:</p>
+ * <dl>
+ *   <dt>namespace</dt>
+ *   <dd>in most cases this should be your plugin or organization name</dd>
+ *   <dt>value</dt>
+ *   <dd>what this key leads to, e.g "translations" or "entity.firework_rocket.blast"</dd>
+ * </dl>
+ *
+ * <p>Valid characters for namespaces are <a href="https://regexr.com/5ibbm">{@code [a-z0-9_.-]}</a>.</p>
+ *
+ * <p>Valid characters for values are <a href="https://regexr.com/5if3m">{@code [a-z0-9/._-]}</a>.</p>
+ *
+ * <p>Some examples of possible custom keys:</p>
+ * <ul>
+ *   <li> my_plugin:translations</li>
+ *   <li> my_plugin:weapon.amazing-weapon_damage-attribute</li>
+ *   <li> my_organization:music.song_1</li>
+ *   <li> my_organization:item.magic_button</li>
+ * </ul>
  *
  * @since 4.0.0
  */

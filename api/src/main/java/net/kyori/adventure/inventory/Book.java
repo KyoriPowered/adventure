@@ -27,14 +27,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * A signed book.
+ * Represents the in-game interface of a book.
  *
+ *
+ * <p>Components exceeding the text limit for a page will be truncated client-side
+ * and not moved automatically to the next page.</p>
+ *
+ * @see Audience#openBook(Book)
  * @since 4.0.0
  */
 public interface Book extends Buildable<Book, Book.Builder>, Examinable {

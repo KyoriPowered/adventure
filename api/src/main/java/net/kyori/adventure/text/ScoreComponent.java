@@ -27,7 +27,24 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * A scoreboard score component.
+ * A component that can display a player's score from a scoreboard objective,
+ * with an optional fallback value if the search for the score fails.
+ * 
+ * <p>This component consists of:</p>
+ * <dl>
+ *   <dt>name</dt>
+ *   <dd>a player username or a Minecraft selector that leads to a single player</dd>
+ *   <dt>objective</dt>
+ *   <dd>a scoreboard objective</dd>
+ *   <dt>value(optional)</dt>
+ *   <dd>a fallback value to be used if the search fails.
+ *   <p>This field is no longer present in the game from 1.16,
+ *   which means it will be ignored</p></dd>
+ * </dl>
+ *
+ * <p>This component is rendered serverside and can therefore receive platform-defined
+ * context. See the documentation for your respective
+ * platform for more info</p>
  *
  * @since 4.0.0
  */

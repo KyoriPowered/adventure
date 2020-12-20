@@ -34,6 +34,10 @@ import org.checkerframework.common.value.qual.IntRange;
 /**
  * A color which may be applied to a {@link Style}.
  *
+ * <p>The full range of hexadecimal colors are only supported in <em>Minecraft: Java Edition</em> 1.16 and above.
+ * On older versions, platforms may downsample these to {@link NamedTextColor}s.</p>
+ *
+ * @see NamedTextColor
  * @since 4.0.0
  */
 public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, StyleBuilderApplicable, TextFormat {

@@ -40,6 +40,7 @@ import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.IntFunction2;
 import net.kyori.examination.Examinable;
@@ -47,7 +48,33 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * A component.
+ * A Component is an immutable object that represents how text
+ * is displayed Minecraft clients.
+ *
+ * <p>Components can be thought of as the combination of:</p>
+ *
+ * <ul>
+ *  <li>The message the Component wants to display; and</li>
+ *  <li>The {@link Style} of that message.</li>
+ * </ul>
+ *
+ * <p>The most basic component is the {@link TextComponent},
+ * where the message is a simple String. However, other dynamic
+ * Components are available, which are linked to from here and you
+ * are encouraged to explore to better support your plugin/mod.
+ * Factories and builders for all available component types are
+ * provided via this interface.</p>
+ *
+ * <p>Components can be serialized to and deserialized from other
+ * formats via the use of {@link ComponentSerializer component
+ * serializers}. If used within one of our natively supported platforms,
+ * the availability of such serializers may vary, consult the documentation
+ * or support for the given platform should this be the case.</p>
+ *
+ * <p>Further information about Components, along with functional
+ * examples of how they can be used,
+ * <a href="https://docs.adventure.kyori.net/text.html">can be found on
+ * our documentation.</a></p>
  *
  * @see BlockNBTComponent
  * @see EntityNBTComponent
@@ -57,6 +84,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @see StorageNBTComponent
  * @see TextComponent
  * @see TranslatableComponent
+ * @see LinearComponents
  * @since 4.0.0
  */
 public interface Component extends ComponentBuilderApplicable, ComponentLike, Examinable, HoverEventSource<Component> {

@@ -46,7 +46,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A registry of translations.
+ * A registry of translations. Used to register localized strings for translation keys. The registry can be submitted
+ * to the {@link GlobalTranslator} or can translate manually through {@link #translate(String, Locale)}.
+ *
+ * <p>The recommended way to register translations is through {@link #registerAll(Locale, ResourceBundle, boolean)}</p>
  *
  * @since 4.0.0
  */
@@ -107,6 +110,16 @@ public interface TranslationRegistry extends Translator {
 
   /**
    * Registers a map of translations.
+   *
+   * <pre>
+   *   final TranslationRegistry registry;
+   *   final Map&#60;String, MessageFormat&#62; translations;
+   *
+   *   translations.put("example.greeting", new MessageFormat("Greetings {0}. Doing ok?));
+   *   translations.put("example.goodbye", new MessageFormat("Goodbye {0}. Have a nice day!));
+   *
+   *   registry.registerAll(Locale.US, translations);
+   * </pre>
    *
    * @param locale a locale
    * @param formats a map of translation keys to formats
