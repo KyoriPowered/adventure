@@ -34,7 +34,20 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.UnmodifiableView;
 
 /**
- * A bossbar.
+ * Represents an in-game bossbar which can be shown to the client.
+ * <p>A bossbar consists of:</p>
+ * <dl>
+ *   <dt>name</dt>
+ *   <dd>the title of the bossbar</dd>
+ *   <dt>progress</dt>
+ *   <dd>a number in the range [0,1] representing how much of the bossbar should be filled</dd>
+ *   <dt>color</dt>
+ *   <dd>the {@link Color} of the bossbar; platforms may downsample this for versions below Java Edition 1.9</dd>
+ *   <dt>overlay</dt>
+ *   <dd>{@link Overlay}s decide if the bossbar is continuous or split into segments</dd>
+ *   <dt>flags(optional)</dt>
+ *   <dd>{@link Flag}s are extra actions that can be triggered whenever the bossbar is displayed</dd>
+ * </dl>
  *
  * @since 4.0.0
  */
@@ -452,30 +465,35 @@ public interface BossBar extends Examinable {
      * Pink.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.9
      */
     PINK("pink"),
     /**
      * Blue.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.9
      */
     BLUE("blue"),
     /**
      * Red.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.9
      */
     RED("red"),
     /**
      * Green.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.9
      */
     GREEN("green"),
     /**
      * Yellow.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.9
      */
     YELLOW("yellow"),
     /**
@@ -488,6 +506,7 @@ public interface BossBar extends Examinable {
      * White.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.9
      */
     WHITE("white");
 
@@ -505,7 +524,7 @@ public interface BossBar extends Examinable {
   }
 
   /**
-   * Flags to control toggleable effects of a boss bar.
+   * Flags to control toggleable effects of a bossbar.
    *
    * @since 4.0.0
    */
@@ -514,18 +533,21 @@ public interface BossBar extends Examinable {
      * If the screen should be darkened.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.9
      */
     DARKEN_SCREEN("darken_screen"),
     /**
      * If boss music should be played.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.9
      */
     PLAY_BOSS_MUSIC("play_boss_music"),
     /**
      * If world fog should be created.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.9
      */
     CREATE_WORLD_FOG("create_world_fog");
 
@@ -545,7 +567,7 @@ public interface BossBar extends Examinable {
   }
 
   /**
-   * An overlay on the bar component of a boss bar.
+   * An overlay on the bar component of a bossbar.
    *
    * @since 4.0.0
    */
@@ -560,24 +582,28 @@ public interface BossBar extends Examinable {
      * A bar with {@code 6} notches.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.9
      */
     NOTCHED_6("notched_6"),
     /**
      * A bar with {@code 10} notches.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.9
      */
     NOTCHED_10("notched_10"),
     /**
      * A bar with {@code 12} notches.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.9
      */
     NOTCHED_12("notched_12"),
     /**
      * A bar with {@code 20} notches.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.9
      */
     NOTCHED_20("notched_20");
 

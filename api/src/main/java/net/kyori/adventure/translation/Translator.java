@@ -25,6 +25,8 @@ package net.kyori.adventure.translation;
 
 import java.text.MessageFormat;
 import java.util.Locale;
+import java.util.ResourceBundle;
+
 import net.kyori.adventure.key.Key;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -32,6 +34,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  * A message format translator.
  *
+ * <p>To see how to create a {@link Translator} with a {@link ResourceBundle}
+ * see {@link TranslationRegistry#registerAll(Locale, ResourceBundle, boolean)}</p>
+ *
+ * <p>After creating a {@link Translator} you can add it to the {@link GlobalTranslator}
+ * to enable automatic translations by the platforms.</p>
+ *
+ * @see TranslationRegistry
  * @since 4.0.0
  */
 public interface Translator {

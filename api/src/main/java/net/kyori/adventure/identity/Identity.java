@@ -30,13 +30,17 @@ import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * An identity.
+ * An identity used to track the sender of messages for the social interaction features
+ * introduced in <em>Minecraft: Java Edition</em> 1.16.4.
  *
  * @since 4.0.0
+ * @sinceMinecraft 1.16
  */
 public interface Identity extends Examinable {
   /**
    * Gets the {@code null} identity.
+   *
+   * <p>This should only be used when no players can be linked to a message.</p>
    *
    * @return the {@code null} identity
    * @since 4.0.0

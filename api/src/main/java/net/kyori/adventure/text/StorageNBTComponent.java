@@ -28,9 +28,19 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Contract;
 
 /**
- * An storage NBT component.
+ * Given a {@link Key}, this component reads the NBT of the associated command storage and displays that information.
  *
+ * <p>This component consists of:</p>
+ * <dl>
+ *   <dt>storage</dt>
+ *   <dd>a key that represents the resource location of a command storage (eg. my_plugin:actions.punches_entity)</dd>
+ *   <dt>everything in</dt>
+ *   <dd>{@link NBTComponent}</dd>
+ * </dl>
+ *
+ * @see NBTComponent
  * @since 4.0.0
+ * @sinceMinecraft 1.15
  */
 public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent, StorageNBTComponent.Builder>, ScopedComponent<StorageNBTComponent> {
   /**

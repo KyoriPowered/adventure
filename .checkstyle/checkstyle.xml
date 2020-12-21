@@ -36,7 +36,7 @@
     <!-- https://checkstyle.org/config_javadoc.html#AtclauseOrder -->
     <module name="AtclauseOrder">
       <property name="violateExecutionOnNonTightHtml" value="true"/>
-      <property name="tagOrder" value="@author, @deprecated, @exception, @param, @return, @serial, @serialData, @serialField, @throws, @see, @since, @version"/>
+      <property name="tagOrder" value="@author, @deprecated, @exception, @param, @return, @serial, @serialData, @serialField, @throws, @see, @since, @sinceMinecraft, @version"/>
     </module>
 
     <!-- https://checkstyle.org/config_imports.html#AvoidStarImport -->
@@ -252,7 +252,7 @@
     <!-- https://checkstyle.org/config_javadoc.html#WriteTag -->
     <!-- https://gitlab.com/stellardrift/stylecheck/-/blob/dev/src/main/java/ca/stellardrift/stylecheck/FilteringWriteTag.java -->
     <module name="FilteringWriteTag">
-      <property name="tag" value="@since"/>
+      <property name="tag" value="@since\s"/>
       <property name="tagFormat" value="\d\.\d+\.\d+"/>
       <property name="tagSeverity" value="ignore"/>
       <property name="minimumScope" value="public"/>

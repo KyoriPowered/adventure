@@ -28,7 +28,7 @@ import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * Utilities for creating a {@link Component} "linearly".
+ * A utility class that allows {@link Component components} to be created where {@link Style styles} can be specified inline.
  *
  * @since 4.0.0
  */
@@ -37,7 +37,15 @@ public final class LinearComponents {
   }
 
   /**
-   * Creates a component "linearly".
+   * Styles apply to all components after them until a conflicting style is discovered
+   *   <pre>
+   *     Component message = LinearComponents.linear(NamedTextColor.RED, translatable("welcome.message"), TextDecoration.BOLD, text(" SERVER));
+   *   </pre>
+   * In this example all the text is red, but only the last word is bold.
+   *   <pre>
+   *     Component message = LinearComponents.linear(NamedTextColor.GREEN, text("I am green. "), NamedTextColor.GRAY, text("I am gray."));
+   *   </pre>
+   * In this example, the first text is green and the second is gray.
    *
    * @param applicables the things used to make the component
    * @return a component

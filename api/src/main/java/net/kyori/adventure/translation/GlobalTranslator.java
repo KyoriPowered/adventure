@@ -24,13 +24,19 @@
 package net.kyori.adventure.translation;
 
 import java.util.Locale;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
 import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * A global source of translations.
+ * A global source of translations. The global source is the default source used by adventure platforms
+ * when rendering a {@link TranslatableComponent} to an {@link Audience}.
+ *
+ * <p>To add your translations to this source, use {@code GlobalTranslator#get()#addSource(Translator)}
+ * with a {@link TranslationRegistry} or your own implementation of a {@link Translator}.</p>
  *
  * @since 4.0.0
  */

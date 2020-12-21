@@ -27,7 +27,17 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Contract;
 
 /**
- * A selector component.
+ * A component that can display the name of entities found with a given selector.
+ *
+ * <p>This component consists of:</p>
+ * <dl>
+ *   <dt>selector</dt>
+ *   <dd>a Minecraft selector.(e.g {@code @p}, {@code @a})</dd>
+ * </dl>
+ *
+ * <p>This component is rendered serverside and can therefore receive platform-defined
+ * context. See the documentation for your respective
+ * platform for more info</p>
  *
  * @since 4.0.0
  */

@@ -21,26 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text;
-
-import net.kyori.adventure.text.format.StyleBuilderApplicable;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.jetbrains.annotations.Contract;
-
 /**
- * Something that can be applied to a {@link ComponentBuilder}.
+ * Adventure: a serverside user interface library for Minecraft: Java Edition.
  *
- * @see StyleBuilderApplicable
- * @since 4.0.0
+ * <p>See the <a href="https://docs.adventure.kyori.net/index.html">documentation</a>
+ * for usage and dependency information for this project and associated libraries.</p>
  */
-@FunctionalInterface
-public interface ComponentBuilderApplicable {
-  /**
-   * Applies to {@code component}.
-   *
-   * @param component the component builder
-   * @since 4.0.0
-   */
-  @Contract(mutates = "param")
-  void componentBuilderApply(final @NonNull ComponentBuilder<?, ?> component);
-}
+package net.kyori.adventure;

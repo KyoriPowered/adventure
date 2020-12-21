@@ -27,9 +27,16 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Contract;
 
 /**
- * A keybind component.
+ * A {@link Component} that displays the client's current keybind for the supplied action.
+ *
+ * <p>This component takes:</p>
+ * <dl>
+ *   <dt>keybind</dt>
+ *   <dd>a keybind identifier for a action. (e.g key.inventory, key.jump etc..)</dd>
+ * </dl>
  *
  * @since 4.0.0
+ * @sinceMinecraft 1.12
  */
 public interface KeybindComponent extends BuildableComponent<KeybindComponent, KeybindComponent.Builder>, ScopedComponent<KeybindComponent> {
   /**

@@ -24,6 +24,7 @@
 package net.kyori.adventure.sound;
 
 import java.util.function.Supplier;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -32,8 +33,14 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A sound stop.
+ * A sound and/or a sound source, used for stopping in-game sounds that
+ * are being played on a game client matching the given sound and/or sound source.
  *
+ * <p>For clarification: a {@link SoundStop} consisting of the sound "ambient.weather.rain" and the source {@link Sound.Source#AMBIENT}
+ * will only stop sounds matching BOTH parameters and not sounds matching only the sound or only the source.</p>
+ *
+ *
+ * @see Audience#stopSound(SoundStop)
  * @since 4.0.0
  */
 public interface SoundStop extends Examinable {

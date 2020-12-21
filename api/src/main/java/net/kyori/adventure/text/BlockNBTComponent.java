@@ -29,9 +29,19 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Contract;
 
 /**
- * A block NBT component.
+ * Given an in-game position, this component reads the NBT of the associated block and displays that information.
  *
+ * <p>This component consists of:</p>
+ * <dl>
+ *   <dt>pos</dt>
+ *   <dd>a position in the world the component is being displayed in.</dd>
+ *   <dt>everything in</dt>
+ *   <dd>{@link NBTComponent}</dd>
+ * </dl>
+ *
+ * @see NBTComponent
  * @since 4.0.0
+ * @sinceMinecraft 1.14
  */
 public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, BlockNBTComponent.Builder>, ScopedComponent<BlockNBTComponent> {
   /**

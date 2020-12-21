@@ -29,7 +29,13 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Contract;
 
 /**
- * A text component.
+ * A component that displays a string.
+ *
+ * <p>This component consists of:</p>
+ * <dl>
+ *   <dt>content</dt>
+ *   <dd>string to be displayed</dd>
+ * </dl>
  *
  * @since 4.0.0
  */

@@ -24,12 +24,36 @@
 package net.kyori.adventure.text;
 
 import java.util.List;
+import java.util.Locale;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.translation.GlobalTranslator;
+import net.kyori.adventure.translation.TranslationRegistry;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Contract;
 
 /**
- * A translatable component.
+ * A component that can display translated text.
  *
+ * <p>This component consists of:</p>
+ * <dl>
+ *   <dt>key</dt>
+ *   <dd>a translation key used together with the viewer locale to fetch a translated string.</dd>
+ *   <dt>args(optional)</dt>
+ *   <dd>components that can be used as arguments in the translated string.
+ *   <p>(e.g "You picked up <b>{0}</b>." -&#62; "You picked up <b>Carrot</b>")</p></dd>
+ * </dl>
+ *
+ * <p>Displaying this component through an {@link Audience} will run it through the {@link GlobalTranslator} by default,
+ * rendering the key as translated text if a translation with a key matching this components key is found in the viewers locale,
+ * optionally switching arguments with any placeholders in the discovered translation. If no translation is registered for the viewers locale
+ * adventure will first try to find similar locales that has a valid translation, and then find a translation in the default language({@link TranslationRegistry#defaultLocale(Locale) relevant method}).</p>
+ *
+ * <p>In addition to the initial attempts, if no translation is found in the serverside registry,
+ * the translation key and arguments will be passed through to the client which will perform translation using any
+ * keys defined in an active resource pack. (Hint: vanilla Minecraft is also considered a resource pack)</p>
+ *
+ * @see GlobalTranslator
+ * @see TranslationRegistry
  * @since 4.0.0
  */
 public interface TranslatableComponent extends BuildableComponent<TranslatableComponent, TranslatableComponent.Builder>, ScopedComponent<TranslatableComponent> {
