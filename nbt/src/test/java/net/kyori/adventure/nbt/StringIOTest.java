@@ -67,7 +67,7 @@ class StringIOTest {
     // Read and write
     final CompoundBinaryTag bigTest;
     try(final InputStream is = this.getClass().getResourceAsStream("/bigtest.nbt")) {
-      bigTest = BinaryTagIO.readCompressedInputStream(is);
+      bigTest = BinaryTagIO.reader().read(is, BinaryTagIO.Compression.GZIP);
       final String written = TagStringIO.get().asString(bigTest);
       assertEquals(bigTest, TagStringIO.get().asCompound(written));
     }
@@ -92,7 +92,7 @@ class StringIOTest {
   void testBigTestPrettyPrinting() throws IOException {
     final CompoundBinaryTag bigTest;
     try(final InputStream is = this.getClass().getResourceAsStream("/bigtest.nbt")) {
-      bigTest = BinaryTagIO.readCompressedInputStream(is);
+      bigTest = BinaryTagIO.reader().read(is, BinaryTagIO.Compression.GZIP);
     }
 
     final String rawTest = Resources.toString(this.getClass().getResource("/bigtest.snbt"), StandardCharsets.UTF_8);
