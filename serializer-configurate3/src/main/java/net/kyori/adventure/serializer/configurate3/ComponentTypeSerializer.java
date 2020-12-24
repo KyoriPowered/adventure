@@ -191,6 +191,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
     } else if(this.stringSerial != null && this.preferString) {
       try {
         value.setValue(this.stringSerial.serialize(src));
+        return;
       } catch(final Exception ex) {
         throw new ObjectMappingException(ex);
       }
