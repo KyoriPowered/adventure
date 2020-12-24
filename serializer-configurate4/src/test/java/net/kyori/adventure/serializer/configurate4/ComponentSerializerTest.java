@@ -25,13 +25,27 @@ package net.kyori.adventure.serializer.configurate4;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ComponentSerializerTest implements ConfigurateTestBase {
+  @Test
+  void testSerializeToString() {
+    final ConfigurationNode serialized = ConfigurateComponentSerializer.builder()
+      .scalarSerializer(GsonComponentSerializer.gson())
+      .outputStringComponents(true)
+      .build()
+      .serialize(Component.text("Hello", Style.style(TextDecoration.BOLD)));
+
+    assertEquals("{\"text\":\"Hello\",\"bold\":true}", serialized.getString());
+  }
+
   @Test
   void testTextComponent() {
     final ConfigurationNode serialized = this.node(n -> {

@@ -189,6 +189,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
     } else if(this.stringSerial != null && this.preferString) {
       try {
         value.set(this.stringSerial.serialize(src));
+        return;
       } catch(final Exception ex) {
         throw new SerializationException(ex);
       }
