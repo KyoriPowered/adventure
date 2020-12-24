@@ -24,7 +24,9 @@
 package net.kyori.adventure.nbt;
 
 import java.util.Map;
+import java.util.function.Consumer;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Common methods between {@link CompoundBinaryTag} and {@link CompoundBinaryTag.Builder}.
@@ -51,6 +53,27 @@ public interface CompoundTagSetter<R> {
    * @since 4.4.0
    */
   @NonNull R put(final @NonNull Map<String, ? extends BinaryTag> tags);
+
+  /**
+   * Removes a tag.
+   *
+   * @param key the key
+   * @return a compound tag
+   * @since 4.4.0
+   */
+  default @NonNull R remove(final @NonNull String key) {
+    return this.remove(key, null);
+  }
+
+  /**
+   * Removes a tag.
+   *
+   * @param key the key
+   * @param removed a consumer that accepts the removed tag
+   * @return a compound tag
+   * @since 4.4.0
+   */
+  @NonNull R remove(final @NonNull String key, final @Nullable Consumer<? super BinaryTag> removed);
 
   /**
    * Inserts a boolean.
