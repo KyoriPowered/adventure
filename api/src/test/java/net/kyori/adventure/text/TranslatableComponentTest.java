@@ -156,4 +156,20 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
       Component.text("lucko")
     ).inOrder();
   }
+
+  @Test
+  void testBuilderArgs_multipleWithEmpty() {
+    final TranslatableComponent c0 = Component.translatable()
+      .key("multiplayer.player.joined")
+      .args(
+        Component.empty(),
+        Component.text().content("kashike")
+      )
+      .build();
+    assertThat(c0.args()).hasSize(2);
+    assertThat(c0.args()).containsExactly(
+      Component.empty(),
+      Component.text("kashike")
+    ).inOrder();
+  }
 }
