@@ -58,7 +58,7 @@ public abstract class AbstractComponent implements Component {
     for(int i = 0, size = list.size(); i < size; i++) {
       final ComponentLike like = list.get(i);
       final Component component = like.asComponent();
-      if((allowEmpty || component != Component.empty())) {
+      if(allowEmpty || component != Component.empty()) {
         components.add(component);
       }
     }
