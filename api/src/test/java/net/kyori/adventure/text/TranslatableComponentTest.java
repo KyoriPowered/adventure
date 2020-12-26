@@ -157,6 +157,7 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
     ).inOrder();
   }
 
+  // https://github.com/KyoriPowered/adventure/pull/252
   @Test
   void testBuilderArgs_multipleWithEmpty() {
     final TranslatableComponent c0 = Component.translatable()

@@ -44,7 +44,11 @@ import static java.util.Objects.requireNonNull;
  * @since 4.0.0
  */
 public abstract class AbstractComponent implements Component {
-  static List<Component> asComponents(final List<? extends ComponentLike> list, final boolean includeEmpty) {
+  static List<Component> asComponents(final List<? extends ComponentLike> list) {
+    return asComponents(list, false);
+  }
+
+  static List<Component> asComponents(final List<? extends ComponentLike> list, final boolean allowEmpty) {
     if(list.isEmpty()) {
       // We do not need to create a new list if the one we are copying is empty - we can
       // simply just return our known-empty list instead.
@@ -54,15 +58,11 @@ public abstract class AbstractComponent implements Component {
     for(int i = 0, size = list.size(); i < size; i++) {
       final ComponentLike like = list.get(i);
       final Component component = like.asComponent();
-      if(includeEmpty || component != Component.empty()) {
+      if((allowEmpty || component != Component.empty())) {
         components.add(component);
       }
     }
     return Collections.unmodifiableList(components);
-  }
-
-  static List<Component> asComponents(final List<? extends ComponentLike> list) {
-    return asComponents(list, false);
   }
 
   static <T> List<T> addOne(final List<T> oldList, final T newElement) {
