@@ -87,8 +87,10 @@ public class MiniMessageTest {
     final Component expected = Component.text("")
             .append(Component.text("ONE").color(NamedTextColor.RED))
             .append(Component.text("TWO").color(NamedTextColor.GREEN))
-            .append(Component.text("THREE").color(NamedTextColor.BLUE));
-    final Component result = MiniMessage.get().parse("<red>ONE</red><test><blue>THREE", "test", Component.text("TWO").color(NamedTextColor.GREEN));
+            .append(Component.text("THREEFOUR").color(NamedTextColor.BLUE));
+    final Component result = MiniMessage.get().parse("<red>ONE<component><blue>THREE<string>",
+            "component", Component.text("TWO").color(NamedTextColor.GREEN),
+            "string", "FOUR");
 
     final String out1 = GsonComponentSerializer.gson().serialize(expected);
     final String out2 = GsonComponentSerializer.gson().serialize(result);

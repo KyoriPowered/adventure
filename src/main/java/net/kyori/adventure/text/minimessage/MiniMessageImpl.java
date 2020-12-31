@@ -108,15 +108,13 @@ public class MiniMessageImpl implements MiniMessage {
       final String key = (String) placeholders[i];
 
       final Object rawValue = placeholders[i + 1];
-      final Component value;
       if(rawValue instanceof String) {
-        value = Component.text((String) rawValue);
+        templates[i / 2] = Template.of(key, (String) rawValue);
       } else if(rawValue instanceof ComponentLike) {
-        value = ((ComponentLike) rawValue).asComponent();
+        templates[i / 2] = Template.of(key, ((ComponentLike) rawValue).asComponent());
       } else {
         throw new IllegalArgumentException("Argument " + (i + 1) + " in placeholders must be Component or String: is value");
       }
-      templates[i / 2] = Template.of(key, value);
     }
 
     return this.parse(input, templates);
