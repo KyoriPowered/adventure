@@ -2,8 +2,11 @@ rootProject.name = "adventure-parent"
 
 // Unfortunately, we cannot make this any nicer really
 
+// Make sure to update bom/build.gradle when making changes to modules.
+
 include "api"
 include "bom"
+include "key"
 include "nbt"
 include "serializer-configurate3"
 include "serializer-configurate4"
@@ -15,6 +18,7 @@ include "text-serializer-plain"
 [
   "api",
   "bom",
+  "key",
   "nbt",
   "serializer-configurate3",
   "serializer-configurate4",
