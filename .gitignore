@@ -4,6 +4,8 @@
 /api/out/
 /api/run/
 /bom/build/
+/key/build/
+/key/out/
 /nbt/build/
 /nbt/out/
 /run/

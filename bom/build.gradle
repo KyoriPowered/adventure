@@ -12,6 +12,7 @@ dependencies {
   constraints {
     [
       "api",
+      "key",
       "nbt",
       "serializer-configurate3",
       "serializer-configurate4",
