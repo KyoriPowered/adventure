@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -77,6 +77,7 @@ public final class Index<K, V> {
    * @since 4.0.0
    */
   @SafeVarargs
+  @SuppressWarnings("varargs")
   public static <K, V extends Enum<V>> @NonNull Index<K, V> create(final Class<V> type, final @NonNull Function<? super V, ? extends K> keyFunction, final @NonNull V@NonNull... values) {
     return create(values, length -> new EnumMap<>(type), keyFunction);
   }
@@ -92,9 +93,9 @@ public final class Index<K, V> {
    * @since 4.0.0
    */
   @SafeVarargs
-  @SuppressWarnings("RedundantTypeArguments") // explicit type parameters needed to fix build on JDK 1.8
+  @SuppressWarnings("varargs")
   public static <K, V> @NonNull Index<K, V> create(final @NonNull Function<? super V, ? extends K> keyFunction, final @NonNull V@NonNull... values) {
-    return create(values, HashMap<V, K>::new, keyFunction);
+    return create(values, HashMap::new, keyFunction);
   }
 
   /**
@@ -107,9 +108,8 @@ public final class Index<K, V> {
    * @return the key map
    * @since 4.0.0
    */
-  @SuppressWarnings("RedundantTypeArguments") // explicit type parameters needed to fix build on JDK 1.8
   public static <K, V> @NonNull Index<K, V> create(final @NonNull Function<? super V, ? extends K> keyFunction, final @NonNull List<V> constants) {
-    return create(constants, HashMap<V, K>::new, keyFunction);
+    return create(constants, HashMap::new, keyFunction);
   }
 
   private static <K, V> @NonNull Index<K, V> create(final V[] values, final IntFunction<Map<V, K>> valueToKeyFactory, final @NonNull Function<? super V, ? extends K> keyFunction) {

@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,16 +27,26 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Buildable;
+import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
- * A signed book.
+ * Represents the in-game interface of a book.
  *
+ *
+ * <p>Components exceeding the text limit for a page will be truncated client-side
+ * and not moved automatically to the next page.</p>
+ *
+ * @see Audience#openBook(Book)
  * @since 4.0.0
  */
-public interface Book extends Buildable<Book, Book.Builder> {
+public interface Book extends Buildable<Book, Book.Builder>, Examinable {
   /**
    * Creates a book.
    *
@@ -64,36 +74,6 @@ public interface Book extends Buildable<Book, Book.Builder> {
   }
 
   /**
-   * Creates a book.
-   *
-   * @param title the title
-   * @param author the author
-   * @param pages the collection of pages
-   * @return a book
-   * @since 4.0.0
-   * @deprecated use {@link #book(Component, Component, Collection)}
-   */
-  @Deprecated
-  static @NonNull Book of(final @NonNull Component title, final @NonNull Component author, final @NonNull Collection<Component> pages) {
-    return book(title, author, pages);
-  }
-
-  /**
-   * Creates a book.
-   *
-   * @param title the title
-   * @param author the author
-   * @param pages an array of pages
-   * @return a book
-   * @since 4.0.0
-   * @deprecated use {@link #book(Component, Component, Component...)}
-   */
-  @Deprecated
-  static @NonNull Book of(final @NonNull Component title, final @NonNull Component author, final @NonNull Component@NonNull... pages) {
-    return book(title, author, pages);
-  }
-
-  /**
    * Create a new builder that will create a {@link Book}.
    *
    * @return a builder
@@ -118,6 +98,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
    * @return a new book with modifications
    * @since 4.0.0
    */
+  @Contract(value = "_ -> new", pure = true)
   @NonNull Book title(final @NonNull Component title);
 
   /**
@@ -135,6 +116,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
    * @return a new book with modifications
    * @since 4.0.0
    */
+  @Contract(value = "_ -> new", pure = true)
   @NonNull Book author(final @NonNull Component author);
 
   /**
@@ -145,7 +127,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
    * @return the list of pages
    * @since 4.0.0
    */
-  @NonNull List<Component> pages();
+  @Unmodifiable @NonNull List<Component> pages();
 
   /**
    * Returns an updated book with the provided pages.
@@ -154,6 +136,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
    * @return a new book with modifications
    * @since 4.0.0
    */
+  @Contract(value = "_ -> new", pure = true)
   default @NonNull Book pages(final @NonNull Component@NonNull... pages) {
     return this.pages(Arrays.asList(pages));
   }
@@ -165,6 +148,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
    * @return a new book with modifications
    * @since 4.0.0
    */
+  @Contract(value = "_ -> new", pure = true)
   @NonNull Book pages(final @NonNull List<Component> pages);
 
   /**
@@ -193,6 +177,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
      * @return this
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder title(final @NonNull Component title);
 
     /**
@@ -202,6 +187,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
      * @return this
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder author(final @NonNull Component author);
 
     /**
@@ -214,6 +200,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
      * @return this
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder addPage(final @NonNull Component page);
 
     /**
@@ -224,6 +211,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
      * @see #addPage(Component) for details on page values
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder pages(final @NonNull Component@NonNull... pages);
 
     /**
@@ -234,6 +222,7 @@ public interface Book extends Buildable<Book, Book.Builder> {
      * @see #addPage(Component) for details on page values
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder pages(final @NonNull Collection<Component> pages);
 
     /**

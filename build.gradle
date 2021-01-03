@@ -1,127 +1,99 @@
-plugins {
-  id 'net.kyori.invent' version '1.0.4' apply false
-  id 'net.kyori.invent-javadoc-jar' version '1.0.4' apply false
-  id 'net.kyori.invent-sonatype-repository' version '1.0.4' apply false
-  id 'net.kyori.invent-sources-jar' version '1.0.4' apply false
-  id 'net.minecrell.licenser' version '0.4.1' apply false
+buildscript {
+  ext {
+    indraVersion = "1.2.1"
+  }
 }
 
+plugins {
+  id "net.kyori.indra" version "$indraVersion" apply false
+  id "net.kyori.indra.checkstyle" version "$indraVersion" apply false
+  id "net.kyori.indra.license-header" version "$indraVersion" apply false
+  id "net.kyori.indra.publishing.sonatype" version "$indraVersion" apply false
+
+  id "com.adarshr.test-logger" version "2.1.1" apply false
+}
+
+group "net.kyori"
+version "4.4.0-SNAPSHOT"
+description "A user-interface library for Minecraft: Java Edition."
+
 subprojects {
-  apply plugin: 'checkstyle'
-  apply plugin: 'java-library'
-  apply plugin: 'maven-publish'
-  apply plugin: 'signing'
-  apply plugin: 'net.kyori.invent'
-  apply plugin: 'net.kyori.invent-javadoc-jar'
-  apply plugin: 'net.kyori.invent-sonatype-repository'
-  apply plugin: 'net.kyori.invent-sources-jar'
-  apply plugin: 'net.minecrell.licenser'
+  // The bom is special... this is a bit ugly, but not much more we can do without making our own script plugin
+  if(name != "adventure-bom") {
+    apply plugin: "net.kyori.indra"
+    apply plugin: "net.kyori.indra.checkstyle"
+    apply plugin: "net.kyori.indra.license-header"
+    apply plugin: "com.adarshr.test-logger"
 
-  group 'net.kyori'
-  version '4.0.0-SNAPSHOT'
-  description 'A user-interface library for Minecraft: Java Edition.'
+    testlogger {
+      theme("mocha-parallel")
+      showPassed(false)
+    }
 
-  tasks.withType(JavaCompile) {
-    options.compilerArgs += ['-Xlint:all']
-  }
+    configurations.testCompileClasspath {
+      exclude group: "junit" // brought in by google's libs
+    }
 
-  license {
-    header rootProject.file('header.txt')
-    include '**/*.java'
-    newLine false
-  }
+    repositories {
+      mavenLocal()
+      mavenCentral()
+    }
 
-  checkstyle {
-    def configRoot = new File(rootProject.projectDir, '.checkstyle')
-    toolVersion = '8.36.2'
-    configDirectory = configRoot
-    configProperties = [basedir: configRoot.getAbsolutePath()]
-  }
+    dependencies {
+      api(platform(project(":adventure-bom")))
+      checkstyle("ca.stellardrift:stylecheck:0.1")
+      testImplementation("com.google.guava:guava-testlib:30.1-jre")
+      testImplementation("com.google.truth:truth:1.1")
+      testImplementation("com.google.truth.extensions:truth-java8-extension:1.1")
+      testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
+      testImplementation("org.junit.jupiter:junit-jupiter-engine:5.7.0")
+    }
 
-  repositories {
-    mavenLocal()
-    mavenCentral()
-    maven {
-      url 'https://oss.sonatype.org/content/groups/public/'
+    javadoc {
+      options.tags(["sinceMinecraft:a:Since Minecraft:"])
     }
   }
 
-  configurations.testCompileClasspath {
-    exclude group: 'junit' // brought in by google's libs
-  }
+  // All projects
+  apply plugin: "net.kyori.indra.publishing.sonatype"
 
-  dependencies {
-    checkstyle 'ca.stellardrift:stylecheck:0.1-SNAPSHOT'
-    testImplementation 'com.google.guava:guava-testlib:29.0-jre'
-    testImplementation 'com.google.truth:truth:1.0.1'
-    testImplementation 'com.google.truth.extensions:truth-java8-extension:1.0.1'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-  }
+  indra {
+    javaVersions {
+      testWith(8, 11, 15)
+    }
 
-  inventSonatypeRepository.enabled = System.getenv('GITHUB_ACTIONS') == null || project.version.endsWith('-SNAPSHOT')
+    github("KyoriPowered", "adventure") {
+      ci = true
+    }
+    mitLicense()
 
-  publishing {
-    publications {
-      maven(MavenPublication) {
-        from components.java
-
-        artifact javadocJar
-        artifact sourcesJar
-
-        pom {
-          name = project.name
-          url = 'https://github.com/KyoriPowered/adventure'
-          description = project.description
-
-          developers {
-            developer {
-              id = 'kashike'
-              timezone = 'America/Vancouver'
-            }
-
-            developer {
-              id = 'lucko'
-              name = 'Luck'
-              url = 'https://lucko.me'
-              email = 'git@lucko.me'
-            }
-
-            developer {
-              id = 'zml'
-              name = 'zml'
-              timezone = 'America/Vancouver'
-            }
-
-            developer {
-              id = 'Electroid'
-            }
+    configurePublications {
+      pom {
+        developers {
+          developer {
+            id = "kashike"
+            timezone = "America/Vancouver"
           }
 
-          issueManagement {
-            system = 'GitHub Issues'
-            url = 'https://github.com/KyoriPowered/adventure/issues'
+          developer {
+            id = "lucko"
+            name = "Luck"
+            url = "https://lucko.me"
+            email = "git@lucko.me"
           }
 
-          licenses {
-            license {
-              name = 'MIT License'
-              url = 'https://opensource.org/licenses/MIT'
-            }
+          developer {
+            id = "zml"
+            name = "zml"
+            timezone = "America/Vancouver"
           }
 
-          scm {
-            connection = 'scm:git@github.com:KyoriPowered/adventure.git'
-            developerConnection = 'scm:git@github.com:KyoriPowered/adventure.git'
-            url = 'https://github.com/KyoriPowered/adventure/'
+          developer {
+            id = "Electroid"
           }
         }
       }
     }
   }
 
-  signing {
-    required { project.hasProperty('signing.keyId') && gradle.taskGraph.hasTask(':publish') && !project.version.endsWith('-SNAPSHOT') }
-    sign publishing.publications.maven
-  }
 }

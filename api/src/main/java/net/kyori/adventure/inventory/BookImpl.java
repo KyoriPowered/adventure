@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,14 +29,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
-import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static java.util.Objects.requireNonNull;
 
-final class BookImpl implements Book, Examinable {
+final class BookImpl implements Book {
   private final Component title;
   private final Component author;
   private final List<Component> pages;

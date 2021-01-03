@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
@@ -38,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BossBarTest {
   private final AtomicInteger name = new AtomicInteger();
-  private final AtomicInteger percent = new AtomicInteger();
+  private final AtomicInteger progress = new AtomicInteger();
   private final AtomicInteger color = new AtomicInteger();
   private final AtomicInteger overlay = new AtomicInteger();
   private final AtomicInteger flags = new AtomicInteger();
@@ -49,8 +50,8 @@ public class BossBarTest {
     }
 
     @Override
-    public void bossBarPercentChanged(final @NonNull BossBar bar, final float oldPercent, final float newPercent) {
-      BossBarTest.this.percent.incrementAndGet();
+    public void bossBarProgressChanged(final @NonNull BossBar bar, final float oldProgress, final float newProgress) {
+      BossBarTest.this.progress.incrementAndGet();
     }
 
     @Override
@@ -68,7 +69,7 @@ public class BossBarTest {
       BossBarTest.this.flags.incrementAndGet();
     }
   };
-  private final BossBar bar = BossBar.bossBar(Component.empty(), 1f, BossBar.Color.PURPLE, BossBar.Overlay.PROGRESS);
+  private final BossBar bar = BossBar.bossBar((ComponentLike) Component.empty(), 1f, BossBar.Color.PURPLE, BossBar.Overlay.PROGRESS);
 
   @Test
   void testOfFlags() {
@@ -92,22 +93,22 @@ public class BossBarTest {
   }
 
   @Test
-  void testPercent() {
-    assertEquals(0f, this.bar.percent(0f).percent());
-    assertEquals(0, this.percent.get());
+  void testProgress() {
+    assertEquals(0f, this.bar.progress(0f).progress());
+    assertEquals(0, this.progress.get());
 
     this.bar.addListener(this.listener);
-    assertEquals(0.1f, this.bar.percent(0.1f).percent());
-    assertEquals(1, this.percent.get());
+    assertEquals(0.1f, this.bar.progress(0.1f).progress());
+    assertEquals(1, this.progress.get());
 
-    assertEquals(0.1f, this.bar.percent(0.1f).percent());
-    assertEquals(1, this.percent.get()); // value has not changed, should not have incremented
+    assertEquals(0.1f, this.bar.progress(0.1f).progress());
+    assertEquals(1, this.progress.get()); // value has not changed, should not have incremented
   }
 
   @Test
-  void testPercent_outOfRange() {
-    assertThrows(IllegalArgumentException.class, () -> this.bar.percent(-1f));
-    assertThrows(IllegalArgumentException.class, () -> this.bar.percent(1.1f));
+  void testProgress_outOfRange() {
+    assertThrows(IllegalArgumentException.class, () -> this.bar.progress(-1f));
+    assertThrows(IllegalArgumentException.class, () -> this.bar.progress(1.1f));
   }
 
   @Test

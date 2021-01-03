@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,25 +30,25 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder<T> {
   private @MonotonicNonNull List<BinaryTag> tags;
-  private BinaryTagType<? extends BinaryTag> type;
+  private BinaryTagType<? extends BinaryTag> elementType;
 
   ListTagBuilder() {
     this(BinaryTagTypes.END);
   }
 
   ListTagBuilder(final BinaryTagType<? extends BinaryTag> type) {
-    this.type = type;
+    this.elementType = type;
   }
 
   @Override
   public ListBinaryTag.@NonNull Builder<T> add(final BinaryTag tag) {
     ListBinaryTagImpl.noAddEnd(tag);
     // set the type if it has not yet been set
-    if(this.type == BinaryTagTypes.END) {
-      this.type = tag.type();
+    if(this.elementType == BinaryTagTypes.END) {
+      this.elementType = tag.type();
     }
     // check after changing from an empty tag
-    ListBinaryTagImpl.mustBeSameType(tag, this.type);
+    ListBinaryTagImpl.mustBeSameType(tag, this.elementType);
     if(this.tags == null) {
       this.tags = new ArrayList<>();
     }
@@ -57,8 +57,16 @@ final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder
   }
 
   @Override
+  public ListBinaryTag.@NonNull Builder<T> add(final Iterable<? extends T> tagsToAdd) {
+    for(final T tag : tagsToAdd) {
+      this.add(tag);
+    }
+    return this;
+  }
+
+  @Override
   public @NonNull ListBinaryTag build() {
     if(this.tags == null) return ListBinaryTag.empty();
-    return new ListBinaryTagImpl(this.type, new ArrayList<>(this.tags));
+    return new ListBinaryTagImpl(this.elementType, new ArrayList<>(this.tags));
   }
 }

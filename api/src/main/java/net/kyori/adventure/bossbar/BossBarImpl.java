@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,38 +25,40 @@ package net.kyori.adventure.bossbar;
 
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.util.Listenable;
-import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static java.util.Objects.requireNonNull;
 
-final class BossBarImpl extends Listenable<BossBar.Listener> implements BossBar, Examinable {
+final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
   private static final BiConsumer<BossBarImpl, Set<Flag>> FLAGS_ADDED = (bar, flagsAdded) -> bar.forEachListener(listener -> listener.bossBarFlagsChanged(bar, flagsAdded, Collections.emptySet()));
   private static final BiConsumer<BossBarImpl, Set<Flag>> FLAGS_REMOVED = (bar, flagsRemoved) -> bar.forEachListener(listener -> listener.bossBarFlagsChanged(bar, Collections.emptySet(), flagsRemoved));
+  private final List<Listener> listeners = new CopyOnWriteArrayList<>();
   private Component name;
-  private float percent;
+  private float progress;
   private Color color;
   private Overlay overlay;
   private final Set<Flag> flags = EnumSet.noneOf(Flag.class);
 
-  BossBarImpl(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay) {
+  BossBarImpl(final @NonNull Component name, final float progress, final @NonNull Color color, final @NonNull Overlay overlay) {
     this.name = requireNonNull(name, "name");
-    this.percent = percent;
+    this.progress = progress;
     this.color = requireNonNull(color, "color");
     this.overlay = requireNonNull(overlay, "overlay");
   }
 
-  BossBarImpl(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay, final @NonNull Set<Flag> flags) {
-    this(name, percent, color, overlay);
+  BossBarImpl(final @NonNull Component name, final float progress, final @NonNull Color color, final @NonNull Overlay overlay, final @NonNull Set<Flag> flags) {
+    this(name, progress, color, overlay);
     this.flags.addAll(flags);
   }
 
@@ -77,24 +79,24 @@ final class BossBarImpl extends Listenable<BossBar.Listener> implements BossBar,
   }
 
   @Override
-  public float percent() {
-    return this.percent;
+  public float progress() {
+    return this.progress;
   }
 
   @Override
-  public @NonNull BossBar percent(final float newPercent) {
-    checkPercent(newPercent);
-    final float oldPercent = this.percent;
-    if(newPercent != oldPercent) {
-      this.percent = newPercent;
-      this.forEachListener(listener -> listener.bossBarPercentChanged(this, oldPercent, newPercent));
+  public @NonNull BossBar progress(final float newProgress) {
+    checkProgress(newProgress);
+    final float oldProgress = this.progress;
+    if(newProgress != oldProgress) {
+      this.progress = newProgress;
+      this.forEachListener(listener -> listener.bossBarProgressChanged(this, oldProgress, newProgress));
     }
     return this;
   }
 
-  static void checkPercent(final float percent) {
-    if(percent < MIN_PERCENT || percent > MAX_PERCENT) {
-      throw new IllegalArgumentException("percent must be between " + MIN_PERCENT + " and " + MAX_PERCENT + ", was " + percent);
+  static void checkProgress(final float progress) {
+    if(progress < MIN_PROGRESS || progress > MAX_PROGRESS) {
+      throw new IllegalArgumentException("progress must be between " + MIN_PROGRESS + " and " + MAX_PROGRESS + ", was " + progress);
     }
   }
 
@@ -132,7 +134,7 @@ final class BossBarImpl extends Listenable<BossBar.Listener> implements BossBar,
 
   @Override
   public @NonNull Set<Flag> flags() {
-    return this.flags;
+    return Collections.unmodifiableSet(this.flags);
   }
 
   @Override
@@ -231,21 +233,27 @@ final class BossBarImpl extends Listenable<BossBar.Listener> implements BossBar,
 
   @Override
   public @NonNull BossBar addListener(final @NonNull Listener listener) {
-    this.addListener0(listener);
+    this.listeners.add(listener);
     return this;
   }
 
   @Override
   public @NonNull BossBar removeListener(final @NonNull Listener listener) {
-    this.removeListener0(listener);
+    this.listeners.remove(listener);
     return this;
+  }
+
+  private void forEachListener(final @NonNull Consumer<Listener> consumer) {
+    for(final Listener listener : this.listeners) {
+      consumer.accept(listener);
+    }
   }
 
   @Override
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("name", this.name),
-      ExaminableProperty.of("percent", this.percent),
+      ExaminableProperty.of("progress", this.progress),
       ExaminableProperty.of("color", this.color),
       ExaminableProperty.of("overlay", this.overlay),
       ExaminableProperty.of("flags", this.flags)

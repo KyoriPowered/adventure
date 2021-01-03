@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -54,6 +54,7 @@ final class StyleSerializer implements TypeSerializer<Style> {
   static final String CLICK_EVENT_VALUE = "value";
   static final String HOVER_EVENT = "hoverEvent";
   static final String HOVER_EVENT_ACTION = "action";
+  @SuppressWarnings("serial")
   static final TypeToken<HoverEvent.Action<?>> HOVER_EVENT_ACTION_TYPE = new TypeToken<HoverEvent.Action<?>>() {};
   static final String HOVER_EVENT_CONTENTS = "contents";
   static final @Deprecated String HOVER_EVENT_VALUE = "value";
@@ -69,11 +70,11 @@ final class StyleSerializer implements TypeSerializer<Style> {
 
     final Style.Builder builder = Style.style();
 
-    final /* @Nullable */ Key font = value.getNode(FONT).getValue(KeySerializer.INSTANCE.type());
+    final @Nullable Key font = value.getNode(FONT).getValue(KeySerializer.INSTANCE.type());
     if(font != null) {
       builder.font(font);
     }
-    final /* @Nullable */ TextColor color = value.getNode(COLOR).getValue(TextColorSerializer.INSTANCE.type());
+    final @Nullable TextColor color = value.getNode(COLOR).getValue(TextColorSerializer.INSTANCE.type());
     if(color != null) {
       builder.color(color);
     }
@@ -85,7 +86,7 @@ final class StyleSerializer implements TypeSerializer<Style> {
       }
     }
 
-    final /* @Nullable */ String insertion = value.getNode(INSERTION).getString();
+    final @Nullable String insertion = value.getNode(INSERTION).getString();
     if(insertion != null) {
       builder.insertion(insertion);
     }

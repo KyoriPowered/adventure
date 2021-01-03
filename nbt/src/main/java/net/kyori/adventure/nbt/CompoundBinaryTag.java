@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.nbt;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -42,6 +43,19 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    */
   static @NonNull CompoundBinaryTag empty() {
     return CompoundBinaryTagImpl.EMPTY;
+  }
+
+  /**
+   * Creates a compound tag populated with {@code tags}.
+   *
+   * <p>If {@code tags} is empty, {@link #empty()} will be returned.</p>
+   *
+   * @return a compound tag
+   * @since 4.4.0
+   */
+  static @NonNull CompoundBinaryTag from(final @NonNull Map<String, ? extends BinaryTag> tags) {
+    if(tags.isEmpty()) return empty();
+    return new CompoundBinaryTagImpl(new HashMap<>(tags)); // explicitly copy
   }
 
   /**
@@ -316,7 +330,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @param key the key
    * @param expectedType the expected list type
    * @return the list, or a new list if this compound does not contain a list tag
-   *     with the specified key, has a tag with a different type, or the {@link ListBinaryTag#listType() list type}
+   *     with the specified key, has a tag with a different type, or the {@link ListBinaryTag#elementType() list type}
    *     does not match {@code expectedType}
    * @since 4.0.0
    */
@@ -331,7 +345,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @param expectedType the expected list type
    * @param defaultValue the default value
    * @return the list, or {@code defaultValue} if this compound does not contain a list tag
-   *     with the specified key, has a tag with a different type, or the {@link ListBinaryTag#listType() list type}
+   *     with the specified key, has a tag with a different type, or the {@link ListBinaryTag#elementType() list type}
    *     does not match {@code expectedType}
    * @since 4.0.0
    */

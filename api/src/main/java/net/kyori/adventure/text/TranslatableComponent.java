@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,281 +24,39 @@
 package net.kyori.adventure.text;
 
 import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
-import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.util.Buildable;
+import java.util.Locale;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.translation.GlobalTranslator;
+import net.kyori.adventure.translation.TranslationRegistry;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.Contract;
 
 /**
- * A translatable component.
+ * A component that can display translated text.
  *
+ * <p>This component consists of:</p>
+ * <dl>
+ *   <dt>key</dt>
+ *   <dd>a translation key used together with the viewer locale to fetch a translated string.</dd>
+ *   <dt>args(optional)</dt>
+ *   <dd>components that can be used as arguments in the translated string.
+ *   <p>(e.g "You picked up <b>{0}</b>." -&#62; "You picked up <b>Carrot</b>")</p></dd>
+ * </dl>
+ *
+ * <p>Displaying this component through an {@link Audience} will run it through the {@link GlobalTranslator} by default,
+ * rendering the key as translated text if a translation with a key matching this components key is found in the viewers locale,
+ * optionally switching arguments with any placeholders in the discovered translation. If no translation is registered for the viewers locale
+ * adventure will first try to find similar locales that has a valid translation, and then find a translation in the default language({@link TranslationRegistry#defaultLocale(Locale) relevant method}).</p>
+ *
+ * <p>In addition to the initial attempts, if no translation is found in the serverside registry,
+ * the translation key and arguments will be passed through to the client which will perform translation using any
+ * keys defined in an active resource pack. (Hint: vanilla Minecraft is also considered a resource pack)</p>
+ *
+ * @see GlobalTranslator
+ * @see TranslationRegistry
  * @since 4.0.0
  */
 public interface TranslatableComponent extends BuildableComponent<TranslatableComponent, TranslatableComponent.Builder>, ScopedComponent<TranslatableComponent> {
-  /**
-   * Creates a translatable component builder.
-   *
-   * @return a builder
-   * @since 4.0.0
-   * @deprecated use {@link Component#translatable()}
-   */
-  @Deprecated
-  static @NonNull Builder builder() {
-    return Component.translatable();
-  }
-
-  /**
-   * Creates a translatable component builder with a translation key.
-   *
-   * @param key the translation key
-   * @return a builder
-   * @since 4.0.0
-   * @deprecated no replacement
-   */
-  @Deprecated
-  static @NonNull Builder builder(final @NonNull String key) {
-    return Component.translatable().key(key);
-  }
-
-  /**
-   * Creates a translatable component with a translation key.
-   *
-   * @param key the translation key
-   * @return a translatable component
-   * @since 4.0.0
-   * @deprecated use {@link Component#translatable(String)}
-   */
-  @Deprecated
-  static @NonNull TranslatableComponent of(final @NonNull String key) {
-    return Component.translatable(key);
-  }
-
-  /**
-   * Creates a translatable component with a translation key and styling.
-   *
-   * @param key the translation key
-   * @param style the style
-   * @return a translatable component
-   * @since 4.0.0
-   * @deprecated use {@link Component#translatable(String, Style)}
-   */
-  @Deprecated
-  static @NonNull TranslatableComponent of(final @NonNull String key, final @NonNull Style style) {
-    return Component.translatable(key, style);
-  }
-
-  /**
-   * Creates a translatable component with a translation key, and optional color.
-   *
-   * @param key the translation key
-   * @param color the color
-   * @return a translatable component
-   * @since 4.0.0
-   * @deprecated use {@link Component#translatable(String, TextColor)}
-   */
-  @Deprecated
-  static @NonNull TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color) {
-    return Component.translatable(key, color);
-  }
-
-  /**
-   * Creates a translatable component with a translation key, and optional color and decorations.
-   *
-   * @param key the translation key
-   * @param color the color
-   * @param decorations the decorations
-   * @return a translatable component
-   * @since 4.0.0
-   * @deprecated use {@link Component#translatable(String, TextColor, TextDecoration...)}
-   */
-  @Deprecated
-  static @NonNull TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
-    return Component.translatable(key, color, decorations);
-  }
-
-  /**
-   * Creates a translatable component with a translation key, and optional color and decorations.
-   *
-   * @param key the translation key
-   * @param color the color
-   * @param decorations the decorations
-   * @return a translatable component
-   * @since 4.0.0
-   * @deprecated use {@link Component#translatable(String, TextColor, Set)}
-   */
-  @Deprecated
-  static @NonNull TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
-    return Component.translatable(key, color, decorations);
-  }
-
-  /**
-   * Creates a translatable component with a translation key and arguments.
-   *
-   * @param key the translation key
-   * @param args the translation arguments
-   * @return a translatable component
-   * @since 4.0.0
-   * @deprecated use {@link Component#translatable(String, ComponentLike...)}
-   */
-  @Deprecated
-  static @NonNull TranslatableComponent of(final @NonNull String key, final @NonNull ComponentLike@NonNull... args) {
-    return Component.translatable(key, args);
-  }
-
-  /**
-   * Creates a translatable component with a translation key and styling.
-   *
-   * @param key the translation key
-   * @param style the style
-   * @param args the translation arguments
-   * @return a translatable component
-   * @since 4.0.0
-   * @deprecated use {@link Component#translatable(String, Style, ComponentLike...)}
-   */
-  @Deprecated
-  static @NonNull TranslatableComponent of(final @NonNull String key, final @NonNull Style style, final @NonNull ComponentLike@NonNull... args) {
-    return Component.translatable(key, style, args);
-  }
-
-  /**
-   * Creates a translatable component with a translation key, arguments, and optional color.
-   *
-   * @param key the translation key
-   * @param color the color
-   * @param args the translation arguments
-   * @return a translatable component
-   * @since 4.0.0
-   * @deprecated use {@link Component#translatable(String, TextColor, ComponentLike...)}
-   */
-  @Deprecated
-  static @NonNull TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final @NonNull ComponentLike@NonNull... args) {
-    return Component.translatable(key, color, args);
-  }
-
-  /**
-   * Creates a translatable component with a translation key, arguments, and optional color and decorations.
-   *
-   * @param key the translation key
-   * @param color the color
-   * @param decorations the decorations
-   * @param args the translation arguments
-   * @return a translatable component
-   * @since 4.0.0
-   * @deprecated use {@link Component#translatable(String, TextColor, Set, ComponentLike...)}
-   */
-  @Deprecated
-  static @NonNull TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations, final @NonNull ComponentLike@NonNull... args) {
-    return Component.translatable(key, color, decorations, args);
-  }
-
-  /**
-   * Creates a translatable component with a translation key and arguments.
-   *
-   * @param key the translation key
-   * @param args the translation arguments
-   * @return a translatable component
-   * @since 4.0.0
-   * @deprecated use {@link Component#translatable(String, List)}
-   */
-  @Deprecated
-  static @NonNull TranslatableComponent of(final @NonNull String key, final @NonNull List<? extends ComponentLike> args) {
-    return Component.translatable(key, args);
-  }
-
-  /**
-   * Creates a translatable component with a translation key and styling.
-   *
-   * @param key the translation key
-   * @param style the style
-   * @param args the translation arguments
-   * @return a translatable component
-   * @since 4.0.0
-   * @deprecated use {@link Component#translatable(String, Style, List)}
-   */
-  @Deprecated
-  static @NonNull TranslatableComponent of(final @NonNull String key, final @NonNull Style style, final @NonNull List<? extends ComponentLike> args) {
-    return Component.translatable(key, style, args);
-  }
-
-  /**
-   * Creates a translatable component with a translation key, arguments, and optional color.
-   *
-   * @param key the translation key
-   * @param color the color
-   * @param args the translation arguments
-   * @return a translatable component
-   * @since 4.0.0
-   * @deprecated use {@link Component#translatable(String, TextColor, List)}
-   */
-  @Deprecated
-  static TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final @NonNull List<? extends ComponentLike> args) {
-    return Component.translatable(key, color, args);
-  }
-
-  /**
-   * Creates a translatable component with a translation key, arguments, and optional color and decorations.
-   *
-   * @param key the translation key
-   * @param color the color
-   * @param decorations the decorations
-   * @param args the translation arguments
-   * @return a translatable component
-   * @since 4.0.0
-   * @deprecated use {@link Component#translatable(String, TextColor, Set, List)}
-   */
-  @Deprecated
-  static @NonNull TranslatableComponent of(final @NonNull String key, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations, final @NonNull List<? extends ComponentLike> args) {
-    return Component.translatable(key, color, decorations, args);
-  }
-
-  /**
-   * Creates a translatable component by applying configuration from {@code consumer}.
-   *
-   * @param consumer the builder configurator
-   * @return a translatable component
-   * @since 4.0.0
-   * @deprecated use {@link Component#translatable(Consumer)}
-   */
-  @Deprecated
-  static @NonNull TranslatableComponent make(final @NonNull Consumer<? super Builder> consumer) {
-    return Component.translatable(consumer);
-  }
-
-  /**
-   * Creates a translatable component by applying configuration from {@code consumer}.
-   *
-   * @param key the translation key
-   * @param consumer the builder configurator
-   * @return a translatable component
-   * @since 4.0.0
-   * @deprecated no replacement
-   */
-  @Deprecated
-  static @NonNull TranslatableComponent make(final @NonNull String key, final @NonNull Consumer<? super Builder> consumer) {
-    final Builder builder = Component.translatable().key(key);
-    return Buildable.configureAndBuild(builder, consumer);
-  }
-
-  /**
-   * Creates a translatable component by applying configuration from {@code consumer}.
-   *
-   * @param key the translation key
-   * @param args the translation arguments
-   * @param consumer the builder configurator
-   * @return a translatable component
-   * @since 4.0.0
-   * @deprecated no replacement
-   */
-  @Deprecated
-  static @NonNull TranslatableComponent make(final @NonNull String key, final @NonNull List<? extends ComponentLike> args, final @NonNull Consumer<? super Builder> consumer) {
-    final Builder builder = Component.translatable().key(key).args(args);
-    return Buildable.configureAndBuild(builder, consumer);
-  }
-
   /**
    * Gets the translation key.
    *
@@ -314,6 +72,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @return a translatable component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull TranslatableComponent key(final @NonNull String key);
 
   /**
@@ -331,6 +90,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @return a translatable component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull TranslatableComponent args(final @NonNull ComponentLike@NonNull... args);
 
   /**
@@ -340,6 +100,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @return a translatable component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull TranslatableComponent args(final @NonNull List<? extends ComponentLike> args);
 
   /**
@@ -355,6 +116,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder key(final @NonNull String key);
 
     /**
@@ -364,6 +126,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder args(final @NonNull ComponentBuilder<?, ?> arg);
 
     /**
@@ -373,9 +136,9 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @return this builder
      * @since 4.0.0
      */
-    // CHECKSTYLE:OFF
+    @Contract("_ -> this")
+    @SuppressWarnings("checkstyle:GenericWhitespace")
     @NonNull Builder args(final @NonNull ComponentBuilder<?, ?>@NonNull... args);
-    // CHECKSTYLE:ON
 
     /**
      * Sets the translation args.
@@ -384,6 +147,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder args(final @NonNull Component arg);
 
     /**
@@ -393,6 +157,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder args(final @NonNull ComponentLike@NonNull... args);
 
     /**
@@ -402,6 +167,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder args(final @NonNull List<? extends ComponentLike> args);
   }
 }

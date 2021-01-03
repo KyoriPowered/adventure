@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,94 +25,126 @@ package net.kyori.adventure.bossbar;
 
 import java.util.Set;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.util.Index;
+import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.UnmodifiableView;
 
 /**
- * A bossbar.
+ * Represents an in-game bossbar which can be shown to the client.
+ * <p>A bossbar consists of:</p>
+ * <dl>
+ *   <dt>name</dt>
+ *   <dd>the title of the bossbar</dd>
+ *   <dt>progress</dt>
+ *   <dd>a number in the range [0,1] representing how much of the bossbar should be filled</dd>
+ *   <dt>color</dt>
+ *   <dd>the {@link Color} of the bossbar; platforms may downsample this for versions below Java Edition 1.9</dd>
+ *   <dt>overlay</dt>
+ *   <dd>{@link Overlay}s decide if the bossbar is continuous or split into segments</dd>
+ *   <dt>flags(optional)</dt>
+ *   <dd>{@link Flag}s are extra actions that can be triggered whenever the bossbar is displayed</dd>
+ * </dl>
  *
  * @since 4.0.0
  */
-public interface BossBar {
+public interface BossBar extends Examinable {
   /**
-   * The minimum value the percent can be.
+   * The minimum value the progress can be.
    *
+   * @since 4.2.0
+   */
+  float MIN_PROGRESS = 0f;
+  /**
+   * The maximum value the progress can be.
+   *
+   * @since 4.2.0
+   */
+  float MAX_PROGRESS = 1f;
+  /**
+   * The minimum value the progress can be.
+   *
+   * @deprecated for removal since 4.2.0, use {@link #MIN_PROGRESS}
    * @since 4.0.0
    */
-  float MIN_PERCENT = 0f;
+  @Deprecated
+  float MIN_PERCENT = MIN_PROGRESS;
   /**
-   * The maximum value the percent can be.
+   * The maximum value the progress can be.
    *
+   * @deprecated for removal since 4.2.0, use {@link #MAX_PROGRESS}
    * @since 4.0.0
    */
-  float MAX_PERCENT = 1f;
+  @Deprecated
+  float MAX_PERCENT = MAX_PROGRESS;
 
   /**
    * Creates a new bossbar.
    *
    * @param name the name
-   * @param percent the percent, between 0 and 1
+   * @param progress the progress, between 0 and 1
    * @param color the color
    * @param overlay the overlay
    * @return a bossbar
-   * @throws IllegalArgumentException if percent is less than 0 or greater than 1
-   * @since 4.0.0
+   * @throws IllegalArgumentException if progress is less than 0 or greater than 1
+   * @since 4.3.0
    */
-  static @NonNull BossBar bossBar(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay) {
-    BossBarImpl.checkPercent(percent);
-    return new BossBarImpl(name, percent, color, overlay);
+  static @NonNull BossBar bossBar(final @NonNull ComponentLike name, final float progress, final @NonNull Color color, final @NonNull Overlay overlay) {
+    BossBarImpl.checkProgress(progress);
+    return bossBar(name.asComponent(), progress, color, overlay);
   }
 
   /**
    * Creates a new bossbar.
    *
    * @param name the name
-   * @param percent the percent, between 0 and 1
+   * @param progress the progress, between 0 and 1
+   * @param color the color
+   * @param overlay the overlay
+   * @return a bossbar
+   * @throws IllegalArgumentException if progress is less than 0 or greater than 1
+   * @since 4.0.0
+   */
+  static @NonNull BossBar bossBar(final @NonNull Component name, final float progress, final @NonNull Color color, final @NonNull Overlay overlay) {
+    BossBarImpl.checkProgress(progress);
+    return new BossBarImpl(name, progress, color, overlay);
+  }
+
+  /**
+   * Creates a new bossbar.
+   *
+   * @param name the name
+   * @param progress the progress, between 0 and 1
    * @param color the color
    * @param overlay the overlay
    * @param flags the flags
    * @return a bossbar
-   * @throws IllegalArgumentException if percent is less than 0 or greater than 1
-   * @since 4.0.0
+   * @throws IllegalArgumentException if progress is less than 0 or greater than 1
+   * @since 4.3.0
    */
-  static @NonNull BossBar bossBar(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay, final @NonNull Set<Flag> flags) {
-    BossBarImpl.checkPercent(percent);
-    return new BossBarImpl(name, percent, color, overlay, flags);
+  static @NonNull BossBar bossBar(final @NonNull ComponentLike name, final float progress, final @NonNull Color color, final @NonNull Overlay overlay, final @NonNull Set<Flag> flags) {
+    BossBarImpl.checkProgress(progress);
+    return bossBar(name.asComponent(), progress, color, overlay, flags);
   }
 
   /**
    * Creates a new bossbar.
    *
    * @param name the name
-   * @param percent the percent, between 0 and 1
-   * @param color the color
-   * @param overlay the overlay
-   * @return a bossbar
-   * @throws IllegalArgumentException if percent is less than 0 or greater than 1
-   * @since 4.0.0
-   * @deprecated use {@link #bossBar(Component, float, Color, Overlay)}
-   */
-  @Deprecated
-  static @NonNull BossBar of(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay) {
-    return bossBar(name, percent, color, overlay);
-  }
-
-  /**
-   * Creates a new bossbar.
-   *
-   * @param name the name
-   * @param percent the percent, between 0 and 1
+   * @param progress the progress, between 0 and 1
    * @param color the color
    * @param overlay the overlay
    * @param flags the flags
    * @return a bossbar
-   * @throws IllegalArgumentException if percent is less than 0 or greater than 1
+   * @throws IllegalArgumentException if progress is less than 0 or greater than 1
    * @since 4.0.0
-   * @deprecated use {@link #bossBar(Component, float, Color, Overlay, Set)}
    */
-  @Deprecated
-  static @NonNull BossBar of(final @NonNull Component name, final float percent, final @NonNull Color color, final @NonNull Overlay overlay, final @NonNull Set<Flag> flags) {
-    return bossBar(name, percent, color, overlay, flags);
+  static @NonNull BossBar bossBar(final @NonNull Component name, final float progress, final @NonNull Color color, final @NonNull Overlay overlay, final @NonNull Set<Flag> flags) {
+    BossBarImpl.checkProgress(progress);
+    return new BossBarImpl(name, progress, color, overlay, flags);
   }
 
   /**
@@ -128,31 +160,76 @@ public interface BossBar {
    *
    * @param name the name
    * @return the bossbar
+   * @since 4.3.0
+   */
+  @Contract("_ -> this")
+  default @NonNull BossBar name(final @NonNull ComponentLike name) {
+    return this.name(name.asComponent());
+  }
+
+  /**
+   * Sets the name.
+   *
+   * @param name the name
+   * @return the bossbar
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull BossBar name(final @NonNull Component name);
 
   /**
-   * Gets the percent.
+   * Gets the progress.
    *
-   * <p>The percent is a value between 0 and 1.</p>
+   * <p>The progress is a value between 0 and 1.</p>
    *
-   * @return the percent
+   * @return the progress
    * @since 4.0.0
    */
-  float percent();
+  float progress();
 
   /**
-   * Sets the percent.
+   * Sets the progress.
    *
-   * <p>The percent is a value between 0 and 1.</p>
+   * <p>The progress is a value between 0 and 1.</p>
    *
-   * @param percent the percent
+   * @param progress the progress
    * @return the bossbar
-   * @throws IllegalArgumentException if percent is less than 0 or greater than 1
+   * @throws IllegalArgumentException if progress is less than 0 or greater than 1
    * @since 4.0.0
    */
-  @NonNull BossBar percent(final float percent);
+  @Contract("_ -> this")
+  @NonNull BossBar progress(final float progress);
+
+  /**
+   * Gets the progress.
+   *
+   * <p>The progress is a value between 0 and 1.</p>
+   *
+   * @return the progress
+   * @deprecated for removal since 4.2.0, use {@link #progress()}
+   * @since 4.0.0
+   */
+  @Deprecated
+  default float percent() {
+    return this.progress();
+  }
+
+  /**
+   * Sets the progress.
+   *
+   * <p>The progress is a value between 0 and 1.</p>
+   *
+   * @param progress the progress
+   * @return the bossbar
+   * @throws IllegalArgumentException if progress is less than 0 or greater than 1
+   * @deprecated for removal since 4.2.0, use {@link #progress(float)}
+   * @since 4.0.0
+   */
+  @Contract("_ -> this")
+  @Deprecated
+  default @NonNull BossBar percent(final float progress) {
+    return this.progress(progress);
+  }
 
   /**
    * Gets the color.
@@ -169,6 +246,7 @@ public interface BossBar {
    * @return the bossbar
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull BossBar color(final @NonNull Color color);
 
   /**
@@ -186,6 +264,7 @@ public interface BossBar {
    * @return the bossbar
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull BossBar overlay(final @NonNull Overlay overlay);
 
   /**
@@ -194,7 +273,7 @@ public interface BossBar {
    * @return the flags
    * @since 4.0.0
    */
-  @NonNull Set<Flag> flags();
+  @UnmodifiableView @NonNull Set<Flag> flags();
 
   /**
    * Sets the flags.
@@ -203,6 +282,7 @@ public interface BossBar {
    * @return the bossbar
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull BossBar flags(final @NonNull Set<Flag> flags);
 
   /**
@@ -221,6 +301,7 @@ public interface BossBar {
    * @return the bossbar
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull BossBar addFlag(final @NonNull Flag flag);
 
   /**
@@ -230,6 +311,7 @@ public interface BossBar {
    * @return the bossbar
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull BossBar removeFlag(final @NonNull Flag flag);
 
   /**
@@ -239,6 +321,7 @@ public interface BossBar {
    * @return the bossbar
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull BossBar addFlags(final @NonNull Flag@NonNull... flags);
 
   /**
@@ -248,6 +331,7 @@ public interface BossBar {
    * @return the bossbar
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull BossBar removeFlags(final @NonNull Flag@NonNull... flags);
 
   /**
@@ -257,6 +341,7 @@ public interface BossBar {
    * @return the bossbar
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull BossBar addFlags(final @NonNull Iterable<Flag> flags);
 
   /**
@@ -266,6 +351,7 @@ public interface BossBar {
    * @return the bossbar
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull BossBar removeFlags(final @NonNull Iterable<Flag> flags);
 
   /**
@@ -275,6 +361,7 @@ public interface BossBar {
    * @return the bossbar
    * @since 4.0.0
    */
+  @Contract(value = "_ -> this")
   @NonNull BossBar addListener(final @NonNull Listener listener);
 
   /**
@@ -284,6 +371,7 @@ public interface BossBar {
    * @return the bossbar
    * @since 4.0.0
    */
+  @Contract("_ -> this")
   @NonNull BossBar removeListener(final @NonNull Listener listener);
 
   /**
@@ -291,6 +379,7 @@ public interface BossBar {
    *
    * @since 4.0.0
    */
+  @ApiStatus.OverrideOnly
   interface Listener {
     /**
      * Bossbar name changed.
@@ -304,14 +393,28 @@ public interface BossBar {
     }
 
     /**
-     * Bossbar percent changed.
+     * Bossbar progress changed.
      *
      * @param bar the bossbar
-     * @param oldPercent the old percent
-     * @param newPercent the new percent
+     * @param oldProgress the old progress
+     * @param newProgress the new progress
      * @since 4.0.0
      */
-    default void bossBarPercentChanged(final @NonNull BossBar bar, final float oldPercent, final float newPercent) {
+    default void bossBarProgressChanged(final @NonNull BossBar bar, final float oldProgress, final float newProgress) {
+      this.bossBarPercentChanged(bar, oldProgress, newProgress);
+    }
+
+    /**
+     * Bossbar progress changed.
+     *
+     * @param bar the bossbar
+     * @param oldProgress the old progress
+     * @param newProgress the new progress
+     * @deprecated for removal since 4.2.0, use {@link #bossBarProgressChanged(BossBar, float, float)}
+     * @since 4.0.0
+     */
+    @Deprecated
+    default void bossBarPercentChanged(final @NonNull BossBar bar, final float oldProgress, final float newProgress) {
     }
 
     /**
@@ -362,30 +465,35 @@ public interface BossBar {
      * Pink.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.9
      */
     PINK("pink"),
     /**
      * Blue.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.9
      */
     BLUE("blue"),
     /**
      * Red.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.9
      */
     RED("red"),
     /**
      * Green.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.9
      */
     GREEN("green"),
     /**
      * Yellow.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.9
      */
     YELLOW("yellow"),
     /**
@@ -398,6 +506,7 @@ public interface BossBar {
      * White.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.9
      */
     WHITE("white");
 
@@ -415,7 +524,7 @@ public interface BossBar {
   }
 
   /**
-   * Flags to control toggleable effects of a boss bar.
+   * Flags to control toggleable effects of a bossbar.
    *
    * @since 4.0.0
    */
@@ -424,18 +533,21 @@ public interface BossBar {
      * If the screen should be darkened.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.9
      */
     DARKEN_SCREEN("darken_screen"),
     /**
      * If boss music should be played.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.9
      */
     PLAY_BOSS_MUSIC("play_boss_music"),
     /**
      * If world fog should be created.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.9
      */
     CREATE_WORLD_FOG("create_world_fog");
 
@@ -455,7 +567,7 @@ public interface BossBar {
   }
 
   /**
-   * An overlay on the bar component of a boss bar.
+   * An overlay on the bar component of a bossbar.
    *
    * @since 4.0.0
    */
@@ -470,24 +582,28 @@ public interface BossBar {
      * A bar with {@code 6} notches.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.9
      */
     NOTCHED_6("notched_6"),
     /**
      * A bar with {@code 10} notches.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.9
      */
     NOTCHED_10("notched_10"),
     /**
      * A bar with {@code 12} notches.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.9
      */
     NOTCHED_12("notched_12"),
     /**
      * A bar with {@code 20} notches.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.9
      */
     NOTCHED_20("notched_20");
 

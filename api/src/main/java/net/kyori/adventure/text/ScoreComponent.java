@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,101 +23,33 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.function.Consumer;
-import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.Contract;
 
 /**
- * A scoreboard score component.
+ * A component that can display a player's score from a scoreboard objective,
+ * with an optional fallback value if the search for the score fails.
+ * 
+ * <p>This component consists of:</p>
+ * <dl>
+ *   <dt>name</dt>
+ *   <dd>a player username or a Minecraft selector that leads to a single player</dd>
+ *   <dt>objective</dt>
+ *   <dd>a scoreboard objective</dd>
+ *   <dt>value(optional)</dt>
+ *   <dd>a fallback value to be used if the search fails.
+ *   <p>This field is no longer present in the game from 1.16,
+ *   which means it will be ignored</p></dd>
+ * </dl>
+ *
+ * <p>This component is rendered serverside and can therefore receive platform-defined
+ * context. See the documentation for your respective
+ * platform for more info</p>
  *
  * @since 4.0.0
  */
 public interface ScoreComponent extends BuildableComponent<ScoreComponent, ScoreComponent.Builder>, ScopedComponent<ScoreComponent> {
-  /**
-   * Creates a score component builder.
-   *
-   * @return a builder
-   * @since 4.0.0
-   * @deprecated use {@link Component#score()}
-   */
-  @Deprecated
-  static @NonNull Builder builder() {
-    return Component.score();
-  }
-
-  /**
-   * Creates a score component builder with a name and objective.
-   *
-   * @param name the score name
-   * @param objective the score objective
-   * @return a builder
-   * @since 4.0.0
-   * @deprecated no replacement
-   */
-  @Deprecated
-  static @NonNull Builder builder(final @NonNull String name, final @NonNull String objective) {
-    return builder().name(name).objective(objective);
-  }
-
-  /**
-   * Creates a score component with a name and objective.
-   *
-   * @param name the score name
-   * @param objective the score objective
-   * @return a score component
-   * @since 4.0.0
-   * @deprecated use {@link Component#score(String, String)}
-   */
-  @Deprecated
-  static @NonNull ScoreComponent of(final @NonNull String name, final @NonNull String objective) {
-    return Component.score(name, objective);
-  }
-
-  /**
-   * Creates a score component with a name, objective, and optional value.
-   *
-   * @param name the score name
-   * @param objective the score objective
-   * @param value the value
-   * @return a score component
-   * @since 4.0.0
-   * @deprecated use {@link Component#score(String, String, String)}
-   */
-  @Deprecated
-  static @NonNull ScoreComponent of(final @NonNull String name, final @NonNull String objective, final @Nullable String value) {
-    return Component.score(name, objective, value);
-  }
-
-  /**
-   * Creates a score component by applying configuration from {@code consumer}.
-   *
-   * @param consumer the builder configurator
-   * @return a score component
-   * @since 4.0.0
-   * @deprecated use {@link Component#score(Consumer)}
-   */
-  @Deprecated
-  static @NonNull ScoreComponent make(final @NonNull Consumer<? super Builder> consumer) {
-    return Component.score(consumer);
-  }
-
-  /**
-   * Creates a score component by applying configuration from {@code consumer}.
-   *
-   * @param name the score name
-   * @param objective the score objective
-   * @param consumer the builder configurator
-   * @return a score component
-   * @since 4.0.0
-   * @deprecated no replacement
-   */
-  @Deprecated
-  static @NonNull ScoreComponent make(final @NonNull String name, final @NonNull String objective, final @NonNull Consumer<? super Builder> consumer) {
-    final Builder builder = Component.score().name(name).objective(objective);
-    return Buildable.configureAndBuild(builder, consumer);
-  }
-
   /**
    * Gets the score name.
    *
@@ -133,6 +65,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @return a score component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull ScoreComponent name(final @NonNull String name);
 
   /**
@@ -150,6 +83,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @return a score component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull ScoreComponent objective(final @NonNull String objective);
 
   /**
@@ -167,6 +101,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @return a score component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull ScoreComponent value(final @Nullable String value);
 
   /**
@@ -182,6 +117,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder name(final @NonNull String name);
 
     /**
@@ -191,6 +127,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder objective(final @NonNull String objective);
 
     /**
@@ -200,6 +137,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder value(final @Nullable String value);
   }
 }

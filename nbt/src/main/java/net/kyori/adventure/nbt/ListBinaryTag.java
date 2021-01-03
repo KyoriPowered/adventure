@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ package net.kyori.adventure.nbt;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -43,6 +44,19 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    */
   static @NonNull ListBinaryTag empty() {
     return ListBinaryTagImpl.EMPTY;
+  }
+
+  /**
+   * Creates a list tag from {@code tags}.
+   *
+   * <p>The {@link #elementType() element type} of the returned list tag is determined from {@code tags}.</p>
+   *
+   * @return a list tag
+   * @throws IllegalArgumentException if {@code tags} has different tag types within
+   * @since 4.4.0
+   */
+  static @NonNull ListBinaryTag from(final @NonNull Iterable<? extends BinaryTag> tags) {
+    return builder().add(tags).build();
   }
 
   /**
@@ -91,8 +105,20 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    *
    * @return the type
    * @since 4.0.0
+   * @deprecated since 4.4.0, use {@link #elementType()} instead
    */
-  @NonNull BinaryTagType<? extends BinaryTag> listType();
+  @Deprecated
+  default @NonNull BinaryTagType<? extends BinaryTag> listType() {
+    return this.elementType();
+  }
+
+  /**
+   * Gets the type of element stored in this list.
+   *
+   * @return the type
+   * @since 4.4.0
+   */
+  @NonNull BinaryTagType<? extends BinaryTag> elementType();
 
   /**
    * Gets the size.
@@ -117,21 +143,21 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    *
    * @param index the index
    * @param tag the tag
-   * @param removedConsumer a consumer which receives the tag being removed at index {@code index}
+   * @param removed a consumer which receives the tag being removed at index {@code index}
    * @return a list tag
    * @since 4.0.0
    */
-  @NonNull ListBinaryTag set(final int index, final @NonNull BinaryTag tag, final @Nullable Consumer<BinaryTag> removedConsumer);
+  @NonNull ListBinaryTag set(final int index, final @NonNull BinaryTag tag, final @Nullable Consumer<? super BinaryTag> removed);
 
   /**
    * Removes the tag at index {@code index}, optionally providing {@code removedConsumer} with the tag previously at index {@code index}.
    *
    * @param index the index
-   * @param removedConsumer a consumer which receives the tag being removed at index {@code index}
+   * @param removed a consumer which receives the tag being removed at index {@code index}
    * @return a list tag
    * @since 4.0.0
    */
-  @NonNull ListBinaryTag remove(final int index, final @Nullable Consumer<BinaryTag> removedConsumer);
+  @NonNull ListBinaryTag remove(final int index, final @Nullable Consumer<? super BinaryTag> removed);
 
   /**
    * Gets a byte.
@@ -354,6 +380,63 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
   }
 
   /**
+   * Gets a list.
+   *
+   * @param index the index
+   * @return the list, or an empty list if the tag at index {@code index} is not a list tag
+   * @since 4.4.0
+   */
+  default @NonNull ListBinaryTag getList(final @NonNegative int index) {
+    return this.getList(index, null, ListBinaryTag.empty());
+  }
+
+  /**
+   * Gets a list.
+   *
+   * @param index the index
+   * @param elementType the expected element type of the list at index {@code index}
+   * @return the list, or an empty list if the tag at index {@code index} is not a list tag, or if the list tag's element type is not {@code elementType}
+   * @since 4.4.0
+   */
+  default @NonNull ListBinaryTag getList(final @NonNegative int index, final @Nullable BinaryTagType<?> elementType) {
+    return this.getList(index, elementType, ListBinaryTag.empty());
+  }
+
+  /**
+   * Gets a list.
+   *
+   * @param index the index
+   * @param defaultValue the default value
+   * @return the list, or {@code defaultValue} if the tag at index {@code index} is not a list tag
+   * @since 4.4.0
+   */
+  default @NonNull ListBinaryTag getList(final @NonNegative int index, final @NonNull ListBinaryTag defaultValue) {
+    return this.getList(index, null, defaultValue);
+  }
+
+  /**
+   * Gets a list.
+   *
+   * <p>If {@code elementType} is non-{@code null} and the {@link ListBinaryTag} at index {@code index} does not match, {@code defaultValue} will be returned.</p>
+   *
+   * @param index the index
+   * @param elementType the expected element type of the list at index {@code index}
+   * @param defaultValue the default value
+   * @return the list, or {@code defaultValue} if the tag at index {@code index} is not a list tag, or if the list tag's element type is not {@code elementType}
+   * @since 4.4.0
+   */
+  default @NonNull ListBinaryTag getList(final @NonNegative int index, final @Nullable BinaryTagType<?> elementType, final @NonNull ListBinaryTag defaultValue) {
+    final BinaryTag tag = this.get(index);
+    if(tag.type() == BinaryTagTypes.LIST) {
+      final ListBinaryTag list = (ListBinaryTag) tag;
+      if(elementType == null || list.elementType() == elementType) {
+        return list;
+      }
+    }
+    return defaultValue;
+  }
+
+  /**
    * Gets a compound.
    *
    * @param index the index
@@ -441,6 +524,14 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
     }
     return defaultValue;
   }
+
+  /**
+   * Creates a stream of the tags contained within this list.
+   *
+   * @return a new stream
+   * @since 4.2.0
+   */
+  @NonNull Stream<BinaryTag> stream();
 
   /**
    * A list tag builder.

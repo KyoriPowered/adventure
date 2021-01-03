@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -59,7 +59,7 @@ final class ConfigurateComponentSerializerImpl implements ConfigurateComponentSe
   @Override
   public @NonNull Component deserialize(final @NonNull ConfigurationNode input) {
     try {
-      final /* @Nullable */ Component deserialized = input.getValue(ComponentTypeSerializer.TYPE);
+      final @Nullable Component deserialized = input.getValue(ComponentTypeSerializer.TYPE);
       if(deserialized != null) {
         return deserialized;
       }
@@ -81,6 +81,7 @@ final class ConfigurateComponentSerializerImpl implements ConfigurateComponentSe
   }
 
   @Override
+  @SuppressWarnings("serial")
   public @NonNull TypeSerializerCollection addSerializersTo(final @NonNull TypeSerializerCollection serializers) {
     return serializers
       .register(BookTypeSerializer.TYPE, BookTypeSerializer.INSTANCE)

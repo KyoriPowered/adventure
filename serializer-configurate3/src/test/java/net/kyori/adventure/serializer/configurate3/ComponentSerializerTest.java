@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,13 +25,27 @@ package net.kyori.adventure.serializer.configurate3;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import ninja.leaping.configurate.ConfigurationNode;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ComponentSerializerTest implements ConfigurateTestBase {
+  @Test
+  void testSerializeToString() {
+    final ConfigurationNode serialized = ConfigurateComponentSerializer.builder()
+      .scalarSerializer(GsonComponentSerializer.gson())
+      .outputStringComponents(true)
+      .build()
+      .serialize(Component.text("Hello", Style.style(TextDecoration.BOLD)));
+
+    assertEquals("{\"text\":\"Hello\",\"bold\":true}", serialized.getString());
+  }
+
   @Test
   void testTextComponent() {
     final ConfigurationNode serialized = this.node(n -> {

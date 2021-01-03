@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,6 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
-import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -40,7 +39,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-final class StyleImpl implements Style, Examinable {
+final class StyleImpl implements Style {
   static final StyleImpl EMPTY = new StyleImpl(null, null, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null);
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
   private final @Nullable Key font;
@@ -251,7 +250,7 @@ final class StyleImpl implements Style, Examinable {
 
   @Override
   public @NonNull String toString() {
-    return StringExaminer.simpleEscaping().examine(this);
+    return this.examine(StringExaminer.simpleEscaping());
   }
 
   @Override

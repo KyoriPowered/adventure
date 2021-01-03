@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -54,7 +54,7 @@ final class HoverEventShowEntitySerializer implements TypeSerializer<HoverEvent.
     if(typeId == null || id == null) {
       throw new ObjectMappingException("A show entity hover event needs type and id fields to be deserialized");
     }
-    final /* @Nullable */ Component name = value.getNode(NAME).getValue(ComponentTypeSerializer.TYPE);
+    final @Nullable Component name = value.getNode(NAME).getValue(ComponentTypeSerializer.TYPE);
 
     return HoverEvent.ShowEntity.of(typeId, id, name);
   }

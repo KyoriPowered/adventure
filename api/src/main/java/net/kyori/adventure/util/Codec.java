@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -49,12 +49,12 @@ public interface Codec<D, E, DX extends Throwable, EX extends Throwable> {
   static <D, E, DX extends Throwable, EX extends Throwable> @NonNull Codec<D, E, DX, EX> of(final @NonNull Decoder<D, E, DX> decoder, final @NonNull Encoder<D, E, EX> encoder) {
     return new Codec<D, E, DX, EX>() {
       @Override
-      public @NonNull D decode(@NonNull final E encoded) throws DX {
+      public @NonNull D decode(final @NonNull E encoded) throws DX {
         return decoder.decode(encoded);
       }
 
       @Override
-      public @NonNull E encode(@NonNull final D decoded) throws EX {
+      public @NonNull E encode(final @NonNull D decoded) throws EX {
         return encoder.encode(decoded);
       }
     };

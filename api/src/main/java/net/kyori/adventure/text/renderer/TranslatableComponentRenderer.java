@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,36 +44,36 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.translation.TranslationRegistry;
+import net.kyori.adventure.translation.Translator;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A component renderer that does server-side translation rendering.
  *
  * @param <C> the context type, usually {@link java.util.Locale}.
- * @see #get()
  * @since 4.0.0
  */
 public abstract class TranslatableComponentRenderer<C> extends AbstractComponentRenderer<C> {
-  static final TranslatableComponentRenderer<Locale> INSTANCE = new TranslatableComponentRenderer<Locale>() {
-    @Override
-    public MessageFormat translate(final @NonNull String key, final @NonNull Locale locale) {
-      return TranslationRegistry.get().translate(key, locale);
-    }
-  };
-
   private static final Set<Style.Merge> MERGES = Style.Merge.of(Style.Merge.COLOR, Style.Merge.DECORATIONS, Style.Merge.INSERTION, Style.Merge.FONT);
 
   /**
-   * Gets the default translatable component renderer.
+   * Creates a {@link TranslatableComponentRenderer} using the {@link Translator} to translate.
    *
-   * @return a translatable component renderer
-   * @see TranslationRegistry
+   * @param source the translation source
+   * @return the renderer
    * @since 4.0.0
    */
-  public static @NonNull TranslatableComponentRenderer<Locale> get() {
-    return INSTANCE;
+  public static @NonNull TranslatableComponentRenderer<Locale> usingTranslationSource(final @NonNull Translator source) {
+    requireNonNull(source, "source");
+    return new TranslatableComponentRenderer<Locale>() {
+      @Override
+      protected @Nullable MessageFormat translate(final @NonNull String key, final @NonNull Locale context) {
+        return source.translate(key, context);
+      }
+    };
   }
 
   /**
@@ -141,7 +141,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
 
   @Override
   protected @NonNull Component renderTranslatable(final @NonNull TranslatableComponent component, final @NonNull C context) {
-    final /* @Nullable */ MessageFormat format = this.translate(component.key(), context);
+    final @Nullable MessageFormat format = this.translate(component.key(), context);
     if(format == null) {
       // we don't have a translation for this component, but the arguments or children
       // of this component might need additional rendering
@@ -165,7 +165,8 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
 
     // no arguments makes this render very simple
     if(args.isEmpty()) {
-      return builder.content(format.format(null, new StringBuffer(), null).toString()).build();
+      builder.content(format.format(null, new StringBuffer(), null).toString());
+      return this.optionallyRenderChildrenAppendAndBuild(component.children(), builder, context);
     }
 
     final Object[] nulls = new Object[args.size()];
@@ -183,7 +184,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
       it.setIndex(end);
     }
 
-    return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
+    return this.optionallyRenderChildrenAppendAndBuild(component.children(), builder, context);
   }
 
   protected <O extends BuildableComponent<O, B>, B extends ComponentBuilder<O, B>> O mergeStyleAndOptionallyDeepRender(final Component component, final B builder, final C context) {
@@ -201,7 +202,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   protected <B extends ComponentBuilder<?, ?>> void mergeStyle(final Component component, final B builder, final C context) {
     builder.mergeStyle(component, MERGES);
     builder.clickEvent(component.clickEvent());
-    final /* @Nullable */ HoverEvent<?> hoverEvent = component.hoverEvent();
+    final @Nullable HoverEvent<?> hoverEvent = component.hoverEvent();
     if(hoverEvent != null) {
       builder.hoverEvent(hoverEvent.withRenderedValue(this, context));
     }

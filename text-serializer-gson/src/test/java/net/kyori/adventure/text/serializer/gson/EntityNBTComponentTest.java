@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,32 +23,31 @@
  */
 package net.kyori.adventure.text.serializer.gson;
 
-import com.google.gson.JsonElement;
-import java.util.Map;
-import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.EntityNBTComponent;
+import org.junit.jupiter.api.Test;
 
-class EntityNBTComponentTest extends AbstractComponentTest<EntityNBTComponent> {
-  @Override
-  Stream<Map.Entry<EntityNBTComponent, JsonElement>> tests() {
-    return Stream.of(
-      entry(
-        Component.entityNBT().nbtPath("abc").selector("test").build(),
-        json -> {
-          json.addProperty(ComponentSerializerImpl.NBT, "abc");
-          json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
-          json.addProperty(ComponentSerializerImpl.NBT_ENTITY, "test");
-        }
-      ),
-      entry(
-        Component.entityNBT().nbtPath("abc").selector("test").interpret(true).build(),
-        json -> {
-          json.addProperty(ComponentSerializerImpl.NBT, "abc");
-          json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, true);
-          json.addProperty(ComponentSerializerImpl.NBT_ENTITY, "test");
-        }
-      )
+class EntityNBTComponentTest extends ComponentTest {
+  @Test
+  void testWithoutInterpret() {
+    this.test(
+      Component.entityNBT().nbtPath("abc").selector("test").build(),
+      object(json -> {
+        json.addProperty(ComponentSerializerImpl.NBT, "abc");
+        json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
+        json.addProperty(ComponentSerializerImpl.NBT_ENTITY, "test");
+      })
+    );
+  }
+
+  @Test
+  void testWithInterpret() {
+    this.test(
+      Component.entityNBT().nbtPath("abc").selector("test").interpret(true).build(),
+      object(json -> {
+        json.addProperty(ComponentSerializerImpl.NBT, "abc");
+        json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, true);
+        json.addProperty(ComponentSerializerImpl.NBT_ENTITY, "test");
+      })
     );
   }
 }

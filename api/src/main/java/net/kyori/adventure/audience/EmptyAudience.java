@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,8 +23,10 @@
  */
 package net.kyori.adventure.audience;
 
+import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.identity.Identified;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 final class EmptyAudience implements Audience {
@@ -35,11 +37,39 @@ final class EmptyAudience implements Audience {
   }
 
   @Override
+  public void sendMessage(final @NonNull Identified source, final @NonNull ComponentLike message) {
+  }
+
+  @Override
+  public void sendMessage(final @NonNull Identity source, final @NonNull ComponentLike message) {
+  }
+
+  @Override
   public void sendMessage(final @NonNull ComponentLike message, final @NonNull MessageType type) {
   }
 
   @Override
+  public void sendMessage(final @NonNull Identified source, final @NonNull ComponentLike message, final @NonNull MessageType type) {
+  }
+
+  @Override
+  public void sendMessage(final @NonNull Identity source, final @NonNull ComponentLike message, final @NonNull MessageType type) {
+  }
+
+  @Override
   public void sendActionBar(final @NonNull ComponentLike message) {
+  }
+
+  @Override
+  public void sendPlayerListHeader(final @NonNull ComponentLike header) {
+  }
+
+  @Override
+  public void sendPlayerListFooter(final @NonNull ComponentLike footer) {
+  }
+
+  @Override
+  public void sendPlayerListHeaderAndFooter(final @NonNull ComponentLike header, final @NonNull ComponentLike footer) {
   }
 
   @Override

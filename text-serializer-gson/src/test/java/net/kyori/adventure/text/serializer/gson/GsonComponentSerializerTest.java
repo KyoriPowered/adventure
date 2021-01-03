@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,25 +31,32 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.junit.jupiter.api.Test;
 
-import static net.kyori.adventure.text.serializer.gson.AbstractComponentTest.array;
-import static net.kyori.adventure.text.serializer.gson.AbstractComponentTest.object;
+import static net.kyori.adventure.text.serializer.gson.GsonTest.array;
+import static net.kyori.adventure.text.serializer.gson.GsonTest.object;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GsonComponentSerializerTest {
   @Test
+  void testDeserializeNull() {
+    final JsonParseException jpe = assertThrows(JsonParseException.class, () -> GsonComponentSerializer.gson().deserialize("null"));
+    assertTrue(jpe.getMessage().contains("turn null into a Component"));
+  }
+
+  @Test
   void testDeserializePrimitive() {
-    assertEquals(Component.text("potato"), AbstractComponentTest.GSON.fromJson(new JsonPrimitive("potato"), Component.class));
+    assertEquals(Component.text("potato"), GsonComponentSerializer.gson().serializer().fromJson(new JsonPrimitive("potato"), Component.class));
   }
 
   @Test
   void testDeserializeArray_empty() {
-    assertThrows(JsonParseException.class, () -> AbstractComponentTest.GSON.fromJson(new JsonArray(), Component.class));
+    assertThrows(JsonParseException.class, () -> GsonComponentSerializer.gson().serializer().fromJson(new JsonArray(), Component.class));
   }
 
   @Test
   void testDeserializeArray() {
-    assertEquals(Component.text("Hello, ").append(Component.text("world.")), AbstractComponentTest.GSON.fromJson(array(array -> {
+    assertEquals(Component.text("Hello, ").append(Component.text("world.")), GsonComponentSerializer.gson().serializer().fromJson(array(array -> {
       array.add(object(object -> object.addProperty(ComponentSerializerImpl.TEXT, "Hello, ")));
       array.add(object(object -> object.addProperty(ComponentSerializerImpl.TEXT, "world.")));
     }), Component.class));
@@ -60,7 +67,7 @@ class GsonComponentSerializerTest {
     final TextColor original = TextColor.color(0xAB2211);
     final NamedTextColor downsampled = NamedTextColor.nearestTo(original);
     final Component test = Component.text("meow", original);
-    assertEquals("{\"text\":\"meow\",\"color\":\"" + name(downsampled) + "\"}", AbstractComponentTest.GSON_DOWNSAMPLING.toJson(test));
+    assertEquals("{\"text\":\"meow\",\"color\":\"" + name(downsampled) + "\"}", GsonComponentSerializer.colorDownsamplingGson().serializer().toJson(test));
   }
 
   @Test
@@ -69,7 +76,7 @@ class GsonComponentSerializerTest {
     final NamedTextColor downsampled = NamedTextColor.nearestTo(original);
     final Component test = Component.text(builder -> builder.content("hey").append(Component.text("there", original)));
 
-    assertEquals("{\"text\":\"hey\",\"extra\":[{\"text\":\"there\",\"color\":\"" + name(downsampled) + "\"}]}", AbstractComponentTest.GSON_DOWNSAMPLING.toJson(test));
+    assertEquals("{\"text\":\"hey\",\"extra\":[{\"text\":\"there\",\"color\":\"" + name(downsampled) + "\"}]}", GsonComponentSerializer.colorDownsamplingGson().serializer().toJson(test));
   }
 
   private static String name(final NamedTextColor color) {

@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,26 +23,37 @@
  */
 package net.kyori.adventure.translation;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.MissingResourceException;
+import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.UTF8ResourceBundleControl;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import static java.util.Objects.requireNonNull;
+
 /**
- * A registry of translations.
+ * A registry of translations. Used to register localized strings for translation keys. The registry can be submitted
+ * to the {@link GlobalTranslator} or can translate manually through {@link #translate(String, Locale)}.
+ *
+ * <p>The recommended way to register translations is through {@link #registerAll(Locale, ResourceBundle, boolean)}</p>
  *
  * @since 4.0.0
  */
-public interface TranslationRegistry extends TranslationSource {
+public interface TranslationRegistry extends Translator {
   /**
    * A pattern which matches a single quote.
    *
@@ -51,31 +62,19 @@ public interface TranslationRegistry extends TranslationSource {
   Pattern SINGLE_QUOTE_PATTERN = Pattern.compile("'");
 
   /**
-   * Gets the shared, global translation registry.
-   *
-   * @return the translation registry
-   * @since 4.0.0
-   */
-  static @NonNull TranslationRegistry get() {
-    return TranslationRegistryImpl.INSTANCE;
-  }
-
-  /**
    * Creates a new standalone translation registry.
-   *
-   * <p>You most likely want {@link #get() the global registry} instead.</p>
    *
    * @return a translation registry
    * @since 4.0.0
    */
-  static @NonNull TranslationRegistry create() {
-    return new TranslationRegistryImpl();
+  static @NonNull TranslationRegistry create(final Key name) {
+    return new TranslationRegistryImpl(requireNonNull(name, "name"));
   }
 
   /**
    * Gets a message format from a key and locale.
    *
-   * <p>If a translation for {@code locale} is not found, we will then try {@code locale} without a country code, and then finally fallback to {@link Locale#US en_us}.</p>
+   * <p>If a translation for {@code locale} is not found, we will then try {@code locale} without a country code, and then finally fallback to a default locale.</p>
    *
    * @param locale a locale
    * @param key a translation key
@@ -86,11 +85,19 @@ public interface TranslationRegistry extends TranslationSource {
   @Nullable MessageFormat translate(final @NonNull String key, final @NonNull Locale locale);
 
   /**
+   * Sets the default locale used by this registry.
+   *
+   * @param locale the locale to use a default
+   * @since 4.0.0
+   */
+  void defaultLocale(final @NonNull Locale locale);
+
+  /**
    * Registers a translation.
    *
    * <pre>
    *   final TranslationRegistry registry;
-   *   registry.register("myplugin.hello", Locale.US, new MessageFormat("Hi, {0}. How are you?"));
+   *   registry.register("example.hello", Locale.US, new MessageFormat("Hi, {0}. How are you?"));
    * </pre>
    *
    * @param key a translation key
@@ -104,6 +111,16 @@ public interface TranslationRegistry extends TranslationSource {
   /**
    * Registers a map of translations.
    *
+   * <pre>
+   *   final TranslationRegistry registry;
+   *   final Map&#60;String, MessageFormat&#62; translations;
+   *
+   *   translations.put("example.greeting", new MessageFormat("Greetings {0}. Doing ok?));
+   *   translations.put("example.goodbye", new MessageFormat("Goodbye {0}. Have a nice day!));
+   *
+   *   registry.registerAll(Locale.US, translations);
+   * </pre>
+   *
    * @param locale a locale
    * @param formats a map of translation keys to formats
    * @throws IllegalArgumentException if a translation key is already exists
@@ -112,6 +129,53 @@ public interface TranslationRegistry extends TranslationSource {
    */
   default void registerAll(final @NonNull Locale locale, final @NonNull Map<String, MessageFormat> formats) {
     this.registerAll(locale, formats.keySet(), formats::get);
+  }
+
+  /**
+   * Registers a resource bundle of translations.
+   *
+   * @param locale a locale
+   * @param path a path to the resource bundle
+   * @param escapeSingleQuotes whether to escape single quotes
+   * @throws IllegalArgumentException if a translation key is already exists
+   * @see #registerAll(Locale, ResourceBundle, boolean)
+   * @since 4.0.0
+   */
+  default void registerAll(final @NonNull Locale locale, final @NonNull Path path, final boolean escapeSingleQuotes) {
+    try(final BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+      this.registerAll(locale, new PropertyResourceBundle(reader), escapeSingleQuotes);
+    } catch(final IOException e) {
+      // ignored
+    }
+  }
+
+  /**
+   * Registers a resource bundle of translations.
+   *
+   * <p>It is highly recommended to create your bundle using {@link UTF8ResourceBundleControl} as your bundle control for UTF-8 support - for example:</p>
+   *
+   * <pre>
+   *   final ResourceBundle bundle = ResourceBundle.getBundle("my_bundle", Locale.GERMANY, UTF8ResourceBundleControl.get());
+   *   registry.registerAll(Locale.GERMANY, bundle, false);
+   * </pre>
+   *
+   * @param locale a locale
+   * @param bundle a resource bundle
+   * @param escapeSingleQuotes whether to escape single quotes
+   * @throws IllegalArgumentException if a translation key is already exists
+   * @see UTF8ResourceBundleControl
+   * @since 4.0.0
+   */
+  default void registerAll(final @NonNull Locale locale, final @NonNull ResourceBundle bundle, final boolean escapeSingleQuotes) {
+    this.registerAll(locale, bundle.keySet(), key -> {
+      final String format = bundle.getString(key);
+      return new MessageFormat(
+        escapeSingleQuotes
+          ? SINGLE_QUOTE_PATTERN.matcher(format).replaceAll("''")
+          : format,
+        locale
+      );
+    });
   }
 
   /**
@@ -143,47 +207,6 @@ public interface TranslationRegistry extends TranslationSource {
         throw new IllegalArgumentException(String.format("Invalid key (and %d more)", size - 1), errors.get(0));
       }
     }
-  }
-
-  /**
-   * Registers a resource bundle of translations.
-   *
-   * @param locale a locale
-   * @param resourceBundle a resource bundle
-   * @param escapeSingleQuotes whether to escape single quotes
-   * @throws IllegalArgumentException if a translation key is already exists
-   * @since 4.0.0
-   */
-  default void registerAll(final @NonNull Locale locale, final @NonNull ResourceBundle resourceBundle, final boolean escapeSingleQuotes) {
-    this.registerAll(locale, resourceBundle.keySet(), key -> {
-      final String format = resourceBundle.getString(key);
-      return new MessageFormat(
-        escapeSingleQuotes
-          ? SINGLE_QUOTE_PATTERN.matcher(format).replaceAll("''")
-          : format,
-        locale
-      );
-    });
-  }
-
-  /**
-   * Registers a resource bundle of translations.
-   *
-   * @param locale a locale
-   * @param resourceBundlePath a resource bundle path
-   * @param escapeSingleQuotes whether to escape single quotes
-   * @throws IllegalArgumentException if a translation key is already exists
-   * @see #registerAll(Locale, ResourceBundle, boolean)
-   * @since 4.0.0
-   */
-  default void registerAll(final @NonNull Locale locale, final @NonNull String resourceBundlePath, final boolean escapeSingleQuotes) {
-    final ResourceBundle resourceBundle;
-    try {
-      resourceBundle = ResourceBundle.getBundle(resourceBundlePath, locale, UTF8ResourceBundleControl.get());
-    } catch(final MissingResourceException e) {
-      return;
-    }
-    this.registerAll(locale, resourceBundle, escapeSingleQuotes);
   }
 
   /**

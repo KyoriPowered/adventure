@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -130,6 +130,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @param text the text to copy to the clipboard
    * @return a click event
    * @since 4.0.0
+   * @sinceMinecraft 1.15
    */
   public static @NonNull ClickEvent copyToClipboard(final @NonNull String text) {
     return new ClickEvent(Action.COPY_TO_CLIPBOARD, text);
@@ -145,20 +146,6 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    */
   public static @NonNull ClickEvent clickEvent(final @NonNull Action action, final @NonNull String value) {
     return new ClickEvent(action, value);
-  }
-
-  /**
-   * Creates a click event.
-   *
-   * @param action the action
-   * @param value the value
-   * @return a click event
-   * @since 4.0.0
-   * @deprecated use {@link #clickEvent(Action, String)}
-   */
-  @Deprecated
-  public static @NonNull ClickEvent of(final @NonNull Action action, final @NonNull String value) {
-    return clickEvent(action, value);
   }
 
   private final Action action;
@@ -219,7 +206,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
 
   @Override
   public String toString() {
-    return StringExaminer.simpleEscaping().examine(this);
+    return this.examine(StringExaminer.simpleEscaping());
   }
 
   /**
@@ -264,6 +251,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
      * Copies text to the clipboard.
      *
      * @since 4.0.0
+     * @sinceMinecraft 1.15
      */
     COPY_TO_CLIPBOARD("copy_to_clipboard", true);
 

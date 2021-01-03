@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -47,7 +47,11 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
   @Override
   public @NonNull Component render(final @NonNull Component component, final @NonNull State state) {
     if(!state.running) return component;
+    final boolean prevFirstMatch = state.firstMatch;
+    state.firstMatch = true;
 
+    final List<Component> oldChildren = component.children();
+    final int oldChildrenSize = oldChildren.size();
     List<Component> children = null;
     Component modified = component;
     // replace the component itself
@@ -73,18 +77,26 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
               .style(component.style()));
 
             modified = replacement == null ? Component.empty() : replacement.asComponent();
+            if(children == null) { // Prepare children
+              children = new ArrayList<>(oldChildrenSize + modified.children().size());
+              children.addAll(modified.children());
+            }
           } else {
             // otherwise, work on a child of the root node
             modified = Component.text("", component.style());
             final ComponentLike child = state.replacement.apply(matcher, Component.text().content(matcher.group()));
             if(child != null) {
-              children = listOrNew(children, component.children().size() + 1);
+              if(children == null) {
+                children = new ArrayList<>(oldChildrenSize + 1);
+              }
               children.add(child.asComponent());
             }
           }
         } else {
-          children = listOrNew(children, component.children().size() + 2);
-          if(state.replaceCount == 0) {
+          if(children == null) {
+            children = new ArrayList<>(oldChildrenSize + 2);
+          }
+          if(state.firstMatch) {
             // truncate parent to content before match
             modified = ((TextComponent) component).content(content.substring(0, matcher.start()));
           } else if(replacedUntil < matcher.start()) {
@@ -96,12 +108,15 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
           }
         }
         state.replaceCount++;
+        state.firstMatch = false;
         replacedUntil = matcher.end();
       }
       if(replacedUntil < content.length()) {
         // append trailing content
         if(replacedUntil > 0) {
-          children = listOrNew(children, component.children().size());
+          if(children == null) {
+            children = new ArrayList<>(oldChildrenSize);
+          }
           children.add(Component.text(content.substring(replacedUntil)));
         }
         // otherwise, we haven't modified the component, so nothing to change
@@ -109,12 +124,12 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
     } else if(modified instanceof TranslatableComponent) { // get TranslatableComponent with() args
       final List<Component> args = ((TranslatableComponent) modified).args();
       List<Component> newArgs = null;
-      for(int i = 0; i < args.size(); i++) {
+      for(int i = 0, size = args.size(); i < size; i++) {
         final Component original = args.get(i);
         final Component replaced = this.render(original, state);
         if(replaced != component) {
           if(newArgs == null) {
-            newArgs = new ArrayList<>(args.size());
+            newArgs = new ArrayList<>(size);
             if(i > 0) {
               newArgs.addAll(args.subList(0, i));
             }
@@ -139,13 +154,14 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
         }
       }
       // Children
-      final List<Component> oldChildren = component.children();
       boolean first = true;
-      for(int i = 0, size = oldChildren.size(); i < size; i++) {
+      for(int i = 0; i < oldChildrenSize; i++) {
         final Component child = oldChildren.get(i);
         final Component replaced = this.render(child, state);
         if(replaced != child) {
-          children = listOrNew(children, size);
+          if(children == null) {
+            children = new ArrayList<>(oldChildrenSize);
+          }
           if(first) {
             children.addAll(oldChildren.subList(0, i));
           }
@@ -158,19 +174,16 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
     } else {
       // we're not visiting children, re-add original children if necessary
       if(children != null) {
-        children.addAll(component.children());
+        children.addAll(oldChildren);
       }
     }
 
+    state.firstMatch = prevFirstMatch;
     // Update the modified component with new children
     if(children != null) {
       return modified.children(children);
     }
     return modified;
-  }
-
-  private static <T> @NonNull List<T> listOrNew(final @Nullable List<T> init, final int size) {
-    return init == null ? new ArrayList<>(size) : init;
   }
 
   static final class State {
@@ -180,6 +193,7 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
     boolean running = true;
     int matchCount = 0;
     int replaceCount = 0;
+    boolean firstMatch = true;
 
     State(final @NonNull Pattern pattern, final @NonNull BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement, final @NonNull IntFunction2<PatternReplacementResult> continuer) {
       this.pattern = pattern;

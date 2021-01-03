@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -47,7 +47,8 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
   TranslatableComponentImpl(final @NonNull List<? extends ComponentLike> children, final @NonNull Style style, final @NonNull String key, final @NonNull List<? extends ComponentLike> args) {
     super(children, style);
     this.key = requireNonNull(key, "key");
-    this.args = AbstractComponent.asComponents(args);
+    // Since translation arguments can be indexed, empty components are also included.
+    this.args = AbstractComponent.asComponents(args, true);
   }
 
   @Override
@@ -144,9 +145,8 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
     }
 
     @Override
-    // CHECKSTYLE:OFF
+    @SuppressWarnings("checkstyle:GenericWhitespace")
     public @NonNull Builder args(final @NonNull ComponentBuilder<?, ?>@NonNull... args) {
-      // CHECKSTYLE:ON
       if(args.length == 0) return this.args(Collections.emptyList());
       return this.args(Stream.of(args).map(ComponentBuilder::build).collect(Collectors.toList()));
     }
@@ -164,7 +164,7 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
 
     @Override
     public @NonNull Builder args(final @NonNull List<? extends ComponentLike> args) {
-      this.args = AbstractComponent.asComponents(args);
+      this.args = AbstractComponent.asComponents(args, true);
       return this;
     }
 

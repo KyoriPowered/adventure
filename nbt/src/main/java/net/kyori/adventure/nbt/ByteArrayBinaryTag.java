@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * @since 4.0.0
  */
-public interface ByteArrayBinaryTag extends BinaryTag {
+public interface ByteArrayBinaryTag extends ArrayBinaryTag, Iterable<Byte> {
   /**
    * Creates a binary tag holding a {@code byte}-array value.
    *
@@ -56,4 +56,22 @@ public interface ByteArrayBinaryTag extends BinaryTag {
    * @since 4.0.0
    */
   byte@NonNull[] value();
+
+  /**
+   * Get the size of the array.
+   *
+   * @return array size
+   * @since 4.2.0
+   */
+  int size();
+
+  /**
+   * Gets the value at {@code index} in this tag.
+   *
+   * @param index the index in the array
+   * @return the byte at the index in the array
+   * @throws IndexOutOfBoundsException if index is &lt; 0 or &ge; {@link #size()}
+   * @since 4.2.0
+   */
+  byte get(final int index);
 }

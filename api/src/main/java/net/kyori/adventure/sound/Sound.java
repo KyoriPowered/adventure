@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,17 +25,34 @@ package net.kyori.adventure.sound;
 
 import java.util.function.Supplier;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.util.Index;
+import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static java.util.Objects.requireNonNull;
 
 /**
- * A sound.
+ * Represents an in-game sound which can be played to the client.
  *
+ * <p>A sound consists of:</p>
+ * <dl>
+ *   <dt>key/type</dt>
+ *   <dd>the resource location of this sound (e.g minecraft:ambient.cave or my_plugin:custom_sound</dd>
+ *   <dt>source</dt>
+ *   <dd>a {@link Source} telling the game where the sound is coming from</dd>
+ *   <dt>volume</dt>
+ *   <dd>a number in the range [0,∞) representing how loud the sound should be played.
+ *   Increasing volume does not actually play the sound louder, but increases the radius
+ *   of where it can be heard</dd>
+ *   <dt>pitch</dt>
+ *   <dd>a number in the range [0,2] representing which pitch the sound should be played at</dd>
+ * </dl>
+ *
+ * @see SoundStop
  * @since 4.0.0
  */
-public interface Sound {
+public interface Sound extends Examinable {
   /**
    * Creates a new sound.
    *
@@ -91,54 +108,6 @@ public interface Sound {
         return type.get().key();
       }
     };
-  }
-
-  /**
-   * Creates a new sound.
-   *
-   * @param name the name
-   * @param source the source
-   * @param volume the volume
-   * @param pitch the pitch
-   * @return the sound
-   * @since 4.0.0
-   * @deprecated use {@link #sound(Key, Source, float, float)}
-   */
-  @Deprecated
-  static @NonNull Sound of(final @NonNull Key name, final @NonNull Source source, final float volume, final float pitch) {
-    return sound(name, source, volume, pitch);
-  }
-
-  /**
-   * Creates a new sound.
-   *
-   * @param type the type
-   * @param source the source
-   * @param volume the volume
-   * @param pitch the pitch
-   * @return the sound
-   * @since 4.0.0
-   * @deprecated use {@link #sound(Type, Source, float, float)}
-   */
-  @Deprecated
-  static @NonNull Sound of(final @NonNull Type type, final @NonNull Source source, final float volume, final float pitch) {
-    return sound(type, source, volume, pitch);
-  }
-
-  /**
-   * Creates a new sound.
-   *
-   * @param type the type
-   * @param source the source
-   * @param volume the volume
-   * @param pitch the pitch
-   * @return the sound
-   * @since 4.0.0
-   * @deprecated use {@link #sound(Supplier, Source, float, float)}
-   */
-  @Deprecated
-  static @NonNull Sound of(final @NonNull Supplier<? extends Type> type, final @NonNull Source source, final float volume, final float pitch) {
-    return sound(type, source, volume, pitch);
   }
 
   /**
@@ -208,13 +177,14 @@ public interface Sound {
    *
    * @since 4.0.0
    */
-  interface Type {
+  interface Type extends Keyed {
     /**
      * Gets the key.
      *
      * @return the key
      * @since 4.0.0
      */
+    @Override
     @NonNull Key key();
   }
 }

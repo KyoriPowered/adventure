@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 package net.kyori.adventure.nbt;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -36,21 +37,21 @@ import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-final class ListBinaryTagImpl implements ListBinaryTag {
+final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag {
   static final ListBinaryTag EMPTY = new ListBinaryTagImpl(BinaryTagTypes.END, Collections.emptyList());
-  private final List<? extends BinaryTag> tags;
-  private final BinaryTagType<? extends BinaryTag> type;
+  private final List<BinaryTag> tags;
+  private final BinaryTagType<? extends BinaryTag> elementType;
   private final int hashCode;
 
-  ListBinaryTagImpl(final BinaryTagType<? extends BinaryTag> type, final List<? extends BinaryTag> tags) {
-    this.tags = tags;
-    this.type = type;
+  ListBinaryTagImpl(final BinaryTagType<? extends BinaryTag> elementType, final List<BinaryTag> tags) {
+    this.tags = Collections.unmodifiableList(tags);
+    this.elementType = elementType;
     this.hashCode = tags.hashCode();
   }
 
   @Override
-  public @NonNull BinaryTagType<? extends BinaryTag> listType() {
-    return this.type;
+  public @NonNull BinaryTagType<? extends BinaryTag> elementType() {
+    return this.elementType;
   }
 
   @Override
@@ -64,34 +65,45 @@ final class ListBinaryTagImpl implements ListBinaryTag {
   }
 
   @Override
-  public @NonNull ListBinaryTag set(final int index, final @NonNull BinaryTag newTag, final @Nullable Consumer<BinaryTag> removedConsumer) {
+  public @NonNull ListBinaryTag set(final int index, final @NonNull BinaryTag newTag, final @Nullable Consumer<? super BinaryTag> removed) {
     return this.edit(tags -> {
       final BinaryTag oldTag = tags.set(index, newTag);
-      if(removedConsumer != null) {
-        removedConsumer.accept(oldTag);
+      if(removed != null) {
+        removed.accept(oldTag);
       }
     }, newTag.type());
   }
 
   @Override
-  public @NonNull ListBinaryTag remove(final int index, final @Nullable Consumer<BinaryTag> removedConsumer) {
+  public @NonNull ListBinaryTag remove(final int index, final @Nullable Consumer<? super BinaryTag> removed) {
     return this.edit(tags -> {
-      final BinaryTag tag = tags.remove(index);
-      if(removedConsumer != null) {
-        removedConsumer.accept(tag);
+      final BinaryTag oldTag = tags.remove(index);
+      if(removed != null) {
+        removed.accept(oldTag);
       }
     }, null);
   }
 
   @Override
   public @NonNull ListBinaryTag add(final BinaryTag tag) {
+    noAddEnd(tag);
+    if(this.elementType != BinaryTagTypes.END) {
+      mustBeSameType(tag, this.elementType);
+    }
+    return this.edit(tags -> tags.add(tag), tag.type());
+  }
+
+  @Override
+  public @NonNull ListBinaryTag add(final Iterable<? extends BinaryTag> tagsToAdd) {
+    if(tagsToAdd instanceof Collection<?> && ((Collection<?>) tagsToAdd).isEmpty()) {
+      return this;
+    }
+    final BinaryTagType<?> type = ListBinaryTagImpl.mustBeSameType(tagsToAdd);
     return this.edit(tags -> {
-      noAddEnd(tag);
-      if(this.type != BinaryTagTypes.END) {
-        mustBeSameType(tag, this.type);
+      for(final BinaryTag tag : tagsToAdd) {
+        tags.add(tag);
       }
-      tags.add(tag);
-    }, tag.type());
+    }, type);
   }
 
   // An end tag cannot be an element in a list tag
@@ -102,26 +114,44 @@ final class ListBinaryTagImpl implements ListBinaryTag {
   }
 
   // Cannot have different element types in a list tag
+  static BinaryTagType<?> mustBeSameType(final Iterable<? extends BinaryTag> tags) {
+    BinaryTagType<?> type = null;
+    for(final BinaryTag tag : tags) {
+      if(type == null) {
+        type = tag.type();
+      } else {
+        mustBeSameType(tag, type);
+      }
+    }
+    return type;
+  }
+
+  // Cannot have different element types in a list tag
   static void mustBeSameType(final BinaryTag tag, final BinaryTagType<? extends BinaryTag> type) {
     if(tag.type() != type) {
       throw new IllegalArgumentException(String.format("Trying to add tag of type %s to list of %s", tag.type(), type));
     }
   }
 
-  private ListBinaryTag edit(final Consumer<List<BinaryTag>> consumer, final @Nullable BinaryTagType<? extends BinaryTag> maybeType) {
+  private ListBinaryTag edit(final Consumer<List<BinaryTag>> consumer, final @Nullable BinaryTagType<? extends BinaryTag> maybeElementType) {
     final List<BinaryTag> tags = new ArrayList<>(this.tags);
     consumer.accept(tags);
-    BinaryTagType<? extends BinaryTag> type = this.type;
+    BinaryTagType<? extends BinaryTag> elementType = this.elementType;
     // set the type if it has not yet been set
-    if(maybeType != null && type == BinaryTagTypes.END) {
-      type = maybeType;
+    if(maybeElementType != null && elementType == BinaryTagTypes.END) {
+      elementType = maybeElementType;
     }
-    return new ListBinaryTagImpl(type, tags);
+    return new ListBinaryTagImpl(elementType, tags);
+  }
+
+  @Override
+  public @NonNull Stream<BinaryTag> stream() {
+    return this.tags.stream();
   }
 
   @Override
   public Iterator<BinaryTag> iterator() {
-    final Iterator<? extends BinaryTag> iterator = this.tags.iterator();
+    final Iterator<BinaryTag> iterator = this.tags.iterator();
     return new Iterator<BinaryTag>() {
       @Override
       public boolean hasNext() {
@@ -164,7 +194,7 @@ final class ListBinaryTagImpl implements ListBinaryTag {
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("tags", this.tags),
-      ExaminableProperty.of("type", this.type)
+      ExaminableProperty.of("type", this.elementType)
     );
   }
 }

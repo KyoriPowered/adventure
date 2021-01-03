@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,15 +26,17 @@ package net.kyori.adventure.title;
 import java.time.Duration;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Ticks;
+import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * A title.
+ * Represents an in-game title, which can be displayed across the centre of the screen.
  *
+ * @see Times
  * @since 4.0.0
  */
-public interface Title {
+public interface Title extends Examinable {
   /**
    * The default times.
    *
@@ -68,35 +70,6 @@ public interface Title {
   }
 
   /**
-   * Creates a title.
-   *
-   * @param title the title
-   * @param subtitle the subtitle
-   * @return the title
-   * @since 4.0.0
-   * @deprecated use {@link #title(Component, Component)}
-   */
-  @Deprecated
-  static @NonNull Title of(final @NonNull Component title, final @NonNull Component subtitle) {
-    return title(title, subtitle);
-  }
-
-  /**
-   * Creates a title.
-   *
-   * @param title the title
-   * @param subtitle the subtitle
-   * @param times the times
-   * @return the title
-   * @since 4.0.0
-   * @deprecated use {@link #title(Component, Component, Times)}
-   */
-  @Deprecated
-  static @NonNull Title of(final @NonNull Component title, final @NonNull Component subtitle, final @Nullable Times times) {
-    return title(title, subtitle, times);
-  }
-
-  /**
    * Gets the title.
    *
    * @return the title
@@ -125,7 +98,7 @@ public interface Title {
    *
    * @since 4.0.0
    */
-  interface Times {
+  interface Times extends Examinable {
     /**
      * Creates times.
      *

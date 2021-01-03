@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 package net.kyori.adventure.audience;
 
 import com.google.common.testing.EqualsTester;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -59,5 +60,15 @@ class AudienceTest {
         Audience.audience() // of() with no args returns empty
       )
       .testEquals();
+  }
+
+  @Test
+  void testCollectorEmpty() {
+    assertThat(Stream.<Audience>empty().collect(Audience.toAudience()).audiences()).isEmpty();
+  }
+
+  @Test
+  void testCollectorSingleItem() {
+    assertThat(Stream.of(Audience.empty()).collect(Audience.toAudience()).audiences()).containsExactly(Audience.empty());
   }
 }

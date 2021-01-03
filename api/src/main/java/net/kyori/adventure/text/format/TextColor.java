@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,10 @@
  */
 package net.kyori.adventure.text.format;
 
+import java.util.stream.Stream;
 import net.kyori.adventure.util.RGBLike;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.common.value.qual.IntRange;
@@ -31,9 +34,13 @@ import org.checkerframework.common.value.qual.IntRange;
 /**
  * A color which may be applied to a {@link Style}.
  *
+ * <p>The full range of hexadecimal colors are only supported in <em>Minecraft: Java Edition</em> 1.16 and above.
+ * On older versions, platforms may downsample these to {@link NamedTextColor}s.</p>
+ *
+ * @see NamedTextColor
  * @since 4.0.0
  */
-public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderApplicable, TextFormat {
+public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, StyleBuilderApplicable, TextFormat {
   /**
    * Creates a new text colour.
    *
@@ -81,62 +88,6 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
    */
   static @NonNull TextColor color(final float r, final float g, final float b) {
     return color((int) (r * 0xff), (int) (g * 0xff), (int) (b * 0xff));
-  }
-
-  /**
-   * Creates a new text colour.
-   *
-   * @param value the rgb value
-   * @return a new text colour
-   * @since 4.0.0
-   * @deprecated use {@link #color(int)}
-   */
-  @Deprecated
-  static @NonNull TextColor of(final int value) {
-    return color(value);
-  }
-
-  /**
-   * Creates a new text colour.
-   *
-   * @param rgb the rgb value
-   * @return a new text colour
-   * @since 4.0.0
-   * @deprecated use {@link #color(RGBLike)}
-   */
-  @Deprecated
-  static @NonNull TextColor from(final RGBLike rgb) {
-    return color(rgb.red(), rgb.green(), rgb.blue());
-  }
-
-  /**
-   * Create a new text colour with the red, green, and blue components individually.
-   *
-   * @param r red, as a value from 0 to 255
-   * @param g green, as a value from 0 to 255
-   * @param b blue, as a value from 0 to 255
-   * @return a new text colour
-   * @since 4.0.0
-   * @deprecated use {@link #color(int, int, int)}
-   */
-  @Deprecated
-  static @NonNull TextColor of(final @IntRange(from = 0x0, to = 0xff) int r, final @IntRange(from = 0x0, to = 0xff) int g, final @IntRange(from = 0x0, to = 0xff) int b) {
-    return color(r, g, b);
-  }
-
-  /**
-   * Create a new color with the individual components as floats.
-   *
-   * @param r red, from [0, 1]
-   * @param g green, within [0, 1]
-   * @param b blue, within [0, 1]
-   * @return a new text colour
-   * @since 4.0.0
-   * @deprecated use {@link #color(float, float, float)}
-   */
-  @Deprecated
-  static @NonNull TextColor of(final float r, final float g, final float b) {
-    return color(r, g, b);
   }
 
   /**
@@ -249,5 +200,10 @@ public interface TextColor extends Comparable<TextColor>, RGBLike, StyleBuilderA
   @Override
   default int compareTo(final TextColor that) {
     return Integer.compare(this.value(), that.value());
+  }
+
+  @Override
+  default @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(ExaminableProperty.of("value", this.asHexString()));
   }
 }

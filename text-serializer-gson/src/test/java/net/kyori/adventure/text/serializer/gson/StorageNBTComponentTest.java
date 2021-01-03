@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,33 +23,32 @@
  */
 package net.kyori.adventure.text.serializer.gson;
 
-import com.google.gson.JsonElement;
-import java.util.Map;
-import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.StorageNBTComponent;
+import org.junit.jupiter.api.Test;
 
-class StorageNBTComponentTest extends AbstractComponentTest<StorageNBTComponent> {
-  @Override
-  Stream<Map.Entry<StorageNBTComponent, JsonElement>> tests() {
-    return Stream.of(
-      entry(
-        Component.storageNBT().nbtPath("abc").storage(Key.key("doom:apple")).build(),
-        json -> {
-          json.addProperty(ComponentSerializerImpl.NBT, "abc");
-          json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
-          json.addProperty(ComponentSerializerImpl.NBT_STORAGE, "doom:apple");
-        }
-      ),
-      entry(
-        Component.storageNBT().nbtPath("abc[].def").storage(Key.key("diamond")).interpret(true).build(),
-        json -> {
-          json.addProperty(ComponentSerializerImpl.NBT, "abc[].def");
-          json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, true);
-          json.addProperty(ComponentSerializerImpl.NBT_STORAGE, "minecraft:diamond");
-        }
-      )
+class StorageNBTComponentTest extends ComponentTest {
+  @Test
+  void testWithoutInterpret() {
+    this.test(
+      Component.storageNBT().nbtPath("abc").storage(Key.key("doom:apple")).build(),
+      object(json -> {
+        json.addProperty(ComponentSerializerImpl.NBT, "abc");
+        json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
+        json.addProperty(ComponentSerializerImpl.NBT_STORAGE, "doom:apple");
+      })
+    );
+  }
+
+  @Test
+  void testWithInterpret() {
+    this.test(
+      Component.storageNBT().nbtPath("abc").storage(Key.key("doom:apple")).build(),
+      object(json -> {
+        json.addProperty(ComponentSerializerImpl.NBT, "abc");
+        json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
+        json.addProperty(ComponentSerializerImpl.NBT_STORAGE, "doom:apple");
+      })
     );
   }
 }

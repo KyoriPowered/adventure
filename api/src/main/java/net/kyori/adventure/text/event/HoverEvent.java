@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import net.kyori.adventure.text.renderer.ComponentRenderer;
@@ -53,6 +54,17 @@ import static java.util.Objects.requireNonNull;
  * @since 4.0.0
  */
 public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, StyleBuilderApplicable {
+  /**
+   * Creates a hover event that shows text on hover.
+   *
+   * @param text the text to show on hover
+   * @return a hover event
+   * @since 4.2.0
+   */
+  public static @NonNull HoverEvent<Component> showText(final @NonNull ComponentLike text) {
+    return showText(text.asComponent());
+  }
+
   /**
    * Creates a hover event that shows text on hover.
    *
@@ -101,7 +113,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
   }
 
   /**
-   * Creates.
+   * Creates a hover event that show information about an entity on hover.
    *
    * @param type the type
    * @param id the id
@@ -113,7 +125,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
   }
 
   /**
-   * Creates.
+   * Creates a hover event that show information about an entity on hover.
    *
    * @param type the type
    * @param id the id
@@ -126,7 +138,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
   }
 
   /**
-   * Creates a hover event that shows an entity on hover.
+   * Creates a hover event that show information about an entity on hover.
    *
    * @param entity the entity to show on hover
    * @return a hover event
@@ -146,21 +158,6 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @since 4.0.0
    */
   public static <V> @NonNull HoverEvent<V> hoverEvent(final @NonNull Action<V> action, final @NonNull V value) {
-    return new HoverEvent<>(action, value);
-  }
-
-  /**
-   * Creates a hover event.
-   *
-   * @param action the action
-   * @param value the value
-   * @param <V> the value type
-   * @return a click event
-   * @since 4.0.0
-   * @deprecated use {@link #hoverEvent(Action, Object)}
-   */
-  @Deprecated
-  public static <V> @NonNull HoverEvent<V> of(final @NonNull Action<V> action, final @NonNull V value) {
     return new HoverEvent<>(action, value);
   }
 
@@ -260,7 +257,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
 
   @Override
   public String toString() {
-    return StringExaminer.simpleEscaping().examine(this);
+    return this.examine(StringExaminer.simpleEscaping());
   }
 
   /**
@@ -394,6 +391,11 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
         ExaminableProperty.of("nbt", this.nbt)
       );
     }
+
+    @Override
+    public String toString() {
+      return this.examine(StringExaminer.simpleEscaping());
+    }
   }
 
   /**
@@ -526,6 +528,11 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
         ExaminableProperty.of("id", this.id),
         ExaminableProperty.of("name", this.name)
       );
+    }
+
+    @Override
+    public String toString() {
+      return this.examine(StringExaminer.simpleEscaping());
     }
   }
 

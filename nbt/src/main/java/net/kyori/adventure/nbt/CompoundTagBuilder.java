@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,18 +25,41 @@ package net.kyori.adventure.nbt;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
   private @MonotonicNonNull Map<String, BinaryTag> tags;
 
-  @Override
-  public CompoundBinaryTag.@NonNull Builder put(final @NonNull String key, @NonNull final BinaryTag tag) {
+  private Map<String, BinaryTag> tags() {
     if(this.tags == null) {
       this.tags = new HashMap<>();
     }
-    this.tags.put(key, tag);
+    return this.tags;
+  }
+
+  @Override
+  public CompoundBinaryTag.@NonNull Builder put(final @NonNull String key, final @NonNull BinaryTag tag) {
+    this.tags().put(key, tag);
+    return this;
+  }
+
+  @Override
+  public CompoundBinaryTag.@NonNull Builder put(final @NonNull Map<String, ? extends BinaryTag> tags) {
+    this.tags().putAll(tags);
+    return this;
+  }
+
+  @Override
+  public CompoundBinaryTag.@NonNull Builder remove(final @NonNull String key, final @Nullable Consumer<? super BinaryTag> removed) {
+    if(this.tags != null) {
+      final BinaryTag tag = this.tags.remove(key);
+      if(removed != null) {
+        removed.accept(tag);
+      }
+    }
     return this;
   }
 

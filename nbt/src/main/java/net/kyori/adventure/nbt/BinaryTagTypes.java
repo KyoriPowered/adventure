@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -111,7 +111,7 @@ public final class BinaryTagTypes {
     }
     return ListBinaryTag.of(type, tags);
   }, (tag, output) -> {
-    output.writeByte(tag.listType().id());
+    output.writeByte(tag.elementType().id());
     final int size = tag.size();
     output.writeInt(size);
     for(final BinaryTag item : tag) {

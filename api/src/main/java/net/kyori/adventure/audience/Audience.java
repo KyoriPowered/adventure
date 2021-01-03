@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,13 +24,16 @@
 package net.kyori.adventure.audience;
 
 import java.util.Arrays;
+import java.util.stream.Collector;
 import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.title.Title;
+import net.kyori.adventure.identity.Identified;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -119,79 +122,168 @@ public interface Audience {
   }
 
   /**
-   * Creates an audience that forwards to many other audiences.
+   * Provides a collector to create a forwarding audience from a stream of audiences.
    *
-   * @param audiences an array of audiences, can be empty
-   * @return an audience
-   * @see ForwardingAudience
+   * <p>The audience produced is immutable and can be reused as desired.</p>
+   *
+   * @return a collector to create a forwarding audience
    * @since 4.0.0
-   * @deprecated use {@link #audience(Audience...)}
    */
-  @Deprecated
-  static @NonNull Audience of(final @NonNull Audience@NonNull... audiences) {
-    return audience(audiences);
+  static @NonNull Collector<? super Audience, ?, ForwardingAudience> toAudience() {
+    return Audiences.COLLECTOR;
   }
 
   /**
-   * Creates an audience that forwards to many other audiences.
-   *
-   * <p>The underlying <code>Iterable</code> is not copied, therefore any changes
-   * made will be reflected in <code>Audience</code>.</p>
-   *
-   * @param audiences an iterable of audiences, can be empty
-   * @return an audience
-   * @see ForwardingAudience
-   * @since 4.0.0
-   * @deprecated use {@link #audience(Iterable)}
-   */
-  @Deprecated
-  static @NonNull ForwardingAudience of(final @NonNull Iterable<? extends Audience> audiences) {
-    return audience(audiences);
-  }
-
-  /**
-   * Sends a chat message.
+   * Sends a chat message with a {@link Identity#nil() nil} identity to this {@link Audience}.
    *
    * @param message a message
    * @see Component
-   * @since 4.0.0
+   * @see #sendMessage(Identified, ComponentLike)
+   * @see #sendMessage(Identity, ComponentLike)
+   * @since 4.1.0
    */
   default void sendMessage(final @NonNull ComponentLike message) {
-    this.sendMessage(message.asComponent());
+    this.sendMessage(Identity.nil(), message);
   }
 
   /**
-   * Sends a chat message.
+   * Sends a chat message from the given {@link Identified} to this {@link Audience}.
    *
+   * @param source the source of the message
    * @param message a message
    * @see Component
    * @since 4.0.0
+   */
+  default void sendMessage(final @NonNull Identified source, final @NonNull ComponentLike message) {
+    this.sendMessage(source, message.asComponent());
+  }
+
+  /**
+   * Sends a chat message from the entity represented by the given {@link Identity} (or the game using {@link Identity#nil()}) to this {@link Audience}.
+   *
+   * @param source the identity of the source of the message
+   * @param message a message
+   * @see Component
+   * @since 4.0.0
+   */
+  default void sendMessage(final @NonNull Identity source, final @NonNull ComponentLike message) {
+    this.sendMessage(source, message.asComponent());
+  }
+
+  /**
+   * Sends a chat message with a {@link Identity#nil() nil} identity to this {@link Audience}.
+   *
+   * @param message a message
+   * @see Component
+   * @see #sendMessage(Identified, Component)
+   * @see #sendMessage(Identity, Component)
+   * @since 4.1.0
    */
   default void sendMessage(final @NonNull Component message) {
-    this.sendMessage(message, MessageType.SYSTEM);
+    this.sendMessage(Identity.nil(), message);
   }
 
   /**
-   * Sends a chat message.
+   * Sends a chat message from the given {@link Identified} to this {@link Audience}.
+   *
+   * @param source the source of the message
+   * @param message a message
+   * @see Component
+   * @since 4.0.0
+   */
+  default void sendMessage(final @NonNull Identified source, final @NonNull Component message) {
+    this.sendMessage(source, message, MessageType.SYSTEM);
+  }
+
+  /**
+   * Sends a chat message from the entity represented by the given {@link Identity} (or the game using {@link Identity#nil()}) to this {@link Audience}.
+   *
+   * @param source the identity of the source of the message
+   * @param message a message
+   * @see Component
+   * @since 4.0.0
+   */
+  default void sendMessage(final @NonNull Identity source, final @NonNull Component message) {
+    this.sendMessage(source, message, MessageType.SYSTEM);
+  }
+
+  /**
+   * Sends a chat message with a {@link Identity#nil() nil} identity to this {@link Audience}.
    *
    * @param message a message
    * @param type the type
    * @see Component
-   * @since 4.0.0
+   * @see #sendMessage(Identified, ComponentLike, MessageType)
+   * @see #sendMessage(Identity, ComponentLike, MessageType)
+   * @since 4.1.0
    */
   default void sendMessage(final @NonNull ComponentLike message, final @NonNull MessageType type) {
-    this.sendMessage(message.asComponent(), type);
+    this.sendMessage(Identity.nil(), message, type);
   }
 
   /**
-   * Sends a chat message.
+   * Sends a chat message from the given {@link Identified} to this {@link Audience}.
    *
+   * @param source the source of the message
    * @param message a message
    * @param type the type
    * @see Component
    * @since 4.0.0
    */
+  default void sendMessage(final @NonNull Identified source, final @NonNull ComponentLike message, final @NonNull MessageType type) {
+    this.sendMessage(source, message.asComponent(), type);
+  }
+
+  /**
+   * Sends a chat message from the entity represented by the given {@link Identity} (or the game using {@link Identity#nil()}) to this {@link Audience}.
+   *
+   * @param source the identity of the source of the message
+   * @param message a message
+   * @param type the type
+   * @see Component
+   * @since 4.0.0
+   */
+  default void sendMessage(final @NonNull Identity source, final @NonNull ComponentLike message, final @NonNull MessageType type) {
+    this.sendMessage(source, message.asComponent(), type);
+  }
+
+  /**
+   * Sends a chat message with a {@link Identity#nil() nil} identity to this {@link Audience}.
+   *
+   * @param message a message
+   * @param type the type
+   * @see Component
+   * @see #sendMessage(Identified, Component, MessageType)
+   * @see #sendMessage(Identity, Component, MessageType)
+   * @since 4.1.0
+   */
   default void sendMessage(final @NonNull Component message, final @NonNull MessageType type) {
+    this.sendMessage(Identity.nil(), message, type);
+  }
+
+  /**
+   * Sends a chat message.
+   *
+   * @param source the source of the message
+   * @param message a message
+   * @param type the type
+   * @see Component
+   * @since 4.0.0
+   */
+  default void sendMessage(final @NonNull Identified source, final @NonNull Component message, final @NonNull MessageType type) {
+    this.sendMessage(source.identity(), message, type);
+  }
+
+  /**
+   * Sends a chat message.
+   *
+   * @param source the identity of the source of the message
+   * @param message a message
+   * @param type the type
+   * @see Component
+   * @since 4.0.0
+   */
+  default void sendMessage(final @NonNull Identity source, final @NonNull Component message, final @NonNull MessageType type) {
   }
 
   /**
@@ -213,6 +305,79 @@ public interface Audience {
    * @since 4.0.0
    */
   default void sendActionBar(final @NonNull Component message) {
+  }
+
+  /**
+   * Sends the player list header.
+   *
+   * <p>Depending on the implementation of this {@code Audience}, an existing footer may be displayed. If you wish
+   * to set both the header and the footer, please use {@link #sendPlayerListHeaderAndFooter(ComponentLike, ComponentLike)}.</p>
+   *
+   * @param header the header
+   * @since 4.3.0
+   */
+  default void sendPlayerListHeader(final @NonNull ComponentLike header) {
+    this.sendPlayerListHeader(header.asComponent());
+  }
+
+  /**
+   * Sends the player list header.
+   *
+   * <p>Depending on the implementation of this {@code Audience}, an existing footer may be displayed. If you wish
+   * to set both the header and the footer, please use {@link #sendPlayerListHeaderAndFooter(Component, Component)}.</p>
+   *
+   * @param header the header
+   * @since 4.3.0
+   */
+  default void sendPlayerListHeader(final @NonNull Component header) {
+    this.sendPlayerListHeaderAndFooter(header, Component.empty());
+  }
+
+  /**
+   * Sends the player list footer.
+   *
+   * <p>Depending on the implementation of this {@code Audience}, an existing footer may be displayed. If you wish
+   * to set both the header and the footer, please use {@link #sendPlayerListHeaderAndFooter(ComponentLike, ComponentLike)}.</p>
+   *
+   * @param footer the footer
+   * @since 4.3.0
+   */
+  default void sendPlayerListFooter(final @NonNull ComponentLike footer) {
+    this.sendPlayerListFooter(footer.asComponent());
+  }
+
+  /**
+   * Sends the player list footer.
+   *
+   * <p>Depending on the implementation of this {@code Audience}, an existing footer may be displayed. If you wish
+   * to set both the header and the footer, please use {@link #sendPlayerListHeaderAndFooter(Component, Component)}.</p>
+   *
+   * @param footer the footer
+   * @since 4.3.0
+   */
+  default void sendPlayerListFooter(final @NonNull Component footer) {
+    this.sendPlayerListHeaderAndFooter(Component.empty(), footer);
+  }
+
+  /**
+   * Sends the player list header and footer.
+   *
+   * @param header the header
+   * @param footer the footer
+   * @since 4.3.0
+   */
+  default void sendPlayerListHeaderAndFooter(final @NonNull ComponentLike header, final @NonNull ComponentLike footer) {
+    this.sendPlayerListHeaderAndFooter(header.asComponent(), footer.asComponent());
+  }
+
+  /**
+   * Sends the player list header and footer.
+   *
+   * @param header the header
+   * @param footer the footer
+   * @since 4.3.0
+   */
+  default void sendPlayerListHeaderAndFooter(final @NonNull Component header, final @NonNull Component footer) {
   }
 
   /**

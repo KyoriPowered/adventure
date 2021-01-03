@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +34,7 @@ import java.lang.reflect.Type;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.event.HoverEvent;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class ShowItemSerializer implements JsonDeserializer<HoverEvent.ShowItem>, JsonSerializer<HoverEvent.ShowItem> {
   static final String ID = "id";
@@ -60,7 +61,12 @@ final class ShowItemSerializer implements JsonDeserializer<HoverEvent.ShowItem>,
 
     BinaryTagHolder nbt = null;
     if(object.has(TAG)) {
-      nbt = BinaryTagHolder.of(object.get(TAG).getAsString());
+      final JsonElement tag = object.get(TAG);
+      if(tag.isJsonPrimitive()) {
+        nbt = BinaryTagHolder.of(tag.getAsString());
+      } else if(!tag.isJsonNull()) {
+        throw new JsonParseException("Expected " + TAG + " to be a string");
+      }
     }
 
     return HoverEvent.ShowItem.of(id, count, nbt);
@@ -77,7 +83,7 @@ final class ShowItemSerializer implements JsonDeserializer<HoverEvent.ShowItem>,
       json.addProperty(COUNT, count);
     }
 
-    final /* @Nullable */ BinaryTagHolder nbt = src.nbt();
+    final @Nullable BinaryTagHolder nbt = src.nbt();
     if(nbt != null) {
       json.addProperty(TAG, nbt.string());
     }

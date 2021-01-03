@@ -1,0 +1,26 @@
+plugins {
+  id("java-platform")
+}
+
+indra {
+  configurePublications {
+    from components.javaPlatform
+  }
+}
+
+dependencies {
+  constraints {
+    [
+      "api",
+      "key",
+      "nbt",
+      "serializer-configurate3",
+      "serializer-configurate4",
+      "text-serializer-gson",
+      "text-serializer-legacy",
+      "text-serializer-plain"
+    ].each {
+      api(project(":adventure-$it"))
+    }
+  }
+}

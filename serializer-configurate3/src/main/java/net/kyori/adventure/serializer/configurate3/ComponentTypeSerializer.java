@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -50,6 +50,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 @SuppressWarnings("UnstableApiUsage") // TypeToken
 final class ComponentTypeSerializer implements TypeSerializer<Component> {
   static final TypeToken<Component> TYPE = TypeToken.of(Component.class);
+  @SuppressWarnings("serial")
   static final TypeToken<List<Component>> LIST_TYPE = new TypeToken<List<Component>>() {};
   static final String TEXT = "text";
   static final String TRANSLATE = "translate";
@@ -183,13 +184,14 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
   }
 
   @Override
-  public void serialize(@NonNull final TypeToken<?> type, @Nullable final Component src, @NonNull final ConfigurationNode value) throws ObjectMappingException {
+  public void serialize(final @NonNull TypeToken<?> type, final @Nullable Component src, final @NonNull ConfigurationNode value) throws ObjectMappingException {
     value.setValue(null);
     if(src == null) {
       return;
     } else if(this.stringSerial != null && this.preferString) {
       try {
         value.setValue(this.stringSerial.serialize(src));
+        return;
       } catch(final Exception ex) {
         throw new ObjectMappingException(ex);
       }
@@ -211,7 +213,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
       score.getNode(SCORE_NAME).setValue(sc.name());
       score.getNode(SCORE_OBJECTIVE).setValue(sc.objective());
       // score component value is optional
-      final /* @Nullable */ String scoreValue = sc.value();
+      final @Nullable String scoreValue = sc.value();
       if(scoreValue != null) score.getNode(SCORE_VALUE).setValue(scoreValue);
     } else if(src instanceof SelectorComponent) {
       value.getNode(SELECTOR).setValue(((SelectorComponent) src).pattern());

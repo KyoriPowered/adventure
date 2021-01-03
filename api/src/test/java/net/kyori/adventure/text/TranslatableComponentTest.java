@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -154,6 +154,23 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
     assertThat(c0.args()).containsExactly(
       Component.text("kashike"),
       Component.text("lucko")
+    ).inOrder();
+  }
+
+  // https://github.com/KyoriPowered/adventure/pull/252
+  @Test
+  void testBuilderArgs_multipleWithEmpty() {
+    final TranslatableComponent c0 = Component.translatable()
+      .key("multiplayer.player.joined")
+      .args(
+        Component.empty(),
+        Component.text().content("kashike")
+      )
+      .build();
+    assertThat(c0.args()).hasSize(2);
+    assertThat(c0.args()).containsExactly(
+      Component.empty(),
+      Component.text("kashike")
     ).inOrder();
   }
 }

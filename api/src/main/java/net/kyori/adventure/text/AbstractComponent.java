@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,24 +27,28 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
-import java.util.regex.Pattern;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.util.IntFunction2;
-import net.kyori.examination.Examinable;
+import net.kyori.adventure.util.Buildable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * An abstract implementation of a text component.
  *
  * @since 4.0.0
  */
-public abstract class AbstractComponent implements Component, Examinable {
+public abstract class AbstractComponent implements Component {
   static List<Component> asComponents(final List<? extends ComponentLike> list) {
+    return asComponents(list, false);
+  }
+
+  static List<Component> asComponents(final List<? extends ComponentLike> list, final boolean allowEmpty) {
     if(list.isEmpty()) {
       // We do not need to create a new list if the one we are copying is empty - we can
       // simply just return our known-empty list instead.
@@ -54,7 +58,7 @@ public abstract class AbstractComponent implements Component, Examinable {
     for(int i = 0, size = list.size(); i < size; i++) {
       final ComponentLike like = list.get(i);
       final Component component = like.asComponent();
-      if(component != Component.empty()) {
+      if(allowEmpty || component != Component.empty()) {
         components.add(component);
       }
     }
@@ -94,8 +98,18 @@ public abstract class AbstractComponent implements Component, Examinable {
   }
 
   @Override
-  public @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement, final @NonNull IntFunction2<PatternReplacementResult> fn) {
-    return TextReplacementRenderer.INSTANCE.render(this, new TextReplacementRenderer.State(pattern, (result, builder) -> replacement.apply(builder), fn));
+  public @NonNull Component replaceText(final @NonNull Consumer<TextReplacementConfig.Builder> configurer) {
+    requireNonNull(configurer, "configurer");
+    return this.replaceText(Buildable.configureAndBuild(TextReplacementConfig.builder(), configurer));
+  }
+
+  @Override
+  public @NonNull Component replaceText(final @NonNull TextReplacementConfig config) {
+    requireNonNull(config, "replacement");
+    if(!(config instanceof TextReplacementConfigImpl)) {
+      throw new IllegalArgumentException("Provided replacement was a custom TextReplacementConfig implementation, which is not supported.");
+    }
+    return TextReplacementRenderer.INSTANCE.render(this, ((TextReplacementConfigImpl) config).createState());
   }
 
   @Override

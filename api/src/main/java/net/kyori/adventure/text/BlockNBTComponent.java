@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,55 +23,27 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.function.Consumer;
 import java.util.regex.Matcher;
+import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.Contract;
 
 /**
- * A block NBT component.
+ * Given an in-game position, this component reads the NBT of the associated block and displays that information.
  *
+ * <p>This component consists of:</p>
+ * <dl>
+ *   <dt>pos</dt>
+ *   <dd>a position in the world the component is being displayed in.</dd>
+ *   <dt>everything in</dt>
+ *   <dd>{@link NBTComponent}</dd>
+ * </dl>
+ *
+ * @see NBTComponent
  * @since 4.0.0
+ * @sinceMinecraft 1.14
  */
 public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, BlockNBTComponent.Builder>, ScopedComponent<BlockNBTComponent> {
-  /**
-   * Creates a block NBT component builder.
-   *
-   * @return a builder
-   * @since 4.0.0
-   * @deprecated use {@link Component#blockNBT()}
-   */
-  @Deprecated
-  static @NonNull Builder builder() {
-    return Component.blockNBT();
-  }
-
-  /**
-   * Creates a block NBT component with a position.
-   *
-   * @param nbtPath the nbt path
-   * @param pos the block position
-   * @return a block NBT component
-   * @since 4.0.0
-   * @deprecated use {@link Component#blockNBT(String, Pos)}
-   */
-  @Deprecated
-  static @NonNull BlockNBTComponent of(final @NonNull String nbtPath, final @NonNull Pos pos) {
-    return Component.blockNBT(nbtPath, pos);
-  }
-
-  /**
-   * Creates a block NBT component by applying configuration from {@code consumer}.
-   *
-   * @param consumer the builder configurator
-   * @return a block NBT component
-   * @since 4.0.0
-   * @deprecated use {@link Component#blockNBT(Consumer)}
-   */
-  @Deprecated
-  static @NonNull BlockNBTComponent make(final @NonNull Consumer<? super Builder> consumer) {
-    return Component.blockNBT(consumer);
-  }
-
   /**
    * Gets the block position.
    *
@@ -87,6 +59,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
    * @return a block NBT component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull BlockNBTComponent pos(final @NonNull Pos pos);
 
   /**
@@ -98,6 +71,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
    * @return a block NBT component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   default @NonNull BlockNBTComponent localPos(final double left, final double up, final double forwards) {
     return this.pos(LocalPos.of(left, up, forwards));
   }
@@ -111,6 +85,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
    * @return a block NBT component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   default @NonNull BlockNBTComponent worldPos(final WorldPos.@NonNull Coordinate x, final WorldPos.@NonNull Coordinate y, final WorldPos.@NonNull Coordinate z) {
     return this.pos(WorldPos.of(x, y, z));
   }
@@ -124,6 +99,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
    * @return a block NBT component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   default @NonNull BlockNBTComponent absoluteWorldPos(final int x, final int y, final int z) {
     return this.worldPos(WorldPos.Coordinate.absolute(x), WorldPos.Coordinate.absolute(y), WorldPos.Coordinate.absolute(z));
   }
@@ -137,6 +113,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
    * @return a block NBT component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   default @NonNull BlockNBTComponent relativeWorldPos(final int x, final int y, final int z) {
     return this.worldPos(WorldPos.Coordinate.relative(x), WorldPos.Coordinate.relative(y), WorldPos.Coordinate.relative(z));
   }
@@ -154,6 +131,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder pos(final @NonNull Pos pos);
 
     /**
@@ -165,6 +143,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_, _, _ -> this")
     default @NonNull Builder localPos(final double left, final double up, final double forwards) {
       return this.pos(LocalPos.of(left, up, forwards));
     }
@@ -178,6 +157,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_, _, _ -> this")
     default @NonNull Builder worldPos(final WorldPos.@NonNull Coordinate x, final WorldPos.@NonNull Coordinate y, final WorldPos.@NonNull Coordinate z) {
       return this.pos(WorldPos.of(x, y, z));
     }
@@ -191,6 +171,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_, _, _ -> this")
     default @NonNull Builder absoluteWorldPos(final int x, final int y, final int z) {
       return this.worldPos(WorldPos.Coordinate.absolute(x), WorldPos.Coordinate.absolute(y), WorldPos.Coordinate.absolute(z));
     }
@@ -204,6 +185,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_, _, _ -> this")
     default @NonNull Builder relativeWorldPos(final int x, final int y, final int z) {
       return this.worldPos(WorldPos.Coordinate.relative(x), WorldPos.Coordinate.relative(y), WorldPos.Coordinate.relative(z));
     }
@@ -214,7 +196,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
    *
    * @since 4.0.0
    */
-  interface Pos {
+  interface Pos extends Examinable {
     /**
      * Attempt to parse a position from the input string.
      *
@@ -351,7 +333,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      *
      * @since 4.0.0
      */
-    interface Coordinate {
+    interface Coordinate extends Examinable {
       /**
        * Creates a absolute coordinate with the given value.
        *

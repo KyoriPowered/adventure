@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,7 @@ package net.kyori.adventure.text.format;
 import net.kyori.adventure.text.ComponentBuilder;
 import net.kyori.adventure.text.ComponentBuilderApplicable;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.Contract;
 
 /**
  * Something that can be applied to a {@link Style}.
@@ -40,6 +41,7 @@ public interface StyleBuilderApplicable extends ComponentBuilderApplicable {
    * @param style the style builder
    * @since 4.0.0
    */
+  @Contract(mutates = "param")
   void styleApply(final Style.@NonNull Builder style);
 
   @Override

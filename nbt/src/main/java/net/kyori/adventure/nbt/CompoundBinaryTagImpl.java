@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-final class CompoundBinaryTagImpl implements CompoundBinaryTag {
+final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundBinaryTag {
   static final CompoundBinaryTag EMPTY = new CompoundBinaryTagImpl(Collections.emptyMap());
   private final Map<String, BinaryTag> tags;
   private final int hashCode;
@@ -47,7 +47,7 @@ final class CompoundBinaryTagImpl implements CompoundBinaryTag {
   }
 
   public boolean contains(final @NonNull String key, final @NonNull BinaryTagType<?> type) {
-    final /* @Nullable */ BinaryTag tag = this.tags.get(key);
+    final @Nullable BinaryTag tag = this.tags.get(key);
     return tag != null && type.test(tag.type());
   }
 
@@ -62,8 +62,26 @@ final class CompoundBinaryTagImpl implements CompoundBinaryTag {
   }
 
   @Override
-  public @NonNull CompoundBinaryTag put(final @NonNull String key, @NonNull final BinaryTag tag) {
+  public @NonNull CompoundBinaryTag put(final @NonNull String key, final @NonNull BinaryTag tag) {
     return this.edit(map -> map.put(key, tag));
+  }
+
+  @Override
+  public @NonNull CompoundBinaryTag put(final @NonNull Map<String, ? extends BinaryTag> tags) {
+    return this.edit(map -> map.putAll(tags));
+  }
+
+  @Override
+  public @NonNull CompoundBinaryTag remove(final @NonNull String key, final @Nullable Consumer<? super BinaryTag> removed) {
+    if(!this.tags.containsKey(key)) {
+      return this;
+    }
+    return this.edit(map -> {
+      final BinaryTag tag = map.remove(key);
+      if(removed != null) {
+        removed.accept(tag);
+      }
+    });
   }
 
   @Override
@@ -150,7 +168,7 @@ final class CompoundBinaryTagImpl implements CompoundBinaryTag {
   public @NonNull ListBinaryTag getList(final @NonNull String key, final @NonNull BinaryTagType<? extends BinaryTag> expectedType, final @NonNull ListBinaryTag defaultValue) {
     if(this.contains(key, BinaryTagTypes.LIST)) {
       final ListBinaryTag tag = (ListBinaryTag) this.tags.get(key);
-      if(expectedType.test(tag.listType())) {
+      if(expectedType.test(tag.elementType())) {
         return tag;
       }
     }

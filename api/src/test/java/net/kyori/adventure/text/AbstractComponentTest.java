@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -308,6 +308,16 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B> & Scoped
   }
 
   @Test
+  void testHasStyling() {
+    Component component = this.buildOne();
+    assertFalse(component.hasStyling());
+    component = component.decoration(TextDecoration.BOLD, TextDecoration.State.TRUE);
+    assertTrue(component.hasStyling());
+    component = component.style(Style.empty());
+    assertFalse(component.hasStyling());
+  }
+
+  @Test
   void testAsHoverEvent() {
     final C c0 = this.buildOne().color(null);
     final HoverEvent<Component> e0 = HoverEvent.showText(c0);
@@ -323,6 +333,32 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B> & Scoped
       .addEqualityGroup(this.builder().build())
       .addEqualityGroup(this.builder().color(NamedTextColor.RED).build())
       .testEquals();
+  }
+
+  @Test
+  void testCycleHoverRoot() {
+    assertThrows(IllegalStateException.class, () -> {
+      final Component hoverComponent = Component.text("hover");
+      final Component component = this.builder()
+        .hoverEvent(HoverEvent.showText(hoverComponent))
+        .build();
+      // component's hover event value is hoverComponent, we should not be able to add it
+      hoverComponent.append(component);
+      fail("A component was added to itself");
+    });
+  }
+
+  @Test
+  void testCycleHoverChild() {
+    assertThrows(IllegalStateException.class, () -> {
+      final Component hoverComponent = Component.text("hover child");
+      final Component component = this.builder()
+        .hoverEvent(HoverEvent.showText(Component.text("hover").append(hoverComponent)))
+        .build();
+      // component's hover event value contains hoverComponent, we should not be able to add it
+      hoverComponent.append(component);
+      fail("A component was added to itself");
+    });
   }
 
   // -----------------

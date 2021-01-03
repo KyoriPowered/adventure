@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -111,8 +111,8 @@ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<S
       if(clickEvent != null) {
         final ClickEvent./*@Nullable*/ Action action = optionallyDeserialize(clickEvent.getAsJsonPrimitive(CLICK_EVENT_ACTION), context, ClickEvent.Action.class);
         if(action != null && action.readable()) {
-          final /* @Nullable */ JsonPrimitive rawValue = clickEvent.getAsJsonPrimitive(CLICK_EVENT_VALUE);
-          final /* @Nullable */ String value = rawValue == null ? null : rawValue.getAsString();
+          final @Nullable JsonPrimitive rawValue = clickEvent.getAsJsonPrimitive(CLICK_EVENT_VALUE);
+          final @Nullable String value = rawValue == null ? null : rawValue.getAsString();
           if(value != null) {
             style.clickEvent(ClickEvent.clickEvent(action, value));
           }
@@ -125,9 +125,9 @@ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<S
       if(hoverEvent != null) {
         final HoverEvent./*@Nullable*/ Action action = optionallyDeserialize(hoverEvent.getAsJsonPrimitive(HOVER_EVENT_ACTION), context, HoverEvent.Action.class);
         if(action != null && action.readable()) {
-          final /* @Nullable */ Object value;
+          final @Nullable Object value;
           if(hoverEvent.has(HOVER_EVENT_CONTENTS)) {
-            final /* @Nullable */ JsonElement rawValue = hoverEvent.get(HOVER_EVENT_CONTENTS);
+            final @Nullable JsonElement rawValue = hoverEvent.get(HOVER_EVENT_CONTENTS);
             value = context.deserialize(rawValue, action.type());
           } else if(hoverEvent.has(HOVER_EVENT_VALUE)) {
             final Component rawValue = context.deserialize(hoverEvent.get(HOVER_EVENT_VALUE), Component.class);
@@ -183,12 +183,12 @@ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<S
   public JsonElement serialize(final Style src, final Type typeOfSrc, final JsonSerializationContext context) {
     final JsonObject json = new JsonObject();
 
-    final /* @Nullable */ Key font = src.font();
+    final @Nullable Key font = src.font();
     if(font != null) {
       json.add(FONT, context.serialize(font));
     }
 
-    final /* @Nullable */ TextColor color = src.color();
+    final @Nullable TextColor color = src.color();
     if(color != null) {
       json.add(COLOR, context.serialize(color));
     }
@@ -203,12 +203,12 @@ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<S
       }
     }
 
-    final /* @Nullable */ String insertion = src.insertion();
+    final @Nullable String insertion = src.insertion();
     if(insertion != null) {
       json.addProperty(INSERTION, insertion);
     }
 
-    final /* @Nullable */ ClickEvent clickEvent = src.clickEvent();
+    final @Nullable ClickEvent clickEvent = src.clickEvent();
     if(clickEvent != null) {
       final JsonObject eventJson = new JsonObject();
       eventJson.add(CLICK_EVENT_ACTION, context.serialize(clickEvent.action()));
@@ -216,7 +216,7 @@ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<S
       json.add(CLICK_EVENT, eventJson);
     }
 
-    final /* @Nullable */ HoverEvent<?> hoverEvent = src.hoverEvent();
+    final @Nullable HoverEvent<?> hoverEvent = src.hoverEvent();
     if(hoverEvent != null) {
       final JsonObject eventJson = new JsonObject();
       eventJson.add(HOVER_EVENT_ACTION, context.serialize(hoverEvent.action()));

@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,55 +23,26 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.function.Consumer;
 import net.kyori.adventure.key.Key;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.Contract;
 
 /**
- * An storage NBT component.
+ * Given a {@link Key}, this component reads the NBT of the associated command storage and displays that information.
  *
+ * <p>This component consists of:</p>
+ * <dl>
+ *   <dt>storage</dt>
+ *   <dd>a key that represents the resource location of a command storage (eg. my_plugin:actions.punches_entity)</dd>
+ *   <dt>everything in</dt>
+ *   <dd>{@link NBTComponent}</dd>
+ * </dl>
+ *
+ * @see NBTComponent
  * @since 4.0.0
+ * @sinceMinecraft 1.15
  */
 public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent, StorageNBTComponent.Builder>, ScopedComponent<StorageNBTComponent> {
-  /**
-   * Creates an storage NBT component builder.
-   *
-   * @return a builder
-   * @since 4.0.0
-   * @deprecated use {@link Component#storageNBT()}
-   */
-  @Deprecated
-  static @NonNull Builder builder() {
-    return Component.storageNBT();
-  }
-
-  /**
-   * Creates a storage NBT component with a path and an storage ID.
-   *
-   * @param nbtPath the nbt path
-   * @param storage the identifier of the storage
-   * @return a storage NBT component
-   * @since 4.0.0
-   * @deprecated use {@link Component#storageNBT(String, Key)}
-   */
-  @Deprecated
-  static @NonNull StorageNBTComponent of(final @NonNull String nbtPath, final @NonNull Key storage) {
-    return Component.storageNBT(nbtPath, storage);
-  }
-
-  /**
-   * Creates a storage NBT component by applying configuration from {@code consumer}.
-   *
-   * @param consumer the builder configurator
-   * @return a storage NBT component
-   * @since 4.0.0
-   * @deprecated use {@link Component#storageNBT(Consumer)}
-   */
-  @Deprecated
-  static @NonNull StorageNBTComponent make(final @NonNull Consumer<? super Builder> consumer) {
-    return Component.storageNBT(consumer);
-  }
-
   /**
    * Gets the NBT storage's ID.
    *
@@ -87,6 +58,7 @@ public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent, S
    * @return a storage NBT component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull StorageNBTComponent storage(final @NonNull Key storage);
 
   /**
@@ -102,6 +74,7 @@ public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent, S
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder storage(final @NonNull Key storage);
   }
 }

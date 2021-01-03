@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,13 +25,12 @@ package net.kyori.adventure.sound;
 
 import java.util.stream.Stream;
 import net.kyori.adventure.util.ShadyPines;
-import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-abstract class SoundImpl implements Examinable, Sound {
+abstract class SoundImpl implements Sound {
   private final Source source;
   private final float volume;
   private final float pitch;

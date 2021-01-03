@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -79,7 +79,7 @@ class BigTest {
   @BeforeAll
   static void before() throws IOException, URISyntaxException {
     final URL url = BigTest.class.getResource("/bigtest.nbt");
-    compound = BinaryTagIO.readCompressedPath(Paths.get(url.toURI()));
+    compound = BinaryTagIO.reader().read(Paths.get(url.toURI()), BinaryTagIO.Compression.GZIP);
   }
 
   @Test

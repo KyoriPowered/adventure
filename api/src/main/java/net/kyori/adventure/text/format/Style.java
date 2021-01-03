@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,24 +28,41 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.sound.Sound;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.ShadyPines;
+import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
- * A style.
+ * A style applies visual effects or extra functionality to {@link Component}s,
+ * such as {@link TextColor}s, {@link TextDecoration}s, {@link ClickEvent}s etc.
+ *
+ * <p>Some examples of valid styles:</p>
+ *   <pre>
+ *     Style myStyle = Style.style(ClickEvent.openUrl(url), NamedTextColor.RED, TextDecoration.BOLD);
+ *     Style yourStyle = Style.style(TextColor.color(20, 30, 40), HoverEvent.showText(Component.text("Wow!"));
+ *     Style ourStyle = Style.style().color(NamedTextColor.WHITE).build();
+ *   </pre>
+ *
+ * <p>A note about fonts: the {@link Key} in this context represents the resource location
+ * of the font in the same way as {@link Sound}s</p>
  *
  * @since 4.0.0
  */
-public interface Style extends Buildable<Style, Style.Builder> {
+public interface Style extends Buildable<Style, Style.Builder>, Examinable {
   /**
    * The default font.
    *
    * @since 4.0.0
+   * @sinceMinecraft 1.16
    */
   Key DEFAULT_FONT = Key.key("default");
 
@@ -169,111 +186,6 @@ public interface Style extends Buildable<Style, Style.Builder> {
   }
 
   /**
-   * Creates a builder.
-   *
-   * @return a builder
-   * @since 4.0.0
-   * @deprecated use {@link #style()}
-   */
-  @Deprecated
-  static @NonNull Builder builder() {
-    return new StyleImpl.BuilderImpl();
-  }
-
-  /**
-   * Creates a style with color.
-   *
-   * @param color the style
-   * @return a style
-   * @since 4.0.0
-   * @deprecated use {@link #style(TextColor)}
-   */
-  @Deprecated
-  static @NonNull Style of(final @Nullable TextColor color) {
-    return style(color);
-  }
-
-  /**
-   * Creates a style with decoration.
-   *
-   * @param decoration the decoration
-   * @return a style
-   * @since 4.0.0
-   * @deprecated use {@link #style(TextDecoration)}
-   */
-  @Deprecated
-  static @NonNull Style of(final @NonNull TextDecoration decoration) {
-    return style(decoration);
-  }
-
-  /**
-   * Creates a style with color and decorations.
-   *
-   * @param color the style
-   * @param decorations the decorations
-   * @return a style
-   * @since 4.0.0
-   * @deprecated use {@link #style(TextColor, TextDecoration...)}
-   */
-  @Deprecated
-  static @NonNull Style of(final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
-    return style(color, decorations);
-  }
-
-  /**
-   * Creates a style with color and decorations.
-   *
-   * @param color the style
-   * @param decorations the decorations
-   * @return a style
-   * @since 4.0.0
-   * @deprecated use {@link #style(TextColor, Set)}
-   */
-  @Deprecated
-  static @NonNull Style of(final @Nullable TextColor color, final Set<TextDecoration> decorations) {
-    return style(color, decorations);
-  }
-
-  /**
-   * Creates a style with {@code applicables} applied.
-   *
-   * @param applicables the applicables
-   * @return a style
-   * @since 4.0.0
-   * @deprecated use {@link #style(StyleBuilderApplicable...)}
-   */
-  @Deprecated
-  static @NonNull Style of(final StyleBuilderApplicable@NonNull... applicables) {
-    return style(applicables);
-  }
-
-  /**
-   * Creates a style with {@code applicables} applied.
-   *
-   * @param applicables the applicables
-   * @return a style
-   * @since 4.0.0
-   * @deprecated use {@link #style(Iterable)}
-   */
-  @Deprecated
-  static @NonNull Style of(final @NonNull Iterable<? extends StyleBuilderApplicable> applicables) {
-    return style(applicables);
-  }
-
-  /**
-   * Creates a style.
-   *
-   * @param consumer the builder consumer
-   * @return a style
-   * @since 4.0.0
-   * @deprecated use {@link #style(Consumer)}
-   */
-  @Deprecated
-  static @NonNull Style make(final @NonNull Consumer<Builder> consumer) {
-    return Buildable.configureAndBuild(style(), consumer);
-  }
-
-  /**
    * Edits this style.
    *
    * <p>The old style will be merge into the new style before {@code consumer} is called.</p>
@@ -311,15 +223,18 @@ public interface Style extends Buildable<Style, Style.Builder> {
    *
    * @return the font
    * @since 4.0.0
+   * @sinceMinecraft 1.16
    */
   @Nullable Key font();
 
   /**
    * Sets the font.
    *
+   *
    * @param font the font
    * @return a style
    * @since 4.0.0
+   * @sinceMinecraft 1.16
    */
   @NonNull Style font(final @Nullable Key font);
 
@@ -415,7 +330,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
    * @return a set of decorations this style has
    * @since 4.0.0
    */
-  @NonNull Map<TextDecoration, TextDecoration.State> decorations();
+  @Unmodifiable @NonNull Map<TextDecoration, TextDecoration.State> decorations();
 
   /**
    * Sets decorations for this style using the specified {@code decorations} map.
@@ -638,7 +553,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
      * @return a merge set
      * @since 4.0.0
      */
-    public static @NonNull Set<Merge> all() {
+    public static @Unmodifiable @NonNull Set<Merge> all() {
       return ALL;
     }
 
@@ -648,7 +563,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
      * @return a merge set
      * @since 4.0.0
      */
-    public static @NonNull Set<Merge> colorAndDecorations() {
+    public static @Unmodifiable @NonNull Set<Merge> colorAndDecorations() {
       return COLOR_AND_DECORATIONS;
     }
 
@@ -659,7 +574,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
      * @return a merge set
      * @since 4.0.0
      */
-    public static @NonNull Set<Merge> of(final Merge@NonNull... merges) {
+    public static @Unmodifiable @NonNull Set<Merge> of(final Merge@NonNull... merges) {
       return ShadyPines.enumSet(Merge.class, merges);
     }
 
@@ -706,7 +621,9 @@ public interface Style extends Buildable<Style, Style.Builder> {
      * @param font the font
      * @return this builder
      * @since 4.0.0
+     * @sinceMinecraft 1.16
      */
+    @Contract("_ -> this")
     @NonNull Builder font(final @Nullable Key font);
 
     /**
@@ -716,6 +633,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder color(final @Nullable TextColor color);
 
     /**
@@ -725,6 +643,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder colorIfAbsent(final @Nullable TextColor color);
 
     /**
@@ -734,6 +653,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
      * @return a style
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     default @NonNull Builder decorate(final @NonNull TextDecoration decoration) {
       return this.decoration(decoration, TextDecoration.State.TRUE);
     }
@@ -745,6 +665,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
      * @return a style
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     default @NonNull Builder decorate(final @NonNull TextDecoration@NonNull... decorations) {
       for(int i = 0, length = decorations.length; i < length; i++) {
         this.decorate(decorations[i]);
@@ -761,6 +682,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
      * @return a style
      * @since 4.0.0
      */
+    @Contract("_, _ -> this")
     default @NonNull Builder decoration(final @NonNull TextDecoration decoration, final boolean flag) {
       return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
     }
@@ -776,6 +698,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_, _ -> this")
     @NonNull Builder decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state);
 
     /**
@@ -785,6 +708,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder clickEvent(final @Nullable ClickEvent event);
 
     /**
@@ -794,6 +718,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder hoverEvent(final @Nullable HoverEventSource<?> source);
 
     /**
@@ -803,15 +728,17 @@ public interface Style extends Buildable<Style, Style.Builder> {
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     @NonNull Builder insertion(final @Nullable String insertion);
 
     /**
      * Merges from another style into this style.
      *
      * @param that the other style
-     * @return a style
+     * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     default @NonNull Builder merge(final @NonNull Style that) {
       return this.merge(that, Merge.all());
     }
@@ -821,9 +748,10 @@ public interface Style extends Buildable<Style, Style.Builder> {
      *
      * @param that the other style
      * @param strategy the merge strategy
-     * @return a style
+     * @return this builder
      * @since 4.0.0
      */
+    @Contract("_, _ -> this")
     default @NonNull Builder merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy) {
       return this.merge(that, strategy, Merge.all());
     }
@@ -833,9 +761,10 @@ public interface Style extends Buildable<Style, Style.Builder> {
      *
      * @param that the other style
      * @param merges the parts to merge
-     * @return a style
+     * @return this builder
      * @since 4.0.0
      */
+    @Contract("_, _ -> this")
     default @NonNull Builder merge(final @NonNull Style that, final @NonNull Merge@NonNull... merges) {
       if(merges.length == 0) return this;
       return this.merge(that, Merge.of(merges));
@@ -847,9 +776,10 @@ public interface Style extends Buildable<Style, Style.Builder> {
      * @param that the other style
      * @param strategy the merge strategy
      * @param merges the parts to merge
-     * @return a style
+     * @return this builder
      * @since 4.0.0
      */
+    @Contract("_, _, _ -> this")
     default @NonNull Builder merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy, final @NonNull Merge@NonNull... merges) {
       if(merges.length == 0) return this;
       return this.merge(that, strategy, Merge.of(merges));
@@ -860,9 +790,10 @@ public interface Style extends Buildable<Style, Style.Builder> {
      *
      * @param that the other style
      * @param merges the parts to merge
-     * @return a style
+     * @return this builder
      * @since 4.0.0
      */
+    @Contract("_, _ -> this")
     default @NonNull Builder merge(final @NonNull Style that, final @NonNull Set<Merge> merges) {
       return this.merge(that, Merge.Strategy.ALWAYS, merges);
     }
@@ -873,9 +804,10 @@ public interface Style extends Buildable<Style, Style.Builder> {
      * @param that the other style
      * @param strategy the merge strategy
      * @param merges the parts to merge
-     * @return a style
+     * @return this builder
      * @since 4.0.0
      */
+    @Contract("_, _, _ -> this")
     @NonNull Builder merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy, final @NonNull Set<Merge> merges);
 
     /**
@@ -885,6 +817,7 @@ public interface Style extends Buildable<Style, Style.Builder> {
      * @return this builder
      * @since 4.0.0
      */
+    @Contract("_ -> this")
     default @NonNull Builder apply(final @NonNull StyleBuilderApplicable applicable) {
       applicable.styleApply(this);
       return this;

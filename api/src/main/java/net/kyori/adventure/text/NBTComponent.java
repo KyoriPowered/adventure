@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,11 +24,27 @@
 package net.kyori.adventure.text;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.Contract;
 
 /**
- * An NBT component.
+ * A component that can display NBT fetched from different locations, optionally trying to interpret the NBT as JSON
+ * using the {@code net.kyori.adventure.text.serializer.gson.GsonComponentSerializer} to convert the JSON to a {@link Component}.
+ * Sending interpreted NBT to the chat would be similar to using {@code /tellraw}.
+ *
+ * <p>This component consists of:</p>
+ * <dl>
+ *   <dt>nbtPath</dt>
+ *   <dd>a path to specify which parts of the nbt you want displayed(<a href="https://minecraft.gamepedia.com/NBT_path_format#Examples">examples</a>).</dd>
+ *   <dt>interpret</dt>
+ *   <dd>a boolean telling adventure if the fetched NBT value should be parsed as JSON</dd>
+ * </dl>
+ *
+ * <p>This component is rendered serverside and can therefore receive platform-defined
+ * context. See the documentation for your respective
+ * platform for more info</p>
  *
  * @since 4.0.0
+ * @sinceMinecraft 1.14
  */
 public interface NBTComponent<C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> extends BuildableComponent<C, B> {
   /**
@@ -46,6 +62,7 @@ public interface NBTComponent<C extends NBTComponent<C, B>, B extends NBTCompone
    * @return an NBT component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull C nbtPath(final @NonNull String nbtPath);
 
   /**
@@ -63,5 +80,6 @@ public interface NBTComponent<C extends NBTComponent<C, B>, B extends NBTCompone
    * @return an NBT component
    * @since 4.0.0
    */
+  @Contract(pure = true)
   @NonNull C interpret(final boolean interpret);
 }

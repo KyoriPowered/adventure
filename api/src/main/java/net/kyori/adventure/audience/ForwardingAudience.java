@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,12 +25,15 @@ package net.kyori.adventure.audience;
 
 import java.util.Collections;
 import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.identity.Identified;
+import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * A receiver that wraps one or more receivers.
@@ -49,16 +52,37 @@ public interface ForwardingAudience extends Audience {
    * @return the audiences
    * @since 4.0.0
    */
+  @ApiStatus.OverrideOnly
   @NonNull Iterable<? extends Audience> audiences();
 
   @Override
-  default void sendMessage(final @NonNull Component message, final @NonNull MessageType type) {
-    for(final Audience audience : this.audiences()) audience.sendMessage(message, type);
+  default void sendMessage(final @NonNull Identified source, final @NonNull Component message, final @NonNull MessageType type) {
+    for(final Audience audience : this.audiences()) audience.sendMessage(source, message, type);
+  }
+
+  @Override
+  default void sendMessage(final @NonNull Identity source, final @NonNull Component message, final @NonNull MessageType type) {
+    for(final Audience audience : this.audiences()) audience.sendMessage(source, message, type);
   }
 
   @Override
   default void sendActionBar(final @NonNull Component message) {
     for(final Audience audience : this.audiences()) audience.sendActionBar(message);
+  }
+
+  @Override
+  default void sendPlayerListHeader(final @NonNull Component header) {
+    for(final Audience audience : this.audiences()) audience.sendPlayerListHeader(header);
+  }
+
+  @Override
+  default void sendPlayerListFooter(final @NonNull Component footer) {
+    for(final Audience audience : this.audiences()) audience.sendPlayerListFooter(footer);
+  }
+
+  @Override
+  default void sendPlayerListHeaderAndFooter(final @NonNull Component header, final @NonNull Component footer) {
+    for(final Audience audience : this.audiences()) audience.sendPlayerListHeaderAndFooter(header, footer);
   }
 
   @Override
@@ -118,6 +142,7 @@ public interface ForwardingAudience extends Audience {
      * @return the audience
      * @since 4.0.0
      */
+    @ApiStatus.OverrideOnly
     @NonNull Audience audience();
 
     /**
@@ -133,13 +158,33 @@ public interface ForwardingAudience extends Audience {
     }
 
     @Override
-    default void sendMessage(final @NonNull Component message, final @NonNull MessageType type) {
-      this.audience().sendMessage(message, type);
+    default void sendMessage(final @NonNull Identified source, final @NonNull Component message, final @NonNull MessageType type) {
+      this.audience().sendMessage(source, message, type);
+    }
+
+    @Override
+    default void sendMessage(final @NonNull Identity source, final @NonNull Component message, final @NonNull MessageType type) {
+      this.audience().sendMessage(source, message, type);
     }
 
     @Override
     default void sendActionBar(final @NonNull Component message) {
       this.audience().sendActionBar(message);
+    }
+
+    @Override
+    default void sendPlayerListHeader(final @NonNull Component header) {
+      this.audience().sendPlayerListHeader(header);
+    }
+
+    @Override
+    default void sendPlayerListFooter(final @NonNull Component footer) {
+      this.audience().sendPlayerListFooter(footer);
+    }
+
+    @Override
+    default void sendPlayerListHeaderAndFooter(final @NonNull Component header, final @NonNull Component footer) {
+      this.audience().sendPlayerListHeaderAndFooter(header, footer);
     }
 
     @Override

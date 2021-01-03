@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,12 +24,13 @@
 package net.kyori.adventure.nbt;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-final class ByteArrayBinaryTagImpl implements ByteArrayBinaryTag {
+final class ByteArrayBinaryTagImpl extends ArrayBinaryTagImpl implements ByteArrayBinaryTag {
   final byte[] value;
 
   ByteArrayBinaryTagImpl(final byte[] value) {
@@ -39,6 +40,17 @@ final class ByteArrayBinaryTagImpl implements ByteArrayBinaryTag {
   @Override
   public byte@NonNull[] value() {
     return Arrays.copyOf(this.value, this.value.length);
+  }
+
+  @Override
+  public int size() {
+    return this.value.length;
+  }
+
+  @Override
+  public byte get(final int index) {
+    checkIndex(index, this.value.length);
+    return this.value[index];
   }
 
   // to avoid copying array internally
@@ -62,5 +74,22 @@ final class ByteArrayBinaryTagImpl implements ByteArrayBinaryTag {
   @Override
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("value", this.value));
+  }
+
+  @Override
+  public Iterator<Byte> iterator() {
+    return new Iterator<Byte>() {
+      private int index;
+
+      @Override
+      public boolean hasNext() {
+        return this.index < ByteArrayBinaryTagImpl.this.value.length - 1;
+      }
+
+      @Override
+      public Byte next() {
+        return ByteArrayBinaryTagImpl.this.value[this.index++];
+      }
+    };
   }
 }

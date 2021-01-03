@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,7 @@ package net.kyori.adventure.util;
 import java.util.function.Consumer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.Contract;
 
 /**
  * Something that can be built.
@@ -45,6 +46,7 @@ public interface Buildable<R, B extends Buildable.Builder<R>> {
    * @return the built thing
    * @since 4.0.0
    */
+  @Contract(mutates = "param1")
   static <R extends Buildable<R, B>, B extends Builder<R>> @NonNull R configureAndBuild(final @NonNull B builder, final @Nullable Consumer<? super B> consumer) {
     if(consumer != null) consumer.accept(builder);
     return builder.build();
@@ -56,6 +58,7 @@ public interface Buildable<R, B extends Buildable.Builder<R>> {
    * @return a builder
    * @since 4.0.0
    */
+  @Contract(value = "-> new", pure = true)
   @NonNull B toBuilder();
 
   /**
@@ -71,6 +74,7 @@ public interface Buildable<R, B extends Buildable.Builder<R>> {
      * @return the built thing
      * @since 4.0.0
      */
+    @Contract(value = "-> new", pure = true)
     @NonNull R build();
   }
 }

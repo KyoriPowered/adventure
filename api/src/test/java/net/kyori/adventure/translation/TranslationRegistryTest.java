@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,12 +24,16 @@
 package net.kyori.adventure.translation;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.testing.EqualsTester;
 import java.text.MessageFormat;
 import java.util.Locale;
+import java.util.ResourceBundle;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
+import net.kyori.adventure.util.UTF8ResourceBundleControl;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -39,13 +43,15 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TranslationRegistryTest {
-  static final TranslationRegistry REGISTRY = TranslationRegistry.get();
-  static final TranslatableComponentRenderer<Locale> RENDERER = TranslatableComponentRenderer.get();
+  static final TranslationRegistry REGISTRY = TranslationRegistry.create(Key.key("adventure", "test"));
+  static final TranslatableComponentRenderer<Locale> RENDERER = TranslatableComponentRenderer.usingTranslationSource(REGISTRY);
 
   @BeforeAll
   static void testRegister() {
     REGISTRY.register("what", Locale.CANADA, new MessageFormat("A what?", Locale.CANADA));
-    REGISTRY.registerAll(Locale.US, "adventure-test", true);
+
+    final ResourceBundle bundle = ResourceBundle.getBundle("adventure-test", Locale.US, UTF8ResourceBundleControl.get());
+    REGISTRY.registerAll(Locale.US, bundle, true);
   }
 
   @Test
@@ -122,7 +128,10 @@ class TranslationRegistryTest {
     assertEquals(
       Component.text().content("")
         .color(NamedTextColor.YELLOW)
-        .append(Component.text("This is a test."))
+        .append(
+          Component.text("This is a test.")
+            .append(Component.text("I promise."))
+        )
         .append(
           Component.text("")
             .append(Component.text("kashike"))
@@ -139,6 +148,7 @@ class TranslationRegistryTest {
           .content("")
           .append(
             Component.translatable("test")
+              .append(Component.text("I promise."))
           )
           .append(
             Component.translatable()
@@ -186,6 +196,14 @@ class TranslationRegistryTest {
         Locale.US
       )
     );
+  }
+
+  @Test
+  void testEquality() {
+    new EqualsTester()
+      .addEqualityGroup(REGISTRY)
+      .addEqualityGroup(TranslationRegistry.create(Key.key("adventure", "test_2")))
+      .testEquals();
   }
 
   @Test

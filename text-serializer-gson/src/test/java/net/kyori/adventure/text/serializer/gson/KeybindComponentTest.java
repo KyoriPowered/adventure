@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,19 +23,14 @@
  */
 package net.kyori.adventure.text.serializer.gson;
 
-import com.google.gson.JsonElement;
-import java.util.Map;
-import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.KeybindComponent;
+import org.junit.jupiter.api.Test;
 
-class KeybindComponentTest extends AbstractComponentTest<KeybindComponent> {
+class KeybindComponentTest extends ComponentTest {
   private static final String KEY = "key.jump";
 
-  @Override
-  Stream<Map.Entry<KeybindComponent, JsonElement>> tests() {
-    return Stream.of(
-      entry(Component.keybind(KEY), json -> json.addProperty(ComponentSerializerImpl.KEYBIND, KEY))
-    );
+  @Test
+  void test() {
+    this.test(Component.keybind(KEY), object(json -> json.addProperty(ComponentSerializerImpl.KEYBIND, KEY)));
   }
 }
