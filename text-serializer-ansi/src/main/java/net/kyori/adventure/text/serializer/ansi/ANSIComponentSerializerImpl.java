@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -48,7 +48,7 @@ import java.util.regex.Pattern;
  */
 final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
   private final boolean colorDownSample;
-  static ANSIComponentSerializer TRUE_COLOR = new ANSIComponentSerializerImpl(false);
+  static final ANSIComponentSerializer TRUE_COLOR = new ANSIComponentSerializerImpl(false);
 
   private ANSIComponentSerializerImpl(final boolean colorDownSample) {
     this.colorDownSample = colorDownSample;
@@ -66,9 +66,10 @@ final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
       if(this.colorDownSample){
         return this.ansiFormat(Formats.byFormat(NamedTextColor.nearestTo((TextColor) format)));
       }
-      final int red = ((TextColor) format).red();
-      final int blue = ((TextColor) format).blue();
-      final int green = ((TextColor) format).green();
+      final TextColor color = (TextColor) format;
+      final int red = color.red();
+      final int blue = color.blue();
+      final int green = color.green();
       return Ansi.ansi().format(RGB_FORMAT, red, green, blue);
     }else{
       return null;
@@ -108,13 +109,13 @@ final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
    */
   @Override
   public @NonNull String serialize(final @NonNull Component component){
-    final Porridge state = new Porridge();
+    final StyleSetter state = new StyleSetter();
     state.append(component);
     return state.toString();
   }
 
   @Override
-  public @NonNull Builder toBuilder(){
+  public @NonNull Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
@@ -125,12 +126,12 @@ final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
 
     }
 
-    BuilderImpl(final @NonNull ANSIComponentSerializerImpl serializer){
+    BuilderImpl(final @NonNull ANSIComponentSerializerImpl serializer) {
       this.colorDownSample = serializer.colorDownSample;
     }
 
     @Override
-    public @NonNull Builder downSample(final boolean downSample) {
+    public @NonNull Builder downsampleColors(final boolean downSample) {
       this.colorDownSample = downSample;
       return this;
     }
@@ -141,36 +142,36 @@ final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
     }
   }
 
-  private final class Porridge {
+  private final class StyleSetter {
     private final Ansi ansi = Ansi.ansi();
     private final Style style = new Style();
 
     @Override
-    public String toString(){
+    public String toString() {
       return this.ansi.toString();
     }
 
-    void append(final @NonNull Component component){
+    void append(final @NonNull Component component) {
       this.append(component, new Style());
     }
 
-    private void append(final @NonNull Component component, final @NonNull Style style){
+    private void append(final @NonNull Component component, final @NonNull Style style) {
       style.apply(component);
 
-      if(component instanceof TextComponent){
+      if(component instanceof TextComponent) {
         final String content = ((TextComponent) component).content();
-        if(!content.isEmpty()){
+        if(!content.isEmpty()) {
           style.applyFormat();
           this.ansi.a(content);
           this.ansi.a(Formats.SOFT_RESET);
         }
       }
-      if(component instanceof TranslatableComponent){
+      if(component instanceof TranslatableComponent) {
         final Component c = TranslatableComponentRenderer.usingTranslationSource(GlobalTranslator.get())
           .render(component, Locale.getDefault());
         if(c instanceof TextComponent){
           final String translatedContent = ((TextComponent) c).content();
-          if(!translatedContent.isEmpty()){
+          if(!translatedContent.isEmpty()) {
             style.applyFormat();
             this.ansi.a(translatedContent);
             this.ansi.a(Formats.SOFT_RESET);
@@ -180,7 +181,7 @@ final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
       final List<Component> children = component.children();
       if(!children.isEmpty()){
         final Style childrenStyle = new Style(style);
-        for(final Component child : children){
+        for(final Component child : children) {
           this.append(child, childrenStyle);
           childrenStyle.set(style);
         }
@@ -188,9 +189,9 @@ final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
     }
 
     void append(final @NonNull TextFormat format) {
-      final Ansi a = ANSIComponentSerializerImpl.this.toANSI(format);
-      if(a != null){
-        this.ansi.a(a);
+      final Ansi output = ANSIComponentSerializerImpl.this.toANSI(format);
+      if(output != null){
+        this.ansi.a(output);
       }
     }
 
@@ -199,29 +200,29 @@ final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
       private @Nullable TextColor color;
       private final Set<TextDecoration> decorations;
 
-      Style(){
+      Style() {
         this.decorations = EnumSet.noneOf(TextDecoration.class);
       }
 
-      Style(final @NonNull Style that){
+      Style(final @NonNull Style that) {
         this.color = that.color;
         this.decorations = EnumSet.copyOf(that.decorations);
       }
 
-      void set(final @NonNull Style that){
+      void set(final @NonNull Style that) {
         this.color = that.color;
         this.decorations.clear();
         this.decorations.addAll(that.decorations);
       }
 
-      void apply(final @NonNull Component component){
+      void apply(final @NonNull Component component) {
         final TextColor color = component.color();
         if(color != null){
           this.color = color;
         }
 
-        for(final TextDecoration decoration : DECORATIONS){
-          switch(component.decoration(decoration)){
+        for(final TextDecoration decoration : DECORATIONS) {
+          switch(component.decoration(decoration)) {
             case TRUE:
               this.decorations.add(decoration);
               break;
@@ -234,40 +235,40 @@ final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
 
       void applyFormat() {
         // If color changes, we need to do a full reset
-        if(this.color != Porridge.this.style.color){
+        if(this.color != StyleSetter.this.style.color) {
           this.applyFullFormat();
           return;
         }
 
         // Does current have any decorations we don't have?
         // Since there is no way to undo decorations, we need to reset these cases
-        if(!this.decorations.containsAll(Porridge.this.style.decorations)){
+        if(!this.decorations.containsAll(StyleSetter.this.style.decorations)) {
           this.applyFullFormat();
           return;
         }
 
         // Apply new decorations
-        for(final TextDecoration decoration : this.decorations){
-          if(Porridge.this.style.decorations.add(decoration)){
-            Porridge.this.append(decoration);
+        for(final TextDecoration decoration : this.decorations) {
+          if(StyleSetter.this.style.decorations.add(decoration)) {
+            StyleSetter.this.append(decoration);
           }
         }
       }
 
       private void applyFullFormat() {
         if(this.color != null){
-          Porridge.this.append(this.color);
+          StyleSetter.this.append(this.color);
         }else{
-          Porridge.this.append(Reset.INSTANCE);
+          StyleSetter.this.append(Reset.INSTANCE);
         }
-        Porridge.this.style.color = this.color;
+        StyleSetter.this.style.color = this.color;
 
         for(final TextDecoration decoration : this.decorations){
-          Porridge.this.append(decoration);
+          StyleSetter.this.append(decoration);
         }
 
-        Porridge.this.style.decorations.clear();
-        Porridge.this.style.decorations.addAll(this.decorations);
+        StyleSetter.this.style.decorations.clear();
+        StyleSetter.this.style.decorations.addAll(this.decorations);
       }
     }
   }

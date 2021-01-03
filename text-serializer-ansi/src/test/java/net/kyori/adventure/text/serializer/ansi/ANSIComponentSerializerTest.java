@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,7 @@ class ANSIComponentSerializerTest {
   void testSimpleFrom() {
     Assertions.assertEquals(Component.text("foo"),
       ANSIComponentSerializer.builder()
-      .downSample(true)
+      .downsampleColors(true)
       .build().deserialize("foo"));
   }
 
@@ -158,8 +158,8 @@ class ANSIComponentSerializerTest {
     final Ansi ansiColor = Ansi.ansi().format("\u001b[38;2;%d;%d;%dm", red, green, blue);
     final Ansi expected = Ansi.ansi().a(ansiColor).a("Kittens!").reset();
     final Ansi expectedDown = Ansi.ansi().fgBrightGreen().a("Kittens!").reset();
-    assertEquals(expected.toString(), ANSIComponentSerializer.builder().downSample(false).build().serialize(c0));
-    assertEquals(expectedDown.toString(), ANSIComponentSerializer.builder().downSample(true).build().serialize(c0));
+    assertEquals(expected.toString(), ANSIComponentSerializer.builder().downsampleColors(false).build().serialize(c0));
+    assertEquals(expectedDown.toString(), ANSIComponentSerializer.builder().downsampleColors(true).build().serialize(c0));
 
   }
 

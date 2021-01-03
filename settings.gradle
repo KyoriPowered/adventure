@@ -14,6 +14,7 @@ include "text-serializer-gson"
 include "text-serializer-gson-legacy-impl"
 include "text-serializer-legacy"
 include "text-serializer-plain"
+include "text-serializer-ansi"
 
 [
   "api",
@@ -25,7 +26,8 @@ include "text-serializer-plain"
   "text-serializer-gson",
   "text-serializer-gson-legacy-impl",
   "text-serializer-legacy",
-  "text-serializer-plain"
+  "text-serializer-plain",
+  "text-serializer-ansi"
 ].each {
   findProject(":$it")?.name = "adventure-$it"
 }

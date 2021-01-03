@@ -18,7 +18,8 @@ dependencies {
       "serializer-configurate4",
       "text-serializer-gson",
       "text-serializer-legacy",
-      "text-serializer-plain"
+      "text-serializer-plain",
+      "text-serializer-ansi"
     ].each {
       api(project(":adventure-$it"))
     }

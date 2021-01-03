@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2020 KyoriPowered
+ * Copyright (c) 2017-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,15 +29,15 @@ import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * A ansi component serializer.
+ * An Ansi component serializer.
  *
- * <p>Use {@link Builder#downSample(boolean)} to support consoles that cannot render
- * 256 colours.</p>
+ * <p>Use {@link Builder#downsampleColors(boolean)} to support consoles that cannot render
+ * 256 colors.</p>
  *
  * @since 4.0.0
  */
 public interface ANSIComponentSerializer extends ComponentSerializer<Component, Component, String>, Buildable<ANSIComponentSerializer, ANSIComponentSerializer.Builder> {
-  char ESC_CHAR = '\u001B';
+  char ESCAPE_CHAR = '\u001B';
 
   /**
    * This AnsiComponentSerializer produces full colour RGB codes and supports True colour terminals.  Otherwise colours are down sampled to the nearest Named Colour.
@@ -45,7 +45,7 @@ public interface ANSIComponentSerializer extends ComponentSerializer<Component, 
    * @return {@link ANSIComponentSerializer}
    * @since 4.0.0
    */
-  static @NonNull ANSIComponentSerializer fullColour(){
+  static @NonNull ANSIComponentSerializer fullColour() {
     return ANSIComponentSerializerImpl.TRUE_COLOR;
   }
 
@@ -55,7 +55,7 @@ public interface ANSIComponentSerializer extends ComponentSerializer<Component, 
    * @return a builder
    * @since 4.0.0
    */
-  static @NonNull Builder builder(){
+  static @NonNull Builder builder() {
     return new ANSIComponentSerializerImpl.BuilderImpl();
   }
 
@@ -72,7 +72,7 @@ public interface ANSIComponentSerializer extends ComponentSerializer<Component, 
      * @param downSample if true down sample the colour.
      * @return this builder
      */
-    @NonNull Builder downSample(final boolean downSample);
+    @NonNull Builder downsampleColors(final boolean downSample);
 
     /**
      * Creates a new {@link ANSIComponentSerializer.Builder}.
