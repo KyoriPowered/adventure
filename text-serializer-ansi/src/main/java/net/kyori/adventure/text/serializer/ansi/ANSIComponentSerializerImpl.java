@@ -31,6 +31,7 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextFormat;
 import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
+import net.kyori.adventure.translation.GlobalTranslator;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.fusesource.jansi.Ansi;
@@ -54,8 +55,8 @@ final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
   }
 
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
-  private static final String RGB_FORMAT = ESC_CHAR + "[38;2;%d;%d;%dm";
-  private static final Pattern STRIP_ESC_CODES = Pattern.compile(ESC_CHAR + "\\[[;\\d]*m");
+  private static final String RGB_FORMAT = ESCAPE_CHAR + "[38;2;%d;%d;%dm";
+  private static final Pattern STRIP_ESC_CODES = Pattern.compile(ESCAPE_CHAR + "\\[[;\\d]*m");
 
   private Ansi toANSI(final TextFormat format){
     if(format instanceof NamedTextColor || format instanceof TextDecoration){
@@ -165,7 +166,8 @@ final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
         }
       }
       if(component instanceof TranslatableComponent){
-        final Component c = TranslatableComponentRenderer.get().render(component, Locale.getDefault());
+        final Component c = TranslatableComponentRenderer.usingTranslationSource(GlobalTranslator.get())
+          .render(component, Locale.getDefault());
         if(c instanceof TextComponent){
           final String translatedContent = ((TextComponent) c).content();
           if(!translatedContent.isEmpty()){
