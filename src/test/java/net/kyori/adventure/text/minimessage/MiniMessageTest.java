@@ -35,6 +35,7 @@ import org.junit.jupiter.api.Test;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MiniMessageTest {
 
@@ -98,6 +99,14 @@ public class MiniMessageTest {
     final String out2 = GsonComponentSerializer.gson().serialize(result);
 
     assertEquals(out1, out2);
+  }
+
+  @Test
+  void testObjectPlaceholdersUnbalanced() {
+    assertThrows(IllegalArgumentException.class, () -> MiniMessage.get().parse("<red>ONE<two><blue>THREE<four><five>",
+            "two", Component.text("TWO").color(NamedTextColor.GREEN),
+            "four", "FOUR",
+            "five"));
   }
 
   @Test
