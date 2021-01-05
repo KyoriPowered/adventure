@@ -213,4 +213,24 @@ public class MiniMessageTest {
 
     assertEquals(out1, out2);
   }
+
+  @Test
+  void testOrderOfPlaceholders() {
+    Component expected = Component.text("");
+    expected = expected.append(Component.text("A"));
+    expected = expected.append(Component.text("B"));
+    expected = expected.append(Component.text("C"));
+
+    final Component result = MiniMessage.get().parse(
+            "<a><b><_c>",
+            "a", Component.text("A"),
+            "b", Component.text("B"),
+            "_c", Component.text("C")
+    );
+
+    final String out1 = GsonComponentSerializer.gson().serialize(expected);
+    final String out2 = GsonComponentSerializer.gson().serialize(result);
+
+    assertEquals(out1, out2);
+  }
 }

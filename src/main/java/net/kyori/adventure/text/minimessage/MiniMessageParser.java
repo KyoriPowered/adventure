@@ -384,7 +384,7 @@ class MiniMessageParser {
     }
 
     while(!oneTimeTransformations.isEmpty()) {
-      oneTimeTransformations.removeLast().applyOneTime(last, parent, transformations);
+      oneTimeTransformations.removeFirst().applyOneTime(last, parent, transformations);
     }
 
     // optimization, ignore empty parent
