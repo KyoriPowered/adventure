@@ -517,6 +517,14 @@ public class MiniMessageParserTest {
   }
 
   @Test
+  void testNonStrictGH69() {
+    final String expected = "{\"text\":\"\\u003c\"}";
+    final Component comp = MiniMessage.builder().strict(false).build().parse(MiniMessage.get().escapeTokens("<3"));
+
+    this.test(comp, expected);
+  }
+
+  @Test
   void testStrictException() {
     final String input = "<gray>Example: <click:suggest_command:/plot flag set coral-dry true><gold>/plot flag set coral-dry true<click></gold></gray>";
     assertThrows(ParseException.class, () -> MiniMessage.builder().strict(true).build().parse(input));

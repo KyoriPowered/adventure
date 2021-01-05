@@ -225,15 +225,32 @@ class MiniMessageParser {
         case OPEN_TAG_START:
           // next has to be name
           if(tokens.size() - 1 == i) {
-            throw new ParsingException("Expected name after open tag, but got nothing", -1);
+            if(debugContext.isStrict()) {
+              throw new ParsingException("Expected name after open tag, but got nothing", -1);
+            } else {
+              tokens.set(i, new Token(TokenType.STRING, token.value()));
+              continue;
+            }
           }
           Token name = tokens.get(++i);
           if(name.type() != TokenType.NAME && token.type() != TokenType.ESCAPED_OPEN_TAG_START) {
-            throw new ParsingException("Expected name after open tag, but got " + name, -1);
+            if(debugContext.isStrict()) {
+              throw new ParsingException("Expected name after open tag, but got " + name, -1);
+            } else {
+              // TODO: handle
+              debugContext.miniMessage().parsingErrorMessageConsumer().accept(Collections.singletonList("Expected name after open tag, but got " + name));
+              continue;
+            }
           }
-          // after that, we get a param seperator or the end
+          // after that, we get a param separator or the end
           if(tokens.size() - 1 == i) {
-            throw new ParsingException("Expected param or end after open tag + name, but got nothing", -1);
+            if(debugContext.isStrict()) {
+              throw new ParsingException("Expected param or end after open tag + name, but got nothing", -1);
+            } else {
+              // TODO: handle
+              debugContext.miniMessage().parsingErrorMessageConsumer().accept(Collections.singletonList("Expected param or end after open tag + name, but got nothing"));
+              continue;
+            }
           }
           Token paramOrEnd = tokens.get(++i);
           if(paramOrEnd.type() == TokenType.PARAM_SEPARATOR) {
@@ -298,22 +315,45 @@ class MiniMessageParser {
               }
             }
           } else {
-            throw new ParsingException("Expected tag end or param separator after tag name, but got " + paramOrEnd, -1);
+            if(debugContext.isStrict()) {
+              throw new ParsingException("Expected tag end or param separator after tag name, but got " + paramOrEnd, -1);
+            } else {
+              // TODO: handle
+              debugContext.miniMessage().parsingErrorMessageConsumer().accept(Collections.singletonList("Expected tag end or param separator after tag name, but got " + paramOrEnd));
+              continue;
+            }
           }
           break;
         case ESCAPED_CLOSE_TAG_START:
         case CLOSE_TAG_START:
           // next has to be name
           if(tokens.size() - 1 == i) {
-            throw new ParsingException("Expected name after open tag, but got nothing", -1);
+            if(debugContext.isStrict()) {
+              throw new ParsingException("Expected name after open tag, but got nothing", -1);
+            } else {
+              tokens.set(i, new Token(TokenType.STRING, token.value()));
+              continue;
+            }
           }
           name = tokens.get(++i);
           if(name.type() != TokenType.NAME && token.type() != TokenType.ESCAPED_CLOSE_TAG_START) {
-            throw new ParsingException("Expected name after close tag start, but got " + name, -1);
+            if(debugContext.isStrict()) {
+              throw new ParsingException("Expected name after close tag start, but got " + name, -1);
+            } else {
+              // TODO: handle
+              debugContext.miniMessage().parsingErrorMessageConsumer().accept(Collections.singletonList("Expected name after close tag start, but got " + name));
+              continue;
+            }
           }
           // after that, we just want end, sometimes end has params tho
           if(tokens.size() - 1 == i) {
-            throw new ParsingException("Expected param or end after open tag + name, but got nothing", -1);
+            if(debugContext.isStrict()) {
+              throw new ParsingException("Expected param or end after open tag + name, but got nothing", -1);
+            } else {
+              // TODO: handle
+              debugContext.miniMessage().parsingErrorMessageConsumer().accept(Collections.singletonList("Expected param or end after open tag + name, but got nothing"));
+              continue;
+            }
           }
           paramOrEnd = tokens.get(++i);
           if(paramOrEnd.type() == TokenType.TAG_END) {
@@ -347,15 +387,16 @@ class MiniMessageParser {
             final Transformation transformation = registry.get(name.value(), inners, templates, placeholderResolver, debugContext);
             transformations.removeFirstOccurrence(transformation);
           } else {
-            throw new ParsingException("Expected tag end or param separator after tag name, but got " + paramOrEnd, -1);
+            if(debugContext.isStrict()) {
+              throw new ParsingException("Expected tag end or param separator after tag name, but got " + paramOrEnd, -1);
+            } else {
+              // TODO: handle
+              debugContext.miniMessage().parsingErrorMessageConsumer().accept(Collections.singletonList("Expected tag end or param separator after tag name, but got " + paramOrEnd));
+              continue;
+            }
           }
           break;
-        case TAG_END:
-        case PARAM_SEPARATOR:
-        case QUOTE_START:
-        case QUOTE_END:
-        case NAME:
-        case STRING:
+        default:
           Component current = Component.text(token.value());
 
           for(final Transformation transformation : transformations) {

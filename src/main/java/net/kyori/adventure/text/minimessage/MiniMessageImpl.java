@@ -127,7 +127,7 @@ public class MiniMessageImpl implements MiniMessage {
         }
       }
     }
-    if (key != null) {
+    if(key != null) {
       throw new IllegalArgumentException("Found a key in placeholders that wasn't followed by a value: " + key);
     }
     return this.parse(input, templates);
