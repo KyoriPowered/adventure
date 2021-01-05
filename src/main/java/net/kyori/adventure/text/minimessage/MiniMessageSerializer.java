@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.KeybindComponent;
 import net.kyori.adventure.text.TextComponent;
@@ -44,6 +45,7 @@ import static net.kyori.adventure.text.minimessage.Tokens.BOLD;
 import static net.kyori.adventure.text.minimessage.Tokens.CLICK;
 import static net.kyori.adventure.text.minimessage.Tokens.CLOSE_TAG;
 import static net.kyori.adventure.text.minimessage.Tokens.COLOR;
+import static net.kyori.adventure.text.minimessage.Tokens.FONT;
 import static net.kyori.adventure.text.minimessage.Tokens.HOVER;
 import static net.kyori.adventure.text.minimessage.Tokens.INSERTION;
 import static net.kyori.adventure.text.minimessage.Tokens.ITALIC;
@@ -127,6 +129,12 @@ final class MiniMessageSerializer {
         sb.append(startTag(INSERTION + SEPARATOR + insert));
       }
 
+      // ## font
+      final Key font = comp.style().font();
+      if(font != null && (prevComp == null || !font.equals(prevComp.style().font()))) {
+        sb.append(startTag(FONT + SEPARATOR + font.asString()));
+      }
+
       // # append text
       if(comp instanceof TextComponent) {
         sb.append(((TextComponent) comp).content());
@@ -191,6 +199,14 @@ final class MiniMessageSerializer {
       if(nextComp != null && comp.insertion() != null) {
         if(!Objects.equals(comp.insertion(), nextComp.insertion())) {
           sb.append(endTag(INSERTION));
+        }
+      }
+
+      // ## font
+      // ### only end insertion if next tag is different
+      if(nextComp != null && comp.style().font() != null) {
+        if(!Objects.equals(comp.style().font(), nextComp.style().font())) {
+          sb.append(endTag(FONT));
         }
       }
     }

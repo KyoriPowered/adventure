@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent.Builder;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -199,6 +200,17 @@ public class MiniMessageSerializerTest {
     final Builder builder = Component.text()
       .content("This is a ").color(TextColor.fromHexString("#ff0000"))
       .append(Component.text("test"));
+
+    this.test(builder, expected);
+  }
+
+  @Test
+  void testFont() {
+    final String expected = "<font:minecraft:default>This is a </font>test";
+
+    final Builder builder = Component.text()
+            .content("This is a ").font(Key.key("minecraft", "default"))
+            .append(Component.text("test"));
 
     this.test(builder, expected);
   }
