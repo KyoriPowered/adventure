@@ -33,6 +33,7 @@ import net.kyori.adventure.text.minimessage.transformation.TransformationType;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -96,27 +97,36 @@ public class MiniMessageImpl implements MiniMessage {
 
   @Override
   public @NonNull Component parse(final @NonNull String input, final @NonNull Object... placeholders) {
-    if(placeholders.length % 2 != 0) {
-      throw new IllegalArgumentException("Each placeholder must have a key and value");
-    }
-
-    final Template[] templates = new Template[placeholders.length / 2];
-    for(int i = 0; i < placeholders.length; i += 2) {
-      if(!(placeholders[i] instanceof String)) {
-        throw new IllegalArgumentException("Argument " + i + " in placeholders must be String: is key");
-      }
-      final String key = (String) placeholders[i];
-
-      final Object rawValue = placeholders[i + 1];
-      if(rawValue instanceof String) {
-        templates[i / 2] = Template.of(key, (String) rawValue);
-      } else if(rawValue instanceof ComponentLike) {
-        templates[i / 2] = Template.of(key, ((ComponentLike) rawValue).asComponent());
+    final List<Template> templates = new ArrayList<>();
+    String key = null;
+    for(int i = 0; i < placeholders.length; i++) {
+      final Object object = placeholders[i];
+      if(object instanceof Template) {
+        // add as a template directly
+        templates.add((Template) object);
       } else {
-        throw new IllegalArgumentException("Argument " + (i + 1) + " in placeholders must be Component or String: is value");
+        // this is a `key=[string|component]` template
+        if(key == null) {
+          // get the key
+          if(object instanceof String) {
+            key = (String) object;
+          } else {
+            throw new IllegalArgumentException("Argument " + i + " in placeholders is key: must be String");
+          }
+        } else {
+          // get the value
+          if(object instanceof ComponentLike) {
+            templates.add(Template.of(key, ((ComponentLike) object).asComponent()));
+            key = null;
+          } else if(object instanceof String) {
+            templates.add(Template.of(key, (String) object));
+            key = null;
+          } else {
+            throw new IllegalArgumentException("Argument " + i + " in placeholders must be Component or String: is value");
+          }
+        }
       }
     }
-
     return this.parse(input, templates);
   }
 
