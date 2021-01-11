@@ -38,6 +38,8 @@ import com.google.gson.stream.JsonReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.Type;
+import java.util.EnumSet;
+import java.util.Set;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -49,7 +51,27 @@ import net.kyori.adventure.util.Codec;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<Style> {
-  private static final TextDecoration[] DECORATIONS = TextDecoration.values();
+  @SuppressWarnings("checkstyle:NoWhitespaceAfter")
+  private static final TextDecoration[] DECORATIONS = {
+    // The order here is important -- Minecraft does string comparisons of some
+    // serialized components so we have to make sure our order matches Vanilla
+    TextDecoration.BOLD,
+    TextDecoration.ITALIC,
+    TextDecoration.UNDERLINED,
+    TextDecoration.STRIKETHROUGH,
+    TextDecoration.OBFUSCATED
+  };
+
+  static {
+    // Ensure coverage of decorations
+    final Set<TextDecoration> knownDecorations = EnumSet.allOf(TextDecoration.class);
+    for(final TextDecoration decoration : DECORATIONS) {
+      knownDecorations.remove(decoration);
+    }
+    if(!knownDecorations.isEmpty()) {
+      throw new IllegalStateException("GSON serializer is missing some text decorations: " + knownDecorations);
+    }
+  }
 
   static final String FONT = "font";
   static final String COLOR = "color";
@@ -183,16 +205,6 @@ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<S
   public JsonElement serialize(final Style src, final Type typeOfSrc, final JsonSerializationContext context) {
     final JsonObject json = new JsonObject();
 
-    final @Nullable Key font = src.font();
-    if(font != null) {
-      json.add(FONT, context.serialize(font));
-    }
-
-    final @Nullable TextColor color = src.color();
-    if(color != null) {
-      json.add(COLOR, context.serialize(color));
-    }
-
     for(int i = 0, length = DECORATIONS.length; i < length; i++) {
       final TextDecoration decoration = DECORATIONS[i];
       final TextDecoration.State state = src.decoration(decoration);
@@ -201,6 +213,11 @@ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<S
         assert name != null; // should never be null
         json.addProperty(name, state == TextDecoration.State.TRUE);
       }
+    }
+
+    final @Nullable TextColor color = src.color();
+    if(color != null) {
+      json.add(COLOR, context.serialize(color));
     }
 
     final @Nullable String insertion = src.insertion();
@@ -226,6 +243,11 @@ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<S
         eventJson.add(HOVER_EVENT_VALUE, this.serializeLegacyHoverEvent(hoverEvent, modernContents, context));
       }
       json.add(HOVER_EVENT, eventJson);
+    }
+
+    final @Nullable Key font = src.font();
+    if(font != null) {
+      json.add(FONT, context.serialize(font));
     }
 
     return json;

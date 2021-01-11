@@ -43,7 +43,7 @@ class ComponentSerializerTest implements ConfigurateTestBase {
       .build()
       .serialize(Component.text("Hello", Style.style(TextDecoration.BOLD)));
 
-    assertEquals("{\"text\":\"Hello\",\"bold\":true}", serialized.getString());
+    assertEquals("{\"bold\":true,\"text\":\"Hello\"}", serialized.getString());
   }
 
   @Test
