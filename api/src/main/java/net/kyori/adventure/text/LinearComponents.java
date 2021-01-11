@@ -24,7 +24,6 @@
 package net.kyori.adventure.text;
 
 import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -50,43 +49,11 @@ public final class LinearComponents {
    * @param applicables the things used to make the component
    * @return a component
    * @since 4.0.0
+   * @deprecated for removal since 4.4.0. Use {@link Component#compose(ComponentBuilderApplicable...)} instead
    */
+  @Deprecated
   public static @NonNull Component linear(final @NonNull ComponentBuilderApplicable@NonNull... applicables) {
-    final int length = applicables.length;
-    if(length == 0) return Component.empty();
-    if(length == 1) {
-      final ComponentBuilderApplicable ap0 = applicables[0];
-      if(ap0 instanceof ComponentLike) {
-        return ((ComponentLike) ap0).asComponent();
-      }
-      throw nothingComponentLike();
-    }
-    final TextComponentImpl.BuilderImpl builder = new TextComponentImpl.BuilderImpl();
-    Style.Builder style = null;
-    for(int i = 0; i < length; i++) {
-      final ComponentBuilderApplicable applicable = applicables[i];
-      if(applicable instanceof StyleBuilderApplicable) {
-        if(style == null) {
-          style = Style.style();
-        }
-        style.apply((StyleBuilderApplicable) applicable);
-      } else if(style != null && applicable instanceof ComponentLike) {
-        builder.applicableApply(((ComponentLike) applicable).asComponent().style(style));
-      } else {
-        builder.applicableApply(applicable);
-      }
-    }
-    final int size = builder.children.size();
-    if(size == 0) {
-      throw nothingComponentLike();
-    } else if(size == 1) {
-      return builder.children.get(0);
-    } else {
-      return builder.build();
-    }
+    return Component.compose(applicables);
   }
 
-  private static IllegalStateException nothingComponentLike() {
-    return new IllegalStateException("Cannot build component linearly - nothing component-like was given");
-  }
 }
