@@ -172,6 +172,25 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
   @Override
   public JsonElement serialize(final Component src, final Type typeOfSrc, final JsonSerializationContext context) {
     final JsonObject object = new JsonObject();
+
+    if(src.hasStyling()) {
+      final JsonElement style = context.serialize(src.style());
+      if(style.isJsonObject()) {
+        for(final Map.Entry<String, JsonElement> entry : ((JsonObject) style).entrySet()) {
+          object.add(entry.getKey(), entry.getValue());
+        }
+      }
+    }
+
+    final List<Component> children = src.children();
+    if(!children.isEmpty()) {
+      final JsonArray extra = new JsonArray();
+      for(final Component child : children) {
+        extra.add(context.serialize(child));
+      }
+      object.add(EXTRA, extra);
+    }
+
     if(src instanceof TextComponent) {
       object.addProperty(TEXT, ((TextComponent) src).content());
     } else if(src instanceof TranslatableComponent) {
@@ -213,24 +232,6 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
       }
     } else {
       throw notSureHowToSerialize(src);
-    }
-
-    final List<Component> children = src.children();
-    if(!children.isEmpty()) {
-      final JsonArray extra = new JsonArray();
-      for(final Component child : children) {
-        extra.add(context.serialize(child));
-      }
-      object.add(EXTRA, extra);
-    }
-
-    if(src.hasStyling()) {
-      final JsonElement style = context.serialize(src.style());
-      if(style.isJsonObject()) {
-        for(final Map.Entry<String, JsonElement> entry : ((JsonObject) style).entrySet()) {
-          object.add(entry.getKey(), entry.getValue());
-        }
-      }
     }
 
     return object;

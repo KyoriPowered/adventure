@@ -67,7 +67,7 @@ class GsonComponentSerializerTest {
     final TextColor original = TextColor.color(0xAB2211);
     final NamedTextColor downsampled = NamedTextColor.nearestTo(original);
     final Component test = Component.text("meow", original);
-    assertEquals("{\"text\":\"meow\",\"color\":\"" + name(downsampled) + "\"}", GsonComponentSerializer.colorDownsamplingGson().serializer().toJson(test));
+    assertEquals("{\"color\":\"" + name(downsampled) + "\",\"text\":\"meow\"}", GsonComponentSerializer.colorDownsamplingGson().serializer().toJson(test));
   }
 
   @Test
@@ -76,7 +76,7 @@ class GsonComponentSerializerTest {
     final NamedTextColor downsampled = NamedTextColor.nearestTo(original);
     final Component test = Component.text(builder -> builder.content("hey").append(Component.text("there", original)));
 
-    assertEquals("{\"text\":\"hey\",\"extra\":[{\"text\":\"there\",\"color\":\"" + name(downsampled) + "\"}]}", GsonComponentSerializer.colorDownsamplingGson().serializer().toJson(test));
+    assertEquals("{\"extra\":[{\"color\":\"" + name(downsampled) + "\",\"text\":\"there\"}],\"text\":\"hey\"}", GsonComponentSerializer.colorDownsamplingGson().serializer().toJson(test));
   }
 
   private static String name(final NamedTextColor color) {
