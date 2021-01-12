@@ -46,6 +46,7 @@ import net.kyori.adventure.util.IntFunction2;
 import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -89,6 +90,7 @@ import org.jetbrains.annotations.Unmodifiable;
  * @see LinearComponents
  * @since 4.0.0
  */
+@ApiStatus.NonExtendable
 public interface Component extends ComponentBuilderApplicable, ComponentLike, Examinable, HoverEventSource<Component> {
   /**
    * Gets an empty component.

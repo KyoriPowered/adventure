@@ -33,6 +33,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -46,6 +47,7 @@ import org.jetbrains.annotations.Unmodifiable;
  * @see Audience#openBook(Book)
  * @since 4.0.0
  */
+@ApiStatus.NonExtendable
 public interface Book extends Buildable<Book, Book.Builder>, Examinable {
   /**
    * Creates a book.

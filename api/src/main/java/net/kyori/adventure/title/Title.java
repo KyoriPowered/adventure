@@ -29,6 +29,7 @@ import net.kyori.adventure.util.Ticks;
 import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Represents an in-game title, which can be displayed across the centre of the screen.
@@ -36,6 +37,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @see Times
  * @since 4.0.0
  */
+@ApiStatus.NonExtendable
 public interface Title extends Examinable {
   /**
    * The default times.

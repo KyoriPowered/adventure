@@ -29,6 +29,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.ApiStatus;
 
 import static java.util.Objects.requireNonNull;
 
@@ -43,6 +44,7 @@ import static java.util.Objects.requireNonNull;
  * @see Audience#stopSound(SoundStop)
  * @since 4.0.0
  */
+@ApiStatus.NonExtendable
 public interface SoundStop extends Examinable {
   /**
    * Stops all sounds.

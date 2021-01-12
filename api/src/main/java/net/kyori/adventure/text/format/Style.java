@@ -38,6 +38,7 @@ import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -57,6 +58,7 @@ import org.jetbrains.annotations.Unmodifiable;
  *
  * @since 4.0.0
  */
+@ApiStatus.NonExtendable
 public interface Style extends Buildable<Style, Style.Builder>, Examinable {
   /**
    * The default font.

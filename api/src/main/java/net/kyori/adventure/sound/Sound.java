@@ -29,6 +29,7 @@ import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.util.Index;
 import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.ApiStatus;
 
 import static java.util.Objects.requireNonNull;
 
@@ -52,6 +53,7 @@ import static java.util.Objects.requireNonNull;
  * @see SoundStop
  * @since 4.0.0
  */
+@ApiStatus.NonExtendable
 public interface Sound extends Examinable {
   /**
    * Creates a new sound.
