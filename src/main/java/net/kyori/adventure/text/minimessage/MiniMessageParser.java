@@ -261,7 +261,7 @@ class MiniMessageParser {
               inners.add(next);
             }
 
-            if (next == null) {
+            if(next == null) {
               if(debugContext.isStrict()) {
                 throw new ParsingException("Expected end sometimes after open tag + name, but got name = " + name + " and inners = " + inners, -1);
               } else {
