@@ -27,6 +27,7 @@ import java.util.Deque;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.Tokens;
+import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.transformation.Inserting;
 import net.kyori.adventure.text.minimessage.transformation.OneTimeTransformation;
@@ -68,6 +69,8 @@ public final class KeybindTransformation extends OneTimeTransformation implement
 
     if(Token.oneString(args)) {
       this.keybind = args.get(0).value();
+    } else {
+      throw new ParsingException("Doesn't know how to turn token with name '" + name + "' and arguments " + args + " into a keybind component", -1);
     }
   }
 

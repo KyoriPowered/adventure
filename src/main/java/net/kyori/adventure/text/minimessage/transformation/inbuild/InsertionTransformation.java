@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.Tokens;
+import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
@@ -63,6 +64,8 @@ public final class InsertionTransformation extends Transformation {
 
     if(Token.oneString(args)) {
       this.insertion = args.get(0).value();
+    } else {
+      throw new ParsingException("Doesn't know how to turn token with name '" + name + "' and arguments " + args + " into a insertion component", -1);
     }
   }
 
