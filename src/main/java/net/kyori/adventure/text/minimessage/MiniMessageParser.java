@@ -256,9 +256,19 @@ class MiniMessageParser {
           if(paramOrEnd.type() == TokenType.PARAM_SEPARATOR) {
             // we need to handle params, so read till end of tag
             final List<Token> inners = new ArrayList<>();
-            Token next;
-            while((next = tokens.get(++i)).type() != TokenType.TAG_END) {
+            Token next = null;
+            while(i < tokens.size() -1 && (next = tokens.get(++i)).type() != TokenType.TAG_END) {
               inners.add(next);
+            }
+
+            if (next == null) {
+              if(debugContext.isStrict()) {
+                throw new ParsingException("Expected end sometimes after open tag + name, but got name = " + name + " and inners = " + inners, -1);
+              } else {
+                // TODO: handle
+                debugContext.miniMessage().parsingErrorMessageConsumer().accept(Collections.singletonList("Expected end sometimes after open tag + name, but got name = " + name + " and inners = " + inners));
+                continue;
+              }
             }
 
             final Transformation transformation = registry.get(name.value(), inners, templates, placeholderResolver, debugContext);

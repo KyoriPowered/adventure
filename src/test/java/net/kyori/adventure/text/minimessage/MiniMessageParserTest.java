@@ -34,6 +34,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -534,6 +539,12 @@ public class MiniMessageParserTest {
   void testMissingCloseOfHover() {
     final String input = "<hover:show_text:'<blue>Hello</blue>'<red>TEST</red></hover><click:suggest_command:'/msg <user>'><user></click> <reset>: <hover:show_text:'<date>'><message></hover>";
     assertThrows(ParseException.class, () -> MiniMessage.builder().strict(true).build().parse(input));
+  }
+
+  @Test
+  void testNonEndingComponent() {
+    final String input = "<red is already created! Try different name! :)";
+    MiniMessage.builder().parsingErrorMessageConsumer(strings -> assertEquals(strings, Collections.singletonList("Expected end sometimes after open tag + name, but got name = Token{type=NAME, value=\"red is already created! Try different name! \"} and inners = []"))).build().parse(input);
   }
 
   private void test(final @NonNull String input, final @NonNull String expected) {
