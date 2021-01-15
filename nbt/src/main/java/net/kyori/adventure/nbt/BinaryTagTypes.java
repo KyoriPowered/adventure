@@ -104,6 +104,9 @@ public final class BinaryTagTypes {
    */
   public static final BinaryTagType<ListBinaryTag> LIST = BinaryTagType.register(ListBinaryTag.class, (byte) 9, input -> {
     final BinaryTagType<? extends BinaryTag> type = BinaryTagType.of(input.readByte());
+    if (type == END) {
+      return ListBinaryTagImpl.EMPTY;
+    }
     final int length = input.readInt();
     final List<BinaryTag> tags = new ArrayList<>(length);
     for(int i = 0; i < length; i++) {
@@ -112,10 +115,12 @@ public final class BinaryTagTypes {
     return ListBinaryTag.of(type, tags);
   }, (tag, output) -> {
     output.writeByte(tag.elementType().id());
-    final int size = tag.size();
-    output.writeInt(size);
-    for(final BinaryTag item : tag) {
-      BinaryTagType.write(item.type(), item, output);
+    if(tag.elementType() != END){
+      final int size = tag.size();
+      output.writeInt(size);
+      for(final BinaryTag item : tag) {
+        BinaryTagType.write(item.type(), item, output);
+      }
     }
   });
   /**
