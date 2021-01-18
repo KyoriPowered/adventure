@@ -38,7 +38,13 @@ import static net.kyori.adventure.nbt.IOStreamUtil.closeShield;
 
 @SuppressWarnings("DuplicatedCode")
 final class BinaryTagReaderImpl implements BinaryTagIO.Reader {
-  static final BinaryTagIO.Reader INSTANCE = new BinaryTagReaderImpl();
+  private final long maxBytes;
+  static final BinaryTagIO.Reader UNLIMITED = new BinaryTagReaderImpl(-1L);
+  static final BinaryTagIO.Reader DEFAULT_LIMIT = new BinaryTagReaderImpl(0x20_00a);
+
+  BinaryTagReaderImpl(final long maxBytes) {
+    this.maxBytes = maxBytes;
+  }
 
   @Override
   public @NonNull CompoundBinaryTag read(final @NonNull Path path, final BinaryTagIO.@NonNull Compression compression) throws IOException {
@@ -55,7 +61,11 @@ final class BinaryTagReaderImpl implements BinaryTagIO.Reader {
   }
 
   @Override
-  public @NonNull CompoundBinaryTag read(final @NonNull DataInput input) throws IOException {
+  public @NonNull CompoundBinaryTag read(@NonNull DataInput input) throws IOException {
+    if(!(input instanceof TrackingDataInput)) {
+      input = new TrackingDataInput(input, this.maxBytes);
+    }
+
     final BinaryTagType<? extends BinaryTag> type = BinaryTagType.of(input.readByte());
     requireCompound(type);
     input.skipBytes(input.readUnsignedShort()); // read empty name

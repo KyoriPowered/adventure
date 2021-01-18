@@ -69,6 +69,9 @@ public final class TagStringIO {
   /**
    * Read the string into a compound tag structure.
    *
+   * <p>When working with untrusted input (such as from the network), users should be careful
+   * to validate that the {@code input} string is of a reasonable size.</p>
+   *
    * @param input Input data
    * @return this
    * @throws IOException on any syntax errors

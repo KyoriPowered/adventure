@@ -48,13 +48,42 @@ public final class BinaryTagIO {
   }
 
   /**
-   * Returns {@link Writer}, used to read binary tags.
+   * Returns {@link Reader}, used to read binary tags.
+   *
+   * <p>There is a maximum depth of {@code 512} nested tags allowed, but no limit for the amount of containe data.</p>
+   *
+   * @return binary tag reader
+   * @since 4.4.0
+   */
+  public static @NonNull Reader unlimitedReader() {
+    return BinaryTagReaderImpl.UNLIMITED;
+  }
+
+  /**
+   * Returns {@link Reader}, used to read binary tags.
+   *
+   * <p>This reader has a size limit for the estimated number of data bytes for a tag.</p>
    *
    * @return binary tag reader
    * @since 4.4.0
    */
   public static @NonNull Reader reader() {
-    return BinaryTagReaderImpl.INSTANCE;
+    return BinaryTagReaderImpl.DEFAULT_LIMIT;
+  }
+
+  /**
+   * Returns {@link Reader}, used to read binary tags.
+   *
+   * <p>This reader will limit the number of bytes read to the approximate size limit indicated.</p>
+   *
+   * @return binary tag reader
+   * @since 4.4.0
+   */
+  public static @NonNull Reader reader(final long sizeLimitBytes) {
+    if(sizeLimitBytes <= 0) {
+      throw new IllegalArgumentException("The size limit must be greater than zero");
+    }
+    return new BinaryTagReaderImpl(sizeLimitBytes);
   }
 
   /**

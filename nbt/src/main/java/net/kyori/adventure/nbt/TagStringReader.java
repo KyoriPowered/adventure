@@ -29,12 +29,14 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
 final class TagStringReader {
+  private static final int MAX_DEPTH = 512;
   private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
   private static final int[] EMPTY_INT_ARRAY = new int[0];
   private static final long[] EMPTY_LONG_ARRAY = new long[0];
 
   private final CharBuffer buffer;
   private boolean acceptLegacy;
+  private int depth;
 
   TagStringReader(final CharBuffer buffer) {
     this.buffer = buffer;
@@ -198,25 +200,32 @@ final class TagStringReader {
   }
 
   public BinaryTag tag() throws StringTagParseException {
-    final char startToken = this.buffer.skipWhitespace().peek();
-    switch(startToken) {
-      case Tokens.COMPOUND_BEGIN:
-        return this.compound();
-      case Tokens.ARRAY_BEGIN:
-        // TODO: legacy-format int arrays are ambiguous with new format int lists
-        // Maybe add in a legacy-only mode to read those?
-        if(this.buffer.hasMore(2) && this.buffer.peek(2) == ';') { // we know we're an array tag
-          return this.array(this.buffer.peek(1));
-        } else {
-          return this.list();
-        }
-      case Tokens.SINGLE_QUOTE:
-      case Tokens.DOUBLE_QUOTE:
-        // definitely a string tag
-        this.buffer.advance();
-        return StringBinaryTag.of(unescape(this.buffer.takeUntil(startToken).toString()));
-      default: // scalar
-        return this.scalar();
+    if(this.depth++ > MAX_DEPTH) {
+      throw this.buffer.makeError("Exceeded maximum allowed depth of " + MAX_DEPTH + " when reading tag");
+    }
+    try {
+      final char startToken = this.buffer.skipWhitespace().peek();
+      switch(startToken) {
+        case Tokens.COMPOUND_BEGIN:
+          return this.compound();
+        case Tokens.ARRAY_BEGIN:
+          // TODO: legacy-format int arrays are ambiguous with new format int lists
+          // Maybe add in a legacy-only mode to read those?
+          if(this.buffer.hasMore(2) && this.buffer.peek(2) == ';') { // we know we're an array tag
+            return this.array(this.buffer.peek(1));
+          } else {
+            return this.list();
+          }
+        case Tokens.SINGLE_QUOTE:
+        case Tokens.DOUBLE_QUOTE:
+          // definitely a string tag
+          this.buffer.advance();
+          return StringBinaryTag.of(unescape(this.buffer.takeUntil(startToken).toString()));
+        default: // scalar
+          return this.scalar();
+      }
+    } finally {
+      this.depth--;
     }
   }
 
