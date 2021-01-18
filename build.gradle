@@ -14,7 +14,7 @@ plugins {
 }
 
 group "net.kyori"
-version "4.4.0"
+version "4.5.0-SNAPSHOT"
 description "A user-interface library for Minecraft: Java Edition."
 
 subprojects {
@@ -52,7 +52,7 @@ subprojects {
     javadoc {
       options.tags(["sinceMinecraft:a:Since Minecraft:"])
       // Temporary until next Indra release
-      options.addBooleanOption("-no-module-directories", true)
+      // options.addBooleanOption("-no-module-directories", true)
     }
   }
 
