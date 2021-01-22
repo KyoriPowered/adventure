@@ -108,6 +108,9 @@ public final class BinaryTagTypes {
   @SuppressWarnings("try")
   public static final BinaryTagType<ListBinaryTag> LIST = BinaryTagType.register(ListBinaryTag.class, (byte) 9, input -> {
     final BinaryTagType<? extends BinaryTag> type = BinaryTagType.of(input.readByte());
+    if(type == END) {
+      return ListBinaryTagImpl.EMPTY;
+    }
     final int length = input.readInt();
     try(final BinaryTagScope ignored = TrackingDataInput.enter(input, length * 8L)) {
       final List<BinaryTag> tags = new ArrayList<>(length);
@@ -118,10 +121,12 @@ public final class BinaryTagTypes {
     }
   }, (tag, output) -> {
     output.writeByte(tag.elementType().id());
-    final int size = tag.size();
-    output.writeInt(size);
-    for(final BinaryTag item : tag) {
-      BinaryTagType.write(item.type(), item, output);
+    if(tag.elementType() != END){
+      final int size = tag.size();
+      output.writeInt(size);
+      for(final BinaryTag item : tag) {
+        BinaryTagType.write(item.type(), item, output);
+      }
     }
   });
   /**
