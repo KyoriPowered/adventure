@@ -28,12 +28,12 @@ import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.transformation.TransformationType;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Function;
 
+import static net.kyori.adventure.text.format.Style.style;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -41,35 +41,26 @@ public class MiniMessageTest {
 
   @Test
   void testMarkdownBuilder() {
-    final Component expected = Component.text("BOLD").decoration(TextDecoration.BOLD, true).color(NamedTextColor.RED);
+    final Component expected = Component.text("BOLD", style(NamedTextColor.RED, TextDecoration.BOLD));
     final Component result = MiniMessage.builder().markdown().build().deserialize("**<red>BOLD**");
 
-    final String out1 = GsonComponentSerializer.gson().serialize(expected);
-    final String out2 = GsonComponentSerializer.gson().serialize(result);
-
-    assertEquals(out1, out2);
+    assertEquals(expected, result);
   }
 
   @Test
   void testNormalBuilder() {
-    final Component expected = Component.text("Test").color(NamedTextColor.RED);
+    final Component expected = Component.text("Test", NamedTextColor.RED);
     final Component result = MiniMessage.builder().build().deserialize("<red>Test");
 
-    final String out1 = GsonComponentSerializer.gson().serialize(expected);
-    final String out2 = GsonComponentSerializer.gson().serialize(result);
-
-    assertEquals(out1, out2);
+    assertEquals(expected, result);
   }
 
   @Test
   void testNormal() {
-    final Component expected = Component.text("Test").color(NamedTextColor.RED);
+    final Component expected = Component.text("Test", NamedTextColor.RED);
     final Component result = MiniMessage.get().deserialize("<red>Test");
 
-    final String out1 = GsonComponentSerializer.gson().serialize(expected);
-    final String out2 = GsonComponentSerializer.gson().serialize(result);
-
-    assertEquals(out1, out2);
+    assertEquals(expected, result);
   }
 
   @Test
@@ -77,47 +68,39 @@ public class MiniMessageTest {
     final Component expected = Component.text("TEST").color(NamedTextColor.RED);
     final Component result = MiniMessage.get().parse("<red><test>", "test", "TEST");
 
-    final String out1 = GsonComponentSerializer.gson().serialize(expected);
-    final String out2 = GsonComponentSerializer.gson().serialize(result);
-
-    assertEquals(out1, out2);
+    assertEquals(expected, result);
   }
 
   @Test
   void testObjectPlaceholders() {
-    final Component expected = Component.text("")
-            .append(Component.text("ONE").color(NamedTextColor.RED))
-            .append(Component.text("TWO").color(NamedTextColor.GREEN))
-            .append(Component.text("THREEFOUR").color(NamedTextColor.BLUE))
-            .append(Component.text("FIVE").color(NamedTextColor.YELLOW));
+    final Component expected = Component.text()
+      .append(Component.text("ONE", NamedTextColor.RED))
+      .append(Component.text("TWO", NamedTextColor.GREEN))
+      .append(Component.text("THREEFOUR", NamedTextColor.BLUE))
+      .append(Component.text("FIVE", NamedTextColor.YELLOW))
+      .build();
     final Component result = MiniMessage.get().parse("<red>ONE<two><blue>THREE<four><five>",
-            "two", Component.text("TWO").color(NamedTextColor.GREEN),
+            "two", Component.text("TWO", NamedTextColor.GREEN),
             "four", "FOUR",
-            "five", Component.text("FIVE").color(NamedTextColor.YELLOW));
+            "five", Component.text("FIVE", NamedTextColor.YELLOW));
 
-    final String out1 = GsonComponentSerializer.gson().serialize(expected);
-    final String out2 = GsonComponentSerializer.gson().serialize(result);
-
-    assertEquals(out1, out2);
+    assertEquals(expected, result);
   }
 
   @Test
   void testObjectPlaceholdersUnbalanced() {
     assertThrows(IllegalArgumentException.class, () -> MiniMessage.get().parse("<red>ONE<two><blue>THREE<four><five>",
-            "two", Component.text("TWO").color(NamedTextColor.GREEN),
+            "two", Component.text("TWO", NamedTextColor.GREEN),
             "four", "FOUR",
             "five"));
   }
 
   @Test
   void testMarkdown() {
-    final Component expected = Component.text("BOLD").decoration(TextDecoration.BOLD, true).color(NamedTextColor.RED);
+    final Component expected = Component.text("BOLD", style(NamedTextColor.RED, TextDecoration.BOLD));
     final Component result = MiniMessage.markdown().deserialize("**<red>BOLD**");
 
-    final String out1 = GsonComponentSerializer.gson().serialize(expected);
-    final String out2 = GsonComponentSerializer.gson().serialize(result);
-
-    assertEquals(out1, out2);
+    assertEquals(expected, result);
   }
 
   @Test
@@ -125,79 +108,69 @@ public class MiniMessageTest {
     final Component expected = Component.text("TEST");
     final Component result = MiniMessage.get().parse("<test>", Template.of("test", "TEST"));
 
-    final String out1 = GsonComponentSerializer.gson().serialize(expected);
-    final String out2 = GsonComponentSerializer.gson().serialize(result);
-
-    assertEquals(out1, out2);
+    assertEquals(expected, result);
   }
 
   @Test
   void testTemplateComponent() {
-    final Component expected = Component.text("TEST").color(NamedTextColor.RED);
-    final Component result = MiniMessage.get().parse("<test>", Template.of("test", Component.text("TEST").color(NamedTextColor.RED)));
+    final Component expected = Component.text("TEST", NamedTextColor.RED);
+    final Component result = MiniMessage.get().parse("<test>", Template.of("test", Component.text("TEST", NamedTextColor.RED)));
 
-    final String out1 = GsonComponentSerializer.gson().serialize(expected);
-    final String out2 = GsonComponentSerializer.gson().serialize(result);
-
-    assertEquals(out1, out2);
+    assertEquals(expected, result);
   }
 
   @Test
   void testTemplateComponentInheritedStyle() {
-    final Component expected = Component.text("TEST").color(NamedTextColor.RED).decoration(TextDecoration.UNDERLINED, true).decoration(TextDecoration.BOLD, true);
-    final Component result = MiniMessage.get().parse("<green><bold><test>", Template.of("test", Component.text("TEST").color(NamedTextColor.RED).decoration(TextDecoration.UNDERLINED, true)));
+    final Component expected = Component.text("TEST", style(NamedTextColor.RED, TextDecoration.UNDERLINED, TextDecoration.BOLD));
+    final Component result = MiniMessage.get().parse("<green><bold><test>", Template.of("test", Component.text("TEST", NamedTextColor.RED, TextDecoration.UNDERLINED)));
 
-    final String out1 = GsonComponentSerializer.gson().serialize(expected);
-    final String out2 = GsonComponentSerializer.gson().serialize(result);
-
-    assertEquals(out1, out2);
+    assertEquals(expected, result);
   }
 
   @Test
   void testTemplateComponentMixed() {
-    Component root = Component.text("");
-    root = root.append(Component.text("TEST").color(NamedTextColor.RED).decoration(TextDecoration.UNDERLINED, true).decoration(TextDecoration.BOLD, true));
-    root = root.append(Component.text("Test2").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true));
+    final Component expected = Component.text()
+      .append(Component.text("TEST", style(NamedTextColor.RED, TextDecoration.UNDERLINED, TextDecoration.BOLD)))
+      .append(Component.text("Test2", style(NamedTextColor.GREEN, TextDecoration.BOLD)))
+      .build();
 
-    final Template t1 = Template.of("test", Component.text("TEST").color(NamedTextColor.RED).decoration(TextDecoration.UNDERLINED, true));
+    final Template t1 = Template.of("test", Component.text("TEST", style(NamedTextColor.RED, TextDecoration.UNDERLINED)));
     final Template t2 = Template.of("test2", "Test2");
     final Component result = MiniMessage.get().parse("<green><bold><test><test2>", t1, t2);
 
-    final String out1 = GsonComponentSerializer.gson().serialize(root);
-    final String out2 = GsonComponentSerializer.gson().serialize(result);
-
-    assertEquals(out1, out2);
+    assertEquals(expected, result);
   }
 
   @Test
   void testCustomRegistry() {
-    Component root = Component.text("");
-    root = root.append(Component.text("<bold>").color(NamedTextColor.GREEN));
-    root = root.append(Component.text("TEST").color(NamedTextColor.GREEN));
-    final Component result = MiniMessage.withTransformations(TransformationType.COLOR).parse("<green><bold><test>", "test", "TEST");
+    final Component expected = Component.text()
+      .append(Component.text("<bold>", NamedTextColor.GREEN))
+      .append(Component.text("TEST", NamedTextColor.GREEN))
+      .build();
+    final Component result = MiniMessage.withTransformations(TransformationType.COLOR)
+      .parse("<green><bold><test>", "test", "TEST");
 
-    final String out1 = GsonComponentSerializer.gson().serialize(root);
-    final String out2 = GsonComponentSerializer.gson().serialize(result);
-
-    assertEquals(out1, out2);
+    assertEquals(expected, result);
   }
 
   @Test
   void testCustomRegistryBuilder() {
-    Component root = Component.text("");
-    root = root.append(Component.text("<bold>").color(NamedTextColor.GREEN));
-    root = root.append(Component.text("TEST").color(NamedTextColor.GREEN));
-    final Component result = MiniMessage.builder().removeDefaultTransformations().transformation(TransformationType.COLOR).build().parse("<green><bold><test>", "test", "TEST");
+    final Component expected = Component.text()
+      .append(Component.text("<bold>", NamedTextColor.GREEN))
+      .append(Component.text("TEST", NamedTextColor.GREEN))
+      .build();
+    final Component result = MiniMessage.builder()
+      .removeDefaultTransformations()
+      .transformation(TransformationType.COLOR)
+      .build()
+      .parse("<green><bold><test>", "test", "TEST");
 
-    final String out1 = GsonComponentSerializer.gson().serialize(root);
-    final String out2 = GsonComponentSerializer.gson().serialize(result);
-
-    assertEquals(out1, out2);
+    assertEquals(expected, result);
   }
 
   @Test
   void testPlaceholderResolver() {
-    final Component expected = Component.text("TEST").color(NamedTextColor.RED).decoration(TextDecoration.BOLD, true);
+    final Component expected = Component.text("TEST", style(NamedTextColor.RED, TextDecoration.BOLD));
 
     final Function<String, ComponentLike> resolver = name -> {
       if(name.equalsIgnoreCase("test")) {
@@ -208,18 +181,16 @@ public class MiniMessageTest {
 
     final Component result = MiniMessage.builder().placeholderResolver(resolver).build().parse("<green><bold><test>");
 
-    final String out1 = GsonComponentSerializer.gson().serialize(expected);
-    final String out2 = GsonComponentSerializer.gson().serialize(result);
-
-    assertEquals(out1, out2);
+    assertEquals(expected, result);
   }
 
   @Test
   void testOrderOfPlaceholders() {
-    Component expected = Component.text("");
-    expected = expected.append(Component.text("A"));
-    expected = expected.append(Component.text("B"));
-    expected = expected.append(Component.text("C"));
+    final Component expected = Component.text()
+      .append(Component.text("A"))
+      .append(Component.text("B"))
+      .append(Component.text("C"))
+      .build();
 
     final Component result = MiniMessage.get().parse(
             "<a><b><_c>",
@@ -228,9 +199,6 @@ public class MiniMessageTest {
             "_c", Component.text("C")
     );
 
-    final String out1 = GsonComponentSerializer.gson().serialize(expected);
-    final String out2 = GsonComponentSerializer.gson().serialize(result);
-
-    assertEquals(out1, out2);
+    assertEquals(expected, result);
   }
 }

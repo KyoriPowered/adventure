@@ -26,30 +26,39 @@ package net.kyori.adventure.text.minimessage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
 
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
+import static net.kyori.adventure.key.Key.key;
+import static net.kyori.adventure.text.Component.keybind;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.translatable;
+import static net.kyori.adventure.text.event.ClickEvent.openUrl;
+import static net.kyori.adventure.text.event.ClickEvent.runCommand;
+import static net.kyori.adventure.text.event.ClickEvent.suggestCommand;
+import static net.kyori.adventure.text.event.HoverEvent.showText;
+import static net.kyori.adventure.text.format.Style.style;
+import static net.kyori.adventure.text.format.TextColor.color;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MiniMessageParserTest {
 
-  private final MiniMessage parser = MiniMessage.builder().strict(true).build();
+  private static final MiniMessage PARSER = MiniMessage.builder().strict(true).build();
 
   @Test
   void test() {
     final String input1 = "<yellow>TEST<green> nested</green>Test";
     final String input2 = "<yellow>TEST<green> nested<yellow>Test";
-    final String out1 = GsonComponentSerializer.gson().serialize(this.parser.parse(input1));
-    final String out2 = GsonComponentSerializer.gson().serialize(this.parser.parse(input2));
+    final Component out1 = PARSER.parse(input1);
+    final Component out2 = PARSER.parse(input2);
 
     assertEquals(out1, out2);
   }
@@ -58,8 +67,8 @@ public class MiniMessageParserTest {
   void testNewColor() {
     final String input1 = "<color:yellow>TEST<color:green> nested</color:green>Test";
     final String input2 = "<color:yellow>TEST<color:green> nested<color:yellow>Test";
-    final String out1 = GsonComponentSerializer.gson().serialize(this.parser.parse(input1));
-    final String out2 = GsonComponentSerializer.gson().serialize(this.parser.parse(input2));
+    final Component out1 = PARSER.parse(input1);
+    final Component out2 = PARSER.parse(input2);
 
     assertEquals(out1, out2);
   }
@@ -68,8 +77,8 @@ public class MiniMessageParserTest {
   void testHexColor() {
     final String input1 = "<color:#ff00ff>TEST<color:#00ff00> nested</color:#00ff00>Test";
     final String input2 = "<color:#ff00ff>TEST<color:#00ff00> nested<color:#ff00ff>Test";
-    final String out1 = GsonComponentSerializer.gson().serialize(this.parser.parse(input1));
-    final String out2 = GsonComponentSerializer.gson().serialize(this.parser.parse(input2));
+    final Component out1 = PARSER.parse(input1);
+    final Component out2 = PARSER.parse(input2);
 
     assertEquals(out1, out2);
   }
@@ -78,8 +87,8 @@ public class MiniMessageParserTest {
   void testHexColorShort() {
     final String input1 = "<#ff00ff>TEST<#00ff00> nested</#00ff00>Test";
     final String input2 = "<#ff00ff>TEST<#00ff00> nested<#ff00ff>Test";
-    final String out1 = GsonComponentSerializer.gson().serialize(this.parser.parse(input1));
-    final String out2 = GsonComponentSerializer.gson().serialize(this.parser.parse(input2));
+    final Component out1 = PARSER.parse(input1);
+    final Component out2 = PARSER.parse(input2);
 
     assertEquals(out1, out2);
   }
@@ -88,49 +97,49 @@ public class MiniMessageParserTest {
   void testStripSimple() {
     final String input = "<yellow>TEST<green> nested</green>Test";
     final String expected = "TEST nestedTest";
-    assertEquals(expected, this.parser.stripTokens(input));
+    assertEquals(expected, PARSER.stripTokens(input));
   }
 
   @Test
   void testStripComplex() {
     final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here</click><blue> to <bold>FEEL</underlined> it";
     final String expected = " random strangerclick here to FEEL it";
-    assertEquals(expected, this.parser.stripTokens(input));
+    assertEquals(expected, PARSER.stripTokens(input));
   }
 
   @Test
   void testStripInner() {
     final String input = "<hover:show_text:\"<red>test:TEST\">TEST";
     final String expected = "TEST";
-    assertEquals(expected, this.parser.stripTokens(input));
+    assertEquals(expected, PARSER.stripTokens(input));
   }
 
   @Test
   void testEscapeSimple() {
     final String input = "<yellow>TEST<green> nested</green>Test";
     final String expected = "\\<yellow>TEST\\<green> nested\\</green>Test";
-    assertEquals(expected, this.parser.escapeTokens(input));
+    assertEquals(expected, PARSER.escapeTokens(input));
   }
 
   @Test
   void testEscapeComplex() {
     final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here</click><blue> to <bold>FEEL</underlined> it";
     final String expected = "\\<yellow>\\<test> random \\<bold>stranger\\</bold>\\<click:run_command:test command>\\<underlined>\\<red>click here\\</click>\\<blue> to \\<bold>FEEL\\</underlined> it";
-    assertEquals(expected, this.parser.escapeTokens(input));
+    assertEquals(expected, PARSER.escapeTokens(input));
   }
 
   @Test
   void testEscapeInner() {
     final String input = "<hover:show_text:\"<red>test:TEST\">TEST";
     final String expected = "\\<hover:show_text:\"\\<red>test:TEST\">TEST";
-    assertEquals(expected, this.parser.escapeTokens(input));
+    assertEquals(expected, PARSER.escapeTokens(input));
   }
 
   @Test
   void testUnescape() {
     final String input ="<yellow>TEST\\<green> nested\\</green>Test";
     final String expected = "TEST<green> nested</green>Test";
-    final TextComponent comp = (TextComponent) this.parser.parse(input);
+    final Component comp = PARSER.parse(input);
 
     assertEquals(expected, PlainComponentSerializer.plain().serialize(comp));
   }
@@ -140,16 +149,16 @@ public class MiniMessageParserTest {
   void testNoUnescape() {
     final String input ="<yellow>TEST\\<green> \\< nested\\</green>Test";
     final String expected = "TEST<green> \\< nested</green>Test";
-    final TextComponent comp = (TextComponent) this.parser.parse(input);
+    final TextComponent comp = (TextComponent) PARSER.parse(input);
 
-    assertEquals(expected, PlainComponentSerializer.plain().serialize(comp));
+    assertEquals(expected, comp.content());
   }
 
   @Test
   void testEscapeParse() {
     final String expected = "<red>test</red>";
     final String escaped = MiniMessage.get().escapeTokens(expected);
-    final TextComponent comp = (TextComponent) MiniMessage.get().parse(escaped);
+    final Component comp = MiniMessage.get().parse(escaped);
 
     assertEquals(expected, PlainComponentSerializer.plain().serialize(comp));
   }
@@ -157,100 +166,119 @@ public class MiniMessageParserTest {
   @Test
   void checkPlaceholder() {
     final String input = "<test>";
-    final String expected = "{\"text\":\"Hello!\"}";
-    final Component comp = this.parser.parse(input, "test", "Hello!");
+    final Component expected = text("Hello!");
+    final Component comp = PARSER.parse(input, "test", "Hello!");
 
-    this.test(comp, expected);
+    assertEquals(expected, comp);
   }
 
   @Test
   void testNiceMix() {
     final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here</click><blue> to <b>FEEL</underlined> it";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Hello! random \",\"color\":\"yellow\"},{\"text\":\"stranger\",\"color\":\"yellow\",\"bold\":true},{\"text\":\"click here\",\"color\":\"red\",\"underlined\":true,\"clickEvent\":{\"action\":\"run_command\",\"value\":\"test command\"}},{\"text\":\" to \",\"color\":\"blue\",\"underlined\":true},{\"text\":\"FEEL\",\"color\":\"blue\",\"bold\":true,\"underlined\":true},{\"text\":\" it\",\"color\":\"blue\",\"bold\":true}]}";
-    final Component comp = this.parser.parse(input, "test", "Hello!");
+    final Component expected = text()
+      .append(text("Hello! random ", NamedTextColor.YELLOW))
+      .append(text("stranger", style(NamedTextColor.YELLOW, TextDecoration.BOLD)))
+      .append(text("click here", style(NamedTextColor.RED, TextDecoration.UNDERLINED, runCommand("test command"))))
+      .append(text(" to ", style(NamedTextColor.BLUE, TextDecoration.UNDERLINED)))
+      .append(text("FEEL", style(NamedTextColor.BLUE, TextDecoration.BOLD, TextDecoration.UNDERLINED)))
+      .append(text(" it", style(NamedTextColor.BLUE, TextDecoration.BOLD)))
+      .build();
+    final Component comp = PARSER.parse(input, "test", "Hello!");
 
-    this.test(comp, expected);
+    assertEquals(expected, comp);
   }
 
   @Test
   void testColorSimple() {
     final String input = "<yellow>TEST";
-    final String expected = "{\"text\":\"TEST\",\"color\":\"yellow\"}";
 
-    this.test(input, expected);
+    assertEquals(
+      text("TEST", NamedTextColor.YELLOW),
+      PARSER.parse(input)
+    );
   }
 
   @Test
   void testColorNested() {
     final String input = "<yellow>TEST<green>nested</green>Test";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"TEST\",\"color\":\"yellow\"},{\"text\":\"nested\",\"color\":\"green\"},{\"text\":\"Test\",\"color\":\"yellow\"}]}";
-
-    this.test(input, expected);
+    final Component expected = text()
+      .append(text("TEST", NamedTextColor.YELLOW))
+      .append(text("nested", NamedTextColor.GREEN))
+      .append(text("Test", NamedTextColor.YELLOW))
+      .build();
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testColorNotNested() {
     final String input = "<yellow>TEST</yellow><green>nested</green>Test";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"TEST\",\"color\":\"yellow\"},{\"text\":\"nested\",\"color\":\"green\"},{\"text\":\"Test\"}]}";
+    final Component expected = text()
+      .append(text("TEST", NamedTextColor.YELLOW))
+      .append(text("nested", NamedTextColor.GREEN))
+      .append(text("Test"))
+      .build();
 
-    this.test(input, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testHover() {
     final String input = "<hover:show_text:\"<red>test\">TEST";
-    final String expected = "{\"text\":\"TEST\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"test\",\"color\":\"red\"}}}";
+    final Component expected = text("TEST")
+      .hoverEvent(text("test", NamedTextColor.RED));
 
-    this.test(input, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testHover2() {
     final String input = "<hover:show_text:'<red>test'>TEST";
-    final String expected = "{\"text\":\"TEST\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"test\",\"color\":\"red\"}}}";
+    final Component expected = text("TEST")
+      .hoverEvent(text("test", NamedTextColor.RED));
 
-    this.test(input, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testHoverWithColon() {
     final String input = "<hover:show_text:\"<red>test:TEST\">TEST";
-    final String expected = "{\"text\":\"TEST\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"test:TEST\",\"color\":\"red\"}}}";
+    final Component expected = text("TEST")
+      .hoverEvent(text("test:TEST", NamedTextColor.RED));
 
-    this.test(input, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testHoverMultiline() {
     final String input = "<hover:show_text:'<red>test\ntest2'>TEST";
-    final String expected = "{\"text\":\"TEST\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"test\\ntest2\",\"color\":\"red\"}}}";
+    final Component expected = text("TEST")
+      .hoverEvent(text("test\ntest2", NamedTextColor.RED));
 
-    this.test(input, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testClick() {
     final String input = "<click:run_command:test>TEST";
-    final String expected = "{\"text\":\"TEST\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"test\"}}";
+    final Component expected = text("TEST", style(runCommand("test")));
 
-    this.test(input, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testClickExtendedCommand() {
     final String input = "<click:run_command:/test command>TEST";
-    final String expected = "{\"text\":\"TEST\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/test command\"}}";
+    final Component expected = text("TEST", style(runCommand("/test command")));
 
-    this.test(input, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testInvalidTag() {
     final String input = "<test>";
-    final String expected = "{\"text\":\"\\u003ctest\\u003e\"}"; // gson makes it html save
-    final Component comp = this.parser.parse(input);
+    final Component expected = text("<test>");
 
-    this.test(comp, expected);
+    assertParsedEquals(expected, input);
 
     // TODO am not totally happy about this yet, invalid tags arent getting colored for example, but good enough for now
   }
@@ -258,240 +286,692 @@ public class MiniMessageParserTest {
   @Test
   void testInvalidTagComplex() {
     final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><oof></oof><underlined><red>click here</click><blue> to <bold>FEEL</underlined> it";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"\\u003ctest\\u003e\",\"color\":\"yellow\"},{\"text\":\" random \",\"color\":\"yellow\"},{\"text\":\"stranger\",\"color\":\"yellow\",\"bold\":true},{\"text\":\"\\u003coof\\u003e\",\"color\":\"yellow\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"test command\"}},{\"text\":\"\\u003c/oof\\u003e\",\"color\":\"yellow\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"test command\"}},{\"text\":\"click here\",\"color\":\"red\",\"underlined\":true,\"clickEvent\":{\"action\":\"run_command\",\"value\":\"test command\"}},{\"text\":\" to \",\"color\":\"blue\",\"underlined\":true},{\"text\":\"FEEL\",\"color\":\"blue\",\"bold\":true,\"underlined\":true},{\"text\":\" it\",\"color\":\"blue\",\"bold\":true}]}";
-    final Component comp = this.parser.parse(input);
+    final Component expected = text()
+      .append(text("<test>", NamedTextColor.YELLOW))
+      .append(text(" random ", NamedTextColor.YELLOW))
+      .append(text("stranger", style(NamedTextColor.YELLOW, TextDecoration.BOLD)))
+      .append(text("<oof>", style(NamedTextColor.YELLOW, runCommand("test command"))))
+      .append(text("</oof>", style(NamedTextColor.YELLOW, runCommand("test command"))))
+      .append(text("click here", style(NamedTextColor.RED, TextDecoration.UNDERLINED, runCommand("test command"))))
+      .append(text(" to ", style(NamedTextColor.BLUE, TextDecoration.UNDERLINED)))
+      .append(text("FEEL", style(NamedTextColor.BLUE, TextDecoration.BOLD, TextDecoration.UNDERLINED)))
+      .append(text(" it", style(NamedTextColor.BLUE, TextDecoration.BOLD)))
+      .build();
 
-    this.test(comp, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testKeyBind() {
     final String input = "Press <key:key.jump> to jump!";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Press \"},{\"keybind\":\"key.jump\"},{\"text\":\" to jump!\"}]}";
-    final Component comp = this.parser.parse(input);
+    final Component expected = text()
+      .append(text("Press "))
+      .append(keybind("key.jump"))
+      .append(text(" to jump!"))
+      .build();
 
-    this.test(comp, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testKeyBindWithColor() {
     final String input = "Press <red><key:key.jump> to jump!";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Press \"},{\"keybind\":\"key.jump\",\"color\":\"red\"},{\"text\":\" to jump!\",\"color\":\"red\"}]}";
-    final Component comp = this.parser.parse(input);
+    final Component expected = text()
+      .append(text("Press "))
+      .append(keybind("key.jump", NamedTextColor.RED))
+      .append(text(" to jump!", NamedTextColor.RED))
+      .build();
 
-    this.test(comp, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testTranslatable() {
     final String input = "You should get a <lang:block.minecraft.diamond_block>!";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"You should get a \"},{\"translate\":\"block.minecraft.diamond_block\"},{\"text\":\"!\"}]}";
-    final Component comp = this.parser.parse(input);
+    final Component expected = text()
+      .append(text("You should get a "))
+      .append(translatable("block.minecraft.diamond_block"))
+      .append(text("!"))
+      .build();
 
-    this.test(comp, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testTranslatableWith() {
     final String input = "Test: <lang:commands.drop.success.single:'<red>1':'<blue>Stone'>!";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Test: \"},{\"translate\":\"commands.drop.success.single\",\"with\":[{\"text\":\"1\",\"color\":\"red\"},{\"text\":\"Stone\",\"color\":\"blue\"}]},{\"text\":\"!\"}]}";
-    final Component comp = this.parser.parse(input);
+    final Component expected = text()
+      .append(text("Test: "))
+      .append(translatable("commands.drop.success.single", text("1", NamedTextColor.RED), text("Stone", NamedTextColor.BLUE)))
+      .append(text("!"))
+      .build();
 
-    this.test(comp, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testTranslatableWithHover() {
     final String input = "Test: <lang:commands.drop.success.single:'<hover:show_text:\\'<red>dum\\'><red>1':'<blue>Stone'>!";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Test: \"},{\"translate\":\"commands.drop.success.single\",\"with\":[{\"text\":\"1\",\"color\":\"red\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"dum\",\"color\":\"red\"}}},{\"text\":\"Stone\",\"color\":\"blue\"}]},{\"text\":\"!\"}]}";
-    final Component comp = this.parser.parse(input);
+    final Component expected = text()
+      .append(text("Test: "))
+      .append(translatable(
+        "commands.drop.success.single",
+        text("1", style(NamedTextColor.RED, showText(text("dum", NamedTextColor.RED)))),
+        text("Stone", NamedTextColor.BLUE)
+      ))
+      .append(text("!"))
+      .build();
 
-    this.test(comp, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testKingAlter() {
     final String input = "Ahoy <lang:offset.-40:'<red>mates!'>";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Ahoy \"},{\"translate\":\"offset.-40\",\"with\":[{\"text\":\"mates!\",\"color\":\"red\"}]}]}";
-    final Component comp = this.parser.parse(input);
+    final Component expected = text()
+      .append(text("Ahoy "))
+      .append(translatable("offset.-40", text("mates!", NamedTextColor.RED)))
+      .build();
 
-    this.test(comp, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testInsertion() {
     final String input = "Click <insert:test>this</insert> to insert!";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Click \"},{\"text\":\"this\",\"insertion\":\"test\"},{\"text\":\" to insert!\"}]}";
-    final Component comp = this.parser.parse(input);
+    final Component expected = text()
+      .append(text("Click "))
+      .append(text("this", style(s -> s.insertion("test"))))
+      .append(text(" to insert!"))
+      .build();
 
-    this.test(comp, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testGH5() {
     final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:<pack_url>><hover:show_text:\"<green>/!\\ install it from Options/ResourcePacks in your game\"><green><bold>CLICK HERE</bold></hover></click>";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"»\",\"color\":\"dark_gray\"},{\"text\":\" To download it from the internet, \",\"color\":\"gray\"},{\"text\":\"CLICK HERE\",\"color\":\"green\",\"bold\":true,\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://www.google.com\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"/!\\\\ install it from Options/ResourcePacks in your game\",\"color\":\"green\"}}}]}";
+    final Component expected = text()
+      .append(text("»", NamedTextColor.DARK_GRAY))
+      .append(text(" To download it from the internet, ", NamedTextColor.GRAY))
+      .append(text("CLICK HERE", style(
+        NamedTextColor.GREEN,
+        TextDecoration.BOLD,
+        openUrl("https://www.google.com"),
+        showText(text("/!\\ install it from Options/ResourcePacks in your game", NamedTextColor.GREEN))
+      )))
+      .build();
 
-    final Component comp1 = this.parser.parse(input, "pack_url", "https://www.google.com");
-    this.test(comp1, expected);
+    final Component comp1 = PARSER.parse(input, "pack_url", "https://www.google.com");
+    assertEquals(expected, comp1);
   }
 
   @Test
   void testGH5Modified() {
     final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:<pack_url>><hover:show_text:'<green>/!\\ install it from \\'Options/ResourcePacks\\' in your game'><green><bold>CLICK HERE</bold></hover></click>";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"»\",\"color\":\"dark_gray\"},{\"text\":\" To download it from the internet, \",\"color\":\"gray\"},{\"text\":\"CLICK HERE\",\"color\":\"green\",\"bold\":true,\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://www.google.com\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"/!\\\\ install it from \\u0027Options/ResourcePacks\\u0027 in your game\",\"color\":\"green\"}}}]}";
+    final Component expected = text()
+      .append(text("»", NamedTextColor.DARK_GRAY))
+      .append(text(" To download it from the internet, ", NamedTextColor.GRAY))
+      .append(text("CLICK HERE", style(
+        NamedTextColor.GREEN,
+        TextDecoration.BOLD,
+        openUrl("https://www.google.com"),
+        showText(text("/!\\ install it from 'Options/ResourcePacks' in your game", NamedTextColor.GREEN))
+      )))
+      .build();
 
     // should work
-    final Component comp1 = this.parser.parse(input, "pack_url", "https://www.google.com");
-    this.test(comp1, expected);
+    final Component comp1 = PARSER.parse(input, "pack_url", "https://www.google.com");
+    assertEquals(expected, comp1);
   }
 
   @Test
   void testGH5Quoted() {
     final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:\"https://www.google.com\"><hover:show_text:\"<green>/!\\ install it from Options/ResourcePacks in your game\"><green><bold>CLICK HERE</bold></hover></click>";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"»\",\"color\":\"dark_gray\"},{\"text\":\" To download it from the internet, \",\"color\":\"gray\"},{\"text\":\"CLICK HERE\",\"color\":\"green\",\"bold\":true,\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://www.google.com\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"/!\\\\ install it from Options/ResourcePacks in your game\",\"color\":\"green\"}}}]}";
+    final Component expected = text()
+      .append(text("»", NamedTextColor.DARK_GRAY))
+      .append(text(" To download it from the internet, ", NamedTextColor.GRAY))
+      .append(text("CLICK HERE", style(
+        NamedTextColor.GREEN,
+        TextDecoration.BOLD,
+        openUrl("https://www.google.com"),
+        showText(text("/!\\ install it from Options/ResourcePacks in your game", NamedTextColor.GREEN))
+      )))
+      .build();
 
     // should work
-    final Component comp1 = this.parser.parse(input);
-    this.test(comp1, expected);
+    final Component comp1 = PARSER.parse(input);
+    assertEquals(expected, comp1);
 
     // shouldnt throw an error
-    this.parser.parse(input, "url", "https://www.google.com");
+    PARSER.parse(input, "url", "https://www.google.com");
   }
 
   @Test
   void testReset() {
     final String input = "Click <yellow><insert:test>this<rainbow> wooo<reset> to insert!";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Click \"},{\"text\":\"this\",\"color\":\"yellow\",\"insertion\":\"test\"},{\"text\":\" \",\"color\":\"#f3801f\",\"insertion\":\"test\"},{\"text\":\"w\",\"color\":\"#71f813\",\"insertion\":\"test\"},{\"text\":\"o\",\"color\":\"#03ca9c\",\"insertion\":\"test\"},{\"text\":\"o\",\"color\":\"#4135fe\",\"insertion\":\"test\"},{\"text\":\"o\",\"color\":\"#d507b1\",\"insertion\":\"test\"},{\"text\":\" to insert!\"}]}";
-    final Component comp = this.parser.parse(input);
+    final Component expected = text()
+      .append(text("Click "))
+      .append(text("this", NamedTextColor.YELLOW).insertion("test"))
+      .append(text(" ", color(0xf3801f)).insertion("test"))
+      .append(text("w", color(0x71f813)).insertion("test"))
+      .append(text("o", color(0x03ca9c)).insertion("test"))
+      .append(text("o", color(0x4135fe)).insertion("test"))
+      .append(text("o", color(0xd507b1)).insertion("test"))
+      .append(text(" to insert!"))
+      .build();
 
-    this.test(comp, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testPre() {
     final String input = "Click <yellow><pre><insert:test>this</pre> to <red>insert!";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Click \"},{\"text\":\"\\u003cinsert:test\\u003e\",\"color\":\"yellow\"},{\"text\":\"this\",\"color\":\"yellow\"},{\"text\":\" to \",\"color\":\"yellow\"},{\"text\":\"insert!\",\"color\":\"red\"}]}";
-    final Component comp = this.parser.parse(input);
+    final Component expected = text()
+      .append(text("Click "))
+      .append(text("<insert:test>", NamedTextColor.YELLOW))
+      .append(text("this", NamedTextColor.YELLOW))
+      .append(text(" to ", NamedTextColor.YELLOW))
+      .append(text("insert!", NamedTextColor.RED))
+      .build();
 
-    this.test(comp, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testRainbow() {
     final String input = "<yellow>Woo: <rainbow>||||||||||||||||||||||||</rainbow>!";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Woo: \",\"color\":\"yellow\"},{\"text\":\"|\",\"color\":\"#f3801f\"},{\"text\":\"|\",\"color\":\"#e1a00d\"},{\"text\":\"|\",\"color\":\"#c9bf03\"},{\"text\":\"|\",\"color\":\"#acd901\"},{\"text\":\"|\",\"color\":\"#8bed08\"},{\"text\":\"|\",\"color\":\"#6afa16\"},{\"text\":\"|\",\"color\":\"#4bff2c\"},{\"text\":\"|\",\"color\":\"#2ffa48\"},{\"text\":\"|\",\"color\":\"#18ed68\"},{\"text\":\"|\",\"color\":\"#08d989\"},{\"text\":\"|\",\"color\":\"#01bfa9\"},{\"text\":\"|\",\"color\":\"#02a0c7\"},{\"text\":\"|\",\"color\":\"#0c80e0\"},{\"text\":\"|\",\"color\":\"#1e5ff2\"},{\"text\":\"|\",\"color\":\"#3640fc\"},{\"text\":\"|\",\"color\":\"#5326fe\"},{\"text\":\"|\",\"color\":\"#7412f7\"},{\"text\":\"|\",\"color\":\"#9505e9\"},{\"text\":\"|\",\"color\":\"#b401d3\"},{\"text\":\"|\",\"color\":\"#d005b7\"},{\"text\":\"|\",\"color\":\"#e71297\"},{\"text\":\"|\",\"color\":\"#f72676\"},{\"text\":\"|\",\"color\":\"#fe4056\"},{\"text\":\"|\",\"color\":\"#fd5f38\"},{\"text\":\"!\",\"color\":\"yellow\"}]}";
-    final Component comp = this.parser.parse(input);
+    final Component expected = text()
+      .append(text("Woo: ", NamedTextColor.YELLOW))
+      .append(text("|", color(0xf3801f)))
+      .append(text("|", color(0xe1a00d)))
+      .append(text("|", color(0xc9bf03)))
+      .append(text("|", color(0xacd901)))
+      .append(text("|", color(0x8bed08)))
+      .append(text("|", color(0x6afa16)))
+      .append(text("|", color(0x4bff2c)))
+      .append(text("|", color(0x2ffa48)))
+      .append(text("|", color(0x18ed68)))
+      .append(text("|", color(0x08d989)))
+      .append(text("|", color(0x01bfa9)))
+      .append(text("|", color(0x02a0c7)))
+      .append(text("|", color(0x0c80e0)))
+      .append(text("|", color(0x1e5ff2)))
+      .append(text("|", color(0x3640fc)))
+      .append(text("|", color(0x5326fe)))
+      .append(text("|", color(0x7412f7)))
+      .append(text("|", color(0x9505e9)))
+      .append(text("|", color(0xb401d3)))
+      .append(text("|", color(0xd005b7)))
+      .append(text("|", color(0xe71297)))
+      .append(text("|", color(0xf72676)))
+      .append(text("|", color(0xfe4056)))
+      .append(text("|", color(0xfd5f38)))
+      .append(text("!", NamedTextColor.YELLOW))
+      .build();
 
-    this.test(comp, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testRainbowPhase() {
     final String input = "<yellow>Woo: <rainbow:2>||||||||||||||||||||||||</rainbow>!";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Woo: \",\"color\":\"yellow\"},{\"text\":\"|\",\"color\":\"#1ff35c\"},{\"text\":\"|\",\"color\":\"#0de17d\"},{\"text\":\"|\",\"color\":\"#03c99e\"},{\"text\":\"|\",\"color\":\"#01acbd\"},{\"text\":\"|\",\"color\":\"#088bd7\"},{\"text\":\"|\",\"color\":\"#166aec\"},{\"text\":\"|\",\"color\":\"#2c4bf9\"},{\"text\":\"|\",\"color\":\"#482ffe\"},{\"text\":\"|\",\"color\":\"#6818fb\"},{\"text\":\"|\",\"color\":\"#8908ef\"},{\"text\":\"|\",\"color\":\"#a901db\"},{\"text\":\"|\",\"color\":\"#c702c1\"},{\"text\":\"|\",\"color\":\"#e00ca3\"},{\"text\":\"|\",\"color\":\"#f21e82\"},{\"text\":\"|\",\"color\":\"#fc3661\"},{\"text\":\"|\",\"color\":\"#fe5342\"},{\"text\":\"|\",\"color\":\"#f77428\"},{\"text\":\"|\",\"color\":\"#e99513\"},{\"text\":\"|\",\"color\":\"#d3b406\"},{\"text\":\"|\",\"color\":\"#b7d001\"},{\"text\":\"|\",\"color\":\"#97e704\"},{\"text\":\"|\",\"color\":\"#76f710\"},{\"text\":\"|\",\"color\":\"#56fe24\"},{\"text\":\"|\",\"color\":\"#38fd3e\"},{\"text\":\"!\",\"color\":\"yellow\"}]}";
-    final Component comp = this.parser.parse(input);
+    final Component expected = text()
+      .append(text("Woo: ", NamedTextColor.YELLOW))
+      .append(text("|", color(0x1ff35c)))
+      .append(text("|", color(0x0de17d)))
+      .append(text("|", color(0x03c99e)))
+      .append(text("|", color(0x01acbd)))
+      .append(text("|", color(0x088bd7)))
+      .append(text("|", color(0x166aec)))
+      .append(text("|", color(0x2c4bf9)))
+      .append(text("|", color(0x482ffe)))
+      .append(text("|", color(0x6818fb)))
+      .append(text("|", color(0x8908ef)))
+      .append(text("|", color(0xa901db)))
+      .append(text("|", color(0xc702c1)))
+      .append(text("|", color(0xe00ca3)))
+      .append(text("|", color(0xf21e82)))
+      .append(text("|", color(0xfc3661)))
+      .append(text("|", color(0xfe5342)))
+      .append(text("|", color(0xf77428)))
+      .append(text("|", color(0xe99513)))
+      .append(text("|", color(0xd3b406)))
+      .append(text("|", color(0xb7d001)))
+      .append(text("|", color(0x97e704)))
+      .append(text("|", color(0x76f710)))
+      .append(text("|", color(0x56fe24)))
+      .append(text("|", color(0x38fd3e)))
+      .append(text("!", NamedTextColor.YELLOW))
+      .build();
 
-    this.test(comp, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testRainbowWithInsertion() {
     final String input = "<yellow>Woo: <insert:test><rainbow>||||||||||||||||||||||||</rainbow>!";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Woo: \",\"color\":\"yellow\"},{\"text\":\"|\",\"color\":\"#f3801f\",\"insertion\":\"test\"},{\"text\":\"|\",\"color\":\"#e1a00d\",\"insertion\":\"test\"},{\"text\":\"|\",\"color\":\"#c9bf03\",\"insertion\":\"test\"},{\"text\":\"|\",\"color\":\"#acd901\",\"insertion\":\"test\"},{\"text\":\"|\",\"color\":\"#8bed08\",\"insertion\":\"test\"},{\"text\":\"|\",\"color\":\"#6afa16\",\"insertion\":\"test\"},{\"text\":\"|\",\"color\":\"#4bff2c\",\"insertion\":\"test\"},{\"text\":\"|\",\"color\":\"#2ffa48\",\"insertion\":\"test\"},{\"text\":\"|\",\"color\":\"#18ed68\",\"insertion\":\"test\"},{\"text\":\"|\",\"color\":\"#08d989\",\"insertion\":\"test\"},{\"text\":\"|\",\"color\":\"#01bfa9\",\"insertion\":\"test\"},{\"text\":\"|\",\"color\":\"#02a0c7\",\"insertion\":\"test\"},{\"text\":\"|\",\"color\":\"#0c80e0\",\"insertion\":\"test\"},{\"text\":\"|\",\"color\":\"#1e5ff2\",\"insertion\":\"test\"},{\"text\":\"|\",\"color\":\"#3640fc\",\"insertion\":\"test\"},{\"text\":\"|\",\"color\":\"#5326fe\",\"insertion\":\"test\"},{\"text\":\"|\",\"color\":\"#7412f7\",\"insertion\":\"test\"},{\"text\":\"|\",\"color\":\"#9505e9\",\"insertion\":\"test\"},{\"text\":\"|\",\"color\":\"#b401d3\",\"insertion\":\"test\"},{\"text\":\"|\",\"color\":\"#d005b7\",\"insertion\":\"test\"},{\"text\":\"|\",\"color\":\"#e71297\",\"insertion\":\"test\"},{\"text\":\"|\",\"color\":\"#f72676\",\"insertion\":\"test\"},{\"text\":\"|\",\"color\":\"#fe4056\",\"insertion\":\"test\"},{\"text\":\"|\",\"color\":\"#fd5f38\",\"insertion\":\"test\"},{\"text\":\"!\",\"color\":\"yellow\",\"insertion\":\"test\"}]}";
-    final Component comp = this.parser.parse(input);
+    final Component expected = text()
+      .append(text("Woo: ", NamedTextColor.YELLOW))
+      .append(text("|", color(0xf3801f)).insertion("test"))
+      .append(text("|", color(0xe1a00d)).insertion("test"))
+      .append(text("|", color(0xc9bf03)).insertion("test"))
+      .append(text("|", color(0xacd901)).insertion("test"))
+      .append(text("|", color(0x8bed08)).insertion("test"))
+      .append(text("|", color(0x6afa16)).insertion("test"))
+      .append(text("|", color(0x4bff2c)).insertion("test"))
+      .append(text("|", color(0x2ffa48)).insertion("test"))
+      .append(text("|", color(0x18ed68)).insertion("test"))
+      .append(text("|", color(0x08d989)).insertion("test"))
+      .append(text("|", color(0x01bfa9)).insertion("test"))
+      .append(text("|", color(0x02a0c7)).insertion("test"))
+      .append(text("|", color(0x0c80e0)).insertion("test"))
+      .append(text("|", color(0x1e5ff2)).insertion("test"))
+      .append(text("|", color(0x3640fc)).insertion("test"))
+      .append(text("|", color(0x5326fe)).insertion("test"))
+      .append(text("|", color(0x7412f7)).insertion("test"))
+      .append(text("|", color(0x9505e9)).insertion("test"))
+      .append(text("|", color(0xb401d3)).insertion("test"))
+      .append(text("|", color(0xd005b7)).insertion("test"))
+      .append(text("|", color(0xe71297)).insertion("test"))
+      .append(text("|", color(0xf72676)).insertion("test"))
+      .append(text("|", color(0xfe4056)).insertion("test"))
+      .append(text("|", color(0xfd5f38)).insertion("test"))
+      .append(text("!", NamedTextColor.YELLOW).insertion("test"))
+      .build();
 
-    this.test(comp, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testGradient() {
     final String input = "<yellow>Woo: <gradient>||||||||||||||||||||||||</gradient>!";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Woo: \",\"color\":\"yellow\"},{\"text\":\"|\",\"color\":\"white\"},{\"text\":\"|\",\"color\":\"#f4f4f4\"},{\"text\":\"|\",\"color\":\"#eaeaea\"},{\"text\":\"|\",\"color\":\"#dfdfdf\"},{\"text\":\"|\",\"color\":\"#d5d5d5\"},{\"text\":\"|\",\"color\":\"#cacaca\"},{\"text\":\"|\",\"color\":\"#bfbfbf\"},{\"text\":\"|\",\"color\":\"#b5b5b5\"},{\"text\":\"|\",\"color\":\"gray\"},{\"text\":\"|\",\"color\":\"#9f9f9f\"},{\"text\":\"|\",\"color\":\"#959595\"},{\"text\":\"|\",\"color\":\"#8a8a8a\"},{\"text\":\"|\",\"color\":\"#808080\"},{\"text\":\"|\",\"color\":\"#757575\"},{\"text\":\"|\",\"color\":\"#6a6a6a\"},{\"text\":\"|\",\"color\":\"#606060\"},{\"text\":\"|\",\"color\":\"dark_gray\"},{\"text\":\"|\",\"color\":\"#4a4a4a\"},{\"text\":\"|\",\"color\":\"#404040\"},{\"text\":\"|\",\"color\":\"#353535\"},{\"text\":\"|\",\"color\":\"#2a2a2a\"},{\"text\":\"|\",\"color\":\"#202020\"},{\"text\":\"|\",\"color\":\"#151515\"},{\"text\":\"|\",\"color\":\"#0b0b0b\"},{\"text\":\"!\",\"color\":\"yellow\"}]}";
-    final Component comp = this.parser.parse(input);
+    final Component expected = text()
+      .append(text("Woo: ", NamedTextColor.YELLOW))
+      .append(text("|", NamedTextColor.WHITE))
+      .append(text("|", color(0xf4f4f4)))
+      .append(text("|", color(0xeaeaea)))
+      .append(text("|", color(0xdfdfdf)))
+      .append(text("|", color(0xd5d5d5)))
+      .append(text("|", color(0xcacaca)))
+      .append(text("|", color(0xbfbfbf)))
+      .append(text("|", color(0xb5b5b5)))
+      .append(text("|", NamedTextColor.GRAY))
+      .append(text("|", color(0x9f9f9f)))
+      .append(text("|", color(0x959595)))
+      .append(text("|", color(0x8a8a8a)))
+      .append(text("|", color(0x808080)))
+      .append(text("|", color(0x757575)))
+      .append(text("|", color(0x6a6a6a)))
+      .append(text("|", color(0x606060)))
+      .append(text("|", NamedTextColor.DARK_GRAY))
+      .append(text("|", color(0x4a4a4a)))
+      .append(text("|", color(0x404040)))
+      .append(text("|", color(0x353535)))
+      .append(text("|", color(0x2a2a2a)))
+      .append(text("|", color(0x202020)))
+      .append(text("|", color(0x151515)))
+      .append(text("|", color(0x0b0b0b)))
+      .append(text("!", NamedTextColor.YELLOW))
+      .build();
 
-    this.test(comp, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testGradientWithHover() {
     final String input = "<yellow>Woo: <hover:show_text:'This is a test'><gradient>||||||||||||||||||||||||</gradient>!";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Woo: \",\"color\":\"yellow\"},{\"text\":\"|\",\"color\":\"white\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"This is a test\"}}},{\"text\":\"|\",\"color\":\"#f4f4f4\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"This is a test\"}}},{\"text\":\"|\",\"color\":\"#eaeaea\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"This is a test\"}}},{\"text\":\"|\",\"color\":\"#dfdfdf\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"This is a test\"}}},{\"text\":\"|\",\"color\":\"#d5d5d5\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"This is a test\"}}},{\"text\":\"|\",\"color\":\"#cacaca\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"This is a test\"}}},{\"text\":\"|\",\"color\":\"#bfbfbf\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"This is a test\"}}},{\"text\":\"|\",\"color\":\"#b5b5b5\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"This is a test\"}}},{\"text\":\"|\",\"color\":\"gray\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"This is a test\"}}},{\"text\":\"|\",\"color\":\"#9f9f9f\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"This is a test\"}}},{\"text\":\"|\",\"color\":\"#959595\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"This is a test\"}}},{\"text\":\"|\",\"color\":\"#8a8a8a\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"This is a test\"}}},{\"text\":\"|\",\"color\":\"#808080\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"This is a test\"}}},{\"text\":\"|\",\"color\":\"#757575\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"This is a test\"}}},{\"text\":\"|\",\"color\":\"#6a6a6a\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"This is a test\"}}},{\"text\":\"|\",\"color\":\"#606060\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"This is a test\"}}},{\"text\":\"|\",\"color\":\"dark_gray\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"This is a test\"}}},{\"text\":\"|\",\"color\":\"#4a4a4a\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"This is a test\"}}},{\"text\":\"|\",\"color\":\"#404040\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"This is a test\"}}},{\"text\":\"|\",\"color\":\"#353535\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"This is a test\"}}},{\"text\":\"|\",\"color\":\"#2a2a2a\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"This is a test\"}}},{\"text\":\"|\",\"color\":\"#202020\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"This is a test\"}}},{\"text\":\"|\",\"color\":\"#151515\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"This is a test\"}}},{\"text\":\"|\",\"color\":\"#0b0b0b\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"This is a test\"}}},{\"text\":\"!\",\"color\":\"yellow\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"This is a test\"}}}]}";
-    final Component comp = this.parser.parse(input);
+    final Component expected = text()
+      .append(text("Woo: ", NamedTextColor.YELLOW))
+      .append(text("|", style(NamedTextColor.WHITE, showText(text("This is a test")))))
+      .append(text("|", style(color(0xf4f4f4), showText(text("This is a test")))))
+      .append(text("|", style(color(0xeaeaea), showText(text("This is a test")))))
+      .append(text("|", style(color(0xdfdfdf), showText(text("This is a test")))))
+      .append(text("|", style(color(0xd5d5d5), showText(text("This is a test")))))
+      .append(text("|", style(color(0xcacaca), showText(text("This is a test")))))
+      .append(text("|", style(color(0xbfbfbf), showText(text("This is a test")))))
+      .append(text("|", style(color(0xb5b5b5), showText(text("This is a test")))))
+      .append(text("|", style(NamedTextColor.GRAY, showText(text("This is a test")))))
+      .append(text("|", style(color(0x9f9f9f), showText(text("This is a test")))))
+      .append(text("|", style(color(0x959595), showText(text("This is a test")))))
+      .append(text("|", style(color(0x8a8a8a), showText(text("This is a test")))))
+      .append(text("|", style(color(0x808080), showText(text("This is a test")))))
+      .append(text("|", style(color(0x757575), showText(text("This is a test")))))
+      .append(text("|", style(color(0x6a6a6a), showText(text("This is a test")))))
+      .append(text("|", style(color(0x606060), showText(text("This is a test")))))
+      .append(text("|", style(NamedTextColor.DARK_GRAY, showText(text("This is a test")))))
+      .append(text("|", style(color(0x4a4a4a), showText(text("This is a test")))))
+      .append(text("|", style(color(0x404040), showText(text("This is a test")))))
+      .append(text("|", style(color(0x353535), showText(text("This is a test")))))
+      .append(text("|", style(color(0x2a2a2a), showText(text("This is a test")))))
+      .append(text("|", style(color(0x202020), showText(text("This is a test")))))
+      .append(text("|", style(color(0x151515), showText(text("This is a test")))))
+      .append(text("|", style(color(0x0b0b0b), showText(text("This is a test")))))
+      .append(text("!", style(NamedTextColor.YELLOW, showText(text("This is a test")))))
+      .build();
 
-    this.test(comp, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testGradient2() {
     final String input = "<yellow>Woo: <gradient:#5e4fa2:#f79459>||||||||||||||||||||||||</gradient>!";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Woo: \",\"color\":\"yellow\"},{\"text\":\"|\",\"color\":\"#5e4fa2\"},{\"text\":\"|\",\"color\":\"#64529f\"},{\"text\":\"|\",\"color\":\"#6b559c\"},{\"text\":\"|\",\"color\":\"#715899\"},{\"text\":\"|\",\"color\":\"#785b96\"},{\"text\":\"|\",\"color\":\"#7e5d93\"},{\"text\":\"|\",\"color\":\"#846090\"},{\"text\":\"|\",\"color\":\"#8b638d\"},{\"text\":\"|\",\"color\":\"#91668a\"},{\"text\":\"|\",\"color\":\"#976987\"},{\"text\":\"|\",\"color\":\"#9e6c84\"},{\"text\":\"|\",\"color\":\"#a46f81\"},{\"text\":\"|\",\"color\":\"#ab727e\"},{\"text\":\"|\",\"color\":\"#b1747a\"},{\"text\":\"|\",\"color\":\"#b77777\"},{\"text\":\"|\",\"color\":\"#be7a74\"},{\"text\":\"|\",\"color\":\"#c47d71\"},{\"text\":\"|\",\"color\":\"#ca806e\"},{\"text\":\"|\",\"color\":\"#d1836b\"},{\"text\":\"|\",\"color\":\"#d78668\"},{\"text\":\"|\",\"color\":\"#de8965\"},{\"text\":\"|\",\"color\":\"#e48b62\"},{\"text\":\"|\",\"color\":\"#ea8e5f\"},{\"text\":\"|\",\"color\":\"#f1915c\"},{\"text\":\"!\",\"color\":\"yellow\"}]}";
-    final Component comp = this.parser.parse(input);
+    final Component expected = text()
+      .append(text("Woo: ", NamedTextColor.YELLOW))
+      .append(text("|", color(0x5e4fa2)))
+      .append(text("|", color(0x64529f)))
+      .append(text("|", color(0x6b559c)))
+      .append(text("|", color(0x715899)))
+      .append(text("|", color(0x785b96)))
+      .append(text("|", color(0x7e5d93)))
+      .append(text("|", color(0x846090)))
+      .append(text("|", color(0x8b638d)))
+      .append(text("|", color(0x91668a)))
+      .append(text("|", color(0x976987)))
+      .append(text("|", color(0x9e6c84)))
+      .append(text("|", color(0xa46f81)))
+      .append(text("|", color(0xab727e)))
+      .append(text("|", color(0xb1747a)))
+      .append(text("|", color(0xb77777)))
+      .append(text("|", color(0xbe7a74)))
+      .append(text("|", color(0xc47d71)))
+      .append(text("|", color(0xca806e)))
+      .append(text("|", color(0xd1836b)))
+      .append(text("|", color(0xd78668)))
+      .append(text("|", color(0xde8965)))
+      .append(text("|", color(0xe48b62)))
+      .append(text("|", color(0xea8e5f)))
+      .append(text("|", color(0xf1915c)))
+      .append(text("!", NamedTextColor.YELLOW))
+      .build();
 
-    this.test(comp, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testGradient3() {
     final String input = "<yellow>Woo: <gradient:green:blue>||||||||||||||||||||||||</gradient>!";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Woo: \",\"color\":\"yellow\"},{\"text\":\"|\",\"color\":\"green\"},{\"text\":\"|\",\"color\":\"#55f85c\"},{\"text\":\"|\",\"color\":\"#55f163\"},{\"text\":\"|\",\"color\":\"#55ea6a\"},{\"text\":\"|\",\"color\":\"#55e371\"},{\"text\":\"|\",\"color\":\"#55dc78\"},{\"text\":\"|\",\"color\":\"#55d580\"},{\"text\":\"|\",\"color\":\"#55cd87\"},{\"text\":\"|\",\"color\":\"#55c68e\"},{\"text\":\"|\",\"color\":\"#55bf95\"},{\"text\":\"|\",\"color\":\"#55b89c\"},{\"text\":\"|\",\"color\":\"#55b1a3\"},{\"text\":\"|\",\"color\":\"#55aaaa\"},{\"text\":\"|\",\"color\":\"#55a3b1\"},{\"text\":\"|\",\"color\":\"#559cb8\"},{\"text\":\"|\",\"color\":\"#5595bf\"},{\"text\":\"|\",\"color\":\"#558ec6\"},{\"text\":\"|\",\"color\":\"#5587cd\"},{\"text\":\"|\",\"color\":\"#5580d5\"},{\"text\":\"|\",\"color\":\"#5578dc\"},{\"text\":\"|\",\"color\":\"#5571e3\"},{\"text\":\"|\",\"color\":\"#556aea\"},{\"text\":\"|\",\"color\":\"#5563f1\"},{\"text\":\"|\",\"color\":\"#555cf8\"},{\"text\":\"!\",\"color\":\"yellow\"}]}";
-    final Component comp = this.parser.parse(input);
+    final Component expected = text()
+      .append(text("Woo: ", NamedTextColor.YELLOW))
+      .append(text("|", NamedTextColor.GREEN))
+      .append(text("|", color(0x55f85c)))
+      .append(text("|", color(0x55f163)))
+      .append(text("|", color(0x55ea6a)))
+      .append(text("|", color(0x55e371)))
+      .append(text("|", color(0x55dc78)))
+      .append(text("|", color(0x55d580)))
+      .append(text("|", color(0x55cd87)))
+      .append(text("|", color(0x55c68e)))
+      .append(text("|", color(0x55bf95)))
+      .append(text("|", color(0x55b89c)))
+      .append(text("|", color(0x55b1a3)))
+      .append(text("|", color(0x55aaaa)))
+      .append(text("|", color(0x55a3b1)))
+      .append(text("|", color(0x559cb8)))
+      .append(text("|", color(0x5595bf)))
+      .append(text("|", color(0x558ec6)))
+      .append(text("|", color(0x5587cd)))
+      .append(text("|", color(0x5580d5)))
+      .append(text("|", color(0x5578dc)))
+      .append(text("|", color(0x5571e3)))
+      .append(text("|", color(0x556aea)))
+      .append(text("|", color(0x5563f1)))
+      .append(text("|", color(0x555cf8)))
+      .append(text("!", NamedTextColor.YELLOW))
+      .build();
 
-    this.test(comp, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testGradientMultiColor() {
     final String input = "<yellow>Woo: <gradient:red:blue:green:yellow:red>||||||||||||||||||||||||||||||||||||||||||||||||||||||</gradient>!";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Woo: \",\"color\":\"yellow\"},{\"text\":\"|\",\"color\":\"red\"},{\"text\":\"|\",\"color\":\"#f25562\"},{\"text\":\"|\",\"color\":\"#e5556f\"},{\"text\":\"|\",\"color\":\"#d8557c\"},{\"text\":\"|\",\"color\":\"#cb5589\"},{\"text\":\"|\",\"color\":\"#be5596\"},{\"text\":\"|\",\"color\":\"#b155a3\"},{\"text\":\"|\",\"color\":\"#a355b1\"},{\"text\":\"|\",\"color\":\"#9655be\"},{\"text\":\"|\",\"color\":\"#8955cb\"},{\"text\":\"|\",\"color\":\"#7c55d8\"},{\"text\":\"|\",\"color\":\"#6f55e5\"},{\"text\":\"|\",\"color\":\"#6255f2\"},{\"text\":\"|\",\"color\":\"blue\"},{\"text\":\"|\",\"color\":\"blue\"},{\"text\":\"|\",\"color\":\"#5562f2\"},{\"text\":\"|\",\"color\":\"#556fe5\"},{\"text\":\"|\",\"color\":\"#557cd8\"},{\"text\":\"|\",\"color\":\"#5589cb\"},{\"text\":\"|\",\"color\":\"#5596be\"},{\"text\":\"|\",\"color\":\"#55a3b1\"},{\"text\":\"|\",\"color\":\"#55b1a3\"},{\"text\":\"|\",\"color\":\"#55be96\"},{\"text\":\"|\",\"color\":\"#55cb89\"},{\"text\":\"|\",\"color\":\"#55d87c\"},{\"text\":\"|\",\"color\":\"#55e56f\"},{\"text\":\"|\",\"color\":\"#55f262\"},{\"text\":\"|\",\"color\":\"green\"},{\"text\":\"|\",\"color\":\"green\"},{\"text\":\"|\",\"color\":\"#62ff55\"},{\"text\":\"|\",\"color\":\"#6fff55\"},{\"text\":\"|\",\"color\":\"#7cff55\"},{\"text\":\"|\",\"color\":\"#89ff55\"},{\"text\":\"|\",\"color\":\"#96ff55\"},{\"text\":\"|\",\"color\":\"#a3ff55\"},{\"text\":\"|\",\"color\":\"#b1ff55\"},{\"text\":\"|\",\"color\":\"#beff55\"},{\"text\":\"|\",\"color\":\"#cbff55\"},{\"text\":\"|\",\"color\":\"#d8ff55\"},{\"text\":\"|\",\"color\":\"#e5ff55\"},{\"text\":\"|\",\"color\":\"#f2ff55\"},{\"text\":\"|\",\"color\":\"yellow\"},{\"text\":\"|\",\"color\":\"yellow\"},{\"text\":\"|\",\"color\":\"#fff255\"},{\"text\":\"|\",\"color\":\"#ffe555\"},{\"text\":\"|\",\"color\":\"#ffd855\"},{\"text\":\"|\",\"color\":\"#ffcb55\"},{\"text\":\"|\",\"color\":\"#ffbe55\"},{\"text\":\"|\",\"color\":\"#ffb155\"},{\"text\":\"|\",\"color\":\"#ffa355\"},{\"text\":\"|\",\"color\":\"#ff9655\"},{\"text\":\"|\",\"color\":\"#ff8955\"},{\"text\":\"|\",\"color\":\"#ff7c55\"},{\"text\":\"|\",\"color\":\"#ff6f55\"},{\"text\":\"!\",\"color\":\"yellow\"}]}";
-    final Component comp = this.parser.parse(input);
+    final Component expected = text()
+      .append(text("Woo: ", NamedTextColor.YELLOW))
+      .append(text("|", NamedTextColor.RED))
+      .append(text("|", color(0xf25562)))
+      .append(text("|", color(0xe5556f)))
+      .append(text("|", color(0xd8557c)))
+      .append(text("|", color(0xcb5589)))
+      .append(text("|", color(0xbe5596)))
+      .append(text("|", color(0xb155a3)))
+      .append(text("|", color(0xa355b1)))
+      .append(text("|", color(0x9655be)))
+      .append(text("|", color(0x8955cb)))
+      .append(text("|", color(0x7c55d8)))
+      .append(text("|", color(0x6f55e5)))
+      .append(text("|", color(0x6255f2)))
+      .append(text("|", NamedTextColor.BLUE))
+      .append(text("|", NamedTextColor.BLUE))
+      .append(text("|", color(0x5562f2)))
+      .append(text("|", color(0x556fe5)))
+      .append(text("|", color(0x557cd8)))
+      .append(text("|", color(0x5589cb)))
+      .append(text("|", color(0x5596be)))
+      .append(text("|", color(0x55a3b1)))
+      .append(text("|", color(0x55b1a3)))
+      .append(text("|", color(0x55be96)))
+      .append(text("|", color(0x55cb89)))
+      .append(text("|", color(0x55d87c)))
+      .append(text("|", color(0x55e56f)))
+      .append(text("|", color(0x55f262)))
+      .append(text("|", NamedTextColor.GREEN))
+      .append(text("|", NamedTextColor.GREEN))
+      .append(text("|", color(0x62ff55)))
+      .append(text("|", color(0x6fff55)))
+      .append(text("|", color(0x7cff55)))
+      .append(text("|", color(0x89ff55)))
+      .append(text("|", color(0x96ff55)))
+      .append(text("|", color(0xa3ff55)))
+      .append(text("|", color(0xb1ff55)))
+      .append(text("|", color(0xbeff55)))
+      .append(text("|", color(0xcbff55)))
+      .append(text("|", color(0xd8ff55)))
+      .append(text("|", color(0xe5ff55)))
+      .append(text("|", color(0xf2ff55)))
+      .append(text("|", NamedTextColor.YELLOW))
+      .append(text("|", NamedTextColor.YELLOW))
+      .append(text("|", color(0xfff255)))
+      .append(text("|", color(0xffe555)))
+      .append(text("|", color(0xffd855)))
+      .append(text("|", color(0xffcb55)))
+      .append(text("|", color(0xffbe55)))
+      .append(text("|", color(0xffb155)))
+      .append(text("|", color(0xffa355)))
+      .append(text("|", color(0xff9655)))
+      .append(text("|", color(0xff8955)))
+      .append(text("|", color(0xff7c55)))
+      .append(text("|", color(0xff6f55)))
+      .append(text("!", NamedTextColor.YELLOW))
+      .build();
 
-    this.test(comp, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testGradientMultiColor2() {
     final String input = "<yellow>Woo: <gradient:black:white:black>||||||||||||||||||||||||||||||||||||||||||||||||||||||</gradient>!";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Woo: \",\"color\":\"yellow\"},{\"text\":\"|\",\"color\":\"black\"},{\"text\":\"|\",\"color\":\"#090909\"},{\"text\":\"|\",\"color\":\"#131313\"},{\"text\":\"|\",\"color\":\"#1c1c1c\"},{\"text\":\"|\",\"color\":\"#262626\"},{\"text\":\"|\",\"color\":\"#2f2f2f\"},{\"text\":\"|\",\"color\":\"#393939\"},{\"text\":\"|\",\"color\":\"#424242\"},{\"text\":\"|\",\"color\":\"#4c4c4c\"},{\"text\":\"|\",\"color\":\"dark_gray\"},{\"text\":\"|\",\"color\":\"#5e5e5e\"},{\"text\":\"|\",\"color\":\"#686868\"},{\"text\":\"|\",\"color\":\"#717171\"},{\"text\":\"|\",\"color\":\"#7b7b7b\"},{\"text\":\"|\",\"color\":\"#848484\"},{\"text\":\"|\",\"color\":\"#8e8e8e\"},{\"text\":\"|\",\"color\":\"#979797\"},{\"text\":\"|\",\"color\":\"#a1a1a1\"},{\"text\":\"|\",\"color\":\"gray\"},{\"text\":\"|\",\"color\":\"#b3b3b3\"},{\"text\":\"|\",\"color\":\"#bdbdbd\"},{\"text\":\"|\",\"color\":\"#c6c6c6\"},{\"text\":\"|\",\"color\":\"#d0d0d0\"},{\"text\":\"|\",\"color\":\"#d9d9d9\"},{\"text\":\"|\",\"color\":\"#e3e3e3\"},{\"text\":\"|\",\"color\":\"#ececec\"},{\"text\":\"|\",\"color\":\"#f6f6f6\"},{\"text\":\"|\",\"color\":\"white\"},{\"text\":\"|\",\"color\":\"white\"},{\"text\":\"|\",\"color\":\"#f6f6f6\"},{\"text\":\"|\",\"color\":\"#ececec\"},{\"text\":\"|\",\"color\":\"#e3e3e3\"},{\"text\":\"|\",\"color\":\"#d9d9d9\"},{\"text\":\"|\",\"color\":\"#d0d0d0\"},{\"text\":\"|\",\"color\":\"#c6c6c6\"},{\"text\":\"|\",\"color\":\"#bdbdbd\"},{\"text\":\"|\",\"color\":\"#b3b3b3\"},{\"text\":\"|\",\"color\":\"gray\"},{\"text\":\"|\",\"color\":\"#a1a1a1\"},{\"text\":\"|\",\"color\":\"#979797\"},{\"text\":\"|\",\"color\":\"#8e8e8e\"},{\"text\":\"|\",\"color\":\"#848484\"},{\"text\":\"|\",\"color\":\"#7b7b7b\"},{\"text\":\"|\",\"color\":\"#717171\"},{\"text\":\"|\",\"color\":\"#686868\"},{\"text\":\"|\",\"color\":\"#5e5e5e\"},{\"text\":\"|\",\"color\":\"dark_gray\"},{\"text\":\"|\",\"color\":\"#4c4c4c\"},{\"text\":\"|\",\"color\":\"#424242\"},{\"text\":\"|\",\"color\":\"#393939\"},{\"text\":\"|\",\"color\":\"#2f2f2f\"},{\"text\":\"|\",\"color\":\"#262626\"},{\"text\":\"|\",\"color\":\"#1c1c1c\"},{\"text\":\"|\",\"color\":\"#131313\"},{\"text\":\"!\",\"color\":\"yellow\"}]}";
-    final Component comp = this.parser.parse(input);
+    final Component expected = text()
+      .append(text("Woo: ", NamedTextColor.YELLOW))
+      .append(text("|", NamedTextColor.BLACK))
+      .append(text("|", color(0x90909)))
+      .append(text("|", color(0x131313)))
+      .append(text("|", color(0x1c1c1c)))
+      .append(text("|", color(0x262626)))
+      .append(text("|", color(0x2f2f2f)))
+      .append(text("|", color(0x393939)))
+      .append(text("|", color(0x424242)))
+      .append(text("|", color(0x4c4c4c)))
+      .append(text("|", NamedTextColor.DARK_GRAY))
+      .append(text("|", color(0x5e5e5e)))
+      .append(text("|", color(0x686868)))
+      .append(text("|", color(0x717171)))
+      .append(text("|", color(0x7b7b7b)))
+      .append(text("|", color(0x848484)))
+      .append(text("|", color(0x8e8e8e)))
+      .append(text("|", color(0x979797)))
+      .append(text("|", color(0xa1a1a1)))
+      .append(text("|", NamedTextColor.GRAY))
+      .append(text("|", color(0xb3b3b3)))
+      .append(text("|", color(0xbdbdbd)))
+      .append(text("|", color(0xc6c6c6)))
+      .append(text("|", color(0xd0d0d0)))
+      .append(text("|", color(0xd9d9d9)))
+      .append(text("|", color(0xe3e3e3)))
+      .append(text("|", color(0xececec)))
+      .append(text("|", color(0xf6f6f6)))
+      .append(text("|", NamedTextColor.WHITE))
+      .append(text("|", NamedTextColor.WHITE))
+      .append(text("|", color(0xf6f6f6)))
+      .append(text("|", color(0xececec)))
+      .append(text("|", color(0xe3e3e3)))
+      .append(text("|", color(0xd9d9d9)))
+      .append(text("|", color(0xd0d0d0)))
+      .append(text("|", color(0xc6c6c6)))
+      .append(text("|", color(0xbdbdbd)))
+      .append(text("|", color(0xb3b3b3)))
+      .append(text("|", NamedTextColor.GRAY))
+      .append(text("|", color(0xa1a1a1)))
+      .append(text("|", color(0x979797)))
+      .append(text("|", color(0x8e8e8e)))
+      .append(text("|", color(0x848484)))
+      .append(text("|", color(0x7b7b7b)))
+      .append(text("|", color(0x717171)))
+      .append(text("|", color(0x686868)))
+      .append(text("|", color(0x5e5e5e)))
+      .append(text("|", NamedTextColor.DARK_GRAY))
+      .append(text("|", color(0x4c4c4c)))
+      .append(text("|", color(0x424242)))
+      .append(text("|", color(0x393939)))
+      .append(text("|", color(0x2f2f2f)))
+      .append(text("|", color(0x262626)))
+      .append(text("|", color(0x1c1c1c)))
+      .append(text("|", color(0x131313)))
+      .append(text("!", NamedTextColor.YELLOW))
+      .build();
 
-    this.test(comp, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testGradientMultiColor2Phase() {
     final String input = "<yellow>Woo: <gradient:black:white:black:-0.65>||||||||||||||||||||||||||||||||||||||||||||||||||||||</gradient>!";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Woo: \",\"color\":\"yellow\"},{\"text\":\"|\",\"color\":\"#a6a6a6\"},{\"text\":\"|\",\"color\":\"#9c9c9c\"},{\"text\":\"|\",\"color\":\"#939393\"},{\"text\":\"|\",\"color\":\"#898989\"},{\"text\":\"|\",\"color\":\"#808080\"},{\"text\":\"|\",\"color\":\"#777777\"},{\"text\":\"|\",\"color\":\"#6d6d6d\"},{\"text\":\"|\",\"color\":\"#646464\"},{\"text\":\"|\",\"color\":\"#5a5a5a\"},{\"text\":\"|\",\"color\":\"#515151\"},{\"text\":\"|\",\"color\":\"#474747\"},{\"text\":\"|\",\"color\":\"#3e3e3e\"},{\"text\":\"|\",\"color\":\"#343434\"},{\"text\":\"|\",\"color\":\"#2b2b2b\"},{\"text\":\"|\",\"color\":\"#222222\"},{\"text\":\"|\",\"color\":\"#181818\"},{\"text\":\"|\",\"color\":\"#0f0f0f\"},{\"text\":\"|\",\"color\":\"#050505\"},{\"text\":\"|\",\"color\":\"#040404\"},{\"text\":\"|\",\"color\":\"#0e0e0e\"},{\"text\":\"|\",\"color\":\"#171717\"},{\"text\":\"|\",\"color\":\"#212121\"},{\"text\":\"|\",\"color\":\"#2a2a2a\"},{\"text\":\"|\",\"color\":\"#333333\"},{\"text\":\"|\",\"color\":\"#3d3d3d\"},{\"text\":\"|\",\"color\":\"#464646\"},{\"text\":\"|\",\"color\":\"#505050\"},{\"text\":\"|\",\"color\":\"#595959\"},{\"text\":\"|\",\"color\":\"#595959\"},{\"text\":\"|\",\"color\":\"#636363\"},{\"text\":\"|\",\"color\":\"#6c6c6c\"},{\"text\":\"|\",\"color\":\"#767676\"},{\"text\":\"|\",\"color\":\"#7f7f7f\"},{\"text\":\"|\",\"color\":\"#888888\"},{\"text\":\"|\",\"color\":\"#929292\"},{\"text\":\"|\",\"color\":\"#9b9b9b\"},{\"text\":\"|\",\"color\":\"#a5a5a5\"},{\"text\":\"|\",\"color\":\"#aeaeae\"},{\"text\":\"|\",\"color\":\"#b8b8b8\"},{\"text\":\"|\",\"color\":\"#c1c1c1\"},{\"text\":\"|\",\"color\":\"#cbcbcb\"},{\"text\":\"|\",\"color\":\"#d4d4d4\"},{\"text\":\"|\",\"color\":\"#dddddd\"},{\"text\":\"|\",\"color\":\"#e7e7e7\"},{\"text\":\"|\",\"color\":\"#f0f0f0\"},{\"text\":\"|\",\"color\":\"#fafafa\"},{\"text\":\"|\",\"color\":\"#fbfbfb\"},{\"text\":\"|\",\"color\":\"#f1f1f1\"},{\"text\":\"|\",\"color\":\"#e8e8e8\"},{\"text\":\"|\",\"color\":\"#dedede\"},{\"text\":\"|\",\"color\":\"#d5d5d5\"},{\"text\":\"|\",\"color\":\"#cccccc\"},{\"text\":\"|\",\"color\":\"#c2c2c2\"},{\"text\":\"|\",\"color\":\"#b9b9b9\"},{\"text\":\"!\",\"color\":\"yellow\"}]}";
-    final Component comp = this.parser.parse(input);
+    final Component expected = text()
+      .append(text("Woo: ", NamedTextColor.YELLOW))
+      .append(text("|", color(0xa6a6a6)))
+      .append(text("|", color(0x9c9c9c)))
+      .append(text("|", color(0x939393)))
+      .append(text("|", color(0x898989)))
+      .append(text("|", color(0x808080)))
+      .append(text("|", color(0x777777)))
+      .append(text("|", color(0x6d6d6d)))
+      .append(text("|", color(0x646464)))
+      .append(text("|", color(0x5a5a5a)))
+      .append(text("|", color(0x515151)))
+      .append(text("|", color(0x474747)))
+      .append(text("|", color(0x3e3e3e)))
+      .append(text("|", color(0x343434)))
+      .append(text("|", color(0x2b2b2b)))
+      .append(text("|", color(0x222222)))
+      .append(text("|", color(0x181818)))
+      .append(text("|", color(0xf0f0f)))
+      .append(text("|", color(0x50505)))
+      .append(text("|", color(0x40404)))
+      .append(text("|", color(0xe0e0e)))
+      .append(text("|", color(0x171717)))
+      .append(text("|", color(0x212121)))
+      .append(text("|", color(0x2a2a2a)))
+      .append(text("|", color(0x333333)))
+      .append(text("|", color(0x3d3d3d)))
+      .append(text("|", color(0x464646)))
+      .append(text("|", color(0x505050)))
+      .append(text("|", color(0x595959)))
+      .append(text("|", color(0x595959)))
+      .append(text("|", color(0x636363)))
+      .append(text("|", color(0x6c6c6c)))
+      .append(text("|", color(0x767676)))
+      .append(text("|", color(0x7f7f7f)))
+      .append(text("|", color(0x888888)))
+      .append(text("|", color(0x929292)))
+      .append(text("|", color(0x9b9b9b)))
+      .append(text("|", color(0xa5a5a5)))
+      .append(text("|", color(0xaeaeae)))
+      .append(text("|", color(0xb8b8b8)))
+      .append(text("|", color(0xc1c1c1)))
+      .append(text("|", color(0xcbcbcb)))
+      .append(text("|", color(0xd4d4d4)))
+      .append(text("|", color(0xdddddd)))
+      .append(text("|", color(0xe7e7e7)))
+      .append(text("|", color(0xf0f0f0)))
+      .append(text("|", color(0xfafafa)))
+      .append(text("|", color(0xfbfbfb)))
+      .append(text("|", color(0xf1f1f1)))
+      .append(text("|", color(0xe8e8e8)))
+      .append(text("|", color(0xdedede)))
+      .append(text("|", color(0xd5d5d5)))
+      .append(text("|", color(0xcccccc)))
+      .append(text("|", color(0xc2c2c2)))
+      .append(text("|", color(0xb9b9b9)))
+      .append(text("!", NamedTextColor.YELLOW))
+      .build();
 
-    this.test(comp, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testGradientPhase() {
     final String input = "<yellow>Woo: <gradient:green:blue:0.7>||||||||||||||||||||||||</gradient>!";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Woo: \",\"color\":\"yellow\"},{\"text\":\"|\",\"color\":\"#5588cc\"},{\"text\":\"|\",\"color\":\"#5581d3\"},{\"text\":\"|\",\"color\":\"#557ada\"},{\"text\":\"|\",\"color\":\"#5573e1\"},{\"text\":\"|\",\"color\":\"#556ce8\"},{\"text\":\"|\",\"color\":\"#5565ef\"},{\"text\":\"|\",\"color\":\"#555ef7\"},{\"text\":\"|\",\"color\":\"#5556fe\"},{\"text\":\"|\",\"color\":\"#555bf9\"},{\"text\":\"|\",\"color\":\"#5562f2\"},{\"text\":\"|\",\"color\":\"#5569eb\"},{\"text\":\"|\",\"color\":\"#5570e4\"},{\"text\":\"|\",\"color\":\"#5577dd\"},{\"text\":\"|\",\"color\":\"#557ed6\"},{\"text\":\"|\",\"color\":\"#5585cf\"},{\"text\":\"|\",\"color\":\"#558cc8\"},{\"text\":\"|\",\"color\":\"#5593c1\"},{\"text\":\"|\",\"color\":\"#559aba\"},{\"text\":\"|\",\"color\":\"#55a2b3\"},{\"text\":\"|\",\"color\":\"#55a9ab\"},{\"text\":\"|\",\"color\":\"#55b0a4\"},{\"text\":\"|\",\"color\":\"#55b79d\"},{\"text\":\"|\",\"color\":\"#55be96\"},{\"text\":\"|\",\"color\":\"#55c58f\"},{\"text\":\"!\",\"color\":\"yellow\"}]}";
-    final Component comp = this.parser.parse(input);
+    final Component expected = text()
+      .append(text("Woo: ", NamedTextColor.YELLOW))
+      .append(text("|", color(0x5588cc)))
+      .append(text("|", color(0x5581d3)))
+      .append(text("|", color(0x557ada)))
+      .append(text("|", color(0x5573e1)))
+      .append(text("|", color(0x556ce8)))
+      .append(text("|", color(0x5565ef)))
+      .append(text("|", color(0x555ef7)))
+      .append(text("|", color(0x5556fe)))
+      .append(text("|", color(0x555bf9)))
+      .append(text("|", color(0x5562f2)))
+      .append(text("|", color(0x5569eb)))
+      .append(text("|", color(0x5570e4)))
+      .append(text("|", color(0x5577dd)))
+      .append(text("|", color(0x557ed6)))
+      .append(text("|", color(0x5585cf)))
+      .append(text("|", color(0x558cc8)))
+      .append(text("|", color(0x5593c1)))
+      .append(text("|", color(0x559aba)))
+      .append(text("|", color(0x55a2b3)))
+      .append(text("|", color(0x55a9ab)))
+      .append(text("|", color(0x55b0a4)))
+      .append(text("|", color(0x55b79d)))
+      .append(text("|", color(0x55be96)))
+      .append(text("|", color(0x55c58f)))
+      .append(text("!", NamedTextColor.YELLOW))
+      .build();
 
-    this.test(comp, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testFont() {
     final String input = "Nothing <font:minecraft:uniform>Uniform <font:minecraft:alt>Alt  </font> Uniform";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Nothing \"},{\"text\":\"Uniform \",\"font\":\"minecraft:uniform\"},{\"text\":\"Alt  \",\"font\":\"minecraft:alt\"},{\"text\":\" Uniform\",\"font\":\"minecraft:uniform\"}]}";
-    final Component comp = this.parser.parse(input);
+    final Component expected = text()
+      .append(text("Nothing "))
+      .append(text("Uniform ", style(s -> s.font(key("uniform")))))
+      .append(text("Alt  ", style(s -> s.font(key("alt")))))
+      .append(text(" Uniform", style(s -> s.font(key("uniform")))))
+      .build();
 
-    this.test(comp, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test // GH-37
   void testPhil() {
     final String input = "<red><hover:show_text:'Message 1\nMessage 2'>My Message";
-    final String expected = "{\"text\":\"My Message\",\"color\":\"red\",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"Message 1\\nMessage 2\"}}}";
-    final Component comp = this.parser.parse(input);
+    final Component expected = text("My Message", style(NamedTextColor.RED, showText(text("Message 1\nMessage 2"))));
 
-    this.test(comp, expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
@@ -499,31 +979,41 @@ public class MiniMessageParserTest {
     assertFalse(Character.isBmpCodePoint("𐌰".codePointAt(0)));
 
     final String input = "Something <gradient:green:blue:1.0>𐌰𐌱𐌲</gradient>";
-    final Component expected = Component.text()
-            .append(Component.text("Something "))
-            .append(Component.text("𐌰", NamedTextColor.BLUE))
-            .append(Component.text("𐌱", TextColor.color(0x5571e3)))
-            .append(Component.text("𐌲", TextColor.color(0x558ec6)))
+    final Component expected = text()
+            .append(text("Something "))
+            .append(text("𐌰", NamedTextColor.BLUE))
+            .append(text("𐌱", color(0x5571e3)))
+            .append(text("𐌲", color(0x558ec6)))
             .build();
 
-    assertEquals(this.parser.parse(input), expected);
+    assertParsedEquals(expected, input);
   }
 
   @Test
   void testNonStrict() {
     final String input = "<gray>Example: <click:suggest_command:/plot flag set coral-dry true><gold>/plot flag set coral-dry true<click></gold></gray>";
-    final String expected = "{\"text\":\"\",\"extra\":[{\"text\":\"Example: \",\"color\":\"gray\"},{\"text\":\"/plot flag set coral-dry true\",\"color\":\"gold\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"/plot flag set coral-dry true\"}},{\"text\":\"\\u003cclick\\u003e\",\"color\":\"gold\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"/plot flag set coral-dry true\"}}]}";
-    final Component comp = MiniMessage.builder().strict(false).build().parse(input);
+    final Component expected = text()
+      .append(text("Example: ", NamedTextColor.GRAY))
+      .append(text("/plot flag set coral-dry true", style(NamedTextColor.GOLD, suggestCommand("/plot flag set coral-dry true"))))
+      .append(text("<click>", style(NamedTextColor.GOLD, suggestCommand("/plot flag set coral-dry true"))))
+      .build();
 
-    this.test(comp, expected);
+    final Component parsed = MiniMessage.builder()
+      .strict(false)
+      .build()
+      .parse(input);
+    assertEquals(expected, parsed);
   }
 
   @Test
   void testNonStrictGH69() {
-    final String expected = "{\"text\":\"\\u003c\"}";
-    final Component comp = MiniMessage.builder().strict(false).build().parse(MiniMessage.get().escapeTokens("<3"));
+    final Component expected = text("<");
+    final Component comp = MiniMessage.builder()
+      .strict(false)
+      .build()
+      .parse(MiniMessage.get().escapeTokens("<3"));
 
-    this.test(comp, expected);
+    assertEquals(expected, comp);
   }
 
   @Test
@@ -544,11 +1034,7 @@ public class MiniMessageParserTest {
     MiniMessage.builder().parsingErrorMessageConsumer(strings -> assertEquals(strings, Collections.singletonList("Expected end sometimes after open tag + name, but got name = Token{type=NAME, value=\"red is already created! Try different name! \"} and inners = []"))).build().parse(input);
   }
 
-  private void test(final @NonNull String input, final @NonNull String expected) {
-    this.test(this.parser.parse(input), expected);
-  }
-
-  private void test(final @NonNull Component comp, final @NonNull String expected) {
-    assertEquals(expected, GsonComponentSerializer.gson().serialize(comp));
+  private static void assertParsedEquals(final @NonNull Component expected, final @NonNull String input) {
+    assertEquals(expected, PARSER.parse(input));
   }
 }
