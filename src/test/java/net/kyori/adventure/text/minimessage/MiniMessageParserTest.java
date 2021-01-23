@@ -137,7 +137,7 @@ public class MiniMessageParserTest {
 
   @Test
   void testUnescape() {
-    final String input ="<yellow>TEST\\<green> nested\\</green>Test";
+    final String input = "<yellow>TEST\\<green> nested\\</green>Test";
     final String expected = "TEST<green> nested</green>Test";
     final Component comp = PARSER.parse(input);
 
@@ -147,7 +147,7 @@ public class MiniMessageParserTest {
   @Test
   @Disabled // TODO, better escape handling
   void testNoUnescape() {
-    final String input ="<yellow>TEST\\<green> \\< nested\\</green>Test";
+    final String input = "<yellow>TEST\\<green> \\< nested\\</green>Test";
     final String expected = "TEST<green> \\< nested</green>Test";
     final TextComponent comp = (TextComponent) PARSER.parse(input);
 

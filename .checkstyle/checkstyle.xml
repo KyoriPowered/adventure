@@ -36,7 +36,7 @@
     <!-- https://checkstyle.org/config_javadoc.html#AtclauseOrder -->
     <module name="AtclauseOrder">
       <property name="violateExecutionOnNonTightHtml" value="true"/>
-      <property name="tagOrder" value="@author, @deprecated, @exception, @param, @return, @serial, @serialData, @serialField, @throws, @see, @since, @version"/>
+      <property name="tagOrder" value="@author, @deprecated, @exception, @param, @return, @serial, @serialData, @serialField, @throws, @see, @since, @sinceMinecraft, @version"/>
     </module>
 
     <!-- https://checkstyle.org/config_imports.html#AvoidStarImport -->
@@ -240,7 +240,15 @@
 
     <!-- https://checkstyle.org/config_whitespace.html#WhitespaceAfter -->
     <module name="WhitespaceAfter">
-      <property name="tokens" value="COMMA, SEMI, TYPECAST, LITERAL_ELSE"/>
+      <property name="tokens" value="COMMA, SEMI, TYPECAST"/>
+    </module>
+
+    <!-- https://checkstyle.org/config_whitespace.html#WhitespaceAround -->
+    <module name="WhitespaceAround">
+      <property name="ignoreEnhancedForColon" value="false"/>
+      <property name="allowEmptyTypes" value="true"/>
+      <property name="allowEmptyLambdas" value="true"/>
+      <property name="tokens" value="ASSIGN, COLON, BAND, BAND_ASSIGN, BOR, BOR_ASSIGN, BSR, BSR_ASSIGN, BXOR, BXOR_ASSIGN, COLON, DIV, DIV_ASSIGN, EQUAL, GE, GT, LAND, LCURLY, LE, LOR, LT, MINUS, MINUS_ASSIGN, MOD, MOD_ASSIGN, NOT_EQUAL, PLUS, PLUS_ASSIGN, QUESTION, RCURLY, SL, SLIST, SL_ASSIGN, SR, SR_ASSIGN, STAR, STAR_ASSIGN, LITERAL_ASSERT, TYPE_EXTENSION_AND"/>
     </module>
 
     <!--
@@ -252,7 +260,7 @@
     <!-- https://checkstyle.org/config_javadoc.html#WriteTag -->
     <!-- https://gitlab.com/stellardrift/stylecheck/-/blob/dev/src/main/java/ca/stellardrift/stylecheck/FilteringWriteTag.java -->
     <module name="FilteringWriteTag">
-      <property name="tag" value="@since"/>
+      <property name="tag" value="@since\s"/>
       <property name="tagFormat" value="\d\.\d+\.\d+"/>
       <property name="tagSeverity" value="ignore"/>
       <property name="minimumScope" value="public"/>

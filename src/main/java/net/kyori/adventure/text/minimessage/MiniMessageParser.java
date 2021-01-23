@@ -257,7 +257,7 @@ class MiniMessageParser {
             // we need to handle params, so read till end of tag
             final List<Token> inners = new ArrayList<>();
             Token next = null;
-            while(i < tokens.size() -1 && (next = tokens.get(++i)).type() != TokenType.TAG_END) {
+            while(i < tokens.size() - 1 && (next = tokens.get(++i)).type() != TokenType.TAG_END) {
               inners.add(next);
             }
 
