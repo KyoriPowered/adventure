@@ -1017,6 +1017,19 @@ public class MiniMessageParserTest {
   }
 
   @Test
+  void testGH78() {
+    final Component expected = text()
+            .append(text("<", NamedTextColor.GRAY))
+            .append(text("Patbox", NamedTextColor.YELLOW))
+            .append(text("> ", NamedTextColor.GRAY))
+            .append(text("am dum"))
+            .build();
+    final String input = "<gray>\\<<yellow><player><gray>> <reset><pre><message></pre>";
+
+    assertParsedEquals(expected, input, "player", "Patbox", "message", "am dum");
+  }
+
+  @Test
   void testStrictException() {
     final String input = "<gray>Example: <click:suggest_command:/plot flag set coral-dry true><gold>/plot flag set coral-dry true<click></gold></gray>";
     assertThrows(ParseException.class, () -> MiniMessage.builder().strict(true).build().parse(input));
@@ -1036,5 +1049,9 @@ public class MiniMessageParserTest {
 
   private static void assertParsedEquals(final @NonNull Component expected, final @NonNull String input) {
     assertEquals(expected, PARSER.parse(input));
+  }
+
+  private static void assertParsedEquals(final @NonNull Component expected, final @NonNull String input, final @NonNull Object... args) {
+    assertEquals(expected, PARSER.parse(input, args));
   }
 }

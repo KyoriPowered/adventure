@@ -145,6 +145,7 @@ whitespace = [ \n\t\r]+
 }
 
 <TAG_DUMMY> {
+  {openTagStart}          { yybegin(TAG); string.setLength(0); tokens.add(new Token(TokenType.OPEN_TAG_START)); }
   {paramSeperator}        { yybegin(PARAM); tokens.add(new Token(TokenType.NAME, getString())); tokens.add(new Token(TokenType.PARAM_SEPARATOR)); }
   {tagEnd}                { yybegin(YYINITIAL); tokens.add(new Token(TokenType.NAME, getString())); tokens.add(new Token(TokenType.TAG_END)); }
   {whitespace}            { yybegin(YYINITIAL); tokens.add(new Token(getString())); }
