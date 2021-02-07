@@ -234,7 +234,7 @@ class MiniMessageParser {
           }
           Token name = tokens.get(++i);
           // if we have an escaped token before a real token, we need special handling, see GH-78
-          if (name.type() == TokenType.OPEN_TAG_START && token.type() == TokenType.ESCAPED_OPEN_TAG_START) {
+          if(name.type() == TokenType.OPEN_TAG_START && token.type() == TokenType.ESCAPED_OPEN_TAG_START) {
             i -= 1;
             tokens.set(i, new Token(TokenType.STRING, name.value()));
             continue;
