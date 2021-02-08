@@ -75,6 +75,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @param type the element type
    * @param <T> the element type
    * @return a new builder
+   * @throws IllegalArgumentException if {@code type} is {@link BinaryTagTypes#END}
    * @since 4.0.0
    */
   static <T extends BinaryTag> @NonNull Builder<T> builder(final @NonNull BinaryTagType<T> type) {
@@ -85,12 +86,16 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
   /**
    * Creates a tag.
    *
+   * <p>If {@code tags} is empty, {@link #empty()} will be returned.</p>
+   *
    * @param type the element type
    * @param tags the elements
    * @return a tag
+   * @throws IllegalArgumentException if {@code type} is {@link BinaryTagTypes#END}
    * @since 4.0.0
    */
   static @NonNull ListBinaryTag of(final @NonNull BinaryTagType<? extends BinaryTag> type, final @NonNull List<BinaryTag> tags) {
+    if(tags.isEmpty()) return empty();
     if(type == BinaryTagTypes.END) throw new IllegalArgumentException("Cannot create a list of " + BinaryTagTypes.END);
     return new ListBinaryTagImpl(type, tags);
   }
