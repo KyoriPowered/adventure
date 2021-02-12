@@ -472,7 +472,13 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       requireNonNull(pattern, "pattern");
       this.urlReplacementConfig = TextReplacementConfig.builder()
         .match(pattern)
-        .replacement(url -> (style == null ? url : url.style(style)).clickEvent(ClickEvent.openUrl(url.content())))
+        .replacement(url -> {
+          String clickUrl = url.content();
+          if(!(clickUrl.startsWith("http://") || clickUrl.startsWith("https://"))) {
+            clickUrl = "http://" + clickUrl;
+          }
+          return (style == null ? url : url.style(style)).clickEvent(ClickEvent.openUrl(clickUrl));
+        })
         .build();
       return this;
     }
