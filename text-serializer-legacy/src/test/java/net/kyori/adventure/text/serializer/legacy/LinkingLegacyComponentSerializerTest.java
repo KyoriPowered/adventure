@@ -85,6 +85,14 @@ class LinkingLegacyComponentSerializerTest {
   }
 
   @Test
+  void testSchemelessUrl() {
+    final String schemelessBareUrl = "example.com";
+    final String bareUrl = "http://example.com";
+    final TextComponent expectedHasScheme = Component.text(schemelessBareUrl).clickEvent(ClickEvent.openUrl(bareUrl));
+    assertEquals(expectedHasScheme, LegacyComponentSerializer.builder().extractUrls().build().deserialize(schemelessBareUrl));
+  }
+
+  @Test
   void testMultipleUrls() {
     final String manyUrls = "go to https://www.example.com and https://www.example.net for cat videos";
     final TextComponent expectedManyUrls = Component.text().content("go to ")
