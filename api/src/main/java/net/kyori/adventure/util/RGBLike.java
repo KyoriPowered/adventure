@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.util;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.common.value.qual.IntRange;
 
 /**
@@ -54,4 +55,46 @@ public interface RGBLike {
    * @since 4.0.0
    */
   @IntRange(from = 0x0, to = 0xff) int blue();
+
+  /**
+   * Converts the color represented by this RGBLike to the HSV color space. Result values will be in the range [0, 1].
+   *
+   * @return an array of three elements containing the hue, saturation, and value (in that order), of the color represented by this RGBLike
+   * @since 4.6.0
+   */
+  default float@NonNull[] asHSV() {
+    final float r = this.red() / 255.0f;
+    final float g = this.green() / 255.0f;
+    final float b = this.blue() / 255.0f;
+
+    final float min = Math.min(r, Math.min(g, b));
+    final float max = Math.max(r, Math.max(g, b)); // v
+    final float delta = max - min;
+
+    final float s;
+    if(max != 0) {
+      s = delta / max; // s
+    } else {
+      // r = g = b = 0
+      s = 0;
+    }
+    if(s == 0) { // s = 0, h is undefined
+      return new float[]{0, s, max};
+    }
+
+    float h;
+    if(r == max) {
+      h = (g - b) / delta; // between yellow & magenta
+    } else if(g == max) {
+      h = 2 + (b - r) / delta; // between cyan & yellow
+    } else {
+      h = 4 + (r - g) / delta; // between magenta & cyan
+    }
+    h *= 60; // degrees
+    if(h < 0) {
+      h += 360;
+    }
+
+    return new float[]{h / 360.0f, s, max};
+  }
 }
