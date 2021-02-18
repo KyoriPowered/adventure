@@ -51,6 +51,8 @@ class NamedTextColorTest {
     assertNearest(NamedTextColor.DARK_PURPLE, 0xff00ff);
     assertNearest(NamedTextColor.DARK_AQUA, 0x11aabb);
     assertNearest(NamedTextColor.GREEN, 0x88ff88);
+    assertNearest(NamedTextColor.GRAY, 0xa2a2a2);
+    assertNearest(NamedTextColor.DARK_GRAY, 0x4c4c4c);
   }
 
   private static void assertNearest(final NamedTextColor expected, final int value) {
