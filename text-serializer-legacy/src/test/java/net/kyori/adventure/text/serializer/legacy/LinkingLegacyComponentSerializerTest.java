@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.serializer.legacy;
 
+import java.util.regex.Pattern;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -90,6 +91,14 @@ class LinkingLegacyComponentSerializerTest {
     final String bareUrl = "http://example.com";
     final TextComponent expectedHasScheme = Component.text(schemelessBareUrl).clickEvent(ClickEvent.openUrl(bareUrl));
     assertEquals(expectedHasScheme, LegacyComponentSerializer.builder().extractUrls().build().deserialize(schemelessBareUrl));
+  }
+
+  @Test
+  void testMailUrl() {
+    final String mailUrl = "mailto:example@example.com";
+    final TextComponent expectedComponent = Component.text(mailUrl).clickEvent(ClickEvent.openUrl(mailUrl));
+    assertEquals(expectedComponent, LegacyComponentSerializer.builder().extractUrls().extractUrls(
+      Pattern.compile("([a-z][a-z0-9+\\-.]*:)?([-\\w_.@]+\\.\\w{2,})(/\\S*)?")).build().deserialize(mailUrl));
   }
 
   @Test
