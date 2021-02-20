@@ -204,6 +204,7 @@ public class MiniMessageTest {
 
   @Test
   void testUnbalancedPlaceholders() {
-    assertThrows(IllegalArgumentException.class, () -> MiniMessage.get().parse("<a>", "a", 2), "Argument 1 in placeholders must be Component or String: was java.lang.Integer");
+    String expected = "Argument 1 in placeholders is a value, must be Component or String, was java.lang.Integer";
+    assertEquals(expected, assertThrows(IllegalArgumentException.class, () -> MiniMessage.get().parse("<a>", "a", 2)).getMessage());
   }
 }
