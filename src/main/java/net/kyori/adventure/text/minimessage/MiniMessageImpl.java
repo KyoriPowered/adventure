@@ -111,7 +111,7 @@ public class MiniMessageImpl implements MiniMessage {
           if(object instanceof String) {
             key = (String) object;
           } else {
-            throw new IllegalArgumentException("Argument " + i + " in placeholders is key: must be String");
+            throw new IllegalArgumentException("Argument " + i + " in placeholders is key: must be String, was " + object.getClass().getName());
           }
         } else {
           // get the value
@@ -122,7 +122,7 @@ public class MiniMessageImpl implements MiniMessage {
             templates.add(Template.of(key, (String) object));
             key = null;
           } else {
-            throw new IllegalArgumentException("Argument " + i + " in placeholders must be Component or String: is value");
+            throw new IllegalArgumentException("Argument " + i + " in placeholders must be Component or String: was " + object.getClass().getName());
           }
         }
       }

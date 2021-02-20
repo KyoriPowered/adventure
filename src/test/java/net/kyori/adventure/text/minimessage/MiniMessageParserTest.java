@@ -1047,6 +1047,13 @@ public class MiniMessageParserTest {
     MiniMessage.builder().parsingErrorMessageConsumer(strings -> assertEquals(strings, Collections.singletonList("Expected end sometimes after open tag + name, but got name = Token{type=NAME, value=\"red is already created! Try different name! \"} and inners = []"))).build().parse(input);
   }
 
+  @Test
+  void testDoubleNewLine() {
+    final Component expected = text("Hello\n\nWorld", NamedTextColor.RED);
+    final String input = "<red>Hello\n\nWorld";
+    assertParsedEquals(expected, input);
+  }
+
   private static void assertParsedEquals(final @NonNull Component expected, final @NonNull String input) {
     assertEquals(expected, PARSER.parse(input));
   }
