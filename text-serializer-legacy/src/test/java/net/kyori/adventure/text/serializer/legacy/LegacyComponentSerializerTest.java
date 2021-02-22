@@ -62,6 +62,18 @@ class LegacyComponentSerializerTest {
   }
 
   @Test
+  void testInvalidColors() {
+    // https://github.com/KyoriPowered/adventure/issues/266
+    assertEquals(Component.text("&q"), LegacyComponentSerializer.legacyAmpersand().deserialize("&q"));
+    assertEquals(Component.text("&#no"), LegacyComponentSerializer.legacyAmpersand().deserialize("&#no"));
+  }
+
+  @Test
+  void testJustColor() {
+    assertEquals(Component.text("", TextColor.color(0xabcdef)), LegacyComponentSerializer.legacyAmpersand().deserialize("&#abcdef"));
+  }
+
+  @Test
   void testResetOverride() {
     final TextComponent component = Component.text().content("")
       .append(Component.text("foo").color(NamedTextColor.GREEN).decoration(TextDecoration.BOLD, TextDecoration.State.TRUE))

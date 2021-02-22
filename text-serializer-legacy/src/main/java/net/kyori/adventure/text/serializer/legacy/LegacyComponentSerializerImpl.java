@@ -121,7 +121,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         return FormatCodeType.BUNGEECORD_UNUSUAL_HEX;
       }
     }
-    if(legacy == this.hexCharacter) {
+    if(legacy == this.hexCharacter && input.length() - pos >= 6) {
       return FormatCodeType.KYORI_HEX;
     } else if(LEGACY_CHARS.indexOf(legacy) != -1) {
       return FormatCodeType.MOJANG_LEGACY;
