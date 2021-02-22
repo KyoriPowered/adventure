@@ -64,7 +64,12 @@ class TextColorTest {
   }
 
   @Test
-  public void testPureColors() {
+  void testFromExcessData() {
+    assertEquals(0xabcdef, TextColor.color(0xffabcdef).value());
+  }
+
+  @Test
+  void testPureColors() {
     final TextColor redInt = TextColor.color(0xff0000);
     final TextColor greenInt = TextColor.color(0x00ff00);
     final TextColor blueInt = TextColor.color(0x0000ff);
@@ -79,7 +84,7 @@ class TextColorTest {
   }
 
   @Test
-  public void testExtractComponents() {
+  void testExtractComponents() {
     final TextColor purple = TextColor.color(0xff00ff);
     assertEquals(0xff, purple.red());
     assertEquals(0x00, purple.green());
@@ -92,7 +97,7 @@ class TextColorTest {
   }
 
   @Test
-  public void testEquality() {
+  void testEquality() {
     new EqualsTester()
       .addEqualityGroup(
         TextColor.color(0xff0000),
@@ -106,19 +111,19 @@ class TextColorTest {
   }
 
   @Test
-  public void testCSSHexStringMalformedHexString() {
+  void testCSSHexStringMalformedHexString() {
     assertNull(TextColor.fromCSSHexString("7f1e2d")); // no # in front
     assertNull(TextColor.fromCSSHexString("#7f1e2")); // only five characters
     assertNull(TextColor.fromCSSHexString("#7fze2d")); // invalid hex character
   }
 
   @Test
-  public void testCSSHexStringIsSameAsHexStringForSixDigitRGB() {
+  void testCSSHexStringIsSameAsHexStringForSixDigitRGB() {
     assertEquals(TextColor.fromHexString("#7f1e2d"), TextColor.fromCSSHexString("#7f1e2d"));
   }
 
   @Test
-  public void testCSSHexStringThreeDigit() {
+  void testCSSHexStringThreeDigit() {
     final TextColor original = TextColor.color(0x77ff11);
     assertEquals(original, TextColor.fromCSSHexString("#7f1"));
   }
