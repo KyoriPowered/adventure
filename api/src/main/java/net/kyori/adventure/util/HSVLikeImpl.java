@@ -23,46 +23,52 @@
  */
 package net.kyori.adventure.util;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.common.value.qual.IntRange;
+import net.kyori.examination.string.StringExaminer;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-/**
- * Something that can provide red, green, and blue colour components.
- *
- * @since 4.0.0
- */
-public interface RGBLike {
-  /**
-   * Gets the red component.
-   *
-   * @return the red component
-   * @since 4.0.0
-   */
-  @IntRange(from = 0x0, to = 0xff) int red();
+import java.util.Objects;
 
-  /**
-   * Gets the green component.
-   *
-   * @return the green component
-   * @since 4.0.0
-   */
-  @IntRange(from = 0x0, to = 0xff) int green();
+final class HSVLikeImpl implements HSVLike {
+  private final float h;
+  private final float s;
+  private final float v;
 
-  /**
-   * Gets the blue component.
-   *
-   * @return the blue component
-   * @since 4.0.0
-   */
-  @IntRange(from = 0x0, to = 0xff) int blue();
+  HSVLikeImpl(final float h, final float s, final float v) {
+    this.h = h;
+    this.s = s;
+    this.v = v;
+  }
 
-  /**
-   * Converts the color represented by this RGBLike to the HSV color space.
-   *
-   * @return an HSVLike representing this RGBLike in the HSV color space
-   * @since 4.6.0
-   */
-  default @NonNull HSVLike asHSV() {
-    return HSVLike.fromRGB(this.red(), this.green(), this.blue());
+  @Override
+  public float h() {
+    return this.h;
+  }
+
+  @Override
+  public float s() {
+    return this.s;
+  }
+
+  @Override
+  public float v() {
+    return this.v;
+  }
+
+  @Override
+  public boolean equals(final @Nullable Object other) {
+    if(this == other) return true;
+    if(!(other instanceof HSVLikeImpl)) return false;
+    final HSVLikeImpl that = (HSVLikeImpl) other;
+    return ShadyPines.equals(that.h, this.h) && ShadyPines.equals(that.s, this.s) && ShadyPines.equals(that.v, this.v);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.h, this.s, this.v);
+  }
+
+  @Override
+  public String toString() {
+    return this.examine(StringExaminer.simpleEscaping());
   }
 }

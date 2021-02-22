@@ -26,6 +26,7 @@ package net.kyori.adventure.text.format;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import net.kyori.adventure.util.HSVLike;
 import net.kyori.adventure.util.Index;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -205,7 +206,7 @@ public final class NamedTextColor implements TextColor {
     NamedTextColor match = VALUES.get(0);
     for(int i = 0, length = VALUES.size(); i < length; i++) {
       final NamedTextColor potential = VALUES.get(i);
-      final float distance = hsvDistance(any, potential);
+      final float distance = distance(any.asHSV(), potential.asHSV());
       if(distance < matchedDistance) {
         match = potential;
         matchedDistance = distance;
@@ -225,27 +226,32 @@ public final class NamedTextColor implements TextColor {
    * @param other colour to compare to
    * @return distance metric
    */
-  private static float hsvDistance(final @NonNull TextColor self, final @NonNull TextColor other) {
-    final float[] hsvSelf = self.asHSV();
-    final float[] hsvOther = other.asHSV();
+  private static float distance(final @NonNull HSVLike self, final @NonNull HSVLike other) {
     // weight hue more heavily than saturation and brightness. kind of magic numbers, but is fine for our use case of downsampling to a set of colors
-    final float hueDistance = 3 * Math.abs(hsvSelf[0] - hsvOther[0]);
-    final float saturationDiff = hsvSelf[1] - hsvOther[1];
-    final float valueDiff = hsvSelf[2] - hsvOther[2];
+    final float hueDistance = 3 * Math.abs(self.h() - other.h());
+    final float saturationDiff = self.s() - other.s();
+    final float valueDiff = self.v() - other.v();
     return hueDistance * hueDistance + saturationDiff * saturationDiff + valueDiff * valueDiff;
   }
 
   private final String name;
   private final int value;
+  private final HSVLike hsv;
 
   private NamedTextColor(final String name, final int value) {
     this.name = name;
     this.value = value;
+    this.hsv = HSVLike.fromRGB(this.red(), this.green(), this.blue());
   }
 
   @Override
   public int value() {
     return this.value;
+  }
+
+  @Override
+  public @NonNull HSVLike asHSV() {
+    return this.hsv;
   }
 
   @Override

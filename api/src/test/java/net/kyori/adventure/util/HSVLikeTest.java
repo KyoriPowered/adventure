@@ -24,7 +24,6 @@
 package net.kyori.adventure.util;
 
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -33,17 +32,18 @@ import java.awt.Color;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-class RGBLikeTest {
+class HSVLikeTest {
   @Test
-  void testHSVConversionAgainstJavaAwtColor() {
-    NamedTextColor.NAMES.values().forEach(this::assertConversionRoughlyMatchesJavaAwtColor);
+  void compareRgbToHsvConversionToJavaAwtColor() {
+    NamedTextColor.NAMES.values().forEach(HSVLikeTest::assertRgbToHsvConversionRoughlyMatchesJavaAwtColor);
   }
 
-  private void assertConversionRoughlyMatchesJavaAwtColor(final @NonNull TextColor color) {
+  private static void assertRgbToHsvConversionRoughlyMatchesJavaAwtColor(final @NonNull RGBLike rgb) {
+    final HSVLike hsv = rgb.asHSV();
     Assertions.assertArrayEquals(
-      roundFloats(Color.RGBtoHSB(color.red(), color.green(), color.blue(), null)),
-      roundFloats(color.asHSV()),
-      color.toString()
+      roundFloats(Color.RGBtoHSB(rgb.red(), rgb.green(), rgb.blue(), null)),
+      roundFloats(new float[]{hsv.h(), hsv.s(), hsv.v()}),
+      rgb.toString()
     );
   }
 
