@@ -37,6 +37,8 @@ import org.checkerframework.common.value.qual.IntRange;
  * <p>The full range of hexadecimal colors are only supported in <em>Minecraft: Java Edition</em> 1.16 and above.
  * On older versions, platforms may downsample these to {@link NamedTextColor}s.</p>
  *
+ * <p>This color does not include any alpha channel information.</p>
+ *
  * @see NamedTextColor
  * @since 4.0.0
  */
@@ -49,8 +51,9 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
    * @since 4.0.0
    */
   static @NonNull TextColor color(final int value) {
-    final NamedTextColor named = NamedTextColor.ofExact(value);
-    return named != null ? named : new TextColorImpl(value);
+    final int truncatedValue = value & 0xffffff;
+    final NamedTextColor named = NamedTextColor.ofExact(truncatedValue);
+    return named != null ? named : new TextColorImpl(truncatedValue);
   }
 
   /**
