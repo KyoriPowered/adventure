@@ -34,7 +34,6 @@ import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.InflaterInputStream;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -538,12 +537,12 @@ public final class BinaryTagIO {
      */
     public static final Compression ZLIB = new Compression() {
       @Override
-      @NonNull InputStream decompress(@NonNull InputStream is) {
+      @NonNull InputStream decompress(final @NonNull InputStream is) {
         return new InflaterInputStream(is);
       }
 
       @Override
-      @NonNull OutputStream compress(@NonNull OutputStream os) {
+      @NonNull OutputStream compress(final @NonNull OutputStream os) {
         return new DeflaterOutputStream(os);
       }
 
