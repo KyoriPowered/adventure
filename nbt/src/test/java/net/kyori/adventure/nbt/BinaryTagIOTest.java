@@ -50,4 +50,14 @@ class BinaryTagIOTest {
     BinaryTagIO.writer().write(tag, output, BinaryTagIO.Compression.GZIP);
     assertEquals(tag, BinaryTagIO.reader().read(new ByteArrayInputStream(output.toByteArray()), BinaryTagIO.Compression.GZIP));
   }
+
+  @Test
+  void testWriteAndReadZLIBCompression() throws IOException {
+    final CompoundBinaryTag tag = CompoundBinaryTag.builder()
+      .putString("name", "test")
+      .build();
+    final ByteArrayOutputStream output = new ByteArrayOutputStream();
+    BinaryTagIO.writer().write(tag, output, BinaryTagIO.Compression.ZLIB);
+    assertEquals(tag, BinaryTagIO.reader().read(new ByteArrayInputStream(output.toByteArray()), BinaryTagIO.Compression.ZLIB));
+  }
 }
