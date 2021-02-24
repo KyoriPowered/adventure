@@ -14,7 +14,7 @@ plugins {
 }
 
 // Adventure version
-ext.adventure = "4.4.0"
+ext.adventure = "4.5.1"
 
 group "net.kyori"
 version "4.1.0-SNAPSHOT"
