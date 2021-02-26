@@ -46,6 +46,15 @@ public interface CompoundTagSetter<R> {
   @NonNull R put(final @NonNull String key, final @NonNull BinaryTag tag);
 
   /**
+   * Inserts the tags in {@code tag}, overwriting any that are in {@code this}.
+   *
+   * @param tag the tag
+   * @return a compound tag
+   * @since 4.6.0
+   */
+  @NonNull R put(final @NonNull CompoundBinaryTag tag);
+
+  /**
    * Inserts some tags.
    *
    * @param tags the tags

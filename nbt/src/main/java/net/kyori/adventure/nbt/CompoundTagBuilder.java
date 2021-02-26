@@ -47,6 +47,15 @@ final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
   }
 
   @Override
+  public CompoundBinaryTag.@NonNull Builder put(final @NonNull CompoundBinaryTag tag) {
+    final Map<String, BinaryTag> tags = this.tags();
+    for(final String key : tag.keySet()) {
+      tags.put(key, tag.get(key));
+    }
+    return this;
+  }
+
+  @Override
   public CompoundBinaryTag.@NonNull Builder put(final @NonNull Map<String, ? extends BinaryTag> tags) {
     this.tags().putAll(tags);
     return this;

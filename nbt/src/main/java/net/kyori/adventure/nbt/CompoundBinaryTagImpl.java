@@ -67,6 +67,15 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
   }
 
   @Override
+  public @NonNull CompoundBinaryTag put(final @NonNull CompoundBinaryTag tag) {
+    return this.edit(map -> {
+      for(final String key : tag.keySet()) {
+        map.put(key, tag.get(key));
+      }
+    });
+  }
+
+  @Override
   public @NonNull CompoundBinaryTag put(final @NonNull Map<String, ? extends BinaryTag> tags) {
     return this.edit(map -> map.putAll(tags));
   }
