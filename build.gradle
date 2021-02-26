@@ -51,8 +51,6 @@ subprojects {
 
     javadoc {
       options.tags(["sinceMinecraft:a:Since Minecraft:"])
-      // Temporary until next Indra release
-      // options.addBooleanOption("-no-module-directories", true)
     }
   }
 
