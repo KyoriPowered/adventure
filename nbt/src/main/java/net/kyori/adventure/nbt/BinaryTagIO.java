@@ -30,8 +30,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import java.util.zip.InflaterInputStream;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -526,6 +528,27 @@ public final class BinaryTagIO {
       @Override
       public String toString() {
         return "Compression.GZIP";
+      }
+    };
+    /**
+     * <a href="https://en.wikipedia.org/wiki/Zlib">ZLIB</a> compression.
+     *
+     * @since 4.6.0
+     */
+    public static final Compression ZLIB = new Compression() {
+      @Override
+      @NonNull InputStream decompress(final @NonNull InputStream is) {
+        return new InflaterInputStream(is);
+      }
+
+      @Override
+      @NonNull OutputStream compress(final @NonNull OutputStream os) {
+        return new DeflaterOutputStream(os);
+      }
+
+      @Override
+      public String toString() {
+        return "Compression.ZLIB";
       }
     };
 
