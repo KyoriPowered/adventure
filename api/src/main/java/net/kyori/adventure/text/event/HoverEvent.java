@@ -28,6 +28,7 @@ import java.util.UUID;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
@@ -93,11 +94,36 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    *
    * @param item the item
    * @param count the count
+   * @return a hover event
+   * @since 4.6.0
+   */
+  public static @NonNull HoverEvent<ShowItem> showItem(final @NonNull Keyed item, final @NonNegative int count) {
+    return showItem(item, count, null);
+  }
+
+  /**
+   * Creates a hover event that shows an item on hover.
+   *
+   * @param item the item
+   * @param count the count
    * @param nbt the nbt
    * @return a hover event
    * @since 4.0.0
    */
   public static @NonNull HoverEvent<ShowItem> showItem(final @NonNull Key item, final @NonNegative int count, final @Nullable BinaryTagHolder nbt) {
+    return showItem(ShowItem.of(item, count, nbt));
+  }
+
+  /**
+   * Creates a hover event that shows an item on hover.
+   *
+   * @param item the item
+   * @param count the count
+   * @param nbt the nbt
+   * @return a hover event
+   * @since 4.6.0
+   */
+  public static @NonNull HoverEvent<ShowItem> showItem(final @NonNull Keyed item, final @NonNegative int count, final @Nullable BinaryTagHolder nbt) {
     return showItem(ShowItem.of(item, count, nbt));
   }
 
@@ -115,6 +141,8 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
   /**
    * Creates a hover event that show information about an entity on hover.
    *
+   * <p>In the official <em>Minecraft: Java Edition</em> client, no information will be shown unless the "Advanced tooltips" debug option is enabled.</p>
+   *
    * @param type the type
    * @param id the id
    * @return a {@code ShowEntity}
@@ -126,6 +154,22 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
 
   /**
    * Creates a hover event that show information about an entity on hover.
+   *
+   * <p>In the official <em>Minecraft: Java Edition</em> client, no information will be shown unless the "Advanced tooltips" debug option is enabled.</p>
+   *
+   * @param type the type
+   * @param id the id
+   * @return a {@code ShowEntity}
+   * @since 4.6.0
+   */
+  public static @NonNull HoverEvent<ShowEntity> showEntity(final @NonNull Keyed type, final @NonNull UUID id) {
+    return showEntity(type, id, null);
+  }
+
+  /**
+   * Creates a hover event that show information about an entity on hover.
+   *
+   * <p>In the official <em>Minecraft: Java Edition</em> client, no information will be shown unless the "Advanced tooltips" debug option is enabled.</p>
    *
    * @param type the type
    * @param id the id
@@ -139,6 +183,23 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
 
   /**
    * Creates a hover event that show information about an entity on hover.
+   *
+   * <p>In the official <em>Minecraft: Java Edition</em> client, no information will be shown unless the "Advanced tooltips" debug option is enabled.</p>
+   *
+   * @param type the type
+   * @param id the id
+   * @param name the name
+   * @return a {@code ShowEntity}
+   * @since 4.6.0
+   */
+  public static @NonNull HoverEvent<ShowEntity> showEntity(final @NonNull Keyed type, final @NonNull UUID id, final @Nullable Component name) {
+    return showEntity(ShowEntity.of(type, id, name));
+  }
+
+  /**
+   * Creates a hover event that show information about an entity on hover.
+   *
+   * <p>In the official <em>Minecraft: Java Edition</em> client, no information will be shown unless the "Advanced tooltips" debug option is enabled.</p>
    *
    * @param entity the entity to show on hover
    * @return a hover event
@@ -287,12 +348,37 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      *
      * @param item the item
      * @param count the count
+     * @return a {@code ShowItem}
+     * @since 4.6.0
+     */
+    public static @NonNull ShowItem of(final @NonNull Keyed item, final @NonNegative int count) {
+      return of(item, count, null);
+    }
+
+    /**
+     * Creates.
+     *
+     * @param item the item
+     * @param count the count
      * @param nbt the nbt
      * @return a {@code ShowItem}
      * @since 4.0.0
      */
     public static @NonNull ShowItem of(final @NonNull Key item, final @NonNegative int count, final @Nullable BinaryTagHolder nbt) {
       return new ShowItem(requireNonNull(item, "item"), count, nbt);
+    }
+
+    /**
+     * Creates.
+     *
+     * @param item the item
+     * @param count the count
+     * @param nbt the nbt
+     * @return a {@code ShowItem}
+     * @since 4.6.0
+     */
+    public static @NonNull ShowItem of(final @NonNull Keyed item, final @NonNegative int count, final @Nullable BinaryTagHolder nbt) {
+      return new ShowItem(requireNonNull(item, "item").key(), count, nbt);
     }
 
     private ShowItem(final @NonNull Key item, final @NonNegative int count, final @Nullable BinaryTagHolder nbt) {
@@ -425,12 +511,37 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      *
      * @param type the type
      * @param id the id
+     * @return a {@code ShowEntity}
+     * @since 4.6.0
+     */
+    public static @NonNull ShowEntity of(final @NonNull Keyed type, final @NonNull UUID id) {
+      return of(type, id, null);
+    }
+
+    /**
+     * Creates.
+     *
+     * @param type the type
+     * @param id the id
      * @param name the name
      * @return a {@code ShowEntity}
      * @since 4.0.0
      */
     public static @NonNull ShowEntity of(final @NonNull Key type, final @NonNull UUID id, final @Nullable Component name) {
       return new ShowEntity(requireNonNull(type, "type"), requireNonNull(id, "id"), name);
+    }
+
+    /**
+     * Creates.
+     *
+     * @param type the type
+     * @param id the id
+     * @param name the name
+     * @return a {@code ShowEntity}
+     * @since 4.6.0
+     */
+    public static @NonNull ShowEntity of(final @NonNull Keyed type, final @NonNull UUID id, final @Nullable Component name) {
+      return new ShowEntity(requireNonNull(type, "type").key(), requireNonNull(id, "id"), name);
     }
 
     private ShowEntity(final @NonNull Key type, final @NonNull UUID id, final @Nullable Component name) {
@@ -459,6 +570,17 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
     public @NonNull ShowEntity type(final @NonNull Key type) {
       if(requireNonNull(type, "type").equals(this.type)) return this;
       return new ShowEntity(type, this.id, this.name);
+    }
+
+    /**
+     * Sets the type.
+     *
+     * @param type the type
+     * @return a {@code ShowEntity}
+     * @since 4.6.0
+     */
+    public @NonNull ShowEntity type(final @NonNull Keyed type) {
+      return this.type(requireNonNull(type, "type").key());
     }
 
     /**
