@@ -26,6 +26,7 @@ package net.kyori.adventure.text.format;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import net.kyori.adventure.util.HSVLike;
 import net.kyori.adventure.util.Index;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -201,12 +202,11 @@ public final class NamedTextColor implements TextColor {
 
     requireNonNull(any, "color");
 
-    // TODO: This tends to match greys more than it should (rgb averages and all that)
-    int matchedDistance = Integer.MAX_VALUE;
+    float matchedDistance = Float.MAX_VALUE;
     NamedTextColor match = VALUES.get(0);
     for(int i = 0, length = VALUES.size(); i < length; i++) {
       final NamedTextColor potential = VALUES.get(i);
-      final int distance = distanceSquared(any, potential);
+      final float distance = distance(any.asHSV(), potential.asHSV());
       if(distance < matchedDistance) {
         match = potential;
         matchedDistance = distance;
@@ -226,25 +226,32 @@ public final class NamedTextColor implements TextColor {
    * @param other colour to compare to
    * @return distance metric
    */
-  private static int distanceSquared(final @NonNull TextColor self, final @NonNull TextColor other) {
-    final int rAvg = (self.red() + other.red()) / 2;
-    final int dR = self.red() - other.red();
-    final int dG = self.green() - other.green();
-    final int dB = self.blue() - other.blue();
-    return ((2 + (rAvg / 256)) * (dR * dR)) + (4 * (dG * dG)) + ((2 + ((255 - rAvg) / 256)) * (dB * dB));
+  private static float distance(final @NonNull HSVLike self, final @NonNull HSVLike other) {
+    // weight hue more heavily than saturation and brightness. kind of magic numbers, but is fine for our use case of downsampling to a set of colors
+    final float hueDistance = 3 * Math.abs(self.h() - other.h());
+    final float saturationDiff = self.s() - other.s();
+    final float valueDiff = self.v() - other.v();
+    return hueDistance * hueDistance + saturationDiff * saturationDiff + valueDiff * valueDiff;
   }
 
   private final String name;
   private final int value;
+  private final HSVLike hsv;
 
   private NamedTextColor(final String name, final int value) {
     this.name = name;
     this.value = value;
+    this.hsv = HSVLike.fromRGB(this.red(), this.green(), this.blue());
   }
 
   @Override
   public int value() {
     return this.value;
+  }
+
+  @Override
+  public @NonNull HSVLike asHSV() {
+    return this.hsv;
   }
 
   @Override

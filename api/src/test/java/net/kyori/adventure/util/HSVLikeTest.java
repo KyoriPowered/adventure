@@ -23,46 +23,35 @@
  */
 package net.kyori.adventure.util;
 
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.common.value.qual.IntRange;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-/**
- * Something that can provide red, green, and blue colour components.
- *
- * @since 4.0.0
- */
-public interface RGBLike {
-  /**
-   * Gets the red component.
-   *
-   * @return the red component
-   * @since 4.0.0
-   */
-  @IntRange(from = 0x0, to = 0xff) int red();
+import java.awt.Color;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
-  /**
-   * Gets the green component.
-   *
-   * @return the green component
-   * @since 4.0.0
-   */
-  @IntRange(from = 0x0, to = 0xff) int green();
+class HSVLikeTest {
+  @Test
+  void compareRgbToHsvConversionToJavaAwtColor() {
+    NamedTextColor.NAMES.values().forEach(HSVLikeTest::assertRgbToHsvConversionRoughlyMatchesJavaAwtColor);
+  }
 
-  /**
-   * Gets the blue component.
-   *
-   * @return the blue component
-   * @since 4.0.0
-   */
-  @IntRange(from = 0x0, to = 0xff) int blue();
+  private static void assertRgbToHsvConversionRoughlyMatchesJavaAwtColor(final @NonNull RGBLike rgb) {
+    final HSVLike hsv = rgb.asHSV();
+    Assertions.assertArrayEquals(
+      roundFloats(Color.RGBtoHSB(rgb.red(), rgb.green(), rgb.blue(), null)),
+      roundFloats(new float[]{hsv.h(), hsv.s(), hsv.v()}),
+      rgb.toString()
+    );
+  }
 
-  /**
-   * Converts the color represented by this RGBLike to the HSV color space.
-   *
-   * @return an HSVLike representing this RGBLike in the HSV color space
-   * @since 4.6.0
-   */
-  default @NonNull HSVLike asHSV() {
-    return HSVLike.fromRGB(this.red(), this.green(), this.blue());
+  private static float[] roundFloats(final float @NonNull [] floats) {
+    final float[] result = new float[floats.length];
+    for(int i = 0; i < floats.length; i++) {
+      result[i] = BigDecimal.valueOf(floats[i]).setScale(7, RoundingMode.UP).floatValue();
+    }
+    return result;
   }
 }
