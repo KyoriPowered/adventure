@@ -389,6 +389,17 @@ class MiniMessageParser {
               final Transformation removed = this.removeFirst(transformations, t -> t.name().equals(name.value()));
               if(removed instanceof PreTransformation) {
                 preActive = false;
+              } else if(removed == null && !registry.couldBeOnetimeTransformation(name.value())) {
+                // invalid end
+                // lets take a step back, first, create a string
+                i -= 2;
+                final String string = tokens.get(i).value() + name.value() + paramOrEnd.value();
+                // insert our string
+                tokens.set(i, new Token(TokenType.STRING, string));
+                // remove the others
+                tokens.remove(i + 1);
+                tokens.remove(i + 1);
+                i -= 1;
               }
             }
           } else if(paramOrEnd.type() == TokenType.PARAM_SEPARATOR) {

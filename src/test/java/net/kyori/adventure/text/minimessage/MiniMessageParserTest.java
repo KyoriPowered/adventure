@@ -1054,6 +1054,15 @@ public class MiniMessageParserTest {
     assertParsedEquals(expected, input);
   }
 
+  @Test
+  void testMismatchedTags() {
+    final Component expected = text()
+            .append(text("hello", NamedTextColor.GREEN))
+            .append(text("</red>", NamedTextColor.GREEN)).build();
+    final String input = "<green>hello</red>";
+    assertParsedEquals(expected, input);
+  }
+
   private static void assertParsedEquals(final @NonNull Component expected, final @NonNull String input) {
     assertEquals(expected, PARSER.parse(input));
   }

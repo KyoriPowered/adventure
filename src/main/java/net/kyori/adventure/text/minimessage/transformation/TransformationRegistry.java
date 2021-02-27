@@ -175,4 +175,20 @@ public final class TransformationRegistry {
     }
     return false;
   }
+
+  /**
+   * Test if any registered onetime transformation type matches the provided key.
+   *
+   * @param name tag name
+   * @return whether any onetime transformation exists
+   * @since 4.1.0
+   */
+  public boolean couldBeOnetimeTransformation(final String name) {
+    for(final TransformationType<? extends Transformation> type : this.types) {
+      if(type.canParse.test(name) && type.parser.parse() instanceof OneTimeTransformation) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
