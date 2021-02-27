@@ -111,8 +111,11 @@ final class MiniMessageSerializer {
       // ### only start if prevComp didn't start the same one
       final HoverEvent<?> hov = comp.hoverEvent();
       if(hov != null && (prevComp == null || areDifferent(hov, prevComp.hoverEvent()))) {
-        // TODO make sure the value cast is right
-        sb.append(startTag(String.format("%s" + SEPARATOR + "%s" + SEPARATOR + "\"%s\"", HOVER, HoverEvent.Action.NAMES.key(hov.action()), serialize((Component) hov.value()))));
+        if(hov.value() instanceof Component) {
+          sb.append(startTag(String.format("%s" + SEPARATOR + "%s" + SEPARATOR + "\"%s\"", HOVER, HoverEvent.Action.NAMES.key(hov.action()), serialize((Component) hov.value()))));
+        } else {
+          // TODO what to do here? warning? exception? toggleable strict mode?
+        }
       }
 
       // ## click
