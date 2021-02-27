@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.format;
 
 import java.util.stream.Stream;
+import net.kyori.adventure.util.HSVLike;
 import net.kyori.adventure.util.RGBLike;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
@@ -63,8 +64,46 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
    * @return a new text colour
    * @since 4.0.0
    */
-  static @NonNull TextColor color(final RGBLike rgb) {
+  static @NonNull TextColor color(final @NonNull RGBLike rgb) {
     return color(rgb.red(), rgb.green(), rgb.blue());
+  }
+
+  /**
+   * Creates a new text color, converting the provided {@link HSVLike} to the RGB color space.
+   *
+   * @param hsv the hsv value
+   * @return a new text color
+   * @see <a href="https://en.wikipedia.org/wiki/HSL_and_HSV">https://en.wikipedia.org/wiki/HSL_and_HSV</a>
+   * @since 4.6.0
+   */
+  static @NonNull TextColor color(final @NonNull HSVLike hsv) {
+    final float s = hsv.s();
+    final float v = hsv.v();
+    if(s == 0) {
+      // achromatic (grey)
+      return color(v, v, v);
+    }
+
+    final float h = hsv.h() * 6; // sector 0 to 5
+    final int i = (int) Math.floor(h);
+    final float f = h - i; // factorial part of h
+    final float p = v * (1 - s);
+    final float q = v * (1 - s * f);
+    final float t = v * (1 - s * (1 - f));
+
+    if(i == 0) {
+      return color(v, t, p);
+    } else if(i == 1) {
+      return color(q, v, p);
+    } else if(i == 2) {
+      return color(p, v, t);
+    } else if(i == 3) {
+      return color(p, q, v);
+    } else if(i == 4) {
+      return color(t, p, v);
+    } else {
+      return color(v, p, q);
+    }
   }
 
   /**
