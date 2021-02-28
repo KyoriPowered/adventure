@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text;
 
+import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -154,6 +155,14 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    */
   @Contract("_ -> this")
   @NonNull B mapChildrenDeep(final @NonNull Function<BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function);
+
+  /**
+   * Get an unmodifiable list containing all children currently in this builder.
+   *
+   * @return the list of children
+   * @since 4.6.0
+   */
+  @NonNull List<Component> children();
 
   /**
    * Sets the style.

@@ -210,6 +210,11 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   }
 
   @Override
+  public @NonNull List<Component> children() {
+    return Collections.unmodifiableList(this.children);
+  }
+
+  @Override
   @SuppressWarnings("unchecked")
   public @NonNull B style(final @NonNull Style style) {
     this.style = style;

@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -375,5 +376,41 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B> & Scoped
     final List<Component> children = c0.children();
     assertThat(children).hasSize(2);
     forEachTransformAndAssert(children, Component::color, color -> assertEquals(NamedTextColor.GREEN, color));
+  }
+
+  @Test
+  void testCollectorNoSeparator() {
+    final Component joined = Stream.of(
+      Component.text("Hello", NamedTextColor.RED),
+      Component.text("World")
+    ).collect(Component.toComponent());
+    final Component expected = Component.text()
+      .append(Component.text("Hello", NamedTextColor.RED))
+      .append(Component.text("World"))
+      .build();
+
+    assertEquals(expected, joined);
+  }
+
+  @Test
+  void testCollectorWithSeparator() {
+    final Component joined = Stream.of(
+      Component.text("Hello", NamedTextColor.RED),
+      Component.text("World")
+    ).collect(Component.toComponent(Component.space()));
+
+    final Component expected = Component.text()
+      .append(Component.text("Hello", NamedTextColor.RED))
+      .append(Component.space())
+      .append(Component.text("World"))
+      .build();
+
+    assertEquals(expected, joined);
+
+  }
+
+  @Test
+  void testJoinEmpty() {
+    assertEquals(Component.empty(), Stream.<Component>of().collect(Component.toComponent()));
   }
 }

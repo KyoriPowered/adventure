@@ -33,6 +33,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
+import java.util.stream.Collector;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -157,6 +158,44 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
       }
     }
     return builder.build();
+  }
+
+  /**
+   * Create a collector that will join components without a separator.
+   *
+   * @return a collector that can join components
+   * @since 4.6.0
+   */
+  static @NonNull Collector<Component, ? extends ComponentBuilder<?, ?>, Component> toComponent() {
+    return toComponent(Component.empty());
+  }
+
+  /**
+   * Create a collector that will join components using the provided separator.
+   *
+   * @param separator the separator to join with
+   * @return a collector that can join components
+   * @since 4.6.0
+   */
+  static @NonNull Collector<Component, ? extends ComponentBuilder<?, ?>, Component> toComponent(final @NonNull Component separator) {
+    return Collector.of(
+      Component::text,
+      (builder, add) -> {
+        if(separator != Component.empty() && !builder.children().isEmpty()) {
+          builder.append(separator);
+        }
+        builder.append(add);
+      }, (a, b) -> {
+        final List<Component> aChildren = a.children();
+        final TextComponent.Builder ret = Component.text().append(aChildren);
+        if(!aChildren.isEmpty()) {
+          ret.append(separator);
+        }
+        ret.append(b.children());
+        return ret;
+      },
+      TextComponent.Builder::build
+    );
   }
 
   /*
