@@ -406,11 +406,10 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B> & Scoped
       .build();
 
     assertEquals(expected, joined);
-
   }
 
   @Test
-  void testJoinEmpty() {
+  void testCollectOnEmptyStreamReturnsEmptyComponent() {
     assertEquals(Component.empty(), Stream.<Component>of().collect(Component.toComponent()));
   }
 }
