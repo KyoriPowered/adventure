@@ -83,6 +83,7 @@ class LegacyComponentSerializerTest {
     assertEquals(component, LegacyComponentSerializer.legacy('&').deserialize("&a&lfoo&r&8bar"));
   }
 
+  @SuppressWarnings("checkstyle:AvoidEscapedUnicodeCharacters")
   @Test
   void testCompound() {
     final TextComponent component = Component.text()
@@ -96,7 +97,7 @@ class LegacyComponentSerializerTest {
         .build())
       .build();
 
-    assertEquals("hi there &athis bit is green &rthis isn't &aand woa, this is again", LegacyComponentSerializer.legacy('&').serialize(component));
+    assertEquals("hi there &athis bit is green &rthis isn't &aand woa, this is again&r", LegacyComponentSerializer.legacy('&').serialize(component));
   }
 
   @Test
@@ -153,7 +154,7 @@ class LegacyComponentSerializerTest {
           )
           .build())
       .build();
-    assertEquals("§e§lHello §a§lworld§r§e§l!§r", LegacyComponentSerializer.legacySection().serialize(c3));
+    assertEquals("§e§lHello §a§lworld§e§l!§r", LegacyComponentSerializer.legacySection().serialize(c3));
   }
 
   @Test
@@ -292,5 +293,28 @@ class LegacyComponentSerializerTest {
     assertNull(lf.color());
     assertNull(lf.decoration());
     assertTrue(lf.reset());
+  }
+
+  // https://github.com/KyoriPowered/adventure/issues/287
+  @Test
+  void testNoRedundantReset() {
+    final String text = "&a&lP&eaper&r";
+    final Component expectedDeserialized = Component.text()
+      .append(Component.text("P", NamedTextColor.GREEN, TextDecoration.BOLD))
+      .append(Component.text("aper", NamedTextColor.YELLOW))
+      .build();
+    final Component deserialized = LegacyComponentSerializer.legacyAmpersand().deserialize(text);
+
+    assertEquals(expectedDeserialized, deserialized);
+
+    final String roundtripped = LegacyComponentSerializer.legacyAmpersand().serialize(deserialized);
+    assertEquals(text, roundtripped);
+  }
+
+  @Test
+  void testPreserveTrailingReset() {
+    final String text = "&a&lPaper&r";
+    final String roundtripped = LegacyComponentSerializer.legacyAmpersand().serialize(LegacyComponentSerializer.legacyAmpersand().deserialize(text));
+    assertEquals(text, roundtripped);
   }
 }

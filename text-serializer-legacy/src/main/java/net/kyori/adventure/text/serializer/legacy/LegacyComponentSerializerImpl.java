@@ -26,6 +26,7 @@ package net.kyori.adventure.text.serializer.legacy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -297,7 +298,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   private final class Cereal {
     private final StringBuilder sb = new StringBuilder();
     private final StyleState style = new StyleState();
-    private @Nullable TextFormat format;
+    private @Nullable TextFormat lastWritten;
 
     void append(final @NonNull Component component) {
       this.append(component, new StyleState());
@@ -317,22 +318,28 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       final List<Component> children = component.children();
       if(!children.isEmpty()) {
         final StyleState childrenStyle = new StyleState(style);
-        for(final Component child : children) {
-          this.append(child, childrenStyle);
-          childrenStyle.set(style);
+        for(final Iterator<Component> it = children.iterator(); it.hasNext();) {
+          this.append(it.next(), childrenStyle);
+          if(it.hasNext()) {
+            childrenStyle.set(style);
+          } else {
+            // compare style between self and parent node
+            // to see if we need to write a reset here
+            // if: color, or child has colour and parent does not. this prevents style from bleeding through
+            if((childrenStyle.color != null && style.color == null)
+              || (childrenStyle.color == style.color && !childrenStyle.decorations.equals(style.decorations))) {
+              this.append(Reset.INSTANCE);
+            }
+          }
         }
-      }
-
-      if(!style.noColorOrDecorations()) {
-        this.append(Reset.INSTANCE);
       }
     }
 
     void append(final @NonNull TextFormat format) {
-      if(this.format != format) {
+      if(this.lastWritten != format) {
         this.sb.append(LegacyComponentSerializerImpl.this.character).append(LegacyComponentSerializerImpl.this.toLegacyCode(format));
       }
-      this.format = format;
+      this.lastWritten = format;
     }
 
     @Override
@@ -343,6 +350,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     private final class StyleState {
       private @Nullable TextColor color;
       private final Set<TextDecoration> decorations;
+      private boolean needsReset;
 
       StyleState() {
         this.decorations = EnumSet.noneOf(TextDecoration.class);
@@ -351,10 +359,6 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       StyleState(final @NonNull StyleState that) {
         this.color = that.color;
         this.decorations = EnumSet.copyOf(that.decorations);
-      }
-
-      boolean noColorOrDecorations() {
-        return this.color == null || this.decorations.isEmpty();
       }
 
       void set(final @NonNull StyleState that) {
@@ -376,16 +380,26 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
               this.decorations.add(decoration);
               break;
             case FALSE:
-              this.decorations.remove(decoration);
+              if(this.decorations.remove(decoration)) {
+                this.needsReset = true;
+              }
               break;
           }
         }
       }
 
       void applyFormat() {
+        final boolean colorChanged = this.color != Cereal.this.style.color;
+        if(this.needsReset) {
+          if(!colorChanged) {
+            Cereal.this.append(Reset.INSTANCE);
+          }
+          this.needsReset = false;
+        }
+
         // If color changes, we need to do a full reset.
         // Additionally, if the last thing to be appended was a reset then we need to re-apply everything.
-        if(this.color != Cereal.this.style.color || Cereal.this.format == Reset.INSTANCE) {
+        if(colorChanged || Cereal.this.lastWritten == Reset.INSTANCE) {
           this.applyFullFormat();
           return;
         }
