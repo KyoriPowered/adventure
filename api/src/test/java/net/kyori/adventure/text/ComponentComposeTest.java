@@ -34,28 +34,28 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class LinearComponentsTest {
+class ComponentComposeTest {
   @Test
   void testEmpty() {
-    assertSame(Component.empty(), LinearComponents.linear());
+    assertSame(Component.empty(), Component.compose());
   }
 
   @Test
   void testNothingComponentLike() {
-    assertThrows(IllegalStateException.class, () -> LinearComponents.linear(TextDecoration.BOLD));
-    assertThrows(IllegalStateException.class, () -> LinearComponents.linear(TextDecoration.BOLD, TextColor.color(0xaa0000)));
+    assertThrows(IllegalStateException.class, () -> Component.compose(TextDecoration.BOLD));
+    assertThrows(IllegalStateException.class, () -> Component.compose(TextDecoration.BOLD, TextColor.color(0xaa0000)));
   }
 
   @Test
   void testSingleComponentLike() {
     final Component c0 = Component.text("kittens");
-    assertSame(c0, LinearComponents.linear(c0));
+    assertSame(c0, Component.compose(c0));
   }
 
   @Test
   void testSimpleText() {
     final Component c0 = Component.text("kittens", NamedTextColor.DARK_PURPLE);
-    assertEquals(c0, LinearComponents.linear(NamedTextColor.DARK_PURPLE, Component.text().content("kittens")));
+    assertEquals(c0, Component.compose(NamedTextColor.DARK_PURPLE, Component.text().content("kittens")));
   }
 
   @Test
@@ -64,7 +64,7 @@ class LinearComponentsTest {
       .append(Component.text("kittens", NamedTextColor.DARK_PURPLE))
       .append(Component.text("cats", Style.style(NamedTextColor.DARK_AQUA, TextDecoration.BOLD, HoverEvent.showText(Component.text("are adorable!")))))
       .build();
-    assertEquals(c0, LinearComponents.linear(
+    assertEquals(c0, Component.compose(
       NamedTextColor.DARK_PURPLE, Component.text().content("kittens"),
       NamedTextColor.DARK_AQUA, TextDecoration.BOLD, HoverEvent.showText(Component.text("are adorable!")), Component.text().content("cats")
     ));

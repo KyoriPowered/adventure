@@ -73,6 +73,10 @@ public abstract class AbstractComponent implements Component {
     return newList;
   }
 
+  static IllegalStateException nothingComponentLike() {
+    return new IllegalStateException("Cannot compose a component from the arguments - nothing component-like was given");
+  }
+
   /**
    * The list of children.
    */

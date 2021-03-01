@@ -38,6 +38,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
@@ -157,6 +158,58 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
       }
     }
     return builder.build();
+  }
+
+  /**
+   * Compose a series of elements (styles and contents) into a component.
+   *
+   * <p>Styles apply to all components after them until a conflicting style is discovered</p>
+   *   <pre>
+   *     Component message = Component.compose(NamedTextColor.RED, translatable("welcome.message"), TextDecoration.BOLD, text(" SERVER"));
+   *   </pre>
+   * In this example all the text is red, but only the last word is bold.
+   *   <pre>
+   *     Component message = Component.compose(NamedTextColor.GREEN, text("I am green. "), NamedTextColor.GRAY, text("I am gray."));
+   *   </pre>
+   * In this example, the first text is green and the second is gray.
+   *
+   * @param applicables the things used to make the component
+   * @return a component
+   * @since 4.4.0
+   */
+  static @NonNull Component compose(final @NonNull ComponentBuilderApplicable@NonNull... applicables) {
+    final int length = applicables.length;
+    if(length == 0) return Component.empty();
+    if(length == 1) {
+      final ComponentBuilderApplicable ap0 = applicables[0];
+      if(ap0 instanceof ComponentLike) {
+        return ((ComponentLike) ap0).asComponent();
+      }
+      throw AbstractComponent.nothingComponentLike();
+    }
+    final TextComponentImpl.BuilderImpl builder = new TextComponentImpl.BuilderImpl();
+    Style.Builder style = null;
+    for(int i = 0; i < length; i++) {
+      final ComponentBuilderApplicable applicable = applicables[i];
+      if(applicable instanceof StyleBuilderApplicable) {
+        if(style == null) {
+          style = Style.style();
+        }
+        style.apply((StyleBuilderApplicable) applicable);
+      } else if(style != null && applicable instanceof ComponentLike) {
+        builder.applicableApply(((ComponentLike) applicable).asComponent().style(style));
+      } else {
+        builder.applicableApply(applicable);
+      }
+    }
+    final int size = builder.children.size();
+    if(size == 0) {
+      throw AbstractComponent.nothingComponentLike();
+    } else if(size == 1) {
+      return builder.children.get(0);
+    } else {
+      return builder.build();
+    }
   }
 
   /*
