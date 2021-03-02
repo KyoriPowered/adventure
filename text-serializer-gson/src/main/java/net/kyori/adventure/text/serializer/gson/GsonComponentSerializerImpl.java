@@ -25,7 +25,12 @@ package net.kyori.adventure.text.serializer.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.io.Reader;
 import java.util.function.UnaryOperator;
+
+import com.google.gson.JsonElement;
+import com.google.gson.stream.JsonReader;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.Component;
@@ -88,6 +93,27 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
   @Override
   public @NonNull String serialize(final @NonNull Component component) {
     return this.serializer().toJson(component);
+  }
+
+  @Override
+  public @NonNull Component deserialize(final @NonNull JsonElement input) {
+    final Component component = this.serializer().fromJson(input, Component.class);
+    if(component == null) throw ComponentSerializerImpl.notSureHowToDeserialize(input);
+    return component;
+  }
+
+  @Override
+  public @NonNull Component deserialize(final @NonNull Reader input) {
+    final Component component = this.serializer().fromJson(input, Component.class);
+    if(component == null) throw ComponentSerializerImpl.notSureHowToDeserialize(input);
+    return component;
+  }
+
+  @Override
+  public @NonNull Component deserialize(final @NonNull JsonReader input) {
+    final Component component = this.serializer().fromJson(input, Component.class);
+    if(component == null) throw ComponentSerializerImpl.notSureHowToDeserialize(input);
+    return component;
   }
 
   @NonNull
