@@ -25,7 +25,12 @@ package net.kyori.adventure.text.serializer.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.io.Reader;
 import java.util.function.UnaryOperator;
+
+import com.google.gson.JsonElement;
+import com.google.gson.stream.JsonReader;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Buildable;
@@ -89,6 +94,33 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
    * @since 4.0.0
    */
   @NonNull UnaryOperator<GsonBuilder> populator();
+
+  /**
+   * Deserialize a component from input of type {@link JsonElement}.
+   *
+   * @param input the input
+   * @return the component
+   * @since 4.7.0
+   */
+  @NonNull Component deserialize(@NonNull JsonElement input);
+
+  /**
+   * Deserialize a component from input of type {@link Reader}.
+   *
+   * @param input the input
+   * @return the component
+   * @since 4.7.0
+   */
+  @NonNull Component deserialize(@NonNull Reader input);
+
+  /**
+   * Deserialize a component from input of type {@link JsonReader}.
+   *
+   * @param input the input
+   * @return the component
+   * @since 4.7.0
+   */
+  @NonNull Component deserialize(@NonNull JsonReader input);
 
   /**
    * A builder for {@link GsonComponentSerializer}.
