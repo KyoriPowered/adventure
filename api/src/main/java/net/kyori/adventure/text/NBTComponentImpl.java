@@ -70,13 +70,13 @@ abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTCompo
   }
 
   @Override
-  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  protected @NonNull Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
     return Stream.concat(
       Stream.of(
         ExaminableProperty.of("nbtPath", this.nbtPath),
         ExaminableProperty.of("interpret", this.interpret)
       ),
-      super.examinableProperties()
+      super.examinablePropertiesWithoutChildren()
     );
   }
 

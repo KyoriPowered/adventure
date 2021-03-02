@@ -89,12 +89,12 @@ final class EntityNBTComponentImpl extends NBTComponentImpl<EntityNBTComponent, 
   }
 
   @Override
-  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  protected @NonNull Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
     return Stream.concat(
       Stream.of(
         ExaminableProperty.of("selector", this.selector)
       ),
-      super.examinableProperties()
+      super.examinablePropertiesWithoutChildren()
     );
   }
 

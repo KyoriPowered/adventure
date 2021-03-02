@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.Debug;
 
 /**
  * A binary tag holding a {@code byte} value.
@@ -79,6 +80,7 @@ public interface ByteBinaryTag extends NumberBinaryTag {
   byte value();
 }
 
+@Debug.Renderer(text = "\"0x\" + Integer.toString(this.value, 16)", hasChildren = "false")
 final class ByteBinaryTagImpl extends AbstractBinaryTag implements ByteBinaryTag {
   private final byte value;
 

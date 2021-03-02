@@ -109,14 +109,14 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
   }
 
   @Override
-  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  protected @NonNull Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
     return Stream.concat(
       Stream.of(
         ExaminableProperty.of("name", this.name),
         ExaminableProperty.of("objective", this.objective),
         ExaminableProperty.of("value", this.value)
       ),
-      super.examinableProperties()
+      super.examinablePropertiesWithoutChildren()
     );
   }
 
