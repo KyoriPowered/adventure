@@ -1,0 +1,27 @@
+plugins {
+  id "org.jetbrains.kotlin.jvm" version "1.4.31"
+}
+
+compileKotlin {
+  kotlinOptions {
+    jvmTarget = "1.8"
+  }
+}
+
+compileTestKotlin {
+  kotlinOptions {
+    jvmTarget = "1.8"
+  }
+}
+
+dependencies {
+  api(project(":adventure-api"))
+  implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+  testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+}
+
+jar {
+  manifest.attributes(
+    "Automatic-Module-Name": "net.kyori.adventure.extra.kotlin"
+  )
+}
