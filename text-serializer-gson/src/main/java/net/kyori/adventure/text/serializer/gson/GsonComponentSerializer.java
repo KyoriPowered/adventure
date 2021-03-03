@@ -25,12 +25,10 @@ package net.kyori.adventure.text.serializer.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import java.io.Reader;
-import java.util.function.UnaryOperator;
-
 import com.google.gson.JsonElement;
 import com.google.gson.stream.JsonReader;
+import java.io.Reader;
+import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Buildable;
