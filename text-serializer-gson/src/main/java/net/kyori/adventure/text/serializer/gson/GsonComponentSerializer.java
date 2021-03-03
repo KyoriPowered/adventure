@@ -100,7 +100,7 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
    * @return the component
    * @since 4.7.0
    */
-  @NonNull Component deserialize(@NonNull JsonElement input);
+  @NonNull Component deserialize(final @NonNull JsonElement input);
 
   /**
    * Deserialize a component from input of type {@link Reader}.
@@ -109,7 +109,7 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
    * @return the component
    * @since 4.7.0
    */
-  @NonNull Component deserialize(@NonNull Reader input);
+  @NonNull Component deserialize(final @NonNull Reader input);
 
   /**
    * Deserialize a component from input of type {@link JsonReader}.
@@ -118,7 +118,7 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
    * @return the component
    * @since 4.7.0
    */
-  @NonNull Component deserialize(@NonNull JsonReader input);
+  @NonNull Component deserialize(final @NonNull JsonReader input);
 
   /**
    * A builder for {@link GsonComponentSerializer}.
