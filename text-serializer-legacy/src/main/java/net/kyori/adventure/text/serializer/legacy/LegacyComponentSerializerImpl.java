@@ -320,6 +320,8 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         final StyleState childrenStyle = new StyleState(style);
         for(final Iterator<Component> it = children.iterator(); it.hasNext();) {
           this.append(it.next(), childrenStyle);
+          // https://github.com/KyoriPowered/adventure/issues/287
+          // https://github.com/KyoriPowered/adventure/pull/299
           childrenStyle.set(style);
         }
       }
