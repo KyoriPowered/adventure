@@ -92,7 +92,7 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
   }
 
   @Override
-  public @NonNull JsonElement serializeToJsonElement(@NonNull Component component) {
+  public @NonNull JsonElement serializeToElement(final @NonNull Component component) {
     return this.serializer().toJsonTree(component);
   }
 

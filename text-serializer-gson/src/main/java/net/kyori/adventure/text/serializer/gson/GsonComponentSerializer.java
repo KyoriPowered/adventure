@@ -98,7 +98,7 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
    * @return the json element
    * @since 4.7.0
    */
-  @NonNull JsonElement serializeToJsonElement(@NonNull Component component);
+  @NonNull JsonElement serializeToElement(final @NonNull Component component);
 
   /**
    * A builder for {@link GsonComponentSerializer}.
