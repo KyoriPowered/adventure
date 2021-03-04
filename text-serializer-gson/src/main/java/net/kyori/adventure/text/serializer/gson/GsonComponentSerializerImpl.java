@@ -114,6 +114,11 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
     return component;
   }
 
+  @Override
+  public @NonNull JsonElement serializeToElement(final @NonNull Component component) {
+    return this.serializer().toJsonTree(component);
+  }
+
   @NonNull
   @Override
   public Builder toBuilder() {

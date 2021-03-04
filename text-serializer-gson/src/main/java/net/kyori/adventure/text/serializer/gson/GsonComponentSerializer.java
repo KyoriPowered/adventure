@@ -121,6 +121,15 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
   @NonNull Component deserialize(final @NonNull JsonReader input);
 
   /**
+   * Deserialize a component to output of type {@link JsonElement}.
+   *
+   * @param component the component
+   * @return the json element
+   * @since 4.7.0
+   */
+  @NonNull JsonElement serializeToElement(final @NonNull Component component);
+
+  /**
    * A builder for {@link GsonComponentSerializer}.
    *
    * @since 4.0.0
