@@ -17,6 +17,7 @@ dependencies {
       "serializer-configurate3",
       "serializer-configurate4",
       "text-serializer-gson",
+      "text-serializer-gson-legacy-impl",
       "text-serializer-legacy",
       "text-serializer-plain"
     ].each {
