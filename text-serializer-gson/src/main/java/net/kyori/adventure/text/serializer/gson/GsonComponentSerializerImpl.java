@@ -25,6 +25,7 @@ package net.kyori.adventure.text.serializer.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.BlockNBTComponent;
@@ -88,6 +89,11 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
   @Override
   public @NonNull String serialize(final @NonNull Component component) {
     return this.serializer().toJson(component);
+  }
+
+  @Override
+  public @NonNull JsonElement serializeToJsonElement(@NonNull Component component) {
+    return this.serializer().toJsonTree(component);
   }
 
   @NonNull
