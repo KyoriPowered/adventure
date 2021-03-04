@@ -320,17 +320,9 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         final StyleState childrenStyle = new StyleState(style);
         for(final Iterator<Component> it = children.iterator(); it.hasNext();) {
           this.append(it.next(), childrenStyle);
-          if(it.hasNext()) {
-            childrenStyle.set(style);
-          } else {
-            // compare style between self and parent node
-            // to see if we need to write a reset here
-            // if: color, or child has colour and parent does not. this prevents style from bleeding through
-            if((childrenStyle.color != null && style.color == null)
-              || (childrenStyle.color == style.color && !childrenStyle.decorations.equals(style.decorations))) {
-              this.append(Reset.INSTANCE);
-            }
-          }
+          // https://github.com/KyoriPowered/adventure/issues/287
+          // https://github.com/KyoriPowered/adventure/pull/299
+          childrenStyle.set(style);
         }
       }
     }
