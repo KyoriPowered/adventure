@@ -26,15 +26,17 @@ package net.kyori.adventure.text.serializer.plain;
 import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.KeybindComponent;
-import net.kyori.adventure.text.ScoreComponent;
-import net.kyori.adventure.text.SelectorComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.renderer.ComponentFlattener;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
+import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A plain component serializer.
@@ -44,8 +46,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * @since 4.0.0
  */
-public class PlainComponentSerializer implements ComponentSerializer<Component, TextComponent, String> {
-  private static final PlainComponentSerializer INSTANCE = new PlainComponentSerializer();
+public class PlainComponentSerializer implements ComponentSerializer<Component, TextComponent, String>, Buildable<PlainComponentSerializer, PlainComponentSerializer.Builder> {
+  private static final PlainComponentSerializer INSTANCE = builder().build();
 
   /**
    * A component serializer for plain-based serialization and deserialization.
@@ -57,16 +59,27 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
     return INSTANCE;
   }
 
-  private final @Nullable Function<KeybindComponent, String> keybind;
-  private final @Nullable Function<TranslatableComponent, String> translatable;
+  /**
+   * Create a new builder.
+   *
+   * @return a new plain serializer builder
+   * @since 4.7.0
+   */
+  public static PlainComponentSerializer.@NonNull Builder builder() {
+    return new PlainComponentSerializerImpl.BuilderImpl();
+  }
+
+  private final ComponentFlattener flattener;
 
   /**
    * Constructs.
    *
    * @since 4.0.0
+   * @deprecated for removal since 4.7.0
    */
+  @Deprecated
   public PlainComponentSerializer() {
-    this(null, null);
+    this(ComponentFlattener.basic());
   }
 
   /**
@@ -75,10 +88,18 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
    * @param keybind the keybind renderer
    * @param translatable the translatable renderer
    * @since 4.0.0
+   * @deprecated for removal since 4.7.0, use the builder instead
    */
+  @Deprecated
   public PlainComponentSerializer(final @Nullable Function<KeybindComponent, String> keybind, final @Nullable Function<TranslatableComponent, String> translatable) {
-    this.keybind = keybind;
-    this.translatable = translatable;
+    final ComponentFlattener.Builder builder = ComponentFlattener.basic().toBuilder();
+    if(keybind != null) builder.type(KeybindComponent.class, keybind);
+    if(translatable != null) builder.type(TranslatableComponent.class, translatable);
+    this.flattener = builder.build();
+  }
+
+  PlainComponentSerializer(final @NonNull ComponentFlattener flattener) {
+    this.flattener = flattener;
   }
 
   @Override
@@ -102,22 +123,31 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
    */
   @SuppressWarnings("deprecation")
   public void serialize(final @NonNull StringBuilder sb, final @NonNull Component component) {
-    if(component instanceof KeybindComponent) {
-      if(this.keybind != null) sb.append(this.keybind.apply((KeybindComponent) component));
-    } else if(component instanceof ScoreComponent) {
-      sb.append(((ScoreComponent) component).value());
-    } else if(component instanceof SelectorComponent) {
-      sb.append(((SelectorComponent) component).pattern());
-    } else if(component instanceof TextComponent) {
-      sb.append(((TextComponent) component).content());
-    } else if(component instanceof TranslatableComponent) {
-      if(this.translatable != null) sb.append(this.translatable.apply((TranslatableComponent) component));
-    } else {
-      throw new UnsupportedOperationException("Don't know how to turn " + component.getClass().getSimpleName() + " into a string");
-    }
+    this.flattener.flatten(requireNonNull(component, "component"), sb::append);
+  }
 
-    for(final Component child : component.children()) {
-      this.serialize(sb, child);
-    }
+  @Override
+  public PlainComponentSerializer.@NonNull Builder toBuilder() {
+    return new PlainComponentSerializerImpl.BuilderImpl(this.flattener);
+  }
+
+  /**
+   * A builder for the plain component serializer.
+   *
+   * @since 4.7.0
+   */
+  public interface Builder extends Buildable.Builder<PlainComponentSerializer> {
+
+    /**
+     * Set the component flattener to use.
+     *
+     * <p>The default flattener is {@link ComponentFlattener#basic()} modified to throw exceptions on unknown component types.</p>
+     *
+     * @param flattener the new flattener
+     * @return this builder
+     * @since 4.7.0
+     */
+    @NonNull Builder flattener(final @NonNull ComponentFlattener flattener);
+
   }
 }

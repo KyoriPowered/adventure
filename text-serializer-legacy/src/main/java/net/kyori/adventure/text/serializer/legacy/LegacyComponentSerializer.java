@@ -29,6 +29,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.renderer.ComponentFlattener;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -240,6 +241,17 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * @since 4.0.0
      */
     @NonNull Builder useUnusualXRepeatedCharacterHexFormat();
+
+    /**
+     * Use this component flattener to convert components into plain text.
+     *
+     * <p>By default, this serializer will use {@link ComponentFlattener#basic()}</p>
+     *
+     * @param flattener the flattener to use
+     * @return this builder
+     * @since 4.7.0
+     */
+    @NonNull Builder flattener(final @NonNull ComponentFlattener flattener);
 
     /**
      * Builds the serializer.

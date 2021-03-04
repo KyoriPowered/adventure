@@ -24,9 +24,9 @@
 package net.kyori.adventure.text.serializer.legacy;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +41,8 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextFormat;
+import net.kyori.adventure.text.renderer.ComponentFlattener;
+import net.kyori.adventure.text.renderer.FlattenerListener;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -93,21 +95,23 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
   }
 
-  static final LegacyComponentSerializer SECTION_SERIALIZER = new LegacyComponentSerializerImpl(SECTION_CHAR, HEX_CHAR, null, false, false);
-  static final LegacyComponentSerializer AMPERSAND_SERIALIZER = new LegacyComponentSerializerImpl(AMPERSAND_CHAR, HEX_CHAR, null, false, false);
+  static final LegacyComponentSerializer SECTION_SERIALIZER = new LegacyComponentSerializerImpl(SECTION_CHAR, HEX_CHAR, null, false, false, ComponentFlattener.basic());
+  static final LegacyComponentSerializer AMPERSAND_SERIALIZER = new LegacyComponentSerializerImpl(AMPERSAND_CHAR, HEX_CHAR, null, false, false, ComponentFlattener.basic());
 
   private final char character;
   private final char hexCharacter;
   private final @Nullable TextReplacementConfig urlReplacementConfig;
   private final boolean hexColours;
   private final boolean useTerriblyStupidHexFormat; // (╯°□°)╯︵ ┻━┻
+  private final ComponentFlattener flattener;
 
-  LegacyComponentSerializerImpl(final char character, final char hexCharacter, final @Nullable TextReplacementConfig urlReplacementConfig, final boolean hexColours, final boolean useTerriblyStupidHexFormat) {
+  LegacyComponentSerializerImpl(final char character, final char hexCharacter, final @Nullable TextReplacementConfig urlReplacementConfig, final boolean hexColours, final boolean useTerriblyStupidHexFormat, final ComponentFlattener flattener) {
     this.character = character;
     this.hexCharacter = hexCharacter;
     this.urlReplacementConfig = urlReplacementConfig;
     this.hexColours = hexColours;
     this.useTerriblyStupidHexFormat = useTerriblyStupidHexFormat;
+    this.flattener = flattener;
   }
 
   private @Nullable FormatCodeType determineFormatType(final char legacy, final String input, final int pos) {
@@ -268,7 +272,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   @Override
   public @NonNull String serialize(final @NonNull Component component) {
     final Cereal state = new Cereal();
-    state.append(component);
+    this.flattener.flatten(component, state);
     return state.toString();
   }
 
@@ -295,35 +299,50 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   }
 
   // Are you hungry?
-  private final class Cereal {
+  private final class Cereal implements FlattenerListener {
     private final StringBuilder sb = new StringBuilder();
     private final StyleState style = new StyleState();
     private @Nullable TextFormat lastWritten;
+    private StyleState[] styles = new StyleState[8];
+    private int head = -1;
 
-    void append(final @NonNull Component component) {
-      this.append(component, new StyleState());
-    }
+    @Override
+    public void pushStyle(final Style pushed) {
+      final int idx = ++this.head;
+      if(idx >= this.styles.length) {
+        this.styles = Arrays.copyOf(this.styles, this.styles.length * 2);
+      }
+      StyleState state = this.styles[idx];
 
-    private void append(final @NonNull Component component, final @NonNull StyleState style) {
-      style.apply(component);
-
-      if(component instanceof TextComponent) {
-        final String content = ((TextComponent) component).content();
-        if(!content.isEmpty()) {
-          style.applyFormat();
-          this.sb.append(content);
-        }
+      if(state == null) {
+        this.styles[idx] = state = new StyleState();
       }
 
-      final List<Component> children = component.children();
-      if(!children.isEmpty()) {
-        final StyleState childrenStyle = new StyleState(style);
-        for(final Iterator<Component> it = children.iterator(); it.hasNext();) {
-          this.append(it.next(), childrenStyle);
-          // https://github.com/KyoriPowered/adventure/issues/287
-          // https://github.com/KyoriPowered/adventure/pull/299
-          childrenStyle.set(style);
-        }
+      if(idx > 0) {
+        // https://github.com/KyoriPowered/adventure/issues/287
+        // https://github.com/KyoriPowered/adventure/pull/299
+        state.set(this.styles[idx - 1]);
+      } else {
+        state.clear();
+      }
+
+      state.apply(pushed);
+    }
+
+    @Override
+    public void component(final String text) {
+      if(!text.isEmpty()) {
+        if(this.head < 0) throw new IllegalStateException("No style has been pushed!");
+
+        this.styles[this.head].applyFormat();
+        this.sb.append(text);
+      }
+    }
+
+    @Override
+    public void popStyle(final Style style) {
+      if(this.head-- < 0) {
+        throw new IllegalStateException("Tried to pop beyond what was pushed!");
       }
     }
 
@@ -348,18 +367,18 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         this.decorations = EnumSet.noneOf(TextDecoration.class);
       }
 
-      StyleState(final @NonNull StyleState that) {
-        this.color = that.color;
-        this.decorations = EnumSet.copyOf(that.decorations);
-      }
-
       void set(final @NonNull StyleState that) {
         this.color = that.color;
         this.decorations.clear();
         this.decorations.addAll(that.decorations);
       }
 
-      void apply(final @NonNull Component component) {
+      public void clear() {
+        this.color = null;
+        this.decorations.clear();
+      }
+
+      void apply(final @NonNull Style component) {
         final TextColor color = component.color();
         if(color != null) {
           this.color = color;
@@ -435,6 +454,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     private TextReplacementConfig urlReplacementConfig = null;
     private boolean hexColours = false;
     private boolean useTerriblyStupidHexFormat = false;
+    private ComponentFlattener flattener = ComponentFlattener.basic();
 
     BuilderImpl() {
     }
@@ -503,8 +523,14 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     @Override
+    public @NonNull Builder flattener(final @NonNull ComponentFlattener flattener) {
+      this.flattener = requireNonNull(flattener, "flattener");
+      return this;
+    }
+
+    @Override
     public @NonNull LegacyComponentSerializer build() {
-      return new LegacyComponentSerializerImpl(this.character, this.hexCharacter, this.urlReplacementConfig, this.hexColours, this.useTerriblyStupidHexFormat);
+      return new LegacyComponentSerializerImpl(this.character, this.hexCharacter, this.urlReplacementConfig, this.hexColours, this.useTerriblyStupidHexFormat, this.flattener);
     }
   }
 
