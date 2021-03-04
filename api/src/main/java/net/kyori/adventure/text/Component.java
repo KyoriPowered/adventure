@@ -441,8 +441,10 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param value the value
    * @return a score component
    * @since 4.0.0
+   * @deprecated since 4.7.0, not for removal, with no replacement. The {@code value} field is no longer supported in 1.16.5.
    */
   @Contract(value = "_, _, _ -> new", pure = true)
+  @Deprecated
   static @NonNull ScoreComponent score(final @NonNull String name, final @NonNull String objective, final @Nullable String value) {
     return new ScoreComponentImpl(Collections.emptyList(), Style.empty(), name, objective, value);
   }

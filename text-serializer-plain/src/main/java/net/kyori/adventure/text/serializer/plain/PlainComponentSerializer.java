@@ -100,6 +100,7 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
    * @param component the component
    * @since 4.0.0
    */
+  @SuppressWarnings("deprecation")
   public void serialize(final @NonNull StringBuilder sb, final @NonNull Component component) {
     if(component instanceof KeybindComponent) {
       if(this.keybind != null) sb.append(this.keybind.apply((KeybindComponent) component));
