@@ -97,7 +97,7 @@ class LegacyComponentSerializerTest {
         .build())
       .build();
 
-    assertEquals("hi there &athis bit is green &rthis isn't &aand woa, this is again&r", LegacyComponentSerializer.legacy('&').serialize(component));
+    assertEquals("hi there &athis bit is green &rthis isn't &aand woa, this is again", LegacyComponentSerializer.legacy('&').serialize(component));
   }
 
   @Test
@@ -154,7 +154,7 @@ class LegacyComponentSerializerTest {
           )
           .build())
       .build();
-    assertEquals("§e§lHello §a§lworld§e§l!§r", LegacyComponentSerializer.legacySection().serialize(c3));
+    assertEquals("§e§lHello §a§lworld§e§l!", LegacyComponentSerializer.legacySection().serialize(c3));
   }
 
   @Test
@@ -298,7 +298,7 @@ class LegacyComponentSerializerTest {
   // https://github.com/KyoriPowered/adventure/issues/287
   @Test
   void testNoRedundantReset() {
-    final String text = "&a&lP&eaper&r";
+    final String text = "&a&lP&eaper";
     final Component expectedDeserialized = Component.text()
       .append(Component.text("P", NamedTextColor.GREEN, TextDecoration.BOLD))
       .append(Component.text("aper", NamedTextColor.YELLOW))
@@ -308,13 +308,6 @@ class LegacyComponentSerializerTest {
     assertEquals(expectedDeserialized, deserialized);
 
     final String roundtripped = LegacyComponentSerializer.legacyAmpersand().serialize(deserialized);
-    assertEquals(text, roundtripped);
-  }
-
-  @Test
-  void testPreserveTrailingReset() {
-    final String text = "&a&lPaper&r";
-    final String roundtripped = LegacyComponentSerializer.legacyAmpersand().serialize(LegacyComponentSerializer.legacyAmpersand().deserialize(text));
     assertEquals(text, roundtripped);
   }
 }
