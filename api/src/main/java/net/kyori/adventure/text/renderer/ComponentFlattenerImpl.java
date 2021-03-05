@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.renderer;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -63,8 +64,8 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
   private final Function<Component, String> unknownHandler;
 
   ComponentFlattenerImpl(final Map<Class<?>, Function<?, String>> flatteners, final Map<Class<?>, BiConsumer<?, Consumer<Component>>> complexFlatteners, final @Nullable Function<Component, String> unknownHandler) {
-    this.flatteners = new HashMap<>(flatteners);
-    this.complexFlatteners = complexFlatteners;
+    this.flatteners = Collections.unmodifiableMap(new HashMap<>(flatteners));
+    this.complexFlatteners = Collections.unmodifiableMap(new HashMap<>(complexFlatteners));
     this.unknownHandler = unknownHandler;
   }
 
@@ -141,7 +142,7 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
   // A function that allows nesting other flatten operations
   @FunctionalInterface
   interface Handler {
-    Handler NONE = ($, $$, $$$) -> {};
+    Handler NONE = (input, listener, depth) -> {};
 
     void handle(final Component input, final FlattenerListener listener, final int depth);
   }
@@ -179,7 +180,7 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
     }
 
     @Override
-    public <T extends Component> ComponentFlattener.@NonNull Builder nestedType(final @NonNull Class<T> type, final @NonNull BiConsumer<T, Consumer<Component>> converter) {
+    public <T extends Component> ComponentFlattener.@NonNull Builder complexType(final @NonNull Class<T> type, final @NonNull BiConsumer<T, Consumer<Component>> converter) {
       this.validateNoneInHierarchy(requireNonNull(type, "type"));
       this.complexFlatteners.put(
         type,

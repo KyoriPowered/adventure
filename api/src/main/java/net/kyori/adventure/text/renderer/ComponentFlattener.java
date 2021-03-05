@@ -94,6 +94,7 @@ public interface ComponentFlattener extends Buildable<ComponentFlattener, Compon
      * @param <T> component type
      * @return this builder
      * @since 4.7.0
+     * @see #complexType(Class, BiConsumer) for component types that are too complex to be directly rendered to a string
      */
     <T extends Component> @NonNull Builder type(final @NonNull Class<T> type, final @NonNull Function<T, String> converter);
 
@@ -106,12 +107,12 @@ public interface ComponentFlattener extends Buildable<ComponentFlattener, Compon
      * @return this builder
      * @since 4.7.0
      */
-    <T extends Component> @NonNull Builder nestedType(final @NonNull Class<T> type, final @NonNull BiConsumer<T, Consumer<Component>> converter);
+    <T extends Component> @NonNull Builder complexType(final @NonNull Class<T> type, final @NonNull BiConsumer<T, Consumer<Component>> converter);
 
     /**
      * Register a handler for unknown component types.
      *
-     * <p>This</p>
+     * <p>This will be called if no other converter can be found.</p>
      *
      * @param converter the converter, may be null to ignore unknown components
      * @return this builder

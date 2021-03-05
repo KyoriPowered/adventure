@@ -307,7 +307,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     private int head = -1;
 
     @Override
-    public void pushStyle(final Style pushed) {
+    public void pushStyle(final @NonNull Style pushed) {
       final int idx = ++this.head;
       if(idx >= this.styles.length) {
         this.styles = Arrays.copyOf(this.styles, this.styles.length * 2);
@@ -330,7 +330,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     @Override
-    public void component(final String text) {
+    public void component(final @NonNull String text) {
       if(!text.isEmpty()) {
         if(this.head < 0) throw new IllegalStateException("No style has been pushed!");
 
@@ -340,7 +340,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     @Override
-    public void popStyle(final Style style) {
+    public void popStyle(final @NonNull Style style) {
       if(this.head-- < 0) {
         throw new IllegalStateException("Tried to pop beyond what was pushed!");
       }

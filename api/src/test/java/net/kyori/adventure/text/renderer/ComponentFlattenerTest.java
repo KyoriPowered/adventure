@@ -34,6 +34,7 @@ import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -50,18 +51,18 @@ class ComponentFlattenerTest {
     final List<String> strings = new ArrayList<>();
 
     @Override
-    public void pushStyle(final Style style) {
+    public void pushStyle(final @NonNull Style style) {
       this.pushCount++;
       this.pushedStyles.add(style);
     }
 
     @Override
-    public void component(final String text) {
+    public void component(final @NonNull String text) {
       this.strings.add(text);
     }
 
     @Override
-    public void popStyle(final Style style) {
+    public void popStyle(final @NonNull Style style) {
       this.popCount++;
     }
 
@@ -221,7 +222,7 @@ class ComponentFlattenerTest {
   @Test
   void testComplexHandler() {
     final ComponentFlattener flattener = ComponentFlattener.basic().toBuilder()
-      .nestedType(TranslatableComponent.class, (component, accepter) -> accepter.accept(Component.text(component.key(), NamedTextColor.RED)))
+      .complexType(TranslatableComponent.class, (component, accepter) -> accepter.accept(Component.text(component.key(), NamedTextColor.RED)))
       .build();
 
     this.testFlatten(flattener, Component.translatable("my.key"))
@@ -240,11 +241,11 @@ class ComponentFlattenerTest {
     // simple subtype
     assertThrows(IllegalArgumentException.class, () -> builder.type(BlockNBTComponent.class, $ -> ""));
     // complex subtype
-    assertThrows(IllegalArgumentException.class, () -> builder.nestedType(BlockNBTComponent.class, ($, $$) -> {}));
+    assertThrows(IllegalArgumentException.class, () -> builder.complexType(BlockNBTComponent.class, ($, $$) -> {}));
 
     // simple supertype
     assertThrows(IllegalArgumentException.class, () -> builder.type(Component.class, $ -> ""));
     // complex supertype
-    assertThrows(IllegalArgumentException.class, () -> builder.nestedType(Component.class, ($, $$) -> {}));
+    assertThrows(IllegalArgumentException.class, () -> builder.complexType(Component.class, ($, $$) -> {}));
   }
 }
