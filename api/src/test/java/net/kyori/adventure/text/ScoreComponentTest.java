@@ -63,6 +63,7 @@ class ScoreComponentTest extends AbstractComponentTest<ScoreComponent, ScoreComp
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   void testValue() {
     final ScoreComponent c0 = Component.score("abc", "def");
     final ScoreComponent c1 = c0.value("ghi");

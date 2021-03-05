@@ -209,6 +209,7 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
       score.addProperty(SCORE_NAME, sc.name());
       score.addProperty(SCORE_OBJECTIVE, sc.objective());
       // score component value is optional
+      @SuppressWarnings("deprecation")
       final @Nullable String value = sc.value();
       if(value != null) score.addProperty(SCORE_VALUE, value);
       object.add(SCORE, score);

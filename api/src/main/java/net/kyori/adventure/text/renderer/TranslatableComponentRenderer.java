@@ -119,6 +119,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   }
 
   @Override
+  @SuppressWarnings("deprecation")
   protected @NonNull Component renderScore(final @NonNull ScoreComponent component, final @NonNull C context) {
     final ScoreComponent.Builder builder = Component.score()
       .name(component.name())

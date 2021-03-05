@@ -36,6 +36,7 @@ import static java.util.Objects.requireNonNull;
 final class ScoreComponentImpl extends AbstractComponent implements ScoreComponent {
   private final String name;
   private final String objective;
+  @Deprecated
   private final @Nullable String value;
 
   ScoreComponentImpl(final @NonNull List<? extends ComponentLike> children, final @NonNull Style style, final @NonNull String name, final @NonNull String objective, final @Nullable String value) {
@@ -68,11 +69,13 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
   }
 
   @Override
+  @Deprecated
   public @Nullable String value() {
     return this.value;
   }
 
   @Override
+  @Deprecated
   public @NonNull ScoreComponent value(final @Nullable String value) {
     if(Objects.equals(this.value, value)) return this;
     return new ScoreComponentImpl(this.children, this.style, this.name, this.objective, value);
@@ -89,6 +92,7 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
   }
 
   @Override
+  @SuppressWarnings("deprecation")
   public boolean equals(final @Nullable Object other) {
     if(this == other) return true;
     if(!(other instanceof ScoreComponent)) return false;
@@ -133,6 +137,7 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
     BuilderImpl() {
     }
 
+    @SuppressWarnings("deprecation")
     BuilderImpl(final @NonNull ScoreComponent component) {
       super(component);
       this.name = component.name();
@@ -153,6 +158,7 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
     }
 
     @Override
+    @Deprecated
     public @NonNull Builder value(final @Nullable String value) {
       this.value = value;
       return this;

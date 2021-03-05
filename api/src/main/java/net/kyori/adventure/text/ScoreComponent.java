@@ -38,7 +38,7 @@ import org.jetbrains.annotations.Contract;
  *   <dt>objective</dt>
  *   <dd>a scoreboard objective</dd>
  *   <dt>value(optional)</dt>
- *   <dd>a fallback value to be used if the search fails.
+ *   <dd>a value to use that will override any queried scoreboard value
  *   <p>This field is no longer present in the game from 1.16,
  *   which means it will be ignored</p></dd>
  * </dl>
@@ -91,7 +91,9 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    *
    * @return the value
    * @since 4.0.0
+   * @deprecated since 4.7.0, not for removal, with no replacement. This field is no longer supported in 1.16.5.
    */
+  @Deprecated
   @Nullable String value();
 
   /**
@@ -100,7 +102,9 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @param value the value
    * @return a score component
    * @since 4.0.0
+   * @deprecated since 4.7.0, not for removal, with no replacement. This field is no longer supported in 1.16.5.
    */
+  @Deprecated
   @Contract(pure = true)
   @NonNull ScoreComponent value(final @Nullable String value);
 
@@ -136,7 +140,9 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
      * @param value the value
      * @return this builder
      * @since 4.0.0
+     * @deprecated since 4.7.0, not for removal, with no replacement. This field is no longer supported in 1.16.5.
      */
+    @Deprecated
     @Contract("_ -> this")
     @NonNull Builder value(final @Nullable String value);
   }
