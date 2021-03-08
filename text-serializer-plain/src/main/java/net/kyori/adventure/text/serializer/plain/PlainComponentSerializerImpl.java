@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.text.serializer.plain;
 
-import net.kyori.adventure.text.renderer.ComponentFlattener;
+import net.kyori.adventure.text.flattener.ComponentFlattener;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static java.util.Objects.requireNonNull;

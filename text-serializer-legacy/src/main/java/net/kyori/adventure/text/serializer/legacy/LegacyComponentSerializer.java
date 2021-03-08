@@ -29,7 +29,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.text.renderer.ComponentFlattener;
+import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;

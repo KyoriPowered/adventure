@@ -41,8 +41,8 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextFormat;
-import net.kyori.adventure.text.renderer.ComponentFlattener;
-import net.kyori.adventure.text.renderer.FlattenerListener;
+import net.kyori.adventure.text.flattener.ComponentFlattener;
+import net.kyori.adventure.text.flattener.FlattenerListener;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 

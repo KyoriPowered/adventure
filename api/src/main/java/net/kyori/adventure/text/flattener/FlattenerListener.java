@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.renderer;
+package net.kyori.adventure.text.flattener;
 
 import net.kyori.adventure.text.format.Style;
 import org.checkerframework.checker.nullness.qual.NonNull;

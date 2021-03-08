@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.renderer;
+package net.kyori.adventure.text.flattener;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
