@@ -5,8 +5,4 @@ dependencies {
   compileOnlyApi("org.jetbrains:annotations:20.1.0")
 }
 
-jar {
-  manifest.attributes(
-    "Automatic-Module-Name": "net.kyori.adventure.nbt"
-  )
-}
+applyJarMetadata(this, "net.kyori.adventure.nbt")

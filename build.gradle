@@ -17,6 +17,25 @@ group "net.kyori"
 version "4.7.0-SNAPSHOT"
 description "A user-interface library for Minecraft: Java Edition."
 
+def applyJarMetadata(project, moduleName) {
+  if("jar" in project.tasks.names) {
+    project.tasks.named("jar", Jar).configure {
+      manifest.attributes(
+        "Automatic-Module-Name": moduleName,
+        "Specification-Title": moduleName,
+        "Specification-Version": project.version,
+        "Specification-Vendor": "KyoriPowered"
+      )
+      if(project.grgit) {
+        manifest.attributes(
+          "Git-Commit": project.grgit.head().id,
+          "Git-Branch": project.grgit.branch.current().name
+        )
+      }
+    }
+  }
+}
+
 subprojects {
   // The bom is special... this is a bit ugly, but not much more we can do without making our own script plugin
   if(name != "adventure-bom") {

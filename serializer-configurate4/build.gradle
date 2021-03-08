@@ -4,8 +4,4 @@ dependencies {
   testImplementation(project(":adventure-text-serializer-gson"))
 }
 
-jar {
-  manifest.attributes(
-    "Automatic-Module-Name": "net.kyori.adventure.serializer.configurate4"
-  )
-}
+applyJarMetadata(this, "net.kyori.adventure.serializer.configurate4")

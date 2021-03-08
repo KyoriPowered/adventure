@@ -20,8 +20,4 @@ dependencies {
   testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 }
 
-jar {
-  manifest.attributes(
-    "Automatic-Module-Name": "net.kyori.adventure.extra.kotlin"
-  )
-}
+applyJarMetadata(this, "net.kyori.adventure.extra.kotlin")
