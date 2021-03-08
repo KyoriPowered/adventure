@@ -12,6 +12,7 @@ dependencies {
   constraints {
     [
       "api",
+      "extra-kotlin",
       "key",
       "nbt",
       "serializer-configurate3",
