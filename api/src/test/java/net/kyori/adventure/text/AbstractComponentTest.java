@@ -46,9 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 abstract class AbstractComponentTest<C extends BuildableComponent<C, B> & ScopedComponent<C>, B extends ComponentBuilder<C, B>> {
   abstract B builder();
@@ -70,15 +68,6 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B> & Scoped
     final Component child = Component.text("foo");
     final Component c1 = c0.children(Collections.singletonList(child));
     assertThat(c1.children()).containsExactly(child).inOrder();
-  }
-
-  @Test
-  void testCycleSelf() {
-    assertThrows(IllegalStateException.class, () -> {
-      final Component component = this.buildOne();
-      component.append(component);
-      fail("A component was added to itself");
-    });
   }
 
   @Test
@@ -334,32 +323,6 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B> & Scoped
       .addEqualityGroup(this.builder().build())
       .addEqualityGroup(this.builder().color(NamedTextColor.RED).build())
       .testEquals();
-  }
-
-  @Test
-  void testCycleHoverRoot() {
-    assertThrows(IllegalStateException.class, () -> {
-      final Component hoverComponent = Component.text("hover");
-      final Component component = this.builder()
-        .hoverEvent(HoverEvent.showText(hoverComponent))
-        .build();
-      // component's hover event value is hoverComponent, we should not be able to add it
-      hoverComponent.append(component);
-      fail("A component was added to itself");
-    });
-  }
-
-  @Test
-  void testCycleHoverChild() {
-    assertThrows(IllegalStateException.class, () -> {
-      final Component hoverComponent = Component.text("hover child");
-      final Component component = this.builder()
-        .hoverEvent(HoverEvent.showText(Component.text("hover").append(hoverComponent)))
-        .build();
-      // component's hover event value contains hoverComponent, we should not be able to add it
-      hoverComponent.append(component);
-      fail("A component was added to itself");
-    });
   }
 
   // -----------------
