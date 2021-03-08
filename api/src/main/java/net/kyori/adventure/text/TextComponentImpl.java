@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.util.Nag;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -35,6 +36,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import static java.util.Objects.requireNonNull;
 
 final class TextComponentImpl extends AbstractComponent implements TextComponent {
+  private static final boolean WARN_WHEN_LEGACY_FORMATTING_DETECTED = Boolean.getBoolean(String.join(".", "net", "kyori", "adventure", "text", "warnWhenLegacyFormattingDetected"));
+  private static final char SECTION_CHAR = '§';
+
   static final TextComponent EMPTY = createDirect("");
   static final TextComponent NEWLINE = createDirect("\n");
   static final TextComponent SPACE = createDirect(" ");
@@ -48,6 +52,12 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   TextComponentImpl(final @NonNull List<? extends ComponentLike> children, final @NonNull Style style, final @NonNull String content) {
     super(children, style);
     this.content = content;
+
+    if(WARN_WHEN_LEGACY_FORMATTING_DETECTED) {
+      if(content.indexOf(SECTION_CHAR) != -1) {
+        Nag.print(new LegacyFormattingDetected(this));
+      }
+    }
   }
 
   @Override
