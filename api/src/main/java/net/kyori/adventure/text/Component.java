@@ -1297,8 +1297,10 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * Prevents a cycle between this component and the provided component.
    *
    * @param that the other component
+   * @deprecated for removal since 4.7.0, with no replacement - this method is not necessary due to the fact {@code Component}s are immutable
    * @since 4.0.0
    */
+  @Deprecated
   default void detectCycle(final @NonNull Component that) {
     if(that.contains(this)) {
       throw new IllegalStateException("Component cycle detected between " + this + " and " + that);
@@ -1598,13 +1600,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(pure = true)
   default @NonNull Component hoverEvent(final @Nullable HoverEventSource<?> source) {
-    final HoverEvent<?> event = HoverEventSource.unbox(source);
-    if(event != null) {
-      if(event.action().type().isAssignableFrom(Component.class)) {
-        this.detectCycle((Component) event.value()); // detect cycle before modifying
-      }
-    }
-    return this.style(this.style().hoverEvent(event));
+    return this.style(this.style().hoverEvent(source));
   }
 
   /**
