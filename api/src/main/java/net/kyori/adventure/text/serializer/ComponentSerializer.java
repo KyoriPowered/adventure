@@ -50,6 +50,8 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
   /**
    * Deserialize a component from input of type {@code R}.
    *
+   * <p>If {@code input} is {@code null}, then {@code null} will be returned.</p>
+   *
    * @param input the input
    * @return the component if {@code input} is non-null, otherwise {@code null}
    * @since 4.7.0
@@ -61,6 +63,8 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
 
   /**
    * Deserialize a component from input of type {@code R}.
+   *
+   * <p>If {@code input} is {@code null}, then {@code fallback} will be returned.</p>
    *
    * @param input the input
    * @param fallback the fallback value
@@ -86,6 +90,8 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
   /**
    * Serializes a component into an output of type {@code R}.
    *
+   * <p>If {@code component} is {@code null}, then {@code null} will be returned.</p>
+   *
    * @param component the component
    * @return the output if {@code component} is non-null, otherwise {@code null}
    * @since 4.7.0
@@ -97,6 +103,8 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
 
   /**
    * Serializes a component into an output of type {@code R}.
+   *
+   * <p>If {@code component} is {@code null}, then {@code fallback} will be returned.</p>
    *
    * @param component the component
    * @param fallback the fallback value
