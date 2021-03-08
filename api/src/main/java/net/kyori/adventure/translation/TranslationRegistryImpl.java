@@ -63,6 +63,11 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
   }
 
   @Override
+  public boolean contains(final @NonNull String key) {
+    return this.translations.containsKey(key);
+  }
+
+  @Override
   public @Nullable MessageFormat translate(final @NonNull String key, final @NonNull Locale locale) {
     final Translation translation = this.translations.get(key);
     if(translation == null) return null;

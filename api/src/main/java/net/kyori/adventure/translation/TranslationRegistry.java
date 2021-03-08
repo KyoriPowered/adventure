@@ -72,6 +72,15 @@ public interface TranslationRegistry extends Translator {
   }
 
   /**
+   * Checks if any translations are explicitly registered for the specified key.
+   *
+   * @param key a translation key
+   * @return whether the registry contains a value for the translation key
+   * @since 4.7.0
+   */
+  boolean contains(final @NonNull String key);
+
+  /**
    * Gets a message format from a key and locale.
    *
    * <p>If a translation for {@code locale} is not found, we will then try {@code locale} without a country code, and then finally fallback to a default locale.</p>
