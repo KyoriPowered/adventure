@@ -35,7 +35,7 @@ final class PlainComponentSerializerImpl {
 
     BuilderImpl() {
       this.flattener = ComponentFlattener.basic().toBuilder()
-        .unknownHandler(comp -> {
+        .unknownMapper(comp -> {
           throw new UnsupportedOperationException("Don't know how to turn " + comp.getClass().getSimpleName() + " into a string");
         })
         .build();

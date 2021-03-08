@@ -45,16 +45,16 @@ import static java.util.Objects.requireNonNull;
 
 final class ComponentFlattenerImpl implements ComponentFlattener {
   @SuppressWarnings("deprecation")
-  static final ComponentFlattener BASIC = new Builder()
-    .type(KeybindComponent.class, KeybindComponent::keybind) // IntelliJ is wrong here, this is fine
-    .type(ScoreComponent.class, ScoreComponent::value) // Removed in Vanilla 1.16, but we keep it for backwards compat
-    .type(SelectorComponent.class, SelectorComponent::pattern)
-    .type(TextComponent.class, TextComponent::content)
-    .type(TranslatableComponent.class, TranslatableComponent::key)
+  static final ComponentFlattener BASIC = new BuilderImpl()
+    .mapper(KeybindComponent.class, KeybindComponent::keybind) // IntelliJ is wrong here, this is fine
+    .mapper(ScoreComponent.class, ScoreComponent::value) // Removed in Vanilla 1.16, but we keep it for backwards compat
+    .mapper(SelectorComponent.class, SelectorComponent::pattern)
+    .mapper(TextComponent.class, TextComponent::content)
+    .mapper(TranslatableComponent.class, TranslatableComponent::key)
     // The Vanilla game will not print NBT components, expecting those to be resolved with sender context
     .build();
-  static final ComponentFlattener TEXT_ONLY = new Builder()
-    .type(TextComponent.class, TextComponent::content)
+  static final ComponentFlattener TEXT_ONLY = new BuilderImpl()
+    .mapper(TextComponent.class, TextComponent::content)
     .build();
 
   private static final int MAX_DEPTH = 512;
@@ -137,7 +137,7 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
 
   @Override
   public ComponentFlattener.@NonNull Builder toBuilder() {
-    return new Builder(this.flatteners, this.complexFlatteners, this.unknownHandler);
+    return new BuilderImpl(this.flatteners, this.complexFlatteners, this.unknownHandler);
   }
 
   // A function that allows nesting other flatten operations
@@ -148,17 +148,17 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
     void handle(final Component input, final FlattenerListener listener, final int depth);
   }
 
-  static final class Builder implements ComponentFlattener.Builder {
+  static final class BuilderImpl implements Builder {
     private final Map<Class<?>, Function<?, String>> flatteners;
     private final Map<Class<?>, BiConsumer<?, Consumer<Component>>> complexFlatteners;
     private @Nullable Function<Component, String> unknownHandler;
 
-    Builder() {
+    BuilderImpl() {
       this.flatteners = new HashMap<>();
       this.complexFlatteners = new HashMap<>();
     }
 
-    Builder(final Map<Class<?>, Function<?, String>> flatteners, final Map<Class<?>, BiConsumer<?, Consumer<Component>>> complexFlatteners, final @Nullable Function<Component, String> unknownHandler) {
+    BuilderImpl(final Map<Class<?>, Function<?, String>> flatteners, final Map<Class<?>, BiConsumer<?, Consumer<Component>>> complexFlatteners, final @Nullable Function<Component, String> unknownHandler) {
       this.flatteners = new HashMap<>(flatteners);
       this.complexFlatteners = new HashMap<>(complexFlatteners);
       this.unknownHandler = unknownHandler;
@@ -170,7 +170,7 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
     }
 
     @Override
-    public <T extends Component> ComponentFlattener.@NonNull Builder type(final @NonNull Class<T> type, final @NonNull Function<T, String> converter) {
+    public <T extends Component> ComponentFlattener.@NonNull Builder mapper(final @NonNull Class<T> type, final @NonNull Function<T, String> converter) {
       this.validateNoneInHierarchy(requireNonNull(type, "type"));
       this.flatteners.put(
         type,
@@ -181,7 +181,7 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
     }
 
     @Override
-    public <T extends Component> ComponentFlattener.@NonNull Builder complexType(final @NonNull Class<T> type, final @NonNull BiConsumer<T, Consumer<Component>> converter) {
+    public <T extends Component> ComponentFlattener.@NonNull Builder complexMapper(final @NonNull Class<T> type, final @NonNull BiConsumer<T, Consumer<Component>> converter) {
       this.validateNoneInHierarchy(requireNonNull(type, "type"));
       this.complexFlatteners.put(
         type,
@@ -209,7 +209,7 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
     }
 
     @Override
-    public ComponentFlattener.@NonNull Builder unknownHandler(final @Nullable Function<Component, String> converter) {
+    public ComponentFlattener.@NonNull Builder unknownMapper(final @Nullable Function<Component, String> converter) {
       this.unknownHandler = converter;
       return this;
     }

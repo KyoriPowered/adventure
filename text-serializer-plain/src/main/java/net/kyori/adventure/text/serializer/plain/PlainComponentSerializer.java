@@ -93,8 +93,8 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
   @Deprecated
   public PlainComponentSerializer(final @Nullable Function<KeybindComponent, String> keybind, final @Nullable Function<TranslatableComponent, String> translatable) {
     final ComponentFlattener.Builder builder = ComponentFlattener.basic().toBuilder();
-    if(keybind != null) builder.type(KeybindComponent.class, keybind);
-    if(translatable != null) builder.type(TranslatableComponent.class, translatable);
+    if(keybind != null) builder.mapper(KeybindComponent.class, keybind);
+    if(translatable != null) builder.mapper(TranslatableComponent.class, translatable);
     this.flattener = builder.build();
   }
 

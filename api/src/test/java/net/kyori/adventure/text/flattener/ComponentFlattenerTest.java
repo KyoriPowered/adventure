@@ -196,7 +196,7 @@ class ComponentFlattenerTest {
   void testCustomHandler() {
     final ComponentFlattener customized = ComponentFlattener.basic()
       .toBuilder()
-      .type(TranslatableComponent.class, component -> component.key().toUpperCase(Locale.ROOT))
+      .mapper(TranslatableComponent.class, component -> component.key().toUpperCase(Locale.ROOT))
       .build();
 
     this.testFlatten(customized, Component.translatable("adventure.test.key"))
@@ -223,7 +223,7 @@ class ComponentFlattenerTest {
   @Test
   void testComplexHandler() {
     final ComponentFlattener flattener = ComponentFlattener.basic().toBuilder()
-      .complexType(TranslatableComponent.class, (component, accepter) -> accepter.accept(Component.text(component.key(), NamedTextColor.RED)))
+      .complexMapper(TranslatableComponent.class, (component, accepter) -> accepter.accept(Component.text(component.key(), NamedTextColor.RED)))
       .build();
 
     this.testFlatten(flattener, Component.translatable("my.key"))
@@ -237,16 +237,16 @@ class ComponentFlattenerTest {
   void testFailsWhenInSameHierarchy() {
     final ComponentFlattener.Builder builder = ComponentFlattener.builder();
 
-    builder.type(NBTComponent.class, x -> "");
+    builder.mapper(NBTComponent.class, x -> "");
 
     // simple subtype
-    assertThrows(IllegalArgumentException.class, () -> builder.type(BlockNBTComponent.class, $ -> ""));
+    assertThrows(IllegalArgumentException.class, () -> builder.mapper(BlockNBTComponent.class, $ -> ""));
     // complex subtype
-    assertThrows(IllegalArgumentException.class, () -> builder.complexType(BlockNBTComponent.class, ($, $$) -> {}));
+    assertThrows(IllegalArgumentException.class, () -> builder.complexMapper(BlockNBTComponent.class, ($, $$) -> {}));
 
     // simple supertype
-    assertThrows(IllegalArgumentException.class, () -> builder.type(Component.class, $ -> ""));
+    assertThrows(IllegalArgumentException.class, () -> builder.mapper(Component.class, $ -> ""));
     // complex supertype
-    assertThrows(IllegalArgumentException.class, () -> builder.complexType(Component.class, ($, $$) -> {}));
+    assertThrows(IllegalArgumentException.class, () -> builder.complexMapper(Component.class, ($, $$) -> {}));
   }
 }

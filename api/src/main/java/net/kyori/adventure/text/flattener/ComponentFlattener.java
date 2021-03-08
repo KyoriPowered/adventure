@@ -44,7 +44,7 @@ public interface ComponentFlattener extends Buildable<ComponentFlattener, Compon
    * @since 4.7.0
    */
   static @NonNull Builder builder() {
-    return new ComponentFlattenerImpl.Builder();
+    return new ComponentFlattenerImpl.BuilderImpl();
   }
 
   /**
@@ -96,10 +96,10 @@ public interface ComponentFlattener extends Buildable<ComponentFlattener, Compon
      * @param converter the converter to map that component to a string
      * @param <T> component type
      * @return this builder
+     * @see #complexMapper(Class, BiConsumer) for component types that are too complex to be directly rendered to a string
      * @since 4.7.0
-     * @see #complexType(Class, BiConsumer) for component types that are too complex to be directly rendered to a string
      */
-    <T extends Component> @NonNull Builder type(final @NonNull Class<T> type, final @NonNull Function<T, String> converter);
+    <T extends Component> @NonNull Builder mapper(final @NonNull Class<T> type, final @NonNull Function<T, String> converter);
 
     /**
      * Register a type of component that needs to be flattened to an intermediate stage.
@@ -110,7 +110,7 @@ public interface ComponentFlattener extends Buildable<ComponentFlattener, Compon
      * @return this builder
      * @since 4.7.0
      */
-    <T extends Component> @NonNull Builder complexType(final @NonNull Class<T> type, final @NonNull BiConsumer<T, Consumer<Component>> converter);
+    <T extends Component> @NonNull Builder complexMapper(final @NonNull Class<T> type, final @NonNull BiConsumer<T, Consumer<Component>> converter);
 
     /**
      * Register a handler for unknown component types.
@@ -121,6 +121,6 @@ public interface ComponentFlattener extends Buildable<ComponentFlattener, Compon
      * @return this builder
      * @since 4.7.0
      */
-    @NonNull Builder unknownHandler(final @Nullable Function<Component, String> converter);
+    @NonNull Builder unknownMapper(final @Nullable Function<Component, String> converter);
   }
 }
