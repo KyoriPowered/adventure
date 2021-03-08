@@ -106,7 +106,7 @@ public interface Title extends Examinable {
      *
      * @param fadeIn the fade-in time
      * @param stay the stay time
-     * @param fadeOut the fade-eut time
+     * @param fadeOut the fade-out time
      * @return times
      * @since 4.0.0
      */
