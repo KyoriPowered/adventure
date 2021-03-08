@@ -33,7 +33,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 @FunctionalInterface
 public interface FlattenerListener {
-
   /**
    * Begin a region of style in the component.
    *

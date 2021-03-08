@@ -48,7 +48,10 @@ public interface ComponentFlattener extends Buildable<ComponentFlattener, Compon
   }
 
   /**
-   * A basic flattener that will only print information directly contained in components.
+   * A basic flattener that will print only information directly contained in components.
+   *
+   * <p>The output of this flattener aims to match what the vanilla <em>Minecraft: Java Edition</em> client
+   * will display when unable to resolve any game data.</p>
    *
    * @return a basic flattener
    * @since 4.7.0

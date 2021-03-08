@@ -44,6 +44,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import static java.util.Objects.requireNonNull;
 
 final class ComponentFlattenerImpl implements ComponentFlattener {
+  @SuppressWarnings("deprecation")
   static final ComponentFlattener BASIC = new Builder()
     .type(KeybindComponent.class, KeybindComponent::keybind) // IntelliJ is wrong here, this is fine
     .type(ScoreComponent.class, ScoreComponent::value) // Removed in Vanilla 1.16, but we keep it for backwards compat

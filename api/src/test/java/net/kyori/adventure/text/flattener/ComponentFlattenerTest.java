@@ -162,6 +162,7 @@ class ComponentFlattenerTest {
   }
 
   @Test
+  @SuppressWarnings("deprecation")
   void testScore() {
     this.testFlatten(ComponentFlattener.basic(), Component.score("kashike", "dirtMined", "legacy support only"))
       .assertBalanced()
