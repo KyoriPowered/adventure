@@ -11,8 +11,4 @@ dependencies {
   testImplementation("com.google.guava:guava:23.0")
 }
 
-jar {
-  manifest.attributes(
-    "Automatic-Module-Name": "net.kyori.adventure"
-  )
-}
+applyJarMetadata(this, "net.kyori.adventure")
