@@ -25,6 +25,9 @@ package net.kyori.adventure.text.serializer;
 
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.PolyNull;
+import org.jetbrains.annotations.Contract;
 
 /**
  * A {@link Component} serializer and deserializer.
@@ -45,6 +48,37 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
   @NonNull O deserialize(final @NonNull R input);
 
   /**
+   * Deserialize a component from input of type {@code R}.
+   *
+   * <p>If {@code input} is {@code null}, then {@code null} will be returned.</p>
+   *
+   * @param input the input
+   * @return the component if {@code input} is non-null, otherwise {@code null}
+   * @since 4.7.0
+   */
+  @Contract(value = "!null -> !null; null -> null", pure = true)
+  default @PolyNull O deseializeOrNull(final @PolyNull R input) {
+    return this.deserializeOr(input, null);
+  }
+
+  /**
+   * Deserialize a component from input of type {@code R}.
+   *
+   * <p>If {@code input} is {@code null}, then {@code fallback} will be returned.</p>
+   *
+   * @param input the input
+   * @param fallback the fallback value
+   * @return the component if {@code input} is non-null, otherwise {@code fallback}
+   * @since 4.7.0
+   */
+  @Contract(value = "!null, _ -> !null; null, _ -> param2", pure = true)
+  default @PolyNull O deserializeOr(final @Nullable R input, final @PolyNull O fallback) {
+    if(input == null) return fallback;
+
+    return this.deserialize(input);
+  }
+
+  /**
    * Serializes a component into an output of type {@code R}.
    *
    * @param component the component
@@ -52,4 +86,35 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
    * @since 4.0.0
    */
   @NonNull R serialize(final @NonNull I component);
+
+  /**
+   * Serializes a component into an output of type {@code R}.
+   *
+   * <p>If {@code component} is {@code null}, then {@code null} will be returned.</p>
+   *
+   * @param component the component
+   * @return the output if {@code component} is non-null, otherwise {@code null}
+   * @since 4.7.0
+   */
+  @Contract(value = "!null -> !null; null -> null", pure = true)
+  default @PolyNull R serializeOrNull(final @PolyNull I component) {
+    return this.serializeOr(component, null);
+  }
+
+  /**
+   * Serializes a component into an output of type {@code R}.
+   *
+   * <p>If {@code component} is {@code null}, then {@code fallback} will be returned.</p>
+   *
+   * @param component the component
+   * @param fallback the fallback value
+   * @return the output if {@code component} is non-null, otherwise {@code fallback}
+   * @since 4.7.0
+   */
+  @Contract(value = "!null, _ -> !null; null, _ -> param2", pure = true)
+  default @PolyNull R serializeOr(final @Nullable I component, final @PolyNull R fallback) {
+    if(component == null) return fallback;
+
+    return this.serialize(component);
+  }
 }
