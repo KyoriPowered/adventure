@@ -23,12 +23,16 @@
  */
 package net.kyori.adventure.text;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
@@ -46,6 +50,7 @@ import static java.util.Objects.requireNonNull;
 @Debug.Renderer(text = "this.debuggerString()", childrenArray = "this.children().toArray()", hasChildren = "!this.children().isEmpty()")
 public abstract class AbstractComponent implements Component {
   private static final Predicate<Component> NOT_EMPTY = component -> component != Component.empty();
+  private static final TextDecoration[] DECORATIONS = TextDecoration.values();
 
   /**
    * The list of children.
@@ -84,6 +89,118 @@ public abstract class AbstractComponent implements Component {
       throw new IllegalArgumentException("Provided replacement was a custom TextReplacementConfig implementation, which is not supported.");
     }
     return TextReplacementRenderer.INSTANCE.render(this, ((TextReplacementConfigImpl) config).createState());
+  }
+
+  @Override
+  public @NotNull Component compact() {
+    return this.optimize(null);
+  }
+
+  private Component optimize(final @Nullable Style parentStyle) {
+    Component optimized = this.children(Collections.emptyList());
+    if (parentStyle != null) {
+      optimized = optimized.style(simplifyStyle(this.style(), parentStyle));
+    }
+
+    // propagate the parent style context to children
+    // by merging this component's style into the parent style
+    Style childParentStyle = optimized.style();
+    if (parentStyle != null) {
+      childParentStyle = parentStyle.merge(childParentStyle, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
+    }
+
+    // optimize all children
+    final List<Component> childrenToAppend = new ArrayList<>(this.children.size());
+    for (int i = 0; i < this.children.size(); ++i) {
+      childrenToAppend.add(((AbstractComponent) this.children.get(i)).optimize(childParentStyle));
+    }
+
+    // try to merge children into this parent component
+    for (final ListIterator<Component> it = childrenToAppend.listIterator(); it.hasNext();) {
+      final Component child = it.next();
+      final Style childStyle = child.style().merge(childParentStyle, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
+
+      if (optimized instanceof TextComponent && child instanceof TextComponent && Objects.equals(childStyle, childParentStyle)) {
+        // merge child components into the parent if they are a text component with the same effective style
+        // in context of their parent style
+        optimized = joinText((TextComponent) optimized, (TextComponent) child);
+        it.remove();
+
+        // if the merged child had any children, retain them
+        child.children().forEach(it::add);
+      } else {
+        // this child can't be merged into the parent, so all children from now on must remain children
+        break;
+      }
+    }
+
+    // try to concatenate any further children with their neighbor
+    // until no further joining is possible
+    for (int i = 0; i + 1 < childrenToAppend.size();) {
+      final Component child = childrenToAppend.get(i);
+      final Component neighbor = childrenToAppend.get(i + 1);
+
+      // calculate the children's styles in context of their parent style
+      final Style childStyle = child.style().merge(childParentStyle, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
+      final Style neighborStyle = neighbor.style().merge(childParentStyle, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
+
+      if (child instanceof TextComponent && neighbor instanceof TextComponent && childStyle.equals(neighborStyle)) {
+        final Component combined = joinText((TextComponent) child, (TextComponent) neighbor);
+
+        // replace the child and its neighbor with the single, combined component
+        childrenToAppend.set(i, combined);
+        childrenToAppend.remove(i + 1);
+
+        // don't increment the index -
+        // we want to try and optimize this combined component even further
+      } else {
+        i++;
+      }
+    }
+
+    return optimized.children(childrenToAppend);
+  }
+
+  /**
+   * Simplify the provided style to remove any information that is redundant.
+   *
+   * @param style style to simplify
+   * @param parentStyle parent to compare against
+   * @return a new, simplified style
+   */
+  private static @NotNull Style simplifyStyle(final @NotNull Style style, final @NotNull Style parentStyle) {
+    final Style.Builder builder = style.toBuilder();
+    if (Objects.equals(style.font(), parentStyle.font())) {
+      builder.font(null);
+    }
+
+    if (Objects.equals(style.color(), parentStyle.color())) {
+      builder.color(null);
+    }
+
+    for (final TextDecoration decoration : DECORATIONS) {
+      if (style.decoration(decoration) == parentStyle.decoration(decoration)) {
+        builder.decoration(decoration, TextDecoration.State.NOT_SET);
+      }
+    }
+
+    if (Objects.equals(style.clickEvent(), parentStyle.clickEvent())) {
+      builder.clickEvent(null);
+    }
+
+    if (Objects.equals(style.hoverEvent(), parentStyle.hoverEvent())) {
+      builder.hoverEvent(null);
+    }
+
+    if (Objects.equals(style.insertion(), parentStyle.insertion())) {
+      builder.insertion(null);
+    }
+
+    return builder.build();
+  }
+
+  private static TextComponent joinText(final TextComponent one, final TextComponent two) {
+    return Component.text(one.content() + two.content(), one.style());
   }
 
   @Override
