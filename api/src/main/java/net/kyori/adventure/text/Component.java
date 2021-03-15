@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 import java.util.stream.Collector;
@@ -1655,6 +1656,42 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(pure = true)
   @NonNull Component replaceText(final @NonNull TextReplacementConfig config);
+
+  /**
+   * Calls the provided visitor for this component and all of the component's children.
+   * There is no guarantee of the order in which each component will be visited.
+   *
+   * @param visitor the component visitor
+   * @since 4.8.0
+   */
+  default void visit(final @NonNull Consumer<Component> visitor) {
+    this.visitWhile(component -> {
+      visitor.accept(component);
+      return true;
+    });
+  }
+
+  /**
+   * Calls the provided visitor for each component and all of the component's children in
+   * this component until the visitor returns {@code true}. There is no guarantee of the
+   * order in which each component will be visited.
+   *
+   * @param visitor the component visitor
+   * @since 4.8.0
+   */
+  default void visitUntil(final @NonNull Predicate<Component> visitor) {
+    this.visitWhile(visitor.negate());
+  }
+
+  /**
+   * Calls the provided visitor for each component and all of the component's children in
+   * this component while the visitor returns {@code true}. There is no guarantee of the
+   * order in which each component will be visited.
+   *
+   * @param visitor the component visitor
+   * @since 4.8.0
+   */
+  void visitWhile(final @NonNull Predicate<Component> visitor);
 
   /**
    * Finds and replaces text within any {@link Component}s using a string literal.

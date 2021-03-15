@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.util.Buildable;
@@ -112,6 +113,17 @@ public abstract class AbstractComponent implements Component {
       throw new IllegalArgumentException("Provided replacement was a custom TextReplacementConfig implementation, which is not supported.");
     }
     return TextReplacementRenderer.INSTANCE.render(this, ((TextReplacementConfigImpl) config).createState());
+  }
+
+  @Override
+  public void visitWhile(final @NonNull Predicate<Component> visitor) {
+    if(visitor.test(this)) {
+      for(final Component child : this.children) {
+        if(!visitor.test(child)) {
+          return;
+        }
+      }
+    }
   }
 
   @Override
