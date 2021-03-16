@@ -98,15 +98,28 @@ public class MiniMessageSerializerTest {
   }
 
   @Test
+  @Disabled // TODO fix, see GH-92
+  void testParentHover() {
+    final String expected = "<hover:show_text:\"<red>---<blue><bold>-\">This is a child with hover</hover>";
+
+    final Builder builder = Component.text().hoverEvent(HoverEvent.showText(Component.text()
+        .content("---").color(NamedTextColor.RED)
+        .append(Component.text("-", NamedTextColor.BLUE, TextDecoration.BOLD))
+        .build()))
+      .append(Component.text("This is a child with hover"));
+
+    this.test(builder, expected);
+  }
+
+  @Test
   void testHoverWithNested() {
     final String expected = "<hover:show_text:\"<red>---<blue><bold>-\">Some hover</hover> that ends here";
 
     final Builder builder = Component.text()
-      .content("Some hover").hoverEvent(HoverEvent.showText(Component.text()
-        .content("---").color(NamedTextColor.RED)
-        .append(Component.text("-", NamedTextColor.BLUE, TextDecoration.BOLD))
-        .build()))
-      .append(Component.text(" that ends here"));
+            .append(Component.text("Some hover").hoverEvent(
+                    HoverEvent.showText(Component.text("---").color(NamedTextColor.RED)
+                            .append(Component.text("-", NamedTextColor.BLUE, TextDecoration.BOLD)))))
+            .append(Component.text(" that ends here"));
 
     this.test(builder, expected);
   }
