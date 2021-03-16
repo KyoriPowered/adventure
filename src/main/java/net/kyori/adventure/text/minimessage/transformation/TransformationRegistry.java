@@ -118,16 +118,17 @@ public final class TransformationRegistry {
    * @since 4.1.0
    */
   public @Nullable Transformation get(final String name, final List<Token> inners, final Map<String, Template.ComponentTemplate> templates, final Function<String, ComponentLike> placeholderResolver, final DebugContext debugContext) {
+    // first try if we have a custom placeholder resolver
+    final ComponentLike potentialTemplate = placeholderResolver.apply(name);
+    if(potentialTemplate != null) {
+      return this.tryLoad(new TemplateTransformation(new Template.ComponentTemplate(name, potentialTemplate.asComponent())), name, inners, debugContext);
+    }
+    // then check our registry
     for(final TransformationType<? extends Transformation> type : this.types) {
       if(type.canParse.test(name)) {
         return this.tryLoad(type.parser.parse(), name, inners, debugContext);
       } else if(templates.containsKey(name)) {
         return this.tryLoad(new TemplateTransformation(templates.get(name)), name, inners, debugContext);
-      } else {
-        final ComponentLike potentialTemplate = placeholderResolver.apply(name);
-        if(potentialTemplate != null) {
-          return this.tryLoad(new TemplateTransformation(new Template.ComponentTemplate(name, potentialTemplate.asComponent())), name, inners, debugContext);
-        }
       }
     }
 
