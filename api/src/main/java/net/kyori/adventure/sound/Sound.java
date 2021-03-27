@@ -254,4 +254,13 @@ public interface Sound extends Examinable {
     @Override
     @NotNull Key key();
   }
+
+  /**
+   * A player of sounds.
+   *
+   * @since 4.8.0
+   */
+  interface Player {
+
+  }
 }
