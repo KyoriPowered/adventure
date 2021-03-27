@@ -23,29 +23,60 @@
  */
 package net.kyori.adventure.util;
 
-class CoordinateLikeImpl implements CoordinateLike {
-  private final double x;
-  private final double y;
-  private final double z;
+import java.util.stream.Stream;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-  CoordinateLikeImpl(final double x, final double y, final double z) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
+/**
+ * Something that can provide x, y, and z components.
+ *
+ * @since 4.8.0
+ */
+public interface Vector3dLike extends Examinable {
+  /**
+   * Creates a new CoordinateLike.
+   *
+   * @param x the x coordinate
+   * @param y the y coordinate
+   * @param z the z coordinate
+   * @return a new CoordinateLike
+   * @since 4.8.0
+   */
+  static Vector3dLike of(final double x, final double y, final double z) {
+    return new Vector3dLikeImpl(x, y, z);
   }
 
-  @Override
-  public double x() {
-    return this.x;
-  }
+  /**
+   * Gets the x coordinate.
+   *
+   * @return the x coordinate
+   * @since 4.8.0
+   */
+  double x();
+
+  /**
+   * Gets the y coordinate.
+   *
+   * @return the y coordinate
+   * @since 4.8.0
+   */
+  double y();
+
+  /**
+   * Gets the y coordinate.
+   *
+   * @return the y coordinate
+   * @since 4.8.0
+   */
+  double z();
 
   @Override
-  public double y() {
-    return this.y;
-  }
-
-  @Override
-  public double z() {
-    return this.z;
+  default @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(
+      ExaminableProperty.of("x", this.x()),
+      ExaminableProperty.of("y", this.y()),
+      ExaminableProperty.of("z", this.z())
+    );
   }
 }

@@ -23,46 +23,51 @@
  */
 package net.kyori.adventure.util;
 
-/**
- * Something that can provide x, y, and z components.
- *
- * @since 4.8.0
- */
-public interface CoordinateLike {
-  /**
-   * Creates a new CoordinateLike.
-   *
-   * @param x the x coordinate
-   * @param y the y coordinate
-   * @param z the z coordinate
-   * @return a new CoordinateLike
-   * @since 4.8.0
-   */
-  static CoordinateLike of(final double x, final double y, final double z) {
-    return new CoordinateLikeImpl(x, y, z);
+import java.util.Objects;
+import net.kyori.examination.string.StringExaminer;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+final class Vector3dLikeImpl implements Vector3dLike {
+  private final double x;
+  private final double y;
+  private final double z;
+
+  Vector3dLikeImpl(final double x, final double y, final double z) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
   }
 
-  /**
-   * Gets the x coordinate.
-   *
-   * @return the x coordinate
-   * @since 4.8.0
-   */
-  double x();
+  @Override
+  public double x() {
+    return this.x;
+  }
 
-  /**
-   * Gets the y coordinate.
-   *
-   * @return the y coordinate
-   * @since 4.8.0
-   */
-  double y();
+  @Override
+  public double y() {
+    return this.y;
+  }
 
-  /**
-   * Gets the y coordinate.
-   *
-   * @return the y coordinate
-   * @since 4.8.0
-   */
-  double z();
+  @Override
+  public double z() {
+    return this.z;
+  }
+
+  @Override
+  public boolean equals(final @Nullable Object other) {
+    if(this == other) return true;
+    if(!(other instanceof Vector3dLikeImpl)) return false;
+    final Vector3dLikeImpl that = (Vector3dLikeImpl) other;
+    return ShadyPines.equals(that.z, this.z) && ShadyPines.equals(that.y, this.y) && ShadyPines.equals(that.z, this.z);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.x, this.y, this.z);
+  }
+
+  @Override
+  public String toString() {
+    return this.examine(StringExaminer.simpleEscaping());
+  }
 }
