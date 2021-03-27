@@ -35,6 +35,7 @@ import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.title.Title;
+import net.kyori.adventure.util.CoordinateLike;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -451,6 +452,17 @@ public interface Audience extends Pointered {
    * @since 4.0.0
    */
   default void playSound(final @NotNull Sound sound) {
+  }
+
+  /**
+   * Plays a sound at a location.
+   *
+   * @param sound a sound
+   * @param location a location
+   * @since 4.8.0
+   */
+  default void playSound(final @NonNull Sound sound, final @NonNull CoordinateLike location) {
+    this.playSound(sound, location.x(), location.y(), location.z());
   }
 
   /**
