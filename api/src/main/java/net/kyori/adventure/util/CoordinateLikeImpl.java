@@ -23,11 +23,6 @@
  */
 package net.kyori.adventure.util;
 
-/**
- * Something that can provide x, y, and z components.
- *
- * @since 4.8.0
- */
 class CoordinateLikeImpl implements CoordinateLike {
   private final double x;
   private final double y;
