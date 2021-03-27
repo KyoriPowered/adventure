@@ -266,6 +266,11 @@ public interface ForwardingAudience extends Audience {
     }
 
     @Override
+    default void playSound(final @NonNull Sound sound, final Sound.@NonNull Player player) {
+      this.audience().playSound(sound, player);
+    }
+
+    @Override
     default void stopSound(final @NotNull SoundStop stop) {
       this.audience().stopSound(stop);
     }
