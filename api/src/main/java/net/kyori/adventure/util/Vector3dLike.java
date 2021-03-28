@@ -35,7 +35,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public interface Vector3dLike extends Examinable {
   /**
-   * Creates a new CoordinateLike.
+   * Creates a new Vector3dLike.
    *
    * @param x the x coordinate
    * @param y the y coordinate

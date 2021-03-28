@@ -58,7 +58,7 @@ final class Vector3dLikeImpl implements Vector3dLike {
     if(this == other) return true;
     if(!(other instanceof Vector3dLikeImpl)) return false;
     final Vector3dLikeImpl that = (Vector3dLikeImpl) other;
-    return ShadyPines.equals(that.z, this.z) && ShadyPines.equals(that.y, this.y) && ShadyPines.equals(that.z, this.z);
+    return ShadyPines.equals(that.x, this.x) && ShadyPines.equals(that.y, this.y) && ShadyPines.equals(that.z, this.z);
   }
 
   @Override
