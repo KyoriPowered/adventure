@@ -91,6 +91,16 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
+  default void showTitle(final @NonNull Title title, final Title.@NonNull Part@NonNull... parts) {
+    for(final Audience audience : this.audiences()) audience.showTitle(title, parts);
+  }
+
+  @Override
+  default void showTitle(final @NonNull Title title, final @NonNull Iterable<Title.Part> parts) {
+    for(final Audience audience : this.audiences()) audience.showTitle(title, parts);
+  }
+
+  @Override
   default void clearTitle() {
     for(final Audience audience : this.audiences()) audience.clearTitle();
   }
@@ -190,6 +200,16 @@ public interface ForwardingAudience extends Audience {
     @Override
     default void showTitle(final @NonNull Title title) {
       this.audience().showTitle(title);
+    }
+
+    @Override
+    default void showTitle(final @NonNull Title title, final Title.@NonNull Part@NonNull... parts) {
+      this.audience().showTitle(title, parts);
+    }
+
+    @Override
+    default void showTitle(final @NonNull Title title, final @NonNull Iterable<Title.Part> parts) {
+      this.audience().showTitle(title, parts);
     }
 
     @Override
