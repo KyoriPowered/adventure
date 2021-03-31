@@ -479,14 +479,14 @@ public interface Audience extends Pointered {
   }
 
   /**
-   * Plays a sound from a player, usually an entity.
+   * Plays a sound from an emitter, usually an entity.
    *
    * @param sound a sound
-   * @param player a player
+   * @param emitter an emitter
    * @see Sound
    * @since 4.8.0
    */
-  default void playSound(final @NonNull Sound sound, final Sound.@NonNull Player player) {
+  default void playSound(final @NonNull Sound sound, final Sound.@NonNull Emitter emitter) {
   }
 
   /**

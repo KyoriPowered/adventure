@@ -256,11 +256,11 @@ public interface Sound extends Examinable {
   }
 
   /**
-   * A player of sounds.
+   * A emitter of sounds.
    *
    * @since 4.8.0
    */
-  interface Player {
+  interface Emitter {
 
   }
 }
