@@ -15,4 +15,6 @@
 /serializer-configurate*/out/
 /text-serializer-*/build/
 /text-serializer-*/out/
+/weather/build/
+/weather/out/
 /*.iml
