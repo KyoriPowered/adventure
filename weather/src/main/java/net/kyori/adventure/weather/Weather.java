@@ -24,13 +24,12 @@
 package net.kyori.adventure.weather;
 
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.stream.Stream;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
-import static net.kyori.adventure.weather.WeatherImpl.DEFAULT_LENGTH;
 
 /**
  * Some weather.
@@ -40,13 +39,13 @@ import static net.kyori.adventure.weather.WeatherImpl.DEFAULT_LENGTH;
 public interface Weather extends Examinable {
 
   /**
-   * Clear skies with the default length of 5 minutes.
+   * Clear skies for a random length of time.
    *
    * @return the weather
    * @since 4.8.0
    */
   static @NonNull Weather clear() {
-    return clear(DEFAULT_LENGTH);
+    return clear(Length.random());
   }
 
   /**
@@ -56,18 +55,18 @@ public interface Weather extends Examinable {
    * @return the weather
    * @since 4.8.0
    */
-  static @NonNull Weather clear(Weather.@NonNull Length length) {
+  static @NonNull Weather clear(final Weather.@NonNull Length length) {
     return weather(Type.CLEAR, length);
   }
 
   /**
-   * Rain with the default length of 5 minutes.
+   * Rain for a random length of time.
    *
    * @return the weather
    * @since 4.8.0
    */
   static @NonNull Weather rain() {
-    return rain(DEFAULT_LENGTH);
+    return rain(Length.random());
   }
 
   /**
@@ -77,18 +76,18 @@ public interface Weather extends Examinable {
    * @return the weather
    * @since 4.8.0
    */
-  static @NonNull Weather rain(Weather.@NonNull Length length) {
+  static @NonNull Weather rain(final Weather.@NonNull Length length) {
     return weather(Type.RAIN, length);
   }
 
   /**
-   * Thunder with the default length of 5 minutes.
+   * Thunder for a random length of time.
    *
    * @return the weather
    * @since 4.8.0
    */
   static @NonNull Weather thunder() {
-    return thunder(DEFAULT_LENGTH);
+    return thunder(Length.random());
   }
 
   /**
@@ -98,7 +97,7 @@ public interface Weather extends Examinable {
    * @return the weather
    * @since 4.8.0
    */
-  static @NonNull Weather thunder(Weather.@NonNull Length length) {
+  static @NonNull Weather thunder(final Weather.@NonNull Length length) {
     return weather(Type.THUNDER, length);
   }
 
@@ -110,17 +109,9 @@ public interface Weather extends Examinable {
    * @return the weather
    * @since 4.8.0
    */
-  static @NonNull Weather weather(final @NonNull Type type, Weather.@NonNull Length length) {
+  static @NonNull Weather weather(final @NonNull Type type, final Weather.@NonNull Length length) {
     return new WeatherImpl(type, length);
   }
-
-  /**
-   * Gets the length of this weather.
-   *
-   * @return the duration
-   * @since 4.8.0
-   */
-  Weather.@NonNull Length length();
 
   /**
    * Gets the type of this weather.
@@ -130,6 +121,14 @@ public interface Weather extends Examinable {
    * @since 4.8.0
    */
   @NonNull Type type();
+
+  /**
+   * Gets the length of this weather.
+   *
+   * @return the duration
+   * @since 4.8.0
+   */
+  @NonNull Length length();
 
   @Override
   default @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
@@ -164,7 +163,7 @@ public interface Weather extends Examinable {
      *
      * @since 4.8.0
      */
-    THUNDER
+    THUNDER;
   }
 
   /**
@@ -174,13 +173,23 @@ public interface Weather extends Examinable {
    */
   interface Length extends Examinable {
     /**
-     * A random weather length.
+     * A random weather length. The actual length of this weather is left up to the implementation.
      *
      * @return the length
      * @since 4.8.0
      */
     static Length random() {
-      return WeatherImpl.RANDOM;
+      return WeatherImpl.LENGTH_RANDOM;
+    }
+
+    /**
+     * A weather length that lasts as long as {@link ChronoUnit#FOREVER}.
+     *
+     * @return the length
+     * @since 4.8.0
+     */
+    static Length forever() {
+      return WeatherImpl.LENGTH_FOREVER;
     }
 
     /**

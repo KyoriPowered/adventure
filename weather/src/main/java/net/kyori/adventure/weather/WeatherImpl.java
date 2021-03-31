@@ -24,14 +24,15 @@
 package net.kyori.adventure.weather;
 
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class WeatherImpl implements Weather {
-  static final Length DEFAULT_LENGTH = Length.of(Duration.ofMillis(5));
-  static final Length RANDOM = new LengthImpl(null);
+  static final Length LENGTH_RANDOM = new LengthImpl(null);
+  static final Length LENGTH_FOREVER = Length.of(ChronoUnit.FOREVER.getDuration());
   private final Type type;
   private final Length length;
 
