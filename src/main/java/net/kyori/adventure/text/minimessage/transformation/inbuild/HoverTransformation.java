@@ -64,6 +64,7 @@ public final class HoverTransformation extends Transformation {
   private HoverTransformation() {
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void load(final String name, final List<Token> args) {
     super.load(name, args);
@@ -72,13 +73,18 @@ public final class HoverTransformation extends Transformation {
       throw new ParsingException("Doesn't know how to turn " + args + " into a hover event", -1);
     }
 
-    //noinspection unchecked
     this.action = (HoverEvent.Action<Object>) HoverEvent.Action.NAMES.value(args.get(0).value());
-    String string = Token.asValueString(args.subList(2, args.size()));
-    if(string.startsWith("'") || string.startsWith("\"")) {
-      string = string.substring(1).substring(0, string.length() - 2);
+    if (this.action == (Object) HoverEvent.Action.SHOW_TEXT) {
+      String string = Token.asValueString(args.subList(2, args.size()));
+      if(string.length() != 1 && (string.startsWith("'") && string.endsWith("'")) || (string.startsWith("\"") && string.endsWith("\""))) {
+        string = string.substring(1).substring(0, string.length() - 2);
+      }
+      this.value = MiniMessage.get().parse(string); // TODO this uses a hardcoded instance, there gotta be a better way
+    } else if (this.action == (Object) HoverEvent.Action.SHOW_ITEM) {
+      throw new UnsupportedOperationException("SHOW_ITEM hover is not yet supported!");
+    } else if (this.action == (Object) HoverEvent.Action.SHOW_ENTITY) {
+      throw new UnsupportedOperationException("SHOW_ENTITY hover is not yet supported!");
     }
-    this.value = MiniMessage.get().parse(string); // TODO this uses a hardcoded instance, there gotta be a better way
   }
 
   @Override
