@@ -91,6 +91,8 @@ public final class HoverTransformation extends Transformation {
       this.value = this.parseShowItem(string);
     } else if(this.action == (Object) HoverEvent.Action.SHOW_ENTITY) {
       this.value = this.parseShowEntity(string);
+    } else {
+      throw new ParsingException("Don't know how to turn '" + args + "' into a hover event", -1);
     }
   }
 

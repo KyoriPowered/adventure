@@ -73,7 +73,7 @@ public final class ClickTransformation extends Transformation {
       this.action = ClickEvent.Action.NAMES.value(args.get(0).value().toLowerCase(Locale.ROOT));
       this.value = Token.asValueString(args.subList(3, args.size() - 1));
     } else {
-      throw new ParsingException("Doesn't know how to turn " + args + " into a click event", -1);
+      throw new ParsingException("Don't know how to turn " + args + " into a click event", -1);
     }
   }
 
