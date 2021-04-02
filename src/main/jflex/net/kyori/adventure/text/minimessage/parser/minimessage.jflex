@@ -48,7 +48,8 @@ import java.io.IOException;
 %state TAG
 %state TAG_DUMMY
 %state PARAM
-%state QUOTED
+%state SINGLE_QUOTED
+%state DOUBLE_QUOTED
 %state STRING
 
 %{
@@ -122,8 +123,10 @@ identifier = [a-zA-Z0-9_\-#\./ ]+
 
 paramSeperator = :
 
-quote = '|\"
-escapedQuote = \\'|\\\"
+singleQuote = '
+doubleQuote = \"
+escapedSingleQuote = \\'
+escapedDoubleQuote = \\\"
 
 whitespace = [ \n\t\r]+
 
@@ -155,14 +158,21 @@ whitespace = [ \n\t\r]+
 <PARAM> {
   {paramSeperator}        { tokens.add(new Token(getString())); tokens.add(new Token(TokenType.PARAM_SEPARATOR)); }
   {tagEnd}                { yybegin(YYINITIAL); tokens.add(new Token(getString())); tokens.add(new Token(TokenType.TAG_END)); }
-  {quote}                 { yybegin(QUOTED); tokens.add(new Token(TokenType.QUOTE_START)); }
+  {singleQuote}           { yybegin(SINGLE_QUOTED); tokens.add(new Token(TokenType.SINGLE_QUOTE_START)); }
+  {doubleQuote}           { yybegin(DOUBLE_QUOTED); tokens.add(new Token(TokenType.DOUBLE_QUOTE_START)); }
   {identifier}            { string.append(yytext()); }
   [^]                     { checkStrict(new ParsingException("Illegal character '" + yytext() + "'. Only alphanumeric + ._-#/ and spaces are allowed as params", yycolumn)); }
 }
 
-<QUOTED> {
-  {escapedQuote}          { string.append(yytext().substring(1)); }
-  {quote}                 { yybegin(PARAM); tokens.add(new Token(getString())); tokens.add(new Token(TokenType.QUOTE_END)); }
+<SINGLE_QUOTED> {
+  {escapedSingleQuote}    { string.append(yytext().substring(1)); }
+  {singleQuote}           { yybegin(PARAM); tokens.add(new Token(getString())); tokens.add(new Token(TokenType.SINGLE_QUOTE_END)); }
+  [^]                     { string.append(yytext()); }
+}
+
+<DOUBLE_QUOTED> {
+  {escapedDoubleQuote}    { string.append(yytext().substring(1)); }
+  {doubleQuote}           { yybegin(PARAM); tokens.add(new Token(getString())); tokens.add(new Token(TokenType.DOUBLE_QUOTE_END)); }
   [^]                     { string.append(yytext()); }
 }
 

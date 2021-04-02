@@ -38,8 +38,10 @@ public enum TokenType {
 
   PARAM_SEPARATOR(":"),
 
-  QUOTE_START("'"),
-  QUOTE_END("'"),
+  SINGLE_QUOTE_START("'"),
+  SINGLE_QUOTE_END("'"),
+  DOUBLE_QUOTE_START("\""),
+  DOUBLE_QUOTE_END("\""),
 
   STRING(""),
   NAME("");

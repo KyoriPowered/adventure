@@ -69,12 +69,19 @@ public final class ClickTransformation extends Transformation {
     if(args.size() >= 3 && args.get(0).type() == TokenType.STRING && args.get(2).type() == TokenType.STRING) {
       this.action = ClickEvent.Action.NAMES.value(args.get(0).value().toLowerCase(Locale.ROOT));
       this.value = Token.asValueString(args.subList(2, args.size()));
-    } else if(args.size() >= 5 && args.get(0).type() == TokenType.STRING && args.get(2).type() == TokenType.QUOTE_START && args.get(args.size() - 1).type() == TokenType.QUOTE_END) {
+    } else if(args.size() >= 5 && args.get(0).type() == TokenType.STRING && startsAndEndsWithQuotes(args.subList(2, args.size()))) {
       this.action = ClickEvent.Action.NAMES.value(args.get(0).value().toLowerCase(Locale.ROOT));
       this.value = Token.asValueString(args.subList(3, args.size() - 1));
     } else {
       throw new ParsingException("Doesn't know how to turn " + args + " into a click event", -1);
     }
+  }
+
+  static boolean startsAndEndsWithQuotes(final @NonNull List<Token> args) {
+    final TokenType startType = args.get(0).type();
+    final TokenType endType = args.get(args.size() - 1).type();
+    return startType == TokenType.SINGLE_QUOTE_START && endType == TokenType.SINGLE_QUOTE_END
+            || startType == TokenType.DOUBLE_QUOTE_START && endType == TokenType.DOUBLE_QUOTE_END;
   }
 
   @Override
