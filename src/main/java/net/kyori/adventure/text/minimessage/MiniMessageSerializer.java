@@ -111,11 +111,7 @@ final class MiniMessageSerializer {
       // ### only start if prevComp didn't start the same one
       final HoverEvent<?> hov = comp.hoverEvent();
       if(hov != null && (prevComp == null || areDifferent(hov, prevComp.hoverEvent()))) {
-        if(hov.value() instanceof Component) {
-          sb.append(startTag(String.format("%s" + SEPARATOR + "%s" + SEPARATOR + "\"%s\"", HOVER, HoverEvent.Action.NAMES.key(hov.action()), serialize((Component) hov.value()))));
-        } else {
-          // TODO what to do here? warning? exception? toggleable strict mode?
-        }
+        serializeHoverEvent(sb, hov);
       }
 
       // ## click
@@ -215,6 +211,32 @@ final class MiniMessageSerializer {
     }
 
     return sb.toString();
+  }
+
+  private static void serializeHoverEvent(final @NonNull StringBuilder sb, final @NonNull HoverEvent<?> hov) {
+    if(hov.action() == HoverEvent.Action.SHOW_TEXT) {
+      sb.append(startTag(HOVER + ":" + HoverEvent.Action.NAMES.key(hov.action()) + ":\"" + serialize((Component) hov.value()) + "\""));
+    } else if(hov.action() == HoverEvent.Action.SHOW_ITEM) {
+      final HoverEvent.ShowItem showItem = (HoverEvent.ShowItem) hov.value();
+      final String nbt;
+      if(showItem.nbt() != null) {
+        nbt = SEPARATOR + "\"" + showItem.nbt().string().replace("\"", "\\\"") + "\"";
+      } else {
+        nbt = "";
+      }
+      sb.append(startTag(HOVER + SEPARATOR + HoverEvent.Action.NAMES.key(hov.action()) + SEPARATOR + "'" + showItem.item().asString() + "'" + SEPARATOR + showItem.count() + nbt));
+    } else if(hov.action() == HoverEvent.Action.SHOW_ENTITY) {
+      final HoverEvent.ShowEntity showEntity = (HoverEvent.ShowEntity) hov.value();
+      final String displayName;
+      if(showEntity.name() != null) {
+        displayName = SEPARATOR + "\"" + serialize(showEntity.name()).replace("\"", "\\\"") + "\"";
+      } else {
+        displayName = "";
+      }
+      sb.append(startTag(HOVER + SEPARATOR + HoverEvent.Action.NAMES.key(hov.action()) + SEPARATOR + "'" + showEntity.type().asString() + "'" + SEPARATOR + showEntity.id().toString() + displayName));
+    } else {
+      throw new RuntimeException("Don't know how to serialize '" + hov + "'!");
+    }
   }
 
   private static boolean areDifferent(final @NonNull ClickEvent c1, final @Nullable ClickEvent c2) {

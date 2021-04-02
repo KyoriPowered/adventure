@@ -26,6 +26,7 @@ package net.kyori.adventure.text.minimessage;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TextComponent.Builder;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -37,6 +38,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.util.UUID;
+
+import static net.kyori.adventure.text.Component.text;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MiniMessageSerializerTest {
@@ -242,6 +246,27 @@ public class MiniMessageSerializerTest {
     System.out.println(reparsed);
 
     assertEquals(parsed, reparsed);
+  }
+
+  @Test
+  void testShowItemHover() {
+    final TextComponent.Builder input = text()
+            .content("test")
+            .hoverEvent(HoverEvent.showItem(Key.key("minecraft", "stone"), 5));
+    final String expected = "<hover:show_item:'minecraft:stone':5>test";
+    this.test(input, expected);
+  }
+
+  @Test
+  void testShowEntityHover() {
+    final UUID uuid = UUID.randomUUID();
+    final String nameString = "<gold>Custom Name!";
+    final Component name = MiniMessage.get().parse(nameString);
+    final TextComponent.Builder input = text()
+            .content("test")
+            .hoverEvent(HoverEvent.showEntity(Key.key("minecraft", "zombie"), uuid, name));
+    final String expected = String.format("<hover:show_entity:'minecraft:zombie':%s:\"%s\">test", uuid.toString(), nameString);
+    this.test(input, expected);
   }
 
   private void test(final @NonNull ComponentLike builder, final @NonNull String expected) {
