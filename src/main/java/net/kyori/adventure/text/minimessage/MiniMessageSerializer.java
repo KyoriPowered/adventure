@@ -31,13 +31,14 @@ import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -64,152 +65,162 @@ final class MiniMessageSerializer {
   }
 
   static @NonNull String serialize(final @NonNull Component component) {
+    final List<ComponentNode> nodes = traverseNode(new ComponentNode(component));
     final StringBuilder sb = new StringBuilder();
 
-    final List<Component> components = new ArrayList<>();
-    components.add(component);
+    for(int i = 0; i < nodes.size(); i++) {
+      // The previous node, null if it doesn't exist.
+      final Style previous = ((i - 1) >= 0) ? nodes.get(i - 1).style() : null;
 
-    for(int i = 0; i < components.size(); i++) {
-      final Component comp = components.get(i);
+      // The next node, null if it doesn't exist.
+      final Style next = ((i + 1) < nodes.size()) ? nodes.get(i + 1).style() : null;
 
-      // add childs
-      components.addAll(i + 1, comp.children());
+      // The current node.
+      final ComponentNode node = nodes.get(i);
 
-      // # start tags
+      // Serialized string for the node.
+      sb.append(serializeNode(node, previous, next));
+    }
+    return sb.toString();
+  }
 
-      // ## get prev comp
-      Component prevComp = null;
-      if(i > 0) {
-        prevComp = components.get(i - 1);
-      }
+  // Sorts a ComponentNode's tree in a LinkedList using Pre Order Traversal.
+  private static List<ComponentNode> traverseNode(@NonNull final ComponentNode root) {
+    final List<ComponentNode> nodes = new LinkedList<>();
+    nodes.add(root);
 
-      // ## color
-      // ### white is not important
-      if(!NamedTextColor.WHITE.equals(comp.color()) && comp.color() != null && (prevComp == null || prevComp.color() != comp.color())) {
-        sb.append(startColor(Objects.requireNonNull(comp.color())));
-      }
-
-      // ## decoration
-      // ### only start if prevComp didn't start
-      if(comp.hasDecoration(TextDecoration.BOLD) && (prevComp == null || !prevComp.hasDecoration(TextDecoration.BOLD))) {
-        sb.append(startTag(BOLD));
-      }
-      if(comp.hasDecoration(TextDecoration.ITALIC) && (prevComp == null || !prevComp.hasDecoration(TextDecoration.ITALIC))) {
-        sb.append(startTag(ITALIC));
-      }
-      if(comp.hasDecoration(TextDecoration.OBFUSCATED) && (prevComp == null || !prevComp.hasDecoration(TextDecoration.OBFUSCATED))) {
-        sb.append(startTag(OBFUSCATED));
-      }
-      if(comp.hasDecoration(TextDecoration.STRIKETHROUGH) && (prevComp == null || !prevComp.hasDecoration(TextDecoration.STRIKETHROUGH))) {
-        sb.append(startTag(STRIKETHROUGH));
-      }
-      if(comp.hasDecoration(TextDecoration.UNDERLINED) && (prevComp == null || !prevComp.hasDecoration(TextDecoration.UNDERLINED))) {
-        sb.append(startTag(UNDERLINED));
-      }
-
-      // ## hover
-      // ### only start if prevComp didn't start the same one
-      final HoverEvent<?> hov = comp.hoverEvent();
-      if(hov != null && (prevComp == null || areDifferent(hov, prevComp.hoverEvent()))) {
-        serializeHoverEvent(sb, hov);
-      }
-
-      // ## click
-      // ### only start if prevComp didn't start the same one
-      final ClickEvent click = comp.clickEvent();
-      if(click != null && (prevComp == null || areDifferent(click, prevComp.clickEvent()))) {
-        sb.append(startTag(String.format("%s" + SEPARATOR + "%s" + SEPARATOR + "\"%s\"", CLICK, ClickEvent.Action.NAMES.key(click.action()), click.value())));
-      }
-
-      // ## insertion
-      // ### only start if prevComp didn't start the same one
-      final String insert = comp.insertion();
-      if(insert != null && (prevComp == null || !insert.equals(prevComp.insertion()))) {
-        sb.append(startTag(INSERTION + SEPARATOR + insert));
-      }
-
-      // ## font
-      final Key font = comp.style().font();
-      if(font != null && (prevComp == null || !font.equals(prevComp.style().font()))) {
-        sb.append(startTag(FONT + SEPARATOR + font.asString()));
-      }
-
-      // # append text
-      if(comp instanceof TextComponent) {
-        sb.append(((TextComponent) comp).content());
-      } else {
-        handleDifferentComponent(comp, sb);
-      }
-
-      // # end tags
-
-      // ## get next comp
-      Component nextComp = null;
-      if(i + 1 < components.size()) {
-        nextComp = components.get(i + 1);
-      }
-
-      // ## color
-      // ### only end color if next comp is white and current isn't
-      if(nextComp != null && comp.color() != NamedTextColor.WHITE && comp.color() != null) {
-        if(nextComp.color() == NamedTextColor.WHITE || nextComp.color() == null) {
-          sb.append(endColor(Objects.requireNonNull(comp.color())));
-        }
-      }
-
-      // ## decoration
-      // ### only end decoration if next tag is different
-      if(nextComp != null) {
-        if(comp.hasDecoration(TextDecoration.BOLD) && !nextComp.hasDecoration(TextDecoration.BOLD)) {
-          sb.append(endTag(BOLD));
-        }
-        if(comp.hasDecoration(TextDecoration.ITALIC) && !nextComp.hasDecoration(TextDecoration.ITALIC)) {
-          sb.append(endTag(ITALIC));
-        }
-        if(comp.hasDecoration(TextDecoration.OBFUSCATED) && !nextComp.hasDecoration(TextDecoration.OBFUSCATED)) {
-          sb.append(endTag(OBFUSCATED));
-        }
-        if(comp.hasDecoration(TextDecoration.STRIKETHROUGH) && !nextComp.hasDecoration(TextDecoration.STRIKETHROUGH)) {
-          sb.append(endTag(STRIKETHROUGH));
-        }
-        if(comp.hasDecoration(TextDecoration.UNDERLINED) && !nextComp.hasDecoration(TextDecoration.UNDERLINED)) {
-          sb.append(endTag(UNDERLINED));
-        }
-      }
-
-      // ## hover
-      // ### only end hover if next tag is different
-      if(nextComp != null && comp.hoverEvent() != null) {
-        if(areDifferent(Objects.requireNonNull(comp.hoverEvent()), nextComp.hoverEvent())) {
-          sb.append(endTag(HOVER));
-        }
-      }
-
-      // ## click
-      // ### only end click if next tag is different
-      if(nextComp != null && comp.clickEvent() != null) {
-        if(areDifferent(Objects.requireNonNull(comp.clickEvent()), nextComp.clickEvent())) {
-          sb.append(endTag(CLICK));
-        }
-      }
-
-      // ## insertion
-      // ### only end insertion if next tag is different
-      if(nextComp != null && comp.insertion() != null) {
-        if(!Objects.equals(comp.insertion(), nextComp.insertion())) {
-          sb.append(endTag(INSERTION));
-        }
-      }
-
-      // ## font
-      // ### only end insertion if next tag is different
-      if(nextComp != null && comp.style().font() != null) {
-        if(!Objects.equals(comp.style().font(), nextComp.style().font())) {
-          sb.append(endTag(FONT));
-        }
+    // Only continue if children found.
+    if(!root.component().children().isEmpty()) {
+      for(final Component child : root.component().children()) {
+        nodes.addAll(traverseNode(new ComponentNode(child, root.style())));
       }
     }
 
+    return nodes;
+  }
+
+  // Serializes a single node into minimessage format.
+  private static String serializeNode(@NonNull final ComponentNode node, @Nullable final Style previous, @Nullable final Style next) {
+    final StringBuilder sb = new StringBuilder();
+    final Style style = node.style();
+
+    // # start tags
+
+    // ## color
+    if(style.color() != null && (previous == null || previous.color() != style.color())) {
+      sb.append(startColor(Objects.requireNonNull(style.color())));
+    }
+
+    // ## decoration
+    // ### only start if previous didn't start
+    if(style.hasDecoration(TextDecoration.BOLD) && (previous == null || !previous.hasDecoration(TextDecoration.BOLD))) {
+      sb.append(startTag(BOLD));
+    }
+    if(style.hasDecoration(TextDecoration.ITALIC) && (previous == null || !previous.hasDecoration(TextDecoration.ITALIC))) {
+      sb.append(startTag(ITALIC));
+    }
+    if(style.hasDecoration(TextDecoration.OBFUSCATED) && (previous == null || !previous.hasDecoration(TextDecoration.OBFUSCATED))) {
+      sb.append(startTag(OBFUSCATED));
+    }
+    if(style.hasDecoration(TextDecoration.STRIKETHROUGH) && (previous == null || !previous.hasDecoration(TextDecoration.STRIKETHROUGH))) {
+      sb.append(startTag(STRIKETHROUGH));
+    }
+    if(style.hasDecoration(TextDecoration.UNDERLINED) && (previous == null || !previous.hasDecoration(TextDecoration.UNDERLINED))) {
+      sb.append(startTag(UNDERLINED));
+    }
+
+    // ## hover
+    // ### only start if prevComp didn't start the same one
+    final HoverEvent<?> hov = style.hoverEvent();
+    if(hov != null && (previous == null || areDifferent(hov, previous.hoverEvent()))) {
+      serializeHoverEvent(sb, hov);
+    }
+
+    // ## click
+    // ### only start if previous didn't start the same one
+    final ClickEvent click = style.clickEvent();
+    if(click != null && (previous == null || areDifferent(click, previous.clickEvent()))) {
+      sb.append(startTag(String.format("%s" + SEPARATOR + "%s" + SEPARATOR + "\"%s\"", CLICK, ClickEvent.Action.NAMES.key(click.action()), click.value())));
+    }
+
+    // ## insertion
+    // ### only start if previous didn't start the same one
+    final String insert = style.insertion();
+    if(insert != null && (previous == null || !insert.equals(previous.insertion()))) {
+      sb.append(startTag(INSERTION + SEPARATOR + insert));
+    }
+
+    // ## font
+    final Key font = style.font();
+    if(font != null && (previous == null || !font.equals(previous.font()))) {
+      sb.append(startTag(FONT + SEPARATOR + font.asString()));
+    }
+
+    // # append text
+    if(node.component() instanceof TextComponent) {
+      sb.append(((TextComponent) node.component()).content());
+    } else {
+      handleDifferentComponent(node.component(), sb);
+    }
+
+    // # end tags
+
+    // ## color
+    if(next != null && style.color() != null && next.color() != style.color()) {
+      sb.append(endColor(Objects.requireNonNull(style.color())));
+    }
+
+    // ## decoration
+    // ### only end decoration if next tag is different
+    if(next != null) {
+      if(style.hasDecoration(TextDecoration.BOLD) && !next.hasDecoration(TextDecoration.BOLD)) {
+        sb.append(endTag(BOLD));
+      }
+      if(style.hasDecoration(TextDecoration.ITALIC) && !next.hasDecoration(TextDecoration.ITALIC)) {
+        sb.append(endTag(ITALIC));
+      }
+      if(style.hasDecoration(TextDecoration.OBFUSCATED) && !next.hasDecoration(TextDecoration.OBFUSCATED)) {
+        sb.append(endTag(OBFUSCATED));
+      }
+      if(style.hasDecoration(TextDecoration.STRIKETHROUGH) && !next.hasDecoration(TextDecoration.STRIKETHROUGH)) {
+        sb.append(endTag(STRIKETHROUGH));
+      }
+      if(style.hasDecoration(TextDecoration.UNDERLINED) && !next.hasDecoration(TextDecoration.UNDERLINED)) {
+        sb.append(endTag(UNDERLINED));
+      }
+    }
+
+    // ## hover
+    // ### only end hover if next tag is different
+    if(next != null && style.hoverEvent() != null) {
+      if(areDifferent(Objects.requireNonNull(style.hoverEvent()), next.hoverEvent())) {
+        sb.append(endTag(HOVER));
+      }
+    }
+
+    // ## click
+    // ### only end click if next tag is different
+    if(next != null && style.clickEvent() != null) {
+      if(areDifferent(Objects.requireNonNull(style.clickEvent()), next.clickEvent())) {
+        sb.append(endTag(CLICK));
+      }
+    }
+
+    // ## insertion
+    // ### only end insertion if next tag is different
+    if(next != null && style.insertion() != null) {
+      if(!Objects.equals(style.insertion(), next.insertion())) {
+        sb.append(endTag(INSERTION));
+      }
+    }
+
+    // ## font
+    // ### only end insertion if next tag is different
+    if(next != null && style.font() != null) {
+      if(!Objects.equals(style.font(), next.font())) {
+        sb.append(endTag(FONT));
+      }
+    }
     return sb.toString();
   }
 
@@ -285,6 +296,28 @@ final class MiniMessageSerializer {
                 .append("\"");
       }
       sb.append(startTag(TRANSLATABLE + SEPARATOR + ((TranslatableComponent) component).key() + args));
+    }
+  }
+
+  private static class ComponentNode {
+    private final Component component;
+    private final Style style;
+
+    ComponentNode(@NonNull final Component component) {
+      this(component, null);
+    }
+
+    ComponentNode(@NonNull final Component component, @Nullable final Style parent) {
+      this.component = component;
+      this.style = (parent == null) ? component.style() : component.style().merge(parent, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
+    }
+
+    public Component component() {
+      return this.component;
+    }
+
+    public Style style() {
+      return this.style;
     }
   }
 }
