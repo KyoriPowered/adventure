@@ -23,11 +23,10 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.util.Buildable;
@@ -46,34 +45,7 @@ import static java.util.Objects.requireNonNull;
  */
 @Debug.Renderer(text = "this.debuggerString()", childrenArray = "this.children().toArray()", hasChildren = "!this.children().isEmpty()")
 public abstract class AbstractComponent implements Component {
-  static List<Component> asComponents(final List<? extends ComponentLike> list) {
-    return asComponents(list, false);
-  }
-
-  static List<Component> asComponents(final List<? extends ComponentLike> list, final boolean allowEmpty) {
-    if(list.isEmpty()) {
-      // We do not need to create a new list if the one we are copying is empty - we can
-      // simply just return our known-empty list instead.
-      return Collections.emptyList();
-    }
-    final List<Component> components = new ArrayList<>(list.size());
-    for(int i = 0, size = list.size(); i < size; i++) {
-      final ComponentLike like = list.get(i);
-      final Component component = like.asComponent();
-      if(allowEmpty || component != Component.empty()) {
-        components.add(component);
-      }
-    }
-    return Collections.unmodifiableList(components);
-  }
-
-  static <T> List<T> addOne(final List<T> oldList, final T newElement) {
-    if(oldList.isEmpty()) return Collections.singletonList(newElement);
-    final List<T> newList = new ArrayList<>(oldList.size() + 1);
-    newList.addAll(oldList);
-    newList.add(newElement);
-    return newList;
-  }
+  private static final Predicate<Component> NOT_EMPTY = component -> component != Component.empty();
 
   /**
    * The list of children.
@@ -85,7 +57,7 @@ public abstract class AbstractComponent implements Component {
   protected final Style style;
 
   protected AbstractComponent(final @NonNull List<? extends ComponentLike> children, final @NonNull Style style) {
-    this.children = asComponents(children);
+    this.children = ComponentLike.asComponents(children, NOT_EMPTY);
     this.style = style;
   }
 
@@ -130,6 +102,7 @@ public abstract class AbstractComponent implements Component {
     return result;
   }
 
+  @SuppressWarnings("unused")
   private String debuggerString() {
     return StringExaminer.simpleEscaping().examine(this.examinableName(), this.examinablePropertiesWithoutChildren());
   }
