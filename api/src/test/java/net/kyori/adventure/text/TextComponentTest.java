@@ -35,6 +35,7 @@ import org.junit.jupiter.api.Test;
 import static net.kyori.adventure.text.TextAssertions.assertDecorations;
 import static net.kyori.test.WeirdAssertions.assertAllEqualToEachOther;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -43,6 +44,23 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
   @Override
   TextComponent.Builder builder() {
     return Component.text().content("foo");
+  }
+
+  @Test
+  void testNoWarningThrownWhenNoLegacyFormattingDetected() {
+    final TextComponent component = Component.text("This is a test.");
+    assertNull(((TextComponentImpl) component).warnWhenLegacyFormattingDetected());
+  }
+
+  @Test
+  void testWarningThrownWhenLegacyFormattingDetected() {
+    final TextComponent component = Component.text(legacy('3') + "This is a test.");
+    assertNotNull(((TextComponentImpl) component).warnWhenLegacyFormattingDetected());
+    ((TextComponentImpl) component).warnWhenLegacyFormattingDetected().printStackTrace();
+  }
+
+  private static String legacy(final char character) {
+    return TextComponentImpl.SECTION_CHAR + String.valueOf(character);
   }
 
   @Test

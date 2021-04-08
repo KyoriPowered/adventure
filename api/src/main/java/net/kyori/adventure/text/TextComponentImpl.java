@@ -32,12 +32,14 @@ import net.kyori.adventure.util.Nag;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import static java.util.Objects.requireNonNull;
 
 final class TextComponentImpl extends AbstractComponent implements TextComponent {
   private static final boolean WARN_WHEN_LEGACY_FORMATTING_DETECTED = Boolean.getBoolean(String.join(".", "net", "kyori", "adventure", "text", "warnWhenLegacyFormattingDetected"));
-  private static final char SECTION_CHAR = '§';
+  @VisibleForTesting
+  static final char SECTION_CHAR = '§';
 
   static final TextComponent EMPTY = createDirect("");
   static final TextComponent NEWLINE = createDirect("\n");
@@ -54,10 +56,19 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
     this.content = content;
 
     if(WARN_WHEN_LEGACY_FORMATTING_DETECTED) {
-      if(content.indexOf(SECTION_CHAR) != -1) {
-        Nag.print(new LegacyFormattingDetected(this));
+      final LegacyFormattingDetected nag = this.warnWhenLegacyFormattingDetected();
+      if(nag != null) {
+        Nag.print(nag);
       }
     }
+  }
+
+  @VisibleForTesting
+  final @Nullable LegacyFormattingDetected warnWhenLegacyFormattingDetected() {
+    if(this.content.indexOf(SECTION_CHAR) != -1) {
+      return new LegacyFormattingDetected(this);
+    }
+    return null;
   }
 
   @Override
