@@ -113,6 +113,48 @@ public interface Sound extends Examinable {
   }
 
   /**
+   * Creates a new sound.
+   *
+   * @param name the name
+   * @param source the source
+   * @param volume the volume
+   * @param pitch the pitch
+   * @return the sound
+   * @since 4.8.0
+   */
+  static @NonNull Sound sound(final @NonNull Key name, final Source.@NonNull Provider source, final float volume, final float pitch) {
+    return sound(name, source.source(), volume, pitch);
+  }
+
+  /**
+   * Creates a new sound.
+   *
+   * @param type the type
+   * @param source the source
+   * @param volume the volume
+   * @param pitch the pitch
+   * @return the sound
+   * @since 4.8.0
+   */
+  static @NonNull Sound sound(final @NonNull Type type, final Source.@NonNull Provider source, final float volume, final float pitch) {
+    return sound(type, source.source(), volume, pitch);
+  }
+
+  /**
+   * Creates a new sound.
+   *
+   * @param type the type
+   * @param source the source
+   * @param volume the volume
+   * @param pitch the pitch
+   * @return the sound
+   * @since 4.8.0
+   */
+  static @NonNull Sound sound(final @NonNull Supplier<? extends Type> type, final Source.@NonNull Provider source, final float volume, final float pitch) {
+    return sound(type, source.source(), volume, pitch);
+  }
+
+  /**
    * Gets the name.
    *
    * @return the name
@@ -171,6 +213,21 @@ public interface Sound extends Examinable {
 
     Source(final String name) {
       this.name = name;
+    }
+
+    /**
+     * A provider of sound sources.
+     *
+     * @since 4.8.0
+     */
+    public interface Provider {
+      /**
+       * Gets the source.
+       *
+       * @return the source
+       * @since 4.8.0
+       */
+      @NonNull Source source();
     }
   }
 
