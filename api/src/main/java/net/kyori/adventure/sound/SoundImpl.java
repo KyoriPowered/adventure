@@ -34,11 +34,13 @@ abstract class SoundImpl implements Sound {
   private final Source source;
   private final float volume;
   private final float pitch;
+  private final SoundStop stopper;
 
   SoundImpl(final @NotNull Source source, final float volume, final float pitch) {
     this.source = source;
     this.volume = volume;
     this.pitch = pitch;
+    this.stopper = SoundStop.sound(this);
   }
 
   @Override
@@ -54,6 +56,11 @@ abstract class SoundImpl implements Sound {
   @Override
   public float pitch() {
     return this.pitch;
+  }
+
+  @Override
+  public @NonNull SoundStop stopper() {
+    return this.stopper;
   }
 
   @Override

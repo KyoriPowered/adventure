@@ -467,6 +467,16 @@ public interface Audience extends Pointered {
   }
 
   /**
+   * Stops a sound.
+   *
+   * @param sound the sound
+   * @since 4.8.0
+   */
+  default void stopSound(final @NonNull Sound sound) {
+    this.stopSound(sound.stopper());
+  }
+
+  /**
    * Stops a sound, or many sounds.
    *
    * @param stop a sound stop

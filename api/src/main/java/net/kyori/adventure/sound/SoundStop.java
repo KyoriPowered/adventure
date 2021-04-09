@@ -176,6 +176,18 @@ public interface SoundStop extends Examinable {
   }
 
   /**
+   * Stops a specific sound.
+   *
+   * @param sound the sound
+   * @return a sound stopper
+   * @since 4.8.0
+   */
+  static @NonNull SoundStop sound(final @NonNull Sound sound) {
+    requireNonNull(sound, "sound");
+    return namedOnSource(sound.name(), sound.source());
+  }
+
+  /**
    * Gets the sound.
    *
    * @return the sound
