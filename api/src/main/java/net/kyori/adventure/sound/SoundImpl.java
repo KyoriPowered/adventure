@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,13 +35,12 @@ abstract class SoundImpl implements Sound {
   private final Source source;
   private final float volume;
   private final float pitch;
-  private final SoundStop stopper;
+  private @MonotonicNonNull SoundStop stop;
 
   SoundImpl(final @NotNull Source source, final float volume, final float pitch) {
     this.source = source;
     this.volume = volume;
     this.pitch = pitch;
-    this.stopper = SoundStop.sound(this);
   }
 
   @Override
@@ -60,7 +60,10 @@ abstract class SoundImpl implements Sound {
 
   @Override
   public @NonNull SoundStop stopper() {
-    return this.stopper;
+    if(this.stop == null) {
+      this.stop = SoundStop.sound(this);
+    }
+    return this.stop;
   }
 
   @Override
