@@ -444,13 +444,26 @@ public interface Audience extends Pointered {
   }
 
   /**
-   * Plays a sound.
+   * Plays a sound at the location of the receiver.
    *
    * @param sound a sound
    * @see Sound
    * @since 4.0.0
    */
   default void playSound(final @NotNull Sound sound) {
+    this.playSound(sound, false);
+  }
+
+  /**
+   * Plays a sound.
+   * <p>Custom sounds cannot be made to follow the receiver and they will fall back to playing at the location of the receiver.</p>
+   *
+   * @param sound a sound
+   * @param followReceiver if the sound should follow the receiver
+   * @see Sound
+   * @since 4.8.0
+   */
+  default void playSound(final @NotNull Sound sound, final boolean followReceiver) {
   }
 
   /**
