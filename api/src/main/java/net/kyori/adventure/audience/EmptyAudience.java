@@ -23,10 +23,10 @@
  */
 package net.kyori.adventure.audience;
 
+import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.text.ComponentLike;
-import net.kyori.adventure.identity.Identified;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 final class EmptyAudience implements Audience {
