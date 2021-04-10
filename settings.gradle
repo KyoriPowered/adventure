@@ -11,6 +11,8 @@ plugins {
 
 rootProject.name = "adventure-parent"
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 // Unfortunately, we cannot make this any nicer really
 
 // Make sure to update bom/build.gradle when making changes to modules.
