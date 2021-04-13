@@ -310,4 +310,12 @@ class LegacyComponentSerializerTest {
     final String roundtripped = LegacyComponentSerializer.legacyAmpersand().serialize(deserialized);
     assertEquals(text, roundtripped);
   }
+
+  @Test
+  void testInvalidHexStringsPassedThrough() {
+    final String text = "Hello&#hellos world";
+    final Component deserialized = LegacyComponentSerializer.legacyAmpersand().deserialize(text);
+
+    assertEquals(Component.text(text), deserialized);
+  }
 }

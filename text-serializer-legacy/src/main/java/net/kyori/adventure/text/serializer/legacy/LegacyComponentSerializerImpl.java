@@ -155,18 +155,32 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       return null;
     }
     if(foundFormat == FormatCodeType.KYORI_HEX) {
-      return new DecodedFormat(foundFormat, TextColor.fromHexString('#' + input.substring(pos, pos + 6)));
+      final @Nullable TextColor parsed = tryParseHexColor(input.substring(pos, pos + 6));
+      if(parsed != null) {
+        return new DecodedFormat(foundFormat, parsed);
+      }
     } else if(foundFormat == FormatCodeType.MOJANG_LEGACY) {
       return new DecodedFormat(foundFormat, FORMATS.get(LEGACY_CHARS.indexOf(legacy)));
     } else if(foundFormat == FormatCodeType.BUNGEECORD_UNUSUAL_HEX) {
-      final StringBuilder foundHex = new StringBuilder();
+      final StringBuilder foundHex = new StringBuilder(6);
       for(int i = pos - 1; i >= pos - 11; i -= 2) {
         foundHex.append(input.charAt(i));
       }
-      foundHex.append('#');
-      return new DecodedFormat(foundFormat, TextColor.fromHexString(foundHex.reverse().toString()));
+      final @Nullable TextColor parsed = tryParseHexColor(foundHex.reverse().toString());
+      if(parsed != null) {
+        return new DecodedFormat(foundFormat, parsed);
+      }
     }
     return null;
+  }
+
+  private static @Nullable TextColor tryParseHexColor(final String hexDigits) {
+    try {
+      final int color = Integer.parseInt(hexDigits, 16);
+      return TextColor.color(color);
+    } catch(final NumberFormatException ex) {
+      return null;
+    }
   }
 
   private static boolean isHexTextColor(final TextFormat format) {
