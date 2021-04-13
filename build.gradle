@@ -10,7 +10,7 @@ plugins {
   id "net.kyori.indra.license-header" version "$indraVersion" apply false
   id "net.kyori.indra.publishing.sonatype" version "$indraVersion" apply false
 
-  id "com.adarshr.test-logger" version "2.1.1" apply false
+  id "com.adarshr.test-logger" version "3.0.0" apply false
 }
 
 group "net.kyori"
@@ -61,7 +61,7 @@ subprojects {
     dependencies {
       api(platform(project(":adventure-bom")))
       checkstyle("ca.stellardrift:stylecheck:0.1")
-      testImplementation("com.google.guava:guava-testlib:30.1-jre")
+      testImplementation("com.google.guava:guava-testlib:30.1.1-jre")
       testImplementation("com.google.truth:truth:1.1.2")
       testImplementation("com.google.truth.extensions:truth-java8-extension:1.1.2")
       testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
