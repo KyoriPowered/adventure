@@ -218,12 +218,31 @@ class TextReplacementRendererTest {
   void testReplaceAtStartReturnsChild() {
     final Component base = Component.text("value");
 
-    final Component replaced = base.replaceText(c -> c.match("value").replacement((matchResult, builder) -> {
-      return Component.text("").append(Component.text("1337"));
-    }).build());
+    final Component replaced = base.replaceText(c -> c.match("value")
+      .replacement((matchResult, builder) -> Component.text("").append(Component.text("1337"))));
 
     final Component expected = Component.text()
       .append(Component.text("1337"))
+      .build();
+    assertEquals(expected, replaced);
+  }
+
+  @Test
+  void testReplaceWithMatchResultCondition() {
+    final Component base = Component.text("get the set the get the set the get the set");
+
+    final Component replaced = base.replaceText(c -> c.match("[gs]et")
+    .condition((result, count, replacements) -> result.group().equals("set") ? PatternReplacementResult.REPLACE : PatternReplacementResult.CONTINUE)
+    .replacement("pet"));
+
+    final Component expected = Component.text().content("get the ")
+      .append(
+        Component.text("pet"),
+        Component.text(" the get the "),
+        Component.text("pet"),
+        Component.text(" the get the "),
+        Component.text("pet")
+      )
       .build();
     assertEquals(expected, replaced);
   }

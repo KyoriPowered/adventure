@@ -27,7 +27,6 @@ import java.util.function.BiFunction;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-import net.kyori.adventure.util.IntFunction2;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
@@ -39,7 +38,7 @@ import static java.util.Objects.requireNonNull;
 final class TextReplacementConfigImpl implements TextReplacementConfig {
   private final Pattern matchPattern;
   private final BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement;
-  private final IntFunction2<PatternReplacementResult> continuer;
+  private final Condition continuer;
 
   TextReplacementConfigImpl(final Builder builder) {
     this.matchPattern = builder.matchPattern;
@@ -78,7 +77,7 @@ final class TextReplacementConfigImpl implements TextReplacementConfig {
   static final class Builder implements TextReplacementConfig.Builder {
     @MonotonicNonNull Pattern matchPattern;
     @MonotonicNonNull BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement;
-    IntFunction2<PatternReplacementResult> continuer = (index, replacement) -> PatternReplacementResult.REPLACE;
+    TextReplacementConfig.Condition continuer = (matchResult, index, replacement) -> PatternReplacementResult.REPLACE;
 
     Builder() {
     }
@@ -96,7 +95,7 @@ final class TextReplacementConfigImpl implements TextReplacementConfig {
     }
 
     @Override
-    public @NonNull Builder condition(final @NonNull IntFunction2<PatternReplacementResult> condition) {
+    public @NonNull Builder condition(final TextReplacementConfig.@NonNull Condition condition) {
       this.continuer = requireNonNull(condition, "continuation");
       return this;
     }

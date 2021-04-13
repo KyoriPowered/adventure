@@ -144,12 +144,26 @@ public interface TextReplacementConfig extends Buildable<TextReplacementConfig, 
     /**
      * Set the function to determine how an individual match should be processed.
      *
-     * @param condition a function of {@code (index, replaced)} used to determine if matches should be replaced, where "replaced" is the number of successful replacements.
+     * @param condition a function of {@code (matchCount, replaced)} used to determine if matches should be replaced, where "matchCount" is the number of matches
+     *                  that have been found, including the current one, and "replaced" is the number of successful replacements.
      * @return this builder
      * @since 4.2.0
      */
     @Contract("_ -> this")
-    @NonNull Builder condition(final @NonNull IntFunction2<PatternReplacementResult> condition);
+    default @NonNull Builder condition(final @NonNull IntFunction2<PatternReplacementResult> condition) {
+      return this.condition((result, matchCount, replaced) -> condition.apply(matchCount, replaced));
+    }
+
+    /**
+     * Set the function to determine how an individual match should be processed.
+     *
+     * @param condition a function that determines whether a replacement should occur
+     * @return this builder
+     * @see Condition
+     * @since 4.8.0
+     */
+    @Contract("_ -> this")
+    @NonNull Builder condition(final @NonNull Condition condition);
 
     /*
      * -------------------------
@@ -206,5 +220,24 @@ public interface TextReplacementConfig extends Buildable<TextReplacementConfig, 
      */
     @Contract("_ -> this")
     @NonNull Builder replacement(final @NonNull BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement);
+  }
+
+  /**
+   * A function determining whether a certain match should be replaced.
+   *
+   * @since 4.8.0
+   */
+  @FunctionalInterface
+  interface Condition {
+    /**
+     * Determine how a single match should be handled.
+     *
+     * @param result the current match result
+     * @param matchCount the number of matches encountered, including this one and matches that were not replaced
+     * @param replaced the number of matches that have already been replaced
+     * @return whether a certain match should
+     * @since 4.8.0
+     */
+    @NonNull PatternReplacementResult shouldReplace(final @NonNull MatchResult result, final int matchCount, final int replaced);
   }
 }

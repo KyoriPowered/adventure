@@ -31,7 +31,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.renderer.ComponentRenderer;
-import net.kyori.adventure.util.IntFunction2;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -60,7 +59,7 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
       final Matcher matcher = state.pattern.matcher(content);
       int replacedUntil = 0; // last index handled
       while(matcher.find()) {
-        final PatternReplacementResult result = state.continuer.apply(++state.matchCount, state.replaceCount);
+        final PatternReplacementResult result = state.continuer.shouldReplace(matcher, ++state.matchCount, state.replaceCount);
         if(result == PatternReplacementResult.CONTINUE) {
           // ignore this replacement
           continue;
@@ -189,13 +188,13 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
   static final class State {
     final Pattern pattern;
     final BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement;
-    final IntFunction2<PatternReplacementResult> continuer;
+    final TextReplacementConfig.Condition continuer;
     boolean running = true;
     int matchCount = 0;
     int replaceCount = 0;
     boolean firstMatch = true;
 
-    State(final @NonNull Pattern pattern, final @NonNull BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement, final @NonNull IntFunction2<PatternReplacementResult> continuer) {
+    State(final @NonNull Pattern pattern, final @NonNull BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement, final TextReplacementConfig.@NonNull Condition continuer) {
       this.pattern = pattern;
       this.replacement = replacement;
       this.continuer = continuer;
