@@ -455,14 +455,15 @@ public interface Audience extends Pointered {
   }
 
   /**
-   * Plays a sound at a location.
+   * Plays a sound at a position.
    *
    * @param sound a sound
-   * @param location a location
+   * @param pos a position
+   * @see Sound
    * @since 4.8.0
    */
-  default void playSound(final @NonNull Sound sound, final @NonNull Vector3dLike location) {
-    this.playSound(sound, location.x(), location.y(), location.z());
+  default void playSound(final @NonNull Sound sound, final @NonNull Vector3dLike pos) {
+    this.playSound(sound, pos.x(), pos.y(), pos.z());
   }
 
   /**
