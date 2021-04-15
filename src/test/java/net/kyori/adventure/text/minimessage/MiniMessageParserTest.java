@@ -1109,6 +1109,35 @@ public class MiniMessageParserTest {
     assertParsedEquals(expected3, input3);
   }
 
+  @Test
+  void testTemplateOrder() {
+    final Component expected = text()
+            .append(text("ONE", NamedTextColor.GRAY))
+            .append(text("TWO", NamedTextColor.RED))
+            .append(text(" ", NamedTextColor.RED))
+            .append(text("THREE", NamedTextColor.RED))
+            .append(text(" ", NamedTextColor.RED))
+            .append(text("FOUR", NamedTextColor.RED)).build();
+    final String input = "<gray><arg1><red><arg2> <arg3> <arg4>";
+
+    assertParsedEquals(expected, input, "arg1", Component.text("ONE"), "arg2", Component.text("TWO"), "arg3", Component.text("THREE"), "arg4",
+            Component.text("FOUR"));
+  }
+
+  @Test
+  void testTemplateOrder2() {
+    final Component expected = text()
+            .append(text("ONE", NamedTextColor.GRAY))
+            .append(text("TWO", NamedTextColor.RED))
+            .append(text("THREE", NamedTextColor.BLUE))
+            .append(text(" "))
+            .append(text("FOUR", NamedTextColor.GREEN)).build();
+    final String input = "<gray><arg1></gray><red><arg2></red><blue><arg3></blue> <green><arg4>";
+
+    assertParsedEquals(expected, input, "arg1", Component.text("ONE"), "arg2", Component.text("TWO"), "arg3", Component.text("THREE"), "arg4",
+            Component.text("FOUR"));
+  }
+
   private static void assertParsedEquals(final @NonNull Component expected, final @NonNull String input) {
     assertEquals(expected, PARSER.parse(input));
   }

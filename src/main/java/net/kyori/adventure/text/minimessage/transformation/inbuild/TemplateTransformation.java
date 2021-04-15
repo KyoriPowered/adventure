@@ -30,7 +30,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.Template;
 import net.kyori.adventure.text.minimessage.transformation.Inserting;
-import net.kyori.adventure.text.minimessage.transformation.OneTimeTransformation;
+import net.kyori.adventure.text.minimessage.transformation.InstantApplyTransformation;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -40,7 +40,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * @since 4.1.0
  */
-public final class TemplateTransformation extends OneTimeTransformation implements Inserting {
+public final class TemplateTransformation extends InstantApplyTransformation implements Inserting {
 
   private final Template.ComponentTemplate template;
 
@@ -55,7 +55,7 @@ public final class TemplateTransformation extends OneTimeTransformation implemen
   }
 
   @Override
-  public Component applyOneTime(final @NonNull Component current, final TextComponent.@NonNull Builder parent, final @NonNull Deque<Transformation> transformations) {
+  public void applyInstant(final TextComponent.@NonNull Builder parent, final @NonNull Deque<Transformation> transformations) {
     Component comp = this.template.value();
     // first apply transformations
     for(final Transformation transformation : transformations) {
@@ -65,7 +65,6 @@ public final class TemplateTransformation extends OneTimeTransformation implemen
     comp = this.merge(this.template.value(), comp);
 
     parent.append(comp);
-    return current;
   }
 
   @Override
