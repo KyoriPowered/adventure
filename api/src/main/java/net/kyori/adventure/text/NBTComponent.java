@@ -25,6 +25,7 @@ package net.kyori.adventure.text;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A component that can display NBT fetched from different locations, optionally trying to interpret the NBT as JSON
@@ -82,4 +83,21 @@ public interface NBTComponent<C extends NBTComponent<C, B>, B extends NBTCompone
    */
   @Contract(pure = true)
   @NotNull C interpret(final boolean interpret);
+
+  /**
+   * Gets the separator.
+   *
+   * @return the separator
+   * @since 4.8.0
+   */
+  @Nullable Component separator();
+
+  /**
+   * Sets the separator.
+   *
+   * @param separator the separator
+   * @return the separator
+   * @since 4.8.0
+   */
+  @NotNull C separator(final @Nullable ComponentLike separator);
 }
