@@ -2030,6 +2030,18 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
+   * Returns a spliterator from this component's iterator.
+   * <p>The resulting iterator has the {@link Spliterator#IMMUTABLE} and {@link Spliterator#NONNULL} characteristics.</p>
+   *
+   * @return the iterator
+   * @since 4.8.0
+   */
+  @Override
+  default @NonNull Spliterator<Component> spliterator() {
+    return Spliterators.spliteratorUnknownSize(this.iterator(), Spliterator.IMMUTABLE & Spliterator.NONNULL);
+  }
+
+  /**
    * Finds and replaces text within any {@link Component}s using a string literal.
    *
    * @param search a string literal

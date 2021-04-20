@@ -50,7 +50,7 @@ public class ComponentIteratorTest {
 
   @Test
   public void testOfEmpty() {
-    for(Component component : Component.empty()) {
+    for(final Component component : Component.empty()) {
       if(component.equals(Component.empty())) {
         return;
       }
@@ -67,7 +67,7 @@ public class ComponentIteratorTest {
       .append(Component.text("WIDE"))
       .build();
 
-    for(Component inner : ComponentIterator.iterable(component, ComponentIterator.Type.DEPTH_FIRST)) {
+    for(final Component inner : ComponentIterator.iterable(component, ComponentIterator.Type.DEPTH_FIRST)) {
       if(inner instanceof TextComponent) {
         final String content = ((TextComponent) inner).content();
 
@@ -91,7 +91,7 @@ public class ComponentIteratorTest {
       .append(Component.text("WIDE"))
       .build();
 
-    for(Component inner : ComponentIterator.iterable(component, ComponentIterator.Type.BREADTH_FIRST)) {
+    for(final Component inner : ComponentIterator.iterable(component, ComponentIterator.Type.BREADTH_FIRST)) {
       if(inner instanceof TextComponent) {
         final String content = ((TextComponent) inner).content();
 
