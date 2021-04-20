@@ -31,46 +31,15 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-/**
- * An iterator that traverses a component and it's children.
- * <p>As components are immutable, this iterator does not support removal.</p>
- *
- * @see Component#iterator()
- * @since 4.8.0
- */
-public final class ComponentIterator implements Iterator<Component> {
-  private final Deque<Component> queue;
-  private final boolean bfs;
+final class ComponentIterator implements Iterator<Component> {
   private Component component;
+  private final ComponentIteratorType type;
+  private final Deque<Component> queue;
 
-  /**
-   * Creates an iterable for a component with a given type.
-   *
-   * @param component the component
-   * @param type the type
-   * @return the iterable
-   * @since 4.8.0
-   */
-  public static Iterable<Component> iterable(final @NonNull Component component, final @NonNull Type type) {
-    return () -> iterator(component, type);
-  }
-
-  /**
-   * Creates an iterator on a component with a given type.
-   *
-   * @param component the component
-   * @param type the type
-   * @return the iterable
-   * @since 4.8.0
-   */
-  public static Iterator<Component> iterator(final @NonNull Component component, final @NonNull Type type) {
-    return new ComponentIterator(component, type);
-  }
-
-  private ComponentIterator(final @NonNull Component component, final @NonNull Type type) {
+  ComponentIterator(final @NonNull Component component, final @NonNull ComponentIteratorType type) {
     this.component = Objects.requireNonNull(component, "component");
+    this.type = Objects.requireNonNull(type, "type");
     this.queue = new ArrayDeque<>();
-    this.bfs = Objects.requireNonNull(type, "type") == Type.BREADTH_FIRST;
   }
 
   @Override
@@ -86,13 +55,7 @@ public final class ComponentIterator implements Iterator<Component> {
 
       final List<Component> children = next.children();
       if(!children.isEmpty()) {
-        if(this.bfs) {
-          this.queue.addAll(next.children());
-        } else {
-          for(int i = children.size() - 1; i >= 0; i--) {
-            this.queue.addFirst(children.get(i));
-          }
-        }
+        this.addChildren(children);
       }
 
       return next;
@@ -103,24 +66,16 @@ public final class ComponentIterator implements Iterator<Component> {
     }
   }
 
-  /**
-   * The iterator types.
-   *
-   * @since 4.8.0
-   */
-  public enum Type {
-    /**
-     * A depth first search.
-     *
-     * @since 4.8.0
-     */
-    DEPTH_FIRST,
-
-    /**
-     * A breadth first search.
-     *
-     * @since 4.8.0
-     */
-    BREADTH_FIRST;
+  private void addChildren(final @NonNull List<Component> children) {
+    switch(this.type) {
+      case DEPTH_FIRST:
+        for(int i = children.size() - 1; i >= 0; i--) {
+          this.queue.addFirst(children.get(i));
+        }
+        break;
+      case BREADTH_FIRST:
+        this.queue.addAll(children);
+        break;
+    }
   }
 }

@@ -47,6 +47,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.translation.Translatable;
 import net.kyori.adventure.util.Buildable;
+import net.kyori.adventure.util.DelegatingIterable;
 import net.kyori.adventure.util.IntFunction2;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
@@ -2018,27 +2019,73 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @NotNull Component compact();
 
   /**
+   * Creates an iterable over this component with a given type.
+   *
+   * @param type the type
+   * @return the iterable
+   * @see ComponentIteratorType
+   * @since 4.8.0
+   */
+  default @NonNull Iterable<Component> iterable(final @NonNull ComponentIteratorType type) {
+    Objects.requireNonNull(type, "type");
+    if(type == ComponentIteratorType.defaultType()) return this;
+    return new DelegatingIterable<>(() -> this.iterator(type), () -> this.spliterator(type));
+  }
+
+  /**
    * Returns a breadth-first iterator over this component and it's children.
+   *
    * <p>As components are immutable, this iterator does not support removal.</p>
    *
    * @return the iterator
+   * @see ComponentIteratorType#BREADTH_FIRST
    * @since 4.8.0
    */
   @Override
   default @NonNull Iterator<Component> iterator() {
-    return ComponentIterator.iterator(this, ComponentIterator.Type.BREADTH_FIRST);
+    return this.iterator(ComponentIteratorType.defaultType());
   }
 
   /**
-   * Returns a spliterator from this component's iterator.
-   * <p>The resulting iterator has the {@link Spliterator#IMMUTABLE} and {@link Spliterator#NONNULL} characteristics.</p>
+   * Returns a breadth-first iterator over this component and it's children.
+   *
+   * <p>As components are immutable, this iterator does not support removal.</p>
+   *
+   * @param type the type of the iterator
+   * @return the iterator
+   * @see ComponentIteratorType
+   * @since 4.8.0
+   */
+  default @NonNull Iterator<Component> iterator(final @NonNull ComponentIteratorType type) {
+    return new ComponentIterator(this, type);
+  }
+
+  /**
+   * Returns a spliterator from a breadth-first iterator over this component.
+   *
+   * <p>The resulting iterator has the {@link Spliterator#IMMUTABLE}, {@link Spliterator#NONNULL} and {@link Spliterator#ORDERED} characteristics.</p>
    *
    * @return the iterator
+   * @see ComponentIteratorType#BREADTH_FIRST
    * @since 4.8.0
    */
   @Override
   default @NonNull Spliterator<Component> spliterator() {
-    return Spliterators.spliteratorUnknownSize(this.iterator(), Spliterator.IMMUTABLE & Spliterator.NONNULL);
+    return this.spliterator(ComponentIteratorType.defaultType());
+  }
+
+  /**
+   * Returns a spliterator from this component's iterator.
+   *
+   * <p>The resulting iterator has the {@link Spliterator#IMMUTABLE}, {@link Spliterator#NONNULL} and {@link Spliterator#ORDERED} characteristics.</p>
+   *
+   * @param type the type of the underlying iterator
+   * @return the iterator
+   * @see ComponentIteratorType
+   * @since 4.8.0
+   */
+  default @NonNull Spliterator<Component> spliterator(final @NonNull ComponentIteratorType type) {
+    return Spliterators.spliteratorUnknownSize(this.iterator(type), Spliterator.IMMUTABLE & Spliterator.NONNULL & Spliterator.ORDERED);
   }
 
   /**

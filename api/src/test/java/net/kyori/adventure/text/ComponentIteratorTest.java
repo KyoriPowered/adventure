@@ -67,7 +67,7 @@ public class ComponentIteratorTest {
       .append(Component.text("WIDE"))
       .build();
 
-    for(final Component inner : ComponentIterator.iterable(component, ComponentIterator.Type.DEPTH_FIRST)) {
+    for(final Component inner : component.iterable(ComponentIteratorType.DEPTH_FIRST)) {
       if(inner instanceof TextComponent) {
         final String content = ((TextComponent) inner).content();
 
@@ -91,7 +91,7 @@ public class ComponentIteratorTest {
       .append(Component.text("WIDE"))
       .build();
 
-    for(final Component inner : ComponentIterator.iterable(component, ComponentIterator.Type.BREADTH_FIRST)) {
+    for(final Component inner : component.iterable(ComponentIteratorType.BREADTH_FIRST)) {
       if(inner instanceof TextComponent) {
         final String content = ((TextComponent) inner).content();
 
