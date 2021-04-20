@@ -23,8 +23,8 @@
  */
 package net.kyori.adventure.extra.kotlin
 
-import net.kyori.adventure.text.*
-import net.kyori.adventure.text.format.Style
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.ComponentLike
 
 /**
  * Add [that] as a child component.
@@ -33,94 +33,3 @@ import net.kyori.adventure.text.format.Style
  * @since 4.6.0
  */
 public operator fun Component.plus(that: ComponentLike): Component = this.append(that)
-
-/**
- * The style of this component.
- *
- * Allows for destructuring into (style, children)
- *
- * @return the style
- * @since 4.8.0
- */
-public operator fun Component.component1(): Style = style()
-
-/**
- * The children of this component.
- *
- * Allows for destructuring into (style, children)
- *
- * @return the children
- * @since 4.8.0
- */
-public operator fun Component.component2(): List<ComponentLike> = children()
-
-/**
- * The keybind of this keybind component.
- *
- * Allows for destructuring into (style, children, keybind)
- *
- * @return the keybind
- * @since 4.8.0
- */
-public operator fun KeybindComponent.component3(): String = keybind()
-
-/**
- * The name of this score component.
- *
- * Allows for destructuring into (style, children, name, objective, value)
- *
- * @return the score
- * @since 4.8.0
- */
-public operator fun ScoreComponent.component3(): String = name()
-
-/**
- * The objective of this score component.
- *
- * Allows for destructuring into (style, children, name, objective, value)
- *
- * @return the objective
- * @since 4.8.0
- */
-public operator fun ScoreComponent.component4(): String = objective()
-
-/**
- * The value of this score component.
- *
- * Allows for destructuring into (style, children, name, objective, value)
- *
- * @return the value
- * @since 4.8.0
- */
-@Deprecated("No longer present in 1.16.5, will not be replaced", ReplaceWith(""))
-public operator fun ScoreComponent.component5(): String? = value()
-
-/**
- * The pattern of this selector component.
- *
- * Allows for destructuring into (style, children, pattern)
- *
- * @return the pattern
- * @since 4.8.0
- */
-public operator fun SelectorComponent.component3(): String = pattern()
-
-/**
- * The content of this text component.
- *
- * Allows for destructuring into (style, children, text)
- *
- * @return the content
- * @since 4.8.0
- */
-public operator fun TextComponent.component3(): String = content()
-
-/**
- * The translation key of this translatable component.
- *
- * Allows for destructuring into (style, children, key)
- *
- * @return the key
- * @since 4.8.0
- */
-public operator fun TranslatableComponent.component3(): String = key()
