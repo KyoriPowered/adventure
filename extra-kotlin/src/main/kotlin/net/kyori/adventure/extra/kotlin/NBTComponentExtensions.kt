@@ -23,68 +23,7 @@
  */
 package net.kyori.adventure.extra.kotlin
 
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.*
-
-/**
- * The path of this NBT component.
- *
- * Allows for destructuring into (style, children, nbtPath, interpret)
- *
- * @return the path
- * @since 4.8.0
- */
-public operator fun <C : NBTComponent<C, B>, B : NBTComponentBuilder<C, B>> NBTComponent<C, B>.component3(): String = nbtPath()
-
-/**
- * If we should be interpreting this NBT component as JSON
- *
- * Allows for destructuring into (style, children, nbtPath, interpret)
- *
- * @return if we should be interpreting
- * @since 4.8.0
- */
-public operator fun <C : NBTComponent<C, B>, B : NBTComponentBuilder<C, B>> NBTComponent<C, B>.component4(): Boolean = interpret()
-
-/**
- * The position of this block NBT component.
- *
- * Allows for destructuring into (style, children, nbtPath, interpret, pos)
- *
- * @return the position
- * @since 4.8.0
- */
-public operator fun BlockNBTComponent.component5(): BlockNBTComponent.Pos = pos()
-
-/**
- * The left component of this local position
- *
- * Allows for destructuring into (left, up, forward)
- *
- * @return the left component
- * @since 4.8.0
- */
-public operator fun BlockNBTComponent.LocalPos.component1(): Double = left()
-
-/**
- * The up component of this local position
- *
- * Allows for destructuring into (left, up, forward)
- *
- * @return the up component
- * @since 4.8.0
- */
-public operator fun BlockNBTComponent.LocalPos.component2(): Double = up()
-
-/**
- * The forward component of this local position
- *
- * Allows for destructuring into (left, up, forward)
- *
- * @return the forward component
- * @since 4.8.0
- */
-public operator fun BlockNBTComponent.LocalPos.component3(): Double = forwards()
+import net.kyori.adventure.text.BlockNBTComponent
 
 /**
  * The X component of this world position
@@ -135,23 +74,3 @@ public operator fun BlockNBTComponent.WorldPos.Coordinate.component1(): Int = va
  * @since 4.8.0
  */
 public operator fun BlockNBTComponent.WorldPos.Coordinate.component2(): BlockNBTComponent.WorldPos.Coordinate.Type = type()
-
-/**
- * The selector of this entity NBT component
- *
- * Allows for destructuring into (style, children, nbtPath, interpret, selector)
- *
- * @return the selector
- * @since 4.8.0
- */
-public operator fun EntityNBTComponent.component5(): String = selector()
-
-/**
- * The storage key of this storage NBT component
- *
- * Allows for destructuring into (style, children, nbtPath, interpret, key)
- *
- * @return the storage key
- * @since 4.8.0
- */
-public operator fun StorageNBTComponent.component5(): Key = storage()
