@@ -2033,12 +2033,12 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
-   * Returns a breadth-first iterator over this component and it's children.
+   * Returns an iterator over this component and it's children using the default iterator type.
    *
    * <p>As components are immutable, this iterator does not support removal.</p>
    *
    * @return the iterator
-   * @see ComponentIteratorType#BREADTH_FIRST
+   * @see ComponentIteratorType#defaultType()
    * @since 4.8.0
    */
   @Override
@@ -2047,7 +2047,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
-   * Returns a breadth-first iterator over this component and it's children.
+   * Returns an iterator of a given type over this component and it's children.
    *
    * <p>As components are immutable, this iterator does not support removal.</p>
    *
@@ -2061,12 +2061,12 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
-   * Returns a spliterator from a breadth-first iterator over this component.
+   * Returns a spliterator over this component backed by an iterator with the default type.
    *
-   * <p>The resulting iterator has the {@link Spliterator#IMMUTABLE}, {@link Spliterator#NONNULL} and {@link Spliterator#ORDERED} characteristics.</p>
+   * <p>The resulting spliterator has the {@link Spliterator#IMMUTABLE}, {@link Spliterator#NONNULL} and {@link Spliterator#ORDERED} characteristics.</p>
    *
    * @return the iterator
-   * @see ComponentIteratorType#BREADTH_FIRST
+   * @see ComponentIteratorType#defaultType()
    * @since 4.8.0
    */
   @Override
@@ -2075,9 +2075,9 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
-   * Returns a spliterator from this component's iterator.
+   * Returns a spliterator over this component backed by an iterator with a given type.
    *
-   * <p>The resulting iterator has the {@link Spliterator#IMMUTABLE}, {@link Spliterator#NONNULL} and {@link Spliterator#ORDERED} characteristics.</p>
+   * <p>The resulting spliterator has the {@link Spliterator#IMMUTABLE}, {@link Spliterator#NONNULL} and {@link Spliterator#ORDERED} characteristics.</p>
    *
    * @param type the type of the underlying iterator
    * @return the iterator

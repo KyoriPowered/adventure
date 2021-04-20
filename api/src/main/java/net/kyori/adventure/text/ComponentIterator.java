@@ -26,25 +26,37 @@ package net.kyori.adventure.text;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.function.BiConsumer;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 final class ComponentIterator implements Iterator<Component> {
+  static final BiConsumer<Component, Deque<Component>> HOVER_EVENT_CONSUMER = (component, deque) -> {
+    final HoverEvent<?> hoverEvent = component.hoverEvent();
+
+    if(hoverEvent == null) return;
+
+    final Object value = hoverEvent.value();
+
+    if(value instanceof Component) deque.addFirst((Component) value);
+    else if(value instanceof HoverEvent.ShowEntity) deque.addFirst(((HoverEvent.ShowEntity) value).name());
+  };
+
   private Component component;
   private final ComponentIteratorType type;
-  private final Deque<Component> queue;
+  private final Deque<Component> deque;
 
   ComponentIterator(final @NonNull Component component, final @NonNull ComponentIteratorType type) {
     this.component = Objects.requireNonNull(component, "component");
     this.type = Objects.requireNonNull(type, "type");
-    this.queue = new ArrayDeque<>();
+    this.deque = new ArrayDeque<>();
   }
 
   @Override
   public boolean hasNext() {
-    return this.component != null || !this.queue.isEmpty();
+    return this.component != null || !this.deque.isEmpty();
   }
 
   @Override
@@ -53,29 +65,15 @@ final class ComponentIterator implements Iterator<Component> {
       final Component next = this.component;
       this.component = null;
 
-      final List<Component> children = next.children();
-      if(!children.isEmpty()) {
-        this.addChildren(children);
+      if(!next.children().isEmpty()) {
+        this.type.populate(next, this.deque);
       }
 
       return next;
     } else {
-      if(this.queue.isEmpty()) throw new NoSuchElementException();
-      this.component = this.queue.poll();
+      if(this.deque.isEmpty()) throw new NoSuchElementException();
+      this.component = this.deque.poll();
       return this.next();
-    }
-  }
-
-  private void addChildren(final @NonNull List<Component> children) {
-    switch(this.type) {
-      case DEPTH_FIRST:
-        for(int i = children.size() - 1; i >= 0; i--) {
-          this.queue.addFirst(children.get(i));
-        }
-        break;
-      case BREADTH_FIRST:
-        this.queue.addAll(children);
-        break;
     }
   }
 }

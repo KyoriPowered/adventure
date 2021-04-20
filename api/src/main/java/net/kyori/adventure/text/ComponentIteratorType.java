@@ -23,7 +23,13 @@
  */
 package net.kyori.adventure.text;
 
+import java.util.Deque;
+import java.util.List;
+import java.util.function.BiConsumer;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import static net.kyori.adventure.text.ComponentIterator.HOVER_EVENT_CONSUMER;
 
 /**
  * The iterator types.
@@ -35,21 +41,44 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public enum ComponentIteratorType {
   /**
-   * A depth first search.
+   * A depth-first search.
    *
    * @since 4.8.0
    */
-  DEPTH_FIRST,
+  DEPTH_FIRST((component, deque) -> {
+    final List<Component> children = component.children();
+    for(int i = children.size() - 1; i >= 0; i--) {
+      deque.addFirst(children.get(i));
+    }
+  }),
 
   /**
-   * A breadth first search.
+   * A breadth-first search.
    *
    * @since 4.8.0
    */
-  BREADTH_FIRST;
+  BREADTH_FIRST((component, deque) -> deque.addAll(component.children())),
+
+  /**
+   * A depth-first search that includes components from the {@link HoverEvent} class where the value is a component or the type is an entity with a name.
+   *
+   * @see HoverEvent
+   * @since 4.8.0
+   */
+  DEPTH_FIRST_WITH_HOVER(HOVER_EVENT_CONSUMER.andThen(DEPTH_FIRST.consumer)),
+
+  /**
+   * A breadth-first search that includes components from the {@link HoverEvent} class where the value is a component or the type is an entity with a name.
+   *
+   * @see HoverEvent
+   * @since 4.8.0
+   */
+  BREADTH_FIRST_WITH_HOVER(HOVER_EVENT_CONSUMER.andThen(BREADTH_FIRST.consumer));
 
   /**
    * The default iterator type used in the implementation of {@link Iterable} in {@link Component}.
+   *
+   * <p>Currently set to {@link #DEPTH_FIRST}.</p>
    *
    * @return the default type
    * @see Component#iterator()
@@ -58,5 +87,22 @@ public enum ComponentIteratorType {
    */
   public static @NonNull ComponentIteratorType defaultType() {
     return DEPTH_FIRST;
+  }
+
+  private final BiConsumer<Component, Deque<Component>> consumer;
+
+  ComponentIteratorType(final @NonNull BiConsumer<Component, Deque<Component>> consumer) {
+    this.consumer = consumer;
+  }
+
+  /**
+   * Populates a deque wth the children of this component, based on the iterator type.
+   *
+   * @param component the component
+   * @param deque the deque
+   * @since 4.8.0
+   */
+  void populate(final @NonNull Component component, final @NonNull Deque<Component> deque) {
+    this.consumer.accept(component, deque);
   }
 }
