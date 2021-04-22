@@ -146,17 +146,57 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TextComponent join(final @NonNull ComponentLike separator, final Iterable<? extends ComponentLike> components) {
+    return joinWithFinalSeparator(separator, separator, components);
+  }
+
+  /**
+   * Joins {@code components} using {@code separator} with {@code finalSeparator} between the last two components.
+   *
+   * @param separator the separator
+   * @param finalSeparator the final separator
+   * @param components the components
+   * @return a text component
+   * @since 4.8.0
+   */
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static @NonNull TextComponent joinWithFinalSeparator(final @NonNull ComponentLike separator, final @NonNull ComponentLike finalSeparator, final @NonNull ComponentLike@NonNull... components) {
+    return joinWithFinalSeparator(separator, finalSeparator, Arrays.asList(components));
+  }
+
+  /**
+   * Joins {@code components} using {@code separator} with {@code finalSeparator} between the last two components.
+   *
+   * @param separator the separator
+   * @param finalSeparator the final separator
+   * @param components the components
+   * @return a text component
+   * @since 4.8.0
+   */
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static @NonNull TextComponent joinWithFinalSeparator(final @NonNull ComponentLike separator, final @NonNull ComponentLike finalSeparator, final @NonNull Iterable<? extends ComponentLike> components) {
     final Iterator<? extends ComponentLike> it = components.iterator();
     if(!it.hasNext()) {
       return Component.empty();
     }
+
     final TextComponent.Builder builder = text();
-    while(it.hasNext()) {
-      builder.append(it.next());
-      if(it.hasNext()) {
-        builder.append(separator);
+    ComponentLike component = it.next();
+    while(true) {
+      builder.append(component);
+
+      if(!it.hasNext()) {
+        break;
+      } else {
+        component = it.next();
+
+        if(it.hasNext()) {
+          builder.append(separator);
+        } else {
+          builder.append(finalSeparator);
+        }
       }
     }
+
     return builder.build();
   }
 

@@ -176,4 +176,42 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
       c0
     );
   }
+
+  @Test
+  void testJoinWithFinalSeparator() {
+    assertEquals(Component.empty(), Component.joinWithFinalSeparator(Component.space(), Component.space(), Collections.emptyList()));
+
+    final Component c0 = Component.joinWithFinalSeparator(
+      Component.space(),
+      Component.text(" and "),
+      IntStream.range(0, 3)
+        .mapToObj(Component::text)
+      .toArray(Component[]::new)
+    );
+    assertEquals(
+      Component.text()
+        .append(Component.text(0))
+        .append(Component.space())
+        .append(Component.text(1))
+        .append(Component.text(" and "))
+        .append(Component.text(2))
+        .build(),
+      c0
+    );
+
+    final Component c1 = Component.joinWithFinalSeparator(
+      Component.space(),
+      Component.text(" or "),
+      Component.text(0),
+      Component.text(1)
+    );
+    assertEquals(
+      Component.text()
+        .append(Component.text(0))
+        .append(Component.text(" or "))
+        .append(Component.text(1))
+        .build(),
+      c1
+    );
+  }
 }
