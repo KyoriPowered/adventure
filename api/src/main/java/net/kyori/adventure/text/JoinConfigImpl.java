@@ -25,6 +25,9 @@ package net.kyori.adventure.text;
 
 import java.util.Objects;
 import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
@@ -74,6 +77,22 @@ final class JoinConfigImpl implements JoinConfig {
   @Override
   public JoinConfig.@NonNull Builder toBuilder() {
     return new BuilderImpl(this.separator, this.lastSeparator, this.prefix, this.suffix, this.operator);
+  }
+
+  @Override
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(
+      ExaminableProperty.of("separator", this.separator),
+      ExaminableProperty.of("lastSeparator", this.lastSeparator),
+      ExaminableProperty.of("prefix", this.prefix),
+      ExaminableProperty.of("suffix", this.suffix),
+      ExaminableProperty.of("operator", this.operator)
+    );
+  }
+
+  @Override
+  public String toString() {
+    return this.examine(StringExaminer.simpleEscaping());
   }
 
   static final class BuilderImpl implements JoinConfig.Builder {

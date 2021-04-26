@@ -25,6 +25,7 @@ package net.kyori.adventure.text;
 
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.util.Buildable;
+import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.Contract;
@@ -51,7 +52,7 @@ import org.jetbrains.annotations.NotNull;
  * @see Component#join(JoinConfig, ComponentLike...)
  * @since 4.8.0
  */
-public interface JoinConfig extends Buildable<JoinConfig, JoinConfig.Builder> {
+public interface JoinConfig extends Buildable<JoinConfig, JoinConfig.Builder>, Examinable {
   /**
    * Creates a new builder.
    *
