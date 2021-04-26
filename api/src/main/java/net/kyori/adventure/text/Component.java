@@ -146,10 +146,12 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param components the components
    * @return a text component
    * @since 4.0.0
+   * @deprecated for removal since 4.8.0, use {@link #join(JoinConfig, ComponentLike...)} with a {@link JoinConfig} instead.
    */
+  @Deprecated
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull TextComponent join(final @NotNull ComponentLike separator, final @NotNull ComponentLike@NotNull... components) {
-    return join(separator, Arrays.asList(components));
+    return join(JoinConfig.separator(separator.asComponent()), components);
   }
 
   /**
@@ -159,20 +161,74 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param components the components
    * @return a text component
    * @since 4.0.0
+   * @deprecated for removal since 4.8.0, use {@link #join(JoinConfig, Iterable)} with a {@link JoinConfig} instead.
    */
+  @Deprecated
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull TextComponent join(final @NotNull ComponentLike separator, final Iterable<? extends ComponentLike> components) {
+    return join(JoinConfig.separator(separator.asComponent()), components);
+  }
+
+  /**
+   * Joins {@code components} using the configuration in {@code config}.
+   *
+   * @param config the join configuration
+   * @param components the components
+   * @return a text component
+   * @see JoinConfig
+   * @since 4.8.0
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static @NonNull TextComponent join(final @NonNull JoinConfig config, final @NonNull ComponentLike@NonNull... components) {
+    return join(config, Arrays.asList(components));
+  }
+
+  /**
+   * Joins {@code components} using the configuration in {@code config}.
+   *
+   * @param config the join configuration
+   * @param components the components
+   * @return a text component
+   * @see JoinConfig
+   * @since 4.8.0
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static @NonNull TextComponent join(final @NonNull JoinConfig config, final @NonNull Iterable<? extends ComponentLike> components) {
     final Iterator<? extends ComponentLike> it = components.iterator();
+
     if (!it.hasNext()) {
-      return Component.empty();
+      if(config.prefix() == null && config.suffix() == null) return Component.empty();
+
+      final TextComponent.Builder builder = text();
+      if(config.prefix() != null) builder.append(config.prefix());
+      if(config.suffix() != null) builder.append(config.suffix());
+      return builder.build();
     }
+
     final TextComponent.Builder builder = text();
-    while (it.hasNext()) {
-      builder.append(it.next());
-      if (it.hasNext()) {
-        builder.append(separator);
+    if(config.prefix() != null) builder.append(config.prefix());
+
+    final boolean hasSeparator = config.separator() != null;
+    final ComponentLike lastSeparator = config.lastSeparator() == null ? config.separator() : config.lastSeparator();
+
+    ComponentLike component = it.next();
+    while (component != null) {
+      builder.append(config.operator().apply(component));
+
+      if(!it.hasNext()) {
+        component = null;
+      } else {
+        component = it.next();
+
+        if (it.hasNext()) {
+          if(hasSeparator) builder.append(config.separator());
+        } else {
+          if(lastSeparator != null) builder.append(lastSeparator);
+        }
       }
     }
+
+    if(config.suffix() != null) builder.append(config.suffix());
     return builder.build();
   }
 
