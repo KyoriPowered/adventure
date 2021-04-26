@@ -47,7 +47,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.translation.Translatable;
 import net.kyori.adventure.util.Buildable;
-import net.kyori.adventure.util.DelegatingIterable;
+import net.kyori.adventure.util.ForwardingIterator;
 import net.kyori.adventure.util.IntFunction2;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
@@ -2029,7 +2029,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   default @NonNull Iterable<Component> iterable(final @NonNull ComponentIteratorType type) {
     Objects.requireNonNull(type, "type");
     if(type == ComponentIteratorType.defaultType()) return this;
-    return new DelegatingIterable<>(() -> this.iterator(type), () -> this.spliterator(type));
+    return new ForwardingIterator<>(() -> this.iterator(type), () -> this.spliterator(type));
   }
 
   /**

@@ -30,34 +30,34 @@ import java.util.function.Supplier;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * An iterable that delegates the {@link #iterator()} and {@link #spliterator()} calls to a {@link Supplier}.
+ * An iterable that forwards the {@link #iterator()} and {@link #spliterator()} calls to some {@link Supplier suppliers}.
  *
  * @param <T> the type of the iterable
  * @since 4.8.0
  */
-public final class DelegatingIterable<T> implements Iterable<T> {
-  private final Supplier<Iterator<T>> iteratorSupplier;
-  private final Supplier<Spliterator<T>> spliteratorSupplier;
+public final class ForwardingIterator<T> implements Iterable<T> {
+  private final Supplier<Iterator<T>> iterator;
+  private final Supplier<Spliterator<T>> spliterator;
 
   /**
-   * Creates a new delegating iterable.
+   * Creates a new forwarding iterable.
    *
-   * @param iteratorSupplier the iterator supplier
-   * @param spliteratorSupplier the spliterator supplier
+   * @param iterator the iterator supplier
+   * @param spliterator the spliterator supplier
    * @since 4.8.0
    */
-  public DelegatingIterable(final @NonNull Supplier<Iterator<T>> iteratorSupplier, final @NonNull Supplier<Spliterator<T>> spliteratorSupplier) {
-    this.iteratorSupplier = Objects.requireNonNull(iteratorSupplier, "iteratorSupplier");
-    this.spliteratorSupplier = Objects.requireNonNull(spliteratorSupplier, "spliteratorSupplier");
+  public ForwardingIterator(final @NonNull Supplier<Iterator<T>> iterator, final @NonNull Supplier<Spliterator<T>> spliterator) {
+    this.iterator = Objects.requireNonNull(iterator, "iterator");
+    this.spliterator = Objects.requireNonNull(spliterator, "spliterator");
   }
 
   @Override
   public @NonNull Iterator<T> iterator() {
-    return this.iteratorSupplier.get();
+    return this.iterator.get();
   }
 
   @Override
   public @NonNull Spliterator<T> spliterator() {
-    return this.spliteratorSupplier.get();
+    return this.spliterator.get();
   }
 }
