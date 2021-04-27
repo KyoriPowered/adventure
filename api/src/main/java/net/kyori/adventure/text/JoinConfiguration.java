@@ -95,7 +95,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
    */
   static @NonNull JoinConfiguration separators(final @Nullable ComponentLike separator, final @Nullable ComponentLike lastSeparator) {
     if(separator == null && lastSeparator == null) return JoinConfigurationImpl.NULL;
-    return builder().separator(separator).lastSeparator(separator).build();
+    return builder().separator(separator).lastSeparator(lastSeparator).build();
   }
 
   /**

@@ -30,13 +30,13 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class JoinTest {
+class JoinTest {
 
   @Test
   void testJoin() {
-    final JoinConfig config = JoinConfig.separator(Component.space());
+    final JoinConfiguration config = JoinConfiguration.separator(Component.space());
 
-    assertEquals(Component.empty(), Component.join(JoinConfig.separator(Component.space()), Collections.emptyList()));
+    assertEquals(Component.empty(), Component.join(JoinConfiguration.separator(Component.space()), Collections.emptyList()));
 
     final Component c0 = Component.join(
       config,
@@ -58,7 +58,7 @@ public class JoinTest {
 
   @Test
   void testJoinWithFinalSeparator() {
-    final JoinConfig config = JoinConfig.separators(Component.space(), Component.text(" and "));
+    final JoinConfiguration config = JoinConfiguration.separators(Component.space(), Component.text(" and "));
 
     assertEquals(Component.empty(), Component.join(config, Collections.emptyList()));
 
@@ -96,7 +96,7 @@ public class JoinTest {
 
   @Test
   void testJoinWithPrefixSuffix() {
-    final JoinConfig config = JoinConfig.builder()
+    final JoinConfiguration config = JoinConfiguration.builder()
       .separator(Component.space())
       .prefix(Component.text("prefix"))
       .suffix(Component.text("suffix"))
@@ -132,12 +132,12 @@ public class JoinTest {
 
   @Test
   void testJoinWithOperator() {
-    final JoinConfig config = JoinConfig.builder()
+    final JoinConfiguration config = JoinConfiguration.builder()
       .separator(Component.space())
       .operator(componentLike -> componentLike.asComponent().color(NamedTextColor.RED))
       .build();
 
-    assertEquals(Component.empty(), Component.join(JoinConfig.separator(Component.space()), Collections.emptyList()));
+    assertEquals(Component.empty(), Component.join(JoinConfiguration.separator(Component.space()), Collections.emptyList()));
 
     final Component c0 = Component.join(
       config,
@@ -152,6 +152,26 @@ public class JoinTest {
         .append(Component.text(1, NamedTextColor.RED))
         .append(Component.space())
         .append(Component.text(2, NamedTextColor.RED))
+        .build(),
+      c0
+    );
+  }
+
+  @Test
+  void testJoinWithNoSeparators() {
+    assertEquals(Component.empty(), Component.join(JoinConfiguration.noSeparators(), Collections.emptyList()));
+
+    final Component c0 = Component.join(
+      JoinConfiguration.noSeparators(),
+      IntStream.range(0, 3)
+        .mapToObj(Component::text)
+        .toArray(Component[]::new)
+    );
+    assertEquals(
+      Component.text()
+        .append(Component.text(0))
+        .append(Component.text(1))
+        .append(Component.text(2))
         .build(),
       c0
     );
