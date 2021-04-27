@@ -48,11 +48,11 @@ import org.jetbrains.annotations.NotNull;
  * <p>Note that if the final separator is omitted, the normal separator will be used instead.
  * To omit the final separator, but still include normal separators, use {@link Component#empty()}.</p>
  *
- * @see Component#join(JoinConfig, Iterable)
- * @see Component#join(JoinConfig, ComponentLike...)
+ * @see Component#join(JoinConfiguration, Iterable)
+ * @see Component#join(JoinConfiguration, ComponentLike...)
  * @since 4.8.0
  */
-public interface JoinConfig extends Buildable<JoinConfig, JoinConfig.Builder>, Examinable {
+public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConfiguration.Builder>, Examinable {
   /**
    * Creates a new builder.
    *
@@ -60,7 +60,7 @@ public interface JoinConfig extends Buildable<JoinConfig, JoinConfig.Builder>, E
    * @since 4.8.0
    */
   static @NonNull Builder builder() {
-    return new JoinConfigImpl.BuilderImpl();
+    return new JoinConfigurationImpl.BuilderImpl();
   }
 
   /**
@@ -69,8 +69,8 @@ public interface JoinConfig extends Buildable<JoinConfig, JoinConfig.Builder>, E
    * @return the join config
    * @since 4.8.0
    */
-  static @NonNull JoinConfig noSeparator() {
-    return JoinConfigImpl.NULL;
+  static @NonNull JoinConfiguration noSeparators() {
+    return JoinConfigurationImpl.NULL;
   }
 
   /**
@@ -80,9 +80,9 @@ public interface JoinConfig extends Buildable<JoinConfig, JoinConfig.Builder>, E
    * @return the join config
    * @since 4.8.0
    */
-  static @NonNull JoinConfig separator(final @Nullable ComponentLike separator) {
-    if(separator == null) return JoinConfigImpl.NULL;
-    return new JoinConfigImpl(separator, null, null, null, UnaryOperator.identity());
+  static @NonNull JoinConfiguration separator(final @Nullable ComponentLike separator) {
+    if(separator == null) return JoinConfigurationImpl.NULL;
+    return builder().separator(separator).build();
   }
 
   /**
@@ -93,9 +93,9 @@ public interface JoinConfig extends Buildable<JoinConfig, JoinConfig.Builder>, E
    * @return the join config
    * @since 4.8.0
    */
-  static @NonNull JoinConfig separators(final @Nullable ComponentLike separator, final @Nullable ComponentLike lastSeparator) {
-    if(separator == null && lastSeparator == null) return JoinConfigImpl.NULL;
-    return new JoinConfigImpl(separator, lastSeparator, null, null, UnaryOperator.identity());
+  static @NonNull JoinConfiguration separators(final @Nullable ComponentLike separator, final @Nullable ComponentLike lastSeparator) {
+    if(separator == null && lastSeparator == null) return JoinConfigurationImpl.NULL;
+    return builder().separator(separator).lastSeparator(separator).build();
   }
 
   /**
@@ -143,7 +143,7 @@ public interface JoinConfig extends Buildable<JoinConfig, JoinConfig.Builder>, E
    *
    * @param components the components
    * @return a text component
-   * @see Component#join(JoinConfig, ComponentLike...)
+   * @see Component#join(JoinConfiguration, ComponentLike...)
    * @since 4.8.0
    */
   @Contract(value = "_ -> new", pure = true)
@@ -156,7 +156,7 @@ public interface JoinConfig extends Buildable<JoinConfig, JoinConfig.Builder>, E
    *
    * @param components the components
    * @return a text component
-   * @see Component#join(JoinConfig, Iterable)
+   * @see Component#join(JoinConfiguration, Iterable)
    * @since 4.8.0
    */
   @Contract(value = "_ -> new", pure = true)
@@ -169,15 +169,7 @@ public interface JoinConfig extends Buildable<JoinConfig, JoinConfig.Builder>, E
    *
    * @since 4.8.0
    */
-  interface Builder extends Buildable.Builder<JoinConfig> {
-    /**
-     * Gets the prefix of this join configuration builder.
-     *
-     * @return the prefix
-     * @since 4.8.0
-     */
-    @Nullable ComponentLike prefix();
-
+  interface Builder extends Buildable.Builder<JoinConfiguration> {
     /**
      * Sets the prefix of this join configuration builder.
      *
@@ -186,14 +178,6 @@ public interface JoinConfig extends Buildable<JoinConfig, JoinConfig.Builder>, E
      */
     @Contract("_ -> this")
     @NonNull Builder prefix(final @Nullable ComponentLike prefix);
-
-    /**
-     * Gets the suffix of this join configuration builder.
-     *
-     * @return the suffix
-     * @since 4.8.0
-     */
-    @Nullable ComponentLike suffix();
 
     /**
      * Sets the suffix of this join configuration builder.
@@ -205,14 +189,6 @@ public interface JoinConfig extends Buildable<JoinConfig, JoinConfig.Builder>, E
     @NonNull Builder suffix(final @Nullable ComponentLike suffix);
 
     /**
-     * Gets the separator of this join configuration builder.
-     *
-     * @return the separator
-     * @since 4.8.0
-     */
-    @Nullable ComponentLike separator();
-
-    /**
      * Sets the separator of this join configuration builder.
      *
      * @param separator the separator
@@ -222,14 +198,6 @@ public interface JoinConfig extends Buildable<JoinConfig, JoinConfig.Builder>, E
     @NonNull Builder separator(final @Nullable ComponentLike separator);
 
     /**
-     * Gets the last separator of this join configuration builder.
-     *
-     * @return the last separator
-     * @since 4.8.0
-     */
-    @Nullable ComponentLike lastSeparator();
-
-    /**
      * Sets the last separator of this join configuration builder.
      *
      * @param lastSeparator the last separator
@@ -237,14 +205,6 @@ public interface JoinConfig extends Buildable<JoinConfig, JoinConfig.Builder>, E
      */
     @Contract("_ -> this")
     @NonNull Builder lastSeparator(final @Nullable ComponentLike lastSeparator);
-
-    /**
-     * Gets the operator of this join configuration builder.
-     *
-     * @return the operator
-     * @since 4.8.0
-     */
-    @NotNull UnaryOperator<ComponentLike> operator();
 
     /**
      * Sets the operator of this join configuration builder.

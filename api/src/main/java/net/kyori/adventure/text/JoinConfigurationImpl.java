@@ -32,8 +32,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
-final class JoinConfigImpl implements JoinConfig {
-  static final JoinConfig NULL = new JoinConfigImpl(null, null, null, null, UnaryOperator.identity());
+final class JoinConfigurationImpl implements JoinConfiguration {
+  static final JoinConfigurationImpl NULL = new JoinConfigurationImpl();
 
   private final ComponentLike separator;
   private final ComponentLike lastSeparator;
@@ -41,12 +41,20 @@ final class JoinConfigImpl implements JoinConfig {
   private final ComponentLike suffix;
   private final UnaryOperator<ComponentLike> operator;
 
-  JoinConfigImpl(final @Nullable ComponentLike separator, final @Nullable ComponentLike lastSeparator, final @Nullable ComponentLike prefix, final @Nullable ComponentLike suffix, final @NotNull UnaryOperator<ComponentLike> operator) {
-    this.separator = separator;
-    this.lastSeparator = lastSeparator;
-    this.prefix = prefix;
-    this.suffix = suffix;
-    this.operator = operator;
+  private JoinConfigurationImpl() {
+    this.separator = null;
+    this.lastSeparator = null;
+    this.prefix = null;
+    this.suffix = null;
+    this.operator = UnaryOperator.identity();
+  }
+
+  private JoinConfigurationImpl(final @NotNull BuilderImpl builder) {
+    this.separator = builder.separator;
+    this.lastSeparator = builder.lastSeparator;
+    this.prefix = builder.prefix;
+    this.suffix = builder.suffix;
+    this.operator = builder.operator;
   }
 
   @Override
@@ -75,8 +83,8 @@ final class JoinConfigImpl implements JoinConfig {
   }
 
   @Override
-  public JoinConfig.@NonNull Builder toBuilder() {
-    return new BuilderImpl(this.separator, this.lastSeparator, this.prefix, this.suffix, this.operator);
+  public JoinConfiguration.@NonNull Builder toBuilder() {
+    return new BuilderImpl(this);
   }
 
   @Override
@@ -95,7 +103,7 @@ final class JoinConfigImpl implements JoinConfig {
     return this.examine(StringExaminer.simpleEscaping());
   }
 
-  static final class BuilderImpl implements JoinConfig.Builder {
+  static final class BuilderImpl implements JoinConfiguration.Builder {
     private ComponentLike separator;
     private ComponentLike lastSeparator;
     private ComponentLike prefix;
@@ -103,25 +111,15 @@ final class JoinConfigImpl implements JoinConfig {
     private UnaryOperator<ComponentLike> operator;
 
     BuilderImpl() {
-      this(null, null, null, null, UnaryOperator.identity());
+      this(JoinConfigurationImpl.NULL);
     }
 
-    private BuilderImpl(final @Nullable ComponentLike separator, final @Nullable ComponentLike lastSeparator, final @Nullable ComponentLike prefix, final @Nullable ComponentLike suffix, final @NotNull UnaryOperator<ComponentLike> operator) {
-      this.separator = separator;
-      this.lastSeparator = lastSeparator;
-      this.prefix = prefix;
-      this.suffix = suffix;
-      this.operator = operator;
-    }
-
-    @Override
-    public @NonNull JoinConfig build() {
-      return new JoinConfigImpl(this.separator, this.lastSeparator, this.prefix, this.suffix, this.operator);
-    }
-
-    @Override
-    public @Nullable ComponentLike prefix() {
-      return this.prefix;
+    private BuilderImpl(final @NotNull JoinConfigurationImpl joinConfig) {
+      this.separator = joinConfig.separator;
+      this.lastSeparator = joinConfig.lastSeparator;
+      this.prefix = joinConfig.prefix;
+      this.suffix = joinConfig.suffix;
+      this.operator = joinConfig.operator;
     }
 
     @Override
@@ -131,19 +129,9 @@ final class JoinConfigImpl implements JoinConfig {
     }
 
     @Override
-    public @Nullable ComponentLike suffix() {
-      return this.suffix;
-    }
-
-    @Override
     public @NonNull Builder suffix(final @Nullable ComponentLike suffix) {
       this.suffix = suffix;
       return this;
-    }
-
-    @Override
-    public @Nullable ComponentLike separator() {
-      return this.separator;
     }
 
     @Override
@@ -153,25 +141,20 @@ final class JoinConfigImpl implements JoinConfig {
     }
 
     @Override
-    public @Nullable ComponentLike lastSeparator() {
-      return this.lastSeparator;
-    }
-
-    @Override
     public @NonNull Builder lastSeparator(final @Nullable ComponentLike lastSeparator) {
       this.lastSeparator = lastSeparator;
       return this;
     }
 
     @Override
-    public @NotNull UnaryOperator<ComponentLike> operator() {
-      return this.operator;
-    }
-
-    @Override
     public @NonNull Builder operator(final @NotNull UnaryOperator<ComponentLike> operator) {
       this.operator = Objects.requireNonNull(operator, "operator");
       return this;
+    }
+
+    @Override
+    public @NonNull JoinConfiguration build() {
+      return new JoinConfigurationImpl(this);
     }
   }
 }
