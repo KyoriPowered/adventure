@@ -32,21 +32,25 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * The configuration for how a series of components can be joined.
+ * A configuration for how a series of components can be joined.
  *
- * <p>A join configuration consists of the following parts, each of which is optional:</p>
+ * <p>A join configuration consists of the following parts:</p>
  * <dl>
- *   <dt>a prefix to be prepended to the resulting component</dt>
- *   <dt>a separator to be placed between each component</dt>
- *   <dt>a final separator to be placed between the last two components</dt>
- *   <dt>a suffix to be appended to the resulting component</dt>
+ *   <dt>a prefix (optional)</dt>
+ *   <dd>a component to be prepended to the resulting component</dd>
+ *   <dt>a separator (optional)</dt>
+ *   <dd>a component to be placed between each component</dd>
+ *   <dt>a last separator (optiona)</dt>
+ *   <dd>a component to be placed between the last two components</dd>
+ *   <dt>a suffix (optional)</dt>
+ *   <dd>a component to be appended to the resulting component</dd>
+ *   <dt>an operator (non-optional)</dt>
+ *   <dd>a unary operator to change each component that is being joined, defaults to the identity operator</dd>
  * </dl>
  *
- * <p>In addition, a join configuration contains a unary operator to change each component to be joined.
- * This defaults to an identity operator.</p>
- *
- * <p>Note that if the final separator is omitted, the normal separator will be used instead.
- * To omit the final separator, but still include normal separators, use {@link Component#empty()}.</p>
+ * <p>Note that the last separator only acts as an override for the normal separator.
+ * This means that if you do not specify a last separator, the normal separator will be placed between the last two components.
+ * To omit the final separator, but still include normal separators, use {@link Component#empty()} as the last separator.</p>
  *
  * @see Component#join(JoinConfiguration, Iterable)
  * @see Component#join(JoinConfiguration, ComponentLike...)
@@ -64,9 +68,9 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
   }
 
   /**
-   * Gets a join configuration with no separators and no prefix or suffix.
+   * Gets a join configuration with no separators, prefix or suffix.
    *
-   * @return the join config
+   * @return the join configuration
    * @since 4.8.0
    */
   static @NonNull JoinConfiguration noSeparators() {
@@ -77,7 +81,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
    * Creates a join configuration with a separator and no prefix or suffix.
    *
    * @param separator the separator
-   * @return the join config
+   * @return the join configuration
    * @since 4.8.0
    */
   static @NonNull JoinConfiguration separator(final @Nullable ComponentLike separator) {
@@ -90,7 +94,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
    *
    * @param separator the separator
    * @param lastSeparator the last separator
-   * @return the join config
+   * @return the join configuration
    * @since 4.8.0
    */
   static @NonNull JoinConfiguration separators(final @Nullable ComponentLike separator, final @Nullable ComponentLike lastSeparator) {

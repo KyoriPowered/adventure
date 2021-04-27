@@ -151,7 +151,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Deprecated
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull TextComponent join(final @NotNull ComponentLike separator, final @NotNull ComponentLike@NotNull... components) {
-    return join(JoinConfiguration.separator(separator.asComponent()), components);
+    return join(JoinConfiguration.separator(separator), components);
   }
 
   /**
@@ -166,7 +166,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Deprecated
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull TextComponent join(final @NotNull ComponentLike separator, final Iterable<? extends ComponentLike> components) {
-    return join(JoinConfiguration.separator(separator.asComponent()), components);
+    return join(JoinConfiguration.separator(separator), components);
   }
 
   /**
