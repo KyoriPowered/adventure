@@ -110,6 +110,34 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
   @NonNull JsonElement serializeToTree(final @NonNull Component component);
 
   /**
+   * Color modes for serializing colors.
+   *
+   * @since 4.8.0
+   */
+  enum ColorMode {
+    /**
+     * The default color mode. All colors will be serialized as they are.
+     *
+     * @since 4.8.0
+     */
+    STANDARD,
+
+    /**
+     * Colors will be downsampled to the nearest named color.
+     *
+     * @since 4.8.0
+     */
+    DOWNSAMPLE,
+
+    /**
+     * Colors will not be present in the output.
+     *
+     * @since 4.8.0
+     */
+    STRIP;
+  }
+
+  /**
    * A builder for {@link GsonComponentSerializer}.
    *
    * @since 4.0.0
@@ -120,8 +148,21 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
      *
      * @return this builder
      * @since 4.0.0
+     * @deprecated Use {@link #colorMode(ColorMode)} with {@link ColorMode#DOWNSAMPLE}.
      */
-    @NonNull Builder downsampleColors();
+    @Deprecated
+    default @NonNull Builder downsampleColors() {
+      return this.colorMode(ColorMode.DOWNSAMPLE);
+    }
+
+    /**
+     * Sets the color mode for the serializer.
+     *
+     * @param colorMode the color mode
+     * @return this builder
+     * @since 4.8.0
+     */
+    @NonNull Builder colorMode(final @NonNull ColorMode colorMode);
 
     /**
      * Sets a serializer that will be used to interpret legacy hover event {@code value} payloads.

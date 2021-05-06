@@ -27,26 +27,35 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
+import java.util.EnumMap;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer.ColorMode;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class TextColorSerializer extends TypeAdapter<TextColor> {
-  static final TypeAdapter<TextColor> INSTANCE = new TextColorSerializer(false).nullSafe();
-  static final TypeAdapter<TextColor> DOWNSAMPLE_COLOR = new TextColorSerializer(true).nullSafe();
+  static final EnumMap<ColorMode, TypeAdapter<TextColor>> SERIALIZERS = new EnumMap<>(ColorMode.class);
 
-  private final boolean downsampleColor;
+  static {
+    for(final ColorMode value : ColorMode.values()) {
+      SERIALIZERS.put(value, new TextColorSerializer(value).nullSafe());
+    }
+  }
 
-  private TextColorSerializer(final boolean downsampleColor) {
-    this.downsampleColor = downsampleColor;
+  private final ColorMode colorMode;
+
+  private TextColorSerializer(final @NonNull ColorMode colorMode) {
+    this.colorMode = colorMode;
   }
 
   @Override
   public void write(final JsonWriter out, final TextColor value) throws IOException {
+    if(this.colorMode == ColorMode.STRIP) return;
+
     if(value instanceof NamedTextColor) {
       out.value(NamedTextColor.NAMES.key((NamedTextColor) value));
-    } else if(this.downsampleColor) {
+    } else if(this.colorMode == ColorMode.DOWNSAMPLE) {
       out.value(NamedTextColor.NAMES.key(NamedTextColor.nearestTo(value)));
     } else {
       out.value(value.asHexString());
@@ -55,10 +64,12 @@ final class TextColorSerializer extends TypeAdapter<TextColor> {
 
   @Override
   public @Nullable TextColor read(final JsonReader in) throws IOException {
+    if(this.colorMode == ColorMode.STRIP) return null;
+
     final @Nullable TextColor color = fromString(in.nextString());
     if(color == null) return null;
 
-    return this.downsampleColor ? NamedTextColor.nearestTo(color) : color;
+    return this.colorMode == ColorMode.DOWNSAMPLE ? NamedTextColor.nearestTo(color) : color;
   }
 
   static @Nullable TextColor fromString(final @NonNull String value) {

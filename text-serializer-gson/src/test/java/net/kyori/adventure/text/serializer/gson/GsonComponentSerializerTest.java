@@ -29,6 +29,7 @@ import com.google.gson.JsonPrimitive;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.serializer.gson.GsonTest.array;
@@ -77,6 +78,20 @@ class GsonComponentSerializerTest {
     final Component test = Component.text(builder -> builder.content("hey").append(Component.text("there", original)));
 
     assertEquals("{\"extra\":[{\"color\":\"" + name(downsampled) + "\",\"text\":\"there\"}],\"text\":\"hey\"}", GsonComponentSerializer.colorDownsamplingGson().serializer().toJson(test));
+  }
+
+  @Test
+  public void testColorStripping() {
+    final GsonComponentSerializer serializer = GsonComponentSerializer.builder().colorMode(GsonComponentSerializer.ColorMode.STRIP).build();
+    final Component c0 = Component.text()
+      .append(Component.text("Dogs ", NamedTextColor.RED))
+      .append(Component.text("suck!", NamedTextColor.BLACK, TextDecoration.BOLD, TextDecoration.UNDERLINED))
+      .build();
+
+    assertEquals("{\"extra\":[{\"text\":\"Dogs \"},{\"bold\":true,\"underlined\":true,\"text\":\"suck!\"}],\"text\":\"\"}", serializer.serialize(c0));
+
+    final Component c1 = Component.text("meow", TextColor.fromCSSHexString("#FF69B4"));
+    assertEquals("{\"text\":\"meow\"}", serializer.serialize(c1));
   }
 
   private static String name(final NamedTextColor color) {
