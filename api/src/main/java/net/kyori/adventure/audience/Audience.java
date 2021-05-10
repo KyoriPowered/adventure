@@ -142,6 +142,7 @@ public interface Audience {
    * @see #sendMessage(Identity, ComponentLike)
    * @since 4.1.0
    */
+  @ForwardingAudienceOverrideNotRequired
   default void sendMessage(final @NonNull ComponentLike message) {
     this.sendMessage(Identity.nil(), message);
   }
@@ -154,6 +155,7 @@ public interface Audience {
    * @see Component
    * @since 4.0.0
    */
+  @ForwardingAudienceOverrideNotRequired
   default void sendMessage(final @NonNull Identified source, final @NonNull ComponentLike message) {
     this.sendMessage(source, message.asComponent());
   }
@@ -166,6 +168,7 @@ public interface Audience {
    * @see Component
    * @since 4.0.0
    */
+  @ForwardingAudienceOverrideNotRequired
   default void sendMessage(final @NonNull Identity source, final @NonNull ComponentLike message) {
     this.sendMessage(source, message.asComponent());
   }
@@ -179,6 +182,7 @@ public interface Audience {
    * @see #sendMessage(Identity, Component)
    * @since 4.1.0
    */
+  @ForwardingAudienceOverrideNotRequired
   default void sendMessage(final @NonNull Component message) {
     this.sendMessage(Identity.nil(), message);
   }
@@ -191,6 +195,7 @@ public interface Audience {
    * @see Component
    * @since 4.0.0
    */
+  @ForwardingAudienceOverrideNotRequired
   default void sendMessage(final @NonNull Identified source, final @NonNull Component message) {
     this.sendMessage(source, message, MessageType.SYSTEM);
   }
@@ -203,6 +208,7 @@ public interface Audience {
    * @see Component
    * @since 4.0.0
    */
+  @ForwardingAudienceOverrideNotRequired
   default void sendMessage(final @NonNull Identity source, final @NonNull Component message) {
     this.sendMessage(source, message, MessageType.SYSTEM);
   }
@@ -217,6 +223,7 @@ public interface Audience {
    * @see #sendMessage(Identity, ComponentLike, MessageType)
    * @since 4.1.0
    */
+  @ForwardingAudienceOverrideNotRequired
   default void sendMessage(final @NonNull ComponentLike message, final @NonNull MessageType type) {
     this.sendMessage(Identity.nil(), message, type);
   }
@@ -230,6 +237,7 @@ public interface Audience {
    * @see Component
    * @since 4.0.0
    */
+  @ForwardingAudienceOverrideNotRequired
   default void sendMessage(final @NonNull Identified source, final @NonNull ComponentLike message, final @NonNull MessageType type) {
     this.sendMessage(source, message.asComponent(), type);
   }
@@ -243,6 +251,7 @@ public interface Audience {
    * @see Component
    * @since 4.0.0
    */
+  @ForwardingAudienceOverrideNotRequired
   default void sendMessage(final @NonNull Identity source, final @NonNull ComponentLike message, final @NonNull MessageType type) {
     this.sendMessage(source, message.asComponent(), type);
   }
@@ -257,6 +266,7 @@ public interface Audience {
    * @see #sendMessage(Identity, Component, MessageType)
    * @since 4.1.0
    */
+  @ForwardingAudienceOverrideNotRequired
   default void sendMessage(final @NonNull Component message, final @NonNull MessageType type) {
     this.sendMessage(Identity.nil(), message, type);
   }
@@ -293,6 +303,7 @@ public interface Audience {
    * @see Component
    * @since 4.0.0
    */
+  @ForwardingAudienceOverrideNotRequired
   default void sendActionBar(final @NonNull ComponentLike message) {
     this.sendActionBar(message.asComponent());
   }
@@ -316,6 +327,7 @@ public interface Audience {
    * @param header the header
    * @since 4.3.0
    */
+  @ForwardingAudienceOverrideNotRequired
   default void sendPlayerListHeader(final @NonNull ComponentLike header) {
     this.sendPlayerListHeader(header.asComponent());
   }
@@ -342,6 +354,7 @@ public interface Audience {
    * @param footer the footer
    * @since 4.3.0
    */
+  @ForwardingAudienceOverrideNotRequired
   default void sendPlayerListFooter(final @NonNull ComponentLike footer) {
     this.sendPlayerListFooter(footer.asComponent());
   }
@@ -366,6 +379,7 @@ public interface Audience {
    * @param footer the footer
    * @since 4.3.0
    */
+  @ForwardingAudienceOverrideNotRequired
   default void sendPlayerListHeaderAndFooter(final @NonNull ComponentLike header, final @NonNull ComponentLike footer) {
     this.sendPlayerListHeaderAndFooter(header.asComponent(), footer.asComponent());
   }
@@ -470,6 +484,7 @@ public interface Audience {
    * @see Book
    * @since 4.0.0
    */
+  @ForwardingAudienceOverrideNotRequired
   default void openBook(final Book.@NonNull Builder book) {
     this.openBook(book.build());
   }
