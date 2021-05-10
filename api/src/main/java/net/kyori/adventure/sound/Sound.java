@@ -123,7 +123,7 @@ public interface Sound extends Examinable {
    * @since 4.8.0
    */
   static @NonNull Sound sound(final @NonNull Key name, final Source.@NonNull Provider source, final float volume, final float pitch) {
-    return sound(name, source.source(), volume, pitch);
+    return sound(name, source.soundSource(), volume, pitch);
   }
 
   /**
@@ -137,7 +137,7 @@ public interface Sound extends Examinable {
    * @since 4.8.0
    */
   static @NonNull Sound sound(final @NonNull Type type, final Source.@NonNull Provider source, final float volume, final float pitch) {
-    return sound(type, source.source(), volume, pitch);
+    return sound(type, source.soundSource(), volume, pitch);
   }
 
   /**
@@ -151,7 +151,7 @@ public interface Sound extends Examinable {
    * @since 4.8.0
    */
   static @NonNull Sound sound(final @NonNull Supplier<? extends Type> type, final Source.@NonNull Provider source, final float volume, final float pitch) {
-    return sound(type, source.source(), volume, pitch);
+    return sound(type, source.soundSource(), volume, pitch);
   }
 
   /**
@@ -227,7 +227,7 @@ public interface Sound extends Examinable {
        * @return the source
        * @since 4.8.0
        */
-      @NonNull Source source();
+      @NonNull Source soundSource();
     }
   }
 
