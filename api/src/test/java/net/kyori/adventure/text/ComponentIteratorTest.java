@@ -23,11 +23,15 @@
  */
 package net.kyori.adventure.text;
 
+import java.util.UUID;
+import net.kyori.adventure.identity.Identity;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class ComponentIteratorTest {
@@ -105,5 +109,29 @@ class ComponentIteratorTest {
     }
 
     fail("target component not found");
+  }
+
+  @Test
+  public void testOfHover() {
+    final Component component = Component.text()
+      .append(Component.text("WITH TEXT").hoverEvent(Component.text("TEXT")))
+      .append(Component.text("WITH ENTITY")
+        .hoverEvent(HoverEvent.showEntity(Key.key("minecraft:pig"), UUID.randomUUID(), Component.text("ENTITY"))))
+      .build();
+
+    boolean foundText = false;
+    boolean foundEntity = false;
+
+    for(final Component inner : component.iterable(ComponentIteratorType.BREADTH_FIRST_WITH_HOVER)) {
+      if (inner instanceof TextComponent) {
+        final TextComponent text = (TextComponent) inner;
+
+        if(text.content().equals("TEXT")) foundText = true;
+        else if(text.content().equals("ENTITY")) foundEntity = true;
+      }
+    }
+
+    assertTrue(foundText, "Could not locate text in component hover event.");
+    assertTrue(foundEntity, "Could not locate entity display name in entity hover event.");
   }
 }
