@@ -96,7 +96,7 @@ public enum ComponentIteratorType {
   }
 
   /**
-   * Populates a deque wth the children of this component, based on the iterator type.
+   * Populates a deque with the children of this component, based on the iterator type.
    *
    * @param component the component
    * @param deque the deque
