@@ -40,8 +40,15 @@ final class ComponentIterator implements Iterator<Component> {
 
     final Object value = hoverEvent.value();
 
-    if(value instanceof Component) deque.addFirst((Component) value);
-    else if(value instanceof HoverEvent.ShowEntity) deque.addFirst(((HoverEvent.ShowEntity) value).name());
+    if(value instanceof Component) {
+      deque.addFirst((Component) value);
+    } else if(value instanceof HoverEvent.ShowEntity) {
+      final HoverEvent.ShowEntity showEntity = (HoverEvent.ShowEntity) value;
+
+      if (showEntity.name() != null) {
+        deque.addFirst(((HoverEvent.ShowEntity) value).name());
+      }
+    }
   };
 
   private Component component;
