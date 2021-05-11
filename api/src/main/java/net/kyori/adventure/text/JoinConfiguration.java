@@ -143,32 +143,6 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
   @NotNull UnaryOperator<ComponentLike> operator();
 
   /**
-   * Joins {@code components} using this join configuration.
-   *
-   * @param components the components
-   * @return a text component
-   * @see Component#join(JoinConfiguration, ComponentLike...)
-   * @since 4.8.0
-   */
-  @Contract(value = "_ -> new", pure = true)
-  default @NonNull TextComponent join(final @NonNull ComponentLike@NonNull... components) {
-    return Component.join(this, components);
-  }
-
-  /**
-   * Joins {@code components} using this join configuration.
-   *
-   * @param components the components
-   * @return a text component
-   * @see Component#join(JoinConfiguration, Iterable)
-   * @since 4.8.0
-   */
-  @Contract(value = "_ -> new", pure = true)
-  default @NonNull TextComponent join(final @NonNull Iterable<? extends ComponentLike> components) {
-    return Component.join(this, components);
-  }
-
-  /**
    * A builder for join configurations.
    *
    * @since 4.8.0
