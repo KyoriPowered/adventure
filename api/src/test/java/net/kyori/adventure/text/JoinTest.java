@@ -31,7 +31,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class JoinTest {
-
   @Test
   void testJoin() {
     final JoinConfiguration config = JoinConfiguration.separator(Component.space());
