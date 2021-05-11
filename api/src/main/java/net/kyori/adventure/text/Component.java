@@ -195,25 +195,32 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TextComponent join(final @NonNull JoinConfiguration config, final @NonNull Iterable<? extends ComponentLike> components) {
     final Iterator<? extends ComponentLike> it = components.iterator();
+    final ComponentLike prefix = config.prefix();
+    final ComponentLike suffix = config.suffix();
 
     if (!it.hasNext()) {
-      if(config.prefix() == null && config.suffix() == null) return Component.empty();
+      if(prefix == null && suffix == null) return Component.empty();
 
       final TextComponent.Builder builder = text();
-      if(config.prefix() != null) builder.append(config.prefix());
-      if(config.suffix() != null) builder.append(config.suffix());
+      if(prefix != null) builder.append(prefix);
+      if(suffix != null) builder.append(suffix);
       return builder.build();
     }
 
     final TextComponent.Builder builder = text();
-    if(config.prefix() != null) builder.append(config.prefix());
+    if(prefix != null) builder.append(prefix);
 
-    final boolean hasSeparator = config.separator() != null;
-    final ComponentLike lastSeparator = config.lastSeparator() == null ? config.separator() : config.lastSeparator();
+    final ComponentLike separator = config.separator();
+    final UnaryOperator<ComponentLike> operator = config.operator();
+
+    ComponentLike lastSeparator = config.lastSeparator();
+    if(lastSeparator == null) lastSeparator = separator;
+
+    final boolean hasSeparator = separator != null;
 
     ComponentLike component = it.next();
     while (component != null) {
-      builder.append(config.operator().apply(component));
+      builder.append(operator.apply(component));
 
       if(!it.hasNext()) {
         component = null;
@@ -221,14 +228,14 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
         component = it.next();
 
         if (it.hasNext()) {
-          if(hasSeparator) builder.append(config.separator());
+          if(hasSeparator) builder.append(separator);
         } else {
           if(lastSeparator != null) builder.append(lastSeparator);
         }
       }
     }
 
-    if(config.suffix() != null) builder.append(config.suffix());
+    if(suffix != null) builder.append(suffix);
     return builder.build();
   }
 
