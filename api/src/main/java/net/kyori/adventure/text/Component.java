@@ -1665,6 +1665,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
    */
+  @ApiStatus.ScheduledForRemoval
   @Contract(pure = true)
   @Deprecated
   default @NonNull Component replaceText(final @NonNull String search, final @Nullable ComponentLike replacement) {
@@ -1680,6 +1681,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
    */
+  @ApiStatus.ScheduledForRemoval
   @Contract(pure = true)
   @Deprecated
   default @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement) {
@@ -1695,6 +1697,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
    */
+  @ApiStatus.ScheduledForRemoval
   @Contract(pure = true)
   @Deprecated
   default @NonNull Component replaceFirstText(final @NonNull String search, final @Nullable ComponentLike replacement) {
@@ -1710,6 +1713,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
    */
+  @ApiStatus.ScheduledForRemoval
   @Contract(pure = true)
   @Deprecated
   default @NonNull Component replaceFirstText(final @NonNull Pattern pattern, final @NonNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement) {
@@ -1726,6 +1730,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
    */
+  @ApiStatus.ScheduledForRemoval
   @Contract(pure = true)
   @Deprecated
   default @NonNull Component replaceText(final @NonNull String search, final @Nullable ComponentLike replacement, final int numberOfReplacements) {
@@ -1742,6 +1747,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
    */
+  @ApiStatus.ScheduledForRemoval
   @Contract(pure = true)
   @Deprecated
   default @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement, final int numberOfReplacements) {
@@ -1760,6 +1766,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
    */
+  @ApiStatus.ScheduledForRemoval
   @Contract(pure = true)
   @Deprecated
   default @NonNull Component replaceText(final @NonNull String search, final @Nullable ComponentLike replacement, final @NonNull IntFunction2<PatternReplacementResult> fn) {
@@ -1778,6 +1785,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
    */
+  @ApiStatus.ScheduledForRemoval
   @Contract(pure = true)
   @Deprecated
   default @NonNull Component replaceText(final @NonNull Pattern pattern, final @NonNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement, final @NonNull IntFunction2<PatternReplacementResult> fn) {

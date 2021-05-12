@@ -71,6 +71,7 @@ public interface BossBar extends Examinable {
    * @deprecated for removal since 4.2.0, use {@link #MIN_PROGRESS}
    * @since 4.0.0
    */
+  @ApiStatus.ScheduledForRemoval
   @Deprecated
   float MIN_PERCENT = MIN_PROGRESS;
   /**
@@ -79,6 +80,7 @@ public interface BossBar extends Examinable {
    * @deprecated for removal since 4.2.0, use {@link #MAX_PROGRESS}
    * @since 4.0.0
    */
+  @ApiStatus.ScheduledForRemoval
   @Deprecated
   float MAX_PERCENT = MAX_PROGRESS;
 
@@ -210,6 +212,7 @@ public interface BossBar extends Examinable {
    * @deprecated for removal since 4.2.0, use {@link #progress()}
    * @since 4.0.0
    */
+  @ApiStatus.ScheduledForRemoval
   @Deprecated
   default float percent() {
     return this.progress();
@@ -226,6 +229,7 @@ public interface BossBar extends Examinable {
    * @deprecated for removal since 4.2.0, use {@link #progress(float)}
    * @since 4.0.0
    */
+  @ApiStatus.ScheduledForRemoval
   @Contract("_ -> this")
   @Deprecated
   default @NonNull BossBar percent(final float progress) {
@@ -414,7 +418,9 @@ public interface BossBar extends Examinable {
      * @deprecated for removal since 4.2.0, use {@link #bossBarProgressChanged(BossBar, float, float)}
      * @since 4.0.0
      */
+    @ApiStatus.ScheduledForRemoval
     @Deprecated
+    @SuppressWarnings("DeprecatedIsStillUsed")
     default void bossBarPercentChanged(final @NonNull BossBar bar, final float oldProgress, final float newProgress) {
     }
 
