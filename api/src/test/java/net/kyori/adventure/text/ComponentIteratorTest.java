@@ -24,7 +24,6 @@
 package net.kyori.adventure.text;
 
 import java.util.UUID;
-import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -123,7 +122,7 @@ class ComponentIteratorTest {
     boolean foundEntity = false;
 
     for(final Component inner : component.iterable(ComponentIteratorType.BREADTH_FIRST_WITH_HOVER)) {
-      if (inner instanceof TextComponent) {
+      if(inner instanceof TextComponent) {
         final TextComponent text = (TextComponent) inner;
 
         if(text.content().equals("TEXT")) foundText = true;

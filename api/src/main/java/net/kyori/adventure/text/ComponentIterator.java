@@ -43,10 +43,10 @@ final class ComponentIterator implements Iterator<Component> {
     if(value instanceof Component) {
       deque.addFirst((Component) value);
     } else if(value instanceof HoverEvent.ShowEntity) {
-      final HoverEvent.ShowEntity showEntity = (HoverEvent.ShowEntity) value;
+      final Component name = ((HoverEvent.ShowEntity) value).name();
 
-      if (showEntity.name() != null) {
-        deque.addFirst(((HoverEvent.ShowEntity) value).name());
+      if(name != null) {
+        deque.addFirst(name);
       }
     }
   };
@@ -71,11 +71,7 @@ final class ComponentIterator implements Iterator<Component> {
     if(this.component != null) {
       final Component next = this.component;
       this.component = null;
-
-      if(!next.children().isEmpty()) {
-        this.type.populate(next, this.deque);
-      }
-
+      this.type.populate(next, this.deque);
       return next;
     } else {
       if(this.deque.isEmpty()) throw new NoSuchElementException();
