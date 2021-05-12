@@ -28,7 +28,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
@@ -93,6 +95,19 @@ import org.jetbrains.annotations.Unmodifiable;
  */
 @ApiStatus.NonExtendable
 public interface Component extends ComponentBuilderApplicable, ComponentLike, Examinable, HoverEventSource<Component> {
+  /**
+   * A predicate that checks equality of two {@code Component}s using {@link Objects#equals(Object, Object)}.
+   *
+   * @since 4.8.0
+   */
+  BiPredicate<? super Component, ? super Component> EQUALS = Objects::equals;
+  /**
+   * A predicate that checks equality of two {@code Component}s using identity equality.
+   *
+   * @since 4.8.0
+   */
+  BiPredicate<? super Component, ? super Component> EQUALS_IDENTITY = (a, b) -> a == b;
+
   /**
    * Gets an empty component.
    *
@@ -1270,15 +1285,31 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   /**
    * Checks if this component contains a component.
    *
+   * <p>This method uses <b>identity</b> comparison when checking for contains. Use {@link #contains(Component, BiPredicate)} with {@link #EQUALS} if you
+   * wish to use full equality comparison.</p>
+   *
    * @param that the other component
    * @return {@code true} if this component contains the provided
    *     component, {@code false} otherwise
    * @since 4.0.0
    */
   default boolean contains(final @NonNull Component that) {
-    if(this == that) return true;
+    return this.contains(that, EQUALS_IDENTITY);
+  }
+
+  /**
+   * Checks if this component contains a component.
+   *
+   * @param that the other component
+   * @param equals the equality tester
+   * @return {@code true} if this component contains the provided
+   *     component, {@code false} otherwise
+   * @since 4.8.0
+   */
+  default boolean contains(final @NonNull Component that, final @NonNull BiPredicate<? super Component, ? super Component> equals) {
+    if(equals.test(this, that)) return true;
     for(final Component child : this.children()) {
-      if(child.contains(that)) return true;
+      if(child.contains(that, equals)) return true;
     }
     final @Nullable HoverEvent<?> hoverEvent = this.hoverEvent();
     if(hoverEvent != null) {
@@ -1286,7 +1317,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
         final Component hover = (Component) hoverEvent.value();
         if(that == hover) return true;
         for(final Component child : hover.children()) {
-          if(child.contains(that)) return true;
+          if(child.contains(that, equals)) return true;
         }
       }
     }
