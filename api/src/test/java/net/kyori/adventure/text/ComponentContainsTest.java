@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+// https://github.com/KyoriPowered/adventure/issues/363
 class ComponentContainsTest {
   @Test
   public void testOf() {
