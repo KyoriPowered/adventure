@@ -40,6 +40,7 @@ class ComponentContainsTest {
       .build();
 
     assertTrue(c1.contains(c0));
+    assertTrue(c1.contains(Component.text("best!"), Component.EQUALS));
   }
 
   @Test
@@ -51,6 +52,7 @@ class ComponentContainsTest {
       .build();
 
     assertTrue(c1.contains(c0));
+    assertTrue(c1.contains(Component.text("A great EDM trio"), Component.EQUALS));
   }
 
   @Test
@@ -62,5 +64,6 @@ class ComponentContainsTest {
       .build();
 
     assertTrue(c1.contains(c0));
+    assertTrue(c1.contains(Component.text("Joe Ray"), Component.EQUALS));
   }
 }
