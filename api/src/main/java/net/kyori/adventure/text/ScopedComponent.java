@@ -31,6 +31,7 @@ import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.util.MonkeyBars;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -76,7 +77,7 @@ public interface ScopedComponent<C extends Component> extends Component {
   default @NonNull C append(final @NonNull Component component) {
     if(component == Component.empty()) return (C) this;
     final List<Component> oldChildren = this.children();
-    return this.children(AbstractComponent.addOne(oldChildren, component));
+    return this.children(MonkeyBars.addOne(oldChildren, component));
   }
 
   @Override

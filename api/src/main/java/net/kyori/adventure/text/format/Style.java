@@ -34,7 +34,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.util.Buildable;
-import net.kyori.adventure.util.ShadyPines;
+import net.kyori.adventure.util.MonkeyBars;
 import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -577,7 +577,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @since 4.0.0
      */
     public static @Unmodifiable @NonNull Set<Merge> of(final Merge@NonNull... merges) {
-      return ShadyPines.enumSet(Merge.class, merges);
+      return MonkeyBars.enumSet(Merge.class, merges);
     }
 
     static boolean hasAll(final @NonNull Set<Merge> merges) {

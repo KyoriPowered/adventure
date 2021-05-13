@@ -48,7 +48,7 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
     super(children, style);
     this.key = requireNonNull(key, "key");
     // Since translation arguments can be indexed, empty components are also included.
-    this.args = AbstractComponent.asComponents(args, true);
+    this.args = ComponentLike.asComponents(args);
   }
 
   @Override
@@ -164,7 +164,7 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
 
     @Override
     public @NonNull Builder args(final @NonNull List<? extends ComponentLike> args) {
-      this.args = AbstractComponent.asComponents(args, true);
+      this.args = ComponentLike.asComponents(args);
       return this;
     }
 

@@ -23,16 +23,21 @@
  */
 package net.kyori.adventure.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * Various utilities.
+ * {@link Collection} related utilities.
  *
- * @since 4.0.0
+ * @since 4.8.0
  */
-public final class ShadyPines {
-  private ShadyPines() {
+public final class MonkeyBars {
+  private MonkeyBars() {
   }
 
   /**
@@ -42,37 +47,32 @@ public final class ShadyPines {
    * @param constants the enum constants
    * @param <E> the enum type
    * @return the set
-   * @deprecated for removal since 4.8.0, use {@link MonkeyBars#enumSet(Class, Enum[])}
    * @since 4.0.0
    */
-  @Deprecated
   @SafeVarargs
   @SuppressWarnings("varargs")
   public static <E extends Enum<E>> @NonNull Set<E> enumSet(final Class<E> type, final E@NonNull... constants) {
-    return MonkeyBars.enumSet(type, constants);
+    final Set<E> set = EnumSet.noneOf(type);
+    Collections.addAll(set, constants);
+    return Collections.unmodifiableSet(set);
   }
 
   /**
-   * Checks if {@code a} is equal to {@code b}.
+   * Adds an element to the end of the list, or returns a new list.
    *
-   * @param a a double
-   * @param b a double
-   * @return {@code true} if {@code a} is equal to {@code b}, otherwise {@code false}
-   * @since 4.0.0
-   */
-  public static boolean equals(final double a, final double b) {
-    return Double.doubleToLongBits(a) == Double.doubleToLongBits(b);
-  }
-
-  /**
-   * Checks if {@code a} is equal to {@code b}.
+   * <p>The returned list is unmodifiable.</p>
    *
-   * @param a a float
-   * @param b a float
-   * @return {@code true} if {@code a} is equal to {@code b}, otherwise {@code false}
-   * @since 4.0.0
+   * @param oldList the old list
+   * @param newElement the element to add
+   * @param <T> the element type
+   * @return a list
+   * @since 4.8.0
    */
-  public static boolean equals(final float a, final float b) {
-    return Float.floatToIntBits(a) == Float.floatToIntBits(b);
+  public static <T> @NonNull List<T> addOne(final @NonNull List<T> oldList, final T newElement) {
+    if(oldList.isEmpty()) return Collections.singletonList(newElement);
+    final List<T> newList = new ArrayList<>(oldList.size() + 1);
+    newList.addAll(oldList);
+    newList.add(newElement);
+    return Collections.unmodifiableList(newList);
   }
 }
