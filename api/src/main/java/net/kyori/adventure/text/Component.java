@@ -1806,4 +1806,196 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   default @NonNull HoverEvent<Component> asHoverEvent(final @NonNull UnaryOperator<Component> op) {
     return HoverEvent.showText(op.apply(this));
   }
+
+  /**
+   * A builder.
+   *
+   * @param <C> the component type
+   * @param <B> the builder type
+   * @since 4.8.0
+   */
+  interface AbstractBuilder<C extends Component, B extends AbstractBuilder<C, B>> extends Buildable.Builder<C>, ComponentLike {
+    /**
+     * Appends a component to this component.
+     *
+     * @param component the component to append
+     * @return this builder
+     * @since 4.8.0
+     */
+    @Contract("_ -> this")
+    @NonNull B append(final @NonNull ComponentLike component);
+
+    /**
+     * Appends components to this component.
+     *
+     * @param components the components to append
+     * @return this builder
+     * @since 4.8.0
+     */
+    @Contract("_ -> this")
+    @NonNull B append(final @NonNull ComponentLike@NonNull... components);
+
+    /**
+     * Appends components to this component.
+     *
+     * @param components the components to append
+     * @return this builder
+     * @since 4.0.0
+     */
+    @Contract("_ -> this")
+    @NonNull B append(final @NonNull Iterable<? extends ComponentLike> components);
+
+    /**
+     * Sets the style.
+     *
+     * @param style the style
+     * @return this builder
+     * @since 4.0.0
+     */
+    @Contract("_ -> this")
+    @NonNull B style(final @NonNull Style style);
+
+    /**
+     * Configures the style.
+     *
+     * @param consumer the style consumer
+     * @return this builder
+     * @since 4.0.0
+     */
+    @Contract("_ -> this")
+    @NonNull B style(final @NonNull Consumer<Style.Builder> consumer);
+
+    /**
+     * Sets the font of this component.
+     *
+     * @param font the font
+     * @return this builder
+     * @since 4.0.0
+     */
+    @Contract("_ -> this")
+    @NonNull B font(final @Nullable Key font);
+
+    /**
+     * Sets the color of this component.
+     *
+     * @param color the color
+     * @return this builder
+     * @since 4.0.0
+     */
+    @Contract("_ -> this")
+    @NonNull B color(final @Nullable TextColor color);
+
+    /**
+     * Sets the color of this component if there isn't one set already.
+     *
+     * @param color the color
+     * @return this builder
+     * @since 4.0.0
+     */
+    @Contract("_ -> this")
+    @NonNull B colorIfAbsent(final @Nullable TextColor color);
+
+    /**
+     * Sets the state of a set of decorations to {@code flag} on this component.
+     *
+     * @param decorations the decorations
+     * @param flag {@code true} if this component should have the decorations, {@code false} if
+     *     this component should not have the decorations
+     * @return this builder
+     * @since 4.0.0
+     */
+    @Contract("_, _ -> this")
+    @SuppressWarnings("unchecked")
+    default @NonNull B decorations(final @NonNull Set<TextDecoration> decorations, final boolean flag) {
+      final TextDecoration.State state = TextDecoration.State.byBoolean(flag);
+      decorations.forEach(decoration -> this.decoration(decoration, state));
+      return (B) this;
+    }
+
+    /**
+     * Sets the state of {@code decoration} to {@link TextDecoration.State#TRUE}.
+     *
+     * @param decoration the decoration
+     * @return this builder
+     * @since 4.0.0
+     */
+    @Contract("_ -> this")
+    default @NonNull B decorate(final @NonNull TextDecoration decoration) {
+      return this.decoration(decoration, TextDecoration.State.TRUE);
+    }
+
+    /**
+     * Sets {@code decorations} to {@link TextDecoration.State#TRUE}.
+     *
+     * @param decorations the decorations
+     * @return this builder
+     * @since 4.0.0
+     */
+    @Contract("_ -> this")
+    @SuppressWarnings("unchecked")
+    default @NonNull B decorate(final @NonNull TextDecoration@NonNull... decorations) {
+      for(int i = 0, length = decorations.length; i < length; i++) {
+        this.decorate(decorations[i]);
+      }
+      return (B) this;
+    }
+
+    /**
+     * Sets the state of a decoration on this component.
+     *
+     * @param decoration the decoration
+     * @param flag {@code true} if this component should have the decoration, {@code false} if
+     *     this component should not have the decoration
+     * @return this builder
+     * @since 4.0.0
+     */
+    @Contract("_, _ -> this")
+    default @NonNull B decoration(final @NonNull TextDecoration decoration, final boolean flag) {
+      return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
+    }
+
+    /**
+     * Sets the value of a decoration on this component.
+     *
+     * @param decoration the decoration
+     * @param state {@link TextDecoration.State#TRUE} if this component should have the
+     *     decoration, {@link TextDecoration.State#FALSE} if this component should not
+     *     have the decoration, and {@link TextDecoration.State#NOT_SET} if the decoration
+     *     should not have a set value
+     * @return this builder
+     * @since 4.0.0
+     */
+    @Contract("_, _ -> this")
+    @NonNull B decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state);
+
+    /**
+     * Sets the click event of this component.
+     *
+     * @param event the click event
+     * @return this builder
+     * @since 4.0.0
+     */
+    @Contract("_ -> this")
+    @NonNull B clickEvent(final @Nullable ClickEvent event);
+
+    /**
+     * Sets the hover event of this component.
+     *
+     * @param source the hover event source
+     * @return this builder
+     * @since 4.0.0
+     */
+    @Contract("_ -> this")
+    @NonNull B hoverEvent(final @Nullable HoverEventSource<?> source);
+
+    /**
+     * Sets the string to be inserted when this component is shift-clicked.
+     *
+     * @param insertion the insertion string
+     * @return this builder
+     * @since 4.0.0
+     */
+    @Contract("_ -> this")
+    @NonNull B insertion(final @Nullable String insertion);
+  }
 }

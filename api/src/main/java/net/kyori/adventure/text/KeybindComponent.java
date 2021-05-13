@@ -62,7 +62,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    *
    * @since 4.0.0
    */
-  interface Builder extends ComponentBuilder<KeybindComponent, Builder> {
+  interface Builder extends Component.AbstractBuilder<KeybindComponent, Builder>, ComponentBuilder<KeybindComponent, Builder> {
     /**
      * Sets the keybind.
      *

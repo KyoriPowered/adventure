@@ -45,7 +45,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @param <C> the component type
  * @param <B> the builder type
  */
-abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> implements ComponentBuilder<C, B> {
+abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B> & Component.AbstractBuilder<C, B>> implements Component.AbstractBuilder<C, B>, ComponentBuilder<C, B> {
   // We use an empty list by default to prevent unnecessary list creation for components with no children
   protected List<Component> children = Collections.emptyList();
   /*
@@ -77,7 +77,8 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NonNull B append(final @NonNull Component component) {
+  public @NonNull B append(final @NonNull ComponentLike like) {
+    final Component component = like.asComponent();
     if(component == Component.empty()) return (B) this;
     this.prepareChildren();
     this.children.add(component);
@@ -317,5 +318,10 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
     } else {
       return Style.empty();
     }
+  }
+
+  @Override
+  public @NonNull Component asComponent() {
+    return this.build();
   }
 }

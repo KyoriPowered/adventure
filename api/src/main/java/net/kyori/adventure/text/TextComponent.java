@@ -75,7 +75,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    *
    * @since 4.0.0
    */
-  interface Builder extends ComponentBuilder<TextComponent, Builder> {
+  interface Builder extends Component.AbstractBuilder<TextComponent, Builder>, ComponentBuilder<TextComponent, Builder> {
     /**
      * Gets the plain text content.
      *

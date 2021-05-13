@@ -113,7 +113,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    *
    * @since 4.0.0
    */
-  interface Builder extends ComponentBuilder<ScoreComponent, Builder> {
+  interface Builder extends Component.AbstractBuilder<ScoreComponent, Builder>, ComponentBuilder<ScoreComponent, Builder> {
     /**
      * Sets the score name.
      *

@@ -108,7 +108,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    *
    * @since 4.0.0
    */
-  interface Builder extends ComponentBuilder<TranslatableComponent, Builder> {
+  interface Builder extends Component.AbstractBuilder<TranslatableComponent, Builder>, ComponentBuilder<TranslatableComponent, Builder> {
     /**
      * Sets the translation key.
      *

@@ -65,7 +65,7 @@ public interface SelectorComponent extends BuildableComponent<SelectorComponent,
    *
    * @since 4.0.0
    */
-  interface Builder extends ComponentBuilder<SelectorComponent, Builder> {
+  interface Builder extends Component.AbstractBuilder<SelectorComponent, Builder>, ComponentBuilder<SelectorComponent, Builder> {
     /**
      * Sets the selector pattern.
      *
