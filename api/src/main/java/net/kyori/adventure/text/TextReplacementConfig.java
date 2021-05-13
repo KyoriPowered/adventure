@@ -124,7 +124,6 @@ public interface TextReplacementConfig extends Buildable<TextReplacementConfig, 
      * @return this builder
      * @since 4.2.0
      */
-    @Contract("-> this")
     default @NonNull Builder once() {
       return this.times(1);
     }

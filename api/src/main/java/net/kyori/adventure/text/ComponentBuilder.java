@@ -223,7 +223,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
-  @Contract("_ -> this")
+  @Contract("_, _ -> this")
   @SuppressWarnings("unchecked")
   default @NonNull B decorations(final @NonNull Set<TextDecoration> decorations, final boolean flag) {
     final TextDecoration.State state = TextDecoration.State.byBoolean(flag);
@@ -359,7 +359,6 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @return this builder
    * @since 4.0.0
    */
-  @Contract("-> this")
   @NonNull B resetStyle();
 
   /**
