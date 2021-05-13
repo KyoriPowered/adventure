@@ -25,9 +25,11 @@ package net.kyori.adventure.audience;
 
 import java.util.Arrays;
 import java.util.stream.Collector;
+import net.kyori.adventure.Adventure;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
@@ -78,6 +80,41 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @since 4.0.0
  */
 public interface Audience {
+  /**
+   * An empty audience.
+   *
+   * @see #empty()
+   * @since 4.8.0
+   */
+  Key TYPE_EMPTY = Key.key(Adventure.NAMESPACE, "empty");
+  /**
+   * A forwarded audience.
+   *
+   * @see ForwardingAudience
+   * @since 4.8.0
+   */
+  Key TYPE_FORWARDED = Key.key(Adventure.NAMESPACE, "forwarded");
+  /**
+   * A single forwarded audience.
+   *
+   * @see ForwardingAudience.Single
+   * @since 4.8.0
+   */
+  Key TYPE_FORWARDED_SINGLE = Key.key(Adventure.NAMESPACE, "forwarded_single");
+
+  /**
+   * A console audience.
+   *
+   * @since 4.8.0
+   */
+  Key TYPE_CONSOLE = Key.key(Adventure.NAMESPACE, "console");
+  /**
+   * A player audience.
+   *
+   * @since 4.8.0
+   */
+  Key TYPE_PLAYER = Key.key("player");
+
   /**
    * Gets an audience that does nothing.
    *
@@ -132,6 +169,14 @@ public interface Audience {
   static @NonNull Collector<? super Audience, ?, ForwardingAudience> toAudience() {
     return Audiences.COLLECTOR;
   }
+
+  /**
+   * Gets the audience type.
+   *
+   * @return the audience type
+   * @since 4.8.0
+   */
+  @NonNull Key audienceType();
 
   /**
    * Sends a chat message with a {@link Identity#nil() nil} identity to this {@link Audience}.

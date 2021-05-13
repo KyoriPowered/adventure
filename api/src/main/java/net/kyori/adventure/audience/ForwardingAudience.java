@@ -28,6 +28,7 @@ import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
@@ -54,6 +55,11 @@ public interface ForwardingAudience extends Audience {
    */
   @ApiStatus.OverrideOnly
   @NonNull Iterable<? extends Audience> audiences();
+
+  @Override
+  default @NonNull Key audienceType() {
+    return TYPE_FORWARDED;
+  }
 
   @Override
   default void sendMessage(final @NonNull Identified source, final @NonNull Component message, final @NonNull MessageType type) {
@@ -155,6 +161,11 @@ public interface ForwardingAudience extends Audience {
     @Override
     default @NonNull Iterable<? extends Audience> audiences() {
       return Collections.singleton(this.audience());
+    }
+
+    @Override
+    default @NonNull Key audienceType() {
+      return TYPE_FORWARDED_SINGLE;
     }
 
     @Override

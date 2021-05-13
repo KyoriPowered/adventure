@@ -25,12 +25,18 @@ package net.kyori.adventure.audience;
 
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.identity.Identified;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 final class EmptyAudience implements Audience {
   static final EmptyAudience INSTANCE = new EmptyAudience();
+
+  @Override
+  public @NonNull Key audienceType() {
+    return TYPE_EMPTY;
+  }
 
   @Override
   public void sendMessage(final @NonNull ComponentLike message) {
