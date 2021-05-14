@@ -101,6 +101,12 @@ public interface Audience {
    * @since 4.8.0
    */
   Key TYPE_FORWARDED_SINGLE = Key.key(Adventure.NAMESPACE, "forwarded_single");
+  /**
+   * An unknown audience type.
+   *
+   * @since 4.8.0
+   */
+  Key TYPE_UNKNOWN = Key.key(Adventure.NAMESPACE, "unknown");
 
   /**
    * A console audience.
@@ -114,6 +120,18 @@ public interface Audience {
    * @since 4.8.0
    */
   Key TYPE_PLAYER = Key.key("player");
+  /**
+   * A server audience.
+   *
+   * @since 4.8.0
+   */
+  Key TYPE_SERVER = Key.key(Adventure.NAMESPACE, "server");
+  /**
+   * A world audience.
+   *
+   * @since 4.8.0
+   */
+  Key TYPE_WORLD = Key.key(Adventure.NAMESPACE, "world");
 
   /**
    * Gets an audience that does nothing.
@@ -173,10 +191,14 @@ public interface Audience {
   /**
    * Gets the audience type.
    *
+   * <p>If you are implementing {@code Audience}, this method must be overridden.</p>
+   *
    * @return the audience type
    * @since 4.8.0
    */
-  @NonNull Key audienceType();
+  default @NonNull Key audienceType() {
+    return TYPE_UNKNOWN;
+  }
 
   /**
    * Sends a chat message with a {@link Identity#nil() nil} identity to this {@link Audience}.
