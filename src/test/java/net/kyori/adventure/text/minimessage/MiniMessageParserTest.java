@@ -23,8 +23,10 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import net.kyori.adventure.text.format.TextDecoration;
@@ -34,6 +36,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
+import java.util.UUID;
 
 import static net.kyori.adventure.key.Key.key;
 import static net.kyori.adventure.text.Component.keybind;
@@ -1061,6 +1064,49 @@ public class MiniMessageParserTest {
             .append(text("</red>", NamedTextColor.GREEN)).build();
     final String input = "<green>hello</red>";
     assertParsedEquals(expected, input);
+  }
+
+  @Test
+  void testShowItemHover() {
+    final Component expected = text()
+            .content("test")
+            .hoverEvent(HoverEvent.showItem(Key.key("minecraft", "stone"), 5))
+            .build();
+    final String input = "<hover:show_item:'minecraft:stone':5>test";
+    final String input1 = "<hover:show_item:'minecraft:stone':'5'>test";
+    assertParsedEquals(expected, input);
+    assertParsedEquals(expected, input1);
+  }
+
+  @Test
+  void testShowEntityHover() {
+    final UUID uuid = UUID.randomUUID();
+    final String nameString = "<gold>Custom Name!";
+    final Component name = PARSER.parse(nameString);
+    final Component expected = text()
+            .content("test")
+            .hoverEvent(HoverEvent.showEntity(Key.key("minecraft", "zombie"), uuid, name))
+            .build();
+    final String input = String.format("<hover:show_entity:'minecraft:zombie':%s:'%s'>test", uuid.toString(), nameString);
+    final String input1 = String.format("<hover:show_entity:zombie:'%s':'%s'>test", uuid.toString(), nameString);
+    assertParsedEquals(expected, input);
+    assertParsedEquals(expected, input1);
+  }
+
+  @Test
+  void testQuoteEscapingInArguments() {
+    final Component expected = translatable("test", text("\"\""));
+    final Component expected1 = translatable("test", text("''"));
+    final Component expected2 = translatable("test", text("''"));
+    final Component expected3 = translatable("test", text("\"\""));
+    final String input = "<lang:test:'\"\"'>";
+    final String input1 = "<lang:test:'\\'\\''>";
+    final String input2 = "<lang:test:\"''\">";
+    final String input3 = "<lang:test:\"\\\"\\\"\">";
+    assertParsedEquals(expected, input);
+    assertParsedEquals(expected1, input1);
+    assertParsedEquals(expected2, input2);
+    assertParsedEquals(expected3, input3);
   }
 
   private static void assertParsedEquals(final @NonNull Component expected, final @NonNull String input) {

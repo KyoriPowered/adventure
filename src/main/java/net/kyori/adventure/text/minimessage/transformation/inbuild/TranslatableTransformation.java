@@ -72,7 +72,7 @@ public class TranslatableTransformation extends OneTimeTransformation implements
     super.load(name, args);
 
     if(args.isEmpty() || args.get(0).type() != TokenType.STRING) {
-      throw new ParsingException("Doesn't know how to turn " + args + " into a click event", -1);
+      throw new ParsingException("Doesn't know how to turn " + args + " into a translatable component", -1);
     }
 
     this.key = args.get(0).value();

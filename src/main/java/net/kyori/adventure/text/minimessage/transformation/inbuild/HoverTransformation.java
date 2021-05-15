@@ -23,6 +23,9 @@
  */
 package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
+import net.kyori.adventure.key.InvalidKeyException;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -37,8 +40,11 @@ import net.kyori.examination.ExaminableProperty;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
@@ -47,6 +53,9 @@ import java.util.stream.Stream;
  * @since 4.1.0
  */
 public final class HoverTransformation extends Transformation {
+  // https://regex101.com/r/wC2xT6/1 splits on ':', except when in single or double quotes, respecting escaped quotes.
+  private static final Pattern REALLY_DUM_SPLIT_PATTERN = Pattern.compile("(?s):(?=(?:((?<!\\\\)[\"'])(?:(?!(?<!\\\\)\\1).)*(?<!\\\\)\\1|\\\\.|[^\"'])*$)");
+
   /**
    * Get if this transformation can handle the provided tag name.
    *
@@ -64,6 +73,7 @@ public final class HoverTransformation extends Transformation {
   private HoverTransformation() {
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void load(final String name, final List<Token> args) {
     super.load(name, args);
@@ -72,13 +82,70 @@ public final class HoverTransformation extends Transformation {
       throw new ParsingException("Doesn't know how to turn " + args + " into a hover event", -1);
     }
 
-    //noinspection unchecked
+    final String string = Token.asValueString(args.subList(2, args.size()));
+
     this.action = (HoverEvent.Action<Object>) HoverEvent.Action.NAMES.value(args.get(0).value());
-    String string = Token.asValueString(args.subList(2, args.size()));
-    if(string.startsWith("'") || string.startsWith("\"")) {
-      string = string.substring(1).substring(0, string.length() - 2);
+    if(this.action == (Object) HoverEvent.Action.SHOW_TEXT) {
+      this.value = MiniMessage.get().parse(stripOuterQuotes(string)); // TODO this uses a hardcoded instance, there gotta be a better way
+    } else if(this.action == (Object) HoverEvent.Action.SHOW_ITEM) {
+      this.value = this.parseShowItem(string);
+    } else if(this.action == (Object) HoverEvent.Action.SHOW_ENTITY) {
+      this.value = this.parseShowEntity(string);
+    } else {
+      throw new ParsingException("Don't know how to turn '" + args + "' into a hover event", -1);
     }
-    this.value = MiniMessage.get().parse(string); // TODO this uses a hardcoded instance, there gotta be a better way
+  }
+
+  private static @NonNull String stripOuterQuotes(final @NonNull String string) {
+    if(string.length() != 1 && startsAndEndsWithQuotes(string)) {
+      return string.substring(1).substring(0, string.length() - 2);
+    }
+    return string;
+  }
+
+  private static boolean startsAndEndsWithQuotes(final @NonNull String string) {
+    return string.startsWith("'") && string.endsWith("'") || string.startsWith("\"") && string.endsWith("\"");
+  }
+
+  private HoverEvent.@NonNull ShowItem parseShowItem(final @NonNull String value) {
+    try {
+      final String[] args = REALLY_DUM_SPLIT_PATTERN.split(value);
+      System.out.println(Arrays.toString(args));
+      if(args.length == 0) {
+        throw new RuntimeException("Show item hover needs at least item id!");
+      }
+      final Key key = Key.key(stripOuterQuotes(args[0]));
+      final int count;
+      if(args.length >= 2) {
+        count = Integer.parseInt(stripOuterQuotes(args[1]));
+      } else {
+        count = 1;
+      }
+      if(args.length == 3) {
+        return HoverEvent.ShowItem.of(key, count, BinaryTagHolder.of(stripOuterQuotes(args[2])));
+      }
+      return HoverEvent.ShowItem.of(key, count);
+    } catch(final InvalidKeyException | NumberFormatException ex) {
+      throw new RuntimeException(String.format("Exception parsing show_item hover '%s'.", value), ex);
+    }
+  }
+
+  private HoverEvent.@NonNull ShowEntity parseShowEntity(final @NonNull String value) {
+    try {
+      final String[] args = REALLY_DUM_SPLIT_PATTERN.split(value);
+      if(args.length <= 1) {
+        throw new RuntimeException("Show entity hover needs at least type and uuid!");
+      }
+      final Key key = Key.key(stripOuterQuotes(args[0]));
+      final UUID id = UUID.fromString(stripOuterQuotes(args[1]));
+      if(args.length == 3) {
+        final Component name = MiniMessage.get().parse(stripOuterQuotes(args[2])); // todo; hardcoded instance
+        return HoverEvent.ShowEntity.of(key, id, name);
+      }
+      return HoverEvent.ShowEntity.of(key, id);
+    } catch(final IllegalArgumentException | InvalidKeyException ex) {
+      throw new RuntimeException(String.format("Exception parsing show_entity hover '%s'.", value), ex);
+    }
   }
 
   @Override
