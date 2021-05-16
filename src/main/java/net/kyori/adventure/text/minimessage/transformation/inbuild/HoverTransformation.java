@@ -40,7 +40,6 @@ import net.kyori.examination.ExaminableProperty;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -110,7 +109,6 @@ public final class HoverTransformation extends Transformation {
   private HoverEvent.@NonNull ShowItem parseShowItem(final @NonNull String value) {
     try {
       final String[] args = REALLY_DUM_SPLIT_PATTERN.split(value);
-      System.out.println(Arrays.toString(args));
       if(args.length == 0) {
         throw new RuntimeException("Show item hover needs at least item id!");
       }
