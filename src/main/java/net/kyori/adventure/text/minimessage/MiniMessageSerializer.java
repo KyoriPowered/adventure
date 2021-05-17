@@ -215,7 +215,7 @@ final class MiniMessageSerializer {
 
   private static void serializeHoverEvent(final @NonNull StringBuilder sb, final @NonNull HoverEvent<?> hov) {
     if(hov.action() == HoverEvent.Action.SHOW_TEXT) {
-      sb.append(startTag(HOVER + ":" + HoverEvent.Action.NAMES.key(hov.action()) + ":\"" + serialize((Component) hov.value()) + "\""));
+      sb.append(startTag(HOVER + SEPARATOR + HoverEvent.Action.NAMES.key(hov.action()) + SEPARATOR + "\"" + serialize((Component) hov.value()).replace("\"", "\\\"") + "\""));
     } else if(hov.action() == HoverEvent.Action.SHOW_ITEM) {
       final HoverEvent.ShowItem showItem = (HoverEvent.ShowItem) hov.value();
       final String nbt;
@@ -277,7 +277,14 @@ final class MiniMessageSerializer {
     if(component instanceof KeybindComponent) {
       sb.append(startTag(KEYBIND + SEPARATOR + ((KeybindComponent) component).keybind()));
     } else if(component instanceof TranslatableComponent) {
-      sb.append(startTag(TRANSLATABLE + SEPARATOR + ((TranslatableComponent) component).key()));
+      final StringBuilder args = new StringBuilder();
+      for(final Component arg : ((TranslatableComponent) component).args()) {
+        args.append(SEPARATOR)
+                .append("\"")
+                .append(serialize(arg).replace("\"", "\\\""))
+                .append("\"");
+      }
+      sb.append(startTag(TRANSLATABLE + SEPARATOR + ((TranslatableComponent) component).key() + args));
     }
   }
 }

@@ -199,6 +199,18 @@ public class MiniMessageSerializerTest {
   }
 
   @Test
+  void testTranslatableWithArgs() {
+    final String expected = "<lang:some_key:\"<red>:arg\\\" 1\":\"<blue>arg 2\">";
+
+    final Component translatable = Component.translatable()
+            .key("some_key")
+            .args(text(":arg\" 1", NamedTextColor.RED), text("arg 2", NamedTextColor.BLUE))
+            .build();
+
+    this.test(translatable, expected);
+  }
+
+  @Test
   void testInsertion() {
     final String expected = "Click <insert:test>this</insert> to insert!";
 
