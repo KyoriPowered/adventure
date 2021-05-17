@@ -28,7 +28,7 @@ dependencies {
   api "net.kyori:adventure-api:${adventure}"
   testImplementation "net.kyori:adventure-text-serializer-plain:${adventure}"
   testImplementation "org.junit.jupiter:junit-jupiter-api:5.7.1"
-  testImplementation "org.junit.jupiter:junit-jupiter-engine:5.7.1"
+  testImplementation "org.junit.jupiter:junit-jupiter-engine:5.7.2"
   checkstyle "ca.stellardrift:stylecheck:0.1"
 }
 
