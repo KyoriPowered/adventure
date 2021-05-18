@@ -65,6 +65,12 @@ public interface Key extends Comparable<Key>, Examinable {
   /**
    * Creates a key.
    *
+   * <p>This will parse {@code string} as a key, using {@code :} as a separator between the namespace and the value.</p>
+   *
+   * <p>The namespace is optional. If you do not provide one (for example, if you provide just {@code player} or {@code :player}
+   * as the string) then {@link #MINECRAFT_NAMESPACE} will be used as a namespace and {@code string} will be used as the value,
+   * removing the colon if necessary.</p>
+   *
    * @param string the string
    * @return the key
    * @throws InvalidKeyException if the namespace or value contains an invalid character
@@ -77,8 +83,14 @@ public interface Key extends Comparable<Key>, Examinable {
   /**
    * Creates a key.
    *
+   * <p>This will parse {@code string} as a key, using {@code character} as a separator between the namespace and the value.</p>
+   *
+   * <p>The namespace is optional. If you do not provide one (for example, if you provide {@code player} or {@code character + "player"}
+   * as the string) then {@link #MINECRAFT_NAMESPACE} will be used as a namespace and {@code string} will be used as the value,
+   * removing the provided separator character if necessary.</p>
+   *
    * @param string the string
-   * @param character the character
+   * @param character the character that separates the namespace from the value
    * @return the key
    * @throws InvalidKeyException if the namespace or value contains an invalid character
    * @since 4.0.0
