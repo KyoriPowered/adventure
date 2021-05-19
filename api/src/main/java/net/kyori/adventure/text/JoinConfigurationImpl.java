@@ -35,11 +35,12 @@ import org.jetbrains.annotations.NotNull;
 final class JoinConfigurationImpl implements JoinConfiguration {
   static final JoinConfigurationImpl NULL = new JoinConfigurationImpl();
 
-  private final ComponentLike separator;
-  private final ComponentLike lastSeparator;
-  private final ComponentLike prefix;
-  private final ComponentLike suffix;
-  private final UnaryOperator<ComponentLike> operator;
+  private final Component separator;
+  private final Component lastSeparator;
+  private final Component prefix;
+  private final Component suffix;
+  private final UnaryOperator<Component> operator;
+  private final Component lastSeparatorIfSerial;
 
   private JoinConfigurationImpl() {
     this.separator = null;
@@ -47,6 +48,7 @@ final class JoinConfigurationImpl implements JoinConfiguration {
     this.prefix = null;
     this.suffix = null;
     this.operator = UnaryOperator.identity();
+    this.lastSeparatorIfSerial = null;
   }
 
   private JoinConfigurationImpl(final @NotNull BuilderImpl builder) {
@@ -55,31 +57,37 @@ final class JoinConfigurationImpl implements JoinConfiguration {
     this.prefix = builder.prefix;
     this.suffix = builder.suffix;
     this.operator = builder.operator;
+    this.lastSeparatorIfSerial = builder.lastSeparatorIfSerial;
   }
 
   @Override
-  public @Nullable ComponentLike prefix() {
+  public @Nullable Component prefix() {
     return this.prefix;
   }
 
   @Override
-  public @Nullable ComponentLike suffix() {
+  public @Nullable Component suffix() {
     return this.suffix;
   }
 
   @Override
-  public @Nullable ComponentLike separator() {
+  public @Nullable Component separator() {
     return this.separator;
   }
 
   @Override
-  public @Nullable ComponentLike lastSeparator() {
+  public @Nullable Component lastSeparator() {
     return this.lastSeparator;
   }
 
   @Override
-  public @NotNull UnaryOperator<ComponentLike> operator() {
+  public @NotNull UnaryOperator<Component> operator() {
     return this.operator;
+  }
+
+  @Override
+  public @Nullable Component lastSeparatorIfSerial() {
+    return this.lastSeparatorIfSerial;
   }
 
   @Override
@@ -104,11 +112,12 @@ final class JoinConfigurationImpl implements JoinConfiguration {
   }
 
   static final class BuilderImpl implements JoinConfiguration.Builder {
-    private ComponentLike separator;
-    private ComponentLike lastSeparator;
-    private ComponentLike prefix;
-    private ComponentLike suffix;
-    private UnaryOperator<ComponentLike> operator;
+    private Component separator;
+    private Component lastSeparator;
+    private Component prefix;
+    private Component suffix;
+    private UnaryOperator<Component> operator;
+    private Component lastSeparatorIfSerial;
 
     BuilderImpl() {
       this(JoinConfigurationImpl.NULL);
@@ -120,35 +129,42 @@ final class JoinConfigurationImpl implements JoinConfiguration {
       this.prefix = joinConfig.prefix;
       this.suffix = joinConfig.suffix;
       this.operator = joinConfig.operator;
+      this.lastSeparatorIfSerial = joinConfig.lastSeparatorIfSerial;
     }
 
     @Override
-    public @NonNull Builder prefix(final @Nullable ComponentLike prefix) {
+    public @NonNull Builder prefix(final @Nullable Component prefix) {
       this.prefix = prefix;
       return this;
     }
 
     @Override
-    public @NonNull Builder suffix(final @Nullable ComponentLike suffix) {
+    public @NonNull Builder suffix(final @Nullable Component suffix) {
       this.suffix = suffix;
       return this;
     }
 
     @Override
-    public @NonNull Builder separator(final @Nullable ComponentLike separator) {
+    public @NonNull Builder separator(final @Nullable Component separator) {
       this.separator = separator;
       return this;
     }
 
     @Override
-    public @NonNull Builder lastSeparator(final @Nullable ComponentLike lastSeparator) {
+    public @NonNull Builder lastSeparator(final @Nullable Component lastSeparator) {
       this.lastSeparator = lastSeparator;
       return this;
     }
 
     @Override
-    public @NonNull Builder operator(final @NotNull UnaryOperator<ComponentLike> operator) {
+    public @NonNull Builder operator(final @NotNull UnaryOperator<Component> operator) {
       this.operator = Objects.requireNonNull(operator, "operator");
+      return this;
+    }
+
+    @Override
+    public @NonNull Builder lastSeparatorIfSerial(final @Nullable Component lastSeparatorIfSerial) {
+      this.lastSeparatorIfSerial = lastSeparatorIfSerial;
       return this;
     }
 

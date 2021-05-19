@@ -195,8 +195,8 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TextComponent join(final @NonNull JoinConfiguration config, final @NonNull Iterable<? extends ComponentLike> components) {
     final Iterator<? extends ComponentLike> it = components.iterator();
-    final ComponentLike prefix = config.prefix();
-    final ComponentLike suffix = config.suffix();
+    final Component prefix = config.prefix();
+    final Component suffix = config.suffix();
 
     if (!it.hasNext()) {
       if(prefix == null && suffix == null) return Component.empty();
@@ -210,17 +210,16 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
     final TextComponent.Builder builder = text();
     if(prefix != null) builder.append(prefix);
 
-    final ComponentLike separator = config.separator();
-    final UnaryOperator<ComponentLike> operator = config.operator();
-
-    ComponentLike lastSeparator = config.lastSeparator();
-    if(lastSeparator == null) lastSeparator = separator;
+    final Component separator = config.separator();
+    final UnaryOperator<Component> operator = config.operator();
 
     final boolean hasSeparator = separator != null;
+    int componentsSeen = 0;
 
     ComponentLike component = it.next();
     while (component != null) {
-      builder.append(operator.apply(component));
+      builder.append(operator.apply(component.asComponent()));
+      componentsSeen++;
 
       if(!it.hasNext()) {
         component = null;
@@ -230,6 +229,12 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
         if (it.hasNext()) {
           if(hasSeparator) builder.append(separator);
         } else {
+          Component lastSeparator = null;
+
+          if(componentsSeen > 1) lastSeparator = config.lastSeparatorIfSerial();
+          if(lastSeparator == null) lastSeparator = config.lastSeparator();
+          if(lastSeparator == null) lastSeparator = config.separator();
+
           if(lastSeparator != null) builder.append(lastSeparator);
         }
       }

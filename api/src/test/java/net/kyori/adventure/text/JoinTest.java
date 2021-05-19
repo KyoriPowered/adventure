@@ -175,4 +175,47 @@ class JoinTest {
       c0
     );
   }
+
+  @Test
+  void testJoinWithSerialComma() {
+    final Component comma = Component.text(", ");
+    final Component and = Component.text(" and ");
+    final Component serialAnd = Component.text(", and ");
+
+    final JoinConfiguration config = JoinConfiguration.builder()
+      .separator(comma)
+      .lastSeparator(and)
+      .lastSeparatorIfSerial(serialAnd)
+      .build();
+
+    final Component[] numbers = IntStream.range(0, 3)
+      .mapToObj(Component::text)
+      .toArray(Component[]::new);
+
+    final Component c0 = Component.join(
+      config,
+      numbers[0],
+      numbers[1]
+    );
+    assertEquals(
+      Component.text()
+        .append(numbers[0])
+        .append(and)
+        .append(numbers[1])
+        .build(),
+      c0
+    );
+
+    final Component c1 = Component.join(config, numbers);
+    assertEquals(
+      Component.text()
+        .append(numbers[0])
+        .append(comma)
+        .append(numbers[1])
+        .append(serialAnd)
+        .append(numbers[2])
+        .build(),
+      c1
+    );
+  }
 }
