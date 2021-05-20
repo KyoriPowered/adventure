@@ -133,38 +133,38 @@ final class JoinConfigurationImpl implements JoinConfiguration {
     }
 
     @Override
-    public @NonNull Builder prefix(final @Nullable Component prefix) {
-      this.prefix = prefix;
+    public @NonNull Builder prefix(final @Nullable ComponentLike prefix) {
+      if(prefix != null) this.prefix = prefix.asComponent();
       return this;
     }
 
     @Override
-    public @NonNull Builder suffix(final @Nullable Component suffix) {
-      this.suffix = suffix;
+    public @NonNull Builder suffix(final @Nullable ComponentLike suffix) {
+      if(suffix != null) this.suffix = suffix.asComponent();
       return this;
     }
 
     @Override
-    public @NonNull Builder separator(final @Nullable Component separator) {
-      this.separator = separator;
+    public @NonNull Builder separator(final @Nullable ComponentLike separator) {
+      if(separator != null) this.separator = separator.asComponent();
       return this;
     }
 
     @Override
-    public @NonNull Builder lastSeparator(final @Nullable Component lastSeparator) {
-      this.lastSeparator = lastSeparator;
+    public @NonNull Builder lastSeparator(final @Nullable ComponentLike lastSeparator) {
+      if(lastSeparator != null) this.lastSeparator = lastSeparator.asComponent();
+      return this;
+    }
+
+    @Override
+    public @NonNull Builder lastSeparatorIfSerial(final @Nullable ComponentLike lastSeparatorIfSerial) {
+      if(lastSeparatorIfSerial != null) this.lastSeparatorIfSerial = lastSeparatorIfSerial.asComponent();
       return this;
     }
 
     @Override
     public @NonNull Builder operator(final @NotNull UnaryOperator<Component> operator) {
       this.operator = Objects.requireNonNull(operator, "operator");
-      return this;
-    }
-
-    @Override
-    public @NonNull Builder lastSeparatorIfSerial(final @Nullable Component lastSeparatorIfSerial) {
-      this.lastSeparatorIfSerial = lastSeparatorIfSerial;
       return this;
     }
 

@@ -150,14 +150,6 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
   @Nullable Component lastSeparator();
 
   /**
-   * Gets the operator of this join configuration.
-   *
-   * @return the operator
-   * @since 4.8.0
-   */
-  @NotNull UnaryOperator<Component> operator();
-
-  /**
    * Gets the last separator that will be used instead of the normal last separator in the case where there
    * are more than two components being joined. This can be used to mimic a serial (or Oxford) comma.
    *
@@ -165,6 +157,14 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
    * @since 4.8.0
    */
   @Nullable Component lastSeparatorIfSerial();
+
+  /**
+   * Gets the operator of this join configuration.
+   *
+   * @return the operator
+   * @since 4.8.0
+   */
+  @NotNull UnaryOperator<Component> operator();
 
   /**
    * A builder for join configurations.
@@ -180,20 +180,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
      * @since 4.8.0
      */
     @Contract("_ -> this")
-    @NonNull Builder prefix(final @Nullable Component prefix);
-
-    /**
-     * Sets the prefix of this join configuration builder.
-     *
-     * @param prefix the prefix
-     * @return this builder
-     * @since 4.8.0
-     */
-    @Contract("_ -> this")
-    default @NonNull Builder prefix(final @Nullable ComponentLike prefix) {
-      if(prefix != null) return this.prefix(prefix.asComponent());
-      return this;
-    }
+    @NonNull Builder prefix(final @Nullable ComponentLike prefix);
 
     /**
      * Sets the suffix of this join configuration builder.
@@ -203,20 +190,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
      * @since 4.8.0
      */
     @Contract("_ -> this")
-    @NonNull Builder suffix(final @Nullable Component suffix);
-
-    /**
-     * Sets the suffix of this join configuration builder.
-     *
-     * @param suffix the suffix
-     * @return this builder
-     * @since 4.8.0
-     */
-    @Contract("_ -> this")
-    default @NonNull Builder suffix(final @Nullable ComponentLike suffix) {
-      if(suffix != null) return this.suffix(suffix);
-      return this;
-    }
+    @NonNull Builder suffix(final @Nullable ComponentLike suffix);
 
     /**
      * Sets the separator of this join configuration builder.
@@ -226,20 +200,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
      * @since 4.8.0
      */
     @Contract("_ -> this")
-    @NonNull Builder separator(final @Nullable Component separator);
-
-    /**
-     * Sets the separator of this join configuration builder.
-     *
-     * @param separator the separator
-     * @return this builder
-     * @since 4.8.0
-     */
-    @Contract("_ -> this")
-    default @NonNull Builder separator(final @Nullable ComponentLike separator) {
-      if(separator != null) return this.separator(separator.asComponent());
-      return this;
-    }
+    @NonNull Builder separator(final @Nullable ComponentLike separator);
 
     /**
      * Sets the last separator of this join configuration builder.
@@ -249,20 +210,18 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
      * @since 4.8.0
      */
     @Contract("_ -> this")
-    @NonNull Builder lastSeparator(final @Nullable Component lastSeparator);
+    @NonNull Builder lastSeparator(final @Nullable ComponentLike lastSeparator);
 
     /**
-     * Sets the last separator of this join configuration builder.
+     * Sets the last separator that will be used instead of the normal last separator in the case where there
+     * are more than two components being joined. This can be used to mimic a serial (or Oxford) comma.
      *
-     * @param lastSeparator the last separator
+     * @param lastSeparatorIfSerial the last separator
      * @return this builder
      * @since 4.8.0
      */
     @Contract("_ -> this")
-    default @NonNull Builder lastSeparator(final @Nullable ComponentLike lastSeparator) {
-      if(lastSeparator != null) return this.lastSeparator(lastSeparator.asComponent());
-      return this;
-    }
+    @NonNull Builder lastSeparatorIfSerial(final @Nullable ComponentLike lastSeparatorIfSerial);
 
     /**
      * Sets the operator of this join configuration builder.
@@ -273,28 +232,5 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
      */
     @Contract("_ -> this")
     @NonNull Builder operator(final @NotNull UnaryOperator<Component> operator);
-
-    /**
-     * Sets the last separator that will be used instead of the normal last separator in the case where there
-     * are more than two components being joined. This can be used to mimic a serial (or Oxford) comma.
-     *
-     * @return this builder
-     * @since 4.8.0
-     */
-    @Contract("_ -> this")
-    @NonNull Builder lastSeparatorIfSerial(final @Nullable Component lastSeparatorIfSerial);
-
-    /**
-     * Sets the last separator that will be used instead of the normal last separator in the case where there
-     * are more than two components being joined. This can be used to mimic a serial (or Oxford) comma.
-     *
-     * @return this builder
-     * @since 4.8.0
-     */
-    @Contract("_ -> this")
-    default @NonNull Builder lastSeparatorIfSerial(final @Nullable ComponentLike lastSeparatorIfSerial) {
-      if(lastSeparatorIfSerial != null) return this.lastSeparatorIfSerial(lastSeparatorIfSerial.asComponent());
-      return this;
-    }
   }
 }
