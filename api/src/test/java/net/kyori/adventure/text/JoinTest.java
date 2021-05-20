@@ -37,7 +37,10 @@ class JoinTest {
 
     assertEquals(Component.empty(), Component.join(JoinConfiguration.separator(Component.space()), Collections.emptyList()));
 
-    final Component c0 = Component.join(
+    final Component c0 = Component.text("test");
+    assertEquals(c0, Component.join(config, c0));
+
+    final Component c1 = Component.join(
       config,
       IntStream.range(0, 3)
         .mapToObj(Component::text)
@@ -51,7 +54,7 @@ class JoinTest {
         .append(Component.space())
         .append(Component.text(2))
         .build(),
-      c0
+      c1
     );
   }
 
@@ -61,7 +64,10 @@ class JoinTest {
 
     assertEquals(Component.empty(), Component.join(config, Collections.emptyList()));
 
-    final Component c0 = Component.join(
+    final Component c0 = Component.text("test");
+    assertEquals(c0, Component.join(config, c0));
+
+    final Component c1 = Component.join(
       config,
       IntStream.range(0, 3)
         .mapToObj(Component::text)
@@ -75,10 +81,10 @@ class JoinTest {
         .append(Component.text(" and "))
         .append(Component.text(2))
         .build(),
-      c0
+      c1
     );
 
-    final Component c1 = Component.join(
+    final Component c2 = Component.join(
       config,
       Component.text(0),
       Component.text(1)
@@ -89,7 +95,7 @@ class JoinTest {
         .append(Component.text(" and "))
         .append(Component.text(1))
         .build(),
-      c1
+      c2
     );
   }
 
@@ -133,12 +139,15 @@ class JoinTest {
   void testJoinWithOperator() {
     final JoinConfiguration config = JoinConfiguration.builder()
       .separator(Component.space())
-      .operator(componentLike -> componentLike.asComponent().color(NamedTextColor.RED))
+      .operator(component -> component.color(NamedTextColor.RED))
       .build();
 
     assertEquals(Component.empty(), Component.join(JoinConfiguration.separator(Component.space()), Collections.emptyList()));
 
-    final Component c0 = Component.join(
+    final Component c0 = Component.text("test");
+    assertEquals(c0.color(NamedTextColor.RED), Component.join(config, c0));
+
+    final Component c1 = Component.join(
       config,
       IntStream.range(0, 3)
         .mapToObj(Component::text)
@@ -152,16 +161,21 @@ class JoinTest {
         .append(Component.space())
         .append(Component.text(2, NamedTextColor.RED))
         .build(),
-      c0
+      c1
     );
   }
 
   @Test
   void testJoinWithNoSeparators() {
-    assertEquals(Component.empty(), Component.join(JoinConfiguration.noSeparators(), Collections.emptyList()));
+    final JoinConfiguration config = JoinConfiguration.noSeparators();
 
-    final Component c0 = Component.join(
-      JoinConfiguration.noSeparators(),
+    assertEquals(Component.empty(), Component.join(config, Collections.emptyList()));
+
+    final Component c0 = Component.text("test");
+    assertEquals(c0, Component.join(config, c0));
+
+    final Component c1 = Component.join(
+      config,
       IntStream.range(0, 3)
         .mapToObj(Component::text)
         .toArray(Component[]::new)
@@ -172,7 +186,7 @@ class JoinTest {
         .append(Component.text(1))
         .append(Component.text(2))
         .build(),
-      c0
+      c1
     );
   }
 
@@ -188,11 +202,16 @@ class JoinTest {
       .lastSeparatorIfSerial(serialAnd)
       .build();
 
+    assertEquals(Component.empty(), Component.join(config, Collections.emptyList()));
+
+    final Component c0 = Component.text("test");
+    assertEquals(c0, Component.join(config, c0));
+
     final Component[] numbers = IntStream.range(0, 3)
       .mapToObj(Component::text)
       .toArray(Component[]::new);
 
-    final Component c0 = Component.join(
+    final Component c1 = Component.join(
       config,
       numbers[0],
       numbers[1]
@@ -203,10 +222,10 @@ class JoinTest {
         .append(and)
         .append(numbers[1])
         .build(),
-      c0
+      c1
     );
 
-    final Component c1 = Component.join(config, numbers);
+    final Component c2 = Component.join(config, numbers);
     assertEquals(
       Component.text()
         .append(numbers[0])
@@ -215,7 +234,7 @@ class JoinTest {
         .append(serialAnd)
         .append(numbers[2])
         .build(),
-      c1
+      c2
     );
   }
 }

@@ -151,7 +151,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Deprecated
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull TextComponent join(final @NotNull ComponentLike separator, final @NotNull ComponentLike@NotNull... components) {
-    return join(JoinConfiguration.separator(separator), components);
+    return join(separator, Arrays.asList(components));
   }
 
   /**
@@ -166,7 +166,10 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Deprecated
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull TextComponent join(final @NotNull ComponentLike separator, final Iterable<? extends ComponentLike> components) {
-    return join(JoinConfiguration.separator(separator), components);
+    final Component component = join(JoinConfiguration.separator(separator), components);
+
+    if(component instanceof TextComponent) return (TextComponent) component;
+    return Component.text().append(component).build();
   }
 
   /**
@@ -178,8 +181,8 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @see JoinConfiguration
    * @since 4.8.0
    */
-  @Contract(value = "_, _ -> new", pure = true)
-  static @NonNull TextComponent join(final @NonNull JoinConfiguration config, final @NonNull ComponentLike@NonNull... components) {
+  @Contract(pure = true)
+  static @NonNull Component join(final @NonNull JoinConfiguration config, final @NonNull ComponentLike@NonNull... components) {
     return join(config, Arrays.asList(components));
   }
 
@@ -192,11 +195,12 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @see JoinConfiguration
    * @since 4.8.0
    */
-  @Contract(value = "_, _ -> new", pure = true)
-  static @NonNull TextComponent join(final @NonNull JoinConfiguration config, final @NonNull Iterable<? extends ComponentLike> components) {
+  @Contract(pure = true)
+  static @NonNull Component join(final @NonNull JoinConfiguration config, final @NonNull Iterable<? extends ComponentLike> components) {
     final Iterator<? extends ComponentLike> it = components.iterator();
     final Component prefix = config.prefix();
     final Component suffix = config.suffix();
+    final UnaryOperator<Component> operator = config.operator();
 
     if (!it.hasNext()) {
       if(prefix == null && suffix == null) return Component.empty();
@@ -207,16 +211,17 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
       return builder.build();
     }
 
+    ComponentLike component = it.next();
+    int componentsSeen = 0;
+
+    if(!it.hasNext() && prefix == null && suffix == null) return operator.apply(component.asComponent());
+
+    final Component separator = config.separator();
+    final boolean hasSeparator = separator != null;
+
     final TextComponent.Builder builder = text();
     if(prefix != null) builder.append(prefix);
 
-    final Component separator = config.separator();
-    final UnaryOperator<Component> operator = config.operator();
-
-    final boolean hasSeparator = separator != null;
-    int componentsSeen = 0;
-
-    ComponentLike component = it.next();
     while (component != null) {
       builder.append(operator.apply(component.asComponent()));
       componentsSeen++;
