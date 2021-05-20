@@ -214,6 +214,14 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
     @NonNull Builder extractUrls(final @NonNull Pattern pattern, final @Nullable Style style);
 
     /**
+     * Sets that no URLs will be extracted. Undoes any usage of {@code extractUrls} methods.
+     *
+     * @return this builder
+     * @since 4.8.0
+     */
+    @NonNull Builder disableExtractUrls();
+
+    /**
      * Sets that the serializer should support hex colors.
      *
      * <p>Otherwise, hex colors are downsampled to the nearest named color.</p>
@@ -222,6 +230,17 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * @since 4.0.0
      */
     @NonNull Builder hexColors();
+
+    /**
+     * Sets whether the serializer should support hex colors.
+     *
+     * <p>If {@code false}, hex colors are downsampled to the nearest named color.</p>
+     *
+     * @param flag {@code true} to support hex colors, {@code false} not to
+     * @return this builder
+     * @since 4.8.0
+     */
+    @NonNull Builder hexColors(boolean flag);
 
     /**
      * Sets that the serializer should use the '&amp;x' repeated code format when serializing hex
@@ -241,6 +260,26 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * @since 4.0.0
      */
     @NonNull Builder useUnusualXRepeatedCharacterHexFormat();
+
+    /**
+     * Sets whether the serializer should use the '&amp;x' repeated code format when serializing hex
+     * colors. Note that messages in this format can still be deserialized, even with this option
+     * disabled.
+     *
+     * <p>This is the format adopted by the BungeeCord (and by usage, Spigot) text API.</p>
+     *
+     * <p>The format is difficult to manipulate and read, and its use is not recommended. Support
+     * is provided for it only to allow plugin developers to use this library alongside parts of
+     * the Spigot API which expect legacy strings in this format.</p>
+     *
+     * <p>It is recommended to use only when absolutely necessary, and when no better alternatives
+     * are available.</p>
+     *
+     * @param flag {@code true} to use the '&amp;x' repeated code format, {@code false} not to
+     * @return this builder
+     * @since 4.8.0
+     */
+    @NonNull Builder useUnusualXRepeatedCharacterHexFormat(boolean flag);
 
     /**
      * Use this component flattener to convert components into plain text.
