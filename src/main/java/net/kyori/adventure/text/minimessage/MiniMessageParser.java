@@ -451,16 +451,36 @@ class MiniMessageParser {
       }
     }
 
+    // then insert missing onetime transformations
+    boolean didApplyOneTime = false;
     while(!oneTimeTransformations.isEmpty()) {
+      didApplyOneTime = true;
       oneTimeTransformations.removeFirst().applyOneTime(last, parent, transformations);
     }
 
-    // optimization, ignore empty parent
-    final TextComponent comp = parent.build();
-    if(comp.content().equals("") && comp.children().size() == 1) {
-      return comp.children().get(0);
+    TextComponent parentBuild;
+
+    // then do one iteration of transformations again
+    if (didApplyOneTime && !transformations.isEmpty()) {
+      List<Component> newChildren = parent.asComponent().children();
+      Component newLast = newChildren.isEmpty() ? Component.empty() : newChildren.get(newChildren.size() - 1);
+      for(final Transformation transformation : transformations) {
+        newLast = transformation.apply(newLast, parent);
+      }
+      // we got a new last, set that as last
+      parentBuild = parent.build();
+      newChildren = new ArrayList<>(newChildren);
+      newChildren.set(newChildren.size() - 1, newLast);
+      parentBuild = parentBuild.children(newChildren);
     } else {
-      return comp;
+      parentBuild = parent.build();
+    }
+
+    // optimization, ignore empty parent
+    if(parentBuild.content().equals("") && parentBuild.children().size() == 1) {
+      return parentBuild.children().get(0);
+    } else {
+      return parentBuild;
     }
   }
 

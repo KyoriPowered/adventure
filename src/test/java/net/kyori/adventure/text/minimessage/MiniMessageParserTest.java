@@ -45,6 +45,7 @@ import static net.kyori.adventure.text.Component.translatable;
 import static net.kyori.adventure.text.event.ClickEvent.openUrl;
 import static net.kyori.adventure.text.event.ClickEvent.runCommand;
 import static net.kyori.adventure.text.event.ClickEvent.suggestCommand;
+import static net.kyori.adventure.text.event.HoverEvent.hoverEvent;
 import static net.kyori.adventure.text.event.HoverEvent.showText;
 import static net.kyori.adventure.text.format.NamedTextColor.BLACK;
 import static net.kyori.adventure.text.format.NamedTextColor.BLUE;
@@ -276,6 +277,17 @@ public class MiniMessageParserTest {
     final String input = "<hover:show_text:'<red>test\ntest2'>TEST";
     final Component expected = text("TEST")
       .hoverEvent(text("test\ntest2", RED));
+
+    assertParsedEquals(expected, input);
+  }
+
+  @Test // GH-101
+  void testHoverWithInsertingComponent() {
+    final String input = "<red><hover:show_text:\"Test\"><lang:item.minecraft.stick>";
+    final Component expected = translatable("item.minecraft.stick").hoverEvent(showText(text("Test"))).color(RED);
+
+    System.out.println(GsonComponentSerializer.gson().serialize(expected));
+    System.out.println(GsonComponentSerializer.gson().serialize(PARSER.parse(input)));
 
     assertParsedEquals(expected, input);
   }
