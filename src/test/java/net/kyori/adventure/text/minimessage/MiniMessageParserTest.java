@@ -27,9 +27,9 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
 
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Disabled;
@@ -46,8 +46,18 @@ import static net.kyori.adventure.text.event.ClickEvent.openUrl;
 import static net.kyori.adventure.text.event.ClickEvent.runCommand;
 import static net.kyori.adventure.text.event.ClickEvent.suggestCommand;
 import static net.kyori.adventure.text.event.HoverEvent.showText;
+import static net.kyori.adventure.text.format.NamedTextColor.BLACK;
+import static net.kyori.adventure.text.format.NamedTextColor.BLUE;
+import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
+import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
+import static net.kyori.adventure.text.format.NamedTextColor.RED;
+import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
+import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
 import static net.kyori.adventure.text.format.Style.style;
 import static net.kyori.adventure.text.format.TextColor.color;
+import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -189,12 +199,12 @@ public class MiniMessageParserTest {
   void testNiceMix() {
     final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here</click><blue> to <b>FEEL</underlined> it";
     final Component expected = text()
-      .append(text("Hello! random ", NamedTextColor.YELLOW))
-      .append(text("stranger", style(NamedTextColor.YELLOW, TextDecoration.BOLD)))
-      .append(text("click here", style(NamedTextColor.RED, TextDecoration.UNDERLINED, runCommand("test command"))))
-      .append(text(" to ", style(NamedTextColor.BLUE, TextDecoration.UNDERLINED)))
-      .append(text("FEEL", style(NamedTextColor.BLUE, TextDecoration.BOLD, TextDecoration.UNDERLINED)))
-      .append(text(" it", style(NamedTextColor.BLUE, TextDecoration.BOLD)))
+      .append(text("Hello! random ", YELLOW))
+      .append(text("stranger", style(YELLOW, BOLD)))
+      .append(text("click here", style(RED, TextDecoration.UNDERLINED, runCommand("test command"))))
+      .append(text(" to ", style(BLUE, TextDecoration.UNDERLINED)))
+      .append(text("FEEL", style(BLUE, BOLD, TextDecoration.UNDERLINED)))
+      .append(text(" it", style(BLUE, BOLD)))
       .build();
     final Component comp = PARSER.parse(input, "test", "Hello!");
 
@@ -206,7 +216,7 @@ public class MiniMessageParserTest {
     final String input = "<yellow>TEST";
 
     assertEquals(
-      text("TEST", NamedTextColor.YELLOW),
+      text("TEST", YELLOW),
       PARSER.parse(input)
     );
   }
@@ -215,9 +225,9 @@ public class MiniMessageParserTest {
   void testColorNested() {
     final String input = "<yellow>TEST<green>nested</green>Test";
     final Component expected = text()
-      .append(text("TEST", NamedTextColor.YELLOW))
-      .append(text("nested", NamedTextColor.GREEN))
-      .append(text("Test", NamedTextColor.YELLOW))
+      .append(text("TEST", YELLOW))
+      .append(text("nested", GREEN))
+      .append(text("Test", YELLOW))
       .build();
     assertParsedEquals(expected, input);
   }
@@ -226,8 +236,8 @@ public class MiniMessageParserTest {
   void testColorNotNested() {
     final String input = "<yellow>TEST</yellow><green>nested</green>Test";
     final Component expected = text()
-      .append(text("TEST", NamedTextColor.YELLOW))
-      .append(text("nested", NamedTextColor.GREEN))
+      .append(text("TEST", YELLOW))
+      .append(text("nested", GREEN))
       .append(text("Test"))
       .build();
 
@@ -238,7 +248,7 @@ public class MiniMessageParserTest {
   void testHover() {
     final String input = "<hover:show_text:\"<red>test\">TEST";
     final Component expected = text("TEST")
-      .hoverEvent(text("test", NamedTextColor.RED));
+      .hoverEvent(text("test", RED));
 
     assertParsedEquals(expected, input);
   }
@@ -247,7 +257,7 @@ public class MiniMessageParserTest {
   void testHover2() {
     final String input = "<hover:show_text:'<red>test'>TEST";
     final Component expected = text("TEST")
-      .hoverEvent(text("test", NamedTextColor.RED));
+      .hoverEvent(text("test", RED));
 
     assertParsedEquals(expected, input);
   }
@@ -256,7 +266,7 @@ public class MiniMessageParserTest {
   void testHoverWithColon() {
     final String input = "<hover:show_text:\"<red>test:TEST\">TEST";
     final Component expected = text("TEST")
-      .hoverEvent(text("test:TEST", NamedTextColor.RED));
+      .hoverEvent(text("test:TEST", RED));
 
     assertParsedEquals(expected, input);
   }
@@ -265,7 +275,7 @@ public class MiniMessageParserTest {
   void testHoverMultiline() {
     final String input = "<hover:show_text:'<red>test\ntest2'>TEST";
     final Component expected = text("TEST")
-      .hoverEvent(text("test\ntest2", NamedTextColor.RED));
+      .hoverEvent(text("test\ntest2", RED));
 
     assertParsedEquals(expected, input);
   }
@@ -300,15 +310,15 @@ public class MiniMessageParserTest {
   void testInvalidTagComplex() {
     final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><oof></oof><underlined><red>click here</click><blue> to <bold>FEEL</underlined> it";
     final Component expected = text()
-      .append(text("<test>", NamedTextColor.YELLOW))
-      .append(text(" random ", NamedTextColor.YELLOW))
-      .append(text("stranger", style(NamedTextColor.YELLOW, TextDecoration.BOLD)))
-      .append(text("<oof>", style(NamedTextColor.YELLOW, runCommand("test command"))))
-      .append(text("</oof>", style(NamedTextColor.YELLOW, runCommand("test command"))))
-      .append(text("click here", style(NamedTextColor.RED, TextDecoration.UNDERLINED, runCommand("test command"))))
-      .append(text(" to ", style(NamedTextColor.BLUE, TextDecoration.UNDERLINED)))
-      .append(text("FEEL", style(NamedTextColor.BLUE, TextDecoration.BOLD, TextDecoration.UNDERLINED)))
-      .append(text(" it", style(NamedTextColor.BLUE, TextDecoration.BOLD)))
+      .append(text("<test>", YELLOW))
+      .append(text(" random ", YELLOW))
+      .append(text("stranger", style(YELLOW, BOLD)))
+      .append(text("<oof>", style(YELLOW, runCommand("test command"))))
+      .append(text("</oof>", style(YELLOW, runCommand("test command"))))
+      .append(text("click here", style(RED, TextDecoration.UNDERLINED, runCommand("test command"))))
+      .append(text(" to ", style(BLUE, TextDecoration.UNDERLINED)))
+      .append(text("FEEL", style(BLUE, BOLD, TextDecoration.UNDERLINED)))
+      .append(text(" it", style(BLUE, BOLD)))
       .build();
 
     assertParsedEquals(expected, input);
@@ -331,8 +341,8 @@ public class MiniMessageParserTest {
     final String input = "Press <red><key:key.jump> to jump!";
     final Component expected = text()
       .append(text("Press "))
-      .append(keybind("key.jump", NamedTextColor.RED))
-      .append(text(" to jump!", NamedTextColor.RED))
+      .append(keybind("key.jump", RED))
+      .append(text(" to jump!", RED))
       .build();
 
     assertParsedEquals(expected, input);
@@ -355,7 +365,7 @@ public class MiniMessageParserTest {
     final String input = "Test: <lang:commands.drop.success.single:'<red>1':'<blue>Stone'>!";
     final Component expected = text()
       .append(text("Test: "))
-      .append(translatable("commands.drop.success.single", text("1", NamedTextColor.RED), text("Stone", NamedTextColor.BLUE)))
+      .append(translatable("commands.drop.success.single", text("1", RED), text("Stone", BLUE)))
       .append(text("!"))
       .build();
 
@@ -369,8 +379,8 @@ public class MiniMessageParserTest {
       .append(text("Test: "))
       .append(translatable(
         "commands.drop.success.single",
-        text("1", style(NamedTextColor.RED, showText(text("dum", NamedTextColor.RED)))),
-        text("Stone", NamedTextColor.BLUE)
+        text("1", style(RED, showText(text("dum", RED)))),
+        text("Stone", BLUE)
       ))
       .append(text("!"))
       .build();
@@ -383,7 +393,7 @@ public class MiniMessageParserTest {
     final String input = "Ahoy <lang:offset.-40:'<red>mates!'>";
     final Component expected = text()
       .append(text("Ahoy "))
-      .append(translatable("offset.-40", text("mates!", NamedTextColor.RED)))
+      .append(translatable("offset.-40", text("mates!", RED)))
       .build();
 
     assertParsedEquals(expected, input);
@@ -405,13 +415,13 @@ public class MiniMessageParserTest {
   void testGH5() {
     final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:<pack_url>><hover:show_text:\"<green>/!\\ install it from Options/ResourcePacks in your game\"><green><bold>CLICK HERE</bold></hover></click>";
     final Component expected = text()
-      .append(text("»", NamedTextColor.DARK_GRAY))
-      .append(text(" To download it from the internet, ", NamedTextColor.GRAY))
+      .append(text("»", DARK_GRAY))
+      .append(text(" To download it from the internet, ", GRAY))
       .append(text("CLICK HERE", style(
-        NamedTextColor.GREEN,
-        TextDecoration.BOLD,
+        GREEN,
+        BOLD,
         openUrl("https://www.google.com"),
-        showText(text("/!\\ install it from Options/ResourcePacks in your game", NamedTextColor.GREEN))
+        showText(text("/!\\ install it from Options/ResourcePacks in your game", GREEN))
       )))
       .build();
 
@@ -423,13 +433,13 @@ public class MiniMessageParserTest {
   void testGH5Modified() {
     final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:<pack_url>><hover:show_text:'<green>/!\\ install it from \\'Options/ResourcePacks\\' in your game'><green><bold>CLICK HERE</bold></hover></click>";
     final Component expected = text()
-      .append(text("»", NamedTextColor.DARK_GRAY))
-      .append(text(" To download it from the internet, ", NamedTextColor.GRAY))
+      .append(text("»", DARK_GRAY))
+      .append(text(" To download it from the internet, ", GRAY))
       .append(text("CLICK HERE", style(
-        NamedTextColor.GREEN,
-        TextDecoration.BOLD,
+        GREEN,
+        BOLD,
         openUrl("https://www.google.com"),
-        showText(text("/!\\ install it from 'Options/ResourcePacks' in your game", NamedTextColor.GREEN))
+        showText(text("/!\\ install it from 'Options/ResourcePacks' in your game", GREEN))
       )))
       .build();
 
@@ -442,13 +452,13 @@ public class MiniMessageParserTest {
   void testGH5Quoted() {
     final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:\"https://www.google.com\"><hover:show_text:\"<green>/!\\ install it from Options/ResourcePacks in your game\"><green><bold>CLICK HERE</bold></hover></click>";
     final Component expected = text()
-      .append(text("»", NamedTextColor.DARK_GRAY))
-      .append(text(" To download it from the internet, ", NamedTextColor.GRAY))
+      .append(text("»", DARK_GRAY))
+      .append(text(" To download it from the internet, ", GRAY))
       .append(text("CLICK HERE", style(
-        NamedTextColor.GREEN,
-        TextDecoration.BOLD,
+        GREEN,
+        BOLD,
         openUrl("https://www.google.com"),
-        showText(text("/!\\ install it from Options/ResourcePacks in your game", NamedTextColor.GREEN))
+        showText(text("/!\\ install it from Options/ResourcePacks in your game", GREEN))
       )))
       .build();
 
@@ -465,7 +475,7 @@ public class MiniMessageParserTest {
     final String input = "Click <yellow><insert:test>this<rainbow> wooo<reset> to insert!";
     final Component expected = text()
       .append(text("Click "))
-      .append(text("this", NamedTextColor.YELLOW).insertion("test"))
+      .append(text("this", YELLOW).insertion("test"))
       .append(text(" ", color(0xf3801f)).insertion("test"))
       .append(text("w", color(0x71f813)).insertion("test"))
       .append(text("o", color(0x03ca9c)).insertion("test"))
@@ -482,10 +492,10 @@ public class MiniMessageParserTest {
     final String input = "Click <yellow><pre><insert:test>this</pre> to <red>insert!";
     final Component expected = text()
       .append(text("Click "))
-      .append(text("<insert:test>", NamedTextColor.YELLOW))
-      .append(text("this", NamedTextColor.YELLOW))
-      .append(text(" to ", NamedTextColor.YELLOW))
-      .append(text("insert!", NamedTextColor.RED))
+      .append(text("<insert:test>", YELLOW))
+      .append(text("this", YELLOW))
+      .append(text(" to ", YELLOW))
+      .append(text("insert!", RED))
       .build();
 
     assertParsedEquals(expected, input);
@@ -495,7 +505,7 @@ public class MiniMessageParserTest {
   void testRainbow() {
     final String input = "<yellow>Woo: <rainbow>||||||||||||||||||||||||</rainbow>!";
     final Component expected = text()
-      .append(text("Woo: ", NamedTextColor.YELLOW))
+      .append(text("Woo: ", YELLOW))
       .append(text("|", color(0xf3801f)))
       .append(text("|", color(0xe1a00d)))
       .append(text("|", color(0xc9bf03)))
@@ -520,7 +530,7 @@ public class MiniMessageParserTest {
       .append(text("|", color(0xf72676)))
       .append(text("|", color(0xfe4056)))
       .append(text("|", color(0xfd5f38)))
-      .append(text("!", NamedTextColor.YELLOW))
+      .append(text("!", YELLOW))
       .build();
 
     assertParsedEquals(expected, input);
@@ -530,7 +540,7 @@ public class MiniMessageParserTest {
   void testRainbowPhase() {
     final String input = "<yellow>Woo: <rainbow:2>||||||||||||||||||||||||</rainbow>!";
     final Component expected = text()
-      .append(text("Woo: ", NamedTextColor.YELLOW))
+      .append(text("Woo: ", YELLOW))
       .append(text("|", color(0x1ff35c)))
       .append(text("|", color(0x0de17d)))
       .append(text("|", color(0x03c99e)))
@@ -555,7 +565,7 @@ public class MiniMessageParserTest {
       .append(text("|", color(0x76f710)))
       .append(text("|", color(0x56fe24)))
       .append(text("|", color(0x38fd3e)))
-      .append(text("!", NamedTextColor.YELLOW))
+      .append(text("!", YELLOW))
       .build();
 
     assertParsedEquals(expected, input);
@@ -565,7 +575,7 @@ public class MiniMessageParserTest {
   void testRainbowWithInsertion() {
     final String input = "<yellow>Woo: <insert:test><rainbow>||||||||||||||||||||||||</rainbow>!";
     final Component expected = text()
-      .append(text("Woo: ", NamedTextColor.YELLOW))
+      .append(text("Woo: ", YELLOW))
       .append(text("|", color(0xf3801f)).insertion("test"))
       .append(text("|", color(0xe1a00d)).insertion("test"))
       .append(text("|", color(0xc9bf03)).insertion("test"))
@@ -590,7 +600,7 @@ public class MiniMessageParserTest {
       .append(text("|", color(0xf72676)).insertion("test"))
       .append(text("|", color(0xfe4056)).insertion("test"))
       .append(text("|", color(0xfd5f38)).insertion("test"))
-      .append(text("!", NamedTextColor.YELLOW).insertion("test"))
+      .append(text("!", YELLOW).insertion("test"))
       .build();
 
     assertParsedEquals(expected, input);
@@ -600,8 +610,8 @@ public class MiniMessageParserTest {
   void testGradient() {
     final String input = "<yellow>Woo: <gradient>||||||||||||||||||||||||</gradient>!";
     final Component expected = text()
-      .append(text("Woo: ", NamedTextColor.YELLOW))
-      .append(text("|", NamedTextColor.WHITE))
+      .append(text("Woo: ", YELLOW))
+      .append(text("|", WHITE))
       .append(text("|", color(0xf4f4f4)))
       .append(text("|", color(0xeaeaea)))
       .append(text("|", color(0xdfdfdf)))
@@ -609,7 +619,7 @@ public class MiniMessageParserTest {
       .append(text("|", color(0xcacaca)))
       .append(text("|", color(0xbfbfbf)))
       .append(text("|", color(0xb5b5b5)))
-      .append(text("|", NamedTextColor.GRAY))
+      .append(text("|", GRAY))
       .append(text("|", color(0x9f9f9f)))
       .append(text("|", color(0x959595)))
       .append(text("|", color(0x8a8a8a)))
@@ -617,7 +627,7 @@ public class MiniMessageParserTest {
       .append(text("|", color(0x757575)))
       .append(text("|", color(0x6a6a6a)))
       .append(text("|", color(0x606060)))
-      .append(text("|", NamedTextColor.DARK_GRAY))
+      .append(text("|", DARK_GRAY))
       .append(text("|", color(0x4a4a4a)))
       .append(text("|", color(0x404040)))
       .append(text("|", color(0x353535)))
@@ -625,7 +635,7 @@ public class MiniMessageParserTest {
       .append(text("|", color(0x202020)))
       .append(text("|", color(0x151515)))
       .append(text("|", color(0x0b0b0b)))
-      .append(text("!", NamedTextColor.YELLOW))
+      .append(text("!", YELLOW))
       .build();
 
     assertParsedEquals(expected, input);
@@ -635,8 +645,8 @@ public class MiniMessageParserTest {
   void testGradientWithHover() {
     final String input = "<yellow>Woo: <hover:show_text:'This is a test'><gradient>||||||||||||||||||||||||</gradient>!";
     final Component expected = text()
-      .append(text("Woo: ", NamedTextColor.YELLOW))
-      .append(text("|", style(NamedTextColor.WHITE, showText(text("This is a test")))))
+      .append(text("Woo: ", YELLOW))
+      .append(text("|", style(WHITE, showText(text("This is a test")))))
       .append(text("|", style(color(0xf4f4f4), showText(text("This is a test")))))
       .append(text("|", style(color(0xeaeaea), showText(text("This is a test")))))
       .append(text("|", style(color(0xdfdfdf), showText(text("This is a test")))))
@@ -644,7 +654,7 @@ public class MiniMessageParserTest {
       .append(text("|", style(color(0xcacaca), showText(text("This is a test")))))
       .append(text("|", style(color(0xbfbfbf), showText(text("This is a test")))))
       .append(text("|", style(color(0xb5b5b5), showText(text("This is a test")))))
-      .append(text("|", style(NamedTextColor.GRAY, showText(text("This is a test")))))
+      .append(text("|", style(GRAY, showText(text("This is a test")))))
       .append(text("|", style(color(0x9f9f9f), showText(text("This is a test")))))
       .append(text("|", style(color(0x959595), showText(text("This is a test")))))
       .append(text("|", style(color(0x8a8a8a), showText(text("This is a test")))))
@@ -652,7 +662,7 @@ public class MiniMessageParserTest {
       .append(text("|", style(color(0x757575), showText(text("This is a test")))))
       .append(text("|", style(color(0x6a6a6a), showText(text("This is a test")))))
       .append(text("|", style(color(0x606060), showText(text("This is a test")))))
-      .append(text("|", style(NamedTextColor.DARK_GRAY, showText(text("This is a test")))))
+      .append(text("|", style(DARK_GRAY, showText(text("This is a test")))))
       .append(text("|", style(color(0x4a4a4a), showText(text("This is a test")))))
       .append(text("|", style(color(0x404040), showText(text("This is a test")))))
       .append(text("|", style(color(0x353535), showText(text("This is a test")))))
@@ -660,7 +670,7 @@ public class MiniMessageParserTest {
       .append(text("|", style(color(0x202020), showText(text("This is a test")))))
       .append(text("|", style(color(0x151515), showText(text("This is a test")))))
       .append(text("|", style(color(0x0b0b0b), showText(text("This is a test")))))
-      .append(text("!", style(NamedTextColor.YELLOW, showText(text("This is a test")))))
+      .append(text("!", style(YELLOW, showText(text("This is a test")))))
       .build();
 
     assertParsedEquals(expected, input);
@@ -670,7 +680,7 @@ public class MiniMessageParserTest {
   void testGradient2() {
     final String input = "<yellow>Woo: <gradient:#5e4fa2:#f79459>||||||||||||||||||||||||</gradient>!";
     final Component expected = text()
-      .append(text("Woo: ", NamedTextColor.YELLOW))
+      .append(text("Woo: ", YELLOW))
       .append(text("|", color(0x5e4fa2)))
       .append(text("|", color(0x64529f)))
       .append(text("|", color(0x6b559c)))
@@ -695,7 +705,7 @@ public class MiniMessageParserTest {
       .append(text("|", color(0xe48b62)))
       .append(text("|", color(0xea8e5f)))
       .append(text("|", color(0xf1915c)))
-      .append(text("!", NamedTextColor.YELLOW))
+      .append(text("!", YELLOW))
       .build();
 
     assertParsedEquals(expected, input);
@@ -705,8 +715,8 @@ public class MiniMessageParserTest {
   void testGradient3() {
     final String input = "<yellow>Woo: <gradient:green:blue>||||||||||||||||||||||||</gradient>!";
     final Component expected = text()
-      .append(text("Woo: ", NamedTextColor.YELLOW))
-      .append(text("|", NamedTextColor.GREEN))
+      .append(text("Woo: ", YELLOW))
+      .append(text("|", GREEN))
       .append(text("|", color(0x55f85c)))
       .append(text("|", color(0x55f163)))
       .append(text("|", color(0x55ea6a)))
@@ -730,7 +740,7 @@ public class MiniMessageParserTest {
       .append(text("|", color(0x556aea)))
       .append(text("|", color(0x5563f1)))
       .append(text("|", color(0x555cf8)))
-      .append(text("!", NamedTextColor.YELLOW))
+      .append(text("!", YELLOW))
       .build();
 
     assertParsedEquals(expected, input);
@@ -740,8 +750,8 @@ public class MiniMessageParserTest {
   void testGradientMultiColor() {
     final String input = "<yellow>Woo: <gradient:red:blue:green:yellow:red>||||||||||||||||||||||||||||||||||||||||||||||||||||||</gradient>!";
     final Component expected = text()
-      .append(text("Woo: ", NamedTextColor.YELLOW))
-      .append(text("|", NamedTextColor.RED))
+      .append(text("Woo: ", YELLOW))
+      .append(text("|", RED))
       .append(text("|", color(0xf25562)))
       .append(text("|", color(0xe5556f)))
       .append(text("|", color(0xd8557c)))
@@ -754,8 +764,8 @@ public class MiniMessageParserTest {
       .append(text("|", color(0x7c55d8)))
       .append(text("|", color(0x6f55e5)))
       .append(text("|", color(0x6255f2)))
-      .append(text("|", NamedTextColor.BLUE))
-      .append(text("|", NamedTextColor.BLUE))
+      .append(text("|", BLUE))
+      .append(text("|", BLUE))
       .append(text("|", color(0x5562f2)))
       .append(text("|", color(0x556fe5)))
       .append(text("|", color(0x557cd8)))
@@ -768,8 +778,8 @@ public class MiniMessageParserTest {
       .append(text("|", color(0x55d87c)))
       .append(text("|", color(0x55e56f)))
       .append(text("|", color(0x55f262)))
-      .append(text("|", NamedTextColor.GREEN))
-      .append(text("|", NamedTextColor.GREEN))
+      .append(text("|", GREEN))
+      .append(text("|", GREEN))
       .append(text("|", color(0x62ff55)))
       .append(text("|", color(0x6fff55)))
       .append(text("|", color(0x7cff55)))
@@ -782,8 +792,8 @@ public class MiniMessageParserTest {
       .append(text("|", color(0xd8ff55)))
       .append(text("|", color(0xe5ff55)))
       .append(text("|", color(0xf2ff55)))
-      .append(text("|", NamedTextColor.YELLOW))
-      .append(text("|", NamedTextColor.YELLOW))
+      .append(text("|", YELLOW))
+      .append(text("|", YELLOW))
       .append(text("|", color(0xfff255)))
       .append(text("|", color(0xffe555)))
       .append(text("|", color(0xffd855)))
@@ -795,7 +805,7 @@ public class MiniMessageParserTest {
       .append(text("|", color(0xff8955)))
       .append(text("|", color(0xff7c55)))
       .append(text("|", color(0xff6f55)))
-      .append(text("!", NamedTextColor.YELLOW))
+      .append(text("!", YELLOW))
       .build();
 
     assertParsedEquals(expected, input);
@@ -805,8 +815,8 @@ public class MiniMessageParserTest {
   void testGradientMultiColor2() {
     final String input = "<yellow>Woo: <gradient:black:white:black>||||||||||||||||||||||||||||||||||||||||||||||||||||||</gradient>!";
     final Component expected = text()
-      .append(text("Woo: ", NamedTextColor.YELLOW))
-      .append(text("|", NamedTextColor.BLACK))
+      .append(text("Woo: ", YELLOW))
+      .append(text("|", BLACK))
       .append(text("|", color(0x90909)))
       .append(text("|", color(0x131313)))
       .append(text("|", color(0x1c1c1c)))
@@ -815,7 +825,7 @@ public class MiniMessageParserTest {
       .append(text("|", color(0x393939)))
       .append(text("|", color(0x424242)))
       .append(text("|", color(0x4c4c4c)))
-      .append(text("|", NamedTextColor.DARK_GRAY))
+      .append(text("|", DARK_GRAY))
       .append(text("|", color(0x5e5e5e)))
       .append(text("|", color(0x686868)))
       .append(text("|", color(0x717171)))
@@ -824,7 +834,7 @@ public class MiniMessageParserTest {
       .append(text("|", color(0x8e8e8e)))
       .append(text("|", color(0x979797)))
       .append(text("|", color(0xa1a1a1)))
-      .append(text("|", NamedTextColor.GRAY))
+      .append(text("|", GRAY))
       .append(text("|", color(0xb3b3b3)))
       .append(text("|", color(0xbdbdbd)))
       .append(text("|", color(0xc6c6c6)))
@@ -833,8 +843,8 @@ public class MiniMessageParserTest {
       .append(text("|", color(0xe3e3e3)))
       .append(text("|", color(0xececec)))
       .append(text("|", color(0xf6f6f6)))
-      .append(text("|", NamedTextColor.WHITE))
-      .append(text("|", NamedTextColor.WHITE))
+      .append(text("|", WHITE))
+      .append(text("|", WHITE))
       .append(text("|", color(0xf6f6f6)))
       .append(text("|", color(0xececec)))
       .append(text("|", color(0xe3e3e3)))
@@ -843,7 +853,7 @@ public class MiniMessageParserTest {
       .append(text("|", color(0xc6c6c6)))
       .append(text("|", color(0xbdbdbd)))
       .append(text("|", color(0xb3b3b3)))
-      .append(text("|", NamedTextColor.GRAY))
+      .append(text("|", GRAY))
       .append(text("|", color(0xa1a1a1)))
       .append(text("|", color(0x979797)))
       .append(text("|", color(0x8e8e8e)))
@@ -852,7 +862,7 @@ public class MiniMessageParserTest {
       .append(text("|", color(0x717171)))
       .append(text("|", color(0x686868)))
       .append(text("|", color(0x5e5e5e)))
-      .append(text("|", NamedTextColor.DARK_GRAY))
+      .append(text("|", DARK_GRAY))
       .append(text("|", color(0x4c4c4c)))
       .append(text("|", color(0x424242)))
       .append(text("|", color(0x393939)))
@@ -860,7 +870,7 @@ public class MiniMessageParserTest {
       .append(text("|", color(0x262626)))
       .append(text("|", color(0x1c1c1c)))
       .append(text("|", color(0x131313)))
-      .append(text("!", NamedTextColor.YELLOW))
+      .append(text("!", YELLOW))
       .build();
 
     assertParsedEquals(expected, input);
@@ -870,7 +880,7 @@ public class MiniMessageParserTest {
   void testGradientMultiColor2Phase() {
     final String input = "<yellow>Woo: <gradient:black:white:black:-0.65>||||||||||||||||||||||||||||||||||||||||||||||||||||||</gradient>!";
     final Component expected = text()
-      .append(text("Woo: ", NamedTextColor.YELLOW))
+      .append(text("Woo: ", YELLOW))
       .append(text("|", color(0xa6a6a6)))
       .append(text("|", color(0x9c9c9c)))
       .append(text("|", color(0x939393)))
@@ -925,7 +935,7 @@ public class MiniMessageParserTest {
       .append(text("|", color(0xcccccc)))
       .append(text("|", color(0xc2c2c2)))
       .append(text("|", color(0xb9b9b9)))
-      .append(text("!", NamedTextColor.YELLOW))
+      .append(text("!", YELLOW))
       .build();
 
     assertParsedEquals(expected, input);
@@ -935,7 +945,7 @@ public class MiniMessageParserTest {
   void testGradientPhase() {
     final String input = "<yellow>Woo: <gradient:green:blue:0.7>||||||||||||||||||||||||</gradient>!";
     final Component expected = text()
-      .append(text("Woo: ", NamedTextColor.YELLOW))
+      .append(text("Woo: ", YELLOW))
       .append(text("|", color(0x5588cc)))
       .append(text("|", color(0x5581d3)))
       .append(text("|", color(0x557ada)))
@@ -960,8 +970,26 @@ public class MiniMessageParserTest {
       .append(text("|", color(0x55b79d)))
       .append(text("|", color(0x55be96)))
       .append(text("|", color(0x55c58f)))
-      .append(text("!", NamedTextColor.YELLOW))
+      .append(text("!", YELLOW))
       .build();
+
+    assertParsedEquals(expected, input);
+  }
+
+  @Test
+  @Disabled // see #91
+  void testGradientWithInnerTokens() {
+    final String input = "<gradient:green:blue>123<bold>123</gradient>!";
+    final Component expected = text()
+            .append(text("1", GREEN))
+            .append(text("2", color(0x55e371)))
+            .append(text("3", color(0x55c68e)))
+            .append(text("1", color(0x55aaaa), BOLD))
+            .append(text("2", color(0x558ec6), BOLD))
+            .append(text("3", color(0x5571e3), BOLD))
+            .build();
+
+    System.out.println(GsonComponentSerializer.gson().serialize(PARSER.parse(input)));
 
     assertParsedEquals(expected, input);
   }
@@ -982,7 +1010,7 @@ public class MiniMessageParserTest {
   @Test // GH-37
   void testPhil() {
     final String input = "<red><hover:show_text:'Message 1\nMessage 2'>My Message";
-    final Component expected = text("My Message", style(NamedTextColor.RED, showText(text("Message 1\nMessage 2"))));
+    final Component expected = text("My Message", style(RED, showText(text("Message 1\nMessage 2"))));
 
     assertParsedEquals(expected, input);
   }
@@ -994,7 +1022,7 @@ public class MiniMessageParserTest {
     final String input = "Something <gradient:green:blue:1.0>𐌰𐌱𐌲</gradient>";
     final Component expected = text()
             .append(text("Something "))
-            .append(text("𐌰", NamedTextColor.BLUE))
+            .append(text("𐌰", BLUE))
             .append(text("𐌱", color(0x5571e3)))
             .append(text("𐌲", color(0x558ec6)))
             .build();
@@ -1006,9 +1034,9 @@ public class MiniMessageParserTest {
   void testNonStrict() {
     final String input = "<gray>Example: <click:suggest_command:/plot flag set coral-dry true><gold>/plot flag set coral-dry true<click></gold></gray>";
     final Component expected = text()
-      .append(text("Example: ", NamedTextColor.GRAY))
-      .append(text("/plot flag set coral-dry true", style(NamedTextColor.GOLD, suggestCommand("/plot flag set coral-dry true"))))
-      .append(text("<click>", style(NamedTextColor.GOLD, suggestCommand("/plot flag set coral-dry true"))))
+      .append(text("Example: ", GRAY))
+      .append(text("/plot flag set coral-dry true", style(GOLD, suggestCommand("/plot flag set coral-dry true"))))
+      .append(text("<click>", style(GOLD, suggestCommand("/plot flag set coral-dry true"))))
       .build();
 
     final Component parsed = MiniMessage.builder()
@@ -1032,9 +1060,9 @@ public class MiniMessageParserTest {
   @Test
   void testGH78() {
     final Component expected = text()
-            .append(text("<", NamedTextColor.GRAY))
-            .append(text("Patbox", NamedTextColor.YELLOW))
-            .append(text("> ", NamedTextColor.GRAY))
+            .append(text("<", GRAY))
+            .append(text("Patbox", YELLOW))
+            .append(text("> ", GRAY))
             .append(text("am dum"))
             .build();
     final String input = "<gray>\\<<yellow><player><gray>> <reset><pre><message></pre>";
@@ -1062,7 +1090,7 @@ public class MiniMessageParserTest {
 
   @Test
   void testDoubleNewLine() {
-    final Component expected = text("Hello\n\nWorld", NamedTextColor.RED);
+    final Component expected = text("Hello\n\nWorld", RED);
     final String input = "<red>Hello\n\nWorld";
     assertParsedEquals(expected, input);
   }
@@ -1070,8 +1098,8 @@ public class MiniMessageParserTest {
   @Test
   void testMismatchedTags() {
     final Component expected = text()
-            .append(text("hello", NamedTextColor.GREEN))
-            .append(text("</red>", NamedTextColor.GREEN)).build();
+            .append(text("hello", GREEN))
+            .append(text("</red>", GREEN)).build();
     final String input = "<green>hello</red>";
     assertParsedEquals(expected, input);
   }
@@ -1122,12 +1150,12 @@ public class MiniMessageParserTest {
   @Test
   void testTemplateOrder() {
     final Component expected = text()
-            .append(text("ONE", NamedTextColor.GRAY))
-            .append(text("TWO", NamedTextColor.RED))
-            .append(text(" ", NamedTextColor.RED))
-            .append(text("THREE", NamedTextColor.RED))
-            .append(text(" ", NamedTextColor.RED))
-            .append(text("FOUR", NamedTextColor.RED)).build();
+            .append(text("ONE", GRAY))
+            .append(text("TWO", RED))
+            .append(text(" ", RED))
+            .append(text("THREE", RED))
+            .append(text(" ", RED))
+            .append(text("FOUR", RED)).build();
     final String input = "<gray><arg1><red><arg2> <arg3> <arg4>";
 
     assertParsedEquals(expected, input, "arg1", Component.text("ONE"), "arg2", Component.text("TWO"), "arg3", Component.text("THREE"), "arg4",
@@ -1137,11 +1165,11 @@ public class MiniMessageParserTest {
   @Test
   void testTemplateOrder2() {
     final Component expected = text()
-            .append(text("ONE", NamedTextColor.GRAY))
-            .append(text("TWO", NamedTextColor.RED))
-            .append(text("THREE", NamedTextColor.BLUE))
+            .append(text("ONE", GRAY))
+            .append(text("TWO", RED))
+            .append(text("THREE", BLUE))
             .append(text(" "))
-            .append(text("FOUR", NamedTextColor.GREEN)).build();
+            .append(text("FOUR", GREEN)).build();
     final String input = "<gray><arg1></gray><red><arg2></red><blue><arg3></blue> <green><arg4>";
 
     assertParsedEquals(expected, input, "arg1", Component.text("ONE"), "arg2", Component.text("TWO"), "arg3", Component.text("THREE"), "arg4",
