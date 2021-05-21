@@ -68,6 +68,11 @@ public final class TemplateTransformation extends InstantApplyTransformation imp
   }
 
   @Override
+  public boolean allowedInPre() {
+    return true;
+  }
+
+  @Override
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("template", this.template));
   }

@@ -278,7 +278,7 @@ class MiniMessageParser {
             }
 
             final Transformation transformation = registry.get(name.value(), inners, templates, placeholderResolver, context);
-            if(transformation == null || preActive || token.type() == TokenType.ESCAPED_OPEN_TAG_START) {
+            if(transformation == null || (preActive && !transformation.allowedInPre()) || token.type() == TokenType.ESCAPED_OPEN_TAG_START) {
               // this isn't a known tag, oh no!
               // lets take a step back, first, create a string
               i -= 3 + inners.size();
@@ -307,7 +307,7 @@ class MiniMessageParser {
           } else if(paramOrEnd.type() == TokenType.TAG_END || paramOrEnd.type() == TokenType.ESCAPED_CLOSE_TAG_START) {
             // we finished
             final Transformation transformation = registry.get(name.value(), Collections.emptyList(), templates, placeholderResolver, context);
-            if(transformation == null || preActive || token.type() == TokenType.ESCAPED_OPEN_TAG_START) {
+            if(transformation == null || (preActive && !transformation.allowedInPre()) || token.type() == TokenType.ESCAPED_OPEN_TAG_START) {
               // this isn't a known tag, oh no!
               // lets take a step back, first, create a string
               i -= 2;
@@ -461,7 +461,7 @@ class MiniMessageParser {
     TextComponent parentBuild;
 
     // then do one iteration of transformations again
-    if (didApplyOneTime && !transformations.isEmpty()) {
+    if(didApplyOneTime && !transformations.isEmpty()) {
       List<Component> newChildren = parent.asComponent().children();
       Component newLast = newChildren.isEmpty() ? Component.empty() : newChildren.get(newChildren.size() - 1);
       for(final Transformation transformation : transformations) {

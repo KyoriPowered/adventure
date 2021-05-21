@@ -32,7 +32,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.List;
 
 /**
- * Carries needed context for minimessage around, ranging from debug info to the configured minimessage instance
+ * Carries needed context for minimessage around, ranging from debug info to the configured minimessage instance.
  *
  * @since 4.1.0
  */
@@ -77,7 +77,7 @@ public class Context {
    * @return the debug context
    * @since 4.1.0
    */
-  public static Context of(final boolean strict, final String input, final MiniMessageImpl miniMessage, @NonNull final Template @ Nullable[] templates) {
+  public static Context of(final boolean strict, final String input, final MiniMessageImpl miniMessage, @NonNull final Template @Nullable[] templates) {
     return new Context(strict, null, input, null, miniMessage, templates);
   }
 
@@ -152,13 +152,14 @@ public class Context {
   }
 
   /**
-   * Parses a MiniMessage using all the settings of this context, including templates
+   * Parses a MiniMessage using all the settings of this context, including templates.
    *
    * @param message the message to parse
    * @return the parsed message
+   * @since 4.1.0
    */
-  public Component parse(String message) {
-    if (this.templates != null) {
+  public Component parse(final String message) {
+    if(this.templates != null) {
       return this.miniMessage.parse(message, this.templates);
     } else {
       return this.miniMessage.parse(message);

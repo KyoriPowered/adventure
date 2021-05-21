@@ -78,7 +78,17 @@ public abstract class Transformation implements Examinable {
    */
   public abstract Component apply(final Component component, final TextComponent.Builder parent);
 
-  void setContext(Context context) {
+  /**
+   * Checks if this transformation is allowed to be interpreted inside a pre tag.
+   *
+   * @return if this transformation is allowed to be interpreted inside a pre tag
+   * @since 4.1.0
+   */
+  public boolean allowedInPre() {
+    return false;
+  }
+
+  void context(final Context context) {
     this.context = context;
   }
 

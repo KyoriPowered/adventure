@@ -220,4 +220,19 @@ public class MiniMessageTest {
     final String expected = "Argument 1 in placeholders is a value, must be Component or String, was java.lang.Integer";
     assertEquals(expected, assertThrows(IllegalArgumentException.class, () -> MiniMessage.get().parse("<a>", "a", 2)).getMessage());
   }
+
+  @Test // GH-98
+  void testTemplateInsideOfPre() {
+    final Component expected = Component.text()
+            .append(Component.text("MiniDigger", NamedTextColor.RED))
+            .append(Component.text(": ", NamedTextColor.GRAY))
+            .append(Component.text("<red>", NamedTextColor.GRAY))
+            .append(Component.text("Hello world", NamedTextColor.GRAY))
+            .build();
+    final String input = "<red><username><gray>: <pre><red><message>";
+
+    final Component result = MiniMessage.get().parse(input, Template.of("username", Component.text("MiniDigger")), Template.of("message", Component.text("Hello world")));
+
+    assertEquals(expected, result);
+  }
 }
