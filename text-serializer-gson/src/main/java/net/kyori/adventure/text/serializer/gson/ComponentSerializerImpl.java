@@ -24,18 +24,17 @@
 package net.kyori.adventure.text.serializer.gson;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import java.lang.reflect.Type;
+import com.google.gson.TypeAdapter;
+import com.google.gson.internal.Streams;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.BuildableComponent;
 import net.kyori.adventure.text.Component;
@@ -52,7 +51,7 @@ import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.Style;
 import org.jetbrains.annotations.Nullable;
 
-final class ComponentSerializerImpl implements JsonDeserializer<Component>, JsonSerializer<Component> {
+final class ComponentSerializerImpl extends TypeAdapter<Component> {
   static final String TEXT = "text";
   static final String TRANSLATE = "translate";
   static final String TRANSLATE_WITH = "with";
@@ -70,18 +69,28 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
   static final String NBT_STORAGE = "storage";
   static final String SEPARATOR = "separator";
 
-  @Override
-  public Component deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
-    return this.deserialize0(json, context);
+  static TypeAdapter<Component> withStyleSerializer(final TypeAdapter<Style> styleSerializer) {
+    return new ComponentSerializerImpl(styleSerializer).nullSafe();
   }
 
-  private BuildableComponent<?, ?> deserialize0(final JsonElement element, final JsonDeserializationContext context) throws JsonParseException {
+  private final TypeAdapter<Style> styleSerializer;
+
+  private ComponentSerializerImpl(final TypeAdapter<Style> styleSerializer) {
+    this.styleSerializer = styleSerializer;
+  }
+
+  @Override
+  public Component read(final JsonReader in) throws IOException {
+    return this.deserialize(Streams.parse(in));
+  }
+
+  private BuildableComponent<?, ?> deserialize(final JsonElement element) throws JsonParseException {
     if (element.isJsonPrimitive()) {
       return Component.text(element.getAsString());
     } else if (element.isJsonArray()) {
       ComponentBuilder<?, ?> parent = null;
       for (final JsonElement childElement : element.getAsJsonArray()) {
-        final BuildableComponent<?, ?> child = this.deserialize0(childElement, context);
+        final BuildableComponent<?, ?> child = this.deserialize(childElement);
         if (parent == null) {
           parent = child.toBuilder();
         } else {
@@ -109,7 +118,7 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
         final List<Component> args = new ArrayList<>(with.size());
         for (int i = 0, size = with.size(); i < size; i++) {
           final JsonElement argElement = with.get(i);
-          args.add(this.deserialize0(argElement, context));
+          args.add(this.deserialize(argElement));
         }
         component = Component.translatable().key(key).args(args);
       }
@@ -128,21 +137,21 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
         component = builder;
       }
     } else if (object.has(SELECTOR)) {
-      final @Nullable Component separator = this.deserializeSeparator(object, context);
+      final @Nullable Component separator = this.deserializeSeparator(object);
       component = Component.selector().pattern(object.get(SELECTOR).getAsString()).separator(separator);
     } else if (object.has(KEYBIND)) {
       component = Component.keybind().keybind(object.get(KEYBIND).getAsString());
     } else if (object.has(NBT)) {
       final String nbt = object.get(NBT).getAsString();
       final boolean interpret = object.has(NBT_INTERPRET) && object.getAsJsonPrimitive(NBT_INTERPRET).getAsBoolean();
-      final @Nullable Component separator = this.deserializeSeparator(object, context);
+      final @Nullable Component separator = this.deserializeSeparator(object);
       if (object.has(NBT_BLOCK)) {
-        final BlockNBTComponent.Pos pos = context.deserialize(object.get(NBT_BLOCK), BlockNBTComponent.Pos.class);
+        final BlockNBTComponent.Pos pos = BlockNBTComponentPosSerializer.INSTANCE.fromJsonTree(object.get(NBT_BLOCK));
         component = nbt(Component.blockNBT(), nbt, interpret, separator).pos(pos);
       } else if (object.has(NBT_ENTITY)) {
         component = nbt(Component.entityNBT(), nbt, interpret, separator).selector(object.get(NBT_ENTITY).getAsString());
       } else if (object.has(NBT_STORAGE)) {
-        component = nbt(Component.storageNBT(), nbt, interpret, separator).storage(context.deserialize(object.get(NBT_STORAGE), Key.class));
+        component = nbt(Component.storageNBT(), nbt, interpret, separator).storage(KeySerializer.INSTANCE.fromJsonTree(object.get(NBT_STORAGE)));
       } else {
         throw notSureHowToDeserialize(element);
       }
@@ -154,11 +163,11 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
       final JsonArray extra = object.getAsJsonArray(EXTRA);
       for (int i = 0, size = extra.size(); i < size; i++) {
         final JsonElement extraElement = extra.get(i);
-        component.append(this.deserialize0(extraElement, context));
+        component.append(this.deserialize(extraElement));
       }
     }
 
-    final Style style = context.deserialize(element, Style.class);
+    final Style style = this.styleSerializer.fromJsonTree(element);
     if (!style.isEmpty()) {
       component.style(style);
     }
@@ -166,9 +175,9 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
     return component.build();
   }
 
-  private @Nullable Component deserializeSeparator(final JsonObject json, final JsonDeserializationContext context) {
+  private @Nullable Component deserializeSeparator(final JsonObject json) {
     if (json.has(SEPARATOR)) {
-      return this.deserialize0(json.get(SEPARATOR), context);
+      return this.deserialize(json.get(SEPARATOR));
     }
     return null;
   }
@@ -181,11 +190,15 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
   }
 
   @Override
-  public JsonElement serialize(final Component src, final Type typeOfSrc, final JsonSerializationContext context) {
+  public void write(final JsonWriter out, final Component value) throws IOException {
+    Streams.write(this.serialize(value), out);
+  }
+
+  private JsonElement serialize(final Component src) {
     final JsonObject object = new JsonObject();
 
     if (src.hasStyling()) {
-      final JsonElement style = context.serialize(src.style());
+      final JsonElement style = this.styleSerializer.toJsonTree(src.style());
       if (style.isJsonObject()) {
         for (final Map.Entry<String, JsonElement> entry : ((JsonObject) style).entrySet()) {
           object.add(entry.getKey(), entry.getValue());
@@ -197,7 +210,7 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
     if (!children.isEmpty()) {
       final JsonArray extra = new JsonArray();
       for (final Component child : children) {
-        extra.add(context.serialize(child));
+        extra.add(this.serialize(child));
       }
       object.add(EXTRA, extra);
     }
@@ -210,7 +223,7 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
       if (!tc.args().isEmpty()) {
         final JsonArray with = new JsonArray();
         for (final Component arg : tc.args()) {
-          with.add(context.serialize(arg));
+          with.add(this.serialize(arg));
         }
         object.add(TRANSLATE_WITH, with);
       }
@@ -227,7 +240,7 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
     } else if (src instanceof SelectorComponent) {
       final SelectorComponent sc = (SelectorComponent) src;
       object.addProperty(SELECTOR, sc.pattern());
-      this.serializeSeparator(context, object, sc.separator());
+      this.serializeSeparator(object, sc.separator());
     } else if (src instanceof KeybindComponent) {
       object.addProperty(KEYBIND, ((KeybindComponent) src).keybind());
     } else if (src instanceof NBTComponent) {
@@ -235,13 +248,13 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
       object.addProperty(NBT, nc.nbtPath());
       object.addProperty(NBT_INTERPRET, nc.interpret());
       if (src instanceof BlockNBTComponent) {
-        final JsonElement position = context.serialize(((BlockNBTComponent) nc).pos());
+        final JsonElement position = BlockNBTComponentPosSerializer.INSTANCE.toJsonTree(((BlockNBTComponent) nc).pos());
         object.add(NBT_BLOCK, position);
-        this.serializeSeparator(context, object, nc.separator());
+        this.serializeSeparator(object, nc.separator());
       } else if (src instanceof EntityNBTComponent) {
         object.addProperty(NBT_ENTITY, ((EntityNBTComponent) nc).selector());
       } else if (src instanceof StorageNBTComponent) {
-        object.add(NBT_STORAGE, context.serialize(((StorageNBTComponent) nc).storage()));
+        object.add(NBT_STORAGE, KeySerializer.INSTANCE.toJsonTree(((StorageNBTComponent) nc).storage()));
       } else {
         throw notSureHowToSerialize(src);
       }
@@ -252,9 +265,9 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
     return object;
   }
 
-  private void serializeSeparator(final JsonSerializationContext context, final JsonObject json, final @Nullable Component separator) {
+  private void serializeSeparator(final JsonObject json, final @Nullable Component separator) {
     if (separator != null) {
-      json.add(SEPARATOR, context.serialize(separator));
+      json.add(SEPARATOR, this.serialize(separator));
     }
   }
 
