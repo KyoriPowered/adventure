@@ -134,13 +134,17 @@ class MiniMessageParser {
     return sb.toString();
   }
 
+  @NonNull String sanitizePlaceholder(String input) {
+    return input.replace("</pre>", "\\</pre>");
+  }
+
   @NonNull String handlePlaceholders(@NonNull String richMessage, final @NonNull Context context, final @NonNull String... placeholders) {
     if(placeholders.length % 2 != 0) {
       throw new ParseException(
         "Invalid number placeholders defined, usage: parseFormat(format, key, value, key, value...)");
     }
     for(int i = 0; i < placeholders.length; i += 2) {
-      richMessage = richMessage.replace(TAG_START + placeholders[i] + TAG_END, placeholders[i + 1]);
+      richMessage = richMessage.replace(TAG_START + placeholders[i] + TAG_END, sanitizePlaceholder(placeholders[i + 1]));
     }
     context.replacedMessage(richMessage);
     return richMessage;
@@ -167,7 +171,7 @@ class MiniMessageParser {
     for(final Template placeholder : placeholders) {
       if(placeholder instanceof Template.StringTemplate) {
         final Template.StringTemplate stringTemplate = (Template.StringTemplate) placeholder;
-        input = input.replace(TAG_START + stringTemplate.key() + TAG_END, stringTemplate.value());
+        input = input.replace(TAG_START + stringTemplate.key() + TAG_END, sanitizePlaceholder(stringTemplate.value()));
       } else if(placeholder instanceof Template.ComponentTemplate) {
         final Template.ComponentTemplate componentTemplate = (Template.ComponentTemplate) placeholder;
         map.put(componentTemplate.key(), componentTemplate);

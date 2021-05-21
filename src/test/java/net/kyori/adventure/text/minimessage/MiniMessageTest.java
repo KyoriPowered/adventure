@@ -235,4 +235,32 @@ public class MiniMessageTest {
 
     assertEquals(expected, result);
   }
+
+  @Test // GH-97
+  void testUnsafePre() {
+    final Component expected = Component.text()
+            .append(Component.text("MiniDigger", NamedTextColor.RED))
+            .append(Component.text(": ", NamedTextColor.GRAY))
+            .append(Component.text("<red>", NamedTextColor.GRAY))
+            .append(Component.text("</pre><red>Test", NamedTextColor.GRAY))
+            .build();
+    final Component expected2 = Component.text()
+            .append(Component.text("MiniDigger", NamedTextColor.RED))
+            .append(Component.text(": ", NamedTextColor.GRAY))
+            .append(Component.text("<red>", NamedTextColor.GRAY))
+            .append(Component.text("</pre>", NamedTextColor.GRAY))
+            .append(Component.text("<red>", NamedTextColor.GRAY))
+            .append(Component.text("Test", NamedTextColor.GRAY))
+            .build();
+    final String input = "<red><username><gray>: <pre><red><message>";
+
+    final Component result1 = MiniMessage.get().parse(input, Template.of("username", Component.text("MiniDigger")), Template.of("message", Component.text("</pre><red>Test")));
+    assertEquals(expected, result1);
+
+    final Component result2 = MiniMessage.get().parse(input, Template.of("username", "MiniDigger"), Template.of("message", "</pre><red>Test"));
+    assertEquals(expected2, result2);
+
+    final Component result3 = MiniMessage.get().parse(input, "username", "MiniDigger", "message", "</pre><red>Test");
+    assertEquals(expected2, result3);
+  }
 }
