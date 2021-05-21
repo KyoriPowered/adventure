@@ -51,6 +51,7 @@ public final class ColorTransformation extends Transformation {
   private static Map<String, String> colorAliases = new HashMap<>();
 
   static {
+    colorAliases.put("dark_grey", "dark_gray");
     colorAliases.put("grey", "gray");
   }
 

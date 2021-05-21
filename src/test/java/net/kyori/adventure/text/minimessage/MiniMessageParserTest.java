@@ -80,10 +80,15 @@ public class MiniMessageParserTest {
   void testBritish() {
     final String input1 = "<grey>This is english"; // no it's british
     final String input2 = "<gray>This is english";
+    final String input3 = "<dark_grey>This is still english"; // British is superior english
+    final String input4 = "<dark_gray>This is still english";
     final Component out1 = PARSER.parse(input1);
     final Component out2 = PARSER.parse(input2);
+    final Component out3 = PARSER.parse(input3);
+    final Component out4 = PARSER.parse(input4);
 
     assertEquals(out1, out2);
+    assertEquals(out3, out4);
   }
 
   @Test
