@@ -27,6 +27,7 @@ import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.string.StringExaminer;
@@ -41,6 +42,7 @@ import net.kyori.examination.string.StringExaminer;
  */
 public abstract class Transformation implements Examinable {
   private String name;
+  protected Context context;
 
   protected Transformation() {
   }
@@ -75,6 +77,10 @@ public abstract class Transformation implements Examinable {
    * @since 4.1.0
    */
   public abstract Component apply(final Component component, final TextComponent.Builder parent);
+
+  void setContext(Context context) {
+    this.context = context;
+  }
 
   @Override
   public final String toString() {

@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import net.kyori.adventure.text.ComponentLike;
-import net.kyori.adventure.text.minimessage.DebugContext;
+import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.Template;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
@@ -113,34 +113,35 @@ public final class TransformationRegistry {
    * @param inners tokens that make up the tag arguments
    * @param templates available templates
    * @param placeholderResolver function to resolve other component types
-   * @param debugContext the debug context
+   * @param context the debug context
    * @return a possible transformation
    * @since 4.1.0
    */
-  public @Nullable Transformation get(final String name, final List<Token> inners, final Map<String, Template.ComponentTemplate> templates, final Function<String, ComponentLike> placeholderResolver, final DebugContext debugContext) {
+  public @Nullable Transformation get(final String name, final List<Token> inners, final Map<String, Template.ComponentTemplate> templates, final Function<String, ComponentLike> placeholderResolver, final Context context) {
     // first try if we have a custom placeholder resolver
     final ComponentLike potentialTemplate = placeholderResolver.apply(name);
     if(potentialTemplate != null) {
-      return this.tryLoad(new TemplateTransformation(new Template.ComponentTemplate(name, potentialTemplate.asComponent())), name, inners, debugContext);
+      return this.tryLoad(new TemplateTransformation(new Template.ComponentTemplate(name, potentialTemplate.asComponent())), name, inners, context);
     }
     // then check our registry
     for(final TransformationType<? extends Transformation> type : this.types) {
       if(type.canParse.test(name)) {
-        return this.tryLoad(type.parser.parse(), name, inners, debugContext);
+        return this.tryLoad(type.parser.parse(), name, inners, context);
       } else if(templates.containsKey(name)) {
-        return this.tryLoad(new TemplateTransformation(templates.get(name)), name, inners, debugContext);
+        return this.tryLoad(new TemplateTransformation(templates.get(name)), name, inners, context);
       }
     }
 
     return null;
   }
 
-  private Transformation tryLoad(final Transformation transformation, final String name, final List<Token> inners, final DebugContext debugContext) {
+  private Transformation tryLoad(final Transformation transformation, final String name, final List<Token> inners, final Context context) {
     try {
+      transformation.setContext(context);
       transformation.load(name, inners);
       return transformation;
     } catch(final ParsingException exception) {
-      if(debugContext.isStrict()) {
+      if(context.isStrict()) {
         throw exception;
       }
       // TODO nicer message format?
@@ -148,15 +149,15 @@ public final class TransformationRegistry {
               "[MiniMessage] Encountered parse exception while trying to load " + transformation.getClass().getSimpleName(),
               "\tmsg=" + exception.getMessage(),
               "\twith name=" + name + " and inners=" + inners + "",
-              "\tinput=" + debugContext.ogMessage()
+              "\tinput=" + context.ogMessage()
       ));
-      if(debugContext.replacedMessage() != null) {
-        errorMessage.add("\twith placeholders=" + debugContext.replacedMessage());
+      if(context.replacedMessage() != null) {
+        errorMessage.add("\twith placeholders=" + context.replacedMessage());
       }
       if(inners != null && inners.isEmpty()) {
         errorMessage.add("\thint: did you mean to enter '</" + name + ">'?");
       }
-      debugContext.miniMessage().parsingErrorMessageConsumer().accept(errorMessage);
+      context.miniMessage().parsingErrorMessageConsumer().accept(errorMessage);
       return null;
     }
   }

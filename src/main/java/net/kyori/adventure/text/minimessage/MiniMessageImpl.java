@@ -71,7 +71,7 @@ public class MiniMessageImpl implements MiniMessage {
     if(this.markdown) {
       input = MiniMarkdownParser.parse(input, this.markdownFlavor);
     }
-    return this.parser.parseFormat(input, DebugContext.of(this.strict, input, this));
+    return this.parser.parseFormat(input, Context.of(this.strict, input, this));
   }
 
   @Override
@@ -84,7 +84,7 @@ public class MiniMessageImpl implements MiniMessage {
     if(this.markdown) {
       input = MiniMarkdownParser.parse(input, this.markdownFlavor);
     }
-    return this.parser.parseFormat(input, DebugContext.of(this.strict, input, this), placeholders);
+    return this.parser.parseFormat(input, Context.of(this.strict, input, this), placeholders);
   }
 
   @Override
@@ -92,7 +92,7 @@ public class MiniMessageImpl implements MiniMessage {
     if(this.markdown) {
       input = MiniMarkdownParser.parse(input, this.markdownFlavor);
     }
-    return this.parser.parseFormat(input, placeholders, DebugContext.of(this.strict, input, this));
+    return this.parser.parseFormat(input, placeholders, Context.of(this.strict, input, this));
   }
 
   @Override
@@ -138,7 +138,7 @@ public class MiniMessageImpl implements MiniMessage {
     if(this.markdown) {
       input = MiniMarkdownParser.parse(input, this.markdownFlavor);
     }
-    return this.parser.parseFormat(input, DebugContext.of(this.strict, input, this), placeholders);
+    return this.parser.parseFormat(input, Context.of(this.strict, input, this, placeholders), placeholders);
   }
 
   @Override
@@ -146,7 +146,7 @@ public class MiniMessageImpl implements MiniMessage {
     if(this.markdown) {
       input = MiniMarkdownParser.parse(input, this.markdownFlavor);
     }
-    return this.parser.parseFormat(input, placeholders, DebugContext.of(this.strict, input, this));
+    return this.parser.parseFormat(input, placeholders, Context.of(this.strict, input, this));
   }
 
   @Override

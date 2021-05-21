@@ -23,29 +23,35 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.parser.Token;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.List;
 
 /**
- * Carries debug info around.
+ * Carries needed context for minimessage around, ranging from debug info to the configured minimessage instance
  *
  * @since 4.1.0
  */
-public class DebugContext {
+public class Context {
 
   private final boolean strict;
   private List<Token> tokens;
   private final String ogMessage;
   private String replacedMessage;
   private final MiniMessageImpl miniMessage;
+  private final @NonNull Template @Nullable [] templates;
 
-  DebugContext(final boolean strict, final List<Token> tokens, final String ogMessage, final String replacedMessage, final MiniMessageImpl miniMessage) {
+  Context(final boolean strict, final List<Token> tokens, final String ogMessage, final String replacedMessage, final MiniMessageImpl miniMessage, final @NonNull Template @Nullable [] templates) {
     this.strict = strict;
     this.tokens = tokens;
     this.ogMessage = ogMessage;
     this.replacedMessage = replacedMessage;
     this.miniMessage = miniMessage;
+    this.templates = templates;
   }
 
   /**
@@ -57,8 +63,22 @@ public class DebugContext {
    * @return the debug context
    * @since 4.1.0
    */
-  public static DebugContext of(final boolean strict, final String input, final MiniMessageImpl miniMessage) {
-    return new DebugContext(strict, null, input, null, miniMessage);
+  public static Context of(final boolean strict, final String input, final MiniMessageImpl miniMessage) {
+    return new Context(strict, null, input, null, miniMessage, null);
+  }
+
+  /**
+   * Init.
+   *
+   * @param strict if strict mode is enabled
+   * @param input the input message
+   * @param miniMessage the minimessage instance
+   * @param templates the templates passed to minimessage
+   * @return the debug context
+   * @since 4.1.0
+   */
+  public static Context of(final boolean strict, final String input, final MiniMessageImpl miniMessage, @NonNull final Template @ Nullable[] templates) {
+    return new Context(strict, null, input, null, miniMessage, templates);
   }
 
   /**
@@ -129,5 +149,19 @@ public class DebugContext {
    */
   public MiniMessageImpl miniMessage() {
     return this.miniMessage;
+  }
+
+  /**
+   * Parses a MiniMessage using all the settings of this context, including templates
+   *
+   * @param message the message to parse
+   * @return the parsed message
+   */
+  public Component parse(String message) {
+    if (this.templates != null) {
+      return this.miniMessage.parse(message, this.templates);
+    } else {
+      return this.miniMessage.parse(message);
+    }
   }
 }

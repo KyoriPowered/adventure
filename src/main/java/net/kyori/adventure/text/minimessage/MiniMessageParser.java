@@ -134,7 +134,7 @@ class MiniMessageParser {
     return sb.toString();
   }
 
-  @NonNull String handlePlaceholders(@NonNull String richMessage, final @NonNull DebugContext debugContext, final @NonNull String... placeholders) {
+  @NonNull String handlePlaceholders(@NonNull String richMessage, final @NonNull Context context, final @NonNull String... placeholders) {
     if(placeholders.length % 2 != 0) {
       throw new ParseException(
         "Invalid number placeholders defined, usage: parseFormat(format, key, value, key, value...)");
@@ -142,27 +142,27 @@ class MiniMessageParser {
     for(int i = 0; i < placeholders.length; i += 2) {
       richMessage = richMessage.replace(TAG_START + placeholders[i] + TAG_END, placeholders[i + 1]);
     }
-    debugContext.replacedMessage(richMessage);
+    context.replacedMessage(richMessage);
     return richMessage;
   }
 
-  @NonNull String handlePlaceholders(@NonNull String richMessage, final @NonNull DebugContext debugContext, final @NonNull Map<String, String> placeholders) {
+  @NonNull String handlePlaceholders(@NonNull String richMessage, final @NonNull Context context, final @NonNull Map<String, String> placeholders) {
     for(final Map.Entry<String, String> entry : placeholders.entrySet()) {
       richMessage = richMessage.replace(TAG_START + entry.getKey() + TAG_END, entry.getValue());
     }
-    debugContext.replacedMessage(richMessage);
+    context.replacedMessage(richMessage);
     return richMessage;
   }
 
-  @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull DebugContext debugContext, final @NonNull String... placeholders) {
-    return this.parseFormat(this.handlePlaceholders(richMessage, debugContext, placeholders), debugContext);
+  @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull Context context, final @NonNull String... placeholders) {
+    return this.parseFormat(this.handlePlaceholders(richMessage, context, placeholders), context);
   }
 
-  @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull Map<String, String> placeholders, final DebugContext debugContext) {
-    return this.parseFormat(this.handlePlaceholders(richMessage, debugContext, placeholders), debugContext);
+  @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull Map<String, String> placeholders, final Context context) {
+    return this.parseFormat(this.handlePlaceholders(richMessage, context, placeholders), context);
   }
 
-  @NonNull Component parseFormat(@NonNull String input, final DebugContext debugContext, final @NonNull Template... placeholders) {
+  @NonNull Component parseFormat(@NonNull String input, final Context context, final @NonNull Template... placeholders) {
     final Map<String, Template.ComponentTemplate> map = new HashMap<>();
     for(final Template placeholder : placeholders) {
       if(placeholder instanceof Template.StringTemplate) {
@@ -173,10 +173,10 @@ class MiniMessageParser {
         map.put(componentTemplate.key(), componentTemplate);
       }
     }
-    return this.parseFormat0(input, map, debugContext);
+    return this.parseFormat0(input, map, context);
   }
 
-  @NonNull Component parseFormat(@NonNull String input, final @NonNull List<Template> placeholders, final @NonNull DebugContext debugContext) {
+  @NonNull Component parseFormat(@NonNull String input, final @NonNull List<Template> placeholders, final @NonNull Context context) {
     final Map<String, Template.ComponentTemplate> map = new HashMap<>();
     for(final Template placeholder : placeholders) {
       if(placeholder instanceof Template.StringTemplate) {
@@ -187,19 +187,19 @@ class MiniMessageParser {
         map.put(componentTemplate.key(), componentTemplate);
       }
     }
-    return this.parseFormat0(input, map, debugContext);
+    return this.parseFormat0(input, map, context);
   }
 
-  @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull DebugContext debugContext) {
-    return this.parseFormat0(richMessage, Collections.emptyMap(), debugContext);
+  @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull Context context) {
+    return this.parseFormat0(richMessage, Collections.emptyMap(), context);
   }
 
-  @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull DebugContext debugContext) {
-    return this.parseFormat0(richMessage, templates, this.registry, this.placeholderResolver, debugContext);
+  @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull Context context) {
+    return this.parseFormat0(richMessage, templates, this.registry, this.placeholderResolver, context);
   }
 
-  @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull TransformationRegistry registry, final @NonNull Function<String, ComponentLike> placeholderResolver, final DebugContext debugContext) {
-    final MiniMessageLexer lexer = new MiniMessageLexer(richMessage, debugContext);
+  @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull TransformationRegistry registry, final @NonNull Function<String, ComponentLike> placeholderResolver, final Context context) {
+    final MiniMessageLexer lexer = new MiniMessageLexer(richMessage, context);
     try {
       lexer.scan();
     } catch(final IOException e) {
@@ -207,11 +207,11 @@ class MiniMessageParser {
     }
     lexer.clean();
     final List<Token> tokens = lexer.getTokens();
-    debugContext.tokens(tokens);
-    return this.parse(tokens, registry, templates, placeholderResolver, debugContext);
+    context.tokens(tokens);
+    return this.parse(tokens, registry, templates, placeholderResolver, context);
   }
 
-  @NonNull Component parse(final @NonNull List<Token> tokens, final @NonNull TransformationRegistry registry, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull Function<String, ComponentLike> placeholderResolver, final @NonNull DebugContext debugContext) {
+  @NonNull Component parse(final @NonNull List<Token> tokens, final @NonNull TransformationRegistry registry, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull Function<String, ComponentLike> placeholderResolver, final @NonNull Context context) {
     final TextComponent.Builder parent = Component.text();
     final Deque<Transformation> transformations = new ArrayDeque<>();
     final Deque<OneTimeTransformation> oneTimeTransformations = new ArrayDeque<>();
@@ -225,7 +225,7 @@ class MiniMessageParser {
         case OPEN_TAG_START:
           // next has to be name
           if(tokens.size() - 1 == i) {
-            if(debugContext.isStrict()) {
+            if(context.isStrict()) {
               throw new ParsingException("Expected name after open tag, but got nothing", -1);
             } else {
               tokens.set(i, new Token(TokenType.STRING, token.value()));
@@ -240,21 +240,21 @@ class MiniMessageParser {
             continue;
           }
           if(name.type() != TokenType.NAME && token.type() != TokenType.ESCAPED_OPEN_TAG_START) {
-            if(debugContext.isStrict()) {
+            if(context.isStrict()) {
               throw new ParsingException("Expected name after open tag, but got " + name, -1);
             } else {
               // TODO: handle
-              debugContext.miniMessage().parsingErrorMessageConsumer().accept(Collections.singletonList("Expected name after open tag, but got " + name));
+              context.miniMessage().parsingErrorMessageConsumer().accept(Collections.singletonList("Expected name after open tag, but got " + name));
               continue;
             }
           }
           // after that, we get a param separator or the end
           if(tokens.size() - 1 == i) {
-            if(debugContext.isStrict()) {
+            if(context.isStrict()) {
               throw new ParsingException("Expected param or end after open tag + name, but got nothing", -1);
             } else {
               // TODO: handle
-              debugContext.miniMessage().parsingErrorMessageConsumer().accept(Collections.singletonList("Expected param or end after open tag + name, but got nothing"));
+              context.miniMessage().parsingErrorMessageConsumer().accept(Collections.singletonList("Expected param or end after open tag + name, but got nothing"));
               continue;
             }
           }
@@ -268,16 +268,16 @@ class MiniMessageParser {
             }
 
             if(next == null) {
-              if(debugContext.isStrict()) {
+              if(context.isStrict()) {
                 throw new ParsingException("Expected end sometimes after open tag + name, but got name = " + name + " and inners = " + inners, -1);
               } else {
                 // TODO: handle
-                debugContext.miniMessage().parsingErrorMessageConsumer().accept(Collections.singletonList("Expected end sometimes after open tag + name, but got name = " + name + " and inners = " + inners));
+                context.miniMessage().parsingErrorMessageConsumer().accept(Collections.singletonList("Expected end sometimes after open tag + name, but got name = " + name + " and inners = " + inners));
                 continue;
               }
             }
 
-            final Transformation transformation = registry.get(name.value(), inners, templates, placeholderResolver, debugContext);
+            final Transformation transformation = registry.get(name.value(), inners, templates, placeholderResolver, context);
             if(transformation == null || preActive || token.type() == TokenType.ESCAPED_OPEN_TAG_START) {
               // this isn't a known tag, oh no!
               // lets take a step back, first, create a string
@@ -306,7 +306,7 @@ class MiniMessageParser {
             }
           } else if(paramOrEnd.type() == TokenType.TAG_END || paramOrEnd.type() == TokenType.ESCAPED_CLOSE_TAG_START) {
             // we finished
-            final Transformation transformation = registry.get(name.value(), Collections.emptyList(), templates, placeholderResolver, debugContext);
+            final Transformation transformation = registry.get(name.value(), Collections.emptyList(), templates, placeholderResolver, context);
             if(transformation == null || preActive || token.type() == TokenType.ESCAPED_OPEN_TAG_START) {
               // this isn't a known tag, oh no!
               // lets take a step back, first, create a string
@@ -331,11 +331,11 @@ class MiniMessageParser {
               }
             }
           } else {
-            if(debugContext.isStrict()) {
+            if(context.isStrict()) {
               throw new ParsingException("Expected tag end or param separator after tag name, but got " + paramOrEnd, -1);
             } else {
               // TODO: handle
-              debugContext.miniMessage().parsingErrorMessageConsumer().accept(Collections.singletonList("Expected tag end or param separator after tag name, but got " + paramOrEnd));
+              context.miniMessage().parsingErrorMessageConsumer().accept(Collections.singletonList("Expected tag end or param separator after tag name, but got " + paramOrEnd));
               continue;
             }
           }
@@ -344,7 +344,7 @@ class MiniMessageParser {
         case CLOSE_TAG_START:
           // next has to be name
           if(tokens.size() - 1 == i) {
-            if(debugContext.isStrict()) {
+            if(context.isStrict()) {
               throw new ParsingException("Expected name after open tag, but got nothing", -1);
             } else {
               tokens.set(i, new Token(TokenType.STRING, token.value()));
@@ -353,21 +353,21 @@ class MiniMessageParser {
           }
           name = tokens.get(++i);
           if(name.type() != TokenType.NAME && token.type() != TokenType.ESCAPED_CLOSE_TAG_START) {
-            if(debugContext.isStrict()) {
+            if(context.isStrict()) {
               throw new ParsingException("Expected name after close tag start, but got " + name, -1);
             } else {
               // TODO: handle
-              debugContext.miniMessage().parsingErrorMessageConsumer().accept(Collections.singletonList("Expected name after close tag start, but got " + name));
+              context.miniMessage().parsingErrorMessageConsumer().accept(Collections.singletonList("Expected name after close tag start, but got " + name));
               continue;
             }
           }
           // after that, we just want end, sometimes end has params tho
           if(tokens.size() - 1 == i) {
-            if(debugContext.isStrict()) {
+            if(context.isStrict()) {
               throw new ParsingException("Expected param or end after open tag + name, but got nothing", -1);
             } else {
               // TODO: handle
-              debugContext.miniMessage().parsingErrorMessageConsumer().accept(Collections.singletonList("Expected param or end after open tag + name, but got nothing"));
+              context.miniMessage().parsingErrorMessageConsumer().accept(Collections.singletonList("Expected param or end after open tag + name, but got nothing"));
               continue;
             }
           }
@@ -411,14 +411,14 @@ class MiniMessageParser {
             }
 
             // check what we need to close, so we create a transformation and try to remove it
-            final Transformation transformation = registry.get(name.value(), inners, templates, placeholderResolver, debugContext);
+            final Transformation transformation = registry.get(name.value(), inners, templates, placeholderResolver, context);
             transformations.removeFirstOccurrence(transformation);
           } else {
-            if(debugContext.isStrict()) {
+            if(context.isStrict()) {
               throw new ParsingException("Expected tag end or param separator after tag name, but got " + paramOrEnd, -1);
             } else {
               // TODO: handle
-              debugContext.miniMessage().parsingErrorMessageConsumer().accept(Collections.singletonList("Expected tag end or param separator after tag name, but got " + paramOrEnd));
+              context.miniMessage().parsingErrorMessageConsumer().accept(Collections.singletonList("Expected tag end or param separator after tag name, but got " + paramOrEnd));
               continue;
             }
           }

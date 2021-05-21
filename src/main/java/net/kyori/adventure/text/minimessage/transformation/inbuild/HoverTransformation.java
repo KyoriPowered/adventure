@@ -85,7 +85,7 @@ public final class HoverTransformation extends Transformation {
 
     this.action = (HoverEvent.Action<Object>) HoverEvent.Action.NAMES.value(args.get(0).value());
     if(this.action == (Object) HoverEvent.Action.SHOW_TEXT) {
-      this.value = MiniMessage.get().parse(stripOuterQuotes(string)); // TODO this uses a hardcoded instance, there gotta be a better way
+      this.value = context.parse(stripOuterQuotes(string));
     } else if(this.action == (Object) HoverEvent.Action.SHOW_ITEM) {
       this.value = this.parseShowItem(string);
     } else if(this.action == (Object) HoverEvent.Action.SHOW_ENTITY) {
@@ -137,7 +137,7 @@ public final class HoverTransformation extends Transformation {
       final Key key = Key.key(stripOuterQuotes(args[0]));
       final UUID id = UUID.fromString(stripOuterQuotes(args[1]));
       if(args.length == 3) {
-        final Component name = MiniMessage.get().parse(stripOuterQuotes(args[2])); // todo; hardcoded instance
+        final Component name = context.parse(stripOuterQuotes(args[2]));
         return HoverEvent.ShowEntity.of(key, id, name);
       }
       return HoverEvent.ShowEntity.of(key, id);

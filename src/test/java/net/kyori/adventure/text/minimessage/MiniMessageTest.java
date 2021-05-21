@@ -25,9 +25,12 @@ package net.kyori.adventure.text.minimessage;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.transformation.TransformationType;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import org.junit.jupiter.api.Test;
 
@@ -137,6 +140,16 @@ public class MiniMessageTest {
     final Template t1 = Template.of("test", Component.text("TEST", style(NamedTextColor.RED, TextDecoration.UNDERLINED)));
     final Template t2 = Template.of("test2", "Test2");
     final Component result = MiniMessage.get().parse("<green><bold><test><test2>", t1, t2);
+
+    assertEquals(expected, result);
+  }
+
+  @Test // GH-103
+  void testTemplateInHover() {
+    final Component expected = Component.text("This is a test message.").hoverEvent(HoverEvent.showText(Component.text("[Plugin]", TextColor.color(0xff0000))));
+    final Component result = MiniMessage.get().parse("<hover:show_text:'<prefix>'>This is a test message.", Template.of("prefix", MiniMessage.get().parse("<#FF0000>[Plugin]<reset>")));
+
+    System.out.println(GsonComponentSerializer.gson().serialize(result));
 
     assertEquals(expected, result);
   }

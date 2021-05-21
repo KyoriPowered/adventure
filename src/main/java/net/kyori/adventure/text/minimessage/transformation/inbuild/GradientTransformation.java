@@ -53,7 +53,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @since 4.1.0
  */
 public final class GradientTransformation extends OneTimeTransformation implements Inserting {
-  // TODO gradient
   private int index = 0;
   private int colorIndex = 0;
 

@@ -26,7 +26,7 @@ package net.kyori.adventure.text.minimessage.parser;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenType;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
-import net.kyori.adventure.text.minimessage.DebugContext;
+import net.kyori.adventure.text.minimessage.Context;
 import java.io.StringReader;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -56,12 +56,12 @@ import java.io.IOException;
     private final StringBuffer string = new StringBuffer();
     private final List<Token> tokens = new ArrayList<>();
     private String input = "error";
-    private DebugContext debugContext;
+    private Context context;
 
-    public MiniMessageLexer(String input, DebugContext debugContext) {
+    public MiniMessageLexer(String input, Context context) {
       this(new StringReader(input));
       this.input = input;
-      this.debugContext = debugContext;
+      this.context = context;
     }
 
     public void clean() {
@@ -103,7 +103,7 @@ import java.io.IOException;
     }
 
     public void checkStrict(ParsingException ex) {
-        if (debugContext.isStrict()) {
+        if (context.isStrict()) {
           throw ex;
         } else {
           // TODO: maybe instead log something here?
