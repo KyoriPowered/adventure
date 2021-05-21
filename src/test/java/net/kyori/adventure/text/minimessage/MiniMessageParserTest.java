@@ -67,6 +67,16 @@ public class MiniMessageParserTest {
   }
 
   @Test
+  void testBritish() {
+    final String input1 = "<grey>This is english"; // no it's british
+    final String input2 = "<gray>This is english";
+    final Component out1 = PARSER.parse(input1);
+    final Component out2 = PARSER.parse(input2);
+
+    assertEquals(out1, out2);
+  }
+
+  @Test
   void testNewColor() {
     final String input1 = "<color:yellow>TEST<color:green> nested</color:green>Test";
     final String input2 = "<color:yellow>TEST<color:green> nested<color:yellow>Test";

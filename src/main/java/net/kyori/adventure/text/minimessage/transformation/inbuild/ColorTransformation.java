@@ -23,8 +23,10 @@
  */
 package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
@@ -45,6 +47,13 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @since 4.1.0
  */
 public final class ColorTransformation extends Transformation {
+
+  private static Map<String, String> colorAliases = new HashMap<>();
+
+  static {
+    colorAliases.put("grey", "gray");
+  }
+
   /**
    * Get if this transformation can handle the provided tag name.
    *
@@ -57,7 +66,8 @@ public final class ColorTransformation extends Transformation {
       || name.equalsIgnoreCase(Tokens.COLOR_2)
       || name.equalsIgnoreCase(Tokens.COLOR_3)
       || TextColor.fromHexString(name) != null
-      || NamedTextColor.NAMES.value(name.toLowerCase(Locale.ROOT)) != null;
+      || NamedTextColor.NAMES.value(name.toLowerCase(Locale.ROOT)) != null
+      || colorAliases.containsKey(name);
   }
 
   private TextColor color;
@@ -75,6 +85,10 @@ public final class ColorTransformation extends Transformation {
       } else {
         throw new ParsingException("Expected to find a color parameter, but found " + args, -1);
       }
+    }
+
+    if(colorAliases.containsKey(name)) {
+      name = colorAliases.get(name);
     }
 
     if(name.charAt(0) == '#') {
