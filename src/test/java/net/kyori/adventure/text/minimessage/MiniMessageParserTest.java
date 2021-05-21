@@ -1184,6 +1184,22 @@ public class MiniMessageParserTest {
             Component.text("FOUR"));
   }
 
+  @Test
+  @Disabled // GH-68, GH-93
+  void testAngleBracketsShit() {
+    final Component expected = text()
+            .append(text("<", GRAY))
+            .append(text("TEST", YELLOW))
+            .append(text("> Woo << double <3", GRAY))
+            .build();
+
+    final String input = "<gray><<yellow>TEST<gray>> Woooo << double \\<3";
+
+    System.out.println(GsonComponentSerializer.gson().serialize(MiniMessage.get().parse(input)));
+
+    assertEquals(expected, MiniMessage.get().parse(input));
+  }
+
   private static void assertParsedEquals(final @NonNull Component expected, final @NonNull String input) {
     assertEquals(expected, PARSER.parse(input));
   }
