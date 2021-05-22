@@ -228,7 +228,7 @@ public final class NamedTextColor implements TextColor {
    */
   private static float distance(final @NonNull HSVLike self, final @NonNull HSVLike other) {
     // weight hue more heavily than saturation and brightness. kind of magic numbers, but is fine for our use case of downsampling to a set of colors
-    final float hueDistance = 3 * Math.abs(self.h() - other.h());
+    final float hueDistance = 3 * Math.min(Math.abs(self.h() - other.h()), 1f - Math.abs(self.h() - other.h()));
     final float saturationDiff = self.s() - other.s();
     final float valueDiff = self.v() - other.v();
     return hueDistance * hueDistance + saturationDiff * saturationDiff + valueDiff * valueDiff;
