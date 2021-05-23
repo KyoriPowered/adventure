@@ -1,0 +1,170 @@
+options {
+  JDK_VERSION = "1.8";
+  CACHE_TOKENS = true;
+  IGNORE_CASE = true;
+  STATIC = false;
+  UNICODE_INPUT = true;
+}
+
+PARSER_BEGIN(MiniParser)
+
+package net.kyori.adventure.text.minimessage.parser.gen;
+
+import java.util.*;
+import net.kyori.adventure.text.minimessage.parser.*;
+import net.kyori.adventure.text.minimessage.parser.Element.*;
+
+public final class MiniParser {
+}
+
+PARSER_END(MiniParser)
+
+//
+// Lexer definition
+//
+
+TOKEN_MGR_DECLS : {
+  int prevLexState;
+}
+
+// Strings
+// Single quote
+<single_quote> MORE : {
+  "\\'"
+  |
+  < ~["\'"] >
+}
+<single_quote> TOKEN : {
+  < SINGLE_QUOTE_STRING : "'" > { SwitchTo(prevLexState); }
+}
+
+// Double quote
+<double_quote> MORE : {
+  "\\\""
+  |
+  < ~["\""] >
+}
+<double_quote> TOKEN : {
+  < DOUBLE_QUOTE_STRING : "\"" > { SwitchTo(prevLexState); }
+}
+// End strings
+
+<DEFAULT> TOKEN : {
+  < BEGIN_TAG : "<" > : tag
+  |
+  < BEGIN_CLOSE_TAG : "</" > : tag
+  |
+  < CHAR : ( ~["<", "\\"] | "\\<" )+ >
+}
+
+<tag> TOKEN : {
+  < COLON : ":">
+  |
+  < END_TAG : ">" > : DEFAULT
+  |
+  < TAG_VALUE : ( ~[":", ">", "'", "\"", "\\"] )+ >
+}
+
+<tag> MORE : {
+  "'" { prevLexState = curLexState; } : single_quote
+  |
+  "\"" { prevLexState = curLexState; } : double_quote
+}
+
+//
+// Parser definition
+//
+
+List<Element> message() :
+{
+  List<Element> elements = new ArrayList<Element>();
+}
+{
+  ( textComponent(elements) )* <EOF>
+  {
+  return elements;
+}
+}
+
+void textComponent(List<Element> elements) :
+{
+  Element element;
+}
+{
+  ( element = rawText() | element = openTag() | element = closeTag() )
+  {
+    elements.add(element);
+  }
+}
+
+Element rawText() :
+{
+  Token token;
+}
+{
+  token = <CHAR>
+  {
+  return new RawTextElement(token.toString().replace("\\<", "<"));
+}
+}
+
+Element openTag() :
+{
+  TagElement element = new OpenTagElement();
+}
+{
+  <BEGIN_TAG> tagStructure(element)
+  {
+    return element;
+  }
+}
+
+Element closeTag() :
+{
+  TagElement element = new CloseTagElement();
+}
+{
+  <BEGIN_CLOSE_TAG> tagStructure(element)
+  {
+    return element;
+  }
+}
+
+void tagStructure(TagElement element) : {}
+{
+  tagValue(element) ( <COLON> tagValue(element) )* <END_TAG>
+}
+
+void tagValue(TagElement element) :
+{
+  String value;
+}
+{
+  ( value = literalTagValue() | value = stringValue() )
+  {
+    element.getParts().add(value);
+  }
+}
+
+String literalTagValue() :
+{
+  Token token;
+}
+{
+  token = <TAG_VALUE>
+  {
+    return token.toString();
+  }
+}
+
+String stringValue() :
+{
+  Token token;
+}
+{
+  ( token = <SINGLE_QUOTE_STRING> | token = <DOUBLE_QUOTE_STRING> )
+  {
+    String value = token.toString();
+    return value.substring(1, value.length() - 1).replace("\\'", "'").replace("\\\"", "\"");
+  }
+}

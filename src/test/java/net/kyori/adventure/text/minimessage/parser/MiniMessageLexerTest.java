@@ -36,11 +36,12 @@ public class MiniMessageLexerTest {
 
   @Test
   void test() throws Exception {
-    this.test("<red>This is a test</red><yellow>Wooo<#112233>hex!</#112233><color:blue>Named color</color>");
-    this.test("<hover:show_text:'<red>test'>TEST</hover>");
-    this.test("<rainbow><treerev> <click:open_url:'https://github.com'>https://github.com</click></rainbow>");
+//    this.test("<red>This is a test</red><yellow>Wooo<#112233>hex!</#112233><color:blue>Named color</color>");
+//    this.test("<hover:show_text:'<red>test'>TEST</hover>");
+//    this.test("<rainbow><treerev> <click:open_url:'https://github.com'>https://github.com</click></rainbow>");
   }
 
+  /*
   private void test(final String input) throws Exception {
     System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     System.out.println("Testing: " + input);
@@ -77,4 +78,5 @@ public class MiniMessageLexerTest {
     }
     return "";
   }
+   */
 }

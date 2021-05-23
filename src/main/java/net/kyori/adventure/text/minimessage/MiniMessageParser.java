@@ -27,7 +27,7 @@ import java.util.Deque;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.minimessage.parser.MiniMessageLexer;
+//import net.kyori.adventure.text.minimessage.parser.MiniMessageLexer;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenType;
@@ -203,6 +203,7 @@ class MiniMessageParser {
   }
 
   @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull TransformationRegistry registry, final @NonNull Function<String, ComponentLike> placeholderResolver, final Context context) {
+    /*
     final MiniMessageLexer lexer = new MiniMessageLexer(richMessage, context);
     try {
       lexer.scan();
@@ -213,6 +214,8 @@ class MiniMessageParser {
     final List<Token> tokens = lexer.getTokens();
     context.tokens(tokens);
     return this.parse(tokens, registry, templates, placeholderResolver, context);
+     */
+    throw new IllegalStateException();
   }
 
   @NonNull Component parse(final @NonNull List<Token> tokens, final @NonNull TransformationRegistry registry, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull Function<String, ComponentLike> placeholderResolver, final @NonNull Context context) {

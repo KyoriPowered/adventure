@@ -4,3 +4,4 @@
 /run/
 /*.iml
 /build/
+out/
