@@ -102,6 +102,9 @@ license {
 tasks.checkstyleJmh {
     exclude("**")
 }
+tasks.checkstyleMain {
+    exclude("**/gen/**")
+}
 
 tasks.checkstyleMain {
     exclude("**/gen/**")

@@ -32,12 +32,12 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
-import net.kyori.adventure.text.minimessage.parser.Token;
-import net.kyori.adventure.text.minimessage.parser.TokenType;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import static net.kyori.adventure.text.minimessage.transformation.Util.stripOuterQuotes;
 
 /**
  * A transformation applying a click event.
@@ -63,30 +63,21 @@ public final class ClickTransformation extends Transformation {
   }
 
   @Override
-  public void load(final String name, final List<Token> args) {
+  public void load(final String name, final List<String> args) {
     super.load(name, args);
 
-    if(args.size() >= 3 && args.get(0).type() == TokenType.STRING && args.get(2).type() == TokenType.STRING) {
-      this.action = ClickEvent.Action.NAMES.value(args.get(0).value().toLowerCase(Locale.ROOT));
-      this.value = Token.asValueString(args.subList(2, args.size()));
-    } else if(args.size() >= 5 && args.get(0).type() == TokenType.STRING && startsAndEndsWithQuotes(args.subList(2, args.size()))) {
-      this.action = ClickEvent.Action.NAMES.value(args.get(0).value().toLowerCase(Locale.ROOT));
-      this.value = Token.asValueString(args.subList(3, args.size() - 1));
+    if(args.size() >= 2) {
+      this.action = ClickEvent.Action.NAMES.value(args.get(0).toLowerCase(Locale.ROOT));
+      this.value = String.join("", args.subList(2, args.size()));
+      this.value = stripOuterQuotes(this.value);
     } else {
       throw new ParsingException("Don't know how to turn " + args + " into a click event", -1);
     }
   }
 
-  static boolean startsAndEndsWithQuotes(final @NonNull List<Token> args) {
-    final TokenType startType = args.get(0).type();
-    final TokenType endType = args.get(args.size() - 1).type();
-    return startType == TokenType.SINGLE_QUOTE_START && endType == TokenType.SINGLE_QUOTE_END
-            || startType == TokenType.DOUBLE_QUOTE_START && endType == TokenType.DOUBLE_QUOTE_END;
-  }
-
   @Override
-  public Component apply(final Component component, final TextComponent.Builder parent) {
-    return component.clickEvent(ClickEvent.clickEvent(this.action, this.value));
+  public Component apply() {
+    return Component.empty().clickEvent(ClickEvent.clickEvent(this.action, this.value));
   }
 
   @Override

@@ -57,8 +57,8 @@ public final class PreTransformation extends Transformation {
   }
 
   @Override
-  public Component apply(final Component component, final TextComponent.Builder parent) {
-    return component;
+  public Component apply() {
+    return Component.empty(); // TODO figure out wtf to do with PRE
   }
 
   @Override

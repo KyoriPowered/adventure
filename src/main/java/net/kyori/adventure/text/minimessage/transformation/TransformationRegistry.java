@@ -33,7 +33,6 @@ import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.Template;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
-import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.TemplateTransformation;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -117,7 +116,7 @@ public final class TransformationRegistry {
    * @return a possible transformation
    * @since 4.1.0
    */
-  public @Nullable Transformation get(final String name, final List<Token> inners, final Map<String, Template.ComponentTemplate> templates, final Function<String, ComponentLike> placeholderResolver, final Context context) {
+  public @Nullable Transformation get(final String name, final List<String> inners, final Map<String, Template.ComponentTemplate> templates, final Function<String, ComponentLike> placeholderResolver, final Context context) {
     // first try if we have a custom placeholder resolver
     final ComponentLike potentialTemplate = placeholderResolver.apply(name);
     if(potentialTemplate != null) {
@@ -135,7 +134,7 @@ public final class TransformationRegistry {
     return null;
   }
 
-  private Transformation tryLoad(final Transformation transformation, final String name, final List<Token> inners, final Context context) {
+  private Transformation tryLoad(final Transformation transformation, final String name, final List<String> inners, final Context context) {
     try {
       transformation.context(context);
       transformation.load(name, inners);
@@ -172,22 +171,6 @@ public final class TransformationRegistry {
   public boolean exists(final String name) {
     for(final TransformationType<? extends Transformation> type : this.types) {
       if(type.canParse.test(name)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /**
-   * Test if any registered onetime transformation type matches the provided key.
-   *
-   * @param name tag name
-   * @return whether any onetime transformation exists
-   * @since 4.1.0
-   */
-  public boolean couldBeOnetimeTransformation(final String name) {
-    for(final TransformationType<? extends Transformation> type : this.types) {
-      if(type.canParse.test(name) && type.parser.parse() instanceof OneTimeTransformation) {
         return true;
       }
     }

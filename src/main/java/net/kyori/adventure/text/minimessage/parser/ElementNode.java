@@ -23,6 +23,8 @@
  */
 package net.kyori.adventure.text.minimessage.parser;
 
+import net.kyori.adventure.text.minimessage.ParseException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -96,6 +98,13 @@ public class ElementNode {
 
     public List<String> getParts() {
       return this.parts;
+    }
+
+    public String name() {
+      if (parts.isEmpty()) {
+        throw new ParseException("Tag has no parts? " + this);
+      }
+      return parts.get(0);
     }
 
     public StringBuilder buildToString(StringBuilder sb, int indent) {

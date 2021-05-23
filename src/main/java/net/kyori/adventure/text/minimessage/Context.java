@@ -24,12 +24,10 @@
 package net.kyori.adventure.text.minimessage;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.parser.Token;
+import net.kyori.adventure.text.minimessage.parser.ElementNode;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
-import java.util.List;
 
 /**
  * Carries needed context for minimessage around, ranging from debug info to the configured minimessage instance.
@@ -39,15 +37,15 @@ import java.util.List;
 public class Context {
 
   private final boolean strict;
-  private List<Token> tokens;
+  private ElementNode root;
   private final String ogMessage;
   private String replacedMessage;
   private final MiniMessageImpl miniMessage;
   private final @NonNull Template @Nullable [] templates;
 
-  Context(final boolean strict, final List<Token> tokens, final String ogMessage, final String replacedMessage, final MiniMessageImpl miniMessage, final @NonNull Template @Nullable [] templates) {
+  Context(final boolean strict, final ElementNode root, final String ogMessage, final String replacedMessage, final MiniMessageImpl miniMessage, final @NonNull Template @Nullable [] templates) {
     this.strict = strict;
-    this.tokens = tokens;
+    this.root = root;
     this.ogMessage = ogMessage;
     this.replacedMessage = replacedMessage;
     this.miniMessage = miniMessage;
@@ -82,13 +80,13 @@ public class Context {
   }
 
   /**
-   * Sets tokens.
+   * Sets the root element.
    *
-   * @param tokens the tokens.
+   * @param root the root element.
    * @since 4.1.0
    */
-  public void tokens(final List<Token> tokens) {
-    this.tokens = tokens;
+  public void root(final ElementNode root) {
+    this.root = root;
   }
 
   /**
@@ -112,13 +110,13 @@ public class Context {
   }
 
   /**
-   * Returns tokens.
+   * Returns the root element.
    *
-   * @return tokens
+   * @return root
    * @since 4.1.0
    */
-  public List<Token> tokens() {
-    return this.tokens;
+  public ElementNode tokens() {
+    return this.root;
   }
 
   /**

@@ -31,8 +31,6 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
-import net.kyori.adventure.text.minimessage.parser.Token;
-import net.kyori.adventure.text.minimessage.parser.TokenType;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
@@ -44,6 +42,8 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+
+import static net.kyori.adventure.text.minimessage.transformation.Util.stripOuterQuotes;
 
 /**
  * A transformation that applies a {@link HoverEvent}.
@@ -73,16 +73,16 @@ public final class HoverTransformation extends Transformation {
 
   @SuppressWarnings("unchecked")
   @Override
-  public void load(final String name, final List<Token> args) {
+  public void load(final String name, final List<String> args) {
     super.load(name, args);
 
-    if(args.size() < 3 || args.get(0).type() != TokenType.STRING) {
+    if(args.size() < 2) {
       throw new ParsingException("Doesn't know how to turn " + args + " into a hover event", -1);
     }
 
-    final String string = Token.asValueString(args.subList(2, args.size()));
+    final String string = String.join("", args.subList(1, args.size()));
 
-    this.action = (HoverEvent.Action<Object>) HoverEvent.Action.NAMES.value(args.get(0).value());
+    this.action = (HoverEvent.Action<Object>) HoverEvent.Action.NAMES.value(args.get(0));
     if(this.action == (Object) HoverEvent.Action.SHOW_TEXT) {
       this.value = context.parse(stripOuterQuotes(string));
     } else if(this.action == (Object) HoverEvent.Action.SHOW_ITEM) {
@@ -92,17 +92,6 @@ public final class HoverTransformation extends Transformation {
     } else {
       throw new ParsingException("Don't know how to turn '" + args + "' into a hover event", -1);
     }
-  }
-
-  private static @NonNull String stripOuterQuotes(final @NonNull String string) {
-    if(string.length() != 1 && startsAndEndsWithQuotes(string)) {
-      return string.substring(1).substring(0, string.length() - 2);
-    }
-    return string;
-  }
-
-  private static boolean startsAndEndsWithQuotes(final @NonNull String string) {
-    return string.startsWith("'") && string.endsWith("'") || string.startsWith("\"") && string.endsWith("\"");
   }
 
   private HoverEvent.@NonNull ShowItem parseShowItem(final @NonNull String value) {
@@ -146,8 +135,8 @@ public final class HoverTransformation extends Transformation {
   }
 
   @Override
-  public Component apply(final Component component, final TextComponent.Builder parent) {
-    return component.hoverEvent(HoverEvent.hoverEvent(this.action, this.value));
+  public Component apply() {
+    return Component.empty().hoverEvent(HoverEvent.hoverEvent(this.action, this.value));
   }
 
   @Override

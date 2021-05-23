@@ -31,13 +31,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
-import net.kyori.adventure.text.minimessage.parser.Token;
-import net.kyori.adventure.text.minimessage.parser.TokenType;
-import net.kyori.adventure.text.minimessage.transformation.Inserting;
-import net.kyori.adventure.text.minimessage.transformation.OneTimeTransformation;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
@@ -48,7 +43,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * @since 4.1.0
  */
-public class TranslatableTransformation extends OneTimeTransformation implements Inserting {
+public class TranslatableTransformation extends Transformation {
   private static final Pattern DUM_SPLIT_PATTERN = Pattern.compile("['\"]:['\"]");
 
   /**
@@ -68,33 +63,32 @@ public class TranslatableTransformation extends OneTimeTransformation implements
   private final List<Component> inners = new ArrayList<>();
 
   @Override
-  public void load(final String name, final List<Token> args) {
+  public void load(final String name, final List<String> args) {
     super.load(name, args);
 
-    if(args.isEmpty() || args.get(0).type() != TokenType.STRING) {
+    if(args.isEmpty()) {
       throw new ParsingException("Doesn't know how to turn " + args + " into a translatable component", -1);
     }
 
-    this.key = args.get(0).value();
+    this.key = args.get(0);
     if(args.size() > 1) {
-      String string = Token.asValueString(args.subList(2, args.size()));
+      String string = String.join(":", args.subList(1, args.size()));
       if(string.startsWith("'") || string.startsWith("\"")) {
         string = string.substring(1).substring(0, string.length() - 2);
       }
       for(final String in : DUM_SPLIT_PATTERN.split(string)) {
-        this.inners.add(MiniMessage.get().parse(in)); // TODO this uses a hardcoded instance, there gotta be a better way
+        this.inners.add(context.parse(in));
       }
     }
   }
 
   @Override
-  public Component applyOneTime(final @NonNull Component current, final TextComponent.@NonNull Builder parent, final @NonNull Deque<Transformation> transformations) {
-    if(!this.inners.isEmpty()) {
-      parent.append(this.merge(Component.translatable(this.key, this.inners), current));
+  public Component apply() {
+    if(this.inners.isEmpty()) {
+      return Component.translatable(this.key);
     } else {
-      parent.append(this.merge(Component.translatable(this.key), current));
+      return Component.translatable(this.key, this.inners);
     }
-    return current;
   }
 
   @Override

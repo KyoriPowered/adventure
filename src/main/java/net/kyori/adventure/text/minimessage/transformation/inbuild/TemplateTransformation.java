@@ -23,14 +23,10 @@
  */
 package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
-import java.util.Deque;
 import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.Template;
-import net.kyori.adventure.text.minimessage.transformation.Inserting;
-import net.kyori.adventure.text.minimessage.transformation.InstantApplyTransformation;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -40,7 +36,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * @since 4.1.0
  */
-public final class TemplateTransformation extends InstantApplyTransformation implements Inserting {
+public final class TemplateTransformation extends Transformation {
 
   private final Template.ComponentTemplate template;
 
@@ -55,16 +51,8 @@ public final class TemplateTransformation extends InstantApplyTransformation imp
   }
 
   @Override
-  public void applyInstant(final TextComponent.@NonNull Builder parent, final @NonNull Deque<Transformation> transformations) {
-    Component comp = this.template.value();
-    // first apply transformations
-    for(final Transformation transformation : transformations) {
-      comp = transformation.apply(comp, parent);
-    }
-    // then fix style again
-    comp = this.merge(this.template.value(), comp);
-
-    parent.append(comp);
+  public Component apply() {
+    return this.template.value();
   }
 
   @Override

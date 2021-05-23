@@ -28,11 +28,11 @@ import java.util.List;
 import net.kyori.adventure.text.minimessage.parser.gen.MiniParser;
 import net.kyori.adventure.text.minimessage.parser.gen.ParseException;
 
-public final class MiniMessageParser {
+public final class ElementParser {
 
   private final MiniParser parser;
 
-  public MiniMessageParser(final String message) {
+  public ElementParser(final String message) {
     this.parser = new MiniParser(new StringReader(message));
   }
 
@@ -85,6 +85,6 @@ public final class MiniMessageParser {
 
   public static void main(final String[] args) throws ParseException {
     final String text = "<yellow>Woo: <hover:show_text:'This is a test'><gradient>||||||||||||||||||||||||</gradient>!";
-    System.out.println(new MiniMessageParser(text).parse());
+    System.out.println(new ElementParser(text).parse());
   }
 }

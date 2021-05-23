@@ -33,9 +33,6 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
-import net.kyori.adventure.text.minimessage.parser.Token;
-import net.kyori.adventure.text.minimessage.transformation.Inserting;
-import net.kyori.adventure.text.minimessage.transformation.OneTimeTransformation;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
@@ -46,7 +43,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * @since 4.1.0
  */
-public final class RainbowTransformation extends OneTimeTransformation implements Inserting {
+public final class RainbowTransformation extends Transformation {
   private int colorIndex = 0;
 
   private float center = 128;
@@ -70,44 +67,45 @@ public final class RainbowTransformation extends OneTimeTransformation implement
   }
 
   @Override
-  public void load(final String name, final List<Token> args) {
+  public void load(final String name, final List<String> args) {
     super.load(name, args);
 
-    if(Token.oneString(args)) {
+    if(args.size() == 1) {
       try {
-        this.phase = Integer.parseInt(args.get(0).value());
+        this.phase = Integer.parseInt(args.get(0));
       } catch(final NumberFormatException ex) {
-        throw new ParsingException("Expected phase, got " + args.get(0).value(), -1);
+        throw new ParsingException("Expected phase, got " + args.get(0), -1);
       }
     }
   }
 
   @Override
-  public Component applyOneTime(final @NonNull Component current, final TextComponent.@NonNull Builder parent, final @NonNull Deque<Transformation> transformations) {
-    if(current instanceof TextComponent) {
-      final TextComponent textComponent = (TextComponent) current;
-      final String content = textComponent.content();
-
-      // init
-      this.center = 128;
-      this.width = 127;
-      this.frequency = Math.PI * 2 / content.length();
-
-      // apply
-      int charSize;
-      final char[] holder = new char[2];
-      for(final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
-        charSize = Character.toChars(it.nextInt(), holder, 0);
-        Component comp = Component.text(new String(holder, 0, charSize));
-        comp = this.merge(comp, current);
-        comp = comp.color(this.color(this.phase));
-        parent.append(comp);
-      }
-
-      return null;
-    }
-
-    throw new ParsingException("Expected Text Comp", -1);
+  public Component apply() {
+//    if(current instanceof TextComponent) {
+//      final TextComponent textComponent = (TextComponent) current;
+//      final String content = textComponent.content();
+//
+//      // init
+//      this.center = 128;
+//      this.width = 127;
+//      this.frequency = Math.PI * 2 / content.length();
+//
+//      // apply
+//      int charSize;
+//      final char[] holder = new char[2];
+//      for(final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
+//        charSize = Character.toChars(it.nextInt(), holder, 0);
+//        Component comp = Component.text(new String(holder, 0, charSize));
+//        comp = this.merge(comp, current);
+//        comp = comp.color(this.color(this.phase));
+//        parent.append(comp);
+//      }
+//
+//      return null;
+//    }
+//
+//    throw new ParsingException("Expected Text Comp", -1);
+    return Component.empty(); // TODO rainbow
   }
 
   private TextColor color(final float phase) {

@@ -38,10 +38,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
-import net.kyori.adventure.text.minimessage.parser.Token;
-import net.kyori.adventure.text.minimessage.parser.TokenType;
-import net.kyori.adventure.text.minimessage.transformation.Inserting;
-import net.kyori.adventure.text.minimessage.transformation.OneTimeTransformation;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
@@ -52,7 +48,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * @since 4.1.0
  */
-public final class GradientTransformation extends OneTimeTransformation implements Inserting {
+public final class GradientTransformation extends Transformation {
   private int index = 0;
   private int colorIndex = 0;
 
@@ -76,41 +72,39 @@ public final class GradientTransformation extends OneTimeTransformation implemen
   }
 
   @Override
-  public void load(final String name, final List<Token> args) {
+  public void load(final String name, final List<String> args) {
     super.load(name, args);
 
     if(!args.isEmpty()) {
       final List<TextColor> textColors = new ArrayList<>();
       for(int i = 0; i < args.size(); i++) {
-        final Token arg = args.get(i);
-        if(arg.type() == TokenType.STRING) {
-          // last argument? maybe this is the phase?
-          if(i == args.size() - 1) {
-            try {
-              this.phase = Float.parseFloat(arg.value());
-              if(this.phase < -1f || this.phase > 1f) {
-                throw new ParsingException(String.format("Gradient phase is out of range (%s). Must be in the range [-1.0f, 1.0f] (inclusive).", this.phase), -1);
-              }
-              if(this.phase < 0) {
-                this.negativePhase = true;
-                this.phase = 1 + this.phase;
-              }
-              break;
-            } catch(final NumberFormatException ignored) {
+        final String arg = args.get(i);
+        // last argument? maybe this is the phase?
+        if(i == args.size() - 1) {
+          try {
+            this.phase = Float.parseFloat(arg);
+            if(this.phase < -1f || this.phase > 1f) {
+              throw new ParsingException(String.format("Gradient phase is out of range (%s). Must be in the range [-1.0f, 1.0f] (inclusive).", this.phase), -1);
             }
+            if(this.phase < 0) {
+              this.negativePhase = true;
+              this.phase = 1 + this.phase;
+            }
+            break;
+          } catch(final NumberFormatException ignored) {
           }
-
-          final TextColor parsedColor;
-          if(arg.value().charAt(0) == '#') {
-            parsedColor = TextColor.fromHexString(arg.value());
-          } else {
-            parsedColor = NamedTextColor.NAMES.value(arg.value().toLowerCase(Locale.ROOT));
-          }
-          if(parsedColor == null) {
-            throw new ParsingException(String.format("Unable to parse a color from '%s'. Please use NamedTextColors or Hex colors.", arg.value()), -1);
-          }
-          textColors.add(parsedColor);
         }
+
+        final TextColor parsedColor;
+        if(arg.charAt(0) == '#') {
+          parsedColor = TextColor.fromHexString(arg);
+        } else {
+          parsedColor = NamedTextColor.NAMES.value(arg.toLowerCase(Locale.ROOT));
+        }
+        if(parsedColor == null) {
+          throw new ParsingException(String.format("Unable to parse a color from '%s'. Please use NamedTextColors or Hex colors.", arg), -1);
+        }
+        textColors.add(parsedColor);
       }
       if(textColors.size() < 2) {
         throw new ParsingException("Invalid gradient, not enough colors. Gradients must have at least two colors.", -1);
@@ -125,33 +119,34 @@ public final class GradientTransformation extends OneTimeTransformation implemen
   }
 
   @Override
-  public Component applyOneTime(final @NonNull Component current, final TextComponent.@NonNull Builder parent, final @NonNull Deque<Transformation> transformations) {
-    if(current instanceof TextComponent) {
-      final TextComponent textComponent = (TextComponent) current;
-      final String content = textComponent.content();
-
-      // init
-      final int size = content.length();
-      final int sectorLength = size / (this.colors.length - 1);
-      this.factorStep = 1.0f / (sectorLength + this.index);
-      this.phase = this.phase * sectorLength;
-      this.index = 0;
-
-      // apply
-      int charSize;
-      final char[] holder = new char[2];
-      for(final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
-        charSize = Character.toChars(it.nextInt(), holder, 0);
-        Component comp = Component.text(new String(holder, 0, charSize));
-        comp = this.merge(comp, current);
-        comp = comp.color(this.color());
-        parent.append(comp);
-      }
-
-      return null;
-    }
-
-    throw new ParsingException("Expected TextComponent, got: " + current.getClass().toString(), -1);
+  public Component apply() {
+//    if(current instanceof TextComponent) {
+//      final TextComponent textComponent = (TextComponent) current;
+//      final String content = textComponent.content();
+//
+//      // init
+//      final int size = content.length();
+//      final int sectorLength = size / (this.colors.length - 1);
+//      this.factorStep = 1.0f / (sectorLength + this.index);
+//      this.phase = this.phase * sectorLength;
+//      this.index = 0;
+//
+//      // apply
+//      int charSize;
+//      final char[] holder = new char[2];
+//      for(final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
+//        charSize = Character.toChars(it.nextInt(), holder, 0);
+//        Component comp = Component.text(new String(holder, 0, charSize));
+//        comp = this.merge(comp, current);
+//        comp = comp.color(this.color());
+//        parent.append(comp);
+//      }
+//
+//      return null;
+//    }
+//
+//    throw new ParsingException("Expected TextComponent, got: " + current.getClass().toString(), -1);
+    return Component.empty(); // TODO gradient
   }
 
   private TextColor color() {

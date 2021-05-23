@@ -23,9 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
-import java.util.Deque;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.minimessage.transformation.InstantApplyTransformation;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
@@ -40,7 +38,7 @@ import java.util.stream.Stream;
  *
  * @since 4.1.0
  */
-public final class ResetTransformation extends InstantApplyTransformation {
+public final class ResetTransformation extends Transformation {
   private static final ResetTransformation INSTANCE = new ResetTransformation();
 
   /**
@@ -58,8 +56,9 @@ public final class ResetTransformation extends InstantApplyTransformation {
   }
 
   @Override
-  public void applyInstant(final TextComponent.Builder parent, final Deque<Transformation> transformations) {
-    transformations.clear();
+  public Component apply() {
+//    transformations.clear();
+    return Component.empty(); // TODO figure out wtf to do with reset
   }
 
   @Override

@@ -32,7 +32,6 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
-import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
@@ -61,7 +60,7 @@ public final class DecorationTransformation extends Transformation {
   }
 
   @Override
-  public void load(final String name, final List<Token> args) {
+  public void load(final String name, final List<String> args) {
     super.load(name, args);
 
     this.decoration = parseDecoration(name);
@@ -97,8 +96,8 @@ public final class DecorationTransformation extends Transformation {
   }
 
   @Override
-  public Component apply(final Component component, final TextComponent.Builder parent) {
-    return component.decorate(this.decoration);
+  public Component apply() {
+    return Component.empty().decorate(this.decoration);
   }
 
   @Override

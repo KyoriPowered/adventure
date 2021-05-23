@@ -28,7 +28,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.minimessage.Context;
-import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.string.StringExaminer;
 
@@ -54,7 +53,7 @@ public abstract class Transformation implements Examinable {
    * @param args tokens within the tags, used to define arguments. Each
    * @since 4.1.0
    */
-  public void load(final String name, final List<Token> args) {
+  public void load(final String name, final List<String> args) {
     this.name = name;
   }
 
@@ -71,12 +70,10 @@ public abstract class Transformation implements Examinable {
   /**
    * Return a transformed {@code component} based on the applied parameters.
    *
-   * @param component component to transform
-   * @param parent the holder being used to configure this component
    * @return the transformed component
    * @since 4.1.0
    */
-  public abstract Component apply(final Component component, final TextComponent.Builder parent);
+  public abstract Component apply();
 
   /**
    * Checks if this transformation is allowed to be interpreted inside a pre tag.

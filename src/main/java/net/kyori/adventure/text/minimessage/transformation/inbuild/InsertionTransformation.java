@@ -30,7 +30,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
-import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
@@ -59,19 +58,19 @@ public final class InsertionTransformation extends Transformation {
   }
 
   @Override
-  public void load(final String name, final List<Token> args) {
+  public void load(final String name, final List<String> args) {
     super.load(name, args);
 
-    if(Token.oneString(args)) {
-      this.insertion = args.get(0).value();
+    if(args.size() == 1) {
+      this.insertion = args.get(0);
     } else {
       throw new ParsingException("Doesn't know how to turn token with name '" + name + "' and arguments " + args + " into a insertion component", -1);
     }
   }
 
   @Override
-  public Component apply(final Component component, final TextComponent.Builder parent) {
-    return component.insertion(this.insertion);
+  public Component apply() {
+    return Component.empty().insertion(this.insertion);
   }
 
   @Override

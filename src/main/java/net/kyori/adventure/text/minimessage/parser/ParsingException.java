@@ -25,17 +25,16 @@ package net.kyori.adventure.text.minimessage.parser;
 
 import net.kyori.adventure.text.minimessage.ParseException;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 /**
  * An exception that happens while parsing.
  *
  * @since 4.1.0
  */
+@Deprecated
 public class ParsingException extends ParseException {
-  private static final long serialVersionUID = 2507190809441787201l;
+  private static final long serialVersionUID = 2507190809441787201L;
 
-  private String message;
+  private final String message;
   private final int column;
 
   /**
@@ -54,16 +53,6 @@ public class ParsingException extends ParseException {
   @Override
   public String getMessage() {
     return this.message;
-  }
-
-  /**
-   * Set this exception's message.
-   *
-   * @param message the new message
-   * @since 4.1.0
-   */
-  public void message(final @Nullable String message) {
-    this.message = message;
   }
 
   /**

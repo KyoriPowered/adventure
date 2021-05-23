@@ -82,8 +82,8 @@ List<Element> message() :
 {
   ( textComponent(elements) )* <EOF>
   {
-  return elements;
-}
+    return elements;
+  }
 }
 
 void textComponent(List<Element> elements) :
@@ -104,8 +104,8 @@ Element rawText() :
 {
   token = <TEXT>
   {
-  return new RawTextElement(token.toString().replace("\\<", "<"));
-}
+    return new RawTextElement(token.toString().replace("\\<", "<"));
+  }
 }
 
 Element openTag() :

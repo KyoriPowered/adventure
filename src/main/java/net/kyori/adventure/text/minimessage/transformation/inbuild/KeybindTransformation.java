@@ -23,14 +23,9 @@
  */
 package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
-import java.util.Deque;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
-import net.kyori.adventure.text.minimessage.parser.Token;
-import net.kyori.adventure.text.minimessage.transformation.Inserting;
-import net.kyori.adventure.text.minimessage.transformation.OneTimeTransformation;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
@@ -46,7 +41,7 @@ import java.util.stream.Stream;
  *
  * @since 4.1.0
  */
-public final class KeybindTransformation extends OneTimeTransformation implements Inserting {
+public final class KeybindTransformation extends Transformation {
   /**
    * Get if this transformation can handle the provided tag name.
    *
@@ -64,20 +59,19 @@ public final class KeybindTransformation extends OneTimeTransformation implement
   }
 
   @Override
-  public void load(final String name, final List<Token> args) {
+  public void load(final String name, final List<String> args) {
     super.load(name, args);
 
-    if(Token.oneString(args)) {
-      this.keybind = args.get(0).value();
+    if(args.size() == 1) {
+      this.keybind = args.get(0);
     } else {
       throw new ParsingException("Doesn't know how to turn token with name '" + name + "' and arguments " + args + " into a keybind component", -1);
     }
   }
 
   @Override
-  public Component applyOneTime(final @NonNull Component current, final TextComponent.@NonNull Builder parent, final @NonNull Deque<Transformation> transformations) {
-    parent.append(this.merge(Component.keybind(this.keybind), current));
-    return current;
+  public Component apply() {
+    return Component.keybind(this.keybind);
   }
 
   @Override

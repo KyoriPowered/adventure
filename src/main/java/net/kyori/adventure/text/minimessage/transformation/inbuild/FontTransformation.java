@@ -29,14 +29,14 @@ import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
-import net.kyori.adventure.text.minimessage.parser.Token;
-import net.kyori.adventure.text.minimessage.parser.TokenType;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.intellij.lang.annotations.Subst;
 
 /**
  * A decoration that applies a font name.
@@ -61,23 +61,26 @@ public final class FontTransformation extends Transformation {
   }
 
   @Override
-  public void load(final String name, final List<Token> args) {
+  public void load(final String name, final List<String> args) {
     super.load(name, args);
 
-    if(Token.oneString(args)) {
-      this.font = Key.key(args.get(0).value());
+    if(args.size() == 1) {
+      @Subst("minecraft:empty") String fontKey = args.get(0);
+      this.font = Key.key(fontKey);
     }
 
-    if(args.size() != 3 || args.get(0).type() != TokenType.STRING || args.get(2).type() != TokenType.STRING) {
+    if(args.size() != 2) {
       throw new ParsingException("Doesn't know how to turn " + args + " into a click event", -1);
     }
 
-    this.font = Key.key(args.get(0).value(), args.get(2).value());
+    @Subst(Key.MINECRAFT_NAMESPACE) String namespaceKey = args.get(0);
+    @Subst("empty") String fontKey = args.get(1);
+    this.font = Key.key(namespaceKey, fontKey);
   }
 
   @Override
-  public Component apply(final Component component, final TextComponent.Builder parent) {
-    return component.style(component.style().font(this.font));
+  public Component apply() {
+    return Component.empty().style(Style.style().font(this.font));
   }
 
   @Override
