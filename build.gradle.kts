@@ -21,7 +21,6 @@ dependencies {
     api(libs.adventure.api)
 
     javacc(libs.javacc)
-    api(libs.javacc)
 
     testImplementation(libs.adventure.text.plain)
     testImplementation(libs.adventure.text.gson)
@@ -95,6 +94,10 @@ license {
 
 tasks.checkstyleJmh {
     exclude("**")
+}
+
+tasks.checkstyleMain {
+    exclude("**/gen/**")
 }
 
 tasks.jar {

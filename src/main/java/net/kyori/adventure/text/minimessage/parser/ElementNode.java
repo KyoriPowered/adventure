@@ -37,11 +37,11 @@ public class ElementNode {
   }
 
   public ElementNode getParent() {
-    return parent;
+    return this.parent;
   }
 
   public List<ElementNode> getChildren() {
-    return children;
+    return this.children;
   }
 
   @Override
@@ -52,7 +52,7 @@ public class ElementNode {
   public StringBuilder buildToString(StringBuilder sb, int indent) {
     final char[] in = getIndent(indent);
     sb.append(in).append("Node {\n");
-    for (final ElementNode child : children) {
+    for(final ElementNode child : this.children) {
       child.buildToString(sb, indent + 1);
     }
     sb.append(in).append("}\n");
@@ -75,12 +75,12 @@ public class ElementNode {
     }
 
     public String getValue() {
-      return value;
+      return this.value;
     }
 
     public StringBuilder buildToString(StringBuilder sb, int indent) {
       final char[] in = getIndent(indent);
-      sb.append(in).append("TextNode('").append(value).append("')\n");
+      sb.append(in).append("TextNode('").append(this.value).append("')\n");
       return sb;
     }
   }
@@ -95,25 +95,25 @@ public class ElementNode {
     }
 
     public List<String> getParts() {
-      return parts;
+      return this.parts;
     }
 
     public StringBuilder buildToString(StringBuilder sb, int indent) {
       final char[] in = getIndent(indent);
       sb.append(in).append("TagNode(");
 
-      final int size = parts.size();
-      for (int i = 0; i < size; i++) {
-        final String part = parts.get(i);
+      final int size = this.parts.size();
+      for(int i = 0; i < size; i++) {
+        final String part = this.parts.get(i);
         sb.append('\'').append(part).append('\'');
-        if (i != size - 1) {
+        if(i != size - 1) {
           sb.append(", ");
         }
       }
 
       sb.append(") {\n");
 
-      for (final ElementNode child : getChildren()) {
+      for(final ElementNode child : this.getChildren()) {
         child.buildToString(sb, indent + 1);
       }
       sb.append(in).append("}\n");

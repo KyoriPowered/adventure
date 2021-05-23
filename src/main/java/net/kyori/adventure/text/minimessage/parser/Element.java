@@ -39,13 +39,13 @@ public abstract class Element {
     }
 
     public String getValue() {
-      return value;
+      return this.value;
     }
 
     @Override
     public String toString() {
       return "RawTextComponent{" +
-          "value='" + value + '\'' +
+          "value='" + this.value + '\'' +
           '}';
     }
   }
@@ -57,7 +57,7 @@ public abstract class Element {
     private TagElement() {}
 
     public List<String> getParts() {
-      return parts;
+      return this.parts;
     }
   }
 
@@ -66,7 +66,7 @@ public abstract class Element {
     @Override
     public String toString() {
       return "OpenTagComponent{" +
-          "parts=" + getParts() +
+          "parts=" + this.getParts() +
           '}';
     }
   }
@@ -76,7 +76,7 @@ public abstract class Element {
     @Override
     public String toString() {
       return "CloseTagComponent{" +
-          "parts=" + getParts() +
+          "parts=" + this.getParts() +
           '}';
     }
   }

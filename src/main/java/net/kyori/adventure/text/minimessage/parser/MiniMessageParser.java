@@ -41,28 +41,28 @@ public final class MiniMessageParser {
   }
 
   private ElementNode buildTree(final List<Element> elements) {
-    ElementNode root = new ElementNode(null);
+    final ElementNode root = new ElementNode(null);
     ElementNode node = root;
 
-    for (final Element element : elements) {
-      if (element instanceof Element.RawTextElement) {
+    for(final Element element : elements) {
+      if(element instanceof Element.RawTextElement) {
         node.getChildren().add(new ElementNode.RawTextNode(node, ((Element.RawTextElement) element).getValue()));
-      } else if (element instanceof Element.OpenTagElement) {
+      } else if(element instanceof Element.OpenTagElement) {
         final ElementNode.TagNode tagNode = new ElementNode.TagNode(node, ((Element.OpenTagElement) element).getParts());
         node.getChildren().add(tagNode);
         node = tagNode;
-      } else if (element instanceof Element.CloseTagElement) {
+      } else if(element instanceof Element.CloseTagElement) {
         final List<String> parts = ((Element.CloseTagElement) element).getParts();
-        if (parts.isEmpty()) {
+        if(parts.isEmpty()) {
           // TODO error or not depends on strict parsing
           continue;
         }
         final String value = parts.get(0);
 
         ElementNode parentNode = node;
-        while (parentNode instanceof ElementNode.TagNode) {
+        while(parentNode instanceof ElementNode.TagNode) {
           final String nodeValue = ((ElementNode.TagNode) parentNode).getParts().get(0);
-          if (value.equals(nodeValue)) {
+          if(value.equals(nodeValue)) {
             node = parentNode.getParent();
             break;
           }
@@ -70,7 +70,7 @@ public final class MiniMessageParser {
           // TODO closing tag isn't closing the immediate tag, is an error if closing tags are required
           parentNode = parentNode.getParent();
 
-          if (parentNode == null) {
+          if(parentNode == null) {
             // TODO dangling closing tag, is an error or not depending on strict parsing
             break;
           }
@@ -83,8 +83,8 @@ public final class MiniMessageParser {
     return root;
   }
 
-  public static void main(String[] args) throws ParseException {
-    final String text = "<yellow><test> random <gradient:red:blue:green><bold>stranger</gradient></bold><click:run_command:test command><underlined><red>click here</click><blue> to <rainbow><b>FEEL</rainbow></underlined> it";
+  public static void main(final String[] args) throws ParseException {
+    final String text = "<yellow>Woo: <hover:show_text:'This is a test'><gradient>||||||||||||||||||||||||</gradient>!";
     System.out.println(new MiniMessageParser(text).parse());
   }
 }
