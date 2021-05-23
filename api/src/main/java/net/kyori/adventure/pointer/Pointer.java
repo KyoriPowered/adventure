@@ -21,79 +21,55 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.identity;
+package net.kyori.adventure.pointer;
 
-import java.util.UUID;
 import java.util.stream.Stream;
-import net.kyori.adventure.Adventure;
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.pointer.Pointer;
-import net.kyori.adventure.text.Component;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * An identity used to track the sender of messages for the social interaction features
- * introduced in <em>Minecraft: Java Edition</em> 1.16.4.
+ * A pointer to a resource.
  *
- * @since 4.0.0
- * @sinceMinecraft 1.16
+ * @param <V> the value type
+ * @since 4.8.0
  */
-public interface Identity extends Examinable {
+public interface Pointer<V> extends Examinable {
   /**
-   * A pointer to a name.
+   * Creates a pointer.
    *
+   * @param type the value type
+   * @param key the key
+   * @param <V> the value type
+   * @return the pointer
    * @since 4.8.0
    */
-  Pointer<String> NAME = Pointer.pointer(String.class, Key.key(Adventure.NAMESPACE, "name"));
-  /**
-   * A pointer to a {@link UUID}.
-   *
-   * @since 4.8.0
-   */
-  Pointer<UUID> UUID = Pointer.pointer(UUID.class, Key.key(Adventure.NAMESPACE, "uuid"));
-  /**
-   * A pointer to a display name.
-   *
-   * @since 4.8.0
-   */
-  Pointer<Component> DISPLAY_NAME = Pointer.pointer(Component.class, Key.key(Adventure.NAMESPACE, "display_name"));
-
-  /**
-   * Gets the {@code null} identity.
-   *
-   * <p>This should only be used when no players can be linked to a message.</p>
-   *
-   * @return the {@code null} identity
-   * @since 4.0.0
-   */
-  static @NonNull Identity nil() {
-    return Identities.NIL;
+  static <V> @NonNull Pointer<V> pointer(final @NonNull Class<V> type, final @NonNull Key key) {
+    return new PointerImpl<>(type, key);
   }
 
   /**
-   * Creates an identity.
+   * Gets the value type.
    *
-   * @param uuid the uuid
-   * @return an identity
-   * @since 4.0.0
+   * @return the value type
+   * @since 4.8.0
    */
-  static @NonNull Identity identity(final @NonNull UUID uuid) {
-    if(uuid.equals(Identities.NIL.uuid())) return Identities.NIL;
-    return new IdentityImpl(uuid);
-  }
+  @NonNull Class<V> type();
 
   /**
-   * Gets the uuid.
+   * Gets the key.
    *
-   * @return the uuid
-   * @since 4.0.0
+   * @return the key
+   * @since 4.8.0
    */
-  @NonNull UUID uuid();
+  @NonNull Key key();
 
   @Override
   default @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(ExaminableProperty.of("uuid", this.uuid()));
+    return Stream.of(
+      ExaminableProperty.of("type", this.type()),
+      ExaminableProperty.of("key", this.key())
+    );
   }
 }
