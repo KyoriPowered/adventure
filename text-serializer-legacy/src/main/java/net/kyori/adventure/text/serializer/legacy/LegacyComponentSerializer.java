@@ -229,7 +229,9 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * @return this builder
      * @since 4.0.0
      */
-    @NonNull Builder hexColors();
+    default @NonNull Builder hexColors() {
+      return this.hexColors(true);
+    }
 
     /**
      * Sets whether the serializer should support hex colors.
@@ -240,7 +242,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * @return this builder
      * @since 4.8.0
      */
-    @NonNull Builder hexColors(boolean flag);
+    @NonNull Builder hexColors(final boolean flag);
 
     /**
      * Sets that the serializer should use the '&amp;x' repeated code format when serializing hex
@@ -259,7 +261,9 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * @return this builder
      * @since 4.0.0
      */
-    @NonNull Builder useUnusualXRepeatedCharacterHexFormat();
+    default @NonNull Builder useUnusualXRepeatedCharacterHexFormat() {
+      return this.useUnusualXRepeatedCharacterHexFormat(true);
+    }
 
     /**
      * Sets whether the serializer should use the '&amp;x' repeated code format when serializing hex
@@ -279,7 +283,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * @return this builder
      * @since 4.8.0
      */
-    @NonNull Builder useUnusualXRepeatedCharacterHexFormat(boolean flag);
+    @NonNull Builder useUnusualXRepeatedCharacterHexFormat(final boolean flag);
 
     /**
      * Use this component flattener to convert components into plain text.

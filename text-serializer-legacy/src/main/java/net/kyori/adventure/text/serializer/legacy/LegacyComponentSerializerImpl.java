@@ -531,19 +531,9 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     @Override
-    public @NonNull Builder hexColors() {
-      return this.hexColors(true);
-    }
-
-    @Override
     public @NonNull Builder hexColors(final boolean flag) {
       this.hexColours = flag;
       return this;
-    }
-
-    @Override
-    public @NonNull Builder useUnusualXRepeatedCharacterHexFormat() {
-      return this.useUnusualXRepeatedCharacterHexFormat(true);
     }
 
     @Override
