@@ -1,4 +1,5 @@
 plugins {
+    idea
     val indraVersion = "2.0.4"
     id("net.kyori.indra") version indraVersion
     id("net.kyori.indra.publishing.sonatype") version indraVersion
@@ -51,11 +52,11 @@ indra {
     }
 }
 
+val parserSource = layout.buildDirectory.dir("gen-src-parser")
+
 val generateParser by tasks.registering(JavaExec::class) {
     val parserName = "MiniParser"
     val genPackage = "net/kyori/adventure/text/minimessage/parser/gen"
-
-    val parserSource = layout.buildDirectory.dir("gen-src-parser")
 
     val src = layout.projectDirectory.file("src/main/grammars/${parserName}.jj")
     val dst = parserSource.map { it.dir(genPackage) }
@@ -85,6 +86,12 @@ sourceSets {
             // JFlex output
             srcDir(generateParser)
         }
+    }
+}
+
+idea {
+    module {
+        generatedSourceDirs.add(parserSource.get().asFile)
     }
 }
 
