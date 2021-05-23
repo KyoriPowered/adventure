@@ -1313,10 +1313,16 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
     }
     final @Nullable HoverEvent<?> hoverEvent = this.hoverEvent();
     if(hoverEvent != null) {
-      if(hoverEvent.action().type().isAssignableFrom(Component.class)) {
-        final Component hover = (Component) hoverEvent.value();
-        if(that == hover) return true;
-        for(final Component child : hover.children()) {
+      final Object value = hoverEvent.value();
+      Component component = null;
+      if(value instanceof Component) {
+        component = (Component) hoverEvent.value();
+      } else if(value instanceof HoverEvent.ShowEntity) {
+        component = ((HoverEvent.ShowEntity) value).name();
+      }
+      if(component != null) {
+        if(equals.test(that, component)) return true;
+        for(final Component child : component.children()) {
           if(child.contains(that, equals)) return true;
         }
       }
