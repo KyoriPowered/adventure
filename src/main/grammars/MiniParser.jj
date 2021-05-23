@@ -54,7 +54,7 @@ TOKEN_MGR_DECLS : {
   |
   < BEGIN_CLOSE_TAG : "</" > : tag
   |
-  < CHAR : ( ~["<", "\\"] | "\\<" )+ >
+  < TEXT : ( ~["<"] | "\\<" )+ >
 }
 
 <tag> TOKEN : {
@@ -62,7 +62,7 @@ TOKEN_MGR_DECLS : {
   |
   < END_TAG : ">" > : DEFAULT
   |
-  < TAG_VALUE : ( ~[":", ">", "'", "\"", "\\"] )+ >
+  < TAG_VALUE : ( ~[":", ">", "'", "\""] )+ >
 }
 
 <tag> MORE : {
@@ -77,7 +77,7 @@ TOKEN_MGR_DECLS : {
 
 List<Element> message() :
 {
-  List<Element> elements = new ArrayList<Element>();
+  final List<Element> elements = new ArrayList<Element>();
 }
 {
   ( textComponent(elements) )* <EOF>
@@ -102,7 +102,7 @@ Element rawText() :
   Token token;
 }
 {
-  token = <CHAR>
+  token = <TEXT>
   {
   return new RawTextElement(token.toString().replace("\\<", "<"));
 }
@@ -110,7 +110,7 @@ Element rawText() :
 
 Element openTag() :
 {
-  TagElement element = new OpenTagElement();
+  final TagElement element = new OpenTagElement();
 }
 {
   <BEGIN_TAG> tagStructure(element)
@@ -121,7 +121,7 @@ Element openTag() :
 
 Element closeTag() :
 {
-  TagElement element = new CloseTagElement();
+  final TagElement element = new CloseTagElement();
 }
 {
   <BEGIN_CLOSE_TAG> tagStructure(element)
@@ -164,7 +164,12 @@ String stringValue() :
 {
   ( token = <SINGLE_QUOTE_STRING> | token = <DOUBLE_QUOTE_STRING> )
   {
-    String value = token.toString();
-    return value.substring(1, value.length() - 1).replace("\\'", "'").replace("\\\"", "\"");
+    final String value = token.toString();
+    final String inside = value.substring(1, value.length() - 1);
+    if (token.kind == SINGLE_QUOTE_STRING) {
+      return inside.replace("\\'", "'");
+    } else {
+      return inside.replace("\\\"", "\"");
+    }
   }
 }
