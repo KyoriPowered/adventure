@@ -62,7 +62,7 @@ TOKEN_MGR_DECLS : {
   |
   < END_TAG : ">" > : DEFAULT
   |
-  < TAG_VALUE : ( ~[":", ">", "'", "\""] )+ >
+  < TAG_VALUE : ( "://" | ~[":", ">", "'", "\""] )+ >
 }
 
 <tag> MORE : {
