@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 /**
- * Holders of Named Binary Tags.<br>
+ * Holders of Named Binary Tags.
  *
  * @see <a href="https://wiki.vg/NBT">wiki.vg/NBT</a>
  */

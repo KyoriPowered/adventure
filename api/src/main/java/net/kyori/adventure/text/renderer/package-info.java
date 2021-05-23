@@ -22,6 +22,6 @@
  * SOFTWARE.
  */
 /**
- * Server-side component rendering.
+ * Component rendering.
  */
 package net.kyori.adventure.text.renderer;

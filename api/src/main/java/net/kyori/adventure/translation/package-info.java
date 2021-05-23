@@ -22,6 +22,6 @@
  * SOFTWARE.
  */
 /**
- * Server based translations and translation registries.
+ * Translations and translation registries.
  */
 package net.kyori.adventure.translation;

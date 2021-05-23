@@ -22,6 +22,6 @@
  * SOFTWARE.
  */
 /**
- * Serializers for configurate 3.
+ * Serializers for Configurate 3.
  */
 package net.kyori.adventure.serializer.configurate3;
