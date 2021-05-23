@@ -15,6 +15,9 @@
     <property name="eachLine" value="true"/>
   </module>
 
+  <!-- https://checkstyle.org/config_javadoc.html#JavadocPackage -->
+  <module name="JavadocPackage"/>
+
   <!-- https://checkstyle.org/config_misc.html#NewlineAtEndOfFile -->
   <module name="NewlineAtEndOfFile"/>
 
@@ -28,9 +31,6 @@
 
   <!-- https://checkstyle.org/config_filters.html#SuppressWithPlainTextCommentFilter -->
   <module name="SuppressWithPlainTextCommentFilter"/>
-
-  <!-- https://checkstyle.org/config_javadoc.html#JavadocPackage -->
-  <module name="JavadocPackage"/>
 
   <module name="TreeWalker">
     <!-- https://checkstyle.org/config_misc.html#ArrayTypeStyle -->
