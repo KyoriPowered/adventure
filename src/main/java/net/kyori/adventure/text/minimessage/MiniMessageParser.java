@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.parser.ElementNode;
 import net.kyori.adventure.text.minimessage.parser.ElementParser;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
@@ -213,12 +214,21 @@ class MiniMessageParser {
       }
       comp = transformation.apply();
     } else {
-      throw new ParseException("Unknown node " + node);
+      comp = Component.empty();
     }
 
     for (ElementNode child : node.getChildren()) {
       comp = comp.append(parse(child, registry, templates, placeholderResolver, context));
     }
+
+    // if root is empty, lift its only child it up
+    if (comp instanceof TextComponent) {
+      TextComponent root = (TextComponent) comp;
+      if (root.content().isEmpty() && root.children().size() == 1 && !root.hasStyling() && root.hoverEvent() == null && root.clickEvent() == null) {
+        return root.children().get(0);
+      }
+    }
+
     return comp;
   }
 }

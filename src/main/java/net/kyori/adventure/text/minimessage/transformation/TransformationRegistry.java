@@ -137,7 +137,7 @@ public final class TransformationRegistry {
   private Transformation tryLoad(final Transformation transformation, final String name, final List<String> inners, final Context context) {
     try {
       transformation.context(context);
-      transformation.load(name, inners);
+      transformation.load(name, inners.subList(1, inners.size()));
       return transformation;
     } catch(final ParsingException exception) {
       if(context.isStrict()) {

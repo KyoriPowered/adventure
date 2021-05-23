@@ -28,7 +28,6 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
@@ -36,8 +35,6 @@ import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import static net.kyori.adventure.text.minimessage.transformation.Util.stripOuterQuotes;
 
 /**
  * A transformation applying a click event.
@@ -68,8 +65,7 @@ public final class ClickTransformation extends Transformation {
 
     if(args.size() >= 2) {
       this.action = ClickEvent.Action.NAMES.value(args.get(0).toLowerCase(Locale.ROOT));
-      this.value = String.join("", args.subList(2, args.size()));
-      this.value = stripOuterQuotes(this.value);
+      this.value = String.join("", args.subList(1, args.size()));
     } else {
       throw new ParsingException("Don't know how to turn " + args + " into a click event", -1);
     }

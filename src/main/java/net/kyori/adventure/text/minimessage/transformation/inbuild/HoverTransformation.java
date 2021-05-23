@@ -27,7 +27,6 @@ import net.kyori.adventure.key.InvalidKeyException;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
@@ -42,8 +41,6 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-
-import static net.kyori.adventure.text.minimessage.transformation.Util.stripOuterQuotes;
 
 /**
  * A transformation that applies a {@link HoverEvent}.
@@ -84,7 +81,7 @@ public final class HoverTransformation extends Transformation {
 
     this.action = (HoverEvent.Action<Object>) HoverEvent.Action.NAMES.value(args.get(0));
     if(this.action == (Object) HoverEvent.Action.SHOW_TEXT) {
-      this.value = context.parse(stripOuterQuotes(string));
+      this.value = context.parse(string);
     } else if(this.action == (Object) HoverEvent.Action.SHOW_ITEM) {
       this.value = this.parseShowItem(string);
     } else if(this.action == (Object) HoverEvent.Action.SHOW_ENTITY) {
@@ -100,15 +97,15 @@ public final class HoverTransformation extends Transformation {
       if(args.length == 0) {
         throw new RuntimeException("Show item hover needs at least item id!");
       }
-      final Key key = Key.key(stripOuterQuotes(args[0]));
+      final Key key = Key.key(args[0]);
       final int count;
       if(args.length >= 2) {
-        count = Integer.parseInt(stripOuterQuotes(args[1]));
+        count = Integer.parseInt(args[1]);
       } else {
         count = 1;
       }
       if(args.length == 3) {
-        return HoverEvent.ShowItem.of(key, count, BinaryTagHolder.of(stripOuterQuotes(args[2])));
+        return HoverEvent.ShowItem.of(key, count, BinaryTagHolder.of(args[2]));
       }
       return HoverEvent.ShowItem.of(key, count);
     } catch(final InvalidKeyException | NumberFormatException ex) {
@@ -122,10 +119,10 @@ public final class HoverTransformation extends Transformation {
       if(args.length <= 1) {
         throw new RuntimeException("Show entity hover needs at least type and uuid!");
       }
-      final Key key = Key.key(stripOuterQuotes(args[0]));
-      final UUID id = UUID.fromString(stripOuterQuotes(args[1]));
+      final Key key = Key.key(args[0]);
+      final UUID id = UUID.fromString(args[1]);
       if(args.length == 3) {
-        final Component name = context.parse(stripOuterQuotes(args[2]));
+        final Component name = context.parse(args[2]);
         return HoverEvent.ShowEntity.of(key, id, name);
       }
       return HoverEvent.ShowEntity.of(key, id);

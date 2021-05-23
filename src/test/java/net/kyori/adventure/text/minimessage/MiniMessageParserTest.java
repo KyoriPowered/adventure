@@ -39,6 +39,7 @@ import java.util.Collections;
 import java.util.UUID;
 
 import static net.kyori.adventure.key.Key.key;
+import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.keybind;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
@@ -68,12 +69,25 @@ public class MiniMessageParserTest {
 
   @Test
   void test() {
+    final Component expected1 = empty().color(YELLOW)
+                    .append(text("TEST"))
+                    .append(empty().color(GREEN)
+                            .append(text(" nested"))
+                    ).append(text("Test"));
+    final Component expected2 = empty().color(YELLOW)
+                    .append(text("TEST"))
+                    .append(empty().color(GREEN)
+                            .append(text(" nested"))
+                            .append(empty().color(YELLOW)
+                                    .append(text("Test"))
+                            )
+                    );
+
     final String input1 = "<yellow>TEST<green> nested</green>Test";
     final String input2 = "<yellow>TEST<green> nested<yellow>Test";
-    final Component out1 = PARSER.parse(input1);
-    final Component out2 = PARSER.parse(input2);
 
-    assertEquals(out1, out2);
+    assertParsedEquals(expected1, input1);
+    assertParsedEquals(expected2, input2);
   }
 
   @Test
@@ -93,32 +107,71 @@ public class MiniMessageParserTest {
 
   @Test
   void testNewColor() {
+    final Component expected1 = empty().color(YELLOW)
+                    .append(text("TEST"))
+                    .append(empty().color(GREEN)
+                            .append(text(" nested"))
+                    ).append(text("Test"));
+    final Component expected2 = empty().color(YELLOW)
+                    .append(text("TEST"))
+                    .append(empty().color(GREEN)
+                            .append(text(" nested"))
+                            .append(empty().color(YELLOW)
+                                    .append(text("Test"))
+                            )
+                    );
+
     final String input1 = "<color:yellow>TEST<color:green> nested</color:green>Test";
     final String input2 = "<color:yellow>TEST<color:green> nested<color:yellow>Test";
-    final Component out1 = PARSER.parse(input1);
-    final Component out2 = PARSER.parse(input2);
 
-    assertEquals(out1, out2);
+    assertParsedEquals(expected1, input1);
+    assertParsedEquals(expected2, input2);
   }
 
   @Test
   void testHexColor() {
+    final Component expected1 = empty().color(color(0xff00ff))
+                    .append(text("TEST"))
+                    .append(empty().color(color(0x00ff00))
+                            .append(text(" nested"))
+                    ).append(text("Test"));
+    final Component expected2 = empty().color(color(0xff00ff))
+                    .append(text("TEST"))
+                    .append(empty().color(color(0x00ff00))
+                            .append(text(" nested"))
+                            .append(empty().color(color(0xff00ff))
+                                    .append(text("Test"))
+                            )
+                    );
+
     final String input1 = "<color:#ff00ff>TEST<color:#00ff00> nested</color:#00ff00>Test";
     final String input2 = "<color:#ff00ff>TEST<color:#00ff00> nested<color:#ff00ff>Test";
-    final Component out1 = PARSER.parse(input1);
-    final Component out2 = PARSER.parse(input2);
 
-    assertEquals(out1, out2);
+    assertParsedEquals(expected1, input1);
+    assertParsedEquals(expected2, input2);
   }
 
   @Test
   void testHexColorShort() {
+    final Component expected1 = empty().color(color(0xff00ff))
+                    .append(text("TEST"))
+                    .append(empty().color(color(0x00ff00))
+                            .append(text(" nested"))
+                    ).append(text("Test"));
+    final Component expected2 = empty().color(color(0xff00ff))
+                    .append(text("TEST"))
+                    .append(empty().color(color(0x00ff00))
+                            .append(text(" nested"))
+                            .append(empty().color(color(0xff00ff))
+                                    .append(text("Test"))
+                            )
+                    );
+
     final String input1 = "<#ff00ff>TEST<#00ff00> nested</#00ff00>Test";
     final String input2 = "<#ff00ff>TEST<#00ff00> nested<#ff00ff>Test";
-    final Component out1 = PARSER.parse(input1);
-    final Component out2 = PARSER.parse(input2);
 
-    assertEquals(out1, out2);
+    assertParsedEquals(expected1, input1);
+    assertParsedEquals(expected2, input2);
   }
 
   @Test
@@ -220,33 +273,7 @@ public class MiniMessageParserTest {
   void testColorSimple() {
     final String input = "<yellow>TEST";
 
-    assertEquals(
-      text("TEST", YELLOW),
-      PARSER.parse(input)
-    );
-  }
-
-  @Test
-  void testColorNested() {
-    final String input = "<yellow>TEST<green>nested</green>Test";
-    final Component expected = text()
-      .append(text("TEST", YELLOW))
-      .append(text("nested", GREEN))
-      .append(text("Test", YELLOW))
-      .build();
-    assertParsedEquals(expected, input);
-  }
-
-  @Test
-  void testColorNotNested() {
-    final String input = "<yellow>TEST</yellow><green>nested</green>Test";
-    final Component expected = text()
-      .append(text("TEST", YELLOW))
-      .append(text("nested", GREEN))
-      .append(text("Test"))
-      .build();
-
-    assertParsedEquals(expected, input);
+    assertParsedEquals(empty().color(YELLOW).append(text("TEST")), input);
   }
 
   @Test
@@ -296,7 +323,7 @@ public class MiniMessageParserTest {
   @Test
   void testClick() {
     final String input = "<click:run_command:test>TEST";
-    final Component expected = text("TEST", style(runCommand("test")));
+    final Component expected = empty().clickEvent(runCommand("test")).append(text("TEST"));
 
     assertParsedEquals(expected, input);
   }
@@ -304,7 +331,7 @@ public class MiniMessageParserTest {
   @Test
   void testClickExtendedCommand() {
     final String input = "<click:run_command:/test command>TEST";
-    final Component expected = text("TEST", style(runCommand("/test command")));
+    final Component expected = empty().clickEvent(runCommand("/test command")).append(text("TEST"));
 
     assertParsedEquals(expected, input);
   }
@@ -1010,12 +1037,14 @@ public class MiniMessageParserTest {
   @Test
   void testFont() {
     final String input = "Nothing <font:minecraft:uniform>Uniform <font:minecraft:alt>Alt  </font> Uniform";
-    final Component expected = text()
-      .append(text("Nothing "))
-      .append(text("Uniform ", style(s -> s.font(key("uniform")))))
-      .append(text("Alt  ", style(s -> s.font(key("alt")))))
-      .append(text(" Uniform", style(s -> s.font(key("uniform")))))
-      .build();
+    final Component expected = empty()
+            .append(text("Nothing "))
+            .append(empty().style((s) -> s.font(key("uniform")))
+                    .append(text("Uniform "))
+                    .append(empty().style((s) -> s.font(key("alt")))
+                            .append(text("Alt  "))
+                    ).append(text(" Uniform"))
+            );
 
     assertParsedEquals(expected, input);
   }
@@ -1103,7 +1132,7 @@ public class MiniMessageParserTest {
 
   @Test
   void testDoubleNewLine() {
-    final Component expected = text("Hello\n\nWorld", RED);
+    final Component expected = empty().color(RED).append(text("Hello\n\nWorld"));
     final String input = "<red>Hello\n\nWorld";
     assertParsedEquals(expected, input);
   }
@@ -1171,8 +1200,8 @@ public class MiniMessageParserTest {
             .append(text("FOUR", RED)).build();
     final String input = "<gray><arg1><red><arg2> <arg3> <arg4>";
 
-    assertParsedEquals(expected, input, "arg1", Component.text("ONE"), "arg2", Component.text("TWO"), "arg3", Component.text("THREE"), "arg4",
-            Component.text("FOUR"));
+    assertParsedEquals(expected, input, "arg1", text("ONE"), "arg2", text("TWO"), "arg3", text("THREE"), "arg4",
+            text("FOUR"));
   }
 
   @Test
@@ -1185,8 +1214,8 @@ public class MiniMessageParserTest {
             .append(text("FOUR", GREEN)).build();
     final String input = "<gray><arg1></gray><red><arg2></red><blue><arg3></blue> <green><arg4>";
 
-    assertParsedEquals(expected, input, "arg1", Component.text("ONE"), "arg2", Component.text("TWO"), "arg3", Component.text("THREE"), "arg4",
-            Component.text("FOUR"));
+    assertParsedEquals(expected, input, "arg1", text("ONE"), "arg2", text("TWO"), "arg3", text("THREE"), "arg4",
+            text("FOUR"));
   }
 
   @Test
