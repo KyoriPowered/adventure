@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Tokens;
+import net.kyori.adventure.text.minimessage.parser.Element;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
@@ -59,11 +60,11 @@ public final class KeybindTransformation extends Transformation {
   }
 
   @Override
-  public void load(final String name, final List<String> args) {
+  public void load(final String name, final List<Element.TagPart> args) {
     super.load(name, args);
 
     if(args.size() == 1) {
-      this.keybind = args.get(0);
+      this.keybind = args.get(0).getValue();
     } else {
       throw new ParsingException("Doesn't know how to turn token with name '" + name + "' and arguments " + args + " into a keybind component", -1);
     }

@@ -32,6 +32,8 @@ import java.util.function.Function;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.Template;
+import net.kyori.adventure.text.minimessage.parser.Element;
+import net.kyori.adventure.text.minimessage.parser.ElementNode;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.TemplateTransformation;
 
@@ -116,7 +118,7 @@ public final class TransformationRegistry {
    * @return a possible transformation
    * @since 4.1.0
    */
-  public @Nullable Transformation get(final String name, final List<String> inners, final Map<String, Template.ComponentTemplate> templates, final Function<String, ComponentLike> placeholderResolver, final Context context) {
+  public @Nullable Transformation get(final String name, final List<Element.TagPart> inners, final Map<String, Template.ComponentTemplate> templates, final Function<String, ComponentLike> placeholderResolver, final Context context) {
     // first try if we have a custom placeholder resolver
     final ComponentLike potentialTemplate = placeholderResolver.apply(name);
     if(potentialTemplate != null) {
@@ -134,7 +136,7 @@ public final class TransformationRegistry {
     return null;
   }
 
-  private Transformation tryLoad(final Transformation transformation, final String name, final List<String> inners, final Context context) {
+  private Transformation tryLoad(final Transformation transformation, final String name, final List<Element.TagPart> inners, final Context context) {
     try {
       transformation.context(context);
       transformation.load(name, inners.subList(1, inners.size()));

@@ -25,20 +25,31 @@ package net.kyori.adventure.text.minimessage.parser;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.kyori.adventure.text.minimessage.parser.gen.Token;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public abstract class Element {
 
-  private Element() {}
+  private final Token token;
+
+  private Element(final @NonNull Token token) {
+    this.token = token;
+  }
+
+  public @NonNull Token getToken() {
+    return this.token;
+  }
 
   public static final class RawTextElement extends Element {
 
     private final String value;
 
-    public RawTextElement(final String value) {
+    public RawTextElement(final @NonNull Token token, final @NonNull String value) {
+      super(token);
       this.value = value;
     }
 
-    public String getValue() {
+    public @NonNull String getValue() {
       return this.value;
     }
 
@@ -52,16 +63,41 @@ public abstract class Element {
 
   public static abstract class TagElement extends Element {
 
-    private final List<String> parts = new ArrayList<>();
+    private final List<TagPart> parts = new ArrayList<>();
 
-    private TagElement() {}
+    private TagElement(final @NonNull Token token) {
+      super(token);
+    }
 
-    public List<String> getParts() {
+    public @NonNull List<TagPart> getParts() {
       return this.parts;
     }
   }
 
+  public static final class TagPart {
+
+    private final Token token;
+    private final String value;
+
+    public TagPart(final @NonNull Token token, final @NonNull String value) {
+      this.token = token;
+      this.value = value;
+    }
+
+    public @NonNull Token getToken() {
+      return this.token;
+    }
+
+    public @NonNull String getValue() {
+      return this.value;
+    }
+  }
+
   public static final class OpenTagElement extends TagElement {
+
+    public OpenTagElement(final @NonNull Token token) {
+      super(token);
+    }
 
     @Override
     public String toString() {
@@ -72,6 +108,10 @@ public abstract class Element {
   }
 
   public static final class CloseTagElement extends TagElement {
+
+    public CloseTagElement(final @NonNull Token token) {
+      super(token);
+    }
 
     @Override
     public String toString() {

@@ -28,6 +28,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.parser.Element;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.string.StringExaminer;
 
@@ -53,7 +54,7 @@ public abstract class Transformation implements Examinable {
    * @param args tokens within the tags, used to define arguments. Each
    * @since 4.1.0
    */
-  public void load(final String name, final List<String> args) {
+  public void load(final String name, final List<Element.TagPart> args) {
     this.name = name;
   }
 

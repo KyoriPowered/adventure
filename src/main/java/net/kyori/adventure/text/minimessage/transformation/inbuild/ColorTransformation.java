@@ -34,6 +34,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Tokens;
+import net.kyori.adventure.text.minimessage.parser.Element;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
@@ -76,12 +77,12 @@ public final class ColorTransformation extends Transformation {
   }
 
   @Override
-  public void load(String name, final List<String> args) {
+  public void load(String name, final List<Element.TagPart> args) {
     super.load(name, args);
 
     if(name.equalsIgnoreCase(Tokens.COLOR)) {
       if(args.size() == 1) {
-        name = args.get(0);
+        name = args.get(0).getValue();
       } else {
         throw new ParsingException("Expected to find a color parameter, but found " + args, -1);
       }

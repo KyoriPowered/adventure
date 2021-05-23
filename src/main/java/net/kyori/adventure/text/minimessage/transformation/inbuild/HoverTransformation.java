@@ -23,12 +23,14 @@
  */
 package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
+import java.util.stream.Collectors;
 import net.kyori.adventure.key.InvalidKeyException;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.Tokens;
+import net.kyori.adventure.text.minimessage.parser.Element;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
@@ -67,18 +69,18 @@ public final class HoverTransformation extends Transformation {
 
   @SuppressWarnings("unchecked")
   @Override
-  public void load(final String name, final List<String> args) {
+  public void load(final String name, final List<Element.TagPart> args) {
     super.load(name, args);
 
     if(args.size() < 2) {
       throw new ParsingException("Doesn't know how to turn " + args + " into a hover event", -1);
     }
 
-    List<String> newArgs = args.subList(1, args.size());
+    final List<String> newArgs = args.subList(1, args.size()).stream().map(Element.TagPart::getValue).collect(Collectors.toList());
 
-    this.action = (HoverEvent.Action<Object>) HoverEvent.Action.NAMES.value(args.get(0));
+    this.action = (HoverEvent.Action<Object>) HoverEvent.Action.NAMES.value(args.get(0).getValue());
     if(this.action == (Object) HoverEvent.Action.SHOW_TEXT) {
-      this.value = context.parse(String.join(":", newArgs));
+      this.value = this.context.parse(String.join(":", newArgs));
     } else if(this.action == (Object) HoverEvent.Action.SHOW_ITEM) {
       this.value = this.parseShowItem(newArgs);
     } else if(this.action == (Object) HoverEvent.Action.SHOW_ENTITY) {
@@ -105,7 +107,7 @@ public final class HoverTransformation extends Transformation {
       }
       return HoverEvent.ShowItem.of(key, count);
     } catch(final InvalidKeyException | NumberFormatException ex) {
-      throw new RuntimeException(String.format("Exception parsing show_item hover '%s'.", value), ex);
+      throw new RuntimeException(String.format("Exception parsing show_item hover '%s'.", this.value), ex);
     }
   }
 
@@ -117,12 +119,12 @@ public final class HoverTransformation extends Transformation {
       final Key key = Key.key(args.get(0));
       final UUID id = UUID.fromString(args.get(1));
       if(args.size() == 3) {
-        final Component name = context.parse(args.get(2));
+        final Component name = this.context.parse(args.get(2));
         return HoverEvent.ShowEntity.of(key, id, name);
       }
       return HoverEvent.ShowEntity.of(key, id);
     } catch(final IllegalArgumentException | InvalidKeyException ex) {
-      throw new RuntimeException(String.format("Exception parsing show_entity hover '%s'.", value), ex);
+      throw new RuntimeException(String.format("Exception parsing show_entity hover '%s'.", this.value), ex);
     }
   }
 

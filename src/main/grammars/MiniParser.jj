@@ -104,16 +104,21 @@ Element rawText() :
 {
   token = <TEXT>
   {
-    return new RawTextElement(token.toString().replace("\\<", "<"));
+    return new RawTextElement(token, token.toString().replace("\\<", "<"));
   }
 }
 
 Element openTag() :
 {
-  final TagElement element = new OpenTagElement();
+  final TagElement element;
+  Token token;
 }
 {
-  <BEGIN_TAG> tagStructure(element)
+  token = <BEGIN_TAG>
+  {
+    element = new OpenTagElement(token);
+  }
+  tagStructure(element)
   {
     return element;
   }
@@ -121,10 +126,15 @@ Element openTag() :
 
 Element closeTag() :
 {
-  final TagElement element = new CloseTagElement();
+  final TagElement element;
+  Token token;
 }
 {
-  <BEGIN_CLOSE_TAG> tagStructure(element)
+  token = <BEGIN_CLOSE_TAG>
+  {
+    element = new CloseTagElement(token);
+  }
+  tagStructure(element)
   {
     return element;
   }
@@ -137,7 +147,7 @@ void tagStructure(TagElement element) : {}
 
 void tagValue(TagElement element) :
 {
-  String value;
+  TagPart value;
 }
 {
   ( value = literalTagValue() | value = stringValue() )
@@ -146,20 +156,22 @@ void tagValue(TagElement element) :
   }
 }
 
-String literalTagValue() :
+TagPart literalTagValue() :
 {
   Token token;
+  TagPart part;
 }
 {
   token = <TAG_VALUE>
   {
-    return token.toString();
+    return new TagPart(token, token.toString());
   }
 }
 
-String stringValue() :
+TagPart stringValue() :
 {
   Token token;
+  TagPart part;
 }
 {
   ( token = <SINGLE_QUOTE_STRING> | token = <DOUBLE_QUOTE_STRING> )
@@ -167,9 +179,9 @@ String stringValue() :
     final String value = token.toString();
     final String inside = value.substring(1, value.length() - 1);
     if (token.kind == SINGLE_QUOTE_STRING) {
-      return inside.replace("\\'", "'");
+      return new TagPart(token, inside.replace("\\'", "'"));
     } else {
-      return inside.replace("\\\"", "\"");
+      return new TagPart(token, inside.replace("\\\"", "\""));
     }
   }
 }

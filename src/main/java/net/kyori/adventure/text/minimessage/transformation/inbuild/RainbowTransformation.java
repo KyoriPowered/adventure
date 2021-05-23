@@ -32,6 +32,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Tokens;
+import net.kyori.adventure.text.minimessage.parser.Element;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
@@ -67,12 +68,12 @@ public final class RainbowTransformation extends Transformation {
   }
 
   @Override
-  public void load(final String name, final List<String> args) {
+  public void load(final String name, final List<Element.TagPart> args) {
     super.load(name, args);
 
     if(args.size() == 1) {
       try {
-        this.phase = Integer.parseInt(args.get(0));
+        this.phase = Integer.parseInt(args.get(0).getValue());
       } catch(final NumberFormatException ex) {
         throw new ParsingException("Expected phase, got " + args.get(0), -1);
       }
