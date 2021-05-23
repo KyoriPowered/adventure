@@ -65,7 +65,7 @@ public final class ClickTransformation extends Transformation {
 
     if(args.size() >= 2) {
       this.action = ClickEvent.Action.NAMES.value(args.get(0).toLowerCase(Locale.ROOT));
-      this.value = String.join("", args.subList(1, args.size()));
+      this.value = String.join(":", args.subList(1, args.size()));
     } else {
       throw new ParsingException("Don't know how to turn " + args + " into a click event", -1);
     }

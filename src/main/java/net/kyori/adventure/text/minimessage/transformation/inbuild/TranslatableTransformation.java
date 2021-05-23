@@ -72,11 +72,7 @@ public class TranslatableTransformation extends Transformation {
 
     this.key = args.get(0);
     if(args.size() > 1) {
-      String string = String.join(":", args.subList(1, args.size()));
-      if(string.startsWith("'") || string.startsWith("\"")) {
-        string = string.substring(1).substring(0, string.length() - 2);
-      }
-      for(final String in : DUM_SPLIT_PATTERN.split(string)) {
+      for(final String in : args.subList(1, args.size())) {
         this.inners.add(context.parse(in));
       }
     }

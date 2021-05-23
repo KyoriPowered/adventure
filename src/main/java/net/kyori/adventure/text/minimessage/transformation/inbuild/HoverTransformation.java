@@ -39,7 +39,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
@@ -48,8 +47,6 @@ import java.util.stream.Stream;
  * @since 4.1.0
  */
 public final class HoverTransformation extends Transformation {
-  // https://regex101.com/r/wC2xT6/1 splits on ':', except when in single or double quotes, respecting escaped quotes.
-  private static final Pattern REALLY_DUM_SPLIT_PATTERN = Pattern.compile("(?s):(?=(?:((?<!\\\\)[\"'])(?:(?!(?<!\\\\)\\1).)*(?<!\\\\)\\1|\\\\.|[^\"'])*$)");
 
   /**
    * Get if this transformation can handle the provided tag name.
@@ -77,35 +74,34 @@ public final class HoverTransformation extends Transformation {
       throw new ParsingException("Doesn't know how to turn " + args + " into a hover event", -1);
     }
 
-    final String string = String.join("", args.subList(1, args.size()));
+    List<String> newArgs = args.subList(1, args.size());
 
     this.action = (HoverEvent.Action<Object>) HoverEvent.Action.NAMES.value(args.get(0));
     if(this.action == (Object) HoverEvent.Action.SHOW_TEXT) {
-      this.value = context.parse(string);
+      this.value = context.parse(String.join(":", newArgs));
     } else if(this.action == (Object) HoverEvent.Action.SHOW_ITEM) {
-      this.value = this.parseShowItem(string);
+      this.value = this.parseShowItem(newArgs);
     } else if(this.action == (Object) HoverEvent.Action.SHOW_ENTITY) {
-      this.value = this.parseShowEntity(string);
+      this.value = this.parseShowEntity(newArgs);
     } else {
       throw new ParsingException("Don't know how to turn '" + args + "' into a hover event", -1);
     }
   }
 
-  private HoverEvent.@NonNull ShowItem parseShowItem(final @NonNull String value) {
+  private HoverEvent.@NonNull ShowItem parseShowItem(final @NonNull List<String> args) {
     try {
-      final String[] args = REALLY_DUM_SPLIT_PATTERN.split(value);
-      if(args.length == 0) {
+      if(args.isEmpty()) {
         throw new RuntimeException("Show item hover needs at least item id!");
       }
-      final Key key = Key.key(args[0]);
+      final Key key = Key.key(args.get(0));
       final int count;
-      if(args.length >= 2) {
-        count = Integer.parseInt(args[1]);
+      if(args.size() >= 2) {
+        count = Integer.parseInt(args.get(1));
       } else {
         count = 1;
       }
-      if(args.length == 3) {
-        return HoverEvent.ShowItem.of(key, count, BinaryTagHolder.of(args[2]));
+      if(args.size() == 3) {
+        return HoverEvent.ShowItem.of(key, count, BinaryTagHolder.of(args.get(2)));
       }
       return HoverEvent.ShowItem.of(key, count);
     } catch(final InvalidKeyException | NumberFormatException ex) {
@@ -113,16 +109,15 @@ public final class HoverTransformation extends Transformation {
     }
   }
 
-  private HoverEvent.@NonNull ShowEntity parseShowEntity(final @NonNull String value) {
+  private HoverEvent.@NonNull ShowEntity parseShowEntity(final @NonNull List<String> args) {
     try {
-      final String[] args = REALLY_DUM_SPLIT_PATTERN.split(value);
-      if(args.length <= 1) {
+      if(args.size() < 2) {
         throw new RuntimeException("Show entity hover needs at least type and uuid!");
       }
-      final Key key = Key.key(args[0]);
-      final UUID id = UUID.fromString(args[1]);
-      if(args.length == 3) {
-        final Component name = context.parse(args[2]);
+      final Key key = Key.key(args.get(0));
+      final UUID id = UUID.fromString(args.get(1));
+      if(args.size() == 3) {
+        final Component name = context.parse(args.get(2));
         return HoverEvent.ShowEntity.of(key, id, name);
       }
       return HoverEvent.ShowEntity.of(key, id);
