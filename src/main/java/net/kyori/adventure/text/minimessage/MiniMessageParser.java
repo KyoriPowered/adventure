@@ -207,9 +207,10 @@ class MiniMessageParser {
       Transformation transformation = registry.get(tag.name(), tag.parts(), templates, placeholderResolver, context);
       if (transformation == null) {
         // unknown, treat as text
-        return Component.text("<error>"); // TODO turn node into text
+        comp = Component.text("<" + tag.name() + ">"); // TODO add tag parts, use constants
+      } else {
+        comp = transformation.apply();
       }
-      comp = transformation.apply();
     } else {
       comp = Component.empty();
     }

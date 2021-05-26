@@ -36,7 +36,20 @@ import org.junit.jupiter.api.Test;
 
 import java.util.function.Function;
 
+import static net.kyori.adventure.text.Component.empty;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.event.HoverEvent.showText;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.NamedTextColor.BLACK;
+import static net.kyori.adventure.text.format.NamedTextColor.BLUE;
+import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
+import static net.kyori.adventure.text.format.NamedTextColor.RED;
+import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
 import static net.kyori.adventure.text.format.Style.style;
+import static net.kyori.adventure.text.format.TextColor.color;
+import static net.kyori.adventure.text.format.TextDecoration.*;
+import static net.kyori.adventure.text.format.TextDecoration.BOLD;
+import static net.kyori.adventure.text.format.TextDecoration.UNDERLINED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -44,7 +57,7 @@ public class MiniMessageTest {
 
   @Test
   void testMarkdownBuilder() {
-    final Component expected = Component.text("BOLD", style(NamedTextColor.RED, TextDecoration.BOLD));
+    final Component expected = empty().decorate(BOLD).append(empty().color(RED).append(text("BOLD")));
     final Component result = MiniMessage.builder().markdown().build().deserialize("**<red>BOLD**");
 
     assertEquals(expected, result);
@@ -52,7 +65,7 @@ public class MiniMessageTest {
 
   @Test
   void testNormalBuilder() {
-    final Component expected = Component.text("Test", NamedTextColor.RED);
+    final Component expected = empty().color(RED).append(text("Test"));
     final Component result = MiniMessage.builder().build().deserialize("<red>Test");
 
     assertEquals(expected, result);
@@ -60,7 +73,7 @@ public class MiniMessageTest {
 
   @Test
   void testNormal() {
-    final Component expected = Component.text("Test", NamedTextColor.RED);
+    final Component expected = empty().color(RED).append(text("Test"));
     final Component result = MiniMessage.get().deserialize("<red>Test");
 
     assertEquals(expected, result);
@@ -68,7 +81,7 @@ public class MiniMessageTest {
 
   @Test
   void testNormalPlaceholders() {
-    final Component expected = Component.text("TEST").color(NamedTextColor.RED);
+    final Component expected = empty().color(RED).append(text("TEST"));
     final Component result = MiniMessage.get().parse("<red><test>", "test", "TEST");
 
     assertEquals(expected, result);
@@ -76,16 +89,18 @@ public class MiniMessageTest {
 
   @Test
   void testObjectPlaceholders() {
-    final Component expected = Component.text()
-      .append(Component.text("ONE", NamedTextColor.RED))
-      .append(Component.text("TWO", NamedTextColor.GREEN))
-      .append(Component.text("THREEFOUR", NamedTextColor.BLUE))
-      .append(Component.text("FIVE", NamedTextColor.YELLOW))
-      .build();
+    final Component expected = empty().color(RED)
+            .append(text("ONE"))
+            .append(text("TWO", GREEN)
+                    .append(empty().color(BLUE)
+                            .append(text("THREEFOUR"))
+                            .append(text("FIVE", YELLOW))
+                    )
+            );
     final Component result = MiniMessage.get().parse("<red>ONE<two><blue>THREE<four><five>",
-            "two", Component.text("TWO", NamedTextColor.GREEN),
+            "two", text("TWO", GREEN),
             "four", "FOUR",
-            "five", Component.text("FIVE", NamedTextColor.YELLOW));
+            "five", text("FIVE", YELLOW));
 
     assertEquals(expected, result);
   }
@@ -93,14 +108,14 @@ public class MiniMessageTest {
   @Test
   void testObjectPlaceholdersUnbalanced() {
     assertThrows(IllegalArgumentException.class, () -> MiniMessage.get().parse("<red>ONE<two><blue>THREE<four><five>",
-            "two", Component.text("TWO", NamedTextColor.GREEN),
+            "two", text("TWO", GREEN),
             "four", "FOUR",
             "five"));
   }
 
   @Test
   void testMarkdown() {
-    final Component expected = Component.text("BOLD", style(NamedTextColor.RED, TextDecoration.BOLD));
+    final Component expected = empty().decorate(BOLD).append(empty().color(RED).append(text("BOLD")));
     final Component result = MiniMessage.markdown().deserialize("**<red>BOLD**");
 
     assertEquals(expected, result);
@@ -108,7 +123,7 @@ public class MiniMessageTest {
 
   @Test
   void testTemplateSimple() {
-    final Component expected = Component.text("TEST");
+    final Component expected = text("TEST");
     final Component result = MiniMessage.get().parse("<test>", Template.of("test", "TEST"));
 
     assertEquals(expected, result);
@@ -116,28 +131,30 @@ public class MiniMessageTest {
 
   @Test
   void testTemplateComponent() {
-    final Component expected = Component.text("TEST", NamedTextColor.RED);
-    final Component result = MiniMessage.get().parse("<test>", Template.of("test", Component.text("TEST", NamedTextColor.RED)));
+    final Component expected = text("TEST", RED);
+    final Component result = MiniMessage.get().parse("<test>", Template.of("test", text("TEST", RED)));
 
     assertEquals(expected, result);
   }
 
   @Test
   void testTemplateComponentInheritedStyle() {
-    final Component expected = Component.text("TEST", style(NamedTextColor.RED, TextDecoration.UNDERLINED, TextDecoration.BOLD));
-    final Component result = MiniMessage.get().parse("<green><bold><test>", Template.of("test", Component.text("TEST", NamedTextColor.RED, TextDecoration.UNDERLINED)));
+    final Component expected = empty().color(GREEN).append(empty().decorate(BOLD).append(text("TEST", RED, UNDERLINED)));
+    final Component result = MiniMessage.get().parse("<green><bold><test>", Template.of("test", text("TEST", RED, UNDERLINED)));
 
     assertEquals(expected, result);
   }
 
   @Test
   void testTemplateComponentMixed() {
-    final Component expected = Component.text()
-      .append(Component.text("TEST", style(NamedTextColor.RED, TextDecoration.UNDERLINED, TextDecoration.BOLD)))
-      .append(Component.text("Test2", style(NamedTextColor.GREEN, TextDecoration.BOLD)))
-      .build();
+    final Component expected = empty().color(GREEN)
+            .append(empty().decorate(BOLD)
+                    .append(text("TEST", style(RED, UNDERLINED))
+                            .append(text("Test2"))
+                    )
+            );
 
-    final Template t1 = Template.of("test", Component.text("TEST", style(NamedTextColor.RED, TextDecoration.UNDERLINED)));
+    final Template t1 = Template.of("test", text("TEST", style(RED, UNDERLINED)));
     final Template t2 = Template.of("test2", "Test2");
     final Component result = MiniMessage.get().parse("<green><bold><test><test2>", t1, t2);
 
@@ -146,20 +163,16 @@ public class MiniMessageTest {
 
   @Test // GH-103
   void testTemplateInHover() {
-    final Component expected = Component.text("This is a test message.").hoverEvent(HoverEvent.showText(Component.text("[Plugin]", TextColor.color(0xff0000))));
+    final Component expected = empty().hoverEvent(showText(empty().color(color(0xff0000)).append(text("[Plugin]"))))
+                    .append(text("This is a test message."));
     final Component result = MiniMessage.get().parse("<hover:show_text:'<prefix>'>This is a test message.", Template.of("prefix", MiniMessage.get().parse("<#FF0000>[Plugin]<reset>")));
-
-    System.out.println(GsonComponentSerializer.gson().serialize(result));
 
     assertEquals(expected, result);
   }
 
   @Test
   void testCustomRegistry() {
-    final Component expected = Component.text()
-      .append(Component.text("<bold>", NamedTextColor.GREEN))
-      .append(Component.text("TEST", NamedTextColor.GREEN))
-      .build();
+    final Component expected = empty().color(GREEN).append(text("<bold>").append(text("TEST")));
     final Component result = MiniMessage.withTransformations(TransformationType.COLOR)
       .parse("<green><bold><test>", "test", "TEST");
 
@@ -168,10 +181,7 @@ public class MiniMessageTest {
 
   @Test
   void testCustomRegistryBuilder() {
-    final Component expected = Component.text()
-      .append(Component.text("<bold>", NamedTextColor.GREEN))
-      .append(Component.text("TEST", NamedTextColor.GREEN))
-      .build();
+    final Component expected = empty().color(GREEN).append(text("<bold>").append(text("TEST")));
     final Component result = MiniMessage.builder()
       .removeDefaultTransformations()
       .transformation(TransformationType.COLOR)
@@ -183,11 +193,11 @@ public class MiniMessageTest {
 
   @Test
   void testPlaceholderResolver() {
-    final Component expected = Component.text("TEST", style(NamedTextColor.RED, TextDecoration.BOLD));
+    final Component expected = empty().color(GREEN).append(empty().decorate(BOLD).append(text("TEST", RED)));
 
     final Function<String, ComponentLike> resolver = name -> {
       if(name.equalsIgnoreCase("test")) {
-        return Component.text("TEST").color(NamedTextColor.RED);
+        return text("TEST").color(RED);
       }
       return null;
     };
@@ -199,17 +209,13 @@ public class MiniMessageTest {
 
   @Test
   void testOrderOfPlaceholders() {
-    final Component expected = Component.text()
-      .append(Component.text("A"))
-      .append(Component.text("B"))
-      .append(Component.text("C"))
-      .build();
+    final Component expected = text("A").append(text("B").append(text("C")));
 
     final Component result = MiniMessage.get().parse(
             "<a><b><_c>",
-            "a", Component.text("A"),
-            "b", Component.text("B"),
-            "_c", Component.text("C")
+            "a", text("A"),
+            "b", text("B"),
+            "_c", text("C")
     );
 
     assertEquals(expected, result);
@@ -223,38 +229,38 @@ public class MiniMessageTest {
 
   @Test // GH-98
   void testTemplateInsideOfPre() {
-    final Component expected = Component.text()
-            .append(Component.text("MiniDigger", NamedTextColor.RED))
-            .append(Component.text(": ", NamedTextColor.GRAY))
-            .append(Component.text("<red>", NamedTextColor.GRAY))
-            .append(Component.text("Hello world", NamedTextColor.GRAY))
-            .build();
+    final Component expected = empty().color(RED)
+            .append(text("MiniDigger")
+                    .append(empty().color(GRAY)
+                            .append(text(": "))
+                            .append(text("<red><message>"))
+                    )
+            );
     final String input = "<red><username><gray>: <pre><red><message>";
 
-    final Component result = MiniMessage.get().parse(input, Template.of("username", Component.text("MiniDigger")), Template.of("message", Component.text("Hello world")));
+    final Component result = MiniMessage.get().parse(input, Template.of("username", text("MiniDigger")), Template.of("message", text("Hello world")));
 
     assertEquals(expected, result);
   }
 
   @Test // GH-97
   void testUnsafePre() {
-    final Component expected = Component.text()
-            .append(Component.text("MiniDigger", NamedTextColor.RED))
-            .append(Component.text(": ", NamedTextColor.GRAY))
-            .append(Component.text("<red>", NamedTextColor.GRAY))
-            .append(Component.text("</pre><red>Test", NamedTextColor.GRAY))
-            .build();
-    final Component expected2 = Component.text()
-            .append(Component.text("MiniDigger", NamedTextColor.RED))
-            .append(Component.text(": ", NamedTextColor.GRAY))
-            .append(Component.text("<red>", NamedTextColor.GRAY))
-            .append(Component.text("</pre>", NamedTextColor.GRAY))
-            .append(Component.text("<red>", NamedTextColor.GRAY))
-            .append(Component.text("Test", NamedTextColor.GRAY))
-            .build();
+    final Component expected = empty().color(RED)
+            .append(text("MiniDigger")
+                            .append(empty().color(GRAY)
+                                    .append(text(": "))
+                                    .append(text("<red><message>"))
+                            )
+            );
+    final Component expected2 = empty().color(RED)
+            .append(text("MiniDigger"))
+            .append(empty().color(GRAY)
+                    .append(text(": "))
+                    .append(text("<red></pre><red>Test"))
+            );
     final String input = "<red><username><gray>: <pre><red><message>";
 
-    final Component result1 = MiniMessage.get().parse(input, Template.of("username", Component.text("MiniDigger")), Template.of("message", Component.text("</pre><red>Test")));
+    final Component result1 = MiniMessage.get().parse(input, Template.of("username", text("MiniDigger")), Template.of("message", text("</pre><red>Test")));
     assertEquals(expected, result1);
 
     final Component result2 = MiniMessage.get().parse(input, Template.of("username", "MiniDigger"), Template.of("message", "</pre><red>Test"));

@@ -227,13 +227,12 @@ public class MiniMessageParserTest {
   }
 
   @Test
-  @Disabled // TODO, better escape handling
   void testNoUnescape() {
-    final String input = "<yellow>TEST\\<green> \\< nested\\</green>Test";
+    final String input = "<yellow>TEST\\<green> \\\\< nested\\</green>Test";
     final String expected = "TEST<green> \\< nested</green>Test";
     final TextComponent comp = (TextComponent) PARSER.parse(input);
 
-    assertEquals(expected, comp.content());
+    assertEquals(expected, PlainComponentSerializer.plain().serialize(comp));
   }
 
   @Test
@@ -353,12 +352,10 @@ public class MiniMessageParserTest {
 
   @Test
   void testInvalidTag() {
-    final String input = "<test>";
-    final Component expected = text("<test>");
+    final String input = "<red><test>";
+    final Component expected = empty().color(RED).append(text("<test>"));
 
     assertParsedEquals(expected, input);
-
-    // TODO am not totally happy about this yet, invalid tags arent getting colored for example, but good enough for now
   }
 
   @Test
@@ -468,6 +465,14 @@ public class MiniMessageParserTest {
   }
 
   @Test
+  void testBackSpace() {
+    final String input = "\\\\!/ IMPORTANT \\!/";
+    final Component expected = text("\\\\!/ IMPORTANT \\!/");
+
+    assertParsedEquals(expected, input);
+  }
+
+  @Test
   void testGH5() {
     final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:<pack_url>><hover:show_text:\"<green>/!\\ install it from Options/ResourcePacks in your game\"><green><bold>CLICK HERE</bold></hover></click>";
     final Component expected = empty().color(DARK_GRAY)
@@ -556,13 +561,15 @@ public class MiniMessageParserTest {
   @Test
   void testPre() {
     final String input = "Click <yellow><pre><insert:test>this</pre> to <red>insert!";
-    final Component expected = text()
-      .append(text("Click "))
-      .append(text("<insert:test>", YELLOW))
-      .append(text("this", YELLOW))
-      .append(text(" to ", YELLOW))
-      .append(text("insert!", RED))
-      .build();
+    final Component expected = empty()
+            .append(text("Click "))
+            .append(empty().color(YELLOW)
+                    .append(text("<insert:test>this"))
+                    .append(text(" to "))
+                    .append(empty().color(RED)
+                            .append(text("insert!"))
+                    )
+            );
 
     assertParsedEquals(expected, input);
   }
@@ -1078,7 +1085,10 @@ public class MiniMessageParserTest {
   @Test // GH-37
   void testPhil() {
     final String input = "<red><hover:show_text:'Message 1\nMessage 2'>My Message";
-    final Component expected = text("My Message", style(RED, showText(text("Message 1\nMessage 2"))));
+    final Component expected = empty().color(RED)
+            .append(empty().hoverEvent(showText(text("Message 1\nMessage 2")))
+                    .append(text("My Message"))
+            );
 
     assertParsedEquals(expected, input);
   }
@@ -1127,15 +1137,20 @@ public class MiniMessageParserTest {
 
   @Test
   void testGH78() {
-    final Component expected = empty().color(GRAY)
-            .append(text("\\<"))
-            .append(empty().color(YELLOW)
-                    .append(text("Patbox"))
-                    .append(empty().color(GRAY)
-                            .append(text(">"))
-                    ));
-    // TODO handle pre
+    final Component expected = empty()
+            .append(empty().color(GRAY)
+                    .append(text("<"))
+                    .append(empty().color(YELLOW)
+                            .append(text("Patbox"))
+                            .append(empty().color(GRAY)
+                                    .append(text("> "))
+                            )
+                    )
+            ).append(text("am dum")); // TODO fix reset
     final String input = "<gray>\\<<yellow><player><gray>> <reset><pre><message></pre>";
+
+    System.out.println(GsonComponentSerializer.gson().serialize(expected));
+    System.out.println(GsonComponentSerializer.gson().serialize(PARSER.parse(input, "player", "Patbox", "message", "am dum")));
 
     assertParsedEquals(expected, input, "player", "Patbox", "message", "am dum");
   }
@@ -1215,13 +1230,18 @@ public class MiniMessageParserTest {
 
   @Test
   void testTemplateOrder() {
-    final Component expected = text()
-            .append(text("ONE", GRAY))
-            .append(text("TWO", RED))
-            .append(text(" ", RED))
-            .append(text("THREE", RED))
-            .append(text(" ", RED))
-            .append(text("FOUR", RED)).build();
+    final Component expected = empty().color(GRAY)
+            .append(text("ONE")
+                    .append(empty().color(RED)
+                            .append(text("TWO")
+                                    .append(text(" "))
+                                    .append(text("THREE")
+                                            .append(text(" "))
+                                            .append(text("FOUR"))
+                                    )
+                            )
+                    )
+            );
     final String input = "<gray><arg1><red><arg2> <arg3> <arg4>";
 
     assertParsedEquals(expected, input, "arg1", text("ONE"), "arg2", text("TWO"), "arg3", text("THREE"), "arg4",
@@ -1230,20 +1250,24 @@ public class MiniMessageParserTest {
 
   @Test
   void testTemplateOrder2() {
-    final Component expected = text()
-            .append(text("ONE", GRAY))
-            .append(text("TWO", RED))
-            .append(text("THREE", BLUE))
-            .append(text(" "))
-            .append(text("FOUR", GREEN)).build();
+    final Component expected = empty()
+            .append(empty().color(GRAY)
+                    .append(text("ONE")))
+            .append(empty().color(RED)
+                    .append(text("TWO"))
+            ).append(empty().color(BLUE)
+                    .append(text("THREE"))
+            ).append(text(" "))
+            .append(empty().color(GREEN)
+                    .append(text("FOUR"))
+            );
     final String input = "<gray><arg1></gray><red><arg2></red><blue><arg3></blue> <green><arg4>";
 
     assertParsedEquals(expected, input, "arg1", text("ONE"), "arg2", text("TWO"), "arg3", text("THREE"), "arg4",
             text("FOUR"));
   }
 
-  @Test
-  @Disabled // GH-68, GH-93
+  @Test // GH-68, GH-93
   void testAngleBracketsShit() {
     final Component expected = empty().color(GRAY)
             .append(text("<"))
@@ -1256,9 +1280,19 @@ public class MiniMessageParserTest {
 
     final String input = "<gray><<yellow>TEST<gray>> Woo << double <3";
 
-    System.out.println(GsonComponentSerializer.gson().serialize(MiniMessage.get().parse(input)));
-
     assertEquals(expected, MiniMessage.get().parse(input));
+  }
+
+  @Test // GH-111
+  void testNoSwallowSpace() {
+    final Component expected = empty().color(RED)
+            .append(empty().hoverEvent(showText(text("Test")))
+                    .append(text(" "))
+                    .append(translatable("item.minecraft.stick"))
+            );
+    final String input = "<red><hover:show_text:\"Test\"> <lang:item.minecraft.stick>";
+
+    assertParsedEquals(expected, input);
   }
 
   private static void assertParsedEquals(final @NonNull Component expected, final @NonNull String input) {
