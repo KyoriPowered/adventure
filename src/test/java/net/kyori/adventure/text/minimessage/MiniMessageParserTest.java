@@ -1245,17 +1245,16 @@ public class MiniMessageParserTest {
   @Test
   @Disabled // GH-68, GH-93
   void testAngleBracketsShit() {
-    final Component expected = empty().color(GREEN)
+    final Component expected = empty().color(GRAY)
             .append(text("<"))
             .append(empty().color(YELLOW)
-                    .append(text("TEST")
-                            .append(empty().color(GRAY)
-                                    .append(text("> Woo << double <3"))
-                            )
+                    .append(text("TEST"))
+                    .append(empty().color(GRAY)
+                            .append(text("> Woo << double <3"))
                     )
             );
 
-    final String input = "<gray><<yellow>TEST<gray>> Woooo << double <3";
+    final String input = "<gray><<yellow>TEST<gray>> Woo << double <3";
 
     System.out.println(GsonComponentSerializer.gson().serialize(MiniMessage.get().parse(input)));
 
