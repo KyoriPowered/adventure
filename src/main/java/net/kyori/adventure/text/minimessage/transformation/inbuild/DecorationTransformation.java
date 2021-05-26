@@ -28,11 +28,10 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.Tokens;
-import net.kyori.adventure.text.minimessage.parser.Element;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
+import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
@@ -61,7 +60,7 @@ public final class DecorationTransformation extends Transformation {
   }
 
   @Override
-  public void load(final String name, final List<Element.TagPart> args) {
+  public void load(final String name, final List<TagPart> args) {
     super.load(name, args);
 
     this.decoration = parseDecoration(name);

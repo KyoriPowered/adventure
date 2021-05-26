@@ -30,8 +30,8 @@ import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.Tokens;
-import net.kyori.adventure.text.minimessage.parser.Element;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
+import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
@@ -69,16 +69,16 @@ public final class HoverTransformation extends Transformation {
 
   @SuppressWarnings("unchecked")
   @Override
-  public void load(final String name, final List<Element.TagPart> args) {
+  public void load(final String name, final List<TagPart> args) {
     super.load(name, args);
 
     if(args.size() < 2) {
       throw new ParsingException("Doesn't know how to turn " + args + " into a hover event", -1);
     }
 
-    final List<String> newArgs = args.subList(1, args.size()).stream().map(Element.TagPart::getValue).collect(Collectors.toList());
+    final List<String> newArgs = args.subList(1, args.size()).stream().map(TagPart::value).collect(Collectors.toList());
 
-    this.action = (HoverEvent.Action<Object>) HoverEvent.Action.NAMES.value(args.get(0).getValue());
+    this.action = (HoverEvent.Action<Object>) HoverEvent.Action.NAMES.value(args.get(0).value());
     if(this.action == (Object) HoverEvent.Action.SHOW_TEXT) {
       this.value = this.context.parse(String.join(":", newArgs));
     } else if(this.action == (Object) HoverEvent.Action.SHOW_ITEM) {

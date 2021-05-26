@@ -26,19 +26,16 @@ package net.kyori.adventure.text.minimessage.transformation.inbuild;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.PrimitiveIterator;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Tokens;
-import net.kyori.adventure.text.minimessage.parser.Element;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
+import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
@@ -73,13 +70,13 @@ public final class GradientTransformation extends Transformation {
   }
 
   @Override
-  public void load(final String name, final List<Element.TagPart> args) {
+  public void load(final String name, final List<TagPart> args) {
     super.load(name, args);
 
     if(!args.isEmpty()) {
       final List<TextColor> textColors = new ArrayList<>();
       for(int i = 0; i < args.size(); i++) {
-        final String arg = args.get(i).getValue();
+        final String arg = args.get(i).value();
         // last argument? maybe this is the phase?
         if(i == args.size() - 1) {
           try {

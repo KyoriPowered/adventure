@@ -24,8 +24,8 @@
 package net.kyori.adventure.text.minimessage;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.parser.ElementNode;
 
+import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 

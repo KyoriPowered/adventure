@@ -21,8 +21,6 @@ repositories {
 dependencies {
     api(libs.adventure.api)
 
-    javacc(libs.javacc)
-
     testImplementation(libs.adventure.text.plain)
     testImplementation(libs.adventure.text.gson)
     testImplementation(libs.junit.api)
@@ -52,59 +50,8 @@ indra {
     }
 }
 
-val parserSource = layout.buildDirectory.dir("gen-src-parser")
-
-val generateParser by tasks.registering(JavaExec::class) {
-    val parserName = "MiniParser"
-    val genPackage = "net/kyori/adventure/text/minimessage/parser/gen"
-
-    val src = layout.projectDirectory.file("src/main/grammars/${parserName}.jj")
-    val dst = parserSource.map { it.dir(genPackage) }
-
-    classpath = javacc
-    main = "javacc"
-
-    inputs.file(src)
-        .withPropertyName("inputFile")
-        .withPathSensitivity(PathSensitivity.RELATIVE)
-    outputs.dir(parserSource)
-        .withPropertyName("outputDir")
-
-    doFirst {
-        val destination = dst.get().asFile
-        destination.mkdirs()
-        args(
-            "-output_directory=${destination.absolutePath}",
-            src.asFile.absolutePath
-        )
-    }
-}
-
-sourceSets {
-    main {
-        java {
-            // JFlex output
-            srcDir(generateParser)
-        }
-    }
-}
-
-idea {
-    module {
-        generatedSourceDirs.add(parserSource.get().asFile)
-    }
-}
-
-license {
-    exclude("**/gen/**")
-}
-
 tasks.checkstyleJmh {
     exclude("**")
-}
-
-tasks.checkstyleMain {
-    exclude("**/gen/**")
 }
 
 tasks.jar {

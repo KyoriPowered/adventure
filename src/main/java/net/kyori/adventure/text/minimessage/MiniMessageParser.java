@@ -26,8 +26,10 @@ package net.kyori.adventure.text.minimessage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.minimessage.parser.ElementNode;
-import net.kyori.adventure.text.minimessage.parser.ElementParser;
+import net.kyori.adventure.text.minimessage.parser.TokenParser;
+import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
+import net.kyori.adventure.text.minimessage.parser.node.TagNode;
+import net.kyori.adventure.text.minimessage.parser.node.TextNode;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
 
@@ -190,24 +192,19 @@ class MiniMessageParser {
   }
 
   @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull TransformationRegistry registry, final @NonNull Function<String, ComponentLike> placeholderResolver, final Context context) {
-    try {
-      ElementParser elementParser = new ElementParser(richMessage);
-      ElementNode root = elementParser.parse();
-      context.root(root);
-      return this.parse(root, registry, templates, placeholderResolver, context);
-    } catch (net.kyori.adventure.text.minimessage.parser.gen.ParseException e) {
-      throw new ParseException(e.getMessage()); // TODO better error handling
-    }
+    ElementNode root = TokenParser.parse(richMessage);
+    context.root(root);
+    return this.parse(root, registry, templates, placeholderResolver, context);
   }
 
   @NonNull Component parse(final @NonNull ElementNode node, final @NonNull TransformationRegistry registry, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull Function<String, ComponentLike> placeholderResolver, final @NonNull Context context) {
     Component comp;
-    if (node instanceof ElementNode.RawTextNode) {
-      comp = Component.text(((ElementNode.RawTextNode) node).getValue());
-    } else if (node instanceof ElementNode.TagNode) {
-      ElementNode.TagNode tag = (ElementNode.TagNode) node;
+    if (node instanceof TextNode) {
+      comp = Component.text(((TextNode) node).value());
+    } else if (node instanceof TagNode) {
+      TagNode tag = (TagNode) node;
 
-      Transformation transformation = registry.get(tag.name(), tag.getParts(), templates, placeholderResolver, context);
+      Transformation transformation = registry.get(tag.name(), tag.parts(), templates, placeholderResolver, context);
       if (transformation == null) {
         // unknown, treat as text
         return Component.text("<error>"); // TODO turn node into text
@@ -217,7 +214,7 @@ class MiniMessageParser {
       comp = Component.empty();
     }
 
-    for (ElementNode child : node.getChildren()) {
+    for (ElementNode child : node.children()) {
       comp = comp.append(parse(child, registry, templates, placeholderResolver, context));
     }
 
