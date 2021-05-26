@@ -1126,7 +1126,7 @@ public class MiniMessageParserTest {
 
   @Test
   void testNonStrictGH69() {
-    final Component expected = text("<");
+    final Component expected = text("<3");
     final Component comp = MiniMessage.builder()
       .strict(false)
       .build()

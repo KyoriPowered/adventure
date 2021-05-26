@@ -30,6 +30,7 @@ import net.kyori.examination.string.StringExaminer;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
@@ -61,6 +62,18 @@ public interface Template extends Examinable {
    */
   static @NonNull Template of(final @NonNull String key, final @NonNull Component value) {
     return new ComponentTemplate(key, value);
+  }
+
+  /**
+   * Constructs a template that gets replaced with a component lazily.
+   *
+   * @param key the placeholder
+   * @param value the supplier that supplies the component to replace the key with
+   * @return the constructed template
+   * @since 4.2.0
+   */
+  static @NonNull Template of(final @NonNull String key, final @NonNull Supplier<Component> value) {
+    return new LazyComponentTemplate(key, value);
   }
 
   /**
@@ -105,12 +118,17 @@ public interface Template extends Examinable {
    * @since 4.0.0
    */
   class ComponentTemplate implements Template {
-    private final String key;
+    protected final String key;
     private final Component value;
 
     public ComponentTemplate(final @NonNull String key, final @NonNull Component value) {
       this.key = key;
       this.value = value;
+    }
+
+    ComponentTemplate(final @NonNull String key) {
+      this.key = key;
+      this.value = null;
     }
 
     public @NonNull String key() {
@@ -131,6 +149,33 @@ public interface Template extends Examinable {
       return Stream.of(
               ExaminableProperty.of("key", this.key),
               ExaminableProperty.of("value", this.value)
+      );
+    }
+  }
+
+  /**
+   * A template with a lazily provided {@link Component} value that will be inserted directly.
+   *
+   * @since 4.2.0
+   */
+  class LazyComponentTemplate extends ComponentTemplate {
+    private final Supplier<Component> value;
+
+    public LazyComponentTemplate(final @NonNull String key, final @NonNull Supplier<Component> value) {
+      super(key);
+      this.value = value;
+    }
+
+    @Override
+    public @NonNull Component value() {
+      return this.value.get();
+    }
+
+    @Override
+    public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+      return Stream.of(
+              ExaminableProperty.of("key", this.key),
+              ExaminableProperty.of("value", this.value.get())
       );
     }
   }

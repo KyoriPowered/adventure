@@ -269,4 +269,16 @@ public class MiniMessageTest {
     final Component result3 = MiniMessage.get().parse(input, "username", "MiniDigger", "message", "</pre><red>Test");
     assertEquals(expected2, result3);
   }
+
+  @Test
+  void testLazyTemplate() {
+    final Component expected = empty()
+            .append(text("This is a "))
+            .append(text("TEST"));
+    final String input = "This is a <test>";
+
+    final Component result = MiniMessage.get().parse(input, Template.of("test", () -> text("TEST")));
+
+    assertEquals(expected, result);
+  }
 }
