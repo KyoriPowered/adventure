@@ -186,6 +186,9 @@ public final class TokenParser {
     STRING
   }
 
+  /*
+   * Second pass over the tag tokens identifies tag parts
+   */
   @SuppressWarnings("DuplicatedCode")
   private static void parseSecondPass(final String message, final List<Token> tokens) {
     boolean disabled = false;
@@ -282,6 +285,9 @@ public final class TokenParser {
     }
   }
 
+  /*
+   * Build a tree from the OPEN_TAG and CLOSE_TAG tokens
+   */
   private static ElementNode buildTree(final List<Token> tokens, final String message) {
     final ElementNode root = new ElementNode(null, null, message);
     ElementNode node = root;
@@ -340,6 +346,14 @@ public final class TokenParser {
     return root;
   }
 
+  /**
+   * Determine if a set of close string parts closes the given list of open tag parts. If the open parts starts with
+   * the set of close parts, then this method returns {@code true}.
+   *
+   * @param closeParts The parts of the close tag
+   * @param openParts The parts of the open tag
+   * @return {@code true} if the given close parts closes the open tag parts.
+   */
   private static boolean tagCloses(final List<String> closeParts, final List<TagPart> openParts) {
     if(closeParts.size() > openParts.size()) {
       return false;
@@ -352,10 +366,25 @@ public final class TokenParser {
     return true;
   }
 
+  /**
+   * Returns {@code true} if it's okay to check for characters up to the given length. Returns {@code false} if the
+   * string is too short.
+   *
+   * @param text The string to check.
+   * @param index The index to start from.
+   * @param length The length to check.
+   * @return {@code true} if the string's length is at least as long as {@code index + length}.
+   */
   private static boolean boundsCheck(final String text, final int index, final int length) {
     return index + length < text.length();
   }
 
+  /**
+   * Optimized insert method for adding child tokens to the given {@code token}.
+   *
+   * @param token The token to add {@code value} as a child.
+   * @param value The token to add to {@code token}.
+   */
   private static void insert(final Token token, final Token value) {
     if(token.childTokens() == null) {
       token.childTokens(Collections.singletonList(value));
