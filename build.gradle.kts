@@ -11,7 +11,7 @@ plugins {
 val javacc: Configuration by configurations.creating
 
 group = "net.kyori"
-version = "4.1.0-SNAPSHOT"
+version = "4.2.0-SNAPSHOT"
 description = "A string-based, user-friendly format for representing Minecraft: Java Edition chat components."
 
 repositories {

@@ -29,10 +29,23 @@ import net.kyori.adventure.text.minimessage.ParseException;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+/**
+ * Represents a tag.
+ *
+ * @since 4.2.0
+ */
 public class TagNode extends ElementNode {
 
   private final List<TagPart> parts;
 
+  /**
+   * Constructs a new tag node.
+   *
+   * @param parent the parent node
+   * @param token the token that created this node
+   * @param sourceMessage the source message
+   * @since 4.2.0
+   */
   public TagNode(final ElementNode parent, final Token token, final String sourceMessage) {
     super(parent, token, sourceMessage);
     this.parts = genParts(token, sourceMessage);
@@ -50,10 +63,22 @@ public class TagNode extends ElementNode {
     return parts;
   }
 
+  /**
+   * Returns the parts of this tag.
+   *
+   * @return the parts
+   * @since 4.2.0
+   */
   public List<TagPart> parts() {
     return this.parts;
   }
 
+  /**
+   * Returns the name of this tag.
+   *
+   * @return the name
+   * @since 4.2.0
+   */
   public String name() {
     if(this.parts.isEmpty()) {
       throw new ParseException("Tag has no parts? " + this);
@@ -61,8 +86,16 @@ public class TagNode extends ElementNode {
     return this.parts.get(0).value();
   }
 
+  /**
+   * Serializes this note to a string.
+   *
+   * @param sb the string builder to serialize into
+   * @param indent the current indent level
+   * @return the passed string builder, for chaining
+   * @since 4.2.0
+   */
   public @NonNull StringBuilder buildToString(final @NonNull StringBuilder sb, final int indent) {
-    final char[] in = this.getIndent(indent);
+    final char[] in = this.ident(indent);
     sb.append(in).append("TagNode(");
 
     final int size = this.parts.size();

@@ -29,6 +29,11 @@ import java.util.List;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+/**
+ * Represents a node in the tree.
+ *
+ * @since 4.2.0
+ */
 public class ElementNode {
 
   private final ElementNode parent;
@@ -36,30 +41,70 @@ public class ElementNode {
   private final String sourceMessage;
   private final List<ElementNode> children = new ArrayList<>();
 
+  /**
+   * Creates a new element node.
+   *
+   * @param parent the parent of this node
+   * @param token the token that created this node
+   * @param sourceMessage the source message
+   * @since 4.2.0
+   */
   public ElementNode(final ElementNode parent, final Token token, final String sourceMessage) {
     this.parent = parent;
     this.token = token;
     this.sourceMessage = sourceMessage;
   }
 
+  /**
+   * Returns the parent of this node, if present.
+   *
+   * @return the parent or null
+   * @since 4.2.0
+   */
   public ElementNode parent() {
     return this.parent;
   }
 
+  /**
+   * Returns the token that lead to the creation of this token.
+   *
+   * @return the token
+   * @since 4.2.0
+   */
   public Token token() {
     return this.token;
   }
 
+  /**
+   * Returns the source message of this node.
+   *
+   * @return the source message
+   * @since 4.2.0
+   */
   public String sourceMessage() {
     return this.sourceMessage;
   }
 
+  /**
+   * Returns the children of this node.
+   *
+   * @return the children of this node
+   * @since 4.2.0
+   */
   public List<ElementNode> children() {
     return this.children;
   }
 
+  /**
+   * Serializes this note to a string.
+   *
+   * @param sb the string builder to serialize into
+   * @param indent the current indent level
+   * @return the passed string builder, for chaining
+   * @since 4.2.0
+   */
   public @NonNull StringBuilder buildToString(final @NonNull StringBuilder sb, final int indent) {
-    final char[] in = this.getIndent(indent);
+    final char[] in = this.ident(indent);
     sb.append(in).append("Node {\n");
     for(final ElementNode child : this.children) {
       child.buildToString(sb, indent + 1);
@@ -68,7 +113,7 @@ public class ElementNode {
     return sb;
   }
 
-  char @NonNull [] getIndent(final int indent) {
+  char @NonNull [] ident(final int indent) {
     final char[] c = new char[indent * 2];
     Arrays.fill(c, ' ');
     return c;

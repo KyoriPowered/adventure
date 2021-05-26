@@ -25,6 +25,11 @@ package net.kyori.adventure.text.minimessage.parser;
 
 import java.util.List;
 
+/**
+ * Represents a token for the lexer.
+ *
+ * @since 4.2.0
+ */
 public final class Token {
 
   private final int startIndex;
@@ -33,28 +38,66 @@ public final class Token {
 
   private List<Token> childTokens = null;
 
+  /**
+   * Creates a new token.
+   *
+   * @param startIndex the start index of the token
+   * @param endIndex the end index of the token
+   * @param type the type of the token
+   * @since 4.2.0
+   */
   public Token(final int startIndex, final int endIndex, final TokenType type) {
     this.startIndex = startIndex;
     this.endIndex = endIndex;
     this.type = type;
   }
 
+  /**
+   * Returns the start index of this token.
+   *
+   * @return the start index
+   * @since 4.2.0
+   */
   public int startIndex() {
     return this.startIndex;
   }
 
+  /**
+   * Returns the end index of this token.
+   *
+   * @return the end index
+   * @since 4.2.0
+   */
   public int endIndex() {
     return this.endIndex;
   }
 
+  /**
+   * Returns the type of this token.
+   *
+   * @return the type
+   * @since 4.2.0
+   */
   public TokenType type() {
     return this.type;
   }
 
+  /**
+   * Returns the children of this token.
+   *
+   * @return the child tokens
+   * @since 4.2.0
+   */
   public List<Token> childTokens() {
     return this.childTokens;
   }
 
+  /**
+   * Sets the children of this token.
+   *
+   * @param childTokens the new children
+   * @since 4.2.0
+   */
   public void childTokens(final List<Token> childTokens) {
     this.childTokens = childTokens;
   }

@@ -25,24 +25,55 @@ package net.kyori.adventure.text.minimessage.parser.node;
 
 import net.kyori.adventure.text.minimessage.parser.Token;
 
+/**
+ * Represents an inner part of a tag.
+ *
+ * @since 4.2.0
+ */
 public final class TagPart {
 
   private final String value;
   private final Token token;
 
+  /**
+   * Constructs a new tag part.
+   *
+   * @param sourceMessage the source message
+   * @param token the token that creates this tag part
+   * @since 4.2.0
+   */
   public TagPart(final String sourceMessage, final Token token) {
     this.value = unquote(sourceMessage.substring(token.startIndex(), token.endIndex()));
     this.token = token;
   }
 
+  /**
+   * Returns the value of this tag part.
+   *
+   * @return the value
+   * @since 4.2.0
+   */
   public String value() {
     return this.value;
   }
 
+  /**
+   * Returns the token that created this tag part.
+   *
+   * @return the token
+   * @since 4.2.0
+   */
   public Token token() {
     return this.token;
   }
 
+  /**
+   * Removes leading/trailing quotes from the given string, if necessary.
+   *
+   * @param text the input text
+   * @return the output
+   * @since 4.2.0
+   */
   public static String unquote(final String text) {
     int startIndex = 0;
     int endIndex = text.length();

@@ -57,7 +57,7 @@ public final class ResetTransformation extends Transformation {
 
   @Override
   public Component apply() {
-//    transformations.clear();
+    //    transformations.clear();
     return Component.empty(); // TODO figure out wtf to do with reset
   }
 

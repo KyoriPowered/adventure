@@ -192,20 +192,20 @@ class MiniMessageParser {
   }
 
   @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull TransformationRegistry registry, final @NonNull Function<String, ComponentLike> placeholderResolver, final Context context) {
-    ElementNode root = TokenParser.parse(richMessage);
+    final ElementNode root = TokenParser.parse(richMessage);
     context.root(root);
     return this.parse(root, registry, templates, placeholderResolver, context);
   }
 
   @NonNull Component parse(final @NonNull ElementNode node, final @NonNull TransformationRegistry registry, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull Function<String, ComponentLike> placeholderResolver, final @NonNull Context context) {
     Component comp;
-    if (node instanceof TextNode) {
+    if(node instanceof TextNode) {
       comp = Component.text(((TextNode) node).value());
-    } else if (node instanceof TagNode) {
-      TagNode tag = (TagNode) node;
+    } else if(node instanceof TagNode) {
+      final TagNode tag = (TagNode) node;
 
-      Transformation transformation = registry.get(tag.name(), tag.parts(), templates, placeholderResolver, context);
-      if (transformation == null) {
+      final Transformation transformation = registry.get(tag.name(), tag.parts(), templates, placeholderResolver, context);
+      if(transformation == null) {
         // unknown, treat as text
         comp = Component.text("<" + tag.name() + ">"); // TODO add tag parts, use constants
       } else {
@@ -215,14 +215,14 @@ class MiniMessageParser {
       comp = Component.empty();
     }
 
-    for (ElementNode child : node.children()) {
-      comp = comp.append(parse(child, registry, templates, placeholderResolver, context));
+    for(final ElementNode child : node.children()) {
+      comp = comp.append(this.parse(child, registry, templates, placeholderResolver, context));
     }
 
     // if root is empty, lift its only child it up
-    if (comp instanceof TextComponent) {
-      TextComponent root = (TextComponent) comp;
-      if (root.content().isEmpty() && root.children().size() == 1 && !root.hasStyling() && root.hoverEvent() == null && root.clickEvent() == null) {
+    if(comp instanceof TextComponent) {
+      final TextComponent root = (TextComponent) comp;
+      if(root.content().isEmpty() && root.children().size() == 1 && !root.hasStyling() && root.hoverEvent() == null && root.clickEvent() == null) {
         return root.children().get(0);
       }
     }

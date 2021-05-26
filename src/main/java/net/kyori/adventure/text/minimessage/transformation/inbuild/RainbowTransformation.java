@@ -79,30 +79,30 @@ public final class RainbowTransformation extends Transformation {
 
   @Override
   public Component apply() {
-//    if(current instanceof TextComponent) {
-//      final TextComponent textComponent = (TextComponent) current;
-//      final String content = textComponent.content();
-//
-//      // init
-//      this.center = 128;
-//      this.width = 127;
-//      this.frequency = Math.PI * 2 / content.length();
-//
-//      // apply
-//      int charSize;
-//      final char[] holder = new char[2];
-//      for(final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
-//        charSize = Character.toChars(it.nextInt(), holder, 0);
-//        Component comp = Component.text(new String(holder, 0, charSize));
-//        comp = this.merge(comp, current);
-//        comp = comp.color(this.color(this.phase));
-//        parent.append(comp);
-//      }
-//
-//      return null;
-//    }
-//
-//    throw new ParsingException("Expected Text Comp", -1);
+    //    if(current instanceof TextComponent) {
+    //      final TextComponent textComponent = (TextComponent) current;
+    //      final String content = textComponent.content();
+    //
+    //      // init
+    //      this.center = 128;
+    //      this.width = 127;
+    //      this.frequency = Math.PI * 2 / content.length();
+    //
+    //      // apply
+    //      int charSize;
+    //      final char[] holder = new char[2];
+    //      for(final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
+    //        charSize = Character.toChars(it.nextInt(), holder, 0);
+    //        Component comp = Component.text(new String(holder, 0, charSize));
+    //        comp = this.merge(comp, current);
+    //        comp = comp.color(this.color(this.phase));
+    //        parent.append(comp);
+    //      }
+    //
+    //      return null;
+    //    }
+    //
+    //    throw new ParsingException("Expected Text Comp", -1);
     return Component.empty(); // TODO rainbow
   }
 

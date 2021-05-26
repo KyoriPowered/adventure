@@ -24,7 +24,6 @@
 package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
@@ -37,8 +36,10 @@ import java.util.stream.Stream;
 /**
  * A transformation that returns its contents, not handling any extra parameters.
  *
+ * @deprecated no longer in use as of 4.2.0, does nothing
  * @since 4.1.0
  */
+@Deprecated
 public final class PreTransformation extends Transformation {
   private static final PreTransformation INSTANCE = new PreTransformation();
 
@@ -58,7 +59,7 @@ public final class PreTransformation extends Transformation {
 
   @Override
   public Component apply() {
-    return Component.empty(); // TODO figure out wtf to do with PRE
+    return Component.empty();
   }
 
   @Override

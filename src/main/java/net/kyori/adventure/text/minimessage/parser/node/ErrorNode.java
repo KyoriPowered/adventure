@@ -26,17 +26,38 @@ package net.kyori.adventure.text.minimessage.parser.node;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+/**
+ * Represents an erroneous node.
+ *
+ * @since 4.2.0
+ */
 public class ErrorNode extends ElementNode {
 
   private final String value;
 
+  /**
+   * Constructs a new error node.
+   *
+   * @param parent the parent node
+   * @param token the token that created this node
+   * @param sourceMessage the source message
+   * @since 4.2.0
+   */
   public ErrorNode(final ElementNode parent, final Token token, final String sourceMessage) {
     super(parent, token, sourceMessage);
     this.value = sourceMessage.substring(token.startIndex(), token.endIndex()).replace("\\", "");
   }
 
+  /**
+   * Serializes this note to a string.
+   *
+   * @param sb the string builder to serialize into
+   * @param indent the current indent level
+   * @return the passed string builder, for chaining
+   * @since 4.2.0
+   */
   public @NonNull StringBuilder buildToString(final @NonNull StringBuilder sb, final int indent) {
-    final char[] in = this.getIndent(indent);
+    final char[] in = this.ident(indent);
     sb.append(in).append("ErrorNode('").append(this.value).append("')\n");
     return sb;
   }

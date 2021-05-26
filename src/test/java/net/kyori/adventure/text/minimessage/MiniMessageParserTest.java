@@ -419,7 +419,7 @@ public class MiniMessageParserTest {
     final String input = "Test: <lang:commands.drop.success.single:'<red>1':'<blue>Stone'>!";
     final Component expected = empty()
       .append(text("Test: "))
-      .append(translatable("commands.drop.success.single",  empty().color(RED).append(text("1")),  empty().color(BLUE).append(text("Stone")))
+      .append(translatable("commands.drop.success.single", empty().color(RED).append(text("1")), empty().color(BLUE).append(text("Stone")))
               .append(text("!"))
       );
 
@@ -435,8 +435,7 @@ public class MiniMessageParserTest {
         "commands.drop.success.single",
         empty().hoverEvent(showText(empty().color(RED).append(text("dum")))).append(empty().color(RED).append(text("1"))),
         empty().color(BLUE).append(text("Stone"))
-      ).
-              append(text("!"))
+      ).append(text("!"))
       );
 
     assertParsedEquals(expected, input);
@@ -1072,9 +1071,9 @@ public class MiniMessageParserTest {
     final String input = "Nothing <font:minecraft:uniform>Uniform <font:minecraft:alt>Alt  </font> Uniform";
     final Component expected = empty()
             .append(text("Nothing "))
-            .append(empty().style((s) -> s.font(key("uniform")))
+            .append(empty().style(s -> s.font(key("uniform")))
                     .append(text("Uniform "))
-                    .append(empty().style((s) -> s.font(key("alt")))
+                    .append(empty().style(s -> s.font(key("alt")))
                             .append(text("Alt  "))
                     ).append(text(" Uniform"))
             );

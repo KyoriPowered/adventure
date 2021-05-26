@@ -118,32 +118,32 @@ public final class GradientTransformation extends Transformation {
 
   @Override
   public Component apply() {
-//    if(current instanceof TextComponent) {
-//      final TextComponent textComponent = (TextComponent) current;
-//      final String content = textComponent.content();
-//
-//      // init
-//      final int size = content.length();
-//      final int sectorLength = size / (this.colors.length - 1);
-//      this.factorStep = 1.0f / (sectorLength + this.index);
-//      this.phase = this.phase * sectorLength;
-//      this.index = 0;
-//
-//      // apply
-//      int charSize;
-//      final char[] holder = new char[2];
-//      for(final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
-//        charSize = Character.toChars(it.nextInt(), holder, 0);
-//        Component comp = Component.text(new String(holder, 0, charSize));
-//        comp = this.merge(comp, current);
-//        comp = comp.color(this.color());
-//        parent.append(comp);
-//      }
-//
-//      return null;
-//    }
-//
-//    throw new ParsingException("Expected TextComponent, got: " + current.getClass().toString(), -1);
+    //    if(current instanceof TextComponent) {
+    //      final TextComponent textComponent = (TextComponent) current;
+    //      final String content = textComponent.content();
+    //
+    //      // init
+    //      final int size = content.length();
+    //      final int sectorLength = size / (this.colors.length - 1);
+    //      this.factorStep = 1.0f / (sectorLength + this.index);
+    //      this.phase = this.phase * sectorLength;
+    //      this.index = 0;
+    //
+    //      // apply
+    //      int charSize;
+    //      final char[] holder = new char[2];
+    //      for(final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
+    //        charSize = Character.toChars(it.nextInt(), holder, 0);
+    //        Component comp = Component.text(new String(holder, 0, charSize));
+    //        comp = this.merge(comp, current);
+    //        comp = comp.color(this.color());
+    //        parent.append(comp);
+    //      }
+    //
+    //      return null;
+    //    }
+    //
+    //    throw new ParsingException("Expected TextComponent, got: " + current.getClass().toString(), -1);
     return Component.empty(); // TODO gradient
   }
 

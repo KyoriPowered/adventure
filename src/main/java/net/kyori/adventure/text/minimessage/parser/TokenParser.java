@@ -33,13 +33,25 @@ import net.kyori.adventure.text.minimessage.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.parser.node.TextNode;
 
+/**
+ * Handles parsing a string into a tree of tokens and then into a tree of nodes.
+ *
+ * @since 4.2.0
+ */
 public final class TokenParser {
 
   private TokenParser() {
   }
 
   // TODO remove - easy test harness
-  public static void main(String[] args) {
+
+  /**
+   * Remove me.
+   *
+   * @param args blah
+   * @since 4.2.0
+   */
+  public static void main(final String[] args) {
     final List<String> list = Arrays.asList(
         "<gray><<yellow>TEST<gray>> Woooo << double <3",
         "<red>ONE<two><blue>THREE<four><five>",
@@ -62,6 +74,13 @@ public final class TokenParser {
     }
   }
 
+  /**
+   * Parse a minimessage string into a tree of nodes.
+   *
+   * @param message the minimessage string to parse
+   * @return the root of the resulting tree
+   * @since 4.2.0
+   */
   public static ElementNode parse(final String message) {
     final List<Token> tokens = parseFirstPass(message);
     parseSecondPass(message, tokens);
