@@ -238,7 +238,7 @@ class MiniMessageParser {
       comp = this.handleModifying((Modifying) transformation, Component.empty(), comp);
     }
 
-    // if root is empty, lift its only child up
+    // if root is empty, lift its only child up // TODO if only one text component (!) child, we can merge them, combining their styling and events and stuff.
     if(comp instanceof TextComponent) {
       final TextComponent root = (TextComponent) comp;
       if(root.content().isEmpty() && root.children().size() == 1 && !root.hasStyling() && root.hoverEvent() == null && root.clickEvent() == null) {
