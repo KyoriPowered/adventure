@@ -61,7 +61,19 @@ public final class TokenParser {
         "Click <yellow><pre><insert:test>this</pre> to <red>insert!",
         "Click <yellow><insert:test>this<rainbow> wooo<reset> to insert!",
         "<dark_gray>»<gray> To download it from the internet, <click:open_url:https://www.google.com><hover:show_text:'<green>/!\\\\ install it from \\'Options/ResourcePacks\\' in your game'><green><bold>CLICK HERE</bold></hover></click>",
-        "<yellow><test> random <gradient:red:blue:green><bold>stranger</gradient></bold><click:run_command:test command><underlined><red>click here</click><blue> to <rainbow><b>FEEL</rainbow></underlined> it"
+        "<yellow><test> random <gradient:red:blue:green><bold>stranger</gradient></bold><click:run_command:test command><underlined><red>click here</click><blue> to <rainbow><b>FEEL</rainbow></underlined> it",
+        "<gray>\\<<yellow><player><gray>> <reset><pre><message></pre>",
+        "<gray><<yellow><player><gray>> <reset><pre><message></pre>",
+        "<gray><<yellow><player><gray>> <reset><pre><message>",
+        "<hover:show_text:'<blue>Hello</blue>'<red>TEST</red></hover><click:suggest_command:'/msg <user>'><user></click> <reset>: <hover:show_text:'<date>'><message></hover>",
+        "<red is already created! Try different name! :)",
+        "<lang:test:'\"\"'>",
+        "<lang:test:'\\'\\''>",
+        "<lang:test:\"''\">",
+        "<lang:test:\"\\\"\\\"\">",
+        "<gray><arg1></gray><red><arg2></red><blue><arg3></blue> <green><arg4>",
+        "<<<<>>><><><><><>>>><<<>>>>><red><><><><><><><><<<<<reset>>>>>>><<<<><<<<<>>>>>><>>>",
+        "<<'\\''\\<'>'><3'<>< '>"
     );
 
     for(final String s : list) {
@@ -132,6 +144,12 @@ public final class TokenParser {
         case TAG:
           switch(codePoint) {
             case '>':
+              if (i == marker + 1) {
+                // This is empty, <>, so it's not a tag
+                state = FirstPassState.NORMAL;
+                break;
+              }
+
               // We found a tag
               if(currentTokenEnd != marker) {
                 // anything not matched up to this point is normal text
@@ -210,8 +228,6 @@ public final class TokenParser {
    */
   @SuppressWarnings("DuplicatedCode")
   private static void parseSecondPass(final String message, final List<Token> tokens) {
-    boolean disabled = false;
-
     for(final Token token : tokens) {
       final TokenType type = token.type();
       if(type != TokenType.OPEN_TAG && type != TokenType.CLOSE_TAG) {
@@ -221,25 +237,6 @@ public final class TokenParser {
       // Only look inside the tag <[/] and >
       final int startIndex = type == TokenType.OPEN_TAG ? token.startIndex() + 1 : token.startIndex() + 2;
       final int endIndex = token.endIndex() - 1;
-
-      // "pre" tags disable parsing
-      if(endIndex - startIndex == 3) {
-        if(message.regionMatches(startIndex, "pre", 0, 3)) {
-          insert(token, new Token(startIndex, endIndex, TokenType.TAG_VALUE));
-          disabled = !disabled;
-          continue;
-        }
-      }
-
-      if(disabled) {
-        continue;
-      }
-
-      // match <> to an empty string
-      if(startIndex == endIndex) {
-        insert(token, new Token(startIndex, endIndex, TokenType.TAG_VALUE));
-        continue;
-      }
 
       SecondPassState state = SecondPassState.NORMAL;
       boolean escaped = false;
@@ -318,8 +315,16 @@ public final class TokenParser {
 
       } else if(type == TokenType.OPEN_TAG) {
         final TagNode tagNode = new TagNode(node, token, message);
-        node.children().add(tagNode);
-        node = tagNode;
+        if(tagNode.name().equals("reset")) {
+          // <reset> tags get special treatment and don't appear in the tree
+          // instead, they close all currently open tags
+
+          // TODO <reset> tags are invalid if all closing tags are required
+          node = root;
+        } else {
+          node.children().add(tagNode);
+          node = tagNode;
+        }
 
       } else if(type == TokenType.CLOSE_TAG) {
         final List<Token> childTokens = token.childTokens();
@@ -331,7 +336,7 @@ public final class TokenParser {
 
         final ArrayList<String> closeValues = new ArrayList<>(childTokens.size());
         for(final Token childToken : childTokens) {
-          closeValues.add(TagPart.unquote(message.substring(childToken.startIndex(), childToken.endIndex())));
+          closeValues.add(TagPart.unquoteAndEscape(message, childToken.startIndex(), childToken.endIndex()));
         }
 
         ElementNode parentNode = node;
@@ -422,5 +427,45 @@ public final class TokenParser {
   enum SecondPassState {
     NORMAL,
     STRING
+  }
+
+  /**
+   * Removes escaping {@code '\`} characters from a substring. In general, this removes all {@code '\`} characters,
+   * though the pattern {@code '\\'} will be replaced with {@code '\'}.
+   *
+   * @param text the input text
+   * @param startIndex the starting index of the substring
+   * @param endIndex the ending index of the substring
+   * @return the output escaped substring
+   * @since 4.2.0
+   */
+  public static String unescape(final String text, final int startIndex, final int endIndex) {
+    int from = startIndex;
+
+    int i = text.indexOf('\\', from);
+    if(i == -1 || i >= endIndex) {
+      return text.substring(from, endIndex);
+    }
+
+    final StringBuilder sb = new StringBuilder(endIndex - startIndex);
+    while(i != -1 && i < endIndex) {
+      sb.append(text, from, i);
+      i++;
+      final int codePoint = text.codePointAt(i);
+      sb.appendCodePoint(codePoint);
+
+      if (Character.isBmpCodePoint(codePoint)) {
+        i += 1;
+      } else {
+        i += 2;
+      }
+
+      from = i;
+      i = text.indexOf('\\', from);
+    }
+
+    sb.append(text, from, endIndex);
+
+    return sb.toString();
   }
 }

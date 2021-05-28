@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.minimessage.parser.node;
 
 import net.kyori.adventure.text.minimessage.parser.Token;
+import net.kyori.adventure.text.minimessage.parser.TokenParser;
 
 /**
  * Represents an inner part of a tag.
@@ -43,7 +44,7 @@ public final class TagPart {
    * @since 4.2.0
    */
   public TagPart(final String sourceMessage, final Token token) {
-    this.value = unquote(sourceMessage.substring(token.startIndex(), token.endIndex()));
+    this.value = unquoteAndEscape(sourceMessage, token.startIndex(), token.endIndex());
     this.token = token;
   }
 
@@ -68,57 +69,31 @@ public final class TagPart {
   }
 
   /**
-   * Removes leading/trailing quotes from the given string, if necessary.
+   * Removes leading/trailing quotes from the given string, if necessary, and removes escaping {@code '\'} characters.
    *
    * @param text the input text
-   * @return the output
+   * @param start the starting index of the substring
+   * @param end the ending index of the substring
+   * @return the output substring
    * @since 4.2.0
    */
-  public static String unquote(final String text) {
-    int startIndex = 0;
-    int endIndex = text.length();
-
-    if(endIndex == 0) {
-      return text;
+  public static String unquoteAndEscape(final String text, final int start, final int end) {
+    if (start == end) {
+      return "";
     }
 
-    final char first = text.charAt(startIndex);
-    final char last = text.charAt(endIndex - 1);
-    if(first == '\'' || first == '"') {
+    int startIndex = start;
+    int endIndex = end;
+
+    final char firstChar = text.charAt(startIndex);
+    final char lastChar = text.charAt(endIndex - 1);
+    if(firstChar == '\'' || firstChar == '"') {
       startIndex++;
     }
-    if(last == '\'' || last == '"') {
+    if(lastChar == '\'' || lastChar == '"') {
       endIndex--;
     }
 
-    return unescape(text, startIndex, endIndex);
-  }
-
-  private static String unescape(final String text, final int start, final int end) {
-    int from = start;
-    int i = text.indexOf('\\', from);
-    if(i == -1 || i >= end) {
-      return text.substring(from, end);
-    }
-
-    final StringBuilder sb = new StringBuilder();
-    while(i != -1 && i < end) {
-      sb.append(text, from, i);
-      i++;
-      final int codePoint = text.codePointAt(i);
-      sb.appendCodePoint(codePoint);
-
-      i++;
-      if(!Character.isBmpCodePoint(codePoint)) {
-        i++;
-      }
-
-      from = i;
-      i = text.indexOf('\\', from);
-    }
-
-    sb.append(text, from, end);
-
-    return sb.toString();
+    return TokenParser.unescape(text, startIndex, endIndex);
   }
 }

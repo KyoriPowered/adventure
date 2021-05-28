@@ -96,7 +96,7 @@ public class ElementNode {
   }
 
   /**
-   * Serializes this note to a string.
+   * Serializes this node to a string.
    *
    * @param sb the string builder to serialize into
    * @param indent the current indent level

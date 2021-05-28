@@ -465,8 +465,8 @@ public class MiniMessageParserTest {
 
   @Test
   void testBackSpace() {
-    final String input = "\\\\!/ IMPORTANT \\!/";
-    final Component expected = text("\\\\!/ IMPORTANT \\!/");
+    final String input = "\\\\!/ IMPORTANT \\\\!/";
+    final Component expected = text("\\!/ IMPORTANT \\!/");
 
     assertParsedEquals(expected, input);
   }

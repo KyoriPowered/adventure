@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.minimessage.parser.node;
 
 import net.kyori.adventure.text.minimessage.parser.Token;
+import net.kyori.adventure.text.minimessage.parser.TokenParser;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -45,11 +46,11 @@ public class ErrorNode extends ElementNode {
    */
   public ErrorNode(final ElementNode parent, final Token token, final String sourceMessage) {
     super(parent, token, sourceMessage);
-    this.value = sourceMessage.substring(token.startIndex(), token.endIndex()).replace("\\", "");
+    this.value = TokenParser.unescape(sourceMessage, token.startIndex(), token.endIndex());
   }
 
   /**
-   * Serializes this note to a string.
+   * Serializes this node to a string.
    *
    * @param sb the string builder to serialize into
    * @param indent the current indent level
