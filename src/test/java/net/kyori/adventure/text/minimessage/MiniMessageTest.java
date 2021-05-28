@@ -23,13 +23,11 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.transformation.TransformationType;
-
 import org.junit.jupiter.api.Test;
-
-import java.util.function.Function;
 
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
@@ -83,17 +81,17 @@ public class MiniMessageTest {
   @Test
   void testObjectPlaceholders() {
     final Component expected = empty().color(RED)
-            .append(text("ONE"))
-            .append(text("TWO", GREEN)
-                    .append(empty().color(BLUE)
-                            .append(text("THREEFOUR"))
-                            .append(text("FIVE", YELLOW))
-                    )
-            );
+      .append(text("ONE"))
+      .append(text("TWO", GREEN)
+        .append(empty().color(BLUE)
+          .append(text("THREEFOUR"))
+          .append(text("FIVE", YELLOW))
+        )
+      );
     final Component result = MiniMessage.get().parse("<red>ONE<two><blue>THREE<four><five>",
-            "two", text("TWO", GREEN),
-            "four", "FOUR",
-            "five", text("FIVE", YELLOW));
+      "two", text("TWO", GREEN),
+      "four", "FOUR",
+      "five", text("FIVE", YELLOW));
 
     assertEquals(expected, result);
   }
@@ -101,9 +99,9 @@ public class MiniMessageTest {
   @Test
   void testObjectPlaceholdersUnbalanced() {
     assertThrows(IllegalArgumentException.class, () -> MiniMessage.get().parse("<red>ONE<two><blue>THREE<four><five>",
-            "two", text("TWO", GREEN),
-            "four", "FOUR",
-            "five"));
+      "two", text("TWO", GREEN),
+      "four", "FOUR",
+      "five"));
   }
 
   @Test
@@ -141,10 +139,10 @@ public class MiniMessageTest {
   @Test
   void testTemplateComponentMixed() {
     final Component expected = empty().color(GREEN)
-            .append(empty().decorate(BOLD)
-                    .append(text("TEST", style(RED, UNDERLINED)))
-                    .append(text("Test2"))
-            );
+      .append(empty().decorate(BOLD)
+        .append(text("TEST", style(RED, UNDERLINED)))
+        .append(text("Test2"))
+      );
 
     final Template t1 = Template.of("test", text("TEST", style(RED, UNDERLINED)));
     final Template t2 = Template.of("test2", "Test2");
@@ -153,10 +151,11 @@ public class MiniMessageTest {
     assertEquals(expected, result);
   }
 
-  @Test // GH-103
+  @Test
+    // GH-103
   void testTemplateInHover() {
     final Component expected = empty().hoverEvent(showText(empty().color(color(0xff0000)).append(text("[Plugin]"))))
-                    .append(text("This is a test message."));
+      .append(text("This is a test message."));
     final Component result = MiniMessage.get().parse("<hover:show_text:'<prefix>'>This is a test message.", Template.of("prefix", MiniMessage.get().parse("<#FF0000>[Plugin]<reset>")));
 
     assertEquals(expected, result);
@@ -204,10 +203,10 @@ public class MiniMessageTest {
     final Component expected = text("A").append(text("B").append(text("C")));
 
     final Component result = MiniMessage.get().parse(
-            "<a><b><_c>",
-            "a", text("A"),
-            "b", text("B"),
-            "_c", text("C")
+      "<a><b><_c>",
+      "a", text("A"),
+      "b", text("B"),
+      "_c", text("C")
     );
 
     assertEquals(expected, result);
@@ -219,15 +218,16 @@ public class MiniMessageTest {
     assertEquals(expected, assertThrows(IllegalArgumentException.class, () -> MiniMessage.get().parse("<a>", "a", 2)).getMessage());
   }
 
-  @Test // GH-98
+  @Test
+    // GH-98
   void testTemplateInsideOfPre() {
     final Component expected = empty().color(RED)
-            .append(text("MiniDigger")
-                    .append(empty().color(GRAY)
-                            .append(text(": "))
-                            .append(text("<red><message>"))
-                    )
-            );
+      .append(text("MiniDigger")
+        .append(empty().color(GRAY)
+          .append(text(": "))
+          .append(text("<red><message>"))
+        )
+      );
     final String input = "<red><username><gray>: <pre><red><message>";
 
     final Component result = MiniMessage.get().parse(input, Template.of("username", text("MiniDigger")), Template.of("message", text("Hello world")));
@@ -235,21 +235,22 @@ public class MiniMessageTest {
     assertEquals(expected, result);
   }
 
-  @Test // GH-97
+  @Test
+    // GH-97
   void testUnsafePre() {
     final Component expected = empty().color(RED)
-            .append(text("MiniDigger")
-                            .append(empty().color(GRAY)
-                                    .append(text(": "))
-                                    .append(text("<red><message>"))
-                            )
-            );
+      .append(text("MiniDigger")
+        .append(empty().color(GRAY)
+          .append(text(": "))
+          .append(text("<red><message>"))
+        )
+      );
     final Component expected2 = empty().color(RED)
-            .append(text("MiniDigger"))
-            .append(empty().color(GRAY)
-                    .append(text(": "))
-                    .append(text("<red></pre><red>Test"))
-            );
+      .append(text("MiniDigger"))
+      .append(empty().color(GRAY)
+        .append(text(": "))
+        .append(text("<red></pre><red>Test"))
+      );
     final String input = "<red><username><gray>: <pre><red><message>";
 
     final Component result1 = MiniMessage.get().parse(input, Template.of("username", text("MiniDigger")), Template.of("message", text("</pre><red>Test")));
@@ -265,8 +266,8 @@ public class MiniMessageTest {
   @Test
   void testLazyTemplate() {
     final Component expected = empty()
-            .append(text("This is a "))
-            .append(text("TEST"));
+      .append(text("This is a "))
+      .append(text("TEST"));
     final String input = "This is a <test>";
 
     final Component result = MiniMessage.get().parse(input, Template.of("test", () -> text("TEST")));

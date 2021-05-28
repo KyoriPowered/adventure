@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MiniMarkdownParserTest {
 
-  private MarkdownFlavor markdownFlavor = LegacyFlavor.get();
+  private final MarkdownFlavor markdownFlavor = LegacyFlavor.get();
 
   @Test
   void testBold() {

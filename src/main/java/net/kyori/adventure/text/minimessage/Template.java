@@ -23,15 +23,13 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 /**
  * A placeholder in a message, that can be either replaced by a string or a component.
@@ -106,8 +104,8 @@ public interface Template extends Examinable {
     @Override
     public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
-              ExaminableProperty.of("key", this.key),
-              ExaminableProperty.of("value", this.value)
+        ExaminableProperty.of("key", this.key),
+        ExaminableProperty.of("value", this.value)
       );
     }
   }
@@ -147,8 +145,8 @@ public interface Template extends Examinable {
     @Override
     public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
-              ExaminableProperty.of("key", this.key),
-              ExaminableProperty.of("value", this.value)
+        ExaminableProperty.of("key", this.key),
+        ExaminableProperty.of("value", this.value)
       );
     }
   }
@@ -174,8 +172,8 @@ public interface Template extends Examinable {
     @Override
     public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
-              ExaminableProperty.of("key", this.key),
-              ExaminableProperty.of("value", this.value.get())
+        ExaminableProperty.of("key", this.key),
+        ExaminableProperty.of("value", this.value.get())
       );
     }
   }

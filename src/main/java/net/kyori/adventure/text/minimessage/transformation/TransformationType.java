@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.transformation;
 
+import java.util.function.Predicate;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.ClickTransformation;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.ColorTransformation;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.DecorationTransformation;
@@ -35,8 +36,6 @@ import net.kyori.adventure.text.minimessage.transformation.inbuild.PreTransforma
 import net.kyori.adventure.text.minimessage.transformation.inbuild.RainbowTransformation;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.ResetTransformation;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.TranslatableTransformation;
-
-import java.util.function.Predicate;
 
 /**
  * Available types of transformation.

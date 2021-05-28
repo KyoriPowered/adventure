@@ -24,7 +24,6 @@
 package net.kyori.adventure.text.minimessage;
 
 import net.kyori.adventure.text.Component;
-
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -75,7 +74,7 @@ public class Context {
    * @return the debug context
    * @since 4.1.0
    */
-  public static Context of(final boolean strict, final String input, final MiniMessageImpl miniMessage, @NonNull final Template @Nullable[] templates) {
+  public static Context of(final boolean strict, final String input, final MiniMessageImpl miniMessage, @NonNull final Template @Nullable [] templates) {
     return new Context(strict, null, input, null, miniMessage, templates);
   }
 

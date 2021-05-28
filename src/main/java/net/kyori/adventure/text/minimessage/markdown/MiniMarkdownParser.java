@@ -23,17 +23,15 @@
  */
 package net.kyori.adventure.text.minimessage.markdown;
 
-import net.kyori.adventure.text.minimessage.Tokens;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
+import net.kyori.adventure.text.minimessage.Tokens;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Internal class for markdown handling.

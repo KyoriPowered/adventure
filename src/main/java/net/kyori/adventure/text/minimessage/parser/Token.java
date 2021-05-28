@@ -105,9 +105,9 @@ public final class Token {
   @Override
   public String toString() {
     return "Token{" +
-        "startIndex=" + this.startIndex +
-        ", endIndex=" + this.endIndex +
-        ", type=" + this.type +
-        '}';
+      "startIndex=" + this.startIndex +
+      ", endIndex=" + this.endIndex +
+      ", type=" + this.type +
+      '}';
   }
 }

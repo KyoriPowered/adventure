@@ -23,6 +23,9 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.KeybindComponent;
@@ -34,13 +37,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
 
 import static net.kyori.adventure.text.minimessage.Tokens.BOLD;
 import static net.kyori.adventure.text.minimessage.Tokens.CLICK;
@@ -244,7 +242,7 @@ final class MiniMessageSerializer {
       } else {
         displayName = "";
       }
-      sb.append(startTag(HOVER + SEPARATOR + HoverEvent.Action.NAMES.key(hov.action()) + SEPARATOR + "'" + showEntity.type().asString() + "'" + SEPARATOR + showEntity.id().toString() + displayName));
+      sb.append(startTag(HOVER + SEPARATOR + HoverEvent.Action.NAMES.key(hov.action()) + SEPARATOR + "'" + showEntity.type().asString() + "'" + SEPARATOR + showEntity.id() + displayName));
     } else {
       throw new RuntimeException("Don't know how to serialize '" + hov + "'!");
     }
@@ -291,9 +289,9 @@ final class MiniMessageSerializer {
       final StringBuilder args = new StringBuilder();
       for(final Component arg : ((TranslatableComponent) component).args()) {
         args.append(SEPARATOR)
-                .append("\"")
-                .append(serialize(arg).replace("\"", "\\\""))
-                .append("\"");
+          .append("\"")
+          .append(serialize(arg).replace("\"", "\\\""))
+          .append("\"");
       }
       sb.append(startTag(TRANSLATABLE + SEPARATOR + ((TranslatableComponent) component).key() + args));
     }

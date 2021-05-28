@@ -59,29 +59,29 @@ public final class TokenParser {
    */
   public static void main(final String[] args) {
     final List<String> list = Arrays.asList(
-        "<gray><<yellow>TEST<gray>> Woooo << double <3",
-        "<red>ONE<two><blue>THREE<four><five>",
-        "<hover:show_item:'minecraft:stone':5>test",
-        "<yellow>Woo: <gradient:red:blue:green:yellow:red>||||||||||||||||||||||||||||||||||||||||||||||||||||||</gradient>!",
-        "<yellow>Woo: <rainbow>||||||||||||||||||||||||</rainbow>!",
-        "Click <yellow><pre><insert:test>this</pre> to <red>insert!",
-        "Click <yellow><insert:test>this<rainbow> wooo<reset> to insert!",
-        "<dark_gray>»<gray> To download it from the internet, <click:open_url:https://www.google.com><hover:show_text:'<green>/!\\\\ install it from \\'Options/ResourcePacks\\' in your game'><green><bold>CLICK HERE</bold></hover></click>",
-        "<yellow><test> random <gradient:red:blue:green><bold>stranger</gradient></bold><click:run_command:test command><underlined><red>click here</click><blue> to <rainbow><b>FEEL</rainbow></underlined> it",
-        "<gray>\\<<yellow><player><gray>> <reset><pre><message></pre>",
-        "<gray><<yellow><player><gray>> <reset><pre><message></pre>",
-        "<gray><<yellow><player><gray>> <reset><pre><message>",
-        "<hover:show_text:'<blue>Hello</blue>'<red>TEST</red></hover><click:suggest_command:'/msg <user>'><user></click> <reset>: <hover:show_text:'<date>'><message></hover>",
-        "<red is already created! Try different name! :)",
-        "<lang:test:'\"\"'>",
-        "<lang:test:'\\'\\''>",
-        "<lang:test:\"''\">",
-        "<lang:test:\"\\\"\\\"\">",
-        "<gray><arg1></gray><red><arg2></red><blue><arg3></blue> <green><arg4>",
-        "<<<<>>><><><><><>>>><<<>>>>><red><><><><><><><><<<<<reset>>>>>>><<<<><<<<<>>>>>><>>>",
-        "<<'\\''\\<'>'><3'<>< '>",
-        "<pre><<'\\''\\<'>'><3'<>< '></pre</pre ></ pre></pre>",
-        "<<'\\''\\<<reset>'>'><3'<>< '>"
+      "<gray><<yellow>TEST<gray>> Woooo << double <3",
+      "<red>ONE<two><blue>THREE<four><five>",
+      "<hover:show_item:'minecraft:stone':5>test",
+      "<yellow>Woo: <gradient:red:blue:green:yellow:red>||||||||||||||||||||||||||||||||||||||||||||||||||||||</gradient>!",
+      "<yellow>Woo: <rainbow>||||||||||||||||||||||||</rainbow>!",
+      "Click <yellow><pre><insert:test>this</pre> to <red>insert!",
+      "Click <yellow><insert:test>this<rainbow> wooo<reset> to insert!",
+      "<dark_gray>»<gray> To download it from the internet, <click:open_url:https://www.google.com><hover:show_text:'<green>/!\\\\ install it from \\'Options/ResourcePacks\\' in your game'><green><bold>CLICK HERE</bold></hover></click>",
+      "<yellow><test> random <gradient:red:blue:green><bold>stranger</gradient></bold><click:run_command:test command><underlined><red>click here</click><blue> to <rainbow><b>FEEL</rainbow></underlined> it",
+      "<gray>\\<<yellow><player><gray>> <reset><pre><message></pre>",
+      "<gray><<yellow><player><gray>> <reset><pre><message></pre>",
+      "<gray><<yellow><player><gray>> <reset><pre><message>",
+      "<hover:show_text:'<blue>Hello</blue>'<red>TEST</red></hover><click:suggest_command:'/msg <user>'><user></click> <reset>: <hover:show_text:'<date>'><message></hover>",
+      "<red is already created! Try different name! :)",
+      "<lang:test:'\"\"'>",
+      "<lang:test:'\\'\\''>",
+      "<lang:test:\"''\">",
+      "<lang:test:\"\\\"\\\"\">",
+      "<gray><arg1></gray><red><arg2></red><blue><arg3></blue> <green><arg4>",
+      "<<<<>>><><><><><>>>><<<>>>>><red><><><><><><><><<<<<reset>>>>>>><<<<><<<<<>>>>>><>>>",
+      "<<'\\''\\<'>'><3'<>< '>",
+      "<pre><<'\\''\\<'>'><3'<>< '></pre</pre ></ pre></pre>",
+      "<<'\\''\\<<reset>'>'><3'<>< '>"
     );
 
     final TransformationRegistry registry = new TransformationRegistry();
@@ -153,7 +153,7 @@ public final class TokenParser {
         case TAG:
           switch(codePoint) {
             case '>':
-              if (i == marker + 1) {
+              if(i == marker + 1) {
                 // This is empty, <>, so it's not a tag
                 state = FirstPassState.NORMAL;
                 break;
@@ -332,7 +332,7 @@ public final class TokenParser {
 
             // TODO <reset> tags are invalid if all closing tags are required
             node = root;
-          } else if (tagNode.name().equals("pre")) {
+          } else if(tagNode.name().equals("pre")) {
             // <pre> tags also get special treatment and don't appear in the tree
             // anything inside <pre> is raw text, so just skip
 
@@ -341,7 +341,7 @@ public final class TokenParser {
             if(registry.exists(tagNode.name())) {
               node.addChild(tagNode);
               node = tagNode;
-            } else if (templates.containsKey(tagNode.name())) {
+            } else if(templates.containsKey(tagNode.name())) {
               // TODO What to do if a template has multiple parts?
               node.addChild(new TemplateNode(node, token, message));
             } else {
@@ -355,7 +355,7 @@ public final class TokenParser {
           final List<Token> childTokens = token.childTokens();
           if(childTokens.isEmpty()) {
             throw new IllegalStateException("CLOSE_TAG token somehow has no children - " +
-                "the parser should not allow this. Original text: " + message);
+              "the parser should not allow this. Original text: " + message);
           }
 
           final ArrayList<String> closeValues = new ArrayList<>(childTokens.size());
@@ -364,12 +364,12 @@ public final class TokenParser {
           }
 
           final String closeTagName = closeValues.get(0);
-          if (closeTagName.equals("reset") || closeTagName.equals("pre")) {
+          if(closeTagName.equals("reset") || closeTagName.equals("pre")) {
             // These are synthetic nodes, closing them means nothing in the context of building a tree
             continue;
           }
 
-          if (!registry.exists(closeTagName)) {
+          if(!registry.exists(closeTagName)) {
             // tag does not exist, so treat it as text
             node.addChild(new TextNode(node, token, message));
             continue;
@@ -385,7 +385,7 @@ public final class TokenParser {
                 node = par;
               } else {
                 throw new IllegalStateException("Root node matched with close tag value, this should not be possible. " +
-                    "Original text: " + message);
+                  "Original text: " + message);
               }
               break;
             }
@@ -491,7 +491,7 @@ public final class TokenParser {
       final int codePoint = text.codePointAt(i);
       sb.appendCodePoint(codePoint);
 
-      if (Character.isBmpCodePoint(codePoint)) {
+      if(Character.isBmpCodePoint(codePoint)) {
         i += 1;
       } else {
         i += 2;

@@ -78,7 +78,7 @@ public final class TagPart {
    * @since 4.2.0
    */
   public static String unquoteAndEscape(final String text, final int start, final int end) {
-    if (start == end) {
+    if(start == end) {
       return "";
     }
 

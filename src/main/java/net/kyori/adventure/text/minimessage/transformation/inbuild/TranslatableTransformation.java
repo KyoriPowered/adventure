@@ -55,8 +55,8 @@ public class TranslatableTransformation extends Transformation implements Insert
    */
   public static boolean canParse(final String name) {
     return name.equalsIgnoreCase(Tokens.TRANSLATABLE)
-           || name.equalsIgnoreCase(Tokens.TRANSLATABLE_2)
-           || name.equalsIgnoreCase(Tokens.TRANSLATABLE_3);
+      || name.equalsIgnoreCase(Tokens.TRANSLATABLE_2)
+      || name.equalsIgnoreCase(Tokens.TRANSLATABLE_3);
   }
 
   private String key;
@@ -90,8 +90,8 @@ public class TranslatableTransformation extends Transformation implements Insert
   @Override
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
-            ExaminableProperty.of("key", this.key),
-            ExaminableProperty.of("inners", this.inners)
+      ExaminableProperty.of("key", this.key),
+      ExaminableProperty.of("inners", this.inners)
     );
   }
 

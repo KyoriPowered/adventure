@@ -98,11 +98,11 @@ public class ElementNode {
 
   public void addChild(final ElementNode childNode) {
     final int last = this.children.size() - 1;
-    if (!(childNode instanceof TextNode) || this.children.isEmpty() || !(this.children.get(last) instanceof TextNode)) {
+    if(!(childNode instanceof TextNode) || this.children.isEmpty() || !(this.children.get(last) instanceof TextNode)) {
       this.children.add(childNode);
     } else {
       final TextNode lastNode = (TextNode) this.children.remove(last);
-      if (lastNode.token().endIndex() == childNode.token().startIndex()) {
+      if(lastNode.token().endIndex() == childNode.token().startIndex()) {
         this.children.add(new TextNode(this, new Token(lastNode.token().startIndex(), childNode.token().endIndex(), TokenType.TEXT), lastNode.sourceMessage()));
       } else {
         // These nodes aren't adjacent in the string, so put the last one back

@@ -47,7 +47,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public final class ColorTransformation extends Transformation {
 
-  private static Map<String, String> colorAliases = new HashMap<>();
+  private static final Map<String, String> colorAliases = new HashMap<>();
 
   static {
     colorAliases.put("dark_grey", "dark_gray");

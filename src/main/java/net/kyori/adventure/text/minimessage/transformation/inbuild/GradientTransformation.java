@@ -120,13 +120,13 @@ public final class GradientTransformation extends Transformation implements Modi
         Collections.reverse(Arrays.asList(this.colors));
       }
     } else {
-      this.colors = new TextColor[] {TextColor.fromHexString("#ffffff"), TextColor.fromHexString("#000000")};
+      this.colors = new TextColor[]{TextColor.fromHexString("#ffffff"), TextColor.fromHexString("#000000")};
     }
   }
 
   @Override
   public void visit(ElementNode curr) {
-    if (curr instanceof TextNode) {
+    if(curr instanceof TextNode) {
       size += ((TextNode) curr).value().length();
     }
   }
@@ -144,22 +144,22 @@ public final class GradientTransformation extends Transformation implements Modi
 
   @Override
   public Component apply(Component current, Component parent) {
-     if(current instanceof TextComponent && ((TextComponent) current).content().length() > 0) {
-       final TextComponent textComponent = (TextComponent) current;
-       final String content = textComponent.content();
+    if(current instanceof TextComponent && ((TextComponent) current).content().length() > 0) {
+      final TextComponent textComponent = (TextComponent) current;
+      final String content = textComponent.content();
 
-       // apply
-       int charSize;
-       final char[] holder = new char[2];
-       for(final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
-         charSize = Character.toChars(it.nextInt(), holder, 0);
-         final Component comp = Component.text(new String(holder, 0, charSize), this.color());
-         parent = parent.append(comp);
-       }
+      // apply
+      int charSize;
+      final char[] holder = new char[2];
+      for(final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext(); ) {
+        charSize = Character.toChars(it.nextInt(), holder, 0);
+        final Component comp = Component.text(new String(holder, 0, charSize), this.color());
+        parent = parent.append(comp);
+      }
 
-       return parent;
-     }
-     return Component.empty().mergeStyle(current);
+      return parent;
+    }
+    return Component.empty().mergeStyle(current);
   }
 
   private TextColor color() {
@@ -185,17 +185,17 @@ public final class GradientTransformation extends Transformation implements Modi
 
   private TextColor interpolate(final TextColor color1, final TextColor color2, final float factor) {
     return TextColor.color(
-            Math.round(color1.red() + factor * (color2.red() - color1.red())),
-            Math.round(color1.green() + factor * (color2.green() - color1.green())),
-            Math.round(color1.blue() + factor * (color2.blue() - color1.blue()))
+      Math.round(color1.red() + factor * (color2.red() - color1.red())),
+      Math.round(color1.green() + factor * (color2.green() - color1.green())),
+      Math.round(color1.blue() + factor * (color2.blue() - color1.blue()))
     );
   }
 
   @Override
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
-            ExaminableProperty.of("phase", this.phase),
-            ExaminableProperty.of("colors", this.colors)
+      ExaminableProperty.of("phase", this.phase),
+      ExaminableProperty.of("colors", this.colors)
     );
   }
 

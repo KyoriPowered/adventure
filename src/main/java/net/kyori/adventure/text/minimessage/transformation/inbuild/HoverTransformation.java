@@ -23,7 +23,11 @@
  */
 package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import net.kyori.adventure.key.InvalidKeyException;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
@@ -35,13 +39,7 @@ import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
-import java.util.stream.Stream;
 
 /**
  * A transformation that applies a {@link HoverEvent}.
@@ -136,8 +134,8 @@ public final class HoverTransformation extends Transformation {
   @Override
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
-            ExaminableProperty.of("action", this.action),
-            ExaminableProperty.of("value", this.value)
+      ExaminableProperty.of("action", this.action),
+      ExaminableProperty.of("value", this.value)
     );
   }
 

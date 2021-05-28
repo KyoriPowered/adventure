@@ -23,15 +23,13 @@
  */
 package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
+import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.util.stream.Stream;
 
 /**
  * Ends any ongoing formatting.

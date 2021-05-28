@@ -23,6 +23,9 @@
  */
 package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
@@ -31,12 +34,7 @@ import net.kyori.adventure.text.minimessage.transformation.Inserting;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Stream;
 
 /**
  * A transformation that inserts a key binding component.

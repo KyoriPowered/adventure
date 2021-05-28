@@ -5,7 +5,7 @@ import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 
 public interface Modifying {
 
-    void visit(ElementNode curr);
+  void visit(ElementNode curr);
 
-    Component apply(Component curr, Component parent);
+  Component apply(Component curr, Component parent);
 }

@@ -28,14 +28,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.Template;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.TemplateTransformation;
-
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -144,10 +142,10 @@ public final class TransformationRegistry {
       }
       // TODO nicer message format?
       final List<String> errorMessage = new ArrayList<>(Arrays.asList(
-              "[MiniMessage] Encountered parse exception while trying to load " + transformation.getClass().getSimpleName(),
-              "\tmsg=" + exception.getMessage(),
-              "\twith name=" + name + " and inners=" + inners + "",
-              "\tinput=" + context.ogMessage()
+        "[MiniMessage] Encountered parse exception while trying to load " + transformation.getClass().getSimpleName(),
+        "\tmsg=" + exception.getMessage(),
+        "\twith name=" + name + " and inners=" + inners + "",
+        "\tinput=" + context.ogMessage()
       ));
       if(context.replacedMessage() != null) {
         errorMessage.add("\twith placeholders=" + context.replacedMessage());

@@ -23,24 +23,6 @@
  */
 package net.kyori.adventure.text.minimessage;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentBuilder;
-import net.kyori.adventure.text.ComponentLike;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.minimessage.parser.TokenParser;
-import net.kyori.adventure.text.minimessage.parser.node.ComponentNode;
-import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
-import net.kyori.adventure.text.minimessage.parser.node.TagNode;
-import net.kyori.adventure.text.minimessage.parser.node.TemplateNode;
-import net.kyori.adventure.text.minimessage.parser.node.TextNode;
-import net.kyori.adventure.text.minimessage.transformation.Modifying;
-import net.kyori.adventure.text.minimessage.transformation.Transformation;
-import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
-
-import net.kyori.adventure.text.minimessage.transformation.inbuild.TemplateTransformation;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.units.qual.C;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -49,6 +31,17 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.minimessage.parser.TokenParser;
+import net.kyori.adventure.text.minimessage.parser.node.ComponentNode;
+import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
+import net.kyori.adventure.text.minimessage.parser.node.TextNode;
+import net.kyori.adventure.text.minimessage.transformation.Modifying;
+import net.kyori.adventure.text.minimessage.transformation.Transformation;
+import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static net.kyori.adventure.text.minimessage.Tokens.TAG_END;
 import static net.kyori.adventure.text.minimessage.Tokens.TAG_START;
@@ -224,7 +217,7 @@ class MiniMessageParser {
 
           // first walk the tree
           LinkedList<ElementNode> toVisit = new LinkedList<>(node.children());
-          while (!toVisit.isEmpty()) {
+          while(!toVisit.isEmpty()) {
             ElementNode curr = toVisit.removeFirst();
             modTransformation.visit(curr);
             toVisit.addAll(0, curr.children());
@@ -257,11 +250,11 @@ class MiniMessageParser {
   }
 
   private Component handleModifying(Modifying modTransformation, Component parent, Component current) {
-    if (current.children().isEmpty()) {
+    if(current.children().isEmpty()) {
       return modTransformation.apply(current, parent);
     } else {
       Component newParent = modTransformation.apply(current, parent);
-      for (Component child : current.children()) {
+      for(Component child : current.children()) {
         newParent = handleModifying(modTransformation, newParent, child);
       }
       return parent.append(newParent);
