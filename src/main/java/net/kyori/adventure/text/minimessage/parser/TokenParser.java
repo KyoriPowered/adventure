@@ -26,12 +26,18 @@ package net.kyori.adventure.text.minimessage.parser;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import net.kyori.adventure.text.minimessage.Template;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
-import net.kyori.adventure.text.minimessage.parser.node.ErrorNode;
+import net.kyori.adventure.text.minimessage.parser.node.RootNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
+import net.kyori.adventure.text.minimessage.parser.node.TemplateNode;
 import net.kyori.adventure.text.minimessage.parser.node.TextNode;
+import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Handles parsing a string into a tree of tokens and then into a tree of nodes.
@@ -73,15 +79,18 @@ public final class TokenParser {
         "<lang:test:\"\\\"\\\"\">",
         "<gray><arg1></gray><red><arg2></red><blue><arg3></blue> <green><arg4>",
         "<<<<>>><><><><><>>>><<<>>>>><red><><><><><><><><<<<<reset>>>>>>><<<<><<<<<>>>>>><>>>",
-        "<<'\\''\\<'>'><3'<>< '>"
+        "<<'\\''\\<'>'><3'<>< '>",
+        "<pre><<'\\''\\<'>'><3'<>< '></pre</pre ></ pre></pre>",
+        "<<'\\''\\<<reset>'>'><3'<>< '>"
     );
 
+    final TransformationRegistry registry = new TransformationRegistry();
     for(final String s : list) {
       System.out.println();
       System.out.println();
       System.out.println(s);
       System.out.println();
-      final ElementNode el = parse(s);
+      final ElementNode el = parse(registry, new HashMap<>(), s);
       System.out.println(el);
     }
   }
@@ -93,11 +102,11 @@ public final class TokenParser {
    * @return the root of the resulting tree
    * @since 4.2.0
    */
-  public static ElementNode parse(final String message) {
+  public static ElementNode parse(final @NonNull TransformationRegistry registry, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull String message) {
     final List<Token> tokens = parseFirstPass(message);
     parseSecondPass(message, tokens);
 
-    return buildTree(tokens, message);
+    return buildTree(registry, templates, tokens, message);
   }
 
   /*
@@ -304,64 +313,92 @@ public final class TokenParser {
   /*
    * Build a tree from the OPEN_TAG and CLOSE_TAG tokens
    */
-  private static ElementNode buildTree(final List<Token> tokens, final String message) {
-    final ElementNode root = new ElementNode(null, null, message);
+  private static ElementNode buildTree(final @NonNull TransformationRegistry registry, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull List<Token> tokens, final @NonNull String message) {
+    final RootNode root = new RootNode(message);
     ElementNode node = root;
 
     for(final Token token : tokens) {
       final TokenType type = token.type();
-      if(type == TokenType.TEXT) {
-        node.children().add(new TextNode(node, token, message));
+      switch(type) {
+        case TEXT:
+          node.addChild(new TextNode(node, token, message));
+          break;
 
-      } else if(type == TokenType.OPEN_TAG) {
-        final TagNode tagNode = new TagNode(node, token, message);
-        if(tagNode.name().equals("reset")) {
-          // <reset> tags get special treatment and don't appear in the tree
-          // instead, they close all currently open tags
+        case OPEN_TAG:
+          final TagNode tagNode = new TagNode(node, token, message);
+          if(tagNode.name().equals("reset")) {
+            // <reset> tags get special treatment and don't appear in the tree
+            // instead, they close all currently open tags
 
-          // TODO <reset> tags are invalid if all closing tags are required
-          node = root;
-        } else {
-          node.children().add(tagNode);
-          node = tagNode;
-        }
+            // TODO <reset> tags are invalid if all closing tags are required
+            node = root;
+          } else if (tagNode.name().equals("pre")) {
+            // <pre> tags also get special treatment and don't appear in the tree
+            // anything inside <pre> is raw text, so just skip
 
-      } else if(type == TokenType.CLOSE_TAG) {
-        final List<Token> childTokens = token.childTokens();
-        if(childTokens.isEmpty()) {
-          // TODO error or not depends on strict parsing
-          node.children().add(new ErrorNode(node, token, message));
-          continue;
-        }
-
-        final ArrayList<String> closeValues = new ArrayList<>(childTokens.size());
-        for(final Token childToken : childTokens) {
-          closeValues.add(TagPart.unquoteAndEscape(message, childToken.startIndex(), childToken.endIndex()));
-        }
-
-        ElementNode parentNode = node;
-        while(parentNode instanceof TagNode) {
-          final List<TagPart> openParts = ((TagNode) parentNode).parts();
-
-          if(tagCloses(closeValues, openParts)) {
-            final ElementNode par = parentNode.parent();
-            if(par != null) {
-              node = par;
+            continue;
+          } else {
+            if(registry.exists(tagNode.name())) {
+              node.addChild(tagNode);
+              node = tagNode;
+            } else if (templates.containsKey(tagNode.name())) {
+              // TODO What to do if a template has multiple parts?
+              node.addChild(new TemplateNode(node, token, message));
             } else {
-              throw new IllegalStateException("Root node matched with close tag value, this should not be possible. " +
-                  "Original text: " + message);
+              // tag does not exist, so treat it as text
+              node.addChild(new TextNode(node, token, message));
             }
-            break;
+          }
+          break; // OPEN_TAG
+
+        case CLOSE_TAG:
+          final List<Token> childTokens = token.childTokens();
+          if(childTokens.isEmpty()) {
+            throw new IllegalStateException("CLOSE_TAG token somehow has no children - " +
+                "the parser should not allow this. Original text: " + message);
           }
 
-          // TODO closing tag isn't closing the immediate tag, is an error if closing tags are required
-          parentNode = parentNode.parent();
-
-          if(parentNode == null) {
-            // TODO dangling closing tag, is an error or not depending on strict parsing
-            break;
+          final ArrayList<String> closeValues = new ArrayList<>(childTokens.size());
+          for(final Token childToken : childTokens) {
+            closeValues.add(TagPart.unquoteAndEscape(message, childToken.startIndex(), childToken.endIndex()));
           }
-        }
+
+          final String closeTagName = closeValues.get(0);
+          if (closeTagName.equals("reset") || closeTagName.equals("pre")) {
+            // These are synthetic nodes, closing them means nothing in the context of building a tree
+            continue;
+          }
+
+          if (!registry.exists(closeTagName)) {
+            // tag does not exist, so treat it as text
+            node.addChild(new TextNode(node, token, message));
+            continue;
+          }
+
+          ElementNode parentNode = node;
+          while(parentNode instanceof TagNode) {
+            final List<TagPart> openParts = ((TagNode) parentNode).parts();
+
+            if(tagCloses(closeValues, openParts)) {
+              final ElementNode par = parentNode.parent();
+              if(par != null) {
+                node = par;
+              } else {
+                throw new IllegalStateException("Root node matched with close tag value, this should not be possible. " +
+                    "Original text: " + message);
+              }
+              break;
+            }
+
+            // TODO closing tag isn't closing the immediate tag, is an error if closing tags are required
+            parentNode = parentNode.parent();
+
+            if(parentNode == null) {
+              // TODO dangling closing tag, is an error or not depending on strict parsing
+              break;
+            }
+          }
+          break; // CLOSE_TAG
       }
     }
 

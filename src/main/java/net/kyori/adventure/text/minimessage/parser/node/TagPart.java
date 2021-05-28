@@ -96,4 +96,9 @@ public final class TagPart {
 
     return TokenParser.unescape(text, startIndex, endIndex);
   }
+
+  @Override
+  public String toString() {
+    return this.value;
+  }
 }

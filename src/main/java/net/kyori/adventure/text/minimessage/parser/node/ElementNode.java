@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import net.kyori.adventure.text.minimessage.parser.Token;
+import net.kyori.adventure.text.minimessage.parser.TokenType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -49,7 +50,7 @@ public class ElementNode {
    * @param sourceMessage the source message
    * @since 4.2.0
    */
-  public ElementNode(final ElementNode parent, final Token token, final String sourceMessage) {
+  ElementNode(final ElementNode parent, final Token token, final String sourceMessage) {
     this.parent = parent;
     this.token = token;
     this.sourceMessage = sourceMessage;
@@ -93,6 +94,22 @@ public class ElementNode {
    */
   public List<ElementNode> children() {
     return this.children;
+  }
+
+  public void addChild(final ElementNode childNode) {
+    final int last = this.children.size() - 1;
+    if (!(childNode instanceof TextNode) || this.children.isEmpty() || !(this.children.get(last) instanceof TextNode)) {
+      this.children.add(childNode);
+    } else {
+      final TextNode lastNode = (TextNode) this.children.remove(last);
+      if (lastNode.token().endIndex() == childNode.token().startIndex()) {
+        this.children.add(new TextNode(this, new Token(lastNode.token().startIndex(), childNode.token().endIndex(), TokenType.TEXT), lastNode.sourceMessage()));
+      } else {
+        // These nodes aren't adjacent in the string, so put the last one back
+        this.children.add(lastNode);
+        this.children.add(childNode);
+      }
+    }
   }
 
   /**

@@ -27,12 +27,15 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.parser.TokenParser;
+import net.kyori.adventure.text.minimessage.parser.node.ComponentNode;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagNode;
+import net.kyori.adventure.text.minimessage.parser.node.TemplateNode;
 import net.kyori.adventure.text.minimessage.parser.node.TextNode;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
 
+import net.kyori.adventure.text.minimessage.transformation.inbuild.TemplateTransformation;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Collections;
@@ -192,7 +195,7 @@ class MiniMessageParser {
   }
 
   @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull TransformationRegistry registry, final @NonNull Function<String, ComponentLike> placeholderResolver, final Context context) {
-    final ElementNode root = TokenParser.parse(richMessage);
+    final ElementNode root = TokenParser.parse(registry, templates, richMessage);
     context.root(root);
     return this.parse(root, registry, templates, placeholderResolver, context);
   }
@@ -201,13 +204,14 @@ class MiniMessageParser {
     Component comp;
     if(node instanceof TextNode) {
       comp = Component.text(((TextNode) node).value());
-    } else if(node instanceof TagNode) {
-      final TagNode tag = (TagNode) node;
+    } else if(node instanceof ComponentNode) {
+      final ComponentNode tag = (ComponentNode) node;
 
       final Transformation transformation = registry.get(tag.name(), tag.parts(), templates, placeholderResolver, context);
       if(transformation == null) {
-        // unknown, treat as text
-        comp = Component.text("<" + tag.name() + ">"); // TODO add tag parts, use constants
+        // unknown, ignore
+        // If we have te ComponentNode here that means the tag name does exist, but is otherwise invalid
+        comp = Component.empty();
       } else {
         comp = transformation.apply();
       }

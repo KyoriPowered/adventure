@@ -361,17 +361,24 @@ public class MiniMessageParserTest {
   @Test
   void testInvalidTagComplex() {
     final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><oof></oof><underlined><red>click here</click><blue> to <bold>FEEL</underlined> it";
-    final Component expected = text()
-      .append(text("<test>", YELLOW))
-      .append(text(" random ", YELLOW))
-      .append(text("stranger", style(YELLOW, BOLD)))
-      .append(text("<oof>", style(YELLOW, runCommand("test command"))))
-      .append(text("</oof>", style(YELLOW, runCommand("test command"))))
-      .append(text("click here", style(RED, TextDecoration.UNDERLINED, runCommand("test command"))))
-      .append(text(" to ", style(BLUE, TextDecoration.UNDERLINED)))
-      .append(text("FEEL", style(BLUE, BOLD, TextDecoration.UNDERLINED)))
-      .append(text(" it", style(BLUE, BOLD)))
-      .build();
+    final Component expected = empty().color(YELLOW)
+            .append(text("<test> random "))
+            .append(empty().decorate(BOLD)
+                    .append(text("stranger")))
+            .append(empty().clickEvent(runCommand("test command"))
+                    .append(text("<oof></oof>"))
+                    .append(empty().decorate(UNDERLINED)
+                            .append(empty().color(RED)
+                                    .append(text("click here")))
+                    )
+            )
+            .append(empty().color(BLUE)
+                    .append(text(" to "))
+                    .append(empty().decorate(BOLD)
+                            .append(text("FEEL"))
+                            .append(text(" it"))
+                    )
+            );
 
     assertParsedEquals(expected, input);
   }
@@ -473,7 +480,7 @@ public class MiniMessageParserTest {
 
   @Test
   void testGH5() {
-    final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:<pack_url>><hover:show_text:\"<green>/!\\ install it from Options/ResourcePacks in your game\"><green><bold>CLICK HERE</bold></hover></click>";
+    final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:<pack_url>><hover:show_text:\"<green>/!\\\\\\\\ install it from Options/ResourcePacks in your game\"><green><bold>CLICK HERE</bold></hover></click>";
     final Component expected = empty().color(DARK_GRAY)
             .append(text("»"))
             .append(empty().color(GRAY)
@@ -495,7 +502,7 @@ public class MiniMessageParserTest {
 
   @Test
   void testGH5Modified() {
-    final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:<pack_url>><hover:show_text:'<green>/!\\ install it from \\'Options/ResourcePacks\\' in your game'><green><bold>CLICK HERE</bold></hover></click>";
+    final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:<pack_url>><hover:show_text:'<green>/!\\\\\\\\ install it from \\'Options/ResourcePacks\\' in your game'><green><bold>CLICK HERE</bold></hover></click>";
     final Component expected = empty().color(DARK_GRAY)
             .append(text("»"))
             .append(empty().color(GRAY)
@@ -517,7 +524,7 @@ public class MiniMessageParserTest {
 
   @Test
   void testGH5Quoted() {
-    final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:\"https://www.google.com\"><hover:show_text:\"<green>/!\\ install it from Options/ResourcePacks in your game\"><green><bold>CLICK HERE</bold></hover></click>";
+    final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:\"https://www.google.com\"><hover:show_text:\"<green>/!\\\\\\\\ install it from Options/ResourcePacks in your game\"><green><bold>CLICK HERE</bold></hover></click>";
     final Component expected = empty().color(DARK_GRAY)
             .append(text("»"))
             .append(empty().color(GRAY)
@@ -1110,11 +1117,11 @@ public class MiniMessageParserTest {
   @Test
   void testNonStrict() {
     final String input = "<gray>Example: <click:suggest_command:/plot flag set coral-dry true><gold>/plot flag set coral-dry true<click></gold></gray>";
-    final Component expected = text()
-      .append(text("Example: ", GRAY))
-      .append(text("/plot flag set coral-dry true", style(GOLD, suggestCommand("/plot flag set coral-dry true"))))
-      .append(text("<click>", style(GOLD, suggestCommand("/plot flag set coral-dry true"))))
-      .build();
+    final Component expected = empty().color(GRAY)
+            .append(text("Example: "))
+            .append(empty().clickEvent(suggestCommand("/plot flag set coral-dry true"))
+                    .append(empty().color(GOLD)
+                            .append(text("/plot flag set coral-dry true"))));
 
     final Component parsed = MiniMessage.builder()
       .strict(false)
@@ -1182,8 +1189,7 @@ public class MiniMessageParserTest {
   @Test
   void testMismatchedTags() {
     final Component expected = empty().color(GREEN)
-            .append(text("hello"))
-            .append(text("</red>"));
+            .append(text("hello"));
     final String input = "<green>hello</red>";
     assertParsedEquals(expected, input);
   }
@@ -1230,16 +1236,13 @@ public class MiniMessageParserTest {
   @Test
   void testTemplateOrder() {
     final Component expected = empty().color(GRAY)
-            .append(text("ONE")
-                    .append(empty().color(RED)
-                            .append(text("TWO")
-                                    .append(text(" "))
-                                    .append(text("THREE")
-                                            .append(text(" "))
-                                            .append(text("FOUR"))
-                                    )
-                            )
-                    )
+            .append(text("ONE"))
+            .append(empty().color(RED)
+                    .append(text("TWO"))
+                    .append(text(" "))
+                    .append(text("THREE"))
+                    .append(text(" "))
+                    .append(text("FOUR"))
             );
     final String input = "<gray><arg1><red><arg2> <arg3> <arg4>";
 
