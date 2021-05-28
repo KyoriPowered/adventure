@@ -27,6 +27,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Template;
+import net.kyori.adventure.text.minimessage.transformation.Inserting;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -36,7 +37,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * @since 4.1.0
  */
-public final class TemplateTransformation extends Transformation {
+public final class TemplateTransformation extends Transformation implements Inserting {
 
   private final Template.ComponentTemplate template;
 

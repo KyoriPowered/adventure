@@ -30,7 +30,7 @@ import net.kyori.adventure.text.minimessage.ParseException;
  *
  * @since 4.1.0
  */
-@Deprecated
+@Deprecated // TODO figure out error handling
 public class ParsingException extends ParseException {
   private static final long serialVersionUID = 2507190809441787201L;
 

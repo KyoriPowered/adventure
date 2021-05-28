@@ -142,9 +142,8 @@ public class MiniMessageTest {
   void testTemplateComponentMixed() {
     final Component expected = empty().color(GREEN)
             .append(empty().decorate(BOLD)
-                    .append(text("TEST", style(RED, UNDERLINED))
-                            .append(text("Test2"))
-                    )
+                    .append(text("TEST", style(RED, UNDERLINED)))
+                    .append(text("Test2"))
             );
 
     final Template t1 = Template.of("test", text("TEST", style(RED, UNDERLINED)));

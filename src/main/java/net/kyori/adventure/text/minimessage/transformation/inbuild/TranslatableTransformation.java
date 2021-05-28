@@ -32,6 +32,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
+import net.kyori.adventure.text.minimessage.transformation.Inserting;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
@@ -42,7 +43,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * @since 4.1.0
  */
-public class TranslatableTransformation extends Transformation {
+public class TranslatableTransformation extends Transformation implements Inserting {
   private static final Pattern DUM_SPLIT_PATTERN = Pattern.compile("['\"]:['\"]");
 
   /**

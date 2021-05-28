@@ -27,6 +27,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
+import net.kyori.adventure.text.minimessage.transformation.Inserting;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
@@ -42,7 +43,7 @@ import java.util.stream.Stream;
  *
  * @since 4.1.0
  */
-public final class KeybindTransformation extends Transformation {
+public final class KeybindTransformation extends Transformation implements Inserting {
   /**
    * Get if this transformation can handle the provided tag name.
    *

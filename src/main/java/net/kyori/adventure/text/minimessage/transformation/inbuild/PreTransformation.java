@@ -36,7 +36,7 @@ import java.util.stream.Stream;
 /**
  * A transformation that returns its contents, not handling any extra parameters.
  *
- * @deprecated no longer in use as of 4.2.0, does nothing
+ * @deprecated no longer in use as of 4.2.0, does nothing, handled by parser now
  * @since 4.1.0
  */
 @Deprecated

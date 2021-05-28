@@ -29,13 +29,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.PrimitiveIterator;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
+import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
+import net.kyori.adventure.text.minimessage.parser.node.TextNode;
+import net.kyori.adventure.text.minimessage.transformation.Modifying;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
@@ -46,7 +51,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * @since 4.1.0
  */
-public final class GradientTransformation extends Transformation {
+public final class GradientTransformation extends Transformation implements Modifying {
+
+  private int size = 0;
+
   private int index = 0;
   private int colorIndex = 0;
 
@@ -117,34 +125,41 @@ public final class GradientTransformation extends Transformation {
   }
 
   @Override
+  public void visit(ElementNode curr) {
+    if (curr instanceof TextNode) {
+      size += ((TextNode) curr).value().length();
+    }
+  }
+
+  @Override
   public Component apply() {
-    //    if(current instanceof TextComponent) {
-    //      final TextComponent textComponent = (TextComponent) current;
-    //      final String content = textComponent.content();
-    //
-    //      // init
-    //      final int size = content.length();
-    //      final int sectorLength = size / (this.colors.length - 1);
-    //      this.factorStep = 1.0f / (sectorLength + this.index);
-    //      this.phase = this.phase * sectorLength;
-    //      this.index = 0;
-    //
-    //      // apply
-    //      int charSize;
-    //      final char[] holder = new char[2];
-    //      for(final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
-    //        charSize = Character.toChars(it.nextInt(), holder, 0);
-    //        Component comp = Component.text(new String(holder, 0, charSize));
-    //        comp = this.merge(comp, current);
-    //        comp = comp.color(this.color());
-    //        parent.append(comp);
-    //      }
-    //
-    //      return null;
-    //    }
-    //
-    //    throw new ParsingException("Expected TextComponent, got: " + current.getClass().toString(), -1);
-    return Component.empty(); // TODO gradient
+    // init
+    final int sectorLength = size / (this.colors.length - 1);
+    this.factorStep = 1.0f / (sectorLength + this.index);
+    this.phase = this.phase * sectorLength;
+    this.index = 0;
+
+    return Component.empty();
+  }
+
+  @Override
+  public Component apply(Component current, Component parent) {
+     if(current instanceof TextComponent && ((TextComponent) current).content().length() > 0) {
+       final TextComponent textComponent = (TextComponent) current;
+       final String content = textComponent.content();
+
+       // apply
+       int charSize;
+       final char[] holder = new char[2];
+       for(final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
+         charSize = Character.toChars(it.nextInt(), holder, 0);
+         final Component comp = Component.text(new String(holder, 0, charSize), this.color());
+         parent = parent.append(comp);
+       }
+
+       return parent;
+     }
+     return Component.empty().mergeStyle(current);
   }
 
   private TextColor color() {

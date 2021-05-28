@@ -69,8 +69,6 @@ public final class TransformationRegistry {
     this.register(TransformationType.FONT);
     this.register(TransformationType.GRADIENT);
     this.register(TransformationType.RAINBOW);
-    this.register(TransformationType.RESET);
-    this.register(TransformationType.PRE);
   }
 
   /**

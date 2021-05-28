@@ -36,6 +36,7 @@ import java.util.stream.Stream;
 /**
  * Ends any ongoing formatting.
  *
+ * @deprecated no longer in use as of 4.2.0, does nothing, handled by parser now
  * @since 4.1.0
  */
 public final class ResetTransformation extends Transformation {
@@ -57,8 +58,7 @@ public final class ResetTransformation extends Transformation {
 
   @Override
   public Component apply() {
-    //    transformations.clear();
-    return Component.empty(); // TODO figure out wtf to do with reset
+    return Component.empty();
   }
 
   @Override

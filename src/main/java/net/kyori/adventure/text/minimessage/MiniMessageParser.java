@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.minimessage;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentBuilder;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.parser.TokenParser;
@@ -32,14 +33,17 @@ import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.parser.node.TemplateNode;
 import net.kyori.adventure.text.minimessage.parser.node.TextNode;
+import net.kyori.adventure.text.minimessage.transformation.Modifying;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
 
 import net.kyori.adventure.text.minimessage.transformation.inbuild.TemplateTransformation;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.units.qual.C;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -202,17 +206,30 @@ class MiniMessageParser {
 
   @NonNull Component parse(final @NonNull ElementNode node, final @NonNull TransformationRegistry registry, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull Function<String, ComponentLike> placeholderResolver, final @NonNull Context context) {
     Component comp;
+    Transformation transformation = null;
     if(node instanceof TextNode) {
       comp = Component.text(((TextNode) node).value());
     } else if(node instanceof ComponentNode) {
       final ComponentNode tag = (ComponentNode) node;
 
-      final Transformation transformation = registry.get(tag.name(), tag.parts(), templates, placeholderResolver, context);
+      transformation = registry.get(tag.name(), tag.parts(), templates, placeholderResolver, context);
       if(transformation == null) {
         // unknown, ignore
         // If we have te ComponentNode here that means the tag name does exist, but is otherwise invalid
         comp = Component.empty();
       } else {
+        // special case for gradient and stuff
+        if(transformation instanceof Modifying) {
+          Modifying modTransformation = (Modifying) transformation;
+
+          // first walk the tree
+          LinkedList<ElementNode> toVisit = new LinkedList<>(node.children());
+          while (!toVisit.isEmpty()) {
+            ElementNode curr = toVisit.removeFirst();
+            modTransformation.visit(curr);
+            toVisit.addAll(0, curr.children());
+          }
+        }
         comp = transformation.apply();
       }
     } else {
@@ -223,7 +240,12 @@ class MiniMessageParser {
       comp = comp.append(this.parse(child, registry, templates, placeholderResolver, context));
     }
 
-    // if root is empty, lift its only child it up
+    // special case for gradient and stuff
+    if(transformation instanceof Modifying) {
+      comp = handleModifying((Modifying) transformation, Component.empty(), comp);
+    }
+
+    // if root is empty, lift its only child up
     if(comp instanceof TextComponent) {
       final TextComponent root = (TextComponent) comp;
       if(root.content().isEmpty() && root.children().size() == 1 && !root.hasStyling() && root.hoverEvent() == null && root.clickEvent() == null) {
@@ -232,5 +254,17 @@ class MiniMessageParser {
     }
 
     return comp;
+  }
+
+  private Component handleModifying(Modifying modTransformation, Component parent, Component current) {
+    if (current.children().isEmpty()) {
+      return modTransformation.apply(current, parent);
+    } else {
+      Component newParent = modTransformation.apply(current, parent);
+      for (Component child : current.children()) {
+        newParent = handleModifying(modTransformation, newParent, child);
+      }
+      return parent.append(newParent);
+    }
   }
 }
