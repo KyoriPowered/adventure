@@ -213,12 +213,12 @@ class MiniMessageParser {
       } else {
         // special case for gradient and stuff
         if(transformation instanceof Modifying) {
-          Modifying modTransformation = (Modifying) transformation;
+          final Modifying modTransformation = (Modifying) transformation;
 
           // first walk the tree
-          LinkedList<ElementNode> toVisit = new LinkedList<>(node.children());
+          final LinkedList<ElementNode> toVisit = new LinkedList<>(node.children());
           while(!toVisit.isEmpty()) {
-            ElementNode curr = toVisit.removeFirst();
+            final ElementNode curr = toVisit.removeFirst();
             modTransformation.visit(curr);
             toVisit.addAll(0, curr.children());
           }
@@ -235,7 +235,7 @@ class MiniMessageParser {
 
     // special case for gradient and stuff
     if(transformation instanceof Modifying) {
-      comp = handleModifying((Modifying) transformation, Component.empty(), comp);
+      comp = this.handleModifying((Modifying) transformation, Component.empty(), comp);
     }
 
     // if root is empty, lift its only child up
@@ -249,13 +249,13 @@ class MiniMessageParser {
     return comp;
   }
 
-  private Component handleModifying(Modifying modTransformation, Component parent, Component current) {
+  private Component handleModifying(final Modifying modTransformation, final Component parent, final Component current) {
     if(current.children().isEmpty()) {
       return modTransformation.apply(current, parent);
     } else {
       Component newParent = modTransformation.apply(current, parent);
-      for(Component child : current.children()) {
-        newParent = handleModifying(modTransformation, newParent, child);
+      for(final Component child : current.children()) {
+        newParent = this.handleModifying(modTransformation, newParent, child);
       }
       return parent.append(newParent);
     }

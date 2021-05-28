@@ -125,16 +125,16 @@ public final class GradientTransformation extends Transformation implements Modi
   }
 
   @Override
-  public void visit(ElementNode curr) {
+  public void visit(final ElementNode curr) {
     if(curr instanceof TextNode) {
-      size += ((TextNode) curr).value().length();
+      this.size += ((TextNode) curr).value().length();
     }
   }
 
   @Override
   public Component apply() {
     // init
-    final int sectorLength = size / (this.colors.length - 1);
+    final int sectorLength = this.size / (this.colors.length - 1);
     this.factorStep = 1.0f / (sectorLength + this.index);
     this.phase = this.phase * sectorLength;
     this.index = 0;
@@ -143,7 +143,7 @@ public final class GradientTransformation extends Transformation implements Modi
   }
 
   @Override
-  public Component apply(Component current, Component parent) {
+  public Component apply(final Component current, Component parent) {
     if(current instanceof TextComponent && ((TextComponent) current).content().length() > 0) {
       final TextComponent textComponent = (TextComponent) current;
       final String content = textComponent.content();
@@ -151,7 +151,7 @@ public final class GradientTransformation extends Transformation implements Modi
       // apply
       int charSize;
       final char[] holder = new char[2];
-      for(final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext(); ) {
+      for(final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
         charSize = Character.toChars(it.nextInt(), holder, 0);
         final Component comp = Component.text(new String(holder, 0, charSize), this.color());
         parent = parent.append(comp);

@@ -55,11 +55,15 @@ public final class TransformationType<T extends Transformation> {
   public static final TransformationType<GradientTransformation> GRADIENT = new TransformationType<>(GradientTransformation::canParse, new GradientTransformation.Parser());
   public static final TransformationType<RainbowTransformation> RAINBOW = new TransformationType<>(RainbowTransformation::canParse, new RainbowTransformation.Parser());
   /**
+   * Don't use.
+   *
    * @deprecated since 4.2.0 this is handled at parser level
    */
   @Deprecated
   public static final TransformationType<ResetTransformation> RESET = new TransformationType<>(ResetTransformation::canParse, new ResetTransformation.Parser());
   /**
+   * Don't use.
+   *
    * @deprecated since 4.2.0 this is handled at parser level
    */
   @Deprecated

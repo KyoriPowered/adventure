@@ -86,9 +86,9 @@ public final class RainbowTransformation extends Transformation implements Modif
   }
 
   @Override
-  public void visit(ElementNode curr) {
+  public void visit(final ElementNode curr) {
     if(curr instanceof TextNode) {
-      size += ((TextNode) curr).value().length();
+      this.size += ((TextNode) curr).value().length();
     }
   }
 
@@ -97,13 +97,13 @@ public final class RainbowTransformation extends Transformation implements Modif
     // init
     this.center = 128;
     this.width = 127;
-    this.frequency = Math.PI * 2 / size;
+    this.frequency = Math.PI * 2 / this.size;
 
     return Component.empty();
   }
 
   @Override
-  public Component apply(Component current, Component parent) {
+  public Component apply(final Component current, Component parent) {
     if(current instanceof TextComponent && ((TextComponent) current).content().length() > 0) {
       final TextComponent textComponent = (TextComponent) current;
       final String content = textComponent.content();
@@ -111,7 +111,7 @@ public final class RainbowTransformation extends Transformation implements Modif
       // apply
       int charSize;
       final char[] holder = new char[2];
-      for(final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext(); ) {
+      for(final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
         charSize = Character.toChars(it.nextInt(), holder, 0);
         final Component comp = Component.text(new String(holder, 0, charSize), this.color(this.phase));
         parent = parent.append(comp);

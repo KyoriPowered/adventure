@@ -96,6 +96,14 @@ public class ElementNode {
     return this.children;
   }
 
+  /**
+   * Adds a child to this node.
+   *
+   * <p>This method will attempt to join text tokens together if possible.</p>
+   *
+   * @param childNode the child node to add.
+   * @since 4.2.0
+   */
   public void addChild(final ElementNode childNode) {
     final int last = this.children.size() - 1;
     if(!(childNode instanceof TextNode) || this.children.isEmpty() || !(this.children.get(last) instanceof TextNode)) {
