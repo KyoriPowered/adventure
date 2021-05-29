@@ -45,7 +45,7 @@ public interface Pointered {
    * @since 4.8.0
    */
   default <T> @NotNull Optional<T> get(final @NotNull Pointer<T> pointer) {
-    return Optional.empty();
+    return this.pointers().get(pointer);
   }
 
   /**
@@ -62,7 +62,7 @@ public interface Pointered {
   @Contract("_, null -> null; _, !null -> !null")
   @SuppressWarnings("checkstyle:MethodName")
   default <T> @Nullable T getOrDefault(final @NotNull Pointer<T> pointer, final @Nullable T defaultValue) {
-    return this.get(pointer).orElse(defaultValue);
+    return this.pointers().getOrDefault(pointer, defaultValue);
   }
 
   /**
@@ -78,6 +78,16 @@ public interface Pointered {
    */
   @SuppressWarnings("checkstyle:MethodName")
   default <T> @UnknownNullability T getOrDefaultFrom(final @NotNull Pointer<T> pointer, final @NotNull Supplier<? extends T> defaultValue) {
-    return this.get(pointer).orElseGet(defaultValue);
+    return this.pointers().getOrDefaultFrom(pointer, defaultValue);
+  }
+
+  /**
+   * Gets the pointers for this audience.
+   *
+   * @return the pointers
+   * @since 4.8.0
+   */
+  default @NotNull Pointers pointers() {
+    return Pointers.EMPTY;
   }
 }
