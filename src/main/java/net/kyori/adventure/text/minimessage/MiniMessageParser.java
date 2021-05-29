@@ -28,14 +28,16 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.parser.TokenParser;
-import net.kyori.adventure.text.minimessage.parser.node.ComponentNode;
+import net.kyori.adventure.text.minimessage.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.parser.node.TextNode;
 import net.kyori.adventure.text.minimessage.transformation.Modifying;
@@ -192,45 +194,45 @@ class MiniMessageParser {
   }
 
   @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull TransformationRegistry registry, final @NonNull Function<String, ComponentLike> placeholderResolver, final Context context) {
-    final ElementNode root = TokenParser.parse(registry, templates, richMessage);
+    final Function<TagNode, Transformation> transformationFactory = node ->
+        registry.get(node.name(), node.parts(), templates, placeholderResolver, context);
+    final BiPredicate<String, Boolean> tagNameChecker = (name, includeTemplates) ->
+        registry.exists(name) || (includeTemplates && templates.containsKey(name));
+
+    final ElementNode root = TokenParser.parse(transformationFactory, tagNameChecker, richMessage);
     context.root(root);
-    return this.parse(root, registry, templates, placeholderResolver, context);
+    return this.parse(root);
   }
 
-  @NonNull Component parse(final @NonNull ElementNode node, final @NonNull TransformationRegistry registry, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull Function<String, ComponentLike> placeholderResolver, final @NonNull Context context) {
+  @NonNull Component parse(final @NonNull ElementNode node) {
     Component comp;
     Transformation transformation = null;
     if(node instanceof TextNode) {
       comp = Component.text(((TextNode) node).value());
-    } else if(node instanceof ComponentNode) {
-      final ComponentNode tag = (ComponentNode) node;
+    } else if(node instanceof TagNode) {
+      final TagNode tag = (TagNode) node;
 
-      transformation = registry.get(tag.name(), tag.parts(), templates, placeholderResolver, context);
-      if(transformation == null) {
-        // unknown, ignore
-        // If we have te ComponentNode here that means the tag name does exist, but is otherwise invalid
-        comp = Component.empty();
-      } else {
-        // special case for gradient and stuff
-        if(transformation instanceof Modifying) {
-          final Modifying modTransformation = (Modifying) transformation;
+      transformation = tag.transformation();
 
-          // first walk the tree
-          final LinkedList<ElementNode> toVisit = new LinkedList<>(node.children());
-          while(!toVisit.isEmpty()) {
-            final ElementNode curr = toVisit.removeFirst();
-            modTransformation.visit(curr);
-            toVisit.addAll(0, curr.children());
-          }
+      // special case for gradient and stuff
+      if(transformation instanceof Modifying) {
+        final Modifying modTransformation = (Modifying) transformation;
+
+        // first walk the tree
+        final LinkedList<ElementNode> toVisit = new LinkedList<>(node.children());
+        while(!toVisit.isEmpty()) {
+          final ElementNode curr = toVisit.removeFirst();
+          modTransformation.visit(curr);
+          toVisit.addAll(0, curr.children());
         }
-        comp = transformation.apply();
       }
+      comp = transformation.apply();
     } else {
       comp = Component.empty();
     }
 
     for(final ElementNode child : node.children()) {
-      comp = comp.append(this.parse(child, registry, templates, placeholderResolver, context));
+      comp = comp.append(this.parse(child));
     }
 
     // special case for gradient and stuff

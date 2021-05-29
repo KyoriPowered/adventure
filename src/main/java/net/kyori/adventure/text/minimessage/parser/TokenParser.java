@@ -26,18 +26,20 @@ package net.kyori.adventure.text.minimessage.parser;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import net.kyori.adventure.text.minimessage.Template;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.parser.node.RootNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
-import net.kyori.adventure.text.minimessage.parser.node.TemplateNode;
 import net.kyori.adventure.text.minimessage.parser.node.TextNode;
-import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
+import net.kyori.adventure.text.minimessage.transformation.Inserting;
+import net.kyori.adventure.text.minimessage.transformation.Transformation;
+import net.kyori.adventure.text.minimessage.transformation.inbuild.RainbowTransformation;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Handles parsing a string into a tree of tokens and then into a tree of nodes.
@@ -84,13 +86,12 @@ public final class TokenParser {
       "<<'\\''\\<<reset>'>'><3'<>< '>"
     );
 
-    final TransformationRegistry registry = new TransformationRegistry();
     for(final String s : list) {
       System.out.println();
       System.out.println();
       System.out.println(s);
       System.out.println();
-      final ElementNode el = parse(registry, new HashMap<>(), s);
+      final ElementNode el = parse(t -> new RainbowTransformation.Parser().parse(), (t, i) -> true, s);
       System.out.println(el);
     }
   }
@@ -102,11 +103,11 @@ public final class TokenParser {
    * @return the root of the resulting tree
    * @since 4.2.0
    */
-  public static ElementNode parse(final @NonNull TransformationRegistry registry, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull String message) {
+  public static ElementNode parse(final @NonNull Function<TagNode, @Nullable Transformation> transformationFactory, final @NonNull BiPredicate<String, Boolean> tagNameChecker, final @NonNull String message) {
     final List<Token> tokens = parseFirstPass(message);
     parseSecondPass(message, tokens);
 
-    return buildTree(registry, templates, tokens, message);
+    return buildTree(transformationFactory, tagNameChecker, tokens, message);
   }
 
   /*
@@ -313,7 +314,7 @@ public final class TokenParser {
   /*
    * Build a tree from the OPEN_TAG and CLOSE_TAG tokens
    */
-  private static ElementNode buildTree(final @NonNull TransformationRegistry registry, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull List<Token> tokens, final @NonNull String message) {
+  private static ElementNode buildTree(final @NonNull Function<TagNode, @Nullable Transformation> transformationFactory, final @NonNull BiPredicate<String, Boolean> tagNameChecker, final @NonNull List<Token> tokens, final @NonNull String message) {
     final RootNode root = new RootNode(message);
     ElementNode node = root;
 
@@ -337,17 +338,24 @@ public final class TokenParser {
             // anything inside <pre> is raw text, so just skip
 
             continue;
-          } else {
-            if(registry.exists(tagNode.name())) {
-              node.addChild(tagNode);
-              node = tagNode;
-            } else if(templates.containsKey(tagNode.name())) {
-              // TODO What to do if a template has multiple parts?
-              node.addChild(new TemplateNode(node, token, message));
-            } else {
-              // tag does not exist, so treat it as text
+          } else if (tagNameChecker.test(tagNode.name(), true)) {
+            final Transformation transformation = transformationFactory.apply(tagNode);
+            if (transformation == null) {
+              // something went wrong, ignore it
+              // if strict mode is enabled this will throw an exception for us
               node.addChild(new TextNode(node, token, message));
+            } else {
+              // This is a recognized tag, goes in the tree
+              tagNode.transformation(transformation);
+              node.addChild(tagNode);
+              if (!(transformation instanceof Inserting)) {
+                // this tag has children
+                node = tagNode;
+              }
             }
+          } else {
+            // not recognized, plain text
+            node.addChild(new TextNode(node, token, message));
           }
           break; // OPEN_TAG
 
@@ -369,7 +377,7 @@ public final class TokenParser {
             continue;
           }
 
-          if(!registry.exists(closeTagName)) {
+          if(!tagNameChecker.test(closeTagName, false)) {
             // tag does not exist, so treat it as text
             node.addChild(new TextNode(node, token, message));
             continue;

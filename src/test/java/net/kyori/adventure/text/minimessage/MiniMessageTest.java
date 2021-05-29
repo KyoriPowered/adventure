@@ -217,10 +217,8 @@ public class MiniMessageTest extends TestBase {
   void testOrderOfPlaceholders() {
     final Component expected = empty()
       .append(text("A"))
-      .append(text("B")
-        .append(text("C"))
-
-      );
+      .append(text("B"))
+      .append(text("C"));
     final String input = "<a><b><_c>";
     final MiniMessage miniMessage = MiniMessage.get();
 
@@ -320,5 +318,17 @@ public class MiniMessageTest extends TestBase {
   void testNonEndingComponent() {
     final String input = "<red is already created! Try different name! :)";
     MiniMessage.builder().parsingErrorMessageConsumer(strings -> assertEquals(strings, Collections.singletonList("Expected end sometimes after open tag + name, but got name = Token{type=NAME, value=\"red is already created! Try different name! \"} and inners = []"))).build().parse(input);
+  }
+
+  @Test
+  void testIncompleteTag() {
+    final String input = "<red>Click <click>here</click> to win a new <bold>car!";
+    final Component expected = empty().color(RED)
+        .append(text("Click <click>here"))
+        .append(text(" to win a new ")
+            .append(empty().decorate(BOLD)
+                .append(text("car!"))));
+
+    assertParsedEquals(MiniMessage.get(), expected, input);
   }
 }
