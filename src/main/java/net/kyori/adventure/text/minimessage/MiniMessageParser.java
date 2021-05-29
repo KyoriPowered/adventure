@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.minimessage.parser.TokenParser;
 import net.kyori.adventure.text.minimessage.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
@@ -239,11 +240,19 @@ class MiniMessageParser {
       comp = this.handleModifying((Modifying) transformation, Component.empty(), comp);
     }
 
-    // if root is empty, lift its only child up // TODO if only one text component (!) child, we can merge them, combining their styling and events and stuff.
+    // at the end, take a look if we can flatten the tree a bit
     if(comp instanceof TextComponent) {
       final TextComponent root = (TextComponent) comp;
-      if(root.content().isEmpty() && root.children().size() == 1 && !root.hasStyling() && root.hoverEvent() == null && root.clickEvent() == null) {
-        return root.children().get(0);
+      if(root.content().isEmpty() && root.children().size() == 1) {
+        // this seems to be some kind of empty node, lets see if we can discard it, or if we have to merge it
+        if(!root.hasStyling() && root.hoverEvent() == null && root.clickEvent() == null) {
+          // seems to be the root node, just discord it
+          return root.children().get(0);
+        } else {
+          // we got something we can merge
+          final Component child = root.children().get(0);
+          return child.style(child.style().merge(root.style(), Style.Merge.Strategy.IF_ABSENT_ON_TARGET, Style.Merge.all()));
+        }
       }
     }
 

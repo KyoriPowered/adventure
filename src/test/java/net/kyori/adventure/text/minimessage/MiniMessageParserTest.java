@@ -60,16 +60,13 @@ public class MiniMessageParserTest extends TestBase {
   void test() {
     final Component expected1 = empty().color(YELLOW)
       .append(text("TEST"))
-      .append(empty().color(GREEN)
-        .append(text(" nested"))
-      ).append(text("Test"));
+      .append(text(" nested").color(GREEN))
+      .append(text("Test"));
     final Component expected2 = empty().color(YELLOW)
       .append(text("TEST"))
       .append(empty().color(GREEN)
         .append(text(" nested"))
-        .append(empty().color(YELLOW)
-          .append(text("Test"))
-        )
+        .append(text("Test").color(YELLOW))
       );
 
     final String input1 = "<yellow>TEST<green> nested</green>Test";
@@ -98,16 +95,13 @@ public class MiniMessageParserTest extends TestBase {
   void testNewColor() {
     final Component expected1 = empty().color(YELLOW)
       .append(text("TEST"))
-      .append(empty().color(GREEN)
-        .append(text(" nested"))
-      ).append(text("Test"));
+      .append(text(" nested").color(GREEN))
+      .append(text("Test"));
     final Component expected2 = empty().color(YELLOW)
       .append(text("TEST"))
       .append(empty().color(GREEN)
         .append(text(" nested"))
-        .append(empty().color(YELLOW)
-          .append(text("Test"))
-        )
+        .append(text("Test").color(YELLOW))
       );
 
     final String input1 = "<color:yellow>TEST<color:green> nested</color:green>Test";
@@ -121,16 +115,13 @@ public class MiniMessageParserTest extends TestBase {
   void testHexColor() {
     final Component expected1 = empty().color(color(0xff00ff))
       .append(text("TEST"))
-      .append(empty().color(color(0x00ff00))
-        .append(text(" nested"))
-      ).append(text("Test"));
+      .append(text(" nested").color(color(0x00ff00)))
+      .append(text("Test"));
     final Component expected2 = empty().color(color(0xff00ff))
       .append(text("TEST"))
       .append(empty().color(color(0x00ff00))
         .append(text(" nested"))
-        .append(empty().color(color(0xff00ff))
-          .append(text("Test"))
-        )
+        .append(text("Test").color(color(0xff00ff)))
       );
 
     final String input1 = "<color:#ff00ff>TEST<color:#00ff00> nested</color:#00ff00>Test";
@@ -144,16 +135,13 @@ public class MiniMessageParserTest extends TestBase {
   void testHexColorShort() {
     final Component expected1 = empty().color(color(0xff00ff))
       .append(text("TEST"))
-      .append(empty().color(color(0x00ff00))
-        .append(text(" nested"))
-      ).append(text("Test"));
+      .append(text(" nested").color(color(0x00ff00)))
+      .append(text("Test"));
     final Component expected2 = empty().color(color(0xff00ff))
       .append(text("TEST"))
       .append(empty().color(color(0x00ff00))
         .append(text(" nested"))
-        .append(empty().color(color(0xff00ff))
-          .append(text("Test"))
-        )
+        .append(text("Test").color(color(0xff00ff)))
       );
 
     final String input1 = "<#ff00ff>TEST<#00ff00> nested</#00ff00>Test";
@@ -246,15 +234,8 @@ public class MiniMessageParserTest extends TestBase {
     final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here</click><blue> to <b>FEEL</underlined> it";
     final Component expected = empty().color(YELLOW)
       .append(text("Hello! random "))
-      .append(empty().decorate(BOLD)
-        .append(text("stranger")))
-      .append(empty().clickEvent(runCommand("test command"))
-        .append(empty().decorate(UNDERLINED)
-          .append(empty().color(RED)
-            .append(text("click here"))
-          )
-        )
-      )
+      .append(text("stranger").decorate(BOLD))
+      .append(text("click here").color(RED).decorate(UNDERLINED).clickEvent(runCommand("test command")))
       .append(empty().color(BLUE)
         .append(text(" to "))
         .append(empty().decorate(BOLD)
@@ -270,14 +251,13 @@ public class MiniMessageParserTest extends TestBase {
   void testColorSimple() {
     final String input = "<yellow>TEST";
 
-    assertParsedEquals(empty().color(YELLOW).append(text("TEST")), input);
+    assertParsedEquals(text("TEST").color(YELLOW), input);
   }
 
   @Test
   void testHover() {
     final String input = "<hover:show_text:\"<red>test\">TEST";
-    final Component expected = empty().hoverEvent(empty().color(RED).append(text("test")))
-      .append(text("TEST"));
+    final Component expected = text("TEST").hoverEvent(text("test").color(RED));
 
     assertParsedEquals(expected, input);
   }
@@ -285,8 +265,7 @@ public class MiniMessageParserTest extends TestBase {
   @Test
   void testHover2() {
     final String input = "<hover:show_text:'<red>test'>TEST";
-    final Component expected = empty().hoverEvent(empty().color(RED).append(text("test")))
-      .append(text("TEST"));
+    final Component expected = text("TEST").hoverEvent(text("test").color(RED));
 
     assertParsedEquals(expected, input);
   }
@@ -294,8 +273,7 @@ public class MiniMessageParserTest extends TestBase {
   @Test
   void testHoverWithColon() {
     final String input = "<hover:show_text:\"<red>test:TEST\">TEST";
-    final Component expected = empty().hoverEvent(empty().color(RED).append(text("test:TEST")))
-      .append(text("TEST"));
+    final Component expected = text("TEST").hoverEvent(text("test:TEST").color(RED));
 
     assertParsedEquals(expected, input);
   }
@@ -303,8 +281,7 @@ public class MiniMessageParserTest extends TestBase {
   @Test
   void testHoverMultiline() {
     final String input = "<hover:show_text:'<red>test\ntest2'>TEST";
-    final Component expected = empty().hoverEvent(empty().color(RED).append(text("test\ntest2")))
-      .append(text("TEST"));
+    final Component expected = text("TEST").hoverEvent(text("test\ntest2").color(RED));
 
     assertParsedEquals(expected, input);
   }
@@ -313,10 +290,7 @@ public class MiniMessageParserTest extends TestBase {
   @Test
   void testHoverWithInsertingComponent() {
     final String input = "<red><hover:show_text:\"Test\"><lang:item.minecraft.stick>";
-    final Component expected = empty().color(RED)
-      .append(empty().hoverEvent(showText(text("Test")))
-        .append(translatable("item.minecraft.stick"))
-      );
+    final Component expected = translatable("item.minecraft.stick").hoverEvent(showText(text("Test"))).color(RED);
 
     assertParsedEquals(expected, input);
   }
@@ -324,7 +298,7 @@ public class MiniMessageParserTest extends TestBase {
   @Test
   void testClick() {
     final String input = "<click:run_command:test>TEST";
-    final Component expected = empty().clickEvent(runCommand("test")).append(text("TEST"));
+    final Component expected = text("TEST").clickEvent(runCommand("test"));
 
     assertParsedEquals(expected, input);
   }
@@ -332,7 +306,7 @@ public class MiniMessageParserTest extends TestBase {
   @Test
   void testClickExtendedCommand() {
     final String input = "<click:run_command:/test command>TEST";
-    final Component expected = empty().clickEvent(runCommand("/test command")).append(text("TEST"));
+    final Component expected = text("TEST").clickEvent(runCommand("/test command"));
 
     assertParsedEquals(expected, input);
   }
@@ -340,7 +314,7 @@ public class MiniMessageParserTest extends TestBase {
   @Test
   void testInvalidTag() {
     final String input = "<red><test>";
-    final Component expected = empty().color(RED).append(text("<test>"));
+    final Component expected = text("<test>").color(RED);
 
     assertParsedEquals(expected, input);
   }
@@ -350,16 +324,11 @@ public class MiniMessageParserTest extends TestBase {
     final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><oof></oof><underlined><red>click here</click><blue> to <bold>FEEL</underlined> it";
     final Component expected = empty().color(YELLOW)
       .append(text("<test> random "))
-      .append(empty().decorate(BOLD)
-        .append(text("stranger")))
+      .append(text("stranger").decorate(BOLD))
       .append(empty().clickEvent(runCommand("test command"))
         .append(text("<oof></oof>"))
-        .append(empty().decorate(UNDERLINED)
-          .append(empty().color(RED)
-            .append(text("click here")))
-        )
-      )
-      .append(empty().color(BLUE)
+        .append(text("click here").color(RED).decorate(UNDERLINED))
+      ).append(empty().color(BLUE)
         .append(text(" to "))
         .append(empty().decorate(BOLD)
           .append(text("FEEL"))
@@ -410,7 +379,7 @@ public class MiniMessageParserTest extends TestBase {
     final String input = "Test: <lang:commands.drop.success.single:'<red>1':'<blue>Stone'>!";
     final Component expected = empty()
       .append(text("Test: "))
-      .append(translatable("commands.drop.success.single", empty().color(RED).append(text("1")), empty().color(BLUE).append(text("Stone"))))
+      .append(translatable("commands.drop.success.single", text("1").color(RED), text("Stone").color(BLUE)))
       .append(text("!"));
 
     assertParsedEquals(expected, input);
@@ -423,8 +392,8 @@ public class MiniMessageParserTest extends TestBase {
       .append(text("Test: "))
       .append(translatable(
         "commands.drop.success.single",
-        empty().hoverEvent(showText(empty().color(RED).append(text("dum")))).append(empty().color(RED).append(text("1"))),
-        empty().color(BLUE).append(text("Stone"))
+        text("1").color(RED).hoverEvent(showText(text("dum").color(RED))),
+        text("Stone").color(BLUE)
       ))
       .append(text("!"));
 
@@ -436,7 +405,7 @@ public class MiniMessageParserTest extends TestBase {
     final String input = "Ahoy <lang:offset.-40:'<red>mates!'>";
     final Component expected = empty()
       .append(text("Ahoy "))
-      .append(translatable("offset.-40", empty().color(RED).append(text("mates!"))));
+      .append(translatable("offset.-40", text("mates!").color(RED)));
 
     assertParsedEquals(expected, input);
   }
@@ -446,8 +415,7 @@ public class MiniMessageParserTest extends TestBase {
     final String input = "Click <insert:test>this</insert> to insert!";
     final Component expected = empty()
       .append(text("Click "))
-      .append(empty().insertion("test")
-        .append(text("this")))
+      .append(text("this").insertion("test"))
       .append(text(" to insert!"));
 
     assertParsedEquals(expected, input);
@@ -468,14 +436,7 @@ public class MiniMessageParserTest extends TestBase {
       .append(text("»"))
       .append(empty().color(GRAY)
         .append(text(" To download it from the internet, "))
-        .append(empty().clickEvent(openUrl("https://www.google.com"))
-          .append(empty().hoverEvent(showText(empty().color(GREEN).append(text("/!\\ install it from Options/ResourcePacks in your game"))))
-            .append(empty().color(GREEN)
-              .append(empty().decorate(BOLD)
-                .append(text("CLICK HERE")))
-            )
-          )
-        )
+        .append(text("CLICK HERE").decorate(BOLD).color(GREEN).clickEvent(openUrl("https://www.google.com")).hoverEvent(showText(text("/!\\ install it from Options/ResourcePacks in your game").color(GREEN))))
       );
 
     assertParsedEquals(expected, input, "pack_url", "https://www.google.com");
@@ -488,14 +449,7 @@ public class MiniMessageParserTest extends TestBase {
       .append(text("»"))
       .append(empty().color(GRAY)
         .append(text(" To download it from the internet, "))
-        .append(empty().clickEvent(openUrl("https://www.google.com"))
-          .append(empty().hoverEvent(showText(empty().color(GREEN).append(text("/!\\ install it from 'Options/ResourcePacks' in your game"))))
-            .append(empty().color(GREEN)
-              .append(empty().decorate(BOLD)
-                .append(text("CLICK HERE")))
-            )
-          )
-        )
+        .append(text("CLICK HERE").decorate(BOLD).color(GREEN).hoverEvent(showText(text("/!\\ install it from 'Options/ResourcePacks' in your game").color(GREEN))).clickEvent(openUrl("https://www.google.com")))
       );
 
     // should work
@@ -509,14 +463,7 @@ public class MiniMessageParserTest extends TestBase {
       .append(text("»"))
       .append(empty().color(GRAY)
         .append(text(" To download it from the internet, "))
-        .append(empty().clickEvent(openUrl("https://www.google.com"))
-          .append(empty().hoverEvent(showText(empty().color(GREEN).append(text("/!\\ install it from Options/ResourcePacks in your game"))))
-            .append(empty().color(GREEN)
-              .append(empty().decorate(BOLD)
-                .append(text("CLICK HERE")))
-            )
-          )
-        )
+        .append(text("CLICK HERE").decorate(BOLD).color(GREEN).clickEvent(openUrl("https://www.google.com")).hoverEvent(showText(text("/!\\ install it from Options/ResourcePacks in your game").color(GREEN))))
       );
 
     // should work
@@ -531,16 +478,14 @@ public class MiniMessageParserTest extends TestBase {
     final String input = "Click <yellow><insert:test>this<rainbow> wooo<reset> to insert!";
     final Component expected = empty()
       .append(text("Click "))
-      .append(empty().color(YELLOW)
-        .append(empty().insertion("test")
-          .append(text("this"))
-          .append(empty()
-            .append(text(" ", color(0xf3801f)))
-            .append(text("w", color(0x71f813)))
-            .append(text("o", color(0x03ca9c)))
-            .append(text("o", color(0x4135fe)))
-            .append(text("o", color(0xd507b1)))
-          )
+      .append(empty().color(YELLOW).insertion("test")
+        .append(text("this"))
+        .append(empty()
+          .append(text(" ", color(0xf3801f)))
+          .append(text("w", color(0x71f813)))
+          .append(text("o", color(0x03ca9c)))
+          .append(text("o", color(0x4135fe)))
+          .append(text("o", color(0xd507b1)))
         )
       ).append(text(" to insert!"));
 
@@ -555,9 +500,7 @@ public class MiniMessageParserTest extends TestBase {
       .append(empty().color(YELLOW)
         .append(text("<insert:test>this"))
         .append(text(" to "))
-        .append(empty().color(RED)
-          .append(text("insert!"))
-        )
+        .append(text("insert!").color(RED))
       );
 
     assertParsedEquals(expected, input);
@@ -1053,7 +996,7 @@ public class MiniMessageParserTest extends TestBase {
         .append(text("1", GREEN))
         .append(text("2", color(0x55e371)))
         .append(text("3", color(0x55c68e)))
-        .append(empty().decorate(BOLD)
+        .append(empty().decorate(BOLD) // TODO fix, missing bold for some reason it seems
           .append(text("1", color(0x55aaaa)))
           .append(text("2", color(0x558ec6)))
           .append(text("3", color(0x5571e3)))
@@ -1070,9 +1013,8 @@ public class MiniMessageParserTest extends TestBase {
       .append(text("Nothing "))
       .append(empty().style(s -> s.font(key("uniform")))
         .append(text("Uniform "))
-        .append(empty().style(s -> s.font(key("alt")))
-          .append(text("Alt  "))
-        ).append(text(" Uniform"))
+        .append(text("Alt  ").style(s -> s.font(key("alt"))))
+        .append(text(" Uniform"))
       );
 
     assertParsedEquals(expected, input);
@@ -1082,10 +1024,7 @@ public class MiniMessageParserTest extends TestBase {
   @Test
   void testPhil() {
     final String input = "<red><hover:show_text:'Message 1\nMessage 2'>My Message";
-    final Component expected = empty().color(RED)
-      .append(empty().hoverEvent(showText(text("Message 1\nMessage 2")))
-        .append(text("My Message"))
-      );
+    final Component expected = text("My Message").hoverEvent(showText(text("Message 1\nMessage 2"))).color(RED);
 
     assertParsedEquals(expected, input);
   }
@@ -1113,9 +1052,7 @@ public class MiniMessageParserTest extends TestBase {
         .append(text("<"))
         .append(empty().color(YELLOW)
           .append(text("Patbox"))
-          .append(empty().color(GRAY)
-            .append(text("> "))
-          )
+          .append(text("> ").color(GRAY))
         )
       ).append(text("am dum"));
     final String input = "<gray>\\<<yellow><player><gray>> <reset><pre><message></pre>";
@@ -1125,23 +1062,21 @@ public class MiniMessageParserTest extends TestBase {
 
   @Test
   void testDoubleNewLine() {
-    final Component expected = empty().color(RED).append(text("Hello\n\nWorld"));
+    final Component expected = text("Hello\n\nWorld").color(RED);
     final String input = "<red>Hello\n\nWorld";
     assertParsedEquals(expected, input);
   }
 
   @Test
   void testMismatchedTags() {
-    final Component expected = empty().color(GREEN)
-      .append(text("hello"));
+    final Component expected = text("hello").color(GREEN);
     final String input = "<green>hello</red>";
     assertParsedEquals(expected, input);
   }
 
   @Test
   void testShowItemHover() {
-    final Component expected = empty().hoverEvent(HoverEvent.showItem(Key.key("minecraft", "stone"), 5))
-      .append(text("test"));
+    final Component expected = text("test").hoverEvent(HoverEvent.showItem(Key.key("minecraft", "stone"), 5));
     final String input = "<hover:show_item:'minecraft:stone':5>test";
     final String input1 = "<hover:show_item:'minecraft:stone':'5'>test";
     assertParsedEquals(expected, input);
@@ -1153,8 +1088,7 @@ public class MiniMessageParserTest extends TestBase {
     final UUID uuid = UUID.randomUUID();
     final String nameString = "<gold>Custom Name!";
     final Component name = PARSER.parse(nameString);
-    final Component expected = empty().hoverEvent(HoverEvent.showEntity(Key.key("minecraft", "zombie"), uuid, name))
-      .append(text("test"));
+    final Component expected = text("test").hoverEvent(HoverEvent.showEntity(Key.key("minecraft", "zombie"), uuid, name));
     final String input = String.format("<hover:show_entity:'minecraft:zombie':%s:'%s'>test", uuid, nameString);
     final String input1 = String.format("<hover:show_entity:zombie:'%s':'%s'>test", uuid, nameString);
     assertParsedEquals(expected, input);
@@ -1197,16 +1131,11 @@ public class MiniMessageParserTest extends TestBase {
   @Test
   void testTemplateOrder2() {
     final Component expected = empty()
-      .append(empty().color(GRAY)
-        .append(text("ONE")))
-      .append(empty().color(RED)
-        .append(text("TWO"))
-      ).append(empty().color(BLUE)
-        .append(text("THREE"))
-      ).append(text(" "))
-      .append(empty().color(GREEN)
-        .append(text("FOUR"))
-      );
+      .append(text("ONE").color(GRAY))
+      .append(text("TWO").color(RED))
+      .append(text("THREE").color(BLUE))
+      .append(text(" "))
+      .append(text("FOUR").color(GREEN));
     final String input = "<gray><arg1></gray><red><arg2></red><blue><arg3></blue> <green><arg4>";
 
     assertParsedEquals(expected, input, "arg1", text("ONE"), "arg2", text("TWO"), "arg3", text("THREE"), "arg4",
@@ -1220,9 +1149,7 @@ public class MiniMessageParserTest extends TestBase {
       .append(text("<"))
       .append(empty().color(YELLOW)
         .append(text("TEST"))
-        .append(empty().color(GRAY)
-          .append(text("> Woo << double <3"))
-        )
+        .append(text("> Woo << double <3").color(GRAY))
       );
 
     final String input = "<gray><<yellow>TEST<gray>> Woo << double <3";
@@ -1233,11 +1160,9 @@ public class MiniMessageParserTest extends TestBase {
   // GH-111
   @Test
   void testNoSwallowSpace() {
-    final Component expected = empty().color(RED)
-      .append(empty().hoverEvent(showText(text("Test")))
-        .append(text(" "))
-        .append(translatable("item.minecraft.stick"))
-      );
+    final Component expected = empty().color(RED).hoverEvent(showText(text("Test")))
+      .append(text(" "))
+      .append(translatable("item.minecraft.stick"));
     final String input = "<red><hover:show_text:\"Test\"> <lang:item.minecraft.stick>";
 
     assertParsedEquals(expected, input);

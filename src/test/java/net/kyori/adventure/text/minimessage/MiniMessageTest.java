@@ -51,7 +51,7 @@ public class MiniMessageTest extends TestBase {
 
   @Test
   void testMarkdownBuilder() {
-    final Component expected = empty().decorate(BOLD).append(empty().color(RED).append(text("BOLD")));
+    final Component expected = text("BOLD").color(RED).decorate(BOLD);
     final String input = "**<red>BOLD**";
     final MiniMessage miniMessage = MiniMessage.builder().markdown().build();
 
@@ -60,7 +60,7 @@ public class MiniMessageTest extends TestBase {
 
   @Test
   void testNormalBuilder() {
-    final Component expected = empty().color(RED).append(text("Test"));
+    final Component expected = text("Test").color(RED);
     final String input = "<red>Test";
     final MiniMessage miniMessage = MiniMessage.builder().build();
 
@@ -69,7 +69,7 @@ public class MiniMessageTest extends TestBase {
 
   @Test
   void testNormal() {
-    final Component expected = empty().color(RED).append(text("Test"));
+    final Component expected = text("Test").color(RED);
     final String input = "<red>Test";
     final MiniMessage miniMessage = MiniMessage.get();
 
@@ -78,7 +78,7 @@ public class MiniMessageTest extends TestBase {
 
   @Test
   void testNormalPlaceholders() {
-    final Component expected = empty().color(RED).append(text("TEST"));
+    final Component expected = text("TEST").color(RED);
     final String input = "<red><test>";
     final MiniMessage miniMessage = MiniMessage.get();
 
@@ -112,7 +112,7 @@ public class MiniMessageTest extends TestBase {
 
   @Test
   void testMarkdown() {
-    final Component expected = empty().decorate(BOLD).append(empty().color(RED).append(text("BOLD")));
+    final Component expected = text("BOLD").color(RED).decorate(BOLD);
     final String input = "**<red>BOLD**";
     final MiniMessage miniMessage = MiniMessage.markdown();
 
@@ -139,7 +139,7 @@ public class MiniMessageTest extends TestBase {
 
   @Test
   void testTemplateComponentInheritedStyle() {
-    final Component expected = empty().color(GREEN).append(empty().decorate(BOLD).append(text("TEST", RED, UNDERLINED)));
+    final Component expected = text("TEST", RED, UNDERLINED, BOLD);
     final String input = "<green><bold><test>";
     final MiniMessage miniMessage = MiniMessage.get();
 
@@ -148,11 +148,9 @@ public class MiniMessageTest extends TestBase {
 
   @Test
   void testTemplateComponentMixed() {
-    final Component expected = empty().color(GREEN)
-      .append(empty().decorate(BOLD)
+    final Component expected = empty().color(GREEN).decorate(BOLD)
         .append(text("TEST", style(RED, UNDERLINED)))
-        .append(text("Test2"))
-      );
+        .append(text("Test2"));
     final String input = "<green><bold><test><test2>";
     final MiniMessage miniMessage = MiniMessage.get();
 
@@ -175,7 +173,7 @@ public class MiniMessageTest extends TestBase {
 
   @Test
   void testCustomRegistry() {
-    final Component expected = empty().color(GREEN).append(text("<bold>TEST"));
+    final Component expected = text("<bold>TEST").color(GREEN);
     final String input = "<green><bold><test>";
     final MiniMessage miniMessage = MiniMessage.withTransformations(TransformationType.COLOR);
 
@@ -184,7 +182,7 @@ public class MiniMessageTest extends TestBase {
 
   @Test
   void testCustomRegistryBuilder() {
-    final Component expected = empty().color(GREEN).append(text("<bold>TEST"));
+    final Component expected = text("<bold>TEST").color(GREEN);
     final String input = "<green><bold><test>";
     final MiniMessage miniMessage = MiniMessage.builder()
       .removeDefaultTransformations()
@@ -196,7 +194,7 @@ public class MiniMessageTest extends TestBase {
 
   @Test
   void testPlaceholderResolver() {
-    final Component expected = empty().color(GREEN).append(empty().decorate(BOLD).append(text("TEST", RED)));
+    final Component expected = text("TEST", RED).decorate(BOLD);
 
     final String input = "<green><bold><test>";
 
@@ -325,9 +323,7 @@ public class MiniMessageTest extends TestBase {
     final Component expected = empty().color(RED)
       .append(text("Click <click>here"))
       .append(text(" to win a new "))
-      .append(empty().decorate(BOLD)
-        .append(text("car!"))
-      );
+      .append(text("car!").decorate(BOLD));
 
     assertParsedEquals(MiniMessage.get(), expected, input);
   }
