@@ -28,6 +28,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
 import org.junit.jupiter.api.Test;
 
@@ -1002,6 +1003,23 @@ public class MiniMessageParserTest extends TestBase {
           .append(text("3", color(0x5571e3)))
         )
       ).append(text("!"));
+
+    assertParsedEquals(expected, input);
+  }
+
+
+
+  @Test
+  void testRainbowWithInnerClick() {
+    final String input = "Rainbow: <rainbow><click:open_url:'https://github.com'>GH</click></rainbow>";
+    final Component expected = empty()
+      .append(text("Rainbow: "))
+      .append(empty()
+        .append(empty().clickEvent(openUrl("https://github.com")) // TODO fix, click event is vanishing
+          .append(text("G").color(color(0xf3801f)))
+          .append(text("H").color(color(0x0c80e0)))
+        )
+      );
 
     assertParsedEquals(expected, input);
   }
