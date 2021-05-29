@@ -375,9 +375,8 @@ public class MiniMessageParserTest extends TestBase {
     final String input = "Press <key:key.jump> to jump!";
     final Component expected = empty()
       .append(text("Press "))
-      .append(keybind("key.jump")
-        .append(text(" to jump!"))
-      );
+      .append(keybind("key.jump"))
+      .append(text(" to jump!"));
 
     assertParsedEquals(expected, input);
   }
@@ -388,9 +387,8 @@ public class MiniMessageParserTest extends TestBase {
     final Component expected = empty()
       .append(text("Press "))
       .append(empty().color(RED)
-        .append(keybind("key.jump")
-          .append(text(" to jump!"))
-        )
+        .append(keybind("key.jump"))
+        .append(text(" to jump!"))
       );
 
     assertParsedEquals(expected, input);
@@ -401,9 +399,8 @@ public class MiniMessageParserTest extends TestBase {
     final String input = "You should get a <lang:block.minecraft.diamond_block>!";
     final Component expected = empty()
       .append(text("You should get a "))
-      .append(translatable("block.minecraft.diamond_block")
-        .append(text("!"))
-      );
+      .append(translatable("block.minecraft.diamond_block"))
+      .append(text("!"));
 
     assertParsedEquals(expected, input);
   }
@@ -413,9 +410,8 @@ public class MiniMessageParserTest extends TestBase {
     final String input = "Test: <lang:commands.drop.success.single:'<red>1':'<blue>Stone'>!";
     final Component expected = empty()
       .append(text("Test: "))
-      .append(translatable("commands.drop.success.single", empty().color(RED).append(text("1")), empty().color(BLUE).append(text("Stone")))
-        .append(text("!"))
-      );
+      .append(translatable("commands.drop.success.single", empty().color(RED).append(text("1")), empty().color(BLUE).append(text("Stone"))))
+      .append(text("!"));
 
     assertParsedEquals(expected, input);
   }
@@ -429,8 +425,8 @@ public class MiniMessageParserTest extends TestBase {
         "commands.drop.success.single",
         empty().hoverEvent(showText(empty().color(RED).append(text("dum")))).append(empty().color(RED).append(text("1"))),
         empty().color(BLUE).append(text("Stone"))
-        ).append(text("!"))
-      );
+      ))
+      .append(text("!"));
 
     assertParsedEquals(expected, input);
   }

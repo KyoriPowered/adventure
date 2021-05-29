@@ -144,7 +144,7 @@ public class MiniMessageImpl implements MiniMessage {
     if(this.markdown) {
       input = MiniMarkdownParser.parse(input, this.markdownFlavor);
     }
-    return this.parser.parseFormat(input, placeholders, Context.of(this.strict, input, this));
+    return this.parser.parseFormat(input, placeholders, Context.of(this.strict, input, this, placeholders.toArray(new Template[0])));
   }
 
   @Override

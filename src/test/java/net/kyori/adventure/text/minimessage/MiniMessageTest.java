@@ -89,11 +89,10 @@ public class MiniMessageTest extends TestBase {
   void testObjectPlaceholders() {
     final Component expected = empty().color(RED)
       .append(text("ONE"))
-      .append(text("TWO", GREEN)
-        .append(empty().color(BLUE)
-          .append(text("THREEFOUR"))
-          .append(text("FIVE", YELLOW))
-        )
+      .append(text("TWO", GREEN))
+      .append(empty().color(BLUE)
+        .append(text("THREEFOUR"))
+        .append(text("FIVE", YELLOW))
       );
     final String input = "<red>ONE<two><blue>THREE<four><five>";
     final MiniMessage miniMessage = MiniMessage.get();
@@ -324,10 +323,11 @@ public class MiniMessageTest extends TestBase {
   void testIncompleteTag() {
     final String input = "<red>Click <click>here</click> to win a new <bold>car!";
     final Component expected = empty().color(RED)
-        .append(text("Click <click>here"))
-        .append(text(" to win a new ")
-            .append(empty().decorate(BOLD)
-                .append(text("car!"))));
+      .append(text("Click <click>here"))
+      .append(text(" to win a new "))
+      .append(empty().decorate(BOLD)
+        .append(text("car!"))
+      );
 
     assertParsedEquals(MiniMessage.get(), expected, input);
   }

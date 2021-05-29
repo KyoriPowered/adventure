@@ -337,9 +337,9 @@ public final class TokenParser {
             // anything inside <pre> is raw text, so just skip
 
             continue;
-          } else if (tagNameChecker.test(tagNode.name(), true)) {
+          } else if(tagNameChecker.test(tagNode.name(), true)) {
             final Transformation transformation = transformationFactory.apply(tagNode);
-            if (transformation == null) {
+            if(transformation == null) {
               // something went wrong, ignore it
               // if strict mode is enabled this will throw an exception for us
               node.addChild(new TextNode(node, token, message));
@@ -347,7 +347,7 @@ public final class TokenParser {
               // This is a recognized tag, goes in the tree
               tagNode.transformation(transformation);
               node.addChild(tagNode);
-              if (!(transformation instanceof Inserting)) {
+              if(!(transformation instanceof Inserting)) {
                 // this tag has children
                 node = tagNode;
               }

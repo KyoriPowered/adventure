@@ -90,10 +90,22 @@ public final class TagNode extends ElementNode {
     return this.parts.get(0).value();
   }
 
+  /**
+   * Gets the transformation attached to this tag node.
+   *
+   * @return the transformation for this tag node
+   * @since 4.2.0
+   */
   public @NonNull Transformation transformation() {
     return Objects.requireNonNull(this.transformation, "no transformation set");
   }
 
+  /**
+   * Sets the transformation that is represented by this tag.
+   *
+   * @param transformation the transformation
+   * @since 4.2.0
+   */
   public void transformation(final @NonNull Transformation transformation) {
     this.transformation = transformation;
   }

@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.kyori.adventure.text.Component;
@@ -197,7 +196,7 @@ class MiniMessageParser {
     final Function<TagNode, Transformation> transformationFactory = node ->
         registry.get(node.name(), node.parts(), templates, placeholderResolver, context);
     final BiPredicate<String, Boolean> tagNameChecker = (name, includeTemplates) ->
-        registry.exists(name) || (includeTemplates && templates.containsKey(name));
+        registry.exists(name, placeholderResolver) || (includeTemplates && templates.containsKey(name));
 
     final ElementNode root = TokenParser.parse(transformationFactory, tagNameChecker, richMessage);
     context.root(root);

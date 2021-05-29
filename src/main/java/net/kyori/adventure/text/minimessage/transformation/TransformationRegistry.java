@@ -162,10 +162,16 @@ public final class TransformationRegistry {
    * Test if any registered transformation type matches the provided key.
    *
    * @param name tag name
+   * @param placeholderResolver function to resolve other component types
    * @return whether any transformation exists
    * @since 4.1.0
    */
-  public boolean exists(final String name) {
+  public boolean exists(final String name, final Function<String, ComponentLike> placeholderResolver) {
+    // first check the placeholder resolver
+    if(placeholderResolver.apply(name) != null) {
+      return true;
+    }
+    // then check registry
     for(final TransformationType<? extends Transformation> type : this.types) {
       if(type.canParse.test(name)) {
         return true;
