@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -36,6 +37,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.minimessage.parser.ParsingException;
+import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenParser;
 import net.kyori.adventure.text.minimessage.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
@@ -131,7 +134,7 @@ class MiniMessageParser {
 
   @NonNull String handlePlaceholders(@NonNull String richMessage, final @NonNull Context context, final @NonNull String... placeholders) {
     if(placeholders.length % 2 != 0) {
-      throw new ParseException(
+      throw new ParsingException(
         "Invalid number placeholders defined, usage: parseFormat(format, key, value, key, value...)");
     }
     for(int i = 0; i < placeholders.length; i += 2) {
@@ -194,12 +197,65 @@ class MiniMessageParser {
   }
 
   @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull TransformationRegistry registry, final @NonNull Function<String, ComponentLike> placeholderResolver, final Context context) {
-    final Function<TagNode, Transformation> transformationFactory = node ->
-        registry.get(node.name(), node.parts(), templates, placeholderResolver, context);
+    final Appendable debug = context.debugOutput();
+    if (debug != null) {
+      try {
+        debug.append("Beginning parsing message ").append(richMessage).append('\n');
+      } catch(final IOException ignored) {}
+    }
+
+    final Function<TagNode, Transformation> transformationFactory;
+    if (debug != null) {
+      transformationFactory = node -> {
+        try {
+          try {
+            debug.append("Attempting to match node '").append(node.name()).append("' at column ")
+                .append(String.valueOf(node.token().startIndex())).append('\n');
+          } catch(final IOException ignored) {}
+
+          final Transformation transformation = registry.get(node.name(), node.parts(), templates, placeholderResolver, context);
+
+          try {
+            if (transformation == null) {
+              debug.append("Could not match node '").append(node.name()).append("'\n");
+            } else {
+              debug.append("Successfully matched node '").append(node.name()).append("' to transformation ")
+                  .append(transformation.examinableName()).append('\n');
+            }
+          } catch(final IOException ignored) {}
+
+          return transformation;
+        } catch(final ParsingException e) {
+          try {
+            if (e.tokens().length == 0) {
+              e.tokens(new Token[]{ node.token() });
+            }
+            debug.append("Could not match node '").append(node.name()).append("' - ").append(e.getMessage()).append('\n');
+          } catch(final IOException ignored) {}
+          return null;
+        }
+      };
+    } else {
+      transformationFactory = node -> {
+        try {
+          return registry.get(node.name(), node.parts(), templates, placeholderResolver, context);
+        } catch(final ParsingException ignored) {
+          return null;
+        }
+      };
+    }
     final BiPredicate<String, Boolean> tagNameChecker = (name, includeTemplates) ->
         registry.exists(name, placeholderResolver) || (includeTemplates && templates.containsKey(name));
 
-    final ElementNode root = TokenParser.parse(transformationFactory, tagNameChecker, richMessage);
+    final ElementNode root = TokenParser.parse(transformationFactory, tagNameChecker, richMessage, context.isStrict());
+
+    if (debug != null) {
+      try {
+        debug.append("Text parsed into element tree:\n");
+        debug.append(root.toString());
+      } catch(final IOException ignored) {}
+    }
+
     context.root(root);
     return this.parse(root);
   }

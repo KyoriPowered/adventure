@@ -24,9 +24,9 @@
 package net.kyori.adventure.text.minimessage.parser;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
@@ -36,63 +36,17 @@ import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.parser.node.TextNode;
 import net.kyori.adventure.text.minimessage.transformation.Inserting;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
-import net.kyori.adventure.text.minimessage.transformation.inbuild.RainbowTransformation;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * Handles parsing a string into a tree of tokens and then into a tree of nodes.
+ * Handles parsing a string into a list of tokens and then into a tree of nodes.
  *
  * @since 4.2.0
  */
 public final class TokenParser {
 
   private TokenParser() {
-  }
-
-  // TODO remove - easy test harness
-
-  /**
-   * Remove me.
-   *
-   * @param args blah
-   * @since 4.2.0
-   */
-  public static void main(final String[] args) {
-    final List<String> list = Arrays.asList(
-      "<gray><<yellow>TEST<gray>> Woooo << double <3",
-      "<red>ONE<two><blue>THREE<four><five>",
-      "<hover:show_item:'minecraft:stone':5>test",
-      "<yellow>Woo: <gradient:red:blue:green:yellow:red>||||||||||||||||||||||||||||||||||||||||||||||||||||||</gradient>!",
-      "<yellow>Woo: <rainbow>||||||||||||||||||||||||</rainbow>!",
-      "Click <yellow><pre><insert:test>this</pre> to <red>insert!",
-      "Click <yellow><insert:test>this<rainbow> wooo<reset> to insert!",
-      "<dark_gray>»<gray> To download it from the internet, <click:open_url:https://www.google.com><hover:show_text:'<green>/!\\\\ install it from \\'Options/ResourcePacks\\' in your game'><green><bold>CLICK HERE</bold></hover></click>",
-      "<yellow><test> random <gradient:red:blue:green><bold>stranger</gradient></bold><click:run_command:test command><underlined><red>click here</click><blue> to <rainbow><b>FEEL</rainbow></underlined> it",
-      "<gray>\\<<yellow><player><gray>> <reset><pre><message></pre>",
-      "<gray><<yellow><player><gray>> <reset><pre><message></pre>",
-      "<gray><<yellow><player><gray>> <reset><pre><message>",
-      "<hover:show_text:'<blue>Hello</blue>'<red>TEST</red></hover><click:suggest_command:'/msg <user>'><user></click> <reset>: <hover:show_text:'<date>'><message></hover>",
-      "<red is already created! Try different name! :)",
-      "<lang:test:'\"\"'>",
-      "<lang:test:'\\'\\''>",
-      "<lang:test:\"''\">",
-      "<lang:test:\"\\\"\\\"\">",
-      "<gray><arg1></gray><red><arg2></red><blue><arg3></blue> <green><arg4>",
-      "<<<<>>><><><><><>>>><<<>>>>><red><><><><><><><><<<<<reset>>>>>>><<<<><<<<<>>>>>><>>>",
-      "<<'\\''\\<'>'><3'<>< '>",
-      "<pre><<'\\''\\<'>'><3'<>< '></pre</pre ></ pre></pre>",
-      "<<'\\''\\<<reset>'>'><3'<>< '>"
-    );
-
-    for(final String s : list) {
-      System.out.println();
-      System.out.println();
-      System.out.println(s);
-      System.out.println();
-      final ElementNode el = parse(t -> new RainbowTransformation.Parser().parse(), (t, i) -> true, s);
-      System.out.println(el);
-    }
   }
 
   /**
@@ -102,11 +56,11 @@ public final class TokenParser {
    * @return the root of the resulting tree
    * @since 4.2.0
    */
-  public static ElementNode parse(final @NonNull Function<TagNode, @Nullable Transformation> transformationFactory, final @NonNull BiPredicate<String, Boolean> tagNameChecker, final @NonNull String message) {
+  public static ElementNode parse(final @NonNull Function<TagNode, @Nullable Transformation> transformationFactory, final @NonNull BiPredicate<String, Boolean> tagNameChecker, final @NonNull String message, final boolean isStrict) {
     final List<Token> tokens = parseFirstPass(message);
     parseSecondPass(message, tokens);
 
-    return buildTree(transformationFactory, tagNameChecker, tokens, message);
+    return buildTree(transformationFactory, tagNameChecker, tokens, message, isStrict);
   }
 
   /*
@@ -313,7 +267,7 @@ public final class TokenParser {
   /*
    * Build a tree from the OPEN_TAG and CLOSE_TAG tokens
    */
-  private static ElementNode buildTree(final @NonNull Function<TagNode, @Nullable Transformation> transformationFactory, final @NonNull BiPredicate<String, Boolean> tagNameChecker, final @NonNull List<Token> tokens, final @NonNull String message) {
+  private static ElementNode buildTree(final @NonNull Function<TagNode, @Nullable Transformation> transformationFactory, final @NonNull BiPredicate<String, Boolean> tagNameChecker, final @NonNull List<Token> tokens, final @NonNull String message, final boolean isStrict) {
     final RootNode root = new RootNode(message);
     ElementNode node = root;
 
@@ -330,7 +284,9 @@ public final class TokenParser {
             // <reset> tags get special treatment and don't appear in the tree
             // instead, they close all currently open tags
 
-            // TODO <reset> tags are invalid if all closing tags are required
+            if (isStrict) {
+              throw new ParsingException("<reset> tags are not allowed when strict mode is enabled", message, token);
+            }
             node = root;
           } else if(tagNode.name().equals("pre")) {
             // <pre> tags also get special treatment and don't appear in the tree
@@ -387,6 +343,10 @@ public final class TokenParser {
             final List<TagPart> openParts = ((TagNode) parentNode).parts();
 
             if(tagCloses(closeValues, openParts)) {
+              if (parentNode != node && isStrict) {
+                throw new ParsingException("Unclosed tag encountered; " + ((TagNode) node).name() + " is not closed, because " + closeValues.get(0) + " was closed first.", message, parentNode.token(), node.token(), token);
+              }
+
               final ElementNode par = parentNode.parent();
               if(par != null) {
                 node = par;
@@ -397,11 +357,12 @@ public final class TokenParser {
               break;
             }
 
-            // TODO closing tag isn't closing the immediate tag, is an error if closing tags are required
             parentNode = parentNode.parent();
 
-            if(parentNode == null) {
-              // TODO dangling closing tag, is an error or not depending on strict parsing
+            if(parentNode == null || parentNode instanceof RootNode) {
+              // This means the closing tag didn't match to anything
+              // Since open tags which don't match to anything is never an error, neither is this
+              node.addChild(new TextNode(node, token, message));
               break;
             }
           }
@@ -409,7 +370,38 @@ public final class TokenParser {
       }
     }
 
-    // TODO if root != node then this is an error if closing tags are required
+    if (isStrict && root != node) {
+      final ArrayList<TagNode> openTags = new ArrayList<>();
+      {
+        ElementNode n = node;
+        while (n != null) {
+          if (n instanceof TagNode) {
+            openTags.add((TagNode) n);
+          } else {
+            break;
+          }
+          n = n.parent();
+        }
+      }
+
+      final Token[] errorTokens = new Token[openTags.size()];
+
+      final StringBuilder sb = new StringBuilder("All tags must be explicitly closed while in strict mode. End of string found with open tags: ");
+
+      int i = 0;
+      final ListIterator<TagNode> iter = openTags.listIterator(openTags.size());
+      while (iter.hasPrevious()) {
+        final TagNode n = iter.previous();
+        errorTokens[i++] = n.token();
+
+        sb.append(n.name());
+        if (iter.hasPrevious()) {
+          sb.append(", ");
+        }
+      }
+
+      throw new ParsingException(sb.toString(), message, errorTokens);
+    }
 
     return root;
   }

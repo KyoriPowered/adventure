@@ -66,7 +66,7 @@ public final class DecorationTransformation extends Transformation {
     this.decoration = parseDecoration(name);
 
     if(this.decoration == null) {
-      throw new ParsingException("Don't know how to turn '" + name + "' into a decoration", -1);
+      throw new ParsingException("Don't know how to turn '" + name + "' into a decoration", this.argTokenArray());
     }
   }
 

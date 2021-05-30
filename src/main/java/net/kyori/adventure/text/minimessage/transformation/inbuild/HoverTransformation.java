@@ -35,6 +35,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
+import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
@@ -71,58 +72,58 @@ public final class HoverTransformation extends Transformation {
     super.load(name, args);
 
     if(args.size() < 2) {
-      throw new ParsingException("Doesn't know how to turn " + args + " into a hover event", -1);
+      throw new ParsingException("Doesn't know how to turn " + args + " into a hover event", this.argTokenArray());
     }
 
-    final List<String> newArgs = args.subList(1, args.size()).stream().map(TagPart::value).collect(Collectors.toList());
+    final List<TagPart> newArgs = args.subList(1, args.size());
 
     this.action = (HoverEvent.Action<Object>) HoverEvent.Action.NAMES.value(args.get(0).value());
     if(this.action == (Object) HoverEvent.Action.SHOW_TEXT) {
-      this.value = this.context.parse(String.join(":", newArgs));
+      this.value = this.context.parse(newArgs.get(0).value());
     } else if(this.action == (Object) HoverEvent.Action.SHOW_ITEM) {
       this.value = this.parseShowItem(newArgs);
     } else if(this.action == (Object) HoverEvent.Action.SHOW_ENTITY) {
       this.value = this.parseShowEntity(newArgs);
     } else {
-      throw new ParsingException("Don't know how to turn '" + args + "' into a hover event", -1);
+      throw new ParsingException("Don't know how to turn '" + args + "' into a hover event", this.argTokenArray());
     }
   }
 
-  private HoverEvent.@NonNull ShowItem parseShowItem(final @NonNull List<String> args) {
+  private HoverEvent.@NonNull ShowItem parseShowItem(final @NonNull List<TagPart> args) {
     try {
       if(args.isEmpty()) {
-        throw new RuntimeException("Show item hover needs at least item id!");
+        throw new ParsingException("Show item hover needs at least item id!");
       }
-      final Key key = Key.key(args.get(0));
+      final Key key = Key.key(args.get(0).value());
       final int count;
       if(args.size() >= 2) {
-        count = Integer.parseInt(args.get(1));
+        count = Integer.parseInt(args.get(1).value());
       } else {
         count = 1;
       }
       if(args.size() == 3) {
-        return HoverEvent.ShowItem.of(key, count, BinaryTagHolder.of(args.get(2)));
+        return HoverEvent.ShowItem.of(key, count, BinaryTagHolder.of(args.get(2).value()));
       }
       return HoverEvent.ShowItem.of(key, count);
     } catch(final InvalidKeyException | NumberFormatException ex) {
-      throw new RuntimeException(String.format("Exception parsing show_item hover '%s'.", this.value), ex);
+      throw new ParsingException("Exception parsing show_item hover", ex, args.stream().map(TagPart::token).toArray(Token[]::new));
     }
   }
 
-  private HoverEvent.@NonNull ShowEntity parseShowEntity(final @NonNull List<String> args) {
+  private HoverEvent.@NonNull ShowEntity parseShowEntity(final @NonNull List<TagPart> args) {
     try {
       if(args.size() < 2) {
-        throw new RuntimeException("Show entity hover needs at least type and uuid!");
+        throw new ParsingException("Show entity hover needs at least type and uuid!");
       }
-      final Key key = Key.key(args.get(0));
-      final UUID id = UUID.fromString(args.get(1));
+      final Key key = Key.key(args.get(0).value());
+      final UUID id = UUID.fromString(args.get(1).value());
       if(args.size() == 3) {
-        final Component name = this.context.parse(args.get(2));
+        final Component name = this.context.parse(args.get(2).value());
         return HoverEvent.ShowEntity.of(key, id, name);
       }
       return HoverEvent.ShowEntity.of(key, id);
     } catch(final IllegalArgumentException | InvalidKeyException ex) {
-      throw new RuntimeException(String.format("Exception parsing show_entity hover '%s'.", this.value), ex);
+      throw new ParsingException("Exception parsing show_entity hover", ex, args.stream().map(TagPart::token).toArray(Token[]::new));
     }
   }
 

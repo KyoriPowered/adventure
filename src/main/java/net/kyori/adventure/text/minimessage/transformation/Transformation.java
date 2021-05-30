@@ -27,6 +27,7 @@ import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.string.StringExaminer;
@@ -41,6 +42,7 @@ import net.kyori.examination.string.StringExaminer;
  */
 public abstract class Transformation implements Examinable {
   private String name;
+  private List<TagPart> args;
   protected Context context;
 
   protected Transformation() {
@@ -55,6 +57,7 @@ public abstract class Transformation implements Examinable {
    */
   public void load(final String name, final List<TagPart> args) {
     this.name = name;
+    this.args = args;
   }
 
   /**
@@ -68,22 +71,26 @@ public abstract class Transformation implements Examinable {
   }
 
   /**
+   * The arguments making up this instance.
+   *
+   * @return the name
+   * @since 4.q.2
+   */
+  public final List<TagPart> args() {
+    return this.args;
+  }
+
+  public final Token[] argTokenArray() {
+    return this.args.stream().map(TagPart::token).toArray(Token[]::new);
+  }
+
+  /**
    * Return a transformed {@code component} based on the applied parameters.
    *
    * @return the transformed component
    * @since 4.1.0
    */
   public abstract Component apply();
-
-  /**
-   * Checks if this transformation is allowed to be interpreted inside a pre tag.
-   *
-   * @return if this transformation is allowed to be interpreted inside a pre tag
-   * @since 4.1.0
-   */
-  public boolean allowedInPre() {
-    return false;
-  }
 
   void context(final Context context) {
     this.context = context;

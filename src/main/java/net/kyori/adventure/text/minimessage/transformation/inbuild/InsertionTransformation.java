@@ -64,7 +64,7 @@ public final class InsertionTransformation extends Transformation {
     if(args.size() == 1) {
       this.insertion = args.get(0).value();
     } else {
-      throw new ParsingException("Doesn't know how to turn token with name '" + name + "' and arguments " + args + " into a insertion component", -1);
+      throw new ParsingException("Doesn't know how to turn token with name '" + name + "' and arguments " + args + " into a insertion component", this.argTokenArray());
     }
   }
 

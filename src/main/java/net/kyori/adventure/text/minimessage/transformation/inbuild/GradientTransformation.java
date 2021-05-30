@@ -90,7 +90,7 @@ public final class GradientTransformation extends Transformation implements Modi
           try {
             this.phase = Float.parseFloat(arg);
             if(this.phase < -1f || this.phase > 1f) {
-              throw new ParsingException(String.format("Gradient phase is out of range (%s). Must be in the range [-1.0f, 1.0f] (inclusive).", this.phase), -1);
+              throw new ParsingException(String.format("Gradient phase is out of range (%s). Must be in the range [-1.0f, 1.0f] (inclusive).", this.phase), this.argTokenArray());
             }
             if(this.phase < 0) {
               this.negativePhase = true;
@@ -108,12 +108,12 @@ public final class GradientTransformation extends Transformation implements Modi
           parsedColor = NamedTextColor.NAMES.value(arg.toLowerCase(Locale.ROOT));
         }
         if(parsedColor == null) {
-          throw new ParsingException(String.format("Unable to parse a color from '%s'. Please use NamedTextColors or Hex colors.", arg), -1);
+          throw new ParsingException(String.format("Unable to parse a color from '%s'. Please use NamedTextColors or Hex colors.", arg), this.argTokenArray());
         }
         textColors.add(parsedColor);
       }
       if(textColors.size() < 2) {
-        throw new ParsingException("Invalid gradient, not enough colors. Gradients must have at least two colors.", -1);
+        throw new ParsingException("Invalid gradient, not enough colors. Gradients must have at least two colors.", this.argTokenArray());
       }
       this.colors = textColors.toArray(new TextColor[0]);
       if(this.negativePhase) {

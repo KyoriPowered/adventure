@@ -78,7 +78,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @since 4.0.0
    */
   static @NonNull MiniMessage withMarkdownFlavor(final MarkdownFlavor markdownFlavor) {
-    return new MiniMessageImpl(true, markdownFlavor, new TransformationRegistry(), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER, false, MiniMessageImpl.DEFAULT_ERROR_CONSUMER);
+    return new MiniMessageImpl(true, markdownFlavor, new TransformationRegistry(), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER, false, null, MiniMessageImpl.DEFAULT_ERROR_CONSUMER);
   }
 
   /**
@@ -90,7 +90,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    */
   @SafeVarargs
   static @NonNull MiniMessage withTransformations(final TransformationType<? extends Transformation>... types) {
-    return new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(), new TransformationRegistry(types), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER, false, MiniMessageImpl.DEFAULT_ERROR_CONSUMER);
+    return new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(), new TransformationRegistry(types), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER, false, null, MiniMessageImpl.DEFAULT_ERROR_CONSUMER);
   }
 
   /**
@@ -102,7 +102,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    */
   @SafeVarargs
   static @NonNull MiniMessage markdownWithTransformations(final TransformationType<? extends Transformation>... types) {
-    return new MiniMessageImpl(true, MarkdownFlavor.defaultFlavor(), new TransformationRegistry(types), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER, false, MiniMessageImpl.DEFAULT_ERROR_CONSUMER);
+    return new MiniMessageImpl(true, MarkdownFlavor.defaultFlavor(), new TransformationRegistry(types), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER, false, null, MiniMessageImpl.DEFAULT_ERROR_CONSUMER);
   }
 
   /**
@@ -115,7 +115,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    */
   @SafeVarargs
   static @NonNull MiniMessage markdownWithTransformations(final MarkdownFlavor markdownFlavor, final TransformationType<? extends Transformation>... types) {
-    return new MiniMessageImpl(true, markdownFlavor, new TransformationRegistry(types), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER, false, MiniMessageImpl.DEFAULT_ERROR_CONSUMER);
+    return new MiniMessageImpl(true, markdownFlavor, new TransformationRegistry(types), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER, false, null, MiniMessageImpl.DEFAULT_ERROR_CONSUMER);
   }
 
   /**
@@ -278,14 +278,25 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
     /**
      * Allows to enable strict mode (disabled by default)
      * <br>
-     * By default, MiniMessage will try to catch some common mistakes and print helpful messages to the console instead of aborting the parse.
-     * This will lead to message that are most likely slightly broken, but don't crash your whole plugin when a user writes slightly malformed syntax into a config.
+     * By default, MiniMessage will allow non-{@link net.kyori.adventure.text.minimessage.transformation.Inserting Inserting} tags to be implicitly closed. When strict mode
+     * is enabled, all non-inserting tags which are {@code <opened>} must be explicitly {@code </closed>} as well.
      *
      * @param strict if strict mode should be enabled
      * @return this builder
      * @since 4.1.0
      */
     @NonNull Builder strict(boolean strict);
+
+    /**
+     * Print debug information to the given output (disabled by default)
+     * <br>
+     * Debug output includes detailed information about the parsing process to help debug parser behavior.
+     *
+     * @param debugOutput if debug mode should be enabled
+     * @return this builder
+     * @since 4.2.0
+     */
+    @NonNull Builder debug(Appendable debugOutput);
 
     /**
      * If in lenient mode, MiniMessage will output helpful messages. This method allows you to change how they should be printed. By default, they will be printed to standard out.

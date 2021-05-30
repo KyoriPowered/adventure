@@ -65,7 +65,7 @@ public final class KeybindTransformation extends Transformation implements Inser
     if(args.size() == 1) {
       this.keybind = args.get(0).value();
     } else {
-      throw new ParsingException("Doesn't know how to turn token with name '" + name + "' and arguments " + args + " into a keybind component", -1);
+      throw new ParsingException("Doesn't know how to turn token with name '" + name + "' and arguments " + args + " into a keybind component", this.argTokenArray());
     }
   }
 

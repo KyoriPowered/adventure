@@ -80,7 +80,7 @@ public final class RainbowTransformation extends Transformation implements Modif
       try {
         this.phase = Integer.parseInt(args.get(0).value());
       } catch(final NumberFormatException ex) {
-        throw new ParsingException("Expected phase, got " + args.get(0), -1);
+        throw new ParsingException("Expected phase, got " + args.get(0), this.argTokenArray());
       }
     }
   }

@@ -137,24 +137,8 @@ public final class TransformationRegistry {
       transformation.load(name, inners.subList(1, inners.size()));
       return transformation;
     } catch(final ParsingException exception) {
-      if(context.isStrict()) {
-        throw exception;
-      }
-      // TODO nicer message format?
-      final List<String> errorMessage = new ArrayList<>(Arrays.asList(
-        "[MiniMessage] Encountered parse exception while trying to load " + transformation.getClass().getSimpleName(),
-        "\tmsg=" + exception.getMessage(),
-        "\twith name=" + name + " and inners=" + inners + "",
-        "\tinput=" + context.ogMessage()
-      ));
-      if(context.replacedMessage() != null) {
-        errorMessage.add("\twith placeholders=" + context.replacedMessage());
-      }
-      if(inners != null && inners.isEmpty()) {
-        errorMessage.add("\thint: did you mean to enter '</" + name + ">'?");
-      }
-      context.miniMessage().parsingErrorMessageConsumer().accept(errorMessage);
-      return null;
+      exception.originalText(context.ogMessage());
+      throw exception;
     }
   }
 

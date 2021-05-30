@@ -70,7 +70,7 @@ public final class FontTransformation extends Transformation {
     }
 
     if(args.size() != 2) {
-      throw new ParsingException("Doesn't know how to turn " + args + " into a click event", -1);
+      throw new ParsingException("Doesn't know how to turn " + args + " into a click event", this.argTokenArray());
     }
 
     @Subst(Key.MINECRAFT_NAMESPACE) final String namespaceKey = args.get(0).value();

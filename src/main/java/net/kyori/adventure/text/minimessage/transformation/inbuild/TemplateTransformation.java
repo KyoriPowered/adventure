@@ -57,11 +57,6 @@ public final class TemplateTransformation extends Transformation implements Inse
   }
 
   @Override
-  public boolean allowedInPre() {
-    return true;
-  }
-
-  @Override
   public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("template", this.template));
   }

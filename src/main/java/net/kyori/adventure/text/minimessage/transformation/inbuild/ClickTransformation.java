@@ -32,6 +32,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
+import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
@@ -65,11 +66,11 @@ public final class ClickTransformation extends Transformation {
   public void load(final String name, final List<TagPart> args) {
     super.load(name, args);
 
-    if(args.size() >= 2) {
+    if(args.size() == 2) {
       this.action = ClickEvent.Action.NAMES.value(args.get(0).value().toLowerCase(Locale.ROOT));
-      this.value = args.subList(1, args.size()).stream().map(TagPart::value).collect(Collectors.joining(":"));
+      this.value = args.get(1).value();
     } else {
-      throw new ParsingException("Don't know how to turn " + args + " into a click event", -1);
+      throw new ParsingException("Don't know how to turn " + args + " into a click event", this.argTokenArray());
     }
   }
 

@@ -67,7 +67,7 @@ public class TranslatableTransformation extends Transformation implements Insert
     super.load(name, args);
 
     if(args.isEmpty()) {
-      throw new ParsingException("Doesn't know how to turn " + args + " into a translatable component", -1);
+      throw new ParsingException("Doesn't know how to turn " + args + " into a translatable component", this.argTokenArray());
     }
 
     this.key = args.get(0).value();

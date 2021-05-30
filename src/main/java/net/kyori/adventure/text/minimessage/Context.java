@@ -36,14 +36,16 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public class Context {
 
   private final boolean strict;
+  private final Appendable debugOutput;
   private ElementNode root;
   private final String ogMessage;
   private String replacedMessage;
   private final MiniMessageImpl miniMessage;
   private final @NonNull Template @Nullable [] templates;
 
-  Context(final boolean strict, final ElementNode root, final String ogMessage, final String replacedMessage, final MiniMessageImpl miniMessage, final @NonNull Template @Nullable [] templates) {
+  Context(final boolean strict, final Appendable debugOutput, final ElementNode root, final String ogMessage, final String replacedMessage, final MiniMessageImpl miniMessage, final @NonNull Template @Nullable [] templates) {
     this.strict = strict;
+    this.debugOutput = debugOutput;
     this.root = root;
     this.ogMessage = ogMessage;
     this.replacedMessage = replacedMessage;
@@ -61,7 +63,21 @@ public class Context {
    * @since 4.1.0
    */
   public static Context of(final boolean strict, final String input, final MiniMessageImpl miniMessage) {
-    return new Context(strict, null, input, null, miniMessage, null);
+    return new Context(strict, null, null, input, null, miniMessage, null);
+  }
+
+  /**
+   * Init.
+   *
+   * @param strict if strict mode is enabled
+   * @param debugOutput where to print debug output
+   * @param input the input message
+   * @param miniMessage the minimessage instance
+   * @return the debug context
+   * @since 4.1.0
+   */
+  public static Context of(final boolean strict, final Appendable debugOutput, final String input, final MiniMessageImpl miniMessage) {
+    return new Context(strict, debugOutput, null, input, null, miniMessage, null);
   }
 
   /**
@@ -75,7 +91,22 @@ public class Context {
    * @since 4.1.0
    */
   public static Context of(final boolean strict, final String input, final MiniMessageImpl miniMessage, @NonNull final Template @Nullable [] templates) {
-    return new Context(strict, null, input, null, miniMessage, templates);
+    return new Context(strict, null, null, input, null, miniMessage, templates);
+  }
+
+  /**
+   * Init.
+   *
+   * @param strict if strict mode is enabled
+   * @param debugOutput where to print debug output
+   * @param input the input message
+   * @param miniMessage the minimessage instance
+   * @param templates the templates passed to minimessage
+   * @return the debug context
+   * @since 4.2.0
+   */
+  public static Context of(final boolean strict, final Appendable debugOutput, final String input, final MiniMessageImpl miniMessage, @NonNull final Template @Nullable [] templates) {
+    return new Context(strict, debugOutput, null, input, null, miniMessage, templates);
   }
 
   /**
@@ -106,6 +137,16 @@ public class Context {
    */
   public boolean isStrict() {
     return this.strict;
+  }
+
+  /**
+   * Returns the appendable to print debug output to
+   *
+   * @return the debug output to print to
+   * @since 4.2.0
+   */
+  public Appendable debugOutput() {
+    return this.debugOutput;
   }
 
   /**

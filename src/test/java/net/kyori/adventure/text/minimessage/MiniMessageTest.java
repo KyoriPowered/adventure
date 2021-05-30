@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.transformation.TransformationType;
 import org.junit.jupiter.api.Test;
 
@@ -163,8 +164,9 @@ public class MiniMessageTest extends TestBase {
   // GH-103
   @Test
   void testTemplateInHover() {
-    final Component expected = empty().hoverEvent(showText(empty().color(color(0xff0000)).append(text("[Plugin]"))))
-      .append(text("This is a test message."));
+    final Component expected = text("This is a test message.")
+        .hoverEvent(showText(text("[Plugin]").color(color(0xff0000))));
+
     final String input = "<hover:show_text:'<prefix>'>This is a test message.";
     final MiniMessage miniMessage = MiniMessage.get();
 
@@ -253,7 +255,7 @@ public class MiniMessageTest extends TestBase {
       .append(text("MiniDigger"))
       .append(empty().color(GRAY)
         .append(text(": "))
-        .append(text("<red></pre><red>Test"))
+        .append(text("<red><message>"))
       );
     final String input = "<red><username><gray>: <pre><red><message>";
     final MiniMessage miniMessage = MiniMessage.get();
@@ -276,12 +278,14 @@ public class MiniMessageTest extends TestBase {
 
   @Test
   void testNonStrict() {
-    final String input = "<gray>Example: <click:suggest_command:/plot flag set coral-dry true><gold>/plot flag set coral-dry true<click></gold></gray>";
+    final String input = "<gray>Example: <click:suggest_command:/plot flag set coral-dry true><gold>/plot flag set coral-dry true</gold></click></gray>";
     final Component expected = empty().color(GRAY)
       .append(text("Example: "))
-      .append(empty().clickEvent(suggestCommand("/plot flag set coral-dry true"))
-        .append(empty().color(GOLD)
-          .append(text("/plot flag set coral-dry true"))));
+      .append(text("/plot flag set coral-dry true")
+          .color(GOLD)
+          .clickEvent(suggestCommand("/plot flag set coral-dry true"))
+      );
+
     final MiniMessage miniMessage = MiniMessage.builder()
       .strict(false)
       .build();
@@ -302,13 +306,13 @@ public class MiniMessageTest extends TestBase {
   @Test
   void testStrictException() {
     final String input = "<gray>Example: <click:suggest_command:/plot flag set coral-dry true><gold>/plot flag set coral-dry true<click></gold></gray>";
-    assertThrows(ParseException.class, () -> MiniMessage.builder().strict(true).build().parse(input));
+    assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().parse(input));
   }
 
   @Test
   void testMissingCloseOfHover() {
     final String input = "<hover:show_text:'<blue>Hello</blue>'<red>TEST</red></hover><click:suggest_command:'/msg <user>'><user></click> <reset>: <hover:show_text:'<date>'><message></hover>";
-    assertThrows(ParseException.class, () -> MiniMessage.builder().strict(true).build().parse(input));
+    assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().parse(input));
   }
 
   @Test
@@ -321,10 +325,148 @@ public class MiniMessageTest extends TestBase {
   void testIncompleteTag() {
     final String input = "<red>Click <click>here</click> to win a new <bold>car!";
     final Component expected = empty().color(RED)
-      .append(text("Click <click>here"))
-      .append(text(" to win a new "))
+      .append(text("Click <click>here</click> to win a new "))
       .append(text("car!").decorate(BOLD));
 
-    assertParsedEquals(MiniMessage.get(), expected, input);
+    assertParsedEquals(expected, input);
+  }
+
+  @Test
+  void allClosedTagsStrict() {
+    final String input = "<red>RED<green>GREEN</green>RED<blue>BLUE</blue></red>";
+    final Component expected = empty().color(RED)
+      .append(text("RED"))
+      .append(text("GREEN").color(GREEN))
+      .append(text("RED"))
+      .append(text("BLUE").color(BLUE));
+
+    assertParsedEquals(MiniMessage.builder().strict(true).build(), expected, input);
+  }
+
+  @Test
+  void unclosedTagStrict() {
+    final String input = "<red>RED<green>GREEN</green>RED<blue>BLUE";
+
+    final String errorMessage = "All tags must be explicitly closed while in strict mode. End of string found with open tags: red, blue\n" +
+        "\t<red>RED<green>GREEN</green>RED<blue>BLUE\n" +
+        "\t^~~~^                          ^~~~~^";
+
+    final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().parse(input));
+    assertEquals(thrown.getMessage(), errorMessage);
+  }
+
+  @Test
+  void implicitCloseStrict() {
+    final String input = "<red>RED<green>GREEN</red>NO COLOR<blue>BLUE</blue>";
+
+    final String errorMessage = "Unclosed tag encountered; green is not closed, because red was closed first.\n" +
+        "\t<red>RED<green>GREEN</red>NO COLOR<blue>BLUE</blue>\n" +
+        "\t^~~~^   ^~~~~~^     ^~~~~^";
+
+    final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().parse(input));
+    assertEquals(thrown.getMessage(), errorMessage);
+  }
+
+  @Test
+  void implicitCloseNestedStrict() {
+    final String input = "<red>RED<green>GREEN<blue>BLUE<yellow>YELLOW</green>";
+
+    final String errorMessage = "Unclosed tag encountered; yellow is not closed, because green was closed first.\n" +
+        "\t<red>RED<green>GREEN<blue>BLUE<yellow>YELLOW</green>\n" +
+        "\t        ^~~~~~^               ^~~~~~~^      ^~~~~~~^";
+
+    final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().parse(input));
+    assertEquals(thrown.getMessage(), errorMessage);
+  }
+
+  @Test
+  void resetWhileStrict() {
+    final String input = "<red>RED<green>GREEN<reset>NO COLOR<blue>BLUE</blue>";
+
+    final String errorMessage = "<reset> tags are not allowed when strict mode is enabled\n" +
+        "\t<red>RED<green>GREEN<reset>NO COLOR<blue>BLUE</blue>\n" +
+        "\t                    ^~~~~~^";
+
+    final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().parse(input));
+    assertEquals(thrown.getMessage(), errorMessage);
+  }
+
+  @Test
+  void debugModeSimple() {
+    final String input = "<red> RED </red>";
+
+    final StringBuilder sb = new StringBuilder();
+    MiniMessage.builder().debug(sb).build().parse(input);
+
+    final String expected = "Beginning parsing message <red> RED </red>\n" +
+        "Attempting to match node 'red' at column 0\n" +
+        "Successfully matched node 'red' to transformation ColorTransformation\n" +
+        "Text parsed into element tree:\n" +
+        "Node {\n" +
+        "  TagNode('red') {\n" +
+        "    TextNode(' RED ')\n" +
+        "  }\n" +
+        "}\n";
+
+    assertEquals(expected, sb.toString());
+  }
+
+  @Test
+  void debugModeMoreComplex() {
+    final String input = "<red> RED <blue> BLUE <click> bad click </click>";
+
+    final StringBuilder sb = new StringBuilder();
+    MiniMessage.builder().debug(sb).build().parse(input);
+
+    final String expected = "Beginning parsing message <red> RED <blue> BLUE <click> bad click </click>\n" +
+        "Attempting to match node 'red' at column 0\n" +
+        "Successfully matched node 'red' to transformation ColorTransformation\n" +
+        "Attempting to match node 'blue' at column 10\n" +
+        "Successfully matched node 'blue' to transformation ColorTransformation\n" +
+        "Attempting to match node 'click' at column 22\n" +
+        "Could not match node 'click' - Don't know how to turn [] into a click event\n" +
+        "\t<red> RED <blue> BLUE <click> bad click </click>\n" +
+        "\t                      ^~~~~~^\n" +
+        "Text parsed into element tree:\n" +
+        "Node {\n" +
+        "  TagNode('red') {\n" +
+        "    TextNode(' RED ')\n" +
+        "    TagNode('blue') {\n" +
+        "      TextNode(' BLUE <click> bad click </click>')\n" +
+        "    }\n" +
+        "  }\n" +
+        "}\n";
+
+    assertEquals(expected, sb.toString());
+  }
+
+  @Test
+  void debugModeMoreComplexNoError() {
+    final String input = "<red> RED <blue> BLUE <click:open_url:https://github.com> good click </click>";
+
+    final StringBuilder sb = new StringBuilder();
+    MiniMessage.builder().debug(sb).build().parse(input);
+
+    final String expected = "Beginning parsing message <red> RED <blue> BLUE <click:open_url:https://github.com> good click </click>\n" +
+        "Attempting to match node 'red' at column 0\n" +
+        "Successfully matched node 'red' to transformation ColorTransformation\n" +
+        "Attempting to match node 'blue' at column 10\n" +
+        "Successfully matched node 'blue' to transformation ColorTransformation\n" +
+        "Attempting to match node 'click' at column 22\n" +
+        "Successfully matched node 'click' to transformation ClickTransformation\n" +
+        "Text parsed into element tree:\n" +
+        "Node {\n" +
+        "  TagNode('red') {\n" +
+        "    TextNode(' RED ')\n" +
+        "    TagNode('blue') {\n" +
+        "      TextNode(' BLUE ')\n" +
+        "      TagNode('click', 'open_url', 'https://github.com') {\n" +
+        "        TextNode(' good click ')\n" +
+        "      }\n" +
+        "    }\n" +
+        "  }\n" +
+        "}\n";
+
+    assertEquals(expected, sb.toString());
   }
 }

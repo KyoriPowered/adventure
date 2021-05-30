@@ -239,11 +239,8 @@ public class MiniMessageParserTest extends TestBase {
       .append(text("click here").color(RED).decorate(UNDERLINED).clickEvent(runCommand("test command")))
       .append(empty().color(BLUE)
         .append(text(" to "))
-        .append(empty().decorate(BOLD)
-          .append(text("FEEL"))
-          .append(text(" it")
-          )
-        ));
+        .append(text("FEEL</underlined> it").decorate(BOLD))
+      );
 
     assertParsedEquals(expected, input, "test", "Hello!");
   }
@@ -331,10 +328,7 @@ public class MiniMessageParserTest extends TestBase {
         .append(text("click here").color(RED).decorate(UNDERLINED))
       ).append(empty().color(BLUE)
         .append(text(" to "))
-        .append(empty().decorate(BOLD)
-          .append(text("FEEL"))
-          .append(text(" it"))
-        )
+        .append(text("FEEL</underlined> it").decorate(BOLD))
       );
 
     assertParsedEquals(expected, input);
@@ -1087,7 +1081,7 @@ public class MiniMessageParserTest extends TestBase {
 
   @Test
   void testMismatchedTags() {
-    final Component expected = text("hello").color(GREEN);
+    final Component expected = text("hello</red>").color(GREEN);
     final String input = "<green>hello</red>";
     assertParsedEquals(expected, input);
   }

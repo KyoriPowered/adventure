@@ -83,7 +83,7 @@ public final class ColorTransformation extends Transformation {
       if(args.size() == 1) {
         name = args.get(0).value();
       } else {
-        throw new ParsingException("Expected to find a color parameter, but found " + args, -1);
+        throw new ParsingException("Expected to find a color parameter, but found " + args, this.argTokenArray());
       }
     }
 
@@ -98,7 +98,7 @@ public final class ColorTransformation extends Transformation {
     }
 
     if(this.color == null) {
-      throw new ParsingException("Don't know how to turn '" + name + "' into a color", -1);
+      throw new ParsingException("Don't know how to turn '" + name + "' into a color", this.argTokenArray());
     }
   }
 

@@ -26,14 +26,14 @@ package net.kyori.adventure.text.minimessage.parser.node;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import net.kyori.adventure.text.minimessage.ParseException;
+import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * Node that represents a component.
+ * Node that represents a tag.
  *
  * @since 4.2.0
  */
@@ -85,7 +85,7 @@ public final class TagNode extends ElementNode {
    */
   public String name() {
     if(this.parts.isEmpty()) {
-      throw new ParseException("Tag has no parts? " + this);
+      throw new ParsingException("Tag has no parts? " + this, this.sourceMessage(), this.token());
     }
     return this.parts.get(0).value();
   }

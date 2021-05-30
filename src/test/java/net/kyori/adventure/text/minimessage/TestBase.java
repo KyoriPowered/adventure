@@ -23,6 +23,8 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -31,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestBase {
 
-  final MiniMessage PARSER = MiniMessage.builder().strict(true).build();
+  final MiniMessage PARSER = MiniMessage.get();
 
   void assertParsedEquals(final @NonNull Component expected, final @NonNull String input) {
     this.assertParsedEquals(this.PARSER, expected, input);
@@ -42,14 +44,20 @@ public class TestBase {
   }
 
   void assertParsedEquals(final MiniMessage miniMessage, final Component expected, final String input) {
-    System.out.println("exp : " + GsonComponentSerializer.gson().serialize(expected));
-    System.out.println("prov: " + GsonComponentSerializer.gson().serialize(miniMessage.parse(input)));
-    assertEquals(expected, miniMessage.parse(input));
+    final Gson gson = this.gson();
+    final String expectedSerialized = gson.toJson(expected);
+    final String actual = gson.toJson(miniMessage.parse(input));
+    assertEquals(expectedSerialized, actual);
   }
 
   void assertParsedEquals(final MiniMessage miniMessage, final Component expected, final String input, final @NonNull Object... args) {
-    System.out.println("exp : " + GsonComponentSerializer.gson().serialize(expected));
-    System.out.println("prov: " + GsonComponentSerializer.gson().serialize(miniMessage.parse(input, args)));
-    assertEquals(expected, miniMessage.parse(input, args));
+    final Gson gson = this.gson();
+    final String expectedSerialized = gson.toJson(expected);
+    final String actual = gson.toJson(miniMessage.parse(input, args));
+    assertEquals(expectedSerialized, actual);
+  }
+
+  private Gson gson() {
+    return GsonComponentSerializer.gson().populator().apply(new GsonBuilder()).setPrettyPrinting().create();
   }
 }
