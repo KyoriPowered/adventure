@@ -28,7 +28,6 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
 import org.junit.jupiter.api.Test;
 
@@ -73,8 +72,8 @@ public class MiniMessageParserTest extends TestBase {
     final String input1 = "<yellow>TEST<green> nested</green>Test";
     final String input2 = "<yellow>TEST<green> nested<yellow>Test";
 
-    assertParsedEquals(expected1, input1);
-    assertParsedEquals(expected2, input2);
+    this.assertParsedEquals(expected1, input1);
+    this.assertParsedEquals(expected2, input2);
   }
 
   @Test
@@ -83,10 +82,10 @@ public class MiniMessageParserTest extends TestBase {
     final String input2 = "<gray>This is english";
     final String input3 = "<dark_grey>This is still english"; // British is superior english
     final String input4 = "<dark_gray>This is still english";
-    final Component out1 = PARSER.parse(input1);
-    final Component out2 = PARSER.parse(input2);
-    final Component out3 = PARSER.parse(input3);
-    final Component out4 = PARSER.parse(input4);
+    final Component out1 = this.PARSER.parse(input1);
+    final Component out2 = this.PARSER.parse(input2);
+    final Component out3 = this.PARSER.parse(input3);
+    final Component out4 = this.PARSER.parse(input4);
 
     assertEquals(out1, out2);
     assertEquals(out3, out4);
@@ -108,8 +107,8 @@ public class MiniMessageParserTest extends TestBase {
     final String input1 = "<color:yellow>TEST<color:green> nested</color:green>Test";
     final String input2 = "<color:yellow>TEST<color:green> nested<color:yellow>Test";
 
-    assertParsedEquals(expected1, input1);
-    assertParsedEquals(expected2, input2);
+    this.assertParsedEquals(expected1, input1);
+    this.assertParsedEquals(expected2, input2);
   }
 
   @Test
@@ -128,8 +127,8 @@ public class MiniMessageParserTest extends TestBase {
     final String input1 = "<color:#ff00ff>TEST<color:#00ff00> nested</color:#00ff00>Test";
     final String input2 = "<color:#ff00ff>TEST<color:#00ff00> nested<color:#ff00ff>Test";
 
-    assertParsedEquals(expected1, input1);
-    assertParsedEquals(expected2, input2);
+    this.assertParsedEquals(expected1, input1);
+    this.assertParsedEquals(expected2, input2);
   }
 
   @Test
@@ -148,57 +147,57 @@ public class MiniMessageParserTest extends TestBase {
     final String input1 = "<#ff00ff>TEST<#00ff00> nested</#00ff00>Test";
     final String input2 = "<#ff00ff>TEST<#00ff00> nested<#ff00ff>Test";
 
-    assertParsedEquals(expected1, input1);
-    assertParsedEquals(expected2, input2);
+    this.assertParsedEquals(expected1, input1);
+    this.assertParsedEquals(expected2, input2);
   }
 
   @Test
   void testStripSimple() {
     final String input = "<yellow>TEST<green> nested</green>Test";
     final String expected = "TEST nestedTest";
-    assertEquals(expected, PARSER.stripTokens(input));
+    assertEquals(expected, this.PARSER.stripTokens(input));
   }
 
   @Test
   void testStripComplex() {
     final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here</click><blue> to <bold>FEEL</underlined> it";
     final String expected = " random strangerclick here to FEEL it";
-    assertEquals(expected, PARSER.stripTokens(input));
+    assertEquals(expected, this.PARSER.stripTokens(input));
   }
 
   @Test
   void testStripInner() {
     final String input = "<hover:show_text:\"<red>test:TEST\">TEST";
     final String expected = "TEST";
-    assertEquals(expected, PARSER.stripTokens(input));
+    assertEquals(expected, this.PARSER.stripTokens(input));
   }
 
   @Test
   void testEscapeSimple() {
     final String input = "<yellow>TEST<green> nested</green>Test";
     final String expected = "\\<yellow>TEST\\<green> nested\\</green>Test";
-    assertEquals(expected, PARSER.escapeTokens(input));
+    assertEquals(expected, this.PARSER.escapeTokens(input));
   }
 
   @Test
   void testEscapeComplex() {
     final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here</click><blue> to <bold>FEEL</underlined> it";
     final String expected = "\\<yellow>\\<test> random \\<bold>stranger\\</bold>\\<click:run_command:test command>\\<underlined>\\<red>click here\\</click>\\<blue> to \\<bold>FEEL\\</underlined> it";
-    assertEquals(expected, PARSER.escapeTokens(input));
+    assertEquals(expected, this.PARSER.escapeTokens(input));
   }
 
   @Test
   void testEscapeInner() {
     final String input = "<hover:show_text:\"<red>test:TEST\">TEST";
     final String expected = "\\<hover:show_text:\"\\<red>test:TEST\">TEST";
-    assertEquals(expected, PARSER.escapeTokens(input));
+    assertEquals(expected, this.PARSER.escapeTokens(input));
   }
 
   @Test
   void testUnescape() {
     final String input = "<yellow>TEST\\<green> nested\\</green>Test";
     final String expected = "TEST<green> nested</green>Test";
-    final Component comp = PARSER.parse(input);
+    final Component comp = this.PARSER.parse(input);
 
     assertEquals(expected, PlainComponentSerializer.plain().serialize(comp));
   }
@@ -207,7 +206,7 @@ public class MiniMessageParserTest extends TestBase {
   void testNoUnescape() {
     final String input = "<yellow>TEST\\<green> \\\\< nested\\</green>Test";
     final String expected = "TEST<green> \\< nested</green>Test";
-    final TextComponent comp = (TextComponent) PARSER.parse(input);
+    final TextComponent comp = (TextComponent) this.PARSER.parse(input);
 
     assertEquals(expected, PlainComponentSerializer.plain().serialize(comp));
   }
@@ -225,7 +224,7 @@ public class MiniMessageParserTest extends TestBase {
   void checkPlaceholder() {
     final String input = "<test>";
     final Component expected = text("Hello!");
-    final Component comp = PARSER.parse(input, "test", "Hello!");
+    final Component comp = this.PARSER.parse(input, "test", "Hello!");
 
     assertEquals(expected, comp);
   }
@@ -243,14 +242,14 @@ public class MiniMessageParserTest extends TestBase {
         .append(text("FEEL</underlined> it").decorate(BOLD))
       );
 
-    assertParsedEquals(expected, input, "test", "Hello!");
+    this.assertParsedEquals(expected, input, "test", "Hello!");
   }
 
   @Test
   void testColorSimple() {
     final String input = "<yellow>TEST";
 
-    assertParsedEquals(text("TEST").color(YELLOW), input);
+    this.assertParsedEquals(text("TEST").color(YELLOW), input);
   }
 
   @Test
@@ -258,7 +257,7 @@ public class MiniMessageParserTest extends TestBase {
     final String input = "<hover:show_text:\"<red>test\">TEST";
     final Component expected = text("TEST").hoverEvent(text("test").color(RED));
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
@@ -266,7 +265,7 @@ public class MiniMessageParserTest extends TestBase {
     final String input = "<hover:show_text:'<red>test'>TEST";
     final Component expected = text("TEST").hoverEvent(text("test").color(RED));
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
@@ -274,7 +273,7 @@ public class MiniMessageParserTest extends TestBase {
     final String input = "<hover:show_text:\"<red>test:TEST\">TEST";
     final Component expected = text("TEST").hoverEvent(text("test:TEST").color(RED));
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
@@ -282,7 +281,7 @@ public class MiniMessageParserTest extends TestBase {
     final String input = "<hover:show_text:'<red>test\ntest2'>TEST";
     final Component expected = text("TEST").hoverEvent(text("test\ntest2").color(RED));
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   // GH-101
@@ -291,7 +290,7 @@ public class MiniMessageParserTest extends TestBase {
     final String input = "<red><hover:show_text:\"Test\"><lang:item.minecraft.stick>";
     final Component expected = translatable("item.minecraft.stick").hoverEvent(showText(text("Test"))).color(RED);
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
@@ -299,7 +298,7 @@ public class MiniMessageParserTest extends TestBase {
     final String input = "<click:run_command:test>TEST";
     final Component expected = text("TEST").clickEvent(runCommand("test"));
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
@@ -307,7 +306,7 @@ public class MiniMessageParserTest extends TestBase {
     final String input = "<click:run_command:/test command>TEST";
     final Component expected = text("TEST").clickEvent(runCommand("/test command"));
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
@@ -315,7 +314,7 @@ public class MiniMessageParserTest extends TestBase {
     final String input = "<red><test>";
     final Component expected = text("<test>").color(RED);
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
@@ -332,60 +331,55 @@ public class MiniMessageParserTest extends TestBase {
         .append(text("FEEL</underlined> it").decorate(BOLD))
       );
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
   void testKeyBind() {
     final String input = "Press <key:key.jump> to jump!";
-    final Component expected = empty()
-      .append(text("Press "))
+    final Component expected = text("Press ")
       .append(keybind("key.jump"))
       .append(text(" to jump!"));
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
   void testKeyBindWithColor() {
     final String input = "Press <red><key:key.jump> to jump!";
-    final Component expected = empty()
-      .append(text("Press "))
+    final Component expected = text("Press ")
       .append(empty().color(RED)
         .append(keybind("key.jump"))
         .append(text(" to jump!"))
       );
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
   void testTranslatable() {
     final String input = "You should get a <lang:block.minecraft.diamond_block>!";
-    final Component expected = empty()
-      .append(text("You should get a "))
+    final Component expected = text("You should get a ")
       .append(translatable("block.minecraft.diamond_block"))
       .append(text("!"));
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
   void testTranslatableWith() {
     final String input = "Test: <lang:commands.drop.success.single:'<red>1':'<blue>Stone'>!";
-    final Component expected = empty()
-      .append(text("Test: "))
+    final Component expected = text("Test: ")
       .append(translatable("commands.drop.success.single", text("1").color(RED), text("Stone").color(BLUE)))
       .append(text("!"));
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
   void testTranslatableWithHover() {
     final String input = "Test: <lang:commands.drop.success.single:'<hover:show_text:\\'<red>dum\\'><red>1':'<blue>Stone'>!";
-    final Component expected = empty()
-      .append(text("Test: "))
+    final Component expected = text("Test: ")
       .append(translatable(
         "commands.drop.success.single",
         text("1").color(RED).hoverEvent(showText(text("dum").color(RED))),
@@ -393,28 +387,26 @@ public class MiniMessageParserTest extends TestBase {
       ))
       .append(text("!"));
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
   void testKingAlter() {
     final String input = "Ahoy <lang:offset.-40:'<red>mates!'>";
-    final Component expected = empty()
-      .append(text("Ahoy "))
+    final Component expected = text("Ahoy ")
       .append(translatable("offset.-40", text("mates!").color(RED)));
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
   void testInsertion() {
     final String input = "Click <insert:test>this</insert> to insert!";
-    final Component expected = empty()
-      .append(text("Click "))
+    final Component expected = text("Click ")
       .append(text("this").insertion("test"))
       .append(text(" to insert!"));
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
@@ -422,7 +414,7 @@ public class MiniMessageParserTest extends TestBase {
     final String input = "\\\\!/ IMPORTANT \\\\!/";
     final Component expected = text("\\!/ IMPORTANT \\!/");
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
@@ -435,7 +427,7 @@ public class MiniMessageParserTest extends TestBase {
         .append(text("CLICK HERE").decorate(BOLD).color(GREEN).clickEvent(openUrl("https://www.google.com")).hoverEvent(showText(text("/!\\ install it from Options/ResourcePacks in your game").color(GREEN))))
       );
 
-    assertParsedEquals(expected, input, "pack_url", "https://www.google.com");
+    this.assertParsedEquals(expected, input, "pack_url", "https://www.google.com");
   }
 
   @Test
@@ -449,7 +441,7 @@ public class MiniMessageParserTest extends TestBase {
       );
 
     // should work
-    assertParsedEquals(expected, input, "pack_url", "https://www.google.com");
+    this.assertParsedEquals(expected, input, "pack_url", "https://www.google.com");
   }
 
   @Test
@@ -463,17 +455,16 @@ public class MiniMessageParserTest extends TestBase {
       );
 
     // should work
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
 
     // shouldnt throw an error
-    PARSER.parse(input, "url", "https://www.google.com");
+    this.PARSER.parse(input, "url", "https://www.google.com");
   }
 
   @Test
   void testReset() {
     final String input = "Click <yellow><insert:test>this<rainbow> wooo<reset> to insert!";
-    final Component expected = empty()
-      .append(text("Click "))
+    final Component expected = text("Click ")
       .append(empty().color(YELLOW).insertion("test")
         .append(text("this"))
         .append(empty()
@@ -485,21 +476,20 @@ public class MiniMessageParserTest extends TestBase {
         )
       ).append(text(" to insert!"));
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
   void testPre() {
     final String input = "Click <yellow><pre><insert:test>this</pre> to <red>insert!";
-    final Component expected = empty()
-      .append(text("Click "))
+    final Component expected = text("Click ")
       .append(empty().color(YELLOW)
         .append(text("<insert:test>this"))
         .append(text(" to "))
         .append(text("insert!").color(RED))
       );
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
@@ -535,7 +525,7 @@ public class MiniMessageParserTest extends TestBase {
       )
       .append(text("!"));
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
@@ -571,7 +561,7 @@ public class MiniMessageParserTest extends TestBase {
       )
       .append(text("!"));
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
@@ -608,7 +598,7 @@ public class MiniMessageParserTest extends TestBase {
         ).append(text("!"))
       );
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
@@ -643,7 +633,7 @@ public class MiniMessageParserTest extends TestBase {
         .append(text("|", color(0x0b0b0b)))
       ).append(text("!"));
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
@@ -679,7 +669,7 @@ public class MiniMessageParserTest extends TestBase {
           .append(text("|", style(color(0x0b0b0b))))
         ).append(text("!")));
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
@@ -715,7 +705,7 @@ public class MiniMessageParserTest extends TestBase {
       )
       .append(text("!"));
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
@@ -750,7 +740,7 @@ public class MiniMessageParserTest extends TestBase {
         .append(text("|", color(0x555cf8)))
       ).append(text("!"));
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
@@ -815,7 +805,7 @@ public class MiniMessageParserTest extends TestBase {
         .append(text("|", color(0xff6f55)))
       ).append(text("!"));
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
@@ -880,7 +870,7 @@ public class MiniMessageParserTest extends TestBase {
         .append(text("|", color(0x131313)))
       ).append(text("!"));
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
@@ -945,7 +935,7 @@ public class MiniMessageParserTest extends TestBase {
         .append(text("|", color(0xb9b9b9)))
       ).append(text("!"));
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
@@ -980,57 +970,77 @@ public class MiniMessageParserTest extends TestBase {
         .append(text("|", color(0x55c58f)))
       ).append(text("!"));
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   // see #91
   @Test
   void testGradientWithInnerTokens() {
-    final String input = "<gradient:green:blue>123<bold>123</gradient>!";
+    final String input = "<gradient:green:blue>123<bold>456</gradient>!";
     final Component expected = empty()
-      .append(empty()
-        .append(text("1", GREEN))
-        .append(text("2", color(0x55e371)))
-        .append(text("3", color(0x55c68e)))
-        .append(empty().decorate(BOLD) // TODO fix, missing bold for some reason it seems
-          .append(text("1", color(0x55aaaa)))
-          .append(text("2", color(0x558ec6)))
-          .append(text("3", color(0x5571e3)))
-        )
-      ).append(text("!"));
+      .append(text("1", GREEN))
+      .append(text("2", color(0x55e371)))
+      .append(text("3", color(0x55c68e)))
+      .append(empty().decorate(BOLD)
+        .append(text("4", color(0x55aaaa)))
+        .append(text("5", color(0x558ec6)))
+        .append(text("6", color(0x5571e3)))
+      )
+      .append(text("!"));
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
+  @Test
+  void testGradientWithInnerGradientWithInnerToken() {
+    final String input = "<gradient:green:blue>123<gradient:red:yellow>456<bold>789</gradient>abc</gradient>!";
+    final Component expected = empty()
+      .append(text("1", GREEN))
+      .append(text("2", color(0x55f163)))
+      .append(text("3", color(0x55e371)))
+      .append(empty()
+        .append(text("4", RED))
+        .append(text("5", color(0xff7155)))
+        .append(text("6", color(0xff8e55)))
+        .append(empty().decorate(BOLD)
+          .append(text("7", color(0xffaa55)))
+          .append(text("8", color(0xffc655)))
+          .append(text("9", color(0xffe355)))
+        )
+      )
+      .append(empty()
+        .append(text("a", color(0x5580d5)))
+        .append(text("b", color(0x5571e3)))
+        .append(text("c", color(0x5563f1)))
+      )
+      .append(text("!"));
 
+    this.assertParsedEquals(expected, input);
+  }
 
   @Test
   void testRainbowWithInnerClick() {
     final String input = "Rainbow: <rainbow><click:open_url:'https://github.com'>GH</click></rainbow>";
-    final Component expected = empty()
-      .append(text("Rainbow: "))
-      .append(empty()
-        .append(empty().clickEvent(openUrl("https://github.com")) // TODO fix, click event is vanishing
-          .append(text("G").color(color(0xf3801f)))
-          .append(text("H").color(color(0x0c80e0)))
-        )
+    final Component expected = text("Rainbow: ")
+      .append(empty().clickEvent(openUrl("https://github.com"))
+        .append(text("G").color(color(0xf3801f)))
+        .append(text("H").color(color(0x0c80e0)))
       );
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
   void testFont() {
     final String input = "Nothing <font:minecraft:uniform>Uniform <font:minecraft:alt>Alt  </font> Uniform";
-    final Component expected = empty()
-      .append(text("Nothing "))
+    final Component expected = text("Nothing ")
       .append(empty().style(s -> s.font(key("uniform")))
         .append(text("Uniform "))
         .append(text("Alt  ").style(s -> s.font(key("alt"))))
         .append(text(" Uniform"))
       );
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   // GH-37
@@ -1039,7 +1049,7 @@ public class MiniMessageParserTest extends TestBase {
     final String input = "<red><hover:show_text:'Message 1\nMessage 2'>My Message";
     final Component expected = text("My Message").hoverEvent(showText(text("Message 1\nMessage 2"))).color(RED);
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
@@ -1047,15 +1057,14 @@ public class MiniMessageParserTest extends TestBase {
     assertFalse(Character.isBmpCodePoint("𐌰".codePointAt(0)));
 
     final String input = "Something <gradient:green:blue:1.0>𐌰𐌱𐌲</gradient>";
-    final Component expected = empty()
-      .append(text("Something "))
+    final Component expected = text("Something ")
       .append(empty()
         .append(text("𐌰", BLUE))
-        .append(text("𐌱", color(0x5571e3)))
-        .append(text("𐌲", color(0x558ec6)))
+        .append(text("𐌱", color(0x558ec6)))
+        .append(text("𐌲", color(0x55c68e)))
       );
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
@@ -1070,21 +1079,21 @@ public class MiniMessageParserTest extends TestBase {
       ).append(text("<message>"));
     final String input = "<gray>\\<<yellow><player><gray>> <reset><pre><message></pre>";
 
-    assertParsedEquals(expected, input, "player", "Patbox", "message", "am dum");
+    this.assertParsedEquals(expected, input, "player", "Patbox", "message", "am dum");
   }
 
   @Test
   void testDoubleNewLine() {
     final Component expected = text("Hello\n\nWorld").color(RED);
     final String input = "<red>Hello\n\nWorld";
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
   void testMismatchedTags() {
     final Component expected = text("hello</red>").color(GREEN);
     final String input = "<green>hello</red>";
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   @Test
@@ -1092,20 +1101,20 @@ public class MiniMessageParserTest extends TestBase {
     final Component expected = text("test").hoverEvent(HoverEvent.showItem(Key.key("minecraft", "stone"), 5));
     final String input = "<hover:show_item:'minecraft:stone':5>test";
     final String input1 = "<hover:show_item:'minecraft:stone':'5'>test";
-    assertParsedEquals(expected, input);
-    assertParsedEquals(expected, input1);
+    this.assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input1);
   }
 
   @Test
   void testShowEntityHover() {
     final UUID uuid = UUID.randomUUID();
     final String nameString = "<gold>Custom Name!";
-    final Component name = PARSER.parse(nameString);
+    final Component name = this.PARSER.parse(nameString);
     final Component expected = text("test").hoverEvent(HoverEvent.showEntity(Key.key("minecraft", "zombie"), uuid, name));
     final String input = String.format("<hover:show_entity:'minecraft:zombie':%s:'%s'>test", uuid, nameString);
     final String input1 = String.format("<hover:show_entity:zombie:'%s':'%s'>test", uuid, nameString);
-    assertParsedEquals(expected, input);
-    assertParsedEquals(expected, input1);
+    this.assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input1);
   }
 
   @Test
@@ -1118,10 +1127,10 @@ public class MiniMessageParserTest extends TestBase {
     final String input1 = "<lang:test:'\\'\\''>";
     final String input2 = "<lang:test:\"''\">";
     final String input3 = "<lang:test:\"\\\"\\\"\">";
-    assertParsedEquals(expected, input);
-    assertParsedEquals(expected1, input1);
-    assertParsedEquals(expected2, input2);
-    assertParsedEquals(expected3, input3);
+    this.assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected1, input1);
+    this.assertParsedEquals(expected2, input2);
+    this.assertParsedEquals(expected3, input3);
   }
 
   @Test
@@ -1137,7 +1146,7 @@ public class MiniMessageParserTest extends TestBase {
       );
     final String input = "<gray><arg1><red><arg2> <arg3> <arg4>";
 
-    assertParsedEquals(expected, input, "arg1", text("ONE"), "arg2", text("TWO"), "arg3", text("THREE"), "arg4",
+    this.assertParsedEquals(expected, input, "arg1", text("ONE"), "arg2", text("TWO"), "arg3", text("THREE"), "arg4",
       text("FOUR"));
   }
 
@@ -1151,7 +1160,7 @@ public class MiniMessageParserTest extends TestBase {
       .append(text("FOUR").color(GREEN));
     final String input = "<gray><arg1></gray><red><arg2></red><blue><arg3></blue> <green><arg4>";
 
-    assertParsedEquals(expected, input, "arg1", text("ONE"), "arg2", text("TWO"), "arg3", text("THREE"), "arg4",
+    this.assertParsedEquals(expected, input, "arg1", text("ONE"), "arg2", text("TWO"), "arg3", text("THREE"), "arg4",
       text("FOUR"));
   }
 
@@ -1167,7 +1176,7 @@ public class MiniMessageParserTest extends TestBase {
 
     final String input = "<gray><<yellow>TEST<gray>> Woo << double <3";
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 
   // GH-111
@@ -1178,6 +1187,6 @@ public class MiniMessageParserTest extends TestBase {
       .append(translatable("item.minecraft.stick"));
     final String input = "<red><hover:show_text:\"Test\"> <lang:item.minecraft.stick>";
 
-    assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input);
   }
 }

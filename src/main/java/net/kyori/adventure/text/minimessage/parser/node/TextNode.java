@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text.minimessage.parser.node;
 
-import java.util.Objects;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenParser;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -34,9 +33,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * @since 4.2.0
  */
-public final class TextNode extends ElementNode {
-
-  private final @NonNull String value;
+public final class TextNode extends ValueNode {
 
   /**
    * Creates a new text node.
@@ -51,36 +48,11 @@ public final class TextNode extends ElementNode {
     final @NonNull Token token,
     final @NonNull String sourceMessage
   ) {
-    super(parent, token, sourceMessage);
-    this.value = TokenParser.unescape(sourceMessage, token.startIndex(), token.endIndex());
-  }
-
-  /**
-   * Returns the value of this text node.
-   *
-   * @return the value
-   * @since 4.2.0
-   */
-  public @NonNull String value() {
-    return this.value;
+    super(parent, token, sourceMessage, TokenParser.unescape(sourceMessage, token.startIndex(), token.endIndex()));
   }
 
   @Override
-  public @NonNull Token token() {
-    return Objects.requireNonNull(super.token(), "token is not set");
-  }
-
-  /**
-   * Serializes this node to a string.
-   *
-   * @param sb the string builder to serialize into
-   * @param indent the current indent level
-   * @return the passed string builder, for chaining
-   * @since 4.2.0
-   */
-  public @NonNull StringBuilder buildToString(final @NonNull StringBuilder sb, final int indent) {
-    final char[] in = this.ident(indent);
-    sb.append(in).append("TextNode('").append(this.value).append("')\n");
-    return sb;
+  String valueName() {
+    return "TextNode";
   }
 }

@@ -57,7 +57,7 @@ public class TestBase {
     assertEquals(expectedSerialized, actual);
   }
 
-  private Gson gson() {
+  Gson gson() {
     return GsonComponentSerializer.gson().populator().apply(new GsonBuilder()).setPrettyPrinting().create();
   }
 }

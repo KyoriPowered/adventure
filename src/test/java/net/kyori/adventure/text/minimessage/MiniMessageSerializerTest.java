@@ -35,13 +35,12 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.text;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class MiniMessageSerializerTest {
+public class MiniMessageSerializerTest extends TestBase {
 
   @Test
   void testColor() {
@@ -229,20 +228,16 @@ public class MiniMessageSerializerTest {
     this.test(builder, expected);
   }
 
-  @Disabled // TODO make this test actually work
   @Test
   void testRainbow() {
     final String expected = "<rainbow>test</rainbow> >> reeeeeeeee";
 
     final Component parsed = MiniMessage.get().parse(expected);
-    System.out.println(parsed);
 
     final String serialized = MiniMessage.get().serialize(parsed);
-    System.out.println(serialized);
     final Component reparsed = MiniMessage.get().parse(serialized);
-    System.out.println(reparsed);
 
-    assertEquals(parsed, reparsed);
+    assertEquals(this.gson().toJson(parsed), this.gson().toJson(reparsed));
   }
 
   @Test

@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage.transformation;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Transformations implementing this interface can transform a whole subtree of nodes.
@@ -46,9 +47,9 @@ public interface Modifying {
    * This gets called after the component tree has been assembled, but you are free to modify it however you like.
    *
    * @param curr the current component
-   * @param parent its parent
+   * @param depth the depth of the tree the current component is at
    * @return the new parent
    * @since 4.2.0
    */
-  Component apply(Component curr, Component parent);
+  Component apply(Component curr, int depth);
 }

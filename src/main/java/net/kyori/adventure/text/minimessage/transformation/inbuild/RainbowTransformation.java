@@ -34,7 +34,7 @@ import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
-import net.kyori.adventure.text.minimessage.parser.node.TextNode;
+import net.kyori.adventure.text.minimessage.parser.node.ValueNode;
 import net.kyori.adventure.text.minimessage.transformation.Modifying;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
@@ -49,6 +49,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public final class RainbowTransformation extends Transformation implements Modifying {
 
   private int size;
+  private int disableApplyingColorDepth = -1;
 
   private int colorIndex = 0;
 
@@ -87,8 +88,9 @@ public final class RainbowTransformation extends Transformation implements Modif
 
   @Override
   public void visit(final ElementNode curr) {
-    if(curr instanceof TextNode) {
-      this.size += ((TextNode) curr).value().length();
+    if(curr instanceof ValueNode) {
+      final String value = ((ValueNode) curr).value();
+      this.size += value.codePointCount(0, value.length());
     }
   }
 
@@ -103,22 +105,42 @@ public final class RainbowTransformation extends Transformation implements Modif
   }
 
   @Override
-  public Component apply(final Component current, Component parent) {
+  public Component apply(final Component current, final int depth) {
+    if ((this.disableApplyingColorDepth != -1 && depth >= this.disableApplyingColorDepth) || current.style().color() != null) {
+      if (this.disableApplyingColorDepth == -1) {
+        this.disableApplyingColorDepth = depth;
+      }
+      // This component has it's own color applied, which overrides ours
+      // We still want to keep track of where we are though if this is text
+      if (current instanceof TextComponent) {
+        final String content = ((TextComponent) current).content();
+        final int len = content.codePointCount(0, content.length());
+        for(int i = 0; i < len; i++) {
+          // increment our color index
+          this.color(this.phase);
+        }
+      }
+      return current;
+    }
+
+    this.disableApplyingColorDepth = -1;
     if(current instanceof TextComponent && ((TextComponent) current).content().length() > 0) {
       final TextComponent textComponent = (TextComponent) current;
       final String content = textComponent.content();
 
+      Component parent = Component.empty();
+
       // apply
-      int charSize;
-      final char[] holder = new char[2];
+      final int[] holder = new int[1];
       for(final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
-        charSize = Character.toChars(it.nextInt(), holder, 0);
-        final Component comp = Component.text(new String(holder, 0, charSize), this.color(this.phase));
+        holder[0] = it.nextInt();
+        final Component comp = Component.text(new String(holder, 0, 1), this.color(this.phase));
         parent = parent.append(comp);
       }
 
       return parent;
     }
+
     return Component.empty().mergeStyle(current);
   }
 

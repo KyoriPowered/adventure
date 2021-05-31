@@ -24,8 +24,10 @@
 package net.kyori.adventure.text.minimessage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +46,7 @@ import net.kyori.adventure.text.minimessage.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.parser.node.TemplateNode;
 import net.kyori.adventure.text.minimessage.parser.node.TextNode;
+import net.kyori.adventure.text.minimessage.parser.node.ValueNode;
 import net.kyori.adventure.text.minimessage.transformation.Modifying;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
@@ -234,16 +237,16 @@ class MiniMessageParser {
     }
 
     context.root(root);
-    return this.parse(root);
+    final Component comp = this.parse(root);
+    // at the end, take a look if we can flatten the tree a bit
+    return this.flatten(comp);
   }
 
   @NonNull Component parse(final @NonNull ElementNode node) {
     Component comp;
     Transformation transformation = null;
-    if(node instanceof TextNode) {
-      comp = Component.text(((TextNode) node).value());
-    } else if (node instanceof TemplateNode) {
-      comp = Component.text(((TemplateNode) node).value());
+    if(node instanceof ValueNode) {
+      comp = Component.text(((ValueNode) node).value());
     } else if(node instanceof TagNode) {
       final TagNode tag = (TagNode) node;
 
@@ -272,37 +275,72 @@ class MiniMessageParser {
 
     // special case for gradient and stuff
     if(transformation instanceof Modifying) {
-      comp = this.handleModifying((Modifying) transformation, Component.empty(), comp);
+      comp = this.handleModifying((Modifying) transformation, comp, 0);
     }
 
-    // at the end, take a look if we can flatten the tree a bit
-    if(comp instanceof TextComponent) {
-      final TextComponent root = (TextComponent) comp;
-      if(root.content().isEmpty() && root.children().size() == 1) {
-        // this seems to be some kind of empty node, lets see if we can discard it, or if we have to merge it
-        if(!root.hasStyling() && root.hoverEvent() == null && root.clickEvent() == null) {
-          // seems to be the root node, just discord it
-          return root.children().get(0);
-        } else {
-          // we got something we can merge
-          final Component child = root.children().get(0);
-          return child.style(child.style().merge(root.style(), Style.Merge.Strategy.IF_ABSENT_ON_TARGET, Style.Merge.all()));
+    return comp;
+  }
+
+  private Component handleModifying(final Modifying modTransformation, final Component current, final int depth) {
+    Component newComp = modTransformation.apply(current, depth);
+    for(final Component child : current.children()) {
+      newComp = newComp.append(this.handleModifying(modTransformation, child, depth + 1));
+    }
+    return newComp;
+  }
+
+  private @NonNull Component flatten(@NonNull Component comp) {
+    if (comp.children().isEmpty()) {
+      return comp;
+    }
+
+    final List<Component> oldChildren = comp.children();
+    final ArrayList<Component> newChildren = new ArrayList<>(oldChildren.size());
+    for(final Component child : oldChildren) {
+      newChildren.add(this.flatten(child));
+    }
+
+    comp = comp.children(newChildren);
+
+    if (!(comp instanceof TextComponent)) {
+      return comp;
+    }
+
+    final TextComponent root = (TextComponent) comp;
+
+    if(root.content().isEmpty()) {
+      // this seems to be some kind of empty node, lets see if we can discard it, or if we have to merge it
+      final boolean hasNoStyle = !root.hasStyling() && root.hoverEvent() == null && root.clickEvent() == null;
+      if(root.children().size() == 1 && hasNoStyle) {
+        // seems to be the root node, just discord it
+        return root.children().get(0);
+      } else if(!root.children().isEmpty() && hasNoStyle) {
+        // see if we can at least flatten the first child
+        final Component child = newChildren.get(0);
+        if(child.hasStyling()) {
+          // We can't, the child styling might interfere with a sibling
+          return comp;
         }
+
+        final ArrayList<Component> copiedChildren = new ArrayList<>(root.children().size() - 1 + child.children().size());
+
+        copiedChildren.addAll(child.children());
+        copiedChildren.addAll(newChildren.subList(1, newChildren.size()));
+
+        return root.content(child instanceof TextComponent ? ((TextComponent) child).content() : "")
+          .style(mergeStyle(root, child))
+          .children(copiedChildren);
+      } else if(root.children().size() == 1) {
+        // we got something we can merge
+        final Component child = newChildren.get(0);
+        return child.style(mergeStyle(root, child));
       }
     }
 
     return comp;
   }
 
-  private Component handleModifying(final Modifying modTransformation, final Component parent, final Component current) {
-    if(current.children().isEmpty()) {
-      return modTransformation.apply(current, parent);
-    } else {
-      Component newParent = modTransformation.apply(current, parent);
-      for(final Component child : current.children()) {
-        newParent = this.handleModifying(modTransformation, newParent, child);
-      }
-      return parent.append(newParent);
-    }
+  private static @NonNull Style mergeStyle(final @NonNull Component base, final @NonNull Component target) {
+    return target.style().merge(base.style(), Style.Merge.Strategy.IF_ABSENT_ON_TARGET, Style.Merge.all());
   }
 }
