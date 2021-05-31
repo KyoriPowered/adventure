@@ -1189,4 +1189,20 @@ public class MiniMessageParserTest extends TestBase {
 
     this.assertParsedEquals(expected, input);
   }
+
+  @Test
+  void testEscape() {
+    final String input = "\\a";
+    final Component expected = text("a");
+
+    this.assertParsedEquals(expected, input);
+  }
+
+  @Test
+  void testBareEscape() {
+    final String input = "\\";
+    final Component expected = empty();
+
+    this.assertParsedEquals(expected, input);
+  }
 }

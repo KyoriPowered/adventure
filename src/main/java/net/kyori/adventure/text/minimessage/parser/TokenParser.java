@@ -512,6 +512,12 @@ public final class TokenParser {
     while(i != -1 && i < endIndex) {
       sb.append(text, from, i);
       i++;
+
+      if (i >= endIndex) {
+        from = endIndex;
+        break;
+      }
+
       final int codePoint = text.codePointAt(i);
       sb.appendCodePoint(codePoint);
 
@@ -519,6 +525,11 @@ public final class TokenParser {
         i += 1;
       } else {
         i += 2;
+      }
+
+      if (i >= endIndex) {
+        from = endIndex;
+        break;
       }
 
       from = i;
