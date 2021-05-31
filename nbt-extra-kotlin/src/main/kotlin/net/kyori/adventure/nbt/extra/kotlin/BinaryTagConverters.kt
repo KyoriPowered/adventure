@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.nbt.extra.kotlin
 
+import net.kyori.adventure.nbt.ArrayBinaryTag
 import net.kyori.adventure.nbt.ByteArrayBinaryTag
 import net.kyori.adventure.nbt.ByteBinaryTag
 import net.kyori.adventure.nbt.DoubleBinaryTag

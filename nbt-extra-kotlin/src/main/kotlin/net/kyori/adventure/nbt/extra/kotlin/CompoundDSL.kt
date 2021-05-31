@@ -27,7 +27,7 @@ import net.kyori.adventure.nbt.BinaryTag
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.nbt.ListBinaryTag
 
-public inline fun nbt(
+public inline fun compound(
   builder: CompoundBinaryTag.Builder.() -> Unit
 ): CompoundBinaryTag = CompoundBinaryTag.builder().apply(builder).build()
 
