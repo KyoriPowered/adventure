@@ -36,28 +36,6 @@ import org.jetbrains.annotations.Contract
 public operator fun Style.contains(decoration: TextDecoration): Boolean = hasDecoration(decoration)
 
 /**
- * Set the state of the specified [decoration] to the specified [state]
- *
- * @param decoration the decoration
- * @param state the new value for the decoration's state
- * @return a new style that is a copy of this one with the new state of the decoration
- * @since 4.8.0
- */
-@Contract("_ -> new")
-public operator fun Style.set(decoration: TextDecoration, state: TextDecoration.State): Style = decoration(decoration, state)
-
-/**
- * Set the state of the specified [decoration] to the specified [flag]
- *
- * @param decoration the decoration
- * @param flag the new value for the decoration's state
- * @return a new style that is a copy of this one with the new state of the decoration
- * @since 4.8.0
- */
-@Contract("_ -> new")
-public operator fun Style.set(decoration: TextDecoration, flag: Boolean): Style = decoration(decoration, flag)
-
-/**
  * Get the state of the specified [decoration]
  *
  * @param decoration the decoration

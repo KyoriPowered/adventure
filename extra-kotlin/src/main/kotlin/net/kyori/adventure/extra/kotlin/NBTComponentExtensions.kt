@@ -54,23 +54,3 @@ public operator fun BlockNBTComponent.WorldPos.component2(): BlockNBTComponent.W
  * @since 4.8.0
  */
 public operator fun BlockNBTComponent.WorldPos.component3(): BlockNBTComponent.WorldPos.Coordinate = z()
-
-/**
- * The value of this coordinate
- *
- * Allows for destructuring into (value, type)
- *
- * @return the value
- * @since 4.8.0
- */
-public operator fun BlockNBTComponent.WorldPos.Coordinate.component1(): Int = value()
-
-/**
- * The type of this coordinate
- *
- * Allows for destructuring into (value, type)
- *
- * @return the type
- * @since 4.8.0
- */
-public operator fun BlockNBTComponent.WorldPos.Coordinate.component2(): BlockNBTComponent.WorldPos.Coordinate.Type = type()
