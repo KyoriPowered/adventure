@@ -1,16 +1,6 @@
-buildscript {
-  ext {
-    indraVersion = "2.0.4"
-  }
-}
-
 plugins {
-  id "net.kyori.indra" version "$indraVersion" apply false
-  id "net.kyori.indra.checkstyle" version "$indraVersion" apply false
-  id "net.kyori.indra.license-header" version "$indraVersion" apply false
-  id "net.kyori.indra.publishing.sonatype" version "$indraVersion"
-
-  id "com.adarshr.test-logger" version "3.0.0" apply false
+  id "net.kyori.indra.publishing.sonatype"
+  id "com.adarshr.test-logger" apply false
 }
 
 group "net.kyori"

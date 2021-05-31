@@ -1,5 +1,14 @@
 metadata:
   format: {version: 1.0}
+  polyglot-extensions: [plugins]
+
+plugins:
+  net.kyori.indra: &indra 2.0.5
+  net.kyori.indra.checkstyle: *indra
+  net.kyori.indra.license-header: *indra
+  net.kyori.indra.publishing.sonatype: *indra
+  com.adarshr.test-logger: 3.0.0
+  org.jetbrains.kotlin.jvm: 1.4.32
 
 dependencies:
   # Runtime libraries
