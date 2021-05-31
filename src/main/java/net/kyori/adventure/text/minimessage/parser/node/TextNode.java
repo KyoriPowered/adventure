@@ -23,9 +23,11 @@
  */
 package net.kyori.adventure.text.minimessage.parser.node;
 
+import java.util.Objects;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenParser;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Represents a string of chars.
@@ -34,7 +36,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public final class TextNode extends ElementNode {
 
-  private final String value;
+  private final @NonNull String value;
 
   /**
    * Creates a new text node.
@@ -44,7 +46,7 @@ public final class TextNode extends ElementNode {
    * @param sourceMessage the source message
    * @since 4.2.0
    */
-  public TextNode(final ElementNode parent, final Token token, final String sourceMessage) {
+  public TextNode(final @Nullable ElementNode parent, final @NonNull Token token, final @NonNull String sourceMessage) {
     super(parent, token, sourceMessage);
     this.value = TokenParser.unescape(sourceMessage, token.startIndex(), token.endIndex());
   }
@@ -55,8 +57,13 @@ public final class TextNode extends ElementNode {
    * @return the value
    * @since 4.2.0
    */
-  public String value() {
+  public @NonNull String value() {
     return this.value;
+  }
+
+  @Override
+  public @NonNull Token token() {
+    return Objects.requireNonNull(super.token(), "token is not set");
   }
 
   /**

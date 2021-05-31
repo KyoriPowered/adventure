@@ -25,7 +25,9 @@ package net.kyori.adventure.text.minimessage.parser.node;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import net.kyori.adventure.text.minimessage.Template;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
@@ -39,7 +41,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public final class TagNode extends ElementNode {
 
-  private final List<TagPart> parts;
+  private final @NonNull List<TagPart> parts;
   private @Nullable Transformation transformation = null;
 
   /**
@@ -50,17 +52,17 @@ public final class TagNode extends ElementNode {
    * @param sourceMessage the source message
    * @since 4.2.0
    */
-  public TagNode(final ElementNode parent, final Token token, final String sourceMessage) {
+  public TagNode(final @NonNull ElementNode parent, final @NonNull Token token, final @NonNull String sourceMessage, final @NonNull Map<String, Template> templates) {
     super(parent, token, sourceMessage);
-    this.parts = genParts(token, sourceMessage);
+    this.parts = genParts(token, sourceMessage, templates);
   }
 
-  private static List<TagPart> genParts(final Token token, final String sourceMessage) {
+  private static @NonNull List<TagPart> genParts(final @NonNull Token token, final @NonNull String sourceMessage, final @NonNull Map<String, Template> templates) {
     final ArrayList<TagPart> parts = new ArrayList<>();
 
     if(token.childTokens() != null) {
       for(final Token childToken : token.childTokens()) {
-        parts.add(new TagPart(sourceMessage, childToken));
+        parts.add(new TagPart(sourceMessage, childToken, templates));
       }
     }
 
@@ -73,7 +75,7 @@ public final class TagNode extends ElementNode {
    * @return the parts
    * @since 4.2.0
    */
-  public List<TagPart> parts() {
+  public @NonNull List<TagPart> parts() {
     return this.parts;
   }
 
@@ -83,11 +85,16 @@ public final class TagNode extends ElementNode {
    * @return the name
    * @since 4.2.0
    */
-  public String name() {
+  public @NonNull String name() {
     if(this.parts.isEmpty()) {
       throw new ParsingException("Tag has no parts? " + this, this.sourceMessage(), this.token());
     }
     return this.parts.get(0).value();
+  }
+
+  @Override
+  public @NonNull Token token() {
+    return Objects.requireNonNull(super.token(), "token is not set");
   }
 
   /**

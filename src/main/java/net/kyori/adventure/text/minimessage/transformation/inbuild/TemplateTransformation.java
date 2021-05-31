@@ -39,7 +39,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public final class TemplateTransformation extends Transformation implements Inserting {
 
-  private final Template.ComponentTemplate template;
+  private final Template.@NonNull ComponentTemplate template;
 
   /**
    * Create a new template transformation applying {@code template}.

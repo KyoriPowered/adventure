@@ -42,14 +42,12 @@ import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenParser;
 import net.kyori.adventure.text.minimessage.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
+import net.kyori.adventure.text.minimessage.parser.node.TemplateNode;
 import net.kyori.adventure.text.minimessage.parser.node.TextNode;
 import net.kyori.adventure.text.minimessage.transformation.Modifying;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import static net.kyori.adventure.text.minimessage.Tokens.TAG_END;
-import static net.kyori.adventure.text.minimessage.Tokens.TAG_START;
 
 class MiniMessageParser {
 
@@ -128,62 +126,41 @@ class MiniMessageParser {
     return sb.toString();
   }
 
-  @NonNull String sanitizePlaceholder(final String input) {
-    return input.replace("</pre>", "\\</pre>");
-  }
-
-  @NonNull String handlePlaceholders(@NonNull String richMessage, final @NonNull Context context, final @NonNull String... placeholders) {
+  @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull Context context, final @NonNull String... placeholders) {
     if(placeholders.length % 2 != 0) {
       throw new ParsingException(
-        "Invalid number placeholders defined, usage: parseFormat(format, key, value, key, value...)");
+          "Invalid number placeholders defined, usage: parseFormat(format, key, value, key, value...)");
     }
+
+    final Template[] t = new Template[placeholders.length / 2];
     for(int i = 0; i < placeholders.length; i += 2) {
-      richMessage = richMessage.replace(TAG_START + placeholders[i] + TAG_END, this.sanitizePlaceholder(placeholders[i + 1]));
+      t[i / 2] = Template.of(placeholders[i], placeholders[i + 1]);
     }
-    context.replacedMessage(richMessage);
-    return richMessage;
-  }
 
-  @NonNull String handlePlaceholders(@NonNull String richMessage, final @NonNull Context context, final @NonNull Map<String, String> placeholders) {
-    for(final Map.Entry<String, String> entry : placeholders.entrySet()) {
-      richMessage = richMessage.replace(TAG_START + entry.getKey() + TAG_END, entry.getValue());
-    }
-    context.replacedMessage(richMessage);
-    return richMessage;
-  }
-
-  @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull Context context, final @NonNull String... placeholders) {
-    return this.parseFormat(this.handlePlaceholders(richMessage, context, placeholders), context);
+    return this.parseFormat(richMessage, context, t);
   }
 
   @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull Map<String, String> placeholders, final Context context) {
-    return this.parseFormat(this.handlePlaceholders(richMessage, context, placeholders), context);
+    final Template[] t = new Template[placeholders.size()];
+    int i = 0;
+    for(final Map.Entry<String, String> entry : placeholders.entrySet()) {
+      t[i++] = Template.of(entry.getKey(), entry.getValue());
+    }
+    return this.parseFormat(richMessage, context, t);
   }
 
   @NonNull Component parseFormat(@NonNull String input, final Context context, final @NonNull Template... placeholders) {
-    final Map<String, Template.ComponentTemplate> map = new HashMap<>();
+    final Map<String, Template> map = new HashMap<>();
     for(final Template placeholder : placeholders) {
-      if(placeholder instanceof Template.StringTemplate) {
-        final Template.StringTemplate stringTemplate = (Template.StringTemplate) placeholder;
-        input = input.replace(TAG_START + stringTemplate.key() + TAG_END, this.sanitizePlaceholder(stringTemplate.value()));
-      } else if(placeholder instanceof Template.ComponentTemplate) {
-        final Template.ComponentTemplate componentTemplate = (Template.ComponentTemplate) placeholder;
-        map.put(componentTemplate.key(), componentTemplate);
-      }
+      map.put(placeholder.key(), placeholder);
     }
     return this.parseFormat0(input, map, context);
   }
 
   @NonNull Component parseFormat(@NonNull String input, final @NonNull List<Template> placeholders, final @NonNull Context context) {
-    final Map<String, Template.ComponentTemplate> map = new HashMap<>();
+    final Map<String, Template> map = new HashMap<>();
     for(final Template placeholder : placeholders) {
-      if(placeholder instanceof Template.StringTemplate) {
-        final Template.StringTemplate stringTemplate = (Template.StringTemplate) placeholder;
-        input = input.replace(TAG_START + stringTemplate.key() + TAG_END, stringTemplate.value());
-      } else if(placeholder instanceof Template.ComponentTemplate) {
-        final Template.ComponentTemplate componentTemplate = (Template.ComponentTemplate) placeholder;
-        map.put(componentTemplate.key(), componentTemplate);
-      }
+      map.put(placeholder.key(), placeholder);
     }
     return this.parseFormat0(input, map, context);
   }
@@ -192,11 +169,11 @@ class MiniMessageParser {
     return this.parseFormat0(richMessage, Collections.emptyMap(), context);
   }
 
-  @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull Context context) {
+  @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template> templates, final @NonNull Context context) {
     return this.parseFormat0(richMessage, templates, this.registry, this.placeholderResolver, context);
   }
 
-  @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template.ComponentTemplate> templates, final @NonNull TransformationRegistry registry, final @NonNull Function<String, ComponentLike> placeholderResolver, final Context context) {
+  @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template> templates, final @NonNull TransformationRegistry registry, final @NonNull Function<String, ComponentLike> placeholderResolver, final Context context) {
     final Appendable debug = context.debugOutput();
     if (debug != null) {
       try {
@@ -247,7 +224,7 @@ class MiniMessageParser {
     final BiPredicate<String, Boolean> tagNameChecker = (name, includeTemplates) ->
         registry.exists(name, placeholderResolver) || (includeTemplates && templates.containsKey(name));
 
-    final ElementNode root = TokenParser.parse(transformationFactory, tagNameChecker, richMessage, context.isStrict());
+    final ElementNode root = TokenParser.parse(transformationFactory, tagNameChecker, templates, richMessage, context.isStrict());
 
     if (debug != null) {
       try {
@@ -265,6 +242,8 @@ class MiniMessageParser {
     Transformation transformation = null;
     if(node instanceof TextNode) {
       comp = Component.text(((TextNode) node).value());
+    } else if (node instanceof TemplateNode) {
+      comp = Component.text(((TemplateNode) node).value());
     } else if(node instanceof TagNode) {
       final TagNode tag = (TagNode) node;
 

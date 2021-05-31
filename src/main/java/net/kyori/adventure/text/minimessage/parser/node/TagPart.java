@@ -23,8 +23,11 @@
  */
 package net.kyori.adventure.text.minimessage.parser.node;
 
+import java.util.Map;
+import net.kyori.adventure.text.minimessage.Template;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenParser;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Represents an inner part of a tag.
@@ -33,8 +36,8 @@ import net.kyori.adventure.text.minimessage.parser.TokenParser;
  */
 public final class TagPart {
 
-  private final String value;
-  private final Token token;
+  private final @NonNull String value;
+  private final @NonNull Token token;
 
   /**
    * Constructs a new tag part.
@@ -43,8 +46,17 @@ public final class TagPart {
    * @param token the token that creates this tag part
    * @since 4.2.0
    */
-  public TagPart(final String sourceMessage, final Token token) {
-    this.value = unquoteAndEscape(sourceMessage, token.startIndex(), token.endIndex());
+  public TagPart(final @NonNull String sourceMessage, final @NonNull Token token, final @NonNull Map<String, Template> templates) {
+    String v = unquoteAndEscape(sourceMessage, token.startIndex(), token.endIndex());
+    if(isTag(v)) {
+      final String text = v.substring(1, v.length() - 1);
+      final Template template = templates.get(text);
+      if (template instanceof Template.StringTemplate) {
+        v = ((Template.StringTemplate) template).value();
+      }
+    }
+
+    this.value = v;
     this.token = token;
   }
 
@@ -54,7 +66,7 @@ public final class TagPart {
    * @return the value
    * @since 4.2.0
    */
-  public String value() {
+  public @NonNull String value() {
     return this.value;
   }
 
@@ -64,8 +76,12 @@ public final class TagPart {
    * @return the token
    * @since 4.2.0
    */
-  public Token token() {
+  public @NonNull Token token() {
     return this.token;
+  }
+
+  private static boolean isTag(final @NonNull String text) {
+    return text.charAt(0) == '<' || text.charAt(text.length() - 1) == '>';
   }
 
   /**
@@ -77,7 +93,7 @@ public final class TagPart {
    * @return the output substring
    * @since 4.2.0
    */
-  public static String unquoteAndEscape(final String text, final int start, final int end) {
+  public static @NonNull String unquoteAndEscape(final @NonNull String text, final int start, final int end) {
     if(start == end) {
       return "";
     }

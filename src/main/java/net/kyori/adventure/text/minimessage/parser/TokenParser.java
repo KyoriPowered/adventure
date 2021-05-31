@@ -27,12 +27,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
+import net.kyori.adventure.text.minimessage.Template;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.parser.node.RootNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
+import net.kyori.adventure.text.minimessage.parser.node.TemplateNode;
 import net.kyori.adventure.text.minimessage.parser.node.TextNode;
 import net.kyori.adventure.text.minimessage.transformation.Inserting;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
@@ -56,11 +59,11 @@ public final class TokenParser {
    * @return the root of the resulting tree
    * @since 4.2.0
    */
-  public static ElementNode parse(final @NonNull Function<TagNode, @Nullable Transformation> transformationFactory, final @NonNull BiPredicate<String, Boolean> tagNameChecker, final @NonNull String message, final boolean isStrict) {
+  public static ElementNode parse(final @NonNull Function<TagNode, @Nullable Transformation> transformationFactory, final @NonNull BiPredicate<String, Boolean> tagNameChecker, final @NonNull Map<String, Template> templates, final @NonNull String message, final boolean isStrict) {
     final List<Token> tokens = parseFirstPass(message);
     parseSecondPass(message, tokens);
 
-    return buildTree(transformationFactory, tagNameChecker, tokens, message, isStrict);
+    return buildTree(transformationFactory, tagNameChecker, templates, tokens, message, isStrict);
   }
 
   /*
@@ -267,7 +270,7 @@ public final class TokenParser {
   /*
    * Build a tree from the OPEN_TAG and CLOSE_TAG tokens
    */
-  private static ElementNode buildTree(final @NonNull Function<TagNode, @Nullable Transformation> transformationFactory, final @NonNull BiPredicate<String, Boolean> tagNameChecker, final @NonNull List<Token> tokens, final @NonNull String message, final boolean isStrict) {
+  private static ElementNode buildTree(final @NonNull Function<TagNode, @Nullable Transformation> transformationFactory, final @NonNull BiPredicate<String, Boolean> tagNameChecker, final @NonNull Map<String, Template> templates, final @NonNull List<Token> tokens, final @NonNull String message, final boolean isStrict) {
     final RootNode root = new RootNode(message);
     ElementNode node = root;
 
@@ -279,7 +282,7 @@ public final class TokenParser {
           break;
 
         case OPEN_TAG:
-          final TagNode tagNode = new TagNode(node, token, message);
+          final TagNode tagNode = new TagNode(node, token, message, templates);
           if(tagNode.name().equals("reset")) {
             // <reset> tags get special treatment and don't appear in the tree
             // instead, they close all currently open tags
@@ -293,24 +296,30 @@ public final class TokenParser {
             // anything inside <pre> is raw text, so just skip
 
             continue;
-          } else if(tagNameChecker.test(tagNode.name(), true)) {
-            final Transformation transformation = transformationFactory.apply(tagNode);
-            if(transformation == null) {
-              // something went wrong, ignore it
-              // if strict mode is enabled this will throw an exception for us
-              node.addChild(new TextNode(node, token, message));
-            } else {
-              // This is a recognized tag, goes in the tree
-              tagNode.transformation(transformation);
-              node.addChild(tagNode);
-              if(!(transformation instanceof Inserting)) {
-                // this tag has children
-                node = tagNode;
-              }
-            }
           } else {
-            // not recognized, plain text
-            node.addChild(new TextNode(node, token, message));
+            final Template template = templates.get(tagNode.name());
+            if (template instanceof Template.StringTemplate) {
+              // String templates are inserted into the tree as raw text nodes, not parsed
+              node.addChild(new TemplateNode(node, token, message, ((Template.StringTemplate) template).value()));
+            } else if(tagNameChecker.test(tagNode.name(), true)) {
+              final Transformation transformation = transformationFactory.apply(tagNode);
+              if(transformation == null) {
+                // something went wrong, ignore it
+                // if strict mode is enabled this will throw an exception for us
+                node.addChild(new TextNode(node, token, message));
+              } else {
+                // This is a recognized tag, goes in the tree
+                tagNode.transformation(transformation);
+                node.addChild(tagNode);
+                if(!(transformation instanceof Inserting)) {
+                  // this tag has children
+                  node = tagNode;
+                }
+              }
+            } else {
+              // not recognized, plain text
+              node.addChild(new TextNode(node, token, message));
+            }
           }
           break; // OPEN_TAG
 

@@ -29,6 +29,7 @@ import java.util.List;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenType;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Represents a node in the tree.
@@ -37,10 +38,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public class ElementNode {
 
-  private final ElementNode parent;
-  private final Token token;
-  private final String sourceMessage;
-  private final List<ElementNode> children = new ArrayList<>();
+  private final @Nullable ElementNode parent;
+  private final @Nullable Token token;
+  private final @NonNull String sourceMessage;
+  private final @NonNull List<ElementNode> children = new ArrayList<>();
 
   /**
    * Creates a new element node.
@@ -50,7 +51,7 @@ public class ElementNode {
    * @param sourceMessage the source message
    * @since 4.2.0
    */
-  ElementNode(final ElementNode parent, final Token token, final String sourceMessage) {
+  ElementNode(final @Nullable ElementNode parent, final @Nullable Token token, final @NonNull String sourceMessage) {
     this.parent = parent;
     this.token = token;
     this.sourceMessage = sourceMessage;
@@ -62,7 +63,7 @@ public class ElementNode {
    * @return the parent or null
    * @since 4.2.0
    */
-  public ElementNode parent() {
+  public @Nullable ElementNode parent() {
     return this.parent;
   }
 
@@ -72,7 +73,7 @@ public class ElementNode {
    * @return the token
    * @since 4.2.0
    */
-  public Token token() {
+  public @Nullable Token token() {
     return this.token;
   }
 
@@ -82,7 +83,7 @@ public class ElementNode {
    * @return the source message
    * @since 4.2.0
    */
-  public String sourceMessage() {
+  public @NonNull String sourceMessage() {
     return this.sourceMessage;
   }
 

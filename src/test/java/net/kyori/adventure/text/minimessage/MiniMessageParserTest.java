@@ -234,7 +234,8 @@ public class MiniMessageParserTest extends TestBase {
   void testNiceMix() {
     final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here</click><blue> to <b>FEEL</underlined> it";
     final Component expected = empty().color(YELLOW)
-      .append(text("Hello! random "))
+      .append(text("Hello!"))
+      .append(text(" random "))
       .append(text("stranger").decorate(BOLD))
       .append(text("click here").color(RED).decorate(UNDERLINED).clickEvent(runCommand("test command")))
       .append(empty().color(BLUE)
@@ -426,7 +427,7 @@ public class MiniMessageParserTest extends TestBase {
 
   @Test
   void testGH5() {
-    final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:<pack_url>><hover:show_text:\"<green>/!\\\\\\\\ install it from Options/ResourcePacks in your game\"><green><bold>CLICK HERE</bold></hover></click>";
+    final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:'<pack_url>'><hover:show_text:\"<green>/!\\\\\\\\ install it from Options/ResourcePacks in your game\"><green><bold>CLICK HERE</bold></hover></click>";
     final Component expected = empty().color(DARK_GRAY)
       .append(text("»"))
       .append(empty().color(GRAY)
@@ -439,7 +440,7 @@ public class MiniMessageParserTest extends TestBase {
 
   @Test
   void testGH5Modified() {
-    final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:<pack_url>><hover:show_text:'<green>/!\\\\\\\\ install it from \\'Options/ResourcePacks\\' in your game'><green><bold>CLICK HERE</bold></hover></click>";
+    final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:'<pack_url>'><hover:show_text:'<green>/!\\\\\\\\ install it from \\'Options/ResourcePacks\\' in your game'><green><bold>CLICK HERE</bold></hover></click>";
     final Component expected = empty().color(DARK_GRAY)
       .append(text("»"))
       .append(empty().color(GRAY)
@@ -1066,7 +1067,7 @@ public class MiniMessageParserTest extends TestBase {
           .append(text("Patbox"))
           .append(text("> ").color(GRAY))
         )
-      ).append(text("am dum"));
+      ).append(text("<message>"));
     final String input = "<gray>\\<<yellow><player><gray>> <reset><pre><message></pre>";
 
     assertParsedEquals(expected, input, "player", "Patbox", "message", "am dum");

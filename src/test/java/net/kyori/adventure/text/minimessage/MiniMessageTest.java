@@ -92,7 +92,8 @@ public class MiniMessageTest extends TestBase {
       .append(text("ONE"))
       .append(text("TWO", GREEN))
       .append(empty().color(BLUE)
-        .append(text("THREEFOUR"))
+        .append(text("THREE"))
+        .append(text("FOUR"))
         .append(text("FIVE", YELLOW))
       );
     final String input = "<red>ONE<two><blue>THREE<four><five>";
@@ -175,7 +176,9 @@ public class MiniMessageTest extends TestBase {
 
   @Test
   void testCustomRegistry() {
-    final Component expected = text("<bold>TEST").color(GREEN);
+    final Component expected = empty().color(GREEN)
+        .append(text("<bold>"))
+        .append(text("TEST"));
     final String input = "<green><bold><test>";
     final MiniMessage miniMessage = MiniMessage.withTransformations(TransformationType.COLOR);
 
@@ -184,7 +187,9 @@ public class MiniMessageTest extends TestBase {
 
   @Test
   void testCustomRegistryBuilder() {
-    final Component expected = text("<bold>TEST").color(GREEN);
+    final Component expected = empty().color(GREEN)
+        .append(text("<bold>"))
+        .append(text("TEST"));
     final String input = "<green><bold><test>";
     final MiniMessage miniMessage = MiniMessage.builder()
       .removeDefaultTransformations()
@@ -258,6 +263,22 @@ public class MiniMessageTest extends TestBase {
         .append(text("<red><message>"))
       );
     final String input = "<red><username><gray>: <pre><red><message>";
+    final MiniMessage miniMessage = MiniMessage.get();
+
+    assertParsedEquals(miniMessage, expected, input, Template.of("username", text("MiniDigger")), Template.of("message", text("</pre><red>Test")));
+    assertParsedEquals(miniMessage, expected, input, Template.of("username", "MiniDigger"), Template.of("message", "</pre><red>Test"));
+    assertParsedEquals(miniMessage, expected, input, "username", "MiniDigger", "message", "</pre><red>Test");
+  }
+
+  @Test
+  void testNodesInTemplate() {
+    final Component expected = empty().color(RED)
+        .append(text("MiniDigger"))
+        .append(empty().color(GRAY)
+            .append(text(": "))
+            .append(text("</pre><red>Test").color(RED))
+        );
+    final String input = "<red><username><gray>: <red><message>";
     final MiniMessage miniMessage = MiniMessage.get();
 
     assertParsedEquals(miniMessage, expected, input, Template.of("username", text("MiniDigger")), Template.of("message", text("</pre><red>Test")));
