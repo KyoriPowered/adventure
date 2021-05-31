@@ -59,7 +59,13 @@ public final class TokenParser {
    * @return the root of the resulting tree
    * @since 4.2.0
    */
-  public static ElementNode parse(final @NonNull Function<TagNode, @Nullable Transformation> transformationFactory, final @NonNull BiPredicate<String, Boolean> tagNameChecker, final @NonNull Map<String, Template> templates, final @NonNull String message, final boolean isStrict) {
+  public static ElementNode parse(
+    final @NonNull Function<TagNode, @Nullable Transformation> transformationFactory,
+    final @NonNull BiPredicate<String, Boolean> tagNameChecker,
+    final @NonNull Map<String, Template> templates,
+    final @NonNull String message,
+    final boolean isStrict
+  ) {
     final List<Token> tokens = parseFirstPass(message);
     parseSecondPass(message, tokens);
 
@@ -270,7 +276,14 @@ public final class TokenParser {
   /*
    * Build a tree from the OPEN_TAG and CLOSE_TAG tokens
    */
-  private static ElementNode buildTree(final @NonNull Function<TagNode, @Nullable Transformation> transformationFactory, final @NonNull BiPredicate<String, Boolean> tagNameChecker, final @NonNull Map<String, Template> templates, final @NonNull List<Token> tokens, final @NonNull String message, final boolean isStrict) {
+  private static ElementNode buildTree(
+    final @NonNull Function<TagNode, @Nullable Transformation> transformationFactory,
+    final @NonNull BiPredicate<String, Boolean> tagNameChecker,
+    final @NonNull Map<String, Template> templates,
+    final @NonNull List<Token> tokens,
+    final @NonNull String message,
+    final boolean isStrict
+  ) {
     final RootNode root = new RootNode(message);
     ElementNode node = root;
 
@@ -353,15 +366,17 @@ public final class TokenParser {
 
             if(tagCloses(closeValues, openParts)) {
               if (parentNode != node && isStrict) {
-                throw new ParsingException("Unclosed tag encountered; " + ((TagNode) node).name() + " is not closed, because " + closeValues.get(0) + " was closed first.", message, parentNode.token(), node.token(), token);
+                final String msg = "Unclosed tag encountered; " + ((TagNode) node).name() + " is not closed, because " +
+                  closeValues.get(0) + " was closed first.";
+                throw new ParsingException(msg, message, parentNode.token(), node.token(), token);
               }
 
               final ElementNode par = parentNode.parent();
               if(par != null) {
                 node = par;
               } else {
-                throw new IllegalStateException("Root node matched with close tag value, this should not be possible. " +
-                  "Original text: " + message);
+                throw new IllegalStateException("Root node matched with close tag value, " +
+                  "this should not be possible. Original text: " + message);
               }
               break;
             }
@@ -395,7 +410,8 @@ public final class TokenParser {
 
       final Token[] errorTokens = new Token[openTags.size()];
 
-      final StringBuilder sb = new StringBuilder("All tags must be explicitly closed while in strict mode. End of string found with open tags: ");
+      final StringBuilder sb = new StringBuilder("All tags must be explicitly closed while in strict mode. " +
+        "End of string found with open tags: ");
 
       int i = 0;
       final ListIterator<TagNode> iter = openTags.listIterator(openTags.size());

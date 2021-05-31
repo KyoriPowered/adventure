@@ -46,7 +46,11 @@ public final class TextNode extends ElementNode {
    * @param sourceMessage the source message
    * @since 4.2.0
    */
-  public TextNode(final @Nullable ElementNode parent, final @NonNull Token token, final @NonNull String sourceMessage) {
+  public TextNode(
+    final @Nullable ElementNode parent,
+    final @NonNull Token token,
+    final @NonNull String sourceMessage
+  ) {
     super(parent, token, sourceMessage);
     this.value = TokenParser.unescape(sourceMessage, token.startIndex(), token.endIndex());
   }

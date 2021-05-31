@@ -46,7 +46,11 @@ public final class TagPart {
    * @param token the token that creates this tag part
    * @since 4.2.0
    */
-  public TagPart(final @NonNull String sourceMessage, final @NonNull Token token, final @NonNull Map<String, Template> templates) {
+  public TagPart(
+    final @NonNull String sourceMessage,
+    final @NonNull Token token,
+    final @NonNull Map<String, Template> templates
+  ) {
     String v = unquoteAndEscape(sourceMessage, token.startIndex(), token.endIndex());
     if(isTag(v)) {
       final String text = v.substring(1, v.length() - 1);

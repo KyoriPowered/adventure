@@ -112,7 +112,8 @@ public class ElementNode {
     } else {
       final TextNode lastNode = (TextNode) this.children.remove(last);
       if(lastNode.token().endIndex() == childNode.token().startIndex()) {
-        this.children.add(new TextNode(this, new Token(lastNode.token().startIndex(), childNode.token().endIndex(), TokenType.TEXT), lastNode.sourceMessage()));
+        final Token replace = new Token(lastNode.token().startIndex(), childNode.token().endIndex(), TokenType.TEXT);
+        this.children.add(new TextNode(this, replace, lastNode.sourceMessage()));
       } else {
         // These nodes aren't adjacent in the string, so put the last one back
         this.children.add(lastNode);

@@ -47,7 +47,11 @@ public class ParsingException extends RuntimeException {
    * @param tokens the token which caused the error
    * @since 4.1.0
    */
-  public ParsingException(final String message, final @Nullable String originalText, final @NonNull Token @NonNull ... tokens) {
+  public ParsingException(
+    final String message,
+    final @Nullable String originalText,
+    final @NonNull Token @NonNull ... tokens
+  ) {
     super(message);
     this.tokens = tokens;
     this.originalText = originalText;
@@ -62,7 +66,12 @@ public class ParsingException extends RuntimeException {
    * @param tokens the token which caused the error
    * @since 4.1.0
    */
-  public ParsingException(final String message, final @Nullable String originalText, final @Nullable Throwable cause, final @NonNull Token @NonNull ... tokens) {
+  public ParsingException(
+    final String message,
+    final @Nullable String originalText,
+    final @Nullable Throwable cause,
+    final @NonNull Token @NonNull ... tokens
+  ) {
     super(message, cause);
     this.tokens = tokens;
     this.originalText = originalText;
@@ -87,7 +96,11 @@ public class ParsingException extends RuntimeException {
    * @param tokens the token which caused the error
    * @since 4.1.0
    */
-  public ParsingException(final String message, final @Nullable Throwable cause, final @NonNull Token @NonNull ... tokens) {
+  public ParsingException(
+    final String message,
+    final @Nullable Throwable cause,
+    final @NonNull Token @NonNull ... tokens
+  ) {
     this(message, null, cause, tokens);
   }
 

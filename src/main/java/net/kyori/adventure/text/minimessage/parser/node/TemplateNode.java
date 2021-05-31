@@ -22,7 +22,12 @@ public class TemplateNode extends ElementNode {
    * @param sourceMessage the source message
    * @since 4.2.0
    */
-  public TemplateNode(final @Nullable ElementNode parent, final @NonNull Token token, final @NonNull String sourceMessage, final @NonNull String actualValue) {
+  public TemplateNode(
+    final @Nullable ElementNode parent,
+    final @NonNull Token token,
+    final @NonNull String sourceMessage,
+    final @NonNull String actualValue
+  ) {
     super(parent, token, sourceMessage);
     this.value = actualValue;
   }

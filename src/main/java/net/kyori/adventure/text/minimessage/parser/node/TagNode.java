@@ -52,12 +52,21 @@ public final class TagNode extends ElementNode {
    * @param sourceMessage the source message
    * @since 4.2.0
    */
-  public TagNode(final @NonNull ElementNode parent, final @NonNull Token token, final @NonNull String sourceMessage, final @NonNull Map<String, Template> templates) {
+  public TagNode(
+    final @NonNull ElementNode parent,
+    final @NonNull Token token,
+    final @NonNull String sourceMessage,
+    final @NonNull Map<String, Template> templates
+  ) {
     super(parent, token, sourceMessage);
     this.parts = genParts(token, sourceMessage, templates);
   }
 
-  private static @NonNull List<TagPart> genParts(final @NonNull Token token, final @NonNull String sourceMessage, final @NonNull Map<String, Template> templates) {
+  private static @NonNull List<TagPart> genParts(
+    final @NonNull Token token,
+    final @NonNull String sourceMessage,
+    final @NonNull Map<String, Template> templates
+  ) {
     final ArrayList<TagPart> parts = new ArrayList<>();
 
     if(token.childTokens() != null) {
