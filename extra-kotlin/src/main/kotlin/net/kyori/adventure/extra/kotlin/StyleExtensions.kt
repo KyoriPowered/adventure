@@ -24,35 +24,7 @@
 package net.kyori.adventure.extra.kotlin
 
 import net.kyori.adventure.text.format.Style
-import net.kyori.adventure.text.format.TextDecoration
 import org.jetbrains.annotations.Contract
-
-/**
- * Check if this style contains the specified [decoration]
- *
- * @return true if this style contains the decoration, false otherwise
- * @since 4.8.0
- */
-public operator fun Style.contains(decoration: TextDecoration): Boolean = hasDecoration(decoration)
-
-/**
- * Get the state of the specified [decoration]
- *
- * @param decoration the decoration
- * @return the state of the specified decoration
- * @since 4.8.0
- */
-public operator fun Style.get(decoration: TextDecoration): TextDecoration.State = decoration(decoration)
-
-/**
- * Add the specified [decoration] (with its state set to [TextDecoration.State.TRUE] by default)
- *
- * @param decoration the decoration to add
- * @return a new style that is a copy of this one with the specified decoration set to true
- * @since 4.8.0
- */
-@Contract("_ -> new")
-public operator fun Style.plus(decoration: TextDecoration): Style = decorate(decoration)
 
 /**
  * Allows editing using [Style.Builder] as the receiver parameter
