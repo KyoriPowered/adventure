@@ -300,7 +300,7 @@ public final class TokenParser {
             // <reset> tags get special treatment and don't appear in the tree
             // instead, they close all currently open tags
 
-            if (isStrict) {
+            if(isStrict) {
               throw new ParsingException("<reset> tags are not allowed when strict mode is enabled", message, token);
             }
             node = root;
@@ -311,7 +311,7 @@ public final class TokenParser {
             continue;
           } else {
             final Template template = templates.get(tagNode.name());
-            if (template instanceof Template.StringTemplate) {
+            if(template instanceof Template.StringTemplate) {
               // String templates are inserted into the tree as raw text nodes, not parsed
               node.addChild(new TemplateNode(node, token, message, ((Template.StringTemplate) template).value()));
             } else if(tagNameChecker.test(tagNode.name(), true)) {
@@ -365,7 +365,7 @@ public final class TokenParser {
             final List<TagPart> openParts = ((TagNode) parentNode).parts();
 
             if(tagCloses(closeValues, openParts)) {
-              if (parentNode != node && isStrict) {
+              if(parentNode != node && isStrict) {
                 final String msg = "Unclosed tag encountered; " + ((TagNode) node).name() + " is not closed, because " +
                   closeValues.get(0) + " was closed first.";
                 throw new ParsingException(msg, message, parentNode.token(), node.token(), token);
@@ -394,12 +394,12 @@ public final class TokenParser {
       }
     }
 
-    if (isStrict && root != node) {
+    if(isStrict && root != node) {
       final ArrayList<TagNode> openTags = new ArrayList<>();
       {
         ElementNode n = node;
-        while (n != null) {
-          if (n instanceof TagNode) {
+        while(n != null) {
+          if(n instanceof TagNode) {
             openTags.add((TagNode) n);
           } else {
             break;
@@ -415,12 +415,12 @@ public final class TokenParser {
 
       int i = 0;
       final ListIterator<TagNode> iter = openTags.listIterator(openTags.size());
-      while (iter.hasPrevious()) {
+      while(iter.hasPrevious()) {
         final TagNode n = iter.previous();
         errorTokens[i++] = n.token();
 
         sb.append(n.name());
-        if (iter.hasPrevious()) {
+        if(iter.hasPrevious()) {
           sb.append(", ");
         }
       }
@@ -513,7 +513,7 @@ public final class TokenParser {
       sb.append(text, from, i);
       i++;
 
-      if (i >= endIndex) {
+      if(i >= endIndex) {
         from = endIndex;
         break;
       }
@@ -527,7 +527,7 @@ public final class TokenParser {
         i += 2;
       }
 
-      if (i >= endIndex) {
+      if(i >= endIndex) {
         from = endIndex;
         break;
       }

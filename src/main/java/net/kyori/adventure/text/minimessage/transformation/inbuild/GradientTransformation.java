@@ -146,13 +146,13 @@ public final class GradientTransformation extends Transformation implements Modi
 
   @Override
   public Component apply(final Component current, final int depth) {
-    if ((this.disableApplyingColorDepth != -1 && depth >= this.disableApplyingColorDepth) || current.style().color() != null) {
-      if (this.disableApplyingColorDepth == -1) {
+    if((this.disableApplyingColorDepth != -1 && depth >= this.disableApplyingColorDepth) || current.style().color() != null) {
+      if(this.disableApplyingColorDepth == -1) {
         this.disableApplyingColorDepth = depth;
       }
       // This component has it's own color applied, which overrides ours
       // We still want to keep track of where we are though if this is text
-      if (current instanceof TextComponent) {
+      if(current instanceof TextComponent) {
         final String content = ((TextComponent) current).content();
         final int len = content.codePointCount(0, content.length());
         for(int i = 0; i < len; i++) {

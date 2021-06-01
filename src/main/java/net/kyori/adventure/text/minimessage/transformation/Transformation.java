@@ -73,13 +73,19 @@ public abstract class Transformation implements Examinable {
   /**
    * The arguments making up this instance.
    *
-   * @return the name
-   * @since 4.q.2
+   * @return the args
+   * @since 4.2.0
    */
   public final List<TagPart> args() {
     return this.args;
   }
 
+  /**
+   * Returns the tokens which make up the arguments as an array.
+   *
+   * @return the arg tokens
+   * @since 4.2.0
+   */
   public final Token[] argTokenArray() {
     return this.args.stream().map(TagPart::token).toArray(Token[]::new);
   }

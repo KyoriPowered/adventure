@@ -140,7 +140,7 @@ public class Context {
   }
 
   /**
-   * Returns the appendable to print debug output to
+   * Returns the appendable to print debug output to.
    *
    * @return the debug output to print to
    * @since 4.2.0

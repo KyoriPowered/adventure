@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -42,10 +41,8 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenParser;
-import net.kyori.adventure.text.minimessage.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
-import net.kyori.adventure.text.minimessage.parser.node.TemplateNode;
-import net.kyori.adventure.text.minimessage.parser.node.TextNode;
+import net.kyori.adventure.text.minimessage.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.parser.node.ValueNode;
 import net.kyori.adventure.text.minimessage.transformation.Modifying;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
@@ -132,7 +129,7 @@ class MiniMessageParser {
   @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull Context context, final @NonNull String... placeholders) {
     if(placeholders.length % 2 != 0) {
       throw new ParsingException(
-          "Invalid number placeholders defined, usage: parseFormat(format, key, value, key, value...)");
+        "Invalid number placeholders defined, usage: parseFormat(format, key, value, key, value...)");
     }
 
     final Template[] t = new Template[placeholders.length / 2];
@@ -152,7 +149,7 @@ class MiniMessageParser {
     return this.parseFormat(richMessage, context, t);
   }
 
-  @NonNull Component parseFormat(@NonNull String input, final Context context, final @NonNull Template... placeholders) {
+  @NonNull Component parseFormat(final @NonNull String input, final Context context, final @NonNull Template... placeholders) {
     final Map<String, Template> map = new HashMap<>();
     for(final Template placeholder : placeholders) {
       map.put(placeholder.key(), placeholder);
@@ -160,7 +157,7 @@ class MiniMessageParser {
     return this.parseFormat0(input, map, context);
   }
 
-  @NonNull Component parseFormat(@NonNull String input, final @NonNull List<Template> placeholders, final @NonNull Context context) {
+  @NonNull Component parseFormat(final @NonNull String input, final @NonNull List<Template> placeholders, final @NonNull Context context) {
     final Map<String, Template> map = new HashMap<>();
     for(final Template placeholder : placeholders) {
       map.put(placeholder.key(), placeholder);
@@ -178,40 +175,44 @@ class MiniMessageParser {
 
   @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template> templates, final @NonNull TransformationRegistry registry, final @NonNull Function<String, ComponentLike> placeholderResolver, final Context context) {
     final Appendable debug = context.debugOutput();
-    if (debug != null) {
+    if(debug != null) {
       try {
         debug.append("Beginning parsing message ").append(richMessage).append('\n');
-      } catch(final IOException ignored) {}
+      } catch(final IOException ignored) {
+      }
     }
 
     final Function<TagNode, Transformation> transformationFactory;
-    if (debug != null) {
+    if(debug != null) {
       transformationFactory = node -> {
         try {
           try {
             debug.append("Attempting to match node '").append(node.name()).append("' at column ")
-                .append(String.valueOf(node.token().startIndex())).append('\n');
-          } catch(final IOException ignored) {}
+              .append(String.valueOf(node.token().startIndex())).append('\n');
+          } catch(final IOException ignored) {
+          }
 
           final Transformation transformation = registry.get(node.name(), node.parts(), templates, placeholderResolver, context);
 
           try {
-            if (transformation == null) {
+            if(transformation == null) {
               debug.append("Could not match node '").append(node.name()).append("'\n");
             } else {
               debug.append("Successfully matched node '").append(node.name()).append("' to transformation ")
-                  .append(transformation.examinableName()).append('\n');
+                .append(transformation.examinableName()).append('\n');
             }
-          } catch(final IOException ignored) {}
+          } catch(final IOException ignored) {
+          }
 
           return transformation;
         } catch(final ParsingException e) {
           try {
-            if (e.tokens().length == 0) {
-              e.tokens(new Token[]{ node.token() });
+            if(e.tokens().length == 0) {
+              e.tokens(new Token[]{node.token()});
             }
             debug.append("Could not match node '").append(node.name()).append("' - ").append(e.getMessage()).append('\n');
-          } catch(final IOException ignored) {}
+          } catch(final IOException ignored) {
+          }
           return null;
         }
       };
@@ -225,15 +226,16 @@ class MiniMessageParser {
       };
     }
     final BiPredicate<String, Boolean> tagNameChecker = (name, includeTemplates) ->
-        registry.exists(name, placeholderResolver) || (includeTemplates && templates.containsKey(name));
+      registry.exists(name, placeholderResolver) || (includeTemplates && templates.containsKey(name));
 
     final ElementNode root = TokenParser.parse(transformationFactory, tagNameChecker, templates, richMessage, context.isStrict());
 
-    if (debug != null) {
+    if(debug != null) {
       try {
         debug.append("Text parsed into element tree:\n");
         debug.append(root.toString());
-      } catch(final IOException ignored) {}
+      } catch(final IOException ignored) {
+      }
     }
 
     context.root(root);
@@ -290,7 +292,7 @@ class MiniMessageParser {
   }
 
   private @NonNull Component flatten(@NonNull Component comp) {
-    if (comp.children().isEmpty()) {
+    if(comp.children().isEmpty()) {
       return comp;
     }
 
@@ -302,7 +304,7 @@ class MiniMessageParser {
 
     comp = comp.children(newChildren);
 
-    if (!(comp instanceof TextComponent)) {
+    if(!(comp instanceof TextComponent)) {
       return comp;
     }
 

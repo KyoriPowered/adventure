@@ -107,24 +107,36 @@ public class ParsingException extends RuntimeException {
   @Override
   public String getMessage() {
     final String arrowInfo = this.tokens().length != 0
-        ? "\n\t" + this.arrow()
-        : "";
+      ? "\n\t" + this.arrow()
+      : "";
     final String messageInfo = this.originalText() != null
-        ? "\n\t" + this.originalText() + arrowInfo
-        : "";
+      ? "\n\t" + this.originalText() + arrowInfo
+      : "";
     return super.getMessage() + messageInfo;
   }
 
+  /**
+   * Get the message which caused this exception.
+   *
+   * @return the original message
+   * @since 4.2.0
+   */
   public @Nullable String originalText() {
     return this.originalText;
   }
 
+  /**
+   * Set the message which caused this exception.
+   *
+   * @param originalText the original message
+   * @since 4.2.0
+   */
   public void originalText(final @NotNull String originalText) {
     this.originalText = originalText;
   }
 
   /**
-   * Gets the tokens associated with this parsing error
+   * Gets the tokens associated with this parsing error.
    *
    * @return the tokens for this error
    * @since 4.1.0
@@ -133,7 +145,13 @@ public class ParsingException extends RuntimeException {
     return this.tokens;
   }
 
-  public void tokens(final @NonNull Token @NonNull[] tokens) {
+  /**
+   * Sets the tokens associated with this parsing error.
+   *
+   * @param tokens the tokens for this error
+   * @since 4.2.0
+   */
+  public void tokens(final @NonNull Token @NonNull [] tokens) {
     this.tokens = tokens;
   }
 

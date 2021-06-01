@@ -25,7 +25,6 @@ package net.kyori.adventure.text.minimessage.transformation;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Transformations implementing this interface can transform a whole subtree of nodes.

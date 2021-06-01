@@ -55,7 +55,7 @@ public final class TagPart {
     if(isTag(v)) {
       final String text = v.substring(1, v.length() - 1);
       final Template template = templates.get(text);
-      if (template instanceof Template.StringTemplate) {
+      if(template instanceof Template.StringTemplate) {
         v = ((Template.StringTemplate) template).value();
       }
     }

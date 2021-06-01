@@ -74,8 +74,20 @@ public interface Template extends Examinable {
     return new LazyComponentTemplate(key, value);
   }
 
+  /**
+   * Get the key for this template.
+   *
+   * @return the key
+   * @since 4.2.0
+   */
   @NonNull String key();
 
+  /**
+   * Get the value for this template.
+   *
+   * @return the value
+   * @since 4.2.0
+   */
   @NonNull Object value();
 
   /**
@@ -108,8 +120,8 @@ public interface Template extends Examinable {
     @Override
     public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
-          ExaminableProperty.of("key", this.key),
-          ExaminableProperty.of("value", this.value)
+        ExaminableProperty.of("key", this.key),
+        ExaminableProperty.of("value", this.value)
       );
     }
   }

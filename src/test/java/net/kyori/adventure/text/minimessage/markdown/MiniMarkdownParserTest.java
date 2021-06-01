@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MiniMarkdownParserTest {
 
+  @SuppressWarnings("deprecation")
   private final MarkdownFlavor markdownFlavor = LegacyFlavor.get();
 
   @Test

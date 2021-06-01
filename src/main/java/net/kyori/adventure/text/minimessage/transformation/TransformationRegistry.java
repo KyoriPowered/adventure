@@ -125,7 +125,7 @@ public final class TransformationRegistry {
       } else if(templates.containsKey(name)) {
         final Template template = templates.get(name);
         // The parser handles StringTemplates
-        if (template instanceof Template.ComponentTemplate) {
+        if(template instanceof Template.ComponentTemplate) {
           return this.tryLoad(new TemplateTransformation((Template.ComponentTemplate) template), name, inners, context);
         }
       }
