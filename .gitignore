@@ -1,5 +1,6 @@
-/.gradle/
+.gradle/
 /.idea/
+/build-logic/build
 /api/build/
 /api/out/
 /api/run/
