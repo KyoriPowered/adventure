@@ -10,7 +10,7 @@ plugins {
 
 testlogger {
   theme = ThemeType.MOCHA_PARALLEL
-  showPassed = true
+  showPassed = false
 }
 
 configurations.testCompileClasspath {

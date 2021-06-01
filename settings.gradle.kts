@@ -13,7 +13,7 @@ pluginManagement {
 
 rootProject.name = "adventure-parent"
 
-// Make sure to update bom/build.gradle when making changes to modules.
+// Make sure to update bom/build.gradle.kts when making changes to modules.
 
 sequenceOf(
   "api",
