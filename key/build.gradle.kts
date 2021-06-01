@@ -1,5 +1,11 @@
-configurations.testCompileOnly {
-  extendsFrom(configurations.compileOnlyApi)
+plugins {
+  id("adventure.common-conventions")
+}
+
+configurations {
+  testCompileOnly {
+    extendsFrom(compileOnlyApi.forUseAtConfigurationTime().get())
+  }
 }
 
 dependencies {
@@ -10,4 +16,4 @@ dependencies {
   testImplementation("com.google.guava:guava:23.0")
 }
 
-applyJarMetadata(this, "net.kyori.adventure.key")
+applyJarMetadata("net.kyori.adventure.key")

@@ -1,3 +1,7 @@
+plugins {
+  id("adventure.common-conventions")
+}
+
 dependencies {
   api("net.kyori:examination-api:1.1.0")
   api("net.kyori:examination-string:1.1.0")
@@ -5,4 +9,4 @@ dependencies {
   compileOnlyApi("org.jetbrains:annotations:21.0.1")
 }
 
-applyJarMetadata(this, "net.kyori.adventure.nbt")
+applyJarMetadata("net.kyori.adventure.nbt")
