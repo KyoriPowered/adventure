@@ -1,4 +1,4 @@
-import com.adarshr.gradle.testlogger.theme.ThemeType.MOCHA_PARALLEL
+import com.adarshr.gradle.testlogger.theme.ThemeType
 
 plugins {
   id("adventure.base-conventions")
@@ -9,12 +9,12 @@ plugins {
 }
 
 testlogger {
-  theme = MOCHA_PARALLEL
-  showPassed = false
+  theme = ThemeType.MOCHA_PARALLEL
+  showPassed = true
 }
 
 configurations.testCompileClasspath {
-  exclude("junit") // brought in by google's libs
+  exclude(group = "junit") // brought in by google's libs
 }
 
 repositories {

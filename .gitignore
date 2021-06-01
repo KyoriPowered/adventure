@@ -1,10 +1,11 @@
-.gradle/
+/.gradle/
 /.idea/
-/build-logic/build
 /api/build/
 /api/out/
 /api/run/
 /bom/build/
+/build-logic/.gradle/
+/build-logic/build/
 /extra-kotlin/build/
 /extra-kotlin/out/
 /key/build/
