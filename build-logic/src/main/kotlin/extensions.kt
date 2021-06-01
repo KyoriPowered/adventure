@@ -6,16 +6,16 @@ import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.named
 
 fun Project.applyJarMetadata(moduleName: String) {
-  if ("jar" in project.tasks.names) {
-    project.tasks.named<Jar>("jar") {
+  if ("jar" in tasks.names) {
+    tasks.named<Jar>("jar") {
       manifest.attributes(
         "Automatic-Module-Name" to moduleName,
         "Specification-Title" to moduleName,
         "Specification-Version" to project.version,
         "Specification-Vendor" to "KyoriPowered"
       )
-      extensions.findByType<IndraGitExtension>()
-        ?.applyVcsInformationToManifest(manifest)
+      val indraGit = rootProject.extensions.findByType<IndraGitExtension>()
+      indraGit?.applyVcsInformationToManifest(manifest)
     }
   }
 }
