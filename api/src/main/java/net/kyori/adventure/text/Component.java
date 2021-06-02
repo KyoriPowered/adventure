@@ -1653,8 +1653,10 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * Gets the color of this component.
    *
    * @return the color of this component
+   * @deprecated for removal since 4.8.0, in favour of {@link #style()}
    * @since 4.0.0
    */
+  @Deprecated
   default @Nullable TextColor color() {
     return this.style().color();
   }
@@ -1690,8 +1692,10 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param decoration the decoration
    * @return {@code true} if this component has the decoration, {@code false} if this
    *     component does not have the decoration
+   * @deprecated for removal since 4.8.0, in favour of {@link #style()}
    * @since 4.0.0
    */
+  @Deprecated
   default boolean hasDecoration(final @NonNull TextDecoration decoration) {
     return this.decoration(decoration) == TextDecoration.State.TRUE;
   }
@@ -1715,8 +1719,10 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return {@link TextDecoration.State#TRUE} if this component has the decoration,
    *     {@link TextDecoration.State#FALSE} if this component does not have the decoration,
    *     and {@link TextDecoration.State#NOT_SET} if not set
+   * @deprecated for removal since 4.8.0, in favour of {@link #style()}
    * @since 4.0.0
    */
+  @Deprecated
   default TextDecoration.@NonNull State decoration(final @NonNull TextDecoration decoration) {
     return this.style().decoration(decoration);
   }
@@ -1728,9 +1734,11 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param flag {@code true} if this component should have the decoration, {@code false} if
    *     this component should not have the decoration
    * @return a component
+   * @deprecated for removal since 4.8.0, in favour of {@link #style()}
    * @since 4.0.0
    */
   @Contract(pure = true)
+  @Deprecated
   default @NonNull Component decoration(final @NonNull TextDecoration decoration, final boolean flag) {
     return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
   }
@@ -1744,9 +1752,11 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    *     have the decoration, and {@link TextDecoration.State#NOT_SET} if the decoration
    *     should not have a set value
    * @return a component
+   * @deprecated for removal since 4.8.0, in favour of {@link #style()}
    * @since 4.0.0
    */
   @Contract(pure = true)
+  @Deprecated
   default @NonNull Component decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
     return this.style(this.style().decoration(decoration, state));
   }
@@ -1757,6 +1767,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a set of decorations this component has
    * @since 4.0.0
    */
+  @Deprecated
   default @NonNull Map<TextDecoration, TextDecoration.State> decorations() {
     return this.style().decorations();
   }
@@ -1771,6 +1782,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   @Contract(pure = true)
+  @Deprecated
   default @NonNull Component decorations(final @NonNull Map<TextDecoration, TextDecoration.State> decorations) {
     return this.style(this.style().decorations(decorations));
   }
@@ -1781,6 +1793,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return the click event
    * @since 4.0.0
    */
+  @Deprecated
   default @Nullable ClickEvent clickEvent() {
     return this.style().clickEvent();
   }
@@ -1793,6 +1806,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   @Contract(pure = true)
+  @Deprecated
   default @NonNull Component clickEvent(final @Nullable ClickEvent event) {
     return this.style(this.style().clickEvent(event));
   }
@@ -1803,6 +1817,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return the hover event
    * @since 4.0.0
    */
+  @Deprecated
   default @Nullable HoverEvent<?> hoverEvent() {
     return this.style().hoverEvent();
   }
@@ -1815,6 +1830,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   @Contract(pure = true)
+  @Deprecated
   default @NonNull Component hoverEvent(final @Nullable HoverEventSource<?> source) {
     return this.style(this.style().hoverEvent(source));
   }
@@ -1825,6 +1841,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return the insertion string
    * @since 4.0.0
    */
+  @Deprecated
   default @Nullable String insertion() {
     return this.style().insertion();
   }
@@ -1837,6 +1854,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   @Contract(pure = true)
+  @Deprecated
   default @NonNull Component insertion(final @Nullable String insertion) {
     return this.style(this.style().insertion(insertion));
   }
