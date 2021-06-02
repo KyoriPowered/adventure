@@ -56,7 +56,6 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
   void testWarningThrownWhenLegacyFormattingDetected() {
     final TextComponent component = Component.text(legacy('3') + "This is a test.");
     assertNotNull(((TextComponentImpl) component).warnWhenLegacyFormattingDetected());
-    ((TextComponentImpl) component).warnWhenLegacyFormattingDetected().printStackTrace();
   }
 
   private static String legacy(final char character) {
