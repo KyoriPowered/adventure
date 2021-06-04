@@ -24,11 +24,10 @@
 package net.kyori.adventure.text.serializer;
 
 import net.kyori.adventure.text.Component;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.checkerframework.checker.nullness.qual.PolyNull;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A {@link Component} serializer and deserializer.
@@ -46,7 +45,7 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
    * @return the component
    * @since 4.0.0
    */
-  @NonNull O deserialize(final @NonNull R input);
+  @NotNull O deserialize(final @NotNull R input);
 
   /**
    * Deserialize a component from input of type {@code R}.
@@ -61,7 +60,7 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
   @ApiStatus.ScheduledForRemoval
   @Contract(value = "!null -> !null; null -> null", pure = true)
   @Deprecated
-  default @PolyNull O deseializeOrNull(final @PolyNull R input) {
+  default @Nullable O deseializeOrNull(final @Nullable R input) {
     return this.deserializeOrNull(input);
   }
 
@@ -75,7 +74,7 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
    * @since 4.8.0
    */
   @Contract(value = "!null -> !null; null -> null", pure = true)
-  default @PolyNull O deserializeOrNull(final @PolyNull R input) {
+  default @Nullable O deserializeOrNull(final @Nullable R input) {
     return this.deserializeOr(input, null);
   }
 
@@ -90,7 +89,7 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
    * @since 4.7.0
    */
   @Contract(value = "!null, _ -> !null; null, _ -> param2", pure = true)
-  default @PolyNull O deserializeOr(final @Nullable R input, final @PolyNull O fallback) {
+  default @Nullable O deserializeOr(final @Nullable R input, final @Nullable O fallback) {
     if (input == null) return fallback;
 
     return this.deserialize(input);
@@ -103,7 +102,7 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
    * @return the output
    * @since 4.0.0
    */
-  @NonNull R serialize(final @NonNull I component);
+  @NotNull R serialize(final @NotNull I component);
 
   /**
    * Serializes a component into an output of type {@code R}.
@@ -115,7 +114,7 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
    * @since 4.7.0
    */
   @Contract(value = "!null -> !null; null -> null", pure = true)
-  default @PolyNull R serializeOrNull(final @PolyNull I component) {
+  default @Nullable R serializeOrNull(final @Nullable I component) {
     return this.serializeOr(component, null);
   }
 
@@ -130,7 +129,7 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
    * @since 4.7.0
    */
   @Contract(value = "!null, _ -> !null; null, _ -> param2", pure = true)
-  default @PolyNull R serializeOr(final @Nullable I component, final @PolyNull R fallback) {
+  default @Nullable R serializeOr(final @Nullable I component, final @Nullable R fallback) {
     if (component == null) return fallback;
 
     return this.serialize(component);

@@ -31,7 +31,7 @@ import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /*
  * This is a hack.

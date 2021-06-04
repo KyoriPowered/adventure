@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Common methods between {@link ListBinaryTag} and {@link ListBinaryTag.Builder}.
@@ -40,7 +40,7 @@ public interface ListTagSetter<R, T extends BinaryTag> {
    * @return a list tag
    * @since 4.0.0
    */
-  @NonNull R add(final T tag);
+  @NotNull R add(final T tag);
 
   /**
    * Adds multiple tags.
@@ -49,5 +49,5 @@ public interface ListTagSetter<R, T extends BinaryTag> {
    * @return a list tag
    * @since 4.4.0
    */
-  @NonNull R add(final Iterable<? extends T> tags);
+  @NotNull R add(final Iterable<? extends T> tags);
 }

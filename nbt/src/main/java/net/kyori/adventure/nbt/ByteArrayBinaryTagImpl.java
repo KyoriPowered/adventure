@@ -27,9 +27,9 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.Debug;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Debug.Renderer(text = "\"byte[\" + this.value.length + \"]\"", childrenArray = "this.value", hasChildren = "this.value.length > 0")
 final class ByteArrayBinaryTagImpl extends ArrayBinaryTagImpl implements ByteArrayBinaryTag {
@@ -40,7 +40,7 @@ final class ByteArrayBinaryTagImpl extends ArrayBinaryTagImpl implements ByteArr
   }
 
   @Override
-  public byte@NonNull[] value() {
+  public byte@NotNull[] value() {
     return Arrays.copyOf(this.value, this.value.length);
   }
 
@@ -74,7 +74,7 @@ final class ByteArrayBinaryTagImpl extends ArrayBinaryTagImpl implements ByteArr
   }
 
   @Override
-  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("value", this.value));
   }
 

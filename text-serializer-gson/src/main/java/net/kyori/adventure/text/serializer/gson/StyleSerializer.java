@@ -48,7 +48,7 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.util.Codec;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<Style> {
   @SuppressWarnings("checkstyle:NoWhitespaceAfter")

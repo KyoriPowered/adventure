@@ -27,7 +27,7 @@ import java.lang.reflect.Type;
 import java.util.function.Predicate;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.serialize.ScalarSerializer;
 import org.spongepowered.configurate.serialize.SerializationException;
 
@@ -40,7 +40,7 @@ final class TextColorSerializer extends ScalarSerializer<TextColor> {
   }
 
   @Override
-  public TextColor deserialize(final @NonNull Type type, final @NonNull Object obj) throws SerializationException {
+  public TextColor deserialize(final @NotNull Type type, final @NotNull Object obj) throws SerializationException {
     if (obj instanceof Number) { // numerical values
       return TextColor.color(((Number) obj).intValue());
     } else if (!(obj instanceof CharSequence)) {
@@ -60,7 +60,7 @@ final class TextColorSerializer extends ScalarSerializer<TextColor> {
   }
 
   @Override
-  public Object serialize(final @NonNull TextColor item, final @NonNull Predicate<Class<?>> typeSupported) {
+  public Object serialize(final @NotNull TextColor item, final @NotNull Predicate<Class<?>> typeSupported) {
     if (item instanceof NamedTextColor) { // TODO: Downsampling
       return NamedTextColor.NAMES.key((NamedTextColor) item);
     } else {

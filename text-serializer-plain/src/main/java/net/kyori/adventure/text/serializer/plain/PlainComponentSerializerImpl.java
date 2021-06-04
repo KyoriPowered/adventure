@@ -27,8 +27,8 @@ import java.util.function.Function;
 import net.kyori.adventure.text.KeybindComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Deprecated
 final class PlainComponentSerializerImpl {
@@ -66,13 +66,13 @@ final class PlainComponentSerializerImpl {
     }
 
     @Override
-    public PlainComponentSerializer.@NonNull Builder flattener(final @NonNull ComponentFlattener flattener) {
+    public PlainComponentSerializer.@NotNull Builder flattener(final @NotNull ComponentFlattener flattener) {
       this.builder.flattener(flattener);
       return this;
     }
 
     @Override
-    public @NonNull PlainComponentSerializer build() {
+    public @NotNull PlainComponentSerializer build() {
       return new PlainComponentSerializer(this.builder.build());
     }
   }

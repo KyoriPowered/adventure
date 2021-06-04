@@ -30,69 +30,72 @@ import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.pointer.Pointer;
 import net.kyori.adventure.text.ComponentLike;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.PolyNull;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 final class EmptyAudience implements Audience {
   static final EmptyAudience INSTANCE = new EmptyAudience();
 
   @Override
-  public @NonNull <T> Optional<T> get(final @NonNull Pointer<T> pointer) {
+  public @NotNull <T> Optional<T> get(final @NotNull Pointer<T> pointer) {
     return Optional.empty();
   }
 
+  @Contract("_, null -> null; _, !null -> !null")
   @Override
-  public <T> @PolyNull T getOrDefault(final @NonNull Pointer<T> pointer, final @PolyNull T defaultValue) {
+  public <T> @Nullable T getOrDefault(final @NotNull Pointer<T> pointer, final @Nullable T defaultValue) {
     return defaultValue;
   }
 
   @Override
-  public <T> @PolyNull T getOrDefaultFrom(final @NonNull Pointer<T> pointer, final @NonNull Supplier<? extends T> defaultValue) {
+  public <T> @UnknownNullability T getOrDefaultFrom(final @NotNull Pointer<T> pointer, final @NotNull Supplier<? extends T> defaultValue) {
     return defaultValue.get();
   }
 
   @Override
-  public void sendMessage(final @NonNull ComponentLike message) {
+  public void sendMessage(final @NotNull ComponentLike message) {
   }
 
   @Override
-  public void sendMessage(final @NonNull Identified source, final @NonNull ComponentLike message) {
+  public void sendMessage(final @NotNull Identified source, final @NotNull ComponentLike message) {
   }
 
   @Override
-  public void sendMessage(final @NonNull Identity source, final @NonNull ComponentLike message) {
+  public void sendMessage(final @NotNull Identity source, final @NotNull ComponentLike message) {
   }
 
   @Override
-  public void sendMessage(final @NonNull ComponentLike message, final @NonNull MessageType type) {
+  public void sendMessage(final @NotNull ComponentLike message, final @NotNull MessageType type) {
   }
 
   @Override
-  public void sendMessage(final @NonNull Identified source, final @NonNull ComponentLike message, final @NonNull MessageType type) {
+  public void sendMessage(final @NotNull Identified source, final @NotNull ComponentLike message, final @NotNull MessageType type) {
   }
 
   @Override
-  public void sendMessage(final @NonNull Identity source, final @NonNull ComponentLike message, final @NonNull MessageType type) {
+  public void sendMessage(final @NotNull Identity source, final @NotNull ComponentLike message, final @NotNull MessageType type) {
   }
 
   @Override
-  public void sendActionBar(final @NonNull ComponentLike message) {
+  public void sendActionBar(final @NotNull ComponentLike message) {
   }
 
   @Override
-  public void sendPlayerListHeader(final @NonNull ComponentLike header) {
+  public void sendPlayerListHeader(final @NotNull ComponentLike header) {
   }
 
   @Override
-  public void sendPlayerListFooter(final @NonNull ComponentLike footer) {
+  public void sendPlayerListFooter(final @NotNull ComponentLike footer) {
   }
 
   @Override
-  public void sendPlayerListHeaderAndFooter(final @NonNull ComponentLike header, final @NonNull ComponentLike footer) {
+  public void sendPlayerListHeaderAndFooter(final @NotNull ComponentLike header, final @NotNull ComponentLike footer) {
   }
 
   @Override
-  public void openBook(final Book.@NonNull Builder book) {
+  public void openBook(final Book.@NotNull Builder book) {
   }
 
   @Override

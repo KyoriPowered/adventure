@@ -28,8 +28,8 @@ import java.util.Locale;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -82,12 +82,12 @@ class GlobalTranslatorTest {
     static final DummyTranslator INSTANCE = new DummyTranslator();
 
     @Override
-    public @NonNull Key name() {
+    public @NotNull Key name() {
       return Key.key("adventure", "test_dummy");
     }
 
     @Override
-    public @Nullable MessageFormat translate(final @NonNull String key, final @NonNull Locale locale) {
+    public @Nullable MessageFormat translate(final @NotNull String key, final @NotNull Locale locale) {
       return (key.equals("testDummy") && locale.equals(Locale.US))
         ? new MessageFormat("Hello {0}!")
         : null;

@@ -31,7 +31,7 @@ import net.kyori.adventure.pointer.Pointer;
 import net.kyori.adventure.text.Component;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * An identity used to track the sender of messages for the social interaction features
@@ -68,7 +68,7 @@ public interface Identity extends Examinable {
    * @return the {@code null} identity
    * @since 4.0.0
    */
-  static @NonNull Identity nil() {
+  static @NotNull Identity nil() {
     return Identities.NIL;
   }
 
@@ -79,7 +79,7 @@ public interface Identity extends Examinable {
    * @return an identity
    * @since 4.0.0
    */
-  static @NonNull Identity identity(final @NonNull UUID uuid) {
+  static @NotNull Identity identity(final @NotNull UUID uuid) {
     if (uuid.equals(Identities.NIL.uuid())) return Identities.NIL;
     return new IdentityImpl(uuid);
   }
@@ -90,10 +90,10 @@ public interface Identity extends Examinable {
    * @return the uuid
    * @since 4.0.0
    */
-  @NonNull UUID uuid();
+  @NotNull UUID uuid();
 
   @Override
-  default @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("uuid", this.uuid()));
   }
 }

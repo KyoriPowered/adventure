@@ -27,7 +27,7 @@ import java.util.Objects;
 import java.util.function.IntPredicate;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import static java.util.Objects.requireNonNull;
@@ -41,7 +41,7 @@ final class KeyImpl implements Key {
   private final String namespace;
   private final String value;
 
-  KeyImpl(final @NonNull String namespace, final @NonNull String value) {
+  KeyImpl(final @NotNull String namespace, final @NotNull String value) {
     if (!namespaceValid(namespace)) throw new InvalidKeyException(namespace, value, String.format("Non [a-z0-9_.-] character in namespace of Key[%s]", asString(namespace, value)));
     if (!valueValid(value)) throw new InvalidKeyException(namespace, value, String.format("Non [a-z0-9/._-] character in value of Key[%s]", asString(namespace, value)));
     this.namespace = requireNonNull(namespace, "namespace");
@@ -49,7 +49,7 @@ final class KeyImpl implements Key {
   }
 
   @VisibleForTesting
-  static boolean namespaceValid(final @NonNull String namespace) {
+  static boolean namespaceValid(final @NotNull String namespace) {
     for (int i = 0, length = namespace.length(); i < length; i++) {
       if (!NAMESPACE_PREDICATE.test(namespace.charAt(i))) {
         return false;
@@ -59,7 +59,7 @@ final class KeyImpl implements Key {
   }
 
   @VisibleForTesting
-  static boolean valueValid(final @NonNull String value) {
+  static boolean valueValid(final @NotNull String value) {
     for (int i = 0, length = value.length(); i < length; i++) {
       if (!VALUE_PREDICATE.test(value.charAt(i))) {
         return false;
@@ -69,31 +69,31 @@ final class KeyImpl implements Key {
   }
 
   @Override
-  public @NonNull String namespace() {
+  public @NotNull String namespace() {
     return this.namespace;
   }
 
   @Override
-  public @NonNull String value() {
+  public @NotNull String value() {
     return this.value;
   }
 
   @Override
-  public @NonNull String asString() {
+  public @NotNull String asString() {
     return asString(this.namespace, this.value);
   }
 
-  private static @NonNull String asString(final @NonNull String namespace, final @NonNull String value) {
+  private static @NotNull String asString(final @NotNull String namespace, final @NotNull String value) {
     return namespace + ':' + value;
   }
 
   @Override
-  public @NonNull String toString() {
+  public @NotNull String toString() {
     return this.asString();
   }
 
   @Override
-  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("namespace", this.namespace),
       ExaminableProperty.of("value", this.value)
@@ -116,7 +116,7 @@ final class KeyImpl implements Key {
   }
 
   @Override
-  public int compareTo(final @NonNull Key that) {
+  public int compareTo(final @NotNull Key that) {
     return Key.super.compareTo(that);
   }
 

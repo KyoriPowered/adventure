@@ -28,47 +28,47 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.examination.ExaminableProperty;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 final class EntityNBTComponentImpl extends NBTComponentImpl<EntityNBTComponent, EntityNBTComponent.Builder> implements EntityNBTComponent {
   private final String selector;
 
-  EntityNBTComponentImpl(final @NonNull List<? extends ComponentLike> children, final @NonNull Style style, final String nbtPath, final boolean interpret, final String selector) {
+  EntityNBTComponentImpl(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final String nbtPath, final boolean interpret, final String selector) {
     super(children, style, nbtPath, interpret);
     this.selector = selector;
   }
 
   @Override
-  public @NonNull EntityNBTComponent nbtPath(final @NonNull String nbtPath) {
+  public @NotNull EntityNBTComponent nbtPath(final @NotNull String nbtPath) {
     if (Objects.equals(this.nbtPath, nbtPath)) return this;
     return new EntityNBTComponentImpl(this.children, this.style, nbtPath, this.interpret, this.selector);
   }
 
   @Override
-  public @NonNull EntityNBTComponent interpret(final boolean interpret) {
+  public @NotNull EntityNBTComponent interpret(final boolean interpret) {
     if (this.interpret == interpret) return this;
     return new EntityNBTComponentImpl(this.children, this.style, this.nbtPath, interpret, this.selector);
   }
 
   @Override
-  public @NonNull String selector() {
+  public @NotNull String selector() {
     return this.selector;
   }
 
   @Override
-  public @NonNull EntityNBTComponent selector(final @NonNull String selector) {
+  public @NotNull EntityNBTComponent selector(final @NotNull String selector) {
     if (Objects.equals(this.selector, selector)) return this;
     return new EntityNBTComponentImpl(this.children, this.style, this.nbtPath, this.interpret, selector);
   }
 
   @Override
-  public @NonNull EntityNBTComponent children(final @NonNull List<? extends ComponentLike> children) {
+  public @NotNull EntityNBTComponent children(final @NotNull List<? extends ComponentLike> children) {
     return new EntityNBTComponentImpl(children, this.style, this.nbtPath, this.interpret, this.selector);
   }
 
   @Override
-  public @NonNull EntityNBTComponent style(final @NonNull Style style) {
+  public @NotNull EntityNBTComponent style(final @NotNull Style style) {
     return new EntityNBTComponentImpl(this.children, style, this.nbtPath, this.interpret, this.selector);
   }
 
@@ -89,7 +89,7 @@ final class EntityNBTComponentImpl extends NBTComponentImpl<EntityNBTComponent, 
   }
 
   @Override
-  protected @NonNull Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
+  protected @NotNull Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
     return Stream.concat(
       Stream.of(
         ExaminableProperty.of("selector", this.selector)
@@ -99,7 +99,7 @@ final class EntityNBTComponentImpl extends NBTComponentImpl<EntityNBTComponent, 
   }
 
   @Override
-  public EntityNBTComponent.@NonNull Builder toBuilder() {
+  public EntityNBTComponent.@NotNull Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
@@ -109,19 +109,19 @@ final class EntityNBTComponentImpl extends NBTComponentImpl<EntityNBTComponent, 
     BuilderImpl() {
     }
 
-    BuilderImpl(final @NonNull EntityNBTComponent component) {
+    BuilderImpl(final @NotNull EntityNBTComponent component) {
       super(component);
       this.selector = component.selector();
     }
 
     @Override
-    public EntityNBTComponent.@NonNull Builder selector(final @NonNull String selector) {
+    public EntityNBTComponent.@NotNull Builder selector(final @NotNull String selector) {
       this.selector = selector;
       return this;
     }
 
     @Override
-    public @NonNull EntityNBTComponent build() {
+    public @NotNull EntityNBTComponent build() {
       if (this.nbtPath == null) throw new IllegalStateException("nbt path must be set");
       if (this.selector == null) throw new IllegalStateException("selector must be set");
       return new EntityNBTComponentImpl(this.children, this.buildStyle(), this.nbtPath, this.interpret, this.selector);

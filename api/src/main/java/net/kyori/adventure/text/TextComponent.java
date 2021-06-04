@@ -25,8 +25,8 @@ package net.kyori.adventure.text;
 
 import java.util.Arrays;
 import net.kyori.adventure.text.format.Style;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A component that displays a string.
@@ -47,7 +47,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @return a text component
    * @since 4.0.0
    */
-  static @NonNull TextComponent ofChildren(final @NonNull ComponentLike@NonNull... components) {
+  static @NotNull TextComponent ofChildren(final @NotNull ComponentLike@NotNull... components) {
     if (components.length == 0) return Component.empty();
     return new TextComponentImpl(Arrays.asList(components), Style.empty(), "");
   }
@@ -58,7 +58,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @return the plain text content
    * @since 4.0.0
    */
-  @NonNull String content();
+  @NotNull String content();
 
   /**
    * Sets the plain text content.
@@ -68,7 +68,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NonNull TextComponent content(final @NonNull String content);
+  @NotNull TextComponent content(final @NotNull String content);
 
   /**
    * A text component builder.
@@ -82,7 +82,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
      * @return the plain text content
      * @since 4.0.0
      */
-    @NonNull String content();
+    @NotNull String content();
 
     /**
      * Sets the plain text content.
@@ -92,6 +92,6 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NonNull Builder content(final @NonNull String content);
+    @NotNull Builder content(final @NotNull String content);
   }
 }

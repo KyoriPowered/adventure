@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.identity;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Something that can be identified by an {@link Identity}.
@@ -37,5 +37,5 @@ public interface Identified {
    * @return the identity
    * @since 4.0.0
    */
-  @NonNull Identity identity();
+  @NotNull Identity identity();
 }

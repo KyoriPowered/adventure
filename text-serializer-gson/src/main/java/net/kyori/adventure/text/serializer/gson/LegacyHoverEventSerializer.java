@@ -27,7 +27,7 @@ import java.io.IOException;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.util.Codec;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Adapter to convert between modern and legacy hover event formats.
@@ -43,7 +43,7 @@ public interface LegacyHoverEventSerializer {
    * @throws IOException if the input is improperly formatted
    * @since 4.0.0
    */
-  HoverEvent.@NonNull ShowItem deserializeShowItem(final @NonNull Component input) throws IOException;
+  HoverEvent.@NotNull ShowItem deserializeShowItem(final @NotNull Component input) throws IOException;
 
   /**
    * Convert a legacy hover event {@code show_entity} value to its modern format.
@@ -54,7 +54,7 @@ public interface LegacyHoverEventSerializer {
    * @throws IOException if the input is improperly formatted
    * @since 4.0.0
    */
-  HoverEvent.@NonNull ShowEntity deserializeShowEntity(final @NonNull Component input, final Codec.Decoder<Component, String, ? extends RuntimeException> componentDecoder) throws IOException;
+  HoverEvent.@NotNull ShowEntity deserializeShowEntity(final @NotNull Component input, final Codec.Decoder<Component, String, ? extends RuntimeException> componentDecoder) throws IOException;
 
   /**
    * Convert a modern hover event {@code show_item} value to its legacy format.
@@ -64,7 +64,7 @@ public interface LegacyHoverEventSerializer {
    * @throws IOException if the input is improperly formatted
    * @since 4.0.0
    */
-  @NonNull Component serializeShowItem(final HoverEvent.@NonNull ShowItem input) throws IOException;
+  @NotNull Component serializeShowItem(final HoverEvent.@NotNull ShowItem input) throws IOException;
 
   /**
    * Convert a modern hover event {@code show_entity} value to its legacy format.
@@ -75,5 +75,5 @@ public interface LegacyHoverEventSerializer {
    * @throws IOException if the input is improperly formatted
    * @since 4.0.0
    */
-  @NonNull Component serializeShowEntity(final HoverEvent.@NonNull ShowEntity input, final Codec.Encoder<Component, String, ? extends RuntimeException> componentEncoder) throws IOException;
+  @NotNull Component serializeShowEntity(final HoverEvent.@NotNull ShowEntity input, final Codec.Encoder<Component, String, ? extends RuntimeException> componentEncoder) throws IOException;
 }

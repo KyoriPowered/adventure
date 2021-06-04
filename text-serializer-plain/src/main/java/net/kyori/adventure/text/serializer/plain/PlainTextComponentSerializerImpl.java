@@ -28,7 +28,7 @@ import java.util.function.Consumer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.util.Services;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -58,12 +58,12 @@ final class PlainTextComponentSerializerImpl implements PlainTextComponentSerial
   }
 
   @Override
-  public void serialize(final @NonNull StringBuilder sb, final @NonNull Component component) {
+  public void serialize(final @NotNull StringBuilder sb, final @NotNull Component component) {
     this.flattener.flatten(requireNonNull(component, "component"), sb::append);
   }
 
   @Override
-  public @NonNull Builder toBuilder() {
+  public @NotNull Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
@@ -80,13 +80,13 @@ final class PlainTextComponentSerializerImpl implements PlainTextComponentSerial
     }
 
     @Override
-    public PlainTextComponentSerializer.@NonNull Builder flattener(final @NonNull ComponentFlattener flattener) {
+    public PlainTextComponentSerializer.@NotNull Builder flattener(final @NotNull ComponentFlattener flattener) {
       this.flattener = requireNonNull(flattener, "flattener");
       return this;
     }
 
     @Override
-    public @NonNull PlainTextComponentSerializer build() {
+    public @NotNull PlainTextComponentSerializer build() {
       return new PlainTextComponentSerializerImpl(this.flattener);
     }
   }

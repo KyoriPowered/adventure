@@ -25,9 +25,9 @@ package net.kyori.adventure.nbt;
 
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.Debug;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A binary tag holding a {@code byte} value.
@@ -56,7 +56,7 @@ public interface ByteBinaryTag extends NumberBinaryTag {
    * @return a binary tag
    * @since 4.0.0
    */
-  static @NonNull ByteBinaryTag of(final byte value) {
+  static @NotNull ByteBinaryTag of(final byte value) {
     if (value == 0) {
       return ZERO;
     } else if (value == 1) {
@@ -67,7 +67,7 @@ public interface ByteBinaryTag extends NumberBinaryTag {
   }
 
   @Override
-  default @NonNull BinaryTagType<ByteBinaryTag> type() {
+  default @NotNull BinaryTagType<ByteBinaryTag> type() {
     return BinaryTagTypes.BYTE;
   }
 
@@ -137,7 +137,7 @@ final class ByteBinaryTagImpl extends AbstractBinaryTag implements ByteBinaryTag
   }
 
   @Override
-  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("value", this.value));
   }
 }

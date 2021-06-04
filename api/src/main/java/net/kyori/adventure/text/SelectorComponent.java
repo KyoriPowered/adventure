@@ -23,8 +23,8 @@
  */
 package net.kyori.adventure.text;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A component that can display the name of entities found with a given selector.
@@ -48,7 +48,7 @@ public interface SelectorComponent extends BuildableComponent<SelectorComponent,
    * @return the selector pattern
    * @since 4.0.0
    */
-  @NonNull String pattern();
+  @NotNull String pattern();
 
   /**
    * Sets the selector pattern.
@@ -58,7 +58,7 @@ public interface SelectorComponent extends BuildableComponent<SelectorComponent,
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NonNull SelectorComponent pattern(final @NonNull String pattern);
+  @NotNull SelectorComponent pattern(final @NotNull String pattern);
 
   /**
    * A selector component builder.
@@ -74,6 +74,6 @@ public interface SelectorComponent extends BuildableComponent<SelectorComponent,
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NonNull Builder pattern(final @NonNull String pattern);
+    @NotNull Builder pattern(final @NotNull String pattern);
   }
 }

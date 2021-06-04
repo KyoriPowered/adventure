@@ -26,8 +26,8 @@ package net.kyori.adventure.util;
 import java.util.stream.Stream;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.common.value.qual.IntRange;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * Something that can provide hue, saturation, and value color components.
@@ -46,7 +46,7 @@ public interface HSVLike extends Examinable {
    * @return a new HSVLike
    * @since 4.6.0
    */
-  static @NonNull HSVLike of(final float h, final float s, final float v) {
+  static @NotNull HSVLike of(final float h, final float s, final float v) {
     return new HSVLikeImpl(h, s, v);
   }
 
@@ -59,7 +59,7 @@ public interface HSVLike extends Examinable {
    * @return a new HSVLike
    * @since 4.6.0
    */
-  static @NonNull HSVLike fromRGB(@IntRange(from = 0x0, to = 0xff) final int red, @IntRange(from = 0x0, to = 0xff) final int green, @IntRange(from = 0x0, to = 0xff) final int blue) {
+  static @NotNull HSVLike fromRGB(@Range(from = 0x0, to = 0xff) final int red, @Range(from = 0x0, to = 0xff) final int green, @Range(from = 0x0, to = 0xff) final int blue) {
     final float r = red / 255.0f;
     final float g = green / 255.0f;
     final float b = blue / 255.0f;
@@ -120,7 +120,7 @@ public interface HSVLike extends Examinable {
   float v();
 
   @Override
-  default @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("h", this.h()),
       ExaminableProperty.of("s", this.s()),

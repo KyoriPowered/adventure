@@ -26,7 +26,7 @@ package net.kyori.adventure.util;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Something that has listeners.
@@ -43,7 +43,7 @@ public abstract class Listenable<L> {
    * @param consumer the consumer
    * @since 4.0.0
    */
-  protected final void forEachListener(final @NonNull Consumer<L> consumer) {
+  protected final void forEachListener(final @NotNull Consumer<L> consumer) {
     for (final L listener : this.listeners) {
       consumer.accept(listener);
     }
@@ -55,7 +55,7 @@ public abstract class Listenable<L> {
    * @param listener the listener
    * @since 4.0.0
    */
-  protected final void addListener0(final @NonNull L listener) {
+  protected final void addListener0(final @NotNull L listener) {
     this.listeners.add(listener);
   }
 
@@ -65,7 +65,7 @@ public abstract class Listenable<L> {
    * @param listener the listener
    * @since 4.0.0
    */
-  protected final void removeListener0(final @NonNull L listener) {
+  protected final void removeListener0(final @NotNull L listener) {
     this.listeners.remove(listener);
   }
 }

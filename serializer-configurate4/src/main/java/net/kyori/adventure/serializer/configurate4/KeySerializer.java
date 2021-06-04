@@ -27,7 +27,7 @@ import java.lang.reflect.Type;
 import java.util.function.Predicate;
 import net.kyori.adventure.key.InvalidKeyException;
 import net.kyori.adventure.key.Key;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.serialize.CoercionFailedException;
 import org.spongepowered.configurate.serialize.ScalarSerializer;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -40,7 +40,7 @@ final class KeySerializer extends ScalarSerializer<Key> {
   }
 
   @Override
-  public @NonNull Key deserialize(final @NonNull Type type, final @NonNull Object obj) throws SerializationException {
+  public @NotNull Key deserialize(final @NotNull Type type, final @NotNull Object obj) throws SerializationException {
     if (!(obj instanceof CharSequence)) {
       throw new CoercionFailedException(obj, "string");
     }
@@ -52,7 +52,7 @@ final class KeySerializer extends ScalarSerializer<Key> {
   }
 
   @Override
-  public @NonNull Object serialize(final @NonNull Key item, final @NonNull Predicate<Class<?>> typeSupported) {
+  public @NotNull Object serialize(final @NotNull Key item, final @NotNull Predicate<Class<?>> typeSupported) {
     return item.asString();
   }
 }

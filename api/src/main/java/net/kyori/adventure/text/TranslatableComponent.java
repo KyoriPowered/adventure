@@ -30,8 +30,8 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.translation.GlobalTranslator;
 import net.kyori.adventure.translation.Translatable;
 import net.kyori.adventure.translation.TranslationRegistry;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A component that can display translated text.
@@ -65,7 +65,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @return the translation key
    * @since 4.0.0
    */
-  @NonNull String key();
+  @NotNull String key();
 
   /**
    * Sets the translation key.
@@ -75,7 +75,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @since 4.8.0
    */
   @Contract(pure = true)
-  default @NonNull TranslatableComponent key(final @NonNull Translatable translatable) {
+  default @NotNull TranslatableComponent key(final @NotNull Translatable translatable) {
     return this.key(Objects.requireNonNull(translatable, "translatable").translationKey());
   }
 
@@ -87,7 +87,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NonNull TranslatableComponent key(final @NonNull String key);
+  @NotNull TranslatableComponent key(final @NotNull String key);
 
   /**
    * Gets the unmodifiable list of translation arguments.
@@ -95,7 +95,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @return the unmodifiable list of translation arguments
    * @since 4.0.0
    */
-  @NonNull List<Component> args();
+  @NotNull List<Component> args();
 
   /**
    * Sets the translation arguments for this component.
@@ -105,7 +105,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NonNull TranslatableComponent args(final @NonNull ComponentLike@NonNull... args);
+  @NotNull TranslatableComponent args(final @NotNull ComponentLike@NotNull... args);
 
   /**
    * Sets the translation arguments for this component.
@@ -115,7 +115,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NonNull TranslatableComponent args(final @NonNull List<? extends ComponentLike> args);
+  @NotNull TranslatableComponent args(final @NotNull List<? extends ComponentLike> args);
 
   /**
    * A text component builder.
@@ -131,7 +131,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @since 4.8.0
      */
     @Contract(pure = true)
-    default @NonNull Builder key(final @NonNull Translatable translatable) {
+    default @NotNull Builder key(final @NotNull Translatable translatable) {
       return this.key(Objects.requireNonNull(translatable, "translatable").translationKey());
     }
 
@@ -143,7 +143,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NonNull Builder key(final @NonNull String key);
+    @NotNull Builder key(final @NotNull String key);
 
     /**
      * Sets the translation args.
@@ -153,7 +153,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NonNull Builder args(final @NonNull ComponentBuilder<?, ?> arg);
+    @NotNull Builder args(final @NotNull ComponentBuilder<?, ?> arg);
 
     /**
      * Sets the translation args.
@@ -164,7 +164,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      */
     @Contract("_ -> this")
     @SuppressWarnings("checkstyle:GenericWhitespace")
-    @NonNull Builder args(final @NonNull ComponentBuilder<?, ?>@NonNull... args);
+    @NotNull Builder args(final @NotNull ComponentBuilder<?, ?>@NotNull... args);
 
     /**
      * Sets the translation args.
@@ -174,7 +174,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NonNull Builder args(final @NonNull Component arg);
+    @NotNull Builder args(final @NotNull Component arg);
 
     /**
      * Sets the translation args.
@@ -184,7 +184,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NonNull Builder args(final @NonNull ComponentLike@NonNull... args);
+    @NotNull Builder args(final @NotNull ComponentLike@NotNull... args);
 
     /**
      * Sets the translation args.
@@ -194,6 +194,6 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NonNull Builder args(final @NonNull List<? extends ComponentLike> args);
+    @NotNull Builder args(final @NotNull List<? extends ComponentLike> args);
   }
 }

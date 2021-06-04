@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * An end tag.
@@ -37,12 +37,12 @@ public interface EndBinaryTag extends BinaryTag {
    * @return the end tag
    * @since 4.0.0
    */
-  static @NonNull EndBinaryTag get() {
+  static @NotNull EndBinaryTag get() {
     return EndBinaryTagImpl.INSTANCE;
   }
 
   @Override
-  default @NonNull BinaryTagType<EndBinaryTag> type() {
+  default @NotNull BinaryTagType<EndBinaryTag> type() {
     return BinaryTagTypes.END;
   }
 }

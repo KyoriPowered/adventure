@@ -28,37 +28,37 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.examination.ExaminableProperty;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
 final class SelectorComponentImpl extends AbstractComponent implements SelectorComponent {
   private final String pattern;
 
-  SelectorComponentImpl(final @NonNull List<? extends ComponentLike> children, final @NonNull Style style, final @NonNull String pattern) {
+  SelectorComponentImpl(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String pattern) {
     super(children, style);
     this.pattern = pattern;
   }
 
   @Override
-  public @NonNull String pattern() {
+  public @NotNull String pattern() {
     return this.pattern;
   }
 
   @Override
-  public @NonNull SelectorComponent pattern(final @NonNull String pattern) {
+  public @NotNull SelectorComponent pattern(final @NotNull String pattern) {
     if (Objects.equals(this.pattern, pattern)) return this;
     return new SelectorComponentImpl(this.children, this.style, requireNonNull(pattern, "pattern"));
   }
 
   @Override
-  public @NonNull SelectorComponent children(final @NonNull List<? extends ComponentLike> children) {
+  public @NotNull SelectorComponent children(final @NotNull List<? extends ComponentLike> children) {
     return new SelectorComponentImpl(children, this.style, this.pattern);
   }
 
   @Override
-  public @NonNull SelectorComponent style(final @NonNull Style style) {
+  public @NotNull SelectorComponent style(final @NotNull Style style) {
     return new SelectorComponentImpl(this.children, style, this.pattern);
   }
 
@@ -79,7 +79,7 @@ final class SelectorComponentImpl extends AbstractComponent implements SelectorC
   }
 
   @Override
-  protected @NonNull Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
+  protected @NotNull Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
     return Stream.concat(
       Stream.of(
         ExaminableProperty.of("pattern", this.pattern)
@@ -89,7 +89,7 @@ final class SelectorComponentImpl extends AbstractComponent implements SelectorC
   }
 
   @Override
-  public @NonNull Builder toBuilder() {
+  public @NotNull Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
@@ -99,19 +99,19 @@ final class SelectorComponentImpl extends AbstractComponent implements SelectorC
     BuilderImpl() {
     }
 
-    BuilderImpl(final @NonNull SelectorComponent component) {
+    BuilderImpl(final @NotNull SelectorComponent component) {
       super(component);
       this.pattern = component.pattern();
     }
 
     @Override
-    public @NonNull Builder pattern(final @NonNull String pattern) {
+    public @NotNull Builder pattern(final @NotNull String pattern) {
       this.pattern = pattern;
       return this;
     }
 
     @Override
-    public @NonNull SelectorComponent build() {
+    public @NotNull SelectorComponent build() {
       if (this.pattern == null) throw new IllegalStateException("pattern must be set");
       return new SelectorComponentImpl(this.children, this.buildStyle(), this.pattern);
     }

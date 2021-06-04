@@ -23,9 +23,9 @@
  */
 package net.kyori.adventure.text;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A component that can display a player's score from a scoreboard objective,
@@ -56,7 +56,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @return the score name
    * @since 4.0.0
    */
-  @NonNull String name();
+  @NotNull String name();
 
   /**
    * Sets the score name.
@@ -66,7 +66,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NonNull ScoreComponent name(final @NonNull String name);
+  @NotNull ScoreComponent name(final @NotNull String name);
 
   /**
    * Gets the objective name.
@@ -74,7 +74,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @return the objective name
    * @since 4.0.0
    */
-  @NonNull String objective();
+  @NotNull String objective();
 
   /**
    * Sets the score objective.
@@ -84,7 +84,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NonNull ScoreComponent objective(final @NonNull String objective);
+  @NotNull ScoreComponent objective(final @NotNull String objective);
 
   /**
    * Gets the value.
@@ -106,7 +106,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
    */
   @Deprecated
   @Contract(pure = true)
-  @NonNull ScoreComponent value(final @Nullable String value);
+  @NotNull ScoreComponent value(final @Nullable String value);
 
   /**
    * A score component builder.
@@ -122,7 +122,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NonNull Builder name(final @NonNull String name);
+    @NotNull Builder name(final @NotNull String name);
 
     /**
      * Sets the score objective.
@@ -132,7 +132,7 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NonNull Builder objective(final @NonNull String objective);
+    @NotNull Builder objective(final @NotNull String objective);
 
     /**
      * Sets the value.
@@ -144,6 +144,6 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
      */
     @Deprecated
     @Contract("_ -> this")
-    @NonNull Builder value(final @Nullable String value);
+    @NotNull Builder value(final @Nullable String value);
   }
 }

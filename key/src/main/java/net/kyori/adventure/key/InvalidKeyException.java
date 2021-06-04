@@ -23,8 +23,8 @@
  */
 package net.kyori.adventure.key;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * This exception is thrown when an invalid namespace and/or value has been detected while creating a {@link Key}.
@@ -36,7 +36,7 @@ public final class InvalidKeyException extends RuntimeException {
   private final String keyNamespace;
   private final String keyValue;
 
-  InvalidKeyException(final @NonNull String keyNamespace, final @NonNull String keyValue, final @Nullable String message) {
+  InvalidKeyException(final @NotNull String keyNamespace, final @NotNull String keyValue, final @Nullable String message) {
     super(message);
     this.keyNamespace = keyNamespace;
     this.keyValue = keyValue;
@@ -48,7 +48,7 @@ public final class InvalidKeyException extends RuntimeException {
    * @return a key
    * @since 4.0.0
    */
-  public final @NonNull String keyNamespace() {
+  public final @NotNull String keyNamespace() {
     return this.keyNamespace;
   }
 
@@ -58,7 +58,7 @@ public final class InvalidKeyException extends RuntimeException {
    * @return a key
    * @since 4.0.0
    */
-  public final @NonNull String keyValue() {
+  public final @NotNull String keyValue() {
     return this.keyValue;
   }
 }

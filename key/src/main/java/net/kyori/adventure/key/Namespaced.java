@@ -23,8 +23,8 @@
  */
 package net.kyori.adventure.key;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.intellij.lang.annotations.Pattern;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Something that has a namespace.
@@ -38,5 +38,5 @@ public interface Namespaced {
    * @return the namespace
    * @since 4.4.0
    */
-  @NonNull @Pattern(KeyImpl.NAMESPACE_PATTERN) String namespace();
+  @NotNull @Pattern(KeyImpl.NAMESPACE_PATTERN) String namespace();
 }

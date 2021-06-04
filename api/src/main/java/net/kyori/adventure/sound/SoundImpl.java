@@ -27,22 +27,22 @@ import java.util.stream.Stream;
 import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 abstract class SoundImpl implements Sound {
   private final Source source;
   private final float volume;
   private final float pitch;
 
-  SoundImpl(final @NonNull Source source, final float volume, final float pitch) {
+  SoundImpl(final @NotNull Source source, final float volume, final float pitch) {
     this.source = source;
     this.volume = volume;
     this.pitch = pitch;
   }
 
   @Override
-  public @NonNull Source source() {
+  public @NotNull Source source() {
     return this.source;
   }
 
@@ -77,7 +77,7 @@ abstract class SoundImpl implements Sound {
   }
 
   @Override
-  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("name", this.name()),
       ExaminableProperty.of("source", this.source),

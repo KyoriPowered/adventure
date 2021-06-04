@@ -24,7 +24,7 @@
 package net.kyori.adventure.text;
 
 import net.kyori.adventure.util.Buildable;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A component which may be built.
@@ -40,5 +40,5 @@ public interface BuildableComponent<C extends BuildableComponent<C, B>, B extend
    * @return the builder
    */
   @Override
-  @NonNull B toBuilder();
+  @NotNull B toBuilder();
 }

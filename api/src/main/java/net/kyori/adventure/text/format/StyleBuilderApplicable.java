@@ -25,8 +25,8 @@ package net.kyori.adventure.text.format;
 
 import net.kyori.adventure.text.ComponentBuilder;
 import net.kyori.adventure.text.ComponentBuilderApplicable;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Something that can be applied to a {@link Style}.
@@ -42,10 +42,10 @@ public interface StyleBuilderApplicable extends ComponentBuilderApplicable {
    * @since 4.0.0
    */
   @Contract(mutates = "param")
-  void styleApply(final Style.@NonNull Builder style);
+  void styleApply(final Style.@NotNull Builder style);
 
   @Override
-  default void componentBuilderApply(final @NonNull ComponentBuilder<?, ?> component) {
+  default void componentBuilderApply(final @NotNull ComponentBuilder<?, ?> component) {
     component.style(this::styleApply);
   }
 }

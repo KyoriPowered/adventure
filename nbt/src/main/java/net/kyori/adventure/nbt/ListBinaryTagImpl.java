@@ -33,10 +33,10 @@ import java.util.Spliterators;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
-import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.Debug;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 @Debug.Renderer(text = "\"ListBinaryTag[type=\" + this.type.toString() + \"]\"", childrenArray = "this.tags.toArray()", hasChildren = "!this.tags.isEmpty()")
 final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag {
@@ -52,7 +52,7 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   }
 
   @Override
-  public @NonNull BinaryTagType<? extends BinaryTag> elementType() {
+  public @NotNull BinaryTagType<? extends BinaryTag> elementType() {
     return this.elementType;
   }
 
@@ -62,12 +62,12 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   }
 
   @Override
-  public @NonNull BinaryTag get(@NonNegative final int index) {
+  public @NotNull BinaryTag get(@Range(from = 0, to = Integer.MAX_VALUE) final int index) {
     return this.tags.get(index);
   }
 
   @Override
-  public @NonNull ListBinaryTag set(final int index, final @NonNull BinaryTag newTag, final @Nullable Consumer<? super BinaryTag> removed) {
+  public @NotNull ListBinaryTag set(final int index, final @NotNull BinaryTag newTag, final @Nullable Consumer<? super BinaryTag> removed) {
     return this.edit(tags -> {
       final BinaryTag oldTag = tags.set(index, newTag);
       if (removed != null) {
@@ -77,7 +77,7 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   }
 
   @Override
-  public @NonNull ListBinaryTag remove(final int index, final @Nullable Consumer<? super BinaryTag> removed) {
+  public @NotNull ListBinaryTag remove(final int index, final @Nullable Consumer<? super BinaryTag> removed) {
     return this.edit(tags -> {
       final BinaryTag oldTag = tags.remove(index);
       if (removed != null) {
@@ -87,7 +87,7 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   }
 
   @Override
-  public @NonNull ListBinaryTag add(final BinaryTag tag) {
+  public @NotNull ListBinaryTag add(final BinaryTag tag) {
     noAddEnd(tag);
     if (this.elementType != BinaryTagTypes.END) {
       mustBeSameType(tag, this.elementType);
@@ -96,7 +96,7 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   }
 
   @Override
-  public @NonNull ListBinaryTag add(final Iterable<? extends BinaryTag> tagsToAdd) {
+  public @NotNull ListBinaryTag add(final Iterable<? extends BinaryTag> tagsToAdd) {
     if (tagsToAdd instanceof Collection<?> && ((Collection<?>) tagsToAdd).isEmpty()) {
       return this;
     }
@@ -147,7 +147,7 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   }
 
   @Override
-  public @NonNull Stream<BinaryTag> stream() {
+  public @NotNull Stream<BinaryTag> stream() {
     return this.tags.stream();
   }
 
@@ -193,7 +193,7 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   }
 
   @Override
-  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("tags", this.tags),
       ExaminableProperty.of("type", this.elementType)

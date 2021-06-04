@@ -28,22 +28,22 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.examination.ExaminableProperty;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> extends AbstractComponent implements NBTComponent<C, B> {
   static final boolean INTERPRET_DEFAULT = false;
   final String nbtPath;
   final boolean interpret;
 
-  NBTComponentImpl(final @NonNull List<? extends ComponentLike> children, final @NonNull Style style, final String nbtPath, final boolean interpret) {
+  NBTComponentImpl(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final String nbtPath, final boolean interpret) {
     super(children, style);
     this.nbtPath = nbtPath;
     this.interpret = interpret;
   }
 
   @Override
-  public @NonNull String nbtPath() {
+  public @NotNull String nbtPath() {
     return this.nbtPath;
   }
 
@@ -70,7 +70,7 @@ abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTCompo
   }
 
   @Override
-  protected @NonNull Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
+  protected @NotNull Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
     return Stream.concat(
       Stream.of(
         ExaminableProperty.of("nbtPath", this.nbtPath),
@@ -87,7 +87,7 @@ abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTCompo
     BuilderImpl() {
     }
 
-    BuilderImpl(final @NonNull C component) {
+    BuilderImpl(final @NotNull C component) {
       super(component);
       this.nbtPath = component.nbtPath();
       this.interpret = component.interpret();
@@ -95,14 +95,14 @@ abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTCompo
 
     @Override
     @SuppressWarnings("unchecked")
-    public @NonNull B nbtPath(final @NonNull String nbtPath) {
+    public @NotNull B nbtPath(final @NotNull String nbtPath) {
       this.nbtPath = nbtPath;
       return (B) this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public @NonNull B interpret(final boolean interpret) {
+    public @NotNull B interpret(final boolean interpret) {
       this.interpret = interpret;
       return (B) this;
     }

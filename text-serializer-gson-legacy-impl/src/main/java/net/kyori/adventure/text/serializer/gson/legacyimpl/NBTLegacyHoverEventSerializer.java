@@ -25,7 +25,7 @@ package net.kyori.adventure.text.serializer.gson.legacyimpl;
 
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.gson.LegacyHoverEventSerializer;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A legacy {@link HoverEvent} serializer.
@@ -39,7 +39,7 @@ public interface NBTLegacyHoverEventSerializer extends LegacyHoverEventSerialize
    * @return a legacy {@link HoverEvent} serializer
    * @since 4.3.0
    */
-  static @NonNull LegacyHoverEventSerializer get() {
+  static @NotNull LegacyHoverEventSerializer get() {
     return NBTLegacyHoverEventSerializerImpl.INSTANCE;
   }
 }

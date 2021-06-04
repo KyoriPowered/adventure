@@ -25,8 +25,8 @@ package net.kyori.adventure.pointer;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.string.StringExaminer;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 final class PointerImpl<T> implements Pointer<T> {
   private final Class<T> type;
@@ -38,12 +38,12 @@ final class PointerImpl<T> implements Pointer<T> {
   }
 
   @Override
-  public @NonNull Class<T> type() {
+  public @NotNull Class<T> type() {
     return this.type;
   }
 
   @Override
-  public @NonNull Key key() {
+  public @NotNull Key key() {
     return this.key;
   }
 

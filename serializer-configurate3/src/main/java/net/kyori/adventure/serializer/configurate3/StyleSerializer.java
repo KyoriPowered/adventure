@@ -34,8 +34,8 @@ import net.kyori.adventure.text.format.TextDecoration;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("UnstableApiUsage") // TypeToken
 final class StyleSerializer implements TypeSerializer<Style> {
@@ -63,7 +63,7 @@ final class StyleSerializer implements TypeSerializer<Style> {
   }
 
   @Override
-  public @NonNull Style deserialize(final @NonNull TypeToken<?> type, final @NonNull ConfigurationNode value) throws ObjectMappingException {
+  public @NotNull Style deserialize(final @NotNull TypeToken<?> type, final @NotNull ConfigurationNode value) throws ObjectMappingException {
     if (value.isVirtual()) {
       return Style.empty();
     }
@@ -129,7 +129,7 @@ final class StyleSerializer implements TypeSerializer<Style> {
   }
 
   @Override
-  public void serialize(final @NonNull TypeToken<?> type, @Nullable Style obj, final @NonNull ConfigurationNode value) throws ObjectMappingException {
+  public void serialize(final @NotNull TypeToken<?> type, @Nullable Style obj, final @NotNull ConfigurationNode value) throws ObjectMappingException {
     if (obj == null) {
       obj = Style.empty();
     }
@@ -172,7 +172,7 @@ final class StyleSerializer implements TypeSerializer<Style> {
     }
   }
 
-  private static <T> @NonNull T nonNull(final @Nullable T value, final @NonNull String type) throws ObjectMappingException {
+  private static <T> @NotNull T nonNull(final @Nullable T value, final @NotNull String type) throws ObjectMappingException {
     if (value == null) {
       throw new ObjectMappingException(type + " was null in an unexpected location");
     }

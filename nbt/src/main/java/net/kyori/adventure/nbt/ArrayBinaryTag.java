@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * An array binary tag.
@@ -32,5 +32,5 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public interface ArrayBinaryTag extends BinaryTag {
   @Override
-  @NonNull BinaryTagType<? extends ArrayBinaryTag> type();
+  @NotNull BinaryTagType<? extends ArrayBinaryTag> type();
 }

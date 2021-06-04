@@ -28,7 +28,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -48,7 +48,7 @@ class HSVLikeTest {
     NamedTextColor.NAMES.values().forEach(HSVLikeTest::assertRgbToHsvConversionRoughlyMatchesJavaAwtColor);
   }
 
-  private static void assertRgbToHsvConversionRoughlyMatchesJavaAwtColor(final @NonNull RGBLike rgb) {
+  private static void assertRgbToHsvConversionRoughlyMatchesJavaAwtColor(final @NotNull RGBLike rgb) {
     final HSVLike hsv = rgb.asHSV();
     assertArrayEquals(
       roundFloats(Color.RGBtoHSB(rgb.red(), rgb.green(), rgb.blue(), null)),
@@ -57,7 +57,7 @@ class HSVLikeTest {
     );
   }
 
-  private static float[] roundFloats(final float @NonNull [] floats) {
+  private static float[] roundFloats(final float @NotNull [] floats) {
     final float[] result = new float[floats.length];
     for (int i = 0; i < floats.length; i++) {
       result[i] = BigDecimal.valueOf(floats[i]).setScale(7, RoundingMode.UP).floatValue();

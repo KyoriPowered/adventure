@@ -23,8 +23,8 @@
  */
 package net.kyori.adventure.text;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A {@link Component} that displays the client's current keybind for the supplied action.
@@ -45,7 +45,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    * @return the keybind
    * @since 4.0.0
    */
-  @NonNull String keybind();
+  @NotNull String keybind();
 
   /**
    * Sets the keybind.
@@ -55,7 +55,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NonNull KeybindComponent keybind(final @NonNull String keybind);
+  @NotNull KeybindComponent keybind(final @NotNull String keybind);
 
   /**
    * A keybind component builder.
@@ -71,6 +71,6 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NonNull Builder keybind(final @NonNull String keybind);
+    @NotNull Builder keybind(final @NotNull String keybind);
   }
 }

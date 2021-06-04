@@ -31,7 +31,7 @@ import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -40,44 +40,44 @@ final class BookImpl implements Book {
   private final Component author;
   private final List<Component> pages;
 
-  BookImpl(final @NonNull Component title, final @NonNull Component author, final @NonNull List<Component> pages) {
+  BookImpl(final @NotNull Component title, final @NotNull Component author, final @NotNull List<Component> pages) {
     this.title = requireNonNull(title, "title");
     this.author = requireNonNull(author, "author");
     this.pages = Collections.unmodifiableList(requireNonNull(pages, "pages"));
   }
 
   @Override
-  public @NonNull Component title() {
+  public @NotNull Component title() {
     return this.title;
   }
 
   @Override
-  public @NonNull Book title(final @NonNull Component title) {
+  public @NotNull Book title(final @NotNull Component title) {
     return new BookImpl(requireNonNull(title, "title"), this.author, this.pages);
   }
 
   @Override
-  public @NonNull Component author() {
+  public @NotNull Component author() {
     return this.author;
   }
 
   @Override
-  public @NonNull Book author(final @NonNull Component author) {
+  public @NotNull Book author(final @NotNull Component author) {
     return new BookImpl(this.title, requireNonNull(author, "author"), this.pages);
   }
 
   @Override
-  public @NonNull List<Component> pages() {
+  public @NotNull List<Component> pages() {
     return this.pages;
   }
 
   @Override
-  public @NonNull Book pages(final @NonNull List<Component> pages) {
+  public @NotNull Book pages(final @NotNull List<Component> pages) {
     return new BookImpl(this.title, this.author, new ArrayList<>(requireNonNull(pages, "pages")));
   }
 
   @Override
-  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("title", this.title),
       ExaminableProperty.of("author", this.author),
@@ -114,37 +114,37 @@ final class BookImpl implements Book {
     private final List<Component> pages = new ArrayList<>();
 
     @Override
-    public @NonNull Builder title(final @NonNull Component title) {
+    public @NotNull Builder title(final @NotNull Component title) {
       this.title = requireNonNull(title, "title");
       return this;
     }
 
     @Override
-    public @NonNull Builder author(final @NonNull Component author) {
+    public @NotNull Builder author(final @NotNull Component author) {
       this.author = requireNonNull(author, "author");
       return this;
     }
 
     @Override
-    public @NonNull Builder addPage(final @NonNull Component page) {
+    public @NotNull Builder addPage(final @NotNull Component page) {
       this.pages.add(requireNonNull(page, "page"));
       return this;
     }
 
     @Override
-    public @NonNull Builder pages(final @NonNull Collection<Component> pages) {
+    public @NotNull Builder pages(final @NotNull Collection<Component> pages) {
       this.pages.addAll(requireNonNull(pages, "pages"));
       return this;
     }
 
     @Override
-    public @NonNull Builder pages(final @NonNull Component@NonNull... pages) {
+    public @NotNull Builder pages(final @NotNull Component@NotNull... pages) {
       Collections.addAll(this.pages, pages);
       return this;
     }
 
     @Override
-    public @NonNull Book build() {
+    public @NotNull Book build() {
       return new BookImpl(this.title, this.author, new ArrayList<>(this.pages));
     }
   }

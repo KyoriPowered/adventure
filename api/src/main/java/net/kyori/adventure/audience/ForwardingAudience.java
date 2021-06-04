@@ -35,9 +35,11 @@ import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.PolyNull;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 /**
  * A receiver that wraps one or more receivers.
@@ -57,55 +59,56 @@ public interface ForwardingAudience extends Audience {
    * @since 4.0.0
    */
   @ApiStatus.OverrideOnly
-  @NonNull Iterable<? extends Audience> audiences();
+  @NotNull Iterable<? extends Audience> audiences();
 
   @Override
-  default <T> @NonNull Optional<T> get(final @NonNull Pointer<T> pointer) {
+  default <T> @NotNull Optional<T> get(final @NotNull Pointer<T> pointer) {
     return Optional.empty(); // unsupported
   }
 
+  @Contract("_, null -> null; _, !null -> !null")
   @Override
-  default <T> @PolyNull T getOrDefault(final @NonNull Pointer<T> pointer, final @PolyNull T defaultValue) {
+  default <T> @Nullable T getOrDefault(final @NotNull Pointer<T> pointer, final @Nullable T defaultValue) {
     return defaultValue; // unsupported
   }
 
   @Override
-  default <T> @PolyNull T getOrDefaultFrom(final @NonNull Pointer<T> pointer, final @NonNull Supplier<? extends T> defaultValue) {
+  default <T> @UnknownNullability T getOrDefaultFrom(final @NotNull Pointer<T> pointer, final @NotNull Supplier<? extends T> defaultValue) {
     return defaultValue.get(); // unsupported
   }
 
   @Override
-  default void sendMessage(final @NonNull Identified source, final @NonNull Component message, final @NonNull MessageType type) {
+  default void sendMessage(final @NotNull Identified source, final @NotNull Component message, final @NotNull MessageType type) {
     for (final Audience audience : this.audiences()) audience.sendMessage(source, message, type);
   }
 
   @Override
-  default void sendMessage(final @NonNull Identity source, final @NonNull Component message, final @NonNull MessageType type) {
+  default void sendMessage(final @NotNull Identity source, final @NotNull Component message, final @NotNull MessageType type) {
     for (final Audience audience : this.audiences()) audience.sendMessage(source, message, type);
   }
 
   @Override
-  default void sendActionBar(final @NonNull Component message) {
+  default void sendActionBar(final @NotNull Component message) {
     for (final Audience audience : this.audiences()) audience.sendActionBar(message);
   }
 
   @Override
-  default void sendPlayerListHeader(final @NonNull Component header) {
+  default void sendPlayerListHeader(final @NotNull Component header) {
     for (final Audience audience : this.audiences()) audience.sendPlayerListHeader(header);
   }
 
   @Override
-  default void sendPlayerListFooter(final @NonNull Component footer) {
+  default void sendPlayerListFooter(final @NotNull Component footer) {
     for (final Audience audience : this.audiences()) audience.sendPlayerListFooter(footer);
   }
 
   @Override
-  default void sendPlayerListHeaderAndFooter(final @NonNull Component header, final @NonNull Component footer) {
+  default void sendPlayerListHeaderAndFooter(final @NotNull Component header, final @NotNull Component footer) {
     for (final Audience audience : this.audiences()) audience.sendPlayerListHeaderAndFooter(header, footer);
   }
 
   @Override
-  default void showTitle(final @NonNull Title title) {
+  default void showTitle(final @NotNull Title title) {
     for (final Audience audience : this.audiences()) audience.showTitle(title);
   }
 
@@ -120,32 +123,32 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
-  default void showBossBar(final @NonNull BossBar bar) {
+  default void showBossBar(final @NotNull BossBar bar) {
     for (final Audience audience : this.audiences()) audience.showBossBar(bar);
   }
 
   @Override
-  default void hideBossBar(final @NonNull BossBar bar) {
+  default void hideBossBar(final @NotNull BossBar bar) {
     for (final Audience audience : this.audiences()) audience.hideBossBar(bar);
   }
 
   @Override
-  default void playSound(final @NonNull Sound sound) {
+  default void playSound(final @NotNull Sound sound) {
     for (final Audience audience : this.audiences()) audience.playSound(sound);
   }
 
   @Override
-  default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
+  default void playSound(final @NotNull Sound sound, final double x, final double y, final double z) {
     for (final Audience audience : this.audiences()) audience.playSound(sound, x, y, z);
   }
 
   @Override
-  default void stopSound(final @NonNull SoundStop stop) {
+  default void stopSound(final @NotNull SoundStop stop) {
     for (final Audience audience : this.audiences()) audience.stopSound(stop);
   }
 
   @Override
-  default void openBook(final @NonNull Book book) {
+  default void openBook(final @NotNull Book book) {
     for (final Audience audience : this.audiences()) audience.openBook(book);
   }
 
@@ -162,7 +165,7 @@ public interface ForwardingAudience extends Audience {
      * @since 4.0.0
      */
     @ApiStatus.OverrideOnly
-    @NonNull Audience audience();
+    @NotNull Audience audience();
 
     /**
      * {@inheritDoc}
@@ -172,57 +175,58 @@ public interface ForwardingAudience extends Audience {
      */
     @Deprecated(/* forRemoval = false */)
     @Override
-    default @NonNull Iterable<? extends Audience> audiences() {
+    default @NotNull Iterable<? extends Audience> audiences() {
       return Collections.singleton(this.audience());
     }
 
     @Override
-    default <T> @NonNull Optional<T> get(final @NonNull Pointer<T> pointer) {
+    default <T> @NotNull Optional<T> get(final @NotNull Pointer<T> pointer) {
       return this.audience().get(pointer);
     }
 
+    @Contract("_, null -> null; _, !null -> !null")
     @Override
-    default <T> @PolyNull T getOrDefault(final @NonNull Pointer<T> pointer, final @PolyNull T defaultValue) {
+    default <T> @Nullable T getOrDefault(final @NotNull Pointer<T> pointer, final @Nullable T defaultValue) {
       return this.audience().getOrDefault(pointer, defaultValue);
     }
 
     @Override
-    default <T> @PolyNull T getOrDefaultFrom(final @NonNull Pointer<T> pointer, final @NonNull Supplier<? extends T> defaultValue) {
+    default <T> @UnknownNullability T getOrDefaultFrom(final @NotNull Pointer<T> pointer, final @NotNull Supplier<? extends T> defaultValue) {
       return this.audience().getOrDefaultFrom(pointer, defaultValue);
     }
 
     @Override
-    default void sendMessage(final @NonNull Identified source, final @NonNull Component message, final @NonNull MessageType type) {
+    default void sendMessage(final @NotNull Identified source, final @NotNull Component message, final @NotNull MessageType type) {
       this.audience().sendMessage(source, message, type);
     }
 
     @Override
-    default void sendMessage(final @NonNull Identity source, final @NonNull Component message, final @NonNull MessageType type) {
+    default void sendMessage(final @NotNull Identity source, final @NotNull Component message, final @NotNull MessageType type) {
       this.audience().sendMessage(source, message, type);
     }
 
     @Override
-    default void sendActionBar(final @NonNull Component message) {
+    default void sendActionBar(final @NotNull Component message) {
       this.audience().sendActionBar(message);
     }
 
     @Override
-    default void sendPlayerListHeader(final @NonNull Component header) {
+    default void sendPlayerListHeader(final @NotNull Component header) {
       this.audience().sendPlayerListHeader(header);
     }
 
     @Override
-    default void sendPlayerListFooter(final @NonNull Component footer) {
+    default void sendPlayerListFooter(final @NotNull Component footer) {
       this.audience().sendPlayerListFooter(footer);
     }
 
     @Override
-    default void sendPlayerListHeaderAndFooter(final @NonNull Component header, final @NonNull Component footer) {
+    default void sendPlayerListHeaderAndFooter(final @NotNull Component header, final @NotNull Component footer) {
       this.audience().sendPlayerListHeaderAndFooter(header, footer);
     }
 
     @Override
-    default void showTitle(final @NonNull Title title) {
+    default void showTitle(final @NotNull Title title) {
       this.audience().showTitle(title);
     }
 
@@ -237,32 +241,32 @@ public interface ForwardingAudience extends Audience {
     }
 
     @Override
-    default void showBossBar(final @NonNull BossBar bar) {
+    default void showBossBar(final @NotNull BossBar bar) {
       this.audience().showBossBar(bar);
     }
 
     @Override
-    default void hideBossBar(final @NonNull BossBar bar) {
+    default void hideBossBar(final @NotNull BossBar bar) {
       this.audience().hideBossBar(bar);
     }
 
     @Override
-    default void playSound(final @NonNull Sound sound) {
+    default void playSound(final @NotNull Sound sound) {
       this.audience().playSound(sound);
     }
 
     @Override
-    default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
+    default void playSound(final @NotNull Sound sound, final double x, final double y, final double z) {
       this.audience().playSound(sound, x, y, z);
     }
 
     @Override
-    default void stopSound(final @NonNull SoundStop stop) {
+    default void stopSound(final @NotNull SoundStop stop) {
       this.audience().stopSound(stop);
     }
 
     @Override
-    default void openBook(final @NonNull Book book) {
+    default void openBook(final @NotNull Book book) {
       this.audience().openBook(book);
     }
   }

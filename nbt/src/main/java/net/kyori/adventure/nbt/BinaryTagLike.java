@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Something that can be represented as a binary tag.
@@ -37,5 +37,5 @@ public interface BinaryTagLike {
    * @return a binary tag
    * @since 4.4.0
    */
-  @NonNull BinaryTag asBinaryTag();
+  @NotNull BinaryTag asBinaryTag();
 }

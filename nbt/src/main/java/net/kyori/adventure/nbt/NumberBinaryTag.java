@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A numeric binary tag.
@@ -32,7 +32,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public interface NumberBinaryTag extends BinaryTag {
   @Override
-  @NonNull BinaryTagType<? extends NumberBinaryTag> type();
+  @NotNull BinaryTagType<? extends NumberBinaryTag> type();
 
   /**
    * Gets the value as a {@code byte}.

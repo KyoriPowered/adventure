@@ -27,9 +27,9 @@ import java.time.Duration;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Ticks;
 import net.kyori.examination.Examinable;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents an in-game title, which can be displayed across the centre of the screen.
@@ -54,7 +54,7 @@ public interface Title extends Examinable {
    * @return the title
    * @since 4.0.0
    */
-  static @NonNull Title title(final @NonNull Component title, final @NonNull Component subtitle) {
+  static @NotNull Title title(final @NotNull Component title, final @NotNull Component subtitle) {
     return title(title, subtitle, DEFAULT_TIMES);
   }
 
@@ -67,7 +67,7 @@ public interface Title extends Examinable {
    * @return the title
    * @since 4.0.0
    */
-  static @NonNull Title title(final @NonNull Component title, final @NonNull Component subtitle, final @Nullable Times times) {
+  static @NotNull Title title(final @NotNull Component title, final @NotNull Component subtitle, final @Nullable Times times) {
     return new TitleImpl(title, subtitle, times);
   }
 
@@ -77,7 +77,7 @@ public interface Title extends Examinable {
    * @return the title
    * @since 4.0.0
    */
-  @NonNull Component title();
+  @NotNull Component title();
 
   /**
    * Gets the subtitle.
@@ -85,7 +85,7 @@ public interface Title extends Examinable {
    * @return the subtitle
    * @since 4.0.0
    */
-  @NonNull Component subtitle();
+  @NotNull Component subtitle();
 
   /**
    * Gets the times.
@@ -110,7 +110,7 @@ public interface Title extends Examinable {
      * @return times
      * @since 4.0.0
      */
-    static @NonNull Times of(final @NonNull Duration fadeIn, final @NonNull Duration stay, final @NonNull Duration fadeOut) {
+    static @NotNull Times of(final @NotNull Duration fadeIn, final @NotNull Duration stay, final @NotNull Duration fadeOut) {
       return new TitleImpl.TimesImpl(fadeIn, stay, fadeOut);
     }
 
@@ -120,7 +120,7 @@ public interface Title extends Examinable {
      * @return the time the title will fade-in
      * @since 4.0.0
      */
-    @NonNull Duration fadeIn();
+    @NotNull Duration fadeIn();
 
     /**
      * Gets the time the title will stay.
@@ -128,7 +128,7 @@ public interface Title extends Examinable {
      * @return the time the title will stay
      * @since 4.0.0
      */
-    @NonNull Duration stay();
+    @NotNull Duration stay();
 
     /**
      * Gets the time the title will fade-out.
@@ -136,6 +136,6 @@ public interface Title extends Examinable {
      * @return the time the title will fade-out
      * @since 4.0.0
      */
-    @NonNull Duration fadeOut();
+    @NotNull Duration fadeOut();
   }
 }

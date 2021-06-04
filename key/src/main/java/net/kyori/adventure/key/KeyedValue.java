@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.key;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -43,7 +43,7 @@ public interface KeyedValue<T> extends Keyed {
    * @return the keyed
    * @since 4.0.0
    */
-  static <T> @NonNull KeyedValue<T> of(final @NonNull Key key, final @NonNull T value) {
+  static <T> @NotNull KeyedValue<T> of(final @NotNull Key key, final @NotNull T value) {
     return new KeyedValueImpl<>(key, requireNonNull(value, "value"));
   }
 
@@ -53,5 +53,5 @@ public interface KeyedValue<T> extends Keyed {
    * @return the value
    * @since 4.0.0
    */
-  @NonNull T value();
+  @NotNull T value();
 }

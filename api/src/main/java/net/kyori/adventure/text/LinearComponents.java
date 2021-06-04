@@ -25,7 +25,7 @@ package net.kyori.adventure.text;
 
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A utility class that allows {@link Component components} to be created where {@link Style styles} can be specified inline.
@@ -51,7 +51,7 @@ public final class LinearComponents {
    * @return a component
    * @since 4.0.0
    */
-  public static @NonNull Component linear(final @NonNull ComponentBuilderApplicable@NonNull... applicables) {
+  public static @NotNull Component linear(final @NotNull ComponentBuilderApplicable@NotNull... applicables) {
     final int length = applicables.length;
     if (length == 0) return Component.empty();
     if (length == 1) {

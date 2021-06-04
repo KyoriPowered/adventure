@@ -29,8 +29,8 @@ import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 final class TextColorSerializer extends TypeAdapter<TextColor> {
   static final TypeAdapter<TextColor> INSTANCE = new TextColorSerializer(false).nullSafe();
@@ -61,7 +61,7 @@ final class TextColorSerializer extends TypeAdapter<TextColor> {
     return this.downsampleColor ? NamedTextColor.nearestTo(color) : color;
   }
 
-  static @Nullable TextColor fromString(final @NonNull String value) {
+  static @Nullable TextColor fromString(final @NotNull String value) {
     if (value.startsWith("#")) {
       return TextColor.fromHexString(value);
     } else {

@@ -45,8 +45,8 @@ import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.translation.Translator;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -66,11 +66,11 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
    * @return the renderer
    * @since 4.0.0
    */
-  public static @NonNull TranslatableComponentRenderer<Locale> usingTranslationSource(final @NonNull Translator source) {
+  public static @NotNull TranslatableComponentRenderer<Locale> usingTranslationSource(final @NotNull Translator source) {
     requireNonNull(source, "source");
     return new TranslatableComponentRenderer<Locale>() {
       @Override
-      protected @Nullable MessageFormat translate(final @NonNull String key, final @NonNull Locale context) {
+      protected @Nullable MessageFormat translate(final @NotNull String key, final @NotNull Locale context) {
         return source.translate(key, context);
       }
     };
@@ -83,24 +83,24 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
    * @param context a context
    * @return a message format or {@code null} to skip translation
    */
-  protected abstract @Nullable MessageFormat translate(final @NonNull String key, final @NonNull C context);
+  protected abstract @Nullable MessageFormat translate(final @NotNull String key, final @NotNull C context);
 
   @Override
-  protected @NonNull Component renderBlockNbt(final @NonNull BlockNBTComponent component, final @NonNull C context) {
+  protected @NotNull Component renderBlockNbt(final @NotNull BlockNBTComponent component, final @NotNull C context) {
     final BlockNBTComponent.Builder builder = nbt(Component.blockNBT(), component)
       .pos(component.pos());
     return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
   @Override
-  protected @NonNull Component renderEntityNbt(final @NonNull EntityNBTComponent component, final @NonNull C context) {
+  protected @NotNull Component renderEntityNbt(final @NotNull EntityNBTComponent component, final @NotNull C context) {
     final EntityNBTComponent.Builder builder = nbt(Component.entityNBT(), component)
       .selector(component.selector());
     return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
   @Override
-  protected @NonNull Component renderStorageNbt(final @NonNull StorageNBTComponent component, final @NonNull C context) {
+  protected @NotNull Component renderStorageNbt(final @NotNull StorageNBTComponent component, final @NotNull C context) {
     final StorageNBTComponent.Builder builder = nbt(Component.storageNBT(), component)
       .storage(component.storage());
     return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
@@ -113,14 +113,14 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   }
 
   @Override
-  protected @NonNull Component renderKeybind(final @NonNull KeybindComponent component, final @NonNull C context) {
+  protected @NotNull Component renderKeybind(final @NotNull KeybindComponent component, final @NotNull C context) {
     final KeybindComponent.Builder builder = Component.keybind().keybind(component.keybind());
     return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
   @Override
   @SuppressWarnings("deprecation")
-  protected @NonNull Component renderScore(final @NonNull ScoreComponent component, final @NonNull C context) {
+  protected @NotNull Component renderScore(final @NotNull ScoreComponent component, final @NotNull C context) {
     final ScoreComponent.Builder builder = Component.score()
       .name(component.name())
       .objective(component.objective())
@@ -129,19 +129,19 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   }
 
   @Override
-  protected @NonNull Component renderSelector(final @NonNull SelectorComponent component, final @NonNull C context) {
+  protected @NotNull Component renderSelector(final @NotNull SelectorComponent component, final @NotNull C context) {
     final SelectorComponent.Builder builder = Component.selector().pattern(component.pattern());
     return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
   @Override
-  protected @NonNull Component renderText(final @NonNull TextComponent component, final @NonNull C context) {
+  protected @NotNull Component renderText(final @NotNull TextComponent component, final @NotNull C context) {
     final TextComponent.Builder builder = Component.text().content(component.content());
     return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
   @Override
-  protected @NonNull Component renderTranslatable(final @NonNull TranslatableComponent component, final @NonNull C context) {
+  protected @NotNull Component renderTranslatable(final @NotNull TranslatableComponent component, final @NotNull C context) {
     final @Nullable MessageFormat format = this.translate(component.key(), context);
     if (format == null) {
       // we don't have a translation for this component, but the arguments or children

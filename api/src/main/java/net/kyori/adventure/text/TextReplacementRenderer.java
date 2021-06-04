@@ -31,8 +31,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.renderer.ComponentRenderer;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A renderer performing a replacement on every {@link TextComponent} element of a component tree.
@@ -44,7 +44,7 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
   }
 
   @Override
-  public @NonNull Component render(final @NonNull Component component, final @NonNull State state) {
+  public @NotNull Component render(final @NotNull Component component, final @NotNull State state) {
     if (!state.running) return component;
     final boolean prevFirstMatch = state.firstMatch;
     state.firstMatch = true;
@@ -194,7 +194,7 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
     int replaceCount = 0;
     boolean firstMatch = true;
 
-    State(final @NonNull Pattern pattern, final @NonNull BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement, final TextReplacementConfig.@NonNull Condition continuer) {
+    State(final @NotNull Pattern pattern, final @NotNull BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement, final TextReplacementConfig.@NotNull Condition continuer) {
       this.pattern = pattern;
       this.replacement = replacement;
       this.continuer = continuer;

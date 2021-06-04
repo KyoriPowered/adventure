@@ -36,8 +36,8 @@ import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializerCollection;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -48,7 +48,7 @@ final class ConfigurateComponentSerializerImpl implements ConfigurateComponentSe
   private final boolean serializeStringComponents;
   static final ConfigurateComponentSerializer INSTANCE = new Builder().build();
 
-  private ConfigurateComponentSerializerImpl(final @NonNull Builder builder) {
+  private ConfigurateComponentSerializerImpl(final @NotNull Builder builder) {
     this.stringSerializer = builder.stringSerializer;
     this.serializeStringComponents = builder.outputStringComponents;
     this.ownNodeOptions = ConfigurationOptions.defaults()
@@ -57,7 +57,7 @@ final class ConfigurateComponentSerializerImpl implements ConfigurateComponentSe
   }
 
   @Override
-  public @NonNull Component deserialize(final @NonNull ConfigurationNode input) {
+  public @NotNull Component deserialize(final @NotNull ConfigurationNode input) {
     try {
       final @Nullable Component deserialized = input.getValue(ComponentTypeSerializer.TYPE);
       if (deserialized != null) {
@@ -70,7 +70,7 @@ final class ConfigurateComponentSerializerImpl implements ConfigurateComponentSe
   }
 
   @Override
-  public @NonNull ConfigurationNode serialize(final @NonNull Component component) {
+  public @NotNull ConfigurationNode serialize(final @NotNull Component component) {
     final ConfigurationNode base = ConfigurationNode.root(this.ownNodeOptions);
     try {
       base.setValue(ComponentTypeSerializer.TYPE, component);
@@ -82,7 +82,7 @@ final class ConfigurateComponentSerializerImpl implements ConfigurateComponentSe
 
   @Override
   @SuppressWarnings("serial")
-  public @NonNull TypeSerializerCollection addSerializersTo(final @NonNull TypeSerializerCollection serializers) {
+  public @NotNull TypeSerializerCollection addSerializersTo(final @NotNull TypeSerializerCollection serializers) {
     return serializers
       .register(BookTypeSerializer.TYPE, BookTypeSerializer.INSTANCE)
       .register(TitleSerializer.TYPE, TitleSerializer.INSTANCE)
@@ -112,19 +112,19 @@ final class ConfigurateComponentSerializerImpl implements ConfigurateComponentSe
     }
 
     @Override
-    public ConfigurateComponentSerializer.@NonNull Builder scalarSerializer(final @NonNull ComponentSerializer<Component, ?, String> stringSerializer) {
+    public ConfigurateComponentSerializer.@NotNull Builder scalarSerializer(final @NotNull ComponentSerializer<Component, ?, String> stringSerializer) {
       this.stringSerializer = requireNonNull(stringSerializer, "stringSerializer");
       return this;
     }
 
     @Override
-    public ConfigurateComponentSerializer.@NonNull Builder outputStringComponents(final boolean stringComponents) {
+    public ConfigurateComponentSerializer.@NotNull Builder outputStringComponents(final boolean stringComponents) {
       this.outputStringComponents = stringComponents;
       return this;
     }
 
     @Override
-    public @NonNull ConfigurateComponentSerializer build() {
+    public @NotNull ConfigurateComponentSerializer build() {
       return new ConfigurateComponentSerializerImpl(this);
     }
   }

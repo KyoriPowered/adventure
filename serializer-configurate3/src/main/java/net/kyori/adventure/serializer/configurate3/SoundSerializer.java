@@ -29,8 +29,8 @@ import net.kyori.adventure.sound.Sound;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("UnstableApiUsage") // TypeToken
 final class SoundSerializer implements TypeSerializer<Sound> {
@@ -47,7 +47,7 @@ final class SoundSerializer implements TypeSerializer<Sound> {
   }
 
   @Override
-  public @Nullable Sound deserialize(final @NonNull TypeToken<?> type, final @NonNull ConfigurationNode value) throws ObjectMappingException {
+  public @Nullable Sound deserialize(final @NotNull TypeToken<?> type, final @NotNull ConfigurationNode value) throws ObjectMappingException {
     if (value.isEmpty()) {
       return null;
     }
@@ -65,7 +65,7 @@ final class SoundSerializer implements TypeSerializer<Sound> {
   }
 
   @Override
-  public void serialize(final @NonNull TypeToken<?> type, final @Nullable Sound obj, final @NonNull ConfigurationNode value) throws ObjectMappingException {
+  public void serialize(final @NotNull TypeToken<?> type, final @Nullable Sound obj, final @NotNull ConfigurationNode value) throws ObjectMappingException {
     if (obj == null) {
       value.setValue(null);
       return;

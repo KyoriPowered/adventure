@@ -27,13 +27,13 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.StyleImpl.BuilderImpl;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 interface Merger {
   void mergeColor(final BuilderImpl target, final @Nullable TextColor color);
 
-  void mergeDecoration(final BuilderImpl target, final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state);
+  void mergeDecoration(final BuilderImpl target, final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
 
   void mergeClickEvent(final BuilderImpl target, final @Nullable ClickEvent event);
 

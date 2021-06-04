@@ -24,7 +24,7 @@
 package net.kyori.adventure.nbt;
 
 import net.kyori.examination.Examinable;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A binary tag.
@@ -38,10 +38,10 @@ public interface BinaryTag extends BinaryTagLike, Examinable {
    * @return the tag type
    * @since 4.0.0
    */
-  @NonNull BinaryTagType<? extends BinaryTag> type();
+  @NotNull BinaryTagType<? extends BinaryTag> type();
 
   @Override
-  default @NonNull BinaryTag asBinaryTag() {
+  default @NotNull BinaryTag asBinaryTag() {
     return this;
   }
 }

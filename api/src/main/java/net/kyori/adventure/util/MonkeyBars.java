@@ -29,7 +29,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * {@link Collection} related utilities.
@@ -51,7 +51,7 @@ public final class MonkeyBars {
    */
   @SafeVarargs
   @SuppressWarnings("varargs")
-  public static <E extends Enum<E>> @NonNull Set<E> enumSet(final Class<E> type, final E@NonNull... constants) {
+  public static <E extends Enum<E>> @NotNull Set<E> enumSet(final Class<E> type, final E@NotNull... constants) {
     final Set<E> set = EnumSet.noneOf(type);
     Collections.addAll(set, constants);
     return Collections.unmodifiableSet(set);
@@ -68,7 +68,7 @@ public final class MonkeyBars {
    * @return a list
    * @since 4.8.0
    */
-  public static <T> @NonNull List<T> addOne(final @NonNull List<T> oldList, final T newElement) {
+  public static <T> @NotNull List<T> addOne(final @NotNull List<T> oldList, final T newElement) {
     if (oldList.isEmpty()) return Collections.singletonList(newElement);
     final List<T> newList = new ArrayList<>(oldList.size() + 1);
     newList.addAll(oldList);

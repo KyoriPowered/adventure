@@ -30,8 +30,8 @@ import net.kyori.adventure.text.Component;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("UnstableApiUsage") // TypeToken
 final class BookTypeSerializer implements TypeSerializer<Book> {
@@ -45,7 +45,7 @@ final class BookTypeSerializer implements TypeSerializer<Book> {
   }
 
   @Override
-  public Book deserialize(final @NonNull TypeToken<?> type, final @NonNull ConfigurationNode value) throws ObjectMappingException {
+  public Book deserialize(final @NotNull TypeToken<?> type, final @NotNull ConfigurationNode value) throws ObjectMappingException {
     final Component title = value.getNode(TITLE).getValue(ComponentTypeSerializer.TYPE);
     final Component author = value.getNode(AUTHOR).getValue(ComponentTypeSerializer.TYPE);
     final List<Component> pages = value.getNode(PAGES).getValue(ComponentTypeSerializer.LIST_TYPE);
@@ -56,7 +56,7 @@ final class BookTypeSerializer implements TypeSerializer<Book> {
   }
 
   @Override
-  public void serialize(final @NonNull TypeToken<?> type, final @Nullable Book obj, final @NonNull ConfigurationNode value) throws ObjectMappingException {
+  public void serialize(final @NotNull TypeToken<?> type, final @Nullable Book obj, final @NotNull ConfigurationNode value) throws ObjectMappingException {
     if (obj == null) {
       value.setValue(null);
       return;

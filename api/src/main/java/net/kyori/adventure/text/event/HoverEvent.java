@@ -39,9 +39,9 @@ import net.kyori.adventure.util.Index;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
-import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import static java.util.Objects.requireNonNull;
 
@@ -62,7 +62,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @return a hover event
    * @since 4.2.0
    */
-  public static @NonNull HoverEvent<Component> showText(final @NonNull ComponentLike text) {
+  public static @NotNull HoverEvent<Component> showText(final @NotNull ComponentLike text) {
     return showText(text.asComponent());
   }
 
@@ -73,7 +73,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @return a hover event
    * @since 4.0.0
    */
-  public static @NonNull HoverEvent<Component> showText(final @NonNull Component text) {
+  public static @NotNull HoverEvent<Component> showText(final @NotNull Component text) {
     return new HoverEvent<>(Action.SHOW_TEXT, text);
   }
 
@@ -85,7 +85,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @return a hover event
    * @since 4.0.0
    */
-  public static @NonNull HoverEvent<ShowItem> showItem(final @NonNull Key item, final @NonNegative int count) {
+  public static @NotNull HoverEvent<ShowItem> showItem(final @NotNull Key item, final @Range(from = 0, to = Integer.MAX_VALUE) int count) {
     return showItem(item, count, null);
   }
 
@@ -97,7 +97,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @return a hover event
    * @since 4.6.0
    */
-  public static @NonNull HoverEvent<ShowItem> showItem(final @NonNull Keyed item, final @NonNegative int count) {
+  public static @NotNull HoverEvent<ShowItem> showItem(final @NotNull Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count) {
     return showItem(item, count, null);
   }
 
@@ -110,7 +110,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @return a hover event
    * @since 4.0.0
    */
-  public static @NonNull HoverEvent<ShowItem> showItem(final @NonNull Key item, final @NonNegative int count, final @Nullable BinaryTagHolder nbt) {
+  public static @NotNull HoverEvent<ShowItem> showItem(final @NotNull Key item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @Nullable BinaryTagHolder nbt) {
     return showItem(ShowItem.of(item, count, nbt));
   }
 
@@ -123,7 +123,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @return a hover event
    * @since 4.6.0
    */
-  public static @NonNull HoverEvent<ShowItem> showItem(final @NonNull Keyed item, final @NonNegative int count, final @Nullable BinaryTagHolder nbt) {
+  public static @NotNull HoverEvent<ShowItem> showItem(final @NotNull Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @Nullable BinaryTagHolder nbt) {
     return showItem(ShowItem.of(item, count, nbt));
   }
 
@@ -134,7 +134,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @return a hover event
    * @since 4.0.0
    */
-  public static @NonNull HoverEvent<ShowItem> showItem(final @NonNull ShowItem item) {
+  public static @NotNull HoverEvent<ShowItem> showItem(final @NotNull ShowItem item) {
     return new HoverEvent<>(Action.SHOW_ITEM, item);
   }
 
@@ -148,7 +148,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @return a {@code ShowEntity}
    * @since 4.0.0
    */
-  public static @NonNull HoverEvent<ShowEntity> showEntity(final @NonNull Key type, final @NonNull UUID id) {
+  public static @NotNull HoverEvent<ShowEntity> showEntity(final @NotNull Key type, final @NotNull UUID id) {
     return showEntity(type, id, null);
   }
 
@@ -162,7 +162,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @return a {@code ShowEntity}
    * @since 4.6.0
    */
-  public static @NonNull HoverEvent<ShowEntity> showEntity(final @NonNull Keyed type, final @NonNull UUID id) {
+  public static @NotNull HoverEvent<ShowEntity> showEntity(final @NotNull Keyed type, final @NotNull UUID id) {
     return showEntity(type, id, null);
   }
 
@@ -177,7 +177,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @return a {@code ShowEntity}
    * @since 4.0.0
    */
-  public static @NonNull HoverEvent<ShowEntity> showEntity(final @NonNull Key type, final @NonNull UUID id, final @Nullable Component name) {
+  public static @NotNull HoverEvent<ShowEntity> showEntity(final @NotNull Key type, final @NotNull UUID id, final @Nullable Component name) {
     return showEntity(ShowEntity.of(type, id, name));
   }
 
@@ -192,7 +192,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @return a {@code ShowEntity}
    * @since 4.6.0
    */
-  public static @NonNull HoverEvent<ShowEntity> showEntity(final @NonNull Keyed type, final @NonNull UUID id, final @Nullable Component name) {
+  public static @NotNull HoverEvent<ShowEntity> showEntity(final @NotNull Keyed type, final @NotNull UUID id, final @Nullable Component name) {
     return showEntity(ShowEntity.of(type, id, name));
   }
 
@@ -205,7 +205,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @return a hover event
    * @since 4.0.0
    */
-  public static @NonNull HoverEvent<ShowEntity> showEntity(final @NonNull ShowEntity entity) {
+  public static @NotNull HoverEvent<ShowEntity> showEntity(final @NotNull ShowEntity entity) {
     return new HoverEvent<>(Action.SHOW_ENTITY, entity);
   }
 
@@ -218,14 +218,14 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @return a click event
    * @since 4.0.0
    */
-  public static <V> @NonNull HoverEvent<V> hoverEvent(final @NonNull Action<V> action, final @NonNull V value) {
+  public static <V> @NotNull HoverEvent<V> hoverEvent(final @NotNull Action<V> action, final @NotNull V value) {
     return new HoverEvent<>(action, value);
   }
 
   private final Action<V> action;
   private final V value;
 
-  private HoverEvent(final @NonNull Action<V> action, final @NonNull V value) {
+  private HoverEvent(final @NotNull Action<V> action, final @NotNull V value) {
     this.action = requireNonNull(action, "action");
     this.value = requireNonNull(value, "value");
   }
@@ -236,7 +236,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @return the hover event action
    * @since 4.0.0
    */
-  public @NonNull Action<V> action() {
+  public @NotNull Action<V> action() {
     return this.action;
   }
 
@@ -246,7 +246,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @return the hover event value
    * @since 4.0.0
    */
-  public @NonNull V value() {
+  public @NotNull V value() {
     return this.value;
   }
 
@@ -257,7 +257,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @return a hover event
    * @since 4.0.0
    */
-  public @NonNull HoverEvent<V> value(final @NonNull V value) {
+  public @NotNull HoverEvent<V> value(final @NotNull V value) {
     return new HoverEvent<>(this.action, value);
   }
 
@@ -270,7 +270,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    * @return a hover event
    * @since 4.0.0
    */
-  public <C> @NonNull HoverEvent<V> withRenderedValue(final @NonNull ComponentRenderer<C> renderer, final @NonNull C context) {
+  public <C> @NotNull HoverEvent<V> withRenderedValue(final @NotNull ComponentRenderer<C> renderer, final @NotNull C context) {
     final V oldValue = this.value;
     final V newValue = this.action.renderer.render(renderer, context, oldValue);
     if (newValue != oldValue) return new HoverEvent<>(this.action, newValue);
@@ -278,18 +278,18 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
   }
 
   @Override
-  public @NonNull HoverEvent<V> asHoverEvent() {
+  public @NotNull HoverEvent<V> asHoverEvent() {
     return this; // i already am a hover event! hehehehe
   }
 
   @Override
-  public @NonNull HoverEvent<V> asHoverEvent(final @NonNull UnaryOperator<V> op) {
+  public @NotNull HoverEvent<V> asHoverEvent(final @NotNull UnaryOperator<V> op) {
     if (op == UnaryOperator.<V>identity()) return this; // nothing to do, can return ourself
     return new HoverEvent<>(this.action, op.apply(this.value));
   }
 
   @Override
-  public void styleApply(final Style.@NonNull Builder style) {
+  public void styleApply(final Style.@NotNull Builder style) {
     style.hoverEvent(this);
   }
 
@@ -309,7 +309,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
   }
 
   @Override
-  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("action", this.action),
       ExaminableProperty.of("value", this.value)
@@ -339,7 +339,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return a {@code ShowItem}
      * @since 4.0.0
      */
-    public static @NonNull ShowItem of(final @NonNull Key item, final @NonNegative int count) {
+    public static @NotNull ShowItem of(final @NotNull Key item, final @Range(from = 0, to = Integer.MAX_VALUE) int count) {
       return of(item, count, null);
     }
 
@@ -351,7 +351,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return a {@code ShowItem}
      * @since 4.6.0
      */
-    public static @NonNull ShowItem of(final @NonNull Keyed item, final @NonNegative int count) {
+    public static @NotNull ShowItem of(final @NotNull Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count) {
       return of(item, count, null);
     }
 
@@ -364,7 +364,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return a {@code ShowItem}
      * @since 4.0.0
      */
-    public static @NonNull ShowItem of(final @NonNull Key item, final @NonNegative int count, final @Nullable BinaryTagHolder nbt) {
+    public static @NotNull ShowItem of(final @NotNull Key item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @Nullable BinaryTagHolder nbt) {
       return new ShowItem(requireNonNull(item, "item"), count, nbt);
     }
 
@@ -377,11 +377,11 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return a {@code ShowItem}
      * @since 4.6.0
      */
-    public static @NonNull ShowItem of(final @NonNull Keyed item, final @NonNegative int count, final @Nullable BinaryTagHolder nbt) {
+    public static @NotNull ShowItem of(final @NotNull Keyed item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @Nullable BinaryTagHolder nbt) {
       return new ShowItem(requireNonNull(item, "item").key(), count, nbt);
     }
 
-    private ShowItem(final @NonNull Key item, final @NonNegative int count, final @Nullable BinaryTagHolder nbt) {
+    private ShowItem(final @NotNull Key item, final @Range(from = 0, to = Integer.MAX_VALUE) int count, final @Nullable BinaryTagHolder nbt) {
       this.item = item;
       this.count = count;
       this.nbt = nbt;
@@ -393,7 +393,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return the item
      * @since 4.0.0
      */
-    public @NonNull Key item() {
+    public @NotNull Key item() {
       return this.item;
     }
 
@@ -404,7 +404,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return a {@code ShowItem}
      * @since 4.0.0
      */
-    public @NonNull ShowItem item(final @NonNull Key item) {
+    public @NotNull ShowItem item(final @NotNull Key item) {
       if (requireNonNull(item, "item").equals(this.item)) return this;
       return new ShowItem(item, this.count, this.nbt);
     }
@@ -415,7 +415,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return the count
      * @since 4.0.0
      */
-    public @NonNegative int count() {
+    public @Range(from = 0, to = Integer.MAX_VALUE) int count() {
       return this.count;
     }
 
@@ -426,7 +426,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return a {@code ShowItem}
      * @since 4.0.0
      */
-    public @NonNull ShowItem count(final @NonNegative int count) {
+    public @NotNull ShowItem count(final @Range(from = 0, to = Integer.MAX_VALUE) int count) {
       if (count == this.count) return this;
       return new ShowItem(this.item, count, this.nbt);
     }
@@ -448,7 +448,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return a {@code ShowItem}
      * @since 4.0.0
      */
-    public @NonNull ShowItem nbt(final @Nullable BinaryTagHolder nbt) {
+    public @NotNull ShowItem nbt(final @Nullable BinaryTagHolder nbt) {
       if (Objects.equals(nbt, this.nbt)) return this;
       return new ShowItem(this.item, this.count, nbt);
     }
@@ -470,7 +470,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
     }
 
     @Override
-    public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
         ExaminableProperty.of("item", this.item),
         ExaminableProperty.of("count", this.count),
@@ -502,7 +502,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return a {@code ShowEntity}
      * @since 4.0.0
      */
-    public static @NonNull ShowEntity of(final @NonNull Key type, final @NonNull UUID id) {
+    public static @NotNull ShowEntity of(final @NotNull Key type, final @NotNull UUID id) {
       return of(type, id, null);
     }
 
@@ -514,7 +514,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return a {@code ShowEntity}
      * @since 4.6.0
      */
-    public static @NonNull ShowEntity of(final @NonNull Keyed type, final @NonNull UUID id) {
+    public static @NotNull ShowEntity of(final @NotNull Keyed type, final @NotNull UUID id) {
       return of(type, id, null);
     }
 
@@ -527,7 +527,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return a {@code ShowEntity}
      * @since 4.0.0
      */
-    public static @NonNull ShowEntity of(final @NonNull Key type, final @NonNull UUID id, final @Nullable Component name) {
+    public static @NotNull ShowEntity of(final @NotNull Key type, final @NotNull UUID id, final @Nullable Component name) {
       return new ShowEntity(requireNonNull(type, "type"), requireNonNull(id, "id"), name);
     }
 
@@ -540,11 +540,11 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return a {@code ShowEntity}
      * @since 4.6.0
      */
-    public static @NonNull ShowEntity of(final @NonNull Keyed type, final @NonNull UUID id, final @Nullable Component name) {
+    public static @NotNull ShowEntity of(final @NotNull Keyed type, final @NotNull UUID id, final @Nullable Component name) {
       return new ShowEntity(requireNonNull(type, "type").key(), requireNonNull(id, "id"), name);
     }
 
-    private ShowEntity(final @NonNull Key type, final @NonNull UUID id, final @Nullable Component name) {
+    private ShowEntity(final @NotNull Key type, final @NotNull UUID id, final @Nullable Component name) {
       this.type = type;
       this.id = id;
       this.name = name;
@@ -556,7 +556,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return the type
      * @since 4.0.0
      */
-    public @NonNull Key type() {
+    public @NotNull Key type() {
       return this.type;
     }
 
@@ -567,7 +567,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return a {@code ShowEntity}
      * @since 4.0.0
      */
-    public @NonNull ShowEntity type(final @NonNull Key type) {
+    public @NotNull ShowEntity type(final @NotNull Key type) {
       if (requireNonNull(type, "type").equals(this.type)) return this;
       return new ShowEntity(type, this.id, this.name);
     }
@@ -579,7 +579,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return a {@code ShowEntity}
      * @since 4.6.0
      */
-    public @NonNull ShowEntity type(final @NonNull Keyed type) {
+    public @NotNull ShowEntity type(final @NotNull Keyed type) {
       return this.type(requireNonNull(type, "type").key());
     }
 
@@ -589,7 +589,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return the id
      * @since 4.0.0
      */
-    public @NonNull UUID id() {
+    public @NotNull UUID id() {
       return this.id;
     }
 
@@ -600,7 +600,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return a {@code ShowEntity}
      * @since 4.0.0
      */
-    public @NonNull ShowEntity id(final @NonNull UUID id) {
+    public @NotNull ShowEntity id(final @NotNull UUID id) {
       if (requireNonNull(id).equals(this.id)) return this;
       return new ShowEntity(this.type, id, this.name);
     }
@@ -622,7 +622,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return a {@code ShowEntity}
      * @since 4.0.0
      */
-    public @NonNull ShowEntity name(final @Nullable Component name) {
+    public @NotNull ShowEntity name(final @Nullable Component name) {
       if (Objects.equals(name, this.name)) return this;
       return new ShowEntity(this.type, this.id, name);
     }
@@ -644,7 +644,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
     }
 
     @Override
-    public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
         ExaminableProperty.of("type", this.type),
         ExaminableProperty.of("id", this.id),
@@ -671,7 +671,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      */
     public static final Action<Component> SHOW_TEXT = new Action<>("show_text", Component.class, true, new Renderer<Component>() {
       @Override
-      public <C> @NonNull Component render(final @NonNull ComponentRenderer<C> renderer, final @NonNull C context, final @NonNull Component value) {
+      public <C> @NotNull Component render(final @NotNull ComponentRenderer<C> renderer, final @NotNull C context, final @NotNull Component value) {
         return renderer.render(value, context);
       }
     });
@@ -682,7 +682,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      */
     public static final Action<ShowItem> SHOW_ITEM = new Action<>("show_item", ShowItem.class, true, new Renderer<ShowItem>() {
       @Override
-      public <C> @NonNull ShowItem render(final @NonNull ComponentRenderer<C> renderer, final @NonNull C context, final @NonNull ShowItem value) {
+      public <C> @NotNull ShowItem render(final @NotNull ComponentRenderer<C> renderer, final @NotNull C context, final @NotNull ShowItem value) {
         return value;
       }
     });
@@ -693,7 +693,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      */
     public static final Action<ShowEntity> SHOW_ENTITY = new Action<>("show_entity", ShowEntity.class, true, new Renderer<ShowEntity>() {
       @Override
-      public <C> @NonNull ShowEntity render(final @NonNull ComponentRenderer<C> renderer, final @NonNull C context, final @NonNull ShowEntity value) {
+      public <C> @NotNull ShowEntity render(final @NotNull ComponentRenderer<C> renderer, final @NotNull C context, final @NotNull ShowEntity value) {
         if (value.name == null) return value;
         return value.name(renderer.render(value.name, context));
       }
@@ -728,7 +728,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
      * @return the value type
      * @since 4.0.0
      */
-    public @NonNull Class<V> type() {
+    public @NotNull Class<V> type() {
       return this.type;
     }
 
@@ -744,13 +744,13 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
     }
 
     @Override
-    public @NonNull String toString() {
+    public @NotNull String toString() {
       return this.name;
     }
 
     @FunctionalInterface
     interface Renderer<V> {
-      <C> @NonNull V render(final @NonNull ComponentRenderer<C> renderer, final @NonNull C context, final @NonNull V value);
+      <C> @NotNull V render(final @NotNull ComponentRenderer<C> renderer, final @NotNull C context, final @NotNull V value);
     }
   }
 }

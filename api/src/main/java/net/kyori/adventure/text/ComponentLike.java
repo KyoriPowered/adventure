@@ -27,9 +27,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Something that can be represented as a {@link Component}.
@@ -45,7 +45,7 @@ public interface ComponentLike {
    * @return the components
    * @since 4.8.0
    */
-  static @NonNull List<Component> asComponents(final @NonNull List<? extends ComponentLike> likes) {
+  static @NotNull List<Component> asComponents(final @NotNull List<? extends ComponentLike> likes) {
     return asComponents(likes, null);
   }
 
@@ -59,7 +59,7 @@ public interface ComponentLike {
    * @return the components
    * @since 4.8.0
    */
-  static @NonNull List<Component> asComponents(final @NonNull List<? extends ComponentLike> likes, final @Nullable Predicate<? super Component> filter) {
+  static @NotNull List<Component> asComponents(final @NotNull List<? extends ComponentLike> likes, final @Nullable Predicate<? super Component> filter) {
     if (likes.isEmpty()) {
       // We do not need to create a new list if the one we are copying is empty - we can
       // simply just return our known-empty list instead.
@@ -94,5 +94,5 @@ public interface ComponentLike {
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NonNull Component asComponent();
+  @NotNull Component asComponent();
 }

@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.translation;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Something that has a translation key.
@@ -37,5 +37,5 @@ public interface Translatable {
    * @return the translation key
    * @since 4.8.0
    */
-  @NonNull String translationKey();
+  @NotNull String translationKey();
 }

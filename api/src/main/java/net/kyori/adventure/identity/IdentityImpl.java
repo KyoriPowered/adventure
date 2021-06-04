@@ -26,8 +26,8 @@ package net.kyori.adventure.identity;
 import java.util.UUID;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.string.StringExaminer;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 final class IdentityImpl implements Examinable, Identity {
   private final UUID uuid;
@@ -37,7 +37,7 @@ final class IdentityImpl implements Examinable, Identity {
   }
 
   @Override
-  public @NonNull UUID uuid() {
+  public @NotNull UUID uuid() {
     return this.uuid;
   }
 

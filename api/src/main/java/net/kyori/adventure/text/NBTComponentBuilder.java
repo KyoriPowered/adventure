@@ -23,8 +23,8 @@
  */
 package net.kyori.adventure.text;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 /*
  * This can't be a child of NBTComponent.
@@ -44,7 +44,7 @@ public interface NBTComponentBuilder<C extends NBTComponent<C, B>, B extends NBT
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NonNull B nbtPath(final @NonNull String nbtPath);
+  @NotNull B nbtPath(final @NotNull String nbtPath);
 
   /**
    * Sets whether to interpret.
@@ -54,5 +54,5 @@ public interface NBTComponentBuilder<C extends NBTComponent<C, B>, B extends NBT
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NonNull B interpret(final boolean interpret);
+  @NotNull B interpret(final boolean interpret);
 }

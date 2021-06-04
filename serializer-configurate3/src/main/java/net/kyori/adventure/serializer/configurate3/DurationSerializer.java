@@ -29,7 +29,7 @@ import java.time.format.DateTimeParseException;
 import java.util.function.Predicate;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.ScalarSerializer;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A serializer for the JDK {@link Duration} type.
@@ -45,7 +45,7 @@ final class DurationSerializer extends ScalarSerializer<Duration> {
   }
 
   @Override
-  public Duration deserialize(final @NonNull TypeToken<?> type, final @NonNull Object obj) throws ObjectMappingException {
+  public Duration deserialize(final @NotNull TypeToken<?> type, final @NotNull Object obj) throws ObjectMappingException {
     if (obj instanceof CharSequence) {
       String value = obj.toString();
       if (!value.startsWith("P") && !value.startsWith("p")) {
@@ -62,7 +62,7 @@ final class DurationSerializer extends ScalarSerializer<Duration> {
   }
 
   @Override
-  public Object serialize(final @NonNull Duration item, final @NonNull Predicate<Class<?>> typeSupported) {
+  public Object serialize(final @NotNull Duration item, final @NotNull Predicate<Class<?>> typeSupported) {
     return item.toString();
   }
 }

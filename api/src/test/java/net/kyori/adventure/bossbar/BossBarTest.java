@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -45,27 +45,27 @@ public class BossBarTest {
   private final AtomicInteger flags = new AtomicInteger();
   private final BossBar.Listener listener = new BossBar.Listener() {
     @Override
-    public void bossBarNameChanged(final @NonNull BossBar bar, final @NonNull Component oldName, final @NonNull Component newName) {
+    public void bossBarNameChanged(final @NotNull BossBar bar, final @NotNull Component oldName, final @NotNull Component newName) {
       BossBarTest.this.name.incrementAndGet();
     }
 
     @Override
-    public void bossBarProgressChanged(final @NonNull BossBar bar, final float oldProgress, final float newProgress) {
+    public void bossBarProgressChanged(final @NotNull BossBar bar, final float oldProgress, final float newProgress) {
       BossBarTest.this.progress.incrementAndGet();
     }
 
     @Override
-    public void bossBarColorChanged(final @NonNull BossBar bar, final BossBar.@NonNull Color oldColor, final BossBar.@NonNull Color newColor) {
+    public void bossBarColorChanged(final @NotNull BossBar bar, final BossBar.@NotNull Color oldColor, final BossBar.@NotNull Color newColor) {
       BossBarTest.this.color.incrementAndGet();
     }
 
     @Override
-    public void bossBarOverlayChanged(final @NonNull BossBar bar, final BossBar.@NonNull Overlay oldOverlay, final BossBar.@NonNull Overlay newOverlay) {
+    public void bossBarOverlayChanged(final @NotNull BossBar bar, final BossBar.@NotNull Overlay oldOverlay, final BossBar.@NotNull Overlay newOverlay) {
       BossBarTest.this.overlay.incrementAndGet();
     }
 
     @Override
-    public void bossBarFlagsChanged(final @NonNull BossBar bar, final @NonNull Set<BossBar.Flag> oldFlags, final @NonNull Set<BossBar.Flag> newFlags) {
+    public void bossBarFlagsChanged(final @NotNull BossBar bar, final @NotNull Set<BossBar.Flag> oldFlags, final @NotNull Set<BossBar.Flag> newFlags) {
       BossBarTest.this.flags.incrementAndGet();
     }
   };
@@ -229,7 +229,7 @@ public class BossBarTest {
     final AtomicReference<Set<BossBar.Flag>> flagsRemoved = new AtomicReference<>(Collections.emptySet());
 
     @Override
-    public void bossBarFlagsChanged(final @NonNull BossBar bar, final @NonNull Set<BossBar.Flag> flagsAdded, final @NonNull Set<BossBar.Flag> flagsRemoved) {
+    public void bossBarFlagsChanged(final @NotNull BossBar bar, final @NotNull Set<BossBar.Flag> flagsAdded, final @NotNull Set<BossBar.Flag> flagsRemoved) {
       this.flagsAdded.set(flagsAdded);
       this.flagsRemoved.set(flagsRemoved);
     }

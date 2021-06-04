@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A pointer to a resource.
@@ -45,7 +45,7 @@ public interface Pointer<V> extends Examinable {
    * @return the pointer
    * @since 4.8.0
    */
-  static <V> @NonNull Pointer<V> pointer(final @NonNull Class<V> type, final @NonNull Key key) {
+  static <V> @NotNull Pointer<V> pointer(final @NotNull Class<V> type, final @NotNull Key key) {
     return new PointerImpl<>(type, key);
   }
 
@@ -55,7 +55,7 @@ public interface Pointer<V> extends Examinable {
    * @return the value type
    * @since 4.8.0
    */
-  @NonNull Class<V> type();
+  @NotNull Class<V> type();
 
   /**
    * Gets the key.
@@ -63,10 +63,10 @@ public interface Pointer<V> extends Examinable {
    * @return the key
    * @since 4.8.0
    */
-  @NonNull Key key();
+  @NotNull Key key();
 
   @Override
-  default @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("type", this.type()),
       ExaminableProperty.of("key", this.key())

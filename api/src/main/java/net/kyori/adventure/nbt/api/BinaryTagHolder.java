@@ -24,7 +24,7 @@
 package net.kyori.adventure.nbt.api;
 
 import net.kyori.adventure.util.Codec;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Holds a compound binary tag.
@@ -48,7 +48,7 @@ public interface BinaryTagHolder {
    * @throws EX if an error occurred while encoding the binary tag
    * @since 4.0.0
    */
-  static <T, EX extends Exception> @NonNull BinaryTagHolder encode(final @NonNull T nbt, final @NonNull Codec<? super T, String, ?, EX> codec) throws EX {
+  static <T, EX extends Exception> @NotNull BinaryTagHolder encode(final @NotNull T nbt, final @NotNull Codec<? super T, String, ?, EX> codec) throws EX {
     return new BinaryTagHolderImpl(codec.encode(nbt));
   }
 
@@ -59,7 +59,7 @@ public interface BinaryTagHolder {
    * @return the encoded binary tag
    * @since 4.0.0
    */
-  static @NonNull BinaryTagHolder of(final @NonNull String string) {
+  static @NotNull BinaryTagHolder of(final @NotNull String string) {
     return new BinaryTagHolderImpl(string);
   }
 
@@ -69,7 +69,7 @@ public interface BinaryTagHolder {
    * @return the raw string value
    * @since 4.0.0
    */
-  @NonNull String string();
+  @NotNull String string();
 
   /**
    * Gets the held value as a binary tag.
@@ -81,5 +81,5 @@ public interface BinaryTagHolder {
    * @throws DX if an error occurred while retrieving the binary tag
    * @since 4.0.0
    */
-  <T, DX extends Exception> @NonNull T get(final @NonNull Codec<T, String, DX, ?> codec) throws DX;
+  <T, DX extends Exception> @NotNull T get(final @NotNull Codec<T, String, DX, ?> codec) throws DX;
 }

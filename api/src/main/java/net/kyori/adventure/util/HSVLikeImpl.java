@@ -25,7 +25,7 @@ package net.kyori.adventure.util;
 
 import java.util.Objects;
 import net.kyori.examination.string.StringExaminer;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 final class HSVLikeImpl implements HSVLike {
   private final float h;

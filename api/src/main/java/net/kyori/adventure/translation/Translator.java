@@ -27,8 +27,8 @@ import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import net.kyori.adventure.key.Key;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A message format translator.
@@ -50,7 +50,7 @@ public interface Translator {
    * @return a locale
    * @since 4.0.0
    */
-  static @Nullable Locale parseLocale(final @NonNull String string) {
+  static @Nullable Locale parseLocale(final @NotNull String string) {
     final String[] segments = string.split("_", 3); // language_country_variant
     final int length = segments.length;
     if (length == 1) {
@@ -71,7 +71,7 @@ public interface Translator {
    * @return an identifier for this translation source
    * @since 4.0.0
    */
-  @NonNull Key name();
+  @NotNull Key name();
 
   /**
    * Gets a message format from a key and locale.
@@ -81,5 +81,5 @@ public interface Translator {
    * @return a message format or {@code null} to skip translation
    * @since 4.0.0
    */
-  @Nullable MessageFormat translate(final @NonNull String key, final @NonNull Locale locale);
+  @Nullable MessageFormat translate(final @NotNull String key, final @NotNull Locale locale);
 }

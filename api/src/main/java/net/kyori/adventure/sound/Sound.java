@@ -28,8 +28,8 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.util.Index;
 import net.kyori.examination.Examinable;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -65,12 +65,12 @@ public interface Sound extends Examinable {
    * @return the sound
    * @since 4.0.0
    */
-  static @NonNull Sound sound(final @NonNull Key name, final @NonNull Source source, final float volume, final float pitch) {
+  static @NotNull Sound sound(final @NotNull Key name, final @NotNull Source source, final float volume, final float pitch) {
     requireNonNull(name, "name");
     requireNonNull(source, "source");
     return new SoundImpl(source, volume, pitch) {
       @Override
-      public @NonNull Key name() {
+      public @NotNull Key name() {
         return name;
       }
     };
@@ -86,7 +86,7 @@ public interface Sound extends Examinable {
    * @return the sound
    * @since 4.0.0
    */
-  static @NonNull Sound sound(final @NonNull Type type, final @NonNull Source source, final float volume, final float pitch) {
+  static @NotNull Sound sound(final @NotNull Type type, final @NotNull Source source, final float volume, final float pitch) {
     requireNonNull(type, "type");
     return sound(type.key(), source, volume, pitch);
   }
@@ -101,12 +101,12 @@ public interface Sound extends Examinable {
    * @return the sound
    * @since 4.0.0
    */
-  static @NonNull Sound sound(final @NonNull Supplier<? extends Type> type, final @NonNull Source source, final float volume, final float pitch) {
+  static @NotNull Sound sound(final @NotNull Supplier<? extends Type> type, final @NotNull Source source, final float volume, final float pitch) {
     requireNonNull(type, "type");
     requireNonNull(source, "source");
     return new SoundImpl(source, volume, pitch) {
       @Override
-      public @NonNull Key name() {
+      public @NotNull Key name() {
         return type.get().key();
       }
     };
@@ -122,7 +122,7 @@ public interface Sound extends Examinable {
    * @return the sound
    * @since 4.8.0
    */
-  static @NonNull Sound sound(final @NonNull Key name, final Source.@NonNull Provider source, final float volume, final float pitch) {
+  static @NotNull Sound sound(final @NotNull Key name, final Source.@NotNull Provider source, final float volume, final float pitch) {
     return sound(name, source.soundSource(), volume, pitch);
   }
 
@@ -136,7 +136,7 @@ public interface Sound extends Examinable {
    * @return the sound
    * @since 4.8.0
    */
-  static @NonNull Sound sound(final @NonNull Type type, final Source.@NonNull Provider source, final float volume, final float pitch) {
+  static @NotNull Sound sound(final @NotNull Type type, final Source.@NotNull Provider source, final float volume, final float pitch) {
     return sound(type, source.soundSource(), volume, pitch);
   }
 
@@ -150,7 +150,7 @@ public interface Sound extends Examinable {
    * @return the sound
    * @since 4.8.0
    */
-  static @NonNull Sound sound(final @NonNull Supplier<? extends Type> type, final Source.@NonNull Provider source, final float volume, final float pitch) {
+  static @NotNull Sound sound(final @NotNull Supplier<? extends Type> type, final Source.@NotNull Provider source, final float volume, final float pitch) {
     return sound(type, source.soundSource(), volume, pitch);
   }
 
@@ -160,7 +160,7 @@ public interface Sound extends Examinable {
    * @return the name
    * @since 4.0.0
    */
-  @NonNull Key name();
+  @NotNull Key name();
 
   /**
    * Gets the source.
@@ -168,7 +168,7 @@ public interface Sound extends Examinable {
    * @return the source
    * @since 4.0.0
    */
-  @NonNull Source source();
+  @NotNull Source source();
 
   /**
    * Gets the volume.
@@ -227,7 +227,7 @@ public interface Sound extends Examinable {
        * @return the source
        * @since 4.8.0
        */
-      @NonNull Source soundSource();
+      @NotNull Source soundSource();
     }
   }
 
@@ -244,6 +244,6 @@ public interface Sound extends Examinable {
      * @since 4.0.0
      */
     @Override
-    @NonNull Key key();
+    @NotNull Key key();
   }
 }

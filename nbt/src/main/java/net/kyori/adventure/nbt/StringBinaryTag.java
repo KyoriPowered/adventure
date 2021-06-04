@@ -25,9 +25,9 @@ package net.kyori.adventure.nbt;
 
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.Debug;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A binary tag holding a {@link String} value.
@@ -42,12 +42,12 @@ public interface StringBinaryTag extends BinaryTag {
    * @return a binary tag
    * @since 4.0.0
    */
-  static @NonNull StringBinaryTag of(final @NonNull String value) {
+  static @NotNull StringBinaryTag of(final @NotNull String value) {
     return new StringBinaryTagImpl(value);
   }
 
   @Override
-  default @NonNull BinaryTagType<StringBinaryTag> type() {
+  default @NotNull BinaryTagType<StringBinaryTag> type() {
     return BinaryTagTypes.STRING;
   }
 
@@ -57,7 +57,7 @@ public interface StringBinaryTag extends BinaryTag {
    * @return the value
    * @since 4.0.0
    */
-  @NonNull String value();
+  @NotNull String value();
 }
 
 @Debug.Renderer(text = "\"\\\"\" + this.value + \"\\\"\"", hasChildren = "false")
@@ -69,7 +69,7 @@ final class StringBinaryTagImpl extends AbstractBinaryTag implements StringBinar
   }
 
   @Override
-  public @NonNull String value() {
+  public @NotNull String value() {
     return this.value;
   }
 
@@ -87,7 +87,7 @@ final class StringBinaryTagImpl extends AbstractBinaryTag implements StringBinar
   }
 
   @Override
-  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("value", this.value));
   }
 }

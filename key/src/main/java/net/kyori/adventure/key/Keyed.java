@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.key;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Something that has an associated {@link Key}.
@@ -37,5 +37,5 @@ public interface Keyed {
    * @return the key
    * @since 4.0.0
    */
-  @NonNull Key key();
+  @NotNull Key key();
 }

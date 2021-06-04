@@ -27,9 +27,9 @@ import java.util.function.Supplier;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -52,7 +52,7 @@ public interface SoundStop extends Examinable {
    * @return a sound stopper
    * @since 4.0.0
    */
-  static @NonNull SoundStop all() {
+  static @NotNull SoundStop all() {
     return SoundStopImpl.ALL;
   }
 
@@ -63,11 +63,11 @@ public interface SoundStop extends Examinable {
    * @return a sound stopper
    * @since 4.0.0
    */
-  static @NonNull SoundStop named(final @NonNull Key sound) {
+  static @NotNull SoundStop named(final @NotNull Key sound) {
     requireNonNull(sound, "sound");
     return new SoundStopImpl(null) {
       @Override
-      public @NonNull Key sound() {
+      public @NotNull Key sound() {
         return sound;
       }
     };
@@ -80,11 +80,11 @@ public interface SoundStop extends Examinable {
    * @return a sound stopper
    * @since 4.0.0
    */
-  static @NonNull SoundStop named(final Sound.@NonNull Type sound) {
+  static @NotNull SoundStop named(final Sound.@NotNull Type sound) {
     requireNonNull(sound, "sound");
     return new SoundStopImpl(null) {
       @Override
-      public @NonNull Key sound() {
+      public @NotNull Key sound() {
         return sound.key();
       }
     };
@@ -97,11 +97,11 @@ public interface SoundStop extends Examinable {
    * @return a sound stopper
    * @since 4.0.0
    */
-  static @NonNull SoundStop named(final @NonNull Supplier<? extends Sound.Type> sound) {
+  static @NotNull SoundStop named(final @NotNull Supplier<? extends Sound.Type> sound) {
     requireNonNull(sound, "sound");
     return new SoundStopImpl(null) {
       @Override
-      public @NonNull Key sound() {
+      public @NotNull Key sound() {
         return sound.get().key();
       }
     };
@@ -114,7 +114,7 @@ public interface SoundStop extends Examinable {
    * @return a sound stopper
    * @since 4.0.0
    */
-  static @NonNull SoundStop source(final Sound.@NonNull Source source) {
+  static @NotNull SoundStop source(final Sound.@NotNull Source source) {
     requireNonNull(source, "source");
     return new SoundStopImpl(source) {
       @Override
@@ -132,12 +132,12 @@ public interface SoundStop extends Examinable {
    * @return a sound stopper
    * @since 4.0.0
    */
-  static @NonNull SoundStop namedOnSource(final @NonNull Key sound, final Sound.@NonNull Source source) {
+  static @NotNull SoundStop namedOnSource(final @NotNull Key sound, final Sound.@NotNull Source source) {
     requireNonNull(sound, "sound");
     requireNonNull(source, "source");
     return new SoundStopImpl(source) {
       @Override
-      public @NonNull Key sound() {
+      public @NotNull Key sound() {
         return sound;
       }
     };
@@ -151,7 +151,7 @@ public interface SoundStop extends Examinable {
    * @return a sound stopper
    * @since 4.0.0
    */
-  static @NonNull SoundStop namedOnSource(final Sound.@NonNull Type sound, final Sound.@NonNull Source source) {
+  static @NotNull SoundStop namedOnSource(final Sound.@NotNull Type sound, final Sound.@NotNull Source source) {
     requireNonNull(sound, "sound");
     return namedOnSource(sound.key(), source);
   }
@@ -164,12 +164,12 @@ public interface SoundStop extends Examinable {
    * @return a sound stopper
    * @since 4.0.0
    */
-  static @NonNull SoundStop namedOnSource(final @NonNull Supplier<? extends Sound.Type> sound, final Sound.@NonNull Source source) {
+  static @NotNull SoundStop namedOnSource(final @NotNull Supplier<? extends Sound.Type> sound, final Sound.@NotNull Source source) {
     requireNonNull(sound, "sound");
     requireNonNull(source, "source");
     return new SoundStopImpl(source) {
       @Override
-      public @NonNull Key sound() {
+      public @NotNull Key sound() {
         return sound.get().key();
       }
     };

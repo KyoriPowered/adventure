@@ -27,8 +27,8 @@ import java.lang.reflect.Type;
 import java.util.List;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.text.Component;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
@@ -43,7 +43,7 @@ final class BookTypeSerializer implements TypeSerializer<Book> {
   }
 
   @Override
-  public Book deserialize(final @NonNull Type type, final @NonNull ConfigurationNode value) throws SerializationException {
+  public Book deserialize(final @NotNull Type type, final @NotNull ConfigurationNode value) throws SerializationException {
     final Component title = value.node(TITLE).get(Component.class);
     final Component author = value.node(AUTHOR).get(Component.class);
     final List<Component> pages = value.node(PAGES).get(ComponentTypeSerializer.LIST_TYPE);
@@ -54,7 +54,7 @@ final class BookTypeSerializer implements TypeSerializer<Book> {
   }
 
   @Override
-  public void serialize(final @NonNull Type type, final @Nullable Book obj, final @NonNull ConfigurationNode value) throws SerializationException {
+  public void serialize(final @NotNull Type type, final @Nullable Book obj, final @NotNull ConfigurationNode value) throws SerializationException {
     if (obj == null) {
       value.set(null);
       return;

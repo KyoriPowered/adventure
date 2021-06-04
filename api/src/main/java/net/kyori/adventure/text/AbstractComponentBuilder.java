@@ -36,8 +36,8 @@ import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * An abstract implementation of a component builder.
@@ -65,7 +65,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   protected AbstractComponentBuilder() {
   }
 
-  protected AbstractComponentBuilder(final @NonNull C component) {
+  protected AbstractComponentBuilder(final @NotNull C component) {
     final List<Component> children = component.children();
     if (!children.isEmpty()) {
       this.children = new ArrayList<>(children);
@@ -77,7 +77,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NonNull B append(final @NonNull Component component) {
+  public @NotNull B append(final @NotNull Component component) {
     if (component == Component.empty()) return (B) this;
     this.prepareChildren();
     this.children.add(component);
@@ -86,7 +86,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NonNull B append(final @NonNull Component@NonNull... components) {
+  public @NotNull B append(final @NotNull Component@NotNull... components) {
     boolean prepared = false;
     for (int i = 0, length = components.length; i < length; i++) {
       final Component component = components[i];
@@ -103,7 +103,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NonNull B append(final @NonNull ComponentLike@NonNull... components) {
+  public @NotNull B append(final @NotNull ComponentLike@NotNull... components) {
     boolean prepared = false;
     for (int i = 0, length = components.length; i < length; i++) {
       final Component component = components[i].asComponent();
@@ -120,7 +120,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NonNull B append(final @NonNull Iterable<? extends ComponentLike> components) {
+  public @NotNull B append(final @NotNull Iterable<? extends ComponentLike> components) {
     boolean prepared = false;
     for (final ComponentLike like : components) {
       final Component component = like.asComponent();
@@ -143,7 +143,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NonNull B applyDeep(final @NonNull Consumer<? super ComponentBuilder<?, ?>> consumer) {
+  public @NotNull B applyDeep(final @NotNull Consumer<? super ComponentBuilder<?, ?>> consumer) {
     this.apply(consumer);
     if (this.children == Collections.<Component>emptyList()) {
       return (B) this;
@@ -163,7 +163,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NonNull B mapChildren(final @NonNull Function<BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function) {
+  public @NotNull B mapChildren(final @NotNull Function<BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function) {
     if (this.children == Collections.<Component>emptyList()) {
       return (B) this;
     }
@@ -184,7 +184,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NonNull B mapChildrenDeep(final @NonNull Function<BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function) {
+  public @NotNull B mapChildrenDeep(final @NotNull Function<BuildableComponent<?, ?>, ? extends BuildableComponent<?, ?>> function) {
     if (this.children == Collections.<Component>emptyList()) {
       return (B) this;
     }
@@ -210,13 +210,13 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   }
 
   @Override
-  public @NonNull List<Component> children() {
+  public @NotNull List<Component> children() {
     return Collections.unmodifiableList(this.children);
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NonNull B style(final @NonNull Style style) {
+  public @NotNull B style(final @NotNull Style style) {
     this.style = style;
     this.styleBuilder = null;
     return (B) this;
@@ -224,76 +224,76 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NonNull B style(final @NonNull Consumer<Style.Builder> consumer) {
+  public @NotNull B style(final @NotNull Consumer<Style.Builder> consumer) {
     consumer.accept(this.styleBuilder());
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NonNull B font(final @Nullable Key font) {
+  public @NotNull B font(final @Nullable Key font) {
     this.styleBuilder().font(font);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NonNull B color(final @Nullable TextColor color) {
+  public @NotNull B color(final @Nullable TextColor color) {
     this.styleBuilder().color(color);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NonNull B colorIfAbsent(final @Nullable TextColor color) {
+  public @NotNull B colorIfAbsent(final @Nullable TextColor color) {
     this.styleBuilder().colorIfAbsent(color);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NonNull B decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
+  public @NotNull B decoration(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
     this.styleBuilder().decoration(decoration, state);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NonNull B clickEvent(final @Nullable ClickEvent event) {
+  public @NotNull B clickEvent(final @Nullable ClickEvent event) {
     this.styleBuilder().clickEvent(event);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NonNull B hoverEvent(final @Nullable HoverEventSource<?> source) {
+  public @NotNull B hoverEvent(final @Nullable HoverEventSource<?> source) {
     this.styleBuilder().hoverEvent(source);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NonNull B insertion(final @Nullable String insertion) {
+  public @NotNull B insertion(final @Nullable String insertion) {
     this.styleBuilder().insertion(insertion);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NonNull B mergeStyle(final @NonNull Component that, final @NonNull Set<Style.Merge> merges) {
+  public @NotNull B mergeStyle(final @NotNull Component that, final @NotNull Set<Style.Merge> merges) {
     this.styleBuilder().merge(that.style(), merges);
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public @NonNull B resetStyle() {
+  public @NotNull B resetStyle() {
     this.style = null;
     this.styleBuilder = null;
     return (B) this;
   }
 
-  private Style.@NonNull Builder styleBuilder() {
+  private Style.@NotNull Builder styleBuilder() {
     if (this.styleBuilder == null) {
       if (this.style != null) {
         this.styleBuilder = this.style.toBuilder();
@@ -309,7 +309,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
     return this.styleBuilder != null || this.style != null;
   }
 
-  protected @NonNull Style buildStyle() {
+  protected @NotNull Style buildStyle() {
     if (this.styleBuilder != null) {
       return this.styleBuilder.build();
     } else if (this.style != null) {

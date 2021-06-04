@@ -46,8 +46,8 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextFormat;
 import net.kyori.adventure.util.Services;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -238,7 +238,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   }
 
   @Override
-  public @NonNull TextComponent deserialize(final @NonNull String input) {
+  public @NotNull TextComponent deserialize(final @NotNull String input) {
     int next = input.lastIndexOf(this.character, input.length() - 2);
     if (next == -1) {
       return this.extractUrl(Component.text(input));
@@ -301,13 +301,13 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   }
 
   @Override
-  public @NonNull String serialize(final @NonNull Component component) {
+  public @NotNull String serialize(final @NotNull Component component) {
     final Cereal state = new Cereal();
     this.flattener.flatten(component, state);
     return state.toString();
   }
 
-  private static boolean applyFormat(final TextComponent.@NonNull Builder builder, final @NonNull TextFormat format) {
+  private static boolean applyFormat(final TextComponent.@NotNull Builder builder, final @NotNull TextFormat format) {
     if (format instanceof TextColor) {
       builder.colorIfAbsent((TextColor) format);
       return true;
@@ -321,7 +321,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   }
 
   @Override
-  public @NonNull Builder toBuilder() {
+  public @NotNull Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
@@ -338,7 +338,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     private int head = -1;
 
     @Override
-    public void pushStyle(final @NonNull Style pushed) {
+    public void pushStyle(final @NotNull Style pushed) {
       final int idx = ++this.head;
       if (idx >= this.styles.length) {
         this.styles = Arrays.copyOf(this.styles, this.styles.length * 2);
@@ -361,7 +361,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     @Override
-    public void component(final @NonNull String text) {
+    public void component(final @NotNull String text) {
       if (!text.isEmpty()) {
         if (this.head < 0) throw new IllegalStateException("No style has been pushed!");
 
@@ -371,13 +371,13 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     @Override
-    public void popStyle(final @NonNull Style style) {
+    public void popStyle(final @NotNull Style style) {
       if (this.head-- < 0) {
         throw new IllegalStateException("Tried to pop beyond what was pushed!");
       }
     }
 
-    void append(final @NonNull TextFormat format) {
+    void append(final @NotNull TextFormat format) {
       if (this.lastWritten != format) {
         this.sb.append(LegacyComponentSerializerImpl.this.character).append(LegacyComponentSerializerImpl.this.toLegacyCode(format));
       }
@@ -398,7 +398,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         this.decorations = EnumSet.noneOf(TextDecoration.class);
       }
 
-      void set(final @NonNull StyleState that) {
+      void set(final @NotNull StyleState that) {
         this.color = that.color;
         this.decorations.clear();
         this.decorations.addAll(that.decorations);
@@ -409,7 +409,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         this.decorations.clear();
       }
 
-      void apply(final @NonNull Style component) {
+      void apply(final @NotNull Style component) {
         final TextColor color = component.color();
         if (color != null) {
           this.color = color;
@@ -491,7 +491,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       BUILDER.accept(this); // let service provider touch the builder before anybody else touches it
     }
 
-    BuilderImpl(final @NonNull LegacyComponentSerializerImpl serializer) {
+    BuilderImpl(final @NotNull LegacyComponentSerializerImpl serializer) {
       this();
       this.character = serializer.character;
       this.hexCharacter = serializer.hexCharacter;
@@ -501,34 +501,34 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     @Override
-    public @NonNull Builder character(final char legacyCharacter) {
+    public @NotNull Builder character(final char legacyCharacter) {
       this.character = legacyCharacter;
       return this;
     }
 
     @Override
-    public @NonNull Builder hexCharacter(final char legacyHexCharacter) {
+    public @NotNull Builder hexCharacter(final char legacyHexCharacter) {
       this.hexCharacter = legacyHexCharacter;
       return this;
     }
 
     @Override
-    public @NonNull Builder extractUrls() {
+    public @NotNull Builder extractUrls() {
       return this.extractUrls(DEFAULT_URL_PATTERN, null);
     }
 
     @Override
-    public @NonNull Builder extractUrls(final @NonNull Pattern pattern) {
+    public @NotNull Builder extractUrls(final @NotNull Pattern pattern) {
       return this.extractUrls(pattern, null);
     }
 
     @Override
-    public @NonNull Builder extractUrls(final @Nullable Style style) {
+    public @NotNull Builder extractUrls(final @Nullable Style style) {
       return this.extractUrls(DEFAULT_URL_PATTERN, style);
     }
 
     @Override
-    public @NonNull Builder extractUrls(final @NonNull Pattern pattern, final @Nullable Style style) {
+    public @NotNull Builder extractUrls(final @NotNull Pattern pattern, final @Nullable Style style) {
       requireNonNull(pattern, "pattern");
       this.urlReplacementConfig = TextReplacementConfig.builder()
         .match(pattern)
@@ -544,25 +544,25 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     @Override
-    public @NonNull Builder hexColors() {
+    public @NotNull Builder hexColors() {
       this.hexColours = true;
       return this;
     }
 
     @Override
-    public @NonNull Builder useUnusualXRepeatedCharacterHexFormat() {
+    public @NotNull Builder useUnusualXRepeatedCharacterHexFormat() {
       this.useTerriblyStupidHexFormat = true; // :(
       return this;
     }
 
     @Override
-    public @NonNull Builder flattener(final @NonNull ComponentFlattener flattener) {
+    public @NotNull Builder flattener(final @NotNull ComponentFlattener flattener) {
       this.flattener = requireNonNull(flattener, "flattener");
       return this;
     }
 
     @Override
-    public @NonNull LegacyComponentSerializer build() {
+    public @NotNull LegacyComponentSerializer build() {
       return new LegacyComponentSerializerImpl(this.character, this.hexCharacter, this.urlReplacementConfig, this.hexColours, this.useTerriblyStupidHexFormat, this.flattener);
     }
   }

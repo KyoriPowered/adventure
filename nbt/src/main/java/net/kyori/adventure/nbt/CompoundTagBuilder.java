@@ -26,12 +26,11 @@ package net.kyori.adventure.nbt;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
-  private @MonotonicNonNull Map<String, BinaryTag> tags;
+  private @Nullable Map<String, BinaryTag> tags;
 
   private Map<String, BinaryTag> tags() {
     if (this.tags == null) {
@@ -41,13 +40,13 @@ final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
   }
 
   @Override
-  public CompoundBinaryTag.@NonNull Builder put(final @NonNull String key, final @NonNull BinaryTag tag) {
+  public CompoundBinaryTag.@NotNull Builder put(final @NotNull String key, final @NotNull BinaryTag tag) {
     this.tags().put(key, tag);
     return this;
   }
 
   @Override
-  public CompoundBinaryTag.@NonNull Builder put(final @NonNull CompoundBinaryTag tag) {
+  public CompoundBinaryTag.@NotNull Builder put(final @NotNull CompoundBinaryTag tag) {
     final Map<String, BinaryTag> tags = this.tags();
     for (final String key : tag.keySet()) {
       tags.put(key, tag.get(key));
@@ -56,13 +55,13 @@ final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
   }
 
   @Override
-  public CompoundBinaryTag.@NonNull Builder put(final @NonNull Map<String, ? extends BinaryTag> tags) {
+  public CompoundBinaryTag.@NotNull Builder put(final @NotNull Map<String, ? extends BinaryTag> tags) {
     this.tags().putAll(tags);
     return this;
   }
 
   @Override
-  public CompoundBinaryTag.@NonNull Builder remove(final @NonNull String key, final @Nullable Consumer<? super BinaryTag> removed) {
+  public CompoundBinaryTag.@NotNull Builder remove(final @NotNull String key, final @Nullable Consumer<? super BinaryTag> removed) {
     if (this.tags != null) {
       final BinaryTag tag = this.tags.remove(key);
       if (removed != null) {
@@ -73,7 +72,7 @@ final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
   }
 
   @Override
-  public @NonNull CompoundBinaryTag build() {
+  public @NotNull CompoundBinaryTag build() {
     if (this.tags == null) return CompoundBinaryTag.empty();
     return new CompoundBinaryTagImpl(new HashMap<>(this.tags));
   }

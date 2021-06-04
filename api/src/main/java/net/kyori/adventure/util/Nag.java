@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.util;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A nag.
@@ -37,7 +37,7 @@ public abstract class Nag extends RuntimeException {
    * @param nag the nag
    * @since 4.7.0
    */
-  public static void print(final @NonNull Nag nag) {
+  public static void print(final @NotNull Nag nag) {
     nag.printStackTrace();
   }
 

@@ -24,11 +24,11 @@
 package net.kyori.adventure.nbt;
 
 import net.kyori.examination.string.StringExaminer;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 abstract class AbstractBinaryTag implements BinaryTag {
   @Override
-  public final @NonNull String examinableName() {
+  public final @NotNull String examinableName() {
     return this.type().toString();
   }
 
