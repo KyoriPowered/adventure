@@ -36,6 +36,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.util.Vector3dLike;
+import net.kyori.adventure.util.Vector3iLike;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -462,7 +463,21 @@ public interface Audience extends Pointered {
    * @see Sound
    * @since 4.8.0
    */
-  default void playSound(final @NonNull Sound sound, final @NonNull Vector3dLike pos) {
+  @ForwardingAudienceOverrideNotRequired
+  default void playSound(final @NotNull Sound sound, final @NotNull Vector3iLike pos) {
+    this.playSound(sound, pos.x(), pos.y(), pos.z());
+  }
+
+  /**
+   * Plays a sound at a position.
+   *
+   * @param sound a sound
+   * @param pos a position
+   * @see Sound
+   * @since 4.8.0
+   */
+  @ForwardingAudienceOverrideNotRequired
+  default void playSound(final @NotNull Sound sound, final @NotNull Vector3dLike pos) {
     this.playSound(sound, pos.x(), pos.y(), pos.z());
   }
 

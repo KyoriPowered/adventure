@@ -23,51 +23,33 @@
  */
 package net.kyori.adventure.util;
 
-import java.util.Objects;
-import net.kyori.examination.string.StringExaminer;
-import org.checkerframework.checker.nullness.qual.Nullable;
+/**
+ * Something that can provide x, y, and z components as integers.
+ *
+ * @since 4.8.0
+ */
+public interface Vector3iLike {
+  /**
+   * Gets the x component.
+   *
+   * @return the x component
+   * @since 4.8.0
+   */
+  int x();
 
-final class Vector3dLikeImpl implements Vector3dLike {
-  private final double x;
-  private final double y;
-  private final double z;
+  /**
+   * Gets the y component.
+   *
+   * @return the y component
+   * @since 4.8.0
+   */
+  int y();
 
-  Vector3dLikeImpl(final double x, final double y, final double z) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
-  }
-
-  @Override
-  public double x() {
-    return this.x;
-  }
-
-  @Override
-  public double y() {
-    return this.y;
-  }
-
-  @Override
-  public double z() {
-    return this.z;
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(!(other instanceof Vector3dLikeImpl)) return false;
-    final Vector3dLikeImpl that = (Vector3dLikeImpl) other;
-    return ShadyPines.equals(that.x, this.x) && ShadyPines.equals(that.y, this.y) && ShadyPines.equals(that.z, this.z);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(this.x, this.y, this.z);
-  }
-
-  @Override
-  public String toString() {
-    return this.examine(StringExaminer.simpleEscaping());
-  }
+  /**
+   * Gets the z component.
+   *
+   * @return the z component
+   * @since 4.8.0
+   */
+  int z();
 }
