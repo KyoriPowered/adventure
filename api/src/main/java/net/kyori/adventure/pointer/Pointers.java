@@ -140,7 +140,7 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
      * @since 4.8.0
      */
     @Contract("_, _ -> this")
-    default <T> @NotNull Builder addPointerWithFixedValue(final @NotNull Pointer<T> pointer, @Nullable T value) {
+    default <T> @NotNull Builder addPointerWithFixedValue(final @NotNull Pointer<T> pointer, final @Nullable T value) {
       return this.addPointerWithVariableValue(pointer, () -> value);
     }
 
@@ -155,26 +155,5 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
      */
     @Contract("_, _ -> this")
     <T> @NotNull Builder addPointerWithVariableValue(final @NotNull Pointer<T> pointer, @NotNull Supplier<@Nullable T> value);
-
-    /**
-     * Adds a parent from which values will be retrieved if they do not exist in this collection.
-     *
-     * @param parent the parent
-     * @return this builder
-     * @since 4.8.0
-     */
-    @Contract("_ -> this")
-    default @NotNull Builder parent(final @NotNull Pointered parent) {
-      return this.parent(() -> parent);
-    }
-
-    /**
-     * Adds a parent from which values will be retrieved if they do not exist in this collection.
-     *
-     * @param parent the parent
-     * @return this builder
-     * @since 4.8.0
-     */
-    @NotNull Builder parent(final @NotNull Supplier<Pointered> parent);
   }
 }

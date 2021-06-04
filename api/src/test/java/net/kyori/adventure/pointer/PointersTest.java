@@ -25,7 +25,6 @@ package net.kyori.adventure.pointer;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.TriState;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -51,42 +50,5 @@ final class PointersTest {
     assertEquals(TriState.TRUE, p1.has(pointer));
     assertTrue(p1.get(pointer).isPresent());
     assertEquals("test", p1.get(pointer).get());
-
-    final Pointers p2 = Pointers.builder()
-      .parent(this.pointered(p0))
-      .build();
-    assertEquals(TriState.FALSE, p2.has(pointer));
-    assertFalse(p2.get(pointer).isPresent());
-
-    final Pointers p3 = Pointers.builder()
-      .parent(this.pointered(p1))
-      .build();
-    assertEquals(TriState.TRUE, p3.has(pointer));
-    assertTrue(p3.get(pointer).isPresent());
-    assertEquals("test", p3.get(pointer).get());
-
-    final Pointers p4 = Pointers.builder()
-      .parent(this.pointered(p1))
-      .addPointer(pointer)
-      .build();
-    assertEquals(TriState.FALSE, p4.has(pointer));
-    assertFalse(p4.get(pointer).isPresent());
-
-    final Pointers p5 = Pointers.builder()
-      .parent(this.pointered(p1))
-      .addPointerWithFixedValue(pointer, "not test")
-      .build();
-    assertEquals(TriState.TRUE, p5.has(pointer));
-    assertTrue(p5.get(pointer).isPresent());
-    assertEquals("not test", p5.get(pointer).get());
-  }
-
-  private @NotNull Pointered pointered(final @NotNull Pointers pointers) {
-    return new Pointered() {
-      @Override
-      public @NotNull Pointers pointers() {
-        return pointers;
-      }
-    };
   }
 }
