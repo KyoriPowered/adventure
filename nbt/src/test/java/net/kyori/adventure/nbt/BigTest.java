@@ -71,7 +71,7 @@ class BigTest {
   private static CompoundBinaryTag compound;
 
   static {
-    for(int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 1000; i++) {
       BYTE_ARRAY_TEST[i] = (byte) ((i * i * 255 + i * 7) % 100);
     }
   }

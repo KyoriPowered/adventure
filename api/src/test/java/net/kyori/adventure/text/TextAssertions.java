@@ -49,8 +49,8 @@ public final class TextAssertions {
   }
 
   private static void assertDecorationsAre(final Style style, final Set<TextDecoration> decorations, final TextDecoration.State state) {
-    if(!decorations.isEmpty()) {
-      for(final TextDecoration decoration : decorations) {
+    if (!decorations.isEmpty()) {
+      for (final TextDecoration decoration : decorations) {
         assertEquals(state, style.decoration(decoration));
       }
     }

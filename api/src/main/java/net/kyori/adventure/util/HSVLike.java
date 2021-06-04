@@ -69,26 +69,26 @@ public interface HSVLike extends Examinable {
     final float delta = max - min;
 
     final float s;
-    if(max != 0) {
+    if (max != 0) {
       s = delta / max; // s
     } else {
       // r = g = b = 0
       s = 0;
     }
-    if(s == 0) { // s = 0, h is undefined
+    if (s == 0) { // s = 0, h is undefined
       return new HSVLikeImpl(0, s, max);
     }
 
     float h;
-    if(r == max) {
+    if (r == max) {
       h = (g - b) / delta; // between yellow & magenta
-    } else if(g == max) {
+    } else if (g == max) {
       h = 2 + (b - r) / delta; // between cyan & yellow
     } else {
       h = 4 + (r - g) / delta; // between magenta & cyan
     }
     h *= 60; // degrees
-    if(h < 0) {
+    if (h < 0) {
       h += 360;
     }
 

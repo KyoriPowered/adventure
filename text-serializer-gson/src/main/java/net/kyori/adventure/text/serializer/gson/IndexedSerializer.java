@@ -52,7 +52,7 @@ final class IndexedSerializer<E> extends TypeAdapter<E> {
   public E read(final JsonReader in) throws IOException {
     final String string = in.nextString();
     final E value = this.map.value(string);
-    if(value != null) {
+    if (value != null) {
       return value;
     } else {
       throw new JsonParseException("invalid " + this.name + ":  " + string);

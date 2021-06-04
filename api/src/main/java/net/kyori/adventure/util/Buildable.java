@@ -48,7 +48,7 @@ public interface Buildable<R, B extends Buildable.Builder<R>> {
    */
   @Contract(mutates = "param1")
   static <R extends Buildable<R, B>, B extends Builder<R>> @NonNull R configureAndBuild(final @NonNull B builder, final @Nullable Consumer<? super B> consumer) {
-    if(consumer != null) consumer.accept(builder);
+    if (consumer != null) consumer.accept(builder);
     return builder.build();
   }
 

@@ -51,8 +51,8 @@ public interface PermissionChecker extends Predicate<String> {
    * @since 4.8.0
    */
   static @NonNull PermissionChecker always(final TriState state) {
-    if(state == TriState.TRUE) return PermissionCheckers.TRUE;
-    if(state == TriState.FALSE) return PermissionCheckers.FALSE;
+    if (state == TriState.TRUE) return PermissionCheckers.TRUE;
+    if (state == TriState.FALSE) return PermissionCheckers.FALSE;
     return PermissionCheckers.NOT_SET;
   }
 

@@ -163,13 +163,13 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TextComponent join(final @NonNull ComponentLike separator, final Iterable<? extends ComponentLike> components) {
     final Iterator<? extends ComponentLike> it = components.iterator();
-    if(!it.hasNext()) {
+    if (!it.hasNext()) {
       return Component.empty();
     }
     final TextComponent.Builder builder = text();
-    while(it.hasNext()) {
+    while (it.hasNext()) {
       builder.append(it.next());
-      if(it.hasNext()) {
+      if (it.hasNext()) {
         builder.append(separator);
       }
     }
@@ -197,14 +197,14 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
     return Collector.of(
       Component::text,
       (builder, add) -> {
-        if(separator != Component.empty() && !builder.children().isEmpty()) {
+        if (separator != Component.empty() && !builder.children().isEmpty()) {
           builder.append(separator);
         }
         builder.append(add);
       }, (a, b) -> {
         final List<Component> aChildren = a.children();
         final TextComponent.Builder ret = Component.text().append(aChildren);
-        if(!aChildren.isEmpty()) {
+        if (!aChildren.isEmpty()) {
           ret.append(separator);
         }
         ret.append(b.children());
@@ -600,7 +600,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_ -> new", pure = true)
   static @NonNull TextComponent text(final @NonNull String content) {
-    if(content.isEmpty()) return empty();
+    if (content.isEmpty()) return empty();
     return new TextComponentImpl(Collections.emptyList(), Style.empty(), content);
   }
 
@@ -733,8 +733,8 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(pure = true)
   static @NonNull TextComponent text(final char value) {
-    if(value == '\n') return newline();
-    if(value == ' ') return space();
+    if (value == '\n') return newline();
+    if (value == ' ') return space();
     return text(String.valueOf(value));
   }
 
@@ -1486,23 +1486,23 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.8.0
    */
   default boolean contains(final @NonNull Component that, final @NonNull BiPredicate<? super Component, ? super Component> equals) {
-    if(equals.test(this, that)) return true;
-    for(final Component child : this.children()) {
-      if(child.contains(that, equals)) return true;
+    if (equals.test(this, that)) return true;
+    for (final Component child : this.children()) {
+      if (child.contains(that, equals)) return true;
     }
     final @Nullable HoverEvent<?> hoverEvent = this.hoverEvent();
-    if(hoverEvent != null) {
+    if (hoverEvent != null) {
       final Object value = hoverEvent.value();
       Component component = null;
-      if(value instanceof Component) {
+      if (value instanceof Component) {
         component = (Component) hoverEvent.value();
-      } else if(value instanceof HoverEvent.ShowEntity) {
+      } else if (value instanceof HoverEvent.ShowEntity) {
         component = ((HoverEvent.ShowEntity) value).name();
       }
-      if(component != null) {
-        if(equals.test(that, component)) return true;
-        for(final Component child : component.children()) {
-          if(child.contains(that, equals)) return true;
+      if (component != null) {
+        if (equals.test(that, component)) return true;
+        for (final Component child : component.children()) {
+          if (child.contains(that, equals)) return true;
         }
       }
     }
@@ -1518,7 +1518,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Deprecated
   default void detectCycle(final @NonNull Component that) {
-    if(that.contains(this)) {
+    if (that.contains(this)) {
       throw new IllegalStateException("Component cycle detected between " + this + " and " + that);
     }
   }
@@ -1680,7 +1680,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(pure = true)
   default @NonNull Component colorIfAbsent(final @Nullable TextColor color) {
-    if(this.color() == null) return this.color(color);
+    if (this.color() == null) return this.color(color);
     return this;
   }
 

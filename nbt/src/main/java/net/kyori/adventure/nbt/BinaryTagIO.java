@@ -82,7 +82,7 @@ public final class BinaryTagIO {
    * @since 4.4.0
    */
   public static @NonNull Reader reader(final long sizeLimitBytes) {
-    if(sizeLimitBytes <= 0) {
+    if (sizeLimitBytes <= 0) {
       throw new IllegalArgumentException("The size limit must be greater than zero");
     }
     return new BinaryTagReaderImpl(sizeLimitBytes);

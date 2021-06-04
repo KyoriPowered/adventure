@@ -55,9 +55,9 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
     super(children, style);
     this.content = content;
 
-    if(WARN_WHEN_LEGACY_FORMATTING_DETECTED) {
+    if (WARN_WHEN_LEGACY_FORMATTING_DETECTED) {
       final LegacyFormattingDetected nag = this.warnWhenLegacyFormattingDetected();
-      if(nag != null) {
+      if (nag != null) {
         Nag.print(nag);
       }
     }
@@ -65,7 +65,7 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
 
   @VisibleForTesting
   final @Nullable LegacyFormattingDetected warnWhenLegacyFormattingDetected() {
-    if(this.content.indexOf(SECTION_CHAR) != -1) {
+    if (this.content.indexOf(SECTION_CHAR) != -1) {
       return new LegacyFormattingDetected(this);
     }
     return null;
@@ -78,7 +78,7 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
 
   @Override
   public @NonNull TextComponent content(final @NonNull String content) {
-    if(Objects.equals(this.content, content)) return this;
+    if (Objects.equals(this.content, content)) return this;
     return new TextComponentImpl(this.children, this.style, requireNonNull(content, "content"));
   }
 
@@ -94,9 +94,9 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(!(other instanceof TextComponentImpl)) return false;
-    if(!super.equals(other)) return false;
+    if (this == other) return true;
+    if (!(other instanceof TextComponentImpl)) return false;
+    if (!super.equals(other)) return false;
     final TextComponentImpl that = (TextComponentImpl) other;
     return Objects.equals(this.content, that.content);
   }
@@ -152,7 +152,7 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
 
     @Override
     public @NonNull TextComponent build() {
-      if(this.isEmpty()) {
+      if (this.isEmpty()) {
         return Component.empty();
       }
       return new TextComponentImpl(this.children, this.buildStyle(), this.content);

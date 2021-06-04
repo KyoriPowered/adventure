@@ -48,7 +48,7 @@ final class SoundSerializer implements TypeSerializer<Sound> {
 
   @Override
   public @Nullable Sound deserialize(final @NonNull TypeToken<?> type, final @NonNull ConfigurationNode value) throws ObjectMappingException {
-    if(value.isEmpty()) {
+    if (value.isEmpty()) {
       return null;
     }
 
@@ -57,7 +57,7 @@ final class SoundSerializer implements TypeSerializer<Sound> {
     final float volume = value.getNode(VOLUME).getFloat(1.0f);
     final float pitch = value.getNode(PITCH).getFloat(1.0f);
 
-    if(name == null || source == null) {
+    if (name == null || source == null) {
       throw new ObjectMappingException("A name and source are required to deserialize a Sound");
     }
 
@@ -66,7 +66,7 @@ final class SoundSerializer implements TypeSerializer<Sound> {
 
   @Override
   public void serialize(final @NonNull TypeToken<?> type, final @Nullable Sound obj, final @NonNull ConfigurationNode value) throws ObjectMappingException {
-    if(obj == null) {
+    if (obj == null) {
       value.setValue(null);
       return;
     }

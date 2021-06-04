@@ -79,7 +79,7 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
   static @NonNull TextColor color(final @NonNull HSVLike hsv) {
     final float s = hsv.s();
     final float v = hsv.v();
-    if(s == 0) {
+    if (s == 0) {
       // achromatic (grey)
       return color(v, v, v);
     }
@@ -91,15 +91,15 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
     final float q = v * (1 - s * f);
     final float t = v * (1 - s * (1 - f));
 
-    if(i == 0) {
+    if (i == 0) {
       return color(v, t, p);
-    } else if(i == 1) {
+    } else if (i == 1) {
       return color(q, v, p);
-    } else if(i == 2) {
+    } else if (i == 2) {
       return color(p, v, t);
-    } else if(i == 3) {
+    } else if (i == 3) {
       return color(p, q, v);
-    } else if(i == 4) {
+    } else if (i == 4) {
       return color(t, p, v);
     } else {
       return color(v, p, q);
@@ -140,7 +140,7 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
    * @since 4.0.0
    */
   static @Nullable TextColor fromHexString(final @NonNull String string) {
-    if(string.startsWith("#")) {
+    if (string.startsWith("#")) {
       try {
         final int hex = Integer.parseInt(string.substring(1), 16);
         return color(hex);
@@ -159,9 +159,9 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
    * @since 4.0.0
    */
   static @Nullable TextColor fromCSSHexString(final @NonNull String string) {
-    if(string.startsWith("#")) {
+    if (string.startsWith("#")) {
       final String hexString = string.substring(1);
-      if(hexString.length() != 3 && hexString.length() != 6) {
+      if (hexString.length() != 3 && hexString.length() != 6) {
         return null;
       }
       final int hex;
@@ -171,7 +171,7 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
         return null;
       }
 
-      if(hexString.length() == 6) {
+      if (hexString.length() == 6) {
         return color(hex);
       } else {
         final int red = (hex & 0xf00) >> 8 | (hex & 0xf00) >> 4;

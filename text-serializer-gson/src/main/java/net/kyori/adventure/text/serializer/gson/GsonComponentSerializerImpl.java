@@ -99,7 +99,7 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
   @Override
   public @NonNull Component deserialize(final @NonNull String string) {
     final Component component = this.serializer().fromJson(string, Component.class);
-    if(component == null) throw ComponentSerializerImpl.notSureHowToDeserialize(string);
+    if (component == null) throw ComponentSerializerImpl.notSureHowToDeserialize(string);
     return component;
   }
 
@@ -111,7 +111,7 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
   @Override
   public @NonNull Component deserializeFromTree(final @NonNull JsonElement input) {
     final Component component = this.serializer().fromJson(input, Component.class);
-    if(component == null) throw ComponentSerializerImpl.notSureHowToDeserialize(input);
+    if (component == null) throw ComponentSerializerImpl.notSureHowToDeserialize(input);
     return component;
   }
 
@@ -161,7 +161,7 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
 
     @Override
     public @NonNull GsonComponentSerializer build() {
-      if(this.legacyHoverSerializer == null) {
+      if (this.legacyHoverSerializer == null) {
         return this.downsampleColor ? Instances.LEGACY_INSTANCE : Instances.INSTANCE;
       } else {
         return new GsonComponentSerializerImpl(this.downsampleColor, this.legacyHoverSerializer, this.emitLegacyHover);

@@ -31,9 +31,9 @@ final class TranslationLocales {
 
   static {
     final String property = System.getProperty("net.kyo".concat("ri.adventure.defaultTranslationLocale"));
-    if(property == null || property.isEmpty()) {
+    if (property == null || property.isEmpty()) {
       GLOBAL = () -> Locale.US;
-    } else if(property.equals("system")) {
+    } else if (property.equals("system")) {
       GLOBAL = Locale::getDefault;
     } else {
       final Locale locale = Translator.parseLocale(property);

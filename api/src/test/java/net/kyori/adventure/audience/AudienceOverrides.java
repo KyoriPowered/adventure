@@ -43,10 +43,10 @@ class AudienceOverrides {
   })
   void ensureForwardingAudiencesOverrideRequiredMethods(final Class<?> audience) {
     final Set<MethodInfo> missing = Sets.difference(methods(Audience.class), methods(audience));
-    if(!missing.isEmpty()) {
+    if (!missing.isEmpty()) {
       final StringBuilder error = new StringBuilder();
       error.append(audience.getSimpleName()).append(" is missing override for ").append(Audience.class.getSimpleName()).append(" methods:");
-      for(final MethodInfo method : missing) {
+      for (final MethodInfo method : missing) {
         error.append('\n').append("- ").append(method);
       }
       error.append('\n');
@@ -81,8 +81,8 @@ class AudienceOverrides {
 
     @Override
     public boolean equals(final Object other) {
-      if(this == other) return true;
-      if(other == null || this.getClass() != other.getClass()) return false;
+      if (this == other) return true;
+      if (other == null || this.getClass() != other.getClass()) return false;
       final MethodInfo that = (MethodInfo) other;
       return this.name.equals(that.name)
         && Objects.equals(this.returnType, that.returnType)

@@ -41,7 +41,7 @@ final class KeySerializer extends ScalarSerializer<Key> {
 
   @Override
   public @NonNull Key deserialize(final @NonNull Type type, final @NonNull Object obj) throws SerializationException {
-    if(!(obj instanceof CharSequence)) {
+    if (!(obj instanceof CharSequence)) {
       throw new CoercionFailedException(obj, "string");
     }
     try {

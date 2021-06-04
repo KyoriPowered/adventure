@@ -59,17 +59,17 @@ public final class UTF8ResourceBundleControl extends ResourceBundle.Control {
 
   @Override
   public ResourceBundle newBundle(final String baseName, final Locale locale, final String format, final ClassLoader loader, final boolean reload) throws IllegalAccessException, InstantiationException, IOException {
-    if(format.equals("java.properties")) {
+    if (format.equals("java.properties")) {
       final String bundle = this.toBundleName(baseName, locale);
       final String resource = this.toResourceName(bundle, "properties");
       final InputStream is;
       try {
         is = AccessController.doPrivileged((PrivilegedExceptionAction<InputStream>) () -> {
-          if(reload) {
+          if (reload) {
             final URL url = loader.getResource(resource);
-            if(url != null) {
+            if (url != null) {
               final URLConnection connection = url.openConnection();
-              if(connection != null) {
+              if (connection != null) {
                 connection.setUseCaches(false);
                 return connection.getInputStream();
               }
@@ -82,7 +82,7 @@ public final class UTF8ResourceBundleControl extends ResourceBundle.Control {
       } catch(final PrivilegedActionException e) {
         throw (IOException) e.getException();
       }
-      if(is != null) {
+      if (is != null) {
         try(final InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8)) {
           return new PropertyResourceBundle(isr);
         }

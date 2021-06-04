@@ -107,7 +107,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    * @since 4.0.0
    */
   static @NonNull Style style(final @Nullable TextColor color) {
-    if(color == null) return empty();
+    if (color == null) return empty();
     return new StyleImpl(null, color, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null);
   }
 
@@ -148,8 +148,8 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
   static @NonNull Style style(final @Nullable TextColor color, final Set<TextDecoration> decorations) {
     final Builder builder = style();
     builder.color(color);
-    if(!decorations.isEmpty()) {
-      for(final TextDecoration decoration : decorations) {
+    if (!decorations.isEmpty()) {
+      for (final TextDecoration decoration : decorations) {
         builder.decoration(decoration, true);
       }
     }
@@ -164,9 +164,9 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    * @since 4.0.0
    */
   static @NonNull Style style(final StyleBuilderApplicable@NonNull... applicables) {
-    if(applicables.length == 0) return empty();
+    if (applicables.length == 0) return empty();
     final Builder builder = style();
-    for(int i = 0, length = applicables.length; i < length; i++) {
+    for (int i = 0, length = applicables.length; i < length; i++) {
       applicables[i].styleApply(builder);
     }
     return builder.build();
@@ -181,7 +181,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    */
   static @NonNull Style style(final @NonNull Iterable<? extends StyleBuilderApplicable> applicables) {
     final Builder builder = style();
-    for(final StyleBuilderApplicable applicable : applicables) {
+    for (final StyleBuilderApplicable applicable : applicables) {
       applicable.styleApply(builder);
     }
     return builder.build();
@@ -210,11 +210,11 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    */
   default @NonNull Style edit(final @NonNull Consumer<Builder> consumer, final Merge.@NonNull Strategy strategy) {
     return style(style -> {
-      if(strategy == Merge.Strategy.ALWAYS) {
+      if (strategy == Merge.Strategy.ALWAYS) {
         style.merge(this, strategy);
       }
       consumer.accept(style);
-      if(strategy == Merge.Strategy.IF_ABSENT_ON_TARGET) {
+      if (strategy == Merge.Strategy.IF_ABSENT_ON_TARGET) {
         style.merge(this, strategy);
       }
     });
@@ -669,7 +669,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      */
     @Contract("_ -> this")
     default @NonNull Builder decorate(final @NonNull TextDecoration@NonNull... decorations) {
-      for(int i = 0, length = decorations.length; i < length; i++) {
+      for (int i = 0, length = decorations.length; i < length; i++) {
         this.decorate(decorations[i]);
       }
       return this;
@@ -768,7 +768,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      */
     @Contract("_, _ -> this")
     default @NonNull Builder merge(final @NonNull Style that, final @NonNull Merge@NonNull... merges) {
-      if(merges.length == 0) return this;
+      if (merges.length == 0) return this;
       return this.merge(that, Merge.of(merges));
     }
 
@@ -783,7 +783,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      */
     @Contract("_, _, _ -> this")
     default @NonNull Builder merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy, final @NonNull Merge@NonNull... merges) {
-      if(merges.length == 0) return this;
+      if (merges.length == 0) return this;
       return this.merge(that, strategy, Merge.of(merges));
     }
 

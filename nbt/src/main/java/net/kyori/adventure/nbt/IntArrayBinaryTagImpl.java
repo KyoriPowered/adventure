@@ -71,7 +71,7 @@ final class IntArrayBinaryTagImpl extends ArrayBinaryTagImpl implements IntArray
 
       @Override
       public int nextInt() {
-        if(!this.hasNext()) {
+        if (!this.hasNext()) {
           throw new NoSuchElementException();
         }
         return IntArrayBinaryTagImpl.this.value[this.index++];
@@ -91,7 +91,7 @@ final class IntArrayBinaryTagImpl extends ArrayBinaryTagImpl implements IntArray
 
   @Override
   public void forEachInt(final @NonNull IntConsumer action) {
-    for(int i = 0, length = this.value.length; i < length; i++) {
+    for (int i = 0, length = this.value.length; i < length; i++) {
       action.accept(this.value[i]);
     }
   }
@@ -103,8 +103,8 @@ final class IntArrayBinaryTagImpl extends ArrayBinaryTagImpl implements IntArray
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(other == null || this.getClass() != other.getClass()) return false;
+    if (this == other) return true;
+    if (other == null || this.getClass() != other.getClass()) return false;
     final IntArrayBinaryTagImpl that = (IntArrayBinaryTagImpl) other;
     return Arrays.equals(this.value, that.value);
   }

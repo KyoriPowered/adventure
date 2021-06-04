@@ -76,77 +76,77 @@ public interface ForwardingAudience extends Audience {
 
   @Override
   default void sendMessage(final @NonNull Identified source, final @NonNull Component message, final @NonNull MessageType type) {
-    for(final Audience audience : this.audiences()) audience.sendMessage(source, message, type);
+    for (final Audience audience : this.audiences()) audience.sendMessage(source, message, type);
   }
 
   @Override
   default void sendMessage(final @NonNull Identity source, final @NonNull Component message, final @NonNull MessageType type) {
-    for(final Audience audience : this.audiences()) audience.sendMessage(source, message, type);
+    for (final Audience audience : this.audiences()) audience.sendMessage(source, message, type);
   }
 
   @Override
   default void sendActionBar(final @NonNull Component message) {
-    for(final Audience audience : this.audiences()) audience.sendActionBar(message);
+    for (final Audience audience : this.audiences()) audience.sendActionBar(message);
   }
 
   @Override
   default void sendPlayerListHeader(final @NonNull Component header) {
-    for(final Audience audience : this.audiences()) audience.sendPlayerListHeader(header);
+    for (final Audience audience : this.audiences()) audience.sendPlayerListHeader(header);
   }
 
   @Override
   default void sendPlayerListFooter(final @NonNull Component footer) {
-    for(final Audience audience : this.audiences()) audience.sendPlayerListFooter(footer);
+    for (final Audience audience : this.audiences()) audience.sendPlayerListFooter(footer);
   }
 
   @Override
   default void sendPlayerListHeaderAndFooter(final @NonNull Component header, final @NonNull Component footer) {
-    for(final Audience audience : this.audiences()) audience.sendPlayerListHeaderAndFooter(header, footer);
+    for (final Audience audience : this.audiences()) audience.sendPlayerListHeaderAndFooter(header, footer);
   }
 
   @Override
   default void showTitle(final @NonNull Title title) {
-    for(final Audience audience : this.audiences()) audience.showTitle(title);
+    for (final Audience audience : this.audiences()) audience.showTitle(title);
   }
 
   @Override
   default void clearTitle() {
-    for(final Audience audience : this.audiences()) audience.clearTitle();
+    for (final Audience audience : this.audiences()) audience.clearTitle();
   }
 
   @Override
   default void resetTitle() {
-    for(final Audience audience : this.audiences()) audience.resetTitle();
+    for (final Audience audience : this.audiences()) audience.resetTitle();
   }
 
   @Override
   default void showBossBar(final @NonNull BossBar bar) {
-    for(final Audience audience : this.audiences()) audience.showBossBar(bar);
+    for (final Audience audience : this.audiences()) audience.showBossBar(bar);
   }
 
   @Override
   default void hideBossBar(final @NonNull BossBar bar) {
-    for(final Audience audience : this.audiences()) audience.hideBossBar(bar);
+    for (final Audience audience : this.audiences()) audience.hideBossBar(bar);
   }
 
   @Override
   default void playSound(final @NonNull Sound sound) {
-    for(final Audience audience : this.audiences()) audience.playSound(sound);
+    for (final Audience audience : this.audiences()) audience.playSound(sound);
   }
 
   @Override
   default void playSound(final @NonNull Sound sound, final double x, final double y, final double z) {
-    for(final Audience audience : this.audiences()) audience.playSound(sound, x, y, z);
+    for (final Audience audience : this.audiences()) audience.playSound(sound, x, y, z);
   }
 
   @Override
   default void stopSound(final @NonNull SoundStop stop) {
-    for(final Audience audience : this.audiences()) audience.stopSound(stop);
+    for (final Audience audience : this.audiences()) audience.stopSound(stop);
   }
 
   @Override
   default void openBook(final @NonNull Book book) {
-    for(final Audience audience : this.audiences()) audience.openBook(book);
+    for (final Audience audience : this.audiences()) audience.openBook(book);
   }
 
   /**

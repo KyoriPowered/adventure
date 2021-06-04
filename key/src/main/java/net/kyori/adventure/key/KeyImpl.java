@@ -42,16 +42,16 @@ final class KeyImpl implements Key {
   private final String value;
 
   KeyImpl(final @NonNull String namespace, final @NonNull String value) {
-    if(!namespaceValid(namespace)) throw new InvalidKeyException(namespace, value, String.format("Non [a-z0-9_.-] character in namespace of Key[%s]", asString(namespace, value)));
-    if(!valueValid(value)) throw new InvalidKeyException(namespace, value, String.format("Non [a-z0-9/._-] character in value of Key[%s]", asString(namespace, value)));
+    if (!namespaceValid(namespace)) throw new InvalidKeyException(namespace, value, String.format("Non [a-z0-9_.-] character in namespace of Key[%s]", asString(namespace, value)));
+    if (!valueValid(value)) throw new InvalidKeyException(namespace, value, String.format("Non [a-z0-9/._-] character in value of Key[%s]", asString(namespace, value)));
     this.namespace = requireNonNull(namespace, "namespace");
     this.value = requireNonNull(value, "value");
   }
 
   @VisibleForTesting
   static boolean namespaceValid(final @NonNull String namespace) {
-    for(int i = 0, length = namespace.length(); i < length; i++) {
-      if(!NAMESPACE_PREDICATE.test(namespace.charAt(i))) {
+    for (int i = 0, length = namespace.length(); i < length; i++) {
+      if (!NAMESPACE_PREDICATE.test(namespace.charAt(i))) {
         return false;
       }
     }
@@ -60,8 +60,8 @@ final class KeyImpl implements Key {
 
   @VisibleForTesting
   static boolean valueValid(final @NonNull String value) {
-    for(int i = 0, length = value.length(); i < length; i++) {
-      if(!VALUE_PREDICATE.test(value.charAt(i))) {
+    for (int i = 0, length = value.length(); i < length; i++) {
+      if (!VALUE_PREDICATE.test(value.charAt(i))) {
         return false;
       }
     }
@@ -102,8 +102,8 @@ final class KeyImpl implements Key {
 
   @Override
   public boolean equals(final Object other) {
-    if(this == other) return true;
-    if(!(other instanceof Key)) return false;
+    if (this == other) return true;
+    if (!(other instanceof Key)) return false;
     final Key that = (Key) other;
     return Objects.equals(this.namespace, that.namespace()) && Objects.equals(this.value, that.value());
   }
@@ -121,8 +121,8 @@ final class KeyImpl implements Key {
   }
 
   static int clampCompare(final int value) {
-    if(value < 0) return -1;
-    if(value > 0) return 1;
+    if (value < 0) return -1;
+    if (value > 0) return 1;
     return value;
   }
 }

@@ -48,8 +48,8 @@ final class IdentityImpl implements Examinable, Identity {
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(!(other instanceof Identity)) return false;
+    if (this == other) return true;
+    if (!(other instanceof Identity)) return false;
     final Identity that = (Identity) other;
     return this.uuid.equals(that.uuid());
   }

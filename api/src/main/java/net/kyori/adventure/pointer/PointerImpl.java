@@ -54,8 +54,8 @@ final class PointerImpl<T> implements Pointer<T> {
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(other == null || this.getClass() != other.getClass()) return false;
+    if (this == other) return true;
+    if (other == null || this.getClass() != other.getClass()) return false;
     final PointerImpl<?> that = (PointerImpl<?>) other;
     return this.type.equals(that.type) && this.key.equals(that.key);
   }

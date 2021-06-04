@@ -51,18 +51,18 @@ public final class Services {
   public static <P> @NonNull Optional<P> service(final @NonNull Class<P> type) {
     final ServiceLoader<P> loader = Services0.loader(type);
     final Iterator<P> it = loader.iterator();
-    while(it.hasNext()) {
+    while (it.hasNext()) {
       final P instance;
       try {
         instance = it.next();
       } catch(final Throwable t) {
-        if(SERVICE_LOAD_FAILURES_ARE_FATAL) {
+        if (SERVICE_LOAD_FAILURES_ARE_FATAL) {
           throw new IllegalStateException("Encountered an exception loading service " + type, t);
         } else {
           continue;
         }
       }
-      if(it.hasNext()) {
+      if (it.hasNext()) {
         throw new IllegalStateException("Expected to find one service " + type + ", found multiple");
       }
       return Optional.of(instance);

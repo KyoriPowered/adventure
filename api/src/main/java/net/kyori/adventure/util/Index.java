@@ -120,13 +120,13 @@ public final class Index<K, V> {
     final int length = values.size();
     final Map<K, V> keyToValue = new HashMap<>(length);
     final Map<V, K> valueToKey = valueToKeyFactory.apply(length); // to support using EnumMap instead of HashMap when possible
-    for(int i = 0; i < length; i++) {
+    for (int i = 0; i < length; i++) {
       final V value = values.get(i);
       final K key = keyFunction.apply(value);
-      if(keyToValue.putIfAbsent(key, value) != null) {
+      if (keyToValue.putIfAbsent(key, value) != null) {
         throw new IllegalStateException(String.format("Key %s already mapped to value %s", key, keyToValue.get(key)));
       }
-      if(valueToKey.putIfAbsent(value, key) != null) {
+      if (valueToKey.putIfAbsent(value, key) != null) {
         throw new IllegalStateException(String.format("Value %s already mapped to key %s", value, valueToKey.get(value)));
       }
     }

@@ -51,7 +51,7 @@ final class HoverEventShowEntitySerializer implements TypeSerializer<HoverEvent.
   public HoverEvent.ShowEntity deserialize(final @NonNull TypeToken<?> type, final @NonNull ConfigurationNode value) throws ObjectMappingException {
     final Key typeId = value.getNode(ENTITY_TYPE).getValue(KeySerializer.INSTANCE.type());
     final UUID id = value.getNode(ID).getValue(UUID_TYPE);
-    if(typeId == null || id == null) {
+    if (typeId == null || id == null) {
       throw new ObjectMappingException("A show entity hover event needs type and id fields to be deserialized");
     }
     final @Nullable Component name = value.getNode(NAME).getValue(ComponentTypeSerializer.TYPE);
@@ -61,7 +61,7 @@ final class HoverEventShowEntitySerializer implements TypeSerializer<HoverEvent.
 
   @Override
   public void serialize(final @NonNull TypeToken<?> type, final HoverEvent.@Nullable ShowEntity obj, final @NonNull ConfigurationNode value) throws ObjectMappingException {
-    if(obj == null) {
+    if (obj == null) {
       value.setValue(null);
       return;
     }

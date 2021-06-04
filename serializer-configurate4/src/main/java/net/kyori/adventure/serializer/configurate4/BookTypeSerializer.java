@@ -47,7 +47,7 @@ final class BookTypeSerializer implements TypeSerializer<Book> {
     final Component title = value.node(TITLE).get(Component.class);
     final Component author = value.node(AUTHOR).get(Component.class);
     final List<Component> pages = value.node(PAGES).get(ComponentTypeSerializer.LIST_TYPE);
-    if(title == null || author == null || pages == null) {
+    if (title == null || author == null || pages == null) {
       throw new SerializationException("title, author, and pages fields are all required to deserialize a Book");
     }
     return Book.book(title, author, pages);
@@ -55,7 +55,7 @@ final class BookTypeSerializer implements TypeSerializer<Book> {
 
   @Override
   public void serialize(final @NonNull Type type, final @Nullable Book obj, final @NonNull ConfigurationNode value) throws SerializationException {
-    if(obj == null) {
+    if (obj == null) {
       value.set(null);
       return;
     }

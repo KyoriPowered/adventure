@@ -78,7 +78,7 @@ class StringIOTest {
       final StringBuilder build = new StringBuilder();
       final char[] buffer = new char[2048];
       int read;
-      while((read = reader.read(buffer)) != -1) {
+      while ((read = reader.read(buffer)) != -1) {
         build.append(buffer, 0, read);
       }
       result = build.toString();
@@ -293,7 +293,7 @@ class StringIOTest {
     final TagStringReader parser = new TagStringReader(buffer);
     parser.legacy(acceptLegacy);
     final BinaryTag ret = parser.tag();
-    if(buffer.skipWhitespace().hasMore()) {
+    if (buffer.skipWhitespace().hasMore()) {
       throw buffer.makeError("Trailing content after parse!");
     }
     return ret;

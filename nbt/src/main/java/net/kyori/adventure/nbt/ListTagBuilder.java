@@ -44,12 +44,12 @@ final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder
   public ListBinaryTag.@NonNull Builder<T> add(final BinaryTag tag) {
     ListBinaryTagImpl.noAddEnd(tag);
     // set the type if it has not yet been set
-    if(this.elementType == BinaryTagTypes.END) {
+    if (this.elementType == BinaryTagTypes.END) {
       this.elementType = tag.type();
     }
     // check after changing from an empty tag
     ListBinaryTagImpl.mustBeSameType(tag, this.elementType);
-    if(this.tags == null) {
+    if (this.tags == null) {
       this.tags = new ArrayList<>();
     }
     this.tags.add(tag);
@@ -58,7 +58,7 @@ final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder
 
   @Override
   public ListBinaryTag.@NonNull Builder<T> add(final Iterable<? extends T> tagsToAdd) {
-    for(final T tag : tagsToAdd) {
+    for (final T tag : tagsToAdd) {
       this.add(tag);
     }
     return this;
@@ -66,7 +66,7 @@ final class ListTagBuilder<T extends BinaryTag> implements ListBinaryTag.Builder
 
   @Override
   public @NonNull ListBinaryTag build() {
-    if(this.tags == null) return ListBinaryTag.empty();
+    if (this.tags == null) return ListBinaryTag.empty();
     return new ListBinaryTagImpl(this.elementType, new ArrayList<>(this.tags));
   }
 }

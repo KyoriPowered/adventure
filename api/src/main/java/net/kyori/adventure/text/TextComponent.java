@@ -48,7 +48,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @since 4.0.0
    */
   static @NonNull TextComponent ofChildren(final @NonNull ComponentLike@NonNull... components) {
-    if(components.length == 0) return Component.empty();
+    if (components.length == 0) return Component.empty();
     return new TextComponentImpl(Arrays.asList(components), Style.empty(), "");
   }
 

@@ -58,7 +58,7 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
 
   @Override
   public @NonNull TranslatableComponent key(final @NonNull String key) {
-    if(Objects.equals(this.key, key)) return this;
+    if (Objects.equals(this.key, key)) return this;
     return new TranslatableComponentImpl(this.children, this.style, requireNonNull(key, "key"), this.args);
   }
 
@@ -89,9 +89,9 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(!(other instanceof TranslatableComponent)) return false;
-    if(!super.equals(other)) return false;
+    if (this == other) return true;
+    if (!(other instanceof TranslatableComponent)) return false;
+    if (!super.equals(other)) return false;
     final TranslatableComponent that = (TranslatableComponent) other;
     return Objects.equals(this.key, that.key()) && Objects.equals(this.args, that.args());
   }
@@ -147,7 +147,7 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
     @Override
     @SuppressWarnings("checkstyle:GenericWhitespace")
     public @NonNull Builder args(final @NonNull ComponentBuilder<?, ?>@NonNull... args) {
-      if(args.length == 0) return this.args(Collections.emptyList());
+      if (args.length == 0) return this.args(Collections.emptyList());
       return this.args(Stream.of(args).map(ComponentBuilder::build).collect(Collectors.toList()));
     }
 
@@ -158,7 +158,7 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
 
     @Override
     public @NonNull Builder args(final @NonNull ComponentLike@NonNull... args) {
-      if(args.length == 0) return this.args(Collections.emptyList());
+      if (args.length == 0) return this.args(Collections.emptyList());
       return this.args(Arrays.asList(args));
     }
 
@@ -170,7 +170,7 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
 
     @Override
     public @NonNull TranslatableComponentImpl build() {
-      if(this.key == null) throw new IllegalStateException("key must be set");
+      if (this.key == null) throw new IllegalStateException("key must be set");
       return new TranslatableComponentImpl(this.children, this.buildStyle(), this.key, this.args);
     }
   }

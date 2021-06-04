@@ -44,22 +44,22 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<C> {
   @Override
   public @NonNull Component render(final @NonNull Component component, final @NonNull C context) {
-    if(component instanceof TextComponent) {
+    if (component instanceof TextComponent) {
       return this.renderText((TextComponent) component, context);
-    } else if(component instanceof TranslatableComponent) {
+    } else if (component instanceof TranslatableComponent) {
       return this.renderTranslatable((TranslatableComponent) component, context);
-    } else if(component instanceof KeybindComponent) {
+    } else if (component instanceof KeybindComponent) {
       return this.renderKeybind((KeybindComponent) component, context);
-    } else if(component instanceof ScoreComponent) {
+    } else if (component instanceof ScoreComponent) {
       return this.renderScore((ScoreComponent) component, context);
-    } else if(component instanceof SelectorComponent) {
+    } else if (component instanceof SelectorComponent) {
       return this.renderSelector((SelectorComponent) component, context);
-    } else if(component instanceof NBTComponent<?, ?>) {
-      if(component instanceof BlockNBTComponent) {
+    } else if (component instanceof NBTComponent<?, ?>) {
+      if (component instanceof BlockNBTComponent) {
         return this.renderBlockNbt((BlockNBTComponent) component, context);
-      } else if(component instanceof EntityNBTComponent) {
+      } else if (component instanceof EntityNBTComponent) {
         return this.renderEntityNbt((EntityNBTComponent) component, context);
-      } else if(component instanceof StorageNBTComponent) {
+      } else if (component instanceof StorageNBTComponent) {
         return this.renderStorageNbt((StorageNBTComponent) component, context);
       }
     }

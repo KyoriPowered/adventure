@@ -54,7 +54,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    * @since 4.4.0
    */
   static @NonNull CompoundBinaryTag from(final @NonNull Map<String, ? extends BinaryTag> tags) {
-    if(tags.isEmpty()) return empty();
+    if (tags.isEmpty()) return empty();
     return new CompoundBinaryTagImpl(new HashMap<>(tags)); // explicitly copy
   }
 

@@ -164,7 +164,7 @@ class StyleTest extends GsonTest<Style> {
         hoverEvent.addProperty(StyleSerializer.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ITEM));
         hoverEvent.add(StyleSerializer.HOVER_EVENT_CONTENTS, object(contents -> {
           contents.addProperty(ShowItemSerializer.ID, "minecraft:stone");
-          if(count != 1) { // default count is 1, we don't serialize the value in this case
+          if (count != 1) { // default count is 1, we don't serialize the value in this case
             contents.addProperty(ShowItemSerializer.COUNT, count);
           }
         }));

@@ -99,9 +99,9 @@ public interface Audience extends Pointered {
    */
   static @NonNull Audience audience(final @NonNull Audience@NonNull... audiences) {
     final int length = audiences.length;
-    if(length == 0) {
+    if (length == 0) {
       return empty();
-    } else if(length == 1) {
+    } else if (length == 1) {
       return audiences[0];
     }
     return audience(Arrays.asList(audiences));

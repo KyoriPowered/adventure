@@ -40,21 +40,21 @@ public final class WeirdAssertions {
 
   @SafeVarargs
   public static <T> void assertAllEqualToEachOther(final T... values) {
-    for(final T a : values) {
-      for(final T b : values) {
+    for (final T a : values) {
+      for (final T b : values) {
         assertEquals(a, b);
       }
     }
   }
 
   public static <T, U> void forEachTransformAndAssert(final Iterable<T> values, final Function<T, U> function, final Consumer<U> consumer) {
-    for(final T value : values) {
+    for (final T value : values) {
       consumer.accept(function.apply(value));
     }
   }
 
   public static <T, U extends Iterable<V>, V> void forEachTransformAndAssertIterable(final Iterable<T> values, final Function<T, U> function, final Consumer<IterableSubject> consumer) {
-    for(final T value : values) {
+    for (final T value : values) {
       consumer.accept(assertThat(function.apply(value)));
     }
   }

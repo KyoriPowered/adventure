@@ -80,7 +80,7 @@ public abstract class AbstractComponent implements Component {
   @Override
   public @NonNull Component replaceText(final @NonNull TextReplacementConfig config) {
     requireNonNull(config, "replacement");
-    if(!(config instanceof TextReplacementConfigImpl)) {
+    if (!(config instanceof TextReplacementConfigImpl)) {
       throw new IllegalArgumentException("Provided replacement was a custom TextReplacementConfig implementation, which is not supported.");
     }
     return TextReplacementRenderer.INSTANCE.render(this, ((TextReplacementConfigImpl) config).createState());
@@ -88,8 +88,8 @@ public abstract class AbstractComponent implements Component {
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(!(other instanceof AbstractComponent)) return false;
+    if (this == other) return true;
+    if (!(other instanceof AbstractComponent)) return false;
     final AbstractComponent that = (AbstractComponent) other;
     return Objects.equals(this.children, that.children)
       && Objects.equals(this.style, that.style);

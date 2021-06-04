@@ -164,7 +164,7 @@ public interface Key extends Comparable<Key>, Examinable {
   @Override
   default int compareTo(final @NonNull Key that) {
     final int value = this.value().compareTo(that.value());
-    if(value != 0) {
+    if (value != 0) {
       return KeyImpl.clampCompare(value);
     }
     return KeyImpl.clampCompare(this.namespace().compareTo(that.namespace()));

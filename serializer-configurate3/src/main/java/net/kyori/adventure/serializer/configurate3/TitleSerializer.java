@@ -52,7 +52,7 @@ final class TitleSerializer implements TypeSerializer<Title> {
 
   @Override
   public @Nullable Title deserialize(final @NonNull TypeToken<?> type, final @NonNull ConfigurationNode value) throws ObjectMappingException {
-    if(value.isEmpty()) {
+    if (value.isEmpty()) {
       return null;
     }
     final Component title = value.getNode(TITLE).getValue(ComponentTypeSerializer.TYPE, Component.empty());
@@ -62,7 +62,7 @@ final class TitleSerializer implements TypeSerializer<Title> {
     final Duration stay = value.getNode(TIMES, STAY).getValue(DurationSerializer.INSTANCE.type(), KEEP);
     final Duration fadeOut = value.getNode(TIMES, FADE_OUT).getValue(DurationSerializer.INSTANCE.type(), KEEP);
 
-    if(!Objects.equals(fadeIn, KEEP) || !Objects.equals(stay, KEEP) || !Objects.equals(fadeOut, KEEP)) {
+    if (!Objects.equals(fadeIn, KEEP) || !Objects.equals(stay, KEEP) || !Objects.equals(fadeOut, KEEP)) {
       return Title.title(title, subtitle, Title.Times.of(fadeIn, stay, fadeOut));
     } else {
       return Title.title(title, subtitle);
@@ -71,7 +71,7 @@ final class TitleSerializer implements TypeSerializer<Title> {
 
   @Override
   public void serialize(final @NonNull TypeToken<?> type, final @Nullable Title obj, final @NonNull ConfigurationNode value) throws ObjectMappingException {
-    if(obj == null) {
+    if (obj == null) {
       value.setValue(null);
       return;
     }

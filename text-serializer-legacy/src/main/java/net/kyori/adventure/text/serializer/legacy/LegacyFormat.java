@@ -102,8 +102,8 @@ public final class LegacyFormat implements Examinable {
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(other == null || this.getClass() != other.getClass()) return false;
+    if (this == other) return true;
+    if (other == null || this.getClass() != other.getClass()) return false;
     final LegacyFormat that = (LegacyFormat) other;
     return this.color == that.color && this.decoration == that.decoration && this.reset == that.reset;
   }

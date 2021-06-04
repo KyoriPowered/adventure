@@ -55,8 +55,8 @@ final class HSVLikeImpl implements HSVLike {
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(!(other instanceof HSVLikeImpl)) return false;
+    if (this == other) return true;
+    if (!(other instanceof HSVLikeImpl)) return false;
     final HSVLikeImpl that = (HSVLikeImpl) other;
     return ShadyPines.equals(that.h, this.h) && ShadyPines.equals(that.s, this.s) && ShadyPines.equals(that.v, this.v);
   }

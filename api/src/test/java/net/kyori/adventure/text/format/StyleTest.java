@@ -115,7 +115,7 @@ class StyleTest {
   void testDecorate() {
     final Style s0 = Style.empty();
     assertDecorations(s0, ImmutableSet.of(), ImmutableSet.of());
-    for(final TextDecoration decoration : TextDecoration.values()) {
+    for (final TextDecoration decoration : TextDecoration.values()) {
       assertDecorations(Style.empty().decorate(decoration), ImmutableSet.of(decoration), ImmutableSet.of());
     }
   }
@@ -144,7 +144,7 @@ class StyleTest {
   void testDecoration() {
     final Style s0 = Style.empty();
     assertDecorations(s0, ImmutableSet.of(), ImmutableSet.of());
-    for(final TextDecoration decoration : TextDecoration.values()) {
+    for (final TextDecoration decoration : TextDecoration.values()) {
       assertDecorations(Style.empty().decoration(decoration, true), ImmutableSet.of(decoration), ImmutableSet.of());
     }
   }
@@ -263,7 +263,7 @@ class StyleTest {
 
   @Test
   void testBuilderDecoration() {
-    for(final TextDecoration decoration : TextDecoration.values()) {
+    for (final TextDecoration decoration : TextDecoration.values()) {
       assertDecorations(Style.style().decoration(decoration, true).build(), ImmutableSet.of(decoration), ImmutableSet.of());
     }
   }

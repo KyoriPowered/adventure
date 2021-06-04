@@ -54,8 +54,8 @@ final class PermissionCheckers {
 
     @Override
     public boolean equals(final @Nullable Object other) {
-      if(this == other) return true;
-      if(other == null || this.getClass() != other.getClass()) return false;
+      if (this == other) return true;
+      if (other == null || this.getClass() != other.getClass()) return false;
       final Always always = (Always) other;
       return this.value == always.value;
     }

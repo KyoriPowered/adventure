@@ -61,60 +61,60 @@ final class StyleSerializer implements TypeSerializer<Style> {
 
   @Override
   public @NonNull Style deserialize(final @NonNull Type type, final @NonNull ConfigurationNode value) throws SerializationException {
-    if(value.virtual()) {
+    if (value.virtual()) {
       return Style.empty();
     }
 
     final Style.Builder builder = Style.style();
 
     final @Nullable Key font = value.node(FONT).get(Key.class);
-    if(font != null) {
+    if (font != null) {
       builder.font(font);
     }
     final @Nullable TextColor color = value.node(COLOR).get(TextColor.class);
-    if(color != null) {
+    if (color != null) {
       builder.color(color);
     }
 
-    for(final TextDecoration decoration : DECORATIONS) {
+    for (final TextDecoration decoration : DECORATIONS) {
       final TextDecoration.State state = value.node(nonNull(TextDecoration.NAMES.key(decoration), "decoration")).get(TextDecoration.State.class);
-      if(state != null) {
+      if (state != null) {
         builder.decoration(decoration, state);
       }
     }
 
     final @Nullable String insertion = value.node(INSERTION).getString();
-    if(insertion != null) {
+    if (insertion != null) {
       builder.insertion(insertion);
     }
 
     final ConfigurationNode clickEvent = value.node(CLICK_EVENT);
-    if(!clickEvent.virtual()) {
+    if (!clickEvent.virtual()) {
       final ClickEvent.Action action = nonNull(clickEvent.node(CLICK_EVENT_ACTION).get(ClickEvent.Action.class), "click event action");
       builder.clickEvent(ClickEvent.clickEvent(action, nonNull(clickEvent.node(CLICK_EVENT_VALUE).getString(), "click event value")));
     }
 
     final ConfigurationNode hoverEvent = value.node(HOVER_EVENT);
-    if(!hoverEvent.virtual()) {
+    if (!hoverEvent.virtual()) {
       final HoverEvent.Action<?> action = hoverEvent.node(HOVER_EVENT_ACTION).get(HOVER_EVENT_ACTION_TYPE);
       final ConfigurationNode contents = hoverEvent.node(HOVER_EVENT_CONTENTS);
-      if(contents.virtual()) {
+      if (contents.virtual()) {
         final Component legacyValue = hoverEvent.node(HOVER_EVENT_VALUE).get(Component.class);
-        if(legacyValue == null) {
+        if (legacyValue == null) {
           throw new SerializationException("No modern contents or legacy value present for hover event");
         }
-        if(action == HoverEvent.Action.SHOW_TEXT) {
+        if (action == HoverEvent.Action.SHOW_TEXT) {
           builder.hoverEvent(HoverEvent.showText(legacyValue));
         } else {
           throw new SerializationException("Unable to deserialize legacy hover event of type " + action);
         }
         // TODO: Legacy hover event
       } else {
-        if(action == HoverEvent.Action.SHOW_TEXT) {
+        if (action == HoverEvent.Action.SHOW_TEXT) {
           builder.hoverEvent(HoverEvent.showText(nonNull(contents.get(Component.class), "hover event text contents")));
-        } else if(action == HoverEvent.Action.SHOW_ENTITY) {
+        } else if (action == HoverEvent.Action.SHOW_ENTITY) {
           builder.hoverEvent(HoverEvent.showEntity(nonNull(contents.get(HoverEvent.ShowEntity.class), "hover event show entity contents")));
-        } else if(action == HoverEvent.Action.SHOW_ITEM) {
+        } else if (action == HoverEvent.Action.SHOW_ITEM) {
           builder.hoverEvent(HoverEvent.showItem(nonNull(contents.get(HoverEvent.ShowItem.class), "hover event show item contents")));
         } else {
           throw new SerializationException("Unsupported hover event action " + action);
@@ -127,15 +127,15 @@ final class StyleSerializer implements TypeSerializer<Style> {
 
   @Override
   public void serialize(final @NonNull Type type, @Nullable Style obj, final @NonNull ConfigurationNode value) throws SerializationException {
-    if(obj == null) {
+    if (obj == null) {
       obj = Style.empty();
     }
     value.node(FONT).set(Key.class, obj.font());
     value.node(COLOR).set(TextColor.class, obj.color());
-    for(final TextDecoration decoration : DECORATIONS) {
+    for (final TextDecoration decoration : DECORATIONS) {
       final ConfigurationNode decorationNode = value.node(nonNull(TextDecoration.NAMES.key(decoration), "decoration"));
       final TextDecoration.State state = obj.decoration(decoration);
-      if(state == TextDecoration.State.NOT_SET) {
+      if (state == TextDecoration.State.NOT_SET) {
         decorationNode.set(null);
       } else {
         decorationNode.set(state == TextDecoration.State.TRUE);
@@ -145,7 +145,7 @@ final class StyleSerializer implements TypeSerializer<Style> {
 
     final ConfigurationNode clickNode = value.node(CLICK_EVENT);
     final ClickEvent clickEvent = obj.clickEvent();
-    if(clickEvent == null) {
+    if (clickEvent == null) {
       clickNode.set(null);
     } else {
       clickNode.node(CLICK_EVENT_ACTION).set(ClickEvent.Action.class, clickEvent.action());
@@ -153,24 +153,24 @@ final class StyleSerializer implements TypeSerializer<Style> {
     }
 
     final ConfigurationNode hoverNode = value.node(HOVER_EVENT);
-    if(obj.hoverEvent() == null) {
+    if (obj.hoverEvent() == null) {
       hoverNode.set(null);
     } else {
       final HoverEvent<?> event = obj.hoverEvent();
       hoverNode.node(HOVER_EVENT_ACTION).set(HOVER_EVENT_ACTION_TYPE, event.action());
       final ConfigurationNode contentsNode = hoverNode.node(HOVER_EVENT_CONTENTS);
-      if(event.action() == HoverEvent.Action.SHOW_TEXT) {
+      if (event.action() == HoverEvent.Action.SHOW_TEXT) {
         contentsNode.set(Component.class, (Component) event.value());
-      } else if(event.action() == HoverEvent.Action.SHOW_ENTITY) {
+      } else if (event.action() == HoverEvent.Action.SHOW_ENTITY) {
         contentsNode.set(HoverEvent.ShowEntity.class, (HoverEvent.ShowEntity) event.value());
-      } else if(event.action() == HoverEvent.Action.SHOW_ITEM) {
+      } else if (event.action() == HoverEvent.Action.SHOW_ITEM) {
         contentsNode.set(HoverEvent.ShowItem.class, (HoverEvent.ShowItem) event.value());
       }
     }
   }
 
   private static <T> @NonNull T nonNull(final @Nullable T value, final @NonNull String type) throws SerializationException {
-    if(value == null) {
+    if (value == null) {
       throw new SerializationException(type + " was null in an unexpected location");
     }
     return value;

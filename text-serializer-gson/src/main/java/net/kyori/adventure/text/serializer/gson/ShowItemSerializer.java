@@ -48,23 +48,23 @@ final class ShowItemSerializer implements JsonDeserializer<HoverEvent.ShowItem>,
   public HoverEvent.ShowItem deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
     final JsonObject object = json.getAsJsonObject();
 
-    if(!object.has(ID)) {
+    if (!object.has(ID)) {
       throw new JsonParseException("Not sure how to deserialize show_item hover event");
     }
 
     final Key id = context.deserialize(object.getAsJsonPrimitive(ID), Key.class);
 
     int count = 1;
-    if(object.has(COUNT)) {
+    if (object.has(COUNT)) {
       count = object.get(COUNT).getAsInt();
     }
 
     BinaryTagHolder nbt = null;
-    if(object.has(TAG)) {
+    if (object.has(TAG)) {
       final JsonElement tag = object.get(TAG);
-      if(tag.isJsonPrimitive()) {
+      if (tag.isJsonPrimitive()) {
         nbt = BinaryTagHolder.of(tag.getAsString());
-      } else if(!tag.isJsonNull()) {
+      } else if (!tag.isJsonNull()) {
         throw new JsonParseException("Expected " + TAG + " to be a string");
       }
     }
@@ -79,12 +79,12 @@ final class ShowItemSerializer implements JsonDeserializer<HoverEvent.ShowItem>,
     json.add(ID, context.serialize(src.item()));
 
     final int count = src.count();
-    if(count != 1) {
+    if (count != 1) {
       json.addProperty(COUNT, count);
     }
 
     final @Nullable BinaryTagHolder nbt = src.nbt();
-    if(nbt != null) {
+    if (nbt != null) {
       json.addProperty(TAG, nbt.string());
     }
 

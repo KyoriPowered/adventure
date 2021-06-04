@@ -45,9 +45,9 @@ final class DurationSerializer extends ScalarSerializer<Duration> {
 
   @Override
   public Duration deserialize(final @NonNull Type type, final @NonNull Object obj) throws SerializationException {
-    if(obj instanceof CharSequence) {
+    if (obj instanceof CharSequence) {
       String value = obj.toString();
-      if(!value.startsWith("P") && !value.startsWith("p")) {
+      if (!value.startsWith("P") && !value.startsWith("p")) {
         value = "P" + value;
       }
 

@@ -64,60 +64,60 @@ final class StyleSerializer implements TypeSerializer<Style> {
 
   @Override
   public @NonNull Style deserialize(final @NonNull TypeToken<?> type, final @NonNull ConfigurationNode value) throws ObjectMappingException {
-    if(value.isVirtual()) {
+    if (value.isVirtual()) {
       return Style.empty();
     }
 
     final Style.Builder builder = Style.style();
 
     final @Nullable Key font = value.getNode(FONT).getValue(KeySerializer.INSTANCE.type());
-    if(font != null) {
+    if (font != null) {
       builder.font(font);
     }
     final @Nullable TextColor color = value.getNode(COLOR).getValue(TextColorSerializer.INSTANCE.type());
-    if(color != null) {
+    if (color != null) {
       builder.color(color);
     }
 
-    for(final TextDecoration decoration : DECORATIONS) {
+    for (final TextDecoration decoration : DECORATIONS) {
       final TextDecoration.State state = value.getNode(nonNull(TextDecoration.NAMES.key(decoration), "decoration")).getValue(DECORATION_STATE);
-      if(state != null) {
+      if (state != null) {
         builder.decoration(decoration, state);
       }
     }
 
     final @Nullable String insertion = value.getNode(INSERTION).getString();
-    if(insertion != null) {
+    if (insertion != null) {
       builder.insertion(insertion);
     }
 
     final ConfigurationNode clickEvent = value.getNode(CLICK_EVENT);
-    if(!clickEvent.isVirtual()) {
+    if (!clickEvent.isVirtual()) {
       final ClickEvent.Action action = nonNull(clickEvent.getNode(CLICK_EVENT_ACTION).getValue(CLICK_EVENT_ACTION_TYPE), "click event action");
       builder.clickEvent(ClickEvent.clickEvent(action, nonNull(clickEvent.getNode(CLICK_EVENT_VALUE).getString(), "click event value")));
     }
 
     final ConfigurationNode hoverEvent = value.getNode(HOVER_EVENT);
-    if(!hoverEvent.isVirtual()) {
+    if (!hoverEvent.isVirtual()) {
       final HoverEvent.Action<?> action = hoverEvent.getNode(HOVER_EVENT_ACTION).getValue(HOVER_EVENT_ACTION_TYPE);
       final ConfigurationNode contents = hoverEvent.getNode(HOVER_EVENT_CONTENTS);
-      if(contents.isVirtual()) {
+      if (contents.isVirtual()) {
         final Component legacyValue = hoverEvent.getNode(HOVER_EVENT_VALUE).getValue(ComponentTypeSerializer.TYPE);
-        if(legacyValue == null) {
+        if (legacyValue == null) {
           throw new ObjectMappingException("No modern contents or legacy value present for hover event");
         }
-        if(action == HoverEvent.Action.SHOW_TEXT) {
+        if (action == HoverEvent.Action.SHOW_TEXT) {
           builder.hoverEvent(HoverEvent.showText(legacyValue));
         } else {
           throw new ObjectMappingException("Unable to deserialize legacy hover event of type " + action);
         }
         // TODO: Legacy hover event
       } else {
-        if(action == HoverEvent.Action.SHOW_TEXT) {
+        if (action == HoverEvent.Action.SHOW_TEXT) {
           builder.hoverEvent(HoverEvent.showText(nonNull(contents.getValue(ComponentTypeSerializer.TYPE), "hover event text contents")));
-        } else if(action == HoverEvent.Action.SHOW_ENTITY) {
+        } else if (action == HoverEvent.Action.SHOW_ENTITY) {
           builder.hoverEvent(HoverEvent.showEntity(nonNull(contents.getValue(HoverEventShowEntitySerializer.TYPE), "hover event show entity contents")));
-        } else if(action == HoverEvent.Action.SHOW_ITEM) {
+        } else if (action == HoverEvent.Action.SHOW_ITEM) {
           builder.hoverEvent(HoverEvent.showItem(nonNull(contents.getValue(HoverEventShowItemSerializer.TYPE), "hover event show item contents")));
         } else {
           throw new ObjectMappingException("Unsupported hover event action " + action);
@@ -130,15 +130,15 @@ final class StyleSerializer implements TypeSerializer<Style> {
 
   @Override
   public void serialize(final @NonNull TypeToken<?> type, @Nullable Style obj, final @NonNull ConfigurationNode value) throws ObjectMappingException {
-    if(obj == null) {
+    if (obj == null) {
       obj = Style.empty();
     }
     value.getNode(FONT).setValue(KeySerializer.INSTANCE.type(), obj.font());
     value.getNode(COLOR).setValue(TextColorSerializer.INSTANCE.type(), obj.color());
-    for(final TextDecoration decoration : DECORATIONS) {
+    for (final TextDecoration decoration : DECORATIONS) {
       final ConfigurationNode decorationNode = value.getNode(nonNull(TextDecoration.NAMES.key(decoration), "decoration"));
       final TextDecoration.State state = obj.decoration(decoration);
-      if(state == TextDecoration.State.NOT_SET) {
+      if (state == TextDecoration.State.NOT_SET) {
         decorationNode.setValue(null);
       } else {
         decorationNode.setValue(state == TextDecoration.State.TRUE);
@@ -148,7 +148,7 @@ final class StyleSerializer implements TypeSerializer<Style> {
 
     final ConfigurationNode clickNode = value.getNode(CLICK_EVENT);
     final ClickEvent clickEvent = obj.clickEvent();
-    if(clickEvent == null) {
+    if (clickEvent == null) {
       clickNode.setValue(null);
     } else {
       clickNode.getNode(CLICK_EVENT_ACTION).setValue(CLICK_EVENT_ACTION_TYPE, clickEvent.action());
@@ -156,24 +156,24 @@ final class StyleSerializer implements TypeSerializer<Style> {
     }
 
     final ConfigurationNode hoverNode = value.getNode(HOVER_EVENT);
-    if(obj.hoverEvent() == null) {
+    if (obj.hoverEvent() == null) {
       hoverNode.setValue(null);
     } else {
       final HoverEvent<?> event = obj.hoverEvent();
       hoverNode.getNode(HOVER_EVENT_ACTION).setValue(HOVER_EVENT_ACTION_TYPE, event.action());
       final ConfigurationNode contentsNode = hoverNode.getNode(HOVER_EVENT_CONTENTS);
-      if(event.action() == HoverEvent.Action.SHOW_TEXT) {
+      if (event.action() == HoverEvent.Action.SHOW_TEXT) {
         contentsNode.setValue(ComponentTypeSerializer.TYPE, (Component) event.value());
-      } else if(event.action() == HoverEvent.Action.SHOW_ENTITY) {
+      } else if (event.action() == HoverEvent.Action.SHOW_ENTITY) {
         contentsNode.setValue(HoverEventShowEntitySerializer.TYPE, (HoverEvent.ShowEntity) event.value());
-      } else if(event.action() == HoverEvent.Action.SHOW_ITEM) {
+      } else if (event.action() == HoverEvent.Action.SHOW_ITEM) {
         contentsNode.setValue(HoverEventShowItemSerializer.TYPE, (HoverEvent.ShowItem) event.value());
       }
     }
   }
 
   private static <T> @NonNull T nonNull(final @Nullable T value, final @NonNull String type) throws ObjectMappingException {
-    if(value == null) {
+    if (value == null) {
       throw new ObjectMappingException(type + " was null in an unexpected location");
     }
     return value;

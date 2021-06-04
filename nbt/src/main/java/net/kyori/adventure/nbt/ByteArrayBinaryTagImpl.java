@@ -62,8 +62,8 @@ final class ByteArrayBinaryTagImpl extends ArrayBinaryTagImpl implements ByteArr
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(other == null || this.getClass() != other.getClass()) return false;
+    if (this == other) return true;
+    if (other == null || this.getClass() != other.getClass()) return false;
     final ByteArrayBinaryTagImpl that = (ByteArrayBinaryTagImpl) other;
     return Arrays.equals(this.value, that.value);
   }

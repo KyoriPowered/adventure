@@ -45,7 +45,7 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
 
   @Override
   public @NonNull Component render(final @NonNull Component component, final @NonNull State state) {
-    if(!state.running) return component;
+    if (!state.running) return component;
     final boolean prevFirstMatch = state.firstMatch;
     state.firstMatch = true;
 
@@ -54,29 +54,29 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
     List<Component> children = null;
     Component modified = component;
     // replace the component itself
-    if(component instanceof TextComponent) {
+    if (component instanceof TextComponent) {
       final String content = ((TextComponent) component).content();
       final Matcher matcher = state.pattern.matcher(content);
       int replacedUntil = 0; // last index handled
-      while(matcher.find()) {
+      while (matcher.find()) {
         final PatternReplacementResult result = state.continuer.shouldReplace(matcher, ++state.matchCount, state.replaceCount);
-        if(result == PatternReplacementResult.CONTINUE) {
+        if (result == PatternReplacementResult.CONTINUE) {
           // ignore this replacement
           continue;
-        } else if(result == PatternReplacementResult.STOP) {
+        } else if (result == PatternReplacementResult.STOP) {
           // end replacement
           state.running = false;
           break;
         }
 
-        if(matcher.start() == 0) {
+        if (matcher.start() == 0) {
           // if we're a full match, modify the component directly
-          if(matcher.end() == content.length()) {
+          if (matcher.end() == content.length()) {
             final ComponentLike replacement = state.replacement.apply(matcher, Component.text().content(matcher.group())
               .style(component.style()));
 
             modified = replacement == null ? Component.empty() : replacement.asComponent();
-            if(children == null) { // Prepare children
+            if (children == null) { // Prepare children
               children = new ArrayList<>(oldChildrenSize + modified.children().size());
               children.addAll(modified.children());
             }
@@ -84,25 +84,25 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
             // otherwise, work on a child of the root node
             modified = Component.text("", component.style());
             final ComponentLike child = state.replacement.apply(matcher, Component.text().content(matcher.group()));
-            if(child != null) {
-              if(children == null) {
+            if (child != null) {
+              if (children == null) {
                 children = new ArrayList<>(oldChildrenSize + 1);
               }
               children.add(child.asComponent());
             }
           }
         } else {
-          if(children == null) {
+          if (children == null) {
             children = new ArrayList<>(oldChildrenSize + 2);
           }
-          if(state.firstMatch) {
+          if (state.firstMatch) {
             // truncate parent to content before match
             modified = ((TextComponent) component).content(content.substring(0, matcher.start()));
-          } else if(replacedUntil < matcher.start()) {
+          } else if (replacedUntil < matcher.start()) {
             children.add(Component.text(content.substring(replacedUntil, matcher.start())));
           }
           final ComponentLike builder = state.replacement.apply(matcher, Component.text().content(matcher.group()));
-          if(builder != null) {
+          if (builder != null) {
             children.add(builder.asComponent());
           }
         }
@@ -110,76 +110,76 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
         state.firstMatch = false;
         replacedUntil = matcher.end();
       }
-      if(replacedUntil < content.length()) {
+      if (replacedUntil < content.length()) {
         // append trailing content
-        if(replacedUntil > 0) {
-          if(children == null) {
+        if (replacedUntil > 0) {
+          if (children == null) {
             children = new ArrayList<>(oldChildrenSize);
           }
           children.add(Component.text(content.substring(replacedUntil)));
         }
         // otherwise, we haven't modified the component, so nothing to change
       }
-    } else if(modified instanceof TranslatableComponent) { // get TranslatableComponent with() args
+    } else if (modified instanceof TranslatableComponent) { // get TranslatableComponent with() args
       final List<Component> args = ((TranslatableComponent) modified).args();
       List<Component> newArgs = null;
-      for(int i = 0, size = args.size(); i < size; i++) {
+      for (int i = 0, size = args.size(); i < size; i++) {
         final Component original = args.get(i);
         final Component replaced = this.render(original, state);
-        if(replaced != component) {
-          if(newArgs == null) {
+        if (replaced != component) {
+          if (newArgs == null) {
             newArgs = new ArrayList<>(size);
-            if(i > 0) {
+            if (i > 0) {
               newArgs.addAll(args.subList(0, i));
             }
           }
         }
-        if(newArgs != null) {
+        if (newArgs != null) {
           newArgs.add(replaced);
         }
       }
-      if(newArgs != null) {
+      if (newArgs != null) {
         modified = ((TranslatableComponent) modified).args(newArgs);
       }
     }
     // Only visit children if we're running
-    if(state.running) {
+    if (state.running) {
       // hover event
       final HoverEvent<?> event = modified.style().hoverEvent();
-      if(event != null) {
+      if (event != null) {
         final HoverEvent<?> rendered = event.withRenderedValue(this, state);
-        if(event != rendered) {
+        if (event != rendered) {
           modified = modified.style(s -> s.hoverEvent(rendered));
         }
       }
       // Children
       boolean first = true;
-      for(int i = 0; i < oldChildrenSize; i++) {
+      for (int i = 0; i < oldChildrenSize; i++) {
         final Component child = oldChildren.get(i);
         final Component replaced = this.render(child, state);
-        if(replaced != child) {
-          if(children == null) {
+        if (replaced != child) {
+          if (children == null) {
             children = new ArrayList<>(oldChildrenSize);
           }
-          if(first) {
+          if (first) {
             children.addAll(oldChildren.subList(0, i));
           }
           first = false;
         }
-        if(children != null) {
+        if (children != null) {
           children.add(replaced);
         }
       }
     } else {
       // we're not visiting children, re-add original children if necessary
-      if(children != null) {
+      if (children != null) {
         children.addAll(oldChildren);
       }
     }
 
     state.firstMatch = prevFirstMatch;
     // Update the modified component with new children
-    if(children != null) {
+    if (children != null) {
       return modified.children(children);
     }
     return modified;

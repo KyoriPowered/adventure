@@ -60,8 +60,8 @@ final class TitleImpl implements Title {
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(other == null || this.getClass() != other.getClass()) return false;
+    if (this == other) return true;
+    if (other == null || this.getClass() != other.getClass()) return false;
     final TitleImpl that = (TitleImpl) other;
     return this.title.equals(that.title)
       && this.subtitle.equals(that.subtitle)
@@ -118,8 +118,8 @@ final class TitleImpl implements Title {
 
     @Override
     public boolean equals(final @Nullable Object other) {
-      if(this == other) return true;
-      if(other == null || this.getClass() != other.getClass()) return false;
+      if (this == other) return true;
+      if (other == null || this.getClass() != other.getClass()) return false;
       final TimesImpl that = (TimesImpl) other;
       return this.fadeIn.equals(that.fadeIn)
         && this.stay.equals(that.stay)

@@ -71,7 +71,7 @@ final class LongArrayBinaryTagImpl extends ArrayBinaryTagImpl implements LongArr
 
       @Override
       public long nextLong() {
-        if(!this.hasNext()) {
+        if (!this.hasNext()) {
           throw new NoSuchElementException();
         }
         return LongArrayBinaryTagImpl.this.value[this.index++];
@@ -91,7 +91,7 @@ final class LongArrayBinaryTagImpl extends ArrayBinaryTagImpl implements LongArr
 
   @Override
   public void forEachLong(final @NonNull LongConsumer action) {
-    for(int i = 0, length = this.value.length; i < length; i++) {
+    for (int i = 0, length = this.value.length; i < length; i++) {
       action.accept(this.value[i]);
     }
   }
@@ -103,8 +103,8 @@ final class LongArrayBinaryTagImpl extends ArrayBinaryTagImpl implements LongArr
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(other == null || this.getClass() != other.getClass()) return false;
+    if (this == other) return true;
+    if (other == null || this.getClass() != other.getClass()) return false;
     final LongArrayBinaryTagImpl that = (LongArrayBinaryTagImpl) other;
     return Arrays.equals(this.value, that.value);
   }

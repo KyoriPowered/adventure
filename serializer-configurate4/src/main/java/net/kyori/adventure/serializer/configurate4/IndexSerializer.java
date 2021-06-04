@@ -42,7 +42,7 @@ final class IndexSerializer<T> extends ScalarSerializer<T> {
   @Override
   public @NonNull T deserialize(final @NonNull Type type, final @NonNull Object obj) throws SerializationException {
     final T value = this.idx.value(obj.toString());
-    if(value == null) {
+    if (value == null) {
       throw new SerializationException("No value for key '" + obj + "' in index for type " + this.type());
     }
     return value;

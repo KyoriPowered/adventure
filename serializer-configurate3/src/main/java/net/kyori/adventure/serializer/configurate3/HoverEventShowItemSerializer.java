@@ -48,7 +48,7 @@ final class HoverEventShowItemSerializer implements TypeSerializer<HoverEvent.Sh
   @Override
   public HoverEvent.ShowItem deserialize(final @NonNull TypeToken<?> type, final @NonNull ConfigurationNode value) throws ObjectMappingException {
     final Key id = value.getNode(ID).getValue(KeySerializer.INSTANCE.type());
-    if(id == null) {
+    if (id == null) {
       throw new ObjectMappingException("An id is required to deserialize the show_item hover event");
     }
     final int count = value.getNode(COUNT).getInt(1);
@@ -59,7 +59,7 @@ final class HoverEventShowItemSerializer implements TypeSerializer<HoverEvent.Sh
 
   @Override
   public void serialize(final @NonNull TypeToken<?> type, final HoverEvent.@Nullable ShowItem obj, final @NonNull ConfigurationNode value) throws ObjectMappingException {
-    if(obj == null) {
+    if (obj == null) {
       value.setValue(null);
       return;
     }
@@ -67,7 +67,7 @@ final class HoverEventShowItemSerializer implements TypeSerializer<HoverEvent.Sh
     value.getNode(ID).setValue(KeySerializer.INSTANCE.type(), obj.item());
     value.getNode(COUNT).setValue(obj.count());
 
-    if(obj.nbt() == null) {
+    if (obj.nbt() == null) {
       value.getNode(TAG).setValue(null);
     } else {
       value.getNode(TAG).setValue(obj.nbt().string());

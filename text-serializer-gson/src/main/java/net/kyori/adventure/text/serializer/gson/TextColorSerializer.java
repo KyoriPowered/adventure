@@ -44,9 +44,9 @@ final class TextColorSerializer extends TypeAdapter<TextColor> {
 
   @Override
   public void write(final JsonWriter out, final TextColor value) throws IOException {
-    if(value instanceof NamedTextColor) {
+    if (value instanceof NamedTextColor) {
       out.value(NamedTextColor.NAMES.key((NamedTextColor) value));
-    } else if(this.downsampleColor) {
+    } else if (this.downsampleColor) {
       out.value(NamedTextColor.NAMES.key(NamedTextColor.nearestTo(value)));
     } else {
       out.value(value.asHexString());
@@ -56,13 +56,13 @@ final class TextColorSerializer extends TypeAdapter<TextColor> {
   @Override
   public @Nullable TextColor read(final JsonReader in) throws IOException {
     final @Nullable TextColor color = fromString(in.nextString());
-    if(color == null) return null;
+    if (color == null) return null;
 
     return this.downsampleColor ? NamedTextColor.nearestTo(color) : color;
   }
 
   static @Nullable TextColor fromString(final @NonNull String value) {
-    if(value.startsWith("#")) {
+    if (value.startsWith("#")) {
       return TextColor.fromHexString(value);
     } else {
       return NamedTextColor.NAMES.value(value);

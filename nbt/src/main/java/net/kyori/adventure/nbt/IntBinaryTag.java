@@ -105,8 +105,8 @@ final class IntBinaryTagImpl extends AbstractBinaryTag implements IntBinaryTag {
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(other == null || this.getClass() != other.getClass()) return false;
+    if (this == other) return true;
+    if (other == null || this.getClass() != other.getClass()) return false;
     final IntBinaryTagImpl that = (IntBinaryTagImpl) other;
     return this.value == that.value;
   }

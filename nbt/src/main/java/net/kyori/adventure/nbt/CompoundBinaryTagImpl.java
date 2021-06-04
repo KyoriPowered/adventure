@@ -71,7 +71,7 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
   @Override
   public @NonNull CompoundBinaryTag put(final @NonNull CompoundBinaryTag tag) {
     return this.edit(map -> {
-      for(final String key : tag.keySet()) {
+      for (final String key : tag.keySet()) {
         map.put(key, tag.get(key));
       }
     });
@@ -84,12 +84,12 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
 
   @Override
   public @NonNull CompoundBinaryTag remove(final @NonNull String key, final @Nullable Consumer<? super BinaryTag> removed) {
-    if(!this.tags.containsKey(key)) {
+    if (!this.tags.containsKey(key)) {
       return this;
     }
     return this.edit(map -> {
       final BinaryTag tag = map.remove(key);
-      if(removed != null) {
+      if (removed != null) {
         removed.accept(tag);
       }
     });
@@ -97,7 +97,7 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
 
   @Override
   public byte getByte(final @NonNull String key, final byte defaultValue) {
-    if(this.contains(key, BinaryTagTypes.BYTE)) {
+    if (this.contains(key, BinaryTagTypes.BYTE)) {
       return ((NumberBinaryTag) this.tags.get(key)).byteValue();
     }
     return defaultValue;
@@ -105,7 +105,7 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
 
   @Override
   public short getShort(final @NonNull String key, final short defaultValue) {
-    if(this.contains(key, BinaryTagTypes.SHORT)) {
+    if (this.contains(key, BinaryTagTypes.SHORT)) {
       return ((NumberBinaryTag) this.tags.get(key)).shortValue();
     }
     return defaultValue;
@@ -113,7 +113,7 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
 
   @Override
   public int getInt(final @NonNull String key, final int defaultValue) {
-    if(this.contains(key, BinaryTagTypes.INT)) {
+    if (this.contains(key, BinaryTagTypes.INT)) {
       return ((NumberBinaryTag) this.tags.get(key)).intValue();
     }
     return defaultValue;
@@ -121,7 +121,7 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
 
   @Override
   public long getLong(final @NonNull String key, final long defaultValue) {
-    if(this.contains(key, BinaryTagTypes.LONG)) {
+    if (this.contains(key, BinaryTagTypes.LONG)) {
       return ((NumberBinaryTag) this.tags.get(key)).longValue();
     }
     return defaultValue;
@@ -129,7 +129,7 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
 
   @Override
   public float getFloat(final @NonNull String key, final float defaultValue) {
-    if(this.contains(key, BinaryTagTypes.FLOAT)) {
+    if (this.contains(key, BinaryTagTypes.FLOAT)) {
       return ((NumberBinaryTag) this.tags.get(key)).floatValue();
     }
     return defaultValue;
@@ -137,7 +137,7 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
 
   @Override
   public double getDouble(final @NonNull String key, final double defaultValue) {
-    if(this.contains(key, BinaryTagTypes.DOUBLE)) {
+    if (this.contains(key, BinaryTagTypes.DOUBLE)) {
       return ((NumberBinaryTag) this.tags.get(key)).doubleValue();
     }
     return defaultValue;
@@ -145,7 +145,7 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
 
   @Override
   public byte@NonNull[] getByteArray(final @NonNull String key) {
-    if(this.contains(key, BinaryTagTypes.BYTE_ARRAY)) {
+    if (this.contains(key, BinaryTagTypes.BYTE_ARRAY)) {
       return ((ByteArrayBinaryTag) this.tags.get(key)).value();
     }
     return new byte[0];
@@ -153,7 +153,7 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
 
   @Override
   public byte@NonNull[] getByteArray(final @NonNull String key, final byte@NonNull[] defaultValue) {
-    if(this.contains(key, BinaryTagTypes.BYTE_ARRAY)) {
+    if (this.contains(key, BinaryTagTypes.BYTE_ARRAY)) {
       return ((ByteArrayBinaryTag) this.tags.get(key)).value();
     }
     return defaultValue;
@@ -161,7 +161,7 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
 
   @Override
   public @NonNull String getString(final @NonNull String key, final @NonNull String defaultValue) {
-    if(this.contains(key, BinaryTagTypes.STRING)) {
+    if (this.contains(key, BinaryTagTypes.STRING)) {
       return ((StringBinaryTag) this.tags.get(key)).value();
     }
     return defaultValue;
@@ -169,7 +169,7 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
 
   @Override
   public @NonNull ListBinaryTag getList(final @NonNull String key, final @NonNull ListBinaryTag defaultValue) {
-    if(this.contains(key, BinaryTagTypes.LIST)) {
+    if (this.contains(key, BinaryTagTypes.LIST)) {
       return (ListBinaryTag) this.tags.get(key);
     }
     return defaultValue;
@@ -177,9 +177,9 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
 
   @Override
   public @NonNull ListBinaryTag getList(final @NonNull String key, final @NonNull BinaryTagType<? extends BinaryTag> expectedType, final @NonNull ListBinaryTag defaultValue) {
-    if(this.contains(key, BinaryTagTypes.LIST)) {
+    if (this.contains(key, BinaryTagTypes.LIST)) {
       final ListBinaryTag tag = (ListBinaryTag) this.tags.get(key);
-      if(expectedType.test(tag.elementType())) {
+      if (expectedType.test(tag.elementType())) {
         return tag;
       }
     }
@@ -188,7 +188,7 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
 
   @Override
   public @NonNull CompoundBinaryTag getCompound(final @NonNull String key, final @NonNull CompoundBinaryTag defaultValue) {
-    if(this.contains(key, BinaryTagTypes.COMPOUND)) {
+    if (this.contains(key, BinaryTagTypes.COMPOUND)) {
       return (CompoundBinaryTag) this.tags.get(key);
     }
     return defaultValue;
@@ -196,7 +196,7 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
 
   @Override
   public int@NonNull[] getIntArray(final @NonNull String key) {
-    if(this.contains(key, BinaryTagTypes.INT_ARRAY)) {
+    if (this.contains(key, BinaryTagTypes.INT_ARRAY)) {
       return ((IntArrayBinaryTag) this.tags.get(key)).value();
     }
     return new int[0];
@@ -204,7 +204,7 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
 
   @Override
   public int@NonNull[] getIntArray(final @NonNull String key, final int@NonNull[] defaultValue) {
-    if(this.contains(key, BinaryTagTypes.INT_ARRAY)) {
+    if (this.contains(key, BinaryTagTypes.INT_ARRAY)) {
       return ((IntArrayBinaryTag) this.tags.get(key)).value();
     }
     return defaultValue;
@@ -212,7 +212,7 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
 
   @Override
   public long@NonNull[] getLongArray(final @NonNull String key) {
-    if(this.contains(key, BinaryTagTypes.LONG_ARRAY)) {
+    if (this.contains(key, BinaryTagTypes.LONG_ARRAY)) {
       return ((LongArrayBinaryTag) this.tags.get(key)).value();
     }
     return new long[0];
@@ -220,7 +220,7 @@ final class CompoundBinaryTagImpl extends AbstractBinaryTag implements CompoundB
 
   @Override
   public long@NonNull[] getLongArray(final @NonNull String key, final long@NonNull[] defaultValue) {
-    if(this.contains(key, BinaryTagTypes.LONG_ARRAY)) {
+    if (this.contains(key, BinaryTagTypes.LONG_ARRAY)) {
       return ((LongArrayBinaryTag) this.tags.get(key)).value();
     }
     return defaultValue;

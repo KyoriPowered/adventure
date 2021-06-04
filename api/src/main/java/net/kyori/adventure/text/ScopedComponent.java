@@ -75,7 +75,7 @@ public interface ScopedComponent<C extends Component> extends Component {
   @Override
   @SuppressWarnings("unchecked")
   default @NonNull C append(final @NonNull Component component) {
-    if(component == Component.empty()) return (C) this;
+    if (component == Component.empty()) return (C) this;
     final List<Component> oldChildren = this.children();
     return this.children(MonkeyBars.addOne(oldChildren, component));
   }

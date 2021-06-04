@@ -42,19 +42,19 @@ final class TextColorSerializer extends ScalarSerializer<TextColor> {
 
   @Override
   public TextColor deserialize(final @NonNull TypeToken<?> type, final @NonNull Object obj) throws ObjectMappingException {
-    if(obj instanceof Number) { // numerical values
+    if (obj instanceof Number) { // numerical values
       return TextColor.color(((Number) obj).intValue());
-    } else if(!(obj instanceof CharSequence)) {
+    } else if (!(obj instanceof CharSequence)) {
       throw new ObjectMappingException("Text colors must either be strings or integers");
     }
     final String value = obj.toString();
     final TextColor result;
-    if(value.startsWith(HEX_PREFIX)) {
+    if (value.startsWith(HEX_PREFIX)) {
       result = TextColor.fromHexString(value);
     } else {
       result = NamedTextColor.NAMES.value(value);
     }
-    if(result == null) {
+    if (result == null) {
       throw new ObjectMappingException("Could not convert '" + value + "' into a TextColor");
     }
     return result;
@@ -62,7 +62,7 @@ final class TextColorSerializer extends ScalarSerializer<TextColor> {
 
   @Override
   public Object serialize(final @NonNull TextColor item, final @NonNull Predicate<Class<?>> typeSupported) {
-    if(item instanceof NamedTextColor) { // TODO: Downsampling
+    if (item instanceof NamedTextColor) { // TODO: Downsampling
       return NamedTextColor.NAMES.key((NamedTextColor) item);
     } else {
       return item.asHexString();

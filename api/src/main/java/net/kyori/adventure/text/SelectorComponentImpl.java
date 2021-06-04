@@ -48,7 +48,7 @@ final class SelectorComponentImpl extends AbstractComponent implements SelectorC
 
   @Override
   public @NonNull SelectorComponent pattern(final @NonNull String pattern) {
-    if(Objects.equals(this.pattern, pattern)) return this;
+    if (Objects.equals(this.pattern, pattern)) return this;
     return new SelectorComponentImpl(this.children, this.style, requireNonNull(pattern, "pattern"));
   }
 
@@ -64,9 +64,9 @@ final class SelectorComponentImpl extends AbstractComponent implements SelectorC
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(!(other instanceof SelectorComponent)) return false;
-    if(!super.equals(other)) return false;
+    if (this == other) return true;
+    if (!(other instanceof SelectorComponent)) return false;
+    if (!super.equals(other)) return false;
     final SelectorComponent that = (SelectorComponent) other;
     return Objects.equals(this.pattern, that.pattern());
   }
@@ -112,7 +112,7 @@ final class SelectorComponentImpl extends AbstractComponent implements SelectorC
 
     @Override
     public @NonNull SelectorComponent build() {
-      if(this.pattern == null) throw new IllegalStateException("pattern must be set");
+      if (this.pattern == null) throw new IllegalStateException("pattern must be set");
       return new SelectorComponentImpl(this.children, this.buildStyle(), this.pattern);
     }
   }

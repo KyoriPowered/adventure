@@ -171,22 +171,22 @@ public final class NamedTextColor implements TextColor {
    * @since 4.0.0
    */
   public static @Nullable NamedTextColor ofExact(final int value) {
-    if(value == BLACK_VALUE) return BLACK;
-    else if(value == DARK_BLUE_VALUE) return DARK_BLUE;
-    else if(value == DARK_GREEN_VALUE) return DARK_GREEN;
-    else if(value == DARK_AQUA_VALUE) return DARK_AQUA;
-    else if(value == DARK_RED_VALUE) return DARK_RED;
-    else if(value == DARK_PURPLE_VALUE) return DARK_PURPLE;
-    else if(value == GOLD_VALUE) return GOLD;
-    else if(value == GRAY_VALUE) return GRAY;
-    else if(value == DARK_GRAY_VALUE) return DARK_GRAY;
-    else if(value == BLUE_VALUE) return BLUE;
-    else if(value == GREEN_VALUE) return GREEN;
-    else if(value == AQUA_VALUE) return AQUA;
-    else if(value == RED_VALUE) return RED;
-    else if(value == LIGHT_PURPLE_VALUE) return LIGHT_PURPLE;
-    else if(value == YELLOW_VALUE) return YELLOW;
-    else if(value == WHITE_VALUE) return WHITE;
+    if (value == BLACK_VALUE) return BLACK;
+    else if (value == DARK_BLUE_VALUE) return DARK_BLUE;
+    else if (value == DARK_GREEN_VALUE) return DARK_GREEN;
+    else if (value == DARK_AQUA_VALUE) return DARK_AQUA;
+    else if (value == DARK_RED_VALUE) return DARK_RED;
+    else if (value == DARK_PURPLE_VALUE) return DARK_PURPLE;
+    else if (value == GOLD_VALUE) return GOLD;
+    else if (value == GRAY_VALUE) return GRAY;
+    else if (value == DARK_GRAY_VALUE) return DARK_GRAY;
+    else if (value == BLUE_VALUE) return BLUE;
+    else if (value == GREEN_VALUE) return GREEN;
+    else if (value == AQUA_VALUE) return AQUA;
+    else if (value == RED_VALUE) return RED;
+    else if (value == LIGHT_PURPLE_VALUE) return LIGHT_PURPLE;
+    else if (value == YELLOW_VALUE) return YELLOW;
+    else if (value == WHITE_VALUE) return WHITE;
     return null;
   }
 
@@ -198,7 +198,7 @@ public final class NamedTextColor implements TextColor {
    * @since 4.0.0
    */
   public static @NonNull NamedTextColor nearestTo(final @NonNull TextColor any) {
-    if(any instanceof NamedTextColor) {
+    if (any instanceof NamedTextColor) {
       return (NamedTextColor) any;
     }
 
@@ -206,14 +206,14 @@ public final class NamedTextColor implements TextColor {
 
     float matchedDistance = Float.MAX_VALUE;
     NamedTextColor match = VALUES.get(0);
-    for(int i = 0, length = VALUES.size(); i < length; i++) {
+    for (int i = 0, length = VALUES.size(); i < length; i++) {
       final NamedTextColor potential = VALUES.get(i);
       final float distance = distance(any.asHSV(), potential.asHSV());
-      if(distance < matchedDistance) {
+      if (distance < matchedDistance) {
         match = potential;
         matchedDistance = distance;
       }
-      if(distance == 0) {
+      if (distance == 0) {
         break; // same colour! whoo!
       }
     }

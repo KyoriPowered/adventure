@@ -105,8 +105,8 @@ final class DoubleBinaryTagImpl extends AbstractBinaryTag implements DoubleBinar
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(other == null || this.getClass() != other.getClass()) return false;
+    if (this == other) return true;
+    if (other == null || this.getClass() != other.getClass()) return false;
     final DoubleBinaryTagImpl that = (DoubleBinaryTagImpl) other;
     return Double.doubleToLongBits(this.value) == Double.doubleToLongBits(that.value);
   }

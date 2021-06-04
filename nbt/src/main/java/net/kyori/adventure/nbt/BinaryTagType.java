@@ -77,9 +77,9 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
   }
 
   static @NonNull BinaryTagType<? extends BinaryTag> of(final byte id) {
-    for(int i = 0; i < TYPES.size(); i++) {
+    for (int i = 0; i < TYPES.size(); i++) {
       final BinaryTagType<? extends BinaryTag> type = TYPES.get(i);
-      if(type.id() == id) {
+      if (type.id() == id) {
         return type;
       }
     }
@@ -142,7 +142,7 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
 
     @Override
     public final void write(final @NonNull T tag, final @NonNull DataOutput output) throws IOException {
-      if(this.writer != null) this.writer.write(tag, output);
+      if (this.writer != null) this.writer.write(tag, output);
     }
 
     @Override

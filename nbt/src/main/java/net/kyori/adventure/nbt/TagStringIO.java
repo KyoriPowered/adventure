@@ -83,7 +83,7 @@ public final class TagStringIO {
       final TagStringReader parser = new TagStringReader(buffer);
       parser.legacy(this.acceptLegacy);
       final CompoundBinaryTag tag = parser.compound();
-      if(buffer.skipWhitespace().hasMore()) {
+      if (buffer.skipWhitespace().hasMore()) {
         throw new IOException("Document had trailing content after first CompoundTag");
       }
       return tag;
@@ -149,9 +149,9 @@ public final class TagStringIO {
      * @since 4.0.0
      */
     public @NonNull Builder indent(final int spaces) {
-      if(spaces == 0) {
+      if (spaces == 0) {
         this.indent = "";
-      } else if((this.indent.length() > 0 && this.indent.charAt(0) != ' ') || spaces != this.indent.length()) {
+      } else if ((this.indent.length() > 0 && this.indent.charAt(0) != ' ') || spaces != this.indent.length()) {
         final char[] indent = new char[spaces];
         Arrays.fill(indent, ' ');
         this.indent = String.copyValueOf(indent);
@@ -169,9 +169,9 @@ public final class TagStringIO {
      * @since 4.0.0
      */
     public @NonNull Builder indentTab(final int tabs) {
-      if(tabs == 0) {
+      if (tabs == 0) {
         this.indent = "";
-      } else if((this.indent.length() > 0 && this.indent.charAt(0) != '\t') || tabs != this.indent.length()) {
+      } else if ((this.indent.length() > 0 && this.indent.charAt(0) != '\t') || tabs != this.indent.length()) {
         final char[] indent = new char[tabs];
         Arrays.fill(indent, '\t');
         this.indent = String.copyValueOf(indent);

@@ -105,8 +105,8 @@ final class FloatBinaryTagImpl extends AbstractBinaryTag implements FloatBinaryT
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(other == null || this.getClass() != other.getClass()) return false;
+    if (this == other) return true;
+    if (other == null || this.getClass() != other.getClass()) return false;
     final FloatBinaryTagImpl that = (FloatBinaryTagImpl) other;
     return Float.floatToIntBits(this.value) == Float.floatToIntBits(that.value);
   }

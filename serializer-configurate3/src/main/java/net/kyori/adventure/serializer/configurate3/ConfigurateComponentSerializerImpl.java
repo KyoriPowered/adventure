@@ -60,7 +60,7 @@ final class ConfigurateComponentSerializerImpl implements ConfigurateComponentSe
   public @NonNull Component deserialize(final @NonNull ConfigurationNode input) {
     try {
       final @Nullable Component deserialized = input.getValue(ComponentTypeSerializer.TYPE);
-      if(deserialized != null) {
+      if (deserialized != null) {
         return deserialized;
       }
     } catch(final ObjectMappingException e) {

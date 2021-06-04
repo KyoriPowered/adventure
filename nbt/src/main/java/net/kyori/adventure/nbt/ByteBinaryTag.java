@@ -57,9 +57,9 @@ public interface ByteBinaryTag extends NumberBinaryTag {
    * @since 4.0.0
    */
   static @NonNull ByteBinaryTag of(final byte value) {
-    if(value == 0) {
+    if (value == 0) {
       return ZERO;
-    } else if(value == 1) {
+    } else if (value == 1) {
       return ONE;
     } else {
       return new ByteBinaryTagImpl(value);
@@ -125,8 +125,8 @@ final class ByteBinaryTagImpl extends AbstractBinaryTag implements ByteBinaryTag
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(other == null || this.getClass() != other.getClass()) return false;
+    if (this == other) return true;
+    if (other == null || this.getClass() != other.getClass()) return false;
     final ByteBinaryTagImpl that = (ByteBinaryTagImpl) other;
     return this.value == that.value;
   }

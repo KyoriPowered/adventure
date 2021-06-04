@@ -54,9 +54,9 @@ abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTCompo
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(!(other instanceof NBTComponent)) return false;
-    if(!super.equals(other)) return false;
+    if (this == other) return true;
+    if (!(other instanceof NBTComponent)) return false;
+    if (!super.equals(other)) return false;
     final NBTComponent<?, ?> that = (NBTComponent<?, ?>) other;
     return Objects.equals(this.nbtPath, that.nbtPath()) && this.interpret == that.interpret();
   }

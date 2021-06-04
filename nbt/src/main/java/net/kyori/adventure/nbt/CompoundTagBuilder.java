@@ -34,7 +34,7 @@ final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
   private @MonotonicNonNull Map<String, BinaryTag> tags;
 
   private Map<String, BinaryTag> tags() {
-    if(this.tags == null) {
+    if (this.tags == null) {
       this.tags = new HashMap<>();
     }
     return this.tags;
@@ -49,7 +49,7 @@ final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
   @Override
   public CompoundBinaryTag.@NonNull Builder put(final @NonNull CompoundBinaryTag tag) {
     final Map<String, BinaryTag> tags = this.tags();
-    for(final String key : tag.keySet()) {
+    for (final String key : tag.keySet()) {
       tags.put(key, tag.get(key));
     }
     return this;
@@ -63,9 +63,9 @@ final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
 
   @Override
   public CompoundBinaryTag.@NonNull Builder remove(final @NonNull String key, final @Nullable Consumer<? super BinaryTag> removed) {
-    if(this.tags != null) {
+    if (this.tags != null) {
       final BinaryTag tag = this.tags.remove(key);
-      if(removed != null) {
+      if (removed != null) {
         removed.accept(tag);
       }
     }
@@ -74,7 +74,7 @@ final class CompoundTagBuilder implements CompoundBinaryTag.Builder {
 
   @Override
   public @NonNull CompoundBinaryTag build() {
-    if(this.tags == null) return CompoundBinaryTag.empty();
+    if (this.tags == null) return CompoundBinaryTag.empty();
     return new CompoundBinaryTagImpl(new HashMap<>(this.tags));
   }
 }

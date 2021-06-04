@@ -60,30 +60,30 @@ public interface ComponentLike {
    * @since 4.8.0
    */
   static @NonNull List<Component> asComponents(final @NonNull List<? extends ComponentLike> likes, final @Nullable Predicate<? super Component> filter) {
-    if(likes.isEmpty()) {
+    if (likes.isEmpty()) {
       // We do not need to create a new list if the one we are copying is empty - we can
       // simply just return our known-empty list instead.
       return Collections.emptyList();
     }
     final int size = likes.size();
     @Nullable ArrayList<Component> components = null;
-    for(int i = 0; i < size; i++) {
+    for (int i = 0; i < size; i++) {
       final ComponentLike like = likes.get(i);
       final Component component = like.asComponent();
-      if(filter == null || filter.test(component)) {
-        if(components == null) {
+      if (filter == null || filter.test(component)) {
+        if (components == null) {
           components = new ArrayList<>(size);
         }
         components.add(component);
       }
     }
-    if(components != null) {
+    if (components != null) {
       // https://github.com/KyoriPowered/adventure/pull/327#discussion_r631420264
       // we pre-size the list, but filtering might make the actual size much smaller
       components.trimToSize();
     }
     // if we filtered all elements out, just use an empty list instead
-    if(components == null) return Collections.emptyList();
+    if (components == null) return Collections.emptyList();
     return Collections.unmodifiableList(components);
   }
 

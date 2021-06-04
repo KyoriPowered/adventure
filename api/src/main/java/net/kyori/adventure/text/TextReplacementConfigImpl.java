@@ -108,8 +108,8 @@ final class TextReplacementConfigImpl implements TextReplacementConfig {
 
     @Override
     public @NonNull TextReplacementConfig build() {
-      if(this.matchPattern == null) throw new IllegalStateException("A pattern must be provided to match against");
-      if(this.replacement == null) throw new IllegalStateException("A replacement action must be provided");
+      if (this.matchPattern == null) throw new IllegalStateException("A pattern must be provided to match against");
+      if (this.replacement == null) throw new IllegalStateException("A replacement action must be provided");
       return new TextReplacementConfigImpl(this);
     }
   }

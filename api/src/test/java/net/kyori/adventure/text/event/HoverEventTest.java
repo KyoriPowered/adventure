@@ -124,7 +124,7 @@ class HoverEventTest {
 
   @Test
   void assertReadable() {
-    for(final HoverEvent.Action<?> action : ImmutableSet.of(
+    for (final HoverEvent.Action<?> action : ImmutableSet.of(
       HoverEvent.Action.SHOW_TEXT,
       HoverEvent.Action.SHOW_ITEM,
       HoverEvent.Action.SHOW_ENTITY

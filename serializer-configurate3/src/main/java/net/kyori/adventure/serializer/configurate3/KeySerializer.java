@@ -42,7 +42,7 @@ final class KeySerializer extends ScalarSerializer<Key> {
 
   @Override
   public @NonNull Key deserialize(final @NonNull TypeToken<?> type, final @NonNull Object obj) throws ObjectMappingException {
-    if(!(obj instanceof CharSequence)) {
+    if (!(obj instanceof CharSequence)) {
       throw new InvalidTypeException(type);
     }
     try {

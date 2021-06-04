@@ -69,7 +69,7 @@ public final class MonkeyBars {
    * @since 4.8.0
    */
   public static <T> @NonNull List<T> addOne(final @NonNull List<T> oldList, final T newElement) {
-    if(oldList.isEmpty()) return Collections.singletonList(newElement);
+    if (oldList.isEmpty()) return Collections.singletonList(newElement);
     final List<T> newList = new ArrayList<>(oldList.size() + 1);
     newList.addAll(oldList);
     newList.add(newElement);

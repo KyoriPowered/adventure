@@ -253,7 +253,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
   @Contract("_ -> this")
   @SuppressWarnings("unchecked")
   default @NonNull B decorate(final @NonNull TextDecoration@NonNull... decorations) {
-    for(int i = 0, length = decorations.length; i < length; i++) {
+    for (int i = 0, length = decorations.length; i < length; i++) {
       this.decorate(decorations[i]);
     }
     return (B) this;

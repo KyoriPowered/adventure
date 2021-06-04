@@ -52,7 +52,7 @@ final class BinaryTagHolderImpl implements BinaryTagHolder {
 
   @Override
   public boolean equals(final Object that) {
-    if(!(that instanceof BinaryTagHolderImpl)) {
+    if (!(that instanceof BinaryTagHolderImpl)) {
       return false;
     }
 

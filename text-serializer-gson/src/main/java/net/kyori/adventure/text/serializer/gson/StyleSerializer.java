@@ -65,10 +65,10 @@ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<S
   static {
     // Ensure coverage of decorations
     final Set<TextDecoration> knownDecorations = EnumSet.allOf(TextDecoration.class);
-    for(final TextDecoration decoration : DECORATIONS) {
+    for (final TextDecoration decoration : DECORATIONS) {
       knownDecorations.remove(decoration);
     }
-    if(!knownDecorations.isEmpty()) {
+    if (!knownDecorations.isEmpty()) {
       throw new IllegalStateException("GSON serializer is missing some text decorations: " + knownDecorations);
     }
   }
@@ -102,70 +102,70 @@ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<S
   private Style deserialize(final JsonObject json, final JsonDeserializationContext context) throws JsonParseException {
     final Style.Builder style = Style.style();
 
-    if(json.has(FONT)) {
+    if (json.has(FONT)) {
       style.font(context.deserialize(json.get(FONT), Key.class));
     }
 
-    if(json.has(COLOR)) {
+    if (json.has(COLOR)) {
       final TextColorWrapper color = context.deserialize(json.get(COLOR), TextColorWrapper.class);
-      if(color.color != null) {
+      if (color.color != null) {
         style.color(color.color);
-      } else if(color.decoration != null) {
+      } else if (color.decoration != null) {
         // I know. Setting a decoration from the color is weird. This is, unfortunately, something we need to support.
         style.decoration(color.decoration, true);
       }
     }
 
-    for(int i = 0, length = DECORATIONS.length; i < length; i++) {
+    for (int i = 0, length = DECORATIONS.length; i < length; i++) {
       final TextDecoration decoration = DECORATIONS[i];
       final String name = TextDecoration.NAMES.key(decoration);
-      if(json.has(name)) {
+      if (json.has(name)) {
         style.decoration(decoration, json.get(name).getAsBoolean());
       }
     }
 
-    if(json.has(INSERTION)) {
+    if (json.has(INSERTION)) {
       style.insertion(json.get(INSERTION).getAsString());
     }
 
-    if(json.has(CLICK_EVENT)) {
+    if (json.has(CLICK_EVENT)) {
       final JsonObject clickEvent = json.getAsJsonObject(CLICK_EVENT);
-      if(clickEvent != null) {
+      if (clickEvent != null) {
         final ClickEvent./*@Nullable*/ Action action = optionallyDeserialize(clickEvent.getAsJsonPrimitive(CLICK_EVENT_ACTION), context, ClickEvent.Action.class);
-        if(action != null && action.readable()) {
+        if (action != null && action.readable()) {
           final @Nullable JsonPrimitive rawValue = clickEvent.getAsJsonPrimitive(CLICK_EVENT_VALUE);
           final @Nullable String value = rawValue == null ? null : rawValue.getAsString();
-          if(value != null) {
+          if (value != null) {
             style.clickEvent(ClickEvent.clickEvent(action, value));
           }
         }
       }
     }
 
-    if(json.has(HOVER_EVENT)) {
+    if (json.has(HOVER_EVENT)) {
       final JsonObject hoverEvent = json.getAsJsonObject(HOVER_EVENT);
-      if(hoverEvent != null) {
+      if (hoverEvent != null) {
         final HoverEvent./*@Nullable*/ Action action = optionallyDeserialize(hoverEvent.getAsJsonPrimitive(HOVER_EVENT_ACTION), context, HoverEvent.Action.class);
-        if(action != null && action.readable()) {
+        if (action != null && action.readable()) {
           final @Nullable Object value;
-          if(hoverEvent.has(HOVER_EVENT_CONTENTS)) {
+          if (hoverEvent.has(HOVER_EVENT_CONTENTS)) {
             final @Nullable JsonElement rawValue = hoverEvent.get(HOVER_EVENT_CONTENTS);
             value = context.deserialize(rawValue, action.type());
-          } else if(hoverEvent.has(HOVER_EVENT_VALUE)) {
+          } else if (hoverEvent.has(HOVER_EVENT_VALUE)) {
             final Component rawValue = context.deserialize(hoverEvent.get(HOVER_EVENT_VALUE), Component.class);
             value = this.legacyHoverEventContents(action, rawValue, context);
           } else {
             value = null;
           }
 
-          if(value != null) {
+          if (value != null) {
             style.hoverEvent(HoverEvent.hoverEvent(action, value));
           }
         }
       }
     }
 
-    if(json.has(FONT)) {
+    if (json.has(FONT)) {
       style.font(context.deserialize(json.get(FONT), Key.class));
     }
 
@@ -177,13 +177,13 @@ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<S
   }
 
   private Object legacyHoverEventContents(final HoverEvent.Action<?> action, final Component rawValue, final JsonDeserializationContext context) {
-    if(action == HoverEvent.Action.SHOW_TEXT) {
+    if (action == HoverEvent.Action.SHOW_TEXT) {
       return rawValue; // Passthrough -- no serialization needed
-    } else if(this.legacyHover != null) {
+    } else if (this.legacyHover != null) {
       try {
-        if(action == HoverEvent.Action.SHOW_ENTITY) {
+        if (action == HoverEvent.Action.SHOW_ENTITY) {
           return this.legacyHover.deserializeShowEntity(rawValue, this.decoder(context));
-        } else if(action == HoverEvent.Action.SHOW_ITEM) {
+        } else if (action == HoverEvent.Action.SHOW_ITEM) {
           return this.legacyHover.deserializeShowItem(rawValue);
         }
       } catch(final IOException ex) {
@@ -205,10 +205,10 @@ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<S
   public JsonElement serialize(final Style src, final Type typeOfSrc, final JsonSerializationContext context) {
     final JsonObject json = new JsonObject();
 
-    for(int i = 0, length = DECORATIONS.length; i < length; i++) {
+    for (int i = 0, length = DECORATIONS.length; i < length; i++) {
       final TextDecoration decoration = DECORATIONS[i];
       final TextDecoration.State state = src.decoration(decoration);
-      if(state != TextDecoration.State.NOT_SET) {
+      if (state != TextDecoration.State.NOT_SET) {
         final String name = TextDecoration.NAMES.key(decoration);
         assert name != null; // should never be null
         json.addProperty(name, state == TextDecoration.State.TRUE);
@@ -216,17 +216,17 @@ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<S
     }
 
     final @Nullable TextColor color = src.color();
-    if(color != null) {
+    if (color != null) {
       json.add(COLOR, context.serialize(color));
     }
 
     final @Nullable String insertion = src.insertion();
-    if(insertion != null) {
+    if (insertion != null) {
       json.addProperty(INSERTION, insertion);
     }
 
     final @Nullable ClickEvent clickEvent = src.clickEvent();
-    if(clickEvent != null) {
+    if (clickEvent != null) {
       final JsonObject eventJson = new JsonObject();
       eventJson.add(CLICK_EVENT_ACTION, context.serialize(clickEvent.action()));
       eventJson.addProperty(CLICK_EVENT_VALUE, clickEvent.value());
@@ -234,19 +234,19 @@ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<S
     }
 
     final @Nullable HoverEvent<?> hoverEvent = src.hoverEvent();
-    if(hoverEvent != null) {
+    if (hoverEvent != null) {
       final JsonObject eventJson = new JsonObject();
       eventJson.add(HOVER_EVENT_ACTION, context.serialize(hoverEvent.action()));
       final JsonElement modernContents = context.serialize(hoverEvent.value());
       eventJson.add(HOVER_EVENT_CONTENTS, modernContents);
-      if(this.emitLegacyHover) {
+      if (this.emitLegacyHover) {
         eventJson.add(HOVER_EVENT_VALUE, this.serializeLegacyHoverEvent(hoverEvent, modernContents, context));
       }
       json.add(HOVER_EVENT, eventJson);
     }
 
     final @Nullable Key font = src.font();
-    if(font != null) {
+    if (font != null) {
       json.add(FONT, context.serialize(font));
     }
 
@@ -254,14 +254,14 @@ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<S
   }
 
   private JsonElement serializeLegacyHoverEvent(final HoverEvent<?> hoverEvent, final JsonElement modernContents, final JsonSerializationContext context) {
-    if(hoverEvent.action() == HoverEvent.Action.SHOW_TEXT) { // serialization is the same
+    if (hoverEvent.action() == HoverEvent.Action.SHOW_TEXT) { // serialization is the same
       return modernContents;
-    } else if(this.legacyHover != null) { // for data formats that require knowledge of SNBT
+    } else if (this.legacyHover != null) { // for data formats that require knowledge of SNBT
       Component serialized = null;
       try {
-        if(hoverEvent.action() == HoverEvent.Action.SHOW_ENTITY) {
+        if (hoverEvent.action() == HoverEvent.Action.SHOW_ENTITY) {
           serialized = this.legacyHover.serializeShowEntity((HoverEvent.ShowEntity) hoverEvent.value(), this.encoder(context));
-        } else if(hoverEvent.action() == HoverEvent.Action.SHOW_ITEM) {
+        } else if (hoverEvent.action() == HoverEvent.Action.SHOW_ITEM) {
           serialized = this.legacyHover.serializeShowItem((HoverEvent.ShowItem) hoverEvent.value());
         }
       } catch(final IOException ex) {

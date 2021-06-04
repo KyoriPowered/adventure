@@ -54,7 +54,7 @@ final class StyleImpl implements Style {
   private final @Nullable String insertion;
 
   static void decorate(final Builder builder, final TextDecoration[] decorations) {
-    for(int i = 0, length = decorations.length; i < length; i++) {
+    for (int i = 0, length = decorations.length; i < length; i++) {
       final TextDecoration decoration = decorations[i];
       builder.decoration(decoration, true);
     }
@@ -91,7 +91,7 @@ final class StyleImpl implements Style {
 
   @Override
   public @NonNull Style font(final @Nullable Key font) {
-    if(Objects.equals(this.font, font)) return this;
+    if (Objects.equals(this.font, font)) return this;
     return new StyleImpl(font, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
   }
 
@@ -102,13 +102,13 @@ final class StyleImpl implements Style {
 
   @Override
   public @NonNull Style color(final @Nullable TextColor color) {
-    if(Objects.equals(this.color, color)) return this;
+    if (Objects.equals(this.color, color)) return this;
     return new StyleImpl(this.font, color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
   }
 
   @Override
   public @NonNull Style colorIfAbsent(final @Nullable TextColor color) {
-    if(this.color == null) {
+    if (this.color == null) {
       return this.color(color);
     }
     return this;
@@ -116,15 +116,15 @@ final class StyleImpl implements Style {
 
   @Override
   public TextDecoration.@NonNull State decoration(final @NonNull TextDecoration decoration) {
-    if(decoration == TextDecoration.BOLD) {
+    if (decoration == TextDecoration.BOLD) {
       return this.bold;
-    } else if(decoration == TextDecoration.ITALIC) {
+    } else if (decoration == TextDecoration.ITALIC) {
       return this.italic;
-    } else if(decoration == TextDecoration.UNDERLINED) {
+    } else if (decoration == TextDecoration.UNDERLINED) {
       return this.underlined;
-    } else if(decoration == TextDecoration.STRIKETHROUGH) {
+    } else if (decoration == TextDecoration.STRIKETHROUGH) {
       return this.strikethrough;
-    } else if(decoration == TextDecoration.OBFUSCATED) {
+    } else if (decoration == TextDecoration.OBFUSCATED) {
       return this.obfuscated;
     }
     throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
@@ -133,15 +133,15 @@ final class StyleImpl implements Style {
   @Override
   public @NonNull Style decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
     requireNonNull(state, "state");
-    if(decoration == TextDecoration.BOLD) {
+    if (decoration == TextDecoration.BOLD) {
       return new StyleImpl(this.font, this.color, this.obfuscated, state, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
-    } else if(decoration == TextDecoration.ITALIC) {
+    } else if (decoration == TextDecoration.ITALIC) {
       return new StyleImpl(this.font, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, state, this.clickEvent, this.hoverEvent, this.insertion);
-    } else if(decoration == TextDecoration.UNDERLINED) {
+    } else if (decoration == TextDecoration.UNDERLINED) {
       return new StyleImpl(this.font, this.color, this.obfuscated, this.bold, this.strikethrough, state, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
-    } else if(decoration == TextDecoration.STRIKETHROUGH) {
+    } else if (decoration == TextDecoration.STRIKETHROUGH) {
       return new StyleImpl(this.font, this.color, this.obfuscated, this.bold, state, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
-    } else if(decoration == TextDecoration.OBFUSCATED) {
+    } else if (decoration == TextDecoration.OBFUSCATED) {
       return new StyleImpl(this.font, this.color, state, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
     }
     throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
@@ -150,7 +150,7 @@ final class StyleImpl implements Style {
   @Override
   public @NonNull Map<TextDecoration, TextDecoration.State> decorations() {
     final Map<TextDecoration, TextDecoration.State> decorations = new EnumMap<>(TextDecoration.class);
-    for(int i = 0, length = DECORATIONS.length; i < length; i++) {
+    for (int i = 0, length = DECORATIONS.length; i < length; i++) {
       final TextDecoration decoration = DECORATIONS[i];
       final TextDecoration.State value = this.decoration(decoration);
       decorations.put(decoration, value);
@@ -195,18 +195,18 @@ final class StyleImpl implements Style {
 
   @Override
   public @NonNull Style insertion(final @Nullable String insertion) {
-    if(Objects.equals(this.insertion, insertion)) return this;
+    if (Objects.equals(this.insertion, insertion)) return this;
     return new StyleImpl(this.font, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, insertion);
   }
 
   @Override
   public @NonNull Style merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy, final @NonNull Set<Merge> merges) {
-    if(that.isEmpty() || strategy == Merge.Strategy.NEVER || merges.isEmpty()) {
+    if (that.isEmpty() || strategy == Merge.Strategy.NEVER || merges.isEmpty()) {
       // nothing to merge
       return this;
     }
 
-    if(this.isEmpty() && Merge.hasAll(merges)) {
+    if (this.isEmpty() && Merge.hasAll(merges)) {
       // if the current style is empty and all merge types have been requested
       // we can just return the other style instead of trying to merge
       return that;
@@ -255,8 +255,8 @@ final class StyleImpl implements Style {
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(!(other instanceof StyleImpl)) return false;
+    if (this == other) return true;
+    if (!(other instanceof StyleImpl)) return false;
     final StyleImpl that = (StyleImpl) other;
     return Objects.equals(this.color, that.color)
       && this.obfuscated == that.obfuscated
@@ -327,7 +327,7 @@ final class StyleImpl implements Style {
 
     @Override
     public @NonNull Builder colorIfAbsent(final @Nullable TextColor color) {
-      if(this.color == null) {
+      if (this.color == null) {
         this.color = color;
       }
       return this;
@@ -340,7 +340,7 @@ final class StyleImpl implements Style {
 
     @Override
     public @NonNull Builder decorate(final @NonNull TextDecoration@NonNull... decorations) {
-      for(int i = 0, length = decorations.length; i < length; i++) {
+      for (int i = 0, length = decorations.length; i < length; i++) {
         this.decorate(decorations[i]);
       }
       return this;
@@ -349,19 +349,19 @@ final class StyleImpl implements Style {
     @Override
     public @NonNull Builder decoration(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
       requireNonNull(state, "state");
-      if(decoration == TextDecoration.BOLD) {
+      if (decoration == TextDecoration.BOLD) {
         this.bold = state;
         return this;
-      } else if(decoration == TextDecoration.ITALIC) {
+      } else if (decoration == TextDecoration.ITALIC) {
         this.italic = state;
         return this;
-      } else if(decoration == TextDecoration.UNDERLINED) {
+      } else if (decoration == TextDecoration.UNDERLINED) {
         this.underlined = state;
         return this;
-      } else if(decoration == TextDecoration.STRIKETHROUGH) {
+      } else if (decoration == TextDecoration.STRIKETHROUGH) {
         this.strikethrough = state;
         return this;
-      } else if(decoration == TextDecoration.OBFUSCATED) {
+      } else if (decoration == TextDecoration.OBFUSCATED) {
         this.obfuscated = state;
         return this;
       }
@@ -370,19 +370,19 @@ final class StyleImpl implements Style {
 
     @NonNull Builder decorationIfAbsent(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
       requireNonNull(state, "state");
-      if(decoration == TextDecoration.BOLD && this.bold == TextDecoration.State.NOT_SET) {
+      if (decoration == TextDecoration.BOLD && this.bold == TextDecoration.State.NOT_SET) {
         this.bold = state;
         return this;
-      } else if(decoration == TextDecoration.ITALIC && this.italic == TextDecoration.State.NOT_SET) {
+      } else if (decoration == TextDecoration.ITALIC && this.italic == TextDecoration.State.NOT_SET) {
         this.italic = state;
         return this;
-      } else if(decoration == TextDecoration.UNDERLINED && this.underlined == TextDecoration.State.NOT_SET) {
+      } else if (decoration == TextDecoration.UNDERLINED && this.underlined == TextDecoration.State.NOT_SET) {
         this.underlined = state;
         return this;
-      } else if(decoration == TextDecoration.STRIKETHROUGH && this.strikethrough == TextDecoration.State.NOT_SET) {
+      } else if (decoration == TextDecoration.STRIKETHROUGH && this.strikethrough == TextDecoration.State.NOT_SET) {
         this.strikethrough = state;
         return this;
-      } else if(decoration == TextDecoration.OBFUSCATED && this.obfuscated == TextDecoration.State.NOT_SET) {
+      } else if (decoration == TextDecoration.OBFUSCATED && this.obfuscated == TextDecoration.State.NOT_SET) {
         this.obfuscated = state;
         return this;
       }
@@ -409,53 +409,53 @@ final class StyleImpl implements Style {
 
     @Override
     public @NonNull Builder merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy, final @NonNull Set<Merge> merges) {
-      if(strategy == Merge.Strategy.NEVER || that.isEmpty() || merges.isEmpty()) {
+      if (strategy == Merge.Strategy.NEVER || that.isEmpty() || merges.isEmpty()) {
         // nothing to merge
         return this;
       }
 
       final Merger merger = merger(strategy);
 
-      if(merges.contains(Merge.COLOR)) {
+      if (merges.contains(Merge.COLOR)) {
         final TextColor color = that.color();
-        if(color != null) merger.mergeColor(this, color);
+        if (color != null) merger.mergeColor(this, color);
       }
 
-      if(merges.contains(Merge.DECORATIONS)) {
-        for(int i = 0, length = DECORATIONS.length; i < length; i++) {
+      if (merges.contains(Merge.DECORATIONS)) {
+        for (int i = 0, length = DECORATIONS.length; i < length; i++) {
           final TextDecoration decoration = DECORATIONS[i];
           final TextDecoration.State state = that.decoration(decoration);
-          if(state != TextDecoration.State.NOT_SET) merger.mergeDecoration(this, decoration, state);
+          if (state != TextDecoration.State.NOT_SET) merger.mergeDecoration(this, decoration, state);
         }
       }
 
-      if(merges.contains(Merge.EVENTS)) {
+      if (merges.contains(Merge.EVENTS)) {
         final ClickEvent clickEvent = that.clickEvent();
-        if(clickEvent != null) merger.mergeClickEvent(this, clickEvent);
+        if (clickEvent != null) merger.mergeClickEvent(this, clickEvent);
 
         final HoverEvent<?> hoverEvent = that.hoverEvent();
-        if(hoverEvent != null) merger.mergeHoverEvent(this, hoverEvent);
+        if (hoverEvent != null) merger.mergeHoverEvent(this, hoverEvent);
       }
 
-      if(merges.contains(Merge.INSERTION)) {
+      if (merges.contains(Merge.INSERTION)) {
         final String insertion = that.insertion();
-        if(insertion != null) merger.mergeInsertion(this, insertion);
+        if (insertion != null) merger.mergeInsertion(this, insertion);
       }
 
-      if(merges.contains(Merge.FONT)) {
+      if (merges.contains(Merge.FONT)) {
         final Key font = that.font();
-        if(font != null) merger.mergeFont(this, font);
+        if (font != null) merger.mergeFont(this, font);
       }
 
       return this;
     }
 
     private static Merger merger(final Merge.Strategy strategy) {
-      if(strategy == Merge.Strategy.ALWAYS) {
+      if (strategy == Merge.Strategy.ALWAYS) {
         return AlwaysMerger.INSTANCE;
-      } else if(strategy == Merge.Strategy.NEVER) {
+      } else if (strategy == Merge.Strategy.NEVER) {
         throw new UnsupportedOperationException();
-      } else if(strategy == Merge.Strategy.IF_ABSENT_ON_TARGET) {
+      } else if (strategy == Merge.Strategy.IF_ABSENT_ON_TARGET) {
         return IfAbsentOnTargetMerger.INSTANCE;
       }
       throw new IllegalArgumentException(strategy.name());
@@ -463,7 +463,7 @@ final class StyleImpl implements Style {
 
     @Override
     public @NonNull StyleImpl build() {
-      if(this.isEmpty()) {
+      if (this.isEmpty()) {
         return EMPTY;
       }
       return new StyleImpl(this.font, this.color, this.obfuscated, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);

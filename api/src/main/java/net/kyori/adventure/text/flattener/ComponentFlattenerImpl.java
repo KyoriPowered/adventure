@@ -78,8 +78,8 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
   private void flatten0(final @NonNull Component input, final @NonNull FlattenerListener listener, final int depth) {
     requireNonNull(input, "input");
     requireNonNull(listener, "listener");
-    if(input == Component.empty()) return;
-    if(depth > MAX_DEPTH) {
+    if (input == Component.empty()) return;
+    if (depth > MAX_DEPTH) {
       throw new IllegalStateException("Exceeded maximum depth of " + MAX_DEPTH + " while attempting to flatten components!");
     }
 
@@ -88,12 +88,12 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
 
     listener.pushStyle(inputStyle);
     try {
-      if(flattener != null) {
+      if (flattener != null) {
         flattener.handle(input, listener, depth + 1);
       }
 
-      if(!input.children().isEmpty()) {
-        for(final Component child : input.children()) {
+      if (!input.children().isEmpty()) {
+        for (final Component child : input.children()) {
           this.flatten0(child, listener, depth + 1);
         }
       }
@@ -107,20 +107,20 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
     final Handler flattener = this.propagatedFlatteners.computeIfAbsent(test.getClass(), key -> {
       // direct flatteners (just return strings)
       final @Nullable Function<Component, String> value = (Function<Component, String>) this.flatteners.get(key);
-      if(value != null) return (component, listener, depth) -> listener.component(value.apply(component));
+      if (value != null) return (component, listener, depth) -> listener.component(value.apply(component));
 
-      for(final Map.Entry<Class<?>, Function<?, String>> entry : this.flatteners.entrySet()) {
-        if(entry.getKey().isAssignableFrom(key)) {
+      for (final Map.Entry<Class<?>, Function<?, String>> entry : this.flatteners.entrySet()) {
+        if (entry.getKey().isAssignableFrom(key)) {
           return (component, listener, depth) -> listener.component(((Function<Component, String>) entry.getValue()).apply(component));
         }
       }
 
       // complex flatteners (these provide extra components)
       final @Nullable BiConsumer<Component, Consumer<Component>> complexValue = (BiConsumer<Component, Consumer<Component>>) this.complexFlatteners.get(key);
-      if(complexValue != null) return (component, listener, depth) -> complexValue.accept(component, c -> this.flatten0(c, listener, depth));
+      if (complexValue != null) return (component, listener, depth) -> complexValue.accept(component, c -> this.flatten0(c, listener, depth));
 
-      for(final Map.Entry<Class<?>, BiConsumer<?, Consumer<Component>>> entry : this.complexFlatteners.entrySet()) {
-        if(entry.getKey().isAssignableFrom(key)) {
+      for (final Map.Entry<Class<?>, BiConsumer<?, Consumer<Component>>> entry : this.complexFlatteners.entrySet()) {
+        if (entry.getKey().isAssignableFrom(key)) {
           return (component, listener, depth) -> ((BiConsumer<Component, Consumer<Component>>) entry.getValue()).accept(component, c -> this.flatten0(c, listener, depth));
         }
       }
@@ -128,7 +128,7 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
       return Handler.NONE;
     });
 
-    if(flattener == Handler.NONE) {
+    if (flattener == Handler.NONE) {
       return this.unknownHandler == null ? null : (component, listener, depth) -> this.unknownHandler.apply(component);
     } else {
       return flattener;
@@ -192,17 +192,17 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
     }
 
     private void validateNoneInHierarchy(final Class<? extends Component> beingRegistered) {
-      for(final Class<?> clazz : this.flatteners.keySet()) {
+      for (final Class<?> clazz : this.flatteners.keySet()) {
         testHierarchy(clazz, beingRegistered);
       }
 
-      for(final Class<?> clazz : this.complexFlatteners.keySet()) {
+      for (final Class<?> clazz : this.complexFlatteners.keySet()) {
         testHierarchy(clazz, beingRegistered);
       }
     }
 
     private static void testHierarchy(final Class<?> existing, final Class<?> beingRegistered) {
-      if(!existing.equals(beingRegistered) && (existing.isAssignableFrom(beingRegistered) || beingRegistered.isAssignableFrom(existing))) {
+      if (!existing.equals(beingRegistered) && (existing.isAssignableFrom(beingRegistered) || beingRegistered.isAssignableFrom(existing))) {
         throw new IllegalArgumentException("Conflict detected between already registered type " + existing
           + " and newly registered type " + beingRegistered + "! Types in a component flattener must not share a common hierachy!");
       }

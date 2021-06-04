@@ -48,7 +48,7 @@ final class KeybindComponentImpl extends AbstractComponent implements KeybindCom
 
   @Override
   public @NonNull KeybindComponent keybind(final @NonNull String keybind) {
-    if(Objects.equals(this.keybind, keybind)) return this;
+    if (Objects.equals(this.keybind, keybind)) return this;
     return new KeybindComponentImpl(this.children, this.style, requireNonNull(keybind, "keybind"));
   }
 
@@ -64,9 +64,9 @@ final class KeybindComponentImpl extends AbstractComponent implements KeybindCom
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(!(other instanceof KeybindComponent)) return false;
-    if(!super.equals(other)) return false;
+    if (this == other) return true;
+    if (!(other instanceof KeybindComponent)) return false;
+    if (!super.equals(other)) return false;
     final KeybindComponent that = (KeybindComponent) other;
     return Objects.equals(this.keybind, that.keybind());
   }
@@ -112,7 +112,7 @@ final class KeybindComponentImpl extends AbstractComponent implements KeybindCom
 
     @Override
     public @NonNull KeybindComponent build() {
-      if(this.keybind == null) throw new IllegalStateException("keybind must be set");
+      if (this.keybind == null) throw new IllegalStateException("keybind must be set");
       return new KeybindComponentImpl(this.children, this.buildStyle(), this.keybind);
     }
   }

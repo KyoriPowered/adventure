@@ -62,7 +62,7 @@ final class BinaryTagReaderImpl implements BinaryTagIO.Reader {
 
   @Override
   public @NonNull CompoundBinaryTag read(@NonNull DataInput input) throws IOException {
-    if(!(input instanceof TrackingDataInput)) {
+    if (!(input instanceof TrackingDataInput)) {
       input = new TrackingDataInput(input, this.maxBytes);
     }
 
@@ -95,7 +95,7 @@ final class BinaryTagReaderImpl implements BinaryTagIO.Reader {
   }
 
   private static void requireCompound(final BinaryTagType<? extends BinaryTag> type) throws IOException {
-    if(type != BinaryTagTypes.COMPOUND) {
+    if (type != BinaryTagTypes.COMPOUND) {
       throw new IOException(String.format("Expected root tag to be a %s, was %s", BinaryTagTypes.COMPOUND, type));
     }
   }

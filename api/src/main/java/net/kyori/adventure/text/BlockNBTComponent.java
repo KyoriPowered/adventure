@@ -211,7 +211,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
      */
     static @NonNull Pos fromString(final @NonNull String input) throws IllegalArgumentException {
       final Matcher localMatch = BlockNBTComponentImpl.Tokens.LOCAL_PATTERN.matcher(input);
-      if(localMatch.matches()) {
+      if (localMatch.matches()) {
         return BlockNBTComponent.LocalPos.of(
           Double.parseDouble(localMatch.group(1)),
           Double.parseDouble(localMatch.group(3)),
@@ -220,7 +220,7 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
       }
 
       final Matcher worldMatch = BlockNBTComponentImpl.Tokens.WORLD_PATTERN.matcher(input);
-      if(worldMatch.matches()) {
+      if (worldMatch.matches()) {
         return BlockNBTComponent.WorldPos.of(
           BlockNBTComponentImpl.Tokens.deserializeCoordinate(worldMatch.group(1), worldMatch.group(2)),
           BlockNBTComponentImpl.Tokens.deserializeCoordinate(worldMatch.group(3), worldMatch.group(4)),

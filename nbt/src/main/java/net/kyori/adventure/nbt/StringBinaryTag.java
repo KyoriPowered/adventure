@@ -75,8 +75,8 @@ final class StringBinaryTagImpl extends AbstractBinaryTag implements StringBinar
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(other == null || this.getClass() != other.getClass()) return false;
+    if (this == other) return true;
+    if (other == null || this.getClass() != other.getClass()) return false;
     final StringBinaryTagImpl that = (StringBinaryTagImpl) other;
     return this.value.equals(that.value);
   }

@@ -59,7 +59,7 @@ final class GlobalTranslatorImpl implements GlobalTranslator {
   @Override
   public boolean addSource(final @NonNull Translator source) {
     requireNonNull(source, "source");
-    if(source == this) throw new IllegalArgumentException("GlobalTranslationSource");
+    if (source == this) throw new IllegalArgumentException("GlobalTranslationSource");
     return this.sources.add(source);
   }
 
@@ -73,9 +73,9 @@ final class GlobalTranslatorImpl implements GlobalTranslator {
   public @Nullable MessageFormat translate(final @NonNull String key, final @NonNull Locale locale) {
     requireNonNull(key, "key");
     requireNonNull(locale, "locale");
-    for(final Translator source : this.sources) {
+    for (final Translator source : this.sources) {
       final MessageFormat translation = source.translate(key, locale);
-      if(translation != null) return translation;
+      if (translation != null) return translation;
     }
     return null;
   }

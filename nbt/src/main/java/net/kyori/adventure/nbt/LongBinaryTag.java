@@ -105,8 +105,8 @@ final class LongBinaryTagImpl extends AbstractBinaryTag implements LongBinaryTag
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(other == null || this.getClass() != other.getClass()) return false;
+    if (this == other) return true;
+    if (other == null || this.getClass() != other.getClass()) return false;
     final LongBinaryTagImpl that = (LongBinaryTagImpl) other;
     return this.value == that.value;
   }

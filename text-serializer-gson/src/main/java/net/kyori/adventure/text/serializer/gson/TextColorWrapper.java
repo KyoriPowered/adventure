@@ -59,7 +59,7 @@ final class TextColorWrapper {
       final TextColor color = TextColorSerializer.fromString(input);
       final TextDecoration decoration = TextDecoration.NAMES.value(input);
       final boolean reset = decoration == null && input.equals("reset");
-      if(color == null && decoration == null && !reset) {
+      if (color == null && decoration == null && !reset) {
         throw new JsonParseException("Don't know how to parse " + input + " at " + in.getPath());
       }
       return new TextColorWrapper(color, decoration, reset);

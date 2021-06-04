@@ -1,14 +1,4 @@
 pluginManagement {
-  plugins {
-    // Default plugin versions
-    val indraVersion = "2.0.5"
-    id("net.kyori.indra") version indraVersion
-    id("net.kyori.indra.git") version indraVersion
-    id("net.kyori.indra.checkstyle") version indraVersion
-    id("net.kyori.indra.license-header") version indraVersion
-    id("net.kyori.indra.publishing.sonatype") version indraVersion
-    id("com.adarshr.test-logger") version "3.0.0"
-  }
   includeBuild("build-logic")
 }
 

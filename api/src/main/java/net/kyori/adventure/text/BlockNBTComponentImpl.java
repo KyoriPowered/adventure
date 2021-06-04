@@ -45,13 +45,13 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
 
   @Override
   public @NonNull BlockNBTComponent nbtPath(final @NonNull String nbtPath) {
-    if(Objects.equals(this.nbtPath, nbtPath)) return this;
+    if (Objects.equals(this.nbtPath, nbtPath)) return this;
     return new BlockNBTComponentImpl(this.children, this.style, nbtPath, this.interpret, this.pos);
   }
 
   @Override
   public @NonNull BlockNBTComponent interpret(final boolean interpret) {
-    if(this.interpret == interpret) return this;
+    if (this.interpret == interpret) return this;
     return new BlockNBTComponentImpl(this.children, this.style, this.nbtPath, interpret, this.pos);
   }
 
@@ -77,9 +77,9 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(!(other instanceof BlockNBTComponent)) return false;
-    if(!super.equals(other)) return false;
+    if (this == other) return true;
+    if (!(other instanceof BlockNBTComponent)) return false;
+    if (!super.equals(other)) return false;
     final BlockNBTComponent that = (BlockNBTComponent) other;
     return Objects.equals(this.pos, that.pos());
   }
@@ -125,8 +125,8 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
 
     @Override
     public @NonNull BlockNBTComponent build() {
-      if(this.nbtPath == null) throw new IllegalStateException("nbt path must be set");
-      if(this.pos == null) throw new IllegalStateException("pos must be set");
+      if (this.nbtPath == null) throw new IllegalStateException("nbt path must be set");
+      if (this.pos == null) throw new IllegalStateException("pos must be set");
       return new BlockNBTComponentImpl(this.children, this.buildStyle(), this.nbtPath, this.interpret, this.pos);
     }
   }
@@ -168,8 +168,8 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
 
     @Override
     public boolean equals(final @Nullable Object other) {
-      if(this == other) return true;
-      if(!(other instanceof LocalPos)) return false;
+      if (this == other) return true;
+      if (!(other instanceof LocalPos)) return false;
       final LocalPos that = (LocalPos) other;
       return ShadyPines.equals(that.left(), this.left())
         && ShadyPines.equals(that.up(), this.up())
@@ -232,8 +232,8 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
 
     @Override
     public boolean equals(final @Nullable Object other) {
-      if(this == other) return true;
-      if(!(other instanceof WorldPos)) return false;
+      if (this == other) return true;
+      if (!(other instanceof WorldPos)) return false;
       final WorldPos that = (WorldPos) other;
       return this.x.equals(that.x())
         && this.y.equals(that.y())
@@ -287,8 +287,8 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
 
       @Override
       public boolean equals(final @Nullable Object other) {
-        if(this == other) return true;
-        if(!(other instanceof Coordinate)) return false;
+        if (this == other) return true;
+        if (!(other instanceof Coordinate)) return false;
         final Coordinate that = (Coordinate) other;
         return this.value() == that.value()
           && this.type() == that.type();
@@ -321,9 +321,9 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
 
     static WorldPos.Coordinate deserializeCoordinate(final String prefix, final String value) {
       final int i = Integer.parseInt(value);
-      if(prefix.equals(ABSOLUTE_SYMBOL)) {
+      if (prefix.equals(ABSOLUTE_SYMBOL)) {
         return WorldPos.Coordinate.absolute(i);
-      } else if(prefix.equals(RELATIVE_SYMBOL)) {
+      } else if (prefix.equals(RELATIVE_SYMBOL)) {
         return WorldPos.Coordinate.relative(i);
       } else {
         throw new AssertionError(); // regex does not allow any other value for prefix.

@@ -75,70 +75,70 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
   }
 
   private BuildableComponent<?, ?> deserialize0(final JsonElement element, final JsonDeserializationContext context) throws JsonParseException {
-    if(element.isJsonPrimitive()) {
+    if (element.isJsonPrimitive()) {
       return Component.text(element.getAsString());
-    } else if(element.isJsonArray()) {
+    } else if (element.isJsonArray()) {
       ComponentBuilder<?, ?> parent = null;
-      for(final JsonElement childElement : element.getAsJsonArray()) {
+      for (final JsonElement childElement : element.getAsJsonArray()) {
         final BuildableComponent<?, ?> child = this.deserialize0(childElement, context);
-        if(parent == null) {
+        if (parent == null) {
           parent = child.toBuilder();
         } else {
           parent.append(child);
         }
       }
-      if(parent == null) {
+      if (parent == null) {
         throw notSureHowToDeserialize(element);
       }
       return parent.build();
-    } else if(!element.isJsonObject()) {
+    } else if (!element.isJsonObject()) {
       throw notSureHowToDeserialize(element);
     }
 
     final JsonObject object = element.getAsJsonObject();
     final ComponentBuilder<?, ?> component;
-    if(object.has(TEXT)) {
+    if (object.has(TEXT)) {
       component = Component.text().content(object.get(TEXT).getAsString());
-    } else if(object.has(TRANSLATE)) {
+    } else if (object.has(TRANSLATE)) {
       final String key = object.get(TRANSLATE).getAsString();
-      if(!object.has(TRANSLATE_WITH)) {
+      if (!object.has(TRANSLATE_WITH)) {
         component = Component.translatable().key(key);
       } else {
         final JsonArray with = object.getAsJsonArray(TRANSLATE_WITH);
         final List<Component> args = new ArrayList<>(with.size());
-        for(int i = 0, size = with.size(); i < size; i++) {
+        for (int i = 0, size = with.size(); i < size; i++) {
           final JsonElement argElement = with.get(i);
           args.add(this.deserialize0(argElement, context));
         }
         component = Component.translatable().key(key).args(args);
       }
-    } else if(object.has(SCORE)) {
+    } else if (object.has(SCORE)) {
       final JsonObject score = object.getAsJsonObject(SCORE);
-      if(!score.has(SCORE_NAME) || !score.has(SCORE_OBJECTIVE)) {
+      if (!score.has(SCORE_NAME) || !score.has(SCORE_OBJECTIVE)) {
         throw new JsonParseException("A score component requires a " + SCORE_NAME + " and " + SCORE_OBJECTIVE);
       }
       final ScoreComponent.Builder builder = Component.score()
         .name(score.get(SCORE_NAME).getAsString())
         .objective(score.get(SCORE_OBJECTIVE).getAsString());
       // score components can have a value sometimes, let's grab it
-      if(score.has(SCORE_VALUE)) {
+      if (score.has(SCORE_VALUE)) {
         component = builder.value(score.get(SCORE_VALUE).getAsString());
       } else {
         component = builder;
       }
-    } else if(object.has(SELECTOR)) {
+    } else if (object.has(SELECTOR)) {
       component = Component.selector().pattern(object.get(SELECTOR).getAsString());
-    } else if(object.has(KEYBIND)) {
+    } else if (object.has(KEYBIND)) {
       component = Component.keybind().keybind(object.get(KEYBIND).getAsString());
-    } else if(object.has(NBT)) {
+    } else if (object.has(NBT)) {
       final String nbt = object.get(NBT).getAsString();
       final boolean interpret = object.has(NBT_INTERPRET) && object.getAsJsonPrimitive(NBT_INTERPRET).getAsBoolean();
-      if(object.has(NBT_BLOCK)) {
+      if (object.has(NBT_BLOCK)) {
         final BlockNBTComponent.Pos pos = context.deserialize(object.get(NBT_BLOCK), BlockNBTComponent.Pos.class);
         component = nbt(Component.blockNBT(), nbt, interpret).pos(pos);
-      } else if(object.has(NBT_ENTITY)) {
+      } else if (object.has(NBT_ENTITY)) {
         component = nbt(Component.entityNBT(), nbt, interpret).selector(object.get(NBT_ENTITY).getAsString());
-      } else if(object.has(NBT_STORAGE)) {
+      } else if (object.has(NBT_STORAGE)) {
         component = nbt(Component.storageNBT(), nbt, interpret).storage(context.deserialize(object.get(NBT_STORAGE), Key.class));
       } else {
         throw notSureHowToDeserialize(element);
@@ -147,16 +147,16 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
       throw notSureHowToDeserialize(element);
     }
 
-    if(object.has(EXTRA)) {
+    if (object.has(EXTRA)) {
       final JsonArray extra = object.getAsJsonArray(EXTRA);
-      for(int i = 0, size = extra.size(); i < size; i++) {
+      for (int i = 0, size = extra.size(); i < size; i++) {
         final JsonElement extraElement = extra.get(i);
         component.append(this.deserialize0(extraElement, context));
       }
     }
 
     final Style style = context.deserialize(element, Style.class);
-    if(!style.isEmpty()) {
+    if (!style.isEmpty()) {
       component.style(style);
     }
 
@@ -173,37 +173,37 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
   public JsonElement serialize(final Component src, final Type typeOfSrc, final JsonSerializationContext context) {
     final JsonObject object = new JsonObject();
 
-    if(src.hasStyling()) {
+    if (src.hasStyling()) {
       final JsonElement style = context.serialize(src.style());
-      if(style.isJsonObject()) {
-        for(final Map.Entry<String, JsonElement> entry : ((JsonObject) style).entrySet()) {
+      if (style.isJsonObject()) {
+        for (final Map.Entry<String, JsonElement> entry : ((JsonObject) style).entrySet()) {
           object.add(entry.getKey(), entry.getValue());
         }
       }
     }
 
     final List<Component> children = src.children();
-    if(!children.isEmpty()) {
+    if (!children.isEmpty()) {
       final JsonArray extra = new JsonArray();
-      for(final Component child : children) {
+      for (final Component child : children) {
         extra.add(context.serialize(child));
       }
       object.add(EXTRA, extra);
     }
 
-    if(src instanceof TextComponent) {
+    if (src instanceof TextComponent) {
       object.addProperty(TEXT, ((TextComponent) src).content());
-    } else if(src instanceof TranslatableComponent) {
+    } else if (src instanceof TranslatableComponent) {
       final TranslatableComponent tc = (TranslatableComponent) src;
       object.addProperty(TRANSLATE, tc.key());
-      if(!tc.args().isEmpty()) {
+      if (!tc.args().isEmpty()) {
         final JsonArray with = new JsonArray();
-        for(final Component arg : tc.args()) {
+        for (final Component arg : tc.args()) {
           with.add(context.serialize(arg));
         }
         object.add(TRANSLATE_WITH, with);
       }
-    } else if(src instanceof ScoreComponent) {
+    } else if (src instanceof ScoreComponent) {
       final ScoreComponent sc = (ScoreComponent) src;
       final JsonObject score = new JsonObject();
       score.addProperty(SCORE_NAME, sc.name());
@@ -211,22 +211,22 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
       // score component value is optional
       @SuppressWarnings("deprecation")
       final @Nullable String value = sc.value();
-      if(value != null) score.addProperty(SCORE_VALUE, value);
+      if (value != null) score.addProperty(SCORE_VALUE, value);
       object.add(SCORE, score);
-    } else if(src instanceof SelectorComponent) {
+    } else if (src instanceof SelectorComponent) {
       object.addProperty(SELECTOR, ((SelectorComponent) src).pattern());
-    } else if(src instanceof KeybindComponent) {
+    } else if (src instanceof KeybindComponent) {
       object.addProperty(KEYBIND, ((KeybindComponent) src).keybind());
-    } else if(src instanceof NBTComponent) {
+    } else if (src instanceof NBTComponent) {
       final NBTComponent<?, ?> nc = (NBTComponent<?, ?>) src;
       object.addProperty(NBT, nc.nbtPath());
       object.addProperty(NBT_INTERPRET, nc.interpret());
-      if(src instanceof BlockNBTComponent) {
+      if (src instanceof BlockNBTComponent) {
         final JsonElement position = context.serialize(((BlockNBTComponent) nc).pos());
         object.add(NBT_BLOCK, position);
-      } else if(src instanceof EntityNBTComponent) {
+      } else if (src instanceof EntityNBTComponent) {
         object.addProperty(NBT_ENTITY, ((EntityNBTComponent) nc).selector());
-      } else if(src instanceof StorageNBTComponent) {
+      } else if (src instanceof StorageNBTComponent) {
         object.add(NBT_STORAGE, context.serialize(((StorageNBTComponent) nc).storage()));
       } else {
         throw notSureHowToSerialize(src);

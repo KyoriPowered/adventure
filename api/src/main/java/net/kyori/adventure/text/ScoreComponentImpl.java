@@ -53,7 +53,7 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
 
   @Override
   public @NonNull ScoreComponent name(final @NonNull String name) {
-    if(Objects.equals(this.name, name)) return this;
+    if (Objects.equals(this.name, name)) return this;
     return new ScoreComponentImpl(this.children, this.style, requireNonNull(name, "name"), this.objective, this.value);
   }
 
@@ -64,7 +64,7 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
 
   @Override
   public @NonNull ScoreComponent objective(final @NonNull String objective) {
-    if(Objects.equals(this.objective, objective)) return this;
+    if (Objects.equals(this.objective, objective)) return this;
     return new ScoreComponentImpl(this.children, this.style, this.name, requireNonNull(objective, "objective"), this.value);
   }
 
@@ -77,7 +77,7 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
   @Override
   @Deprecated
   public @NonNull ScoreComponent value(final @Nullable String value) {
-    if(Objects.equals(this.value, value)) return this;
+    if (Objects.equals(this.value, value)) return this;
     return new ScoreComponentImpl(this.children, this.style, this.name, this.objective, value);
   }
 
@@ -94,9 +94,9 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
   @Override
   @SuppressWarnings("deprecation")
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(!(other instanceof ScoreComponent)) return false;
-    if(!super.equals(other)) return false;
+    if (this == other) return true;
+    if (!(other instanceof ScoreComponent)) return false;
+    if (!super.equals(other)) return false;
     final ScoreComponent that = (ScoreComponent) other;
     return Objects.equals(this.name, that.name())
       && Objects.equals(this.objective, that.objective())
@@ -166,8 +166,8 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
 
     @Override
     public @NonNull ScoreComponent build() {
-      if(this.name == null) throw new IllegalStateException("name must be set");
-      if(this.objective == null) throw new IllegalStateException("objective must be set");
+      if (this.name == null) throw new IllegalStateException("name must be set");
+      if (this.objective == null) throw new IllegalStateException("objective must be set");
       return new ScoreComponentImpl(this.children, this.buildStyle(), this.name, this.objective, this.value);
     }
   }

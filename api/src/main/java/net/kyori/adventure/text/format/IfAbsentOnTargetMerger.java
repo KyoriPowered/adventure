@@ -37,7 +37,7 @@ final class IfAbsentOnTargetMerger implements Merger {
 
   @Override
   public void mergeColor(final StyleImpl.BuilderImpl target, final @Nullable TextColor color) {
-    if(target.color == null) {
+    if (target.color == null) {
       target.color(color);
     }
   }
@@ -49,28 +49,28 @@ final class IfAbsentOnTargetMerger implements Merger {
 
   @Override
   public void mergeClickEvent(final StyleImpl.BuilderImpl target, final @Nullable ClickEvent event) {
-    if(target.clickEvent == null) {
+    if (target.clickEvent == null) {
       target.clickEvent(event);
     }
   }
 
   @Override
   public void mergeHoverEvent(final StyleImpl.BuilderImpl target, final @Nullable HoverEvent<?> event) {
-    if(target.hoverEvent == null) {
+    if (target.hoverEvent == null) {
       target.hoverEvent(event);
     }
   }
 
   @Override
   public void mergeInsertion(final StyleImpl.BuilderImpl target, final @Nullable String insertion) {
-    if(target.insertion == null) {
+    if (target.insertion == null) {
       target.insertion(insertion);
     }
   }
 
   @Override
   public void mergeFont(final StyleImpl.BuilderImpl target, final @Nullable Key font) {
-    if(target.font == null) {
+    if (target.font == null) {
       target.font(font);
     }
   }

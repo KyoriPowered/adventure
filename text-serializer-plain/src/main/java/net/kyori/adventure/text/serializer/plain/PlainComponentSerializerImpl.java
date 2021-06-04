@@ -43,12 +43,12 @@ final class PlainComponentSerializerImpl {
     final @Nullable Function<TranslatableComponent, String> translatable
   ) {
     // if both legacy functions are null we can simply use the standard plain-text serializer, since there is nothing special we need to do
-    if(keybind == null && translatable == null) {
+    if (keybind == null && translatable == null) {
       return PlainTextComponentSerializer.plainText();
     }
     final ComponentFlattener.Builder builder = ComponentFlattener.basic().toBuilder();
-    if(keybind != null) builder.mapper(KeybindComponent.class, keybind);
-    if(translatable != null) builder.mapper(TranslatableComponent.class, translatable);
+    if (keybind != null) builder.mapper(KeybindComponent.class, keybind);
+    if (translatable != null) builder.mapper(TranslatableComponent.class, translatable);
     return PlainTextComponentSerializer.builder().flattener(builder.build()).build();
   }
 

@@ -41,7 +41,7 @@ public interface ComponentMessageThrowable {
    */
   @SuppressWarnings("checkstyle:MethodName")
   static @Nullable Component getMessage(final @Nullable Throwable throwable) {
-    if(throwable instanceof ComponentMessageThrowable) {
+    if (throwable instanceof ComponentMessageThrowable) {
       return ((ComponentMessageThrowable) throwable).componentMessage();
     }
     return null;
@@ -56,11 +56,11 @@ public interface ComponentMessageThrowable {
    */
   @SuppressWarnings("checkstyle:MethodName")
   static @Nullable Component getOrConvertMessage(final @Nullable Throwable throwable) {
-    if(throwable instanceof ComponentMessageThrowable) {
+    if (throwable instanceof ComponentMessageThrowable) {
       return ((ComponentMessageThrowable) throwable).componentMessage();
-    } else if(throwable != null) {
+    } else if (throwable != null) {
       final String message = throwable.getMessage();
-      if(message != null) {
+      if (message != null) {
         return Component.text(message);
       }
     }

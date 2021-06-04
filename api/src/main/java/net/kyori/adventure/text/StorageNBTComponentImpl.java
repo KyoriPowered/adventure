@@ -43,13 +43,13 @@ final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent
 
   @Override
   public @NonNull StorageNBTComponent nbtPath(final @NonNull String nbtPath) {
-    if(Objects.equals(this.nbtPath, nbtPath)) return this;
+    if (Objects.equals(this.nbtPath, nbtPath)) return this;
     return new StorageNBTComponentImpl(this.children, this.style, nbtPath, this.interpret, this.storage);
   }
 
   @Override
   public @NonNull StorageNBTComponent interpret(final boolean interpret) {
-    if(this.interpret == interpret) return this;
+    if (this.interpret == interpret) return this;
     return new StorageNBTComponentImpl(this.children, this.style, this.nbtPath, interpret, this.storage);
   }
 
@@ -60,7 +60,7 @@ final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent
 
   @Override
   public @NonNull StorageNBTComponent storage(final @NonNull Key storage) {
-    if(Objects.equals(this.storage, storage)) return this;
+    if (Objects.equals(this.storage, storage)) return this;
     return new StorageNBTComponentImpl(this.children, this.style, this.nbtPath, this.interpret, storage);
   }
 
@@ -76,9 +76,9 @@ final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(!(other instanceof StorageNBTComponent)) return false;
-    if(!super.equals(other)) return false;
+    if (this == other) return true;
+    if (!(other instanceof StorageNBTComponent)) return false;
+    if (!super.equals(other)) return false;
     final StorageNBTComponentImpl that = (StorageNBTComponentImpl) other;
     return Objects.equals(this.storage, that.storage());
   }
@@ -124,8 +124,8 @@ final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent
 
     @Override
     public @NonNull StorageNBTComponent build() {
-      if(this.nbtPath == null) throw new IllegalStateException("nbt path must be set");
-      if(this.storage == null) throw new IllegalStateException("storage must be set");
+      if (this.nbtPath == null) throw new IllegalStateException("nbt path must be set");
+      if (this.storage == null) throw new IllegalStateException("storage must be set");
       return new StorageNBTComponentImpl(this.children, this.buildStyle(), this.nbtPath, this.interpret, this.storage);
     }
   }

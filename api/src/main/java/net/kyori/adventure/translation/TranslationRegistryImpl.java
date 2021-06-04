@@ -70,7 +70,7 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
   @Override
   public @Nullable MessageFormat translate(final @NonNull String key, final @NonNull Locale locale) {
     final Translation translation = this.translations.get(key);
-    if(translation == null) return null;
+    if (translation == null) return null;
     return translation.translate(locale);
   }
 
@@ -86,8 +86,8 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
 
   @Override
   public boolean equals(final Object other) {
-    if(this == other) return true;
-    if(!(other instanceof TranslationRegistryImpl)) return false;
+    if (this == other) return true;
+    if (!(other instanceof TranslationRegistryImpl)) return false;
 
     final TranslationRegistryImpl that = (TranslationRegistryImpl) other;
 
@@ -116,18 +116,18 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
     }
 
     void register(final @NonNull Locale locale, final @NonNull MessageFormat format) {
-      if(this.formats.putIfAbsent(requireNonNull(locale, "locale"), requireNonNull(format, "message format")) != null) {
+      if (this.formats.putIfAbsent(requireNonNull(locale, "locale"), requireNonNull(format, "message format")) != null) {
         throw new IllegalArgumentException(String.format("Translation already exists: %s for %s", this.key, locale));
       }
     }
 
     @Nullable MessageFormat translate(final @NonNull Locale locale) {
       MessageFormat format = this.formats.get(requireNonNull(locale, "locale"));
-      if(format == null) {
+      if (format == null) {
         format = this.formats.get(new Locale(locale.getLanguage())); // try without country
-        if(format == null) {
+        if (format == null) {
           format = this.formats.get(TranslationRegistryImpl.this.defaultLocale); // try local default locale
-          if(format == null) {
+          if (format == null) {
             format = this.formats.get(TranslationLocales.global()); // try global default locale
           }
         }
@@ -145,8 +145,8 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
 
     @Override
     public boolean equals(final Object other) {
-      if(this == other) return true;
-      if(!(other instanceof Translation)) return false;
+      if (this == other) return true;
+      if (!(other instanceof Translation)) return false;
       final Translation that = (Translation) other;
       return this.key.equals(that.key) &&
         this.formats.equals(that.formats);

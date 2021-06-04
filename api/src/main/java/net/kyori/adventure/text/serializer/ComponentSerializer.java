@@ -91,7 +91,7 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
    */
   @Contract(value = "!null, _ -> !null; null, _ -> param2", pure = true)
   default @PolyNull O deserializeOr(final @Nullable R input, final @PolyNull O fallback) {
-    if(input == null) return fallback;
+    if (input == null) return fallback;
 
     return this.deserialize(input);
   }
@@ -131,7 +131,7 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
    */
   @Contract(value = "!null, _ -> !null; null, _ -> param2", pure = true)
   default @PolyNull R serializeOr(final @Nullable I component, final @PolyNull R fallback) {
-    if(component == null) return fallback;
+    if (component == null) return fallback;
 
     return this.serialize(component);
   }

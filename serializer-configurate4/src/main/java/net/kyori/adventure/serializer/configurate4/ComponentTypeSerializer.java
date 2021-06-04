@@ -81,12 +81,12 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
 
   private @NonNull BuildableComponent<?, ?> deserialize0(final @NonNull Type type, final @NonNull ConfigurationNode value) throws SerializationException {
     // Try to read as a string
-    if(!value.isList() && !value.isMap()) {
+    if (!value.isList() && !value.isMap()) {
       final String str = value.getString();
-      if(str != null) {
-        if(this.stringSerial != null) {
+      if (str != null) {
+        if (this.stringSerial != null) {
           final Component ret = this.stringSerial.deserialize(str);
-          if(!(ret instanceof BuildableComponent<?, ?>)) {
+          if (!(ret instanceof BuildableComponent<?, ?>)) {
             throw new SerializationException("Result " + ret + " is not builable");
           }
           return (BuildableComponent<?, ?>) ret;
@@ -94,45 +94,45 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
           return Component.text(str);
         }
       }
-    } else if(value.isList()) {
+    } else if (value.isList()) {
       ComponentBuilder<?, ?> parent = null;
-      for(final ConfigurationNode childElement : value.childrenList()) {
+      for (final ConfigurationNode childElement : value.childrenList()) {
         final BuildableComponent<?, ?> child = this.deserialize0(Component.class, childElement);
-        if(parent == null) {
+        if (parent == null) {
           parent = child.toBuilder();
         } else {
           parent.append(child);
         }
       }
-      if(parent == null) {
+      if (parent == null) {
         throw notSureHowToDeserialize(value);
       }
       return parent.build();
-    } else if(!value.isMap()) {
+    } else if (!value.isMap()) {
       throw notSureHowToDeserialize(value);
     }
 
     final ComponentBuilder<?, ?> component;
     final Map<Object, ? extends ConfigurationNode> children = value.childrenMap();
-    if(children.containsKey(TEXT)) {
+    if (children.containsKey(TEXT)) {
       component = Component.text().content(children.get(TEXT).getString());
-    } else if(children.containsKey(TRANSLATE)) {
+    } else if (children.containsKey(TRANSLATE)) {
       final String key = children.get(TRANSLATE).getString();
-      if(!children.containsKey(TRANSLATE_WITH)) {
+      if (!children.containsKey(TRANSLATE_WITH)) {
         component = Component.translatable().key(key);
       } else {
         final ConfigurationNode with = children.get(TRANSLATE_WITH);
-        if(!with.isList()) {
+        if (!with.isList()) {
           throw new SerializationException("Expected " + TRANSLATE_WITH + " to be a list");
         }
         final List<Component> args = with.get(LIST_TYPE);
         component = Component.translatable().key(key).args(args);
       }
-    } else if(children.containsKey(SCORE)) {
+    } else if (children.containsKey(SCORE)) {
       final ConfigurationNode score = children.get(SCORE);
       final ConfigurationNode name = score.node(SCORE_NAME);
       final ConfigurationNode objective = score.node(SCORE_OBJECTIVE);
-      if(name.virtual() || objective.virtual()) {
+      if (name.virtual() || objective.virtual()) {
         throw new SerializationException("A score component requires a " + SCORE_NAME + " and " + SCORE_OBJECTIVE);
       }
       final ScoreComponent.Builder builder = Component.score()
@@ -140,24 +140,24 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
         .objective(objective.getString());
       // score components can have a value sometimes, let's grab it
       final ConfigurationNode scoreValue = score.node(SCORE_VALUE);
-      if(!scoreValue.virtual()) {
+      if (!scoreValue.virtual()) {
         component = builder.value(scoreValue.getString());
       } else {
         component = builder;
       }
-    } else if(children.containsKey(SELECTOR)) {
+    } else if (children.containsKey(SELECTOR)) {
       component = Component.selector().pattern(children.get(SELECTOR).getString());
-    } else if(children.containsKey(KEYBIND)) {
+    } else if (children.containsKey(KEYBIND)) {
       component = Component.keybind().keybind(children.get(KEYBIND).getString());
-    } else if(children.containsKey(NBT)) {
+    } else if (children.containsKey(NBT)) {
       final String nbt = children.get(NBT).getString();
       final boolean interpret = children.containsKey(NBT_INTERPRET) && children.get(NBT_INTERPRET).getBoolean();
-      if(children.containsKey(NBT_BLOCK)) {
+      if (children.containsKey(NBT_BLOCK)) {
         final BlockNBTComponent.Pos pos = children.get(NBT_BLOCK).get(BlockNBTPosSerializer.INSTANCE.type());
         component = nbt(Component.blockNBT(), nbt, interpret).pos(pos);
-      } else if(children.containsKey(NBT_ENTITY)) {
+      } else if (children.containsKey(NBT_ENTITY)) {
         component = nbt(Component.entityNBT(), nbt, interpret).selector(children.get(NBT_ENTITY).getString());
-      } else if(children.containsKey(NBT_STORAGE)) {
+      } else if (children.containsKey(NBT_STORAGE)) {
         component = nbt(Component.storageNBT(), nbt, interpret).storage(children.get(NBT_STORAGE).get(KeySerializer.INSTANCE.type()));
       } else {
         throw notSureHowToDeserialize(value);
@@ -166,15 +166,15 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
       throw notSureHowToDeserialize(value);
     }
 
-    if(children.containsKey(EXTRA)) {
+    if (children.containsKey(EXTRA)) {
       final ConfigurationNode extra = children.get(EXTRA);
-      for(final ConfigurationNode child : extra.childrenList()) {
+      for (final ConfigurationNode child : extra.childrenList()) {
         component.append(this.deserialize0(Component.class, child));
       }
     }
 
     final Style style = value.get(Style.class, Style.empty());
-    if(!style.isEmpty()) {
+    if (!style.isEmpty()) {
       component.style(style);
     }
 
@@ -184,9 +184,9 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
   @Override
   public void serialize(final @NonNull Type type, final @Nullable Component src, final @NonNull ConfigurationNode value) throws SerializationException {
     value.set(null);
-    if(src == null) {
+    if (src == null) {
       return;
-    } else if(this.stringSerial != null && this.preferString) {
+    } else if (this.stringSerial != null && this.preferString) {
       try {
         value.set(this.stringSerial.serialize(src));
         return;
@@ -194,18 +194,18 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
         throw new SerializationException(ex);
       }
     }
-    if(src instanceof TextComponent) {
+    if (src instanceof TextComponent) {
       value.node(TEXT).set(((TextComponent) src).content());
-    } else if(src instanceof TranslatableComponent) {
+    } else if (src instanceof TranslatableComponent) {
       final TranslatableComponent tc = (TranslatableComponent) src;
       value.node(TRANSLATE).set(tc.key());
-      if(!tc.args().isEmpty()) {
+      if (!tc.args().isEmpty()) {
         final ConfigurationNode with = value.node(TRANSLATE_WITH);
-        for(final Component arg : tc.args()) {
+        for (final Component arg : tc.args()) {
           with.appendListNode().set(Component.class, arg);
         }
       }
-    } else if(src instanceof ScoreComponent) {
+    } else if (src instanceof ScoreComponent) {
       final ScoreComponent sc = (ScoreComponent) src;
       final ConfigurationNode score = value.node(SCORE);
       score.node(SCORE_NAME).set(sc.name());
@@ -213,20 +213,20 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
       // score component value is optional
       @SuppressWarnings("deprecation")
       final @Nullable String scoreValue = sc.value();
-      if(scoreValue != null) score.node(SCORE_VALUE).set(scoreValue);
-    } else if(src instanceof SelectorComponent) {
+      if (scoreValue != null) score.node(SCORE_VALUE).set(scoreValue);
+    } else if (src instanceof SelectorComponent) {
       value.node(SELECTOR).set(((SelectorComponent) src).pattern());
-    } else if(src instanceof KeybindComponent) {
+    } else if (src instanceof KeybindComponent) {
       value.node(KEYBIND).set(((KeybindComponent) src).keybind());
-    } else if(src instanceof NBTComponent) {
+    } else if (src instanceof NBTComponent) {
       final NBTComponent<?, ?> nc = (NBTComponent<?, ?>) src;
       value.node(NBT).set(nc.nbtPath());
       value.node(NBT_INTERPRET).set(nc.interpret());
-      if(src instanceof BlockNBTComponent) {
+      if (src instanceof BlockNBTComponent) {
         value.node(NBT_BLOCK).set(BlockNBTPosSerializer.INSTANCE.type(), ((BlockNBTComponent) nc).pos());
-      } else if(src instanceof EntityNBTComponent) {
+      } else if (src instanceof EntityNBTComponent) {
         value.node(NBT_ENTITY).set(((EntityNBTComponent) nc).selector());
-      } else if(src instanceof StorageNBTComponent) {
+      } else if (src instanceof StorageNBTComponent) {
         value.node(NBT_STORAGE).set(KeySerializer.INSTANCE.type(), ((StorageNBTComponent) nc).storage());
       } else {
         throw notSureHowToSerialize(src);
@@ -236,11 +236,11 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
     }
 
     final List<Component> children = src.children();
-    if(!children.isEmpty()) {
+    if (!children.isEmpty()) {
       value.node(EXTRA).set(LIST_TYPE, children);
     }
 
-    if(src.hasStyling()) {
+    if (src.hasStyling()) {
       // merge
       value.set(Style.class, src.style());
     }

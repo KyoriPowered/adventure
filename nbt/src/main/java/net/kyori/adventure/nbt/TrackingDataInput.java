@@ -41,7 +41,7 @@ final class TrackingDataInput implements DataInput, BinaryTagScope {
   }
 
   public static BinaryTagScope enter(final DataInput input) throws IOException {
-    if(input instanceof TrackingDataInput) {
+    if (input instanceof TrackingDataInput) {
       return ((TrackingDataInput) input).enter();
     } else {
       return NoOp.INSTANCE;
@@ -49,7 +49,7 @@ final class TrackingDataInput implements DataInput, BinaryTagScope {
   }
 
   public static BinaryTagScope enter(final DataInput input, final long expectedSize) throws IOException {
-    if(input instanceof TrackingDataInput) {
+    if (input instanceof TrackingDataInput) {
       return ((TrackingDataInput) input).enter(expectedSize);
     } else {
       return NoOp.INSTANCE;
@@ -62,7 +62,7 @@ final class TrackingDataInput implements DataInput, BinaryTagScope {
 
   // enter a nesting level that pre-allocates storage
   public TrackingDataInput enter(final long expectedSize) throws IOException {
-    if(this.depth++ > MAX_DEPTH) {
+    if (this.depth++ > MAX_DEPTH) {
       throw new IOException("NBT read exceeded maximum depth of " + MAX_DEPTH);
     }
 
@@ -71,7 +71,7 @@ final class TrackingDataInput implements DataInput, BinaryTagScope {
   }
 
   public TrackingDataInput enter() throws IOException {
-    if(this.depth++ > MAX_DEPTH) {
+    if (this.depth++ > MAX_DEPTH) {
       throw new IOException("NBT read exceeded maximum depth of " + MAX_DEPTH);
     }
     this.ensureMaxLength(0);
@@ -84,7 +84,7 @@ final class TrackingDataInput implements DataInput, BinaryTagScope {
   }
 
   private void ensureMaxLength(final long expected) throws IOException {
-    if(this.maxLength > 0 && this.counter + expected > this.maxLength) {
+    if (this.maxLength > 0 && this.counter + expected > this.maxLength) {
       throw new IOException("The read NBT was longer than the maximum allowed size of " + this.maxLength + " bytes!");
     }
   }
@@ -169,7 +169,7 @@ final class TrackingDataInput implements DataInput, BinaryTagScope {
   @Override
   public @Nullable String readLine() throws IOException {
     final @Nullable String result = this.input.readLine();
-    if(result != null) {
+    if (result != null) {
       this.counter += result.length() + 1;
     }
     return result;

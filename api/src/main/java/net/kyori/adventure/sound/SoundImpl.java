@@ -58,8 +58,8 @@ abstract class SoundImpl implements Sound {
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(!(other instanceof SoundImpl)) return false;
+    if (this == other) return true;
+    if (!(other instanceof SoundImpl)) return false;
     final SoundImpl that = (SoundImpl) other;
     return this.name().equals(that.name())
       && this.source == that.source

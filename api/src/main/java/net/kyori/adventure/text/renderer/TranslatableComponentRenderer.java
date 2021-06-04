@@ -143,15 +143,15 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   @Override
   protected @NonNull Component renderTranslatable(final @NonNull TranslatableComponent component, final @NonNull C context) {
     final @Nullable MessageFormat format = this.translate(component.key(), context);
-    if(format == null) {
+    if (format == null) {
       // we don't have a translation for this component, but the arguments or children
       // of this component might need additional rendering
 
       final TranslatableComponent.Builder builder = Component.translatable()
         .key(component.key());
-      if(!component.args().isEmpty()) {
+      if (!component.args().isEmpty()) {
         final List<Component> args = new ArrayList<>(component.args());
-        for(int i = 0, size = args.size(); i < size; i++) {
+        for (int i = 0, size = args.size(); i < size; i++) {
           args.set(i, this.render(args.get(i), context));
         }
         builder.args(args);
@@ -165,7 +165,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
     this.mergeStyle(component, builder, context);
 
     // no arguments makes this render very simple
-    if(args.isEmpty()) {
+    if (args.isEmpty()) {
       builder.content(format.format(null, new StringBuffer(), null).toString());
       return this.optionallyRenderChildrenAppendAndBuild(component.children(), builder, context);
     }
@@ -174,10 +174,10 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
     final StringBuffer sb = format.format(nulls, new StringBuffer(), null);
     final AttributedCharacterIterator it = format.formatToCharacterIterator(nulls);
 
-    while(it.getIndex() < it.getEndIndex()) {
+    while (it.getIndex() < it.getEndIndex()) {
       final int end = it.getRunLimit();
       final Integer index = (Integer) it.getAttribute(MessageFormat.Field.ARGUMENT);
-      if(index != null) {
+      if (index != null) {
         builder.append(this.render(args.get(index), context));
       } else {
         builder.append(Component.text(sb.substring(it.getIndex(), end)));
@@ -194,7 +194,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   }
 
   protected <O extends BuildableComponent<O, B>, B extends ComponentBuilder<O, B>> O optionallyRenderChildrenAppendAndBuild(final List<Component> children, final B builder, final C context) {
-    if(!children.isEmpty()) {
+    if (!children.isEmpty()) {
       children.forEach(child -> builder.append(this.render(child, context)));
     }
     return builder.build();
@@ -204,7 +204,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
     builder.mergeStyle(component, MERGES);
     builder.clickEvent(component.clickEvent());
     final @Nullable HoverEvent<?> hoverEvent = component.hoverEvent();
-    if(hoverEvent != null) {
+    if (hoverEvent != null) {
       builder.hoverEvent(hoverEvent.withRenderedValue(this, context));
     }
   }

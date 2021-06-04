@@ -84,9 +84,9 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * @since 4.0.0
    */
   static @NonNull LegacyComponentSerializer legacy(final char legacyCharacter) {
-    if(legacyCharacter == SECTION_CHAR) {
+    if (legacyCharacter == SECTION_CHAR) {
       return legacySection();
-    } else if(legacyCharacter == AMPERSAND_CHAR) {
+    } else if (legacyCharacter == AMPERSAND_CHAR) {
       return legacyAmpersand();
     }
     return builder().character(legacyCharacter).build();

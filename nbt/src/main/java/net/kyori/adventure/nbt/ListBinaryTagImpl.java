@@ -70,7 +70,7 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   public @NonNull ListBinaryTag set(final int index, final @NonNull BinaryTag newTag, final @Nullable Consumer<? super BinaryTag> removed) {
     return this.edit(tags -> {
       final BinaryTag oldTag = tags.set(index, newTag);
-      if(removed != null) {
+      if (removed != null) {
         removed.accept(oldTag);
       }
     }, newTag.type());
@@ -80,7 +80,7 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   public @NonNull ListBinaryTag remove(final int index, final @Nullable Consumer<? super BinaryTag> removed) {
     return this.edit(tags -> {
       final BinaryTag oldTag = tags.remove(index);
-      if(removed != null) {
+      if (removed != null) {
         removed.accept(oldTag);
       }
     }, null);
@@ -89,7 +89,7 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   @Override
   public @NonNull ListBinaryTag add(final BinaryTag tag) {
     noAddEnd(tag);
-    if(this.elementType != BinaryTagTypes.END) {
+    if (this.elementType != BinaryTagTypes.END) {
       mustBeSameType(tag, this.elementType);
     }
     return this.edit(tags -> tags.add(tag), tag.type());
@@ -97,12 +97,12 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
 
   @Override
   public @NonNull ListBinaryTag add(final Iterable<? extends BinaryTag> tagsToAdd) {
-    if(tagsToAdd instanceof Collection<?> && ((Collection<?>) tagsToAdd).isEmpty()) {
+    if (tagsToAdd instanceof Collection<?> && ((Collection<?>) tagsToAdd).isEmpty()) {
       return this;
     }
     final BinaryTagType<?> type = ListBinaryTagImpl.mustBeSameType(tagsToAdd);
     return this.edit(tags -> {
-      for(final BinaryTag tag : tagsToAdd) {
+      for (final BinaryTag tag : tagsToAdd) {
         tags.add(tag);
       }
     }, type);
@@ -110,7 +110,7 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
 
   // An end tag cannot be an element in a list tag
   static void noAddEnd(final BinaryTag tag) {
-    if(tag.type() == BinaryTagTypes.END) {
+    if (tag.type() == BinaryTagTypes.END) {
       throw new IllegalArgumentException(String.format("Cannot add a %s to a %s", BinaryTagTypes.END, BinaryTagTypes.LIST));
     }
   }
@@ -118,8 +118,8 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
   // Cannot have different element types in a list tag
   static BinaryTagType<?> mustBeSameType(final Iterable<? extends BinaryTag> tags) {
     BinaryTagType<?> type = null;
-    for(final BinaryTag tag : tags) {
-      if(type == null) {
+    for (final BinaryTag tag : tags) {
+      if (type == null) {
         type = tag.type();
       } else {
         mustBeSameType(tag, type);
@@ -130,7 +130,7 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
 
   // Cannot have different element types in a list tag
   static void mustBeSameType(final BinaryTag tag, final BinaryTagType<? extends BinaryTag> type) {
-    if(tag.type() != type) {
+    if (tag.type() != type) {
       throw new IllegalArgumentException(String.format("Trying to add tag of type %s to list of %s", tag.type(), type));
     }
   }
@@ -140,7 +140,7 @@ final class ListBinaryTagImpl extends AbstractBinaryTag implements ListBinaryTag
     consumer.accept(tags);
     BinaryTagType<? extends BinaryTag> elementType = this.elementType;
     // set the type if it has not yet been set
-    if(maybeElementType != null && elementType == BinaryTagTypes.END) {
+    if (maybeElementType != null && elementType == BinaryTagTypes.END) {
       elementType = maybeElementType;
     }
     return new ListBinaryTagImpl(elementType, tags);

@@ -80,7 +80,7 @@ public interface Identity extends Examinable {
    * @since 4.0.0
    */
   static @NonNull Identity identity(final @NonNull UUID uuid) {
-    if(uuid.equals(Identities.NIL.uuid())) return Identities.NIL;
+    if (uuid.equals(Identities.NIL.uuid())) return Identities.NIL;
     return new IdentityImpl(uuid);
   }
 

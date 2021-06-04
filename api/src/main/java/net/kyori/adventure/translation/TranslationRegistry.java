@@ -198,21 +198,21 @@ public interface TranslationRegistry extends Translator {
    */
   default void registerAll(final @NonNull Locale locale, final @NonNull Set<String> keys, final Function<String, MessageFormat> function) {
     List<IllegalArgumentException> errors = null;
-    for(final String key : keys) {
+    for (final String key : keys) {
       try {
         this.register(key, locale, function.apply(key));
       } catch(final IllegalArgumentException e) {
-        if(errors == null) {
+        if (errors == null) {
           errors = new LinkedList<>();
         }
         errors.add(e);
       }
     }
-    if(errors != null) {
+    if (errors != null) {
       final int size = errors.size();
-      if(size == 1) {
+      if (size == 1) {
         throw errors.get(0);
-      } else if(size > 1) {
+      } else if (size > 1) {
         throw new IllegalArgumentException(String.format("Invalid key (and %d more)", size - 1), errors.get(0));
       }
     }

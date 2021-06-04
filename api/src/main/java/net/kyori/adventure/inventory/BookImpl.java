@@ -87,8 +87,8 @@ final class BookImpl implements Book {
 
   @Override
   public boolean equals(final Object o) {
-    if(this == o) return true;
-    if(!(o instanceof BookImpl)) return false;
+    if (this == o) return true;
+    if (!(o instanceof BookImpl)) return false;
     final BookImpl that = (BookImpl) o;
     return this.title.equals(that.title)
       && this.author.equals(that.author)

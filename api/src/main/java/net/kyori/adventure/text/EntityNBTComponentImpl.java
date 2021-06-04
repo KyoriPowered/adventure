@@ -41,13 +41,13 @@ final class EntityNBTComponentImpl extends NBTComponentImpl<EntityNBTComponent, 
 
   @Override
   public @NonNull EntityNBTComponent nbtPath(final @NonNull String nbtPath) {
-    if(Objects.equals(this.nbtPath, nbtPath)) return this;
+    if (Objects.equals(this.nbtPath, nbtPath)) return this;
     return new EntityNBTComponentImpl(this.children, this.style, nbtPath, this.interpret, this.selector);
   }
 
   @Override
   public @NonNull EntityNBTComponent interpret(final boolean interpret) {
-    if(this.interpret == interpret) return this;
+    if (this.interpret == interpret) return this;
     return new EntityNBTComponentImpl(this.children, this.style, this.nbtPath, interpret, this.selector);
   }
 
@@ -58,7 +58,7 @@ final class EntityNBTComponentImpl extends NBTComponentImpl<EntityNBTComponent, 
 
   @Override
   public @NonNull EntityNBTComponent selector(final @NonNull String selector) {
-    if(Objects.equals(this.selector, selector)) return this;
+    if (Objects.equals(this.selector, selector)) return this;
     return new EntityNBTComponentImpl(this.children, this.style, this.nbtPath, this.interpret, selector);
   }
 
@@ -74,9 +74,9 @@ final class EntityNBTComponentImpl extends NBTComponentImpl<EntityNBTComponent, 
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(!(other instanceof EntityNBTComponent)) return false;
-    if(!super.equals(other)) return false;
+    if (this == other) return true;
+    if (!(other instanceof EntityNBTComponent)) return false;
+    if (!super.equals(other)) return false;
     final EntityNBTComponentImpl that = (EntityNBTComponentImpl) other;
     return Objects.equals(this.selector, that.selector());
   }
@@ -122,8 +122,8 @@ final class EntityNBTComponentImpl extends NBTComponentImpl<EntityNBTComponent, 
 
     @Override
     public @NonNull EntityNBTComponent build() {
-      if(this.nbtPath == null) throw new IllegalStateException("nbt path must be set");
-      if(this.selector == null) throw new IllegalStateException("selector must be set");
+      if (this.nbtPath == null) throw new IllegalStateException("nbt path must be set");
+      if (this.selector == null) throw new IllegalStateException("selector must be set");
       return new EntityNBTComponentImpl(this.children, this.buildStyle(), this.nbtPath, this.interpret, this.selector);
     }
   }

@@ -45,14 +45,14 @@ class IndexTest {
 
   @Test
   void testKey() {
-    for(final Thing thing : Thing.values()) {
+    for (final Thing thing : Thing.values()) {
       assertEquals(thing.name, THINGS.key(thing));
     }
   }
 
   @Test
   void testValue() {
-    for(final Thing thing : Thing.values()) {
+    for (final Thing thing : Thing.values()) {
       assertEquals(thing, THINGS.value(thing.name));
     }
   }

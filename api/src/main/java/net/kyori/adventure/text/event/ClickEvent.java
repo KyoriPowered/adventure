@@ -183,8 +183,8 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(other == null || this.getClass() != other.getClass()) return false;
+    if (this == other) return true;
+    if (other == null || this.getClass() != other.getClass()) return false;
     final ClickEvent that = (ClickEvent) other;
     return this.action == that.action && Objects.equals(this.value, that.value);
   }

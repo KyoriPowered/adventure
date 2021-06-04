@@ -78,15 +78,15 @@ final class CharBuffer {
   public CharSequence takeUntil(char until) throws StringTagParseException {
     until = Character.toLowerCase(until);
     int endIdx = -1;
-    for(int idx = this.index; idx < this.sequence.length(); ++idx) {
-      if(this.sequence.charAt(idx) == Tokens.ESCAPE_MARKER) {
+    for (int idx = this.index; idx < this.sequence.length(); ++idx) {
+      if (this.sequence.charAt(idx) == Tokens.ESCAPE_MARKER) {
         idx++;
-      } else if(Character.toLowerCase(this.sequence.charAt(idx)) == until) {
+      } else if (Character.toLowerCase(this.sequence.charAt(idx)) == until) {
         endIdx = idx;
         break;
       }
     }
-    if(endIdx == -1) {
+    if (endIdx == -1) {
       throw this.makeError("No occurrence of " + until + " was found");
     }
 
@@ -106,10 +106,10 @@ final class CharBuffer {
    */
   public CharBuffer expect(final char expectedChar) throws StringTagParseException {
     this.skipWhitespace();
-    if(!this.hasMore()) {
+    if (!this.hasMore()) {
       throw this.makeError("Expected character '" + expectedChar + "' but got EOF");
     }
-    if(this.peek() != expectedChar) {
+    if (this.peek() != expectedChar) {
       throw this.makeError("Expected character '" + expectedChar + "' but got '" + this.peek() + "'");
     }
     this.take();
@@ -126,7 +126,7 @@ final class CharBuffer {
    */
   public boolean takeIf(final char token) {
     this.skipWhitespace();
-    if(this.hasMore() && this.peek() == token) {
+    if (this.hasMore() && this.peek() == token) {
       this.advance();
       return true;
     }
@@ -134,7 +134,7 @@ final class CharBuffer {
   }
 
   public CharBuffer skipWhitespace() {
-    while(this.hasMore() && Character.isWhitespace(this.peek())) this.advance();
+    while (this.hasMore() && Character.isWhitespace(this.peek())) this.advance();
     return this;
   }
 

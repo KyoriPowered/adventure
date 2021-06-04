@@ -64,7 +64,7 @@ class ClickEventTest {
   @Test
   void assertReadable() {
     final Set<ClickEvent.Action> unreadable = Collections.singleton(ClickEvent.Action.OPEN_FILE);
-    for(final ClickEvent.Action action : ClickEvent.Action.values()) {
+    for (final ClickEvent.Action action : ClickEvent.Action.values()) {
       assertEquals(action.readable(), !unreadable.contains(action));
     }
   }

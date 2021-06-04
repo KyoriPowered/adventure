@@ -77,7 +77,7 @@ final class NBTLegacyHoverEventSerializerImpl implements LegacyHoverEventSeriali
   }
 
   private static void assertTextComponent(final Component component) {
-    if(!(component instanceof TextComponent) || !component.children().isEmpty()) {
+    if (!(component instanceof TextComponent) || !component.children().isEmpty()) {
       throw new IllegalArgumentException("Legacy events must be single Component instances");
     }
   }
@@ -88,7 +88,7 @@ final class NBTLegacyHoverEventSerializerImpl implements LegacyHoverEventSeriali
       .putString(ITEM_TYPE, input.item().asString())
       .putByte(ITEM_COUNT, (byte) input.count());
     final @Nullable BinaryTagHolder nbt = input.nbt();
-    if(nbt != null) {
+    if (nbt != null) {
       builder.put(ITEM_TAG, nbt.get(SNBT_CODEC));
     }
     return Component.text(SNBT_CODEC.encode(builder.build()));
@@ -100,7 +100,7 @@ final class NBTLegacyHoverEventSerializerImpl implements LegacyHoverEventSeriali
       .putString(ENTITY_ID, input.id().toString())
       .putString(ENTITY_TYPE, input.type().asString());
     final @Nullable Component name = input.name();
-    if(name != null) {
+    if (name != null) {
       builder.putString(ENTITY_NAME, componentCodec.encode(name));
     }
     return Component.text(SNBT_CODEC.encode(builder.build()));

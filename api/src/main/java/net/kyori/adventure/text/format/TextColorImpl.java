@@ -41,8 +41,8 @@ final class TextColorImpl implements TextColor {
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(!(other instanceof TextColorImpl)) return false;
+    if (this == other) return true;
+    if (!(other instanceof TextColorImpl)) return false;
     final TextColorImpl that = (TextColorImpl) other;
     return this.value == that.value;
   }

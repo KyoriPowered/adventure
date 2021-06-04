@@ -56,29 +56,29 @@ final class TagStringWriter implements AutoCloseable {
 
   public TagStringWriter writeTag(final BinaryTag tag) throws IOException {
     final BinaryTagType<?> type = tag.type();
-    if(type == BinaryTagTypes.COMPOUND) {
+    if (type == BinaryTagTypes.COMPOUND) {
       return this.writeCompound((CompoundBinaryTag) tag);
-    } else if(type == BinaryTagTypes.LIST) {
+    } else if (type == BinaryTagTypes.LIST) {
       return this.writeList((ListBinaryTag) tag);
-    } else if(type == BinaryTagTypes.BYTE_ARRAY) {
+    } else if (type == BinaryTagTypes.BYTE_ARRAY) {
       return this.writeByteArray((ByteArrayBinaryTag) tag);
-    } else if(type == BinaryTagTypes.INT_ARRAY) {
+    } else if (type == BinaryTagTypes.INT_ARRAY) {
       return this.writeIntArray((IntArrayBinaryTag) tag);
-    } else if(type == BinaryTagTypes.LONG_ARRAY) {
+    } else if (type == BinaryTagTypes.LONG_ARRAY) {
       return this.writeLongArray((LongArrayBinaryTag) tag);
-    } else if(type == BinaryTagTypes.STRING) {
+    } else if (type == BinaryTagTypes.STRING) {
       return this.value(((StringBinaryTag) tag).value(), Tokens.EOF);
-    } else if(type == BinaryTagTypes.BYTE) {
+    } else if (type == BinaryTagTypes.BYTE) {
       return this.value(Byte.toString(((ByteBinaryTag) tag).value()), Tokens.TYPE_BYTE);
-    } else if(type == BinaryTagTypes.SHORT) {
+    } else if (type == BinaryTagTypes.SHORT) {
       return this.value(Short.toString(((ShortBinaryTag) tag).value()), Tokens.TYPE_SHORT);
-    } else if(type == BinaryTagTypes.INT) {
+    } else if (type == BinaryTagTypes.INT) {
       return this.value(Integer.toString(((IntBinaryTag) tag).value()), Tokens.TYPE_INT);
-    } else if(type == BinaryTagTypes.LONG) {
+    } else if (type == BinaryTagTypes.LONG) {
       return this.value(Long.toString(((LongBinaryTag) tag).value()), Character.toUpperCase(Tokens.TYPE_LONG)); // special-case
-    } else if(type == BinaryTagTypes.FLOAT) {
+    } else if (type == BinaryTagTypes.FLOAT) {
       return this.value(Float.toString(((FloatBinaryTag) tag).value()), Tokens.TYPE_FLOAT);
-    } else if(type == BinaryTagTypes.DOUBLE) {
+    } else if (type == BinaryTagTypes.DOUBLE) {
       return this.value(Double.toString(((DoubleBinaryTag) tag).value()), Tokens.TYPE_DOUBLE);
     } else {
       throw new IOException("Unknown tag type: " + type);
@@ -88,7 +88,7 @@ final class TagStringWriter implements AutoCloseable {
 
   private TagStringWriter writeCompound(final CompoundBinaryTag tag) throws IOException {
     this.beginCompound();
-    for(final Map.Entry<String, ? extends BinaryTag> entry : tag) {
+    for (final Map.Entry<String, ? extends BinaryTag> entry : tag) {
       this.key(entry.getKey());
       this.writeTag(entry.getValue());
     }
@@ -100,12 +100,12 @@ final class TagStringWriter implements AutoCloseable {
     this.beginList();
     int idx = 0;
     final boolean lineBreaks = this.prettyPrinting() && this.breakListElement(tag.elementType());
-    for(final BinaryTag el : tag) {
+    for (final BinaryTag el : tag) {
       this.printAndResetSeparator(!lineBreaks);
-      if(lineBreaks) {
+      if (lineBreaks) {
         this.newlineIndent();
       }
-      if(this.legacy) {
+      if (this.legacy) {
         this.out.append(String.valueOf(idx++));
         this.appendSeparator(Tokens.COMPOUND_KEY_TERMINATOR);
       }
@@ -117,14 +117,14 @@ final class TagStringWriter implements AutoCloseable {
   }
 
   private TagStringWriter writeByteArray(final ByteArrayBinaryTag tag) throws IOException {
-    if(this.legacy) {
+    if (this.legacy) {
       throw new IOException("Legacy Mojangson only supports integer arrays!");
     }
     this.beginArray(Tokens.TYPE_BYTE);
 
     final char byteArrayType = Character.toUpperCase(Tokens.TYPE_BYTE); // special case to match vanilla format
     final byte[] value = ByteArrayBinaryTagImpl.value(tag);
-    for(int i = 0, length = value.length; i < length; i++) {
+    for (int i = 0, length = value.length; i < length; i++) {
       this.printAndResetSeparator(true);
       this.value(Byte.toString(value[i]), byteArrayType);
     }
@@ -133,14 +133,14 @@ final class TagStringWriter implements AutoCloseable {
   }
 
   private TagStringWriter writeIntArray(final IntArrayBinaryTag tag) throws IOException {
-    if(this.legacy) {
+    if (this.legacy) {
       this.beginList();
     } else {
       this.beginArray(Tokens.TYPE_INT);
     }
 
     final int[] value = IntArrayBinaryTagImpl.value(tag);
-    for(int i = 0, length = value.length; i < length; i++) {
+    for (int i = 0, length = value.length; i < length; i++) {
       this.printAndResetSeparator(true);
       this.value(Integer.toString(value[i]), Tokens.TYPE_INT);
     }
@@ -149,13 +149,13 @@ final class TagStringWriter implements AutoCloseable {
   }
 
   private TagStringWriter writeLongArray(final LongArrayBinaryTag tag) throws IOException {
-    if(this.legacy) {
+    if (this.legacy) {
       throw new IOException("Legacy Mojangson only supports integer arrays!");
     }
     this.beginArray(Tokens.TYPE_LONG);
 
     final long[] value = LongArrayBinaryTagImpl.value(tag);
-    for(int i = 0, length = value.length; i < length; i++) {
+    for (int i = 0, length = value.length; i < length; i++) {
       this.printAndResetSeparator(true);
       this.value(Long.toString(value[i]), Tokens.TYPE_LONG);
     }
@@ -189,11 +189,11 @@ final class TagStringWriter implements AutoCloseable {
   }
 
   public TagStringWriter value(final String value, final char valueType) throws IOException {
-    if(valueType == Tokens.EOF) { // string doesn't have its type
+    if (valueType == Tokens.EOF) { // string doesn't have its type
       this.writeMaybeQuoted(value, true);
     } else {
       this.out.append(value);
-      if(valueType != Tokens.TYPE_INT) {
+      if (valueType != Tokens.TYPE_INT) {
         this.out.append(valueType);
       }
     }
@@ -210,7 +210,7 @@ final class TagStringWriter implements AutoCloseable {
 
   public TagStringWriter endList(final boolean lineBreak) throws IOException {
     this.level--;
-    if(lineBreak) {
+    if (lineBreak) {
       this.newlineIndent();
     }
     this.out.append(Tokens.ARRAY_END);
@@ -223,7 +223,7 @@ final class TagStringWriter implements AutoCloseable {
       .out.append(Character.toUpperCase(type))
       .append(Tokens.ARRAY_SIGNATURE_SEPARATOR);
 
-    if(this.prettyPrinting()) {
+    if (this.prettyPrinting()) {
       this.out.append(' ');
     }
 
@@ -235,15 +235,15 @@ final class TagStringWriter implements AutoCloseable {
   }
 
   private void writeMaybeQuoted(final String content, boolean requireQuotes) throws IOException {
-    if(!requireQuotes) {
-      for(int i = 0; i < content.length(); ++i) {
-        if(!Tokens.id(content.charAt(i))) {
+    if (!requireQuotes) {
+      for (int i = 0; i < content.length(); ++i) {
+        if (!Tokens.id(content.charAt(i))) {
           requireQuotes = true;
           break;
         }
       }
     }
-    if(requireQuotes) { // TODO: single quotes
+    if (requireQuotes) { // TODO: single quotes
       this.out.append(Tokens.DOUBLE_QUOTE);
       this.out.append(escape(content, Tokens.DOUBLE_QUOTE));
       this.out.append(Tokens.DOUBLE_QUOTE);
@@ -254,9 +254,9 @@ final class TagStringWriter implements AutoCloseable {
 
   private static String escape(final String content, final char quoteChar) {
     final StringBuilder output = new StringBuilder(content.length());
-    for(int i = 0; i < content.length(); ++i) {
+    for (int i = 0; i < content.length(); ++i) {
       final char c = content.charAt(i);
-      if(c == quoteChar || c == '\\') {
+      if (c == quoteChar || c == '\\') {
         output.append(Tokens.ESCAPE_MARKER);
       }
       output.append(c);
@@ -265,9 +265,9 @@ final class TagStringWriter implements AutoCloseable {
   }
 
   private void printAndResetSeparator(final boolean pad) throws IOException {
-    if(this.needsSeparator) {
+    if (this.needsSeparator) {
       this.out.append(Tokens.VALUE_SEPARATOR);
-      if(pad && this.prettyPrinting()) {
+      if (pad && this.prettyPrinting()) {
         this.out.append(' ');
       }
       this.needsSeparator = false;
@@ -290,9 +290,9 @@ final class TagStringWriter implements AutoCloseable {
   }
 
   private void newlineIndent() throws IOException {
-    if(this.prettyPrinting()) {
+    if (this.prettyPrinting()) {
       this.out.append(Tokens.NEWLINE);
-      for(int i = 0; i < this.level; ++i) {
+      for (int i = 0; i < this.level; ++i) {
         this.out.append(this.indent);
       }
     }
@@ -300,7 +300,7 @@ final class TagStringWriter implements AutoCloseable {
 
   private Appendable appendSeparator(final char separatorChar) throws IOException {
     this.out.append(separatorChar);
-    if(this.prettyPrinting()) {
+    if (this.prettyPrinting()) {
       this.out.append(' ');
     }
     return this.out;
@@ -308,10 +308,10 @@ final class TagStringWriter implements AutoCloseable {
 
   @Override
   public void close() throws IOException {
-    if(this.level != 0) {
+    if (this.level != 0) {
       throw new IllegalStateException("Document finished with unbalanced start and end objects");
     }
-    if(this.out instanceof Writer) {
+    if (this.out instanceof Writer) {
       ((Writer) this.out).flush();
     }
   }

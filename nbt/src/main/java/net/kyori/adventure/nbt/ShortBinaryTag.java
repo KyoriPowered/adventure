@@ -105,8 +105,8 @@ final class ShortBinaryTagImpl extends AbstractBinaryTag implements ShortBinaryT
 
   @Override
   public boolean equals(final @Nullable Object other) {
-    if(this == other) return true;
-    if(other == null || this.getClass() != other.getClass()) return false;
+    if (this == other) return true;
+    if (other == null || this.getClass() != other.getClass()) return false;
     final ShortBinaryTagImpl that = (ShortBinaryTagImpl) other;
     return this.value == that.value;
   }

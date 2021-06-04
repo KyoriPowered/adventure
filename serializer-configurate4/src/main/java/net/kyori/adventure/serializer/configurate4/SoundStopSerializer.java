@@ -45,12 +45,12 @@ final class SoundStopSerializer implements TypeSerializer<SoundStop> {
 
   @Override
   public SoundStop deserialize(final @NonNull Type type, final @NonNull ConfigurationNode value) throws SerializationException {
-    if(value.empty()) {
+    if (value.empty()) {
       return SoundStop.all();
     } else {
       final Key sound = value.node(SOUND).get(Key.class);
       final Sound.Source source = value.node(SOURCE).get(Sound.Source.class);
-      if(sound == null) {
+      if (sound == null) {
         return source == null ? SoundStop.all() : SoundStop.source(source);
       } else {
         return source == null ? SoundStop.named(sound) : SoundStop.namedOnSource(sound, source);
@@ -62,7 +62,7 @@ final class SoundStopSerializer implements TypeSerializer<SoundStop> {
   public void serialize(final @NonNull Type type, final @Nullable SoundStop obj, final @NonNull ConfigurationNode value) throws SerializationException {
     value.node(SOUND).set(Key.class, obj == null ? null : obj.sound());
     value.node(SOURCE).set(Sound.Source.class, obj == null ? null : obj.source());
-    if(value.empty()) {
+    if (value.empty()) {
       value.set(Collections.emptyMap());
     }
   }

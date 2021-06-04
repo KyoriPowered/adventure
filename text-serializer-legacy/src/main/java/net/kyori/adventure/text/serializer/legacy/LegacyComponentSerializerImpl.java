@@ -93,7 +93,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     LEGACY_CHARS = String.join("", formats.values());
 
     // assert same length
-    if(FORMATS.size() != LEGACY_CHARS.length()) {
+    if (FORMATS.size() != LEGACY_CHARS.length()) {
       throw new IllegalStateException("FORMATS length differs from LEGACY_CHARS length");
     }
   }
@@ -132,20 +132,20 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   }
 
   private @Nullable FormatCodeType determineFormatType(final char legacy, final String input, final int pos) {
-    if(pos >= 14) {
+    if (pos >= 14) {
       // The BungeeCord RGB color format uses a repeating sequence of RGB values, each character formatted
       // as their own color format string, and to make things interesting, all the colors are also valid
       // Mojang colors. To differentiate this, we do a lookback check for &x (or equivalent) for its position
       // in the string if it is indeed a BungeeCord-style RGB color.
       final int expectedCharacterPosition = pos - 14;
       final int expectedIndicatorPosition = pos - 13;
-      if(input.charAt(expectedCharacterPosition) == this.character && input.charAt(expectedIndicatorPosition) == LEGACY_BUNGEE_HEX_CHAR) {
+      if (input.charAt(expectedCharacterPosition) == this.character && input.charAt(expectedIndicatorPosition) == LEGACY_BUNGEE_HEX_CHAR) {
         return FormatCodeType.BUNGEECORD_UNUSUAL_HEX;
       }
     }
-    if(legacy == this.hexCharacter && input.length() - pos >= 6) {
+    if (legacy == this.hexCharacter && input.length() - pos >= 6) {
       return FormatCodeType.KYORI_HEX;
-    } else if(LEGACY_CHARS.indexOf(legacy) != -1) {
+    } else if (LEGACY_CHARS.indexOf(legacy) != -1) {
       return FormatCodeType.MOJANG_LEGACY;
     }
     return null;
@@ -153,13 +153,13 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
   static @Nullable LegacyFormat legacyFormat(final char character) {
     final int index = LEGACY_CHARS.indexOf(character);
-    if(index != -1) {
+    if (index != -1) {
       final TextFormat format = FORMATS.get(index);
-      if(format instanceof NamedTextColor) {
+      if (format instanceof NamedTextColor) {
         return new LegacyFormat((NamedTextColor) format);
-      } else if(format instanceof TextDecoration) {
+      } else if (format instanceof TextDecoration) {
         return new LegacyFormat((TextDecoration) format);
-      } else if(format instanceof Reset) {
+      } else if (format instanceof Reset) {
         return LegacyFormat.RESET;
       }
     }
@@ -168,23 +168,23 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
   private @Nullable DecodedFormat decodeTextFormat(final char legacy, final String input, final int pos) {
     final FormatCodeType foundFormat = this.determineFormatType(legacy, input, pos);
-    if(foundFormat == null) {
+    if (foundFormat == null) {
       return null;
     }
-    if(foundFormat == FormatCodeType.KYORI_HEX) {
+    if (foundFormat == FormatCodeType.KYORI_HEX) {
       final @Nullable TextColor parsed = tryParseHexColor(input.substring(pos, pos + 6));
-      if(parsed != null) {
+      if (parsed != null) {
         return new DecodedFormat(foundFormat, parsed);
       }
-    } else if(foundFormat == FormatCodeType.MOJANG_LEGACY) {
+    } else if (foundFormat == FormatCodeType.MOJANG_LEGACY) {
       return new DecodedFormat(foundFormat, FORMATS.get(LEGACY_CHARS.indexOf(legacy)));
-    } else if(foundFormat == FormatCodeType.BUNGEECORD_UNUSUAL_HEX) {
+    } else if (foundFormat == FormatCodeType.BUNGEECORD_UNUSUAL_HEX) {
       final StringBuilder foundHex = new StringBuilder(6);
-      for(int i = pos - 1; i >= pos - 11; i -= 2) {
+      for (int i = pos - 1; i >= pos - 11; i -= 2) {
         foundHex.append(input.charAt(i));
       }
       final @Nullable TextColor parsed = tryParseHexColor(foundHex.reverse().toString());
-      if(parsed != null) {
+      if (parsed != null) {
         return new DecodedFormat(foundFormat, parsed);
       }
     }
@@ -205,14 +205,14 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   }
 
   private String toLegacyCode(TextFormat format) {
-    if(isHexTextColor(format)) {
+    if (isHexTextColor(format)) {
       final TextColor color = (TextColor) format;
-      if(this.hexColours) {
+      if (this.hexColours) {
         final String hex = String.format("%06x", color.value());
-        if(this.useTerriblyStupidHexFormat) {
+        if (this.useTerriblyStupidHexFormat) {
           // ah yes, wonderful. A 14 digit long completely unreadable string.
           final StringBuilder legacy = new StringBuilder(String.valueOf(LEGACY_BUNGEE_HEX_CHAR));
-          for(final char character : hex.toCharArray()) {
+          for (final char character : hex.toCharArray()) {
             legacy.append(this.character).append(character);
           }
           return legacy.toString();
@@ -231,16 +231,16 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   }
 
   private TextComponent extractUrl(final TextComponent component) {
-    if(this.urlReplacementConfig == null) return component;
+    if (this.urlReplacementConfig == null) return component;
     final Component newComponent = component.replaceText(this.urlReplacementConfig);
-    if(newComponent instanceof TextComponent) return (TextComponent) newComponent;
+    if (newComponent instanceof TextComponent) return (TextComponent) newComponent;
     return TextComponent.ofChildren(newComponent);
   }
 
   @Override
   public @NonNull TextComponent deserialize(final @NonNull String input) {
     int next = input.lastIndexOf(this.character, input.length() - 2);
-    if(next == -1) {
+    if (next == -1) {
       return this.extractUrl(Component.text(input));
     }
 
@@ -252,11 +252,11 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     int pos = input.length();
     do {
       final DecodedFormat decoded = this.decodeTextFormat(input.charAt(next + 1), input, next + 2);
-      if(decoded != null) {
+      if (decoded != null) {
         final int from = next + (decoded.encodedFormat == FormatCodeType.KYORI_HEX ? 8 : 2);
-        if(from != pos) {
-          if(current != null) {
-            if(reset) {
+        if (from != pos) {
+          if (current != null) {
+            if (reset) {
               parts.add(current.build());
               reset = false;
               current = Component.text();
@@ -268,14 +268,14 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
           }
 
           current.content(input.substring(from, pos));
-        } else if(current == null) {
+        } else if (current == null) {
           current = Component.text();
         }
 
-        if(!reset) {
+        if (!reset) {
           reset = applyFormat(current, decoded.format);
         }
-        if(decoded.encodedFormat == FormatCodeType.BUNGEECORD_UNUSUAL_HEX) {
+        if (decoded.encodedFormat == FormatCodeType.BUNGEECORD_UNUSUAL_HEX) {
           // BungeeCord hex characters are a repeating set of characters, all of which are also valid
           // legacy Mojang chat colors. Subtract the number of characters in the format, and only then
           // skip ahead.
@@ -285,14 +285,14 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       }
 
       next = input.lastIndexOf(this.character, next - 1);
-    } while(next != -1);
+    } while (next != -1);
 
-    if(current != null) {
+    if (current != null) {
       parts.add(current.build());
     }
 
     final String remaining = pos > 0 ? input.substring(0, pos) : "";
-    if(parts.size() == 1 && remaining.isEmpty()) {
+    if (parts.size() == 1 && remaining.isEmpty()) {
       return this.extractUrl(parts.get(0));
     } else {
       Collections.reverse(parts);
@@ -308,13 +308,13 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   }
 
   private static boolean applyFormat(final TextComponent.@NonNull Builder builder, final @NonNull TextFormat format) {
-    if(format instanceof TextColor) {
+    if (format instanceof TextColor) {
       builder.colorIfAbsent((TextColor) format);
       return true;
-    } else if(format instanceof TextDecoration) {
+    } else if (format instanceof TextDecoration) {
       builder.decoration((TextDecoration) format, TextDecoration.State.TRUE);
       return false;
-    } else if(format instanceof Reset) {
+    } else if (format instanceof Reset) {
       return true;
     }
     throw new IllegalArgumentException(String.format("unknown format '%s'", format.getClass()));
@@ -340,16 +340,16 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     @Override
     public void pushStyle(final @NonNull Style pushed) {
       final int idx = ++this.head;
-      if(idx >= this.styles.length) {
+      if (idx >= this.styles.length) {
         this.styles = Arrays.copyOf(this.styles, this.styles.length * 2);
       }
       StyleState state = this.styles[idx];
 
-      if(state == null) {
+      if (state == null) {
         this.styles[idx] = state = new StyleState();
       }
 
-      if(idx > 0) {
+      if (idx > 0) {
         // https://github.com/KyoriPowered/adventure/issues/287
         // https://github.com/KyoriPowered/adventure/pull/299
         state.set(this.styles[idx - 1]);
@@ -362,8 +362,8 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
     @Override
     public void component(final @NonNull String text) {
-      if(!text.isEmpty()) {
-        if(this.head < 0) throw new IllegalStateException("No style has been pushed!");
+      if (!text.isEmpty()) {
+        if (this.head < 0) throw new IllegalStateException("No style has been pushed!");
 
         this.styles[this.head].applyFormat();
         this.sb.append(text);
@@ -372,13 +372,13 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
     @Override
     public void popStyle(final @NonNull Style style) {
-      if(this.head-- < 0) {
+      if (this.head-- < 0) {
         throw new IllegalStateException("Tried to pop beyond what was pushed!");
       }
     }
 
     void append(final @NonNull TextFormat format) {
-      if(this.lastWritten != format) {
+      if (this.lastWritten != format) {
         this.sb.append(LegacyComponentSerializerImpl.this.character).append(LegacyComponentSerializerImpl.this.toLegacyCode(format));
       }
       this.lastWritten = format;
@@ -411,18 +411,18 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
       void apply(final @NonNull Style component) {
         final TextColor color = component.color();
-        if(color != null) {
+        if (color != null) {
           this.color = color;
         }
 
-        for(int i = 0, length = DECORATIONS.length; i < length; i++) {
+        for (int i = 0, length = DECORATIONS.length; i < length; i++) {
           final TextDecoration decoration = DECORATIONS[i];
           switch(component.decoration(decoration)) {
             case TRUE:
               this.decorations.add(decoration);
               break;
             case FALSE:
-              if(this.decorations.remove(decoration)) {
+              if (this.decorations.remove(decoration)) {
                 this.needsReset = true;
               }
               break;
@@ -432,8 +432,8 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
       void applyFormat() {
         final boolean colorChanged = this.color != Cereal.this.style.color;
-        if(this.needsReset) {
-          if(!colorChanged) {
+        if (this.needsReset) {
+          if (!colorChanged) {
             Cereal.this.append(Reset.INSTANCE);
           }
           this.needsReset = false;
@@ -441,35 +441,35 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
         // If color changes, we need to do a full reset.
         // Additionally, if the last thing to be appended was a reset then we need to re-apply everything.
-        if(colorChanged || Cereal.this.lastWritten == Reset.INSTANCE) {
+        if (colorChanged || Cereal.this.lastWritten == Reset.INSTANCE) {
           this.applyFullFormat();
           return;
         }
 
         // Does current have any decorations we don't have?
         // Since there is no way to undo decorations, we need to reset these cases
-        if(!this.decorations.containsAll(Cereal.this.style.decorations)) {
+        if (!this.decorations.containsAll(Cereal.this.style.decorations)) {
           this.applyFullFormat();
           return;
         }
 
         // Apply new decorations
-        for(final TextDecoration decoration : this.decorations) {
-          if(Cereal.this.style.decorations.add(decoration)) {
+        for (final TextDecoration decoration : this.decorations) {
+          if (Cereal.this.style.decorations.add(decoration)) {
             Cereal.this.append(decoration);
           }
         }
       }
 
       private void applyFullFormat() {
-        if(this.color != null) {
+        if (this.color != null) {
           Cereal.this.append(this.color);
         } else {
           Cereal.this.append(Reset.INSTANCE);
         }
         Cereal.this.style.color = this.color;
 
-        for(final TextDecoration decoration : this.decorations) {
+        for (final TextDecoration decoration : this.decorations) {
           Cereal.this.append(decoration);
         }
 
@@ -534,7 +534,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         .match(pattern)
         .replacement(url -> {
           String clickUrl = url.content();
-          if(!URL_SCHEME_PATTERN.matcher(clickUrl).find()) {
+          if (!URL_SCHEME_PATTERN.matcher(clickUrl).find()) {
             clickUrl = "http://" + clickUrl;
           }
           return (style == null ? url : url.style(style)).clickEvent(ClickEvent.openUrl(clickUrl));
@@ -578,7 +578,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     final TextFormat format;
 
     private DecodedFormat(final FormatCodeType encodedFormat, final TextFormat format) {
-      if(format == null) {
+      if (format == null) {
         throw new IllegalStateException("No format found");
       }
       this.encodedFormat = encodedFormat;
