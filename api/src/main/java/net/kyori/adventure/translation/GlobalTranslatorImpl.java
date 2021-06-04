@@ -32,8 +32,8 @@ import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
 import net.kyori.examination.ExaminableProperty;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -47,30 +47,30 @@ final class GlobalTranslatorImpl implements GlobalTranslator {
   }
 
   @Override
-  public @NonNull Key name() {
+  public @NotNull Key name() {
     return NAME;
   }
 
   @Override
-  public @NonNull Iterable<? extends Translator> sources() {
+  public @NotNull Iterable<? extends Translator> sources() {
     return Collections.unmodifiableSet(this.sources);
   }
 
   @Override
-  public boolean addSource(final @NonNull Translator source) {
+  public boolean addSource(final @NotNull Translator source) {
     requireNonNull(source, "source");
     if (source == this) throw new IllegalArgumentException("GlobalTranslationSource");
     return this.sources.add(source);
   }
 
   @Override
-  public boolean removeSource(final @NonNull Translator source) {
+  public boolean removeSource(final @NotNull Translator source) {
     requireNonNull(source, "source");
     return this.sources.remove(source);
   }
 
   @Override
-  public @Nullable MessageFormat translate(final @NonNull String key, final @NonNull Locale locale) {
+  public @Nullable MessageFormat translate(final @NotNull String key, final @NotNull Locale locale) {
     requireNonNull(key, "key");
     requireNonNull(locale, "locale");
     for (final Translator source : this.sources) {
@@ -81,7 +81,7 @@ final class GlobalTranslatorImpl implements GlobalTranslator {
   }
 
   @Override
-  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("sources", this.sources));
   }
 }

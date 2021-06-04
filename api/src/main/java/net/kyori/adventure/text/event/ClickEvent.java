@@ -32,8 +32,8 @@ import net.kyori.adventure.util.Index;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -52,7 +52,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a click event
    * @since 4.0.0
    */
-  public static @NonNull ClickEvent openUrl(final @NonNull String url) {
+  public static @NotNull ClickEvent openUrl(final @NotNull String url) {
     return new ClickEvent(Action.OPEN_URL, url);
   }
 
@@ -63,7 +63,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a click event
    * @since 4.0.0
    */
-  public static @NonNull ClickEvent openUrl(final @NonNull URL url) {
+  public static @NotNull ClickEvent openUrl(final @NotNull URL url) {
     return openUrl(url.toExternalForm());
   }
 
@@ -76,7 +76,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a click event
    * @since 4.0.0
    */
-  public static @NonNull ClickEvent openFile(final @NonNull String file) {
+  public static @NotNull ClickEvent openFile(final @NotNull String file) {
     return new ClickEvent(Action.OPEN_FILE, file);
   }
 
@@ -87,7 +87,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a click event
    * @since 4.0.0
    */
-  public static @NonNull ClickEvent runCommand(final @NonNull String command) {
+  public static @NotNull ClickEvent runCommand(final @NotNull String command) {
     return new ClickEvent(Action.RUN_COMMAND, command);
   }
 
@@ -98,7 +98,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a click event
    * @since 4.0.0
    */
-  public static @NonNull ClickEvent suggestCommand(final @NonNull String command) {
+  public static @NotNull ClickEvent suggestCommand(final @NotNull String command) {
     return new ClickEvent(Action.SUGGEST_COMMAND, command);
   }
 
@@ -109,7 +109,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a click event
    * @since 4.0.0
    */
-  public static @NonNull ClickEvent changePage(final @NonNull String page) {
+  public static @NotNull ClickEvent changePage(final @NotNull String page) {
     return new ClickEvent(Action.CHANGE_PAGE, page);
   }
 
@@ -120,7 +120,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a click event
    * @since 4.0.0
    */
-  public static @NonNull ClickEvent changePage(final int page) {
+  public static @NotNull ClickEvent changePage(final int page) {
     return changePage(String.valueOf(page));
   }
 
@@ -132,7 +132,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @since 4.0.0
    * @sinceMinecraft 1.15
    */
-  public static @NonNull ClickEvent copyToClipboard(final @NonNull String text) {
+  public static @NotNull ClickEvent copyToClipboard(final @NotNull String text) {
     return new ClickEvent(Action.COPY_TO_CLIPBOARD, text);
   }
 
@@ -144,14 +144,14 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a click event
    * @since 4.0.0
    */
-  public static @NonNull ClickEvent clickEvent(final @NonNull Action action, final @NonNull String value) {
+  public static @NotNull ClickEvent clickEvent(final @NotNull Action action, final @NotNull String value) {
     return new ClickEvent(action, value);
   }
 
   private final Action action;
   private final String value;
 
-  private ClickEvent(final @NonNull Action action, final @NonNull String value) {
+  private ClickEvent(final @NotNull Action action, final @NotNull String value) {
     this.action = requireNonNull(action, "action");
     this.value = requireNonNull(value, "value");
   }
@@ -162,7 +162,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return the click event action
    * @since 4.0.0
    */
-  public @NonNull Action action() {
+  public @NotNull Action action() {
     return this.action;
   }
 
@@ -172,12 +172,12 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return the click event value
    * @since 4.0.0
    */
-  public @NonNull String value() {
+  public @NotNull String value() {
     return this.value;
   }
 
   @Override
-  public void styleApply(final Style.@NonNull Builder style) {
+  public void styleApply(final Style.@NotNull Builder style) {
     style.clickEvent(this);
   }
 
@@ -197,7 +197,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
   }
 
   @Override
-  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("action", this.action),
       ExaminableProperty.of("value", this.value)
@@ -269,7 +269,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
      */
     private final boolean readable;
 
-    Action(final @NonNull String name, final boolean readable) {
+    Action(final @NotNull String name, final boolean readable) {
       this.name = name;
       this.readable = readable;
     }
@@ -286,7 +286,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
     }
 
     @Override
-    public @NonNull String toString() {
+    public @NotNull String toString() {
       return this.name;
     }
   }

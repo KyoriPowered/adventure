@@ -50,7 +50,7 @@ import net.kyori.adventure.text.StorageNBTComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.Style;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 final class ComponentSerializerImpl implements JsonDeserializer<Component>, JsonSerializer<Component> {
   static final String TEXT = "text";

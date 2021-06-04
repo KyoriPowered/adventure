@@ -28,7 +28,7 @@ import java.util.function.Predicate;
 import net.kyori.adventure.text.BlockNBTComponent;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.ScalarSerializer;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("UnstableApiUsage") // TypeToken
 final class BlockNBTPosSerializer extends ScalarSerializer<BlockNBTComponent.Pos> {
@@ -39,7 +39,7 @@ final class BlockNBTPosSerializer extends ScalarSerializer<BlockNBTComponent.Pos
   }
 
   @Override
-  public BlockNBTComponent.Pos deserialize(final @NonNull TypeToken<?> type, final @NonNull Object obj) throws ObjectMappingException {
+  public BlockNBTComponent.Pos deserialize(final @NotNull TypeToken<?> type, final @NotNull Object obj) throws ObjectMappingException {
     try {
       return BlockNBTComponent.Pos.fromString(obj.toString());
     } catch(final IllegalArgumentException ex) {
@@ -48,7 +48,7 @@ final class BlockNBTPosSerializer extends ScalarSerializer<BlockNBTComponent.Pos
   }
 
   @Override
-  public Object serialize(final BlockNBTComponent.@NonNull Pos item, final @NonNull Predicate<Class<?>> typeSupported) {
+  public Object serialize(final BlockNBTComponent.@NotNull Pos item, final @NotNull Predicate<Class<?>> typeSupported) {
     return item.asString();
   }
 }

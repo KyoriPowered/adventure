@@ -27,20 +27,20 @@ import io.leangen.geantyref.TypeToken;
 import java.lang.reflect.Type;
 import java.util.function.Predicate;
 import net.kyori.adventure.util.Index;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.serialize.ScalarSerializer;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 final class IndexSerializer<T> extends ScalarSerializer<T> {
   private final Index<String, T> idx;
 
-  IndexSerializer(final @NonNull TypeToken<T> type, final @NonNull Index<String, T> idx) {
+  IndexSerializer(final @NotNull TypeToken<T> type, final @NotNull Index<String, T> idx) {
     super(type);
     this.idx = idx;
   }
 
   @Override
-  public @NonNull T deserialize(final @NonNull Type type, final @NonNull Object obj) throws SerializationException {
+  public @NotNull T deserialize(final @NotNull Type type, final @NotNull Object obj) throws SerializationException {
     final T value = this.idx.value(obj.toString());
     if (value == null) {
       throw new SerializationException("No value for key '" + obj + "' in index for type " + this.type());
@@ -49,7 +49,7 @@ final class IndexSerializer<T> extends ScalarSerializer<T> {
   }
 
   @Override
-  public Object serialize(final @NonNull T item, final @NonNull Predicate<Class<?>> typeSupported) {
+  public Object serialize(final @NotNull T item, final @NotNull Predicate<Class<?>> typeSupported) {
     return this.idx.key(item);
   }
 }

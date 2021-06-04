@@ -29,48 +29,47 @@ import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.examination.ExaminableProperty;
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent, StorageNBTComponent.Builder> implements StorageNBTComponent {
   private final Key storage;
 
-  StorageNBTComponentImpl(final @NonNull List<? extends ComponentLike> children, final @NonNull Style style, final String nbtPath, final boolean interpret, final Key storage) {
+  StorageNBTComponentImpl(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final String nbtPath, final boolean interpret, final Key storage) {
     super(children, style, nbtPath, interpret);
     this.storage = storage;
   }
 
   @Override
-  public @NonNull StorageNBTComponent nbtPath(final @NonNull String nbtPath) {
+  public @NotNull StorageNBTComponent nbtPath(final @NotNull String nbtPath) {
     if (Objects.equals(this.nbtPath, nbtPath)) return this;
     return new StorageNBTComponentImpl(this.children, this.style, nbtPath, this.interpret, this.storage);
   }
 
   @Override
-  public @NonNull StorageNBTComponent interpret(final boolean interpret) {
+  public @NotNull StorageNBTComponent interpret(final boolean interpret) {
     if (this.interpret == interpret) return this;
     return new StorageNBTComponentImpl(this.children, this.style, this.nbtPath, interpret, this.storage);
   }
 
   @Override
-  public @NonNull Key storage() {
+  public @NotNull Key storage() {
     return this.storage;
   }
 
   @Override
-  public @NonNull StorageNBTComponent storage(final @NonNull Key storage) {
+  public @NotNull StorageNBTComponent storage(final @NotNull Key storage) {
     if (Objects.equals(this.storage, storage)) return this;
     return new StorageNBTComponentImpl(this.children, this.style, this.nbtPath, this.interpret, storage);
   }
 
   @Override
-  public @NonNull StorageNBTComponent children(final @NonNull List<? extends ComponentLike> children) {
+  public @NotNull StorageNBTComponent children(final @NotNull List<? extends ComponentLike> children) {
     return new StorageNBTComponentImpl(children, this.style, this.nbtPath, this.interpret, this.storage);
   }
 
   @Override
-  public @NonNull StorageNBTComponent style(final @NonNull Style style) {
+  public @NotNull StorageNBTComponent style(final @NotNull Style style) {
     return new StorageNBTComponentImpl(this.children, style, this.nbtPath, this.interpret, this.storage);
   }
 
@@ -91,7 +90,7 @@ final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent
   }
 
   @Override
-  protected @NonNull Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
+  protected @NotNull Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
     return Stream.concat(
       Stream.of(
         ExaminableProperty.of("storage", this.storage)
@@ -101,29 +100,29 @@ final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent
   }
 
   @Override
-  public StorageNBTComponent.@NonNull Builder toBuilder() {
+  public StorageNBTComponent.@NotNull Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
   static class BuilderImpl extends NBTComponentImpl.BuilderImpl<StorageNBTComponent, StorageNBTComponent.Builder> implements StorageNBTComponent.Builder {
-    private @MonotonicNonNull Key storage;
+    private @Nullable Key storage;
 
     BuilderImpl() {
     }
 
-    BuilderImpl(final @NonNull StorageNBTComponent component) {
+    BuilderImpl(final @NotNull StorageNBTComponent component) {
       super(component);
       this.storage = component.storage();
     }
 
     @Override
-    public StorageNBTComponent.@NonNull Builder storage(final @NonNull Key storage) {
+    public StorageNBTComponent.@NotNull Builder storage(final @NotNull Key storage) {
       this.storage = storage;
       return this;
     }
 
     @Override
-    public @NonNull StorageNBTComponent build() {
+    public @NotNull StorageNBTComponent build() {
       if (this.nbtPath == null) throw new IllegalStateException("nbt path must be set");
       if (this.storage == null) throw new IllegalStateException("storage must be set");
       return new StorageNBTComponentImpl(this.children, this.buildStyle(), this.nbtPath, this.interpret, this.storage);

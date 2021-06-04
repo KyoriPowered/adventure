@@ -31,9 +31,9 @@ import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.Debug;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Debug.Renderer(text = "\"int[\" + this.value.length + \"]\"", childrenArray = "this.value", hasChildren = "this.value.length > 0")
 final class IntArrayBinaryTagImpl extends ArrayBinaryTagImpl implements IntArrayBinaryTag {
@@ -44,7 +44,7 @@ final class IntArrayBinaryTagImpl extends ArrayBinaryTagImpl implements IntArray
   }
 
   @Override
-  public int@NonNull[] value() {
+  public int@NotNull[] value() {
     return Arrays.copyOf(this.value, this.value.length);
   }
 
@@ -60,7 +60,7 @@ final class IntArrayBinaryTagImpl extends ArrayBinaryTagImpl implements IntArray
   }
 
   @Override
-  public PrimitiveIterator.@NonNull OfInt iterator() {
+  public PrimitiveIterator.@NotNull OfInt iterator() {
     return new PrimitiveIterator.OfInt() {
       private int index;
 
@@ -80,17 +80,17 @@ final class IntArrayBinaryTagImpl extends ArrayBinaryTagImpl implements IntArray
   }
 
   @Override
-  public Spliterator.@NonNull OfInt spliterator() {
+  public Spliterator.@NotNull OfInt spliterator() {
     return Arrays.spliterator(this.value);
   }
 
   @Override
-  public @NonNull IntStream stream() {
+  public @NotNull IntStream stream() {
     return Arrays.stream(this.value);
   }
 
   @Override
-  public void forEachInt(final @NonNull IntConsumer action) {
+  public void forEachInt(final @NotNull IntConsumer action) {
     for (int i = 0, length = this.value.length; i < length; i++) {
       action.accept(this.value[i]);
     }
@@ -115,7 +115,7 @@ final class IntArrayBinaryTagImpl extends ArrayBinaryTagImpl implements IntArray
   }
 
   @Override
-  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("value", this.value));
   }
 }

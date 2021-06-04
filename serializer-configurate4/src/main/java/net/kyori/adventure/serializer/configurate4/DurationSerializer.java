@@ -27,7 +27,7 @@ import java.lang.reflect.Type;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
 import java.util.function.Predicate;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.serialize.ScalarSerializer;
 import org.spongepowered.configurate.serialize.SerializationException;
 
@@ -44,7 +44,7 @@ final class DurationSerializer extends ScalarSerializer<Duration> {
   }
 
   @Override
-  public Duration deserialize(final @NonNull Type type, final @NonNull Object obj) throws SerializationException {
+  public Duration deserialize(final @NotNull Type type, final @NotNull Object obj) throws SerializationException {
     if (obj instanceof CharSequence) {
       String value = obj.toString();
       if (!value.startsWith("P") && !value.startsWith("p")) {
@@ -61,7 +61,7 @@ final class DurationSerializer extends ScalarSerializer<Duration> {
   }
 
   @Override
-  public Object serialize(final @NonNull Duration item, final @NonNull Predicate<Class<?>> typeSupported) {
+  public Object serialize(final @NotNull Duration item, final @NotNull Predicate<Class<?>> typeSupported) {
     return item.toString();
   }
 }

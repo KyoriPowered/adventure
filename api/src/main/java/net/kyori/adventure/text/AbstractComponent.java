@@ -32,9 +32,9 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.Debug;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -56,29 +56,29 @@ public abstract class AbstractComponent implements Component {
    */
   protected final Style style;
 
-  protected AbstractComponent(final @NonNull List<? extends ComponentLike> children, final @NonNull Style style) {
+  protected AbstractComponent(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style) {
     this.children = ComponentLike.asComponents(children, NOT_EMPTY);
     this.style = style;
   }
 
   @Override
-  public final @NonNull List<Component> children() {
+  public final @NotNull List<Component> children() {
     return this.children;
   }
 
   @Override
-  public final @NonNull Style style() {
+  public final @NotNull Style style() {
     return this.style;
   }
 
   @Override
-  public @NonNull Component replaceText(final @NonNull Consumer<TextReplacementConfig.Builder> configurer) {
+  public @NotNull Component replaceText(final @NotNull Consumer<TextReplacementConfig.Builder> configurer) {
     requireNonNull(configurer, "configurer");
     return this.replaceText(Buildable.configureAndBuild(TextReplacementConfig.builder(), configurer));
   }
 
   @Override
-  public @NonNull Component replaceText(final @NonNull TextReplacementConfig config) {
+  public @NotNull Component replaceText(final @NotNull TextReplacementConfig config) {
     requireNonNull(config, "replacement");
     if (!(config instanceof TextReplacementConfigImpl)) {
       throw new IllegalArgumentException("Provided replacement was a custom TextReplacementConfig implementation, which is not supported.");
@@ -112,7 +112,7 @@ public abstract class AbstractComponent implements Component {
   }
 
   @Override
-  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.concat(
       this.examinablePropertiesWithoutChildren(),
       Stream.of(

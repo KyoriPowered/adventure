@@ -24,7 +24,7 @@
 package net.kyori.adventure.util;
 
 import net.kyori.adventure.text.Component;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * An extension interface for {@link Throwable}s to provide a {@link Component}-based message.

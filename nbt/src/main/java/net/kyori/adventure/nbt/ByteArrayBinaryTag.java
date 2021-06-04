@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A binary tag holding a {@code byte}-array value.
@@ -38,12 +38,12 @@ public interface ByteArrayBinaryTag extends ArrayBinaryTag, Iterable<Byte> {
    * @return a binary tag
    * @since 4.0.0
    */
-  static @NonNull ByteArrayBinaryTag of(final byte@NonNull... value) {
+  static @NotNull ByteArrayBinaryTag of(final byte@NotNull... value) {
     return new ByteArrayBinaryTagImpl(value);
   }
 
   @Override
-  default @NonNull BinaryTagType<ByteArrayBinaryTag> type() {
+  default @NotNull BinaryTagType<ByteArrayBinaryTag> type() {
     return BinaryTagTypes.BYTE_ARRAY;
   }
 
@@ -55,7 +55,7 @@ public interface ByteArrayBinaryTag extends ArrayBinaryTag, Iterable<Byte> {
    * @return the value
    * @since 4.0.0
    */
-  byte@NonNull[] value();
+  byte@NotNull[] value();
 
   /**
    * Get the size of the array.

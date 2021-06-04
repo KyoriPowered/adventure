@@ -28,8 +28,8 @@ import java.util.Collections;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
@@ -44,7 +44,7 @@ final class SoundStopSerializer implements TypeSerializer<SoundStop> {
   }
 
   @Override
-  public SoundStop deserialize(final @NonNull Type type, final @NonNull ConfigurationNode value) throws SerializationException {
+  public SoundStop deserialize(final @NotNull Type type, final @NotNull ConfigurationNode value) throws SerializationException {
     if (value.empty()) {
       return SoundStop.all();
     } else {
@@ -59,7 +59,7 @@ final class SoundStopSerializer implements TypeSerializer<SoundStop> {
   }
 
   @Override
-  public void serialize(final @NonNull Type type, final @Nullable SoundStop obj, final @NonNull ConfigurationNode value) throws SerializationException {
+  public void serialize(final @NotNull Type type, final @Nullable SoundStop obj, final @NotNull ConfigurationNode value) throws SerializationException {
     value.node(SOUND).set(Key.class, obj == null ? null : obj.sound());
     value.node(SOURCE).set(Sound.Source.class, obj == null ? null : obj.source());
     if (value.empty()) {

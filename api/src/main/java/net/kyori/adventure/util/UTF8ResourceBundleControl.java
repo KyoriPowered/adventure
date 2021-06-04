@@ -35,7 +35,7 @@ import java.security.PrivilegedExceptionAction;
 import java.util.Locale;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A {@link ResourceBundle.Control} that enforces UTF-8 string encoding.
@@ -53,7 +53,7 @@ public final class UTF8ResourceBundleControl extends ResourceBundle.Control {
    * @return a resource bundle control
    * @since 4.0.0
    */
-  public static ResourceBundle.@NonNull Control get() {
+  public static ResourceBundle.@NotNull Control get() {
     return INSTANCE;
   }
 

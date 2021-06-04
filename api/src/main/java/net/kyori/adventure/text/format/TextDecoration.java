@@ -25,8 +25,8 @@ package net.kyori.adventure.text.format;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Index;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * An enumeration of decorations which may be applied to a {@link Component}.
@@ -78,12 +78,12 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
   }
 
   @Override
-  public void styleApply(final Style.@NonNull Builder style) {
+  public void styleApply(final Style.@NotNull Builder style) {
     style.decorate(this);
   }
 
   @Override
-  public @NonNull String toString() {
+  public @NotNull String toString() {
     return this.name;
   }
 
@@ -130,7 +130,7 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
      * @return the state
      * @since 4.0.0
      */
-    public static @NonNull State byBoolean(final boolean flag) {
+    public static @NotNull State byBoolean(final boolean flag) {
       return flag ? TRUE : FALSE;
     }
 
@@ -141,7 +141,7 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
      * @return the state
      * @since 4.0.0
      */
-    public static @NonNull State byBoolean(final @Nullable Boolean flag) {
+    public static @NotNull State byBoolean(final @Nullable Boolean flag) {
       return flag == null ? NOT_SET : byBoolean(flag.booleanValue());
     }
   }

@@ -24,9 +24,9 @@
 package net.kyori.adventure.util;
 
 import java.util.function.Consumer;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Something that can be built.
@@ -47,7 +47,7 @@ public interface Buildable<R, B extends Buildable.Builder<R>> {
    * @since 4.0.0
    */
   @Contract(mutates = "param1")
-  static <R extends Buildable<R, B>, B extends Builder<R>> @NonNull R configureAndBuild(final @NonNull B builder, final @Nullable Consumer<? super B> consumer) {
+  static <R extends Buildable<R, B>, B extends Builder<R>> @NotNull R configureAndBuild(final @NotNull B builder, final @Nullable Consumer<? super B> consumer) {
     if (consumer != null) consumer.accept(builder);
     return builder.build();
   }
@@ -59,7 +59,7 @@ public interface Buildable<R, B extends Buildable.Builder<R>> {
    * @since 4.0.0
    */
   @Contract(value = "-> new", pure = true)
-  @NonNull B toBuilder();
+  @NotNull B toBuilder();
 
   /**
    * A builder.
@@ -75,6 +75,6 @@ public interface Buildable<R, B extends Buildable.Builder<R>> {
      * @since 4.0.0
      */
     @Contract(value = "-> new", pure = true)
-    @NonNull R build();
+    @NotNull R build();
   }
 }

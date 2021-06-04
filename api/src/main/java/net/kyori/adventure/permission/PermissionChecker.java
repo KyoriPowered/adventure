@@ -28,7 +28,7 @@ import net.kyori.adventure.Adventure;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.pointer.Pointer;
 import net.kyori.adventure.util.TriState;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Something that has permissions.
@@ -50,7 +50,7 @@ public interface PermissionChecker extends Predicate<String> {
    * @return a {@link PermissionChecker}
    * @since 4.8.0
    */
-  static @NonNull PermissionChecker always(final TriState state) {
+  static @NotNull PermissionChecker always(final TriState state) {
     if (state == TriState.TRUE) return PermissionCheckers.TRUE;
     if (state == TriState.FALSE) return PermissionCheckers.FALSE;
     return PermissionCheckers.NOT_SET;
@@ -63,7 +63,7 @@ public interface PermissionChecker extends Predicate<String> {
    * @return a tri-state result
    * @since 4.8.0
    */
-  @NonNull TriState value(final String permission);
+  @NotNull TriState value(final String permission);
 
   @Override
   default boolean test(final String permission) {

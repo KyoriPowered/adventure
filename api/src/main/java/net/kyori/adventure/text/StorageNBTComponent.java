@@ -24,8 +24,8 @@
 package net.kyori.adventure.text;
 
 import net.kyori.adventure.key.Key;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Given a {@link Key}, this component reads the NBT of the associated command storage and displays that information.
@@ -49,7 +49,7 @@ public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent, S
    * @return the NBT storage
    * @since 4.0.0
    */
-  @NonNull Key storage();
+  @NotNull Key storage();
 
   /**
    * Sets the NBT storage.
@@ -59,7 +59,7 @@ public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent, S
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NonNull StorageNBTComponent storage(final @NonNull Key storage);
+  @NotNull StorageNBTComponent storage(final @NotNull Key storage);
 
   /**
    * A command storage NBT component builder.
@@ -75,6 +75,6 @@ public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent, S
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NonNull Builder storage(final @NonNull Key storage);
+    @NotNull Builder storage(final @NotNull Key storage);
   }
 }

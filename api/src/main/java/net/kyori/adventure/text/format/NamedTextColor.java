@@ -30,8 +30,8 @@ import java.util.stream.Stream;
 import net.kyori.adventure.util.HSVLike;
 import net.kyori.adventure.util.Index;
 import net.kyori.examination.ExaminableProperty;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -197,7 +197,7 @@ public final class NamedTextColor implements TextColor {
    * @return nearest named colour. will always return a value
    * @since 4.0.0
    */
-  public static @NonNull NamedTextColor nearestTo(final @NonNull TextColor any) {
+  public static @NotNull NamedTextColor nearestTo(final @NotNull TextColor any) {
     if (any instanceof NamedTextColor) {
       return (NamedTextColor) any;
     }
@@ -228,7 +228,7 @@ public final class NamedTextColor implements TextColor {
    * @param other colour to compare to
    * @return distance metric
    */
-  private static float distance(final @NonNull HSVLike self, final @NonNull HSVLike other) {
+  private static float distance(final @NotNull HSVLike self, final @NotNull HSVLike other) {
     // weight hue more heavily than saturation and brightness. kind of magic numbers, but is fine for our use case of downsampling to a set of colors
     final float hueDistance = 3 * Math.min(Math.abs(self.h() - other.h()), 1f - Math.abs(self.h() - other.h()));
     final float saturationDiff = self.s() - other.s();
@@ -252,17 +252,17 @@ public final class NamedTextColor implements TextColor {
   }
 
   @Override
-  public @NonNull HSVLike asHSV() {
+  public @NotNull HSVLike asHSV() {
     return this.hsv;
   }
 
   @Override
-  public @NonNull String toString() {
+  public @NotNull String toString() {
     return this.name;
   }
 
   @Override
-  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.concat(
       Stream.of(ExaminableProperty.of("name", this.name)),
       TextColor.super.examinableProperties()

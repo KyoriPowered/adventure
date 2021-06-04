@@ -30,8 +30,8 @@ import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.util.Nag;
 import net.kyori.examination.ExaminableProperty;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import static java.util.Objects.requireNonNull;
@@ -45,13 +45,13 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   static final TextComponent NEWLINE = createDirect("\n");
   static final TextComponent SPACE = createDirect(" ");
 
-  private static @NonNull TextComponent createDirect(final @NonNull String content) {
+  private static @NotNull TextComponent createDirect(final @NotNull String content) {
     return new TextComponentImpl(Collections.emptyList(), Style.empty(), content);
   }
 
   private final String content;
 
-  TextComponentImpl(final @NonNull List<? extends ComponentLike> children, final @NonNull Style style, final @NonNull String content) {
+  TextComponentImpl(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String content) {
     super(children, style);
     this.content = content;
 
@@ -72,23 +72,23 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   }
 
   @Override
-  public @NonNull String content() {
+  public @NotNull String content() {
     return this.content;
   }
 
   @Override
-  public @NonNull TextComponent content(final @NonNull String content) {
+  public @NotNull TextComponent content(final @NotNull String content) {
     if (Objects.equals(this.content, content)) return this;
     return new TextComponentImpl(this.children, this.style, requireNonNull(content, "content"));
   }
 
   @Override
-  public @NonNull TextComponent children(final @NonNull List<? extends ComponentLike> children) {
+  public @NotNull TextComponent children(final @NotNull List<? extends ComponentLike> children) {
     return new TextComponentImpl(children, this.style, this.content);
   }
 
   @Override
-  public @NonNull TextComponent style(final @NonNull Style style) {
+  public @NotNull TextComponent style(final @NotNull Style style) {
     return new TextComponentImpl(this.children, style, this.content);
   }
 
@@ -109,7 +109,7 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   }
 
   @Override
-  protected @NonNull Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
+  protected @NotNull Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
     return Stream.concat(
       Stream.of(
         ExaminableProperty.of("content", this.content)
@@ -119,7 +119,7 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   }
 
   @Override
-  public @NonNull Builder toBuilder() {
+  public @NotNull Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
@@ -134,24 +134,24 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
     BuilderImpl() {
     }
 
-    BuilderImpl(final @NonNull TextComponent component) {
+    BuilderImpl(final @NotNull TextComponent component) {
       super(component);
       this.content = component.content();
     }
 
     @Override
-    public @NonNull Builder content(final @NonNull String content) {
+    public @NotNull Builder content(final @NotNull String content) {
       this.content = requireNonNull(content, "content");
       return this;
     }
 
     @Override
-    public @NonNull String content() {
+    public @NotNull String content() {
       return this.content;
     }
 
     @Override
-    public @NonNull TextComponent build() {
+    public @NotNull TextComponent build() {
       if (this.isEmpty()) {
         return Component.empty();
       }

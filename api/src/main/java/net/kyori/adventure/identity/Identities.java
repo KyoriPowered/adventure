@@ -24,14 +24,14 @@
 package net.kyori.adventure.identity;
 
 import java.util.UUID;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 final class Identities {
   static final Identity NIL = new Identity() {
     private final UUID uuid = new UUID(0, 0);
 
     @Override
-    public @NonNull UUID uuid() {
+    public @NotNull UUID uuid() {
       return this.uuid;
     }
 

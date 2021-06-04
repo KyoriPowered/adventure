@@ -29,8 +29,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A binary tag type.
@@ -59,7 +59,7 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
    * @throws IOException if an exception was encountered while reading
    * @since 4.0.0
    */
-  public abstract @NonNull T read(final @NonNull DataInput input) throws IOException;
+  public abstract @NotNull T read(final @NotNull DataInput input) throws IOException;
 
   /**
    * Writes a tag.
@@ -69,14 +69,14 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
    * @throws IOException if an exception was encountered while writing
    * @since 4.0.0
    */
-  public abstract void write(final @NonNull T tag, final @NonNull DataOutput output) throws IOException;
+  public abstract void write(final @NotNull T tag, final @NotNull DataOutput output) throws IOException;
 
   @SuppressWarnings("unchecked") // HACK: generics suck
   static <T extends BinaryTag> void write(final BinaryTagType<? extends BinaryTag> type, final T tag, final DataOutput output) throws IOException {
     ((BinaryTagType<T>) type).write(tag, output);
   }
 
-  static @NonNull BinaryTagType<? extends BinaryTag> of(final byte id) {
+  static @NotNull BinaryTagType<? extends BinaryTag> of(final byte id) {
     for (int i = 0; i < TYPES.size(); i++) {
       final BinaryTagType<? extends BinaryTag> type = TYPES.get(i);
       if (type.id() == id) {
@@ -86,11 +86,11 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
     throw new IllegalArgumentException(String.valueOf(id));
   }
 
-  static <T extends BinaryTag> @NonNull BinaryTagType<T> register(final Class<T> type, final byte id, final Reader<T> reader, final @Nullable Writer<T> writer) {
+  static <T extends BinaryTag> @NotNull BinaryTagType<T> register(final Class<T> type, final byte id, final Reader<T> reader, final @Nullable Writer<T> writer) {
     return register(new Impl<>(type, id, reader, writer));
   }
 
-  static <T extends NumberBinaryTag> @NonNull BinaryTagType<T> registerNumeric(final Class<T> type, final byte id, final Reader<T> reader, final Writer<T> writer) {
+  static <T extends NumberBinaryTag> @NotNull BinaryTagType<T> registerNumeric(final Class<T> type, final byte id, final Reader<T> reader, final Writer<T> writer) {
     return register(new Impl.Numeric<>(type, id, reader, writer));
   }
 
@@ -105,7 +105,7 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
    * @param <T> the tag type
    */
   interface Reader<T extends BinaryTag> {
-    @NonNull T read(final @NonNull DataInput input) throws IOException;
+    @NotNull T read(final @NotNull DataInput input) throws IOException;
   }
 
   /**
@@ -114,7 +114,7 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
    * @param <T> the tag type
    */
   interface Writer<T extends BinaryTag> {
-    void write(final @NonNull T tag, final @NonNull DataOutput output) throws IOException;
+    void write(final @NotNull T tag, final @NotNull DataOutput output) throws IOException;
   }
 
   @Override
@@ -136,12 +136,12 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
     }
 
     @Override
-    public final @NonNull T read(final @NonNull DataInput input) throws IOException {
+    public final @NotNull T read(final @NotNull DataInput input) throws IOException {
       return this.reader.read(input);
     }
 
     @Override
-    public final void write(final @NonNull T tag, final @NonNull DataOutput output) throws IOException {
+    public final void write(final @NotNull T tag, final @NotNull DataOutput output) throws IOException {
       if (this.writer != null) this.writer.write(tag, output);
     }
 

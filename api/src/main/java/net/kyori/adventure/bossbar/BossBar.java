@@ -28,9 +28,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.util.Index;
 import net.kyori.examination.Examinable;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
 /**
@@ -95,7 +95,7 @@ public interface BossBar extends Examinable {
    * @throws IllegalArgumentException if progress is less than 0 or greater than 1
    * @since 4.3.0
    */
-  static @NonNull BossBar bossBar(final @NonNull ComponentLike name, final float progress, final @NonNull Color color, final @NonNull Overlay overlay) {
+  static @NotNull BossBar bossBar(final @NotNull ComponentLike name, final float progress, final @NotNull Color color, final @NotNull Overlay overlay) {
     BossBarImpl.checkProgress(progress);
     return bossBar(name.asComponent(), progress, color, overlay);
   }
@@ -111,7 +111,7 @@ public interface BossBar extends Examinable {
    * @throws IllegalArgumentException if progress is less than 0 or greater than 1
    * @since 4.0.0
    */
-  static @NonNull BossBar bossBar(final @NonNull Component name, final float progress, final @NonNull Color color, final @NonNull Overlay overlay) {
+  static @NotNull BossBar bossBar(final @NotNull Component name, final float progress, final @NotNull Color color, final @NotNull Overlay overlay) {
     BossBarImpl.checkProgress(progress);
     return new BossBarImpl(name, progress, color, overlay);
   }
@@ -128,7 +128,7 @@ public interface BossBar extends Examinable {
    * @throws IllegalArgumentException if progress is less than 0 or greater than 1
    * @since 4.3.0
    */
-  static @NonNull BossBar bossBar(final @NonNull ComponentLike name, final float progress, final @NonNull Color color, final @NonNull Overlay overlay, final @NonNull Set<Flag> flags) {
+  static @NotNull BossBar bossBar(final @NotNull ComponentLike name, final float progress, final @NotNull Color color, final @NotNull Overlay overlay, final @NotNull Set<Flag> flags) {
     BossBarImpl.checkProgress(progress);
     return bossBar(name.asComponent(), progress, color, overlay, flags);
   }
@@ -145,7 +145,7 @@ public interface BossBar extends Examinable {
    * @throws IllegalArgumentException if progress is less than 0 or greater than 1
    * @since 4.0.0
    */
-  static @NonNull BossBar bossBar(final @NonNull Component name, final float progress, final @NonNull Color color, final @NonNull Overlay overlay, final @NonNull Set<Flag> flags) {
+  static @NotNull BossBar bossBar(final @NotNull Component name, final float progress, final @NotNull Color color, final @NotNull Overlay overlay, final @NotNull Set<Flag> flags) {
     BossBarImpl.checkProgress(progress);
     return new BossBarImpl(name, progress, color, overlay, flags);
   }
@@ -156,7 +156,7 @@ public interface BossBar extends Examinable {
    * @return the name
    * @since 4.0.0
    */
-  @NonNull Component name();
+  @NotNull Component name();
 
   /**
    * Sets the name.
@@ -166,7 +166,7 @@ public interface BossBar extends Examinable {
    * @since 4.3.0
    */
   @Contract("_ -> this")
-  default @NonNull BossBar name(final @NonNull ComponentLike name) {
+  default @NotNull BossBar name(final @NotNull ComponentLike name) {
     return this.name(name.asComponent());
   }
 
@@ -178,7 +178,7 @@ public interface BossBar extends Examinable {
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NonNull BossBar name(final @NonNull Component name);
+  @NotNull BossBar name(final @NotNull Component name);
 
   /**
    * Gets the progress.
@@ -201,7 +201,7 @@ public interface BossBar extends Examinable {
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NonNull BossBar progress(final float progress);
+  @NotNull BossBar progress(final float progress);
 
   /**
    * Gets the progress.
@@ -232,7 +232,7 @@ public interface BossBar extends Examinable {
   @ApiStatus.ScheduledForRemoval
   @Contract("_ -> this")
   @Deprecated
-  default @NonNull BossBar percent(final float progress) {
+  default @NotNull BossBar percent(final float progress) {
     return this.progress(progress);
   }
 
@@ -242,7 +242,7 @@ public interface BossBar extends Examinable {
    * @return the color
    * @since 4.0.0
    */
-  @NonNull Color color();
+  @NotNull Color color();
 
   /**
    * Sets the color.
@@ -252,7 +252,7 @@ public interface BossBar extends Examinable {
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NonNull BossBar color(final @NonNull Color color);
+  @NotNull BossBar color(final @NotNull Color color);
 
   /**
    * Gets the overlay.
@@ -260,7 +260,7 @@ public interface BossBar extends Examinable {
    * @return the overlay
    * @since 4.0.0
    */
-  @NonNull Overlay overlay();
+  @NotNull Overlay overlay();
 
   /**
    * Sets the overlay.
@@ -270,7 +270,7 @@ public interface BossBar extends Examinable {
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NonNull BossBar overlay(final @NonNull Overlay overlay);
+  @NotNull BossBar overlay(final @NotNull Overlay overlay);
 
   /**
    * Gets the flags.
@@ -278,7 +278,7 @@ public interface BossBar extends Examinable {
    * @return the flags
    * @since 4.0.0
    */
-  @UnmodifiableView @NonNull Set<Flag> flags();
+  @UnmodifiableView @NotNull Set<Flag> flags();
 
   /**
    * Sets the flags.
@@ -288,7 +288,7 @@ public interface BossBar extends Examinable {
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NonNull BossBar flags(final @NonNull Set<Flag> flags);
+  @NotNull BossBar flags(final @NotNull Set<Flag> flags);
 
   /**
    * Checks if this bossbar has a flag.
@@ -297,7 +297,7 @@ public interface BossBar extends Examinable {
    * @return {@code true} if this bossbar has the flag, {@code false} otherwise
    * @since 4.0.0
    */
-  boolean hasFlag(final @NonNull Flag flag);
+  boolean hasFlag(final @NotNull Flag flag);
 
   /**
    * Adds a flag to this bossbar.
@@ -307,7 +307,7 @@ public interface BossBar extends Examinable {
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NonNull BossBar addFlag(final @NonNull Flag flag);
+  @NotNull BossBar addFlag(final @NotNull Flag flag);
 
   /**
    * Removes a flag from this bossbar.
@@ -317,7 +317,7 @@ public interface BossBar extends Examinable {
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NonNull BossBar removeFlag(final @NonNull Flag flag);
+  @NotNull BossBar removeFlag(final @NotNull Flag flag);
 
   /**
    * Adds flags to this bossbar.
@@ -327,7 +327,7 @@ public interface BossBar extends Examinable {
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NonNull BossBar addFlags(final @NonNull Flag@NonNull... flags);
+  @NotNull BossBar addFlags(final @NotNull Flag@NotNull... flags);
 
   /**
    * Removes flags from this bossbar.
@@ -337,7 +337,7 @@ public interface BossBar extends Examinable {
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NonNull BossBar removeFlags(final @NonNull Flag@NonNull... flags);
+  @NotNull BossBar removeFlags(final @NotNull Flag@NotNull... flags);
 
   /**
    * Adds flags to this bossbar.
@@ -347,7 +347,7 @@ public interface BossBar extends Examinable {
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NonNull BossBar addFlags(final @NonNull Iterable<Flag> flags);
+  @NotNull BossBar addFlags(final @NotNull Iterable<Flag> flags);
 
   /**
    * Removes flags from this bossbar.
@@ -357,7 +357,7 @@ public interface BossBar extends Examinable {
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NonNull BossBar removeFlags(final @NonNull Iterable<Flag> flags);
+  @NotNull BossBar removeFlags(final @NotNull Iterable<Flag> flags);
 
   /**
    * Adds a listener.
@@ -367,7 +367,7 @@ public interface BossBar extends Examinable {
    * @since 4.0.0
    */
   @Contract(value = "_ -> this")
-  @NonNull BossBar addListener(final @NonNull Listener listener);
+  @NotNull BossBar addListener(final @NotNull Listener listener);
 
   /**
    * Removes a listener.
@@ -377,7 +377,7 @@ public interface BossBar extends Examinable {
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @NonNull BossBar removeListener(final @NonNull Listener listener);
+  @NotNull BossBar removeListener(final @NotNull Listener listener);
 
   /**
    * A listener for changes that happen on a {@link BossBar}.
@@ -394,7 +394,7 @@ public interface BossBar extends Examinable {
      * @param newName the new name
      * @since 4.0.0
      */
-    default void bossBarNameChanged(final @NonNull BossBar bar, final @NonNull Component oldName, final @NonNull Component newName) {
+    default void bossBarNameChanged(final @NotNull BossBar bar, final @NotNull Component oldName, final @NotNull Component newName) {
     }
 
     /**
@@ -405,7 +405,7 @@ public interface BossBar extends Examinable {
      * @param newProgress the new progress
      * @since 4.0.0
      */
-    default void bossBarProgressChanged(final @NonNull BossBar bar, final float oldProgress, final float newProgress) {
+    default void bossBarProgressChanged(final @NotNull BossBar bar, final float oldProgress, final float newProgress) {
       this.bossBarPercentChanged(bar, oldProgress, newProgress);
     }
 
@@ -421,7 +421,7 @@ public interface BossBar extends Examinable {
     @ApiStatus.ScheduledForRemoval
     @Deprecated
     @SuppressWarnings("DeprecatedIsStillUsed")
-    default void bossBarPercentChanged(final @NonNull BossBar bar, final float oldProgress, final float newProgress) {
+    default void bossBarPercentChanged(final @NotNull BossBar bar, final float oldProgress, final float newProgress) {
     }
 
     /**
@@ -432,7 +432,7 @@ public interface BossBar extends Examinable {
      * @param newColor the new color
      * @since 4.0.0
      */
-    default void bossBarColorChanged(final @NonNull BossBar bar, final @NonNull Color oldColor, final @NonNull Color newColor) {
+    default void bossBarColorChanged(final @NotNull BossBar bar, final @NotNull Color oldColor, final @NotNull Color newColor) {
     }
 
     /**
@@ -443,7 +443,7 @@ public interface BossBar extends Examinable {
      * @param newOverlay the new overlay
      * @since 4.0.0
      */
-    default void bossBarOverlayChanged(final @NonNull BossBar bar, final @NonNull Overlay oldOverlay, final @NonNull Overlay newOverlay) {
+    default void bossBarOverlayChanged(final @NotNull BossBar bar, final @NotNull Overlay oldOverlay, final @NotNull Overlay newOverlay) {
     }
 
     /**
@@ -454,7 +454,7 @@ public interface BossBar extends Examinable {
      * @param flagsRemoved the flags removed from the bossbar
      * @since 4.0.0
      */
-    default void bossBarFlagsChanged(final @NonNull BossBar bar, final @NonNull Set<Flag> flagsAdded, final @NonNull Set<Flag> flagsRemoved) {
+    default void bossBarFlagsChanged(final @NotNull BossBar bar, final @NotNull Set<Flag> flagsAdded, final @NotNull Set<Flag> flagsRemoved) {
     }
   }
 

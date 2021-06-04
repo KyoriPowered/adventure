@@ -25,7 +25,7 @@ package net.kyori.adventure.text.renderer;
 
 import java.util.function.Function;
 import net.kyori.adventure.text.Component;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A component renderer.
@@ -42,7 +42,7 @@ public interface ComponentRenderer<C> {
    * @return the rendered component
    * @since 4.0.0
    */
-  @NonNull Component render(final @NonNull Component component, final @NonNull C context);
+  @NotNull Component render(final @NotNull Component component, final @NotNull C context);
 
   /**
    * Return a {@link ComponentRenderer} that takes a different context type.

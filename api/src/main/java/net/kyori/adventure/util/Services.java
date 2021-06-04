@@ -26,7 +26,7 @@ package net.kyori.adventure.util;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.ServiceLoader;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Tools for working with {@link ServiceLoader}s.
@@ -48,7 +48,7 @@ public final class Services {
    * @return a service, or {@link Optional#empty()}
    * @since 4.8.0
    */
-  public static <P> @NonNull Optional<P> service(final @NonNull Class<P> type) {
+  public static <P> @NotNull Optional<P> service(final @NotNull Class<P> type) {
     final ServiceLoader<P> loader = Services0.loader(type);
     final Iterator<P> it = loader.iterator();
     while (it.hasNext()) {

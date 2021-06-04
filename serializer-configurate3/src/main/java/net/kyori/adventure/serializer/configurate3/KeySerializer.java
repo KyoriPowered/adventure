@@ -30,7 +30,7 @@ import net.kyori.adventure.key.Key;
 import ninja.leaping.configurate.objectmapping.InvalidTypeException;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.ScalarSerializer;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("UnstableApiUsage") // TypeToken
 final class KeySerializer extends ScalarSerializer<Key> {
@@ -41,7 +41,7 @@ final class KeySerializer extends ScalarSerializer<Key> {
   }
 
   @Override
-  public @NonNull Key deserialize(final @NonNull TypeToken<?> type, final @NonNull Object obj) throws ObjectMappingException {
+  public @NotNull Key deserialize(final @NotNull TypeToken<?> type, final @NotNull Object obj) throws ObjectMappingException {
     if (!(obj instanceof CharSequence)) {
       throw new InvalidTypeException(type);
     }
@@ -53,7 +53,7 @@ final class KeySerializer extends ScalarSerializer<Key> {
   }
 
   @Override
-  public @NonNull Object serialize(final @NonNull Key item, final @NonNull Predicate<Class<?>> typeSupported) {
+  public @NotNull Object serialize(final @NotNull Key item, final @NotNull Predicate<Class<?>> typeSupported) {
     return item.asString();
   }
 }

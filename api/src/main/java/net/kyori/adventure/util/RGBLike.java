@@ -23,8 +23,8 @@
  */
 package net.kyori.adventure.util;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.common.value.qual.IntRange;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 /**
  * Something that can provide red, green, and blue colour components.
@@ -38,7 +38,7 @@ public interface RGBLike {
    * @return the red component
    * @since 4.0.0
    */
-  @IntRange(from = 0x0, to = 0xff) int red();
+  @Range(from = 0x0, to = 0xff) int red();
 
   /**
    * Gets the green component.
@@ -46,7 +46,7 @@ public interface RGBLike {
    * @return the green component
    * @since 4.0.0
    */
-  @IntRange(from = 0x0, to = 0xff) int green();
+  @Range(from = 0x0, to = 0xff) int green();
 
   /**
    * Gets the blue component.
@@ -54,7 +54,7 @@ public interface RGBLike {
    * @return the blue component
    * @since 4.0.0
    */
-  @IntRange(from = 0x0, to = 0xff) int blue();
+  @Range(from = 0x0, to = 0xff) int blue();
 
   /**
    * Converts the color represented by this RGBLike to the HSV color space.
@@ -62,7 +62,7 @@ public interface RGBLike {
    * @return an HSVLike representing this RGBLike in the HSV color space
    * @since 4.6.0
    */
-  default @NonNull HSVLike asHSV() {
+  default @NotNull HSVLike asHSV() {
     return HSVLike.fromRGB(this.red(), this.green(), this.blue());
   }
 }

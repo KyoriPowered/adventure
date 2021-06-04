@@ -27,7 +27,7 @@ import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.function.LongConsumer;
 import java.util.stream.LongStream;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A binary tag holding a {@code long}-array value.
@@ -42,12 +42,12 @@ public interface LongArrayBinaryTag extends ArrayBinaryTag, Iterable<Long> {
    * @return a binary tag
    * @since 4.0.0
    */
-  static @NonNull LongArrayBinaryTag of(final long@NonNull... value) {
+  static @NotNull LongArrayBinaryTag of(final long@NotNull... value) {
     return new LongArrayBinaryTagImpl(value);
   }
 
   @Override
-  default @NonNull BinaryTagType<LongArrayBinaryTag> type() {
+  default @NotNull BinaryTagType<LongArrayBinaryTag> type() {
     return BinaryTagTypes.LONG_ARRAY;
   }
 
@@ -59,7 +59,7 @@ public interface LongArrayBinaryTag extends ArrayBinaryTag, Iterable<Long> {
    * @return the value
    * @since 4.0.0
    */
-  long@NonNull[] value();
+  long@NotNull[] value();
 
   /**
    * Gets the length of the array.
@@ -87,10 +87,10 @@ public interface LongArrayBinaryTag extends ArrayBinaryTag, Iterable<Long> {
    * @since 4.2.0
    */
   @Override
-  PrimitiveIterator.@NonNull OfLong iterator();
+  PrimitiveIterator.@NotNull OfLong iterator();
 
   @Override
-  Spliterator.@NonNull OfLong spliterator();
+  Spliterator.@NotNull OfLong spliterator();
 
   /**
    * Create a stream whose elements are the elements of this array tag.
@@ -98,7 +98,7 @@ public interface LongArrayBinaryTag extends ArrayBinaryTag, Iterable<Long> {
    * @return a new stream
    * @since 4.2.0
    */
-  @NonNull LongStream stream();
+  @NotNull LongStream stream();
 
   /**
    * Perform an action for every long in the backing array.
@@ -106,5 +106,5 @@ public interface LongArrayBinaryTag extends ArrayBinaryTag, Iterable<Long> {
    * @param action the action to perform
    * @since 4.2.0
    */
-  void forEachLong(final @NonNull LongConsumer action);
+  void forEachLong(final @NotNull LongConsumer action);
 }

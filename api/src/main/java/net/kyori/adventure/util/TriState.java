@@ -23,8 +23,8 @@
  */
 package net.kyori.adventure.util;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Similar to a {@code boolean} but with three states.
@@ -58,7 +58,7 @@ public enum TriState {
    * @return a tri-state
    * @since 4.8.0
    */
-  public static @NonNull TriState byBoolean(final boolean value) {
+  public static @NotNull TriState byBoolean(final boolean value) {
     return value ? TRUE : FALSE;
   }
 
@@ -69,7 +69,7 @@ public enum TriState {
    * @return a tri-state
    * @since 4.8.0
    */
-  public static @NonNull TriState byBoolean(final @Nullable Boolean value) {
+  public static @NotNull TriState byBoolean(final @Nullable Boolean value) {
     return value == null ? NOT_SET : byBoolean(value.booleanValue());
   }
 }

@@ -31,8 +31,8 @@ import net.kyori.adventure.sound.SoundStop;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("UnstableApiUsage") // TypeToken
 final class SoundStopSerializer implements TypeSerializer<SoundStop> {
@@ -46,7 +46,7 @@ final class SoundStopSerializer implements TypeSerializer<SoundStop> {
   }
 
   @Override
-  public SoundStop deserialize(final @NonNull TypeToken<?> type, final @NonNull ConfigurationNode value) throws ObjectMappingException {
+  public SoundStop deserialize(final @NotNull TypeToken<?> type, final @NotNull ConfigurationNode value) throws ObjectMappingException {
     if (value.isEmpty()) {
       return SoundStop.all();
     } else {
@@ -61,7 +61,7 @@ final class SoundStopSerializer implements TypeSerializer<SoundStop> {
   }
 
   @Override
-  public void serialize(final @NonNull TypeToken<?> type, final @Nullable SoundStop obj, final @NonNull ConfigurationNode value) throws ObjectMappingException {
+  public void serialize(final @NotNull TypeToken<?> type, final @Nullable SoundStop obj, final @NotNull ConfigurationNode value) throws ObjectMappingException {
     value.getNode(SOUND).setValue(KeySerializer.INSTANCE.type(), obj == null ? null : obj.sound());
     value.getNode(SOURCE).setValue(SoundSerializer.SOURCE_TYPE, obj == null ? null : obj.source());
     if (value.isEmpty()) {

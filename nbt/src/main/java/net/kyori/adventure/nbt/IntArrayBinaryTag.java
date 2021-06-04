@@ -27,7 +27,7 @@ import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A binary tag holding an {@code int}-array value.
@@ -42,12 +42,12 @@ public interface IntArrayBinaryTag extends ArrayBinaryTag, Iterable<Integer> {
    * @return a binary tag
    * @since 4.0.0
    */
-  static @NonNull IntArrayBinaryTag of(final int@NonNull... value) {
+  static @NotNull IntArrayBinaryTag of(final int@NotNull... value) {
     return new IntArrayBinaryTagImpl(value);
   }
 
   @Override
-  default @NonNull BinaryTagType<IntArrayBinaryTag> type() {
+  default @NotNull BinaryTagType<IntArrayBinaryTag> type() {
     return BinaryTagTypes.INT_ARRAY;
   }
 
@@ -59,7 +59,7 @@ public interface IntArrayBinaryTag extends ArrayBinaryTag, Iterable<Integer> {
    * @return the value
    * @since 4.0.0
    */
-  int@NonNull[] value();
+  int@NotNull[] value();
 
   /**
    * Get the length of the array.
@@ -87,10 +87,10 @@ public interface IntArrayBinaryTag extends ArrayBinaryTag, Iterable<Integer> {
    * @since 4.2.0
    */
   @Override
-  PrimitiveIterator.@NonNull OfInt iterator();
+  PrimitiveIterator.@NotNull OfInt iterator();
 
   @Override
-  Spliterator.@NonNull OfInt spliterator();
+  Spliterator.@NotNull OfInt spliterator();
 
   /**
    * Create a stream whose elements are the elements of this array tag.
@@ -98,7 +98,7 @@ public interface IntArrayBinaryTag extends ArrayBinaryTag, Iterable<Integer> {
    * @return a new stream
    * @since 4.2.0
    */
-  @NonNull IntStream stream();
+  @NotNull IntStream stream();
 
   /**
    * Perform an action for every int in the backing array.
@@ -106,5 +106,5 @@ public interface IntArrayBinaryTag extends ArrayBinaryTag, Iterable<Integer> {
    * @param action the action to perform
    * @since 4.2.0
    */
-  void forEachInt(final @NonNull IntConsumer action);
+  void forEachInt(final @NotNull IntConsumer action);
 }

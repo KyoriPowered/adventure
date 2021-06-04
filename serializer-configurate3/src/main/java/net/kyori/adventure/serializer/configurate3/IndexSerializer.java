@@ -28,19 +28,19 @@ import java.util.function.Predicate;
 import net.kyori.adventure.util.Index;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.ScalarSerializer;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("UnstableApiUsage") // TypeToken
 final class IndexSerializer<T> extends ScalarSerializer<T> {
   private final Index<String, T> idx;
 
-  IndexSerializer(final @NonNull TypeToken<T> type, final @NonNull Index<String, T> idx) {
+  IndexSerializer(final @NotNull TypeToken<T> type, final @NotNull Index<String, T> idx) {
     super(type);
     this.idx = idx;
   }
 
   @Override
-  public @NonNull T deserialize(final @NonNull TypeToken<?> type, final @NonNull Object obj) throws ObjectMappingException {
+  public @NotNull T deserialize(final @NotNull TypeToken<?> type, final @NotNull Object obj) throws ObjectMappingException {
     final T value = this.idx.value(obj.toString());
     if (value == null) {
       throw new ObjectMappingException("No value for key '" + obj + "' in index for type " + this.type());
@@ -49,7 +49,7 @@ final class IndexSerializer<T> extends ScalarSerializer<T> {
   }
 
   @Override
-  public Object serialize(final @NonNull T item, final @NonNull Predicate<Class<?>> typeSupported) {
+  public Object serialize(final @NotNull T item, final @NotNull Predicate<Class<?>> typeSupported) {
     return this.idx.key(item);
   }
 }

@@ -26,8 +26,8 @@ package net.kyori.adventure.key;
 import java.util.stream.Stream;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.intellij.lang.annotations.Pattern;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * An identifying object used to fetch and/or store unique objects.
@@ -76,7 +76,7 @@ public interface Key extends Comparable<Key>, Examinable {
    * @throws InvalidKeyException if the namespace or value contains an invalid character
    * @since 4.0.0
    */
-  static @NonNull Key key(final @NonNull @Pattern("(" + KeyImpl.NAMESPACE_PATTERN + ":)?" + KeyImpl.VALUE_PATTERN) String string) {
+  static @NotNull Key key(final @NotNull @Pattern("(" + KeyImpl.NAMESPACE_PATTERN + ":)?" + KeyImpl.VALUE_PATTERN) String string) {
     return key(string, ':');
   }
 
@@ -96,7 +96,7 @@ public interface Key extends Comparable<Key>, Examinable {
    * @since 4.0.0
    */
   @SuppressWarnings("PatternValidation") // impossible to validate since the character is variable
-  static @NonNull Key key(final @NonNull String string, final char character) {
+  static @NotNull Key key(final @NotNull String string, final char character) {
     final int index = string.indexOf(character);
     final String namespace = index >= 1 ? string.substring(0, index) : MINECRAFT_NAMESPACE;
     final String value = index >= 0 ? string.substring(index + 1) : string;
@@ -112,7 +112,7 @@ public interface Key extends Comparable<Key>, Examinable {
    * @throws InvalidKeyException if the namespace or value contains an invalid character
    * @since 4.4.0
    */
-  static @NonNull Key key(final @NonNull Namespaced namespaced, final @NonNull @Pattern(KeyImpl.VALUE_PATTERN) String value) {
+  static @NotNull Key key(final @NotNull Namespaced namespaced, final @NotNull @Pattern(KeyImpl.VALUE_PATTERN) String value) {
     return key(namespaced.namespace(), value);
   }
 
@@ -125,7 +125,7 @@ public interface Key extends Comparable<Key>, Examinable {
    * @throws InvalidKeyException if the namespace or value contains an invalid character
    * @since 4.0.0
    */
-  static @NonNull Key key(final @NonNull @Pattern(KeyImpl.NAMESPACE_PATTERN) String namespace, final @NonNull @Pattern(KeyImpl.VALUE_PATTERN) String value) {
+  static @NotNull Key key(final @NotNull @Pattern(KeyImpl.NAMESPACE_PATTERN) String namespace, final @NotNull @Pattern(KeyImpl.VALUE_PATTERN) String value) {
     return new KeyImpl(namespace, value);
   }
 
@@ -135,7 +135,7 @@ public interface Key extends Comparable<Key>, Examinable {
    * @return the namespace
    * @since 4.0.0
    */
-  @NonNull String namespace();
+  @NotNull String namespace();
 
   /**
    * Gets the value.
@@ -143,7 +143,7 @@ public interface Key extends Comparable<Key>, Examinable {
    * @return the value
    * @since 4.0.0
    */
-  @NonNull String value();
+  @NotNull String value();
 
   /**
    * Returns the string representation of this key.
@@ -151,10 +151,10 @@ public interface Key extends Comparable<Key>, Examinable {
    * @return the string representation
    * @since 4.0.0
    */
-  @NonNull String asString();
+  @NotNull String asString();
 
   @Override
-  default @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("namespace", this.namespace()),
       ExaminableProperty.of("value", this.value())
@@ -162,7 +162,7 @@ public interface Key extends Comparable<Key>, Examinable {
   }
 
   @Override
-  default int compareTo(final @NonNull Key that) {
+  default int compareTo(final @NotNull Key that) {
     final int value = this.value().compareTo(that.value());
     if (value != 0) {
       return KeyImpl.clampCompare(value);

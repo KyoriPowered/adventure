@@ -24,7 +24,7 @@
 package net.kyori.adventure.util;
 
 import java.util.Set;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Various utilities.
@@ -48,7 +48,7 @@ public final class ShadyPines {
   @Deprecated
   @SafeVarargs
   @SuppressWarnings("varargs")
-  public static <E extends Enum<E>> @NonNull Set<E> enumSet(final Class<E> type, final E@NonNull... constants) {
+  public static <E extends Enum<E>> @NotNull Set<E> enumSet(final Class<E> type, final E@NotNull... constants) {
     return MonkeyBars.enumSet(type, constants);
   }
 

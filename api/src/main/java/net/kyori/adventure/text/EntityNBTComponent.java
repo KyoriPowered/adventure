@@ -23,8 +23,8 @@
  */
 package net.kyori.adventure.text;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Given a Minecraft selector, this component reads the NBT of the associated entity and displays that information.
@@ -48,7 +48,7 @@ public interface EntityNBTComponent extends NBTComponent<EntityNBTComponent, Ent
    * @return the entity selector
    * @since 4.0.0
    */
-  @NonNull String selector();
+  @NotNull String selector();
 
   /**
    * Sets the entity selector.
@@ -58,7 +58,7 @@ public interface EntityNBTComponent extends NBTComponent<EntityNBTComponent, Ent
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NonNull EntityNBTComponent selector(final @NonNull String selector);
+  @NotNull EntityNBTComponent selector(final @NotNull String selector);
 
   /**
    * An entity NBT component builder.
@@ -74,6 +74,6 @@ public interface EntityNBTComponent extends NBTComponent<EntityNBTComponent, Ent
      * @since 4.0.0
      */
     @Contract("_ -> this")
-    @NonNull Builder selector(final @NonNull String selector);
+    @NotNull Builder selector(final @NotNull String selector);
   }
 }

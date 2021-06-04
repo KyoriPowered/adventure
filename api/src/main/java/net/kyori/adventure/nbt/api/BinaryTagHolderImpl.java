@@ -24,7 +24,7 @@
 package net.kyori.adventure.nbt.api;
 
 import net.kyori.adventure.util.Codec;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
@@ -36,12 +36,12 @@ final class BinaryTagHolderImpl implements BinaryTagHolder {
   }
 
   @Override
-  public @NonNull String string() {
+  public @NotNull String string() {
     return this.string;
   }
 
   @Override
-  public <T, DX extends Exception> @NonNull T get(final @NonNull Codec<T, String, DX, ?> codec) throws DX {
+  public <T, DX extends Exception> @NotNull T get(final @NotNull Codec<T, String, DX, ?> codec) throws DX {
     return codec.decode(this.string);
   }
 

@@ -28,37 +28,37 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.examination.ExaminableProperty;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
 final class KeybindComponentImpl extends AbstractComponent implements KeybindComponent {
   private final String keybind;
 
-  KeybindComponentImpl(final @NonNull List<? extends ComponentLike> children, final @NonNull Style style, final @NonNull String keybind) {
+  KeybindComponentImpl(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String keybind) {
     super(children, style);
     this.keybind = requireNonNull(keybind, "keybind");
   }
 
   @Override
-  public @NonNull String keybind() {
+  public @NotNull String keybind() {
     return this.keybind;
   }
 
   @Override
-  public @NonNull KeybindComponent keybind(final @NonNull String keybind) {
+  public @NotNull KeybindComponent keybind(final @NotNull String keybind) {
     if (Objects.equals(this.keybind, keybind)) return this;
     return new KeybindComponentImpl(this.children, this.style, requireNonNull(keybind, "keybind"));
   }
 
   @Override
-  public @NonNull KeybindComponent children(final @NonNull List<? extends ComponentLike> children) {
+  public @NotNull KeybindComponent children(final @NotNull List<? extends ComponentLike> children) {
     return new KeybindComponentImpl(children, this.style, this.keybind);
   }
 
   @Override
-  public @NonNull KeybindComponent style(final @NonNull Style style) {
+  public @NotNull KeybindComponent style(final @NotNull Style style) {
     return new KeybindComponentImpl(this.children, style, this.keybind);
   }
 
@@ -79,7 +79,7 @@ final class KeybindComponentImpl extends AbstractComponent implements KeybindCom
   }
 
   @Override
-  protected @NonNull Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
+  protected @NotNull Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
     return Stream.concat(
       Stream.of(
         ExaminableProperty.of("keybind", this.keybind)
@@ -89,7 +89,7 @@ final class KeybindComponentImpl extends AbstractComponent implements KeybindCom
   }
 
   @Override
-  public @NonNull Builder toBuilder() {
+  public @NotNull Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
@@ -99,19 +99,19 @@ final class KeybindComponentImpl extends AbstractComponent implements KeybindCom
     BuilderImpl() {
     }
 
-    BuilderImpl(final @NonNull KeybindComponent component) {
+    BuilderImpl(final @NotNull KeybindComponent component) {
       super(component);
       this.keybind = component.keybind();
     }
 
     @Override
-    public @NonNull Builder keybind(final @NonNull String keybind) {
+    public @NotNull Builder keybind(final @NotNull String keybind) {
       this.keybind = keybind;
       return this;
     }
 
     @Override
-    public @NonNull KeybindComponent build() {
+    public @NotNull KeybindComponent build() {
       if (this.keybind == null) throw new IllegalStateException("keybind must be set");
       return new KeybindComponentImpl(this.children, this.buildStyle(), this.keybind);
     }

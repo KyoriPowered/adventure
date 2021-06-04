@@ -27,8 +27,8 @@ import java.util.stream.Stream;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 final class KeyedValueImpl<T> implements Examinable, KeyedValue<T> {
   private final Key key;
@@ -40,12 +40,12 @@ final class KeyedValueImpl<T> implements Examinable, KeyedValue<T> {
   }
 
   @Override
-  public @NonNull Key key() {
+  public @NotNull Key key() {
     return this.key;
   }
 
   @Override
-  public @NonNull T value() {
+  public @NotNull T value() {
     return this.value;
   }
 
@@ -65,7 +65,7 @@ final class KeyedValueImpl<T> implements Examinable, KeyedValue<T> {
   }
 
   @Override
-  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("key", this.key),
       ExaminableProperty.of("value", this.value)

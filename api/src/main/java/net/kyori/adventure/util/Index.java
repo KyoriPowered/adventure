@@ -32,8 +32,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.IntFunction;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A bi-directional map in which keys and values must be unique.
@@ -61,7 +61,7 @@ public final class Index<K, V> {
    * @return the key map
    * @since 4.0.0
    */
-  public static <K, V extends Enum<V>> @NonNull Index<K, V> create(final Class<V> type, final @NonNull Function<? super V, ? extends K> keyFunction) {
+  public static <K, V extends Enum<V>> @NotNull Index<K, V> create(final Class<V> type, final @NotNull Function<? super V, ? extends K> keyFunction) {
     return create(type, keyFunction, type.getEnumConstants());
   }
 
@@ -78,7 +78,7 @@ public final class Index<K, V> {
    */
   @SafeVarargs
   @SuppressWarnings("varargs")
-  public static <K, V extends Enum<V>> @NonNull Index<K, V> create(final Class<V> type, final @NonNull Function<? super V, ? extends K> keyFunction, final @NonNull V@NonNull... values) {
+  public static <K, V extends Enum<V>> @NotNull Index<K, V> create(final Class<V> type, final @NotNull Function<? super V, ? extends K> keyFunction, final @NotNull V@NotNull... values) {
     return create(values, length -> new EnumMap<>(type), keyFunction);
   }
 
@@ -94,7 +94,7 @@ public final class Index<K, V> {
    */
   @SafeVarargs
   @SuppressWarnings("varargs")
-  public static <K, V> @NonNull Index<K, V> create(final @NonNull Function<? super V, ? extends K> keyFunction, final @NonNull V@NonNull... values) {
+  public static <K, V> @NotNull Index<K, V> create(final @NotNull Function<? super V, ? extends K> keyFunction, final @NotNull V@NotNull... values) {
     return create(values, HashMap::new, keyFunction);
   }
 
@@ -108,15 +108,15 @@ public final class Index<K, V> {
    * @return the key map
    * @since 4.0.0
    */
-  public static <K, V> @NonNull Index<K, V> create(final @NonNull Function<? super V, ? extends K> keyFunction, final @NonNull List<V> constants) {
+  public static <K, V> @NotNull Index<K, V> create(final @NotNull Function<? super V, ? extends K> keyFunction, final @NotNull List<V> constants) {
     return create(constants, HashMap::new, keyFunction);
   }
 
-  private static <K, V> @NonNull Index<K, V> create(final V[] values, final IntFunction<Map<V, K>> valueToKeyFactory, final @NonNull Function<? super V, ? extends K> keyFunction) {
+  private static <K, V> @NotNull Index<K, V> create(final V[] values, final IntFunction<Map<V, K>> valueToKeyFactory, final @NotNull Function<? super V, ? extends K> keyFunction) {
     return create(Arrays.asList(values), valueToKeyFactory, keyFunction);
   }
 
-  private static <K, V> @NonNull Index<K, V> create(final List<V> values, final IntFunction<Map<V, K>> valueToKeyFactory, final @NonNull Function<? super V, ? extends K> keyFunction) {
+  private static <K, V> @NotNull Index<K, V> create(final List<V> values, final IntFunction<Map<V, K>> valueToKeyFactory, final @NotNull Function<? super V, ? extends K> keyFunction) {
     final int length = values.size();
     final Map<K, V> keyToValue = new HashMap<>(length);
     final Map<V, K> valueToKey = valueToKeyFactory.apply(length); // to support using EnumMap instead of HashMap when possible
@@ -139,7 +139,7 @@ public final class Index<K, V> {
    * @return the keys
    * @since 4.0.0
    */
-  public @NonNull Set<K> keys() {
+  public @NotNull Set<K> keys() {
     return Collections.unmodifiableSet(this.keyToValue.keySet());
   }
 
@@ -150,7 +150,7 @@ public final class Index<K, V> {
    * @return the key
    * @since 4.0.0
    */
-  public @Nullable K key(final @NonNull V value) {
+  public @Nullable K key(final @NotNull V value) {
     return this.valueToKey.get(value);
   }
 
@@ -160,7 +160,7 @@ public final class Index<K, V> {
    * @return the keys
    * @since 4.0.0
    */
-  public @NonNull Set<V> values() {
+  public @NotNull Set<V> values() {
     return Collections.unmodifiableSet(this.valueToKey.keySet());
   }
 
@@ -171,7 +171,7 @@ public final class Index<K, V> {
    * @return the value
    * @since 4.0.0
    */
-  public @Nullable V value(final @NonNull K key) {
+  public @Nullable V value(final @NotNull K key) {
     return this.keyToValue.get(key);
   }
 }

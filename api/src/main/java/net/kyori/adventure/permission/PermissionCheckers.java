@@ -24,8 +24,8 @@
 package net.kyori.adventure.permission;
 
 import net.kyori.adventure.util.TriState;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 final class PermissionCheckers {
   static final PermissionChecker NOT_SET = new Always(TriState.NOT_SET);
@@ -43,7 +43,7 @@ final class PermissionCheckers {
     }
 
     @Override
-    public @NonNull TriState value(final String permission) {
+    public @NotNull TriState value(final String permission) {
       return this.value;
     }
 

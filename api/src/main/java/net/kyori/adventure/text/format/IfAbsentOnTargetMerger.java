@@ -26,8 +26,8 @@ package net.kyori.adventure.text.format;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 final class IfAbsentOnTargetMerger implements Merger {
   static final IfAbsentOnTargetMerger INSTANCE = new IfAbsentOnTargetMerger();
@@ -43,7 +43,7 @@ final class IfAbsentOnTargetMerger implements Merger {
   }
 
   @Override
-  public void mergeDecoration(final StyleImpl.BuilderImpl target, final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
+  public void mergeDecoration(final StyleImpl.BuilderImpl target, final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
     target.decorationIfAbsent(decoration, state);
   }
 

@@ -29,27 +29,27 @@ import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 final class TitleImpl implements Title {
   private final Component title;
   private final Component subtitle;
   private final @Nullable Times times;
 
-  TitleImpl(final @NonNull Component title, final @NonNull Component subtitle, final @Nullable Times times) {
+  TitleImpl(final @NotNull Component title, final @NotNull Component subtitle, final @Nullable Times times) {
     this.title = title;
     this.subtitle = subtitle;
     this.times = times;
   }
 
   @Override
-  public @NonNull Component title() {
+  public @NotNull Component title() {
     return this.title;
   }
 
   @Override
-  public @NonNull Component subtitle() {
+  public @NotNull Component subtitle() {
     return this.subtitle;
   }
 
@@ -77,7 +77,7 @@ final class TitleImpl implements Title {
   }
 
   @Override
-  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("title", this.title),
       ExaminableProperty.of("subtitle", this.subtitle),
@@ -102,17 +102,17 @@ final class TitleImpl implements Title {
     }
 
     @Override
-    public @NonNull Duration fadeIn() {
+    public @NotNull Duration fadeIn() {
       return this.fadeIn;
     }
 
     @Override
-    public @NonNull Duration stay() {
+    public @NotNull Duration stay() {
       return this.stay;
     }
 
     @Override
-    public @NonNull Duration fadeOut() {
+    public @NotNull Duration fadeOut() {
       return this.fadeOut;
     }
 
@@ -135,7 +135,7 @@ final class TitleImpl implements Title {
     }
 
     @Override
-    public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
         ExaminableProperty.of("fadeIn", this.fadeIn),
         ExaminableProperty.of("stay", this.stay),

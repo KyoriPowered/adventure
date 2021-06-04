@@ -23,8 +23,8 @@
  */
 package net.kyori.adventure.text;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A component that can display NBT fetched from different locations, optionally trying to interpret the NBT as JSON
@@ -53,7 +53,7 @@ public interface NBTComponent<C extends NBTComponent<C, B>, B extends NBTCompone
    * @return the NBT path
    * @since 4.0.0
    */
-  @NonNull String nbtPath();
+  @NotNull String nbtPath();
 
   /**
    * Sets the NBT path.
@@ -63,7 +63,7 @@ public interface NBTComponent<C extends NBTComponent<C, B>, B extends NBTCompone
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NonNull C nbtPath(final @NonNull String nbtPath);
+  @NotNull C nbtPath(final @NotNull String nbtPath);
 
   /**
    * Gets if we should be interpreting.
@@ -81,5 +81,5 @@ public interface NBTComponent<C extends NBTComponent<C, B>, B extends NBTCompone
    * @since 4.0.0
    */
   @Contract(pure = true)
-  @NonNull C interpret(final boolean interpret);
+  @NotNull C interpret(final boolean interpret);
 }

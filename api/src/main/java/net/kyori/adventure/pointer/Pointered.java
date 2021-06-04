@@ -25,8 +25,10 @@ package net.kyori.adventure.pointer;
 
 import java.util.Optional;
 import java.util.function.Supplier;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.PolyNull;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 /**
  * Something that can retrieve values based on a given {@link Pointer}.
@@ -42,7 +44,7 @@ public interface Pointered {
    * @return the value
    * @since 4.8.0
    */
-  default <T> @NonNull Optional<T> get(final @NonNull Pointer<T> pointer) {
+  default <T> @NotNull Optional<T> get(final @NotNull Pointer<T> pointer) {
     return Optional.empty();
   }
 
@@ -57,8 +59,9 @@ public interface Pointered {
    * @return the value
    * @since 4.8.0
    */
+  @Contract("_, null -> null; _, !null -> !null")
   @SuppressWarnings("checkstyle:MethodName")
-  default <T> @PolyNull T getOrDefault(final @NonNull Pointer<T> pointer, final @PolyNull T defaultValue) {
+  default <T> @Nullable T getOrDefault(final @NotNull Pointer<T> pointer, final @Nullable T defaultValue) {
     return this.get(pointer).orElse(defaultValue);
   }
 
@@ -74,7 +77,7 @@ public interface Pointered {
    * @since 4.8.0
    */
   @SuppressWarnings("checkstyle:MethodName")
-  default <T> @PolyNull T getOrDefaultFrom(final @NonNull Pointer<T> pointer, final @NonNull Supplier<? extends T> defaultValue) {
+  default <T> @UnknownNullability T getOrDefaultFrom(final @NotNull Pointer<T> pointer, final @NotNull Supplier<? extends T> defaultValue) {
     return this.get(pointer).orElseGet(defaultValue);
   }
 }

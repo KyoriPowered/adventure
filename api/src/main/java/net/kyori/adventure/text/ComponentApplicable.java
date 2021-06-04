@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.text;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Something that can be applied to a {@link Component}.
@@ -39,5 +39,5 @@ public interface ComponentApplicable {
    * @return a component with something applied.
    * @since 4.0.0
    */
-  @NonNull Component componentApply(final @NonNull Component component);
+  @NotNull Component componentApply(final @NotNull Component component);
 }

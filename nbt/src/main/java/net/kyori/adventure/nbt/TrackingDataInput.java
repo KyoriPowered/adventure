@@ -25,8 +25,8 @@ package net.kyori.adventure.nbt;
 
 import java.io.DataInput;
 import java.io.IOException;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 final class TrackingDataInput implements DataInput, BinaryTagScope {
   private static final int MAX_DEPTH = 512;
@@ -90,13 +90,13 @@ final class TrackingDataInput implements DataInput, BinaryTagScope {
   }
 
   @Override
-  public void readFully(final byte@NonNull[] array) throws IOException {
+  public void readFully(final byte@NotNull[] array) throws IOException {
     this.counter += array.length;
     this.input.readFully(array);
   }
 
   @Override
-  public void readFully(final byte@NonNull[] array, final int off, final int len) throws IOException {
+  public void readFully(final byte@NotNull[] array, final int off, final int len) throws IOException {
     this.counter += len;
     this.input.readFully(array, off, len);
   }
@@ -176,7 +176,7 @@ final class TrackingDataInput implements DataInput, BinaryTagScope {
   }
 
   @Override
-  public @NonNull String readUTF() throws IOException {
+  public @NotNull String readUTF() throws IOException {
     final String result = this.input.readUTF();
     this.counter += (result.length() * 2L) + 2; // not entirely accurate, but the closest we can get without doing implementation details
     return result;
