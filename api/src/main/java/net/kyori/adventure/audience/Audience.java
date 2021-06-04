@@ -451,12 +451,14 @@ public interface Audience extends Pointered {
    * @since 4.0.0
    */
   default void playSound(final @NotNull Sound sound) {
-    this.playSound(sound, false);
   }
 
   /**
    * Plays a sound.
+   *
    * <p>Custom sounds cannot be made to follow the receiver and they will fall back to playing at the location of the receiver.</p>
+   *
+   * <p><b>Note</b>: Due to <a href="https://bugs.mojang.com/browse/MC-138832">MC-138832</a>, the volume and pitch may be ignored when using this method to follow the receiver.</p>
    *
    * @param sound a sound
    * @param followReceiver if the sound should follow the receiver
@@ -464,6 +466,7 @@ public interface Audience extends Pointered {
    * @since 4.8.0
    */
   default void playSound(final @NotNull Sound sound, final boolean followReceiver) {
+    if (!followReceiver) this.playSound(sound);
   }
 
   /**
