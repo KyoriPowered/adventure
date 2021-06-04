@@ -25,7 +25,6 @@ package net.kyori.adventure.text;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -168,7 +167,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   static @NotNull TextComponent join(final @NotNull ComponentLike separator, final Iterable<? extends ComponentLike> components) {
     final Component component = join(JoinConfiguration.separator(separator), components);
 
-    if(component instanceof TextComponent) return (TextComponent) component;
+    if (component instanceof TextComponent) return (TextComponent) component;
     return Component.text().append(component).build();
   }
 
@@ -182,7 +181,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.8.0
    */
   @Contract(pure = true)
-  static @NonNull Component join(final @NonNull JoinConfiguration config, final @NonNull ComponentLike@NonNull... components) {
+  static @NotNull Component join(final @NotNull JoinConfiguration config, final @NotNull ComponentLike @NotNull... components) {
     return join(config, Arrays.asList(components));
   }
 
@@ -196,57 +195,8 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.8.0
    */
   @Contract(pure = true)
-  static @NonNull Component join(final @NonNull JoinConfiguration config, final @NonNull Iterable<? extends ComponentLike> components) {
-    final Iterator<? extends ComponentLike> it = components.iterator();
-    final Component prefix = config.prefix();
-    final Component suffix = config.suffix();
-    final UnaryOperator<Component> operator = config.operator();
-
-    if (!it.hasNext()) {
-      if(prefix == null && suffix == null) return Component.empty();
-
-      final TextComponent.Builder builder = text();
-      if(prefix != null) builder.append(prefix);
-      if(suffix != null) builder.append(suffix);
-      return builder.build();
-    }
-
-    ComponentLike component = it.next();
-    int componentsSeen = 0;
-
-    if(!it.hasNext() && prefix == null && suffix == null) return operator.apply(component.asComponent());
-
-    final Component separator = config.separator();
-    final boolean hasSeparator = separator != null;
-
-    final TextComponent.Builder builder = text();
-    if(prefix != null) builder.append(prefix);
-
-    while (component != null) {
-      builder.append(operator.apply(component.asComponent()));
-      componentsSeen++;
-
-      if(!it.hasNext()) {
-        component = null;
-      } else {
-        component = it.next();
-
-        if (it.hasNext()) {
-          if(hasSeparator) builder.append(separator);
-        } else {
-          Component lastSeparator = null;
-
-          if(componentsSeen > 1) lastSeparator = config.lastSeparatorIfSerial();
-          if(lastSeparator == null) lastSeparator = config.lastSeparator();
-          if(lastSeparator == null) lastSeparator = config.separator();
-
-          if(lastSeparator != null) builder.append(lastSeparator);
-        }
-      }
-    }
-
-    if(suffix != null) builder.append(suffix);
-    return builder.build();
+  static @NotNull Component join(final @NotNull JoinConfiguration config, final @NotNull Iterable<? extends ComponentLike> components) {
+    return JoinConfigurationImpl.join(config, components);
   }
 
   /**

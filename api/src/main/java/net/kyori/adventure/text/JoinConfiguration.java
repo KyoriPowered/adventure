@@ -26,11 +26,10 @@ package net.kyori.adventure.text;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.examination.Examinable;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A configuration for how a series of components can be joined.
@@ -78,7 +77,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
    * @return a new builder
    * @since 4.8.0
    */
-  static @NonNull Builder builder() {
+  static @NotNull Builder builder() {
     return new JoinConfigurationImpl.BuilderImpl();
   }
 
@@ -88,7 +87,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
    * @return the join configuration
    * @since 4.8.0
    */
-  static @NonNull JoinConfiguration noSeparators() {
+  static @NotNull JoinConfiguration noSeparators() {
     return JoinConfigurationImpl.NULL;
   }
 
@@ -99,8 +98,8 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
    * @return the join configuration
    * @since 4.8.0
    */
-  static @NonNull JoinConfiguration separator(final @Nullable ComponentLike separator) {
-    if(separator == null) return JoinConfigurationImpl.NULL;
+  static @NotNull JoinConfiguration separator(final @Nullable ComponentLike separator) {
+    if (separator == null) return JoinConfigurationImpl.NULL;
     return builder().separator(separator).build();
   }
 
@@ -112,8 +111,8 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
    * @return the join configuration
    * @since 4.8.0
    */
-  static @NonNull JoinConfiguration separators(final @Nullable ComponentLike separator, final @Nullable ComponentLike lastSeparator) {
-    if(separator == null && lastSeparator == null) return JoinConfigurationImpl.NULL;
+  static @NotNull JoinConfiguration separators(final @Nullable ComponentLike separator, final @Nullable ComponentLike lastSeparator) {
+    if (separator == null && lastSeparator == null) return JoinConfigurationImpl.NULL;
     return builder().separator(separator).lastSeparator(lastSeparator).build();
   }
 
@@ -159,7 +158,9 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
   @Nullable Component lastSeparatorIfSerial();
 
   /**
-   * Gets the operator of this join configuration.
+   * Gets the operator of this join configuration.]
+   *
+   * <p>This is used to mutate the components that are going to be joined. It does not touch the prefix, suffix or any of the separators.</p>
    *
    * @return the operator
    * @since 4.8.0
@@ -180,7 +181,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
      * @since 4.8.0
      */
     @Contract("_ -> this")
-    @NonNull Builder prefix(final @Nullable ComponentLike prefix);
+    @NotNull Builder prefix(final @Nullable ComponentLike prefix);
 
     /**
      * Sets the suffix of this join configuration builder.
@@ -190,7 +191,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
      * @since 4.8.0
      */
     @Contract("_ -> this")
-    @NonNull Builder suffix(final @Nullable ComponentLike suffix);
+    @NotNull Builder suffix(final @Nullable ComponentLike suffix);
 
     /**
      * Sets the separator of this join configuration builder.
@@ -200,7 +201,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
      * @since 4.8.0
      */
     @Contract("_ -> this")
-    @NonNull Builder separator(final @Nullable ComponentLike separator);
+    @NotNull Builder separator(final @Nullable ComponentLike separator);
 
     /**
      * Sets the last separator of this join configuration builder.
@@ -210,7 +211,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
      * @since 4.8.0
      */
     @Contract("_ -> this")
-    @NonNull Builder lastSeparator(final @Nullable ComponentLike lastSeparator);
+    @NotNull Builder lastSeparator(final @Nullable ComponentLike lastSeparator);
 
     /**
      * Sets the last separator that will be used instead of the normal last separator in the case where there
@@ -221,16 +222,18 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
      * @since 4.8.0
      */
     @Contract("_ -> this")
-    @NonNull Builder lastSeparatorIfSerial(final @Nullable ComponentLike lastSeparatorIfSerial);
+    @NotNull Builder lastSeparatorIfSerial(final @Nullable ComponentLike lastSeparatorIfSerial);
 
     /**
      * Sets the operator of this join configuration builder.
+     *
+     * <p>This is used to mutate the components that are going to be joined. It does not touch the prefix, suffix or any of the separators.</p>
      *
      * @param operator the operator
      * @return this builder
      * @since 4.8.0
      */
     @Contract("_ -> this")
-    @NonNull Builder operator(final @NotNull UnaryOperator<Component> operator);
+    @NotNull Builder operator(final @NotNull UnaryOperator<Component> operator);
   }
 }

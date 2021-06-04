@@ -23,14 +23,15 @@
  */
 package net.kyori.adventure.text;
 
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 final class JoinConfigurationImpl implements JoinConfiguration {
   static final JoinConfigurationImpl NULL = new JoinConfigurationImpl();
@@ -91,12 +92,12 @@ final class JoinConfigurationImpl implements JoinConfiguration {
   }
 
   @Override
-  public JoinConfiguration.@NonNull Builder toBuilder() {
+  public JoinConfiguration.@NotNull Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
   @Override
-  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("separator", this.separator),
       ExaminableProperty.of("lastSeparator", this.lastSeparator),
@@ -109,6 +110,63 @@ final class JoinConfigurationImpl implements JoinConfiguration {
   @Override
   public String toString() {
     return this.examine(StringExaminer.simpleEscaping());
+  }
+
+  @Contract(pure = true)
+  static @NotNull Component join(final @NotNull JoinConfiguration config, final @NotNull Iterable<? extends ComponentLike> components) {
+    Objects.requireNonNull(config, "config");
+    Objects.requireNonNull(components, "components");
+
+    final Iterator<? extends ComponentLike> it = components.iterator();
+    final Component prefix = config.prefix();
+    final Component suffix = config.suffix();
+    final UnaryOperator<Component> operator = config.operator();
+
+    if (!it.hasNext()) {
+      if (prefix == null && suffix == null) return Component.empty();
+
+      final TextComponent.Builder builder = Component.text();
+      if (prefix != null) builder.append(prefix);
+      if (suffix != null) builder.append(suffix);
+      return builder.build();
+    }
+
+    ComponentLike component = it.next();
+    int componentsSeen = 0;
+
+    if (!it.hasNext() && prefix == null && suffix == null) return operator.apply(component.asComponent());
+
+    final Component separator = config.separator();
+    final boolean hasSeparator = separator != null;
+
+    final TextComponent.Builder builder = Component.text();
+    if (prefix != null) builder.append(prefix);
+
+    while (component != null) {
+      builder.append(operator.apply(component.asComponent()));
+      componentsSeen++;
+
+      if (!it.hasNext()) {
+        component = null;
+      } else {
+        component = it.next();
+
+        if (it.hasNext()) {
+          if (hasSeparator) builder.append(separator);
+        } else {
+          Component lastSeparator = null;
+
+          if (componentsSeen > 1) lastSeparator = config.lastSeparatorIfSerial();
+          if (lastSeparator == null) lastSeparator = config.lastSeparator();
+          if (lastSeparator == null) lastSeparator = config.separator();
+
+          if (lastSeparator != null) builder.append(lastSeparator);
+        }
+      }
+    }
+
+    if (suffix != null) builder.append(suffix);
+    return builder.build();
   }
 
   static final class BuilderImpl implements JoinConfiguration.Builder {
@@ -133,43 +191,43 @@ final class JoinConfigurationImpl implements JoinConfiguration {
     }
 
     @Override
-    public @NonNull Builder prefix(final @Nullable ComponentLike prefix) {
-      if(prefix != null) this.prefix = prefix.asComponent();
+    public @NotNull Builder prefix(final @Nullable ComponentLike prefix) {
+      if (prefix != null) this.prefix = prefix.asComponent();
       return this;
     }
 
     @Override
-    public @NonNull Builder suffix(final @Nullable ComponentLike suffix) {
-      if(suffix != null) this.suffix = suffix.asComponent();
+    public @NotNull Builder suffix(final @Nullable ComponentLike suffix) {
+      if (suffix != null) this.suffix = suffix.asComponent();
       return this;
     }
 
     @Override
-    public @NonNull Builder separator(final @Nullable ComponentLike separator) {
-      if(separator != null) this.separator = separator.asComponent();
+    public @NotNull Builder separator(final @Nullable ComponentLike separator) {
+      if (separator != null) this.separator = separator.asComponent();
       return this;
     }
 
     @Override
-    public @NonNull Builder lastSeparator(final @Nullable ComponentLike lastSeparator) {
-      if(lastSeparator != null) this.lastSeparator = lastSeparator.asComponent();
+    public @NotNull Builder lastSeparator(final @Nullable ComponentLike lastSeparator) {
+      if (lastSeparator != null) this.lastSeparator = lastSeparator.asComponent();
       return this;
     }
 
     @Override
-    public @NonNull Builder lastSeparatorIfSerial(final @Nullable ComponentLike lastSeparatorIfSerial) {
-      if(lastSeparatorIfSerial != null) this.lastSeparatorIfSerial = lastSeparatorIfSerial.asComponent();
+    public @NotNull Builder lastSeparatorIfSerial(final @Nullable ComponentLike lastSeparatorIfSerial) {
+      if (lastSeparatorIfSerial != null) this.lastSeparatorIfSerial = lastSeparatorIfSerial.asComponent();
       return this;
     }
 
     @Override
-    public @NonNull Builder operator(final @NotNull UnaryOperator<Component> operator) {
+    public @NotNull Builder operator(final @NotNull UnaryOperator<Component> operator) {
       this.operator = Objects.requireNonNull(operator, "operator");
       return this;
     }
 
     @Override
-    public @NonNull JoinConfiguration build() {
+    public @NotNull JoinConfiguration build() {
       return new JoinConfigurationImpl(this);
     }
   }
