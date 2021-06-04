@@ -53,12 +53,12 @@ final class JoinConfigurationImpl implements JoinConfiguration {
   }
 
   private JoinConfigurationImpl(final @NotNull BuilderImpl builder) {
-    this.separator = builder.separator;
-    this.lastSeparator = builder.lastSeparator;
-    this.prefix = builder.prefix;
-    this.suffix = builder.suffix;
+    this.separator = builder.separator == null ? null : builder.separator.asComponent();
+    this.lastSeparator = builder.lastSeparator == null ? null : builder.lastSeparator.asComponent();
+    this.prefix = builder.prefix == null ? null : builder.prefix.asComponent();
+    this.suffix = builder.suffix == null ? null : builder.suffix.asComponent();
     this.operator = builder.operator;
-    this.lastSeparatorIfSerial = builder.lastSeparatorIfSerial;
+    this.lastSeparatorIfSerial = builder.lastSeparatorIfSerial == null ? null : builder.lastSeparatorIfSerial.asComponent();
   }
 
   @Override
@@ -170,12 +170,12 @@ final class JoinConfigurationImpl implements JoinConfiguration {
   }
 
   static final class BuilderImpl implements JoinConfiguration.Builder {
-    private Component separator;
-    private Component lastSeparator;
-    private Component prefix;
-    private Component suffix;
+    private ComponentLike separator;
+    private ComponentLike lastSeparator;
+    private ComponentLike prefix;
+    private ComponentLike suffix;
     private UnaryOperator<Component> operator;
-    private Component lastSeparatorIfSerial;
+    private ComponentLike lastSeparatorIfSerial;
 
     BuilderImpl() {
       this(JoinConfigurationImpl.NULL);
@@ -192,31 +192,31 @@ final class JoinConfigurationImpl implements JoinConfiguration {
 
     @Override
     public @NotNull Builder prefix(final @Nullable ComponentLike prefix) {
-      if (prefix != null) this.prefix = prefix.asComponent();
+      this.prefix = prefix;
       return this;
     }
 
     @Override
     public @NotNull Builder suffix(final @Nullable ComponentLike suffix) {
-      if (suffix != null) this.suffix = suffix.asComponent();
+      this.suffix = suffix;
       return this;
     }
 
     @Override
     public @NotNull Builder separator(final @Nullable ComponentLike separator) {
-      if (separator != null) this.separator = separator.asComponent();
+      this.separator = separator;
       return this;
     }
 
     @Override
     public @NotNull Builder lastSeparator(final @Nullable ComponentLike lastSeparator) {
-      if (lastSeparator != null) this.lastSeparator = lastSeparator.asComponent();
+      this.lastSeparator = lastSeparator;
       return this;
     }
 
     @Override
     public @NotNull Builder lastSeparatorIfSerial(final @Nullable ComponentLike lastSeparatorIfSerial) {
-      if (lastSeparatorIfSerial != null) this.lastSeparatorIfSerial = lastSeparatorIfSerial.asComponent();
+      this.lastSeparatorIfSerial = lastSeparatorIfSerial;
       return this;
     }
 
