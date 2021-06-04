@@ -41,26 +41,26 @@ import static net.kyori.adventure.text.ComponentIterator.HOVER_EVENT_CONSUMER;
  */
 public enum ComponentIteratorType {
   /**
-   * A depth-first search.
+   * A depth-first iteration.
    *
    * @since 4.8.0
    */
-  DEPTH_FIRST((component, deque) -> {
+  DEPTH_FIRST((deque, component) -> {
     final List<Component> children = component.children();
-    for(int i = children.size() - 1; i >= 0; i--) {
+    for (int i = children.size() - 1; i >= 0; i--) {
       deque.addFirst(children.get(i));
     }
   }),
 
   /**
-   * A breadth-first search.
+   * A breadth-first iteration.
    *
    * @since 4.8.0
    */
-  BREADTH_FIRST((component, deque) -> deque.addAll(component.children())),
+  BREADTH_FIRST((deque, component) -> deque.addAll(component.children())),
 
   /**
-   * A depth-first search that includes components from the {@link HoverEvent} class where the value is a component or the type is an entity with a name.
+   * A depth-first iteration that includes components from the {@link HoverEvent} class where the value is a component or the type is an entity with a name.
    *
    * @see HoverEvent
    * @since 4.8.0
@@ -68,30 +68,16 @@ public enum ComponentIteratorType {
   DEPTH_FIRST_WITH_HOVER(HOVER_EVENT_CONSUMER.andThen(DEPTH_FIRST.consumer)),
 
   /**
-   * A breadth-first search that includes components from the {@link HoverEvent} class where the value is a component or the type is an entity with a name.
+   * A breadth-first iteration that includes components from the {@link HoverEvent} class where the value is a component or the type is an entity with a name.
    *
    * @see HoverEvent
    * @since 4.8.0
    */
   BREADTH_FIRST_WITH_HOVER(HOVER_EVENT_CONSUMER.andThen(BREADTH_FIRST.consumer));
 
-  /**
-   * The default iterator type used in the implementation of {@link Iterable} in {@link Component}.
-   *
-   * <p>Currently set to {@link #DEPTH_FIRST}.</p>
-   *
-   * @return the default type
-   * @see Component#iterator()
-   * @see Component#spliterator()
-   * @since 4.8.0
-   */
-  public static @NonNull ComponentIteratorType defaultType() {
-    return DEPTH_FIRST;
-  }
+  private final BiConsumer<Deque<Component>, Component> consumer;
 
-  private final BiConsumer<Component, Deque<Component>> consumer;
-
-  ComponentIteratorType(final @NonNull BiConsumer<Component, Deque<Component>> consumer) {
+  ComponentIteratorType(final @NonNull BiConsumer<Deque<Component>, Component> consumer) {
     this.consumer = consumer;
   }
 
@@ -103,6 +89,6 @@ public enum ComponentIteratorType {
    * @since 4.8.0
    */
   void populate(final @NonNull Component component, final @NonNull Deque<Component> deque) {
-    this.consumer.accept(component, deque);
+    this.consumer.accept(deque, component);
   }
 }

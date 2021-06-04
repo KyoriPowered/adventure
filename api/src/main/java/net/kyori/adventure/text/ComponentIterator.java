@@ -30,22 +30,22 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import net.kyori.adventure.text.event.HoverEvent;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 final class ComponentIterator implements Iterator<Component> {
-  static final BiConsumer<Component, Deque<Component>> HOVER_EVENT_CONSUMER = (component, deque) -> {
+  static final BiConsumer<Deque<Component>, Component> HOVER_EVENT_CONSUMER = (deque, component) -> {
     final HoverEvent<?> hoverEvent = component.hoverEvent();
 
-    if(hoverEvent == null) return;
+    if (hoverEvent == null) return;
 
     final Object value = hoverEvent.value();
 
-    if(value instanceof Component) {
+    if (value instanceof Component) {
       deque.addFirst((Component) value);
-    } else if(value instanceof HoverEvent.ShowEntity) {
+    } else if (value instanceof HoverEvent.ShowEntity) {
       final Component name = ((HoverEvent.ShowEntity) value).name();
 
-      if(name != null) {
+      if (name != null) {
         deque.addFirst(name);
       }
     }
@@ -55,7 +55,7 @@ final class ComponentIterator implements Iterator<Component> {
   private final ComponentIteratorType type;
   private final Deque<Component> deque;
 
-  ComponentIterator(final @NonNull Component component, final @NonNull ComponentIteratorType type) {
+  ComponentIterator(final @NotNull Component component, final @NotNull ComponentIteratorType type) {
     this.component = Objects.requireNonNull(component, "component");
     this.type = Objects.requireNonNull(type, "type");
     this.deque = new ArrayDeque<>();
@@ -68,13 +68,13 @@ final class ComponentIterator implements Iterator<Component> {
 
   @Override
   public Component next() {
-    if(this.component != null) {
+    if (this.component != null) {
       final Component next = this.component;
       this.component = null;
       this.type.populate(next, this.deque);
       return next;
     } else {
-      if(this.deque.isEmpty()) throw new NoSuchElementException();
+      if (this.deque.isEmpty()) throw new NoSuchElementException();
       this.component = this.deque.poll();
       return this.next();
     }

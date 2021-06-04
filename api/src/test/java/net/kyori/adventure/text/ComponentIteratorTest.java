@@ -46,15 +46,17 @@ class ComponentIteratorTest {
       .append(Component.translatable("some.adjective"))
       .append(Component.text(" band", NamedTextColor.GREEN).hoverEvent(HoverEvent.showText(Component.text("ever"))))
       .append(Component.text("."))
-      .build().forEach(component -> hits[0]++);
+      .build()
+      .iterable(ComponentIteratorType.DEPTH_FIRST)
+      .forEach(component -> hits[0]++);
 
     assertEquals(6, hits[0]);
   }
 
   @Test
   public void testOfEmpty() {
-    for(final Component component : Component.empty()) {
-      if(component.equals(Component.empty())) {
+    for (final Component component : Component.empty().iterable(ComponentIteratorType.DEPTH_FIRST)) {
+      if (component.equals(Component.empty())) {
         return;
       }
     }
@@ -70,14 +72,14 @@ class ComponentIteratorTest {
       .append(Component.text("WIDE"))
       .build();
 
-    for(final Component inner : component.iterable(ComponentIteratorType.DEPTH_FIRST)) {
-      if(inner instanceof TextComponent) {
+    for (final Component inner : component.iterable(ComponentIteratorType.DEPTH_FIRST)) {
+      if (inner instanceof TextComponent) {
         final String content = ((TextComponent) inner).content();
 
-        if(content.equals("WIDE")) {
+        if (content.equals("WIDE")) {
           fail("WIDE before DEEP");
           return;
-        } else if(content.equals("DEEP")) {
+        } else if (content.equals("DEEP")) {
           return;
         }
       }
@@ -94,14 +96,14 @@ class ComponentIteratorTest {
       .append(Component.text("WIDE"))
       .build();
 
-    for(final Component inner : component.iterable(ComponentIteratorType.BREADTH_FIRST)) {
-      if(inner instanceof TextComponent) {
+    for (final Component inner : component.iterable(ComponentIteratorType.BREADTH_FIRST)) {
+      if (inner instanceof TextComponent) {
         final String content = ((TextComponent) inner).content();
 
-        if(content.equals("DEEP")) {
+        if (content.equals("DEEP")) {
           fail("DEEP before WIDE");
           return;
-        } else if(content.equals("WIDE")) {
+        } else if (content.equals("WIDE")) {
           return;
         }
       }
@@ -121,12 +123,12 @@ class ComponentIteratorTest {
     boolean foundText = false;
     boolean foundEntity = false;
 
-    for(final Component inner : component.iterable(ComponentIteratorType.BREADTH_FIRST_WITH_HOVER)) {
-      if(inner instanceof TextComponent) {
+    for (final Component inner : component.iterable(ComponentIteratorType.BREADTH_FIRST_WITH_HOVER)) {
+      if (inner instanceof TextComponent) {
         final TextComponent text = (TextComponent) inner;
 
-        if(text.content().equals("TEXT")) foundText = true;
-        else if(text.content().equals("ENTITY")) foundEntity = true;
+        if (text.content().equals("TEXT")) foundText = true;
+        else if (text.content().equals("ENTITY")) foundEntity = true;
       }
     }
 
