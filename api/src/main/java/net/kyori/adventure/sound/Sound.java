@@ -258,6 +258,7 @@ public interface Sound extends Examinable {
   /**
    * An emitter of sounds.
    *
+   * @see net.kyori.adventure.audience.Audience#playSound(Sound, Emitter)
    * @since 4.8.0
    */
   interface Emitter {

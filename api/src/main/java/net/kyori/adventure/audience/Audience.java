@@ -481,12 +481,19 @@ public interface Audience extends Pointered {
   /**
    * Plays a sound from an emitter, usually an entity.
    *
+   * <p>
+   *   Sounds played from an emitter will follow the entity unless the sound is custom sound.
+   *   In the case where a custom sound is provided, the sound will be played at the location of the emitter at the time of calling.
+   * </p>
+   *
+   * <p><b>Note</b>: Due to <a href="https://bugs.mojang.com/browse/MC-138832">MC-138832</a>, the volume and pitch may be ignored when using this method.</p>
+   *
    * @param sound a sound
    * @param emitter an emitter
    * @see Sound
    * @since 4.8.0
    */
-  default void playSound(final @NonNull Sound sound, final Sound.@NonNull Emitter emitter) {
+  default void playSound(final @NotNull Sound sound, final Sound.@NotNull Emitter emitter) {
   }
 
   /**
