@@ -27,10 +27,10 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.TriState;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.checkerframework.checker.nullness.qual.PolyNull;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 /**
  * A collection of {@link Pointer pointers}.
@@ -43,7 +43,7 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
    *
    * @since 4.8.0
    */
-  @NonNull Pointers EMPTY = PointersImpl.EMPTY;
+  @NotNull Pointers EMPTY = PointersImpl.EMPTY;
 
   /**
    * Gets a new pointers builder.
@@ -52,8 +52,8 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
    * @see Builder
    * @since 4.8.0
    */
-  @Contract(value = "-> new", pure = true)
-  static @NonNull Builder builder() {
+  @Contract(pure = true)
+  static @NotNull Builder builder() {
     return new PointersImpl.BuilderImpl();
   }
 
@@ -65,7 +65,7 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
    * @return the value
    * @since 4.8.0
    */
-  <T> @NonNull Optional<T> get(final @NonNull Pointer<T> pointer);
+  <T> @NotNull Optional<T> get(final @NotNull Pointer<T> pointer);
 
   /**
    * Gets the value of {@code pointer}.
@@ -78,8 +78,9 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
    * @return the value
    * @since 4.8.0
    */
+  @Contract("_, !null -> !null; _, null -> null")
   @SuppressWarnings("checkstyle:MethodName")
-  default <T> @PolyNull T getOrDefault(final @NonNull Pointer<T> pointer, final @PolyNull T defaultValue) {
+  default <T> @Nullable T getOrDefault(final @NotNull Pointer<T> pointer, final @Nullable T defaultValue) {
     return this.get(pointer).orElse(defaultValue);
   }
 
@@ -95,7 +96,7 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
    * @since 4.8.0
    */
   @SuppressWarnings("checkstyle:MethodName")
-  default <T> @PolyNull T getOrDefaultFrom(final @NonNull Pointer<T> pointer, final @NonNull Supplier<? extends T> defaultValue) {
+  default <T> @UnknownNullability T getOrDefaultFrom(final @NotNull Pointer<T> pointer, final @NotNull Supplier<? extends T> defaultValue) {
     return this.get(pointer).orElseGet(defaultValue);
   }
 
@@ -107,7 +108,7 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
    * @return a tri-state
    * @since 4.8.0
    */
-  <T> @NonNull TriState has(final @NonNull Pointer<T> pointer);
+  <T> @NotNull TriState has(final @NotNull Pointer<T> pointer);
 
   /**
    * A builder of pointers.
@@ -125,7 +126,7 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
      * @since 4.8.0
      */
     @Contract("_ -> this")
-    default <T> @NonNull Builder addPointer(final @NonNull Pointer<T> pointer) {
+    default <T> @NotNull Builder addPointer(final @NotNull Pointer<T> pointer) {
       return this.addPointerWithFixedValue(pointer, null);
     }
 
@@ -139,7 +140,7 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
      * @since 4.8.0
      */
     @Contract("_, _ -> this")
-    default <T> @NonNull Builder addPointerWithFixedValue(final @NonNull Pointer<T> pointer, @Nullable T value) {
+    default <T> @NotNull Builder addPointerWithFixedValue(final @NotNull Pointer<T> pointer, @Nullable T value) {
       return this.addPointerWithVariableValue(pointer, () -> value);
     }
 
@@ -153,7 +154,7 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
      * @since 4.8.0
      */
     @Contract("_, _ -> this")
-    <T> @NonNull Builder addPointerWithVariableValue(final @NonNull Pointer<T> pointer, @NonNull Supplier<@Nullable T> value);
+    <T> @NotNull Builder addPointerWithVariableValue(final @NotNull Pointer<T> pointer, @NotNull Supplier<@Nullable T> value);
 
     /**
      * Adds a parent from which values will be retrieved if they do not exist in this collection.
@@ -163,7 +164,7 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
      * @since 4.8.0
      */
     @Contract("_ -> this")
-    default @NonNull Builder parent(final @NonNull Pointered parent) {
+    default @NotNull Builder parent(final @NotNull Pointered parent) {
       return this.parent(() -> parent);
     }
 
@@ -174,6 +175,6 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
      * @return this builder
      * @since 4.8.0
      */
-    @NonNull Builder parent(final @NonNull Supplier<Pointered> parent);
+    @NotNull Builder parent(final @NotNull Supplier<Pointered> parent);
   }
 }

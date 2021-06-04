@@ -25,7 +25,7 @@ package net.kyori.adventure.pointer;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.TriState;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -81,10 +81,10 @@ final class PointersTest {
     assertEquals("not test", p5.get(pointer).get());
   }
 
-  private @NonNull Pointered pointered(final @NonNull Pointers pointers) {
+  private @NotNull Pointered pointered(final @NotNull Pointers pointers) {
     return new Pointered() {
       @Override
-      public @NonNull Pointers pointers() {
+      public @NotNull Pointers pointers() {
         return pointers;
       }
     };
