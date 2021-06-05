@@ -53,12 +53,4 @@ public operator fun <R> CompoundTagSetter<R>.set(key: String, value: String): R 
 
 public operator fun <R> CompoundTagSetter<R>.plus(tag: CompoundBinaryTag): R = put(tag)
 
-public operator fun CompoundBinaryTag.plusAssign(tag: CompoundBinaryTag) {
-  put(tag)
-}
-
 public operator fun <R> CompoundTagSetter<R>.minus(key: String): R = remove(key)
-
-public operator fun CompoundBinaryTag.minusAssign(key: String) {
-  remove(key)
-}

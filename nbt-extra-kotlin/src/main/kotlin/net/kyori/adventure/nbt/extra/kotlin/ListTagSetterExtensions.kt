@@ -30,11 +30,3 @@ import net.kyori.adventure.nbt.ListTagSetter
 public operator fun <R, T : BinaryTag> ListTagSetter<R, T>.plus(tag: T): R = add(tag)
 
 public operator fun <R, T : BinaryTag> ListTagSetter<R, T>.plus(tags: Iterable<T>): R = add(tags)
-
-public operator fun ListBinaryTag.plusAssign(tag: BinaryTag) {
-  add(tag)
-}
-
-public operator fun ListBinaryTag.plusAssign(tags: Iterable<BinaryTag>) {
-  add(tags)
-}

@@ -32,10 +32,6 @@ public inline fun compound(
 ): CompoundBinaryTag = CompoundBinaryTag.builder().apply(builder).build()
 
 public inline fun CompoundBinaryTag.Builder.compound(
-  builder: CompoundBinaryTag.Builder.() -> Unit
-): CompoundBinaryTag.Builder = put(CompoundBinaryTag.builder().apply(builder).build())
-
-public inline fun CompoundBinaryTag.Builder.compound(
   name: String,
   builder: CompoundBinaryTag.Builder.() -> Unit
 ): CompoundBinaryTag.Builder = put(name, CompoundBinaryTag.builder().apply(builder).build())
