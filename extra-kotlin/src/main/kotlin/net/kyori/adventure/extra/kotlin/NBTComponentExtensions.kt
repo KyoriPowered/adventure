@@ -26,9 +26,9 @@ package net.kyori.adventure.extra.kotlin
 import net.kyori.adventure.text.BlockNBTComponent
 
 /**
- * The X component of this world position
+ * The X component of this world position.
  *
- * Allows for destructuring into (x, y, z)
+ * Allows for destructuring into `(x, y, z)`.
  *
  * @return the X component
  * @since 4.8.0
@@ -36,9 +36,9 @@ import net.kyori.adventure.text.BlockNBTComponent
 public operator fun BlockNBTComponent.WorldPos.component1(): BlockNBTComponent.WorldPos.Coordinate = x()
 
 /**
- * The Y component of this world position
+ * The Y component of this world position.
  *
- * Allows for destructuring into (x, y, z)
+ * Allows for destructuring into `(x, y, z)`.
  *
  * @return the Y component
  * @since 4.8.0
@@ -46,9 +46,9 @@ public operator fun BlockNBTComponent.WorldPos.component1(): BlockNBTComponent.W
 public operator fun BlockNBTComponent.WorldPos.component2(): BlockNBTComponent.WorldPos.Coordinate = y()
 
 /**
- * The Z component of this world position
+ * The Z component of this world position.
  *
- * Allows for destructuring into (x, y, z)
+ * Allows for destructuring into `(x, y, z)`.
  *
  * @return the Z component
  * @since 4.8.0
