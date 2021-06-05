@@ -27,7 +27,7 @@ import net.kyori.adventure.text.format.Style
 import org.jetbrains.annotations.Contract
 
 /**
- * Allows editing using [Style.Builder] as the receiver parameter
+ * Allows editing using [Style.Builder] as the receiver parameter.
  *
  * @param consumer the consumer to edit this style with
  * @return a new style, with the changes applied from this builder

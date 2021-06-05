@@ -27,7 +27,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.ComponentLike
 
 /**
- * Add [that] as a child component.
+ * Adds [that] as a child component.
  *
  * @return a component
  * @since 4.6.0

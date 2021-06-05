@@ -26,7 +26,7 @@ package net.kyori.adventure.extra.kotlin
 import net.kyori.adventure.text.format.Style
 
 /**
- * Build a new [Style] from the specified [builder]
+ * Builds a new [Style] from the specified [builder].
  *
  * @param builder the builder to apply values from
  * @return a new [Style]

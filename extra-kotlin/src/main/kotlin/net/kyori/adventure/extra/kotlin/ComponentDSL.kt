@@ -34,7 +34,7 @@ import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.TranslatableComponent
 
 /**
- * Build a new [BlockNBTComponent] from the specified [builder]
+ * Builds a new [BlockNBTComponent] from the specified [builder].
  *
  * @param builder the builder to apply values from
  * @return a new [BlockNBTComponent]
@@ -43,7 +43,7 @@ import net.kyori.adventure.text.TranslatableComponent
 public fun blockNBT(builder: BlockNBTComponent.Builder.() -> Unit): BlockNBTComponent = Component.blockNBT(builder)
 
 /**
- * Build a new [EntityNBTComponent] from the specified [builder]
+ * Builds a new [EntityNBTComponent] from the specified [builder].
  *
  * @param builder the builder to apply values from
  * @return a new [EntityNBTComponent]
@@ -52,7 +52,7 @@ public fun blockNBT(builder: BlockNBTComponent.Builder.() -> Unit): BlockNBTComp
 public fun entityNBT(builder: EntityNBTComponent.Builder.() -> Unit): EntityNBTComponent = Component.entityNBT(builder)
 
 /**
- * Build a new [KeybindComponent] from the specified [builder]
+ * Builds a new [KeybindComponent] from the specified [builder].
  *
  * @param builder the builder to apply values from
  * @return a new [KeybindComponent]
@@ -61,7 +61,7 @@ public fun entityNBT(builder: EntityNBTComponent.Builder.() -> Unit): EntityNBTC
 public fun keybind(builder: KeybindComponent.Builder.() -> Unit): KeybindComponent = Component.keybind(builder)
 
 /**
- * Build a new [ScoreComponent] from the specified [builder]
+ * Builds a new [ScoreComponent] from the specified [builder].
  *
  * @param builder the builder to apply values from
  * @return a new [ScoreComponent]
@@ -70,7 +70,7 @@ public fun keybind(builder: KeybindComponent.Builder.() -> Unit): KeybindCompone
 public fun score(builder: ScoreComponent.Builder.() -> Unit): ScoreComponent = Component.score(builder)
 
 /**
- * Build a new [SelectorComponent] from the specified [builder]
+ * Builds a new [SelectorComponent] from the specified [builder].
  *
  * @param builder the builder to apply values from
  * @return a new [SelectorComponent]
@@ -79,7 +79,7 @@ public fun score(builder: ScoreComponent.Builder.() -> Unit): ScoreComponent = C
 public fun selector(builder: SelectorComponent.Builder.() -> Unit): SelectorComponent = Component.selector(builder)
 
 /**
- * Build a new [StorageNBTComponent] from the specified [builder]
+ * Builds a new [StorageNBTComponent] from the specified [builder].
  *
  * @param builder the builder to apply values from
  * @return a new [StorageNBTComponent]
@@ -88,7 +88,7 @@ public fun selector(builder: SelectorComponent.Builder.() -> Unit): SelectorComp
 public fun storageNBT(builder: StorageNBTComponent.Builder.() -> Unit): StorageNBTComponent = Component.storageNBT(builder)
 
 /**
- * Build a new [TextComponent] from the specified [builder]
+ * Builds a new [TextComponent] from the specified [builder].
  *
  * @param builder the builder to apply values from
  * @return a new [TextComponent]
@@ -97,7 +97,7 @@ public fun storageNBT(builder: StorageNBTComponent.Builder.() -> Unit): StorageN
 public fun text(builder: TextComponent.Builder.() -> Unit): TextComponent = Component.text(builder)
 
 /**
- * Build a new [TranslatableComponent] from the specified [builder]
+ * Builds a new [TranslatableComponent] from the specified [builder].
  *
  * @param builder the builder to apply values from
  * @return a new [TranslatableComponent]
