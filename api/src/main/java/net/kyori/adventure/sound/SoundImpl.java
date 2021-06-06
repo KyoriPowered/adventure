@@ -31,6 +31,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 abstract class SoundImpl implements Sound {
+  static final Emitter SELF = new Emitter() {};
+
   private final Source source;
   private final float volume;
   private final float pitch;

@@ -262,5 +262,16 @@ public interface Sound extends Examinable {
    * @since 4.8.0
    */
   interface Emitter {
+    /**
+     * An emitter representing the recipient of a sound.
+     *
+     * <p>When used with {@link net.kyori.adventure.audience.Audience#playSound(Sound, Emitter)}, the sound will be emitted from the recipient of the sound.</p>
+     *
+     * @return the emitter
+     * @since 4.8.0
+     */
+    static @NotNull Emitter self() {
+      return SoundImpl.SELF;
+    }
   }
 }
