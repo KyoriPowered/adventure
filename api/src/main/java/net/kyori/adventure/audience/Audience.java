@@ -24,6 +24,7 @@
 package net.kyori.adventure.audience;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.Collector;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.identity.Identified;
@@ -472,8 +473,9 @@ public interface Audience extends Pointered {
    * @param sound the sound
    * @since 4.8.0
    */
-  default void stopSound(final @NonNull Sound sound) {
-    this.stopSound(sound.stopper());
+  @ForwardingAudienceOverrideNotRequired
+  default void stopSound(final @NotNull Sound sound) {
+    this.stopSound(Objects.requireNonNull(sound, "sound").asStop());
   }
 
   /**

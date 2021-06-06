@@ -182,7 +182,7 @@ public interface SoundStop extends Examinable {
    * @return a sound stopper
    * @since 4.8.0
    */
-  static @NonNull SoundStop sound(final @NonNull Sound sound) {
+  static @NotNull SoundStop sound(final @NotNull Sound sound) {
     requireNonNull(sound, "sound");
     return namedOnSource(sound.name(), sound.source());
   }

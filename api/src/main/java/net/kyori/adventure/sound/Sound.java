@@ -192,7 +192,7 @@ public interface Sound extends Examinable {
    * @return the sound stop
    * @since 4.8.0
    */
-  @NonNull SoundStop stopper();
+  @NotNull SoundStop asStop();
 
   /**
    * The sound source.
