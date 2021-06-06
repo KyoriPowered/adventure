@@ -68,6 +68,7 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
   static final String NBT_BLOCK = "block";
   static final String NBT_ENTITY = "entity";
   static final String NBT_STORAGE = "storage";
+  static final String SEPARATOR = "separator";
 
   @Override
   public Component deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
@@ -127,19 +128,21 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
         component = builder;
       }
     } else if (object.has(SELECTOR)) {
-      component = Component.selector().pattern(object.get(SELECTOR).getAsString());
+      final @Nullable Component separator = this.deserializeSeparator(object, context);
+      component = Component.selector().pattern(object.get(SELECTOR).getAsString()).separator(separator);
     } else if (object.has(KEYBIND)) {
       component = Component.keybind().keybind(object.get(KEYBIND).getAsString());
     } else if (object.has(NBT)) {
       final String nbt = object.get(NBT).getAsString();
       final boolean interpret = object.has(NBT_INTERPRET) && object.getAsJsonPrimitive(NBT_INTERPRET).getAsBoolean();
+      final @Nullable Component separator = this.deserializeSeparator(object, context);
       if (object.has(NBT_BLOCK)) {
         final BlockNBTComponent.Pos pos = context.deserialize(object.get(NBT_BLOCK), BlockNBTComponent.Pos.class);
-        component = nbt(Component.blockNBT(), nbt, interpret).pos(pos);
+        component = nbt(Component.blockNBT(), nbt, interpret, separator).pos(pos);
       } else if (object.has(NBT_ENTITY)) {
-        component = nbt(Component.entityNBT(), nbt, interpret).selector(object.get(NBT_ENTITY).getAsString());
+        component = nbt(Component.entityNBT(), nbt, interpret, separator).selector(object.get(NBT_ENTITY).getAsString());
       } else if (object.has(NBT_STORAGE)) {
-        component = nbt(Component.storageNBT(), nbt, interpret).storage(context.deserialize(object.get(NBT_STORAGE), Key.class));
+        component = nbt(Component.storageNBT(), nbt, interpret, separator).storage(context.deserialize(object.get(NBT_STORAGE), Key.class));
       } else {
         throw notSureHowToDeserialize(element);
       }
@@ -163,10 +166,18 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
     return component.build();
   }
 
-  private static <C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> B nbt(final B builder, final String nbt, final boolean interpret) {
+  private @Nullable Component deserializeSeparator(final JsonObject json, final JsonDeserializationContext context) {
+    if (json.has(SEPARATOR)) {
+      return this.deserialize0(json.get(SEPARATOR), context);
+    }
+    return null;
+  }
+
+  private static <C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> B nbt(final B builder, final String nbt, final boolean interpret, final @Nullable Component separator) {
     return builder
       .nbtPath(nbt)
-      .interpret(interpret);
+      .interpret(interpret)
+      .separator(separator);
   }
 
   @Override
@@ -214,7 +225,9 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
       if (value != null) score.addProperty(SCORE_VALUE, value);
       object.add(SCORE, score);
     } else if (src instanceof SelectorComponent) {
-      object.addProperty(SELECTOR, ((SelectorComponent) src).pattern());
+      final SelectorComponent sc = (SelectorComponent) src;
+      object.addProperty(SELECTOR, sc.pattern());
+      this.serializeSeparator(context, object, sc.separator());
     } else if (src instanceof KeybindComponent) {
       object.addProperty(KEYBIND, ((KeybindComponent) src).keybind());
     } else if (src instanceof NBTComponent) {
@@ -224,6 +237,7 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
       if (src instanceof BlockNBTComponent) {
         final JsonElement position = context.serialize(((BlockNBTComponent) nc).pos());
         object.add(NBT_BLOCK, position);
+        this.serializeSeparator(context, object, nc.separator());
       } else if (src instanceof EntityNBTComponent) {
         object.addProperty(NBT_ENTITY, ((EntityNBTComponent) nc).selector());
       } else if (src instanceof StorageNBTComponent) {
@@ -236,6 +250,12 @@ final class ComponentSerializerImpl implements JsonDeserializer<Component>, Json
     }
 
     return object;
+  }
+
+  private void serializeSeparator(final JsonSerializationContext context, final JsonObject json, final @Nullable Component separator) {
+    if (separator != null) {
+      json.add(SEPARATOR, context.serialize(separator));
+    }
   }
 
   static JsonParseException notSureHowToDeserialize(final Object element) {

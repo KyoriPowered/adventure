@@ -267,7 +267,22 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _, _ -> new", pure = true)
   static @NotNull BlockNBTComponent blockNBT(final @NotNull String nbtPath, final boolean interpret, final BlockNBTComponent.@NotNull Pos pos) {
-    return new BlockNBTComponentImpl(Collections.emptyList(), Style.empty(), nbtPath, interpret, pos);
+    return blockNBT(nbtPath, interpret, null, pos);
+  }
+
+  /**
+   * Creates a block NBT component with a position.
+   *
+   * @param nbtPath the nbt path
+   * @param interpret whether to interpret
+   * @param separator the separator
+   * @param pos the block position
+   * @return a block NBT component
+   * @since 4.8.0
+   */
+  @Contract(value = "_, _, _, _ -> new", pure = true)
+  static @NotNull BlockNBTComponent blockNBT(final @NotNull String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final BlockNBTComponent.@NotNull Pos pos) {
+    return new BlockNBTComponentImpl(Collections.emptyList(), Style.empty(), nbtPath, interpret, separator, pos);
   }
 
   /*
@@ -503,7 +518,20 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_ -> new", pure = true)
   static @NotNull SelectorComponent selector(final @NotNull String pattern) {
-    return new SelectorComponentImpl(Collections.emptyList(), Style.empty(), pattern);
+    return selector(pattern, null);
+  }
+
+  /**
+   * Creates a selector component with a pattern.
+   *
+   * @param pattern the selector pattern
+   * @param separator the separator
+   * @return a selector component
+   * @since 4.8.0
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static @NotNull SelectorComponent selector(final @NotNull String pattern, final @Nullable ComponentLike separator) {
+    return new SelectorComponentImpl(Collections.emptyList(), Style.empty(), pattern, separator);
   }
 
   /*
@@ -559,7 +587,22 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _, _ -> new", pure = true)
   static @NotNull StorageNBTComponent storageNBT(final @NotNull String nbtPath, final boolean interpret, final @NotNull Key storage) {
-    return new StorageNBTComponentImpl(Collections.emptyList(), Style.empty(), nbtPath, interpret, storage);
+    return storageNBT(nbtPath, interpret, null, storage);
+  }
+
+  /**
+   * Creates a storage NBT component with a path and an storage ID.
+   *
+   * @param nbtPath the nbt path
+   * @param interpret whether to interpret
+   * @param separator the separator
+   * @param storage the identifier of the storage
+   * @return a storage NBT component
+   * @since 4.8.0
+   */
+  @Contract(value = "_, _, _, _ -> new", pure = true)
+  static @NotNull StorageNBTComponent storageNBT(final @NotNull String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final @NotNull Key storage) {
+    return new StorageNBTComponentImpl(Collections.emptyList(), Style.empty(), nbtPath, interpret, separator, storage);
   }
 
   /*

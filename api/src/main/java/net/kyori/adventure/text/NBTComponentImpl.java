@@ -35,11 +35,13 @@ abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTCompo
   static final boolean INTERPRET_DEFAULT = false;
   final String nbtPath;
   final boolean interpret;
+  final @Nullable Component separator;
 
-  NBTComponentImpl(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final String nbtPath, final boolean interpret) {
+  NBTComponentImpl(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final String nbtPath, final boolean interpret, final @Nullable ComponentLike separator) {
     super(children, style);
     this.nbtPath = nbtPath;
     this.interpret = interpret;
+    this.separator = ComponentLike.unbox(separator);
   }
 
   @Override
@@ -58,7 +60,7 @@ abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTCompo
     if (!(other instanceof NBTComponent)) return false;
     if (!super.equals(other)) return false;
     final NBTComponent<?, ?> that = (NBTComponent<?, ?>) other;
-    return Objects.equals(this.nbtPath, that.nbtPath()) && this.interpret == that.interpret();
+    return Objects.equals(this.nbtPath, that.nbtPath()) && this.interpret == that.interpret() && Objects.equals(this.separator, that.separator());
   }
 
   @Override
@@ -66,6 +68,7 @@ abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTCompo
     int result = super.hashCode();
     result = (31 * result) + this.nbtPath.hashCode();
     result = (31 * result) + Boolean.hashCode(this.interpret);
+    result = (31 * result) + Objects.hashCode(this.separator);
     return result;
   }
 
@@ -74,7 +77,8 @@ abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTCompo
     return Stream.concat(
       Stream.of(
         ExaminableProperty.of("nbtPath", this.nbtPath),
-        ExaminableProperty.of("interpret", this.interpret)
+        ExaminableProperty.of("interpret", this.interpret),
+        ExaminableProperty.of("separator", this.separator)
       ),
       super.examinablePropertiesWithoutChildren()
     );
@@ -83,6 +87,7 @@ abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTCompo
   static abstract class BuilderImpl<C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> extends AbstractComponentBuilder<C, B> implements NBTComponentBuilder<C, B> {
     protected @Nullable String nbtPath;
     protected boolean interpret = INTERPRET_DEFAULT;
+    protected @Nullable Component separator;
 
     BuilderImpl() {
     }
@@ -104,6 +109,13 @@ abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTCompo
     @SuppressWarnings("unchecked")
     public @NotNull B interpret(final boolean interpret) {
       this.interpret = interpret;
+      return (B) this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public @NotNull B separator(final @Nullable ComponentLike separator) {
+      this.separator = ComponentLike.unbox(separator);
       return (B) this;
     }
   }

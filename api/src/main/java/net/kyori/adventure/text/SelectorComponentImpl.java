@@ -35,10 +35,12 @@ import static java.util.Objects.requireNonNull;
 
 final class SelectorComponentImpl extends AbstractComponent implements SelectorComponent {
   private final String pattern;
+  private final @Nullable Component separator;
 
-  SelectorComponentImpl(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String pattern) {
+  SelectorComponentImpl(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String pattern, final @Nullable ComponentLike separator) {
     super(children, style);
     this.pattern = pattern;
+    this.separator = ComponentLike.unbox(separator);
   }
 
   @Override
@@ -49,17 +51,27 @@ final class SelectorComponentImpl extends AbstractComponent implements SelectorC
   @Override
   public @NotNull SelectorComponent pattern(final @NotNull String pattern) {
     if (Objects.equals(this.pattern, pattern)) return this;
-    return new SelectorComponentImpl(this.children, this.style, requireNonNull(pattern, "pattern"));
+    return new SelectorComponentImpl(this.children, this.style, requireNonNull(pattern, "pattern"), this.separator);
+  }
+
+  @Override
+  public @Nullable Component separator() {
+    return this.separator;
+  }
+
+  @Override
+  public @NotNull SelectorComponent separator(final @Nullable ComponentLike separator) {
+    return new SelectorComponentImpl(this.children, this.style, this.pattern, separator);
   }
 
   @Override
   public @NotNull SelectorComponent children(final @NotNull List<? extends ComponentLike> children) {
-    return new SelectorComponentImpl(children, this.style, this.pattern);
+    return new SelectorComponentImpl(children, this.style, this.pattern, this.separator);
   }
 
   @Override
   public @NotNull SelectorComponent style(final @NotNull Style style) {
-    return new SelectorComponentImpl(this.children, style, this.pattern);
+    return new SelectorComponentImpl(this.children, style, this.pattern, this.separator);
   }
 
   @Override
@@ -68,13 +80,14 @@ final class SelectorComponentImpl extends AbstractComponent implements SelectorC
     if (!(other instanceof SelectorComponent)) return false;
     if (!super.equals(other)) return false;
     final SelectorComponent that = (SelectorComponent) other;
-    return Objects.equals(this.pattern, that.pattern());
+    return Objects.equals(this.pattern, that.pattern()) && Objects.equals(this.separator, that.separator());
   }
 
   @Override
   public int hashCode() {
     int result = super.hashCode();
     result = (31 * result) + this.pattern.hashCode();
+    result = (31 * result) + Objects.hashCode(this.separator);
     return result;
   }
 
@@ -82,7 +95,8 @@ final class SelectorComponentImpl extends AbstractComponent implements SelectorC
   protected @NotNull Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
     return Stream.concat(
       Stream.of(
-        ExaminableProperty.of("pattern", this.pattern)
+        ExaminableProperty.of("pattern", this.pattern),
+        ExaminableProperty.of("separator", this.separator)
       ),
       super.examinablePropertiesWithoutChildren()
     );
@@ -95,6 +109,7 @@ final class SelectorComponentImpl extends AbstractComponent implements SelectorC
 
   static final class BuilderImpl extends AbstractComponentBuilder<SelectorComponent, Builder> implements SelectorComponent.Builder {
     private @Nullable String pattern;
+    private @Nullable Component separator;
 
     BuilderImpl() {
     }
@@ -111,9 +126,15 @@ final class SelectorComponentImpl extends AbstractComponent implements SelectorC
     }
 
     @Override
+    public @NotNull Builder separator(final @Nullable ComponentLike separator) {
+      this.separator = ComponentLike.unbox(separator);
+      return this;
+    }
+
+    @Override
     public @NotNull SelectorComponent build() {
       if (this.pattern == null) throw new IllegalStateException("pattern must be set");
-      return new SelectorComponentImpl(this.children, this.buildStyle(), this.pattern);
+      return new SelectorComponentImpl(this.children, this.buildStyle(), this.pattern, this.separator);
     }
   }
 }

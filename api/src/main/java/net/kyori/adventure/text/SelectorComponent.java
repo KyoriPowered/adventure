@@ -25,6 +25,7 @@ package net.kyori.adventure.text;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A component that can display the name of entities found with a given selector.
@@ -61,6 +62,23 @@ public interface SelectorComponent extends BuildableComponent<SelectorComponent,
   @NotNull SelectorComponent pattern(final @NotNull String pattern);
 
   /**
+   * Gets the separator.
+   *
+   * @return the separator
+   * @since 4.8.0
+   */
+  @Nullable Component separator();
+
+  /**
+   * Sets the separator.
+   *
+   * @param separator the separator
+   * @return the separator
+   * @since 4.8.0
+   */
+  @NotNull SelectorComponent separator(final @Nullable ComponentLike separator);
+
+  /**
    * A selector component builder.
    *
    * @since 4.0.0
@@ -75,5 +93,15 @@ public interface SelectorComponent extends BuildableComponent<SelectorComponent,
      */
     @Contract("_ -> this")
     @NotNull Builder pattern(final @NotNull String pattern);
+
+    /**
+     * Sets the separator.
+     *
+     * @param separator the separator
+     * @return this builder
+     * @since 4.8.0
+     */
+    @Contract("_ -> this")
+    @NotNull Builder separator(final @Nullable ComponentLike separator);
   }
 }
