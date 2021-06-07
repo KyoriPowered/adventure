@@ -445,7 +445,9 @@ public interface Audience extends Pointered {
   }
 
   /**
-   * Plays a sound.
+   * Plays a sound at the location of the recipient of the sound.
+   *
+   * <p>To play a sound that follows the recipient, use {@link #playSound(Sound, Sound.Emitter)} with {@link Sound.Emitter#self()}.</p>
    *
    * @param sound a sound
    * @see Sound
@@ -476,6 +478,25 @@ public interface Audience extends Pointered {
   @ForwardingAudienceOverrideNotRequired
   default void stopSound(final @NotNull Sound sound) {
     this.stopSound(Objects.requireNonNull(sound, "sound").asStop());
+  }
+
+  /**
+   * Plays a sound from an emitter, usually an entity.
+   *
+   * <p>
+   *   Sounds played using this method will follow the emitter unless the sound is a custom sound.
+   *   In this case the sound will be played at the location of the emitter and will not follow them.
+   * </p>
+   *
+   * <p>To play a sound that follows the recipient, use {@link Sound.Emitter#self()}.</p>
+   *
+   * <p><b>Note</b>: Due to <a href="https://bugs.mojang.com/browse/MC-138832">MC-138832</a>, the volume and pitch may be ignored when using this method.</p>
+   *
+   * @param sound a sound
+   * @param emitter an emitter
+   * @since 4.8.0
+   */
+  default void playSound(final @NotNull Sound sound, final Sound.@NotNull Emitter emitter) {
   }
 
   /**
