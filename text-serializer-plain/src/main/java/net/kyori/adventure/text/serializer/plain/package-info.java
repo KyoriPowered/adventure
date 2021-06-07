@@ -22,6 +22,6 @@
  * SOFTWARE.
  */
 /**
- * Plain string based serialization and deserialization.
+ * Plain text based serialization and deserialization.
  */
 package net.kyori.adventure.text.serializer.plain;

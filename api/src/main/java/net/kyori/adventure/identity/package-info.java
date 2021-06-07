@@ -24,5 +24,7 @@
 /**
  * Identity information used to track the sender of messages for the social interaction
  * features introduced in <em>Minecraft: Java Edition</em> 1.16.4.
+ *
+ * @sinceMinecraft 1.16
  */
 package net.kyori.adventure.identity;

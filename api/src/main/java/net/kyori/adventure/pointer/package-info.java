@@ -22,6 +22,6 @@
  * SOFTWARE.
  */
 /**
- * Key/Value based pointers to resources.
+ * Key/Value based pointers to information.
  */
 package net.kyori.adventure.pointer;

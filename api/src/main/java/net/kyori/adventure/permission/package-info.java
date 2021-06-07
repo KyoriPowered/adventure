@@ -22,6 +22,6 @@
  * SOFTWARE.
  */
 /**
- * TriState based permission checking.
+ * {@link net.kyori.adventure.util.TriState} based permission checking.
  */
 package net.kyori.adventure.permission;
