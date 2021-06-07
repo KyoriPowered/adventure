@@ -69,7 +69,7 @@ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<S
       knownDecorations.remove(decoration);
     }
     if (!knownDecorations.isEmpty()) {
-      throw new IllegalStateException("GSON serializer is missing some text decorations: " + knownDecorations);
+      throw new IllegalStateException("Gson serializer is missing some text decorations: " + knownDecorations);
     }
   }
 
