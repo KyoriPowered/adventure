@@ -59,7 +59,7 @@ abstract class SoundImpl implements Sound {
 
   @Override
   public @NotNull SoundStop asStop() {
-    if (this.stop == null) this.stop = SoundStop.sound(this);
+    if (this.stop == null) this.stop = SoundStop.namedOnSource(this.name(), this.source());
     return this.stop;
   }
 
