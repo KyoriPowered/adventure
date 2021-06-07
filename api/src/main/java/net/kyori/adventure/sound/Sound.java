@@ -271,7 +271,7 @@ public interface Sound extends Examinable {
      * @since 4.8.0
      */
     static @NotNull Emitter self() {
-      return SoundImpl.SELF;
+      return SoundImpl.EMITTER_SELF;
     }
   }
 }

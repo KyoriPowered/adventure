@@ -488,12 +488,12 @@ public interface Audience extends Pointered {
    *   In this case the sound will be played at the location of the emitter and will not follow them.
    * </p>
    *
+   * <p>To play a sound that follows the recipient, use {@link Sound.Emitter#self()}.</p>
+   *
    * <p><b>Note</b>: Due to <a href="https://bugs.mojang.com/browse/MC-138832">MC-138832</a>, the volume and pitch may be ignored when using this method.</p>
    *
    * @param sound a sound
    * @param emitter an emitter
-   * @see Sound
-   * @see Sound.Emitter
    * @since 4.8.0
    */
   default void playSound(final @NotNull Sound sound, final Sound.@NotNull Emitter emitter) {
