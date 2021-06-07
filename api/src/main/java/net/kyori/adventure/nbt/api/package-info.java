@@ -25,6 +25,6 @@
  * Holders of Named Binary Tags.
  *
  * @see <a href="https://wiki.vg/NBT">wiki.vg/NBT</a>
- * @see <a href="https://minecraft.fandom.com/wiki/NBT_format">minecraft.fandom</a>
+ * @see <a href="https://minecraft.fandom.com/wiki/NBT_format">minecraft.fandom.com/wiki/NBT_format</a>
  */
 package net.kyori.adventure.nbt.api;
