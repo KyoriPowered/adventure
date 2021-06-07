@@ -53,7 +53,7 @@ import org.jetbrains.annotations.Nullable;
  *   <p>a component to be appended to the resulting component</p>
  *  </li>
  *  <li>
- *   <b>an operator</b> (required)
+ *   <b>an operator</b> (required, defaults to {@link UnaryOperator#identity()})
  *   <p>a unary operator to change each component that is being joined, defaults to the identity operator</p>
  *  </li>
  * </ul>
@@ -158,9 +158,9 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
   @Nullable Component lastSeparatorIfSerial();
 
   /**
-   * Gets the operator of this join configuration.]
+   * Gets the operator of this join configuration.
    *
-   * <p>This is used to mutate the components that are going to be joined. It does not touch the prefix, suffix or any of the separators.</p>
+   * <p>This is used to change the components that are going to be joined. It does not touch the prefix, suffix or any of the separators.</p>
    *
    * @return the operator
    * @since 4.8.0
