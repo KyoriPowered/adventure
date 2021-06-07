@@ -103,7 +103,7 @@ class TextColorTest {
   }
 
   @Test
-  public void testEquality() {
+  void testEquality() {
     new EqualsTester()
       .addEqualityGroup(
         TextColor.color(0xff0000),
