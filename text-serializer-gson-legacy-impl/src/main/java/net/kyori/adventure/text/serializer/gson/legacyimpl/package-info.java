@@ -22,6 +22,6 @@
  * SOFTWARE.
  */
 /**
- * GSON legacy hover event serialization and deserialization.
+ * Gson legacy hover event serialization and deserialization.
  */
 package net.kyori.adventure.text.serializer.gson.legacyimpl;

@@ -22,6 +22,6 @@
  * SOFTWARE.
  */
 /**
- * GSON based serialization and deserialization.
+ * Gson based serialization and deserialization.
  */
 package net.kyori.adventure.text.serializer.gson;
