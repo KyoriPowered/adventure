@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
-import net.kyori.adventure.util.TriState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,13 +39,18 @@ final class PointersImpl implements Pointers {
     }
 
     @Override
-    public @NotNull <T> TriState has(final @NotNull Pointer<T> pointer) {
-      return TriState.NOT_SET;
+    public <T> boolean supports(final @NotNull Pointer<T> pointer) {
+      return false;
     }
 
     @Override
     public Pointers.@NotNull Builder toBuilder() {
       return new PointersImpl.BuilderImpl();
+    }
+
+    @Override
+    public String toString() {
+      return "EmptyPointers";
     }
   };
 
@@ -59,14 +63,14 @@ final class PointersImpl implements Pointers {
   @Override
   @SuppressWarnings("unchecked") // all values are checked on entry
   public @NotNull <T> Optional<T> get(final @NotNull Pointer<T> pointer) {
+    Objects.requireNonNull(pointer, "pointer");
     return Optional.ofNullable(((Supplier<T>) this.pointers.get(pointer)).get());
   }
 
   @Override
-  @SuppressWarnings("unchecked") // all values are checked on entry
-  public @NotNull <T> TriState has(final @NotNull Pointer<T> pointer) {
-    if (!this.pointers.containsKey(pointer)) return TriState.NOT_SET;
-    return TriState.byBoolean(((Supplier<T>) this.pointers.get(pointer)).get() != null);
+  public <T> boolean supports(final @NotNull Pointer<T> pointer) {
+    Objects.requireNonNull(pointer, "pointer");
+    return this.pointers.containsKey(pointer);
   }
 
   @Override

@@ -26,7 +26,6 @@ package net.kyori.adventure.pointer;
 import java.util.Optional;
 import java.util.function.Supplier;
 import net.kyori.adventure.util.Buildable;
-import net.kyori.adventure.util.TriState;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,7 +38,7 @@ import org.jetbrains.annotations.UnknownNullability;
  */
 public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
   /**
-   * An empty set of pointers.
+   * An empty collection of pointers.
    *
    * @since 4.8.0
    */
@@ -70,7 +69,7 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
   /**
    * Gets the value of {@code pointer}.
    *
-   * <p>If this {@code Audience} is unable to provide a value for {@code pointer}, {@code defaultValue} will be returned.</p>
+   * <p>If a value for {@code pointer} is unable to be provided, {@code defaultValue} will be returned.</p>
    *
    * @param pointer the pointer
    * @param defaultValue the default value
@@ -87,7 +86,7 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
   /**
    * Gets the value of {@code pointer}.
    *
-   * <p>If this {@code Audience} is unable to provide a value for {@code pointer}, the value supplied by {@code defaultValue} will be returned.</p>
+   * <p>If a value for {@code pointer} is unable to be provided, the value supplied by {@code defaultValue} will be returned.</p>
    *
    * @param pointer the pointer
    * @param defaultValue the default value supplier
@@ -101,14 +100,16 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
   }
 
   /**
-   * Checks if these pointers contain a value for the given pointer.
+   * Checks if a given pointer is supported.
+   *
+   * <p>This will return {@code true} when a mapping for the provided pointer exists, even if the value for the pointer is {@code null}.</p>
    *
    * @param pointer the pointer
    * @param <T> the type
-   * @return a tri-state
+   * @return if the pointer is supported
    * @since 4.8.0
    */
-  <T> @NotNull TriState has(final @NotNull Pointer<T> pointer);
+  <T> boolean supports(final @NotNull Pointer<T> pointer);
 
   /**
    * A builder of pointers.
@@ -145,10 +146,10 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
     }
 
     /**
-     * Adds a pointer with an optional value.
+     * Adds a pointer with a value provided by a supplier.
      *
      * @param pointer the pointer
-     * @param value the optional value
+     * @param value the value supplier
      * @param <T> the type
      * @return this builder
      * @since 4.8.0

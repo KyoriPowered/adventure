@@ -24,7 +24,6 @@
 package net.kyori.adventure.pointer;
 
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.util.TriState;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,18 +35,18 @@ final class PointersTest {
   public void ofPointers() {
     final Pointer<String> pointer = Pointer.pointer(String.class, Key.key("adventure:test"));
 
-    assertEquals(TriState.NOT_SET, Pointers.EMPTY.has(pointer));
+    assertFalse(Pointers.EMPTY.supports(pointer));
 
     final Pointers p0 = Pointers.builder()
       .addPointer(pointer)
       .build();
-    assertEquals(TriState.FALSE, p0.has(pointer));
+    assertTrue(p0.supports(pointer));
     assertFalse(p0.get(pointer).isPresent());
 
     final Pointers p1 = Pointers.builder()
       .addPointerWithFixedValue(pointer, "test")
       .build();
-    assertEquals(TriState.TRUE, p1.has(pointer));
+    assertTrue(p1.supports(pointer));
     assertTrue(p1.get(pointer).isPresent());
     assertEquals("test", p1.get(pointer).get());
   }

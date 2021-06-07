@@ -82,7 +82,7 @@ public interface Pointered {
   }
 
   /**
-   * Gets the pointers for this audience.
+   * Gets the pointers for this object.
    *
    * @return the pointers
    * @since 4.8.0
