@@ -187,6 +187,14 @@ public interface Sound extends Examinable {
   float pitch();
 
   /**
+   * Gets the {@link SoundStop} that will stop this specific sound.
+   *
+   * @return the sound stop
+   * @since 4.8.0
+   */
+  @NotNull SoundStop asStop();
+
+  /**
    * The sound source.
    *
    * @since 4.0.0
