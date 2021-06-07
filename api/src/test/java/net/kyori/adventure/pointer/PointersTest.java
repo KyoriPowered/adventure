@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.pointer;
 
+import java.util.function.Supplier;
 import net.kyori.adventure.key.Key;
 import org.junit.jupiter.api.Test;
 
@@ -38,16 +39,30 @@ final class PointersTest {
     assertFalse(Pointers.empty().supports(pointer));
 
     final Pointers p0 = Pointers.builder()
-      .addPointer(pointer)
+      .withStatic(pointer, null)
       .build();
     assertTrue(p0.supports(pointer));
     assertFalse(p0.get(pointer).isPresent());
 
     final Pointers p1 = Pointers.builder()
-      .addPointerWithFixedValue(pointer, "test")
+      .withStatic(pointer, "test")
       .build();
     assertTrue(p1.supports(pointer));
     assertTrue(p1.get(pointer).isPresent());
     assertEquals("test", p1.get(pointer).get());
+    assertEquals("test", p1.get(pointer).get()); // make sure the value doesn't change
+
+    final StringBuilder s = new StringBuilder("test");
+    final Supplier<String> supplier = () -> {
+      final String result = s.toString();
+      s.reverse();
+      return result;
+    };
+    final Pointers p2 = Pointers.builder()
+      .withDynamic(pointer, supplier)
+      .build();
+    assertTrue(p2.supports(pointer));
+    assertEquals("test", p2.getOrDefault(pointer, null));
+    assertEquals("tset", p2.getOrDefault(pointer, null)); // make sure the value does change
   }
 }

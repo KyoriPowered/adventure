@@ -123,20 +123,7 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
    */
   interface Builder extends Buildable.Builder<Pointers> {
     /**
-     * Adds a pointer without a value.
-     *
-     * @param pointer the pointer
-     * @param <T> the type
-     * @return this builder
-     * @since 4.8.0
-     */
-    @Contract("_ -> this")
-    default <T> @NotNull Builder addPointer(final @NotNull Pointer<T> pointer) {
-      return this.addPointerWithFixedValue(pointer, null);
-    }
-
-    /**
-     * Adds a pointer with an optional value.
+     * Adds a pointer with a static, optional value.
      *
      * @param pointer the pointer
      * @param value the optional value
@@ -145,12 +132,12 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
      * @since 4.8.0
      */
     @Contract("_, _ -> this")
-    default <T> @NotNull Builder addPointerWithFixedValue(final @NotNull Pointer<T> pointer, final @Nullable T value) {
-      return this.addPointerWithVariableValue(pointer, () -> value);
+    default <T> @NotNull Builder withStatic(final @NotNull Pointer<T> pointer, final @Nullable T value) {
+      return this.withDynamic(pointer, () -> value);
     }
 
     /**
-     * Adds a pointer with a value provided by a supplier.
+     * Adds a pointer with a dynamic value provided by a supplier.
      *
      * @param pointer the pointer
      * @param value the value supplier
@@ -159,6 +146,6 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
      * @since 4.8.0
      */
     @Contract("_, _ -> this")
-    <T> @NotNull Builder addPointerWithVariableValue(final @NotNull Pointer<T> pointer, @NotNull Supplier<@Nullable T> value);
+    <T> @NotNull Builder withDynamic(final @NotNull Pointer<T> pointer, @NotNull Supplier<@Nullable T> value);
   }
 }

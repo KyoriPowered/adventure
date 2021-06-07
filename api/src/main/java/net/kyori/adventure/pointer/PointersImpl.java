@@ -90,7 +90,7 @@ final class PointersImpl implements Pointers {
     }
 
     @Override
-    public @NotNull <T> Builder addPointerWithVariableValue(final @NotNull Pointer<T> pointer, final @NotNull Supplier<@Nullable T> value) {
+    public @NotNull <T> Builder withDynamic(final @NotNull Pointer<T> pointer, final @NotNull Supplier<@Nullable T> value) {
       this.pointers.put(Objects.requireNonNull(pointer, "pointer"), Objects.requireNonNull(value, "value"));
       return this;
     }
