@@ -35,7 +35,7 @@ final class PointersTest {
   public void ofPointers() {
     final Pointer<String> pointer = Pointer.pointer(String.class, Key.key("adventure:test"));
 
-    assertFalse(Pointers.EMPTY.supports(pointer));
+    assertFalse(Pointers.empty().supports(pointer));
 
     final Pointers p0 = Pointers.builder()
       .addPointer(pointer)

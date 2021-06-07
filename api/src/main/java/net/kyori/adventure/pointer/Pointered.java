@@ -88,6 +88,6 @@ public interface Pointered {
    * @since 4.8.0
    */
   default @NotNull Pointers pointers() {
-    return Pointers.EMPTY;
+    return Pointers.empty();
   }
 }

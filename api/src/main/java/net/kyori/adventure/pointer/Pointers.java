@@ -38,11 +38,15 @@ import org.jetbrains.annotations.UnknownNullability;
  */
 public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
   /**
-   * An empty collection of pointers.
+   * Gets an empty pointers collection.
    *
+   * @return the pointers
    * @since 4.8.0
    */
-  @NotNull Pointers EMPTY = PointersImpl.EMPTY;
+  @Contract(pure = true)
+  static @NotNull Pointers empty() {
+    return PointersImpl.EMPTY;
+  }
 
   /**
    * Gets a new pointers builder.
