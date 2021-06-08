@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure-text-minimessage, licensed under the MIT License.
  *
- * Copyright (c) 2018-2020 KyoriPowered
+ * Copyright (c) 2018-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,8 +40,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @since 4.2.0
  */
 public final class TagNode extends ElementNode {
-
-  private final @NonNull List<TagPart> parts;
+  private final List<TagPart> parts;
   private @Nullable Transformation transformation = null;
 
   /**
@@ -69,8 +68,8 @@ public final class TagNode extends ElementNode {
   ) {
     final ArrayList<TagPart> parts = new ArrayList<>();
 
-    if(token.childTokens() != null) {
-      for(final Token childToken : token.childTokens()) {
+    if (token.childTokens() != null) {
+      for (final Token childToken : token.childTokens()) {
         parts.add(new TagPart(sourceMessage, childToken, templates));
       }
     }
@@ -95,7 +94,7 @@ public final class TagNode extends ElementNode {
    * @since 4.2.0
    */
   public @NonNull String name() {
-    if(this.parts.isEmpty()) {
+    if (this.parts.isEmpty()) {
       throw new ParsingException("Tag has no parts? " + this, this.sourceMessage(), this.token());
     }
     return this.parts.get(0).value();
@@ -126,30 +125,23 @@ public final class TagNode extends ElementNode {
     this.transformation = transformation;
   }
 
-  /**
-   * Serializes this node to a string.
-   *
-   * @param sb the string builder to serialize into
-   * @param indent the current indent level
-   * @return the passed string builder, for chaining
-   * @since 4.2.0
-   */
+  @Override
   public @NonNull StringBuilder buildToString(final @NonNull StringBuilder sb, final int indent) {
     final char[] in = this.ident(indent);
     sb.append(in).append("TagNode(");
 
     final int size = this.parts.size();
-    for(int i = 0; i < size; i++) {
+    for (int i = 0; i < size; i++) {
       final TagPart part = this.parts.get(i);
       sb.append('\'').append(part.value()).append('\'');
-      if(i != size - 1) {
+      if (i != size - 1) {
         sb.append(", ");
       }
     }
 
     sb.append(") {\n");
 
-    for(final ElementNode child : this.children()) {
+    for (final ElementNode child : this.children()) {
       child.buildToString(sb, indent + 1);
     }
     sb.append(in).append("}\n");

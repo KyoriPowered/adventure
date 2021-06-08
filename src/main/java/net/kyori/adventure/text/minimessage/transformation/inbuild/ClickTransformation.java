@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure-text-minimessage, licensed under the MIT License.
  *
- * Copyright (c) 2018-2020 KyoriPowered
+ * Copyright (c) 2018-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -64,7 +64,7 @@ public final class ClickTransformation extends Transformation {
   public void load(final String name, final List<TagPart> args) {
     super.load(name, args);
 
-    if(args.size() == 2) {
+    if (args.size() == 2) {
       this.action = ClickEvent.Action.NAMES.value(args.get(0).value().toLowerCase(Locale.ROOT));
       this.value = args.get(1).value();
     } else {
@@ -87,8 +87,8 @@ public final class ClickTransformation extends Transformation {
 
   @Override
   public boolean equals(final Object other) {
-    if(this == other) return true;
-    if(other == null || this.getClass() != other.getClass()) return false;
+    if (this == other) return true;
+    if (other == null || this.getClass() != other.getClass()) return false;
     final ClickTransformation that = (ClickTransformation) other;
     return this.action == that.action && Objects.equals(this.value, that.value);
   }

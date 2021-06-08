@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure-text-minimessage, licensed under the MIT License.
  *
- * Copyright (c) 2018-2020 KyoriPowered
+ * Copyright (c) 2018-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -83,14 +83,14 @@ public final class MiniMarkdownParser {
 
     final List<Insert> inserts = new ArrayList<>();
     int skip = 0;
-    for(int i = 0; i + skip < input.length(); i++) {
+    for (int i = 0; i + skip < input.length(); i++) {
       final int currIndex = i + skip;
       final char c = input.charAt(currIndex);
       final char n = next(currIndex, input);
 
       boolean shouldSkip = false;
-      if(markdownFlavor.isBold(c, n)) {
-        if(bold == -1) {
+      if (markdownFlavor.isBold(c, n)) {
+        if (bold == -1) {
           bold = sb.length();
           boldSkip = new Insert(sb.length(), c + "");
         } else {
@@ -100,8 +100,8 @@ public final class MiniMarkdownParser {
         }
         skip += c == n ? 1 : 0;
         shouldSkip = true;
-      } else if(markdownFlavor.isItalic(c, n)) {
-        if(italic == -1) {
+      } else if (markdownFlavor.isItalic(c, n)) {
+        if (italic == -1) {
           italic = sb.length();
           italicSkip = new Insert(sb.length(), c + "");
         } else {
@@ -111,8 +111,8 @@ public final class MiniMarkdownParser {
         }
         skip += c == n ? 1 : 0;
         shouldSkip = true;
-      } else if(markdownFlavor.isUnderline(c, n)) {
-        if(underline == -1) {
+      } else if (markdownFlavor.isUnderline(c, n)) {
+        if (underline == -1) {
           underline = sb.length();
           underlineSkip = new Insert(sb.length(), c + "");
         } else {
@@ -122,8 +122,8 @@ public final class MiniMarkdownParser {
         }
         skip += c == n ? 1 : 0;
         shouldSkip = true;
-      } else if(markdownFlavor.isStrikeThrough(c, n)) {
-        if(strikeThrough == -1) {
+      } else if (markdownFlavor.isStrikeThrough(c, n)) {
+        if (strikeThrough == -1) {
           strikeThrough = sb.length();
           strikeThroughSkip = new Insert(sb.length(), c + "");
         } else {
@@ -133,8 +133,8 @@ public final class MiniMarkdownParser {
         }
         skip += c == n ? 1 : 0;
         shouldSkip = true;
-      } else if(markdownFlavor.isObfuscate(c, n)) {
-        if(obfuscate == -1) {
+      } else if (markdownFlavor.isObfuscate(c, n)) {
+        if (obfuscate == -1) {
           obfuscate = sb.length();
           obfuscateSkip = new Insert(sb.length(), c + "");
         } else {
@@ -146,34 +146,34 @@ public final class MiniMarkdownParser {
         shouldSkip = true;
       }
 
-      if(!shouldSkip) {
+      if (!shouldSkip) {
         sb.append(c);
       }
     }
 
-    if(strip) {
+    if (strip) {
       inserts.clear();
     } else {
       inserts.sort(Comparator.comparing(Insert::pos).thenComparing(Insert::value).reversed());
     }
 
-    if(underline != -1) {
+    if (underline != -1) {
       inserts.add(underlineSkip);
     }
-    if(bold != -1) {
+    if (bold != -1) {
       inserts.add(boldSkip);
     }
-    if(italic != -1) {
+    if (italic != -1) {
       inserts.add(italicSkip);
     }
-    if(strikeThrough != -1) {
+    if (strikeThrough != -1) {
       inserts.add(strikeThroughSkip);
     }
-    if(obfuscate != -1) {
+    if (obfuscate != -1) {
       inserts.add(obfuscateSkip);
     }
 
-    for(final Insert el : inserts) {
+    for (final Insert el : inserts) {
       sb.insert(el.pos(), el.value());
     }
 
@@ -181,7 +181,7 @@ public final class MiniMarkdownParser {
   }
 
   private static char next(final int index, final @NonNull String input) {
-    if(index < input.length() - 1) {
+    if (index < input.length() - 1) {
       return input.charAt(index + 1);
     } else {
       return ' ';

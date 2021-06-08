@@ -3,6 +3,7 @@
 <suppressions>
   <!-- no javadoc on test classes -->
   <suppress files="src[\\/]test[\\/]java[\\/].*" checks="FilteringWriteTag"/>
+  <suppress files="src[\\/]test[\\/]java[\\/].*" checks="JavadocPackage"/>
   <suppress files="src[\\/]test[\\/]java[\\/].*" checks="MissingJavadoc.*"/>
 
   <!--<suppress files=".*[\\/]nbt[\\/](List|Compound)BinaryTag.java" checks="MethodName"/>-->

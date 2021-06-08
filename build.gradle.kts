@@ -1,11 +1,11 @@
 plugins {
-    idea
-    val indraVersion = "2.0.4"
-    id("net.kyori.indra") version indraVersion
-    id("net.kyori.indra.publishing.sonatype") version indraVersion
-    id("net.kyori.indra.license-header") version indraVersion
-    id("net.kyori.indra.checkstyle") version indraVersion
-    id("me.champeau.jmh") version "0.6.5"
+  idea
+  val indraVersion = "2.0.4"
+  id("net.kyori.indra") version indraVersion
+  id("net.kyori.indra.publishing.sonatype") version indraVersion
+  id("net.kyori.indra.license-header") version indraVersion
+  id("net.kyori.indra.checkstyle") version indraVersion
+  id("me.champeau.jmh") version "0.6.5"
 }
 
 val javacc: Configuration by configurations.creating
@@ -15,47 +15,46 @@ version = "4.2.0-SNAPSHOT"
 description = "A string-based, user-friendly format for representing Minecraft: Java Edition chat components."
 
 repositories {
-    mavenCentral()
+  mavenCentral()
 }
 
 dependencies {
-    api(libs.adventure.api)
-
-    testImplementation(libs.adventure.text.plain)
-    testImplementation(libs.adventure.text.gson)
-    testImplementation(libs.junit.api)
-    testRuntimeOnly(libs.junit.engine)
-    checkstyle(libs.checkstyle)
+  api(libs.adventure.api)
+  checkstyle(libs.checkstyle)
+  testImplementation(libs.adventure.text.plain)
+  testImplementation(libs.adventure.text.gson)
+  testImplementation(libs.junit.api)
+  testRuntimeOnly(libs.junit.engine)
 }
 
 indra {
-    javaVersions {
-        testWith(8, 11, 16)
-    }
+  javaVersions {
+    testWith(8, 11, 16)
+  }
 
-    github("KyoriPowered", "adventure-text-minimessage") {
-        ci(true)
-    }
-    mitLicense()
+  github("KyoriPowered", "adventure-text-minimessage") {
+    ci(true)
+  }
+  mitLicense()
 
-    configurePublications {
-        pom {
-            developers {
-                developer {
-                    id.set("minidigger")
-                    name.set("MiniDigger")
-                }
-            }
+  configurePublications {
+    pom {
+      developers {
+        developer {
+          id.set("minidigger")
+          name.set("MiniDigger")
         }
+      }
     }
+  }
 }
 
 tasks.checkstyleJmh {
-    exclude("**")
+  exclude("**")
 }
 
 tasks.jar {
-    manifest.attributes(
-        "Automatic-Module-Name" to "net.kyori.adventure.text.minimessage"
-    )
+  manifest.attributes(
+    "Automatic-Module-Name" to "net.kyori.adventure.text.minimessage"
+  )
 }

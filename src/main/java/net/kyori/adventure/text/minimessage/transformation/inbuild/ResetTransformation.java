@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure-text-minimessage, licensed under the MIT License.
  *
- * Copyright (c) 2018-2020 KyoriPowered
+ * Copyright (c) 2018-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,6 +37,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @deprecated no longer in use as of 4.2.0, does nothing, handled by parser now
  * @since 4.1.0
  */
+@Deprecated
 public final class ResetTransformation extends Transformation {
   private static final ResetTransformation INSTANCE = new ResetTransformation();
 

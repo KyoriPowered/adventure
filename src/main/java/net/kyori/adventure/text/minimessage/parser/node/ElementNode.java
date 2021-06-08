@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure-text-minimessage, licensed under the MIT License.
  *
- * Copyright (c) 2018-2020 KyoriPowered
+ * Copyright (c) 2018-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,11 +37,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @since 4.2.0
  */
 public class ElementNode {
-
   private final @Nullable ElementNode parent;
   private final @Nullable Token token;
-  private final @NonNull String sourceMessage;
-  private final @NonNull List<ElementNode> children = new ArrayList<>();
+  private final String sourceMessage;
+  private final List<ElementNode> children = new ArrayList<>();
 
   /**
    * Creates a new element node.
@@ -107,11 +106,11 @@ public class ElementNode {
    */
   public void addChild(final ElementNode childNode) {
     final int last = this.children.size() - 1;
-    if(!(childNode instanceof TextNode) || this.children.isEmpty() || !(this.children.get(last) instanceof TextNode)) {
+    if (!(childNode instanceof TextNode) || this.children.isEmpty() || !(this.children.get(last) instanceof TextNode)) {
       this.children.add(childNode);
     } else {
       final TextNode lastNode = (TextNode) this.children.remove(last);
-      if(lastNode.token().endIndex() == childNode.token().startIndex()) {
+      if (lastNode.token().endIndex() == childNode.token().startIndex()) {
         final Token replace = new Token(lastNode.token().startIndex(), childNode.token().endIndex(), TokenType.TEXT);
         this.children.add(new TextNode(this, replace, lastNode.sourceMessage()));
       } else {
@@ -133,7 +132,7 @@ public class ElementNode {
   public @NonNull StringBuilder buildToString(final @NonNull StringBuilder sb, final int indent) {
     final char[] in = this.ident(indent);
     sb.append(in).append("Node {\n");
-    for(final ElementNode child : this.children) {
+    for (final ElementNode child : this.children) {
       child.buildToString(sb, indent + 1);
     }
     sb.append(in).append("}\n");

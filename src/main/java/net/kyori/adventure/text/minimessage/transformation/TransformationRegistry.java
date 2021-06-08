@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure-text-minimessage, licensed under the MIT License.
  *
- * Copyright (c) 2018-2020 KyoriPowered
+ * Copyright (c) 2018-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @since 4.1.0
  */
 public final class TransformationRegistry {
-
   public static final TransformationRegistry EMPTY = new TransformationRegistry();
 
   static {
@@ -76,7 +75,7 @@ public final class TransformationRegistry {
    */
   @SafeVarargs
   public TransformationRegistry(final TransformationType<? extends Transformation>... types) {
-    for(final TransformationType<? extends Transformation> type : types) {
+    for (final TransformationType<? extends Transformation> type : types) {
       this.register(type);
     }
   }
@@ -115,17 +114,17 @@ public final class TransformationRegistry {
   public @Nullable Transformation get(final String name, final List<TagPart> inners, final Map<String, Template> templates, final Function<String, ComponentLike> placeholderResolver, final Context context) {
     // first try if we have a custom placeholder resolver
     final ComponentLike potentialTemplate = placeholderResolver.apply(name);
-    if(potentialTemplate != null) {
+    if (potentialTemplate != null) {
       return this.tryLoad(new TemplateTransformation(new Template.ComponentTemplate(name, potentialTemplate.asComponent())), name, inners, context);
     }
     // then check our registry
-    for(final TransformationType<? extends Transformation> type : this.types) {
-      if(type.canParse.test(name)) {
+    for (final TransformationType<? extends Transformation> type : this.types) {
+      if (type.canParse.test(name)) {
         return this.tryLoad(type.parser.parse(), name, inners, context);
-      } else if(templates.containsKey(name)) {
+      } else if (templates.containsKey(name)) {
         final Template template = templates.get(name);
         // The parser handles StringTemplates
-        if(template instanceof Template.ComponentTemplate) {
+        if (template instanceof Template.ComponentTemplate) {
           return this.tryLoad(new TemplateTransformation((Template.ComponentTemplate) template), name, inners, context);
         }
       }
@@ -139,7 +138,7 @@ public final class TransformationRegistry {
       transformation.context(context);
       transformation.load(name, inners.subList(1, inners.size()));
       return transformation;
-    } catch(final ParsingException exception) {
+    } catch (final ParsingException exception) {
       exception.originalText(context.ogMessage());
       throw exception;
     }
@@ -155,12 +154,12 @@ public final class TransformationRegistry {
    */
   public boolean exists(final String name, final Function<String, ComponentLike> placeholderResolver) {
     // first check the placeholder resolver
-    if(placeholderResolver.apply(name) != null) {
+    if (placeholderResolver.apply(name) != null) {
       return true;
     }
     // then check registry
-    for(final TransformationType<? extends Transformation> type : this.types) {
-      if(type.canParse.test(name)) {
+    for (final TransformationType<? extends Transformation> type : this.types) {
+      if (type.canParse.test(name)) {
         return true;
       }
     }

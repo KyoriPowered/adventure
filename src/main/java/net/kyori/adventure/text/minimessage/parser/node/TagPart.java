@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure-text-minimessage, licensed under the MIT License.
  *
- * Copyright (c) 2018-2020 KyoriPowered
+ * Copyright (c) 2018-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,9 +35,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @since 4.2.0
  */
 public final class TagPart {
-
-  private final @NonNull String value;
-  private final @NonNull Token token;
+  private final String value;
+  private final Token token;
 
   /**
    * Constructs a new tag part.
@@ -52,10 +51,10 @@ public final class TagPart {
     final @NonNull Map<String, Template> templates
   ) {
     String v = unquoteAndEscape(sourceMessage, token.startIndex(), token.endIndex());
-    if(isTag(v)) {
+    if (isTag(v)) {
       final String text = v.substring(1, v.length() - 1);
       final Template template = templates.get(text);
-      if(template instanceof Template.StringTemplate) {
+      if (template instanceof Template.StringTemplate) {
         v = ((Template.StringTemplate) template).value();
       }
     }
@@ -98,7 +97,7 @@ public final class TagPart {
    * @since 4.2.0
    */
   public static @NonNull String unquoteAndEscape(final @NonNull String text, final int start, final int end) {
-    if(start == end) {
+    if (start == end) {
       return "";
     }
 
@@ -107,10 +106,10 @@ public final class TagPart {
 
     final char firstChar = text.charAt(startIndex);
     final char lastChar = text.charAt(endIndex - 1);
-    if(firstChar == '\'' || firstChar == '"') {
+    if (firstChar == '\'' || firstChar == '"') {
       startIndex++;
     }
-    if(lastChar == '\'' || lastChar == '"') {
+    if (lastChar == '\'' || lastChar == '"') {
       endIndex--;
     }
 

@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure-text-minimessage, licensed under the MIT License.
  *
- * Copyright (c) 2018-2020 KyoriPowered
+ * Copyright (c) 2018-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -43,7 +43,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @since 4.0.0
  */
 public class MiniMessageImpl implements MiniMessage {
-
   static final Function<String, ComponentLike> DEFAULT_PLACEHOLDER_RESOLVER = s -> null;
   static final Consumer<List<String>> DEFAULT_ERROR_CONSUMER = message -> message.forEach(System.out::println);
 
@@ -68,7 +67,7 @@ public class MiniMessageImpl implements MiniMessage {
 
   @Override
   public @NonNull Component deserialize(@NonNull String input) {
-    if(this.markdown) {
+    if (this.markdown) {
       input = MiniMarkdownParser.parse(input, this.markdownFlavor);
     }
     return this.parser.parseFormat(input, Context.of(this.strict, this.debugOutput, input, this));
@@ -81,7 +80,7 @@ public class MiniMessageImpl implements MiniMessage {
 
   @Override
   public @NonNull Component parse(@NonNull String input, final @NonNull String... placeholders) {
-    if(this.markdown) {
+    if (this.markdown) {
       input = MiniMarkdownParser.parse(input, this.markdownFlavor);
     }
     return this.parser.parseFormat(input, Context.of(this.strict, this.debugOutput, input, this), placeholders);
@@ -89,7 +88,7 @@ public class MiniMessageImpl implements MiniMessage {
 
   @Override
   public @NonNull Component parse(@NonNull String input, final @NonNull Map<String, String> placeholders) {
-    if(this.markdown) {
+    if (this.markdown) {
       input = MiniMarkdownParser.parse(input, this.markdownFlavor);
     }
     return this.parser.parseFormat(input, placeholders, Context.of(this.strict, this.debugOutput, input, this));
@@ -99,26 +98,26 @@ public class MiniMessageImpl implements MiniMessage {
   public @NonNull Component parse(final @NonNull String input, final @NonNull Object... placeholders) {
     final List<Template> templates = new ArrayList<>();
     String key = null;
-    for(int i = 0; i < placeholders.length; i++) {
+    for (int i = 0; i < placeholders.length; i++) {
       final Object object = placeholders[i];
-      if(object instanceof Template) {
+      if (object instanceof Template) {
         // add as a template directly
         templates.add((Template) object);
       } else {
         // this is a `key=[string|component]` template
-        if(key == null) {
+        if (key == null) {
           // get the key
-          if(object instanceof String) {
+          if (object instanceof String) {
             key = (String) object;
           } else {
             throw new IllegalArgumentException("Argument " + i + " in placeholders is key, must be String, was " + object.getClass().getName());
           }
         } else {
           // get the value
-          if(object instanceof ComponentLike) {
+          if (object instanceof ComponentLike) {
             templates.add(Template.of(key, ((ComponentLike) object).asComponent()));
             key = null;
-          } else if(object instanceof String) {
+          } else if (object instanceof String) {
             templates.add(Template.of(key, (String) object));
             key = null;
           } else {
@@ -127,7 +126,7 @@ public class MiniMessageImpl implements MiniMessage {
         }
       }
     }
-    if(key != null) {
+    if (key != null) {
       throw new IllegalArgumentException("Found a key in placeholders that wasn't followed by a value: " + key);
     }
     return this.parse(input, templates);
@@ -135,7 +134,7 @@ public class MiniMessageImpl implements MiniMessage {
 
   @Override
   public @NonNull Component parse(@NonNull String input, final @NonNull Template... placeholders) {
-    if(this.markdown) {
+    if (this.markdown) {
       input = MiniMarkdownParser.parse(input, this.markdownFlavor);
     }
     return this.parser.parseFormat(input, Context.of(this.strict, this.debugOutput, input, this, placeholders), placeholders);
@@ -143,7 +142,7 @@ public class MiniMessageImpl implements MiniMessage {
 
   @Override
   public @NonNull Component parse(@NonNull String input, final @NonNull List<Template> placeholders) {
-    if(this.markdown) {
+    if (this.markdown) {
       input = MiniMarkdownParser.parse(input, this.markdownFlavor);
     }
     return this.parser.parseFormat(input, placeholders, Context.of(this.strict, this.debugOutput, input, this, placeholders.toArray(new Template[0])));
@@ -156,7 +155,7 @@ public class MiniMessageImpl implements MiniMessage {
 
   @Override
   public @NonNull String stripTokens(@NonNull String input) {
-    if(this.markdown) {
+    if (this.markdown) {
       input = MiniMarkdownParser.stripMarkdown(input, this.markdownFlavor);
     }
     return this.parser.stripTokens(input);
@@ -214,7 +213,7 @@ public class MiniMessageImpl implements MiniMessage {
     @SafeVarargs
     @Override
     public final @NonNull Builder transformations(final TransformationType<? extends Transformation>... types) {
-      for(final TransformationType<? extends Transformation> type : types) {
+      for (final TransformationType<? extends Transformation> type : types) {
         this.registry.register(type);
       }
       return this;
@@ -252,7 +251,7 @@ public class MiniMessageImpl implements MiniMessage {
 
     @Override
     public @NonNull MiniMessage build() {
-      if(this.markdown) {
+      if (this.markdown) {
         return new MiniMessageImpl(true, this.markdownFlavor, this.registry, this.placeholderResolver, this.strict, this.debug, this.parsingErrorMessageConsumer);
       } else {
         return new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(), this.registry, this.placeholderResolver, this.strict, this.debug, this.parsingErrorMessageConsumer);

@@ -21,21 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.parser.node;
-
 /**
- * Represents the root node of a tree.
- *
- * @since 4.2.0
+ * Standard transformations.
  */
-public final class RootNode extends ElementNode {
-  /**
-   * Creates a new root node.
-   *
-   * @param sourceMessage the source message
-   * @since 4.2.0
-   */
-  public RootNode(final String sourceMessage) {
-    super(null, null, sourceMessage);
-  }
-}
+package net.kyori.adventure.text.minimessage.transformation.inbuild;

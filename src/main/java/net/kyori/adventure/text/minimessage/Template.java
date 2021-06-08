@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure-text-minimessage, licensed under the MIT License.
  *
- * Copyright (c) 2018-2020 KyoriPowered
+ * Copyright (c) 2018-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,12 +32,11 @@ import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * A placeholder in a message, whicj can replace a tag with a component.
+ * A placeholder in a message, which can replace a tag with a component.
  *
  * @since 4.0.0
  */
 public interface Template extends Examinable {
-
   /**
    * Constructs a template that gets replaced with a string.
    *
@@ -104,10 +103,12 @@ public interface Template extends Examinable {
       this.value = value;
     }
 
+    @Override
     public @NonNull String key() {
       return this.key;
     }
 
+    @Override
     public @NonNull String value() {
       return this.value;
     }

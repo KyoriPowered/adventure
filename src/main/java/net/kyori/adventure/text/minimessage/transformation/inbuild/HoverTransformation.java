@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure-text-minimessage, licensed under the MIT License.
  *
- * Copyright (c) 2018-2020 KyoriPowered
+ * Copyright (c) 2018-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -70,18 +70,18 @@ public final class HoverTransformation extends Transformation {
   public void load(final String name, final List<TagPart> args) {
     super.load(name, args);
 
-    if(args.size() < 2) {
+    if (args.size() < 2) {
       throw new ParsingException("Doesn't know how to turn " + args + " into a hover event", this.argTokenArray());
     }
 
     final List<TagPart> newArgs = args.subList(1, args.size());
 
     this.action = (HoverEvent.Action<Object>) HoverEvent.Action.NAMES.value(args.get(0).value());
-    if(this.action == (Object) HoverEvent.Action.SHOW_TEXT) {
+    if (this.action == (Object) HoverEvent.Action.SHOW_TEXT) {
       this.value = this.context.parse(newArgs.get(0).value());
-    } else if(this.action == (Object) HoverEvent.Action.SHOW_ITEM) {
+    } else if (this.action == (Object) HoverEvent.Action.SHOW_ITEM) {
       this.value = this.parseShowItem(newArgs);
-    } else if(this.action == (Object) HoverEvent.Action.SHOW_ENTITY) {
+    } else if (this.action == (Object) HoverEvent.Action.SHOW_ENTITY) {
       this.value = this.parseShowEntity(newArgs);
     } else {
       throw new ParsingException("Don't know how to turn '" + args + "' into a hover event", this.argTokenArray());
@@ -90,38 +90,38 @@ public final class HoverTransformation extends Transformation {
 
   private HoverEvent.@NonNull ShowItem parseShowItem(final @NonNull List<TagPart> args) {
     try {
-      if(args.isEmpty()) {
+      if (args.isEmpty()) {
         throw new ParsingException("Show item hover needs at least item id!");
       }
       final Key key = Key.key(args.get(0).value());
       final int count;
-      if(args.size() >= 2) {
+      if (args.size() >= 2) {
         count = Integer.parseInt(args.get(1).value());
       } else {
         count = 1;
       }
-      if(args.size() == 3) {
+      if (args.size() == 3) {
         return HoverEvent.ShowItem.of(key, count, BinaryTagHolder.of(args.get(2).value()));
       }
       return HoverEvent.ShowItem.of(key, count);
-    } catch(final InvalidKeyException | NumberFormatException ex) {
+    } catch (final InvalidKeyException | NumberFormatException ex) {
       throw new ParsingException("Exception parsing show_item hover", ex, args.stream().map(TagPart::token).toArray(Token[]::new));
     }
   }
 
   private HoverEvent.@NonNull ShowEntity parseShowEntity(final @NonNull List<TagPart> args) {
     try {
-      if(args.size() < 2) {
+      if (args.size() < 2) {
         throw new ParsingException("Show entity hover needs at least type and uuid!");
       }
       final Key key = Key.key(args.get(0).value());
       final UUID id = UUID.fromString(args.get(1).value());
-      if(args.size() == 3) {
+      if (args.size() == 3) {
         final Component name = this.context.parse(args.get(2).value());
         return HoverEvent.ShowEntity.of(key, id, name);
       }
       return HoverEvent.ShowEntity.of(key, id);
-    } catch(final IllegalArgumentException | InvalidKeyException ex) {
+    } catch (final IllegalArgumentException | InvalidKeyException ex) {
       throw new ParsingException("Exception parsing show_entity hover", ex, args.stream().map(TagPart::token).toArray(Token[]::new));
     }
   }
@@ -141,8 +141,8 @@ public final class HoverTransformation extends Transformation {
 
   @Override
   public boolean equals(final Object other) {
-    if(this == other) return true;
-    if(other == null || this.getClass() != other.getClass()) return false;
+    if (this == other) return true;
+    if (other == null || this.getClass() != other.getClass()) return false;
     final HoverTransformation that = (HoverTransformation) other;
     return Objects.equals(this.action, that.action)
       && Objects.equals(this.value, that.value);

@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure-text-minimessage, licensed under the MIT License.
  *
- * Copyright (c) 2018-2020 KyoriPowered
+ * Copyright (c) 2018-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -65,14 +65,14 @@ public final class DecorationTransformation extends Transformation {
 
     this.decoration = parseDecoration(name);
 
-    if(this.decoration == null) {
+    if (this.decoration == null) {
       throw new ParsingException("Don't know how to turn '" + name + "' into a decoration", this.argTokenArray());
     }
   }
 
   private static TextDecoration parseDecoration(String name) {
     name = name.toLowerCase(Locale.ROOT);
-    switch(name) {
+    switch (name) {
       case Tokens.BOLD_2:
         name = Tokens.BOLD;
         break;
@@ -107,8 +107,8 @@ public final class DecorationTransformation extends Transformation {
 
   @Override
   public boolean equals(final Object other) {
-    if(this == other) return true;
-    if(other == null || this.getClass() != other.getClass()) return false;
+    if (this == other) return true;
+    if (other == null || this.getClass() != other.getClass()) return false;
     final DecorationTransformation that = (DecorationTransformation) other;
     return this.decoration == that.decoration;
   }

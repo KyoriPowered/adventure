@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure-text-minimessage, licensed under the MIT License.
  *
- * Copyright (c) 2018-2020 KyoriPowered
+ * Copyright (c) 2018-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -48,7 +48,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @since 4.2.0
  */
 public final class TokenParser {
-
   private TokenParser() {
   }
 
@@ -64,12 +63,12 @@ public final class TokenParser {
     final @NonNull BiPredicate<String, Boolean> tagNameChecker,
     final @NonNull Map<String, Template> templates,
     final @NonNull String message,
-    final boolean isStrict
+    final boolean strict
   ) {
     final List<Token> tokens = parseFirstPass(message);
     parseSecondPass(message, tokens);
 
-    return buildTree(transformationFactory, tagNameChecker, templates, tokens, message, isStrict);
+    return buildTree(transformationFactory, tagNameChecker, templates, tokens, message, strict);
   }
 
   /*
@@ -89,14 +88,14 @@ public final class TokenParser {
     char currentStringChar = 0;
 
     final int length = message.length();
-    for(int i = 0; i < length; i++) {
+    for (int i = 0; i < length; i++) {
       final int codePoint = message.codePointAt(i);
-      if(!Character.isBmpCodePoint(codePoint)) {
+      if (!Character.isBmpCodePoint(codePoint)) {
         i++;
       }
 
-      if(!escaped) {
-        if(codePoint == '\\') {
+      if (!escaped) {
+        if (codePoint == '\\') {
           escaped = true;
           continue;
         }
@@ -105,25 +104,25 @@ public final class TokenParser {
         continue;
       }
 
-      switch(state) {
+      switch (state) {
         case NORMAL:
-          if(codePoint == '<') {
+          if (codePoint == '<') {
             // Possibly a tag
             marker = i;
             state = FirstPassState.TAG;
           }
           break;
         case TAG:
-          switch(codePoint) {
+          switch (codePoint) {
             case '>':
-              if(i == marker + 1) {
+              if (i == marker + 1) {
                 // This is empty, <>, so it's not a tag
                 state = FirstPassState.NORMAL;
                 break;
               }
 
               // We found a tag
-              if(currentTokenEnd != marker) {
+              if (currentTokenEnd != marker) {
                 // anything not matched up to this point is normal text
                 elements.add(new Token(currentTokenEnd, marker, TokenType.TEXT));
               }
@@ -131,13 +130,13 @@ public final class TokenParser {
 
               // closing tags start with </
               TokenType thisType = TokenType.OPEN_TAG;
-              if(boundsCheck(message, marker, 1) && message.charAt(marker + 1) == '/') {
+              if (boundsCheck(message, marker, 1) && message.charAt(marker + 1) == '/') {
                 thisType = TokenType.CLOSE_TAG;
               }
               elements.add(new Token(marker, currentTokenEnd, thisType));
 
               // <pre> tags put us into a state where we don't parse anything
-              if(message.regionMatches(marker, "<pre>", 0, 5)) {
+              if (message.regionMatches(marker, "<pre>", 0, 5)) {
                 state = FirstPassState.PRE;
               } else {
                 state = FirstPassState.NORMAL;
@@ -155,8 +154,8 @@ public final class TokenParser {
           }
           break;
         case PRE:
-          if(codePoint == '<') {
-            if(message.regionMatches(i, "</pre>", 0, 6)) {
+          if (codePoint == '<') {
+            if (message.regionMatches(i, "</pre>", 0, 6)) {
               // Anything inside the <pre>...</pre> is text
               elements.add(new Token(currentTokenEnd, i, TokenType.TEXT));
               // the </pre> is still a closing tag though
@@ -168,7 +167,7 @@ public final class TokenParser {
           }
           break;
         case STRING:
-          if(codePoint == currentStringChar) {
+          if (codePoint == currentStringChar) {
             state = FirstPassState.TAG;
           }
           break;
@@ -176,11 +175,11 @@ public final class TokenParser {
     }
 
     // anything left over is plain text
-    if(elements.isEmpty()) {
+    if (elements.isEmpty()) {
       elements.add(new Token(0, message.length(), TokenType.TEXT));
     } else {
       final int end = elements.get(elements.size() - 1).endIndex();
-      if(end != message.length()) {
+      if (end != message.length()) {
         elements.add(new Token(end, message.length(), TokenType.TEXT));
       }
     }
@@ -192,7 +191,7 @@ public final class TokenParser {
     NORMAL,
     TAG,
     PRE,
-    STRING
+    STRING;
   }
 
   /*
@@ -200,9 +199,9 @@ public final class TokenParser {
    */
   @SuppressWarnings("DuplicatedCode")
   private static void parseSecondPass(final String message, final List<Token> tokens) {
-    for(final Token token : tokens) {
+    for (final Token token : tokens) {
       final TokenType type = token.type();
-      if(type != TokenType.OPEN_TAG && type != TokenType.CLOSE_TAG) {
+      if (type != TokenType.OPEN_TAG && type != TokenType.CLOSE_TAG) {
         continue;
       }
 
@@ -217,14 +216,14 @@ public final class TokenParser {
       // Marker is the starting index for the current token
       int marker = startIndex;
 
-      for(int i = startIndex; i < endIndex; i++) {
+      for (int i = startIndex; i < endIndex; i++) {
         final int codePoint = message.codePointAt(i);
-        if(!Character.isBmpCodePoint(i)) {
+        if (!Character.isBmpCodePoint(i)) {
           i++;
         }
 
-        if(!escaped) {
-          if(codePoint == '\\') {
+        if (!escaped) {
+          if (codePoint == '\\') {
             escaped = true;
             continue;
           }
@@ -233,14 +232,14 @@ public final class TokenParser {
           continue;
         }
 
-        switch(state) {
+        switch (state) {
           case NORMAL:
             // Values are split by : unless it's in a URL
-            if(codePoint == ':') {
-              if(boundsCheck(message, i, 2) && message.charAt(i + 1) == '/' && message.charAt(i + 2) == '/') {
+            if (codePoint == ':') {
+              if (boundsCheck(message, i, 2) && message.charAt(i + 1) == '/' && message.charAt(i + 2) == '/') {
                 break;
               }
-              if(marker == i) {
+              if (marker == i) {
                 // 2 colons side-by-side like <::> or <:text> or <text::text> would lead to this happening
                 insert(token, new Token(i, i, TokenType.TAG_VALUE));
                 marker++;
@@ -248,13 +247,13 @@ public final class TokenParser {
                 insert(token, new Token(marker, i, TokenType.TAG_VALUE));
                 marker = i + 1;
               }
-            } else if(codePoint == '\'' || codePoint == '"') {
+            } else if (codePoint == '\'' || codePoint == '"') {
               state = SecondPassState.STRING;
               currentStringChar = (char) codePoint;
             }
             break;
           case STRING:
-            if(codePoint == currentStringChar) {
+            if (codePoint == currentStringChar) {
               state = SecondPassState.NORMAL;
             }
             break;
@@ -262,11 +261,11 @@ public final class TokenParser {
       }
 
       // anything not matched is the final part
-      if(token.childTokens() == null || token.childTokens().isEmpty()) {
+      if (token.childTokens() == null || token.childTokens().isEmpty()) {
         insert(token, new Token(startIndex, endIndex, TokenType.TAG_VALUE));
       } else {
         final int end = token.childTokens().get(token.childTokens().size() - 1).endIndex();
-        if(end != endIndex) {
+        if (end != endIndex) {
           insert(token, new Token(end + 1, endIndex, TokenType.TAG_VALUE));
         }
       }
@@ -282,41 +281,41 @@ public final class TokenParser {
     final @NonNull Map<String, Template> templates,
     final @NonNull List<Token> tokens,
     final @NonNull String message,
-    final boolean isStrict
+    final boolean strict
   ) {
     final RootNode root = new RootNode(message);
     ElementNode node = root;
 
-    for(final Token token : tokens) {
+    for (final Token token : tokens) {
       final TokenType type = token.type();
-      switch(type) {
+      switch (type) {
         case TEXT:
           node.addChild(new TextNode(node, token, message));
           break;
 
         case OPEN_TAG:
           final TagNode tagNode = new TagNode(node, token, message, templates);
-          if(tagNode.name().equals("reset")) {
+          if (tagNode.name().equals("reset")) {
             // <reset> tags get special treatment and don't appear in the tree
             // instead, they close all currently open tags
 
-            if(isStrict) {
+            if (strict) {
               throw new ParsingException("<reset> tags are not allowed when strict mode is enabled", message, token);
             }
             node = root;
-          } else if(tagNode.name().equals("pre")) {
+          } else if (tagNode.name().equals("pre")) {
             // <pre> tags also get special treatment and don't appear in the tree
             // anything inside <pre> is raw text, so just skip
 
             continue;
           } else {
             final Template template = templates.get(tagNode.name());
-            if(template instanceof Template.StringTemplate) {
+            if (template instanceof Template.StringTemplate) {
               // String templates are inserted into the tree as raw text nodes, not parsed
               node.addChild(new TemplateNode(node, token, message, ((Template.StringTemplate) template).value()));
-            } else if(tagNameChecker.test(tagNode.name(), true)) {
+            } else if (tagNameChecker.test(tagNode.name(), true)) {
               final Transformation transformation = transformationFactory.apply(tagNode);
-              if(transformation == null) {
+              if (transformation == null) {
                 // something went wrong, ignore it
                 // if strict mode is enabled this will throw an exception for us
                 node.addChild(new TextNode(node, token, message));
@@ -324,7 +323,7 @@ public final class TokenParser {
                 // This is a recognized tag, goes in the tree
                 tagNode.transformation(transformation);
                 node.addChild(tagNode);
-                if(!(transformation instanceof Inserting)) {
+                if (!(transformation instanceof Inserting)) {
                   // this tag has children
                   node = tagNode;
                 }
@@ -338,41 +337,41 @@ public final class TokenParser {
 
         case CLOSE_TAG:
           final List<Token> childTokens = token.childTokens();
-          if(childTokens.isEmpty()) {
+          if (childTokens.isEmpty()) {
             throw new IllegalStateException("CLOSE_TAG token somehow has no children - " +
               "the parser should not allow this. Original text: " + message);
           }
 
           final ArrayList<String> closeValues = new ArrayList<>(childTokens.size());
-          for(final Token childToken : childTokens) {
+          for (final Token childToken : childTokens) {
             closeValues.add(TagPart.unquoteAndEscape(message, childToken.startIndex(), childToken.endIndex()));
           }
 
           final String closeTagName = closeValues.get(0);
-          if(closeTagName.equals("reset") || closeTagName.equals("pre")) {
+          if (closeTagName.equals("reset") || closeTagName.equals("pre")) {
             // These are synthetic nodes, closing them means nothing in the context of building a tree
             continue;
           }
 
-          if(!tagNameChecker.test(closeTagName, false)) {
+          if (!tagNameChecker.test(closeTagName, false)) {
             // tag does not exist, so treat it as text
             node.addChild(new TextNode(node, token, message));
             continue;
           }
 
           ElementNode parentNode = node;
-          while(parentNode instanceof TagNode) {
+          while (parentNode instanceof TagNode) {
             final List<TagPart> openParts = ((TagNode) parentNode).parts();
 
-            if(tagCloses(closeValues, openParts)) {
-              if(parentNode != node && isStrict) {
+            if (tagCloses(closeValues, openParts)) {
+              if (parentNode != node && strict) {
                 final String msg = "Unclosed tag encountered; " + ((TagNode) node).name() + " is not closed, because " +
                   closeValues.get(0) + " was closed first.";
                 throw new ParsingException(msg, message, parentNode.token(), node.token(), token);
               }
 
               final ElementNode par = parentNode.parent();
-              if(par != null) {
+              if (par != null) {
                 node = par;
               } else {
                 throw new IllegalStateException("Root node matched with close tag value, " +
@@ -383,7 +382,7 @@ public final class TokenParser {
 
             parentNode = parentNode.parent();
 
-            if(parentNode == null || parentNode instanceof RootNode) {
+            if (parentNode == null || parentNode instanceof RootNode) {
               // This means the closing tag didn't match to anything
               // Since open tags which don't match to anything is never an error, neither is this
               node.addChild(new TextNode(node, token, message));
@@ -394,12 +393,12 @@ public final class TokenParser {
       }
     }
 
-    if(isStrict && root != node) {
+    if (strict && root != node) {
       final ArrayList<TagNode> openTags = new ArrayList<>();
       {
         ElementNode n = node;
-        while(n != null) {
-          if(n instanceof TagNode) {
+        while (n != null) {
+          if (n instanceof TagNode) {
             openTags.add((TagNode) n);
           } else {
             break;
@@ -415,12 +414,12 @@ public final class TokenParser {
 
       int i = 0;
       final ListIterator<TagNode> iter = openTags.listIterator(openTags.size());
-      while(iter.hasPrevious()) {
+      while (iter.hasPrevious()) {
         final TagNode n = iter.previous();
         errorTokens[i++] = n.token();
 
         sb.append(n.name());
-        if(iter.hasPrevious()) {
+        if (iter.hasPrevious()) {
           sb.append(", ");
         }
       }
@@ -440,11 +439,11 @@ public final class TokenParser {
    * @return {@code true} if the given close parts closes the open tag parts.
    */
   private static boolean tagCloses(final List<String> closeParts, final List<TagPart> openParts) {
-    if(closeParts.size() > openParts.size()) {
+    if (closeParts.size() > openParts.size()) {
       return false;
     }
-    for(int i = 0; i < closeParts.size(); i++) {
-      if(!closeParts.get(i).equals(openParts.get(i).value())) {
+    for (int i = 0; i < closeParts.size(); i++) {
+      if (!closeParts.get(i).equals(openParts.get(i).value())) {
         return false;
       }
     }
@@ -471,11 +470,11 @@ public final class TokenParser {
    * @param value The token to add to {@code token}.
    */
   private static void insert(final Token token, final Token value) {
-    if(token.childTokens() == null) {
+    if (token.childTokens() == null) {
       token.childTokens(Collections.singletonList(value));
       return;
     }
-    if(token.childTokens().size() == 1) {
+    if (token.childTokens().size() == 1) {
       final ArrayList<Token> list = new ArrayList<>(3);
       list.add(token.childTokens().get(0));
       list.add(value);
@@ -487,7 +486,7 @@ public final class TokenParser {
 
   enum SecondPassState {
     NORMAL,
-    STRING
+    STRING;
   }
 
   /**
@@ -504,16 +503,16 @@ public final class TokenParser {
     int from = startIndex;
 
     int i = text.indexOf('\\', from);
-    if(i == -1 || i >= endIndex) {
+    if (i == -1 || i >= endIndex) {
       return text.substring(from, endIndex);
     }
 
     final StringBuilder sb = new StringBuilder(endIndex - startIndex);
-    while(i != -1 && i < endIndex) {
+    while (i != -1 && i < endIndex) {
       sb.append(text, from, i);
       i++;
 
-      if(i >= endIndex) {
+      if (i >= endIndex) {
         from = endIndex;
         break;
       }
@@ -521,13 +520,13 @@ public final class TokenParser {
       final int codePoint = text.codePointAt(i);
       sb.appendCodePoint(codePoint);
 
-      if(Character.isBmpCodePoint(codePoint)) {
+      if (Character.isBmpCodePoint(codePoint)) {
         i += 1;
       } else {
         i += 2;
       }
 
-      if(i >= endIndex) {
+      if (i >= endIndex) {
         from = endIndex;
         break;
       }

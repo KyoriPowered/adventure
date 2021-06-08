@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure-text-minimessage, licensed under the MIT License.
  *
- * Copyright (c) 2018-2020 KyoriPowered
+ * Copyright (c) 2018-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @since 4.1.0
  */
 public class Context {
-
   private final boolean strict;
   private final Appendable debugOutput;
   private ElementNode root;
@@ -135,7 +134,7 @@ public class Context {
    * @return if strict mode is enabled
    * @since 4.1.0
    */
-  public boolean isStrict() {
+  public boolean strict() {
     return this.strict;
   }
 
@@ -197,7 +196,7 @@ public class Context {
    * @since 4.1.0
    */
   public Component parse(final String message) {
-    if(this.templates != null) {
+    if (this.templates != null) {
       return this.miniMessage.parse(message, this.templates);
     } else {
       return this.miniMessage.parse(message);

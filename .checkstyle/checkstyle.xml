@@ -15,6 +15,9 @@
     <property name="eachLine" value="true"/>
   </module>
 
+  <!-- https://checkstyle.org/config_javadoc.html#JavadocPackage -->
+  <module name="JavadocPackage"/>
+
   <!-- https://checkstyle.org/config_misc.html#NewlineAtEndOfFile -->
   <module name="NewlineAtEndOfFile"/>
 
@@ -51,6 +54,13 @@
 
     <!-- https://checkstyle.org/config_misc.html#CommentsIndentation -->
     <module name="CommentsIndentation"/>
+
+    <!-- https://checkstyle.org/config_imports.html#CustomImportOrder -->
+    <module name="CustomImportOrder">
+      <property name="customImportOrderRules" value="THIRD_PARTY_PACKAGE###STATIC"/>
+      <property name="standardPackageRegExp" value="^$"/>
+      <property name="sortImportsInGroupAlphabetically" value="true"/>
+    </module>
 
     <!-- https://checkstyle.org/config_whitespace.html#EmptyForInitializerPad -->
     <module name="EmptyForInitializerPad"/>
@@ -239,9 +249,7 @@
     <module name="UnusedImports"/>
 
     <!-- https://checkstyle.org/config_whitespace.html#WhitespaceAfter -->
-    <module name="WhitespaceAfter">
-      <property name="tokens" value="COMMA, SEMI, TYPECAST"/>
-    </module>
+    <module name="WhitespaceAfter"/>
 
     <!-- https://checkstyle.org/config_whitespace.html#WhitespaceAround -->
     <module name="WhitespaceAround">
@@ -265,11 +273,6 @@
       <property name="tagSeverity" value="ignore"/>
       <property name="minimumScope" value="public"/>
       <property name="tokens" value="INTERFACE_DEF, CLASS_DEF, ENUM_DEF, ANNOTATION_DEF, RECORD_DEF, METHOD_DEF, CTOR_DEF, ANNOTATION_FIELD_DEF, RECORD_DEF, COMPACT_CTOR_DEF"/>
-    </module>
-
-    <!-- https://gitlab.com/stellardrift/stylecheck/-/blob/dev/src/main/java/ca/stellardrift/stylecheck/StatementNoWhitespaceAfter.java -->
-    <module name="StatementNoWhitespaceAfter">
-      <property name="tokens" value="LITERAL_CATCH, LITERAL_FOR, LITERAL_IF, LITERAL_TRY, LITERAL_WHILE"/>
     </module>
   </module>
 </module>

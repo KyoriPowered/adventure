@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure-text-minimessage, licensed under the MIT License.
  *
- * Copyright (c) 2018-2020 KyoriPowered
+ * Copyright (c) 2018-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -79,25 +79,25 @@ public final class ColorTransformation extends Transformation {
   public void load(String name, final List<TagPart> args) {
     super.load(name, args);
 
-    if(name.equalsIgnoreCase(Tokens.COLOR)) {
-      if(args.size() == 1) {
+    if (name.equalsIgnoreCase(Tokens.COLOR)) {
+      if (args.size() == 1) {
         name = args.get(0).value();
       } else {
         throw new ParsingException("Expected to find a color parameter, but found " + args, this.argTokenArray());
       }
     }
 
-    if(colorAliases.containsKey(name)) {
+    if (colorAliases.containsKey(name)) {
       name = colorAliases.get(name);
     }
 
-    if(name.charAt(0) == '#') {
+    if (name.charAt(0) == '#') {
       this.color = TextColor.fromHexString(name);
     } else {
       this.color = NamedTextColor.NAMES.value(name.toLowerCase(Locale.ROOT));
     }
 
-    if(this.color == null) {
+    if (this.color == null) {
       throw new ParsingException("Don't know how to turn '" + name + "' into a color", this.argTokenArray());
     }
   }
@@ -114,8 +114,8 @@ public final class ColorTransformation extends Transformation {
 
   @Override
   public boolean equals(final Object other) {
-    if(this == other) return true;
-    if(other == null || this.getClass() != other.getClass()) return false;
+    if (this == other) return true;
+    if (other == null || this.getClass() != other.getClass()) return false;
     final ColorTransformation that = (ColorTransformation) other;
     return Objects.equals(this.color, that.color);
   }

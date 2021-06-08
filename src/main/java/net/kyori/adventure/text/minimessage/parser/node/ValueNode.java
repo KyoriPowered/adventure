@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure-text-minimessage, licensed under the MIT License.
  *
- * Copyright (c) 2018-2020 KyoriPowered
+ * Copyright (c) 2018-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,8 +35,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 
 public abstract class ValueNode extends ElementNode {
-
-  private final @NonNull String value;
+  private final String value;
 
   /**
    * Creates a new element node.
@@ -68,14 +67,7 @@ public abstract class ValueNode extends ElementNode {
     return Objects.requireNonNull(super.token(), "token is not set");
   }
 
-  /**
-   * Serializes this node to a string.
-   *
-   * @param sb the string builder to serialize into
-   * @param indent the current indent level
-   * @return the passed string builder, for chaining
-   * @since 4.2.0
-   */
+  @Override
   public @NonNull StringBuilder buildToString(final @NonNull StringBuilder sb, final int indent) {
     final char[] in = this.ident(indent);
     sb.append(in).append(this.valueName()).append("('").append(this.value).append("')\n");

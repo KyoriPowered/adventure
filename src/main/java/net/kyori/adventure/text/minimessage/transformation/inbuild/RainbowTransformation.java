@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure-text-minimessage, licensed under the MIT License.
  *
- * Copyright (c) 2018-2020 KyoriPowered
+ * Copyright (c) 2018-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -77,10 +77,10 @@ public final class RainbowTransformation extends Transformation implements Modif
   public void load(final String name, final List<TagPart> args) {
     super.load(name, args);
 
-    if(args.size() == 1) {
+    if (args.size() == 1) {
       try {
         this.phase = Integer.parseInt(args.get(0).value());
-      } catch(final NumberFormatException ex) {
+      } catch (final NumberFormatException ex) {
         throw new ParsingException("Expected phase, got " + args.get(0), this.argTokenArray());
       }
     }
@@ -88,7 +88,7 @@ public final class RainbowTransformation extends Transformation implements Modif
 
   @Override
   public void visit(final ElementNode curr) {
-    if(curr instanceof ValueNode) {
+    if (curr instanceof ValueNode) {
       final String value = ((ValueNode) curr).value();
       this.size += value.codePointCount(0, value.length());
     }
@@ -106,16 +106,16 @@ public final class RainbowTransformation extends Transformation implements Modif
 
   @Override
   public Component apply(final Component current, final int depth) {
-    if((this.disableApplyingColorDepth != -1 && depth >= this.disableApplyingColorDepth) || current.style().color() != null) {
-      if(this.disableApplyingColorDepth == -1) {
+    if ((this.disableApplyingColorDepth != -1 && depth >= this.disableApplyingColorDepth) || current.style().color() != null) {
+      if (this.disableApplyingColorDepth == -1) {
         this.disableApplyingColorDepth = depth;
       }
       // This component has it's own color applied, which overrides ours
       // We still want to keep track of where we are though if this is text
-      if(current instanceof TextComponent) {
+      if (current instanceof TextComponent) {
         final String content = ((TextComponent) current).content();
         final int len = content.codePointCount(0, content.length());
-        for(int i = 0; i < len; i++) {
+        for (int i = 0; i < len; i++) {
           // increment our color index
           this.color(this.phase);
         }
@@ -124,7 +124,7 @@ public final class RainbowTransformation extends Transformation implements Modif
     }
 
     this.disableApplyingColorDepth = -1;
-    if(current instanceof TextComponent && ((TextComponent) current).content().length() > 0) {
+    if (current instanceof TextComponent && ((TextComponent) current).content().length() > 0) {
       final TextComponent textComponent = (TextComponent) current;
       final String content = textComponent.content();
 
@@ -132,7 +132,7 @@ public final class RainbowTransformation extends Transformation implements Modif
 
       // apply
       final int[] holder = new int[1];
-      for(final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
+      for (final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
         holder[0] = it.nextInt();
         final Component comp = Component.text(new String(holder, 0, 1), this.color(this.phase));
         parent = parent.append(comp);
@@ -159,8 +159,8 @@ public final class RainbowTransformation extends Transformation implements Modif
 
   @Override
   public boolean equals(final Object other) {
-    if(this == other) return true;
-    if(other == null || this.getClass() != other.getClass()) return false;
+    if (this == other) return true;
+    if (other == null || this.getClass() != other.getClass()) return false;
     final RainbowTransformation that = (RainbowTransformation) other;
     return this.colorIndex == that.colorIndex
       && Float.compare(that.center, this.center) == 0

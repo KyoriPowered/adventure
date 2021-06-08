@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure-text-minimessage, licensed under the MIT License.
  *
- * Copyright (c) 2018-2020 KyoriPowered
+ * Copyright (c) 2018-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@ public class ParsingException extends RuntimeException {
   private static final long serialVersionUID = 2507190809441787201L;
 
   private @Nullable String originalText;
-  private @NonNull Token @NonNull [] tokens;
+  private Token @NonNull [] tokens;
 
   /**
    * Create a new parsing exception.
@@ -160,7 +160,7 @@ public class ParsingException extends RuntimeException {
     final char[] chars = new char[ts[ts.length - 1].endIndex()];
 
     int i = 0;
-    for(final Token t : ts) {
+    for (final Token t : ts) {
       Arrays.fill(chars, i, t.startIndex(), ' ');
       chars[t.startIndex()] = '^';
       Arrays.fill(chars, t.startIndex() + 1, t.endIndex() - 1, '~');

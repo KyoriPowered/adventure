@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure-text-minimessage, licensed under the MIT License.
  *
- * Copyright (c) 2018-2020 KyoriPowered
+ * Copyright (c) 2018-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -206,7 +206,7 @@ public class MiniMessageTest extends TestBase {
     final String input = "<green><bold><test>";
 
     final Function<String, ComponentLike> resolver = name -> {
-      if(name.equalsIgnoreCase("test")) {
+      if (name.equalsIgnoreCase("test")) {
         return text("TEST").color(RED);
       }
       return null;

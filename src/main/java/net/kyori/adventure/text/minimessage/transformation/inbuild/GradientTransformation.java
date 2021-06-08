@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure-text-minimessage, licensed under the MIT License.
  *
- * Copyright (c) 2018-2020 KyoriPowered
+ * Copyright (c) 2018-2021 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -82,42 +82,42 @@ public final class GradientTransformation extends Transformation implements Modi
   public void load(final String name, final List<TagPart> args) {
     super.load(name, args);
 
-    if(!args.isEmpty()) {
+    if (!args.isEmpty()) {
       final List<TextColor> textColors = new ArrayList<>();
-      for(int i = 0; i < args.size(); i++) {
+      for (int i = 0; i < args.size(); i++) {
         final String arg = args.get(i).value();
         // last argument? maybe this is the phase?
-        if(i == args.size() - 1) {
+        if (i == args.size() - 1) {
           try {
             this.phase = Float.parseFloat(arg);
-            if(this.phase < -1f || this.phase > 1f) {
+            if (this.phase < -1f || this.phase > 1f) {
               throw new ParsingException(String.format("Gradient phase is out of range (%s). Must be in the range [-1.0f, 1.0f] (inclusive).", this.phase), this.argTokenArray());
             }
-            if(this.phase < 0) {
+            if (this.phase < 0) {
               this.negativePhase = true;
               this.phase = 1 + this.phase;
             }
             break;
-          } catch(final NumberFormatException ignored) {
+          } catch (final NumberFormatException ignored) {
           }
         }
 
         final TextColor parsedColor;
-        if(arg.charAt(0) == '#') {
+        if (arg.charAt(0) == '#') {
           parsedColor = TextColor.fromHexString(arg);
         } else {
           parsedColor = NamedTextColor.NAMES.value(arg.toLowerCase(Locale.ROOT));
         }
-        if(parsedColor == null) {
+        if (parsedColor == null) {
           throw new ParsingException(String.format("Unable to parse a color from '%s'. Please use NamedTextColors or Hex colors.", arg), this.argTokenArray());
         }
         textColors.add(parsedColor);
       }
-      if(textColors.size() < 2) {
+      if (textColors.size() < 2) {
         throw new ParsingException("Invalid gradient, not enough colors. Gradients must have at least two colors.", this.argTokenArray());
       }
       this.colors = textColors.toArray(new TextColor[0]);
-      if(this.negativePhase) {
+      if (this.negativePhase) {
         Collections.reverse(Arrays.asList(this.colors));
       }
     } else {
@@ -127,7 +127,7 @@ public final class GradientTransformation extends Transformation implements Modi
 
   @Override
   public void visit(final ElementNode curr) {
-    if(curr instanceof ValueNode) {
+    if (curr instanceof ValueNode) {
       final String value = ((ValueNode) curr).value();
       this.size += value.codePointCount(0, value.length());
     }
@@ -146,16 +146,16 @@ public final class GradientTransformation extends Transformation implements Modi
 
   @Override
   public Component apply(final Component current, final int depth) {
-    if((this.disableApplyingColorDepth != -1 && depth >= this.disableApplyingColorDepth) || current.style().color() != null) {
-      if(this.disableApplyingColorDepth == -1) {
+    if ((this.disableApplyingColorDepth != -1 && depth >= this.disableApplyingColorDepth) || current.style().color() != null) {
+      if (this.disableApplyingColorDepth == -1) {
         this.disableApplyingColorDepth = depth;
       }
       // This component has it's own color applied, which overrides ours
       // We still want to keep track of where we are though if this is text
-      if(current instanceof TextComponent) {
+      if (current instanceof TextComponent) {
         final String content = ((TextComponent) current).content();
         final int len = content.codePointCount(0, content.length());
-        for(int i = 0; i < len; i++) {
+        for (int i = 0; i < len; i++) {
           // increment our color index
           this.color();
         }
@@ -164,13 +164,13 @@ public final class GradientTransformation extends Transformation implements Modi
     }
 
     Component parent = Component.empty();
-    if(current instanceof TextComponent && ((TextComponent) current).content().length() > 0) {
+    if (current instanceof TextComponent && ((TextComponent) current).content().length() > 0) {
       final TextComponent textComponent = (TextComponent) current;
       final String content = textComponent.content();
 
       // apply
       final int[] holder = new int[1];
-      for(final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
+      for (final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
         holder[0] = it.nextInt();
         final Component comp = Component.text(new String(holder, 0, 1), this.color());
         parent = parent.append(comp);
@@ -183,18 +183,18 @@ public final class GradientTransformation extends Transformation implements Modi
 
   private TextColor color() {
     // color switch needed?
-    if(this.factorStep * this.index > 1) {
+    if (this.factorStep * this.index > 1) {
       this.colorIndex++;
       this.index = 0;
     }
 
     float factor = this.factorStep * (this.index++ + this.phase);
     // loop around if needed
-    if(factor > 1) {
+    if (factor > 1) {
       factor = 1 - (factor - 1);
     }
 
-    if(this.negativePhase && this.colors.length % 2 != 0) {
+    if (this.negativePhase && this.colors.length % 2 != 0) {
       // flip the gradient segment for to allow for looping phase -1 through 1
       return this.interpolate(this.colors[this.colorIndex + 1], this.colors[this.colorIndex], factor);
     } else {
@@ -220,8 +220,8 @@ public final class GradientTransformation extends Transformation implements Modi
 
   @Override
   public boolean equals(final Object other) {
-    if(this == other) return true;
-    if(other == null || this.getClass() != other.getClass()) return false;
+    if (this == other) return true;
+    if (other == null || this.getClass() != other.getClass()) return false;
     final GradientTransformation that = (GradientTransformation) other;
     return this.index == that.index
       && this.colorIndex == that.colorIndex
