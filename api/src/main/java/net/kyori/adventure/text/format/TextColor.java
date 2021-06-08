@@ -240,8 +240,8 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
    * <p>This returns a color blended between color {@code a}, at {@code t=0.0}, and color {@code b}, at {@code t=1.0}.</p>
    *
    * @param t the interpolation value, between {@code 0.0} and {@code 1.0} (both inclusive)
-   * @param a the lower bound ({@code t=0.0})
-   * @param b the upper bound ({@code t=1.0})
+   * @param a the first color
+   * @param b the second color
    * @return the interpolated value, a color between the two input colors {@code a} and {@code b}
    * @since 4.8.0
    */
