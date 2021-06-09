@@ -25,8 +25,8 @@ package net.kyori.adventure.text.minimessage.parser.node;
 
 import java.util.Objects;
 import net.kyori.adventure.text.minimessage.parser.Token;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a node in the tree which has a text value.
@@ -45,7 +45,7 @@ public abstract class ValueNode extends ElementNode {
    * @param sourceMessage the source message
    * @since 4.2.0
    */
-  ValueNode(final @Nullable ElementNode parent, final @Nullable Token token, final @NonNull String sourceMessage, final @NonNull String value) {
+  ValueNode(final @Nullable ElementNode parent, final @Nullable Token token, final @NotNull String sourceMessage, final @NotNull String value) {
     super(parent, token, sourceMessage);
     this.value = value;
   }
@@ -58,17 +58,17 @@ public abstract class ValueNode extends ElementNode {
    * @return the value
    * @since 4.2.0
    */
-  public @NonNull String value() {
+  public @NotNull String value() {
     return this.value;
   }
 
   @Override
-  public @NonNull Token token() {
+  public @NotNull Token token() {
     return Objects.requireNonNull(super.token(), "token is not set");
   }
 
   @Override
-  public @NonNull StringBuilder buildToString(final @NonNull StringBuilder sb, final int indent) {
+  public @NotNull StringBuilder buildToString(final @NotNull StringBuilder sb, final int indent) {
     final char[] in = this.ident(indent);
     sb.append(in).append(this.valueName()).append("('").append(this.value).append("')\n");
     return sb;

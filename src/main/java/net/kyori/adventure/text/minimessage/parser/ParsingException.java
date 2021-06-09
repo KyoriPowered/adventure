@@ -24,9 +24,8 @@
 package net.kyori.adventure.text.minimessage.parser;
 
 import java.util.Arrays;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * An exception that happens while parsing.
@@ -37,7 +36,7 @@ public class ParsingException extends RuntimeException {
   private static final long serialVersionUID = 2507190809441787201L;
 
   private @Nullable String originalText;
-  private Token @NonNull [] tokens;
+  private Token @NotNull [] tokens;
 
   /**
    * Create a new parsing exception.
@@ -50,7 +49,7 @@ public class ParsingException extends RuntimeException {
   public ParsingException(
     final String message,
     final @Nullable String originalText,
-    final @NonNull Token @NonNull ... tokens
+    final @NotNull Token @NotNull ... tokens
   ) {
     super(message);
     this.tokens = tokens;
@@ -70,7 +69,7 @@ public class ParsingException extends RuntimeException {
     final String message,
     final @Nullable String originalText,
     final @Nullable Throwable cause,
-    final @NonNull Token @NonNull ... tokens
+    final @NotNull Token @NotNull ... tokens
   ) {
     super(message, cause);
     this.tokens = tokens;
@@ -84,7 +83,7 @@ public class ParsingException extends RuntimeException {
    * @param tokens the token which caused the error
    * @since 4.1.0
    */
-  public ParsingException(final String message, final @NonNull Token @NonNull ... tokens) {
+  public ParsingException(final String message, final @NotNull Token @NotNull ... tokens) {
     this(message, null, null, tokens);
   }
 
@@ -99,7 +98,7 @@ public class ParsingException extends RuntimeException {
   public ParsingException(
     final String message,
     final @Nullable Throwable cause,
-    final @NonNull Token @NonNull ... tokens
+    final @NotNull Token @NotNull ... tokens
   ) {
     this(message, null, cause, tokens);
   }
@@ -141,7 +140,7 @@ public class ParsingException extends RuntimeException {
    * @return the tokens for this error
    * @since 4.1.0
    */
-  public @NonNull Token @NonNull [] tokens() {
+  public @NotNull Token @NotNull [] tokens() {
     return this.tokens;
   }
 
@@ -151,12 +150,12 @@ public class ParsingException extends RuntimeException {
    * @param tokens the tokens for this error
    * @since 4.2.0
    */
-  public void tokens(final @NonNull Token @NonNull [] tokens) {
+  public void tokens(final @NotNull Token @NotNull [] tokens) {
     this.tokens = tokens;
   }
 
   private String arrow() {
-    final @NonNull Token[] ts = this.tokens();
+    final @NotNull Token[] ts = this.tokens();
     final char[] chars = new char[ts[ts.length - 1].endIndex()];
 
     int i = 0;

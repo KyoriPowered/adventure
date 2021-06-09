@@ -35,7 +35,7 @@ import net.kyori.adventure.text.minimessage.markdown.MiniMarkdownParser;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
 import net.kyori.adventure.text.minimessage.transformation.TransformationType;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * not public api.
@@ -56,7 +56,7 @@ public class MiniMessageImpl implements MiniMessage {
   private final Appendable debugOutput;
   private final Consumer<List<String>> parsingErrorMessageConsumer;
 
-  MiniMessageImpl(final boolean markdown, final @NonNull MarkdownFlavor markdownFlavor, final @NonNull TransformationRegistry registry, final @NonNull Function<String, ComponentLike> placeholderResolver, final boolean strict, final Appendable debugOutput, final @NonNull Consumer<List<String>> parsingErrorMessageConsumer) {
+  MiniMessageImpl(final boolean markdown, final @NotNull MarkdownFlavor markdownFlavor, final @NotNull TransformationRegistry registry, final @NotNull Function<String, ComponentLike> placeholderResolver, final boolean strict, final Appendable debugOutput, final @NotNull Consumer<List<String>> parsingErrorMessageConsumer) {
     this.markdown = markdown;
     this.markdownFlavor = markdownFlavor;
     this.parser = new MiniMessageParser(registry, placeholderResolver);
@@ -66,7 +66,7 @@ public class MiniMessageImpl implements MiniMessage {
   }
 
   @Override
-  public @NonNull Component deserialize(@NonNull String input) {
+  public @NotNull Component deserialize(@NotNull String input) {
     if (this.markdown) {
       input = MiniMarkdownParser.parse(input, this.markdownFlavor);
     }
@@ -74,12 +74,12 @@ public class MiniMessageImpl implements MiniMessage {
   }
 
   @Override
-  public @NonNull String serialize(final @NonNull Component component) {
+  public @NotNull String serialize(final @NotNull Component component) {
     return MiniMessageSerializer.serialize(component);
   }
 
   @Override
-  public @NonNull Component parse(@NonNull String input, final @NonNull String... placeholders) {
+  public @NotNull Component parse(@NotNull String input, final @NotNull String... placeholders) {
     if (this.markdown) {
       input = MiniMarkdownParser.parse(input, this.markdownFlavor);
     }
@@ -87,7 +87,7 @@ public class MiniMessageImpl implements MiniMessage {
   }
 
   @Override
-  public @NonNull Component parse(@NonNull String input, final @NonNull Map<String, String> placeholders) {
+  public @NotNull Component parse(@NotNull String input, final @NotNull Map<String, String> placeholders) {
     if (this.markdown) {
       input = MiniMarkdownParser.parse(input, this.markdownFlavor);
     }
@@ -95,7 +95,7 @@ public class MiniMessageImpl implements MiniMessage {
   }
 
   @Override
-  public @NonNull Component parse(final @NonNull String input, final @NonNull Object... placeholders) {
+  public @NotNull Component parse(final @NotNull String input, final @NotNull Object... placeholders) {
     final List<Template> templates = new ArrayList<>();
     String key = null;
     for (int i = 0; i < placeholders.length; i++) {
@@ -133,7 +133,7 @@ public class MiniMessageImpl implements MiniMessage {
   }
 
   @Override
-  public @NonNull Component parse(@NonNull String input, final @NonNull Template... placeholders) {
+  public @NotNull Component parse(@NotNull String input, final @NotNull Template... placeholders) {
     if (this.markdown) {
       input = MiniMarkdownParser.parse(input, this.markdownFlavor);
     }
@@ -141,7 +141,7 @@ public class MiniMessageImpl implements MiniMessage {
   }
 
   @Override
-  public @NonNull Component parse(@NonNull String input, final @NonNull List<Template> placeholders) {
+  public @NotNull Component parse(@NotNull String input, final @NotNull List<Template> placeholders) {
     if (this.markdown) {
       input = MiniMarkdownParser.parse(input, this.markdownFlavor);
     }
@@ -149,12 +149,12 @@ public class MiniMessageImpl implements MiniMessage {
   }
 
   @Override
-  public @NonNull String escapeTokens(final @NonNull String input) {
+  public @NotNull String escapeTokens(final @NotNull String input) {
     return this.parser.escapeTokens(input);
   }
 
   @Override
-  public @NonNull String stripTokens(@NonNull String input) {
+  public @NotNull String stripTokens(@NotNull String input) {
     if (this.markdown) {
       input = MiniMarkdownParser.stripMarkdown(input, this.markdownFlavor);
     }
@@ -167,12 +167,12 @@ public class MiniMessageImpl implements MiniMessage {
    * @return huhu.
    * @since 4.1.0
    */
-  public @NonNull Consumer<List<String>> parsingErrorMessageConsumer() {
+  public @NotNull Consumer<List<String>> parsingErrorMessageConsumer() {
     return this.parsingErrorMessageConsumer;
   }
 
   @Override
-  public @NonNull Builder toBuilder() {
+  public @NotNull Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
@@ -193,26 +193,26 @@ public class MiniMessageImpl implements MiniMessage {
     }
 
     @Override
-    public @NonNull Builder markdown() {
+    public @NotNull Builder markdown() {
       this.markdown = true;
       return this;
     }
 
     @Override
-    public @NonNull Builder removeDefaultTransformations() {
+    public @NotNull Builder removeDefaultTransformations() {
       this.registry.clear();
       return this;
     }
 
     @Override
-    public @NonNull Builder transformation(final TransformationType<? extends Transformation> type) {
+    public @NotNull Builder transformation(final TransformationType<? extends Transformation> type) {
       this.registry.register(type);
       return this;
     }
 
     @SafeVarargs
     @Override
-    public final @NonNull Builder transformations(final TransformationType<? extends Transformation>... types) {
+    public final @NotNull Builder transformations(final TransformationType<? extends Transformation>... types) {
       for (final TransformationType<? extends Transformation> type : types) {
         this.registry.register(type);
       }
@@ -220,37 +220,37 @@ public class MiniMessageImpl implements MiniMessage {
     }
 
     @Override
-    public @NonNull Builder markdownFlavor(final MarkdownFlavor markdownFlavor) {
+    public @NotNull Builder markdownFlavor(final MarkdownFlavor markdownFlavor) {
       this.markdownFlavor = markdownFlavor;
       return this;
     }
 
     @Override
-    public @NonNull Builder placeholderResolver(final Function<String, ComponentLike> placeholderResolver) {
+    public @NotNull Builder placeholderResolver(final Function<String, ComponentLike> placeholderResolver) {
       this.placeholderResolver = placeholderResolver;
       return this;
     }
 
     @Override
-    public @NonNull Builder strict(final boolean strict) {
+    public @NotNull Builder strict(final boolean strict) {
       this.strict = strict;
       return this;
     }
 
     @Override
-    public @NonNull Builder debug(final Appendable debugOutput) {
+    public @NotNull Builder debug(final Appendable debugOutput) {
       this.debug = debugOutput;
       return this;
     }
 
     @Override
-    public @NonNull Builder parsingErrorMessageConsumer(final Consumer<List<String>> consumer) {
+    public @NotNull Builder parsingErrorMessageConsumer(final Consumer<List<String>> consumer) {
       this.parsingErrorMessageConsumer = consumer;
       return this;
     }
 
     @Override
-    public @NonNull MiniMessage build() {
+    public @NotNull MiniMessage build() {
       if (this.markdown) {
         return new MiniMessageImpl(true, this.markdownFlavor, this.registry, this.placeholderResolver, this.strict, this.debug, this.parsingErrorMessageConsumer);
       } else {

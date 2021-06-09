@@ -28,8 +28,8 @@ import java.util.Arrays;
 import java.util.List;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenType;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a node in the tree.
@@ -50,7 +50,7 @@ public class ElementNode {
    * @param sourceMessage the source message
    * @since 4.2.0
    */
-  ElementNode(final @Nullable ElementNode parent, final @Nullable Token token, final @NonNull String sourceMessage) {
+  ElementNode(final @Nullable ElementNode parent, final @Nullable Token token, final @NotNull String sourceMessage) {
     this.parent = parent;
     this.token = token;
     this.sourceMessage = sourceMessage;
@@ -82,7 +82,7 @@ public class ElementNode {
    * @return the source message
    * @since 4.2.0
    */
-  public @NonNull String sourceMessage() {
+  public @NotNull String sourceMessage() {
     return this.sourceMessage;
   }
 
@@ -129,7 +129,7 @@ public class ElementNode {
    * @return the passed string builder, for chaining
    * @since 4.2.0
    */
-  public @NonNull StringBuilder buildToString(final @NonNull StringBuilder sb, final int indent) {
+  public @NotNull StringBuilder buildToString(final @NotNull StringBuilder sb, final int indent) {
     final char[] in = this.ident(indent);
     sb.append(in).append("Node {\n");
     for (final ElementNode child : this.children) {
@@ -139,7 +139,7 @@ public class ElementNode {
     return sb;
   }
 
-  char @NonNull [] ident(final int indent) {
+  char @NotNull [] ident(final int indent) {
     final char[] c = new char[indent * 2];
     Arrays.fill(c, ' ');
     return c;

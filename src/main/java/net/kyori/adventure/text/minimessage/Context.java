@@ -25,8 +25,8 @@ package net.kyori.adventure.text.minimessage;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Carries needed context for minimessage around, ranging from debug info to the configured minimessage instance.
@@ -40,9 +40,9 @@ public class Context {
   private final String ogMessage;
   private String replacedMessage;
   private final MiniMessageImpl miniMessage;
-  private final @NonNull Template @Nullable [] templates;
+  private final @NotNull Template @Nullable [] templates;
 
-  Context(final boolean strict, final Appendable debugOutput, final ElementNode root, final String ogMessage, final String replacedMessage, final MiniMessageImpl miniMessage, final @NonNull Template @Nullable [] templates) {
+  Context(final boolean strict, final Appendable debugOutput, final ElementNode root, final String ogMessage, final String replacedMessage, final MiniMessageImpl miniMessage, final @NotNull Template @Nullable [] templates) {
     this.strict = strict;
     this.debugOutput = debugOutput;
     this.root = root;
@@ -89,7 +89,7 @@ public class Context {
    * @return the debug context
    * @since 4.1.0
    */
-  public static Context of(final boolean strict, final String input, final MiniMessageImpl miniMessage, @NonNull final Template @Nullable [] templates) {
+  public static Context of(final boolean strict, final String input, final MiniMessageImpl miniMessage, @NotNull final Template @Nullable [] templates) {
     return new Context(strict, null, null, input, null, miniMessage, templates);
   }
 
@@ -104,7 +104,7 @@ public class Context {
    * @return the debug context
    * @since 4.2.0
    */
-  public static Context of(final boolean strict, final Appendable debugOutput, final String input, final MiniMessageImpl miniMessage, @NonNull final Template @Nullable [] templates) {
+  public static Context of(final boolean strict, final Appendable debugOutput, final String input, final MiniMessageImpl miniMessage, @NotNull final Template @Nullable [] templates) {
     return new Context(strict, debugOutput, null, input, null, miniMessage, templates);
   }
 

@@ -24,8 +24,8 @@
 package net.kyori.adventure.text.minimessage.parser.node;
 
 import net.kyori.adventure.text.minimessage.parser.Token;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a template replacement in a string.
@@ -43,9 +43,9 @@ public class TemplateNode extends ValueNode {
    */
   public TemplateNode(
     final @Nullable ElementNode parent,
-    final @NonNull Token token,
-    final @NonNull String sourceMessage,
-    final @NonNull String actualValue
+    final @NotNull Token token,
+    final @NotNull String sourceMessage,
+    final @NotNull String actualValue
   ) {
     super(parent, token, sourceMessage, actualValue);
   }

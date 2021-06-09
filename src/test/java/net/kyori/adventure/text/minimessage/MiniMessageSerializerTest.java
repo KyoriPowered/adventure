@@ -34,7 +34,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.text;
@@ -261,7 +261,7 @@ public class MiniMessageSerializerTest extends TestBase {
     this.test(input, expected);
   }
 
-  private void test(final @NonNull ComponentLike builder, final @NonNull String expected) {
+  private void test(final @NotNull ComponentLike builder, final @NotNull String expected) {
     final String string = MiniMessageSerializer.serialize(builder.asComponent());
     assertEquals(expected, string);
   }

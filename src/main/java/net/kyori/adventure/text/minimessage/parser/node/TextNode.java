@@ -25,8 +25,8 @@ package net.kyori.adventure.text.minimessage.parser.node;
 
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenParser;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a string of chars.
@@ -44,8 +44,8 @@ public final class TextNode extends ValueNode {
    */
   public TextNode(
     final @Nullable ElementNode parent,
-    final @NonNull Token token,
-    final @NonNull String sourceMessage
+    final @NotNull Token token,
+    final @NotNull String sourceMessage
   ) {
     super(parent, token, sourceMessage, TokenParser.unescape(sourceMessage, token.startIndex(), token.endIndex()));
   }

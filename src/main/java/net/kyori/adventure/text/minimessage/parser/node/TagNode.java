@@ -31,8 +31,8 @@ import net.kyori.adventure.text.minimessage.Template;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Node that represents a tag.
@@ -52,19 +52,19 @@ public final class TagNode extends ElementNode {
    * @since 4.2.0
    */
   public TagNode(
-    final @NonNull ElementNode parent,
-    final @NonNull Token token,
-    final @NonNull String sourceMessage,
-    final @NonNull Map<String, Template> templates
+    final @NotNull ElementNode parent,
+    final @NotNull Token token,
+    final @NotNull String sourceMessage,
+    final @NotNull Map<String, Template> templates
   ) {
     super(parent, token, sourceMessage);
     this.parts = genParts(token, sourceMessage, templates);
   }
 
-  private static @NonNull List<TagPart> genParts(
-    final @NonNull Token token,
-    final @NonNull String sourceMessage,
-    final @NonNull Map<String, Template> templates
+  private static @NotNull List<TagPart> genParts(
+    final @NotNull Token token,
+    final @NotNull String sourceMessage,
+    final @NotNull Map<String, Template> templates
   ) {
     final ArrayList<TagPart> parts = new ArrayList<>();
 
@@ -83,7 +83,7 @@ public final class TagNode extends ElementNode {
    * @return the parts
    * @since 4.2.0
    */
-  public @NonNull List<TagPart> parts() {
+  public @NotNull List<TagPart> parts() {
     return this.parts;
   }
 
@@ -93,7 +93,7 @@ public final class TagNode extends ElementNode {
    * @return the name
    * @since 4.2.0
    */
-  public @NonNull String name() {
+  public @NotNull String name() {
     if (this.parts.isEmpty()) {
       throw new ParsingException("Tag has no parts? " + this, this.sourceMessage(), this.token());
     }
@@ -101,7 +101,7 @@ public final class TagNode extends ElementNode {
   }
 
   @Override
-  public @NonNull Token token() {
+  public @NotNull Token token() {
     return Objects.requireNonNull(super.token(), "token is not set");
   }
 
@@ -111,7 +111,7 @@ public final class TagNode extends ElementNode {
    * @return the transformation for this tag node
    * @since 4.2.0
    */
-  public @NonNull Transformation transformation() {
+  public @NotNull Transformation transformation() {
     return Objects.requireNonNull(this.transformation, "no transformation set");
   }
 
@@ -121,12 +121,12 @@ public final class TagNode extends ElementNode {
    * @param transformation the transformation
    * @since 4.2.0
    */
-  public void transformation(final @NonNull Transformation transformation) {
+  public void transformation(final @NotNull Transformation transformation) {
     this.transformation = transformation;
   }
 
   @Override
-  public @NonNull StringBuilder buildToString(final @NonNull StringBuilder sb, final int indent) {
+  public @NotNull StringBuilder buildToString(final @NotNull StringBuilder sb, final int indent) {
     final char[] in = this.ident(indent);
     sb.append(in).append("TagNode(");
 

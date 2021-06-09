@@ -39,7 +39,7 @@ import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A transformation that applies a {@link HoverEvent}.
@@ -88,7 +88,7 @@ public final class HoverTransformation extends Transformation {
     }
   }
 
-  private HoverEvent.@NonNull ShowItem parseShowItem(final @NonNull List<TagPart> args) {
+  private HoverEvent.@NotNull ShowItem parseShowItem(final @NotNull List<TagPart> args) {
     try {
       if (args.isEmpty()) {
         throw new ParsingException("Show item hover needs at least item id!");
@@ -109,7 +109,7 @@ public final class HoverTransformation extends Transformation {
     }
   }
 
-  private HoverEvent.@NonNull ShowEntity parseShowEntity(final @NonNull List<TagPart> args) {
+  private HoverEvent.@NotNull ShowEntity parseShowEntity(final @NotNull List<TagPart> args) {
     try {
       if (args.size() < 2) {
         throw new ParsingException("Show entity hover needs at least type and uuid!");
@@ -132,7 +132,7 @@ public final class HoverTransformation extends Transformation {
   }
 
   @Override
-  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("action", this.action),
       ExaminableProperty.of("value", this.value)

@@ -31,7 +31,7 @@ import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Internal class for markdown handling.
@@ -51,7 +51,7 @@ public final class MiniMarkdownParser {
    * @return the stripped input
    * @since 4.1.0
    */
-  public static @NonNull String stripMarkdown(final @NonNull String input, final @NonNull MarkdownFlavor markdownFlavor) {
+  public static @NotNull String stripMarkdown(final @NotNull String input, final @NotNull MarkdownFlavor markdownFlavor) {
     return handle(input, true, markdownFlavor);
   }
 
@@ -63,11 +63,11 @@ public final class MiniMarkdownParser {
    * @return a modified string
    * @since 4.1.0
    */
-  public static @NonNull String parse(final @NonNull String input, final @NonNull MarkdownFlavor markdownFlavor) {
+  public static @NotNull String parse(final @NotNull String input, final @NotNull MarkdownFlavor markdownFlavor) {
     return handle(input, false, markdownFlavor);
   }
 
-  private static @NonNull String handle(final @NonNull String input, final boolean strip, final @NonNull MarkdownFlavor markdownFlavor) {
+  private static @NotNull String handle(final @NotNull String input, final boolean strip, final @NotNull MarkdownFlavor markdownFlavor) {
     final StringBuilder sb = new StringBuilder();
 
     int bold = -1;
@@ -180,7 +180,7 @@ public final class MiniMarkdownParser {
     return sb.toString();
   }
 
-  private static char next(final int index, final @NonNull String input) {
+  private static char next(final int index, final @NotNull String input) {
     if (index < input.length() - 1) {
       return input.charAt(index + 1);
     } else {
@@ -192,7 +192,7 @@ public final class MiniMarkdownParser {
     private final int pos;
     private final String value;
 
-    Insert(final int pos, final @NonNull String value) {
+    Insert(final int pos, final @NotNull String value) {
       this.pos = pos;
       this.value = value;
     }
@@ -201,12 +201,12 @@ public final class MiniMarkdownParser {
       return this.pos;
     }
 
-    private @NonNull String value() {
+    private @NotNull String value() {
       return this.value;
     }
 
     @Override
-    public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
         ExaminableProperty.of("pos", this.pos),
         ExaminableProperty.of("value", this.value)

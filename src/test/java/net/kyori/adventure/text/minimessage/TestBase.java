@@ -27,7 +27,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -35,11 +35,11 @@ public class TestBase {
 
   final MiniMessage PARSER = MiniMessage.get();
 
-  void assertParsedEquals(final @NonNull Component expected, final @NonNull String input) {
+  void assertParsedEquals(final @NotNull Component expected, final @NotNull String input) {
     this.assertParsedEquals(this.PARSER, expected, input);
   }
 
-  void assertParsedEquals(final @NonNull Component expected, final @NonNull String input, final @NonNull Object... args) {
+  void assertParsedEquals(final @NotNull Component expected, final @NotNull String input, final @NotNull Object... args) {
     this.assertParsedEquals(this.PARSER, expected, input, args);
   }
 
@@ -50,7 +50,7 @@ public class TestBase {
     assertEquals(expectedSerialized, actual);
   }
 
-  void assertParsedEquals(final MiniMessage miniMessage, final Component expected, final String input, final @NonNull Object... args) {
+  void assertParsedEquals(final MiniMessage miniMessage, final Component expected, final String input, final @NotNull Object... args) {
     final Gson gson = this.gson();
     final String expectedSerialized = gson.toJson(expected);
     final String actual = gson.toJson(miniMessage.parse(input, args));

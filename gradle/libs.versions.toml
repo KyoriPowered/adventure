@@ -9,6 +9,8 @@ adventure-text-gson = { module = "net.kyori:adventure-text-serializer-gson", ver
 
 javacc = "net.java.dev.javacc:javacc:7.0.10"
 
+jetbrains-annotations = "org.jetbrains:annotations:21.0.1"
+
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
 

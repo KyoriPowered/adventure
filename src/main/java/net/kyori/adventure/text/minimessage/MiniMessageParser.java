@@ -47,7 +47,7 @@ import net.kyori.adventure.text.minimessage.parser.node.ValueNode;
 import net.kyori.adventure.text.minimessage.transformation.Modifying;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 final class MiniMessageParser {
   // regex group names
@@ -71,7 +71,7 @@ final class MiniMessageParser {
     this.placeholderResolver = placeholderResolver;
   }
 
-  @NonNull String escapeTokens(final @NonNull String richMessage) {
+  @NotNull String escapeTokens(final @NotNull String richMessage) {
     final StringBuilder sb = new StringBuilder();
     final Matcher matcher = pattern.matcher(richMessage);
     int lastEnd = 0;
@@ -104,7 +104,7 @@ final class MiniMessageParser {
     return sb.toString();
   }
 
-  @NonNull String stripTokens(final @NonNull String richMessage) {
+  @NotNull String stripTokens(final @NotNull String richMessage) {
     final StringBuilder sb = new StringBuilder();
     final Matcher matcher = pattern.matcher(richMessage);
     int lastEnd = 0;
@@ -125,7 +125,7 @@ final class MiniMessageParser {
     return sb.toString();
   }
 
-  @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull Context context, final @NonNull String... placeholders) {
+  @NotNull Component parseFormat(final @NotNull String richMessage, final @NotNull Context context, final @NotNull String... placeholders) {
     if (placeholders.length % 2 != 0) {
       throw new ParsingException(
         "Invalid number placeholders defined, usage: parseFormat(format, key, value, key, value...)");
@@ -139,7 +139,7 @@ final class MiniMessageParser {
     return this.parseFormat(richMessage, context, t);
   }
 
-  @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull Map<String, String> placeholders, final Context context) {
+  @NotNull Component parseFormat(final @NotNull String richMessage, final @NotNull Map<String, String> placeholders, final Context context) {
     final Template[] t = new Template[placeholders.size()];
     int i = 0;
     for (final Map.Entry<String, String> entry : placeholders.entrySet()) {
@@ -148,7 +148,7 @@ final class MiniMessageParser {
     return this.parseFormat(richMessage, context, t);
   }
 
-  @NonNull Component parseFormat(final @NonNull String input, final Context context, final @NonNull Template... placeholders) {
+  @NotNull Component parseFormat(final @NotNull String input, final Context context, final @NotNull Template... placeholders) {
     final Map<String, Template> map = new HashMap<>();
     for (final Template placeholder : placeholders) {
       map.put(placeholder.key(), placeholder);
@@ -156,7 +156,7 @@ final class MiniMessageParser {
     return this.parseFormat0(input, map, context);
   }
 
-  @NonNull Component parseFormat(final @NonNull String input, final @NonNull List<Template> placeholders, final @NonNull Context context) {
+  @NotNull Component parseFormat(final @NotNull String input, final @NotNull List<Template> placeholders, final @NotNull Context context) {
     final Map<String, Template> map = new HashMap<>();
     for (final Template placeholder : placeholders) {
       map.put(placeholder.key(), placeholder);
@@ -164,15 +164,15 @@ final class MiniMessageParser {
     return this.parseFormat0(input, map, context);
   }
 
-  @NonNull Component parseFormat(final @NonNull String richMessage, final @NonNull Context context) {
+  @NotNull Component parseFormat(final @NotNull String richMessage, final @NotNull Context context) {
     return this.parseFormat0(richMessage, Collections.emptyMap(), context);
   }
 
-  @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template> templates, final @NonNull Context context) {
+  @NotNull Component parseFormat0(final @NotNull String richMessage, final @NotNull Map<String, Template> templates, final @NotNull Context context) {
     return this.parseFormat0(richMessage, templates, this.registry, this.placeholderResolver, context);
   }
 
-  @NonNull Component parseFormat0(final @NonNull String richMessage, final @NonNull Map<String, Template> templates, final @NonNull TransformationRegistry registry, final @NonNull Function<String, ComponentLike> placeholderResolver, final Context context) {
+  @NotNull Component parseFormat0(final @NotNull String richMessage, final @NotNull Map<String, Template> templates, final @NotNull TransformationRegistry registry, final @NotNull Function<String, ComponentLike> placeholderResolver, final Context context) {
     final Appendable debug = context.debugOutput();
     if (debug != null) {
       try {
@@ -243,7 +243,7 @@ final class MiniMessageParser {
     return this.flatten(comp);
   }
 
-  @NonNull Component parse(final @NonNull ElementNode node) {
+  @NotNull Component parse(final @NotNull ElementNode node) {
     Component comp;
     Transformation transformation = null;
     if (node instanceof ValueNode) {
@@ -290,7 +290,7 @@ final class MiniMessageParser {
     return newComp;
   }
 
-  private @NonNull Component flatten(@NonNull Component comp) {
+  private @NotNull Component flatten(@NotNull Component comp) {
     if (comp.children().isEmpty()) {
       return comp;
     }
@@ -341,7 +341,7 @@ final class MiniMessageParser {
     return comp;
   }
 
-  private static @NonNull Style mergeStyle(final @NonNull Component base, final @NonNull Component target) {
+  private static @NotNull Style mergeStyle(final @NotNull Component base, final @NotNull Component target) {
     return target.style().merge(base.style(), Style.Merge.Strategy.IF_ABSENT_ON_TARGET, Style.Merge.all());
   }
 }

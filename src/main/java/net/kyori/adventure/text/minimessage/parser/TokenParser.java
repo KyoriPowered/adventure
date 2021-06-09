@@ -39,8 +39,8 @@ import net.kyori.adventure.text.minimessage.parser.node.TemplateNode;
 import net.kyori.adventure.text.minimessage.parser.node.TextNode;
 import net.kyori.adventure.text.minimessage.transformation.Inserting;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Handles parsing a string into a list of tokens and then into a tree of nodes.
@@ -59,10 +59,10 @@ public final class TokenParser {
    * @since 4.2.0
    */
   public static ElementNode parse(
-    final @NonNull Function<TagNode, @Nullable Transformation> transformationFactory,
-    final @NonNull BiPredicate<String, Boolean> tagNameChecker,
-    final @NonNull Map<String, Template> templates,
-    final @NonNull String message,
+    final @NotNull Function<TagNode, @Nullable Transformation> transformationFactory,
+    final @NotNull BiPredicate<String, Boolean> tagNameChecker,
+    final @NotNull Map<String, Template> templates,
+    final @NotNull String message,
     final boolean strict
   ) {
     final List<Token> tokens = parseFirstPass(message);
@@ -276,11 +276,11 @@ public final class TokenParser {
    * Build a tree from the OPEN_TAG and CLOSE_TAG tokens
    */
   private static ElementNode buildTree(
-    final @NonNull Function<TagNode, @Nullable Transformation> transformationFactory,
-    final @NonNull BiPredicate<String, Boolean> tagNameChecker,
-    final @NonNull Map<String, Template> templates,
-    final @NonNull List<Token> tokens,
-    final @NonNull String message,
+    final @NotNull Function<TagNode, @Nullable Transformation> transformationFactory,
+    final @NotNull BiPredicate<String, Boolean> tagNameChecker,
+    final @NotNull Map<String, Template> templates,
+    final @NotNull List<Token> tokens,
+    final @NotNull String message,
     final boolean strict
   ) {
     final RootNode root = new RootNode(message);

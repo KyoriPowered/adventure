@@ -37,8 +37,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static net.kyori.adventure.text.minimessage.Tokens.BOLD;
 import static net.kyori.adventure.text.minimessage.Tokens.CLICK;
@@ -61,7 +61,7 @@ final class MiniMessageSerializer {
   private MiniMessageSerializer() {
   }
 
-  static @NonNull String serialize(final @NonNull Component component) {
+  static @NotNull String serialize(final @NotNull Component component) {
     final List<ComponentNode> nodes = traverseNode(new ComponentNode(component));
     final StringBuilder sb = new StringBuilder();
 
@@ -82,7 +82,7 @@ final class MiniMessageSerializer {
   }
 
   // Sorts a ComponentNode's tree in a LinkedList using Pre Order Traversal.
-  private static List<ComponentNode> traverseNode(@NonNull final ComponentNode root) {
+  private static List<ComponentNode> traverseNode(@NotNull final ComponentNode root) {
     final List<ComponentNode> nodes = new LinkedList<>();
     nodes.add(root);
 
@@ -97,7 +97,7 @@ final class MiniMessageSerializer {
   }
 
   // Serializes a single node into minimessage format.
-  private static String serializeNode(@NonNull final ComponentNode node, @Nullable final Style previous, @Nullable final Style next) {
+  private static String serializeNode(@NotNull final ComponentNode node, @Nullable final Style previous, @Nullable final Style next) {
     final StringBuilder sb = new StringBuilder();
     final Style style = node.style();
 
@@ -221,7 +221,7 @@ final class MiniMessageSerializer {
     return sb.toString();
   }
 
-  private static void serializeHoverEvent(final @NonNull StringBuilder sb, final @NonNull HoverEvent<?> hov) {
+  private static void serializeHoverEvent(final @NotNull StringBuilder sb, final @NotNull HoverEvent<?> hov) {
     if (hov.action() == HoverEvent.Action.SHOW_TEXT) {
       sb.append(startTag(HOVER + SEPARATOR + HoverEvent.Action.NAMES.key(hov.action()) + SEPARATOR + "\"" + serialize((Component) hov.value()).replace("\"", "\\\"") + "\""));
     } else if (hov.action() == HoverEvent.Action.SHOW_ITEM) {
@@ -247,17 +247,17 @@ final class MiniMessageSerializer {
     }
   }
 
-  private static boolean areDifferent(final @NonNull ClickEvent c1, final @Nullable ClickEvent c2) {
+  private static boolean areDifferent(final @NotNull ClickEvent c1, final @Nullable ClickEvent c2) {
     if (c2 == null) return true;
     return !c1.equals(c2) && (!c1.action().equals(c2.action()) || !c1.value().equals(c2.value()));
   }
 
-  private static boolean areDifferent(final @NonNull HoverEvent<?> h1, final @Nullable HoverEvent<?> h2) {
+  private static boolean areDifferent(final @NotNull HoverEvent<?> h1, final @Nullable HoverEvent<?> h2) {
     if (h2 == null) return true;
     return !h1.equals(h2) && (!h1.action().equals(h2.action())); // TODO also compare value
   }
 
-  private static @NonNull String startColor(final @NonNull TextColor color) {
+  private static @NotNull String startColor(final @NotNull TextColor color) {
     if (color instanceof NamedTextColor) {
       return startTag(Objects.requireNonNull(NamedTextColor.NAMES.key((NamedTextColor) color)));
     } else {
@@ -265,7 +265,7 @@ final class MiniMessageSerializer {
     }
   }
 
-  private static @NonNull String endColor(final @NonNull TextColor color) {
+  private static @NotNull String endColor(final @NotNull TextColor color) {
     if (color instanceof NamedTextColor) {
       return endTag(Objects.requireNonNull(NamedTextColor.NAMES.key((NamedTextColor) color)));
     } else {
@@ -273,15 +273,15 @@ final class MiniMessageSerializer {
     }
   }
 
-  private static @NonNull String startTag(final @NonNull String content) {
+  private static @NotNull String startTag(final @NotNull String content) {
     return TAG_START + content + TAG_END;
   }
 
-  private static @NonNull String endTag(final @NonNull String content) {
+  private static @NotNull String endTag(final @NotNull String content) {
     return TAG_START + CLOSE_TAG + content + TAG_END;
   }
 
-  private static void handleDifferentComponent(final @NonNull Component component, final @NonNull StringBuilder sb) {
+  private static void handleDifferentComponent(final @NotNull Component component, final @NotNull StringBuilder sb) {
     if (component instanceof KeybindComponent) {
       sb.append(startTag(KEYBIND + SEPARATOR + ((KeybindComponent) component).keybind()));
     } else if (component instanceof TranslatableComponent) {
@@ -300,11 +300,11 @@ final class MiniMessageSerializer {
     private final Component component;
     private final Style style;
 
-    ComponentNode(@NonNull final Component component) {
+    ComponentNode(@NotNull final Component component) {
       this(component, null);
     }
 
-    ComponentNode(@NonNull final Component component, @Nullable final Style parent) {
+    ComponentNode(@NotNull final Component component, @Nullable final Style parent) {
       this.component = component;
       this.style = (parent == null) ? component.style() : component.style().merge(parent, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
     }

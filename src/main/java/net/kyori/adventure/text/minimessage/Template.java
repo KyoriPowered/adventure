@@ -29,7 +29,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A placeholder in a message, which can replace a tag with a component.
@@ -45,7 +45,7 @@ public interface Template extends Examinable {
    * @return the constructed template
    * @since 4.0.0
    */
-  static @NonNull Template of(final @NonNull String key, final @NonNull String value) {
+  static @NotNull Template of(final @NotNull String key, final @NotNull String value) {
     return new StringTemplate(key, value);
   }
 
@@ -57,7 +57,7 @@ public interface Template extends Examinable {
    * @return the constructed template
    * @since 4.0.0
    */
-  static @NonNull Template of(final @NonNull String key, final @NonNull Component value) {
+  static @NotNull Template of(final @NotNull String key, final @NotNull Component value) {
     return new ComponentTemplate(key, value);
   }
 
@@ -69,7 +69,7 @@ public interface Template extends Examinable {
    * @return the constructed template
    * @since 4.2.0
    */
-  static @NonNull Template of(final @NonNull String key, final @NonNull Supplier<Component> value) {
+  static @NotNull Template of(final @NotNull String key, final @NotNull Supplier<Component> value) {
     return new LazyComponentTemplate(key, value);
   }
 
@@ -79,7 +79,7 @@ public interface Template extends Examinable {
    * @return the key
    * @since 4.2.0
    */
-  @NonNull String key();
+  @NotNull String key();
 
   /**
    * Get the value for this template.
@@ -87,7 +87,7 @@ public interface Template extends Examinable {
    * @return the value
    * @since 4.2.0
    */
-  @NonNull Object value();
+  @NotNull Object value();
 
   /**
    * A template with a value that will be parsed as a MiniMessage string.
@@ -98,18 +98,18 @@ public interface Template extends Examinable {
     private final String key;
     private final String value;
 
-    StringTemplate(final @NonNull String key, final @NonNull String value) {
+    StringTemplate(final @NotNull String key, final @NotNull String value) {
       this.key = key;
       this.value = value;
     }
 
     @Override
-    public @NonNull String key() {
+    public @NotNull String key() {
       return this.key;
     }
 
     @Override
-    public @NonNull String value() {
+    public @NotNull String value() {
       return this.value;
     }
 
@@ -119,7 +119,7 @@ public interface Template extends Examinable {
     }
 
     @Override
-    public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
         ExaminableProperty.of("key", this.key),
         ExaminableProperty.of("value", this.value)
@@ -133,21 +133,21 @@ public interface Template extends Examinable {
    * @since 4.0.0
    */
   class ComponentTemplate implements Template {
-    private final @NonNull String key;
-    private final @NonNull Component value;
+    private final @NotNull String key;
+    private final @NotNull Component value;
 
-    public ComponentTemplate(final @NonNull String key, final @NonNull Component value) {
+    public ComponentTemplate(final @NotNull String key, final @NotNull Component value) {
       this.key = key;
       this.value = value;
     }
 
     @Override
-    public @NonNull String key() {
+    public @NotNull String key() {
       return this.key;
     }
 
     @Override
-    public @NonNull Component value() {
+    public @NotNull Component value() {
       return this.value;
     }
 
@@ -157,7 +157,7 @@ public interface Template extends Examinable {
     }
 
     @Override
-    public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
         ExaminableProperty.of("key", this.key),
         ExaminableProperty.of("value", this.value)
@@ -171,20 +171,20 @@ public interface Template extends Examinable {
    * @since 4.2.0
    */
   class LazyComponentTemplate extends ComponentTemplate {
-    private final @NonNull Supplier<Component> value;
+    private final @NotNull Supplier<Component> value;
 
-    public LazyComponentTemplate(final @NonNull String key, final @NonNull Supplier<Component> value) {
+    public LazyComponentTemplate(final @NotNull String key, final @NotNull Supplier<Component> value) {
       super(key, Component.empty());
       this.value = value;
     }
 
     @Override
-    public @NonNull Component value() {
+    public @NotNull Component value() {
       return this.value.get();
     }
 
     @Override
-    public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
         ExaminableProperty.of("key", this.key()),
         ExaminableProperty.of("value", this.value.get())

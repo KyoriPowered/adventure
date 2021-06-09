@@ -30,7 +30,7 @@ import net.kyori.adventure.text.minimessage.Template;
 import net.kyori.adventure.text.minimessage.transformation.Inserting;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.examination.ExaminableProperty;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Inserts a formatted template component into the result.
@@ -39,7 +39,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public final class TemplateTransformation extends Transformation implements Inserting {
 
-  private final Template.@NonNull ComponentTemplate template;
+  private final Template.@NotNull ComponentTemplate template;
 
   /**
    * Create a new template transformation applying {@code template}.
@@ -47,7 +47,7 @@ public final class TemplateTransformation extends Transformation implements Inse
    * @param template the template to apply
    * @since 4.1.0
    */
-  public TemplateTransformation(final Template.@NonNull ComponentTemplate template) {
+  public TemplateTransformation(final Template.@NotNull ComponentTemplate template) {
     this.template = template;
   }
 
@@ -57,7 +57,7 @@ public final class TemplateTransformation extends Transformation implements Inse
   }
 
   @Override
-  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("template", this.template));
   }
 

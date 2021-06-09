@@ -27,7 +27,7 @@ import java.util.Map;
 import net.kyori.adventure.text.minimessage.Template;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenParser;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents an inner part of a tag.
@@ -46,9 +46,9 @@ public final class TagPart {
    * @since 4.2.0
    */
   public TagPart(
-    final @NonNull String sourceMessage,
-    final @NonNull Token token,
-    final @NonNull Map<String, Template> templates
+    final @NotNull String sourceMessage,
+    final @NotNull Token token,
+    final @NotNull Map<String, Template> templates
   ) {
     String v = unquoteAndEscape(sourceMessage, token.startIndex(), token.endIndex());
     if (isTag(v)) {
@@ -69,7 +69,7 @@ public final class TagPart {
    * @return the value
    * @since 4.2.0
    */
-  public @NonNull String value() {
+  public @NotNull String value() {
     return this.value;
   }
 
@@ -79,11 +79,11 @@ public final class TagPart {
    * @return the token
    * @since 4.2.0
    */
-  public @NonNull Token token() {
+  public @NotNull Token token() {
     return this.token;
   }
 
-  private static boolean isTag(final @NonNull String text) {
+  private static boolean isTag(final @NotNull String text) {
     return text.charAt(0) == '<' || text.charAt(text.length() - 1) == '>';
   }
 
@@ -96,7 +96,7 @@ public final class TagPart {
    * @return the output substring
    * @since 4.2.0
    */
-  public static @NonNull String unquoteAndEscape(final @NonNull String text, final int start, final int end) {
+  public static @NotNull String unquoteAndEscape(final @NotNull String text, final int start, final int end) {
     if (start == end) {
       return "";
     }
