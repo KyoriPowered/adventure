@@ -73,10 +73,10 @@ dependencies {
 }
 
 fun filterProjectName(name: String): String {
-  return if (name.startsWith(ADVENTURE_PREFIX)) {
-    name.substring(ADVENTURE_PREFIX.length, name.length)
+  if (name.startsWith(ADVENTURE_PREFIX)) {
+    return name.substring(ADVENTURE_PREFIX.length, name.length)
   } else {
-    name
+    return name
   }
 }
 
