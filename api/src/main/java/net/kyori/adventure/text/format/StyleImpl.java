@@ -368,6 +368,7 @@ final class StyleImpl implements Style {
       throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
     }
 
+    // todo(kashike): promote to public api?
     @NotNull Builder decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
       requireNonNull(state, "state");
       if (decoration == TextDecoration.BOLD) {
