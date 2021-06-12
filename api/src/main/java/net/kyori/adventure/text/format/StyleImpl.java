@@ -370,20 +370,30 @@ final class StyleImpl implements Style {
 
     @NotNull Builder decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
       requireNonNull(state, "state");
-      if (decoration == TextDecoration.BOLD && this.bold == TextDecoration.State.NOT_SET) {
-        this.bold = state;
+      if (decoration == TextDecoration.BOLD) {
+        if (this.bold == TextDecoration.State.NOT_SET) {
+          this.bold = state;
+        }
         return this;
-      } else if (decoration == TextDecoration.ITALIC && this.italic == TextDecoration.State.NOT_SET) {
-        this.italic = state;
+      } else if (decoration == TextDecoration.ITALIC) {
+        if (this.italic == TextDecoration.State.NOT_SET) {
+          this.italic = state;
+        }
         return this;
-      } else if (decoration == TextDecoration.UNDERLINED && this.underlined == TextDecoration.State.NOT_SET) {
-        this.underlined = state;
+      } else if (decoration == TextDecoration.UNDERLINED) {
+        if (this.underlined == TextDecoration.State.NOT_SET) {
+          this.underlined = state;
+        }
         return this;
-      } else if (decoration == TextDecoration.STRIKETHROUGH && this.strikethrough == TextDecoration.State.NOT_SET) {
-        this.strikethrough = state;
+      } else if (decoration == TextDecoration.STRIKETHROUGH) {
+        if (this.strikethrough == TextDecoration.State.NOT_SET) {
+          this.strikethrough = state;
+        }
         return this;
-      } else if (decoration == TextDecoration.OBFUSCATED && this.obfuscated == TextDecoration.State.NOT_SET) {
-        this.obfuscated = state;
+      } else if (decoration == TextDecoration.OBFUSCATED) {
+        if (this.obfuscated == TextDecoration.State.NOT_SET) {
+          this.obfuscated = state;
+        }
         return this;
       }
       throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
