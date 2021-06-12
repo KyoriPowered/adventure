@@ -13,7 +13,7 @@ import org.gradle.api.tasks.options.Option
 import java.io.File
 import javax.inject.Inject
 
-private const val ADVENTURE_PREFIX = "adventure-"
+internal const val ADVENTURE_PREFIX = "adventure-"
 
 /**
  * Copy project javadoc into the `adventure-javadoc` directory tree
@@ -43,14 +43,12 @@ abstract class CopyJavadoc : DefaultTask() {
 
   init {
     // relative to project root, <output>/<projectName>/<projectVersion>
-    outputDir.set(rootDir.dir(output).flatMap { it.dir(this.projectName.map(this::filterProjectName)).flatMap { it.dir(this.projectVersion) } })
+    outputDir.set(rootDir.dir(output).flatMap { it.dir(this.projectName).flatMap { it.dir(this.projectVersion) } })
   }
 
   @TaskAction
   fun doTransfer() {
-    val dest = outputDir.get().asFile // rootDir.get().asFile.resolve(this.output.get())
-      // .resolve(this.filterProjectName(this.projectName.get()))
-      //.resolve(this.projectVersion.get())
+    val dest = outputDir.get().asFile
 
     dest.deleteRecursively()
     dest.mkdirs()
@@ -58,14 +56,6 @@ abstract class CopyJavadoc : DefaultTask() {
     fsOps.copy {
       from(javadocFiles)
       into(dest)
-    }
-  }
-
-  private fun filterProjectName(name: String): String {
-    return if (name.startsWith(ADVENTURE_PREFIX)) {
-      name.substring(ADVENTURE_PREFIX.length, name.length)
-    } else {
-      name
     }
   }
 }
