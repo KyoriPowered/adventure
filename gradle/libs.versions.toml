@@ -1,5 +1,5 @@
 [versions]
-adventure = "4.7.0"
+adventure = "4.8.1"
 junit = "5.7.2"
 
 [libraries]
