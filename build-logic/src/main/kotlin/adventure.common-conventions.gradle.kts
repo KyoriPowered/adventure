@@ -82,6 +82,7 @@ fun filterProjectName(name: String): String {
 
 tasks {
   // link to modules in project
+  val submoduleLinkRoot = providers.gradleProperty("javadocPublishRoot")
   val jdLinks = offlineLinkedJavadoc.get().incoming
     .artifactView {
       componentFilter { it is ProjectComponentIdentifier } // only in-project
@@ -89,10 +90,11 @@ tasks {
     }
   val version = project.version
   javadoc {
+    inputs.property("jdLinks.root", submoduleLinkRoot)
     inputs.property("project.version", version)
     inputs.files(jdLinks.files)
       .ignoreEmptyDirectories()
-      .withPropertyName("jdLinks")
+      .withPropertyName("jdLinks.directories")
 
     val options = options as? StandardJavadocDocletOptions ?: return@javadoc
     options.tags("sinceMinecraft:a:Since Minecraft:")
@@ -106,7 +108,12 @@ tasks {
         }
 
         // This matches the file structure in adventure-javadocs
-        options.linksOffline("../../${filterProjectName(projectName)}/$version", file.absolutePath)
+        var linkRoot = submoduleLinkRoot.get()
+        if (!linkRoot.endsWith("/")) {
+          linkRoot += "/"
+        }
+
+        options.linksOffline("${linkRoot}${filterProjectName(projectName)}/$version", file.absolutePath)
       }
     }
   }
