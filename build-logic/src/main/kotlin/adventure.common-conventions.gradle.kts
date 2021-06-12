@@ -1,4 +1,5 @@
 import com.adarshr.gradle.testlogger.theme.ThemeType
+import org.gradle.api.artifacts.type.ArtifactTypeDefinition
 
 plugins {
   id("adventure.base-conventions")
@@ -25,6 +26,7 @@ configurations {
         create("files") {
           artifact(tasks.javadoc.map { it.destinationDir!! }) {
             builtBy(tasks.javadoc)
+            type = ArtifactTypeDefinition.DIRECTORY_TYPE // JavaBasePlugin has a hardcoded list of artifact types that can't be published. this is one of them
           }
           attributes {
             attribute(JavadocPackaging.ATTRIBUTE, objects.named(JavadocPackaging.DIRECTORY))
