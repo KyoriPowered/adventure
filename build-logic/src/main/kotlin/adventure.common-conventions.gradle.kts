@@ -40,4 +40,11 @@ tasks {
     val options = options as? StandardJavadocDocletOptions ?: return@javadoc
     options.tags("sinceMinecraft:a:Since Minecraft:")
   }
+
+  register("copyJavadoc", CopyJavadoc::class) {
+    projectName.set(provider { project.name })
+    projectVersion.set(provider { project.version.toString() })
+    javadocFiles.from(javadoc)
+    rootDir.set(project.rootDir)
+  }
 }
