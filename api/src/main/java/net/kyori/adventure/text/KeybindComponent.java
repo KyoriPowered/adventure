@@ -66,7 +66,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
    * @since 4.9.0
    */
   @Contract(pure = true)
-  default @NotNull KeybindComponent keybind(final @NotNull KeybindComponent.KeybindLike keybind) {
+  default @NotNull KeybindComponent keybind(final @NotNull KeybindLike keybind) {
     return this.keybind(Objects.requireNonNull(keybind, "keybind").asKeybind());
   }
 
@@ -109,7 +109,7 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
      * @since 4.9.0
      */
     @Contract(pure = true)
-    default @NotNull Builder keybind(final @NotNull KeybindComponent.KeybindLike keybind) {
+    default @NotNull Builder keybind(final @NotNull KeybindLike keybind) {
       return this.keybind(Objects.requireNonNull(keybind, "keybind").asKeybind());
     }
   }
