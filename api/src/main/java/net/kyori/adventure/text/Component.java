@@ -376,8 +376,8 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.9.0
    */
   @Contract(value = "_ -> new", pure = true)
-  static @NotNull KeybindComponent keybind(final @NotNull KeybindComponent.Keybind keybind) {
-    return keybind(Objects.requireNonNull(keybind, "keybind").keybind(), Style.empty());
+  static @NotNull KeybindComponent keybind(final @NotNull KeybindComponent.KeybindLike keybind) {
+    return keybind(Objects.requireNonNull(keybind, "keybind").asKeybind(), Style.empty());
   }
 
   /**
@@ -402,8 +402,8 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.9.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull KeybindComponent keybind(final @NotNull KeybindComponent.Keybind keybind, final @NotNull Style style) {
-    return new KeybindComponentImpl(Collections.emptyList(), style, Objects.requireNonNull(keybind, "keybind").keybind());
+  static @NotNull KeybindComponent keybind(final @NotNull KeybindComponent.KeybindLike keybind, final @NotNull Style style) {
+    return new KeybindComponentImpl(Collections.emptyList(), style, Objects.requireNonNull(keybind, "keybind").asKeybind());
   }
 
   /**
@@ -428,8 +428,8 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.9.0
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull KeybindComponent keybind(final @NotNull KeybindComponent.Keybind keybind, final @Nullable TextColor color) {
-    return keybind(Objects.requireNonNull(keybind, "keybind").keybind(), Style.style(color));
+  static @NotNull KeybindComponent keybind(final @NotNull KeybindComponent.KeybindLike keybind, final @Nullable TextColor color) {
+    return keybind(Objects.requireNonNull(keybind, "keybind").asKeybind(), Style.style(color));
   }
 
   /**
@@ -456,8 +456,8 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.9.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull KeybindComponent keybind(final @NotNull KeybindComponent.Keybind keybind, final @Nullable TextColor color, final TextDecoration@NotNull... decorations) {
-    return keybind(Objects.requireNonNull(keybind, "keybind").keybind(), Style.style(color, decorations));
+  static @NotNull KeybindComponent keybind(final @NotNull KeybindComponent.KeybindLike keybind, final @Nullable TextColor color, final TextDecoration@NotNull... decorations) {
+    return keybind(Objects.requireNonNull(keybind, "keybind").asKeybind(), Style.style(color, decorations));
   }
 
   /**
@@ -484,8 +484,8 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.9.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull KeybindComponent keybind(final @NotNull KeybindComponent.Keybind keybind, final @Nullable TextColor color, final @NotNull Set<TextDecoration> decorations) {
-    return keybind(Objects.requireNonNull(keybind, "keybind").keybind(), Style.style(color, decorations));
+  static @NotNull KeybindComponent keybind(final @NotNull KeybindComponent.KeybindLike keybind, final @Nullable TextColor color, final @NotNull Set<TextDecoration> decorations) {
+    return keybind(Objects.requireNonNull(keybind, "keybind").asKeybind(), Style.style(color, decorations));
   }
 
   /*
