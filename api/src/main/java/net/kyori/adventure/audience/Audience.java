@@ -36,6 +36,7 @@ import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.title.Title;
+import net.kyori.adventure.title.TitlePart;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -404,6 +405,17 @@ public interface Audience extends Pointered {
    * @since 4.0.0
    */
   default void showTitle(final @NotNull Title title) {
+  }
+
+  /**
+   * Shows a part of a title.
+   *
+   * @param titlePart the part
+   * @param content the content
+   * @param <T> the type of the content of the part
+   * @since 4.8.0
+   */
+  default <T> void showTitlePart(final @NotNull TitlePart<T> titlePart, final @NotNull T content) {
   }
 
   /**

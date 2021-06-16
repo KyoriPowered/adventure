@@ -36,6 +36,7 @@ import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
+import net.kyori.adventure.title.TitlePart;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -111,6 +112,11 @@ public interface ForwardingAudience extends Audience {
   @Override
   default void showTitle(final @NotNull Title title) {
     for (final Audience audience : this.audiences()) audience.showTitle(title);
+  }
+
+  @Override
+  default <T> void showTitlePart(final @NotNull TitlePart<T> titlePart, @NotNull final T content) {
+    for (final Audience audience : this.audiences()) audience.showTitlePart(titlePart, content);
   }
 
   @Override
@@ -239,6 +245,11 @@ public interface ForwardingAudience extends Audience {
     @Override
     default void showTitle(final @NotNull Title title) {
       this.audience().showTitle(title);
+    }
+
+    @Override
+    default <T> void showTitlePart(final @NotNull TitlePart<T> titlePart, @NotNull final T content) {
+      this.audience().showTitlePart(titlePart, content);
     }
 
     @Override
