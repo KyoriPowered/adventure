@@ -415,7 +415,7 @@ public interface Audience extends Pointered {
    * @param <T> the type of the content of the part
    * @since 4.8.0
    */
-  default <T> void showTitlePart(final @NotNull TitlePart<T> titlePart, final @NotNull T content) {
+  default <T> void sendTitlePart(final @NotNull TitlePart<T> titlePart, final @NotNull T content) {
   }
 
   /**

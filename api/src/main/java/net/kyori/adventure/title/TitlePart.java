@@ -31,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
  * A part of a title.
  *
  * @param <T> the type of the content of the part
+ * @see net.kyori.adventure.audience.Audience#sendTitlePart(TitlePart, Object)
  * @since 4.9.0
  */
 @ApiStatus.NonExtendable
