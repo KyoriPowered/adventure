@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text;
 
+import java.util.Objects;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,6 +59,33 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
   @NotNull KeybindComponent keybind(final @NotNull String keybind);
 
   /**
+   * Sets the keybind.
+   *
+   * @param keybind the keybind
+   * @return a copy of this component
+   * @since 4.9.0
+   */
+  @Contract(pure = true)
+  default @NotNull KeybindComponent keybind(final @NotNull Keybind keybind) {
+    return this.keybind(Objects.requireNonNull(keybind, "keybind").keybind());
+  }
+
+  /**
+   * An object with a keybind.
+   *
+   * @since 4.9.0
+   */
+  interface Keybind {
+    /**
+     * Gets the string keybind identifier.
+     *
+     * @return the keybind identifier
+     * @since 4.9.0
+     */
+    @NotNull String keybind();
+  }
+
+  /**
    * A keybind component builder.
    *
    * @since 4.0.0
@@ -72,5 +100,17 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
      */
     @Contract("_ -> this")
     @NotNull Builder keybind(final @NotNull String keybind);
+
+    /**
+     * Sets the keybind.
+     *
+     * @param keybind the keybind
+     * @return this builder
+     * @since 4.9.0
+     */
+    @Contract(pure = true)
+    default @NotNull Builder keybind(final @NotNull Keybind keybind) {
+      return this.keybind(Objects.requireNonNull(keybind, "keybind").keybind());
+    }
   }
 }
