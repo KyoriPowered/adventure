@@ -5,7 +5,7 @@ on: ["pull_request", "push"]
 jobs:
   build:
     # Only run on PRs if the source branch is on someone else's repo
-    if: ${{ github.event_name != 'pull_request' || github.repository != github.event.pull_request.head.repo.full_name }}
+    if: "${{ github.event_name != 'pull_request' || github.repository != github.event.pull_request.head.repo.full_name }}"
     strategy:
       matrix:
         os: ["ubuntu-latest", "windows-latest"]
@@ -19,9 +19,25 @@ jobs:
           java-version: "11"
       - name: "build"
         run: "./gradlew build"
+      - name: "Archive test results"
+        if: "${{ always() }}"
+        uses: "actions/upload-artifact@v2"
+        with:
+          name: "test-results"
+          path: |
+            build/reports/
+            */build/reports/
+      - name: Determine status
+        if: "${{ runner.os == 'Linux' }}"
+        run: |
+          if [ "$(./gradlew properties | awk '/^version:/ { print $2; }' | grep '\-SNAPSHOT')" ]; then
+            echo "STATUS=snapshot" >> $GITHUB_ENV
+          else
+            echo "STATUS=release" >> $GITHUB_ENV
+          fi
       - name: "publish"
-        if: ${{ runner.os == 'Linux' && github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+        if: "${{ runner.os == 'Linux' && env.STATUS != 'release' && github.event_name == 'push' && github.ref == 'refs/heads/master' }}"
         run: "./gradlew publish"
         env:
-          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_USERNAME }}
-          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.SONATYPE_PASSWORD }}
+          ORG_GRADLE_PROJECT_sonatypeUsername: "${{ secrets.SONATYPE_USERNAME }}"
+          ORG_GRADLE_PROJECT_sonatypePassword: "${{ secrets.SONATYPE_PASSWORD }}"
