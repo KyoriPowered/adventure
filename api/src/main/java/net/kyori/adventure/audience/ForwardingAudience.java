@@ -31,6 +31,7 @@ import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.pointer.Pointer;
+import net.kyori.adventure.pointer.Pointers;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
@@ -198,6 +199,11 @@ public interface ForwardingAudience extends Audience {
     @Override
     default <T> @UnknownNullability T getOrDefaultFrom(final @NotNull Pointer<T> pointer, final @NotNull Supplier<? extends T> defaultValue) {
       return this.audience().getOrDefaultFrom(pointer, defaultValue);
+    }
+
+    @Override
+    default @NotNull Pointers pointers() {
+      return this.audience().pointers();
     }
 
     @Override
