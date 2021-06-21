@@ -1,14 +1,16 @@
 plugins {
   id("adventure.common-conventions")
-  kotlin("jvm") version "1.4.32"
+  kotlin("jvm") version "1.5.10"
 }
 
-tasks {
-  sequenceOf(compileKotlin, compileTestKotlin).forEach {
-    it.configure {
-      kotlinOptions {
-        jvmTarget = "1.8"
-      }
+kotlin {
+  coreLibrariesVersion = "1.4.32"
+  target {
+    compilations.configureEach {
+        kotlinOptions {
+          jvmTarget = "1.8"
+          languageVersion = "1.4"
+        }
     }
   }
 }
