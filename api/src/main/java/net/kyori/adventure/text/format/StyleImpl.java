@@ -190,7 +190,7 @@ final class StyleImpl implements Style {
    */
   @Override
   public @NotNull Builder toBuilder() {
-    return new BuilderImpl(new StyleImpl(this.font, this.color, this.decorationStates.clone(), this.clickEvent, this.hoverEvent, this.insertion));
+    return new BuilderImpl(this);
   }
 
   @Override
@@ -249,7 +249,7 @@ final class StyleImpl implements Style {
 
     BuilderImpl(final @NotNull StyleImpl style) {
       this.color = style.color;
-      this.decorationStates = style.decorationStates;
+      this.decorationStates = style.decorationStates.clone();
       this.clickEvent = style.clickEvent;
       this.hoverEvent = style.hoverEvent;
       this.insertion = style.insertion;
