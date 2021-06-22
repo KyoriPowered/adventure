@@ -79,7 +79,7 @@ public final class UTF8ResourceBundleControl extends ResourceBundle.Control {
             return loader.getResourceAsStream(resource);
           }
         });
-      } catch(final PrivilegedActionException e) {
+      } catch (final PrivilegedActionException e) {
         throw (IOException) e.getException();
       }
       if (is != null) {

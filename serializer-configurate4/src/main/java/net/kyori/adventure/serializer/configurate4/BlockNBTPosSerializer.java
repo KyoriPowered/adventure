@@ -41,7 +41,7 @@ final class BlockNBTPosSerializer extends ScalarSerializer<BlockNBTComponent.Pos
   public BlockNBTComponent.Pos deserialize(final @NotNull Type type, final @NotNull Object obj) throws SerializationException {
     try {
       return BlockNBTComponent.Pos.fromString(obj.toString());
-    } catch(final IllegalArgumentException ex) {
+    } catch (final IllegalArgumentException ex) {
       throw new SerializationException(ex);
     }
   }

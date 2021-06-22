@@ -41,7 +41,7 @@ final class BlockNBTComponentPosSerializer extends TypeAdapter<BlockNBTComponent
     final String string = in.nextString();
     try {
       return BlockNBTComponent.Pos.fromString(string);
-    } catch(final IllegalArgumentException ex) {
+    } catch (final IllegalArgumentException ex) {
       throw new JsonParseException("Don't know how to turn " + string + " into a Position");
     }
   }

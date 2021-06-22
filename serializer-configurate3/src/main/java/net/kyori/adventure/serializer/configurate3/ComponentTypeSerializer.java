@@ -192,7 +192,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
       try {
         value.setValue(this.stringSerial.serialize(src));
         return;
-      } catch(final Exception ex) {
+      } catch (final Exception ex) {
         throw new ObjectMappingException(ex);
       }
     }

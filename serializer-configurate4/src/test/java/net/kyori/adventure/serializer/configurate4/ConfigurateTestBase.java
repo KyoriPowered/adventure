@@ -65,7 +65,7 @@ public interface ConfigurateTestBase {
     try {
       assertEquals(holder, this.node().set(type, value));
       assertEquals(value, holder.get(type));
-    } catch(final SerializationException ex) {
+    } catch (final SerializationException ex) {
       fail(ex);
     }
   }
@@ -75,7 +75,7 @@ public interface ConfigurateTestBase {
     try {
       assertEquals(holder, this.node().set(type, value));
       assertEquals(value, holder.get(type));
-    } catch(final SerializationException ex) {
+    } catch (final SerializationException ex) {
       fail(ex);
     }
   }

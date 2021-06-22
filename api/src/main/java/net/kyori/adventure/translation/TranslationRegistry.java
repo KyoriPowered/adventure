@@ -153,7 +153,7 @@ public interface TranslationRegistry extends Translator {
   default void registerAll(final @NotNull Locale locale, final @NotNull Path path, final boolean escapeSingleQuotes) {
     try(final BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
       this.registerAll(locale, new PropertyResourceBundle(reader), escapeSingleQuotes);
-    } catch(final IOException e) {
+    } catch (final IOException e) {
       // ignored
     }
   }
@@ -201,7 +201,7 @@ public interface TranslationRegistry extends Translator {
     for (final String key : keys) {
       try {
         this.register(key, locale, function.apply(key));
-      } catch(final IllegalArgumentException e) {
+      } catch (final IllegalArgumentException e) {
         if (errors == null) {
           errors = new LinkedList<>();
         }

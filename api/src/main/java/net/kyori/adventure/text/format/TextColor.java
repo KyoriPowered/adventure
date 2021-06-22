@@ -144,7 +144,7 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
       try {
         final int hex = Integer.parseInt(string.substring(1), 16);
         return color(hex);
-      } catch(final NumberFormatException e) {
+      } catch (final NumberFormatException e) {
         return null;
       }
     }
@@ -167,7 +167,7 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
       final int hex;
       try {
         hex = Integer.parseInt(hexString, 16);
-      } catch(final NumberFormatException e) {
+      } catch (final NumberFormatException e) {
         return null;
       }
 

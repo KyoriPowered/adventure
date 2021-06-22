@@ -87,7 +87,7 @@ public final class TagStringIO {
         throw new IOException("Document had trailing content after first CompoundTag");
       }
       return tag;
-    } catch(final StringTagParseException ex) {
+    } catch (final StringTagParseException ex) {
       throw new IOException(ex);
     }
   }

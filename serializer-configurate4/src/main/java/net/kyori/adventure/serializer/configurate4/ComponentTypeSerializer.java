@@ -190,7 +190,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
       try {
         value.set(this.stringSerial.serialize(src));
         return;
-      } catch(final Exception ex) {
+      } catch (final Exception ex) {
         throw new SerializationException(ex);
       }
     }

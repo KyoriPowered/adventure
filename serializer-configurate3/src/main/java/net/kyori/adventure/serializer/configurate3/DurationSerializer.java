@@ -54,7 +54,7 @@ final class DurationSerializer extends ScalarSerializer<Duration> {
 
       try {
         return Duration.parse(value);
-      } catch(final DateTimeParseException ex) {
+      } catch (final DateTimeParseException ex) {
         throw new ObjectMappingException(ex);
       }
     }

@@ -64,7 +64,7 @@ public interface ConfigurateTestBase {
     try {
       assertEquals(holder, this.node().setValue(type, value));
       assertEquals(value, holder.getValue(type));
-    } catch(final ObjectMappingException ex) {
+    } catch (final ObjectMappingException ex) {
       fail(ex);
     }
   }

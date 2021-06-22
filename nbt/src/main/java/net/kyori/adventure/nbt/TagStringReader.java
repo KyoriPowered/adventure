@@ -112,7 +112,7 @@ final class TagStringReader {
       final CharSequence value = this.buffer.skipWhitespace().takeUntil(Tokens.TYPE_BYTE);
       try {
         bytes.add(Byte.valueOf(value.toString()));
-      } catch(final NumberFormatException ex) {
+      } catch (final NumberFormatException ex) {
         throw this.buffer.makeError("All elements of a byte array must be bytes!");
       }
 
@@ -156,7 +156,7 @@ final class TagStringReader {
       final CharSequence value = this.buffer.skipWhitespace().takeUntil(Tokens.TYPE_LONG);
       try {
         longs.add(Long.parseLong(value.toString()));
-      } catch(final NumberFormatException ex) {
+      } catch (final NumberFormatException ex) {
         throw this.buffer.makeError("All elements of a long array must be longs!");
       }
 
@@ -205,7 +205,7 @@ final class TagStringReader {
     }
     try {
       final char startToken = this.buffer.skipWhitespace().peek();
-      switch(startToken) {
+      switch (startToken) {
         case Tokens.COMPOUND_BEGIN:
           return this.compound();
         case Tokens.ARRAY_BEGIN:
@@ -245,7 +245,7 @@ final class TagStringReader {
         if (builder.length() != 0) {
           BinaryTag result = null;
           try {
-            switch(Character.toLowerCase(current)) { // try to read and return as a number
+            switch (Character.toLowerCase(current)) { // try to read and return as a number
               // case Tokens.TYPE_INTEGER: // handled below, ints are ~special~
               case Tokens.TYPE_BYTE:
                 result = ByteBinaryTag.of(Byte.parseByte(builder.toString()));
@@ -263,7 +263,7 @@ final class TagStringReader {
                 result = DoubleBinaryTag.of(Double.parseDouble(builder.toString()));
                 break;
             }
-          } catch(final NumberFormatException ex) {
+          } catch (final NumberFormatException ex) {
             possiblyNumeric = false; // fallback to treating as a String
           }
           if (result != null) {
@@ -286,10 +286,10 @@ final class TagStringReader {
     if (possiblyNumeric) {
       try {
         return IntBinaryTag.of(Integer.parseInt(built));
-      } catch(final NumberFormatException ex) {
+      } catch (final NumberFormatException ex) {
         try {
           return DoubleBinaryTag.of(Double.parseDouble(built));
-        } catch(final NumberFormatException ex2) {
+        } catch (final NumberFormatException ex2) {
           // ignore
         }
       }

@@ -55,7 +55,7 @@ public final class Services {
       final P instance;
       try {
         instance = it.next();
-      } catch(final Throwable t) {
+      } catch (final Throwable t) {
         if (SERVICE_LOAD_FAILURES_ARE_FATAL) {
           throw new IllegalStateException("Encountered an exception loading service " + type, t);
         } else {

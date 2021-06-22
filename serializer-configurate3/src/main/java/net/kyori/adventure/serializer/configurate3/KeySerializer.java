@@ -47,7 +47,7 @@ final class KeySerializer extends ScalarSerializer<Key> {
     }
     try {
       return Key.key(obj.toString());
-    } catch(final InvalidKeyException ex) {
+    } catch (final InvalidKeyException ex) {
       throw new ObjectMappingException(ex);
     }
   }

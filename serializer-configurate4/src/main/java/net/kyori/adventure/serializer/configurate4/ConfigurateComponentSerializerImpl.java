@@ -68,7 +68,7 @@ final class ConfigurateComponentSerializerImpl implements ConfigurateComponentSe
       if (deserialized != null) {
         return deserialized;
       }
-    } catch(final SerializationException e) {
+    } catch (final SerializationException e) {
       throw new IllegalArgumentException(e);
     }
     throw new IllegalArgumentException("No value present");
@@ -79,7 +79,7 @@ final class ConfigurateComponentSerializerImpl implements ConfigurateComponentSe
     final ConfigurationNode base = BasicConfigurationNode.root(this.ownNodeOptions);
     try {
       base.set(Component.class, component);
-    } catch(final SerializationException e) {
+    } catch (final SerializationException e) {
       throw new IllegalStateException("Unable to serialize component " + component, e);
     }
     return base;

@@ -186,7 +186,7 @@ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<S
         } else if (action == HoverEvent.Action.SHOW_ITEM) {
           return this.legacyHover.deserializeShowItem(rawValue);
         }
-      } catch(final IOException ex) {
+      } catch (final IOException ex) {
         throw new JsonParseException(ex);
       }
     }
@@ -264,7 +264,7 @@ final class StyleSerializer implements JsonDeserializer<Style>, JsonSerializer<S
         } else if (hoverEvent.action() == HoverEvent.Action.SHOW_ITEM) {
           serialized = this.legacyHover.serializeShowItem((HoverEvent.ShowItem) hoverEvent.value());
         }
-      } catch(final IOException ex) {
+      } catch (final IOException ex) {
         throw new JsonSyntaxException(ex);
       }
       return serialized == null ? JsonNull.INSTANCE : context.serialize(serialized);

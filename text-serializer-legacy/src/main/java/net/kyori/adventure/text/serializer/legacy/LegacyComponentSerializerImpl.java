@@ -195,7 +195,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     try {
       final int color = Integer.parseInt(hexDigits, 16);
       return TextColor.color(color);
-    } catch(final NumberFormatException ex) {
+    } catch (final NumberFormatException ex) {
       return null;
     }
   }
@@ -417,7 +417,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
         for (int i = 0, length = DECORATIONS.length; i < length; i++) {
           final TextDecoration decoration = DECORATIONS[i];
-          switch(component.decoration(decoration)) {
+          switch (component.decoration(decoration)) {
             case TRUE:
               this.decorations.add(decoration);
               break;
