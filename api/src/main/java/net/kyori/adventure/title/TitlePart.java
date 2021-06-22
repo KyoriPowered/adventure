@@ -63,7 +63,7 @@ public interface TitlePart<T> {
   /**
    * The times part of a title.
    *
-   * @since 4.8.0
+   * @since 4.9.0
    */
   @NotNull TitlePart<Title.Times> TIMES = new TitlePart<Title.Times>() {
     @Override
