@@ -198,6 +198,7 @@ final class StyleImpl implements Style {
     return Stream.concat(Stream.of(DECORATIONS).map(decoration -> ExaminableProperty.of(requireNonNull(TextDecoration.NAMES.key(decoration)), this.decoration(decoration))),
       Stream.of(ExaminableProperty.of("color", this.color),
         ExaminableProperty.of("clickEvent", this.clickEvent),
+        ExaminableProperty.of("hoverEvent", this.hoverEvent),
         ExaminableProperty.of("insertion", this.insertion),
         ExaminableProperty.of("font", this.font)));
   }
