@@ -28,6 +28,7 @@ import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
+import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
 import net.kyori.adventure.text.minimessage.transformation.TransformationType;
 import org.junit.jupiter.api.Test;
 
@@ -176,11 +177,9 @@ public class MiniMessageTest extends TestBase {
 
   @Test
   void testCustomRegistry() {
-    final Component expected = empty().color(GREEN)
-        .append(text("<bold>"))
-        .append(text("TEST"));
+    final Component expected = text("<green><bold>").append(text("TEST"));
     final String input = "<green><bold><test>";
-    final MiniMessage miniMessage = MiniMessage.withTransformations(TransformationType.COLOR);
+    final MiniMessage miniMessage = MiniMessage.builder().transformations(TransformationRegistry.empty()).build();
 
     this.assertParsedEquals(miniMessage, expected, input, "test", "TEST");
   }
@@ -191,10 +190,11 @@ public class MiniMessageTest extends TestBase {
         .append(text("<bold>"))
         .append(text("TEST"));
     final String input = "<green><bold><test>";
-    final MiniMessage miniMessage = MiniMessage.builder()
-      .removeDefaultTransformations()
-      .transformation(TransformationType.COLOR)
-      .build();
+    final TransformationRegistry registry = TransformationRegistry.builder()
+            .clear()
+            .add(TransformationType.COLOR)
+            .build();
+    final MiniMessage miniMessage = MiniMessage.builder().transformations(registry).build();
 
     this.assertParsedEquals(miniMessage, expected, input, "test", "TEST");
   }

@@ -62,7 +62,7 @@ final class MiniMessageParser {
   private final Function<String, ComponentLike> placeholderResolver;
 
   MiniMessageParser() {
-    this.registry = new TransformationRegistry();
+    this.registry = TransformationRegistry.standard();
     this.placeholderResolver = MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER;
   }
 

@@ -32,9 +32,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.markdown.MarkdownFlavor;
 import net.kyori.adventure.text.minimessage.markdown.MiniMarkdownParser;
-import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
-import net.kyori.adventure.text.minimessage.transformation.TransformationType;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -46,8 +44,8 @@ public class MiniMessageImpl implements MiniMessage {
   static final Function<String, ComponentLike> DEFAULT_PLACEHOLDER_RESOLVER = s -> null;
   static final Consumer<List<String>> DEFAULT_ERROR_CONSUMER = message -> message.forEach(System.out::println);
 
-  static final MiniMessage INSTANCE = new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(), new TransformationRegistry(), DEFAULT_PLACEHOLDER_RESOLVER, false, null, DEFAULT_ERROR_CONSUMER);
-  static final MiniMessage MARKDOWN = new MiniMessageImpl(true, MarkdownFlavor.defaultFlavor(), new TransformationRegistry(), DEFAULT_PLACEHOLDER_RESOLVER, false, null, DEFAULT_ERROR_CONSUMER);
+  static final MiniMessage INSTANCE = new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(), TransformationRegistry.standard(), DEFAULT_PLACEHOLDER_RESOLVER, false, null, DEFAULT_ERROR_CONSUMER);
+  static final MiniMessage MARKDOWN = new MiniMessageImpl(true, MarkdownFlavor.defaultFlavor(), TransformationRegistry.standard(), DEFAULT_PLACEHOLDER_RESOLVER, false, null, DEFAULT_ERROR_CONSUMER);
 
   private final boolean markdown;
   private final MarkdownFlavor markdownFlavor;
@@ -179,7 +177,7 @@ public class MiniMessageImpl implements MiniMessage {
   /* package */ static final class BuilderImpl implements Builder {
     private boolean markdown = false;
     private MarkdownFlavor markdownFlavor = MarkdownFlavor.defaultFlavor();
-    private final TransformationRegistry registry = new TransformationRegistry();
+    private TransformationRegistry registry = TransformationRegistry.standard();
     private Function<String, ComponentLike> placeholderResolver = DEFAULT_PLACEHOLDER_RESOLVER;
     private boolean strict = false;
     private Appendable debug = null;
@@ -199,23 +197,8 @@ public class MiniMessageImpl implements MiniMessage {
     }
 
     @Override
-    public @NotNull Builder removeDefaultTransformations() {
-      this.registry.clear();
-      return this;
-    }
-
-    @Override
-    public @NotNull Builder transformation(final TransformationType<? extends Transformation> type) {
-      this.registry.register(type);
-      return this;
-    }
-
-    @SafeVarargs
-    @Override
-    public final @NotNull Builder transformations(final TransformationType<? extends Transformation>... types) {
-      for (final TransformationType<? extends Transformation> type : types) {
-        this.registry.register(type);
-      }
+    public @NotNull Builder transformations(final TransformationRegistry transformationRegistry) {
+      this.registry = transformationRegistry;
       return this;
     }
 

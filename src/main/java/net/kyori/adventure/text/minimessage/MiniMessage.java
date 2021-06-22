@@ -30,9 +30,7 @@ import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.markdown.MarkdownFlavor;
-import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
-import net.kyori.adventure.text.minimessage.transformation.TransformationType;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Buildable;
 import org.jetbrains.annotations.NotNull;
@@ -78,44 +76,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @since 4.0.0
    */
   static @NotNull MiniMessage withMarkdownFlavor(final MarkdownFlavor markdownFlavor) {
-    return new MiniMessageImpl(true, markdownFlavor, new TransformationRegistry(), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER, false, null, MiniMessageImpl.DEFAULT_ERROR_CONSUMER);
-  }
-
-  /**
-   * Creates an custom instances without markdown support and the given transformations.
-   *
-   * @param types the transformations
-   * @return your very own custom MiniMessage instance
-   * @since 4.1.0
-   */
-  @SafeVarargs
-  static @NotNull MiniMessage withTransformations(final TransformationType<? extends Transformation>... types) {
-    return new MiniMessageImpl(false, MarkdownFlavor.defaultFlavor(), new TransformationRegistry(types), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER, false, null, MiniMessageImpl.DEFAULT_ERROR_CONSUMER);
-  }
-
-  /**
-   * Creates an custom instances with markdown support and the given transformations.
-   *
-   * @param types the transformations
-   * @return your very own custom MiniMessage instance
-   * @since 4.1.0
-   */
-  @SafeVarargs
-  static @NotNull MiniMessage markdownWithTransformations(final TransformationType<? extends Transformation>... types) {
-    return new MiniMessageImpl(true, MarkdownFlavor.defaultFlavor(), new TransformationRegistry(types), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER, false, null, MiniMessageImpl.DEFAULT_ERROR_CONSUMER);
-  }
-
-  /**
-   * Creates an custom instances with markdown support (with the given flavor) and the given transformations.
-   *
-   * @param markdownFlavor the markdown flavor to use
-   * @param types the transformations
-   * @return your very own custom MiniMessage instance
-   * @since 4.1.0
-   */
-  @SafeVarargs
-  static @NotNull MiniMessage markdownWithTransformations(final MarkdownFlavor markdownFlavor, final TransformationType<? extends Transformation>... types) {
-    return new MiniMessageImpl(true, markdownFlavor, new TransformationRegistry(types), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER, false, null, MiniMessageImpl.DEFAULT_ERROR_CONSUMER);
+    return new MiniMessageImpl(true, markdownFlavor, TransformationRegistry.builder().build(), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER, false, null, MiniMessageImpl.DEFAULT_ERROR_CONSUMER);
   }
 
   /**
@@ -229,31 +190,13 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
     @NotNull Builder markdown();
 
     /**
-     * Removes all default transformations, allowing you to create a customized set of transformations.
+     * Uses the supplied transformation registry.
      *
+     * @param transformationRegistry the transformation registry to use
      * @return this builder
      * @since 4.1.0
      */
-    @NotNull Builder removeDefaultTransformations();
-
-    /**
-     * Adds the given transformation.
-     *
-     * @param type the type of transformation to add
-     * @return this builder
-     * @since 4.1.0
-     */
-    @NotNull Builder transformation(final TransformationType<? extends Transformation> type);
-
-    /**
-     * Adds the given transformations.
-     *
-     * @param types the types of transformations to add
-     * @return this builder
-     * @since 4.1.0
-     */
-    @SuppressWarnings("unchecked")
-    @NotNull Builder transformations(final TransformationType<? extends Transformation>... types);
+    @NotNull Builder transformations(final TransformationRegistry transformationRegistry);
 
     /**
      * Sets the markdown flavor that should be used to parse markdown.
