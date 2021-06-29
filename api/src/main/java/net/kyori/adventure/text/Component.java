@@ -145,7 +145,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param components the components
    * @return a text component
    * @since 4.0.0
-   * @deprecated for removal since 4.8.0, use {@link #join(JoinConfiguration, ComponentLike...)} with a {@link JoinConfiguration} instead.
+   * @deprecated for removal since 4.9.0, use {@link #join(JoinConfiguration, ComponentLike...)} with a {@link JoinConfiguration} instead.
    */
   @Deprecated
   @Contract(value = "_, _ -> new", pure = true)
@@ -160,7 +160,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param components the components
    * @return a text component
    * @since 4.0.0
-   * @deprecated for removal since 4.8.0, use {@link #join(JoinConfiguration, Iterable)} with a {@link JoinConfiguration} instead.
+   * @deprecated for removal since 4.9.0, use {@link #join(JoinConfiguration, Iterable)} with a {@link JoinConfiguration} instead.
    */
   @Deprecated
   @Contract(value = "_, _ -> new", pure = true)
@@ -178,7 +178,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param components the components
    * @return a text component
    * @see JoinConfiguration
-   * @since 4.8.0
+   * @since 4.9.0
    */
   @Contract(pure = true)
   static @NotNull Component join(final @NotNull JoinConfiguration config, final @NotNull ComponentLike @NotNull... components) {
@@ -192,7 +192,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param components the components
    * @return a text component
    * @see JoinConfiguration
-   * @since 4.8.0
+   * @since 4.9.0
    */
   @Contract(pure = true)
   static @NotNull Component join(final @NotNull JoinConfiguration config, final @NotNull Iterable<? extends ComponentLike> components) {
