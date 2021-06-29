@@ -2024,8 +2024,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    *
    * @param type the type
    * @return the iterable
-   * @see ComponentIteratorType
-   * @since 4.8.0
+   * @since 4.9.0
    */
   default @NotNull Iterable<Component> iterable(final @NotNull ComponentIteratorType type) {
     Objects.requireNonNull(type, "type");
@@ -2039,8 +2038,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    *
    * @param type the type of the iterator
    * @return the iterator
-   * @see ComponentIteratorType
-   * @since 4.8.0
+   * @since 4.9.0
    */
   default @NotNull Iterator<Component> iterator(final @NotNull ComponentIteratorType type) {
     return new ComponentIterator(this, type);
@@ -2053,8 +2051,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    *
    * @param type the type of the underlying iterator
    * @return the iterator
-   * @see ComponentIteratorType
-   * @since 4.8.0
+   * @since 4.9.0
    */
   default @NotNull Spliterator<Component> spliterator(final @NotNull ComponentIteratorType type) {
     return Spliterators.spliteratorUnknownSize(this.iterator(type), Spliterator.IMMUTABLE & Spliterator.NONNULL & Spliterator.ORDERED);

@@ -37,13 +37,13 @@ import static net.kyori.adventure.text.ComponentIterator.HOVER_EVENT_CONSUMER;
  * @see Component#iterator(ComponentIteratorType)
  * @see Component#spliterator(ComponentIteratorType)
  * @see Component#iterable(ComponentIteratorType)
- * @since 4.8.0
+ * @since 4.9.0
  */
 public enum ComponentIteratorType {
   /**
    * A depth-first iteration.
    *
-   * @since 4.8.0
+   * @since 4.9.0
    */
   DEPTH_FIRST((deque, component) -> {
     final List<Component> children = component.children();
@@ -55,23 +55,21 @@ public enum ComponentIteratorType {
   /**
    * A breadth-first iteration.
    *
-   * @since 4.8.0
+   * @since 4.9.0
    */
   BREADTH_FIRST((deque, component) -> deque.addAll(component.children())),
 
   /**
    * A depth-first iteration that includes components from the {@link HoverEvent} class where the value is a component or the type is an entity with a name.
    *
-   * @see HoverEvent
-   * @since 4.8.0
+   * @since 4.9.0
    */
   DEPTH_FIRST_WITH_HOVER(HOVER_EVENT_CONSUMER.andThen(DEPTH_FIRST.consumer)),
 
   /**
    * A breadth-first iteration that includes components from the {@link HoverEvent} class where the value is a component or the type is an entity with a name.
    *
-   * @see HoverEvent
-   * @since 4.8.0
+   * @since 4.9.0
    */
   BREADTH_FIRST_WITH_HOVER(HOVER_EVENT_CONSUMER.andThen(BREADTH_FIRST.consumer));
 
@@ -86,7 +84,7 @@ public enum ComponentIteratorType {
    *
    * @param component the component
    * @param deque the deque
-   * @since 4.8.0
+   * @since 4.9.0
    */
   void populate(final @NonNull Component component, final @NonNull Deque<Component> deque) {
     this.consumer.accept(deque, component);
