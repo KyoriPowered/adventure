@@ -65,6 +65,7 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
    * @since 4.0.0
    */
   static @NotNull TextColor color(final @NotNull RGBLike rgb) {
+    if (rgb instanceof TextColor) return (TextColor) rgb;
     return color(rgb.red(), rgb.green(), rgb.blue());
   }
 
