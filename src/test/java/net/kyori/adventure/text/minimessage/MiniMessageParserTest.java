@@ -28,7 +28,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.key.Key.key;
@@ -199,7 +199,7 @@ public class MiniMessageParserTest extends TestBase {
     final String expected = "TEST<green> nested</green>Test";
     final Component comp = this.PARSER.parse(input);
 
-    assertEquals(expected, PlainComponentSerializer.plain().serialize(comp));
+    assertEquals(expected, PlainTextComponentSerializer.plainText().serialize(comp));
   }
 
   @Test
@@ -208,7 +208,7 @@ public class MiniMessageParserTest extends TestBase {
     final String expected = "TEST<green> \\< nested</green>Test";
     final TextComponent comp = (TextComponent) this.PARSER.parse(input);
 
-    assertEquals(expected, PlainComponentSerializer.plain().serialize(comp));
+    assertEquals(expected, PlainTextComponentSerializer.plainText().serialize(comp));
   }
 
   @Test
@@ -217,7 +217,7 @@ public class MiniMessageParserTest extends TestBase {
     final String escaped = MiniMessage.get().escapeTokens(expected);
     final Component comp = MiniMessage.get().parse(escaped);
 
-    assertEquals(expected, PlainComponentSerializer.plain().serialize(comp));
+    assertEquals(expected, PlainTextComponentSerializer.plainText().serialize(comp));
   }
 
   @Test
@@ -1186,6 +1186,24 @@ public class MiniMessageParserTest extends TestBase {
       .append(text(" "))
       .append(translatable("item.minecraft.stick"));
     final String input = "<red><hover:show_text:\"Test\"> <lang:item.minecraft.stick>";
+
+    this.assertParsedEquals(expected, input);
+  }
+
+  // GH-125
+  @Test
+  void testNoRepeatedTextAfterUnclosedRainbow() {
+    final Component expected = text()
+            .append(text('r', color(0xf3801f)))
+            .append(text('a', color(0xcdbb04)))
+            .append(text('i', color(0x96e805)))
+            .append(text('n', color(0x59fe22)))
+            .append(text('b', color(0x25f654)))
+            .append(text('o', color(0x06d490)))
+            .append(text('w', color(0x039ec9)))
+            .append(text("yellow", YELLOW))
+            .build();
+    final String input = "<rainbow>rainbow<yellow>yellow";
 
     this.assertParsedEquals(expected, input);
   }
