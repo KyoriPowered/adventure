@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.PrimitiveIterator;
@@ -120,7 +121,7 @@ public final class RainbowTransformation extends Transformation implements Modif
           this.color(this.phase);
         }
       }
-      return current;
+      return current.children(Collections.emptyList());
     }
 
     this.disableApplyingColorDepth = -1;
@@ -128,17 +129,17 @@ public final class RainbowTransformation extends Transformation implements Modif
       final TextComponent textComponent = (TextComponent) current;
       final String content = textComponent.content();
 
-      Component parent = Component.empty();
+      final TextComponent.Builder parent = Component.text();
 
       // apply
       final int[] holder = new int[1];
       for (final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
         holder[0] = it.nextInt();
         final Component comp = Component.text(new String(holder, 0, 1), this.color(this.phase));
-        parent = parent.append(comp);
+        parent.append(comp);
       }
 
-      return parent;
+      return parent.build();
     }
 
     return Component.empty().mergeStyle(current);

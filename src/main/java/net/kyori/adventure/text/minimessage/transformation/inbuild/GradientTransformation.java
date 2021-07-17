@@ -163,21 +163,23 @@ public final class GradientTransformation extends Transformation implements Modi
       return current.children(Collections.emptyList());
     }
 
-    Component parent = Component.empty();
     if (current instanceof TextComponent && ((TextComponent) current).content().length() > 0) {
       final TextComponent textComponent = (TextComponent) current;
       final String content = textComponent.content();
+
+      final TextComponent.Builder parent = Component.text();
 
       // apply
       final int[] holder = new int[1];
       for (final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
         holder[0] = it.nextInt();
         final Component comp = Component.text(new String(holder, 0, 1), this.color());
-        parent = parent.append(comp);
+        parent.append(comp);
       }
 
-      return parent;
+      return parent.build();
     }
+
     return Component.empty().mergeStyle(current);
   }
 
