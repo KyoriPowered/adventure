@@ -1194,15 +1194,15 @@ public class MiniMessageParserTest extends TestBase {
   @Test
   void testNoRepeatedTextAfterUnclosedRainbow() {
     final Component expected = text()
-            .append(text('r', color(0xf3801f)))
-            .append(text('a', color(0xcdbb04)))
-            .append(text('i', color(0x96e805)))
-            .append(text('n', color(0x59fe22)))
-            .append(text('b', color(0x25f654)))
-            .append(text('o', color(0x06d490)))
-            .append(text('w', color(0x039ec9)))
-            .append(text("yellow", YELLOW))
-            .build();
+      .append(text('r', color(0xf3801f)))
+      .append(text('a', color(0xcdbb04)))
+      .append(text('i', color(0x96e805)))
+      .append(text('n', color(0x59fe22)))
+      .append(text('b', color(0x25f654)))
+      .append(text('o', color(0x06d490)))
+      .append(text('w', color(0x039ec9)))
+      .append(text("yellow", YELLOW))
+      .build();
     final String input = "<rainbow>rainbow<yellow>yellow";
 
     this.assertParsedEquals(expected, input);
