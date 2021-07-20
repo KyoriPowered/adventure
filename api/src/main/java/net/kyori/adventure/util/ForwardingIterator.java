@@ -33,7 +33,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * An iterable that forwards the {@link #iterator()} and {@link #spliterator()} calls to some {@link Supplier suppliers}.
  *
  * @param <T> the type of the iterable
- * @since 4.8.0
+ * @since 4.9.0
  */
 public final class ForwardingIterator<T> implements Iterable<T> {
   private final Supplier<Iterator<T>> iterator;
@@ -44,7 +44,7 @@ public final class ForwardingIterator<T> implements Iterable<T> {
    *
    * @param iterator the iterator supplier
    * @param spliterator the spliterator supplier
-   * @since 4.8.0
+   * @since 4.9.0
    */
   public ForwardingIterator(final @NonNull Supplier<Iterator<T>> iterator, final @NonNull Supplier<Spliterator<T>> spliterator) {
     this.iterator = Objects.requireNonNull(iterator, "iterator");
