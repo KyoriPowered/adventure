@@ -54,17 +54,17 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
 
     while(in.hasNext()) {
       final String fieldName = in.nextName();
-      if(fieldName.equals(ID)) {
+      if (fieldName.equals(ID)) {
         key = KeySerializer.INSTANCE.read(in);
-      } else if(fieldName.equals(COUNT)) {
+      } else if (fieldName.equals(COUNT)) {
         count = in.nextInt();
-      } else if(fieldName.equals(TAG)) {
+      } else if (fieldName.equals(TAG)) {
         final JsonToken token = in.peek();
-        if(token == JsonToken.STRING || token == JsonToken.NUMBER) {
+        if (token == JsonToken.STRING || token == JsonToken.NUMBER) {
           nbt = BinaryTagHolder.of(in.nextString());
-        } else if(token == JsonToken.BOOLEAN) {
+        } else if (token == JsonToken.BOOLEAN) {
           nbt = BinaryTagHolder.of(String.valueOf(in.nextBoolean()));
-        } else if(token == JsonToken.NULL) {
+        } else if (token == JsonToken.NULL) {
           in.nextNull();
         } else {
           throw new JsonParseException("Expected " + TAG + " to be a string");
@@ -74,7 +74,7 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
       }
     }
 
-    if(key == null) {
+    if (key == null) {
       throw new JsonParseException("Not sure how to deserialize show_item hover event");
     }
     in.endObject();
@@ -90,13 +90,13 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
     KeySerializer.INSTANCE.write(out, value.item());
 
     final int count = value.count();
-    if(count != 1) {
+    if (count != 1) {
       out.name(COUNT);
       out.value(count);
     }
 
     final @Nullable BinaryTagHolder nbt = value.nbt();
-    if(nbt != null) {
+    if (nbt != null) {
       out.name(TAG);
       out.value(nbt.string());
     }

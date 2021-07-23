@@ -55,18 +55,18 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
 
     while(in.hasNext()) {
       final String fieldName = in.nextName();
-      if(fieldName.equals(TYPE)) {
+      if (fieldName.equals(TYPE)) {
         type = KeySerializer.INSTANCE.read(in);
-      } else if(fieldName.equals(ID)) {
+      } else if (fieldName.equals(ID)) {
         id = UUID.fromString(in.nextString());
-      } else if(fieldName.equals(NAME)) {
+      } else if (fieldName.equals(NAME)) {
         name = this.componentSerializer.read(in);
       } else {
         in.skipValue();
       }
     }
 
-    if(type == null || id == null) {
+    if (type == null || id == null) {
       throw new JsonParseException("A show entity hover event needs type and id fields to be deserialized");
     }
     in.endObject();
@@ -85,7 +85,7 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
     out.value(value.id().toString());
 
     final @Nullable Component name = value.name();
-    if(name != null) {
+    if (name != null) {
       out.name(NAME);
       this.componentSerializer.write(out, name);
     }
