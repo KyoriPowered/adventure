@@ -98,7 +98,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
     in.beginObject();
     final Style.Builder style = Style.style();
 
-    while(in.hasNext()) {
+    while (in.hasNext()) {
       final String fieldName = in.nextName();
       if (fieldName.equals(FONT)) {
         style.font(KeySerializer.INSTANCE.read(in));
@@ -117,7 +117,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
         in.beginObject();
         ClickEvent.Action action = null;
         String value = null;
-        while(in.hasNext()) {
+        while (in.hasNext()) {
           final String clickEventField = in.nextName();
           if (clickEventField.equals(CLICK_EVENT_ACTION)) {
             action = ClickEventActionSerializer.INSTANCE.read(in);

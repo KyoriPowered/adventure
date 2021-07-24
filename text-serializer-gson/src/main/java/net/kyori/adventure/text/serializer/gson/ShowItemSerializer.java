@@ -52,7 +52,7 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
     int count = 1;
     @Nullable BinaryTagHolder nbt = null;
 
-    while(in.hasNext()) {
+    while (in.hasNext()) {
       final String fieldName = in.nextName();
       if (fieldName.equals(ID)) {
         key = KeySerializer.INSTANCE.read(in);

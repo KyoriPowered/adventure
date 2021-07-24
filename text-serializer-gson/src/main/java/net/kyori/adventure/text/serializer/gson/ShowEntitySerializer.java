@@ -53,7 +53,7 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
     UUID id = null;
     @Nullable Component name = null;
 
-    while(in.hasNext()) {
+    while (in.hasNext()) {
       final String fieldName = in.nextName();
       if (fieldName.equals(TYPE)) {
         type = KeySerializer.INSTANCE.read(in);
