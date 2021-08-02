@@ -1,4 +1,6 @@
 import com.adarshr.gradle.testlogger.theme.ThemeType
+import me.champeau.jmh.JMHPlugin
+import me.champeau.jmh.JmhParameters
 import org.gradle.api.artifacts.type.ArtifactTypeDefinition
 
 plugins {
@@ -7,11 +9,25 @@ plugins {
   id("net.kyori.indra.checkstyle")
   id("net.kyori.indra.license-header")
   id("com.adarshr.test-logger")
+  jacoco
 }
 
 testlogger {
   theme = ThemeType.MOCHA_PARALLEL
   showPassed = false
+}
+
+plugins.withId("me.champeau.jmh") {
+  extensions.configure(JmhParameters::class) {
+    jmhVersion.set(providers.gradleProperty("jmhVersion").forUseAtConfigurationTime())
+  }
+  tasks.named("compileJmhJava") {
+    // avoid implicit task dependencies
+    dependsOn(tasks.compileTestJava, tasks.processTestResources)
+  }
+  tasks.named(JMHPlugin.JMH_TASK_COMPILE_GENERATED_CLASSES_NAME, JavaCompile::class) {
+    classpath += configurations.getByName(JavaPlugin.COMPILE_CLASSPATH_CONFIGURATION_NAME).incoming.files
+  }
 }
 
 configurations {
@@ -125,5 +141,9 @@ tasks {
     projectVersion.set(provider { project.version.toString() })
     javadocFiles.from(javadoc)
     rootDir.set(project.rootDir)
+  }
+
+  jacocoTestReport {
+    dependsOn(test)
   }
 }

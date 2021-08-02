@@ -87,6 +87,11 @@ public abstract class AbstractComponent implements Component {
   }
 
   @Override
+  public @NotNull Component compact() {
+    return ComponentCompaction.compact(this, null);
+  }
+
+  @Override
   public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
     if (!(other instanceof AbstractComponent)) return false;

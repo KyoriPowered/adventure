@@ -42,16 +42,17 @@ import static java.util.Objects.requireNonNull;
 final class StyleImpl implements Style {
   static final StyleImpl EMPTY = new StyleImpl(null, null, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null);
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
-  private final @Nullable Key font;
-  private final @Nullable TextColor color;
-  private final TextDecoration.State obfuscated;
-  private final TextDecoration.State bold;
-  private final TextDecoration.State strikethrough;
-  private final TextDecoration.State underlined;
-  private final TextDecoration.State italic;
-  private final @Nullable ClickEvent clickEvent;
-  private final @Nullable HoverEvent<?> hoverEvent;
-  private final @Nullable String insertion;
+  // visible to avoid generating accessors when creating a builder
+  final @Nullable Key font;
+  final @Nullable TextColor color;
+  final TextDecoration.State obfuscated;
+  final TextDecoration.State bold;
+  final TextDecoration.State strikethrough;
+  final TextDecoration.State underlined;
+  final TextDecoration.State italic;
+  final @Nullable ClickEvent clickEvent;
+  final @Nullable HoverEvent<?> hoverEvent;
+  final @Nullable String insertion;
 
   static void decorate(final Builder builder, final TextDecoration[] decorations) {
     for (int i = 0, length = decorations.length; i < length; i++) {
