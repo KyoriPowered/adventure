@@ -35,6 +35,7 @@ import static net.kyori.adventure.key.Key.key;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 import static net.kyori.adventure.text.format.Style.style;
+import static net.kyori.adventure.text.format.TextColor.color;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
@@ -228,6 +229,34 @@ class ComponentCompactingTest {
             .build(),
           component.compact());
       })
+    );
+  }
+
+  @Test
+  void testCompactTextSeries() {
+    final Component input = Component.text()
+      .decorate(TextDecoration.BOLD)
+      .append(text("one "))
+      .append(TextComponent.ofChildren(
+        Component.text("t", color(0xf3801f)),
+        text("w", color(0x18ed68)),
+        text("o", color(0x7412f7))
+      ))
+      .append(text(", three?"))
+      .build();
+
+    assertEquals(
+      text()
+        .content("one ")
+        .decorate(TextDecoration.BOLD)
+        .append(
+          text("t", color(0xf3801f)),
+          text("w", color(0x18ed68)),
+          text("o", color(0x7412f7)),
+          text(", three?")
+        )
+        .build(),
+      input.compact()
     );
   }
 }

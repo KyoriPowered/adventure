@@ -26,7 +26,6 @@ package net.kyori.adventure.text;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -121,18 +120,18 @@ public abstract class AbstractComponent implements Component {
     }
 
     // try to merge children into this parent component
-    for (final ListIterator<Component> it = childrenToAppend.listIterator(); it.hasNext();) {
-      final Component child = it.next();
+    while (!childrenToAppend.isEmpty()) {
+      final Component child = childrenToAppend.get(0);
       final Style childStyle = child.style().merge(childParentStyle, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
 
       if (optimized instanceof TextComponent && child instanceof TextComponent && Objects.equals(childStyle, childParentStyle)) {
         // merge child components into the parent if they are a text component with the same effective style
         // in context of their parent style
         optimized = joinText((TextComponent) optimized, (TextComponent) child);
-        it.remove();
+        childrenToAppend.remove(0);
 
         // if the merged child had any children, retain them
-        child.children().forEach(it::add);
+        childrenToAppend.addAll(0, child.children());
       } else {
         // this child can't be merged into the parent, so all children from now on must remain children
         break;
