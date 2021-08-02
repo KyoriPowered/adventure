@@ -174,6 +174,11 @@ public abstract class AbstractComponent implements Component {
    * @return a new, simplified style
    */
   private static @NotNull Style simplifyStyle(final @NotNull Style style, final @NotNull Style parentStyle) {
+    if (style.isEmpty()) {
+      // the target style is empty, so there is nothing to simplify
+      return style;
+    }
+
     final Style.Builder builder = style.toBuilder();
     if (Objects.equals(style.font(), parentStyle.font())) {
       builder.font(null);
