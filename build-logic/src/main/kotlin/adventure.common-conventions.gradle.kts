@@ -8,6 +8,7 @@ plugins {
   id("net.kyori.indra.checkstyle")
   id("net.kyori.indra.license-header")
   id("com.adarshr.test-logger")
+  jacoco
 }
 
 testlogger {
@@ -136,5 +137,9 @@ tasks {
     projectVersion.set(provider { project.version.toString() })
     javadocFiles.from(javadoc)
     rootDir.set(project.rootDir)
+  }
+
+  jacocoTestReport {
+    dependsOn(test)
   }
 }
