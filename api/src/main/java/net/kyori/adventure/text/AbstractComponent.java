@@ -102,6 +102,11 @@ public abstract class AbstractComponent implements Component {
       optimized = optimized.style(simplifyStyle(this.style(), parentStyle));
     }
 
+    if (this.children.isEmpty()) {
+      // leaf nodes do not need to be further optimized - there is no point
+      return optimized;
+    }
+
     // propagate the parent style context to children
     // by merging this component's style into the parent style
     Style childParentStyle = optimized.style();
