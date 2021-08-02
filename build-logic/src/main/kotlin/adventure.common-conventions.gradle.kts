@@ -1,4 +1,5 @@
 import com.adarshr.gradle.testlogger.theme.ThemeType
+import me.champeau.jmh.JmhParameters
 import org.gradle.api.artifacts.type.ArtifactTypeDefinition
 
 plugins {
@@ -12,6 +13,16 @@ plugins {
 testlogger {
   theme = ThemeType.MOCHA_PARALLEL
   showPassed = false
+}
+
+plugins.withId("me.champeau.jmh") {
+  extensions.configure(JmhParameters::class) {
+    jmhVersion.set("1.32")
+  }
+  tasks.named("compileJmhJava") {
+    // avoid implicit task dependencies
+    dependsOn(tasks.compileTestJava, tasks.processTestResources)
+  }
 }
 
 configurations {
