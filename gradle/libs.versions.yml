@@ -1,0 +1,17 @@
+metadata:
+  format: {version: 1.0}
+  polyglot-extensions: [plugins]
+
+dependencies:
+  adventure-api: "net.kyori:adventure-api:4.8.1"
+  adventure-text-plain: "net.kyori:adventure-text-serializer-plain:4.8.1"
+  adventure-text-gson: "net.kyori:adventure-text-serializer-gson:4.8.1"
+
+  javacc: "net.java.dev.javacc:javacc:7.0.10"
+
+  jetbrains-annotations: "org.jetbrains:annotations:21.0.1"
+
+  junit-api: "org.junit.jupiter:junit-jupiter-api:5.7.2"
+  junit-engine: "org.junit.jupiter:junit-jupiter-engine:5.7.2"
+
+  checkstyle: "ca.stellardrift:stylecheck:0.1"
