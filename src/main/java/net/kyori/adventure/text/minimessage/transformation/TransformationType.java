@@ -72,7 +72,13 @@ public final class TransformationType<T extends Transformation> {
   final Predicate<String> canParse;
   final TransformationParser<T> parser;
 
-  TransformationType(final Predicate<String> canParse, final TransformationParser<T> parser) {
+  /**
+   * Constructs a new transformation type
+   *
+   * @param canParse the predicate used to check if a tag can be parsed by this type
+   * @param parser the parser that should be used to parse this type
+   */
+  public TransformationType(final Predicate<String> canParse, final TransformationParser<T> parser) {
     this.canParse = canParse;
     this.parser = parser;
   }
