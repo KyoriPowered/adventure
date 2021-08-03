@@ -44,7 +44,7 @@ public interface TitlePart<T> {
   @NotNull TitlePart<Component> TITLE = new TitlePart<Component>() {
     @Override
     public String toString() {
-      return "TitleTitlePart";
+      return "TitlePart.TITLE";
     }
   };
 
@@ -56,7 +56,7 @@ public interface TitlePart<T> {
   @NotNull TitlePart<Component> SUBTITLE = new TitlePart<Component>() {
     @Override
     public String toString() {
-      return "SubtitleTitlePart";
+      return "TitlePart.SUBTITLE";
     }
   };
 
@@ -68,7 +68,7 @@ public interface TitlePart<T> {
   @NotNull TitlePart<Title.Times> TIMES = new TitlePart<Title.Times>() {
     @Override
     public String toString() {
-      return "TimesTitlePart";
+      return "TitlePart.TIMES";
     }
   };
 }
