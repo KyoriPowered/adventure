@@ -14,4 +14,4 @@ dependencies:
   junit-api: "org.junit.jupiter:junit-jupiter-api:5.7.2"
   junit-engine: "org.junit.jupiter:junit-jupiter-engine:5.7.2"
 
-  checkstyle: "ca.stellardrift:stylecheck:0.1"
+  stylecheck: "ca.stellardrift:stylecheck:0.1"
