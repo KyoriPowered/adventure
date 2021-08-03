@@ -6,6 +6,8 @@ A string-based, user-friendly format for representing *Minecraft: Java Edition* 
 
 See the [documentation](https://docs.adventure.kyori.net/minimessage.html) for usage and dependency information for this project and the main `adventure` library.
 
+You might also be interested in the web viewer! https://webui.adventure.kyori.net/
+
 ### Contributing
 
 We appreciate contributions of any type. For any new features or typo-fix/style changes, please open an issue or come talk to us in our [Discord] first so we make sure you're going in the right direction for the project.
