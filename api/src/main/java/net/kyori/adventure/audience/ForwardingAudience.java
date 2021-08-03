@@ -109,8 +109,8 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
-  default <T> void sendTitlePart(final @NotNull TitlePart<T> titlePart, @NotNull final T content) {
-    for (final Audience audience : this.audiences()) audience.sendTitlePart(titlePart, content);
+  default <T> void sendTitlePart(final @NotNull TitlePart<T> part, @NotNull final T value) {
+    for (final Audience audience : this.audiences()) audience.sendTitlePart(part, value);
   }
 
   @Override
@@ -237,8 +237,8 @@ public interface ForwardingAudience extends Audience {
     }
 
     @Override
-    default <T> void sendTitlePart(final @NotNull TitlePart<T> titlePart, @NotNull final T content) {
-      this.audience().sendTitlePart(titlePart, content);
+    default <T> void sendTitlePart(final @NotNull TitlePart<T> part, @NotNull final T value) {
+      this.audience().sendTitlePart(part, value);
     }
 
     @Override

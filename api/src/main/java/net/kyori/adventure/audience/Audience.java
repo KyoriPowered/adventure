@@ -416,12 +416,12 @@ public interface Audience extends Pointered {
   /**
    * Shows a part of a title.
    *
-   * @param titlePart the part
-   * @param content the content
-   * @param <T> the type of the content of the part
+   * @param part the part
+   * @param value the value
+   * @param <T> the type of the value of the part
    * @since 4.9.0
    */
-  default <T> void sendTitlePart(final @NotNull TitlePart<T> titlePart, final @NotNull T content) {
+  default <T> void sendTitlePart(final @NotNull TitlePart<T> part, final @NotNull T value) {
   }
 
   /**
