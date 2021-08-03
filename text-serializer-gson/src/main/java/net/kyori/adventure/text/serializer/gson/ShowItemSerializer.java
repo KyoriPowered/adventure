@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.serializer.gson;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -35,13 +36,18 @@ import net.kyori.adventure.text.event.HoverEvent;
 import org.jetbrains.annotations.Nullable;
 
 final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
-  static final TypeAdapter<HoverEvent.ShowItem> INSTANCE = new ShowItemSerializer().nullSafe();
-
   static final String ID = "id";
   static final String COUNT = "count";
   static final String TAG = "tag";
 
-  private ShowItemSerializer() {
+  static TypeAdapter<HoverEvent.ShowItem> create(final Gson gson) {
+    return new ShowItemSerializer(gson).nullSafe();
+  }
+
+  private final Gson gson;
+
+  private ShowItemSerializer(final Gson gson) {
+    this.gson = gson;
   }
 
   @Override
@@ -55,7 +61,7 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
     while (in.hasNext()) {
       final String fieldName = in.nextName();
       if (fieldName.equals(ID)) {
-        key = KeySerializer.INSTANCE.read(in);
+        key = this.gson.getAdapter(SerializerFactory.KEY_TYPE).read(in);
       } else if (fieldName.equals(COUNT)) {
         count = in.nextInt();
       } else if (fieldName.equals(TAG)) {
@@ -87,7 +93,7 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
     out.beginObject();
 
     out.name(ID);
-    KeySerializer.INSTANCE.write(out, value.item());
+    this.gson.getAdapter(SerializerFactory.KEY_TYPE).write(out, value.item());
 
     final int count = value.count();
     if (count != 1) {

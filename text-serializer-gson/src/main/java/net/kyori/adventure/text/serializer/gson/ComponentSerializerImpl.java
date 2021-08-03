@@ -23,12 +23,12 @@
  */
 package net.kyori.adventure.text.serializer.gson;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapter;
-import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
@@ -69,19 +69,19 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
   static final String NBT_STORAGE = "storage";
   static final String SEPARATOR = "separator";
 
-  static TypeAdapter<Component> withStyleSerializer(final TypeAdapter<Style> styleSerializer) {
-    return new ComponentSerializerImpl(styleSerializer).nullSafe();
+  static TypeAdapter<Component> create(final Gson gson) {
+    return new ComponentSerializerImpl(gson).nullSafe();
   }
 
-  private final TypeAdapter<Style> styleSerializer;
+  private final Gson gson;
 
-  private ComponentSerializerImpl(final TypeAdapter<Style> styleSerializer) {
-    this.styleSerializer = styleSerializer;
+  private ComponentSerializerImpl(final Gson gson) {
+    this.gson = gson;
   }
 
   @Override
   public Component read(final JsonReader in) throws IOException {
-    return this.deserialize(Streams.parse(in));
+    return this.deserialize(this.gson.getAdapter(JsonElement.class).read(in));
   }
 
   private BuildableComponent<?, ?> deserialize(final JsonElement element) throws JsonParseException {
@@ -146,12 +146,12 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
       final boolean interpret = object.has(NBT_INTERPRET) && object.getAsJsonPrimitive(NBT_INTERPRET).getAsBoolean();
       final @Nullable Component separator = this.deserializeSeparator(object);
       if (object.has(NBT_BLOCK)) {
-        final BlockNBTComponent.Pos pos = BlockNBTComponentPosSerializer.INSTANCE.fromJsonTree(object.get(NBT_BLOCK));
+        final BlockNBTComponent.Pos pos = this.gson.getAdapter(SerializerFactory.BLOCK_NBT_POS_TYPE).fromJsonTree(object.get(NBT_BLOCK));
         component = nbt(Component.blockNBT(), nbt, interpret, separator).pos(pos);
       } else if (object.has(NBT_ENTITY)) {
         component = nbt(Component.entityNBT(), nbt, interpret, separator).selector(object.get(NBT_ENTITY).getAsString());
       } else if (object.has(NBT_STORAGE)) {
-        component = nbt(Component.storageNBT(), nbt, interpret, separator).storage(KeySerializer.INSTANCE.fromJsonTree(object.get(NBT_STORAGE)));
+        component = nbt(Component.storageNBT(), nbt, interpret, separator).storage(this.gson.getAdapter(SerializerFactory.KEY_TYPE).fromJsonTree(object.get(NBT_STORAGE)));
       } else {
         throw notSureHowToDeserialize(element);
       }
@@ -167,7 +167,7 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
       }
     }
 
-    final Style style = this.styleSerializer.fromJsonTree(element);
+    final Style style = this.gson.getAdapter(SerializerFactory.STYLE_TYPE).fromJsonTree(element);
     if (!style.isEmpty()) {
       component.style(style);
     }
@@ -191,14 +191,14 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
 
   @Override
   public void write(final JsonWriter out, final Component value) throws IOException {
-    Streams.write(this.serialize(value), out);
+    this.gson.getAdapter(JsonElement.class).write(out, this.serialize(value));
   }
 
   private JsonElement serialize(final Component src) {
     final JsonObject object = new JsonObject();
 
     if (src.hasStyling()) {
-      final JsonElement style = this.styleSerializer.toJsonTree(src.style());
+      final JsonElement style = this.gson.getAdapter(SerializerFactory.STYLE_TYPE).toJsonTree(src.style());
       if (style.isJsonObject()) {
         for (final Map.Entry<String, JsonElement> entry : ((JsonObject) style).entrySet()) {
           object.add(entry.getKey(), entry.getValue());
@@ -248,13 +248,13 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
       object.addProperty(NBT, nc.nbtPath());
       object.addProperty(NBT_INTERPRET, nc.interpret());
       if (src instanceof BlockNBTComponent) {
-        final JsonElement position = BlockNBTComponentPosSerializer.INSTANCE.toJsonTree(((BlockNBTComponent) nc).pos());
+        final JsonElement position = this.gson.getAdapter(SerializerFactory.BLOCK_NBT_POS_TYPE).toJsonTree(((BlockNBTComponent) nc).pos());
         object.add(NBT_BLOCK, position);
         this.serializeSeparator(object, nc.separator());
       } else if (src instanceof EntityNBTComponent) {
         object.addProperty(NBT_ENTITY, ((EntityNBTComponent) nc).selector());
       } else if (src instanceof StorageNBTComponent) {
-        object.add(NBT_STORAGE, KeySerializer.INSTANCE.toJsonTree(((StorageNBTComponent) nc).storage()));
+        object.add(NBT_STORAGE, this.gson.getAdapter(SerializerFactory.KEY_TYPE).toJsonTree(((StorageNBTComponent) nc).storage()));
       } else {
         throw notSureHowToSerialize(src);
       }

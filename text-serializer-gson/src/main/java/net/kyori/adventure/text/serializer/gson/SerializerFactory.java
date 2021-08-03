@@ -65,19 +65,19 @@ final class SerializerFactory implements TypeAdapterFactory {
   public <T> TypeAdapter<T> create(final Gson gson, final TypeToken<T> type) {
     final Class<? super T> rawType = type.getRawType();
     if (COMPONENT_TYPE.isAssignableFrom(rawType)) {
-      return (TypeAdapter<T>) ComponentSerializerImpl.withStyleSerializer(gson.getAdapter(STYLE_TYPE));
+      return (TypeAdapter<T>) ComponentSerializerImpl.create(gson);
     } else if (KEY_TYPE.isAssignableFrom(rawType)) {
       return (TypeAdapter<T>) KeySerializer.INSTANCE;
     } else if (STYLE_TYPE.isAssignableFrom(rawType)) {
-      return (TypeAdapter<T>) new StyleSerializer(this.legacyHoverSerializer, this.emitLegacyHover, gson.getAdapter(COLOR_TYPE));
+      return (TypeAdapter<T>) StyleSerializer.create(this.legacyHoverSerializer, this.emitLegacyHover, gson);
     } else if (CLICK_ACTION_TYPE.isAssignableFrom(rawType)) {
       return (TypeAdapter<T>) ClickEventActionSerializer.INSTANCE;
     } else if (HOVER_ACTION_TYPE.isAssignableFrom(rawType)) {
       return (TypeAdapter<T>) HoverEventActionSerializer.INSTANCE;
     } else if (SHOW_ITEM_TYPE.isAssignableFrom(rawType)) {
-      return (TypeAdapter<T>) ShowItemSerializer.INSTANCE;
+      return (TypeAdapter<T>) ShowItemSerializer.create(gson);
     } else if (SHOW_ENTITY_TYPE.isAssignableFrom(rawType)) {
-      return (TypeAdapter<T>) new ShowEntitySerializer(gson.getAdapter(COMPONENT_TYPE));
+      return (TypeAdapter<T>) ShowEntitySerializer.create(gson);
     } else if (COLOR_WRAPPER_TYPE.isAssignableFrom(rawType)) {
       return (TypeAdapter<T>) TextColorWrapper.Serializer.INSTANCE;
     } else if (COLOR_TYPE.isAssignableFrom(rawType)) {

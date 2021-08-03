@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.serializer.gson;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -39,10 +40,14 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
   static final String ID = "id";
   static final String NAME = "name";
 
-  private final TypeAdapter<Component> componentSerializer;
+  static TypeAdapter<HoverEvent.ShowEntity> create(final Gson gson) {
+    return new ShowEntitySerializer(gson).nullSafe();
+  }
 
-  ShowEntitySerializer(final TypeAdapter<Component> componentSerializer) {
-    this.componentSerializer = componentSerializer;
+  private final Gson gson;
+
+  private ShowEntitySerializer(final Gson gson) {
+    this.gson = gson;
   }
 
   @Override
@@ -56,11 +61,11 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
     while (in.hasNext()) {
       final String fieldName = in.nextName();
       if (fieldName.equals(TYPE)) {
-        type = KeySerializer.INSTANCE.read(in);
+        type = this.gson.getAdapter(SerializerFactory.KEY_TYPE).read(in);
       } else if (fieldName.equals(ID)) {
         id = UUID.fromString(in.nextString());
       } else if (fieldName.equals(NAME)) {
-        name = this.componentSerializer.read(in);
+        name = this.gson.getAdapter(SerializerFactory.COMPONENT_TYPE).read(in);
       } else {
         in.skipValue();
       }
@@ -79,7 +84,7 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
     out.beginObject();
 
     out.name(TYPE);
-    KeySerializer.INSTANCE.write(out, value.type());
+    this.gson.getAdapter(SerializerFactory.KEY_TYPE).write(out, value.type());
 
     out.name(ID);
     out.value(value.id().toString());
@@ -87,7 +92,7 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
     final @Nullable Component name = value.name();
     if (name != null) {
       out.name(NAME);
-      this.componentSerializer.write(out, name);
+      this.gson.getAdapter(SerializerFactory.COMPONENT_TYPE).write(out, name);
     }
 
     out.endObject();
