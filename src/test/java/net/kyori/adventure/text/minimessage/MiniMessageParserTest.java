@@ -493,6 +493,17 @@ public class MiniMessageParserTest extends TestBase {
   }
 
   @Test
+  void testPreWithoutTrailingSpace() {
+    final String input = "<red>Don't sabotage my <yellow><pre><insert:test>color</pre></yellow> please";
+    final Component expected = empty().color(RED)
+        .append(text("Don't sabotage my "))
+        .append(text("<insert:test>color", YELLOW))
+        .append(text(" please"));
+
+    this.assertParsedEquals(expected, input);
+  }
+
+  @Test
   void testRainbow() {
     final String input = "<yellow>Woo: <rainbow>||||||||||||||||||||||||</rainbow>!";
     final Component expected = empty().color(YELLOW)

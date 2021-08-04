@@ -180,8 +180,8 @@ public final class TokenParser {
               elements.add(new Token(currentTokenEnd, i, TokenType.TEXT));
               // the </pre> is still a closing tag though
               elements.add(new Token(i, i + 6, TokenType.CLOSE_TAG));
-              i += 6;
-              currentTokenEnd = i;
+              i += 5;
+              currentTokenEnd = i + 1;
               state = FirstPassState.NORMAL;
             }
           }
