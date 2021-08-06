@@ -246,4 +246,16 @@ class TextReplacementRendererTest {
       .build();
     assertEquals(expected, replaced);
   }
+
+  // https://github.com/KyoriPowered/adventure/issues/387
+  @Test
+  void testFullMatchReplaceWithStyle() {
+    final Component base = Component.text("hello", NamedTextColor.RED);
+
+    final Component replaced = base.replaceText(c -> c.matchLiteral("hello")
+      .replacement(Component.text("world").decorate(TextDecoration.BOLD)));
+
+    final Component expected = Component.text("world", NamedTextColor.RED, TextDecoration.BOLD);
+    assertEquals(expected, replaced);
+  }
 }
