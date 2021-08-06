@@ -30,6 +30,7 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.renderer.ComponentRenderer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -76,6 +77,10 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
               .style(component.style()));
 
             modified = replacement == null ? Component.empty() : replacement.asComponent();
+
+            // merge style of the match into this component to prevent unexpected loss of style
+            modified = modified.style(modified.style().merge(component.style(), Style.Merge.Strategy.IF_ABSENT_ON_TARGET));
+
             if (children == null) { // Prepare children
               children = new ArrayList<>(oldChildrenSize + modified.children().size());
               children.addAll(modified.children());
