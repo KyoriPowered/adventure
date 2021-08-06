@@ -295,7 +295,7 @@ public final class TokenParser {
 
         case OPEN_TAG:
           final TagNode tagNode = new TagNode(node, token, message, templates);
-          if (tagNode.name().equals("reset")) {
+          if (tagNode.name().equals("reset") || tagNode.name().equals("r")) {
             // <reset> tags get special treatment and don't appear in the tree
             // instead, they close all currently open tags
 
@@ -348,7 +348,7 @@ public final class TokenParser {
           }
 
           final String closeTagName = closeValues.get(0);
-          if (closeTagName.equals("reset") || closeTagName.equals("pre")) {
+          if (closeTagName.equals("reset") || closeTagName.equals("r") || closeTagName.equals("pre")) {
             // These are synthetic nodes, closing them means nothing in the context of building a tree
             continue;
           }
