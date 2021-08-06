@@ -411,7 +411,7 @@ public class MiniMessageParserTest extends TestBase {
 
   @Test
   void testBackSpace() {
-    final String input = "\\\\!/ IMPORTANT \\\\!/";
+    final String input = "\\!/ IMPORTANT \\!/";
     final Component expected = text("\\!/ IMPORTANT \\!/");
 
     this.assertParsedEquals(expected, input);
@@ -419,7 +419,7 @@ public class MiniMessageParserTest extends TestBase {
 
   @Test
   void testGH5() {
-    final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:'<pack_url>'><hover:show_text:\"<green>/!\\\\\\\\ install it from Options/ResourcePacks in your game\"><green><bold>CLICK HERE</bold></hover></click>";
+    final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:'<pack_url>'><hover:show_text:\"<green>/!\\ install it from Options/ResourcePacks in your game\"><green><bold>CLICK HERE</bold></hover></click>";
     final Component expected = empty().color(DARK_GRAY)
       .append(text("»"))
       .append(empty().color(GRAY)
@@ -432,7 +432,7 @@ public class MiniMessageParserTest extends TestBase {
 
   @Test
   void testGH5Modified() {
-    final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:'<pack_url>'><hover:show_text:'<green>/!\\\\\\\\ install it from \\'Options/ResourcePacks\\' in your game'><green><bold>CLICK HERE</bold></hover></click>";
+    final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:'<pack_url>'><hover:show_text:'<green>/!\\ install it from \\'Options/ResourcePacks\\' in your game'><green><bold>CLICK HERE</bold></hover></click>";
     final Component expected = empty().color(DARK_GRAY)
       .append(text("»"))
       .append(empty().color(GRAY)
@@ -446,7 +446,7 @@ public class MiniMessageParserTest extends TestBase {
 
   @Test
   void testGH5Quoted() {
-    final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:\"https://www.google.com\"><hover:show_text:\"<green>/!\\\\\\\\ install it from Options/ResourcePacks in your game\"><green><bold>CLICK HERE</bold></hover></click>";
+    final String input = "<dark_gray>»<gray> To download it from the internet, <click:open_url:\"https://www.google.com\"><hover:show_text:\"<green>/!\\ install it from Options/ResourcePacks in your game\"><green><bold>CLICK HERE</bold></hover></click>";
     final Component expected = empty().color(DARK_GRAY)
       .append(text("»"))
       .append(empty().color(GRAY)
@@ -1242,18 +1242,22 @@ public class MiniMessageParserTest extends TestBase {
     this.assertParsedEquals(expectedGradient, gradientInput);
   }
 
+  // GH-134
   @Test
-  void testEscape() {
-    final String input = "\\a";
-    final Component expected = text("a");
+  void testEscapeOutsideOfContext() {
+    final String input = "\\\"";
+    final Component expected = text("\\\"");
 
     this.assertParsedEquals(expected, input);
   }
 
   @Test
-  void testBareEscape() {
-    final String input = "\\";
-    final Component expected = empty();
+  void testEscapeInsideOfContext() {
+    final String input = "<hover:show_text:'Look at this \\''>Test";
+    final Component expected = text()
+            .content("Test")
+            .hoverEvent(text("Look at this '"))
+            .build();
 
     this.assertParsedEquals(expected, input);
   }

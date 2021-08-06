@@ -113,7 +113,7 @@ public final class TagPart {
       endIndex--;
     }
 
-    return TokenParser.unescape(text, startIndex, endIndex);
+    return TokenParser.unescape(text, startIndex, endIndex, i -> i == firstChar);
   }
 
   @Override

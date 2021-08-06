@@ -30,6 +30,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.IntPredicate;
 import net.kyori.adventure.text.minimessage.Template;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.parser.node.RootNode;
@@ -95,9 +96,28 @@ public final class TokenParser {
       }
 
       if (!escaped) {
-        if (codePoint == '\\') {
-          escaped = true;
-          continue;
+        // if we're trying to escape and the next character exists
+        if (codePoint == '\\' && i + 1 < message.length()) {
+          final int nextCodePoint = message.codePointAt(i + 1);
+
+          switch (state) {
+            case NORMAL:
+              // allow escaping open tokens
+              escaped = nextCodePoint == '<';
+              break;
+            case STRING:
+              // allow escaping closing string chars
+              escaped = currentStringChar == nextCodePoint;
+              break;
+            case TAG:
+            case PRE:
+              break;
+          }
+
+          // only escape if we need to
+          if (escaped) {
+            continue;
+          }
         }
       } else {
         escaped = false;
@@ -223,9 +243,25 @@ public final class TokenParser {
         }
 
         if (!escaped) {
-          if (codePoint == '\\') {
-            escaped = true;
-            continue;
+          // if we're trying to escape and the next character exists
+          if (codePoint == '\\' && i + 1 < message.length()) {
+            final int nextCodePoint = message.codePointAt(i + 1);
+
+            switch (state) {
+              case NORMAL:
+                // allow escaping open tokens
+                escaped = nextCodePoint == '<';
+                break;
+              case STRING:
+                // allow escaping closing string chars
+                escaped = currentStringChar == nextCodePoint;
+                break;
+            }
+
+            // only escape if we need to
+            if (escaped) {
+              continue;
+            }
           }
         } else {
           escaped = false;
@@ -490,16 +526,16 @@ public final class TokenParser {
   }
 
   /**
-   * Removes escaping {@code '\`} characters from a substring. In general, this removes all {@code '\`} characters,
-   * though the pattern {@code '\\'} will be replaced with {@code '\'}.
+   * Removes escaping {@code '\`} characters from a substring where the subsequent character matches a given predicate.
    *
    * @param text the input text
    * @param startIndex the starting index of the substring
    * @param endIndex the ending index of the substring
+   * @param escapes the predicate to determine if an escape happened
    * @return the output escaped substring
    * @since 4.2.0
    */
-  public static String unescape(final String text, final int startIndex, final int endIndex) {
+  public static String unescape(final String text, final int startIndex, final int endIndex, final IntPredicate escapes) {
     int from = startIndex;
 
     int i = text.indexOf('\\', from);
@@ -509,26 +545,31 @@ public final class TokenParser {
 
     final StringBuilder sb = new StringBuilder(endIndex - startIndex);
     while (i != -1 && i < endIndex) {
-      sb.append(text, from, i);
-      i++;
+      if (escapes.test(text.codePointAt(i + 1))) {
+        sb.append(text, from, i);
+        i++;
 
-      if (i >= endIndex) {
-        from = endIndex;
-        break;
-      }
+        if (i >= endIndex) {
+          from = endIndex;
+          break;
+        }
 
-      final int codePoint = text.codePointAt(i);
-      sb.appendCodePoint(codePoint);
+        final int codePoint = text.codePointAt(i);
+        sb.appendCodePoint(codePoint);
 
-      if (Character.isBmpCodePoint(codePoint)) {
-        i += 1;
+        if (Character.isBmpCodePoint(codePoint)) {
+          i += 1;
+        } else {
+          i += 2;
+        }
+
+        if (i >= endIndex) {
+          from = endIndex;
+          break;
+        }
       } else {
-        i += 2;
-      }
-
-      if (i >= endIndex) {
-        from = endIndex;
-        break;
+        i++;
+        sb.append(text, from, i);
       }
 
       from = i;
