@@ -20,6 +20,7 @@ repositories {
 
 dependencies {
   api(libs.adventure.api)
+  compileOnly(libs.adventure.text.plain)
   checkstyle(libs.stylecheck)
   compileOnlyApi(libs.jetbrains.annotations)
   testImplementation(libs.adventure.text.plain)

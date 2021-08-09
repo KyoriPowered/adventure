@@ -28,6 +28,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.junit.jupiter.api.Test;
 
@@ -39,14 +40,7 @@ import static net.kyori.adventure.text.Component.translatable;
 import static net.kyori.adventure.text.event.ClickEvent.openUrl;
 import static net.kyori.adventure.text.event.ClickEvent.runCommand;
 import static net.kyori.adventure.text.event.HoverEvent.showText;
-import static net.kyori.adventure.text.format.NamedTextColor.BLACK;
-import static net.kyori.adventure.text.format.NamedTextColor.BLUE;
-import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
-import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
-import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
-import static net.kyori.adventure.text.format.NamedTextColor.RED;
-import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
-import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.Style.style;
 import static net.kyori.adventure.text.format.TextColor.color;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
@@ -1337,5 +1331,21 @@ public class MiniMessageParserTest extends TestBase {
     final Component expected = text("Please don't crash \\");
 
     this.assertParsedEquals(expected, input);
+  }
+
+  @Test
+  void gh137() {
+    final String input = "<gradient:gold:yellow:red><dum>";
+    final String input2 = "<gradient:gold:yellow:red><dum>a";
+    final Component expected1 = text("a", BLACK); // ????
+    final Component expected2 = text().append(text("a", GOLD), text("a", YELLOW)).build();
+    final Component expected3 = text().append(text("a", GOLD), text("a", YELLOW), text("a", YELLOW)).build();
+    final Component expected4 = text().append(text("a", GOLD), text("a", TextColor.fromHexString("#ffd52b")), text("a", YELLOW), text("a", YELLOW)).build();
+
+    this.assertParsedEquals(expected1, input, Template.of("dum", text("a")));
+    this.assertParsedEquals(expected2, input, Template.of("dum", text("aa")));
+    this.assertParsedEquals(expected3, input, Template.of("dum", text("aaa")));
+    this.assertParsedEquals(expected4, input, Template.of("dum", text("aaaa")));
+    this.assertParsedEquals(expected4, input2, Template.of("dum", text("aaa")));
   }
 }

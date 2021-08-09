@@ -43,6 +43,7 @@ import net.kyori.adventure.text.minimessage.parser.node.ValueNode;
 import net.kyori.adventure.text.minimessage.transformation.Modifying;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,7 +54,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class GradientTransformation extends Transformation implements Modifying {
 
-  private int size = 0;
+  private int size = -1;
   private int disableApplyingColorDepth = -1;
 
   private int index = 0;
@@ -146,6 +147,16 @@ public final class GradientTransformation extends Transformation implements Modi
 
   @Override
   public Component apply(final Component current, final int depth) {
+    if (this.size == -1) {
+      // we didn't init yet, cause at least part of current was a template, so let's do that now
+      String content = PlainTextComponentSerializer.plainText().serialize(current);
+      this.size = content.codePointCount(0, content.length());
+      if (this.size == 0 || this.size == -1) {
+        throw new ParsingException("Content of gradient seems strange, don't know how to calculate size!!");
+      }
+      apply();
+    }
+
     if ((this.disableApplyingColorDepth != -1 && depth > this.disableApplyingColorDepth) || current.style().color() != null) {
       if (this.disableApplyingColorDepth == -1) {
         this.disableApplyingColorDepth = depth;
