@@ -1272,4 +1272,12 @@ public class MiniMessageParserTest extends TestBase {
 
     this.assertParsedEquals(expected, input);
   }
+
+  @Test
+  void testEscapeAtEnd() {
+    final String input = "Please don't crash \\";
+    final Component expected = text("Please don't crash \\");
+
+    this.assertParsedEquals(expected, input);
+  }
 }

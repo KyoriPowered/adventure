@@ -544,7 +544,7 @@ public final class TokenParser {
     }
 
     final StringBuilder sb = new StringBuilder(endIndex - startIndex);
-    while (i != -1 && i < endIndex) {
+    while (i != -1 && i + 1 < endIndex) {
       if (escapes.test(text.codePointAt(i + 1))) {
         sb.append(text, from, i);
         i++;
