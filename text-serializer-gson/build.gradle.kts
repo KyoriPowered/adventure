@@ -1,5 +1,6 @@
 plugins {
   id("adventure.common-conventions")
+  id("me.champeau.jmh")
 }
 
 dependencies {
