@@ -3,8 +3,8 @@ plugins {
 }
 
 dependencies {
-  api("net.kyori:examination-api:1.1.0")
-  api("net.kyori:examination-string:1.1.0")
+  api("net.kyori:examination-api:1.2.0")
+  api("net.kyori:examination-string:1.2.0")
   compileOnlyApi("org.jetbrains:annotations:21.0.1")
 }
 
