@@ -37,11 +37,11 @@ import org.jetbrains.annotations.NotNull;
 @ApiStatus.NonExtendable
 public interface TitlePart<T> {
   /**
-   * A title part of a title.
+   * The title part of a title.
    *
    * @since 4.9.0
    */
-  @NotNull TitlePart<Component> TITLE = new TitlePart<Component>() {
+  TitlePart<Component> TITLE = new TitlePart<Component>() {
     @Override
     public String toString() {
       return "TitlePart.TITLE";
@@ -53,7 +53,7 @@ public interface TitlePart<T> {
    *
    * @since 4.9.0
    */
-  @NotNull TitlePart<Component> SUBTITLE = new TitlePart<Component>() {
+  TitlePart<Component> SUBTITLE = new TitlePart<Component>() {
     @Override
     public String toString() {
       return "TitlePart.SUBTITLE";
@@ -65,7 +65,7 @@ public interface TitlePart<T> {
    *
    * @since 4.9.0
    */
-  @NotNull TitlePart<Title.Times> TIMES = new TitlePart<Title.Times>() {
+  TitlePart<Title.Times> TIMES = new TitlePart<Title.Times>() {
     @Override
     public String toString() {
       return "TitlePart.TIMES";
