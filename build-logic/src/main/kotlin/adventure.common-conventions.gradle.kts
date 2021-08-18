@@ -9,6 +9,7 @@ plugins {
   id("net.kyori.indra.checkstyle")
   id("net.kyori.indra.license-header")
   id("com.adarshr.test-logger")
+  id("com.diffplug.eclipse.apt")
   jacoco
 }
 
