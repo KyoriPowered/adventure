@@ -70,7 +70,7 @@ final class TitleImpl implements Title {
       return (T) this.times;
     }
 
-    throw new IllegalArgumentException("Unknown part.");
+    throw new IllegalArgumentException("Don't know what " + part + " is.");
   }
 
   @Override
