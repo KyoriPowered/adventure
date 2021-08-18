@@ -1,6 +1,6 @@
 plugins {
   idea
-  val indraVersion = "2.0.4"
+  val indraVersion = "2.0.6"
   id("net.kyori.indra") version indraVersion
   id("net.kyori.indra.publishing.sonatype") version indraVersion
   id("net.kyori.indra.license-header") version indraVersion
