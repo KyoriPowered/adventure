@@ -24,8 +24,8 @@
 package net.kyori.adventure.text.format;
 
 import net.kyori.examination.string.StringExaminer;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 final class TextDecorationAndStateImpl implements TextDecorationAndState {
   private final TextDecoration decoration;
@@ -37,12 +37,12 @@ final class TextDecorationAndStateImpl implements TextDecorationAndState {
   }
 
   @Override
-  public @NonNull TextDecoration decoration() {
+  public @NotNull TextDecoration decoration() {
     return this.decoration;
   }
 
   @Override
-  public TextDecoration.@NonNull State state() {
+  public TextDecoration.@NotNull State state() {
     return this.state;
   }
 

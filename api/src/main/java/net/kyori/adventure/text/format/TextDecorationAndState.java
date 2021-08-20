@@ -26,8 +26,8 @@ package net.kyori.adventure.text.format;
 import java.util.stream.Stream;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A combination of a {@link TextDecoration} and a {@link TextDecoration.State}.
@@ -42,7 +42,7 @@ public interface TextDecorationAndState extends Examinable, StyleBuilderApplicab
    * @return the decoration
    * @since 4.8.0
    */
-  @NonNull TextDecoration decoration();
+  @NotNull TextDecoration decoration();
 
   /**
    * Gets the state.
@@ -50,15 +50,15 @@ public interface TextDecorationAndState extends Examinable, StyleBuilderApplicab
    * @return the state
    * @since 4.8.0
    */
-  TextDecoration.@NonNull State state();
+  TextDecoration.@NotNull State state();
 
   @Override
-  default void styleApply(final Style.@NonNull Builder style) {
+  default void styleApply(final Style.@NotNull Builder style) {
     style.decoration(this.decoration(), this.state());
   }
 
   @Override
-  default @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
       ExaminableProperty.of("decoration", this.decoration()),
       ExaminableProperty.of("state", this.state())
