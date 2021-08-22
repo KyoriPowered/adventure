@@ -23,6 +23,7 @@ dependencies {
       "text-serializer-json",
       "text-serializer-json-legacy-impl",
       "text-serializer-legacy",
+      "text-serializer-moshi",
       "text-serializer-plain"
     ).forEach {
       api(project(":adventure-$it"))

@@ -19,6 +19,7 @@ sequenceOf(
   "text-serializer-json",
   "text-serializer-json-legacy-impl",
   "text-serializer-legacy",
+  "text-serializer-moshi",
   "text-serializer-plain"
 ).forEach {
   include("adventure-$it")
