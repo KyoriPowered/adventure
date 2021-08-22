@@ -37,6 +37,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer;
 import net.kyori.adventure.util.Services;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -149,6 +150,12 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
 
     @Override
     public @NotNull Builder legacyHoverEventSerializer(final @Nullable LegacyHoverEventSerializer serializer) {
+      this.legacyHoverSerializer = serializer;
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder legacyHoverEventSerializer(final net.kyori.adventure.text.serializer.gson.@Nullable LegacyHoverEventSerializer serializer) {
       this.legacyHoverSerializer = serializer;
       return this;
     }

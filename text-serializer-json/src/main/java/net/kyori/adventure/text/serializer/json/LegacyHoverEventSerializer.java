@@ -21,24 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.serializer.gson;
+package net.kyori.adventure.text.serializer.json;
 
 import java.io.IOException;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.util.Codec;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Adapter to convert between modern and legacy hover event formats.
  *
  * @since 4.0.0
- * @deprecated For removal, use {@link net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer}
  */
-@Deprecated
-@ApiStatus.ScheduledForRemoval
-public interface LegacyHoverEventSerializer extends net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer {
+public interface LegacyHoverEventSerializer {
   /**
    * Convert a legacy hover event {@code show_item} value to its modern format.
    *
