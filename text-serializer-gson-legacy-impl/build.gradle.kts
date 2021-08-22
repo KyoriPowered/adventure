@@ -5,6 +5,7 @@ plugins {
 dependencies {
   api(project(":adventure-api"))
   api(project(":adventure-text-serializer-gson"))
+  api(project(":adventure-text-serializer-json-legacy-impl"))
   api(project(":adventure-nbt"))
 }
 

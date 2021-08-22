@@ -6,4 +6,4 @@ dependencies {
   api(project(":adventure-api"))
 }
 
-applyJarMetadata("net.kyori.adventure.text.serializer.gson")
+applyJarMetadata("net.kyori.adventure.text.serializer.json")
