@@ -5,6 +5,7 @@ plugins {
 
 dependencies {
   api(project(":adventure-api"))
+  api(project(":adventure-text-serializer-json"))
   api("com.google.code.gson:gson:2.8.0")
   testImplementation(project(":adventure-nbt"))
 }
