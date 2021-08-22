@@ -21,8 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package net.kyori.adventure.text.serializer.json.legacyimpl;
+
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer;
+import org.jetbrains.annotations.NotNull;
+
 /**
- * Gson legacy hover event serialization and deserialization.
+ * A legacy {@link HoverEvent} serializer.
+ *
+ * @since 4.9.0
  */
-@Deprecated
-package net.kyori.adventure.text.serializer.gson.legacyimpl;
+public interface NBTLegacyHoverEventSerializer extends LegacyHoverEventSerializer {
+  /**
+   * Gets the legacy {@link HoverEvent} serializer.
+   *
+   * @return a legacy {@link HoverEvent} serializer
+   * @since 4.9.0
+   */
+  static @NotNull LegacyHoverEventSerializer get() {
+    return NBTLegacyHoverEventSerializerImpl.INSTANCE;
+  }
+}
