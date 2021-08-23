@@ -47,13 +47,7 @@ import static java.util.Objects.requireNonNull;
 public abstract class AbstractComponent implements Component {
   private static final Predicate<Component> NOT_EMPTY = component -> component != Component.empty();
 
-  /**
-   * The list of children.
-   */
   protected final List<Component> children;
-  /**
-   * The style of this component.
-   */
   protected final Style style;
 
   protected AbstractComponent(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style) {

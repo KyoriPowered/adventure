@@ -53,13 +53,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
    * another component, or someone provides a style via style(Style), then we don't need a builder - unless someone later
    * calls one of the style modification methods in this builder, at which time we'll convert 'style' to a style builder.
    */
-  /**
-   * The style.
-   */
   private @Nullable Style style;
-  /**
-   * The style builder.
-   */
   private Style.@Nullable Builder styleBuilder;
 
   protected AbstractComponentBuilder() {
