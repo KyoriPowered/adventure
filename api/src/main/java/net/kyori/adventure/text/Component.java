@@ -145,7 +145,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param components the components
    * @return a text component
    * @since 4.0.0
-   * @deprecated for removal since 4.9.0, use {@link #join(JoinConfiguration, ComponentLike...)} with a {@link JoinConfiguration} instead.
+   * @deprecated for removal since 4.9.0, use {@link #join(JoinConfiguration, ComponentLike...)} with {@link JoinConfiguration#separator(ComponentLike)} instead.
    */
   @Deprecated
   @Contract(value = "_, _ -> new", pure = true)
@@ -160,7 +160,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param components the components
    * @return a text component
    * @since 4.0.0
-   * @deprecated for removal since 4.9.0, use {@link #join(JoinConfiguration, Iterable)} with a {@link JoinConfiguration} instead.
+   * @deprecated for removal since 4.9.0, use {@link #join(JoinConfiguration, Iterable)} with {@link JoinConfiguration#separator(ComponentLike)} instead.
    */
   @Deprecated
   @Contract(value = "_, _ -> new", pure = true)
@@ -176,8 +176,10 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    *
    * @param config the join configuration
    * @param components the components
-   * @return a text component
-   * @see JoinConfiguration
+   * @return the resulting component
+   * @see JoinConfiguration#noSeparators()
+   * @see JoinConfiguration#separator(ComponentLike)
+   * @see JoinConfiguration#separators(ComponentLike, ComponentLike)
    * @since 4.9.0
    */
   @Contract(pure = true)
@@ -190,8 +192,10 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    *
    * @param config the join configuration
    * @param components the components
-   * @return a text component
-   * @see JoinConfiguration
+   * @return the resulting component
+   * @see JoinConfiguration#noSeparators()
+   * @see JoinConfiguration#separator(ComponentLike)
+   * @see JoinConfiguration#separators(ComponentLike, ComponentLike)
    * @since 4.9.0
    */
   @Contract(pure = true)
