@@ -52,7 +52,6 @@ import static net.kyori.adventure.text.serializer.gson.GsonComponentSerializer.g
 @BenchmarkMode(Mode.SampleTime)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class ComponentDeserializationBenchmark {
-
   private String simpleComponent;
   private String componentTreeWithStyle;
   private String componentTreeWithEvents;
@@ -69,14 +68,10 @@ public class ComponentDeserializationBenchmark {
                                                      .build());
     this.componentTreeWithEvents = gson().serialize(text()
                                                       .decorate(TextDecoration.UNDERLINED, TextDecoration.ITALIC)
-                                                      .append(text("Component ", color(0x8cfbde))
-                                                                .clickEvent(openUrl("https://kyori.net/")))
-                                                      .append(text("with ", color(0x0fff95), TextDecoration.BOLD)
-                                                                .hoverEvent(showItem(Key.key("iron_sword"), 1, BinaryTagHolder.of("{Damage: 30, RepairCost: 4, Enchantments: [{id: 'minecraft:sharpness', lvl: 3s}, {id: 'minecraft:unbreaking', lvl: 1s}]}"))))
-                                                      .append(text("hex ", color(0x06ba63))
-                                                                .hoverEvent(showEntity(Key.key("pig"), UUID.randomUUID(), text("Piggy", NamedTextColor.YELLOW))))
-                                                      .append(text("colors", color(0x103900))
-                                                                .hoverEvent(showText(text("Text hover!"))))
+                                                      .append(text("Component ", style(color(0x8cfbde), openUrl("https://kyori.net/"))))
+                                                      .append(text("with ", style(color(0x0fff95), TextDecoration.BOLD, showItem(Key.key("iron_sword"), 1, BinaryTagHolder.of("{Damage: 30, RepairCost: 4, Enchantments: [{id: 'minecraft:sharpness', lvl: 3s}, {id: 'minecraft:unbreaking', lvl: 1s}]}")))))
+                                                      .append(text("hex ", style(color(0x06ba63), showEntity(Key.key("pig"), UUID.randomUUID(), text("Piggy", NamedTextColor.YELLOW)))))
+                                                      .append(text("colors", style(color(0x103900), showText(text("Text hover!")))))
                                                       .build());
   }
 
