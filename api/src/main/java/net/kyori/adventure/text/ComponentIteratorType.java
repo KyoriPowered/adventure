@@ -46,6 +46,15 @@ public enum ComponentIteratorType {
    * @since 4.9.0
    */
   DEPTH_FIRST((deque, component) -> {
+    if (component instanceof TranslatableComponent) {
+      final TranslatableComponent translatable = (TranslatableComponent) component;
+      final List<Component> args = translatable.args();
+
+      for (int i = args.size() - 1; i >= 0; i--) {
+        deque.addFirst(args.get(i));
+      }
+    }
+
     final List<Component> children = component.children();
     for (int i = children.size() - 1; i >= 0; i--) {
       deque.addFirst(children.get(i));
@@ -57,7 +66,13 @@ public enum ComponentIteratorType {
    *
    * @since 4.9.0
    */
-  BREADTH_FIRST((deque, component) -> deque.addAll(component.children())),
+  BREADTH_FIRST((deque, component) -> {
+    if (component instanceof TranslatableComponent) {
+      deque.addAll(((TranslatableComponent) component).args());
+    }
+
+    deque.addAll(component.children());
+  }),
 
   /**
    * A depth-first iteration that includes components from the {@link HoverEvent} class where the value is a component or the type is an entity with a name.

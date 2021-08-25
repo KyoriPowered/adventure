@@ -135,4 +135,22 @@ class ComponentIteratorTest {
     assertTrue(foundText, "Could not locate text in component hover event.");
     assertTrue(foundEntity, "Could not locate entity display name in entity hover event.");
   }
+
+  @Test
+  public void testOfTranslatableArguments() {
+    final Component component = Component.text()
+      .append(Component.text("TEXT"))
+      .append(Component.translatable("translatable", Component.text("ARG")))
+      .build();
+
+    for (final Component inner : component.iterable(ComponentIteratorType.BREADTH_FIRST)) {
+      if (inner instanceof TextComponent) {
+        final TextComponent text = (TextComponent) inner;
+
+        if (text.content().equals("ARG")) return;
+      }
+    }
+
+    fail("Could not locale the arg of a translatable component.");
+  }
 }
