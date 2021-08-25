@@ -27,6 +27,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -101,9 +102,9 @@ final class StyleSerializer extends TypeAdapter<Style> {
     while (in.hasNext()) {
       final String fieldName = in.nextName();
       if (fieldName.equals(FONT)) {
-        style.font(this.gson.getAdapter(SerializerFactory.KEY_TYPE).read(in));
+        style.font(this.gson.fromJson(in, SerializerFactory.KEY_TYPE));
       } else if (fieldName.equals(COLOR)) {
-        final TextColorWrapper color = this.gson.getAdapter(SerializerFactory.COLOR_WRAPPER_TYPE).read(in);
+        final TextColorWrapper color = this.gson.fromJson(in, SerializerFactory.COLOR_WRAPPER_TYPE);
         if (color.color != null) {
           style.color(color.color);
         } else if (color.decoration != null) {
@@ -120,7 +121,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
         while (in.hasNext()) {
           final String clickEventField = in.nextName();
           if (clickEventField.equals(CLICK_EVENT_ACTION)) {
-            action = this.gson.getAdapter(SerializerFactory.CLICK_ACTION_TYPE).read(in);
+            action = this.gson.fromJson(in, SerializerFactory.CLICK_ACTION_TYPE);
           } else if (clickEventField.equals(CLICK_EVENT_VALUE)) {
             value = in.peek() == JsonToken.NULL ? null : in.nextString();
           } else {
@@ -132,25 +133,30 @@ final class StyleSerializer extends TypeAdapter<Style> {
         }
         in.endObject();
       } else if (fieldName.equals(HOVER_EVENT)) {
-        final JsonObject hoverEventObject = this.gson.getAdapter(JsonElement.class).read(in).getAsJsonObject();
+        final JsonObject hoverEventObject = this.gson.fromJson(in, JsonObject.class);
         if (hoverEventObject != null) {
-          final HoverEvent.@Nullable Action action = this.optionallyDeserialize(hoverEventObject.getAsJsonPrimitive(HOVER_EVENT_ACTION), this.gson.getAdapter(SerializerFactory.HOVER_ACTION_TYPE));
-          if (action != null && action.readable()) {
+          final JsonPrimitive serializedAction = hoverEventObject.getAsJsonPrimitive(HOVER_EVENT_ACTION);
+          if (serializedAction == null) {
+            continue;
+          }
+
+          final HoverEvent.Action action = this.gson.fromJson(serializedAction, SerializerFactory.HOVER_ACTION_TYPE);
+          if (action.readable()) {
             final @Nullable Object value;
             if (hoverEventObject.has(HOVER_EVENT_CONTENTS)) {
               final @Nullable JsonElement rawValue = hoverEventObject.get(HOVER_EVENT_CONTENTS);
               final Class<?> actionType = action.type();
               if (SerializerFactory.COMPONENT_TYPE.isAssignableFrom(actionType)) {
-                value = this.gson.getAdapter(SerializerFactory.COMPONENT_TYPE).fromJsonTree(rawValue);
+                value = this.gson.fromJson(rawValue, SerializerFactory.COMPONENT_TYPE);
               } else if (SerializerFactory.SHOW_ITEM_TYPE.isAssignableFrom(actionType)) {
-                value = this.gson.getAdapter(SerializerFactory.SHOW_ITEM_TYPE).fromJsonTree(rawValue);
+                value = this.gson.fromJson(rawValue, SerializerFactory.SHOW_ITEM_TYPE);
               } else if (SerializerFactory.SHOW_ENTITY_TYPE.isAssignableFrom(actionType)) {
-                value = this.gson.getAdapter(SerializerFactory.SHOW_ENTITY_TYPE).fromJsonTree(rawValue);
+                value = this.gson.fromJson(rawValue, SerializerFactory.SHOW_ENTITY_TYPE);
               } else {
                 value = null;
               }
             } else if (hoverEventObject.has(HOVER_EVENT_VALUE)) {
-              final Component rawValue = this.gson.getAdapter(SerializerFactory.COMPONENT_TYPE).fromJsonTree(hoverEventObject.get(HOVER_EVENT_VALUE));
+              final Component rawValue = this.gson.fromJson(hoverEventObject.get(HOVER_EVENT_VALUE), SerializerFactory.COMPONENT_TYPE);
               value = this.legacyHoverEventContents(action, rawValue);
             } else {
               value = null;
@@ -168,10 +174,6 @@ final class StyleSerializer extends TypeAdapter<Style> {
 
     in.endObject();
     return style.build();
-  }
-
-  private <T> T optionallyDeserialize(final JsonElement json, final TypeAdapter<T> adapter) {
-    return json == null ? null : adapter.fromJsonTree(json);
   }
 
   private Object legacyHoverEventContents(final HoverEvent.Action<?> action, final Component rawValue) {
@@ -193,17 +195,14 @@ final class StyleSerializer extends TypeAdapter<Style> {
   }
 
   private Codec.Decoder<Component, String, JsonParseException> decoder() {
-    return string -> {
-      try {
-        return this.gson.getAdapter(SerializerFactory.COMPONENT_TYPE).fromJson(string);
-      } catch (final IOException ex) {
-        throw new JsonParseException(ex);
-      }
-    };
+    return string -> this.gson.fromJson(string, SerializerFactory.COMPONENT_TYPE);
+  }
+
+  private Codec.Encoder<Component, String, JsonParseException> encoder() {
+    return component -> this.gson.toJson(component, SerializerFactory.COMPONENT_TYPE);
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public void write(final JsonWriter out, final Style value) throws IOException {
     out.beginObject();
 
@@ -221,7 +220,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
     final @Nullable TextColor color = value.color();
     if (color != null) {
       out.name(COLOR);
-      this.gson.getAdapter(SerializerFactory.COLOR_TYPE).write(out, color);
+      this.gson.toJson(color, SerializerFactory.COLOR_TYPE, out);
     }
 
     final @Nullable String insertion = value.insertion();
@@ -235,7 +234,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
       out.name(CLICK_EVENT);
       out.beginObject();
       out.name(CLICK_EVENT_ACTION);
-      this.gson.getAdapter(SerializerFactory.CLICK_ACTION_TYPE).write(out, clickEvent.action());
+      this.gson.toJson(clickEvent.action(), SerializerFactory.CLICK_ACTION_TYPE, out);
       out.name(CLICK_EVENT_VALUE);
       out.value(clickEvent.value());
       out.endObject();
@@ -247,14 +246,14 @@ final class StyleSerializer extends TypeAdapter<Style> {
       out.beginObject();
       out.name(HOVER_EVENT_ACTION);
       final HoverEvent.Action<?> action = hoverEvent.action();
-      this.gson.getAdapter(SerializerFactory.HOVER_ACTION_TYPE).write(out, action);
+      this.gson.toJson(action, SerializerFactory.HOVER_ACTION_TYPE, out);
       out.name(HOVER_EVENT_CONTENTS);
       if (action == HoverEvent.Action.SHOW_ITEM) {
-        this.gson.getAdapter(SerializerFactory.SHOW_ITEM_TYPE).write(out, (HoverEvent.ShowItem) hoverEvent.value());
+        this.gson.toJson(hoverEvent.value(), SerializerFactory.SHOW_ITEM_TYPE, out);
       } else if (action == HoverEvent.Action.SHOW_ENTITY) {
-        this.gson.getAdapter(SerializerFactory.SHOW_ENTITY_TYPE).write(out, (HoverEvent.ShowEntity) hoverEvent.value());
+        this.gson.toJson(hoverEvent.value(), SerializerFactory.SHOW_ENTITY_TYPE, out);
       } else if (action == HoverEvent.Action.SHOW_TEXT) {
-        this.gson.getAdapter(SerializerFactory.COMPONENT_TYPE).write(out, (Component) hoverEvent.value());
+        this.gson.toJson(hoverEvent.value(), SerializerFactory.COMPONENT_TYPE, out);
       } else {
         throw new JsonParseException("Don't know how to serialize " + hoverEvent.value());
       }
@@ -269,7 +268,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
     final @Nullable Key font = value.font();
     if (font != null) {
       out.name(FONT);
-      this.gson.getAdapter(SerializerFactory.KEY_TYPE).write(out, font);
+      this.gson.toJson(font, SerializerFactory.KEY_TYPE, out);
     }
 
     out.endObject();
@@ -277,12 +276,12 @@ final class StyleSerializer extends TypeAdapter<Style> {
 
   private void serializeLegacyHoverEvent(final HoverEvent<?> hoverEvent, final JsonWriter out) throws IOException {
     if (hoverEvent.action() == HoverEvent.Action.SHOW_TEXT) { // serialization is the same
-      this.gson.getAdapter(SerializerFactory.COMPONENT_TYPE).write(out, (Component) hoverEvent.value());
+      this.gson.toJson(hoverEvent.value(), SerializerFactory.COMPONENT_TYPE, out);
     } else if (this.legacyHover != null) { // for data formats that require knowledge of SNBT
       Component serialized = null;
       try {
         if (hoverEvent.action() == HoverEvent.Action.SHOW_ENTITY) {
-          serialized = this.legacyHover.serializeShowEntity((HoverEvent.ShowEntity) hoverEvent.value(), this.gson.getAdapter(SerializerFactory.COMPONENT_TYPE)::toJson);
+          serialized = this.legacyHover.serializeShowEntity((HoverEvent.ShowEntity) hoverEvent.value(), this.encoder());
         } else if (hoverEvent.action() == HoverEvent.Action.SHOW_ITEM) {
           serialized = this.legacyHover.serializeShowItem((HoverEvent.ShowItem) hoverEvent.value());
         }
@@ -290,7 +289,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
         throw new JsonSyntaxException(ex);
       }
       if (serialized != null) {
-        this.gson.getAdapter(SerializerFactory.COMPONENT_TYPE).write(out, serialized);
+        this.gson.toJson(serialized, SerializerFactory.COMPONENT_TYPE, out);
       } else {
         out.nullValue();
       }

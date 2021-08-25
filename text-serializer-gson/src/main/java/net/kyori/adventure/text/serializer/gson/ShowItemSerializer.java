@@ -61,7 +61,7 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
     while (in.hasNext()) {
       final String fieldName = in.nextName();
       if (fieldName.equals(ID)) {
-        key = this.gson.getAdapter(SerializerFactory.KEY_TYPE).read(in);
+        key = this.gson.fromJson(in, SerializerFactory.KEY_TYPE);
       } else if (fieldName.equals(COUNT)) {
         count = in.nextInt();
       } else if (fieldName.equals(TAG)) {
@@ -93,7 +93,7 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
     out.beginObject();
 
     out.name(ID);
-    this.gson.getAdapter(SerializerFactory.KEY_TYPE).write(out, value.item());
+    this.gson.toJson(value.item(), SerializerFactory.KEY_TYPE, out);
 
     final int count = value.count();
     if (count != 1) {

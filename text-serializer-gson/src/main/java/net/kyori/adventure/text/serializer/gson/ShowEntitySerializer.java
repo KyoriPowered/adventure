@@ -61,11 +61,11 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
     while (in.hasNext()) {
       final String fieldName = in.nextName();
       if (fieldName.equals(TYPE)) {
-        type = this.gson.getAdapter(SerializerFactory.KEY_TYPE).read(in);
+        type = this.gson.fromJson(in, SerializerFactory.KEY_TYPE);
       } else if (fieldName.equals(ID)) {
         id = UUID.fromString(in.nextString());
       } else if (fieldName.equals(NAME)) {
-        name = this.gson.getAdapter(SerializerFactory.COMPONENT_TYPE).read(in);
+        name = this.gson.fromJson(in, SerializerFactory.COMPONENT_TYPE);
       } else {
         in.skipValue();
       }
@@ -84,7 +84,7 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
     out.beginObject();
 
     out.name(TYPE);
-    this.gson.getAdapter(SerializerFactory.KEY_TYPE).write(out, value.type());
+    this.gson.toJson(value.type(), SerializerFactory.KEY_TYPE, out);
 
     out.name(ID);
     out.value(value.id().toString());
@@ -92,7 +92,7 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
     final @Nullable Component name = value.name();
     if (name != null) {
       out.name(NAME);
-      this.gson.getAdapter(SerializerFactory.COMPONENT_TYPE).write(out, name);
+      this.gson.toJson(name, SerializerFactory.COMPONENT_TYPE, out);
     }
 
     out.endObject();
