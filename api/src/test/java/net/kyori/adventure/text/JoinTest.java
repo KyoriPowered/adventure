@@ -26,6 +26,7 @@ package net.kyori.adventure.text;
 import java.util.Collections;
 import java.util.stream.IntStream;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -236,5 +237,35 @@ class JoinTest {
         .build(),
       c2
     );
+  }
+
+  @Test
+  final void testWithPredicate() {
+    final JoinConfiguration config = JoinConfiguration.builder()
+      .predicate((component) -> !(component instanceof TestComponentLike))
+      .build();
+
+    final ComponentLike[] components = new ComponentLike[] {
+      Component.text("PASS"),
+      new TestComponentLike(),
+      Component.text("PASS")
+    };
+
+    final Component result = Component.join(config, components);
+    assertEquals(
+      Component.text()
+        .append(Component.text("PASS"))
+        .append(Component.text("PASS"))
+        .build(),
+      result
+    );
+  }
+
+  private static final class TestComponentLike implements ComponentLike {
+
+    @Override
+    public @NotNull Component asComponent() {
+      return Component.text("FAIL");
+    }
   }
 }

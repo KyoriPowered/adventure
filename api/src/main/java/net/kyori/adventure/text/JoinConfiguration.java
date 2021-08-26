@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text;
 
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.examination.Examinable;
@@ -56,6 +57,10 @@ import org.jetbrains.annotations.Nullable;
  *   <b>an operator</b> (required, defaults to {@link UnaryOperator#identity()})
  *   <p>a unary operator to change each component that is being joined, defaults to the identity operator</p>
  *  </li>
+ *  <li>
+ *    <b>a predicate</b> (required, defaults to {@code true})
+ *    <p>a predicate that specifies if a given component should be included in the join process</p>
+ *  </li>
  * </ul>
  *
  * <p>Note that the last separator only acts as an override for the normal separator.
@@ -64,6 +69,9 @@ import org.jetbrains.annotations.Nullable;
  *
  * <p>If specified, the join method can use a different last separator in the case where the amount of components
  * being joined together is more than two. This can be used to insert a serial (or Oxford) comma if needed.</p>
+ *
+ * <p>Null elements are not allowed in the input of the join methods or as output from the operator. If you would like to
+ * exclude elements from being joined, use the predicate.</p>
  *
  * @see Component#join(JoinConfiguration, Iterable)
  * @see Component#join(JoinConfiguration, ComponentLike...)
@@ -168,6 +176,16 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
   @NotNull UnaryOperator<Component> operator();
 
   /**
+   * Gets the predicate of this join configuration.
+   *
+   * <p>This is used to determine if a component is to be included in the join process. It does not touch the prefix, suffix or any of the separators.</p>
+   *
+   * @return the predicate
+   * @since 4.9.0
+   */
+  @NotNull Predicate<ComponentLike> predicate();
+
+  /**
    * A builder for join configurations.
    *
    * @since 4.9.0
@@ -235,5 +253,17 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
      */
     @Contract("_ -> this")
     @NotNull Builder operator(final @NotNull UnaryOperator<Component> operator);
+
+    /**
+     * Gets the predicate of this join configuration builder.
+     *
+     * <p>This is used to determine if a component is to be included in the join process. It does not touch the prefix, suffix or any of the separators.</p>
+     *
+     * @param predicate the predicate
+     * @return this builder
+     * @since 4.9.0
+     */
+    @Contract("_ -> this")
+    @NotNull Builder predicate(final @NotNull Predicate<ComponentLike> predicate);
   }
 }
