@@ -64,7 +64,12 @@ final class PointersImpl implements Pointers {
   @SuppressWarnings("unchecked") // all values are checked on entry
   public @NotNull <T> Optional<T> get(final @NotNull Pointer<T> pointer) {
     Objects.requireNonNull(pointer, "pointer");
-    return Optional.ofNullable(((Supplier<T>) this.pointers.get(pointer)).get());
+    final Supplier<?> supplier = this.pointers.get(pointer);
+    if (supplier == null) {
+      return Optional.empty();
+    } else {
+      return Optional.ofNullable((T) supplier.get());
+    }
   }
 
   @Override
