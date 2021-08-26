@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text;
 
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.util.Buildable;
@@ -54,8 +55,8 @@ import org.jetbrains.annotations.Nullable;
  *   <p>a component to be appended to the resulting component</p>
  *  </li>
  *  <li>
- *   <b>an operator</b> (required, defaults to {@link UnaryOperator#identity()})
- *   <p>a unary operator to change each component that is being joined, defaults to the identity operator</p>
+ *   <b>a convertor</b> (required, defaults to {@link ComponentLike#asComponent()})
+ *   <p>a function to change each component that is being joined into a component</p>
  *  </li>
  *  <li>
  *    <b>a predicate</b> (required, defaults to {@code true})
@@ -70,7 +71,7 @@ import org.jetbrains.annotations.Nullable;
  * <p>If specified, the join method can use a different last separator in the case where the amount of components
  * being joined together is more than two. This can be used to insert a serial (or Oxford) comma if needed.</p>
  *
- * <p>Null elements are not allowed in the input of the join methods or as output from the operator. If you would like to
+ * <p>Null elements are not allowed in the input of the join methods or as output from the convertor. If you would like to
  * exclude elements from being joined, use the predicate.</p>
  *
  * @see Component#join(JoinConfiguration, Iterable)
@@ -166,14 +167,14 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
   @Nullable Component lastSeparatorIfSerial();
 
   /**
-   * Gets the operator of this join configuration.
+   * Gets the convertor of this join configuration.
    *
    * <p>This is used to change the components that are going to be joined. It does not touch the prefix, suffix or any of the separators.</p>
    *
    * @return the operator
    * @since 4.9.0
    */
-  @NotNull UnaryOperator<Component> operator();
+  @NotNull Function<ComponentLike, Component> convertor();
 
   /**
    * Gets the predicate of this join configuration.
@@ -243,16 +244,16 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
     @NotNull Builder lastSeparatorIfSerial(final @Nullable ComponentLike lastSeparatorIfSerial);
 
     /**
-     * Sets the operator of this join configuration builder.
+     * Sets the convertor of this join configuration builder.
      *
      * <p>This is used to mutate the components that are going to be joined. It does not touch the prefix, suffix or any of the separators.</p>
      *
-     * @param operator the operator
+     * @param convertor the convertor
      * @return this builder
      * @since 4.9.0
      */
     @Contract("_ -> this")
-    @NotNull Builder operator(final @NotNull UnaryOperator<Component> operator);
+    @NotNull Builder convertor(final @NotNull Function<ComponentLike, Component> convertor);
 
     /**
      * Gets the predicate of this join configuration builder.

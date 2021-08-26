@@ -137,10 +137,10 @@ class JoinTest {
   }
 
   @Test
-  void testJoinWithOperator() {
+  void testJoinWithConvertor() {
     final JoinConfiguration config = JoinConfiguration.builder()
       .separator(Component.space())
-      .operator(component -> component.color(NamedTextColor.RED))
+      .convertor(component -> component.asComponent().color(NamedTextColor.RED))
       .build();
 
     assertEquals(Component.empty(), Component.join(JoinConfiguration.separator(Component.space()), Collections.emptyList()));

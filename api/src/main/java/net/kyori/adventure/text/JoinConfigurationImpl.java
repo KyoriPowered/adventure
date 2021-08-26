@@ -25,6 +25,7 @@ package net.kyori.adventure.text;
 
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
@@ -35,7 +36,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 final class JoinConfigurationImpl implements JoinConfiguration {
-  static final Predicate<ComponentLike> TRUE = (componentLike) -> true;
+  static final Function<ComponentLike, Component> DEFAULT_CONVERTOR = ComponentLike::asComponent;
+  static final Predicate<ComponentLike> DEFAULT_PREDICATE = (componentLike) -> true;
   static final JoinConfigurationImpl NULL = new JoinConfigurationImpl();
 
   private final Component prefix;
@@ -43,7 +45,7 @@ final class JoinConfigurationImpl implements JoinConfiguration {
   private final Component separator;
   private final Component lastSeparator;
   private final Component lastSeparatorIfSerial;
-  private final UnaryOperator<Component> operator;
+  private final Function<ComponentLike, Component> convertor;
   private final Predicate<ComponentLike> predicate;
 
   private JoinConfigurationImpl() {
@@ -52,8 +54,8 @@ final class JoinConfigurationImpl implements JoinConfiguration {
     this.separator = null;
     this.lastSeparator = null;
     this.lastSeparatorIfSerial = null;
-    this.operator = UnaryOperator.identity();
-    this.predicate = TRUE;
+    this.convertor = DEFAULT_CONVERTOR;
+    this.predicate = DEFAULT_PREDICATE;
   }
 
   private JoinConfigurationImpl(final @NotNull BuilderImpl builder) {
@@ -62,7 +64,7 @@ final class JoinConfigurationImpl implements JoinConfiguration {
     this.separator = builder.separator == null ? null : builder.separator.asComponent();
     this.lastSeparator = builder.lastSeparator == null ? null : builder.lastSeparator.asComponent();
     this.lastSeparatorIfSerial = builder.lastSeparatorIfSerial == null ? null : builder.lastSeparatorIfSerial.asComponent();
-    this.operator = builder.operator;
+    this.convertor = builder.convertor;
     this.predicate = builder.predicate;
   }
 
@@ -92,8 +94,8 @@ final class JoinConfigurationImpl implements JoinConfiguration {
   }
 
   @Override
-  public @NotNull UnaryOperator<Component> operator() {
-    return this.operator;
+  public @NotNull Function<ComponentLike, Component> convertor() {
+    return this.convertor;
   }
 
   @Override
@@ -114,7 +116,7 @@ final class JoinConfigurationImpl implements JoinConfiguration {
       ExaminableProperty.of("separator", this.separator),
       ExaminableProperty.of("lastSeparator", this.lastSeparator),
       ExaminableProperty.of("lastSeparatorIfSerial", this.lastSeparatorIfSerial),
-      ExaminableProperty.of("operator", this.operator),
+      ExaminableProperty.of("convertor", this.convertor),
       ExaminableProperty.of("predicate", this.predicate)
     );
   }
@@ -132,7 +134,7 @@ final class JoinConfigurationImpl implements JoinConfiguration {
     final Iterator<? extends ComponentLike> it = components.iterator();
     final Component prefix = config.prefix();
     final Component suffix = config.suffix();
-    final UnaryOperator<Component> operator = config.operator();
+    final Function<ComponentLike, Component> convertor = config.convertor();
     final Predicate<ComponentLike> predicate = config.predicate();
 
     if (!it.hasNext()) {
@@ -162,7 +164,7 @@ final class JoinConfigurationImpl implements JoinConfiguration {
         }
       }
 
-      builder.append(operator.apply(component.asComponent()));
+      builder.append(convertor.apply(component));
       componentsSeen++;
 
       if (!it.hasNext()) {
@@ -191,20 +193,20 @@ final class JoinConfigurationImpl implements JoinConfiguration {
   static @NotNull Component singleElementJoin(final @NotNull JoinConfiguration config, final @Nullable ComponentLike component) {
     final Component prefix = config.prefix();
     final Component suffix = config.suffix();
-    final UnaryOperator<Component> operator = config.operator();
+    final Function<ComponentLike, Component> convertor = config.convertor();
     final Predicate<ComponentLike> predicate = config.predicate();
 
     if (prefix == null && suffix == null) {
       if (component == null || !predicate.test(component)) {
         return Component.empty();
       } else {
-        return operator.apply(component.asComponent());
+        return convertor.apply(component);
       }
     }
 
     final TextComponent.Builder builder = Component.text();
     if (prefix != null) builder.append(prefix);
-    if (component != null && predicate.test(component)) builder.append(operator.apply(component.asComponent()));
+    if (component != null && predicate.test(component)) builder.append(convertor.apply(component));
     if (suffix != null) builder.append(suffix);
     return builder.build();
   }
@@ -215,7 +217,7 @@ final class JoinConfigurationImpl implements JoinConfiguration {
     private ComponentLike separator;
     private ComponentLike lastSeparator;
     private ComponentLike lastSeparatorIfSerial;
-    private UnaryOperator<Component> operator;
+    private Function<ComponentLike, Component> convertor;
     private Predicate<ComponentLike> predicate;
 
     BuilderImpl() {
@@ -227,7 +229,7 @@ final class JoinConfigurationImpl implements JoinConfiguration {
       this.lastSeparator = joinConfig.lastSeparator;
       this.prefix = joinConfig.prefix;
       this.suffix = joinConfig.suffix;
-      this.operator = joinConfig.operator;
+      this.convertor = joinConfig.convertor;
       this.lastSeparatorIfSerial = joinConfig.lastSeparatorIfSerial;
       this.predicate = joinConfig.predicate;
     }
@@ -263,8 +265,8 @@ final class JoinConfigurationImpl implements JoinConfiguration {
     }
 
     @Override
-    public @NotNull Builder operator(final @NotNull UnaryOperator<Component> operator) {
-      this.operator = Objects.requireNonNull(operator, "operator");
+    public @NotNull Builder convertor(final @NotNull Function<ComponentLike, Component> convertor) {
+      this.convertor = Objects.requireNonNull(convertor, "convertor");
       return this;
     }
 
