@@ -30,7 +30,10 @@
   <module name="SuppressWarningsFilter"/>
 
   <!-- https://checkstyle.org/config_filters.html#SuppressWithPlainTextCommentFilter -->
-  <module name="SuppressWithPlainTextCommentFilter"/>
+  <module name="SuppressWithPlainTextCommentFilter">
+    <property name="offCommentFormat" value="// (@formatter|CHECKSTYLE):(off|OFF)"/>
+    <property name="onCommentFormat" value="// (@formatter|CHECKSTYLE):(on|ON)"/>
+  </module>
 
   <module name="TreeWalker">
     <!-- https://checkstyle.org/config_misc.html#ArrayTypeStyle -->
