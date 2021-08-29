@@ -98,9 +98,12 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * @param character the legacy character
    * @return the legacy format
    * @since 4.0.0
+   * @deprecated For removal since 4.9.0, use {@link LegacyFormat#legacyCharacter(char)} instead.
    */
+  @ApiStatus.ScheduledForRemoval
+  @Deprecated
   static @Nullable LegacyFormat parseChar(final char character) {
-    return LegacyComponentSerializerImpl.legacyFormat(character);
+    return LegacyFormat.legacyCharacter(character);
   }
 
   /**

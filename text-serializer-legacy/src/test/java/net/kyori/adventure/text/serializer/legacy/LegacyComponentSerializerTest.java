@@ -270,7 +270,7 @@ class LegacyComponentSerializerTest {
 
   @Test
   void testParseColourChar() {
-    final LegacyFormat lf = LegacyComponentSerializer.parseChar('5');
+    final LegacyFormat lf = LegacyFormat.legacyCharacter('5');
     assertNotNull(lf);
     assertEquals(NamedTextColor.DARK_PURPLE, lf.color());
     assertNull(lf.decoration());
@@ -279,7 +279,7 @@ class LegacyComponentSerializerTest {
 
   @Test
   void testParseDecorationChar() {
-    final LegacyFormat lf = LegacyComponentSerializer.parseChar('l');
+    final LegacyFormat lf = LegacyFormat.legacyCharacter('l');
     assertNotNull(lf);
     assertNull(lf.color());
     assertEquals(TextDecoration.BOLD, lf.decoration());
@@ -288,7 +288,7 @@ class LegacyComponentSerializerTest {
 
   @Test
   void testParseResetChar() {
-    final LegacyFormat lf = LegacyComponentSerializer.parseChar('r');
+    final LegacyFormat lf = LegacyFormat.legacyCharacter('r');
     assertNotNull(lf);
     assertNull(lf.color());
     assertNull(lf.decoration());

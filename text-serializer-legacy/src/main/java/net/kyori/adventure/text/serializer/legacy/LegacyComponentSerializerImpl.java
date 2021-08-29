@@ -27,9 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -56,47 +54,6 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   static final Pattern URL_SCHEME_PATTERN = Pattern.compile("^[a-z][a-z0-9+\\-.]*:");
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
   private static final char LEGACY_BUNGEE_HEX_CHAR = 'x';
-  private static final List<TextFormat> FORMATS;
-  private static final String LEGACY_CHARS;
-
-  static {
-    // Enumeration order may change - manually
-
-    final Map<TextFormat, String> formats = new LinkedHashMap<>(16 + 5 + 1); // colours + decorations + reset
-
-    formats.put(NamedTextColor.BLACK, "0");
-    formats.put(NamedTextColor.DARK_BLUE, "1");
-    formats.put(NamedTextColor.DARK_GREEN, "2");
-    formats.put(NamedTextColor.DARK_AQUA, "3");
-    formats.put(NamedTextColor.DARK_RED, "4");
-    formats.put(NamedTextColor.DARK_PURPLE, "5");
-    formats.put(NamedTextColor.GOLD, "6");
-    formats.put(NamedTextColor.GRAY, "7");
-    formats.put(NamedTextColor.DARK_GRAY, "8");
-    formats.put(NamedTextColor.BLUE, "9");
-    formats.put(NamedTextColor.GREEN, "a");
-    formats.put(NamedTextColor.AQUA, "b");
-    formats.put(NamedTextColor.RED, "c");
-    formats.put(NamedTextColor.LIGHT_PURPLE, "d");
-    formats.put(NamedTextColor.YELLOW, "e");
-    formats.put(NamedTextColor.WHITE, "f");
-
-    formats.put(TextDecoration.OBFUSCATED, "k");
-    formats.put(TextDecoration.BOLD, "l");
-    formats.put(TextDecoration.STRIKETHROUGH, "m");
-    formats.put(TextDecoration.UNDERLINED, "n");
-    formats.put(TextDecoration.ITALIC, "o");
-
-    formats.put(Reset.INSTANCE, "r");
-
-    FORMATS = Collections.unmodifiableList(new ArrayList<>(formats.keySet()));
-    LEGACY_CHARS = String.join("", formats.values());
-
-    // assert same length
-    if (FORMATS.size() != LEGACY_CHARS.length()) {
-      throw new IllegalStateException("FORMATS length differs from LEGACY_CHARS length");
-    }
-  }
 
   private static final Optional<Provider> SERVICE = Services.service(Provider.class);
   static final Consumer<Builder> BUILDER = SERVICE
@@ -145,23 +102,8 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
     if (legacy == this.hexCharacter && input.length() - pos >= 6) {
       return FormatCodeType.KYORI_HEX;
-    } else if (LEGACY_CHARS.indexOf(legacy) != -1) {
+    } else if (LegacyFormat.INDEX.keys().contains(legacy)) {
       return FormatCodeType.MOJANG_LEGACY;
-    }
-    return null;
-  }
-
-  static @Nullable LegacyFormat legacyFormat(final char character) {
-    final int index = LEGACY_CHARS.indexOf(character);
-    if (index != -1) {
-      final TextFormat format = FORMATS.get(index);
-      if (format instanceof NamedTextColor) {
-        return new LegacyFormat((NamedTextColor) format);
-      } else if (format instanceof TextDecoration) {
-        return new LegacyFormat((TextDecoration) format);
-      } else if (format instanceof Reset) {
-        return LegacyFormat.RESET;
-      }
     }
     return null;
   }
@@ -177,7 +119,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         return new DecodedFormat(foundFormat, parsed);
       }
     } else if (foundFormat == FormatCodeType.MOJANG_LEGACY) {
-      return new DecodedFormat(foundFormat, FORMATS.get(LEGACY_CHARS.indexOf(legacy)));
+      return new DecodedFormat(foundFormat, LegacyFormat.legacyCharacter(legacy));
     } else if (foundFormat == FormatCodeType.BUNGEECORD_UNUSUAL_HEX) {
       final StringBuilder foundHex = new StringBuilder(6);
       for (int i = pos - 1; i >= pos - 11; i -= 2) {
@@ -226,8 +168,20 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         format = NamedTextColor.nearestTo(color);
       }
     }
-    final int index = FORMATS.indexOf(format);
-    return Character.toString(LEGACY_CHARS.charAt(index));
+
+    if (format instanceof NamedTextColor) {
+      return Character.toString(LegacyFormat.legacyColor((NamedTextColor) format).character());
+    }
+
+    if (format instanceof TextDecoration) {
+      return Character.toString(LegacyFormat.legacyDecoration((TextDecoration) format).character());
+    }
+
+    if (format == Reset.INSTANCE) {
+      return Character.toString(LegacyFormat.legacyReset().character());
+    }
+
+    throw new IllegalArgumentException("Could not turn " + format + " into a legacy code");
   }
 
   private TextComponent extractUrl(final TextComponent component) {
@@ -576,6 +530,26 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   static final class DecodedFormat {
     final FormatCodeType encodedFormat;
     final TextFormat format;
+
+    private DecodedFormat(final FormatCodeType encodedFormat, final LegacyFormat format) {
+      this.encodedFormat = encodedFormat;
+
+      if (format.reset()) {
+        this.format = Reset.INSTANCE;
+      } else {
+        final TextColor color = format.color();
+        if (color != null) {
+          this.format = color;
+        } else {
+          final TextDecoration decoration = format.decoration();
+          if (decoration == null) {
+            throw new IllegalStateException("No format found");
+          } else {
+            this.format = decoration;
+          }
+        }
+      }
+    }
 
     private DecodedFormat(final FormatCodeType encodedFormat, final TextFormat format) {
       if (format == null) {
