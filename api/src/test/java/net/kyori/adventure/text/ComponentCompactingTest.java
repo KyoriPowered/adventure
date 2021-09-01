@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 
 import static net.kyori.adventure.key.Key.key;
+import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 import static net.kyori.adventure.text.format.Style.style;
@@ -258,5 +259,21 @@ class ComponentCompactingTest {
         .build(),
       input.compact()
     );
+  }
+
+  @Test
+  void testCompactWithEmptyRootComponent() {
+    final Component c0 = empty().append(text("meow"));
+    assertEquals(text("meow"), c0.compact());
+
+    final Component c1 = text("", NamedTextColor.RED).append(text("meow"));
+    assertEquals(text("meow", NamedTextColor.RED), c1.compact());
+
+    final Component c2 = text("", NamedTextColor.RED).append(text("meow", NamedTextColor.BLUE));
+    assertEquals(text("meow", NamedTextColor.BLUE), c2.compact());
+
+    final Component c3 = empty().decoration(TextDecoration.BOLD, true)
+      .append(text("meow").decoration(TextDecoration.BOLD, TextDecoration.State.NOT_SET));
+    assertEquals(text("meow").decoration(TextDecoration.BOLD, true), c3.compact());
   }
 }

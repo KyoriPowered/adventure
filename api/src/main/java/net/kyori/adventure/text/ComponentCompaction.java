@@ -45,9 +45,25 @@ final class ComponentCompaction {
       optimized = optimized.style(simplifyStyle(self.style(), parentStyle));
     }
 
-    if (children.isEmpty()) {
+    final int childrenSize = children.size();
+
+    if (childrenSize == 0) {
       // leaf nodes do not need to be further optimized - there is no point
       return optimized;
+    }
+
+    if (childrenSize == 1) {
+      // if there is only one child, check if self a useless empty component
+      if (self instanceof TextComponent) {
+        final TextComponent textComponent = (TextComponent) self;
+
+        if (textComponent.content().isEmpty()) {
+          final Component child = children.get(0);
+
+          // merge the updated/parent style into the child before we return
+          return child.style(child.style().merge(optimized.style(), Style.Merge.Strategy.IF_ABSENT_ON_TARGET));
+        }
+      }
     }
 
     // propagate the parent style context to children
