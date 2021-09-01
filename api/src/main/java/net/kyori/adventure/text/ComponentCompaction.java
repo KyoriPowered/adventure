@@ -61,7 +61,7 @@ final class ComponentCompaction {
           final Component child = children.get(0);
 
           // merge the updated/parent style into the child before we return
-          return child.style(child.style().merge(optimized.style(), Style.Merge.Strategy.IF_ABSENT_ON_TARGET));
+          return child.style(child.style().merge(optimized.style(), Style.Merge.Strategy.IF_ABSENT_ON_TARGET)).compact();
         }
       }
     }
