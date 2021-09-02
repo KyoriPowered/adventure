@@ -92,6 +92,16 @@ public class MiniMessageParserTest extends TestBase {
   }
 
   @Test
+  void testBritishColour() {
+    final String input1 = "<colour:grey>This is english"; // no it's british
+    final String input2 = "<color:gray>This is english";
+    final Component out1 = this.PARSER.parse(input1);
+    final Component out2 = this.PARSER.parse(input2);
+
+    assertEquals(out1, out2);
+  }
+
+  @Test
   void testNewColor() {
     final Component expected1 = empty().color(YELLOW)
       .append(text("TEST"))
@@ -146,6 +156,26 @@ public class MiniMessageParserTest extends TestBase {
 
     final String input1 = "<#ff00ff>TEST<#00ff00> nested</#00ff00>Test";
     final String input2 = "<#ff00ff>TEST<#00ff00> nested<#ff00ff>Test";
+
+    this.assertParsedEquals(expected1, input1);
+    this.assertParsedEquals(expected2, input2);
+  }
+
+  @Test
+  void testHexColorC() {
+    final Component expected1 = empty().color(color(0xff00ff))
+        .append(text("TEST"))
+        .append(text(" nested").color(color(0x00ff00)))
+        .append(text("Test"));
+    final Component expected2 = empty().color(color(0xff00ff))
+        .append(text("TEST"))
+        .append(empty().color(color(0x00ff00))
+            .append(text(" nested"))
+            .append(text("Test").color(color(0xff00ff)))
+        );
+
+    final String input1 = "<c:#ff00ff>TEST<c:#00ff00> nested</c>Test";
+    final String input2 = "<c:#ff00ff>TEST<c:#00ff00> nested<c:#ff00ff>Test";
 
     this.assertParsedEquals(expected1, input1);
     this.assertParsedEquals(expected2, input2);

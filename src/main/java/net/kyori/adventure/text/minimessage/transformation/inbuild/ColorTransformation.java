@@ -79,7 +79,7 @@ public final class ColorTransformation extends Transformation {
   public void load(String name, final List<TagPart> args) {
     super.load(name, args);
 
-    if (name.equalsIgnoreCase(Tokens.COLOR)) {
+    if (name.equalsIgnoreCase(Tokens.COLOR) || name.equalsIgnoreCase(Tokens.COLOR_2) || name.equalsIgnoreCase(Tokens.COLOR_3)) {
       if (args.size() == 1) {
         name = args.get(0).value();
       } else {
