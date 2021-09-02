@@ -200,8 +200,7 @@ public class MiniMessageParserTest extends TestBase {
 
     final Component expectedCNamed = text("Mildly Aggressive Test").color(color(BLUE));
     final String inputCNamed = "<c:blue>Mildly Aggressive Test</c>";
-
-
+    
     this.assertParsedEquals(expectedColorHex, inputColorHex);
     this.assertParsedEquals(expectedColourHex, inputColourHex);
     this.assertParsedEquals(expectedCHex, inputCHex);
