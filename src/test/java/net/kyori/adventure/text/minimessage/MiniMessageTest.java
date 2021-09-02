@@ -52,15 +52,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class MiniMessageTest extends TestBase {
 
   @Test
-  void testMarkdownBuilder() {
-    final Component expected = text("BOLD").color(RED).decorate(BOLD);
-    final String input = "**<red>BOLD**";
-    final MiniMessage miniMessage = MiniMessage.builder().markdown().build();
-
-    this.assertParsedEquals(miniMessage, expected, input);
-  }
-
-  @Test
   void testNormalBuilder() {
     final Component expected = text("Test").color(RED);
     final String input = "<red>Test";
@@ -111,15 +102,6 @@ public class MiniMessageTest extends TestBase {
       "two", text("TWO", GREEN),
       "four", "FOUR",
       "five"));
-  }
-
-  @Test
-  void testMarkdown() {
-    final Component expected = text("BOLD").color(RED).decorate(BOLD);
-    final String input = "**<red>BOLD**";
-    final MiniMessage miniMessage = MiniMessage.markdown();
-
-    this.assertParsedEquals(miniMessage, expected, input);
   }
 
   @Test

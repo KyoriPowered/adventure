@@ -29,7 +29,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
-import net.kyori.adventure.text.minimessage.markdown.MarkdownFlavor;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Buildable;
@@ -39,7 +38,7 @@ import org.jetbrains.annotations.NotNull;
  * MiniMessage is a textual representation of components.
  *
  * <p>This class allows you to serialize and deserialize them, strip
- * or escape them, and even supports a markdown like format.</p>
+ * or escape them.</p>
  *
  * @since 4.0.0
  */
@@ -53,30 +52,6 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    */
   static @NotNull MiniMessage get() {
     return MiniMessageImpl.INSTANCE;
-  }
-
-  /**
-   * Gets an instance with markdown support.
-   *
-   * <p>Uses {@link net.kyori.adventure.text.minimessage.markdown.GithubFlavor}.<br>
-   * For other flavors, see {@link #withMarkdownFlavor(MarkdownFlavor)} or the builder.</p>
-   *
-   * @return a instance of markdown support
-   * @since 4.0.0
-   */
-  static @NotNull MiniMessage markdown() {
-    return MiniMessageImpl.MARKDOWN;
-  }
-
-  /**
-   * Creates an custom instances with markdown supported by the given markdown flavor.
-   *
-   * @param markdownFlavor the markdown flavor
-   * @return your very own custom MiniMessage instance
-   * @since 4.0.0
-   */
-  static @NotNull MiniMessage withMarkdownFlavor(final MarkdownFlavor markdownFlavor) {
-    return new MiniMessageImpl(true, markdownFlavor, TransformationRegistry.builder().build(), MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER, false, null, MiniMessageImpl.DEFAULT_ERROR_CONSUMER);
   }
 
   /**
@@ -182,14 +157,6 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
   interface Builder extends Buildable.Builder<MiniMessage> {
 
     /**
-     * Adds markdown support.
-     *
-     * @return this builder
-     * @since 4.0.0
-     */
-    @NotNull Builder markdown();
-
-    /**
      * Uses the supplied transformation registry.
      *
      * @param transformationRegistry the transformation registry to use
@@ -199,20 +166,11 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
     @NotNull Builder transformations(final TransformationRegistry transformationRegistry);
 
     /**
-     * Sets the markdown flavor that should be used to parse markdown.
-     *
-     * @param markdownFlavor the markdown flavor to use
-     * @return this builder
-     * @since 4.1.0
-     */
-    @NotNull Builder markdownFlavor(final MarkdownFlavor markdownFlavor);
-
-    /**
      * Sets the placeholder resolve that should handle all (unresolved) placeholders.
      * <br>
      * It needs to return a component
      *
-     * @param placeholderResolver the markdown flavor to use
+     * @param placeholderResolver the placeholder resolver to use
      * @return this builder
      * @since 4.1.0
      */
