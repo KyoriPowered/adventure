@@ -5,7 +5,7 @@ plugins {
   id("net.kyori.indra.publishing.sonatype") version indraVersion
   id("net.kyori.indra.license-header") version indraVersion
   id("net.kyori.indra.checkstyle") version indraVersion
-  id("me.champeau.jmh") version "0.6.5"
+  id("me.champeau.jmh") version "0.6.6"
 }
 
 val javacc: Configuration by configurations.creating
