@@ -52,17 +52,15 @@ final class ComponentCompaction {
       return optimized;
     }
 
-    if (childrenSize == 1) {
-      // if there is only one child, check if self a useless empty component
-      if (self instanceof TextComponent) {
-        final TextComponent textComponent = (TextComponent) self;
+    // if there is only one child, check if self a useless empty component
+    if (childrenSize == 1 && self instanceof TextComponent) {
+      final TextComponent textComponent = (TextComponent) self;
 
-        if (textComponent.content().isEmpty()) {
-          final Component child = children.get(0);
+      if (textComponent.content().isEmpty()) {
+        final Component child = children.get(0);
 
-          // merge the updated/parent style into the child before we return
-          return child.style(child.style().merge(optimized.style(), Style.Merge.Strategy.IF_ABSENT_ON_TARGET)).compact();
-        }
+        // merge the updated/parent style into the child before we return
+        return child.style(child.style().merge(optimized.style(), Style.Merge.Strategy.IF_ABSENT_ON_TARGET)).compact();
       }
     }
 
