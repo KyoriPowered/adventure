@@ -123,7 +123,7 @@ class ComponentIteratorTest {
     boolean foundText = false;
     boolean foundEntity = false;
 
-    for (final Component inner : component.iterable(ComponentIteratorType.BREADTH_FIRST_WITH_HOVER)) {
+    for (final Component inner : component.iterable(ComponentIteratorType.BREADTH_FIRST, ComponentIteratorFlag.INCLUDE_SHOW_TEXT_COMPONENT, ComponentIteratorFlag.INCLUDE_SHOW_ENTITY_NAME)) {
       if (inner instanceof TextComponent) {
         final TextComponent text = (TextComponent) inner;
 
@@ -143,7 +143,7 @@ class ComponentIteratorTest {
       .append(Component.translatable("translatable", Component.text("ARG")))
       .build();
 
-    for (final Component inner : component.iterable(ComponentIteratorType.BREADTH_FIRST)) {
+    for (final Component inner : component.iterable(ComponentIteratorType.BREADTH_FIRST, ComponentIteratorFlag.INCLUDE_TRANSLATABLE_COMPONENT_ARGUMENTS)) {
       if (inner instanceof TextComponent) {
         final TextComponent text = (TextComponent) inner;
 

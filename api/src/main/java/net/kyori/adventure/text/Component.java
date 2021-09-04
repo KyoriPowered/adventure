@@ -49,6 +49,7 @@ import net.kyori.adventure.translation.Translatable;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.ForwardingIterator;
 import net.kyori.adventure.util.IntFunction2;
+import net.kyori.adventure.util.MonkeyBars;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
@@ -2023,12 +2024,26 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * Returns an iterable view of this component.
    *
    * @param type the type
+   * @param flags the flags
    * @return the iterable
    * @since 4.9.0
    */
-  default @NotNull Iterable<Component> iterable(final @NotNull ComponentIteratorType type) {
+  default @NotNull Iterable<Component> iterable(final @NotNull ComponentIteratorType type, final @NotNull ComponentIteratorFlag@Nullable... flags) {
+    return this.iterable(type, flags == null ? Collections.emptySet() : MonkeyBars.enumSet(ComponentIteratorFlag.class, flags));
+  }
+
+  /**
+   * Returns an iterable view of this component.
+   *
+   * @param type the type
+   * @param flags the flags
+   * @return the iterable
+   * @since 4.9.0
+   */
+  default @NotNull Iterable<Component> iterable(final @NotNull ComponentIteratorType type, final @NotNull Set<ComponentIteratorFlag> flags) {
     Objects.requireNonNull(type, "type");
-    return new ForwardingIterator<>(() -> this.iterator(type), () -> this.spliterator(type));
+    Objects.requireNonNull(flags, "flags");
+    return new ForwardingIterator<>(() -> this.iterator(type, flags), () -> this.spliterator(type, flags));
   }
 
   /**
@@ -2036,12 +2051,27 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    *
    * <p>As components are immutable, this iterator does not support removal.</p>
    *
-   * @param type the type of the iterator
+   * @param type the type
+   * @param flags the flags
    * @return the iterator
    * @since 4.9.0
    */
-  default @NotNull Iterator<Component> iterator(final @NotNull ComponentIteratorType type) {
-    return new ComponentIterator(this, type);
+  default @NotNull Iterator<Component> iterator(final @NotNull ComponentIteratorType type, final @NotNull ComponentIteratorFlag@Nullable... flags) {
+    return this.iterator(type, flags == null ? Collections.emptySet() : MonkeyBars.enumSet(ComponentIteratorFlag.class, flags));
+  }
+
+  /**
+   * Returns an iterator for this component.
+   *
+   * <p>As components are immutable, this iterator does not support removal.</p>
+   *
+   * @param type the type
+   * @param flags the flags
+   * @return the iterator
+   * @since 4.9.0
+   */
+  default @NotNull Iterator<Component> iterator(final @NotNull ComponentIteratorType type, final @NotNull Set<ComponentIteratorFlag> flags) {
+    return new ComponentIterator(this, Objects.requireNonNull(type, "type"), Objects.requireNonNull(flags, "flags"));
   }
 
   /**
@@ -2049,12 +2079,27 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    *
    * <p>The resulting spliterator has the {@link Spliterator#IMMUTABLE}, {@link Spliterator#NONNULL} and {@link Spliterator#ORDERED} characteristics.</p>
    *
-   * @param type the type of the underlying iterator
-   * @return the iterator
+   * @param type the type
+   * @param flags the flags
+   * @return the spliterator
    * @since 4.9.0
    */
-  default @NotNull Spliterator<Component> spliterator(final @NotNull ComponentIteratorType type) {
-    return Spliterators.spliteratorUnknownSize(this.iterator(type), Spliterator.IMMUTABLE & Spliterator.NONNULL & Spliterator.ORDERED);
+  default @NotNull Spliterator<Component> spliterator(final @NotNull ComponentIteratorType type, final @NotNull ComponentIteratorFlag@Nullable... flags) {
+    return this.spliterator(type, flags == null ? Collections.emptySet() : MonkeyBars.enumSet(ComponentIteratorFlag.class, flags));
+  }
+
+  /**
+   * Returns a spliterator for this component.
+   *
+   * <p>The resulting spliterator has the {@link Spliterator#IMMUTABLE}, {@link Spliterator#NONNULL} and {@link Spliterator#ORDERED} characteristics.</p>
+   *
+   * @param type the type
+   * @param flags the flags
+   * @return the spliterator
+   * @since 4.9.0
+   */
+  default @NotNull Spliterator<Component> spliterator(final @NotNull ComponentIteratorType type, final @NotNull Set<ComponentIteratorFlag> flags) {
+    return Spliterators.spliteratorUnknownSize(this.iterator(type, flags), Spliterator.IMMUTABLE & Spliterator.NONNULL & Spliterator.ORDERED);
   }
 
   /**

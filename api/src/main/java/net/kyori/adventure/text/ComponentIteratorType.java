@@ -25,28 +25,29 @@ package net.kyori.adventure.text;
 
 import java.util.Deque;
 import java.util.List;
-import java.util.function.BiConsumer;
+import java.util.Set;
 import net.kyori.adventure.text.event.HoverEvent;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import static net.kyori.adventure.text.ComponentIterator.HOVER_EVENT_CONSUMER;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * The iterator types.
  *
- * @see Component#iterator(ComponentIteratorType)
- * @see Component#spliterator(ComponentIteratorType)
- * @see Component#iterable(ComponentIteratorType)
+ * @see Component#iterator(ComponentIteratorType, Set)
+ * @see Component#iterable(ComponentIteratorType, Set)
+ * @see Component#spliterator(ComponentIteratorType, Set)
  * @since 4.9.0
  */
-public enum ComponentIteratorType {
+@ApiStatus.NonExtendable
+@FunctionalInterface
+public interface ComponentIteratorType {
   /**
    * A depth-first iteration.
    *
    * @since 4.9.0
    */
-  DEPTH_FIRST((deque, component) -> {
-    if (component instanceof TranslatableComponent) {
+  ComponentIteratorType DEPTH_FIRST = (component, deque, flags) -> {
+    if (flags.contains(ComponentIteratorFlag.INCLUDE_TRANSLATABLE_COMPONENT_ARGUMENTS) && component instanceof TranslatableComponent) {
       final TranslatableComponent translatable = (TranslatableComponent) component;
       final List<Component> args = translatable.args();
 
@@ -55,53 +56,52 @@ public enum ComponentIteratorType {
       }
     }
 
+    final HoverEvent<?> hoverEvent = component.hoverEvent();
+    if (hoverEvent != null) {
+      final HoverEvent.Action<?> action = hoverEvent.action();
+
+      if (flags.contains(ComponentIteratorFlag.INCLUDE_SHOW_ENTITY_NAME) && action == HoverEvent.Action.SHOW_ENTITY) {
+        deque.addFirst(((HoverEvent.ShowEntity) hoverEvent.value()).name());
+      } else if (flags.contains(ComponentIteratorFlag.INCLUDE_SHOW_TEXT_COMPONENT) && action == HoverEvent.Action.SHOW_TEXT) {
+        deque.addFirst((Component) hoverEvent.value());
+      }
+    }
+
     final List<Component> children = component.children();
     for (int i = children.size() - 1; i >= 0; i--) {
       deque.addFirst(children.get(i));
     }
-  }),
-
+  };
   /**
    * A breadth-first iteration.
    *
    * @since 4.9.0
    */
-  BREADTH_FIRST((deque, component) -> {
-    if (component instanceof TranslatableComponent) {
+  ComponentIteratorType BREADTH_FIRST = (component, deque, flags) -> {
+    if (flags.contains(ComponentIteratorFlag.INCLUDE_TRANSLATABLE_COMPONENT_ARGUMENTS) && component instanceof TranslatableComponent) {
       deque.addAll(((TranslatableComponent) component).args());
     }
 
+    final HoverEvent<?> hoverEvent = component.hoverEvent();
+    if (hoverEvent != null) {
+      final HoverEvent.Action<?> action = hoverEvent.action();
+
+      if (flags.contains(ComponentIteratorFlag.INCLUDE_SHOW_ENTITY_NAME) && action == HoverEvent.Action.SHOW_ENTITY) {
+        deque.addLast(((HoverEvent.ShowEntity) hoverEvent.value()).name());
+      } else if (flags.contains(ComponentIteratorFlag.INCLUDE_SHOW_TEXT_COMPONENT) && action == HoverEvent.Action.SHOW_TEXT) {
+        deque.addLast((Component) hoverEvent.value());
+      }
+    }
+
     deque.addAll(component.children());
-  }),
-
+  };
   /**
-   * A depth-first iteration that includes components from the {@link HoverEvent} class where the value is a component or the type is an entity with a name.
-   *
-   * @since 4.9.0
-   */
-  DEPTH_FIRST_WITH_HOVER(HOVER_EVENT_CONSUMER.andThen(DEPTH_FIRST.consumer)),
-
-  /**
-   * A breadth-first iteration that includes components from the {@link HoverEvent} class where the value is a component or the type is an entity with a name.
-   *
-   * @since 4.9.0
-   */
-  BREADTH_FIRST_WITH_HOVER(HOVER_EVENT_CONSUMER.andThen(BREADTH_FIRST.consumer));
-
-  private final BiConsumer<Deque<Component>, Component> consumer;
-
-  ComponentIteratorType(final @NonNull BiConsumer<Deque<Component>, Component> consumer) {
-    this.consumer = consumer;
-  }
-
-  /**
-   * Populates a deque with the children of this component, based on the iterator type.
+   * Populates a deque with the children of the provided component, based on the iterator type and flags.
    *
    * @param component the component
    * @param deque the deque
+   * @param flags the flags
    * @since 4.9.0
    */
-  void populate(final @NonNull Component component, final @NonNull Deque<Component> deque) {
-    this.consumer.accept(deque, component);
-  }
+  void populate(final @NotNull Component component, final @NotNull Deque<Component> deque, final @NotNull Set<ComponentIteratorFlag> flags);
 }
