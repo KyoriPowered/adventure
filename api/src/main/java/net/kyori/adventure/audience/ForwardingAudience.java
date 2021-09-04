@@ -109,7 +109,7 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
-  default <T> void sendTitlePart(final @NotNull TitlePart<T> part, @NotNull final T value) {
+  default <T> void sendTitlePart(final @NotNull TitlePart<T> part, final @NotNull T value) {
     for (final Audience audience : this.audiences()) audience.sendTitlePart(part, value);
   }
 
