@@ -140,7 +140,8 @@ final class StyleSerializer extends TypeAdapter<Style> {
             continue;
           }
 
-          final HoverEvent.Action action = this.gson.fromJson(serializedAction, SerializerFactory.HOVER_ACTION_TYPE);
+          @SuppressWarnings("unchecked")
+          final HoverEvent.Action<Object> action = this.gson.fromJson(serializedAction, SerializerFactory.HOVER_ACTION_TYPE);
           if (action.readable()) {
             final @Nullable Object value;
             if (hoverEventObject.has(HOVER_EVENT_CONTENTS)) {
