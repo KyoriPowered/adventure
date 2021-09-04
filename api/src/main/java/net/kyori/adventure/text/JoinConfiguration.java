@@ -233,7 +233,9 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
 
     /**
      * Sets the last separator that will be used instead of the normal last separator in the case where there
-     * are more than two components being joined. This can be used to mimic a serial (or Oxford) comma.
+     * are more than two components being joined. 
+     * 
+     * <p>This can be used to mimic a serial (or Oxford) comma.</p>
      *
      * @param lastSeparatorIfSerial the last separator
      * @return this builder
