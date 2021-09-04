@@ -119,11 +119,12 @@ tasks {
     options.tags("sinceMinecraft:a:Since Minecraft:")
 
     doFirst {
-      jdLinks.artifacts.forEach {
+      jdLinks.artifacts.forEach el@{
         val file = it.file
         val projectName = (it.id.componentIdentifier as ProjectComponentIdentifier).projectName
         if (!file.isDirectory) {
-          logger.warn("Failed to link to Javadoc in $file (for $projectName) because it was not a directory")
+          logger.info("Failed to link to Javadoc in $file (for $projectName) because it was not a directory")
+          return@el
         }
 
         // This matches the file structure in adventure-javadocs
