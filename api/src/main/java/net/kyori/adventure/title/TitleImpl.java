@@ -31,6 +31,7 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 final class TitleImpl implements Title {
   private final Component title;
@@ -56,6 +57,20 @@ final class TitleImpl implements Title {
   @Override
   public @Nullable Times times() {
     return this.times;
+  }
+
+  @Override
+  @SuppressWarnings("unchecked") // compared with parts directly
+  public <T> @UnknownNullability T part(final @NotNull TitlePart<T> part) {
+    if (part == TitlePart.TITLE) {
+      return (T) this.title;
+    } else if (part == TitlePart.SUBTITLE) {
+      return (T) this.subtitle;
+    } else if (part == TitlePart.TIMES) {
+      return (T) this.times;
+    }
+
+    throw new IllegalArgumentException("Don't know what " + part + " is.");
   }
 
   @Override

@@ -30,6 +30,7 @@ import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 /**
  * Represents an in-game title, which can be displayed across the centre of the screen.
@@ -94,6 +95,16 @@ public interface Title extends Examinable {
    * @since 4.0.0
    */
   @Nullable Times times();
+
+  /**
+   * Gets a part.
+   *
+   * @param part the part
+   * @param <T> the type of the part
+   * @return the value
+   * @since 4.9.0
+   */
+  <T> @UnknownNullability T part(final @NotNull TitlePart<T> part);
 
   /**
    * Title times.
