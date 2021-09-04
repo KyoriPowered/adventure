@@ -60,9 +60,9 @@ public interface ComponentIteratorType {
     if (hoverEvent != null) {
       final HoverEvent.Action<?> action = hoverEvent.action();
 
-      if (flags.contains(ComponentIteratorFlag.INCLUDE_SHOW_ENTITY_NAME) && action == HoverEvent.Action.SHOW_ENTITY) {
+      if (flags.contains(ComponentIteratorFlag.INCLUDE_HOVER_SHOW_ENTITY_NAME) && action == HoverEvent.Action.SHOW_ENTITY) {
         deque.addFirst(((HoverEvent.ShowEntity) hoverEvent.value()).name());
-      } else if (flags.contains(ComponentIteratorFlag.INCLUDE_SHOW_TEXT_COMPONENT) && action == HoverEvent.Action.SHOW_TEXT) {
+      } else if (flags.contains(ComponentIteratorFlag.INCLUDE_HOVER_SHOW_TEXT_COMPONENT) && action == HoverEvent.Action.SHOW_TEXT) {
         deque.addFirst((Component) hoverEvent.value());
       }
     }
@@ -86,9 +86,9 @@ public interface ComponentIteratorType {
     if (hoverEvent != null) {
       final HoverEvent.Action<?> action = hoverEvent.action();
 
-      if (flags.contains(ComponentIteratorFlag.INCLUDE_SHOW_ENTITY_NAME) && action == HoverEvent.Action.SHOW_ENTITY) {
+      if (flags.contains(ComponentIteratorFlag.INCLUDE_HOVER_SHOW_ENTITY_NAME) && action == HoverEvent.Action.SHOW_ENTITY) {
         deque.addLast(((HoverEvent.ShowEntity) hoverEvent.value()).name());
-      } else if (flags.contains(ComponentIteratorFlag.INCLUDE_SHOW_TEXT_COMPONENT) && action == HoverEvent.Action.SHOW_TEXT) {
+      } else if (flags.contains(ComponentIteratorFlag.INCLUDE_HOVER_SHOW_TEXT_COMPONENT) && action == HoverEvent.Action.SHOW_TEXT) {
         deque.addLast((Component) hoverEvent.value());
       }
     }

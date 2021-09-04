@@ -40,13 +40,13 @@ public enum ComponentIteratorFlag {
    *
    * @since 4.9.0
    */
-  INCLUDE_SHOW_ENTITY_NAME,
+  INCLUDE_HOVER_SHOW_ENTITY_NAME,
   /**
    * Includes the components inside {@link net.kyori.adventure.text.event.HoverEvent.Action#SHOW_TEXT text} hover events.
    *
    * @since 4.9.0
    */
-  INCLUDE_SHOW_TEXT_COMPONENT,
+  INCLUDE_HOVER_SHOW_TEXT_COMPONENT,
   /**
    * Includes the arguments of {@link TranslatableComponent translatable components}.
    *

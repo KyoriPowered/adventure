@@ -123,7 +123,7 @@ class ComponentIteratorTest {
     boolean foundText = false;
     boolean foundEntity = false;
 
-    for (final Component inner : component.iterable(ComponentIteratorType.BREADTH_FIRST, ComponentIteratorFlag.INCLUDE_SHOW_TEXT_COMPONENT, ComponentIteratorFlag.INCLUDE_SHOW_ENTITY_NAME)) {
+    for (final Component inner : component.iterable(ComponentIteratorType.BREADTH_FIRST, ComponentIteratorFlag.INCLUDE_HOVER_SHOW_TEXT_COMPONENT, ComponentIteratorFlag.INCLUDE_HOVER_SHOW_ENTITY_NAME)) {
       if (inner instanceof TextComponent) {
         final TextComponent text = (TextComponent) inner;
 
