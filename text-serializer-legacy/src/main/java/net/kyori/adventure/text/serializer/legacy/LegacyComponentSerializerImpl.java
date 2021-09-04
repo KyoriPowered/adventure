@@ -234,7 +234,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     if (this.urlReplacementConfig == null) return component;
     final Component newComponent = component.replaceText(this.urlReplacementConfig);
     if (newComponent instanceof TextComponent) return (TextComponent) newComponent;
-    return TextComponent.ofChildren(newComponent);
+    return Component.text().append(newComponent).build();
   }
 
   @Override

@@ -24,8 +24,6 @@
 package net.kyori.adventure.text;
 
 import com.google.common.collect.ImmutableSet;
-import java.util.Collections;
-import java.util.stream.IntStream;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
@@ -60,21 +58,6 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
 
   private static String legacy(final char character) {
     return TextComponentImpl.SECTION_CHAR + String.valueOf(character);
-  }
-
-  @Test
-  void testOfChildren() {
-    assertSame(Component.empty(), TextComponent.ofChildren()); // empty array
-    assertEquals(
-      Component.text()
-        .append(Component.text("a"))
-        .append(Component.text().content("b"))
-        .build(),
-      TextComponent.ofChildren(
-        Component.text("a"),
-        Component.text().content("b")
-      )
-    );
   }
 
   @Test
@@ -152,27 +135,5 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
   @Test
   void testBuildEmptyIsEmpty() {
     assertSame(Component.empty(), Component.text().build());
-  }
-
-  @Test
-  void testJoin() {
-    assertEquals(Component.empty(), Component.join(Component.space(), Collections.emptyList()));
-
-    final Component c0 = Component.join(
-      Component.space(),
-      IntStream.range(0, 3)
-        .mapToObj(Component::text)
-        .toArray(Component[]::new)
-    );
-    assertEquals(
-      Component.text()
-        .append(Component.text(0))
-        .append(Component.space())
-        .append(Component.text(1))
-        .append(Component.space())
-        .append(Component.text(2))
-        .build(),
-      c0
-    );
   }
 }

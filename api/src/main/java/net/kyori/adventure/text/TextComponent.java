@@ -23,8 +23,7 @@
  */
 package net.kyori.adventure.text;
 
-import java.util.Arrays;
-import net.kyori.adventure.text.format.Style;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,10 +45,14 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param components the children
    * @return a text component
    * @since 4.0.0
+   * @deprecated For removal since 4.9.0, use {@link Component#join(JoinConfiguration, ComponentLike...)} with {@link JoinConfiguration#noSeparators()}.
    */
+  @ApiStatus.ScheduledForRemoval
+  @Deprecated
   static @NotNull TextComponent ofChildren(final @NotNull ComponentLike@NotNull... components) {
-    if (components.length == 0) return Component.empty();
-    return new TextComponentImpl(Arrays.asList(components), Style.empty(), "");
+    final Component joined = Component.join(JoinConfiguration.noSeparators(), components);
+    if (joined instanceof TextComponent) return (TextComponent) joined;
+    else return Component.text().append(joined).build();
   }
 
   /**
