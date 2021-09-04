@@ -144,7 +144,7 @@ public interface Audience extends Pointered {
    * <p>The returned {@code Audience} may be the same, or a completely different one.</p>
    *
    * @param filter the filter
-   * @since 4.8.0
+   * @since 4.9.0
    */
   default @NotNull Audience filterAudience(final @NotNull Predicate<? super Audience> filter) {
     if (filter.test(this)) {
@@ -160,7 +160,7 @@ public interface Audience extends Pointered {
    * other audiences, then you <b>must</b> override this method and provide each audience to {@code action}.</p>
    *
    * @param action the action
-   * @since 4.8.0
+   * @since 4.9.0
    */
   default void forEachAudience(final @NotNull Consumer<? super Audience> action) {
     action.accept(this);
