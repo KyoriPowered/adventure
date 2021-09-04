@@ -25,7 +25,6 @@ package net.kyori.adventure.text;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
@@ -56,7 +55,7 @@ import org.jetbrains.annotations.Nullable;
  *  </li>
  *  <li>
  *   <b>a convertor</b> (required, defaults to {@link ComponentLike#asComponent()})
- *   <p>a function to change each component that is being joined into a component</p>
+ *   <p>a function to change each {@link ComponentLike} that is being joined into a {@link Component}</p>
  *  </li>
  *  <li>
  *    <b>a predicate</b> (required, defaults to {@code true})

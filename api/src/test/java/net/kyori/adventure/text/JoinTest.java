@@ -242,14 +242,10 @@ class JoinTest {
   @Test
   final void testWithPredicate() {
     final JoinConfiguration config = JoinConfiguration.builder()
-      .predicate((component) -> !(component instanceof TestComponentLike))
+      .predicate(component -> !(component instanceof TestComponentLike))
       .build();
 
-    final ComponentLike[] components = new ComponentLike[] {
-      Component.text("PASS"),
-      new TestComponentLike(),
-      Component.text("PASS")
-    };
+    final ComponentLike[] components = new ComponentLike[] {Component.text("PASS"), new TestComponentLike(), Component.text("PASS")};
 
     final Component result = Component.join(config, components);
     assertEquals(

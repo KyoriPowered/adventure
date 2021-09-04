@@ -27,7 +27,6 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
@@ -37,7 +36,7 @@ import org.jetbrains.annotations.Nullable;
 
 final class JoinConfigurationImpl implements JoinConfiguration {
   static final Function<ComponentLike, Component> DEFAULT_CONVERTOR = ComponentLike::asComponent;
-  static final Predicate<ComponentLike> DEFAULT_PREDICATE = (componentLike) -> true;
+  static final Predicate<ComponentLike> DEFAULT_PREDICATE = componentLike -> true;
   static final JoinConfigurationImpl NULL = new JoinConfigurationImpl();
 
   private final Component prefix;
@@ -164,7 +163,7 @@ final class JoinConfigurationImpl implements JoinConfiguration {
         }
       }
 
-      builder.append(convertor.apply(component));
+      builder.append(Objects.requireNonNull(convertor.apply(component), "Null output from \"convertor\" is not allowed"));
       componentsSeen++;
 
       if (!it.hasNext()) {

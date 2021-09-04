@@ -183,7 +183,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.9.0
    */
   @Contract(pure = true)
-  static @NotNull Component join(final @NotNull JoinConfiguration config, final @NotNull ComponentLike @NotNull... components) {
+  static @NotNull Component join(final @NotNull JoinConfiguration config, final @NotNull ComponentLike@NotNull... components) {
     return join(config, Arrays.asList(components));
   }
 
