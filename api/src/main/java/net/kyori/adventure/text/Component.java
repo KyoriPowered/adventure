@@ -25,10 +25,13 @@ package net.kyori.adventure.text;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -45,7 +48,9 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.translation.Translatable;
 import net.kyori.adventure.util.Buildable;
+import net.kyori.adventure.util.ForwardingIterator;
 import net.kyori.adventure.util.IntFunction2;
+import net.kyori.adventure.util.MonkeyBars;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
@@ -2015,6 +2020,88 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.9.0
    */
   @NotNull Component compact();
+
+  /**
+   * Returns an iterable view of this component.
+   *
+   * @param type the type
+   * @param flags the flags
+   * @return the iterable
+   * @since 4.9.0
+   */
+  default @NotNull Iterable<Component> iterable(final @NotNull ComponentIteratorType type, final @NotNull ComponentIteratorFlag@Nullable... flags) {
+    return this.iterable(type, flags == null ? Collections.emptySet() : MonkeyBars.enumSet(ComponentIteratorFlag.class, flags));
+  }
+
+  /**
+   * Returns an iterable view of this component.
+   *
+   * @param type the type
+   * @param flags the flags
+   * @return the iterable
+   * @since 4.9.0
+   */
+  default @NotNull Iterable<Component> iterable(final @NotNull ComponentIteratorType type, final @NotNull Set<ComponentIteratorFlag> flags) {
+    Objects.requireNonNull(type, "type");
+    Objects.requireNonNull(flags, "flags");
+    return new ForwardingIterator<>(() -> this.iterator(type, flags), () -> this.spliterator(type, flags));
+  }
+
+  /**
+   * Returns an iterator for this component.
+   *
+   * <p>As components are immutable, this iterator does not support removal.</p>
+   *
+   * @param type the type
+   * @param flags the flags
+   * @return the iterator
+   * @since 4.9.0
+   */
+  default @NotNull Iterator<Component> iterator(final @NotNull ComponentIteratorType type, final @NotNull ComponentIteratorFlag@Nullable... flags) {
+    return this.iterator(type, flags == null ? Collections.emptySet() : MonkeyBars.enumSet(ComponentIteratorFlag.class, flags));
+  }
+
+  /**
+   * Returns an iterator for this component.
+   *
+   * <p>As components are immutable, this iterator does not support removal.</p>
+   *
+   * @param type the type
+   * @param flags the flags
+   * @return the iterator
+   * @since 4.9.0
+   */
+  default @NotNull Iterator<Component> iterator(final @NotNull ComponentIteratorType type, final @NotNull Set<ComponentIteratorFlag> flags) {
+    return new ComponentIterator(this, Objects.requireNonNull(type, "type"), Objects.requireNonNull(flags, "flags"));
+  }
+
+  /**
+   * Returns a spliterator for this component.
+   *
+   * <p>The resulting spliterator has the {@link Spliterator#IMMUTABLE}, {@link Spliterator#NONNULL} and {@link Spliterator#ORDERED} characteristics.</p>
+   *
+   * @param type the type
+   * @param flags the flags
+   * @return the spliterator
+   * @since 4.9.0
+   */
+  default @NotNull Spliterator<Component> spliterator(final @NotNull ComponentIteratorType type, final @NotNull ComponentIteratorFlag@Nullable... flags) {
+    return this.spliterator(type, flags == null ? Collections.emptySet() : MonkeyBars.enumSet(ComponentIteratorFlag.class, flags));
+  }
+
+  /**
+   * Returns a spliterator for this component.
+   *
+   * <p>The resulting spliterator has the {@link Spliterator#IMMUTABLE}, {@link Spliterator#NONNULL} and {@link Spliterator#ORDERED} characteristics.</p>
+   *
+   * @param type the type
+   * @param flags the flags
+   * @return the spliterator
+   * @since 4.9.0
+   */
+  default @NotNull Spliterator<Component> spliterator(final @NotNull ComponentIteratorType type, final @NotNull Set<ComponentIteratorFlag> flags) {
+    return Spliterators.spliteratorUnknownSize(this.iterator(type, flags), Spliterator.IMMUTABLE & Spliterator.NONNULL & Spliterator.ORDERED);
+  }
 
   /**
    * Finds and replaces text within any {@link Component}s using a string literal.
