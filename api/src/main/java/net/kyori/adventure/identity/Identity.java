@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.identity;
 
+import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Stream;
 import net.kyori.adventure.Adventure;
@@ -59,6 +60,12 @@ public interface Identity extends Examinable {
    * @since 4.8.0
    */
   Pointer<Component> DISPLAY_NAME = Pointer.pointer(Component.class, Key.key(Adventure.NAMESPACE, "display_name"));
+  /**
+   * A pointer to a {@link Locale}.
+   *
+   * @since 4.9.0
+   */
+  Pointer<Locale> LOCALE = Pointer.pointer(Locale.class, Key.key(Adventure.NAMESPACE, "locale"));
 
   /**
    * Gets the {@code null} identity.
