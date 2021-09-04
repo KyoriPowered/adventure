@@ -19,3 +19,4 @@
 /text-serializer-*/build/
 /text-serializer-*/out/
 /*.iml
+/*/.factorypath
