@@ -53,7 +53,7 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
 
   TextComponentImpl(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String content) {
     super(children, style);
-    this.content = content;
+    this.content = requireNonNull(content, "content");
 
     if (WARN_WHEN_LEGACY_FORMATTING_DETECTED) {
       final LegacyFormattingDetected nag = this.warnWhenLegacyFormattingDetected();
