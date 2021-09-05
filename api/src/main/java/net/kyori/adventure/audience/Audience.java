@@ -456,6 +456,7 @@ public interface Audience extends Pointered {
    * @param part the part
    * @param value the value
    * @param <T> the type of the value of the part
+   * @throws IllegalArgumentException if a title part that is not in {@link TitlePart} is used
    * @since 4.9.0
    */
   default <T> void sendTitlePart(final @NotNull TitlePart<T> part, final @NotNull T value) {
