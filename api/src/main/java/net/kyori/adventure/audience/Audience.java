@@ -143,14 +143,17 @@ public interface Audience extends Pointered {
    *
    * <p>The returned {@code Audience} may be the same, or a completely different one.</p>
    *
+   * <p>Container audiences such as {@link ForwardingAudience} may or may not have their own identity.
+   * If they do, they <em>may</em> test themselves against the provided {@code filter} first, and if the test fails return an empty audience skipping any contained children.
+   * If they do not, they <em>must not</em> test themselves against the filter, only testing their children.</p>
+   *
    * @param filter the filter
    * @since 4.9.0
    */
   default @NotNull Audience filterAudience(final @NotNull Predicate<? super Audience> filter) {
-    if (filter.test(this)) {
-      return this;
-    }
-    return empty();
+    return filter.test(this)
+      ? this
+      : empty();
   }
 
   /**
@@ -158,6 +161,10 @@ public interface Audience extends Pointered {
    *
    * <p>If you implement {@code Audience} and not {@link ForwardingAudience} in your own code, and your audience forwards to
    * other audiences, then you <b>must</b> override this method and provide each audience to {@code action}.</p>
+   *
+   * <p>If an implementation of {@code Audience} has its own identity distinct from its contained children,
+   * it <em>may</em> test itself against the provided {@code filter} first, and  if the test fails return an empty audience skipping any contained children.
+   * If it does not, it <em>must not</em> test itself against the filter, only testing its children.</p>
    *
    * @param action the action
    * @since 4.9.0
