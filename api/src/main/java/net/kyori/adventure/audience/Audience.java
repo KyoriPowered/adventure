@@ -162,8 +162,8 @@ public interface Audience extends Pointered {
    * <p>If you implement {@code Audience} and not {@link ForwardingAudience} in your own code, and your audience forwards to
    * other audiences, then you <b>must</b> override this method and provide each audience to {@code action}.</p>
    *
-   * <p>If an implementation of {@code Audience} has its own identity distinct from its contained children,
-   * it <em>may</em> test itself against the provided {@code filter} first, and  if the test fails return an empty audience skipping any contained children.
+   * <p>If an implementation of {@code Audience} has its own identity distinct from its contained children, it <em>may</em> test
+   * itself against the provided {@code filter} first, and  if the test fails return an empty audience skipping any contained children.
    * If it does not, it <em>must not</em> test itself against the filter, only testing its children.</p>
    *
    * @param action the action
