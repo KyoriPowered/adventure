@@ -71,7 +71,7 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
   static final String NBT_STORAGE = "storage";
   static final String SEPARATOR = "separator";
 
-  static final Type COMPONENT_LIST_TYPE = TypeToken.getParameterized(List.class, Component.class).getType();
+  static final Type COMPONENT_LIST_TYPE = new TypeToken<List<Component>>() {}.getType();
 
   static TypeAdapter<Component> create(final Gson gson) {
     return new ComponentSerializerImpl(gson).nullSafe();
