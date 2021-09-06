@@ -39,6 +39,8 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * An abstract implementation of a component builder.
  *
@@ -74,13 +76,14 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   public @NotNull B append(final @NotNull Component component) {
     if (component == Component.empty()) return (B) this;
     this.prepareChildren();
-    this.children.add(component);
+    this.children.add(requireNonNull(component, "component"));
     return (B) this;
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public @NotNull B append(final @NotNull Component@NotNull... components) {
+    requireNonNull(components, "components");
     boolean prepared = false;
     for (int i = 0, length = components.length; i < length; i++) {
       final Component component = components[i];
@@ -89,7 +92,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
           this.prepareChildren();
           prepared = true;
         }
-        this.children.add(component);
+        this.children.add(requireNonNull(component, "components[?]"));
       }
     }
     return (B) this;
@@ -98,6 +101,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   @Override
   @SuppressWarnings("unchecked")
   public @NotNull B append(final @NotNull ComponentLike@NotNull... components) {
+    requireNonNull(components, "components");
     boolean prepared = false;
     for (int i = 0, length = components.length; i < length; i++) {
       final Component component = components[i].asComponent();
@@ -106,7 +110,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
           this.prepareChildren();
           prepared = true;
         }
-        this.children.add(component);
+        this.children.add(requireNonNull(component, "components[?]"));
       }
     }
     return (B) this;
@@ -115,6 +119,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   @Override
   @SuppressWarnings("unchecked")
   public @NotNull B append(final @NotNull Iterable<? extends ComponentLike> components) {
+    requireNonNull(components, "components");
     boolean prepared = false;
     for (final ComponentLike like : components) {
       final Component component = like.asComponent();
@@ -123,7 +128,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
           this.prepareChildren();
           prepared = true;
         }
-        this.children.add(component);
+        this.children.add(requireNonNull(component, "components[?]"));
       }
     }
     return (B) this;
@@ -167,7 +172,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
       if (!(child instanceof BuildableComponent<?, ?>)) {
         continue;
       }
-      final BuildableComponent<?, ?> mappedChild = function.apply((BuildableComponent<?, ?>) child);
+      final BuildableComponent<?, ?> mappedChild = requireNonNull(function.apply((BuildableComponent<?, ?>) child), "mappedChild");
       if (child == mappedChild) {
         continue;
       }
@@ -188,7 +193,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
       if (!(child instanceof BuildableComponent<?, ?>)) {
         continue;
       }
-      final BuildableComponent<?, ?> mappedChild = function.apply((BuildableComponent<?, ?>) child);
+      final BuildableComponent<?, ?> mappedChild = requireNonNull(function.apply((BuildableComponent<?, ?>) child), "mappedChild");
       if (mappedChild.children().isEmpty()) {
         if (child == mappedChild) {
           continue;
