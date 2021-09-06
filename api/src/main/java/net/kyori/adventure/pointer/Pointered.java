@@ -59,7 +59,7 @@ public interface Pointered {
    * @return the value
    * @since 4.8.0
    */
-  @Contract("_, null -> null; _, !null -> !null")
+  @Contract("_, null -> _; _, !null -> !null")
   @SuppressWarnings("checkstyle:MethodName")
   default <T> @Nullable T getOrDefault(final @NotNull Pointer<T> pointer, final @Nullable T defaultValue) {
     return this.pointers().getOrDefault(pointer, defaultValue);
