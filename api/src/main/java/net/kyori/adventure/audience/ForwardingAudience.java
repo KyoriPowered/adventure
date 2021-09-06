@@ -67,19 +67,8 @@ public interface ForwardingAudience extends Audience {
   @NotNull Iterable<? extends Audience> audiences();
 
   @Override
-  default <T> @NotNull Optional<T> get(final @NotNull Pointer<T> pointer) {
-    return Optional.empty(); // unsupported
-  }
-
-  @Contract("_, null -> null; _, !null -> !null")
-  @Override
-  default <T> @Nullable T getOrDefault(final @NotNull Pointer<T> pointer, final @Nullable T defaultValue) {
-    return defaultValue; // unsupported
-  }
-
-  @Override
-  default <T> @UnknownNullability T getOrDefaultFrom(final @NotNull Pointer<T> pointer, final @NotNull Supplier<? extends T> defaultValue) {
-    return defaultValue.get(); // unsupported
+  default @NotNull Pointers pointers() {
+    return Pointers.empty(); // unsupported
   }
 
   @Override
