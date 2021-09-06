@@ -31,6 +31,8 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A placeholder in a message, which can replace a tag with a component.
  *
@@ -46,7 +48,10 @@ public interface Template extends Examinable {
    * @since 4.0.0
    */
   static @NotNull Template of(final @NotNull String key, final @NotNull String value) {
-    return new StringTemplate(key, value);
+    return new StringTemplate(
+      requireNonNull(key, "key"),
+      requireNonNull(value, "value")
+    );
   }
 
   /**
@@ -58,7 +63,10 @@ public interface Template extends Examinable {
    * @since 4.0.0
    */
   static @NotNull Template of(final @NotNull String key, final @NotNull Component value) {
-    return new ComponentTemplate(key, value);
+    return new ComponentTemplate(
+      requireNonNull(key, "key"),
+      requireNonNull(value, "value")
+    );
   }
 
   /**
@@ -70,7 +78,10 @@ public interface Template extends Examinable {
    * @since 4.2.0
    */
   static @NotNull Template of(final @NotNull String key, final @NotNull Supplier<Component> value) {
-    return new LazyComponentTemplate(key, value);
+    return new LazyComponentTemplate(
+      requireNonNull(key, "key"),
+      requireNonNull(value, "value")
+    );
   }
 
   /**
@@ -180,7 +191,7 @@ public interface Template extends Examinable {
 
     @Override
     public @NotNull Component value() {
-      return this.value.get();
+      return requireNonNull(this.value.get(), () -> "get() value of " + this.value);
     }
 
     @Override
