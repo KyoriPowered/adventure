@@ -35,6 +35,8 @@ import net.kyori.adventure.util.MonkeyBars;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Some magic to change return types.
  *
@@ -77,7 +79,7 @@ public interface ScopedComponent<C extends Component> extends Component {
   default @NotNull C append(final @NotNull Component component) {
     if (component == Component.empty()) return (C) this;
     final List<Component> oldChildren = this.children();
-    return this.children(MonkeyBars.addOne(oldChildren, component));
+    return this.children(MonkeyBars.addOne(oldChildren, requireNonNull(component, "component")));
   }
 
   @Override
