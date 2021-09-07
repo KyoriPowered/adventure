@@ -3,9 +3,9 @@ metadata:
   polyglot-extensions: [plugins]
 
 dependencies:
-  adventure-api: "net.kyori:adventure-api:4.9.0"
-  adventure-text-plain: "net.kyori:adventure-text-serializer-plain:4.9.0"
-  adventure-text-gson: "net.kyori:adventure-text-serializer-gson:4.9.0"
+  adventure-api: "net.kyori:adventure-api:4.9.1"
+  adventure-text-plain: "net.kyori:adventure-text-serializer-plain:4.9.1"
+  adventure-text-gson: "net.kyori:adventure-text-serializer-gson:4.9.1"
 
   javacc: "net.java.dev.javacc:javacc:7.0.10"
 
