@@ -204,7 +204,7 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
     private static void testHierarchy(final Class<?> existing, final Class<?> beingRegistered) {
       if (!existing.equals(beingRegistered) && (existing.isAssignableFrom(beingRegistered) || beingRegistered.isAssignableFrom(existing))) {
         throw new IllegalArgumentException("Conflict detected between already registered type " + existing
-          + " and newly registered type " + beingRegistered + "! Types in a component flattener must not share a common hierachy!");
+          + " and newly registered type " + beingRegistered + "! Types in a component flattener must not share a common hierarchy!");
       }
     }
 
