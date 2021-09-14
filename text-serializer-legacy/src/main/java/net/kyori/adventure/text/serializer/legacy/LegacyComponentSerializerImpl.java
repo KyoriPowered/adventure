@@ -498,6 +498,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       this.urlReplacementConfig = serializer.urlReplacementConfig;
       this.hexColours = serializer.hexColours;
       this.useTerriblyStupidHexFormat = serializer.useTerriblyStupidHexFormat;
+      this.flattener = serializer.flattener;
     }
 
     @Override
