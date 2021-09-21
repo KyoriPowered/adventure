@@ -62,7 +62,7 @@ class TitleSerializerTest implements ConfigurateTestBase {
     });
 
     final Title title = Title.title(Component.text("Title"), Component.text("Subtitle", NamedTextColor.DARK_PURPLE),
-      Title.Times.of(Duration.ofSeconds(50), Duration.ofSeconds(20), Duration.ofSeconds(50)));
+      Title.Times.times(Duration.ofSeconds(50), Duration.ofSeconds(20), Duration.ofSeconds(50)));
 
     this.assertRoundtrippable(Title.class, title, node);
   }
