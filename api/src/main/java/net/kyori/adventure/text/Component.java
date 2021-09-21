@@ -2112,7 +2112,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
    */
-  @ApiStatus.ScheduledForRemoval
+  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Contract(pure = true)
   @Deprecated
   default @NotNull Component replaceText(final @NotNull String search, final @Nullable ComponentLike replacement) {
@@ -2128,7 +2128,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
    */
-  @ApiStatus.ScheduledForRemoval
+  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Contract(pure = true)
   @Deprecated
   default @NotNull Component replaceText(final @NotNull Pattern pattern, final @NotNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement) {
@@ -2144,7 +2144,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
    */
-  @ApiStatus.ScheduledForRemoval
+  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Contract(pure = true)
   @Deprecated
   default @NotNull Component replaceFirstText(final @NotNull String search, final @Nullable ComponentLike replacement) {
@@ -2160,7 +2160,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
    */
-  @ApiStatus.ScheduledForRemoval
+  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Contract(pure = true)
   @Deprecated
   default @NotNull Component replaceFirstText(final @NotNull Pattern pattern, final @NotNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement) {
@@ -2177,7 +2177,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
    */
-  @ApiStatus.ScheduledForRemoval
+  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Contract(pure = true)
   @Deprecated
   default @NotNull Component replaceText(final @NotNull String search, final @Nullable ComponentLike replacement, final int numberOfReplacements) {
@@ -2194,7 +2194,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
    */
-  @ApiStatus.ScheduledForRemoval
+  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Contract(pure = true)
   @Deprecated
   default @NotNull Component replaceText(final @NotNull Pattern pattern, final @NotNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement, final int numberOfReplacements) {
@@ -2213,7 +2213,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
    */
-  @ApiStatus.ScheduledForRemoval
+  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Contract(pure = true)
   @Deprecated
   default @NotNull Component replaceText(final @NotNull String search, final @Nullable ComponentLike replacement, final @NotNull IntFunction2<PatternReplacementResult> fn) {
@@ -2232,7 +2232,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    * @deprecated for removal since 4.2.0, use {@link #replaceText(Consumer)} or {@link #replaceText(TextReplacementConfig)} instead.
    */
-  @ApiStatus.ScheduledForRemoval
+  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Contract(pure = true)
   @Deprecated
   default @NotNull Component replaceText(final @NotNull Pattern pattern, final @NotNull Function<TextComponent.Builder, @Nullable ComponentLike> replacement, final @NotNull IntFunction2<PatternReplacementResult> fn) {

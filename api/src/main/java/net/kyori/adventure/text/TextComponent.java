@@ -47,7 +47,7 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @since 4.0.0
    * @deprecated For removal since 4.9.0, use {@link Component#join(JoinConfiguration, ComponentLike...)} with {@link JoinConfiguration#noSeparators()}.
    */
-  @ApiStatus.ScheduledForRemoval
+  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Deprecated
   static @NotNull TextComponent ofChildren(final @NotNull ComponentLike@NotNull... components) {
     final Component joined = Component.join(JoinConfiguration.noSeparators(), components);
