@@ -1112,6 +1112,19 @@ public class MiniMessageParserTest extends TestBase {
     this.assertParsedEquals(expected, input);
   }
 
+  @Test
+  void testFontNoNamespace() {
+    final String input = "Nothing <font:uniform>Uniform <font:alt>Alt  </font> Uniform";
+    final Component expected = text("Nothing ")
+        .append(empty().style(s -> s.font(key("uniform")))
+            .append(text("Uniform "))
+            .append(text("Alt  ").style(s -> s.font(key("alt"))))
+            .append(text(" Uniform"))
+        );
+
+    this.assertParsedEquals(expected, input);
+  }
+
   // GH-37
   @Test
   void testPhil() {
