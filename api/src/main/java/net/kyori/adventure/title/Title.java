@@ -122,7 +122,7 @@ public interface Title extends Examinable {
      * @since 4.0.0
      * @deprecated for removal since 4.10.0, use {@link #times()}
      */
-    @ApiStatus.ScheduledForRemoval
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
     @Deprecated
     static @NotNull Times of(final @NotNull Duration fadeIn, final @NotNull Duration stay, final @NotNull Duration fadeOut) {
       return times(fadeIn, stay, fadeOut);
