@@ -120,8 +120,23 @@ public interface Title extends Examinable {
      * @param fadeOut the fade-out time
      * @return times
      * @since 4.0.0
+     * @deprecated for removal since 4.10.0, use {@link #times()}
      */
+    @Deprecated
     static @NotNull Times of(final @NotNull Duration fadeIn, final @NotNull Duration stay, final @NotNull Duration fadeOut) {
+      return times(fadeIn, stay, fadeOut);
+    }
+
+    /**
+     * Creates times.
+     *
+     * @param fadeIn the fade-in time
+     * @param stay the stay time
+     * @param fadeOut the fade-out time
+     * @return times
+     * @since 4.10.0
+     */
+    static @NotNull Times times(final @NotNull Duration fadeIn, final @NotNull Duration stay, final @NotNull Duration fadeOut) {
       return new TitleImpl.TimesImpl(fadeIn, stay, fadeOut);
     }
 
