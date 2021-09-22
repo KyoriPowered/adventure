@@ -24,7 +24,6 @@
 package net.kyori.adventure.util;
 
 import java.util.Set;
-
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
