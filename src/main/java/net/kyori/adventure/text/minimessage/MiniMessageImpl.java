@@ -38,7 +38,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 4.0.0
  */
-public class MiniMessageImpl implements MiniMessage {
+final class MiniMessageImpl implements MiniMessage {
   static final Function<String, ComponentLike> DEFAULT_PLACEHOLDER_RESOLVER = s -> null;
   static final Consumer<List<String>> DEFAULT_ERROR_CONSUMER = message -> message.forEach(System.out::println);
 
