@@ -309,7 +309,7 @@ final class TagStringReader {
       return true;
     }
     this.buffer.expect(Tokens.VALUE_SEPARATOR);
-    return false;
+    return this.buffer.takeIf(endCharacter);
   }
 
   /**
