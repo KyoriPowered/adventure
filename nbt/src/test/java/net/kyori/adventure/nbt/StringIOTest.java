@@ -276,6 +276,13 @@ class StringIOTest {
     assertEquals(LongArrayBinaryTag.of(), this.stringToTag("[L; ]"));
   }
 
+  @Test
+  void testTrailingComma() throws IOException {
+    assertEquals(CompoundBinaryTag.builder().putString("test", "hello").build(), this.stringToTag("{test: \"hello\",}"));
+    assertEquals(IntArrayBinaryTag.of(1), this.stringToTag("[I;1,]"));
+    assertEquals(ListBinaryTag.builder().add(StringBinaryTag.of("hello")).build(), this.stringToTag("[\"hello\",]"));
+  }
+
   private String tagToString(final BinaryTag tag) throws IOException {
     final StringWriter writer = new StringWriter();
     try(final TagStringWriter emitter = new TagStringWriter(writer, "")) {
