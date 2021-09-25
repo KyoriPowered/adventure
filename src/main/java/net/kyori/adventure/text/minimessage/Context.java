@@ -37,16 +37,16 @@ public class Context {
   private final boolean strict;
   private final Appendable debugOutput;
   private ElementNode root;
-  private final String ogMessage;
+  private final String originalMessage;
   private String replacedMessage;
   private final MiniMessage miniMessage;
   private final @NotNull Template @Nullable [] templates;
 
-  Context(final boolean strict, final Appendable debugOutput, final ElementNode root, final String ogMessage, final String replacedMessage, final MiniMessage miniMessage, final @NotNull Template @Nullable [] templates) {
+  Context(final boolean strict, final Appendable debugOutput, final ElementNode root, final String originalMessage, final String replacedMessage, final MiniMessage miniMessage, final @NotNull Template @Nullable [] templates) {
     this.strict = strict;
     this.debugOutput = debugOutput;
     this.root = root;
-    this.ogMessage = ogMessage;
+    this.originalMessage = originalMessage;
     this.replacedMessage = replacedMessage;
     this.miniMessage = miniMessage;
     this.templates = templates;
@@ -163,9 +163,21 @@ public class Context {
    *
    * @return ogMessage
    * @since 4.1.0
+   * @deprecated for removal, use {@link #originalMessage()} instead
    */
+  @Deprecated
   public String ogMessage() {
-    return this.ogMessage;
+    return this.originalMessage();
+  }
+
+  /**
+   * Returns original message.
+   *
+   * @return ogMessage
+   * @since 4.2.0
+   */
+  public String originalMessage() {
+    return this.originalMessage;
   }
 
   /**
