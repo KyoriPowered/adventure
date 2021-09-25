@@ -24,6 +24,7 @@
 package net.kyori.adventure.util;
 
 import java.util.Set;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -45,6 +46,7 @@ public final class ShadyPines {
    * @deprecated for removal since 4.8.0, use {@link MonkeyBars#enumSet(Class, Enum[])}
    * @since 4.0.0
    */
+  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Deprecated
   @SafeVarargs
   @SuppressWarnings("varargs")

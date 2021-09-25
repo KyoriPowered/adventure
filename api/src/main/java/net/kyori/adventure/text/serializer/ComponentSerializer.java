@@ -57,7 +57,7 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
    * @since 4.7.0
    * @deprecated for removal since 4.8.0, use {@link #deserializeOrNull(Object)} instead.
    */
-  @ApiStatus.ScheduledForRemoval
+  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Contract(value = "!null -> !null; null -> null", pure = true)
   @Deprecated
   default @Nullable O deseializeOrNull(final @Nullable R input) {
