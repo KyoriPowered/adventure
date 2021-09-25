@@ -1113,6 +1113,19 @@ public class MiniMessageParserTest extends TestBase {
   }
 
   @Test
+  void testCustomFont() {
+    final String input = "Default <font:myfont:best_font>Custom font <font:custom:worst_font>Another custom font </font>Back to previous font";
+    final Component expected = text("Default ")
+        .append(empty().style(s -> s.font(key("myfont", "best_font")))
+            .append(text("Custom font "))
+            .append(text("Another custom font ").style(s -> s.font(key("custom", "worst_font"))))
+            .append(text("Back to previous font"))
+        );
+
+    this.assertParsedEquals(expected, input);
+  }
+
+  @Test
   void testFontNoNamespace() {
     final String input = "Nothing <font:uniform>Uniform <font:alt>Alt  </font> Uniform";
     final Component expected = text("Nothing ")
