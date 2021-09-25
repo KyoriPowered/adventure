@@ -40,24 +40,24 @@ public class MiniMessageBenchmark {
   @Benchmark
   public Component testNiceMix() {
     final String input = "<yellow><test> random <gradient:red:blue:green><bold>stranger</gradient></bold><click:run_command:test command><underlined><red>click here</click><blue> to <rainbow><b>FEEL</rainbow></underlined> it";
-    return MiniMessage.get().parse(input);
+    return MiniMessage.miniMessage().parse(input);
   }
 
   @Benchmark
   public Component testSimple() {
     final String input = "<yellow><test><bold>stranger";
-    return MiniMessage.get().parse(input, "test", "test2");
+    return MiniMessage.miniMessage().parse(input, "test", "test2");
   }
 
   @Benchmark
   public Component testGradient() {
     final String input = "<gradient:red:blue:green>COLORS ARE COOL";
-    return MiniMessage.get().parse(input);
+    return MiniMessage.miniMessage().parse(input);
   }
 
   @Benchmark
   public Component testRainbow() {
     final String input = "<rainbow>COLORS ARE COOL";
-    return MiniMessage.get().parse(input);
+    return MiniMessage.miniMessage().parse(input);
   }
 }
