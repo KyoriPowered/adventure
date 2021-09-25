@@ -61,7 +61,7 @@ final class TitleSerializer implements TypeSerializer<Title> {
     final Duration fadeOut = value.node(TIMES, FADE_OUT).get(Duration.class, KEEP);
 
     if (!Objects.equals(fadeIn, KEEP) || !Objects.equals(stay, KEEP) || !Objects.equals(fadeOut, KEEP)) {
-      return Title.title(title, subtitle, Title.Times.of(fadeIn, stay, fadeOut));
+      return Title.title(title, subtitle, Title.Times.times(fadeIn, stay, fadeOut));
     } else {
       return Title.title(title, subtitle);
     }
