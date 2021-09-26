@@ -160,6 +160,11 @@ final class MiniMessageImpl implements MiniMessage {
     }
 
     BuilderImpl(final MiniMessageImpl serializer) {
+      this.registry = serializer.parser.registry;
+      this.placeholderResolver = serializer.parser.placeholderResolver;
+      this.strict = serializer.strict;
+      this.debug = serializer.debugOutput;
+      this.parsingErrorMessageConsumer = serializer.parsingErrorMessageConsumer;
     }
 
     @Override
