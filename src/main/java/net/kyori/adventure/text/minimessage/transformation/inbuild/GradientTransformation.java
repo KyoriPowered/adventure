@@ -149,12 +149,12 @@ public final class GradientTransformation extends Transformation implements Modi
   public Component apply(final Component current, final int depth) {
     if (this.size == -1) {
       // we didn't init yet, cause at least part of current was a template, so let's do that now
-      String content = PlainTextComponentSerializer.plainText().serialize(current);
+      final String content = PlainTextComponentSerializer.plainText().serialize(current);
       this.size = content.codePointCount(0, content.length());
       if (this.size == 0 || this.size == -1) {
         throw new ParsingException("Content of gradient seems strange, don't know how to calculate size!!");
       }
-      apply();
+      this.apply();
     }
 
     if ((this.disableApplyingColorDepth != -1 && depth > this.disableApplyingColorDepth) || current.style().color() != null) {
