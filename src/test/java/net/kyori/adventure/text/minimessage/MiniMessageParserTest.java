@@ -272,8 +272,8 @@ public class MiniMessageParserTest extends TestBase {
   @Test
   void testEscapeParse() {
     final String expected = "<red>test</red>";
-    final String escaped = MiniMessage.get().escapeTokens(expected);
-    final Component comp = MiniMessage.get().parse(escaped);
+    final String escaped = MiniMessage.miniMessage().escapeTokens(expected);
+    final Component comp = MiniMessage.miniMessage().parse(escaped);
 
     assertEquals(expected, PlainTextComponentSerializer.plainText().serialize(comp));
   }

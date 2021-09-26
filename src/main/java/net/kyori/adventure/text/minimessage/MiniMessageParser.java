@@ -58,8 +58,8 @@ final class MiniMessageParser {
   // https://regex101.com/r/8VZ7uA/10
   private static final Pattern pattern = Pattern.compile("((?<start><)(?<token>[^<>]+(:(?<inner>['\"]?([^'\"](\\\\['\"])?)+['\"]?))*)(?<end>>))+?");
 
-  private final TransformationRegistry registry;
-  private final Function<String, ComponentLike> placeholderResolver;
+  final TransformationRegistry registry;
+  final Function<String, ComponentLike> placeholderResolver;
 
   MiniMessageParser() {
     this.registry = TransformationRegistry.standard();

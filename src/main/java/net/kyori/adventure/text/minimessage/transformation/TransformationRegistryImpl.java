@@ -78,7 +78,7 @@ final class TransformationRegistryImpl implements TransformationRegistry {
       transformation.load(name, inners.subList(1, inners.size()));
       return transformation;
     } catch (final ParsingException exception) {
-      exception.originalText(context.ogMessage());
+      exception.originalText(context.originalMessage());
       throw exception;
     }
   }

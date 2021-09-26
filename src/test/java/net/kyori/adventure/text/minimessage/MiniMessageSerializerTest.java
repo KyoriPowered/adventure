@@ -232,10 +232,10 @@ public class MiniMessageSerializerTest extends TestBase {
   void testRainbow() {
     final String expected = "<rainbow>test</rainbow> >> reeeeeeeee";
 
-    final Component parsed = MiniMessage.get().parse(expected);
+    final Component parsed = MiniMessage.miniMessage().parse(expected);
 
-    final String serialized = MiniMessage.get().serialize(parsed);
-    final Component reparsed = MiniMessage.get().parse(serialized);
+    final String serialized = MiniMessage.miniMessage().serialize(parsed);
+    final Component reparsed = MiniMessage.miniMessage().parse(serialized);
 
     assertEquals(this.gson().toJson(parsed), this.gson().toJson(reparsed));
   }
@@ -253,7 +253,7 @@ public class MiniMessageSerializerTest extends TestBase {
   void testShowEntityHover() {
     final UUID uuid = UUID.randomUUID();
     final String nameString = "<gold>Custom Name!";
-    final Component name = MiniMessage.get().parse(nameString);
+    final Component name = MiniMessage.miniMessage().parse(nameString);
     final TextComponent.Builder input = text()
       .content("test")
       .hoverEvent(HoverEvent.showEntity(Key.key("minecraft", "zombie"), uuid, name));

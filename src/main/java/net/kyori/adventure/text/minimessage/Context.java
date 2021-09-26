@@ -37,16 +37,16 @@ public class Context {
   private final boolean strict;
   private final Appendable debugOutput;
   private ElementNode root;
-  private final String ogMessage;
+  private final String originalMessage;
   private String replacedMessage;
-  private final MiniMessageImpl miniMessage;
+  private final MiniMessage miniMessage;
   private final @NotNull Template @Nullable [] templates;
 
-  Context(final boolean strict, final Appendable debugOutput, final ElementNode root, final String ogMessage, final String replacedMessage, final MiniMessageImpl miniMessage, final @NotNull Template @Nullable [] templates) {
+  Context(final boolean strict, final Appendable debugOutput, final ElementNode root, final String originalMessage, final String replacedMessage, final MiniMessage miniMessage, final @NotNull Template @Nullable [] templates) {
     this.strict = strict;
     this.debugOutput = debugOutput;
     this.root = root;
-    this.ogMessage = ogMessage;
+    this.originalMessage = originalMessage;
     this.replacedMessage = replacedMessage;
     this.miniMessage = miniMessage;
     this.templates = templates;
@@ -61,7 +61,7 @@ public class Context {
    * @return the debug context
    * @since 4.1.0
    */
-  public static Context of(final boolean strict, final String input, final MiniMessageImpl miniMessage) {
+  public static Context of(final boolean strict, final String input, final MiniMessage miniMessage) {
     return new Context(strict, null, null, input, null, miniMessage, null);
   }
 
@@ -75,7 +75,7 @@ public class Context {
    * @return the debug context
    * @since 4.1.0
    */
-  public static Context of(final boolean strict, final Appendable debugOutput, final String input, final MiniMessageImpl miniMessage) {
+  public static Context of(final boolean strict, final Appendable debugOutput, final String input, final MiniMessage miniMessage) {
     return new Context(strict, debugOutput, null, input, null, miniMessage, null);
   }
 
@@ -163,9 +163,21 @@ public class Context {
    *
    * @return ogMessage
    * @since 4.1.0
+   * @deprecated for removal, use {@link #originalMessage()} instead
    */
+  @Deprecated
   public String ogMessage() {
-    return this.ogMessage;
+    return this.originalMessage();
+  }
+
+  /**
+   * Returns original message.
+   *
+   * @return ogMessage
+   * @since 4.2.0
+   */
+  public String originalMessage() {
+    return this.originalMessage;
   }
 
   /**
@@ -184,7 +196,7 @@ public class Context {
    * @return minimessage
    * @since 4.1.0
    */
-  public MiniMessageImpl miniMessage() {
+  public MiniMessage miniMessage() {
     return this.miniMessage;
   }
 
