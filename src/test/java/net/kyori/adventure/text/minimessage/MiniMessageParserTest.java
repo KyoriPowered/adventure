@@ -1356,4 +1356,11 @@ public class MiniMessageParserTest extends TestBase {
     this.assertParsedEquals(expected4, input, Template.of("dum", text("aaaa")));
     this.assertParsedEquals(expected4, input2, Template.of("dum", text("aaa")));
   }
+
+  @Test
+  void gh147() {
+    final String input = "<rainbow><msg>";
+    final Component expected1 = text().append(text("y", color(0xf3801f)), text("o", color(0x0c80e0))).build();
+    this.assertParsedEquals(expected1, input, Template.of("msg", text("yo")));
+  }
 }

@@ -30,10 +30,12 @@ import java.util.PrimitiveIterator;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
+import net.kyori.adventure.text.minimessage.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.parser.node.ValueNode;
 import net.kyori.adventure.text.minimessage.transformation.Modifying;
@@ -92,6 +94,12 @@ public final class RainbowTransformation extends Transformation implements Modif
     if (curr instanceof ValueNode) {
       final String value = ((ValueNode) curr).value();
       this.size += value.codePointCount(0, value.length());
+    } else if (curr instanceof TagNode) {
+      final TagNode tag = (TagNode) curr;
+      if (tag.transformation() instanceof TemplateTransformation) {
+        // TemplateTransformation.apply() returns the value of the component template
+        ComponentFlattener.textOnly().flatten(tag.transformation().apply(), s -> this.size += s.codePointCount(0, s.length()));
+      }
     }
   }
 
