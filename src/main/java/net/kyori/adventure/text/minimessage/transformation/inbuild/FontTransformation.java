@@ -65,17 +65,15 @@ public final class FontTransformation extends Transformation {
     super.load(name, args);
 
     if (args.size() == 1) {
-      @Subst("minecraft:empty") final String fontKey = args.get(0).value();
+      @Subst("empty") final String fontKey = args.get(0).value();
       this.font = Key.key(fontKey);
+    } else if (args.size() == 2) {
+      @Subst(Key.MINECRAFT_NAMESPACE) final String namespaceKey = args.get(0).value();
+      @Subst("empty") final String fontKey = args.get(1).value();
+      this.font = Key.key(namespaceKey, fontKey);
+    } else {
+      throw new ParsingException("Don't know how to turn " + args + " into a font", this.argTokenArray());
     }
-
-    if (args.size() != 2) {
-      throw new ParsingException("Doesn't know how to turn " + args + " into a click event", this.argTokenArray());
-    }
-
-    @Subst(Key.MINECRAFT_NAMESPACE) final String namespaceKey = args.get(0).value();
-    @Subst("empty") final String fontKey = args.get(1).value();
-    this.font = Key.key(namespaceKey, fontKey);
   }
 
   @Override
