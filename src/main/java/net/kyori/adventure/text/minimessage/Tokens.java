@@ -61,6 +61,7 @@ public final class Tokens {
 
   // minimessage components
   public static final String RAINBOW = "rainbow";
+  public static final String REVERSE = "!";
   public static final String GRADIENT = "gradient";
 
   // minimessage tags

@@ -59,6 +59,7 @@ public final class RainbowTransformation extends Transformation implements Modif
   private float center = 128;
   private float width = 127;
   private double frequency = 1;
+  private boolean reversed = false;
 
   private int phase;
 
@@ -81,10 +82,17 @@ public final class RainbowTransformation extends Transformation implements Modif
     super.load(name, args);
 
     if (args.size() == 1) {
-      try {
-        this.phase = Integer.parseInt(args.get(0).value());
-      } catch (final NumberFormatException ex) {
-        throw new ParsingException("Expected phase, got " + args.get(0), this.argTokenArray());
+      String value = args.get(0).value();
+      if (args.get(0).value().startsWith(Tokens.REVERSE)) {
+        this.reversed = true;
+        value = value.replaceFirst(Tokens.REVERSE, "");
+      }
+      if (value.length() > 0) {
+        try {
+          this.phase = Integer.parseInt(value);
+        } catch (final NumberFormatException ex) {
+          throw new ParsingException("Expected phase, got " + args.get(0), this.argTokenArray());
+        }
       }
     }
   }
@@ -139,6 +147,10 @@ public final class RainbowTransformation extends Transformation implements Modif
 
       final TextComponent.Builder parent = Component.text();
 
+      if (this.colorIndex == 0 && this.reversed) {
+        this.colorIndex = this.size - 1;
+      }
+
       // apply
       final int[] holder = new int[1];
       for (final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
@@ -154,7 +166,7 @@ public final class RainbowTransformation extends Transformation implements Modif
   }
 
   private TextColor color(final float phase) {
-    final int index = this.colorIndex++;
+    final int index = this.reversed ? this.colorIndex-- : this.colorIndex++;
     final int red = (int) (Math.sin(this.frequency * index + 2 + phase) * this.width + this.center);
     final int green = (int) (Math.sin(this.frequency * index + 0 + phase) * this.width + this.center);
     final int blue = (int) (Math.sin(this.frequency * index + 4 + phase) * this.width + this.center);

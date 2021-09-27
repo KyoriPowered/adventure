@@ -600,6 +600,42 @@ public class MiniMessageParserTest extends TestBase {
   }
 
   @Test
+  void testRainbowBackwards() {
+    final String input = "<yellow>Woo: <rainbow:!>||||||||||||||||||||||||</rainbow>!";
+    final Component expected = empty().color(YELLOW)
+            .append(text("Woo: "))
+            .append(empty()
+                    .append(text("|", color(0xfd5f38)))
+                    .append(text("|", color(0xfe4056)))
+                    .append(text("|", color(0xf72676)))
+                    .append(text("|", color(0xe71297)))
+                    .append(text("|", color(0xd005b7)))
+                    .append(text("|", color(0xb401d3)))
+                    .append(text("|", color(0x9505e9)))
+                    .append(text("|", color(0x7412f7)))
+                    .append(text("|", color(0x5326fe)))
+                    .append(text("|", color(0x3640fc)))
+                    .append(text("|", color(0x1e5ff2)))
+                    .append(text("|", color(0x0c80e0)))
+                    .append(text("|", color(0x02a0c7)))
+                    .append(text("|", color(0x01bfa9)))
+                    .append(text("|", color(0x08d989)))
+                    .append(text("|", color(0x18ed68)))
+                    .append(text("|", color(0x2ffa48)))
+                    .append(text("|", color(0x4bff2c)))
+                    .append(text("|", color(0x6afa16)))
+                    .append(text("|", color(0x8bed08)))
+                    .append(text("|", color(0xacd901)))
+                    .append(text("|", color(0xc9bf03)))
+                    .append(text("|", color(0xe1a00d)))
+                    .append(text("|", color(0xf3801f)))
+            )
+            .append(text("!"));
+
+    this.assertParsedEquals(expected, input);
+  }
+
+  @Test
   void testRainbowPhase() {
     final String input = "<yellow>Woo: <rainbow:2>||||||||||||||||||||||||</rainbow>!";
     final Component expected = empty().color(YELLOW)
@@ -631,6 +667,42 @@ public class MiniMessageParserTest extends TestBase {
         .append(text("|", color(0x38fd3e)))
       )
       .append(text("!"));
+
+    this.assertParsedEquals(expected, input);
+  }
+
+  @Test
+  void testRainbowPhaseBackwards() {
+    final String input = "<yellow>Woo: <rainbow:!2>||||||||||||||||||||||||</rainbow>!";
+    final Component expected = empty().color(YELLOW)
+            .append(text("Woo: "))
+            .append(empty()
+                    .append(text("|", color(0x38fd3e)))
+                    .append(text("|", color(0x56fe24)))
+                    .append(text("|", color(0x76f710)))
+                    .append(text("|", color(0x97e704)))
+                    .append(text("|", color(0xb7d001)))
+                    .append(text("|", color(0xd3b406)))
+                    .append(text("|", color(0xe99513)))
+                    .append(text("|", color(0xf77428)))
+                    .append(text("|", color(0xfe5342)))
+                    .append(text("|", color(0xfc3661)))
+                    .append(text("|", color(0xf21e82)))
+                    .append(text("|", color(0xe00ca3)))
+                    .append(text("|", color(0xc702c1)))
+                    .append(text("|", color(0xa901db)))
+                    .append(text("|", color(0x8908ef)))
+                    .append(text("|", color(0x6818fb)))
+                    .append(text("|", color(0x482ffe)))
+                    .append(text("|", color(0x2c4bf9)))
+                    .append(text("|", color(0x166aec)))
+                    .append(text("|", color(0x088bd7)))
+                    .append(text("|", color(0x01acbd)))
+                    .append(text("|", color(0x03c99e)))
+                    .append(text("|", color(0x0de17d)))
+                    .append(text("|", color(0x1ff35c)))
+            )
+            .append(text("!"));
 
     this.assertParsedEquals(expected, input);
   }
@@ -668,6 +740,43 @@ public class MiniMessageParserTest extends TestBase {
           .append(text("|", color(0xfd5f38)))
         ).append(text("!"))
       );
+
+    this.assertParsedEquals(expected, input);
+  }
+
+  @Test
+  void testRainbowBackwardsWithInsertion() {
+    final String input = "<yellow>Woo: <insert:test><rainbow:!>||||||||||||||||||||||||</rainbow>!";
+    final Component expected = empty().color(YELLOW)
+            .append(text("Woo: "))
+            .append(empty().insertion("test")
+                    .append(empty()
+                            .append(text("|", color(0xfd5f38)))
+                            .append(text("|", color(0xfe4056)))
+                            .append(text("|", color(0xf72676)))
+                            .append(text("|", color(0xe71297)))
+                            .append(text("|", color(0xd005b7)))
+                            .append(text("|", color(0xb401d3)))
+                            .append(text("|", color(0x9505e9)))
+                            .append(text("|", color(0x7412f7)))
+                            .append(text("|", color(0x5326fe)))
+                            .append(text("|", color(0x3640fc)))
+                            .append(text("|", color(0x1e5ff2)))
+                            .append(text("|", color(0x0c80e0)))
+                            .append(text("|", color(0x02a0c7)))
+                            .append(text("|", color(0x01bfa9)))
+                            .append(text("|", color(0x08d989)))
+                            .append(text("|", color(0x18ed68)))
+                            .append(text("|", color(0x2ffa48)))
+                            .append(text("|", color(0x4bff2c)))
+                            .append(text("|", color(0x6afa16)))
+                            .append(text("|", color(0x8bed08)))
+                            .append(text("|", color(0xacd901)))
+                            .append(text("|", color(0xc9bf03)))
+                            .append(text("|", color(0xe1a00d)))
+                            .append(text("|", color(0xf3801f)))
+                    ).append(text("!"))
+            );
 
     this.assertParsedEquals(expected, input);
   }
@@ -1097,6 +1206,18 @@ public class MiniMessageParserTest extends TestBase {
         .append(text("G").color(color(0xf3801f)))
         .append(text("H").color(color(0x0c80e0)))
       );
+
+    this.assertParsedEquals(expected, input);
+  }
+
+  @Test
+  void testRainbowBackwardsWithInnerClick() {
+    final String input = "Rainbow: <rainbow:!0><click:open_url:'https://github.com'>GH</click></rainbow>";
+    final Component expected = text("Rainbow: ")
+            .append(empty().clickEvent(openUrl("https://github.com"))
+                    .append(text("G").color(color(0x0c80e0)))
+                    .append(text("H").color(color(0xf3801f)))
+            );
 
     this.assertParsedEquals(expected, input);
   }
