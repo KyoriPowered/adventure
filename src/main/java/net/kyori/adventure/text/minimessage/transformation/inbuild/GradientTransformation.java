@@ -33,11 +33,13 @@ import java.util.PrimitiveIterator;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
+import net.kyori.adventure.text.minimessage.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.parser.node.ValueNode;
 import net.kyori.adventure.text.minimessage.transformation.Modifying;
@@ -121,7 +123,7 @@ public final class GradientTransformation extends Transformation implements Modi
         Collections.reverse(Arrays.asList(this.colors));
       }
     } else {
-      this.colors = new TextColor[]{TextColor.fromHexString("#ffffff"), TextColor.fromHexString("#000000")};
+      this.colors = new TextColor[]{TextColor.color(0xffffff), TextColor.color(0x000000)};
     }
   }
 
@@ -130,6 +132,12 @@ public final class GradientTransformation extends Transformation implements Modi
     if (curr instanceof ValueNode) {
       final String value = ((ValueNode) curr).value();
       this.size += value.codePointCount(0, value.length());
+    } else if (curr instanceof TagNode) {
+      final TagNode tag = (TagNode) curr;
+      if (tag.transformation() instanceof TemplateTransformation) {
+        // TemplateTransformation.apply() returns the value of the component template
+        ComponentFlattener.textOnly().flatten(tag.transformation().apply(), s -> this.size += s.codePointCount(0, s.length()));
+      }
     }
   }
 
@@ -150,7 +158,7 @@ public final class GradientTransformation extends Transformation implements Modi
       if (this.disableApplyingColorDepth == -1) {
         this.disableApplyingColorDepth = depth;
       }
-      // This component has it's own color applied, which overrides ours
+      // This component has its own color applied, which overrides ours
       // We still want to keep track of where we are though if this is text
       if (current instanceof TextComponent) {
         final String content = ((TextComponent) current).content();
@@ -198,18 +206,10 @@ public final class GradientTransformation extends Transformation implements Modi
 
     if (this.negativePhase && this.colors.length % 2 != 0) {
       // flip the gradient segment for to allow for looping phase -1 through 1
-      return this.interpolate(this.colors[this.colorIndex + 1], this.colors[this.colorIndex], factor);
+      return TextColor.lerp(factor, this.colors[this.colorIndex + 1], this.colors[this.colorIndex]);
     } else {
-      return this.interpolate(this.colors[this.colorIndex], this.colors[this.colorIndex + 1], factor);
+      return TextColor.lerp(factor, this.colors[this.colorIndex], this.colors[this.colorIndex + 1]);
     }
-  }
-
-  private TextColor interpolate(final TextColor color1, final TextColor color2, final float factor) {
-    return TextColor.color(
-      Math.round(color1.red() + factor * (color2.red() - color1.red())),
-      Math.round(color1.green() + factor * (color2.green() - color1.green())),
-      Math.round(color1.blue() + factor * (color2.blue() - color1.blue()))
-    );
   }
 
   @Override
