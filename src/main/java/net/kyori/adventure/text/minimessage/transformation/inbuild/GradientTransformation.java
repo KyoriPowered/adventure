@@ -144,7 +144,10 @@ public final class GradientTransformation extends Transformation implements Modi
   @Override
   public Component apply() {
     // init
-    final int sectorLength = this.size / (this.colors.length - 1);
+    int sectorLength = this.size / (this.colors.length - 1);
+    if (sectorLength < 1) {
+      sectorLength = 1;
+    }
     this.factorStep = 1.0f / (sectorLength + this.index);
     this.phase = this.phase * sectorLength;
     this.index = 0;

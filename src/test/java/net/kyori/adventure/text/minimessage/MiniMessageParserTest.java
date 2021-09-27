@@ -202,7 +202,7 @@ public class MiniMessageParserTest extends TestBase {
 
     final Component expectedCNamed = text("Mildly Aggressive Test").color(color(BLUE));
     final String inputCNamed = "<c:blue>Mildly Aggressive Test</c>";
-    
+
     this.assertParsedEquals(expectedColorHex, inputColorHex);
     this.assertParsedEquals(expectedColourHex, inputColourHex);
     this.assertParsedEquals(expectedCHex, inputCHex);
@@ -1388,5 +1388,17 @@ public class MiniMessageParserTest extends TestBase {
     final String input = "<rainbow><msg>";
     final Component expected1 = text().append(text("y", color(0xf3801f)), text("o", color(0x0c80e0))).build();
     this.assertParsedEquals(expected1, input, Template.of("msg", text("yo")));
+  }
+
+  @Test
+  void testSingleCharGradient() {
+    final String input1 = "<gradient:red:blue:green>A";
+    final String input2 = "<gradient:red:blue:green:red>AB";
+
+    final Component expected1 = text("A", RED);
+    final Component expected2 = text().append(text("A", RED), text("B", BLUE)).build();
+
+    this.assertParsedEquals(expected1, input1);
+    this.assertParsedEquals(expected2, input2);
   }
 }
