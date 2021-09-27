@@ -1371,7 +1371,7 @@ public class MiniMessageParserTest extends TestBase {
   void gh137() {
     final String input = "<gradient:gold:yellow:red><dum>";
     final String input2 = "<gradient:gold:yellow:red><dum>a";
-    final Component expected1 = text("a", BLACK); // ????
+    final Component expected1 = text("a", GOLD);
     final Component expected2 = text().append(text("a", GOLD), text("a", YELLOW)).build();
     final Component expected3 = text().append(text("a", GOLD), text("a", YELLOW), text("a", YELLOW)).build();
     final Component expected4 = text().append(text("a", GOLD), text("a", TextColor.color(0xffd52b)), text("a", YELLOW), text("a", YELLOW)).build();
