@@ -274,11 +274,11 @@ final class MiniMessageSerializer {
   }
 
   private static @NotNull String startTag(final @NotNull String content) {
-    return TAG_START + content + TAG_END;
+    return "" + TAG_START + content + TAG_END;
   }
 
   private static @NotNull String endTag(final @NotNull String content) {
-    return TAG_START + CLOSE_TAG + content + TAG_END;
+    return ("" + TAG_START) + CLOSE_TAG + content + TAG_END;
   }
 
   private static void handleDifferentComponent(final @NotNull Component component, final @NotNull StringBuilder sb) {

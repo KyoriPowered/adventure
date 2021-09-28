@@ -104,7 +104,7 @@ public final class TokenParser {
           switch (state) {
             case NORMAL:
               // allow escaping open tokens
-              escaped = nextCodePoint == '<';
+              escaped = nextCodePoint == Tokens.TAG_START;
               break;
             case STRING:
               // allow escaping closing string chars
@@ -127,7 +127,7 @@ public final class TokenParser {
 
       switch (state) {
         case NORMAL:
-          if (codePoint == '<') {
+          if (codePoint == Tokens.TAG_START) {
             // Possibly a tag
             marker = i;
             state = FirstPassState.TAG;
@@ -135,7 +135,7 @@ public final class TokenParser {
           break;
         case TAG:
           switch (codePoint) {
-            case '>':
+            case Tokens.TAG_END:
               if (i == marker + 1) {
                 // This is empty, <>, so it's not a tag
                 state = FirstPassState.NORMAL;
@@ -151,7 +151,7 @@ public final class TokenParser {
 
               // closing tags start with </
               TokenType thisType = TokenType.OPEN_TAG;
-              if (boundsCheck(message, marker, 1) && message.charAt(marker + 1) == '/') {
+              if (boundsCheck(message, marker, 1) && message.charAt(marker + 1) == Tokens.CLOSE_TAG) {
                 thisType = TokenType.CLOSE_TAG;
               }
               elements.add(new Token(marker, currentTokenEnd, thisType));
@@ -163,7 +163,7 @@ public final class TokenParser {
                 state = FirstPassState.NORMAL;
               }
               break;
-            case '<':
+            case Tokens.TAG_START:
               // This isn't a tag, but we can re-start looking here
               marker = i;
               break;
@@ -175,8 +175,8 @@ public final class TokenParser {
           }
           break;
         case PRE:
-          if (codePoint == '<') {
-            if (message.regionMatches(i, "</pre>", 0, 6)) {
+          if (codePoint == Tokens.TAG_START) {
+            if (message.regionMatches(i, "</" + Tokens.PRE + ">", 0, 6)) {
               // Anything inside the <pre>...</pre> is text
               elements.add(new Token(currentTokenEnd, i, TokenType.TEXT));
               // the </pre> is still a closing tag though
@@ -251,7 +251,7 @@ public final class TokenParser {
             switch (state) {
               case NORMAL:
                 // allow escaping open tokens
-                escaped = nextCodePoint == '<';
+                escaped = nextCodePoint == Tokens.TAG_START;
                 break;
               case STRING:
                 // allow escaping closing string chars
@@ -272,7 +272,7 @@ public final class TokenParser {
         switch (state) {
           case NORMAL:
             // Values are split by : unless it's in a URL
-            if (codePoint == ':') {
+            if (codePoint == Tokens.SEPARATOR) {
               if (boundsCheck(message, i, 2) && message.charAt(i + 1) == '/' && message.charAt(i + 2) == '/') {
                 break;
               }

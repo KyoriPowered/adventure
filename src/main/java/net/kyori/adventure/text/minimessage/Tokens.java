@@ -65,10 +65,10 @@ public final class Tokens {
   public static final String GRADIENT = "gradient";
 
   // minimessage tags
-  public static final String TAG_START = "<";
-  public static final String TAG_END = ">";
-  public static final String CLOSE_TAG = "/";
-  public static final String SEPARATOR = ":";
+  public static final char TAG_START = '<';
+  public static final char TAG_END = '>';
+  public static final char CLOSE_TAG = '/';
+  public static final char SEPARATOR = ':';
 
   private Tokens() {
   }
