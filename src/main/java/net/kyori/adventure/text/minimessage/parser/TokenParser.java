@@ -32,6 +32,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
 import net.kyori.adventure.text.minimessage.Template;
+import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.parser.node.RootNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagNode;
@@ -156,7 +157,7 @@ public final class TokenParser {
               elements.add(new Token(marker, currentTokenEnd, thisType));
 
               // <pre> tags put us into a state where we don't parse anything
-              if (message.regionMatches(marker, "<pre>", 0, 5)) {
+              if (message.regionMatches(marker, "<" + Tokens.PRE + ">", 0, 5)) {
                 state = FirstPassState.PRE;
               } else {
                 state = FirstPassState.NORMAL;
@@ -331,7 +332,7 @@ public final class TokenParser {
 
         case OPEN_TAG:
           final TagNode tagNode = new TagNode(node, token, message, templates);
-          if (tagNode.name().equals("reset") || tagNode.name().equals("r")) {
+          if (isReset(tagNode.name())) {
             // <reset> tags get special treatment and don't appear in the tree
             // instead, they close all currently open tags
 
@@ -339,7 +340,7 @@ public final class TokenParser {
               throw new ParsingException("<reset> tags are not allowed when strict mode is enabled", message, token);
             }
             node = root;
-          } else if (tagNode.name().equals("pre")) {
+          } else if (tagNode.name().equals(Tokens.PRE)) {
             // <pre> tags also get special treatment and don't appear in the tree
             // anything inside <pre> is raw text, so just skip
 
@@ -384,7 +385,7 @@ public final class TokenParser {
           }
 
           final String closeTagName = closeValues.get(0);
-          if (closeTagName.equals("reset") || closeTagName.equals("r") || closeTagName.equals("pre")) {
+          if (isReset(closeTagName) || closeTagName.equals(Tokens.PRE)) {
             // These are synthetic nodes, closing them means nothing in the context of building a tree
             continue;
           }
@@ -464,6 +465,10 @@ public final class TokenParser {
     }
 
     return root;
+  }
+
+  private static boolean isReset(final String input) {
+    return input.equals(Tokens.RESET) || input.equals(Tokens.RESET_2);
   }
 
   /**
