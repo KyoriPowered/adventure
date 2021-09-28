@@ -64,6 +64,7 @@ public final class DecorationTransformation extends Transformation {
   }
 
   private final TextDecoration decoration;
+  private final boolean flag;
 
   /**
    * Create a new decoration.
@@ -80,7 +81,12 @@ public final class DecorationTransformation extends Transformation {
       throw new ParsingException("Don't know how to turn '" + name + "' into a decoration", args);
     }
 
-    return new DecorationTransformation(decoration);
+    boolean flag = true;
+    if (args.size() == 1 && "false".equals(args.get(0).value())) {
+      flag = false;
+    }
+
+    return new DecorationTransformation(decoration, flag);
   }
 
   private static TextDecoration parseDecoration(final String name) {
@@ -88,13 +94,14 @@ public final class DecorationTransformation extends Transformation {
     return alias != null ? alias : TextDecoration.NAMES.value(name);
   }
 
-  private DecorationTransformation(final TextDecoration decoration) {
+  private DecorationTransformation(final TextDecoration decoration, boolean flag) {
     this.decoration = decoration;
+    this.flag = false;
   }
 
   @Override
   public Component apply() {
-    return Component.empty().decorate(this.decoration);
+    return Component.empty().decoration(this.decoration, this.flag);
   }
 
   @Override

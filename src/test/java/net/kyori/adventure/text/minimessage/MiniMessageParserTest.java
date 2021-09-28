@@ -54,6 +54,7 @@ import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
 import static net.kyori.adventure.text.format.Style.style;
 import static net.kyori.adventure.text.format.TextColor.color;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
+import static net.kyori.adventure.text.format.TextDecoration.ITALIC;
 import static net.kyori.adventure.text.format.TextDecoration.UNDERLINED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -1629,5 +1630,18 @@ public class MiniMessageParserTest extends TestBase {
         .hoverEvent(text("Word: Adventure"));
 
     assertParsedEquals(expected, input, "word", "Adventure");
+  }
+
+  @Test
+  void testDisabledDecoration() {
+    final String input = "<italic:false>Test<bold:false>Test2<bold>Test3";
+    final Component expected = text().decoration(ITALIC, false)
+            .append(text("Test"))
+            .append(text().decoration(BOLD, false)
+                    .append(text("Test2"))
+                    .append(text("Test3").decorate(BOLD))
+            ).build();
+
+    this.assertParsedEquals(expected, input);
   }
 }
