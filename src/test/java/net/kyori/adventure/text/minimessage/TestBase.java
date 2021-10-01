@@ -23,10 +23,10 @@
  */
 package net.kyori.adventure.text.minimessage;
 
-import java.util.stream.Collectors;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.template.TemplateResolver;
-import net.kyori.examination.string.MultiLineStringExaminer;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,18 +44,20 @@ public class TestBase {
   }
 
   void assertParsedEquals(final MiniMessage miniMessage, final Component expected, final String input) {
-    final String expectedSerialized = this.prettyPrint(expected);
-    final String actual = this.prettyPrint(miniMessage.parse(input));
+    final Gson gson = this.gson();
+    final String expectedSerialized = gson.toJson(expected.compact());
+    final String actual = gson.toJson(miniMessage.parse(input).compact());
     assertEquals(expectedSerialized, actual);
   }
 
   void assertParsedEquals(final MiniMessage miniMessage, final Component expected, final String input, final @NotNull Object... args) {
-    final String expectedSerialized = this.prettyPrint(expected);
-    final String actual = this.prettyPrint(miniMessage.deserialize(input, TemplateResolver.resolving(args)));
+    final Gson gson = this.gson();
+    final String expectedSerialized = gson.toJson(expected.compact());
+    final String actual = gson.toJson(miniMessage.parse(input, args).compact());
     assertEquals(expectedSerialized, actual);
   }
 
-  final String prettyPrint(final Component component) {
-    return component.examine(MultiLineStringExaminer.simpleEscaping()).collect(Collectors.joining("\n"));
+  Gson gson() {
+    return GsonComponentSerializer.gson().populator().apply(new GsonBuilder()).setPrettyPrinting().create();
   }
 }
