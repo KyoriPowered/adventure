@@ -53,7 +53,7 @@ public class Context {
     this.replacedMessage = replacedMessage;
     this.miniMessage = miniMessage;
     this.templateResolver = templateResolver;
-    this.postProcessingFunction = postProcessingFunction;
+    this.postProcessingFunction = postProcessingFunction == null ? Function.identity() : postProcessingFunction;
   }
 
   /**

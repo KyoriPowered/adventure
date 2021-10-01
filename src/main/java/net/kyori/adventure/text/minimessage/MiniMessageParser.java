@@ -187,12 +187,7 @@ final class MiniMessageParser {
     }
 
     context.root(root);
-    final Component comp = this.treeToComponent(root);
-    if (context.postProcessingFunction() != null) {
-      return context.postProcessingFunction().apply(comp);
-    } else {
-      return comp;
-    }
+    return context.postProcessingFunction().apply(this.treeToComponent(root));
   }
 
   @NotNull Component treeToComponent(final @NotNull ElementNode node) {
