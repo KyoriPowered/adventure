@@ -39,6 +39,8 @@ import org.jetbrains.annotations.NotNull;
  */
 @Deprecated
 public final class PreTransformation extends Transformation {
+  private static final PreTransformation INSTANCE = new PreTransformation();
+
   /**
    * Create a new pre transformation from a tag.
    *
@@ -48,11 +50,10 @@ public final class PreTransformation extends Transformation {
    * @since 4.2.0
    */
   public static PreTransformation create(final String name, final List<TagPart> args) {
-    return new PreTransformation(name, args);
+    return INSTANCE;
   }
 
-  private PreTransformation(final String name, final List<TagPart> args) {
-    super(name, args);
+  private PreTransformation() {
   }
 
   @Override

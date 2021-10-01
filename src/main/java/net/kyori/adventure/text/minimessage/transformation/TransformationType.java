@@ -126,6 +126,7 @@ public final class TransformationType<T extends Transformation> {
    * @param canParse the predicate used to check if a tag can be parsed by this type
    * @param parser the parser that should be used to parse this type
    * @since 4.1.0
+   * @deprecated for removal since 4.2.0, use {@link #transformationType(Predicate, TransformationFactory)} instead
    */
   @Deprecated
   public TransformationType(final Predicate<String> canParse, final TransformationParser<T> parser) {

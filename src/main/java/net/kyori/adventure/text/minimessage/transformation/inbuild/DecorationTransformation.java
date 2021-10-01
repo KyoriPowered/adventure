@@ -79,13 +79,12 @@ public final class DecorationTransformation extends Transformation {
       throw new ParsingException("Don't know how to turn '" + name + "' into a decoration", args);
     }
 
-    return new DecorationTransformation(name, args, decoration);
+    return new DecorationTransformation(decoration);
   }
 
   private final TextDecoration decoration;
 
-  private DecorationTransformation(final String name, final List<TagPart> args, final TextDecoration decoration) {
-    super(name, args);
+  private DecorationTransformation(final TextDecoration decoration) {
     this.decoration = decoration;
   }
 

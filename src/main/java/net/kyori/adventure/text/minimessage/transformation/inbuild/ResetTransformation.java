@@ -39,6 +39,8 @@ import org.jetbrains.annotations.NotNull;
  */
 @Deprecated
 public final class ResetTransformation extends Transformation {
+  private static final ResetTransformation INSTANCE = new ResetTransformation();
+
   /**
    * Create a new reset transformation from a tag.
    *
@@ -48,11 +50,10 @@ public final class ResetTransformation extends Transformation {
    * @since 4.2.0
    */
   public static ResetTransformation create(final String name, final List<TagPart> args) {
-    return new ResetTransformation(name, args);
+    return INSTANCE;
   }
 
-  private ResetTransformation(final String name, final List<TagPart> args) {
-    super(name, args);
+  private ResetTransformation() {
   }
 
   @Override

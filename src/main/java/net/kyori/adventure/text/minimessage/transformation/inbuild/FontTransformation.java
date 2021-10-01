@@ -63,13 +63,12 @@ public final class FontTransformation extends Transformation {
       throw new ParsingException("Don't know how to turn " + args + " into a font", args);
     }
 
-    return new FontTransformation(name, args, font);
+    return new FontTransformation(font);
   }
 
   private final Key font;
 
-  private FontTransformation(final String name, final List<TagPart> args, final Key font) {
-    super(name, args);
+  private FontTransformation(final Key font) {
     this.font = font;
   }
 

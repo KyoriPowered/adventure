@@ -78,7 +78,7 @@ public final class HoverTransformation extends Transformation {
       throw new ParsingException("Don't know how to turn '" + args + "' into a hover event", args);
     }
 
-    return new HoverTransformation(name, args, action, value);
+    return new HoverTransformation(action, value);
   }
 
   private static HoverEvent.@NotNull ShowItem parseShowItem(final @NotNull List<TagPart> args) {
@@ -119,8 +119,7 @@ public final class HoverTransformation extends Transformation {
     }
   }
 
-  private HoverTransformation(final String name, final List<TagPart> args, final HoverEvent.Action<Object> action, final Object value) {
-    super(name, args);
+  private HoverTransformation(final HoverEvent.Action<Object> action, final Object value) {
     this.action = action;
     this.value = value;
   }

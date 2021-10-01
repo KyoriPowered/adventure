@@ -105,13 +105,12 @@ public final class ColorTransformation extends Transformation {
       throw new ParsingException("Don't know how to turn '" + name + "' into a color", args);
     }
 
-    return new ColorTransformation(name, args, color);
+    return new ColorTransformation(color);
   }
 
   private final TextColor color;
 
-  private ColorTransformation(final String name, final List<TagPart> args, final TextColor color) {
-    super(name, args);
+  private ColorTransformation(final TextColor color) {
     this.color = color;
   }
 

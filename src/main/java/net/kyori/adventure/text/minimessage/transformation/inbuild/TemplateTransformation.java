@@ -23,12 +23,10 @@
  */
 package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Template;
-import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Inserting;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationFactory;
@@ -44,8 +42,7 @@ public final class TemplateTransformation extends Transformation implements Inse
 
   private final Template.@NotNull ComponentTemplate template;
 
-  private TemplateTransformation(final String name, final List<TagPart> args, final Template.@NotNull ComponentTemplate template) {
-    super(name, args);
+  private TemplateTransformation(final Template.@NotNull ComponentTemplate template) {
     this.template = template;
   }
 
@@ -56,7 +53,8 @@ public final class TemplateTransformation extends Transformation implements Inse
    * @since 4.1.0
    */
   public static @NotNull TransformationFactory<TemplateTransformation> factory(final Template.@NotNull ComponentTemplate template) {
-    return (ctx, name, args) -> new TemplateTransformation(name, args, template);
+    final TemplateTransformation instance = new TemplateTransformation(template);
+    return (ctx, name, args) -> instance;
   }
 
   @Override

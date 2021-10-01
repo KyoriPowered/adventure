@@ -109,11 +109,10 @@ public final class GradientTransformation extends Transformation implements Modi
       textColors = Collections.emptyList();
     }
 
-    return new GradientTransformation(name, args, phase, textColors);
+    return new GradientTransformation(phase, textColors);
   }
 
-  private GradientTransformation(final String name, final List<TagPart> args, final float phase, final List<TextColor> colors) {
-    super(name, args);
+  private GradientTransformation(final float phase, final List<TextColor> colors) {
     if (phase < 0) {
       this.negativePhase = true;
       this.phase = 1 + phase;

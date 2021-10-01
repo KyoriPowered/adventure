@@ -54,11 +54,10 @@ public final class InsertionTransformation extends Transformation {
       throw new ParsingException("Doesn't know how to turn token with name '" + name + "' and arguments " + args + " into a insertion component", args);
     }
 
-    return new InsertionTransformation(name, args, args.get(0).value());
+    return new InsertionTransformation(args.get(0).value());
   }
 
-  private InsertionTransformation(final String name, final List<TagPart> args, final String insertion) {
-    super(name, args);
+  private InsertionTransformation(final String insertion) {
     this.insertion = insertion;
   }
 

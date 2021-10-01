@@ -63,11 +63,10 @@ public final class ClickTransformation extends Transformation {
       throw new ParsingException("Unknown click event action '" + args.get(0).value() + "'", args);
     }
 
-    return new ClickTransformation(name, args, action, value);
+    return new ClickTransformation(action, value);
   }
 
-  private ClickTransformation(final String name, final List<TagPart> args, final ClickEvent.Action action, final String value) {
-    super(name, args);
+  private ClickTransformation(final ClickEvent.Action action, final String value) {
     this.action = action;
     this.value = value;
   }

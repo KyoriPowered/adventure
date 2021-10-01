@@ -66,19 +66,13 @@ public final class TranslatableTransformation extends Transformation implements 
       with = Collections.emptyList();
     }
 
-    return new TranslatableTransformation(
-      name,
-      args,
-      args.get(0).value(),
-      with
-    );
+    return new TranslatableTransformation(args.get(0).value(), with);
   }
 
   private final String key;
   private final List<Component> inners;
 
-  private TranslatableTransformation(final String name, final List<TagPart> args, final String key, final List<Component> with) {
-    super(name, args);
+  private TranslatableTransformation(final String key, final List<Component> with) {
     this.key = key;
     this.inners = with;
   }

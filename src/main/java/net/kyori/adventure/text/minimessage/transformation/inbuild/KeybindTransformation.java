@@ -52,13 +52,12 @@ public final class KeybindTransformation extends Transformation implements Inser
     if (args.size() != 1) {
       throw new ParsingException("Doesn't know how to turn token with name '" + name + "' and arguments " + args + " into a keybind component", args);
     }
-    return new KeybindTransformation(name, args, args.get(0).value());
+    return new KeybindTransformation(args.get(0).value());
   }
 
   private final String keybind;
 
-  private KeybindTransformation(final String name, final List<TagPart> args, final String keybind) {
-    super(name, args);
+  private KeybindTransformation(final String keybind) {
     this.keybind = keybind;
   }
 

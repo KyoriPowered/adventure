@@ -89,11 +89,10 @@ public final class RainbowTransformation extends Transformation implements Modif
       }
     }
 
-    return new RainbowTransformation(name, args, reversed, phase);
+    return new RainbowTransformation(reversed, phase);
   }
 
-  private RainbowTransformation(final String name, final List<TagPart> args, final boolean reversed, final int phase) {
-    super(name, args);
+  private RainbowTransformation(final boolean reversed, final int phase) {
     this.reversed = reversed;
     this.phase = phase;
   }
