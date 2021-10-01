@@ -33,9 +33,9 @@ import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
-import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A transformation that applies any {@link TextDecoration}.
@@ -54,20 +54,29 @@ public final class DecorationTransformation extends Transformation {
     return parseDecoration(name) != null;
   }
 
-  private TextDecoration decoration;
+  /**
+   * Create a new decoration.
+   *
+   * @param name the tag name
+   * @param args the tag arguments
+   * @return a new transformation
+   * @since 4.2.0
+   */
+  public static DecorationTransformation create(final String name, final List<TagPart> args) {
+    final @Nullable TextDecoration decoration = parseDecoration(name);
 
-  private DecorationTransformation() {
+    if (decoration == null) {
+      throw new ParsingException("Don't know how to turn '" + name + "' into a decoration", args);
+    }
+
+    return new DecorationTransformation(name, args, decoration);
   }
 
-  @Override
-  public void load(final String name, final List<TagPart> args) {
-    super.load(name, args);
+  private final TextDecoration decoration;
 
-    this.decoration = parseDecoration(name);
-
-    if (this.decoration == null) {
-      throw new ParsingException("Don't know how to turn '" + name + "' into a decoration", this.argTokenArray());
-    }
+  private DecorationTransformation(final String name, final List<TagPart> args, final TextDecoration decoration) {
+    super(name, args);
+    this.decoration = decoration;
   }
 
   private static TextDecoration parseDecoration(String name) {
@@ -116,17 +125,5 @@ public final class DecorationTransformation extends Transformation {
   @Override
   public int hashCode() {
     return Objects.hash(this.decoration);
-  }
-
-  /**
-   * Factory for {@link DecorationTransformation} instances.
-   *
-   * @since 4.1.0
-   */
-  public static class Parser implements TransformationParser<DecorationTransformation> {
-    @Override
-    public DecorationTransformation parse() {
-      return new DecorationTransformation();
-    }
   }
 }

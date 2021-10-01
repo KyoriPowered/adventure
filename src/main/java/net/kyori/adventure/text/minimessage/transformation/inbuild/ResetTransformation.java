@@ -23,11 +23,12 @@
  */
 package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
+import java.util.List;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Tokens;
+import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
-import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,8 +40,6 @@ import org.jetbrains.annotations.NotNull;
  */
 @Deprecated
 public final class ResetTransformation extends Transformation {
-  private static final ResetTransformation INSTANCE = new ResetTransformation();
-
   /**
    * Get if this transformation can handle the provided tag name.
    *
@@ -52,7 +51,20 @@ public final class ResetTransformation extends Transformation {
     return name.equalsIgnoreCase(Tokens.RESET) || name.equalsIgnoreCase(Tokens.RESET_2);
   }
 
-  private ResetTransformation() {
+  /**
+   * Create a new reset transformation from a tag.
+   *
+   * @param name the tag name
+   * @param args the tag arguments
+   * @return a new transformation
+   * @since 4.2.0
+   */
+  public static ResetTransformation create(final String name, final List<TagPart> args) {
+    return new ResetTransformation(name, args);
+  }
+
+  private ResetTransformation(final String name, final List<TagPart> args) {
+    super(name, args);
   }
 
   @Override
@@ -73,17 +85,5 @@ public final class ResetTransformation extends Transformation {
   @Override
   public int hashCode() {
     return 0;
-  }
-
-  /**
-   * Factory for {@link ResetTransformation} instances.
-   *
-   * @since 4.1.0
-   */
-  public static final class Parser implements TransformationParser<ResetTransformation> {
-    @Override
-    public ResetTransformation parse() {
-      return ResetTransformation.INSTANCE;
-    }
   }
 }

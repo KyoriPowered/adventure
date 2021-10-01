@@ -33,7 +33,6 @@ import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
-import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.NotNull;
@@ -55,25 +54,35 @@ public final class FontTransformation extends Transformation {
     return name.equalsIgnoreCase(Tokens.FONT);
   }
 
-  private Key font;
-
-  private FontTransformation() {
-  }
-
-  @Override
-  public void load(final String name, final List<TagPart> args) {
-    super.load(name, args);
-
+  /**
+   * Create a new font transformation from a tag.
+   *
+   * @param name the tag name
+   * @param args the tag arguments
+   * @return a new transformation
+   * @since 4.2.0
+   */
+  public static FontTransformation create(final String name, final List<TagPart> args) {
+    final Key font;
     if (args.size() == 1) {
       @Subst("empty") final String fontKey = args.get(0).value();
-      this.font = Key.key(fontKey);
+      font = Key.key(fontKey);
     } else if (args.size() == 2) {
       @Subst(Key.MINECRAFT_NAMESPACE) final String namespaceKey = args.get(0).value();
       @Subst("empty") final String fontKey = args.get(1).value();
-      this.font = Key.key(namespaceKey, fontKey);
+      font = Key.key(namespaceKey, fontKey);
     } else {
-      throw new ParsingException("Don't know how to turn " + args + " into a font", this.argTokenArray());
+      throw new ParsingException("Don't know how to turn " + args + " into a font", args);
     }
+
+    return new FontTransformation(name, args, font);
+  }
+
+  private final Key font;
+
+  private FontTransformation(final String name, final List<TagPart> args, final Key font) {
+    super(name, args);
+    this.font = font;
   }
 
   @Override
@@ -97,17 +106,5 @@ public final class FontTransformation extends Transformation {
   @Override
   public int hashCode() {
     return Objects.hash(this.font);
-  }
-
-  /**
-   * Factory for {@link FontTransformation} instances.
-   *
-   * @since 4.1.0
-   */
-  public static class Parser implements TransformationParser<FontTransformation> {
-    @Override
-    public FontTransformation parse() {
-      return new FontTransformation();
-    }
   }
 }

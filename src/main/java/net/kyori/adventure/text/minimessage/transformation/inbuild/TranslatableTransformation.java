@@ -24,17 +24,17 @@
 package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Inserting;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
-import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,9 +43,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 4.1.0
  */
-public class TranslatableTransformation extends Transformation implements Inserting {
-  private static final Pattern DUM_SPLIT_PATTERN = Pattern.compile("['\"]:['\"]");
-
+public final class TranslatableTransformation extends Transformation implements Inserting {
   /**
    * Get if this transformation can handle the provided tag name.
    *
@@ -59,23 +57,44 @@ public class TranslatableTransformation extends Transformation implements Insert
       || name.equalsIgnoreCase(Tokens.TRANSLATABLE_3);
   }
 
-  private String key;
-  private final List<Component> inners = new ArrayList<>();
-
-  @Override
-  public void load(final String name, final List<TagPart> args) {
-    super.load(name, args);
-
+  /**
+   * Create a new translatable transformation from a tag.
+   *
+   * @param name the tag name
+   * @param args the tag arguments
+   * @return a new transformation
+   * @since 4.2.0
+   */
+  public static TranslatableTransformation create(final Context ctx, final String name, final List<TagPart> args) {
     if (args.isEmpty()) {
-      throw new ParsingException("Doesn't know how to turn " + args + " into a translatable component", this.argTokenArray());
+      throw new ParsingException("Doesn't know how to turn " + args + " into a translatable component", args);
     }
 
-    this.key = args.get(0).value();
+    final List<Component> with;
     if (args.size() > 1) {
+      with = new ArrayList<>();
       for (final TagPart in : args.subList(1, args.size())) {
-        this.inners.add(this.context.parse(in.value()));
+        with.add(ctx.parse(in.value()));
       }
+    } else {
+      with = Collections.emptyList();
     }
+
+    return new TranslatableTransformation(
+      name,
+      args,
+      args.get(0).value(),
+      with
+    );
+  }
+
+  private final String key;
+  private final List<Component> inners;
+
+  private TranslatableTransformation(final String name, final List<TagPart> args, final String key, final List<Component> with) {
+    super(name, args);
+    this.key = key;
+    this.inners = with;
   }
 
   @Override
@@ -107,17 +126,5 @@ public class TranslatableTransformation extends Transformation implements Insert
   @Override
   public int hashCode() {
     return Objects.hash(this.key, this.inners);
-  }
-
-  /**
-   * Factory for {@link TranslatableTransformation} instances.
-   *
-   * @since 4.1.0
-   */
-  public static class Parser implements TransformationParser<TranslatableTransformation> {
-    @Override
-    public TranslatableTransformation parse() {
-      return new TranslatableTransformation();
-    }
   }
 }

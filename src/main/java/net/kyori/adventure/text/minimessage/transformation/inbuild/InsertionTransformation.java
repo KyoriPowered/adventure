@@ -31,7 +31,6 @@ import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
-import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,7 +40,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.1.0
  */
 public final class InsertionTransformation extends Transformation {
-  private String insertion;
+  private final String insertion;
 
   /**
    * Get if this transformation can handle the provided tag name.
@@ -54,18 +53,25 @@ public final class InsertionTransformation extends Transformation {
     return name.equalsIgnoreCase(Tokens.INSERTION);
   }
 
-  private InsertionTransformation() {
+  /**
+   * Create a new insertion transformation from a tag.
+   *
+   * @param name the tag name
+   * @param args the tag arguments
+   * @return a new transformation
+   * @since 4.2.0
+   */
+  public static InsertionTransformation create(final String name, final List<TagPart> args) {
+    if (args.size() != 1) {
+      throw new ParsingException("Doesn't know how to turn token with name '" + name + "' and arguments " + args + " into a insertion component", args);
+    }
+
+    return new InsertionTransformation(name, args, args.get(0).value());
   }
 
-  @Override
-  public void load(final String name, final List<TagPart> args) {
-    super.load(name, args);
-
-    if (args.size() == 1) {
-      this.insertion = args.get(0).value();
-    } else {
-      throw new ParsingException("Doesn't know how to turn token with name '" + name + "' and arguments " + args + " into a insertion component", this.argTokenArray());
-    }
+  private InsertionTransformation(final String name, final List<TagPart> args, final String insertion) {
+    super(name, args);
+    this.insertion = insertion;
   }
 
   @Override
@@ -89,17 +95,5 @@ public final class InsertionTransformation extends Transformation {
   @Override
   public int hashCode() {
     return Objects.hash(this.insertion);
-  }
-
-  /**
-   * Factory for {@link InsertionTransformation} instances.
-   *
-   * @since 4.1.0
-   */
-  public static class Parser implements TransformationParser<InsertionTransformation> {
-    @Override
-    public InsertionTransformation parse() {
-      return new InsertionTransformation();
-    }
   }
 }

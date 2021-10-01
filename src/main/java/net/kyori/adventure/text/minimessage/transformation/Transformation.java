@@ -31,6 +31,7 @@ import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * A transformation that can be applied while parsing a message.
@@ -43,9 +44,16 @@ import net.kyori.examination.string.StringExaminer;
 public abstract class Transformation implements Examinable {
   private String name;
   private List<TagPart> args;
+  @Deprecated
   protected Context context;
 
+  @Deprecated
   protected Transformation() {
+  }
+
+  protected Transformation(final String name, final List<TagPart> args) {
+    this.name = name;
+    this.args = args;
   }
 
   /**
@@ -55,6 +63,8 @@ public abstract class Transformation implements Examinable {
    * @param args tokens within the tags, used to define arguments. Each
    * @since 4.1.0
    */
+  @Deprecated
+  @ApiStatus.OverrideOnly
   public void load(final String name, final List<TagPart> args) {
     this.name = name;
     this.args = args;
@@ -66,6 +76,7 @@ public abstract class Transformation implements Examinable {
    * @return the name
    * @since 4.1.0
    */
+  @Deprecated
   public final String name() {
     return this.name;
   }
@@ -76,6 +87,7 @@ public abstract class Transformation implements Examinable {
    * @return the args
    * @since 4.2.0
    */
+  @Deprecated
   public final List<TagPart> args() {
     return this.args;
   }

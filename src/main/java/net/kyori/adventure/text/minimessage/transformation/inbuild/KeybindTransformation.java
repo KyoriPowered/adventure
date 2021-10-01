@@ -32,7 +32,6 @@ import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Inserting;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
-import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,20 +52,26 @@ public final class KeybindTransformation extends Transformation implements Inser
     return name.equalsIgnoreCase(Tokens.KEYBIND);
   }
 
-  private String keybind;
-
-  private KeybindTransformation() {
+  /**
+   * Create a new keybind transformation from a tag.
+   *
+   * @param name the tag name
+   * @param args the tag arguments
+   * @return a new transformation
+   * @since 4.2.0
+   */
+  public static KeybindTransformation create(final String name, final List<TagPart> args) {
+    if (args.size() != 1) {
+      throw new ParsingException("Doesn't know how to turn token with name '" + name + "' and arguments " + args + " into a keybind component", args);
+    }
+    return new KeybindTransformation(name, args, args.get(0).value());
   }
 
-  @Override
-  public void load(final String name, final List<TagPart> args) {
-    super.load(name, args);
+  private final String keybind;
 
-    if (args.size() == 1) {
-      this.keybind = args.get(0).value();
-    } else {
-      throw new ParsingException("Doesn't know how to turn token with name '" + name + "' and arguments " + args + " into a keybind component", this.argTokenArray());
-    }
+  private KeybindTransformation(final String name, final List<TagPart> args, final String keybind) {
+    super(name, args);
+    this.keybind = keybind;
   }
 
   @Override
@@ -90,17 +95,5 @@ public final class KeybindTransformation extends Transformation implements Inser
   @Override
   public int hashCode() {
     return Objects.hash(this.keybind);
-  }
-
-  /**
-   * Factory for {@link KeybindTransformation} instances.
-   *
-   * @since 4.1.0
-   */
-  public static class Parser implements TransformationParser<KeybindTransformation> {
-    @Override
-    public KeybindTransformation parse() {
-      return new KeybindTransformation();
-    }
   }
 }

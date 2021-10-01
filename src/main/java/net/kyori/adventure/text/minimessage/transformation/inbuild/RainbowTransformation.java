@@ -40,7 +40,6 @@ import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.parser.node.ValueNode;
 import net.kyori.adventure.text.minimessage.transformation.Modifying;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
-import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 
@@ -59,9 +58,9 @@ public final class RainbowTransformation extends Transformation implements Modif
   private float center = 128;
   private float width = 127;
   private double frequency = 1;
-  private boolean reversed = false;
+  private final boolean reversed;
 
-  private int phase;
+  private final int phase;
 
   /**
    * Get if this transformation can handle the provided tag name.
@@ -74,27 +73,40 @@ public final class RainbowTransformation extends Transformation implements Modif
     return name.equalsIgnoreCase(Tokens.RAINBOW);
   }
 
-  private RainbowTransformation() {
-  }
-
-  @Override
-  public void load(final String name, final List<TagPart> args) {
-    super.load(name, args);
+  /**
+   * Create a new rainbow transformation from a tag.
+   *
+   * @param name the tag name
+   * @param args the tag arguments
+   * @return a new transformation
+   * @since 4.2.0
+   */
+  public static RainbowTransformation create(final String name, final List<TagPart> args) {
+    boolean reversed = false;
+    int phase = 0;
 
     if (args.size() == 1) {
       String value = args.get(0).value();
       if (args.get(0).value().startsWith(Tokens.REVERSE)) {
-        this.reversed = true;
+        reversed = true;
         value = value.replaceFirst(Tokens.REVERSE, "");
       }
       if (value.length() > 0) {
         try {
-          this.phase = Integer.parseInt(value);
+          phase = Integer.parseInt(value);
         } catch (final NumberFormatException ex) {
-          throw new ParsingException("Expected phase, got " + args.get(0), this.argTokenArray());
+          throw new ParsingException("Expected phase, got " + args.get(0), args);
         }
       }
     }
+
+    return new RainbowTransformation(name, args, reversed, phase);
+  }
+
+  private RainbowTransformation(final String name, final List<TagPart> args, final boolean reversed, final int phase) {
+    super(name, args);
+    this.reversed = reversed;
+    this.phase = phase;
   }
 
   @Override
@@ -193,17 +205,5 @@ public final class RainbowTransformation extends Transformation implements Modif
   @Override
   public int hashCode() {
     return Objects.hash(this.colorIndex, this.center, this.width, this.frequency, this.phase);
-  }
-
-  /**
-   * Factory for {@link RainbowTransformation} instances.
-   *
-   * @since 4.1.0
-   */
-  public static class Parser implements TransformationParser<RainbowTransformation> {
-    @Override
-    public RainbowTransformation parse() {
-      return new RainbowTransformation();
-    }
   }
 }

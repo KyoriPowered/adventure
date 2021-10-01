@@ -23,11 +23,12 @@
  */
 package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
+import java.util.List;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Tokens;
+import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
-import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,8 +40,6 @@ import org.jetbrains.annotations.NotNull;
  */
 @Deprecated
 public final class PreTransformation extends Transformation {
-  private static final PreTransformation INSTANCE = new PreTransformation();
-
   /**
    * Get if this transformation can handle the provided tag name.
    *
@@ -52,7 +51,20 @@ public final class PreTransformation extends Transformation {
     return name.equalsIgnoreCase(Tokens.PRE);
   }
 
-  private PreTransformation() {
+  /**
+   * Create a new pre transformation from a tag.
+   *
+   * @param name the tag name
+   * @param args the tag arguments
+   * @return a new transformation
+   * @since 4.2.0
+   */
+  public static PreTransformation create(final String name, final List<TagPart> args) {
+    return new PreTransformation(name, args);
+  }
+
+  private PreTransformation(final String name, final List<TagPart> args) {
+    super(name, args);
   }
 
   @Override
@@ -73,17 +85,5 @@ public final class PreTransformation extends Transformation {
   @Override
   public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.empty();
-  }
-
-  /**
-   * Factory for {@link PreTransformation} instances.
-   *
-   * @since 4.1.0
-   */
-  public static class Parser implements TransformationParser<PreTransformation> {
-    @Override
-    public PreTransformation parse() {
-      return PreTransformation.INSTANCE;
-    }
   }
 }

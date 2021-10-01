@@ -23,20 +23,50 @@
  */
 package net.kyori.adventure.text.minimessage.transformation;
 
+import java.util.List;
+import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.parser.node.TagPart;
+
 /**
  * A supplier of new transformation instances.
  *
  * @param <T> the transformation type
- * @since 4.1.0
+ * @since 4.2.0
  */
-@Deprecated
 @FunctionalInterface
-public interface TransformationParser<T extends Transformation> {
+public interface TransformationFactory<T extends Transformation> {
   /**
-   * Create a new instance of the transformation.
+   * Produce a new instance of the transformation given a specific tag.
    *
+   * @param ctx the parse context
+   * @param name the tag name
+   * @param args an unmodifiable list of tag arguments, may be empty
    * @return the new instance
-   * @since 4.1.0
+   * @since 4.2.0
    */
-  T parse();
+  T parse(final Context ctx, final String name, final List<TagPart> args);
+
+  /**
+   * A variant of a transformation factory that doesn't take a context object.
+   *
+   * @param <T> the transformation type
+   * @since 4.2.0
+   */
+  @FunctionalInterface
+  interface ContextFree<T extends Transformation> extends TransformationFactory<T> {
+    @Override
+    default T parse(final Context ctx, final String name, final List<TagPart> args) {
+      return this.parse(name, args);
+    }
+
+    /**
+     * Produce a new instance of the transformation given a specific tag.
+     *
+     * @param name the tag name
+     * @param args an unmodifiable list of tag arguments, may be empty
+     * @return the new instance
+     * @since 4.2.0
+     */
+    T parse(final String name, final List<TagPart> args);
+  }
 }

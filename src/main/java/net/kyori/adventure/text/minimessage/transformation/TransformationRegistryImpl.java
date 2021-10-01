@@ -72,11 +72,11 @@ final class TransformationRegistryImpl implements TransformationRegistry {
     this.types = Collections.unmodifiableList(types);
   }
 
-  private Transformation tryLoad(final Transformation transformation, final String name, final List<TagPart> inners, final Context context) {
+  private Transformation tryLoad(final TransformationFactory<?> factory, final String name, final List<TagPart> inners, final Context context) {
     try {
-      transformation.context(context);
-      transformation.load(name, inners.subList(1, inners.size()));
-      return transformation;
+      final Transformation xform = factory.parse(context, name, inners.subList(1, inners.size()));
+      xform.context(context);
+      return xform;
     } catch (final ParsingException exception) {
       exception.originalText(context.originalMessage());
       throw exception;
@@ -88,17 +88,17 @@ final class TransformationRegistryImpl implements TransformationRegistry {
     // first try if we have a custom placeholder resolver
     final ComponentLike potentialTemplate = placeholderResolver.apply(name);
     if (potentialTemplate != null) {
-      return this.tryLoad(new TemplateTransformation(new Template.ComponentTemplate(name, potentialTemplate.asComponent())), name, inners, context);
+      return this.tryLoad(TemplateTransformation.factory(new Template.ComponentTemplate(name, potentialTemplate.asComponent())), name, inners, context);
     }
     // then check our registry
     for (final TransformationType<? extends Transformation> type : this.types) {
       if (type.canParse.test(name)) {
-        return this.tryLoad(type.parser.parse(), name, inners, context);
+        return this.tryLoad(type.factory, name, inners, context);
       } else if (templates.containsKey(name)) {
         final Template template = templates.get(name);
         // The parser handles StringTemplates
         if (template instanceof Template.ComponentTemplate) {
-          return this.tryLoad(new TemplateTransformation((Template.ComponentTemplate) template), name, inners, context);
+          return this.tryLoad(TemplateTransformation.factory((Template.ComponentTemplate) template), name, inners, context);
         }
       }
     }

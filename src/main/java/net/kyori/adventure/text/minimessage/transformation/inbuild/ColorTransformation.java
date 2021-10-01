@@ -36,7 +36,6 @@ import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
-import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,12 +45,15 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.1.0
  */
 public final class ColorTransformation extends Transformation {
-
-  private static final Map<String, String> colorAliases = new HashMap<>();
+  private static final Map<String, String> COLOR_ALIASES = new HashMap<>();
 
   static {
-    colorAliases.put("dark_grey", "dark_gray");
-    colorAliases.put("grey", "gray");
+    COLOR_ALIASES.put("dark_grey", "dark_gray");
+    COLOR_ALIASES.put("grey", "gray");
+  }
+
+  private static boolean isColorOrAbbreviation(final String name) {
+    return name.equalsIgnoreCase(Tokens.COLOR) || name.equalsIgnoreCase(Tokens.COLOR_2) || name.equalsIgnoreCase(Tokens.COLOR_3);
   }
 
   /**
@@ -62,44 +64,55 @@ public final class ColorTransformation extends Transformation {
    * @since 4.1.0
    */
   public static boolean canParse(final String name) {
-    return name.equalsIgnoreCase(Tokens.COLOR)
-      || name.equalsIgnoreCase(Tokens.COLOR_2)
-      || name.equalsIgnoreCase(Tokens.COLOR_3)
+    return isColorOrAbbreviation(name)
       || TextColor.fromHexString(name) != null
       || NamedTextColor.NAMES.value(name.toLowerCase(Locale.ROOT)) != null
-      || colorAliases.containsKey(name);
+      || COLOR_ALIASES.containsKey(name);
   }
 
-  private TextColor color;
-
-  private ColorTransformation() {
-  }
-
-  @Override
-  public void load(String name, final List<TagPart> args) {
-    super.load(name, args);
-
-    if (name.equalsIgnoreCase(Tokens.COLOR) || name.equalsIgnoreCase(Tokens.COLOR_2) || name.equalsIgnoreCase(Tokens.COLOR_3)) {
+  /**
+   * Create a new color name.
+   *
+   * @param name the tag name
+   * @param args the tag arguments
+   * @return a new transformation
+   * @since 4.2.0
+   */
+  public static ColorTransformation create(final String name, final List<TagPart> args) {
+    String colorName;
+    if (isColorOrAbbreviation(name)) {
       if (args.size() == 1) {
-        name = args.get(0).value();
+        colorName = args.get(0).value();
       } else {
-        throw new ParsingException("Expected to find a color parameter, but found " + args, this.argTokenArray());
+        throw new ParsingException("Expected to find a color parameter, but found " + args, args);
       }
-    }
-
-    if (colorAliases.containsKey(name)) {
-      name = colorAliases.get(name);
-    }
-
-    if (name.charAt(0) == '#') {
-      this.color = TextColor.fromHexString(name);
     } else {
-      this.color = NamedTextColor.NAMES.value(name.toLowerCase(Locale.ROOT));
+      colorName = name;
     }
 
-    if (this.color == null) {
-      throw new ParsingException("Don't know how to turn '" + name + "' into a color", this.argTokenArray());
+    if (COLOR_ALIASES.containsKey(colorName)) {
+      colorName = COLOR_ALIASES.get(colorName);
     }
+
+    final TextColor color;
+    if (colorName.charAt(0) == '#') {
+      color = TextColor.fromHexString(colorName);
+    } else {
+      color = NamedTextColor.NAMES.value(colorName.toLowerCase(Locale.ROOT));
+    }
+
+    if (color == null) {
+      throw new ParsingException("Don't know how to turn '" + name + "' into a color", args);
+    }
+
+    return new ColorTransformation(name, args, color);
+  }
+
+  private final TextColor color;
+
+  private ColorTransformation(final String name, final List<TagPart> args, final TextColor color) {
+    super(name, args);
+    this.color = color;
   }
 
   @Override
@@ -123,17 +136,5 @@ public final class ColorTransformation extends Transformation {
   @Override
   public int hashCode() {
     return Objects.hash(this.color);
-  }
-
-  /**
-   * Factory for {@link ColorTransformation} instances.
-   *
-   * @since 4.1.0
-   */
-  public static class Parser implements TransformationParser<ColorTransformation> {
-    @Override
-    public ColorTransformation parse() {
-      return new ColorTransformation();
-    }
   }
 }

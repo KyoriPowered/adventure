@@ -24,6 +24,8 @@
 package net.kyori.adventure.text.minimessage.parser;
 
 import java.util.Arrays;
+import java.util.List;
+import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,6 +39,22 @@ public class ParsingException extends RuntimeException {
 
   private @Nullable String originalText;
   private Token @NotNull [] tokens;
+
+  /**
+   * Create a new parsing exception.
+   *
+   * @param message the detail message
+   * @param originalText the original text which was parsed
+   * @param tags the tag parts which caused the error
+   * @since 4.1.0
+   */
+  public ParsingException(
+    final String message,
+    final @Nullable String originalText,
+    final @NotNull List<TagPart> tags
+  ) {
+    this(message, originalText, tagsToTokens(tags));
+  }
 
   /**
    * Create a new parsing exception.
@@ -60,7 +78,25 @@ public class ParsingException extends RuntimeException {
    * Create a new parsing exception.
    *
    * @param message the detail message
-   * @param originalText the origina text which was parsed
+   * @param originalText the original text which was parsed
+   * @param cause the cause
+   * @param tags tag parts that caused the errors
+   * @since 4.2.0
+   */
+  public ParsingException(
+    final String message,
+    final @Nullable String originalText,
+    final @Nullable Throwable cause,
+    final @NotNull List<TagPart> tags
+  ) {
+    this(message, originalText, cause, tagsToTokens(tags));
+  }
+
+  /**
+   * Create a new parsing exception.
+   *
+   * @param message the detail message
+   * @param originalText the original text which was parsed
    * @param cause the cause
    * @param tokens the token which caused the error
    * @since 4.1.0
@@ -81,10 +117,37 @@ public class ParsingException extends RuntimeException {
    *
    * @param message the detail message
    * @param tokens the token which caused the error
+   * @since 4.2.0
+   */
+  public ParsingException(final String message, final List<TagPart> tokens) {
+    this(message, tagsToTokens(tokens));
+  }
+
+  /**
+   * Create a new parsing exception.
+   *
+   * @param message the detail message
+   * @param tokens the token which caused the error
    * @since 4.1.0
    */
   public ParsingException(final String message, final @NotNull Token @NotNull ... tokens) {
     this(message, null, null, tokens);
+  }
+
+  /**
+   * Create a new parsing exception.
+   *
+   * @param message the detail message
+   * @param cause the cause
+   * @param tags the tag parts that caused the error
+   * @since 4.2.0
+   */
+  public ParsingException(
+    final String message,
+    final @Nullable Throwable cause,
+    final @NotNull List<TagPart> tags
+  ) {
+    this(message, null, cause, tagsToTokens(tags));
   }
 
   /**
@@ -167,5 +230,13 @@ public class ParsingException extends RuntimeException {
       i = t.endIndex();
     }
     return new String(chars);
+  }
+
+  private static Token[] tagsToTokens(final List<TagPart> tags) {
+    final Token[] tokens = new Token[tags.size()];
+    for (int i = 0, length = tokens.length; i < length; i++) {
+      tokens[i] = tags.get(i).token();
+    }
+    return tokens;
   }
 }
