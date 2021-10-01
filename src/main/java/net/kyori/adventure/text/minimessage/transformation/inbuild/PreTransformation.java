@@ -26,7 +26,6 @@ package net.kyori.adventure.text.minimessage.transformation.inbuild;
 import java.util.List;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.examination.ExaminableProperty;
@@ -40,17 +39,6 @@ import org.jetbrains.annotations.NotNull;
  */
 @Deprecated
 public final class PreTransformation extends Transformation {
-  /**
-   * Get if this transformation can handle the provided tag name.
-   *
-   * @param name tag name to test
-   * @return if this transformation is applicable
-   * @since 4.1.0
-   */
-  public static boolean canParse(final String name) {
-    return name.equalsIgnoreCase(Tokens.PRE);
-  }
-
   /**
    * Create a new pre transformation from a tag.
    *

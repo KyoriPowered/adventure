@@ -63,17 +63,6 @@ public final class RainbowTransformation extends Transformation implements Modif
   private final int phase;
 
   /**
-   * Get if this transformation can handle the provided tag name.
-   *
-   * @param name tag name to test
-   * @return if this transformation is applicable
-   * @since 4.1.0
-   */
-  public static boolean canParse(final String name) {
-    return name.equalsIgnoreCase(Tokens.RAINBOW);
-  }
-
-  /**
    * Create a new rainbow transformation from a tag.
    *
    * @param name the tag name

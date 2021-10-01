@@ -29,7 +29,6 @@ import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
@@ -43,17 +42,6 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.1.0
  */
 public final class FontTransformation extends Transformation {
-  /**
-   * Get if this transformation can handle the provided tag name.
-   *
-   * @param name tag name to test
-   * @return if this transformation is applicable
-   * @since 4.1.0
-   */
-  public static boolean canParse(final String name) {
-    return name.equalsIgnoreCase(Tokens.FONT);
-  }
-
   /**
    * Create a new font transformation from a tag.
    *

@@ -33,7 +33,6 @@ import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.Context;
-import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
@@ -48,17 +47,6 @@ import org.jetbrains.annotations.NotNull;
 public final class HoverTransformation extends Transformation {
   private final HoverEvent.Action<Object> action;
   private final Object value;
-
-  /**
-   * Get if this transformation can handle the provided tag name.
-   *
-   * @param name tag name to test
-   * @return if this transformation is applicable
-   * @since 4.1.0
-   */
-  public static boolean canParse(final String name) {
-    return name.equalsIgnoreCase(Tokens.HOVER);
-  }
 
   /**
    * Create a new hover transformation from a tag.

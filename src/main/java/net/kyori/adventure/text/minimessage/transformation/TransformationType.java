@@ -23,7 +23,13 @@
  */
 package net.kyori.adventure.text.minimessage.transformation;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.ClickTransformation;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.ColorTransformation;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.DecorationTransformation;
@@ -37,6 +43,8 @@ import net.kyori.adventure.text.minimessage.transformation.inbuild.RainbowTransf
 import net.kyori.adventure.text.minimessage.transformation.inbuild.ResetTransformation;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.TranslatableTransformation;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Available types of transformation.
  *
@@ -44,30 +52,70 @@ import net.kyori.adventure.text.minimessage.transformation.inbuild.TranslatableT
  * @since 4.1.0
  */
 public final class TransformationType<T extends Transformation> {
-  public static final TransformationType<ColorTransformation> COLOR = new TransformationType<>(ColorTransformation::canParse, ColorTransformation::create);
-  public static final TransformationType<DecorationTransformation> DECORATION = new TransformationType<>(DecorationTransformation::canParse, DecorationTransformation::create);
-  public static final TransformationType<HoverTransformation> HOVER_EVENT = new TransformationType<>(HoverTransformation::canParse, HoverTransformation::create);
-  public static final TransformationType<ClickTransformation> CLICK_EVENT = new TransformationType<>(ClickTransformation::canParse, ClickTransformation::create);
-  public static final TransformationType<KeybindTransformation> KEYBIND = new TransformationType<>(KeybindTransformation::canParse, KeybindTransformation::create);
-  public static final TransformationType<TranslatableTransformation> TRANSLATABLE = new TransformationType<>(TranslatableTransformation::canParse, TranslatableTransformation::create);
-  public static final TransformationType<InsertionTransformation> INSERTION = new TransformationType<>(InsertionTransformation::canParse, InsertionTransformation::create);
-  public static final TransformationType<FontTransformation> FONT = new TransformationType<>(FontTransformation::canParse, FontTransformation::create);
-  public static final TransformationType<GradientTransformation> GRADIENT = new TransformationType<>(GradientTransformation::canParse, GradientTransformation::create);
-  public static final TransformationType<RainbowTransformation> RAINBOW = new TransformationType<>(RainbowTransformation::canParse, RainbowTransformation::create);
+  public static final TransformationType<ColorTransformation> COLOR = transformationType(
+    ColorTransformation::canParse,
+    ColorTransformation::create
+  );
+  public static final TransformationType<DecorationTransformation> DECORATION = transformationType(
+    acceptingNames(
+      Stream.of(TextDecoration.NAMES.keys(), DecorationTransformation.DECORATION_ALIASES.keySet())
+        .flatMap(Collection::stream)
+        .collect(Collectors.toSet())
+    ),
+    DecorationTransformation::create
+  );
+  public static final TransformationType<HoverTransformation> HOVER_EVENT = transformationType(
+    acceptingNames(Tokens.HOVER),
+    HoverTransformation::create
+  );
+  public static final TransformationType<ClickTransformation> CLICK_EVENT = transformationType(
+    acceptingNames(Tokens.CLICK),
+    ClickTransformation::create
+  );
+  public static final TransformationType<KeybindTransformation> KEYBIND = transformationType(
+    acceptingNames(Tokens.KEYBIND),
+    KeybindTransformation::create
+  );
+  public static final TransformationType<TranslatableTransformation> TRANSLATABLE = transformationType(
+    acceptingNames(Tokens.TRANSLATABLE, Tokens.TRANSLATABLE_2, Tokens.TRANSLATABLE_3),
+    TranslatableTransformation::create
+  );
+  public static final TransformationType<InsertionTransformation> INSERTION = transformationType(
+    acceptingNames(Tokens.INSERTION),
+    InsertionTransformation::create
+  );
+  public static final TransformationType<FontTransformation> FONT = transformationType(
+    acceptingNames(Tokens.FONT),
+    FontTransformation::create
+  );
+  public static final TransformationType<GradientTransformation> GRADIENT = transformationType(
+    acceptingNames(Tokens.GRADIENT),
+    GradientTransformation::create
+  );
+  public static final TransformationType<RainbowTransformation> RAINBOW = transformationType(
+    acceptingNames(Tokens.RAINBOW),
+    RainbowTransformation::create
+  );
   /**
    * Don't use.
    *
    * @deprecated since 4.2.0 this is handled at parser level
    */
   @Deprecated
-  public static final TransformationType<ResetTransformation> RESET = new TransformationType<>(ResetTransformation::canParse, ResetTransformation::create);
+  public static final TransformationType<ResetTransformation> RESET = transformationType(
+    acceptingNames(Tokens.RESET, Tokens.RESET_2),
+    ResetTransformation::create
+  );
   /**
    * Don't use.
    *
    * @deprecated since 4.2.0 this is handled at parser level
    */
   @Deprecated
-  public static final TransformationType<PreTransformation> PRE = new TransformationType<>(PreTransformation::canParse, PreTransformation::create);
+  public static final TransformationType<PreTransformation> PRE = transformationType(
+    acceptingNames(Tokens.PRE),
+    PreTransformation::create
+  );
 
   final Predicate<String> canParse;
   final TransformationFactory<T> factory;
@@ -97,20 +145,77 @@ public final class TransformationType<T extends Transformation> {
    * @param factory the factory that should be used to create this type
    * @since 4.2.0
    */
-  public TransformationType(final Predicate<String> canParse, final TransformationFactory<T> factory) {
+  private TransformationType(final Predicate<String> canParse, final TransformationFactory<T> factory) {
     this.canParse = canParse;
     this.factory = factory;
+  }
+
+  /**
+   * Create a new transformation type with dynamically determined names.
+   *
+   * <p>It is assumed that the {@code nameMatcher} function is side-effect free, meaning that any time
+   * it is called for a certain input {@code x}, it will always return the same value, and not modify any other state.</p>
+   *
+   * @param nameMatcher the name matcher predicate
+   * @param factory a factory
+   * @param <T> transformation instance type
+   * @return a new transformation type definition
+   * @since 4.2.0
+   */
+  public static <T extends Transformation> TransformationType<T> transformationType(final Predicate<String> nameMatcher, final TransformationFactory<T> factory) {
+    return new TransformationType<>(
+      requireNonNull(nameMatcher, "nameMatcher"),
+      requireNonNull(factory, "factory")
+    );
   }
 
   /**
    * Create a new transformation type that can be parsed without performing recursive parses.
    *
    * @param nameMatcher filter for tag names to apply this transformation to
-   * @param contextFree the context-free factory
+   * @param contextFreeFactory the context-free factory
+   * @param <T> transformation instance type
+   * @return a new transformation type definition
+   * @see #transformationType(Predicate, TransformationFactory)
    * @since 4.2.0
    */
-  public TransformationType(final Predicate<String> nameMatcher, final TransformationFactory.ContextFree<T> contextFree) {
-    this.canParse = nameMatcher;
-    this.factory = contextFree;
+  public static <T extends Transformation> TransformationType<T> transformationType(final Predicate<String> nameMatcher, final TransformationFactory.ContextFree<T> contextFreeFactory) {
+    return new TransformationType<>(
+      requireNonNull(nameMatcher, "nameMatcher"),
+      requireNonNull(contextFreeFactory, "contextFreeFactory")
+    );
+  }
+
+  /**
+   * Create a name matcher function that will accept the provided case-insensitive tag names.
+   *
+   * @param elements the accepted names
+   * @return a name matcher function
+   * @since 4.2.0
+   */
+  public static Predicate<String> acceptingNames(final String... elements) {
+    return acceptingNames(Arrays.asList(elements));
+  }
+
+  /**
+   * Create a name matcher function that will accept the provided case-insensitive tag names.
+   *
+   * @param elements the accepted names
+   * @return a name matcher function
+   * @since 4.2.0
+   */
+  public static Predicate<String> acceptingNames(final Collection<String> elements) {
+    if (elements.size() == 1) {
+      final String name = elements.iterator().next();
+      return tag -> tag.equalsIgnoreCase(name);
+    } else {
+      final String[] names = elements.toArray(new String[0]);
+      return tag -> {
+        for (final String name : names) {
+          if (tag.equalsIgnoreCase(name)) return true;
+        }
+        return false;
+      };
+    }
   }
 }

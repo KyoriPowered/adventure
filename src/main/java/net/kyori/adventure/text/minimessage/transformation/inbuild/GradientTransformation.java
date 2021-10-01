@@ -36,7 +36,6 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagNode;
@@ -63,17 +62,6 @@ public final class GradientTransformation extends Transformation implements Modi
   private final TextColor[] colors;
   private float phase;
   private final boolean negativePhase;
-
-  /**
-   * Get if this transformation can handle the provided tag name.
-   *
-   * @param name tag name to test
-   * @return if this transformation is applicable
-   * @since 4.1.0
-   */
-  public static boolean canParse(final String name) {
-    return name.equalsIgnoreCase(Tokens.GRADIENT);
-  }
 
   /**
    * Create a new gradient transformation from a tag.

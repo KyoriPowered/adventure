@@ -98,6 +98,7 @@ public abstract class Transformation implements Examinable {
    * @return the arg tokens
    * @since 4.2.0
    */
+  @Deprecated
   public final Token[] argTokenArray() {
     return this.args.stream().map(TagPart::token).toArray(Token[]::new);
   }

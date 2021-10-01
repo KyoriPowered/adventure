@@ -29,7 +29,6 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
@@ -45,17 +44,6 @@ import org.jetbrains.annotations.Nullable;
 public final class ClickTransformation extends Transformation {
   private final ClickEvent.Action action;
   private final String value;
-
-  /**
-   * Get if this transformation can handle the provided tag name.
-   *
-   * @param name tag name to test
-   * @return if this transformation is applicable
-   * @since 4.1.0
-   */
-  public static boolean canParse(final String name) {
-    return name.equalsIgnoreCase(Tokens.CLICK);
-  }
 
   /**
    * Create a new click event transformation.

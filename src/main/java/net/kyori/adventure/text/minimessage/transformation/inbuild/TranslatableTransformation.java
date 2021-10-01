@@ -30,7 +30,6 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Context;
-import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Inserting;
@@ -44,19 +43,6 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.1.0
  */
 public final class TranslatableTransformation extends Transformation implements Inserting {
-  /**
-   * Get if this transformation can handle the provided tag name.
-   *
-   * @param name tag name to test
-   * @return if this transformation is applicable
-   * @since 4.1.0
-   */
-  public static boolean canParse(final String name) {
-    return name.equalsIgnoreCase(Tokens.TRANSLATABLE)
-      || name.equalsIgnoreCase(Tokens.TRANSLATABLE_2)
-      || name.equalsIgnoreCase(Tokens.TRANSLATABLE_3);
-  }
-
   /**
    * Create a new translatable transformation from a tag.
    *

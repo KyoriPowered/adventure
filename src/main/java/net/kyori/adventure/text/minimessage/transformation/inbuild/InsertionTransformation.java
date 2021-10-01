@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
@@ -41,17 +40,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class InsertionTransformation extends Transformation {
   private final String insertion;
-
-  /**
-   * Get if this transformation can handle the provided tag name.
-   *
-   * @param name tag name to test
-   * @return if this transformation is applicable
-   * @since 4.1.0
-   */
-  public static boolean canParse(final String name) {
-    return name.equalsIgnoreCase(Tokens.INSERTION);
-  }
 
   /**
    * Create a new insertion transformation from a tag.
