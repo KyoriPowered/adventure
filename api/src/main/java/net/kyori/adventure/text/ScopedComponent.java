@@ -31,11 +31,8 @@ import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.util.MonkeyBars;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Some magic to change return types.
@@ -77,15 +74,13 @@ public interface ScopedComponent<C extends Component> extends Component {
   @Override
   @SuppressWarnings("unchecked")
   default @NotNull C append(final @NotNull Component component) {
-    if (component == Component.empty()) return (C) this;
-    final List<Component> oldChildren = this.children();
-    return this.children(MonkeyBars.addOne(oldChildren, requireNonNull(component, "component")));
+    return (C) Component.super.append(component);
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  default @NotNull C append(final @NotNull ComponentLike component) {
-    return (C) Component.super.append(component);
+  default @NotNull C append(final @NotNull ComponentLike like) {
+    return (C) Component.super.append(like);
   }
 
   @Override

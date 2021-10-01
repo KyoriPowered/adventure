@@ -40,6 +40,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 import org.jetbrains.annotations.Unmodifiable;
 
 /**
@@ -163,11 +164,15 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    * @return a style
    * @since 4.0.0
    */
-  static @NotNull Style style(final StyleBuilderApplicable@NotNull... applicables) {
-    if (applicables.length == 0) return empty();
+  static @NotNull Style style(final @UnknownNullability StyleBuilderApplicable@NotNull... applicables) {
+    final int length = applicables.length;
+    if (length == 0) return empty();
     final Builder builder = style();
-    for (int i = 0, length = applicables.length; i < length; i++) {
-      applicables[i].styleApply(builder);
+    for (int i = 0; i < length; i++) {
+      final StyleBuilderApplicable applicable = applicables[i];
+      if (applicable != null) {
+        applicable.styleApply(builder);
+      }
     }
     return builder.build();
   }

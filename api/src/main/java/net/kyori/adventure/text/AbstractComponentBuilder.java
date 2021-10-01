@@ -81,21 +81,8 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public @NotNull B append(final @NotNull Component@NotNull... components) {
-    requireNonNull(components, "components");
-    boolean prepared = false;
-    for (int i = 0, length = components.length; i < length; i++) {
-      final Component component = components[i];
-      if (component != Component.empty()) {
-        if (!prepared) {
-          this.prepareChildren();
-          prepared = true;
-        }
-        this.children.add(requireNonNull(component, "components[?]"));
-      }
-    }
-    return (B) this;
+    return this.append((ComponentLike[]) components);
   }
 
   @Override

@@ -25,19 +25,15 @@ package net.kyori.adventure.text;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.util.Buildable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * An abstract implementation of a text component.
@@ -67,26 +63,6 @@ public abstract class AbstractComponent implements Component {
   @Override
   public final @NotNull Style style() {
     return this.style;
-  }
-
-  @Override
-  public @NotNull Component replaceText(final @NotNull Consumer<TextReplacementConfig.Builder> configurer) {
-    requireNonNull(configurer, "configurer");
-    return this.replaceText(Buildable.configureAndBuild(TextReplacementConfig.builder(), configurer));
-  }
-
-  @Override
-  public @NotNull Component replaceText(final @NotNull TextReplacementConfig config) {
-    requireNonNull(config, "replacement");
-    if (!(config instanceof TextReplacementConfigImpl)) {
-      throw new IllegalArgumentException("Provided replacement was a custom TextReplacementConfig implementation, which is not supported.");
-    }
-    return TextReplacementRenderer.INSTANCE.render(this, ((TextReplacementConfigImpl) config).createState());
-  }
-
-  @Override
-  public @NotNull Component compact() {
-    return ComponentCompaction.compact(this, null);
   }
 
   @Override
