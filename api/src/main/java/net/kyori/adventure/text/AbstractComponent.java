@@ -32,6 +32,7 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,8 +43,11 @@ import static java.util.Objects.requireNonNull;
  * An abstract implementation of a text component.
  *
  * @since 4.0.0
+ * @deprecated for removal since 4.10.0
  */
+@ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
 @Debug.Renderer(text = "this.debuggerString()", childrenArray = "this.children().toArray()", hasChildren = "!this.children().isEmpty()")
+@Deprecated
 public abstract class AbstractComponent implements Component {
   private static final Predicate<Component> NOT_EMPTY = component -> component != Component.empty();
 
