@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.template.TemplateResolver;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
@@ -40,19 +41,22 @@ import static java.util.Objects.requireNonNull;
  */
 final class MiniMessageImpl implements MiniMessage {
   static final Consumer<List<String>> DEFAULT_ERROR_CONSUMER = message -> message.forEach(System.out::println);
+  static final Function<Component, Component> DEFAULT_COMPACTING_METHOD = Component::compact;
 
-  static final MiniMessage INSTANCE = new MiniMessageImpl(TransformationRegistry.standard(), TemplateResolver.empty(), false, null, DEFAULT_ERROR_CONSUMER);
+  static final MiniMessage INSTANCE = new MiniMessageImpl(TransformationRegistry.standard(), TemplateResolver.empty(), false, null, DEFAULT_ERROR_CONSUMER, DEFAULT_COMPACTING_METHOD);
 
   private final boolean strict;
   private final Appendable debugOutput;
   private final Consumer<List<String>> parsingErrorMessageConsumer;
+  private final Function<Component, Component> postProcessingFunction;
   final MiniMessageParser parser;
 
-  MiniMessageImpl(final @NotNull TransformationRegistry registry, final @NotNull TemplateResolver templateResolver, final boolean strict, final Appendable debugOutput, final @NotNull Consumer<List<String>> parsingErrorMessageConsumer) {
+  MiniMessageImpl(final @NotNull TransformationRegistry registry, final @NotNull TemplateResolver templateResolver, final boolean strict, final Appendable debugOutput, final @NotNull Consumer<List<String>> parsingErrorMessageConsumer, final @NotNull Function<Component, Component> postProcessingFunction) {
     this.parser = new MiniMessageParser(registry, templateResolver);
     this.strict = strict;
     this.debugOutput = debugOutput;
     this.parsingErrorMessageConsumer = parsingErrorMessageConsumer;
+    this.postProcessingFunction = postProcessingFunction;
   }
 
   @Override
@@ -92,9 +96,9 @@ final class MiniMessageImpl implements MiniMessage {
 
   private @NotNull Context newContext(final @NotNull String input, final @Nullable TemplateResolver resolver) {
     if (resolver == null) {
-      return Context.of(this.strict, this.debugOutput, input, this);
+      return Context.of(this.strict, this.debugOutput, input, this, TemplateResolver.empty(), postProcessingFunction);
     } else {
-      return Context.of(this.strict, this.debugOutput, input, this, resolver);
+      return Context.of(this.strict, this.debugOutput, input, this, resolver, postProcessingFunction);
     }
   }
 
@@ -119,6 +123,7 @@ final class MiniMessageImpl implements MiniMessage {
     private boolean strict = false;
     private Appendable debug = null;
     private Consumer<List<String>> parsingErrorMessageConsumer = DEFAULT_ERROR_CONSUMER;
+    private Function<Component, Component> postProcessingFunction = DEFAULT_COMPACTING_METHOD;
 
     BuilderImpl() {
     }
@@ -170,8 +175,14 @@ final class MiniMessageImpl implements MiniMessage {
     }
 
     @Override
+    public @NotNull Builder postProcessingFunction(final Function<Component, Component> postProcessingFunction) {
+      this.postProcessingFunction = postProcessingFunction;
+      return this;
+    }
+
+    @Override
     public @NotNull MiniMessage build() {
-      return new MiniMessageImpl(this.registry, this.templateResolver == null ? TemplateResolver.empty() : this.templateResolver, this.strict, this.debug, this.parsingErrorMessageConsumer);
+      return new MiniMessageImpl(this.registry, this.templateResolver == null ? TemplateResolver.empty() : this.templateResolver, this.strict, this.debug, this.parsingErrorMessageConsumer, this.postProcessingFunction);
     }
   }
 }

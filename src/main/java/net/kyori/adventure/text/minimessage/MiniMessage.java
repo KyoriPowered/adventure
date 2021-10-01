@@ -318,6 +318,15 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
     @NotNull Builder parsingErrorMessageConsumer(final @NotNull Consumer<List<String>> consumer);
 
     /**
+     * TODO write something here.
+     *
+     * @param compactingMethod method to use for compacting
+     * @return this builder
+     * @since 4.2.0
+     */
+    @NotNull Builder compactingMethod(Function<Component, Component> compactingMethod);
+
+    /**
      * Builds the serializer.
      *
      * @return the built serializer

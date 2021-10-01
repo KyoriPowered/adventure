@@ -188,8 +188,11 @@ final class MiniMessageParser {
 
     context.root(root);
     final Component comp = this.treeToComponent(root);
-    // at the end, take a look if we can flatten the tree a bit
-    return this.flatten(comp);
+    if (context.postProcessingFunction() != null) {
+      return context.postProcessingFunction().apply(comp);
+    } else {
+      return comp;
+    }
   }
 
   @NotNull Component treeToComponent(final @NotNull ElementNode node) {
