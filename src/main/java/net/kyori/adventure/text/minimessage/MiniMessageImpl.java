@@ -32,6 +32,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * not public api.
@@ -149,7 +152,7 @@ final class MiniMessageImpl implements MiniMessage {
     return new BuilderImpl(this);
   }
 
-  /* package */ static final class BuilderImpl implements Builder {
+  static final class BuilderImpl implements Builder {
     private TransformationRegistry registry = TransformationRegistry.standard();
     private Function<String, ComponentLike> placeholderResolver = DEFAULT_PLACEHOLDER_RESOLVER;
     private boolean strict = false;
@@ -168,14 +171,22 @@ final class MiniMessageImpl implements MiniMessage {
     }
 
     @Override
-    public @NotNull Builder transformations(final TransformationRegistry transformationRegistry) {
-      this.registry = transformationRegistry;
+    public @NotNull Builder transformations(final @NotNull TransformationRegistry transformationRegistry) {
+      this.registry = requireNonNull(transformationRegistry, "transformationRegistry");
       return this;
     }
 
     @Override
-    public @NotNull Builder placeholderResolver(final Function<String, ComponentLike> placeholderResolver) {
-      this.placeholderResolver = placeholderResolver;
+    public @NotNull Builder transformations(final @NotNull Consumer<TransformationRegistry.Builder> modifier) {
+      final TransformationRegistry.Builder builder = this.registry.toBuilder();
+      modifier.accept(builder);
+      this.registry = builder.build();
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder placeholderResolver(final @NotNull Function<@NotNull String, @Nullable ComponentLike> placeholderResolver) {
+      this.placeholderResolver = requireNonNull(placeholderResolver, "placeholderResolver");
       return this;
     }
 
@@ -186,14 +197,14 @@ final class MiniMessageImpl implements MiniMessage {
     }
 
     @Override
-    public @NotNull Builder debug(final Appendable debugOutput) {
+    public @NotNull Builder debug(final @Nullable Appendable debugOutput) {
       this.debug = debugOutput;
       return this;
     }
 
     @Override
-    public @NotNull Builder parsingErrorMessageConsumer(final Consumer<List<String>> consumer) {
-      this.parsingErrorMessageConsumer = consumer;
+    public @NotNull Builder parsingErrorMessageConsumer(final @NotNull Consumer<List<String>> consumer) {
+      this.parsingErrorMessageConsumer = requireNonNull(consumer, "consumer");
       return this;
     }
 

@@ -121,9 +121,22 @@ final class TransformationRegistryImpl implements TransformationRegistry {
     return false;
   }
 
+  @Override
+  public @NotNull TransformationRegistry.Builder toBuilder() {
+    return new TransformationRegistryImpl.BuilderImpl(this);
+  }
+
   static final class BuilderImpl implements TransformationRegistry.Builder {
 
-    private final List<TransformationType<? extends Transformation>> types = new ArrayList<>(DEFAULT_TRANSFORMATIONS);
+    private final List<TransformationType<? extends Transformation>> types;
+
+    BuilderImpl() {
+      this.types = new ArrayList<>(DEFAULT_TRANSFORMATIONS);
+    }
+
+    BuilderImpl(final TransformationRegistryImpl registry) {
+      this.types = new ArrayList<>(registry.types);
+    }
 
     @Override
     public @NotNull Builder clear() {

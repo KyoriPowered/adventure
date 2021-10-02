@@ -33,6 +33,7 @@ import net.kyori.adventure.text.minimessage.transformation.TransformationRegistr
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Buildable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * MiniMessage is a textual representation of components.
@@ -176,50 +177,63 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      * @return this builder
      * @since 4.1.0
      */
-    @NotNull Builder transformations(final TransformationRegistry transformationRegistry);
+    @NotNull Builder transformations(final @NotNull TransformationRegistry transformationRegistry);
+
+    /**
+     * Modify the set transformation registry.
+     *
+     * <p>By default, this will start out with a registry of all default transformations.</p>
+     *
+     * @param modifier an action to perform on the registry builder
+     * @return this builder
+     * @since 4.2.0
+     */
+    @NotNull Builder transformations(final @NotNull Consumer<TransformationRegistry.Builder> modifier);
 
     /**
      * Sets the placeholder resolve that should handle all (unresolved) placeholders.
-     * <br>
-     * It needs to return a component
+     *
+     * <p>It needs to return a component, or {@code null} if no value is available.</p>
      *
      * @param placeholderResolver the placeholder resolver to use
      * @return this builder
      * @since 4.1.0
      */
-    @NotNull Builder placeholderResolver(final Function<String, ComponentLike> placeholderResolver);
+    @NotNull Builder placeholderResolver(final @NotNull Function<@NotNull String, @Nullable ComponentLike> placeholderResolver);
 
     /**
-     * Allows to enable strict mode (disabled by default)
-     * <br>
-     * By default, MiniMessage will allow non-{@link net.kyori.adventure.text.minimessage.transformation.Inserting Inserting} tags to be implicitly closed. When strict mode
-     * is enabled, all non-inserting tags which are {@code <opened>} must be explicitly {@code </closed>} as well.
+     * Allows to enable strict mode (disabled by default).
+     *
+     * <p>By default, MiniMessage will allow non-{@link net.kyori.adventure.text.minimessage.transformation.Inserting Inserting} tags to be implicitly closed. When strict mode
+     * is enabled, all non-inserting tags which are {@code <opened>} must be explicitly {@code </closed>} as well.</p>
      *
      * @param strict if strict mode should be enabled
      * @return this builder
      * @since 4.1.0
      */
-    @NotNull Builder strict(boolean strict);
+    @NotNull Builder strict(final boolean strict);
 
     /**
-     * Print debug information to the given output (disabled by default)
-     * <br>
-     * Debug output includes detailed information about the parsing process to help debug parser behavior.
+     * Print debug information to the given output (disabled by default).
+     *
+     * <p>Debug output includes detailed information about the parsing process to help debug parser behavior.</p>
      *
      * @param debugOutput if debug mode should be enabled
      * @return this builder
      * @since 4.2.0
      */
-    @NotNull Builder debug(Appendable debugOutput);
+    @NotNull Builder debug(final @Nullable Appendable debugOutput);
 
     /**
-     * If in lenient mode, MiniMessage will output helpful messages. This method allows you to change how they should be printed. By default, they will be printed to standard out.
+     * If in lenient mode, MiniMessage will output helpful messages.
+     *
+     * <p>This method allows you to change how they should be printed. By default, they will be printed to standard out.</p>
      *
      * @param consumer the error message consumer
      * @return this builder
      * @since 4.1.0
      */
-    @NotNull Builder parsingErrorMessageConsumer(final Consumer<List<String>> consumer);
+    @NotNull Builder parsingErrorMessageConsumer(final @NotNull Consumer<List<String>> consumer);
 
     /**
      * Builds the serializer.

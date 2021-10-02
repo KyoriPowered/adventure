@@ -39,7 +39,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.1.0
  */
-public interface TransformationRegistry {
+public interface TransformationRegistry extends Buildable<TransformationRegistry, TransformationRegistry.Builder> {
 
   /**
    * Get a transformation from this registry based on the current state.
