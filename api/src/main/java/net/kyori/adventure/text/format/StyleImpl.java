@@ -306,6 +306,8 @@ final class StyleImpl implements Style {
       final @Nullable TextDecoration.State thisState = this.decorations.get(decoration);
       if (thisState == TextDecoration.State.NOT_SET) {
         this.decorations.put(decoration, state);
+      }
+      if (thisState != null) {
         return this;
       }
       throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
