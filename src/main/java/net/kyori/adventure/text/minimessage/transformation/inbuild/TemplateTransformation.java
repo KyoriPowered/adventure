@@ -39,7 +39,6 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.1.0
  */
 public final class TemplateTransformation extends Transformation implements Inserting {
-
   private final Template.@NotNull ComponentTemplate template;
 
   private TemplateTransformation(final Template.@NotNull ComponentTemplate template) {

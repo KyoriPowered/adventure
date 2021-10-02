@@ -49,7 +49,6 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.1.0
  */
 public final class RainbowTransformation extends Transformation implements Modifying {
-
   private int size;
   private int disableApplyingColorDepth = -1;
 

@@ -42,6 +42,8 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.1.0
  */
 public final class FontTransformation extends Transformation {
+  private final Key font;
+
   /**
    * Create a new font transformation from a tag.
    *
@@ -65,8 +67,6 @@ public final class FontTransformation extends Transformation {
 
     return new FontTransformation(font);
   }
-
-  private final Key font;
 
   private FontTransformation(final Key font) {
     this.font = font;

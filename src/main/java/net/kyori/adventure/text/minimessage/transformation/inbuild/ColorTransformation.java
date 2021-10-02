@@ -52,6 +52,8 @@ public final class ColorTransformation extends Transformation {
     COLOR_ALIASES.put("grey", "gray");
   }
 
+  private final TextColor color;
+
   private static boolean isColorOrAbbreviation(final String name) {
     return name.equalsIgnoreCase(Tokens.COLOR) || name.equalsIgnoreCase(Tokens.COLOR_2) || name.equalsIgnoreCase(Tokens.COLOR_3);
   }
@@ -107,8 +109,6 @@ public final class ColorTransformation extends Transformation {
 
     return new ColorTransformation(color);
   }
-
-  private final TextColor color;
 
   private ColorTransformation(final TextColor color) {
     this.color = color;

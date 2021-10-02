@@ -64,6 +64,8 @@ public final class DecorationTransformation extends Transformation {
     DECORATION_ALIASES = Collections.unmodifiableMap(aliases);
   }
 
+  private final TextDecoration decoration;
+
   /**
    * Create a new decoration.
    *
@@ -82,16 +84,14 @@ public final class DecorationTransformation extends Transformation {
     return new DecorationTransformation(decoration);
   }
 
-  private final TextDecoration decoration;
-
-  private DecorationTransformation(final TextDecoration decoration) {
-    this.decoration = decoration;
-  }
-
   private static TextDecoration parseDecoration(String name) {
     name = name.toLowerCase(Locale.ROOT);
     final TextDecoration alias = DECORATION_ALIASES.get(name);
     return alias != null ? alias : TextDecoration.NAMES.value(name);
+  }
+
+  private DecorationTransformation(final TextDecoration decoration) {
+    this.decoration = decoration;
   }
 
   @Override
