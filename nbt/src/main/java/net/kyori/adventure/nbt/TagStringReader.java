@@ -246,12 +246,14 @@ final class TagStringReader {
           BinaryTag result = null;
           try {
             switch (Character.toLowerCase(current)) { // try to read and return as a number
-              // case Tokens.TYPE_INTEGER: // handled below, ints are ~special~
               case Tokens.TYPE_BYTE:
                 result = ByteBinaryTag.of(Byte.parseByte(builder.toString()));
                 break;
               case Tokens.TYPE_SHORT:
                 result = ShortBinaryTag.of(Short.parseShort(builder.toString()));
+                break;
+              case Tokens.TYPE_INT:
+                result = IntBinaryTag.of(Integer.parseInt(builder.toString()));
                 break;
               case Tokens.TYPE_LONG:
                 result = LongBinaryTag.of(Long.parseLong(builder.toString()));
