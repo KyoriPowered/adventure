@@ -109,8 +109,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
    * @since 4.0.0
    */
   static @NotNull Style style(final @Nullable TextColor color) {
-    if (color == null) return empty();
-    return new StyleImpl(null, color, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null);
+    return empty().color(color);
   }
 
   /**
