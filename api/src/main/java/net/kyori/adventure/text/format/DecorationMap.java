@@ -42,6 +42,8 @@ import org.jetbrains.annotations.Unmodifiable;
 @Unmodifiable
 final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.State> implements Serializable {
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
+  private static final TextDecoration.State[] STATES = TextDecoration.State.values();
+
   static final DecorationMap EMPTY = fromMap(Collections.emptyMap());
   // key set is universal, all decorations always exist in any given style
   private static final KeySet KEY_SET = new KeySet();
@@ -96,7 +98,7 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
   @Override
   public TextDecoration.State get(final Object o) {
     if (o instanceof TextDecoration) {
-      return TextDecoration.State.values()[(int) (this.bitSet >> ((TextDecoration) o).ordinal() * 2 & 0b11)];
+      return STATES[this.bitSet >> ((TextDecoration) o).ordinal() * 2 & 0b11];
     }
     return null;
   }
