@@ -277,4 +277,16 @@ class ComponentCompactingTest {
       .append(text("meow").decoration(TextDecoration.BOLD, TextDecoration.State.NOT_SET));
     assertEquals(text("meow").decoration(TextDecoration.BOLD, true), c3.compact());
   }
+
+  @Test
+  void testStyleMatchingGrandchild() {
+    final Component notCompact = text("mew", NamedTextColor.RED)
+      .append(text("mow", NamedTextColor.BLUE)
+          .append(text("mew", NamedTextColor.RED)));
+    final Component expectedCompact = text("mew", NamedTextColor.RED)
+      .append(text("mow", NamedTextColor.BLUE)
+      .append(text("mew", NamedTextColor.RED)));
+
+    assertEquals(expectedCompact, notCompact.compact());
+  }
 }
