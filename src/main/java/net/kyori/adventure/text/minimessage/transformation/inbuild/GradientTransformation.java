@@ -36,7 +36,6 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagNode;
@@ -44,7 +43,6 @@ import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.parser.node.ValueNode;
 import net.kyori.adventure.text.minimessage.transformation.Modifying;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
-import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 
@@ -54,7 +52,6 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.1.0
  */
 public final class GradientTransformation extends Transformation implements Modifying {
-
   private int size = 0;
   private int disableApplyingColorDepth = -1;
 
@@ -62,42 +59,31 @@ public final class GradientTransformation extends Transformation implements Modi
   private int colorIndex = 0;
 
   private float factorStep = 0;
-  private TextColor[] colors;
-  private float phase = 0;
-  private boolean negativePhase = false;
+  private final TextColor[] colors;
+  private float phase;
+  private final boolean negativePhase;
 
   /**
-   * Get if this transformation can handle the provided tag name.
+   * Create a new gradient transformation from a tag.
    *
-   * @param name tag name to test
-   * @return if this transformation is applicable
-   * @since 4.1.0
+   * @param name the tag name
+   * @param args the tag arguments
+   * @return a new transformation
+   * @since 4.2.0
    */
-  public static boolean canParse(final String name) {
-    return name.equalsIgnoreCase(Tokens.GRADIENT);
-  }
-
-  private GradientTransformation() {
-  }
-
-  @Override
-  public void load(final String name, final List<TagPart> args) {
-    super.load(name, args);
-
+  public static GradientTransformation create(final String name, final List<TagPart> args) {
+    float phase = 0;
+    final List<TextColor> textColors;
     if (!args.isEmpty()) {
-      final List<TextColor> textColors = new ArrayList<>();
+      textColors = new ArrayList<>();
       for (int i = 0; i < args.size(); i++) {
         final String arg = args.get(i).value();
         // last argument? maybe this is the phase?
         if (i == args.size() - 1) {
           try {
-            this.phase = Float.parseFloat(arg);
-            if (this.phase < -1f || this.phase > 1f) {
-              throw new ParsingException(String.format("Gradient phase is out of range (%s). Must be in the range [-1.0f, 1.0f] (inclusive).", this.phase), this.argTokenArray());
-            }
-            if (this.phase < 0) {
-              this.negativePhase = true;
-              this.phase = 1 + this.phase;
+            phase = Float.parseFloat(arg);
+            if (phase < -1f || phase > 1f) {
+              throw new ParsingException(String.format("Gradient phase is out of range (%s). Must be in the range [-1.0f, 1.0f] (inclusive).", phase), args);
             }
             break;
           } catch (final NumberFormatException ignored) {
@@ -111,19 +97,35 @@ public final class GradientTransformation extends Transformation implements Modi
           parsedColor = NamedTextColor.NAMES.value(arg.toLowerCase(Locale.ROOT));
         }
         if (parsedColor == null) {
-          throw new ParsingException(String.format("Unable to parse a color from '%s'. Please use NamedTextColors or Hex colors.", arg), this.argTokenArray());
+          throw new ParsingException(String.format("Unable to parse a color from '%s'. Please use named colours or hex (#RRGGBB) colors.", arg), args);
         }
         textColors.add(parsedColor);
       }
+
       if (textColors.size() < 2) {
-        throw new ParsingException("Invalid gradient, not enough colors. Gradients must have at least two colors.", this.argTokenArray());
-      }
-      this.colors = textColors.toArray(new TextColor[0]);
-      if (this.negativePhase) {
-        Collections.reverse(Arrays.asList(this.colors));
+        throw new ParsingException("Invalid gradient, not enough colors. Gradients must have at least two colors.", args);
       }
     } else {
+      textColors = Collections.emptyList();
+    }
+
+    return new GradientTransformation(phase, textColors);
+  }
+
+  private GradientTransformation(final float phase, final List<TextColor> colors) {
+    if (phase < 0) {
+      this.negativePhase = true;
+      this.phase = 1 + phase;
+      Collections.reverse(colors);
+    } else {
+      this.negativePhase = false;
+      this.phase = phase;
+    }
+
+    if (colors.isEmpty()) {
       this.colors = new TextColor[]{TextColor.color(0xffffff), TextColor.color(0x000000)};
+    } else {
+      this.colors = colors.toArray(new TextColor[0]);
     }
   }
 
@@ -239,17 +241,5 @@ public final class GradientTransformation extends Transformation implements Modi
     int result = Objects.hash(this.index, this.colorIndex, this.factorStep, this.phase);
     result = 31 * result + Arrays.hashCode(this.colors);
     return result;
-  }
-
-  /**
-   * Factory for {@link GradientTransformation} instances.
-   *
-   * @since 4.1.0
-   */
-  public static class Parser implements TransformationParser<GradientTransformation> {
-    @Override
-    public GradientTransformation parse() {
-      return new GradientTransformation();
-    }
   }
 }

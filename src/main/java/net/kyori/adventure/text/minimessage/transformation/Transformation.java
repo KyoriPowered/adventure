@@ -31,6 +31,7 @@ import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * A transformation that can be applied while parsing a message.
@@ -43,6 +44,12 @@ import net.kyori.examination.string.StringExaminer;
 public abstract class Transformation implements Examinable {
   private String name;
   private List<TagPart> args;
+  /**
+   * context.
+   *
+   * @deprecated for removal since 4.2.0, access when preparing in a {@link TransformationFactory} instead
+   */
+  @Deprecated
   protected Context context;
 
   protected Transformation() {
@@ -54,7 +61,10 @@ public abstract class Transformation implements Examinable {
    * @param name the alias for this transformation
    * @param args tokens within the tags, used to define arguments. Each
    * @since 4.1.0
+   * @deprecated for removal since 4.2.0, create with a {@link TransformationFactory} instead
    */
+  @Deprecated
+  @ApiStatus.OverrideOnly
   public void load(final String name, final List<TagPart> args) {
     this.name = name;
     this.args = args;
@@ -65,7 +75,9 @@ public abstract class Transformation implements Examinable {
    *
    * @return the name
    * @since 4.1.0
+   * @deprecated for removal since 4.2.0, access when preparing in a {@link TransformationFactory} instead
    */
+  @Deprecated
   public final String name() {
     return this.name;
   }
@@ -75,7 +87,9 @@ public abstract class Transformation implements Examinable {
    *
    * @return the args
    * @since 4.2.0
+   * @deprecated for removal since 4.2.0, access when preparing in a {@link TransformationFactory} instead
    */
+  @Deprecated
   public final List<TagPart> args() {
     return this.args;
   }
@@ -85,7 +99,9 @@ public abstract class Transformation implements Examinable {
    *
    * @return the arg tokens
    * @since 4.2.0
+   * @deprecated for removal since 4.2.0, use the {@link net.kyori.adventure.text.minimessage.parser.ParsingException} methods instead
    */
+  @Deprecated
   public final Token[] argTokenArray() {
     return this.args.stream().map(TagPart::token).toArray(Token[]::new);
   }

@@ -23,5 +23,11 @@
  */
 /**
  * Standard transformations.
+ *
+ * <p>These implementation classes should not be directly referenced.
+ * See {@link net.kyori.adventure.text.minimessage.transformation.TransformationType} instead for referencing these transformations.</p>
  */
+@ApiStatus.Internal
 package net.kyori.adventure.text.minimessage.transformation.inbuild;
+
+import org.jetbrains.annotations.ApiStatus;

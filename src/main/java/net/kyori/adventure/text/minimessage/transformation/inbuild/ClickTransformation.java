@@ -29,13 +29,12 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
-import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A transformation applying a click event.
@@ -43,33 +42,33 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.1.0
  */
 public final class ClickTransformation extends Transformation {
-  private ClickEvent.Action action;
-  private String value;
+  private final ClickEvent.Action action;
+  private final String value;
 
   /**
-   * Get if this transformation can handle the provided tag name.
+   * Create a new click event transformation.
    *
-   * @param name tag name to test
-   * @return if this transformation is applicable
-   * @since 4.1.0
+   * @param name the tag name
+   * @param args tag arguments
+   * @return a new transformation
+   * @since 4.2.0
    */
-  public static boolean canParse(final String name) {
-    return name.equalsIgnoreCase(Tokens.CLICK);
-  }
-
-  private ClickTransformation() {
-  }
-
-  @Override
-  public void load(final String name, final List<TagPart> args) {
-    super.load(name, args);
-
-    if (args.size() == 2) {
-      this.action = ClickEvent.Action.NAMES.value(args.get(0).value().toLowerCase(Locale.ROOT));
-      this.value = args.get(1).value();
-    } else {
-      throw new ParsingException("Don't know how to turn " + args + " into a click event", this.argTokenArray());
+  public static ClickTransformation create(final String name, final List<TagPart> args) {
+    if (args.size() != 2) {
+      throw new ParsingException("Don't know how to turn " + args + " into a click event", args);
     }
+    final ClickEvent.@Nullable Action action = ClickEvent.Action.NAMES.value(args.get(0).value().toLowerCase(Locale.ROOT));
+    final String value = args.get(1).value();
+    if (action == null) {
+      throw new ParsingException("Unknown click event action '" + args.get(0).value() + "'", args);
+    }
+
+    return new ClickTransformation(action, value);
+  }
+
+  private ClickTransformation(final ClickEvent.Action action, final String value) {
+    this.action = action;
+    this.value = value;
   }
 
   @Override
@@ -96,17 +95,5 @@ public final class ClickTransformation extends Transformation {
   @Override
   public int hashCode() {
     return Objects.hash(this.action, this.value);
-  }
-
-  /**
-   * Factory for {@link ClickTransformation} instances.
-   *
-   * @since 4.1.0
-   */
-  public static class Parser implements TransformationParser<ClickTransformation> {
-    @Override
-    public ClickTransformation parse() {
-      return new ClickTransformation();
-    }
   }
 }

@@ -32,12 +32,10 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.minimessage.Tokens;
+import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
-import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
-import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,48 +45,43 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.1.0
  */
 public final class HoverTransformation extends Transformation {
+  private final HoverEvent.Action<Object> action;
+  private final Object value;
 
   /**
-   * Get if this transformation can handle the provided tag name.
+   * Create a new hover transformation from a tag.
    *
-   * @param name tag name to test
-   * @return if this transformation is applicable
-   * @since 4.1.0
+   * @param ctx the active parse context
+   * @param name the tag name
+   * @param args the arguments provided
+   * @return a new transformation
+   * @throws ParsingException if an error occurs
+   * @since 4.2.0
    */
-  public static boolean canParse(final String name) {
-    return name.equalsIgnoreCase(Tokens.HOVER);
-  }
-
-  private HoverEvent.Action<Object> action;
-  private Object value;
-
-  private HoverTransformation() {
-  }
-
   @SuppressWarnings("unchecked")
-  @Override
-  public void load(final String name, final List<TagPart> args) {
-    super.load(name, args);
-
+  public static HoverTransformation create(final Context ctx, final String name, final List<TagPart> args) {
     if (args.size() < 2) {
-      throw new ParsingException("Doesn't know how to turn " + args + " into a hover event", this.argTokenArray());
+      throw new ParsingException("Doesn't know how to turn " + args + " into a hover event", args);
     }
 
     final List<TagPart> newArgs = args.subList(1, args.size());
 
-    this.action = (HoverEvent.Action<Object>) HoverEvent.Action.NAMES.value(args.get(0).value());
-    if (this.action == (Object) HoverEvent.Action.SHOW_TEXT) {
-      this.value = this.context.parse(newArgs.get(0).value());
-    } else if (this.action == (Object) HoverEvent.Action.SHOW_ITEM) {
-      this.value = this.parseShowItem(newArgs);
-    } else if (this.action == (Object) HoverEvent.Action.SHOW_ENTITY) {
-      this.value = this.parseShowEntity(newArgs);
+    final HoverEvent.Action<Object> action = (HoverEvent.Action<Object>) HoverEvent.Action.NAMES.value(args.get(0).value());
+    final Object value;
+    if (action == (Object) HoverEvent.Action.SHOW_TEXT) {
+      value = ctx.parse(newArgs.get(0).value());
+    } else if (action == (Object) HoverEvent.Action.SHOW_ITEM) {
+      value = parseShowItem(newArgs);
+    } else if (action == (Object) HoverEvent.Action.SHOW_ENTITY) {
+      value = parseShowEntity(newArgs, ctx);
     } else {
-      throw new ParsingException("Don't know how to turn '" + args + "' into a hover event", this.argTokenArray());
+      throw new ParsingException("Don't know how to turn '" + args + "' into a hover event", args);
     }
+
+    return new HoverTransformation(action, value);
   }
 
-  private HoverEvent.@NotNull ShowItem parseShowItem(final @NotNull List<TagPart> args) {
+  private static HoverEvent.@NotNull ShowItem parseShowItem(final @NotNull List<TagPart> args) {
     try {
       if (args.isEmpty()) {
         throw new ParsingException("Show item hover needs at least item id!");
@@ -105,11 +98,11 @@ public final class HoverTransformation extends Transformation {
       }
       return HoverEvent.ShowItem.of(key, count);
     } catch (final InvalidKeyException | NumberFormatException ex) {
-      throw new ParsingException("Exception parsing show_item hover", ex, args.stream().map(TagPart::token).toArray(Token[]::new));
+      throw new ParsingException("Exception parsing show_item hover", ex, args);
     }
   }
 
-  private HoverEvent.@NotNull ShowEntity parseShowEntity(final @NotNull List<TagPart> args) {
+  private static HoverEvent.@NotNull ShowEntity parseShowEntity(final @NotNull List<TagPart> args, final Context context) {
     try {
       if (args.size() < 2) {
         throw new ParsingException("Show entity hover needs at least type and uuid!");
@@ -117,13 +110,18 @@ public final class HoverTransformation extends Transformation {
       final Key key = Key.key(args.get(0).value());
       final UUID id = UUID.fromString(args.get(1).value());
       if (args.size() == 3) {
-        final Component name = this.context.parse(args.get(2).value());
+        final Component name = context.parse(args.get(2).value());
         return HoverEvent.ShowEntity.of(key, id, name);
       }
       return HoverEvent.ShowEntity.of(key, id);
     } catch (final IllegalArgumentException | InvalidKeyException ex) {
-      throw new ParsingException("Exception parsing show_entity hover", ex, args.stream().map(TagPart::token).toArray(Token[]::new));
+      throw new ParsingException("Exception parsing show_entity hover", ex, args);
     }
+  }
+
+  private HoverTransformation(final HoverEvent.Action<Object> action, final Object value) {
+    this.action = action;
+    this.value = value;
   }
 
   @Override
@@ -151,17 +149,5 @@ public final class HoverTransformation extends Transformation {
   @Override
   public int hashCode() {
     return Objects.hash(this.action, this.value);
-  }
-
-  /**
-   * Factory for {@link HoverTransformation} instances.
-   *
-   * @since 4.1.0
-   */
-  public static class Parser implements TransformationParser<HoverTransformation> {
-    @Override
-    public HoverTransformation parse() {
-      return new HoverTransformation();
-    }
   }
 }

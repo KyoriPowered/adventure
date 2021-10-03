@@ -468,7 +468,7 @@ public final class TokenParser {
   }
 
   private static boolean isReset(final String input) {
-    return input.equals(Tokens.RESET) || input.equals(Tokens.RESET_2);
+    return input.equalsIgnoreCase(Tokens.RESET) || input.equalsIgnoreCase(Tokens.RESET_2);
   }
 
   /**
@@ -483,7 +483,11 @@ public final class TokenParser {
     if (closeParts.size() > openParts.size()) {
       return false;
     }
-    for (int i = 0; i < closeParts.size(); i++) {
+    // The tag name is case-insensitive, but the tag values are not
+    if (!closeParts.get(0).equalsIgnoreCase(openParts.get(0).value())) {
+      return false;
+    }
+    for (int i = 1; i < closeParts.size(); i++) {
       if (!closeParts.get(i).equals(openParts.get(i).value())) {
         return false;
       }

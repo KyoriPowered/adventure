@@ -28,7 +28,10 @@ package net.kyori.adventure.text.minimessage.transformation;
  *
  * @param <T> the transformation type
  * @since 4.1.0
+ * @deprecated for removal since 4.2.0, use {@link TransformationFactory} instead
  */
+@Deprecated
+@FunctionalInterface
 public interface TransformationParser<T extends Transformation> {
   /**
    * Create a new instance of the transformation.

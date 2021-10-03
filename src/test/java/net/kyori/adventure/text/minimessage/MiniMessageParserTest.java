@@ -1522,4 +1522,21 @@ public class MiniMessageParserTest extends TestBase {
     this.assertParsedEquals(expected1, input1);
     this.assertParsedEquals(expected2, input2);
   }
+
+  @Test
+  void testCaseInsensitive() {
+    final String input1 = "<red>this is <BOLD>an error</bold> message";
+    final String input2 = "<C:reD>also red";
+
+    final Component expected1 = text()
+      .color(RED)
+      .append(text("this is "))
+      .append(text("an error", style(BOLD)))
+      .append(text(" message"))
+      .build();
+    final Component expected2 = text("also red", RED);
+
+    this.assertParsedEquals(expected1, input1);
+    this.assertParsedEquals(expected2, input2);
+  }
 }

@@ -23,8 +23,10 @@
  */
 package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
@@ -33,9 +35,9 @@ import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
-import net.kyori.adventure.text.minimessage.transformation.TransformationParser;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A transformation that applies any {@link TextDecoration}.
@@ -44,55 +46,50 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class DecorationTransformation extends Transformation {
   /**
-   * Get if this transformation can handle the provided tag name.
+   * An unmodifiable map of known decoration aliases.
    *
-   * @param name tag name to test
-   * @return if this transformation is applicable
-   * @since 4.1.0
+   * @since 4.2.0
    */
-  public static boolean canParse(final String name) {
-    return parseDecoration(name) != null;
+  public static final Map<String, TextDecoration> DECORATION_ALIASES;
+
+  static {
+    final Map<String, TextDecoration> aliases = new HashMap<>();
+    aliases.put(Tokens.BOLD_2, TextDecoration.BOLD);
+    aliases.put(Tokens.ITALIC_2, TextDecoration.ITALIC);
+    aliases.put(Tokens.ITALIC_3, TextDecoration.ITALIC);
+    aliases.put(Tokens.UNDERLINED_2, TextDecoration.UNDERLINED);
+    aliases.put(Tokens.STRIKETHROUGH_2, TextDecoration.STRIKETHROUGH);
+    aliases.put(Tokens.OBFUSCATED_2, TextDecoration.OBFUSCATED);
+    DECORATION_ALIASES = Collections.unmodifiableMap(aliases);
   }
 
-  private TextDecoration decoration;
+  private final TextDecoration decoration;
 
-  private DecorationTransformation() {
-  }
+  /**
+   * Create a new decoration.
+   *
+   * @param name the tag name
+   * @param args the tag arguments
+   * @return a new transformation
+   * @since 4.2.0
+   */
+  public static DecorationTransformation create(final String name, final List<TagPart> args) {
+    final @Nullable TextDecoration decoration = parseDecoration(name);
 
-  @Override
-  public void load(final String name, final List<TagPart> args) {
-    super.load(name, args);
-
-    this.decoration = parseDecoration(name);
-
-    if (this.decoration == null) {
-      throw new ParsingException("Don't know how to turn '" + name + "' into a decoration", this.argTokenArray());
+    if (decoration == null) {
+      throw new ParsingException("Don't know how to turn '" + name + "' into a decoration", args);
     }
+
+    return new DecorationTransformation(decoration);
   }
 
-  private static TextDecoration parseDecoration(String name) {
-    name = name.toLowerCase(Locale.ROOT);
-    switch (name) {
-      case Tokens.BOLD_2:
-        name = Tokens.BOLD;
-        break;
-      case Tokens.ITALIC_2:
-      case Tokens.ITALIC_3:
-        name = Tokens.ITALIC;
-        break;
-      case Tokens.UNDERLINED_2:
-        name = Tokens.UNDERLINED;
-        break;
-      case Tokens.STRIKETHROUGH_2:
-        name = Tokens.STRIKETHROUGH;
-        break;
-      case Tokens.OBFUSCATED_2:
-        name = Tokens.OBFUSCATED;
-        break;
-      default:
-        break;
-    }
-    return TextDecoration.NAMES.value(name);
+  private static TextDecoration parseDecoration(final String name) {
+    final TextDecoration alias = DECORATION_ALIASES.get(name);
+    return alias != null ? alias : TextDecoration.NAMES.value(name);
+  }
+
+  private DecorationTransformation(final TextDecoration decoration) {
+    this.decoration = decoration;
   }
 
   @Override
@@ -116,17 +113,5 @@ public final class DecorationTransformation extends Transformation {
   @Override
   public int hashCode() {
     return Objects.hash(this.decoration);
-  }
-
-  /**
-   * Factory for {@link DecorationTransformation} instances.
-   *
-   * @since 4.1.0
-   */
-  public static class Parser implements TransformationParser<DecorationTransformation> {
-    @Override
-    public DecorationTransformation parse() {
-      return new DecorationTransformation();
-    }
   }
 }

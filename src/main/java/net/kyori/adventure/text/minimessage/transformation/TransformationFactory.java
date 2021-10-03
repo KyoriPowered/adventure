@@ -21,58 +21,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.transformation.inbuild;
+package net.kyori.adventure.text.minimessage.transformation;
 
 import java.util.List;
-import java.util.stream.Stream;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
-import net.kyori.adventure.text.minimessage.transformation.Transformation;
-import net.kyori.examination.ExaminableProperty;
-import org.jetbrains.annotations.NotNull;
 
 /**
- * Ends any ongoing formatting.
+ * A supplier of new transformation instances.
  *
- * @deprecated no longer in use as of 4.2.0, does nothing, handled by parser now
- * @since 4.1.0
+ * @param <T> the transformation type
+ * @since 4.2.0
  */
-@Deprecated
-public final class ResetTransformation extends Transformation {
-  private static final ResetTransformation INSTANCE = new ResetTransformation();
-
+@FunctionalInterface
+public interface TransformationFactory<T extends Transformation> {
   /**
-   * Create a new reset transformation from a tag.
+   * Produce a new instance of the transformation given a specific tag.
    *
+   * @param ctx the parse context
    * @param name the tag name
-   * @param args the tag arguments
-   * @return a new transformation
+   * @param args an unmodifiable list of tag arguments, may be empty
+   * @return the new instance
    * @since 4.2.0
    */
-  public static ResetTransformation create(final String name, final List<TagPart> args) {
-    return INSTANCE;
-  }
+  T parse(final Context ctx, final String name, final List<TagPart> args);
 
-  private ResetTransformation() {
-  }
+  /**
+   * A variant of a transformation factory that doesn't take a context object.
+   *
+   * @param <T> the transformation type
+   * @since 4.2.0
+   */
+  @FunctionalInterface
+  interface ContextFree<T extends Transformation> extends TransformationFactory<T> {
+    @Override
+    default T parse(final Context ctx, final String name, final List<TagPart> args) {
+      return this.parse(name, args);
+    }
 
-  @Override
-  public Component apply() {
-    return Component.empty();
-  }
-
-  @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.empty();
-  }
-
-  @Override
-  public boolean equals(final Object other) {
-    return other instanceof ResetTransformation;
-  }
-
-  @Override
-  public int hashCode() {
-    return 0;
+    /**
+     * Produce a new instance of the transformation given a specific tag.
+     *
+     * @param name the tag name
+     * @param args an unmodifiable list of tag arguments, may be empty
+     * @return the new instance
+     * @since 4.2.0
+     */
+    T parse(final String name, final List<TagPart> args);
   }
 }

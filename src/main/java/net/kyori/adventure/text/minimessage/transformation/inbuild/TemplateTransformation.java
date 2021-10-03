@@ -29,6 +29,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Template;
 import net.kyori.adventure.text.minimessage.transformation.Inserting;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
+import net.kyori.adventure.text.minimessage.transformation.TransformationFactory;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,17 +39,21 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.1.0
  */
 public final class TemplateTransformation extends Transformation implements Inserting {
-
   private final Template.@NotNull ComponentTemplate template;
 
+  private TemplateTransformation(final Template.@NotNull ComponentTemplate template) {
+    this.template = template;
+  }
+
   /**
-   * Create a new template transformation applying {@code template}.
+   * Create a new factory for template transformations applying {@code template}.
    *
    * @param template the template to apply
    * @since 4.1.0
    */
-  public TemplateTransformation(final Template.@NotNull ComponentTemplate template) {
-    this.template = template;
+  public static @NotNull TransformationFactory<TemplateTransformation> factory(final Template.@NotNull ComponentTemplate template) {
+    final TemplateTransformation instance = new TemplateTransformation(template);
+    return (ctx, name, args) -> instance;
   }
 
   @Override
