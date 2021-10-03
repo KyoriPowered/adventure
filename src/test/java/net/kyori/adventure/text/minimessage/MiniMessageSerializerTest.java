@@ -237,7 +237,7 @@ public class MiniMessageSerializerTest extends TestBase {
     final String serialized = MiniMessage.miniMessage().serialize(parsed);
     final Component reparsed = MiniMessage.miniMessage().parse(serialized);
 
-    assertEquals(this.gson().toJson(parsed), this.gson().toJson(reparsed));
+    assertEquals(this.prettyPrint(parsed), this.prettyPrint(reparsed));
   }
 
   @Test

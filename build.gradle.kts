@@ -23,7 +23,6 @@ dependencies {
   checkstyle(libs.stylecheck)
   compileOnlyApi(libs.jetbrains.annotations)
   testImplementation(libs.adventure.text.plain)
-  testImplementation(libs.adventure.text.gson)
   testImplementation(libs.junit.api)
   testRuntimeOnly(libs.junit.engine)
 }
