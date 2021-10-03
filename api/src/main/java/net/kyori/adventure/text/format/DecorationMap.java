@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text.format;
 
-import java.io.Serializable;
 import java.util.AbstractCollection;
 import java.util.AbstractMap;
 import java.util.AbstractSet;
@@ -36,18 +35,20 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 import java.util.Spliterators;
+import java.util.stream.Stream;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
 @Unmodifiable
-final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.State> implements Serializable {
+final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.State> implements Examinable {
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
   private static final TextDecoration.State[] STATES = TextDecoration.State.values();
 
   static final DecorationMap EMPTY = fromMap(Collections.emptyMap());
   // key set is universal, all decorations always exist in any given style
   private static final KeySet KEY_SET = new KeySet();
-  private static final long serialVersionUID = 3072526425153408678L;
 
   static DecorationMap fromMap(final Map<TextDecoration, TextDecoration.State> decorationMap) {
     if (decorationMap instanceof DecorationMap) return (DecorationMap) decorationMap;
@@ -93,6 +94,12 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
       );
     }
     throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
+  }
+
+  @Override
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Arrays.stream(DECORATIONS)
+      .map(decoration -> ExaminableProperty.of(decoration.toString(), this.get(decoration)));
   }
 
   @Override

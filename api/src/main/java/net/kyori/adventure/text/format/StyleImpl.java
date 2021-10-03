@@ -97,6 +97,7 @@ final class StyleImpl implements Style {
 
   @Override
   public TextDecoration.@NotNull State decoration(final @NotNull TextDecoration decoration) {
+    // null -> null
     final @Nullable TextDecoration.State state = this.decorations.get(decoration);
     if (state != null) {
       return state;
@@ -107,8 +108,7 @@ final class StyleImpl implements Style {
   @Override
   public @NotNull Style decoration(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
     requireNonNull(state, "state");
-    final @NotNull TextDecoration.State thisState = this.decoration(decoration);
-    if (thisState == state) return this;
+    if (this.decoration(decoration) == state) return this;
     return new StyleImpl(this.font, this.color, this.decorations.with(decoration, state), this.clickEvent, this.hoverEvent, this.insertion);
   }
 
@@ -190,17 +190,15 @@ final class StyleImpl implements Style {
 
   @Override
   public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(
-      ExaminableProperty.of("color", this.color),
-      ExaminableProperty.of("obfuscated", this.decorations.get(TextDecoration.OBFUSCATED)),
-      ExaminableProperty.of("bold", this.decorations.get(TextDecoration.BOLD)),
-      ExaminableProperty.of("strikethrough", this.decorations.get(TextDecoration.STRIKETHROUGH)),
-      ExaminableProperty.of("underlined", this.decorations.get(TextDecoration.UNDERLINED)),
-      ExaminableProperty.of("italic", this.decorations.get(TextDecoration.ITALIC)),
-      ExaminableProperty.of("clickEvent", this.clickEvent),
-      ExaminableProperty.of("hoverEvent", this.hoverEvent),
-      ExaminableProperty.of("insertion", this.insertion),
-      ExaminableProperty.of("font", this.font)
+    return Stream.concat(
+      this.decorations.examinableProperties(),
+      Stream.of(
+        ExaminableProperty.of("color", this.color),
+        ExaminableProperty.of("clickEvent", this.clickEvent),
+        ExaminableProperty.of("hoverEvent", this.hoverEvent),
+        ExaminableProperty.of("insertion", this.insertion),
+        ExaminableProperty.of("font", this.font)
+      )
     );
   }
 
