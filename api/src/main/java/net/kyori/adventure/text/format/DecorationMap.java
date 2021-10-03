@@ -29,6 +29,7 @@ import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -38,93 +39,65 @@ import java.util.Spliterators;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
-final @Unmodifiable class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.State> implements Serializable {
-  static final DecorationMap EMPTY = new DecorationMap(
-    TextDecoration.State.NOT_SET,
-    TextDecoration.State.NOT_SET,
-    TextDecoration.State.NOT_SET,
-    TextDecoration.State.NOT_SET,
-    TextDecoration.State.NOT_SET
-  );
+@Unmodifiable
+final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.State> implements Serializable {
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
+  static final DecorationMap EMPTY = fromMap(Collections.emptyMap());
   // key set is universal, all decorations always exist in any given style
   private static final KeySet KEY_SET = new KeySet();
   private static final long serialVersionUID = 3072526425153408678L;
 
   static DecorationMap fromMap(final Map<TextDecoration, TextDecoration.State> decorationMap) {
-    return new DecorationMap(
-      decorationMap.getOrDefault(TextDecoration.OBFUSCATED, TextDecoration.State.NOT_SET),
-      decorationMap.getOrDefault(TextDecoration.BOLD, TextDecoration.State.NOT_SET),
-      decorationMap.getOrDefault(TextDecoration.STRIKETHROUGH, TextDecoration.State.NOT_SET),
-      decorationMap.getOrDefault(TextDecoration.UNDERLINED, TextDecoration.State.NOT_SET),
-      decorationMap.getOrDefault(TextDecoration.ITALIC, TextDecoration.State.NOT_SET)
-    );
+    if (decorationMap instanceof DecorationMap) return (DecorationMap) decorationMap;
+    int bitSet = 0;
+    for (int i = 0; i < DECORATIONS.length; i++) {
+      final TextDecoration decoration = DECORATIONS[i];
+      bitSet |= decorationMap.getOrDefault(decoration, TextDecoration.State.NOT_SET).ordinal() * offset(decoration);
+    }
+    return new DecorationMap(bitSet);
   }
 
   static DecorationMap merge(final Map<TextDecoration, TextDecoration.State> first, final Map<TextDecoration, TextDecoration.State> second) {
-    return new DecorationMap(
-      first.getOrDefault(TextDecoration.OBFUSCATED, second.getOrDefault(TextDecoration.OBFUSCATED, TextDecoration.State.NOT_SET)),
-      first.getOrDefault(TextDecoration.BOLD, second.getOrDefault(TextDecoration.BOLD, TextDecoration.State.NOT_SET)),
-      first.getOrDefault(TextDecoration.STRIKETHROUGH, second.getOrDefault(TextDecoration.STRIKETHROUGH, TextDecoration.State.NOT_SET)),
-      first.getOrDefault(TextDecoration.UNDERLINED, second.getOrDefault(TextDecoration.UNDERLINED, TextDecoration.State.NOT_SET)),
-      first.getOrDefault(TextDecoration.ITALIC, second.getOrDefault(TextDecoration.ITALIC, TextDecoration.State.NOT_SET))
-    );
+    int bitSet = 0;
+    for (int i = 0; i < DECORATIONS.length; i++) {
+      final TextDecoration decoration = DECORATIONS[i];
+      bitSet |= first.getOrDefault(decoration, second.getOrDefault(decoration, TextDecoration.State.NOT_SET)).ordinal() * offset(decoration);
+    }
+    return new DecorationMap(bitSet);
   }
 
-  private final TextDecoration.@NotNull State obfuscated;
-  private final TextDecoration.@NotNull State bold;
-  private final TextDecoration.@NotNull State strikethrough;
-  private final TextDecoration.@NotNull State underlined;
-  private final TextDecoration.@NotNull State italic;
+  private static int offset(final TextDecoration decoration) {
+    // ordinal * 2, decoration states are tristate so they occupy two bits each [0b00, 0b01, 0b10]
+    return 1 << decoration.ordinal() * 2;
+  }
+
+  private final int bitSet;
 
   // lazy
   private transient EntrySet entrySet = null;
   private transient Values values = null;
 
-  private DecorationMap(
-    final TextDecoration.@NotNull State obfuscated,
-    final TextDecoration.@NotNull State bold,
-    final TextDecoration.@NotNull State strikethrough,
-    final TextDecoration.@NotNull State underlined,
-    final TextDecoration.@NotNull State italic
-  ) {
-    this.obfuscated = obfuscated;
-    this.bold = bold;
-    this.strikethrough = strikethrough;
-    this.underlined = underlined;
-    this.italic = italic;
+  private DecorationMap(final int bitSet) {
+    this.bitSet = bitSet;
   }
 
   public @NotNull DecorationMap with(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
     Objects.requireNonNull(state, "state");
-    if (decoration == TextDecoration.OBFUSCATED) {
-      return new DecorationMap(state, this.bold, this.strikethrough, this.underlined, this.italic);
-    } else if (decoration == TextDecoration.BOLD) {
-      return new DecorationMap(this.obfuscated, state, this.strikethrough, this.underlined, this.italic);
-    } else if (decoration == TextDecoration.STRIKETHROUGH) {
-      return new DecorationMap(this.obfuscated, this.bold, state, this.underlined, this.italic);
-    } else if (decoration == TextDecoration.UNDERLINED) {
-      return new DecorationMap(this.obfuscated, this.bold, this.strikethrough, state, this.italic);
-    } else if (decoration == TextDecoration.ITALIC) {
-      return new DecorationMap(this.obfuscated, this.bold, this.strikethrough, this.underlined, state);
+    if (decoration != null) {
+      final int offset = offset(decoration);
+      return new DecorationMap(
+        this.bitSet & ~(0b11 * offset) // 'reset' the state bits
+          | state.ordinal() * offset
+      );
     }
     throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
   }
 
   @Override
-  public TextDecoration.State get(final Object decoration) {
-    if (decoration == TextDecoration.OBFUSCATED) {
-      return this.obfuscated;
-    } else if (decoration == TextDecoration.BOLD) {
-      return this.bold;
-    } else if (decoration == TextDecoration.STRIKETHROUGH) {
-      return this.strikethrough;
-    } else if (decoration == TextDecoration.UNDERLINED) {
-      return this.underlined;
-    } else if (decoration == TextDecoration.ITALIC) {
-      return this.italic;
+  public TextDecoration.State get(final Object o) {
+    if (o instanceof TextDecoration) {
+      return TextDecoration.State.values()[(int) (this.bitSet >> ((TextDecoration) o).ordinal() * 2 & 0b11)];
     }
-
     return null;
   }
 
@@ -170,22 +143,12 @@ final @Unmodifiable class DecorationMap extends AbstractMap<TextDecoration, Text
     if (other == this) return true;
     if (other == null || other.getClass() != DecorationMap.class) return false;
     final DecorationMap that = (DecorationMap) other;
-    return this.obfuscated == that.obfuscated
-      && this.bold == that.bold
-      && this.strikethrough == that.strikethrough
-      && this.underlined == that.underlined
-      && this.italic == that.italic;
+    return this.bitSet == that.bitSet;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-      this.obfuscated,
-      this.bold,
-      this.strikethrough,
-      this.underlined,
-      this.italic
-    );
+    return Long.hashCode(this.bitSet);
   }
 
   final class EntrySet extends AbstractSet<Entry<TextDecoration, TextDecoration.State>> {
@@ -229,7 +192,7 @@ final @Unmodifiable class DecorationMap extends AbstractMap<TextDecoration, Text
 
     @Override
     public Object @NotNull [] toArray() {
-      return new TextDecoration.State[] {DecorationMap.this.obfuscated, DecorationMap.this.bold, DecorationMap.this.strikethrough, DecorationMap.this.underlined, DecorationMap.this.italic};
+      return Arrays.stream(DECORATIONS).map(DecorationMap.this::get).toArray(TextDecoration.State[]::new);
     }
 
     @Override

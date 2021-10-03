@@ -40,8 +40,7 @@ import static java.util.Objects.requireNonNull;
 
 final class StyleImpl implements Style {
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
-  private static final byte TRUSTED = 0;
-  static final StyleImpl EMPTY = new StyleImpl(null, null, DecorationMap.EMPTY, null, null, null, TRUSTED);
+  static final StyleImpl EMPTY = new StyleImpl(null, null, DecorationMap.EMPTY, null, null, null);
   // visible to avoid generating accessors when creating a builder
   final @Nullable Key font;
   final @Nullable TextColor color;
@@ -66,24 +65,6 @@ final class StyleImpl implements Style {
     this.insertion = insertion;
   }
 
-  // internal constructor, takes a 'trusted' decoration map (from another StyleImpl) to avoid copying
-  private StyleImpl(
-    final @Nullable Key font,
-    final @Nullable TextColor color,
-    final @NotNull DecorationMap decorations,
-    final @Nullable ClickEvent clickEvent,
-    final @Nullable HoverEvent<?> hoverEvent,
-    final @Nullable String insertion,
-    final byte trusted
-  ) {
-    this.font = font;
-    this.color = color;
-    this.decorations = decorations;
-    this.clickEvent = clickEvent;
-    this.hoverEvent = hoverEvent;
-    this.insertion = insertion;
-  }
-
   @Override
   public @Nullable Key font() {
     return this.font;
@@ -92,7 +73,7 @@ final class StyleImpl implements Style {
   @Override
   public @NotNull Style font(final @Nullable Key font) {
     if (Objects.equals(this.font, font)) return this;
-    return new StyleImpl(font, this.color, this.decorations, this.clickEvent, this.hoverEvent, this.insertion, TRUSTED);
+    return new StyleImpl(font, this.color, this.decorations, this.clickEvent, this.hoverEvent, this.insertion);
   }
 
   @Override
@@ -103,7 +84,7 @@ final class StyleImpl implements Style {
   @Override
   public @NotNull Style color(final @Nullable TextColor color) {
     if (Objects.equals(this.color, color)) return this;
-    return new StyleImpl(this.font, color, this.decorations, this.clickEvent, this.hoverEvent, this.insertion, TRUSTED);
+    return new StyleImpl(this.font, color, this.decorations, this.clickEvent, this.hoverEvent, this.insertion);
   }
 
   @Override
@@ -128,7 +109,7 @@ final class StyleImpl implements Style {
     requireNonNull(state, "state");
     final @NotNull TextDecoration.State thisState = this.decoration(decoration);
     if (thisState == state) return this;
-    return new StyleImpl(this.font, this.color, this.decorations.with(decoration, state), this.clickEvent, this.hoverEvent, this.insertion, TRUSTED);
+    return new StyleImpl(this.font, this.color, this.decorations.with(decoration, state), this.clickEvent, this.hoverEvent, this.insertion);
   }
 
   @Override
@@ -138,7 +119,7 @@ final class StyleImpl implements Style {
 
   @Override
   public @NotNull Style decorations(final @NotNull Map<TextDecoration, TextDecoration.State> decorations) {
-    return new StyleImpl(this.font, this.color, DecorationMap.merge(decorations, this.decorations), this.clickEvent, this.hoverEvent, this.insertion, TRUSTED);
+    return new StyleImpl(this.font, this.color, DecorationMap.merge(decorations, this.decorations), this.clickEvent, this.hoverEvent, this.insertion);
   }
 
   @Override
@@ -148,7 +129,7 @@ final class StyleImpl implements Style {
 
   @Override
   public @NotNull Style clickEvent(final @Nullable ClickEvent event) {
-    return new StyleImpl(this.font, this.color, this.decorations, event, this.hoverEvent, this.insertion, TRUSTED);
+    return new StyleImpl(this.font, this.color, this.decorations, event, this.hoverEvent, this.insertion);
   }
 
   @Override
@@ -158,7 +139,7 @@ final class StyleImpl implements Style {
 
   @Override
   public @NotNull Style hoverEvent(final @Nullable HoverEventSource<?> source) {
-    return new StyleImpl(this.font, this.color, this.decorations, this.clickEvent, HoverEventSource.unbox(source), this.insertion, TRUSTED);
+    return new StyleImpl(this.font, this.color, this.decorations, this.clickEvent, HoverEventSource.unbox(source), this.insertion);
   }
 
   @Override
@@ -169,7 +150,7 @@ final class StyleImpl implements Style {
   @Override
   public @NotNull Style insertion(final @Nullable String insertion) {
     if (Objects.equals(this.insertion, insertion)) return this;
-    return new StyleImpl(this.font, this.color, this.decorations, this.clickEvent, this.hoverEvent, insertion, TRUSTED);
+    return new StyleImpl(this.font, this.color, this.decorations, this.clickEvent, this.hoverEvent, insertion);
   }
 
   @Override
