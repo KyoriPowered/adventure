@@ -45,11 +45,11 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.1.0
  */
 public final class ColorTransformation extends Transformation {
-  private static final Map<String, String> COLOR_ALIASES = new HashMap<>();
+  private static final Map<String, TextColor> COLOR_ALIASES = new HashMap<>();
 
   static {
-    COLOR_ALIASES.put("dark_grey", "dark_gray");
-    COLOR_ALIASES.put("grey", "gray");
+    COLOR_ALIASES.put("dark_grey", NamedTextColor.DARK_GRAY);
+    COLOR_ALIASES.put("grey", NamedTextColor.GRAY);
   }
 
   private final TextColor color;
@@ -81,7 +81,7 @@ public final class ColorTransformation extends Transformation {
    * @since 4.2.0
    */
   public static ColorTransformation create(final String name, final List<TagPart> args) {
-    String colorName;
+    final String colorName;
     if (isColorOrAbbreviation(name)) {
       if (args.size() == 1) {
         colorName = args.get(0).value().toLowerCase(Locale.ROOT);
@@ -92,12 +92,10 @@ public final class ColorTransformation extends Transformation {
       colorName = name;
     }
 
-    if (COLOR_ALIASES.containsKey(colorName)) {
-      colorName = COLOR_ALIASES.get(colorName);
-    }
-
     final TextColor color;
-    if (colorName.charAt(0) == '#') {
+    if (COLOR_ALIASES.containsKey(colorName)) {
+      color = COLOR_ALIASES.get(colorName);
+    } else if (colorName.charAt(0) == '#') {
       color = TextColor.fromHexString(colorName);
     } else {
       color = NamedTextColor.NAMES.value(colorName);
