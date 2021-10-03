@@ -374,7 +374,6 @@ final class StyleImpl implements Style {
       if (this.isEmpty()) {
         return EMPTY;
       }
-      // copy map, don't use the 'trusted' constructor
       return new StyleImpl(this.font, this.color, this.decorations, this.clickEvent, this.hoverEvent, this.insertion);
     }
 
