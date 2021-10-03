@@ -8,8 +8,6 @@ plugins {
   id("me.champeau.jmh") version "0.6.6"
 }
 
-val javacc: Configuration by configurations.creating
-
 group = "net.kyori"
 version = "4.2.0-SNAPSHOT"
 description = "A string-based, user-friendly format for representing Minecraft: Java Edition chat components."
