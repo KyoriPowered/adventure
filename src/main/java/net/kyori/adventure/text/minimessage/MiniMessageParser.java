@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -133,7 +134,7 @@ final class MiniMessageParser {
 
     final Template[] t = new Template[placeholders.length / 2];
     for (int i = 0; i < placeholders.length; i += 2) {
-      t[i / 2] = Template.of(placeholders[i], placeholders[i + 1]);
+      t[i / 2] = Template.of(this.sanitizeTemplateName(placeholders[i]), placeholders[i + 1]);
     }
 
     return this.parseFormat(richMessage, context, t);
@@ -143,7 +144,7 @@ final class MiniMessageParser {
     final Template[] t = new Template[placeholders.size()];
     int i = 0;
     for (final Map.Entry<String, String> entry : placeholders.entrySet()) {
-      t[i++] = Template.of(entry.getKey(), entry.getValue());
+      t[i++] = Template.of(this.sanitizeTemplateName(entry.getKey()), entry.getValue());
     }
     return this.parseFormat(richMessage, context, t);
   }
@@ -151,7 +152,7 @@ final class MiniMessageParser {
   @NotNull Component parseFormat(final @NotNull String input, final Context context, final @NotNull Template... placeholders) {
     final Map<String, Template> map = new HashMap<>();
     for (final Template placeholder : placeholders) {
-      map.put(placeholder.key(), placeholder);
+      map.put(this.sanitizeTemplateName(placeholder.key()), placeholder);
     }
     return this.parseFormat0(input, map, context);
   }
@@ -159,7 +160,7 @@ final class MiniMessageParser {
   @NotNull Component parseFormat(final @NotNull String input, final @NotNull List<Template> placeholders, final @NotNull Context context) {
     final Map<String, Template> map = new HashMap<>();
     for (final Template placeholder : placeholders) {
-      map.put(placeholder.key(), placeholder);
+      map.put(this.sanitizeTemplateName(placeholder.key()), placeholder);
     }
     return this.parseFormat0(input, map, context);
   }
@@ -191,7 +192,7 @@ final class MiniMessageParser {
           } catch (final IOException ignored) {
           }
 
-          final Transformation transformation = registry.get(node.name(), node.parts(), templates, placeholderResolver, context);
+          final Transformation transformation = registry.get(this.sanitizeTemplateName(node.name()), node.parts(), templates, placeholderResolver, context);
 
           try {
             if (transformation == null) {
@@ -218,14 +219,16 @@ final class MiniMessageParser {
     } else {
       transformationFactory = node -> {
         try {
-          return registry.get(node.name(), node.parts(), templates, placeholderResolver, context);
+          return registry.get(this.sanitizeTemplateName(node.name()), node.parts(), templates, placeholderResolver, context);
         } catch (final ParsingException ignored) {
           return null;
         }
       };
     }
-    final BiPredicate<String, Boolean> tagNameChecker = (name, includeTemplates) ->
-      registry.exists(name, placeholderResolver) || (includeTemplates && templates.containsKey(name));
+    final BiPredicate<String, Boolean> tagNameChecker = (name, includeTemplates) -> {
+      final String sanitized = this.sanitizeTemplateName(name);
+      return registry.exists(sanitized, placeholderResolver) || (includeTemplates && templates.containsKey(sanitized));
+    };
 
     final ElementNode root = TokenParser.parse(transformationFactory, tagNameChecker, templates, richMessage, context.strict());
 
@@ -343,5 +346,9 @@ final class MiniMessageParser {
 
   private static @NotNull Style mergeStyle(final @NotNull Component base, final @NotNull Component target) {
     return target.style().merge(base.style(), Style.Merge.Strategy.IF_ABSENT_ON_TARGET, Style.Merge.all());
+  }
+
+  private String sanitizeTemplateName(final String name) {
+    return name.toLowerCase(Locale.ROOT);
   }
 }

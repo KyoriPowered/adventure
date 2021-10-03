@@ -25,6 +25,9 @@ package net.kyori.adventure.text.minimessage.transformation;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -157,6 +160,8 @@ public final class TransformationType<T extends Transformation> {
    * <p>It is assumed that the {@code nameMatcher} function is side-effect free, meaning that any time
    * it is called for a certain input {@code x}, it will always return the same value, and not modify any other state.</p>
    *
+   * <p>All input to the {@code nameMatcher} function will be lower-case in the {@code ROOT} locale.</p>
+   *
    * @param nameMatcher the name matcher predicate
    * @param factory a factory
    * @param <T> transformation instance type
@@ -188,7 +193,7 @@ public final class TransformationType<T extends Transformation> {
   }
 
   /**
-   * Create a name matcher function that will accept the provided case-insensitive tag names.
+   * Create a name matcher function that will accept the provided lowercase tag names.
    *
    * @param elements the accepted names
    * @return a name matcher function
@@ -199,7 +204,7 @@ public final class TransformationType<T extends Transformation> {
   }
 
   /**
-   * Create a name matcher function that will accept the provided case-insensitive tag names.
+   * Create a name matcher function that will accept the provided lowercase tag names.
    *
    * @param elements the accepted names
    * @return a name matcher function
@@ -207,16 +212,14 @@ public final class TransformationType<T extends Transformation> {
    */
   public static Predicate<String> acceptingNames(final Collection<String> elements) {
     if (elements.size() == 1) {
-      final String name = elements.iterator().next();
-      return tag -> tag.equalsIgnoreCase(name);
+      final String name = elements.iterator().next().toLowerCase(Locale.ROOT);
+      return tag -> tag.equals(name);
     } else {
-      final String[] names = elements.toArray(new String[0]);
-      return tag -> {
-        for (final String name : names) {
-          if (tag.equalsIgnoreCase(name)) return true;
-        }
-        return false;
-      };
+      final Set<String> names = new HashSet<>(elements.size());
+      for (final String name : elements) {
+        names.add(name.toLowerCase(Locale.ROOT));
+      }
+      return names::contains;
     }
   }
 }

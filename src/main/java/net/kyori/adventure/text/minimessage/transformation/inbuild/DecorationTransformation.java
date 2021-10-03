@@ -26,7 +26,6 @@ package net.kyori.adventure.text.minimessage.transformation.inbuild;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -84,8 +83,7 @@ public final class DecorationTransformation extends Transformation {
     return new DecorationTransformation(decoration);
   }
 
-  private static TextDecoration parseDecoration(String name) {
-    name = name.toLowerCase(Locale.ROOT);
+  private static TextDecoration parseDecoration(final String name) {
     final TextDecoration alias = DECORATION_ALIASES.get(name);
     return alias != null ? alias : TextDecoration.NAMES.value(name);
   }

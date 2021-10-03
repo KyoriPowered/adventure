@@ -55,7 +55,7 @@ public final class ColorTransformation extends Transformation {
   private final TextColor color;
 
   private static boolean isColorOrAbbreviation(final String name) {
-    return name.equalsIgnoreCase(Tokens.COLOR) || name.equalsIgnoreCase(Tokens.COLOR_2) || name.equalsIgnoreCase(Tokens.COLOR_3);
+    return name.equals(Tokens.COLOR) || name.equals(Tokens.COLOR_2) || name.equals(Tokens.COLOR_3);
   }
 
   /**
@@ -68,7 +68,7 @@ public final class ColorTransformation extends Transformation {
   public static boolean canParse(final String name) {
     return isColorOrAbbreviation(name)
       || TextColor.fromHexString(name) != null
-      || NamedTextColor.NAMES.value(name.toLowerCase(Locale.ROOT)) != null
+      || NamedTextColor.NAMES.value(name) != null
       || COLOR_ALIASES.containsKey(name);
   }
 
@@ -84,7 +84,7 @@ public final class ColorTransformation extends Transformation {
     String colorName;
     if (isColorOrAbbreviation(name)) {
       if (args.size() == 1) {
-        colorName = args.get(0).value();
+        colorName = args.get(0).value().toLowerCase(Locale.ROOT);
       } else {
         throw new ParsingException("Expected to find a color parameter, but found " + args, args);
       }
@@ -100,7 +100,7 @@ public final class ColorTransformation extends Transformation {
     if (colorName.charAt(0) == '#') {
       color = TextColor.fromHexString(colorName);
     } else {
-      color = NamedTextColor.NAMES.value(colorName.toLowerCase(Locale.ROOT));
+      color = NamedTextColor.NAMES.value(colorName);
     }
 
     if (color == null) {
