@@ -2006,6 +2006,17 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
+   * Tests if this {@link Component} is empty.
+   *
+   * @return {@code true} if the component is the empty component, {@code false} if
+   *     component is not a {@link TextComponent} or not empty.
+   * @since 4.10.0
+   */
+  default boolean isEmpty() {
+    return this == TextComponentImpl.EMPTY;
+  }
+
+  /**
    * Finds and replaces any text with this or child {@link Component}s using the configured options.
    *
    * @param configurer the configurer

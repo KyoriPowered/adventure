@@ -308,6 +308,11 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B> & Scoped
   }
 
   @Test
+  void testIsEmpty() {
+    assertFalse(this.buildOne().isEmpty());
+  }
+
+  @Test
   void testAsHoverEvent() {
     final C c0 = this.buildOne().color(null);
     final HoverEvent<Component> e0 = HoverEvent.showText(c0);
