@@ -278,6 +278,7 @@ class ComponentCompactingTest {
     assertEquals(text("meow").decoration(TextDecoration.BOLD, true), c3.compact());
   }
 
+  // https://github.com/KyoriPowered/adventure/issues/455
   @Test
   void testStyleMatchingGrandchild() {
     final Component notCompact = text("mew", NamedTextColor.RED)
