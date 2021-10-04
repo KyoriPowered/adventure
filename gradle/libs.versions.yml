@@ -3,10 +3,8 @@ metadata:
   polyglot-extensions: [plugins]
 
 dependencies:
-  adventure-api: "net.kyori:adventure-api:4.9.1"
-  adventure-text-plain: "net.kyori:adventure-text-serializer-plain:4.9.1"
-
-  javacc: "net.java.dev.javacc:javacc:7.0.10"
+  adventure-api: "net.kyori:adventure-api:4.9.2"
+  adventure-text-plain: "net.kyori:adventure-text-serializer-plain:4.9.2"
 
   jetbrains-annotations: "org.jetbrains:annotations:22.0.0"
 
