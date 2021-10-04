@@ -65,10 +65,10 @@ final class ComponentCompaction {
     }
 
     // propagate the parent style context to children
-    // by merging this component's style into the parent style
+    // by merging the parent's style into this component
     Style childParentStyle = optimized.style();
     if (parentStyle != null) {
-      childParentStyle = parentStyle.merge(childParentStyle, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
+      childParentStyle = childParentStyle.merge(parentStyle, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
     }
 
     // optimize all children
