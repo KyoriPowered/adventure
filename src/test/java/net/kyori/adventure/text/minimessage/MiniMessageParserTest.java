@@ -1540,6 +1540,7 @@ public class MiniMessageParserTest extends TestBase {
     this.assertParsedEquals(expected2, input2);
   }
 
+  // https://github.com/KyoriPowered/adventure-text-minimessage/issues/165
   @Test
   void testClosingTagAtRootLevel() {
     final String input = "one</blue>two";
