@@ -1539,4 +1539,13 @@ public class MiniMessageParserTest extends TestBase {
     this.assertParsedEquals(expected1, input1);
     this.assertParsedEquals(expected2, input2);
   }
+
+  @Test
+  void testClosingTagAtRootLevel() {
+    final String input = "one</blue>two";
+
+    final Component expected = text("one</blue>two");
+
+    this.assertParsedEquals(expected, input);
+  }
 }

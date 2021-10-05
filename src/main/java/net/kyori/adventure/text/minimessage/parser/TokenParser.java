@@ -418,13 +418,12 @@ public final class TokenParser {
             }
 
             parentNode = parentNode.parent();
-
-            if (parentNode == null || parentNode instanceof RootNode) {
-              // This means the closing tag didn't match to anything
-              // Since open tags which don't match to anything is never an error, neither is this
-              node.addChild(new TextNode(node, token, message));
-              break;
-            }
+          }
+          if (parentNode == null || parentNode instanceof RootNode) {
+            // This means the closing tag didn't match to anything
+            // Since open tags which don't match to anything is never an error, neither is this
+            node.addChild(new TextNode(node, token, message));
+            break;
           }
           break; // CLOSE_TAG
       }
