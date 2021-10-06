@@ -26,13 +26,11 @@ package net.kyori.adventure.text.minimessage.transformation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.Template;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
+import net.kyori.adventure.text.minimessage.template.TemplateResolver;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.TemplateTransformation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -87,22 +85,19 @@ final class TransformationRegistryImpl implements TransformationRegistry {
   }
 
   @Override
-  public @Nullable Transformation get(final String name, final List<TagPart> inners, final Map<String, Template> templates, final Function<String, ComponentLike> placeholderResolver, final Context context) {
+  public @Nullable Transformation get(final String name, final List<TagPart> inners, final TemplateResolver templateResolver, final Context context) {
     // first try if we have a custom placeholder resolver
-    final ComponentLike potentialTemplate = placeholderResolver.apply(name);
-    if (potentialTemplate != null) {
-      return this.tryLoad(TemplateTransformation.factory(new Template.ComponentTemplate(name, potentialTemplate.asComponent())), name, inners, context);
+    final Template template = templateResolver.resolve(name);
+    if (template != null) {
+      // The parser handles StringTemplates
+      if (template instanceof Template.ComponentTemplate) {
+        return this.tryLoad(TemplateTransformation.factory(new Template.ComponentTemplate(name, ((Template.ComponentTemplate) template).value())), name, inners, context);
+      }
     }
     // then check our registry
     for (final TransformationType<? extends Transformation> type : this.types) {
       if (type.canParse.test(name)) {
         return this.tryLoad(type.factory, name, inners, context);
-      } else if (templates.containsKey(name)) {
-        final Template template = templates.get(name);
-        // The parser handles StringTemplates
-        if (template instanceof Template.ComponentTemplate) {
-          return this.tryLoad(TemplateTransformation.factory((Template.ComponentTemplate) template), name, inners, context);
-        }
       }
     }
 
@@ -110,9 +105,9 @@ final class TransformationRegistryImpl implements TransformationRegistry {
   }
 
   @Override
-  public boolean exists(final String name, final Function<String, ComponentLike> placeholderResolver) {
+  public boolean exists(final String name, final TemplateResolver templateResolver) {
     // first check the placeholder resolver
-    if (placeholderResolver.apply(name) != null) {
+    if (templateResolver.canResolve(name)) {
       return true;
     }
     // then check registry

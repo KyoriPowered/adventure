@@ -30,7 +30,9 @@ import java.util.Objects;
 import net.kyori.adventure.text.minimessage.Template;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
+import net.kyori.adventure.text.minimessage.template.TemplateResolver;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,27 +52,48 @@ public final class TagNode extends ElementNode {
    * @param token         the token that created this node
    * @param sourceMessage the source message
    * @since 4.2.0
+   * @deprecated For removal since 4.2.0, use {@link #TagNode(ElementNode, Token, String, TemplateResolver)} with {@link TemplateResolver#pairs(Map)}
    */
+  @ApiStatus.ScheduledForRemoval
+  @Deprecated
   public TagNode(
     final @NotNull ElementNode parent,
     final @NotNull Token token,
     final @NotNull String sourceMessage,
     final @NotNull Map<String, Template> templates
   ) {
+    this(parent, token, sourceMessage, TemplateResolver.pairs(templates));
+  }
+
+  /**
+   * Creates a new element node.
+   *
+   * @param parent        the parent of this node
+   * @param token         the token that created this node
+   * @param sourceMessage the source message
+   * @param templateResolver the template resolver
+   * @since 4.2.0
+   */
+  public TagNode(
+      final @NotNull ElementNode parent,
+      final @NotNull Token token,
+      final @NotNull String sourceMessage,
+      final @NotNull TemplateResolver templateResolver
+  ) {
     super(parent, token, sourceMessage);
-    this.parts = genParts(token, sourceMessage, templates);
+    this.parts = genParts(token, sourceMessage, templateResolver);
   }
 
   private static @NotNull List<TagPart> genParts(
     final @NotNull Token token,
     final @NotNull String sourceMessage,
-    final @NotNull Map<String, Template> templates
+    final @NotNull TemplateResolver templateResolver
   ) {
     final ArrayList<TagPart> parts = new ArrayList<>();
 
     if (token.childTokens() != null) {
       for (final Token childToken : token.childTokens()) {
-        parts.add(new TagPart(sourceMessage, childToken, templates));
+        parts.add(new TagPart(sourceMessage, childToken, templateResolver));
       }
     }
 

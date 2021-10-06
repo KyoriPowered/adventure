@@ -23,13 +23,10 @@
  */
 package net.kyori.adventure.text.minimessage;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.minimessage.template.TemplateResolver;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,18 +39,17 @@ import static java.util.Objects.requireNonNull;
  * @since 4.0.0
  */
 final class MiniMessageImpl implements MiniMessage {
-  static final Function<String, ComponentLike> DEFAULT_PLACEHOLDER_RESOLVER = s -> null;
   static final Consumer<List<String>> DEFAULT_ERROR_CONSUMER = message -> message.forEach(System.out::println);
 
-  static final MiniMessage INSTANCE = new MiniMessageImpl(TransformationRegistry.standard(), DEFAULT_PLACEHOLDER_RESOLVER, false, null, DEFAULT_ERROR_CONSUMER);
+  static final MiniMessage INSTANCE = new MiniMessageImpl(TransformationRegistry.standard(), TemplateResolver.empty(), false, null, DEFAULT_ERROR_CONSUMER);
 
-  private final MiniMessageParser parser;
   private final boolean strict;
   private final Appendable debugOutput;
   private final Consumer<List<String>> parsingErrorMessageConsumer;
+  final MiniMessageParser parser;
 
-  MiniMessageImpl(final @NotNull TransformationRegistry registry, final @NotNull Function<String, ComponentLike> placeholderResolver, final boolean strict, final Appendable debugOutput, final @NotNull Consumer<List<String>> parsingErrorMessageConsumer) {
-    this.parser = new MiniMessageParser(registry, placeholderResolver);
+  MiniMessageImpl(final @NotNull TransformationRegistry registry, final @NotNull TemplateResolver templateResolver, final boolean strict, final Appendable debugOutput, final @NotNull Consumer<List<String>> parsingErrorMessageConsumer) {
+    this.parser = new MiniMessageParser(registry, templateResolver);
     this.strict = strict;
     this.debugOutput = debugOutput;
     this.parsingErrorMessageConsumer = parsingErrorMessageConsumer;
@@ -65,66 +61,13 @@ final class MiniMessageImpl implements MiniMessage {
   }
 
   @Override
+  public @NotNull Component deserialize(final @NotNull String input, final @NotNull TemplateResolver templateResolver) {
+    return this.parser.parseFormat(input, Context.of(this.strict, this.debugOutput, input, this, templateResolver));
+  }
+
+  @Override
   public @NotNull String serialize(final @NotNull Component component) {
     return MiniMessageSerializer.serialize(component);
-  }
-
-  @Override
-  public @NotNull Component parse(final @NotNull String input, final @NotNull String... placeholders) {
-    return this.parser.parseFormat(input, Context.of(this.strict, this.debugOutput, input, this), placeholders);
-  }
-
-  @Override
-  public @NotNull Component parse(final @NotNull String input, final @NotNull Map<String, String> placeholders) {
-    return this.parser.parseFormat(input, placeholders, Context.of(this.strict, this.debugOutput, input, this));
-  }
-
-  @Override
-  public @NotNull Component parse(final @NotNull String input, final @NotNull Object... placeholders) {
-    final List<Template> templates = new ArrayList<>();
-    String key = null;
-    for (int i = 0; i < placeholders.length; i++) {
-      final Object object = placeholders[i];
-      if (object instanceof Template) {
-        // add as a template directly
-        templates.add((Template) object);
-      } else {
-        // this is a `key=[string|component]` template
-        if (key == null) {
-          // get the key
-          if (object instanceof String) {
-            key = (String) object;
-          } else {
-            throw new IllegalArgumentException("Argument " + i + " in placeholders is key, must be String, was " + object.getClass().getName());
-          }
-        } else {
-          // get the value
-          if (object instanceof ComponentLike) {
-            templates.add(Template.of(key, ((ComponentLike) object).asComponent()));
-            key = null;
-          } else if (object instanceof String) {
-            templates.add(Template.of(key, (String) object));
-            key = null;
-          } else {
-            throw new IllegalArgumentException("Argument " + i + " in placeholders is a value, must be Component or String, was " + object.getClass().getName());
-          }
-        }
-      }
-    }
-    if (key != null) {
-      throw new IllegalArgumentException("Found a key in placeholders that wasn't followed by a value: " + key);
-    }
-    return this.parse(input, templates);
-  }
-
-  @Override
-  public @NotNull Component parse(final @NotNull String input, final @NotNull Template... placeholders) {
-    return this.parser.parseFormat(input, Context.of(this.strict, this.debugOutput, input, this, placeholders), placeholders);
-  }
-
-  @Override
-  public @NotNull Component parse(final @NotNull String input, final @NotNull List<Template> placeholders) {
-    return this.parser.parseFormat(input, placeholders, Context.of(this.strict, this.debugOutput, input, this, placeholders.toArray(new Template[0])));
   }
 
   @Override
@@ -154,7 +97,7 @@ final class MiniMessageImpl implements MiniMessage {
 
   static final class BuilderImpl implements Builder {
     private TransformationRegistry registry = TransformationRegistry.standard();
-    private Function<String, ComponentLike> placeholderResolver = DEFAULT_PLACEHOLDER_RESOLVER;
+    private TemplateResolver templateResolver = null;
     private boolean strict = false;
     private Appendable debug = null;
     private Consumer<List<String>> parsingErrorMessageConsumer = DEFAULT_ERROR_CONSUMER;
@@ -164,7 +107,7 @@ final class MiniMessageImpl implements MiniMessage {
 
     BuilderImpl(final MiniMessageImpl serializer) {
       this.registry = serializer.parser.registry;
-      this.placeholderResolver = serializer.parser.placeholderResolver;
+      this.templateResolver = serializer.parser.templateResolver;
       this.strict = serializer.strict;
       this.debug = serializer.debugOutput;
       this.parsingErrorMessageConsumer = serializer.parsingErrorMessageConsumer;
@@ -185,8 +128,8 @@ final class MiniMessageImpl implements MiniMessage {
     }
 
     @Override
-    public @NotNull Builder placeholderResolver(final @NotNull Function<@NotNull String, @Nullable ComponentLike> placeholderResolver) {
-      this.placeholderResolver = requireNonNull(placeholderResolver, "placeholderResolver");
+    public @NotNull Builder templateResolver(final @Nullable TemplateResolver templateResolver) {
+      this.templateResolver = templateResolver;
       return this;
     }
 
@@ -210,7 +153,7 @@ final class MiniMessageImpl implements MiniMessage {
 
     @Override
     public @NotNull MiniMessage build() {
-      return new MiniMessageImpl(this.registry, this.placeholderResolver, this.strict, this.debug, this.parsingErrorMessageConsumer);
+      return new MiniMessageImpl(this.registry, this.templateResolver == null ? TemplateResolver.empty() : this.templateResolver, this.strict, this.debug, this.parsingErrorMessageConsumer);
     }
   }
 }

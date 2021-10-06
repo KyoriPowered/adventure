@@ -26,9 +26,11 @@ package net.kyori.adventure.text.minimessage;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
@@ -46,7 +48,10 @@ public interface Template extends Examinable {
    * @param value the value to replace the key with
    * @return the constructed template
    * @since 4.0.0
+   * @deprecated Use {@link #template(String, String)}
    */
+  @ApiStatus.ScheduledForRemoval
+  @Deprecated
   static @NotNull Template of(final @NotNull String key, final @NotNull String value) {
     return new StringTemplate(
       requireNonNull(key, "key"),
@@ -61,7 +66,10 @@ public interface Template extends Examinable {
    * @param value the component to replace the key with
    * @return the constructed template
    * @since 4.0.0
+   * @deprecated Use {@link #template(String, ComponentLike)}
    */
+  @ApiStatus.ScheduledForRemoval
+  @Deprecated
   static @NotNull Template of(final @NotNull String key, final @NotNull Component value) {
     return new ComponentTemplate(
       requireNonNull(key, "key"),
@@ -76,11 +84,59 @@ public interface Template extends Examinable {
    * @param value the supplier that supplies the component to replace the key with
    * @return the constructed template
    * @since 4.2.0
+   * @deprecated Use {@link #template(String, Supplier)}
    */
+  @ApiStatus.ScheduledForRemoval
+  @Deprecated
   static @NotNull Template of(final @NotNull String key, final @NotNull Supplier<Component> value) {
     return new LazyComponentTemplate(
       requireNonNull(key, "key"),
       requireNonNull(value, "value")
+    );
+  }
+
+  /**
+   * Constructs a template that gets replaced with a string.
+   *
+   * @param key the placeholder
+   * @param value the value to replace the key with
+   * @return the constructed template
+   * @since 4.2.0
+   */
+  static @NotNull Template template(final @NotNull String key, final @NotNull String value) {
+    return new StringTemplate(
+        requireNonNull(key, "key"),
+        requireNonNull(value, "value")
+    );
+  }
+
+  /**
+   * Constructs a template that gets replaced with a component.
+   *
+   * @param key the placeholder
+   * @param value the component to replace the key with
+   * @return the constructed template
+   * @since 4.2.0
+   */
+  static @NotNull Template template(final @NotNull String key, final @NotNull ComponentLike value) {
+    return new ComponentTemplate(
+        requireNonNull(key, "key"),
+        requireNonNull(requireNonNull(value, "value").asComponent(), "value cannot resolve to null")
+    );
+  }
+
+  /**
+   * Constructs a template that gets replaced with a component lazily.
+   *
+   * @param key the placeholder
+   * @param value the supplier that supplies the component to replace the key with
+   * @return the constructed template
+   * @since 4.2.0
+   */
+  static @NotNull Template template(final @NotNull String key, final @NotNull Supplier<? extends ComponentLike> value) {
+    return new LazyComponentTemplate(
+        requireNonNull(key, "key"),
+        requireNonNull(value, "value")
     );
   }
 
@@ -105,6 +161,7 @@ public interface Template extends Examinable {
    *
    * @since 4.0.0
    */
+  @ApiStatus.Internal
   class StringTemplate implements Template {
     private final String key;
     private final String value;
@@ -143,6 +200,7 @@ public interface Template extends Examinable {
    *
    * @since 4.0.0
    */
+  @ApiStatus.Internal
   class ComponentTemplate implements Template {
     private final @NotNull String key;
     private final @NotNull Component value;
@@ -181,24 +239,27 @@ public interface Template extends Examinable {
    *
    * @since 4.2.0
    */
+  @ApiStatus.Internal
   class LazyComponentTemplate extends ComponentTemplate {
-    private final @NotNull Supplier<Component> value;
+    private final @NotNull Supplier<? extends ComponentLike> value;
 
-    public LazyComponentTemplate(final @NotNull String key, final @NotNull Supplier<Component> value) {
+    public LazyComponentTemplate(final @NotNull String key, final @NotNull Supplier<? extends ComponentLike> value) {
       super(key, Component.empty());
       this.value = value;
     }
 
     @Override
     public @NotNull Component value() {
-      return requireNonNull(this.value.get(), () -> "get() value of " + this.value);
+      return requireNonNull(requireNonNull(
+          this.value.get(), () -> "get() value of " + this.value)
+          .asComponent(), () -> "asComponent() on value of " + this.value);
     }
 
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
         ExaminableProperty.of("key", this.key()),
-        ExaminableProperty.of("value", this.value.get())
+        ExaminableProperty.of("value", this.value)
       );
     }
   }
