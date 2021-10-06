@@ -55,11 +55,12 @@ import static java.util.Objects.requireNonNull;
  * @since 4.1.0
  */
 public final class TransformationType<T extends Transformation> {
-  public static final TransformationType<ColorTransformation> COLOR = transformationType(
+
+  public static final TransformationType<?> COLOR = transformationType(
     ColorTransformation::canParse,
     ColorTransformation::create
   );
-  public static final TransformationType<DecorationTransformation> DECORATION = transformationType(
+  public static final TransformationType<?> DECORATION = transformationType(
     acceptingNames(
       Stream.of(TextDecoration.NAMES.keys(), DecorationTransformation.DECORATION_ALIASES.keySet())
         .flatMap(Collection::stream)
@@ -67,35 +68,35 @@ public final class TransformationType<T extends Transformation> {
     ),
     DecorationTransformation::create
   );
-  public static final TransformationType<HoverTransformation> HOVER_EVENT = transformationType(
+  public static final TransformationType<?> HOVER_EVENT = transformationType(
     acceptingNames(Tokens.HOVER),
     HoverTransformation::create
   );
-  public static final TransformationType<ClickTransformation> CLICK_EVENT = transformationType(
+  public static final TransformationType<?> CLICK_EVENT = transformationType(
     acceptingNames(Tokens.CLICK),
     ClickTransformation::create
   );
-  public static final TransformationType<KeybindTransformation> KEYBIND = transformationType(
+  public static final TransformationType<?> KEYBIND = transformationType(
     acceptingNames(Tokens.KEYBIND),
     KeybindTransformation::create
   );
-  public static final TransformationType<TranslatableTransformation> TRANSLATABLE = transformationType(
+  public static final TransformationType<?> TRANSLATABLE = transformationType(
     acceptingNames(Tokens.TRANSLATABLE, Tokens.TRANSLATABLE_2, Tokens.TRANSLATABLE_3),
     TranslatableTransformation::create
   );
-  public static final TransformationType<InsertionTransformation> INSERTION = transformationType(
+  public static final TransformationType<?> INSERTION = transformationType(
     acceptingNames(Tokens.INSERTION),
     InsertionTransformation::create
   );
-  public static final TransformationType<FontTransformation> FONT = transformationType(
+  public static final TransformationType<?> FONT = transformationType(
     acceptingNames(Tokens.FONT),
     FontTransformation::create
   );
-  public static final TransformationType<GradientTransformation> GRADIENT = transformationType(
+  public static final TransformationType<?> GRADIENT = transformationType(
     acceptingNames(Tokens.GRADIENT),
     GradientTransformation::create
   );
-  public static final TransformationType<RainbowTransformation> RAINBOW = transformationType(
+  public static final TransformationType<?> RAINBOW = transformationType(
     acceptingNames(Tokens.RAINBOW),
     RainbowTransformation::create
   );
@@ -105,7 +106,7 @@ public final class TransformationType<T extends Transformation> {
    * @deprecated since 4.2.0 this is handled at parser level
    */
   @Deprecated
-  public static final TransformationType<ResetTransformation> RESET = transformationType(
+  public static final TransformationType<?> RESET = transformationType(
     acceptingNames(Tokens.RESET, Tokens.RESET_2),
     ResetTransformation::create
   );
@@ -115,7 +116,7 @@ public final class TransformationType<T extends Transformation> {
    * @deprecated since 4.2.0 this is handled at parser level
    */
   @Deprecated
-  public static final TransformationType<PreTransformation> PRE = transformationType(
+  public static final TransformationType<?> PRE = transformationType(
     acceptingNames(Tokens.PRE),
     PreTransformation::create
   );
