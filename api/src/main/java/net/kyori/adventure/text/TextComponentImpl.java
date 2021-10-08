@@ -168,9 +168,5 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
       }
       return new TextComponentImpl(this.children, style, this.content);
     }
-
-    private boolean isEmpty() {
-      return this.content.isEmpty() && this.children.isEmpty() && !this.hasStyle();
-    }
   }
 }

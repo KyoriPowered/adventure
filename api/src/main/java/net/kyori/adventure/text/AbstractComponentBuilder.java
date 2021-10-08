@@ -291,10 +291,6 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
     return this.styleBuilder;
   }
 
-  protected final boolean hasStyle() {
-    return this.styleBuilder != null || this.style != null;
-  }
-
   protected @NotNull Style buildStyle() {
     if (this.styleBuilder != null) {
       return this.styleBuilder.build();
