@@ -24,6 +24,7 @@
 package net.kyori.adventure.text;
 
 import com.google.common.collect.ImmutableSet;
+import java.util.Collections;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
@@ -144,8 +145,11 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
     assertTrue(component.isEmpty());
     component = Component.text("");
     assertTrue(component.isEmpty());
+    component = Component.text("", Style.empty());
+    assertTrue(component.isEmpty());
     component = Component.text().append(Component.empty()).append(Component.empty()).build();
     assertTrue(component.isEmpty());
+
     component = Component.text(" ");
     assertFalse(component.isEmpty());
     component = Component.text().append(Component.text(" ")).append(Component.empty()).build();
@@ -153,13 +157,28 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
   }
 
   @Test
-  void testTextReplaceIsEmpty() {
-    Component component = Component.text("a");
-    assertFalse(component.isEmpty());
-    component = component.replaceText(builder -> {
-      builder.matchLiteral("a");
-      builder.replacement("");
-    });
-    assertTrue(component.isEmpty(), component.toString());
+  void testIsEmptyBuilders() {
+    Component component = Component.text().content("").style(Style.empty()).asComponent();
+    assertTrue(component.isEmpty());
+    component = component.style(Style.empty());
+    assertTrue(component.isEmpty());
+    component = component.children(Collections.emptyList());
+    assertTrue(component.isEmpty());
+    component = component.children(Collections.singletonList(Component.empty()));
+    assertTrue(component.isEmpty());
+
+    final Style nonEmptyStyle = Style.style()
+      .decorate(TextDecoration.BOLD).build();
+    assertFalse(Component.empty().style(nonEmptyStyle).isEmpty());
+    assertFalse(Component.empty()
+      .children(Collections.singletonList(Component.text().content("a"))).isEmpty());
+    assertFalse(Component.empty()
+      .children(Collections.singletonList(Component.text().style(nonEmptyStyle))).isEmpty());
+
+    assertTrue(Component.empty().content("abc").content("").isEmpty());
+    assertTrue(Component.empty().style(nonEmptyStyle).style(Style.empty()).isEmpty());
+    assertTrue(Component.empty()
+      .children(Collections.singletonList(Component.text("a")))
+      .children(Collections.emptyList()).isEmpty());
   }
 }
