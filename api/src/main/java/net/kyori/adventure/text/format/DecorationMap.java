@@ -210,7 +210,11 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
 
     @Override
     public Object @NotNull [] toArray() {
-      return Arrays.stream(StyleImpl.DECORATIONS).map(DecorationMap.this::get).toArray(TextDecoration.State[]::new);
+      final TextDecoration.State[] states = new TextDecoration.State[MAP_SIZE];
+      for (int i = 0; i < MAP_SIZE; i++) {
+        states[i] = DecorationMap.this.get(StyleImpl.DECORATIONS[i]);
+      }
+      return states;
     }
 
     @Override
