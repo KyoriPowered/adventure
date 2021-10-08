@@ -215,12 +215,15 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T @NotNull [] toArray(final T @NotNull [] a) {
-      if (a.length < MAP_SIZE) {
-        return (T[]) Arrays.copyOf(this.toArray(), MAP_SIZE, a.getClass());
+    public <T> T @NotNull [] toArray(final T @NotNull [] dest) {
+      if (dest.length < MAP_SIZE) {
+        return (T[]) Arrays.copyOf(this.toArray(), MAP_SIZE, dest.getClass());
       }
-      System.arraycopy(this.toArray(), 0, a, 0, MAP_SIZE);
-      return a;
+      System.arraycopy(this.toArray(), 0, dest, 0, MAP_SIZE);
+      if (dest.length > MAP_SIZE) {
+        dest[MAP_SIZE] = null;
+      }
+      return dest;
     }
 
     @Override
@@ -253,12 +256,15 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T @NotNull [] toArray(final T @NotNull [] a) {
-      if (a.length < MAP_SIZE) {
-        return (T[]) Arrays.copyOf(StyleImpl.DECORATIONS, MAP_SIZE, a.getClass());
+    public <T> T @NotNull [] toArray(final T @NotNull [] dest) {
+      if (dest.length < MAP_SIZE) {
+        return (T[]) Arrays.copyOf(StyleImpl.DECORATIONS, MAP_SIZE, dest.getClass());
       }
-      System.arraycopy(StyleImpl.DECORATIONS, 0, a, 0, MAP_SIZE);
-      return a;
+      System.arraycopy(StyleImpl.DECORATIONS, 0, dest, 0, MAP_SIZE);
+      if (dest.length > MAP_SIZE) {
+        dest[MAP_SIZE] = null;
+      }
+      return dest;
     }
 
     @Override
