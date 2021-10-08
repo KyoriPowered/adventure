@@ -144,9 +144,22 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
     assertTrue(component.isEmpty());
     component = Component.text("");
     assertTrue(component.isEmpty());
-    component = Component.text().append(Component.empty()).build();
+    component = Component.text().append(Component.empty()).append(Component.empty()).build();
     assertTrue(component.isEmpty());
     component = Component.text(" ");
     assertFalse(component.isEmpty());
+    component = Component.text().append(Component.text(" ")).append(Component.empty()).build();
+    assertFalse(component.isEmpty());
+  }
+
+  @Test
+  void testTextReplaceIsEmpty() {
+    Component component = Component.text("a");
+    assertFalse(component.isEmpty());
+    component = component.replaceText(builder -> {
+      builder.matchLiteral("a");
+      builder.replacement("");
+    });
+    assertTrue(component.isEmpty(), component.toString());
   }
 }

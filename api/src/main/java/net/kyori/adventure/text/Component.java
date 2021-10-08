@@ -2006,7 +2006,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
-   * Tests if this {@link Component} is empty.
+   * Tests if this component is empty.
    *
    * @return {@code true} if the component is the empty component, {@code false} if
    *     component is not a {@link TextComponent} or not empty.
