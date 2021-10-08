@@ -39,7 +39,7 @@ import org.jetbrains.annotations.Nullable;
 import static java.util.Objects.requireNonNull;
 
 final class StyleImpl implements Style {
-  private static final TextDecoration[] DECORATIONS = TextDecoration.values();
+  static final TextDecoration[] DECORATIONS = TextDecoration.values();
   static final StyleImpl EMPTY = new StyleImpl(null, null, DecorationMap.EMPTY, null, null, null);
   // visible to avoid generating accessors when creating a builder
   final @Nullable Key font;

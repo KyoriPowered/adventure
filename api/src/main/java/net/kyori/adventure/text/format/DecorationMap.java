@@ -28,7 +28,6 @@ import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -43,28 +42,41 @@ import org.jetbrains.annotations.Unmodifiable;
 
 @Unmodifiable
 final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.State> implements Examinable {
-  private static final TextDecoration[] DECORATIONS = TextDecoration.values();
   private static final TextDecoration.State[] STATES = TextDecoration.State.values();
+  private static final int MAP_SIZE = StyleImpl.DECORATIONS.length;
+  private static final TextDecoration.State[] EMPTY_STATE_ARRAY = {};
 
-  static final DecorationMap EMPTY = fromMap(Collections.emptyMap());
+  static final DecorationMap EMPTY = createEmptyDecorationMap();
   // key set is universal, all decorations always exist in any given style
   private static final KeySet KEY_SET = new KeySet();
 
   static DecorationMap fromMap(final Map<TextDecoration, TextDecoration.State> decorationMap) {
     if (decorationMap instanceof DecorationMap) return (DecorationMap) decorationMap;
     int bitSet = 0;
-    for (int i = 0; i < DECORATIONS.length; i++) {
-      final TextDecoration decoration = DECORATIONS[i];
+    for (int i = 0; i < MAP_SIZE; i++) {
+      final TextDecoration decoration = StyleImpl.DECORATIONS[i];
       bitSet |= decorationMap.getOrDefault(decoration, TextDecoration.State.NOT_SET).ordinal() * offset(decoration);
     }
-    return new DecorationMap(bitSet);
+    return withBitSet(bitSet);
   }
 
   static DecorationMap merge(final Map<TextDecoration, TextDecoration.State> first, final Map<TextDecoration, TextDecoration.State> second) {
     int bitSet = 0;
-    for (int i = 0; i < DECORATIONS.length; i++) {
-      final TextDecoration decoration = DECORATIONS[i];
+    for (int i = 0; i < MAP_SIZE; i++) {
+      final TextDecoration decoration = StyleImpl.DECORATIONS[i];
       bitSet |= first.getOrDefault(decoration, second.getOrDefault(decoration, TextDecoration.State.NOT_SET)).ordinal() * offset(decoration);
+    }
+    return withBitSet(bitSet);
+  }
+
+  private static DecorationMap withBitSet(final int bitSet) {
+    return bitSet == EMPTY.bitSet ? EMPTY : new DecorationMap(bitSet);
+  }
+
+  private static DecorationMap createEmptyDecorationMap() {
+    int bitSet = 0;
+    for (int i = 0; i < MAP_SIZE; i++) {
+      bitSet |= TextDecoration.State.NOT_SET.ordinal() * offset(StyleImpl.DECORATIONS[i]);
     }
     return new DecorationMap(bitSet);
   }
@@ -77,8 +89,8 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
   private final int bitSet;
 
   // lazy
-  private transient EntrySet entrySet = null;
-  private transient Values values = null;
+  private EntrySet entrySet = null;
+  private Values values = null;
 
   private DecorationMap(final int bitSet) {
     this.bitSet = bitSet;
@@ -86,19 +98,17 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
 
   public @NotNull DecorationMap with(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
     Objects.requireNonNull(state, "state");
-    if (decoration != null) {
-      final int offset = offset(decoration);
-      return new DecorationMap(
-        this.bitSet & ~(0b11 * offset) // 'reset' the state bits
-          | state.ordinal() * offset
-      );
-    }
-    throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
+    Objects.requireNonNull(decoration, "decoration");
+    final int offset = offset(decoration);
+    return withBitSet(
+      this.bitSet & ~(0b11 * offset) // 'reset' the state bits
+        | state.ordinal() * offset
+    );
   }
 
   @Override
   public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Arrays.stream(DECORATIONS)
+    return Arrays.stream(StyleImpl.DECORATIONS)
       .map(decoration -> ExaminableProperty.of(decoration.toString(), this.get(decoration)));
   }
 
@@ -118,7 +128,7 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
 
   @Override
   public int size() {
-    return DECORATIONS.length;
+    return MAP_SIZE;
   }
 
   @Override
@@ -151,13 +161,12 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
   public boolean equals(final Object other) {
     if (other == this) return true;
     if (other == null || other.getClass() != DecorationMap.class) return false;
-    final DecorationMap that = (DecorationMap) other;
-    return this.bitSet == that.bitSet;
+    return this.bitSet == ((DecorationMap) other).bitSet;
   }
 
   @Override
   public int hashCode() {
-    return Long.hashCode(this.bitSet);
+    return this.bitSet;
   }
 
   final class EntrySet extends AbstractSet<Entry<TextDecoration, TextDecoration.State>> {
@@ -184,14 +193,14 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
 
     @Override
     public int size() {
-      return DECORATIONS.length;
+      return MAP_SIZE;
     }
   }
 
   final class Values extends AbstractCollection<TextDecoration.State> {
     @Override
     public @NotNull Iterator<TextDecoration.State> iterator() {
-      return Spliterators.iterator(Arrays.spliterator(this.toArray(new TextDecoration.State[0])));
+      return Spliterators.iterator(Arrays.spliterator(this.toArray(EMPTY_STATE_ARRAY)));
     }
 
     @Override
@@ -201,16 +210,16 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
 
     @Override
     public Object @NotNull [] toArray() {
-      return Arrays.stream(DECORATIONS).map(DecorationMap.this::get).toArray(TextDecoration.State[]::new);
+      return Arrays.stream(StyleImpl.DECORATIONS).map(DecorationMap.this::get).toArray(TextDecoration.State[]::new);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T @NotNull [] toArray(final T @NotNull [] a) {
-      if (a.length < DECORATIONS.length) {
-        return (T[]) Arrays.copyOf(this.toArray(), DECORATIONS.length, a.getClass());
+      if (a.length < MAP_SIZE) {
+        return (T[]) Arrays.copyOf(this.toArray(), MAP_SIZE, a.getClass());
       }
-      System.arraycopy(this.toArray(), 0, a, 0, DECORATIONS.length);
+      System.arraycopy(this.toArray(), 0, a, 0, MAP_SIZE);
       return a;
     }
 
@@ -221,7 +230,7 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
 
     @Override
     public int size() {
-      return DECORATIONS.length;
+      return MAP_SIZE;
     }
   }
 
@@ -239,27 +248,27 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
 
     @Override
     public Object @NotNull [] toArray() {
-      return DECORATIONS.clone();
+      return StyleImpl.DECORATIONS.clone();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T @NotNull [] toArray(final T @NotNull [] a) {
-      if (a.length < DECORATIONS.length) {
-        return (T[]) Arrays.copyOf(DECORATIONS, DECORATIONS.length, a.getClass());
+      if (a.length < MAP_SIZE) {
+        return (T[]) Arrays.copyOf(StyleImpl.DECORATIONS, MAP_SIZE, a.getClass());
       }
-      System.arraycopy(DECORATIONS, 0, a, 0, DECORATIONS.length);
+      System.arraycopy(StyleImpl.DECORATIONS, 0, a, 0, MAP_SIZE);
       return a;
     }
 
     @Override
     public @NotNull Iterator<TextDecoration> iterator() {
-      return Spliterators.iterator(Arrays.spliterator(DECORATIONS));
+      return Spliterators.iterator(Arrays.spliterator(StyleImpl.DECORATIONS));
     }
 
     @Override
     public int size() {
-      return DECORATIONS.length;
+      return MAP_SIZE;
     }
   }
 }
