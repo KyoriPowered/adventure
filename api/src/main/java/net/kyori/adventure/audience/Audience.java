@@ -147,8 +147,8 @@ public interface Audience extends Pointered {
    * If they do, they <em>may</em> test themselves against the provided {@code filter} first, and if the test fails return an empty audience skipping any contained children.
    * If they do not, they <em>must not</em> test themselves against the filter, only testing their children.</p>
    *
-   * @param filter that applied to each audience to determine if it should be included
-   * @return a stateless audience of all audiences that matches to the predicate
+   * @param filter a filter that determines if an audience should be included
+   * @return a stateless audience of all audiences that match the predicate
    * @since 4.9.0
    */
   default @NotNull Audience filterAudience(final @NotNull Predicate<? super Audience> filter) {
