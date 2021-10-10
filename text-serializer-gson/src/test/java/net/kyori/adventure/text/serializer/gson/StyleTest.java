@@ -24,6 +24,8 @@
 package net.kyori.adventure.text.serializer.gson;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonParseException;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -39,7 +41,9 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("CodeBlock2Expr")
@@ -87,6 +91,27 @@ class StyleTest extends GsonTest<Style> {
   @Test
   void testDecoration() {
     this.test(Style.style(TextDecoration.BOLD), object(json -> json.addProperty(name(TextDecoration.BOLD), true)));
+
+    Style s0 = GsonComponentSerializer.gson().serializer().fromJson(object(object -> {
+      object.addProperty(name(TextDecoration.BOLD), "true");
+    }), Style.class);
+    assertTrue(s0.hasDecoration(TextDecoration.BOLD));
+
+    s0 = GsonComponentSerializer.gson().serializer().fromJson(object(object -> {
+      object.addProperty(name(TextDecoration.BOLD), "false");
+    }), Style.class);
+    assertFalse(s0.hasDecoration(TextDecoration.BOLD));
+
+    s0 = GsonComponentSerializer.gson().serializer().fromJson(object(object -> {
+      object.addProperty(name(TextDecoration.BOLD), 1);
+    }), Style.class);
+    assertFalse(s0.hasDecoration(TextDecoration.BOLD));
+
+    assertThrows(JsonParseException.class, () -> {
+      GsonComponentSerializer.gson().serializer().fromJson(object(object -> {
+        object.add(name(TextDecoration.BOLD), JsonNull.INSTANCE);
+      }), Style.class);
+    });
   }
 
   @Test
