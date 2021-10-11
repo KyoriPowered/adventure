@@ -111,7 +111,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
           style.decoration(color.decoration, TextDecoration.State.TRUE);
         }
       } else if (TextDecoration.NAMES.keys().contains(fieldName)) {
-        style.decoration(TextDecoration.NAMES.value(fieldName), in.nextBoolean());
+        style.decoration(TextDecoration.NAMES.value(fieldName), this.readBoolean(in));
       } else if (fieldName.equals(INSERTION)) {
         style.insertion(in.nextString());
       } else if (fieldName.equals(CLICK_EVENT)) {
@@ -175,6 +175,17 @@ final class StyleSerializer extends TypeAdapter<Style> {
 
     in.endObject();
     return style.build();
+  }
+
+  private boolean readBoolean(final JsonReader in) throws IOException {
+    final JsonToken peek = in.peek();
+    if (peek == JsonToken.BOOLEAN) {
+      return in.nextBoolean();
+    } else if (peek == JsonToken.STRING || peek == JsonToken.NUMBER) {
+      return Boolean.parseBoolean(in.nextString());
+    } else {
+      throw new JsonParseException("Token of type " + peek + " cannot be interpreted as a boolean");
+    }
   }
 
   private Object legacyHoverEventContents(final HoverEvent.Action<?> action, final Component rawValue) {
