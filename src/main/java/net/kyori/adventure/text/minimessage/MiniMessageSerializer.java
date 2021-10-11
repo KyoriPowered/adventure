@@ -161,45 +161,13 @@ final class MiniMessageSerializer {
     }
 
     // # end tags
+    // ### these must be in reverse order to avoid https://github.com/KyoriPowered/adventure-text-minimessage/issues/151
 
-    // ## color
-    if (next != null && style.color() != null && next.color() != style.color()) {
-      sb.append(endColor(Objects.requireNonNull(style.color())));
-    }
-
-    // ## decoration
-    // ### only end decoration if next tag is different
-    if (next != null) {
-      if (style.hasDecoration(TextDecoration.BOLD) && !next.hasDecoration(TextDecoration.BOLD)) {
-        sb.append(endTag(BOLD));
-      }
-      if (style.hasDecoration(TextDecoration.ITALIC) && !next.hasDecoration(TextDecoration.ITALIC)) {
-        sb.append(endTag(ITALIC));
-      }
-      if (style.hasDecoration(TextDecoration.OBFUSCATED) && !next.hasDecoration(TextDecoration.OBFUSCATED)) {
-        sb.append(endTag(OBFUSCATED));
-      }
-      if (style.hasDecoration(TextDecoration.STRIKETHROUGH) && !next.hasDecoration(TextDecoration.STRIKETHROUGH)) {
-        sb.append(endTag(STRIKETHROUGH));
-      }
-      if (style.hasDecoration(TextDecoration.UNDERLINED) && !next.hasDecoration(TextDecoration.UNDERLINED)) {
-        sb.append(endTag(UNDERLINED));
-      }
-    }
-
-    // ## hover
-    // ### only end hover if next tag is different
-    if (next != null && style.hoverEvent() != null) {
-      if (areDifferent(Objects.requireNonNull(style.hoverEvent()), next.hoverEvent())) {
-        sb.append(endTag(HOVER));
-      }
-    }
-
-    // ## click
-    // ### only end click if next tag is different
-    if (next != null && style.clickEvent() != null) {
-      if (areDifferent(Objects.requireNonNull(style.clickEvent()), next.clickEvent())) {
-        sb.append(endTag(CLICK));
+    // ## font
+    // ### only end insertion if next tag is different
+    if (next != null && style.font() != null) {
+      if (!Objects.equals(style.font(), next.font())) {
+        sb.append(endTag(FONT));
       }
     }
 
@@ -211,13 +179,47 @@ final class MiniMessageSerializer {
       }
     }
 
-    // ## font
-    // ### only end insertion if next tag is different
-    if (next != null && style.font() != null) {
-      if (!Objects.equals(style.font(), next.font())) {
-        sb.append(endTag(FONT));
+    // ## click
+    // ### only end click if next tag is different
+    if (next != null && style.clickEvent() != null) {
+      if (areDifferent(Objects.requireNonNull(style.clickEvent()), next.clickEvent())) {
+        sb.append(endTag(CLICK));
       }
     }
+
+    // ## hover
+    // ### only end hover if next tag is different
+    if (next != null && style.hoverEvent() != null) {
+      if (areDifferent(Objects.requireNonNull(style.hoverEvent()), next.hoverEvent())) {
+        sb.append(endTag(HOVER));
+      }
+    }
+
+    // ## decoration
+    // ### only end decoration if next tag is different
+    if (next != null) {
+      if (style.hasDecoration(TextDecoration.UNDERLINED) && !next.hasDecoration(TextDecoration.UNDERLINED)) {
+        sb.append(endTag(UNDERLINED));
+      }
+      if (style.hasDecoration(TextDecoration.STRIKETHROUGH) && !next.hasDecoration(TextDecoration.STRIKETHROUGH)) {
+        sb.append(endTag(STRIKETHROUGH));
+      }
+      if (style.hasDecoration(TextDecoration.OBFUSCATED) && !next.hasDecoration(TextDecoration.OBFUSCATED)) {
+        sb.append(endTag(OBFUSCATED));
+      }
+      if (style.hasDecoration(TextDecoration.ITALIC) && !next.hasDecoration(TextDecoration.ITALIC)) {
+        sb.append(endTag(ITALIC));
+      }
+      if (style.hasDecoration(TextDecoration.BOLD) && !next.hasDecoration(TextDecoration.BOLD)) {
+        sb.append(endTag(BOLD));
+      }
+    }
+
+    // ## color
+    if (next != null && style.color() != null && next.color() != style.color()) {
+      sb.append(endColor(Objects.requireNonNull(style.color())));
+    }
+
     return sb.toString();
   }
 
