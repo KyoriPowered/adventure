@@ -32,6 +32,7 @@ import net.kyori.adventure.text.TextComponent.Builder;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.jetbrains.annotations.NotNull;
@@ -259,6 +260,34 @@ public class MiniMessageSerializerTest extends TestBase {
       .hoverEvent(HoverEvent.showEntity(Key.key("minecraft", "zombie"), uuid, name));
     final String expected = String.format("<hover:show_entity:'minecraft:zombie':%s:\"%s\">test", uuid, nameString);
     this.test(input, expected);
+  }
+
+  // https://github.com/KyoriPowered/adventure-text-minimessage/issues/172
+  @Test
+  void testHoverWithExtraFollowing() {
+    final Component component = Component.text("START", NamedTextColor.AQUA)
+      .append(Component.text("HOVERED", NamedTextColor.BLUE)
+        .hoverEvent(HoverEvent.showText(Component.text("Text on hover"))))
+      .append(Component.text("END"));
+    final String expected = "<aqua>START</aqua><blue><hover:show_text:\"Text on hover\">HOVERED</hover></blue><aqua>END";
+
+    this.test(component, expected);
+  }
+
+  @Test
+  void testNestedStyles() {
+    // These are mostly arbitrary, but I don't want to test every single combination
+    final ComponentLike component = Component.text()
+      .append(Component.text("b+i+u", Style.style(TextDecoration.BOLD, TextDecoration.ITALIC, TextDecoration.UNDERLINED)))
+      .append(Component.text("color+insert", Style.style(NamedTextColor.RED)).insertion("meow"))
+      .append(Component.text("st+font", Style.style(TextDecoration.STRIKETHROUGH).font(Key.key("uniform"))))
+      .append(Component.text("empty"));
+    final String expected = "<bold><italic><underlined>b+i+u</underlined></italic></bold>" +
+      "<red><insert:meow>color+insert</insert></red>" +
+      "<strikethrough><font:minecraft:uniform>st+font</font></strikethrough>" +
+      "empty";
+
+    this.test(component, expected);
   }
 
   private void test(final @NotNull ComponentLike builder, final @NotNull String expected) {
