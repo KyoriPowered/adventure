@@ -4,6 +4,7 @@ plugins {
 }
 
 kotlin {
+  explicitApi()
   coreLibrariesVersion = "1.4.32"
   target {
     compilations.configureEach {
