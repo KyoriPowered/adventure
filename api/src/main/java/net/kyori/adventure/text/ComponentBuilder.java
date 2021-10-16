@@ -24,6 +24,7 @@
 package net.kyori.adventure.text;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -271,6 +272,24 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
   @Contract("_, _ -> this")
   default @NotNull B decoration(final @NotNull TextDecoration decoration, final boolean flag) {
     return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
+  }
+
+  /**
+   * Sets decorations for this component's style using the specified {@code decorations} map.
+   *
+   * <p>If a given decoration does not have a value explicitly set, the value of that particular decoration is not changed.</p>
+   *
+   * @param decorations a map containing text decorations and their respective state.
+   * @return this builder
+   * @since 4.10.0
+   */
+  @Contract("_ -> this")
+  @SuppressWarnings("unchecked")
+  default @NotNull B decorations(final @NotNull Map<TextDecoration, TextDecoration.State> decorations) {
+    for (final Map.Entry<TextDecoration, TextDecoration.State> entry : decorations.entrySet()) {
+      this.decoration(entry.getKey(), entry.getValue());
+    }
+    return (B) this;
   }
 
   /**
