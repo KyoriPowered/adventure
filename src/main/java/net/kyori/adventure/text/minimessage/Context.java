@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
+import net.kyori.adventure.text.minimessage.template.TemplateResolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,16 +41,16 @@ public class Context {
   private final String originalMessage;
   private String replacedMessage;
   private final MiniMessage miniMessage;
-  private final @NotNull Template @Nullable [] templates;
+  private final TemplateResolver templateResolver;
 
-  Context(final boolean strict, final Appendable debugOutput, final ElementNode root, final String originalMessage, final String replacedMessage, final MiniMessage miniMessage, final @NotNull Template @Nullable [] templates) {
+  Context(final boolean strict, final Appendable debugOutput, final ElementNode root, final String originalMessage, final String replacedMessage, final MiniMessage miniMessage, final TemplateResolver templateResolver) {
     this.strict = strict;
     this.debugOutput = debugOutput;
     this.root = root;
     this.originalMessage = originalMessage;
     this.replacedMessage = replacedMessage;
     this.miniMessage = miniMessage;
-    this.templates = templates;
+    this.templateResolver = templateResolver;
   }
 
   /**
@@ -62,7 +63,7 @@ public class Context {
    * @since 4.1.0
    */
   public static Context of(final boolean strict, final String input, final MiniMessage miniMessage) {
-    return new Context(strict, null, null, input, null, miniMessage, null);
+    return new Context(strict, null, null, input, null, miniMessage, TemplateResolver.empty());
   }
 
   /**
@@ -76,7 +77,7 @@ public class Context {
    * @since 4.1.0
    */
   public static Context of(final boolean strict, final Appendable debugOutput, final String input, final MiniMessage miniMessage) {
-    return new Context(strict, debugOutput, null, input, null, miniMessage, null);
+    return new Context(strict, debugOutput, null, input, null, miniMessage, TemplateResolver.empty());
   }
 
   /**
@@ -90,7 +91,7 @@ public class Context {
    * @since 4.1.0
    */
   public static Context of(final boolean strict, final String input, final MiniMessageImpl miniMessage, @NotNull final Template @Nullable [] templates) {
-    return new Context(strict, null, null, input, null, miniMessage, templates);
+    return new Context(strict, null, null, input, null, miniMessage, templates == null ? TemplateResolver.empty() : TemplateResolver.templates(templates));
   }
 
   /**
@@ -105,7 +106,22 @@ public class Context {
    * @since 4.2.0
    */
   public static Context of(final boolean strict, final Appendable debugOutput, final String input, final MiniMessageImpl miniMessage, @NotNull final Template @Nullable [] templates) {
-    return new Context(strict, debugOutput, null, input, null, miniMessage, templates);
+    return new Context(strict, debugOutput, null, input, null, miniMessage, templates == null ? TemplateResolver.empty() : TemplateResolver.templates(templates));
+  }
+
+  /**
+   * Init.
+   *
+   * @param strict if strict mode is enabled
+   * @param debugOutput where to print debug output
+   * @param input the input message
+   * @param miniMessage the minimessage instance
+   * @param templateResolver the template resolver passed to minimessage
+   * @return the debug context
+   * @since 4.2.0
+   */
+  public static Context of(final boolean strict, final Appendable debugOutput, final String input, final MiniMessageImpl miniMessage, final TemplateResolver templateResolver) {
+    return new Context(strict, debugOutput, null, input, null, miniMessage, templateResolver);
   }
 
   /**
@@ -201,6 +217,16 @@ public class Context {
   }
 
   /**
+   * Returns the template resolver.
+   *
+   * @return the template resolver
+   * @since 4.2.0
+   */
+  public @NotNull TemplateResolver templateResolver() {
+    return this.templateResolver;
+  }
+
+  /**
    * Parses a MiniMessage using all the settings of this context, including templates.
    *
    * @param message the message to parse
@@ -208,10 +234,6 @@ public class Context {
    * @since 4.1.0
    */
   public Component parse(final String message) {
-    if (this.templates != null) {
-      return this.miniMessage.parse(message, this.templates);
-    } else {
-      return this.miniMessage.parse(message);
-    }
+    return this.miniMessage.deserialize(message, this.templateResolver);
   }
 }

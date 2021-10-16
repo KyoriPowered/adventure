@@ -30,7 +30,9 @@ import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.Template;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
+import net.kyori.adventure.text.minimessage.template.TemplateResolver;
 import net.kyori.adventure.util.Buildable;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,8 +53,25 @@ public interface TransformationRegistry extends Buildable<TransformationRegistry
    * @param context the debug context
    * @return a possible transformation
    * @since 4.1.0
+   * @deprecated For removal since 4.2.0, use {@link #get(String, List, TemplateResolver, Context)}
    */
-  @Nullable Transformation get(final String name, final List<TagPart> inners, final Map<String, Template> templates, final Function<String, ComponentLike> placeholderResolver, final Context context);
+  @ApiStatus.ScheduledForRemoval
+  @Deprecated
+  default @Nullable Transformation get(final String name, final List<TagPart> inners, final Map<String, Template> templates, final Function<String, ComponentLike> placeholderResolver, final Context context) {
+    return this.get(name, inners, TemplateResolver.combining(TemplateResolver.pairs(templates), TemplateResolver.dynamic(placeholderResolver)), context);
+  }
+
+  /**
+   * Gets a transformation from this registry based on the current state.
+   *
+   * @param name the tag name
+   * @param inners the tokens that make up the tag arguments
+   * @param templateResolver the template resolver
+   * @param context the debug context
+   * @return a possible transformation
+   * @since 4.2.0
+   */
+  @Nullable Transformation get(final String name, final List<TagPart> inners, final TemplateResolver templateResolver, final Context context);
 
   /**
    * Test if any registered transformation type matches the provided key.
@@ -61,8 +80,23 @@ public interface TransformationRegistry extends Buildable<TransformationRegistry
    * @param placeholderResolver function to resolve other component types
    * @return whether any transformation exists
    * @since 4.1.0
+   * @deprecated For removal since 4.2.0, use {@link #exists(String, TemplateResolver)} with {@link TemplateResolver#dynamic(Function)}
    */
-  boolean exists(final String name, final Function<String, ComponentLike> placeholderResolver);
+  @ApiStatus.ScheduledForRemoval
+  @Deprecated
+  default boolean exists(final String name, final Function<String, ComponentLike> placeholderResolver) {
+    return this.exists(name, TemplateResolver.dynamic(placeholderResolver));
+  }
+
+  /**
+   * Tests if any registered transformation type matches the provided key.
+   *
+   * @param name the tag name
+   * @param templateResolver the resolver to resolve other component types
+   * @return whether any transformation exists
+   * @since 4.2.0
+   */
+  boolean exists(final String name, final TemplateResolver templateResolver);
 
   /**
    * Creates a new {@link TransformationRegistry.Builder}.

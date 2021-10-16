@@ -25,18 +25,14 @@ package net.kyori.adventure.text.minimessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
@@ -45,6 +41,7 @@ import net.kyori.adventure.text.minimessage.parser.TokenParser;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.parser.node.ValueNode;
+import net.kyori.adventure.text.minimessage.template.TemplateResolver;
 import net.kyori.adventure.text.minimessage.transformation.Modifying;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
@@ -60,16 +57,16 @@ final class MiniMessageParser {
   private static final Pattern pattern = Pattern.compile("((?<start><)(?<token>[^<>]+(:(?<inner>['\"]?([^'\"](\\\\['\"])?)+['\"]?))*)(?<end>>))+?");
 
   final TransformationRegistry registry;
-  final Function<String, ComponentLike> placeholderResolver;
+  final TemplateResolver templateResolver;
 
   MiniMessageParser() {
     this.registry = TransformationRegistry.standard();
-    this.placeholderResolver = MiniMessageImpl.DEFAULT_PLACEHOLDER_RESOLVER;
+    this.templateResolver = TemplateResolver.empty();
   }
 
-  MiniMessageParser(final TransformationRegistry registry, final Function<String, ComponentLike> placeholderResolver) {
+  MiniMessageParser(final TransformationRegistry registry, final TemplateResolver templateResolver) {
     this.registry = registry;
-    this.placeholderResolver = placeholderResolver;
+    this.templateResolver = templateResolver;
   }
 
   @NotNull String escapeTokens(final @NotNull String richMessage) {
@@ -126,54 +123,8 @@ final class MiniMessageParser {
     return sb.toString();
   }
 
-  @NotNull Component parseFormat(final @NotNull String richMessage, final @NotNull Context context, final @NotNull String... placeholders) {
-    if (placeholders.length % 2 != 0) {
-      throw new ParsingException(
-        "Invalid number placeholders defined, usage: parseFormat(format, key, value, key, value...)");
-    }
-
-    final Template[] t = new Template[placeholders.length / 2];
-    for (int i = 0; i < placeholders.length; i += 2) {
-      t[i / 2] = Template.of(this.sanitizeTemplateName(placeholders[i]), placeholders[i + 1]);
-    }
-
-    return this.parseFormat(richMessage, context, t);
-  }
-
-  @NotNull Component parseFormat(final @NotNull String richMessage, final @NotNull Map<String, String> placeholders, final Context context) {
-    final Template[] t = new Template[placeholders.size()];
-    int i = 0;
-    for (final Map.Entry<String, String> entry : placeholders.entrySet()) {
-      t[i++] = Template.of(this.sanitizeTemplateName(entry.getKey()), entry.getValue());
-    }
-    return this.parseFormat(richMessage, context, t);
-  }
-
-  @NotNull Component parseFormat(final @NotNull String input, final Context context, final @NotNull Template... placeholders) {
-    final Map<String, Template> map = new HashMap<>();
-    for (final Template placeholder : placeholders) {
-      map.put(this.sanitizeTemplateName(placeholder.key()), placeholder);
-    }
-    return this.parseFormat0(input, map, context);
-  }
-
-  @NotNull Component parseFormat(final @NotNull String input, final @NotNull List<Template> placeholders, final @NotNull Context context) {
-    final Map<String, Template> map = new HashMap<>();
-    for (final Template placeholder : placeholders) {
-      map.put(this.sanitizeTemplateName(placeholder.key()), placeholder);
-    }
-    return this.parseFormat0(input, map, context);
-  }
-
   @NotNull Component parseFormat(final @NotNull String richMessage, final @NotNull Context context) {
-    return this.parseFormat0(richMessage, Collections.emptyMap(), context);
-  }
-
-  @NotNull Component parseFormat0(final @NotNull String richMessage, final @NotNull Map<String, Template> templates, final @NotNull Context context) {
-    return this.parseFormat0(richMessage, templates, this.registry, this.placeholderResolver, context);
-  }
-
-  @NotNull Component parseFormat0(final @NotNull String richMessage, final @NotNull Map<String, Template> templates, final @NotNull TransformationRegistry registry, final @NotNull Function<String, ComponentLike> placeholderResolver, final Context context) {
+    final TemplateResolver combinedResolver = TemplateResolver.combining(context.templateResolver(), this.templateResolver);
     final Appendable debug = context.debugOutput();
     if (debug != null) {
       try {
@@ -192,7 +143,7 @@ final class MiniMessageParser {
           } catch (final IOException ignored) {
           }
 
-          final Transformation transformation = registry.get(this.sanitizeTemplateName(node.name()), node.parts(), templates, placeholderResolver, context);
+          final Transformation transformation = this.registry.get(this.sanitizeTemplateName(node.name()), node.parts(), combinedResolver, context);
 
           try {
             if (transformation == null) {
@@ -219,7 +170,7 @@ final class MiniMessageParser {
     } else {
       transformationFactory = node -> {
         try {
-          return registry.get(this.sanitizeTemplateName(node.name()), node.parts(), templates, placeholderResolver, context);
+          return this.registry.get(this.sanitizeTemplateName(node.name()), node.parts(), combinedResolver, context);
         } catch (final ParsingException ignored) {
           return null;
         }
@@ -227,10 +178,10 @@ final class MiniMessageParser {
     }
     final BiPredicate<String, Boolean> tagNameChecker = (name, includeTemplates) -> {
       final String sanitized = this.sanitizeTemplateName(name);
-      return registry.exists(sanitized, placeholderResolver) || (includeTemplates && templates.containsKey(sanitized));
+      return this.registry.exists(sanitized, combinedResolver) || (includeTemplates && combinedResolver.canResolve(name));
     };
 
-    final ElementNode root = TokenParser.parse(transformationFactory, tagNameChecker, templates, richMessage, context.strict());
+    final ElementNode root = TokenParser.parse(transformationFactory, tagNameChecker, combinedResolver, richMessage, context.strict());
 
     if (debug != null) {
       try {
