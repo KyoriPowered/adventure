@@ -79,7 +79,7 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   @Override
   public @NotNull TextComponent content(final @NotNull String content) {
     if (Objects.equals(this.content, content)) return this;
-    if (this.children.isEmpty() && this.style.isEmpty() && content.isEmpty()) {
+    if (content.isEmpty() && this.children.isEmpty() && this.style.isEmpty()) {
       return Component.empty();
     }
     return new TextComponentImpl(this.children, this.style, content);
@@ -87,16 +87,16 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
 
   @Override
   public @NotNull TextComponent children(final @NotNull List<? extends ComponentLike> children) {
-    if (this.style.isEmpty() && this.content.isEmpty() && (children.isEmpty()
-      || children.stream().map(ComponentLike::asComponent).allMatch(Component::isEmpty))) {
+    final List<Component> components = ComponentLike.asComponents(children, NOT_EMPTY);
+    if (components.isEmpty() && this.style.isEmpty() && this.content.isEmpty()) {
       return Component.empty();
     }
-    return new TextComponentImpl(children, this.style, this.content);
+    return new TextComponentImpl(components, this.style, this.content);
   }
 
   @Override
   public @NotNull TextComponent style(final @NotNull Style style) {
-    if (this.children.isEmpty() && style.isEmpty() && this.content.isEmpty()) {
+    if (style.isEmpty() && this.children.isEmpty() && this.content.isEmpty()) {
       return Component.empty();
     }
     return new TextComponentImpl(this.children, style, this.content);
