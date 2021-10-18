@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -40,6 +39,8 @@ import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenParser;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagNode;
+import net.kyori.adventure.text.minimessage.parser.node.TemplateNode;
+import net.kyori.adventure.text.minimessage.parser.node.TextNode;
 import net.kyori.adventure.text.minimessage.parser.node.ValueNode;
 import net.kyori.adventure.text.minimessage.template.TemplateResolver;
 import net.kyori.adventure.text.minimessage.transformation.Modifying;
@@ -69,61 +70,56 @@ final class MiniMessageParser {
     this.templateResolver = templateResolver;
   }
 
-  @NotNull String escapeTokens(final @NotNull String richMessage) {
-    final StringBuilder sb = new StringBuilder();
-    final Matcher matcher = pattern.matcher(richMessage);
-    int lastEnd = 0;
-    while (matcher.find()) {
-      final int startIndex = matcher.start();
-      final int endIndex = matcher.end();
-
-      if (startIndex > lastEnd) {
-        sb.append(richMessage, lastEnd, startIndex);
-      }
-      lastEnd = endIndex;
-
-      final String start = matcher.group(START);
-      String token = matcher.group(TOKEN);
-      final String inner = matcher.group(INNER);
-      final String end = matcher.group(END);
-
-      // also escape inner
-      if (inner != null) {
-        token = token.replace(inner, this.escapeTokens(inner));
-      }
-
-      sb.append("\\").append(start).append(token).append(end);
-    }
-
-    if (richMessage.length() > lastEnd) {
-      sb.append(richMessage.substring(lastEnd));
-    }
-
+  @NotNull
+  String escapeTokens(final @NotNull String richMessage, final @NotNull Context context) {
+    final StringBuilder sb = new StringBuilder(richMessage.length());
+    final ElementNode root = this.parse(richMessage, context);
+    this.appendEscaped(root, sb);
     return sb.toString();
   }
 
-  @NotNull String stripTokens(final @NotNull String richMessage) {
-    final StringBuilder sb = new StringBuilder();
-    final Matcher matcher = pattern.matcher(richMessage);
-    int lastEnd = 0;
-    while (matcher.find()) {
-      final int startIndex = matcher.start();
-      final int endIndex = matcher.end();
-
-      if (startIndex > lastEnd) {
-        sb.append(richMessage, lastEnd, startIndex);
-      }
-      lastEnd = endIndex;
+  private void appendEscaped(final ElementNode node, final StringBuilder builder) {
+    if (node instanceof TextNode) {
+      builder.append(node.sourceMessage(), node.token().startIndex(), node.token().endIndex()); // todo: escape inner parts
+    } else if (node instanceof TagNode) {
+      builder.append('\\')
+        // .append(Tokens.TAG_START)
+        .append(node.sourceMessage(), node.token().startIndex(), node.token().endIndex()); // todo: escape inner parts
+    } else if (node instanceof TemplateNode) {
+      builder.append('\\')
+        .append(node.sourceMessage());
     }
-
-    if (richMessage.length() > lastEnd) {
-      sb.append(richMessage.substring(lastEnd));
+    for (int i = 0, length = node.children().size(); i < length; i++) {
+      this.appendEscaped(node.children().get(i), builder);
     }
+  }
 
+  @NotNull
+  String stripTokens(final @NotNull String richMessage, final @NotNull Context context) {
+    final StringBuilder sb = new StringBuilder(richMessage.length());
+    final ElementNode root = this.parse(richMessage, context);
+    this.appendStripped(root, sb);
     return sb.toString();
+  }
+
+  private void appendStripped(final ElementNode node, final StringBuilder builder) {
+    if (node instanceof TextNode) {
+      builder.append(node.sourceMessage(), node.token().startIndex(), node.token().endIndex());
+    }
+    for (int i = 0, length = node.children().size(); i < length; i++) {
+      this.appendStripped(node.children().get(i), builder);
+    }
   }
 
   @NotNull Component parseFormat(final @NotNull String richMessage, final @NotNull Context context) {
+    final ElementNode root = this.parse(richMessage, context);
+    final Component comp = this.treeToComponent(root);
+    // at the end, take a look if we can flatten the tree a bit
+    return this.flatten(comp);
+  }
+
+  @NotNull
+  ElementNode parse(final @NotNull String richMessage, final @NotNull Context context) {
     final TemplateResolver combinedResolver = TemplateResolver.combining(context.templateResolver(), this.templateResolver);
     final Appendable debug = context.debugOutput();
     if (debug != null) {
@@ -192,12 +188,10 @@ final class MiniMessageParser {
     }
 
     context.root(root);
-    final Component comp = this.parse(root);
-    // at the end, take a look if we can flatten the tree a bit
-    return this.flatten(comp);
+    return root;
   }
 
-  @NotNull Component parse(final @NotNull ElementNode node) {
+  @NotNull Component treeToComponent(final @NotNull ElementNode node) {
     Component comp;
     Transformation transformation = null;
     if (node instanceof ValueNode) {
@@ -225,7 +219,7 @@ final class MiniMessageParser {
     }
 
     for (final ElementNode child : node.children()) {
-      comp = comp.append(this.parse(child));
+      comp = comp.append(this.treeToComponent(child));
     }
 
     // special case for gradient and stuff

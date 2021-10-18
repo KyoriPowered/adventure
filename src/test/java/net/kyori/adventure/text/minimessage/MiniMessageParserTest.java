@@ -225,6 +225,14 @@ public class MiniMessageParserTest extends TestBase {
     assertEquals(expected, this.PARSER.stripTokens(input));
   }
 
+  // https://github.com/KyoriPowered/adventure-text-minimessage/issues/169
+  @Test
+  void testStripComplexInner() {
+    final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here <please></click><blue> to <bold>FEEL</underlined> it";
+    final String expected = "<test> random strangerclick here <please> to FEEL it";
+    assertEquals(expected, this.PARSER.stripTokens(input));
+  }
+
   @Test
   void testStripInner() {
     final String input = "<hover:show_text:\"<red>test:TEST\">TEST";
@@ -250,6 +258,14 @@ public class MiniMessageParserTest extends TestBase {
   void testEscapeInner() {
     final String input = "<hover:show_text:\"<red>test:TEST\">TEST";
     final String expected = "\\<hover:show_text:\"\\<red>test:TEST\">TEST";
+    assertEquals(expected, this.PARSER.escapeTokens(input));
+  }
+
+  // https://github.com/KyoriPowered/adventure-text-minimessage/issues/169
+  @Test
+  void testEscapeComplexInner() {
+    final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here <notToken></click><blue> to <bold>FEEL</underlined> it";
+    final String expected = "\\<yellow><test> random \\<bold>stranger\\</bold>\\<click:run_command:test command>\\<underlined>\\<red>click here <notToken>\\</click>\\<blue> to \\<bold>FEEL\\</underlined> it";
     assertEquals(expected, this.PARSER.escapeTokens(input));
   }
 
