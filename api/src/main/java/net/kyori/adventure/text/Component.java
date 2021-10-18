@@ -766,8 +766,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull TextComponent text(final @NotNull String content, final @NotNull Style style) {
-    if (content.isEmpty() && style.isEmpty()) return empty();
-    return new TextComponentImpl(Collections.emptyList(), style, content);
+    return TextComponentImpl.create(Collections.emptyList(), style, content);
   }
 
   /**
