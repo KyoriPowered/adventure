@@ -67,10 +67,22 @@ public final class TokenParser {
     final @NotNull String message,
     final boolean strict
   ) {
-    final List<Token> tokens = parseFirstPass(message);
-    parseSecondPass(message, tokens);
+    final List<Token> tokens = tokenize(message);
 
     return buildTree(transformationFactory, tagNameChecker, templateResolver, tokens, message, strict);
+  }
+
+  /**
+   * Tokenize a minimessage string into a list of tokens.
+   *
+   * @param message the minimessage string to parse
+   * @return the root tokens
+   * @since 4.2.0
+   */
+  public static List<Token> tokenize(final String message) {
+    final List<Token> tokens = parseFirstPass(message);
+    parseSecondPass(message, tokens);
+    return tokens;
   }
 
   /*

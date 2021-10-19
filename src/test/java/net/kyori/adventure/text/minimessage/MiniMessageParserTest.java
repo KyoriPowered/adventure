@@ -221,7 +221,7 @@ public class MiniMessageParserTest extends TestBase {
   @Test
   void testStripComplex() {
     final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here</click><blue> to <bold>FEEL</underlined> it";
-    final String expected = " random strangerclick here to FEEL it";
+    final String expected = "<test> random strangerclick here to FEEL it";
     assertEquals(expected, this.PARSER.stripTokens(input));
   }
 
@@ -250,7 +250,7 @@ public class MiniMessageParserTest extends TestBase {
   @Test
   void testEscapeComplex() {
     final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here</click><blue> to <bold>FEEL</underlined> it";
-    final String expected = "\\<yellow>\\<test> random \\<bold>stranger\\</bold>\\<click:run_command:test command>\\<underlined>\\<red>click here\\</click>\\<blue> to \\<bold>FEEL\\</underlined> it";
+    final String expected = "\\<yellow><test> random \\<bold>stranger\\</bold>\\<click:run_command:test command>\\<underlined>\\<red>click here\\</click>\\<blue> to \\<bold>FEEL\\</underlined> it";
     assertEquals(expected, this.PARSER.escapeTokens(input));
   }
 

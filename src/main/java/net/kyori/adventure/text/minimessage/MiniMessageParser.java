@@ -28,19 +28,18 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenParser;
+import net.kyori.adventure.text.minimessage.parser.TokenType;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagNode;
-import net.kyori.adventure.text.minimessage.parser.node.TemplateNode;
-import net.kyori.adventure.text.minimessage.parser.node.TextNode;
 import net.kyori.adventure.text.minimessage.parser.node.ValueNode;
 import net.kyori.adventure.text.minimessage.template.TemplateResolver;
 import net.kyori.adventure.text.minimessage.transformation.Modifying;
@@ -49,14 +48,6 @@ import net.kyori.adventure.text.minimessage.transformation.TransformationRegistr
 import org.jetbrains.annotations.NotNull;
 
 final class MiniMessageParser {
-  // regex group names
-  private static final String START = "start";
-  private static final String TOKEN = "token";
-  private static final String INNER = "inner";
-  private static final String END = "end";
-  // https://regex101.com/r/8VZ7uA/10
-  private static final Pattern pattern = Pattern.compile("((?<start><)(?<token>[^<>]+(:(?<inner>['\"]?([^'\"](\\\\['\"])?)+['\"]?))*)(?<end>>))+?");
-
   final TransformationRegistry registry;
   final TemplateResolver templateResolver;
 
@@ -70,56 +61,64 @@ final class MiniMessageParser {
     this.templateResolver = templateResolver;
   }
 
-  @NotNull
-  String escapeTokens(final @NotNull String richMessage, final @NotNull Context context) {
+  @NotNull String escapeTokens(final @NotNull String richMessage, final @NotNull Context context) {
     final StringBuilder sb = new StringBuilder(richMessage.length());
-    final ElementNode root = this.parse(richMessage, context);
-    this.appendEscaped(root, sb);
+    this.escapeTokens(sb, richMessage, context);
     return sb.toString();
   }
 
-  private void appendEscaped(final ElementNode node, final StringBuilder builder) {
-    if (node instanceof TextNode) {
-      builder.append(node.sourceMessage(), node.token().startIndex(), node.token().endIndex()); // todo: escape inner parts
-    } else if (node instanceof TagNode) {
-      builder.append('\\')
-        // .append(Tokens.TAG_START)
-        .append(node.sourceMessage(), node.token().startIndex(), node.token().endIndex()); // todo: escape inner parts
-    } else if (node instanceof TemplateNode) {
-      builder.append('\\')
-        .append(node.sourceMessage());
-    }
-    for (int i = 0, length = node.children().size(); i < length; i++) {
-      this.appendEscaped(node.children().get(i), builder);
-    }
+  void escapeTokens(final StringBuilder sb, final @NotNull String richMessage, final @NotNull Context context) {
+    this.processTokens(sb, richMessage, context, (token, builder) -> {
+      builder.append('\\').append(Tokens.TAG_START);
+      if (token.type() == TokenType.CLOSE_TAG) {
+        builder.append(Tokens.CLOSE_TAG);
+      }
+      final List<Token> childTokens = token.childTokens();
+      for (int i = 0; i < childTokens.size(); i++) {
+        if (i != 0) {
+          builder.append(Tokens.SEPARATOR);
+        }
+        this.escapeTokens(builder, childTokens.get(i).get(richMessage).toString(), context); // todo: do we need to unwrap quotes on this?
+      }
+      builder.append(Tokens.TAG_END);
+    });
   }
 
-  @NotNull
-  String stripTokens(final @NotNull String richMessage, final @NotNull Context context) {
+  @NotNull String stripTokens(final @NotNull String richMessage, final @NotNull Context context) {
     final StringBuilder sb = new StringBuilder(richMessage.length());
-    final ElementNode root = this.parse(richMessage, context);
-    this.appendStripped(root, sb);
+    this.processTokens(sb, richMessage, context, (token, builder) -> {});
     return sb.toString();
   }
 
-  private void appendStripped(final ElementNode node, final StringBuilder builder) {
-    if (node instanceof TextNode) {
-      builder.append(node.sourceMessage(), node.token().startIndex(), node.token().endIndex());
-    }
-    for (int i = 0, length = node.children().size(); i < length; i++) {
-      this.appendStripped(node.children().get(i), builder);
+  private void processTokens(final @NotNull StringBuilder sb, final @NotNull String richMessage, final @NotNull Context context, final BiConsumer<Token, StringBuilder> tagHandler) {
+    final TemplateResolver combinedResolver = TemplateResolver.combining(context.templateResolver(), this.templateResolver);
+    final List<Token> root = TokenParser.tokenize(richMessage);
+    for (final Token token : root) {
+      switch (token.type()) {
+        case TEXT:
+          sb.append(richMessage, token.startIndex(), token.endIndex());
+          break;
+        case OPEN_TAG:
+        case CLOSE_TAG:
+          // extract tag name
+          if (token.childTokens().isEmpty()) {
+            sb.append(richMessage, token.startIndex(), token.endIndex());
+            continue;
+          }
+          final String sanitized = this.sanitizeTemplateName(token.childTokens().get(0).get(richMessage).toString());
+          if (this.registry.exists(sanitized, combinedResolver) || combinedResolver.canResolve(sanitized)) {
+            tagHandler.accept(token, sb);
+          } else {
+            sb.append(richMessage, token.startIndex(), token.endIndex());
+          }
+          break;
+        default:
+          throw new IllegalArgumentException("Unsupported token type " + token.type());
+      }
     }
   }
 
   @NotNull Component parseFormat(final @NotNull String richMessage, final @NotNull Context context) {
-    final ElementNode root = this.parse(richMessage, context);
-    final Component comp = this.treeToComponent(root);
-    // at the end, take a look if we can flatten the tree a bit
-    return this.flatten(comp);
-  }
-
-  @NotNull
-  ElementNode parse(final @NotNull String richMessage, final @NotNull Context context) {
     final TemplateResolver combinedResolver = TemplateResolver.combining(context.templateResolver(), this.templateResolver);
     final Appendable debug = context.debugOutput();
     if (debug != null) {
@@ -135,7 +134,7 @@ final class MiniMessageParser {
         try {
           try {
             debug.append("Attempting to match node '").append(node.name()).append("' at column ")
-              .append(String.valueOf(node.token().startIndex())).append('\n');
+            .append(String.valueOf(node.token().startIndex())).append('\n');
           } catch (final IOException ignored) {
           }
 
@@ -146,7 +145,7 @@ final class MiniMessageParser {
               debug.append("Could not match node '").append(node.name()).append("'\n");
             } else {
               debug.append("Successfully matched node '").append(node.name()).append("' to transformation ")
-                .append(transformation.examinableName()).append('\n');
+              .append(transformation.examinableName()).append('\n');
             }
           } catch (final IOException ignored) {
           }
@@ -188,7 +187,9 @@ final class MiniMessageParser {
     }
 
     context.root(root);
-    return root;
+    final Component comp = this.treeToComponent(root);
+    // at the end, take a look if we can flatten the tree a bit
+    return this.flatten(comp);
   }
 
   @NotNull Component treeToComponent(final @NotNull ElementNode node) {
