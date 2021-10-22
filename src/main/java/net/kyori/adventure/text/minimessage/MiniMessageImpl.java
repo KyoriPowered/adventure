@@ -76,8 +76,18 @@ final class MiniMessageImpl implements MiniMessage {
   }
 
   @Override
+  public @NotNull String escapeTokens(@NotNull final String input, @NotNull final TemplateResolver templates) {
+    return this.parser.escapeTokens(input, this.newContext(input, templates));
+  }
+
+  @Override
   public @NotNull String stripTokens(final @NotNull String input) {
     return this.parser.stripTokens(input, this.newContext(input, null));
+  }
+
+  @Override
+  public @NotNull String stripTokens(@NotNull final String input, @NotNull final TemplateResolver templates) {
+    return this.parser.stripTokens(input, this.newContext(input, templates));
   }
 
   private @NotNull Context newContext(final @NotNull String input, final @Nullable TemplateResolver resolver) {
