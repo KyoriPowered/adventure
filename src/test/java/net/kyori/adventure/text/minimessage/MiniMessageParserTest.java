@@ -315,7 +315,7 @@ public class MiniMessageParserTest extends TestBase {
   void checkPlaceholder() {
     final String input = "<test>";
     final Component expected = text("Hello!");
-    final Component comp = this.PARSER.parse(input, "test", "Hello!");
+    final Component comp = this.PARSER.deserialize(input, TemplateResolver.resolving("test", "Hello!"));
 
     assertEquals(expected, comp);
   }
@@ -549,7 +549,7 @@ public class MiniMessageParserTest extends TestBase {
     this.assertParsedEquals(expected, input);
 
     // shouldnt throw an error
-    this.PARSER.parse(input, "url", "https://www.google.com");
+    this.PARSER.deserialize(input, TemplateResolver.resolving("url", "https://www.google.com"));
   }
 
   @Test
@@ -1528,18 +1528,18 @@ public class MiniMessageParserTest extends TestBase {
     final Component expected3 = text().append(text("a", GOLD), text("a", YELLOW), text("a", YELLOW)).build();
     final Component expected4 = text().append(text("a", GOLD), text("a", TextColor.color(0xffd52b)), text("a", YELLOW), text("a", YELLOW)).build();
 
-    this.assertParsedEquals(expected1, input, Template.of("dum", text("a")));
-    this.assertParsedEquals(expected2, input, Template.of("dum", text("aa")));
-    this.assertParsedEquals(expected3, input, Template.of("dum", text("aaa")));
-    this.assertParsedEquals(expected4, input, Template.of("dum", text("aaaa")));
-    this.assertParsedEquals(expected4, input2, Template.of("dum", text("aaa")));
+    this.assertParsedEquals(expected1, input, Template.template("dum", text("a")));
+    this.assertParsedEquals(expected2, input, Template.template("dum", text("aa")));
+    this.assertParsedEquals(expected3, input, Template.template("dum", text("aaa")));
+    this.assertParsedEquals(expected4, input, Template.template("dum", text("aaaa")));
+    this.assertParsedEquals(expected4, input2, Template.template("dum", text("aaa")));
   }
 
   @Test
   void gh147() {
     final String input = "<rainbow><msg>";
     final Component expected1 = text().append(text("y", color(0xf3801f)), text("o", color(0x0c80e0))).build();
-    this.assertParsedEquals(expected1, input, Template.of("msg", text("yo")));
+    this.assertParsedEquals(expected1, input, Template.template("msg", text("yo")));
   }
 
   @Test

@@ -28,6 +28,7 @@ import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
+import net.kyori.adventure.text.minimessage.template.TemplateResolver;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
 import net.kyori.adventure.text.minimessage.transformation.TransformationType;
 import org.junit.jupiter.api.Test;
@@ -98,10 +99,13 @@ public class MiniMessageTest extends TestBase {
 
   @Test
   void testObjectPlaceholdersUnbalanced() {
-    assertThrows(IllegalArgumentException.class, () -> MiniMessage.miniMessage().parse("<red>ONE<two><blue>THREE<four><five>",
-      "two", text("TWO", GREEN),
-      "four", "FOUR",
-      "five"));
+    assertThrows(IllegalArgumentException.class, () -> MiniMessage.miniMessage().deserialize("<red>ONE<two><blue>THREE<four><five>",
+      TemplateResolver.resolving(
+        "two", text("TWO", GREEN),
+        "four", "FOUR",
+        "five"
+      )
+      ));
   }
 
   @Test
@@ -110,7 +114,7 @@ public class MiniMessageTest extends TestBase {
     final String input = "<test>";
     final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    this.assertParsedEquals(miniMessage, expected, input, Template.of("test", "TEST"));
+    this.assertParsedEquals(miniMessage, expected, input, Template.template("test", "TEST"));
   }
 
   @Test
@@ -119,7 +123,7 @@ public class MiniMessageTest extends TestBase {
     final String string = "<test>";
     final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    this.assertParsedEquals(miniMessage, expected, string, Template.of("test", text("TEST", RED)));
+    this.assertParsedEquals(miniMessage, expected, string, Template.template("test", text("TEST", RED)));
   }
 
   @Test
@@ -128,7 +132,7 @@ public class MiniMessageTest extends TestBase {
     final String input = "<green><bold><test>";
     final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    this.assertParsedEquals(miniMessage, expected, input, Template.of("test", text("TEST", RED, UNDERLINED)));
+    this.assertParsedEquals(miniMessage, expected, input, Template.template("test", text("TEST", RED, UNDERLINED)));
   }
 
   @Test
@@ -139,8 +143,8 @@ public class MiniMessageTest extends TestBase {
     final String input = "<green><bold><test><test2>";
     final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    final Template t1 = Template.of("test", text("TEST", style(RED, UNDERLINED)));
-    final Template t2 = Template.of("test2", "Test2");
+    final Template t1 = Template.template("test", text("TEST", style(RED, UNDERLINED)));
+    final Template t2 = Template.template("test2", "Test2");
 
     this.assertParsedEquals(miniMessage, expected, input, t1, t2);
   }
@@ -154,7 +158,7 @@ public class MiniMessageTest extends TestBase {
     final String input = "<hover:show_text:'<prefix>'>This is a test message.";
     final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    this.assertParsedEquals(miniMessage, expected, input, Template.of("prefix", MiniMessage.miniMessage().parse("<#FF0000>[Plugin]<reset>")));
+    this.assertParsedEquals(miniMessage, expected, input, Template.template("prefix", MiniMessage.miniMessage().parse("<#FF0000>[Plugin]<reset>")));
   }
 
   @Test
@@ -194,7 +198,7 @@ public class MiniMessageTest extends TestBase {
       return null;
     };
 
-    final MiniMessage miniMessage = MiniMessage.builder().placeholderResolver(resolver).build();
+    final MiniMessage miniMessage = MiniMessage.builder().templateResolver(TemplateResolver.dynamic(resolver)).build();
 
     this.assertParsedEquals(miniMessage, expected, input);
   }
@@ -216,7 +220,7 @@ public class MiniMessageTest extends TestBase {
   @Test
   void testUnbalancedPlaceholders() {
     final String expected = "Argument 1 in pairs must be a String or ComponentLike value, was java.lang.Integer";
-    assertEquals(expected, assertThrows(IllegalArgumentException.class, () -> MiniMessage.miniMessage().parse("<a>", "a", 2)).getMessage());
+    assertEquals(expected, assertThrows(IllegalArgumentException.class, () -> MiniMessage.miniMessage().deserialize("<a>", TemplateResolver.resolving("a", 2))).getMessage());
   }
 
   // GH-98
@@ -231,7 +235,7 @@ public class MiniMessageTest extends TestBase {
     final String input = "<red><username><gray>: <pre><red><message>";
     final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    this.assertParsedEquals(miniMessage, expected, input, Template.of("username", text("MiniDigger")), Template.of("message", text("Hello world")));
+    this.assertParsedEquals(miniMessage, expected, input, Template.template("username", text("MiniDigger")), Template.template("message", text("Hello world")));
   }
 
   // GH-97
@@ -246,8 +250,8 @@ public class MiniMessageTest extends TestBase {
     final String input = "<red><username><gray>: <pre><red><message>";
     final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    this.assertParsedEquals(miniMessage, expected, input, Template.of("username", text("MiniDigger")), Template.of("message", text("</pre><red>Test")));
-    this.assertParsedEquals(miniMessage, expected, input, Template.of("username", "MiniDigger"), Template.of("message", "</pre><red>Test"));
+    this.assertParsedEquals(miniMessage, expected, input, Template.template("username", text("MiniDigger")), Template.template("message", text("</pre><red>Test")));
+    this.assertParsedEquals(miniMessage, expected, input, Template.template("username", "MiniDigger"), Template.template("message", "</pre><red>Test"));
     this.assertParsedEquals(miniMessage, expected, input, "username", "MiniDigger", "message", "</pre><red>Test");
   }
 
@@ -262,8 +266,8 @@ public class MiniMessageTest extends TestBase {
     final String input = "<red><username><gray>: <red><message>";
     final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    this.assertParsedEquals(miniMessage, expected, input, Template.of("username", text("MiniDigger")), Template.of("message", text("</pre><red>Test")));
-    this.assertParsedEquals(miniMessage, expected, input, Template.of("username", "MiniDigger"), Template.of("message", "</pre><red>Test"));
+    this.assertParsedEquals(miniMessage, expected, input, Template.template("username", text("MiniDigger")), Template.template("message", text("</pre><red>Test")));
+    this.assertParsedEquals(miniMessage, expected, input, Template.template("username", "MiniDigger"), Template.template("message", "</pre><red>Test"));
     this.assertParsedEquals(miniMessage, expected, input, "username", "MiniDigger", "message", "</pre><red>Test");
   }
 
@@ -274,7 +278,7 @@ public class MiniMessageTest extends TestBase {
     final String input = "This is a <test>";
     final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    this.assertParsedEquals(miniMessage, expected, input, Template.of("test", () -> text("TEST")));
+    this.assertParsedEquals(miniMessage, expected, input, Template.template("test", () -> text("TEST")));
   }
 
   @Test
