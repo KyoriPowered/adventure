@@ -28,16 +28,16 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenParser;
+import net.kyori.adventure.text.minimessage.parser.TokenType;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.parser.node.ValueNode;
@@ -48,14 +48,6 @@ import net.kyori.adventure.text.minimessage.transformation.TransformationRegistr
 import org.jetbrains.annotations.NotNull;
 
 final class MiniMessageParser {
-  // regex group names
-  private static final String START = "start";
-  private static final String TOKEN = "token";
-  private static final String INNER = "inner";
-  private static final String END = "end";
-  // https://regex101.com/r/8VZ7uA/10
-  private static final Pattern pattern = Pattern.compile("((?<start><)(?<token>[^<>]+(:(?<inner>['\"]?([^'\"](\\\\['\"])?)+['\"]?))*)(?<end>>))+?");
-
   final TransformationRegistry registry;
   final TemplateResolver templateResolver;
 
@@ -69,58 +61,61 @@ final class MiniMessageParser {
     this.templateResolver = templateResolver;
   }
 
-  @NotNull String escapeTokens(final @NotNull String richMessage) {
-    final StringBuilder sb = new StringBuilder();
-    final Matcher matcher = pattern.matcher(richMessage);
-    int lastEnd = 0;
-    while (matcher.find()) {
-      final int startIndex = matcher.start();
-      final int endIndex = matcher.end();
-
-      if (startIndex > lastEnd) {
-        sb.append(richMessage, lastEnd, startIndex);
-      }
-      lastEnd = endIndex;
-
-      final String start = matcher.group(START);
-      String token = matcher.group(TOKEN);
-      final String inner = matcher.group(INNER);
-      final String end = matcher.group(END);
-
-      // also escape inner
-      if (inner != null) {
-        token = token.replace(inner, this.escapeTokens(inner));
-      }
-
-      sb.append("\\").append(start).append(token).append(end);
-    }
-
-    if (richMessage.length() > lastEnd) {
-      sb.append(richMessage.substring(lastEnd));
-    }
-
+  @NotNull String escapeTokens(final @NotNull String richMessage, final @NotNull Context context) {
+    final StringBuilder sb = new StringBuilder(richMessage.length());
+    this.escapeTokens(sb, richMessage, context);
     return sb.toString();
   }
 
-  @NotNull String stripTokens(final @NotNull String richMessage) {
-    final StringBuilder sb = new StringBuilder();
-    final Matcher matcher = pattern.matcher(richMessage);
-    int lastEnd = 0;
-    while (matcher.find()) {
-      final int startIndex = matcher.start();
-      final int endIndex = matcher.end();
-
-      if (startIndex > lastEnd) {
-        sb.append(richMessage, lastEnd, startIndex);
+  void escapeTokens(final StringBuilder sb, final @NotNull String richMessage, final @NotNull Context context) {
+    this.processTokens(sb, richMessage, context, (token, builder) -> {
+      builder.append('\\').append(Tokens.TAG_START);
+      if (token.type() == TokenType.CLOSE_TAG) {
+        builder.append(Tokens.CLOSE_TAG);
       }
-      lastEnd = endIndex;
-    }
+      final List<Token> childTokens = token.childTokens();
+      for (int i = 0; i < childTokens.size(); i++) {
+        if (i != 0) {
+          builder.append(Tokens.SEPARATOR);
+        }
+        this.escapeTokens(builder, childTokens.get(i).get(richMessage).toString(), context); // todo: do we need to unwrap quotes on this?
+      }
+      builder.append(Tokens.TAG_END);
+    });
+  }
 
-    if (richMessage.length() > lastEnd) {
-      sb.append(richMessage.substring(lastEnd));
-    }
-
+  @NotNull String stripTokens(final @NotNull String richMessage, final @NotNull Context context) {
+    final StringBuilder sb = new StringBuilder(richMessage.length());
+    this.processTokens(sb, richMessage, context, (token, builder) -> {});
     return sb.toString();
+  }
+
+  private void processTokens(final @NotNull StringBuilder sb, final @NotNull String richMessage, final @NotNull Context context, final BiConsumer<Token, StringBuilder> tagHandler) {
+    final TemplateResolver combinedResolver = TemplateResolver.combining(context.templateResolver(), this.templateResolver);
+    final List<Token> root = TokenParser.tokenize(richMessage);
+    for (final Token token : root) {
+      switch (token.type()) {
+        case TEXT:
+          sb.append(richMessage, token.startIndex(), token.endIndex());
+          break;
+        case OPEN_TAG:
+        case CLOSE_TAG:
+          // extract tag name
+          if (token.childTokens().isEmpty()) {
+            sb.append(richMessage, token.startIndex(), token.endIndex());
+            continue;
+          }
+          final String sanitized = this.sanitizeTemplateName(token.childTokens().get(0).get(richMessage).toString());
+          if (this.registry.exists(sanitized, combinedResolver) || combinedResolver.canResolve(sanitized)) {
+            tagHandler.accept(token, sb);
+          } else {
+            sb.append(richMessage, token.startIndex(), token.endIndex());
+          }
+          break;
+        default:
+          throw new IllegalArgumentException("Unsupported token type " + token.type());
+      }
+    }
   }
 
   @NotNull Component parseFormat(final @NotNull String richMessage, final @NotNull Context context) {
@@ -139,7 +134,7 @@ final class MiniMessageParser {
         try {
           try {
             debug.append("Attempting to match node '").append(node.name()).append("' at column ")
-              .append(String.valueOf(node.token().startIndex())).append('\n');
+            .append(String.valueOf(node.token().startIndex())).append('\n');
           } catch (final IOException ignored) {
           }
 
@@ -150,7 +145,7 @@ final class MiniMessageParser {
               debug.append("Could not match node '").append(node.name()).append("'\n");
             } else {
               debug.append("Successfully matched node '").append(node.name()).append("' to transformation ")
-                .append(transformation.examinableName()).append('\n');
+              .append(transformation.examinableName()).append('\n');
             }
           } catch (final IOException ignored) {
           }
@@ -192,12 +187,12 @@ final class MiniMessageParser {
     }
 
     context.root(root);
-    final Component comp = this.parse(root);
+    final Component comp = this.treeToComponent(root);
     // at the end, take a look if we can flatten the tree a bit
     return this.flatten(comp);
   }
 
-  @NotNull Component parse(final @NotNull ElementNode node) {
+  @NotNull Component treeToComponent(final @NotNull ElementNode node) {
     Component comp;
     Transformation transformation = null;
     if (node instanceof ValueNode) {
@@ -225,7 +220,7 @@ final class MiniMessageParser {
     }
 
     for (final ElementNode child : node.children()) {
-      comp = comp.append(this.parse(child));
+      comp = comp.append(this.treeToComponent(child));
     }
 
     // special case for gradient and stuff

@@ -57,12 +57,12 @@ final class MiniMessageImpl implements MiniMessage {
 
   @Override
   public @NotNull Component deserialize(final @NotNull String input) {
-    return this.parser.parseFormat(input, Context.of(this.strict, this.debugOutput, input, this));
+    return this.parser.parseFormat(input, this.newContext(input, null));
   }
 
   @Override
   public @NotNull Component deserialize(final @NotNull String input, final @NotNull TemplateResolver templateResolver) {
-    return this.parser.parseFormat(input, Context.of(this.strict, this.debugOutput, input, this, templateResolver));
+    return this.parser.parseFormat(input, this.newContext(input, requireNonNull(templateResolver, "templateResolver")));
   }
 
   @Override
@@ -72,12 +72,30 @@ final class MiniMessageImpl implements MiniMessage {
 
   @Override
   public @NotNull String escapeTokens(final @NotNull String input) {
-    return this.parser.escapeTokens(input);
+    return this.parser.escapeTokens(input, this.newContext(input, null));
+  }
+
+  @Override
+  public @NotNull String escapeTokens(@NotNull final String input, @NotNull final TemplateResolver templates) {
+    return this.parser.escapeTokens(input, this.newContext(input, templates));
   }
 
   @Override
   public @NotNull String stripTokens(final @NotNull String input) {
-    return this.parser.stripTokens(input);
+    return this.parser.stripTokens(input, this.newContext(input, null));
+  }
+
+  @Override
+  public @NotNull String stripTokens(@NotNull final String input, @NotNull final TemplateResolver templates) {
+    return this.parser.stripTokens(input, this.newContext(input, templates));
+  }
+
+  private @NotNull Context newContext(final @NotNull String input, final @Nullable TemplateResolver resolver) {
+    if (resolver == null) {
+      return Context.of(this.strict, this.debugOutput, input, this);
+    } else {
+      return Context.of(this.strict, this.debugOutput, input, this, resolver);
+    }
   }
 
   /**

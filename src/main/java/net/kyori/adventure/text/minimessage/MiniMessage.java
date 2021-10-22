@@ -69,11 +69,12 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
     return MiniMessageImpl.INSTANCE;
   }
 
-
   /**
-   * Escapes all tokens in the input message, so that they are ignored in deserialization.
+   * Escapes all known tokens in the input message, so that they are ignored in deserialization.
    *
    * <p>Useful for untrusted input.</p>
+   *
+   * <p>Only globally known tokens will be escaped. Use the overload that takes a {@link TemplateResolver} if templates should be handled.</p>
    *
    * @param input the input message, with tokens
    * @return the output, with escaped tokens
@@ -82,15 +83,41 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
   @NotNull String escapeTokens(final @NotNull String input);
 
   /**
-   * Removes all tokens in the input message.
+   * Escapes all known tokens in the input message, so that they are ignored in deserialization.
    *
    * <p>Useful for untrusted input.</p>
+   *
+   * @param input the input message, with tokens
+   * @param templates the template resolver adding known templates
+   * @return the output, with escaped tokens
+   * @since 4.2.0
+   */
+  @NotNull String escapeTokens(final @NotNull String input, final @NotNull TemplateResolver templates);
+
+  /**
+   * Removes all supported tokens in the input message.
+   *
+   * <p>Useful for untrusted input.</p>
+   *
+   * <p>Only globally known tokens will be stripped. Use the overload that takes a {@link TemplateResolver} if templates should be handled.</p>
    *
    * @param input the input message, with tokens
    * @return the output, without tokens
    * @since 4.0.0
    */
   @NotNull String stripTokens(final @NotNull String input);
+
+  /**
+   * Removes all known tokens in the input message, so that they are ignored in deserialization.
+   *
+   * <p>Useful for untrusted input.</p>
+   *
+   * @param input the input message, with tokens
+   * @param templates the template resolver adding known templates
+   * @return the output, without tokens
+   * @since 4.2.0
+   */
+  @NotNull String stripTokens(final @NotNull String input, final @NotNull TemplateResolver templates);
 
   /**
    * Parses a string into an component.
@@ -144,7 +171,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    */
   @ApiStatus.ScheduledForRemoval
   @Deprecated
-  default @NotNull Component parse(@NotNull String input, @NotNull Object... placeholders) {
+  default @NotNull Component parse(@NotNull final String input, @NotNull final Object... placeholders) {
     return this.deserialize(input, TemplateResolver.resolving(placeholders));
   }
 

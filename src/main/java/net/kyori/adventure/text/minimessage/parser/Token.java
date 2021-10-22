@@ -101,6 +101,17 @@ public final class Token {
     this.childTokens = childTokens;
   }
 
+  /**
+   * Get the value of this token from the complete message.
+   *
+   * @param message the message to read
+   * @return the value of this token
+   * @since 4.2.0
+   */
+  public CharSequence get(final CharSequence message) {
+    return message.subSequence(this.startIndex, this.endIndex);
+  }
+
   @Override
   public String toString() {
     return "Token{" +

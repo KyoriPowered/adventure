@@ -29,6 +29,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.minimessage.template.TemplateResolver;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.junit.jupiter.api.Test;
 
@@ -221,7 +222,15 @@ public class MiniMessageParserTest extends TestBase {
   @Test
   void testStripComplex() {
     final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here</click><blue> to <bold>FEEL</underlined> it";
-    final String expected = " random strangerclick here to FEEL it";
+    final String expected = "<test> random strangerclick here to FEEL it";
+    assertEquals(expected, this.PARSER.stripTokens(input));
+  }
+
+  // https://github.com/KyoriPowered/adventure-text-minimessage/issues/169
+  @Test
+  void testStripComplexInner() {
+    final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here <please></click><blue> to <bold>FEEL</underlined> it";
+    final String expected = "<test> random strangerclick here <please> to FEEL it";
     assertEquals(expected, this.PARSER.stripTokens(input));
   }
 
@@ -230,6 +239,13 @@ public class MiniMessageParserTest extends TestBase {
     final String input = "<hover:show_text:\"<red>test:TEST\">TEST";
     final String expected = "TEST";
     assertEquals(expected, this.PARSER.stripTokens(input));
+  }
+
+  @Test
+  void testStripTemplates() {
+    final String input = "Hello, <red><name>!";
+    final String expected = "Hello, !";
+    assertEquals(expected, this.PARSER.stripTokens(input, TemplateResolver.templates(Template.template("name", "you"))));
   }
 
   @Test
@@ -242,7 +258,7 @@ public class MiniMessageParserTest extends TestBase {
   @Test
   void testEscapeComplex() {
     final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here</click><blue> to <bold>FEEL</underlined> it";
-    final String expected = "\\<yellow>\\<test> random \\<bold>stranger\\</bold>\\<click:run_command:test command>\\<underlined>\\<red>click here\\</click>\\<blue> to \\<bold>FEEL\\</underlined> it";
+    final String expected = "\\<yellow><test> random \\<bold>stranger\\</bold>\\<click:run_command:test command>\\<underlined>\\<red>click here\\</click>\\<blue> to \\<bold>FEEL\\</underlined> it";
     assertEquals(expected, this.PARSER.escapeTokens(input));
   }
 
@@ -251,6 +267,21 @@ public class MiniMessageParserTest extends TestBase {
     final String input = "<hover:show_text:\"<red>test:TEST\">TEST";
     final String expected = "\\<hover:show_text:\"\\<red>test:TEST\">TEST";
     assertEquals(expected, this.PARSER.escapeTokens(input));
+  }
+
+  // https://github.com/KyoriPowered/adventure-text-minimessage/issues/169
+  @Test
+  void testEscapeComplexInner() {
+    final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here <notToken></click><blue> to <bold>FEEL</underlined> it";
+    final String expected = "\\<yellow><test> random \\<bold>stranger\\</bold>\\<click:run_command:test command>\\<underlined>\\<red>click here <notToken>\\</click>\\<blue> to \\<bold>FEEL\\</underlined> it";
+    assertEquals(expected, this.PARSER.escapeTokens(input));
+  }
+
+  @Test
+  void testEscapeTemplates() {
+    final String input = "Hello, <red><name>!";
+    final String expected = "Hello, \\<red>\\<name>!";
+    assertEquals(expected, this.PARSER.escapeTokens(input, TemplateResolver.templates(Template.template("name", "you"))));
   }
 
   @Test
