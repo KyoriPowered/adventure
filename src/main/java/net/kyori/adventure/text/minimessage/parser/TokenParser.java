@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Locale;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
@@ -504,7 +505,7 @@ public final class TokenParser {
         case OPEN_TAG:
           if (token.childTokens() != null && token.childTokens().size() == 1) {
             final CharSequence name = token.childTokens().get(0).get(message);
-            final Template template = templateResolver.resolve(name.toString());
+            final Template template = templateResolver.resolve(name.toString().toLowerCase(Locale.ROOT));
             if (template instanceof Template.StringTemplate) {
               sb.append(((Template.StringTemplate) template).value());
               break;
