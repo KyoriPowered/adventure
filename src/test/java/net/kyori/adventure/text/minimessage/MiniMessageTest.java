@@ -204,6 +204,50 @@ public class MiniMessageTest extends TestBase {
   }
 
   @Test
+  void testFilteringPlaceholderResolver() {
+    final Component expected = empty()
+        .append(text("ONE", RED))
+        .append(text("<filtered>"))
+        .append(text("TWO", RED));
+
+    final String input = "<one><filtered><two>";
+
+    final Function<String, ComponentLike> resolver = name -> text(name.toUpperCase()).color(RED);
+
+    final MiniMessage miniMessage = MiniMessage.builder().templateResolver(
+        TemplateResolver.filtering(TemplateResolver.dynamic(resolver), name -> name.key().equals("filtered"))
+    ).build();
+
+    this.assertParsedEquals(miniMessage, expected, input);
+  }
+
+  @Test
+  void testGroupingPlaceholderResolver() {
+    final Component expected = empty()
+        .append(text("ONE", RED))
+        .append(text("<none>"))
+        .append(text("TWO", GREEN));
+
+    final String input = "<one><none><two>";
+
+    final Function<String, ComponentLike> resolver = name -> {
+      if (name.equalsIgnoreCase("one")) {
+        return text("ONE").color(RED);
+      }
+      return null;
+    };
+
+    final MiniMessage miniMessage = MiniMessage.builder().templateResolver(
+        TemplateResolver.combining(
+            TemplateResolver.dynamic(resolver),
+            TemplateResolver.templates(Template.template("two", text("TWO", GREEN)))
+        )
+    ).build();
+
+    this.assertParsedEquals(miniMessage, expected, input);
+  }
+
+  @Test
   void testOrderOfPlaceholders() {
     final Component expected = text("A")
       .append(text("B"))
