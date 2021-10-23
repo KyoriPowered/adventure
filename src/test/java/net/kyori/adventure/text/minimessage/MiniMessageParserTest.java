@@ -1591,6 +1591,14 @@ public class MiniMessageParserTest extends TestBase {
     this.assertParsedEquals(expected, input, "word", "Adventure");
   }
 
+  @Test
+  void testInvalidStringPlaceholderInCommand() {
+    final String input = "<click:run_command:'word <unknown> </word>'><gold>Click to run the word!";
+    final Component expected = text("Click to run the word!", GOLD)
+        .clickEvent(ClickEvent.runCommand("word <unknown> </word>"));
+    this.assertParsedEquals(expected, input, "word", "Adventure");
+  }
+
   // https://github.com/KyoriPowered/adventure-text-minimessage/issues/166
   @Test
   void testEmptyTagPart() {
