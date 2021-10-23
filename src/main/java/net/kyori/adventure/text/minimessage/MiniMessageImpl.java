@@ -96,9 +96,9 @@ final class MiniMessageImpl implements MiniMessage {
 
   private @NotNull Context newContext(final @NotNull String input, final @Nullable TemplateResolver resolver) {
     if (resolver == null) {
-      return Context.of(this.strict, this.debugOutput, input, this, TemplateResolver.empty(), postProcessingFunction);
+      return Context.of(this.strict, this.debugOutput, input, this, TemplateResolver.empty(), this.postProcessingFunction);
     } else {
-      return Context.of(this.strict, this.debugOutput, input, this, resolver, postProcessingFunction);
+      return Context.of(this.strict, this.debugOutput, input, this, resolver, this.postProcessingFunction);
     }
   }
 
