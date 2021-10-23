@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.minimessage;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import net.kyori.adventure.text.Component;
@@ -176,7 +177,7 @@ final class MiniMessageImpl implements MiniMessage {
 
     @Override
     public @NotNull Builder postProcessingFunction(final @NotNull Function<Component, Component> postProcessingFunction) {
-      this.postProcessingFunction = postProcessingFunction;
+      this.postProcessingFunction = Objects.requireNonNull(postProcessingFunction);
       return this;
     }
 

@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -187,7 +188,7 @@ final class MiniMessageParser {
     }
 
     context.root(root);
-    return context.postProcessingFunction().apply(this.treeToComponent(root));
+    return Objects.requireNonNull(context.postProcessingFunction()).apply(this.treeToComponent(root));
   }
 
   @NotNull Component treeToComponent(final @NotNull ElementNode node) {

@@ -325,7 +325,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      * @return this builder
      * @since 4.2.0
      */
-    @NotNull Builder postProcessingFunction(Function<Component, Component> postProcessingFunction);
+    @NotNull Builder postProcessingFunction(final @NotNull Function<Component, Component> postProcessingFunction);
 
     /**
      * Builds the serializer.
