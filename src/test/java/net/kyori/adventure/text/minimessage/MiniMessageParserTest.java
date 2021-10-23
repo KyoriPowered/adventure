@@ -1610,4 +1610,24 @@ public class MiniMessageParserTest extends TestBase {
     this.assertParsedEquals(expected, input);
     this.assertParsedEquals(expected, input2);
   }
+
+  @Test
+  void testInvalidClick() {
+    final String input = "<click:pet_a_kitty:'a very cute one'>best click event";
+
+    final Component expected = text("<click:pet_a_kitty:'a very cute one'>best click event");
+
+    this.assertParsedEquals(expected, input);
+  }
+
+  // https://github.com/KyoriPowered/adventure-text-minimessage/issues/140
+  @Test
+  void testStringPlaceholderInHover() {
+    final String input = "<hover:show_text:'Word: <word>'><gold>Hover to see the word!";
+
+    final Component expected = text("Hover to see the word!", GOLD)
+        .hoverEvent(text("Word: ").append(text("Adventure")));
+
+    assertParsedEquals(expected, input, "word", "Adventure");
+  }
 }
