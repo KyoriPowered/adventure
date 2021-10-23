@@ -501,12 +501,15 @@ public final class TokenParser {
           break;
 
         case OPEN_TAG:
-          final Template template = templateResolver.resolve(token.get(message).toString());
-          if (template instanceof Template.StringTemplate) {
-            sb.append(((Template.StringTemplate) template).value());
-          } else {
-            sb.append(token.get(message));
+          if (token.childTokens() != null && token.childTokens().size() == 1) {
+            final CharSequence name = token.childTokens().get(0).get(message);
+            final Template template = templateResolver.resolve(name.toString());
+            if (template instanceof Template.StringTemplate) {
+              sb.append(((Template.StringTemplate) template).value());
+              break;
+            }
           }
+          sb.append(token.get(message));
           break;
       }
     }
