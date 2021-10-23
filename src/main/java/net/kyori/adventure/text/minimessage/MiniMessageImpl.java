@@ -175,7 +175,7 @@ final class MiniMessageImpl implements MiniMessage {
     }
 
     @Override
-    public @NotNull Builder postProcessingFunction(final Function<Component, Component> postProcessingFunction) {
+    public @NotNull Builder postProcessingFunction(final @NotNull Function<Component, Component> postProcessingFunction) {
       this.postProcessingFunction = postProcessingFunction;
       return this;
     }

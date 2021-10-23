@@ -319,7 +319,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
 
     /**
      * Specify a function that takes the component at the end of the parser process.
-     * This is used to compact the resulting component by default
+    * <p>By default, this compacts the resulting component with {@link Component#compact}.</p>
      *
      * @param postProcessingFunction method run at the end of parsing
      * @return this builder
