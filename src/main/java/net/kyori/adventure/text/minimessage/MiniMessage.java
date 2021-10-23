@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.template.TemplateResolver;
@@ -321,11 +322,11 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      * Specify a function that takes the component at the end of the parser process.
     * <p>By default, this compacts the resulting component with {@link Component#compact}.</p>
      *
-     * @param postProcessingFunction method run at the end of parsing
+     * @param postProcessor method run at the end of parsing
      * @return this builder
      * @since 4.2.0
      */
-    @NotNull Builder postProcessingFunction(final @NotNull Function<Component, Component> postProcessingFunction);
+    @NotNull Builder postProcessor(final @NotNull UnaryOperator<Component> postProcessor);
 
     /**
      * Builds the serializer.

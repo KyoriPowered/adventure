@@ -188,7 +188,7 @@ final class MiniMessageParser {
     }
 
     context.root(root);
-    return Objects.requireNonNull(context.postProcessingFunction()).apply(this.treeToComponent(root));
+    return Objects.requireNonNull(context.postProcessor()).apply(this.treeToComponent(root));
   }
 
   @NotNull Component treeToComponent(final @NotNull ElementNode node) {

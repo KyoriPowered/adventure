@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage;
 
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.template.TemplateResolver;
@@ -43,9 +43,9 @@ public class Context {
   private String replacedMessage;
   private final MiniMessage miniMessage;
   private final TemplateResolver templateResolver;
-  private final Function<Component, Component> postProcessingFunction;
+  private final UnaryOperator<Component> postProcessor;
 
-  Context(final boolean strict, final Appendable debugOutput, final ElementNode root, final String originalMessage, final String replacedMessage, final MiniMessage miniMessage, final @NotNull TemplateResolver templateResolver, final Function<Component, Component> postProcessingFunction) {
+  Context(final boolean strict, final Appendable debugOutput, final ElementNode root, final String originalMessage, final String replacedMessage, final MiniMessage miniMessage, final @NotNull TemplateResolver templateResolver, final UnaryOperator<Component> postProcessor) {
     this.strict = strict;
     this.debugOutput = debugOutput;
     this.root = root;
@@ -53,7 +53,7 @@ public class Context {
     this.replacedMessage = replacedMessage;
     this.miniMessage = miniMessage;
     this.templateResolver = templateResolver;
-    this.postProcessingFunction = postProcessingFunction == null ? Function.identity() : postProcessingFunction;
+    this.postProcessor = postProcessor == null ? UnaryOperator.identity() : postProcessor;
   }
 
   /**
@@ -135,12 +135,12 @@ public class Context {
    * @param input the input message
    * @param miniMessage the minimessage instance
    * @param templateResolver the template resolver passed to minimessage
-   * @param postProcessingFunction callback ran at the end of parsing which could be used to compact the output
+   * @param postProcessor callback ran at the end of parsing which could be used to compact the output
    * @return the debug context
    * @since 4.2.0
    */
-  public static Context of(final boolean strict, final Appendable debugOutput, final String input, final MiniMessageImpl miniMessage, final TemplateResolver templateResolver, final Function<Component, Component> postProcessingFunction) {
-    return new Context(strict, debugOutput, null, input, null, miniMessage, templateResolver, postProcessingFunction);
+  public static Context of(final boolean strict, final Appendable debugOutput, final String input, final MiniMessageImpl miniMessage, final TemplateResolver templateResolver, final UnaryOperator<Component> postProcessor) {
+    return new Context(strict, debugOutput, null, input, null, miniMessage, templateResolver, postProcessor);
   }
 
   /**
@@ -251,8 +251,8 @@ public class Context {
    * @return Post-processing function
    * @since 4.2.0
    */
-  public Function<Component, Component> postProcessingFunction() {
-    return this.postProcessingFunction;
+  public UnaryOperator<Component> postProcessor() {
+    return this.postProcessor;
   }
 
   /**
