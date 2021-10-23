@@ -1626,7 +1626,7 @@ public class MiniMessageParserTest extends TestBase {
     final String input = "<hover:show_text:'Word: <word>'><gold>Hover to see the word!";
 
     final Component expected = text("Hover to see the word!", GOLD)
-        .hoverEvent(text("Word: ").append(text("Adventure")));
+        .hoverEvent(text("Word: Adventure"));
 
     assertParsedEquals(expected, input, "word", "Adventure");
   }
