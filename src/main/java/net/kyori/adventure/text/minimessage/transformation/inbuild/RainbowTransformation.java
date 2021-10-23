@@ -126,7 +126,7 @@ public final class RainbowTransformation extends Transformation implements Modif
       if (this.disableApplyingColorDepth == -1) {
         this.disableApplyingColorDepth = depth;
       }
-      // This component has it's own color applied, which overrides ours
+      // This component has its own color applied, which overrides ours
       // We still want to keep track of where we are though if this is text
       if (current instanceof TextComponent) {
         final String content = ((TextComponent) current).content();

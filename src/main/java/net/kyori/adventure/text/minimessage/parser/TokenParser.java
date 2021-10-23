@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Locale;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
@@ -476,6 +477,46 @@ public final class TokenParser {
     }
 
     return root;
+  }
+
+  /**
+   * Parse a minimessage string into another string, resolving only the string templates present in the message.
+   *
+   * @param message the minimessage string to parse
+   * @param templateResolver the template resolver to use to find string placeholders
+   * @return the message, with non-string templates still intact
+   * @since 4.2.0
+   */
+  public static String resolveStringTemplates(
+      final @NotNull String message,
+      final @NotNull TemplateResolver templateResolver
+  ) {
+    final List<Token> tokens = tokenize(message);
+    final StringBuilder sb = new StringBuilder();
+
+    for (final Token token : tokens) {
+      final TokenType type = token.type();
+      switch (type) {
+        case TEXT:
+        case CLOSE_TAG:
+          sb.append(token.get(message));
+          break;
+
+        case OPEN_TAG:
+          if (token.childTokens() != null && token.childTokens().size() == 1) {
+            final CharSequence name = token.childTokens().get(0).get(message);
+            final Template template = templateResolver.resolve(name.toString().toLowerCase(Locale.ROOT));
+            if (template instanceof Template.StringTemplate) {
+              sb.append(((Template.StringTemplate) template).value());
+              break;
+            }
+          }
+          sb.append(token.get(message));
+          break;
+      }
+    }
+
+    return sb.toString();
   }
 
   private static boolean isReset(final String input) {

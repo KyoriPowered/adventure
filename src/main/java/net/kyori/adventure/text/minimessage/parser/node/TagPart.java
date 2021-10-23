@@ -72,15 +72,7 @@ public final class TagPart {
     final @NotNull TemplateResolver templateResolver
   ) {
     String v = unquoteAndEscape(sourceMessage, token.startIndex(), token.endIndex());
-    if (isTag(v)) {
-      final String text = v.substring(1, v.length() - 1);
-      if (templateResolver.canResolve(text)) {
-        final Template template = templateResolver.resolve(text);
-        if (template instanceof Template.StringTemplate) {
-          v = ((Template.StringTemplate) template).value();
-        }
-      }
-    }
+    v = TokenParser.resolveStringTemplates(v, templateResolver);
 
     this.value = v;
     this.token = token;
@@ -104,10 +96,6 @@ public final class TagPart {
    */
   public @NotNull Token token() {
     return this.token;
-  }
-
-  private static boolean isTag(final @NotNull String text) {
-    return text.charAt(0) == '<' || text.charAt(text.length() - 1) == '>';
   }
 
   /**

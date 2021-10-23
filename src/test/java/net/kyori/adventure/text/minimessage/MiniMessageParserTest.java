@@ -27,6 +27,7 @@ import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.template.TemplateResolver;
@@ -1579,5 +1580,34 @@ public class MiniMessageParserTest extends TestBase {
     final Component expected = text("one</blue>two");
 
     this.assertParsedEquals(expected, input);
+  }
+
+  // https://github.com/KyoriPowered/adventure-text-minimessage/issues/146
+  @Test
+  void testStringPlaceholderInCommand() {
+    final String input = "<click:run_command:'word <word>'><gold>Click to run the word!";
+    final Component expected = text("Click to run the word!", GOLD)
+        .clickEvent(ClickEvent.runCommand("word Adventure"));
+    this.assertParsedEquals(expected, input, "word", "Adventure");
+  }
+
+  @Test
+  void testInvalidStringPlaceholderInCommand() {
+    final String input = "<click:run_command:'word <unknown> </word>'><gold>Click to run the word!";
+    final Component expected = text("Click to run the word!", GOLD)
+        .clickEvent(ClickEvent.runCommand("word <unknown> </word>"));
+    this.assertParsedEquals(expected, input, "word", "Adventure");
+  }
+
+  // https://github.com/KyoriPowered/adventure-text-minimessage/issues/166
+  @Test
+  void testEmptyTagPart() {
+    final String input = "<hover:show_text:\"\">text</hover>";
+    final String input2 = "<hover:show_text:>text</hover>";
+
+    final Component expected = text("text").hoverEvent(showText(empty()));
+
+    this.assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected, input2);
   }
 }
