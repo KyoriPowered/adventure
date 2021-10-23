@@ -496,7 +496,8 @@ public final class TokenParser {
     for (final Token token : tokens) {
       final TokenType type = token.type();
       switch (type) {
-        case TEXT: case CLOSE_TAG:
+        case TEXT:
+        case CLOSE_TAG:
           sb.append(token.get(message));
           break;
 
