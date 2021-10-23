@@ -498,7 +498,7 @@ public final class TokenParser {
       final TokenType type = token.type();
       switch (type) {
         case TEXT: case CLOSE_TAG:
-          sb.append(new TextNode(dummy, token, message).value());
+          sb.append(token.get(message));
           break;
 
         case OPEN_TAG:
@@ -507,7 +507,7 @@ public final class TokenParser {
           if (template instanceof Template.StringTemplate) {
             sb.append(((Template.StringTemplate) template).value());
           } else {
-            sb.append(new TextNode(dummy, token, message).value());
+            sb.append(token.get(message));
           }
           break;
       }
