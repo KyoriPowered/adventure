@@ -490,7 +490,6 @@ public final class TokenParser {
       final @NotNull String message,
       final @NotNull TemplateResolver templateResolver
   ) {
-    final RootNode dummy = new RootNode(message);
     final List<Token> tokens = tokenize(message);
     final StringBuilder sb = new StringBuilder();
 
@@ -502,8 +501,7 @@ public final class TokenParser {
           break;
 
         case OPEN_TAG:
-          final TagNode tagNode = new TagNode(dummy, token, message, templateResolver);
-          final Template template = templateResolver.resolve(tagNode.name());
+          final Template template = templateResolver.resolve(token.get(message).toString());
           if (template instanceof Template.StringTemplate) {
             sb.append(((Template.StringTemplate) template).value());
           } else {
