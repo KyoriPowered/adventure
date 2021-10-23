@@ -478,6 +478,44 @@ public final class TokenParser {
     return root;
   }
 
+  /**
+   * Parse a minimessage string into another string, resolving only the string templates present in the message.
+   *
+   * @param message the minimessage string to parse
+   * @param templateResolver the template resolver to use to find string placeholders
+   * @return the message, with non-string templates still intact
+   * @since 4.2.0
+   */
+  public static String resolveStringTemplates(
+      final @NotNull String message,
+      final @NotNull TemplateResolver templateResolver
+  ) {
+    final RootNode dummy = new RootNode(message);
+    final List<Token> tokens = tokenize(message);
+    final StringBuilder sb = new StringBuilder();
+
+    for (final Token token : tokens) {
+      final TokenType type = token.type();
+      switch (type) {
+        case TEXT: case CLOSE_TAG:
+          sb.append(new TextNode(dummy, token, message).value());
+          break;
+
+        case OPEN_TAG:
+          final TagNode tagNode = new TagNode(dummy, token, message, templateResolver);
+          final Template template = templateResolver.resolve(tagNode.name());
+          if (template instanceof Template.StringTemplate) {
+            sb.append(((Template.StringTemplate) template).value());
+          } else {
+            sb.append(new TextNode(dummy, token, message).value());
+          }
+          break;
+      }
+    }
+
+    return sb.toString();
+  }
+
   private static boolean isReset(final String input) {
     return input.equalsIgnoreCase(Tokens.RESET) || input.equalsIgnoreCase(Tokens.RESET_2);
   }
