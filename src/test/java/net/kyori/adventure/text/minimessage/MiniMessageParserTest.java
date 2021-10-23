@@ -1590,7 +1590,7 @@ public class MiniMessageParserTest extends TestBase {
         .clickEvent(ClickEvent.runCommand("word Adventure"));
     this.assertParsedEquals(expected, input, "word", "Adventure");
   }
-  
+
   // https://github.com/KyoriPowered/adventure-text-minimessage/issues/166
   @Test
   void testEmptyTagPart() {
