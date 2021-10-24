@@ -33,14 +33,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
+import static java.util.Objects.requireNonNull;
+
 final class TitleImpl implements Title {
   private final Component title;
   private final Component subtitle;
   private final @Nullable Times times;
 
   TitleImpl(final @NotNull Component title, final @NotNull Component subtitle, final @Nullable Times times) {
-    this.title = title;
-    this.subtitle = subtitle;
+    this.title = requireNonNull(title, "title");
+    this.subtitle = requireNonNull(subtitle, "subtitle");
     this.times = times;
   }
 
@@ -110,10 +112,10 @@ final class TitleImpl implements Title {
     private final Duration stay;
     private final Duration fadeOut;
 
-    TimesImpl(final Duration fadeIn, final Duration stay, final Duration fadeOut) {
-      this.fadeIn = fadeIn;
-      this.stay = stay;
-      this.fadeOut = fadeOut;
+    TimesImpl(final @NotNull Duration fadeIn, final @NotNull Duration stay, final @NotNull Duration fadeOut) {
+      this.fadeIn = requireNonNull(fadeIn, "fade in");
+      this.stay = requireNonNull(stay, "stay");
+      this.fadeOut = requireNonNull(fadeOut, "fade out");
     }
 
     @Override

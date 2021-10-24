@@ -46,7 +46,7 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
   @Override
   public @NotNull BlockNBTComponent nbtPath(final @NotNull String nbtPath) {
     if (Objects.equals(this.nbtPath, nbtPath)) return this;
-    return new BlockNBTComponentImpl(this.children, this.style, nbtPath, this.interpret, this.separator, this.pos);
+    return new BlockNBTComponentImpl(this.children, this.style, requireNonNull(nbtPath, "nbt path"), this.interpret, this.separator, this.pos);
   }
 
   @Override
@@ -72,17 +72,17 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
 
   @Override
   public @NotNull BlockNBTComponent pos(final @NotNull Pos pos) {
-    return new BlockNBTComponentImpl(this.children, this.style, this.nbtPath, this.interpret, this.separator, pos);
+    return new BlockNBTComponentImpl(this.children, this.style, this.nbtPath, this.interpret, this.separator, requireNonNull(pos, "pos"));
   }
 
   @Override
   public @NotNull BlockNBTComponent children(final @NotNull List<? extends ComponentLike> children) {
-    return new BlockNBTComponentImpl(children, this.style, this.nbtPath, this.interpret, this.separator, this.pos);
+    return new BlockNBTComponentImpl(requireNonNull(children, "children"), this.style, this.nbtPath, this.interpret, this.separator, this.pos);
   }
 
   @Override
   public @NotNull BlockNBTComponent style(final @NotNull Style style) {
-    return new BlockNBTComponentImpl(this.children, style, this.nbtPath, this.interpret, this.separator, this.pos);
+    return new BlockNBTComponentImpl(this.children, requireNonNull(style, "style"), this.nbtPath, this.interpret, this.separator, this.pos);
   }
 
   @Override

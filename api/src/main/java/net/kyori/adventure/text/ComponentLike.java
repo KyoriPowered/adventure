@@ -31,6 +31,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Something that can be represented as a {@link Component}.
  *
@@ -68,7 +70,7 @@ public interface ComponentLike {
     }
     @Nullable ArrayList<Component> components = null;
     for (int i = 0; i < size; i++) {
-      final ComponentLike like = likes.get(i);
+      final ComponentLike like = requireNonNull(likes.get(i), "components[?]");
       final Component component = like.asComponent();
       if (filter == null || filter.test(component)) {
         if (components == null) {

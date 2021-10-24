@@ -83,12 +83,12 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
 
   @Override
   public @NotNull ScoreComponent children(final @NotNull List<? extends ComponentLike> children) {
-    return new ScoreComponentImpl(children, this.style, this.name, this.objective, this.value);
+    return new ScoreComponentImpl(requireNonNull(children, "children"), this.style, this.name, this.objective, this.value);
   }
 
   @Override
   public @NotNull ScoreComponent style(final @NotNull Style style) {
-    return new ScoreComponentImpl(this.children, style, this.name, this.objective, this.value);
+    return new ScoreComponentImpl(this.children, requireNonNull(style, "style"), this.name, this.objective, this.value);
   }
 
   @Override

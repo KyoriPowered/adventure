@@ -66,12 +66,12 @@ final class SelectorComponentImpl extends AbstractComponent implements SelectorC
 
   @Override
   public @NotNull SelectorComponent children(final @NotNull List<? extends ComponentLike> children) {
-    return new SelectorComponentImpl(children, this.style, this.pattern, this.separator);
+    return new SelectorComponentImpl(requireNonNull(children, "children"), this.style, this.pattern, this.separator);
   }
 
   @Override
   public @NotNull SelectorComponent style(final @NotNull Style style) {
-    return new SelectorComponentImpl(this.children, style, this.pattern, this.separator);
+    return new SelectorComponentImpl(this.children, requireNonNull(style, "style"), this.pattern, this.separator);
   }
 
   @Override

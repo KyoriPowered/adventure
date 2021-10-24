@@ -32,6 +32,8 @@ import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static java.util.Objects.requireNonNull;
+
 final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent, StorageNBTComponent.Builder> implements StorageNBTComponent {
   private final Key storage;
 
@@ -43,7 +45,7 @@ final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent
   @Override
   public @NotNull StorageNBTComponent nbtPath(final @NotNull String nbtPath) {
     if (Objects.equals(this.nbtPath, nbtPath)) return this;
-    return new StorageNBTComponentImpl(this.children, this.style, nbtPath, this.interpret, this.separator, this.storage);
+    return new StorageNBTComponentImpl(this.children, this.style, requireNonNull(nbtPath, "nbt path"), this.interpret, this.separator, this.storage);
   }
 
   @Override
@@ -70,17 +72,17 @@ final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent
   @Override
   public @NotNull StorageNBTComponent storage(final @NotNull Key storage) {
     if (Objects.equals(this.storage, storage)) return this;
-    return new StorageNBTComponentImpl(this.children, this.style, this.nbtPath, this.interpret, this.separator, storage);
+    return new StorageNBTComponentImpl(this.children, this.style, this.nbtPath, this.interpret, this.separator, requireNonNull(storage, "storage"));
   }
 
   @Override
   public @NotNull StorageNBTComponent children(final @NotNull List<? extends ComponentLike> children) {
-    return new StorageNBTComponentImpl(children, this.style, this.nbtPath, this.interpret, this.separator, this.storage);
+    return new StorageNBTComponentImpl(requireNonNull(children, "children"), this.style, this.nbtPath, this.interpret, this.separator, this.storage);
   }
 
   @Override
   public @NotNull StorageNBTComponent style(final @NotNull Style style) {
-    return new StorageNBTComponentImpl(this.children, style, this.nbtPath, this.interpret, this.separator, this.storage);
+    return new StorageNBTComponentImpl(this.children, requireNonNull(style, "style"), this.nbtPath, this.interpret, this.separator, this.storage);
   }
 
   @Override
