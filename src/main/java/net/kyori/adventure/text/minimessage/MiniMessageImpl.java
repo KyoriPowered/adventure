@@ -177,7 +177,7 @@ final class MiniMessageImpl implements MiniMessage {
 
     @Override
     public @NotNull Builder postProcessor(final @NotNull UnaryOperator<Component> postProcessor) {
-      this.postProcessor = Objects.requireNonNull(postProcessor);
+      this.postProcessor = Objects.requireNonNull(postProcessor, "postProcessor");
       return this;
     }
 
