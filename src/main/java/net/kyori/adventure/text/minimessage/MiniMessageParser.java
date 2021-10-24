@@ -24,16 +24,14 @@
 package net.kyori.adventure.text.minimessage;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenParser;
@@ -187,9 +185,7 @@ final class MiniMessageParser {
     }
 
     context.root(root);
-    final Component comp = this.treeToComponent(root);
-    // at the end, take a look if we can flatten the tree a bit
-    return this.flatten(comp);
+    return Objects.requireNonNull(context.postProcessor().apply(this.treeToComponent(root)), "Post-processor must not return null");
   }
 
   @NotNull Component treeToComponent(final @NotNull ElementNode node) {
@@ -237,61 +233,6 @@ final class MiniMessageParser {
       newComp = newComp.append(this.handleModifying(modTransformation, child, depth + 1));
     }
     return newComp;
-  }
-
-  private @NotNull Component flatten(@NotNull Component comp) {
-    if (comp.children().isEmpty()) {
-      return comp;
-    }
-
-    final List<Component> oldChildren = comp.children();
-    final ArrayList<Component> newChildren = new ArrayList<>(oldChildren.size());
-    for (final Component child : oldChildren) {
-      newChildren.add(this.flatten(child));
-    }
-
-    comp = comp.children(newChildren);
-
-    if (!(comp instanceof TextComponent)) {
-      return comp;
-    }
-
-    final TextComponent root = (TextComponent) comp;
-
-    if (root.content().isEmpty()) {
-      // this seems to be some kind of empty node, lets see if we can discard it, or if we have to merge it
-      final boolean hasNoStyle = !root.hasStyling() && root.hoverEvent() == null && root.clickEvent() == null;
-      if (root.children().size() == 1 && hasNoStyle) {
-        // seems to be the root node, just discord it
-        return root.children().get(0);
-      } else if (!root.children().isEmpty() && hasNoStyle) {
-        // see if we can at least flatten the first child
-        final Component child = newChildren.get(0);
-        if (child.hasStyling()) {
-          // We can't, the child styling might interfere with a sibling
-          return comp;
-        }
-
-        final ArrayList<Component> copiedChildren = new ArrayList<>(root.children().size() - 1 + child.children().size());
-
-        copiedChildren.addAll(child.children());
-        copiedChildren.addAll(newChildren.subList(1, newChildren.size()));
-
-        return root.content(child instanceof TextComponent ? ((TextComponent) child).content() : "")
-          .style(mergeStyle(root, child))
-          .children(copiedChildren);
-      } else if (root.children().size() == 1) {
-        // we got something we can merge
-        final Component child = newChildren.get(0);
-        return child.style(mergeStyle(root, child));
-      }
-    }
-
-    return comp;
-  }
-
-  private static @NotNull Style mergeStyle(final @NotNull Component base, final @NotNull Component target) {
-    return target.style().merge(base.style(), Style.Merge.Strategy.IF_ABSENT_ON_TARGET, Style.Merge.all());
   }
 
   private String sanitizeTemplateName(final String name) {

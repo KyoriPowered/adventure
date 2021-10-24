@@ -44,14 +44,14 @@ public class TestBase {
   }
 
   void assertParsedEquals(final MiniMessage miniMessage, final Component expected, final String input) {
-    final String expectedSerialized = this.prettyPrint(expected);
-    final String actual = this.prettyPrint(miniMessage.parse(input));
+    final String expectedSerialized = this.prettyPrint(expected.compact());
+    final String actual = this.prettyPrint(miniMessage.parse(input).compact());
     assertEquals(expectedSerialized, actual);
   }
 
   void assertParsedEquals(final MiniMessage miniMessage, final Component expected, final String input, final @NotNull Object... args) {
-    final String expectedSerialized = this.prettyPrint(expected);
-    final String actual = this.prettyPrint(miniMessage.deserialize(input, TemplateResolver.resolving(args)));
+    final String expectedSerialized = this.prettyPrint(expected.compact());
+    final String actual = this.prettyPrint(miniMessage.deserialize(input, TemplateResolver.resolving(args)).compact());
     assertEquals(expectedSerialized, actual);
   }
 
