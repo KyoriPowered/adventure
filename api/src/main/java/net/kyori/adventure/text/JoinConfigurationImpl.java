@@ -39,6 +39,15 @@ final class JoinConfigurationImpl implements JoinConfiguration {
   static final Predicate<ComponentLike> DEFAULT_PREDICATE = componentLike -> true;
   static final JoinConfigurationImpl NULL = new JoinConfigurationImpl();
 
+  static final JoinConfiguration STANDARD_NEW_LINES = JoinConfiguration.separator(Component.newline());
+  static final JoinConfiguration STANDARD_COMMA_SEPARATED = JoinConfiguration.separator(Component.text(","));
+  static final JoinConfiguration STANDARD_COMMA_SPACE_SEPARATED = JoinConfiguration.separator(Component.text(", "));
+  static final JoinConfiguration STANDARD_ARRAY_LIKE = JoinConfiguration.builder()
+    .separator(Component.text(", "))
+    .prefix(Component.text("["))
+    .suffix(Component.text("]"))
+    .build();
+
   private final Component prefix;
   private final Component suffix;
   private final Component separator;
