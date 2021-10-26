@@ -289,4 +289,28 @@ class ComponentCompactingTest {
 
     assertEquals(expectedCompact, notCompact.compact());
   }
+
+  // https://github.com/KyoriPowered/adventure-text-minimessage/issues/181
+  @Test
+  void testJoinTextWithChildren() {
+    final Component expectedCompact = text().append(
+      text('2', NamedTextColor.AQUA),
+      text().content("-").append(
+        text('3', NamedTextColor.BLUE),
+        text('4', NamedTextColor.DARK_BLUE)
+      ),
+      text("end")
+    ).build();
+    final Component notCompact = text().append(
+      text('2', NamedTextColor.AQUA),
+      text('-'),
+      text().append(
+        text('3', NamedTextColor.BLUE),
+        text('4', NamedTextColor.DARK_BLUE)
+      ),
+      text("end")
+    ).build();
+
+    assertEquals(expectedCompact, notCompact.compact());
+  }
 }
