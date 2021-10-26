@@ -106,7 +106,7 @@ final class ComponentCompaction {
       final Style childStyle = child.style().merge(childParentStyle, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
       final Style neighborStyle = neighbor.style().merge(childParentStyle, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
 
-      if (child instanceof TextComponent && neighbor instanceof TextComponent && childStyle.equals(neighborStyle)) {
+      if (child.children().isEmpty() && child instanceof TextComponent && neighbor instanceof TextComponent && childStyle.equals(neighborStyle)) {
         final Component combined = joinText((TextComponent) child, (TextComponent) neighbor);
 
         // replace the child and its neighbor with the single, combined component
@@ -167,6 +167,6 @@ final class ComponentCompaction {
   }
 
   private static TextComponent joinText(final TextComponent one, final TextComponent two) {
-    return Component.text(one.content() + two.content(), one.style());
+    return Component.text(one.content() + two.content(), one.style()).children(two.children());
   }
 }

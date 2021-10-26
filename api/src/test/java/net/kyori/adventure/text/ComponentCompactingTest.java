@@ -290,4 +290,22 @@ class ComponentCompactingTest {
 
     assertEquals(expectedCompact, notCompact.compact());
   }
+
+  @Test
+  void testJoinTextWithChildren() {
+    final Component expectedCompact = empty()
+      .append(text('2', NamedTextColor.AQUA))
+      .append(text('-')
+        .append(text('3', NamedTextColor.BLUE))
+        .append(text('4', NamedTextColor.DARK_BLUE)));
+    final Component notCompact = empty()
+      .append(text('2', NamedTextColor.AQUA))
+      .append(text('-'))
+      .append(empty()
+        .append(text('3', NamedTextColor.BLUE))
+        .append(text('4', NamedTextColor.DARK_BLUE))
+      );
+
+    assertEquals(expectedCompact, notCompact.compact());
+  }
 }
