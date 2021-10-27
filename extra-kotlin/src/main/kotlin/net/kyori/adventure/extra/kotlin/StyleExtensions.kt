@@ -31,7 +31,7 @@ import org.jetbrains.annotations.Contract
  *
  * @param consumer the consumer to edit this style with
  * @return a new style, with the changes applied from this builder
- * @since 4.8.0
+ * @since 4.10.0
  */
 @Contract("_ -> new")
 public fun Style.edit(consumer: Style.Builder.() -> Unit): Style = edit(consumer)

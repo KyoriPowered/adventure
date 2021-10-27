@@ -31,7 +31,7 @@ import net.kyori.adventure.util.HSVLike
  * Allows for destructuring into `(h, s, v)`.
  *
  * @return the [HSVLike.h] component
- * @since 4.8.0
+ * @since 4.10.0
  */
 public operator fun HSVLike.component1(): Float = h()
 
@@ -41,7 +41,7 @@ public operator fun HSVLike.component1(): Float = h()
  * Allows for destructuring into `(h, s, v)`.
  *
  * @return the [HSVLike.s] component
- * @since 4.8.0
+ * @since 4.10.0
  */
 public operator fun HSVLike.component2(): Float = s()
 
@@ -51,6 +51,6 @@ public operator fun HSVLike.component2(): Float = s()
  * Allows for destructuring into `(h, s, v)`.
  *
  * @return the [HSVLike.v] component
- * @since 4.8.0
+ * @since 4.10.0
  */
 public operator fun HSVLike.component3(): Float = v()

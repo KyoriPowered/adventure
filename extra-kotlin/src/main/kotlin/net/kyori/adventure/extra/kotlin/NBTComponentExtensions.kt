@@ -31,7 +31,7 @@ import net.kyori.adventure.text.BlockNBTComponent
  * Allows for destructuring into `(x, y, z)`.
  *
  * @return the X component
- * @since 4.8.0
+ * @since 4.10.0
  */
 public operator fun BlockNBTComponent.WorldPos.component1(): BlockNBTComponent.WorldPos.Coordinate = x()
 
@@ -41,7 +41,7 @@ public operator fun BlockNBTComponent.WorldPos.component1(): BlockNBTComponent.W
  * Allows for destructuring into `(x, y, z)`.
  *
  * @return the Y component
- * @since 4.8.0
+ * @since 4.10.0
  */
 public operator fun BlockNBTComponent.WorldPos.component2(): BlockNBTComponent.WorldPos.Coordinate = y()
 
@@ -51,6 +51,6 @@ public operator fun BlockNBTComponent.WorldPos.component2(): BlockNBTComponent.W
  * Allows for destructuring into `(x, y, z)`.
  *
  * @return the Z component
- * @since 4.8.0
+ * @since 4.10.0
  */
 public operator fun BlockNBTComponent.WorldPos.component3(): BlockNBTComponent.WorldPos.Coordinate = z()
