@@ -48,6 +48,7 @@ import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.StyleGetter;
 import net.kyori.adventure.text.format.StyleSetter;
+import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
@@ -1730,6 +1731,33 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Contract(pure = true)
   default @NotNull Component append(final @NotNull ComponentBuilder<?, ?> builder) {
     return this.append(builder.build());
+  }
+
+  /**
+   * "Wraps" a component, setting its default style to the specified style regardless of parent style, unless the component itself overrides that.
+   *
+   * @param like the component which will be wrapped
+   * @param style style to use by default
+   * @return wrapped component
+   * @since 4.10.0
+   */
+  @Contract(pure = true)
+  static @NotNull Component wrap(final @NotNull ComponentLike like, final @NotNull Style style) {
+    return Component.text().append(like).style(style).build();
+  }
+
+
+  /**
+   * "Wraps" a component, setting its default style to the specified style regardless of parent style, unless the component itself overrides that.
+   *
+   * @param like the component which will be wrapped
+   * @param style style to use by default
+   * @return wrapped component
+   * @since 4.10.0
+   */
+  @Contract(pure = true)
+  static @NotNull Component wrap(final @NotNull ComponentLike like, final @NotNull StyleBuilderApplicable... style) {
+    return Component.wrap(like, Style.style(style));
   }
 
   /**

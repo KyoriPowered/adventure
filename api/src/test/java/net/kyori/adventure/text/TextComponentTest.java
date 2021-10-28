@@ -153,4 +153,17 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
   void testBuildEmptyIsEmpty() {
     assertSame(Component.empty(), Component.text().build());
   }
+
+  @Test
+  void testWrapping() {
+    final Component italic = Component.text("italic").decorate(TextDecoration.ITALIC);
+    final Component notItalic = Component.text("non-italic");
+    final Component parent = Component.empty().decoration(TextDecoration.ITALIC, true);
+
+    final Component wrappedItalic = parent.append(Component.wrap(italic, TextDecoration.ITALIC.as(false)));
+    final Component wrappedNotItalic = parent.append(Component.wrap(notItalic, TextDecoration.ITALIC.as(false)));
+
+    assertEquals(wrappedItalic.compact(), Component.text("italic").decoration(TextDecoration.ITALIC, true));
+    assertEquals(wrappedNotItalic.compact(), Component.text("non-italic").decoration(TextDecoration.ITALIC, false));
+  }
 }
