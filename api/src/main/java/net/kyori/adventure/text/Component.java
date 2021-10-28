@@ -1743,10 +1743,8 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(pure = true)
   static @NotNull Component wrap(final @NotNull ComponentLike like, final @NotNull Style style) {
-    return Component.text().append(like).style(style).build();
+    return text().append(like).style(style).build();
   }
-
-
   /**
    * "Wraps" a component, setting its default style to the specified style regardless of parent style, unless the component itself overrides that.
    *
@@ -1756,8 +1754,8 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.10.0
    */
   @Contract(pure = true)
-  static @NotNull Component wrap(final @NotNull ComponentLike like, final @NotNull StyleBuilderApplicable... style) {
-    return Component.wrap(like, Style.style(style));
+  static @NotNull Component wrap(final @NotNull ComponentLike like, final @NotNull StyleBuilderApplicable@NotNull... style) {
+    return wrap(like, Style.style(style));
   }
 
   /**
