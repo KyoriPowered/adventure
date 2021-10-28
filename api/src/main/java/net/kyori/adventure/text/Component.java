@@ -1745,6 +1745,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   static @NotNull Component wrap(final @NotNull ComponentLike like, final @NotNull Style style) {
     return text().append(like).style(style).build();
   }
+
   /**
    * "Wraps" a component, setting its default style to the specified style regardless of parent style, unless the component itself overrides that.
    *
