@@ -291,6 +291,7 @@ class ComponentCompactingTest {
     assertEquals(expectedCompact, notCompact.compact());
   }
 
+  // https://github.com/KyoriPowered/adventure-text-minimessage/issues/181
   @Test
   void testJoinTextWithChildren() {
     final Component expectedCompact = text().append(
