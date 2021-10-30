@@ -1734,7 +1734,9 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
-   * "Wraps" a component, setting its default style to the specified style regardless of parent style, unless the component itself overrides that.
+   * Wraps the provided component in an empty component with the given style.
+   *
+   * <p>This method can be used to set the "default" style for a component, whilst still allowing the component to override the style.</p>
    *
    * @param like the component which will be wrapped
    * @param style style to use by default
@@ -1743,11 +1745,15 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(pure = true)
   static @NotNull Component wrap(final @NotNull ComponentLike like, final @NotNull Style style) {
+    Objects.requireNonNull(like, "like");
+    Objects.requireNonNull(style, "style");
     return text().append(like).style(style).build();
   }
 
   /**
-   * "Wraps" a component, setting its default style to the specified style regardless of parent style, unless the component itself overrides that.
+   * Wraps the provided component in an empty component with the given style.
+   *
+   * <p>This method can be used to set the "default" style for a component, whilst still allowing the component to override the style.</p>
    *
    * @param like the component which will be wrapped
    * @param style style to use by default
