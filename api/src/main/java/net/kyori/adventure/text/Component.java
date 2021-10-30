@@ -1738,16 +1738,16 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    *
    * <p>This method can be used to set the "default" style for a component, whilst still allowing the component to override the style.</p>
    *
-   * @param like the component which will be wrapped
-   * @param style style to use by default
-   * @return wrapped component
+   * @param component the component which will be wrapped
+   * @param style style for the wrapper component
+   * @return the wrapped component
    * @since 4.10.0
    */
   @Contract(pure = true)
-  static @NotNull Component wrap(final @NotNull ComponentLike like, final @NotNull Style style) {
-    Objects.requireNonNull(like, "like");
+  static @NotNull Component wrap(final @NotNull ComponentLike component, final @NotNull Style style) {
+    Objects.requireNonNull(component, "component");
     Objects.requireNonNull(style, "style");
-    return text().append(like).style(style).build();
+    return text().append(component).style(style).build();
   }
 
   /**
@@ -1755,14 +1755,14 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    *
    * <p>This method can be used to set the "default" style for a component, whilst still allowing the component to override the style.</p>
    *
-   * @param like the component which will be wrapped
-   * @param style style to use by default
-   * @return wrapped component
+   * @param component the component which will be wrapped
+   * @param style style for the wrapper component
+   * @return the wrapped component
    * @since 4.10.0
    */
   @Contract(pure = true)
-  static @NotNull Component wrap(final @NotNull ComponentLike like, final @NotNull StyleBuilderApplicable@NotNull... style) {
-    return wrap(like, Style.style(style));
+  static @NotNull Component wrap(final @NotNull ComponentLike component, final @NotNull StyleBuilderApplicable@NotNull... style) {
+    return wrap(component, Style.style(style));
   }
 
   /**
