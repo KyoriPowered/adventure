@@ -171,7 +171,7 @@ final class MiniMessageParser {
     }
     final BiPredicate<String, Boolean> tagNameChecker = (name, includeTemplates) -> {
       final String sanitized = this.sanitizeTemplateName(name);
-      return this.registry.exists(sanitized, combinedResolver) || (includeTemplates && combinedResolver.canResolve(name));
+      return this.registry.exists(sanitized) || (includeTemplates && combinedResolver.canResolve(name));
     };
 
     final ElementNode root = TokenParser.parse(transformationFactory, tagNameChecker, combinedResolver, richMessage, context.strict());

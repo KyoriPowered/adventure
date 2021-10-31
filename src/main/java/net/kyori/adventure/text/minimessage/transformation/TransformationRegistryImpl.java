@@ -105,18 +105,23 @@ final class TransformationRegistryImpl implements TransformationRegistry {
   }
 
   @Override
-  public boolean exists(final String name, final TemplateResolver templateResolver) {
-    // first check the placeholder resolver
-    if (templateResolver.canResolve(name)) {
-      return true;
-    }
-    // then check registry
+  public boolean exists(final String name) {
     for (final TransformationType<? extends Transformation> type : this.types) {
       if (type.canParse.test(name)) {
         return true;
       }
     }
     return false;
+  }
+
+  @Override
+  public boolean exists(final String name, final TemplateResolver templateResolver) {
+    // first check the placeholder resolver
+    if (templateResolver.canResolve(name)) {
+      return true;
+    }
+    // then check registry
+    return this.exists(name);
   }
 
   @Override

@@ -31,8 +31,12 @@ import java.util.Locale;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
+import java.util.function.Predicate;
 import net.kyori.adventure.text.minimessage.Template;
 import net.kyori.adventure.text.minimessage.Tokens;
+import net.kyori.adventure.text.minimessage.parser.match.MatchedTokenConsumer;
+import net.kyori.adventure.text.minimessage.parser.match.PlaceholderResolvingMatchedTokenConsumer;
+import net.kyori.adventure.text.minimessage.parser.match.TokenListProducingMatchedTokenConsumer;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.parser.node.RootNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagNode;
@@ -51,6 +55,8 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.2.0
  */
 public final class TokenParser {
+  private static final int MAX_DEPTH = 16;
+
   private TokenParser() {
   }
 
@@ -68,9 +74,39 @@ public final class TokenParser {
     final @NotNull String message,
     final boolean strict
   ) {
-    final List<Token> tokens = tokenize(message);
+    // first resolve placeholders...
+    final String actualMessage = resolvePlaceholders(message, string -> tagNameChecker.test(string, false), templateResolver);
 
-    return buildTree(transformationFactory, tagNameChecker, templateResolver, tokens, message, strict);
+    // then collect tokens...
+    final List<Token> tokens = tokenize(actualMessage);
+
+    // then build the tree!
+    return buildTree(transformationFactory, tagNameChecker, templateResolver, tokens, actualMessage, strict);
+  }
+
+  /**
+   * Resolves placeholders on a string.
+   *
+   * @param message the message
+   * @param tagNameChecker a predicate to check if a matched token is a in-built transformation tag
+   * @param templateResolver the template resolver
+   * @return the resulting string
+   * @since 4.2.0
+   */
+  public static String resolvePlaceholders(final String message, final Predicate<String> tagNameChecker, final TemplateResolver templateResolver) {
+    int passes = 0;
+    String lastResult;
+    String result = message;
+
+    do {
+      lastResult = result;
+      final PlaceholderResolvingMatchedTokenConsumer placeholderResolver = new PlaceholderResolvingMatchedTokenConsumer(lastResult, tagNameChecker, templateResolver);
+      parseString(lastResult, placeholderResolver);
+      result = placeholderResolver.result();
+      passes++;
+    } while (passes < MAX_DEPTH && !lastResult.equals(result));
+
+    return lastResult;
   }
 
   /**
@@ -81,18 +117,27 @@ public final class TokenParser {
    * @since 4.2.0
    */
   public static List<Token> tokenize(final String message) {
-    final List<Token> tokens = parseFirstPass(message);
+    final TokenListProducingMatchedTokenConsumer listProducer = new TokenListProducingMatchedTokenConsumer(message);
+    parseString(message, listProducer);
+    final List<Token> tokens = listProducer.result();
     parseSecondPass(message, tokens);
     return tokens;
   }
 
-  /*
-   * First pass over the text identifies valid tags and text blocks.
-   */
-  @SuppressWarnings("DuplicatedCode")
-  private static List<Token> parseFirstPass(final String message) {
-    final ArrayList<Token> elements = new ArrayList<>();
+  enum FirstPassState {
+    NORMAL,
+    TAG,
+    STRING;
+  }
 
+  /**
+   * Parses a string, providing information on matched tokens to the matched token consumer.
+   *
+   * @param message the message
+   * @param consumer the consumer
+   * @since 4.2.0
+   */
+  public static void parseString(final String message, final MatchedTokenConsumer<?> consumer) {
     FirstPassState state = FirstPassState.NORMAL;
     // If the current state is escaped then the next character is skipped
     boolean escaped = false;
@@ -111,7 +156,7 @@ public final class TokenParser {
 
       if (!escaped) {
         // if we're trying to escape and the next character exists
-        if (codePoint == '\\' && i + 1 < message.length()) {
+        if (codePoint == Tokens.ESCAPE && i + 1 < message.length()) {
           final int nextCodePoint = message.codePointAt(i + 1);
 
           switch (state) {
@@ -157,7 +202,7 @@ public final class TokenParser {
               // We found a tag
               if (currentTokenEnd != marker) {
                 // anything not matched up to this point is normal text
-                elements.add(new Token(currentTokenEnd, marker, TokenType.TEXT));
+                consumer.accept(currentTokenEnd, marker, TokenType.TEXT);
               }
               currentTokenEnd = i + 1;
 
@@ -166,7 +211,7 @@ public final class TokenParser {
               if (boundsCheck(message, marker, 1) && message.charAt(marker + 1) == Tokens.CLOSE_TAG) {
                 thisType = TokenType.CLOSE_TAG;
               }
-              elements.add(new Token(marker, currentTokenEnd, thisType));
+              consumer.accept(marker, currentTokenEnd, thisType);
               state = FirstPassState.NORMAL;
               break;
             case Tokens.TAG_START:
@@ -189,22 +234,12 @@ public final class TokenParser {
     }
 
     // anything left over is plain text
-    if (elements.isEmpty()) {
-      elements.add(new Token(0, message.length(), TokenType.TEXT));
-    } else {
-      final int end = elements.get(elements.size() - 1).endIndex();
-      if (end != message.length()) {
-        elements.add(new Token(end, message.length(), TokenType.TEXT));
-      }
+    final int end = consumer.lastEndIndex();
+    if (end == -1) {
+      consumer.accept(0, message.length(), TokenType.TEXT);
+    } else if (end != message.length()) {
+      consumer.accept(end, message.length(), TokenType.TEXT);
     }
-
-    return elements;
-  }
-
-  enum FirstPassState {
-    NORMAL,
-    TAG,
-    STRING;
   }
 
   /*
@@ -237,7 +272,7 @@ public final class TokenParser {
 
         if (!escaped) {
           // if we're trying to escape and the next character exists
-          if (codePoint == '\\' && i + 1 < message.length()) {
+          if (codePoint == Tokens.ESCAPE && i + 1 < message.length()) {
             final int nextCodePoint = message.codePointAt(i + 1);
 
             switch (state) {

@@ -70,6 +70,9 @@ public final class Tokens {
   public static final char CLOSE_TAG = '/';
   public static final char SEPARATOR = ':';
 
+  // misc
+  public static final char ESCAPE = '\\';
+
   private Tokens() {
   }
 }

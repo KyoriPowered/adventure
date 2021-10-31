@@ -1591,4 +1591,13 @@ public class MiniMessageParserTest extends TestBase {
 
     assertParsedEquals(expected, input, "word", "Adventure");
   }
+
+  @Test
+  void testRepeatedResolvingOfStringPlaceholders() {
+    final String input = "<animal> makes a sound";
+
+    final Component expected = text("cat makes a sound", RED);
+
+    assertParsedEquals(expected, input, "animal", "<red><feline>", "feline", "cat");
+  }
 }

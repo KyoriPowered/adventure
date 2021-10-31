@@ -92,6 +92,15 @@ public interface TransformationRegistry extends Buildable<TransformationRegistry
    * Tests if any registered transformation type matches the provided key.
    *
    * @param name the tag name
+   * @return whether any transformation type exists
+   * @since 4.2.0
+   */
+  boolean exists(final String name);
+
+  /**
+   * Tests if any registered transformation type matches the provided key.
+   *
+   * @param name the tag name
    * @param templateResolver the resolver to resolve other component types
    * @return whether any transformation exists
    * @since 4.2.0
