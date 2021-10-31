@@ -81,7 +81,7 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
   }
 
   /**
-   * Creates a {@link TextDecorationAndState}.
+   * Creates a {@link TextDecorationAndState}, annotating this decoration with the given {@code state}.
    *
    * @param state the state
    * @return a {@link TextDecorationAndState}
@@ -92,7 +92,7 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
   }
 
   /**
-   * Creates a {@link TextDecorationAndState}.
+   * Creates a {@link TextDecorationAndState}, annotating this decoration with the given {@code state}.
    *
    * @param state the state
    * @return a {@link TextDecorationAndState}
@@ -100,6 +100,28 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
    */
   public final @NotNull TextDecorationAndState as(final @NotNull State state) {
     return new TextDecorationAndStateImpl(this, state);
+  }
+
+  /**
+   * An alias for {@link #as(boolean)}.
+   *
+   * @param state the state
+   * @return a {@link TextDecorationAndState}
+   * @since 4.8.0
+   */
+  public final @NotNull TextDecorationAndState withState(final boolean state) {
+    return this.as(State.byBoolean(state));
+  }
+
+  /**
+   * An alias for {@link #as(State)}.
+   *
+   * @param state the state
+   * @return a {@link TextDecorationAndState}
+   * @since 4.8.0
+   */
+  public final @NotNull TextDecorationAndState withState(final @NotNull State state) {
+    return this.as(state);
   }
 
   @Override
