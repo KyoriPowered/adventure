@@ -107,7 +107,7 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
    *
    * @param state the state
    * @return a {@link TextDecorationAndState}
-   * @since 4.8.0
+   * @since 4.10.0
    */
   public final @NotNull TextDecorationAndState withState(final boolean state) {
     return this.as(State.byBoolean(state));
@@ -118,7 +118,7 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
    *
    * @param state the state
    * @return a {@link TextDecorationAndState}
-   * @since 4.8.0
+   * @since 4.10.0
    */
   public final @NotNull TextDecorationAndState withState(final @NotNull State state) {
     return this.as(state);
