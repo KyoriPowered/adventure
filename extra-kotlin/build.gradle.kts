@@ -5,12 +5,12 @@ plugins {
 
 kotlin {
   explicitApi()
-  coreLibrariesVersion = "1.5.31"
+  coreLibrariesVersion = "1.4.32"
   target {
     compilations.configureEach {
       kotlinOptions {
         jvmTarget = "1.8"
-        languageVersion = "1.5"
+        languageVersion = "1.4"
       }
     }
   }
