@@ -572,30 +572,6 @@ public class MiniMessageParserTest extends TestBase {
   }
 
   @Test
-  void testPre() {
-    final String input = "Click <yellow><pre><insert:test>this</pre> to <red>insert!";
-    final Component expected = text("Click ")
-      .append(empty().color(YELLOW)
-        .append(text("<insert:test>this"))
-        .append(text(" to "))
-        .append(text("insert!").color(RED))
-      );
-
-    this.assertParsedEquals(expected, input);
-  }
-
-  @Test
-  void testPreWithoutTrailingSpace() {
-    final String input = "<red>Don't sabotage my <yellow><pre><insert:test>color</pre></yellow> please";
-    final Component expected = empty().color(RED)
-        .append(text("Don't sabotage my "))
-        .append(text("<insert:test>color", YELLOW))
-        .append(text(" please"));
-
-    this.assertParsedEquals(expected, input);
-  }
-
-  @Test
   void testRainbow() {
     final String input = "<yellow>Woo: <rainbow>||||||||||||||||||||||||</rainbow>!";
     final Component expected = empty().color(YELLOW)
@@ -1315,21 +1291,6 @@ public class MiniMessageParserTest extends TestBase {
       );
 
     this.assertParsedEquals(expected, input);
-  }
-
-  @Test
-  void testGH78() {
-    final Component expected = empty()
-      .append(empty().color(GRAY)
-        .append(text("<"))
-        .append(empty().color(YELLOW)
-          .append(text("Patbox"))
-          .append(text("> ").color(GRAY))
-        )
-      ).append(text("<message>"));
-    final String input = "<gray>\\<<yellow><player><gray>> <reset><pre><message></pre>";
-
-    this.assertParsedEquals(expected, input, "player", "Patbox", "message", "am dum");
   }
 
   @Test

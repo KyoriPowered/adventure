@@ -267,38 +267,6 @@ public class MiniMessageTest extends TestBase {
     assertEquals(expected, assertThrows(IllegalArgumentException.class, () -> MiniMessage.miniMessage().deserialize("<a>", TemplateResolver.resolving("a", 2))).getMessage());
   }
 
-  // GH-98
-  @Test
-  void testTemplateInsideOfPre() {
-    final Component expected = empty().color(RED)
-      .append(text("MiniDigger"))
-      .append(empty().color(GRAY)
-        .append(text(": "))
-        .append(text("<red><message>"))
-      );
-    final String input = "<red><username><gray>: <pre><red><message>";
-    final MiniMessage miniMessage = MiniMessage.miniMessage();
-
-    this.assertParsedEquals(miniMessage, expected, input, Template.template("username", text("MiniDigger")), Template.template("message", text("Hello world")));
-  }
-
-  // GH-97
-  @Test
-  void testUnsafePre() {
-    final Component expected = empty().color(RED)
-      .append(text("MiniDigger"))
-      .append(empty().color(GRAY)
-        .append(text(": "))
-        .append(text("<red><message>"))
-      );
-    final String input = "<red><username><gray>: <pre><red><message>";
-    final MiniMessage miniMessage = MiniMessage.miniMessage();
-
-    this.assertParsedEquals(miniMessage, expected, input, Template.template("username", text("MiniDigger")), Template.template("message", text("</pre><red>Test")));
-    this.assertParsedEquals(miniMessage, expected, input, Template.template("username", "MiniDigger"), Template.template("message", "</pre><red>Test"));
-    this.assertParsedEquals(miniMessage, expected, input, "username", "MiniDigger", "message", "</pre><red>Test");
-  }
-
   @Test
   void testNodesInTemplate() {
     final Component expected = empty().color(RED)

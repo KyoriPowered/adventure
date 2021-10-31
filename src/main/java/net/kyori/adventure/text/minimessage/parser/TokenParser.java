@@ -124,7 +124,6 @@ public final class TokenParser {
               escaped = currentStringChar == nextCodePoint;
               break;
             case TAG:
-            case PRE:
               break;
           }
 
@@ -168,13 +167,7 @@ public final class TokenParser {
                 thisType = TokenType.CLOSE_TAG;
               }
               elements.add(new Token(marker, currentTokenEnd, thisType));
-
-              // <pre> tags put us into a state where we don't parse anything
-              if (message.regionMatches(marker, "<" + Tokens.PRE + ">", 0, 5)) {
-                state = FirstPassState.PRE;
-              } else {
-                state = FirstPassState.NORMAL;
-              }
+              state = FirstPassState.NORMAL;
               break;
             case Tokens.TAG_START:
               // This isn't a tag, but we can re-start looking here
@@ -185,19 +178,6 @@ public final class TokenParser {
               state = FirstPassState.STRING;
               currentStringChar = (char) codePoint;
               break;
-          }
-          break;
-        case PRE:
-          if (codePoint == Tokens.TAG_START) {
-            if (message.regionMatches(i, "</" + Tokens.PRE + ">", 0, 6)) {
-              // Anything inside the <pre>...</pre> is text
-              elements.add(new Token(currentTokenEnd, i, TokenType.TEXT));
-              // the </pre> is still a closing tag though
-              elements.add(new Token(i, i + 6, TokenType.CLOSE_TAG));
-              i += 5;
-              currentTokenEnd = i + 1;
-              state = FirstPassState.NORMAL;
-            }
           }
           break;
         case STRING:
@@ -224,7 +204,6 @@ public final class TokenParser {
   enum FirstPassState {
     NORMAL,
     TAG,
-    PRE,
     STRING;
   }
 
@@ -353,11 +332,6 @@ public final class TokenParser {
               throw new ParsingException("<reset> tags are not allowed when strict mode is enabled", message, token);
             }
             node = root;
-          } else if (tagNode.name().equals(Tokens.PRE)) {
-            // <pre> tags also get special treatment and don't appear in the tree
-            // anything inside <pre> is raw text, so just skip
-
-            continue;
           } else {
             final Template template = templateResolver.resolve(tagNode.name());
             if (template instanceof Template.StringTemplate) {
@@ -398,8 +372,8 @@ public final class TokenParser {
           }
 
           final String closeTagName = closeValues.get(0);
-          if (isReset(closeTagName) || closeTagName.equals(Tokens.PRE)) {
-            // These are synthetic nodes, closing them means nothing in the context of building a tree
+          if (isReset(closeTagName)) {
+            // This is a synthetic node, closing it means nothing in the context of building a tree
             continue;
           }
 
