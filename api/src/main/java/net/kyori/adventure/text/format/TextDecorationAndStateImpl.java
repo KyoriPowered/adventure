@@ -27,13 +27,17 @@ import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static java.util.Objects.requireNonNull;
+
 final class TextDecorationAndStateImpl implements TextDecorationAndState {
   private final TextDecoration decoration;
   private final TextDecoration.State state;
 
   TextDecorationAndStateImpl(final TextDecoration decoration, final TextDecoration.State state) {
+    // no null check is required on the decoration since this constructor is always invoked in such a way that
+    // decoration is always non-null
     this.decoration = decoration;
-    this.state = state;
+    this.state = requireNonNull(state, "state");
   }
 
   @Override

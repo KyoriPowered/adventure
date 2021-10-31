@@ -38,6 +38,12 @@ class TextDecorationTest {
     assertEquals(TextDecoration.State.FALSE, TextDecoration.State.byBoolean(false));
     assertEquals(TextDecoration.State.TRUE, TextDecoration.State.byBoolean(true));
   }
+  
+  @Test
+  void withStateOrAsThrowsOnNull() {
+    assertThrows(NullPointerException.class, () -> TextDecoration.BOLD.as(null));
+    assertThrows(NullPointerException.class, () -> TextDecoration.BOLD.withState(null));
+  }
 
   @Test
   void testByTristate() {
