@@ -23,6 +23,12 @@
  */
 package net.kyori.adventure.text.width;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.function.Function;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.KeybindComponent;
@@ -35,13 +41,6 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.translation.GlobalTranslator;
 import net.kyori.adventure.translation.TranslationRegistry;
 import org.junit.jupiter.api.Test;
-
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.function.Function;
 
 import static net.kyori.adventure.text.Component.keybind;
 import static net.kyori.adventure.text.Component.text;

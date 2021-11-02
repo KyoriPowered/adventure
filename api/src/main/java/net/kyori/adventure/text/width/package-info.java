@@ -21,23 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.width;
-
-import net.kyori.adventure.text.format.Style;
-
 /**
- * A function that takes a character(represented by its UTF-16 codepoint) and a {@link Style} and returns
- * the characters width as an {@code int}.
- *
- * @since 4.7.0
+ * Pixel width calculation of in game characters.
  */
-@FunctionalInterface
-public interface CharacterWidthFunction {
-  /**
-   * Gets the width for the given character(represented by its UTF-16 codepoint). {@code char}s will
-   * automatically be converted to codepoints.
-   *
-   * @since 4.7.0
-   */
-  float widthOf(int codepoint, Style style);
-}
+package net.kyori.adventure.text.width;

@@ -23,11 +23,10 @@
  */
 package net.kyori.adventure.text.width;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 class DummyContext {
   private final @NotNull Locale locale;

@@ -23,6 +23,9 @@
  */
 package net.kyori.adventure.text.width;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
@@ -31,11 +34,6 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 
 /**
  * An implementation of the pixel width source which handles serialization with a set of functions
@@ -51,92 +49,11 @@ final class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
   private final Function<CX, CharacterWidthFunction> characterWidthFunction;
 
   /**
-   * Get the pixel width of the given character in the Minecraft font, excluding the space between
-   * characters and drop shadow. Handles alphanumerics and most common english punctuation.
-   */
-  static final CharacterWidthFunction DEFAULT_FONT_WIDTH = (codepoint, style) -> {
-    int i;
-    if(Character.isUpperCase(codepoint)) {
-      i = codepoint == 'I' ? 3 : 5;
-    } else if(Character.isDigit(codepoint)) {
-      i = 5;
-    } else if(Character.isLowerCase(codepoint)) {
-      switch (codepoint) {
-        case 'i':
-          i = 1;
-          break;
-
-        case 'l':
-          i = 2;
-          break;
-
-        case 't':
-          i = 3;
-          break;
-
-        case 'f':
-        case 'k':
-          i = 4;
-          break;
-
-        default:
-          i = 5;
-          break;
-      }
-    } else {
-      switch (codepoint) {
-        case '!':
-        case '.':
-        case ',':
-        case ';':
-        case ':':
-        case '|':
-          i = 1;
-          break;
-
-        case '\'':
-          i = 2;
-          break;
-
-        case '[':
-        case ']':
-        case ' ':
-          i = 3;
-          break;
-
-        case '*':
-        case '(':
-        case ')':
-        case '{':
-        case '}':
-        case '<':
-        case '>':
-          i = 4;
-          break;
-
-        case '@':
-          i = 6;
-          break;
-
-        default:
-          i = 5;
-          break;
-      }
-    }
-
-    if(style.hasDecoration(TextDecoration.BOLD)) {
-      i++;
-    }
-
-    return i;
-  };
-
-  /**
    * Creates a pixel width source with a function used for getting a {@link CharacterWidthFunction}.
    *
    * <p>Any {@link CharacterWidthFunction} returned by the function should accept at least all
    * english alphanumerics and most punctuation and handle {@link TextDecoration#BOLD} in the style.
-   * See {@link PixelWidthSourceImpl#DEFAULT_FONT_WIDTH} for an example.</p>
+   * See {@link net.kyori.adventure.text.width.DefaultCharacterWidthFunction#INSTANCE} for an example.</p>
    *
    * @param characterWidthFunction a function that can provide a {@link CharacterWidthFunction} given a context
    * @since 4.5.0
@@ -147,8 +64,8 @@ final class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
   }
 
   @Override
-  public int width(final @NotNull Component component, final @Nullable CX context) {
-    final AtomicInteger length = new AtomicInteger();
+  public float width(final @NotNull Component component, final @Nullable CX context) {
+    final float[] length = {0};
 
     this.flattener.flatten(component, new FlattenerListener() {
       final List<Style> styles = new LinkedList<>();
@@ -162,7 +79,7 @@ final class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
 
       @Override
       public void component(final @NotNull String text) {
-        length.addAndGet(PixelWidthSourceImpl.this.width(text, this.currentStyle, context));
+        length[0] += PixelWidthSourceImpl.this.width(text, this.currentStyle, context);
       }
 
       @Override
@@ -173,44 +90,28 @@ final class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
 
       private void calculateStyle() {
         final Style.Builder newStyle = Style.style();
-        for(final Style style : this.styles) {
+        for (final Style style : this.styles) {
           newStyle.merge(style);
         }
         this.currentStyle = newStyle.build();
       }
     });
 
-    return length.get();
+    return length[0];
   }
 
   @Override
-  public int width(final @NotNull String string, final @NotNull Style style, final @Nullable CX context) {
-    int length = 0;
-
-    final char[] chars = string.toCharArray();
-    for(int i = 0; i < chars.length; i++) {
-      final char c = chars[i];
-
-      if(Character.isLowSurrogate(c)) continue; //this character was handled on the previous iteration
-
-      final int codepoint;
-      if(Character.isHighSurrogate(c)) {
-        codepoint = Character.codePointAt(chars, i);
-      } else codepoint = c;
-
-      length += this.characterWidthFunction.apply(context).widthOf(codepoint, style);
-    }
-
-    return length;
+  public float width(final @NotNull String string, final @NotNull Style style, final @Nullable CX context) {
+    return (float) string.codePoints().mapToDouble(codepoint -> this.characterWidthFunction.apply(context).widthOf(codepoint, style)).sum();
   }
 
   @Override
-  public int width(final char c, final @NotNull Style style, final @Nullable CX context) {
+  public float width(final char c, final @NotNull Style style, final @Nullable CX context) {
     return this.characterWidthFunction.apply(context).widthOf(c, style);
   }
 
   @Override
-  public int width(final int codepoint, final @NotNull Style style, final @Nullable CX context) {
+  public float width(final int codepoint, final @NotNull Style style, final @Nullable CX context) {
     return this.characterWidthFunction.apply(context).widthOf(codepoint, style);
   }
 
@@ -225,7 +126,7 @@ final class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
 
     BuilderImpl() {
       this.flattener = ComponentFlattener.basic();
-      this.characterWidthFunction = cx -> DEFAULT_FONT_WIDTH;
+      this.characterWidthFunction = cx -> DefaultCharacterWidthFunction.INSTANCE;
     }
 
     BuilderImpl(final @NotNull ComponentFlattener flattener, final @NotNull Function<@Nullable CX, CharacterWidthFunction> characterWidthFunction) {

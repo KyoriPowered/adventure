@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.width;
 
+import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
@@ -31,8 +32,6 @@ import net.kyori.adventure.util.Buildable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Function;
 
 /**
  * A source able to return the width of text. By default accuracy can only be guaranteed for {@link TextComponent}s
@@ -58,7 +57,7 @@ public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, Pi
    * @since 4.7.0
    */
   static <CX> @NotNull PixelWidthSource<CX> pixelWidthSource(final @Nullable ComponentFlattener flattener, final @Nullable Function<@Nullable CX, CharacterWidthFunction> function) {
-    return new PixelWidthSourceImpl<>(flattener == null ? ComponentFlattener.basic() : flattener, function == null ? cx -> PixelWidthSourceImpl.DEFAULT_FONT_WIDTH : function);
+    return new PixelWidthSourceImpl<>(flattener == null ? ComponentFlattener.basic() : flattener, function == null ? cx -> DefaultCharacterWidthFunction.INSTANCE : function);
   }
 
   /**
@@ -69,7 +68,7 @@ public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, Pi
    * @return the pixel width of the component
    * @since 4.7.0
    */
-  int width(final @NotNull Component component, final @Nullable CX context);
+  float width(final @NotNull Component component, final @Nullable CX context);
 
   /**
    * Calculates the pixel width of a component without any context.
@@ -78,7 +77,7 @@ public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, Pi
    * @return the pixel width of the component
    * @since 4.7.0
    */
-  default int width(final @NotNull Component component) {
+  default float width(final @NotNull Component component) {
     return this.width(component, null);
   }
 
@@ -91,7 +90,7 @@ public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, Pi
    * @return the pixel width of the string
    * @since 4.7.0
    */
-  int width(final @NotNull String string, final @NotNull Style style, final @Nullable CX context);
+  float width(final @NotNull String string, final @NotNull Style style, final @Nullable CX context);
 
   /**
    * Calculates the pixel width of a string without any context.
@@ -101,7 +100,7 @@ public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, Pi
    * @return the pixel width of the string
    * @since 4.7.0
    */
-  default int width(final @NotNull String string, final @NotNull Style style) {
+  default float width(final @NotNull String string, final @NotNull Style style) {
     return this.width(string, style, null);
   }
 
@@ -114,7 +113,7 @@ public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, Pi
    * @return the pixel width of the character
    * @since 4.7.0
    */
-  int width(final char character, final @NotNull Style style, final @Nullable CX context);
+  float width(final char character, final @NotNull Style style, final @Nullable CX context);
 
   /**
    * Calculates the pixel width of a character without any context.
@@ -124,7 +123,7 @@ public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, Pi
    * @return the pixel width of the character
    * @since 4.7.0
    */
-  default int width(final char character, final @NotNull Style style) {
+  default float width(final char character, final @NotNull Style style) {
     return this.width(character, style, null);
   }
 
@@ -137,7 +136,7 @@ public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, Pi
    * @return the pixel width of the character
    * @since 4.7.0
    */
-  int width(final int codepoint, final @NotNull Style style, final @Nullable CX context);
+  float width(final int codepoint, final @NotNull Style style, final @Nullable CX context);
 
   /**
    * Calculates the pixel width of a character represented by a codepoint without any context.
@@ -147,7 +146,7 @@ public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, Pi
    * @return the pixel width of the character
    * @since 4.7.0
    */
-  default int width(final int codepoint, final @NotNull Style style) {
+  default float width(final int codepoint, final @NotNull Style style) {
     return this.width(codepoint, style, null);
   }
 
@@ -174,7 +173,7 @@ public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, Pi
     /**
      * Set the function used to figure out which {@link CharacterWidthFunction} to use based on the context provided at calculation time.
      *
-     * <p>The default value for this is {@link PixelWidthSourceImpl#DEFAULT_FONT_WIDTH}</p>
+     * <p>The default value for this is {@link net.kyori.adventure.text.width.DefaultCharacterWidthFunction#INSTANCE}</p>
      *
      * @param characterWidthFunction the function
      * @return this builder
