@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.format;
 
+import net.kyori.adventure.util.TriState;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,5 +34,12 @@ class TextDecorationTest {
     assertEquals(TextDecoration.State.NOT_SET, TextDecoration.State.byBoolean(null));
     assertEquals(TextDecoration.State.FALSE, TextDecoration.State.byBoolean(false));
     assertEquals(TextDecoration.State.TRUE, TextDecoration.State.byBoolean(true));
+  }
+
+  @Test
+  void testByTristate() {
+    assertEquals(TextDecoration.State.NOT_SET, TextDecoration.State.byTriState(TriState.NOT_SET));
+    assertEquals(TextDecoration.State.FALSE, TextDecoration.State.byTriState(TriState.FALSE));
+    assertEquals(TextDecoration.State.TRUE, TextDecoration.State.byTriState(TriState.TRUE));
   }
 }

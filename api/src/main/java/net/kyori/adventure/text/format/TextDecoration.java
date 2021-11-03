@@ -25,6 +25,7 @@ package net.kyori.adventure.text.format;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Index;
+import net.kyori.adventure.util.TriState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -165,6 +166,17 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
      */
     public static @NotNull State byBoolean(final @Nullable Boolean flag) {
       return flag == null ? NOT_SET : byBoolean(flag.booleanValue());
+    }
+
+    /**
+     * Gets a state from a {@link net.kyori.adventure.util.TriState}.
+     *
+     * @param flag the tristate
+     * @return the state
+     * @since 4.10.0
+     */
+    public static @NotNull State byTriState(final @NotNull TriState flag) {
+      return byBoolean(flag.toBoolean());
     }
   }
 }
