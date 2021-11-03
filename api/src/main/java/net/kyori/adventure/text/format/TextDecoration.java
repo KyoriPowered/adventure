@@ -29,6 +29,8 @@ import net.kyori.adventure.util.TriState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * An enumeration of decorations which may be applied to a {@link Component}.
  *
@@ -176,6 +178,7 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
      * @since 4.10.0
      */
     public static @NotNull State byTriState(final @NotNull TriState flag) {
+      requireNonNull(flag);
       return byBoolean(flag.toBoolean());
     }
   }
