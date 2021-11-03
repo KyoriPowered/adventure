@@ -59,6 +59,7 @@ public class PixelWidthSourceTest {
       ComponentFlattener.builder()
         .complexMapper(TranslatableComponent.class, (t, cc) -> cc.accept(GlobalTranslator.render(t.children(new ArrayList<>()), Locale.US)))
         .mapper(TextComponent.class, TextComponent::content).build(), null);
+  private final CharacterWidthFunction reference = DefaultCharacterWidthFunction.INSTANCE;
   private final DummyContext context = new DummyContext(Locale.US);
 
   private final Style bold = style(TextDecoration.BOLD);
@@ -77,44 +78,44 @@ public class PixelWidthSourceTest {
 
   @Test
   public void testDefaultSimpleWidth() {
-    assertEquals(21, this.defaultPixelWidth.width("wowie", empty(), this.context));
-    assertEquals(5, this.defaultPixelWidth.width(text(2), this.context));
-    assertEquals(6, this.defaultPixelWidth.width('@', empty(), this.context));
-    assertEquals(15, this.defaultPixelWidth.width(translatable("dummy.wow"), this.context));
+    assertEquals(26, this.defaultPixelWidth.width("wowie", empty(), this.context));
+    assertEquals(6, this.defaultPixelWidth.width(text(2), this.context));
+    assertEquals(7, this.defaultPixelWidth.width('@', empty(), this.context));
+    assertEquals(18, this.defaultPixelWidth.width(translatable("dummy.wow"), this.context));
   }
 
   @Test
   public void testDefaultWidthBold() {
-    assertEquals(26, this.defaultPixelWidth.width(text("wowie", this.bold), this.context));
-    assertEquals(7, this.defaultPixelWidth.width('@', this.bold, this.context));
+    assertEquals(31, this.defaultPixelWidth.width(text("wowie", this.bold), this.context));
+    assertEquals(8, this.defaultPixelWidth.width('@', this.bold, this.context));
   }
 
   @Test
   public void testWidthInheritedStyle() {
-    assertEquals(33, this.defaultPixelWidth.width(text("wowie", this.bold).append(text('@')), this.context));
+    assertEquals(39, this.defaultPixelWidth.width(text("wowie", this.bold).append(text('@')), this.context));
   }
 
   @Test
   public void testWidthChildrenAndArgs() {
-    final Component component0 = text("kashike", this.bold); //29 + (1*7)
-    final Component component1 = translatable("dummy.welcome", component0); //36 + 36
-    final Component component2 = translatable("dummy.level", text("electroid", style(TextDecoration.ITALIC))).decoration(TextDecoration.BOLD, false); //96 + 36
-    final Component component3 = translatable("dummy.news", this.bold, component2); //30 + 132
+    final Component component0 = text("kashike", this.bold);
+    final Component component1 = translatable("dummy.welcome", component0);
+    final Component component2 = translatable("dummy.level", text("electroid", style(TextDecoration.ITALIC))).decoration(TextDecoration.BOLD, false);
+    final Component component3 = translatable("dummy.news", this.bold, component2);
 
     final Component welcomePrompt = component1.append(component3);
 
-    assertEquals(36, this.defaultPixelWidth.width(component0, this.context));
-    assertEquals(72, this.defaultPixelWidth.width(component1, this.context)); //includes component
-    assertEquals(132, this.defaultPixelWidth.width(component2, this.context));
-    assertEquals(162, this.defaultPixelWidth.width(component3, this.context)); //includes component2
-    assertEquals(234, this.defaultPixelWidth.width(welcomePrompt, this.context)); //includes all components
+    assertEquals(43, this.defaultPixelWidth.width(component0, this.context));
+    assertEquals(83, this.defaultPixelWidth.width(component1, this.context)); //includes component
+    assertEquals(145, this.defaultPixelWidth.width(component2, this.context));
+    assertEquals(175, this.defaultPixelWidth.width(component3, this.context)); //includes component2
+    assertEquals(258, this.defaultPixelWidth.width(welcomePrompt, this.context)); //includes all components
   }
 
   @Test
   public void testWidthCustomResolver() {
     final ComponentFlattener keybindFlattener = ComponentFlattener.builder().mapper(KeybindComponent.class, k -> this.context.keybinds().get(k.keybind())).build();
     final PixelWidthSource<DummyContext> custom = pixelWidthSource(keybindFlattener, null);
-    assertEquals(40, custom.width(keybind("key.jump"), this.context));
+    assertEquals(48, custom.width(keybind("key.jump"), this.context));
   }
 
   @Test

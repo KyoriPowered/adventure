@@ -30,6 +30,8 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Generated with <a href="https://github.com/KingOfSquares/MinecraftFontPixelWidth">MinecraftFontPixelWidth</a>.
  * <p>Can calculate for all characters found in the default ascii.png file</p>
+ * <p>NB: this function includes the spacing after each character before the next,
+ * this means that if the last character is at the end of a line it will be calculated as one(1) pixel "too long"</p>
  *
  * @since 4.10.0
  */
@@ -38,7 +40,7 @@ public class DefaultCharacterWidthFunction implements CharacterWidthFunction {
 
   @Override
   public final float widthOf(final int c, @NotNull final Style style) {
-    float i = -1;
+    float width = -1;
     switch(c) {
       case 33:
       case 39:
@@ -48,11 +50,11 @@ public class DefaultCharacterWidthFunction implements CharacterWidthFunction {
       case 59:
       case 105:
       case 124:
-        i = 2.0F;
+        width = 2.0F;
         break;
       case 96:
       case 108:
-        i = 3.0F;
+        width = 3.0F;
         break;
       case 34:
       case 40:
@@ -64,7 +66,20 @@ public class DefaultCharacterWidthFunction implements CharacterWidthFunction {
       case 116:
       case 123:
       case 125:
-        i = 4.0F;
+        width = 4.0F;
+        break;
+      case 60:
+      case 62:
+      case 102:
+      case 107:
+      case 170:
+      case 176:
+      case 178:
+      case 186:
+      case 8319:
+      case 8993:
+      case 9612:
+        width = 5.0F;
         break;
       case 35:
       case 36:
@@ -151,7 +166,16 @@ public class DefaultCharacterWidthFunction implements CharacterWidthFunction {
       case 9563:
       case 9569:
       case 9632:
-        i = 6.0F;
+        width = 6.0F;
+        break;
+      case 64:
+      case 126:
+      case 171:
+      case 187:
+      case 8730:
+      case 8776:
+      case 8801:
+        width = 7.0F;
         break;
       case 8709:
       case 8992:
@@ -163,7 +187,7 @@ public class DefaultCharacterWidthFunction implements CharacterWidthFunction {
       case 9570:
       case 9571:
       case 9617:
-        i = 12.0F;
+        width = 8.0F;
         break;
       case 9472:
       case 9484:
@@ -197,32 +221,11 @@ public class DefaultCharacterWidthFunction implements CharacterWidthFunction {
       case 9616:
       case 9618:
       case 9619:
-        i = 13.0F;
-        break;
-      case 60:
-      case 62:
-      case 102:
-      case 107:
-      case 170:
-      case 176:
-      case 178:
-      case 186:
-      case 8319:
-      case 8993:
-      case 9612:
-        i = 5.0F;
-        break;
-      case 64:
-      case 126:
-      case 171:
-      case 187:
-      case 8730:
-      case 8776:
-      case 8801:
-        i = 15.0F;
+        width = 9.0F;
         break;
     }
-    if (i != -1 && style.hasDecoration(TextDecoration.BOLD)) i++;
-    return i;
+    if (width != -1 && style.hasDecoration(TextDecoration.BOLD))
+      width++;
+    return width;
   }
 }

@@ -40,7 +40,7 @@ import org.jetbrains.annotations.Nullable;
  * for resolving all components except {@link TextComponent}s.
  *
  * @param <CX> a context (player, server, locale)
- * @since 4.7.0
+ * @since 4.10.0
  */
 
 final class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
@@ -56,7 +56,7 @@ final class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
    * See {@link net.kyori.adventure.text.width.DefaultCharacterWidthFunction#INSTANCE} for an example.</p>
    *
    * @param characterWidthFunction a function that can provide a {@link CharacterWidthFunction} given a context
-   * @since 4.5.0
+   * @since 4.10.0
    */
   PixelWidthSourceImpl(final @NotNull ComponentFlattener flattener, final @NotNull Function<@Nullable CX, CharacterWidthFunction> characterWidthFunction) {
     this.flattener = flattener;

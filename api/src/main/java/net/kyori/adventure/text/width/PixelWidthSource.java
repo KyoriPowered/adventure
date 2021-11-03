@@ -40,7 +40,7 @@ import org.jetbrains.annotations.Nullable;
  * <p>Providing context to this source is only necessary if a custom {@code Function<CX, CharacterWidthFunction>} is provided on creation</p>
  *
  * @param <CX> a context type (player, server, locale)
- * @since 4.7.0
+ * @since 4.10.0
  */
 @ApiStatus.NonExtendable
 public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, PixelWidthSource.Builder<CX>> {
@@ -48,13 +48,15 @@ public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, Pi
   /**
    * A pixel width source calculating width using the provided flattener and character width function.
    *
-   * <p>A null value results in using the basic counterpart</p>
+   * <p>A null value results in using a basic counterpart:</p>
+   * <p>{@link net.kyori.adventure.text.flattener.ComponentFlattener#basic()}</p>
+   * <p>{@link net.kyori.adventure.text.width.DefaultCharacterWidthFunction#INSTANCE}</p>
    *
    * @param flattener a flattener used to turn components into linear text
    * @param function a function that provides a character width function
    * @param <CX> context a context type (player, server, locale)
    * @return a pixel width source
-   * @since 4.7.0
+   * @since 4.10.0
    */
   static <CX> @NotNull PixelWidthSource<CX> pixelWidthSource(final @Nullable ComponentFlattener flattener, final @Nullable Function<@Nullable CX, CharacterWidthFunction> function) {
     return new PixelWidthSourceImpl<>(flattener == null ? ComponentFlattener.basic() : flattener, function == null ? cx -> DefaultCharacterWidthFunction.INSTANCE : function);
@@ -66,7 +68,7 @@ public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, Pi
    * @param component a component
    * @param context the context of this calculation
    * @return the pixel width of the component
-   * @since 4.7.0
+   * @since 4.10.0
    */
   float width(final @NotNull Component component, final @Nullable CX context);
 
@@ -75,7 +77,7 @@ public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, Pi
    *
    * @param component a component
    * @return the pixel width of the component
-   * @since 4.7.0
+   * @since 4.10.0
    */
   default float width(final @NotNull Component component) {
     return this.width(component, null);
@@ -88,7 +90,7 @@ public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, Pi
    * @param style the style of the string
    * @param context the context of this calculation
    * @return the pixel width of the string
-   * @since 4.7.0
+   * @since 4.10.0
    */
   float width(final @NotNull String string, final @NotNull Style style, final @Nullable CX context);
 
@@ -98,7 +100,7 @@ public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, Pi
    * @param string a string
    * @param style the style of the string
    * @return the pixel width of the string
-   * @since 4.7.0
+   * @since 4.10.0
    */
   default float width(final @NotNull String string, final @NotNull Style style) {
     return this.width(string, style, null);
@@ -111,7 +113,7 @@ public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, Pi
    * @param style the style of the character
    * @param context the context of this calculation
    * @return the pixel width of the character
-   * @since 4.7.0
+   * @since 4.10.0
    */
   float width(final char character, final @NotNull Style style, final @Nullable CX context);
 
@@ -121,7 +123,7 @@ public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, Pi
    * @param character a character
    * @param style the style of the character
    * @return the pixel width of the character
-   * @since 4.7.0
+   * @since 4.10.0
    */
   default float width(final char character, final @NotNull Style style) {
     return this.width(character, style, null);
@@ -134,7 +136,7 @@ public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, Pi
    * @param style the style of the character
    * @param context the context of this calculation
    * @return the pixel width of the character
-   * @since 4.7.0
+   * @since 4.10.0
    */
   float width(final int codepoint, final @NotNull Style style, final @Nullable CX context);
 
@@ -144,7 +146,7 @@ public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, Pi
    * @param codepoint a codepoint representing a character
    * @param style the style of the character
    * @return the pixel width of the character
-   * @since 4.7.0
+   * @since 4.10.0
    */
   default float width(final int codepoint, final @NotNull Style style) {
     return this.width(codepoint, style, null);
@@ -153,10 +155,10 @@ public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, Pi
   /**
    * A builder for a pixel width source.
    *
-   * <p>A new builder will start a default value for each part, see the methods for each part for these values</p>
+   * <p>A new builder will start with a default value for each part, see the methods for each part for these values</p>
    *
    * @param <CX> a context type (player, server, locale)
-   * @since 4.7.0
+   * @since 4.10.0
    */
   interface Builder<CX> extends Buildable.Builder<PixelWidthSource<CX>> {
     /**
@@ -166,7 +168,7 @@ public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, Pi
      *
      * @param flattener the flattener
      * @return this builder
-     * @since 4.8.0
+     * @since 4.10.0
      */
     @NotNull Builder<CX> flattener(final @NotNull ComponentFlattener flattener);
 
@@ -177,7 +179,7 @@ public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, Pi
      *
      * @param characterWidthFunction the function
      * @return this builder
-     * @since 4.8.0
+     * @since 4.10.0
      */
     @NotNull Builder<CX> characterWidthFunction(final @NotNull Function<@Nullable CX, CharacterWidthFunction> characterWidthFunction);
   }
