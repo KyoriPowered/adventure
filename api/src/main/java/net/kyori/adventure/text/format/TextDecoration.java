@@ -179,7 +179,12 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
      */
     public static @NotNull State byTriState(final @NotNull TriState flag) {
       requireNonNull(flag);
-      return byBoolean(flag.toBoolean());
+      switch (flag) {
+        case TRUE: return TRUE;
+        case FALSE: return FALSE;
+        case NOT_SET: return NOT_SET;
+      }
+      throw new IllegalArgumentException("Unable to turn TriState: " + flag + " into a TextDecoration.State");
     }
   }
 }
