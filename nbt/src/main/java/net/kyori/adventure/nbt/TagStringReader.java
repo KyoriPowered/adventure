@@ -272,7 +272,7 @@ final class TagStringReader {
           case Tokens.TYPE_FLOAT:
             final float floatValue = Float.parseFloat(built.substring(0, length - 1));
             if (Float.isFinite(floatValue)) { // don't accept NaN and Infinity
-             return FloatBinaryTag.of(floatValue);
+              return FloatBinaryTag.of(floatValue);
             }
             break;
           case Tokens.TYPE_DOUBLE:
