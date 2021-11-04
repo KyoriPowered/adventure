@@ -204,6 +204,14 @@ class StringIOTest {
     assertEquals(StringBinaryTag.of("NaNd"), this.stringToTag("NaNd"));
     assertEquals(StringBinaryTag.of("NaNf"), this.stringToTag("NaNf"));
     assertEquals(StringBinaryTag.of("Infinityd"), this.stringToTag("Infinityd"));
+    assertEquals(StringBinaryTag.of("Infinityf"), this.stringToTag("Infinityf"));
+  }
+
+  @Test
+  void testPrematureNumericParsing() throws IOException {
+    assertEquals(StringBinaryTag.of("0da"), this.stringToTag("0da"));
+    assertEquals(StringBinaryTag.of("00000faa"), this.stringToTag("00000faa"));
+    assertEquals(StringBinaryTag.of("1350diamonds_plz"), this.stringToTag("1350diamonds_plz"));
   }
 
   @Test
