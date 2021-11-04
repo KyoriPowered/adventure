@@ -259,10 +259,16 @@ final class TagStringReader {
                 result = LongBinaryTag.of(Long.parseLong(builder.toString()));
                 break;
               case Tokens.TYPE_FLOAT:
-                result = FloatBinaryTag.of(Float.parseFloat(builder.toString()));
+                final float floatValue = Float.parseFloat(builder.toString());
+                if (!Float.isNaN(floatValue)) { // don't accept NaN
+                  result = FloatBinaryTag.of(floatValue);
+                }
                 break;
               case Tokens.TYPE_DOUBLE:
-                result = DoubleBinaryTag.of(Double.parseDouble(builder.toString()));
+                final double doubleValue = Double.parseDouble(builder.toString());
+                if (!Double.isNaN(doubleValue)) { // don't accept NaN
+                  result = DoubleBinaryTag.of(doubleValue);
+                }
                 break;
             }
           } catch (final NumberFormatException ex) {

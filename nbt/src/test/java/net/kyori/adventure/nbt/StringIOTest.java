@@ -200,6 +200,13 @@ class StringIOTest {
   }
 
   @Test
+  void testSpecialFloatingPointNumbers() throws IOException {
+    assertEquals(StringBinaryTag.of("NaNd"), this.stringToTag("NaNd"));
+    assertEquals(StringBinaryTag.of("NaNf"), this.stringToTag("NaNf"));
+    assertEquals(StringBinaryTag.of("Infinityd"), this.stringToTag("Infinityd"));
+  }
+
+  @Test
   void testByteArrayTag() throws IOException {
     assertEquals("[B;1B,2B,3B]", this.tagToString(ByteArrayBinaryTag.of((byte) 1, (byte) 2, (byte) 3)));
     assertEquals(ByteArrayBinaryTag.of((byte) 1, (byte) 1, (byte) 2, (byte) 3, (byte) 5, (byte) 8), this.stringToTag("[B; 1b, 1b, 2b, 3b, 5b, 8b]"));
