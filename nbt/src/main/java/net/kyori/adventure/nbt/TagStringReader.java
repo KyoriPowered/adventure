@@ -257,7 +257,7 @@ final class TagStringReader {
 
     final int length = builder.length();
     final String built = builder.toString();
-    if (noLongerNumericAt == length) {
+    if (noLongerNumericAt == length && length > 1) {
       final char last = built.charAt(length - 1);
       try {
         switch (Character.toLowerCase(last)) { // try to read and return as a number
