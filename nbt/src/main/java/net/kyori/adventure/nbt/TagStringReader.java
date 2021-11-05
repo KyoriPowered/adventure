@@ -288,10 +288,12 @@ final class TagStringReader {
       try {
         return IntBinaryTag.of(Integer.parseInt(built));
       } catch (final NumberFormatException ex) {
-        try {
-          return DoubleBinaryTag.of(Double.parseDouble(built));
-        } catch (final NumberFormatException ex2) {
-          // ignore
+        if (built.indexOf('.') != -1) { // see if we have an unsuffixed double; always needs a dot
+          try {
+            return DoubleBinaryTag.of(Double.parseDouble(built));
+          } catch (final NumberFormatException ex2) {
+            // ignore
+          }
         }
       }
     }
