@@ -119,6 +119,7 @@ class StringIOTest {
 
     // something vaguely like a number
     assertEquals(StringBinaryTag.of("1.33.28d"), this.stringToTag("1.33.28d"));
+    assertEquals(StringBinaryTag.of("2147483649"), this.stringToTag("2147483649")); // larger than an int
   }
 
   private static final String UNICODE_TEST = "test ä ö";
@@ -197,6 +198,7 @@ class StringIOTest {
     assertEquals(DoubleBinaryTag.of(2.55e5), this.stringToTag("2.55e5"));
     assertEquals(DoubleBinaryTag.of(9.0), this.stringToTag("9."));
     assertEquals(DoubleBinaryTag.of(-9.5), this.stringToTag("-9.5"));
+    assertEquals(DoubleBinaryTag.of(0.5), this.stringToTag(".5"));
   }
 
   @Test
