@@ -42,7 +42,7 @@ import org.jetbrains.annotations.NotNull;
  *   <dd>a translation key used together with the viewer locale to fetch a translated string.</dd>
  *   <dt>args(optional)</dt>
  *   <dd>components that can be used as arguments in the translated string.
- *   <p>(e.g "You picked up <b>{0}</b>." -&#62; "You picked up <b>Carrot</b>")</p></dd>
+ *   <p>(e.g "You picked up <b>{0}</b>." -&#62; "You picked up <b>Carrot</b>.")</p></dd>
  * </dl>
  *
  * <p>Displaying this component through an {@link Audience} will run it through the {@link GlobalTranslator} by default,
