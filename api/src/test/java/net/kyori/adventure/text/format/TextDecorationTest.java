@@ -23,9 +23,13 @@
  */
 package net.kyori.adventure.text.format;
 
+import java.util.Arrays;
+import net.kyori.adventure.util.TriState;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TextDecorationTest {
   @Test
@@ -33,5 +37,15 @@ class TextDecorationTest {
     assertEquals(TextDecoration.State.NOT_SET, TextDecoration.State.byBoolean(null));
     assertEquals(TextDecoration.State.FALSE, TextDecoration.State.byBoolean(false));
     assertEquals(TextDecoration.State.TRUE, TextDecoration.State.byBoolean(true));
+  }
+
+  @Test
+  void testByTristate() {
+    assertEquals(TextDecoration.State.NOT_SET, TextDecoration.State.byTriState(TriState.NOT_SET));
+    assertEquals(TextDecoration.State.FALSE, TextDecoration.State.byTriState(TriState.FALSE));
+    assertEquals(TextDecoration.State.TRUE, TextDecoration.State.byTriState(TriState.TRUE));
+
+    assertThrows(NullPointerException.class, () -> TextDecoration.State.byTriState(null));
+    assertDoesNotThrow(() -> Arrays.stream(TriState.values()).forEach(TextDecoration.State::byTriState));
   }
 }
