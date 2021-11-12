@@ -167,6 +167,9 @@ public interface Template extends Examinable {
     private final String value;
 
     StringTemplate(final @NotNull String key, final @NotNull String value) {
+      if (!key.toLowerCase().equals(key))
+        throw new IllegalArgumentException("Template key '" + key + "' must be lowercase");
+
       this.key = key;
       this.value = value;
     }
@@ -206,6 +209,9 @@ public interface Template extends Examinable {
     private final @NotNull Component value;
 
     public ComponentTemplate(final @NotNull String key, final @NotNull Component value) {
+      if (!key.toLowerCase().equals(key))
+        throw new IllegalArgumentException("Template key '" + key + "' must be lowercase");
+
       this.key = key;
       this.value = value;
     }
