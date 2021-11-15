@@ -109,7 +109,7 @@ public interface ScopedComponent<C extends Component> extends Component {
 
   @Override
   @SuppressWarnings("unchecked")
-  default @NotNull Component decorate(final @NotNull TextDecoration decoration) {
+  default @NotNull C decorate(final @NotNull TextDecoration decoration) {
     return (C) Component.super.decorate(decoration);
   }
 
