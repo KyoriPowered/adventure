@@ -100,6 +100,48 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
   }
 
   /**
+   * Provides a join configuration with no prefix or suffix that simply joins the components together using the {@link Component#newline()} component.
+   *
+   * <p>A purely text based example of this syntax, without introducing the concepts of components, would join the two strings 'hello' and 'there' together,
+   * creating the following output: 'hello\nthere'.</p>
+   *
+   * @return the join configuration
+   * @since 4.10.0
+   */
+  static @NotNull JoinConfiguration newlines() {
+    return JoinConfigurationImpl.STANDARD_NEW_LINES;
+  }
+
+  /**
+   * Provides a join configuration with no prefix or suffix that simply joins the components together using a single comma, matching a CSV like layout.
+   *
+   * <p>A purely text based example of this syntax, without introducing the concepts of components, would join the two strings 'hello' and 'there' together,
+   * creating either the output 'hello,there' or 'hello, there' depending on whether the passed boolean flag was {@code false} or {@code true} respectively.</p>
+   *
+   * @param spaces a plain boolean flag indicating whether the returned comma-based join configuration should append a single space after each comma or not
+   * @return the join configuration
+   * @since 4.10.0
+   */
+  static @NotNull JoinConfiguration commas(final boolean spaces) {
+    return spaces ? JoinConfigurationImpl.STANDARD_COMMA_SPACE_SEPARATED : JoinConfigurationImpl.STANDARD_COMMA_SEPARATED;
+  }
+
+  /**
+   * Provides a join configuration that joins components together in the same manner {@link java.util.Arrays#toString(Object[])} stringifies an array.
+   * Specifically, the join configuration prefixes and suffixes the components with an open or closed square bracket respectively.
+   * Components themselves are joined together using a comma and a space.
+   *
+   * <p>A purely text based example of this syntax, without introducing the concepts of components, would join the two strings 'hello' and 'there' together,
+   * creating the following output: '[hello, there]'.</p>
+   *
+   * @return the join configuration
+   * @since 4.10.0
+   */
+  static @NotNull JoinConfiguration arrayLike() {
+    return JoinConfigurationImpl.STANDARD_ARRAY_LIKE;
+  }
+
+  /**
    * Creates a join configuration with a separator and no prefix or suffix.
    *
    * @param separator the separator
