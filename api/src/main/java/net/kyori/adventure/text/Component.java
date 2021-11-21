@@ -43,6 +43,8 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.StyleReader;
+import net.kyori.adventure.text.format.StyleWriter;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
@@ -101,7 +103,7 @@ import static java.util.Objects.requireNonNull;
  * @since 4.0.0
  */
 @ApiStatus.NonExtendable
-public interface Component extends ComponentBuilderApplicable, ComponentLike, Examinable, HoverEventSource<Component> {
+public interface Component extends ComponentBuilderApplicable, ComponentLike, Examinable, HoverEventSource<Component>, StyleReader, StyleWriter<Component> {
   /**
    * A predicate that checks equality of two {@code Component}s using {@link Objects#equals(Object, Object)}.
    *
@@ -1803,6 +1805,27 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
+   * Gets the font.
+   *
+   * @return the font of this component
+   * @since 4.10.0
+   */
+  default @Nullable Key font() {
+    return this.style().font();
+  }
+
+  /**
+   * Sets the font.
+   *
+   * @param key a font
+   * @return a component
+   * @since 4.10.0
+   */
+  default @NotNull Component font(final @Nullable Key key) {
+    return this.style(this.style().font(key));
+  }
+
+  /**
    * Gets the color of this component.
    *
    * @return the color of this component
@@ -1846,7 +1869,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   default boolean hasDecoration(final @NotNull TextDecoration decoration) {
-    return this.decoration(decoration) == TextDecoration.State.TRUE;
+    return StyleReader.super.hasDecoration(decoration);
   }
 
   /**
@@ -1858,7 +1881,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(pure = true)
   default @NotNull Component decorate(final @NotNull TextDecoration decoration) {
-    return this.decoration(decoration, TextDecoration.State.TRUE);
+    return StyleWriter.super.decorate(decoration);
   }
 
   /**
@@ -1885,7 +1908,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(pure = true)
   default @NotNull Component decoration(final @NotNull TextDecoration decoration, final boolean flag) {
-    return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
+    return StyleWriter.super.decoration(decoration, flag);
   }
 
   /**

@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text.format;
 
-import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -146,17 +145,6 @@ final class StyleImpl implements Style {
       return new StyleImpl(this.font, this.color, state, this.bold, this.strikethrough, this.underlined, this.italic, this.clickEvent, this.hoverEvent, this.insertion);
     }
     throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
-  }
-
-  @Override
-  public @NotNull Map<TextDecoration, TextDecoration.State> decorations() {
-    final Map<TextDecoration, TextDecoration.State> decorations = new EnumMap<>(TextDecoration.class);
-    for (int i = 0, length = DECORATIONS.length; i < length; i++) {
-      final TextDecoration decoration = DECORATIONS[i];
-      final TextDecoration.State value = this.decoration(decoration);
-      decorations.put(decoration, value);
-    }
-    return decorations;
   }
 
   @Override
@@ -330,19 +318,6 @@ final class StyleImpl implements Style {
     public @NotNull Builder colorIfAbsent(final @Nullable TextColor color) {
       if (this.color == null) {
         this.color = color;
-      }
-      return this;
-    }
-
-    @Override
-    public @NotNull Builder decorate(final @NotNull TextDecoration decoration) {
-      return this.decoration(decoration, TextDecoration.State.TRUE);
-    }
-
-    @Override
-    public @NotNull Builder decorate(final @NotNull TextDecoration@NotNull... decorations) {
-      for (int i = 0, length = decorations.length; i < length; i++) {
-        this.decorate(decorations[i]);
       }
       return this;
     }
