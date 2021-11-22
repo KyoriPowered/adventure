@@ -41,7 +41,6 @@ import org.jetbrains.annotations.Unmodifiable;
  */
 @ApiStatus.NonExtendable
 public interface StyleReader {
-  @ApiStatus.Internal TextDecoration[] DECORATIONS = TextDecoration.values();
 
   /**
    * Gets the font.
@@ -92,8 +91,8 @@ public interface StyleReader {
   @SuppressWarnings("Duplicates")
   default @Unmodifiable @NotNull Map<TextDecoration, TextDecoration.State> decorations() {
     final Map<TextDecoration, TextDecoration.State> decorations = new EnumMap<>(TextDecoration.class);
-    for (int i = 0, length = DECORATIONS.length; i < length; i++) {
-      final TextDecoration decoration = DECORATIONS[i];
+    for (int i = 0, length = StyleImpl.DECORATIONS.length; i < length; i++) {
+      final TextDecoration decoration = StyleImpl.DECORATIONS[i];
       final TextDecoration.State value = this.decoration(decoration);
       decorations.put(decoration, value);
     }

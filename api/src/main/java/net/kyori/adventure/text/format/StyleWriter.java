@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import org.jetbrains.annotations.ApiStatus;
@@ -38,8 +39,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Writes style properties to an object.
  *
- * @param <T> The type implementing this interface, e.g. {@link net.kyori.adventure.text.Component}
- * @see net.kyori.adventure.text.format.Style
+ * @param <T> the type implementing this interface, e.g. {@link Component}
+ * @see Style
  * @since 4.10.0
  */
 @ApiStatus.NonExtendable

@@ -40,7 +40,7 @@ import static java.util.Objects.requireNonNull;
 
 final class StyleImpl implements Style {
   static final StyleImpl EMPTY = new StyleImpl(null, null, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null);
-  private static final TextDecoration[] DECORATIONS = TextDecoration.values();
+  static final TextDecoration[] DECORATIONS = TextDecoration.values();
   // visible to avoid generating accessors when creating a builder
   final @Nullable Key font;
   final @Nullable TextColor color;
