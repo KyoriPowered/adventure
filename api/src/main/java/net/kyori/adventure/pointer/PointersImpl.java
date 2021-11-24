@@ -23,16 +23,23 @@
  */
 package net.kyori.adventure.pointer;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 final class PointersImpl implements Pointers {
   static final Pointers EMPTY = new Pointers() {
+    @Override
+    public @NotNull Set<Pointer<?>> pointers() {
+      return Collections.emptySet();
+    }
+
     @Override
     public @NotNull <T> Optional<T> get(final @NotNull Pointer<T> pointer) {
       return Optional.empty();
@@ -58,6 +65,11 @@ final class PointersImpl implements Pointers {
 
   PointersImpl(final @NotNull BuilderImpl builder) {
     this.pointers = new HashMap<>(builder.pointers);
+  }
+
+  @Override
+  public @NotNull Set<Pointer<?>> pointers() {
+    return Collections.unmodifiableSet(this.pointers.keySet());
   }
 
   @Override
