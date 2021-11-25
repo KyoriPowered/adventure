@@ -23,11 +23,14 @@
  */
 package net.kyori.adventure.pointer;
 
+import java.util.Objects;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A pointer to a resource.
@@ -47,6 +50,39 @@ public interface Pointer<V> extends Examinable {
    */
   static <V> @NotNull Pointer<V> pointer(final @NotNull Class<V> type, final @NotNull Key key) {
     return new PointerImpl<>(type, key);
+  }
+
+  /**
+   * Creates a forward pointer to a pointer of another pointered resource.
+   *
+   * <p>The forwarder returns a null value of the pointer does not exist or its value is null in the target.</p>
+   *
+   * @param pointered the forward target
+   * @param targetPointer the pointer on the forward target
+   * @param <T> the value type of the pointer
+   * @return a supplier that forwards to the given pointer
+   * @since 4.10.0
+   */
+  static <T> @NotNull Supplier<T> forward(@NotNull final Pointered pointered, @NotNull final Pointer<T> targetPointer) {
+    return forwardWithDefault(pointered, targetPointer, null);
+  }
+
+  /**
+   * Creates a forward pointer with a default value to a pointer of another pointered resource.
+   *
+   * <p>The forwarder returns the default value if the pointer does not exist in the target.</p>
+   *
+   * @param pointered the forward target
+   * @param targetPointer the pointer on the forward target
+   * @param defaultValue the default value to use if the target pointer does not exist
+   * @param <T> the value type of the pointer
+   * @return a supplier that forwards to the given pointer
+   * @since 4.10.0
+   */
+  static <T> @NotNull Supplier<T> forwardWithDefault(@NotNull final Pointered pointered, @NotNull final Pointer<T> targetPointer, @Nullable final T defaultValue) {
+    Objects.requireNonNull(pointered, "pointered");
+    Objects.requireNonNull(targetPointer, "targetPointer");
+    return () -> pointered.getOrDefault(targetPointer, defaultValue);
   }
 
   /**

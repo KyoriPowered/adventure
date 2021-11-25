@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.pointer;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 import net.kyori.adventure.util.Buildable;
@@ -134,6 +135,23 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
     @Contract("_, _ -> this")
     default <T> @NotNull Builder withStatic(final @NotNull Pointer<T> pointer, final @Nullable T value) {
       return this.withDynamic(pointer, () -> value);
+    }
+
+    /**
+     * Adds a pointer that gets its value from another pointered resource's pointer.
+     *
+     * @param pointer the pointer to add
+     * @param target the target to forward to
+     * @param targetPointer the pointer on the target
+     * @param <T> the value type of the pointer
+     * @return this builder
+     * @since 4.10.0
+     */
+    default <T> @NotNull Builder withForwardTo(final @NotNull Pointer<T> pointer, final @NotNull Pointered target, final @NotNull Pointer<T> targetPointer) {
+      Objects.requireNonNull(pointer, "pointer");
+      Objects.requireNonNull(target, "target");
+      Objects.requireNonNull(targetPointer, "targetPointer");
+      return this.withDynamic(pointer, Pointer.forward(target, targetPointer));
     }
 
     /**
