@@ -171,23 +171,25 @@ public final class NamedTextColor implements TextColor {
    * @since 4.0.0
    */
   public static @Nullable NamedTextColor ofExact(final int value) {
-    if (value == BLACK_VALUE) return BLACK;
-    else if (value == DARK_BLUE_VALUE) return DARK_BLUE;
-    else if (value == DARK_GREEN_VALUE) return DARK_GREEN;
-    else if (value == DARK_AQUA_VALUE) return DARK_AQUA;
-    else if (value == DARK_RED_VALUE) return DARK_RED;
-    else if (value == DARK_PURPLE_VALUE) return DARK_PURPLE;
-    else if (value == GOLD_VALUE) return GOLD;
-    else if (value == GRAY_VALUE) return GRAY;
-    else if (value == DARK_GRAY_VALUE) return DARK_GRAY;
-    else if (value == BLUE_VALUE) return BLUE;
-    else if (value == GREEN_VALUE) return GREEN;
-    else if (value == AQUA_VALUE) return AQUA;
-    else if (value == RED_VALUE) return RED;
-    else if (value == LIGHT_PURPLE_VALUE) return LIGHT_PURPLE;
-    else if (value == YELLOW_VALUE) return YELLOW;
-    else if (value == WHITE_VALUE) return WHITE;
-    return null;
+    switch (value) {
+      case BLACK_VALUE: return BLACK;
+      case DARK_BLUE_VALUE: return DARK_BLUE;
+      case DARK_GREEN_VALUE: return DARK_GREEN;
+      case DARK_AQUA_VALUE: return DARK_AQUA;
+      case DARK_RED_VALUE: return DARK_RED;
+      case DARK_PURPLE_VALUE: return DARK_PURPLE;
+      case GOLD_VALUE: return GOLD;
+      case GRAY_VALUE: return GRAY;
+      case DARK_GRAY_VALUE: return DARK_GRAY;
+      case BLUE_VALUE: return BLUE;
+      case GREEN_VALUE: return GREEN;
+      case AQUA_VALUE: return AQUA;
+      case RED_VALUE: return RED;
+      case LIGHT_PURPLE_VALUE: return LIGHT_PURPLE;
+      case YELLOW_VALUE: return YELLOW;
+      case WHITE_VALUE: return WHITE;
+      default: return null;
+    }
   }
 
   /**
