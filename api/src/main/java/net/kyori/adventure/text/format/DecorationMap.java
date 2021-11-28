@@ -89,8 +89,8 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
   private final int bitSet;
 
   // lazy
-  private EntrySet entrySet = null;
-  private Values values = null;
+  private volatile EntrySet entrySet = null;
+  private volatile Values values = null;
 
   private DecorationMap(final int bitSet) {
     this.bitSet = bitSet;
@@ -139,7 +139,12 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
   @Override
   public @NotNull Set<Entry<TextDecoration, TextDecoration.State>> entrySet() {
     if (this.entrySet == null) {
-      this.entrySet = new EntrySet();
+      synchronized (this) {
+        // re-check for lost race condition
+        if (this.entrySet == null) {
+          this.entrySet = new EntrySet();
+        }
+      }
     }
     return this.entrySet;
   }
@@ -152,7 +157,12 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
   @Override
   public @NotNull Collection<TextDecoration.State> values() {
     if (this.values == null) {
-      this.values = new Values();
+      synchronized (this) {
+        // re-check for lost race condition
+        if (this.values == null) {
+          this.values = new Values();
+        }
+      }
     }
     return this.values;
   }
