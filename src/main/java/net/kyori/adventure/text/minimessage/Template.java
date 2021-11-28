@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.util.Locale;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
@@ -167,7 +168,7 @@ public interface Template extends Examinable {
     private final String value;
 
     StringTemplate(final @NotNull String key, final @NotNull String value) {
-      if (!key.toLowerCase().equals(key))
+      if (!key.toLowerCase(Locale.ROOT).equals(key))
         throw new IllegalArgumentException("Template key '" + key + "' must be lowercase");
 
       this.key = key;
@@ -209,7 +210,7 @@ public interface Template extends Examinable {
     private final @NotNull Component value;
 
     public ComponentTemplate(final @NotNull String key, final @NotNull Component value) {
-      if (!key.toLowerCase().equals(key))
+      if (!key.toLowerCase(Locale.ROOT).equals(key))
         throw new IllegalArgumentException("Template key '" + key + "' must be lowercase");
 
       this.key = key;
