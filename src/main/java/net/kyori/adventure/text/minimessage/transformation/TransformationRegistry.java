@@ -24,13 +24,10 @@
 package net.kyori.adventure.text.minimessage.transformation;
 
 import java.util.List;
-import java.util.function.Function;
-import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 import net.kyori.adventure.util.Buildable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,21 +49,6 @@ public interface TransformationRegistry extends Buildable<TransformationRegistry
    * @since 4.2.0
    */
   @Nullable Transformation get(final String name, final List<TagPart> inners, final PlaceholderResolver placeholderResolver, final Context context);
-
-  /**
-   * Test if any registered transformation type matches the provided key.
-   *
-   * @param name tag name
-   * @param placeholderResolver function to resolve other component types
-   * @return whether any transformation exists
-   * @since 4.1.0
-   * @deprecated For removal since 4.2.0, use {@link #exists(String, PlaceholderResolver)} with {@link PlaceholderResolver#dynamic(Function)}
-   */
-  @ApiStatus.ScheduledForRemoval
-  @Deprecated
-  default boolean exists(final String name, final Function<String, ComponentLike> placeholderResolver) {
-    return this.exists(name, PlaceholderResolver.dynamic(placeholderResolver));
-  }
 
   /**
    * Tests if any registered transformation type matches the provided key.

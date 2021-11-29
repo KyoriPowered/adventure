@@ -25,14 +25,11 @@ package net.kyori.adventure.text.minimessage.parser.node;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import net.kyori.adventure.text.minimessage.Placeholder;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,26 +41,6 @@ import org.jetbrains.annotations.Nullable;
 public final class TagNode extends ElementNode {
   private final List<TagPart> parts;
   private @Nullable Transformation transformation = null;
-
-  /**
-   * Creates a new element node.
-   *
-   * @param parent        the parent of this node
-   * @param token         the token that created this node
-   * @param sourceMessage the source message
-   * @since 4.2.0
-   * @deprecated For removal since 4.2.0, use {@link #TagNode(ElementNode, Token, String, PlaceholderResolver)} with {@link PlaceholderResolver#pairs(Map)}
-   */
-  @ApiStatus.ScheduledForRemoval
-  @Deprecated
-  public TagNode(
-    final @NotNull ElementNode parent,
-    final @NotNull Token token,
-    final @NotNull String sourceMessage,
-    final @NotNull Map<String, Placeholder> placeholders
-  ) {
-    this(parent, token, sourceMessage, PlaceholderResolver.pairs(placeholders));
-  }
 
   /**
    * Creates a new element node.

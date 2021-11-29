@@ -194,18 +194,6 @@ public class Context {
   }
 
   /**
-   * Returns og message.
-   *
-   * @return ogMessage
-   * @since 4.1.0
-   * @deprecated for removal, use {@link #originalMessage()} instead
-   */
-  @Deprecated
-  public String ogMessage() {
-    return this.originalMessage();
-  }
-
-  /**
    * Returns original message.
    *
    * @return ogMessage

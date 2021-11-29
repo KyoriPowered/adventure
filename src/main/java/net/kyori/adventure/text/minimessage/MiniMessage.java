@@ -49,18 +49,6 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    *
    * @return a simple instance
    * @since 4.0.0
-   * @deprecated for removal, use {@link #miniMessage()} instead
-   */
-  @Deprecated
-  static @NotNull MiniMessage get() {
-    return MiniMessageImpl.INSTANCE;
-  }
-
-  /**
-   * Gets a simple instance without markdown support.
-   *
-   * @return a simple instance
-   * @since 4.0.0
    */
   static @NotNull MiniMessage miniMessage() {
     return MiniMessageImpl.INSTANCE;

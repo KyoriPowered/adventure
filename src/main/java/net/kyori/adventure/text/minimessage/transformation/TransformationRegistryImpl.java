@@ -71,14 +71,9 @@ final class TransformationRegistryImpl implements TransformationRegistry {
     this.types = Collections.unmodifiableList(types);
   }
 
-  @SuppressWarnings("deprecation")
   private Transformation tryLoad(final TransformationFactory<?> factory, final String name, final List<TagPart> inners, final Context context) {
     try {
-      final Transformation xform = factory.parse(context, name, inners.subList(1, inners.size()));
-      // initialize fields for accessing deprecated content
-      xform.context(context);
-      xform.load(name, inners.subList(1, inners.size()));
-      return xform;
+      return factory.parse(context, name, inners.subList(1, inners.size()));
     } catch (final ParsingException exception) {
       exception.originalText(context.originalMessage());
       throw exception;

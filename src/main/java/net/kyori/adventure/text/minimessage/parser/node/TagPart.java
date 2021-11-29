@@ -23,12 +23,9 @@
  */
 package net.kyori.adventure.text.minimessage.parser.node;
 
-import java.util.Map;
-import net.kyori.adventure.text.minimessage.Placeholder;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenParser;
 import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -39,24 +36,6 @@ import org.jetbrains.annotations.NotNull;
 public final class TagPart {
   private final String value;
   private final Token token;
-
-  /**
-   * Constructs a new tag part.
-   *
-   * @param sourceMessage the source message
-   * @param token the token that creates this tag part
-   * @since 4.2.0
-   * @deprecated For removal since 4.2.0, use {@link #TagPart(String, Token, PlaceholderResolver)} with {@link PlaceholderResolver#pairs(Map)}
-   */
-  @ApiStatus.ScheduledForRemoval
-  @Deprecated
-  public TagPart(
-    final @NotNull String sourceMessage,
-    final @NotNull Token token,
-    final @NotNull Map<String, Placeholder> placeholders
-  ) {
-    this(sourceMessage, token, PlaceholderResolver.pairs(placeholders));
-  }
 
   /**
    * Constructs a new tag part.
