@@ -30,7 +30,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.minimessage.template.TemplateResolver;
+import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.junit.jupiter.api.Test;
 
@@ -243,10 +243,10 @@ public class MiniMessageParserTest extends TestBase {
   }
 
   @Test
-  void testStripTemplates() {
+  void testStripPlaceholders() {
     final String input = "Hello, <red><name>!";
     final String expected = "Hello, !";
-    assertEquals(expected, this.PARSER.stripTokens(input, TemplateResolver.templates(Template.template("name", "you"))));
+    assertEquals(expected, this.PARSER.stripTokens(input, PlaceholderResolver.placeholders(Placeholder.placeholder("name", "you"))));
   }
 
   @Test
@@ -279,10 +279,10 @@ public class MiniMessageParserTest extends TestBase {
   }
 
   @Test
-  void testEscapeTemplates() {
+  void testEscapePlaceholders() {
     final String input = "Hello, <red><name>!";
     final String expected = "Hello, \\<red>\\<name>!";
-    assertEquals(expected, this.PARSER.escapeTokens(input, TemplateResolver.templates(Template.template("name", "you"))));
+    assertEquals(expected, this.PARSER.escapeTokens(input, PlaceholderResolver.placeholders(Placeholder.placeholder("name", "you"))));
   }
 
   @Test
@@ -316,7 +316,7 @@ public class MiniMessageParserTest extends TestBase {
   void checkPlaceholder() {
     final String input = "<test>";
     final Component expected = text("Hello!");
-    final Component comp = this.PARSER.deserialize(input, TemplateResolver.resolving("test", "Hello!"));
+    final Component comp = this.PARSER.deserialize(input, PlaceholderResolver.resolving("test", "Hello!"));
 
     assertEquals(expected, comp);
   }
@@ -550,7 +550,7 @@ public class MiniMessageParserTest extends TestBase {
     this.assertParsedEquals(expected, input);
 
     // shouldnt throw an error
-    this.PARSER.deserialize(input, TemplateResolver.resolving("url", "https://www.google.com"));
+    this.PARSER.deserialize(input, PlaceholderResolver.resolving("url", "https://www.google.com"));
   }
 
   @Test
@@ -1345,7 +1345,7 @@ public class MiniMessageParserTest extends TestBase {
   }
 
   @Test
-  void testTemplateOrder() {
+  void testPlaceholderOrder() {
     final Component expected = empty().color(GRAY)
       .append(text("ONE"))
       .append(empty().color(RED)
@@ -1362,7 +1362,7 @@ public class MiniMessageParserTest extends TestBase {
   }
 
   @Test
-  void testTemplateOrder2() {
+  void testPlaceholderOrder2() {
     final Component expected = empty()
       .append(text("ONE").color(GRAY))
       .append(text("TWO").color(RED))
@@ -1490,18 +1490,18 @@ public class MiniMessageParserTest extends TestBase {
     final Component expected3 = text().append(text("a", GOLD), text("a", YELLOW), text("a", YELLOW)).build();
     final Component expected4 = text().append(text("a", GOLD), text("a", TextColor.color(0xffd52b)), text("a", YELLOW), text("a", YELLOW)).build();
 
-    this.assertParsedEquals(expected1, input, Template.template("dum", text("a")));
-    this.assertParsedEquals(expected2, input, Template.template("dum", text("aa")));
-    this.assertParsedEquals(expected3, input, Template.template("dum", text("aaa")));
-    this.assertParsedEquals(expected4, input, Template.template("dum", text("aaaa")));
-    this.assertParsedEquals(expected4, input2, Template.template("dum", text("aaa")));
+    this.assertParsedEquals(expected1, input, Placeholder.placeholder("dum", text("a")));
+    this.assertParsedEquals(expected2, input, Placeholder.placeholder("dum", text("aa")));
+    this.assertParsedEquals(expected3, input, Placeholder.placeholder("dum", text("aaa")));
+    this.assertParsedEquals(expected4, input, Placeholder.placeholder("dum", text("aaaa")));
+    this.assertParsedEquals(expected4, input2, Placeholder.placeholder("dum", text("aaa")));
   }
 
   @Test
   void gh147() {
     final String input = "<rainbow><msg>";
     final Component expected1 = text().append(text("y", color(0xf3801f)), text("o", color(0x0c80e0))).build();
-    this.assertParsedEquals(expected1, input, Template.template("msg", text("yo")));
+    this.assertParsedEquals(expected1, input, Placeholder.placeholder("msg", text("yo")));
   }
 
   @Test

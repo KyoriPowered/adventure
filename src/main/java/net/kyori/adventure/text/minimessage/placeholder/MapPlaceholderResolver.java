@@ -21,30 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.template;
+package net.kyori.adventure.text.minimessage.placeholder;
 
 import java.util.Map;
-import net.kyori.adventure.text.minimessage.Template;
+import net.kyori.adventure.text.minimessage.Placeholder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * A template resolver based on a map.
+ * A placeholder resolver based on a map.
  */
-final class MapTemplateResolver implements TemplateResolver {
-  private final Map<String, Template> templateMap;
+final class MapPlaceholderResolver implements PlaceholderResolver {
+  private final Map<String, Placeholder> placeholderMap;
 
-  MapTemplateResolver(final @NotNull Map<String, Template> templateMap) {
-    this.templateMap = templateMap;
+  MapPlaceholderResolver(final @NotNull Map<String, Placeholder> placeholderMap) {
+    this.placeholderMap = placeholderMap;
   }
 
   @Override
   public boolean canResolve(final @NotNull String key) {
-    return this.templateMap.containsKey(key);
+    return this.placeholderMap.containsKey(key);
   }
 
   @Override
-  public @Nullable Template resolve(final @NotNull String key) {
-    return this.templateMap.get(key);
+  public @Nullable Placeholder resolve(final @NotNull String key) {
+    return this.placeholderMap.get(key);
   }
 }

@@ -24,10 +24,10 @@
 package net.kyori.adventure.text.minimessage.parser.node;
 
 import java.util.Map;
-import net.kyori.adventure.text.minimessage.Template;
+import net.kyori.adventure.text.minimessage.Placeholder;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenParser;
-import net.kyori.adventure.text.minimessage.template.TemplateResolver;
+import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,16 +46,16 @@ public final class TagPart {
    * @param sourceMessage the source message
    * @param token the token that creates this tag part
    * @since 4.2.0
-   * @deprecated For removal since 4.2.0, use {@link #TagPart(String, Token, TemplateResolver)} with {@link TemplateResolver#pairs(Map)}
+   * @deprecated For removal since 4.2.0, use {@link #TagPart(String, Token, PlaceholderResolver)} with {@link PlaceholderResolver#pairs(Map)}
    */
   @ApiStatus.ScheduledForRemoval
   @Deprecated
   public TagPart(
     final @NotNull String sourceMessage,
     final @NotNull Token token,
-    final @NotNull Map<String, Template> templates
+    final @NotNull Map<String, Placeholder> placeholders
   ) {
-    this(sourceMessage, token, TemplateResolver.pairs(templates));
+    this(sourceMessage, token, PlaceholderResolver.pairs(placeholders));
   }
 
   /**
@@ -63,16 +63,16 @@ public final class TagPart {
    *
    * @param sourceMessage the source message
    * @param token the token that creates this tag part
-   * @param templateResolver the template resolver
+   * @param placeholderResolver the placeholder resolver
    * @since 4.2.0
    */
   public TagPart(
     final @NotNull String sourceMessage,
     final @NotNull Token token,
-    final @NotNull TemplateResolver templateResolver
+    final @NotNull PlaceholderResolver placeholderResolver
   ) {
     String v = unquoteAndEscape(sourceMessage, token.startIndex(), token.endIndex());
-    v = TokenParser.resolveStringTemplates(v, templateResolver);
+    v = TokenParser.resolveStringPlaceholders(v, placeholderResolver);
 
     this.value = v;
     this.token = token;

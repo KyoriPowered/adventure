@@ -32,18 +32,19 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
-import net.kyori.adventure.text.minimessage.Template;
+import net.kyori.adventure.text.minimessage.Placeholder;
+import net.kyori.adventure.text.minimessage.Placeholder.StringPlaceholder;
 import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.match.MatchedTokenConsumer;
-import net.kyori.adventure.text.minimessage.parser.match.PlaceholderResolvingMatchedTokenConsumer;
+import net.kyori.adventure.text.minimessage.parser.match.StringResolvingMatchedTokenConsumer;
 import net.kyori.adventure.text.minimessage.parser.match.TokenListProducingMatchedTokenConsumer;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
+import net.kyori.adventure.text.minimessage.parser.node.PlaceholderNode;
 import net.kyori.adventure.text.minimessage.parser.node.RootNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
-import net.kyori.adventure.text.minimessage.parser.node.TemplateNode;
 import net.kyori.adventure.text.minimessage.parser.node.TextNode;
-import net.kyori.adventure.text.minimessage.template.TemplateResolver;
+import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 import net.kyori.adventure.text.minimessage.transformation.Inserting;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import org.jetbrains.annotations.NotNull;
@@ -70,18 +71,18 @@ public final class TokenParser {
   public static ElementNode parse(
     final @NotNull Function<TagNode, @Nullable Transformation> transformationFactory,
     final @NotNull BiPredicate<String, Boolean> tagNameChecker,
-    final @NotNull TemplateResolver templateResolver,
+    final @NotNull PlaceholderResolver placeholderResolver,
     final @NotNull String message,
     final boolean strict
   ) {
     // first resolve placeholders...
-    final String actualMessage = resolvePlaceholders(message, string -> tagNameChecker.test(string, false), templateResolver);
+    final String actualMessage = resolvePlaceholders(message, string -> tagNameChecker.test(string, false), placeholderResolver);
 
     // then collect tokens...
     final List<Token> tokens = tokenize(actualMessage);
 
     // then build the tree!
-    return buildTree(transformationFactory, tagNameChecker, templateResolver, tokens, actualMessage, strict);
+    return buildTree(transformationFactory, tagNameChecker, placeholderResolver, tokens, actualMessage, strict);
   }
 
   /**
@@ -89,20 +90,20 @@ public final class TokenParser {
    *
    * @param message the message
    * @param tagNameChecker a predicate to check if a matched token is a in-built transformation tag
-   * @param templateResolver the template resolver
+   * @param placeholderResolver the placeholder resolver
    * @return the resulting string
    * @since 4.2.0
    */
-  public static String resolvePlaceholders(final String message, final Predicate<String> tagNameChecker, final TemplateResolver templateResolver) {
+  public static String resolvePlaceholders(final String message, final Predicate<String> tagNameChecker, final PlaceholderResolver placeholderResolver) {
     int passes = 0;
     String lastResult;
     String result = message;
 
     do {
       lastResult = result;
-      final PlaceholderResolvingMatchedTokenConsumer placeholderResolver = new PlaceholderResolvingMatchedTokenConsumer(lastResult, tagNameChecker, templateResolver);
-      parseString(lastResult, placeholderResolver);
-      result = placeholderResolver.result();
+      final StringResolvingMatchedTokenConsumer stringTokenResolver = new StringResolvingMatchedTokenConsumer(lastResult, tagNameChecker, placeholderResolver);
+      parseString(lastResult, stringTokenResolver);
+      result = stringTokenResolver.result();
       passes++;
     } while (passes < MAX_DEPTH && !lastResult.equals(result));
 
@@ -342,7 +343,7 @@ public final class TokenParser {
   private static ElementNode buildTree(
     final @NotNull Function<TagNode, @Nullable Transformation> transformationFactory,
     final @NotNull BiPredicate<String, Boolean> tagNameChecker,
-    final @NotNull TemplateResolver templateResolver,
+    final @NotNull PlaceholderResolver placeholderResolver,
     final @NotNull List<Token> tokens,
     final @NotNull String message,
     final boolean strict
@@ -358,7 +359,7 @@ public final class TokenParser {
           break;
 
         case OPEN_TAG:
-          final TagNode tagNode = new TagNode(node, token, message, templateResolver);
+          final TagNode tagNode = new TagNode(node, token, message, placeholderResolver);
           if (isReset(tagNode.name())) {
             // <reset> tags get special treatment and don't appear in the tree
             // instead, they close all currently open tags
@@ -368,10 +369,10 @@ public final class TokenParser {
             }
             node = root;
           } else {
-            final Template template = templateResolver.resolve(tagNode.name());
-            if (template instanceof Template.StringTemplate) {
-              // String templates are inserted into the tree as raw text nodes, not parsed
-              node.addChild(new TemplateNode(node, token, message, ((Template.StringTemplate) template).value()));
+            final Placeholder placeholder = placeholderResolver.resolve(tagNode.name());
+            if (placeholder instanceof StringPlaceholder) {
+              // String placeholders are inserted into the tree as raw text nodes, not parsed
+              node.addChild(new PlaceholderNode(node, token, message, ((StringPlaceholder) placeholder).value()));
             } else if (tagNameChecker.test(tagNode.name(), true)) {
               final Transformation transformation = transformationFactory.apply(tagNode);
               if (transformation == null) {
@@ -489,16 +490,16 @@ public final class TokenParser {
   }
 
   /**
-   * Parse a minimessage string into another string, resolving only the string templates present in the message.
+   * Parse a minimessage string into another string, resolving only the string placeholders present in the message.
    *
    * @param message the minimessage string to parse
-   * @param templateResolver the template resolver to use to find string placeholders
-   * @return the message, with non-string templates still intact
+   * @param placeholderResolver the placeholder resolver to use to find string placeholders
+   * @return the message, with non-string placeholders still intact
    * @since 4.2.0
    */
-  public static String resolveStringTemplates(
+  public static String resolveStringPlaceholders(
       final @NotNull String message,
-      final @NotNull TemplateResolver templateResolver
+      final @NotNull PlaceholderResolver placeholderResolver
   ) {
     final List<Token> tokens = tokenize(message);
     final StringBuilder sb = new StringBuilder();
@@ -514,9 +515,9 @@ public final class TokenParser {
         case OPEN_TAG:
           if (token.childTokens() != null && token.childTokens().size() == 1) {
             final CharSequence name = token.childTokens().get(0).get(message);
-            final Template template = templateResolver.resolve(name.toString().toLowerCase(Locale.ROOT));
-            if (template instanceof Template.StringTemplate) {
-              sb.append(((Template.StringTemplate) template).value());
+            final Placeholder placeholder = placeholderResolver.resolve(name.toString().toLowerCase(Locale.ROOT));
+            if (placeholder instanceof StringPlaceholder) {
+              sb.append(((StringPlaceholder) placeholder).value());
               break;
             }
           }

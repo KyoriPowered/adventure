@@ -21,38 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.template;
+package net.kyori.adventure.text.minimessage.placeholder;
 
-import net.kyori.adventure.text.minimessage.Template;
+import net.kyori.adventure.text.minimessage.Placeholder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * A template resolver that resolves from multiple sources.
+ * An empty placeholder resolver that has no placeholders.
  */
-final class GroupedTemplateResolver implements TemplateResolver {
-  private final Iterable<? extends TemplateResolver> templateResolvers;
+final class EmptyPlaceholderResolver implements PlaceholderResolver {
+  static final EmptyPlaceholderResolver INSTANCE = new EmptyPlaceholderResolver();
 
-  GroupedTemplateResolver(final @NotNull Iterable<? extends TemplateResolver> templateResolvers) {
-    this.templateResolvers = templateResolvers;
+  private EmptyPlaceholderResolver() {
   }
 
   @Override
   public boolean canResolve(final @NotNull String key) {
-    for (final TemplateResolver templateResolver : this.templateResolvers) {
-      if (templateResolver.canResolve(key)) return true;
-    }
-
     return false;
   }
 
   @Override
-  public @Nullable Template resolve(final @NotNull String key) {
-    for (final TemplateResolver templateResolver : this.templateResolvers) {
-      final Template template = templateResolver.resolve(key);
-      if (template != null) return template;
-    }
-
+  public @Nullable Placeholder resolve(final @NotNull String key) {
     return null;
   }
 }

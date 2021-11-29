@@ -21,31 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.template;
-
-import java.util.function.Predicate;
-import net.kyori.adventure.text.minimessage.Template;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-final class FilteringTemplateResolver implements TemplateResolver {
-  private final TemplateResolver templateResolver;
-  private final Predicate<Template> filter;
-
-  FilteringTemplateResolver(final TemplateResolver templateResolver, final Predicate<Template> filter) {
-    this.templateResolver = templateResolver;
-    this.filter = filter;
-  }
-
-  @Override
-  public boolean canResolve(final @NotNull String key) {
-    return this.resolve(key) != null;
-  }
-
-  @Override
-  public @Nullable Template resolve(final @NotNull String key) {
-    final Template template = this.templateResolver.resolve(key);
-    if (template == null || this.filter.test(template)) return null;
-    return template;
-  }
-}
+/**
+ * Placeholders.
+ */
+package net.kyori.adventure.text.minimessage.placeholder;

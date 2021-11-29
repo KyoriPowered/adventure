@@ -24,9 +24,10 @@
 package net.kyori.adventure.text.minimessage.parser.match;
 
 import java.util.function.Predicate;
-import net.kyori.adventure.text.minimessage.Template;
+import net.kyori.adventure.text.minimessage.Placeholder;
+import net.kyori.adventure.text.minimessage.Placeholder.StringPlaceholder;
 import net.kyori.adventure.text.minimessage.parser.TokenType;
-import net.kyori.adventure.text.minimessage.template.TemplateResolver;
+import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -34,10 +35,10 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 4.2.0
  */
-public final class PlaceholderResolvingMatchedTokenConsumer extends MatchedTokenConsumer<String> {
+public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsumer<String> {
   private final StringBuilder builder;
   private final Predicate<String> tagChecker;
-  private final TemplateResolver templateResolver;
+  private final PlaceholderResolver placeholderResolver;
 
   /**
    * Creates a placeholder resolving matched token consumer.
@@ -45,15 +46,15 @@ public final class PlaceholderResolvingMatchedTokenConsumer extends MatchedToken
    * @param input the input
    * @since 4.2.0
    */
-  public PlaceholderResolvingMatchedTokenConsumer(
+  public StringResolvingMatchedTokenConsumer(
     final @NotNull String input,
     final @NotNull Predicate<String> tagChecker,
-    final @NotNull TemplateResolver templateResolver
+    final @NotNull PlaceholderResolver placeholderResolver
   ) {
     super(input);
     this.builder = new StringBuilder(input.length());
     this.tagChecker = tagChecker;
-    this.templateResolver = templateResolver;
+    this.placeholderResolver = placeholderResolver;
   }
 
   @Override
@@ -73,12 +74,12 @@ public final class PlaceholderResolvingMatchedTokenConsumer extends MatchedToken
         this.builder.append(match);
       } else {
         // we might care if it's a placeholder!
-        if (this.templateResolver.canResolve(tag)) {
-          final Template template = this.templateResolver.resolve(tag);
+        if (this.placeholderResolver.canResolve(tag)) {
+          final Placeholder placeholder = this.placeholderResolver.resolve(tag);
 
-          if (template instanceof Template.StringTemplate) {
-            // we only care about string templates!
-            this.builder.append(((Template.StringTemplate) template).value());
+          if (placeholder instanceof StringPlaceholder) {
+            // we only care about string placeholders!
+            this.builder.append(((StringPlaceholder) placeholder).value());
             return;
           }
         }

@@ -28,11 +28,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Represents a template replacement in a string.
+ * Represents a placeholder replacement in a string.
  *
  * @since 4.2.0
  */
-public class TemplateNode extends ValueNode {
+public class PlaceholderNode extends ValueNode {
   /**
    * Creates a new element node.
    *
@@ -41,7 +41,7 @@ public class TemplateNode extends ValueNode {
    * @param sourceMessage the source message
    * @since 4.2.0
    */
-  public TemplateNode(
+  public PlaceholderNode(
     final @Nullable ElementNode parent,
     final @NotNull Token token,
     final @NotNull String sourceMessage,
@@ -52,6 +52,6 @@ public class TemplateNode extends ValueNode {
 
   @Override
   String valueName() {
-    return "TemplateNode";
+    return "PlaceholderNode";
   }
 }

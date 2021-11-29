@@ -39,7 +39,7 @@ import net.kyori.adventure.text.minimessage.parser.TokenType;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.parser.node.ValueNode;
-import net.kyori.adventure.text.minimessage.template.TemplateResolver;
+import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 import net.kyori.adventure.text.minimessage.transformation.Modifying;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
@@ -47,16 +47,16 @@ import org.jetbrains.annotations.NotNull;
 
 final class MiniMessageParser {
   final TransformationRegistry registry;
-  final TemplateResolver templateResolver;
+  final PlaceholderResolver placeholderResolver;
 
   MiniMessageParser() {
     this.registry = TransformationRegistry.standard();
-    this.templateResolver = TemplateResolver.empty();
+    this.placeholderResolver = PlaceholderResolver.empty();
   }
 
-  MiniMessageParser(final TransformationRegistry registry, final TemplateResolver templateResolver) {
+  MiniMessageParser(final TransformationRegistry registry, final PlaceholderResolver placeholderResolver) {
     this.registry = registry;
-    this.templateResolver = templateResolver;
+    this.placeholderResolver = placeholderResolver;
   }
 
   @NotNull String escapeTokens(final @NotNull String richMessage, final @NotNull Context context) {
@@ -89,7 +89,7 @@ final class MiniMessageParser {
   }
 
   private void processTokens(final @NotNull StringBuilder sb, final @NotNull String richMessage, final @NotNull Context context, final BiConsumer<Token, StringBuilder> tagHandler) {
-    final TemplateResolver combinedResolver = TemplateResolver.combining(context.templateResolver(), this.templateResolver);
+    final PlaceholderResolver combinedResolver = PlaceholderResolver.combining(context.placeholderResolver(), this.placeholderResolver);
     final List<Token> root = TokenParser.tokenize(richMessage);
     for (final Token token : root) {
       switch (token.type()) {
@@ -103,7 +103,7 @@ final class MiniMessageParser {
             sb.append(richMessage, token.startIndex(), token.endIndex());
             continue;
           }
-          final String sanitized = this.sanitizeTemplateName(token.childTokens().get(0).get(richMessage).toString());
+          final String sanitized = this.sanitizePlaceholderName(token.childTokens().get(0).get(richMessage).toString());
           if (this.registry.exists(sanitized, combinedResolver) || combinedResolver.canResolve(sanitized)) {
             tagHandler.accept(token, sb);
           } else {
@@ -117,7 +117,7 @@ final class MiniMessageParser {
   }
 
   @NotNull Component parseFormat(final @NotNull String richMessage, final @NotNull Context context) {
-    final TemplateResolver combinedResolver = TemplateResolver.combining(context.templateResolver(), this.templateResolver);
+    final PlaceholderResolver combinedResolver = PlaceholderResolver.combining(context.placeholderResolver(), this.placeholderResolver);
     final Appendable debug = context.debugOutput();
     if (debug != null) {
       try {
@@ -136,7 +136,7 @@ final class MiniMessageParser {
           } catch (final IOException ignored) {
           }
 
-          final Transformation transformation = this.registry.get(this.sanitizeTemplateName(node.name()), node.parts(), combinedResolver, context);
+          final Transformation transformation = this.registry.get(this.sanitizePlaceholderName(node.name()), node.parts(), combinedResolver, context);
 
           try {
             if (transformation == null) {
@@ -163,15 +163,15 @@ final class MiniMessageParser {
     } else {
       transformationFactory = node -> {
         try {
-          return this.registry.get(this.sanitizeTemplateName(node.name()), node.parts(), combinedResolver, context);
+          return this.registry.get(this.sanitizePlaceholderName(node.name()), node.parts(), combinedResolver, context);
         } catch (final ParsingException ignored) {
           return null;
         }
       };
     }
-    final BiPredicate<String, Boolean> tagNameChecker = (name, includeTemplates) -> {
-      final String sanitized = this.sanitizeTemplateName(name);
-      return this.registry.exists(sanitized) || (includeTemplates && combinedResolver.canResolve(name));
+    final BiPredicate<String, Boolean> tagNameChecker = (name, includePlaceholders) -> {
+      final String sanitized = this.sanitizePlaceholderName(name);
+      return this.registry.exists(sanitized) || (includePlaceholders && combinedResolver.canResolve(name));
     };
 
     final ElementNode root = TokenParser.parse(transformationFactory, tagNameChecker, combinedResolver, richMessage, context.strict());
@@ -235,7 +235,7 @@ final class MiniMessageParser {
     return newComp;
   }
 
-  private String sanitizeTemplateName(final String name) {
+  private String sanitizePlaceholderName(final String name) {
     return name.toLowerCase(Locale.ROOT);
   }
 }

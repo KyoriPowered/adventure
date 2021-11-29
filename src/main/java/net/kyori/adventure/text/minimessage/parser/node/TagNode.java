@@ -27,10 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import net.kyori.adventure.text.minimessage.Template;
+import net.kyori.adventure.text.minimessage.Placeholder;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
-import net.kyori.adventure.text.minimessage.template.TemplateResolver;
+import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -52,7 +52,7 @@ public final class TagNode extends ElementNode {
    * @param token         the token that created this node
    * @param sourceMessage the source message
    * @since 4.2.0
-   * @deprecated For removal since 4.2.0, use {@link #TagNode(ElementNode, Token, String, TemplateResolver)} with {@link TemplateResolver#pairs(Map)}
+   * @deprecated For removal since 4.2.0, use {@link #TagNode(ElementNode, Token, String, PlaceholderResolver)} with {@link PlaceholderResolver#pairs(Map)}
    */
   @ApiStatus.ScheduledForRemoval
   @Deprecated
@@ -60,9 +60,9 @@ public final class TagNode extends ElementNode {
     final @NotNull ElementNode parent,
     final @NotNull Token token,
     final @NotNull String sourceMessage,
-    final @NotNull Map<String, Template> templates
+    final @NotNull Map<String, Placeholder> placeholders
   ) {
-    this(parent, token, sourceMessage, TemplateResolver.pairs(templates));
+    this(parent, token, sourceMessage, PlaceholderResolver.pairs(placeholders));
   }
 
   /**
@@ -71,29 +71,29 @@ public final class TagNode extends ElementNode {
    * @param parent        the parent of this node
    * @param token         the token that created this node
    * @param sourceMessage the source message
-   * @param templateResolver the template resolver
+   * @param placeholderResolver the placeholder resolver
    * @since 4.2.0
    */
   public TagNode(
       final @NotNull ElementNode parent,
       final @NotNull Token token,
       final @NotNull String sourceMessage,
-      final @NotNull TemplateResolver templateResolver
+      final @NotNull PlaceholderResolver placeholderResolver
   ) {
     super(parent, token, sourceMessage);
-    this.parts = genParts(token, sourceMessage, templateResolver);
+    this.parts = genParts(token, sourceMessage, placeholderResolver);
   }
 
   private static @NotNull List<TagPart> genParts(
     final @NotNull Token token,
     final @NotNull String sourceMessage,
-    final @NotNull TemplateResolver templateResolver
+    final @NotNull PlaceholderResolver placeholderResolver
   ) {
     final ArrayList<TagPart> parts = new ArrayList<>();
 
     if (token.childTokens() != null) {
       for (final Token childToken : token.childTokens()) {
-        parts.add(new TagPart(sourceMessage, childToken, templateResolver));
+        parts.add(new TagPart(sourceMessage, childToken, placeholderResolver));
       }
     }
 
