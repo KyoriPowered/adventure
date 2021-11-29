@@ -24,9 +24,9 @@
 package net.kyori.adventure.text.minimessage.parser.match;
 
 import java.util.function.Predicate;
-import net.kyori.adventure.text.minimessage.Placeholder;
-import net.kyori.adventure.text.minimessage.Placeholder.StringPlaceholder;
 import net.kyori.adventure.text.minimessage.parser.TokenType;
+import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
+import net.kyori.adventure.text.minimessage.placeholder.Placeholder.StringPlaceholder;
 import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 import org.jetbrains.annotations.NotNull;
 

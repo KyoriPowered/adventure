@@ -24,7 +24,6 @@
 package net.kyori.adventure.text.minimessage.placeholder;
 
 import java.util.Map;
-import net.kyori.adventure.text.minimessage.Placeholder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

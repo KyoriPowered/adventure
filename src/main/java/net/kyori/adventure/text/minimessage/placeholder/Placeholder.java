@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage;
+package net.kyori.adventure.text.minimessage.placeholder;
 
 import java.util.function.Supplier;
 import java.util.stream.Stream;
