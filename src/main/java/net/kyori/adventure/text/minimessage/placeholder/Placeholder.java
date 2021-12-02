@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.placeholder;
 
+import java.util.Locale;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
@@ -114,6 +115,8 @@ public interface Placeholder extends Examinable {
     private final String value;
 
     StringPlaceholder(final @NotNull String key, final @NotNull String value) {
+      if (!key.toLowerCase(Locale.ROOT).equals(key))
+        throw new IllegalArgumentException("Template key '" + key + "' must be lowercase");
       this.key = key;
       this.value = value;
     }
@@ -153,6 +156,8 @@ public interface Placeholder extends Examinable {
     private final @NotNull Component value;
 
     public ComponentPlaceholder(final @NotNull String key, final @NotNull Component value) {
+      if (!key.toLowerCase(Locale.ROOT).equals(key))
+        throw new IllegalArgumentException("Template key '" + key + "' must be lowercase");
       this.key = key;
       this.value = value;
     }
