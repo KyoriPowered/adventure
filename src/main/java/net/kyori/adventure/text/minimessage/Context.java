@@ -26,7 +26,8 @@ package net.kyori.adventure.text.minimessage;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
-import net.kyori.adventure.text.minimessage.template.TemplateResolver;
+import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
+import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,17 +43,17 @@ public class Context {
   private final String originalMessage;
   private String replacedMessage;
   private final MiniMessage miniMessage;
-  private final TemplateResolver templateResolver;
+  private final PlaceholderResolver placeholderResolver;
   private final UnaryOperator<Component> postProcessor;
 
-  Context(final boolean strict, final Appendable debugOutput, final ElementNode root, final String originalMessage, final String replacedMessage, final MiniMessage miniMessage, final @NotNull TemplateResolver templateResolver, final UnaryOperator<Component> postProcessor) {
+  Context(final boolean strict, final Appendable debugOutput, final ElementNode root, final String originalMessage, final String replacedMessage, final MiniMessage miniMessage, final @NotNull PlaceholderResolver placeholderResolver, final UnaryOperator<Component> postProcessor) {
     this.strict = strict;
     this.debugOutput = debugOutput;
     this.root = root;
     this.originalMessage = originalMessage;
     this.replacedMessage = replacedMessage;
     this.miniMessage = miniMessage;
-    this.templateResolver = templateResolver;
+    this.placeholderResolver = placeholderResolver;
     this.postProcessor = postProcessor == null ? UnaryOperator.identity() : postProcessor;
   }
 
@@ -66,7 +67,7 @@ public class Context {
    * @since 4.1.0
    */
   public static Context of(final boolean strict, final String input, final MiniMessage miniMessage) {
-    return new Context(strict, null, null, input, null, miniMessage, TemplateResolver.empty(), null);
+    return new Context(strict, null, null, input, null, miniMessage, PlaceholderResolver.empty(), null);
   }
 
   /**
@@ -77,10 +78,10 @@ public class Context {
    * @param input the input message
    * @param miniMessage the minimessage instance
    * @return the debug context
-   * @since 4.1.0
+   * @since 4.2.0
    */
   public static Context of(final boolean strict, final Appendable debugOutput, final String input, final MiniMessage miniMessage) {
-    return new Context(strict, debugOutput, null, input, null, miniMessage, TemplateResolver.empty(), null);
+    return new Context(strict, debugOutput, null, input, null, miniMessage, PlaceholderResolver.empty(), null);
   }
 
   /**
@@ -89,27 +90,12 @@ public class Context {
    * @param strict if strict mode is enabled
    * @param input the input message
    * @param miniMessage the minimessage instance
-   * @param templates the templates passed to minimessage
-   * @return the debug context
-   * @since 4.1.0
-   */
-  public static Context of(final boolean strict, final String input, final MiniMessageImpl miniMessage, @NotNull final Template @Nullable [] templates) {
-    return new Context(strict, null, null, input, null, miniMessage, templates == null ? TemplateResolver.empty() : TemplateResolver.templates(templates), null);
-  }
-
-  /**
-   * Init.
-   *
-   * @param strict if strict mode is enabled
-   * @param debugOutput where to print debug output
-   * @param input the input message
-   * @param miniMessage the minimessage instance
-   * @param templates the templates passed to minimessage
+   * @param placeholders the placeholders passed to minimessage
    * @return the debug context
    * @since 4.2.0
    */
-  public static Context of(final boolean strict, final Appendable debugOutput, final String input, final MiniMessageImpl miniMessage, @NotNull final Template @Nullable [] templates) {
-    return new Context(strict, debugOutput, null, input, null, miniMessage, templates == null ? TemplateResolver.empty() : TemplateResolver.templates(templates), null);
+  public static Context of(final boolean strict, final String input, final MiniMessageImpl miniMessage, @NotNull final Placeholder @Nullable [] placeholders) {
+    return new Context(strict, null, null, input, null, miniMessage, placeholders == null ? PlaceholderResolver.empty() : PlaceholderResolver.placeholders(placeholders), null);
   }
 
   /**
@@ -119,12 +105,12 @@ public class Context {
    * @param debugOutput where to print debug output
    * @param input the input message
    * @param miniMessage the minimessage instance
-   * @param templateResolver the template resolver passed to minimessage
+   * @param placeholders the placeholders passed to minimessage
    * @return the debug context
    * @since 4.2.0
    */
-  public static Context of(final boolean strict, final Appendable debugOutput, final String input, final MiniMessageImpl miniMessage, final TemplateResolver templateResolver) {
-    return new Context(strict, debugOutput, null, input, null, miniMessage, templateResolver, null);
+  public static Context of(final boolean strict, final Appendable debugOutput, final String input, final MiniMessageImpl miniMessage, @NotNull final Placeholder @Nullable [] placeholders) {
+    return new Context(strict, debugOutput, null, input, null, miniMessage, placeholders == null ? PlaceholderResolver.empty() : PlaceholderResolver.placeholders(placeholders), null);
   }
 
   /**
@@ -134,13 +120,28 @@ public class Context {
    * @param debugOutput where to print debug output
    * @param input the input message
    * @param miniMessage the minimessage instance
-   * @param templateResolver the template resolver passed to minimessage
+   * @param placeholderResolver the placeholder resolver passed to minimessage
+   * @return the debug context
+   * @since 4.2.0
+   */
+  public static Context of(final boolean strict, final Appendable debugOutput, final String input, final MiniMessageImpl miniMessage, final PlaceholderResolver placeholderResolver) {
+    return new Context(strict, debugOutput, null, input, null, miniMessage, placeholderResolver, null);
+  }
+
+  /**
+   * Init.
+   *
+   * @param strict if strict mode is enabled
+   * @param debugOutput where to print debug output
+   * @param input the input message
+   * @param miniMessage the minimessage instance
+   * @param placeholderResolver the placeholder resolver passed to minimessage
    * @param postProcessor callback ran at the end of parsing which could be used to compact the output
    * @return the debug context
    * @since 4.2.0
    */
-  public static Context of(final boolean strict, final Appendable debugOutput, final String input, final MiniMessageImpl miniMessage, final TemplateResolver templateResolver, final UnaryOperator<Component> postProcessor) {
-    return new Context(strict, debugOutput, null, input, null, miniMessage, templateResolver, postProcessor);
+  public static Context of(final boolean strict, final Appendable debugOutput, final String input, final MiniMessageImpl miniMessage, final PlaceholderResolver placeholderResolver, final UnaryOperator<Component> postProcessor) {
+    return new Context(strict, debugOutput, null, input, null, miniMessage, placeholderResolver, postProcessor);
   }
 
   /**
@@ -194,18 +195,6 @@ public class Context {
   }
 
   /**
-   * Returns og message.
-   *
-   * @return ogMessage
-   * @since 4.1.0
-   * @deprecated for removal, use {@link #originalMessage()} instead
-   */
-  @Deprecated
-  public String ogMessage() {
-    return this.originalMessage();
-  }
-
-  /**
    * Returns original message.
    *
    * @return ogMessage
@@ -236,13 +225,13 @@ public class Context {
   }
 
   /**
-   * Returns the template resolver.
+   * Returns the placeholder resolver.
    *
-   * @return the template resolver
+   * @return the placeholder resolver
    * @since 4.2.0
    */
-  public @NotNull TemplateResolver templateResolver() {
-    return this.templateResolver;
+  public @NotNull PlaceholderResolver placeholderResolver() {
+    return this.placeholderResolver;
   }
 
   /**
@@ -256,13 +245,13 @@ public class Context {
   }
 
   /**
-   * Parses a MiniMessage using all the settings of this context, including templates.
+   * Parses a MiniMessage using all the settings of this context, including placeholders.
    *
    * @param message the message to parse
    * @return the parsed message
    * @since 4.1.0
    */
   public Component parse(final String message) {
-    return this.miniMessage.deserialize(message, this.templateResolver);
+    return this.miniMessage.deserialize(message, this.placeholderResolver);
   }
 }

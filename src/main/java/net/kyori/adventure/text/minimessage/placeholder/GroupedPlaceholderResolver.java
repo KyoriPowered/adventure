@@ -21,37 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.parser.node;
+package net.kyori.adventure.text.minimessage.placeholder;
 
-import net.kyori.adventure.text.minimessage.parser.Token;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Represents a template replacement in a string.
- *
- * @since 4.2.0
+ * A placeholder resolver that resolves from multiple sources.
  */
-public class TemplateNode extends ValueNode {
-  /**
-   * Creates a new element node.
-   *
-   * @param parent        the parent of this node
-   * @param token         the token that created this node
-   * @param sourceMessage the source message
-   * @since 4.2.0
-   */
-  public TemplateNode(
-    final @Nullable ElementNode parent,
-    final @NotNull Token token,
-    final @NotNull String sourceMessage,
-    final @NotNull String actualValue
-  ) {
-    super(parent, token, sourceMessage, actualValue);
+final class GroupedPlaceholderResolver implements PlaceholderResolver {
+  private final Iterable<? extends PlaceholderResolver> placeholderResolvers;
+
+  GroupedPlaceholderResolver(final @NotNull Iterable<? extends PlaceholderResolver> placeholderResolvers) {
+    this.placeholderResolvers = placeholderResolvers;
   }
 
   @Override
-  String valueName() {
-    return "TemplateNode";
+  public boolean canResolve(final @NotNull String key) {
+    for (final PlaceholderResolver placeholderResolver : this.placeholderResolvers) {
+      if (placeholderResolver.canResolve(key)) return true;
+    }
+
+    return false;
+  }
+
+  @Override
+  public @Nullable Placeholder resolve(final @NotNull String key) {
+    for (final PlaceholderResolver placeholderResolver : this.placeholderResolvers) {
+      final Placeholder placeholder = placeholderResolver.resolve(key);
+      if (placeholder != null) return placeholder;
+    }
+
+    return null;
   }
 }

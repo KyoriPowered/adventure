@@ -21,38 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.template;
+package net.kyori.adventure.text.minimessage.placeholder;
 
-import net.kyori.adventure.text.minimessage.Template;
+import java.util.function.Predicate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * A template resolver that resolves from multiple sources.
- */
-final class GroupedTemplateResolver implements TemplateResolver {
-  private final Iterable<? extends TemplateResolver> templateResolvers;
+final class FilteringPlaceholderResolver implements PlaceholderResolver {
+  private final PlaceholderResolver placeholderResolver;
+  private final Predicate<Placeholder> filter;
 
-  GroupedTemplateResolver(final @NotNull Iterable<? extends TemplateResolver> templateResolvers) {
-    this.templateResolvers = templateResolvers;
+  FilteringPlaceholderResolver(final PlaceholderResolver placeholderResolver, final Predicate<Placeholder> filter) {
+    this.placeholderResolver = placeholderResolver;
+    this.filter = filter;
   }
 
   @Override
   public boolean canResolve(final @NotNull String key) {
-    for (final TemplateResolver templateResolver : this.templateResolvers) {
-      if (templateResolver.canResolve(key)) return true;
-    }
-
-    return false;
+    return this.resolve(key) != null;
   }
 
   @Override
-  public @Nullable Template resolve(final @NotNull String key) {
-    for (final TemplateResolver templateResolver : this.templateResolvers) {
-      final Template template = templateResolver.resolve(key);
-      if (template != null) return template;
-    }
-
-    return null;
+  public @Nullable Placeholder resolve(final @NotNull String key) {
+    final Placeholder placeholder = this.placeholderResolver.resolve(key);
+    if (placeholder == null || this.filter.test(placeholder)) return null;
+    return placeholder;
   }
 }

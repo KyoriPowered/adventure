@@ -28,7 +28,8 @@ import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
-import net.kyori.adventure.text.minimessage.template.TemplateResolver;
+import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
+import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
 import net.kyori.adventure.text.minimessage.transformation.TransformationType;
 import org.junit.jupiter.api.Test;
@@ -100,7 +101,7 @@ public class MiniMessageTest extends TestBase {
   @Test
   void testObjectPlaceholdersUnbalanced() {
     assertThrows(IllegalArgumentException.class, () -> MiniMessage.miniMessage().deserialize("<red>ONE<two><blue>THREE<four><five>",
-      TemplateResolver.resolving(
+      PlaceholderResolver.resolving(
         "two", text("TWO", GREEN),
         "four", "FOUR",
         "five"
@@ -109,56 +110,56 @@ public class MiniMessageTest extends TestBase {
   }
 
   @Test
-  void testTemplateSimple() {
+  void testPlaceholderSimple() {
     final Component expected = text("TEST");
     final String input = "<test>";
     final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    this.assertParsedEquals(miniMessage, expected, input, Template.template("test", "TEST"));
+    this.assertParsedEquals(miniMessage, expected, input, Placeholder.placeholder("test", "TEST"));
   }
 
   @Test
-  void testTemplateComponent() {
+  void testPlaceholderComponent() {
     final Component expected = text("TEST", RED);
     final String string = "<test>";
     final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    this.assertParsedEquals(miniMessage, expected, string, Template.template("test", text("TEST", RED)));
+    this.assertParsedEquals(miniMessage, expected, string, Placeholder.placeholder("test", text("TEST", RED)));
   }
 
   @Test
-  void testTemplateComponentInheritedStyle() {
+  void testPlaceholderComponentInheritedStyle() {
     final Component expected = text("TEST", RED, UNDERLINED, BOLD);
     final String input = "<green><bold><test>";
     final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    this.assertParsedEquals(miniMessage, expected, input, Template.template("test", text("TEST", RED, UNDERLINED)));
+    this.assertParsedEquals(miniMessage, expected, input, Placeholder.placeholder("test", text("TEST", RED, UNDERLINED)));
   }
 
   @Test
-  void testTemplateComponentMixed() {
+  void testPlaceholderComponentMixed() {
     final Component expected = empty().color(GREEN).decorate(BOLD)
         .append(text("TEST", style(RED, UNDERLINED)))
         .append(text("Test2"));
     final String input = "<green><bold><test><test2>";
     final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    final Template t1 = Template.template("test", text("TEST", style(RED, UNDERLINED)));
-    final Template t2 = Template.template("test2", "Test2");
+    final Placeholder t1 = Placeholder.placeholder("test", text("TEST", style(RED, UNDERLINED)));
+    final Placeholder t2 = Placeholder.placeholder("test2", "Test2");
 
     this.assertParsedEquals(miniMessage, expected, input, t1, t2);
   }
 
   // GH-103
   @Test
-  void testTemplateInHover() {
+  void testPlaceholderInHover() {
     final Component expected = text("This is a test message.")
         .hoverEvent(showText(text("[Plugin]").color(color(0xff0000))));
 
     final String input = "<hover:show_text:'<prefix>'>This is a test message.";
     final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    this.assertParsedEquals(miniMessage, expected, input, Template.template("prefix", MiniMessage.miniMessage().parse("<#FF0000>[Plugin]<reset>")));
+    this.assertParsedEquals(miniMessage, expected, input, Placeholder.placeholder("prefix", MiniMessage.miniMessage().parse("<#FF0000>[Plugin]<reset>")));
   }
 
   @Test
@@ -198,7 +199,7 @@ public class MiniMessageTest extends TestBase {
       return null;
     };
 
-    final MiniMessage miniMessage = MiniMessage.builder().templateResolver(TemplateResolver.dynamic(resolver)).build();
+    final MiniMessage miniMessage = MiniMessage.builder().placeholderResolver(PlaceholderResolver.dynamic(resolver)).build();
 
     this.assertParsedEquals(miniMessage, expected, input);
   }
@@ -214,8 +215,8 @@ public class MiniMessageTest extends TestBase {
 
     final Function<String, ComponentLike> resolver = name -> text(name.toUpperCase()).color(RED);
 
-    final MiniMessage miniMessage = MiniMessage.builder().templateResolver(
-        TemplateResolver.filtering(TemplateResolver.dynamic(resolver), name -> name.key().equals("filtered"))
+    final MiniMessage miniMessage = MiniMessage.builder().placeholderResolver(
+        PlaceholderResolver.filtering(PlaceholderResolver.dynamic(resolver), name -> name.key().equals("filtered"))
     ).build();
 
     this.assertParsedEquals(miniMessage, expected, input);
@@ -237,10 +238,10 @@ public class MiniMessageTest extends TestBase {
       return null;
     };
 
-    final MiniMessage miniMessage = MiniMessage.builder().templateResolver(
-        TemplateResolver.combining(
-            TemplateResolver.dynamic(resolver),
-            TemplateResolver.templates(Template.template("two", text("TWO", GREEN)))
+    final MiniMessage miniMessage = MiniMessage.builder().placeholderResolver(
+        PlaceholderResolver.combining(
+            PlaceholderResolver.dynamic(resolver),
+            PlaceholderResolver.placeholders(Placeholder.placeholder("two", text("TWO", GREEN)))
         )
     ).build();
 
@@ -264,11 +265,11 @@ public class MiniMessageTest extends TestBase {
   @Test
   void testUnbalancedPlaceholders() {
     final String expected = "Argument 1 in pairs must be a String or ComponentLike value, was java.lang.Integer";
-    assertEquals(expected, assertThrows(IllegalArgumentException.class, () -> MiniMessage.miniMessage().deserialize("<a>", TemplateResolver.resolving("a", 2))).getMessage());
+    assertEquals(expected, assertThrows(IllegalArgumentException.class, () -> MiniMessage.miniMessage().deserialize("<a>", PlaceholderResolver.resolving("a", 2))).getMessage());
   }
 
   @Test
-  void testNodesInTemplate() {
+  void testNodesInPlaceholder() {
     final Component expected = empty().color(RED)
         .append(text("MiniDigger"))
         .append(empty().color(GRAY)
@@ -278,17 +279,17 @@ public class MiniMessageTest extends TestBase {
     final String input = "<red><username><gray>: <red><message>";
     final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    this.assertParsedEquals(miniMessage, expected, input, Template.template("username", text("MiniDigger")), Template.template("message", text("</pre><red>Test")));
+    this.assertParsedEquals(miniMessage, expected, input, Placeholder.placeholder("username", text("MiniDigger")), Placeholder.placeholder("message", text("</pre><red>Test")));
   }
 
   @Test
-  void testLazyTemplate() {
+  void testLazyPlaceholder() {
     final Component expected = text("This is a ")
       .append(text("TEST"));
     final String input = "This is a <test>";
     final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    this.assertParsedEquals(miniMessage, expected, input, Template.template("test", () -> text("TEST")));
+    this.assertParsedEquals(miniMessage, expected, input, Placeholder.placeholder("test", () -> text("TEST")));
   }
 
   @Test

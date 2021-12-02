@@ -21,28 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.template;
-
-import net.kyori.adventure.text.minimessage.Template;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 /**
- * An empty template resolver that has no templates.
+ * Placeholders.
  */
-final class EmptyTemplateResolver implements TemplateResolver {
-  static final EmptyTemplateResolver INSTANCE = new EmptyTemplateResolver();
-
-  private EmptyTemplateResolver() {
-  }
-
-  @Override
-  public boolean canResolve(final @NotNull String key) {
-    return false;
-  }
-
-  @Override
-  public @Nullable Template resolve(final @NotNull String key) {
-    return null;
-  }
-}
+package net.kyori.adventure.text.minimessage.placeholder;

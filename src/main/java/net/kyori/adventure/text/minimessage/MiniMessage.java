@@ -24,17 +24,13 @@
 package net.kyori.adventure.text.minimessage;
 
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
-import net.kyori.adventure.text.minimessage.template.TemplateResolver;
+import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Buildable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,18 +49,6 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    *
    * @return a simple instance
    * @since 4.0.0
-   * @deprecated for removal, use {@link #miniMessage()} instead
-   */
-  @Deprecated
-  static @NotNull MiniMessage get() {
-    return MiniMessageImpl.INSTANCE;
-  }
-
-  /**
-   * Gets a simple instance without markdown support.
-   *
-   * @return a simple instance
-   * @since 4.0.0
    */
   static @NotNull MiniMessage miniMessage() {
     return MiniMessageImpl.INSTANCE;
@@ -75,7 +59,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    *
    * <p>Useful for untrusted input.</p>
    *
-   * <p>Only globally known tokens will be escaped. Use the overload that takes a {@link TemplateResolver} if templates should be handled.</p>
+   * <p>Only globally known tokens will be escaped. Use the overload that takes a {@link PlaceholderResolver} if placeholders should be handled.</p>
    *
    * @param input the input message, with tokens
    * @return the output, with escaped tokens
@@ -89,18 +73,18 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * <p>Useful for untrusted input.</p>
    *
    * @param input the input message, with tokens
-   * @param templates the template resolver adding known templates
+   * @param placeholders the placeholder resolver adding known placeholders
    * @return the output, with escaped tokens
    * @since 4.2.0
    */
-  @NotNull String escapeTokens(final @NotNull String input, final @NotNull TemplateResolver templates);
+  @NotNull String escapeTokens(final @NotNull String input, final @NotNull PlaceholderResolver placeholders);
 
   /**
    * Removes all supported tokens in the input message.
    *
    * <p>Useful for untrusted input.</p>
    *
-   * <p>Only globally known tokens will be stripped. Use the overload that takes a {@link TemplateResolver} if templates should be handled.</p>
+   * <p>Only globally known tokens will be stripped. Use the overload that takes a {@link PlaceholderResolver} if placeholders should be handled.</p>
    *
    * @param input the input message, with tokens
    * @return the output, without tokens
@@ -114,11 +98,11 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * <p>Useful for untrusted input.</p>
    *
    * @param input the input message, with tokens
-   * @param templates the template resolver adding known templates
+   * @param placeholders the placeholder resolver adding known placeholders
    * @return the output, without tokens
    * @since 4.2.0
    */
-  @NotNull String stripTokens(final @NotNull String input, final @NotNull TemplateResolver templates);
+  @NotNull String stripTokens(final @NotNull String input, final @NotNull PlaceholderResolver placeholders);
 
   /**
    * Parses a string into an component.
@@ -132,93 +116,16 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
   }
 
   /**
-   * Parses a string into an component, allows passing placeholders in key value pairs.
+   * Deserializes a string into a component, with a placeholder resolver to parse placeholders of the form {@code <key>}.
+   *
+   * <p>Placeholders will be resolved from this resolver before the resolver provided in the builder is used.</p>
    *
    * @param input the input string
-   * @param placeholders the placeholders
-   * @return the output component
-   * @since 4.1.0
-   * @deprecated For removal since 4.2.0, use {@link #deserialize(String, TemplateResolver)} with {@link TemplateResolver#resolving(Object...)}
-   */
-  @ApiStatus.ScheduledForRemoval
-  @Deprecated
-  default @NotNull Component parse(final @NotNull String input, final @NotNull String... placeholders) {
-    return this.deserialize(input, TemplateResolver.resolving((Object[]) placeholders));
-  }
-
-  /**
-   * Parses a string into an component, allows passing placeholders in key value pairs.
-   *
-   * @param input the input string
-   * @param placeholders the placeholders
-   * @return the output component
-   * @since 4.1.0
-   * @deprecated For removal since 4.2.0, use {@link #deserialize(String, TemplateResolver)} with {@link TemplateResolver#pairs(Map)}
-   */
-  @ApiStatus.ScheduledForRemoval
-  @Deprecated
-  default @NotNull Component parse(final @NotNull String input, final @NotNull Map<String, String> placeholders) {
-    return this.deserialize(input, TemplateResolver.pairs(placeholders));
-  }
-
-  /**
-   * Parses a string into an component, allows passing placeholders using key component pairs.
-   *
-   * @param input the input string
-   * @param placeholders the placeholders
-   * @return the output component
-   * @since 4.1.0
-   * @deprecated For removal since 4.2.0, use {@link #deserialize(String, TemplateResolver)} with {@link TemplateResolver#resolving(Object...)}
-   */
-  @ApiStatus.ScheduledForRemoval
-  @Deprecated
-  default @NotNull Component parse(@NotNull final String input, @NotNull final Object... placeholders) {
-    return this.deserialize(input, TemplateResolver.resolving(placeholders));
-  }
-
-  /**
-   * Parses a string into an component, allows passing placeholders using templates (which support components).
-   * MiniMessage parses placeholders from following syntax: {@code <placeholder_name>} where placeholder_name is {@link Template#key()}
-   *
-   * @param input the input string
-   * @param placeholders the placeholders
-   * @return the output component
-   * @since 4.0.0
-   * @deprecated For removal since 4.2.0, use {@link #deserialize(String, TemplateResolver)} with {@link TemplateResolver#templates(Template...)}
-   */
-  @ApiStatus.ScheduledForRemoval
-  @Deprecated
-  default @NotNull Component parse(final @NotNull String input, final @NotNull Template... placeholders) {
-    return this.deserialize(input, TemplateResolver.templates(placeholders));
-  }
-
-  /**
-   * Parses a string into an component, allows passing placeholders using templates (which support components).
-   * MiniMessage parses placeholders from following syntax: {@code <placeholder_name>} where placeholder_name is {@link Template#key()}
-   *
-   * @param input the input string
-   * @param placeholders the placeholders
-   * @return the output component
-   * @since 4.0.0
-   * @deprecated Scheduled for removal since 4.2.0, use {@link #deserialize(String, TemplateResolver)} with {@link TemplateResolver#templates(Iterable)}
-   */
-  @ApiStatus.ScheduledForRemoval
-  @Deprecated
-  default @NotNull Component parse(final @NotNull String input, final @NotNull List<Template> placeholders) {
-    return this.deserialize(input, TemplateResolver.templates(placeholders));
-  }
-
-  /**
-   * Deserializes a string into a component, with a template resolver to parse templates of the form {@code <key>}.
-   *
-   * <p>Templates will be resolved from this resolver before the resolver provided in the builder is used.</p>
-   *
-   * @param input the input string
-   * @param templateResolver the template resolver
+   * @param placeholderResolver the placeholder resolver
    * @return the output component
    * @since 4.2.0
    */
-  @NotNull Component deserialize(final @NotNull String input, final @NotNull TemplateResolver templateResolver);
+  @NotNull Component deserialize(final @NotNull String input, final @NotNull PlaceholderResolver placeholderResolver);
 
   /**
    * Creates a new {@link MiniMessage.Builder}.
@@ -258,31 +165,15 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
     @NotNull Builder transformations(final @NotNull Consumer<TransformationRegistry.Builder> modifier);
 
     /**
-     * Sets the placeholder resolve that should handle all (unresolved) placeholders.
+     * Sets the placeholder resolver.
      *
-     * <p>It needs to return a component, or {@code null} if no value is available.</p>
+     * <p>This placeholder resolver will be used after any placeholder resolved provided in {@link MiniMessage#deserialize(String, PlaceholderResolver)}.</p>
      *
-     * @param placeholderResolver the placeholder resolver to use
-     * @return this builder
-     * @since 4.1.0
-     * @deprecated For removal since 4.2.0, use {@link #templateResolver(TemplateResolver)} with {@link TemplateResolver#dynamic(Function)}
-     */
-    @ApiStatus.ScheduledForRemoval
-    @Deprecated
-    default @NotNull Builder placeholderResolver(final @NotNull Function<@NotNull String, @Nullable ComponentLike> placeholderResolver) {
-      return this.templateResolver(TemplateResolver.dynamic(placeholderResolver));
-    }
-
-    /**
-     * Sets the template resolver.
-     *
-     * <p>This template resolver will be used after any template resolved provided in {@link MiniMessage#deserialize(String, TemplateResolver)}.</p>
-     *
-     * @param templateResolver the template resolver to use, if any
+     * @param placeholderResolver the placeholder resolver to use, if any
      * @return this builder
      * @since 4.2.0
      */
-    @NotNull Builder templateResolver(final @Nullable TemplateResolver templateResolver);
+    @NotNull Builder placeholderResolver(final @Nullable PlaceholderResolver placeholderResolver);
 
     /**
      * Allows to enable strict mode (disabled by default).
