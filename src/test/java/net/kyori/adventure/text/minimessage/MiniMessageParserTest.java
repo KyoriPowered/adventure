@@ -1629,7 +1629,7 @@ public class MiniMessageParserTest extends TestBase {
     final Component expected = text("Hover to see the word!", GOLD)
         .hoverEvent(text("Word: Adventure"));
 
-    assertParsedEquals(expected, input, "word", "Adventure");
+    this.assertParsedEquals(expected, input, "word", "Adventure");
   }
 
   @Test
