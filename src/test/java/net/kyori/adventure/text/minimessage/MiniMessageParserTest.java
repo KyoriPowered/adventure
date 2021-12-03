@@ -1666,4 +1666,16 @@ public class MiniMessageParserTest extends TestBase {
     final Component expected = text("<!italic:true>Go decide on something, god dammit!");
     this.assertParsedEquals(expected, input);
   }
+
+  @Test
+  void testDecorationShorthandClosing() {
+    final String input = "<italic:false>Hello! <italic>spooky</italic> not spooky</italic:false>";
+    final Component expected = text().decoration(ITALIC, false)
+            .append(text("Hello! "))
+            .append(text().decoration(ITALIC, true)
+                    .append(text("spooky")))
+            .append(text(" not spooky"))
+            .build();
+    this.assertParsedEquals(expected, input);
+  }
 }
