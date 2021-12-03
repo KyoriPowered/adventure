@@ -79,8 +79,11 @@ public final class DecorationTransformation extends Transformation {
    */
   public static DecorationTransformation create(String name, final List<TagPart> args) {
     boolean flag = true;
-    if (args.size() == 1 && "false".equals(args.get(0).value())) {
-      flag = false;
+    if (args.size() == 1) {
+      String val = args.get(0).value();
+      if ("f".equals(val) || "false".equals(val)) {
+        flag = false;
+      }
     }
 
     if (name.startsWith(REVERT)) {
