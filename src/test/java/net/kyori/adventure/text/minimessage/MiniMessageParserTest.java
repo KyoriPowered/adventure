@@ -1644,4 +1644,17 @@ public class MiniMessageParserTest extends TestBase {
 
     this.assertParsedEquals(expected, input);
   }
+
+  @Test
+  void testDisabledDecorationShorthand() {
+    final String input = "<!italic>Test<!bold>Test2<bold>Test3";
+    final Component expected = text().decoration(ITALIC, false)
+            .append(text("Test"))
+            .append(text().decoration(BOLD, false)
+                    .append(text("Test2"))
+                    .append(text("Test3").decorate(BOLD))
+            ).build();
+
+    this.assertParsedEquals(expected, input);
+  }
 }

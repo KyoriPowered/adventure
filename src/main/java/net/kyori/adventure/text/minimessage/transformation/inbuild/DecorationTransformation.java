@@ -45,6 +45,9 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.1.0
  */
 public final class DecorationTransformation extends Transformation {
+
+  public static final String REVERT = "!";
+
   /**
    * An unmodifiable map of known decoration aliases.
    *
@@ -74,16 +77,21 @@ public final class DecorationTransformation extends Transformation {
    * @return a new transformation
    * @since 4.2.0
    */
-  public static DecorationTransformation create(final String name, final List<TagPart> args) {
+  public static DecorationTransformation create(String name, final List<TagPart> args) {
+    boolean flag = true;
+    if (args.size() == 1 && "false".equals(args.get(0).value())) {
+      flag = false;
+    }
+
+    if (name.startsWith(REVERT)) {
+      flag = false;
+      name = name.substring(1);
+    }
+
     final @Nullable TextDecoration decoration = parseDecoration(name);
 
     if (decoration == null) {
       throw new ParsingException("Don't know how to turn '" + name + "' into a decoration", args);
-    }
-
-    boolean flag = true;
-    if (args.size() == 1 && "false".equals(args.get(0).value())) {
-      flag = false;
     }
 
     return new DecorationTransformation(decoration, flag);

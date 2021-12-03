@@ -64,6 +64,7 @@ public final class TransformationType<T extends Transformation> {
     acceptingNames(
       Stream.of(TextDecoration.NAMES.keys(), DecorationTransformation.DECORATION_ALIASES.keySet())
         .flatMap(Collection::stream)
+        .flatMap(k -> Stream.of(k, DecorationTransformation.REVERT + k))
         .collect(Collectors.toSet())
     ),
     DecorationTransformation::create
