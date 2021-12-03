@@ -96,7 +96,7 @@ public final class DecorationTransformation extends Transformation {
 
   private DecorationTransformation(final TextDecoration decoration, boolean flag) {
     this.decoration = decoration;
-    this.flag = false;
+    this.flag = flag;
   }
 
   @Override
