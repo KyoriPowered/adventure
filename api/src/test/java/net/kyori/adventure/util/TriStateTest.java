@@ -23,9 +23,14 @@
  */
 package net.kyori.adventure.util;
 
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TriStateTest {
   @Test
@@ -39,5 +44,38 @@ class TriStateTest {
     assertEquals(TriState.NOT_SET, TriState.byBoolean(null));
     assertEquals(TriState.FALSE, TriState.byBoolean(Boolean.FALSE));
     assertEquals(TriState.TRUE, TriState.byBoolean(Boolean.TRUE));
+  }
+
+  @Test
+  void testToBoolean() {
+    assertEquals(true, TriState.TRUE.toBoolean());
+    assertEquals(false, TriState.FALSE.toBoolean());
+    assertNull(TriState.NOT_SET.toBoolean());
+  }
+
+  @Test
+  void testToBooleanOrElse() {
+    assertTrue(TriState.TRUE.toBooleanOrElse(false));
+    assertFalse(TriState.FALSE.toBooleanOrElse(true));
+
+    assertTrue(TriState.NOT_SET.toBooleanOrElse(true));
+    assertFalse(TriState.NOT_SET.toBooleanOrElse(false));
+  }
+
+  @Test
+  void testToBooleanOrElseGet() {
+    final AtomicInteger atomicCounter = new AtomicInteger(0);
+    final Function<Boolean, Boolean> supplierCounter = b -> {
+      atomicCounter.incrementAndGet();
+      return b;
+    };
+
+    assertTrue(TriState.TRUE.toBooleanOrElseGet(() -> supplierCounter.apply(false)));
+    assertFalse(TriState.FALSE.toBooleanOrElseGet(() -> supplierCounter.apply(true)));
+
+    assertTrue(TriState.NOT_SET.toBooleanOrElseGet(() -> supplierCounter.apply(true)));
+    assertFalse(TriState.NOT_SET.toBooleanOrElseGet(() -> supplierCounter.apply(false)));
+
+    assertEquals(2, atomicCounter.get()); // Ensure that the supplier was only called twice for the two test cases.
   }
 }

@@ -21,31 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.format;
+package net.kyori.adventure.extra.kotlin
 
-import java.util.Arrays;
-import net.kyori.adventure.util.TriState;
-import org.junit.jupiter.api.Test;
+import net.kyori.adventure.util.HSVLike
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+/**
+ * The [HSVLike.h] component.
+ *
+ * Allows for destructuring into `(h, s, v)`.
+ *
+ * @return the [HSVLike.h] component
+ * @since 4.10.0
+ */
+public operator fun HSVLike.component1(): Float = h()
 
-class TextDecorationTest {
-  @Test
-  void testByBoolean() {
-    assertEquals(TextDecoration.State.NOT_SET, TextDecoration.State.byBoolean(null));
-    assertEquals(TextDecoration.State.FALSE, TextDecoration.State.byBoolean(false));
-    assertEquals(TextDecoration.State.TRUE, TextDecoration.State.byBoolean(true));
-  }
+/**
+ * The [HSVLike.s] component.
+ *
+ * Allows for destructuring into `(h, s, v)`.
+ *
+ * @return the [HSVLike.s] component
+ * @since 4.10.0
+ */
+public operator fun HSVLike.component2(): Float = s()
 
-  @Test
-  void testByTristate() {
-    assertEquals(TextDecoration.State.NOT_SET, TextDecoration.State.byTriState(TriState.NOT_SET));
-    assertEquals(TextDecoration.State.FALSE, TextDecoration.State.byTriState(TriState.FALSE));
-    assertEquals(TextDecoration.State.TRUE, TextDecoration.State.byTriState(TriState.TRUE));
-
-    assertThrows(NullPointerException.class, () -> TextDecoration.State.byTriState(null));
-    assertDoesNotThrow(() -> Arrays.stream(TriState.values()).forEach(TextDecoration.State::byTriState));
-  }
-}
+/**
+ * The [HSVLike.v] component.
+ *
+ * Allows for destructuring into `(h, s, v)`.
+ *
+ * @return the [HSVLike.v] component
+ * @since 4.10.0
+ */
+public operator fun HSVLike.component3(): Float = v()

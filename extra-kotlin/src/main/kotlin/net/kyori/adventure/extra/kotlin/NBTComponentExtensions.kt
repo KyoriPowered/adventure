@@ -21,31 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.format;
+package net.kyori.adventure.extra.kotlin
 
-import java.util.Arrays;
-import net.kyori.adventure.util.TriState;
-import org.junit.jupiter.api.Test;
+import net.kyori.adventure.text.BlockNBTComponent
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+/**
+ * The X component of this world position.
+ *
+ * Allows for destructuring into `(x, y, z)`.
+ *
+ * @return the X component
+ * @since 4.10.0
+ */
+public operator fun BlockNBTComponent.WorldPos.component1(): BlockNBTComponent.WorldPos.Coordinate = x()
 
-class TextDecorationTest {
-  @Test
-  void testByBoolean() {
-    assertEquals(TextDecoration.State.NOT_SET, TextDecoration.State.byBoolean(null));
-    assertEquals(TextDecoration.State.FALSE, TextDecoration.State.byBoolean(false));
-    assertEquals(TextDecoration.State.TRUE, TextDecoration.State.byBoolean(true));
-  }
+/**
+ * The Y component of this world position.
+ *
+ * Allows for destructuring into `(x, y, z)`.
+ *
+ * @return the Y component
+ * @since 4.10.0
+ */
+public operator fun BlockNBTComponent.WorldPos.component2(): BlockNBTComponent.WorldPos.Coordinate = y()
 
-  @Test
-  void testByTristate() {
-    assertEquals(TextDecoration.State.NOT_SET, TextDecoration.State.byTriState(TriState.NOT_SET));
-    assertEquals(TextDecoration.State.FALSE, TextDecoration.State.byTriState(TriState.FALSE));
-    assertEquals(TextDecoration.State.TRUE, TextDecoration.State.byTriState(TriState.TRUE));
-
-    assertThrows(NullPointerException.class, () -> TextDecoration.State.byTriState(null));
-    assertDoesNotThrow(() -> Arrays.stream(TriState.values()).forEach(TextDecoration.State::byTriState));
-  }
-}
+/**
+ * The Z component of this world position.
+ *
+ * Allows for destructuring into `(x, y, z)`.
+ *
+ * @return the Z component
+ * @since 4.10.0
+ */
+public operator fun BlockNBTComponent.WorldPos.component3(): BlockNBTComponent.WorldPos.Coordinate = z()

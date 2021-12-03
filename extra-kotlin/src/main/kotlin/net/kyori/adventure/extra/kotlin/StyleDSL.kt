@@ -25,4 +25,11 @@ package net.kyori.adventure.extra.kotlin
 
 import net.kyori.adventure.text.format.Style
 
-fun style(builder: Style.Builder.() -> Unit): Style = Style.style(builder)
+/**
+ * Builds a new [Style] from the specified [builder].
+ *
+ * @param builder the builder to apply values from
+ * @return a new [Style]
+ * @since 4.6.0
+ */
+public fun style(builder: Style.Builder.() -> Unit): Style = Style.style(builder)

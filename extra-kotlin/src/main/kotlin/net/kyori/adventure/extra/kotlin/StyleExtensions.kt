@@ -21,31 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.format;
+package net.kyori.adventure.extra.kotlin
 
-import java.util.Arrays;
-import net.kyori.adventure.util.TriState;
-import org.junit.jupiter.api.Test;
+import net.kyori.adventure.text.format.Style
+import org.jetbrains.annotations.Contract
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-class TextDecorationTest {
-  @Test
-  void testByBoolean() {
-    assertEquals(TextDecoration.State.NOT_SET, TextDecoration.State.byBoolean(null));
-    assertEquals(TextDecoration.State.FALSE, TextDecoration.State.byBoolean(false));
-    assertEquals(TextDecoration.State.TRUE, TextDecoration.State.byBoolean(true));
-  }
-
-  @Test
-  void testByTristate() {
-    assertEquals(TextDecoration.State.NOT_SET, TextDecoration.State.byTriState(TriState.NOT_SET));
-    assertEquals(TextDecoration.State.FALSE, TextDecoration.State.byTriState(TriState.FALSE));
-    assertEquals(TextDecoration.State.TRUE, TextDecoration.State.byTriState(TriState.TRUE));
-
-    assertThrows(NullPointerException.class, () -> TextDecoration.State.byTriState(null));
-    assertDoesNotThrow(() -> Arrays.stream(TriState.values()).forEach(TextDecoration.State::byTriState));
-  }
-}
+/**
+ * Allows editing using [Style.Builder] as the receiver parameter.
+ *
+ * @param consumer the consumer to edit this style with
+ * @return a new style, with the changes applied from this builder
+ * @since 4.10.0
+ */
+@Contract("_ -> new")
+public fun Style.edit(consumer: Style.Builder.() -> Unit): Style = edit(consumer)

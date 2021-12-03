@@ -695,6 +695,23 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
     }
 
     /**
+     * Sets decorations for this style using the specified {@code decorations} map.
+     *
+     * <p>If a given decoration does not have a value explicitly set, the value of that particular decoration is not changed.</p>
+     *
+     * @param decorations a map containing text decorations and their respective state.
+     * @return this builder.
+     * @since 4.10.0
+     */
+    @Contract("_ -> this")
+    default @NotNull Builder decorations(final @NotNull Map<TextDecoration, TextDecoration.State> decorations) {
+      for (final Map.Entry<TextDecoration, TextDecoration.State> entry : decorations.entrySet()) {
+        this.decoration(entry.getKey(), entry.getValue());
+      }
+      return this;
+    }
+
+    /**
      * Sets the value of a decoration.
      *
      * @param decoration the decoration

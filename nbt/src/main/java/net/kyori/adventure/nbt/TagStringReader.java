@@ -238,61 +238,62 @@ final class TagStringReader {
    */
   private BinaryTag scalar() {
     final StringBuilder builder = new StringBuilder();
-    boolean possiblyNumeric = true;
+    int noLongerNumericAt = -1;
     while (this.buffer.hasMore()) {
-      final char current = this.buffer.peek();
-      if (possiblyNumeric && !Tokens.numeric(current)) {
-        if (builder.length() != 0) {
-          BinaryTag result = null;
-          try {
-            switch (Character.toLowerCase(current)) { // try to read and return as a number
-              case Tokens.TYPE_BYTE:
-                result = ByteBinaryTag.of(Byte.parseByte(builder.toString()));
-                break;
-              case Tokens.TYPE_SHORT:
-                result = ShortBinaryTag.of(Short.parseShort(builder.toString()));
-                break;
-              case Tokens.TYPE_INT:
-                result = IntBinaryTag.of(Integer.parseInt(builder.toString()));
-                break;
-              case Tokens.TYPE_LONG:
-                result = LongBinaryTag.of(Long.parseLong(builder.toString()));
-                break;
-              case Tokens.TYPE_FLOAT:
-                result = FloatBinaryTag.of(Float.parseFloat(builder.toString()));
-                break;
-              case Tokens.TYPE_DOUBLE:
-                result = DoubleBinaryTag.of(Double.parseDouble(builder.toString()));
-                break;
-            }
-          } catch (final NumberFormatException ex) {
-            possiblyNumeric = false; // fallback to treating as a String
-          }
-          if (result != null) {
-            this.buffer.take();
-            return result;
-          }
-        }
-      }
+      char current = this.buffer.peek();
       if (current == '\\') { // escape -- we are significantly more lenient than original format at the moment
         this.buffer.advance();
-        builder.append(this.buffer.take());
+        current = this.buffer.take();
       } else if (Tokens.id(current)) {
-        builder.append(this.buffer.take());
+        this.buffer.advance();
       } else { // end of value
         break;
       }
+      builder.append(current);
+      if (noLongerNumericAt == -1 && !Tokens.numeric(current)) {
+        noLongerNumericAt = builder.length();
+      }
     }
-    // if we run out of content without an explicit value separator, then we're either an integer or string tag -- all others have a character at the end
+
+    final int length = builder.length();
     final String built = builder.toString();
-    if (possiblyNumeric) {
+    if (noLongerNumericAt == length && length > 1) {
+      final char last = built.charAt(length - 1);
+      try {
+        switch (Character.toLowerCase(last)) { // try to read and return as a number
+          case Tokens.TYPE_BYTE:
+            return ByteBinaryTag.of(Byte.parseByte(built.substring(0, length - 1)));
+          case Tokens.TYPE_SHORT:
+            return ShortBinaryTag.of(Short.parseShort(built.substring(0, length - 1)));
+          case Tokens.TYPE_INT:
+            return IntBinaryTag.of(Integer.parseInt(built.substring(0, length - 1)));
+          case Tokens.TYPE_LONG:
+            return LongBinaryTag.of(Long.parseLong(built.substring(0, length - 1)));
+          case Tokens.TYPE_FLOAT:
+            final float floatValue = Float.parseFloat(built.substring(0, length - 1));
+            if (Float.isFinite(floatValue)) { // don't accept NaN and Infinity
+              return FloatBinaryTag.of(floatValue);
+            }
+            break;
+          case Tokens.TYPE_DOUBLE:
+            final double doubleValue = Double.parseDouble(built.substring(0, length - 1));
+            if (Double.isFinite(doubleValue)) { // don't accept NaN and Infinity
+              return DoubleBinaryTag.of(doubleValue);
+            }
+            break;
+        }
+      } catch (final NumberFormatException ignored) {
+      }
+    } else if (noLongerNumericAt == -1) { // if we run out of content without an explicit value separator, then we're either an integer or string tag -- all others have a character at the end
       try {
         return IntBinaryTag.of(Integer.parseInt(built));
       } catch (final NumberFormatException ex) {
-        try {
-          return DoubleBinaryTag.of(Double.parseDouble(built));
-        } catch (final NumberFormatException ex2) {
-          // ignore
+        if (built.indexOf('.') != -1) { // see if we have an unsuffixed double; always needs a dot
+          try {
+            return DoubleBinaryTag.of(Double.parseDouble(built));
+          } catch (final NumberFormatException ex2) {
+            // ignore
+          }
         }
       }
     }

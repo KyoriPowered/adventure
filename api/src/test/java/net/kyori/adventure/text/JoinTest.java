@@ -257,6 +257,68 @@ class JoinTest {
     );
   }
 
+  @Test
+  final void testStandardJoinConfigurationsNewLines() {
+    final Component result = Component.join(JoinConfiguration.newlines(), Component.text("line 1"), Component.text("line 2"), Component.text("line 3"));
+    assertEquals(
+      Component.text()
+        .append(Component.text("line 1"))
+        .append(Component.newline())
+        .append(Component.text("line 2"))
+        .append(Component.newline())
+        .append(Component.text("line 3"))
+        .build(),
+      result
+    );
+  }
+
+  @Test
+  final void testStandardJoinConfigurationsCommas() {
+    final Component result = Component.join(JoinConfiguration.commas(false), Component.text("line 1"), Component.text("line 2"), Component.text("line 3"));
+    assertEquals(
+      Component.text()
+        .append(Component.text("line 1"))
+        .append(Component.text(","))
+        .append(Component.text("line 2"))
+        .append(Component.text(","))
+        .append(Component.text("line 3"))
+        .build(),
+      result
+    );
+  }
+
+  @Test
+  final void testStandardJoinConfigurationsCommasSpaced() {
+    final Component result = Component.join(JoinConfiguration.commas(true), Component.text("line 1"), Component.text("line 2"), Component.text("line 3"));
+    assertEquals(
+      Component.text()
+        .append(Component.text("line 1"))
+        .append(Component.text(", "))
+        .append(Component.text("line 2"))
+        .append(Component.text(", "))
+        .append(Component.text("line 3"))
+        .build(),
+      result
+    );
+  }
+
+  @Test
+  final void testStandardJoinConfigurationsArrayLike() {
+    final Component result = Component.join(JoinConfiguration.arrayLike(), Component.text("line 1"), Component.text("line 2"), Component.text("line 3"));
+    assertEquals(
+      Component.text()
+        .append(Component.text("["))
+        .append(Component.text("line 1"))
+        .append(Component.text(", "))
+        .append(Component.text("line 2"))
+        .append(Component.text(", "))
+        .append(Component.text("line 3"))
+        .append(Component.text("]"))
+        .build(),
+      result
+    );
+  }
+
   private static final class TestComponentLike implements ComponentLike {
 
     @Override
