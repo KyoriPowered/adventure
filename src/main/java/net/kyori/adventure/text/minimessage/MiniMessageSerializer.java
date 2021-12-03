@@ -126,6 +126,24 @@ final class MiniMessageSerializer {
       sb.append(startTag(UNDERLINED));
     }
 
+    // ## disabled decorations
+    // ### only start if previous didn't start
+    if (style.decoration(TextDecoration.BOLD) == TextDecoration.State.FALSE && (previous == null || previous.decoration(TextDecoration.BOLD) == TextDecoration.State.NOT_SET)) {
+      sb.append(startTag("!" + BOLD));
+    }
+    if (style.decoration(TextDecoration.ITALIC) == TextDecoration.State.FALSE && (previous == null || previous.decoration(TextDecoration.ITALIC) == TextDecoration.State.NOT_SET)) {
+      sb.append(startTag("!" + ITALIC));
+    }
+    if (style.decoration(TextDecoration.OBFUSCATED) == TextDecoration.State.FALSE && (previous == null || previous.decoration(TextDecoration.OBFUSCATED) == TextDecoration.State.NOT_SET)) {
+      sb.append(startTag("!" + OBFUSCATED));
+    }
+    if (style.decoration(TextDecoration.STRIKETHROUGH) == TextDecoration.State.FALSE && (previous == null || previous.decoration(TextDecoration.STRIKETHROUGH) == TextDecoration.State.NOT_SET)) {
+      sb.append(startTag("!" + STRIKETHROUGH));
+    }
+    if (style.decoration(TextDecoration.UNDERLINED) == TextDecoration.State.FALSE && (previous == null || previous.decoration(TextDecoration.UNDERLINED) == TextDecoration.State.NOT_SET)) {
+      sb.append(startTag("!" + UNDERLINED));
+    }
+
     // ## hover
     // ### only start if prevComp didn't start the same one
     final HoverEvent<?> hov = style.hoverEvent();
@@ -212,6 +230,26 @@ final class MiniMessageSerializer {
       }
       if (style.hasDecoration(TextDecoration.BOLD) && !next.hasDecoration(TextDecoration.BOLD)) {
         sb.append(endTag(BOLD));
+      }
+    }
+
+    // ## disabled decorations
+    // ### only end decoration if next tag is different
+    if (next != null) {
+      if (style.decoration(TextDecoration.UNDERLINED) == TextDecoration.State.FALSE && next.decoration(TextDecoration.UNDERLINED) == TextDecoration.State.NOT_SET) {
+        sb.append(endTag("!" + UNDERLINED));
+      }
+      if (style.decoration(TextDecoration.STRIKETHROUGH) == TextDecoration.State.FALSE && next.decoration(TextDecoration.STRIKETHROUGH) == TextDecoration.State.NOT_SET) {
+        sb.append(endTag("!" + STRIKETHROUGH));
+      }
+      if (style.decoration(TextDecoration.OBFUSCATED) == TextDecoration.State.FALSE && next.decoration(TextDecoration.OBFUSCATED) == TextDecoration.State.NOT_SET) {
+        sb.append(endTag("!" + OBFUSCATED));
+      }
+      if (style.decoration(TextDecoration.ITALIC) == TextDecoration.State.FALSE && next.decoration(TextDecoration.ITALIC) == TextDecoration.State.NOT_SET) {
+        sb.append(endTag("!" + ITALIC));
+      }
+      if (style.decoration(TextDecoration.BOLD) == TextDecoration.State.FALSE && next.decoration(TextDecoration.BOLD) == TextDecoration.State.NOT_SET) {
+        sb.append(endTag("!" + BOLD));
       }
     }
 

@@ -32,7 +32,6 @@ import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
@@ -46,7 +45,6 @@ import net.kyori.adventure.text.minimessage.transformation.Modifying;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
 import net.kyori.examination.string.MultiLineStringExaminer;
-
 import org.jetbrains.annotations.NotNull;
 
 final class MiniMessageParser {
@@ -232,7 +230,7 @@ final class MiniMessageParser {
     if (debug != null) {
       try {
         debug.append("==========\ntreeToComponent \n").append(node.toString()).append("\n").append(comp.examine(MultiLineStringExaminer.simpleEscaping()).collect(Collectors.joining("\n"))).append("\n==========\n");
-      } catch (IOException ignored) {
+      } catch (final IOException ignored) {
       }
     }
 

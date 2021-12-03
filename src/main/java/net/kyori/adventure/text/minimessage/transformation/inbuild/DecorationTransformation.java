@@ -78,13 +78,7 @@ public final class DecorationTransformation extends Transformation {
    * @since 4.2.0
    */
   public static DecorationTransformation create(String name, final List<TagPart> args) {
-    boolean flag = true;
-    if (args.size() == 1) {
-      String val = args.get(0).value();
-      if ("f".equals(val) || "false".equals(val)) {
-        flag = false;
-      }
-    }
+    boolean flag = args.size() != 1 || !args.get(0).isFalse();
 
     if (name.startsWith(REVERT)) {
       if (args.size() == 1) {
@@ -108,7 +102,7 @@ public final class DecorationTransformation extends Transformation {
     return alias != null ? alias : TextDecoration.NAMES.value(name);
   }
 
-  private DecorationTransformation(final TextDecoration decoration, boolean flag) {
+  private DecorationTransformation(final TextDecoration decoration, final boolean flag) {
     this.decoration = decoration;
     this.flag = flag;
   }

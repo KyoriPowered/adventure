@@ -23,8 +23,6 @@
  */
 package net.kyori.adventure.text.minimessage;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
