@@ -84,6 +84,9 @@ public final class DecorationTransformation extends Transformation {
     }
 
     if (name.startsWith(REVERT)) {
+      if (args.size() == 1) {
+        throw new ParsingException("Can't use both ! short hand and a argument for decoration transformations!", args);
+      }
       flag = false;
       name = name.substring(1);
     }

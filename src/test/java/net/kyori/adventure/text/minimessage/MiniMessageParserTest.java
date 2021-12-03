@@ -23,6 +23,8 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -1655,6 +1657,13 @@ public class MiniMessageParserTest extends TestBase {
                     .append(text("Test3").decorate(BOLD))
             ).build();
 
+    this.assertParsedEquals(expected, input);
+  }
+
+  @Test
+  void testErrorOnShorthandAndLongHand() {
+    final String input = "<!italic:true>Go decide on something, god dammit!";
+    final Component expected = text("<!italic:true>Go decide on something, god dammit!");
     this.assertParsedEquals(expected, input);
   }
 }
