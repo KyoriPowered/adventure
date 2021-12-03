@@ -50,10 +50,17 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   }
 
   static @NotNull TextComponent create(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String content) {
-    if (children.isEmpty() && style.isEmpty() && content.isEmpty()) {
+    requireNonNull(content, "content");
+    final boolean emptyStyleAndContent = style.isEmpty() && content.isEmpty();
+    if (emptyStyleAndContent && children.isEmpty()) {
       return Component.empty();
     }
-    return new TextComponentImpl(children, style, content);
+    final TextComponentImpl component = new TextComponentImpl(children, style, content);
+    //Checks if the children are empty after creation, through the filter in the constructor of AbstractComponent.
+    if (emptyStyleAndContent & component.children().isEmpty()) {
+      return Component.empty();
+    }
+    return component;
   }
 
   private final String content;
@@ -91,7 +98,7 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
 
   @Override
   public @NotNull TextComponent children(final @NotNull List<? extends ComponentLike> children) {
-    return create(ComponentLike.asComponents(children, NOT_EMPTY), this.style, this.content);
+    return create(children, this.style, this.content);
   }
 
   @Override
