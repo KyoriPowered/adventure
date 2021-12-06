@@ -21,7 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-/**
- * Templates.
- */
-package net.kyori.adventure.text.minimessage.template;
+package net.kyori.adventure.text.minimessage;
+
+import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
+import org.junit.jupiter.api.Test;
+
+import static net.kyori.adventure.text.Component.text;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+public class PlaceholderTest {
+
+  // https://github.com/KyoriPowered/adventure-text-minimessage/issues/190
+  @Test
+  void testCaseOfPlaceholders() {
+    assertThrows(IllegalArgumentException.class, () -> Placeholder.placeholder("HI", "hi"));
+    assertThrows(IllegalArgumentException.class, () -> Placeholder.placeholder("HI", text("hi")));
+    assertThrows(IllegalArgumentException.class, () -> Placeholder.placeholder("HI", () -> text("hi")));
+  }
+}

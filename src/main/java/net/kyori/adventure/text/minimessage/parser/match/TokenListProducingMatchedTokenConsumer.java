@@ -21,20 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage;
+package net.kyori.adventure.text.minimessage.parser.match;
 
-import org.junit.jupiter.api.Test;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import net.kyori.adventure.text.minimessage.parser.Token;
+import net.kyori.adventure.text.minimessage.parser.TokenType;
+import org.jetbrains.annotations.NotNull;
 
-import static net.kyori.adventure.text.Component.text;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+/**
+ * A matched token consumer that produces a list of matched tokens.
+ *
+ * @since 4.2.0
+ */
+public final class TokenListProducingMatchedTokenConsumer extends MatchedTokenConsumer<List<Token>> {
+  private List<Token> result = null;
 
-public class TemplateTest {
+  /**
+   * Creates a new token list producing matched token consumer.
+   *
+   * @param input the input
+   * @since 4.2.0
+   */
+  public TokenListProducingMatchedTokenConsumer(final @NotNull String input) {
+    super(input);
+  }
 
-  // https://github.com/KyoriPowered/adventure-text-minimessage/issues/190
-  @Test
-  void testCaseOfTemplates() {
-    assertThrows(IllegalArgumentException.class, () -> Template.template("HI", "hi"));
-    assertThrows(IllegalArgumentException.class, () -> Template.template("HI", text("hi")));
-    assertThrows(IllegalArgumentException.class, () -> Template.template("HI", () -> text("hi")));
+  @Override
+  public void accept(final int start, final int end, final @NotNull TokenType tokenType) {
+    super.accept(start, end, tokenType);
+
+    if (this.result == null) {
+      this.result = new ArrayList<>();
+    }
+
+    this.result.add(new Token(start, end, tokenType));
+  }
+
+  @Override
+  public @NotNull List<Token> result() {
+    return this.result == null ? Collections.emptyList() : this.result;
   }
 }

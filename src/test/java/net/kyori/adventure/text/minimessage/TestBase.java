@@ -25,7 +25,7 @@ package net.kyori.adventure.text.minimessage;
 
 import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.template.TemplateResolver;
+import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 import net.kyori.examination.string.MultiLineStringExaminer;
 import org.jetbrains.annotations.NotNull;
 
@@ -51,7 +51,7 @@ public class TestBase {
 
   void assertParsedEquals(final MiniMessage miniMessage, final Component expected, final String input, final @NotNull Object... args) {
     final String expectedSerialized = this.prettyPrint(expected.compact());
-    final String actual = this.prettyPrint(miniMessage.deserialize(input, TemplateResolver.resolving(args)).compact());
+    final String actual = this.prettyPrint(miniMessage.deserialize(input, PlaceholderResolver.resolving(args)).compact());
     assertEquals(expectedSerialized, actual);
   }
 

@@ -21,58 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.transformation.inbuild;
+package net.kyori.adventure.text.minimessage.parser.node;
 
-import java.util.List;
-import java.util.stream.Stream;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.parser.node.TagPart;
-import net.kyori.adventure.text.minimessage.transformation.Transformation;
-import net.kyori.examination.ExaminableProperty;
+import net.kyori.adventure.text.minimessage.parser.Token;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
- * Ends any ongoing formatting.
+ * Represents a placeholder replacement in a string.
  *
- * @deprecated no longer in use as of 4.2.0, does nothing, handled by parser now
- * @since 4.1.0
+ * @since 4.2.0
  */
-@Deprecated
-public final class ResetTransformation extends Transformation {
-  private static final ResetTransformation INSTANCE = new ResetTransformation();
-
+public class PlaceholderNode extends ValueNode {
   /**
-   * Create a new reset transformation from a tag.
+   * Creates a new element node.
    *
-   * @param name the tag name
-   * @param args the tag arguments
-   * @return a new transformation
+   * @param parent        the parent of this node
+   * @param token         the token that created this node
+   * @param sourceMessage the source message
    * @since 4.2.0
    */
-  public static ResetTransformation create(final String name, final List<TagPart> args) {
-    return INSTANCE;
-  }
-
-  private ResetTransformation() {
-  }
-
-  @Override
-  public Component apply() {
-    return Component.empty();
+  public PlaceholderNode(
+    final @Nullable ElementNode parent,
+    final @NotNull Token token,
+    final @NotNull String sourceMessage,
+    final @NotNull String actualValue
+  ) {
+    super(parent, token, sourceMessage, actualValue);
   }
 
   @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.empty();
-  }
-
-  @Override
-  public boolean equals(final Object other) {
-    return other instanceof ResetTransformation;
-  }
-
-  @Override
-  public int hashCode() {
-    return 0;
+  String valueName() {
+    return "PlaceholderNode";
   }
 }

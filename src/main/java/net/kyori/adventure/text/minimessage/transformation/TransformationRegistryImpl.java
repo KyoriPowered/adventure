@@ -27,11 +27,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import net.kyori.adventure.text.minimessage.Context;
-import net.kyori.adventure.text.minimessage.Template;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
-import net.kyori.adventure.text.minimessage.template.TemplateResolver;
-import net.kyori.adventure.text.minimessage.transformation.inbuild.TemplateTransformation;
+import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
+import net.kyori.adventure.text.minimessage.placeholder.Placeholder.ComponentPlaceholder;
+import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
+import net.kyori.adventure.text.minimessage.transformation.inbuild.PlaceholderTransformation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,14 +71,9 @@ final class TransformationRegistryImpl implements TransformationRegistry {
     this.types = Collections.unmodifiableList(types);
   }
 
-  @SuppressWarnings("deprecation")
   private Transformation tryLoad(final TransformationFactory<?> factory, final String name, final List<TagPart> inners, final Context context) {
     try {
-      final Transformation xform = factory.parse(context, name, inners.subList(1, inners.size()));
-      // initialize fields for accessing deprecated content
-      xform.context(context);
-      xform.load(name, inners.subList(1, inners.size()));
-      return xform;
+      return factory.parse(context, name, inners.subList(1, inners.size()));
     } catch (final ParsingException exception) {
       exception.originalText(context.originalMessage());
       throw exception;
@@ -85,13 +81,13 @@ final class TransformationRegistryImpl implements TransformationRegistry {
   }
 
   @Override
-  public @Nullable Transformation get(final String name, final List<TagPart> inners, final TemplateResolver templateResolver, final Context context) {
+  public @Nullable Transformation get(final String name, final List<TagPart> inners, final PlaceholderResolver placeholderResolver, final Context context) {
     // first try if we have a custom placeholder resolver
-    final Template template = templateResolver.resolve(name);
-    if (template != null) {
-      // The parser handles StringTemplates
-      if (template instanceof Template.ComponentTemplate) {
-        return this.tryLoad(TemplateTransformation.factory(new Template.ComponentTemplate(name, ((Template.ComponentTemplate) template).value())), name, inners, context);
+    final Placeholder placeholder = placeholderResolver.resolve(name);
+    if (placeholder != null) {
+      // The parser handles StringPlaceholders
+      if (placeholder instanceof ComponentPlaceholder) {
+        return this.tryLoad(PlaceholderTransformation.factory(new ComponentPlaceholder(name, ((ComponentPlaceholder) placeholder).value())), name, inners, context);
       }
     }
     // then check our registry
@@ -105,18 +101,23 @@ final class TransformationRegistryImpl implements TransformationRegistry {
   }
 
   @Override
-  public boolean exists(final String name, final TemplateResolver templateResolver) {
-    // first check the placeholder resolver
-    if (templateResolver.canResolve(name)) {
-      return true;
-    }
-    // then check registry
+  public boolean exists(final String name) {
     for (final TransformationType<? extends Transformation> type : this.types) {
       if (type.canParse.test(name)) {
         return true;
       }
     }
     return false;
+  }
+
+  @Override
+  public boolean exists(final String name, final PlaceholderResolver placeholderResolver) {
+    // first check the placeholder resolver
+    if (placeholderResolver.canResolve(name)) {
+      return true;
+    }
+    // then check registry
+    return this.exists(name);
   }
 
   @Override

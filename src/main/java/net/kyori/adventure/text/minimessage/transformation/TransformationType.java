@@ -41,9 +41,7 @@ import net.kyori.adventure.text.minimessage.transformation.inbuild.GradientTrans
 import net.kyori.adventure.text.minimessage.transformation.inbuild.HoverTransformation;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.InsertionTransformation;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.KeybindTransformation;
-import net.kyori.adventure.text.minimessage.transformation.inbuild.PreTransformation;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.RainbowTransformation;
-import net.kyori.adventure.text.minimessage.transformation.inbuild.ResetTransformation;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.TranslatableTransformation;
 
 import static java.util.Objects.requireNonNull;
@@ -100,48 +98,9 @@ public final class TransformationType<T extends Transformation> {
     acceptingNames(Tokens.RAINBOW),
     RainbowTransformation::create
   );
-  /**
-   * Don't use.
-   *
-   * @deprecated since 4.2.0 this is handled at parser level
-   */
-  @Deprecated
-  public static final TransformationType<?> RESET = transformationType(
-    acceptingNames(Tokens.RESET, Tokens.RESET_2),
-    ResetTransformation::create
-  );
-  /**
-   * Don't use.
-   *
-   * @deprecated since 4.2.0 this is handled at parser level
-   */
-  @Deprecated
-  public static final TransformationType<?> PRE = transformationType(
-    acceptingNames(Tokens.PRE),
-    PreTransformation::create
-  );
 
   final Predicate<String> canParse;
   final TransformationFactory<T> factory;
-
-  /**
-   * Constructs a new transformation type.
-   *
-   * @param canParse the predicate used to check if a tag can be parsed by this type
-   * @param parser the parser that should be used to parse this type
-   * @since 4.1.0
-   * @deprecated for removal since 4.2.0, use {@link #transformationType(Predicate, TransformationFactory)} instead
-   */
-  @Deprecated
-  public TransformationType(final Predicate<String> canParse, final TransformationParser<T> parser) {
-    this.canParse = canParse;
-    this.factory = (ctx, name, args) -> {
-      final T ret = parser.parse();
-      ret.context(ctx);
-      ret.load(name, args);
-      return ret;
-    };
-  }
 
   /**
    * Constructs a new transformation type.

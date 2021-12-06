@@ -21,38 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.template;
-
-import net.kyori.adventure.text.minimessage.Template;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 /**
- * A template resolver that resolves from multiple sources.
+ * Token consumers.
  */
-final class GroupedTemplateResolver implements TemplateResolver {
-  private final Iterable<? extends TemplateResolver> templateResolvers;
-
-  GroupedTemplateResolver(final @NotNull Iterable<? extends TemplateResolver> templateResolvers) {
-    this.templateResolvers = templateResolvers;
-  }
-
-  @Override
-  public boolean canResolve(final @NotNull String key) {
-    for (final TemplateResolver templateResolver : this.templateResolvers) {
-      if (templateResolver.canResolve(key)) return true;
-    }
-
-    return false;
-  }
-
-  @Override
-  public @Nullable Template resolve(final @NotNull String key) {
-    for (final TemplateResolver templateResolver : this.templateResolvers) {
-      final Template template = templateResolver.resolve(key);
-      if (template != null) return template;
-    }
-
-    return null;
-  }
-}
+package net.kyori.adventure.text.minimessage.parser.match;

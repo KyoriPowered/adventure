@@ -28,7 +28,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.template.TemplateResolver;
+import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,7 +44,7 @@ final class MiniMessageImpl implements MiniMessage {
   static final Consumer<List<String>> DEFAULT_ERROR_CONSUMER = message -> message.forEach(System.out::println);
   static final UnaryOperator<Component> DEFAULT_COMPACTING_METHOD = Component::compact;
 
-  static final MiniMessage INSTANCE = new MiniMessageImpl(TransformationRegistry.standard(), TemplateResolver.empty(), false, null, DEFAULT_ERROR_CONSUMER, DEFAULT_COMPACTING_METHOD);
+  static final MiniMessage INSTANCE = new MiniMessageImpl(TransformationRegistry.standard(), PlaceholderResolver.empty(), false, null, DEFAULT_ERROR_CONSUMER, DEFAULT_COMPACTING_METHOD);
 
   private final boolean strict;
   private final Appendable debugOutput;
@@ -52,8 +52,8 @@ final class MiniMessageImpl implements MiniMessage {
   private final UnaryOperator<Component> postProcessor;
   final MiniMessageParser parser;
 
-  MiniMessageImpl(final @NotNull TransformationRegistry registry, final @NotNull TemplateResolver templateResolver, final boolean strict, final Appendable debugOutput, final @NotNull Consumer<List<String>> parsingErrorMessageConsumer, final @NotNull UnaryOperator<Component> postProcessor) {
-    this.parser = new MiniMessageParser(registry, templateResolver);
+  MiniMessageImpl(final @NotNull TransformationRegistry registry, final @NotNull PlaceholderResolver placeholderResolver, final boolean strict, final Appendable debugOutput, final @NotNull Consumer<List<String>> parsingErrorMessageConsumer, final @NotNull UnaryOperator<Component> postProcessor) {
+    this.parser = new MiniMessageParser(registry, placeholderResolver);
     this.strict = strict;
     this.debugOutput = debugOutput;
     this.parsingErrorMessageConsumer = parsingErrorMessageConsumer;
@@ -66,8 +66,8 @@ final class MiniMessageImpl implements MiniMessage {
   }
 
   @Override
-  public @NotNull Component deserialize(final @NotNull String input, final @NotNull TemplateResolver templateResolver) {
-    return this.parser.parseFormat(input, this.newContext(input, requireNonNull(templateResolver, "templateResolver")));
+  public @NotNull Component deserialize(final @NotNull String input, final @NotNull PlaceholderResolver placeholderResolver) {
+    return this.parser.parseFormat(input, this.newContext(input, requireNonNull(placeholderResolver, "placeholderResolver")));
   }
 
   @Override
@@ -81,8 +81,8 @@ final class MiniMessageImpl implements MiniMessage {
   }
 
   @Override
-  public @NotNull String escapeTokens(@NotNull final String input, @NotNull final TemplateResolver templates) {
-    return this.parser.escapeTokens(input, this.newContext(input, templates));
+  public @NotNull String escapeTokens(@NotNull final String input, @NotNull final PlaceholderResolver placeholders) {
+    return this.parser.escapeTokens(input, this.newContext(input, placeholders));
   }
 
   @Override
@@ -91,13 +91,13 @@ final class MiniMessageImpl implements MiniMessage {
   }
 
   @Override
-  public @NotNull String stripTokens(@NotNull final String input, @NotNull final TemplateResolver templates) {
-    return this.parser.stripTokens(input, this.newContext(input, templates));
+  public @NotNull String stripTokens(@NotNull final String input, @NotNull final PlaceholderResolver placeholders) {
+    return this.parser.stripTokens(input, this.newContext(input, placeholders));
   }
 
-  private @NotNull Context newContext(final @NotNull String input, final @Nullable TemplateResolver resolver) {
+  private @NotNull Context newContext(final @NotNull String input, final @Nullable PlaceholderResolver resolver) {
     if (resolver == null) {
-      return Context.of(this.strict, this.debugOutput, input, this, TemplateResolver.empty(), this.postProcessor);
+      return Context.of(this.strict, this.debugOutput, input, this, PlaceholderResolver.empty(), this.postProcessor);
     } else {
       return Context.of(this.strict, this.debugOutput, input, this, resolver, this.postProcessor);
     }
@@ -120,7 +120,7 @@ final class MiniMessageImpl implements MiniMessage {
 
   static final class BuilderImpl implements Builder {
     private TransformationRegistry registry = TransformationRegistry.standard();
-    private TemplateResolver templateResolver = null;
+    private PlaceholderResolver placeholderResolver = null;
     private boolean strict = false;
     private Appendable debug = null;
     private Consumer<List<String>> parsingErrorMessageConsumer = DEFAULT_ERROR_CONSUMER;
@@ -131,7 +131,7 @@ final class MiniMessageImpl implements MiniMessage {
 
     BuilderImpl(final MiniMessageImpl serializer) {
       this.registry = serializer.parser.registry;
-      this.templateResolver = serializer.parser.templateResolver;
+      this.placeholderResolver = serializer.parser.placeholderResolver;
       this.strict = serializer.strict;
       this.debug = serializer.debugOutput;
       this.parsingErrorMessageConsumer = serializer.parsingErrorMessageConsumer;
@@ -152,8 +152,8 @@ final class MiniMessageImpl implements MiniMessage {
     }
 
     @Override
-    public @NotNull Builder templateResolver(final @Nullable TemplateResolver templateResolver) {
-      this.templateResolver = templateResolver;
+    public @NotNull Builder placeholderResolver(final @Nullable PlaceholderResolver placeholderResolver) {
+      this.placeholderResolver = placeholderResolver;
       return this;
     }
 
@@ -183,7 +183,7 @@ final class MiniMessageImpl implements MiniMessage {
 
     @Override
     public @NotNull MiniMessage build() {
-      return new MiniMessageImpl(this.registry, this.templateResolver == null ? TemplateResolver.empty() : this.templateResolver, this.strict, this.debug, this.parsingErrorMessageConsumer, this.postProcessor);
+      return new MiniMessageImpl(this.registry, this.placeholderResolver == null ? PlaceholderResolver.empty() : this.placeholderResolver, this.strict, this.debug, this.parsingErrorMessageConsumer, this.postProcessor);
     }
   }
 }

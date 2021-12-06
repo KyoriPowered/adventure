@@ -23,14 +23,9 @@
  */
 package net.kyori.adventure.text.minimessage.transformation;
 
-import java.util.List;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.Context;
-import net.kyori.adventure.text.minimessage.parser.Token;
-import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.string.StringExaminer;
-import org.jetbrains.annotations.ApiStatus;
 
 /**
  * A transformation that can be applied while parsing a message.
@@ -41,68 +36,8 @@ import org.jetbrains.annotations.ApiStatus;
  * @since 4.1.0
  */
 public abstract class Transformation implements Examinable {
-  private String name;
-  private List<TagPart> args;
-  /**
-   * context.
-   *
-   * @deprecated for removal since 4.2.0, access when preparing in a {@link TransformationFactory} instead
-   */
-  @Deprecated
-  protected Context context;
 
   protected Transformation() {
-  }
-
-  /**
-   * Initialize this transformation with a tag name and tokens.
-   *
-   * @param name the alias for this transformation
-   * @param args tokens within the tags, used to define arguments. Each
-   * @since 4.1.0
-   * @deprecated for removal since 4.2.0, create with a {@link TransformationFactory} instead
-   */
-  @Deprecated
-  @ApiStatus.OverrideOnly
-  public void load(final String name, final List<TagPart> args) {
-    this.name = name;
-    this.args = args;
-  }
-
-  /**
-   * The tag alias used to refer to this instance.
-   *
-   * @return the name
-   * @since 4.1.0
-   * @deprecated for removal since 4.2.0, access when preparing in a {@link TransformationFactory} instead
-   */
-  @Deprecated
-  public final String name() {
-    return this.name;
-  }
-
-  /**
-   * The arguments making up this instance.
-   *
-   * @return the args
-   * @since 4.2.0
-   * @deprecated for removal since 4.2.0, access when preparing in a {@link TransformationFactory} instead
-   */
-  @Deprecated
-  public final List<TagPart> args() {
-    return this.args;
-  }
-
-  /**
-   * Returns the tokens which make up the arguments as an array.
-   *
-   * @return the arg tokens
-   * @since 4.2.0
-   * @deprecated for removal since 4.2.0, use the {@link net.kyori.adventure.text.minimessage.parser.ParsingException} methods instead
-   */
-  @Deprecated
-  public final Token[] argTokenArray() {
-    return this.args.stream().map(TagPart::token).toArray(Token[]::new);
   }
 
   /**
@@ -112,10 +47,6 @@ public abstract class Transformation implements Examinable {
    * @since 4.1.0
    */
   public abstract Component apply();
-
-  void context(final Context context) {
-    this.context = context;
-  }
 
   @Override
   public final String toString() {
