@@ -134,7 +134,7 @@ public final class TagPart {
    * @since 4.2.0
    */
   public boolean isTrue() {
-    return "t".equals(this.value) || "true".equals(this.value) || "on".equals(this.value);
+    return "true".equals(this.value) || "on".equals(this.value);
   }
 
   /**
@@ -144,7 +144,7 @@ public final class TagPart {
    * @since 4.2.0
    */
   public boolean isFalse() {
-    return "f".equals(this.value) || "false".equals(this.value) || "off".equals(this.value);
+    return "false".equals(this.value) || "off".equals(this.value);
   }
 
   @Override
