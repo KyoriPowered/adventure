@@ -45,6 +45,9 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.1.0
  */
 public final class DecorationTransformation extends Transformation {
+
+  public static final String REVERT = "!";
+
   /**
    * An unmodifiable map of known decoration aliases.
    *
@@ -64,6 +67,7 @@ public final class DecorationTransformation extends Transformation {
   }
 
   private final TextDecoration decoration;
+  private final boolean flag;
 
   /**
    * Create a new decoration.
@@ -73,14 +77,24 @@ public final class DecorationTransformation extends Transformation {
    * @return a new transformation
    * @since 4.2.0
    */
-  public static DecorationTransformation create(final String name, final List<TagPart> args) {
+  public static DecorationTransformation create(String name, final List<TagPart> args) {
+    boolean flag = args.size() != 1 || !args.get(0).isFalse();
+
+    if (name.startsWith(REVERT)) {
+      if (args.size() == 1) {
+        throw new ParsingException("Can't use both ! short hand and a argument for decoration transformations!", args);
+      }
+      flag = false;
+      name = name.substring(1);
+    }
+
     final @Nullable TextDecoration decoration = parseDecoration(name);
 
     if (decoration == null) {
       throw new ParsingException("Don't know how to turn '" + name + "' into a decoration", args);
     }
 
-    return new DecorationTransformation(decoration);
+    return new DecorationTransformation(decoration, flag);
   }
 
   private static TextDecoration parseDecoration(final String name) {
@@ -88,13 +102,14 @@ public final class DecorationTransformation extends Transformation {
     return alias != null ? alias : TextDecoration.NAMES.value(name);
   }
 
-  private DecorationTransformation(final TextDecoration decoration) {
+  private DecorationTransformation(final TextDecoration decoration, final boolean flag) {
     this.decoration = decoration;
+    this.flag = flag;
   }
 
   @Override
   public Component apply() {
-    return Component.empty().decorate(this.decoration);
+    return Component.empty().decoration(this.decoration, this.flag);
   }
 
   @Override

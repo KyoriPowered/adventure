@@ -77,13 +77,25 @@ public class MiniMessageSerializerTest extends TestBase {
 
   @Test
   void testDecoration() {
-    final String expected = "<underlined>This is <bold>underlined</underlined>, this</bold> isn't";
+    // TODO this minimessage string is invalid, prolly need to rewrite the whole parser for it to be fixed...
+    final String expected = "<underlined>This is <bold>underlined</underlined></bold>, this isn't";
 
     final Builder builder = Component.text()
       .append(Component.text("This is ").decoration(TextDecoration.UNDERLINED, true)
-        .append(Component.text("underlined").decoration(TextDecoration.BOLD, true)
-          .append(Component.text(", this").decoration(TextDecoration.UNDERLINED, false))))
-      .append(Component.text(" isn't"));
+        .append(Component.text("underlined").decoration(TextDecoration.BOLD, true)))
+      .append(Component.text(", this isn't"));
+    this.test(builder, expected);
+  }
+
+  @Test
+  void testDecorationNegated() {
+    final String expected = "<!underlined>Not underlined<!bold>not bold<underlined>underlined</underlined></!bold> not underlined";
+
+    final Builder builder = Component.text()
+            .append(Component.text("Not underlined").decoration(TextDecoration.UNDERLINED, false)
+                    .append(Component.text("not bold").decoration(TextDecoration.BOLD, false)
+                            .append(Component.text("underlined").decoration(TextDecoration.UNDERLINED, true))))
+            .append(Component.text(" not underlined").decoration(TextDecoration.UNDERLINED, false));
 
     this.test(builder, expected);
   }

@@ -23,7 +23,9 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
@@ -50,6 +52,7 @@ import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 import static net.kyori.adventure.text.format.TextDecoration.UNDERLINED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MiniMessageTest extends TestBase {
 
@@ -413,18 +416,17 @@ public class MiniMessageTest extends TestBase {
 
     final StringBuilder sb = new StringBuilder();
     MiniMessage.builder().debug(sb).build().parse(input);
+    final List<String> messages = Arrays.asList(sb.toString().split("\n"));
 
-    final String expected = "Beginning parsing message <red> RED </red>\n" +
-        "Attempting to match node 'red' at column 0\n" +
-        "Successfully matched node 'red' to transformation ColorTransformation\n" +
-        "Text parsed into element tree:\n" +
-        "Node {\n" +
-        "  TagNode('red') {\n" +
-        "    TextNode(' RED ')\n" +
-        "  }\n" +
-        "}\n";
-
-    assertEquals(expected, sb.toString());
+    assertTrue(messages.contains("Beginning parsing message <red> RED </red>"));
+    assertTrue(messages.contains("Attempting to match node 'red' at column 0"));
+    assertTrue(messages.contains("Successfully matched node 'red' to transformation ColorTransformation"));
+    assertTrue(messages.contains("Text parsed into element tree:"));
+    assertTrue(messages.contains("Node {"));
+    assertTrue(messages.contains("  TagNode('red') {"));
+    assertTrue(messages.contains("    TextNode(' RED ')"));
+    assertTrue(messages.contains("  }"));
+    assertTrue(messages.contains("}"));
   }
 
   @Test
@@ -433,27 +435,26 @@ public class MiniMessageTest extends TestBase {
 
     final StringBuilder sb = new StringBuilder();
     MiniMessage.builder().debug(sb).build().parse(input);
+    final List<String> messages = Arrays.asList(sb.toString().split("\n"));
 
-    final String expected = "Beginning parsing message <red> RED <blue> BLUE <click> bad click </click>\n" +
-        "Attempting to match node 'red' at column 0\n" +
-        "Successfully matched node 'red' to transformation ColorTransformation\n" +
-        "Attempting to match node 'blue' at column 10\n" +
-        "Successfully matched node 'blue' to transformation ColorTransformation\n" +
-        "Attempting to match node 'click' at column 22\n" +
-        "Could not match node 'click' - Don't know how to turn [] into a click event\n" +
-        "\t<red> RED <blue> BLUE <click> bad click </click>\n" +
-        "\t                      ^~~~~~^\n" +
-        "Text parsed into element tree:\n" +
-        "Node {\n" +
-        "  TagNode('red') {\n" +
-        "    TextNode(' RED ')\n" +
-        "    TagNode('blue') {\n" +
-        "      TextNode(' BLUE <click> bad click </click>')\n" +
-        "    }\n" +
-        "  }\n" +
-        "}\n";
-
-    assertEquals(expected, sb.toString());
+    assertTrue(messages.contains("Beginning parsing message <red> RED <blue> BLUE <click> bad click </click>"));
+    assertTrue(messages.contains("Attempting to match node 'red' at column 0"));
+    assertTrue(messages.contains("Successfully matched node 'red' to transformation ColorTransformation"));
+    assertTrue(messages.contains("Attempting to match node 'blue' at column 10"));
+    assertTrue(messages.contains("Successfully matched node 'blue' to transformation ColorTransformation"));
+    assertTrue(messages.contains("Attempting to match node 'click' at column 22"));
+    assertTrue(messages.contains("Could not match node 'click' - Don't know how to turn [] into a click event"));
+    assertTrue(messages.contains("\t<red> RED <blue> BLUE <click> bad click </click>"));
+    assertTrue(messages.contains("\t                      ^~~~~~^"));
+    assertTrue(messages.contains("Text parsed into element tree:"));
+    assertTrue(messages.contains("Node {"));
+    assertTrue(messages.contains("  TagNode('red') {"));
+    assertTrue(messages.contains("    TextNode(' RED ')"));
+    assertTrue(messages.contains("    TagNode('blue') {"));
+    assertTrue(messages.contains("      TextNode(' BLUE <click> bad click </click>')"));
+    assertTrue(messages.contains("    }"));
+    assertTrue(messages.contains("  }"));
+    assertTrue(messages.contains("}"));
   }
 
   @Test
@@ -462,27 +463,26 @@ public class MiniMessageTest extends TestBase {
 
     final StringBuilder sb = new StringBuilder();
     MiniMessage.builder().debug(sb).build().parse(input);
+    final List<String> messages = Arrays.asList(sb.toString().split("\n"));
 
-    final String expected = "Beginning parsing message <red> RED <blue> BLUE <click:open_url:https://github.com> good click </click>\n" +
-        "Attempting to match node 'red' at column 0\n" +
-        "Successfully matched node 'red' to transformation ColorTransformation\n" +
-        "Attempting to match node 'blue' at column 10\n" +
-        "Successfully matched node 'blue' to transformation ColorTransformation\n" +
-        "Attempting to match node 'click' at column 22\n" +
-        "Successfully matched node 'click' to transformation ClickTransformation\n" +
-        "Text parsed into element tree:\n" +
-        "Node {\n" +
-        "  TagNode('red') {\n" +
-        "    TextNode(' RED ')\n" +
-        "    TagNode('blue') {\n" +
-        "      TextNode(' BLUE ')\n" +
-        "      TagNode('click', 'open_url', 'https://github.com') {\n" +
-        "        TextNode(' good click ')\n" +
-        "      }\n" +
-        "    }\n" +
-        "  }\n" +
-        "}\n";
-
-    assertEquals(expected, sb.toString());
+    assertTrue(messages.contains("Beginning parsing message <red> RED <blue> BLUE <click:open_url:https://github.com> good click </click>"));
+    assertTrue(messages.contains("Attempting to match node 'red' at column 0"));
+    assertTrue(messages.contains("Successfully matched node 'red' to transformation ColorTransformation"));
+    assertTrue(messages.contains("Attempting to match node 'blue' at column 10"));
+    assertTrue(messages.contains("Successfully matched node 'blue' to transformation ColorTransformation"));
+    assertTrue(messages.contains("Attempting to match node 'click' at column 22"));
+    assertTrue(messages.contains("Successfully matched node 'click' to transformation ClickTransformation"));
+    assertTrue(messages.contains("Text parsed into element tree:"));
+    assertTrue(messages.contains("Node {"));
+    assertTrue(messages.contains("  TagNode('red') {"));
+    assertTrue(messages.contains("    TextNode(' RED ')"));
+    assertTrue(messages.contains("    TagNode('blue') {"));
+    assertTrue(messages.contains("      TextNode(' BLUE ')"));
+    assertTrue(messages.contains("      TagNode('click', 'open_url', 'https://github.com') {"));
+    assertTrue(messages.contains("        TextNode(' good click ')"));
+    assertTrue(messages.contains("      }"));
+    assertTrue(messages.contains("    }"));
+    assertTrue(messages.contains("  }"));
+    assertTrue(messages.contains("}"));
   }
 }

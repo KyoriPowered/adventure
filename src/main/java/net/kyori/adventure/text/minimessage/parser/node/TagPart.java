@@ -106,6 +106,26 @@ public final class TagPart {
     return TokenParser.unescape(text, startIndex, endIndex, i -> i == firstChar);
   }
 
+  /**
+   * Checks if this tag part represents <code>true</code>.
+   *
+   * @return if this tag part represents <code>true</code>
+   * @since 4.2.0
+   */
+  public boolean isTrue() {
+    return "true".equals(this.value) || "on".equals(this.value);
+  }
+
+  /**
+   * Checks if this tag part represents <code>false</code>.
+   *
+   * @return if this tag part represents <code>false</code>
+   * @since 4.2.0
+   */
+  public boolean isFalse() {
+    return "false".equals(this.value) || "off".equals(this.value);
+  }
+
   @Override
   public String toString() {
     return this.value;

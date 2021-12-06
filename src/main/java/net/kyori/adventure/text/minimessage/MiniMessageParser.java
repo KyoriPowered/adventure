@@ -31,6 +31,7 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.Token;
@@ -43,6 +44,7 @@ import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 import net.kyori.adventure.text.minimessage.transformation.Modifying;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
+import net.kyori.examination.string.MultiLineStringExaminer;
 import org.jetbrains.annotations.NotNull;
 
 final class MiniMessageParser {
@@ -185,10 +187,10 @@ final class MiniMessageParser {
     }
 
     context.root(root);
-    return Objects.requireNonNull(context.postProcessor().apply(this.treeToComponent(root)), "Post-processor must not return null");
+    return Objects.requireNonNull(context.postProcessor().apply(this.treeToComponent(root, context)), "Post-processor must not return null");
   }
 
-  @NotNull Component treeToComponent(final @NotNull ElementNode node) {
+  @NotNull Component treeToComponent(final @NotNull ElementNode node, final @NotNull Context context) {
     Component comp;
     Transformation transformation = null;
     if (node instanceof ValueNode) {
@@ -216,12 +218,20 @@ final class MiniMessageParser {
     }
 
     for (final ElementNode child : node.children()) {
-      comp = comp.append(this.treeToComponent(child));
+      comp = comp.append(this.treeToComponent(child, context));
     }
 
     // special case for gradient and stuff
     if (transformation instanceof Modifying) {
       comp = this.handleModifying((Modifying) transformation, comp, 0);
+    }
+
+    final Appendable debug = context.debugOutput();
+    if (debug != null) {
+      try {
+        debug.append("==========\ntreeToComponent \n").append(node.toString()).append("\n").append(comp.examine(MultiLineStringExaminer.simpleEscaping()).collect(Collectors.joining("\n"))).append("\n==========\n");
+      } catch (final IOException ignored) {
+      }
     }
 
     return comp;
