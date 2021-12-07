@@ -148,4 +148,14 @@ tasks {
   jacocoTestReport {
     dependsOn(test)
   }
+  
+  // Non-incremental
+  named("eclipseFactorypath", com.diffplug.gradle.eclipse.apt.GenerateEclipseFactorypath::class) {
+    doFirst {
+      val inFile = inputFile
+      if (inFile != null && inFile.exists()) {
+        inFile.delete()
+      }
+    }
+  }
 }
