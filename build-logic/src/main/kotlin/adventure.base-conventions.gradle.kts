@@ -41,6 +41,18 @@ indra {
           id.set("minidigger")
           name.set("MiniDigger")
         }
+
+        developer {
+          id.set("kezz")
+        }
+
+        developer {
+          id.set("broccolai")
+        }
+
+        developer {
+          id.set("rymiel")
+        }
       }
     }
   }
