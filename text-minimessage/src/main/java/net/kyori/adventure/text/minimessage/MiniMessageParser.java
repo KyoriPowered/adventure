@@ -118,7 +118,7 @@ final class MiniMessageParser {
     }
   }
 
-  @NotNull Component parseFormat(final @NotNull String richMessage, final @NotNull Context context) {
+  @NotNull Component parseFormat(final @NotNull String richMessage, final @NotNull ContextImpl context) {
     final PlaceholderResolver combinedResolver = PlaceholderResolver.combining(context.placeholderResolver(), this.placeholderResolver);
     final Appendable debug = context.debugOutput();
     if (debug != null) {

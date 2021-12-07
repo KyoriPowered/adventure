@@ -95,11 +95,11 @@ final class MiniMessageImpl implements MiniMessage {
     return this.parser.stripTokens(input, this.newContext(input, placeholders));
   }
 
-  private @NotNull Context newContext(final @NotNull String input, final @Nullable PlaceholderResolver resolver) {
+  private @NotNull ContextImpl newContext(final @NotNull String input, final @Nullable PlaceholderResolver resolver) {
     if (resolver == null) {
-      return Context.of(this.strict, this.debugOutput, input, this, PlaceholderResolver.empty(), this.postProcessor);
+      return ContextImpl.of(this.strict, this.debugOutput, input, this, PlaceholderResolver.empty(), this.postProcessor);
     } else {
-      return Context.of(this.strict, this.debugOutput, input, this, resolver, this.postProcessor);
+      return ContextImpl.of(this.strict, this.debugOutput, input, this, resolver, this.postProcessor);
     }
   }
 
