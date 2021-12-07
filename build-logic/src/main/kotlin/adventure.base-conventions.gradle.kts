@@ -36,6 +36,11 @@ indra {
         developer {
           id.set("Electroid")
         }
+
+        developer {
+          id.set("minidigger")
+          name.set("MiniDigger")
+        }
       }
     }
   }

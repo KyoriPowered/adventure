@@ -14,6 +14,7 @@ sequenceOf(
   "nbt",
   "serializer-configurate3",
   "serializer-configurate4",
+  "text-minimessage",
   "text-serializer-gson",
   "text-serializer-gson-legacy-impl",
   "text-serializer-legacy",
