@@ -26,14 +26,14 @@ package net.kyori.adventure.text.minimessage.parser.node;
 /**
  * Represents the root node of a tree.
  *
- * @since 4.2.0
+ * @since 4.10.0
  */
 public final class RootNode extends ElementNode {
   /**
    * Creates a new root node.
    *
    * @param sourceMessage the source message
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public RootNode(final String sourceMessage) {
     super(null, null, sourceMessage);

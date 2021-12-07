@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Represents a token for the lexer.
  *
- * @since 4.2.0
+ * @since 4.10.0
  */
 public final class Token {
   private final int startIndex;
@@ -43,7 +43,7 @@ public final class Token {
    * @param startIndex the start index of the token
    * @param endIndex the end index of the token
    * @param type the type of the token
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public Token(final int startIndex, final int endIndex, final TokenType type) {
     this.startIndex = startIndex;
@@ -55,7 +55,7 @@ public final class Token {
    * Returns the start index of this token.
    *
    * @return the start index
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public int startIndex() {
     return this.startIndex;
@@ -65,7 +65,7 @@ public final class Token {
    * Returns the end index of this token.
    *
    * @return the end index
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public int endIndex() {
     return this.endIndex;
@@ -75,7 +75,7 @@ public final class Token {
    * Returns the type of this token.
    *
    * @return the type
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public TokenType type() {
     return this.type;
@@ -85,7 +85,7 @@ public final class Token {
    * Returns the children of this token.
    *
    * @return the child tokens
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public List<Token> childTokens() {
     return this.childTokens;
@@ -95,7 +95,7 @@ public final class Token {
    * Sets the children of this token.
    *
    * @param childTokens the new children
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public void childTokens(final List<Token> childTokens) {
     this.childTokens = childTokens;
@@ -106,7 +106,7 @@ public final class Token {
    *
    * @param message the message to read
    * @return the value of this token
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public CharSequence get(final CharSequence message) {
     return message.subSequence(this.startIndex, this.endIndex);

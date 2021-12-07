@@ -32,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Represents a string of chars.
  *
- * @since 4.2.0
+ * @since 4.10.0
  */
 public final class TextNode extends ValueNode {
   private static final IntPredicate ESCAPES = i -> i == '<';
@@ -43,7 +43,7 @@ public final class TextNode extends ValueNode {
    * @param parent the parent of this node
    * @param token the token that created this node
    * @param sourceMessage the source message
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public TextNode(
     final @Nullable ElementNode parent,

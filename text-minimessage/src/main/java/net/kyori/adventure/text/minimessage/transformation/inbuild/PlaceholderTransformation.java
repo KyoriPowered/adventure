@@ -36,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Inserts a formatted placeholder component into the result.
  *
- * @since 4.2.0
+ * @since 4.10.0
  */
 public final class PlaceholderTransformation extends Transformation implements Inserting {
   private final Placeholder.@NotNull ComponentPlaceholder placeholder;
@@ -49,7 +49,7 @@ public final class PlaceholderTransformation extends Transformation implements I
    * Create a new factory for placeholder transformations applying {@code placeholder}.
    *
    * @param placeholder the placeholder to apply
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public static @NotNull TransformationFactory<PlaceholderTransformation> factory(final Placeholder.@NotNull ComponentPlaceholder placeholder) {
     final PlaceholderTransformation instance = new PlaceholderTransformation(placeholder);

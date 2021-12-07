@@ -40,7 +40,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Insert a translation component into the result.
  *
- * @since 4.1.0
+ * @since 4.10.0
  */
 public final class TranslatableTransformation extends Transformation implements Inserting {
   /**
@@ -49,7 +49,7 @@ public final class TranslatableTransformation extends Transformation implements 
    * @param name the tag name
    * @param args the tag arguments
    * @return a new transformation
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public static TranslatableTransformation create(final Context ctx, final String name, final List<TagPart> args) {
     if (args.isEmpty()) {

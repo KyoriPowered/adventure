@@ -37,7 +37,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * A transformation that inserts a key binding component.
  *
- * @since 4.1.0
+ * @since 4.10.0
  */
 public final class KeybindTransformation extends Transformation implements Inserting {
   /**
@@ -46,7 +46,7 @@ public final class KeybindTransformation extends Transformation implements Inser
    * @param name the tag name
    * @param args the tag arguments
    * @return a new transformation
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public static KeybindTransformation create(final String name, final List<TagPart> args) {
     if (args.size() != 1) {

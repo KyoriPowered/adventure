@@ -33,7 +33,7 @@ import net.kyori.examination.string.StringExaminer;
  * <p>A transformation instance is created for each instance of a tag in a parsed string.</p>
  *
  * @see TransformationRegistry to access and register available transformations
- * @since 4.1.0
+ * @since 4.10.0
  */
 public abstract class Transformation implements Examinable {
 
@@ -44,7 +44,7 @@ public abstract class Transformation implements Examinable {
    * Return a transformed {@code component} based on the applied parameters.
    *
    * @return the transformed component
-   * @since 4.1.0
+   * @since 4.10.0
    */
   public abstract Component apply();
 

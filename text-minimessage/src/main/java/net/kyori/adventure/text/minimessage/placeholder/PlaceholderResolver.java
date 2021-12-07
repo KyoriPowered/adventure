@@ -38,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A resolver for user-defined placeholders.
  *
- * @since 4.2.0
+ * @since 4.10.0
  */
 public interface PlaceholderResolver {
   /**
@@ -48,7 +48,7 @@ public interface PlaceholderResolver {
    *
    * @param objects the objects
    * @return the placeholder resolver
-   * @since 4.2.0
+   * @since 4.10.0
    */
   static @NotNull PlaceholderResolver resolving(final @NotNull Object @NotNull ... objects) {
     final int size = Objects.requireNonNull(objects, "pairs").length;
@@ -101,7 +101,7 @@ public interface PlaceholderResolver {
    *
    * @param pairs the key-value pairs
    * @return the placeholder resolver
-   * @since 4.2.0
+   * @since 4.10.0
    */
   static @NotNull PlaceholderResolver pairs(final @NotNull Map<String, ?> pairs) {
     final int size = Objects.requireNonNull(pairs, "pairs").size();
@@ -129,7 +129,7 @@ public interface PlaceholderResolver {
    *
    * @param placeholders the placeholders
    * @return the placeholder resolver
-   * @since 4.2.0
+   * @since 4.10.0
    */
   static @NotNull PlaceholderResolver placeholders(final @NotNull Placeholder @NotNull ... placeholders) {
     if (Objects.requireNonNull(placeholders, "placeholders").length == 0) return empty();
@@ -141,7 +141,7 @@ public interface PlaceholderResolver {
    *
    * @param placeholders the placeholders
    * @return the placeholder resolver
-   * @since 4.2.0
+   * @since 4.10.0
    */
   static @NotNull PlaceholderResolver placeholders(final @NotNull Iterable<? extends Placeholder> placeholders) {
     final Map<String, Placeholder> placeholderMap = new HashMap<>();
@@ -161,7 +161,7 @@ public interface PlaceholderResolver {
    *
    * @param placeholderResolvers the placeholder resolvers
    * @return the placeholder resolver
-   * @since 4.2.0
+   * @since 4.10.0
    */
   static @NotNull PlaceholderResolver combining(final @NotNull PlaceholderResolver @NotNull ... placeholderResolvers) {
     if (Objects.requireNonNull(placeholderResolvers, "placeholderResolvers").length == 1)
@@ -176,7 +176,7 @@ public interface PlaceholderResolver {
    *
    * @param placeholderResolvers the placeholder resolvers
    * @return the placeholder resolver
-   * @since 4.2.0
+   * @since 4.10.0
    */
   static @NotNull PlaceholderResolver combining(final @NotNull Iterable<? extends PlaceholderResolver> placeholderResolvers) {
     final List<PlaceholderResolver> placeholderResolverList = new ArrayList<>();
@@ -199,7 +199,7 @@ public interface PlaceholderResolver {
    *
    * @param resolver the resolver
    * @return the placeholder resolver
-   * @since 4.2.0
+   * @since 4.10.0
    */
   static @NotNull PlaceholderResolver dynamic(final @NotNull Function<String, ?> resolver) {
     return new DynamicPlaceholderResolver(Objects.requireNonNull(resolver, "resolver"));
@@ -211,7 +211,7 @@ public interface PlaceholderResolver {
    * @param placeholderResolver the placeholder resolver
    * @param filter the filter
    * @return the placeholder resolver
-   * @since 4.2.0
+   * @since 4.10.0
    */
   static @NotNull PlaceholderResolver filtering(final @NotNull PlaceholderResolver placeholderResolver, final @NotNull Predicate<Placeholder> filter) {
     return new FilteringPlaceholderResolver(Objects.requireNonNull(placeholderResolver, "placeholderResolver"), Objects.requireNonNull(filter, "filter"));
@@ -221,7 +221,7 @@ public interface PlaceholderResolver {
    * An empty placeholder resolver that will return {@code null} for all resolve attempts.
    *
    * @return the placeholder resolver
-   * @since 4.2.0
+   * @since 4.10.0
    */
   static @NotNull PlaceholderResolver empty() {
     return EmptyPlaceholderResolver.INSTANCE;
@@ -232,7 +232,7 @@ public interface PlaceholderResolver {
    *
    * @param key the key
    * @return if a placeholder can be resolved from this key
-   * @since 4.2.0
+   * @since 4.10.0
    */
   boolean canResolve(final @NotNull String key);
 
@@ -241,7 +241,7 @@ public interface PlaceholderResolver {
    *
    * @param key the key
    * @return the placeholder
-   * @since 4.2.0
+   * @since 4.10.0
    */
   @Nullable Placeholder resolve(final @NotNull String key);
 }

@@ -39,7 +39,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * A decoration that applies a font name.
  *
- * @since 4.1.0
+ * @since 4.10.0
  */
 public final class FontTransformation extends Transformation {
   private final Key font;
@@ -50,7 +50,7 @@ public final class FontTransformation extends Transformation {
    * @param name the tag name
    * @param args the tag arguments
    * @return a new transformation
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public static FontTransformation create(final String name, final List<TagPart> args) {
     final Key font;

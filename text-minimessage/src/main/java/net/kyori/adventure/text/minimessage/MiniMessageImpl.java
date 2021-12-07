@@ -38,7 +38,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * not public api.
  *
- * @since 4.0.0
+ * @since 4.10.0
  */
 final class MiniMessageImpl implements MiniMessage {
   static final Consumer<List<String>> DEFAULT_ERROR_CONSUMER = message -> message.forEach(System.out::println);
@@ -107,7 +107,7 @@ final class MiniMessageImpl implements MiniMessage {
    * not public api.
    *
    * @return huhu.
-   * @since 4.1.0
+   * @since 4.10.0
    */
   public @NotNull Consumer<List<String>> parsingErrorMessageConsumer() {
     return this.parsingErrorMessageConsumer;

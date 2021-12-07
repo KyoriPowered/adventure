@@ -42,7 +42,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * A transformation that applies a {@link HoverEvent}.
  *
- * @since 4.1.0
+ * @since 4.10.0
  */
 public final class HoverTransformation extends Transformation {
   private final HoverEvent.Action<Object> action;
@@ -56,7 +56,7 @@ public final class HoverTransformation extends Transformation {
    * @param args the arguments provided
    * @return a new transformation
    * @throws ParsingException if an error occurs
-   * @since 4.2.0
+   * @since 4.10.0
    */
   @SuppressWarnings("unchecked")
   public static HoverTransformation create(final Context ctx, final String name, final List<TagPart> args) {

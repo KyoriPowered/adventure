@@ -36,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * A transformation that applies an insertion (shift-click) event.
  *
- * @since 4.1.0
+ * @since 4.10.0
  */
 public final class InsertionTransformation extends Transformation {
   private final String insertion;
@@ -47,7 +47,7 @@ public final class InsertionTransformation extends Transformation {
    * @param name the tag name
    * @param args the tag arguments
    * @return a new transformation
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public static InsertionTransformation create(final String name, final List<TagPart> args) {
     if (args.size() != 1) {

@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * A matched token consumer that produces a list of matched tokens.
  *
- * @since 4.2.0
+ * @since 4.10.0
  */
 public final class TokenListProducingMatchedTokenConsumer extends MatchedTokenConsumer<List<Token>> {
   private List<Token> result = null;
@@ -42,7 +42,7 @@ public final class TokenListProducingMatchedTokenConsumer extends MatchedTokenCo
    * Creates a new token list producing matched token consumer.
    *
    * @param input the input
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public TokenListProducingMatchedTokenConsumer(final @NotNull String input) {
     super(input);

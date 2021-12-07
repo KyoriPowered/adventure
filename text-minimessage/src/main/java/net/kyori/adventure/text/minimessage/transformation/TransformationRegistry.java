@@ -34,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A registry of transformation types understood by the MiniMessage parser.
  *
- * @since 4.1.0
+ * @since 4.10.0
  */
 public interface TransformationRegistry extends Buildable<TransformationRegistry, TransformationRegistry.Builder> {
 
@@ -46,7 +46,7 @@ public interface TransformationRegistry extends Buildable<TransformationRegistry
    * @param placeholderResolver the placeholder resolver
    * @param context the debug context
    * @return a possible transformation
-   * @since 4.2.0
+   * @since 4.10.0
    */
   @Nullable Transformation get(final String name, final List<TagPart> inners, final PlaceholderResolver placeholderResolver, final Context context);
 
@@ -55,7 +55,7 @@ public interface TransformationRegistry extends Buildable<TransformationRegistry
    *
    * @param name the tag name
    * @return whether any transformation type exists
-   * @since 4.2.0
+   * @since 4.10.0
    */
   boolean exists(final String name);
 
@@ -65,7 +65,7 @@ public interface TransformationRegistry extends Buildable<TransformationRegistry
    * @param name the tag name
    * @param placeholderResolver the resolver to resolve other component types
    * @return whether any transformation exists
-   * @since 4.2.0
+   * @since 4.10.0
    */
   boolean exists(final String name, final PlaceholderResolver placeholderResolver);
 
@@ -73,7 +73,7 @@ public interface TransformationRegistry extends Buildable<TransformationRegistry
    * Creates a new {@link TransformationRegistry.Builder}.
    *
    * @return a builder
-   * @since 4.2.0
+   * @since 4.10.0
    */
   static @NotNull Builder builder() {
     return new TransformationRegistryImpl.BuilderImpl();
@@ -83,7 +83,7 @@ public interface TransformationRegistry extends Buildable<TransformationRegistry
    * Gets an instance of the transformation registry without any transformations.
    *
    * @return a empty transformation registry
-   * @since 4.2.0
+   * @since 4.10.0
    */
   static @NotNull TransformationRegistry empty() {
     return TransformationRegistryImpl.EMPTY;
@@ -93,7 +93,7 @@ public interface TransformationRegistry extends Buildable<TransformationRegistry
    * Gets an instance of the transformation registry with only the standard transformations.
    *
    * @return a standard transformation registry
-   * @since 4.2.0
+   * @since 4.10.0
    */
   static @NotNull TransformationRegistry standard() {
     return TransformationRegistryImpl.STANDARD;
@@ -102,7 +102,7 @@ public interface TransformationRegistry extends Buildable<TransformationRegistry
   /**
    * A builder for {@link TransformationRegistry}.
    *
-   * @since 4.2.0
+   * @since 4.10.0
    */
   interface Builder extends Buildable.Builder<TransformationRegistry> {
 
@@ -110,7 +110,7 @@ public interface TransformationRegistry extends Buildable<TransformationRegistry
      * Clears all currently set transformations.
      *
      * @return this builder
-     * @since 4.2.0
+     * @since 4.10.0
      */
     @NotNull Builder clear();
 
@@ -118,7 +118,7 @@ public interface TransformationRegistry extends Buildable<TransformationRegistry
      * Adds a supplied transformation to the registry.
      *
      * @return this builder
-     * @since 4.2.0
+     * @since 4.10.0
      */
     @NotNull Builder add(final @NotNull TransformationType<? extends Transformation> transformation);
 
@@ -126,7 +126,7 @@ public interface TransformationRegistry extends Buildable<TransformationRegistry
      * Adds the supplied transformations to the registry.
      *
      * @return this builder
-     * @since 4.2.0
+     * @since 4.10.0
      */
     @NotNull Builder add(final @NotNull TransformationType<? extends Transformation>... transformations);
 

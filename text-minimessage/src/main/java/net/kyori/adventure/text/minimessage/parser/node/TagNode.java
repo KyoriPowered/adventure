@@ -36,7 +36,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Node that represents a tag.
  *
- * @since 4.2.0
+ * @since 4.10.0
  */
 public final class TagNode extends ElementNode {
   private final List<TagPart> parts;
@@ -49,7 +49,7 @@ public final class TagNode extends ElementNode {
    * @param token         the token that created this node
    * @param sourceMessage the source message
    * @param placeholderResolver the placeholder resolver
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public TagNode(
       final @NotNull ElementNode parent,
@@ -81,7 +81,7 @@ public final class TagNode extends ElementNode {
    * Returns the parts of this tag.
    *
    * @return the parts
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public @NotNull List<TagPart> parts() {
     return this.parts;
@@ -91,7 +91,7 @@ public final class TagNode extends ElementNode {
    * Returns the name of this tag.
    *
    * @return the name
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public @NotNull String name() {
     if (this.parts.isEmpty()) {
@@ -109,7 +109,7 @@ public final class TagNode extends ElementNode {
    * Gets the transformation attached to this tag node.
    *
    * @return the transformation for this tag node
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public @NotNull Transformation transformation() {
     return Objects.requireNonNull(this.transformation, "no transformation set");
@@ -119,7 +119,7 @@ public final class TagNode extends ElementNode {
    * Sets the transformation that is represented by this tag.
    *
    * @param transformation the transformation
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public void transformation(final @NotNull Transformation transformation) {
     this.transformation = transformation;

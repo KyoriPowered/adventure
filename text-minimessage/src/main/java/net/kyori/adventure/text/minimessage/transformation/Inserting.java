@@ -26,7 +26,7 @@ package net.kyori.adventure.text.minimessage.transformation;
 /**
  * Marker interface for transformations that insert text or components, but have no children.
  *
- * @since 4.2.0
+ * @since 4.10.0
  */
 public interface Inserting {
 }

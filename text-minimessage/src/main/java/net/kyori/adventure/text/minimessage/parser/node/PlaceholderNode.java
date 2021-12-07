@@ -30,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Represents a placeholder replacement in a string.
  *
- * @since 4.2.0
+ * @since 4.10.0
  */
 public class PlaceholderNode extends ValueNode {
   /**
@@ -39,7 +39,7 @@ public class PlaceholderNode extends ValueNode {
    * @param parent        the parent of this node
    * @param token         the token that created this node
    * @param sourceMessage the source message
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public PlaceholderNode(
     final @Nullable ElementNode parent,

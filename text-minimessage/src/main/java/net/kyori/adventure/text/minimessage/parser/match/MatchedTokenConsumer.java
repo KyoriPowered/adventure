@@ -32,7 +32,7 @@ import org.jetbrains.annotations.UnknownNullability;
  * A consumer of a region of a string that was identified as a token.
  *
  * @param <T> the return result
- * @since 4.2.0
+ * @since 4.10.0
  */
 public abstract class MatchedTokenConsumer<T> {
   protected final String input;
@@ -43,7 +43,7 @@ public abstract class MatchedTokenConsumer<T> {
    * Creates a new matched token consumer.
    *
    * @param input the input
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public MatchedTokenConsumer(final @NotNull String input) {
     this.input = input;
@@ -55,7 +55,7 @@ public abstract class MatchedTokenConsumer<T> {
    * @param start     the start of the token
    * @param end       the end of the token
    * @param tokenType the type of the token
-   * @since 4.2.0
+   * @since 4.10.0
    */
   @MustBeInvokedByOverriders
   public void accept(final int start, final int end, final @NotNull TokenType tokenType) {
@@ -66,7 +66,7 @@ public abstract class MatchedTokenConsumer<T> {
    * Gets the result of this consumer, if any.
    *
    * @return the result
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public abstract @UnknownNullability T result();
 
@@ -74,7 +74,7 @@ public abstract class MatchedTokenConsumer<T> {
    * The last accepted end index, or {@code -1} if no match has been accepted.
    *
    * @return the last accepted end index
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public final int lastEndIndex() {
     return this.lastIndex;

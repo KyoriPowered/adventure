@@ -49,7 +49,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * A transformation that applies a colour gradient.
  *
- * @since 4.1.0
+ * @since 4.10.0
  */
 public final class GradientTransformation extends Transformation implements Modifying {
   private int size = 0;
@@ -69,7 +69,7 @@ public final class GradientTransformation extends Transformation implements Modi
    * @param name the tag name
    * @param args the tag arguments
    * @return a new transformation
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public static GradientTransformation create(final String name, final List<TagPart> args) {
     float phase = 0;

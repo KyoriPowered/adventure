@@ -65,7 +65,7 @@ final class TransformationRegistryImpl implements TransformationRegistry {
    * Create a transformation registry with the specified transformation types.
    *
    * @param types known transformation types
-   * @since 4.1.0
+   * @since 4.10.0
    */
   TransformationRegistryImpl(final List<TransformationType<? extends Transformation>> types) {
     this.types = Collections.unmodifiableList(types);

@@ -32,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * An exception that happens while parsing.
  *
- * @since 4.1.0
+ * @since 4.10.0
  */
 public class ParsingException extends RuntimeException {
   private static final long serialVersionUID = 2507190809441787201L;
@@ -46,7 +46,7 @@ public class ParsingException extends RuntimeException {
    * @param message the detail message
    * @param originalText the original text which was parsed
    * @param tags the tag parts which caused the error
-   * @since 4.1.0
+   * @since 4.10.0
    */
   public ParsingException(
     final String message,
@@ -62,7 +62,7 @@ public class ParsingException extends RuntimeException {
    * @param message the detail message
    * @param originalText the origina text which was parsed
    * @param tokens the token which caused the error
-   * @since 4.1.0
+   * @since 4.10.0
    */
   public ParsingException(
     final String message,
@@ -81,7 +81,7 @@ public class ParsingException extends RuntimeException {
    * @param originalText the original text which was parsed
    * @param cause the cause
    * @param tags tag parts that caused the errors
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public ParsingException(
     final String message,
@@ -99,7 +99,7 @@ public class ParsingException extends RuntimeException {
    * @param originalText the original text which was parsed
    * @param cause the cause
    * @param tokens the token which caused the error
-   * @since 4.1.0
+   * @since 4.10.0
    */
   public ParsingException(
     final String message,
@@ -117,7 +117,7 @@ public class ParsingException extends RuntimeException {
    *
    * @param message the detail message
    * @param tokens the token which caused the error
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public ParsingException(final String message, final List<TagPart> tokens) {
     this(message, tagsToTokens(tokens));
@@ -128,7 +128,7 @@ public class ParsingException extends RuntimeException {
    *
    * @param message the detail message
    * @param tokens the token which caused the error
-   * @since 4.1.0
+   * @since 4.10.0
    */
   public ParsingException(final String message, final @NotNull Token @NotNull ... tokens) {
     this(message, null, null, tokens);
@@ -140,7 +140,7 @@ public class ParsingException extends RuntimeException {
    * @param message the detail message
    * @param cause the cause
    * @param tags the tag parts that caused the error
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public ParsingException(
     final String message,
@@ -156,7 +156,7 @@ public class ParsingException extends RuntimeException {
    * @param message the detail message
    * @param cause the cause
    * @param tokens the token which caused the error
-   * @since 4.1.0
+   * @since 4.10.0
    */
   public ParsingException(
     final String message,
@@ -181,7 +181,7 @@ public class ParsingException extends RuntimeException {
    * Get the message which caused this exception.
    *
    * @return the original message
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public @Nullable String originalText() {
     return this.originalText;
@@ -191,7 +191,7 @@ public class ParsingException extends RuntimeException {
    * Set the message which caused this exception.
    *
    * @param originalText the original message
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public void originalText(final @NotNull String originalText) {
     this.originalText = originalText;
@@ -201,7 +201,7 @@ public class ParsingException extends RuntimeException {
    * Gets the tokens associated with this parsing error.
    *
    * @return the tokens for this error
-   * @since 4.1.0
+   * @since 4.10.0
    */
   public @NotNull Token @NotNull [] tokens() {
     return this.tokens;
@@ -211,7 +211,7 @@ public class ParsingException extends RuntimeException {
    * Sets the tokens associated with this parsing error.
    *
    * @param tokens the tokens for this error
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public void tokens(final @NotNull Token @NotNull [] tokens) {
     this.tokens = tokens;

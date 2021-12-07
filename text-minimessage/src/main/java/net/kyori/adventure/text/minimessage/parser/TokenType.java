@@ -26,7 +26,7 @@ package net.kyori.adventure.text.minimessage.parser;
 /**
  * Represents the type of a token.
  *
- * @since 4.2.0
+ * @since 4.10.0
  */
 public enum TokenType {
   TEXT,

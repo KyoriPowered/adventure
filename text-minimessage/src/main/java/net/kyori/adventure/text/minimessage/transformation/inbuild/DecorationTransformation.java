@@ -42,7 +42,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A transformation that applies any {@link TextDecoration}.
  *
- * @since 4.1.0
+ * @since 4.10.0
  */
 public final class DecorationTransformation extends Transformation {
 
@@ -51,7 +51,7 @@ public final class DecorationTransformation extends Transformation {
   /**
    * An unmodifiable map of known decoration aliases.
    *
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public static final Map<String, TextDecoration> DECORATION_ALIASES;
 
@@ -75,7 +75,7 @@ public final class DecorationTransformation extends Transformation {
    * @param name the tag name
    * @param args the tag arguments
    * @return a new transformation
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public static DecorationTransformation create(String name, final List<TagPart> args) {
     boolean flag = args.size() != 1 || !args.get(0).isFalse();

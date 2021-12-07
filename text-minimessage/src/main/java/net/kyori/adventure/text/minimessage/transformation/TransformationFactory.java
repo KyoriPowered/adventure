@@ -31,7 +31,7 @@ import net.kyori.adventure.text.minimessage.parser.node.TagPart;
  * A supplier of new transformation instances.
  *
  * @param <T> the transformation type
- * @since 4.2.0
+ * @since 4.10.0
  */
 @FunctionalInterface
 public interface TransformationFactory<T extends Transformation> {
@@ -42,7 +42,7 @@ public interface TransformationFactory<T extends Transformation> {
    * @param name the tag name
    * @param args an unmodifiable list of tag arguments, may be empty
    * @return the new instance
-   * @since 4.2.0
+   * @since 4.10.0
    */
   T parse(final Context ctx, final String name, final List<TagPart> args);
 
@@ -50,7 +50,7 @@ public interface TransformationFactory<T extends Transformation> {
    * A variant of a transformation factory that doesn't take a context object.
    *
    * @param <T> the transformation type
-   * @since 4.2.0
+   * @since 4.10.0
    */
   @FunctionalInterface
   interface ContextFree<T extends Transformation> extends TransformationFactory<T> {
@@ -65,7 +65,7 @@ public interface TransformationFactory<T extends Transformation> {
      * @param name the tag name
      * @param args an unmodifiable list of tag arguments, may be empty
      * @return the new instance
-     * @since 4.2.0
+     * @since 4.10.0
      */
     T parse(final String name, final List<TagPart> args);
   }

@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Represents an inner part of a tag.
  *
- * @since 4.2.0
+ * @since 4.10.0
  */
 public final class TagPart {
   private final String value;
@@ -43,7 +43,7 @@ public final class TagPart {
    * @param sourceMessage the source message
    * @param token the token that creates this tag part
    * @param placeholderResolver the placeholder resolver
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public TagPart(
     final @NotNull String sourceMessage,
@@ -61,7 +61,7 @@ public final class TagPart {
    * Returns the value of this tag part.
    *
    * @return the value
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public @NotNull String value() {
     return this.value;
@@ -71,7 +71,7 @@ public final class TagPart {
    * Returns the token that created this tag part.
    *
    * @return the token
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public @NotNull Token token() {
     return this.token;
@@ -84,7 +84,7 @@ public final class TagPart {
    * @param start the starting index of the substring
    * @param end the ending index of the substring
    * @return the output substring
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public static @NotNull String unquoteAndEscape(final @NotNull String text, final int start, final int end) {
     if (start == end) {
@@ -110,7 +110,7 @@ public final class TagPart {
    * Checks if this tag part represents <code>true</code>.
    *
    * @return if this tag part represents <code>true</code>
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public boolean isTrue() {
     return "true".equals(this.value) || "on".equals(this.value);
@@ -120,7 +120,7 @@ public final class TagPart {
    * Checks if this tag part represents <code>false</code>.
    *
    * @return if this tag part represents <code>false</code>
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public boolean isFalse() {
     return "false".equals(this.value) || "off".equals(this.value);

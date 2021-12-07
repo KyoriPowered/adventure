@@ -39,7 +39,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A placeholder in a message, which can replace a tag with a component.
  *
- * @since 4.2.0
+ * @since 4.10.0
  */
 public interface Placeholder extends Examinable {
 
@@ -49,7 +49,7 @@ public interface Placeholder extends Examinable {
    * @param key the placeholder
    * @param value the value to replace the key with
    * @return the constructed placeholder
-   * @since 4.2.0
+   * @since 4.10.0
    */
   static @NotNull Placeholder placeholder(final @NotNull String key, final @NotNull String value) {
     return new StringPlaceholder(
@@ -64,7 +64,7 @@ public interface Placeholder extends Examinable {
    * @param key the placeholder
    * @param value the component to replace the key with
    * @return the constructed placeholder
-   * @since 4.2.0
+   * @since 4.10.0
    */
   static @NotNull Placeholder placeholder(final @NotNull String key, final @NotNull ComponentLike value) {
     return new ComponentPlaceholder(
@@ -79,7 +79,7 @@ public interface Placeholder extends Examinable {
    * @param key the placeholder
    * @param value the supplier that supplies the component to replace the key with
    * @return the constructed placeholder
-   * @since 4.2.0
+   * @since 4.10.0
    */
   static @NotNull Placeholder placeholder(final @NotNull String key, final @NotNull Supplier<? extends ComponentLike> value) {
     return new LazyComponentPlaceholder(
@@ -92,7 +92,7 @@ public interface Placeholder extends Examinable {
    * Get the key for this placeholder.
    *
    * @return the key
-   * @since 4.2.0
+   * @since 4.10.0
    */
   @NotNull String key();
 
@@ -100,14 +100,14 @@ public interface Placeholder extends Examinable {
    * Get the value for this placeholder.
    *
    * @return the value
-   * @since 4.2.0
+   * @since 4.10.0
    */
   @NotNull Object value();
 
   /**
    * A placeholder with a value that will be parsed as a MiniMessage string.
    *
-   * @since 4.2.0
+   * @since 4.10.0
    */
   @ApiStatus.Internal
   class StringPlaceholder implements Placeholder {
@@ -148,7 +148,7 @@ public interface Placeholder extends Examinable {
   /**
    * A placeholder with a {@link Component} value that will be inserted directly.
    *
-   * @since 4.2.0
+   * @since 4.10.0
    */
   @ApiStatus.Internal
   class ComponentPlaceholder implements Placeholder {
@@ -189,7 +189,7 @@ public interface Placeholder extends Examinable {
   /**
    * A placeholder with a lazily provided {@link Component} value that will be inserted directly.
    *
-   * @since 4.2.0
+   * @since 4.10.0
    */
   @ApiStatus.Internal
   class LazyComponentPlaceholder extends ComponentPlaceholder {

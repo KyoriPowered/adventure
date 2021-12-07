@@ -29,7 +29,7 @@ import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 /**
  * Transformations implementing this interface can transform a whole subtree of nodes.
  *
- * @since 4.2.0
+ * @since 4.10.0
  */
 public interface Modifying {
 
@@ -37,7 +37,7 @@ public interface Modifying {
    * This method gets called once for every element in the sub tree, allowing you to do calculations beforehand.
    *
    * @param curr the current element in the sub tree
-   * @since 4.2.0
+   * @since 4.10.0
    */
   void visit(ElementNode curr);
 
@@ -48,7 +48,7 @@ public interface Modifying {
    * @param curr the current component
    * @param depth the depth of the tree the current component is at
    * @return the new parent
-   * @since 4.2.0
+   * @since 4.10.0
    */
   Component apply(Component curr, int depth);
 }

@@ -42,7 +42,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * A transformation applying a single text color.
  *
- * @since 4.1.0
+ * @since 4.10.0
  */
 public final class ColorTransformation extends Transformation {
   private static final Map<String, TextColor> COLOR_ALIASES = new HashMap<>();
@@ -63,7 +63,7 @@ public final class ColorTransformation extends Transformation {
    *
    * @param name tag name to test
    * @return if this transformation is applicable
-   * @since 4.1.0
+   * @since 4.10.0
    */
   public static boolean canParse(final String name) {
     return isColorOrAbbreviation(name)
@@ -78,7 +78,7 @@ public final class ColorTransformation extends Transformation {
    * @param name the tag name
    * @param args the tag arguments
    * @return a new transformation
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public static ColorTransformation create(final String name, final List<TagPart> args) {
     final String colorName;

@@ -39,7 +39,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A transformation applying a click event.
  *
- * @since 4.1.0
+ * @since 4.10.0
  */
 public final class ClickTransformation extends Transformation {
   private final ClickEvent.Action action;
@@ -51,7 +51,7 @@ public final class ClickTransformation extends Transformation {
    * @param name the tag name
    * @param args tag arguments
    * @return a new transformation
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public static ClickTransformation create(final String name, final List<TagPart> args) {
     if (args.size() != 2) {

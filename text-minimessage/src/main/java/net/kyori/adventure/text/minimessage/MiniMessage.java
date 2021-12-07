@@ -40,7 +40,7 @@ import org.jetbrains.annotations.Nullable;
  * <p>This class allows you to serialize and deserialize them, strip
  * or escape them.</p>
  *
- * @since 4.0.0
+ * @since 4.10.0
  */
 public interface MiniMessage extends ComponentSerializer<Component, Component, String>, Buildable<MiniMessage, MiniMessage.Builder> {
 
@@ -48,7 +48,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * Gets a simple instance without markdown support.
    *
    * @return a simple instance
-   * @since 4.0.0
+   * @since 4.10.0
    */
   static @NotNull MiniMessage miniMessage() {
     return MiniMessageImpl.INSTANCE;
@@ -63,7 +63,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    *
    * @param input the input message, with tokens
    * @return the output, with escaped tokens
-   * @since 4.0.0
+   * @since 4.10.0
    */
   @NotNull String escapeTokens(final @NotNull String input);
 
@@ -75,7 +75,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @param input the input message, with tokens
    * @param placeholders the placeholder resolver adding known placeholders
    * @return the output, with escaped tokens
-   * @since 4.2.0
+   * @since 4.10.0
    */
   @NotNull String escapeTokens(final @NotNull String input, final @NotNull PlaceholderResolver placeholders);
 
@@ -88,7 +88,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    *
    * @param input the input message, with tokens
    * @return the output, without tokens
-   * @since 4.0.0
+   * @since 4.10.0
    */
   @NotNull String stripTokens(final @NotNull String input);
 
@@ -100,7 +100,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @param input the input message, with tokens
    * @param placeholders the placeholder resolver adding known placeholders
    * @return the output, without tokens
-   * @since 4.2.0
+   * @since 4.10.0
    */
   @NotNull String stripTokens(final @NotNull String input, final @NotNull PlaceholderResolver placeholders);
 
@@ -109,7 +109,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    *
    * @param input the input string
    * @return the output component
-   * @since 4.0.0
+   * @since 4.10.0
    */
   default Component parse(final @NotNull String input) {
     return this.deserialize(input);
@@ -123,7 +123,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @param input the input string
    * @param placeholderResolver the placeholder resolver
    * @return the output component
-   * @since 4.2.0
+   * @since 4.10.0
    */
   @NotNull Component deserialize(final @NotNull String input, final @NotNull PlaceholderResolver placeholderResolver);
 
@@ -131,7 +131,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * Creates a new {@link MiniMessage.Builder}.
    *
    * @return a builder
-   * @since 4.0.0
+   * @since 4.10.0
    */
   static Builder builder() {
     return new MiniMessageImpl.BuilderImpl();
@@ -140,7 +140,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
   /**
    * A builder for {@link MiniMessage}.
    *
-   * @since 4.0.0
+   * @since 4.10.0
    */
   interface Builder extends Buildable.Builder<MiniMessage> {
 
@@ -149,7 +149,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      *
      * @param transformationRegistry the transformation registry to use
      * @return this builder
-     * @since 4.1.0
+     * @since 4.10.0
      */
     @NotNull Builder transformations(final @NotNull TransformationRegistry transformationRegistry);
 
@@ -160,7 +160,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      *
      * @param modifier an action to perform on the registry builder
      * @return this builder
-     * @since 4.2.0
+     * @since 4.10.0
      */
     @NotNull Builder transformations(final @NotNull Consumer<TransformationRegistry.Builder> modifier);
 
@@ -171,7 +171,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      *
      * @param placeholderResolver the placeholder resolver to use, if any
      * @return this builder
-     * @since 4.2.0
+     * @since 4.10.0
      */
     @NotNull Builder placeholderResolver(final @Nullable PlaceholderResolver placeholderResolver);
 
@@ -183,7 +183,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      *
      * @param strict if strict mode should be enabled
      * @return this builder
-     * @since 4.1.0
+     * @since 4.10.0
      */
     @NotNull Builder strict(final boolean strict);
 
@@ -194,7 +194,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      *
      * @param debugOutput if debug mode should be enabled
      * @return this builder
-     * @since 4.2.0
+     * @since 4.10.0
      */
     @NotNull Builder debug(final @Nullable Appendable debugOutput);
 
@@ -205,7 +205,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      *
      * @param consumer the error message consumer
      * @return this builder
-     * @since 4.1.0
+     * @since 4.10.0
      */
     @NotNull Builder parsingErrorMessageConsumer(final @NotNull Consumer<List<String>> consumer);
 
@@ -215,7 +215,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      *
      * @param postProcessor method run at the end of parsing
      * @return this builder
-     * @since 4.2.0
+     * @since 4.10.0
      */
     @NotNull Builder postProcessor(final @NotNull UnaryOperator<Component> postProcessor);
 
@@ -223,7 +223,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      * Builds the serializer.
      *
      * @return the built serializer
-     * @since 4.0.0
+     * @since 4.10.0
      */
     @Override
     @NotNull MiniMessage build();

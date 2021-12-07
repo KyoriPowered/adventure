@@ -50,7 +50,7 @@ import static java.util.Objects.requireNonNull;
  * Available types of transformation.
  *
  * @param <T> transformation class
- * @since 4.1.0
+ * @since 4.10.0
  */
 public final class TransformationType<T extends Transformation> {
 
@@ -108,7 +108,7 @@ public final class TransformationType<T extends Transformation> {
    *
    * @param canParse the predicate used to check if a tag can be parsed by this type
    * @param factory the factory that should be used to create this type
-   * @since 4.2.0
+   * @since 4.10.0
    */
   private TransformationType(final Predicate<String> canParse, final TransformationFactory<T> factory) {
     this.canParse = canParse;
@@ -127,7 +127,7 @@ public final class TransformationType<T extends Transformation> {
    * @param factory a factory
    * @param <T> transformation instance type
    * @return a new transformation type definition
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public static <T extends Transformation> TransformationType<T> transformationType(final Predicate<String> nameMatcher, final TransformationFactory<T> factory) {
     return new TransformationType<>(
@@ -144,7 +144,7 @@ public final class TransformationType<T extends Transformation> {
    * @param <T> transformation instance type
    * @return a new transformation type definition
    * @see #transformationType(Predicate, TransformationFactory)
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public static <T extends Transformation> TransformationType<T> transformationType(final Predicate<String> nameMatcher, final TransformationFactory.ContextFree<T> contextFreeFactory) {
     return new TransformationType<>(
@@ -158,7 +158,7 @@ public final class TransformationType<T extends Transformation> {
    *
    * @param elements the accepted names
    * @return a name matcher function
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public static Predicate<String> acceptingNames(final String... elements) {
     return acceptingNames(Arrays.asList(elements));
@@ -169,7 +169,7 @@ public final class TransformationType<T extends Transformation> {
    *
    * @param elements the accepted names
    * @return a name matcher function
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public static Predicate<String> acceptingNames(final Collection<String> elements) {
     if (elements.size() == 1) {

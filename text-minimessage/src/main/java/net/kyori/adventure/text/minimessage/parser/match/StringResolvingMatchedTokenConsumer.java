@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * A matched token consumer that produces a string and returns a copy of the string with placeholders resolved.
  *
- * @since 4.2.0
+ * @since 4.10.0
  */
 public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsumer<String> {
   private final StringBuilder builder;
@@ -44,7 +44,7 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
    * Creates a placeholder resolving matched token consumer.
    *
    * @param input the input
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public StringResolvingMatchedTokenConsumer(
     final @NotNull String input,

@@ -53,7 +53,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Handles parsing a string into a list of tokens and then into a tree of nodes.
  *
- * @since 4.2.0
+ * @since 4.10.0
  */
 public final class TokenParser {
   private static final int MAX_DEPTH = 16;
@@ -66,7 +66,7 @@ public final class TokenParser {
    *
    * @param message the minimessage string to parse
    * @return the root of the resulting tree
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public static ElementNode parse(
     final @NotNull Function<TagNode, @Nullable Transformation> transformationFactory,
@@ -92,7 +92,7 @@ public final class TokenParser {
    * @param tagNameChecker a predicate to check if a matched token is a in-built transformation tag
    * @param placeholderResolver the placeholder resolver
    * @return the resulting string
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public static String resolvePlaceholders(final String message, final Predicate<String> tagNameChecker, final PlaceholderResolver placeholderResolver) {
     int passes = 0;
@@ -115,7 +115,7 @@ public final class TokenParser {
    *
    * @param message the minimessage string to parse
    * @return the root tokens
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public static List<Token> tokenize(final String message) {
     final TokenListProducingMatchedTokenConsumer listProducer = new TokenListProducingMatchedTokenConsumer(message);
@@ -136,7 +136,7 @@ public final class TokenParser {
    *
    * @param message the message
    * @param consumer the consumer
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public static void parseString(final String message, final MatchedTokenConsumer<?> consumer) {
     FirstPassState state = FirstPassState.NORMAL;
@@ -495,7 +495,7 @@ public final class TokenParser {
    * @param message the minimessage string to parse
    * @param placeholderResolver the placeholder resolver to use to find string placeholders
    * @return the message, with non-string placeholders still intact
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public static String resolveStringPlaceholders(
       final @NotNull String message,
@@ -604,7 +604,7 @@ public final class TokenParser {
    * @param endIndex the ending index of the substring
    * @param escapes the predicate to determine if an escape happened
    * @return the output escaped substring
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public static String unescape(final String text, final int startIndex, final int endIndex, final IntPredicate escapes) {
     int from = startIndex;

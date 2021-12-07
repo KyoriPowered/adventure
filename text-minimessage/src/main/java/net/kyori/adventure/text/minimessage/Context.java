@@ -34,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Carries needed context for minimessage around, ranging from debug info to the configured minimessage instance.
  *
- * @since 4.1.0
+ * @since 4.10.0
  */
 public class Context {
   private final boolean strict;
@@ -64,7 +64,7 @@ public class Context {
    * @param input the input message
    * @param miniMessage the minimessage instance
    * @return the debug context
-   * @since 4.1.0
+   * @since 4.10.0
    */
   public static Context of(final boolean strict, final String input, final MiniMessage miniMessage) {
     return new Context(strict, null, null, input, null, miniMessage, PlaceholderResolver.empty(), null);
@@ -78,7 +78,7 @@ public class Context {
    * @param input the input message
    * @param miniMessage the minimessage instance
    * @return the debug context
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public static Context of(final boolean strict, final Appendable debugOutput, final String input, final MiniMessage miniMessage) {
     return new Context(strict, debugOutput, null, input, null, miniMessage, PlaceholderResolver.empty(), null);
@@ -92,7 +92,7 @@ public class Context {
    * @param miniMessage the minimessage instance
    * @param placeholders the placeholders passed to minimessage
    * @return the debug context
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public static Context of(final boolean strict, final String input, final MiniMessageImpl miniMessage, @NotNull final Placeholder @Nullable [] placeholders) {
     return new Context(strict, null, null, input, null, miniMessage, placeholders == null ? PlaceholderResolver.empty() : PlaceholderResolver.placeholders(placeholders), null);
@@ -107,7 +107,7 @@ public class Context {
    * @param miniMessage the minimessage instance
    * @param placeholders the placeholders passed to minimessage
    * @return the debug context
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public static Context of(final boolean strict, final Appendable debugOutput, final String input, final MiniMessageImpl miniMessage, @NotNull final Placeholder @Nullable [] placeholders) {
     return new Context(strict, debugOutput, null, input, null, miniMessage, placeholders == null ? PlaceholderResolver.empty() : PlaceholderResolver.placeholders(placeholders), null);
@@ -122,7 +122,7 @@ public class Context {
    * @param miniMessage the minimessage instance
    * @param placeholderResolver the placeholder resolver passed to minimessage
    * @return the debug context
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public static Context of(final boolean strict, final Appendable debugOutput, final String input, final MiniMessageImpl miniMessage, final PlaceholderResolver placeholderResolver) {
     return new Context(strict, debugOutput, null, input, null, miniMessage, placeholderResolver, null);
@@ -138,7 +138,7 @@ public class Context {
    * @param placeholderResolver the placeholder resolver passed to minimessage
    * @param postProcessor callback ran at the end of parsing which could be used to compact the output
    * @return the debug context
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public static Context of(final boolean strict, final Appendable debugOutput, final String input, final MiniMessageImpl miniMessage, final PlaceholderResolver placeholderResolver, final UnaryOperator<Component> postProcessor) {
     return new Context(strict, debugOutput, null, input, null, miniMessage, placeholderResolver, postProcessor);
@@ -148,7 +148,7 @@ public class Context {
    * Sets the root element.
    *
    * @param root the root element.
-   * @since 4.1.0
+   * @since 4.10.0
    */
   public void root(final ElementNode root) {
     this.root = root;
@@ -158,7 +158,7 @@ public class Context {
    * sets the replaced message.
    *
    * @param replacedMessage the replaced message
-   * @since 4.1.0
+   * @since 4.10.0
    */
   public void replacedMessage(final String replacedMessage) {
     this.replacedMessage = replacedMessage;
@@ -168,7 +168,7 @@ public class Context {
    * Returns strict mode.
    *
    * @return if strict mode is enabled
-   * @since 4.1.0
+   * @since 4.10.0
    */
   public boolean strict() {
     return this.strict;
@@ -178,7 +178,7 @@ public class Context {
    * Returns the appendable to print debug output to.
    *
    * @return the debug output to print to
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public Appendable debugOutput() {
     return this.debugOutput;
@@ -188,7 +188,7 @@ public class Context {
    * Returns the root element.
    *
    * @return root
-   * @since 4.1.0
+   * @since 4.10.0
    */
   public ElementNode tokens() {
     return this.root;
@@ -198,7 +198,7 @@ public class Context {
    * Returns original message.
    *
    * @return ogMessage
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public String originalMessage() {
     return this.originalMessage;
@@ -208,7 +208,7 @@ public class Context {
    * Returns replaced message.
    *
    * @return replacedMessage
-   * @since 4.1.0
+   * @since 4.10.0
    */
   public String replacedMessage() {
     return this.replacedMessage;
@@ -218,7 +218,7 @@ public class Context {
    * Returns minimessage.
    *
    * @return minimessage
-   * @since 4.1.0
+   * @since 4.10.0
    */
   public MiniMessage miniMessage() {
     return this.miniMessage;
@@ -228,7 +228,7 @@ public class Context {
    * Returns the placeholder resolver.
    *
    * @return the placeholder resolver
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public @NotNull PlaceholderResolver placeholderResolver() {
     return this.placeholderResolver;
@@ -238,7 +238,7 @@ public class Context {
    * Returns callback ran at the end of parsing which could be used to compact the output.
    *
    * @return Post-processing function
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public UnaryOperator<Component> postProcessor() {
     return this.postProcessor;
@@ -249,7 +249,7 @@ public class Context {
    *
    * @param message the message to parse
    * @return the parsed message
-   * @since 4.1.0
+   * @since 4.10.0
    */
   public Component parse(final String message) {
     return this.miniMessage.deserialize(message, this.placeholderResolver);

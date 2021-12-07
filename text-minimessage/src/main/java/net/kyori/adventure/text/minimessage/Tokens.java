@@ -26,7 +26,7 @@ package net.kyori.adventure.text.minimessage;
 /**
  * Tokens used in the MiniMessage format.
  *
- * @since 4.0.0
+ * @since 4.10.0
  */
 public final class Tokens {
   // vanilla components

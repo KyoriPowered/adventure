@@ -31,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Represents a node in the tree which has a text value.
  *
- * @since 4.2.0
+ * @since 4.10.0
  */
 
 public abstract class ValueNode extends ElementNode {
@@ -43,7 +43,7 @@ public abstract class ValueNode extends ElementNode {
    * @param parent the parent of this node
    * @param token the token that created this node
    * @param sourceMessage the source message
-   * @since 4.2.0
+   * @since 4.10.0
    */
   ValueNode(final @Nullable ElementNode parent, final @Nullable Token token, final @NotNull String sourceMessage, final @NotNull String value) {
     super(parent, token, sourceMessage);
@@ -56,7 +56,7 @@ public abstract class ValueNode extends ElementNode {
    * Returns the value of this text node.
    *
    * @return the value
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public @NotNull String value() {
     return this.value;

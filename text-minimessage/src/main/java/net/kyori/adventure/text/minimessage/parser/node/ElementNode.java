@@ -34,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Represents a node in the tree.
  *
- * @since 4.2.0
+ * @since 4.10.0
  */
 public class ElementNode {
   private final @Nullable ElementNode parent;
@@ -48,7 +48,7 @@ public class ElementNode {
    * @param parent the parent of this node
    * @param token the token that created this node
    * @param sourceMessage the source message
-   * @since 4.2.0
+   * @since 4.10.0
    */
   ElementNode(final @Nullable ElementNode parent, final @Nullable Token token, final @NotNull String sourceMessage) {
     this.parent = parent;
@@ -60,7 +60,7 @@ public class ElementNode {
    * Returns the parent of this node, if present.
    *
    * @return the parent or null
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public @Nullable ElementNode parent() {
     return this.parent;
@@ -70,7 +70,7 @@ public class ElementNode {
    * Returns the token that lead to the creation of this token.
    *
    * @return the token
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public @Nullable Token token() {
     return this.token;
@@ -80,7 +80,7 @@ public class ElementNode {
    * Returns the source message of this node.
    *
    * @return the source message
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public @NotNull String sourceMessage() {
     return this.sourceMessage;
@@ -90,7 +90,7 @@ public class ElementNode {
    * Returns the children of this node.
    *
    * @return the children of this node
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public List<ElementNode> children() {
     return this.children;
@@ -102,7 +102,7 @@ public class ElementNode {
    * <p>This method will attempt to join text tokens together if possible.</p>
    *
    * @param childNode the child node to add.
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public void addChild(final ElementNode childNode) {
     final int last = this.children.size() - 1;
@@ -127,7 +127,7 @@ public class ElementNode {
    * @param sb the string builder to serialize into
    * @param indent the current indent level
    * @return the passed string builder, for chaining
-   * @since 4.2.0
+   * @since 4.10.0
    */
   public @NotNull StringBuilder buildToString(final @NotNull StringBuilder sb, final int indent) {
     final char[] in = this.ident(indent);
