@@ -12,7 +12,7 @@
     {
       "matchUpdateTypes": ["patch"],
       "excludePackageNames": ["gradle"],
-      "groupName": "Patch-release Dependency Updates"
+      "groupName": "patch-release dependency changes"
     }
   ]
 }
