@@ -15,7 +15,7 @@
       "groupName": "gradle plugins"
     },
     {
-      "matchPaths": ["+(build-logic/**)", "+(buildSrc/**)"],
+      "matchPaths": ["+(build-logic/**/*)", "+(buildSrc/**/*)"],
       "groupName": "gradle plugins"
     },
     {
@@ -29,5 +29,7 @@
       "enabled": false
     }
   ],
+  "prHourlyLimit": 4,
+  "pruneStaleBranches": false,
   "semanticCommitType": "build"
 }
