@@ -11,7 +11,7 @@
   "packageRules": [
     {
       "matchUpdateTypes": ["patch"],
-      "excludePackageNames": ["gradle"]
+      "excludePackageNames": ["gradle"],
       "groupName": "Patch-release Dependency Updates"
     }
   ]
