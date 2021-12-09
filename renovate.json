@@ -13,6 +13,11 @@
       "matchUpdateTypes": ["patch"],
       "excludePackageNames": ["gradle"],
       "groupName": "patch-release dependency changes"
-    }
-  ]
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "matchPackagePrefixes": ["org.spongepowered:configurate-"],
+      "enabled": false
+  ],
+  "semanticCommitType": "build"
 }
