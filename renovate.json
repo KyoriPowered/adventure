@@ -10,6 +10,15 @@
   ],
   "packageRules": [
     {
+      "matchDepTypes": ["plugin"],
+      "matchManagers": ["gradle"],
+      "groupName": "gradle plugins"
+    },
+    {
+      "matchPaths": ["+(build-logic/**)", "+(buildSrc/**)"]
+      "groupName": "gradle plugins"
+    },
+    {
       "matchUpdateTypes": ["patch"],
       "excludePackageNames": ["gradle"],
       "groupName": "patch-release dependency changes"
