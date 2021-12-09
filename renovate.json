@@ -1,5 +1,18 @@
 {
   "extends": [
     "config:base"
+  ],
+  "ignoreDeps": [
+    "com.google.code.gson:gson"
+  ],
+  "labels": [
+    "dependencies"
+  ],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["patch"],
+      "excludePackageNames": ["gradle"]
+      "groupName": "Patch-release Dependency Updates"
+    }
   ]
 }
