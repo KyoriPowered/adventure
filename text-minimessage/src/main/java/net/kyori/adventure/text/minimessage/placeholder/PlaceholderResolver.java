@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import net.kyori.adventure.text.ComponentLike;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,86 +41,19 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface PlaceholderResolver {
   /**
-   * Constructs a placeholder resolver from key-value pairs or {@link Placeholder} instances.
+   * Constructs a placeholder resolver from a map.
    *
-   * <p>The {@code pairs} arguments must be a string key followed by a string or {@link ComponentLike} value or a {@link Placeholder}.</p>
+   * <p>
+   *   The provided map is used as the backing for the returned placeholder resolver. This means
+   *   that changes to the map will be reflected in the placeholder resolver.
+   * </p>
    *
-   * @param objects the objects
+   * @param map the map
    * @return the placeholder resolver
    * @since 4.10.0
    */
-  static @NotNull PlaceholderResolver resolving(final @NotNull Object @NotNull ... objects) {
-    final int size = Objects.requireNonNull(objects, "pairs").length;
-
-    if (size == 0) return empty();
-
-    String key = null;
-
-    final Map<String, Placeholder> placeholderMap = new HashMap<>(size);
-    for (int i = 0; i < size; i++) {
-      final Object obj = objects[i];
-
-      if (key == null) {
-        // we are looking for a key or a placeholder
-        if (obj instanceof Placeholder) {
-          final Placeholder placeholder = (Placeholder) obj;
-          placeholderMap.put(placeholder.key(), placeholder);
-        } else if (obj instanceof String) {
-          key = (String) obj;
-        } else {
-          throw new IllegalArgumentException("Argument " + i + " in pairs must be a String key or a Placeholder, was " + obj.getClass().getName());
-        }
-      } else {
-        // we are looking for a value
-        if (obj instanceof String) {
-          placeholderMap.put(key, Placeholder.placeholder(key, (String) obj));
-        } else if (obj instanceof ComponentLike) {
-          placeholderMap.put(key, Placeholder.placeholder(key, (ComponentLike) obj));
-        } else {
-          throw new IllegalArgumentException("Argument " + i + " in pairs must be a String or ComponentLike value, was " + obj.getClass().getName());
-        }
-
-        key = null;
-      }
-    }
-
-    if (key != null) {
-      throw new IllegalArgumentException("Found key \"" + key + "\" in objects that wasn't followed by a value.");
-    }
-
-    if (placeholderMap.isEmpty()) return empty();
-
-    return new MapPlaceholderResolver(placeholderMap);
-  }
-
-  /**
-   * Constructs a placeholder resolver from key-value pairs.
-   *
-   * <p>The values must be instances of String, {@link ComponentLike} or {@link Placeholder}.</p>
-   *
-   * @param pairs the key-value pairs
-   * @return the placeholder resolver
-   * @since 4.10.0
-   */
-  static @NotNull PlaceholderResolver pairs(final @NotNull Map<String, ?> pairs) {
-    final int size = Objects.requireNonNull(pairs, "pairs").size();
-
-    if (size == 0) return empty();
-
-    final Map<String, Placeholder> placeholderMap = new HashMap<>(size);
-
-    for (final Map.Entry<String, ?> entry : pairs.entrySet()) {
-      final String key = Objects.requireNonNull(entry.getKey(), "pairs cannot contain null keys");
-      final Object value = entry.getValue();
-
-      if (value instanceof String) placeholderMap.put(key, Placeholder.placeholder(key, (String) value));
-      else if (value instanceof ComponentLike) placeholderMap.put(key, Placeholder.placeholder(key, (ComponentLike) value));
-      else if (value instanceof Placeholder) placeholderMap.put(key, (Placeholder) value);
-      else
-        throw new IllegalArgumentException("Values must be either ComponentLike or String but " + value + " was not.");
-    }
-
-    return new MapPlaceholderResolver(placeholderMap);
+  static @NotNull PlaceholderResolver map(final @NotNull Map<String, Placeholder> map) {
+    return new MapPlaceholderResolver(Objects.requireNonNull(map, "map"));
   }
 
   /**
@@ -194,14 +126,13 @@ public interface PlaceholderResolver {
   /**
    * Constructs a placeholder resolver capable of dynamically resolving placeholders.
    *
-   * <p>The {@code resolver} function must return instances of String, {@link ComponentLike} or {@link Placeholder}.
-   * The resolver can return {@code null} to indicate it cannot resolve a placeholder.</p>
+   * <p>The resolver can return {@code null} to indicate it cannot resolve a placeholder.</p>
    *
    * @param resolver the resolver
    * @return the placeholder resolver
    * @since 4.10.0
    */
-  static @NotNull PlaceholderResolver dynamic(final @NotNull Function<String, ?> resolver) {
+  static @NotNull PlaceholderResolver dynamic(final @NotNull Function<String, Placeholder> resolver) {
     return new DynamicPlaceholderResolver(Objects.requireNonNull(resolver, "resolver"));
   }
 
@@ -214,7 +145,10 @@ public interface PlaceholderResolver {
    * @since 4.10.0
    */
   static @NotNull PlaceholderResolver filtering(final @NotNull PlaceholderResolver placeholderResolver, final @NotNull Predicate<Placeholder> filter) {
-    return new FilteringPlaceholderResolver(Objects.requireNonNull(placeholderResolver, "placeholderResolver"), Objects.requireNonNull(filter, "filter"));
+    return new FilteringPlaceholderResolver(
+      Objects.requireNonNull(placeholderResolver, "placeholderResolver"),
+      Objects.requireNonNull(filter, "filter")
+    );
   }
 
   /**

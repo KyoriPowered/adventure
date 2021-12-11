@@ -24,32 +24,23 @@
 package net.kyori.adventure.text.minimessage.placeholder;
 
 import java.util.function.Function;
-import net.kyori.adventure.text.ComponentLike;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 final class DynamicPlaceholderResolver implements PlaceholderResolver {
-  private final Function<String, ?> resolver;
+  private final Function<String, Placeholder> resolver;
 
-  DynamicPlaceholderResolver(final Function<String, ?> resolver) {
+  DynamicPlaceholderResolver(final Function<String, Placeholder> resolver) {
     this.resolver = resolver;
   }
 
   @Override
   public boolean canResolve(final @NotNull String key) {
-    final Object result = this.resolver.apply(key);
-    return result instanceof String || result instanceof ComponentLike || result instanceof Placeholder;
+    return this.resolver.apply(key) != null;
   }
 
   @Override
   public @Nullable Placeholder resolve(final @NotNull String key) {
-    final Object result = this.resolver.apply(key);
-
-    if (result == null) return null;
-    else if (result instanceof String) return Placeholder.placeholder(key, (String) result);
-    else if (result instanceof ComponentLike) return Placeholder.placeholder(key, (ComponentLike) result);
-    else if (result instanceof Placeholder) return (Placeholder) result;
-
-    throw new IllegalArgumentException("Dynamic placeholder resolver must return instances of String or ComponentLike, instead found " + result.getClass().getName());
+    return this.resolver.apply(key);
   }
 }
