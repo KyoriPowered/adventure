@@ -86,9 +86,11 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
    * @param state the state
    * @return a {@link TextDecorationAndState}
    * @since 4.8.0
+   * @deprecated for removal since 4.10.0, use {@link #withState(boolean)} instead
    */
+  @Deprecated
   public final @NotNull TextDecorationAndState as(final boolean state) {
-    return this.as(State.byBoolean(state));
+    return this.withState(state);
   }
 
   /**
@@ -97,9 +99,11 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
    * @param state the state
    * @return a {@link TextDecorationAndState}
    * @since 4.8.0
+   * @deprecated for removal since 4.10.0, use {@link #withState(State)} instead
    */
+  @Deprecated
   public final @NotNull TextDecorationAndState as(final @NotNull State state) {
-    return new TextDecorationAndStateImpl(this, state);
+    return this.withState(state);
   }
 
   /**
@@ -110,7 +114,7 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
    * @since 4.10.0
    */
   public final @NotNull TextDecorationAndState withState(final boolean state) {
-    return this.as(State.byBoolean(state));
+    return new TextDecorationAndStateImpl(this, State.byBoolean(state));
   }
 
   /**
@@ -121,7 +125,18 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
    * @since 4.10.0
    */
   public final @NotNull TextDecorationAndState withState(final @NotNull State state) {
-    return this.as(state);
+    return new TextDecorationAndStateImpl(this, state);
+  }
+
+  /**
+   * An alias for {@link #as(State)}.
+   *
+   * @param state the state
+   * @return a {@link TextDecorationAndState}
+   * @since 4.10.0
+   */
+  public final @NotNull TextDecorationAndState withState(final @NotNull TriState state) {
+    return new TextDecorationAndStateImpl(this, State.byTriState(state));
   }
 
   @Override
