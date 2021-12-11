@@ -31,7 +31,7 @@
       "matchUpdateTypes": ["major"],
       "matchPackagePrefixes": ["org.spongepowered:configurate-"],
       "enabled": false
-    },
+    }
   ],
   "prHourlyLimit": 4,
   "pruneStaleBranches": false,
