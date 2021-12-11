@@ -4,7 +4,7 @@ plugins {
 
 dependencies {
   api(project(":adventure-api"))
-  api("org.spongepowered:configurate-core:3.7.2")
+  api("org.spongepowered:configurate-core:3.7.3")
   testImplementation(project(":adventure-text-serializer-gson"))
 }
 
