@@ -11,12 +11,16 @@
   "packageRules": [
     {
       "matchDepTypes": ["plugin"],
-      "matchManagers": ["gradle"],
       "groupName": "gradle plugins"
     },
     {
-      "matchPaths": ["/build-logic/", "/buildSrc/"],
+      "matchPaths": ["build-logic/**", "buildSrc/**"],
       "groupName": "gradle plugins"
+    },
+    {
+      "description": "Group packages from guava monorepo together",
+      "matchSourceUrlPrefixes": ["https://github.com/google/guava"],
+      "groupName": "guava monorepo",
     },
     {
       "matchUpdateTypes": ["patch"],
@@ -27,7 +31,7 @@
       "matchUpdateTypes": ["major"],
       "matchPackagePrefixes": ["org.spongepowered:configurate-"],
       "enabled": false
-    }
+    },
   ],
   "prHourlyLimit": 4,
   "pruneStaleBranches": false,
