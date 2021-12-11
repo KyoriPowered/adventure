@@ -28,6 +28,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 import org.jetbrains.annotations.NotNull;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Carries needed context for minimessage around, ranging from debug info to the
  * configured minimessage instance.
@@ -78,7 +80,7 @@ class ContextImpl implements Context {
   }
 
   @Override
-  public String originalMessage() {
+  public @NotNull String originalMessage() {
     return this.originalMessage;
   }
 
@@ -91,7 +93,7 @@ class ContextImpl implements Context {
   }
 
   @Override
-  public Component parse(final String message) {
-    return this.miniMessage.deserialize(message, this.placeholderResolver);
+  public @NotNull Component parse(final @NotNull String message) {
+    return this.miniMessage.deserialize(requireNonNull(message, "message"), this.placeholderResolver);
   }
 }

@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage;
 
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Parser context for use within transformations.
@@ -41,7 +42,7 @@ public interface Context {
    * @return ogMessage
    * @since 4.10.0
    */
-  String originalMessage();
+  @NotNull String originalMessage();
 
   /**
    * Parses a MiniMessage using all the settings of this context, including placeholders.
@@ -50,5 +51,5 @@ public interface Context {
    * @return the parsed message
    * @since 4.10.0
    */
-  Component parse(String message);
+  @NotNull Component parse(final @NotNull String message);
 }
