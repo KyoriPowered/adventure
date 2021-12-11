@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.minimessage;
 
 import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Parser context for use within transformations.
@@ -32,6 +33,7 @@ import net.kyori.adventure.text.Component;
  *
  * @since 4.10.0
  */
+@ApiStatus.NonExtendable
 public interface Context {
   /**
    * Returns original message as provided to the parser.
