@@ -10,6 +10,11 @@
   ],
   "packageRules": [
     {
+      "matchUpdateTypes": ["patch"],
+      "excludePackageNames": ["gradle"],
+      "groupName": "patch-release dependency changes"
+    },
+    {
       "matchDepTypes": ["plugin"],
       "groupName": "gradle plugins"
     },
@@ -21,11 +26,6 @@
       "description": "Group packages from guava monorepo together",
       "matchSourceUrlPrefixes": ["https://github.com/google/guava"],
       "groupName": "guava monorepo"
-    },
-    {
-      "matchUpdateTypes": ["patch"],
-      "excludePackageNames": ["gradle"],
-      "groupName": "patch-release dependency changes"
     },
     {
       "matchUpdateTypes": ["major"],
