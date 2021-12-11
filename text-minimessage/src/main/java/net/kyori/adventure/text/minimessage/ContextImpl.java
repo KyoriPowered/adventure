@@ -25,7 +25,6 @@ package net.kyori.adventure.text.minimessage;
 
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,9 +37,7 @@ import org.jetbrains.annotations.NotNull;
 class ContextImpl implements Context {
   private final boolean strict;
   private final Appendable debugOutput;
-  private ElementNode root;
   private final String originalMessage;
-  private final String replacedMessage;
   private final MiniMessage miniMessage;
   private final PlaceholderResolver placeholderResolver;
   private final UnaryOperator<Component> postProcessor;
@@ -48,18 +45,14 @@ class ContextImpl implements Context {
   ContextImpl(
     final boolean strict,
     final Appendable debugOutput,
-    final ElementNode root,
     final String originalMessage,
-    final String replacedMessage,
     final MiniMessage miniMessage,
     final @NotNull PlaceholderResolver placeholderResolver,
     final UnaryOperator<Component> postProcessor
   ) {
     this.strict = strict;
     this.debugOutput = debugOutput;
-    this.root = root;
     this.originalMessage = originalMessage;
-    this.replacedMessage = replacedMessage;
     this.miniMessage = miniMessage;
     this.placeholderResolver = placeholderResolver;
     this.postProcessor = postProcessor == null ? UnaryOperator.identity() : postProcessor;
@@ -73,26 +66,15 @@ class ContextImpl implements Context {
     final PlaceholderResolver placeholderResolver,
     final UnaryOperator<Component> postProcessor
   ) {
-    return new ContextImpl(strict, debugOutput, null, input, null, miniMessage, placeholderResolver, postProcessor);
+    return new ContextImpl(strict, debugOutput, input, miniMessage, placeholderResolver, postProcessor);
   }
 
-  void root(final ElementNode root) {
-    this.root = root;
-  }
-
-  @Override
   public boolean strict() {
     return this.strict;
   }
 
-  @Override
   public Appendable debugOutput() {
     return this.debugOutput;
-  }
-
-  @Override
-  public ElementNode tokens() {
-    return this.root;
   }
 
   @Override
@@ -100,21 +82,10 @@ class ContextImpl implements Context {
     return this.originalMessage;
   }
 
-  @Override
-  public String replacedMessage() {
-    return this.replacedMessage;
-  }
-
-  public MiniMessage miniMessage() {
-    return this.miniMessage;
-  }
-
-  @Override
   public @NotNull PlaceholderResolver placeholderResolver() {
     return this.placeholderResolver;
   }
 
-  @Override
   public UnaryOperator<Component> postProcessor() {
     return this.postProcessor;
   }

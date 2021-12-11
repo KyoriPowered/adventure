@@ -61,13 +61,13 @@ final class MiniMessageParser {
     this.placeholderResolver = placeholderResolver;
   }
 
-  @NotNull String escapeTokens(final @NotNull String richMessage, final @NotNull Context context) {
+  @NotNull String escapeTokens(final @NotNull String richMessage, final @NotNull ContextImpl context) {
     final StringBuilder sb = new StringBuilder(richMessage.length());
     this.escapeTokens(sb, richMessage, context);
     return sb.toString();
   }
 
-  void escapeTokens(final StringBuilder sb, final @NotNull String richMessage, final @NotNull Context context) {
+  void escapeTokens(final StringBuilder sb, final @NotNull String richMessage, final @NotNull ContextImpl context) {
     this.processTokens(sb, richMessage, context, (token, builder) -> {
       builder.append('\\').append(Tokens.TAG_START);
       if (token.type() == TokenType.CLOSE_TAG) {
@@ -84,13 +84,13 @@ final class MiniMessageParser {
     });
   }
 
-  @NotNull String stripTokens(final @NotNull String richMessage, final @NotNull Context context) {
+  @NotNull String stripTokens(final @NotNull String richMessage, final @NotNull ContextImpl context) {
     final StringBuilder sb = new StringBuilder(richMessage.length());
     this.processTokens(sb, richMessage, context, (token, builder) -> {});
     return sb.toString();
   }
 
-  private void processTokens(final @NotNull StringBuilder sb, final @NotNull String richMessage, final @NotNull Context context, final BiConsumer<Token, StringBuilder> tagHandler) {
+  private void processTokens(final @NotNull StringBuilder sb, final @NotNull String richMessage, final @NotNull ContextImpl context, final BiConsumer<Token, StringBuilder> tagHandler) {
     final PlaceholderResolver combinedResolver = PlaceholderResolver.combining(context.placeholderResolver(), this.placeholderResolver);
     final List<Token> root = TokenParser.tokenize(richMessage);
     for (final Token token : root) {
@@ -186,11 +186,10 @@ final class MiniMessageParser {
       }
     }
 
-    context.root(root);
     return Objects.requireNonNull(context.postProcessor().apply(this.treeToComponent(root, context)), "Post-processor must not return null");
   }
 
-  @NotNull Component treeToComponent(final @NotNull ElementNode node, final @NotNull Context context) {
+  @NotNull Component treeToComponent(final @NotNull ElementNode node, final @NotNull ContextImpl context) {
     Component comp;
     Transformation transformation = null;
     if (node instanceof ValueNode) {

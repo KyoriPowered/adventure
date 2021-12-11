@@ -23,72 +23,23 @@
  */
 package net.kyori.adventure.text.minimessage;
 
-import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
-import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 
 /**
  * Parser context for use within transformations.
+ *
+ * <p>This allows operating recursive parses, for cases where messages may include tokens.</p>
  *
  * @since 4.10.0
  */
 public interface Context {
   /**
-   * Returns strict mode.
-   *
-   * @return if strict mode is enabled
-   * @since 4.10.0
-   */
-  boolean strict();
-
-  /**
-   * Returns the appendable to print debug output to.
-   *
-   * @return the debug output to print to
-   * @since 4.10.0
-   */
-  Appendable debugOutput();
-
-  /**
-   * Returns the root element.
-   *
-   * @return root
-   * @since 4.10.0
-   */
-  ElementNode tokens();
-
-  /**
-   * Returns original message.
+   * Returns original message as provided to the parser.
    *
    * @return ogMessage
    * @since 4.10.0
    */
   String originalMessage();
-
-  /**
-   * Returns replaced message.
-   *
-   * @return replacedMessage
-   * @since 4.10.0
-   */
-  String replacedMessage();
-
-  /**
-   * Returns the placeholder resolver.
-   *
-   * @return the placeholder resolver
-   * @since 4.10.0
-   */
-  PlaceholderResolver placeholderResolver();
-
-  /**
-   * Returns callback ran at the end of parsing which could be used to compact the output.
-   *
-   * @return Post-processing function
-   * @since 4.10.0
-   */
-  UnaryOperator<Component> postProcessor();
 
   /**
    * Parses a MiniMessage using all the settings of this context, including placeholders.
