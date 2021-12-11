@@ -15,17 +15,17 @@
       "groupName": "patch-release dependency changes"
     },
     {
+      "description": "Group packages from guava monorepo together",
+      "matchSourceUrlPrefixes": ["https://github.com/google/guava"],
+      "groupName": "guava monorepo"
+    },
+    {
       "matchDepTypes": ["plugin"],
       "groupName": "gradle plugins"
     },
     {
-      "matchPaths": ["build-logic/**", "buildSrc/**"],
+      "matchPaths": ["build-logic/*", "buildSrc/*"],
       "groupName": "gradle plugins"
-    },
-    {
-      "description": "Group packages from guava monorepo together",
-      "matchSourceUrlPrefixes": ["https://github.com/google/guava"],
-      "groupName": "guava monorepo"
     },
     {
       "matchUpdateTypes": ["major"],
