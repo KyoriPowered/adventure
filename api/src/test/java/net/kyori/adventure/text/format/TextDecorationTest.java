@@ -40,6 +40,12 @@ class TextDecorationTest {
   }
 
   @Test
+  void testWithStateThrowsOnNull() {
+    assertThrows(NullPointerException.class, () -> TextDecoration.BOLD.withState((TextDecoration.State) null));
+    assertThrows(NullPointerException.class, () -> TextDecoration.BOLD.withState((TriState) null));
+  }
+
+  @Test
   void testByTristate() {
     assertEquals(TextDecoration.State.NOT_SET, TextDecoration.State.byTriState(TriState.NOT_SET));
     assertEquals(TextDecoration.State.FALSE, TextDecoration.State.byTriState(TriState.FALSE));
