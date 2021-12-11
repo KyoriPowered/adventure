@@ -29,6 +29,7 @@ import com.google.gson.JsonPrimitive;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.serializer.gson.GsonTest.array;
@@ -63,7 +64,7 @@ class GsonComponentSerializerTest {
   }
 
   @Test
-  public void testPre116Downsamples() {
+  void testPre116Downsamples() {
     final TextColor original = TextColor.color(0xAB2211);
     final NamedTextColor downsampled = NamedTextColor.nearestTo(original);
     final Component test = Component.text("meow", original);
@@ -71,12 +72,22 @@ class GsonComponentSerializerTest {
   }
 
   @Test
-  public void testPre116DownsamplesInChildren() {
+  void testPre116DownsamplesInChildren() {
     final TextColor original = TextColor.color(0xEC41AA);
     final NamedTextColor downsampled = NamedTextColor.nearestTo(original);
     final Component test = Component.text(builder -> builder.content("hey").append(Component.text("there", original)));
-
     assertEquals("{\"extra\":[{\"color\":\"" + name(downsampled) + "\",\"text\":\"there\"}],\"text\":\"hey\"}", GsonComponentSerializer.colorDownsamplingGson().serializer().toJson(test));
+  }
+
+  // https://github.com/KyoriPowered/adventure/issues/447
+  @Test
+  void testDeserializeJsonNull() {
+    final @Nullable Component result = GsonComponentSerializer.gson().deserializeOr("null", null);
+    assertEquals(null, result);
+    final JsonParseException ex = assertThrows(JsonParseException.class, () -> {
+      GsonComponentSerializer.gson().deserialize("null");
+    });
+    assertEquals("Don't know how to turn null into a Component", ex.getMessage());
   }
 
   private static String name(final NamedTextColor color) {
