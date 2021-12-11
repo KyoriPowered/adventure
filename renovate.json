@@ -1,0 +1,39 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "ignoreDeps": [
+    "com.google.code.gson:gson"
+  ],
+  "labels": [
+    "dependencies"
+  ],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["patch"],
+      "excludePackageNames": ["gradle"],
+      "groupName": "patch-release dependency changes"
+    },
+    {
+      "matchDepTypes": ["plugin"],
+      "groupName": "gradle plugins"
+    },
+    {
+      "matchPaths": ["build-logic/**", "buildSrc/**"],
+      "groupName": "gradle plugins"
+    },
+    {
+      "description": "Group packages from guava monorepo together",
+      "matchSourceUrlPrefixes": ["https://github.com/google/guava"],
+      "groupName": "guava monorepo"
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "matchPackagePrefixes": ["org.spongepowered:configurate-"],
+      "enabled": false
+    }
+  ],
+  "prHourlyLimit": 4,
+  "pruneStaleBranches": false,
+  "semanticCommitType": "build"
+}
