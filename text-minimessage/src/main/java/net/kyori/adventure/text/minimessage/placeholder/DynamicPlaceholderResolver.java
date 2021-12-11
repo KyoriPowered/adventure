@@ -23,19 +23,23 @@
  */
 package net.kyori.adventure.text.minimessage.placeholder;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 final class DynamicPlaceholderResolver implements PlaceholderResolver {
   private final Function<String, Replacement<?>> resolver;
+  private final Map<String, Replacement<?>> cache;
 
   DynamicPlaceholderResolver(final Function<String, Replacement<?>> resolver) {
     this.resolver = resolver;
+    this.cache = new HashMap<>();
   }
 
   @Override
   public @Nullable Replacement<?> resolve(final @NotNull String key) {
-    return this.resolver.apply(key);
+    return this.cache.computeIfAbsent(key, this.resolver);
   }
 }
