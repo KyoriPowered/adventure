@@ -27,9 +27,6 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * A placeholder resolver based on a map.
- */
 final class MapPlaceholderResolver implements PlaceholderResolver {
   private final Map<String, Placeholder> placeholderMap;
 

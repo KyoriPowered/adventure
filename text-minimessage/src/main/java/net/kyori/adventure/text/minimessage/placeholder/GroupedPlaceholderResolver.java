@@ -26,9 +26,6 @@ package net.kyori.adventure.text.minimessage.placeholder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * A placeholder resolver that resolves from multiple sources.
- */
 final class GroupedPlaceholderResolver implements PlaceholderResolver {
   private final Iterable<? extends PlaceholderResolver> placeholderResolvers;
 

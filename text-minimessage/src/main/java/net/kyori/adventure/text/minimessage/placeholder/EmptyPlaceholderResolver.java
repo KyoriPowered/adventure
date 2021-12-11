@@ -26,9 +26,6 @@ package net.kyori.adventure.text.minimessage.placeholder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * An empty placeholder resolver that has no placeholders.
- */
 final class EmptyPlaceholderResolver implements PlaceholderResolver {
   static final EmptyPlaceholderResolver INSTANCE = new EmptyPlaceholderResolver();
 
