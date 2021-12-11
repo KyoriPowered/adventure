@@ -23,15 +23,10 @@
  */
 package net.kyori.adventure.text.minimessage;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
 import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
-import net.kyori.adventure.text.minimessage.placeholder.Replacement;
 import net.kyori.examination.string.MultiLineStringExaminer;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,7 +40,7 @@ public class TestBase {
     this.assertParsedEquals(this.PARSER, expected, input);
   }
 
-  void assertParsedEquals(final @NotNull Component expected, final @NotNull String input, final @NotNull Object... args) {
+  void assertParsedEquals(final @NotNull Component expected, final @NotNull String input, final @NotNull Placeholder<?>... args) {
     this.assertParsedEquals(this.PARSER, expected, input, args);
   }
 
@@ -55,57 +50,13 @@ public class TestBase {
     assertEquals(expectedSerialized, actual);
   }
 
-  void assertParsedEquals(final MiniMessage miniMessage, final Component expected, final String input, final @NotNull Object... args) {
+  void assertParsedEquals(final MiniMessage miniMessage, final Component expected, final String input, final @NotNull Placeholder<?>... args) {
     final String expectedSerialized = this.prettyPrint(expected.compact());
-    final String actual = this.prettyPrint(miniMessage.deserialize(input, resolving(args)).compact());
+    final String actual = this.prettyPrint(miniMessage.deserialize(input, PlaceholderResolver.placeholders(args)).compact());
     assertEquals(expectedSerialized, actual);
   }
 
   final String prettyPrint(final Component component) {
     return component.examine(MultiLineStringExaminer.simpleEscaping()).collect(Collectors.joining("\n"));
-  }
-
-  final PlaceholderResolver resolving(final @NotNull Object @NotNull ... objects) {
-    final int size = Objects.requireNonNull(objects, "pairs").length;
-
-    if (size == 0) return PlaceholderResolver.empty();
-
-    String key = null;
-
-    final Map<String, Replacement<?>> replacementMap = new HashMap<>(size);
-    for (int i = 0; i < size; i++) {
-      final Object obj = objects[i];
-
-      if (key == null) {
-        // we are looking for a key or a placeholder
-        if (obj instanceof Placeholder<?>) {
-          final Placeholder<?> placeholder = (Placeholder<?>) obj;
-          replacementMap.put(placeholder.key(), placeholder);
-        } else if (obj instanceof String) {
-          key = (String) obj;
-        } else {
-          throw new IllegalArgumentException("Argument " + i + " in pairs must be a String key or a Placeholder, was " + obj.getClass().getName());
-        }
-      } else {
-        // we are looking for a value
-        if (obj instanceof String) {
-          replacementMap.put(key, Replacement.miniMessage((String) obj));
-        } else if (obj instanceof ComponentLike) {
-          replacementMap.put(key, Replacement.component((ComponentLike) obj));
-        } else {
-          throw new IllegalArgumentException("Argument " + i + " in pairs must be a String or ComponentLike value, was " + obj.getClass().getName());
-        }
-
-        key = null;
-      }
-    }
-
-    if (key != null) {
-      throw new IllegalArgumentException("Found key \"" + key + "\" in objects that wasn't followed by a value.");
-    }
-
-    if (replacementMap.isEmpty()) return PlaceholderResolver.empty();
-
-    return PlaceholderResolver.map(replacementMap);
   }
 }
