@@ -74,21 +74,6 @@ public interface Placeholder extends Examinable {
   }
 
   /**
-   * Constructs a placeholder that gets replaced with a component lazily.
-   *
-   * @param key the placeholder
-   * @param value the supplier that supplies the component to replace the key with
-   * @return the constructed placeholder
-   * @since 4.10.0
-   */
-  static @NotNull Placeholder placeholder(final @NotNull String key, final @NotNull Supplier<? extends ComponentLike> value) {
-    return new LazyComponentPlaceholder(
-        requireNonNull(key, "key"),
-        requireNonNull(value, "value")
-    );
-  }
-
-  /**
    * Get the key for this placeholder.
    *
    * @return the key
@@ -181,36 +166,6 @@ public interface Placeholder extends Examinable {
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
         ExaminableProperty.of("key", this.key),
-        ExaminableProperty.of("value", this.value)
-      );
-    }
-  }
-
-  /**
-   * A placeholder with a lazily provided {@link Component} value that will be inserted directly.
-   *
-   * @since 4.10.0
-   */
-  @ApiStatus.Internal
-  class LazyComponentPlaceholder extends ComponentPlaceholder {
-    private final @NotNull Supplier<? extends ComponentLike> value;
-
-    public LazyComponentPlaceholder(final @NotNull String key, final @NotNull Supplier<? extends ComponentLike> value) {
-      super(key, Component.empty());
-      this.value = value;
-    }
-
-    @Override
-    public @NotNull Component value() {
-      return requireNonNull(requireNonNull(
-          this.value.get(), () -> "get() value of " + this.value)
-          .asComponent(), () -> "asComponent() on value of " + this.value);
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-      return Stream.of(
-        ExaminableProperty.of("key", this.key()),
         ExaminableProperty.of("value", this.value)
       );
     }
