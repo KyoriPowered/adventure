@@ -34,15 +34,6 @@ final class GroupedPlaceholderResolver implements PlaceholderResolver {
   }
 
   @Override
-  public boolean canResolve(final @NotNull String key) {
-    for (final PlaceholderResolver placeholderResolver : this.placeholderResolvers) {
-      if (placeholderResolver.canResolve(key)) return true;
-    }
-
-    return false;
-  }
-
-  @Override
   public @Nullable Replacement<?> resolve(final @NotNull String key) {
     for (final PlaceholderResolver placeholderResolver : this.placeholderResolvers) {
       final Replacement<?> placeholder = placeholderResolver.resolve(key);

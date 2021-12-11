@@ -33,11 +33,6 @@ final class EmptyPlaceholderResolver implements PlaceholderResolver {
   }
 
   @Override
-  public boolean canResolve(final @NotNull String key) {
-    return false;
-  }
-
-  @Override
   public @Nullable Replacement<?> resolve(final @NotNull String key) {
     return null;
   }

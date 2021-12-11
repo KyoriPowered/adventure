@@ -38,6 +38,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.10.0
  */
+@FunctionalInterface
 public interface PlaceholderResolver {
   /**
    * Constructs a placeholder resolver from a map.
@@ -144,15 +145,6 @@ public interface PlaceholderResolver {
   static @NotNull PlaceholderResolver empty() {
     return EmptyPlaceholderResolver.INSTANCE;
   }
-
-  /**
-   * Checks if this placeholder resolver can resolve a placeholder from a key.
-   *
-   * @param key the key
-   * @return if a placeholder can be resolved from this key
-   * @since 4.10.0
-   */
-  boolean canResolve(final @NotNull String key);
 
   /**
    * Returns the replacement for a given key, if any exist.

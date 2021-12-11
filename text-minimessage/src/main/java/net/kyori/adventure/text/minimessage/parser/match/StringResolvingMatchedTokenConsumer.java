@@ -73,17 +73,15 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
         this.builder.append(match);
       } else {
         // we might care if it's a placeholder!
-        if (this.placeholderResolver.canResolve(tag)) {
-          final Replacement<?> replacement = this.placeholderResolver.resolve(tag);
+        final Replacement<?> replacement = this.placeholderResolver.resolve(tag);
 
-          if (replacement != null) {
-            final Object value = replacement.value();
+        if (replacement != null) {
+          final Object value = replacement.value();
 
-            // we only care about string placeholders!
-            if (value instanceof String) {
-              this.builder.append((String) value);
-              return;
-            }
+          // we only care about string placeholders!
+          if (value instanceof String) {
+            this.builder.append((String) value);
+            return;
           }
         }
 

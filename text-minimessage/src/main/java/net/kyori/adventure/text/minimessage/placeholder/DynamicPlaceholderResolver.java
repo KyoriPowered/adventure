@@ -35,11 +35,6 @@ final class DynamicPlaceholderResolver implements PlaceholderResolver {
   }
 
   @Override
-  public boolean canResolve(final @NotNull String key) {
-    return this.resolver.apply(key) != null;
-  }
-
-  @Override
   public @Nullable Replacement<?> resolve(final @NotNull String key) {
     return this.resolver.apply(key);
   }

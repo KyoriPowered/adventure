@@ -115,7 +115,7 @@ final class TransformationRegistryImpl implements TransformationRegistry {
   @Override
   public boolean exists(final String name, final PlaceholderResolver placeholderResolver) {
     // first check the placeholder resolver
-    if (placeholderResolver.canResolve(name)) {
+    if (placeholderResolver.resolve(name) != null) {
       return true;
     }
     // then check registry
