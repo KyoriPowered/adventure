@@ -34,8 +34,8 @@ public class PlaceholderTest {
   // https://github.com/KyoriPowered/adventure-text-minimessage/issues/190
   @Test
   void testCaseOfPlaceholders() {
-    assertThrows(IllegalArgumentException.class, () -> Placeholder.placeholder("HI", "hi"));
-    assertThrows(IllegalArgumentException.class, () -> Placeholder.placeholder("HI", text("hi")));
-    assertThrows(IllegalArgumentException.class, () -> Placeholder.placeholder("HI", () -> text("hi")));
+    assertThrows(IllegalArgumentException.class, () -> Placeholder.miniMessage("HI", "hi"));
+    assertThrows(IllegalArgumentException.class, () -> Placeholder.component("HI", text("hi")));
+    assertThrows(IllegalArgumentException.class, () -> Placeholder.component("HI", () -> text("hi")));
   }
 }

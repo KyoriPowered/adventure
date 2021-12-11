@@ -43,9 +43,9 @@ final class GroupedPlaceholderResolver implements PlaceholderResolver {
   }
 
   @Override
-  public @Nullable Placeholder resolve(final @NotNull String key) {
+  public @Nullable Replacement<?> resolve(final @NotNull String key) {
     for (final PlaceholderResolver placeholderResolver : this.placeholderResolvers) {
-      final Placeholder placeholder = placeholderResolver.resolve(key);
+      final Replacement<?> placeholder = placeholderResolver.resolve(key);
       if (placeholder != null) return placeholder;
     }
 

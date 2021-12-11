@@ -23,68 +23,55 @@
  */
 package net.kyori.adventure.text.minimessage.placeholder;
 
-import java.util.Locale;
 import java.util.Objects;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
+import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A replacement with an associated key.
+ * The result of a resolved placeholder.
  *
  * @param <T> the type of the replacement
  * @since 4.10.0
  */
 @ApiStatus.NonExtendable
-public interface Placeholder<T> extends Replacement<T> {
+public interface Replacement<T> extends Examinable {
 
   /**
-   * Creates a placeholder that inserts a MiniMessage string. The inserted string will impact
+   * Creates a replacement that inserts a MiniMessage string. The inserted string will impact
    * the rest of the parse process.
    *
-   * @param key the key
-   * @param value the replacement
-   * @return the placeholder
+   * @param miniMessage the string
+   * @return the replacement
    * @since 4.10.0
    */
-  static @NotNull Placeholder<String> miniMessage(final @NotNull String key, final @NotNull String value) {
-    if (!Objects.requireNonNull(key, "key").equals(key.toLowerCase(Locale.ROOT)))
-      throw new IllegalArgumentException("key must be lowercase, was " + key);
-
-    return new PlaceholderImpl<>(key, Objects.requireNonNull(value, "value"));
+  static @NotNull Replacement<String> miniMessage(final @NotNull String miniMessage) {
+    return new ReplacementImpl<>(Objects.requireNonNull(miniMessage, "miniMessage"));
   }
 
   /**
    * Creates a replacement that inserts a component.
    *
-   * @param key the key
-   * @param value the replacement
-   * @return the placeholder
+   * @param component the component
+   * @return the replacement
    * @since 4.10.0
    */
-  static @NotNull Placeholder<Component> component(final @NotNull String key, final @NotNull ComponentLike value) {
-    if (!Objects.requireNonNull(key, "key").equals(key.toLowerCase(Locale.ROOT)))
-      throw new IllegalArgumentException("key must be lowercase, was " + key);
-
-    return new PlaceholderImpl<>(
-      key,
+  static @NotNull Replacement<Component> component(final @NotNull ComponentLike component) {
+    return new ReplacementImpl<>(
       Objects.requireNonNull(
-        Objects.requireNonNull(value, "value").asComponent(),
-        "value must not resolve to null"
+        Objects.requireNonNull(component, "component").asComponent(),
+        "component cannot resolve to null"
       )
     );
   }
 
   /**
-   * Get the key for this placeholder.
+   * The value of the replacement.
    *
-   * <p>
-   *   The key will always be lowercase.
-   * </p>
-   *
-   * @return the key
+   * @return the value
    * @since 4.10.0
    */
-  @NotNull String key();
+  @NotNull T value();
 }

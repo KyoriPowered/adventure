@@ -23,28 +23,30 @@
  */
 package net.kyori.adventure.text.minimessage.placeholder;
 
-import java.util.function.Predicate;
+import java.util.stream.Stream;
+import net.kyori.examination.ExaminableProperty;
+import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-final class FilteringPlaceholderResolver implements PlaceholderResolver {
-  private final PlaceholderResolver placeholderResolver;
-  private final Predicate<Placeholder> filter;
+final class ReplacementImpl<T> implements Replacement<T> {
+  private final T value;
 
-  FilteringPlaceholderResolver(final PlaceholderResolver placeholderResolver, final Predicate<Placeholder> filter) {
-    this.placeholderResolver = placeholderResolver;
-    this.filter = filter;
+  ReplacementImpl(final @NotNull T value) {
+    this.value = value;
   }
 
   @Override
-  public boolean canResolve(final @NotNull String key) {
-    return this.resolve(key) != null;
+  public @NotNull T value() {
+    return this.value;
   }
 
   @Override
-  public @Nullable Placeholder resolve(final @NotNull String key) {
-    final Placeholder placeholder = this.placeholderResolver.resolve(key);
-    if (placeholder == null || this.filter.test(placeholder)) return null;
-    return placeholder;
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(ExaminableProperty.of("value", this.value));
+  }
+
+  @Override
+  public String toString() {
+    return StringExaminer.simpleEscaping().examine(this);
   }
 }

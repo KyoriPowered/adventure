@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,7 +51,7 @@ public interface PlaceholderResolver {
    * @return the placeholder resolver
    * @since 4.10.0
    */
-  static @NotNull PlaceholderResolver map(final @NotNull Map<String, Placeholder> map) {
+  static @NotNull PlaceholderResolver map(final @NotNull Map<String, Replacement<?>> map) {
     return new MapPlaceholderResolver(Objects.requireNonNull(map, "map"));
   }
 
@@ -63,7 +62,7 @@ public interface PlaceholderResolver {
    * @return the placeholder resolver
    * @since 4.10.0
    */
-  static @NotNull PlaceholderResolver placeholders(final @NotNull Placeholder @NotNull ... placeholders) {
+  static @NotNull PlaceholderResolver placeholders(final @NotNull Placeholder<?> @NotNull ... placeholders) {
     if (Objects.requireNonNull(placeholders, "placeholders").length == 0) return empty();
     return placeholders(Arrays.asList(placeholders));
   }
@@ -75,10 +74,10 @@ public interface PlaceholderResolver {
    * @return the placeholder resolver
    * @since 4.10.0
    */
-  static @NotNull PlaceholderResolver placeholders(final @NotNull Iterable<? extends Placeholder> placeholders) {
-    final Map<String, Placeholder> placeholderMap = new HashMap<>();
+  static @NotNull PlaceholderResolver placeholders(final @NotNull Iterable<? extends Placeholder<?>> placeholders) {
+    final Map<String, Placeholder<?>> placeholderMap = new HashMap<>();
 
-    for (final Placeholder placeholder : Objects.requireNonNull(placeholders, "placeholders")) {
+    for (final Placeholder<?> placeholder : Objects.requireNonNull(placeholders, "placeholders")) {
       Objects.requireNonNull(placeholder, "placeholders must not contain null elements");
       placeholderMap.put(placeholder.key(), placeholder);
     }
@@ -132,23 +131,8 @@ public interface PlaceholderResolver {
    * @return the placeholder resolver
    * @since 4.10.0
    */
-  static @NotNull PlaceholderResolver dynamic(final @NotNull Function<String, Placeholder> resolver) {
+  static @NotNull PlaceholderResolver dynamic(final @NotNull Function<String, Replacement<?>> resolver) {
     return new DynamicPlaceholderResolver(Objects.requireNonNull(resolver, "resolver"));
-  }
-
-  /**
-   * Constructs a placeholder resolver that uses the provided filter to prevent the resolving of placeholders that match the filter.
-   *
-   * @param placeholderResolver the placeholder resolver
-   * @param filter the filter
-   * @return the placeholder resolver
-   * @since 4.10.0
-   */
-  static @NotNull PlaceholderResolver filtering(final @NotNull PlaceholderResolver placeholderResolver, final @NotNull Predicate<Placeholder> filter) {
-    return new FilteringPlaceholderResolver(
-      Objects.requireNonNull(placeholderResolver, "placeholderResolver"),
-      Objects.requireNonNull(filter, "filter")
-    );
   }
 
   /**
@@ -171,11 +155,11 @@ public interface PlaceholderResolver {
   boolean canResolve(final @NotNull String key);
 
   /**
-   * Returns a placeholder from a given key, if any exist.
+   * Returns the replacement for a given key, if any exist.
    *
    * @param key the key
-   * @return the placeholder
+   * @return the replacement
    * @since 4.10.0
    */
-  @Nullable Placeholder resolve(final @NotNull String key);
+  @Nullable Replacement<?> resolve(final @NotNull String key);
 }

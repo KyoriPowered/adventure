@@ -38,7 +38,7 @@ final class EmptyPlaceholderResolver implements PlaceholderResolver {
   }
 
   @Override
-  public @Nullable Placeholder resolve(final @NotNull String key) {
+  public @Nullable Replacement<?> resolve(final @NotNull String key) {
     return null;
   }
 }
