@@ -237,12 +237,6 @@ public class MiniMessageTest extends TestBase {
   }
 
   @Test
-  void testUnbalancedPlaceholders() {
-    final String expected = "Argument 1 in pairs must be a String or ComponentLike value, was java.lang.Integer";
-    assertEquals(expected, assertThrows(IllegalArgumentException.class, () -> MiniMessage.miniMessage().deserialize("<a>", PlaceholderResolver.placeholders(Placeholder.component("a", text(2))))).getMessage());
-  }
-
-  @Test
   void testNodesInPlaceholder() {
     final Component expected = empty().color(RED)
         .append(text("MiniDigger"))

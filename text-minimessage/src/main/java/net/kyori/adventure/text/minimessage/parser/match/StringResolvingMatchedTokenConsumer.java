@@ -82,8 +82,8 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
             // we only care about string placeholders!
             if (value instanceof String) {
               this.builder.append((String) value);
+              return;
             }
-            return;
           }
         }
 

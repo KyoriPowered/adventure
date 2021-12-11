@@ -528,8 +528,8 @@ public final class TokenParser {
 
               if (value instanceof String) {
                 sb.append((String) value);
+                break;
               }
-              break;
             }
           }
           sb.append(token.get(message));
