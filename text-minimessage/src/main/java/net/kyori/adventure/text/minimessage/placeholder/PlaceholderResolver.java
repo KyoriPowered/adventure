@@ -43,10 +43,8 @@ public interface PlaceholderResolver {
   /**
    * Constructs a placeholder resolver from a map.
    *
-   * <p>
-   *   The provided map is used as the backing for the returned placeholder resolver. This means
-   *   that changes to the map will be reflected in the placeholder resolver.
-   * </p>
+   * <p>The provided map is used as the backing for the returned placeholder resolver.
+   * This means that changes to the map will be reflected in the placeholder resolver.</p>
    *
    * @param map the map
    * @return the placeholder resolver
@@ -126,11 +124,9 @@ public interface PlaceholderResolver {
   /**
    * Constructs a placeholder resolver capable of dynamically resolving placeholders.
    *
-   * <p>
-   *   The resolver can return {@code null} to indicate it cannot resolve a placeholder.
-   *   Once a string to replacement mapping has been created, it will be cached to avoid
-   *   the cost of recreating the replacement.
-   * </p>
+   * <p>The resolver can return {@code null} to indicate it cannot resolve a placeholder.
+   * Once a string to replacement mapping has been created, it will be cached to avoid
+   * the cost of recreating the replacement.</p>
    *
    * @param resolver the resolver
    * @return the placeholder resolver
@@ -153,11 +149,9 @@ public interface PlaceholderResolver {
   /**
    * Returns the replacement for a given key, if any exist.
    *
-   * <p>
-   *   This method might be called multiple times during each parse attempt. This is due to the
-   *   fact that it is used in places to check if a tag is a placeholder or not. Therefore, you
-   *   should prefer using fixed or cached replacements instead of dynamic construction.
-   * </p>
+   * <p>This method might be called multiple times during each parse attempt. This is due to the
+   * fact that it is used in places to check if a tag is a placeholder or not. Therefore, you
+   * should prefer using fixed or cached replacements instead of dynamic construction.</p>
    *
    * @param key the key
    * @return the replacement

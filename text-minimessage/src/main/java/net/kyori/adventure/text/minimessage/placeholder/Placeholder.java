@@ -79,9 +79,7 @@ public interface Placeholder<T> extends Replacement<T> {
   /**
    * Get the key for this placeholder.
    *
-   * <p>
-   *   The key will always be lowercase.
-   * </p>
+   * <p>The key will always be lowercase.</p>
    *
    * @return the key
    * @since 4.10.0

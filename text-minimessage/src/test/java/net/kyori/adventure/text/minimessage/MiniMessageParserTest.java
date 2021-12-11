@@ -523,7 +523,7 @@ public class MiniMessageParserTest extends TestBase {
         .append(text("CLICK HERE").decorate(BOLD).color(GREEN).clickEvent(openUrl("https://www.google.com")).hoverEvent(showText(text("/!\\ install it from Options/ResourcePacks in your game").color(GREEN))))
       );
 
-    this.assertParsedEquals(expected, input, miniMessage("pack_url","https://www.google.com"));
+    this.assertParsedEquals(expected, input, miniMessage("pack_url", "https://www.google.com"));
   }
 
   @Test
