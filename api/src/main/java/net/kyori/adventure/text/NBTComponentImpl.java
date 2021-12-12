@@ -98,6 +98,7 @@ abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTCompo
       super(component);
       this.nbtPath = component.nbtPath();
       this.interpret = component.interpret();
+      this.separator = component.separator();
     }
 
     @Override

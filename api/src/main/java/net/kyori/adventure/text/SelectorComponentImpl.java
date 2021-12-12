@@ -117,6 +117,7 @@ final class SelectorComponentImpl extends AbstractComponent implements SelectorC
     BuilderImpl(final @NotNull SelectorComponent component) {
       super(component);
       this.pattern = component.pattern();
+      this.separator = component.separator();
     }
 
     @Override
