@@ -43,6 +43,8 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jetbrains.annotations.Unmodifiable;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A style applies visual effects or extra functionality to {@link Component}s,
  * such as {@link TextColor}s, {@link TextDecoration}s, {@link ClickEvent}s etc.
@@ -705,6 +707,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      */
     @Contract("_ -> this")
     default @NotNull Builder decorations(final @NotNull Map<TextDecoration, TextDecoration.State> decorations) {
+      requireNonNull(decorations, "decorations");
       for (final Map.Entry<TextDecoration, TextDecoration.State> entry : decorations.entrySet()) {
         this.decoration(entry.getKey(), entry.getValue());
       }

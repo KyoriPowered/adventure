@@ -421,6 +421,9 @@ final class StyleImpl implements Style {
 
     @Override
     public @NotNull Builder merge(final @NotNull Style that, final Merge.@NotNull Strategy strategy, final @NotNull Set<Merge> merges) {
+      requireNonNull(that, "style");
+      requireNonNull(strategy, "strategy");
+      requireNonNull(merges, "merges");
       if (strategy == Merge.Strategy.NEVER || that.isEmpty() || merges.isEmpty()) {
         // nothing to merge
         return this;

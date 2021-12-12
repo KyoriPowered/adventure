@@ -59,7 +59,7 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
   @Override
   public @NotNull TranslatableComponent key(final @NotNull String key) {
     if (Objects.equals(this.key, key)) return this;
-    return new TranslatableComponentImpl(this.children, this.style, requireNonNull(key, "key"), this.args);
+    return new TranslatableComponentImpl(this.children, this.style, key, this.args);
   }
 
   @Override
@@ -69,22 +69,22 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
 
   @Override
   public @NotNull TranslatableComponent args(final @NotNull ComponentLike@NotNull... args) {
-    return new TranslatableComponentImpl(this.children, this.style, this.key, args);
+    return new TranslatableComponentImpl(this.children, this.style, this.key, requireNonNull(args, "args"));
   }
 
   @Override
   public @NotNull TranslatableComponent args(final @NotNull List<? extends ComponentLike> args) {
-    return new TranslatableComponentImpl(this.children, this.style, this.key, args);
+    return new TranslatableComponentImpl(this.children, this.style, this.key, requireNonNull(args, "args"));
   }
 
   @Override
   public @NotNull TranslatableComponent children(final @NotNull List<? extends ComponentLike> children) {
-    return new TranslatableComponentImpl(children, this.style, this.key, this.args);
+    return new TranslatableComponentImpl(requireNonNull(children, "children"), this.style, this.key, this.args);
   }
 
   @Override
   public @NotNull TranslatableComponent style(final @NotNull Style style) {
-    return new TranslatableComponentImpl(this.children, style, this.key, this.args);
+    return new TranslatableComponentImpl(this.children, requireNonNull(style, "style"), this.key, this.args);
   }
 
   @Override
@@ -141,30 +141,32 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
 
     @Override
     public @NotNull Builder args(final @NotNull ComponentBuilder<?, ?> arg) {
-      return this.args(Collections.singletonList(arg.build()));
+      return this.args(Collections.singletonList(requireNonNull(arg, "arg").build()));
     }
 
     @Override
     @SuppressWarnings("checkstyle:GenericWhitespace")
     public @NotNull Builder args(final @NotNull ComponentBuilder<?, ?>@NotNull... args) {
+      requireNonNull(args, "args");
       if (args.length == 0) return this.args(Collections.emptyList());
       return this.args(Stream.of(args).map(ComponentBuilder::build).collect(Collectors.toList()));
     }
 
     @Override
     public @NotNull Builder args(final @NotNull Component arg) {
-      return this.args(Collections.singletonList(arg));
+      return this.args(Collections.singletonList(requireNonNull(arg, "arg")));
     }
 
     @Override
     public @NotNull Builder args(final @NotNull ComponentLike@NotNull... args) {
+      requireNonNull(args, "args");
       if (args.length == 0) return this.args(Collections.emptyList());
       return this.args(Arrays.asList(args));
     }
 
     @Override
     public @NotNull Builder args(final @NotNull List<? extends ComponentLike> args) {
-      this.args = ComponentLike.asComponents(args);
+      this.args = ComponentLike.asComponents(requireNonNull(args, "args"));
       return this;
     }
 

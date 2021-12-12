@@ -79,17 +79,17 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   @Override
   public @NotNull TextComponent content(final @NotNull String content) {
     if (Objects.equals(this.content, content)) return this;
-    return new TextComponentImpl(this.children, this.style, requireNonNull(content, "content"));
+    return new TextComponentImpl(this.children, this.style, content);
   }
 
   @Override
   public @NotNull TextComponent children(final @NotNull List<? extends ComponentLike> children) {
-    return new TextComponentImpl(children, this.style, this.content);
+    return new TextComponentImpl(requireNonNull(children, "children"), this.style, this.content);
   }
 
   @Override
   public @NotNull TextComponent style(final @NotNull Style style) {
-    return new TextComponentImpl(this.children, style, this.content);
+    return new TextComponentImpl(this.children, requireNonNull(style, "style"), this.content);
   }
 
   @Override

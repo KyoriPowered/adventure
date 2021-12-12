@@ -31,6 +31,8 @@ import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static java.util.Objects.requireNonNull;
+
 abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> extends AbstractComponent implements NBTComponent<C, B> {
   static final boolean INTERPRET_DEFAULT = false;
   final String nbtPath;
@@ -96,12 +98,13 @@ abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTCompo
       super(component);
       this.nbtPath = component.nbtPath();
       this.interpret = component.interpret();
+      this.separator = component.separator();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public @NotNull B nbtPath(final @NotNull String nbtPath) {
-      this.nbtPath = nbtPath;
+      this.nbtPath = requireNonNull(nbtPath, "nbtPath");
       return (B) this;
     }
 
