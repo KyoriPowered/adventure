@@ -26,9 +26,6 @@ package net.kyori.adventure.text.minimessage.placeholder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * An empty placeholder resolver that has no placeholders.
- */
 final class EmptyPlaceholderResolver implements PlaceholderResolver {
   static final EmptyPlaceholderResolver INSTANCE = new EmptyPlaceholderResolver();
 
@@ -36,12 +33,7 @@ final class EmptyPlaceholderResolver implements PlaceholderResolver {
   }
 
   @Override
-  public boolean canResolve(final @NotNull String key) {
-    return false;
-  }
-
-  @Override
-  public @Nullable Placeholder resolve(final @NotNull String key) {
+  public @Nullable Replacement<?> resolve(final @NotNull String key) {
     return null;
   }
 }

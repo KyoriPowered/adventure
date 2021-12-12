@@ -25,9 +25,8 @@ package net.kyori.adventure.text.minimessage.parser.match;
 
 import java.util.function.Predicate;
 import net.kyori.adventure.text.minimessage.parser.TokenType;
-import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
-import net.kyori.adventure.text.minimessage.placeholder.Placeholder.StringPlaceholder;
 import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
+import net.kyori.adventure.text.minimessage.placeholder.Replacement;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -74,12 +73,14 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
         this.builder.append(match);
       } else {
         // we might care if it's a placeholder!
-        if (this.placeholderResolver.canResolve(tag)) {
-          final Placeholder placeholder = this.placeholderResolver.resolve(tag);
+        final Replacement<?> replacement = this.placeholderResolver.resolve(tag);
 
-          if (placeholder instanceof StringPlaceholder) {
-            // we only care about string placeholders!
-            this.builder.append(((StringPlaceholder) placeholder).value());
+        if (replacement != null) {
+          final Object value = replacement.value();
+
+          // we only care about string placeholders!
+          if (value instanceof String) {
+            this.builder.append((String) value);
             return;
           }
         }

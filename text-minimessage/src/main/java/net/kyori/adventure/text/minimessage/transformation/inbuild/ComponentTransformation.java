@@ -26,7 +26,6 @@ package net.kyori.adventure.text.minimessage.transformation.inbuild;
 import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
 import net.kyori.adventure.text.minimessage.transformation.Inserting;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import net.kyori.adventure.text.minimessage.transformation.TransformationFactory;
@@ -34,49 +33,48 @@ import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Inserts a formatted placeholder component into the result.
+ * Inserts a component into the result.
  *
  * @since 4.10.0
  */
-public final class PlaceholderTransformation extends Transformation implements Inserting {
-  private final Placeholder.@NotNull ComponentPlaceholder placeholder;
+public final class ComponentTransformation extends Transformation implements Inserting {
+  private final Component component;
 
-  private PlaceholderTransformation(final Placeholder.@NotNull ComponentPlaceholder placeholder) {
-    this.placeholder = placeholder;
+  private ComponentTransformation(final @NotNull Component component) {
+    this.component = component;
   }
 
   /**
-   * Create a new factory for placeholder transformations applying {@code placeholder}.
+   * Create a new factory for component transformations applying {@code component}.
    *
-   * @param placeholder the placeholder to apply
+   * @param component the component to apply
    * @since 4.10.0
    */
-  public static @NotNull TransformationFactory<PlaceholderTransformation> factory(final Placeholder.@NotNull ComponentPlaceholder placeholder) {
-    final PlaceholderTransformation instance = new PlaceholderTransformation(placeholder);
+  public static @NotNull TransformationFactory<ComponentTransformation> factory(final @NotNull Component component) {
+    final ComponentTransformation instance = new ComponentTransformation(Objects.requireNonNull(component, "component"));
     return (ctx, name, args) -> instance;
   }
 
   @Override
   public Component apply() {
-    return this.placeholder.value();
+    return this.component;
   }
 
   @Override
   public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.of(ExaminableProperty.of("placeholder", this.placeholder));
+    return Stream.of(ExaminableProperty.of("component", this.component));
   }
 
   @Override
   public boolean equals(final Object other) {
     if (this == other) return true;
     if (other == null || this.getClass() != other.getClass()) return false;
-    final PlaceholderTransformation that = (PlaceholderTransformation) other;
-    return Objects.equals(this.placeholder, that.placeholder);
+    final ComponentTransformation that = (ComponentTransformation) other;
+    return Objects.equals(this.component, that.component);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.placeholder);
+    return Objects.hash(this.component);
   }
-
 }

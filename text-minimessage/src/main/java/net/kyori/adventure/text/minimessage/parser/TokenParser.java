@@ -42,9 +42,8 @@ import net.kyori.adventure.text.minimessage.parser.node.RootNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.parser.node.TextNode;
-import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
-import net.kyori.adventure.text.minimessage.placeholder.Placeholder.StringPlaceholder;
 import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
+import net.kyori.adventure.text.minimessage.placeholder.Replacement;
 import net.kyori.adventure.text.minimessage.transformation.Inserting;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import org.jetbrains.annotations.NotNull;
@@ -369,11 +368,19 @@ public final class TokenParser {
             }
             node = root;
           } else {
-            final Placeholder placeholder = placeholderResolver.resolve(tagNode.name());
-            if (placeholder instanceof StringPlaceholder) {
-              // String placeholders are inserted into the tree as raw text nodes, not parsed
-              node.addChild(new PlaceholderNode(node, token, message, ((StringPlaceholder) placeholder).value()));
-            } else if (tagNameChecker.test(tagNode.name(), true)) {
+            final Replacement<?> replacement = placeholderResolver.resolve(tagNode.name());
+
+            if (replacement != null) {
+              final Object value = replacement.value();
+
+              if (value instanceof String) {
+                // String placeholders are inserted into the tree as raw text nodes, not parsed
+                node.addChild(new PlaceholderNode(node, token, message, (String) value));
+                break;
+              }
+            }
+
+            if (tagNameChecker.test(tagNode.name(), true)) {
               final Transformation transformation = transformationFactory.apply(tagNode);
               if (transformation == null) {
                 // something went wrong, ignore it
@@ -515,10 +522,14 @@ public final class TokenParser {
         case OPEN_TAG:
           if (token.childTokens() != null && token.childTokens().size() == 1) {
             final CharSequence name = token.childTokens().get(0).get(message);
-            final Placeholder placeholder = placeholderResolver.resolve(name.toString().toLowerCase(Locale.ROOT));
-            if (placeholder instanceof StringPlaceholder) {
-              sb.append(((StringPlaceholder) placeholder).value());
-              break;
+            final Replacement<?> replacement = placeholderResolver.resolve(name.toString().toLowerCase(Locale.ROOT));
+            if (replacement != null) {
+              final Object value = replacement.value();
+
+              if (value instanceof String) {
+                sb.append((String) value);
+                break;
+              }
             }
           }
           sb.append(token.get(message));

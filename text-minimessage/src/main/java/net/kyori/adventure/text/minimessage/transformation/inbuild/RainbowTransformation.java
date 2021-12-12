@@ -103,7 +103,7 @@ public final class RainbowTransformation extends Transformation implements Modif
       this.size += value.codePointCount(0, value.length());
     } else if (curr instanceof TagNode) {
       final TagNode tag = (TagNode) curr;
-      if (tag.transformation() instanceof PlaceholderTransformation) {
+      if (tag.transformation() instanceof ComponentTransformation) {
         // PlaceholderTransformation.apply() returns the value of the component placeholder
         ComponentFlattener.textOnly().flatten(tag.transformation().apply(), s -> this.size += s.codePointCount(0, s.length()));
       }

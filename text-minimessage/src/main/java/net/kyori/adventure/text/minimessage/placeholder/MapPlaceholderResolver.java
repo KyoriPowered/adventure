@@ -27,23 +27,15 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * A placeholder resolver based on a map.
- */
 final class MapPlaceholderResolver implements PlaceholderResolver {
-  private final Map<String, Placeholder> placeholderMap;
+  private final Map<String, ? extends Replacement<?>> placeholderMap;
 
-  MapPlaceholderResolver(final @NotNull Map<String, Placeholder> placeholderMap) {
+  MapPlaceholderResolver(final @NotNull Map<String, ? extends Replacement<?>> placeholderMap) {
     this.placeholderMap = placeholderMap;
   }
 
   @Override
-  public boolean canResolve(final @NotNull String key) {
-    return this.placeholderMap.containsKey(key);
-  }
-
-  @Override
-  public @Nullable Placeholder resolve(final @NotNull String key) {
+  public @Nullable Replacement<?> resolve(final @NotNull String key) {
     return this.placeholderMap.get(key);
   }
 }

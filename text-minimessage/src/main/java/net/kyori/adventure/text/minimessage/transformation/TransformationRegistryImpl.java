@@ -26,13 +26,13 @@ package net.kyori.adventure.text.minimessage.transformation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
-import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
-import net.kyori.adventure.text.minimessage.placeholder.Placeholder.ComponentPlaceholder;
 import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
-import net.kyori.adventure.text.minimessage.transformation.inbuild.PlaceholderTransformation;
+import net.kyori.adventure.text.minimessage.placeholder.Replacement;
+import net.kyori.adventure.text.minimessage.transformation.inbuild.ComponentTransformation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -83,11 +83,13 @@ final class TransformationRegistryImpl implements TransformationRegistry {
   @Override
   public @Nullable Transformation get(final String name, final List<TagPart> inners, final PlaceholderResolver placeholderResolver, final Context context) {
     // first try if we have a custom placeholder resolver
-    final Placeholder placeholder = placeholderResolver.resolve(name);
-    if (placeholder != null) {
+    final Replacement<?> replacement = placeholderResolver.resolve(name);
+    if (replacement != null) {
+      final Object value = replacement.value();
+
       // The parser handles StringPlaceholders
-      if (placeholder instanceof ComponentPlaceholder) {
-        return this.tryLoad(PlaceholderTransformation.factory(new ComponentPlaceholder(name, ((ComponentPlaceholder) placeholder).value())), name, inners, context);
+      if (value instanceof Component) {
+        return this.tryLoad(ComponentTransformation.factory((Component) value), name, inners, context);
       }
     }
     // then check our registry
@@ -113,7 +115,7 @@ final class TransformationRegistryImpl implements TransformationRegistry {
   @Override
   public boolean exists(final String name, final PlaceholderResolver placeholderResolver) {
     // first check the placeholder resolver
-    if (placeholderResolver.canResolve(name)) {
+    if (placeholderResolver.resolve(name) != null) {
       return true;
     }
     // then check registry

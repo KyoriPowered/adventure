@@ -106,7 +106,7 @@ final class MiniMessageParser {
             continue;
           }
           final String sanitized = this.sanitizePlaceholderName(token.childTokens().get(0).get(richMessage).toString());
-          if (this.registry.exists(sanitized, combinedResolver) || combinedResolver.canResolve(sanitized)) {
+          if (this.registry.exists(sanitized, combinedResolver) || combinedResolver.resolve(sanitized) != null) {
             tagHandler.accept(token, sb);
           } else {
             sb.append(richMessage, token.startIndex(), token.endIndex());
@@ -173,7 +173,7 @@ final class MiniMessageParser {
     }
     final BiPredicate<String, Boolean> tagNameChecker = (name, includePlaceholders) -> {
       final String sanitized = this.sanitizePlaceholderName(name);
-      return this.registry.exists(sanitized) || (includePlaceholders && combinedResolver.canResolve(name));
+      return this.registry.exists(sanitized) || (includePlaceholders && combinedResolver.resolve(name) != null);
     };
 
     final ElementNode root = TokenParser.parse(transformationFactory, tagNameChecker, combinedResolver, richMessage, context.strict());
