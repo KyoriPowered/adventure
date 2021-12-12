@@ -173,6 +173,7 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
         }
         if (children != null) {
           children.add(replaced);
+          first = false;
         }
       }
     } else {

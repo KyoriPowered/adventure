@@ -258,4 +258,25 @@ class TextReplacementRendererTest {
     final Component expected = Component.text("world", NamedTextColor.RED, TextDecoration.BOLD);
     assertEquals(expected, replaced);
   }
+
+  // https://github.com/KyoriPowered/adventure/issues/618
+  @Test
+  void testDoesNotDuplicateComponents() {
+    final Component original = Component.text()
+      .content("%n")
+      .append(Component.text("duplicate me"), Component.text("b%n"))
+      .build();
+
+    final Component replaced = original.replaceText(c -> c.matchLiteral("%n").replacement("*"));
+
+    final Component expected = Component.text()
+      .content("*")
+      .append(
+        Component.text("duplicate me"),
+        Component.text("b").append(Component.text("*"))
+      )
+      .build();
+
+    TextAssertions.assertEquals(expected, replaced);
+  }
 }
