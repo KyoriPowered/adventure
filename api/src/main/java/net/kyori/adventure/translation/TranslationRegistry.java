@@ -64,6 +64,7 @@ public interface TranslationRegistry extends Translator {
   /**
    * Creates a new standalone translation registry.
    *
+   * @param name the registry id
    * @return a translation registry
    * @since 4.0.0
    */

@@ -30,7 +30,8 @@ import org.jetbrains.annotations.NotNull;
  *
  * @param <D> the decoded type
  * @param <E> the encoded type
- * @param <DX> the exception type
+ * @param <DX> the decode exception type
+ * @param <EX> the encode exception type
  * @since 4.0.0
  */
 public interface Codec<D, E, DX extends Throwable, EX extends Throwable> {

@@ -44,6 +44,8 @@ import org.jetbrains.annotations.Nullable;
  * context. See the documentation for your respective
  * platform for more info</p>
  *
+ * @param <C> component type
+ * @param <B> builder type
  * @since 4.0.0
  * @sinceMinecraft 1.14
  */

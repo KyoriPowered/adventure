@@ -34,6 +34,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * An NBT component builder.
  *
+ * @param <C> component type
+ * @param <B> builder type
  * @since 4.0.0
  */
 public interface NBTComponentBuilder<C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> extends ComponentBuilder<C, B> {

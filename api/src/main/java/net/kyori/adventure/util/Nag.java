@@ -31,6 +31,8 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.7.0
  */
 public abstract class Nag extends RuntimeException {
+  private static final long serialVersionUID = -695562541413409498L;
+
   /**
    * Prints a nag.
    *

@@ -661,6 +661,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
   /**
    * An enumeration of hover event actions.
    *
+   * @param <V> the value type an action handles
    * @since 4.0.0
    */
   public static final class Action<V> {
