@@ -118,8 +118,8 @@ public class MiniMessageTest extends TestBase {
     final String input = "<green><bold><test><test2>";
     final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    final Placeholder t1 = component("test", text("TEST", style(RED, UNDERLINED)));
-    final Placeholder t2 = Placeholder.miniMessage("test2", "Test2");
+    final Placeholder<Component> t1 = component("test", text("TEST", style(RED, UNDERLINED)));
+    final Placeholder<String> t2 = Placeholder.miniMessage("test2", "Test2");
 
     this.assertParsedEquals(miniMessage, expected, input, t1, t2);
   }
