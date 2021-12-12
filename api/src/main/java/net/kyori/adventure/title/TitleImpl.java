@@ -113,9 +113,9 @@ final class TitleImpl implements Title {
     private final Duration fadeOut;
 
     TimesImpl(final @NotNull Duration fadeIn, final @NotNull Duration stay, final @NotNull Duration fadeOut) {
-      this.fadeIn = requireNonNull(fadeIn, "fade in");
+      this.fadeIn = requireNonNull(fadeIn, "fadeIn");
       this.stay = requireNonNull(stay, "stay");
-      this.fadeOut = requireNonNull(fadeOut, "fade out");
+      this.fadeOut = requireNonNull(fadeOut, "fadeOut");
     }
 
     @Override
