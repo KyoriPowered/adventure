@@ -12,6 +12,7 @@ sequenceOf(
   "extra-kotlin",
   "key",
   "nbt",
+  "nbt-extra-kotlin",
   "serializer-configurate3",
   "serializer-configurate4",
   "text-minimessage",
