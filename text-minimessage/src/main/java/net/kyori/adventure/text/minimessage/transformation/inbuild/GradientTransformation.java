@@ -137,7 +137,7 @@ public final class GradientTransformation extends Transformation implements Modi
     } else if (curr instanceof TagNode) {
       final TagNode tag = (TagNode) curr;
       if (tag.transformation() instanceof ComponentTransformation) {
-        // PlaceholderTransformation.apply() returns the value of the component placeholder
+        // ComponentTransformation.apply() returns the value of the component placeholder
         ComponentFlattener.textOnly().flatten(tag.transformation().apply(), s -> this.size += s.codePointCount(0, s.length()));
       }
     }
@@ -159,6 +159,8 @@ public final class GradientTransformation extends Transformation implements Modi
 
   @Override
   public Component apply(final Component current, final int depth) {
+    if (this.disableApplyingColorDepth >= depth) this.disableApplyingColorDepth = -1;
+
     if ((this.disableApplyingColorDepth != -1 && depth > this.disableApplyingColorDepth) || current.style().color() != null) {
       if (this.disableApplyingColorDepth == -1) {
         this.disableApplyingColorDepth = depth;

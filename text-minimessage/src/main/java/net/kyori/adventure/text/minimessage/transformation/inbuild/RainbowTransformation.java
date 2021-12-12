@@ -122,6 +122,8 @@ public final class RainbowTransformation extends Transformation implements Modif
 
   @Override
   public Component apply(final Component current, final int depth) {
+    if (this.disableApplyingColorDepth >= depth) this.disableApplyingColorDepth = -1;
+
     if ((this.disableApplyingColorDepth != -1 && depth > this.disableApplyingColorDepth) || current.style().color() != null) {
       if (this.disableApplyingColorDepth == -1) {
         this.disableApplyingColorDepth = depth;
