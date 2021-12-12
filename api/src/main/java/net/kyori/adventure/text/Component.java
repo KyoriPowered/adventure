@@ -318,7 +318,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static @NotNull BlockNBTComponent blockNBT(final @NotNull String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final BlockNBTComponent.@NotNull Pos pos) {
-    return new BlockNBTComponentImpl(Collections.emptyList(), Style.empty(), requireNonNull(nbtPath, "nbt path"), interpret, separator, requireNonNull(pos, "pos"));
+    return new BlockNBTComponentImpl(Collections.emptyList(), Style.empty(), requireNonNull(nbtPath, "nbtPath"), interpret, separator, requireNonNull(pos, "pos"));
   }
 
   /*
@@ -704,7 +704,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static @NotNull StorageNBTComponent storageNBT(final @NotNull String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final @NotNull Key storage) {
-    return new StorageNBTComponentImpl(Collections.emptyList(), Style.empty(), requireNonNull(nbtPath, "nbt path"), interpret, separator, requireNonNull(storage, "storage"));
+    return new StorageNBTComponentImpl(Collections.emptyList(), Style.empty(), requireNonNull(nbtPath, "nbtPath"), interpret, separator, requireNonNull(storage, "storage"));
   }
 
   /*

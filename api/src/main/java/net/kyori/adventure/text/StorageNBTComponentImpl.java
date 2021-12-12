@@ -129,7 +129,7 @@ final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent
 
     @Override
     public StorageNBTComponent.@NotNull Builder storage(final @NotNull Key storage) {
-      this.storage = storage;
+      this.storage = requireNonNull(storage, "storage");
       return this;
     }
 

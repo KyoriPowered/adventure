@@ -128,7 +128,7 @@ final class EntityNBTComponentImpl extends NBTComponentImpl<EntityNBTComponent, 
 
     @Override
     public EntityNBTComponent.@NotNull Builder selector(final @NotNull String selector) {
-      this.selector = selector;
+      this.selector = requireNonNull(selector, "selector");
       return this;
     }
 

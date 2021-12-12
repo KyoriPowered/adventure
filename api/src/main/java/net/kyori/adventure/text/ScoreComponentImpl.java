@@ -147,13 +147,13 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
 
     @Override
     public @NotNull Builder name(final @NotNull String name) {
-      this.name = name;
+      this.name = requireNonNull(name, "name");
       return this;
     }
 
     @Override
     public @NotNull Builder objective(final @NotNull String objective) {
-      this.objective = objective;
+      this.objective = requireNonNull(objective, "objective");
       return this;
     }
 

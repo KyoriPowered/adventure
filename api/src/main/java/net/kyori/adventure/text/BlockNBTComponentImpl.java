@@ -46,7 +46,7 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
   @Override
   public @NotNull BlockNBTComponent nbtPath(final @NotNull String nbtPath) {
     if (Objects.equals(this.nbtPath, nbtPath)) return this;
-    return new BlockNBTComponentImpl(this.children, this.style, requireNonNull(nbtPath, "nbt path"), this.interpret, this.separator, this.pos);
+    return new BlockNBTComponentImpl(this.children, this.style, requireNonNull(nbtPath, "nbtPath"), this.interpret, this.separator, this.pos);
   }
 
   @Override
@@ -129,7 +129,7 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
 
     @Override
     public BlockNBTComponent.@NotNull Builder pos(final @NotNull Pos pos) {
-      this.pos = pos;
+      this.pos = requireNonNull(pos, "pos");
       return this;
     }
 

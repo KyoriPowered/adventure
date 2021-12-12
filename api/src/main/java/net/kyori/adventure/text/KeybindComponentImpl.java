@@ -106,7 +106,7 @@ final class KeybindComponentImpl extends AbstractComponent implements KeybindCom
 
     @Override
     public @NotNull Builder keybind(final @NotNull String keybind) {
-      this.keybind = keybind;
+      this.keybind = requireNonNull(keybind, "keybind");
       return this;
     }
 

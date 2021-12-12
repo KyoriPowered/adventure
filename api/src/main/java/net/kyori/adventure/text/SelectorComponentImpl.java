@@ -121,7 +121,7 @@ final class SelectorComponentImpl extends AbstractComponent implements SelectorC
 
     @Override
     public @NotNull Builder pattern(final @NotNull String pattern) {
-      this.pattern = pattern;
+      this.pattern = requireNonNull(pattern, "pattern");
       return this;
     }
 
