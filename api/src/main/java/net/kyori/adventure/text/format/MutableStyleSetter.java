@@ -32,15 +32,15 @@ import org.jetbrains.annotations.NotNull;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Writes style properties to a mutable object. Used to override some default methods from {@link net.kyori.adventure.text.format.StyleWriter}
+ * Writes style properties to a mutable object. Used to override some default methods from {@link net.kyori.adventure.text.format.StyleSetter}
  * with faster alternatives that only work for mutable objects.
  *
  * @param <T> The type implementing this interface e.g. {@link net.kyori.adventure.text.Component}
- * @see net.kyori.adventure.text.format.StyleWriter
+ * @see net.kyori.adventure.text.format.StyleSetter
  * @since 4.10.0
  */
 @ApiStatus.NonExtendable
-public interface MutableStyleWriter<T extends MutableStyleWriter<?>> extends StyleWriter<T> {
+public interface MutableStyleSetter<T extends MutableStyleSetter<?>> extends StyleSetter<T> {
 
   /**
    * Sets {@code decorations} to {@link TextDecoration.State#TRUE}.

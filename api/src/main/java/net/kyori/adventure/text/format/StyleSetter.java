@@ -44,7 +44,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.10.0
  */
 @ApiStatus.NonExtendable
-public interface StyleWriter<T extends StyleWriter<?>> {
+public interface StyleSetter<T extends StyleSetter<?>> {
 
   /**
    * Sets the font.

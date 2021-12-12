@@ -43,8 +43,8 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.text.format.StyleReader;
-import net.kyori.adventure.text.format.StyleWriter;
+import net.kyori.adventure.text.format.StyleGetter;
+import net.kyori.adventure.text.format.StyleSetter;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
@@ -103,7 +103,7 @@ import static java.util.Objects.requireNonNull;
  * @since 4.0.0
  */
 @ApiStatus.NonExtendable
-public interface Component extends ComponentBuilderApplicable, ComponentLike, Examinable, HoverEventSource<Component>, StyleReader, StyleWriter<Component> {
+public interface Component extends ComponentBuilderApplicable, ComponentLike, Examinable, HoverEventSource<Component>, StyleGetter, StyleSetter<Component> {
   /**
    * A predicate that checks equality of two {@code Component}s using {@link Objects#equals(Object, Object)}.
    *
@@ -1869,7 +1869,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   default boolean hasDecoration(final @NotNull TextDecoration decoration) {
-    return StyleReader.super.hasDecoration(decoration);
+    return StyleGetter.super.hasDecoration(decoration);
   }
 
   /**
@@ -1881,7 +1881,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(pure = true)
   default @NotNull Component decorate(final @NotNull TextDecoration decoration) {
-    return StyleWriter.super.decorate(decoration);
+    return StyleSetter.super.decorate(decoration);
   }
 
   /**
@@ -1908,7 +1908,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(pure = true)
   default @NotNull Component decoration(final @NotNull TextDecoration decoration, final boolean flag) {
-    return StyleWriter.super.decoration(decoration, flag);
+    return StyleSetter.super.decoration(decoration, flag);
   }
 
   /**

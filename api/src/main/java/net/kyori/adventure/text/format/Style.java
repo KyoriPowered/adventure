@@ -60,7 +60,7 @@ import org.jetbrains.annotations.Unmodifiable;
  * @since 4.0.0
  */
 @ApiStatus.NonExtendable
-public interface Style extends Buildable<Style, Style.Builder>, Examinable, StyleReader, StyleWriter<Style> {
+public interface Style extends Buildable<Style, Style.Builder>, Examinable, StyleGetter, StyleSetter<Style> {
   /**
    * The default font.
    *
@@ -286,7 +286,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
    */
   @Override
   default boolean hasDecoration(final @NotNull TextDecoration decoration) {
-    return StyleReader.super.hasDecoration(decoration);
+    return StyleGetter.super.hasDecoration(decoration);
   }
 
   /**
@@ -310,7 +310,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
    */
   @Override
   default @NotNull Style decorate(final @NotNull TextDecoration decoration) {
-    return StyleWriter.super.decorate(decoration);
+    return StyleSetter.super.decorate(decoration);
   }
 
   /**
@@ -324,7 +324,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
    */
   @Override
   default @NotNull Style decoration(final @NotNull TextDecoration decoration, final boolean flag) {
-    return StyleWriter.super.decoration(decoration, flag);
+    return StyleSetter.super.decoration(decoration, flag);
   }
 
   /**
@@ -349,7 +349,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
    */
   @Override
   default @Unmodifiable @NotNull Map<TextDecoration, TextDecoration.State> decorations() {
-    return StyleReader.super.decorations();
+    return StyleGetter.super.decorations();
   }
 
   /**
@@ -641,7 +641,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
    *
    * @since 4.0.0
    */
-  interface Builder extends Buildable.Builder<Style>, MutableStyleWriter<Builder> {
+  interface Builder extends Buildable.Builder<Style>, MutableStyleSetter<Builder> {
     /**
      * Sets the font.
      *
@@ -686,7 +686,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
     @Override
     @Contract("_ -> this")
     default @NotNull Builder decorate(final @NotNull TextDecoration decoration) {
-      return MutableStyleWriter.super.decorate(decoration);
+      return MutableStyleSetter.super.decorate(decoration);
     }
 
     /**
@@ -699,7 +699,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
     @Override
     @Contract("_ -> this")
     default @NotNull Builder decorate(final @NotNull TextDecoration@NotNull... decorations) {
-      return MutableStyleWriter.super.decorate(decorations);
+      return MutableStyleSetter.super.decorate(decorations);
     }
 
     /**
@@ -714,7 +714,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
     @Override
     @Contract("_, _ -> this")
     default @NotNull Builder decoration(final @NotNull TextDecoration decoration, final boolean flag) {
-      return MutableStyleWriter.super.decoration(decoration, flag);
+      return MutableStyleSetter.super.decoration(decoration, flag);
     }
 
     /**
@@ -729,7 +729,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
     @Override
     @Contract("_ -> this")
     default @NotNull Builder decorations(final @NotNull Map<TextDecoration, TextDecoration.State> decorations) {
-      return MutableStyleWriter.super.decorations(decorations);
+      return MutableStyleSetter.super.decorations(decorations);
     }
 
     /**

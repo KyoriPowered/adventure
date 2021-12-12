@@ -40,7 +40,7 @@ import org.jetbrains.annotations.Unmodifiable;
  * @since 4.10.0
  */
 @ApiStatus.NonExtendable
-public interface StyleReader {
+public interface StyleGetter {
 
   /**
    * Gets the font.

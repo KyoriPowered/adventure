@@ -31,7 +31,7 @@ import java.util.function.Function;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
-import net.kyori.adventure.text.format.MutableStyleWriter;
+import net.kyori.adventure.text.format.MutableStyleSetter;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -49,7 +49,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.0.0
  */
 @ApiStatus.NonExtendable
-public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends Buildable.Builder<C>, ComponentBuilderApplicable, ComponentLike, MutableStyleWriter<B> {
+public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends Buildable.Builder<C>, ComponentBuilderApplicable, ComponentLike, MutableStyleSetter<B> {
   /**
    * Appends a component to this component.
    *
@@ -230,7 +230,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
   @Contract("_, _ -> this")
   @SuppressWarnings("unchecked")
   default @NotNull B decorations(final @NotNull Set<TextDecoration> decorations, final boolean flag) {
-    return MutableStyleWriter.super.decorations(decorations, flag);
+    return MutableStyleSetter.super.decorations(decorations, flag);
   }
 
   /**
@@ -255,7 +255,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
   @Contract("_ -> this")
   @SuppressWarnings("unchecked")
   default @NotNull B decorate(final @NotNull TextDecoration@NotNull... decorations) {
-    return MutableStyleWriter.super.decorate(decorations);
+    return MutableStyleSetter.super.decorate(decorations);
   }
 
   /**
@@ -284,7 +284,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
   @Contract("_ -> this")
   @SuppressWarnings("unchecked")
   default @NotNull B decorations(final @NotNull Map<TextDecoration, TextDecoration.State> decorations) {
-    return MutableStyleWriter.super.decorations(decorations);
+    return MutableStyleSetter.super.decorations(decorations);
   }
 
   /**
