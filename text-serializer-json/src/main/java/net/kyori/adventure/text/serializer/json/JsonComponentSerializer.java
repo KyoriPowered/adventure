@@ -107,14 +107,6 @@ public interface JsonComponentSerializer extends ComponentSerializer<Component, 
      * @since 4.9.0
      */
     @NotNull Builder emitLegacyHoverEvent();
-
-    /**
-     * Builds the serializer.
-     *
-     * @return the built serializer
-     */
-    @Override
-    @NotNull JsonComponentSerializer build();
   }
 
   /**

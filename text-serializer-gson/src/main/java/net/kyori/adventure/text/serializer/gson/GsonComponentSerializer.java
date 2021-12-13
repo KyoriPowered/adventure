@@ -125,6 +125,12 @@ public interface GsonComponentSerializer extends JsonComponentSerializer {
    * @since 4.0.0
    */
   interface Builder extends JsonComponentSerializer.Builder {
+    @Override
+    @NotNull Builder downsampleColors();
+
+    @Override
+    @NotNull Builder legacyHoverEventSerializer(final @Nullable net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer serializer);
+
     /**
      * Sets a serializer that will be used to interpret legacy hover event {@code value} payloads.
      * If the serializer is {@code null}, then only {@link net.kyori.adventure.text.event.HoverEvent.Action#SHOW_TEXT}
@@ -139,11 +145,9 @@ public interface GsonComponentSerializer extends JsonComponentSerializer {
     @ApiStatus.ScheduledForRemoval
     @NotNull Builder legacyHoverEventSerializer(final @Nullable LegacyHoverEventSerializer serializer);
 
-    /**
-     * Builds the serializer.
-     *
-     * @return the built serializer
-     */
+    @Override
+    @NotNull Builder emitLegacyHoverEvent();
+
     @Override
     @NotNull GsonComponentSerializer build();
   }
