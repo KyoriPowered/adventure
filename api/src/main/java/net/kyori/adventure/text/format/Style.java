@@ -43,8 +43,6 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jetbrains.annotations.Unmodifiable;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * A style applies visual effects or extra functionality to {@link Component}s,
  * such as {@link TextColor}s, {@link TextDecoration}s, {@link ClickEvent}s etc.
@@ -62,7 +60,7 @@ import static java.util.Objects.requireNonNull;
  * @since 4.0.0
  */
 @ApiStatus.NonExtendable
-public interface Style extends Buildable<Style, Style.Builder>, Examinable {
+public interface Style extends Buildable<Style, Style.Builder>, Examinable, StyleGetter, StyleSetter<Style> {
   /**
    * The default font.
    *
@@ -234,6 +232,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    * @since 4.0.0
    * @sinceMinecraft 1.16
    */
+  @Override
   @Nullable Key font();
 
   /**
@@ -245,6 +244,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    * @since 4.0.0
    * @sinceMinecraft 1.16
    */
+  @Override
   @NotNull Style font(final @Nullable Key font);
 
   /**
@@ -253,6 +253,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    * @return the color
    * @since 4.0.0
    */
+  @Override
   @Nullable TextColor color();
 
   /**
@@ -262,6 +263,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    * @return a style
    * @since 4.0.0
    */
+  @Override
   @NotNull Style color(final @Nullable TextColor color);
 
   /**
@@ -271,6 +273,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    * @return this builder
    * @since 4.0.0
    */
+  @Override
   @NotNull Style colorIfAbsent(final @Nullable TextColor color);
 
   /**
@@ -281,8 +284,9 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    *     style does not have the decoration
    * @since 4.0.0
    */
+  @Override
   default boolean hasDecoration(final @NotNull TextDecoration decoration) {
-    return this.decoration(decoration) == TextDecoration.State.TRUE;
+    return StyleGetter.super.hasDecoration(decoration);
   }
 
   /**
@@ -294,6 +298,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    *     and {@link TextDecoration.State#NOT_SET} if not set
    * @since 4.0.0
    */
+  @Override
   TextDecoration.@NotNull State decoration(final @NotNull TextDecoration decoration);
 
   /**
@@ -303,8 +308,9 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    * @return a style
    * @since 4.0.0
    */
+  @Override
   default @NotNull Style decorate(final @NotNull TextDecoration decoration) {
-    return this.decoration(decoration, TextDecoration.State.TRUE);
+    return StyleSetter.super.decorate(decoration);
   }
 
   /**
@@ -316,8 +322,9 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    * @return a style
    * @since 4.0.0
    */
+  @Override
   default @NotNull Style decoration(final @NotNull TextDecoration decoration, final boolean flag) {
-    return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
+    return StyleSetter.super.decoration(decoration, flag);
   }
 
   /**
@@ -331,6 +338,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    * @return a style
    * @since 4.0.0
    */
+  @Override
   @NotNull Style decoration(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
 
   /**
@@ -339,7 +347,10 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    * @return a set of decorations this style has
    * @since 4.0.0
    */
-  @Unmodifiable @NotNull Map<TextDecoration, TextDecoration.State> decorations();
+  @Override
+  default @Unmodifiable @NotNull Map<TextDecoration, TextDecoration.State> decorations() {
+    return StyleGetter.super.decorations();
+  }
 
   /**
    * Sets decorations for this style using the specified {@code decorations} map.
@@ -350,6 +361,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    * @return a style
    * @since 4.0.0
    */
+  @Override
   @NotNull Style decorations(final @NotNull Map<TextDecoration, TextDecoration.State> decorations);
 
   /**
@@ -358,6 +370,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    * @return the click event
    * @since 4.0.0
    */
+  @Override
   @Nullable ClickEvent clickEvent();
 
   /**
@@ -367,6 +380,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    * @return a style
    * @since 4.0.0
    */
+  @Override
   @NotNull Style clickEvent(final @Nullable ClickEvent event);
 
   /**
@@ -375,6 +389,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    * @return the hover event
    * @since 4.0.0
    */
+  @Override
   @Nullable HoverEvent<?> hoverEvent();
 
   /**
@@ -384,6 +399,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    * @return a style
    * @since 4.0.0
    */
+  @Override
   @NotNull Style hoverEvent(final @Nullable HoverEventSource<?> source);
 
   /**
@@ -392,6 +408,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    * @return the insertion string
    * @since 4.0.0
    */
+  @Override
   @Nullable String insertion();
 
   /**
@@ -401,6 +418,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    * @return a style
    * @since 4.0.0
    */
+  @Override
   @NotNull Style insertion(final @Nullable String insertion);
 
   /**
@@ -623,7 +641,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    *
    * @since 4.0.0
    */
-  interface Builder extends Buildable.Builder<Style> {
+  interface Builder extends Buildable.Builder<Style>, MutableStyleSetter<Builder> {
     /**
      * Sets the font.
      *
@@ -632,6 +650,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @since 4.0.0
      * @sinceMinecraft 1.16
      */
+    @Override
     @Contract("_ -> this")
     @NotNull Builder font(final @Nullable Key font);
 
@@ -642,6 +661,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @return this builder
      * @since 4.0.0
      */
+    @Override
     @Contract("_ -> this")
     @NotNull Builder color(final @Nullable TextColor color);
 
@@ -652,6 +672,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @return this builder
      * @since 4.0.0
      */
+    @Override
     @Contract("_ -> this")
     @NotNull Builder colorIfAbsent(final @Nullable TextColor color);
 
@@ -662,9 +683,10 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @return a style
      * @since 4.0.0
      */
+    @Override
     @Contract("_ -> this")
     default @NotNull Builder decorate(final @NotNull TextDecoration decoration) {
-      return this.decoration(decoration, TextDecoration.State.TRUE);
+      return MutableStyleSetter.super.decorate(decoration);
     }
 
     /**
@@ -674,12 +696,10 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @return a style
      * @since 4.0.0
      */
+    @Override
     @Contract("_ -> this")
     default @NotNull Builder decorate(final @NotNull TextDecoration@NotNull... decorations) {
-      for (int i = 0, length = decorations.length; i < length; i++) {
-        this.decorate(decorations[i]);
-      }
-      return this;
+      return MutableStyleSetter.super.decorate(decorations);
     }
 
     /**
@@ -691,9 +711,10 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @return a style
      * @since 4.0.0
      */
+    @Override
     @Contract("_, _ -> this")
     default @NotNull Builder decoration(final @NotNull TextDecoration decoration, final boolean flag) {
-      return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
+      return MutableStyleSetter.super.decoration(decoration, flag);
     }
 
     /**
@@ -705,13 +726,10 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @return this builder.
      * @since 4.10.0
      */
+    @Override
     @Contract("_ -> this")
     default @NotNull Builder decorations(final @NotNull Map<TextDecoration, TextDecoration.State> decorations) {
-      requireNonNull(decorations, "decorations");
-      for (final Map.Entry<TextDecoration, TextDecoration.State> entry : decorations.entrySet()) {
-        this.decoration(entry.getKey(), entry.getValue());
-      }
-      return this;
+      return MutableStyleSetter.super.decorations(decorations);
     }
 
     /**
@@ -725,6 +743,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @return this builder
      * @since 4.0.0
      */
+    @Override
     @Contract("_, _ -> this")
     @NotNull Builder decoration(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
 
@@ -735,6 +754,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @return this builder
      * @since 4.0.0
      */
+    @Override
     @Contract("_ -> this")
     @NotNull Builder clickEvent(final @Nullable ClickEvent event);
 
@@ -745,6 +765,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @return this builder
      * @since 4.0.0
      */
+    @Override
     @Contract("_ -> this")
     @NotNull Builder hoverEvent(final @Nullable HoverEventSource<?> source);
 
@@ -755,6 +776,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      * @return this builder
      * @since 4.0.0
      */
+    @Override
     @Contract("_ -> this")
     @NotNull Builder insertion(final @Nullable String insertion);
 
