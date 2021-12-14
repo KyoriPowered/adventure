@@ -279,4 +279,19 @@ class TextReplacementRendererTest {
 
     TextAssertions.assertEquals(expected, replaced);
   }
+
+  // https://github.com/KyoriPowered/adventure/issues/638
+  @Test
+  void testExactMatchHover() {
+    Component expected = Component.text("two").hoverEvent(Component.text("one!")).append(Component.text("one?"));
+    Component replacedExact = Component.text("one").replaceText(c -> c.match("one").replacement(expected));
+
+    Component replacedNonExact = Component.text("one ").replaceText(c -> c.match("one").replacement(expected));
+    Component expectedNonExact = Component.text("")
+      .append(expected)
+      .append(Component.space());
+
+    TextAssertions.assertEquals(expected, replacedExact);
+    TextAssertions.assertEquals(expectedNonExact, replacedNonExact);
+  }
 }

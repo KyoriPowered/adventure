@@ -52,6 +52,7 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
 
     final List<Component> oldChildren = component.children();
     final int oldChildrenSize = oldChildren.size();
+    final Style oldStyle = component.style();
     List<Component> children = null;
     Component modified = component;
     // replace the component itself
@@ -150,7 +151,7 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
     // Only visit children if we're running
     if (state.running) {
       // hover event
-      final HoverEvent<?> event = modified.style().hoverEvent();
+      final HoverEvent<?> event = oldStyle.hoverEvent();
       if (event != null) {
         final HoverEvent<?> rendered = event.withRenderedValue(this, state);
         if (event != rendered) {
