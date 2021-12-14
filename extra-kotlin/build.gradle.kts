@@ -1,6 +1,6 @@
 plugins {
   id("adventure.common-conventions")
-  kotlin("jvm") version "1.6.0"
+  kotlin("jvm") version "1.6.10"
 }
 
 kotlin {
