@@ -159,8 +159,6 @@ public final class GradientTransformation extends Transformation implements Modi
 
   @Override
   public Component apply(final Component current, final int depth) {
-    if (this.disableApplyingColorDepth >= depth) this.disableApplyingColorDepth = -1;
-
     if ((this.disableApplyingColorDepth != -1 && depth > this.disableApplyingColorDepth) || current.style().color() != null) {
       if (this.disableApplyingColorDepth == -1) {
         this.disableApplyingColorDepth = depth;
@@ -178,6 +176,7 @@ public final class GradientTransformation extends Transformation implements Modi
       return current.children(Collections.emptyList());
     }
 
+    this.disableApplyingColorDepth = -1;
     if (current instanceof TextComponent && ((TextComponent) current).content().length() > 0) {
       final TextComponent textComponent = (TextComponent) current;
       final String content = textComponent.content();
