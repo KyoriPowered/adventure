@@ -279,4 +279,47 @@ class TextReplacementRendererTest {
 
     TextAssertions.assertEquals(expected, replaced);
   }
+
+  // https://github.com/KyoriPowered/adventure/issues/638
+  @Test
+  void testExactMatchHover() {
+    final Component expected = Component.text("two").hoverEvent(Component.text("one!")).append(Component.text("one?"));
+    final Component replacedExact = Component.text("one").replaceText(c -> c.match("one").replacement(expected));
+
+    final Component replacedNonExact = Component.text("one ").replaceText(c -> c.match("one").replacement(expected));
+    final Component expectedNonExact = Component.text("")
+      .append(expected)
+      .append(Component.space());
+
+    TextAssertions.assertEquals(expected, replacedExact);
+    TextAssertions.assertEquals(expectedNonExact, replacedNonExact);
+  }
+
+  @Test
+  void testHoverCollision() {
+    final Component original = Component.text("one")
+      .hoverEvent(Component.text("less important"));
+
+    final Component replaced = original.replaceText(c -> c.match("one")
+      .replacement(Component.text("two").hoverEvent(Component.text("important"))));
+
+    final Component expected = Component.text("two")
+      .hoverEvent(Component.text("important"));
+
+    TextAssertions.assertEquals(expected, replaced);
+  }
+
+  @Test
+  void testReplacementHoverWithOriginalHoverAlsoMatching() {
+    final Component original = Component.text("Hello")
+      .hoverEvent(Component.text("Hello Kyori"));
+
+    final Component replaced = original.replaceText(c -> c.match("Hello")
+      .replacement(Component.text("Goodbye world").hoverEvent(Component.text("Hello world"))));
+
+    final Component expected = Component.text("Goodbye world")
+      .hoverEvent(Component.text("Hello world"));
+
+    TextAssertions.assertEquals(expected, replaced);
+  }
 }
