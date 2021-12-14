@@ -64,6 +64,7 @@ final class TitleImpl implements Title {
   @Override
   @SuppressWarnings("unchecked") // compared with parts directly
   public <T> @UnknownNullability T part(final @NotNull TitlePart<T> part) {
+    requireNonNull(part, "part");
     if (part == TitlePart.TITLE) {
       return (T) this.title;
     } else if (part == TitlePart.SUBTITLE) {
