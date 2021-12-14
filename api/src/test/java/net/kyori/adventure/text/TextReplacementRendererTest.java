@@ -308,4 +308,18 @@ class TextReplacementRendererTest {
 
     TextAssertions.assertEquals(expected, replaced);
   }
+
+  @Test
+  void testReplacementHoverWithOriginalHoverAlsoMatching() {
+    final Component original = Component.text("Hello")
+      .hoverEvent(Component.text("Hello Kyori"));
+
+    final Component replaced = original.replaceText(c -> c.match("Hello")
+      .replacement(Component.text("Goodbye world").hoverEvent(Component.text("Hello world"))));
+
+    final Component expected = Component.text("Goodbye world")
+      .hoverEvent(Component.text("Hello world"));
+
+    TextAssertions.assertEquals(expected, replaced);
+  }
 }
