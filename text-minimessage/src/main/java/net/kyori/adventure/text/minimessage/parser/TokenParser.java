@@ -32,7 +32,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
-import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.match.MatchedTokenConsumer;
 import net.kyori.adventure.text.minimessage.parser.match.StringResolvingMatchedTokenConsumer;
 import net.kyori.adventure.text.minimessage.parser.match.TokenListProducingMatchedTokenConsumer;
@@ -46,6 +45,7 @@ import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 import net.kyori.adventure.text.minimessage.placeholder.Replacement;
 import net.kyori.adventure.text.minimessage.transformation.Inserting;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,10 +54,18 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.10.0
  */
+@ApiStatus.Internal
 public final class TokenParser {
   private static final int MAX_DEPTH = 16;
   public static final String RESET = "reset";
   public static final String RESET_2 = "r";
+  // minimessage tags
+  public static final char TAG_START = '<';
+  public static final char TAG_END = '>';
+  public static final char CLOSE_TAG = '/';
+  public static final char SEPARATOR = ':';
+  // misc
+  public static final char ESCAPE = '\\';
 
   private TokenParser() {
   }
@@ -158,13 +166,13 @@ public final class TokenParser {
 
       if (!escaped) {
         // if we're trying to escape and the next character exists
-        if (codePoint == Tokens.ESCAPE && i + 1 < message.length()) {
+        if (codePoint == TokenParser.ESCAPE && i + 1 < message.length()) {
           final int nextCodePoint = message.codePointAt(i + 1);
 
           switch (state) {
             case NORMAL:
               // allow escaping open tokens
-              escaped = nextCodePoint == Tokens.TAG_START;
+              escaped = nextCodePoint == TokenParser.TAG_START;
               break;
             case STRING:
               // allow escaping closing string chars
@@ -186,7 +194,7 @@ public final class TokenParser {
 
       switch (state) {
         case NORMAL:
-          if (codePoint == Tokens.TAG_START) {
+          if (codePoint == TokenParser.TAG_START) {
             // Possibly a tag
             marker = i;
             state = FirstPassState.TAG;
@@ -194,7 +202,7 @@ public final class TokenParser {
           break;
         case TAG:
           switch (codePoint) {
-            case Tokens.TAG_END:
+            case TokenParser.TAG_END:
               if (i == marker + 1) {
                 // This is empty, <>, so it's not a tag
                 state = FirstPassState.NORMAL;
@@ -210,13 +218,13 @@ public final class TokenParser {
 
               // closing tags start with </
               TokenType thisType = TokenType.OPEN_TAG;
-              if (boundsCheck(message, marker, 1) && message.charAt(marker + 1) == Tokens.CLOSE_TAG) {
+              if (boundsCheck(message, marker, 1) && message.charAt(marker + 1) == TokenParser.CLOSE_TAG) {
                 thisType = TokenType.CLOSE_TAG;
               }
               consumer.accept(marker, currentTokenEnd, thisType);
               state = FirstPassState.NORMAL;
               break;
-            case Tokens.TAG_START:
+            case TokenParser.TAG_START:
               // This isn't a tag, but we can re-start looking here
               marker = i;
               break;
@@ -274,13 +282,13 @@ public final class TokenParser {
 
         if (!escaped) {
           // if we're trying to escape and the next character exists
-          if (codePoint == Tokens.ESCAPE && i + 1 < message.length()) {
+          if (codePoint == TokenParser.ESCAPE && i + 1 < message.length()) {
             final int nextCodePoint = message.codePointAt(i + 1);
 
             switch (state) {
               case NORMAL:
                 // allow escaping open tokens
-                escaped = nextCodePoint == Tokens.TAG_START;
+                escaped = nextCodePoint == TokenParser.TAG_START;
                 break;
               case STRING:
                 // allow escaping closing string chars
@@ -301,7 +309,7 @@ public final class TokenParser {
         switch (state) {
           case NORMAL:
             // Values are split by : unless it's in a URL
-            if (codePoint == Tokens.SEPARATOR) {
+            if (codePoint == TokenParser.SEPARATOR) {
               if (boundsCheck(message, i, 2) && message.charAt(i + 1) == '/' && message.charAt(i + 2) == '/') {
                 break;
               }

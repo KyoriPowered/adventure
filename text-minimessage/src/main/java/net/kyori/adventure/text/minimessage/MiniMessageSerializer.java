@@ -37,6 +37,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.parser.TokenParser;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.ClickTransformation;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.ColorTransformation;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.DecorationTransformation;
@@ -47,11 +48,6 @@ import net.kyori.adventure.text.minimessage.transformation.inbuild.KeybindTransf
 import net.kyori.adventure.text.minimessage.transformation.inbuild.TranslatableTransformation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import static net.kyori.adventure.text.minimessage.Tokens.CLOSE_TAG;
-import static net.kyori.adventure.text.minimessage.Tokens.SEPARATOR;
-import static net.kyori.adventure.text.minimessage.Tokens.TAG_END;
-import static net.kyori.adventure.text.minimessage.Tokens.TAG_START;
 
 final class MiniMessageSerializer {
   private MiniMessageSerializer() {
@@ -151,20 +147,20 @@ final class MiniMessageSerializer {
     // ### only start if previous didn't start the same one
     final ClickEvent click = style.clickEvent();
     if (click != null && (previous == null || areDifferent(click, previous.clickEvent()))) {
-      sb.append(startTag(String.format("%s" + SEPARATOR + "%s" + SEPARATOR + "\"%s\"", ClickTransformation.CLICK, ClickEvent.Action.NAMES.key(click.action()), click.value())));
+      sb.append(startTag(String.format("%s" + TokenParser.SEPARATOR + "%s" + TokenParser.SEPARATOR + "\"%s\"", ClickTransformation.CLICK, ClickEvent.Action.NAMES.key(click.action()), click.value())));
     }
 
     // ## insertion
     // ### only start if previous didn't start the same one
     final String insert = style.insertion();
     if (insert != null && (previous == null || !insert.equals(previous.insertion()))) {
-      sb.append(startTag(InsertionTransformation.INSERTION + SEPARATOR + insert));
+      sb.append(startTag(InsertionTransformation.INSERTION + TokenParser.SEPARATOR + insert));
     }
 
     // ## font
     final Key font = style.font();
     if (font != null && (previous == null || !font.equals(previous.font()))) {
-      sb.append(startTag(FontTransformation.FONT + SEPARATOR + font.asString()));
+      sb.append(startTag(FontTransformation.FONT + TokenParser.SEPARATOR + font.asString()));
     }
 
     // # append text
@@ -259,25 +255,25 @@ final class MiniMessageSerializer {
 
   private static void serializeHoverEvent(final @NotNull StringBuilder sb, final @NotNull HoverEvent<?> hov) {
     if (hov.action() == HoverEvent.Action.SHOW_TEXT) {
-      sb.append(startTag(HoverTransformation.HOVER + SEPARATOR + HoverEvent.Action.NAMES.key(hov.action()) + SEPARATOR + "\"" + serialize((Component) hov.value()).replace("\"", "\\\"") + "\""));
+      sb.append(startTag(HoverTransformation.HOVER + TokenParser.SEPARATOR + HoverEvent.Action.NAMES.key(hov.action()) + TokenParser.SEPARATOR + "\"" + serialize((Component) hov.value()).replace("\"", "\\\"") + "\""));
     } else if (hov.action() == HoverEvent.Action.SHOW_ITEM) {
       final HoverEvent.ShowItem showItem = (HoverEvent.ShowItem) hov.value();
       final String nbt;
       if (showItem.nbt() != null) {
-        nbt = SEPARATOR + "\"" + showItem.nbt().string().replace("\"", "\\\"") + "\"";
+        nbt = TokenParser.SEPARATOR + "\"" + showItem.nbt().string().replace("\"", "\\\"") + "\"";
       } else {
         nbt = "";
       }
-      sb.append(startTag(HoverTransformation.HOVER + SEPARATOR + HoverEvent.Action.NAMES.key(hov.action()) + SEPARATOR + "'" + showItem.item().asString() + "'" + SEPARATOR + showItem.count() + nbt));
+      sb.append(startTag(HoverTransformation.HOVER + TokenParser.SEPARATOR + HoverEvent.Action.NAMES.key(hov.action()) + TokenParser.SEPARATOR + "'" + showItem.item().asString() + "'" + TokenParser.SEPARATOR + showItem.count() + nbt));
     } else if (hov.action() == HoverEvent.Action.SHOW_ENTITY) {
       final HoverEvent.ShowEntity showEntity = (HoverEvent.ShowEntity) hov.value();
       final String displayName;
       if (showEntity.name() != null) {
-        displayName = SEPARATOR + "\"" + serialize(showEntity.name()).replace("\"", "\\\"") + "\"";
+        displayName = TokenParser.SEPARATOR + "\"" + serialize(showEntity.name()).replace("\"", "\\\"") + "\"";
       } else {
         displayName = "";
       }
-      sb.append(startTag(HoverTransformation.HOVER + SEPARATOR + HoverEvent.Action.NAMES.key(hov.action()) + SEPARATOR + "'" + showEntity.type().asString() + "'" + SEPARATOR + showEntity.id() + displayName));
+      sb.append(startTag(HoverTransformation.HOVER + TokenParser.SEPARATOR + HoverEvent.Action.NAMES.key(hov.action()) + TokenParser.SEPARATOR + "'" + showEntity.type().asString() + "'" + TokenParser.SEPARATOR + showEntity.id() + displayName));
     } else {
       throw new RuntimeException("Don't know how to serialize '" + hov + "'!");
     }
@@ -297,7 +293,7 @@ final class MiniMessageSerializer {
     if (color instanceof NamedTextColor) {
       return startTag(Objects.requireNonNull(NamedTextColor.NAMES.key((NamedTextColor) color)));
     } else {
-      return startTag(ColorTransformation.COLOR + SEPARATOR + color.asHexString());
+      return startTag(ColorTransformation.COLOR + TokenParser.SEPARATOR + color.asHexString());
     }
   }
 
@@ -305,30 +301,30 @@ final class MiniMessageSerializer {
     if (color instanceof NamedTextColor) {
       return endTag(Objects.requireNonNull(NamedTextColor.NAMES.key((NamedTextColor) color)));
     } else {
-      return endTag(ColorTransformation.COLOR + SEPARATOR + color.asHexString());
+      return endTag(ColorTransformation.COLOR + TokenParser.SEPARATOR + color.asHexString());
     }
   }
 
   private static @NotNull String startTag(final @NotNull String content) {
-    return "" + TAG_START + content + TAG_END;
+    return "" + TokenParser.TAG_START + content + TokenParser.TAG_END;
   }
 
   private static @NotNull String endTag(final @NotNull String content) {
-    return ("" + TAG_START) + CLOSE_TAG + content + TAG_END;
+    return ("" + TokenParser.TAG_START) + TokenParser.CLOSE_TAG + content + TokenParser.TAG_END;
   }
 
   private static void handleDifferentComponent(final @NotNull Component component, final @NotNull StringBuilder sb) {
     if (component instanceof KeybindComponent) {
-      sb.append(startTag(KeybindTransformation.KEYBIND + SEPARATOR + ((KeybindComponent) component).keybind()));
+      sb.append(startTag(KeybindTransformation.KEYBIND + TokenParser.SEPARATOR + ((KeybindComponent) component).keybind()));
     } else if (component instanceof TranslatableComponent) {
       final StringBuilder args = new StringBuilder();
       for (final Component arg : ((TranslatableComponent) component).args()) {
-        args.append(SEPARATOR)
+        args.append(TokenParser.SEPARATOR)
           .append("\"")
           .append(serialize(arg).replace("\"", "\\\""))
           .append("\"");
       }
-      sb.append(startTag(TranslatableTransformation.TRANSLATABLE + SEPARATOR + ((TranslatableComponent) component).key() + args));
+      sb.append(startTag(TranslatableTransformation.TRANSLATABLE + TokenParser.SEPARATOR + ((TranslatableComponent) component).key() + args));
     }
   }
 
