@@ -15,9 +15,9 @@
       "groupName": "patch-release dependency changes"
     },
     {
-      "description": "Group packages from guava monorepo together",
-      "matchSourceUrlPrefixes": ["https://github.com/google/guava"],
-      "groupName": "guava monorepo"
+      "description": "Correct Guava version handling",
+      "matchPackagePrefixes": ["com.google.guava:"],
+      "versioning": "regex:^(?<major>\\d+)(\\.(?<minor>\\d+))?(\\.(?<patch>\\d+))?(-(?<compatibility>.*))?$"
     },
     {
       "matchDepTypes": ["plugin"],
