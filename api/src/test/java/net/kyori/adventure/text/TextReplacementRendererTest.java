@@ -294,4 +294,18 @@ class TextReplacementRendererTest {
     TextAssertions.assertEquals(expected, replacedExact);
     TextAssertions.assertEquals(expectedNonExact, replacedNonExact);
   }
+
+  @Test
+  void testHoverCollision() {
+    final Component original = Component.text("one")
+      .hoverEvent(Component.text("less important"));
+
+    final Component replaced = original.replaceText(c -> c.match("one")
+      .replacement(Component.text("two").hoverEvent(Component.text("important"))));
+
+    final Component expected = Component.text("two")
+      .hoverEvent(Component.text("important"));
+
+    TextAssertions.assertEquals(expected, replaced);
+  }
 }
