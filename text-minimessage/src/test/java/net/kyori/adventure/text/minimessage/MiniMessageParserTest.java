@@ -29,6 +29,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
 import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
@@ -1659,11 +1660,28 @@ public class MiniMessageParserTest extends TestBase {
 
     final Component expected = text("cat makes a sound", RED);
 
-    assertParsedEquals(
+    this.assertParsedEquals(
       expected,
       input,
       miniMessage("animal", "<red><feline>"),
       component("feline", text("cat"))
     );
+  }
+
+  // https://github.com/KyoriPowered/adventure/issues/510
+  @Test
+  void testNestedGradientsDontOverrideColors() {
+    final String input = "<gradient:#1985ff:#2bc7ff>a<gradient:#00fffb:#00ffc3>b</gradient> <gray>gray</gray></gradient>";
+
+    final Component expected = Component.text()
+      .append(
+        text("a", color(0x1985ff)),
+        text("b", color(0x00fffb)),
+        text(" ", color(0x1e98ff)),
+        text("gray", NamedTextColor.GRAY)
+      )
+      .build();
+
+    this.assertParsedEquals(expected, input);
   }
 }
