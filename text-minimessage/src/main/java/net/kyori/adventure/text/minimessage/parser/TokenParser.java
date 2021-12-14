@@ -56,6 +56,8 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class TokenParser {
   private static final int MAX_DEPTH = 16;
+  public static final String RESET = "reset";
+  public static final String RESET_2 = "r";
 
   private TokenParser() {
   }
@@ -541,7 +543,7 @@ public final class TokenParser {
   }
 
   private static boolean isReset(final String input) {
-    return input.equalsIgnoreCase(Tokens.RESET) || input.equalsIgnoreCase(Tokens.RESET_2);
+    return input.equalsIgnoreCase(TokenParser.RESET) || input.equalsIgnoreCase(TokenParser.RESET_2);
   }
 
   /**

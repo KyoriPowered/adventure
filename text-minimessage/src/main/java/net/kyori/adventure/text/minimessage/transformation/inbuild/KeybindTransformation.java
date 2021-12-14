@@ -40,6 +40,8 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.10.0
  */
 public final class KeybindTransformation extends Transformation implements Inserting {
+  public static final String KEYBIND = "key";
+
   /**
    * Create a new keybind transformation from a tag.
    *

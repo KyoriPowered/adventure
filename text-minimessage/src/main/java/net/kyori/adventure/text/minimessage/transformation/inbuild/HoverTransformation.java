@@ -45,6 +45,8 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.10.0
  */
 public final class HoverTransformation extends Transformation {
+  public static final String HOVER = "hover";
+
   private final HoverEvent.Action<Object> action;
   private final Object value;
 

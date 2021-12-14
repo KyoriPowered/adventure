@@ -32,7 +32,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagNode;
@@ -49,6 +48,9 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.10.0
  */
 public final class RainbowTransformation extends Transformation implements Modifying {
+  private static final String REVERSE = "!";
+  public static final String RAINBOW = "rainbow";
+
   private int size;
   private int disableApplyingColorDepth = -1;
 
@@ -75,9 +77,9 @@ public final class RainbowTransformation extends Transformation implements Modif
 
     if (args.size() == 1) {
       String value = args.get(0).value();
-      if (args.get(0).value().startsWith(Tokens.REVERSE)) {
+      if (args.get(0).value().startsWith(RainbowTransformation.REVERSE)) {
         reversed = true;
-        value = value.replaceFirst(Tokens.REVERSE, "");
+        value = value.replaceFirst(RainbowTransformation.REVERSE, "");
       }
       if (value.length() > 0) {
         try {

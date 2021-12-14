@@ -31,7 +31,6 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
@@ -45,6 +44,18 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.10.0
  */
 public final class DecorationTransformation extends Transformation {
+  // vanilla decoration
+  public static final String UNDERLINED = "underlined";
+  public static final String BOLD_2 = "b";
+  public static final String BOLD = "bold";
+  public static final String ITALIC_3 = "i";
+  public static final String ITALIC_2 = "em";
+  public static final String ITALIC = "italic";
+  public static final String OBFUSCATED_2 = "obf";
+  public static final String OBFUSCATED = "obfuscated";
+  public static final String STRIKETHROUGH_2 = "st";
+  public static final String STRIKETHROUGH = "strikethrough";
+  public static final String UNDERLINED_2 = "u";
 
   public static final String REVERT = "!";
 
@@ -57,12 +68,12 @@ public final class DecorationTransformation extends Transformation {
 
   static {
     final Map<String, TextDecoration> aliases = new HashMap<>();
-    aliases.put(Tokens.BOLD_2, TextDecoration.BOLD);
-    aliases.put(Tokens.ITALIC_2, TextDecoration.ITALIC);
-    aliases.put(Tokens.ITALIC_3, TextDecoration.ITALIC);
-    aliases.put(Tokens.UNDERLINED_2, TextDecoration.UNDERLINED);
-    aliases.put(Tokens.STRIKETHROUGH_2, TextDecoration.STRIKETHROUGH);
-    aliases.put(Tokens.OBFUSCATED_2, TextDecoration.OBFUSCATED);
+    aliases.put(DecorationTransformation.BOLD_2, TextDecoration.BOLD);
+    aliases.put(DecorationTransformation.ITALIC_2, TextDecoration.ITALIC);
+    aliases.put(DecorationTransformation.ITALIC_3, TextDecoration.ITALIC);
+    aliases.put(DecorationTransformation.UNDERLINED_2, TextDecoration.UNDERLINED);
+    aliases.put(DecorationTransformation.STRIKETHROUGH_2, TextDecoration.STRIKETHROUGH);
+    aliases.put(DecorationTransformation.OBFUSCATED_2, TextDecoration.OBFUSCATED);
     DECORATION_ALIASES = Collections.unmodifiableMap(aliases);
   }
 

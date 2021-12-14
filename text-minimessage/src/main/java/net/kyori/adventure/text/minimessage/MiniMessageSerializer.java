@@ -37,25 +37,21 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.transformation.inbuild.ClickTransformation;
+import net.kyori.adventure.text.minimessage.transformation.inbuild.ColorTransformation;
+import net.kyori.adventure.text.minimessage.transformation.inbuild.DecorationTransformation;
+import net.kyori.adventure.text.minimessage.transformation.inbuild.FontTransformation;
+import net.kyori.adventure.text.minimessage.transformation.inbuild.HoverTransformation;
+import net.kyori.adventure.text.minimessage.transformation.inbuild.InsertionTransformation;
+import net.kyori.adventure.text.minimessage.transformation.inbuild.KeybindTransformation;
+import net.kyori.adventure.text.minimessage.transformation.inbuild.TranslatableTransformation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static net.kyori.adventure.text.minimessage.Tokens.BOLD;
-import static net.kyori.adventure.text.minimessage.Tokens.CLICK;
 import static net.kyori.adventure.text.minimessage.Tokens.CLOSE_TAG;
-import static net.kyori.adventure.text.minimessage.Tokens.COLOR;
-import static net.kyori.adventure.text.minimessage.Tokens.FONT;
-import static net.kyori.adventure.text.minimessage.Tokens.HOVER;
-import static net.kyori.adventure.text.minimessage.Tokens.INSERTION;
-import static net.kyori.adventure.text.minimessage.Tokens.ITALIC;
-import static net.kyori.adventure.text.minimessage.Tokens.KEYBIND;
-import static net.kyori.adventure.text.minimessage.Tokens.OBFUSCATED;
 import static net.kyori.adventure.text.minimessage.Tokens.SEPARATOR;
-import static net.kyori.adventure.text.minimessage.Tokens.STRIKETHROUGH;
 import static net.kyori.adventure.text.minimessage.Tokens.TAG_END;
 import static net.kyori.adventure.text.minimessage.Tokens.TAG_START;
-import static net.kyori.adventure.text.minimessage.Tokens.TRANSLATABLE;
-import static net.kyori.adventure.text.minimessage.Tokens.UNDERLINED;
 
 final class MiniMessageSerializer {
   private MiniMessageSerializer() {
@@ -111,37 +107,37 @@ final class MiniMessageSerializer {
     // ## decoration
     // ### only start if previous didn't start
     if (style.hasDecoration(TextDecoration.BOLD) && (previous == null || !previous.hasDecoration(TextDecoration.BOLD))) {
-      sb.append(startTag(BOLD));
+      sb.append(startTag(DecorationTransformation.BOLD));
     }
     if (style.hasDecoration(TextDecoration.ITALIC) && (previous == null || !previous.hasDecoration(TextDecoration.ITALIC))) {
-      sb.append(startTag(ITALIC));
+      sb.append(startTag(DecorationTransformation.ITALIC));
     }
     if (style.hasDecoration(TextDecoration.OBFUSCATED) && (previous == null || !previous.hasDecoration(TextDecoration.OBFUSCATED))) {
-      sb.append(startTag(OBFUSCATED));
+      sb.append(startTag(DecorationTransformation.OBFUSCATED));
     }
     if (style.hasDecoration(TextDecoration.STRIKETHROUGH) && (previous == null || !previous.hasDecoration(TextDecoration.STRIKETHROUGH))) {
-      sb.append(startTag(STRIKETHROUGH));
+      sb.append(startTag(DecorationTransformation.STRIKETHROUGH));
     }
     if (style.hasDecoration(TextDecoration.UNDERLINED) && (previous == null || !previous.hasDecoration(TextDecoration.UNDERLINED))) {
-      sb.append(startTag(UNDERLINED));
+      sb.append(startTag(DecorationTransformation.UNDERLINED));
     }
 
     // ## disabled decorations
     // ### only start if previous didn't start
     if (style.decoration(TextDecoration.BOLD) == TextDecoration.State.FALSE && (previous == null || previous.decoration(TextDecoration.BOLD) == TextDecoration.State.NOT_SET)) {
-      sb.append(startTag("!" + BOLD));
+      sb.append(startTag("!" + DecorationTransformation.BOLD));
     }
     if (style.decoration(TextDecoration.ITALIC) == TextDecoration.State.FALSE && (previous == null || previous.decoration(TextDecoration.ITALIC) == TextDecoration.State.NOT_SET)) {
-      sb.append(startTag("!" + ITALIC));
+      sb.append(startTag("!" + DecorationTransformation.ITALIC));
     }
     if (style.decoration(TextDecoration.OBFUSCATED) == TextDecoration.State.FALSE && (previous == null || previous.decoration(TextDecoration.OBFUSCATED) == TextDecoration.State.NOT_SET)) {
-      sb.append(startTag("!" + OBFUSCATED));
+      sb.append(startTag("!" + DecorationTransformation.OBFUSCATED));
     }
     if (style.decoration(TextDecoration.STRIKETHROUGH) == TextDecoration.State.FALSE && (previous == null || previous.decoration(TextDecoration.STRIKETHROUGH) == TextDecoration.State.NOT_SET)) {
-      sb.append(startTag("!" + STRIKETHROUGH));
+      sb.append(startTag("!" + DecorationTransformation.STRIKETHROUGH));
     }
     if (style.decoration(TextDecoration.UNDERLINED) == TextDecoration.State.FALSE && (previous == null || previous.decoration(TextDecoration.UNDERLINED) == TextDecoration.State.NOT_SET)) {
-      sb.append(startTag("!" + UNDERLINED));
+      sb.append(startTag("!" + DecorationTransformation.UNDERLINED));
     }
 
     // ## hover
@@ -155,20 +151,20 @@ final class MiniMessageSerializer {
     // ### only start if previous didn't start the same one
     final ClickEvent click = style.clickEvent();
     if (click != null && (previous == null || areDifferent(click, previous.clickEvent()))) {
-      sb.append(startTag(String.format("%s" + SEPARATOR + "%s" + SEPARATOR + "\"%s\"", CLICK, ClickEvent.Action.NAMES.key(click.action()), click.value())));
+      sb.append(startTag(String.format("%s" + SEPARATOR + "%s" + SEPARATOR + "\"%s\"", ClickTransformation.CLICK, ClickEvent.Action.NAMES.key(click.action()), click.value())));
     }
 
     // ## insertion
     // ### only start if previous didn't start the same one
     final String insert = style.insertion();
     if (insert != null && (previous == null || !insert.equals(previous.insertion()))) {
-      sb.append(startTag(INSERTION + SEPARATOR + insert));
+      sb.append(startTag(InsertionTransformation.INSERTION + SEPARATOR + insert));
     }
 
     // ## font
     final Key font = style.font();
     if (font != null && (previous == null || !font.equals(previous.font()))) {
-      sb.append(startTag(FONT + SEPARATOR + font.asString()));
+      sb.append(startTag(FontTransformation.FONT + SEPARATOR + font.asString()));
     }
 
     // # append text
@@ -185,7 +181,7 @@ final class MiniMessageSerializer {
     // ### only end insertion if next tag is different
     if (next != null && style.font() != null) {
       if (!Objects.equals(style.font(), next.font())) {
-        sb.append(endTag(FONT));
+        sb.append(endTag(FontTransformation.FONT));
       }
     }
 
@@ -193,7 +189,7 @@ final class MiniMessageSerializer {
     // ### only end insertion if next tag is different
     if (next != null && style.insertion() != null) {
       if (!Objects.equals(style.insertion(), next.insertion())) {
-        sb.append(endTag(INSERTION));
+        sb.append(endTag(InsertionTransformation.INSERTION));
       }
     }
 
@@ -201,7 +197,7 @@ final class MiniMessageSerializer {
     // ### only end click if next tag is different
     if (next != null && style.clickEvent() != null) {
       if (areDifferent(Objects.requireNonNull(style.clickEvent()), next.clickEvent())) {
-        sb.append(endTag(CLICK));
+        sb.append(endTag(ClickTransformation.CLICK));
       }
     }
 
@@ -209,7 +205,7 @@ final class MiniMessageSerializer {
     // ### only end hover if next tag is different
     if (next != null && style.hoverEvent() != null) {
       if (areDifferent(Objects.requireNonNull(style.hoverEvent()), next.hoverEvent())) {
-        sb.append(endTag(HOVER));
+        sb.append(endTag(HoverTransformation.HOVER));
       }
     }
 
@@ -217,19 +213,19 @@ final class MiniMessageSerializer {
     // ### only end decoration if next tag is different
     if (next != null) {
       if (style.hasDecoration(TextDecoration.UNDERLINED) && !next.hasDecoration(TextDecoration.UNDERLINED)) {
-        sb.append(endTag(UNDERLINED));
+        sb.append(endTag(DecorationTransformation.UNDERLINED));
       }
       if (style.hasDecoration(TextDecoration.STRIKETHROUGH) && !next.hasDecoration(TextDecoration.STRIKETHROUGH)) {
-        sb.append(endTag(STRIKETHROUGH));
+        sb.append(endTag(DecorationTransformation.STRIKETHROUGH));
       }
       if (style.hasDecoration(TextDecoration.OBFUSCATED) && !next.hasDecoration(TextDecoration.OBFUSCATED)) {
-        sb.append(endTag(OBFUSCATED));
+        sb.append(endTag(DecorationTransformation.OBFUSCATED));
       }
       if (style.hasDecoration(TextDecoration.ITALIC) && !next.hasDecoration(TextDecoration.ITALIC)) {
-        sb.append(endTag(ITALIC));
+        sb.append(endTag(DecorationTransformation.ITALIC));
       }
       if (style.hasDecoration(TextDecoration.BOLD) && !next.hasDecoration(TextDecoration.BOLD)) {
-        sb.append(endTag(BOLD));
+        sb.append(endTag(DecorationTransformation.BOLD));
       }
     }
 
@@ -237,19 +233,19 @@ final class MiniMessageSerializer {
     // ### only end decoration if next tag is different
     if (next != null) {
       if (style.decoration(TextDecoration.UNDERLINED) == TextDecoration.State.FALSE && next.decoration(TextDecoration.UNDERLINED) == TextDecoration.State.NOT_SET) {
-        sb.append(endTag("!" + UNDERLINED));
+        sb.append(endTag("!" + DecorationTransformation.UNDERLINED));
       }
       if (style.decoration(TextDecoration.STRIKETHROUGH) == TextDecoration.State.FALSE && next.decoration(TextDecoration.STRIKETHROUGH) == TextDecoration.State.NOT_SET) {
-        sb.append(endTag("!" + STRIKETHROUGH));
+        sb.append(endTag("!" + DecorationTransformation.STRIKETHROUGH));
       }
       if (style.decoration(TextDecoration.OBFUSCATED) == TextDecoration.State.FALSE && next.decoration(TextDecoration.OBFUSCATED) == TextDecoration.State.NOT_SET) {
-        sb.append(endTag("!" + OBFUSCATED));
+        sb.append(endTag("!" + DecorationTransformation.OBFUSCATED));
       }
       if (style.decoration(TextDecoration.ITALIC) == TextDecoration.State.FALSE && next.decoration(TextDecoration.ITALIC) == TextDecoration.State.NOT_SET) {
-        sb.append(endTag("!" + ITALIC));
+        sb.append(endTag("!" + DecorationTransformation.ITALIC));
       }
       if (style.decoration(TextDecoration.BOLD) == TextDecoration.State.FALSE && next.decoration(TextDecoration.BOLD) == TextDecoration.State.NOT_SET) {
-        sb.append(endTag("!" + BOLD));
+        sb.append(endTag("!" + DecorationTransformation.BOLD));
       }
     }
 
@@ -263,7 +259,7 @@ final class MiniMessageSerializer {
 
   private static void serializeHoverEvent(final @NotNull StringBuilder sb, final @NotNull HoverEvent<?> hov) {
     if (hov.action() == HoverEvent.Action.SHOW_TEXT) {
-      sb.append(startTag(HOVER + SEPARATOR + HoverEvent.Action.NAMES.key(hov.action()) + SEPARATOR + "\"" + serialize((Component) hov.value()).replace("\"", "\\\"") + "\""));
+      sb.append(startTag(HoverTransformation.HOVER + SEPARATOR + HoverEvent.Action.NAMES.key(hov.action()) + SEPARATOR + "\"" + serialize((Component) hov.value()).replace("\"", "\\\"") + "\""));
     } else if (hov.action() == HoverEvent.Action.SHOW_ITEM) {
       final HoverEvent.ShowItem showItem = (HoverEvent.ShowItem) hov.value();
       final String nbt;
@@ -272,7 +268,7 @@ final class MiniMessageSerializer {
       } else {
         nbt = "";
       }
-      sb.append(startTag(HOVER + SEPARATOR + HoverEvent.Action.NAMES.key(hov.action()) + SEPARATOR + "'" + showItem.item().asString() + "'" + SEPARATOR + showItem.count() + nbt));
+      sb.append(startTag(HoverTransformation.HOVER + SEPARATOR + HoverEvent.Action.NAMES.key(hov.action()) + SEPARATOR + "'" + showItem.item().asString() + "'" + SEPARATOR + showItem.count() + nbt));
     } else if (hov.action() == HoverEvent.Action.SHOW_ENTITY) {
       final HoverEvent.ShowEntity showEntity = (HoverEvent.ShowEntity) hov.value();
       final String displayName;
@@ -281,7 +277,7 @@ final class MiniMessageSerializer {
       } else {
         displayName = "";
       }
-      sb.append(startTag(HOVER + SEPARATOR + HoverEvent.Action.NAMES.key(hov.action()) + SEPARATOR + "'" + showEntity.type().asString() + "'" + SEPARATOR + showEntity.id() + displayName));
+      sb.append(startTag(HoverTransformation.HOVER + SEPARATOR + HoverEvent.Action.NAMES.key(hov.action()) + SEPARATOR + "'" + showEntity.type().asString() + "'" + SEPARATOR + showEntity.id() + displayName));
     } else {
       throw new RuntimeException("Don't know how to serialize '" + hov + "'!");
     }
@@ -301,7 +297,7 @@ final class MiniMessageSerializer {
     if (color instanceof NamedTextColor) {
       return startTag(Objects.requireNonNull(NamedTextColor.NAMES.key((NamedTextColor) color)));
     } else {
-      return startTag(COLOR + SEPARATOR + color.asHexString());
+      return startTag(ColorTransformation.COLOR + SEPARATOR + color.asHexString());
     }
   }
 
@@ -309,7 +305,7 @@ final class MiniMessageSerializer {
     if (color instanceof NamedTextColor) {
       return endTag(Objects.requireNonNull(NamedTextColor.NAMES.key((NamedTextColor) color)));
     } else {
-      return endTag(COLOR + SEPARATOR + color.asHexString());
+      return endTag(ColorTransformation.COLOR + SEPARATOR + color.asHexString());
     }
   }
 
@@ -323,7 +319,7 @@ final class MiniMessageSerializer {
 
   private static void handleDifferentComponent(final @NotNull Component component, final @NotNull StringBuilder sb) {
     if (component instanceof KeybindComponent) {
-      sb.append(startTag(KEYBIND + SEPARATOR + ((KeybindComponent) component).keybind()));
+      sb.append(startTag(KeybindTransformation.KEYBIND + SEPARATOR + ((KeybindComponent) component).keybind()));
     } else if (component instanceof TranslatableComponent) {
       final StringBuilder args = new StringBuilder();
       for (final Component arg : ((TranslatableComponent) component).args()) {
@@ -332,7 +328,7 @@ final class MiniMessageSerializer {
           .append(serialize(arg).replace("\"", "\\\""))
           .append("\"");
       }
-      sb.append(startTag(TRANSLATABLE + SEPARATOR + ((TranslatableComponent) component).key() + args));
+      sb.append(startTag(TranslatableTransformation.TRANSLATABLE + SEPARATOR + ((TranslatableComponent) component).key() + args));
     }
   }
 

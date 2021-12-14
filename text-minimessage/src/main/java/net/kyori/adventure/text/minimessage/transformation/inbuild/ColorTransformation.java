@@ -32,7 +32,6 @@ import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
@@ -45,6 +44,11 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.10.0
  */
 public final class ColorTransformation extends Transformation {
+  public static final String HEX = "#";
+  public static final String COLOR_3 = "c";
+  public static final String COLOR_2 = "colour";
+  public static final String COLOR = "color";
+
   private static final Map<String, TextColor> COLOR_ALIASES = new HashMap<>();
 
   static {
@@ -55,7 +59,7 @@ public final class ColorTransformation extends Transformation {
   private final TextColor color;
 
   private static boolean isColorOrAbbreviation(final String name) {
-    return name.equals(Tokens.COLOR) || name.equals(Tokens.COLOR_2) || name.equals(Tokens.COLOR_3);
+    return name.equals(ColorTransformation.COLOR) || name.equals(ColorTransformation.COLOR_2) || name.equals(ColorTransformation.COLOR_3);
   }
 
   /**
