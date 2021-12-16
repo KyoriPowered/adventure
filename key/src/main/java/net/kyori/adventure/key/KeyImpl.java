@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.key;
 
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.function.IntPredicate;
 import java.util.stream.Stream;
@@ -33,6 +34,8 @@ import org.jetbrains.annotations.VisibleForTesting;
 import static java.util.Objects.requireNonNull;
 
 final class KeyImpl implements Key {
+  static final Comparator<? super Key> COMPARATOR = Comparator.comparing(Key::value).thenComparing(Key::namespace);
+
   static final String NAMESPACE_PATTERN = "[a-z0-9_\\-.]+";
   static final String VALUE_PATTERN = "[a-z0-9_\\-./]+";
 
@@ -118,11 +121,5 @@ final class KeyImpl implements Key {
   @Override
   public int compareTo(final @NotNull Key that) {
     return Key.super.compareTo(that);
-  }
-
-  static int clampCompare(final int value) {
-    if (value < 0) return -1;
-    if (value > 0) return 1;
-    return value;
   }
 }
