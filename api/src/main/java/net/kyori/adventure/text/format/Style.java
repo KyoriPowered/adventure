@@ -134,7 +134,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
   static @NotNull Style style(final @Nullable TextColor color, final TextDecoration@NotNull... decorations) {
     final Builder builder = style();
     builder.color(color);
-    StyleImpl.decorate(builder, decorations);
+    builder.decorate(decorations);
     return builder.build();
   }
 

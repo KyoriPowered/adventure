@@ -25,6 +25,7 @@ package net.kyori.adventure.text.format;
 
 import java.util.Map;
 import java.util.Set;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -32,16 +33,15 @@ import org.jetbrains.annotations.NotNull;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Writes style properties to a mutable object. Used to override some default methods from {@link net.kyori.adventure.text.format.StyleSetter}
+ * Writes style properties to a mutable object. Used to override some default methods from {@link StyleSetter}
  * with faster alternatives that only work for mutable objects.
  *
- * @param <T> The type implementing this interface e.g. {@link net.kyori.adventure.text.Component}
- * @see net.kyori.adventure.text.format.StyleSetter
+ * @param <T> The type implementing this interface e.g. {@link Component}
+ * @see StyleSetter
  * @since 4.10.0
  */
 @ApiStatus.NonExtendable
 public interface MutableStyleSetter<T extends MutableStyleSetter<?>> extends StyleSetter<T> {
-
   /**
    * Sets {@code decorations} to {@link TextDecoration.State#TRUE}.
    *

@@ -36,12 +36,11 @@ import org.jetbrains.annotations.Unmodifiable;
 /**
  * Reads style properties from an object.
  *
- * @see net.kyori.adventure.text.format.Style
+ * @see Style
  * @since 4.10.0
  */
 @ApiStatus.NonExtendable
 public interface StyleGetter {
-
   /**
    * Gets the font.
    *

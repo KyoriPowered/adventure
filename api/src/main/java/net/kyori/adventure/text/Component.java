@@ -1810,6 +1810,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return the font of this component
    * @since 4.10.0
    */
+  @Override
   default @Nullable Key font() {
     return this.style().font();
   }
@@ -1821,6 +1822,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a component
    * @since 4.10.0
    */
+  @Override
   default @NotNull Component font(final @Nullable Key key) {
     return this.style(this.style().font(key));
   }
@@ -1831,6 +1833,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return the color of this component
    * @since 4.0.0
    */
+  @Override
   default @Nullable TextColor color() {
     return this.style().color();
   }
@@ -1843,6 +1846,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   @Contract(pure = true)
+  @Override
   default @NotNull Component color(final @Nullable TextColor color) {
     return this.style(this.style().color(color));
   }
@@ -1855,6 +1859,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   @Contract(pure = true)
+  @Override
   default @NotNull Component colorIfAbsent(final @Nullable TextColor color) {
     if (this.color() == null) return this.color(color);
     return this;
@@ -1868,6 +1873,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    *     component does not have the decoration
    * @since 4.0.0
    */
+  @Override
   default boolean hasDecoration(final @NotNull TextDecoration decoration) {
     return StyleGetter.super.hasDecoration(decoration);
   }
@@ -1880,6 +1886,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   @Contract(pure = true)
+  @Override
   default @NotNull Component decorate(final @NotNull TextDecoration decoration) {
     return StyleSetter.super.decorate(decoration);
   }
@@ -1893,6 +1900,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    *     and {@link TextDecoration.State#NOT_SET} if not set
    * @since 4.0.0
    */
+  @Override
   default TextDecoration.@NotNull State decoration(final @NotNull TextDecoration decoration) {
     return this.style().decoration(decoration);
   }
@@ -1907,6 +1915,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   @Contract(pure = true)
+  @Override
   default @NotNull Component decoration(final @NotNull TextDecoration decoration, final boolean flag) {
     return StyleSetter.super.decoration(decoration, flag);
   }
@@ -1923,6 +1932,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   @Contract(pure = true)
+  @Override
   default @NotNull Component decoration(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
     return this.style(this.style().decoration(decoration, state));
   }
@@ -1933,6 +1943,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a set of decorations this component has
    * @since 4.0.0
    */
+  @Override
   default @NotNull Map<TextDecoration, TextDecoration.State> decorations() {
     return this.style().decorations();
   }
@@ -1947,6 +1958,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   @Contract(pure = true)
+  @Override
   default @NotNull Component decorations(final @NotNull Map<TextDecoration, TextDecoration.State> decorations) {
     return this.style(this.style().decorations(decorations));
   }
@@ -1957,6 +1969,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return the click event
    * @since 4.0.0
    */
+  @Override
   default @Nullable ClickEvent clickEvent() {
     return this.style().clickEvent();
   }
@@ -1969,6 +1982,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   @Contract(pure = true)
+  @Override
   default @NotNull Component clickEvent(final @Nullable ClickEvent event) {
     return this.style(this.style().clickEvent(event));
   }
@@ -1979,6 +1993,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return the hover event
    * @since 4.0.0
    */
+  @Override
   default @Nullable HoverEvent<?> hoverEvent() {
     return this.style().hoverEvent();
   }
@@ -1991,6 +2006,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   @Contract(pure = true)
+  @Override
   default @NotNull Component hoverEvent(final @Nullable HoverEventSource<?> source) {
     return this.style(this.style().hoverEvent(source));
   }
@@ -2001,6 +2017,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return the insertion string
    * @since 4.0.0
    */
+  @Override
   default @Nullable String insertion() {
     return this.style().insertion();
   }
@@ -2013,6 +2030,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   @Contract(pure = true)
+  @Override
   default @NotNull Component insertion(final @Nullable String insertion) {
     return this.style(this.style().insertion(insertion));
   }

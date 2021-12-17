@@ -196,6 +196,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
+  @Override
   @NotNull B font(final @Nullable Key font);
 
   /**
@@ -206,6 +207,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
+  @Override
   @NotNull B color(final @Nullable TextColor color);
 
   /**
@@ -216,6 +218,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
+  @Override
   @NotNull B colorIfAbsent(final @Nullable TextColor color);
 
   /**
@@ -228,7 +231,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_, _ -> this")
-  @SuppressWarnings("unchecked")
+  @Override
   default @NotNull B decorations(final @NotNull Set<TextDecoration> decorations, final boolean flag) {
     return MutableStyleSetter.super.decorations(decorations, flag);
   }
@@ -241,6 +244,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
+  @Override
   default @NotNull B decorate(final @NotNull TextDecoration decoration) {
     return this.decoration(decoration, TextDecoration.State.TRUE);
   }
@@ -253,7 +257,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @SuppressWarnings("unchecked")
+  @Override
   default @NotNull B decorate(final @NotNull TextDecoration@NotNull... decorations) {
     return MutableStyleSetter.super.decorate(decorations);
   }
@@ -268,6 +272,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_, _ -> this")
+  @Override
   default @NotNull B decoration(final @NotNull TextDecoration decoration, final boolean flag) {
     return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
   }
@@ -282,7 +287,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.10.0
    */
   @Contract("_ -> this")
-  @SuppressWarnings("unchecked")
+  @Override
   default @NotNull B decorations(final @NotNull Map<TextDecoration, TextDecoration.State> decorations) {
     return MutableStyleSetter.super.decorations(decorations);
   }
@@ -299,6 +304,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_, _ -> this")
+  @Override
   @NotNull B decoration(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
 
   /**
@@ -309,6 +315,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
+  @Override
   @NotNull B clickEvent(final @Nullable ClickEvent event);
 
   /**
@@ -319,6 +326,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
+  @Override
   @NotNull B hoverEvent(final @Nullable HoverEventSource<?> source);
 
   /**
@@ -329,6 +337,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
+  @Override
   @NotNull B insertion(final @Nullable String insertion);
 
   /**

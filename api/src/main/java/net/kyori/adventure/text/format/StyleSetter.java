@@ -45,7 +45,6 @@ import org.jetbrains.annotations.Nullable;
  */
 @ApiStatus.NonExtendable
 public interface StyleSetter<T extends StyleSetter<?>> {
-
   /**
    * Sets the font.
    *
@@ -147,7 +146,7 @@ public interface StyleSetter<T extends StyleSetter<?>> {
    * @since 4.10.0
    */
   default @NotNull T decorations(final @NotNull Set<TextDecoration> decorations, final boolean flag) {
-    return this.decorations(decorations.stream().collect(Collectors.toMap(Function.identity(), d -> TextDecoration.State.byBoolean(flag))));
+    return this.decorations(decorations.stream().collect(Collectors.toMap(Function.identity(), decoration -> TextDecoration.State.byBoolean(flag))));
   }
 
   /**

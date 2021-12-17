@@ -53,13 +53,6 @@ final class StyleImpl implements Style {
   final @Nullable HoverEvent<?> hoverEvent;
   final @Nullable String insertion;
 
-  static void decorate(final Builder builder, final TextDecoration[] decorations) {
-    for (int i = 0, length = decorations.length; i < length; i++) {
-      final TextDecoration decoration = decorations[i];
-      builder.decoration(decoration, true);
-    }
-  }
-
   StyleImpl(
     final @Nullable Key font,
     final @Nullable TextColor color,
@@ -190,8 +183,7 @@ final class StyleImpl implements Style {
 
   @Override
   public @NotNull Style merge(final @NotNull Style that, final Merge.@NotNull Strategy strategy, final @NotNull Set<Merge> merges) {
-    if (that.isEmpty() || strategy == Merge.Strategy.NEVER || merges.isEmpty()) {
-      // nothing to merge
+    if (nothingToMerge(that, strategy, merges)) {
       return this;
     }
 
@@ -204,6 +196,14 @@ final class StyleImpl implements Style {
     final Builder builder = this.toBuilder();
     builder.merge(that, strategy, merges);
     return builder.build();
+  }
+
+  @SuppressWarnings("RedundantIfStatement")
+  static boolean nothingToMerge(final @NotNull Style mergeFrom, final Merge.@NotNull Strategy strategy, final @NotNull Set<Merge> merges) {
+    if (strategy == Merge.Strategy.NEVER) return true;
+    if (mergeFrom.isEmpty()) return true;
+    if (merges.isEmpty()) return true;
+    return false;
   }
 
   @Override
@@ -327,21 +327,18 @@ final class StyleImpl implements Style {
       requireNonNull(state, "state");
       if (decoration == TextDecoration.BOLD) {
         this.bold = state;
-        return this;
       } else if (decoration == TextDecoration.ITALIC) {
         this.italic = state;
-        return this;
       } else if (decoration == TextDecoration.UNDERLINED) {
         this.underlined = state;
-        return this;
       } else if (decoration == TextDecoration.STRIKETHROUGH) {
         this.strikethrough = state;
-        return this;
       } else if (decoration == TextDecoration.OBFUSCATED) {
         this.obfuscated = state;
-        return this;
+      } else {
+        throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
       }
-      throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
+      return this;
     }
 
     // todo(kashike): promote to public api?
@@ -399,8 +396,8 @@ final class StyleImpl implements Style {
       requireNonNull(that, "style");
       requireNonNull(strategy, "strategy");
       requireNonNull(merges, "merges");
-      if (strategy == Merge.Strategy.NEVER || that.isEmpty() || merges.isEmpty()) {
-        // nothing to merge
+
+      if (nothingToMerge(that, strategy, merges)) {
         return this;
       }
 
