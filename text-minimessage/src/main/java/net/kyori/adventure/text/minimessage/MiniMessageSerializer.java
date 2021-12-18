@@ -82,7 +82,7 @@ final class MiniMessageSerializer {
   }
 
   // Sorts a ComponentNode's tree in a LinkedList using Pre Order Traversal.
-  private static List<ComponentNode> traverseNode(@NotNull final ComponentNode root) {
+  private static List<ComponentNode> traverseNode(final @NotNull ComponentNode root) {
     final List<ComponentNode> nodes = new LinkedList<>();
     nodes.add(root);
 
@@ -97,7 +97,7 @@ final class MiniMessageSerializer {
   }
 
   // Serializes a single node into minimessage format.
-  private static String serializeNode(@NotNull final ComponentNode node, @Nullable final Style previous, @Nullable final Style next) {
+  private static String serializeNode(final @NotNull ComponentNode node, final @Nullable Style previous, final @Nullable Style next) {
     final StringBuilder sb = new StringBuilder();
     final Style style = node.style();
 
@@ -340,11 +340,11 @@ final class MiniMessageSerializer {
     private final Component component;
     private final Style style;
 
-    ComponentNode(@NotNull final Component component) {
+    ComponentNode(final @NotNull Component component) {
       this(component, null);
     }
 
-    ComponentNode(@NotNull final Component component, @Nullable final Style parent) {
+    ComponentNode(final @NotNull Component component, final @Nullable Style parent) {
       this.component = component;
       this.style = (parent == null) ? component.style() : component.style().merge(parent, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
     }

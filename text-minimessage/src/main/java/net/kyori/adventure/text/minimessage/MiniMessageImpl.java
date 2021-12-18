@@ -81,7 +81,7 @@ final class MiniMessageImpl implements MiniMessage {
   }
 
   @Override
-  public @NotNull String escapeTokens(@NotNull final String input, @NotNull final PlaceholderResolver placeholders) {
+  public @NotNull String escapeTokens(final @NotNull String input, final @NotNull PlaceholderResolver placeholders) {
     return this.parser.escapeTokens(input, this.newContext(input, placeholders));
   }
 
@@ -91,7 +91,7 @@ final class MiniMessageImpl implements MiniMessage {
   }
 
   @Override
-  public @NotNull String stripTokens(@NotNull final String input, @NotNull final PlaceholderResolver placeholders) {
+  public @NotNull String stripTokens(final @NotNull String input, final @NotNull PlaceholderResolver placeholders) {
     return this.parser.stripTokens(input, this.newContext(input, placeholders));
   }
 
