@@ -84,9 +84,9 @@ class KeyTest {
 
   @Test
   void testCompare() {
-    assertEquals(-1, Key.key("air").compareTo(Key.key("stone")));
+    assertTrue(Key.key("air").compareTo(Key.key("stone")) < 0);
     assertEquals(0, Key.key("empty").compareTo(Key.key("empty")));
-    assertEquals(1, Key.key("stone").compareTo(Key.key("air")));
+    assertTrue(Key.key("stone").compareTo(Key.key("air")) > 0);
   }
 
   @Test
