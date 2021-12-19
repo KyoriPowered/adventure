@@ -68,12 +68,12 @@ public final class DecorationTransformation extends Transformation {
 
   static {
     final Map<String, TextDecoration> aliases = new HashMap<>();
-    aliases.put(DecorationTransformation.BOLD_2, TextDecoration.BOLD);
-    aliases.put(DecorationTransformation.ITALIC_2, TextDecoration.ITALIC);
-    aliases.put(DecorationTransformation.ITALIC_3, TextDecoration.ITALIC);
-    aliases.put(DecorationTransformation.UNDERLINED_2, TextDecoration.UNDERLINED);
-    aliases.put(DecorationTransformation.STRIKETHROUGH_2, TextDecoration.STRIKETHROUGH);
-    aliases.put(DecorationTransformation.OBFUSCATED_2, TextDecoration.OBFUSCATED);
+    aliases.put(BOLD_2, TextDecoration.BOLD);
+    aliases.put(ITALIC_2, TextDecoration.ITALIC);
+    aliases.put(ITALIC_3, TextDecoration.ITALIC);
+    aliases.put(UNDERLINED_2, TextDecoration.UNDERLINED);
+    aliases.put(STRIKETHROUGH_2, TextDecoration.STRIKETHROUGH);
+    aliases.put(OBFUSCATED_2, TextDecoration.OBFUSCATED);
     DECORATION_ALIASES = Collections.unmodifiableMap(aliases);
   }
 

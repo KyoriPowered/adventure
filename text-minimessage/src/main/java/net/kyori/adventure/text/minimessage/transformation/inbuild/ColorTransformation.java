@@ -59,7 +59,7 @@ public final class ColorTransformation extends Transformation {
   private final TextColor color;
 
   private static boolean isColorOrAbbreviation(final String name) {
-    return name.equals(ColorTransformation.COLOR) || name.equals(ColorTransformation.COLOR_2) || name.equals(ColorTransformation.COLOR_3);
+    return name.equals(COLOR) || name.equals(COLOR_2) || name.equals(COLOR_3);
   }
 
   /**
