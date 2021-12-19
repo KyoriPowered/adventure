@@ -12,5 +12,5 @@ dependencies {
   implementation("net.kyori", "indra-publishing-sonatype", indraVersion)
   implementation("com.adarshr", "gradle-test-logger-plugin", "3.1.0")
   implementation("me.champeau.jmh", "jmh-gradle-plugin", "0.6.6")
-  implementation("com.diffplug.gradle", "goomph", "3.33.3")
+  implementation("com.diffplug.gradle", "goomph", "3.34.0")
 }
