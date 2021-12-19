@@ -734,6 +734,18 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
+   * Creates a text component with {@code components} as the children.
+   *
+   * @param components the children
+   * @return a text component
+   * @since 4.10.0
+   */
+  static @NotNull TextComponent textOfChildren(final @NotNull ComponentLike@NotNull... components) {
+    if (components.length == 0) return empty();
+    return new TextComponentImpl(Arrays.asList(components), Style.empty(), "");
+  }
+
+  /**
    * Creates a text component by applying configuration from {@code consumer}.
    *
    * @param consumer the builder configurator
