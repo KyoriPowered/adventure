@@ -42,6 +42,8 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.10.0
  */
 public final class FontTransformation extends Transformation {
+  public static final String FONT = "font";
+
   private final Key font;
 
   /**

@@ -39,6 +39,8 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.10.0
  */
 public final class InsertionTransformation extends Transformation {
+  public static final String INSERTION = "insert";
+
   private final String insertion;
 
   /**

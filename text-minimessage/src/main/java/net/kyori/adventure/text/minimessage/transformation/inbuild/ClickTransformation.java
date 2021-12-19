@@ -42,6 +42,8 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.10.0
  */
 public final class ClickTransformation extends Transformation {
+  public static final String CLICK = "click";
+
   private final ClickEvent.Action action;
   private final String value;
 

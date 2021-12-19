@@ -52,6 +52,8 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.10.0
  */
 public final class GradientTransformation extends Transformation implements Modifying {
+  public static final String GRADIENT = "gradient";
+
   private int size = 0;
   private int disableApplyingColorDepth = -1;
 

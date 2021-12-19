@@ -32,7 +32,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.minimessage.Tokens;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.ClickTransformation;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.ColorTransformation;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.DecorationTransformation;
@@ -68,35 +67,35 @@ public final class TransformationType<T extends Transformation> {
     DecorationTransformation::create
   );
   public static final TransformationType<?> HOVER_EVENT = transformationType(
-    acceptingNames(Tokens.HOVER),
+    acceptingNames(HoverTransformation.HOVER),
     HoverTransformation::create
   );
   public static final TransformationType<?> CLICK_EVENT = transformationType(
-    acceptingNames(Tokens.CLICK),
+    acceptingNames(ClickTransformation.CLICK),
     ClickTransformation::create
   );
   public static final TransformationType<?> KEYBIND = transformationType(
-    acceptingNames(Tokens.KEYBIND),
+    acceptingNames(KeybindTransformation.KEYBIND),
     KeybindTransformation::create
   );
   public static final TransformationType<?> TRANSLATABLE = transformationType(
-    acceptingNames(Tokens.TRANSLATABLE, Tokens.TRANSLATABLE_2, Tokens.TRANSLATABLE_3),
+    acceptingNames(TranslatableTransformation.TRANSLATABLE, TranslatableTransformation.TRANSLATABLE_2, TranslatableTransformation.TRANSLATABLE_3),
     TranslatableTransformation::create
   );
   public static final TransformationType<?> INSERTION = transformationType(
-    acceptingNames(Tokens.INSERTION),
+    acceptingNames(InsertionTransformation.INSERTION),
     InsertionTransformation::create
   );
   public static final TransformationType<?> FONT = transformationType(
-    acceptingNames(Tokens.FONT),
+    acceptingNames(FontTransformation.FONT),
     FontTransformation::create
   );
   public static final TransformationType<?> GRADIENT = transformationType(
-    acceptingNames(Tokens.GRADIENT),
+    acceptingNames(GradientTransformation.GRADIENT),
     GradientTransformation::create
   );
   public static final TransformationType<?> RAINBOW = transformationType(
-    acceptingNames(Tokens.RAINBOW),
+    acceptingNames(RainbowTransformation.RAINBOW),
     RainbowTransformation::create
   );
 

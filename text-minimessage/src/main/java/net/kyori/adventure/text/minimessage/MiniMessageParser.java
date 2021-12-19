@@ -69,18 +69,18 @@ final class MiniMessageParser {
 
   void escapeTokens(final StringBuilder sb, final @NotNull String richMessage, final @NotNull ContextImpl context) {
     this.processTokens(sb, richMessage, context, (token, builder) -> {
-      builder.append('\\').append(Tokens.TAG_START);
+      builder.append('\\').append(TokenParser.TAG_START);
       if (token.type() == TokenType.CLOSE_TAG) {
-        builder.append(Tokens.CLOSE_TAG);
+        builder.append(TokenParser.CLOSE_TAG);
       }
       final List<Token> childTokens = token.childTokens();
       for (int i = 0; i < childTokens.size(); i++) {
         if (i != 0) {
-          builder.append(Tokens.SEPARATOR);
+          builder.append(TokenParser.SEPARATOR);
         }
         this.escapeTokens(builder, childTokens.get(i).get(richMessage).toString(), context); // todo: do we need to unwrap quotes on this?
       }
-      builder.append(Tokens.TAG_END);
+      builder.append(TokenParser.TAG_END);
     });
   }
 

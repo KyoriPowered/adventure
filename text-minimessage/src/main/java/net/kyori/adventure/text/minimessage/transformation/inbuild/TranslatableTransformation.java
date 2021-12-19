@@ -43,6 +43,10 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.10.0
  */
 public final class TranslatableTransformation extends Transformation implements Inserting {
+  public static final String TRANSLATABLE_3 = "tr";
+  public static final String TRANSLATABLE_2 = "translate";
+  public static final String TRANSLATABLE = "lang";
+
   /**
    * Create a new translatable transformation from a tag.
    *
