@@ -25,7 +25,6 @@ package net.kyori.adventure.text;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.examination.ExaminableProperty;
@@ -45,13 +44,11 @@ import org.jetbrains.annotations.Nullable;
 @Debug.Renderer(text = "this.debuggerString()", childrenArray = "this.children().toArray()", hasChildren = "!this.children().isEmpty()")
 @Deprecated
 public abstract class AbstractComponent implements Component {
-  private static final Predicate<Component> NOT_EMPTY = component -> component != Component.empty();
-
   protected final List<Component> children;
   protected final Style style;
 
   protected AbstractComponent(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style) {
-    this.children = ComponentLike.asComponents(children, NOT_EMPTY);
+    this.children = ComponentLike.asComponents(children, IS_NOT_EMPTY);
     this.style = style;
   }
 

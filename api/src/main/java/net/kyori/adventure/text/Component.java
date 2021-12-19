@@ -35,6 +35,7 @@ import java.util.Spliterators;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 import java.util.stream.Collector;
@@ -116,6 +117,12 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.8.0
    */
   BiPredicate<? super Component, ? super Component> EQUALS_IDENTITY = (a, b) -> a == b;
+  /**
+   * A predicate that excludes {@link #empty()}.
+   *
+   * @since 4.10.0
+   */
+  Predicate<? super Component> IS_NOT_EMPTY = component -> component != empty();
 
   /**
    * Gets an empty component.
