@@ -56,6 +56,18 @@ public interface StyleSetter<T extends StyleSetter<?>> {
   @NotNull T font(final @Nullable Key font);
 
   /**
+   * Sets the font.
+   *
+   * @param font the font
+   * @return an object ({@code T})
+   * @since 4.10.0
+   * @sinceMinecraft 1.16
+   */
+  default @NotNull T font(final @Nullable Font font) {
+    return this.font(Font.unbox(font));
+  }
+
+  /**
    * Sets the color.
    *
    * @param color the color
