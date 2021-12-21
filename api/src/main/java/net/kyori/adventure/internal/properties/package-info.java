@@ -21,29 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.internal;
-
-import net.kyori.examination.Examinable;
-import net.kyori.examination.string.StringExaminer;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-
 /**
- * Utilities internal to Adventure.
+ * Internal properties.
  */
-@ApiStatus.Internal
-public final class Internals {
-  private Internals() {
-  }
-
-  /**
-   * Examines an {@link Examinable} using the {@link StringExaminer}.
-   *
-   * @param examinable the examinable
-   * @return the result from examining
-   * @since 4.10.0
-   */
-  public static @NotNull String toString(final @NotNull Examinable examinable) {
-    return examinable.examine(StringExaminer.simpleEscaping());
-  }
-}
+@org.jetbrains.annotations.ApiStatus.Internal
+package net.kyori.adventure.internal.properties;
