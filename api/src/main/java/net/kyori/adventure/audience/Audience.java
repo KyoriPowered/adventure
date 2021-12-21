@@ -464,8 +464,8 @@ public interface Audience extends Pointered {
   }
 
   /**
-   * Clears the title, if one is being displayed.
-   *
+   * Clears the title and subtitle, if one is being displayed.
+   * <p>Next title/subtitle sent using {@link #sendTitlePart(TitlePart, Object)} will use the timings defined previously by any title or title part or default
    * @see Title
    * @since 4.0.0
    */
@@ -473,7 +473,7 @@ public interface Audience extends Pointered {
   }
 
   /**
-   * Resets the title and timings back to their default.
+   * Resets the title and subtitle and timings back to their default.
    *
    * @see Title
    * @since 4.0.0
