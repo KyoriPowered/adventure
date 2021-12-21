@@ -32,7 +32,9 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class HSVLikeTest {
   @Test
@@ -63,5 +65,17 @@ class HSVLikeTest {
       result[i] = BigDecimal.valueOf(floats[i]).setScale(7, RoundingMode.UP).floatValue();
     }
     return result;
+  }
+
+  @Test
+  void testRange() {
+    assertThrows(IllegalArgumentException.class, () -> HSVLike.of(2, 1, 1));
+    assertThrows(IllegalArgumentException.class, () -> HSVLike.of(1, -1, 1));
+    assertThrows(IllegalArgumentException.class, () -> HSVLike.of(1, 1, 2));
+    assertDoesNotThrow(() -> {
+      HSVLike.of(1, 1, 1);
+      HSVLike.of(0, 0, 0);
+      HSVLike.of(0.5f, 0.5f, 0.5f);
+    });
   }
 }
