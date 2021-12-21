@@ -33,6 +33,9 @@ final class HSVLikeImpl implements HSVLike {
   private final float v;
 
   HSVLikeImpl(final float h, final float s, final float v) {
+    requireInsideRange(h, "h");
+    requireInsideRange(s, "s");
+    requireInsideRange(v, "v");
     this.h = h;
     this.s = s;
     this.v = v;
@@ -51,6 +54,13 @@ final class HSVLikeImpl implements HSVLike {
   @Override
   public float v() {
     return this.v;
+  }
+
+  private static void requireInsideRange(final float number, final String name) throws IllegalArgumentException {
+    if (number < 0 || 1 < number) {
+      throw new IllegalArgumentException(
+        name + " (" + number + ")" + " is not inside the required range: [0,1]");
+    }
   }
 
   @Override
