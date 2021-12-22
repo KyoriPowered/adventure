@@ -96,7 +96,7 @@ public final class HoverTransformation extends Transformation {
         count = 1;
       }
       if (args.size() == 3) {
-        return HoverEvent.ShowItem.of(key, count, BinaryTagHolder.of(args.get(2).value()));
+        return HoverEvent.ShowItem.of(key, count, BinaryTagHolder.binaryTagHolder(args.get(2).value()));
       }
       return HoverEvent.ShowItem.of(key, count);
     } catch (final InvalidKeyException | NumberFormatException ex) {

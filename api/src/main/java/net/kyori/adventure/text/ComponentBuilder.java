@@ -362,7 +362,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    */
   @Contract("_, _ -> this")
   default @NotNull B mergeStyle(final @NotNull Component that, final Style.@NotNull Merge@NotNull... merges) {
-    return this.mergeStyle(that, Style.Merge.of(merges));
+    return this.mergeStyle(that, Style.Merge.merges(merges));
   }
 
   /**

@@ -67,9 +67,9 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
       } else if (fieldName.equals(TAG)) {
         final JsonToken token = in.peek();
         if (token == JsonToken.STRING || token == JsonToken.NUMBER) {
-          nbt = BinaryTagHolder.of(in.nextString());
+          nbt = BinaryTagHolder.binaryTagHolder(in.nextString());
         } else if (token == JsonToken.BOOLEAN) {
-          nbt = BinaryTagHolder.of(String.valueOf(in.nextBoolean()));
+          nbt = BinaryTagHolder.binaryTagHolder(String.valueOf(in.nextBoolean()));
         } else if (token == JsonToken.NULL) {
           in.nextNull();
         } else {
