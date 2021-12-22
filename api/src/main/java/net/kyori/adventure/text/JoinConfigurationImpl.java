@@ -29,6 +29,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -55,6 +56,7 @@ final class JoinConfigurationImpl implements JoinConfiguration {
   private final Component lastSeparatorIfSerial;
   private final Function<ComponentLike, Component> convertor;
   private final Predicate<ComponentLike> predicate;
+  private final Style rootStyle;
 
   private JoinConfigurationImpl() {
     this.prefix = null;
@@ -64,6 +66,7 @@ final class JoinConfigurationImpl implements JoinConfiguration {
     this.lastSeparatorIfSerial = null;
     this.convertor = DEFAULT_CONVERTOR;
     this.predicate = DEFAULT_PREDICATE;
+    this.rootStyle = Style.empty();
   }
 
   private JoinConfigurationImpl(final @NotNull BuilderImpl builder) {
@@ -74,6 +77,7 @@ final class JoinConfigurationImpl implements JoinConfiguration {
     this.lastSeparatorIfSerial = ComponentLike.unbox(builder.lastSeparatorIfSerial);
     this.convertor = builder.convertor;
     this.predicate = builder.predicate;
+    this.rootStyle = builder.rootStyle;
   }
 
   @Override
@@ -112,6 +116,11 @@ final class JoinConfigurationImpl implements JoinConfiguration {
   }
 
   @Override
+  public @NotNull Style parentStyle() {
+    return this.rootStyle;
+  }
+
+  @Override
   public JoinConfiguration.@NotNull Builder toBuilder() {
     return new BuilderImpl(this);
   }
@@ -140,10 +149,6 @@ final class JoinConfigurationImpl implements JoinConfiguration {
     Objects.requireNonNull(components, "components");
 
     final Iterator<? extends ComponentLike> it = components.iterator();
-    final Component prefix = config.prefix();
-    final Component suffix = config.suffix();
-    final Function<ComponentLike, Component> convertor = config.convertor();
-    final Predicate<ComponentLike> predicate = config.predicate();
 
     if (!it.hasNext()) {
       return singleElementJoin(config, null);
@@ -153,13 +158,26 @@ final class JoinConfigurationImpl implements JoinConfiguration {
     int componentsSeen = 0;
 
     if (!it.hasNext()) {
-      return singleElementJoin(config, component);
+      return singleElementJoin(
+        config,
+        component
+      );
     }
+
+    final Component prefix = config.prefix();
+    final Component suffix = config.suffix();
+    final Function<ComponentLike, Component> convertor = config.convertor();
+    final Predicate<ComponentLike> predicate = config.predicate();
+    final Style rootStyle = config.parentStyle();
+    final boolean hasRootStyle = rootStyle != Style.empty();
 
     final Component separator = config.separator();
     final boolean hasSeparator = separator != null;
 
-    final TextComponent.Builder builder = Component.text();
+    final TextComponent.Builder builder =
+      hasRootStyle ?
+        Component.text().style(rootStyle) :
+        Component.text();
     if (prefix != null) builder.append(prefix);
 
     while (component != null) {
@@ -203,20 +221,24 @@ final class JoinConfigurationImpl implements JoinConfiguration {
     final Component suffix = config.suffix();
     final Function<ComponentLike, Component> convertor = config.convertor();
     final Predicate<ComponentLike> predicate = config.predicate();
+    final Style rootStyle = config.parentStyle();
+    final boolean hasRootStyle = rootStyle != Style.empty();
 
     if (prefix == null && suffix == null) {
+      final Component result;
       if (component == null || !predicate.test(component)) {
-        return Component.empty();
+        result = Component.empty();
       } else {
-        return convertor.apply(component);
+        result = convertor.apply(component);
       }
+      return hasRootStyle ? Component.text().style(rootStyle).append(result).build() : result;
     }
 
     final TextComponent.Builder builder = Component.text();
     if (prefix != null) builder.append(prefix);
     if (component != null && predicate.test(component)) builder.append(convertor.apply(component));
     if (suffix != null) builder.append(suffix);
-    return builder.build();
+    return hasRootStyle ? Component.text().style(rootStyle).append(builder).build() : builder.build();
   }
 
   static final class BuilderImpl implements JoinConfiguration.Builder {
@@ -227,6 +249,7 @@ final class JoinConfigurationImpl implements JoinConfiguration {
     private ComponentLike lastSeparatorIfSerial;
     private Function<ComponentLike, Component> convertor;
     private Predicate<ComponentLike> predicate;
+    private Style rootStyle;
 
     BuilderImpl() {
       this(JoinConfigurationImpl.NULL);
@@ -240,6 +263,7 @@ final class JoinConfigurationImpl implements JoinConfiguration {
       this.convertor = joinConfig.convertor;
       this.lastSeparatorIfSerial = joinConfig.lastSeparatorIfSerial;
       this.predicate = joinConfig.predicate;
+      this.rootStyle = joinConfig.rootStyle;
     }
 
     @Override
@@ -281,6 +305,12 @@ final class JoinConfigurationImpl implements JoinConfiguration {
     @Override
     public @NotNull Builder predicate(final @NotNull Predicate<ComponentLike> predicate) {
       this.predicate = Objects.requireNonNull(predicate, "predicate");
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder parentStyle(final @NotNull Style parentStyle) {
+      this.rootStyle = Objects.requireNonNull(parentStyle, "rootStyle");
       return this;
     }
 
