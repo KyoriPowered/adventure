@@ -76,7 +76,7 @@ public interface Identity extends Examinable {
    * @since 4.0.0
    */
   static @NotNull Identity nil() {
-    return Identities.NIL;
+    return NilIdentity.INSTANCE;
   }
 
   /**
@@ -87,7 +87,7 @@ public interface Identity extends Examinable {
    * @since 4.0.0
    */
   static @NotNull Identity identity(final @NotNull UUID uuid) {
-    if (uuid.equals(Identities.NIL.uuid())) return Identities.NIL;
+    if (uuid.equals(NilIdentity.NIL_UUID)) return NilIdentity.INSTANCE;
     return new IdentityImpl(uuid);
   }
 

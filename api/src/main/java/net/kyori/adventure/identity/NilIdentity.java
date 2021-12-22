@@ -25,32 +25,29 @@ package net.kyori.adventure.identity;
 
 import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-final class Identities {
-  static final Identity NIL = new Identity() {
-    private final UUID uuid = new UUID(0, 0);
+final class NilIdentity implements Identity {
+  static final UUID NIL_UUID = new UUID(0, 0);
+  static final Identity INSTANCE = new NilIdentity();
 
-    @Override
-    public @NotNull UUID uuid() {
-      return this.uuid;
-    }
+  @Override
+  public @NotNull UUID uuid() {
+    return NIL_UUID;
+  }
 
-    @Override
-    public String toString() {
-      return "Identity.nil()";
-    }
+  @Override
+  public String toString() {
+    return "Identity.nil()";
+  }
 
-    @Override
-    public boolean equals(final Object that) {
-      return this == that;
-    }
+  @Override
+  public boolean equals(final @Nullable Object that) {
+    return this == that;
+  }
 
-    @Override
-    public int hashCode() {
-      return 0;
-    }
-  };
-
-  private Identities() {
+  @Override
+  public int hashCode() {
+    return 0;
   }
 }
