@@ -67,11 +67,11 @@ final class JoinConfigurationImpl implements JoinConfiguration {
   }
 
   private JoinConfigurationImpl(final @NotNull BuilderImpl builder) {
-    this.prefix = builder.prefix == null ? null : builder.prefix.asComponent();
-    this.suffix = builder.suffix == null ? null : builder.suffix.asComponent();
-    this.separator = builder.separator == null ? null : builder.separator.asComponent();
-    this.lastSeparator = builder.lastSeparator == null ? null : builder.lastSeparator.asComponent();
-    this.lastSeparatorIfSerial = builder.lastSeparatorIfSerial == null ? null : builder.lastSeparatorIfSerial.asComponent();
+    this.prefix = ComponentLike.unbox(builder.prefix);
+    this.suffix = ComponentLike.unbox(builder.suffix);
+    this.separator = ComponentLike.unbox(builder.separator);
+    this.lastSeparator = ComponentLike.unbox(builder.lastSeparator);
+    this.lastSeparatorIfSerial = ComponentLike.unbox(builder.lastSeparatorIfSerial);
     this.convertor = builder.convertor;
     this.predicate = builder.predicate;
   }

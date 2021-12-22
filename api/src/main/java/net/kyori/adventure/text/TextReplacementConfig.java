@@ -192,7 +192,7 @@ public interface TextReplacementConfig extends Buildable<TextReplacementConfig, 
      */
     @Contract("_ -> this")
     default @NotNull Builder replacement(final @Nullable ComponentLike replacement) {
-      final @Nullable Component baked = replacement == null ? null : replacement.asComponent();
+      final @Nullable Component baked = ComponentLike.unbox(replacement);
       return this.replacement((result, input) -> baked);
     }
 
