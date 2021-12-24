@@ -1,39 +1,15 @@
 {
   "extends": [
-    "config:base"
+    "local>KyoriPowered/.github:renovate-config"
   ],
   "ignoreDeps": [
     "com.google.code.gson:gson"
   ],
-  "labels": [
-    "dependencies"
-  ],
   "packageRules": [
-    {
-      "matchUpdateTypes": ["patch"],
-      "excludePackageNames": ["gradle"],
-      "groupName": "patch-release dependency changes"
-    },
-    {
-      "description": "Correct Guava version handling",
-      "matchPackagePrefixes": ["com.google.guava:"],
-      "versioning": "regex:^(?<major>\\d+)(\\.(?<minor>\\d+))?(\\.(?<patch>\\d+))?(-(?<compatibility>.*))?$"
-    },
-    {
-      "matchDepTypes": ["plugin"],
-      "groupName": "gradle plugins"
-    },
-    {
-      "matchPaths": ["build-logic/*", "buildSrc/*"],
-      "groupName": "gradle plugins"
-    },
     {
       "matchUpdateTypes": ["major"],
       "matchPackagePrefixes": ["org.spongepowered:configurate-"],
       "enabled": false
     }
-  ],
-  "prHourlyLimit": 4,
-  "pruneStaleBranches": false,
-  "semanticCommitType": "build"
+  ]
 }
