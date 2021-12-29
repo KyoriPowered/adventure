@@ -52,6 +52,17 @@ public interface Replacement<T> extends Examinable {
   }
 
   /**
+   * Creates a replacement that inserts a raw string, ignoring any MiniMessage tags present.
+   *
+   * @param raw the string
+   * @return the replacement
+   * @since 4.10.0
+   */
+  static @NotNull Replacement<Component> raw(final @NotNull String raw) {
+    return Replacement.component(Component.text(raw));
+  }
+
+  /**
    * Creates a replacement that inserts a component.
    *
    * @param component the component

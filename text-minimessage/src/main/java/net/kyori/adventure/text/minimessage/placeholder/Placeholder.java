@@ -56,6 +56,18 @@ public interface Placeholder<T> extends Replacement<T> {
   }
 
   /**
+   * Creates a placeholder that inserts a raw string, ignoring any MiniMessage tags present.
+   *
+   * @param key the key
+   * @param value the replacement
+   * @return the placeholder
+   * @since 4.10.0
+   */
+  static @NotNull Placeholder<Component> raw(final @NotNull String key, final @NotNull String value) {
+    return Placeholder.component(key, Component.text(value));
+  }
+
+  /**
    * Creates a replacement that inserts a component.
    *
    * @param key the key
