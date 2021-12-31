@@ -29,6 +29,7 @@ import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tree.Node;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -67,6 +68,11 @@ final class MiniMessageImpl implements MiniMessage {
   @Override
   public @NotNull Component deserialize(final @NotNull String input, final @NotNull TagResolver tagResolver) {
     return this.parser.parseFormat(input, this.newContext(input, requireNonNull(tagResolver, "tagResolver")));
+  }
+
+  @Override
+  public @NotNull Node deserializeToTree(final @NotNull String input, final @NotNull TagResolver tagResolver) {
+    return this.parser.parseToTree(input, this.newContext(input, requireNonNull(tagResolver, "tagResolver")));
   }
 
   @Override

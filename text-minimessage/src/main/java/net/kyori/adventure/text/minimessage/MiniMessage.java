@@ -28,6 +28,7 @@ import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Buildable;
 import org.jetbrains.annotations.NotNull;
@@ -156,6 +157,19 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
   default @NotNull Component deserialize(final @NotNull String input, final @NotNull TagResolver... tagResolvers) {
     return this.deserialize(input, TagResolver.resolver(tagResolvers));
   }
+
+  /**
+   * Deserializes a string into a tree of parsed elements, with a tag resolver to parse tags of the form {@code <key>}.
+   * This is intended for inspecting the output of the parser for debugging purposes.
+   *
+   * <p>Tags will be resolved from the resolver parameter before the resolver provided in the builder is used.</p>
+   *
+   * @param input the input string
+   * @param tagResolver the tag resolver for any additional tags to handle
+   * @return the root of the resulting tree
+   * @since 4.10.0
+   */
+  @NotNull Node deserializeToTree(final @NotNull String input, final @NotNull TagResolver tagResolver);
 
   /**
    * Creates a new {@link MiniMessage.Builder}.
