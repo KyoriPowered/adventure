@@ -27,11 +27,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Locale;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
+import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.parser.match.MatchedTokenConsumer;
 import net.kyori.adventure.text.minimessage.parser.match.StringResolvingMatchedTokenConsumer;
 import net.kyori.adventure.text.minimessage.parser.match.TokenListProducingMatchedTokenConsumer;
@@ -43,6 +43,7 @@ import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.parser.node.TextNode;
 import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 import net.kyori.adventure.text.minimessage.placeholder.Replacement;
+import net.kyori.adventure.text.minimessage.placeholder.ResolveContext;
 import net.kyori.adventure.text.minimessage.transformation.Inserting;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
 import org.jetbrains.annotations.ApiStatus;
@@ -82,35 +83,41 @@ public final class TokenParser {
     final @NotNull BiPredicate<String, Boolean> tagNameChecker,
     final @NotNull PlaceholderResolver placeholderResolver,
     final @NotNull String message,
-    final boolean strict
+    final @NotNull Context context
   ) {
     // first resolve placeholders...
-    final String actualMessage = resolvePlaceholders(message, string -> tagNameChecker.test(string, false), placeholderResolver);
+    final String actualMessage = resolvePlaceholders(message, string -> tagNameChecker.test(string, false), placeholderResolver, context);
 
     // then collect tokens...
     final List<Token> tokens = tokenize(actualMessage);
 
     // then build the tree!
-    return buildTree(transformationFactory, tagNameChecker, placeholderResolver, tokens, actualMessage, strict);
+    return buildTree(transformationFactory, tagNameChecker, placeholderResolver, tokens, actualMessage, context);
   }
 
   /**
    * Resolves placeholders on a string.
    *
    * @param message the message
-   * @param tagNameChecker a predicate to check if a matched token is a in-built transformation tag
+   * @param tagNameChecker a predicate to check if a matched token is an in-built transformation tag
    * @param placeholderResolver the placeholder resolver
+   * @param context the parse context
    * @return the resulting string
    * @since 4.10.0
    */
-  public static String resolvePlaceholders(final String message, final Predicate<String> tagNameChecker, final PlaceholderResolver placeholderResolver) {
+  public static String resolvePlaceholders(
+    final String message,
+    final Predicate<String> tagNameChecker,
+    final PlaceholderResolver placeholderResolver,
+    final Context context
+  ) {
     int passes = 0;
     String lastResult;
     String result = message;
 
     do {
       lastResult = result;
-      final StringResolvingMatchedTokenConsumer stringTokenResolver = new StringResolvingMatchedTokenConsumer(lastResult, tagNameChecker, placeholderResolver);
+      final StringResolvingMatchedTokenConsumer stringTokenResolver = new StringResolvingMatchedTokenConsumer(lastResult, tagNameChecker, placeholderResolver, context);
       parseString(lastResult, stringTokenResolver);
       result = stringTokenResolver.result();
       passes++;
@@ -355,8 +362,9 @@ public final class TokenParser {
     final @NotNull PlaceholderResolver placeholderResolver,
     final @NotNull List<Token> tokens,
     final @NotNull String message,
-    final boolean strict
+    final @NotNull Context context
   ) {
+    final boolean strict = context.strict();
     final RootNode root = new RootNode(message);
     ElementNode node = root;
 
@@ -378,11 +386,10 @@ public final class TokenParser {
             }
             node = root;
           } else {
-            final Replacement<?> replacement = placeholderResolver.resolve(tagNode.name());
+            final String key = tagNode.name();
 
-            if (replacement != null) {
-              final Object value = replacement.value();
-
+            if (placeholderResolver.canResolve(key)) {
+              final Object value = unpackReplacementSafely(placeholderResolver, ResolveContext.resolveContext(key, context));
               if (value instanceof String) {
                 // String placeholders are inserted into the tree as raw text nodes, not parsed
                 node.addChild(new PlaceholderNode(node, token, message, (String) value));
@@ -506,50 +513,6 @@ public final class TokenParser {
     return root;
   }
 
-  /**
-   * Parse a minimessage string into another string, resolving only the string placeholders present in the message.
-   *
-   * @param message the minimessage string to parse
-   * @param placeholderResolver the placeholder resolver to use to find string placeholders
-   * @return the message, with non-string placeholders still intact
-   * @since 4.10.0
-   */
-  public static String resolveStringPlaceholders(
-      final @NotNull String message,
-      final @NotNull PlaceholderResolver placeholderResolver
-  ) {
-    final List<Token> tokens = tokenize(message);
-    final StringBuilder sb = new StringBuilder();
-
-    for (final Token token : tokens) {
-      final TokenType type = token.type();
-      switch (type) {
-        case TEXT:
-        case CLOSE_TAG:
-          sb.append(token.get(message));
-          break;
-
-        case OPEN_TAG:
-          if (token.childTokens() != null && token.childTokens().size() == 1) {
-            final CharSequence name = token.childTokens().get(0).get(message);
-            final Replacement<?> replacement = placeholderResolver.resolve(name.toString().toLowerCase(Locale.ROOT));
-            if (replacement != null) {
-              final Object value = replacement.value();
-
-              if (value instanceof String) {
-                sb.append((String) value);
-                break;
-              }
-            }
-          }
-          sb.append(token.get(message));
-          break;
-      }
-    }
-
-    return sb.toString();
-  }
-
   private static boolean isReset(final String input) {
     return input.equalsIgnoreCase(RESET) || input.equalsIgnoreCase(RESET_2);
   }
@@ -671,5 +634,31 @@ public final class TokenParser {
     sb.append(text, from, endIndex);
 
     return sb.toString();
+  }
+
+  /**
+   * Safely obtains a replacement from a placeholder, throwing a {@link ParsingException} if the
+   * placeholder resolver returns null or if the replacement value is null.
+   *
+   * <p>This method should be called <b>after</b> a call to {@link PlaceholderResolver#canResolve(String)}.</p>
+   *
+   * @param placeholderResolver the placeholder resolver
+   * @param resolveContext the resolve context
+   * @return the replacement value
+   * @since 4.10.0
+   */
+  @SuppressWarnings("ConstantConditions") // we're over-eagerly checking here as bad implementations could return null
+  public static @NotNull Object unpackReplacementSafely(final @NotNull PlaceholderResolver placeholderResolver, final @NotNull ResolveContext resolveContext) {
+    final Replacement<?> replacement = placeholderResolver.resolve(resolveContext);
+    if (replacement == null) {
+      throw new ParsingException("Placeholder resolver (" + placeholderResolver + ") returned null after returning true for canResolve with key " + resolveContext.key());
+    }
+
+    final Object value = replacement.value();
+    if (value == null) {
+      throw new ParsingException("Replacement (" + replacement + ") illegally returned null for value call!");
+    }
+
+    return value;
   }
 }

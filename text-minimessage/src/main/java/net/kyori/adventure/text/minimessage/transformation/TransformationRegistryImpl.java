@@ -29,9 +29,10 @@ import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
+import net.kyori.adventure.text.minimessage.parser.TokenParser;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
-import net.kyori.adventure.text.minimessage.placeholder.Replacement;
+import net.kyori.adventure.text.minimessage.placeholder.ResolveContext;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.ComponentTransformation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -83,9 +84,8 @@ final class TransformationRegistryImpl implements TransformationRegistry {
   @Override
   public @Nullable Transformation get(final String name, final List<TagPart> inners, final PlaceholderResolver placeholderResolver, final Context context) {
     // first try if we have a custom placeholder resolver
-    final Replacement<?> replacement = placeholderResolver.resolve(name);
-    if (replacement != null) {
-      final Object value = replacement.value();
+    if (placeholderResolver.canResolve(name)) {
+      final Object value = TokenParser.unpackReplacementSafely(placeholderResolver, ResolveContext.resolveContext(name, context));
 
       // The parser handles StringPlaceholders
       if (value instanceof Component) {
@@ -115,7 +115,7 @@ final class TransformationRegistryImpl implements TransformationRegistry {
   @Override
   public boolean exists(final String name, final PlaceholderResolver placeholderResolver) {
     // first check the placeholder resolver
-    if (placeholderResolver.resolve(name) != null) {
+    if (placeholderResolver.canResolve(name)) {
       return true;
     }
     // then check registry

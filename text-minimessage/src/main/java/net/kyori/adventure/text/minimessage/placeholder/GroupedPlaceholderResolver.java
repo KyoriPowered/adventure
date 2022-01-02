@@ -24,7 +24,6 @@
 package net.kyori.adventure.text.minimessage.placeholder;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 final class GroupedPlaceholderResolver implements PlaceholderResolver {
   private final Iterable<? extends PlaceholderResolver> placeholderResolvers;
@@ -34,12 +33,24 @@ final class GroupedPlaceholderResolver implements PlaceholderResolver {
   }
 
   @Override
-  public @Nullable Replacement<?> resolve(final @NotNull String key) {
+  public boolean canResolve(final @NotNull String key) {
     for (final PlaceholderResolver placeholderResolver : this.placeholderResolvers) {
-      final Replacement<?> placeholder = placeholderResolver.resolve(key);
-      if (placeholder != null) return placeholder;
+      if (placeholderResolver.canResolve(key)) return true;
     }
 
-    return null;
+    return false;
+  }
+
+  @Override
+  public @NotNull Replacement<?> resolve(final @NotNull ResolveContext context) {
+    final String key = context.key();
+
+    for (final PlaceholderResolver placeholderResolver : this.placeholderResolvers) {
+      if (placeholderResolver.canResolve(key)) {
+        return placeholderResolver.resolve(context);
+      }
+    }
+
+    throw new PlaceholderResolveException(context, "No placeholder resolve could resolve this placeholder.");
   }
 }

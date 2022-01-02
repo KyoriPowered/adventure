@@ -23,25 +23,25 @@
  */
 package net.kyori.adventure.text.minimessage.placeholder;
 
-import java.util.Map;
+import net.kyori.adventure.text.minimessage.Context;
 import org.jetbrains.annotations.NotNull;
 
-final class MapPlaceholderResolver implements PlaceholderResolver {
-  private final Map<String, ? extends Replacement<?>> placeholderMap;
+final class ResolveContextImpl implements ResolveContext {
+  private final String key;
+  private final Context parseContext;
 
-  MapPlaceholderResolver(final @NotNull Map<String, ? extends Replacement<?>> placeholderMap) {
-    this.placeholderMap = placeholderMap;
+  ResolveContextImpl(final @NotNull String key, final @NotNull Context parseContext) {
+    this.key = key;
+    this.parseContext = parseContext;
   }
 
   @Override
-  public boolean canResolve(final @NotNull String key) {
-    return this.placeholderMap.containsKey(key);
+  public @NotNull String key() {
+    return this.key;
   }
 
   @Override
-  public @NotNull Replacement<?> resolve(final @NotNull ResolveContext context) {
-    final Replacement<?> replacement = this.placeholderMap.get(context.key());
-    if (replacement == null) throw new PlaceholderResolveException(context, "Placeholder map did not contain a placeholder with the given key.");
-    return replacement;
+  public @NotNull Context parseContext() {
+    return this.parseContext;
   }
 }

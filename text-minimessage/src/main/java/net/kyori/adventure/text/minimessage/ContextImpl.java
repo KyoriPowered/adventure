@@ -71,6 +71,7 @@ class ContextImpl implements Context {
     return new ContextImpl(strict, debugOutput, input, miniMessage, placeholderResolver, postProcessor);
   }
 
+  @Override
   public boolean strict() {
     return this.strict;
   }

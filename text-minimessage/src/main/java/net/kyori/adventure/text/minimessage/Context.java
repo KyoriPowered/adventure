@@ -28,7 +28,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Parser context for use within transformations.
+ * Parser context for use within transformations and placeholders.
  *
  * <p>This allows operating recursive parses, for cases where messages may include tokens.</p>
  *
@@ -43,6 +43,14 @@ public interface Context {
    * @since 4.10.0
    */
   @NotNull String originalMessage();
+
+  /**
+   * If the MiniMessage instance is using strict mode.
+   *
+   * @return if strict mode is enabled
+   * @since 4.10.0
+   */
+  boolean strict();
 
   /**
    * Parses a MiniMessage using all the settings of this context, including placeholders.

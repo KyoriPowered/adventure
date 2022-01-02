@@ -26,12 +26,10 @@ package net.kyori.adventure.text.minimessage;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
 import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
-import net.kyori.adventure.text.minimessage.placeholder.Replacement;
 import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
 import net.kyori.adventure.text.minimessage.transformation.TransformationType;
 import org.junit.jupiter.api.Test;
@@ -161,24 +159,6 @@ public class MiniMessageTest extends TestBase {
   }
 
   @Test
-  void testPlaceholderResolver() {
-    final Component expected = text("TEST", RED).decorate(BOLD);
-
-    final String input = "<green><bold><test>";
-
-    final Function<String, Replacement<?>> resolver = name -> {
-      if (name.equalsIgnoreCase("test")) {
-        return Replacement.component(text("TEST", RED));
-      }
-      return null;
-    };
-
-    final MiniMessage miniMessage = MiniMessage.builder().placeholderResolver(PlaceholderResolver.dynamic(resolver)).build();
-
-    this.assertParsedEquals(miniMessage, expected, input);
-  }
-
-  @Test
   void testGroupingPlaceholderResolver() {
     final Component expected = empty()
         .append(text("ONE", RED))
@@ -187,16 +167,9 @@ public class MiniMessageTest extends TestBase {
 
     final String input = "<one><none><two>";
 
-    final Function<String, Replacement<?>> resolver = name -> {
-      if (name.equalsIgnoreCase("one")) {
-        return Replacement.component(text("ONE").color(RED));
-      }
-      return null;
-    };
-
     final MiniMessage miniMessage = MiniMessage.builder().placeholderResolver(
         PlaceholderResolver.combining(
-            PlaceholderResolver.dynamic(resolver),
+            PlaceholderResolver.placeholders(component("one", text("ONE", RED))),
             PlaceholderResolver.placeholders(component("two", text("TWO", GREEN)))
         )
     ).build();

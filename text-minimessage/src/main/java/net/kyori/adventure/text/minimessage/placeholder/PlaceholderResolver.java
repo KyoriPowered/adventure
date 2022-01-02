@@ -29,16 +29,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * A resolver for user-defined placeholders.
  *
  * @since 4.10.0
  */
-@FunctionalInterface
 public interface PlaceholderResolver {
   /**
    * Constructs a placeholder resolver from a map.
@@ -122,22 +119,7 @@ public interface PlaceholderResolver {
   }
 
   /**
-   * Constructs a placeholder resolver capable of dynamically resolving placeholders.
-   *
-   * <p>The resolver can return {@code null} to indicate it cannot resolve a placeholder.
-   * Once a string to replacement mapping has been created, it will be cached to avoid
-   * the cost of recreating the replacement.</p>
-   *
-   * @param resolver the resolver
-   * @return the placeholder resolver
-   * @since 4.10.0
-   */
-  static @NotNull PlaceholderResolver dynamic(final @NotNull Function<String, Replacement<?>> resolver) {
-    return new DynamicPlaceholderResolver(Objects.requireNonNull(resolver, "resolver"));
-  }
-
-  /**
-   * An empty placeholder resolver that will return {@code null} for all resolve attempts.
+   * An empty placeholder resolver that will return {@code false} for all resolve attempts.
    *
    * @return the placeholder resolver
    * @since 4.10.0
@@ -147,15 +129,25 @@ public interface PlaceholderResolver {
   }
 
   /**
-   * Returns the replacement for a given key, if any exist.
-   *
-   * <p>This method might be called multiple times during each parse attempt. This is due to the
-   * fact that it is used in places to check if a tag is a placeholder or not. Therefore, you
-   * should prefer using fixed or cached replacements instead of dynamic construction.</p>
+   * Checks if this placeholder resolver can resolve a placeholder with the given key.
    *
    * @param key the key
+   * @return if the placeholder resolver can resolve a placeholder with the key
+   * @since 4.10.0
+   */
+  boolean canResolve(final @NotNull String key);
+
+  /**
+   * Returns the replacement for a given context.
+   *
+   * <p>This method will only be called if {@link #canResolve(String)} returns {@code true}, which means
+   * the parser is expecting a replacement to be provided. If you cannot provide a replacement (due to,
+   * for example, bad input) then you should either throw a {@link PlaceholderResolveException} or
+   * return a dummy replacement.</p>
+   *
+   * @param context the context
    * @return the replacement
    * @since 4.10.0
    */
-  @Nullable Replacement<?> resolve(final @NotNull String key);
+  @NotNull Replacement<?> resolve(final @NotNull ResolveContext context);
 }

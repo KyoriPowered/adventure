@@ -23,23 +23,45 @@
  */
 package net.kyori.adventure.text.minimessage.placeholder;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
+import net.kyori.adventure.text.minimessage.Context;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-final class DynamicPlaceholderResolver implements PlaceholderResolver {
-  private final Function<String, Replacement<?>> resolver;
-  private final Map<String, Replacement<?>> cache;
-
-  DynamicPlaceholderResolver(final Function<String, Replacement<?>> resolver) {
-    this.resolver = resolver;
-    this.cache = new HashMap<>();
+/**
+ * The context of a placeholder resolve attempt.
+ *
+ * @since 4.10.0
+ */
+@ApiStatus.NonExtendable
+public interface ResolveContext {
+  /**
+   * Creates a new resolve context.
+   *
+   * <p>As there may be new properties added to the resolve context at any time, this constructor
+   * method is not considered public API and should not be relied upon as a stable way of
+   * constructing a resolve context instance (something which should not need to be done anyway).</p>
+   *
+   * @return a resolve context
+   * @since 4.10.0
+   */
+  @ApiStatus.Internal
+  static @NotNull ResolveContext resolveContext(final @NotNull String key, final @NotNull Context context) {
+    return new ResolveContextImpl(key, context);
   }
 
-  @Override
-  public @Nullable Replacement<?> resolve(final @NotNull String key) {
-    return this.cache.computeIfAbsent(key, this.resolver);
-  }
+  /**
+   * The key of the placeholder.
+   *
+   * @return the key
+   * @since 4.10.0
+   */
+  @NotNull String key();
+
+  /**
+   * The context of the parse.
+   *
+   * @return the parser context
+   * @since 4.10.0
+   */
+  @NotNull Context parseContext();
 }

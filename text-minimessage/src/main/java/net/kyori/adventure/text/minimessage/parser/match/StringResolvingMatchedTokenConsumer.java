@@ -24,9 +24,11 @@
 package net.kyori.adventure.text.minimessage.parser.match;
 
 import java.util.function.Predicate;
+import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.parser.TokenParser;
 import net.kyori.adventure.text.minimessage.parser.TokenType;
 import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
-import net.kyori.adventure.text.minimessage.placeholder.Replacement;
+import net.kyori.adventure.text.minimessage.placeholder.ResolveContext;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -38,6 +40,7 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
   private final StringBuilder builder;
   private final Predicate<String> tagChecker;
   private final PlaceholderResolver placeholderResolver;
+  private final Context context;
 
   /**
    * Creates a placeholder resolving matched token consumer.
@@ -48,12 +51,14 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
   public StringResolvingMatchedTokenConsumer(
     final @NotNull String input,
     final @NotNull Predicate<String> tagChecker,
-    final @NotNull PlaceholderResolver placeholderResolver
+    final @NotNull PlaceholderResolver placeholderResolver,
+    final @NotNull Context context
   ) {
     super(input);
     this.builder = new StringBuilder(input.length());
     this.tagChecker = tagChecker;
     this.placeholderResolver = placeholderResolver;
+    this.context = context;
   }
 
   @Override
@@ -66,18 +71,15 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
     } else {
       // well, now we need to work out if it's a tag or a placeholder!
       final String match = this.input.substring(start, end);
-      final String tag = this.input.substring(start + 1, end - 1);
+      final String[] args = match.substring(1, match.length() - 1).split(":");
+      final String key = args[0];
 
-      if (this.tagChecker.test(tag)) {
+      if (this.tagChecker.test(key)) {
         // it's a tag, not a placeholder, so we don't care
         this.builder.append(match);
       } else {
-        // we might care if it's a placeholder!
-        final Replacement<?> replacement = this.placeholderResolver.resolve(tag);
-
-        if (replacement != null) {
-          final Object value = replacement.value();
-
+        if (this.placeholderResolver.canResolve(key)) {
+          final Object value = TokenParser.unpackReplacementSafely(this.placeholderResolver, ResolveContext.resolveContext(key, this.context));
           // we only care about string placeholders!
           if (value instanceof String) {
             this.builder.append((String) value);
