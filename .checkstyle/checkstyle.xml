@@ -245,9 +245,6 @@
     <!-- https://checkstyle.org/config_whitespace.html#TypecastParenPad -->
     <module name="TypecastParenPad"/>
 
-    <!-- https://checkstyle.org/config_coding.html#UnnecessaryParentheses -->
-    <module name="UnnecessaryParentheses"/>
-
     <!-- https://checkstyle.org/config_imports.html#UnusedImports -->
     <module name="UnusedImports"/>
 
