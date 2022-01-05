@@ -12,6 +12,7 @@ indra {
   }
   mitLicense()
 
+  publishSnapshotsTo("stellardrift", "https://repo.stellardrift.ca/repositories/snapshots/")
   configurePublications {
     pom {
       developers {
