@@ -61,6 +61,7 @@ final class MiniMessageParser {
 
   @NotNull String escapeTokens(final @NotNull String richMessage, final @NotNull ContextImpl context) {
     final StringBuilder sb = new StringBuilder(richMessage.length());
+    this.tryToNag(richMessage, context.strict());
     this.escapeTokens(sb, richMessage, context);
     return sb.toString();
   }
@@ -84,6 +85,7 @@ final class MiniMessageParser {
 
   @NotNull String stripTokens(final @NotNull String richMessage, final @NotNull ContextImpl context) {
     final StringBuilder sb = new StringBuilder(richMessage.length());
+    this.tryToNag(richMessage, context.strict());
     this.processTokens(sb, richMessage, context, (token, builder) -> {});
     return sb.toString();
   }
@@ -125,6 +127,7 @@ final class MiniMessageParser {
       debug.accept(richMessage);
       debug.accept("\n");
     }
+    this.tryToNag(richMessage, context.strict());
 
     final TokenParser.TagProvider transformationFactory;
     if (debug != null) {
@@ -264,5 +267,11 @@ final class MiniMessageParser {
       newComp = newComp.append(this.handleModifying(modTransformation, child, depth + 1));
     }
     return newComp;
+  }
+
+  private void tryToNag(final String input, final boolean strict) {
+    if (input.contains("§") && strict) {
+      throw new IllegalArgumentException("Legacy formatting codes have been detected in a component - this is unsupported behaviour. Please refer to the Adventure documentation (https://docs.adventure.kyori.net) for more information.");
+    }
   }
 }
