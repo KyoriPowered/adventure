@@ -45,7 +45,6 @@ final class TransformationRegistryImpl implements TransformationRegistry {
 
   static {
     DEFAULT_TRANSFORMATIONS.add(TransformationType.COLOR);
-    DEFAULT_TRANSFORMATIONS.add(TransformationType.CSS_COLOR);
     DEFAULT_TRANSFORMATIONS.add(TransformationType.DECORATION);
     DEFAULT_TRANSFORMATIONS.add(TransformationType.HOVER_EVENT);
     DEFAULT_TRANSFORMATIONS.add(TransformationType.CLICK_EVENT);

@@ -226,7 +226,7 @@ public final class CSSColorTransformation extends Transformation {
         throw new ParsingException("Expected to find a css color name, but found " + args, args);
       }
     } else {
-      color = CSS_COLORS.get(name);
+      color = CSS_COLORS.get(name.toLowerCase(Locale.ROOT));
       if (color == null) {
         throw new ParsingException("Expected to find a css color name, but found " + name, args);
       }

@@ -23,6 +23,8 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -33,6 +35,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
 import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
+import net.kyori.adventure.text.minimessage.transformation.TransformationType;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.junit.jupiter.api.Test;
 
@@ -1691,7 +1694,9 @@ public class MiniMessageParserTest extends TestBase {
 
     final Component expected = Component.text("Alice Blue").color(TextColor.color(0xf0f8ff));
 
-    this.assertParsedEquals(expected, input);
+    assertEquals(expected, MiniMessage.builder().transformations(builder ->
+      builder.add(TransformationType.CSS_COLOR)
+    ).build().parse(input));
   }
 
   @Test
@@ -1703,7 +1708,9 @@ public class MiniMessageParserTest extends TestBase {
       .append(Component.text(" White "))
       .append(Component.text("Orange").color(TextColor.color(0xffa500)));
 
-    this.assertParsedEquals(expected, input);
+    assertEquals(expected, MiniMessage.builder().transformations(builder ->
+      builder.add(TransformationType.CSS_COLOR)
+    ).build().parse(input));
   }
 
   @Test
@@ -1715,7 +1722,9 @@ public class MiniMessageParserTest extends TestBase {
       .append(Component.text(" White "))
       .append(Component.text("Orange").color(TextColor.color(0xffa500)));
 
-    this.assertParsedEquals(expected, input);
+    assertEquals(expected, MiniMessage.builder().transformations(builder ->
+      builder.add(TransformationType.CSS_COLOR)
+    ).build().parse(input));
   }
 
   @Test
@@ -1724,7 +1733,9 @@ public class MiniMessageParserTest extends TestBase {
 
     final Component expected = Component.text("Minecraft").color(NamedTextColor.AQUA);
 
-    this.assertParsedEquals(expected, input);
+    assertEquals(expected, MiniMessage.builder().transformations(builder ->
+      builder.add(TransformationType.CSS_COLOR)
+    ).build().parse(input));
   }
 
   @Test
@@ -1733,7 +1744,9 @@ public class MiniMessageParserTest extends TestBase {
 
     final Component expected = Component.text("CSS").color(TextColor.color(0x00ffff));
 
-    this.assertParsedEquals(expected, input);
+    assertEquals(expected, MiniMessage.builder().transformations(builder ->
+      builder.add(TransformationType.CSS_COLOR)
+    ).build().parse(input));
   }
 
   @Test
@@ -1745,6 +1758,42 @@ public class MiniMessageParserTest extends TestBase {
       .append(Component.text(" White "))
       .append(Component.text("CSS Aqua").color(TextColor.color(0x00ffff)));
 
-    this.assertParsedEquals(expected, input);
+    assertEquals(expected, MiniMessage.builder().transformations(builder ->
+      builder.add(TransformationType.CSS_COLOR)
+    ).build().parse(input));
+  }
+
+  @Test
+  public void testCustomColorTransformation() {
+    final String input = "<orange>Orange";
+
+    final Component expected = Component.text("Orange").color(TextColor.color(0xfc6a03));
+
+    final Map<String, TextColor> colorMap = new HashMap<>();
+    colorMap.put("orange", TextColor.color(0xfc6a03));
+
+    assertEquals(
+      expected,
+      MiniMessage.builder().transformations(builder ->
+        builder.add(TransformationType.color(colorMap))
+      ).build().parse(input)
+    );
+  }
+
+  @Test
+  public void testCustomColorTransformationWithIdentifier() {
+    final String input = "<identifier:orange>Orange";
+
+    final Component expected = Component.text("Orange").color(TextColor.color(0xfc6a03));
+
+    final Map<String, TextColor> colorMap = new HashMap<>();
+    colorMap.put("orange", TextColor.color(0xfc6a03));
+
+    assertEquals(
+      expected,
+      MiniMessage.builder().transformations(builder ->
+        builder.add(TransformationType.color("identifier", colorMap)).add(TransformationType.CSS_COLOR)
+      ).build().parse(input)
+    );
   }
 }

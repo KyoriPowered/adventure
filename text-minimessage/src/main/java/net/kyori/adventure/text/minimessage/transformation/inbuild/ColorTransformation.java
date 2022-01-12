@@ -112,7 +112,13 @@ public final class ColorTransformation extends Transformation {
     return new ColorTransformation(color);
   }
 
-  private ColorTransformation(final TextColor color) {
+  /**
+   * Create a new color transformation.
+   *
+   * @param color the color
+   * @since 4.10.0
+   */
+  public ColorTransformation(final TextColor color) {
     this.color = color;
   }
 
