@@ -1684,4 +1684,67 @@ public class MiniMessageParserTest extends TestBase {
 
     this.assertParsedEquals(expected, input);
   }
+
+  @Test
+  public void singleCssColor() {
+    final String input = "<aliceblue>Alice Blue";
+
+    final Component expected = Component.text("Alice Blue").color(TextColor.color(0xf0f8ff));
+
+    this.assertParsedEquals(expected, input);
+  }
+
+  @Test
+  public void multipleCssColors() {
+    final String input = "<aliceblue>Blue</aliceblue> White <orange>Orange";
+
+    final Component expected = Component.empty()
+      .append(Component.text("Blue").color(TextColor.color(0xf0f8ff)))
+      .append(Component.text(" White "))
+      .append(Component.text("Orange").color(TextColor.color(0xffa500)));
+
+    this.assertParsedEquals(expected, input);
+  }
+
+  @Test
+  public void multipleCssColorsUsingArgs() {
+    final String input = "<css:aliceblue>Blue</css:aliceblue> White <css:orange>Orange";
+
+    final Component expected = Component.empty()
+      .append(Component.text("Blue").color(TextColor.color(0xf0f8ff)))
+      .append(Component.text(" White "))
+      .append(Component.text("Orange").color(TextColor.color(0xffa500)));
+
+    this.assertParsedEquals(expected, input);
+  }
+
+  @Test
+  public void mcColorThatExistsInCss() {
+    final String input = "<aqua>Minecraft";
+
+    final Component expected = Component.text("Minecraft").color(NamedTextColor.AQUA);
+
+    this.assertParsedEquals(expected, input);
+  }
+
+  @Test
+  public void specifyCssColorThatExistsInMc() {
+    final String input = "<css:aqua>CSS";
+
+    final Component expected = Component.text("CSS").color(TextColor.color(0x00ffff));
+
+    this.assertParsedEquals(expected, input);
+  }
+
+  @Test
+  public void cssAndMcColors() {
+    final String input = "<aqua>MC Aqua</aqua> White <css:aqua>CSS Aqua</css:aqua>";
+
+    final Component expected = Component.empty()
+      .append(Component.text("MC Aqua").color(TextColor.color(0x55ffff)))
+      .append(Component.text(" White "))
+      .append(Component.text("CSS Aqua").color(TextColor.color(0x00ffff)));
+
+    this.assertParsedEquals(expected, input);
+  }
 }
