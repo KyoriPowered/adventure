@@ -32,6 +32,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.transformation.inbuild.CSSColorTransformation;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.ClickTransformation;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.ColorTransformation;
 import net.kyori.adventure.text.minimessage.transformation.inbuild.DecorationTransformation;
@@ -56,6 +57,10 @@ public final class TransformationType<T extends Transformation> {
   public static final TransformationType<?> COLOR = transformationType(
     ColorTransformation::canParse,
     ColorTransformation::create
+  );
+  public static final TransformationType<?> CSS_COLOR = transformationType(
+    CSSColorTransformation::canParse,
+    CSSColorTransformation::create
   );
   public static final TransformationType<?> DECORATION = transformationType(
     acceptingNames(
