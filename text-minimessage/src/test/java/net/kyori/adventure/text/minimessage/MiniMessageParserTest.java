@@ -1696,7 +1696,7 @@ public class MiniMessageParserTest extends TestBase {
 
     assertEquals(expected, MiniMessage.builder().transformations(builder ->
       builder.add(TransformationType.CSS_COLOR)
-    ).build().parse(input));
+    ).build().deserialize(input));
   }
 
   @Test
@@ -1710,7 +1710,7 @@ public class MiniMessageParserTest extends TestBase {
 
     assertEquals(expected, MiniMessage.builder().transformations(builder ->
       builder.add(TransformationType.CSS_COLOR)
-    ).build().parse(input));
+    ).build().deserialize(input));
   }
 
   @Test
@@ -1724,7 +1724,7 @@ public class MiniMessageParserTest extends TestBase {
 
     assertEquals(expected, MiniMessage.builder().transformations(builder ->
       builder.add(TransformationType.CSS_COLOR)
-    ).build().parse(input));
+    ).build().deserialize(input));
   }
 
   @Test
@@ -1735,7 +1735,7 @@ public class MiniMessageParserTest extends TestBase {
 
     assertEquals(expected, MiniMessage.builder().transformations(builder ->
       builder.add(TransformationType.CSS_COLOR)
-    ).build().parse(input));
+    ).build().deserialize(input));
   }
 
   @Test
@@ -1746,7 +1746,7 @@ public class MiniMessageParserTest extends TestBase {
 
     assertEquals(expected, MiniMessage.builder().transformations(builder ->
       builder.add(TransformationType.CSS_COLOR)
-    ).build().parse(input));
+    ).build().deserialize(input));
   }
 
   @Test
@@ -1760,7 +1760,7 @@ public class MiniMessageParserTest extends TestBase {
 
     assertEquals(expected, MiniMessage.builder().transformations(builder ->
       builder.add(TransformationType.CSS_COLOR)
-    ).build().parse(input));
+    ).build().deserialize(input));
   }
 
   @Test
@@ -1776,7 +1776,7 @@ public class MiniMessageParserTest extends TestBase {
       expected,
       MiniMessage.builder().transformations(builder ->
         builder.add(TransformationType.color(colorMap))
-      ).build().parse(input)
+      ).build().deserialize(input)
     );
   }
 
@@ -1793,7 +1793,7 @@ public class MiniMessageParserTest extends TestBase {
       expected,
       MiniMessage.builder().transformations(builder ->
         builder.add(TransformationType.color("identifier", colorMap)).add(TransformationType.CSS_COLOR)
-      ).build().parse(input)
+      ).build().deserialize(input)
     );
   }
 }
