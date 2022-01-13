@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage.placeholder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,8 +56,8 @@ public interface PlaceholderResolver {
   /**
    * Constructs a placeholder resolver from a map.
    *
-   * <p>The provided map is used as the backing for the returned placeholder resolver.
-   * This means that changes to the map will be reflected in the placeholder resolver.</p>
+   * <p>The returned placeholder resolver will make a copy of the provided map.
+   * This means that changes to the map will not be reflected in the placeholder resolver.</p>
    *
    * @param map the map
    * @return the placeholder resolver
@@ -122,7 +123,7 @@ public interface PlaceholderResolver {
    * @since 4.10.0
    */
   static @NotNull PlaceholderResolver combining(final @NotNull Iterable<? extends PlaceholderResolver> resolvers) {
-    final List<PlaceholderResolver> copiedResolvers = new ArrayList<>();
+    final List<PlaceholderResolver> copiedResolvers = resolvers instanceof Collection<?> ? new ArrayList<>(((Collection<?>) resolvers).size()) : new ArrayList<>();
 
     for (final PlaceholderResolver resolver : Objects.requireNonNull(resolvers, "resolvers")) {
       copiedResolvers.add(Objects.requireNonNull(resolver, "resolvers cannot contain null elements"));
@@ -145,7 +146,7 @@ public interface PlaceholderResolver {
    * @return the placeholder resolver
    * @since 4.10.0
    */
-  static @NotNull PlaceholderResolver dynamic(final @NotNull Function<String, Replacement<?>> resolver) {
+  static @NotNull PlaceholderResolver dynamic(final @NotNull Function<String, @Nullable Replacement<?>> resolver) {
     return new DynamicPlaceholderResolver(Objects.requireNonNull(resolver, "resolver"));
   }
 
