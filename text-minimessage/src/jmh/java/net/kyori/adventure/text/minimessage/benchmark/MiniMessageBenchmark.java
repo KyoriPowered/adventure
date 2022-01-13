@@ -42,7 +42,7 @@ public class MiniMessageBenchmark {
   @Benchmark
   public Component testNiceMix() {
     final String input = "<yellow><test> random <gradient:red:blue:green><bold>stranger</gradient></bold><click:run_command:test command><underlined><red>click here</click><blue> to <rainbow><b>FEEL</rainbow></underlined> it";
-    return MiniMessage.miniMessage().parse(input);
+    return MiniMessage.miniMessage().deserialize(input);
   }
 
   @Benchmark
@@ -57,12 +57,12 @@ public class MiniMessageBenchmark {
   @Benchmark
   public Component testGradient() {
     final String input = "<gradient:red:blue:green>COLORS ARE COOL";
-    return MiniMessage.miniMessage().parse(input);
+    return MiniMessage.miniMessage().deserialize(input);
   }
 
   @Benchmark
   public Component testRainbow() {
     final String input = "<rainbow>COLORS ARE COOL";
-    return MiniMessage.miniMessage().parse(input);
+    return MiniMessage.miniMessage().deserialize(input);
   }
 }

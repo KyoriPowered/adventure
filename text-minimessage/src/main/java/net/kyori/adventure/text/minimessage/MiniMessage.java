@@ -105,17 +105,6 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
   @NotNull String stripTokens(final @NotNull String input, final @NotNull PlaceholderResolver placeholders);
 
   /**
-   * Parses a string into an component.
-   *
-   * @param input the input string
-   * @return the output component
-   * @since 4.10.0
-   */
-  default Component parse(final @NotNull String input) {
-    return this.deserialize(input);
-  }
-
-  /**
    * Deserializes a string into a component, with a placeholder resolver to parse placeholders of the form {@code <key>}.
    *
    * <p>Placeholders will be resolved from this resolver before the resolver provided in the builder is used.</p>

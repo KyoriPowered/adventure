@@ -46,7 +46,7 @@ public class TestBase {
 
   void assertParsedEquals(final MiniMessage miniMessage, final Component expected, final String input) {
     final String expectedSerialized = this.prettyPrint(expected.compact());
-    final String actual = this.prettyPrint(miniMessage.parse(input).compact());
+    final String actual = this.prettyPrint(miniMessage.deserialize(input).compact());
     assertEquals(expectedSerialized, actual);
   }
 
