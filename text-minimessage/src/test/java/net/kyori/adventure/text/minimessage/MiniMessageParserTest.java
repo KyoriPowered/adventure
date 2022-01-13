@@ -36,6 +36,7 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
 import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
 import net.kyori.adventure.text.minimessage.transformation.TransformationType;
+import net.kyori.adventure.text.minimessage.transformation.inbuild.ColorTransformation;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.junit.jupiter.api.Test;
 
@@ -1775,7 +1776,7 @@ public class MiniMessageParserTest extends TestBase {
     assertEquals(
       expected,
       MiniMessage.builder().transformations(builder ->
-        builder.add(TransformationType.color(colorMap))
+        builder.add(ColorTransformation.color(colorMap))
       ).build().deserialize(input)
     );
   }
@@ -1792,7 +1793,7 @@ public class MiniMessageParserTest extends TestBase {
     assertEquals(
       expected,
       MiniMessage.builder().transformations(builder ->
-        builder.add(TransformationType.color("identifier", colorMap)).add(TransformationType.CSS_COLOR)
+        builder.add(ColorTransformation.color("identifier", colorMap)).add(TransformationType.CSS_COLOR)
       ).build().deserialize(input)
     );
   }

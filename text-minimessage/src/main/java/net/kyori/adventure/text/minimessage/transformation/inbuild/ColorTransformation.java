@@ -24,10 +24,12 @@
 package net.kyori.adventure.text.minimessage.transformation.inbuild;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -35,6 +37,7 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.parser.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.transformation.Transformation;
+import net.kyori.adventure.text.minimessage.transformation.TransformationType;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 
@@ -113,12 +116,60 @@ public final class ColorTransformation extends Transformation {
   }
 
   /**
-   * Create a new color transformation.
+   * Create a new color transformation type for parsing the supplied color map.
    *
-   * @param color the color
+   * @param aliases map of color names to their {@link TextColor} values
+   * @return a new color transformation
    * @since 4.10.0
    */
-  public ColorTransformation(final TextColor color) {
+  public static TransformationType<ColorTransformation> color(final Map<String, TextColor> aliases) {
+    return TransformationType.transformationType(
+      TransformationType.acceptingNames(aliases.keySet()),
+      (name, args) -> {
+        final TextColor color = aliases.get(name.toLowerCase(Locale.ROOT));
+        if (color == null) {
+          throw new ParsingException("Expected to find a color name, but found " + name, args);
+        }
+        return new ColorTransformation(color);
+      }
+    );
+  }
+
+  /**
+   * Create a new color transformation type for parsing the supplied color map
+   * The identifier allows you to use an alias that is already present, such as 'gray',
+   * by specifying 'identifier:gray' in the tag to ensure your supplied color is used.
+   *
+   * @param identifier the alias identifier
+   * @param aliases map of color names to their {@link TextColor} values
+   * @return a new color transformation
+   * @since 4.10.0
+   */
+  public static TransformationType<ColorTransformation> color(final String identifier, final Map<String, TextColor> aliases) {
+    final Set<String> names = new HashSet<>(aliases.keySet());
+    names.add(identifier);
+    return TransformationType.transformationType(
+      TransformationType.acceptingNames(names),
+      (name, args) -> {
+        final TextColor color;
+        if (name.equalsIgnoreCase(identifier)) {
+          if (args.size() == 1) {
+            color = aliases.get(args.get(0).value().toLowerCase(Locale.ROOT));
+          } else {
+            throw new ParsingException("Expected to find a color name, but found " + args, args);
+          }
+        } else {
+          color = aliases.get(name.toLowerCase(Locale.ROOT));
+          if (color == null) {
+            throw new ParsingException("Expected to find a color name, but found " + name, args);
+          }
+        }
+        return new ColorTransformation(color);
+      }
+    );
+  }
+
+  private ColorTransformation(final TextColor color) {
     this.color = color;
   }
 
