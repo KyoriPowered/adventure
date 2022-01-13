@@ -85,7 +85,7 @@ public final class TokenParser {
     final boolean strict
   ) throws ParsingException {
     // collect tokens...
-    final List<Token> tokens = tokenize(message);
+    final List<Token> tokens = tokenize(message, strict);
 
     // then build the tree!
     return buildTree(tagProvider, tagNameChecker, tokens, message, originalMessage, strict);
@@ -120,10 +120,12 @@ public final class TokenParser {
    * Tokenize a minimessage string into a list of tokens.
    *
    * @param message the minimessage string to parse
+   * @param strict whether to be strict in tokenizing
    * @return the root tokens
    * @since 4.10.0
    */
-  public static List<Token> tokenize(final String message) {
+  public static List<Token> tokenize(final String message, final boolean strict) {
+    tryToNag(message, strict);
     final TokenListProducingMatchedTokenConsumer listProducer = new TokenListProducingMatchedTokenConsumer(message);
     parseString(message, listProducer);
     final List<Token> tokens = listProducer.result();
@@ -610,6 +612,19 @@ public final class TokenParser {
     sb.append(text, from, endIndex);
 
     return sb.toString();
+  }
+
+  /*
+   * Nags the user about using legacy symbol, if they used it.
+   *
+   * @param input the input text
+   * @param strict strict mode
+   * @since 4.10.0
+   */
+  private static void tryToNag(final String input, final boolean strict) {
+    if (input.contains("§") && strict) {
+      throw new IllegalArgumentException("Legacy formatting codes have been detected in a component - this is unsupported behaviour. Please refer to the Adventure documentation (https://docs.adventure.kyori.net) for more information.");
+    }
   }
 
   /**
