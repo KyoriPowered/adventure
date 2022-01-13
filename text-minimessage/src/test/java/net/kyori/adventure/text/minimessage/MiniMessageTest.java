@@ -133,7 +133,7 @@ public class MiniMessageTest extends TestBase {
     final String input = "<hover:show_text:'<prefix>'>This is a test message.";
     final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    this.assertParsedEquals(miniMessage, expected, input, component("prefix", MiniMessage.miniMessage().parse("<#FF0000>[Plugin]<reset>")));
+    this.assertParsedEquals(miniMessage, expected, input, component("prefix", MiniMessage.miniMessage().deserialize("<#FF0000>[Plugin]<reset>")));
   }
 
   @Test
@@ -276,19 +276,19 @@ public class MiniMessageTest extends TestBase {
   @Test
   void testStrictException() {
     final String input = "<gray>Example: <click:suggest_command:/plot flag set coral-dry true><gold>/plot flag set coral-dry true<click></gold></gray>";
-    assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().parse(input));
+    assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
   }
 
   @Test
   void testMissingCloseOfHover() {
     final String input = "<hover:show_text:'<blue>Hello</blue>'<red>TEST</red></hover><click:suggest_command:'/msg <user>'><user></click> <reset>: <hover:show_text:'<date>'><message></hover>";
-    assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().parse(input));
+    assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
   }
 
   @Test
   void testNonEndingComponent() {
     final String input = "<red is already created! Try different name! :)";
-    MiniMessage.builder().parsingErrorMessageConsumer(strings -> assertEquals(strings, Collections.singletonList("Expected end sometimes after open tag + name, but got name = Token{type=NAME, value=\"red is already created! Try different name! \"} and inners = []"))).build().parse(input);
+    MiniMessage.builder().parsingErrorMessageConsumer(strings -> assertEquals(strings, Collections.singletonList("Expected end sometimes after open tag + name, but got name = Token{type=NAME, value=\"red is already created! Try different name! \"} and inners = []"))).build().deserialize(input);
   }
 
   @Test
@@ -321,7 +321,7 @@ public class MiniMessageTest extends TestBase {
         "\t<red>RED<green>GREEN</green>RED<blue>BLUE\n" +
         "\t^~~~^                          ^~~~~^";
 
-    final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().parse(input));
+    final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
     assertEquals(thrown.getMessage(), errorMessage);
   }
 
@@ -333,7 +333,7 @@ public class MiniMessageTest extends TestBase {
         "\t<red>RED<green>GREEN</red>NO COLOR<blue>BLUE</blue>\n" +
         "\t^~~~^   ^~~~~~^     ^~~~~^";
 
-    final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().parse(input));
+    final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
     assertEquals(thrown.getMessage(), errorMessage);
   }
 
@@ -345,7 +345,7 @@ public class MiniMessageTest extends TestBase {
         "\t<red>RED<green>GREEN<blue>BLUE<yellow>YELLOW</green>\n" +
         "\t        ^~~~~~^               ^~~~~~~^      ^~~~~~~^";
 
-    final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().parse(input));
+    final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
     assertEquals(thrown.getMessage(), errorMessage);
   }
 
@@ -357,7 +357,7 @@ public class MiniMessageTest extends TestBase {
         "\t<red>RED<green>GREEN<reset>NO COLOR<blue>BLUE</blue>\n" +
         "\t                    ^~~~~~^";
 
-    final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().parse(input));
+    final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
     assertEquals(thrown.getMessage(), errorMessage);
   }
 
@@ -366,7 +366,7 @@ public class MiniMessageTest extends TestBase {
     final String input = "<red> RED </red>";
 
     final StringBuilder sb = new StringBuilder();
-    MiniMessage.builder().debug(sb).build().parse(input);
+    MiniMessage.builder().debug(sb).build().deserialize(input);
     final List<String> messages = Arrays.asList(sb.toString().split("\n"));
 
     assertTrue(messages.contains("Beginning parsing message <red> RED </red>"));
@@ -385,7 +385,7 @@ public class MiniMessageTest extends TestBase {
     final String input = "<red> RED <blue> BLUE <click> bad click </click>";
 
     final StringBuilder sb = new StringBuilder();
-    MiniMessage.builder().debug(sb).build().parse(input);
+    MiniMessage.builder().debug(sb).build().deserialize(input);
     final List<String> messages = Arrays.asList(sb.toString().split("\n"));
 
     assertTrue(messages.contains("Beginning parsing message <red> RED <blue> BLUE <click> bad click </click>"));
@@ -413,7 +413,7 @@ public class MiniMessageTest extends TestBase {
     final String input = "<red> RED <blue> BLUE <click:open_url:https://github.com> good click </click>";
 
     final StringBuilder sb = new StringBuilder();
-    MiniMessage.builder().debug(sb).build().parse(input);
+    MiniMessage.builder().debug(sb).build().deserialize(input);
     final List<String> messages = Arrays.asList(sb.toString().split("\n"));
 
     assertTrue(messages.contains("Beginning parsing message <red> RED <blue> BLUE <click:open_url:https://github.com> good click </click>"));

@@ -91,10 +91,10 @@ public class MiniMessageParserTest extends TestBase {
     final String input2 = "<gray>This is english";
     final String input3 = "<dark_grey>This is still english"; // British is superior english
     final String input4 = "<dark_gray>This is still english";
-    final Component out1 = this.PARSER.parse(input1);
-    final Component out2 = this.PARSER.parse(input2);
-    final Component out3 = this.PARSER.parse(input3);
-    final Component out4 = this.PARSER.parse(input4);
+    final Component out1 = this.PARSER.deserialize(input1);
+    final Component out2 = this.PARSER.deserialize(input2);
+    final Component out3 = this.PARSER.deserialize(input3);
+    final Component out4 = this.PARSER.deserialize(input4);
 
     assertEquals(out1, out2);
     assertEquals(out3, out4);
@@ -104,8 +104,8 @@ public class MiniMessageParserTest extends TestBase {
   void testBritishColour() {
     final String input1 = "<colour:grey>This is english"; // no it's british
     final String input2 = "<color:gray>This is english";
-    final Component out1 = this.PARSER.parse(input1);
-    final Component out2 = this.PARSER.parse(input2);
+    final Component out1 = this.PARSER.deserialize(input1);
+    final Component out2 = this.PARSER.deserialize(input2);
 
     assertEquals(out1, out2);
   }
@@ -294,7 +294,7 @@ public class MiniMessageParserTest extends TestBase {
   void testUnescape() {
     final String input = "<yellow>TEST\\<green> nested\\</green>Test";
     final String expected = "TEST<green> nested</green>Test";
-    final Component comp = this.PARSER.parse(input);
+    final Component comp = this.PARSER.deserialize(input);
 
     assertEquals(expected, PlainTextComponentSerializer.plainText().serialize(comp));
   }
@@ -303,7 +303,7 @@ public class MiniMessageParserTest extends TestBase {
   void testNoUnescape() {
     final String input = "<yellow>TEST\\<green> \\\\< nested\\</green>Test";
     final String expected = "TEST<green> \\< nested</green>Test";
-    final TextComponent comp = (TextComponent) this.PARSER.parse(input);
+    final TextComponent comp = (TextComponent) this.PARSER.deserialize(input);
 
     assertEquals(expected, PlainTextComponentSerializer.plainText().serialize(comp));
   }
@@ -312,7 +312,7 @@ public class MiniMessageParserTest extends TestBase {
   void testEscapeParse() {
     final String expected = "<red>test</red>";
     final String escaped = MiniMessage.miniMessage().escapeTokens(expected);
-    final Component comp = MiniMessage.miniMessage().parse(escaped);
+    final Component comp = MiniMessage.miniMessage().deserialize(escaped);
 
     assertEquals(expected, PlainTextComponentSerializer.plainText().serialize(comp));
   }
@@ -1325,7 +1325,7 @@ public class MiniMessageParserTest extends TestBase {
   void testShowEntityHover() {
     final UUID uuid = UUID.randomUUID();
     final String nameString = "<gold>Custom Name!";
-    final Component name = this.PARSER.parse(nameString);
+    final Component name = this.PARSER.deserialize(nameString);
     final Component expected = text("test").hoverEvent(HoverEvent.showEntity(Key.key("minecraft", "zombie"), uuid, name));
     final String input = String.format("<hover:show_entity:'minecraft:zombie':%s:'%s'>test", uuid, nameString);
     final String input1 = String.format("<hover:show_entity:zombie:'%s':'%s'>test", uuid, nameString);
