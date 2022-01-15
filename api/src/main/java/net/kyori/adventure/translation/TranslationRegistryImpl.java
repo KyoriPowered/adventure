@@ -29,10 +29,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
+import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -103,7 +103,7 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
 
   @Override
   public String toString() {
-    return this.examine(StringExaminer.simpleEscaping());
+    return Internals.toString(this);
   }
 
   final class Translation implements Examinable {
@@ -159,7 +159,7 @@ final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
 
     @Override
     public String toString() {
-      return this.examine(StringExaminer.simpleEscaping());
+      return Internals.toString(this);
     }
   }
 }

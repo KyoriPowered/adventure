@@ -25,9 +25,7 @@ package net.kyori.adventure.text;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -72,18 +70,6 @@ abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTCompo
     result = (31 * result) + Boolean.hashCode(this.interpret);
     result = (31 * result) + Objects.hashCode(this.separator);
     return result;
-  }
-
-  @Override
-  protected @NotNull Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
-    return Stream.concat(
-      Stream.of(
-        ExaminableProperty.of("nbtPath", this.nbtPath),
-        ExaminableProperty.of("interpret", this.interpret),
-        ExaminableProperty.of("separator", this.separator)
-      ),
-      super.examinablePropertiesWithoutChildren()
-    );
   }
 
   static abstract class BuilderImpl<C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> extends AbstractComponentBuilder<C, B> implements NBTComponentBuilder<C, B> {

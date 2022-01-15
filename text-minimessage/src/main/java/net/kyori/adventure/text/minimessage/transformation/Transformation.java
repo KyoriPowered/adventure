@@ -23,9 +23,9 @@
  */
 package net.kyori.adventure.text.minimessage.transformation;
 
+import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.Component;
 import net.kyori.examination.Examinable;
-import net.kyori.examination.string.StringExaminer;
 
 /**
  * A transformation that can be applied while parsing a message.
@@ -50,7 +50,7 @@ public abstract class Transformation implements Examinable {
 
   @Override
   public final String toString() {
-    return this.examine(StringExaminer.simpleEscaping());
+    return Internals.toString(this);
   }
 
   @Override

@@ -24,7 +24,9 @@
 package net.kyori.adventure.text;
 
 import java.util.regex.Matcher;
+import java.util.stream.Stream;
 import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -116,6 +118,16 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
   @Contract(pure = true)
   default @NotNull BlockNBTComponent relativeWorldPos(final int x, final int y, final int z) {
     return this.worldPos(WorldPos.Coordinate.relative(x), WorldPos.Coordinate.relative(y), WorldPos.Coordinate.relative(z));
+  }
+
+  @Override
+  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.concat(
+      Stream.of(
+        ExaminableProperty.of("pos", this.pos())
+      ),
+      NBTComponent.super.examinableProperties()
+    );
   }
 
   /**

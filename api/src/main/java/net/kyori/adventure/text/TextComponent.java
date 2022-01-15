@@ -23,6 +23,8 @@
  */
 package net.kyori.adventure.text;
 
+import java.util.stream.Stream;
+import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -70,6 +72,16 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    */
   @Contract(pure = true)
   @NotNull TextComponent content(final @NotNull String content);
+
+  @Override
+  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.concat(
+      Stream.of(
+        ExaminableProperty.of("content", this.content())
+      ),
+      BuildableComponent.super.examinableProperties()
+    );
+  }
 
   /**
    * A text component builder.

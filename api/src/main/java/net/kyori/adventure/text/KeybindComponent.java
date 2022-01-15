@@ -24,6 +24,8 @@
 package net.kyori.adventure.text;
 
 import java.util.Objects;
+import java.util.stream.Stream;
+import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -68,6 +70,16 @@ public interface KeybindComponent extends BuildableComponent<KeybindComponent, K
   @Contract(pure = true)
   default @NotNull KeybindComponent keybind(final @NotNull KeybindLike keybind) {
     return this.keybind(Objects.requireNonNull(keybind, "keybind").asKeybind());
+  }
+
+  @Override
+  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.concat(
+      Stream.of(
+        ExaminableProperty.of("keybind", this.keybind())
+      ),
+      BuildableComponent.super.examinableProperties()
+    );
   }
 
   /**

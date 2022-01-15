@@ -25,9 +25,9 @@ package net.kyori.adventure.sound;
 
 import java.util.Objects;
 import java.util.stream.Stream;
+import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
 import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -75,6 +75,6 @@ abstract class SoundStopImpl implements SoundStop {
 
   @Override
   public String toString() {
-    return this.examine(StringExaminer.simpleEscaping());
+    return Internals.toString(this);
   }
 }

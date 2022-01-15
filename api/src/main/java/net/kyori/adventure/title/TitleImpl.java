@@ -26,9 +26,9 @@ package net.kyori.adventure.title;
 import java.time.Duration;
 import java.util.Objects;
 import java.util.stream.Stream;
+import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.Component;
 import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -105,7 +105,7 @@ final class TitleImpl implements Title {
 
   @Override
   public String toString() {
-    return this.examine(StringExaminer.simpleEscaping());
+    return Internals.toString(this);
   }
 
   static class TimesImpl implements Times {
@@ -163,7 +163,7 @@ final class TitleImpl implements Title {
 
     @Override
     public String toString() {
-      return this.examine(StringExaminer.simpleEscaping());
+      return Internals.toString(this);
     }
   }
 }

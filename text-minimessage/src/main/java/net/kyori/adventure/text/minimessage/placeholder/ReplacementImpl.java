@@ -24,8 +24,8 @@
 package net.kyori.adventure.text.minimessage.placeholder;
 
 import java.util.stream.Stream;
+import net.kyori.adventure.internal.Internals;
 import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 
 final class ReplacementImpl<T> implements Replacement<T> {
@@ -47,6 +47,6 @@ final class ReplacementImpl<T> implements Replacement<T> {
 
   @Override
   public String toString() {
-    return StringExaminer.simpleEscaping().examine(this);
+    return Internals.toString(this);
   }
 }

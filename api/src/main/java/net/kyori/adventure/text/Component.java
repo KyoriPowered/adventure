@@ -39,6 +39,7 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 import java.util.stream.Collector;
+import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -55,6 +56,7 @@ import net.kyori.adventure.util.ForwardingIterator;
 import net.kyori.adventure.util.IntFunction2;
 import net.kyori.adventure.util.MonkeyBars;
 import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -2335,5 +2337,13 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Override
   default @NotNull HoverEvent<Component> asHoverEvent(final @NotNull UnaryOperator<Component> op) {
     return HoverEvent.showText(op.apply(this));
+  }
+
+  @Override
+  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(
+      ExaminableProperty.of("style", this.style()),
+      ExaminableProperty.of(ComponentInternals.CHILDREN_PROPERTY, this.children())
+    );
   }
 }

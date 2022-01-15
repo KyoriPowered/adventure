@@ -24,9 +24,9 @@
 package net.kyori.adventure.sound;
 
 import java.util.stream.Stream;
+import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -102,6 +102,6 @@ abstract class SoundImpl implements Sound {
 
   @Override
   public String toString() {
-    return this.examine(StringExaminer.simpleEscaping());
+    return Internals.toString(this);
   }
 }

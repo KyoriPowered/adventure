@@ -23,6 +23,8 @@
  */
 package net.kyori.adventure.text;
 
+import java.util.stream.Stream;
+import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -102,4 +104,16 @@ public interface NBTComponent<C extends NBTComponent<C, B>, B extends NBTCompone
    * @since 4.8.0
    */
   @NotNull C separator(final @Nullable ComponentLike separator);
+
+  @Override
+  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.concat(
+      Stream.of(
+        ExaminableProperty.of("nbtPath", this.nbtPath()),
+        ExaminableProperty.of("interpret", this.interpret()),
+        ExaminableProperty.of("separator", this.separator())
+      ),
+      BuildableComponent.super.examinableProperties()
+    );
+  }
 }

@@ -23,7 +23,9 @@
  */
 package net.kyori.adventure.text;
 
+import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
+import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -60,6 +62,16 @@ public interface StorageNBTComponent extends NBTComponent<StorageNBTComponent, S
    */
   @Contract(pure = true)
   @NotNull StorageNBTComponent storage(final @NotNull Key storage);
+
+  @Override
+  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.concat(
+      Stream.of(
+        ExaminableProperty.of("storage", this.storage())
+      ),
+      NBTComponent.super.examinableProperties()
+    );
+  }
 
   /**
    * A command storage NBT component builder.
