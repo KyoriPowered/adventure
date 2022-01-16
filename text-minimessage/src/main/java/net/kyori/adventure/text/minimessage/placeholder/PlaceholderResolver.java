@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage.placeholder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,8 @@ import java.util.Objects;
 import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A resolver for user-defined placeholders.
@@ -41,10 +44,20 @@ import org.jetbrains.annotations.Nullable;
 @FunctionalInterface
 public interface PlaceholderResolver {
   /**
+   * Create a new builder for a {@link PlaceholderResolver}.
+   *
+   * @return a new builder
+   * @since 4.10.0
+   */
+  static @NotNull Builder builder() {
+    return new PlaceholderResolverBuilderImpl();
+  }
+
+  /**
    * Constructs a placeholder resolver from a map.
    *
-   * <p>The provided map is used as the backing for the returned placeholder resolver.
-   * This means that changes to the map will be reflected in the placeholder resolver.</p>
+   * <p>The returned placeholder resolver will make a copy of the provided map.
+   * This means that changes to the map will not be reflected in the placeholder resolver.</p>
    *
    * @param map the map
    * @return the placeholder resolver
@@ -110,7 +123,7 @@ public interface PlaceholderResolver {
    * @since 4.10.0
    */
   static @NotNull PlaceholderResolver combining(final @NotNull Iterable<? extends PlaceholderResolver> resolvers) {
-    final List<PlaceholderResolver> copiedResolvers = new ArrayList<>();
+    final List<PlaceholderResolver> copiedResolvers = resolvers instanceof Collection<?> ? new ArrayList<>(((Collection<?>) resolvers).size()) : new ArrayList<>();
 
     for (final PlaceholderResolver resolver : Objects.requireNonNull(resolvers, "resolvers")) {
       copiedResolvers.add(Objects.requireNonNull(resolver, "resolvers cannot contain null elements"));
@@ -133,7 +146,7 @@ public interface PlaceholderResolver {
    * @return the placeholder resolver
    * @since 4.10.0
    */
-  static @NotNull PlaceholderResolver dynamic(final @NotNull Function<String, Replacement<?>> resolver) {
+  static @NotNull PlaceholderResolver dynamic(final @NotNull Function<String, @Nullable Replacement<?>> resolver) {
     return new DynamicPlaceholderResolver(Objects.requireNonNull(resolver, "resolver"));
   }
 
@@ -159,4 +172,101 @@ public interface PlaceholderResolver {
    * @since 4.10.0
    */
   @Nullable Replacement<?> resolve(final @NotNull String key);
+
+  /**
+   * A builder to gradually construct placeholder resolvers.
+   *
+   * <p>Entries added later will take priority over entries added earlier.</p>
+   *
+   * @since 4.10.0
+   */
+  interface Builder {
+    /**
+     * Add a single placeholder to this resolver.
+     *
+     * @param placeholder the placeholder
+     * @return this builder
+     * @since 4.10.0
+     */
+    @NotNull Builder placeholder(final @NotNull Placeholder<?> placeholder);
+
+    /**
+     * Add placeholders to this resolver.
+     *
+     * @param placeholders placeholders to add
+     * @return this builder
+     * @since 4.10.0
+     */
+    default @NotNull Builder placeholders(final @NotNull Placeholder<?> @NotNull... placeholders) {
+      return this.placeholders(Arrays.asList(requireNonNull(placeholders, "placeholders")));
+    }
+
+    /**
+     * Add placeholders to this resolver.
+     *
+     * @param placeholders placeholders to add
+     * @return this builder
+     * @since 4.10.0
+     */
+    @NotNull Builder placeholders(final @NotNull Iterable<Placeholder<?>> placeholders);
+
+    /**
+     * Add placeholders to this resolver.
+     *
+     * <p>A snapshot of the map will be added to this resolver, rather than a live view.</p>
+     *
+     * @param replacements placeholders to add
+     * @return this builder
+     * @since 4.10.0
+     */
+    @NotNull Builder placeholders(final @NotNull Map<String, Replacement<?>> replacements);
+
+    /**
+     * Add a placeholder resolver to those queried by the result of this builder.
+     *
+     * @param resolver the resolver to add
+     * @return this builder
+     * @since 4.10.0
+     */
+    @NotNull Builder resolver(final @NotNull PlaceholderResolver resolver);
+
+    /**
+     * Add placeholder resolvers to those queried by the result of this builder.
+     *
+     * @param resolvers the resolvers to add
+     * @return this builder
+     * @since 4.10.0
+     */
+    @NotNull Builder resolvers(final @NotNull PlaceholderResolver@NotNull... resolvers);
+
+    /**
+     * Add placeholder resolvers to those queried by the result of this builder.
+     *
+     * @param resolvers the resolvers to add
+     * @return this builder
+     * @since 4.10.0
+     */
+    @NotNull Builder resolvers(final @NotNull Iterable<? extends PlaceholderResolver> resolvers);
+
+    /**
+     * Add a resolver that dynamically queries and caches based on the provided function.
+     *
+     * @param dynamic the function to query for replacements
+     * @return this builder
+     * @since 4.10.0
+     */
+    default @NotNull Builder dynamic(final @NotNull Function<String, @Nullable Replacement<?>> dynamic) {
+      return this.resolver(PlaceholderResolver.dynamic(dynamic));
+    }
+
+    /**
+     * Create a placeholder resolver based on the input.
+     *
+     * <p>If no elements are added, this may return an empty resolver.</p>
+     *
+     * @return the resolver
+     * @since 4.10.0
+     */
+    @NotNull PlaceholderResolver build();
+  }
 }
