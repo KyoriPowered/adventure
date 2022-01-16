@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text.minimessage.placeholder;
 
-import java.util.Locale;
 import java.util.Objects;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
@@ -38,7 +37,6 @@ import org.jetbrains.annotations.NotNull;
  */
 @ApiStatus.NonExtendable
 public interface Placeholder<T> extends Replacement<T> {
-
   /**
    * Creates a placeholder that inserts a MiniMessage string. The inserted string will impact
    * the rest of the parse process.
@@ -49,9 +47,7 @@ public interface Placeholder<T> extends Replacement<T> {
    * @since 4.10.0
    */
   static @NotNull Placeholder<String> miniMessage(final @NotNull String key, final @NotNull String value) {
-    if (!Objects.requireNonNull(key, "key").equals(key.toLowerCase(Locale.ROOT)))
-      throw new IllegalArgumentException("key must be lowercase, was " + key);
-
+    PlaceholderImpl.checkKey(key);
     return new PlaceholderImpl<>(key, Objects.requireNonNull(value, "value"));
   }
 
@@ -64,7 +60,7 @@ public interface Placeholder<T> extends Replacement<T> {
    * @since 4.10.0
    */
   static @NotNull Placeholder<Component> raw(final @NotNull String key, final @NotNull String value) {
-    return Placeholder.component(key, Component.text(value));
+    return component(key, Component.text(value));
   }
 
   /**
@@ -76,9 +72,7 @@ public interface Placeholder<T> extends Replacement<T> {
    * @since 4.10.0
    */
   static @NotNull Placeholder<Component> component(final @NotNull String key, final @NotNull ComponentLike value) {
-    if (!Objects.requireNonNull(key, "key").equals(key.toLowerCase(Locale.ROOT)))
-      throw new IllegalArgumentException("key must be lowercase, was " + key);
-
+    PlaceholderImpl.checkKey(key);
     return new PlaceholderImpl<>(
       key,
       Objects.requireNonNull(

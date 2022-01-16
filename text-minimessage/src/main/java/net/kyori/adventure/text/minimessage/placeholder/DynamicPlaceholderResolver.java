@@ -30,12 +30,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 final class DynamicPlaceholderResolver implements PlaceholderResolver {
+  private final Map<String, Replacement<?>> cache = new HashMap<>();
   private final Function<String, Replacement<?>> resolver;
-  private final Map<String, Replacement<?>> cache;
 
   DynamicPlaceholderResolver(final Function<String, Replacement<?>> resolver) {
     this.resolver = resolver;
-    this.cache = new HashMap<>();
   }
 
   @Override

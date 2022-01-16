@@ -23,6 +23,8 @@
  */
 package net.kyori.adventure.text.minimessage.placeholder;
 
+import java.util.Locale;
+import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
@@ -31,6 +33,12 @@ import org.jetbrains.annotations.NotNull;
 final class PlaceholderImpl<T> implements Placeholder<T> {
   private final String key;
   private final T value;
+
+  static void checkKey(final @NotNull String key) {
+    if (!Objects.requireNonNull(key, "key").equals(key.toLowerCase(Locale.ROOT))) {
+      throw new IllegalArgumentException("key must be lowercase, was " + key);
+    }
+  }
 
   PlaceholderImpl(final @NotNull String key, final @NotNull T value) {
     this.key = key;

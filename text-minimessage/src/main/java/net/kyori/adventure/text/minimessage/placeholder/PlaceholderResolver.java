@@ -89,14 +89,15 @@ public interface PlaceholderResolver {
   /**
    * Constructs a placeholder resolver capable of resolving from multiple sources.
    *
-   * @param placeholderResolvers the placeholder resolvers
+   * @param resolvers the placeholder resolvers
    * @return the placeholder resolver
    * @since 4.10.0
    */
-  static @NotNull PlaceholderResolver combining(final @NotNull PlaceholderResolver @NotNull ... placeholderResolvers) {
-    if (Objects.requireNonNull(placeholderResolvers, "placeholderResolvers").length == 1)
-      return Objects.requireNonNull(placeholderResolvers[0], "placeholderResolvers must not contain null elements");
-    return new GroupedPlaceholderResolver(Arrays.asList(placeholderResolvers));
+  static @NotNull PlaceholderResolver combining(final @NotNull PlaceholderResolver@NotNull... resolvers) {
+    if (Objects.requireNonNull(resolvers, "resolvers").length == 1) {
+      return Objects.requireNonNull(resolvers[0], "resolvers must not contain null elements");
+    }
+    return combining(Arrays.asList(resolvers));
   }
 
   /**
@@ -104,21 +105,21 @@ public interface PlaceholderResolver {
    *
    * <p>The provided iterable is copied. This means changes to the iterable will not reflect in the returned resolver.</p>
    *
-   * @param placeholderResolvers the placeholder resolvers
+   * @param resolvers the placeholder resolvers
    * @return the placeholder resolver
    * @since 4.10.0
    */
-  static @NotNull PlaceholderResolver combining(final @NotNull Iterable<? extends PlaceholderResolver> placeholderResolvers) {
-    final List<PlaceholderResolver> placeholderResolverList = new ArrayList<>();
+  static @NotNull PlaceholderResolver combining(final @NotNull Iterable<? extends PlaceholderResolver> resolvers) {
+    final List<PlaceholderResolver> copiedResolvers = new ArrayList<>();
 
-    for (final PlaceholderResolver placeholderResolver : Objects.requireNonNull(placeholderResolvers, "placeholderResolvers")) {
-      placeholderResolverList.add(Objects.requireNonNull(placeholderResolver, "placeholderResolvers cannot contain null elements"));
+    for (final PlaceholderResolver resolver : Objects.requireNonNull(resolvers, "resolvers")) {
+      copiedResolvers.add(Objects.requireNonNull(resolver, "resolvers cannot contain null elements"));
     }
 
-    final int size = placeholderResolverList.size();
+    final int size = copiedResolvers.size();
     if (size == 0) return empty();
-    if (size == 1) return placeholderResolverList.get(0);
-    return new GroupedPlaceholderResolver(placeholderResolvers);
+    if (size == 1) return copiedResolvers.get(0);
+    return new GroupedPlaceholderResolver(copiedResolvers);
   }
 
   /**

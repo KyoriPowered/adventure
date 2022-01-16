@@ -38,7 +38,6 @@ import org.jetbrains.annotations.NotNull;
  */
 @ApiStatus.NonExtendable
 public interface Replacement<T> extends Examinable {
-
   /**
    * Creates a replacement that inserts a MiniMessage string. The inserted string will impact
    * the rest of the parse process.
@@ -59,7 +58,7 @@ public interface Replacement<T> extends Examinable {
    * @since 4.10.0
    */
   static @NotNull Replacement<Component> raw(final @NotNull String raw) {
-    return Replacement.component(Component.text(raw));
+    return component(Component.text(raw));
   }
 
   /**

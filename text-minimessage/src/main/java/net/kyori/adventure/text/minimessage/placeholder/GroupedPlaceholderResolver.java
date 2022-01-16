@@ -27,19 +27,20 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 final class GroupedPlaceholderResolver implements PlaceholderResolver {
-  private final Iterable<? extends PlaceholderResolver> placeholderResolvers;
+  private final Iterable<? extends PlaceholderResolver> resolvers;
 
-  GroupedPlaceholderResolver(final @NotNull Iterable<? extends PlaceholderResolver> placeholderResolvers) {
-    this.placeholderResolvers = placeholderResolvers;
+  GroupedPlaceholderResolver(final @NotNull Iterable<? extends PlaceholderResolver> resolvers) {
+    this.resolvers = resolvers;
   }
 
   @Override
   public @Nullable Replacement<?> resolve(final @NotNull String key) {
-    for (final PlaceholderResolver placeholderResolver : this.placeholderResolvers) {
-      final Replacement<?> placeholder = placeholderResolver.resolve(key);
-      if (placeholder != null) return placeholder;
+    for (final PlaceholderResolver resolver : this.resolvers) {
+      final Replacement<?> placeholder = resolver.resolve(key);
+      if (placeholder != null) {
+        return placeholder;
+      }
     }
-
     return null;
   }
 }
