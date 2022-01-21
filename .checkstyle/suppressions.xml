@@ -4,10 +4,13 @@
   <!-- let me be excited, checkstyle! -->
   <suppress files="api[\\/]src[\\/]main[\\/]java[\\/]net[\\/]kyori[\\/]adventure[\\/]Adventure.java" checks="SummaryJavadoc"/>
 
-  <!-- no javadoc on test classes -->
+  <!-- no javadoc on test and internal classes -->
   <suppress files="src[\\/](test|jmh)[\\/]java[\\/].*" checks="FilteringWriteTag"/>
   <suppress files="src[\\/](test|jmh)[\\/]java[\\/].*" checks="JavadocPackage"/>
   <suppress files="src[\\/](test|jmh)[\\/]java[\\/].*" checks="MissingJavadoc.*"/>
+  <suppress files="api[\\/]src[\\/]main[\\/]java[\\/]net[\\/]kyori[\\/]adventure[\\/]internal[\\/].*" checks="FilteringWriteTag"/>
+  <suppress files="api[\\/]src[\\/]main[\\/]java[\\/]net[\\/]kyori[\\/]adventure[\\/]internal[\\/].*" checks="JavadocPackage"/>
+  <suppress files="api[\\/]src[\\/]main[\\/]java[\\/]net[\\/]kyori[\\/]adventure[\\/]internal[\\/].*" checks="MissingJavadoc.*"/>
 
   <suppress files=".*[\\/]nbt[\\/](List|Compound)BinaryTag.java" checks="MethodName"/>
 </suppressions>
