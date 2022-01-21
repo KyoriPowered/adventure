@@ -4,7 +4,7 @@ plugins {
 
 indra {
   javaVersions {
-    testWith(8, 11, 17)
+    target(17)
   }
   checkstyle("9.3")
 

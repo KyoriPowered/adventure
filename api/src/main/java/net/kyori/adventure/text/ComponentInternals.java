@@ -26,6 +26,8 @@ package net.kyori.adventure.text;
 final class ComponentInternals {
   static final String CHILDREN_PROPERTY = "children";
 
+  static final boolean NBT_INTERPRET_DEFAULT = false;
+
   private ComponentInternals() {
   }
 }

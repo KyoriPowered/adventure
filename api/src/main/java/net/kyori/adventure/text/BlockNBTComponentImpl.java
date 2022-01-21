@@ -29,31 +29,45 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, BlockNBTComponent.Builder> implements BlockNBTComponent {
-  private final Pos pos;
+record BlockNBTComponentImpl(
+  @NotNull List<Component> children,
+  @NotNull Style style,
+  @NotNull String nbtPath,
+  boolean interpret,
+  @Nullable Component separator,
+  @NotNull Pos pos
+) implements BlockNBTComponent {
+  static @NotNull BlockNBTComponent create(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final @NotNull Pos pos) {
+    return new BlockNBTComponentImpl(
+      ComponentLike.asComponents(children, IS_NOT_EMPTY),
+      requireNonNull(style, "style"),
+      requireNonNull(nbtPath, "nbtPath"),
+      interpret,
+      ComponentLike.unbox(separator),
+      requireNonNull(pos, "pos")
+    );
+  }
 
-  BlockNBTComponentImpl(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final @NotNull Pos pos) {
-    super(children, style, nbtPath, interpret, separator);
-    this.pos = pos;
+  @Deprecated
+  BlockNBTComponentImpl {
   }
 
   @Override
   public @NotNull BlockNBTComponent nbtPath(final @NotNull String nbtPath) {
     if (Objects.equals(this.nbtPath, nbtPath)) return this;
-    return new BlockNBTComponentImpl(this.children, this.style, requireNonNull(nbtPath, "nbtPath"), this.interpret, this.separator, this.pos);
+    return create(this.children, this.style, requireNonNull(nbtPath, "nbtPath"), this.interpret, this.separator, this.pos);
   }
 
   @Override
   public @NotNull BlockNBTComponent interpret(final boolean interpret) {
     if (this.interpret == interpret) return this;
-    return new BlockNBTComponentImpl(this.children, this.style, this.nbtPath, interpret, this.separator, this.pos);
+    return create(this.children, this.style, this.nbtPath, interpret, this.separator, this.pos);
   }
 
   @Override
@@ -63,7 +77,7 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
 
   @Override
   public @NotNull BlockNBTComponent separator(final @Nullable ComponentLike separator) {
-    return new BlockNBTComponentImpl(this.children, this.style, this.nbtPath, this.interpret, separator, this.pos);
+    return create(this.children, this.style, this.nbtPath, this.interpret, separator, this.pos);
   }
 
   @Override
@@ -73,33 +87,17 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
 
   @Override
   public @NotNull BlockNBTComponent pos(final @NotNull Pos pos) {
-    return new BlockNBTComponentImpl(this.children, this.style, this.nbtPath, this.interpret, this.separator, requireNonNull(pos, "pos"));
+    return create(this.children, this.style, this.nbtPath, this.interpret, this.separator, requireNonNull(pos, "pos"));
   }
 
   @Override
   public @NotNull BlockNBTComponent children(final @NotNull List<? extends ComponentLike> children) {
-    return new BlockNBTComponentImpl(requireNonNull(children, "children"), this.style, this.nbtPath, this.interpret, this.separator, this.pos);
+    return create(requireNonNull(children, "children"), this.style, this.nbtPath, this.interpret, this.separator, this.pos);
   }
 
   @Override
   public @NotNull BlockNBTComponent style(final @NotNull Style style) {
-    return new BlockNBTComponentImpl(this.children, requireNonNull(style, "style"), this.nbtPath, this.interpret, this.separator, this.pos);
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) return true;
-    if (!(other instanceof BlockNBTComponent)) return false;
-    if (!super.equals(other)) return false;
-    final BlockNBTComponent that = (BlockNBTComponent) other;
-    return Objects.equals(this.pos, that.pos());
-  }
-
-  @Override
-  public int hashCode() {
-    int result = super.hashCode();
-    result = (31 * result) + this.pos.hashCode();
-    return result;
+    return create(this.children, requireNonNull(style, "style"), this.nbtPath, this.interpret, this.separator, this.pos);
   }
 
   @Override
@@ -112,7 +110,7 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
     return new BuilderImpl(this);
   }
 
-  static final class BuilderImpl extends NBTComponentImpl.BuilderImpl<BlockNBTComponent, BlockNBTComponent.Builder> implements BlockNBTComponent.Builder {
+  static final class BuilderImpl extends AbstractNBTComponentBuilder<BlockNBTComponent, Builder> implements BlockNBTComponent.Builder {
     private @Nullable Pos pos;
 
     BuilderImpl() {
@@ -133,36 +131,15 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
     public @NotNull BlockNBTComponent build() {
       if (this.nbtPath == null) throw new IllegalStateException("nbt path must be set");
       if (this.pos == null) throw new IllegalStateException("pos must be set");
-      return new BlockNBTComponentImpl(this.children, this.buildStyle(), this.nbtPath, this.interpret, this.separator, this.pos);
+      return create(this.children, this.buildStyle(), this.nbtPath, this.interpret, this.separator, this.pos);
     }
   }
 
-  static final class LocalPosImpl implements LocalPos {
-    private final double left;
-    private final double up;
-    private final double forwards;
-
-    LocalPosImpl(final double left, final double up, final double forwards) {
-      this.left = left;
-      this.up = up;
-      this.forwards = forwards;
-    }
-
-    @Override
-    public double left() {
-      return this.left;
-    }
-
-    @Override
-    public double up() {
-      return this.up;
-    }
-
-    @Override
-    public double forwards() {
-      return this.forwards;
-    }
-
+  record LocalPosImpl(
+    double left,
+    double up,
+    double forwards
+  ) implements LocalPos {
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
@@ -170,24 +147,6 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
         ExaminableProperty.of("up", this.up),
         ExaminableProperty.of("forwards", this.forwards)
       );
-    }
-
-    @Override
-    public boolean equals(final @Nullable Object other) {
-      if (this == other) return true;
-      if (!(other instanceof LocalPos)) return false;
-      final LocalPos that = (LocalPos) other;
-      return ShadyPines.equals(that.left(), this.left())
-        && ShadyPines.equals(that.up(), this.up())
-        && ShadyPines.equals(that.forwards(), this.forwards());
-    }
-
-    @Override
-    public int hashCode() {
-      int result = Double.hashCode(this.left);
-      result = (31 * result) + Double.hashCode(this.up);
-      result = (31 * result) + Double.hashCode(this.forwards);
-      return result;
     }
 
     @Override
@@ -201,32 +160,11 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
     }
   }
 
-  static final class WorldPosImpl implements WorldPos {
-    private final Coordinate x;
-    private final Coordinate y;
-    private final Coordinate z;
-
-    WorldPosImpl(final Coordinate x, final Coordinate y, final Coordinate z) {
-      this.x = requireNonNull(x, "x");
-      this.y = requireNonNull(y, "y");
-      this.z = requireNonNull(z, "z");
-    }
-
-    @Override
-    public @NotNull Coordinate x() {
-      return this.x;
-    }
-
-    @Override
-    public @NotNull Coordinate y() {
-      return this.y;
-    }
-
-    @Override
-    public @NotNull Coordinate z() {
-      return this.z;
-    }
-
+  record WorldPosImpl(
+    @NotNull Coordinate x,
+    @NotNull Coordinate y,
+    @NotNull Coordinate z
+  ) implements WorldPos {
     @Override
     public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
@@ -234,24 +172,6 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
         ExaminableProperty.of("y", this.y),
         ExaminableProperty.of("z", this.z)
       );
-    }
-
-    @Override
-    public boolean equals(final @Nullable Object other) {
-      if (this == other) return true;
-      if (!(other instanceof WorldPos)) return false;
-      final WorldPos that = (WorldPos) other;
-      return this.x.equals(that.x())
-        && this.y.equals(that.y())
-        && this.z.equals(that.z());
-    }
-
-    @Override
-    public int hashCode() {
-      int result = this.x.hashCode();
-      result = (31 * result) + this.y.hashCode();
-      result = (31 * result) + this.z.hashCode();
-      return result;
     }
 
     @Override
@@ -264,23 +184,13 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
       return Tokens.serializeCoordinate(this.x()) + ' ' + Tokens.serializeCoordinate(this.y()) + ' ' + Tokens.serializeCoordinate(this.z());
     }
 
-    static final class CoordinateImpl implements Coordinate {
-      private final int value;
-      private final Type type;
-
+    record CoordinateImpl(
+      int value,
+      @NotNull Type type
+    ) implements Coordinate {
       CoordinateImpl(final int value, final @NotNull Type type) {
         this.value = value;
         this.type = requireNonNull(type, "type");
-      }
-
-      @Override
-      public int value() {
-        return this.value;
-      }
-
-      @Override
-      public @NotNull Type type() {
-        return this.type;
       }
 
       @Override
@@ -289,22 +199,6 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
           ExaminableProperty.of("value", this.value),
           ExaminableProperty.of("type", this.type)
         );
-      }
-
-      @Override
-      public boolean equals(final @Nullable Object other) {
-        if (this == other) return true;
-        if (!(other instanceof Coordinate)) return false;
-        final Coordinate that = (Coordinate) other;
-        return this.value() == that.value()
-          && this.type() == that.type();
-      }
-
-      @Override
-      public int hashCode() {
-        int result = this.value;
-        result = (31 * result) + this.type.hashCode();
-        return result;
       }
 
       @Override

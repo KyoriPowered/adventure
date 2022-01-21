@@ -32,24 +32,39 @@ import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-final class EntityNBTComponentImpl extends NBTComponentImpl<EntityNBTComponent, EntityNBTComponent.Builder> implements EntityNBTComponent {
-  private final String selector;
+record EntityNBTComponentImpl(
+  @NotNull List<Component> children,
+  @NotNull Style style,
+  @NotNull String nbtPath,
+  boolean interpret,
+  @Nullable Component separator,
+  @NotNull String selector
+) implements EntityNBTComponent {
+  static @NotNull EntityNBTComponent create(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final @NotNull String selector) {
+    return new EntityNBTComponentImpl(
+      ComponentLike.asComponents(children, IS_NOT_EMPTY),
+      requireNonNull(style, "style"),
+      requireNonNull(nbtPath, "nbtPath"),
+      interpret,
+      ComponentLike.unbox(separator),
+      requireNonNull(selector, "selector")
+    );
+  }
 
-  EntityNBTComponentImpl(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final String selector) {
-    super(children, style, nbtPath, interpret, separator);
-    this.selector = selector;
+  @Deprecated
+  EntityNBTComponentImpl {
   }
 
   @Override
   public @NotNull EntityNBTComponent nbtPath(final @NotNull String nbtPath) {
     if (Objects.equals(this.nbtPath, nbtPath)) return this;
-    return new EntityNBTComponentImpl(this.children, this.style, requireNonNull(nbtPath, "nbt path"), this.interpret, this.separator, this.selector);
+    return create(this.children, this.style, requireNonNull(nbtPath, "nbt path"), this.interpret, this.separator, this.selector);
   }
 
   @Override
   public @NotNull EntityNBTComponent interpret(final boolean interpret) {
     if (this.interpret == interpret) return this;
-    return new EntityNBTComponentImpl(this.children, this.style, this.nbtPath, interpret, this.separator, this.selector);
+    return create(this.children, this.style, this.nbtPath, interpret, this.separator, this.selector);
   }
 
   @Override
@@ -59,7 +74,7 @@ final class EntityNBTComponentImpl extends NBTComponentImpl<EntityNBTComponent, 
 
   @Override
   public @NotNull EntityNBTComponent separator(final @Nullable ComponentLike separator) {
-    return new EntityNBTComponentImpl(this.children, this.style, this.nbtPath, this.interpret, separator, this.selector);
+    return create(this.children, this.style, this.nbtPath, this.interpret, separator, this.selector);
   }
 
   @Override
@@ -70,33 +85,17 @@ final class EntityNBTComponentImpl extends NBTComponentImpl<EntityNBTComponent, 
   @Override
   public @NotNull EntityNBTComponent selector(final @NotNull String selector) {
     if (Objects.equals(this.selector, selector)) return this;
-    return new EntityNBTComponentImpl(this.children, this.style, this.nbtPath, this.interpret, this.separator, requireNonNull(selector, "selector"));
+    return create(this.children, this.style, this.nbtPath, this.interpret, this.separator, requireNonNull(selector, "selector"));
   }
 
   @Override
   public @NotNull EntityNBTComponent children(final @NotNull List<? extends ComponentLike> children) {
-    return new EntityNBTComponentImpl(requireNonNull(children, "children"), this.style, this.nbtPath, this.interpret, this.separator, this.selector);
+    return create(requireNonNull(children, "children"), this.style, this.nbtPath, this.interpret, this.separator, this.selector);
   }
 
   @Override
   public @NotNull EntityNBTComponent style(final @NotNull Style style) {
-    return new EntityNBTComponentImpl(this.children, requireNonNull(style, "style"), this.nbtPath, this.interpret, this.separator, this.selector);
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) return true;
-    if (!(other instanceof EntityNBTComponent)) return false;
-    if (!super.equals(other)) return false;
-    final EntityNBTComponentImpl that = (EntityNBTComponentImpl) other;
-    return Objects.equals(this.selector, that.selector());
-  }
-
-  @Override
-  public int hashCode() {
-    int result = super.hashCode();
-    result = (31 * result) + this.selector.hashCode();
-    return result;
+    return create(this.children, requireNonNull(style, "style"), this.nbtPath, this.interpret, this.separator, this.selector);
   }
 
   @Override
@@ -109,7 +108,7 @@ final class EntityNBTComponentImpl extends NBTComponentImpl<EntityNBTComponent, 
     return new BuilderImpl(this);
   }
 
-  static final class BuilderImpl extends NBTComponentImpl.BuilderImpl<EntityNBTComponent, EntityNBTComponent.Builder> implements EntityNBTComponent.Builder {
+  static final class BuilderImpl extends AbstractNBTComponentBuilder<EntityNBTComponent, Builder> implements EntityNBTComponent.Builder {
     private @Nullable String selector;
 
     BuilderImpl() {
@@ -130,7 +129,7 @@ final class EntityNBTComponentImpl extends NBTComponentImpl<EntityNBTComponent, 
     public @NotNull EntityNBTComponent build() {
       if (this.nbtPath == null) throw new IllegalStateException("nbt path must be set");
       if (this.selector == null) throw new IllegalStateException("selector must be set");
-      return new EntityNBTComponentImpl(this.children, this.buildStyle(), this.nbtPath, this.interpret, this.separator, this.selector);
+      return create(this.children, this.buildStyle(), this.nbtPath, this.interpret, this.separator, this.selector);
     }
   }
 }

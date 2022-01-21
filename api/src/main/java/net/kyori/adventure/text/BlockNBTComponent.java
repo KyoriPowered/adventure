@@ -31,6 +31,8 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Given an in-game position, this component reads the NBT of the associated block and displays that information.
  *
@@ -346,7 +348,11 @@ public interface BlockNBTComponent extends NBTComponent<BlockNBTComponent, Block
     @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
     static @NotNull WorldPos of(final @NotNull Coordinate x, final @NotNull Coordinate y, final @NotNull Coordinate z) {
-      return new BlockNBTComponentImpl.WorldPosImpl(x, y, z);
+      return new BlockNBTComponentImpl.WorldPosImpl(
+        requireNonNull(x, "x"),
+        requireNonNull(y, "y"),
+        requireNonNull(z, "z")
+      );
     }
 
     /**

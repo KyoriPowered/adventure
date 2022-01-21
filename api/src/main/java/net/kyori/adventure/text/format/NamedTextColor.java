@@ -204,25 +204,25 @@ public final class NamedTextColor implements TextColor {
   @Deprecated
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   public static @Nullable NamedTextColor ofExact(final int value) {
-    switch (value) {
-      case BLACK_VALUE: return BLACK;
-      case DARK_BLUE_VALUE: return DARK_BLUE;
-      case DARK_GREEN_VALUE: return DARK_GREEN;
-      case DARK_AQUA_VALUE: return DARK_AQUA;
-      case DARK_RED_VALUE: return DARK_RED;
-      case DARK_PURPLE_VALUE: return DARK_PURPLE;
-      case GOLD_VALUE: return GOLD;
-      case GRAY_VALUE: return GRAY;
-      case DARK_GRAY_VALUE: return DARK_GRAY;
-      case BLUE_VALUE: return BLUE;
-      case GREEN_VALUE: return GREEN;
-      case AQUA_VALUE: return AQUA;
-      case RED_VALUE: return RED;
-      case LIGHT_PURPLE_VALUE: return LIGHT_PURPLE;
-      case YELLOW_VALUE: return YELLOW;
-      case WHITE_VALUE: return WHITE;
-      default: return null;
-    }
+    return switch (value) {
+      case BLACK_VALUE -> BLACK;
+      case DARK_BLUE_VALUE -> DARK_BLUE;
+      case DARK_GREEN_VALUE -> DARK_GREEN;
+      case DARK_AQUA_VALUE -> DARK_AQUA;
+      case DARK_RED_VALUE -> DARK_RED;
+      case DARK_PURPLE_VALUE -> DARK_PURPLE;
+      case GOLD_VALUE -> GOLD;
+      case GRAY_VALUE -> GRAY;
+      case DARK_GRAY_VALUE -> DARK_GRAY;
+      case BLUE_VALUE -> BLUE;
+      case GREEN_VALUE -> GREEN;
+      case AQUA_VALUE -> AQUA;
+      case RED_VALUE -> RED;
+      case LIGHT_PURPLE_VALUE -> LIGHT_PURPLE;
+      case YELLOW_VALUE -> YELLOW;
+      case WHITE_VALUE -> WHITE;
+      default -> null;
+    };
   }
 
   /**

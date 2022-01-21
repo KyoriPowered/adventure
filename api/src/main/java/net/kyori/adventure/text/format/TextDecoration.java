@@ -114,7 +114,7 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
    * @since 4.10.0
    */
   public final @NotNull TextDecorationAndState withState(final boolean state) {
-    return new TextDecorationAndStateImpl(this, State.byBoolean(state));
+    return this.withState(State.byBoolean(state));
   }
 
   /**
@@ -136,7 +136,7 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
    * @since 4.10.0
    */
   public final @NotNull TextDecorationAndState withState(final @NotNull TriState state) {
-    return new TextDecorationAndStateImpl(this, State.byTriState(state));
+    return this.withState(State.byTriState(state));
   }
 
   @Override

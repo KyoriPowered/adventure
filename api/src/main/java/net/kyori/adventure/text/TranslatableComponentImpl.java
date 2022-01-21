@@ -36,19 +36,27 @@ import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-final class TranslatableComponentImpl extends AbstractComponent implements TranslatableComponent {
-  private final String key;
-  private final List<Component> args;
-
-  TranslatableComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final @NotNull String key, final @NotNull ComponentLike@NotNull[] args) {
-    this(children, style, key, Arrays.asList(args));
+record TranslatableComponentImpl(
+  @NotNull List<Component> children,
+  @NotNull Style style,
+  @NotNull String key,
+  @NotNull List<Component> args
+) implements TranslatableComponent {
+  static TranslatableComponent create(final @NotNull List<Component> children, final @NotNull Style style, final @NotNull String key, final @NotNull ComponentLike@NotNull[] args) {
+    return create(children, style, key, Arrays.asList(args));
   }
 
-  TranslatableComponentImpl(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String key, final @NotNull List<? extends ComponentLike> args) {
-    super(children, style);
-    this.key = requireNonNull(key, "key");
-    // Since translation arguments can be indexed, empty components are also included.
-    this.args = ComponentLike.asComponents(args);
+  static TranslatableComponent create(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String key, final @NotNull List<? extends ComponentLike> args) {
+    return new TranslatableComponentImpl(
+      ComponentLike.asComponents(children, IS_NOT_EMPTY),
+      requireNonNull(style, "style"),
+      requireNonNull(key, "key"),
+      ComponentLike.asComponents(args) // Since translation arguments can be indexed, empty components are also included.
+    );
+  }
+
+  @Deprecated
+  TranslatableComponentImpl {
   }
 
   @Override
@@ -59,7 +67,7 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
   @Override
   public @NotNull TranslatableComponent key(final @NotNull String key) {
     if (Objects.equals(this.key, key)) return this;
-    return new TranslatableComponentImpl(this.children, this.style, key, this.args);
+    return create(this.children, this.style, key, this.args);
   }
 
   @Override
@@ -69,39 +77,22 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
 
   @Override
   public @NotNull TranslatableComponent args(final @NotNull ComponentLike@NotNull... args) {
-    return new TranslatableComponentImpl(this.children, this.style, this.key, requireNonNull(args, "args"));
+    return create(this.children, this.style, this.key, requireNonNull(args, "args"));
   }
 
   @Override
   public @NotNull TranslatableComponent args(final @NotNull List<? extends ComponentLike> args) {
-    return new TranslatableComponentImpl(this.children, this.style, this.key, requireNonNull(args, "args"));
+    return create(this.children, this.style, this.key, requireNonNull(args, "args"));
   }
 
   @Override
   public @NotNull TranslatableComponent children(final @NotNull List<? extends ComponentLike> children) {
-    return new TranslatableComponentImpl(requireNonNull(children, "children"), this.style, this.key, this.args);
+    return create(requireNonNull(children, "children"), this.style, this.key, this.args);
   }
 
   @Override
   public @NotNull TranslatableComponent style(final @NotNull Style style) {
-    return new TranslatableComponentImpl(this.children, requireNonNull(style, "style"), this.key, this.args);
-  }
-
-  @Override
-  public boolean equals(final @Nullable Object other) {
-    if (this == other) return true;
-    if (!(other instanceof TranslatableComponent)) return false;
-    if (!super.equals(other)) return false;
-    final TranslatableComponent that = (TranslatableComponent) other;
-    return Objects.equals(this.key, that.key()) && Objects.equals(this.args, that.args());
-  }
-
-  @Override
-  public int hashCode() {
-    int result = super.hashCode();
-    result = (31 * result) + this.key.hashCode();
-    result = (31 * result) + this.args.hashCode();
-    return result;
+    return create(this.children, requireNonNull(style, "style"), this.key, this.args);
   }
 
   @Override
@@ -165,9 +156,9 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
     }
 
     @Override
-    public @NotNull TranslatableComponentImpl build() {
+    public @NotNull TranslatableComponent build() {
       if (this.key == null) throw new IllegalStateException("key must be set");
-      return new TranslatableComponentImpl(this.children, this.buildStyle(), this.key, this.args);
+      return create(this.children, this.buildStyle(), this.key, this.args);
     }
   }
 }
