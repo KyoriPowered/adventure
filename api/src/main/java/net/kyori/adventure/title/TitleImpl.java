@@ -23,15 +23,16 @@
  */
 package net.kyori.adventure.title;
 
-import java.time.Duration;
-import java.util.Objects;
-import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.Component;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
+
+import java.time.Duration;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
@@ -164,6 +165,35 @@ final class TitleImpl implements Title {
     @Override
     public String toString() {
       return Internals.toString(this);
+    }
+
+    static final class BuilderImpl implements Builder {
+      private Duration fadeIn = DEFAULT_TIMES.fadeIn();
+      private Duration stay = DEFAULT_TIMES.stay();
+      private Duration fadeOut = DEFAULT_TIMES.fadeOut();
+
+      @Override
+      public @NotNull Builder fadeIn(@NotNull Duration fadeIn) {
+        this.fadeIn = requireNonNull(fadeIn, "fadeIn");
+        return this;
+      }
+
+      @Override
+      public @NotNull Builder stay(@NotNull Duration stay) {
+        this.stay = requireNonNull(stay, "stay");
+        return this;
+      }
+
+      @Override
+      public @NotNull Builder fadeOut(@NotNull Duration fadeOut) {
+        this.fadeOut = requireNonNull(fadeOut, "fadeOut");
+        return this;
+      }
+
+      @Override
+      public @NotNull Title.Times build() {
+        return new TimesImpl(fadeIn, stay, fadeOut);
+      }
     }
   }
 

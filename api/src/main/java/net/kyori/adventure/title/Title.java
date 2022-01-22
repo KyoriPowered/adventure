@@ -132,7 +132,7 @@ public interface Title extends Buildable<Title, Title.Builder>, Examinable {
    *
    * @since 4.0.0
    */
-  interface Times extends Examinable {
+  interface Times extends Buildable<Title.Times, Title.Times.Builder>, Examinable {
     /**
      * Creates times.
      *
@@ -163,6 +163,16 @@ public interface Title extends Buildable<Title, Title.Builder>, Examinable {
     }
 
     /**
+     * Create a new builder that will create a {@link Title.Times}
+     *
+     * @return a builder
+     * @since 4.10.0
+     */
+    static @NotNull Builder builder() {
+      return new TitleImpl.TimesImpl.BuilderImpl();
+    }
+
+    /**
      * Gets the time the title will fade-in.
      *
      * @return the time the title will fade-in
@@ -185,6 +195,65 @@ public interface Title extends Buildable<Title, Title.Builder>, Examinable {
      * @since 4.0.0
      */
     @NotNull Duration fadeOut();
+
+    /**
+     * Creates a new builder initialized with the attributes of this times.
+     *
+     * @return the builder
+     * @since 4.10.0
+     */
+    @Override
+    default @NotNull Builder toBuilder() {
+      return new TitleImpl.TimesImpl.BuilderImpl()
+        .fadeIn(fadeIn())
+        .stay(stay())
+        .fadeOut(fadeOut());
+    }
+
+    /**
+     * A builder for a {@link Title.Times}
+     *
+     * @since 4.10.0
+     */
+    interface Builder extends Buildable.Builder<Title.Times> {
+      /**
+       * Set the time the title will fade-in.
+       *
+       * @param fadeIn the fade-in time
+       * @return this
+       * @since 4.10.0
+       */
+      @Contract("_ -> this")
+      @NotNull Builder fadeIn(final @NotNull Duration fadeIn);
+
+      /**
+       * Set the time the title will stay.
+       *
+       * @param stay the stay time
+       * @return this
+       * @since 4.10.0
+       */
+      @Contract("_ -> this")
+      @NotNull Builder stay(final @NotNull Duration stay);
+
+      /**
+       * Set the time the title will fade-out.
+       *
+       * @param fadeOut the fade-out time
+       * @return this
+       * @since 4.10.0
+       */
+      @Contract("_ -> this")
+      @NotNull Builder fadeOut(final @NotNull Duration fadeOut);
+
+      /**
+       * Builds
+       *
+       * @return a new times
+       */
+      @Override
+      @NotNull Title.Times build();
+    }
   }
 
   /**
