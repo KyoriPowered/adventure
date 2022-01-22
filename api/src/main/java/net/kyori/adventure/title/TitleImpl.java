@@ -220,6 +220,11 @@ final class TitleImpl implements Title {
     }
 
     @Override
+    public @NotNull Builder times(final @NotNull Duration fadeIn, final @NotNull Duration stay, final @NotNull Duration fadeOut) {
+      return this.times(Times.times(fadeIn, stay, fadeOut));
+    }
+
+    @Override
     public @NotNull Title build() {
       return new TitleImpl(this.title, this.subtitle, this.times);
     }

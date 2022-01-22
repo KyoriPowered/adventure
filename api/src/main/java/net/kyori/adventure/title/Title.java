@@ -122,6 +122,7 @@ public interface Title extends Buildable<Title, Title.Builder>, Examinable {
    * Create a new builder initialized with the attributes of this title.
    *
    * @return the builder
+   * @since 4.10.0
    */
   @Override
   default @NotNull Builder toBuilder() {
@@ -254,6 +255,7 @@ public interface Title extends Buildable<Title, Title.Builder>, Examinable {
        * Builds.
        *
        * @return a new times
+       * @since 4.10.0
        */
       @Override
       @NotNull Title.Times build();
@@ -297,9 +299,22 @@ public interface Title extends Buildable<Title, Title.Builder>, Examinable {
     @NotNull Builder times(final @Nullable Times times);
 
     /**
+     * Set the times by specifying the fade-in, stay, and fade-out attributes.
+     *
+     * @param fadeIn the fade-in time
+     * @param stay the stay time
+     * @param fadeOut the fade-out time
+     * @return this
+     * @since 4.10.0
+     */
+    @Contract("_, _, _ -> this")
+    @NotNull Builder times(final @NotNull Duration fadeIn, final @NotNull Duration stay, @NotNull Duration fadeOut);
+
+    /**
      * Builds.
      *
      * @return a new title
+     * @since 4.10.0
      */
     @Override
     @NotNull Title build();

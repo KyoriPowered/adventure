@@ -74,6 +74,12 @@ class TitleTest {
       .times(TIMES)
       .build();
     assertEquals(Title.title(TITLE, SUBTITLE, TIMES), t0);
+    final Title t1 = Title.builder()
+      .times(FADE_IN, STAY, FADE_OUT)
+      .title(TITLE)
+      .subtitle(SUBTITLE)
+      .build();
+    assertEquals(Title.title(TITLE, SUBTITLE, TIMES), t0);
   }
 
   @Test
