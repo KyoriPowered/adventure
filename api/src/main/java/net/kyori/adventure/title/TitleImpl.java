@@ -166,4 +166,33 @@ final class TitleImpl implements Title {
       return Internals.toString(this);
     }
   }
+
+  static final class BuilderImpl implements Builder {
+    private Component title = Component.empty();
+    private Component subtitle = Component.empty();
+    private Times times = null;
+
+    @Override
+    public @NotNull Builder title(@NotNull Component title) {
+      this.title = requireNonNull(title, "title");
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder subtitle(@NotNull Component subtitle) {
+      this.subtitle = requireNonNull(subtitle, "subtitle");
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder times(@Nullable Times times) {
+      this.times = times;
+      return this;
+    }
+
+    @Override
+    public @NotNull Title build() {
+      return new TitleImpl(title, subtitle, times);
+    }
+  }
 }

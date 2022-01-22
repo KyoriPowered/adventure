@@ -25,12 +25,10 @@ package net.kyori.adventure.title;
 
 import java.time.Duration;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.Ticks;
 import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
+import org.jetbrains.annotations.*;
 
 /**
  * Represents an in-game title, which can be displayed across the centre of the screen.
@@ -39,7 +37,7 @@ import org.jetbrains.annotations.UnknownNullability;
  * @since 4.0.0
  */
 @ApiStatus.NonExtendable
-public interface Title extends Examinable {
+public interface Title extends Buildable<Title, Title.Builder>, Examinable {
   /**
    * The default times.
    *
@@ -70,6 +68,16 @@ public interface Title extends Examinable {
    */
   static @NotNull Title title(final @NotNull Component title, final @NotNull Component subtitle, final @Nullable Times times) {
     return new TitleImpl(title, subtitle, times);
+  }
+
+  /**
+   * Create a new builder that will create a {@link Title}
+   *
+   * @return a builder
+   * @since 4.10.0
+   */
+  static @NotNull Builder builder() {
+    return new TitleImpl.BuilderImpl();
   }
 
   /**
@@ -105,6 +113,19 @@ public interface Title extends Examinable {
    * @since 4.9.0
    */
   <T> @UnknownNullability T part(final @NotNull TitlePart<T> part);
+
+  /**
+   * Create a new builder initialized with the attributes of this title.
+   *
+   * @return the builder
+   */
+  @Override
+  default @NotNull Builder toBuilder() {
+    return builder()
+      .title(this.title())
+      .subtitle(this.subtitle())
+      .times(this.times());
+  }
 
   /**
    * Title times.
@@ -164,5 +185,50 @@ public interface Title extends Examinable {
      * @since 4.0.0
      */
     @NotNull Duration fadeOut();
+  }
+
+  /**
+   * A builder for a {@link Title}
+   *
+   * @since 4.10.0
+   */
+  interface Builder extends Buildable.Builder<Title> {
+    /**
+     * Set the title
+     *
+     * @param title the title
+     * @return this
+     * @since 4.10.0
+     */
+    @Contract("_ -> this")
+    @NotNull Builder title(final @NotNull Component title);
+
+    /**
+     * Set the subtitle
+     *
+     * @param subtitle the subtitle
+     * @return this
+     * @since 4.10.0
+     */
+    @Contract("_ -> this")
+    @NotNull Builder subtitle(final @NotNull Component subtitle);
+
+    /**
+     * Set the times
+     *
+     * @param times the times
+     * @return this
+     * @since 4.10.0
+     */
+    @Contract("_ -> this")
+    @NotNull Builder times(final @Nullable Times times);
+
+    /**
+     * Builds
+     *
+     * @return a new title
+     */
+    @Override
+    @NotNull Title build();
   }
 }
