@@ -478,7 +478,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
    * @since 4.0.0
    */
   default @NotNull Style merge(final @NotNull Style that, final @NotNull Merge@NotNull... merges) {
-    return this.merge(that, Merge.of(merges));
+    return this.merge(that, Merge.merges(merges));
   }
 
   /**
@@ -491,7 +491,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
    * @since 4.0.0
    */
   default @NotNull Style merge(final @NotNull Style that, final Merge.@NotNull Strategy strategy, final @NotNull Merge@NotNull... merges) {
-    return this.merge(that, strategy, Merge.of(merges));
+    return this.merge(that, strategy, Merge.merges(merges));
   }
 
   /**
@@ -571,8 +571,8 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
      */
     FONT;
 
-    static final Set<Merge> ALL = of(values());
-    static final Set<Merge> COLOR_AND_DECORATIONS = of(COLOR, DECORATIONS);
+    static final Set<Merge> ALL = merges(values());
+    static final Set<Merge> COLOR_AND_DECORATIONS = merges(COLOR, DECORATIONS);
 
     /**
      * Gets a merge set of all merge types.
@@ -599,8 +599,22 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
      *
      * @param merges the merge parts
      * @return a merge set
-     * @since 4.0.0
+     * @since 4.10.0
      */
+    public static @Unmodifiable @NotNull Set<Merge> merges(final Merge@NotNull... merges) {
+      return MonkeyBars.enumSet(Merge.class, merges);
+    }
+
+    /**
+     * Creates a merge set.
+     *
+     * @param merges the merge parts
+     * @return a merge set
+     * @since 4.0.0
+     * @deprecated for removal since 4.10.0, use {@link #merges(Style.Merge...)} instead.
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
     public static @Unmodifiable @NotNull Set<Merge> of(final Merge@NotNull... merges) {
       return MonkeyBars.enumSet(Merge.class, merges);
     }
@@ -816,7 +830,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
     @Contract("_, _ -> this")
     default @NotNull Builder merge(final @NotNull Style that, final @NotNull Merge@NotNull... merges) {
       if (merges.length == 0) return this;
-      return this.merge(that, Merge.of(merges));
+      return this.merge(that, Merge.merges(merges));
     }
 
     /**
@@ -831,7 +845,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
     @Contract("_, _, _ -> this")
     default @NotNull Builder merge(final @NotNull Style that, final Merge.@NotNull Strategy strategy, final @NotNull Merge@NotNull... merges) {
       if (merges.length == 0) return this;
-      return this.merge(that, strategy, Merge.of(merges));
+      return this.merge(that, strategy, Merge.merges(merges));
     }
 
     /**

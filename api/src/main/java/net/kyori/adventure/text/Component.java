@@ -1809,7 +1809,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(pure = true)
   default @NotNull Component mergeStyle(final @NotNull Component that, final Style.@NotNull Merge@NotNull... merges) {
-    return this.mergeStyle(that, Style.Merge.of(merges));
+    return this.mergeStyle(that, Style.Merge.merges(merges));
   }
 
   /**

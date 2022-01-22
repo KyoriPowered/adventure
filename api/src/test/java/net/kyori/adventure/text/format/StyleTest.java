@@ -204,7 +204,7 @@ class StyleTest {
   @Test
   void testMerge_none() {
     final Style s0 = Style.empty();
-    final Style s1 = s0.merge(Style.style(NamedTextColor.DARK_PURPLE), Style.Merge.of());
+    final Style s1 = s0.merge(Style.style(NamedTextColor.DARK_PURPLE), Style.Merge.merges());
     assertNull(s1.color());
     assertDecorations(s1, ImmutableSet.of(), ImmutableSet.of());
     assertNull(s1.clickEvent());

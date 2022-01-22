@@ -39,7 +39,7 @@ class ShowItemSerializerTest {
   @Test
   void testDeserializeWithPopulatedTag() throws IOException {
     assertEquals(
-      HoverEvent.ShowItem.of(Key.key("minecraft", "diamond"), 1, BinaryTagHolder.of(TagStringIO.get().asString(
+      HoverEvent.ShowItem.of(Key.key("minecraft", "diamond"), 1, BinaryTagHolder.binaryTagHolder(TagStringIO.get().asString(
         CompoundBinaryTag.builder()
           .put("display", CompoundBinaryTag.builder()
             .put("Name", StringBinaryTag.of("A test!"))
