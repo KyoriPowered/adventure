@@ -23,12 +23,13 @@
  */
 package net.kyori.adventure.title;
 
+import java.time.Duration;
 import net.kyori.adventure.text.Component;
 import org.junit.jupiter.api.Test;
 
-import java.time.Duration;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 class TitleTest {
   private static final Component TITLE = Component.text("title");
@@ -38,7 +39,6 @@ class TitleTest {
   private static final Duration FADE_OUT = Duration.ofMillis(4);
   private static final Title.Times TIMES = Title.Times.times(FADE_IN, STAY, FADE_OUT);
 
-  
   @Test
   void testTitle() {
     final Title t = Title.title(TITLE, SUBTITLE, TIMES);

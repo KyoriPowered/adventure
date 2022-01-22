@@ -28,7 +28,11 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.Ticks;
 import net.kyori.examination.Examinable;
-import org.jetbrains.annotations.*;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 /**
  * Represents an in-game title, which can be displayed across the centre of the screen.
@@ -71,7 +75,7 @@ public interface Title extends Buildable<Title, Title.Builder>, Examinable {
   }
 
   /**
-   * Create a new builder that will create a {@link Title}
+   * Create a new builder that will create a {@link Title}.
    *
    * @return a builder
    * @since 4.10.0
@@ -163,7 +167,7 @@ public interface Title extends Buildable<Title, Title.Builder>, Examinable {
     }
 
     /**
-     * Create a new builder that will create a {@link Title.Times}
+     * Create a new builder that will create a {@link Title.Times}.
      *
      * @return a builder
      * @since 4.10.0
@@ -205,13 +209,13 @@ public interface Title extends Buildable<Title, Title.Builder>, Examinable {
     @Override
     default @NotNull Builder toBuilder() {
       return new TitleImpl.TimesImpl.BuilderImpl()
-        .fadeIn(fadeIn())
-        .stay(stay())
-        .fadeOut(fadeOut());
+        .fadeIn(this.fadeIn())
+        .stay(this.stay())
+        .fadeOut(this.fadeOut());
     }
 
     /**
-     * A builder for a {@link Title.Times}
+     * A builder for a {@link Title.Times}.
      *
      * @since 4.10.0
      */
@@ -247,7 +251,7 @@ public interface Title extends Buildable<Title, Title.Builder>, Examinable {
       @NotNull Builder fadeOut(final @NotNull Duration fadeOut);
 
       /**
-       * Builds
+       * Builds.
        *
        * @return a new times
        */
@@ -257,13 +261,13 @@ public interface Title extends Buildable<Title, Title.Builder>, Examinable {
   }
 
   /**
-   * A builder for a {@link Title}
+   * A builder for a {@link Title}.
    *
    * @since 4.10.0
    */
   interface Builder extends Buildable.Builder<Title> {
     /**
-     * Set the title
+     * Set the title.
      *
      * @param title the title
      * @return this
@@ -273,7 +277,7 @@ public interface Title extends Buildable<Title, Title.Builder>, Examinable {
     @NotNull Builder title(final @NotNull Component title);
 
     /**
-     * Set the subtitle
+     * Set the subtitle.
      *
      * @param subtitle the subtitle
      * @return this
@@ -283,7 +287,7 @@ public interface Title extends Buildable<Title, Title.Builder>, Examinable {
     @NotNull Builder subtitle(final @NotNull Component subtitle);
 
     /**
-     * Set the times
+     * Set the times.
      *
      * @param times the times
      * @return this
@@ -293,7 +297,7 @@ public interface Title extends Buildable<Title, Title.Builder>, Examinable {
     @NotNull Builder times(final @Nullable Times times);
 
     /**
-     * Builds
+     * Builds.
      *
      * @return a new title
      */

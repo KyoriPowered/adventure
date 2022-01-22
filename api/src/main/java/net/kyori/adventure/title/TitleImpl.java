@@ -23,16 +23,15 @@
  */
 package net.kyori.adventure.title;
 
+import java.time.Duration;
+import java.util.Objects;
+import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.Component;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
-
-import java.time.Duration;
-import java.util.Objects;
-import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
@@ -173,26 +172,26 @@ final class TitleImpl implements Title {
       private Duration fadeOut = DEFAULT_TIMES.fadeOut();
 
       @Override
-      public @NotNull Builder fadeIn(@NotNull Duration fadeIn) {
+      public @NotNull Builder fadeIn(final @NotNull Duration fadeIn) {
         this.fadeIn = requireNonNull(fadeIn, "fadeIn");
         return this;
       }
 
       @Override
-      public @NotNull Builder stay(@NotNull Duration stay) {
+      public @NotNull Builder stay(final @NotNull Duration stay) {
         this.stay = requireNonNull(stay, "stay");
         return this;
       }
 
       @Override
-      public @NotNull Builder fadeOut(@NotNull Duration fadeOut) {
+      public @NotNull Builder fadeOut(final @NotNull Duration fadeOut) {
         this.fadeOut = requireNonNull(fadeOut, "fadeOut");
         return this;
       }
 
       @Override
       public @NotNull Title.Times build() {
-        return new TimesImpl(fadeIn, stay, fadeOut);
+        return new TimesImpl(this.fadeIn, this.stay, this.fadeOut);
       }
     }
   }
@@ -203,26 +202,26 @@ final class TitleImpl implements Title {
     private Times times = null;
 
     @Override
-    public @NotNull Builder title(@NotNull Component title) {
+    public @NotNull Builder title(final @NotNull Component title) {
       this.title = requireNonNull(title, "title");
       return this;
     }
 
     @Override
-    public @NotNull Builder subtitle(@NotNull Component subtitle) {
+    public @NotNull Builder subtitle(final @NotNull Component subtitle) {
       this.subtitle = requireNonNull(subtitle, "subtitle");
       return this;
     }
 
     @Override
-    public @NotNull Builder times(@Nullable Times times) {
+    public @NotNull Builder times(final @Nullable Times times) {
       this.times = times;
       return this;
     }
 
     @Override
     public @NotNull Title build() {
-      return new TitleImpl(title, subtitle, times);
+      return new TitleImpl(this.title, this.subtitle, this.times);
     }
   }
 }
