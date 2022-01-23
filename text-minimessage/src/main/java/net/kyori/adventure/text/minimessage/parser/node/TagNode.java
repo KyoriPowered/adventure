@@ -26,10 +26,10 @@ package net.kyori.adventure.text.minimessage.parser.node;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import net.kyori.adventure.text.minimessage.parser.ParsingException;
+import net.kyori.adventure.text.minimessage.parser.ParsingExceptionImpl;
 import net.kyori.adventure.text.minimessage.parser.Token;
-import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
-import net.kyori.adventure.text.minimessage.transformation.Transformation;
+import net.kyori.adventure.text.minimessage.parser.TokenParser;
+import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,7 +40,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class TagNode extends ElementNode {
   private final List<TagPart> parts;
-  private @Nullable Transformation transformation = null;
+  private @Nullable Tag tag = null;
 
   /**
    * Creates a new element node.
@@ -48,29 +48,29 @@ public final class TagNode extends ElementNode {
    * @param parent        the parent of this node
    * @param token         the token that created this node
    * @param sourceMessage the source message
-   * @param placeholderResolver the placeholder resolver
+   * @param tagProvider the tag provider
    * @since 4.10.0
    */
   public TagNode(
       final @NotNull ElementNode parent,
       final @NotNull Token token,
       final @NotNull String sourceMessage,
-      final @NotNull PlaceholderResolver placeholderResolver
+      final @NotNull TokenParser.TagProvider tagProvider
   ) {
     super(parent, token, sourceMessage);
-    this.parts = genParts(token, sourceMessage, placeholderResolver);
+    this.parts = genParts(token, sourceMessage, tagProvider);
   }
 
   private static @NotNull List<TagPart> genParts(
     final @NotNull Token token,
     final @NotNull String sourceMessage,
-    final @NotNull PlaceholderResolver placeholderResolver
+    final @NotNull TokenParser.TagProvider tagProvider
   ) {
     final ArrayList<TagPart> parts = new ArrayList<>();
 
     if (token.childTokens() != null) {
       for (final Token childToken : token.childTokens()) {
-        parts.add(new TagPart(sourceMessage, childToken, placeholderResolver));
+        parts.add(new TagPart(sourceMessage, childToken, tagProvider));
       }
     }
 
@@ -95,7 +95,7 @@ public final class TagNode extends ElementNode {
    */
   public @NotNull String name() {
     if (this.parts.isEmpty()) {
-      throw new ParsingException("Tag has no parts? " + this, this.sourceMessage(), this.token());
+      throw new ParsingExceptionImpl("Tag has no parts? " + this, this.sourceMessage(), this.token());
     }
     return this.parts.get(0).value();
   }
@@ -106,23 +106,23 @@ public final class TagNode extends ElementNode {
   }
 
   /**
-   * Gets the transformation attached to this tag node.
+   * Gets the tag attached to this tag node.
    *
-   * @return the transformation for this tag node
+   * @return the tag for this tag node
    * @since 4.10.0
    */
-  public @NotNull Transformation transformation() {
-    return Objects.requireNonNull(this.transformation, "no transformation set");
+  public @NotNull Tag tag() {
+    return Objects.requireNonNull(this.tag, "no tag set");
   }
 
   /**
-   * Sets the transformation that is represented by this tag.
+   * Sets the tag logic that is represented by this tag node.
    *
-   * @param transformation the transformation
+   * @param tag the tag logic
    * @since 4.10.0
    */
-  public void transformation(final @NotNull Transformation transformation) {
-    this.transformation = transformation;
+  public void tag(final @NotNull Tag tag) {
+    this.tag = tag;
   }
 
   @Override

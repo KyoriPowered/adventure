@@ -21,38 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.parser.node;
+package net.kyori.adventure.text.minimessage.tag.builtin;
 
-import net.kyori.adventure.text.minimessage.parser.Token;
-import org.jetbrains.annotations.NotNull;
+import java.util.List;
+import java.util.Locale;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Represents a placeholder replacement in a string.
+ * Click events.
  *
  * @since 4.10.0
  */
-public class PlaceholderNode extends ValueNode {
-  /**
-   * Creates a new element node.
-   *
-   * @param parent        the parent of this node
-   * @param token         the token that created this node
-   * @param sourceMessage the source message
-   * @param actualValue the actual value of the placeholder this tag refers to
-   * @since 4.10.0
-   */
-  public PlaceholderNode(
-    final @Nullable ElementNode parent,
-    final @NotNull Token token,
-    final @NotNull String sourceMessage,
-    final @NotNull String actualValue
-  ) {
-    super(parent, token, sourceMessage, actualValue);
+@ApiStatus.Internal
+public final class ClickTag {
+  public static final String CLICK = "click";
+
+  private ClickTag() {
   }
 
-  @Override
-  String valueName() {
-    return "PlaceholderNode";
+  static Tag create(final List<? extends Tag.Argument> args, final Context ctx) {
+    if (args.size() != 2) {
+      throw ctx.newError("Don't know how to turn " + args + " into a click event", args);
+    }
+    final ClickEvent.@Nullable Action action = ClickEvent.Action.NAMES.value(args.get(0).value().toLowerCase(Locale.ROOT));
+    final String value = args.get(1).value();
+    if (action == null) {
+      throw ctx.newError("Unknown click event action '" + args.get(0).value() + "'", args);
+    }
+
+    return Tag.styling(ClickEvent.clickEvent(action, value));
   }
 }

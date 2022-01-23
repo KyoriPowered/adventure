@@ -21,38 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.parser.node;
+package net.kyori.adventure.text.minimessage.tag.builtin;
 
-import net.kyori.adventure.text.minimessage.parser.Token;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.tag.Tag;
 
 /**
- * Represents a placeholder replacement in a string.
+ * Insert a translation component into the result.
  *
  * @since 4.10.0
  */
-public class PlaceholderNode extends ValueNode {
-  /**
-   * Creates a new element node.
-   *
-   * @param parent        the parent of this node
-   * @param token         the token that created this node
-   * @param sourceMessage the source message
-   * @param actualValue the actual value of the placeholder this tag refers to
-   * @since 4.10.0
-   */
-  public PlaceholderNode(
-    final @Nullable ElementNode parent,
-    final @NotNull Token token,
-    final @NotNull String sourceMessage,
-    final @NotNull String actualValue
-  ) {
-    super(parent, token, sourceMessage, actualValue);
+public final class TranslatableTag {
+  public static final String TRANSLATABLE_3 = "tr";
+  public static final String TRANSLATABLE_2 = "translate";
+  public static final String TRANSLATABLE = "lang";
+
+  private TranslatableTag() {
   }
 
-  @Override
-  String valueName() {
-    return "PlaceholderNode";
+  static Tag create(final List<? extends Tag.Argument> args, final Context ctx) {
+    if (args.isEmpty()) {
+      throw ctx.newError("Doesn't know how to turn " + args + " into a translatable component", args);
+    }
+
+    final List<Component> with;
+    if (args.size() > 1) {
+      with = new ArrayList<>();
+      for (final Tag.Argument in : args.subList(1, args.size())) {
+        with.add(ctx.parse(in.value()));
+      }
+    } else {
+      with = Collections.emptyList();
+    }
+
+    return Tag.inserting(Component.translatable(args.get(0).value(), with));
   }
 }

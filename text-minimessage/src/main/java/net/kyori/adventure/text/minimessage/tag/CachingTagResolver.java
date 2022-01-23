@@ -21,38 +21,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.parser.node;
+package net.kyori.adventure.text.minimessage.tag;
 
-import net.kyori.adventure.text.minimessage.parser.Token;
+import java.util.HashMap;
+import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Represents a placeholder replacement in a string.
- *
- * @since 4.10.0
- */
-public class PlaceholderNode extends ValueNode {
-  /**
-   * Creates a new element node.
-   *
-   * @param parent        the parent of this node
-   * @param token         the token that created this node
-   * @param sourceMessage the source message
-   * @param actualValue the actual value of the placeholder this tag refers to
-   * @since 4.10.0
-   */
-  public PlaceholderNode(
-    final @Nullable ElementNode parent,
-    final @NotNull Token token,
-    final @NotNull String sourceMessage,
-    final @NotNull String actualValue
-  ) {
-    super(parent, token, sourceMessage, actualValue);
+final class CachingTagResolver implements TagResolver.WithoutArguments, MappableResolver {
+  private static final Tag NULL_REPLACEMENT = new Tag() {
+  };
+
+  private final Map<String, Tag> cache = new HashMap<>();
+  private final TagResolver.WithoutArguments resolver;
+
+  CachingTagResolver(final TagResolver.WithoutArguments resolver) {
+    this.resolver = resolver;
+  }
+
+  private Tag query(final @NotNull String key) {
+    return this.cache.computeIfAbsent(key, k -> {
+      final @Nullable Tag result = this.resolver.resolve(k);
+      return result == null ? NULL_REPLACEMENT : result;
+    });
   }
 
   @Override
-  String valueName() {
-    return "PlaceholderNode";
+  public @Nullable Tag resolve(final @NotNull String name) {
+    final Tag potentialValue = this.query(name);
+    return potentialValue == NULL_REPLACEMENT ? null : potentialValue;
+  }
+
+  @Override
+  public boolean has(final @NotNull String name) {
+    return this.query(name) != NULL_REPLACEMENT;
+  }
+
+  @Override
+  public boolean contributeToMap(final Map<String, Tag> map) {
+    if (this.resolver instanceof MappableResolver) {
+      return ((MappableResolver) this.resolver).contributeToMap(map);
+    } else {
+      return false;
+    }
   }
 }

@@ -21,38 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.parser.node;
+package net.kyori.adventure.text.minimessage.tag;
 
-import net.kyori.adventure.text.minimessage.parser.Token;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import java.util.Map;
 
 /**
- * Represents a placeholder replacement in a string.
- *
- * @since 4.10.0
+ * Marker interface for resolvers that may handle a fixed domain of tags.
  */
-public class PlaceholderNode extends ValueNode {
+interface MappableResolver {
   /**
-   * Creates a new element node.
+   * Contribute entries.
    *
-   * @param parent        the parent of this node
-   * @param token         the token that created this node
-   * @param sourceMessage the source message
-   * @param actualValue the actual value of the placeholder this tag refers to
-   * @since 4.10.0
+   * <p>Returning false from this method should leave the input {@code map} unmodified,
+   * and lead to handling as if this resolver did not implement {@code MappableResolver}.</p>
+   *
+   * @param map the map to add to
+   * @return whether or not the set of values was actually known
    */
-  public PlaceholderNode(
-    final @Nullable ElementNode parent,
-    final @NotNull Token token,
-    final @NotNull String sourceMessage,
-    final @NotNull String actualValue
-  ) {
-    super(parent, token, sourceMessage, actualValue);
-  }
-
-  @Override
-  String valueName() {
-    return "PlaceholderNode";
-  }
+  boolean contributeToMap(final Map<String, Tag> map);
 }

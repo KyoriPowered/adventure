@@ -21,38 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.parser.node;
+package net.kyori.adventure.text.minimessage.tag;
 
-import net.kyori.adventure.text.minimessage.parser.Token;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 
 /**
- * Represents a placeholder replacement in a string.
+ * Transformations implementing this interface can transform a whole subtree of nodes.
  *
  * @since 4.10.0
  */
-public class PlaceholderNode extends ValueNode {
+public interface Modifying extends Tag {
   /**
-   * Creates a new element node.
+   * This method gets called once for every element in the sub tree, allowing you to do calculations beforehand.
    *
-   * @param parent        the parent of this node
-   * @param token         the token that created this node
-   * @param sourceMessage the source message
-   * @param actualValue the actual value of the placeholder this tag refers to
+   * @param curr the current element in the sub tree
    * @since 4.10.0
    */
-  public PlaceholderNode(
-    final @Nullable ElementNode parent,
-    final @NotNull Token token,
-    final @NotNull String sourceMessage,
-    final @NotNull String actualValue
-  ) {
-    super(parent, token, sourceMessage, actualValue);
+  void visit(final ElementNode curr);
+
+  /**
+   * Called after the entire tree has been {@link #visit(ElementNode)}-ed.
+   *
+   * <p>This allows for finalizing calculations</p>
+   *
+   * @since 4.10.0
+   */
+  default void postVisit() {
   }
 
-  @Override
-  String valueName() {
-    return "PlaceholderNode";
-  }
+  /**
+   * Applies this transformation for the current component.
+   * This gets called after the component tree has been assembled, but you are free to modify it however you like.
+   *
+   * @param curr the current component
+   * @param depth the depth of the tree the current component is at
+   * @return the new parent
+   * @since 4.10.0
+   */
+  Component apply(final Component curr, final int depth);
 }

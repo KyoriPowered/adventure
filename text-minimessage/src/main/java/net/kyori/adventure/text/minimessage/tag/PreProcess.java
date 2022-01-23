@@ -21,38 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.parser.node;
-
-import net.kyori.adventure.text.minimessage.parser.Token;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+package net.kyori.adventure.text.minimessage.tag;
 
 /**
- * Represents a placeholder replacement in a string.
+ * A tag that is applied at the tokenization stage, before the tree is constructed.
+ *
+ * <p>Its value must be a MiniMessage string, and cannot accept any arguments</p>
  *
  * @since 4.10.0
  */
-public class PlaceholderNode extends ValueNode {
+public /* non-sealed */ interface PreProcess extends Tag {
   /**
-   * Creates a new element node.
+   * Get the value to insert at the pre-process phase.
    *
-   * @param parent        the parent of this node
-   * @param token         the token that created this node
-   * @param sourceMessage the source message
-   * @param actualValue the actual value of the placeholder this tag refers to
+   * @return the value to insert
    * @since 4.10.0
    */
-  public PlaceholderNode(
-    final @Nullable ElementNode parent,
-    final @NotNull Token token,
-    final @NotNull String sourceMessage,
-    final @NotNull String actualValue
-  ) {
-    super(parent, token, sourceMessage, actualValue);
-  }
-
-  @Override
-  String valueName() {
-    return "PlaceholderNode";
-  }
+  String value();
 }

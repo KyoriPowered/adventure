@@ -21,38 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.parser.node;
+package net.kyori.adventure.text.minimessage.tag.builtin;
 
-import net.kyori.adventure.text.minimessage.parser.Token;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import java.util.List;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.tag.Tag;
 
 /**
- * Represents a placeholder replacement in a string.
+ * A transformation that inserts a key binding component.
  *
  * @since 4.10.0
  */
-public class PlaceholderNode extends ValueNode {
-  /**
-   * Creates a new element node.
-   *
-   * @param parent        the parent of this node
-   * @param token         the token that created this node
-   * @param sourceMessage the source message
-   * @param actualValue the actual value of the placeholder this tag refers to
-   * @since 4.10.0
-   */
-  public PlaceholderNode(
-    final @Nullable ElementNode parent,
-    final @NotNull Token token,
-    final @NotNull String sourceMessage,
-    final @NotNull String actualValue
-  ) {
-    super(parent, token, sourceMessage, actualValue);
+public final class KeybindTag {
+  public static final String KEYBIND = "key";
+
+  private KeybindTag() {
   }
 
-  @Override
-  String valueName() {
-    return "PlaceholderNode";
+  static Tag create(final List<? extends Tag.Argument> args, final Context ctx) {
+    if (args.size() != 1) {
+      throw ctx.newError("Doesn't know how to turn token with arguments " + args + " into a keybind component", args);
+    }
+    return Tag.inserting(Component.keybind(args.get(0).value()));
   }
+
 }

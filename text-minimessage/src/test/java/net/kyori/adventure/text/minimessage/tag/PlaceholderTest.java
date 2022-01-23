@@ -21,38 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.parser.node;
+package net.kyori.adventure.text.minimessage.tag;
 
-import net.kyori.adventure.text.minimessage.parser.Token;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.junit.jupiter.api.Test;
 
-/**
- * Represents a placeholder replacement in a string.
- *
- * @since 4.10.0
- */
-public class PlaceholderNode extends ValueNode {
-  /**
-   * Creates a new element node.
-   *
-   * @param parent        the parent of this node
-   * @param token         the token that created this node
-   * @param sourceMessage the source message
-   * @param actualValue the actual value of the placeholder this tag refers to
-   * @since 4.10.0
-   */
-  public PlaceholderNode(
-    final @Nullable ElementNode parent,
-    final @NotNull Token token,
-    final @NotNull String sourceMessage,
-    final @NotNull String actualValue
-  ) {
-    super(parent, token, sourceMessage, actualValue);
-  }
+import static net.kyori.adventure.text.Component.text;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-  @Override
-  String valueName() {
-    return "PlaceholderNode";
+public class PlaceholderTest {
+
+  // https://github.com/KyoriPowered/adventure-text-minimessage/issues/190
+  @Test
+  void testCaseOfPlaceholders() {
+    assertThrows(IllegalArgumentException.class, () -> Placeholder.miniMessage("HI", "hi"));
+    assertThrows(IllegalArgumentException.class, () -> Placeholder.component("HI", text("hi")));
+    assertThrows(IllegalArgumentException.class, () -> Placeholder.component("HI", () -> text("hi")));
   }
 }

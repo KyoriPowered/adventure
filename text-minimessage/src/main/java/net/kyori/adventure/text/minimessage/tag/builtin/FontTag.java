@@ -21,38 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.parser.node;
+package net.kyori.adventure.text.minimessage.tag.builtin;
 
-import net.kyori.adventure.text.minimessage.parser.Token;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import java.util.List;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import org.intellij.lang.annotations.Subst;
 
 /**
- * Represents a placeholder replacement in a string.
+ * A decoration that applies a font name.
  *
  * @since 4.10.0
  */
-public class PlaceholderNode extends ValueNode {
-  /**
-   * Creates a new element node.
-   *
-   * @param parent        the parent of this node
-   * @param token         the token that created this node
-   * @param sourceMessage the source message
-   * @param actualValue the actual value of the placeholder this tag refers to
-   * @since 4.10.0
-   */
-  public PlaceholderNode(
-    final @Nullable ElementNode parent,
-    final @NotNull Token token,
-    final @NotNull String sourceMessage,
-    final @NotNull String actualValue
-  ) {
-    super(parent, token, sourceMessage, actualValue);
+public final class FontTag {
+  public static final String FONT = "font";
+
+  private FontTag() {
   }
 
-  @Override
-  String valueName() {
-    return "PlaceholderNode";
+  static Tag create(final List<? extends Tag.Argument> args, final Context ctx) {
+    final Key font;
+    if (args.size() == 1) {
+      @Subst("empty") final String fontKey = args.get(0).value();
+      font = Key.key(fontKey);
+    } else if (args.size() == 2) {
+      @Subst(Key.MINECRAFT_NAMESPACE) final String namespaceKey = args.get(0).value();
+      @Subst("empty") final String fontKey = args.get(1).value();
+      font = Key.key(namespaceKey, fontKey);
+    } else {
+      throw ctx.newError("Don't know how to turn " + args + " into a font", args);
+    }
+
+    return Tag.styling(builder -> builder.font(font));
   }
 }

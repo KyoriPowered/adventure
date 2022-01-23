@@ -21,38 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.parser.node;
+package net.kyori.adventure.text.minimessage.tag;
 
-import net.kyori.adventure.text.minimessage.parser.Token;
+import java.util.List;
+import java.util.Map;
+import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.tag.Tag.Argument;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Represents a placeholder replacement in a string.
- *
- * @since 4.10.0
- */
-public class PlaceholderNode extends ValueNode {
-  /**
-   * Creates a new element node.
-   *
-   * @param parent        the parent of this node
-   * @param token         the token that created this node
-   * @param sourceMessage the source message
-   * @param actualValue the actual value of the placeholder this tag refers to
-   * @since 4.10.0
-   */
-  public PlaceholderNode(
-    final @Nullable ElementNode parent,
-    final @NotNull Token token,
-    final @NotNull String sourceMessage,
-    final @NotNull String actualValue
-  ) {
-    super(parent, token, sourceMessage, actualValue);
+final class EmptyTagResolver implements TagResolver, MappableResolver {
+  static final EmptyTagResolver INSTANCE = new EmptyTagResolver();
+
+  private EmptyTagResolver() {
   }
 
   @Override
-  String valueName() {
-    return "PlaceholderNode";
+  public @Nullable Tag resolve(final @NotNull String name, final @NotNull List<? extends Argument> arguments, final @NotNull Context ctx) {
+    return null;
+  }
+
+  @Override
+  public boolean has(final @NotNull String name) {
+    return false;
+  }
+
+  @Override
+  public boolean contributeToMap(final Map<String, Tag> map) {
+    return true;
   }
 }

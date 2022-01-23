@@ -25,7 +25,7 @@ package net.kyori.adventure.text.minimessage.parser.node;
 
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenParser;
-import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
+import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 4.10.0
  */
-public final class TagPart {
+public final class TagPart implements Tag.Argument {
   private final String value;
   private final Token token;
 
@@ -42,16 +42,16 @@ public final class TagPart {
    *
    * @param sourceMessage the source message
    * @param token the token that creates this tag part
-   * @param placeholderResolver the placeholder resolver
+   * @param tagResolver the combined tag resolver
    * @since 4.10.0
    */
   public TagPart(
     final @NotNull String sourceMessage,
     final @NotNull Token token,
-    final @NotNull PlaceholderResolver placeholderResolver
+    final @NotNull TokenParser.TagProvider tagResolver
   ) {
     String v = unquoteAndEscape(sourceMessage, token.startIndex(), token.endIndex());
-    v = TokenParser.resolveStringPlaceholders(v, placeholderResolver);
+    v = TokenParser.resolvePlaceholders(v, tagResolver);
 
     this.value = v;
     this.token = token;
@@ -63,6 +63,7 @@ public final class TagPart {
    * @return the value
    * @since 4.10.0
    */
+  @Override
   public @NotNull String value() {
     return this.value;
   }
@@ -104,26 +105,6 @@ public final class TagPart {
     }
 
     return TokenParser.unescape(text, startIndex, endIndex, i -> i == firstChar);
-  }
-
-  /**
-   * Checks if this tag part represents <code>true</code>.
-   *
-   * @return if this tag part represents <code>true</code>
-   * @since 4.10.0
-   */
-  public boolean isTrue() {
-    return "true".equals(this.value) || "on".equals(this.value);
-  }
-
-  /**
-   * Checks if this tag part represents <code>false</code>.
-   *
-   * @return if this tag part represents <code>false</code>
-   * @since 4.10.0
-   */
-  public boolean isFalse() {
-    return "false".equals(this.value) || "off".equals(this.value);
   }
 
   @Override

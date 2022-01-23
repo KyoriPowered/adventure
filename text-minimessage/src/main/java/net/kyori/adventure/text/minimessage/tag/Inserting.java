@@ -21,38 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.parser.node;
+package net.kyori.adventure.text.minimessage.tag;
 
-import net.kyori.adventure.text.minimessage.parser.Token;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import net.kyori.adventure.text.Component;
 
 /**
- * Represents a placeholder replacement in a string.
+ * A tag type that inserts a {@link Component} into the output.
  *
  * @since 4.10.0
  */
-public class PlaceholderNode extends ValueNode {
+public interface Inserting extends Tag {
   /**
-   * Creates a new element node.
+   * Return the component this tag produces.
    *
-   * @param parent        the parent of this node
-   * @param token         the token that created this node
-   * @param sourceMessage the source message
-   * @param actualValue the actual value of the placeholder this tag refers to
+   * <p>It may be desirable to store the result of this method.</p>
+   *
+   * @return the component this tag produces
    * @since 4.10.0
    */
-  public PlaceholderNode(
-    final @Nullable ElementNode parent,
-    final @NotNull Token token,
-    final @NotNull String sourceMessage,
-    final @NotNull String actualValue
-  ) {
-    super(parent, token, sourceMessage, actualValue);
-  }
-
-  @Override
-  String valueName() {
-    return "PlaceholderNode";
-  }
+  Component value();
 }

@@ -27,8 +27,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
-import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
+import net.kyori.adventure.text.minimessage.tag.TagResolver;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Buildable;
 import org.jetbrains.annotations.NotNull;
@@ -59,7 +58,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    *
    * <p>Useful for untrusted input.</p>
    *
-   * <p>Only globally known tokens will be escaped. Use the overload that takes a {@link PlaceholderResolver} if placeholders should be handled.</p>
+   * <p>Only globally known tokens will be escaped. Use the overload that takes a {@link TagResolver} if any custom tags should be handled.</p>
    *
    * @param input the input message, with tokens
    * @return the output, with escaped tokens
@@ -73,18 +72,18 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * <p>Useful for untrusted input.</p>
    *
    * @param input the input message, with tokens
-   * @param placeholders the placeholder resolver adding known placeholders
+   * @param tags a tag resolver to provide any additional tags that can be understood, combined with the overall tag resolver
    * @return the output, with escaped tokens
    * @since 4.10.0
    */
-  @NotNull String escapeTokens(final @NotNull String input, final @NotNull PlaceholderResolver placeholders);
+  @NotNull String escapeTokens(final @NotNull String input, final @NotNull TagResolver tags);
 
   /**
    * Removes all supported tokens in the input message.
    *
    * <p>Useful for untrusted input.</p>
    *
-   * <p>Only globally known tokens will be stripped. Use the overload that takes a {@link PlaceholderResolver} if placeholders should be handled.</p>
+   * <p>Only globally known tokens will be stripped. Use the overload that takes a {@link TagResolver} if any custom tags should be handled.</p>
    *
    * @param input the input message, with tokens
    * @return the output, without tokens
@@ -98,23 +97,23 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * <p>Useful for untrusted input.</p>
    *
    * @param input the input message, with tokens
-   * @param placeholders the placeholder resolver adding known placeholders
+   * @param tags a tag resolver to provide any additional tags that can be understood, combined with the overall tag resolver
    * @return the output, without tokens
    * @since 4.10.0
    */
-  @NotNull String stripTokens(final @NotNull String input, final @NotNull PlaceholderResolver placeholders);
+  @NotNull String stripTokens(final @NotNull String input, final @NotNull TagResolver tags);
 
   /**
    * Deserializes a string into a component, with a placeholder resolver to parse placeholders of the form {@code <key>}.
    *
-   * <p>Placeholders will be resolved from this resolver before the resolver provided in the builder is used.</p>
+   * <p>Tags will be resolved from the resolver parameter before the resolver provided in the builder is used.</p>
    *
    * @param input the input string
-   * @param placeholderResolver the placeholder resolver
+   * @param tagResolver the tag resolver for any additional tags to handle.
    * @return the output component
    * @since 4.10.0
    */
-  @NotNull Component deserialize(final @NotNull String input, final @NotNull PlaceholderResolver placeholderResolver);
+  @NotNull Component deserialize(final @NotNull String input, final @NotNull TagResolver tagResolver);
 
   /**
    * Creates a new {@link MiniMessage.Builder}.
@@ -134,41 +133,28 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
   interface Builder extends Buildable.Builder<MiniMessage> {
 
     /**
-     * Uses the supplied transformation registry.
+     * Set the known tags to the provided tag resolver.
      *
-     * @param transformationRegistry the transformation registry to use
+     * @param tags the tag resolver to use
      * @return this builder
      * @since 4.10.0
      */
-    @NotNull Builder transformations(final @NotNull TransformationRegistry transformationRegistry);
+    @NotNull Builder tags(final @NotNull TagResolver tags);
 
     /**
-     * Modify the set transformation registry.
+     * Add to the set of known tags this MiniMessage instance can use.
      *
-     * <p>By default, this will start out with a registry of all default transformations.</p>
-     *
-     * @param modifier an action to perform on the registry builder
+     * @param adder a function operating on a builder containing currently known tags
      * @return this builder
      * @since 4.10.0
      */
-    @NotNull Builder transformations(final @NotNull Consumer<TransformationRegistry.Builder> modifier);
-
-    /**
-     * Sets the placeholder resolver.
-     *
-     * <p>This placeholder resolver will be used after any placeholder resolved provided in {@link MiniMessage#deserialize(String, PlaceholderResolver)}.</p>
-     *
-     * @param placeholderResolver the placeholder resolver to use, if any
-     * @return this builder
-     * @since 4.10.0
-     */
-    @NotNull Builder placeholderResolver(final @Nullable PlaceholderResolver placeholderResolver);
+    @NotNull Builder tags(final @NotNull Consumer<TagResolver.Builder> adder);
 
     /**
      * Allows to enable strict mode (disabled by default).
      *
-     * <p>By default, MiniMessage will allow non-{@link net.kyori.adventure.text.minimessage.transformation.Inserting Inserting} tags to be implicitly closed. When strict mode
-     * is enabled, all non-inserting tags which are {@code <opened>} must be explicitly {@code </closed>} as well.</p>
+     * <p>By default, MiniMessage will allow {@link net.kyori.adventure.text.minimessage.tag.Tag#allowsChildren() child-allowing} tags to be implicitly closed. When strict mode
+     * is enabled, all child-allowing tags which are {@code <opened>} must be explicitly {@code </closed>} as well.</p>
      *
      * @param strict if strict mode should be enabled
      * @return this builder

@@ -23,42 +23,39 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
 import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.parser.ParsingException;
+import net.kyori.adventure.text.minimessage.parser.ParsingExceptionImpl;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenParser;
 import net.kyori.adventure.text.minimessage.parser.TokenType;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.parser.node.ValueNode;
-import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
-import net.kyori.adventure.text.minimessage.transformation.Modifying;
-import net.kyori.adventure.text.minimessage.transformation.Transformation;
-import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
+import net.kyori.adventure.text.minimessage.tag.Inserting;
+import net.kyori.adventure.text.minimessage.tag.Modifying;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.TagResolver;
 import net.kyori.examination.string.MultiLineStringExaminer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 final class MiniMessageParser {
-  final TransformationRegistry registry;
-  final PlaceholderResolver placeholderResolver;
+  final TagResolver tagResolver;
 
   MiniMessageParser() {
-    this.registry = TransformationRegistry.standard();
-    this.placeholderResolver = PlaceholderResolver.empty();
+    this.tagResolver = TagResolver.standard();
   }
 
-  MiniMessageParser(final TransformationRegistry registry, final PlaceholderResolver placeholderResolver) {
-    this.registry = registry;
-    this.placeholderResolver = placeholderResolver;
+  MiniMessageParser(final TagResolver tagResolver) {
+    this.tagResolver = tagResolver;
   }
 
   @NotNull String escapeTokens(final @NotNull String richMessage, final @NotNull ContextImpl context) {
@@ -91,7 +88,7 @@ final class MiniMessageParser {
   }
 
   private void processTokens(final @NotNull StringBuilder sb, final @NotNull String richMessage, final @NotNull ContextImpl context, final BiConsumer<Token, StringBuilder> tagHandler) {
-    final PlaceholderResolver combinedResolver = PlaceholderResolver.combining(context.placeholderResolver(), this.placeholderResolver);
+    final TagResolver combinedResolver = TagResolver.combining(this.tagResolver, context.extraTags());
     final List<Token> root = TokenParser.tokenize(richMessage);
     for (final Token token : root) {
       switch (token.type()) {
@@ -105,8 +102,8 @@ final class MiniMessageParser {
             sb.append(richMessage, token.startIndex(), token.endIndex());
             continue;
           }
-          final String sanitized = this.sanitizePlaceholderName(token.childTokens().get(0).get(richMessage).toString());
-          if (this.registry.exists(sanitized, combinedResolver) || combinedResolver.resolve(sanitized) != null) {
+          final String sanitized = TokenParser.TagProvider.sanitizePlaceholderName(token.childTokens().get(0).get(richMessage).toString());
+          if (combinedResolver.has(sanitized)) {
             tagHandler.accept(token, sb);
           } else {
             sb.append(richMessage, token.startIndex(), token.endIndex());
@@ -119,7 +116,7 @@ final class MiniMessageParser {
   }
 
   @NotNull Component parseFormat(final @NotNull String richMessage, final @NotNull ContextImpl context) {
-    final PlaceholderResolver combinedResolver = PlaceholderResolver.combining(context.placeholderResolver(), this.placeholderResolver);
+    final TagResolver combinedResolver = TagResolver.combining(this.tagResolver, context.extraTags());
     final Consumer<String> debug = context.debugOutput();
     if (debug != null) {
       debug.accept("Beginning parsing message ");
@@ -127,37 +124,40 @@ final class MiniMessageParser {
       debug.accept("\n");
     }
 
-    final Function<TagNode, Transformation> transformationFactory;
+    final TokenParser.TagProvider transformationFactory;
     if (debug != null) {
-      transformationFactory = node -> {
+      transformationFactory = (name, args, token) -> {
         try {
           debug.accept("Attempting to match node '");
-          debug.accept(node.name());
-          debug.accept("' at column ");
-          debug.accept(String.valueOf(node.token().startIndex()));
+          debug.accept(name);
+          debug.accept("'");
+          if (token != null) {
+            debug.accept(" at column ");
+            debug.accept(String.valueOf(token.startIndex()));
+          }
           debug.accept("\n");
 
-          final Transformation transformation = this.registry.get(this.sanitizePlaceholderName(node.name()), node.parts(), combinedResolver, context);
+          final @Nullable Tag transformation = combinedResolver.resolve(name, args, context);
 
           if (transformation == null) {
             debug.accept("Could not match node '");
-            debug.accept(node.name());
+            debug.accept(name);
             debug.accept("'\n");
           } else {
             debug.accept("Successfully matched node '");
-            debug.accept(node.name());
-            debug.accept("' to transformation ");
-            debug.accept(transformation.examinableName());
+            debug.accept(name);
+            debug.accept("' to tag ");
+            debug.accept(transformation.getClass().getName());
             debug.accept("\n");
           }
 
           return transformation;
-        } catch (final ParsingException e) {
-          if (e.tokens().length == 0) {
-            e.tokens(new Token[]{node.token()});
+        } catch (final ParsingExceptionImpl e) {
+          if (e.tokens().length == 0 && token != null) {
+            e.tokens(new Token[] {token});
           }
           debug.accept("Could not match node '");
-          debug.accept(node.name());
+          debug.accept(name);
           debug.accept("' - ");
           debug.accept(e.getMessage());
           debug.accept("\n");
@@ -165,20 +165,20 @@ final class MiniMessageParser {
         }
       };
     } else {
-      transformationFactory = node -> {
+      transformationFactory = (name, args, token) -> {
         try {
-          return this.registry.get(this.sanitizePlaceholderName(node.name()), node.parts(), combinedResolver, context);
-        } catch (final ParsingException ignored) {
+          return combinedResolver.resolve(name, args, context);
+        } catch (final ParsingExceptionImpl ignored) {
           return null;
         }
       };
     }
-    final BiPredicate<String, Boolean> tagNameChecker = (name, includePlaceholders) -> {
-      final String sanitized = this.sanitizePlaceholderName(name);
-      return this.registry.exists(sanitized) || (includePlaceholders && combinedResolver.resolve(name) != null);
+    final Predicate<String> tagNameChecker = name -> {
+      final String sanitized = TokenParser.TagProvider.sanitizePlaceholderName(name);
+      return combinedResolver.has(sanitized);
     };
 
-    final ElementNode root = TokenParser.parse(transformationFactory, tagNameChecker, combinedResolver, richMessage, context.strict());
+    final ElementNode root = TokenParser.parse(transformationFactory, tagNameChecker, richMessage, context.strict());
 
     if (debug != null) {
       debug.accept("Text parsed into element tree:\n");
@@ -189,18 +189,18 @@ final class MiniMessageParser {
   }
 
   @NotNull Component treeToComponent(final @NotNull ElementNode node, final @NotNull ContextImpl context) {
-    Component comp;
-    Transformation transformation = null;
+    Component comp = Component.empty();
+    Tag tag = null;
     if (node instanceof ValueNode) {
       comp = Component.text(((ValueNode) node).value());
     } else if (node instanceof TagNode) {
-      final TagNode tag = (TagNode) node;
+      final TagNode tagNode = (TagNode) node;
 
-      transformation = tag.transformation();
+      tag = tagNode.tag();
 
       // special case for gradient and stuff
-      if (transformation instanceof Modifying) {
-        final Modifying modTransformation = (Modifying) transformation;
+      if (tag instanceof Modifying) {
+        final Modifying modTransformation = (Modifying) tag;
 
         // first walk the tree
         final LinkedList<ElementNode> toVisit = new LinkedList<>(node.children());
@@ -209,19 +209,26 @@ final class MiniMessageParser {
           modTransformation.visit(curr);
           toVisit.addAll(0, curr.children());
         }
+        modTransformation.postVisit();
       }
-      comp = transformation.apply();
-    } else {
-      comp = Component.empty();
+
+      if (tag instanceof Inserting) {
+        comp = ((Inserting) tag).value();
+      }
     }
 
-    for (final ElementNode child : node.children()) {
-      comp = comp.append(this.treeToComponent(child, context));
+    if (!node.children().isEmpty()) {
+      final List<Component> children = new ArrayList<>(comp.children().size() + node.children().size());
+      children.addAll(comp.children());
+      for (final ElementNode child : node.children()) {
+        children.add(this.treeToComponent(child, context));
+      }
+      comp = comp.children(children);
     }
 
     // special case for gradient and stuff
-    if (transformation instanceof Modifying) {
-      comp = this.handleModifying((Modifying) transformation, comp, 0);
+    if (tag instanceof Modifying) {
+      comp = this.handleModifying((Modifying) tag, comp, 0);
     }
 
     final Consumer<String> debug = context.debugOutput();
@@ -242,9 +249,5 @@ final class MiniMessageParser {
       newComp = newComp.append(this.handleModifying(modTransformation, child, depth + 1));
     }
     return newComp;
-  }
-
-  private String sanitizePlaceholderName(final String name) {
-    return name.toLowerCase(Locale.ROOT);
   }
 }

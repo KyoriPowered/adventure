@@ -26,8 +26,7 @@ package net.kyori.adventure.text.minimessage.benchmark;
 import java.util.concurrent.TimeUnit;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
-import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
+import net.kyori.adventure.text.minimessage.tag.Placeholder;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -50,7 +49,7 @@ public class MiniMessageBenchmark {
     final String input = "<yellow><test><bold>stranger";
     return MiniMessage.miniMessage().deserialize(
       input,
-      PlaceholderResolver.placeholders(Placeholder.component("test", Component.text("test2")))
+      Placeholder.component("test", Component.text("test2"))
     );
   }
 
