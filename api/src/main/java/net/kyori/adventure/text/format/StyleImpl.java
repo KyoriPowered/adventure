@@ -334,51 +334,64 @@ final class StyleImpl implements Style {
         return this;
       }
 
-      final Merger merger = merger(strategy);
-
       if (merges.contains(Merge.COLOR)) {
         final TextColor color = that.color();
-        if (color != null) merger.mergeColor(this, color);
+        if (color != null) {
+          if (strategy == Merge.Strategy.ALWAYS || (strategy == Merge.Strategy.IF_ABSENT_ON_TARGET && this.color == null)) {
+            this.color(color);
+          }
+        }
       }
 
       if (merges.contains(Merge.DECORATIONS)) {
         for (int i = 0, length = DecorationMap.DECORATIONS.length; i < length; i++) {
           final TextDecoration decoration = DecorationMap.DECORATIONS[i];
           final TextDecoration.State state = that.decoration(decoration);
-          if (state != TextDecoration.State.NOT_SET) merger.mergeDecoration(this, decoration, state);
+          if (state != TextDecoration.State.NOT_SET) {
+            if (strategy == Merge.Strategy.ALWAYS) {
+              this.decoration(decoration, state);
+            } else if (strategy == Merge.Strategy.IF_ABSENT_ON_TARGET) {
+              this.decorationIfAbsent(decoration, state);
+            }
+          }
         }
       }
 
       if (merges.contains(Merge.EVENTS)) {
         final ClickEvent clickEvent = that.clickEvent();
-        if (clickEvent != null) merger.mergeClickEvent(this, clickEvent);
+        if (clickEvent != null) {
+          if (strategy == Merge.Strategy.ALWAYS || (strategy == Merge.Strategy.IF_ABSENT_ON_TARGET && this.clickEvent == null)) {
+            this.clickEvent(clickEvent);
+          }
+        }
 
         final HoverEvent<?> hoverEvent = that.hoverEvent();
-        if (hoverEvent != null) merger.mergeHoverEvent(this, hoverEvent);
+        if (hoverEvent != null) {
+          if (strategy == Merge.Strategy.ALWAYS || (strategy == Merge.Strategy.IF_ABSENT_ON_TARGET && this.hoverEvent == null)) {
+            this.hoverEvent(hoverEvent);
+          }
+        }
       }
 
       if (merges.contains(Merge.INSERTION)) {
         final String insertion = that.insertion();
-        if (insertion != null) merger.mergeInsertion(this, insertion);
+        if (insertion != null) {
+          if (strategy == Merge.Strategy.ALWAYS || (strategy == Merge.Strategy.IF_ABSENT_ON_TARGET && this.insertion == null)) {
+            this.insertion(insertion);
+          }
+        }
       }
 
       if (merges.contains(Merge.FONT)) {
         final Key font = that.font();
-        if (font != null) merger.mergeFont(this, font);
+        if (font != null) {
+          if (strategy == Merge.Strategy.ALWAYS || (strategy == Merge.Strategy.IF_ABSENT_ON_TARGET && this.font == null)) {
+            this.font(font);
+          }
+        }
       }
 
       return this;
-    }
-
-    private static Merger merger(final Merge.Strategy strategy) {
-      if (strategy == Merge.Strategy.ALWAYS) {
-        return AlwaysMerger.INSTANCE;
-      } else if (strategy == Merge.Strategy.NEVER) {
-        throw new UnsupportedOperationException();
-      } else if (strategy == Merge.Strategy.IF_ABSENT_ON_TARGET) {
-        return IfAbsentOnTargetMerger.INSTANCE;
-      }
-      throw new IllegalArgumentException(strategy.name());
     }
 
     @Override
