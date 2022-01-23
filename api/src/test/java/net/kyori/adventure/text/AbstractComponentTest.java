@@ -39,7 +39,6 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static net.kyori.test.WeirdAssertions.assertAllEqualToEachOther;
-import static net.kyori.test.WeirdAssertions.forEachTransformAndAssert;
 import static net.kyori.test.WeirdAssertions.forEachTransformAndAssertIterable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -338,7 +337,9 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B> & Scoped
       .build();
     final List<Component> children = c0.children();
     assertThat(children).hasSize(2);
-    forEachTransformAndAssert(children, Component::color, color -> assertEquals(NamedTextColor.GREEN, color));
+    for (final Component child : children) {
+      assertEquals(NamedTextColor.GREEN, child.color());
+    }
   }
 
   @Test

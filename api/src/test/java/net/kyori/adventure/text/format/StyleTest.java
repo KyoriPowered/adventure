@@ -40,7 +40,6 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static net.kyori.adventure.text.TextAssertions.assertDecorations;
-import static net.kyori.test.WeirdAssertions.doWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -299,14 +298,18 @@ class StyleTest {
   @Test
   void testBuilderMerge_none() {
     final Style style = Style.style(NamedTextColor.DARK_PURPLE);
-    doWith(Style.style(), builder -> {
-      builder.merge(style, new Style.Merge[0]);
-      assertEquals(Style.empty(), builder.build());
-    });
-    doWith(Style.style(), builder -> {
-      builder.merge(style, ImmutableSet.of());
-      assertEquals(Style.empty(), builder.build());
-    });
+    assertEquals(
+      Style.empty(),
+      Style.style()
+        .merge(style, new Style.Merge[0])
+        .build()
+    );
+    assertEquals(
+      Style.empty(),
+      Style.style()
+        .merge(style, ImmutableSet.of())
+        .build()
+    );
   }
 
   @Test
@@ -336,14 +339,18 @@ class StyleTest {
   @Test
   void testBuilderMerge_color() {
     final Style style = Style.style(NamedTextColor.DARK_PURPLE, TextDecoration.BOLD);
-    doWith(Style.style(), builder -> {
-      builder.merge(style, Style.Merge.COLOR);
-      assertEquals(Style.style(NamedTextColor.DARK_PURPLE), builder.build());
-    });
-    doWith(Style.style(), builder -> {
-      builder.merge(style, ImmutableSet.of(Style.Merge.COLOR));
-      assertEquals(Style.style(NamedTextColor.DARK_PURPLE), builder.build());
-    });
+    assertEquals(
+      Style.style(NamedTextColor.DARK_PURPLE),
+      Style.style()
+        .merge(style, Style.Merge.COLOR)
+        .build()
+    );
+    assertEquals(
+      Style.style(NamedTextColor.DARK_PURPLE),
+      Style.style()
+        .merge(style, ImmutableSet.of(Style.Merge.COLOR))
+        .build()
+    );
   }
 
   @Test

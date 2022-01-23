@@ -24,6 +24,7 @@
 package net.kyori.adventure.text;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.testing.EqualsTester;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
@@ -85,16 +86,18 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
 
   @Test
   void testOfSameResult() {
-    assertAllEqualToEachOther(
-      Component.text("foo", Style.style(TextColor.color(0x0a1ab9))),
-      Component.text("foo", TextColor.color(0x0a1ab9)),
-      Component.text("foo", TextColor.color(0x0a1ab9), ImmutableSet.of())
-    );
-    assertAllEqualToEachOther(
-      Component.text("foo", Style.style(TextColor.color(0x0a1ab9), TextDecoration.BOLD)),
-      Component.text("foo", TextColor.color(0x0a1ab9), TextDecoration.BOLD),
-      Component.text("foo", TextColor.color(0x0a1ab9), ImmutableSet.of(TextDecoration.BOLD))
-    );
+    new EqualsTester()
+      .addEqualityGroup(
+        Component.text("foo", Style.style(TextColor.color(0x0a1ab9))),
+        Component.text("foo", TextColor.color(0x0a1ab9)),
+        Component.text("foo", TextColor.color(0x0a1ab9), ImmutableSet.of())
+      )
+      .addEqualityGroup(
+        Component.text("foo", Style.style(TextColor.color(0x0a1ab9), TextDecoration.BOLD)),
+        Component.text("foo", TextColor.color(0x0a1ab9), TextDecoration.BOLD),
+        Component.text("foo", TextColor.color(0x0a1ab9), ImmutableSet.of(TextDecoration.BOLD))
+      )
+      .testEquals();
   }
 
   @Test
