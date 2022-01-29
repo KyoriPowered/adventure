@@ -104,8 +104,8 @@ public final class BinaryTagIO {
    * @param path the path
    * @return the compound tag
    * @throws IOException if an exception was encountered while reading a compound tag
-   * @deprecated since 4.4.0, use {@link #reader()}
    * @since 4.0.0
+   * @deprecated since 4.4.0, use {@link #reader()}
    */
   @Deprecated
   public static @NotNull CompoundBinaryTag readPath(final @NotNull Path path) throws IOException {
@@ -118,8 +118,8 @@ public final class BinaryTagIO {
    * @param input the input stream
    * @return the compound tag
    * @throws IOException if an exception was encountered while reading a compound tag
-   * @deprecated since 4.4.0, use {@link #reader()}
    * @since 4.0.0
+   * @deprecated since 4.4.0, use {@link #reader()}
    */
   @Deprecated
   public static @NotNull CompoundBinaryTag readInputStream(final @NotNull InputStream input) throws IOException {
@@ -132,8 +132,8 @@ public final class BinaryTagIO {
    * @param path the path
    * @return the compound tag
    * @throws IOException if an exception was encountered while reading a compound tag
-   * @deprecated since 4.4.0, use {@link #reader()}
    * @since 4.0.0
+   * @deprecated since 4.4.0, use {@link #reader()}
    */
   @Deprecated
   public static @NotNull CompoundBinaryTag readCompressedPath(final @NotNull Path path) throws IOException {
@@ -146,8 +146,8 @@ public final class BinaryTagIO {
    * @param input the input stream
    * @return the compound tag
    * @throws IOException if an exception was encountered while reading a compound tag
-   * @deprecated since 4.4.0, use {@link #reader()}
    * @since 4.0.0
+   * @deprecated since 4.4.0, use {@link #reader()}
    */
   @Deprecated
   public static @NotNull CompoundBinaryTag readCompressedInputStream(final @NotNull InputStream input) throws IOException {
@@ -160,8 +160,8 @@ public final class BinaryTagIO {
    * @param input the input
    * @return the compound tag
    * @throws IOException if an exception was encountered while reading a compound tag
-   * @deprecated since 4.4.0, use {@link #reader()}
    * @since 4.0.0
+   * @deprecated since 4.4.0, use {@link #reader()}
    */
   @Deprecated
   public static @NotNull CompoundBinaryTag readDataInput(final @NotNull DataInput input) throws IOException {
@@ -174,8 +174,8 @@ public final class BinaryTagIO {
    * @param tag the compound tag
    * @param path the path
    * @throws IOException if an exception was encountered while writing the compound tag
-   * @deprecated since 4.4.0, use {@link #writer()}
    * @since 4.0.0
+   * @deprecated since 4.4.0, use {@link #writer()}
    */
   @Deprecated
   public static void writePath(final @NotNull CompoundBinaryTag tag, final @NotNull Path path) throws IOException {
@@ -188,8 +188,8 @@ public final class BinaryTagIO {
    * @param tag the compound tag
    * @param output the output stream
    * @throws IOException if an exception was encountered while writing the compound tag
-   * @deprecated since 4.4.0, use {@link #writer()}
    * @since 4.0.0
+   * @deprecated since 4.4.0, use {@link #writer()}
    */
   @Deprecated
   public static void writeOutputStream(final @NotNull CompoundBinaryTag tag, final @NotNull OutputStream output) throws IOException {
@@ -202,8 +202,8 @@ public final class BinaryTagIO {
    * @param tag the compound tag
    * @param path the path
    * @throws IOException if an exception was encountered while writing the compound tag
-   * @deprecated since 4.4.0, use {@link #writer()}
    * @since 4.0.0
+   * @deprecated since 4.4.0, use {@link #writer()}
    */
   @Deprecated
   public static void writeCompressedPath(final @NotNull CompoundBinaryTag tag, final @NotNull Path path) throws IOException {
@@ -216,8 +216,8 @@ public final class BinaryTagIO {
    * @param tag the compound tag
    * @param output the output stream
    * @throws IOException if an exception was encountered while writing the compound tag
-   * @deprecated since 4.4.0, use {@link #writer()}
    * @since 4.0.0
+   * @deprecated since 4.4.0, use {@link #writer()}
    */
   @Deprecated
   public static void writeCompressedOutputStream(final @NotNull CompoundBinaryTag tag, final @NotNull OutputStream output) throws IOException {
@@ -230,8 +230,8 @@ public final class BinaryTagIO {
    * @param tag the compound tag
    * @param output the output
    * @throws IOException if an exception was encountered while writing the compound tag
-   * @deprecated since 4.4.0, use {@link #writer()}
    * @since 4.0.0
+   * @deprecated since 4.4.0, use {@link #writer()}
    */
   @Deprecated
   public static void writeDataOutput(final @NotNull CompoundBinaryTag tag, final @NotNull DataOutput output) throws IOException {
