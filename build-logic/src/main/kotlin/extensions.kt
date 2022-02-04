@@ -14,7 +14,7 @@ fun Project.applyJarMetadata(moduleName: String) {
         "Specification-Version" to project.version,
         "Specification-Vendor" to "KyoriPowered"
       )
-      val indraGit = rootProject.extensions.findByType<IndraGitExtension>()
+      val indraGit = project.extensions.findByType<IndraGitExtension>()
       indraGit?.applyVcsInformationToManifest(manifest)
     }
   }

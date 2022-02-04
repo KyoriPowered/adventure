@@ -1681,8 +1681,8 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * Prevents a cycle between this component and the provided component.
    *
    * @param that the other component
-   * @deprecated for removal since 4.7.0, with no replacement - this method is not necessary due to the fact {@code Component}s are immutable
    * @since 4.0.0
+   * @deprecated for removal since 4.7.0, with no replacement - this method is not necessary due to the fact {@code Component}s are immutable
    */
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Deprecated
