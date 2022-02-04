@@ -22,3 +22,8 @@ dependencies {
   implementation("me.champeau.jmh", "jmh-gradle-plugin", "0.6.6")
   implementation("com.diffplug.gradle", "goomph", "3.35.0")
 }
+
+java {
+  sourceCompatibility = JavaVersion.VERSION_1_8
+  targetCompatibility = JavaVersion.VERSION_1_8
+}
