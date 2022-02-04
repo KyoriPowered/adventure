@@ -6,7 +6,7 @@ indra {
   javaVersions {
     testWith(8, 11, 17)
   }
-  checkstyle("9.2.1")
+  checkstyle("9.3")
 
   github("KyoriPowered", "adventure") {
     ci(true)
