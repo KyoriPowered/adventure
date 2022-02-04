@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestBase {
 
-  final MiniMessage PARSER = MiniMessage.builder().debug(System.out).build();
+  final MiniMessage PARSER = MiniMessage.builder().debug(System.out::print).build();
 
   void assertParsedEquals(final @NotNull Component expected, final @NotNull String input) {
     this.assertParsedEquals(this.PARSER, expected, input);

@@ -366,7 +366,7 @@ public class MiniMessageTest extends TestBase {
     final String input = "<red> RED </red>";
 
     final StringBuilder sb = new StringBuilder();
-    MiniMessage.builder().debug(sb).build().deserialize(input);
+    MiniMessage.builder().debug(sb::append).build().deserialize(input);
     final List<String> messages = Arrays.asList(sb.toString().split("\n"));
 
     assertTrue(messages.contains("Beginning parsing message <red> RED </red>"));
@@ -385,7 +385,7 @@ public class MiniMessageTest extends TestBase {
     final String input = "<red> RED <blue> BLUE <click> bad click </click>";
 
     final StringBuilder sb = new StringBuilder();
-    MiniMessage.builder().debug(sb).build().deserialize(input);
+    MiniMessage.builder().debug(sb::append).build().deserialize(input);
     final List<String> messages = Arrays.asList(sb.toString().split("\n"));
 
     assertTrue(messages.contains("Beginning parsing message <red> RED <blue> BLUE <click> bad click </click>"));
@@ -413,7 +413,7 @@ public class MiniMessageTest extends TestBase {
     final String input = "<red> RED <blue> BLUE <click:open_url:https://github.com> good click </click>";
 
     final StringBuilder sb = new StringBuilder();
-    MiniMessage.builder().debug(sb).build().deserialize(input);
+    MiniMessage.builder().debug(sb::append).build().deserialize(input);
     final List<String> messages = Arrays.asList(sb.toString().split("\n"));
 
     assertTrue(messages.contains("Beginning parsing message <red> RED <blue> BLUE <click:open_url:https://github.com> good click </click>"));

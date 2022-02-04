@@ -185,7 +185,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      * @return this builder
      * @since 4.10.0
      */
-    @NotNull Builder debug(final @Nullable Appendable debugOutput);
+    @NotNull Builder debug(final @Nullable Consumer<String> debugOutput);
 
     /**
      * If in lenient mode, MiniMessage will output helpful messages.

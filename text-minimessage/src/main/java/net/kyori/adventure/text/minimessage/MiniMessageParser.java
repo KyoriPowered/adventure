@@ -23,13 +23,13 @@
  */
 package net.kyori.adventure.text.minimessage;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
@@ -120,45 +120,47 @@ final class MiniMessageParser {
 
   @NotNull Component parseFormat(final @NotNull String richMessage, final @NotNull ContextImpl context) {
     final PlaceholderResolver combinedResolver = PlaceholderResolver.combining(context.placeholderResolver(), this.placeholderResolver);
-    final Appendable debug = context.debugOutput();
+    final Consumer<String> debug = context.debugOutput();
     if (debug != null) {
-      try {
-        debug.append("Beginning parsing message ").append(richMessage).append('\n');
-      } catch (final IOException ignored) {
-      }
+      debug.accept("Beginning parsing message ");
+      debug.accept(richMessage);
+      debug.accept("\n");
     }
 
     final Function<TagNode, Transformation> transformationFactory;
     if (debug != null) {
       transformationFactory = node -> {
         try {
-          try {
-            debug.append("Attempting to match node '").append(node.name()).append("' at column ")
-            .append(String.valueOf(node.token().startIndex())).append('\n');
-          } catch (final IOException ignored) {
-          }
+          debug.accept("Attempting to match node '");
+          debug.accept(node.name());
+          debug.accept("' at column ");
+          debug.accept(String.valueOf(node.token().startIndex()));
+          debug.accept("\n");
 
           final Transformation transformation = this.registry.get(this.sanitizePlaceholderName(node.name()), node.parts(), combinedResolver, context);
 
-          try {
-            if (transformation == null) {
-              debug.append("Could not match node '").append(node.name()).append("'\n");
-            } else {
-              debug.append("Successfully matched node '").append(node.name()).append("' to transformation ")
-              .append(transformation.examinableName()).append('\n');
-            }
-          } catch (final IOException ignored) {
+          if (transformation == null) {
+            debug.accept("Could not match node '");
+            debug.accept(node.name());
+            debug.accept("'\n");
+          } else {
+            debug.accept("Successfully matched node '");
+            debug.accept(node.name());
+            debug.accept("' to transformation ");
+            debug.accept(transformation.examinableName());
+            debug.accept("\n");
           }
 
           return transformation;
         } catch (final ParsingException e) {
-          try {
-            if (e.tokens().length == 0) {
-              e.tokens(new Token[]{node.token()});
-            }
-            debug.append("Could not match node '").append(node.name()).append("' - ").append(e.getMessage()).append('\n');
-          } catch (final IOException ignored) {
+          if (e.tokens().length == 0) {
+            e.tokens(new Token[]{node.token()});
           }
+          debug.accept("Could not match node '");
+          debug.accept(node.name());
+          debug.accept("' - ");
+          debug.accept(e.getMessage());
+          debug.accept("\n");
           return null;
         }
       };
@@ -179,11 +181,8 @@ final class MiniMessageParser {
     final ElementNode root = TokenParser.parse(transformationFactory, tagNameChecker, combinedResolver, richMessage, context.strict());
 
     if (debug != null) {
-      try {
-        debug.append("Text parsed into element tree:\n");
-        debug.append(root.toString());
-      } catch (final IOException ignored) {
-      }
+      debug.accept("Text parsed into element tree:\n");
+      debug.accept(root.toString());
     }
 
     return Objects.requireNonNull(context.postProcessor().apply(this.treeToComponent(root, context)), "Post-processor must not return null");
@@ -225,12 +224,13 @@ final class MiniMessageParser {
       comp = this.handleModifying((Modifying) transformation, comp, 0);
     }
 
-    final Appendable debug = context.debugOutput();
+    final Consumer<String> debug = context.debugOutput();
     if (debug != null) {
-      try {
-        debug.append("==========\ntreeToComponent \n").append(node.toString()).append("\n").append(comp.examine(MultiLineStringExaminer.simpleEscaping()).collect(Collectors.joining("\n"))).append("\n==========\n");
-      } catch (final IOException ignored) {
-      }
+      debug.accept("==========\ntreeToComponent \n");
+      debug.accept(node.toString());
+      debug.accept("\n");
+      debug.accept(comp.examine(MultiLineStringExaminer.simpleEscaping()).collect(Collectors.joining("\n")));
+      debug.accept("\n==========\n");
     }
 
     return comp;
