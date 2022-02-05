@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
@@ -38,7 +39,7 @@ import static java.util.Objects.requireNonNull;
  */
 class ContextImpl implements Context {
   private final boolean strict;
-  private final Appendable debugOutput;
+  private final Consumer<String> debugOutput;
   private final String originalMessage;
   private final MiniMessage miniMessage;
   private final PlaceholderResolver placeholderResolver;
@@ -46,7 +47,7 @@ class ContextImpl implements Context {
 
   ContextImpl(
     final boolean strict,
-    final Appendable debugOutput,
+    final Consumer<String> debugOutput,
     final String originalMessage,
     final MiniMessage miniMessage,
     final @NotNull PlaceholderResolver placeholderResolver,
@@ -62,7 +63,7 @@ class ContextImpl implements Context {
 
   static ContextImpl of(
     final boolean strict,
-    final Appendable debugOutput,
+    final Consumer<String> debugOutput,
     final String input,
     final MiniMessageImpl miniMessage,
     final PlaceholderResolver placeholderResolver,
@@ -75,7 +76,7 @@ class ContextImpl implements Context {
     return this.strict;
   }
 
-  public Appendable debugOutput() {
+  public Consumer<String> debugOutput() {
     return this.debugOutput;
   }
 

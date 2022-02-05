@@ -181,11 +181,14 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      *
      * <p>Debug output includes detailed information about the parsing process to help debug parser behavior.</p>
      *
+     * <p>The consumer will receive line fragments terminated by {@code LF}, not complete lines.
+     * This avoids string concatenation within debug output generation. If the consumer is {@code null}, no debug information will be generated.</p>
+     *
      * @param debugOutput if debug mode should be enabled
      * @return this builder
      * @since 4.10.0
      */
-    @NotNull Builder debug(final @Nullable Appendable debugOutput);
+    @NotNull Builder debug(final @Nullable Consumer<String> debugOutput);
 
     /**
      * If in lenient mode, MiniMessage will output helpful messages.

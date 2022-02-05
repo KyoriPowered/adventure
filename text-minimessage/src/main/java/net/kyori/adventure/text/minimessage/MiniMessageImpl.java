@@ -47,12 +47,12 @@ final class MiniMessageImpl implements MiniMessage {
   static final MiniMessage INSTANCE = new MiniMessageImpl(TransformationRegistry.standard(), PlaceholderResolver.empty(), false, null, DEFAULT_ERROR_CONSUMER, DEFAULT_COMPACTING_METHOD);
 
   private final boolean strict;
-  private final Appendable debugOutput;
+  private final @Nullable Consumer<String> debugOutput;
   private final Consumer<List<String>> parsingErrorMessageConsumer;
   private final UnaryOperator<Component> postProcessor;
   final MiniMessageParser parser;
 
-  MiniMessageImpl(final @NotNull TransformationRegistry registry, final @NotNull PlaceholderResolver placeholderResolver, final boolean strict, final Appendable debugOutput, final @NotNull Consumer<List<String>> parsingErrorMessageConsumer, final @NotNull UnaryOperator<Component> postProcessor) {
+  MiniMessageImpl(final @NotNull TransformationRegistry registry, final @NotNull PlaceholderResolver placeholderResolver, final boolean strict, final @Nullable Consumer<String> debugOutput, final @NotNull Consumer<List<String>> parsingErrorMessageConsumer, final @NotNull UnaryOperator<Component> postProcessor) {
     this.parser = new MiniMessageParser(registry, placeholderResolver);
     this.strict = strict;
     this.debugOutput = debugOutput;
@@ -122,7 +122,7 @@ final class MiniMessageImpl implements MiniMessage {
     private TransformationRegistry registry = TransformationRegistry.standard();
     private PlaceholderResolver placeholderResolver = null;
     private boolean strict = false;
-    private Appendable debug = null;
+    private Consumer<String> debug = null;
     private Consumer<List<String>> parsingErrorMessageConsumer = DEFAULT_ERROR_CONSUMER;
     private UnaryOperator<Component> postProcessor = DEFAULT_COMPACTING_METHOD;
 
@@ -164,7 +164,7 @@ final class MiniMessageImpl implements MiniMessage {
     }
 
     @Override
-    public @NotNull Builder debug(final @Nullable Appendable debugOutput) {
+    public @NotNull Builder debug(final @Nullable Consumer<String> debugOutput) {
       this.debug = debugOutput;
       return this;
     }
