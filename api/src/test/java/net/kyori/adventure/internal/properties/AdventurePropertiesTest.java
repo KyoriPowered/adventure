@@ -21,29 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.internal;
+package net.kyori.adventure.internal.properties;
 
-import net.kyori.examination.Examinable;
-import net.kyori.examination.string.StringExaminer;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Test;
 
-/**
- * Utilities internal to Adventure.
- */
-@ApiStatus.Internal
-public final class Internals {
-  private Internals() {
-  }
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-  /**
-   * Examines an {@link Examinable} using the {@link StringExaminer}.
-   *
-   * @param examinable the examinable
-   * @return the result from examining
-   * @since 4.10.0
-   */
-  public static @NotNull String toString(final @NotNull Examinable examinable) {
-    return examinable.examine(StringExaminer.simpleEscaping());
+class AdventurePropertiesTest {
+  @Test
+  void testSystemPropertyName() {
+    assertEquals("net.kyori.adventure.test", AdventurePropertiesImpl.systemPropertyName("test"));
   }
 }

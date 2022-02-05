@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 /**
- * Utilities that are not considered part of the Public API.
+ * Internal things, not for public use.
  */
 @org.jetbrains.annotations.ApiStatus.Internal
 package net.kyori.adventure.internal;
