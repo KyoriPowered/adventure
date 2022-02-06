@@ -183,6 +183,45 @@ final class StyleImpl implements Style {
     return builder.build();
   }
 
+  @Override
+  public @NotNull Style unmerge(final @NotNull Style that) {
+    if (this.isEmpty()) {
+      // the target style is empty, so there is nothing to simplify
+      return this;
+    }
+
+    final Style.Builder builder = new BuilderImpl(this);
+
+    if (Objects.equals(this.font(), that.font())) {
+      builder.font(null);
+    }
+
+    if (Objects.equals(this.color(), that.color())) {
+      builder.color(null);
+    }
+
+    for (int i = 0, length = DecorationMap.DECORATIONS.length; i < length; i++) {
+      final TextDecoration decoration = DecorationMap.DECORATIONS[i];
+      if (this.decoration(decoration) == that.decoration(decoration)) {
+        builder.decoration(decoration, TextDecoration.State.NOT_SET);
+      }
+    }
+
+    if (Objects.equals(this.clickEvent(), that.clickEvent())) {
+      builder.clickEvent(null);
+    }
+
+    if (Objects.equals(this.hoverEvent(), that.hoverEvent())) {
+      builder.hoverEvent(null);
+    }
+
+    if (Objects.equals(this.insertion(), that.insertion())) {
+      builder.insertion(null);
+    }
+
+    return builder.build();
+  }
+
   @SuppressWarnings("RedundantIfStatement")
   static boolean nothingToMerge(final @NotNull Style mergeFrom, final Merge.@NotNull Strategy strategy, final @NotNull Set<Merge> merges) {
     if (strategy == Merge.Strategy.NEVER) return true;
