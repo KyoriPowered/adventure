@@ -167,6 +167,6 @@ final class ComponentCompaction {
   }
 
   private static TextComponent joinText(final TextComponent one, final TextComponent two) {
-    return new TextComponentImpl(two.children(), one.style(), one.content() + two.content());
+    return TextComponentImpl.create(two.children(), one.style(), one.content() + two.content());
   }
 }

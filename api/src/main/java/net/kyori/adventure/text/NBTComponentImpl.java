@@ -29,19 +29,17 @@ import net.kyori.adventure.text.format.Style;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static java.util.Objects.requireNonNull;
-
 abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> extends AbstractComponent implements NBTComponent<C, B> {
   static final boolean INTERPRET_DEFAULT = false;
   final String nbtPath;
   final boolean interpret;
   final @Nullable Component separator;
 
-  NBTComponentImpl(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final String nbtPath, final boolean interpret, final @Nullable ComponentLike separator) {
+  NBTComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final String nbtPath, final boolean interpret, final @Nullable Component separator) {
     super(children, style);
     this.nbtPath = nbtPath;
     this.interpret = interpret;
-    this.separator = ComponentLike.unbox(separator);
+    this.separator = separator;
   }
 
   @Override
@@ -70,42 +68,5 @@ abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTCompo
     result = (31 * result) + Boolean.hashCode(this.interpret);
     result = (31 * result) + Objects.hashCode(this.separator);
     return result;
-  }
-
-  static abstract class BuilderImpl<C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> extends AbstractComponentBuilder<C, B> implements NBTComponentBuilder<C, B> {
-    protected @Nullable String nbtPath;
-    protected boolean interpret = INTERPRET_DEFAULT;
-    protected @Nullable Component separator;
-
-    BuilderImpl() {
-    }
-
-    BuilderImpl(final @NotNull C component) {
-      super(component);
-      this.nbtPath = component.nbtPath();
-      this.interpret = component.interpret();
-      this.separator = component.separator();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public @NotNull B nbtPath(final @NotNull String nbtPath) {
-      this.nbtPath = requireNonNull(nbtPath, "nbtPath");
-      return (B) this;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public @NotNull B interpret(final boolean interpret) {
-      this.interpret = interpret;
-      return (B) this;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public @NotNull B separator(final @Nullable ComponentLike separator) {
-      this.separator = ComponentLike.unbox(separator);
-      return (B) this;
-    }
   }
 }

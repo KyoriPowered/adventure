@@ -31,6 +31,8 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Something that can be represented as a {@link Component}.
  *
@@ -60,6 +62,7 @@ public interface ComponentLike {
    * @since 4.8.0
    */
   static @NotNull List<Component> asComponents(final @NotNull List<? extends ComponentLike> likes, final @Nullable Predicate<? super Component> filter) {
+    requireNonNull(likes, "likes");
     final int size = likes.size();
     if (size == 0) {
       // We do not need to create a new list if the one we are copying is empty - we can
