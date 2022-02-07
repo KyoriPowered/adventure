@@ -25,6 +25,7 @@ package net.kyori.adventure.text.serializer.legacy;
 
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
+import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -157,7 +158,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    *
    * @since 4.0.0
    */
-  interface Builder extends Buildable.Builder<LegacyComponentSerializer> {
+  interface Builder extends AbstractBuilder<LegacyComponentSerializer>, Buildable.Builder<LegacyComponentSerializer> {
     /**
      * Sets the legacy character used by the serializer.
      *

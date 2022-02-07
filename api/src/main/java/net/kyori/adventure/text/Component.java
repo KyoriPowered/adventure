@@ -40,6 +40,7 @@ import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
+import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -51,7 +52,6 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.translation.Translatable;
-import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.ForwardingIterator;
 import net.kyori.adventure.util.IntFunction2;
 import net.kyori.adventure.util.MonkeyBars;
@@ -287,7 +287,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract("_ -> new")
   static @NotNull BlockNBTComponent blockNBT(final @NotNull Consumer<? super BlockNBTComponent.Builder> consumer) {
-    return Buildable.configureAndBuild(blockNBT(), consumer);
+    return AbstractBuilder.configureAndBuild(blockNBT(), consumer);
   }
 
   /**
@@ -358,7 +358,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract("_ -> new")
   static @NotNull EntityNBTComponent entityNBT(final @NotNull Consumer<? super EntityNBTComponent.Builder> consumer) {
-    return Buildable.configureAndBuild(entityNBT(), consumer);
+    return AbstractBuilder.configureAndBuild(entityNBT(), consumer);
   }
 
   /**
@@ -400,7 +400,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract("_ -> new")
   static @NotNull KeybindComponent keybind(final @NotNull Consumer<? super KeybindComponent.Builder> consumer) {
-    return Buildable.configureAndBuild(keybind(), consumer);
+    return AbstractBuilder.configureAndBuild(keybind(), consumer);
   }
 
   /**
@@ -561,7 +561,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract("_ -> new")
   static @NotNull ScoreComponent score(final @NotNull Consumer<? super ScoreComponent.Builder> consumer) {
-    return Buildable.configureAndBuild(score(), consumer);
+    return AbstractBuilder.configureAndBuild(score(), consumer);
   }
 
   /**
@@ -619,7 +619,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract("_ -> new")
   static @NotNull SelectorComponent selector(final @NotNull Consumer<? super SelectorComponent.Builder> consumer) {
-    return Buildable.configureAndBuild(selector(), consumer);
+    return AbstractBuilder.configureAndBuild(selector(), consumer);
   }
 
   /**
@@ -673,7 +673,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract("_ -> new")
   static @NotNull StorageNBTComponent storageNBT(final @NotNull Consumer<? super StorageNBTComponent.Builder> consumer) {
-    return Buildable.configureAndBuild(storageNBT(), consumer);
+    return AbstractBuilder.configureAndBuild(storageNBT(), consumer);
   }
 
   /**
@@ -756,7 +756,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract("_ -> new")
   static @NotNull TextComponent text(final @NotNull Consumer<? super TextComponent.Builder> consumer) {
-    return Buildable.configureAndBuild(text(), consumer);
+    return AbstractBuilder.configureAndBuild(text(), consumer);
   }
 
   /**
@@ -1250,7 +1250,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract("_ -> new")
   static @NotNull TranslatableComponent translatable(final @NotNull Consumer<? super TranslatableComponent.Builder> consumer) {
-    return Buildable.configureAndBuild(translatable(), consumer);
+    return AbstractBuilder.configureAndBuild(translatable(), consumer);
   }
 
   /**
@@ -2077,7 +2077,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Contract(pure = true)
   default @NotNull Component replaceText(final @NotNull Consumer<TextReplacementConfig.Builder> configurer) {
     requireNonNull(configurer, "configurer");
-    return this.replaceText(Buildable.configureAndBuild(TextReplacementConfig.builder(), configurer));
+    return this.replaceText(AbstractBuilder.configureAndBuild(TextReplacementConfig.builder(), configurer));
   }
 
   /**

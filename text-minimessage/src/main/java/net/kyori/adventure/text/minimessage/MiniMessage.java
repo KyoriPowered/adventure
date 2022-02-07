@@ -25,11 +25,11 @@ package net.kyori.adventure.text.minimessage;
 
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
+import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
-import net.kyori.adventure.util.Buildable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,7 +41,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.10.0
  */
-public interface MiniMessage extends ComponentSerializer<Component, Component, String>, Buildable<MiniMessage, MiniMessage.Builder> {
+public interface MiniMessage extends ComponentSerializer<Component, Component, String> {
 
   /**
    * Gets a simple instance without markdown support.
@@ -210,7 +210,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    *
    * @since 4.10.0
    */
-  interface Builder extends Buildable.Builder<MiniMessage> {
+  interface Builder extends AbstractBuilder<MiniMessage> {
 
     /**
      * Set the known tags to the provided tag resolver.

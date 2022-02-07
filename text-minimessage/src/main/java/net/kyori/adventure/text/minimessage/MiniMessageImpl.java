@@ -110,11 +110,6 @@ final class MiniMessageImpl implements MiniMessage {
     }
   }
 
-  @Override
-  public @NotNull Builder toBuilder() {
-    return new BuilderImpl(this);
-  }
-
   static final class BuilderImpl implements Builder {
     private TagResolver tagResolver = TagResolver.standard();
     private boolean strict = false;
