@@ -24,12 +24,8 @@
 package net.kyori.adventure.text.minimessage.tag;
 
 import java.util.Objects;
-import java.util.stream.Stream;
-import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
@@ -84,48 +80,13 @@ public final class Placeholder {
   public static TagResolver.@NotNull Single component(final @NotNull String key, final @NotNull ComponentLike value) {
     return TagResolver.resolver(
       key,
-      new ComponentPlaceholder(
-        key,
+      new InsertingImpl(
+        false,
         Objects.requireNonNull(
           Objects.requireNonNull(value, "value").asComponent(),
           "value must not resolve to null"
         )
       )
     );
-  }
-
-  static final class ComponentPlaceholder implements Inserting, Examinable {
-    private final String key;
-    private final Component value;
-
-    ComponentPlaceholder(final String key, final Component value) {
-      this.key = key;
-      this.value = value;
-    }
-
-    @Override
-    public Component value() {
-      return this.value;
-    }
-
-    @Override
-    public boolean allowsChildren() {
-      return false;
-    }
-
-    @Override
-    public @NotNull String examinableName() {
-      return this.key;
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-      return Stream.of(ExaminableProperty.of("value", this.value));
-    }
-
-    @Override
-    public String toString() {
-      return Internals.toString(this);
-    }
   }
 }

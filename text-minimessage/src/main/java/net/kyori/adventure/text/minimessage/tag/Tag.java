@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.tag;
 
+import java.util.Arrays;
 import java.util.function.Consumer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
@@ -50,7 +51,7 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, PreProcess */
    * @since 4.10.0
    */
   static @NotNull PreProcess miniMessage(final @NotNull String content) {
-    return () -> content;
+    return new PreProcessTagImpl(requireNonNull(content, "content"));
   }
 
   /**
@@ -63,8 +64,7 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, PreProcess */
    * @since 4.10.0
    */
   static @NotNull Tag inserting(final @NotNull Component content) {
-    requireNonNull(content, "content must not be null");
-    return (Inserting) () -> content;
+    return new InsertingImpl(true, requireNonNull(content, "content must not be null"));
   }
 
   /**
@@ -88,12 +88,7 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, PreProcess */
    * @since 4.10.0
    */
   static @NotNull Tag styling(final Consumer<Style.Builder> styles) {
-    return new Inserting() {
-      @Override
-      public Component value() {
-        return Component.text("", Style.style(styles));
-      }
-    };
+    return new CallbackStylingTagImpl(styles);
   }
 
   /**
@@ -110,12 +105,7 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, PreProcess */
         throw new NullPointerException("actions[" + i + "]");
       }
     }
-
-    return styling(builder -> {
-      for (final StyleBuilderApplicable action : actions) {
-        action.styleApply(builder);
-      }
-    });
+    return new StylingTagImpl(Arrays.copyOf(actions, actions.length));
   }
 
   /**

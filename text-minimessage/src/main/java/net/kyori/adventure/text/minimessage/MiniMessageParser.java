@@ -43,6 +43,7 @@ import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.Modifying;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.TagResolver;
+import net.kyori.examination.Examinable;
 import net.kyori.examination.string.MultiLineStringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -147,7 +148,7 @@ final class MiniMessageParser {
             debug.accept("Successfully matched node '");
             debug.accept(name);
             debug.accept("' to tag ");
-            debug.accept(transformation.getClass().getName());
+            debug.accept(transformation instanceof Examinable ? ((Examinable) transformation).examinableName() : transformation.getClass().getName());
             debug.accept("\n");
           }
 
