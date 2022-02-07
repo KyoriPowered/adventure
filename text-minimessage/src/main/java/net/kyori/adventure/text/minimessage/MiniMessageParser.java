@@ -210,11 +210,11 @@ final class MiniMessageParser {
         final Modifying modTransformation = (Modifying) tag;
 
         // first walk the tree
-        final LinkedList<ElementNode> toVisit = new LinkedList<>(node.children());
+        final LinkedList<ElementNode> toVisit = new LinkedList<>(node.unsafeChildren());
         while (!toVisit.isEmpty()) {
           final ElementNode curr = toVisit.removeFirst();
           modTransformation.visit(curr);
-          toVisit.addAll(0, curr.children());
+          toVisit.addAll(0, curr.unsafeChildren());
         }
         modTransformation.postVisit();
       }

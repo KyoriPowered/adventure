@@ -34,12 +34,12 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Context;
-import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.parser.node.ValueNode;
 import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.Modifying;
 import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
@@ -95,7 +95,7 @@ public final class RainbowTag implements Modifying, Examinable {
   }
 
   @Override
-  public void visit(final ElementNode curr) {
+  public void visit(final Node curr) {
     if (curr instanceof ValueNode) {
       final String value = ((ValueNode) curr).value();
       this.size += value.codePointCount(0, value.length());

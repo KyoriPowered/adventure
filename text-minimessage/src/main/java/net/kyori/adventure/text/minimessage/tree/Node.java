@@ -21,43 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.tag;
+package net.kyori.adventure.text.minimessage.tree;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.tree.Node;
+import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
- * Transformations implementing this interface can transform a whole subtree of nodes.
+ * A node in the MiniMessage parse tree.
+ *
+ * <p>This API is currently incomplete -- it will be expanded in future versions based on user interest.</p>
  *
  * @since 4.10.0
  */
-public /* non-sealed */ interface Modifying extends Tag {
+public interface Node {
   /**
-   * This method gets called once for every element in the sub tree, allowing you to do calculations beforehand.
+   * Get a human-readable representation of this node and its descendants for debugging purposes.
    *
-   * @param curr the current element in the sub tree
+   * @return the human-readable representation of this node tree
    * @since 4.10.0
    */
-  void visit(final Node curr);
+  @Override
+  @NotNull String toString();
 
   /**
-   * Called after the entire tree has been {@link #visit(Node)}-ed.
+   * Get children of this node.
    *
-   * <p>This allows for finalizing calculations</p>
+   * <p>The returned list is unmodifiable.</p>
    *
+   * @return a list of children
    * @since 4.10.0
    */
-  default void postVisit() {
-  }
+  @NotNull List<? extends Node> children();
 
   /**
-   * Applies this transformation for the current component.
-   * This gets called after the component tree has been assembled, but you are free to modify it however you like.
+   * Get the parent of this node.
    *
-   * @param curr the current component
-   * @param depth the depth of the tree the current component is at
-   * @return the new parent
+   * <p>If this node is at the root of the tree, this may be {@code null}.</p>
+   *
+   * @return this node's parent
    * @since 4.10.0
    */
-  Component apply(final Component curr, final int depth);
+  @Nullable Node parent();
 }

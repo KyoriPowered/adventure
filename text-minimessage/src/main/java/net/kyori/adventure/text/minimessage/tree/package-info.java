@@ -21,43 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.tag;
-
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.tree.Node;
-
 /**
- * Transformations implementing this interface can transform a whole subtree of nodes.
+ * A stable representation of the MiniMessage parse tree.
+ *
+ * <p>This API is currently incomplete.</p>
  *
  * @since 4.10.0
  */
-public /* non-sealed */ interface Modifying extends Tag {
-  /**
-   * This method gets called once for every element in the sub tree, allowing you to do calculations beforehand.
-   *
-   * @param curr the current element in the sub tree
-   * @since 4.10.0
-   */
-  void visit(final Node curr);
-
-  /**
-   * Called after the entire tree has been {@link #visit(Node)}-ed.
-   *
-   * <p>This allows for finalizing calculations</p>
-   *
-   * @since 4.10.0
-   */
-  default void postVisit() {
-  }
-
-  /**
-   * Applies this transformation for the current component.
-   * This gets called after the component tree has been assembled, but you are free to modify it however you like.
-   *
-   * @param curr the current component
-   * @param depth the depth of the tree the current component is at
-   * @return the new parent
-   * @since 4.10.0
-   */
-  Component apply(final Component curr, final int depth);
-}
+package net.kyori.adventure.text.minimessage.tree;

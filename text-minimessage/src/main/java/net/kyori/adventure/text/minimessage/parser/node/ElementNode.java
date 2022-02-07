@@ -25,9 +25,11 @@ package net.kyori.adventure.text.minimessage.parser.node;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenType;
+import net.kyori.adventure.text.minimessage.tree.Node;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.10.0
  */
-public class ElementNode {
+public class ElementNode implements Node {
   private final @Nullable ElementNode parent;
   private final @Nullable Token token;
   private final String sourceMessage;
@@ -62,6 +64,7 @@ public class ElementNode {
    * @return the parent or null
    * @since 4.10.0
    */
+  @Override
   public @Nullable ElementNode parent() {
     return this.parent;
   }
@@ -92,7 +95,12 @@ public class ElementNode {
    * @return the children of this node
    * @since 4.10.0
    */
+  @Override
   public List<ElementNode> children() {
+    return Collections.unmodifiableList(this.children);
+  }
+
+  public List<ElementNode> unsafeChildren() {
     return this.children;
   }
 
