@@ -32,7 +32,6 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.TextAssertions.assertDecorations;
-import static net.kyori.test.WeirdAssertions.assertAllEqualToEachOther;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
