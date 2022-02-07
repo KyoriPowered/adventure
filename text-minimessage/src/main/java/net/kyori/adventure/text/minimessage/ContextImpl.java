@@ -47,7 +47,7 @@ import static java.util.Objects.requireNonNull;
 class ContextImpl implements Context {
   private final boolean strict;
   private final Consumer<String> debugOutput;
-  private final String originalMessage;
+  private String message;
   private final MiniMessage miniMessage;
   private final TagResolver tagResolver;
   private final UnaryOperator<Component> postProcessor;
@@ -55,14 +55,14 @@ class ContextImpl implements Context {
   ContextImpl(
     final boolean strict,
     final Consumer<String> debugOutput,
-    final String originalMessage,
+    final String message,
     final MiniMessage miniMessage,
     final @NotNull TagResolver extraTags,
     final UnaryOperator<Component> postProcessor
   ) {
     this.strict = strict;
     this.debugOutput = debugOutput;
-    this.originalMessage = originalMessage;
+    this.message = message;
     this.miniMessage = miniMessage;
     this.tagResolver = extraTags;
     this.postProcessor = postProcessor == null ? UnaryOperator.identity() : postProcessor;
@@ -87,9 +87,12 @@ class ContextImpl implements Context {
     return this.debugOutput;
   }
 
-  @Override
-  public @NotNull String originalMessage() {
-    return this.originalMessage;
+  public @NotNull String message() {
+    return this.message;
+  }
+
+  void message(final @NotNull String message) {
+    this.message = message;
   }
 
   public @NotNull TagResolver extraTags() {
@@ -107,12 +110,12 @@ class ContextImpl implements Context {
 
   @Override
   public ParsingException newError(final String message, final @NotNull List<? extends Argument> tags) {
-    return new ParsingExceptionImpl(message, this.originalMessage, tagsToTokens(tags));
+    return new ParsingExceptionImpl(message, this.message, tagsToTokens(tags));
   }
 
   @Override
   public ParsingException newError(final String message, final @Nullable Throwable cause, final @NotNull List<? extends Argument> tags) {
-    return new ParsingExceptionImpl(message, this.originalMessage, cause, tagsToTokens(tags));
+    return new ParsingExceptionImpl(message, this.message, cause, tagsToTokens(tags));
   }
 
   private static Token[] tagsToTokens(final List<? extends Tag.Argument> tags) {

@@ -41,14 +41,6 @@ import org.jetbrains.annotations.Nullable;
 @ApiStatus.NonExtendable
 public interface Context {
   /**
-   * Returns original message as provided to the parser.
-   *
-   * @return ogMessage
-   * @since 4.10.0
-   */
-  @NotNull String originalMessage();
-
-  /**
    * Parses a MiniMessage using all the settings of this context, including placeholders.
    *
    * @param message the message to parse

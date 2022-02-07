@@ -26,6 +26,7 @@ package net.kyori.adventure.text.minimessage.tag.builtin;
 import java.util.List;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.intellij.lang.annotations.Subst;
 
@@ -40,7 +41,7 @@ public final class FontTag {
   private FontTag() {
   }
 
-  static Tag create(final List<? extends Tag.Argument> args, final Context ctx) {
+  static Tag create(final List<? extends Tag.Argument> args, final Context ctx) throws ParsingException {
     final Key font;
     if (args.size() == 1) {
       @Subst("empty") final String fontKey = args.get(0).value();

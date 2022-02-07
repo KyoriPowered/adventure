@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage.tag;
 
 import java.util.List;
 import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag.Argument;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,12 +38,24 @@ final class SequentialTagResolver implements TagResolver {
   }
 
   @Override
-  public @Nullable Tag resolve(final @NotNull String name, final @NotNull List<? extends Argument> arguments, final @NotNull Context ctx) {
+  public @Nullable Tag resolve(final @NotNull String name, final @NotNull List<? extends Argument> arguments, final @NotNull Context ctx) throws ParsingException {
+    @Nullable ParsingException thrown = null;
     for (final TagResolver resolver : this.resolvers) {
-      final @Nullable Tag placeholder = resolver.resolve(name, arguments, ctx);
-      if (placeholder != null) {
-        return placeholder;
+      try {
+        final @Nullable Tag placeholder = resolver.resolve(name, arguments, ctx);
+
+        if (placeholder != null) return placeholder;
+      } catch (final ParsingException ex) {
+        if (thrown == null) {
+          thrown = ex;
+        } else {
+          thrown.addSuppressed(ex);
+        }
       }
+    }
+
+    if (thrown != null) {
+      throw thrown;
     }
     return null;
   }

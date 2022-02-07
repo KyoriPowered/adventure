@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 
 /**
@@ -43,7 +44,7 @@ public final class TranslatableTag {
   private TranslatableTag() {
   }
 
-  static Tag create(final List<? extends Tag.Argument> args, final Context ctx) {
+  static Tag create(final List<? extends Tag.Argument> args, final Context ctx) throws ParsingException {
     if (args.isEmpty()) {
       throw ctx.newError("Doesn't know how to turn " + args + " into a translatable component", args);
     }

@@ -51,7 +51,7 @@ public final class TagPart implements Tag.Argument {
     final @NotNull TokenParser.TagProvider tagResolver
   ) {
     String v = unquoteAndEscape(sourceMessage, token.startIndex(), token.endIndex());
-    v = TokenParser.resolvePlaceholders(v, tagResolver);
+    v = TokenParser.resolvePreProcessTags(v, tagResolver);
 
     this.value = v;
     this.token = token;

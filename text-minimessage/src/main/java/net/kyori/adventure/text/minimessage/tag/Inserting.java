@@ -30,7 +30,7 @@ import net.kyori.adventure.text.Component;
  *
  * @since 4.10.0
  */
-public interface Inserting extends Tag {
+public /* non-sealed */ interface Inserting extends Tag {
   /**
    * Return the component this tag produces.
    *

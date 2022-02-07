@@ -30,6 +30,7 @@ import java.util.ListIterator;
 import java.util.Locale;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
+import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.match.MatchedTokenConsumer;
 import net.kyori.adventure.text.minimessage.parser.match.StringResolvingMatchedTokenConsumer;
 import net.kyori.adventure.text.minimessage.parser.match.TokenListProducingMatchedTokenConsumer;
@@ -69,9 +70,10 @@ public final class TokenParser {
    *
    * @param tagProvider provides tags based on the available information
    * @param tagNameChecker checker for tag names, performing necessary tag normalization
-   * @param message the minimessage string to parse
+   * @param message the minimessage string to parse, after processing for preprocess tags
    * @param strict whether parsing in strict mode
    * @return the root of the resulting tree
+   * @throws ParsingException if invalid input is provided when in strict mode
    * @since 4.10.0
    */
   public static ElementNode parse(
@@ -79,15 +81,12 @@ public final class TokenParser {
     final @NotNull Predicate<String> tagNameChecker,
     final @NotNull String message,
     final boolean strict
-  ) {
-    // first resolve placeholders...
-    final String actualMessage = resolvePlaceholders(message, tagProvider);
-
-    // then collect tokens...
-    final List<Token> tokens = tokenize(actualMessage);
+  ) throws ParsingException {
+    // collect tokens...
+    final List<Token> tokens = tokenize(message);
 
     // then build the tree!
-    return buildTree(tagProvider, tagNameChecker, tokens, actualMessage, strict);
+    return buildTree(tagProvider, tagNameChecker, tokens, message, strict);
   }
 
   /**
@@ -98,7 +97,7 @@ public final class TokenParser {
    * @return the resulting string
    * @since 4.10.0
    */
-  public static String resolvePlaceholders(final String message, final TagProvider provider) {
+  public static String resolvePreProcessTags(final String message, final TagProvider provider) {
     int passes = 0;
     String lastResult;
     String result = message;
@@ -351,7 +350,7 @@ public final class TokenParser {
     final @NotNull List<Token> tokens,
     final @NotNull String message,
     final boolean strict
-  ) {
+  ) throws ParsingException {
     final RootNode root = new RootNode(message);
     ElementNode node = root;
 

@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.TestBase;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,6 +35,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class TagResolverTest {
 
@@ -78,9 +80,14 @@ class TagResolverTest {
   }
 
   private static @NotNull Tag resolveForTest(final TagResolver resolver, final String tag) {
-    final @Nullable Tag result = resolver.resolve(tag, Collections.emptyList(), TestBase.dummyContext("help i shouldn't be seen"));
-    assertNotNull(result, () -> "tag " + tag + " from resolver " + resolver);
-    return result;
+    try {
+      final @Nullable Tag result = resolver.resolve(tag, Collections.emptyList(), TestBase.dummyContext("help i shouldn't be seen"));
+      assertNotNull(result, () -> "tag " + tag + " from resolver " + resolver);
+      return result;
+    } catch (final ParsingException ex) {
+      fail(ex);
+      throw new RuntimeException(ex);
+    }
   }
 
 }

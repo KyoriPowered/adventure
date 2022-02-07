@@ -31,7 +31,7 @@ import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
  *
  * @since 4.10.0
  */
-public interface Modifying extends Tag {
+public /* non-sealed */ interface Modifying extends Tag {
   /**
    * This method gets called once for every element in the sub tree, allowing you to do calculations beforehand.
    *

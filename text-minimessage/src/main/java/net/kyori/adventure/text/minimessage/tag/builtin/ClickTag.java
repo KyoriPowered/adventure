@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -43,7 +44,7 @@ public final class ClickTag {
   private ClickTag() {
   }
 
-  static Tag create(final List<? extends Tag.Argument> args, final Context ctx) {
+  static Tag create(final List<? extends Tag.Argument> args, final Context ctx) throws ParsingException {
     if (args.size() != 2) {
       throw ctx.newError("Don't know how to turn " + args + " into a click event", args);
     }

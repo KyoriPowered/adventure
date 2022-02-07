@@ -31,7 +31,7 @@ import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.Context;
-import net.kyori.adventure.text.minimessage.parser.ParsingExceptionImpl;
+import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -48,17 +48,8 @@ public final class HoverTag {
   private HoverTag() {
   }
 
-  /**
-   * Create a new hover transformation from a tag.
-   *
-   * @param ctx the active parse context
-   * @param args the arguments provided
-   * @return a new transformation
-   * @throws ParsingExceptionImpl if an error occurs
-   * @since 4.10.0
-   */
   @SuppressWarnings("unchecked")
-  static Tag create(final List<? extends Tag.Argument> args, final Context ctx) {
+  static Tag create(final List<? extends Tag.Argument> args, final Context ctx) throws ParsingException {
     if (args.size() < 2) {
       throw ctx.newError("Doesn't know how to turn " + args + " into a hover event", args);
     }
@@ -79,7 +70,7 @@ public final class HoverTag {
     return Tag.styling(HoverEvent.hoverEvent(action, value));
   }
 
-  private static HoverEvent.@NotNull ShowItem parseShowItem(final @NotNull List<? extends Tag.Argument> args, final Context ctx) {
+  private static HoverEvent.@NotNull ShowItem parseShowItem(final @NotNull List<? extends Tag.Argument> args, final Context ctx) throws ParsingException {
     try {
       if (args.isEmpty()) {
         throw ctx.newError("Show item hover needs at least item id!");
@@ -100,7 +91,7 @@ public final class HoverTag {
     }
   }
 
-  private static HoverEvent.@NotNull ShowEntity parseShowEntity(final @NotNull List<? extends Tag.Argument> args, final Context context) {
+  private static HoverEvent.@NotNull ShowEntity parseShowEntity(final @NotNull List<? extends Tag.Argument> args, final Context context) throws ParsingException {
     try {
       if (args.size() < 2) {
         throw context.newError("Show entity hover needs at least type and uuid!", args);

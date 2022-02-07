@@ -30,7 +30,7 @@ import java.util.Map;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Context;
-import net.kyori.adventure.text.minimessage.parser.ParsingExceptionImpl;
+import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.TagResolver;
 import org.jetbrains.annotations.ApiStatus;
@@ -64,7 +64,7 @@ public final class ColorTagResolver implements TagResolver {
   }
 
   @Override
-  public @Nullable Tag resolve(final @NotNull String name, final @NotNull List<? extends Tag.Argument> args, final @NotNull Context ctx) throws ParsingExceptionImpl {
+  public @Nullable Tag resolve(final @NotNull String name, final @NotNull List<? extends Tag.Argument> args, final @NotNull Context ctx) throws ParsingException {
     if (!this.has(name)) {
       return null;
     }

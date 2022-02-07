@@ -35,7 +35,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import net.kyori.adventure.text.minimessage.Context;
-import net.kyori.adventure.text.minimessage.parser.ParsingExceptionImpl;
+import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag.Argument;
 import net.kyori.adventure.text.minimessage.tag.builtin.BuiltInTags;
 import org.jetbrains.annotations.ApiStatus;
@@ -47,7 +47,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A collection of known tags.
  *
- * <p>A resolver can handle anywhere from a single tag, to a dynamically generated set of tags.</p>
+ * <p>A resolver can handle anywhere from a single tag, to a dynamically generated set of tags, returning a tag based on the provided name and arguments.</p>
  *
  * @see BuiltInTags
  * @see Placeholder
@@ -72,7 +72,7 @@ public interface TagResolver {
    * @return the default resolver
    * @since 4.10.0
    */
-  static @NotNull TagResolver standard() { // or standard?
+  static @NotNull TagResolver standard() {
     return BuiltInTags.all();
   }
 
@@ -106,7 +106,7 @@ public interface TagResolver {
    * Create a tag resolver that only responds to a single tag name, and whose value does not depend on that name.
    *
    * @param name the name to respond to
-   * @param handler the tag handler, may throw {@link ParsingExceptionImpl} if provided arguments are in an invalid format
+   * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
    * @return a resolver that creates tags using the provided handler
    * @since 4.10.0
    */
@@ -118,7 +118,7 @@ public interface TagResolver {
    * Create a tag resolver that only responds to certain tag names, and whose value does not depend on that name.
    *
    * @param names the names to respond to
-   * @param handler the tag handler, may throw {@link ParsingExceptionImpl} if provided arguments are in an invalid format
+   * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
    * @return a resolver that creates tags using the provided handler
    * @since 4.10.0
    */
@@ -131,7 +131,7 @@ public interface TagResolver {
 
     return new TagResolver() {
       @Override
-      public @Nullable Tag resolve(final @NotNull String name, final @NotNull List<? extends Argument> arguments, final @NotNull Context ctx) throws ParsingExceptionImpl {
+      public @Nullable Tag resolve(final @NotNull String name, final @NotNull List<? extends Argument> arguments, final @NotNull Context ctx) throws ParsingException {
         if (!names.contains(name)) return null;
 
         return handler.apply(arguments, ctx);
@@ -150,7 +150,7 @@ public interface TagResolver {
    * <p>This variant must also not depend on the context provided.</p>
    *
    * @param name the name to respond to
-   * @param handler the tag handler, may throw {@link ParsingExceptionImpl} if provided arguments are in an invalid format
+   * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
    * @return a resolver that creates tags using the provided handler
    * @since 4.10.0
    */
@@ -164,7 +164,7 @@ public interface TagResolver {
    * <p>This variant must also not depend on the context provided.</p>
    *
    * @param names the names to respond to
-   * @param handler the tag handler, may throw {@link ParsingExceptionImpl} if provided arguments are in an invalid format
+   * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
    * @return a resolver that creates tags using the provided handler
    * @since 4.10.0
    */
@@ -177,7 +177,7 @@ public interface TagResolver {
 
     return new TagResolver() {
       @Override
-      public @Nullable Tag resolve(final @NotNull String name, final @NotNull List<? extends Argument> arguments, final @NotNull Context ctx) throws ParsingExceptionImpl {
+      public @Nullable Tag resolve(final @NotNull String name, final @NotNull List<? extends Argument> arguments, final @NotNull Context ctx) throws ParsingException {
         if (!names.contains(name)) return null;
 
         return handler.apply(arguments);
@@ -279,10 +279,10 @@ public interface TagResolver {
    * @param arguments the arguments passed to the tag
    * @param ctx the parse context
    * @return a possible tag
-   * @throws ParsingExceptionImpl if the provided arguments are invalid
+   * @throws ParsingException if the provided arguments are invalid
    * @since 4.10.0
    */
-  @Nullable Tag resolve(final @NotNull String name, final @NotNull List<? extends Tag.Argument> arguments, final @NotNull Context ctx) throws ParsingExceptionImpl;
+  @Nullable Tag resolve(final @NotNull String name, final @NotNull List<? extends Tag.Argument> arguments, final @NotNull Context ctx) throws ParsingException;
 
   /**
    * Get whether this resolver handles tags with a certain name.
@@ -364,7 +364,7 @@ public interface TagResolver {
     }
 
     @Override
-    default @Nullable Tag resolve(final @NotNull String name, final @NotNull List<? extends Argument> arguments, final @NotNull Context ctx) throws ParsingExceptionImpl {
+    default @Nullable Tag resolve(final @NotNull String name, final @NotNull List<? extends Argument> arguments, final @NotNull Context ctx) throws ParsingException {
       final Tag resolved = this.resolve(name);
       if (resolved != null && arguments.size() > 0) {
         throw ctx.newError("Tag '<" + name + ">' does not accept any arguments", arguments);

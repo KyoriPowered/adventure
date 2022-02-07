@@ -29,7 +29,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.parser.ParsingExceptionImpl;
 import net.kyori.adventure.text.minimessage.tag.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.TagResolver;
@@ -269,13 +268,13 @@ public class MiniMessageTest extends TestBase {
   @Test
   void testStrictException() {
     final String input = "<gray>Example: <click:suggest_command:/plot flag set coral-dry true><gold>/plot flag set coral-dry true<click></gold></gray>";
-    assertThrows(ParsingExceptionImpl.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
+    assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
   }
 
   @Test
   void testMissingCloseOfHover() {
     final String input = "<hover:show_text:'<blue>Hello</blue>'<red>TEST</red></hover><click:suggest_command:'/msg <user>'><user></click> <reset>: <hover:show_text:'<date>'><message></hover>";
-    assertThrows(ParsingExceptionImpl.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
+    assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
   }
 
   @Test
@@ -314,7 +313,7 @@ public class MiniMessageTest extends TestBase {
         "\t<red>RED<green>GREEN</green>RED<blue>BLUE\n" +
         "\t^~~~^                          ^~~~~^";
 
-    final ParsingExceptionImpl thrown = assertThrows(ParsingExceptionImpl.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
+    final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
     assertEquals(thrown.getMessage(), errorMessage);
   }
 
@@ -326,7 +325,7 @@ public class MiniMessageTest extends TestBase {
         "\t<red>RED<green>GREEN</red>NO COLOR<blue>BLUE</blue>\n" +
         "\t^~~~^   ^~~~~~^     ^~~~~^";
 
-    final ParsingExceptionImpl thrown = assertThrows(ParsingExceptionImpl.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
+    final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
     assertEquals(thrown.getMessage(), errorMessage);
   }
 
@@ -338,7 +337,7 @@ public class MiniMessageTest extends TestBase {
         "\t<red>RED<green>GREEN<blue>BLUE<yellow>YELLOW</green>\n" +
         "\t        ^~~~~~^               ^~~~~~~^      ^~~~~~~^";
 
-    final ParsingExceptionImpl thrown = assertThrows(ParsingExceptionImpl.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
+    final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
     assertEquals(thrown.getMessage(), errorMessage);
   }
 
@@ -350,7 +349,7 @@ public class MiniMessageTest extends TestBase {
         "\t<red>RED<green>GREEN<reset>NO COLOR<blue>BLUE</blue>\n" +
         "\t                    ^~~~~~^";
 
-    final ParsingExceptionImpl thrown = assertThrows(ParsingExceptionImpl.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
+    final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
     assertEquals(thrown.getMessage(), errorMessage);
   }
 

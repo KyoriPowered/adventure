@@ -152,9 +152,12 @@ final class MiniMessageParser {
           }
 
           return transformation;
-        } catch (final ParsingExceptionImpl e) {
-          if (e.tokens().length == 0 && token != null) {
-            e.tokens(new Token[] {token});
+        } catch (final ParsingException e) {
+          if (token != null && e instanceof ParsingExceptionImpl) {
+            final ParsingExceptionImpl impl = (ParsingExceptionImpl) e;
+            if (impl.tokens().length == 0) {
+              impl.tokens(new Token[] {token});
+            }
           }
           debug.accept("Could not match node '");
           debug.accept(name);
@@ -168,7 +171,7 @@ final class MiniMessageParser {
       transformationFactory = (name, args, token) -> {
         try {
           return combinedResolver.resolve(name, args, context);
-        } catch (final ParsingExceptionImpl ignored) {
+        } catch (final ParsingException ignored) {
           return null;
         }
       };
@@ -178,7 +181,10 @@ final class MiniMessageParser {
       return combinedResolver.has(sanitized);
     };
 
-    final ElementNode root = TokenParser.parse(transformationFactory, tagNameChecker, richMessage, context.strict());
+    final String preProcessed = TokenParser.resolvePreProcessTags(richMessage, transformationFactory);
+    context.message(preProcessed);
+    // Then, once MiniMessage placeholders have
+    final ElementNode root = TokenParser.parse(transformationFactory, tagNameChecker, preProcessed, context.strict());
 
     if (debug != null) {
       debug.accept("Text parsed into element tree:\n");
