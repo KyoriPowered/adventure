@@ -21,48 +21,63 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.tag;
+package net.kyori.adventure.text.minimessage.tag.resolver;
 
-import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
+import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-final class CachingTagResolver implements TagResolver.WithoutArguments, MappableResolver {
-  private static final Tag NULL_REPLACEMENT = new Tag() {
-  };
+final class SingleResolver implements TagResolver.Single, MappableResolver {
+  private final String key;
+  private final Tag tag;
 
-  private final Map<String, Tag> cache = new HashMap<>();
-  private final TagResolver.WithoutArguments resolver;
-
-  CachingTagResolver(final TagResolver.WithoutArguments resolver) {
-    this.resolver = resolver;
+  static void checkKey(final @NotNull String key) {
+    if (!Objects.requireNonNull(key, "key").equals(key.toLowerCase(Locale.ROOT))) {
+      throw new IllegalArgumentException("key must be lowercase, was " + key);
+    }
   }
 
-  private Tag query(final @NotNull String key) {
-    return this.cache.computeIfAbsent(key, k -> {
-      final @Nullable Tag result = this.resolver.resolve(k);
-      return result == null ? NULL_REPLACEMENT : result;
-    });
+  SingleResolver(final String key, final Tag tag) {
+    this.key = key;
+    this.tag = tag;
   }
 
   @Override
-  public @Nullable Tag resolve(final @NotNull String name) {
-    final Tag potentialValue = this.query(name);
-    return potentialValue == NULL_REPLACEMENT ? null : potentialValue;
+  public @NotNull String key() {
+    return this.key;
   }
 
   @Override
-  public boolean has(final @NotNull String name) {
-    return this.query(name) != NULL_REPLACEMENT;
+  public @NotNull Tag tag() {
+    return this.tag;
   }
 
   @Override
   public boolean contributeToMap(final Map<String, Tag> map) {
-    if (this.resolver instanceof MappableResolver) {
-      return ((MappableResolver) this.resolver).contributeToMap(map);
-    } else {
+    map.put(this.key, this.tag);
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.key, this.tag);
+  }
+
+  @Override
+  public boolean equals(final Object other) {
+    if (this == other) {
+      return true;
+    }
+    if (other == null) {
       return false;
     }
+    if (this.getClass() != other.getClass()) {
+      return false;
+    }
+    final SingleResolver that = (SingleResolver) other;
+    return Objects.equals(this.key, that.key)
+      && Objects.equals(this.tag, that.tag);
   }
 }

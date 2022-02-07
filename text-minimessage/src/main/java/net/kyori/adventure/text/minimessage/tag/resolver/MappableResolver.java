@@ -21,9 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.tag;
+package net.kyori.adventure.text.minimessage.tag.resolver;
 
 import java.util.Map;
+import net.kyori.adventure.text.minimessage.tag.Tag;
 
 /**
  * Marker interface for resolvers that may handle a fixed domain of tags.

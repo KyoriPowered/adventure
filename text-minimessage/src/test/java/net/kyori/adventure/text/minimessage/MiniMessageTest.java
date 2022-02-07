@@ -31,8 +31,8 @@ import java.util.function.Predicate;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.Tag;
-import net.kyori.adventure.text.minimessage.tag.TagResolver;
 import net.kyori.adventure.text.minimessage.tag.builtin.BuiltInTags;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.empty;

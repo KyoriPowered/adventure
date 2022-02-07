@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.tag;
+package net.kyori.adventure.text.minimessage.tag.resolver;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -36,6 +36,8 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
+import net.kyori.adventure.text.minimessage.tag.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.Tag.Argument;
 import net.kyori.adventure.text.minimessage.tag.builtin.BuiltInTags;
 import org.jetbrains.annotations.ApiStatus;

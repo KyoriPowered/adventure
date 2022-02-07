@@ -21,33 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.tag;
+package net.kyori.adventure.text.minimessage.tag.resolver;
 
-import java.util.List;
 import java.util.Map;
-import net.kyori.adventure.text.minimessage.Context;
-import net.kyori.adventure.text.minimessage.tag.Tag.Argument;
+import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-final class EmptyTagResolver implements TagResolver, MappableResolver {
-  static final EmptyTagResolver INSTANCE = new EmptyTagResolver();
+final class MapTagResolver implements TagResolver.WithoutArguments, MappableResolver {
+  private final Map<String, ? extends Tag> tagMap;
 
-  private EmptyTagResolver() {
+  MapTagResolver(final @NotNull Map<String, ? extends Tag> placeholderMap) {
+    this.tagMap = placeholderMap;
   }
 
   @Override
-  public @Nullable Tag resolve(final @NotNull String name, final @NotNull List<? extends Argument> arguments, final @NotNull Context ctx) {
-    return null;
-  }
-
-  @Override
-  public boolean has(final @NotNull String name) {
-    return false;
+  public @Nullable Tag resolve(final @NotNull String name) {
+    return this.tagMap.get(name);
   }
 
   @Override
   public boolean contributeToMap(final Map<String, Tag> map) {
+    map.putAll(this.tagMap);
     return true;
   }
 }

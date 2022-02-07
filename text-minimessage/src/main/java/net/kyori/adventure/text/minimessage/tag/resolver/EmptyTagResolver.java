@@ -21,62 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.tag;
+package net.kyori.adventure.text.minimessage.tag.resolver;
 
-import java.util.Locale;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.Tag.Argument;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-final class SingleResolver implements TagResolver.Single, MappableResolver {
-  private final String key;
-  private final Tag tag;
+final class EmptyTagResolver implements TagResolver, MappableResolver {
+  static final EmptyTagResolver INSTANCE = new EmptyTagResolver();
 
-  static void checkKey(final @NotNull String key) {
-    if (!Objects.requireNonNull(key, "key").equals(key.toLowerCase(Locale.ROOT))) {
-      throw new IllegalArgumentException("key must be lowercase, was " + key);
-    }
-  }
-
-  SingleResolver(final String key, final Tag tag) {
-    this.key = key;
-    this.tag = tag;
+  private EmptyTagResolver() {
   }
 
   @Override
-  public @NotNull String key() {
-    return this.key;
+  public @Nullable Tag resolve(final @NotNull String name, final @NotNull List<? extends Argument> arguments, final @NotNull Context ctx) {
+    return null;
   }
 
   @Override
-  public @NotNull Tag tag() {
-    return this.tag;
+  public boolean has(final @NotNull String name) {
+    return false;
   }
 
   @Override
   public boolean contributeToMap(final Map<String, Tag> map) {
-    map.put(this.key, this.tag);
     return true;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(this.key, this.tag);
-  }
-
-  @Override
-  public boolean equals(final Object other) {
-    if (this == other) {
-      return true;
-    }
-    if (other == null) {
-      return false;
-    }
-    if (this.getClass() != other.getClass()) {
-      return false;
-    }
-    final SingleResolver that = (SingleResolver) other;
-    return Objects.equals(this.key, that.key)
-      && Objects.equals(this.tag, that.tag);
   }
 }

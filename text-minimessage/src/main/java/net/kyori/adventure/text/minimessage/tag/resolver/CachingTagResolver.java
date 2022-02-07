@@ -21,52 +21,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.tag;
+package net.kyori.adventure.text.minimessage.tag.resolver;
 
-import java.util.List;
-import net.kyori.adventure.text.minimessage.Context;
-import net.kyori.adventure.text.minimessage.ParsingException;
-import net.kyori.adventure.text.minimessage.tag.Tag.Argument;
+import java.util.HashMap;
+import java.util.Map;
+import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-final class SequentialTagResolver implements TagResolver {
-  final TagResolver[] resolvers;
+final class CachingTagResolver implements TagResolver.WithoutArguments, MappableResolver {
+  private static final Tag NULL_REPLACEMENT = new Tag() {
+  };
 
-  SequentialTagResolver(final @NotNull TagResolver@NotNull[] resolvers) {
-    this.resolvers = resolvers;
+  private final Map<String, Tag> cache = new HashMap<>();
+  private final TagResolver.WithoutArguments resolver;
+
+  CachingTagResolver(final TagResolver.WithoutArguments resolver) {
+    this.resolver = resolver;
+  }
+
+  private Tag query(final @NotNull String key) {
+    return this.cache.computeIfAbsent(key, k -> {
+      final @Nullable Tag result = this.resolver.resolve(k);
+      return result == null ? NULL_REPLACEMENT : result;
+    });
   }
 
   @Override
-  public @Nullable Tag resolve(final @NotNull String name, final @NotNull List<? extends Argument> arguments, final @NotNull Context ctx) throws ParsingException {
-    @Nullable ParsingException thrown = null;
-    for (final TagResolver resolver : this.resolvers) {
-      try {
-        final @Nullable Tag placeholder = resolver.resolve(name, arguments, ctx);
-
-        if (placeholder != null) return placeholder;
-      } catch (final ParsingException ex) {
-        if (thrown == null) {
-          thrown = ex;
-        } else {
-          thrown.addSuppressed(ex);
-        }
-      }
-    }
-
-    if (thrown != null) {
-      throw thrown;
-    }
-    return null;
+  public @Nullable Tag resolve(final @NotNull String name) {
+    final Tag potentialValue = this.query(name);
+    return potentialValue == NULL_REPLACEMENT ? null : potentialValue;
   }
 
   @Override
   public boolean has(final @NotNull String name) {
-    for (final TagResolver resolver : this.resolvers) {
-      if (resolver.has(name)) {
-        return true;
-      }
+    return this.query(name) != NULL_REPLACEMENT;
+  }
+
+  @Override
+  public boolean contributeToMap(final Map<String, Tag> map) {
+    if (this.resolver instanceof MappableResolver) {
+      return ((MappableResolver) this.resolver).contributeToMap(map);
+    } else {
+      return false;
     }
-    return false;
   }
 }

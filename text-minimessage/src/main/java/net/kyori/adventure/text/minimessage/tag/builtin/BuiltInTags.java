@@ -29,7 +29,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.minimessage.tag.TagResolver;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
 /**
  * Tag types distributed with MiniMessage.
