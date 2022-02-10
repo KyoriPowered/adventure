@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text.minimessage.tag.builtin;
 
-import java.util.List;
 import java.util.UUID;
 import net.kyori.adventure.key.InvalidKeyException;
 import net.kyori.adventure.key.Key;
@@ -33,6 +32,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,20 +49,16 @@ public final class HoverTag {
   }
 
   @SuppressWarnings("unchecked")
-  static Tag create(final List<? extends Tag.Argument> args, final Context ctx) throws ParsingException {
-    if (args.size() < 2) {
-      throw ctx.newError("Doesn't know how to turn " + args + " into a hover event", args);
-    }
-    final List<? extends Tag.Argument> newArgs = args.subList(1, args.size());
-
-    final HoverEvent.Action<Object> action = (HoverEvent.Action<Object>) HoverEvent.Action.NAMES.value(args.get(0).value());
+  static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
+    final String actionName = args.popOr("Hover event requires an action as its first argument").value();
+    final HoverEvent.Action<Object> action = (HoverEvent.Action<Object>) HoverEvent.Action.NAMES.value(actionName);
     final Object value;
     if (action == (Object) HoverEvent.Action.SHOW_TEXT) {
-      value = ctx.parse(newArgs.get(0).value());
+      value = ctx.parse(args.popOr("show_text action requires a message").value());
     } else if (action == (Object) HoverEvent.Action.SHOW_ITEM) {
-      value = parseShowItem(newArgs, ctx);
+      value = parseShowItem(args, ctx);
     } else if (action == (Object) HoverEvent.Action.SHOW_ENTITY) {
-      value = parseShowEntity(newArgs, ctx);
+      value = parseShowEntity(args, ctx);
     } else {
       throw ctx.newError("Don't know how to turn '" + args + "' into a hover event", args);
     }
@@ -70,36 +66,26 @@ public final class HoverTag {
     return Tag.styling(HoverEvent.hoverEvent(action, value));
   }
 
-  private static HoverEvent.@NotNull ShowItem parseShowItem(final @NotNull List<? extends Tag.Argument> args, final Context ctx) throws ParsingException {
+  private static HoverEvent.@NotNull ShowItem parseShowItem(final @NotNull ArgumentQueue args, final Context ctx) throws ParsingException {
     try {
-      if (args.isEmpty()) {
-        throw ctx.newError("Show item hover needs at least item id!");
-      }
-      final Key key = Key.key(args.get(0).value());
-      final int count;
-      if (args.size() >= 2) {
-        count = Integer.parseInt(args.get(1).value());
+      final Key key = Key.key(args.popOr("Show item hover needs at least an item ID").value());
+      final int count = args.hasNext() ? args.pop().asInt().orElseThrow(() -> ctx.newError("The count argument was not a valid integer")) : 1;
+      if (args.hasNext()) {
+        return HoverEvent.ShowItem.of(key, count, BinaryTagHolder.binaryTagHolder(args.pop().value()));
       } else {
-        count = 1;
+        return HoverEvent.ShowItem.of(key, count);
       }
-      if (args.size() == 3) {
-        return HoverEvent.ShowItem.of(key, count, BinaryTagHolder.binaryTagHolder(args.get(2).value()));
-      }
-      return HoverEvent.ShowItem.of(key, count);
     } catch (final InvalidKeyException | NumberFormatException ex) {
       throw ctx.newError("Exception parsing show_item hover", ex, args);
     }
   }
 
-  private static HoverEvent.@NotNull ShowEntity parseShowEntity(final @NotNull List<? extends Tag.Argument> args, final Context context) throws ParsingException {
+  private static HoverEvent.@NotNull ShowEntity parseShowEntity(final @NotNull ArgumentQueue args, final Context context) throws ParsingException {
     try {
-      if (args.size() < 2) {
-        throw context.newError("Show entity hover needs at least type and uuid!", args);
-      }
-      final Key key = Key.key(args.get(0).value());
-      final UUID id = UUID.fromString(args.get(1).value());
-      if (args.size() == 3) {
-        final Component name = context.parse(args.get(2).value());
+      final Key key = Key.key(args.popOr("Show entity needs a type argument").value());
+      final UUID id = UUID.fromString(args.popOr("Show entity needs an entity UUID").value());
+      if (args.hasNext()) {
+        final Component name = context.parse(args.pop().value());
         return HoverEvent.ShowEntity.of(key, id, name);
       }
       return HoverEvent.ShowEntity.of(key, id);

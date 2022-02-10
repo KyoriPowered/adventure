@@ -25,11 +25,11 @@ package net.kyori.adventure.text.minimessage.tag.builtin;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 
 /**
  * A transformation that applies any {@link TextDecoration}.
@@ -73,8 +73,8 @@ public final class DecorationTag {
   private DecorationTag() {
   }
 
-  static Tag create(final TextDecoration toApply, final List<? extends Tag.Argument> args, final Context ctx) {
-    final boolean flag = args.size() != 1 || !args.get(0).isFalse();
+  static Tag create(final TextDecoration toApply, final ArgumentQueue args, final Context ctx) {
+    final boolean flag = !args.hasNext() || !args.pop().isFalse();
 
     return Tag.styling(toApply.withState(flag));
   }

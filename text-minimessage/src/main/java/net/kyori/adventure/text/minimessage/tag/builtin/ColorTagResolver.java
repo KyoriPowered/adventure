@@ -24,14 +24,13 @@
 package net.kyori.adventure.text.minimessage.tag.builtin;
 
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -64,18 +63,14 @@ public final class ColorTagResolver implements TagResolver {
   }
 
   @Override
-  public @Nullable Tag resolve(final @NotNull String name, final @NotNull List<? extends Tag.Argument> args, final @NotNull Context ctx) throws ParsingException {
+  public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue args, final @NotNull Context ctx) throws ParsingException {
     if (!this.has(name)) {
       return null;
     }
 
     final String colorName;
     if (isColorOrAbbreviation(name)) {
-      if (args.size() == 1) {
-        colorName = args.get(0).value().toLowerCase(Locale.ROOT);
-      } else {
-        throw ctx.newError("Expected to find a color parameter, but found " + args, args);
-      }
+      colorName = args.popOr("Expected to find a color parameter: <name>|#RRGGBB").lowerValue();
     } else {
       colorName = name;
     }
@@ -90,7 +85,7 @@ public final class ColorTagResolver implements TagResolver {
     }
 
     if (color == null) {
-      throw ctx.newError("Don't know how to turn '" + name + "' into a color", args);
+      throw ctx.newError("Don't know how to turn '" + colorName + "' into a color");
     }
 
     return Tag.styling(color);

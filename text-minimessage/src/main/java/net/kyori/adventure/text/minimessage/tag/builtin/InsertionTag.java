@@ -23,10 +23,10 @@
  */
 package net.kyori.adventure.text.minimessage.tag.builtin;
 
-import java.util.List;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 
 /**
  * A transformation that applies an insertion (shift-click) event.
@@ -39,12 +39,8 @@ public final class InsertionTag {
   private InsertionTag() {
   }
 
-  static Tag create(final List<? extends Tag.Argument> args, final Context ctx) throws ParsingException {
-    if (args.size() != 1) {
-      throw ctx.newError("Doesn't know how to turn token with arguments " + args + " into an insertion component", args);
-    }
-
-    final String insertion = args.get(0).value();
+  static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
+    final String insertion = args.popOr("A value is required to produce an insertion component").value();
     return Tag.styling(b -> b.insertion(insertion));
   }
 }

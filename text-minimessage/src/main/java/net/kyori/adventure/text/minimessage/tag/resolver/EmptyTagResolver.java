@@ -23,11 +23,9 @@
  */
 package net.kyori.adventure.text.minimessage.tag.resolver;
 
-import java.util.List;
 import java.util.Map;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.tag.Tag;
-import net.kyori.adventure.text.minimessage.tag.Tag.Argument;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,7 +36,7 @@ final class EmptyTagResolver implements TagResolver, MappableResolver {
   }
 
   @Override
-  public @Nullable Tag resolve(final @NotNull String name, final @NotNull List<? extends Argument> arguments, final @NotNull Context ctx) {
+  public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) {
     return null;
   }
 

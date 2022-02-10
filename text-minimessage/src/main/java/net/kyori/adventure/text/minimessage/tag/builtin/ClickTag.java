@@ -23,12 +23,11 @@
  */
 package net.kyori.adventure.text.minimessage.tag.builtin;
 
-import java.util.List;
-import java.util.Locale;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,16 +43,14 @@ public final class ClickTag {
   private ClickTag() {
   }
 
-  static Tag create(final List<? extends Tag.Argument> args, final Context ctx) throws ParsingException {
-    if (args.size() != 2) {
-      throw ctx.newError("Don't know how to turn " + args + " into a click event", args);
-    }
-    final ClickEvent.@Nullable Action action = ClickEvent.Action.NAMES.value(args.get(0).value().toLowerCase(Locale.ROOT));
-    final String value = args.get(1).value();
+  static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
+    final String actionName = args.popOr(() -> "A click tag requires an action of one of " + ClickEvent.Action.NAMES.keys()).lowerValue();
+    final ClickEvent.@Nullable Action action = ClickEvent.Action.NAMES.value(actionName);
     if (action == null) {
-      throw ctx.newError("Unknown click event action '" + args.get(0).value() + "'", args);
+      throw ctx.newError("Unknown click event action '" + actionName + "'", args);
     }
 
+    final String value = args.popOr("Click event actions require a value").value();
     return Tag.styling(ClickEvent.clickEvent(action, value));
   }
 }

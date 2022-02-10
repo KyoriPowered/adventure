@@ -23,11 +23,11 @@
  */
 package net.kyori.adventure.text.minimessage.tag.builtin;
 
-import java.util.List;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import org.intellij.lang.annotations.Subst;
 
 /**
@@ -41,17 +41,14 @@ public final class FontTag {
   private FontTag() {
   }
 
-  static Tag create(final List<? extends Tag.Argument> args, final Context ctx) throws ParsingException {
+  static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
     final Key font;
-    if (args.size() == 1) {
-      @Subst("empty") final String fontKey = args.get(0).value();
-      font = Key.key(fontKey);
-    } else if (args.size() == 2) {
-      @Subst(Key.MINECRAFT_NAMESPACE) final String namespaceKey = args.get(0).value();
-      @Subst("empty") final String fontKey = args.get(1).value();
-      font = Key.key(namespaceKey, fontKey);
+    final @Subst("empty") String valueOrNamespace = args.popOr("A font tag must have either arguments of either <value> or <namespace:value>").value();
+    if (!args.hasNext()) {
+      font = Key.key(valueOrNamespace);
     } else {
-      throw ctx.newError("Don't know how to turn " + args + " into a font", args);
+      @Subst("empty") final String fontKey = args.pop().value();
+      font = Key.key(valueOrNamespace, fontKey);
     }
 
     return Tag.styling(builder -> builder.font(font));

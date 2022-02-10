@@ -24,7 +24,6 @@
 package net.kyori.adventure.text.minimessage.tag.builtin;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 import java.util.PrimitiveIterator;
 import java.util.stream.Stream;
@@ -38,6 +37,7 @@ import net.kyori.adventure.text.minimessage.parser.node.ValueNode;
 import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.Modifying;
 import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.Examinable;
@@ -65,13 +65,13 @@ public final class RainbowTag implements Modifying, Examinable {
 
   private final int phase;
 
-  static Tag create(final List<? extends Tag.Argument> args, final Context ctx) {
+  static Tag create(final ArgumentQueue args, final Context ctx) {
     boolean reversed = false;
     int phase = 0;
 
-    if (args.size() == 1) {
-      String value = args.get(0).value();
-      if (args.get(0).value().startsWith(REVERSE)) {
+    if (args.hasNext()) {
+      String value = args.pop().value();
+      if (value.startsWith(REVERSE)) {
         reversed = true;
         value = value.substring(REVERSE.length());
       }
@@ -79,7 +79,7 @@ public final class RainbowTag implements Modifying, Examinable {
         try {
           phase = Integer.parseInt(value);
         } catch (final NumberFormatException ex) {
-          throw ctx.newError("Expected phase, got " + args.get(0), args);
+          throw ctx.newError("Expected phase, got " + value);
         }
       }
     }

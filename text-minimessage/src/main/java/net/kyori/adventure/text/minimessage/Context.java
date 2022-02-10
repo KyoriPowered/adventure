@@ -23,10 +23,8 @@
  */
 package net.kyori.adventure.text.minimessage;
 
-import java.util.Collections;
-import java.util.List;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -59,7 +57,7 @@ public interface Context {
    */
   @NotNull ParsingException newError(
     final @NotNull String message,
-    final @NotNull List<? extends Tag.Argument> tags
+    final @NotNull ArgumentQueue tags
   );
 
   /**
@@ -69,22 +67,20 @@ public interface Context {
    * @return the new parsing exception
    * @since 4.10.0
    */
-  default @NotNull ParsingException newError(final @NotNull String message) {
-    return this.newError(message, Collections.emptyList());
-  }
+  @NotNull ParsingException newError(final @NotNull String message);
 
   /**
    * Create a new parsing exception.
    *
    * @param message the detail message
    * @param cause the cause
-   * @param tags tag parts that caused the errors
+   * @param args arguments that caused the errors
    * @return the new parsing exception
    * @since 4.10.0
    */
   @NotNull ParsingException newError(
     final @NotNull String message,
     final @Nullable Throwable cause,
-    final @NotNull List<? extends Tag.Argument> tags
+    final @NotNull ArgumentQueue args
   );
 }

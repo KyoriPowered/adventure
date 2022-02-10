@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.minimessage.tag;
 
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.function.Consumer;
@@ -130,7 +131,7 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, PreProcess */
   @ApiStatus.NonExtendable
   interface Argument {
     /**
-     * Returns the value of this tag part.
+     * Returns the value of this argument.
      *
      * @return the value
      * @since 4.10.0
@@ -138,9 +139,21 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, PreProcess */
     @NotNull String value();
 
     /**
-     * Checks if this tag part represents {@code true}.
+     * Returns the value of this argument, lower-cased in the root locale.
      *
-     * @return if this tag part represents {@code true}
+     * <p>This value should be used for comparisons against literals, to help ensure MiniMessage tags are case-insensitive.</p>
+     *
+     * @return the lower-cased value of this argument
+     * @since 4.10.0
+     */
+    default @NotNull String lowerValue() {
+      return this.value().toLowerCase(Locale.ROOT);
+    }
+
+    /**
+     * Checks if this argument represents {@code true}.
+     *
+     * @return if this argument represents {@code true}
      * @since 4.10.0
      */
     default boolean isTrue() {
@@ -148,9 +161,9 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, PreProcess */
     }
 
     /**
-     * Checks if this tag part represents {@code false}.
+     * Checks if this argument represents {@code false}.
      *
-     * @return if this tag part represents {@code false}
+     * @return if this argument represents {@code false}
      * @since 4.10.0
      */
     default boolean isFalse() {
@@ -158,7 +171,7 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, PreProcess */
     }
 
     /**
-     * Try and parse this tag part as an {@code int}.
+     * Try and parse this argument as an {@code int}.
      *
      * <p>The optional will only be present if the value is a valid integer.</p>
      *
@@ -174,7 +187,7 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, PreProcess */
     }
 
     /**
-     * Try and parse this tag part as a {@code double}.
+     * Try and parse this argument as a {@code double}.
      *
      * <p>The optional will only be present if the value is a valid double.</p>
      *

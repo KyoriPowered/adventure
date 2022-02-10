@@ -24,9 +24,9 @@
 package net.kyori.adventure.text.minimessage.tag;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.TestBase;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -82,7 +82,8 @@ class TagResolverTest {
 
   private static @NotNull Tag resolveForTest(final TagResolver resolver, final String tag) {
     try {
-      final @Nullable Tag result = resolver.resolve(tag, Collections.emptyList(), TestBase.dummyContext("help i shouldn't be seen"));
+      final Context ctx = TestBase.dummyContext("help i shouldn't be seen");
+      final @Nullable Tag result = resolver.resolve(tag, TestBase.emptyArgumentQueue(ctx), ctx);
       assertNotNull(result, () -> "tag " + tag + " from resolver " + resolver);
       return result;
     } catch (final ParsingException ex) {

@@ -138,7 +138,7 @@ final class MiniMessageParser {
           }
           debug.accept("\n");
 
-          final @Nullable Tag transformation = combinedResolver.resolve(name, args, context);
+          final @Nullable Tag transformation = combinedResolver.resolve(name, new ArgumentQueueImpl<>(context, args), context);
 
           if (transformation == null) {
             debug.accept("Could not match node '");
@@ -171,7 +171,7 @@ final class MiniMessageParser {
     } else {
       transformationFactory = (name, args, token) -> {
         try {
-          return combinedResolver.resolve(name, args, context);
+          return combinedResolver.resolve(name, new ArgumentQueueImpl<>(context, args), context);
         } catch (final ParsingException ignored) {
           return null;
         }

@@ -26,7 +26,6 @@ package net.kyori.adventure.text.minimessage.tag.resolver;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -35,7 +34,6 @@ import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.Tag;
-import net.kyori.adventure.text.minimessage.tag.Tag.Argument;
 import net.kyori.adventure.text.minimessage.tag.builtin.BuiltInTags;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -109,7 +107,7 @@ public interface TagResolver {
    * @return a resolver that creates tags using the provided handler
    * @since 4.10.0
    */
-  static @NotNull TagResolver resolver(final @NotNull String name, final @NotNull BiFunction<List<? extends Tag.Argument>, Context, @NotNull Tag> handler) {
+  static @NotNull TagResolver resolver(final @NotNull String name, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler) {
     return resolver(Collections.singleton(name), handler);
   }
 
@@ -121,7 +119,7 @@ public interface TagResolver {
    * @return a resolver that creates tags using the provided handler
    * @since 4.10.0
    */
-  static @NotNull TagResolver resolver(final @NotNull Set<String> names, final @NotNull BiFunction<List<? extends Tag.Argument>, Context, @NotNull Tag> handler) {
+  static @NotNull TagResolver resolver(final @NotNull Set<String> names, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler) {
     final Set<String> ownNames = new HashSet<>(names);
     for (final String name : ownNames) {
       SingleResolver.checkKey(name);
@@ -130,7 +128,7 @@ public interface TagResolver {
 
     return new TagResolver() {
       @Override
-      public @Nullable Tag resolve(final @NotNull String name, final @NotNull List<? extends Argument> arguments, final @NotNull Context ctx) throws ParsingException {
+      public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
         if (!names.contains(name)) return null;
 
         return handler.apply(arguments, ctx);
@@ -221,7 +219,7 @@ public interface TagResolver {
    * @throws ParsingException if the provided arguments are invalid
    * @since 4.10.0
    */
-  @Nullable Tag resolve(final @NotNull String name, final @NotNull List<? extends Tag.Argument> arguments, final @NotNull Context ctx) throws ParsingException;
+  @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException;
 
   /**
    * Get whether this resolver handles tags with a certain name.
@@ -303,10 +301,10 @@ public interface TagResolver {
     }
 
     @Override
-    default @Nullable Tag resolve(final @NotNull String name, final @NotNull List<? extends Argument> arguments, final @NotNull Context ctx) throws ParsingException {
+    default @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
       final Tag resolved = this.resolve(name);
-      if (resolved != null && arguments.size() > 0) {
-        throw ctx.newError("Tag '<" + name + ">' does not accept any arguments", arguments);
+      if (resolved != null && arguments.hasNext()) {
+        throw ctx.newError("Tag '<" + name + ">' does not accept any arguments");
       }
       return resolved;
     }
@@ -338,7 +336,7 @@ public interface TagResolver {
      * @return this builder
      * @since 4.10.0
      */
-    default @NotNull Builder tag(final @NotNull String name, final @NotNull BiFunction<List<? extends Tag.Argument>, Context, @NotNull Tag> handler) {
+    default @NotNull Builder tag(final @NotNull String name, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler) {
       return this.tag(Collections.singleton(name), handler);
     }
 
@@ -350,11 +348,9 @@ public interface TagResolver {
      * @return this builder
      * @since 4.10.0
      */
-    default @NotNull Builder tag(final @NotNull Set<String> names, final @NotNull BiFunction<List<? extends Tag.Argument>, Context, @NotNull Tag> handler) {
+    default @NotNull Builder tag(final @NotNull Set<String> names, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler) {
       return this.resolver(TagResolver.resolver(names, handler));
     }
-
-    // add fancier resolver methods to builder
 
     /**
      * Add a placeholder resolver to those queried by the result of this builder.

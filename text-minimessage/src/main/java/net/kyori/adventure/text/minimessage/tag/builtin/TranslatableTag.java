@@ -30,6 +30,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 
 /**
  * Insert a translation component into the result.
@@ -44,21 +45,18 @@ public final class TranslatableTag {
   private TranslatableTag() {
   }
 
-  static Tag create(final List<? extends Tag.Argument> args, final Context ctx) throws ParsingException {
-    if (args.isEmpty()) {
-      throw ctx.newError("Doesn't know how to turn " + args + " into a translatable component", args);
-    }
-
+  static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
+    final String key = args.popOr("A translation key is required").value();
     final List<Component> with;
-    if (args.size() > 1) {
+    if (args.hasNext()) {
       with = new ArrayList<>();
-      for (final Tag.Argument in : args.subList(1, args.size())) {
-        with.add(ctx.parse(in.value()));
+      while (args.hasNext()) {
+        with.add(ctx.parse(args.pop().value()));
       }
     } else {
       with = Collections.emptyList();
     }
 
-    return Tag.inserting(Component.translatable(args.get(0).value(), with));
+    return Tag.inserting(Component.translatable(key, with));
   }
 }

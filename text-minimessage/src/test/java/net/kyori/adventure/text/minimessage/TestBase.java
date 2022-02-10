@@ -23,8 +23,11 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.util.Collections;
 import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.examination.string.MultiLineStringExaminer;
 import org.jetbrains.annotations.NotNull;
@@ -61,5 +64,9 @@ public class TestBase {
 
   public static Context dummyContext(final String originalMessage) {
     return ContextImpl.of(false, null, originalMessage, (MiniMessageImpl) PARSER, TagResolver.empty(), Component::compact);
+  }
+
+  public static ArgumentQueue emptyArgumentQueue(final Context context) {
+    return new ArgumentQueueImpl<>(context, Collections.<Tag.Argument>emptyList());
   }
 }

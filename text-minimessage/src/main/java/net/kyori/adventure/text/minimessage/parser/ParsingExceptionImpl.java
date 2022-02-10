@@ -136,4 +136,9 @@ public class ParsingExceptionImpl extends ParsingException {
     return new String(chars);
   }
 
+  @Override
+  public ParsingExceptionImpl fillInStackTrace() { // no stacktrace
+    return this;
+  }
+
 }

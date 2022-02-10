@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.PrimitiveIterator;
@@ -43,6 +42,7 @@ import net.kyori.adventure.text.minimessage.parser.node.ValueNode;
 import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.Modifying;
 import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.Examinable;
@@ -68,16 +68,16 @@ public final class GradientTag implements Modifying, Examinable {
   private float phase;
   private final boolean negativePhase;
 
-  static Tag create(final List<? extends Tag.Argument> args, final Context ctx) {
+  static Tag create(final ArgumentQueue args, final Context ctx) {
     float phase = 0;
     final List<TextColor> textColors;
-    if (!args.isEmpty()) {
+    if (args.hasNext()) {
       textColors = new ArrayList<>();
-      for (int i = 0; i < args.size(); i++) {
-        final String arg = args.get(i).value();
+      while (args.hasNext()) {
+        final Tag.Argument arg = args.pop();
         // last argument? maybe this is the phase?
-        if (i == args.size() - 1) {
-          final OptionalDouble possiblePhase = args.get(i).asDouble();
+        if (!args.hasNext()) {
+          final OptionalDouble possiblePhase = arg.asDouble();
           if (possiblePhase.isPresent()) {
             phase = (float) possiblePhase.getAsDouble();
             if (phase < -1f || phase > 1f) {
@@ -87,14 +87,15 @@ public final class GradientTag implements Modifying, Examinable {
           }
         }
 
+        final String argValue = arg.value();
         final TextColor parsedColor;
-        if (arg.charAt(0) == '#') {
-          parsedColor = TextColor.fromHexString(arg);
+        if (argValue.charAt(0) == '#') {
+          parsedColor = TextColor.fromHexString(argValue);
         } else {
-          parsedColor = NamedTextColor.NAMES.value(arg.toLowerCase(Locale.ROOT));
+          parsedColor = NamedTextColor.NAMES.value(arg.lowerValue());
         }
         if (parsedColor == null) {
-          throw ctx.newError(String.format("Unable to parse a color from '%s'. Please use named colours or hex (#RRGGBB) colors.", arg), args);
+          throw ctx.newError(String.format("Unable to parse a color from '%s'. Please use named colours or hex (#RRGGBB) colors.", argValue), args);
         }
         textColors.add(parsedColor);
       }
