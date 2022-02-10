@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.PrimitiveIterator;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -52,7 +51,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class RainbowTag implements Modifying, Examinable {
   private static final String REVERSE = "!";
-  private static final Pattern REVERSE_PATTERN = Pattern.compile(REVERSE, Pattern.LITERAL);
   public static final String RAINBOW = "rainbow";
 
   private int size;
@@ -75,7 +73,7 @@ public final class RainbowTag implements Modifying, Examinable {
       String value = args.get(0).value();
       if (args.get(0).value().startsWith(REVERSE)) {
         reversed = true;
-        value = REVERSE_PATTERN.matcher(value).replaceFirst("");
+        value = value.substring(REVERSE.length());
       }
       if (value.length() > 0) {
         try {

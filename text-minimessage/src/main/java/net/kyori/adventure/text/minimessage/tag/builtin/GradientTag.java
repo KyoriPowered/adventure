@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.OptionalDouble;
 import java.util.PrimitiveIterator;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
@@ -76,13 +77,13 @@ public final class GradientTag implements Modifying, Examinable {
         final String arg = args.get(i).value();
         // last argument? maybe this is the phase?
         if (i == args.size() - 1) {
-          try {
-            phase = Float.parseFloat(arg);
+          final OptionalDouble possiblePhase = args.get(i).asDouble();
+          if (possiblePhase.isPresent()) {
+            phase = (float) possiblePhase.getAsDouble();
             if (phase < -1f || phase > 1f) {
               throw ctx.newError(String.format("Gradient phase is out of range (%s). Must be in the range [-1.0f, 1.0f] (inclusive).", phase), args);
             }
             break;
-          } catch (final NumberFormatException ignored) {
           }
         }
 

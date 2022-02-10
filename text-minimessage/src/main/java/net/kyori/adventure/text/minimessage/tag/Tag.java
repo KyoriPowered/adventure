@@ -24,6 +24,8 @@
 package net.kyori.adventure.text.minimessage.tag;
 
 import java.util.Arrays;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
 import java.util.function.Consumer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
@@ -153,6 +155,38 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, PreProcess */
      */
     default boolean isFalse() {
       return "false".equals(this.value()) || "off".equals(this.value());
+    }
+
+    /**
+     * Try and parse this tag part as an {@code int}.
+     *
+     * <p>The optional will only be present if the value is a valid integer.</p>
+     *
+     * @return an optional providing the value of this argument as an integer
+     * @since 4.10.0
+     */
+    default OptionalInt asInt() {
+      try {
+        return OptionalInt.of(Integer.parseInt(this.value()));
+      } catch (final NumberFormatException ex) {
+        return OptionalInt.empty();
+      }
+    }
+
+    /**
+     * Try and parse this tag part as a {@code double}.
+     *
+     * <p>The optional will only be present if the value is a valid double.</p>
+     *
+     * @return an optional providing the value of this argument as an integer
+     * @since 4.10.0
+     */
+    default OptionalDouble asDouble() {
+      try {
+        return OptionalDouble.of(Double.parseDouble(this.value()));
+      } catch (final NumberFormatException ex) {
+        return OptionalDouble.empty();
+      }
     }
   }
 }
