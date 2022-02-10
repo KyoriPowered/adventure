@@ -25,14 +25,11 @@ package net.kyori.adventure.text.minimessage.tag.resolver;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.stream.Collector;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
@@ -147,66 +144,6 @@ public interface TagResolver {
   }
 
   /**
-   * Create a tag resolver that only responds to a single tag name, and whose value does not depend on that name.
-   *
-   * <p>This variant must also not depend on the context provided.</p>
-   *
-   * @param name the name to respond to
-   * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
-   * @return a resolver that creates tags using the provided handler
-   * @since 4.10.0
-   */
-  static @NotNull TagResolver resolver(final @NotNull String name, final @NotNull Function<List<? extends Tag.Argument>, @NotNull Tag> handler) {
-    return resolver(Collections.singleton(name), handler);
-  }
-
-  /**
-   * Create a tag resolver that only responds to certain tag names, and whose value does not depend on that name.
-   *
-   * <p>This variant must also not depend on the context provided.</p>
-   *
-   * @param names the names to respond to
-   * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
-   * @return a resolver that creates tags using the provided handler
-   * @since 4.10.0
-   */
-  static @NotNull TagResolver resolver(final @NotNull Set<String> names, final @NotNull Function<List<? extends Tag.Argument>, @NotNull Tag> handler) {
-    final Set<String> ownNames = new HashSet<>(names);
-    for (final String name : ownNames) {
-      SingleResolver.checkKey(name);
-    }
-    requireNonNull(handler, "handler");
-
-    return new TagResolver() {
-      @Override
-      public @Nullable Tag resolve(final @NotNull String name, final @NotNull List<? extends Argument> arguments, final @NotNull Context ctx) throws ParsingException {
-        if (!names.contains(name)) return null;
-
-        return handler.apply(arguments);
-      }
-
-      @Override
-      public boolean has(final @NotNull String name) {
-        return names.contains(name);
-      }
-    };
-  }
-
-  /**
-   * Constructs a tag resolver from a map.
-   *
-   * <p>The returned tag resolver will make a copy of the provided map.
-   * This means that changes to the map will not be reflected in the tag resolver.</p>
-   *
-   * @param map the map
-   * @return the tag resolver
-   * @since 4.10.0
-   */
-  static @NotNull TagResolver map(final @NotNull Map<String, Tag> map) {
-    return new MapTagResolver(new HashMap<>(Objects.requireNonNull(map, "map")));
-  }
-
-  /**
    * Constructs a tag resolver capable of resolving from multiple sources.
    *
    * <p>The last specified resolver takes priority.</p>
@@ -215,7 +152,7 @@ public interface TagResolver {
    * @return the tag resolver
    * @since 4.10.0
    */
-  static @NotNull TagResolver combining(final @NotNull TagResolver@NotNull... resolvers) {
+  static @NotNull TagResolver resolver(final @NotNull TagResolver@NotNull... resolvers) {
     if (Objects.requireNonNull(resolvers, "resolvers").length == 1) {
       return Objects.requireNonNull(resolvers[0], "resolvers must not contain null elements");
     }
@@ -233,7 +170,7 @@ public interface TagResolver {
    * @return the tag resolver
    * @since 4.10.0
    */
-  static @NotNull TagResolver combining(final @NotNull Iterable<? extends TagResolver> resolvers) {
+  static @NotNull TagResolver resolver(final @NotNull Iterable<? extends TagResolver> resolvers) {
     if (resolvers instanceof Collection<?>) { // in the simplest case, we can
       final int size = ((Collection<?>) resolvers).size();
       if (size == 0) return empty();
@@ -392,6 +329,32 @@ public interface TagResolver {
      * @since 4.10.0
      */
     @NotNull Builder tag(final @NotNull String name, final @NotNull Tag tag);
+
+    /**
+     * Add a single dynamically created tag to this resolver.
+     *
+     * @param name the name to respond to
+     * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
+     * @return this builder
+     * @since 4.10.0
+     */
+    default @NotNull Builder tag(final @NotNull String name, final @NotNull BiFunction<List<? extends Tag.Argument>, Context, @NotNull Tag> handler) {
+      return this.tag(Collections.singleton(name), handler);
+    }
+
+    /**
+     * Add a single dynamically created tag to this resolver.
+     *
+     * @param names the names to respond to
+     * @param handler the tag handler, may throw {@link ParsingException} if provided arguments are in an invalid format
+     * @return this builder
+     * @since 4.10.0
+     */
+    default @NotNull Builder tag(final @NotNull Set<String> names, final @NotNull BiFunction<List<? extends Tag.Argument>, Context, @NotNull Tag> handler) {
+      return this.resolver(TagResolver.resolver(names, handler));
+    }
+
+    // add fancier resolver methods to builder
 
     /**
      * Add a placeholder resolver to those queried by the result of this builder.

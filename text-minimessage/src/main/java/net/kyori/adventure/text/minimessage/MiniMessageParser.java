@@ -89,7 +89,7 @@ final class MiniMessageParser {
   }
 
   private void processTokens(final @NotNull StringBuilder sb, final @NotNull String richMessage, final @NotNull ContextImpl context, final BiConsumer<Token, StringBuilder> tagHandler) {
-    final TagResolver combinedResolver = TagResolver.combining(this.tagResolver, context.extraTags());
+    final TagResolver combinedResolver = TagResolver.resolver(this.tagResolver, context.extraTags());
     final List<Token> root = TokenParser.tokenize(richMessage);
     for (final Token token : root) {
       switch (token.type()) {
@@ -117,7 +117,7 @@ final class MiniMessageParser {
   }
 
   @NotNull Component parseFormat(final @NotNull String richMessage, final @NotNull ContextImpl context) {
-    final TagResolver combinedResolver = TagResolver.combining(this.tagResolver, context.extraTags());
+    final TagResolver combinedResolver = TagResolver.resolver(this.tagResolver, context.extraTags());
     final Consumer<String> debug = context.debugOutput();
     if (debug != null) {
       debug.accept("Beginning parsing message ");
@@ -184,7 +184,7 @@ final class MiniMessageParser {
 
     final String preProcessed = TokenParser.resolvePreProcessTags(richMessage, transformationFactory);
     context.message(preProcessed);
-    // Then, once MiniMessage placeholders have
+    // Then, once MiniMessage placeholders have been inserted, we can do the real parse
     final ElementNode root = TokenParser.parse(transformationFactory, tagNameChecker, preProcessed, context.strict());
 
     if (debug != null) {

@@ -104,7 +104,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
   @NotNull String stripTokens(final @NotNull String input, final @NotNull TagResolver tags);
 
   /**
-   * Deserializes a string into a component, with a placeholder resolver to parse placeholders of the form {@code <key>}.
+   * Deserializes a string into a component, with a tag resolver to parse tags of the form {@code <key>}.
    *
    * <p>Tags will be resolved from the resolver parameter before the resolver provided in the builder is used.</p>
    *

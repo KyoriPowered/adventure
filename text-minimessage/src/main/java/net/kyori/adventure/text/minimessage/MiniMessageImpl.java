@@ -66,7 +66,7 @@ final class MiniMessageImpl implements MiniMessage {
 
   @Override
   public @NotNull Component deserialize(final @NotNull String input, final @NotNull TagResolver tagResolver) {
-    return this.parser.parseFormat(input, this.newContext(input, requireNonNull(tagResolver, "placeholderResolver")));
+    return this.parser.parseFormat(input, this.newContext(input, requireNonNull(tagResolver, "tagResolver")));
   }
 
   @Override
@@ -90,8 +90,8 @@ final class MiniMessageImpl implements MiniMessage {
   }
 
   @Override
-  public @NotNull String stripTokens(final @NotNull String input, final @NotNull TagResolver placeholders) {
-    return this.parser.stripTokens(input, this.newContext(input, placeholders));
+  public @NotNull String stripTokens(final @NotNull String input, final @NotNull TagResolver tagResolver) {
+    return this.parser.stripTokens(input, this.newContext(input, tagResolver));
   }
 
   private @NotNull ContextImpl newContext(final @NotNull String input, final @Nullable TagResolver resolver) {
