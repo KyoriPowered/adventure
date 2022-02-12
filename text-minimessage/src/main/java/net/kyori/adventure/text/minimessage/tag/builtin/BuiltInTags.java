@@ -148,6 +148,16 @@ public final class BuiltInTags {
   }
 
   /**
+   * Get a resolver for the {@value RainbowTag#RAINBOW} tag.
+   *
+   * @return a resolver for the {@value RainbowTag#RAINBOW} tag
+   * @since 4.10.0
+   */
+  public static TagResolver rainbow() {
+    return RAINBOW;
+  }
+
+  /**
    * Get a resolver that handles all built-in tags.
    *
    * @return the resolver for built-in tags

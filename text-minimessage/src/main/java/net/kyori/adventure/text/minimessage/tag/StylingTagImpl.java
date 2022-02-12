@@ -30,6 +30,7 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 final class StylingTagImpl extends AbstractTag implements Inserting {
   private final StyleBuilderApplicable[] styles;
@@ -49,7 +50,7 @@ final class StylingTagImpl extends AbstractTag implements Inserting {
   }
 
   @Override
-  public boolean equals(final Object other) {
+  public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
     if (!(other instanceof StylingTagImpl)) return false;
     final StylingTagImpl that = (StylingTagImpl) other;

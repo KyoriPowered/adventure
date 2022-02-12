@@ -43,7 +43,7 @@ public /* non-sealed */ interface Modifying extends Tag {
   /**
    * Called after the entire tree has been {@link #visit(Node)}-ed.
    *
-   * <p>This allows for finalizing calculations</p>
+   * <p>This allows for finalizing calculations made during the tree visit, but before actual application to the child components of this tag.</p>
    *
    * @since 4.10.0
    */

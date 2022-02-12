@@ -224,10 +224,10 @@ final class MiniMessageParser {
       }
     }
 
-    if (!node.children().isEmpty()) {
+    if (!node.unsafeChildren().isEmpty()) {
       final List<Component> children = new ArrayList<>(comp.children().size() + node.children().size());
       children.addAll(comp.children());
-      for (final ElementNode child : node.children()) {
+      for (final ElementNode child : node.unsafeChildren()) {
         children.add(this.treeToComponent(child, context));
       }
       comp = comp.children(children);
