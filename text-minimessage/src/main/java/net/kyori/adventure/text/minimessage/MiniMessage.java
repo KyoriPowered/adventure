@@ -72,11 +72,25 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * <p>Useful for untrusted input.</p>
    *
    * @param input the input message, with tokens
-   * @param tags the tag resolver for any additional tags to handle
+   * @param tagResolver the tag resolver for any additional tags to handle
    * @return the output, with escaped tokens
    * @since 4.10.0
    */
-  @NotNull String escapeTokens(final @NotNull String input, final @NotNull TagResolver tags);
+  @NotNull String escapeTokens(final @NotNull String input, final @NotNull TagResolver tagResolver);
+
+  /**
+   * Escapes all known tokens in the input message, so that they are ignored in deserialization.
+   *
+   * <p>Useful for untrusted input.</p>
+   *
+   * @param input the input message, with tokens
+   * @param tagResolvers a series of tag resolvers to apply extra tags from, last specified taking priority
+   * @return the output, with escaped tokens
+   * @since 4.10.0
+   */
+  default @NotNull String escapeTokens(final @NotNull String input, final @NotNull TagResolver... tagResolvers) {
+    return this.escapeTokens(input, TagResolver.resolver(tagResolvers));
+  }
 
   /**
    * Removes all supported tokens in the input message.
@@ -97,11 +111,25 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * <p>Useful for untrusted input.</p>
    *
    * @param input the input message, with tokens
-   * @param tags the tag resolver for any additional tags to handle
+   * @param tagResolver the tag resolver for any additional tags to handle
    * @return the output, without tokens
    * @since 4.10.0
    */
-  @NotNull String stripTokens(final @NotNull String input, final @NotNull TagResolver tags);
+  @NotNull String stripTokens(final @NotNull String input, final @NotNull TagResolver tagResolver);
+
+  /**
+   * Removes all known tokens in the input message, so that they are ignored in deserialization.
+   *
+   * <p>Useful for untrusted input.</p>
+   *
+   * @param input the input message, with tokens
+   * @param tagResolvers a series of tag resolvers to apply extra tags from, last specified taking priority
+   * @return the output, without tokens
+   * @since 4.10.0
+   */
+  default @NotNull String stripTokens(final @NotNull String input, final @NotNull TagResolver... tagResolvers) {
+    return this.stripTokens(input, TagResolver.resolver(tagResolvers));
+  }
 
   /**
    * Deserializes a string into a component, with a tag resolver to parse tags of the form {@code <key>}.
@@ -114,6 +142,20 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @since 4.10.0
    */
   @NotNull Component deserialize(final @NotNull String input, final @NotNull TagResolver tagResolver);
+
+  /**
+   * Deserializes a string into a component, with a tag resolver to parse tags of the form {@code <key>}.
+   *
+   * <p>Tags will be resolved from the resolver parameters before the resolver provided in the builder is used.</p>
+   *
+   * @param input the input string
+   * @param tagResolvers a series of tag resolvers to apply extra tags from, last specified taking priority
+   * @return the output component
+   * @since 4.10.0
+   */
+  default @NotNull Component deserialize(final @NotNull String input, final @NotNull TagResolver... tagResolvers) {
+    return this.deserialize(input, TagResolver.resolver(tagResolvers));
+  }
 
   /**
    * Creates a new {@link MiniMessage.Builder}.
