@@ -25,12 +25,18 @@ package net.kyori.adventure.text.minimessage.tag.resolver;
 
 import java.util.HashMap;
 import java.util.Map;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 final class CachingTagResolver implements TagResolver.WithoutArguments, MappableResolver {
-  private static final Tag NULL_REPLACEMENT = new Tag() {
+  private static final Tag NULL_REPLACEMENT = new Inserting() {
+    @Override
+    public Component value() {
+      throw new UnsupportedOperationException("no-op null tag");
+    }
   };
 
   private final Map<String, Tag> cache = new HashMap<>();
