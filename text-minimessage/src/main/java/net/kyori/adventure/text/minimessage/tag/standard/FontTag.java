@@ -21,42 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.tag.builtin;
+package net.kyori.adventure.text.minimessage.tag.standard;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+import org.intellij.lang.annotations.Subst;
 
 /**
- * Insert a translation component into the result.
+ * A decoration that applies a font name.
  *
  * @since 4.10.0
  */
-public final class TranslatableTag {
-  public static final String TRANSLATABLE_3 = "tr";
-  public static final String TRANSLATABLE_2 = "translate";
-  public static final String TRANSLATABLE = "lang";
+public final class FontTag {
+  public static final String FONT = "font";
 
-  private TranslatableTag() {
+  private FontTag() {
   }
 
   static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
-    final String key = args.popOr("A translation key is required").value();
-    final List<Component> with;
-    if (args.hasNext()) {
-      with = new ArrayList<>();
-      while (args.hasNext()) {
-        with.add(ctx.parse(args.pop().value()));
-      }
+    final Key font;
+    final @Subst("empty") String valueOrNamespace = args.popOr("A font tag must have either arguments of either <value> or <namespace:value>").value();
+    if (!args.hasNext()) {
+      font = Key.key(valueOrNamespace);
     } else {
-      with = Collections.emptyList();
+      @Subst("empty") final String fontKey = args.pop().value();
+      font = Key.key(valueOrNamespace, fontKey);
     }
 
-    return Tag.inserting(Component.translatable(key, with));
+    return Tag.styling(builder -> builder.font(font));
   }
 }

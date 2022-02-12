@@ -21,8 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.tag.builtin;
+package net.kyori.adventure.text.minimessage.tag.standard;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
@@ -30,18 +33,30 @@ import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 
 /**
- * A transformation that inserts a key binding component.
+ * Insert a translation component into the result.
  *
  * @since 4.10.0
  */
-public final class KeybindTag {
-  public static final String KEYBIND = "key";
+public final class TranslatableTag {
+  public static final String TRANSLATABLE_3 = "tr";
+  public static final String TRANSLATABLE_2 = "translate";
+  public static final String TRANSLATABLE = "lang";
 
-  private KeybindTag() {
+  private TranslatableTag() {
   }
 
   static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
-    return Tag.inserting(Component.keybind(args.popOr("A keybind id is required").value()));
-  }
+    final String key = args.popOr("A translation key is required").value();
+    final List<Component> with;
+    if (args.hasNext()) {
+      with = new ArrayList<>();
+      while (args.hasNext()) {
+        with.add(ctx.parse(args.pop().value()));
+      }
+    } else {
+      with = Collections.emptyList();
+    }
 
+    return Tag.inserting(Component.translatable(key, with));
+  }
 }

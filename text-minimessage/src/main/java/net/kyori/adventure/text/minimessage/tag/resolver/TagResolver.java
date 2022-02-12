@@ -34,7 +34,7 @@ import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.Tag;
-import net.kyori.adventure.text.minimessage.tag.builtin.BuiltInTags;
+import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,7 +46,7 @@ import static java.util.Objects.requireNonNull;
  *
  * <p>A resolver can handle anywhere from a single tag, to a dynamically generated set of tags, returning a tag based on the provided name and arguments.</p>
  *
- * @see BuiltInTags
+ * @see StandardTags
  * @see Placeholder
  * @since 4.10.0
  */
@@ -62,7 +62,7 @@ public interface TagResolver {
   }
 
   /**
-   * Get the tag resolver that resolves all {@link BuiltInTags built-in tags}.
+   * Get the tag resolver that resolves all {@link StandardTags standard tags}.
    *
    * <p>This is the default resolver used by parsers.</p>
    *
@@ -70,7 +70,7 @@ public interface TagResolver {
    * @since 4.10.0
    */
   static @NotNull TagResolver standard() {
-    return BuiltInTags.all();
+    return StandardTags.defaults();
   }
 
   /**

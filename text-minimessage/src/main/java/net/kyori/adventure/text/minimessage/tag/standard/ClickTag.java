@@ -21,36 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.tag.builtin;
+package net.kyori.adventure.text.minimessage.tag.standard;
 
-import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
-import org.intellij.lang.annotations.Subst;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 /**
- * A decoration that applies a font name.
+ * Click events.
  *
  * @since 4.10.0
  */
-public final class FontTag {
-  public static final String FONT = "font";
+@ApiStatus.Internal
+public final class ClickTag {
+  public static final String CLICK = "click";
 
-  private FontTag() {
+  private ClickTag() {
   }
 
   static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
-    final Key font;
-    final @Subst("empty") String valueOrNamespace = args.popOr("A font tag must have either arguments of either <value> or <namespace:value>").value();
-    if (!args.hasNext()) {
-      font = Key.key(valueOrNamespace);
-    } else {
-      @Subst("empty") final String fontKey = args.pop().value();
-      font = Key.key(valueOrNamespace, fontKey);
+    final String actionName = args.popOr(() -> "A click tag requires an action of one of " + ClickEvent.Action.NAMES.keys()).lowerValue();
+    final ClickEvent.@Nullable Action action = ClickEvent.Action.NAMES.value(actionName);
+    if (action == null) {
+      throw ctx.newError("Unknown click event action '" + actionName + "'", args);
     }
 
-    return Tag.styling(builder -> builder.font(font));
+    final String value = args.popOr("Click event actions require a value").value();
+    return Tag.styling(ClickEvent.clickEvent(action, value));
   }
 }

@@ -26,4 +26,4 @@
  *
  * @since 4.10.0
  */
-package net.kyori.adventure.text.minimessage.tag.builtin;
+package net.kyori.adventure.text.minimessage.tag.standard;

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.tag.builtin;
+package net.kyori.adventure.text.minimessage.tag.standard;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -38,8 +38,8 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
  *
  * @since 4.10.0
  */
-public final class BuiltInTags {
-  private BuiltInTags() {
+public final class StandardTags {
+  private StandardTags() {
   }
 
   private static final TagResolver DECORATION = Stream.concat(TextDecoration.NAMES.keyToValue().entrySet().stream(), DecorationTag.DECORATION_ALIASES.entrySet().stream())
@@ -172,12 +172,15 @@ public final class BuiltInTags {
   }
 
   /**
-   * Get a resolver that handles all built-in tags.
+   * Get a resolver that handles all default standard tags.
+   *
+   * <p>This will currently return all standard tags, but in the future MiniMessage
+   * may add tags that are not enabled by default, and which must explicitly be opted-in to.</p>
    *
    * @return the resolver for built-in tags
    * @since 4.10.0
    */
-  public static TagResolver all() {
+  public static TagResolver defaults() {
     return ALL;
   }
 

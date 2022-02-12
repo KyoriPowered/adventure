@@ -31,8 +31,8 @@ import java.util.function.Predicate;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.Tag;
-import net.kyori.adventure.text.minimessage.tag.builtin.BuiltInTags;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.empty;
@@ -151,7 +151,7 @@ public class MiniMessageTest extends TestBase {
         .append(text("TEST"));
     final String input = "<green><bold><test>";
     final TagResolver registry = TagResolver.builder()
-            .resolver(BuiltInTags.color())
+            .resolver(StandardTags.color())
             .build();
     final MiniMessage miniMessage = MiniMessage.builder().tags(registry).build();
 
