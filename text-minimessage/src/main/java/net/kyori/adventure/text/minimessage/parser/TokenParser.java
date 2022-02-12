@@ -629,7 +629,7 @@ public final class TokenParser {
      * @return a tag
      * @since 4.10.0
      */
-    @Nullable Tag resolve(final String name, final List<? extends Tag.Argument> trimmedArgs, final @Nullable Token token);
+    @Nullable Tag resolve(final @NotNull String name, final @NotNull List<? extends Tag.Argument> trimmedArgs, final @Nullable Token token);
 
     /**
      * Resolve by sanitized name.
@@ -638,7 +638,7 @@ public final class TokenParser {
      * @return a tag, if any is available
      * @since 4.10.0
      */
-    default @Nullable Tag resolve(final String name) {
+    default @Nullable Tag resolve(final @NotNull String name) {
       return this.resolve(name, Collections.emptyList(), null);
     }
 
@@ -649,7 +649,7 @@ public final class TokenParser {
      * @return a tag, if any is available
      * @since 4.10.0
      */
-    default @Nullable Tag resolve(final TagNode node) {
+    default @Nullable Tag resolve(final @NotNull TagNode node) {
       return this.resolve(
         sanitizePlaceholderName(node.name()),
         node.parts().subList(1, node.parts().size()),
@@ -666,7 +666,7 @@ public final class TokenParser {
      * @return a sanitized name
      * @since 4.10.0
      */
-    static String sanitizePlaceholderName(final String name) {
+    static @NotNull String sanitizePlaceholderName(final @NotNull String name) {
       return name.toLowerCase(Locale.ROOT);
     }
   }

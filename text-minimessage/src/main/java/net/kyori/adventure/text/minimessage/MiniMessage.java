@@ -72,7 +72,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * <p>Useful for untrusted input.</p>
    *
    * @param input the input message, with tokens
-   * @param tags a tag resolver to provide any additional tags that can be understood, combined with the overall tag resolver
+   * @param tags the tag resolver for any additional tags to handle
    * @return the output, with escaped tokens
    * @since 4.10.0
    */
@@ -97,7 +97,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * <p>Useful for untrusted input.</p>
    *
    * @param input the input message, with tokens
-   * @param tags a tag resolver to provide any additional tags that can be understood, combined with the overall tag resolver
+   * @param tags the tag resolver for any additional tags to handle
    * @return the output, without tokens
    * @since 4.10.0
    */
@@ -109,7 +109,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * <p>Tags will be resolved from the resolver parameter before the resolver provided in the builder is used.</p>
    *
    * @param input the input string
-   * @param tagResolver the tag resolver for any additional tags to handle.
+   * @param tagResolver the tag resolver for any additional tags to handle
    * @return the output component
    * @since 4.10.0
    */
@@ -135,6 +135,9 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
     /**
      * Set the known tags to the provided tag resolver.
      *
+     * <p>This resolver determines the base set of tags known to this {@link MiniMessage} instance.
+     * Any resolvers passed to the {@link MiniMessage#deserialize(String, TagResolver)} method will override this resolver.</p>
+     *
      * @param tags the tag resolver to use
      * @return this builder
      * @since 4.10.0
@@ -148,7 +151,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      * @return this builder
      * @since 4.10.0
      */
-    @NotNull Builder tags(final @NotNull Consumer<TagResolver.Builder> adder);
+    @NotNull Builder editTags(final @NotNull Consumer<TagResolver.Builder> adder);
 
     /**
      * Allows to enable strict mode (disabled by default).

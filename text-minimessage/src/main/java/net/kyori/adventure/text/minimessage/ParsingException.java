@@ -34,7 +34,7 @@ public abstract class ParsingException extends RuntimeException {
   /**
    * Create a new parsing exception with only a message.
    *
-   * @param message the message
+   * @param message a detail message describing the error
    * @since 4.10.0
    */
   protected ParsingException(final String message) {
@@ -44,7 +44,7 @@ public abstract class ParsingException extends RuntimeException {
   /**
    * Create a new parsing exception with a message and an optional cause.
    *
-   * @param message the message
+   * @param message a detail message describing the error
    * @param cause the cause
    * @since 4.10.0
    */
@@ -53,9 +53,9 @@ public abstract class ParsingException extends RuntimeException {
   }
 
   /**
-   * Get the message which caused this exception.
+   * Get the input message which caused this exception.
    *
-   * @return the original message
+   * @return the original input message
    * @since 4.10.0
    */
   public abstract String originalText();

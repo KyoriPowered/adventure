@@ -62,6 +62,20 @@ public final class BuiltInTags {
   private static final TagResolver FONT = TagResolver.resolver(FontTag.FONT, FontTag::create);
   private static final TagResolver GRADIENT = TagResolver.resolver(GradientTag.GRADIENT, GradientTag::create);
   private static final TagResolver RAINBOW = TagResolver.resolver(RainbowTag.RAINBOW, RainbowTag::create);
+  private static final TagResolver ALL = TagResolver.builder()
+      .resolvers(
+        HOVER_EVENT,
+        CLICK_EVENT,
+        COLOR,
+        KEYBIND,
+        TRANSLATABLE,
+        INSERTION,
+        FONT,
+        DECORATION,
+        GRADIENT,
+        RAINBOW
+      )
+      .build();
 
   /**
    * Get a resolver for the {@value HoverTag#HOVER} tag.
@@ -164,20 +178,7 @@ public final class BuiltInTags {
    * @since 4.10.0
    */
   public static TagResolver all() {
-    return TagResolver.builder()
-      .resolvers(
-        HOVER_EVENT,
-        CLICK_EVENT,
-        COLOR,
-        KEYBIND,
-        TRANSLATABLE,
-        INSERTION,
-        FONT,
-        DECORATION,
-        GRADIENT,
-        RAINBOW
-      )
-      .build();
+    return ALL;
   }
 
   private static Set<String> names(final String... names) {

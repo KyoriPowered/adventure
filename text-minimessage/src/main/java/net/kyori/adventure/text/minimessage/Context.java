@@ -32,14 +32,14 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Parser context for use within transformations.
  *
- * <p>This allows operating recursive parses, for cases where messages may include tokens.</p>
+ * <p>This allows operating recursive parses, for cases where messages may include parse-specific tags.</p>
  *
  * @since 4.10.0
  */
 @ApiStatus.NonExtendable
 public interface Context {
   /**
-   * Parses a MiniMessage using all the settings of this context, including placeholders.
+   * Parses a MiniMessage string using all the settings of this context.
    *
    * @param message the message to parse
    * @return the parsed message
@@ -50,7 +50,7 @@ public interface Context {
   /**
    * Create a new parsing exception.
    *
-   * @param message the detail message
+   * @param message a detail message describing the error
    * @param tags the tag parts which caused the error
    * @return the new parsing exception
    * @since 4.10.0
@@ -63,7 +63,7 @@ public interface Context {
   /**
    * Create a new parsing exception without reference to a specific location.
    *
-   * @param message the detail message
+   * @param message a detail message describing the error
    * @return the new parsing exception
    * @since 4.10.0
    */
@@ -72,7 +72,7 @@ public interface Context {
   /**
    * Create a new parsing exception.
    *
-   * @param message the detail message
+   * @param message a detail message describing the error
    * @param cause the cause
    * @param args arguments that caused the errors
    * @return the new parsing exception

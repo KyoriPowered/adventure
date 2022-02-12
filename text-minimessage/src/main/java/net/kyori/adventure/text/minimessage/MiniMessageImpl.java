@@ -141,7 +141,7 @@ final class MiniMessageImpl implements MiniMessage {
     }
 
     @Override
-    public @NotNull Builder tags(final @NotNull Consumer<TagResolver.Builder> adder) {
+    public @NotNull Builder editTags(final @NotNull Consumer<TagResolver.Builder> adder) {
       requireNonNull(adder, "adder");
       final TagResolver.Builder builder = TagResolver.builder().resolver(this.tagResolver);
       adder.accept(builder);

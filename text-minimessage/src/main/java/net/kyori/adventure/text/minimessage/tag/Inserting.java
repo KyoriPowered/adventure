@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.minimessage.tag;
 
 import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A tag type that inserts a {@link Component} into the output.
@@ -34,12 +35,10 @@ public /* non-sealed */ interface Inserting extends Tag {
   /**
    * Return the component this tag produces.
    *
-   * <p>It may be desirable to store the result of this method.</p>
-   *
    * @return the component this tag produces
    * @since 4.10.0
    */
-  Component value();
+  @NotNull Component value();
 
   /**
    * Get whether or not this tag allows children.

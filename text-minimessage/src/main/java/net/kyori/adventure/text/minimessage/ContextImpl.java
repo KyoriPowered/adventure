@@ -45,6 +45,8 @@ import static java.util.Objects.requireNonNull;
  * @since 4.10.0
  */
 class ContextImpl implements Context {
+  private static final Token[] EMPTY_TOKEN_ARRAY = new Token[0];
+
   private final boolean strict;
   private final Consumer<String> debugOutput;
   private String message;
@@ -110,7 +112,7 @@ class ContextImpl implements Context {
 
   @Override
   public @NotNull ParsingException newError(@NotNull final String message) {
-    return new ParsingExceptionImpl(message, this.message, null, new Token[0]);
+    return new ParsingExceptionImpl(message, this.message, null, EMPTY_TOKEN_ARRAY);
   }
 
   @Override

@@ -171,7 +171,7 @@ public class MiniMessageTest extends TestBase {
       return null;
     };
 
-    final MiniMessage miniMessage = MiniMessage.builder().tags(b -> b.resolver(TagResolver.caching(resolver))).build();
+    final MiniMessage miniMessage = MiniMessage.builder().editTags(b -> b.resolver(TagResolver.caching(resolver))).build();
 
     this.assertParsedEquals(miniMessage, expected, input);
   }
@@ -187,7 +187,7 @@ public class MiniMessageTest extends TestBase {
 
     final TagResolver.Single resolver = Placeholder.component("one", text("ONE", RED));
 
-    final MiniMessage miniMessage = MiniMessage.builder().tags(b -> b.resolvers(
+    final MiniMessage miniMessage = MiniMessage.builder().editTags(b -> b.resolvers(
         component("two", text("TWO", GREEN)),
         TagResolver.caching(resolver)
       ))
