@@ -112,18 +112,6 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, PreProcess */
   }
 
   /**
-   * Get whether or not this tag allows children.
-   *
-   * <p>If children are not allowed, this tag will be auto-closing, and should not be closed explicitly.</p>
-   *
-   * @return whether this tag will allow following to become children
-   * @since 4.10.0
-   */
-  default boolean allowsChildren() {
-    return true;
-  }
-
-  /**
    * An argument that can be passed to a tag, after the first {@code :}.
    *
    * @since 4.10.0

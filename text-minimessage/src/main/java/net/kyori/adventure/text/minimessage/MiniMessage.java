@@ -153,7 +153,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
     /**
      * Allows to enable strict mode (disabled by default).
      *
-     * <p>By default, MiniMessage will allow {@link net.kyori.adventure.text.minimessage.tag.Tag#allowsChildren() child-allowing} tags to be implicitly closed. When strict mode
+     * <p>By default, MiniMessage will allow {@link net.kyori.adventure.text.minimessage.tag.Inserting#allowsChildren() child-allowing} tags to be implicitly closed. When strict mode
      * is enabled, all child-allowing tags which are {@code <opened>} must be explicitly {@code </closed>} as well.</p>
      *
      * @param strict if strict mode should be enabled

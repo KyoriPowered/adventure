@@ -40,4 +40,16 @@ public /* non-sealed */ interface Inserting extends Tag {
    * @since 4.10.0
    */
   Component value();
+
+  /**
+   * Get whether or not this tag allows children.
+   *
+   * <p>If children are not allowed, this tag will be auto-closing, and should not be closed explicitly.</p>
+   *
+   * @return whether this tag will allow following to become children
+   * @since 4.10.0
+   */
+  default boolean allowsChildren() {
+    return true;
+  }
 }

@@ -39,6 +39,7 @@ import net.kyori.adventure.text.minimessage.parser.node.RootNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.parser.node.TextNode;
+import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -382,7 +383,7 @@ public final class TokenParser {
                 // This is a recognized tag, goes in the tree
                 tagNode.tag(transformation);
                 node.addChild(tagNode);
-                if (transformation.allowsChildren()) {
+                if (!(transformation instanceof Inserting) || ((Inserting) transformation).allowsChildren()) {
                   node = tagNode; // TODO: self-terminating tags (i.e. <tag/>) don't set this, so they don't have children
                 }
               }
