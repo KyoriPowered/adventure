@@ -116,7 +116,7 @@ final class MiniMessageParser {
     }
   }
 
-  @NotNull Component parseFormat(final @NotNull String richMessage, final @NotNull ContextImpl context) {
+  @NotNull ElementNode parseToTree(final @NotNull String richMessage, final @NotNull ContextImpl context) {
     final TagResolver combinedResolver = TagResolver.resolver(this.tagResolver, context.extraTags());
     final Consumer<String> debug = context.debugOutput();
     if (debug != null) {
@@ -192,6 +192,11 @@ final class MiniMessageParser {
       debug.accept(root.toString());
     }
 
+    return root;
+  }
+
+  @NotNull Component parseFormat(final @NotNull String richMessage, final @NotNull ContextImpl context) {
+    final ElementNode root = this.parseToTree(richMessage, context);
     return Objects.requireNonNull(context.postProcessor().apply(this.treeToComponent(root, context)), "Post-processor must not return null");
   }
 
