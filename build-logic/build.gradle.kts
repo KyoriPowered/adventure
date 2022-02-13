@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-  val indraVersion = "2.1.0"
+  val indraVersion = "2.1.1"
   implementation("net.kyori", "indra-common", indraVersion)
   implementation("net.kyori", "indra-publishing-sonatype", indraVersion)
   implementation("net.kyori", "indra-crossdoc", indraVersion)
