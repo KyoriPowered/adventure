@@ -21,8 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package net.kyori.adventure.text.minimessage.tag.standard;
+
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.ParsingException;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+
 /**
- * Parser.
+ * A transformation that inserts a key binding component.
+ *
+ * @since 4.10.0
  */
-@org.jetbrains.annotations.ApiStatus.Internal
-package net.kyori.adventure.text.minimessage.parser;
+public final class KeybindTag {
+  public static final String KEYBIND = "key";
+
+  private KeybindTag() {
+  }
+
+  static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
+    return Tag.inserting(Component.keybind(args.popOr("A keybind id is required").value()));
+  }
+
+}

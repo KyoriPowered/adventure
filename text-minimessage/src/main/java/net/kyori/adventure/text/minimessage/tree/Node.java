@@ -21,8 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package net.kyori.adventure.text.minimessage.tree;
+
+import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
- * Parser.
+ * A node in the MiniMessage parse tree.
+ *
+ * <p>This API is currently incomplete -- it will be expanded in future versions based on user interest.</p>
+ *
+ * @since 4.10.0
  */
-@org.jetbrains.annotations.ApiStatus.Internal
-package net.kyori.adventure.text.minimessage.parser;
+public interface Node {
+  /**
+   * Get a human-readable representation of this node and its descendants for debugging purposes.
+   *
+   * @return the human-readable representation of this node tree
+   * @since 4.10.0
+   */
+  @Override
+  @NotNull String toString();
+
+  /**
+   * Get children of this node.
+   *
+   * <p>The returned list is unmodifiable.</p>
+   *
+   * @return a list of children
+   * @since 4.10.0
+   */
+  @NotNull List<? extends Node> children();
+
+  /**
+   * Get the parent of this node.
+   *
+   * <p>If this node is at the root of the tree, this may be {@code null}.</p>
+   *
+   * @return this node's parent
+   * @since 4.10.0
+   */
+  @Nullable Node parent();
+}

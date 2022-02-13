@@ -28,8 +28,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
-import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,7 +43,7 @@ final class MiniMessageImpl implements MiniMessage {
   static final Consumer<List<String>> DEFAULT_ERROR_CONSUMER = message -> message.forEach(System.out::println);
   static final UnaryOperator<Component> DEFAULT_COMPACTING_METHOD = Component::compact;
 
-  static final MiniMessage INSTANCE = new MiniMessageImpl(TransformationRegistry.standard(), PlaceholderResolver.empty(), false, null, DEFAULT_ERROR_CONSUMER, DEFAULT_COMPACTING_METHOD);
+  static final MiniMessage INSTANCE = new MiniMessageImpl(TagResolver.standard(), false, null, DEFAULT_ERROR_CONSUMER, DEFAULT_COMPACTING_METHOD);
 
   private final boolean strict;
   private final @Nullable Consumer<String> debugOutput;
@@ -52,8 +51,8 @@ final class MiniMessageImpl implements MiniMessage {
   private final UnaryOperator<Component> postProcessor;
   final MiniMessageParser parser;
 
-  MiniMessageImpl(final @NotNull TransformationRegistry registry, final @NotNull PlaceholderResolver placeholderResolver, final boolean strict, final @Nullable Consumer<String> debugOutput, final @NotNull Consumer<List<String>> parsingErrorMessageConsumer, final @NotNull UnaryOperator<Component> postProcessor) {
-    this.parser = new MiniMessageParser(registry, placeholderResolver);
+  MiniMessageImpl(final @NotNull TagResolver resolver, final boolean strict, final @Nullable Consumer<String> debugOutput, final @NotNull Consumer<List<String>> parsingErrorMessageConsumer, final @NotNull UnaryOperator<Component> postProcessor) {
+    this.parser = new MiniMessageParser(resolver);
     this.strict = strict;
     this.debugOutput = debugOutput;
     this.parsingErrorMessageConsumer = parsingErrorMessageConsumer;
@@ -66,8 +65,8 @@ final class MiniMessageImpl implements MiniMessage {
   }
 
   @Override
-  public @NotNull Component deserialize(final @NotNull String input, final @NotNull PlaceholderResolver placeholderResolver) {
-    return this.parser.parseFormat(input, this.newContext(input, requireNonNull(placeholderResolver, "placeholderResolver")));
+  public @NotNull Component deserialize(final @NotNull String input, final @NotNull TagResolver tagResolver) {
+    return this.parser.parseFormat(input, this.newContext(input, requireNonNull(tagResolver, "tagResolver")));
   }
 
   @Override
@@ -76,28 +75,28 @@ final class MiniMessageImpl implements MiniMessage {
   }
 
   @Override
-  public @NotNull String escapeTokens(final @NotNull String input) {
+  public @NotNull String escapeTags(final @NotNull String input) {
     return this.parser.escapeTokens(input, this.newContext(input, null));
   }
 
   @Override
-  public @NotNull String escapeTokens(final @NotNull String input, final @NotNull PlaceholderResolver placeholders) {
-    return this.parser.escapeTokens(input, this.newContext(input, placeholders));
+  public @NotNull String escapeTags(final @NotNull String input, final @NotNull TagResolver tagResolver) {
+    return this.parser.escapeTokens(input, this.newContext(input, tagResolver));
   }
 
   @Override
-  public @NotNull String stripTokens(final @NotNull String input) {
+  public @NotNull String stripTags(final @NotNull String input) {
     return this.parser.stripTokens(input, this.newContext(input, null));
   }
 
   @Override
-  public @NotNull String stripTokens(final @NotNull String input, final @NotNull PlaceholderResolver placeholders) {
-    return this.parser.stripTokens(input, this.newContext(input, placeholders));
+  public @NotNull String stripTags(final @NotNull String input, final @NotNull TagResolver tagResolver) {
+    return this.parser.stripTokens(input, this.newContext(input, tagResolver));
   }
 
-  private @NotNull ContextImpl newContext(final @NotNull String input, final @Nullable PlaceholderResolver resolver) {
+  private @NotNull ContextImpl newContext(final @NotNull String input, final @Nullable TagResolver resolver) {
     if (resolver == null) {
-      return ContextImpl.of(this.strict, this.debugOutput, input, this, PlaceholderResolver.empty(), this.postProcessor);
+      return ContextImpl.of(this.strict, this.debugOutput, input, this, TagResolver.empty(), this.postProcessor);
     } else {
       return ContextImpl.of(this.strict, this.debugOutput, input, this, resolver, this.postProcessor);
     }
@@ -119,8 +118,7 @@ final class MiniMessageImpl implements MiniMessage {
   }
 
   static final class BuilderImpl implements Builder {
-    private TransformationRegistry registry = TransformationRegistry.standard();
-    private PlaceholderResolver placeholderResolver = null;
+    private TagResolver tagResolver = TagResolver.standard();
     private boolean strict = false;
     private Consumer<String> debug = null;
     private Consumer<List<String>> parsingErrorMessageConsumer = DEFAULT_ERROR_CONSUMER;
@@ -130,30 +128,24 @@ final class MiniMessageImpl implements MiniMessage {
     }
 
     BuilderImpl(final MiniMessageImpl serializer) {
-      this.registry = serializer.parser.registry;
-      this.placeholderResolver = serializer.parser.placeholderResolver;
+      this.tagResolver = serializer.parser.tagResolver;
       this.strict = serializer.strict;
       this.debug = serializer.debugOutput;
       this.parsingErrorMessageConsumer = serializer.parsingErrorMessageConsumer;
     }
 
     @Override
-    public @NotNull Builder transformations(final @NotNull TransformationRegistry transformationRegistry) {
-      this.registry = requireNonNull(transformationRegistry, "transformationRegistry");
+    public @NotNull Builder tags(final @NotNull TagResolver tags) {
+      this.tagResolver = requireNonNull(tags, "tags");
       return this;
     }
 
     @Override
-    public @NotNull Builder transformations(final @NotNull Consumer<TransformationRegistry.Builder> modifier) {
-      final TransformationRegistry.Builder builder = this.registry.toBuilder();
-      modifier.accept(builder);
-      this.registry = builder.build();
-      return this;
-    }
-
-    @Override
-    public @NotNull Builder placeholderResolver(final @Nullable PlaceholderResolver placeholderResolver) {
-      this.placeholderResolver = placeholderResolver;
+    public @NotNull Builder editTags(final @NotNull Consumer<TagResolver.Builder> adder) {
+      requireNonNull(adder, "adder");
+      final TagResolver.Builder builder = TagResolver.builder().resolver(this.tagResolver);
+      adder.accept(builder);
+      this.tagResolver = builder.build();
       return this;
     }
 
@@ -183,7 +175,7 @@ final class MiniMessageImpl implements MiniMessage {
 
     @Override
     public @NotNull MiniMessage build() {
-      return new MiniMessageImpl(this.registry, this.placeholderResolver == null ? PlaceholderResolver.empty() : this.placeholderResolver, this.strict, this.debug, this.parsingErrorMessageConsumer, this.postProcessor);
+      return new MiniMessageImpl(this.tagResolver, this.strict, this.debug, this.parsingErrorMessageConsumer, this.postProcessor);
     }
   }
 }

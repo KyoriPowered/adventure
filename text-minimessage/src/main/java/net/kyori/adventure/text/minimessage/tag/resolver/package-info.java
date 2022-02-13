@@ -22,7 +22,8 @@
  * SOFTWARE.
  */
 /**
- * Parser.
+ * Tools for resolving tags based on tag information.
+ *
+ * @since 4.10.0
  */
-@org.jetbrains.annotations.ApiStatus.Internal
-package net.kyori.adventure.text.minimessage.parser;
+package net.kyori.adventure.text.minimessage.tag.resolver;

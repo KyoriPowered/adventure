@@ -22,7 +22,10 @@
  * SOFTWARE.
  */
 /**
- * Parser.
+ * Built-in tags shipped with MiniMessage.
+ *
+ * <p>The tags in {@link StandardTags} will be included in MiniMessage instances by default.</p>
+ *
+ * @since 4.10.0
  */
-@org.jetbrains.annotations.ApiStatus.Internal
-package net.kyori.adventure.text.minimessage.parser;
+package net.kyori.adventure.text.minimessage.tag.standard;

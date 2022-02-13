@@ -22,7 +22,10 @@
  * SOFTWARE.
  */
 /**
- * Parser.
+ * A stable representation of the MiniMessage parse tree.
+ *
+ * <p>This API is currently incomplete.</p>
+ *
+ * @since 4.10.0
  */
-@org.jetbrains.annotations.ApiStatus.Internal
-package net.kyori.adventure.text.minimessage.parser;
+package net.kyori.adventure.text.minimessage.tree;

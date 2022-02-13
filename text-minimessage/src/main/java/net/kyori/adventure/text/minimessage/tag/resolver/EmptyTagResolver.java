@@ -21,8 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-/**
- * Parser.
- */
-@org.jetbrains.annotations.ApiStatus.Internal
-package net.kyori.adventure.text.minimessage.parser;
+package net.kyori.adventure.text.minimessage.tag.resolver;
+
+import java.util.Map;
+import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+final class EmptyTagResolver implements TagResolver, MappableResolver {
+  static final EmptyTagResolver INSTANCE = new EmptyTagResolver();
+
+  private EmptyTagResolver() {
+  }
+
+  @Override
+  public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) {
+    return null;
+  }
+
+  @Override
+  public boolean has(final @NotNull String name) {
+    return false;
+  }
+
+  @Override
+  public boolean contributeToMap(final Map<String, Tag> map) {
+    return true;
+  }
+}

@@ -21,8 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-/**
- * Parser.
- */
-@org.jetbrains.annotations.ApiStatus.Internal
-package net.kyori.adventure.text.minimessage.parser;
+package net.kyori.adventure.text.minimessage.tag;
+
+import net.kyori.adventure.internal.Internals;
+import net.kyori.examination.Examinable;
+
+abstract /* non-sealed */ class AbstractTag implements Tag, Examinable {
+  @Override
+  public final String toString() {
+    return Internals.toString(this);
+  }
+}

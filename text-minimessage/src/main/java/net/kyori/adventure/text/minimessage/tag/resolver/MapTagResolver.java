@@ -21,8 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-/**
- * Parser.
- */
-@org.jetbrains.annotations.ApiStatus.Internal
-package net.kyori.adventure.text.minimessage.parser;
+package net.kyori.adventure.text.minimessage.tag.resolver;
+
+import java.util.Map;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+final class MapTagResolver implements TagResolver.WithoutArguments, MappableResolver {
+  private final Map<String, ? extends Tag> tagMap;
+
+  MapTagResolver(final @NotNull Map<String, ? extends Tag> placeholderMap) {
+    this.tagMap = placeholderMap;
+  }
+
+  @Override
+  public @Nullable Tag resolve(final @NotNull String name) {
+    return this.tagMap.get(name);
+  }
+
+  @Override
+  public boolean contributeToMap(final Map<String, Tag> map) {
+    map.putAll(this.tagMap);
+    return true;
+  }
+}

@@ -21,8 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package net.kyori.adventure.text.minimessage.tag.resolver;
+
+import java.util.Map;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+
 /**
- * Parser.
+ * Marker interface for resolvers that may handle a fixed domain of tags.
  */
-@org.jetbrains.annotations.ApiStatus.Internal
-package net.kyori.adventure.text.minimessage.parser;
+interface MappableResolver {
+  /**
+   * Contribute entries.
+   *
+   * <p>Returning false from this method should leave the input {@code map} unmodified,
+   * and lead to handling as if this resolver did not implement {@code MappableResolver}.</p>
+   *
+   * @param map the map to add to
+   * @return whether or not the set of values was actually known
+   */
+  boolean contributeToMap(final Map<String, Tag> map);
+}

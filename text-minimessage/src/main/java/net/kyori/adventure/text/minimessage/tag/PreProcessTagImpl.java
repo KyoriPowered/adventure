@@ -21,8 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-/**
- * Parser.
- */
-@org.jetbrains.annotations.ApiStatus.Internal
-package net.kyori.adventure.text.minimessage.parser;
+package net.kyori.adventure.text.minimessage.tag;
+
+import java.util.Objects;
+import java.util.stream.Stream;
+import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+final class PreProcessTagImpl extends AbstractTag implements PreProcess {
+  private final String value;
+
+  PreProcessTagImpl(final String value) {
+    this.value = value;
+  }
+
+  @Override
+  public String value() {
+    return this.value;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.value);
+  }
+
+  @Override
+  public boolean equals(final @Nullable Object other) {
+    if (this == other) return true;
+    if (!(other instanceof PreProcessTagImpl)) return false;
+    final PreProcessTagImpl that = (PreProcessTagImpl) other;
+    return Objects.equals(this.value, that.value);
+  }
+
+  @Override
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(ExaminableProperty.of("value", this.value));
+  }
+}

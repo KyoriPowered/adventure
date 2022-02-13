@@ -21,8 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-/**
- * Parser.
- */
-@org.jetbrains.annotations.ApiStatus.Internal
-package net.kyori.adventure.text.minimessage.parser;
+package net.kyori.adventure.text.minimessage.tag;
+
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.Style;
+import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.NotNull;
+
+final class CallbackStylingTagImpl extends AbstractTag implements Inserting {
+  private final Consumer<Style.Builder> styles;
+
+  CallbackStylingTagImpl(final Consumer<Style.Builder> styles) {
+    this.styles = styles;
+  }
+
+  @Override
+  public Component value() {
+    return Component.text("", Style.style(this.styles));
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.styles);
+  }
+
+  @Override
+  public boolean equals(final Object other) {
+    if (this == other) return true;
+    if (!(other instanceof CallbackStylingTagImpl)) return false;
+    final CallbackStylingTagImpl that = (CallbackStylingTagImpl) other;
+    return Objects.equals(this.styles, that.styles);
+  }
+
+  @Override
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(ExaminableProperty.of("styles", this.styles));
+  }
+}

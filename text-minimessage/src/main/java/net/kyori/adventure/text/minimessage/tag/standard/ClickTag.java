@@ -21,8 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package net.kyori.adventure.text.minimessage.tag.standard;
+
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.ParsingException;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
+
 /**
- * Parser.
+ * Click events.
+ *
+ * @since 4.10.0
  */
-@org.jetbrains.annotations.ApiStatus.Internal
-package net.kyori.adventure.text.minimessage.parser;
+@ApiStatus.Internal
+public final class ClickTag {
+  public static final String CLICK = "click";
+
+  private ClickTag() {
+  }
+
+  static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
+    final String actionName = args.popOr(() -> "A click tag requires an action of one of " + ClickEvent.Action.NAMES.keys()).lowerValue();
+    final ClickEvent.@Nullable Action action = ClickEvent.Action.NAMES.value(actionName);
+    if (action == null) {
+      throw ctx.newException("Unknown click event action '" + actionName + "'", args);
+    }
+
+    final String value = args.popOr("Click event actions require a value").value();
+    return Tag.styling(ClickEvent.clickEvent(action, value));
+  }
+}

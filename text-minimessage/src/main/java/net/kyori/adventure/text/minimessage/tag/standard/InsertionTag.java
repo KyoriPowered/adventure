@@ -21,8 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package net.kyori.adventure.text.minimessage.tag.standard;
+
+import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.ParsingException;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+
 /**
- * Parser.
+ * A transformation that applies an insertion (shift-click) event.
+ *
+ * @since 4.10.0
  */
-@org.jetbrains.annotations.ApiStatus.Internal
-package net.kyori.adventure.text.minimessage.parser;
+public final class InsertionTag {
+  public static final String INSERTION = "insert";
+
+  private InsertionTag() {
+  }
+
+  static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
+    final String insertion = args.popOr("A value is required to produce an insertion component").value();
+    return Tag.styling(b -> b.insertion(insertion));
+  }
+}

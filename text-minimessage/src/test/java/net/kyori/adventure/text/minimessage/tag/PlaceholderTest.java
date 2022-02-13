@@ -21,8 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-/**
- * Parser.
- */
-@org.jetbrains.annotations.ApiStatus.Internal
-package net.kyori.adventure.text.minimessage.parser;
+package net.kyori.adventure.text.minimessage.tag;
+
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.junit.jupiter.api.Test;
+
+import static net.kyori.adventure.text.Component.text;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+public class PlaceholderTest {
+
+  // https://github.com/KyoriPowered/adventure-text-minimessage/issues/190
+  @Test
+  void testCaseOfPlaceholders() {
+    assertThrows(IllegalArgumentException.class, () -> Placeholder.parsed("HI", "hi"));
+    assertThrows(IllegalArgumentException.class, () -> Placeholder.component("HI", text("hi")));
+    assertThrows(IllegalArgumentException.class, () -> Placeholder.component("HI", () -> text("hi")));
+  }
+}

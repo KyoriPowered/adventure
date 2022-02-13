@@ -24,4 +24,5 @@
 /**
  * Parser nodes.
  */
+@org.jetbrains.annotations.ApiStatus.Internal
 package net.kyori.adventure.text.minimessage.parser.node;

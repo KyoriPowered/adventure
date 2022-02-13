@@ -21,8 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package net.kyori.adventure.text.minimessage.tag;
+
+import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.NotNull;
+
 /**
- * Parser.
+ * A tag type that inserts a {@link Component} into the output.
+ *
+ * @since 4.10.0
  */
-@org.jetbrains.annotations.ApiStatus.Internal
-package net.kyori.adventure.text.minimessage.parser;
+public /* non-sealed */ interface Inserting extends Tag {
+  /**
+   * Return the component this tag produces.
+   *
+   * @return the component this tag produces
+   * @since 4.10.0
+   */
+  @NotNull Component value();
+
+  /**
+   * Get whether or not this tag allows children.
+   *
+   * <p>If children are not allowed, this tag will be auto-closing, and
+   * should not be closed explicitly. In strict mode, a closing tag will be
+   * an error. In lenient mode, the closing tag will be interpreted as literal text.</p>
+   *
+   * @return whether this tag will allow following to become children
+   * @since 4.10.0
+   */
+  default boolean allowsChildren() {
+    return true;
+  }
+}

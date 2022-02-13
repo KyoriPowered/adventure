@@ -21,8 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package net.kyori.adventure.text.minimessage.tag;
+
 /**
- * Parser.
+ * A tag that is applied at the tokenization stage, before the tree is constructed.
+ *
+ * <p>Its value must be a MiniMessage string, and cannot accept any arguments</p>
+ *
+ * @since 4.10.0
  */
-@org.jetbrains.annotations.ApiStatus.Internal
-package net.kyori.adventure.text.minimessage.parser;
+public /* non-sealed */ interface PreProcess extends Tag {
+  /**
+   * Get the value to insert at the pre-process phase.
+   *
+   * @return the value to insert
+   * @since 4.10.0
+   */
+  String value();
+}

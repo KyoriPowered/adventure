@@ -21,8 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package net.kyori.adventure.text.minimessage;
+
 /**
- * Parser.
+ * An exception thrown when an error occurs while parsing a MiniMessage string.
+ *
+ * @since 4.10.0
  */
-@org.jetbrains.annotations.ApiStatus.Internal
-package net.kyori.adventure.text.minimessage.parser;
+public abstract class ParsingException extends RuntimeException {
+  private static final long serialVersionUID = 4502774670340827070L;
+
+  /**
+   * Create a new parsing exception with only a message.
+   *
+   * @param message a detail message describing the error
+   * @since 4.10.0
+   */
+  protected ParsingException(final String message) {
+    super(message);
+  }
+
+  /**
+   * Create a new parsing exception with a message and an optional cause.
+   *
+   * @param message a detail message describing the error
+   * @param cause the cause
+   * @since 4.10.0
+   */
+  protected ParsingException(final String message, final Throwable cause) {
+    super(message, cause);
+  }
+
+  /**
+   * Get the input message which caused this exception.
+   *
+   * @return the original input message
+   * @since 4.10.0
+   */
+  public abstract String originalText();
+}
