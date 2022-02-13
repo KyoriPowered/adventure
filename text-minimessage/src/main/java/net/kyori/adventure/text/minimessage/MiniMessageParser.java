@@ -43,7 +43,6 @@ import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.Modifying;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.string.MultiLineStringExaminer;
 import org.jetbrains.annotations.NotNull;
@@ -117,7 +116,7 @@ final class MiniMessageParser {
     }
   }
 
-  @NotNull Node parseToTree(final @NotNull String richMessage, final @NotNull ContextImpl context) {
+  @NotNull ElementNode parseToTree(final @NotNull String richMessage, final @NotNull ContextImpl context) {
     final TagResolver combinedResolver = TagResolver.resolver(this.tagResolver, context.extraTags());
     final Consumer<String> debug = context.debugOutput();
     if (debug != null) {
@@ -197,7 +196,7 @@ final class MiniMessageParser {
   }
 
   @NotNull Component parseFormat(final @NotNull String richMessage, final @NotNull ContextImpl context) {
-    final ElementNode root = (ElementNode) this.parseToTree(richMessage, context);
+    final ElementNode root = this.parseToTree(richMessage, context);
     return Objects.requireNonNull(context.postProcessor().apply(this.treeToComponent(root, context)), "Post-processor must not return null");
   }
 
