@@ -47,7 +47,7 @@ public final class ClickTag {
     final String actionName = args.popOr(() -> "A click tag requires an action of one of " + ClickEvent.Action.NAMES.keys()).lowerValue();
     final ClickEvent.@Nullable Action action = ClickEvent.Action.NAMES.value(actionName);
     if (action == null) {
-      throw ctx.newError("Unknown click event action '" + actionName + "'", args);
+      throw ctx.newException("Unknown click event action '" + actionName + "'", args);
     }
 
     final String value = args.popOr("Click event actions require a value").value();

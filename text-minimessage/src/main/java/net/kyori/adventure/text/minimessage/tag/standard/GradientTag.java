@@ -81,7 +81,7 @@ public final class GradientTag implements Modifying, Examinable {
           if (possiblePhase.isPresent()) {
             phase = (float) possiblePhase.getAsDouble();
             if (phase < -1f || phase > 1f) {
-              throw ctx.newError(String.format("Gradient phase is out of range (%s). Must be in the range [-1.0f, 1.0f] (inclusive).", phase), args);
+              throw ctx.newException(String.format("Gradient phase is out of range (%s). Must be in the range [-1.0f, 1.0f] (inclusive).", phase), args);
             }
             break;
           }
@@ -95,13 +95,13 @@ public final class GradientTag implements Modifying, Examinable {
           parsedColor = NamedTextColor.NAMES.value(arg.lowerValue());
         }
         if (parsedColor == null) {
-          throw ctx.newError(String.format("Unable to parse a color from '%s'. Please use named colours or hex (#RRGGBB) colors.", argValue), args);
+          throw ctx.newException(String.format("Unable to parse a color from '%s'. Please use named colours or hex (#RRGGBB) colors.", argValue), args);
         }
         textColors.add(parsedColor);
       }
 
       if (textColors.size() < 2) {
-        throw ctx.newError("Invalid gradient, not enough colors. Gradients must have at least two colors.", args);
+        throw ctx.newException("Invalid gradient, not enough colors. Gradients must have at least two colors.", args);
       }
     } else {
       textColors = Collections.emptyList();

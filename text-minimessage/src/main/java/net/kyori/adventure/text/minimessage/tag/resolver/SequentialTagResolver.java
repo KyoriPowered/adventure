@@ -53,7 +53,7 @@ final class SequentialTagResolver implements TagResolver {
         }
       } catch (final Exception ex) {
         arguments.reset();
-        final ParsingException err = ctx.newError("Exception thrown while parsing <" + name + ">", ex, arguments);
+        final ParsingException err = ctx.newException("Exception thrown while parsing <" + name + ">", ex, arguments);
         if (thrown == null) {
           thrown = err;
         } else {

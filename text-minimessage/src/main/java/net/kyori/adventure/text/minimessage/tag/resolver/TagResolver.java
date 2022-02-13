@@ -304,7 +304,7 @@ public interface TagResolver {
     default @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
       final Tag resolved = this.resolve(name);
       if (resolved != null && arguments.hasNext()) {
-        throw ctx.newError("Tag '<" + name + ">' does not accept any arguments");
+        throw ctx.newException("Tag '<" + name + ">' does not accept any arguments");
       }
       return resolved;
     }

@@ -45,7 +45,7 @@ final class ArgumentQueueImpl<T extends Tag.Argument> implements ArgumentQueue {
   @Override
   public @NotNull T pop() {
     if (!this.hasNext()) {
-      throw this.context.newError("Missing argument for this tag!", this);
+      throw this.context.newException("Missing argument for this tag!", this);
     }
     return this.args.get(this.ptr++);
   }
@@ -54,7 +54,7 @@ final class ArgumentQueueImpl<T extends Tag.Argument> implements ArgumentQueue {
   public @NotNull T popOr(final @NotNull String errorMessage) {
     requireNonNull(errorMessage, "errorMessage");
     if (!this.hasNext()) {
-      throw this.context.newError(errorMessage, this);
+      throw this.context.newException(errorMessage, this);
     }
     return this.args.get(this.ptr++);
   }
@@ -63,7 +63,7 @@ final class ArgumentQueueImpl<T extends Tag.Argument> implements ArgumentQueue {
   public @NotNull T popOr(final @NotNull Supplier<String> errorMessage) {
     requireNonNull(errorMessage, "errorMessage");
     if (!this.hasNext()) {
-      throw this.context.newError(requireNonNull(errorMessage.get(), "errorMessage.get()"), this);
+      throw this.context.newException(requireNonNull(errorMessage.get(), "errorMessage.get()"), this);
     }
     return this.args.get(this.ptr++);
   }

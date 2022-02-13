@@ -79,7 +79,7 @@ public final class RainbowTag implements Modifying, Examinable {
         try {
           phase = Integer.parseInt(value);
         } catch (final NumberFormatException ex) {
-          throw ctx.newError("Expected phase, got " + value);
+          throw ctx.newException("Expected phase, got " + value);
         }
       }
     }

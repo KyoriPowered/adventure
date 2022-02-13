@@ -85,7 +85,7 @@ public final class ColorTagResolver implements TagResolver {
     }
 
     if (color == null) {
-      throw ctx.newError("Don't know how to turn '" + colorName + "' into a color");
+      throw ctx.newException("Don't know how to turn '" + colorName + "' into a color");
     }
 
     return Tag.styling(color);

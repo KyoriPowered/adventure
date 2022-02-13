@@ -55,7 +55,7 @@ public interface Context {
    * @return the new parsing exception
    * @since 4.10.0
    */
-  @NotNull ParsingException newError(
+  @NotNull ParsingException newException(
     final @NotNull String message,
     final @NotNull ArgumentQueue tags
   );
@@ -67,7 +67,7 @@ public interface Context {
    * @return the new parsing exception
    * @since 4.10.0
    */
-  @NotNull ParsingException newError(final @NotNull String message);
+  @NotNull ParsingException newException(final @NotNull String message);
 
   /**
    * Create a new parsing exception.
@@ -78,7 +78,7 @@ public interface Context {
    * @return the new parsing exception
    * @since 4.10.0
    */
-  @NotNull ParsingException newError(
+  @NotNull ParsingException newException(
     final @NotNull String message,
     final @Nullable Throwable cause,
     final @NotNull ArgumentQueue args

@@ -60,7 +60,7 @@ public final class HoverTag {
     } else if (action == (Object) HoverEvent.Action.SHOW_ENTITY) {
       value = parseShowEntity(args, ctx);
     } else {
-      throw ctx.newError("Don't know how to turn '" + args + "' into a hover event", args);
+      throw ctx.newException("Don't know how to turn '" + args + "' into a hover event", args);
     }
 
     return Tag.styling(HoverEvent.hoverEvent(action, value));
@@ -69,14 +69,14 @@ public final class HoverTag {
   private static HoverEvent.@NotNull ShowItem parseShowItem(final @NotNull ArgumentQueue args, final Context ctx) throws ParsingException {
     try {
       final Key key = Key.key(args.popOr("Show item hover needs at least an item ID").value());
-      final int count = args.hasNext() ? args.pop().asInt().orElseThrow(() -> ctx.newError("The count argument was not a valid integer")) : 1;
+      final int count = args.hasNext() ? args.pop().asInt().orElseThrow(() -> ctx.newException("The count argument was not a valid integer")) : 1;
       if (args.hasNext()) {
         return HoverEvent.ShowItem.of(key, count, BinaryTagHolder.binaryTagHolder(args.pop().value()));
       } else {
         return HoverEvent.ShowItem.of(key, count);
       }
     } catch (final InvalidKeyException | NumberFormatException ex) {
-      throw ctx.newError("Exception parsing show_item hover", ex, args);
+      throw ctx.newException("Exception parsing show_item hover", ex, args);
     }
   }
 
@@ -90,7 +90,7 @@ public final class HoverTag {
       }
       return HoverEvent.ShowEntity.of(key, id);
     } catch (final IllegalArgumentException | InvalidKeyException ex) {
-      throw context.newError("Exception parsing show_entity hover", ex, args);
+      throw context.newException("Exception parsing show_entity hover", ex, args);
     }
   }
 }

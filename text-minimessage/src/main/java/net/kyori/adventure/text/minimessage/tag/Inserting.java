@@ -43,7 +43,9 @@ public /* non-sealed */ interface Inserting extends Tag {
   /**
    * Get whether or not this tag allows children.
    *
-   * <p>If children are not allowed, this tag will be auto-closing, and should not be closed explicitly.</p>
+   * <p>If children are not allowed, this tag will be auto-closing, and
+   * should not be closed explicitly. In strict mode, a closing tag will be
+   * an error. In lenient mode, the closing tag will be interpreted as literal text.</p>
    *
    * @return whether this tag will allow following to become children
    * @since 4.10.0

@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.tag.standard;
 
+import net.kyori.adventure.key.InvalidKeyException;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
@@ -44,11 +45,15 @@ public final class FontTag {
   static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
     final Key font;
     final @Subst("empty") String valueOrNamespace = args.popOr("A font tag must have either arguments of either <value> or <namespace:value>").value();
-    if (!args.hasNext()) {
-      font = Key.key(valueOrNamespace);
-    } else {
-      @Subst("empty") final String fontKey = args.pop().value();
-      font = Key.key(valueOrNamespace, fontKey);
+    try {
+      if (!args.hasNext()) {
+        font = Key.key(valueOrNamespace);
+      } else {
+        @Subst("empty") final String fontKey = args.pop().value();
+        font = Key.key(valueOrNamespace, fontKey);
+      }
+    } catch (final InvalidKeyException ex) {
+      throw ctx.newException(ex.getMessage(), args);
     }
 
     return Tag.styling(builder -> builder.font(font));
