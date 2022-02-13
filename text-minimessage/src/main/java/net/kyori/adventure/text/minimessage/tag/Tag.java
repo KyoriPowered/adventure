@@ -40,11 +40,12 @@ import static java.util.Objects.requireNonNull;
 /**
  * A tag definition for the MiniMessage language.
  *
- * <p>All implementations of {@code Tag} must implement one of {@link Inserting}, {@link Modifying}, or {@link PreProcess}.</p>
+ * <p>All implementations of {@code Tag} must implement one of {@link Inserting}, {@link Modifying},
+ * {@link ParserDirective} or {@link PreProcess}.</p>
  *
  * @since 4.10.0
  */
-public /* sealed */ interface Tag /* permits Inserting, Modifying, PreProcess, /internal/ AbstractTag */ {
+public /* sealed */ interface Tag /* permits Inserting, Modifying, ParserDirective, PreProcess, /internal/ AbstractTag */ {
 
   /**
    * Create a tag that inserts the content literally into the parse string.

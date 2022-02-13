@@ -40,6 +40,7 @@ import net.kyori.adventure.text.minimessage.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.parser.node.TextNode;
 import net.kyori.adventure.text.minimessage.tag.Inserting;
+import net.kyori.adventure.text.minimessage.tag.ParserDirective;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -53,8 +54,6 @@ import org.jetbrains.annotations.Nullable;
 @ApiStatus.Internal
 public final class TokenParser {
   private static final int MAX_DEPTH = 16;
-  public static final String RESET = "reset";
-  public static final String RESET_2 = "r";
   // minimessage tags
   public static final char TAG_START = '<';
   public static final char TAG_END = '>';
@@ -364,33 +363,30 @@ public final class TokenParser {
 
         case OPEN_TAG:
           final TagNode tagNode = new TagNode(node, token, message, tagProvider);
-          if (isReset(tagNode.name())) {
-            // <reset> tags get special treatment and don't appear in the tree
-            // instead, they close all currently open tags
-
-            if (strict) {
-              throw new ParsingExceptionImpl("<reset> tags are not allowed when strict mode is enabled", message, token);
-            }
-            node = root;
-          } else {
-            if (tagNameChecker.test(tagNode.name())) {
-              final Tag transformation = tagProvider.resolve(tagNode);
-              if (transformation == null) {
-                // something went wrong, ignore it
-                // if strict mode is enabled this will throw an exception for us
-                node.addChild(new TextNode(node, token, message));
-              } else {
-                // This is a recognized tag, goes in the tree
-                tagNode.tag(transformation);
-                node.addChild(tagNode);
-                if (!(transformation instanceof Inserting) || ((Inserting) transformation).allowsChildren()) {
-                  node = tagNode; // TODO: self-terminating tags (i.e. <tag/>) don't set this, so they don't have children
-                }
-              }
-            } else {
-              // not recognized, plain text
+          if (tagNameChecker.test(tagNode.name())) {
+            final Tag tag = tagProvider.resolve(tagNode);
+            if (tag == null) {
+              // something went wrong, ignore it
+              // if strict mode is enabled this will throw an exception for us
               node.addChild(new TextNode(node, token, message));
+            } else if (tag == ParserDirective.RESET) {
+              // <reset> tags get special treatment and don't appear in the tree
+              // instead, they close all currently open tags
+              if (strict) {
+                throw new ParsingExceptionImpl("<reset> tags are not allowed when strict mode is enabled", message, token);
+              }
+              node = root;
+            } else {
+              // This is a recognized tag, goes in the tree
+              tagNode.tag(tag);
+              node.addChild(tagNode);
+              if (!(tag instanceof Inserting) || ((Inserting) tag).allowsChildren()) {
+                node = tagNode; // TODO: self-terminating tags (i.e. <tag/>) don't set this, so they don't have children
+              }
             }
+          } else {
+            // not recognized, plain text
+            node.addChild(new TextNode(node, token, message));
           }
           break; // OPEN_TAG
 
@@ -407,12 +403,15 @@ public final class TokenParser {
           }
 
           final String closeTagName = closeValues.get(0);
-          if (isReset(closeTagName)) {
-            // This is a synthetic node, closing it means nothing in the context of building a tree
-            continue;
-          }
 
-          if (!tagNameChecker.test(closeTagName)) {
+          if (tagNameChecker.test(closeTagName)) {
+            final Tag tag = tagProvider.resolve(closeTagName);
+
+            if (tag == ParserDirective.RESET) {
+              // This is a synthetic node, closing it means nothing in the context of building a tree
+              continue;
+            }
+          } else {
             // tag does not exist, so treat it as text
             node.addChild(new TextNode(node, token, message));
             continue;
@@ -486,10 +485,6 @@ public final class TokenParser {
     }
 
     return root;
-  }
-
-  private static boolean isReset(final String input) {
-    return input.equalsIgnoreCase(RESET) || input.equalsIgnoreCase(RESET_2);
   }
 
   /**
