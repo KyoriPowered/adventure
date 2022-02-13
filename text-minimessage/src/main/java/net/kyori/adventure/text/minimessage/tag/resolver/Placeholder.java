@@ -21,12 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.tag;
+package net.kyori.adventure.text.minimessage.tag.resolver;
 
-import java.util.Objects;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
-import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
@@ -80,15 +79,6 @@ public final class Placeholder {
    * @since 4.10.0
    */
   public static TagResolver.@NotNull Single component(final @NotNull String key, final @NotNull ComponentLike value) {
-    return TagResolver.resolver(
-      key,
-      new InsertingImpl(
-        false,
-        Objects.requireNonNull(
-          Objects.requireNonNull(value, "value").asComponent(),
-          "value must not resolve to null"
-        )
-      )
-    );
+    return TagResolver.resolver(key, Tag.selfClosingInserting(value));
   }
 }

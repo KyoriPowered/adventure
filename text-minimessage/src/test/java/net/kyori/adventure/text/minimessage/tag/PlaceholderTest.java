@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.tag;
 
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.text;

@@ -84,6 +84,32 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, PreProcess, /
   }
 
   /**
+   * Create a tag that will insert a certain component into the output.
+   *
+   * <p>This tag is self-closing, so its contents will not influence the style of following content.</p>
+   *
+   * @param content the content to insert.
+   * @return a tag that will insert this component
+   * @since 4.10.0
+   */
+  static @NotNull Tag selfClosingInserting(final @NotNull Component content) {
+    return new InsertingImpl(false, requireNonNull(content, "content must not be null"));
+  }
+
+  /**
+   * Create a tag that will insert a certain component into the output.
+   *
+   * <p>This tag is self-closing, so its contents will not influence the style of following content.</p>
+   *
+   * @param value the content to insert, eagerly converted to a component
+   * @return a tag that will insert this component
+   * @since 4.10.0
+   */
+  static @NotNull Tag selfClosingInserting(final @NotNull ComponentLike value) {
+    return selfClosingInserting(requireNonNull(value, "value").asComponent());
+  }
+
+  /**
    * Create a tag that will apply a certain style to components.
    *
    * @param styles the action applied to the component style

@@ -56,8 +56,8 @@ import static net.kyori.adventure.text.format.TextColor.color;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 import static net.kyori.adventure.text.format.TextDecoration.ITALIC;
 import static net.kyori.adventure.text.format.TextDecoration.UNDERLINED;
-import static net.kyori.adventure.text.minimessage.tag.Placeholder.component;
-import static net.kyori.adventure.text.minimessage.tag.Placeholder.parsed;
+import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
+import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.parsed;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 

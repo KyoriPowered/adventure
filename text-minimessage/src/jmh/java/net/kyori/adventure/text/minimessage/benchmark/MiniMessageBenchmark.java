@@ -26,7 +26,7 @@ package net.kyori.adventure.text.minimessage.benchmark;
 import java.util.concurrent.TimeUnit;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.tag.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
