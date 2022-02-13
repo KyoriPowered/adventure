@@ -47,7 +47,7 @@ class TagResolverTest {
 
   @Test
   void testBuilderUnpacksSingleElement() {
-    final TagResolver.WithoutArguments test = key -> Tag.miniMessage("hello");
+    final TagResolver.WithoutArguments test = key -> Tag.preProcessParsed("hello");
     assertEquals(test, TagResolver.builder().resolver(test).build());
   }
 
@@ -55,12 +55,12 @@ class TagResolverTest {
   void testSingleAndResolversCombine() {
     final List<TagResolver> placeholders = Arrays.asList(
       Placeholder.component("foo", Component.text("fizz")),
-      Placeholder.miniMessage("overlapping", "from list")
+      Placeholder.parsed("overlapping", "from list")
     );
     final TagResolver.WithoutArguments resolver = key -> {
       switch (key) {
-        case "one": return Tag.miniMessage("fish");
-        case "overlapping": return Tag.miniMessage("from resolver");
+        case "one": return Tag.preProcessParsed("fish");
+        case "overlapping": return Tag.preProcessParsed("from resolver");
         default: return null;
       }
     };

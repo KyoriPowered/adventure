@@ -57,7 +57,7 @@ import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 import static net.kyori.adventure.text.format.TextDecoration.ITALIC;
 import static net.kyori.adventure.text.format.TextDecoration.UNDERLINED;
 import static net.kyori.adventure.text.minimessage.tag.Placeholder.component;
-import static net.kyori.adventure.text.minimessage.tag.Placeholder.miniMessage;
+import static net.kyori.adventure.text.minimessage.tag.Placeholder.parsed;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -220,14 +220,14 @@ public class MiniMessageParserTest extends TestBase {
   void testStripSimple() {
     final String input = "<yellow>TEST<green> nested</green>Test";
     final String expected = "TEST nestedTest";
-    assertEquals(expected, PARSER.stripTokens(input));
+    assertEquals(expected, PARSER.stripTags(input));
   }
 
   @Test
   void testStripComplex() {
     final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here</click><blue> to <bold>FEEL</underlined> it";
     final String expected = "<test> random strangerclick here to FEEL it";
-    assertEquals(expected, PARSER.stripTokens(input));
+    assertEquals(expected, PARSER.stripTags(input));
   }
 
   // https://github.com/KyoriPowered/adventure-text-minimessage/issues/169
@@ -235,42 +235,42 @@ public class MiniMessageParserTest extends TestBase {
   void testStripComplexInner() {
     final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here <please></click><blue> to <bold>FEEL</underlined> it";
     final String expected = "<test> random strangerclick here <please> to FEEL it";
-    assertEquals(expected, PARSER.stripTokens(input));
+    assertEquals(expected, PARSER.stripTags(input));
   }
 
   @Test
   void testStripInner() {
     final String input = "<hover:show_text:\"<red>test:TEST\">TEST";
     final String expected = "TEST";
-    assertEquals(expected, PARSER.stripTokens(input));
+    assertEquals(expected, PARSER.stripTags(input));
   }
 
   @Test
   void testStripPlaceholders() {
     final String input = "Hello, <red><name>!";
     final String expected = "Hello, !";
-    assertEquals(expected, PARSER.stripTokens(input, miniMessage("name", "you")));
+    assertEquals(expected, PARSER.stripTags(input, parsed("name", "you")));
   }
 
   @Test
   void testEscapeSimple() {
     final String input = "<yellow>TEST<green> nested</green>Test";
     final String expected = "\\<yellow>TEST\\<green> nested\\</green>Test";
-    assertEquals(expected, PARSER.escapeTokens(input));
+    assertEquals(expected, PARSER.escapeTags(input));
   }
 
   @Test
   void testEscapeComplex() {
     final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here</click><blue> to <bold>FEEL</underlined> it";
     final String expected = "\\<yellow><test> random \\<bold>stranger\\</bold>\\<click:run_command:test command>\\<underlined>\\<red>click here\\</click>\\<blue> to \\<bold>FEEL\\</underlined> it";
-    assertEquals(expected, PARSER.escapeTokens(input));
+    assertEquals(expected, PARSER.escapeTags(input));
   }
 
   @Test
   void testEscapeInner() {
     final String input = "<hover:show_text:\"<red>test:TEST\">TEST";
     final String expected = "\\<hover:show_text:\"\\<red>test:TEST\">TEST";
-    assertEquals(expected, PARSER.escapeTokens(input));
+    assertEquals(expected, PARSER.escapeTags(input));
   }
 
   // https://github.com/KyoriPowered/adventure-text-minimessage/issues/169
@@ -278,14 +278,14 @@ public class MiniMessageParserTest extends TestBase {
   void testEscapeComplexInner() {
     final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here <notToken></click><blue> to <bold>FEEL</underlined> it";
     final String expected = "\\<yellow><test> random \\<bold>stranger\\</bold>\\<click:run_command:test command>\\<underlined>\\<red>click here <notToken>\\</click>\\<blue> to \\<bold>FEEL\\</underlined> it";
-    assertEquals(expected, PARSER.escapeTokens(input));
+    assertEquals(expected, PARSER.escapeTags(input));
   }
 
   @Test
   void testEscapePlaceholders() {
     final String input = "Hello, <red><name>!";
     final String expected = "Hello, \\<red>\\<name>!";
-    assertEquals(expected, PARSER.escapeTokens(input, miniMessage("name", "you")));
+    assertEquals(expected, PARSER.escapeTags(input, parsed("name", "you")));
   }
 
   @Test
@@ -309,7 +309,7 @@ public class MiniMessageParserTest extends TestBase {
   @Test
   void testEscapeParse() {
     final String expected = "<red>test</red>";
-    final String escaped = MiniMessage.miniMessage().escapeTokens(expected);
+    final String escaped = MiniMessage.miniMessage().escapeTags(expected);
     final Component comp = MiniMessage.miniMessage().deserialize(escaped);
 
     assertEquals(expected, PlainTextComponentSerializer.plainText().serialize(comp));
@@ -319,7 +319,7 @@ public class MiniMessageParserTest extends TestBase {
   void checkPlaceholder() {
     final String input = "<test>";
     final Component expected = text("Hello!");
-    final Component comp = PARSER.deserialize(input, miniMessage("test", "Hello!"));
+    final Component comp = PARSER.deserialize(input, parsed("test", "Hello!"));
 
     assertEquals(expected, comp);
   }
@@ -524,7 +524,7 @@ public class MiniMessageParserTest extends TestBase {
         .append(text("CLICK HERE").decorate(BOLD).color(GREEN).clickEvent(openUrl("https://www.google.com")).hoverEvent(showText(text("/!\\ install it from Options/ResourcePacks in your game").color(GREEN))))
       );
 
-    this.assertParsedEquals(expected, input, miniMessage("pack_url", "https://www.google.com"));
+    this.assertParsedEquals(expected, input, parsed("pack_url", "https://www.google.com"));
   }
 
   @Test
@@ -538,7 +538,7 @@ public class MiniMessageParserTest extends TestBase {
       );
 
     // should work
-    this.assertParsedEquals(expected, input, miniMessage("pack_url", "https://www.google.com"));
+    this.assertParsedEquals(expected, input, parsed("pack_url", "https://www.google.com"));
   }
 
   @Test
@@ -555,7 +555,7 @@ public class MiniMessageParserTest extends TestBase {
     this.assertParsedEquals(expected, input);
 
     // shouldnt throw an error
-    PARSER.deserialize(input, miniMessage("url", "https://www.google.com"));
+    PARSER.deserialize(input, parsed("url", "https://www.google.com"));
   }
 
   @Test
@@ -1566,7 +1566,7 @@ public class MiniMessageParserTest extends TestBase {
     final String input = "<click:run_command:'word <word>'><gold>Click to run the word!";
     final Component expected = text("Click to run the word!", GOLD)
         .clickEvent(ClickEvent.runCommand("word Adventure"));
-    this.assertParsedEquals(expected, input, miniMessage("word", "Adventure"));
+    this.assertParsedEquals(expected, input, parsed("word", "Adventure"));
   }
 
   @Test
@@ -1663,7 +1663,7 @@ public class MiniMessageParserTest extends TestBase {
     this.assertParsedEquals(
       expected,
       input,
-      miniMessage("animal", "<red><feline>"),
+      parsed("animal", "<red><feline>"),
       component("feline", text("cat"))
     );
   }

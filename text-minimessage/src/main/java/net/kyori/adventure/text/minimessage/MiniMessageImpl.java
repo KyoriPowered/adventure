@@ -75,22 +75,22 @@ final class MiniMessageImpl implements MiniMessage {
   }
 
   @Override
-  public @NotNull String escapeTokens(final @NotNull String input) {
+  public @NotNull String escapeTags(final @NotNull String input) {
     return this.parser.escapeTokens(input, this.newContext(input, null));
   }
 
   @Override
-  public @NotNull String escapeTokens(final @NotNull String input, final @NotNull TagResolver tagResolver) {
+  public @NotNull String escapeTags(final @NotNull String input, final @NotNull TagResolver tagResolver) {
     return this.parser.escapeTokens(input, this.newContext(input, tagResolver));
   }
 
   @Override
-  public @NotNull String stripTokens(final @NotNull String input) {
+  public @NotNull String stripTags(final @NotNull String input) {
     return this.parser.stripTokens(input, this.newContext(input, null));
   }
 
   @Override
-  public @NotNull String stripTokens(final @NotNull String input, final @NotNull TagResolver tagResolver) {
+  public @NotNull String stripTags(final @NotNull String input, final @NotNull TagResolver tagResolver) {
     return this.parser.stripTokens(input, this.newContext(input, tagResolver));
   }
 

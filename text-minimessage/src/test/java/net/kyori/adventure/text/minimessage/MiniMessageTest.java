@@ -88,7 +88,7 @@ public class MiniMessageTest extends TestBase {
     final String input = "<test>";
     final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    this.assertParsedEquals(miniMessage, expected, input, Placeholder.miniMessage("test", "TEST"));
+    this.assertParsedEquals(miniMessage, expected, input, Placeholder.parsed("test", "TEST"));
   }
 
   @Test
@@ -118,7 +118,7 @@ public class MiniMessageTest extends TestBase {
     final MiniMessage miniMessage = MiniMessage.miniMessage();
 
     final TagResolver t1 = component("test", text("TEST", style(RED, UNDERLINED)));
-    final TagResolver t2 = Placeholder.miniMessage("test2", "Test2");
+    final TagResolver t2 = Placeholder.parsed("test2", "Test2");
 
     this.assertParsedEquals(miniMessage, expected, input, t1, t2);
   }
@@ -262,7 +262,7 @@ public class MiniMessageTest extends TestBase {
       .strict(false)
       .build();
 
-    this.assertParsedEquals(miniMessage, expected, MiniMessage.miniMessage().escapeTokens("<3"));
+    this.assertParsedEquals(miniMessage, expected, MiniMessage.miniMessage().escapeTags("<3"));
   }
 
   @Test

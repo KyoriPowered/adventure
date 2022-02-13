@@ -43,27 +43,28 @@ public final class Placeholder {
   }
 
   /**
-   * Creates a placeholder that inserts a MiniMessage string. The inserted string will impact
-   * the rest of the parse process.
+   * Creates a placeholder that inserts a MiniMessage string.
+   *
+   * <p>The inserted string will impact the rest of the parse process.</p>
    *
    * @param key the key
    * @param value the replacement
    * @return the placeholder
    * @since 4.10.0
    */
-  public static TagResolver.@NotNull Single miniMessage(final @NotNull String key, final @NotNull String value) {
-    return TagResolver.resolver(key, Tag.miniMessage(value));
+  public static TagResolver.@NotNull Single parsed(final @NotNull String key, final @NotNull String value) {
+    return TagResolver.resolver(key, Tag.preProcessParsed(value));
   }
 
   /**
-   * Creates a placeholder that inserts a raw string, ignoring any MiniMessage tags present.
+   * Creates a placeholder that inserts a literal string, without attempting to parse any contained tags.
    *
    * @param key the key
    * @param value the replacement
    * @return the placeholder
    * @since 4.10.0
    */
-  public static TagResolver.@NotNull Single raw(final @NotNull String key, final @NotNull String value) {
+  public static TagResolver.@NotNull Single unparsed(final @NotNull String key, final @NotNull String value) {
     requireNonNull(value, "value");
     return Placeholder.component(key, Component.text(value));
   }

@@ -53,7 +53,7 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, PreProcess, /
    * @return a new tag
    * @since 4.10.0
    */
-  static @NotNull PreProcess miniMessage(final @NotNull String content) {
+  static @NotNull PreProcess preProcessParsed(final @NotNull String content) {
     return new PreProcessTagImpl(requireNonNull(content, "content"));
   }
 

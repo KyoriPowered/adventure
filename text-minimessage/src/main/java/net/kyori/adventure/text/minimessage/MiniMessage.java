@@ -54,81 +54,81 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
   }
 
   /**
-   * Escapes all known tokens in the input message, so that they are ignored in deserialization.
+   * Escapes all known tags in the input message, so that they are ignored in deserialization.
    *
    * <p>Useful for untrusted input.</p>
    *
-   * <p>Only globally known tokens will be escaped. Use the overload that takes a {@link TagResolver} if any custom tags should be handled.</p>
+   * <p>Only globally known tags will be escaped. Use the overload that takes a {@link TagResolver} if any custom tags should be handled.</p>
    *
-   * @param input the input message, with tokens
-   * @return the output, with escaped tokens
+   * @param input the input message, with potential tags
+   * @return the output, with escaped tags
    * @since 4.10.0
    */
-  @NotNull String escapeTokens(final @NotNull String input);
+  @NotNull String escapeTags(final @NotNull String input);
 
   /**
-   * Escapes all known tokens in the input message, so that they are ignored in deserialization.
+   * Escapes all known tags in the input message, so that they are ignored in deserialization.
    *
    * <p>Useful for untrusted input.</p>
    *
-   * @param input the input message, with tokens
+   * @param input the input message, with potential tags
    * @param tagResolver the tag resolver for any additional tags to handle
-   * @return the output, with escaped tokens
+   * @return the output, with escaped tags
    * @since 4.10.0
    */
-  @NotNull String escapeTokens(final @NotNull String input, final @NotNull TagResolver tagResolver);
+  @NotNull String escapeTags(final @NotNull String input, final @NotNull TagResolver tagResolver);
 
   /**
-   * Escapes all known tokens in the input message, so that they are ignored in deserialization.
+   * Escapes all known tags in the input message, so that they are ignored in deserialization.
    *
    * <p>Useful for untrusted input.</p>
    *
-   * @param input the input message, with tokens
+   * @param input the input message, with potential tags
    * @param tagResolvers a series of tag resolvers to apply extra tags from, last specified taking priority
-   * @return the output, with escaped tokens
+   * @return the output, with escaped tags
    * @since 4.10.0
    */
-  default @NotNull String escapeTokens(final @NotNull String input, final @NotNull TagResolver... tagResolvers) {
-    return this.escapeTokens(input, TagResolver.resolver(tagResolvers));
+  default @NotNull String escapeTags(final @NotNull String input, final @NotNull TagResolver... tagResolvers) {
+    return this.escapeTags(input, TagResolver.resolver(tagResolvers));
   }
 
   /**
-   * Removes all supported tokens in the input message.
+   * Removes all supported tags in the input message.
    *
    * <p>Useful for untrusted input.</p>
    *
-   * <p>Only globally known tokens will be stripped. Use the overload that takes a {@link TagResolver} if any custom tags should be handled.</p>
+   * <p>Only globally known tags will be stripped. Use the overload that takes a {@link TagResolver} if any custom tags should be handled.</p>
    *
-   * @param input the input message, with tokens
-   * @return the output, without tokens
+   * @param input the input message, with potential tags
+   * @return the output, without tags
    * @since 4.10.0
    */
-  @NotNull String stripTokens(final @NotNull String input);
+  @NotNull String stripTags(final @NotNull String input);
 
   /**
-   * Removes all known tokens in the input message, so that they are ignored in deserialization.
+   * Removes all known tags in the input message, so that they are ignored in deserialization.
    *
    * <p>Useful for untrusted input.</p>
    *
-   * @param input the input message, with tokens
+   * @param input the input message, with tags
    * @param tagResolver the tag resolver for any additional tags to handle
-   * @return the output, without tokens
+   * @return the output, without tags
    * @since 4.10.0
    */
-  @NotNull String stripTokens(final @NotNull String input, final @NotNull TagResolver tagResolver);
+  @NotNull String stripTags(final @NotNull String input, final @NotNull TagResolver tagResolver);
 
   /**
-   * Removes all known tokens in the input message, so that they are ignored in deserialization.
+   * Removes all known tags in the input message, so that they are ignored in deserialization.
    *
    * <p>Useful for untrusted input.</p>
    *
-   * @param input the input message, with tokens
+   * @param input the input message, with tags
    * @param tagResolvers a series of tag resolvers to apply extra tags from, last specified taking priority
-   * @return the output, without tokens
+   * @return the output, without tags
    * @since 4.10.0
    */
-  default @NotNull String stripTokens(final @NotNull String input, final @NotNull TagResolver... tagResolvers) {
-    return this.stripTokens(input, TagResolver.resolver(tagResolvers));
+  default @NotNull String stripTags(final @NotNull String input, final @NotNull TagResolver... tagResolvers) {
+    return this.stripTags(input, TagResolver.resolver(tagResolvers));
   }
 
   /**
