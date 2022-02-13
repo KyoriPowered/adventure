@@ -159,6 +159,16 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
   }
 
   /**
+   * Deserializes a string into a tree of parsed elements,
+   * This is intended for inspecting the output of the parser for debugging purposes.
+   *
+   * @param input the input string
+   * @return the root of the resulting tree
+   * @since 4.10.0
+   */
+  @NotNull Node deserializeToTree(@NotNull String input);
+
+  /**
    * Deserializes a string into a tree of parsed elements, with a tag resolver to parse tags of the form {@code <key>}.
    * This is intended for inspecting the output of the parser for debugging purposes.
    *
@@ -170,6 +180,21 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @since 4.10.0
    */
   @NotNull Node deserializeToTree(final @NotNull String input, final @NotNull TagResolver tagResolver);
+
+  /**
+   * Deserializes a string into a tree of parsed elements, with a tag resolver to parse tags of the form {@code <key>}.
+   * This is intended for inspecting the output of the parser for debugging purposes.
+   *
+   * <p>Tags will be resolved from the resolver parameter before the resolver provided in the builder is used.</p>
+   *
+   * @param input the input string
+   * @param tagResolvers a series of tag resolvers to apply extra tags from, last specified taking priority
+   * @return the root of the resulting tree
+   * @since 4.10.0
+   */
+  default @NotNull Node deserializeToTree(final @NotNull String input, final @NotNull TagResolver... tagResolvers) {
+    return this.deserializeToTree(input, TagResolver.resolver(tagResolvers));
+  }
 
   /**
    * Creates a new {@link MiniMessage.Builder}.
