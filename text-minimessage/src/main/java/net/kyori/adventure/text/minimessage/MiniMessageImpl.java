@@ -82,7 +82,7 @@ final class MiniMessageImpl implements MiniMessage {
 
   @Override
   public @NotNull String serialize(final @NotNull Component component) {
-    return MiniMessageSerializer.serialize(component);
+    return MiniMessageSerializer.serialize(requireNonNull(component, "component"));
   }
 
   @Override
@@ -106,6 +106,7 @@ final class MiniMessageImpl implements MiniMessage {
   }
 
   private @NotNull ContextImpl newContext(final @NotNull String input, final @Nullable TagResolver resolver) {
+    requireNonNull(input, "input");
     if (resolver == null) {
       return ContextImpl.of(this.strict, this.debugOutput, input, this, TagResolver.empty(), this.postProcessor);
     } else {
