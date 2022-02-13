@@ -21,7 +21,7 @@ testlogger {
 
 plugins.withId("me.champeau.jmh") {
   extensions.configure(JmhParameters::class) {
-    jmhVersion.set(providers.gradleProperty("jmhVersion").forUseAtConfigurationTime())
+    jmhVersion.set(providers.gradleProperty("jmhVersion"))
   }
   tasks.named("compileJmhJava") {
     // avoid implicit task dependencies
