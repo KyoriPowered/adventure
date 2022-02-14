@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.key;
 
+import java.util.Comparator;
 import java.util.stream.Stream;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
@@ -130,6 +131,17 @@ public interface Key extends Comparable<Key>, Examinable {
   }
 
   /**
+   * Gets the comparator.
+   *
+   * <p>The {@link #value() value} is compared first, followed by the {@link #namespace() namespace}.</p>
+   *
+   * @since 4.10.0
+   */
+  static @NotNull Comparator<? super Key> comparator() {
+    return KeyImpl.COMPARATOR;
+  }
+
+  /**
    * Gets the namespace.
    *
    * @return the namespace
@@ -163,10 +175,6 @@ public interface Key extends Comparable<Key>, Examinable {
 
   @Override
   default int compareTo(final @NotNull Key that) {
-    final int value = this.value().compareTo(that.value());
-    if (value != 0) {
-      return KeyImpl.clampCompare(value);
-    }
-    return KeyImpl.clampCompare(this.namespace().compareTo(that.namespace()));
+    return comparator().compare(this, that);
   }
 }

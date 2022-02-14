@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.util;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -30,7 +31,8 @@ import org.jetbrains.annotations.NotNull;
  *
  * @param <D> the decoded type
  * @param <E> the encoded type
- * @param <DX> the exception type
+ * @param <DX> the decode exception type
+ * @param <EX> the encode exception type
  * @since 4.0.0
  */
 public interface Codec<D, E, DX extends Throwable, EX extends Throwable> {
@@ -44,8 +46,37 @@ public interface Codec<D, E, DX extends Throwable, EX extends Throwable> {
    * @param <DX> the decode exception type
    * @param <EX> the encode exception type
    * @return a codec
-   * @since 4.0.0
+   * @since 4.10.0
    */
+  static <D, E, DX extends Throwable, EX extends Throwable> @NotNull Codec<D, E, DX, EX> codec(final @NotNull Decoder<D, E, DX> decoder, final @NotNull Encoder<D, E, EX> encoder) {
+    return new Codec<D, E, DX, EX>() {
+      @Override
+      public @NotNull D decode(final @NotNull E encoded) throws DX {
+        return decoder.decode(encoded);
+      }
+
+      @Override
+      public @NotNull E encode(final @NotNull D decoded) throws EX {
+        return encoder.encode(decoded);
+      }
+    };
+  }
+
+  /**
+   * Creates a codec.
+   *
+   * @param decoder the decoder
+   * @param encoder the encoder
+   * @param <D> the decoded type
+   * @param <E> the encoded type
+   * @param <DX> the decode exception type
+   * @param <EX> the encode exception type
+   * @return a codec
+   * @since 4.0.0
+   * @deprecated for removal since 4.10.0, use {@link #codec(Codec.Decoder, Codec.Encoder)} instead.
+   */
+  @Deprecated
+  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   static <D, E, DX extends Throwable, EX extends Throwable> @NotNull Codec<D, E, DX, EX> of(final @NotNull Decoder<D, E, DX> decoder, final @NotNull Encoder<D, E, EX> encoder) {
     return new Codec<D, E, DX, EX>() {
       @Override

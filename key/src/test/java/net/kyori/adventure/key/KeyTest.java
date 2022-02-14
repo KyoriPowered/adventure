@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -84,9 +84,9 @@ class KeyTest {
 
   @Test
   void testCompare() {
-    assertEquals(-1, Key.key("air").compareTo(Key.key("stone")));
+    assertTrue(Key.key("air").compareTo(Key.key("stone")) < 0);
     assertEquals(0, Key.key("empty").compareTo(Key.key("empty")));
-    assertEquals(1, Key.key("stone").compareTo(Key.key("air")));
+    assertTrue(Key.key("stone").compareTo(Key.key("air")) > 0);
   }
 
   @Test

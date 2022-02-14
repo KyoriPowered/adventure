@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,8 +23,8 @@
  */
 package net.kyori.adventure.pointer;
 
+import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
-import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,7 +49,7 @@ final class PointerImpl<T> implements Pointer<T> {
 
   @Override
   public String toString() {
-    return this.examine(StringExaminer.simpleEscaping());
+    return Internals.toString(this);
   }
 
   @Override

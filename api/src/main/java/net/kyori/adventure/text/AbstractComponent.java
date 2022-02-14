@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,6 @@ package net.kyori.adventure.text;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.examination.ExaminableProperty;
@@ -45,13 +44,11 @@ import org.jetbrains.annotations.Nullable;
 @Debug.Renderer(text = "this.debuggerString()", childrenArray = "this.children().toArray()", hasChildren = "!this.children().isEmpty()")
 @Deprecated
 public abstract class AbstractComponent implements Component {
-  private static final Predicate<Component> NOT_EMPTY = component -> component != Component.empty();
-
   protected final List<Component> children;
   protected final Style style;
 
   protected AbstractComponent(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style) {
-    this.children = ComponentLike.asComponents(children, NOT_EMPTY);
+    this.children = ComponentLike.asComponents(children, IS_NOT_EMPTY);
     this.style = style;
   }
 
@@ -81,27 +78,13 @@ public abstract class AbstractComponent implements Component {
     return result;
   }
 
+  @Override
+  public abstract String toString();
+
   @SuppressWarnings("unused")
   private String debuggerString() {
-    return StringExaminer.simpleEscaping().examine(this.examinableName(), this.examinablePropertiesWithoutChildren());
-  }
-
-  protected Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
-    return Stream.of(ExaminableProperty.of("style", this.style));
-  }
-
-  @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.concat(
-      this.examinablePropertiesWithoutChildren(),
-      Stream.of(
-        ExaminableProperty.of("children", this.children)
-      )
-    );
-  }
-
-  @Override
-  public String toString() {
-    return this.examine(StringExaminer.simpleEscaping());
+    final Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren = this.examinableProperties()
+      .filter(property -> !property.name().equals(ComponentInternals.CHILDREN_PROPERTY));
+    return StringExaminer.simpleEscaping().examine(this.examinableName(), examinablePropertiesWithoutChildren);
   }
 }

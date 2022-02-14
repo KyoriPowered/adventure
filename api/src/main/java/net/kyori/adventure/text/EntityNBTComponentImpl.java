@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,11 +25,12 @@ package net.kyori.adventure.text;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
+import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import static java.util.Objects.requireNonNull;
 
 final class EntityNBTComponentImpl extends NBTComponentImpl<EntityNBTComponent, EntityNBTComponent.Builder> implements EntityNBTComponent {
   private final String selector;
@@ -42,7 +43,7 @@ final class EntityNBTComponentImpl extends NBTComponentImpl<EntityNBTComponent, 
   @Override
   public @NotNull EntityNBTComponent nbtPath(final @NotNull String nbtPath) {
     if (Objects.equals(this.nbtPath, nbtPath)) return this;
-    return new EntityNBTComponentImpl(this.children, this.style, nbtPath, this.interpret, this.separator, this.selector);
+    return new EntityNBTComponentImpl(this.children, this.style, requireNonNull(nbtPath, "nbt path"), this.interpret, this.separator, this.selector);
   }
 
   @Override
@@ -69,17 +70,17 @@ final class EntityNBTComponentImpl extends NBTComponentImpl<EntityNBTComponent, 
   @Override
   public @NotNull EntityNBTComponent selector(final @NotNull String selector) {
     if (Objects.equals(this.selector, selector)) return this;
-    return new EntityNBTComponentImpl(this.children, this.style, this.nbtPath, this.interpret, this.separator, selector);
+    return new EntityNBTComponentImpl(this.children, this.style, this.nbtPath, this.interpret, this.separator, requireNonNull(selector, "selector"));
   }
 
   @Override
   public @NotNull EntityNBTComponent children(final @NotNull List<? extends ComponentLike> children) {
-    return new EntityNBTComponentImpl(children, this.style, this.nbtPath, this.interpret, this.separator, this.selector);
+    return new EntityNBTComponentImpl(requireNonNull(children, "children"), this.style, this.nbtPath, this.interpret, this.separator, this.selector);
   }
 
   @Override
   public @NotNull EntityNBTComponent style(final @NotNull Style style) {
-    return new EntityNBTComponentImpl(this.children, style, this.nbtPath, this.interpret, this.separator, this.selector);
+    return new EntityNBTComponentImpl(this.children, requireNonNull(style, "style"), this.nbtPath, this.interpret, this.separator, this.selector);
   }
 
   @Override
@@ -99,13 +100,8 @@ final class EntityNBTComponentImpl extends NBTComponentImpl<EntityNBTComponent, 
   }
 
   @Override
-  protected @NotNull Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
-    return Stream.concat(
-      Stream.of(
-        ExaminableProperty.of("selector", this.selector)
-      ),
-      super.examinablePropertiesWithoutChildren()
-    );
+  public String toString() {
+    return Internals.toString(this);
   }
 
   @Override
@@ -126,7 +122,7 @@ final class EntityNBTComponentImpl extends NBTComponentImpl<EntityNBTComponent, 
 
     @Override
     public EntityNBTComponent.@NotNull Builder selector(final @NotNull String selector) {
-      this.selector = selector;
+      this.selector = requireNonNull(selector, "selector");
       return this;
     }
 

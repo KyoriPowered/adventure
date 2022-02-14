@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -53,7 +53,7 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
    */
   static @NotNull TextColor color(final int value) {
     final int truncatedValue = value & 0xffffff;
-    final NamedTextColor named = NamedTextColor.ofExact(truncatedValue);
+    final NamedTextColor named = NamedTextColor.namedColor(truncatedValue);
     return named != null ? named : new TextColorImpl(truncatedValue);
   }
 

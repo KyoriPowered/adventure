@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,9 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class HSVLikeTest {
   @Test
@@ -63,5 +65,17 @@ class HSVLikeTest {
       result[i] = BigDecimal.valueOf(floats[i]).setScale(7, RoundingMode.UP).floatValue();
     }
     return result;
+  }
+
+  @Test
+  void testRange() {
+    assertThrows(IllegalArgumentException.class, () -> HSVLike.hsvLike(2, 1, 1));
+    assertThrows(IllegalArgumentException.class, () -> HSVLike.hsvLike(1, -1, 1));
+    assertThrows(IllegalArgumentException.class, () -> HSVLike.hsvLike(1, 1, 2));
+    assertDoesNotThrow(() -> {
+      HSVLike.hsvLike(1, 1, 1);
+      HSVLike.hsvLike(0, 0, 0);
+      HSVLike.hsvLike(0.5f, 0.5f, 0.5f);
+    });
   }
 }

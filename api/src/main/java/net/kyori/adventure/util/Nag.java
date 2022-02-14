@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,6 +31,8 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.7.0
  */
 public abstract class Nag extends RuntimeException {
+  private static final long serialVersionUID = -695562541413409498L;
+
   /**
    * Prints a nag.
    *

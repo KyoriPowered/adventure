@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,17 +23,21 @@
  */
 package net.kyori.adventure.text.format;
 
-import net.kyori.examination.string.StringExaminer;
+import net.kyori.adventure.internal.Internals;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import static java.util.Objects.requireNonNull;
 
 final class TextDecorationAndStateImpl implements TextDecorationAndState {
   private final TextDecoration decoration;
   private final TextDecoration.State state;
 
   TextDecorationAndStateImpl(final TextDecoration decoration, final TextDecoration.State state) {
+    // no null check is required on the decoration since this constructor is always invoked in such a way that
+    // decoration is always non-null
     this.decoration = decoration;
-    this.state = state;
+    this.state = requireNonNull(state, "state");
   }
 
   @Override
@@ -48,7 +52,7 @@ final class TextDecorationAndStateImpl implements TextDecorationAndState {
 
   @Override
   public String toString() {
-    return this.examine(StringExaminer.simpleEscaping());
+    return Internals.toString(this);
   }
 
   @Override

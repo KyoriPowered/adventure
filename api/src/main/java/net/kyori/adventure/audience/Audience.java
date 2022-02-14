@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -147,7 +147,8 @@ public interface Audience extends Pointered {
    * If they do, they <em>may</em> test themselves against the provided {@code filter} first, and if the test fails return an empty audience skipping any contained children.
    * If they do not, they <em>must not</em> test themselves against the filter, only testing their children.</p>
    *
-   * @param filter the filter
+   * @param filter a filter that determines if an audience should be included
+   * @return an audience providing a snapshot of all audiences that match the predicate when this method is invoked
    * @since 4.9.0
    */
   default @NotNull Audience filterAudience(final @NotNull Predicate<? super Audience> filter) {

@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -54,7 +54,7 @@ final class HoverEventShowItemSerializer implements TypeSerializer<HoverEvent.Sh
     final int count = value.getNode(COUNT).getInt(1);
     final String tag = value.getNode(TAG).getString();
 
-    return HoverEvent.ShowItem.of(id, count, tag == null ? null : BinaryTagHolder.of(tag));
+    return HoverEvent.ShowItem.of(id, count, tag == null ? null : BinaryTagHolder.binaryTagHolder(tag));
   }
 
   @Override

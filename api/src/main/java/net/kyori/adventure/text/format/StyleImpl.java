@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,17 +23,16 @@
  */
 package net.kyori.adventure.text.format;
 
-import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
+import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,7 +40,7 @@ import static java.util.Objects.requireNonNull;
 
 final class StyleImpl implements Style {
   static final StyleImpl EMPTY = new StyleImpl(null, null, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null);
-  private static final TextDecoration[] DECORATIONS = TextDecoration.values();
+  static final TextDecoration[] DECORATIONS = TextDecoration.values();
   // visible to avoid generating accessors when creating a builder
   final @Nullable Key font;
   final @Nullable TextColor color;
@@ -53,13 +52,6 @@ final class StyleImpl implements Style {
   final @Nullable ClickEvent clickEvent;
   final @Nullable HoverEvent<?> hoverEvent;
   final @Nullable String insertion;
-
-  static void decorate(final Builder builder, final TextDecoration[] decorations) {
-    for (int i = 0, length = decorations.length; i < length; i++) {
-      final TextDecoration decoration = decorations[i];
-      builder.decoration(decoration, true);
-    }
-  }
 
   StyleImpl(
     final @Nullable Key font,
@@ -149,17 +141,6 @@ final class StyleImpl implements Style {
   }
 
   @Override
-  public @NotNull Map<TextDecoration, TextDecoration.State> decorations() {
-    final Map<TextDecoration, TextDecoration.State> decorations = new EnumMap<>(TextDecoration.class);
-    for (int i = 0, length = DECORATIONS.length; i < length; i++) {
-      final TextDecoration decoration = DECORATIONS[i];
-      final TextDecoration.State value = this.decoration(decoration);
-      decorations.put(decoration, value);
-    }
-    return decorations;
-  }
-
-  @Override
   public @NotNull Style decorations(final @NotNull Map<TextDecoration, TextDecoration.State> decorations) {
     final TextDecoration.State obfuscated = decorations.getOrDefault(TextDecoration.OBFUSCATED, this.obfuscated);
     final TextDecoration.State bold = decorations.getOrDefault(TextDecoration.BOLD, this.bold);
@@ -202,8 +183,7 @@ final class StyleImpl implements Style {
 
   @Override
   public @NotNull Style merge(final @NotNull Style that, final Merge.@NotNull Strategy strategy, final @NotNull Set<Merge> merges) {
-    if (that.isEmpty() || strategy == Merge.Strategy.NEVER || merges.isEmpty()) {
-      // nothing to merge
+    if (nothingToMerge(that, strategy, merges)) {
       return this;
     }
 
@@ -218,16 +198,19 @@ final class StyleImpl implements Style {
     return builder.build();
   }
 
+  @SuppressWarnings("RedundantIfStatement")
+  static boolean nothingToMerge(final @NotNull Style mergeFrom, final Merge.@NotNull Strategy strategy, final @NotNull Set<Merge> merges) {
+    if (strategy == Merge.Strategy.NEVER) return true;
+    if (mergeFrom.isEmpty()) return true;
+    if (merges.isEmpty()) return true;
+    return false;
+  }
+
   @Override
   public boolean isEmpty() {
     return this == EMPTY;
   }
 
-  /**
-   * Create a builder from this style.
-   *
-   * @return a builder
-   */
   @Override
   public @NotNull Builder toBuilder() {
     return new BuilderImpl(this);
@@ -251,7 +234,7 @@ final class StyleImpl implements Style {
 
   @Override
   public @NotNull String toString() {
-    return this.examine(StringExaminer.simpleEscaping());
+    return Internals.toString(this);
   }
 
   @Override
@@ -335,38 +318,22 @@ final class StyleImpl implements Style {
     }
 
     @Override
-    public @NotNull Builder decorate(final @NotNull TextDecoration decoration) {
-      return this.decoration(decoration, TextDecoration.State.TRUE);
-    }
-
-    @Override
-    public @NotNull Builder decorate(final @NotNull TextDecoration@NotNull... decorations) {
-      for (int i = 0, length = decorations.length; i < length; i++) {
-        this.decorate(decorations[i]);
-      }
-      return this;
-    }
-
-    @Override
     public @NotNull Builder decoration(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
       requireNonNull(state, "state");
       if (decoration == TextDecoration.BOLD) {
         this.bold = state;
-        return this;
       } else if (decoration == TextDecoration.ITALIC) {
         this.italic = state;
-        return this;
       } else if (decoration == TextDecoration.UNDERLINED) {
         this.underlined = state;
-        return this;
       } else if (decoration == TextDecoration.STRIKETHROUGH) {
         this.strikethrough = state;
-        return this;
       } else if (decoration == TextDecoration.OBFUSCATED) {
         this.obfuscated = state;
-        return this;
+      } else {
+        throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
       }
-      throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
+      return this;
     }
 
     // todo(kashike): promote to public api?
@@ -421,8 +388,11 @@ final class StyleImpl implements Style {
 
     @Override
     public @NotNull Builder merge(final @NotNull Style that, final Merge.@NotNull Strategy strategy, final @NotNull Set<Merge> merges) {
-      if (strategy == Merge.Strategy.NEVER || that.isEmpty() || merges.isEmpty()) {
-        // nothing to merge
+      requireNonNull(that, "style");
+      requireNonNull(strategy, "strategy");
+      requireNonNull(merges, "merges");
+
+      if (nothingToMerge(that, strategy, merges)) {
         return this;
       }
 

@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,9 +25,8 @@ package net.kyori.adventure.text;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
+import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,17 +48,17 @@ final class KeybindComponentImpl extends AbstractComponent implements KeybindCom
   @Override
   public @NotNull KeybindComponent keybind(final @NotNull String keybind) {
     if (Objects.equals(this.keybind, keybind)) return this;
-    return new KeybindComponentImpl(this.children, this.style, requireNonNull(keybind, "keybind"));
+    return new KeybindComponentImpl(this.children, this.style, keybind);
   }
 
   @Override
   public @NotNull KeybindComponent children(final @NotNull List<? extends ComponentLike> children) {
-    return new KeybindComponentImpl(children, this.style, this.keybind);
+    return new KeybindComponentImpl(requireNonNull(children, "children"), this.style, this.keybind);
   }
 
   @Override
   public @NotNull KeybindComponent style(final @NotNull Style style) {
-    return new KeybindComponentImpl(this.children, style, this.keybind);
+    return new KeybindComponentImpl(this.children, requireNonNull(style, "style"), this.keybind);
   }
 
   @Override
@@ -79,13 +78,8 @@ final class KeybindComponentImpl extends AbstractComponent implements KeybindCom
   }
 
   @Override
-  protected @NotNull Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
-    return Stream.concat(
-      Stream.of(
-        ExaminableProperty.of("keybind", this.keybind)
-      ),
-      super.examinablePropertiesWithoutChildren()
-    );
+  public String toString() {
+    return Internals.toString(this);
   }
 
   @Override
@@ -106,7 +100,7 @@ final class KeybindComponentImpl extends AbstractComponent implements KeybindCom
 
     @Override
     public @NotNull Builder keybind(final @NotNull String keybind) {
-      this.keybind = keybind;
+      this.keybind = requireNonNull(keybind, "keybind");
       return this;
     }
 

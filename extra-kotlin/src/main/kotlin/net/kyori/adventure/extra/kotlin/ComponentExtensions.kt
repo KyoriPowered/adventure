@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ package net.kyori.adventure.extra.kotlin
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.ComponentLike
+import net.kyori.adventure.text.JoinConfiguration
 
 /**
  * Adds [that] as a child component.
@@ -33,3 +34,23 @@ import net.kyori.adventure.text.ComponentLike
  * @since 4.6.0
  */
 public operator fun Component.plus(that: ComponentLike): Component = this.append(that)
+
+/**
+ * Joins this array of components using the provided [config].
+ *
+ * @param config the join configuration
+ * @return the resulting component
+ * @since 4.10.0
+ */
+public fun Array<out ComponentLike>.join(config: JoinConfiguration = JoinConfiguration.noSeparators()): Component =
+    this.toList().join(config)
+
+/**
+ * Joins this iterable of components using the provided [config].
+ *
+ * @param config the join configuration
+ * @return the resulting component
+ * @since 4.10.0
+ */
+public fun Iterable<ComponentLike>.join(config: JoinConfiguration = JoinConfiguration.noSeparators()): Component =
+    Component.join(config, this)

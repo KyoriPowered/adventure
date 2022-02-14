@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@
 package net.kyori.adventure.util;
 
 import java.util.Objects;
-import net.kyori.examination.string.StringExaminer;
+import net.kyori.adventure.internal.Internals;
 import org.jetbrains.annotations.Nullable;
 
 final class HSVLikeImpl implements HSVLike {
@@ -33,6 +33,9 @@ final class HSVLikeImpl implements HSVLike {
   private final float v;
 
   HSVLikeImpl(final float h, final float s, final float v) {
+    requireInsideRange(h, "h");
+    requireInsideRange(s, "s");
+    requireInsideRange(v, "v");
     this.h = h;
     this.s = s;
     this.v = v;
@@ -53,6 +56,13 @@ final class HSVLikeImpl implements HSVLike {
     return this.v;
   }
 
+  private static void requireInsideRange(final float number, final String name) throws IllegalArgumentException {
+    if (number < 0 || 1 < number) {
+      throw new IllegalArgumentException(
+        name + " (" + number + ")" + " is not inside the required range: [0,1]");
+    }
+  }
+
   @Override
   public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
@@ -68,6 +78,6 @@ final class HSVLikeImpl implements HSVLike {
 
   @Override
   public String toString() {
-    return this.examine(StringExaminer.simpleEscaping());
+    return Internals.toString(this);
   }
 }

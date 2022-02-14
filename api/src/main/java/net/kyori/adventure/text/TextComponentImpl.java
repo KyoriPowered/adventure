@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,10 +26,10 @@ package net.kyori.adventure.text;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
+import net.kyori.adventure.internal.Internals;
+import net.kyori.adventure.internal.properties.AdventureProperties;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.util.Nag;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
@@ -37,7 +37,7 @@ import org.jetbrains.annotations.VisibleForTesting;
 import static java.util.Objects.requireNonNull;
 
 final class TextComponentImpl extends AbstractComponent implements TextComponent {
-  private static final boolean WARN_WHEN_LEGACY_FORMATTING_DETECTED = Boolean.getBoolean(String.join(".", "net", "kyori", "adventure", "text", "warnWhenLegacyFormattingDetected"));
+  private static final boolean WARN_WHEN_LEGACY_FORMATTING_DETECTED = Boolean.TRUE.equals(AdventureProperties.TEXT_WARN_WHEN_LEGACY_FORMATTING_DETECTED.value());
   @VisibleForTesting
   static final char SECTION_CHAR = '§';
 
@@ -79,17 +79,17 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   @Override
   public @NotNull TextComponent content(final @NotNull String content) {
     if (Objects.equals(this.content, content)) return this;
-    return new TextComponentImpl(this.children, this.style, requireNonNull(content, "content"));
+    return new TextComponentImpl(this.children, this.style, content);
   }
 
   @Override
   public @NotNull TextComponent children(final @NotNull List<? extends ComponentLike> children) {
-    return new TextComponentImpl(children, this.style, this.content);
+    return new TextComponentImpl(requireNonNull(children, "children"), this.style, this.content);
   }
 
   @Override
   public @NotNull TextComponent style(final @NotNull Style style) {
-    return new TextComponentImpl(this.children, style, this.content);
+    return new TextComponentImpl(this.children, requireNonNull(style, "style"), this.content);
   }
 
   @Override
@@ -109,13 +109,8 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   }
 
   @Override
-  protected @NotNull Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
-    return Stream.concat(
-      Stream.of(
-        ExaminableProperty.of("content", this.content)
-      ),
-      super.examinablePropertiesWithoutChildren()
-    );
+  public String toString() {
+    return Internals.toString(this);
   }
 
   @Override

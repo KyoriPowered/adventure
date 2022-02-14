@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,8 +28,8 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+import net.kyori.adventure.internal.Internals;
 import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -67,11 +67,11 @@ final class JoinConfigurationImpl implements JoinConfiguration {
   }
 
   private JoinConfigurationImpl(final @NotNull BuilderImpl builder) {
-    this.prefix = builder.prefix == null ? null : builder.prefix.asComponent();
-    this.suffix = builder.suffix == null ? null : builder.suffix.asComponent();
-    this.separator = builder.separator == null ? null : builder.separator.asComponent();
-    this.lastSeparator = builder.lastSeparator == null ? null : builder.lastSeparator.asComponent();
-    this.lastSeparatorIfSerial = builder.lastSeparatorIfSerial == null ? null : builder.lastSeparatorIfSerial.asComponent();
+    this.prefix = ComponentLike.unbox(builder.prefix);
+    this.suffix = ComponentLike.unbox(builder.suffix);
+    this.separator = ComponentLike.unbox(builder.separator);
+    this.lastSeparator = ComponentLike.unbox(builder.lastSeparator);
+    this.lastSeparatorIfSerial = ComponentLike.unbox(builder.lastSeparatorIfSerial);
     this.convertor = builder.convertor;
     this.predicate = builder.predicate;
   }
@@ -131,7 +131,7 @@ final class JoinConfigurationImpl implements JoinConfiguration {
 
   @Override
   public String toString() {
-    return this.examine(StringExaminer.simpleEscaping());
+    return Internals.toString(this);
   }
 
   @Contract(pure = true)

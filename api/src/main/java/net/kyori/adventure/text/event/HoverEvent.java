@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
+import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
@@ -38,7 +39,6 @@ import net.kyori.adventure.text.renderer.ComponentRenderer;
 import net.kyori.adventure.util.Index;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -318,7 +318,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
 
   @Override
   public String toString() {
-    return this.examine(StringExaminer.simpleEscaping());
+    return Internals.toString(this);
   }
 
   /**
@@ -480,7 +480,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
 
     @Override
     public String toString() {
-      return this.examine(StringExaminer.simpleEscaping());
+      return Internals.toString(this);
     }
   }
 
@@ -654,13 +654,14 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
 
     @Override
     public String toString() {
-      return this.examine(StringExaminer.simpleEscaping());
+      return Internals.toString(this);
     }
   }
 
   /**
    * An enumeration of hover event actions.
    *
+   * @param <V> the value type an action handles
    * @since 4.0.0
    */
   public static final class Action<V> {

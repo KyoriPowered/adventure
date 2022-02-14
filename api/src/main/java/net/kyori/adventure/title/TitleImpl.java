@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,12 +26,14 @@ package net.kyori.adventure.title;
 import java.time.Duration;
 import java.util.Objects;
 import java.util.stream.Stream;
+import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.Component;
 import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
+
+import static java.util.Objects.requireNonNull;
 
 final class TitleImpl implements Title {
   private final Component title;
@@ -39,8 +41,8 @@ final class TitleImpl implements Title {
   private final @Nullable Times times;
 
   TitleImpl(final @NotNull Component title, final @NotNull Component subtitle, final @Nullable Times times) {
-    this.title = title;
-    this.subtitle = subtitle;
+    this.title = requireNonNull(title, "title");
+    this.subtitle = requireNonNull(subtitle, "subtitle");
     this.times = times;
   }
 
@@ -62,6 +64,7 @@ final class TitleImpl implements Title {
   @Override
   @SuppressWarnings("unchecked") // compared with parts directly
   public <T> @UnknownNullability T part(final @NotNull TitlePart<T> part) {
+    requireNonNull(part, "part");
     if (part == TitlePart.TITLE) {
       return (T) this.title;
     } else if (part == TitlePart.SUBTITLE) {
@@ -102,7 +105,7 @@ final class TitleImpl implements Title {
 
   @Override
   public String toString() {
-    return this.examine(StringExaminer.simpleEscaping());
+    return Internals.toString(this);
   }
 
   static class TimesImpl implements Times {
@@ -110,10 +113,10 @@ final class TitleImpl implements Title {
     private final Duration stay;
     private final Duration fadeOut;
 
-    TimesImpl(final Duration fadeIn, final Duration stay, final Duration fadeOut) {
-      this.fadeIn = fadeIn;
-      this.stay = stay;
-      this.fadeOut = fadeOut;
+    TimesImpl(final @NotNull Duration fadeIn, final @NotNull Duration stay, final @NotNull Duration fadeOut) {
+      this.fadeIn = requireNonNull(fadeIn, "fadeIn");
+      this.stay = requireNonNull(stay, "stay");
+      this.fadeOut = requireNonNull(fadeOut, "fadeOut");
     }
 
     @Override
@@ -160,7 +163,7 @@ final class TitleImpl implements Title {
 
     @Override
     public String toString() {
-      return this.examine(StringExaminer.simpleEscaping());
+      return Internals.toString(this);
     }
   }
 }

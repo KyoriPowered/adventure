@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -81,25 +81,62 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
   }
 
   /**
-   * Creates a {@link TextDecorationAndState}.
+   * Creates a {@link TextDecorationAndState}, annotating this decoration with the given {@code state}.
    *
    * @param state the state
    * @return a {@link TextDecorationAndState}
    * @since 4.8.0
+   * @deprecated for removal since 4.10.0, use {@link #withState(boolean)} instead
    */
+  @Deprecated
   public final @NotNull TextDecorationAndState as(final boolean state) {
-    return this.as(State.byBoolean(state));
+    return this.withState(state);
   }
 
   /**
-   * Creates a {@link TextDecorationAndState}.
+   * Creates a {@link TextDecorationAndState}, annotating this decoration with the given {@code state}.
    *
    * @param state the state
    * @return a {@link TextDecorationAndState}
    * @since 4.8.0
+   * @deprecated for removal since 4.10.0, use {@link #withState(State)} instead
    */
+  @Deprecated
   public final @NotNull TextDecorationAndState as(final @NotNull State state) {
+    return this.withState(state);
+  }
+
+  /**
+   * An alias for {@link #as(boolean)}.
+   *
+   * @param state the state
+   * @return a {@link TextDecorationAndState}
+   * @since 4.10.0
+   */
+  public final @NotNull TextDecorationAndState withState(final boolean state) {
+    return new TextDecorationAndStateImpl(this, State.byBoolean(state));
+  }
+
+  /**
+   * An alias for {@link #as(State)}.
+   *
+   * @param state the state
+   * @return a {@link TextDecorationAndState}
+   * @since 4.10.0
+   */
+  public final @NotNull TextDecorationAndState withState(final @NotNull State state) {
     return new TextDecorationAndStateImpl(this, state);
+  }
+
+  /**
+   * An alias for {@link #as(State)}.
+   *
+   * @param state the state
+   * @return a {@link TextDecorationAndState}
+   * @since 4.10.0
+   */
+  public final @NotNull TextDecorationAndState withState(final @NotNull TriState state) {
+    return new TextDecorationAndStateImpl(this, State.byTriState(state));
   }
 
   @Override

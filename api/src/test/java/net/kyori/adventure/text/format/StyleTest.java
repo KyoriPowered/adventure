@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,6 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static net.kyori.adventure.text.TextAssertions.assertDecorations;
-import static net.kyori.test.WeirdAssertions.doWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -90,13 +89,13 @@ class StyleTest {
   @Test
   void testOfTextDecorationAndState() {
     final Style s0 = Style.style(
-      TextDecoration.BOLD.as(TextDecoration.State.TRUE),
-      TextDecoration.ITALIC.as(TextDecoration.State.FALSE)
+      TextDecoration.BOLD.withState(TextDecoration.State.TRUE),
+      TextDecoration.ITALIC.withState(TextDecoration.State.FALSE)
     );
     assertDecorations(s0, ImmutableSet.of(TextDecoration.BOLD), ImmutableSet.of(TextDecoration.ITALIC));
     final Style s1 = Style.style(
-      TextDecoration.BOLD.as(true),
-      TextDecoration.ITALIC.as(false)
+      TextDecoration.BOLD.withState(true),
+      TextDecoration.ITALIC.withState(false)
     );
     assertDecorations(s1, ImmutableSet.of(TextDecoration.BOLD), ImmutableSet.of(TextDecoration.ITALIC));
   }
@@ -104,13 +103,13 @@ class StyleTest {
   @Test
   void testOfTextDecorationAndStateOverridesWhenSame() {
     final Style s0 = Style.style(
-      TextDecoration.BOLD.as(TextDecoration.State.TRUE),
-      TextDecoration.BOLD.as(TextDecoration.State.FALSE)
+      TextDecoration.BOLD.withState(TextDecoration.State.TRUE),
+      TextDecoration.BOLD.withState(TextDecoration.State.FALSE)
     );
     assertDecorations(s0, ImmutableSet.of(), ImmutableSet.of(TextDecoration.BOLD));
     final Style s1 = Style.style(
-      TextDecoration.BOLD.as(true),
-      TextDecoration.BOLD.as(false)
+      TextDecoration.BOLD.withState(true),
+      TextDecoration.BOLD.withState(false)
     );
     assertDecorations(s1, ImmutableSet.of(), ImmutableSet.of(TextDecoration.BOLD));
   }
@@ -204,7 +203,7 @@ class StyleTest {
   @Test
   void testMerge_none() {
     final Style s0 = Style.empty();
-    final Style s1 = s0.merge(Style.style(NamedTextColor.DARK_PURPLE), Style.Merge.of());
+    final Style s1 = s0.merge(Style.style(NamedTextColor.DARK_PURPLE), Style.Merge.merges());
     assertNull(s1.color());
     assertDecorations(s1, ImmutableSet.of(), ImmutableSet.of());
     assertNull(s1.clickEvent());
@@ -299,14 +298,18 @@ class StyleTest {
   @Test
   void testBuilderMerge_none() {
     final Style style = Style.style(NamedTextColor.DARK_PURPLE);
-    doWith(Style.style(), builder -> {
-      builder.merge(style, new Style.Merge[0]);
-      assertEquals(Style.empty(), builder.build());
-    });
-    doWith(Style.style(), builder -> {
-      builder.merge(style, ImmutableSet.of());
-      assertEquals(Style.empty(), builder.build());
-    });
+    assertEquals(
+      Style.empty(),
+      Style.style()
+        .merge(style, new Style.Merge[0])
+        .build()
+    );
+    assertEquals(
+      Style.empty(),
+      Style.style()
+        .merge(style, ImmutableSet.of())
+        .build()
+    );
   }
 
   @Test
@@ -336,14 +339,18 @@ class StyleTest {
   @Test
   void testBuilderMerge_color() {
     final Style style = Style.style(NamedTextColor.DARK_PURPLE, TextDecoration.BOLD);
-    doWith(Style.style(), builder -> {
-      builder.merge(style, Style.Merge.COLOR);
-      assertEquals(Style.style(NamedTextColor.DARK_PURPLE), builder.build());
-    });
-    doWith(Style.style(), builder -> {
-      builder.merge(style, ImmutableSet.of(Style.Merge.COLOR));
-      assertEquals(Style.style(NamedTextColor.DARK_PURPLE), builder.build());
-    });
+    assertEquals(
+      Style.style(NamedTextColor.DARK_PURPLE),
+      Style.style()
+        .merge(style, Style.Merge.COLOR)
+        .build()
+    );
+    assertEquals(
+      Style.style(NamedTextColor.DARK_PURPLE),
+      Style.style()
+        .merge(style, ImmutableSet.of(Style.Merge.COLOR))
+        .build()
+    );
   }
 
   @Test

@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -68,7 +68,10 @@ public interface ComponentLike {
     }
     @Nullable ArrayList<Component> components = null;
     for (int i = 0; i < size; i++) {
-      final ComponentLike like = likes.get(i);
+      final @Nullable ComponentLike like = likes.get(i);
+      if (like == null) {
+        throw new NullPointerException("likes[" + i + "]");
+      }
       final Component component = like.asComponent();
       if (filter == null || filter.test(component)) {
         if (components == null) {

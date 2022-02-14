@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,9 +25,8 @@ package net.kyori.adventure.text;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
+import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -83,12 +82,12 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
 
   @Override
   public @NotNull ScoreComponent children(final @NotNull List<? extends ComponentLike> children) {
-    return new ScoreComponentImpl(children, this.style, this.name, this.objective, this.value);
+    return new ScoreComponentImpl(requireNonNull(children, "children"), this.style, this.name, this.objective, this.value);
   }
 
   @Override
   public @NotNull ScoreComponent style(final @NotNull Style style) {
-    return new ScoreComponentImpl(this.children, style, this.name, this.objective, this.value);
+    return new ScoreComponentImpl(this.children, requireNonNull(style, "style"), this.name, this.objective, this.value);
   }
 
   @Override
@@ -113,15 +112,8 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
   }
 
   @Override
-  protected @NotNull Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
-    return Stream.concat(
-      Stream.of(
-        ExaminableProperty.of("name", this.name),
-        ExaminableProperty.of("objective", this.objective),
-        ExaminableProperty.of("value", this.value)
-      ),
-      super.examinablePropertiesWithoutChildren()
-    );
+  public String toString() {
+    return Internals.toString(this);
   }
 
   @Override
@@ -147,13 +139,13 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
 
     @Override
     public @NotNull Builder name(final @NotNull String name) {
-      this.name = name;
+      this.name = requireNonNull(name, "name");
       return this;
     }
 
     @Override
     public @NotNull Builder objective(final @NotNull String objective) {
-      this.objective = objective;
+      this.objective = requireNonNull(objective, "objective");
       return this;
     }
 

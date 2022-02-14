@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,8 @@
  */
 package net.kyori.adventure.text;
 
+import java.util.stream.Stream;
+import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -45,14 +47,12 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    * @param components the children
    * @return a text component
    * @since 4.0.0
-   * @deprecated For removal since 4.9.0, use {@link Component#join(JoinConfiguration, ComponentLike...)} with {@link JoinConfiguration#noSeparators()}.
+   * @deprecated for removal since 4.9.0, use {@link Component#textOfChildren(ComponentLike...)} instead
    */
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Deprecated
   static @NotNull TextComponent ofChildren(final @NotNull ComponentLike@NotNull... components) {
-    final Component joined = Component.join(JoinConfiguration.noSeparators(), components);
-    if (joined instanceof TextComponent) return (TextComponent) joined;
-    else return Component.text().append(joined).build();
+    return Component.textOfChildren(components);
   }
 
   /**
@@ -72,6 +72,16 @@ public interface TextComponent extends BuildableComponent<TextComponent, TextCom
    */
   @Contract(pure = true)
   @NotNull TextComponent content(final @NotNull String content);
+
+  @Override
+  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.concat(
+      Stream.of(
+        ExaminableProperty.of("content", this.content())
+      ),
+      BuildableComponent.super.examinableProperties()
+    );
+  }
 
   /**
    * A text component builder.

@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,10 +26,12 @@ package net.kyori.adventure.text;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import java.util.Set;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import net.kyori.examination.string.MultiLineStringExaminer;
+import org.junit.jupiter.api.Assertions;
 
 public final class TextAssertions {
   private static final Set<TextDecoration> DECORATIONS = ImmutableSet.copyOf(TextDecoration.values());
@@ -51,8 +53,24 @@ public final class TextAssertions {
   private static void assertDecorationsAre(final Style style, final Set<TextDecoration> decorations, final TextDecoration.State state) {
     if (!decorations.isEmpty()) {
       for (final TextDecoration decoration : decorations) {
-        assertEquals(state, style.decoration(decoration));
+        Assertions.assertEquals(state, style.decoration(decoration));
       }
     }
+  }
+
+  public static void assertEquals(final Component expected, final Component actual) {
+    Assertions.assertEquals(prettyPrint(expected), prettyPrint(actual));
+  }
+
+  public static void assertEquals(final Component expected, final Component actual, final String message) {
+    Assertions.assertEquals(prettyPrint(expected), prettyPrint(actual), message);
+  }
+
+  public static void assertEquals(final Component expected, final Component actual, final Supplier<String> message) {
+    Assertions.assertEquals(prettyPrint(expected), prettyPrint(actual), message);
+  }
+
+  private static final String prettyPrint(final Component component) {
+    return component.examine(MultiLineStringExaminer.simpleEscaping()).collect(Collectors.joining("\n"));
   }
 }

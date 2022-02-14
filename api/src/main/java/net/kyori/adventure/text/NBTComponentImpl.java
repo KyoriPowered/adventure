@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,11 +25,11 @@ package net.kyori.adventure.text;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import static java.util.Objects.requireNonNull;
 
 abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> extends AbstractComponent implements NBTComponent<C, B> {
   static final boolean INTERPRET_DEFAULT = false;
@@ -72,18 +72,6 @@ abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTCompo
     return result;
   }
 
-  @Override
-  protected @NotNull Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
-    return Stream.concat(
-      Stream.of(
-        ExaminableProperty.of("nbtPath", this.nbtPath),
-        ExaminableProperty.of("interpret", this.interpret),
-        ExaminableProperty.of("separator", this.separator)
-      ),
-      super.examinablePropertiesWithoutChildren()
-    );
-  }
-
   static abstract class BuilderImpl<C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> extends AbstractComponentBuilder<C, B> implements NBTComponentBuilder<C, B> {
     protected @Nullable String nbtPath;
     protected boolean interpret = INTERPRET_DEFAULT;
@@ -96,12 +84,13 @@ abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTCompo
       super(component);
       this.nbtPath = component.nbtPath();
       this.interpret = component.interpret();
+      this.separator = component.separator();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public @NotNull B nbtPath(final @NotNull String nbtPath) {
-      this.nbtPath = nbtPath;
+      this.nbtPath = requireNonNull(nbtPath, "nbtPath");
       return (B) this;
     }
 

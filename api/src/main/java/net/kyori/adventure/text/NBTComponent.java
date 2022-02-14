@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,8 @@
  */
 package net.kyori.adventure.text;
 
+import java.util.stream.Stream;
+import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,6 +46,8 @@ import org.jetbrains.annotations.Nullable;
  * context. See the documentation for your respective
  * platform for more info</p>
  *
+ * @param <C> component type
+ * @param <B> builder type
  * @since 4.0.0
  * @sinceMinecraft 1.14
  */
@@ -100,4 +104,16 @@ public interface NBTComponent<C extends NBTComponent<C, B>, B extends NBTCompone
    * @since 4.8.0
    */
   @NotNull C separator(final @Nullable ComponentLike separator);
+
+  @Override
+  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.concat(
+      Stream.of(
+        ExaminableProperty.of("nbtPath", this.nbtPath()),
+        ExaminableProperty.of("interpret", this.interpret()),
+        ExaminableProperty.of("separator", this.separator())
+      ),
+      BuildableComponent.super.examinableProperties()
+    );
+  }
 }

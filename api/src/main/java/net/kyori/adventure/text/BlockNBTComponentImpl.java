@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.ExaminableProperty;
@@ -46,7 +47,7 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
   @Override
   public @NotNull BlockNBTComponent nbtPath(final @NotNull String nbtPath) {
     if (Objects.equals(this.nbtPath, nbtPath)) return this;
-    return new BlockNBTComponentImpl(this.children, this.style, nbtPath, this.interpret, this.separator, this.pos);
+    return new BlockNBTComponentImpl(this.children, this.style, requireNonNull(nbtPath, "nbtPath"), this.interpret, this.separator, this.pos);
   }
 
   @Override
@@ -72,17 +73,17 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
 
   @Override
   public @NotNull BlockNBTComponent pos(final @NotNull Pos pos) {
-    return new BlockNBTComponentImpl(this.children, this.style, this.nbtPath, this.interpret, this.separator, pos);
+    return new BlockNBTComponentImpl(this.children, this.style, this.nbtPath, this.interpret, this.separator, requireNonNull(pos, "pos"));
   }
 
   @Override
   public @NotNull BlockNBTComponent children(final @NotNull List<? extends ComponentLike> children) {
-    return new BlockNBTComponentImpl(children, this.style, this.nbtPath, this.interpret, this.separator, this.pos);
+    return new BlockNBTComponentImpl(requireNonNull(children, "children"), this.style, this.nbtPath, this.interpret, this.separator, this.pos);
   }
 
   @Override
   public @NotNull BlockNBTComponent style(final @NotNull Style style) {
-    return new BlockNBTComponentImpl(this.children, style, this.nbtPath, this.interpret, this.separator, this.pos);
+    return new BlockNBTComponentImpl(this.children, requireNonNull(style, "style"), this.nbtPath, this.interpret, this.separator, this.pos);
   }
 
   @Override
@@ -102,13 +103,8 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
   }
 
   @Override
-  protected @NotNull Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
-    return Stream.concat(
-      Stream.of(
-        ExaminableProperty.of("pos", this.pos)
-      ),
-      super.examinablePropertiesWithoutChildren()
-    );
+  public String toString() {
+    return Internals.toString(this);
   }
 
   @Override
@@ -129,7 +125,7 @@ final class BlockNBTComponentImpl extends NBTComponentImpl<BlockNBTComponent, Bl
 
     @Override
     public BlockNBTComponent.@NotNull Builder pos(final @NotNull Pos pos) {
-      this.pos = pos;
+      this.pos = requireNonNull(pos, "pos");
       return this;
     }
 

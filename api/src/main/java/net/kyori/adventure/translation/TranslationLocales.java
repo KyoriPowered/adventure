@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,12 +25,14 @@ package net.kyori.adventure.translation;
 
 import java.util.Locale;
 import java.util.function.Supplier;
+import net.kyori.adventure.internal.properties.AdventureProperties;
+import org.jetbrains.annotations.Nullable;
 
 final class TranslationLocales {
   private static final Supplier<Locale> GLOBAL;
 
   static {
-    final String property = System.getProperty("net.kyo".concat("ri.adventure.defaultTranslationLocale"));
+    final @Nullable String property = AdventureProperties.DEFAULT_TRANSLATION_LOCALE.value();
     if (property == null || property.isEmpty()) {
       GLOBAL = () -> Locale.US;
     } else if (property.equals("system")) {

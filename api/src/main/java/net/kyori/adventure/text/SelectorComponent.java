@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,8 @@
  */
 package net.kyori.adventure.text;
 
+import java.util.stream.Stream;
+import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -77,6 +79,17 @@ public interface SelectorComponent extends BuildableComponent<SelectorComponent,
    * @since 4.8.0
    */
   @NotNull SelectorComponent separator(final @Nullable ComponentLike separator);
+
+  @Override
+  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.concat(
+      Stream.of(
+        ExaminableProperty.of("pattern", this.pattern()),
+        ExaminableProperty.of("separator", this.separator())
+      ),
+      BuildableComponent.super.examinableProperties()
+    );
+  }
 
   /**
    * A selector component builder.

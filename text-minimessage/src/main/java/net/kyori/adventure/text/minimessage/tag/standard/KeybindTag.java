@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,14 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import org.gradle.api.Named
-import org.gradle.api.attributes.Attribute
+package net.kyori.adventure.text.minimessage.tag.standard;
 
-interface JavadocPackaging : Named {
-  companion object {
-    val ATTRIBUTE: Attribute<JavadocPackaging> = Attribute.of("net.kyori.javadoc.packaging", JavadocPackaging::class.java)
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.ParsingException;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 
-    const val ARCHIVE = "archive"
-    const val DIRECTORY = "directory"
+/**
+ * A transformation that inserts a key binding component.
+ *
+ * @since 4.10.0
+ */
+public final class KeybindTag {
+  public static final String KEYBIND = "key";
+
+  private KeybindTag() {
   }
+
+  static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
+    return Tag.inserting(Component.keybind(args.popOr("A keybind id is required").value()));
+  }
+
 }

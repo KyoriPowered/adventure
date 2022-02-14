@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,10 +31,12 @@ import java.util.function.Function;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
+import net.kyori.adventure.text.format.MutableStyleSetter;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.util.Buildable;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,7 +48,8 @@ import org.jetbrains.annotations.Nullable;
  * @param <B> the builder type
  * @since 4.0.0
  */
-public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends Buildable.Builder<C>, ComponentBuilderApplicable, ComponentLike {
+@ApiStatus.NonExtendable
+public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends Buildable.Builder<C>, ComponentBuilderApplicable, ComponentLike, MutableStyleSetter<B> {
   /**
    * Appends a component to this component.
    *
@@ -193,6 +196,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
+  @Override
   @NotNull B font(final @Nullable Key font);
 
   /**
@@ -203,6 +207,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
+  @Override
   @NotNull B color(final @Nullable TextColor color);
 
   /**
@@ -213,6 +218,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
+  @Override
   @NotNull B colorIfAbsent(final @Nullable TextColor color);
 
   /**
@@ -225,11 +231,9 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_, _ -> this")
-  @SuppressWarnings("unchecked")
+  @Override
   default @NotNull B decorations(final @NotNull Set<TextDecoration> decorations, final boolean flag) {
-    final TextDecoration.State state = TextDecoration.State.byBoolean(flag);
-    decorations.forEach(decoration -> this.decoration(decoration, state));
-    return (B) this;
+    return MutableStyleSetter.super.decorations(decorations, flag);
   }
 
   /**
@@ -240,6 +244,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
+  @Override
   default @NotNull B decorate(final @NotNull TextDecoration decoration) {
     return this.decoration(decoration, TextDecoration.State.TRUE);
   }
@@ -252,12 +257,9 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
-  @SuppressWarnings("unchecked")
+  @Override
   default @NotNull B decorate(final @NotNull TextDecoration@NotNull... decorations) {
-    for (int i = 0, length = decorations.length; i < length; i++) {
-      this.decorate(decorations[i]);
-    }
-    return (B) this;
+    return MutableStyleSetter.super.decorate(decorations);
   }
 
   /**
@@ -270,6 +272,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_, _ -> this")
+  @Override
   default @NotNull B decoration(final @NotNull TextDecoration decoration, final boolean flag) {
     return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
   }
@@ -284,12 +287,9 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.10.0
    */
   @Contract("_ -> this")
-  @SuppressWarnings("unchecked")
+  @Override
   default @NotNull B decorations(final @NotNull Map<TextDecoration, TextDecoration.State> decorations) {
-    for (final Map.Entry<TextDecoration, TextDecoration.State> entry : decorations.entrySet()) {
-      this.decoration(entry.getKey(), entry.getValue());
-    }
-    return (B) this;
+    return MutableStyleSetter.super.decorations(decorations);
   }
 
   /**
@@ -304,6 +304,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_, _ -> this")
+  @Override
   @NotNull B decoration(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
 
   /**
@@ -314,6 +315,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
+  @Override
   @NotNull B clickEvent(final @Nullable ClickEvent event);
 
   /**
@@ -324,6 +326,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
+  @Override
   @NotNull B hoverEvent(final @Nullable HoverEventSource<?> source);
 
   /**
@@ -334,6 +337,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    * @since 4.0.0
    */
   @Contract("_ -> this")
+  @Override
   @NotNull B insertion(final @Nullable String insertion);
 
   /**
@@ -358,7 +362,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    */
   @Contract("_, _ -> this")
   default @NotNull B mergeStyle(final @NotNull Component that, final Style.@NotNull Merge@NotNull... merges) {
-    return this.mergeStyle(that, Style.Merge.of(merges));
+    return this.mergeStyle(that, Style.Merge.merges(merges));
   }
 
   /**

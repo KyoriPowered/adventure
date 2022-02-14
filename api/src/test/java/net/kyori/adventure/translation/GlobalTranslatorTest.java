@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -42,12 +42,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class GlobalTranslatorTest {
   @BeforeEach
   void removeDummySourceBeforeEachTest() {
-    GlobalTranslator.get().removeSource(DummyTranslator.INSTANCE);
+    GlobalTranslator.translator().removeSource(DummyTranslator.INSTANCE);
   }
 
   @Test
   void testRender() {
-    GlobalTranslator.get().addSource(DummyTranslator.INSTANCE);
+    GlobalTranslator.translator().addSource(DummyTranslator.INSTANCE);
     assertEquals(
       Component.text()
         .append(Component.text("Hello "))
@@ -60,22 +60,22 @@ class GlobalTranslatorTest {
 
   @Test
   void testAddingSelf() {
-    assertThrows(IllegalArgumentException.class, () -> GlobalTranslator.get().addSource(GlobalTranslator.get()));
+    assertThrows(IllegalArgumentException.class, () -> GlobalTranslator.translator().addSource(GlobalTranslator.translator()));
   }
 
   @Test
   void testAddAndRemoveSource() {
-    assertTrue(GlobalTranslator.get().addSource(DummyTranslator.INSTANCE));
-    assertThat(GlobalTranslator.get().sources()).contains(DummyTranslator.INSTANCE);
-    assertTrue(GlobalTranslator.get().removeSource(DummyTranslator.INSTANCE));
-    assertThat(GlobalTranslator.get().sources()).doesNotContain(DummyTranslator.INSTANCE);
+    assertTrue(GlobalTranslator.translator().addSource(DummyTranslator.INSTANCE));
+    assertThat(GlobalTranslator.translator().sources()).contains(DummyTranslator.INSTANCE);
+    assertTrue(GlobalTranslator.translator().removeSource(DummyTranslator.INSTANCE));
+    assertThat(GlobalTranslator.translator().sources()).doesNotContain(DummyTranslator.INSTANCE);
   }
 
   @Test
   void testTranslate() {
-    assertNull(GlobalTranslator.get().translate("testDummy", Locale.US));
-    GlobalTranslator.get().addSource(DummyTranslator.INSTANCE);
-    assertEquals(new MessageFormat("Hello {0}!"), GlobalTranslator.get().translate("testDummy", Locale.US));
+    assertNull(GlobalTranslator.translator().translate("testDummy", Locale.US));
+    GlobalTranslator.translator().addSource(DummyTranslator.INSTANCE);
+    assertEquals(new MessageFormat("Hello {0}!"), GlobalTranslator.translator().translate("testDummy", Locale.US));
   }
 
   static class DummyTranslator implements Translator {

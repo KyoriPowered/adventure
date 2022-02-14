@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -91,7 +91,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
     requireNonNull(components, "components");
     boolean prepared = false;
     for (int i = 0, length = components.length; i < length; i++) {
-      final Component component = components[i].asComponent();
+      final Component component = requireNonNull(components[i], "components[?]").asComponent();
       if (component != Component.empty()) {
         if (!prepared) {
           this.prepareChildren();
@@ -109,7 +109,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
     requireNonNull(components, "components");
     boolean prepared = false;
     for (final ComponentLike like : components) {
-      final Component component = like.asComponent();
+      final Component component = requireNonNull(like, "components[?]").asComponent();
       if (component != Component.empty()) {
         if (!prepared) {
           this.prepareChildren();
@@ -267,7 +267,7 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
   @Override
   @SuppressWarnings("unchecked")
   public @NotNull B mergeStyle(final @NotNull Component that, final @NotNull Set<Style.Merge> merges) {
-    this.styleBuilder().merge(that.style(), merges);
+    this.styleBuilder().merge(requireNonNull(that, "component").style(), merges);
     return (B) this;
   }
 

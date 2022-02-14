@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -39,7 +39,7 @@ class ShowItemSerializerTest {
   @Test
   void testDeserializeWithPopulatedTag() throws IOException {
     assertEquals(
-      HoverEvent.ShowItem.of(Key.key("minecraft", "diamond"), 1, BinaryTagHolder.of(TagStringIO.get().asString(
+      HoverEvent.ShowItem.of(Key.key("minecraft", "diamond"), 1, BinaryTagHolder.binaryTagHolder(TagStringIO.get().asString(
         CompoundBinaryTag.builder()
           .put("display", CompoundBinaryTag.builder()
             .put("Name", StringBinaryTag.of("A test!"))

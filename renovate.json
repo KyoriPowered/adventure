@@ -1,0 +1,15 @@
+{
+  "extends": [
+    "local>KyoriPowered/.github:renovate-config"
+  ],
+  "ignoreDeps": [
+    "com.google.code.gson:gson"
+  ],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["major"],
+      "matchPackagePrefixes": ["org.spongepowered:configurate-"],
+      "enabled": false
+    }
+  ]
+}

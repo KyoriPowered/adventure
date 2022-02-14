@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,12 +25,13 @@ package net.kyori.adventure.text;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
+import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import static java.util.Objects.requireNonNull;
 
 final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent, StorageNBTComponent.Builder> implements StorageNBTComponent {
   private final Key storage;
@@ -43,7 +44,7 @@ final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent
   @Override
   public @NotNull StorageNBTComponent nbtPath(final @NotNull String nbtPath) {
     if (Objects.equals(this.nbtPath, nbtPath)) return this;
-    return new StorageNBTComponentImpl(this.children, this.style, nbtPath, this.interpret, this.separator, this.storage);
+    return new StorageNBTComponentImpl(this.children, this.style, requireNonNull(nbtPath, "nbt path"), this.interpret, this.separator, this.storage);
   }
 
   @Override
@@ -70,17 +71,17 @@ final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent
   @Override
   public @NotNull StorageNBTComponent storage(final @NotNull Key storage) {
     if (Objects.equals(this.storage, storage)) return this;
-    return new StorageNBTComponentImpl(this.children, this.style, this.nbtPath, this.interpret, this.separator, storage);
+    return new StorageNBTComponentImpl(this.children, this.style, this.nbtPath, this.interpret, this.separator, requireNonNull(storage, "storage"));
   }
 
   @Override
   public @NotNull StorageNBTComponent children(final @NotNull List<? extends ComponentLike> children) {
-    return new StorageNBTComponentImpl(children, this.style, this.nbtPath, this.interpret, this.separator, this.storage);
+    return new StorageNBTComponentImpl(requireNonNull(children, "children"), this.style, this.nbtPath, this.interpret, this.separator, this.storage);
   }
 
   @Override
   public @NotNull StorageNBTComponent style(final @NotNull Style style) {
-    return new StorageNBTComponentImpl(this.children, style, this.nbtPath, this.interpret, this.separator, this.storage);
+    return new StorageNBTComponentImpl(this.children, requireNonNull(style, "style"), this.nbtPath, this.interpret, this.separator, this.storage);
   }
 
   @Override
@@ -100,13 +101,8 @@ final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent
   }
 
   @Override
-  protected @NotNull Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
-    return Stream.concat(
-      Stream.of(
-        ExaminableProperty.of("storage", this.storage)
-      ),
-      super.examinablePropertiesWithoutChildren()
-    );
+  public String toString() {
+    return Internals.toString(this);
   }
 
   @Override
@@ -127,7 +123,7 @@ final class StorageNBTComponentImpl extends NBTComponentImpl<StorageNBTComponent
 
     @Override
     public StorageNBTComponent.@NotNull Builder storage(final @NotNull Key storage) {
-      this.storage = storage;
+      this.storage = requireNonNull(storage, "storage");
       return this;
     }
 

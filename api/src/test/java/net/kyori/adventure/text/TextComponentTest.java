@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 package net.kyori.adventure.text;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.testing.EqualsTester;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
@@ -31,7 +32,6 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.TextAssertions.assertDecorations;
-import static net.kyori.test.WeirdAssertions.assertAllEqualToEachOther;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -61,6 +61,21 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
   }
 
   @Test
+  void testOfChildren() {
+    assertSame(Component.empty(), Component.textOfChildren()); // empty array
+    assertEquals(
+      Component.text()
+        .append(Component.text("a"))
+        .append(Component.text().content("b"))
+        .build(),
+      Component.textOfChildren(
+        Component.text("a"),
+        Component.text().content("b")
+      )
+    );
+  }
+
+  @Test
   void testOf() {
     final TextComponent component = Component.text("foo");
     assertEquals("foo", component.content());
@@ -70,16 +85,18 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
 
   @Test
   void testOfSameResult() {
-    assertAllEqualToEachOther(
-      Component.text("foo", Style.style(TextColor.color(0x0a1ab9))),
-      Component.text("foo", TextColor.color(0x0a1ab9)),
-      Component.text("foo", TextColor.color(0x0a1ab9), ImmutableSet.of())
-    );
-    assertAllEqualToEachOther(
-      Component.text("foo", Style.style(TextColor.color(0x0a1ab9), TextDecoration.BOLD)),
-      Component.text("foo", TextColor.color(0x0a1ab9), TextDecoration.BOLD),
-      Component.text("foo", TextColor.color(0x0a1ab9), ImmutableSet.of(TextDecoration.BOLD))
-    );
+    new EqualsTester()
+      .addEqualityGroup(
+        Component.text("foo", Style.style(TextColor.color(0x0a1ab9))),
+        Component.text("foo", TextColor.color(0x0a1ab9)),
+        Component.text("foo", TextColor.color(0x0a1ab9), ImmutableSet.of())
+      )
+      .addEqualityGroup(
+        Component.text("foo", Style.style(TextColor.color(0x0a1ab9), TextDecoration.BOLD)),
+        Component.text("foo", TextColor.color(0x0a1ab9), TextDecoration.BOLD),
+        Component.text("foo", TextColor.color(0x0a1ab9), ImmutableSet.of(TextDecoration.BOLD))
+      )
+      .testEquals();
   }
 
   @Test

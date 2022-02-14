@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,14 +35,18 @@ import java.util.Spliterators;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 import java.util.stream.Collector;
+import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.StyleGetter;
+import net.kyori.adventure.text.format.StyleSetter;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
@@ -52,6 +56,7 @@ import net.kyori.adventure.util.ForwardingIterator;
 import net.kyori.adventure.util.IntFunction2;
 import net.kyori.adventure.util.MonkeyBars;
 import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -101,7 +106,7 @@ import static java.util.Objects.requireNonNull;
  * @since 4.0.0
  */
 @ApiStatus.NonExtendable
-public interface Component extends ComponentBuilderApplicable, ComponentLike, Examinable, HoverEventSource<Component> {
+public interface Component extends ComponentBuilderApplicable, ComponentLike, Examinable, HoverEventSource<Component>, StyleGetter, StyleSetter<Component> {
   /**
    * A predicate that checks equality of two {@code Component}s using {@link Objects#equals(Object, Object)}.
    *
@@ -114,6 +119,12 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.8.0
    */
   BiPredicate<? super Component, ? super Component> EQUALS_IDENTITY = (a, b) -> a == b;
+  /**
+   * A predicate that excludes {@link #empty()}.
+   *
+   * @since 4.10.0
+   */
+  Predicate<? super Component> IS_NOT_EMPTY = component -> component != empty();
 
   /**
    * Gets an empty component.
@@ -318,7 +329,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static @NotNull BlockNBTComponent blockNBT(final @NotNull String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final BlockNBTComponent.@NotNull Pos pos) {
-    return new BlockNBTComponentImpl(Collections.emptyList(), Style.empty(), nbtPath, interpret, separator, pos);
+    return new BlockNBTComponentImpl(Collections.emptyList(), Style.empty(), requireNonNull(nbtPath, "nbtPath"), interpret, separator, requireNonNull(pos, "pos"));
   }
 
   /*
@@ -426,7 +437,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull KeybindComponent keybind(final @NotNull String keybind, final @NotNull Style style) {
-    return new KeybindComponentImpl(Collections.emptyList(), style, keybind);
+    return new KeybindComponentImpl(Collections.emptyList(), requireNonNull(style, "style"), keybind);
   }
 
   /**
@@ -439,7 +450,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull KeybindComponent keybind(final KeybindComponent.@NotNull KeybindLike keybind, final @NotNull Style style) {
-    return new KeybindComponentImpl(Collections.emptyList(), style, requireNonNull(keybind, "keybind").asKeybind());
+    return new KeybindComponentImpl(Collections.emptyList(), requireNonNull(style, "style"), requireNonNull(keybind, "keybind").asKeybind());
   }
 
   /**
@@ -579,7 +590,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Contract(value = "_, _, _ -> new", pure = true)
   @Deprecated
   static @NotNull ScoreComponent score(final @NotNull String name, final @NotNull String objective, final @Nullable String value) {
-    return new ScoreComponentImpl(Collections.emptyList(), Style.empty(), name, objective, value);
+    return new ScoreComponentImpl(Collections.emptyList(), Style.empty(), requireNonNull(name, "name"), requireNonNull(objective, "objective"), value);
   }
 
   /*
@@ -633,7 +644,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull SelectorComponent selector(final @NotNull String pattern, final @Nullable ComponentLike separator) {
-    return new SelectorComponentImpl(Collections.emptyList(), Style.empty(), pattern, separator);
+    return new SelectorComponentImpl(Collections.emptyList(), Style.empty(), requireNonNull(pattern, "pattern"), separator);
   }
 
   /*
@@ -704,7 +715,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static @NotNull StorageNBTComponent storageNBT(final @NotNull String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final @NotNull Key storage) {
-    return new StorageNBTComponentImpl(Collections.emptyList(), Style.empty(), nbtPath, interpret, separator, storage);
+    return new StorageNBTComponentImpl(Collections.emptyList(), Style.empty(), requireNonNull(nbtPath, "nbtPath"), interpret, separator, requireNonNull(storage, "storage"));
   }
 
   /*
@@ -722,6 +733,18 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Contract(pure = true)
   static TextComponent.@NotNull Builder text() {
     return new TextComponentImpl.BuilderImpl();
+  }
+
+  /**
+   * Creates a text component with {@code components} as the children.
+   *
+   * @param components the children
+   * @return a text component
+   * @since 4.10.0
+   */
+  static @NotNull TextComponent textOfChildren(final @NotNull ComponentLike@NotNull... components) {
+    if (components.length == 0) return empty();
+    return new TextComponentImpl(Arrays.asList(components), Style.empty(), "");
   }
 
   /**
@@ -759,7 +782,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull TextComponent text(final @NotNull String content, final @NotNull Style style) {
-    return new TextComponentImpl(Collections.emptyList(), style, content);
+    return new TextComponentImpl(Collections.emptyList(), requireNonNull(style, "style"), content);
   }
 
   /**
@@ -1264,7 +1287,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @NotNull Style style) {
-    return new TranslatableComponentImpl(Collections.emptyList(), style, key, Collections.emptyList());
+    return new TranslatableComponentImpl(Collections.emptyList(), requireNonNull(style, "style"), key, Collections.emptyList());
   }
 
   /**
@@ -1399,7 +1422,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @NotNull Style style, final @NotNull ComponentLike@NotNull... args) {
-    return new TranslatableComponentImpl(Collections.emptyList(), style, key, args);
+    return new TranslatableComponentImpl(Collections.emptyList(), requireNonNull(style, "style"), key, requireNonNull(args, "args"));
   }
 
   /**
@@ -1484,7 +1507,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @NotNull List<? extends ComponentLike> args) {
-    return new TranslatableComponentImpl(Collections.emptyList(), Style.empty(), key, args);
+    return new TranslatableComponentImpl(Collections.emptyList(), Style.empty(), key, requireNonNull(args, "args"));
   }
 
   /**
@@ -1511,7 +1534,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @NotNull Style style, final @NotNull List<? extends ComponentLike> args) {
-    return new TranslatableComponentImpl(Collections.emptyList(), style, key, args);
+    return new TranslatableComponentImpl(Collections.emptyList(), requireNonNull(style, "style"), key, requireNonNull(args, "args"));
   }
 
   /**
@@ -1658,8 +1681,8 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * Prevents a cycle between this component and the provided component.
    *
    * @param that the other component
-   * @deprecated for removal since 4.7.0, with no replacement - this method is not necessary due to the fact {@code Component}s are immutable
    * @since 4.0.0
+   * @deprecated for removal since 4.7.0, with no replacement - this method is not necessary due to the fact {@code Component}s are immutable
    */
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Deprecated
@@ -1786,7 +1809,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(pure = true)
   default @NotNull Component mergeStyle(final @NotNull Component that, final Style.@NotNull Merge@NotNull... merges) {
-    return this.mergeStyle(that, Style.Merge.of(merges));
+    return this.mergeStyle(that, Style.Merge.merges(merges));
   }
 
   /**
@@ -1803,11 +1826,35 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
+   * Gets the font.
+   *
+   * @return the font of this component
+   * @since 4.10.0
+   */
+  @Override
+  default @Nullable Key font() {
+    return this.style().font();
+  }
+
+  /**
+   * Sets the font.
+   *
+   * @param key a font
+   * @return a component
+   * @since 4.10.0
+   */
+  @Override
+  default @NotNull Component font(final @Nullable Key key) {
+    return this.style(this.style().font(key));
+  }
+
+  /**
    * Gets the color of this component.
    *
    * @return the color of this component
    * @since 4.0.0
    */
+  @Override
   default @Nullable TextColor color() {
     return this.style().color();
   }
@@ -1820,6 +1867,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   @Contract(pure = true)
+  @Override
   default @NotNull Component color(final @Nullable TextColor color) {
     return this.style(this.style().color(color));
   }
@@ -1832,6 +1880,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   @Contract(pure = true)
+  @Override
   default @NotNull Component colorIfAbsent(final @Nullable TextColor color) {
     if (this.color() == null) return this.color(color);
     return this;
@@ -1845,8 +1894,9 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    *     component does not have the decoration
    * @since 4.0.0
    */
+  @Override
   default boolean hasDecoration(final @NotNull TextDecoration decoration) {
-    return this.decoration(decoration) == TextDecoration.State.TRUE;
+    return StyleGetter.super.hasDecoration(decoration);
   }
 
   /**
@@ -1857,8 +1907,9 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   @Contract(pure = true)
+  @Override
   default @NotNull Component decorate(final @NotNull TextDecoration decoration) {
-    return this.decoration(decoration, TextDecoration.State.TRUE);
+    return StyleSetter.super.decorate(decoration);
   }
 
   /**
@@ -1870,6 +1921,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    *     and {@link TextDecoration.State#NOT_SET} if not set
    * @since 4.0.0
    */
+  @Override
   default TextDecoration.@NotNull State decoration(final @NotNull TextDecoration decoration) {
     return this.style().decoration(decoration);
   }
@@ -1884,8 +1936,9 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   @Contract(pure = true)
+  @Override
   default @NotNull Component decoration(final @NotNull TextDecoration decoration, final boolean flag) {
-    return this.decoration(decoration, TextDecoration.State.byBoolean(flag));
+    return StyleSetter.super.decoration(decoration, flag);
   }
 
   /**
@@ -1900,6 +1953,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   @Contract(pure = true)
+  @Override
   default @NotNull Component decoration(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
     return this.style(this.style().decoration(decoration, state));
   }
@@ -1910,6 +1964,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return a set of decorations this component has
    * @since 4.0.0
    */
+  @Override
   default @NotNull Map<TextDecoration, TextDecoration.State> decorations() {
     return this.style().decorations();
   }
@@ -1924,6 +1979,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   @Contract(pure = true)
+  @Override
   default @NotNull Component decorations(final @NotNull Map<TextDecoration, TextDecoration.State> decorations) {
     return this.style(this.style().decorations(decorations));
   }
@@ -1934,6 +1990,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return the click event
    * @since 4.0.0
    */
+  @Override
   default @Nullable ClickEvent clickEvent() {
     return this.style().clickEvent();
   }
@@ -1946,6 +2003,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   @Contract(pure = true)
+  @Override
   default @NotNull Component clickEvent(final @Nullable ClickEvent event) {
     return this.style(this.style().clickEvent(event));
   }
@@ -1956,6 +2014,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return the hover event
    * @since 4.0.0
    */
+  @Override
   default @Nullable HoverEvent<?> hoverEvent() {
     return this.style().hoverEvent();
   }
@@ -1968,6 +2027,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   @Contract(pure = true)
+  @Override
   default @NotNull Component hoverEvent(final @Nullable HoverEventSource<?> source) {
     return this.style(this.style().hoverEvent(source));
   }
@@ -1978,6 +2038,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @return the insertion string
    * @since 4.0.0
    */
+  @Override
   default @Nullable String insertion() {
     return this.style().insertion();
   }
@@ -1990,6 +2051,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   @Contract(pure = true)
+  @Override
   default @NotNull Component insertion(final @Nullable String insertion) {
     return this.style(this.style().insertion(insertion));
   }
@@ -2275,5 +2337,13 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Override
   default @NotNull HoverEvent<Component> asHoverEvent(final @NotNull UnaryOperator<Component> op) {
     return HoverEvent.showText(op.apply(this));
+  }
+
+  @Override
+  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(
+      ExaminableProperty.of("style", this.style()),
+      ExaminableProperty.of(ComponentInternals.CHILDREN_PROPERTY, this.children())
+    );
   }
 }

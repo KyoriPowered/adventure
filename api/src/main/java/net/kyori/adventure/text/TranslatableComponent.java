@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,10 +26,12 @@ package net.kyori.adventure.text;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.stream.Stream;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.translation.GlobalTranslator;
 import net.kyori.adventure.translation.Translatable;
 import net.kyori.adventure.translation.TranslationRegistry;
+import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -116,6 +118,17 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    */
   @Contract(pure = true)
   @NotNull TranslatableComponent args(final @NotNull List<? extends ComponentLike> args);
+
+  @Override
+  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.concat(
+      Stream.of(
+        ExaminableProperty.of("key", this.key()),
+        ExaminableProperty.of("args", this.args())
+      ),
+      BuildableComponent.super.examinableProperties()
+    );
+  }
 
   /**
    * A text component builder.
