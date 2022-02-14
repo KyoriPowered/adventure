@@ -37,7 +37,7 @@ final class PreProcessTagImpl extends AbstractTag implements PreProcess {
   }
 
   @Override
-  public String value() {
+  public @NotNull String value() {
     return this.value;
   }
 

@@ -168,7 +168,8 @@ public interface TagResolver {
    * @since 4.10.0
    */
   static @NotNull TagResolver resolver(final @NotNull Iterable<? extends TagResolver> resolvers) {
-    if (resolvers instanceof Collection<?>) { // in the simplest case, we can
+    // We can break out early and return exact resolvers in the case of a zero/one length array.
+    if (resolvers instanceof Collection<?>) {
       final int size = ((Collection<?>) resolvers).size();
       if (size == 0) return empty();
       if (size == 1) return Objects.requireNonNull(resolvers.iterator().next(), "resolvers must not contain null elements");
@@ -184,7 +185,7 @@ public interface TagResolver {
    * Once a string to replacement mapping has been created, it will be cached to avoid
    * the cost of recreating the replacement.</p>
    *
-   * <p>Due to the complexity of handling lookups for tags with arguments, the built-in cache does not support anything but argumentless tags.</p>
+   * <p>Due to the complexity of handling lookups for tags with arguments, the built-in cache does not support anything but tags without arguments.</p>
    *
    * @param resolver the resolver
    * @return the caching tag resolver

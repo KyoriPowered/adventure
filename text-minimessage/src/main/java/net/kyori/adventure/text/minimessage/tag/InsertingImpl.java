@@ -45,7 +45,7 @@ final class InsertingImpl extends AbstractTag implements Inserting {
   }
 
   @Override
-  public Component value() {
+  public @NotNull Component value() {
     return this.value;
   }
 

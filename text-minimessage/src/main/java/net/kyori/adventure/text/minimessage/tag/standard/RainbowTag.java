@@ -93,12 +93,12 @@ public final class RainbowTag implements Modifying, Examinable {
   }
 
   @Override
-  public void visit(final Node curr) {
-    if (curr instanceof ValueNode) {
-      final String value = ((ValueNode) curr).value();
+  public void visit(final @NotNull Node current) {
+    if (current instanceof ValueNode) {
+      final String value = ((ValueNode) current).value();
       this.size += value.codePointCount(0, value.length());
-    } else if (curr instanceof TagNode) {
-      final TagNode tag = (TagNode) curr;
+    } else if (current instanceof TagNode) {
+      final TagNode tag = (TagNode) current;
       if (tag.tag() instanceof Inserting) {
         // Inserting.apply() returns the value of the component placeholder
         ComponentFlattener.textOnly().flatten(((Inserting) tag.tag()).value(), s -> this.size += s.codePointCount(0, s.length()));
@@ -115,7 +115,7 @@ public final class RainbowTag implements Modifying, Examinable {
   }
 
   @Override
-  public Component apply(final Component current, final int depth) {
+  public Component apply(final @NotNull Component current, final int depth) {
     if ((this.disableApplyingColorDepth != -1 && depth > this.disableApplyingColorDepth) || current.style().color() != null) {
       if (this.disableApplyingColorDepth == -1) {
         this.disableApplyingColorDepth = depth;

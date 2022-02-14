@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage.tag.resolver;
 
 import java.util.Map;
 import net.kyori.adventure.text.minimessage.tag.Tag;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Marker interface for resolvers that may handle a fixed domain of tags.
@@ -37,7 +38,7 @@ interface MappableResolver {
    * and lead to handling as if this resolver did not implement {@code MappableResolver}.</p>
    *
    * @param map the map to add to
-   * @return whether or not the set of values was actually known
+   * @return whether the set of values was actually known
    */
-  boolean contributeToMap(final Map<String, Tag> map);
+  boolean contributeToMap(final @NotNull Map<String, Tag> map);
 }

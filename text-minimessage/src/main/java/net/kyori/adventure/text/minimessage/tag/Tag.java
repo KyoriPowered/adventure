@@ -193,7 +193,7 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, ParserDirecti
      * @return an optional providing the value of this argument as an integer
      * @since 4.10.0
      */
-    default OptionalInt asInt() {
+    default @NotNull OptionalInt asInt() {
       try {
         return OptionalInt.of(Integer.parseInt(this.value()));
       } catch (final NumberFormatException ex) {
@@ -209,7 +209,7 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, ParserDirecti
      * @return an optional providing the value of this argument as an integer
      * @since 4.10.0
      */
-    default OptionalDouble asDouble() {
+    default @NotNull OptionalDouble asDouble() {
       try {
         return OptionalDouble.of(Double.parseDouble(this.value()));
       } catch (final NumberFormatException ex) {
