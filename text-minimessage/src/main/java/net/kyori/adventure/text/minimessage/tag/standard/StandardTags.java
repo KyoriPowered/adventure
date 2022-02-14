@@ -81,6 +81,30 @@ public final class StandardTags {
       .build();
 
   /**
+   * Get a resolver for all decoration tags.
+   *
+   * <p>This tag supports both standard names from {@link TextDecoration#NAMES} as well as a few aliases from {@link DecorationTag#DECORATION_ALIASES}.</p>
+   *
+   * @return a resolver for all tags
+   * @since 4.10.0
+   */
+  public static TagResolver decoration() {
+    return DECORATION;
+  }
+
+  /**
+   * Get a resolver for the {@value ColorTagResolver#COLOR} tags.
+   *
+   * <p>This tag supports both hex string colors as well as {@linkplain NamedTextColor named colors}.</p>
+   *
+   * @return a resolver for the {@value ColorTagResolver#COLOR} tags
+   * @since 4.10.0
+   */
+  public static TagResolver color() {
+    return COLOR;
+  }
+
+  /**
    * Get a resolver for the {@value HoverTag#HOVER} tag.
    *
    * @return a resolver for the {@value HoverTag#HOVER} tag
@@ -98,18 +122,6 @@ public final class StandardTags {
    */
   public static TagResolver clickEvent() {
     return CLICK_EVENT;
-  }
-
-  /**
-   * Get a resolver for the {@value ColorTagResolver#COLOR} tags.
-   *
-   * <p>This tag supports both hex string colors as well as {@linkplain NamedTextColor named colors}.</p>
-   *
-   * @return a resolver for the {@value ColorTagResolver#COLOR} tags
-   * @since 4.10.0
-   */
-  public static TagResolver color() {
-    return COLOR;
   }
 
   /**
