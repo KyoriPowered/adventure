@@ -46,12 +46,10 @@ public final class StandardTags {
   }
 
   private static final TagResolver DECORATION = Stream.concat(TextDecoration.NAMES.keyToValue().entrySet().stream(), DecorationTag.DECORATION_ALIASES.entrySet().stream())
-    .flatMap(entry -> {
-      return Stream.of(
-        TagResolver.resolver(entry.getKey(), (args, ctx) -> DecorationTag.create(entry.getValue(), args, ctx)),
-        TagResolver.resolver(DecorationTag.REVERT + entry.getKey(), DecorationTag.createNegated(entry.getValue()))
-        );
-    })
+    .flatMap(entry -> Stream.of(
+      TagResolver.resolver(entry.getKey(), (args, ctx) -> DecorationTag.create(entry.getValue(), args, ctx)),
+      TagResolver.resolver(DecorationTag.REVERT + entry.getKey(), DecorationTag.createNegated(entry.getValue()))
+      ))
     .collect(TagResolver.toTagResolver());
   private static final TagResolver COLOR = new ColorTagResolver();
   private static final TagResolver HOVER_EVENT = TagResolver.resolver(HoverTag.HOVER, HoverTag::create);

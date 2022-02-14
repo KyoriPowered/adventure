@@ -96,11 +96,17 @@ public class ElementNode implements Node {
    * @since 4.10.0
    */
   @Override
-  public List<ElementNode> children() {
+  public @NotNull List<ElementNode> children() {
     return Collections.unmodifiableList(this.children);
   }
 
-  public List<ElementNode> unsafeChildren() {
+  /**
+   * Returns an unsafe view of the children of this node.
+   *
+   * @return the children of this node
+   * @since 4.10.0
+   */
+  public @NotNull List<ElementNode> unsafeChildren() {
     return this.children;
   }
 
@@ -112,7 +118,7 @@ public class ElementNode implements Node {
    * @param childNode the child node to add.
    * @since 4.10.0
    */
-  public void addChild(final ElementNode childNode) {
+  public void addChild(final @NotNull ElementNode childNode) {
     final int last = this.children.size() - 1;
     if (!(childNode instanceof TextNode) || this.children.isEmpty() || !(this.children.get(last) instanceof TextNode)) {
       this.children.add(childNode);
@@ -154,7 +160,7 @@ public class ElementNode implements Node {
   }
 
   @Override
-  public String toString() {
+  public @NotNull String toString() {
     return this.buildToString(new StringBuilder(), 0).toString();
   }
 }

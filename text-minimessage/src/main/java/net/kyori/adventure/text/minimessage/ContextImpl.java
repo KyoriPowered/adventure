@@ -116,12 +116,12 @@ class ContextImpl implements Context {
   }
 
   @Override
-  public ParsingException newException(final String message, final @NotNull ArgumentQueue tags) {
+  public @NotNull ParsingException newException(final @NotNull String message, final @NotNull ArgumentQueue tags) {
     return new ParsingExceptionImpl(message, this.message, tagsToTokens(((ArgumentQueueImpl<?>) tags).args));
   }
 
   @Override
-  public ParsingException newException(final String message, final @Nullable Throwable cause, final @NotNull ArgumentQueue tags) {
+  public @NotNull ParsingException newException(final @NotNull String message, final @Nullable Throwable cause, final @NotNull ArgumentQueue tags) {
     return new ParsingExceptionImpl(message, this.message, cause, tagsToTokens(((ArgumentQueueImpl<?>) tags).args));
   }
 

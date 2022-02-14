@@ -27,13 +27,13 @@ import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A tag type that inserts a {@link Component} into the output.
+ * A tag that inserts a {@link Component} into the output.
  *
  * @since 4.10.0
  */
 public /* non-sealed */ interface Inserting extends Tag {
   /**
-   * Return the component this tag produces.
+   * Returns the component this tag produces.
    *
    * @return the component this tag produces
    * @since 4.10.0
@@ -41,7 +41,7 @@ public /* non-sealed */ interface Inserting extends Tag {
   @NotNull Component value();
 
   /**
-   * Get whether or not this tag allows children.
+   * Get whether this tag allows children.
    *
    * <p>If children are not allowed, this tag will be auto-closing, and
    * should not be closed explicitly. In strict mode, a closing tag will be

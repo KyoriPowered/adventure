@@ -25,23 +25,25 @@ package net.kyori.adventure.text.minimessage.tag;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tree.Node;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Transformations implementing this interface can transform a whole subtree of nodes.
+ * A tag that can transform a whole subtree of nodes.
  *
  * @since 4.10.0
  */
 public /* non-sealed */ interface Modifying extends Tag {
   /**
-   * This method gets called once for every element in the sub tree, allowing you to do calculations beforehand.
+   * Method called once for every element in the subtree, allowing calculations to be made before {@link #apply(Component, int) application}.
    *
-   * @param curr the current element in the sub tree
+   * @param current the current element in the subtree
    * @since 4.10.0
    */
-  void visit(final Node curr);
+  default void visit(final @NotNull Node current) {
+  }
 
   /**
-   * Called after the entire tree has been {@link #visit(Node)}-ed.
+   * Called after the entire tree has been {@link #visit(Node) visited}.
    *
    * <p>This allows for finalizing calculations made during the tree visit, but before actual application to the child components of this tag.</p>
    *
@@ -52,12 +54,13 @@ public /* non-sealed */ interface Modifying extends Tag {
 
   /**
    * Applies this transformation for the current component.
-   * This gets called after the component tree has been assembled, but you are free to modify it however you like.
    *
-   * @param curr the current component
+   * <p>This gets called after the component tree has been assembled, however, the tree can still be modified at this point if desired.</p>
+   *
+   * @param current the current component
    * @param depth the depth of the tree the current component is at
    * @return the new parent
    * @since 4.10.0
    */
-  Component apply(final Component curr, final int depth);
+  Component apply(final @NotNull Component current, final int depth);
 }

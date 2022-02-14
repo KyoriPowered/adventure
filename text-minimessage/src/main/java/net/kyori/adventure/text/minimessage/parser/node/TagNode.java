@@ -45,8 +45,8 @@ public final class TagNode extends ElementNode {
   /**
    * Creates a new element node.
    *
-   * @param parent        the parent of this node
-   * @param token         the token that created this node
+   * @param parent the parent of this node
+   * @param token the token that created this node
    * @param sourceMessage the source message
    * @param tagProvider the tag provider
    * @since 4.10.0

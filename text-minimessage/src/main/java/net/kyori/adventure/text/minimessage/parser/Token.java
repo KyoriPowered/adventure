@@ -24,13 +24,18 @@
 package net.kyori.adventure.text.minimessage.parser;
 
 import java.util.List;
+import java.util.stream.Stream;
+import net.kyori.adventure.internal.Internals;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a token for the lexer.
  *
  * @since 4.10.0
  */
-public final class Token {
+public final class Token implements Examinable {
   private final int startIndex;
   private final int endIndex;
   private final TokenType type;
@@ -113,11 +118,16 @@ public final class Token {
   }
 
   @Override
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(
+      ExaminableProperty.of("startIndex", this.startIndex),
+      ExaminableProperty.of("endIndex", this.endIndex),
+      ExaminableProperty.of("type", this.type)
+    );
+  }
+
+  @Override
   public String toString() {
-    return "Token{" +
-      "startIndex=" + this.startIndex +
-      ", endIndex=" + this.endIndex +
-      ", type=" + this.type +
-      '}';
+    return Internals.toString(this);
   }
 }

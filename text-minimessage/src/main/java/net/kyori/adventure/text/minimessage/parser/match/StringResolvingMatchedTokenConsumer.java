@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.parser.match;
 
+import java.util.Objects;
 import net.kyori.adventure.text.minimessage.parser.TokenParser;
 import net.kyori.adventure.text.minimessage.parser.TokenParser.TagProvider;
 import net.kyori.adventure.text.minimessage.parser.TokenType;
@@ -32,28 +33,28 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * A matched token consumer that produces a string and returns a copy of the string with placeholders resolved.
+ * A matched token consumer that produces a string and returns a copy of the string with {@link PreProcess} tags resolved.
  *
  * @since 4.10.0
  */
 public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsumer<String> {
   private final StringBuilder builder;
-  private final TagProvider tagResolver;
+  private final TagProvider tagProvider;
 
   /**
-   * Creates a placeholder resolving matched token consumer.
+   * Creates a string resolving matched token consumer.
    *
    * @param input the input
-   * @param tagResolver the resolver for argument-less tags
+   * @param tagProvider the resolver for argument-less tags
    * @since 4.10.0
    */
   public StringResolvingMatchedTokenConsumer(
     final @NotNull String input,
-    final @NotNull TagProvider tagResolver
+    final @NotNull TagProvider tagProvider
   ) {
     super(input);
     this.builder = new StringBuilder(input.length());
-    this.tagResolver = tagResolver;
+    this.tagProvider = tagProvider;
   }
 
   @Override
@@ -62,17 +63,17 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
 
     if (tokenType != TokenType.OPEN_TAG) {
       // just add it normally, we don't care about other tags
-      this.builder.append(this.input.substring(start, end));
+      this.builder.append(this.input, start, end);
     } else {
       // well, now we need to work out if it's a tag or a placeholder!
       final String match = this.input.substring(start, end);
       final String tag = this.input.substring(start + 1, end - 1);
 
       // we might care if it's a pre-process!
-      final @Nullable Tag replacement = this.tagResolver.resolve(TokenParser.TagProvider.sanitizePlaceholderName(tag));
+      final @Nullable Tag replacement = this.tagProvider.resolve(TokenParser.TagProvider.sanitizePlaceholderName(tag));
 
       if (replacement instanceof PreProcess) {
-        this.builder.append(((PreProcess) replacement).value());
+        this.builder.append(Objects.requireNonNull(((PreProcess) replacement).value(), "PreProcess replacements cannot return null"));
         return;
       }
 

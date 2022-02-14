@@ -46,7 +46,7 @@ final class EmptyTagResolver implements TagResolver, MappableResolver {
   }
 
   @Override
-  public boolean contributeToMap(final Map<String, Tag> map) {
+  public boolean contributeToMap(final @NotNull Map<String, Tag> map) {
     return true;
   }
 }
