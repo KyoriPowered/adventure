@@ -235,10 +235,13 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
     @NotNull Builder editTags(final @NotNull Consumer<TagResolver.Builder> adder);
 
     /**
-     * Allows to enable strict mode (disabled by default).
+     * Enables strict mode (disabled by default).
      *
      * <p>By default, MiniMessage will allow {@link net.kyori.adventure.text.minimessage.tag.Inserting#allowsChildren() child-allowing} tags to be implicitly closed. When strict mode
      * is enabled, all child-allowing tags which are {@code <opened>} must be explicitly {@code </closed>} as well.</p>
+     *
+     * <p>Additionally, the {@link net.kyori.adventure.text.minimessage.tag.ParserDirective#RESET reset tag} is disabled in this mode.
+     * Any usage of this tag will throw a parser exception if strict mode is enabled.</p>
      *
      * @param strict if strict mode should be enabled
      * @return this builder

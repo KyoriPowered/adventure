@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.tag.ParserDirective;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
 /**
@@ -39,6 +40,8 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
  * @since 4.10.0
  */
 public final class StandardTags {
+  private static final String RESET_TAG = "reset";
+
   private StandardTags() {
   }
 
@@ -62,6 +65,7 @@ public final class StandardTags {
   private static final TagResolver FONT = TagResolver.resolver(FontTag.FONT, FontTag::create);
   private static final TagResolver GRADIENT = TagResolver.resolver(GradientTag.GRADIENT, GradientTag::create);
   private static final TagResolver RAINBOW = TagResolver.resolver(RainbowTag.RAINBOW, RainbowTag::create);
+  private static final TagResolver RESET = TagResolver.resolver(RESET_TAG, ParserDirective.RESET);
   private static final TagResolver ALL = TagResolver.builder()
       .resolvers(
         HOVER_EVENT,
@@ -73,7 +77,8 @@ public final class StandardTags {
         FONT,
         DECORATION,
         GRADIENT,
-        RAINBOW
+        RAINBOW,
+        RESET
       )
       .build();
 
@@ -169,6 +174,16 @@ public final class StandardTags {
    */
   public static TagResolver rainbow() {
     return RAINBOW;
+  }
+
+  /**
+   * Get a resolver for the {@value RESET_TAG} tag.
+   *
+   * @return a resolver for the {@value RESET_TAG} tag.
+   * @since 4.10.0
+   */
+  public static TagResolver reset() {
+    return RESET;
   }
 
   /**
