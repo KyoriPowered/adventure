@@ -25,7 +25,6 @@ package net.kyori.adventure.text.minimessage;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import net.kyori.adventure.text.Component;
@@ -280,7 +279,7 @@ public class MiniMessageTest extends TestBase {
   @Test
   void testNonEndingComponent() {
     final String input = "<red is already created! Try different name! :)";
-    MiniMessage.builder().parsingErrorMessageConsumer(strings -> assertEquals(strings, Collections.singletonList("Expected end sometimes after open tag + name, but got name = Token{type=NAME, value=\"red is already created! Try different name! \"} and inners = []"))).build().deserialize(input);
+    this.assertParsedEquals(Component.text(input), input);
   }
 
   @Test

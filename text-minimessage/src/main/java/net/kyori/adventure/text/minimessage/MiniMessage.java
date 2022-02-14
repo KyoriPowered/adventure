@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text.minimessage;
 
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
@@ -262,17 +261,6 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      * @since 4.10.0
      */
     @NotNull Builder debug(final @Nullable Consumer<String> debugOutput);
-
-    /**
-     * If in lenient mode, MiniMessage will output helpful messages.
-     *
-     * <p>This method allows you to change how they should be printed. By default, they will be printed to standard out.</p>
-     *
-     * @param consumer the error message consumer
-     * @return this builder
-     * @since 4.10.0
-     */
-    @NotNull Builder parsingErrorMessageConsumer(final @NotNull Consumer<List<String>> consumer);
 
     /**
      * Specify a function that takes the component at the end of the parser process.

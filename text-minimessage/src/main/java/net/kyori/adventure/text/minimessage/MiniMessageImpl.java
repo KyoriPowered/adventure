@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text.minimessage;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
@@ -41,22 +40,19 @@ import static java.util.Objects.requireNonNull;
  * @since 4.10.0
  */
 final class MiniMessageImpl implements MiniMessage {
-  static final Consumer<List<String>> DEFAULT_ERROR_CONSUMER = message -> message.forEach(System.out::println);
   static final UnaryOperator<Component> DEFAULT_COMPACTING_METHOD = Component::compact;
 
-  static final MiniMessage INSTANCE = new MiniMessageImpl(TagResolver.standard(), false, null, DEFAULT_ERROR_CONSUMER, DEFAULT_COMPACTING_METHOD);
+  static final MiniMessage INSTANCE = new MiniMessageImpl(TagResolver.standard(), false, null, DEFAULT_COMPACTING_METHOD);
 
   private final boolean strict;
   private final @Nullable Consumer<String> debugOutput;
-  private final Consumer<List<String>> parsingErrorMessageConsumer;
   private final UnaryOperator<Component> postProcessor;
   final MiniMessageParser parser;
 
-  MiniMessageImpl(final @NotNull TagResolver resolver, final boolean strict, final @Nullable Consumer<String> debugOutput, final @NotNull Consumer<List<String>> parsingErrorMessageConsumer, final @NotNull UnaryOperator<Component> postProcessor) {
+  MiniMessageImpl(final @NotNull TagResolver resolver, final boolean strict, final @Nullable Consumer<String> debugOutput, final @NotNull UnaryOperator<Component> postProcessor) {
     this.parser = new MiniMessageParser(resolver);
     this.strict = strict;
     this.debugOutput = debugOutput;
-    this.parsingErrorMessageConsumer = parsingErrorMessageConsumer;
     this.postProcessor = postProcessor;
   }
 
@@ -114,16 +110,6 @@ final class MiniMessageImpl implements MiniMessage {
     }
   }
 
-  /**
-   * not public api.
-   *
-   * @return huhu.
-   * @since 4.10.0
-   */
-  public @NotNull Consumer<List<String>> parsingErrorMessageConsumer() {
-    return this.parsingErrorMessageConsumer;
-  }
-
   @Override
   public @NotNull Builder toBuilder() {
     return new BuilderImpl(this);
@@ -133,7 +119,6 @@ final class MiniMessageImpl implements MiniMessage {
     private TagResolver tagResolver = TagResolver.standard();
     private boolean strict = false;
     private Consumer<String> debug = null;
-    private Consumer<List<String>> parsingErrorMessageConsumer = DEFAULT_ERROR_CONSUMER;
     private UnaryOperator<Component> postProcessor = DEFAULT_COMPACTING_METHOD;
 
     BuilderImpl() {
@@ -143,7 +128,6 @@ final class MiniMessageImpl implements MiniMessage {
       this.tagResolver = serializer.parser.tagResolver;
       this.strict = serializer.strict;
       this.debug = serializer.debugOutput;
-      this.parsingErrorMessageConsumer = serializer.parsingErrorMessageConsumer;
     }
 
     @Override
@@ -174,12 +158,6 @@ final class MiniMessageImpl implements MiniMessage {
     }
 
     @Override
-    public @NotNull Builder parsingErrorMessageConsumer(final @NotNull Consumer<List<String>> consumer) {
-      this.parsingErrorMessageConsumer = requireNonNull(consumer, "consumer");
-      return this;
-    }
-
-    @Override
     public @NotNull Builder postProcessor(final @NotNull UnaryOperator<Component> postProcessor) {
       this.postProcessor = Objects.requireNonNull(postProcessor, "postProcessor");
       return this;
@@ -187,7 +165,7 @@ final class MiniMessageImpl implements MiniMessage {
 
     @Override
     public @NotNull MiniMessage build() {
-      return new MiniMessageImpl(this.tagResolver, this.strict, this.debug, this.parsingErrorMessageConsumer, this.postProcessor);
+      return new MiniMessageImpl(this.tagResolver, this.strict, this.debug, this.postProcessor);
     }
   }
 }
