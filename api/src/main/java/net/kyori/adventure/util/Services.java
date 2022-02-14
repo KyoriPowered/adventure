@@ -26,6 +26,7 @@ package net.kyori.adventure.util;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.ServiceLoader;
+import net.kyori.adventure.internal.properties.AdventureProperties;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -34,8 +35,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.8.0
  */
 public final class Services {
-  // net.kyori.adventure.serviceLoadFailuresAreFatal
-  private static final boolean SERVICE_LOAD_FAILURES_ARE_FATAL = Boolean.parseBoolean(System.getProperty(String.join(".", "net", "kyori", "adventure", "serviceLoadFailuresAreFatal"), String.valueOf(true)));
+  private static final boolean SERVICE_LOAD_FAILURES_ARE_FATAL = Boolean.TRUE.equals(AdventureProperties.SERVICE_LOAD_FAILURES_ARE_FATAL.value());
 
   private Services() {
   }

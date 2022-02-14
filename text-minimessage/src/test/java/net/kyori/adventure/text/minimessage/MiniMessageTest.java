@@ -24,16 +24,14 @@
 package net.kyori.adventure.text.minimessage;
 
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.Predicate;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.parser.ParsingException;
-import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
-import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
-import net.kyori.adventure.text.minimessage.placeholder.Replacement;
-import net.kyori.adventure.text.minimessage.transformation.TransformationRegistry;
-import net.kyori.adventure.text.minimessage.transformation.TransformationType;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.empty;
@@ -49,7 +47,7 @@ import static net.kyori.adventure.text.format.Style.style;
 import static net.kyori.adventure.text.format.TextColor.color;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 import static net.kyori.adventure.text.format.TextDecoration.UNDERLINED;
-import static net.kyori.adventure.text.minimessage.placeholder.Placeholder.component;
+import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -80,7 +78,7 @@ public class MiniMessageTest extends TestBase {
     final String input = "<red><test>";
     final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    this.assertParsedEquals(miniMessage, expected, input, Placeholder.component("test", text("TEST")));
+    this.assertParsedEquals(miniMessage, expected, input, component("test", text("TEST")));
   }
 
   @Test
@@ -89,7 +87,7 @@ public class MiniMessageTest extends TestBase {
     final String input = "<test>";
     final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    this.assertParsedEquals(miniMessage, expected, input, Placeholder.miniMessage("test", "TEST"));
+    this.assertParsedEquals(miniMessage, expected, input, Placeholder.parsed("test", "TEST"));
   }
 
   @Test
@@ -118,8 +116,8 @@ public class MiniMessageTest extends TestBase {
     final String input = "<green><bold><test><test2>";
     final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    final Placeholder<Component> t1 = component("test", text("TEST", style(RED, UNDERLINED)));
-    final Placeholder<String> t2 = Placeholder.miniMessage("test2", "Test2");
+    final TagResolver t1 = component("test", text("TEST", style(RED, UNDERLINED)));
+    final TagResolver t2 = Placeholder.parsed("test2", "Test2");
 
     this.assertParsedEquals(miniMessage, expected, input, t1, t2);
   }
@@ -133,14 +131,14 @@ public class MiniMessageTest extends TestBase {
     final String input = "<hover:show_text:'<prefix>'>This is a test message.";
     final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    this.assertParsedEquals(miniMessage, expected, input, component("prefix", MiniMessage.miniMessage().parse("<#FF0000>[Plugin]<reset>")));
+    this.assertParsedEquals(miniMessage, expected, input, component("prefix", MiniMessage.miniMessage().deserialize("<#FF0000>[Plugin]<reset>")));
   }
 
   @Test
   void testCustomRegistry() {
     final Component expected = text("<green><bold>").append(text("TEST"));
     final String input = "<green><bold><test>";
-    final MiniMessage miniMessage = MiniMessage.builder().transformations(TransformationRegistry.empty()).build();
+    final MiniMessage miniMessage = MiniMessage.builder().tags(TagResolver.empty()).build();
 
     this.assertParsedEquals(miniMessage, expected, input, component("test", text("TEST")));
   }
@@ -151,11 +149,10 @@ public class MiniMessageTest extends TestBase {
         .append(text("<bold>"))
         .append(text("TEST"));
     final String input = "<green><bold><test>";
-    final TransformationRegistry registry = TransformationRegistry.builder()
-            .clear()
-            .add(TransformationType.COLOR)
+    final TagResolver registry = TagResolver.builder()
+            .resolver(StandardTags.color())
             .build();
-    final MiniMessage miniMessage = MiniMessage.builder().transformations(registry).build();
+    final MiniMessage miniMessage = MiniMessage.builder().tags(registry).build();
 
     this.assertParsedEquals(miniMessage, expected, input, component("test", text("TEST")));
   }
@@ -166,14 +163,14 @@ public class MiniMessageTest extends TestBase {
 
     final String input = "<green><bold><test>";
 
-    final Function<String, Replacement<?>> resolver = name -> {
+    final TagResolver.WithoutArguments resolver = name -> {
       if (name.equalsIgnoreCase("test")) {
-        return Replacement.component(text("TEST", RED));
+        return Tag.inserting(text("TEST", RED));
       }
       return null;
     };
 
-    final MiniMessage miniMessage = MiniMessage.builder().placeholderResolver(PlaceholderResolver.dynamic(resolver)).build();
+    final MiniMessage miniMessage = MiniMessage.builder().editTags(b -> b.resolver(TagResolver.caching(resolver))).build();
 
     this.assertParsedEquals(miniMessage, expected, input);
   }
@@ -187,19 +184,13 @@ public class MiniMessageTest extends TestBase {
 
     final String input = "<one><none><two>";
 
-    final Function<String, Replacement<?>> resolver = name -> {
-      if (name.equalsIgnoreCase("one")) {
-        return Replacement.component(text("ONE").color(RED));
-      }
-      return null;
-    };
+    final TagResolver.Single resolver = Placeholder.component("one", text("ONE", RED));
 
-    final MiniMessage miniMessage = MiniMessage.builder().placeholderResolver(
-        PlaceholderResolver.combining(
-            PlaceholderResolver.dynamic(resolver),
-            PlaceholderResolver.placeholders(component("two", text("TWO", GREEN)))
-        )
-    ).build();
+    final MiniMessage miniMessage = MiniMessage.builder().editTags(b -> b.resolvers(
+        component("two", text("TWO", GREEN)),
+        TagResolver.caching(resolver)
+      ))
+      .build();
 
     this.assertParsedEquals(miniMessage, expected, input);
   }
@@ -270,25 +261,25 @@ public class MiniMessageTest extends TestBase {
       .strict(false)
       .build();
 
-    this.assertParsedEquals(miniMessage, expected, MiniMessage.miniMessage().escapeTokens("<3"));
+    this.assertParsedEquals(miniMessage, expected, MiniMessage.miniMessage().escapeTags("<3"));
   }
 
   @Test
   void testStrictException() {
     final String input = "<gray>Example: <click:suggest_command:/plot flag set coral-dry true><gold>/plot flag set coral-dry true<click></gold></gray>";
-    assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().parse(input));
+    assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
   }
 
   @Test
   void testMissingCloseOfHover() {
     final String input = "<hover:show_text:'<blue>Hello</blue>'<red>TEST</red></hover><click:suggest_command:'/msg <user>'><user></click> <reset>: <hover:show_text:'<date>'><message></hover>";
-    assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().parse(input));
+    assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
   }
 
   @Test
   void testNonEndingComponent() {
     final String input = "<red is already created! Try different name! :)";
-    MiniMessage.builder().parsingErrorMessageConsumer(strings -> assertEquals(strings, Collections.singletonList("Expected end sometimes after open tag + name, but got name = Token{type=NAME, value=\"red is already created! Try different name! \"} and inners = []"))).build().parse(input);
+    this.assertParsedEquals(Component.text(input), input);
   }
 
   @Test
@@ -321,7 +312,7 @@ public class MiniMessageTest extends TestBase {
         "\t<red>RED<green>GREEN</green>RED<blue>BLUE\n" +
         "\t^~~~^                          ^~~~~^";
 
-    final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().parse(input));
+    final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
     assertEquals(thrown.getMessage(), errorMessage);
   }
 
@@ -333,7 +324,7 @@ public class MiniMessageTest extends TestBase {
         "\t<red>RED<green>GREEN</red>NO COLOR<blue>BLUE</blue>\n" +
         "\t^~~~^   ^~~~~~^     ^~~~~^";
 
-    final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().parse(input));
+    final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
     assertEquals(thrown.getMessage(), errorMessage);
   }
 
@@ -345,7 +336,7 @@ public class MiniMessageTest extends TestBase {
         "\t<red>RED<green>GREEN<blue>BLUE<yellow>YELLOW</green>\n" +
         "\t        ^~~~~~^               ^~~~~~~^      ^~~~~~~^";
 
-    final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().parse(input));
+    final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
     assertEquals(thrown.getMessage(), errorMessage);
   }
 
@@ -357,7 +348,7 @@ public class MiniMessageTest extends TestBase {
         "\t<red>RED<green>GREEN<reset>NO COLOR<blue>BLUE</blue>\n" +
         "\t                    ^~~~~~^";
 
-    final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().parse(input));
+    final ParsingException thrown = assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().deserialize(input));
     assertEquals(thrown.getMessage(), errorMessage);
   }
 
@@ -366,12 +357,12 @@ public class MiniMessageTest extends TestBase {
     final String input = "<red> RED </red>";
 
     final StringBuilder sb = new StringBuilder();
-    MiniMessage.builder().debug(sb).build().parse(input);
+    MiniMessage.builder().debug(sb::append).build().deserialize(input);
     final List<String> messages = Arrays.asList(sb.toString().split("\n"));
 
     assertTrue(messages.contains("Beginning parsing message <red> RED </red>"));
     assertTrue(messages.contains("Attempting to match node 'red' at column 0"));
-    assertTrue(messages.contains("Successfully matched node 'red' to transformation ColorTransformation"));
+    assertTrue(anyMatch(messages, it -> it.startsWith("Successfully matched node 'red' to tag ")));
     assertTrue(messages.contains("Text parsed into element tree:"));
     assertTrue(messages.contains("Node {"));
     assertTrue(messages.contains("  TagNode('red') {"));
@@ -385,16 +376,16 @@ public class MiniMessageTest extends TestBase {
     final String input = "<red> RED <blue> BLUE <click> bad click </click>";
 
     final StringBuilder sb = new StringBuilder();
-    MiniMessage.builder().debug(sb).build().parse(input);
+    MiniMessage.builder().debug(sb::append).build().deserialize(input);
     final List<String> messages = Arrays.asList(sb.toString().split("\n"));
 
     assertTrue(messages.contains("Beginning parsing message <red> RED <blue> BLUE <click> bad click </click>"));
     assertTrue(messages.contains("Attempting to match node 'red' at column 0"));
-    assertTrue(messages.contains("Successfully matched node 'red' to transformation ColorTransformation"));
+    assertTrue(anyMatch(messages, it -> it.startsWith("Successfully matched node 'red' to tag ")));
     assertTrue(messages.contains("Attempting to match node 'blue' at column 10"));
-    assertTrue(messages.contains("Successfully matched node 'blue' to transformation ColorTransformation"));
+    assertTrue(anyMatch(messages, it -> it.startsWith("Successfully matched node 'blue' to tag ")));
     assertTrue(messages.contains("Attempting to match node 'click' at column 22"));
-    assertTrue(messages.contains("Could not match node 'click' - Don't know how to turn [] into a click event"));
+    assertTrue(messages.contains("Could not match node 'click' - A click tag requires an action of one of [open_url, run_command, copy_to_clipboard, open_file, change_page, suggest_command]"));
     assertTrue(messages.contains("\t<red> RED <blue> BLUE <click> bad click </click>"));
     assertTrue(messages.contains("\t                      ^~~~~~^"));
     assertTrue(messages.contains("Text parsed into element tree:"));
@@ -413,16 +404,16 @@ public class MiniMessageTest extends TestBase {
     final String input = "<red> RED <blue> BLUE <click:open_url:https://github.com> good click </click>";
 
     final StringBuilder sb = new StringBuilder();
-    MiniMessage.builder().debug(sb).build().parse(input);
+    MiniMessage.builder().debug(sb::append).build().deserialize(input);
     final List<String> messages = Arrays.asList(sb.toString().split("\n"));
 
     assertTrue(messages.contains("Beginning parsing message <red> RED <blue> BLUE <click:open_url:https://github.com> good click </click>"));
     assertTrue(messages.contains("Attempting to match node 'red' at column 0"));
-    assertTrue(messages.contains("Successfully matched node 'red' to transformation ColorTransformation"));
+    assertTrue(anyMatch(messages, it -> it.startsWith("Successfully matched node 'red' to tag ")));
     assertTrue(messages.contains("Attempting to match node 'blue' at column 10"));
-    assertTrue(messages.contains("Successfully matched node 'blue' to transformation ColorTransformation"));
+    assertTrue(anyMatch(messages, it -> it.startsWith("Successfully matched node 'blue' to tag ")));
     assertTrue(messages.contains("Attempting to match node 'click' at column 22"));
-    assertTrue(messages.contains("Successfully matched node 'click' to transformation ClickTransformation"));
+    assertTrue(anyMatch(messages, it -> it.startsWith("Successfully matched node 'click' to tag ")));
     assertTrue(messages.contains("Text parsed into element tree:"));
     assertTrue(messages.contains("Node {"));
     assertTrue(messages.contains("  TagNode('red') {"));
@@ -435,5 +426,10 @@ public class MiniMessageTest extends TestBase {
     assertTrue(messages.contains("    }"));
     assertTrue(messages.contains("  }"));
     assertTrue(messages.contains("}"));
+  }
+
+  private static <T> boolean anyMatch(final Collection<T> items, final Predicate<T> test) {
+    return items.stream()
+      .anyMatch(test);
   }
 }

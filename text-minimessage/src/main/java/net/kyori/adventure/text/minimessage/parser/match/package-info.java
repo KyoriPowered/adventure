@@ -24,4 +24,5 @@
 /**
  * Token consumers.
  */
+@org.jetbrains.annotations.ApiStatus.Internal
 package net.kyori.adventure.text.minimessage.parser.match;

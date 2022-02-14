@@ -34,22 +34,12 @@ public final class WeirdAssertions {
   private WeirdAssertions() {
   }
 
-  public static <T> void doWith(final T value, final Consumer<T> consumer) {
-    consumer.accept(value);
-  }
-
   @SafeVarargs
   public static <T> void assertAllEqualToEachOther(final T... values) {
     for (final T a : values) {
       for (final T b : values) {
         assertEquals(a, b);
       }
-    }
-  }
-
-  public static <T, U> void forEachTransformAndAssert(final Iterable<T> values, final Function<T, U> function, final Consumer<U> consumer) {
-    for (final T value : values) {
-      consumer.accept(function.apply(value));
     }
   }
 

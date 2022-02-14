@@ -23,10 +23,12 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.util.Collections;
 import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
-import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.examination.string.MultiLineStringExaminer;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,29 +36,37 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestBase {
 
-  final MiniMessage PARSER = MiniMessage.builder().debug(System.out).build();
+  static final MiniMessage PARSER = MiniMessage.builder().debug(System.out::print).build();
 
   void assertParsedEquals(final @NotNull Component expected, final @NotNull String input) {
-    this.assertParsedEquals(this.PARSER, expected, input);
+    this.assertParsedEquals(PARSER, expected, input);
   }
 
-  void assertParsedEquals(final @NotNull Component expected, final @NotNull String input, final @NotNull Placeholder<?>... args) {
-    this.assertParsedEquals(this.PARSER, expected, input, args);
+  void assertParsedEquals(final @NotNull Component expected, final @NotNull String input, final @NotNull TagResolver... args) {
+    this.assertParsedEquals(PARSER, expected, input, args);
   }
 
   void assertParsedEquals(final MiniMessage miniMessage, final Component expected, final String input) {
     final String expectedSerialized = this.prettyPrint(expected.compact());
-    final String actual = this.prettyPrint(miniMessage.parse(input).compact());
+    final String actual = this.prettyPrint(miniMessage.deserialize(input).compact());
     assertEquals(expectedSerialized, actual);
   }
 
-  void assertParsedEquals(final MiniMessage miniMessage, final Component expected, final String input, final @NotNull Placeholder<?>... args) {
+  void assertParsedEquals(final MiniMessage miniMessage, final Component expected, final String input, final @NotNull TagResolver... args) {
     final String expectedSerialized = this.prettyPrint(expected.compact());
-    final String actual = this.prettyPrint(miniMessage.deserialize(input, PlaceholderResolver.placeholders(args)).compact());
+    final String actual = this.prettyPrint(miniMessage.deserialize(input, TagResolver.resolver(args)).compact());
     assertEquals(expectedSerialized, actual);
   }
 
   final String prettyPrint(final Component component) {
     return component.examine(MultiLineStringExaminer.simpleEscaping()).collect(Collectors.joining("\n"));
+  }
+
+  public static Context dummyContext(final String originalMessage) {
+    return ContextImpl.of(false, null, originalMessage, (MiniMessageImpl) PARSER, TagResolver.empty(), Component::compact);
+  }
+
+  public static ArgumentQueue emptyArgumentQueue(final Context context) {
+    return new ArgumentQueueImpl<>(context, Collections.<Tag.Argument>emptyList());
   }
 }

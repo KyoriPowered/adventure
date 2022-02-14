@@ -23,6 +23,8 @@
  */
 package net.kyori.adventure.text;
 
+import java.util.stream.Stream;
+import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -107,6 +109,18 @@ public interface ScoreComponent extends BuildableComponent<ScoreComponent, Score
   @Deprecated
   @Contract(pure = true)
   @NotNull ScoreComponent value(final @Nullable String value);
+
+  @Override
+  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.concat(
+      Stream.of(
+        ExaminableProperty.of("name", this.name()),
+        ExaminableProperty.of("objective", this.objective()),
+        ExaminableProperty.of("value", this.value())
+      ),
+      BuildableComponent.super.examinableProperties()
+    );
+  }
 
   /**
    * A score component builder.

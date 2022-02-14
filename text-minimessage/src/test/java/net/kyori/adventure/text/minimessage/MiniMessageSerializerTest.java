@@ -245,10 +245,10 @@ public class MiniMessageSerializerTest extends TestBase {
   void testRainbow() {
     final String expected = "<rainbow>test</rainbow> >> reeeeeeeee";
 
-    final Component parsed = MiniMessage.miniMessage().parse(expected);
+    final Component parsed = MiniMessage.miniMessage().deserialize(expected);
 
     final String serialized = MiniMessage.miniMessage().serialize(parsed);
-    final Component reparsed = MiniMessage.miniMessage().parse(serialized);
+    final Component reparsed = MiniMessage.miniMessage().deserialize(serialized);
 
     assertEquals(this.prettyPrint(parsed), this.prettyPrint(reparsed));
   }
@@ -266,7 +266,7 @@ public class MiniMessageSerializerTest extends TestBase {
   void testShowEntityHover() {
     final UUID uuid = UUID.randomUUID();
     final String nameString = "<gold>Custom Name!";
-    final Component name = MiniMessage.miniMessage().parse(nameString);
+    final Component name = MiniMessage.miniMessage().deserialize(nameString);
     final TextComponent.Builder input = text()
       .content("test")
       .hoverEvent(HoverEvent.showEntity(Key.key("minecraft", "zombie"), uuid, name));

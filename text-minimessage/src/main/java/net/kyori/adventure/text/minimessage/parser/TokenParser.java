@@ -28,23 +28,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
+import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.parser.match.MatchedTokenConsumer;
 import net.kyori.adventure.text.minimessage.parser.match.StringResolvingMatchedTokenConsumer;
 import net.kyori.adventure.text.minimessage.parser.match.TokenListProducingMatchedTokenConsumer;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
-import net.kyori.adventure.text.minimessage.parser.node.PlaceholderNode;
 import net.kyori.adventure.text.minimessage.parser.node.RootNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagPart;
 import net.kyori.adventure.text.minimessage.parser.node.TextNode;
-import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
-import net.kyori.adventure.text.minimessage.placeholder.Replacement;
-import net.kyori.adventure.text.minimessage.transformation.Inserting;
-import net.kyori.adventure.text.minimessage.transformation.Transformation;
+import net.kyori.adventure.text.minimessage.tag.Inserting;
+import net.kyori.adventure.text.minimessage.tag.ParserDirective;
+import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -57,8 +54,6 @@ import org.jetbrains.annotations.Nullable;
 @ApiStatus.Internal
 public final class TokenParser {
   private static final int MAX_DEPTH = 16;
-  public static final String RESET = "reset";
-  public static final String RESET_2 = "r";
   // minimessage tags
   public static final char TAG_START = '<';
   public static final char TAG_END = '>';
@@ -73,44 +68,44 @@ public final class TokenParser {
   /**
    * Parse a minimessage string into a tree of nodes.
    *
-   * @param message the minimessage string to parse
+   * @param tagProvider provides tags based on the available information
+   * @param tagNameChecker checker for tag names, performing necessary tag normalization
+   * @param message the minimessage string to parse, after processing for preprocess tags
+   * @param strict whether parsing in strict mode
    * @return the root of the resulting tree
+   * @throws ParsingException if invalid input is provided when in strict mode
    * @since 4.10.0
    */
   public static ElementNode parse(
-    final @NotNull Function<TagNode, @Nullable Transformation> transformationFactory,
-    final @NotNull BiPredicate<String, Boolean> tagNameChecker,
-    final @NotNull PlaceholderResolver placeholderResolver,
+    final @NotNull TagProvider tagProvider,
+    final @NotNull Predicate<String> tagNameChecker,
     final @NotNull String message,
     final boolean strict
-  ) {
-    // first resolve placeholders...
-    final String actualMessage = resolvePlaceholders(message, string -> tagNameChecker.test(string, false), placeholderResolver);
-
-    // then collect tokens...
-    final List<Token> tokens = tokenize(actualMessage);
+  ) throws ParsingException {
+    // collect tokens...
+    final List<Token> tokens = tokenize(message);
 
     // then build the tree!
-    return buildTree(transformationFactory, tagNameChecker, placeholderResolver, tokens, actualMessage, strict);
+    return buildTree(tagProvider, tagNameChecker, tokens, message, strict);
   }
 
   /**
-   * Resolves placeholders on a string.
+   * Resolves all pre-process tags in a string.
    *
    * @param message the message
-   * @param tagNameChecker a predicate to check if a matched token is a in-built transformation tag
-   * @param placeholderResolver the placeholder resolver
+   * @param provider the tag resolver, to gather preprocess tags
    * @return the resulting string
    * @since 4.10.0
    */
-  public static String resolvePlaceholders(final String message, final Predicate<String> tagNameChecker, final PlaceholderResolver placeholderResolver) {
+  public static String resolvePreProcessTags(final String message, final TagProvider provider) {
     int passes = 0;
     String lastResult;
     String result = message;
 
     do {
       lastResult = result;
-      final StringResolvingMatchedTokenConsumer stringTokenResolver = new StringResolvingMatchedTokenConsumer(lastResult, tagNameChecker, placeholderResolver);
+      final StringResolvingMatchedTokenConsumer stringTokenResolver = new StringResolvingMatchedTokenConsumer(lastResult, provider);
+
       parseString(lastResult, stringTokenResolver);
       result = stringTokenResolver.result();
       passes++;
@@ -350,13 +345,12 @@ public final class TokenParser {
    * Build a tree from the OPEN_TAG and CLOSE_TAG tokens
    */
   private static ElementNode buildTree(
-    final @NotNull Function<TagNode, @Nullable Transformation> transformationFactory,
-    final @NotNull BiPredicate<String, Boolean> tagNameChecker,
-    final @NotNull PlaceholderResolver placeholderResolver,
+    final @NotNull TagProvider tagProvider,
+    final @NotNull Predicate<String> tagNameChecker,
     final @NotNull List<Token> tokens,
     final @NotNull String message,
     final boolean strict
-  ) {
+  ) throws ParsingException {
     final RootNode root = new RootNode(message);
     ElementNode node = root;
 
@@ -368,47 +362,31 @@ public final class TokenParser {
           break;
 
         case OPEN_TAG:
-          final TagNode tagNode = new TagNode(node, token, message, placeholderResolver);
-          if (isReset(tagNode.name())) {
-            // <reset> tags get special treatment and don't appear in the tree
-            // instead, they close all currently open tags
-
-            if (strict) {
-              throw new ParsingException("<reset> tags are not allowed when strict mode is enabled", message, token);
-            }
-            node = root;
-          } else {
-            final Replacement<?> replacement = placeholderResolver.resolve(tagNode.name());
-
-            if (replacement != null) {
-              final Object value = replacement.value();
-
-              if (value instanceof String) {
-                // String placeholders are inserted into the tree as raw text nodes, not parsed
-                node.addChild(new PlaceholderNode(node, token, message, (String) value));
-                break;
-              }
-            }
-
-            if (tagNameChecker.test(tagNode.name(), true)) {
-              final Transformation transformation = transformationFactory.apply(tagNode);
-              if (transformation == null) {
-                // something went wrong, ignore it
-                // if strict mode is enabled this will throw an exception for us
-                node.addChild(new TextNode(node, token, message));
-              } else {
-                // This is a recognized tag, goes in the tree
-                tagNode.transformation(transformation);
-                node.addChild(tagNode);
-                if (!(transformation instanceof Inserting)) {
-                  // this tag has children
-                  node = tagNode;
-                }
-              }
-            } else {
-              // not recognized, plain text
+          final TagNode tagNode = new TagNode(node, token, message, tagProvider);
+          if (tagNameChecker.test(tagNode.name())) {
+            final Tag tag = tagProvider.resolve(tagNode);
+            if (tag == null) {
+              // something went wrong, ignore it
+              // if strict mode is enabled this will throw an exception for us
               node.addChild(new TextNode(node, token, message));
+            } else if (tag == ParserDirective.RESET) {
+              // <reset> tags get special treatment and don't appear in the tree
+              // instead, they close all currently open tags
+              if (strict) {
+                throw new ParsingExceptionImpl("<reset> tags are not allowed when strict mode is enabled", message, token);
+              }
+              node = root;
+            } else {
+              // This is a recognized tag, goes in the tree
+              tagNode.tag(tag);
+              node.addChild(tagNode);
+              if (!(tag instanceof Inserting) || ((Inserting) tag).allowsChildren()) {
+                node = tagNode; // TODO: self-terminating tags (i.e. <tag/>) don't set this, so they don't have children
+              }
             }
+          } else {
+            // not recognized, plain text
+            node.addChild(new TextNode(node, token, message));
           }
           break; // OPEN_TAG
 
@@ -425,12 +403,15 @@ public final class TokenParser {
           }
 
           final String closeTagName = closeValues.get(0);
-          if (isReset(closeTagName)) {
-            // This is a synthetic node, closing it means nothing in the context of building a tree
-            continue;
-          }
 
-          if (!tagNameChecker.test(closeTagName, false)) {
+          if (tagNameChecker.test(closeTagName)) {
+            final Tag tag = tagProvider.resolve(closeTagName);
+
+            if (tag == ParserDirective.RESET) {
+              // This is a synthetic node, closing it means nothing in the context of building a tree
+              continue;
+            }
+          } else {
             // tag does not exist, so treat it as text
             node.addChild(new TextNode(node, token, message));
             continue;
@@ -444,7 +425,7 @@ public final class TokenParser {
               if (parentNode != node && strict) {
                 final String msg = "Unclosed tag encountered; " + ((TagNode) node).name() + " is not closed, because " +
                   closeValues.get(0) + " was closed first.";
-                throw new ParsingException(msg, message, parentNode.token(), node.token(), token);
+                throw new ParsingExceptionImpl(msg, message, parentNode.token(), node.token(), token);
               }
 
               final ElementNode par = parentNode.parent();
@@ -500,58 +481,10 @@ public final class TokenParser {
         }
       }
 
-      throw new ParsingException(sb.toString(), message, errorTokens);
+      throw new ParsingExceptionImpl(sb.toString(), message, errorTokens);
     }
 
     return root;
-  }
-
-  /**
-   * Parse a minimessage string into another string, resolving only the string placeholders present in the message.
-   *
-   * @param message the minimessage string to parse
-   * @param placeholderResolver the placeholder resolver to use to find string placeholders
-   * @return the message, with non-string placeholders still intact
-   * @since 4.10.0
-   */
-  public static String resolveStringPlaceholders(
-      final @NotNull String message,
-      final @NotNull PlaceholderResolver placeholderResolver
-  ) {
-    final List<Token> tokens = tokenize(message);
-    final StringBuilder sb = new StringBuilder();
-
-    for (final Token token : tokens) {
-      final TokenType type = token.type();
-      switch (type) {
-        case TEXT:
-        case CLOSE_TAG:
-          sb.append(token.get(message));
-          break;
-
-        case OPEN_TAG:
-          if (token.childTokens() != null && token.childTokens().size() == 1) {
-            final CharSequence name = token.childTokens().get(0).get(message);
-            final Replacement<?> replacement = placeholderResolver.resolve(name.toString().toLowerCase(Locale.ROOT));
-            if (replacement != null) {
-              final Object value = replacement.value();
-
-              if (value instanceof String) {
-                sb.append((String) value);
-                break;
-              }
-            }
-          }
-          sb.append(token.get(message));
-          break;
-      }
-    }
-
-    return sb.toString();
-  }
-
-  private static boolean isReset(final String input) {
-    return input.equalsIgnoreCase(RESET) || input.equalsIgnoreCase(RESET_2);
   }
 
   /**
@@ -671,5 +604,65 @@ public final class TokenParser {
     sb.append(text, from, endIndex);
 
     return sb.toString();
+  }
+
+  /**
+   * Normalizing provider for tag information.
+   *
+   * @since 4.10.0
+   */
+  @ApiStatus.Internal
+  public interface TagProvider {
+    /**
+     * Look up a tag.
+     *
+     * <p>Parsing exceptions must be caught and handled within this method.</p>
+     *
+     * @param name the tag name, pre-sanitized
+     * @param trimmedArgs arguments, with the tag name trimmed off
+     * @param token the token, if this tag is from a parse stream
+     * @return a tag
+     * @since 4.10.0
+     */
+    @Nullable Tag resolve(final @NotNull String name, final @NotNull List<? extends Tag.Argument> trimmedArgs, final @Nullable Token token);
+
+    /**
+     * Resolve by sanitized name.
+     *
+     * @param name sanitized name
+     * @return a tag, if any is available
+     * @since 4.10.0
+     */
+    default @Nullable Tag resolve(final @NotNull String name) {
+      return this.resolve(name, Collections.emptyList(), null);
+    }
+
+    /**
+     * Resolve by node.
+     *
+     * @param node tag node
+     * @return a tag, if any is available
+     * @since 4.10.0
+     */
+    default @Nullable Tag resolve(final @NotNull TagNode node) {
+      return this.resolve(
+        sanitizePlaceholderName(node.name()),
+        node.parts().subList(1, node.parts().size()),
+        node.token()
+      );
+    }
+
+    /**
+     * Sanitize placeholder names.
+     *
+     * <p>This makes all placeholder names lower-case.</p>
+     *
+     * @param name the raw name
+     * @return a sanitized name
+     * @since 4.10.0
+     */
+    static @NotNull String sanitizePlaceholderName(final @NotNull String name) {
+      return name.toLowerCase(Locale.ROOT);
+    }
   }
 }

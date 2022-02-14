@@ -24,6 +24,7 @@
 package net.kyori.adventure.nbt.api;
 
 import net.kyori.adventure.util.Codec;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -57,8 +58,22 @@ public interface BinaryTagHolder {
    *
    * @param string the encoded binary tag value
    * @return the encoded binary tag
-   * @since 4.0.0
+   * @since 4.10.0
    */
+  static @NotNull BinaryTagHolder binaryTagHolder(final @NotNull String string) {
+    return new BinaryTagHolderImpl(string);
+  }
+
+  /**
+   * Creates an encoded binary tag holder.
+   *
+   * @param string the encoded binary tag value
+   * @return the encoded binary tag
+   * @since 4.0.0
+   * @deprecated for removal since 4.10.0, use {@link #binaryTagHolder(String)} instead.
+   */
+  @Deprecated
+  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   static @NotNull BinaryTagHolder of(final @NotNull String string) {
     return new BinaryTagHolderImpl(string);
   }

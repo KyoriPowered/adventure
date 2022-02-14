@@ -24,7 +24,7 @@
 package net.kyori.adventure.util;
 
 import java.util.Objects;
-import net.kyori.examination.string.StringExaminer;
+import net.kyori.adventure.internal.Internals;
 import org.jetbrains.annotations.Nullable;
 
 final class HSVLikeImpl implements HSVLike {
@@ -78,6 +78,6 @@ final class HSVLikeImpl implements HSVLike {
 
   @Override
   public String toString() {
-    return this.examine(StringExaminer.simpleEscaping());
+    return Internals.toString(this);
   }
 }

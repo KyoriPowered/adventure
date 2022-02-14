@@ -23,10 +23,18 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
+import net.kyori.adventure.text.minimessage.parser.ParsingExceptionImpl;
+import net.kyori.adventure.text.minimessage.parser.Token;
+import net.kyori.adventure.text.minimessage.parser.node.TagPart;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -37,55 +45,60 @@ import static java.util.Objects.requireNonNull;
  * @since 4.10.0
  */
 class ContextImpl implements Context {
+  private static final Token[] EMPTY_TOKEN_ARRAY = new Token[0];
+
   private final boolean strict;
-  private final Appendable debugOutput;
-  private final String originalMessage;
+  private final Consumer<String> debugOutput;
+  private String message;
   private final MiniMessage miniMessage;
-  private final PlaceholderResolver placeholderResolver;
+  private final TagResolver tagResolver;
   private final UnaryOperator<Component> postProcessor;
 
   ContextImpl(
     final boolean strict,
-    final Appendable debugOutput,
-    final String originalMessage,
+    final Consumer<String> debugOutput,
+    final String message,
     final MiniMessage miniMessage,
-    final @NotNull PlaceholderResolver placeholderResolver,
+    final @NotNull TagResolver extraTags,
     final UnaryOperator<Component> postProcessor
   ) {
     this.strict = strict;
     this.debugOutput = debugOutput;
-    this.originalMessage = originalMessage;
+    this.message = message;
     this.miniMessage = miniMessage;
-    this.placeholderResolver = placeholderResolver;
+    this.tagResolver = extraTags;
     this.postProcessor = postProcessor == null ? UnaryOperator.identity() : postProcessor;
   }
 
   static ContextImpl of(
     final boolean strict,
-    final Appendable debugOutput,
+    final Consumer<String> debugOutput,
     final String input,
     final MiniMessageImpl miniMessage,
-    final PlaceholderResolver placeholderResolver,
+    final TagResolver extraTags,
     final UnaryOperator<Component> postProcessor
   ) {
-    return new ContextImpl(strict, debugOutput, input, miniMessage, placeholderResolver, postProcessor);
+    return new ContextImpl(strict, debugOutput, input, miniMessage, extraTags, postProcessor);
   }
 
   public boolean strict() {
     return this.strict;
   }
 
-  public Appendable debugOutput() {
+  public Consumer<String> debugOutput() {
     return this.debugOutput;
   }
 
-  @Override
-  public @NotNull String originalMessage() {
-    return this.originalMessage;
+  public @NotNull String message() {
+    return this.message;
   }
 
-  public @NotNull PlaceholderResolver placeholderResolver() {
-    return this.placeholderResolver;
+  void message(final @NotNull String message) {
+    this.message = message;
+  }
+
+  public @NotNull TagResolver extraTags() {
+    return this.tagResolver;
   }
 
   public UnaryOperator<Component> postProcessor() {
@@ -94,6 +107,30 @@ class ContextImpl implements Context {
 
   @Override
   public @NotNull Component parse(final @NotNull String message) {
-    return this.miniMessage.deserialize(requireNonNull(message, "message"), this.placeholderResolver);
+    return this.miniMessage.deserialize(requireNonNull(message, "message"), this.tagResolver);
   }
+
+  @Override
+  public @NotNull ParsingException newException(@NotNull final String message) {
+    return new ParsingExceptionImpl(message, this.message, null, EMPTY_TOKEN_ARRAY);
+  }
+
+  @Override
+  public @NotNull ParsingException newException(final @NotNull String message, final @NotNull ArgumentQueue tags) {
+    return new ParsingExceptionImpl(message, this.message, tagsToTokens(((ArgumentQueueImpl<?>) tags).args));
+  }
+
+  @Override
+  public @NotNull ParsingException newException(final @NotNull String message, final @Nullable Throwable cause, final @NotNull ArgumentQueue tags) {
+    return new ParsingExceptionImpl(message, this.message, cause, tagsToTokens(((ArgumentQueueImpl<?>) tags).args));
+  }
+
+  private static Token[] tagsToTokens(final List<? extends Tag.Argument> tags) {
+    final Token[] tokens = new Token[tags.size()];
+    for (int i = 0, length = tokens.length; i < length; i++) {
+      tokens[i] = ((TagPart) tags.get(i)).token();
+    }
+    return tokens;
+  }
+
 }

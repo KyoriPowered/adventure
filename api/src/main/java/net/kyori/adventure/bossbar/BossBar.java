@@ -68,8 +68,8 @@ public interface BossBar extends Examinable {
   /**
    * The minimum value the progress can be.
    *
-   * @deprecated for removal since 4.2.0, use {@link #MIN_PROGRESS}
    * @since 4.0.0
+   * @deprecated for removal since 4.2.0, use {@link #MIN_PROGRESS}
    */
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Deprecated
@@ -77,8 +77,8 @@ public interface BossBar extends Examinable {
   /**
    * The maximum value the progress can be.
    *
-   * @deprecated for removal since 4.2.0, use {@link #MAX_PROGRESS}
    * @since 4.0.0
+   * @deprecated for removal since 4.2.0, use {@link #MAX_PROGRESS}
    */
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Deprecated
@@ -209,8 +209,8 @@ public interface BossBar extends Examinable {
    * <p>The progress is a value between 0 and 1.</p>
    *
    * @return the progress
-   * @deprecated for removal since 4.2.0, use {@link #progress()}
    * @since 4.0.0
+   * @deprecated for removal since 4.2.0, use {@link #progress()}
    */
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Deprecated
@@ -226,8 +226,8 @@ public interface BossBar extends Examinable {
    * @param progress the progress
    * @return the bossbar
    * @throws IllegalArgumentException if progress is less than 0 or greater than 1
-   * @deprecated for removal since 4.2.0, use {@link #progress(float)}
    * @since 4.0.0
+   * @deprecated for removal since 4.2.0, use {@link #progress(float)}
    */
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Contract("_ -> this")
@@ -415,8 +415,8 @@ public interface BossBar extends Examinable {
      * @param bar the bossbar
      * @param oldProgress the old progress
      * @param newProgress the new progress
-     * @deprecated for removal since 4.2.0, use {@link #bossBarProgressChanged(BossBar, float, float)}
      * @since 4.0.0
+     * @deprecated for removal since 4.2.0, use {@link #bossBarProgressChanged(BossBar, float, float)}
      */
     @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
     @Deprecated

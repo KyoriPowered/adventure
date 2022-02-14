@@ -24,8 +24,8 @@
 package net.kyori.adventure.identity;
 
 import java.util.UUID;
+import net.kyori.adventure.internal.Internals;
 import net.kyori.examination.Examinable;
-import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,7 +43,7 @@ final class IdentityImpl implements Examinable, Identity {
 
   @Override
   public String toString() {
-    return this.examine(StringExaminer.simpleEscaping());
+    return Internals.toString(this);
   }
 
   @Override

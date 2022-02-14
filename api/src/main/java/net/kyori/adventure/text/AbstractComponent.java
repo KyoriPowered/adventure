@@ -78,27 +78,13 @@ public abstract class AbstractComponent implements Component {
     return result;
   }
 
+  @Override
+  public abstract String toString();
+
   @SuppressWarnings("unused")
   private String debuggerString() {
-    return StringExaminer.simpleEscaping().examine(this.examinableName(), this.examinablePropertiesWithoutChildren());
-  }
-
-  protected Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren() {
-    return Stream.of(ExaminableProperty.of("style", this.style));
-  }
-
-  @Override
-  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Stream.concat(
-      this.examinablePropertiesWithoutChildren(),
-      Stream.of(
-        ExaminableProperty.of("children", this.children)
-      )
-    );
-  }
-
-  @Override
-  public String toString() {
-    return this.examine(StringExaminer.simpleEscaping());
+    final Stream<? extends ExaminableProperty> examinablePropertiesWithoutChildren = this.examinableProperties()
+      .filter(property -> !property.name().equals(ComponentInternals.CHILDREN_PROPERTY));
+    return StringExaminer.simpleEscaping().examine(this.examinableName(), examinablePropertiesWithoutChildren);
   }
 }

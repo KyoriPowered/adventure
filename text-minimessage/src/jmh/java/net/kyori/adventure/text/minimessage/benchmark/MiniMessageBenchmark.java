@@ -26,8 +26,7 @@ package net.kyori.adventure.text.minimessage.benchmark;
 import java.util.concurrent.TimeUnit;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
-import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -42,7 +41,7 @@ public class MiniMessageBenchmark {
   @Benchmark
   public Component testNiceMix() {
     final String input = "<yellow><test> random <gradient:red:blue:green><bold>stranger</gradient></bold><click:run_command:test command><underlined><red>click here</click><blue> to <rainbow><b>FEEL</rainbow></underlined> it";
-    return MiniMessage.miniMessage().parse(input);
+    return MiniMessage.miniMessage().deserialize(input);
   }
 
   @Benchmark
@@ -50,19 +49,19 @@ public class MiniMessageBenchmark {
     final String input = "<yellow><test><bold>stranger";
     return MiniMessage.miniMessage().deserialize(
       input,
-      PlaceholderResolver.placeholders(Placeholder.component("test", Component.text("test2")))
+      Placeholder.component("test", Component.text("test2"))
     );
   }
 
   @Benchmark
   public Component testGradient() {
     final String input = "<gradient:red:blue:green>COLORS ARE COOL";
-    return MiniMessage.miniMessage().parse(input);
+    return MiniMessage.miniMessage().deserialize(input);
   }
 
   @Benchmark
   public Component testRainbow() {
     final String input = "<rainbow>COLORS ARE COOL";
-    return MiniMessage.miniMessage().parse(input);
+    return MiniMessage.miniMessage().deserialize(input);
   }
 }

@@ -23,7 +23,7 @@
  */
 package net.kyori.adventure.text.format;
 
-import net.kyori.examination.string.StringExaminer;
+import net.kyori.adventure.internal.Internals;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,7 +52,7 @@ final class TextDecorationAndStateImpl implements TextDecorationAndState {
 
   @Override
   public String toString() {
-    return this.examine(StringExaminer.simpleEscaping());
+    return Internals.toString(this);
   }
 
   @Override

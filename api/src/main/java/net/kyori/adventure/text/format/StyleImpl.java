@@ -27,12 +27,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
+import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.examination.ExaminableProperty;
-import net.kyori.examination.string.StringExaminer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -211,11 +211,6 @@ final class StyleImpl implements Style {
     return this == EMPTY;
   }
 
-  /**
-   * Create a builder from this style.
-   *
-   * @return a builder
-   */
   @Override
   public @NotNull Builder toBuilder() {
     return new BuilderImpl(this);
@@ -239,7 +234,7 @@ final class StyleImpl implements Style {
 
   @Override
   public @NotNull String toString() {
-    return this.examine(StringExaminer.simpleEscaping());
+    return Internals.toString(this);
   }
 
   @Override

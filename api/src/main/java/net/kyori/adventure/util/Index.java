@@ -174,4 +174,24 @@ public final class Index<K, V> {
   public @Nullable V value(final @NotNull K key) {
     return this.keyToValue.get(key);
   }
+
+  /**
+   * Get an unmodifiable mapping of index entries from key to value.
+   *
+   * @return a mapping from key to value in the index
+   * @since 4.10.0
+   */
+  public @NotNull Map<K, V> keyToValue() {
+    return Collections.unmodifiableMap(this.keyToValue);
+  }
+
+  /**
+   * Get an unmodifiable mapping of index entries from value to key.
+   *
+   * @return a mapping from value to key in the index
+   * @since 4.10.0
+   */
+  public @NotNull Map<V, K> valueToKey() {
+    return Collections.unmodifiableMap(this.valueToKey);
+  }
 }
