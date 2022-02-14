@@ -52,7 +52,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MiniMessageTest extends TestBase {
+public class MiniMessageTest extends AbstractTest {
 
   @Test
   void testNormalBuilder() {

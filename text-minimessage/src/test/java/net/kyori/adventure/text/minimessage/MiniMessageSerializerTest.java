@@ -41,7 +41,7 @@ import org.junit.jupiter.api.Test;
 import static net.kyori.adventure.text.Component.text;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class MiniMessageSerializerTest extends TestBase {
+public class MiniMessageSerializerTest extends AbstractTest {
 
   @Test
   void testColor() {
