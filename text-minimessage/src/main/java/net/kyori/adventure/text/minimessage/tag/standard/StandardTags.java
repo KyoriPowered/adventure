@@ -85,7 +85,7 @@ public final class StandardTags {
    *
    * <p>This tag supports both standard names from {@link TextDecoration#NAMES} as well as a few aliases from {@link DecorationTag#DECORATION_ALIASES}.</p>
    *
-   * @return a resolver for all tags
+   * @return a resolver for all decoration tags
    * @since 4.10.0
    */
   public static TagResolver decoration() {
