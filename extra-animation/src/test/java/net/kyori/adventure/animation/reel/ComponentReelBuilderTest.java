@@ -1,0 +1,48 @@
+/*
+ * This file is part of adventure, licensed under the MIT License.
+ *
+ * Copyright (c) 2017-2021 KyoriPowered
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package net.kyori.adventure.animation.reel;
+
+import net.kyori.adventure.animation.container.reel.FrameReel;
+import net.kyori.adventure.text.Component;
+import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class ComponentReelBuilderTest {
+
+  @Test
+  void appendComponentLike() {
+    assertEquals(Arrays.asList(Component.text("Mine"), Component.text("craft")), FrameReel.component(Component.text("Mine")).toBuilder().append(Component.text("craft").toBuilder()).frames());
+  }
+
+  @Test
+  void appendEmpties() {
+    assertEquals(Collections.singletonList(Component.text("a")), FrameReel.component(Component.text("a")).toBuilder().appendEmpties(-1).frames());
+    assertEquals(Collections.singletonList(Component.text("a")), FrameReel.component(Component.text("a")).toBuilder().appendEmpties(0).frames());
+    assertEquals(Arrays.asList(Component.text("a"), Component.empty(), Component.empty()), FrameReel.component(Component.text("a")).toBuilder().appendEmpties(2).frames());
+  }
+}
