@@ -64,6 +64,7 @@ public final class StandardTags {
   private static final TagResolver GRADIENT = TagResolver.resolver(GradientTag.GRADIENT, GradientTag::create);
   private static final TagResolver RAINBOW = TagResolver.resolver(RainbowTag.RAINBOW, RainbowTag::create);
   private static final TagResolver RESET = TagResolver.resolver(RESET_TAG, ParserDirective.RESET);
+  private static final TagResolver NEW_LINE = TagResolver.resolver(names(NewlineTag.NEWLINE, NewlineTag.NEWLINE_2), NewlineTag::create);
   private static final TagResolver ALL = TagResolver.builder()
       .resolvers(
         HOVER_EVENT,
@@ -76,7 +77,8 @@ public final class StandardTags {
         DECORATION,
         GRADIENT,
         RAINBOW,
-        RESET
+        RESET,
+        NEW_LINE
       )
       .build();
 
@@ -194,6 +196,18 @@ public final class StandardTags {
    */
   public static TagResolver reset() {
     return RESET;
+  }
+
+  /**
+   * Get a resolver for the {@value NewlineTag#NEWLINE} tag.
+   *
+   * <p>This tag also responds to {@value NewlineTag#NEWLINE_2}.</p>
+   *
+   * @return a resolver for the {@value NewlineTag#NEWLINE} tag.
+   * @since 4.10.0
+   */
+  public static TagResolver newline() {
+    return NEW_LINE;
   }
 
   /**

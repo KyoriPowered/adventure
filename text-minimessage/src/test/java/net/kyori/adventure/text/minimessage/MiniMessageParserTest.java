@@ -1711,4 +1711,18 @@ public class MiniMessageParserTest extends TestBase {
 
     assertEquals(expected, tree.toString());
   }
+
+  @Test
+  void testNewLine() {
+    final String input = "<red>Line<br><gray>break!";
+    final Component expected = Component.text().color(RED)
+      .append(
+        text("Line"),
+        Component.newline(),
+        text("break!", color(GRAY))
+      )
+      .build();
+
+    this.assertParsedEquals(expected, input);
+  }
 }
