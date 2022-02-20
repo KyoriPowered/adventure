@@ -143,7 +143,7 @@ public final class StandardTags {
    * @since 4.10.0
    */
   public static TagResolver translatable() {
-    return KEYBIND;
+    return TRANSLATABLE;
   }
 
   /**
