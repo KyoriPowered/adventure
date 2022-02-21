@@ -37,8 +37,8 @@ import org.jetbrains.annotations.ApiStatus;
  */
 @ApiStatus.Internal
 public final class NewlineTag {
-  public static final String NEWLINE_2 = "newline";
-  public static final String NEWLINE = "br";
+  public static final String NEWLINE_2 = "br";
+  public static final String NEWLINE = "newline";
 
   private NewlineTag() {
   }
