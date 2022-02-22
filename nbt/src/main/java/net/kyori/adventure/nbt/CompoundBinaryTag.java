@@ -50,6 +50,7 @@ public interface CompoundBinaryTag extends BinaryTag, CompoundTagSetter<Compound
    *
    * <p>If {@code tags} is empty, {@link #empty()} will be returned.</p>
    *
+   * @param tags the map of contents for the created tag
    * @return a compound tag
    * @since 4.4.0
    */

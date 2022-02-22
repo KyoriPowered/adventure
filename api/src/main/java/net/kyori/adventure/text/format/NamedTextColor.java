@@ -260,6 +260,7 @@ public final class NamedTextColor implements TextColor {
    *
    * <p>This value is unitless and should only be used to compare with other text colours.</p>
    *
+   * @param self the base colour
    * @param other colour to compare to
    * @return distance metric
    */

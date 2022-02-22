@@ -210,6 +210,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * when deserializing.
      *
      * @param pattern the url pattern
+     * @param style the style to apply to indicate that text is a link
      * @return this builder
      * @since 4.2.0
      */
