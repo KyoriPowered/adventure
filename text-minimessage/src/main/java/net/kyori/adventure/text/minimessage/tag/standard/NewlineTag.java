@@ -26,24 +26,40 @@ package net.kyori.adventure.text.minimessage.tag.standard;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
+import net.kyori.adventure.text.minimessage.serializer.Emitable;
+import net.kyori.adventure.text.minimessage.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
-import org.jetbrains.annotations.ApiStatus;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Newline tag.
  *
  * @since 4.10.0
  */
-@ApiStatus.Internal
-public final class NewlineTag {
-  public static final String BR = "br";
-  public static final String NEWLINE = "newline";
+final class NewlineTag {
+  private static final String BR = "br";
+  private static final String NEWLINE = "newline";
+
+  static final TagResolver RESOLVER = SerializableResolver.claimingComponent(
+    StandardTags.names(NEWLINE, BR),
+    NewlineTag::create,
+    NewlineTag::claimComponent
+  );
 
   private NewlineTag() {
   }
 
   static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
     return Tag.inserting(Component.newline());
+  }
+
+  static @Nullable Emitable claimComponent(final Component input) {
+    if (Component.newline().equals(input)) {
+      return emit -> emit.tag(BR);
+    } else {
+      return null;
+    }
   }
 }

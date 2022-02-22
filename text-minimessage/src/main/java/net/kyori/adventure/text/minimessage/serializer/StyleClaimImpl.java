@@ -21,39 +21,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.tag.resolver;
+package net.kyori.adventure.text.minimessage.serializer;
 
-import java.util.Map;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.Context;
-import net.kyori.adventure.text.minimessage.serializer.ClaimConsumer;
-import net.kyori.adventure.text.minimessage.serializer.SerializableResolver;
-import net.kyori.adventure.text.minimessage.tag.Tag;
+import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import net.kyori.adventure.text.format.Style;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-final class EmptyTagResolver implements TagResolver, MappableResolver, SerializableResolver {
-  static final EmptyTagResolver INSTANCE = new EmptyTagResolver();
+class StyleClaimImpl<V> implements StyleClaim<V> {
+  private final String claimKey;
+  private final Function<Style, V> lens;
+  private final Predicate<V> filter;
+  private final BiConsumer<V, TokenEmitter> emitable;
 
-  private EmptyTagResolver() {
+  StyleClaimImpl(final String claimKey, final Function<Style, @Nullable V> lens, final Predicate<V> filter, final BiConsumer<V, TokenEmitter> emitable) {
+    this.claimKey = claimKey;
+    this.lens = lens;
+    this.filter = filter;
+    this.emitable = emitable;
   }
 
   @Override
-  public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) {
-    return null;
+  public String claimKey() {
+    return this.claimKey;
   }
 
   @Override
-  public boolean has(final @NotNull String name) {
-    return false;
+  public @Nullable Emitable apply(final @NotNull Style style) {
+    final V element = this.lens.apply(style);
+    if (element == null || !this.filter.test(element)) return null;
+
+    return emitter -> this.emitable.accept(element, emitter);
   }
 
   @Override
-  public boolean contributeToMap(final @NotNull Map<String, Tag> map) {
-    return true;
+  public int hashCode() {
+    return Objects.hash(this.claimKey);
   }
 
   @Override
-  public void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer) {
+  public boolean equals(final @Nullable Object other) {
+    if (this == other) return true;
+    if (!(other instanceof StyleClaimImpl)) return false;
+    final StyleClaimImpl<?> that = (StyleClaimImpl<?>) other;
+    return Objects.equals(this.claimKey, that.claimKey);
   }
 }

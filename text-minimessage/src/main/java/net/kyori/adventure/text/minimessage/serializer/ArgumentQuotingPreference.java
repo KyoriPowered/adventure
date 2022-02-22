@@ -21,39 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.tag.resolver;
+package net.kyori.adventure.text.minimessage.serializer;
 
-import java.util.Map;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.Context;
-import net.kyori.adventure.text.minimessage.serializer.ClaimConsumer;
-import net.kyori.adventure.text.minimessage.serializer.SerializableResolver;
-import net.kyori.adventure.text.minimessage.tag.Tag;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-final class EmptyTagResolver implements TagResolver, MappableResolver, SerializableResolver {
-  static final EmptyTagResolver INSTANCE = new EmptyTagResolver();
-
-  private EmptyTagResolver() {
-  }
-
-  @Override
-  public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) {
-    return null;
-  }
-
-  @Override
-  public boolean has(final @NotNull String name) {
-    return false;
-  }
-
-  @Override
-  public boolean contributeToMap(final @NotNull Map<String, Tag> map) {
-    return true;
-  }
-
-  @Override
-  public void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer) {
-  }
+/**
+ * The preferred style of argument quoting when serializing a MiniMessage string.
+ *
+ * <p>This only applies to tag arguments, not the tag name itself.</p>
+ *
+ * @since 4.10.0
+ */
+public enum ArgumentQuotingPreference {
+  UNQUOTED,
+  SINGLE_QUOTED,
+  DOUBLE_QUOTED;
 }

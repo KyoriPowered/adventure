@@ -38,6 +38,7 @@ import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.Modifying;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.Examinable;
@@ -49,9 +50,11 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 4.10.0
  */
-public final class RainbowTag implements Modifying, Examinable {
+final class RainbowTag implements Modifying, Examinable {
   private static final String REVERSE = "!";
-  public static final String RAINBOW = "rainbow";
+  private static final String RAINBOW = "rainbow";
+
+  static final TagResolver RESOLVER = TagResolver.resolver(RAINBOW, RainbowTag::create);
 
   private int size;
   private int disableApplyingColorDepth = -1;

@@ -21,39 +21,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.tag.resolver;
+package net.kyori.adventure.text.minimessage.serializer;
 
-import java.util.Map;
+import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Context;
-import net.kyori.adventure.text.minimessage.serializer.ClaimConsumer;
-import net.kyori.adventure.text.minimessage.serializer.SerializableResolver;
+import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-final class EmptyTagResolver implements TagResolver, MappableResolver, SerializableResolver {
-  static final EmptyTagResolver INSTANCE = new EmptyTagResolver();
+class ComponentClaimingResolverImpl implements TagResolver, SerializableResolver.Single {
+  private final @NotNull Set<String> names;
+  private final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler;
+  private final @NotNull Function<Component, @Nullable Emitable> componentClaim;
 
-  private EmptyTagResolver() {
+  ComponentClaimingResolverImpl(final Set<String> names, final BiFunction<ArgumentQueue, Context, Tag> handler, final Function<Component, @Nullable Emitable> componentClaim) {
+    this.names = names;
+    this.handler = handler;
+    this.componentClaim = componentClaim;
   }
 
   @Override
-  public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) {
-    return null;
+  public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
+    if (!this.names.contains(name)) return null;
+
+    return this.handler.apply(arguments, ctx);
   }
 
   @Override
   public boolean has(final @NotNull String name) {
-    return false;
+    return this.names.contains(name);
   }
 
   @Override
-  public boolean contributeToMap(final @NotNull Map<String, Tag> map) {
-    return true;
-  }
-
-  @Override
-  public void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer) {
+  public @Nullable Emitable claimComponent(final @NotNull Component component) {
+    return this.componentClaim.apply(component);
   }
 }

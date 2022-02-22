@@ -24,14 +24,25 @@
 package net.kyori.adventure.text.minimessage.tag.standard;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.AbstractTest;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 import static net.kyori.adventure.text.format.TextDecoration.ITALIC;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DecorationTagTest extends AbstractTest {
+
+  @Test
+  void testCompleteness() {
+    final TagResolver decorations = StandardTags.decoration();
+    for (final String key : TextDecoration.NAMES.keys()) {
+      assertTrue(decorations.has(key), () -> "missing " + key);
+    }
+  }
 
   @Test
   void testDisabledDecoration() {

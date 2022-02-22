@@ -24,10 +24,15 @@
 package net.kyori.adventure.text.minimessage.tag.standard;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.KeybindComponent;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
+import net.kyori.adventure.text.minimessage.serializer.Emitable;
+import net.kyori.adventure.text.minimessage.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A transformation that inserts a key binding component.
@@ -37,11 +42,21 @@ import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 public final class KeybindTag {
   public static final String KEYBIND = "key";
 
+  static final TagResolver RESOLVER = SerializableResolver.claimingComponent(KeybindTag.KEYBIND, KeybindTag::create, KeybindTag::emit);
+
   private KeybindTag() {
   }
 
   static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
     return Tag.inserting(Component.keybind(args.popOr("A keybind id is required").value()));
+  }
+
+  static @Nullable Emitable emit(final Component component) {
+    if (!(component instanceof KeybindComponent)) return null;
+
+    final String key = ((KeybindComponent) component).keybind();
+
+    return emit -> emit.tag(KEYBIND).argument(key);
   }
 
 }

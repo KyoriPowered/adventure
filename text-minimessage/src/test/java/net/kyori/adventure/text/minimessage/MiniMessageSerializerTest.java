@@ -32,13 +32,13 @@ import net.kyori.adventure.text.TextComponent.Builder;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.Style.style;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MiniMessageSerializerTest extends AbstractTest {
@@ -54,11 +54,11 @@ public class MiniMessageSerializerTest extends AbstractTest {
 
   @Test
   void testColorClosing() {
-    final String expected = "<red>This is a </red>test";
+    final String expected = "<red>This is a</red> test";
 
     final Builder builder = Component.text()
-      .append(Component.text("This is a ", NamedTextColor.RED))
-      .append(Component.text("test"));
+      .append(Component.text("This is a", NamedTextColor.RED))
+      .append(Component.text(" test"));
 
     this.test(builder, expected);
   }
@@ -76,13 +76,24 @@ public class MiniMessageSerializerTest extends AbstractTest {
   }
 
   @Test
+  void testLayeredColor() {
+    final String expected = "<red>This is a <blue>blue</blue> test";
+
+    final Component builder = Component.text("This is a ", NamedTextColor.RED)
+      .append(Component.text("blue", NamedTextColor.BLUE))
+      .append(Component.text(" test"));
+
+    this.test(builder, expected);
+  }
+
+  // https://github.com/KyoriPowered/adventure/issues/513
+  @Test
   void testDecoration() {
-    // TODO this minimessage string is invalid, prolly need to rewrite the whole parser for it to be fixed...
-    final String expected = "<underlined>This is <bold>underlined</underlined></bold>, this isn't";
+    final String expected = "<underlined>This is <bold>underlined</bold></underlined>, this isn't";
 
     final Builder builder = Component.text()
-      .append(Component.text("This is ").decoration(TextDecoration.UNDERLINED, true)
-        .append(Component.text("underlined").decoration(TextDecoration.BOLD, true)))
+      .append(Component.text("This is ", style(TextDecoration.UNDERLINED))
+        .append(Component.text("underlined", style(TextDecoration.BOLD))))
       .append(Component.text(", this isn't"));
     this.test(builder, expected);
   }
@@ -113,12 +124,11 @@ public class MiniMessageSerializerTest extends AbstractTest {
 
   @Test
   void testParentHover() {
-    final String expected = "<hover:show_text:\"<red>---</red><blue><bold>-\">This is a child with hover";
+    final String expected = "<hover:show_text:'<red>---</red><blue><bold>-'>This is a child with hover";
 
     final Builder builder = Component.text().hoverEvent(HoverEvent.showText(Component.text()
       .content("---").color(NamedTextColor.RED)
-      .append(Component.text("-", NamedTextColor.BLUE, TextDecoration.BOLD))
-      .build()))
+      .append(Component.text("-", NamedTextColor.BLUE, TextDecoration.BOLD))))
       .append(Component.text("This is a child with hover"));
 
     this.test(builder, expected);
@@ -150,7 +160,7 @@ public class MiniMessageSerializerTest extends AbstractTest {
 
   @Test
   void testContinuedClick() {
-    final String expected = "<click:run_command:\"test\">Some click<red> that doesn't end here";
+    final String expected = "<click:run_command:'test'>Some click<red> that doesn't end here";
 
     final Builder builder = Component.text()
       .append(Component.text("Some click").clickEvent(ClickEvent.runCommand("test"))
@@ -161,7 +171,7 @@ public class MiniMessageSerializerTest extends AbstractTest {
 
   @Test
   void testKeyBind() {
-    final String expected = "Press <key:key.jump> to jump!";
+    final String expected = "Press <key:key.jump></key> to jump!";
 
     final Builder builder = Component.text()
       .content("Press ")
@@ -278,10 +288,9 @@ public class MiniMessageSerializerTest extends AbstractTest {
   @Test
   void testHoverWithExtraFollowing() {
     final Component component = Component.text("START", NamedTextColor.AQUA)
-      .append(Component.text("HOVERED", NamedTextColor.BLUE)
-        .hoverEvent(HoverEvent.showText(Component.text("Text on hover"))))
+      .append(Component.text("HOVERED", style(NamedTextColor.BLUE, HoverEvent.showText(Component.text("Text on hover")))))
       .append(Component.text("END"));
-    final String expected = "<aqua>START</aqua><blue><hover:show_text:\"Text on hover\">HOVERED</hover></blue><aqua>END";
+    final String expected = "<aqua>START<blue><hover:show_text:\"Text on hover\">HOVERED</hover></blue>END";
 
     this.test(component, expected);
   }
@@ -290,9 +299,9 @@ public class MiniMessageSerializerTest extends AbstractTest {
   void testNestedStyles() {
     // These are mostly arbitrary, but I don't want to test every single combination
     final ComponentLike component = Component.text()
-      .append(Component.text("b+i+u", Style.style(TextDecoration.BOLD, TextDecoration.ITALIC, TextDecoration.UNDERLINED)))
-      .append(Component.text("color+insert", Style.style(NamedTextColor.RED)).insertion("meow"))
-      .append(Component.text("st+font", Style.style(TextDecoration.STRIKETHROUGH).font(Key.key("uniform"))))
+      .append(Component.text("b+i+u", style(TextDecoration.BOLD, TextDecoration.ITALIC, TextDecoration.UNDERLINED)))
+      .append(Component.text("color+insert", style(NamedTextColor.RED)).insertion("meow"))
+      .append(Component.text("st+font", style(TextDecoration.STRIKETHROUGH).font(Key.key("uniform"))))
       .append(Component.text("empty"));
     final String expected = "<bold><italic><underlined>b+i+u</underlined></italic></bold>" +
       "<red><insert:meow>color+insert</insert></red>" +
@@ -303,7 +312,7 @@ public class MiniMessageSerializerTest extends AbstractTest {
   }
 
   private void test(final @NotNull ComponentLike builder, final @NotNull String expected) {
-    final String string = MiniMessageSerializer.serialize(builder.asComponent());
+    final String string = PARSER.serialize(builder.asComponent());
     assertEquals(expected, string);
   }
 }
