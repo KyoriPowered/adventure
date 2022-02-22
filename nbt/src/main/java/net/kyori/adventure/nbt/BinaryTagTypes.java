@@ -159,6 +159,7 @@ public final class BinaryTagTypes {
    * {@link IntArrayBinaryTag}.
    *
    * @since 4.0.0
+   * @sinceMinecraft 1.2.1
    */
   @SuppressWarnings("try")
   public static final BinaryTagType<IntArrayBinaryTag> INT_ARRAY = BinaryTagType.register(IntArrayBinaryTag.class, (byte) 11, input -> {
@@ -182,6 +183,7 @@ public final class BinaryTagTypes {
    * {@link LongArrayBinaryTag}.
    *
    * @since 4.0.0
+   * @sinceMinecraft 1.12
    */
   @SuppressWarnings("try")
   public static final BinaryTagType<LongArrayBinaryTag> LONG_ARRAY = BinaryTagType.register(LongArrayBinaryTag.class, (byte) 12, input -> {
