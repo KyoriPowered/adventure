@@ -329,7 +329,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static @NotNull BlockNBTComponent blockNBT(final @NotNull String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final BlockNBTComponent.@NotNull Pos pos) {
-    return new BlockNBTComponentImpl(Collections.emptyList(), Style.empty(), requireNonNull(nbtPath, "nbtPath"), interpret, separator, requireNonNull(pos, "pos"));
+    return BlockNBTComponentImpl.create(Collections.emptyList(), Style.empty(), nbtPath, interpret, separator, pos);
   }
 
   /*
@@ -437,7 +437,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull KeybindComponent keybind(final @NotNull String keybind, final @NotNull Style style) {
-    return new KeybindComponentImpl(Collections.emptyList(), requireNonNull(style, "style"), keybind);
+    return KeybindComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), keybind);
   }
 
   /**
@@ -450,7 +450,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull KeybindComponent keybind(final KeybindComponent.@NotNull KeybindLike keybind, final @NotNull Style style) {
-    return new KeybindComponentImpl(Collections.emptyList(), requireNonNull(style, "style"), requireNonNull(keybind, "keybind").asKeybind());
+    return KeybindComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), requireNonNull(keybind, "keybind").asKeybind());
   }
 
   /**
@@ -590,7 +590,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Contract(value = "_, _, _ -> new", pure = true)
   @Deprecated
   static @NotNull ScoreComponent score(final @NotNull String name, final @NotNull String objective, final @Nullable String value) {
-    return new ScoreComponentImpl(Collections.emptyList(), Style.empty(), requireNonNull(name, "name"), requireNonNull(objective, "objective"), value);
+    return ScoreComponentImpl.create(Collections.emptyList(), Style.empty(), name, objective, value);
   }
 
   /*
@@ -644,7 +644,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull SelectorComponent selector(final @NotNull String pattern, final @Nullable ComponentLike separator) {
-    return new SelectorComponentImpl(Collections.emptyList(), Style.empty(), requireNonNull(pattern, "pattern"), separator);
+    return SelectorComponentImpl.create(Collections.emptyList(), Style.empty(), pattern, separator);
   }
 
   /*
@@ -715,7 +715,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static @NotNull StorageNBTComponent storageNBT(final @NotNull String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final @NotNull Key storage) {
-    return new StorageNBTComponentImpl(Collections.emptyList(), Style.empty(), requireNonNull(nbtPath, "nbtPath"), interpret, separator, requireNonNull(storage, "storage"));
+    return StorageNBTComponentImpl.create(Collections.emptyList(), Style.empty(), nbtPath, interpret, separator, storage);
   }
 
   /*
@@ -744,7 +744,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   static @NotNull TextComponent textOfChildren(final @NotNull ComponentLike@NotNull... components) {
     if (components.length == 0) return empty();
-    return new TextComponentImpl(Arrays.asList(components), Style.empty(), "");
+    return TextComponentImpl.create(Arrays.asList(components), Style.empty(), "");
   }
 
   /**
@@ -782,7 +782,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull TextComponent text(final @NotNull String content, final @NotNull Style style) {
-    return new TextComponentImpl(Collections.emptyList(), requireNonNull(style, "style"), content);
+    return TextComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), content);
   }
 
   /**
@@ -1287,7 +1287,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @NotNull Style style) {
-    return new TranslatableComponentImpl(Collections.emptyList(), requireNonNull(style, "style"), key, Collections.emptyList());
+    return TranslatableComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), key, Collections.emptyList());
   }
 
   /**
@@ -1422,7 +1422,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @NotNull Style style, final @NotNull ComponentLike@NotNull... args) {
-    return new TranslatableComponentImpl(Collections.emptyList(), requireNonNull(style, "style"), key, requireNonNull(args, "args"));
+    return TranslatableComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), key, requireNonNull(args, "args"));
   }
 
   /**
@@ -1507,7 +1507,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @NotNull List<? extends ComponentLike> args) {
-    return new TranslatableComponentImpl(Collections.emptyList(), Style.empty(), key, requireNonNull(args, "args"));
+    return TranslatableComponentImpl.create(Collections.emptyList(), Style.empty(), key, requireNonNull(args, "args"));
   }
 
   /**
@@ -1534,7 +1534,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @NotNull Style style, final @NotNull List<? extends ComponentLike> args) {
-    return new TranslatableComponentImpl(Collections.emptyList(), requireNonNull(style, "style"), key, requireNonNull(args, "args"));
+    return TranslatableComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), key, requireNonNull(args, "args"));
   }
 
   /**

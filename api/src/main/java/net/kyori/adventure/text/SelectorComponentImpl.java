@@ -36,7 +36,16 @@ final class SelectorComponentImpl extends AbstractComponent implements SelectorC
   private final String pattern;
   private final @Nullable Component separator;
 
-  SelectorComponentImpl(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String pattern, final @Nullable ComponentLike separator) {
+  static SelectorComponent create(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String pattern, final @Nullable ComponentLike separator) {
+    return new SelectorComponentImpl(
+      ComponentLike.asComponents(children, IS_NOT_EMPTY),
+      requireNonNull(style, "style"),
+      requireNonNull(pattern, "pattern"),
+      separator
+    );
+  }
+
+  SelectorComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final @NotNull String pattern, final @Nullable ComponentLike separator) {
     super(children, style);
     this.pattern = pattern;
     this.separator = ComponentLike.unbox(separator);
@@ -50,7 +59,7 @@ final class SelectorComponentImpl extends AbstractComponent implements SelectorC
   @Override
   public @NotNull SelectorComponent pattern(final @NotNull String pattern) {
     if (Objects.equals(this.pattern, pattern)) return this;
-    return new SelectorComponentImpl(this.children, this.style, requireNonNull(pattern, "pattern"), this.separator);
+    return create(this.children, this.style, pattern, this.separator);
   }
 
   @Override
@@ -60,17 +69,17 @@ final class SelectorComponentImpl extends AbstractComponent implements SelectorC
 
   @Override
   public @NotNull SelectorComponent separator(final @Nullable ComponentLike separator) {
-    return new SelectorComponentImpl(this.children, this.style, this.pattern, separator);
+    return create(this.children, this.style, this.pattern, separator);
   }
 
   @Override
   public @NotNull SelectorComponent children(final @NotNull List<? extends ComponentLike> children) {
-    return new SelectorComponentImpl(requireNonNull(children, "children"), this.style, this.pattern, this.separator);
+    return create(children, this.style, this.pattern, this.separator);
   }
 
   @Override
   public @NotNull SelectorComponent style(final @NotNull Style style) {
-    return new SelectorComponentImpl(this.children, requireNonNull(style, "style"), this.pattern, this.separator);
+    return create(this.children, style, this.pattern, this.separator);
   }
 
   @Override
@@ -128,7 +137,7 @@ final class SelectorComponentImpl extends AbstractComponent implements SelectorC
     @Override
     public @NotNull SelectorComponent build() {
       if (this.pattern == null) throw new IllegalStateException("pattern must be set");
-      return new SelectorComponentImpl(this.children, this.buildStyle(), this.pattern, this.separator);
+      return create(this.children, this.buildStyle(), this.pattern, this.separator);
     }
   }
 }
