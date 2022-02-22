@@ -189,9 +189,9 @@ public final class StandardTags {
   }
 
   /**
-   * Get a resolver for the {@value RESET_TAG} tag.
+   * Get a resolver for the {@value #RESET_TAG} tag.
    *
-   * @return a resolver for the {@value RESET_TAG} tag.
+   * @return a resolver for the {@value #RESET_TAG} tag.
    * @since 4.10.0
    */
   public static TagResolver reset() {
