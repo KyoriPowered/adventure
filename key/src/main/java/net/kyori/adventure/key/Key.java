@@ -55,7 +55,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 4.0.0
  */
-public interface Key extends Comparable<Key>, Examinable {
+public interface Key extends Comparable<Key>, Examinable, Namespaced {
   /**
    * The namespace for Minecraft.
    *
