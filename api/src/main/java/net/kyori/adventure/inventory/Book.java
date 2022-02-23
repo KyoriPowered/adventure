@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.examination.Examinable;
@@ -170,7 +171,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
    *
    * @since 4.0.0
    */
-  interface Builder extends Buildable.Builder<Book> {
+  interface Builder extends AbstractBuilder<Book>, Buildable.Builder<Book> {
     /**
      * Set the title.
      *

@@ -28,6 +28,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
+import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Buildable;
@@ -116,7 +117,7 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
    *
    * @since 4.0.0
    */
-  interface Builder extends Buildable.Builder<GsonComponentSerializer> {
+  interface Builder extends AbstractBuilder<GsonComponentSerializer>, Buildable.Builder<GsonComponentSerializer> {
     /**
      * Sets that the serializer should downsample hex colors to named colors.
      *

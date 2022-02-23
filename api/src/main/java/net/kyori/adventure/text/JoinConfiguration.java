@@ -25,6 +25,7 @@ package net.kyori.adventure.text;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
+import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
@@ -232,7 +233,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
    *
    * @since 4.9.0
    */
-  interface Builder extends Buildable.Builder<JoinConfiguration> {
+  interface Builder extends AbstractBuilder<JoinConfiguration>, Buildable.Builder<JoinConfiguration> {
     /**
      * Sets the prefix of this join configuration builder.
      *

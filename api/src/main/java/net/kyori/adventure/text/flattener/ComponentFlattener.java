@@ -26,6 +26,7 @@ package net.kyori.adventure.text.flattener;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Buildable;
 import org.jetbrains.annotations.NotNull;
@@ -88,7 +89,7 @@ public interface ComponentFlattener extends Buildable<ComponentFlattener, Compon
    *
    * @since 4.7.0
    */
-  interface Builder extends Buildable.Builder<ComponentFlattener> {
+  interface Builder extends AbstractBuilder<ComponentFlattener>, Buildable.Builder<ComponentFlattener> {
     /**
      * Register a type of component to be handled.
      *
