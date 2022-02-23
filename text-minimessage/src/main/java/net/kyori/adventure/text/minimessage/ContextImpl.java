@@ -106,8 +106,9 @@ class ContextImpl implements Context {
   }
 
   @Override
-  public @NotNull Component parse(final @NotNull String message) {
-    return this.miniMessage.deserialize(requireNonNull(message, "message"), this.tagResolver);
+  public @NotNull Component parse(final @NotNull String message, final @NotNull TagResolver@NotNull... resolvers) {
+    return this.miniMessage.deserialize(requireNonNull(message, "message"),
+      TagResolver.resolver(this.tagResolver, TagResolver.resolver(resolvers)));
   }
 
   @Override

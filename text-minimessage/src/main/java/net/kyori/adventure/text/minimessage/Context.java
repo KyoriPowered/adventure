@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,10 +43,11 @@ public interface Context {
    * Parses a MiniMessage string using all the settings of this context.
    *
    * @param message the message to parse
+   * @param resolvers additional tag resolvers
    * @return the parsed message
    * @since 4.10.0
    */
-  @NotNull Component parse(final @NotNull String message);
+  @NotNull Component parse(final @NotNull String message, final @NotNull TagResolver@NotNull... resolvers);
 
   /**
    * Create a new parsing exception.
