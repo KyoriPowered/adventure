@@ -86,10 +86,6 @@ class TagResolverTest {
 
   @Test
   void testParseInResolver() {
-    final List<TagResolver> placeholders = Arrays.asList(
-      Placeholder.parsed("foo", "<red>Hello</red>"),
-      Placeholder.parsed("bar", "<yellow>World</yellow>")
-    );
     final Context ctx = TestBase.dummyContext("dummy text");
     final Component input = ctx.parse("<foo> <bar>",
       Placeholder.parsed("foo", "<red>Hello</red>"), Placeholder.parsed("bar", "<yellow>World</yellow>"));
