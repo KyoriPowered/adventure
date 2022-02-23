@@ -30,6 +30,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,15 +43,14 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.10.0
  */
 public interface MiniMessage extends ComponentSerializer<Component, Component, String> {
-
   /**
-   * Gets a simple instance without markdown support.
+   * Gets a simple instance with default settings.
    *
    * @return a simple instance
    * @since 4.10.0
    */
   static @NotNull MiniMessage miniMessage() {
-    return MiniMessageImpl.INSTANCE;
+    return MiniMessageImpl.Instances.INSTANCE;
   }
 
   /**
@@ -280,5 +280,31 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      */
     @Override
     @NotNull MiniMessage build();
+  }
+
+  /**
+   * A {@link MiniMessage} service provider.
+   *
+   * @since 4.10.0
+   */
+  @ApiStatus.Internal
+  interface Provider {
+    /**
+     * Provides a standard {@link MiniMessage} instance.
+     *
+     * @return a {@link MiniMessage} instance
+     * @since 4.10.0
+     */
+    @ApiStatus.Internal
+    @NotNull MiniMessage miniMessage();
+
+    /**
+     * Initialize a {@link Builder} before it is returned to the API caller.
+     *
+     * @return a {@link Consumer} modifying a {@link Builder}
+     * @since 4.10.0
+     */
+    @ApiStatus.Internal
+    @NotNull Consumer<Builder> builder();
   }
 }
