@@ -1734,35 +1734,32 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
-   * Wraps the provided component in an empty component with the given style.
+   * Wraps this component in an empty component with the given style.
    *
-   * <p>This method can be used to set the "default" style for a component, whilst still allowing the component to override the style.</p>
+   * <p>This method can be used to set the "default" style for a component, whilst still allowing children of the component to override the style.</p>
    *
-   * @param component the component which will be wrapped
    * @param style style for the wrapper component
    * @return the wrapped component
    * @since 4.10.0
    */
   @Contract(pure = true)
-  static @NotNull Component wrap(final @NotNull ComponentLike component, final @NotNull Style style) {
-    Objects.requireNonNull(component, "component");
+  default @NotNull Component wrap(final @NotNull Style style) {
     Objects.requireNonNull(style, "style");
-    return text().append(component).style(style).build();
+    return this.style(this.style().merge(style, Style.Merge.Strategy.IF_ABSENT_ON_TARGET));
   }
 
   /**
-   * Wraps the provided component in an empty component with the given style.
+   * Wraps this component in an empty component with the given style.
    *
-   * <p>This method can be used to set the "default" style for a component, whilst still allowing the component to override the style.</p>
+   * <p>This method can be used to set the "default" style for a component, whilst still allowing children of the component to override the style.</p>
    *
-   * @param component the component which will be wrapped
    * @param style style for the wrapper component
    * @return the wrapped component
    * @since 4.10.0
    */
   @Contract(pure = true)
-  static @NotNull Component wrap(final @NotNull ComponentLike component, final @NotNull StyleBuilderApplicable@NotNull... style) {
-    return wrap(component, Style.style(style));
+  default @NotNull Component wrap(final @NotNull StyleBuilderApplicable@NotNull... style) {
+    return this.wrap(Style.style(style));
   }
 
   /**
