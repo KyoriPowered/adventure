@@ -106,9 +106,20 @@ class ContextImpl implements Context {
   }
 
   @Override
-  public @NotNull Component parse(final @NotNull String message, final @NotNull TagResolver@NotNull... resolvers) {
+  public @NotNull Component deserialize(final @NotNull String message) {
+    return this.miniMessage.deserialize(requireNonNull(message, "message"), this.tagResolver);
+  }
+
+  @Override
+  public @NotNull Component deserialize(final @NotNull String message, final @NotNull TagResolver resolver) {
     return this.miniMessage.deserialize(requireNonNull(message, "message"),
-      TagResolver.builder().resolver(this.tagResolver).resolvers(resolvers).build());
+      TagResolver.builder().resolver(this.tagResolver).resolver(requireNonNull(resolver, "resolver")).build());
+  }
+
+  @Override
+  public @NotNull Component deserialize(final @NotNull String message, final @NotNull TagResolver@NotNull... resolvers) {
+    return this.miniMessage.deserialize(requireNonNull(message, "message"),
+      TagResolver.builder().resolver(this.tagResolver).resolvers(requireNonNull(resolvers, "resolvers")).build());
   }
 
   @Override

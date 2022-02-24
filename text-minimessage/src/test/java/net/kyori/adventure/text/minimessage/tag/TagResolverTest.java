@@ -85,16 +85,33 @@ class TagResolverTest {
   }
 
   @Test
-  void testParseInResolver() {
+  void testContextParseOne() {
     final Context ctx = TestBase.dummyContext("dummy text");
-    final Component input = ctx.parse("<foo> <bar>",
+    final Component input = ctx.deserialize("<foo> <bar><green>!</green>", Placeholder.parsed("foo", "<red>Hello</red>"));
+
+    final Component expected = Component.text()
+      .append(
+        text("Hello", color(NamedTextColor.RED)),
+        text(" <bar>"),
+        text("!", color(NamedTextColor.GREEN))
+      )
+      .build();
+
+    assertEquals(expected, input);
+  }
+
+  @Test
+  void testContextParseVarargs() {
+    final Context ctx = TestBase.dummyContext("dummy text");
+    final Component input = ctx.deserialize("<foo> <bar><green>!</green>",
       Placeholder.parsed("foo", "<red>Hello</red>"), Placeholder.parsed("bar", "<yellow>World</yellow>"));
 
     final Component expected = Component.text()
       .append(
         text("Hello", color(NamedTextColor.RED)),
         text(" "),
-        text("World", color(NamedTextColor.YELLOW))
+        text("World", color(NamedTextColor.YELLOW)),
+        text("!", color(NamedTextColor.GREEN))
       )
       .build();
 
