@@ -55,7 +55,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 4.0.0
  */
-public interface Key extends Comparable<Key>, Examinable {
+public interface Key extends Comparable<Key>, Examinable, Namespaced {
   /**
    * The namespace for Minecraft.
    *
@@ -135,6 +135,7 @@ public interface Key extends Comparable<Key>, Examinable {
    *
    * <p>The {@link #value() value} is compared first, followed by the {@link #namespace() namespace}.</p>
    *
+   * @return a comparator for keys
    * @since 4.10.0
    */
   static @NotNull Comparator<? super Key> comparator() {

@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
@@ -49,7 +50,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.0.0
  */
 @ApiStatus.NonExtendable
-public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends Buildable.Builder<C>, ComponentBuilderApplicable, ComponentLike, MutableStyleSetter<B> {
+public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends AbstractBuilder<C>, Buildable.Builder<C>, ComponentBuilderApplicable, ComponentLike, MutableStyleSetter<B> {
   /**
    * Appends a component to this component.
    *
@@ -362,7 +363,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    */
   @Contract("_, _ -> this")
   default @NotNull B mergeStyle(final @NotNull Component that, final Style.@NotNull Merge@NotNull... merges) {
-    return this.mergeStyle(that, Style.Merge.of(merges));
+    return this.mergeStyle(that, Style.Merge.merges(merges));
   }
 
   /**

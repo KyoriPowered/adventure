@@ -211,11 +211,6 @@ final class StyleImpl implements Style {
     return this == EMPTY;
   }
 
-  /**
-   * Create a builder from this style.
-   *
-   * @return a builder
-   */
   @Override
   public @NotNull Builder toBuilder() {
     return new BuilderImpl(this);

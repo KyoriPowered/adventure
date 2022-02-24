@@ -25,6 +25,7 @@ package net.kyori.adventure.text.serializer.legacy;
 
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
+import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -157,7 +158,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    *
    * @since 4.0.0
    */
-  interface Builder extends Buildable.Builder<LegacyComponentSerializer> {
+  interface Builder extends AbstractBuilder<LegacyComponentSerializer>, Buildable.Builder<LegacyComponentSerializer> {
     /**
      * Sets the legacy character used by the serializer.
      *
@@ -210,6 +211,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * when deserializing.
      *
      * @param pattern the url pattern
+     * @param style the style to apply to indicate that text is a link
      * @return this builder
      * @since 4.2.0
      */

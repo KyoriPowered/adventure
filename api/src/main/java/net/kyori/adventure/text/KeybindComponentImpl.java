@@ -35,9 +35,17 @@ import static java.util.Objects.requireNonNull;
 final class KeybindComponentImpl extends AbstractComponent implements KeybindComponent {
   private final String keybind;
 
-  KeybindComponentImpl(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String keybind) {
+  static KeybindComponent create(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String keybind) {
+    return new KeybindComponentImpl(
+      ComponentLike.asComponents(children, IS_NOT_EMPTY),
+      requireNonNull(style, "style"),
+      requireNonNull(keybind, "keybind")
+    );
+  }
+
+  KeybindComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final @NotNull String keybind) {
     super(children, style);
-    this.keybind = requireNonNull(keybind, "keybind");
+    this.keybind = keybind;
   }
 
   @Override
@@ -48,17 +56,17 @@ final class KeybindComponentImpl extends AbstractComponent implements KeybindCom
   @Override
   public @NotNull KeybindComponent keybind(final @NotNull String keybind) {
     if (Objects.equals(this.keybind, keybind)) return this;
-    return new KeybindComponentImpl(this.children, this.style, keybind);
+    return create(this.children, this.style, keybind);
   }
 
   @Override
   public @NotNull KeybindComponent children(final @NotNull List<? extends ComponentLike> children) {
-    return new KeybindComponentImpl(requireNonNull(children, "children"), this.style, this.keybind);
+    return create(children, this.style, this.keybind);
   }
 
   @Override
   public @NotNull KeybindComponent style(final @NotNull Style style) {
-    return new KeybindComponentImpl(this.children, requireNonNull(style, "style"), this.keybind);
+    return create(this.children, style, this.keybind);
   }
 
   @Override
@@ -107,7 +115,7 @@ final class KeybindComponentImpl extends AbstractComponent implements KeybindCom
     @Override
     public @NotNull KeybindComponent build() {
       if (this.keybind == null) throw new IllegalStateException("keybind must be set");
-      return new KeybindComponentImpl(this.children, this.buildStyle(), this.keybind);
+      return create(this.children, this.buildStyle(), this.keybind);
     }
   }
 }

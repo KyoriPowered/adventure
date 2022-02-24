@@ -72,8 +72,9 @@ final class CharBuffer {
   /**
    * Search for the provided token, and advance the reader index past the {@code until} character.
    *
-   * @param until Case-insensitive token
+   * @param until case-insensitive token
    * @return the string starting at the current position (inclusive) and going until the location of {@code until}, exclusive
+   * @throws StringTagParseException if {@code until} is not present in the remaining string
    */
   public CharSequence takeUntil(char until) throws StringTagParseException {
     until = Character.toLowerCase(until);

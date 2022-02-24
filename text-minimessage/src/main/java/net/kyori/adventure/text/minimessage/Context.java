@@ -24,32 +24,63 @@
 package net.kyori.adventure.text.minimessage;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Parser context for use within transformations.
  *
- * <p>This allows operating recursive parses, for cases where messages may include tokens.</p>
+ * <p>This allows operating recursive parses, for cases where messages may include parse-specific tags.</p>
  *
  * @since 4.10.0
  */
 @ApiStatus.NonExtendable
 public interface Context {
   /**
-   * Returns original message as provided to the parser.
-   *
-   * @return ogMessage
-   * @since 4.10.0
-   */
-  @NotNull String originalMessage();
-
-  /**
-   * Parses a MiniMessage using all the settings of this context, including placeholders.
+   * Parses a MiniMessage string using all the settings of this context.
    *
    * @param message the message to parse
    * @return the parsed message
    * @since 4.10.0
    */
   @NotNull Component parse(final @NotNull String message);
+
+  /**
+   * Create a new parsing exception.
+   *
+   * @param message a detail message describing the error
+   * @param tags the tag parts which caused the error
+   * @return the new parsing exception
+   * @since 4.10.0
+   */
+  @NotNull ParsingException newException(
+    final @NotNull String message,
+    final @NotNull ArgumentQueue tags
+  );
+
+  /**
+   * Create a new parsing exception without reference to a specific location.
+   *
+   * @param message a detail message describing the error
+   * @return the new parsing exception
+   * @since 4.10.0
+   */
+  @NotNull ParsingException newException(final @NotNull String message);
+
+  /**
+   * Create a new parsing exception.
+   *
+   * @param message a detail message describing the error
+   * @param cause the cause
+   * @param args arguments that caused the errors
+   * @return the new parsing exception
+   * @since 4.10.0
+   */
+  @NotNull ParsingException newException(
+    final @NotNull String message,
+    final @Nullable Throwable cause,
+    final @NotNull ArgumentQueue args
+  );
 }

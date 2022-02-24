@@ -25,9 +25,11 @@ package net.kyori.adventure.text.minimessage.parser.node;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenType;
+import net.kyori.adventure.text.minimessage.tree.Node;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.10.0
  */
-public class ElementNode {
+public class ElementNode implements Node {
   private final @Nullable ElementNode parent;
   private final @Nullable Token token;
   private final String sourceMessage;
@@ -62,6 +64,7 @@ public class ElementNode {
    * @return the parent or null
    * @since 4.10.0
    */
+  @Override
   public @Nullable ElementNode parent() {
     return this.parent;
   }
@@ -92,7 +95,18 @@ public class ElementNode {
    * @return the children of this node
    * @since 4.10.0
    */
-  public List<ElementNode> children() {
+  @Override
+  public @NotNull List<ElementNode> children() {
+    return Collections.unmodifiableList(this.children);
+  }
+
+  /**
+   * Returns an unsafe view of the children of this node.
+   *
+   * @return the children of this node
+   * @since 4.10.0
+   */
+  public @NotNull List<ElementNode> unsafeChildren() {
     return this.children;
   }
 
@@ -104,7 +118,7 @@ public class ElementNode {
    * @param childNode the child node to add.
    * @since 4.10.0
    */
-  public void addChild(final ElementNode childNode) {
+  public void addChild(final @NotNull ElementNode childNode) {
     final int last = this.children.size() - 1;
     if (!(childNode instanceof TextNode) || this.children.isEmpty() || !(this.children.get(last) instanceof TextNode)) {
       this.children.add(childNode);
@@ -146,7 +160,7 @@ public class ElementNode {
   }
 
   @Override
-  public String toString() {
+  public @NotNull String toString() {
     return this.buildToString(new StringBuilder(), 0).toString();
   }
 }

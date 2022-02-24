@@ -83,7 +83,9 @@ final class TagStringReader {
   /**
    * Similar to a list tag in syntax, but returning a single array tag rather than a list of tags.
    *
+   * @param elementType the indicator character for element type
    * @return array-typed tag
+   * @throws StringTagParseException if the array was not properly terminated
    */
   public BinaryTag array(char elementType) throws StringTagParseException {
     this.buffer.expect(Tokens.ARRAY_BEGIN)

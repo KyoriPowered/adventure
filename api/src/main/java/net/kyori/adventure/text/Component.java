@@ -40,6 +40,7 @@ import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
+import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -51,7 +52,6 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.translation.Translatable;
-import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.ForwardingIterator;
 import net.kyori.adventure.util.IntFunction2;
 import net.kyori.adventure.util.MonkeyBars;
@@ -287,7 +287,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract("_ -> new")
   static @NotNull BlockNBTComponent blockNBT(final @NotNull Consumer<? super BlockNBTComponent.Builder> consumer) {
-    return Buildable.configureAndBuild(blockNBT(), consumer);
+    return AbstractBuilder.configureAndBuild(blockNBT(), consumer);
   }
 
   /**
@@ -329,7 +329,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static @NotNull BlockNBTComponent blockNBT(final @NotNull String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final BlockNBTComponent.@NotNull Pos pos) {
-    return new BlockNBTComponentImpl(Collections.emptyList(), Style.empty(), requireNonNull(nbtPath, "nbtPath"), interpret, separator, requireNonNull(pos, "pos"));
+    return BlockNBTComponentImpl.create(Collections.emptyList(), Style.empty(), nbtPath, interpret, separator, pos);
   }
 
   /*
@@ -358,7 +358,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract("_ -> new")
   static @NotNull EntityNBTComponent entityNBT(final @NotNull Consumer<? super EntityNBTComponent.Builder> consumer) {
-    return Buildable.configureAndBuild(entityNBT(), consumer);
+    return AbstractBuilder.configureAndBuild(entityNBT(), consumer);
   }
 
   /**
@@ -400,7 +400,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract("_ -> new")
   static @NotNull KeybindComponent keybind(final @NotNull Consumer<? super KeybindComponent.Builder> consumer) {
-    return Buildable.configureAndBuild(keybind(), consumer);
+    return AbstractBuilder.configureAndBuild(keybind(), consumer);
   }
 
   /**
@@ -437,7 +437,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull KeybindComponent keybind(final @NotNull String keybind, final @NotNull Style style) {
-    return new KeybindComponentImpl(Collections.emptyList(), requireNonNull(style, "style"), keybind);
+    return KeybindComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), keybind);
   }
 
   /**
@@ -450,7 +450,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull KeybindComponent keybind(final KeybindComponent.@NotNull KeybindLike keybind, final @NotNull Style style) {
-    return new KeybindComponentImpl(Collections.emptyList(), requireNonNull(style, "style"), requireNonNull(keybind, "keybind").asKeybind());
+    return KeybindComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), requireNonNull(keybind, "keybind").asKeybind());
   }
 
   /**
@@ -561,7 +561,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract("_ -> new")
   static @NotNull ScoreComponent score(final @NotNull Consumer<? super ScoreComponent.Builder> consumer) {
-    return Buildable.configureAndBuild(score(), consumer);
+    return AbstractBuilder.configureAndBuild(score(), consumer);
   }
 
   /**
@@ -590,7 +590,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Contract(value = "_, _, _ -> new", pure = true)
   @Deprecated
   static @NotNull ScoreComponent score(final @NotNull String name, final @NotNull String objective, final @Nullable String value) {
-    return new ScoreComponentImpl(Collections.emptyList(), Style.empty(), requireNonNull(name, "name"), requireNonNull(objective, "objective"), value);
+    return ScoreComponentImpl.create(Collections.emptyList(), Style.empty(), name, objective, value);
   }
 
   /*
@@ -619,7 +619,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract("_ -> new")
   static @NotNull SelectorComponent selector(final @NotNull Consumer<? super SelectorComponent.Builder> consumer) {
-    return Buildable.configureAndBuild(selector(), consumer);
+    return AbstractBuilder.configureAndBuild(selector(), consumer);
   }
 
   /**
@@ -644,7 +644,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull SelectorComponent selector(final @NotNull String pattern, final @Nullable ComponentLike separator) {
-    return new SelectorComponentImpl(Collections.emptyList(), Style.empty(), requireNonNull(pattern, "pattern"), separator);
+    return SelectorComponentImpl.create(Collections.emptyList(), Style.empty(), pattern, separator);
   }
 
   /*
@@ -673,7 +673,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract("_ -> new")
   static @NotNull StorageNBTComponent storageNBT(final @NotNull Consumer<? super StorageNBTComponent.Builder> consumer) {
-    return Buildable.configureAndBuild(storageNBT(), consumer);
+    return AbstractBuilder.configureAndBuild(storageNBT(), consumer);
   }
 
   /**
@@ -715,7 +715,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static @NotNull StorageNBTComponent storageNBT(final @NotNull String nbtPath, final boolean interpret, final @Nullable ComponentLike separator, final @NotNull Key storage) {
-    return new StorageNBTComponentImpl(Collections.emptyList(), Style.empty(), requireNonNull(nbtPath, "nbtPath"), interpret, separator, requireNonNull(storage, "storage"));
+    return StorageNBTComponentImpl.create(Collections.emptyList(), Style.empty(), nbtPath, interpret, separator, storage);
   }
 
   /*
@@ -744,7 +744,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   static @NotNull TextComponent textOfChildren(final @NotNull ComponentLike@NotNull... components) {
     if (components.length == 0) return empty();
-    return new TextComponentImpl(Arrays.asList(components), Style.empty(), "");
+    return TextComponentImpl.create(Arrays.asList(components), Style.empty(), "");
   }
 
   /**
@@ -756,7 +756,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract("_ -> new")
   static @NotNull TextComponent text(final @NotNull Consumer<? super TextComponent.Builder> consumer) {
-    return Buildable.configureAndBuild(text(), consumer);
+    return AbstractBuilder.configureAndBuild(text(), consumer);
   }
 
   /**
@@ -782,7 +782,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull TextComponent text(final @NotNull String content, final @NotNull Style style) {
-    return new TextComponentImpl(Collections.emptyList(), requireNonNull(style, "style"), content);
+    return TextComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), content);
   }
 
   /**
@@ -1250,7 +1250,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract("_ -> new")
   static @NotNull TranslatableComponent translatable(final @NotNull Consumer<? super TranslatableComponent.Builder> consumer) {
-    return Buildable.configureAndBuild(translatable(), consumer);
+    return AbstractBuilder.configureAndBuild(translatable(), consumer);
   }
 
   /**
@@ -1287,7 +1287,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @NotNull Style style) {
-    return new TranslatableComponentImpl(Collections.emptyList(), requireNonNull(style, "style"), key, Collections.emptyList());
+    return TranslatableComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), key, Collections.emptyList());
   }
 
   /**
@@ -1422,7 +1422,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @NotNull Style style, final @NotNull ComponentLike@NotNull... args) {
-    return new TranslatableComponentImpl(Collections.emptyList(), requireNonNull(style, "style"), key, requireNonNull(args, "args"));
+    return TranslatableComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), key, requireNonNull(args, "args"));
   }
 
   /**
@@ -1507,7 +1507,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @NotNull List<? extends ComponentLike> args) {
-    return new TranslatableComponentImpl(Collections.emptyList(), Style.empty(), key, requireNonNull(args, "args"));
+    return TranslatableComponentImpl.create(Collections.emptyList(), Style.empty(), key, requireNonNull(args, "args"));
   }
 
   /**
@@ -1534,7 +1534,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @NotNull Style style, final @NotNull List<? extends ComponentLike> args) {
-    return new TranslatableComponentImpl(Collections.emptyList(), requireNonNull(style, "style"), key, requireNonNull(args, "args"));
+    return TranslatableComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), key, requireNonNull(args, "args"));
   }
 
   /**
@@ -1681,8 +1681,8 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * Prevents a cycle between this component and the provided component.
    *
    * @param that the other component
-   * @deprecated for removal since 4.7.0, with no replacement - this method is not necessary due to the fact {@code Component}s are immutable
    * @since 4.0.0
+   * @deprecated for removal since 4.7.0, with no replacement - this method is not necessary due to the fact {@code Component}s are immutable
    */
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Deprecated
@@ -1809,7 +1809,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(pure = true)
   default @NotNull Component mergeStyle(final @NotNull Component that, final Style.@NotNull Merge@NotNull... merges) {
-    return this.mergeStyle(that, Style.Merge.of(merges));
+    return this.mergeStyle(that, Style.Merge.merges(merges));
   }
 
   /**
@@ -2077,7 +2077,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Contract(pure = true)
   default @NotNull Component replaceText(final @NotNull Consumer<TextReplacementConfig.Builder> configurer) {
     requireNonNull(configurer, "configurer");
-    return this.replaceText(Buildable.configureAndBuild(TextReplacementConfig.builder(), configurer));
+    return this.replaceText(AbstractBuilder.configureAndBuild(TextReplacementConfig.builder(), configurer));
   }
 
   /**

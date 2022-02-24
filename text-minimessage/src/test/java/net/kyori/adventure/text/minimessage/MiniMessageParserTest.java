@@ -31,8 +31,9 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.minimessage.placeholder.Placeholder;
-import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.junit.jupiter.api.Test;
 
@@ -58,8 +59,8 @@ import static net.kyori.adventure.text.format.TextColor.color;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 import static net.kyori.adventure.text.format.TextDecoration.ITALIC;
 import static net.kyori.adventure.text.format.TextDecoration.UNDERLINED;
-import static net.kyori.adventure.text.minimessage.placeholder.Placeholder.component;
-import static net.kyori.adventure.text.minimessage.placeholder.Placeholder.miniMessage;
+import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
+import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.parsed;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -91,10 +92,10 @@ public class MiniMessageParserTest extends TestBase {
     final String input2 = "<gray>This is english";
     final String input3 = "<dark_grey>This is still english"; // British is superior english
     final String input4 = "<dark_gray>This is still english";
-    final Component out1 = this.PARSER.deserialize(input1);
-    final Component out2 = this.PARSER.deserialize(input2);
-    final Component out3 = this.PARSER.deserialize(input3);
-    final Component out4 = this.PARSER.deserialize(input4);
+    final Component out1 = PARSER.deserialize(input1);
+    final Component out2 = PARSER.deserialize(input2);
+    final Component out3 = PARSER.deserialize(input3);
+    final Component out4 = PARSER.deserialize(input4);
 
     assertEquals(out1, out2);
     assertEquals(out3, out4);
@@ -104,8 +105,8 @@ public class MiniMessageParserTest extends TestBase {
   void testBritishColour() {
     final String input1 = "<colour:grey>This is english"; // no it's british
     final String input2 = "<color:gray>This is english";
-    final Component out1 = this.PARSER.deserialize(input1);
-    final Component out2 = this.PARSER.deserialize(input2);
+    final Component out1 = PARSER.deserialize(input1);
+    final Component out2 = PARSER.deserialize(input2);
 
     assertEquals(out1, out2);
   }
@@ -222,14 +223,14 @@ public class MiniMessageParserTest extends TestBase {
   void testStripSimple() {
     final String input = "<yellow>TEST<green> nested</green>Test";
     final String expected = "TEST nestedTest";
-    assertEquals(expected, this.PARSER.stripTokens(input));
+    assertEquals(expected, PARSER.stripTags(input));
   }
 
   @Test
   void testStripComplex() {
     final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here</click><blue> to <bold>FEEL</underlined> it";
     final String expected = "<test> random strangerclick here to FEEL it";
-    assertEquals(expected, this.PARSER.stripTokens(input));
+    assertEquals(expected, PARSER.stripTags(input));
   }
 
   // https://github.com/KyoriPowered/adventure-text-minimessage/issues/169
@@ -237,42 +238,42 @@ public class MiniMessageParserTest extends TestBase {
   void testStripComplexInner() {
     final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here <please></click><blue> to <bold>FEEL</underlined> it";
     final String expected = "<test> random strangerclick here <please> to FEEL it";
-    assertEquals(expected, this.PARSER.stripTokens(input));
+    assertEquals(expected, PARSER.stripTags(input));
   }
 
   @Test
   void testStripInner() {
     final String input = "<hover:show_text:\"<red>test:TEST\">TEST";
     final String expected = "TEST";
-    assertEquals(expected, this.PARSER.stripTokens(input));
+    assertEquals(expected, PARSER.stripTags(input));
   }
 
   @Test
   void testStripPlaceholders() {
     final String input = "Hello, <red><name>!";
     final String expected = "Hello, !";
-    assertEquals(expected, this.PARSER.stripTokens(input, PlaceholderResolver.placeholders(Placeholder.miniMessage("name", "you"))));
+    assertEquals(expected, PARSER.stripTags(input, parsed("name", "you")));
   }
 
   @Test
   void testEscapeSimple() {
     final String input = "<yellow>TEST<green> nested</green>Test";
     final String expected = "\\<yellow>TEST\\<green> nested\\</green>Test";
-    assertEquals(expected, this.PARSER.escapeTokens(input));
+    assertEquals(expected, PARSER.escapeTags(input));
   }
 
   @Test
   void testEscapeComplex() {
     final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here</click><blue> to <bold>FEEL</underlined> it";
     final String expected = "\\<yellow><test> random \\<bold>stranger\\</bold>\\<click:run_command:test command>\\<underlined>\\<red>click here\\</click>\\<blue> to \\<bold>FEEL\\</underlined> it";
-    assertEquals(expected, this.PARSER.escapeTokens(input));
+    assertEquals(expected, PARSER.escapeTags(input));
   }
 
   @Test
   void testEscapeInner() {
     final String input = "<hover:show_text:\"<red>test:TEST\">TEST";
     final String expected = "\\<hover:show_text:\"\\<red>test:TEST\">TEST";
-    assertEquals(expected, this.PARSER.escapeTokens(input));
+    assertEquals(expected, PARSER.escapeTags(input));
   }
 
   // https://github.com/KyoriPowered/adventure-text-minimessage/issues/169
@@ -280,21 +281,21 @@ public class MiniMessageParserTest extends TestBase {
   void testEscapeComplexInner() {
     final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here <notToken></click><blue> to <bold>FEEL</underlined> it";
     final String expected = "\\<yellow><test> random \\<bold>stranger\\</bold>\\<click:run_command:test command>\\<underlined>\\<red>click here <notToken>\\</click>\\<blue> to \\<bold>FEEL\\</underlined> it";
-    assertEquals(expected, this.PARSER.escapeTokens(input));
+    assertEquals(expected, PARSER.escapeTags(input));
   }
 
   @Test
   void testEscapePlaceholders() {
     final String input = "Hello, <red><name>!";
     final String expected = "Hello, \\<red>\\<name>!";
-    assertEquals(expected, this.PARSER.escapeTokens(input, PlaceholderResolver.placeholders(Placeholder.miniMessage("name", "you"))));
+    assertEquals(expected, PARSER.escapeTags(input, parsed("name", "you")));
   }
 
   @Test
   void testUnescape() {
     final String input = "<yellow>TEST\\<green> nested\\</green>Test";
     final String expected = "TEST<green> nested</green>Test";
-    final Component comp = this.PARSER.deserialize(input);
+    final Component comp = PARSER.deserialize(input);
 
     assertEquals(expected, PlainTextComponentSerializer.plainText().serialize(comp));
   }
@@ -303,7 +304,7 @@ public class MiniMessageParserTest extends TestBase {
   void testNoUnescape() {
     final String input = "<yellow>TEST\\<green> \\\\< nested\\</green>Test";
     final String expected = "TEST<green> \\< nested</green>Test";
-    final TextComponent comp = (TextComponent) this.PARSER.deserialize(input);
+    final TextComponent comp = (TextComponent) PARSER.deserialize(input);
 
     assertEquals(expected, PlainTextComponentSerializer.plainText().serialize(comp));
   }
@@ -311,7 +312,7 @@ public class MiniMessageParserTest extends TestBase {
   @Test
   void testEscapeParse() {
     final String expected = "<red>test</red>";
-    final String escaped = MiniMessage.miniMessage().escapeTokens(expected);
+    final String escaped = MiniMessage.miniMessage().escapeTags(expected);
     final Component comp = MiniMessage.miniMessage().deserialize(escaped);
 
     assertEquals(expected, PlainTextComponentSerializer.plainText().serialize(comp));
@@ -321,7 +322,7 @@ public class MiniMessageParserTest extends TestBase {
   void checkPlaceholder() {
     final String input = "<test>";
     final Component expected = text("Hello!");
-    final Component comp = this.PARSER.deserialize(input, PlaceholderResolver.placeholders(Placeholder.miniMessage("test", "Hello!")));
+    final Component comp = PARSER.deserialize(input, parsed("test", "Hello!"));
 
     assertEquals(expected, comp);
   }
@@ -435,8 +436,8 @@ public class MiniMessageParserTest extends TestBase {
   void testKeyBind() {
     final String input = "Press <key:key.jump> to jump!";
     final Component expected = text("Press ")
-      .append(keybind("key.jump"))
-      .append(text(" to jump!"));
+      .append(keybind("key.jump")
+        .append(text(" to jump!")));
 
     this.assertParsedEquals(expected, input);
   }
@@ -445,9 +446,9 @@ public class MiniMessageParserTest extends TestBase {
   void testKeyBindWithColor() {
     final String input = "Press <red><key:key.jump> to jump!";
     final Component expected = text("Press ")
-      .append(empty().color(RED)
-        .append(keybind("key.jump"))
-        .append(text(" to jump!"))
+      .append(
+        keybind("key.jump", RED)
+          .append(text(" to jump!"))
       );
 
     this.assertParsedEquals(expected, input);
@@ -457,8 +458,8 @@ public class MiniMessageParserTest extends TestBase {
   void testTranslatable() {
     final String input = "You should get a <lang:block.minecraft.diamond_block>!";
     final Component expected = text("You should get a ")
-      .append(translatable("block.minecraft.diamond_block"))
-      .append(text("!"));
+      .append(translatable("block.minecraft.diamond_block")
+        .append(text("!")));
 
     this.assertParsedEquals(expected, input);
   }
@@ -467,8 +468,8 @@ public class MiniMessageParserTest extends TestBase {
   void testTranslatableWith() {
     final String input = "Test: <lang:commands.drop.success.single:'<red>1':'<blue>Stone'>!";
     final Component expected = text("Test: ")
-      .append(translatable("commands.drop.success.single", text("1").color(RED), text("Stone").color(BLUE)))
-      .append(text("!"));
+      .append(translatable("commands.drop.success.single", text("1", RED), text("Stone", BLUE))
+      .append(text("!")));
 
     this.assertParsedEquals(expected, input);
   }
@@ -477,12 +478,14 @@ public class MiniMessageParserTest extends TestBase {
   void testTranslatableWithHover() {
     final String input = "Test: <lang:commands.drop.success.single:'<hover:show_text:\\'<red>dum\\'><red>1':'<blue>Stone'>!";
     final Component expected = text("Test: ")
-      .append(translatable(
-        "commands.drop.success.single",
-        text("1").color(RED).hoverEvent(showText(text("dum").color(RED))),
-        text("Stone").color(BLUE)
-      ))
-      .append(text("!"));
+      .append(
+        translatable(
+          "commands.drop.success.single",
+          text("1", RED).hoverEvent(showText(text("dum", RED))),
+          text("Stone", BLUE)
+        )
+        .append(text("!"))
+      );
 
     this.assertParsedEquals(expected, input);
   }
@@ -491,7 +494,7 @@ public class MiniMessageParserTest extends TestBase {
   void testKingAlter() {
     final String input = "Ahoy <lang:offset.-40:'<red>mates!'>";
     final Component expected = text("Ahoy ")
-      .append(translatable("offset.-40", text("mates!").color(RED)));
+      .append(translatable("offset.-40", text("mates!", RED)));
 
     this.assertParsedEquals(expected, input);
   }
@@ -524,7 +527,7 @@ public class MiniMessageParserTest extends TestBase {
         .append(text("CLICK HERE").decorate(BOLD).color(GREEN).clickEvent(openUrl("https://www.google.com")).hoverEvent(showText(text("/!\\ install it from Options/ResourcePacks in your game").color(GREEN))))
       );
 
-    this.assertParsedEquals(expected, input, miniMessage("pack_url", "https://www.google.com"));
+    this.assertParsedEquals(expected, input, parsed("pack_url", "https://www.google.com"));
   }
 
   @Test
@@ -538,7 +541,7 @@ public class MiniMessageParserTest extends TestBase {
       );
 
     // should work
-    this.assertParsedEquals(expected, input, miniMessage("pack_url", "https://www.google.com"));
+    this.assertParsedEquals(expected, input, parsed("pack_url", "https://www.google.com"));
   }
 
   @Test
@@ -555,7 +558,7 @@ public class MiniMessageParserTest extends TestBase {
     this.assertParsedEquals(expected, input);
 
     // shouldnt throw an error
-    this.PARSER.deserialize(input, PlaceholderResolver.placeholders(Placeholder.miniMessage("url", "https://www.google.com")));
+    PARSER.deserialize(input, parsed("url", "https://www.google.com"));
   }
 
   @Test
@@ -1325,7 +1328,7 @@ public class MiniMessageParserTest extends TestBase {
   void testShowEntityHover() {
     final UUID uuid = UUID.randomUUID();
     final String nameString = "<gold>Custom Name!";
-    final Component name = this.PARSER.deserialize(nameString);
+    final Component name = PARSER.deserialize(nameString);
     final Component expected = text("test").hoverEvent(HoverEvent.showEntity(Key.key("minecraft", "zombie"), uuid, name));
     final String input = String.format("<hover:show_entity:'minecraft:zombie':%s:'%s'>test", uuid, nameString);
     final String input1 = String.format("<hover:show_entity:zombie:'%s':'%s'>test", uuid, nameString);
@@ -1566,7 +1569,7 @@ public class MiniMessageParserTest extends TestBase {
     final String input = "<click:run_command:'word <word>'><gold>Click to run the word!";
     final Component expected = text("Click to run the word!", GOLD)
         .clickEvent(ClickEvent.runCommand("word Adventure"));
-    this.assertParsedEquals(expected, input, miniMessage("word", "Adventure"));
+    this.assertParsedEquals(expected, input, parsed("word", "Adventure"));
   }
 
   @Test
@@ -1663,7 +1666,7 @@ public class MiniMessageParserTest extends TestBase {
     this.assertParsedEquals(
       expected,
       input,
-      miniMessage("animal", "<red><feline>"),
+      parsed("animal", "<red><feline>"),
       component("feline", text("cat"))
     );
   }
@@ -1679,6 +1682,44 @@ public class MiniMessageParserTest extends TestBase {
         text("b", color(0x00fffb)),
         text(" ", color(0x1e98ff)),
         text("gray", NamedTextColor.GRAY)
+      )
+      .build();
+
+    this.assertParsedEquals(expected, input);
+  }
+
+  @Test
+  void testTreeOutput() {
+    final String input = "<red> RED <blue> <name> <click:open_url:https://github.com> good <action> </click>";
+
+    final TagResolver resolver = TagResolver.resolver(Placeholder.parsed("name", "you"), Placeholder.component("action", Component.text("click")));
+    final Node tree = MiniMessage.miniMessage().deserializeToTree(input, resolver);
+    final String expected = "Node {\n" +
+      "  TagNode('red') {\n" +
+      "    TextNode(' RED ')\n" +
+      "    TagNode('blue') {\n" +
+      "      TextNode(' you ')\n" +
+      "      TagNode('click', 'open_url', 'https://github.com') {\n" +
+      "        TextNode(' good ')\n" +
+      "        TagNode('action') {\n" +
+      "        }\n" +
+      "        TextNode(' ')\n" +
+      "      }\n" +
+      "    }\n" +
+      "  }\n" +
+      "}\n";
+
+    assertEquals(expected, tree.toString());
+  }
+
+  @Test
+  void testNewLine() {
+    final String input = "<red>Line<br><gray>break!";
+    final Component expected = Component.text().color(RED)
+      .append(
+        text("Line"),
+        Component.newline(),
+        text("break!", color(GRAY))
       )
       .build();
 

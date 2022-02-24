@@ -36,6 +36,13 @@ public final class Internals {
   private Internals() {
   }
 
+  /**
+   * Examines an {@link Examinable} using the {@link StringExaminer}.
+   *
+   * @param examinable the examinable
+   * @return the result from examining
+   * @since 4.10.0
+   */
   public static @NotNull String toString(final @NotNull Examinable examinable) {
     return examinable.examine(StringExaminer.simpleEscaping());
   }

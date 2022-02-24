@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.serializer.plain;
 
 import java.util.function.Function;
+import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.KeybindComponent;
 import net.kyori.adventure.text.TextComponent;
@@ -43,8 +44,8 @@ import org.jetbrains.annotations.Nullable;
  * <p>Plain does <b>not</b> support more complex features such as, but not limited
  * to, colours, decorations, {@link ClickEvent}, and {@link HoverEvent}.</p>
  *
- * @deprecated for removal since 4.8.0, use {@link PlainTextComponentSerializer} instead
  * @since 4.0.0
+ * @deprecated for removal since 4.8.0, use {@link PlainTextComponentSerializer} instead
  */
 @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
 @Deprecated
@@ -53,8 +54,8 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
    * A component serializer for plain-based serialization and deserialization.
    *
    * @return serializer instance
-   * @deprecated for removal since 4.8.0, use {@link PlainTextComponentSerializer#plainText()} instead
    * @since 4.0.0
+   * @deprecated for removal since 4.8.0, use {@link PlainTextComponentSerializer#plainText()} instead
    */
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Deprecated
@@ -66,8 +67,8 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
    * Create a new builder.
    *
    * @return a new plain serializer builder
-   * @deprecated for removal since 4.8.0, use {@link PlainTextComponentSerializer#builder()} instead
    * @since 4.7.0
+   * @deprecated for removal since 4.8.0, use {@link PlainTextComponentSerializer#builder()} instead
    */
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Deprecated
@@ -123,8 +124,8 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
    *
    * @param sb the string builder
    * @param component the component
-   * @deprecated for removal since 4.8.0, use {@link PlainTextComponentSerializer#serialize(StringBuilder, Component)} instead
    * @since 4.0.0
+   * @deprecated for removal since 4.8.0, use {@link PlainTextComponentSerializer#serialize(StringBuilder, Component)} instead
    */
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Deprecated
@@ -140,12 +141,12 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
   /**
    * A builder for the plain component serializer.
    *
-   * @deprecated for removal since 4.8.0, use {@link PlainTextComponentSerializer.Builder} instead
    * @since 4.7.0
+   * @deprecated for removal since 4.8.0, use {@link PlainTextComponentSerializer.Builder} instead
    */
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Deprecated
-  public interface Builder extends Buildable.Builder<PlainComponentSerializer> {
+  public interface Builder extends AbstractBuilder<PlainComponentSerializer>, Buildable.Builder<PlainComponentSerializer> {
     /**
      * Set the component flattener to use.
      *
@@ -153,8 +154,8 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
      *
      * @param flattener the new flattener
      * @return this builder
-     * @deprecated for removal since 4.8.0, use {@link PlainTextComponentSerializer.Builder#flattener(ComponentFlattener)} instead
      * @since 4.7.0
+     * @deprecated for removal since 4.8.0, use {@link PlainTextComponentSerializer.Builder#flattener(ComponentFlattener)} instead
      */
     @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
     @Deprecated

@@ -33,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
  * A binary tag holding a {@code long}-array value.
  *
  * @since 4.0.0
+ * @sinceMinecraft 1.12
  */
 public interface LongArrayBinaryTag extends ArrayBinaryTag, Iterable<Long> {
   /**

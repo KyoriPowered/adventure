@@ -23,6 +23,8 @@
  */
 package net.kyori.adventure.text.minimessage.parser.node;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Represents the root node of a tree.
  *
@@ -35,7 +37,7 @@ public final class RootNode extends ElementNode {
    * @param sourceMessage the source message
    * @since 4.10.0
    */
-  public RootNode(final String sourceMessage) {
+  public RootNode(final @NotNull String sourceMessage) {
     super(null, null, sourceMessage);
   }
 }

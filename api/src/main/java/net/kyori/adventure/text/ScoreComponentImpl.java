@@ -38,7 +38,17 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
   @Deprecated
   private final @Nullable String value;
 
-  ScoreComponentImpl(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String name, final @NotNull String objective, final @Nullable String value) {
+  static ScoreComponent create(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String name, final @NotNull String objective, final @Nullable String value) {
+    return new ScoreComponentImpl(
+      ComponentLike.asComponents(children, IS_NOT_EMPTY),
+      requireNonNull(style, "style"),
+      requireNonNull(name, "name"),
+      requireNonNull(objective, "objective"),
+      value
+    );
+  }
+
+  ScoreComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final @NotNull String name, final @NotNull String objective, final @Nullable String value) {
     super(children, style);
     this.name = name;
     this.objective = objective;
@@ -53,7 +63,7 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
   @Override
   public @NotNull ScoreComponent name(final @NotNull String name) {
     if (Objects.equals(this.name, name)) return this;
-    return new ScoreComponentImpl(this.children, this.style, requireNonNull(name, "name"), this.objective, this.value);
+    return create(this.children, this.style, name, this.objective, this.value);
   }
 
   @Override
@@ -64,7 +74,7 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
   @Override
   public @NotNull ScoreComponent objective(final @NotNull String objective) {
     if (Objects.equals(this.objective, objective)) return this;
-    return new ScoreComponentImpl(this.children, this.style, this.name, requireNonNull(objective, "objective"), this.value);
+    return create(this.children, this.style, this.name, objective, this.value);
   }
 
   @Override
@@ -77,17 +87,17 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
   @Deprecated
   public @NotNull ScoreComponent value(final @Nullable String value) {
     if (Objects.equals(this.value, value)) return this;
-    return new ScoreComponentImpl(this.children, this.style, this.name, this.objective, value);
+    return create(this.children, this.style, this.name, this.objective, value);
   }
 
   @Override
   public @NotNull ScoreComponent children(final @NotNull List<? extends ComponentLike> children) {
-    return new ScoreComponentImpl(requireNonNull(children, "children"), this.style, this.name, this.objective, this.value);
+    return create(children, this.style, this.name, this.objective, this.value);
   }
 
   @Override
   public @NotNull ScoreComponent style(final @NotNull Style style) {
-    return new ScoreComponentImpl(this.children, requireNonNull(style, "style"), this.name, this.objective, this.value);
+    return create(this.children, style, this.name, this.objective, this.value);
   }
 
   @Override
@@ -160,7 +170,7 @@ final class ScoreComponentImpl extends AbstractComponent implements ScoreCompone
     public @NotNull ScoreComponent build() {
       if (this.name == null) throw new IllegalStateException("name must be set");
       if (this.objective == null) throw new IllegalStateException("objective must be set");
-      return new ScoreComponentImpl(this.children, this.buildStyle(), this.name, this.objective, this.value);
+      return create(this.children, this.buildStyle(), this.name, this.objective, this.value);
     }
   }
 }

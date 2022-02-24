@@ -69,13 +69,13 @@ class HSVLikeTest {
 
   @Test
   void testRange() {
-    assertThrows(IllegalArgumentException.class, () -> HSVLike.of(2, 1, 1));
-    assertThrows(IllegalArgumentException.class, () -> HSVLike.of(1, -1, 1));
-    assertThrows(IllegalArgumentException.class, () -> HSVLike.of(1, 1, 2));
+    assertThrows(IllegalArgumentException.class, () -> HSVLike.hsvLike(2, 1, 1));
+    assertThrows(IllegalArgumentException.class, () -> HSVLike.hsvLike(1, -1, 1));
+    assertThrows(IllegalArgumentException.class, () -> HSVLike.hsvLike(1, 1, 2));
     assertDoesNotThrow(() -> {
-      HSVLike.of(1, 1, 1);
-      HSVLike.of(0, 0, 0);
-      HSVLike.of(0.5f, 0.5f, 0.5f);
+      HSVLike.hsvLike(1, 1, 1);
+      HSVLike.hsvLike(0, 0, 0);
+      HSVLike.hsvLike(0.5f, 0.5f, 0.5f);
     });
   }
 }

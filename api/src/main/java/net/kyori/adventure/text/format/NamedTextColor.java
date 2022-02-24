@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 import net.kyori.adventure.util.HSVLike;
 import net.kyori.adventure.util.Index;
 import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -168,8 +169,40 @@ public final class NamedTextColor implements TextColor {
    *
    * @param value the color to match
    * @return the matched color, or null
-   * @since 4.0.0
+   * @since 4.10.0
    */
+  public static @Nullable NamedTextColor namedColor(final int value) {
+    switch (value) {
+      case BLACK_VALUE: return BLACK;
+      case DARK_BLUE_VALUE: return DARK_BLUE;
+      case DARK_GREEN_VALUE: return DARK_GREEN;
+      case DARK_AQUA_VALUE: return DARK_AQUA;
+      case DARK_RED_VALUE: return DARK_RED;
+      case DARK_PURPLE_VALUE: return DARK_PURPLE;
+      case GOLD_VALUE: return GOLD;
+      case GRAY_VALUE: return GRAY;
+      case DARK_GRAY_VALUE: return DARK_GRAY;
+      case BLUE_VALUE: return BLUE;
+      case GREEN_VALUE: return GREEN;
+      case AQUA_VALUE: return AQUA;
+      case RED_VALUE: return RED;
+      case LIGHT_PURPLE_VALUE: return LIGHT_PURPLE;
+      case YELLOW_VALUE: return YELLOW;
+      case WHITE_VALUE: return WHITE;
+      default: return null;
+    }
+  }
+
+  /**
+   * Gets the named color exactly matching the provided color.
+   *
+   * @param value the color to match
+   * @return the matched color, or null
+   * @since 4.0.0
+   * @deprecated for removal since 4.10.0, use {@link #namedColor(int)} instead
+   */
+  @Deprecated
+  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   public static @Nullable NamedTextColor ofExact(final int value) {
     switch (value) {
       case BLACK_VALUE: return BLACK;
@@ -227,6 +260,7 @@ public final class NamedTextColor implements TextColor {
    *
    * <p>This value is unitless and should only be used to compare with other text colours.</p>
    *
+   * @param self the base colour
    * @param other colour to compare to
    * @return distance metric
    */

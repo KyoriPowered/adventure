@@ -23,37 +23,38 @@
  */
 package net.kyori.adventure.text.minimessage.parser.match;
 
-import java.util.function.Predicate;
+import java.util.Objects;
+import net.kyori.adventure.text.minimessage.parser.TokenParser;
+import net.kyori.adventure.text.minimessage.parser.TokenParser.TagProvider;
 import net.kyori.adventure.text.minimessage.parser.TokenType;
-import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver;
-import net.kyori.adventure.text.minimessage.placeholder.Replacement;
+import net.kyori.adventure.text.minimessage.tag.PreProcess;
+import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
- * A matched token consumer that produces a string and returns a copy of the string with placeholders resolved.
+ * A matched token consumer that produces a string and returns a copy of the string with {@link PreProcess} tags resolved.
  *
  * @since 4.10.0
  */
 public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsumer<String> {
   private final StringBuilder builder;
-  private final Predicate<String> tagChecker;
-  private final PlaceholderResolver placeholderResolver;
+  private final TagProvider tagProvider;
 
   /**
-   * Creates a placeholder resolving matched token consumer.
+   * Creates a string resolving matched token consumer.
    *
    * @param input the input
+   * @param tagProvider the resolver for argument-less tags
    * @since 4.10.0
    */
   public StringResolvingMatchedTokenConsumer(
     final @NotNull String input,
-    final @NotNull Predicate<String> tagChecker,
-    final @NotNull PlaceholderResolver placeholderResolver
+    final @NotNull TagProvider tagProvider
   ) {
     super(input);
     this.builder = new StringBuilder(input.length());
-    this.tagChecker = tagChecker;
-    this.placeholderResolver = placeholderResolver;
+    this.tagProvider = tagProvider;
   }
 
   @Override
@@ -62,32 +63,22 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
 
     if (tokenType != TokenType.OPEN_TAG) {
       // just add it normally, we don't care about other tags
-      this.builder.append(this.input.substring(start, end));
+      this.builder.append(this.input, start, end);
     } else {
       // well, now we need to work out if it's a tag or a placeholder!
       final String match = this.input.substring(start, end);
       final String tag = this.input.substring(start + 1, end - 1);
 
-      if (this.tagChecker.test(tag)) {
-        // it's a tag, not a placeholder, so we don't care
-        this.builder.append(match);
-      } else {
-        // we might care if it's a placeholder!
-        final Replacement<?> replacement = this.placeholderResolver.resolve(tag);
+      // we might care if it's a pre-process!
+      final @Nullable Tag replacement = this.tagProvider.resolve(TokenParser.TagProvider.sanitizePlaceholderName(tag));
 
-        if (replacement != null) {
-          final Object value = replacement.value();
-
-          // we only care about string placeholders!
-          if (value instanceof String) {
-            this.builder.append((String) value);
-            return;
-          }
-        }
-
-        // if we get here, the placeholder wasn't found or was null
-        this.builder.append(match);
+      if (replacement instanceof PreProcess) {
+        this.builder.append(Objects.requireNonNull(((PreProcess) replacement).value(), "PreProcess replacements cannot return null"));
+        return;
       }
+
+      // if we get here, the placeholder wasn't found or was null
+      this.builder.append(match);
     }
   }
 

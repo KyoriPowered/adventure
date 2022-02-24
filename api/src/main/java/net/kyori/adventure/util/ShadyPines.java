@@ -43,8 +43,8 @@ public final class ShadyPines {
    * @param constants the enum constants
    * @param <E> the enum type
    * @return the set
-   * @deprecated for removal since 4.8.0, use {@link MonkeyBars#enumSet(Class, Enum[])}
    * @since 4.0.0
+   * @deprecated for removal since 4.8.0, use {@link MonkeyBars#enumSet(Class, Enum[])}
    */
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Deprecated

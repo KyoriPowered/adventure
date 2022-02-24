@@ -53,7 +53,7 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
    */
   static @NotNull TextColor color(final int value) {
     final int truncatedValue = value & 0xffffff;
-    final NamedTextColor named = NamedTextColor.ofExact(truncatedValue);
+    final NamedTextColor named = NamedTextColor.namedColor(truncatedValue);
     return named != null ? named : new TextColorImpl(truncatedValue);
   }
 

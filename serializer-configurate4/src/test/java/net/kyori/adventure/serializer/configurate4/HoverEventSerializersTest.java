@@ -95,7 +95,7 @@ class HoverEventSerializersTest implements ConfigurateTestBase {
       .color(NamedTextColor.AQUA)
       .append(Component.translatable("item.minecraft.purple_wool"))
       .append(Component.text("]"))
-      .hoverEvent(HoverEvent.showItem(HoverEvent.ShowItem.of(Key.key("minecraft:purple_wool"), 2, BinaryTagHolder.of("{Damage: 5b}"))))
+      .hoverEvent(HoverEvent.showItem(HoverEvent.ShowItem.of(Key.key("minecraft:purple_wool"), 2, BinaryTagHolder.binaryTagHolder("{Damage: 5b}"))))
       .build();
 
     this.assertRoundtrippable(component, node);
