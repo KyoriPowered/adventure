@@ -51,7 +51,7 @@ public final class TranslatableTag {
     if (args.hasNext()) {
       with = new ArrayList<>();
       while (args.hasNext()) {
-        with.add(ctx.parse(args.pop().value()));
+        with.add(ctx.deserialize(args.pop().value()));
       }
     } else {
       with = Collections.emptyList();

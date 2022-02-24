@@ -54,7 +54,7 @@ public final class HoverTag {
     final HoverEvent.Action<Object> action = (HoverEvent.Action<Object>) HoverEvent.Action.NAMES.value(actionName);
     final Object value;
     if (action == (Object) HoverEvent.Action.SHOW_TEXT) {
-      value = ctx.parse(args.popOr("show_text action requires a message").value());
+      value = ctx.deserialize(args.popOr("show_text action requires a message").value());
     } else if (action == (Object) HoverEvent.Action.SHOW_ITEM) {
       value = parseShowItem(args, ctx);
     } else if (action == (Object) HoverEvent.Action.SHOW_ENTITY) {
@@ -85,7 +85,7 @@ public final class HoverTag {
       final Key key = Key.key(args.popOr("Show entity needs a type argument").value());
       final UUID id = UUID.fromString(args.popOr("Show entity needs an entity UUID").value());
       if (args.hasNext()) {
-        final Component name = context.parse(args.pop().value());
+        final Component name = context.deserialize(args.pop().value());
         return HoverEvent.ShowEntity.of(key, id, name);
       }
       return HoverEvent.ShowEntity.of(key, id);

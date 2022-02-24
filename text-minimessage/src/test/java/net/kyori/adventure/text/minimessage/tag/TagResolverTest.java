@@ -26,6 +26,7 @@ package net.kyori.adventure.text.minimessage.tag;
 import java.util.Arrays;
 import java.util.List;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.TestBase;
@@ -35,6 +36,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.TextColor.color;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -79,6 +82,40 @@ class TagResolverTest {
 
     // shared, resolver takes priority
     assertEquals("from resolver", ((PreProcess) resolveForTest(built, "overlapping")).value());
+  }
+
+  @Test
+  void testContextParseOne() {
+    final Context ctx = TestBase.dummyContext("dummy text");
+    final Component input = ctx.deserialize("<foo> <bar><green>!</green>", Placeholder.parsed("foo", "<red>Hello</red>"));
+
+    final Component expected = Component.text()
+      .append(
+        text("Hello", color(NamedTextColor.RED)),
+        text(" <bar>"),
+        text("!", color(NamedTextColor.GREEN))
+      )
+      .build();
+
+    assertEquals(expected, input);
+  }
+
+  @Test
+  void testContextParseVarargs() {
+    final Context ctx = TestBase.dummyContext("dummy text");
+    final Component input = ctx.deserialize("<foo> <bar><green>!</green>",
+      Placeholder.parsed("foo", "<red>Hello</red>"), Placeholder.parsed("bar", "<yellow>World</yellow>"));
+
+    final Component expected = Component.text()
+      .append(
+        text("Hello", color(NamedTextColor.RED)),
+        text(" "),
+        text("World", color(NamedTextColor.YELLOW)),
+        text("!", color(NamedTextColor.GREEN))
+      )
+      .build();
+
+    assertEquals(expected, input);
   }
 
   private static @NotNull Tag resolveForTest(final TagResolver resolver, final String tag) {
