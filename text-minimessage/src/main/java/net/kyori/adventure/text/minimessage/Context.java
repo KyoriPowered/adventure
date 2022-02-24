@@ -43,7 +43,7 @@ public interface Context {
    * Parses a MiniMessage string using all the settings of this context.
    *
    * @param message the message to parse
-   * @param resolvers additional tag resolvers
+   * @param resolvers additional tag resolvers, added to all other resolvers in this parse, but taking priority in the event of a name overlap
    * @return the parsed message
    * @since 4.10.0
    */
