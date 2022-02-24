@@ -57,7 +57,7 @@ final class MiniMessageSerializer {
     visit(component, emitter, resolver, true);
     if (strict) {
       // If we are in strict mode, we need to close all tags at the end of our serialization journey
-      emitter.popToMark();
+      emitter.popAll();
     }
 
     return sb.toString();
@@ -134,6 +134,16 @@ final class MiniMessageSerializer {
       String tag;
       while ((tag = this.popTag(true)) != MARK) {
         this.emitClose(tag);
+      }
+    }
+
+    void popAll() {
+      this.completeTag();
+      while (this.tagLevel > 0) {
+        final String tag = this.activeTags[--this.tagLevel];
+        if (tag != MARK) {
+          this.emitClose(tag);
+        }
       }
     }
 
