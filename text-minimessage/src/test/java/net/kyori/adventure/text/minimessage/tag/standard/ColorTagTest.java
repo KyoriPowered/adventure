@@ -86,7 +86,7 @@ class ColorTagTest extends AbstractTest {
 
   @Test
   void testSerializeHexColor() {
-    final String expected = "<color:#ff0000>This is a </color:#ff0000>test";
+    final String expected = "<#ff0000>This is a </#ff0000>test";
 
     final TextComponent.Builder builder = Component.text()
       .append(Component.text("This is a ").color(TextColor.fromHexString("#ff0000")))

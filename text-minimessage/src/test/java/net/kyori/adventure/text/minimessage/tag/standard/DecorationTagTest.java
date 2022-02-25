@@ -63,10 +63,11 @@ class DecorationTagTest extends AbstractTest {
     final String expected = "<!underlined>Not underlined<!bold>not bold<underlined>underlined</underlined></!bold> not underlined";
 
     final TextComponent.Builder builder = Component.text()
-            .append(Component.text("Not underlined").decoration(TextDecoration.UNDERLINED, false)
-                    .append(Component.text("not bold").decoration(TextDecoration.BOLD, false)
-                            .append(Component.text("underlined").decoration(TextDecoration.UNDERLINED, true))))
-            .append(Component.text(" not underlined").decoration(TextDecoration.UNDERLINED, false));
+      .append(Component.text("Not underlined", style(TextDecoration.UNDERLINED.withState(false)))
+        .append(Component.text("not bold", style(TextDecoration.BOLD.withState(false)))
+          .append(Component.text("underlined", style(TextDecoration.UNDERLINED.withState(true)))))
+        .append(Component.text(" not underlined"))
+      );
 
     this.assertSerializedEquals(expected, builder);
   }

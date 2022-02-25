@@ -55,7 +55,7 @@ class HoverTagTest extends AbstractTest {
 
   @Test
   void testSerializeParentHover() {
-    final String expected = "<hover:show_text:'<red>---</red><blue><bold>-'>This is a child with hover";
+    final String expected = "<hover:show_text:'<red>---<bold><blue>-'>This is a child with hover";
 
     final TextComponent.Builder builder = Component.text().hoverEvent(HoverEvent.showText(Component.text()
       .content("---").color(NamedTextColor.RED)
@@ -67,7 +67,7 @@ class HoverTagTest extends AbstractTest {
 
   @Test
   void testSerializeHoverWithNested() {
-    final String expected = "<hover:show_text:\"<red>---</red><blue><bold>-\">Some hover</hover> that ends here";
+    final String expected = "<hover:show_text:'<red>---<bold><blue>-'>Some hover</hover> that ends here";
 
     final TextComponent.Builder builder = Component.text()
       .append(Component.text("Some hover").hoverEvent(
@@ -83,7 +83,7 @@ class HoverTagTest extends AbstractTest {
     final TextComponent.Builder input = text()
       .content("test")
       .hoverEvent(HoverEvent.showItem(Key.key("minecraft", "stone"), 5));
-    final String expected = "<hover:show_item:'minecraft:stone':5>test";
+    final String expected = "<hover:show_item:stone:5>test";
     this.assertSerializedEquals(expected, input);
   }
 
@@ -95,7 +95,7 @@ class HoverTagTest extends AbstractTest {
     final TextComponent.Builder input = text()
       .content("test")
       .hoverEvent(HoverEvent.showEntity(Key.key("minecraft", "zombie"), uuid, name));
-    final String expected = String.format("<hover:show_entity:'minecraft:zombie':%s:'%s'>test", uuid, nameString);
+    final String expected = String.format("<hover:show_entity:zombie:%s:'%s'>test", uuid, nameString);
     this.assertSerializedEquals(expected, input);
   }
 

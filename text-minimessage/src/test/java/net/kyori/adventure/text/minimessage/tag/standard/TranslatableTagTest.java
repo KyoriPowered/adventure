@@ -38,7 +38,7 @@ import static net.kyori.adventure.text.format.NamedTextColor.RED;
 class TranslatableTagTest extends AbstractTest {
   @Test
   void testSerializeTranslatable() {
-    final String expected = "You should get a <lang:block.minecraft.diamond_block>!";
+    final String expected = "You should get a <lang:block.minecraft.diamond_block></lang>!";
 
     final TextComponent.Builder builder = Component.text()
       .content("You should get a ")

@@ -56,7 +56,7 @@ final class ColorTagResolver implements TagResolver, SerializableResolver.Single
     if (color instanceof NamedTextColor) {
       emitter.tag(NamedTextColor.NAMES.key((NamedTextColor) color));
     } else {
-      emitter.tag(COLOR).argument(color.asHexString());
+      emitter.tag(color.asHexString());
     }
   });
 

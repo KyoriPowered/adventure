@@ -41,9 +41,9 @@ public class MiniMessageSerializerTest extends AbstractTest {
       .append(Component.text("st+font", style(TextDecoration.STRIKETHROUGH).font(Key.key("uniform"))))
       .append(Component.text("empty"))
       .build();
-    final String expected = "<bold><italic><underlined>b+i+u</underlined></italic></bold>" +
-      "<red><insert:meow>color+insert</insert></red>" +
-      "<strikethrough><font:minecraft:uniform>st+font</font></strikethrough>" +
+    final String expected = "<italic><underlined><bold>b+i+u</bold></underlined></italic>" +
+      "<insert:meow><red>color+insert</red></insert>" +
+      "<strikethrough><font:uniform>st+font</font></strikethrough>" +
       "empty";
 
     this.assertSerializedEquals(expected, component);
