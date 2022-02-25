@@ -26,7 +26,10 @@ package net.kyori.adventure.text.minimessage.tag.standard;
 import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.AbstractTest;
 import org.junit.jupiter.api.Test;
 
@@ -35,9 +38,77 @@ import static net.kyori.adventure.text.Component.translatable;
 import static net.kyori.adventure.text.event.HoverEvent.showText;
 import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
 import static net.kyori.adventure.text.format.NamedTextColor.RED;
+import static net.kyori.adventure.text.format.Style.style;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
 
 class HoverTagTest extends AbstractTest {
+  @Test
+  void testSerializeHover() {
+    final String expected = "<hover:show_text:'---'>Some hover</hover> that ends here";
+
+    final TextComponent.Builder builder = Component.text()
+      .append(Component.text("Some hover").hoverEvent(HoverEvent.showText(Component.text("---"))))
+      .append(Component.text(" that ends here"));
+
+    this.assertSerializedEquals(expected, builder);
+  }
+
+  @Test
+  void testSerializeParentHover() {
+    final String expected = "<hover:show_text:'<red>---</red><blue><bold>-'>This is a child with hover";
+
+    final TextComponent.Builder builder = Component.text().hoverEvent(HoverEvent.showText(Component.text()
+      .content("---").color(NamedTextColor.RED)
+      .append(Component.text("-", NamedTextColor.BLUE, TextDecoration.BOLD))))
+      .append(Component.text("This is a child with hover"));
+
+    this.assertSerializedEquals(expected, builder);
+  }
+
+  @Test
+  void testSerializeHoverWithNested() {
+    final String expected = "<hover:show_text:\"<red>---</red><blue><bold>-\">Some hover</hover> that ends here";
+
+    final TextComponent.Builder builder = Component.text()
+      .append(Component.text("Some hover").hoverEvent(
+        HoverEvent.showText(Component.text("---").color(NamedTextColor.RED)
+          .append(Component.text("-", NamedTextColor.BLUE, TextDecoration.BOLD)))))
+      .append(Component.text(" that ends here"));
+
+    this.assertSerializedEquals(expected, builder);
+  }
+
+  @Test
+  void testSerializeShowItemHover() {
+    final TextComponent.Builder input = text()
+      .content("test")
+      .hoverEvent(HoverEvent.showItem(Key.key("minecraft", "stone"), 5));
+    final String expected = "<hover:show_item:'minecraft:stone':5>test";
+    this.assertSerializedEquals(expected, input);
+  }
+
+  @Test
+  void testSerializeShowEntityHover() {
+    final UUID uuid = UUID.randomUUID();
+    final String nameString = "<gold>Custom Name!";
+    final Component name = PARSER.deserialize(nameString);
+    final TextComponent.Builder input = text()
+      .content("test")
+      .hoverEvent(HoverEvent.showEntity(Key.key("minecraft", "zombie"), uuid, name));
+    final String expected = String.format("<hover:show_entity:'minecraft:zombie':%s:'%s'>test", uuid, nameString);
+    this.assertSerializedEquals(expected, input);
+  }
+
+  // https://github.com/KyoriPowered/adventure-text-minimessage/issues/172
+  @Test
+  void testSerializeHoverWithExtraFollowing() {
+    final Component component = Component.text("START", NamedTextColor.AQUA)
+      .append(Component.text("HOVERED", style(NamedTextColor.BLUE, HoverEvent.showText(Component.text("Text on hover")))))
+      .append(Component.text("END"));
+    final String expected = "<aqua>START<blue><hover:show_text:'Text on hover'>HOVERED</hover></blue>END";
+
+    this.assertSerializedEquals(expected, component);
+  }
 
   @Test
   void testHover() {

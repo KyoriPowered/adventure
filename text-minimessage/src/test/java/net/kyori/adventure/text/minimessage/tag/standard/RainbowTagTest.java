@@ -26,6 +26,7 @@ package net.kyori.adventure.text.minimessage.tag.standard;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.AbstractTest;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.empty;
@@ -37,8 +38,20 @@ import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
 import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
 import static net.kyori.adventure.text.format.TextColor.color;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RainbowTagTest extends AbstractTest {
+  @Test
+  void testSerializeRainbow() {
+    final String expected = "<rainbow>test</rainbow> >> reeeeeeeee";
+
+    final Component parsed = MiniMessage.miniMessage().deserialize(expected);
+
+    final String serialized = MiniMessage.miniMessage().serialize(parsed);
+    final Component reparsed = MiniMessage.miniMessage().deserialize(serialized);
+
+    assertEquals(this.prettyPrint(parsed), this.prettyPrint(reparsed));
+  }
 
   @Test
   void testRainbow() {

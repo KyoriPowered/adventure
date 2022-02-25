@@ -26,6 +26,7 @@ package net.kyori.adventure.text.minimessage;
 import java.util.Collections;
 import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -35,8 +36,12 @@ import org.jetbrains.annotations.NotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class AbstractTest {
-
   protected static final MiniMessage PARSER = MiniMessage.builder().debug(System.out::print).build();
+
+  protected void assertSerializedEquals(final @NotNull String expected, final @NotNull ComponentLike input) {
+    final String string = PARSER.serialize(input.asComponent());
+    assertEquals(expected, string);
+  }
 
   protected void assertParsedEquals(final @NotNull Component expected, final @NotNull String input) {
     this.assertParsedEquals(PARSER, expected, input);

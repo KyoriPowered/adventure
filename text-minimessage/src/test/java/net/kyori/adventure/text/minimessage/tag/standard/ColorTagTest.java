@@ -24,6 +24,9 @@
 package net.kyori.adventure.text.minimessage.tag.standard;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.AbstractTest;
 import org.junit.jupiter.api.Test;
 
@@ -37,6 +40,60 @@ import static net.kyori.adventure.text.format.TextColor.color;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ColorTagTest extends AbstractTest {
+
+  @Test
+  void testSerializeColor() {
+    final String expected = "<red>This is a test";
+
+    final Component builder = Component.text("This is a test", NamedTextColor.RED);
+
+    this.assertSerializedEquals(expected, builder);
+  }
+
+  @Test
+  void testSerializeColorClosing() {
+    final String expected = "<red>This is a</red> test";
+
+    final TextComponent.Builder builder = Component.text()
+      .append(Component.text("This is a", NamedTextColor.RED))
+      .append(Component.text(" test"));
+
+    this.assertSerializedEquals(expected, builder);
+  }
+
+  @Test
+  void testSerializeNestedColor() {
+    final String expected = "<red>This is a</red><blue>blue </blue><red>test";
+
+    final TextComponent.Builder builder = Component.text()
+      .append(Component.text("This is a", NamedTextColor.RED))
+      .append(Component.text("blue ", NamedTextColor.BLUE))
+      .append(Component.text("test", NamedTextColor.RED));
+
+    this.assertSerializedEquals(expected, builder);
+  }
+
+  @Test
+  void testSerializeLayeredColor() {
+    final String expected = "<red>This is a <blue>blue</blue> test";
+
+    final Component builder = Component.text("This is a ", NamedTextColor.RED)
+      .append(Component.text("blue", NamedTextColor.BLUE))
+      .append(Component.text(" test"));
+
+    this.assertSerializedEquals(expected, builder);
+  }
+
+  @Test
+  void testSerializeHexColor() {
+    final String expected = "<color:#ff0000>This is a </color:#ff0000>test";
+
+    final TextComponent.Builder builder = Component.text()
+      .append(Component.text("This is a ").color(TextColor.fromHexString("#ff0000")))
+      .append(Component.text("test"));
+
+    this.assertSerializedEquals(expected, builder);
+  }
 
   @Test
   void test() {

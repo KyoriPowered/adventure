@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.minimessage.tag.standard;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.AbstractTest;
 import org.junit.jupiter.api.Test;
 
@@ -32,6 +33,16 @@ import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 
 class FontTagTest extends AbstractTest {
+  @Test
+  void testSerializeFont() {
+    final String expected = "<font:minecraft:default>This is a </font>test";
+
+    final TextComponent.Builder builder = Component.text()
+      .append(Component.text().content("This is a ").font(key("minecraft", "default")))
+      .append(Component.text("test"));
+
+    this.assertSerializedEquals(expected, builder);
+  }
 
   @Test
   void testFont() {
