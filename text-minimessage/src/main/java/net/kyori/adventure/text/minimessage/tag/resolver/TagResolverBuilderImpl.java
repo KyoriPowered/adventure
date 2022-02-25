@@ -58,7 +58,9 @@ final class TagResolverBuilderImpl implements TagResolver.Builder {
 
   @Override
   public @NotNull TagResolver.Builder resolver(final @NotNull TagResolver resolver) {
-    if (!this.consumePotentialMappable(resolver)) {
+    if (resolver instanceof SequentialTagResolver) {
+      this.resolvers(((SequentialTagResolver) resolver).resolvers, false);
+    } else if (!this.consumePotentialMappable(resolver)) {
       this.popMap();
       this.resolvers.add(requireNonNull(resolver, "resolver"));
     }
@@ -67,10 +69,14 @@ final class TagResolverBuilderImpl implements TagResolver.Builder {
 
   @Override
   public @NotNull TagResolver.Builder resolvers(final @NotNull TagResolver @NotNull... resolvers) {
+    return this.resolvers(resolvers, true);
+  }
+
+  private @NotNull TagResolver.Builder resolvers(final @NotNull TagResolver @NotNull[] resolvers, final boolean forwards) {
     boolean popped = false;
     for (final TagResolver resolver : requireNonNull(resolvers, "resolvers")) {
       if (resolver instanceof SequentialTagResolver) {
-        this.resolvers(((SequentialTagResolver) resolver).resolvers);
+        this.resolvers(((SequentialTagResolver) resolver).resolvers, false);
       } else if (!this.consumePotentialMappable(resolver)) {
         if (!popped) {
           this.popMap();
@@ -89,7 +95,7 @@ final class TagResolverBuilderImpl implements TagResolver.Builder {
     boolean popped = false;
     for (final TagResolver resolver : requireNonNull(resolvers, "resolvers")) {
       if (resolver instanceof SequentialTagResolver) {
-        this.resolvers(((SequentialTagResolver) resolver).resolvers);
+        this.resolvers(((SequentialTagResolver) resolver).resolvers, false);
       } else if (!this.consumePotentialMappable(resolver)) {
         if (!popped) {
           this.popMap();

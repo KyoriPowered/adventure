@@ -58,6 +58,8 @@ final class MiniMessageSerializer {
     if (strict) {
       // If we are in strict mode, we need to close all tags at the end of our serialization journey
       emitter.popAll();
+    } else {
+      emitter.completeTag();
     }
 
     return sb.toString();

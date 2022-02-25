@@ -113,7 +113,7 @@ public class MiniMessageSerializerTest extends AbstractTest {
 
   @Test
   void testHover() {
-    final String expected = "<hover:show_text:\"---\">Some hover</hover> that ends here";
+    final String expected = "<hover:show_text:'---'>Some hover</hover> that ends here";
 
     final Builder builder = Component.text()
       .append(Component.text("Some hover").hoverEvent(HoverEvent.showText(Component.text("---"))))
@@ -149,7 +149,7 @@ public class MiniMessageSerializerTest extends AbstractTest {
 
   @Test
   void testClick() {
-    final String expected = "<click:run_command:\"test\">Some click</click> that ends here";
+    final String expected = "<click:run_command:'test'>Some click</click> that ends here";
 
     final Builder builder = Component.text()
       .append(Component.text("Some click").clickEvent(ClickEvent.runCommand("test")))
@@ -207,11 +207,11 @@ public class MiniMessageSerializerTest extends AbstractTest {
 
   @Test
   void testTranslatableWithArgs() {
-    final String expected = "<lang:some_key:\"<red>:arg\\\" 1\":\"<blue>arg 2\">";
+    final String expected = "<lang:some_key:\"<red>:arg' 1\":'<blue>arg 2'>";
 
     final Component translatable = Component.translatable()
       .key("some_key")
-      .args(text(":arg\" 1", NamedTextColor.RED), text("arg 2", NamedTextColor.BLUE))
+      .args(text(":arg' 1", NamedTextColor.RED), text("arg 2", NamedTextColor.BLUE))
       .build();
 
     this.test(translatable, expected);
@@ -280,7 +280,7 @@ public class MiniMessageSerializerTest extends AbstractTest {
     final TextComponent.Builder input = text()
       .content("test")
       .hoverEvent(HoverEvent.showEntity(Key.key("minecraft", "zombie"), uuid, name));
-    final String expected = String.format("<hover:show_entity:'minecraft:zombie':%s:\"%s\">test", uuid, nameString);
+    final String expected = String.format("<hover:show_entity:'minecraft:zombie':%s:'%s'>test", uuid, nameString);
     this.test(input, expected);
   }
 
@@ -290,7 +290,7 @@ public class MiniMessageSerializerTest extends AbstractTest {
     final Component component = Component.text("START", NamedTextColor.AQUA)
       .append(Component.text("HOVERED", style(NamedTextColor.BLUE, HoverEvent.showText(Component.text("Text on hover")))))
       .append(Component.text("END"));
-    final String expected = "<aqua>START<blue><hover:show_text:\"Text on hover\">HOVERED</hover></blue>END";
+    final String expected = "<aqua>START<blue><hover:show_text:'Text on hover'>HOVERED</hover></blue>END";
 
     this.test(component, expected);
   }
