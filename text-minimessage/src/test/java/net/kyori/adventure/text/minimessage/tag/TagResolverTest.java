@@ -27,9 +27,9 @@ import java.util.Arrays;
 import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.AbstractTest;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
-import net.kyori.adventure.text.minimessage.TestBase;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
@@ -86,7 +86,7 @@ class TagResolverTest {
 
   @Test
   void testContextParseOne() {
-    final Context ctx = TestBase.dummyContext("dummy text");
+    final Context ctx = AbstractTest.dummyContext("dummy text");
     final Component input = ctx.deserialize("<foo> <bar><green>!</green>", Placeholder.parsed("foo", "<red>Hello</red>"));
 
     final Component expected = Component.text()
@@ -102,7 +102,7 @@ class TagResolverTest {
 
   @Test
   void testContextParseVarargs() {
-    final Context ctx = TestBase.dummyContext("dummy text");
+    final Context ctx = AbstractTest.dummyContext("dummy text");
     final Component input = ctx.deserialize("<foo> <bar><green>!</green>",
       Placeholder.parsed("foo", "<red>Hello</red>"), Placeholder.parsed("bar", "<yellow>World</yellow>"));
 
@@ -120,8 +120,8 @@ class TagResolverTest {
 
   private static @NotNull Tag resolveForTest(final TagResolver resolver, final String tag) {
     try {
-      final Context ctx = TestBase.dummyContext("help i shouldn't be seen");
-      final @Nullable Tag result = resolver.resolve(tag, TestBase.emptyArgumentQueue(ctx), ctx);
+      final Context ctx = AbstractTest.dummyContext("help i shouldn't be seen");
+      final @Nullable Tag result = resolver.resolve(tag, AbstractTest.emptyArgumentQueue(ctx), ctx);
       assertNotNull(result, () -> "tag " + tag + " from resolver " + resolver);
       return result;
     } catch (final ParsingException ex) {
