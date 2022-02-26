@@ -36,7 +36,7 @@ import static net.kyori.adventure.text.format.NamedTextColor.RED;
 class KeybindTagTest extends AbstractTest {
   @Test
   void testSerializeKeyBind() {
-    final String expected = "Press <key:key.jump></key> to jump!";
+    final String expected = "Press <key:key.jump/> to jump!";
 
     final TextComponent.Builder builder = Component.text()
       .content("Press ")

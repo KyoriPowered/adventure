@@ -128,7 +128,6 @@ final class MiniMessageSerializer {
     }
 
     void popToMark() {
-      this.completeTag();
       if (this.tagLevel == 0) {
         return;
       }
@@ -139,7 +138,6 @@ final class MiniMessageSerializer {
     }
 
     void popAll() {
-      this.completeTag();
       while (this.tagLevel > 0) {
         final String tag = this.activeTags[--this.tagLevel];
         if (tag != MARK) {
@@ -191,15 +189,6 @@ final class MiniMessageSerializer {
     public @NotNull TokenEmitter argument(final @NotNull Component arg) {
       final String serialized = MiniMessageSerializer.serialize(arg, this.resolver, this.strict);
       return this.argument(serialized, QuotingOverride.QUOTED); // always quote tokens
-    }
-
-    @Override
-    public Collector selfClosing(final String token) {
-      this.completeTag();
-      this.consumer.append(TokenParser.TAG_START);
-      this.escapeTagContent(token, QuotingOverride.UNQUOTED);
-      this.midTag = true; // TODO: `<tag/>` syntax
-      return this;
     }
 
     @Override
@@ -276,17 +265,21 @@ final class MiniMessageSerializer {
 
     @Override
     public Collector pop() {
-      this.completeTag();
       this.emitClose(this.popTag(false));
       return this;
     }
 
     private void emitClose(final @NotNull String tag) {
       // currently: we don't keep any arguments, does it ever make sense to?
-      this.consumer.append(TokenParser.TAG_START)
-        .append(TokenParser.CLOSE_TAG);
-      this.escapeTagContent(tag, QuotingOverride.UNQUOTED);
-      this.consumer.append(TokenParser.TAG_END);
+      if (this.midTag) {
+        this.consumer.append(TokenParser.CLOSE_TAG).append(TokenParser.TAG_END);
+        this.midTag = false;
+      } else {
+        this.consumer.append(TokenParser.TAG_START)
+          .append(TokenParser.CLOSE_TAG);
+        this.escapeTagContent(tag, QuotingOverride.UNQUOTED);
+        this.consumer.append(TokenParser.TAG_END);
+      }
     }
 
     // ClaimCollector

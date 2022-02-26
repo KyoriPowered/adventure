@@ -42,18 +42,9 @@ public interface TokenEmitter {
   @NotNull TokenEmitter tag(final @NotNull String token); // TODO: some sort of TagFlags, with things like SELF_CLOSING, CLOSE_WITH_ARGUMENTS, etc?
 
   /**
-   * Create a self-contained tag without arguments.
-   *
-   * @param token the token to emit
-   * @return this emitter
-   * @since 4.10.0
-   */
-  @NotNull TokenEmitter selfClosing(final @NotNull String token);
-
-  /**
    * Add arguments to the current tag.
    *
-   * <p>Must be called after {@link #tag(String)} or {@link #selfClosing(String)}, but before any call to {@link #text(String)}.</p>
+   * <p>Must be called after {@link #tag(String)}, but before any call to {@link #text(String)}.</p>
    *
    * @param args args to add
    * @return this emitter
@@ -69,7 +60,7 @@ public interface TokenEmitter {
   /**
    * Add a single argument to the current tag.
    *
-   * <p>Must be called after {@link #tag(String)} or {@link #selfClosing(String)}, but before any call to {@link #text(String)}.</p>
+   * <p>Must be called after {@link #tag(String)}, but before any call to {@link #text(String)}.</p>
    *
    * @param arg argument to add
    * @return this emitter
@@ -80,7 +71,7 @@ public interface TokenEmitter {
   /**
    * Add a single argument to the current tag.
    *
-   * <p>Must be called after {@link #tag(String)} or {@link #selfClosing(String)}, but before any call to {@link #text(String)}.</p>
+   * <p>Must be called after {@link #tag(String)}, but before any call to {@link #text(String)}.</p>
    *
    * @param arg argument to add
    * @param quotingPreference an argument-specific quoting instruction
@@ -92,7 +83,7 @@ public interface TokenEmitter {
   /**
    * Add a single argument to the current tag.
    *
-   * <p>Must be called after {@link #tag(String)} or {@link #selfClosing(String)}, but before any call to {@link #text(String)}.</p>
+   * <p>Must be called after {@link #tag(String)}, but before any call to {@link #text(String)}.</p>
    *
    * @param arg argument to add, serialized as a nested MiniMessage string
    * @return this emitter

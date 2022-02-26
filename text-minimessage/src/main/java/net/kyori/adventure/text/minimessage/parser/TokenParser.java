@@ -215,8 +215,10 @@ public final class TokenParser {
 
               // closing tags start with </
               TokenType thisType = TokenType.OPEN_TAG;
-              if (boundsCheck(message, marker, 1) && message.charAt(marker + 1) == CLOSE_TAG) {
+              if (boundsCheck(message, marker, 1) && message.charAt(marker + 1) == CLOSE_TAG) { // </content>
                 thisType = TokenType.CLOSE_TAG;
+              } else if (boundsCheck(message, marker, 2) && message.charAt(i - 1) == CLOSE_TAG) { // <content/>
+                thisType = TokenType.OPEN_CLOSE_TAG;
               }
               consumer.accept(marker, currentTokenEnd, thisType);
               state = FirstPassState.NORMAL;
@@ -256,13 +258,13 @@ public final class TokenParser {
   private static void parseSecondPass(final String message, final List<Token> tokens) {
     for (final Token token : tokens) {
       final TokenType type = token.type();
-      if (type != TokenType.OPEN_TAG && type != TokenType.CLOSE_TAG) {
+      if (type != TokenType.OPEN_TAG && type != TokenType.OPEN_CLOSE_TAG && type != TokenType.CLOSE_TAG) {
         continue;
       }
 
       // Only look inside the tag <[/] and >
-      final int startIndex = type == TokenType.OPEN_TAG ? token.startIndex() + 1 : token.startIndex() + 2;
-      final int endIndex = token.endIndex() - 1;
+      final int startIndex = type == TokenType.CLOSE_TAG ? token.startIndex() + 2 : token.startIndex() + 1;
+      final int endIndex = type == TokenType.OPEN_CLOSE_TAG ? token.endIndex() - 2 : token.endIndex() - 1;
 
       SecondPassState state = SecondPassState.NORMAL;
       boolean escaped = false;
@@ -365,6 +367,7 @@ public final class TokenParser {
           break;
 
         case OPEN_TAG:
+        case OPEN_CLOSE_TAG:
           final TagNode tagNode = new TagNode(node, token, message, tagProvider);
           if (tagNameChecker.test(tagNode.name())) {
             final Tag tag = tagProvider.resolve(tagNode);
@@ -383,8 +386,8 @@ public final class TokenParser {
               // This is a recognized tag, goes in the tree
               tagNode.tag(tag);
               node.addChild(tagNode);
-              if (!(tag instanceof Inserting) || ((Inserting) tag).allowsChildren()) {
-                node = tagNode; // TODO: self-terminating tags (i.e. <tag/>) don't set this, so they don't have children
+              if (type != TokenType.OPEN_CLOSE_TAG && (!(tag instanceof Inserting) || ((Inserting) tag).allowsChildren())) {
+                node = tagNode;
               }
             }
           } else {

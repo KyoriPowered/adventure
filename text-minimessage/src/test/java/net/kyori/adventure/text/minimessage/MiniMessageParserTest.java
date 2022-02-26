@@ -440,4 +440,33 @@ public class MiniMessageParserTest extends AbstractTest {
 
     assertEquals(expected, tree.toString());
   }
+
+  @Test
+  void testTagsSelfClosable() {
+    final String input = "<red>hello <lang:gameMode.creative/> there";
+
+    final Component parsed = Component.text()
+      .content("hello ")
+      .color(NamedTextColor.RED)
+      .append(
+        Component.translatable("gameMode.creative"),
+        Component.text(" there")
+      )
+      .build();
+
+    this.assertParsedEquals(parsed, input);
+  }
+
+  @Test
+  void testIgnorableSelfClosable() {
+    final String input = "<red/>things";
+
+    final Component parsed = Component.text().append(
+        Component.text("", NamedTextColor.RED),
+        Component.text("things")
+      )
+      .build();
+
+    this.assertParsedEquals(parsed, input);
+  }
 }
