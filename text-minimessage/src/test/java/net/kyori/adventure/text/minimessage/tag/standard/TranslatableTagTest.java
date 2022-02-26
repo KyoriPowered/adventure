@@ -24,6 +24,8 @@
 package net.kyori.adventure.text.minimessage.tag.standard;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.AbstractTest;
 import org.junit.jupiter.api.Test;
 
@@ -34,6 +36,29 @@ import static net.kyori.adventure.text.format.NamedTextColor.BLUE;
 import static net.kyori.adventure.text.format.NamedTextColor.RED;
 
 class TranslatableTagTest extends AbstractTest {
+  @Test
+  void testSerializeTranslatable() {
+    final String expected = "You should get a <lang:block.minecraft.diamond_block></lang>!";
+
+    final TextComponent.Builder builder = Component.text()
+      .content("You should get a ")
+      .append(Component.translatable("block.minecraft.diamond_block"))
+      .append(Component.text("!"));
+
+    this.assertSerializedEquals(expected, builder);
+  }
+
+  @Test
+  void testSerializeTranslatableWithArgs() {
+    final String expected = "<lang:some_key:\"<red>:arg' 1\":'<blue>arg 2'>";
+
+    final Component translatable = Component.translatable()
+      .key("some_key")
+      .args(text(":arg' 1", NamedTextColor.RED), text("arg 2", NamedTextColor.BLUE))
+      .build();
+
+    this.assertSerializedEquals(expected, translatable);
+  }
 
   @Test
   void testTranslatable() {

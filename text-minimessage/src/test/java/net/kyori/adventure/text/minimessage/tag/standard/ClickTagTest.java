@@ -24,6 +24,9 @@
 package net.kyori.adventure.text.minimessage.tag.standard;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.AbstractTest;
 import org.junit.jupiter.api.Test;
 
@@ -31,6 +34,27 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.event.ClickEvent.runCommand;
 
 class ClickTagTest extends AbstractTest {
+  @Test
+  void testSerializeClick() {
+    final String expected = "<click:run_command:'test'>Some click</click> that ends here";
+
+    final TextComponent.Builder builder = Component.text()
+      .append(Component.text("Some click").clickEvent(ClickEvent.runCommand("test")))
+      .append(Component.text(" that ends here"));
+
+    this.assertSerializedEquals(expected, builder);
+  }
+
+  @Test
+  void testSerializeContinuedClick() {
+    final String expected = "<click:run_command:'test'>Some click<red> that doesn't end here";
+
+    final TextComponent.Builder builder = Component.text()
+      .append(Component.text("Some click").clickEvent(ClickEvent.runCommand("test"))
+        .append(Component.text(" that doesn't end here", NamedTextColor.RED)));
+
+    this.assertSerializedEquals(expected, builder);
+  }
 
   @Test
   void testClick() {

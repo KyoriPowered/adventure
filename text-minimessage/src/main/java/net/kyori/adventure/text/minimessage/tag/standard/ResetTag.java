@@ -21,39 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.tag.resolver;
+package net.kyori.adventure.text.minimessage.tag.standard;
 
-import java.util.Map;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.Context;
-import net.kyori.adventure.text.minimessage.serializer.ClaimConsumer;
-import net.kyori.adventure.text.minimessage.serializer.SerializableResolver;
-import net.kyori.adventure.text.minimessage.tag.Tag;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import net.kyori.adventure.text.minimessage.tag.ParserDirective;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
-final class EmptyTagResolver implements TagResolver, MappableResolver, SerializableResolver {
-  static final EmptyTagResolver INSTANCE = new EmptyTagResolver();
+final class ResetTag {
+  private static final String RESET = "reset";
 
-  private EmptyTagResolver() {
-  }
+  static final TagResolver RESOLVER = TagResolver.resolver(RESET, ParserDirective.RESET); // Not serializable -- we don't reeealy want to encourage its use
 
-  @Override
-  public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) {
-    return null;
-  }
-
-  @Override
-  public boolean has(final @NotNull String name) {
-    return false;
-  }
-
-  @Override
-  public boolean contributeToMap(final @NotNull Map<String, Tag> map) {
-    return true;
-  }
-
-  @Override
-  public void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer) {
+  private ResetTag() {
   }
 }

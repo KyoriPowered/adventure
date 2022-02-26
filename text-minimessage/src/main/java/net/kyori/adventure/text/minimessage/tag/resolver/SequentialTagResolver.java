@@ -23,13 +23,16 @@
  */
 package net.kyori.adventure.text.minimessage.tag.resolver;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
+import net.kyori.adventure.text.minimessage.serializer.ClaimConsumer;
+import net.kyori.adventure.text.minimessage.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-final class SequentialTagResolver implements TagResolver {
+final class SequentialTagResolver implements TagResolver, SerializableResolver {
   final TagResolver[] resolvers;
 
   SequentialTagResolver(final @NotNull TagResolver@NotNull[] resolvers) {
@@ -76,5 +79,14 @@ final class SequentialTagResolver implements TagResolver {
       }
     }
     return false;
+  }
+
+  @Override
+  public void handle(@NotNull final Component serializable, @NotNull final ClaimConsumer consumer) {
+    for (final TagResolver resolver : this.resolvers) {
+      if (resolver instanceof SerializableResolver) {
+        ((SerializableResolver) resolver).handle(serializable, consumer);
+      }
+    }
   }
 }

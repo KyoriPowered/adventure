@@ -25,12 +25,15 @@ package net.kyori.adventure.text.minimessage.tag.resolver;
 
 import java.util.HashMap;
 import java.util.Map;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.serializer.ClaimConsumer;
+import net.kyori.adventure.text.minimessage.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-final class CachingTagResolver implements TagResolver.WithoutArguments, MappableResolver {
+final class CachingTagResolver implements TagResolver.WithoutArguments, MappableResolver, SerializableResolver {
   private static final Tag NULL_REPLACEMENT = (Inserting) () -> {
     throw new UnsupportedOperationException("no-op null tag");
   };
@@ -66,6 +69,13 @@ final class CachingTagResolver implements TagResolver.WithoutArguments, Mappable
       return ((MappableResolver) this.resolver).contributeToMap(map);
     } else {
       return false;
+    }
+  }
+
+  @Override
+  public void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer) {
+    if (this.resolver instanceof SerializableResolver) {
+      ((SerializableResolver) this.resolver).handle(serializable, consumer);
     }
   }
 }

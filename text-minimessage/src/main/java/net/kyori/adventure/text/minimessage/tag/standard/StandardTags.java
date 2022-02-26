@@ -26,10 +26,8 @@ package net.kyori.adventure.text.minimessage.tag.standard;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Stream;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.minimessage.tag.ParserDirective;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
 /**
@@ -40,58 +38,37 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
  * @since 4.10.0
  */
 public final class StandardTags {
-  private static final String RESET_TAG = "reset";
 
   private StandardTags() {
   }
 
-  private static final TagResolver DECORATION = Stream.concat(TextDecoration.NAMES.keyToValue().entrySet().stream(), DecorationTag.DECORATION_ALIASES.entrySet().stream())
-    .flatMap(entry -> Stream.of(
-      TagResolver.resolver(entry.getKey(), (args, ctx) -> DecorationTag.create(entry.getValue(), args, ctx)),
-      TagResolver.resolver(DecorationTag.REVERT + entry.getKey(), DecorationTag.createNegated(entry.getValue()))
-      ))
-    .collect(TagResolver.toTagResolver());
-  private static final TagResolver COLOR = new ColorTagResolver();
-  private static final TagResolver HOVER_EVENT = TagResolver.resolver(HoverTag.HOVER, HoverTag::create);
-  private static final TagResolver CLICK_EVENT = TagResolver.resolver(ClickTag.CLICK, ClickTag::create);
-  private static final TagResolver KEYBIND = TagResolver.resolver(KeybindTag.KEYBIND, KeybindTag::create);
-  private static final TagResolver TRANSLATABLE = TagResolver.resolver(
-    names(TranslatableTag.TRANSLATABLE, TranslatableTag.TRANSLATABLE_2, TranslatableTag.TRANSLATABLE_3),
-    TranslatableTag::create
-  );
-  private static final TagResolver INSERTION = TagResolver.resolver(InsertionTag.INSERTION, InsertionTag::create);
-  private static final TagResolver FONT = TagResolver.resolver(FontTag.FONT, FontTag::create);
-  private static final TagResolver GRADIENT = TagResolver.resolver(GradientTag.GRADIENT, GradientTag::create);
-  private static final TagResolver RAINBOW = TagResolver.resolver(RainbowTag.RAINBOW, RainbowTag::create);
-  private static final TagResolver RESET = TagResolver.resolver(RESET_TAG, ParserDirective.RESET);
-  private static final TagResolver NEWLINE = TagResolver.resolver(names(NewlineTag.NEWLINE, NewlineTag.BR), NewlineTag::create);
   private static final TagResolver ALL = TagResolver.builder()
       .resolvers(
-        HOVER_EVENT,
-        CLICK_EVENT,
-        COLOR,
-        KEYBIND,
-        TRANSLATABLE,
-        INSERTION,
-        FONT,
-        DECORATION,
-        GRADIENT,
-        RAINBOW,
-        RESET,
-        NEWLINE
+        HoverTag.RESOLVER,
+        ClickTag.RESOLVER,
+        ColorTagResolver.INSTANCE,
+        KeybindTag.RESOLVER,
+        TranslatableTag.RESOLVER,
+        InsertionTag.RESOLVER,
+        FontTag.RESOLVER,
+        DecorationTag.RESOLVER,
+        GradientTag.RESOLVER,
+        RainbowTag.RESOLVER,
+        ResetTag.RESOLVER,
+        NewlineTag.RESOLVER
       )
       .build();
 
   /**
    * Get a resolver for all decoration tags.
    *
-   * <p>This tag supports both standard names from {@link TextDecoration#NAMES} as well as a few aliases from {@link DecorationTag#DECORATION_ALIASES}.</p>
+   * <p>This tag supports both standard names from {@link TextDecoration#NAMES} as well as a few aliases from {@link DecorationTag}.</p>
    *
    * @return a resolver for all decoration tags
    * @since 4.10.0
    */
   public static TagResolver decoration() {
-    return DECORATION;
+    return DecorationTag.RESOLVER;
   }
 
   /**
@@ -103,7 +80,7 @@ public final class StandardTags {
    * @since 4.10.0
    */
   public static TagResolver color() {
-    return COLOR;
+    return ColorTagResolver.INSTANCE;
   }
 
   /**
@@ -113,7 +90,7 @@ public final class StandardTags {
    * @since 4.10.0
    */
   public static TagResolver hoverEvent() {
-    return HOVER_EVENT;
+    return HoverTag.RESOLVER;
   }
 
   /**
@@ -123,7 +100,7 @@ public final class StandardTags {
    * @since 4.10.0
    */
   public static TagResolver clickEvent() {
-    return CLICK_EVENT;
+    return ClickTag.RESOLVER;
   }
 
   /**
@@ -133,19 +110,19 @@ public final class StandardTags {
    * @since 4.10.0
    */
   public static TagResolver keybind() {
-    return KEYBIND;
+    return KeybindTag.RESOLVER;
   }
 
   /**
-   * Get a resolver for the {@value TranslatableTag#TRANSLATABLE} tag.
+   * Get a resolver for the {@value TranslatableTag#TRANSLATE} tag.
    *
-   * <p>This tag also responds to {@value TranslatableTag#TRANSLATABLE_2} and {@value TranslatableTag#TRANSLATABLE_3}.</p>
+   * <p>This tag also responds to {@value TranslatableTag#LANG} and {@value TranslatableTag#TR}.</p>
    *
-   * @return a resolver for the {@value TranslatableTag#TRANSLATABLE} tag
+   * @return a resolver for the {@value TranslatableTag#TRANSLATE} tag
    * @since 4.10.0
    */
   public static TagResolver translatable() {
-    return TRANSLATABLE;
+    return TranslatableTag.RESOLVER;
   }
 
   /**
@@ -155,7 +132,7 @@ public final class StandardTags {
    * @since 4.10.0
    */
   public static TagResolver insertion() {
-    return INSERTION;
+    return InsertionTag.RESOLVER;
   }
 
   /**
@@ -165,7 +142,7 @@ public final class StandardTags {
    * @since 4.10.0
    */
   public static TagResolver font() {
-    return FONT;
+    return FontTag.RESOLVER;
   }
 
   /**
@@ -175,7 +152,7 @@ public final class StandardTags {
    * @since 4.10.0
    */
   public static TagResolver gradient() {
-    return GRADIENT;
+    return GradientTag.RESOLVER;
   }
 
   /**
@@ -185,17 +162,17 @@ public final class StandardTags {
    * @since 4.10.0
    */
   public static TagResolver rainbow() {
-    return RAINBOW;
+    return RainbowTag.RESOLVER;
   }
 
   /**
-   * Get a resolver for the {@value #RESET_TAG} tag.
+   * Get a resolver for the {@value ResetTag#RESET} tag.
    *
-   * @return a resolver for the {@value #RESET_TAG} tag.
+   * @return a resolver for the {@value ResetTag#RESET} tag.
    * @since 4.10.0
    */
   public static TagResolver reset() {
-    return RESET;
+    return ResetTag.RESOLVER;
   }
 
   /**
@@ -207,7 +184,7 @@ public final class StandardTags {
    * @since 4.10.0
    */
   public static TagResolver newline() {
-    return NEWLINE;
+    return NewlineTag.RESOLVER;
   }
 
   /**
@@ -223,7 +200,7 @@ public final class StandardTags {
     return ALL;
   }
 
-  private static Set<String> names(final String... names) {
+  static Set<String> names(final String... names) {
     return new HashSet<>(Arrays.asList(names));
   }
 }

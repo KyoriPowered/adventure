@@ -24,14 +24,53 @@
 package net.kyori.adventure.text.minimessage.tag.standard;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.AbstractTest;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.Style.style;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 import static net.kyori.adventure.text.format.TextDecoration.ITALIC;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DecorationTagTest extends AbstractTest {
+
+  @Test
+  void testCompleteness() {
+    final TagResolver decorations = StandardTags.decoration();
+    for (final String key : TextDecoration.NAMES.keys()) {
+      assertTrue(decorations.has(key), () -> "missing " + key);
+    }
+  }
+
+  // https://github.com/KyoriPowered/adventure/issues/513
+  @Test
+  void testSerializeDecoration() {
+    final String expected = "<underlined>This is <bold>underlined</bold></underlined>, this isn't";
+
+    final TextComponent.Builder builder = Component.text()
+      .append(Component.text("This is ", style(TextDecoration.UNDERLINED))
+        .append(Component.text("underlined", style(TextDecoration.BOLD))))
+      .append(Component.text(", this isn't"));
+    this.assertSerializedEquals(expected, builder);
+  }
+
+  @Test
+  void testSerializeDecorationNegated() {
+    final String expected = "<!underlined>Not underlined<!bold>not bold<underlined>underlined</underlined></!bold> not underlined";
+
+    final TextComponent.Builder builder = Component.text()
+      .append(Component.text("Not underlined", style(TextDecoration.UNDERLINED.withState(false)))
+        .append(Component.text("not bold", style(TextDecoration.BOLD.withState(false)))
+          .append(Component.text("underlined", style(TextDecoration.UNDERLINED.withState(true)))))
+        .append(Component.text(" not underlined"))
+      );
+
+    this.assertSerializedEquals(expected, builder);
+  }
 
   @Test
   void testDisabledDecoration() {

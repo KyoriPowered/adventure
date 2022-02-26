@@ -58,7 +58,9 @@ final class TagResolverBuilderImpl implements TagResolver.Builder {
 
   @Override
   public @NotNull TagResolver.Builder resolver(final @NotNull TagResolver resolver) {
-    if (!this.consumePotentialMappable(resolver)) {
+    if (resolver instanceof SequentialTagResolver) {
+      this.resolvers(((SequentialTagResolver) resolver).resolvers, false);
+    } else if (!this.consumePotentialMappable(resolver)) {
       this.popMap();
       this.resolvers.add(requireNonNull(resolver, "resolver"));
     }
@@ -67,19 +69,20 @@ final class TagResolverBuilderImpl implements TagResolver.Builder {
 
   @Override
   public @NotNull TagResolver.Builder resolvers(final @NotNull TagResolver @NotNull... resolvers) {
+    return this.resolvers(resolvers, true);
+  }
+
+  private @NotNull TagResolver.Builder resolvers(final @NotNull TagResolver @NotNull[] resolvers, final boolean forwards) {
     boolean popped = false;
-    for (final TagResolver resolver : requireNonNull(resolvers, "resolvers")) {
-      if (resolver instanceof SequentialTagResolver) {
-        this.resolvers(((SequentialTagResolver) resolver).resolvers);
-      } else if (!this.consumePotentialMappable(resolver)) {
-        if (!popped) {
-          this.popMap();
-          popped = true;
-        }
-        this.resolvers.add(requireNonNull(resolver, "resolvers[?]"));
-        continue;
+    requireNonNull(resolvers, "resolvers");
+    if (forwards) {
+      for (final TagResolver resolver : resolvers) {
+        popped = this.single(resolver, popped);
       }
-      popped = false;
+    } else {
+      for (int i = resolvers.length - 1; i >= 0; i--) {
+        popped = this.single(resolvers[i], popped);
+      }
     }
     return this;
   }
@@ -88,19 +91,22 @@ final class TagResolverBuilderImpl implements TagResolver.Builder {
   public @NotNull TagResolver.Builder resolvers(final @NotNull Iterable<? extends TagResolver> resolvers) {
     boolean popped = false;
     for (final TagResolver resolver : requireNonNull(resolvers, "resolvers")) {
-      if (resolver instanceof SequentialTagResolver) {
-        this.resolvers(((SequentialTagResolver) resolver).resolvers);
-      } else if (!this.consumePotentialMappable(resolver)) {
-        if (!popped) {
-          this.popMap();
-          popped = true;
-        }
-        this.resolvers.add(requireNonNull(resolver, "resolvers[?]"));
-        continue;
-      }
-      popped = false;
+      popped = this.single(resolver, popped);
     }
     return this;
+  }
+
+  private boolean single(final TagResolver resolver, final boolean popped) {
+    if (resolver instanceof SequentialTagResolver) {
+      this.resolvers(((SequentialTagResolver) resolver).resolvers, false);
+    } else if (!this.consumePotentialMappable(resolver)) {
+      if (!popped) {
+        this.popMap();
+      }
+      this.resolvers.add(requireNonNull(resolver, "resolvers[?]"));
+      return true;
+    }
+    return false;
   }
 
   private void popMap() {

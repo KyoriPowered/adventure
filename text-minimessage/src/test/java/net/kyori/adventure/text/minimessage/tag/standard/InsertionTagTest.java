@@ -24,12 +24,24 @@
 package net.kyori.adventure.text.minimessage.tag.standard;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.AbstractTest;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.text;
 
 class InsertionTagTest extends AbstractTest {
+  @Test
+  void testSerializeInsertion() {
+    final String expected = "Click <insert:test>this</insert> to insert!";
+
+    final TextComponent.Builder builder = Component.text()
+      .append(Component.text("Click "))
+      .append(Component.text("this").insertion("test"))
+      .append(Component.text(" to insert!"));
+
+    this.assertSerializedEquals(expected, builder);
+  }
 
   @Test
   void testInsertion() {

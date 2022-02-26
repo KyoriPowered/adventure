@@ -28,6 +28,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.util.Services;
@@ -92,7 +93,22 @@ final class MiniMessageImpl implements MiniMessage {
 
   @Override
   public @NotNull String serialize(final @NotNull Component component) {
-    return MiniMessageSerializer.serialize(requireNonNull(component, "component"));
+    return MiniMessageSerializer.serialize(component, this.serialResolver(null), this.strict);
+  }
+
+  private SerializableResolver serialResolver(final @Nullable TagResolver extraResolver) {
+    if (extraResolver == null) {
+      if (this.parser.tagResolver instanceof SerializableResolver) {
+        return (SerializableResolver) this.parser.tagResolver;
+      }
+    } else {
+      final TagResolver combined = TagResolver.resolver(this.parser.tagResolver, extraResolver);
+      if (combined instanceof SerializableResolver) {
+        return (SerializableResolver) combined;
+      }
+    }
+
+    return (SerializableResolver) TagResolver.empty();
   }
 
   @Override

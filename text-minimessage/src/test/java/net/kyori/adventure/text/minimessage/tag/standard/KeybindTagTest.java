@@ -24,6 +24,8 @@
 package net.kyori.adventure.text.minimessage.tag.standard;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.AbstractTest;
 import org.junit.jupiter.api.Test;
 
@@ -32,6 +34,29 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.RED;
 
 class KeybindTagTest extends AbstractTest {
+  @Test
+  void testSerializeKeyBind() {
+    final String expected = "Press <key:key.jump></key> to jump!";
+
+    final TextComponent.Builder builder = Component.text()
+      .content("Press ")
+      .append(Component.keybind("key.jump"))
+      .append(Component.text(" to jump!"));
+
+    this.assertSerializedEquals(expected, builder);
+  }
+
+  @Test
+  void testSerializeKeyBindWithColor() {
+    final String expected = "Press <red><key:key.jump> to jump!";
+
+    final TextComponent.Builder builder = Component.text()
+      .content("Press ")
+      .append(Component.keybind("key.jump", NamedTextColor.RED)
+        .append(Component.text(" to jump!")));
+
+    this.assertSerializedEquals(expected, builder);
+  }
 
   @Test
   void testKeyBind() {
