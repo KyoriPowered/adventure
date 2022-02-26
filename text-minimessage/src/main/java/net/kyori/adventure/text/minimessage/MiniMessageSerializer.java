@@ -86,10 +86,10 @@ final class MiniMessageSerializer {
      * mark tag boundaries within the stack, without needing to mess with typing too much.
      */
     private static final String MARK = "__<'\"\\MARK__";
-    private static final char[] TEXT_ESCAPES = {'\\', '<'};
-    private static final char[] TAG_ESCAPES = {TokenParser.TAG_END, TokenParser.SEPARATOR};
-    private static final char[] SINGLE_QUOTED_ESCAPES = {'\\', '\''};
-    private static final char[] DOUBLE_QUOTED_ESCAPES = {'\\', '"'};
+    private static final char[] TEXT_ESCAPES = {TokenParser.ESCAPE, TokenParser.TAG_START};
+    private static final char[] TAG_TOKENS = {TokenParser.TAG_END, TokenParser.SEPARATOR};
+    private static final char[] SINGLE_QUOTED_ESCAPES = {TokenParser.ESCAPE, '\''};
+    private static final char[] DOUBLE_QUOTED_ESCAPES = {TokenParser.ESCAPE, '"'};
 
     private final SerializableResolver resolver;
     private final boolean strict;
@@ -239,7 +239,7 @@ final class MiniMessageSerializer {
         appendEscaping(this.consumer, content, SINGLE_QUOTED_ESCAPES, true);
         this.consumer.append('\'');
       } else { // unquoted
-        appendEscaping(this.consumer, content, TAG_ESCAPES, false);
+        appendEscaping(this.consumer, content, TAG_TOKENS, false);
       }
     }
 
