@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.minimessage.tree;
 
 import java.util.List;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,6 +35,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.10.0
  */
+@ApiStatus.NonExtendable
 public interface Node {
   /**
    * Get a human-readable representation of this node and its descendants for debugging purposes.
@@ -69,6 +71,7 @@ public interface Node {
    *
    * @since 4.10.0
    */
+  @ApiStatus.NonExtendable
   interface Root extends Node {
     /**
      * Get the original provided message which produced this node.
