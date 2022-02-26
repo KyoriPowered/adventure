@@ -82,12 +82,12 @@ final class MiniMessageImpl implements MiniMessage {
   }
 
   @Override
-  public @NotNull Node deserializeToTree(final @NotNull String input) {
+  public Node.@NotNull Root deserializeToTree(final @NotNull String input) {
     return this.parser.parseToTree(input, this.newContext(input, null));
   }
 
   @Override
-  public @NotNull Node deserializeToTree(final @NotNull String input, final @NotNull TagResolver tagResolver) {
+  public Node.@NotNull Root deserializeToTree(final @NotNull String input, final @NotNull TagResolver tagResolver) {
     return this.parser.parseToTree(input, this.newContext(input, requireNonNull(tagResolver, "tagResolver")));
   }
 

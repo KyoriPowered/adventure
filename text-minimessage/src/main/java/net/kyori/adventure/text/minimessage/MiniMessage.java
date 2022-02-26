@@ -165,7 +165,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @return the root of the resulting tree
    * @since 4.10.0
    */
-  @NotNull Node deserializeToTree(@NotNull String input);
+  Node.@NotNull Root deserializeToTree(final @NotNull String input);
 
   /**
    * Deserializes a string into a tree of parsed elements, with a tag resolver to parse tags of the form {@code <key>}.
@@ -178,7 +178,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @return the root of the resulting tree
    * @since 4.10.0
    */
-  @NotNull Node deserializeToTree(final @NotNull String input, final @NotNull TagResolver tagResolver);
+  Node.@NotNull Root deserializeToTree(final @NotNull String input, final @NotNull TagResolver tagResolver);
 
   /**
    * Deserializes a string into a tree of parsed elements, with a tag resolver to parse tags of the form {@code <key>}.
@@ -191,7 +191,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @return the root of the resulting tree
    * @since 4.10.0
    */
-  default @NotNull Node deserializeToTree(final @NotNull String input, final @NotNull TagResolver... tagResolvers) {
+  default Node.@NotNull Root deserializeToTree(final @NotNull String input, final @NotNull TagResolver... tagResolvers) {
     return this.deserializeToTree(input, TagResolver.resolver(tagResolvers));
   }
 
