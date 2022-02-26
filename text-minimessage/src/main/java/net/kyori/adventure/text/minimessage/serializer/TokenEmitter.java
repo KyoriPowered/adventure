@@ -82,6 +82,18 @@ public interface TokenEmitter {
    *
    * <p>Must be called after {@link #tag(String)} or {@link #selfClosing(String)}, but before any call to {@link #text(String)}.</p>
    *
+   * @param arg argument to add
+   * @param quotingPreference an argument-specific quoting instruction
+   * @return this emitter
+   * @since 4.10.0
+   */
+  @NotNull TokenEmitter argument(final @NotNull String arg, final @NotNull QuotingOverride quotingPreference);
+
+  /**
+   * Add a single argument to the current tag.
+   *
+   * <p>Must be called after {@link #tag(String)} or {@link #selfClosing(String)}, but before any call to {@link #text(String)}.</p>
+   *
    * @param arg argument to add, serialized as a nested MiniMessage string
    * @return this emitter
    * @since 4.10.0

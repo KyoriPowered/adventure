@@ -30,9 +30,9 @@ import java.util.Set;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.parser.TokenParser;
-import net.kyori.adventure.text.minimessage.serializer.ArgumentQuotingPreference;
 import net.kyori.adventure.text.minimessage.serializer.ClaimConsumer;
 import net.kyori.adventure.text.minimessage.serializer.Emitable;
+import net.kyori.adventure.text.minimessage.serializer.QuotingOverride;
 import net.kyori.adventure.text.minimessage.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.serializer.TokenEmitter;
 import org.jetbrains.annotations.NotNull;
@@ -87,13 +87,12 @@ final class MiniMessageSerializer {
      */
     private static final String MARK = "__<'\"\\MARK__";
     private static final char[] TEXT_ESCAPES = {'\\', '<'};
-    private static final char[] TAG_ESCAPES = {'\\', '>', ':'};
+    private static final char[] TAG_ESCAPES = {TokenParser.TAG_END, TokenParser.SEPARATOR};
     private static final char[] SINGLE_QUOTED_ESCAPES = {'\\', '\''};
     private static final char[] DOUBLE_QUOTED_ESCAPES = {'\\', '"'};
 
     private final SerializableResolver resolver;
     private final boolean strict;
-    private final ArgumentQuotingPreference quotingPreference = ArgumentQuotingPreference.UNQUOTED;
     private final StringBuilder consumer;
     private String[] activeTags = new String[4];
     private int tagLevel = 0;
@@ -162,7 +161,7 @@ final class MiniMessageSerializer {
     public Collector tag(final String token) {
       this.completeTag();
       this.consumer.append(TokenParser.TAG_START);
-      this.escapeTagContent(token, false);
+      this.escapeTagContent(token, QuotingOverride.UNQUOTED);
       this.midTag = true;
       this.pushActiveTag(token);
       return this;
@@ -174,21 +173,31 @@ final class MiniMessageSerializer {
         throw new IllegalStateException("Not within a tag!");
       }
       this.consumer.append(TokenParser.SEPARATOR);
-      this.escapeTagContent(arg, true);
+      this.escapeTagContent(arg, null);
+      return this;
+    }
+
+    @Override
+    public @NotNull TokenEmitter argument(final @NotNull String arg, final @NotNull QuotingOverride quotingPreference) {
+      if (!this.midTag) {
+        throw new IllegalStateException("Not within a tag!");
+      }
+      this.consumer.append(TokenParser.SEPARATOR);
+      this.escapeTagContent(arg, quotingPreference);
       return this;
     }
 
     @Override
     public @NotNull TokenEmitter argument(final @NotNull Component arg) {
       final String serialized = MiniMessageSerializer.serialize(arg, this.resolver, this.strict);
-      return this.argument(serialized);
+      return this.argument(serialized, QuotingOverride.QUOTED); // always quote tokens
     }
 
     @Override
     public Collector selfClosing(final String token) {
       this.completeTag();
       this.consumer.append(TokenParser.TAG_START);
-      this.escapeTagContent(token, false);
+      this.escapeTagContent(token, QuotingOverride.UNQUOTED);
       this.midTag = true; // TODO: `<tag/>` syntax
       return this;
     }
@@ -197,44 +206,44 @@ final class MiniMessageSerializer {
     public Collector text(final String text) {
       this.completeTag();
       // escape '\' and '<'
-      appendEscaping(this.consumer, text, TEXT_ESCAPES);
+      appendEscaping(this.consumer, text, TEXT_ESCAPES, true);
       return this;
     }
 
-    private void escapeTagContent(final String content, final boolean trustQuotingPreference) {
-      boolean hasTagClose = false;
+    private void escapeTagContent(final String content, final @Nullable QuotingOverride preference) {
+      boolean mustBeQuoted = preference == QuotingOverride.QUOTED;
       boolean hasSingleQuote = false;
       boolean hasDoubleQuote = false;
 
       for (int i = 0; i < content.length(); i++) {
         final char active = content.charAt(i);
-        if (active == TokenParser.TAG_END) {
-          hasTagClose = true;
+        if (active == TokenParser.TAG_END || active == TokenParser.SEPARATOR || active == ' ') { // space is not technically required here, but is preferred
+          mustBeQuoted = true;
           if (hasSingleQuote && hasDoubleQuote) break;
         } else if (active == '\'') {
           hasSingleQuote = true;
-          if (hasTagClose && hasDoubleQuote) break;
+          break; // we know our quoting style
         } else if (active == '"') {
           hasDoubleQuote = true;
-          if (hasTagClose && hasSingleQuote) break;
+          if (mustBeQuoted && hasSingleQuote) break;
         }
       }
 
       if (hasSingleQuote) { // double-quoted
         this.consumer.append('"');
-        appendEscaping(this.consumer, content, DOUBLE_QUOTED_ESCAPES);
+        appendEscaping(this.consumer, content, DOUBLE_QUOTED_ESCAPES, true);
         this.consumer.append('"');
-      } else if (hasDoubleQuote || hasTagClose) {
+      } else if (hasDoubleQuote || mustBeQuoted) {
         // single-quoted
         this.consumer.append('\'');
-        appendEscaping(this.consumer, content, SINGLE_QUOTED_ESCAPES);
+        appendEscaping(this.consumer, content, SINGLE_QUOTED_ESCAPES, true);
         this.consumer.append('\'');
       } else { // unquoted
-        appendEscaping(this.consumer, content, TAG_ESCAPES);
+        appendEscaping(this.consumer, content, TAG_ESCAPES, false);
       }
     }
 
-    static void appendEscaping(final StringBuilder builder, final String text, final char[] escapeChars) {
+    static void appendEscaping(final StringBuilder builder, final String text, final char[] escapeChars, final boolean allowEscapes) {
       int startIdx = 0;
       boolean unescapedFound = false;
 
@@ -243,6 +252,9 @@ final class MiniMessageSerializer {
         boolean escaped = false;
         for (final char c : escapeChars) {
           if (test == c) {
+            if (!allowEscapes) {
+              throw new IllegalArgumentException("Invalid escapable character '" + test + "' found at index " + i + " in string '" + text + "'");
+            }
             escaped = true;
             break;
           }
@@ -273,7 +285,7 @@ final class MiniMessageSerializer {
       // currently: we don't keep any arguments, does it ever make sense to?
       this.consumer.append(TokenParser.TAG_START)
         .append(TokenParser.CLOSE_TAG);
-      this.escapeTagContent(tag, false);
+      this.escapeTagContent(tag, QuotingOverride.UNQUOTED);
       this.consumer.append(TokenParser.TAG_END);
     }
 
@@ -303,7 +315,7 @@ final class MiniMessageSerializer {
     }
 
     @Override
-    public boolean styleClaimed(@NotNull final String claimId) {
+    public boolean styleClaimed(final @NotNull String claimId) {
       return this.claimedStyleElements.contains(claimId);
     }
 

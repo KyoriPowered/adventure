@@ -27,6 +27,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
+import net.kyori.adventure.text.minimessage.serializer.QuotingOverride;
 import net.kyori.adventure.text.minimessage.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.serializer.StyleClaim;
 import net.kyori.adventure.text.minimessage.tag.Tag;
@@ -46,7 +47,9 @@ final class ClickTag {
     CLICK,
     ClickTag::create,
     StyleClaim.<ClickEvent>claim(CLICK, Style::clickEvent, (event, emitter) -> {
-      emitter.tag(CLICK).arguments(ClickEvent.Action.NAMES.key(event.action()), event.value());
+      emitter.tag(CLICK)
+        .argument(ClickEvent.Action.NAMES.key(event.action()))
+        .argument(event.value(), QuotingOverride.QUOTED);
     })
   );
 

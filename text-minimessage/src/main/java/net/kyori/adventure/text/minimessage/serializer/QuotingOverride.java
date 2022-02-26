@@ -24,14 +24,25 @@
 package net.kyori.adventure.text.minimessage.serializer;
 
 /**
- * The preferred style of argument quoting when serializing a MiniMessage string.
+ * The preferred style of argument quoting for a specific argument.
  *
- * <p>This only applies to tag arguments, not the tag name itself.</p>
+ * <p>This will allow overriding the style preferences for specific arguments.</p>
  *
  * @since 4.10.0
  */
-public enum ArgumentQuotingPreference {
+public enum QuotingOverride {
+  /**
+   * Request that this argument is included unquoted.
+   *
+   * <p>As no escapes can be included in an unquoted argument, this request may be ignored depending on the content of the argument.</p>
+   *
+   * @since 4.10.0
+   */
   UNQUOTED,
-  SINGLE_QUOTED,
-  DOUBLE_QUOTED;
+  /**
+   * Request that this argument is included quoted.
+   *
+   * @since 4.10.0
+   */
+  QUOTED;
 }
