@@ -30,6 +30,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.format.Style.style;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MiniMessageSerializerTest extends AbstractTest {
   @Test
@@ -47,5 +48,24 @@ public class MiniMessageSerializerTest extends AbstractTest {
       "empty";
 
     this.assertSerializedEquals(expected, component);
+  }
+
+  // https://github.com/KyoriPowered/adventure/issues/526
+  @Test
+  void testTagsClosedInStrictMode() {
+    final MiniMessage serializer = MiniMessage.builder().strict(true).build();
+
+    final String expected = "hello<red>red<bold>bold</bold></red>";
+    final Component input = Component.text()
+      .content("hello")
+      .append(
+        Component.text("red", NamedTextColor.RED)
+          .append(
+            Component.text("bold", style(TextDecoration.BOLD))
+          )
+      )
+      .build();
+
+    assertEquals(expected, serializer.serialize(input));
   }
 }

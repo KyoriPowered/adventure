@@ -183,7 +183,7 @@ final class MiniMessageSerializer {
         throw new IllegalStateException("Not within a tag!");
       }
       this.consumer.append(TokenParser.SEPARATOR);
-      this.escapeTagContent(arg, quotingPreference);
+      this.escapeTagContent(arg, requireNonNull(quotingPreference, "quotingPreference"));
       return this;
     }
 
