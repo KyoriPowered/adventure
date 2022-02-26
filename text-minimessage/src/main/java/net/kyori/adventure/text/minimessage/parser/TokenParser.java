@@ -71,22 +71,24 @@ public final class TokenParser {
    * @param tagProvider provides tags based on the available information
    * @param tagNameChecker checker for tag names, performing necessary tag normalization
    * @param message the minimessage string to parse, after processing for preprocess tags
+   * @param originalMessage the string to parse, before preprocess tags
    * @param strict whether parsing in strict mode
    * @return the root of the resulting tree
    * @throws ParsingException if invalid input is provided when in strict mode
    * @since 4.10.0
    */
-  public static ElementNode parse(
+  public static RootNode parse(
     final @NotNull TagProvider tagProvider,
     final @NotNull Predicate<String> tagNameChecker,
     final @NotNull String message,
+    final @NotNull String originalMessage,
     final boolean strict
   ) throws ParsingException {
     // collect tokens...
     final List<Token> tokens = tokenize(message);
 
     // then build the tree!
-    return buildTree(tagProvider, tagNameChecker, tokens, message, strict);
+    return buildTree(tagProvider, tagNameChecker, tokens, message, originalMessage, strict);
   }
 
   /**
@@ -344,14 +346,15 @@ public final class TokenParser {
   /*
    * Build a tree from the OPEN_TAG and CLOSE_TAG tokens
    */
-  private static ElementNode buildTree(
+  private static RootNode buildTree(
     final @NotNull TagProvider tagProvider,
     final @NotNull Predicate<String> tagNameChecker,
     final @NotNull List<Token> tokens,
     final @NotNull String message,
+    final @NotNull String originalMessage,
     final boolean strict
   ) throws ParsingException {
-    final RootNode root = new RootNode(message);
+    final RootNode root = new RootNode(message, originalMessage);
     ElementNode node = root;
 
     for (final Token token : tokens) {

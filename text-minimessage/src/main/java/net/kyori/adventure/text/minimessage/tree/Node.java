@@ -63,4 +63,19 @@ public interface Node {
    * @since 4.10.0
    */
   @Nullable Node parent();
+
+  /**
+   * The root node of a parse.
+   *
+   * @since 4.10.0
+   */
+  interface Root extends Node {
+    /**
+     * Get the original provided message which produced this node.
+     *
+     * @return the input message
+     * @since 4.10.0
+     */
+    @NotNull String input();
+  }
 }
