@@ -25,10 +25,15 @@ package net.kyori.adventure.text.minimessage;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.empty;
@@ -49,6 +54,7 @@ import static net.kyori.adventure.text.format.TextDecoration.UNDERLINED;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.parsed;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MiniMessageParserTest extends AbstractTest {
 
@@ -310,11 +316,21 @@ public class MiniMessageParserTest extends AbstractTest {
   }
 
   @Test
+  void testEscapesEscapablePlainText() {
+    final String input = "\\\\<red>hi";
+    final Component expected = text()
+      .content("\\")
+      .append(Component.text("hi", NamedTextColor.RED))
+      .build();
+    this.assertParsedEquals(expected, input);
+  }
+
+  @Test
   void testEscapeInsideOfContext() {
-    final String input = "<hover:show_text:'Look at this \\''>Test";
+    final String input = "<hover:show_text:'Look at\\\\ this \\''>Test";
     final Component expected = text()
             .content("Test")
-            .hoverEvent(text("Look at this '"))
+            .hoverEvent(text("Look at\\ this '"))
             .build();
 
     this.assertParsedEquals(expected, input);
@@ -326,6 +342,40 @@ public class MiniMessageParserTest extends AbstractTest {
     final Component expected = text("Please don't crash \\");
 
     this.assertParsedEquals(expected, input);
+  }
+
+  @Test
+  void testNoEscapesInTags() {
+    class TestResolver implements TagResolver {
+      private static final String EXPECTED_NAME = "hi\\\\there";
+      boolean has = false;
+      boolean resolved = false;
+
+      @Override
+      public @Nullable Tag resolve(@NotNull final String name, @NotNull final ArgumentQueue arguments, @NotNull final Context ctx) throws ParsingException {
+        if (name.equals(EXPECTED_NAME)) {
+          this.resolved = true;
+          return Tag.inserting(Component.text("hi"));
+        }
+        return null;
+      }
+
+      @Override
+      public boolean has(@NotNull final String name) {
+        if (name.equals(EXPECTED_NAME)) {
+          this.has = true;
+          return true;
+        }
+        return false;
+      }
+    }
+
+    final TestResolver instance = new TestResolver();
+
+    this.assertParsedEquals(Component.text("hi"), "<hi\\\\there>", instance);
+
+    assertTrue(instance.has, "has = false; escape was processed");
+    assertTrue(instance.resolved, "resolved = false; escape was processed");
   }
 
   @Test

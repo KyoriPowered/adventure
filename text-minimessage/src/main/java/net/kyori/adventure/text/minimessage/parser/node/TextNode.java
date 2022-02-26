@@ -35,7 +35,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.10.0
  */
 public final class TextNode extends ValueNode {
-  private static final IntPredicate ESCAPES = i -> i == '<';
+  private static final IntPredicate ESCAPES = i -> i == TokenParser.TAG_START || i == TokenParser.ESCAPE;
 
   /**
    * Creates a new text node.

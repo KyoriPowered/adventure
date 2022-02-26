@@ -167,11 +167,11 @@ public final class TokenParser {
           switch (state) {
             case NORMAL:
               // allow escaping open tokens
-              escaped = nextCodePoint == TAG_START;
+              escaped = nextCodePoint == TAG_START || nextCodePoint == ESCAPE;
               break;
             case STRING:
               // allow escaping closing string chars
-              escaped = currentStringChar == nextCodePoint;
+              escaped = currentStringChar == nextCodePoint || nextCodePoint == ESCAPE;
               break;
             case TAG:
               break;
@@ -283,11 +283,11 @@ public final class TokenParser {
             switch (state) {
               case NORMAL:
                 // allow escaping open tokens
-                escaped = nextCodePoint == TAG_START;
+                escaped = nextCodePoint == TAG_START || nextCodePoint == ESCAPE;
                 break;
               case STRING:
                 // allow escaping closing string chars
-                escaped = currentStringChar == nextCodePoint;
+                escaped = currentStringChar == nextCodePoint || nextCodePoint == ESCAPE;
                 break;
             }
 
