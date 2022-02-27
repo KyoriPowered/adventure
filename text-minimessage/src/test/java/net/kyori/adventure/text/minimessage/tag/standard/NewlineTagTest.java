@@ -31,8 +31,15 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
 import static net.kyori.adventure.text.format.NamedTextColor.RED;
 import static net.kyori.adventure.text.format.TextColor.color;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class NewlineTagTest extends AbstractTest {
+
+  @Test
+  void testRoundtripNewline() {
+    final String input = "<red>Line</red><br><gray>break!";
+    assertEquals(input, PARSER.serialize(PARSER.deserialize(input)));
+  }
 
   @Test
   void testNewLine() {

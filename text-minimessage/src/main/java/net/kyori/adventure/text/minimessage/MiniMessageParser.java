@@ -99,6 +99,7 @@ final class MiniMessageParser {
           break;
         case OPEN_TAG:
         case CLOSE_TAG:
+        case OPEN_CLOSE_TAG:
           // extract tag name
           if (token.childTokens().isEmpty()) {
             sb.append(richMessage, token.startIndex(), token.endIndex());
