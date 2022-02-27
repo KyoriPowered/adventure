@@ -82,6 +82,18 @@ final class MiniMessageSerializer {
   }
 
   static final class Collector implements TokenEmitter, ClaimConsumer {
+    enum TagState {
+      TEXT(false),
+      MID(true),
+      MID_SELF_CLOSING(true);
+
+      final boolean isTag;
+
+      TagState(final boolean isTag) {
+        this.isTag = isTag;
+      }
+    }
+
     /**
      * mark tag boundaries within the stack, without needing to mess with typing too much.
      */
@@ -96,7 +108,7 @@ final class MiniMessageSerializer {
     private final StringBuilder consumer;
     private String[] activeTags = new String[4];
     private int tagLevel = 0;
-    private boolean midTag;
+    private TagState tagState = TagState.TEXT;
 
     Collector(final SerializableResolver resolver, final boolean strict, final StringBuilder consumer) {
       this.resolver = resolver;
@@ -147,9 +159,9 @@ final class MiniMessageSerializer {
     }
 
     void completeTag() {
-      if (this.midTag) {
+      if (this.tagState.isTag) {
         this.consumer.append(TokenParser.TAG_END);
-        this.midTag = false;
+        this.tagState = TagState.TEXT;
       }
     }
 
@@ -160,14 +172,23 @@ final class MiniMessageSerializer {
       this.completeTag();
       this.consumer.append(TokenParser.TAG_START);
       this.escapeTagContent(token, QuotingOverride.UNQUOTED);
-      this.midTag = true;
+      this.tagState = TagState.MID;
       this.pushActiveTag(token);
       return this;
     }
 
     @Override
+    public @NotNull TokenEmitter selfClosingTag(@NotNull final String token) {
+      this.completeTag();
+      this.consumer.append(TokenParser.TAG_START);
+      this.escapeTagContent(token, QuotingOverride.UNQUOTED);
+      this.tagState = TagState.MID_SELF_CLOSING;
+      return null;
+    }
+
+    @Override
     public TokenEmitter argument(final String arg) {
-      if (!this.midTag) {
+      if (!this.tagState.isTag) {
         throw new IllegalStateException("Not within a tag!");
       }
       this.consumer.append(TokenParser.SEPARATOR);
@@ -177,7 +198,7 @@ final class MiniMessageSerializer {
 
     @Override
     public @NotNull TokenEmitter argument(final @NotNull String arg, final @NotNull QuotingOverride quotingPreference) {
-      if (!this.midTag) {
+      if (!this.tagState.isTag) {
         throw new IllegalStateException("Not within a tag!");
       }
       this.consumer.append(TokenParser.SEPARATOR);
@@ -271,9 +292,12 @@ final class MiniMessageSerializer {
 
     private void emitClose(final @NotNull String tag) {
       // currently: we don't keep any arguments, does it ever make sense to?
-      if (this.midTag) {
-        this.consumer.append(TokenParser.CLOSE_TAG).append(TokenParser.TAG_END);
-        this.midTag = false;
+      if (this.tagState.isTag) {
+        if (this.tagState == TagState.MID) { // not _SELF_CLOSING
+          this.consumer.append(TokenParser.CLOSE_TAG);
+        }
+        this.consumer.append(TokenParser.TAG_END);
+        this.tagState = TagState.TEXT;
       } else {
         this.consumer.append(TokenParser.TAG_START)
           .append(TokenParser.CLOSE_TAG);

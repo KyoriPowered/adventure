@@ -52,12 +52,12 @@ final class NewlineTag {
   }
 
   static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
-    return Tag.inserting(Component.newline());
+    return Tag.selfClosingInserting(Component.newline());
   }
 
   static @Nullable Emitable claimComponent(final Component input) {
     if (Component.newline().equals(input)) {
-      return emit -> emit.tag(BR);
+      return emit -> emit.selfClosingTag(BR);
     } else {
       return null;
     }

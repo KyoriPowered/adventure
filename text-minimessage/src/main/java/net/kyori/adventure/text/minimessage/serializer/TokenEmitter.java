@@ -42,6 +42,17 @@ public interface TokenEmitter {
   @NotNull TokenEmitter tag(final @NotNull String token); // TODO: some sort of TagFlags, with things like SELF_CLOSING, CLOSE_WITH_ARGUMENTS, etc?
 
   /**
+   * Open a tag with or without arguments that cannot have children.
+   *
+   * <p>These sorts of tags will be closed even without any sort of closing indicator.</p>
+   *
+   * @param token the token to emit
+   * @return this emitter
+   * @since 4.10.0
+   */
+  @NotNull TokenEmitter selfClosingTag(final @NotNull String token); // TODO: some sort of TagFlags, with things like SELF_CLOSING, CLOSE_WITH_ARGUMENTS, etc?
+
+  /**
    * Add arguments to the current tag.
    *
    * <p>Must be called after {@link #tag(String)}, but before any call to {@link #text(String)}.</p>
