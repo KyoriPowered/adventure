@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.serializer.plain;
 
 import java.util.function.Consumer;
+import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -89,7 +90,7 @@ public interface PlainTextComponentSerializer extends ComponentSerializer<Compon
    *
    * @since 4.8.0
    */
-  interface Builder extends Buildable.Builder<PlainTextComponentSerializer> {
+  interface Builder extends AbstractBuilder<PlainTextComponentSerializer>, Buildable.Builder<PlainTextComponentSerializer> {
     /**
      * Set the component flattener to use.
      *

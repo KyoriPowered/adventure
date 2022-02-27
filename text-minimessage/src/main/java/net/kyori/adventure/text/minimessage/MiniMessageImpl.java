@@ -24,11 +24,14 @@
 package net.kyori.adventure.text.minimessage;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tree.Node;
+import net.kyori.adventure.util.Services;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,9 +43,21 @@ import static java.util.Objects.requireNonNull;
  * @since 4.10.0
  */
 final class MiniMessageImpl implements MiniMessage {
-  static final UnaryOperator<Component> DEFAULT_COMPACTING_METHOD = Component::compact;
+  private static final Optional<Provider> SERVICE = Services.service(Provider.class);
+  static final Consumer<Builder> BUILDER = SERVICE
+    .map(Provider::builder)
+    .orElseGet(() -> builder -> {
+      // NOOP
+    });
 
-  static final MiniMessage INSTANCE = new MiniMessageImpl(TagResolver.standard(), false, null, DEFAULT_COMPACTING_METHOD);
+  // We cannot store these fields in MiniMessageImpl directly due to class initialisation issues.
+  static final class Instances {
+    static final MiniMessage INSTANCE = SERVICE
+      .map(Provider::miniMessage)
+      .orElseGet(() -> new MiniMessageImpl(TagResolver.standard(), false, null, DEFAULT_COMPACTING_METHOD));
+  }
+
+  static final UnaryOperator<Component> DEFAULT_COMPACTING_METHOD = Component::compact;
 
   private final boolean strict;
   private final @Nullable Consumer<String> debugOutput;
@@ -67,18 +82,33 @@ final class MiniMessageImpl implements MiniMessage {
   }
 
   @Override
-  public @NotNull Node deserializeToTree(final @NotNull String input) {
+  public Node.@NotNull Root deserializeToTree(final @NotNull String input) {
     return this.parser.parseToTree(input, this.newContext(input, null));
   }
 
   @Override
-  public @NotNull Node deserializeToTree(final @NotNull String input, final @NotNull TagResolver tagResolver) {
+  public Node.@NotNull Root deserializeToTree(final @NotNull String input, final @NotNull TagResolver tagResolver) {
     return this.parser.parseToTree(input, this.newContext(input, requireNonNull(tagResolver, "tagResolver")));
   }
 
   @Override
   public @NotNull String serialize(final @NotNull Component component) {
-    return MiniMessageSerializer.serialize(requireNonNull(component, "component"));
+    return MiniMessageSerializer.serialize(component, this.serialResolver(null), this.strict);
+  }
+
+  private SerializableResolver serialResolver(final @Nullable TagResolver extraResolver) {
+    if (extraResolver == null) {
+      if (this.parser.tagResolver instanceof SerializableResolver) {
+        return (SerializableResolver) this.parser.tagResolver;
+      }
+    } else {
+      final TagResolver combined = TagResolver.resolver(this.parser.tagResolver, extraResolver);
+      if (combined instanceof SerializableResolver) {
+        return (SerializableResolver) combined;
+      }
+    }
+
+    return (SerializableResolver) TagResolver.empty();
   }
 
   @Override
@@ -110,11 +140,6 @@ final class MiniMessageImpl implements MiniMessage {
     }
   }
 
-  @Override
-  public @NotNull Builder toBuilder() {
-    return new BuilderImpl(this);
-  }
-
   static final class BuilderImpl implements Builder {
     private TagResolver tagResolver = TagResolver.standard();
     private boolean strict = false;
@@ -122,12 +147,15 @@ final class MiniMessageImpl implements MiniMessage {
     private UnaryOperator<Component> postProcessor = DEFAULT_COMPACTING_METHOD;
 
     BuilderImpl() {
+      BUILDER.accept(this);
     }
 
     BuilderImpl(final MiniMessageImpl serializer) {
+      this();
       this.tagResolver = serializer.parser.tagResolver;
       this.strict = serializer.strict;
       this.debug = serializer.debugOutput;
+      this.postProcessor = serializer.postProcessor;
     }
 
     @Override

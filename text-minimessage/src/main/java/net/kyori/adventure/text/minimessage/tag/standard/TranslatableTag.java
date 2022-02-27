@@ -27,20 +27,31 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
+import net.kyori.adventure.text.minimessage.serializer.Emitable;
+import net.kyori.adventure.text.minimessage.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Insert a translation component into the result.
  *
  * @since 4.10.0
  */
-public final class TranslatableTag {
-  public static final String TRANSLATABLE_3 = "tr";
-  public static final String TRANSLATABLE_2 = "translate";
-  public static final String TRANSLATABLE = "lang";
+final class TranslatableTag {
+  private static final String TR = "tr";
+  private static final String TRANSLATE = "translate";
+  private static final String LANG = "lang";
+
+  static final TagResolver RESOLVER = SerializableResolver.claimingComponent(
+    StandardTags.names(LANG, TRANSLATE, TR),
+    TranslatableTag::create,
+    TranslatableTag::claim
+  );
 
   private TranslatableTag() {
   }
@@ -51,12 +62,25 @@ public final class TranslatableTag {
     if (args.hasNext()) {
       with = new ArrayList<>();
       while (args.hasNext()) {
-        with.add(ctx.parse(args.pop().value()));
+        with.add(ctx.deserialize(args.pop().value()));
       }
     } else {
       with = Collections.emptyList();
     }
 
     return Tag.inserting(Component.translatable(key, with));
+  }
+
+  static @Nullable Emitable claim(final Component input) {
+    if (!(input instanceof TranslatableComponent)) return null;
+
+    final TranslatableComponent tr = (TranslatableComponent) input;
+    return emit -> {
+      emit.tag(LANG);
+      emit.argument(tr.key());
+      for (final Component with : tr.args()) {
+        emit.argument(with);
+      }
+    };
   }
 }

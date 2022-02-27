@@ -27,6 +27,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
+import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.IntFunction2;
 import net.kyori.examination.Examinable;
@@ -69,7 +70,7 @@ public interface TextReplacementConfig extends Buildable<TextReplacementConfig, 
    *
    * @since 4.2.0
    */
-  interface Builder extends Buildable.Builder<TextReplacementConfig> {
+  interface Builder extends AbstractBuilder<TextReplacementConfig>, Buildable.Builder<TextReplacementConfig> {
     /*
      * -------------------
      * ---- Patterns -----

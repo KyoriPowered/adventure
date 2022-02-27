@@ -43,6 +43,7 @@ import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.Modifying;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.Examinable;
@@ -54,8 +55,10 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 4.10.0
  */
-public final class GradientTag implements Modifying, Examinable {
-  public static final String GRADIENT = "gradient";
+final class GradientTag implements Modifying, Examinable {
+  private static final String GRADIENT = "gradient";
+
+  static final TagResolver RESOLVER = TagResolver.resolver(GRADIENT, GradientTag::create);
 
   private int size = 0;
   private int disableApplyingColorDepth = -1;

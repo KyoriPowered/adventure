@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.serializer.plain;
 
 import java.util.function.Function;
+import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.KeybindComponent;
 import net.kyori.adventure.text.TextComponent;
@@ -145,7 +146,7 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
    */
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Deprecated
-  public interface Builder extends Buildable.Builder<PlainComponentSerializer> {
+  public interface Builder extends AbstractBuilder<PlainComponentSerializer>, Buildable.Builder<PlainComponentSerializer> {
     /**
      * Set the component flattener to use.
      *

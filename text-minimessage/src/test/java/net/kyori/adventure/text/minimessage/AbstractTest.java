@@ -26,6 +26,7 @@ package net.kyori.adventure.text.minimessage;
 import java.util.Collections;
 import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -34,31 +35,35 @@ import org.jetbrains.annotations.NotNull;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestBase {
+public abstract class AbstractTest {
+  protected static final MiniMessage PARSER = MiniMessage.builder().debug(System.out::print).build();
 
-  static final MiniMessage PARSER = MiniMessage.builder().debug(System.out::print).build();
+  protected void assertSerializedEquals(final @NotNull String expected, final @NotNull ComponentLike input) {
+    final String string = PARSER.serialize(input.asComponent());
+    assertEquals(expected, string);
+  }
 
-  void assertParsedEquals(final @NotNull Component expected, final @NotNull String input) {
+  protected void assertParsedEquals(final @NotNull Component expected, final @NotNull String input) {
     this.assertParsedEquals(PARSER, expected, input);
   }
 
-  void assertParsedEquals(final @NotNull Component expected, final @NotNull String input, final @NotNull TagResolver... args) {
+  protected void assertParsedEquals(final @NotNull Component expected, final @NotNull String input, final @NotNull TagResolver... args) {
     this.assertParsedEquals(PARSER, expected, input, args);
   }
 
-  void assertParsedEquals(final MiniMessage miniMessage, final Component expected, final String input) {
+  protected void assertParsedEquals(final MiniMessage miniMessage, final Component expected, final String input) {
     final String expectedSerialized = this.prettyPrint(expected.compact());
     final String actual = this.prettyPrint(miniMessage.deserialize(input).compact());
     assertEquals(expectedSerialized, actual);
   }
 
-  void assertParsedEquals(final MiniMessage miniMessage, final Component expected, final String input, final @NotNull TagResolver... args) {
+  protected void assertParsedEquals(final MiniMessage miniMessage, final Component expected, final String input, final @NotNull TagResolver... args) {
     final String expectedSerialized = this.prettyPrint(expected.compact());
     final String actual = this.prettyPrint(miniMessage.deserialize(input, TagResolver.resolver(args)).compact());
     assertEquals(expectedSerialized, actual);
   }
 
-  final String prettyPrint(final Component component) {
+  protected final String prettyPrint(final Component component) {
     return component.examine(MultiLineStringExaminer.simpleEscaping()).collect(Collectors.joining("\n"));
   }
 

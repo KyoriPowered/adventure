@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
@@ -97,7 +98,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
    * @since 4.0.0
    */
   static @NotNull Style style(final @NotNull Consumer<Builder> consumer) {
-    return Buildable.configureAndBuild(style(), consumer);
+    return AbstractBuilder.configureAndBuild(style(), consumer);
   }
 
   /**
@@ -655,7 +656,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
    *
    * @since 4.0.0
    */
-  interface Builder extends Buildable.Builder<Style>, MutableStyleSetter<Builder> {
+  interface Builder extends AbstractBuilder<Style>, Buildable.Builder<Style>, MutableStyleSetter<Builder> {
     /**
      * Sets the font.
      *

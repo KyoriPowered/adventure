@@ -25,11 +25,12 @@ package net.kyori.adventure.text.minimessage;
 
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
+import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
-import net.kyori.adventure.util.Buildable;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,16 +42,15 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.10.0
  */
-public interface MiniMessage extends ComponentSerializer<Component, Component, String>, Buildable<MiniMessage, MiniMessage.Builder> {
-
+public interface MiniMessage extends ComponentSerializer<Component, Component, String> {
   /**
-   * Gets a simple instance without markdown support.
+   * Gets a simple instance with default settings.
    *
    * @return a simple instance
    * @since 4.10.0
    */
   static @NotNull MiniMessage miniMessage() {
-    return MiniMessageImpl.INSTANCE;
+    return MiniMessageImpl.Instances.INSTANCE;
   }
 
   /**
@@ -165,7 +165,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @return the root of the resulting tree
    * @since 4.10.0
    */
-  @NotNull Node deserializeToTree(@NotNull String input);
+  Node.@NotNull Root deserializeToTree(final @NotNull String input);
 
   /**
    * Deserializes a string into a tree of parsed elements, with a tag resolver to parse tags of the form {@code <key>}.
@@ -178,7 +178,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @return the root of the resulting tree
    * @since 4.10.0
    */
-  @NotNull Node deserializeToTree(final @NotNull String input, final @NotNull TagResolver tagResolver);
+  Node.@NotNull Root deserializeToTree(final @NotNull String input, final @NotNull TagResolver tagResolver);
 
   /**
    * Deserializes a string into a tree of parsed elements, with a tag resolver to parse tags of the form {@code <key>}.
@@ -191,7 +191,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @return the root of the resulting tree
    * @since 4.10.0
    */
-  default @NotNull Node deserializeToTree(final @NotNull String input, final @NotNull TagResolver... tagResolvers) {
+  default Node.@NotNull Root deserializeToTree(final @NotNull String input, final @NotNull TagResolver... tagResolvers) {
     return this.deserializeToTree(input, TagResolver.resolver(tagResolvers));
   }
 
@@ -210,7 +210,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    *
    * @since 4.10.0
    */
-  interface Builder extends Buildable.Builder<MiniMessage> {
+  interface Builder extends AbstractBuilder<MiniMessage> {
 
     /**
      * Set the known tags to the provided tag resolver.
@@ -280,5 +280,31 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      */
     @Override
     @NotNull MiniMessage build();
+  }
+
+  /**
+   * A {@link MiniMessage} service provider.
+   *
+   * @since 4.10.0
+   */
+  @ApiStatus.Internal
+  interface Provider {
+    /**
+     * Provides a standard {@link MiniMessage} instance.
+     *
+     * @return a {@link MiniMessage} instance
+     * @since 4.10.0
+     */
+    @ApiStatus.Internal
+    @NotNull MiniMessage miniMessage();
+
+    /**
+     * Initialize a {@link Builder} before it is returned to the API caller.
+     *
+     * @return a {@link Consumer} modifying a {@link Builder}
+     * @since 4.10.0
+     */
+    @ApiStatus.Internal
+    @NotNull Consumer<Builder> builder();
   }
 }

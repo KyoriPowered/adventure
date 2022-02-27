@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.parser.node;
 
+import net.kyori.adventure.text.minimessage.tree.Node;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -30,14 +31,23 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 4.10.0
  */
-public final class RootNode extends ElementNode {
+public final class RootNode extends ElementNode implements Node.Root {
+  private final String beforePreprocessing;
+
   /**
    * Creates a new root node.
    *
    * @param sourceMessage the source message
+   * @param beforePreprocessing the source message before handling preProcess tags
    * @since 4.10.0
    */
-  public RootNode(final @NotNull String sourceMessage) {
+  public RootNode(final @NotNull String sourceMessage, final @NotNull String beforePreprocessing) {
     super(null, null, sourceMessage);
+    this.beforePreprocessing = beforePreprocessing;
+  }
+
+  @Override
+  public @NotNull String input() {
+    return this.beforePreprocessing;
   }
 }

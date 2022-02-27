@@ -52,7 +52,7 @@ public final class BinaryTagIO {
   /**
    * Returns {@link Reader}, used to read binary tags.
    *
-   * <p>There is a maximum depth of {@code 512} nested tags allowed, but no limit for the amount of containe data.</p>
+   * <p>There is a maximum depth of {@code 512} nested tags allowed, but no limit for the amount of contained data.</p>
    *
    * @return binary tag reader
    * @since 4.4.0
@@ -78,6 +78,7 @@ public final class BinaryTagIO {
    *
    * <p>This reader will limit the number of bytes read to the approximate size limit indicated.</p>
    *
+   * @param sizeLimitBytes the maximum (approximate) size of uncompressed data, must be greater than {@code 0}
    * @return binary tag reader
    * @since 4.4.0
    */
@@ -376,6 +377,7 @@ public final class BinaryTagIO {
      *
      * <p>This is the equivalent of passing {@code Compression#NONE} as the second parameter to {@link #write(CompoundBinaryTag, Path, Compression)}.</p>
      *
+     * @param tag the tag to write
      * @param path the path
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
@@ -387,6 +389,7 @@ public final class BinaryTagIO {
     /**
      * Writes a binary tag to {@code path} with a {@code compression} type.
      *
+     * @param tag the tag to write
      * @param path the path
      * @param compression the compression type
      * @throws IOException if an exception was encountered while reading the tag
@@ -399,6 +402,7 @@ public final class BinaryTagIO {
      *
      * <p>This is the equivalent of passing {@link Compression#NONE} as the second parameter to {@link #write(CompoundBinaryTag, OutputStream, Compression)}.</p>
      *
+     * @param tag the tag to write
      * @param output the output stream
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
@@ -410,6 +414,7 @@ public final class BinaryTagIO {
     /**
      * Writes a binary tag to {@code output} with a {@code compression} type.
      *
+     * @param tag the tag to write
      * @param output the output stream
      * @param compression the compression type
      * @throws IOException if an exception was encountered while reading the tag
@@ -420,6 +425,7 @@ public final class BinaryTagIO {
     /**
      * Writes a binary tag to {@code output}.
      *
+     * @param tag the tag to write
      * @param output the output
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
@@ -431,6 +437,7 @@ public final class BinaryTagIO {
      *
      * <p>This is the equivalent of passing {@code Compression#NONE} as the second parameter to {@link #write(CompoundBinaryTag, Path, Compression)}.</p>
      *
+     * @param tag the named tag entry to write
      * @param path the path
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
@@ -442,6 +449,7 @@ public final class BinaryTagIO {
     /**
      * Writes a binary tag, with a name, to {@code path} with a {@code compression} type.
      *
+     * @param tag the named tag entry to write
      * @param path the path
      * @param compression the compression type
      * @throws IOException if an exception was encountered while reading the tag
@@ -454,6 +462,7 @@ public final class BinaryTagIO {
      *
      * <p>This is the equivalent of passing {@code Compression#NONE} as the second parameter to {@link #write(CompoundBinaryTag, OutputStream, Compression)}.</p>
      *
+     * @param tag the named tag entry to write
      * @param output the output stream
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0
@@ -465,6 +474,7 @@ public final class BinaryTagIO {
     /**
      * Writes a binary tag, with a name, to {@code output} with a {@code compression} type.
      *
+     * @param tag the named tag entry to write
      * @param output the output stream
      * @param compression the compression type
      * @throws IOException if an exception was encountered while reading the tag
@@ -475,6 +485,7 @@ public final class BinaryTagIO {
     /**
      * Writes a binary tag, with a name, to {@code output}.
      *
+     * @param tag the named tag entry to write
      * @param output the output
      * @throws IOException if an exception was encountered while reading the tag
      * @since 4.4.0

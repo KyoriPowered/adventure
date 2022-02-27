@@ -99,12 +99,14 @@ public final class TagPart implements Tag.Argument {
     final char lastChar = text.charAt(endIndex - 1);
     if (firstChar == '\'' || firstChar == '"') {
       startIndex++;
+    } else {
+      return text.substring(startIndex, endIndex); // plain text is unescapable
     }
     if (lastChar == '\'' || lastChar == '"') {
       endIndex--;
     }
 
-    return TokenParser.unescape(text, startIndex, endIndex, i -> i == firstChar);
+    return TokenParser.unescape(text, startIndex, endIndex, i -> i == firstChar || i == TokenParser.ESCAPE);
   }
 
   @Override

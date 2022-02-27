@@ -43,6 +43,7 @@ public abstract class ValueNode extends ElementNode {
    * @param parent the parent of this node
    * @param token the token that created this node
    * @param sourceMessage the source message
+   * @param value the value of this text node
    * @since 4.10.0
    */
   ValueNode(final @Nullable ElementNode parent, final @Nullable Token token, final @NotNull String sourceMessage, final @NotNull String value) {

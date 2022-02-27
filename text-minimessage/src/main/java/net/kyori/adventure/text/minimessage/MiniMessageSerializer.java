@@ -23,330 +23,314 @@
  */
 package net.kyori.adventure.text.minimessage;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import net.kyori.adventure.key.Key;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.KeybindComponent;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.TranslatableComponent;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.parser.TokenParser;
-import net.kyori.adventure.text.minimessage.tag.standard.ClickTag;
-import net.kyori.adventure.text.minimessage.tag.standard.ColorTagResolver;
-import net.kyori.adventure.text.minimessage.tag.standard.DecorationTag;
-import net.kyori.adventure.text.minimessage.tag.standard.FontTag;
-import net.kyori.adventure.text.minimessage.tag.standard.HoverTag;
-import net.kyori.adventure.text.minimessage.tag.standard.InsertionTag;
-import net.kyori.adventure.text.minimessage.tag.standard.KeybindTag;
-import net.kyori.adventure.text.minimessage.tag.standard.TranslatableTag;
+import net.kyori.adventure.text.minimessage.serializer.ClaimConsumer;
+import net.kyori.adventure.text.minimessage.serializer.Emitable;
+import net.kyori.adventure.text.minimessage.serializer.QuotingOverride;
+import net.kyori.adventure.text.minimessage.serializer.SerializableResolver;
+import net.kyori.adventure.text.minimessage.serializer.TokenEmitter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import static java.util.Objects.requireNonNull;
 
 final class MiniMessageSerializer {
   private MiniMessageSerializer() {
   }
 
-  static @NotNull String serialize(final @NotNull Component component) {
-    final List<ComponentNode> nodes = traverseNode(new ComponentNode(component));
+  // TODO: serialization customization:
+  // - preferred quoting style
+  // - abbreviated vs long tag names (tag-specific option)
+  //
+
+  static @NotNull String serialize(final @NotNull Component component, final @NotNull SerializableResolver resolver, final boolean strict) {
     final StringBuilder sb = new StringBuilder();
+    final Collector emitter = new Collector(resolver, strict, sb);
 
-    for (int i = 0; i < nodes.size(); i++) {
-      // The previous node, null if it doesn't exist.
-      final Style previous = ((i - 1) >= 0) ? nodes.get(i - 1).style() : null;
-
-      // The next node, null if it doesn't exist.
-      final Style next = ((i + 1) < nodes.size()) ? nodes.get(i + 1).style() : null;
-
-      // The current node.
-      final ComponentNode node = nodes.get(i);
-
-      // Serialized string for the node.
-      sb.append(serializeNode(node, previous, next));
-    }
-    return sb.toString();
-  }
-
-  // Sorts a ComponentNode's tree in a LinkedList using Pre Order Traversal.
-  private static List<ComponentNode> traverseNode(final @NotNull ComponentNode root) {
-    final List<ComponentNode> nodes = new LinkedList<>();
-    nodes.add(root);
-
-    // Only continue if children found.
-    if (!root.component().children().isEmpty()) {
-      for (final Component child : root.component().children()) {
-        nodes.addAll(traverseNode(new ComponentNode(child, root.style())));
-      }
-    }
-
-    return nodes;
-  }
-
-  // Serializes a single node into minimessage format.
-  private static String serializeNode(final @NotNull ComponentNode node, final @Nullable Style previous, final @Nullable Style next) {
-    final StringBuilder sb = new StringBuilder();
-    final Style style = node.style();
-
-    // # start tags
-
-    // ## color
-    if (style.color() != null && (previous == null || previous.color() != style.color())) {
-      sb.append(startColor(Objects.requireNonNull(style.color())));
-    }
-
-    // ## decoration
-    // ### only start if previous didn't start
-    if (style.hasDecoration(TextDecoration.BOLD) && (previous == null || !previous.hasDecoration(TextDecoration.BOLD))) {
-      sb.append(startTag(DecorationTag.BOLD));
-    }
-    if (style.hasDecoration(TextDecoration.ITALIC) && (previous == null || !previous.hasDecoration(TextDecoration.ITALIC))) {
-      sb.append(startTag(DecorationTag.ITALIC));
-    }
-    if (style.hasDecoration(TextDecoration.OBFUSCATED) && (previous == null || !previous.hasDecoration(TextDecoration.OBFUSCATED))) {
-      sb.append(startTag(DecorationTag.OBFUSCATED));
-    }
-    if (style.hasDecoration(TextDecoration.STRIKETHROUGH) && (previous == null || !previous.hasDecoration(TextDecoration.STRIKETHROUGH))) {
-      sb.append(startTag(DecorationTag.STRIKETHROUGH));
-    }
-    if (style.hasDecoration(TextDecoration.UNDERLINED) && (previous == null || !previous.hasDecoration(TextDecoration.UNDERLINED))) {
-      sb.append(startTag(DecorationTag.UNDERLINED));
-    }
-
-    // ## disabled decorations
-    // ### only start if previous didn't start
-    if (style.decoration(TextDecoration.BOLD) == TextDecoration.State.FALSE && (previous == null || previous.decoration(TextDecoration.BOLD) == TextDecoration.State.NOT_SET)) {
-      sb.append(startTag("!" + DecorationTag.BOLD));
-    }
-    if (style.decoration(TextDecoration.ITALIC) == TextDecoration.State.FALSE && (previous == null || previous.decoration(TextDecoration.ITALIC) == TextDecoration.State.NOT_SET)) {
-      sb.append(startTag("!" + DecorationTag.ITALIC));
-    }
-    if (style.decoration(TextDecoration.OBFUSCATED) == TextDecoration.State.FALSE && (previous == null || previous.decoration(TextDecoration.OBFUSCATED) == TextDecoration.State.NOT_SET)) {
-      sb.append(startTag("!" + DecorationTag.OBFUSCATED));
-    }
-    if (style.decoration(TextDecoration.STRIKETHROUGH) == TextDecoration.State.FALSE && (previous == null || previous.decoration(TextDecoration.STRIKETHROUGH) == TextDecoration.State.NOT_SET)) {
-      sb.append(startTag("!" + DecorationTag.STRIKETHROUGH));
-    }
-    if (style.decoration(TextDecoration.UNDERLINED) == TextDecoration.State.FALSE && (previous == null || previous.decoration(TextDecoration.UNDERLINED) == TextDecoration.State.NOT_SET)) {
-      sb.append(startTag("!" + DecorationTag.UNDERLINED));
-    }
-
-    // ## hover
-    // ### only start if prevComp didn't start the same one
-    final HoverEvent<?> hov = style.hoverEvent();
-    if (hov != null && (previous == null || areDifferent(hov, previous.hoverEvent()))) {
-      serializeHoverEvent(sb, hov);
-    }
-
-    // ## click
-    // ### only start if previous didn't start the same one
-    final ClickEvent click = style.clickEvent();
-    if (click != null && (previous == null || areDifferent(click, previous.clickEvent()))) {
-      sb.append(startTag(String.format("%s" + TokenParser.SEPARATOR + "%s" + TokenParser.SEPARATOR + "\"%s\"", ClickTag.CLICK, ClickEvent.Action.NAMES.key(click.action()), click.value())));
-    }
-
-    // ## insertion
-    // ### only start if previous didn't start the same one
-    final String insert = style.insertion();
-    if (insert != null && (previous == null || !insert.equals(previous.insertion()))) {
-      sb.append(startTag(InsertionTag.INSERTION + TokenParser.SEPARATOR + insert));
-    }
-
-    // ## font
-    final Key font = style.font();
-    if (font != null && (previous == null || !font.equals(previous.font()))) {
-      sb.append(startTag(FontTag.FONT + TokenParser.SEPARATOR + font.asString()));
-    }
-
-    // # append text
-    if (node.component() instanceof TextComponent) {
-      sb.append(((TextComponent) node.component()).content());
+    emitter.mark();
+    visit(component, emitter, resolver, true);
+    if (strict) {
+      // If we are in strict mode, we need to close all tags at the end of our serialization journey
+      emitter.popAll();
     } else {
-      handleDifferentComponent(node.component(), sb);
-    }
-
-    // # end tags
-    // ### these must be in reverse order to avoid https://github.com/KyoriPowered/adventure-text-minimessage/issues/151
-
-    // ## font
-    // ### only end insertion if next tag is different
-    if (next != null && style.font() != null) {
-      if (!Objects.equals(style.font(), next.font())) {
-        sb.append(endTag(FontTag.FONT));
-      }
-    }
-
-    // ## insertion
-    // ### only end insertion if next tag is different
-    if (next != null && style.insertion() != null) {
-      if (!Objects.equals(style.insertion(), next.insertion())) {
-        sb.append(endTag(InsertionTag.INSERTION));
-      }
-    }
-
-    // ## click
-    // ### only end click if next tag is different
-    if (next != null && style.clickEvent() != null) {
-      if (areDifferent(Objects.requireNonNull(style.clickEvent()), next.clickEvent())) {
-        sb.append(endTag(ClickTag.CLICK));
-      }
-    }
-
-    // ## hover
-    // ### only end hover if next tag is different
-    if (next != null && style.hoverEvent() != null) {
-      if (areDifferent(Objects.requireNonNull(style.hoverEvent()), next.hoverEvent())) {
-        sb.append(endTag(HoverTag.HOVER));
-      }
-    }
-
-    // ## decoration
-    // ### only end decoration if next tag is different
-    if (next != null) {
-      if (style.hasDecoration(TextDecoration.UNDERLINED) && !next.hasDecoration(TextDecoration.UNDERLINED)) {
-        sb.append(endTag(DecorationTag.UNDERLINED));
-      }
-      if (style.hasDecoration(TextDecoration.STRIKETHROUGH) && !next.hasDecoration(TextDecoration.STRIKETHROUGH)) {
-        sb.append(endTag(DecorationTag.STRIKETHROUGH));
-      }
-      if (style.hasDecoration(TextDecoration.OBFUSCATED) && !next.hasDecoration(TextDecoration.OBFUSCATED)) {
-        sb.append(endTag(DecorationTag.OBFUSCATED));
-      }
-      if (style.hasDecoration(TextDecoration.ITALIC) && !next.hasDecoration(TextDecoration.ITALIC)) {
-        sb.append(endTag(DecorationTag.ITALIC));
-      }
-      if (style.hasDecoration(TextDecoration.BOLD) && !next.hasDecoration(TextDecoration.BOLD)) {
-        sb.append(endTag(DecorationTag.BOLD));
-      }
-    }
-
-    // ## disabled decorations
-    // ### only end decoration if next tag is different
-    if (next != null) {
-      if (style.decoration(TextDecoration.UNDERLINED) == TextDecoration.State.FALSE && next.decoration(TextDecoration.UNDERLINED) == TextDecoration.State.NOT_SET) {
-        sb.append(endTag("!" + DecorationTag.UNDERLINED));
-      }
-      if (style.decoration(TextDecoration.STRIKETHROUGH) == TextDecoration.State.FALSE && next.decoration(TextDecoration.STRIKETHROUGH) == TextDecoration.State.NOT_SET) {
-        sb.append(endTag("!" + DecorationTag.STRIKETHROUGH));
-      }
-      if (style.decoration(TextDecoration.OBFUSCATED) == TextDecoration.State.FALSE && next.decoration(TextDecoration.OBFUSCATED) == TextDecoration.State.NOT_SET) {
-        sb.append(endTag("!" + DecorationTag.OBFUSCATED));
-      }
-      if (style.decoration(TextDecoration.ITALIC) == TextDecoration.State.FALSE && next.decoration(TextDecoration.ITALIC) == TextDecoration.State.NOT_SET) {
-        sb.append(endTag("!" + DecorationTag.ITALIC));
-      }
-      if (style.decoration(TextDecoration.BOLD) == TextDecoration.State.FALSE && next.decoration(TextDecoration.BOLD) == TextDecoration.State.NOT_SET) {
-        sb.append(endTag("!" + DecorationTag.BOLD));
-      }
-    }
-
-    // ## color
-    if (next != null && style.color() != null && next.color() != style.color()) {
-      sb.append(endColor(Objects.requireNonNull(style.color())));
+      emitter.completeTag();
     }
 
     return sb.toString();
   }
 
-  private static void serializeHoverEvent(final @NotNull StringBuilder sb, final @NotNull HoverEvent<?> hov) {
-    if (hov.action() == HoverEvent.Action.SHOW_TEXT) {
-      sb.append(startTag(HoverTag.HOVER + TokenParser.SEPARATOR + HoverEvent.Action.NAMES.key(hov.action()) + TokenParser.SEPARATOR + "\"" + serialize((Component) hov.value()).replace("\"", "\\\"") + "\""));
-    } else if (hov.action() == HoverEvent.Action.SHOW_ITEM) {
-      final HoverEvent.ShowItem showItem = (HoverEvent.ShowItem) hov.value();
-      final String nbt;
-      if (showItem.nbt() != null) {
-        nbt = TokenParser.SEPARATOR + "\"" + showItem.nbt().string().replace("\"", "\\\"") + "\"";
+  private static void visit(final @NotNull Component component, final Collector emitter, final SerializableResolver resolver, final boolean lastChild) {
+    // visit self
+    resolver.handle(component, emitter);
+    emitter.flushClaims(component);
+
+    // then children
+    for (final Iterator<Component> it = component.children().iterator(); it.hasNext();) {
+      emitter.mark();
+      visit(it.next(), emitter, resolver, lastChild && !it.hasNext());
+    }
+
+    if (!lastChild) {
+      emitter.popToMark();
+    }
+  }
+
+  static final class Collector implements TokenEmitter, ClaimConsumer {
+    /**
+     * mark tag boundaries within the stack, without needing to mess with typing too much.
+     */
+    private static final String MARK = "__<'\"\\MARK__";
+    private static final char[] TEXT_ESCAPES = {TokenParser.ESCAPE, TokenParser.TAG_START};
+    private static final char[] TAG_TOKENS = {TokenParser.TAG_END, TokenParser.SEPARATOR};
+    private static final char[] SINGLE_QUOTED_ESCAPES = {TokenParser.ESCAPE, '\''};
+    private static final char[] DOUBLE_QUOTED_ESCAPES = {TokenParser.ESCAPE, '"'};
+
+    private final SerializableResolver resolver;
+    private final boolean strict;
+    private final StringBuilder consumer;
+    private String[] activeTags = new String[4];
+    private int tagLevel = 0;
+    private boolean midTag;
+
+    Collector(final SerializableResolver resolver, final boolean strict, final StringBuilder consumer) {
+      this.resolver = resolver;
+      this.strict = strict;
+      this.consumer = consumer;
+    }
+
+    // state tracking
+    private void pushActiveTag(final String tag) {
+      if (this.tagLevel >= this.activeTags.length) {
+        this.activeTags = Arrays.copyOf(this.activeTags, this.activeTags.length * 2);
+      }
+      this.activeTags[this.tagLevel++] = tag;
+    }
+
+    private String popTag(final boolean allowMarks) {
+      if (this.tagLevel-- <= 0) {
+        throw new IllegalStateException("Unbalanced tags, tried to pop below depth");
+      }
+      final String tag = this.activeTags[this.tagLevel];
+      if (!allowMarks && tag == MARK) {
+        throw new IllegalStateException("Tried to pop past mark, tag stack: " + Arrays.toString(this.activeTags) + " @ " + this.tagLevel);
+      }
+      return tag;
+    }
+
+    void mark() {
+      this.pushActiveTag(MARK);
+    }
+
+    void popToMark() {
+      this.completeTag();
+      if (this.tagLevel == 0) {
+        return;
+      }
+      String tag;
+      while ((tag = this.popTag(true)) != MARK) {
+        this.emitClose(tag);
+      }
+    }
+
+    void popAll() {
+      this.completeTag();
+      while (this.tagLevel > 0) {
+        final String tag = this.activeTags[--this.tagLevel];
+        if (tag != MARK) {
+          this.emitClose(tag);
+        }
+      }
+    }
+
+    void completeTag() {
+      if (this.midTag) {
+        this.consumer.append(TokenParser.TAG_END);
+        this.midTag = false;
+      }
+    }
+
+    // TokenEmitter
+
+    @Override
+    public Collector tag(final String token) {
+      this.completeTag();
+      this.consumer.append(TokenParser.TAG_START);
+      this.escapeTagContent(token, QuotingOverride.UNQUOTED);
+      this.midTag = true;
+      this.pushActiveTag(token);
+      return this;
+    }
+
+    @Override
+    public TokenEmitter argument(final String arg) {
+      if (!this.midTag) {
+        throw new IllegalStateException("Not within a tag!");
+      }
+      this.consumer.append(TokenParser.SEPARATOR);
+      this.escapeTagContent(arg, null);
+      return this;
+    }
+
+    @Override
+    public @NotNull TokenEmitter argument(final @NotNull String arg, final @NotNull QuotingOverride quotingPreference) {
+      if (!this.midTag) {
+        throw new IllegalStateException("Not within a tag!");
+      }
+      this.consumer.append(TokenParser.SEPARATOR);
+      this.escapeTagContent(arg, requireNonNull(quotingPreference, "quotingPreference"));
+      return this;
+    }
+
+    @Override
+    public @NotNull TokenEmitter argument(final @NotNull Component arg) {
+      final String serialized = MiniMessageSerializer.serialize(arg, this.resolver, this.strict);
+      return this.argument(serialized, QuotingOverride.QUOTED); // always quote tokens
+    }
+
+    @Override
+    public Collector selfClosing(final String token) {
+      this.completeTag();
+      this.consumer.append(TokenParser.TAG_START);
+      this.escapeTagContent(token, QuotingOverride.UNQUOTED);
+      this.midTag = true; // TODO: `<tag/>` syntax
+      return this;
+    }
+
+    @Override
+    public Collector text(final String text) {
+      this.completeTag();
+      // escape '\' and '<'
+      appendEscaping(this.consumer, text, TEXT_ESCAPES, true);
+      return this;
+    }
+
+    private void escapeTagContent(final String content, final @Nullable QuotingOverride preference) {
+      boolean mustBeQuoted = preference == QuotingOverride.QUOTED;
+      boolean hasSingleQuote = false;
+      boolean hasDoubleQuote = false;
+
+      for (int i = 0; i < content.length(); i++) {
+        final char active = content.charAt(i);
+        if (active == TokenParser.TAG_END || active == TokenParser.SEPARATOR || active == ' ') { // space is not technically required here, but is preferred
+          mustBeQuoted = true;
+          if (hasSingleQuote && hasDoubleQuote) break;
+        } else if (active == '\'') {
+          hasSingleQuote = true;
+          break; // we know our quoting style
+        } else if (active == '"') {
+          hasDoubleQuote = true;
+          if (mustBeQuoted && hasSingleQuote) break;
+        }
+      }
+
+      if (hasSingleQuote) { // double-quoted
+        this.consumer.append('"');
+        appendEscaping(this.consumer, content, DOUBLE_QUOTED_ESCAPES, true);
+        this.consumer.append('"');
+      } else if (hasDoubleQuote || mustBeQuoted) {
+        // single-quoted
+        this.consumer.append('\'');
+        appendEscaping(this.consumer, content, SINGLE_QUOTED_ESCAPES, true);
+        this.consumer.append('\'');
+      } else { // unquoted
+        appendEscaping(this.consumer, content, TAG_TOKENS, false);
+      }
+    }
+
+    static void appendEscaping(final StringBuilder builder, final String text, final char[] escapeChars, final boolean allowEscapes) {
+      int startIdx = 0;
+      boolean unescapedFound = false;
+
+      for (int i = 0; i < text.length(); i++) {
+        final char test = text.charAt(i);
+        boolean escaped = false;
+        for (final char c : escapeChars) {
+          if (test == c) {
+            if (!allowEscapes) {
+              throw new IllegalArgumentException("Invalid escapable character '" + test + "' found at index " + i + " in string '" + text + "'");
+            }
+            escaped = true;
+            break;
+          }
+        }
+
+        if (escaped) {
+          if (unescapedFound) builder.append(text, startIdx, i);
+          startIdx = i + 1;
+          builder.append(TokenParser.ESCAPE).append(test);
+        } else {
+          unescapedFound = true;
+        }
+      }
+
+      if (startIdx < text.length() && unescapedFound) {
+        builder.append(text, startIdx, text.length());
+      }
+    }
+
+    @Override
+    public Collector pop() {
+      this.completeTag();
+      this.emitClose(this.popTag(false));
+      return this;
+    }
+
+    private void emitClose(final @NotNull String tag) {
+      // currently: we don't keep any arguments, does it ever make sense to?
+      this.consumer.append(TokenParser.TAG_START)
+        .append(TokenParser.CLOSE_TAG);
+      this.escapeTagContent(tag, QuotingOverride.UNQUOTED);
+      this.consumer.append(TokenParser.TAG_END);
+    }
+
+    // ClaimCollector
+
+    @Nullable Emitable componentClaim;
+    final Set<String> claimedStyleElements = new HashSet<>();
+
+    @Override
+    public void style(final String claimKey, final @NotNull Emitable styleClaim) {
+      if (this.claimedStyleElements.add(requireNonNull(claimKey, "claimKey"))) {
+        styleClaim.emit(this);
+      }
+    }
+
+    @Override
+    public boolean component(final @NotNull Emitable componentClaim) {
+      if (this.componentClaim != null) return false;
+
+      this.componentClaim = requireNonNull(componentClaim, "componentClaim");
+      return true;
+    }
+
+    @Override
+    public boolean componentClaimed() {
+      return this.componentClaim != null;
+    }
+
+    @Override
+    public boolean styleClaimed(final @NotNull String claimId) {
+      return this.claimedStyleElements.contains(claimId);
+    }
+
+    void flushClaims(final Component component) {
+      if (this.componentClaim != null) {
+        this.componentClaim.emit(this);
+        this.componentClaim = null;
+      } else if (component instanceof TextComponent) {
+        this.text(((TextComponent) component).content());
       } else {
-        nbt = "";
+        // todo: best choice?
+        throw new IllegalStateException("Unclaimed component " + component);
       }
-      sb.append(startTag(HoverTag.HOVER + TokenParser.SEPARATOR + HoverEvent.Action.NAMES.key(hov.action()) + TokenParser.SEPARATOR + "'" + showItem.item().asString() + "'" + TokenParser.SEPARATOR + showItem.count() + nbt));
-    } else if (hov.action() == HoverEvent.Action.SHOW_ENTITY) {
-      final HoverEvent.ShowEntity showEntity = (HoverEvent.ShowEntity) hov.value();
-      final String displayName;
-      if (showEntity.name() != null) {
-        displayName = TokenParser.SEPARATOR + "\"" + serialize(showEntity.name()).replace("\"", "\\\"") + "\"";
-      } else {
-        displayName = "";
-      }
-      sb.append(startTag(HoverTag.HOVER + TokenParser.SEPARATOR + HoverEvent.Action.NAMES.key(hov.action()) + TokenParser.SEPARATOR + "'" + showEntity.type().asString() + "'" + TokenParser.SEPARATOR + showEntity.id() + displayName));
-    } else {
-      throw new RuntimeException("Don't know how to serialize '" + hov + "'!");
+      this.claimedStyleElements.clear();
     }
   }
 
-  private static boolean areDifferent(final @NotNull ClickEvent c1, final @Nullable ClickEvent c2) {
-    if (c2 == null) return true;
-    return !c1.equals(c2) && (!c1.action().equals(c2.action()) || !c1.value().equals(c2.value()));
-  }
-
-  private static boolean areDifferent(final @NotNull HoverEvent<?> h1, final @Nullable HoverEvent<?> h2) {
-    if (h2 == null) return true;
-    return !h1.equals(h2) && (!h1.action().equals(h2.action())); // TODO also compare value
-  }
-
-  private static @NotNull String startColor(final @NotNull TextColor color) {
-    if (color instanceof NamedTextColor) {
-      return startTag(Objects.requireNonNull(NamedTextColor.NAMES.key((NamedTextColor) color)));
-    } else {
-      return startTag(ColorTagResolver.COLOR + TokenParser.SEPARATOR + color.asHexString());
-    }
-  }
-
-  private static @NotNull String endColor(final @NotNull TextColor color) {
-    if (color instanceof NamedTextColor) {
-      return endTag(Objects.requireNonNull(NamedTextColor.NAMES.key((NamedTextColor) color)));
-    } else {
-      return endTag(ColorTagResolver.COLOR + TokenParser.SEPARATOR + color.asHexString());
-    }
-  }
-
-  private static @NotNull String startTag(final @NotNull String content) {
-    return "" + TokenParser.TAG_START + content + TokenParser.TAG_END;
-  }
-
-  private static @NotNull String endTag(final @NotNull String content) {
-    return ("" + TokenParser.TAG_START) + TokenParser.CLOSE_TAG + content + TokenParser.TAG_END;
-  }
-
-  private static void handleDifferentComponent(final @NotNull Component component, final @NotNull StringBuilder sb) {
-    if (component instanceof KeybindComponent) {
-      sb.append(startTag(KeybindTag.KEYBIND + TokenParser.SEPARATOR + ((KeybindComponent) component).keybind()));
-    } else if (component instanceof TranslatableComponent) {
-      final StringBuilder args = new StringBuilder();
-      for (final Component arg : ((TranslatableComponent) component).args()) {
-        args.append(TokenParser.SEPARATOR)
-          .append("\"")
-          .append(serialize(arg).replace("\"", "\\\""))
-          .append("\"");
-      }
-      sb.append(startTag(TranslatableTag.TRANSLATABLE + TokenParser.SEPARATOR + ((TranslatableComponent) component).key() + args));
-    }
-  }
-
-  private static class ComponentNode {
-    private final Component component;
-    private final Style style;
-
-    ComponentNode(final @NotNull Component component) {
-      this(component, null);
-    }
-
-    ComponentNode(final @NotNull Component component, final @Nullable Style parent) {
-      this.component = component;
-      this.style = (parent == null) ? component.style() : component.style().merge(parent, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
-    }
-
-    public Component component() {
-      return this.component;
-    }
-
-    public Style style() {
-      return this.style;
-    }
-  }
 }

@@ -33,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
  * A binary tag holding an {@code int}-array value.
  *
  * @since 4.0.0
+ * @sinceMinecraft 1.2.1
  */
 public interface IntArrayBinaryTag extends ArrayBinaryTag, Iterable<Integer> {
   /**
@@ -81,7 +82,7 @@ public interface IntArrayBinaryTag extends ArrayBinaryTag, Iterable<Integer> {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * <p>The returned iterator is immutable.</p>
    *
    * @since 4.2.0

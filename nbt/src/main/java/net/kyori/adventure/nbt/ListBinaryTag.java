@@ -51,6 +51,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    *
    * <p>The {@link #elementType() element type} of the returned list tag is determined from {@code tags}.</p>
    *
+   * @param tags the list of contents for the created tag
    * @return a list tag
    * @throws IllegalArgumentException if {@code tags} has different tag types within
    * @since 4.4.0

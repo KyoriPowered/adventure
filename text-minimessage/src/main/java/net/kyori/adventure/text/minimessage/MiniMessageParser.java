@@ -37,6 +37,7 @@ import net.kyori.adventure.text.minimessage.parser.Token;
 import net.kyori.adventure.text.minimessage.parser.TokenParser;
 import net.kyori.adventure.text.minimessage.parser.TokenType;
 import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
+import net.kyori.adventure.text.minimessage.parser.node.RootNode;
 import net.kyori.adventure.text.minimessage.parser.node.TagNode;
 import net.kyori.adventure.text.minimessage.parser.node.ValueNode;
 import net.kyori.adventure.text.minimessage.tag.Inserting;
@@ -116,7 +117,7 @@ final class MiniMessageParser {
     }
   }
 
-  @NotNull ElementNode parseToTree(final @NotNull String richMessage, final @NotNull ContextImpl context) {
+  @NotNull RootNode parseToTree(final @NotNull String richMessage, final @NotNull ContextImpl context) {
     final TagResolver combinedResolver = TagResolver.resolver(this.tagResolver, context.extraTags());
     final Consumer<String> debug = context.debugOutput();
     if (debug != null) {
@@ -185,7 +186,7 @@ final class MiniMessageParser {
     final String preProcessed = TokenParser.resolvePreProcessTags(richMessage, transformationFactory);
     context.message(preProcessed);
     // Then, once MiniMessage placeholders have been inserted, we can do the real parse
-    final ElementNode root = TokenParser.parse(transformationFactory, tagNameChecker, preProcessed, context.strict());
+    final RootNode root = TokenParser.parse(transformationFactory, tagNameChecker, preProcessed, richMessage, context.strict());
 
     if (debug != null) {
       debug.accept("Text parsed into element tree:\n");

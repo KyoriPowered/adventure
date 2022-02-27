@@ -24,51 +24,68 @@
 package net.kyori.adventure.text.minimessage.tag.standard;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.stream.Stream;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.format.TextDecoration.State;
 import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.serializer.SerializableResolver;
+import net.kyori.adventure.text.minimessage.serializer.StyleClaim;
+import net.kyori.adventure.text.minimessage.serializer.TokenEmitter;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A transformation that applies any {@link TextDecoration}.
  *
  * @since 4.10.0
  */
-public final class DecorationTag {
+final class DecorationTag {
   // vanilla decoration
-  public static final String UNDERLINED = "underlined";
-  public static final String BOLD_2 = "b";
-  public static final String BOLD = "bold";
-  public static final String ITALIC_3 = "i";
-  public static final String ITALIC_2 = "em";
-  public static final String ITALIC = "italic";
-  public static final String OBFUSCATED_2 = "obf";
-  public static final String OBFUSCATED = "obfuscated";
-  public static final String STRIKETHROUGH_2 = "st";
-  public static final String STRIKETHROUGH = "strikethrough";
-  public static final String UNDERLINED_2 = "u";
+  private static final String B = "b";
+  private static final String I = "i";
+  private static final String EM = "em";
+  private static final String OBF = "obf";
+  private static final String ST = "st";
+  private static final String U = "u";
 
   public static final String REVERT = "!";
 
-  /**
-   * An unmodifiable map of known decoration aliases.
-   *
-   * @since 4.10.0
-   */
-  static final Map<String, TextDecoration> DECORATION_ALIASES;
+  // create resolvers for canonical + configured alternates
+  static Stream<TagResolver> resolvers(final TextDecoration decoration, final @Nullable String shortName, final @NotNull String@NotNull... secondaryAliases) {
+    final String canonicalName = TextDecoration.NAMES.key(decoration);
+    final Set<String> names = new HashSet<>();
+    names.add(canonicalName);
+    if (shortName != null) names.add(shortName);
+    Collections.addAll(names, secondaryAliases);
 
-  static {
-    final Map<String, TextDecoration> aliases = new HashMap<>();
-    aliases.put(BOLD_2, TextDecoration.BOLD);
-    aliases.put(ITALIC_2, TextDecoration.ITALIC);
-    aliases.put(ITALIC_3, TextDecoration.ITALIC);
-    aliases.put(UNDERLINED_2, TextDecoration.UNDERLINED);
-    aliases.put(STRIKETHROUGH_2, TextDecoration.STRIKETHROUGH);
-    aliases.put(OBFUSCATED_2, TextDecoration.OBFUSCATED);
-    DECORATION_ALIASES = Collections.unmodifiableMap(aliases);
+    return Stream.concat(
+      Stream.of(SerializableResolver.claimingStyle(
+          names,
+          (args, ctx) -> DecorationTag.create(decoration, args, ctx),
+          claim(decoration, (state, emitter) -> emit(canonicalName, shortName == null ? canonicalName : shortName, state, emitter))
+        )),
+      names.stream().map(name -> TagResolver.resolver(DecorationTag.REVERT + name, DecorationTag.createNegated(decoration)))
+    );
   }
+
+  static final TagResolver RESOLVER = Stream.of(
+      resolvers(TextDecoration.OBFUSCATED, OBF),
+      resolvers(TextDecoration.BOLD, B),
+      resolvers(TextDecoration.STRIKETHROUGH, ST),
+      resolvers(TextDecoration.UNDERLINED, U),
+      resolvers(TextDecoration.ITALIC, EM, I)
+    )
+    .flatMap(Function.identity())
+    .collect(TagResolver.toTagResolver());
 
   private DecorationTag() {
   }
@@ -81,5 +98,23 @@ public final class DecorationTag {
 
   static Tag createNegated(final TextDecoration toApply) {
     return Tag.styling(toApply.withState(false));
+  }
+
+  static @NotNull StyleClaim<TextDecoration.State> claim(final @NotNull TextDecoration decoration, final @NotNull BiConsumer<TextDecoration.State, TokenEmitter> emitable) {
+    requireNonNull(decoration, "decoration");
+    return StyleClaim.claim(
+      "decoration_" + TextDecoration.NAMES.key(decoration),
+      style -> style.decoration(decoration),
+      state -> state != TextDecoration.State.NOT_SET,
+      emitable
+    );
+  }
+
+  static void emit(final @NotNull String longName, final @NotNull String shortName, final TextDecoration.@NotNull State state, final @NotNull TokenEmitter emitter) {
+    if (state == State.FALSE) {
+      emitter.tag(REVERT + longName);
+    } else {
+      emitter.tag(longName);
+    }
   }
 }
