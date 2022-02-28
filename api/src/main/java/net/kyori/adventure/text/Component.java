@@ -1734,32 +1734,32 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
-   * Wraps this component in an empty component with the given style.
+   * Apply a fallback style for this component and its children.
    *
    * <p>This method can be used to set the "default" style for a component, whilst still allowing children of the component to override the style.</p>
    *
-   * @param style style for the wrapper component
-   * @return the wrapped component
+   * @param style style to be used as a fallback
+   * @return the styled component
    * @since 4.10.0
    */
   @Contract(pure = true)
-  default @NotNull Component wrap(final @NotNull Style style) {
+  default @NotNull Component applyFallbackStyle(final @NotNull Style style) {
     Objects.requireNonNull(style, "style");
     return this.style(this.style().merge(style, Style.Merge.Strategy.IF_ABSENT_ON_TARGET));
   }
 
   /**
-   * Wraps this component in an empty component with the given style.
+   * Apply a fallback style for this component and its children.
    *
    * <p>This method can be used to set the "default" style for a component, whilst still allowing children of the component to override the style.</p>
    *
-   * @param style style for the wrapper component
-   * @return the wrapped component
+   * @param style style to be used as a fallback
+   * @return the styled component
    * @since 4.10.0
    */
   @Contract(pure = true)
-  default @NotNull Component wrap(final @NotNull StyleBuilderApplicable@NotNull... style) {
-    return this.wrap(Style.style(style));
+  default @NotNull Component applyFallbackStyle(final @NotNull StyleBuilderApplicable@NotNull... style) {
+    return this.applyFallbackStyle(Style.style(style));
   }
 
   /**

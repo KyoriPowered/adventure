@@ -160,8 +160,8 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
     final Component notItalic = Component.text("non-italic");
     final Component parent = Component.empty().decoration(TextDecoration.ITALIC, true);
 
-    final Component wrappedItalic = parent.append(italic.wrap(TextDecoration.ITALIC.withState(false)));
-    final Component wrappedNotItalic = parent.append(notItalic.wrap(TextDecoration.ITALIC.withState(false)));
+    final Component wrappedItalic = parent.append(italic.applyFallbackStyle(TextDecoration.ITALIC.withState(false)));
+    final Component wrappedNotItalic = parent.append(notItalic.applyFallbackStyle(TextDecoration.ITALIC.withState(false)));
 
     assertEquals(wrappedItalic.compact(), Component.text("italic").decoration(TextDecoration.ITALIC, true));
     assertEquals(wrappedNotItalic.compact(), Component.text("non-italic").decoration(TextDecoration.ITALIC, false));
