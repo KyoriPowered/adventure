@@ -200,7 +200,7 @@ public class MiniMessageTest extends AbstractTest {
     final Component expected = text("A")
       .append(text("B"))
       .append(text("C"));
-    final String input = "<a><b><_c>";
+    final String input = "<a><b><!c>";
     final MiniMessage miniMessage = MiniMessage.miniMessage();
 
     this.assertParsedEquals(
@@ -209,7 +209,7 @@ public class MiniMessageTest extends AbstractTest {
       input,
       component("a", text("A")),
       component("b", text("B")),
-      component("_c", text("C"))
+      component("!c", text("C"))
     );
   }
 

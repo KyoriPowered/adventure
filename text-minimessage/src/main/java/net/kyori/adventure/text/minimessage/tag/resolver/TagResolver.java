@@ -32,6 +32,7 @@ import java.util.function.BiFunction;
 import java.util.stream.Collector;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
+import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import org.jetbrains.annotations.ApiStatus;
@@ -91,7 +92,7 @@ public interface TagResolver {
    * @since 4.10.0
    */
   static TagResolver.@NotNull Single resolver(final @NotNull String name, final @NotNull Tag tag) {
-    SingleResolver.checkKey(name);
+    TagInternals.checkTagName(name);
     return new SingleResolver(
       name,
       requireNonNull(tag, "tag")
@@ -121,7 +122,7 @@ public interface TagResolver {
   static @NotNull TagResolver resolver(final @NotNull Set<String> names, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler) {
     final Set<String> ownNames = new HashSet<>(names);
     for (final String name : ownNames) {
-      SingleResolver.checkKey(name);
+      TagInternals.checkTagName(name);
     }
     requireNonNull(handler, "handler");
 
