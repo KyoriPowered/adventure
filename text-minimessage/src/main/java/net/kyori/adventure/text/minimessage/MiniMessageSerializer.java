@@ -29,12 +29,12 @@ import java.util.Iterator;
 import java.util.Set;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.minimessage.parser.TokenParser;
-import net.kyori.adventure.text.minimessage.serializer.ClaimConsumer;
-import net.kyori.adventure.text.minimessage.serializer.Emitable;
-import net.kyori.adventure.text.minimessage.serializer.QuotingOverride;
-import net.kyori.adventure.text.minimessage.serializer.SerializableResolver;
-import net.kyori.adventure.text.minimessage.serializer.TokenEmitter;
+import net.kyori.adventure.text.minimessage.internal.parser.TokenParser;
+import net.kyori.adventure.text.minimessage.internal.serializer.ClaimConsumer;
+import net.kyori.adventure.text.minimessage.internal.serializer.Emitable;
+import net.kyori.adventure.text.minimessage.internal.serializer.QuotingOverride;
+import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
+import net.kyori.adventure.text.minimessage.internal.serializer.TokenEmitter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

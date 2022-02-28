@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.parser;
+package net.kyori.adventure.text.minimessage.internal.parser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,14 +31,14 @@ import java.util.Locale;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 import net.kyori.adventure.text.minimessage.ParsingException;
-import net.kyori.adventure.text.minimessage.parser.match.MatchedTokenConsumer;
-import net.kyori.adventure.text.minimessage.parser.match.StringResolvingMatchedTokenConsumer;
-import net.kyori.adventure.text.minimessage.parser.match.TokenListProducingMatchedTokenConsumer;
-import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
-import net.kyori.adventure.text.minimessage.parser.node.RootNode;
-import net.kyori.adventure.text.minimessage.parser.node.TagNode;
-import net.kyori.adventure.text.minimessage.parser.node.TagPart;
-import net.kyori.adventure.text.minimessage.parser.node.TextNode;
+import net.kyori.adventure.text.minimessage.internal.parser.match.MatchedTokenConsumer;
+import net.kyori.adventure.text.minimessage.internal.parser.match.StringResolvingMatchedTokenConsumer;
+import net.kyori.adventure.text.minimessage.internal.parser.match.TokenListProducingMatchedTokenConsumer;
+import net.kyori.adventure.text.minimessage.internal.parser.node.ElementNode;
+import net.kyori.adventure.text.minimessage.internal.parser.node.RootNode;
+import net.kyori.adventure.text.minimessage.internal.parser.node.TagNode;
+import net.kyori.adventure.text.minimessage.internal.parser.node.TagPart;
+import net.kyori.adventure.text.minimessage.internal.parser.node.TextNode;
 import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.ParserDirective;
 import net.kyori.adventure.text.minimessage.tag.Tag;

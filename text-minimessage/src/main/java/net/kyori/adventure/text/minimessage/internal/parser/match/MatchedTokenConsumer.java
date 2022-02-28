@@ -21,52 +21,62 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.serializer;
+package net.kyori.adventure.text.minimessage.internal.parser.match;
 
+import net.kyori.adventure.text.minimessage.internal.parser.TokenType;
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnknownNullability;
 
 /**
- * A consumer of serialization claims.
+ * A consumer of a region of a string that was identified as a token.
  *
+ * @param <T> the return result
  * @since 4.10.0
  */
-public interface ClaimConsumer {
-  /**
-   * Submit a style claim for the active component.
-   *
-   * <p>Style claims are additive, but any single style element can only be claimed once.</p>
-   *
-   * @param claimKey an identifier for the style element being claimed
-   * @param styleClaim the claim of a style
-   * @since 4.10.0
-   */
-  void style(final @NotNull String claimKey, final @NotNull Emitable styleClaim);
+public abstract class MatchedTokenConsumer<T> {
+  protected final String input;
+
+  private int lastIndex = -1;
 
   /**
-   * Submit a component claim for the active component.
+   * Creates a new matched token consumer.
    *
-   * <p>Only one component claim can be in effect. We use the first component claim.</p>
-   *
-   * @param componentClaim the claim of a component
-   * @return whether the claim was successful
+   * @param input the input
    * @since 4.10.0
    */
-  boolean component(final @NotNull Emitable componentClaim);
+  public MatchedTokenConsumer(final @NotNull String input) {
+    this.input = input;
+  }
 
   /**
-   * Get whether a style element has been claimed yet.
+   * Accepts a matched token.
    *
-   * @param claimId the id for this style elemnt being tested
-   * @return whether style is claimed
+   * @param start     the start of the token
+   * @param end       the end of the token
+   * @param tokenType the type of the token
    * @since 4.10.0
    */
-  boolean styleClaimed(final @NotNull String claimId);
+  @MustBeInvokedByOverriders
+  public void accept(final int start, final int end, final @NotNull TokenType tokenType) {
+    this.lastIndex = end;
+  }
 
   /**
-   * Get whether a component has been claimed yet.
+   * Gets the result of this consumer, if any.
    *
-   * @return whether a component has been claimed yet
+   * @return the result
    * @since 4.10.0
    */
-  boolean componentClaimed();
+  public abstract @UnknownNullability T result();
+
+  /**
+   * The last accepted end index, or {@code -1} if no match has been accepted.
+   *
+   * @return the last accepted end index
+   * @since 4.10.0
+   */
+  public final int lastEndIndex() {
+    return this.lastIndex;
+  }
 }

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.serializer;
+package net.kyori.adventure.text.minimessage.internal.serializer;
 
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;

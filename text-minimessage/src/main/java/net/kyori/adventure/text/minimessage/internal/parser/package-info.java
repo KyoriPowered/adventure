@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 /**
- * Parser nodes.
+ * Parser.
  */
 @org.jetbrains.annotations.ApiStatus.Internal
-package net.kyori.adventure.text.minimessage.parser.node;
+package net.kyori.adventure.text.minimessage.internal.parser;

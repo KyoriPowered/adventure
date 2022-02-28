@@ -21,12 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.serializer;
+package net.kyori.adventure.text.minimessage.internal.serializer;
 
 import java.util.Set;
 import java.util.function.BiFunction;
-import java.util.function.Function;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag;
@@ -35,15 +33,15 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-class ComponentClaimingResolverImpl implements TagResolver, SerializableResolver.Single {
+final class StyleClaimingResolverImpl implements TagResolver, SerializableResolver.Single {
   private final @NotNull Set<String> names;
   private final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler;
-  private final @NotNull Function<Component, @Nullable Emitable> componentClaim;
+  private final @NotNull StyleClaim<?> styleClaim;
 
-  ComponentClaimingResolverImpl(final Set<String> names, final BiFunction<ArgumentQueue, Context, Tag> handler, final Function<Component, @Nullable Emitable> componentClaim) {
+  StyleClaimingResolverImpl(@NotNull final Set<String> names, @NotNull final BiFunction<ArgumentQueue, Context, Tag> handler, @NotNull final StyleClaim<?> styleClaim) {
     this.names = names;
     this.handler = handler;
-    this.componentClaim = componentClaim;
+    this.styleClaim = styleClaim;
   }
 
   @Override
@@ -59,7 +57,7 @@ class ComponentClaimingResolverImpl implements TagResolver, SerializableResolver
   }
 
   @Override
-  public @Nullable Emitable claimComponent(final @NotNull Component component) {
-    return this.componentClaim.apply(component);
+  public @Nullable StyleClaim<?> claimStyle() {
+    return this.styleClaim;
   }
 }

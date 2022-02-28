@@ -21,40 +21,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.parser.node;
+package net.kyori.adventure.text.minimessage.internal.serializer;
 
-import java.util.function.IntPredicate;
-import net.kyori.adventure.text.minimessage.parser.Token;
-import net.kyori.adventure.text.minimessage.parser.TokenParser;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
- * Represents a string of chars.
+ * A consumer of serialization claims.
  *
  * @since 4.10.0
  */
-public final class TextNode extends ValueNode {
-  private static final IntPredicate ESCAPES = i -> i == TokenParser.TAG_START || i == TokenParser.ESCAPE;
-
+public interface ClaimConsumer {
   /**
-   * Creates a new text node.
+   * Submit a style claim for the active component.
    *
-   * @param parent the parent of this node
-   * @param token the token that created this node
-   * @param sourceMessage the source message
+   * <p>Style claims are additive, but any single style element can only be claimed once.</p>
+   *
+   * @param claimKey an identifier for the style element being claimed
+   * @param styleClaim the claim of a style
    * @since 4.10.0
    */
-  public TextNode(
-    final @Nullable ElementNode parent,
-    final @NotNull Token token,
-    final @NotNull String sourceMessage
-  ) {
-    super(parent, token, sourceMessage, TokenParser.unescape(sourceMessage, token.startIndex(), token.endIndex(), ESCAPES));
-  }
+  void style(final @NotNull String claimKey, final @NotNull Emitable styleClaim);
 
-  @Override
-  String valueName() {
-    return "TextNode";
-  }
+  /**
+   * Submit a component claim for the active component.
+   *
+   * <p>Only one component claim can be in effect. We use the first component claim.</p>
+   *
+   * @param componentClaim the claim of a component
+   * @return whether the claim was successful
+   * @since 4.10.0
+   */
+  boolean component(final @NotNull Emitable componentClaim);
+
+  /**
+   * Get whether a style element has been claimed yet.
+   *
+   * @param claimId the id for this style elemnt being tested
+   * @return whether style is claimed
+   * @since 4.10.0
+   */
+  boolean styleClaimed(final @NotNull String claimId);
+
+  /**
+   * Get whether a component has been claimed yet.
+   *
+   * @return whether a component has been claimed yet
+   * @since 4.10.0
+   */
+  boolean componentClaimed();
 }

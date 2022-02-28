@@ -286,6 +286,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * A {@link MiniMessage} service provider.
    *
    * @since 4.10.0
+   * @hidden
    */
   @ApiStatus.Internal
   interface Provider {

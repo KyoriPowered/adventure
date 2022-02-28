@@ -21,28 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.serializer;
+package net.kyori.adventure.text.minimessage.internal.serializer;
 
 /**
- * The preferred style of argument quoting for a specific argument.
- *
- * <p>This will allow overriding the style preferences for specific arguments.</p>
+ * Something that holds data representable as MiniMessage tags.
  *
  * @since 4.10.0
  */
-public enum QuotingOverride {
+@FunctionalInterface
+public interface Emitable {
   /**
-   * Request that this argument is included unquoted.
+   * Emit tags based on this emitable's data.
    *
-   * <p>As no escapes can be included in an unquoted argument, this request may be ignored depending on the content of the argument.</p>
-   *
+   * @param emitter the target to emit to
    * @since 4.10.0
    */
-  UNQUOTED,
-  /**
-   * Request that this argument is included quoted.
-   *
-   * @since 4.10.0
-   */
-  QUOTED;
+  void emit(final TokenEmitter emitter);
 }

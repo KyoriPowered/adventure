@@ -21,20 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.serializer;
+package net.kyori.adventure.text.minimessage.internal.parser.node;
+
+import net.kyori.adventure.text.minimessage.tree.Node;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Something that holds data representable as MiniMessage tags.
+ * Represents the root node of a tree.
  *
  * @since 4.10.0
  */
-@FunctionalInterface
-public interface Emitable {
+public final class RootNode extends ElementNode implements Node.Root {
+  private final String beforePreprocessing;
+
   /**
-   * Emit tags based on this emitable's data.
+   * Creates a new root node.
    *
-   * @param emitter the target to emit to
+   * @param sourceMessage the source message
+   * @param beforePreprocessing the source message before handling preProcess tags
    * @since 4.10.0
    */
-  void emit(final TokenEmitter emitter);
+  public RootNode(final @NotNull String sourceMessage, final @NotNull String beforePreprocessing) {
+    super(null, null, sourceMessage);
+    this.beforePreprocessing = beforePreprocessing;
+  }
+
+  @Override
+  public @NotNull String input() {
+    return this.beforePreprocessing;
+  }
 }
