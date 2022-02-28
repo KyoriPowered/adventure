@@ -183,7 +183,7 @@ final class MiniMessageSerializer {
       this.consumer.append(TokenParser.TAG_START);
       this.escapeTagContent(token, QuotingOverride.UNQUOTED);
       this.tagState = TagState.MID_SELF_CLOSING;
-      return null;
+      return this;
     }
 
     @Override

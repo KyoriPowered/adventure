@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.minimessage.tag.standard;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.AbstractTest;
 import org.junit.jupiter.api.Test;
 
@@ -53,5 +54,17 @@ class NewlineTagTest extends AbstractTest {
       .build();
 
     this.assertParsedEquals(expected, input);
+  }
+
+  @Test
+  void testSerializeNewLine() {
+    final String expected = "Attention!<br>This is a new line!";
+
+    final TextComponent.Builder builder = Component.text()
+      .content("Attention!")
+      .append(Component.newline())
+      .append(Component.text("This is a new line!"));
+
+    this.assertSerializedEquals(expected, builder);
   }
 }
