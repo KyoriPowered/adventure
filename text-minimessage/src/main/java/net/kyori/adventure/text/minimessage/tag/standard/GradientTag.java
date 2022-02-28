@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.stream.Stream;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.tag.Tag;
@@ -78,16 +77,7 @@ final class GradientTag extends AbstractColorChangingTag {
           }
         }
 
-        final String argValue = arg.value();
-        final TextColor parsedColor;
-        if (argValue.charAt(0) == '#') {
-          parsedColor = TextColor.fromHexString(argValue);
-        } else {
-          parsedColor = NamedTextColor.NAMES.value(arg.lowerValue());
-        }
-        if (parsedColor == null) {
-          throw ctx.newException(String.format("Unable to parse a color from '%s'. Please use named colours or hex (#RRGGBB) colors.", argValue), args);
-        }
+        final TextColor parsedColor = ColorTagResolver.resolveColor(arg.value(), ctx);
         textColors.add(parsedColor);
       }
 
