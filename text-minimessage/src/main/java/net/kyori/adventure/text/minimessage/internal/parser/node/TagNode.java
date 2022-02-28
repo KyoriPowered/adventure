@@ -26,6 +26,7 @@ package net.kyori.adventure.text.minimessage.internal.parser.node;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import net.kyori.adventure.text.minimessage.internal.parser.ParsingExceptionImpl;
 import net.kyori.adventure.text.minimessage.internal.parser.Token;
 import net.kyori.adventure.text.minimessage.internal.parser.TokenParser;
@@ -59,6 +60,18 @@ public final class TagNode extends ElementNode {
   ) {
     super(parent, token, sourceMessage);
     this.parts = genParts(token, sourceMessage, tagProvider);
+
+    // Assert the tag node has parts.
+    if (this.parts.isEmpty()) {
+      throw new ParsingExceptionImpl("Tag has no parts? " + this, this.sourceMessage(), this.token());
+    }
+
+    // Then assert the tag node has a proper name.
+    try {
+      TagInternals.sanitizeAndCheckTagName(this.name());
+    } catch (final IllegalArgumentException | NullPointerException e) {
+      throw new ParsingExceptionImpl("Invalid tag name " + this.name(), this.sourceMessage(), e, this.token());
+    }
   }
 
   private static @NotNull List<TagPart> genParts(
@@ -94,9 +107,6 @@ public final class TagNode extends ElementNode {
    * @since 4.10.0
    */
   public @NotNull String name() {
-    if (this.parts.isEmpty()) {
-      throw new ParsingExceptionImpl("Tag has no parts? " + this, this.sourceMessage(), this.token());
-    }
     return this.parts.get(0).value();
   }
 

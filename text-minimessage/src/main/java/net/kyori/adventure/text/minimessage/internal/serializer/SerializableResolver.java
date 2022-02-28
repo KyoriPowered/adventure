@@ -25,14 +25,13 @@ package net.kyori.adventure.text.minimessage.internal.serializer;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Locale;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
+import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -72,7 +71,7 @@ public interface SerializableResolver {
   static @NotNull TagResolver claimingComponent(final @NotNull Set<String> names, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler, final @NotNull Function<Component, @Nullable Emitable> componentClaim) {
     final Set<String> ownNames = new HashSet<>(names);
     for (final String name : ownNames) {
-      checkKey(name);
+      TagInternals.checkTagName(name);
     }
     requireNonNull(handler, "handler");
     return new ComponentClaimingResolverImpl(ownNames, handler, componentClaim);
@@ -103,24 +102,10 @@ public interface SerializableResolver {
   static @NotNull TagResolver claimingStyle(final @NotNull Set<String> names, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler, final @NotNull StyleClaim<?> styleClaim) {
     final Set<String> ownNames = new HashSet<>(names);
     for (final String name : ownNames) {
-      checkKey(name);
+      TagInternals.checkTagName(name);
     }
     requireNonNull(handler, "handler");
     return new StyleClaimingResolverImpl(ownNames, handler, styleClaim);
-  }
-
-  /**
-   * Check a key.
-   *
-   * <p>Temporary copy of {@code SingleResolver#checkKey(String)} until we have a better idea.</p>
-   *
-   * @param key the key
-   * @since 4.10.0
-   */
-  static void checkKey(final @NotNull String key) {
-    if (!Objects.requireNonNull(key, "key").equals(key.toLowerCase(Locale.ROOT))) {
-      throw new IllegalArgumentException("key must be lowercase, was " + key);
-    }
   }
 
   /**
