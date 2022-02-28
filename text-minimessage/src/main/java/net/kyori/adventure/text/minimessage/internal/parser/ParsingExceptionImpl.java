@@ -45,7 +45,7 @@ public class ParsingExceptionImpl extends ParsingException {
    * Create a new parsing exception.
    *
    * @param message the detail message
-   * @param originalText the origina text which was parsed
+   * @param originalText the original text which was parsed
    * @param tokens the token which caused the error
    * @since 4.10.0
    */
@@ -88,6 +88,11 @@ public class ParsingExceptionImpl extends ParsingException {
       ? "\n\t" + this.originalText() + arrowInfo
       : "";
     return super.getMessage() + messageInfo;
+  }
+
+  @Override
+  public @Nullable String detailMessage() {
+    return super.getMessage();
   }
 
   /**
@@ -141,4 +146,15 @@ public class ParsingExceptionImpl extends ParsingException {
     return this;
   }
 
+  @Override
+  public int startIndex() {
+    if (this.tokens.length == 0) return LOCATION_UNKNOWN;
+    return this.tokens[0].startIndex();
+  }
+
+  @Override
+  public int endIndex() {
+    if (this.tokens.length == 0) return LOCATION_UNKNOWN;
+    return this.tokens[this.tokens.length - 1].endIndex();
+  }
 }
