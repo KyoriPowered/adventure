@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage.internal;
 
 import java.util.Locale;
 import java.util.Objects;
+import java.util.regex.Pattern;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
  */
 @ApiStatus.Internal
 public final class TagInternals {
-  private static final String TAG_NAME_PATTERN = "[!?#]?[a-z0-9_-]*";
+  private static final Pattern TAG_NAME_PATTERN = Pattern.compile("[!?#]?[a-z0-9_-]*");
 
   private TagInternals() {
   }
@@ -48,8 +49,8 @@ public final class TagInternals {
    * @since 4.10.0
    */
   public static void checkTagName(final @NotNull String tagName) {
-    if (!Objects.requireNonNull(tagName).matches(TAG_NAME_PATTERN)) {
-      throw new IllegalArgumentException("Tag name must match pattern " + TAG_NAME_PATTERN + ", was " + tagName);
+    if (!TAG_NAME_PATTERN.matcher(Objects.requireNonNull(tagName)).matches()) {
+      throw new IllegalArgumentException("Tag name must match pattern " + TAG_NAME_PATTERN.pattern() + ", was " + tagName);
     }
   }
 
