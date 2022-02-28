@@ -90,6 +90,11 @@ public class ParsingExceptionImpl extends ParsingException {
     return super.getMessage() + messageInfo;
   }
 
+  @Override
+  public @Nullable String detailMessage() {
+    return super.getMessage();
+  }
+
   /**
    * Get the message which caused this exception.
    *

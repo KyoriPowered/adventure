@@ -68,6 +68,16 @@ public abstract class ParsingException extends RuntimeException {
   public abstract @NotNull String originalText();
 
   /**
+   * Get the detail message optionally passed with this exception.
+   *
+   * <p>Unlike {@link #getMessage()}, this method does not include location information.</p>
+   *
+   * @return the detail message passed to this exception
+   * @since 4.10.0
+   */
+  public abstract @Nullable String detailMessage();
+
+  /**
    * Get the start index of the location which caused this exception.
    *
    * <p>This index is an index into {@link #originalText()}. If location is unknown, {@link #LOCATION_UNKNOWN} will be returned instead.</p>
