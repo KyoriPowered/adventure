@@ -58,7 +58,8 @@ public final class StandardTags {
         GradientTag.RESOLVER,
         RainbowTag.RESOLVER,
         ResetTag.RESOLVER,
-        NewlineTag.RESOLVER
+        NewlineTag.RESOLVER,
+        TransitionTag.RESOLVER
       )
       .build();
 
@@ -179,6 +180,16 @@ public final class StandardTags {
    */
   public static @NotNull TagResolver rainbow() {
     return RainbowTag.RESOLVER;
+  }
+
+  /**
+   * Get a resolver for the {@value TransitionTag#TRANSITION} tag.
+   *
+   * @return a resolver for the {@value TransitionTag#TRANSITION} tag
+   * @since 4.10.0
+   */
+  public static TagResolver transition() {
+    return TransitionTag.RESOLVER;
   }
 
   /**
