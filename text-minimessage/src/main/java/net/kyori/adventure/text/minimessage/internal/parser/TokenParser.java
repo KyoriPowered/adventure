@@ -108,7 +108,7 @@ public final class TokenParser {
       lastResult = result;
       final StringResolvingMatchedTokenConsumer stringTokenResolver = new StringResolvingMatchedTokenConsumer(lastResult, provider);
 
-      parseString(lastResult, stringTokenResolver);
+      parseString(lastResult, stringTokenResolver, false);
       result = stringTokenResolver.result();
       passes++;
     } while (passes < MAX_DEPTH && !lastResult.equals(result));
@@ -125,9 +125,8 @@ public final class TokenParser {
    * @since 4.10.0
    */
   public static List<Token> tokenize(final String message, final boolean strict) {
-    tryToNag(message, strict);
     final TokenListProducingMatchedTokenConsumer listProducer = new TokenListProducingMatchedTokenConsumer(message);
-    parseString(message, listProducer);
+    parseString(message, listProducer, strict);
     final List<Token> tokens = listProducer.result();
     parseSecondPass(message, tokens);
     return tokens;
@@ -144,9 +143,10 @@ public final class TokenParser {
    *
    * @param message the message
    * @param consumer the consumer
+   * @param throwOnLegacyCharacter whether to throw an exception if the section symbol is found in parsed strings
    * @since 4.10.0
    */
-  public static void parseString(final String message, final MatchedTokenConsumer<?> consumer) {
+  public static void parseString(final String message, final MatchedTokenConsumer<?> consumer, final boolean throwOnLegacyCharacter) {
     FirstPassState state = FirstPassState.NORMAL;
     // If the current state is escaped then the next character is skipped
     boolean escaped = false;
@@ -159,10 +159,17 @@ public final class TokenParser {
     final int length = message.length();
     for (int i = 0; i < length; i++) {
       final int codePoint = message.codePointAt(i);
+      if (throwOnLegacyCharacter && codePoint == '§') {
+        throw new ParsingExceptionImpl(
+          "Legacy formatting codes have been detected in a component - this is unsupported behaviour. Please refer to the Adventure documentation (https://docs.adventure.kyori.net) for more information.",
+          message,
+          new Token(i, i + 2, TokenType.TEXT)
+        );
+      }
+
       if (!Character.isBmpCodePoint(codePoint)) {
         i++;
       }
-
       if (!escaped) {
         // if we're trying to escape and the next character exists
         if (codePoint == ESCAPE && i + 1 < message.length()) {
@@ -612,19 +619,6 @@ public final class TokenParser {
     sb.append(text, from, endIndex);
 
     return sb.toString();
-  }
-
-  /*
-   * Nags the user about using legacy symbol, if they used it.
-   *
-   * @param input the input text
-   * @param strict strict mode
-   * @since 4.10.0
-   */
-  private static void tryToNag(final String input, final boolean strict) {
-    if (input.contains("§") && strict) {
-      throw new IllegalArgumentException("Legacy formatting codes have been detected in a component - this is unsupported behaviour. Please refer to the Adventure documentation (https://docs.adventure.kyori.net) for more information.");
-    }
   }
 
   /**
