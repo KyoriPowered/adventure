@@ -27,8 +27,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.KeybindComponent;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
-import net.kyori.adventure.text.minimessage.serializer.Emitable;
-import net.kyori.adventure.text.minimessage.serializer.SerializableResolver;
+import net.kyori.adventure.text.minimessage.internal.serializer.Emitable;
+import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -39,7 +39,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.10.0
  */
-public final class KeybindTag {
+final class KeybindTag {
   public static final String KEYBIND = "key";
 
   static final TagResolver RESOLVER = SerializableResolver.claimingComponent(KeybindTag.KEYBIND, KeybindTag::create, KeybindTag::emit);

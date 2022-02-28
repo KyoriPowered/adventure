@@ -21,12 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package net.kyori.adventure.text.minimessage.internal.parser.node;
+
+import java.util.function.IntPredicate;
+import net.kyori.adventure.text.minimessage.internal.parser.Token;
+import net.kyori.adventure.text.minimessage.internal.parser.TokenParser;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
- * Serializer for the MiniMessage language.
- *
- * <p>This is currently internal API, likely to change at any time. It may or may not ever become stable.</p>
+ * Represents a string of chars.
  *
  * @since 4.10.0
  */
-@org.jetbrains.annotations.ApiStatus.Internal
-package net.kyori.adventure.text.minimessage.serializer;
+public final class TextNode extends ValueNode {
+  private static final IntPredicate ESCAPES = i -> i == TokenParser.TAG_START || i == TokenParser.ESCAPE;
+
+  /**
+   * Creates a new text node.
+   *
+   * @param parent the parent of this node
+   * @param token the token that created this node
+   * @param sourceMessage the source message
+   * @since 4.10.0
+   */
+  public TextNode(
+    final @Nullable ElementNode parent,
+    final @NotNull Token token,
+    final @NotNull String sourceMessage
+  ) {
+    super(parent, token, sourceMessage, TokenParser.unescape(sourceMessage, token.startIndex(), token.endIndex(), ESCAPES));
+  }
+
+  @Override
+  String valueName() {
+    return "TextNode";
+  }
+}

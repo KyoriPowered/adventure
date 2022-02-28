@@ -24,7 +24,7 @@
 package net.kyori.adventure.text.minimessage;
 
 import java.util.function.Consumer;
-import net.kyori.adventure.text.minimessage.serializer.SerializableResolver;
+import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import org.junit.jupiter.api.Test;
 

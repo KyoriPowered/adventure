@@ -21,8 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package net.kyori.adventure.text.minimessage.internal.parser;
+
 /**
- * Parser.
+ * Represents the type of a token.
+ *
+ * @since 4.10.0
  */
-@org.jetbrains.annotations.ApiStatus.Internal
-package net.kyori.adventure.text.minimessage.parser;
+public enum TokenType {
+  TEXT,
+  OPEN_TAG,
+  OPEN_CLOSE_TAG, // one token that both opens and closes a tag
+  CLOSE_TAG,
+  TAG_VALUE;
+}
