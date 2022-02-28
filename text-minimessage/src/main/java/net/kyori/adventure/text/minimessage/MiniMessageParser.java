@@ -24,7 +24,6 @@
 package net.kyori.adventure.text.minimessage;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -217,12 +216,7 @@ final class MiniMessageParser {
         final Modifying modTransformation = (Modifying) tag;
 
         // first walk the tree
-        final LinkedList<ElementNode> toVisit = new LinkedList<>(node.unsafeChildren());
-        while (!toVisit.isEmpty()) {
-          final ElementNode curr = toVisit.removeFirst();
-          modTransformation.visit(curr);
-          toVisit.addAll(0, curr.unsafeChildren());
-        }
+        this.visitModifying(modTransformation, tagNode, 0);
         modTransformation.postVisit();
       }
 
@@ -255,6 +249,13 @@ final class MiniMessageParser {
     }
 
     return comp;
+  }
+
+  private void visitModifying(final Modifying modTransformation, final ElementNode node, final int depth) {
+    modTransformation.visit(node, depth);
+    for (final ElementNode child : node.unsafeChildren()) {
+      this.visitModifying(modTransformation, child, depth + 1);
+    }
   }
 
   private Component handleModifying(final Modifying modTransformation, final Component current, final int depth) {

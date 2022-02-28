@@ -64,7 +64,7 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
   }
 
   @Override
-  public final void visit(final @NotNull Node current) {
+  public final void visit(final @NotNull Node current, final int depth) {
     if (this.visited) {
       throw new IllegalStateException("Color changing tag instances cannot be re-used, return a new one for each resolve");
     }
