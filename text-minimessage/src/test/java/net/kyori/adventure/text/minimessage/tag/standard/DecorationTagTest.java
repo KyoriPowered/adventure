@@ -40,7 +40,7 @@ class DecorationTagTest extends AbstractTest {
 
   @Test
   void testCompleteness() {
-    final TagResolver decorations = StandardTags.decoration();
+    final TagResolver decorations = StandardTags.decorations();
     for (final String key : TextDecoration.NAMES.keys()) {
       assertTrue(decorations.has(key), () -> "missing " + key);
     }

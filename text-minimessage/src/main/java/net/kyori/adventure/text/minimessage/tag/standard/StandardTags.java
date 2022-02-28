@@ -29,6 +29,9 @@ import java.util.Set;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import org.jetbrains.annotations.NotNull;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Tag types distributed with MiniMessage.
@@ -60,6 +63,19 @@ public final class StandardTags {
       .build();
 
   /**
+   * Get a resolver for a specific text decoration.
+   *
+   * <p>This tag supports both the standard names from {@link TextDecoration#NAMES} as well as a few aliases from {@link DecorationTag}.</p>
+   *
+   * @param decoration the decoration to have a tag for
+   * @return a resolver for a certain decoration's tags
+   * @since 4.10.0
+   */
+  public static TagResolver decorations(final @NotNull TextDecoration decoration) {
+    return requireNonNull(DecorationTag.RESOLVERS.get(decoration), "No resolver found for decoration (this should not be possible?)");
+  }
+
+  /**
    * Get a resolver for all decoration tags.
    *
    * <p>This tag supports both standard names from {@link TextDecoration#NAMES} as well as a few aliases from {@link DecorationTag}.</p>
@@ -67,7 +83,7 @@ public final class StandardTags {
    * @return a resolver for all decoration tags
    * @since 4.10.0
    */
-  public static TagResolver decoration() {
+  public static TagResolver decorations() {
     return DecorationTag.RESOLVER;
   }
 
