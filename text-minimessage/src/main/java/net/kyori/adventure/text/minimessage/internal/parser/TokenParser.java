@@ -85,7 +85,7 @@ public final class TokenParser {
     final boolean strict
   ) throws ParsingException {
     // collect tokens...
-    final List<Token> tokens = tokenize(message, strict);
+    final List<Token> tokens = tokenize(message);
 
     // then build the tree!
     return buildTree(tagProvider, tagNameChecker, tokens, message, originalMessage, strict);
@@ -108,7 +108,7 @@ public final class TokenParser {
       lastResult = result;
       final StringResolvingMatchedTokenConsumer stringTokenResolver = new StringResolvingMatchedTokenConsumer(lastResult, provider);
 
-      parseString(lastResult, stringTokenResolver, false);
+      parseString(lastResult, stringTokenResolver);
       result = stringTokenResolver.result();
       passes++;
     } while (passes < MAX_DEPTH && !lastResult.equals(result));
@@ -120,13 +120,12 @@ public final class TokenParser {
    * Tokenize a minimessage string into a list of tokens.
    *
    * @param message the minimessage string to parse
-   * @param strict whether to be strict in tokenizing
    * @return the root tokens
    * @since 4.10.0
    */
-  public static List<Token> tokenize(final String message, final boolean strict) {
+  public static List<Token> tokenize(final String message) {
     final TokenListProducingMatchedTokenConsumer listProducer = new TokenListProducingMatchedTokenConsumer(message);
-    parseString(message, listProducer, strict);
+    parseString(message, listProducer);
     final List<Token> tokens = listProducer.result();
     parseSecondPass(message, tokens);
     return tokens;
@@ -143,10 +142,9 @@ public final class TokenParser {
    *
    * @param message the message
    * @param consumer the consumer
-   * @param throwOnLegacyCharacter whether to throw an exception if the section symbol is found in parsed strings
    * @since 4.10.0
    */
-  public static void parseString(final String message, final MatchedTokenConsumer<?> consumer, final boolean throwOnLegacyCharacter) {
+  public static void parseString(final String message, final MatchedTokenConsumer<?> consumer) {
     FirstPassState state = FirstPassState.NORMAL;
     // If the current state is escaped then the next character is skipped
     boolean escaped = false;
@@ -159,7 +157,7 @@ public final class TokenParser {
     final int length = message.length();
     for (int i = 0; i < length; i++) {
       final int codePoint = message.codePointAt(i);
-      if (throwOnLegacyCharacter && codePoint == '§') {
+      if (codePoint == '§') {
         throw new ParsingExceptionImpl(
           "Legacy formatting codes have been detected in a component - this is unsupported behaviour. Please refer to the Adventure documentation (https://docs.adventure.kyori.net) for more information.",
           message,

@@ -90,7 +90,7 @@ final class MiniMessageParser {
 
   private void processTokens(final @NotNull StringBuilder sb, final @NotNull String richMessage, final @NotNull ContextImpl context, final BiConsumer<Token, StringBuilder> tagHandler) {
     final TagResolver combinedResolver = TagResolver.resolver(this.tagResolver, context.extraTags());
-    final List<Token> root = TokenParser.tokenize(richMessage, context.strict());
+    final List<Token> root = TokenParser.tokenize(richMessage);
     for (final Token token : root) {
       switch (token.type()) {
         case TEXT:

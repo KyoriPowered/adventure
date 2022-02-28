@@ -53,7 +53,6 @@ import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 import static net.kyori.adventure.text.format.TextDecoration.UNDERLINED;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.parsed;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -473,12 +472,10 @@ public class MiniMessageParserTest extends AbstractTest {
   }
 
   @Test
-  void testLegacySymbolForbiddenInStrictMode() {
+  void testLegacySymbolForbidden() {
     final String failingTest = "Hello §Cfriends";
 
     // Non-strict
-    assertDoesNotThrow(() -> PARSER.deserialize(failingTest));
-
-    System.out.println(assertThrows(ParsingException.class, () -> MiniMessage.builder().strict(true).build().deserialize(failingTest)).getMessage());
+    System.out.println(assertThrows(ParsingException.class, () -> PARSER.deserialize(failingTest)).getMessage());
   }
 }
