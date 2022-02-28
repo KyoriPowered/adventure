@@ -23,13 +23,20 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * An exception thrown when an error occurs while parsing a MiniMessage string.
  *
  * @since 4.10.0
  */
+@ApiStatus.NonExtendable
 public abstract class ParsingException extends RuntimeException {
   private static final long serialVersionUID = 4502774670340827070L;
+
+  public static final int LOCATION_UNKNOWN = -1;
 
   /**
    * Create a new parsing exception with only a message.
@@ -37,7 +44,7 @@ public abstract class ParsingException extends RuntimeException {
    * @param message a detail message describing the error
    * @since 4.10.0
    */
-  protected ParsingException(final String message) {
+  protected ParsingException(final @Nullable String message) {
     super(message);
   }
 
@@ -48,7 +55,7 @@ public abstract class ParsingException extends RuntimeException {
    * @param cause the cause
    * @since 4.10.0
    */
-  protected ParsingException(final String message, final Throwable cause) {
+  protected ParsingException(final @Nullable String message, final @Nullable Throwable cause) {
     super(message, cause);
   }
 
@@ -58,5 +65,25 @@ public abstract class ParsingException extends RuntimeException {
    * @return the original input message
    * @since 4.10.0
    */
-  public abstract String originalText();
+  public abstract @NotNull String originalText();
+
+  /**
+   * Get the start index of the location which caused this exception.
+   *
+   * <p>This index is an index into {@link #originalText()}. If location is unknown, {@link #LOCATION_UNKNOWN} will be returned instead.</p>
+   *
+   * @return the start index
+   * @since 4.10.0
+   */
+  public abstract int startIndex();
+
+  /**
+   * Get the end index of the location which caused this exception.
+   *
+   * <p>This index is an index into {@link #originalText()}. If location is unknown, {@link #LOCATION_UNKNOWN} will be returned instead.</p>
+   *
+   * @return the end index
+   * @since 4.10.0
+   */
+  public abstract int endIndex();
 }
