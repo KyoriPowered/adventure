@@ -26,6 +26,7 @@ package net.kyori.adventure.text.minimessage.tag.standard;
 import java.util.Collections;
 import java.util.PrimitiveIterator;
 import java.util.stream.Stream;
+import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
@@ -149,6 +150,11 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
 
   @Override
   public abstract @NotNull Stream<? extends ExaminableProperty> examinableProperties();
+
+  @Override
+  public final @NotNull String toString() {
+    return Internals.toString(this);
+  }
 
   @Override
   public abstract boolean equals(final @Nullable Object other);
