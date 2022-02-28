@@ -157,10 +157,17 @@ public final class TokenParser {
     final int length = message.length();
     for (int i = 0; i < length; i++) {
       final int codePoint = message.codePointAt(i);
+      if (codePoint == '§') {
+        throw new ParsingExceptionImpl(
+          "Legacy formatting codes have been detected in a component - this is unsupported behaviour. Please refer to the Adventure documentation (https://docs.adventure.kyori.net) for more information.",
+          message,
+          new Token(i, i + 2, TokenType.TEXT)
+        );
+      }
+
       if (!Character.isBmpCodePoint(codePoint)) {
         i++;
       }
-
       if (!escaped) {
         // if we're trying to escape and the next character exists
         if (codePoint == ESCAPE && i + 1 < message.length()) {
