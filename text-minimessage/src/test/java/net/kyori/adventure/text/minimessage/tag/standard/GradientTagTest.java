@@ -506,4 +506,22 @@ class GradientTagTest extends AbstractTest {
 
     this.assertParsedEquals(expected, input);
   }
+
+  // https://github.com/KyoriPowered/adventure/issues/510
+  @Test
+  void testNestedGradientsReallyDontOverrideColors() {
+    final String input = "<gradient:white:blue>A <gradient:yellow:black>B <white>C";
+
+    final Component expected = Component.textOfChildren(
+        text("A", NamedTextColor.WHITE),
+        text(" ", color(0xddddff)),
+        Component.textOfChildren(
+          text("B", NamedTextColor.YELLOW),
+          text(" ", color(0xaaaa39)),
+          text("C", NamedTextColor.WHITE)
+        )
+      );
+
+    this.assertParsedEquals(expected, input);
+  }
 }
