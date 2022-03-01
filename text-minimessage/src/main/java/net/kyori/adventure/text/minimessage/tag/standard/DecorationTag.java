@@ -23,18 +23,21 @@
  */
 package net.kyori.adventure.text.minimessage.tag.standard;
 
+import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
 import net.kyori.adventure.text.minimessage.Context;
-import net.kyori.adventure.text.minimessage.serializer.SerializableResolver;
-import net.kyori.adventure.text.minimessage.serializer.StyleClaim;
-import net.kyori.adventure.text.minimessage.serializer.TokenEmitter;
+import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
+import net.kyori.adventure.text.minimessage.internal.serializer.StyleClaim;
+import net.kyori.adventure.text.minimessage.internal.serializer.TokenEmitter;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -60,32 +63,38 @@ final class DecorationTag {
   public static final String REVERT = "!";
 
   // create resolvers for canonical + configured alternates
-  static Stream<TagResolver> resolvers(final TextDecoration decoration, final @Nullable String shortName, final @NotNull String@NotNull... secondaryAliases) {
+  static Map.Entry<TextDecoration, Stream<TagResolver>> resolvers(final TextDecoration decoration, final @Nullable String shortName, final @NotNull String@NotNull... secondaryAliases) {
     final String canonicalName = TextDecoration.NAMES.key(decoration);
     final Set<String> names = new HashSet<>();
     names.add(canonicalName);
     if (shortName != null) names.add(shortName);
     Collections.addAll(names, secondaryAliases);
 
-    return Stream.concat(
+    return new AbstractMap.SimpleImmutableEntry<>(decoration, Stream.concat(
       Stream.of(SerializableResolver.claimingStyle(
           names,
           (args, ctx) -> DecorationTag.create(decoration, args, ctx),
           claim(decoration, (state, emitter) -> emit(canonicalName, shortName == null ? canonicalName : shortName, state, emitter))
         )),
       names.stream().map(name -> TagResolver.resolver(DecorationTag.REVERT + name, DecorationTag.createNegated(decoration)))
-    );
+    ));
   }
 
-  static final TagResolver RESOLVER = Stream.of(
+  static final Map<TextDecoration, TagResolver> RESOLVERS = Stream.of(
       resolvers(TextDecoration.OBFUSCATED, OBF),
       resolvers(TextDecoration.BOLD, B),
       resolvers(TextDecoration.STRIKETHROUGH, ST),
       resolvers(TextDecoration.UNDERLINED, U),
       resolvers(TextDecoration.ITALIC, EM, I)
     )
-    .flatMap(Function.identity())
-    .collect(TagResolver.toTagResolver());
+    .collect(Collectors.toMap(
+      Map.Entry::getKey,
+      ent -> ent.getValue().collect(TagResolver.toTagResolver()),
+      (l, r) -> TagResolver.builder().resolver(l).resolver(r).build(),
+      LinkedHashMap::new
+    ));
+
+  static final TagResolver RESOLVER = TagResolver.resolver(RESOLVERS.values());
 
   private DecorationTag() {
   }

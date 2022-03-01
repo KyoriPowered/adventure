@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text.minimessage.tag.resolver;
 
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import net.kyori.adventure.text.minimessage.tag.Tag;
@@ -32,12 +31,6 @@ import org.jetbrains.annotations.NotNull;
 final class SingleResolver implements TagResolver.Single, MappableResolver {
   private final String key;
   private final Tag tag;
-
-  static void checkKey(final @NotNull String key) {
-    if (!Objects.requireNonNull(key, "key").equals(key.toLowerCase(Locale.ROOT))) {
-      throw new IllegalArgumentException("key must be lowercase, was " + key);
-    }
-  }
 
   SingleResolver(final String key, final Tag tag) {
     this.key = key;

@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.minimessage.tag.standard;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.AbstractTest;
 import org.junit.jupiter.api.Test;
 
@@ -31,8 +32,15 @@ import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
 import static net.kyori.adventure.text.format.NamedTextColor.RED;
 import static net.kyori.adventure.text.format.TextColor.color;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class NewlineTagTest extends AbstractTest {
+
+  @Test
+  void testRoundtripNewline() {
+    final String input = "<red>Line</red><br><gray>break!";
+    assertEquals(input, PARSER.serialize(PARSER.deserialize(input)));
+  }
 
   @Test
   void testNewLine() {
@@ -46,5 +54,17 @@ class NewlineTagTest extends AbstractTest {
       .build();
 
     this.assertParsedEquals(expected, input);
+  }
+
+  @Test
+  void testSerializeNewLine() {
+    final String expected = "Attention!<br>This is a new line!";
+
+    final TextComponent.Builder builder = Component.text()
+      .content("Attention!")
+      .append(Component.newline())
+      .append(Component.text("This is a new line!"));
+
+    this.assertSerializedEquals(expected, builder);
   }
 }

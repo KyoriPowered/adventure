@@ -38,8 +38,10 @@ import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.TextColor.color;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class TagResolverTest {
@@ -116,6 +118,24 @@ class TagResolverTest {
       .build();
 
     assertEquals(expected, input);
+  }
+
+  @Test
+  void testInvalidTagName() {
+    assertThrows(IllegalArgumentException.class, () -> TagResolver.resolver("INVALID_NAME", Tag.preProcessParsed("something")));
+    assertThrows(IllegalArgumentException.class, () -> TagResolver.resolver("!invalid!", Tag.preProcessParsed("something")));
+    assertThrows(IllegalArgumentException.class, () -> TagResolver.resolver("???", Tag.preProcessParsed("something")));
+    assertThrows(IllegalArgumentException.class, () -> TagResolver.resolver("#test#", Tag.preProcessParsed("something")));
+  }
+
+  @Test
+  void testValidTagName() {
+    assertDoesNotThrow(() -> TagResolver.resolver("valid_-name0909", Tag.preProcessParsed("something")));
+    assertDoesNotThrow(() -> TagResolver.resolver("!valid", Tag.preProcessParsed("something")));
+    assertDoesNotThrow(() -> TagResolver.resolver("?valid", Tag.preProcessParsed("something")));
+    assertDoesNotThrow(() -> TagResolver.resolver("#valid", Tag.preProcessParsed("something")));
+    assertDoesNotThrow(() -> TagResolver.resolver("valid99", Tag.preProcessParsed("something")));
+    assertDoesNotThrow(() -> TagResolver.resolver("v_9_v", Tag.preProcessParsed("something")));
   }
 
   private static @NotNull Tag resolveForTest(final TagResolver resolver, final String tag) {

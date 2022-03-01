@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 /**
- * MiniMessage.
+ * MiniMessage, a friendly text format for representing chat components.
+ *
+ * @see <a href="https://docs.adventure.kyori.net/minimessage/format.html">Format Documentation</a>
  */
 package net.kyori.adventure.text.minimessage;

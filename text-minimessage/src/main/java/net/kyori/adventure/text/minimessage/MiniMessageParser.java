@@ -24,7 +24,6 @@
 package net.kyori.adventure.text.minimessage;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -32,14 +31,14 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.parser.ParsingExceptionImpl;
-import net.kyori.adventure.text.minimessage.parser.Token;
-import net.kyori.adventure.text.minimessage.parser.TokenParser;
-import net.kyori.adventure.text.minimessage.parser.TokenType;
-import net.kyori.adventure.text.minimessage.parser.node.ElementNode;
-import net.kyori.adventure.text.minimessage.parser.node.RootNode;
-import net.kyori.adventure.text.minimessage.parser.node.TagNode;
-import net.kyori.adventure.text.minimessage.parser.node.ValueNode;
+import net.kyori.adventure.text.minimessage.internal.parser.ParsingExceptionImpl;
+import net.kyori.adventure.text.minimessage.internal.parser.Token;
+import net.kyori.adventure.text.minimessage.internal.parser.TokenParser;
+import net.kyori.adventure.text.minimessage.internal.parser.TokenType;
+import net.kyori.adventure.text.minimessage.internal.parser.node.ElementNode;
+import net.kyori.adventure.text.minimessage.internal.parser.node.RootNode;
+import net.kyori.adventure.text.minimessage.internal.parser.node.TagNode;
+import net.kyori.adventure.text.minimessage.internal.parser.node.ValueNode;
 import net.kyori.adventure.text.minimessage.tag.Inserting;
 import net.kyori.adventure.text.minimessage.tag.Modifying;
 import net.kyori.adventure.text.minimessage.tag.Tag;
@@ -99,6 +98,7 @@ final class MiniMessageParser {
           break;
         case OPEN_TAG:
         case CLOSE_TAG:
+        case OPEN_CLOSE_TAG:
           // extract tag name
           if (token.childTokens().isEmpty()) {
             sb.append(richMessage, token.startIndex(), token.endIndex());
@@ -216,12 +216,7 @@ final class MiniMessageParser {
         final Modifying modTransformation = (Modifying) tag;
 
         // first walk the tree
-        final LinkedList<ElementNode> toVisit = new LinkedList<>(node.unsafeChildren());
-        while (!toVisit.isEmpty()) {
-          final ElementNode curr = toVisit.removeFirst();
-          modTransformation.visit(curr);
-          toVisit.addAll(0, curr.unsafeChildren());
-        }
+        this.visitModifying(modTransformation, tagNode, 0);
         modTransformation.postVisit();
       }
 
@@ -254,6 +249,13 @@ final class MiniMessageParser {
     }
 
     return comp;
+  }
+
+  private void visitModifying(final Modifying modTransformation, final ElementNode node, final int depth) {
+    modTransformation.visit(node, depth);
+    for (final ElementNode child : node.unsafeChildren()) {
+      this.visitModifying(modTransformation, child, depth + 1);
+    }
   }
 
   private Component handleModifying(final Modifying modTransformation, final Component current, final int depth) {

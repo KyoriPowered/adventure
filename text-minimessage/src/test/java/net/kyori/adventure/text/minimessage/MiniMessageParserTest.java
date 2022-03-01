@@ -28,14 +28,10 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.tag.nonstandard.CSSColorTagResolver;
-import net.kyori.adventure.text.minimessage.tag.Tag;
-import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.empty;
@@ -55,8 +51,9 @@ import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 import static net.kyori.adventure.text.format.TextDecoration.UNDERLINED;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.parsed;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MiniMessageParserTest extends AbstractTest {
 
@@ -347,40 +344,6 @@ public class MiniMessageParserTest extends AbstractTest {
   }
 
   @Test
-  void testNoEscapesInTags() {
-    class TestResolver implements TagResolver {
-      private static final String EXPECTED_NAME = "hi\\\\there";
-      boolean has = false;
-      boolean resolved = false;
-
-      @Override
-      public @Nullable Tag resolve(@NotNull final String name, @NotNull final ArgumentQueue arguments, @NotNull final Context ctx) throws ParsingException {
-        if (name.equals(EXPECTED_NAME)) {
-          this.resolved = true;
-          return Tag.inserting(Component.text("hi"));
-        }
-        return null;
-      }
-
-      @Override
-      public boolean has(@NotNull final String name) {
-        if (name.equals(EXPECTED_NAME)) {
-          this.has = true;
-          return true;
-        }
-        return false;
-      }
-    }
-
-    final TestResolver instance = new TestResolver();
-
-    this.assertParsedEquals(Component.text("hi"), "<hi\\\\there>", instance);
-
-    assertTrue(instance.has, "has = false; escape was processed");
-    assertTrue(instance.resolved, "resolved = false; escape was processed");
-  }
-
-  @Test
   void testCaseInsensitive() {
     final String input1 = "<red>this is <BOLD>an error</bold> message";
     final String input2 = "<C:reD>also red";
@@ -504,5 +467,70 @@ public class MiniMessageParserTest extends AbstractTest {
       .append(Component.text("CSS Aqua").color(TextColor.color(0x00ffff)));
 
     assertEquals(expected, MiniMessage.builder().editTags(tags -> tags.resolver(new CSSColorTagResolver())).build().deserialize(input));
+  }
+
+  @Test
+  void testTagsSelfClosable() {
+    final String input = "<red>hello <lang:gameMode.creative/> there";
+
+    final Component parsed = Component.text()
+      .content("hello ")
+      .color(NamedTextColor.RED)
+      .append(
+        Component.translatable("gameMode.creative"),
+        Component.text(" there")
+      )
+      .build();
+
+    this.assertParsedEquals(parsed, input);
+  }
+
+  @Test
+  void testIgnorableSelfClosable() {
+    final String input = "<red/>things";
+
+    final Component parsed = Component.text().append(
+        Component.text("", NamedTextColor.RED),
+        Component.text("things")
+      )
+      .build();
+
+    this.assertParsedEquals(parsed, input);
+  }
+
+  @Test
+  void testLegacySymbolForbidden() {
+    final String failingTest = "Hello §Cfriends";
+
+    // Non-strict
+    System.out.println(assertThrows(ParsingException.class, () -> PARSER.deserialize(failingTest)).getMessage());
+  }
+
+  @Test
+  void testInvalidTagNames() {
+    final String failingTest = "Hello <this_is_%not_allowed> but cool?";
+    final String failingTest1 = "Hello <this_is_not_allowed!> but cool?";
+    final String failingTest2 = "Hello <!?this_is_not_allowed> but cool?";
+    final String failingTest3 = "Hello <##this_is_%not_allowed> but cool?";
+
+    assertThrows(ParsingException.class, () -> PARSER.deserialize(failingTest));
+    assertThrows(ParsingException.class, () -> PARSER.deserialize(failingTest1));
+    assertThrows(ParsingException.class, () -> PARSER.deserialize(failingTest2));
+    assertThrows(ParsingException.class, () -> PARSER.deserialize(failingTest3));
+  }
+
+  @Test
+  void testValidTagNames() {
+    final String passingTest = "Hello <this_is_allowed> but cool?";
+    final String passingTest1 = "Hello <this-is-allowed> but cool?";
+    final String passingTest2 = "Hello <!allowed> but cool?";
+    final String passingTest3 = "Hello <?allowed> but cool?";
+    final String passingTest4 = "Hello <#allowed> but cool?";
+
+    assertDoesNotThrow(() -> PARSER.deserialize(passingTest));
+    assertDoesNotThrow(() -> PARSER.deserialize(passingTest1));
+    assertDoesNotThrow(() -> PARSER.deserialize(passingTest2));
+    assertDoesNotThrow(() -> PARSER.deserialize(passingTest3));
+    assertDoesNotThrow(() -> PARSER.deserialize(passingTest4));
   }
 }

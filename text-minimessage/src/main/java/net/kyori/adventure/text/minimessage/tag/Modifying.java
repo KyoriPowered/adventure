@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage.tag;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tree.Node;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -32,18 +33,20 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 4.10.0
  */
+@ApiStatus.OverrideOnly
 public /* non-sealed */ interface Modifying extends Tag {
   /**
    * Method called once for every element in the subtree, allowing calculations to be made before {@link #apply(Component, int) application}.
    *
    * @param current the current element in the subtree
+   * @param depth depth in the tree this node is at
    * @since 4.10.0
    */
-  default void visit(final @NotNull Node current) {
+  default void visit(final @NotNull Node current, final int depth) {
   }
 
   /**
-   * Called after the entire tree has been {@link #visit(Node) visited}.
+   * Called after the entire tree has been {@link #visit(Node, int) visited}.
    *
    * <p>This allows for finalizing calculations made during the tree visit, but before actual application to the child components of this tag.</p>
    *

@@ -29,12 +29,12 @@ import java.util.Iterator;
 import java.util.Set;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.minimessage.parser.TokenParser;
-import net.kyori.adventure.text.minimessage.serializer.ClaimConsumer;
-import net.kyori.adventure.text.minimessage.serializer.Emitable;
-import net.kyori.adventure.text.minimessage.serializer.QuotingOverride;
-import net.kyori.adventure.text.minimessage.serializer.SerializableResolver;
-import net.kyori.adventure.text.minimessage.serializer.TokenEmitter;
+import net.kyori.adventure.text.minimessage.internal.parser.TokenParser;
+import net.kyori.adventure.text.minimessage.internal.serializer.ClaimConsumer;
+import net.kyori.adventure.text.minimessage.internal.serializer.Emitable;
+import net.kyori.adventure.text.minimessage.internal.serializer.QuotingOverride;
+import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
+import net.kyori.adventure.text.minimessage.internal.serializer.TokenEmitter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -82,6 +82,18 @@ final class MiniMessageSerializer {
   }
 
   static final class Collector implements TokenEmitter, ClaimConsumer {
+    enum TagState {
+      TEXT(false),
+      MID(true),
+      MID_SELF_CLOSING(true);
+
+      final boolean isTag;
+
+      TagState(final boolean isTag) {
+        this.isTag = isTag;
+      }
+    }
+
     /**
      * mark tag boundaries within the stack, without needing to mess with typing too much.
      */
@@ -96,7 +108,7 @@ final class MiniMessageSerializer {
     private final StringBuilder consumer;
     private String[] activeTags = new String[4];
     private int tagLevel = 0;
-    private boolean midTag;
+    private TagState tagState = TagState.TEXT;
 
     Collector(final SerializableResolver resolver, final boolean strict, final StringBuilder consumer) {
       this.resolver = resolver;
@@ -128,7 +140,6 @@ final class MiniMessageSerializer {
     }
 
     void popToMark() {
-      this.completeTag();
       if (this.tagLevel == 0) {
         return;
       }
@@ -139,7 +150,6 @@ final class MiniMessageSerializer {
     }
 
     void popAll() {
-      this.completeTag();
       while (this.tagLevel > 0) {
         final String tag = this.activeTags[--this.tagLevel];
         if (tag != MARK) {
@@ -149,9 +159,9 @@ final class MiniMessageSerializer {
     }
 
     void completeTag() {
-      if (this.midTag) {
+      if (this.tagState.isTag) {
         this.consumer.append(TokenParser.TAG_END);
-        this.midTag = false;
+        this.tagState = TagState.TEXT;
       }
     }
 
@@ -162,14 +172,23 @@ final class MiniMessageSerializer {
       this.completeTag();
       this.consumer.append(TokenParser.TAG_START);
       this.escapeTagContent(token, QuotingOverride.UNQUOTED);
-      this.midTag = true;
+      this.tagState = TagState.MID;
       this.pushActiveTag(token);
       return this;
     }
 
     @Override
+    public @NotNull TokenEmitter selfClosingTag(@NotNull final String token) {
+      this.completeTag();
+      this.consumer.append(TokenParser.TAG_START);
+      this.escapeTagContent(token, QuotingOverride.UNQUOTED);
+      this.tagState = TagState.MID_SELF_CLOSING;
+      return this;
+    }
+
+    @Override
     public TokenEmitter argument(final String arg) {
-      if (!this.midTag) {
+      if (!this.tagState.isTag) {
         throw new IllegalStateException("Not within a tag!");
       }
       this.consumer.append(TokenParser.SEPARATOR);
@@ -179,7 +198,7 @@ final class MiniMessageSerializer {
 
     @Override
     public @NotNull TokenEmitter argument(final @NotNull String arg, final @NotNull QuotingOverride quotingPreference) {
-      if (!this.midTag) {
+      if (!this.tagState.isTag) {
         throw new IllegalStateException("Not within a tag!");
       }
       this.consumer.append(TokenParser.SEPARATOR);
@@ -191,15 +210,6 @@ final class MiniMessageSerializer {
     public @NotNull TokenEmitter argument(final @NotNull Component arg) {
       final String serialized = MiniMessageSerializer.serialize(arg, this.resolver, this.strict);
       return this.argument(serialized, QuotingOverride.QUOTED); // always quote tokens
-    }
-
-    @Override
-    public Collector selfClosing(final String token) {
-      this.completeTag();
-      this.consumer.append(TokenParser.TAG_START);
-      this.escapeTagContent(token, QuotingOverride.UNQUOTED);
-      this.midTag = true; // TODO: `<tag/>` syntax
-      return this;
     }
 
     @Override
@@ -276,17 +286,24 @@ final class MiniMessageSerializer {
 
     @Override
     public Collector pop() {
-      this.completeTag();
       this.emitClose(this.popTag(false));
       return this;
     }
 
     private void emitClose(final @NotNull String tag) {
       // currently: we don't keep any arguments, does it ever make sense to?
-      this.consumer.append(TokenParser.TAG_START)
-        .append(TokenParser.CLOSE_TAG);
-      this.escapeTagContent(tag, QuotingOverride.UNQUOTED);
-      this.consumer.append(TokenParser.TAG_END);
+      if (this.tagState.isTag) {
+        if (this.tagState == TagState.MID) { // not _SELF_CLOSING
+          this.consumer.append(TokenParser.CLOSE_TAG);
+        }
+        this.consumer.append(TokenParser.TAG_END);
+        this.tagState = TagState.TEXT;
+      } else {
+        this.consumer.append(TokenParser.TAG_START)
+          .append(TokenParser.CLOSE_TAG);
+        this.escapeTagContent(tag, QuotingOverride.UNQUOTED);
+        this.consumer.append(TokenParser.TAG_END);
+      }
     }
 
     // ClaimCollector

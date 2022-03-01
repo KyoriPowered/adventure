@@ -14,4 +14,8 @@ tasks.checkstyleJmh {
   exclude("**")
 }
 
+tasks.javadoc {
+  exclude("net/kyori/adventure/text/minimessage/internal/**")
+}
+
 applyJarMetadata("net.kyori.adventure.text.minimessage")

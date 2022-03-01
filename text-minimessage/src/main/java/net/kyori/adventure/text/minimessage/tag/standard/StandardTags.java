@@ -29,6 +29,9 @@ import java.util.Set;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import org.jetbrains.annotations.NotNull;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Tag types distributed with MiniMessage.
@@ -55,9 +58,23 @@ public final class StandardTags {
         GradientTag.RESOLVER,
         RainbowTag.RESOLVER,
         ResetTag.RESOLVER,
-        NewlineTag.RESOLVER
+        NewlineTag.RESOLVER,
+        TransitionTag.RESOLVER
       )
       .build();
+
+  /**
+   * Get a resolver for a specific text decoration.
+   *
+   * <p>This tag supports both the standard names from {@link TextDecoration#NAMES} as well as a few aliases from {@link DecorationTag}.</p>
+   *
+   * @param decoration the decoration to have a tag for
+   * @return a resolver for a certain decoration's tags
+   * @since 4.10.0
+   */
+  public static @NotNull TagResolver decorations(final @NotNull TextDecoration decoration) {
+    return requireNonNull(DecorationTag.RESOLVERS.get(decoration), "No resolver found for decoration (this should not be possible?)");
+  }
 
   /**
    * Get a resolver for all decoration tags.
@@ -67,7 +84,7 @@ public final class StandardTags {
    * @return a resolver for all decoration tags
    * @since 4.10.0
    */
-  public static TagResolver decoration() {
+  public static @NotNull TagResolver decorations() {
     return DecorationTag.RESOLVER;
   }
 
@@ -79,7 +96,7 @@ public final class StandardTags {
    * @return a resolver for the {@value ColorTagResolver#COLOR} tags
    * @since 4.10.0
    */
-  public static TagResolver color() {
+  public static @NotNull TagResolver color() {
     return ColorTagResolver.INSTANCE;
   }
 
@@ -89,7 +106,7 @@ public final class StandardTags {
    * @return a resolver for the {@value HoverTag#HOVER} tag
    * @since 4.10.0
    */
-  public static TagResolver hoverEvent() {
+  public static @NotNull TagResolver hoverEvent() {
     return HoverTag.RESOLVER;
   }
 
@@ -99,7 +116,7 @@ public final class StandardTags {
    * @return a resolver for the {@value ClickTag#CLICK} tag
    * @since 4.10.0
    */
-  public static TagResolver clickEvent() {
+  public static @NotNull TagResolver clickEvent() {
     return ClickTag.RESOLVER;
   }
 
@@ -109,7 +126,7 @@ public final class StandardTags {
    * @return a resolver for the {@value KeybindTag#KEYBIND} tag
    * @since 4.10.0
    */
-  public static TagResolver keybind() {
+  public static @NotNull TagResolver keybind() {
     return KeybindTag.RESOLVER;
   }
 
@@ -121,7 +138,7 @@ public final class StandardTags {
    * @return a resolver for the {@value TranslatableTag#TRANSLATE} tag
    * @since 4.10.0
    */
-  public static TagResolver translatable() {
+  public static @NotNull TagResolver translatable() {
     return TranslatableTag.RESOLVER;
   }
 
@@ -131,7 +148,7 @@ public final class StandardTags {
    * @return a resolver for the {@value InsertionTag#INSERTION} tag
    * @since 4.10.0
    */
-  public static TagResolver insertion() {
+  public static @NotNull TagResolver insertion() {
     return InsertionTag.RESOLVER;
   }
 
@@ -141,7 +158,7 @@ public final class StandardTags {
    * @return a resolver for the {@value FontTag#FONT} tag
    * @since 4.10.0
    */
-  public static TagResolver font() {
+  public static @NotNull TagResolver font() {
     return FontTag.RESOLVER;
   }
 
@@ -151,7 +168,7 @@ public final class StandardTags {
    * @return a resolver for the {@value GradientTag#GRADIENT} tag
    * @since 4.10.0
    */
-  public static TagResolver gradient() {
+  public static @NotNull TagResolver gradient() {
     return GradientTag.RESOLVER;
   }
 
@@ -161,8 +178,18 @@ public final class StandardTags {
    * @return a resolver for the {@value RainbowTag#RAINBOW} tag
    * @since 4.10.0
    */
-  public static TagResolver rainbow() {
+  public static @NotNull TagResolver rainbow() {
     return RainbowTag.RESOLVER;
+  }
+
+  /**
+   * Get a resolver for the {@value TransitionTag#TRANSITION} tag.
+   *
+   * @return a resolver for the {@value TransitionTag#TRANSITION} tag
+   * @since 4.10.0
+   */
+  public static TagResolver transition() {
+    return TransitionTag.RESOLVER;
   }
 
   /**
@@ -171,7 +198,7 @@ public final class StandardTags {
    * @return a resolver for the {@value ResetTag#RESET} tag.
    * @since 4.10.0
    */
-  public static TagResolver reset() {
+  public static @NotNull TagResolver reset() {
     return ResetTag.RESOLVER;
   }
 
@@ -183,7 +210,7 @@ public final class StandardTags {
    * @return a resolver for the {@value NewlineTag#NEWLINE} tag.
    * @since 4.10.0
    */
-  public static TagResolver newline() {
+  public static @NotNull TagResolver newline() {
     return NewlineTag.RESOLVER;
   }
 
@@ -196,7 +223,7 @@ public final class StandardTags {
    * @return the resolver for built-in tags
    * @since 4.10.0
    */
-  public static TagResolver defaults() {
+  public static @NotNull TagResolver defaults() {
     return ALL;
   }
 

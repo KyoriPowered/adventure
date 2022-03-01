@@ -46,6 +46,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import net.kyori.adventure.text.format.StyleGetter;
 import net.kyori.adventure.text.format.StyleSetter;
 import net.kyori.adventure.text.format.TextColor;
@@ -1730,6 +1731,35 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Contract(pure = true)
   default @NotNull Component append(final @NotNull ComponentBuilder<?, ?> builder) {
     return this.append(builder.build());
+  }
+
+  /**
+   * Apply a fallback style for this component and its children.
+   *
+   * <p>This method can be used to set the "default" style for a component, whilst still allowing children of the component to override the style.</p>
+   *
+   * @param style style to be used as a fallback
+   * @return the styled component
+   * @since 4.10.0
+   */
+  @Contract(pure = true)
+  default @NotNull Component applyFallbackStyle(final @NotNull Style style) {
+    Objects.requireNonNull(style, "style");
+    return this.style(this.style().merge(style, Style.Merge.Strategy.IF_ABSENT_ON_TARGET));
+  }
+
+  /**
+   * Apply a fallback style for this component and its children.
+   *
+   * <p>This method can be used to set the "default" style for a component, whilst still allowing children of the component to override the style.</p>
+   *
+   * @param style style to be used as a fallback
+   * @return the styled component
+   * @since 4.10.0
+   */
+  @Contract(pure = true)
+  default @NotNull Component applyFallbackStyle(final @NotNull StyleBuilderApplicable@NotNull... style) {
+    return this.applyFallbackStyle(Style.style(style));
   }
 
   /**

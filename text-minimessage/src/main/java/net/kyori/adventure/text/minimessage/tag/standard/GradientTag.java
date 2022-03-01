@@ -29,39 +29,26 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.OptionalDouble;
-import java.util.PrimitiveIterator;
 import java.util.stream.Stream;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.flattener.ComponentFlattener;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Context;
-import net.kyori.adventure.text.minimessage.parser.node.TagNode;
-import net.kyori.adventure.text.minimessage.parser.node.ValueNode;
-import net.kyori.adventure.text.minimessage.tag.Inserting;
-import net.kyori.adventure.text.minimessage.tag.Modifying;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.util.ShadyPines;
-import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A transformation that applies a colour gradient.
  *
  * @since 4.10.0
  */
-final class GradientTag implements Modifying, Examinable {
+final class GradientTag extends AbstractColorChangingTag {
   private static final String GRADIENT = "gradient";
 
   static final TagResolver RESOLVER = TagResolver.resolver(GRADIENT, GradientTag::create);
-
-  private int size = 0;
-  private int disableApplyingColorDepth = -1;
 
   private int index = 0;
   private int colorIndex = 0;
@@ -90,16 +77,7 @@ final class GradientTag implements Modifying, Examinable {
           }
         }
 
-        final String argValue = arg.value();
-        final TextColor parsedColor;
-        if (argValue.charAt(0) == '#') {
-          parsedColor = TextColor.fromHexString(argValue);
-        } else {
-          parsedColor = NamedTextColor.NAMES.value(arg.lowerValue());
-        }
-        if (parsedColor == null) {
-          throw ctx.newException(String.format("Unable to parse a color from '%s'. Please use named colours or hex (#RRGGBB) colors.", argValue), args);
-        }
+        final TextColor parsedColor = ColorTagResolver.resolveColor(arg.value(), ctx);
         textColors.add(parsedColor);
       }
 
@@ -131,23 +109,8 @@ final class GradientTag implements Modifying, Examinable {
   }
 
   @Override
-  public void visit(final @NotNull Node current) {
-    if (current instanceof ValueNode) {
-      final String value = ((ValueNode) current).value();
-      this.size += value.codePointCount(0, value.length());
-    } else if (current instanceof TagNode) {
-      final TagNode tag = (TagNode) current;
-      if (tag.tag() instanceof Inserting) {
-        // ComponentTransformation.apply() returns the value of the component placeholder
-        ComponentFlattener.textOnly().flatten(((Inserting) tag.tag()).value(), s -> this.size += s.codePointCount(0, s.length()));
-      }
-    }
-  }
-
-  @Override
-  public void postVisit() {
-    // init
-    int sectorLength = this.size / (this.colors.length - 1);
+  protected void init() {
+    int sectorLength = this.size() / (this.colors.length - 1);
     if (sectorLength < 1) {
       sectorLength = 1;
     }
@@ -157,53 +120,18 @@ final class GradientTag implements Modifying, Examinable {
   }
 
   @Override
-  public Component apply(final @NotNull Component current, final int depth) {
-    if ((this.disableApplyingColorDepth != -1 && depth > this.disableApplyingColorDepth) || current.style().color() != null) {
-      if (this.disableApplyingColorDepth == -1) {
-        this.disableApplyingColorDepth = depth;
-      }
-      // This component has its own color applied, which overrides ours
-      // We still want to keep track of where we are though if this is text
-      if (current instanceof TextComponent) {
-        final String content = ((TextComponent) current).content();
-        final int len = content.codePointCount(0, content.length());
-        for (int i = 0; i < len; i++) {
-          // increment our color index
-          this.color();
-        }
-      }
-      return current.children(Collections.emptyList());
-    }
-
-    this.disableApplyingColorDepth = -1;
-    if (current instanceof TextComponent && ((TextComponent) current).content().length() > 0) {
-      final TextComponent textComponent = (TextComponent) current;
-      final String content = textComponent.content();
-
-      final TextComponent.Builder parent = Component.text();
-
-      // apply
-      final int[] holder = new int[1];
-      for (final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
-        holder[0] = it.nextInt();
-        final Component comp = Component.text(new String(holder, 0, 1), this.color());
-        parent.append(comp);
-      }
-
-      return parent.build();
-    }
-
-    return Component.empty().mergeStyle(current);
-  }
-
-  private TextColor color() {
+  protected void advanceColor() {
     // color switch needed?
+    this.index++;
     if (this.factorStep * this.index > 1) {
       this.colorIndex++;
       this.index = 0;
     }
+  }
 
-    float factor = this.factorStep * (this.index++ + this.phase);
+  @Override
+  protected TextColor color() {
+    float factor = this.factorStep * (this.index + this.phase);
     // loop around if needed
     if (factor > 1) {
       factor = 1 - (factor - 1);
@@ -226,7 +154,7 @@ final class GradientTag implements Modifying, Examinable {
   }
 
   @Override
-  public boolean equals(final Object other) {
+  public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
     if (other == null || this.getClass() != other.getClass()) return false;
     final GradientTag that = (GradientTag) other;

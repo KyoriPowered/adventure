@@ -30,8 +30,8 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
-import net.kyori.adventure.text.minimessage.serializer.SerializableResolver;
-import net.kyori.adventure.text.minimessage.serializer.StyleClaim;
+import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
+import net.kyori.adventure.text.minimessage.internal.serializer.StyleClaim;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -87,6 +87,11 @@ final class ColorTagResolver implements TagResolver, SerializableResolver.Single
       colorName = name;
     }
 
+    final TextColor color = resolveColor(colorName, ctx);
+    return Tag.styling(color);
+  }
+
+  static @NotNull TextColor resolveColor(final @NotNull String colorName, final @NotNull Context ctx) throws ParsingException {
     final TextColor color;
     if (COLOR_ALIASES.containsKey(colorName)) {
       color = COLOR_ALIASES.get(colorName);
@@ -97,10 +102,9 @@ final class ColorTagResolver implements TagResolver, SerializableResolver.Single
     }
 
     if (color == null) {
-      throw ctx.newException("Don't know how to turn '" + colorName + "' into a color");
+      throw ctx.newException(String.format("Unable to parse a color from '%s'. Please use named colours or hex (#RRGGBB) colors.", colorName));
     }
-
-    return Tag.styling(color);
+    return color;
   }
 
   @Override
