@@ -26,8 +26,6 @@ package net.kyori.adventure.text.minimessage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.minimessage.tag.nonstandard.CSSColorTagResolver;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tree.Node;
@@ -404,69 +402,6 @@ public class MiniMessageParserTest extends AbstractTest {
       "}\n";
 
     assertEquals(expected, tree.toString());
-  }
-
-  @Test
-  public void singleCssColor() {
-    final String input = "<aliceblue>Alice Blue";
-
-    final Component expected = Component.text("Alice Blue").color(TextColor.color(0xf0f8ff));
-
-    assertEquals(expected, MiniMessage.builder().editTags(tags -> tags.resolver(new CSSColorTagResolver())).build().deserialize(input));
-  }
-
-  @Test
-  public void multipleCssColors() {
-    final String input = "<aliceblue>Blue</aliceblue> White <orange>Orange";
-
-    final Component expected = Component.empty()
-      .append(Component.text("Blue").color(TextColor.color(0xf0f8ff)))
-      .append(Component.text(" White "))
-      .append(Component.text("Orange").color(TextColor.color(0xffa500)));
-
-    assertEquals(expected, MiniMessage.builder().editTags(tags -> tags.resolver(new CSSColorTagResolver())).build().deserialize(input));
-  }
-
-  @Test
-  public void multipleCssColorsUsingArgs() {
-    final String input = "<css:aliceblue>Blue</css:aliceblue> White <css:orange>Orange";
-
-    final Component expected = Component.empty()
-      .append(Component.text("Blue").color(TextColor.color(0xf0f8ff)))
-      .append(Component.text(" White "))
-      .append(Component.text("Orange").color(TextColor.color(0xffa500)));
-
-    assertEquals(expected, MiniMessage.builder().editTags(tags -> tags.resolver(new CSSColorTagResolver())).build().deserialize(input));
-  }
-
-  @Test
-  public void mcColorThatExistsInCss() {
-    final String input = "<aqua>Minecraft";
-
-    final Component expected = Component.text("Minecraft").color(NamedTextColor.AQUA);
-
-    assertEquals(expected, MiniMessage.builder().editTags(tags -> tags.resolver(new CSSColorTagResolver())).build().deserialize(input));
-  }
-
-  @Test
-  public void specifyCssColorThatExistsInMc() {
-    final String input = "<css:aqua>CSS";
-
-    final Component expected = Component.text("CSS").color(TextColor.color(0x00ffff));
-
-    assertEquals(expected, MiniMessage.builder().editTags(tags -> tags.resolver(new CSSColorTagResolver())).build().deserialize(input));
-  }
-
-  @Test
-  public void cssAndMcColors() {
-    final String input = "<aqua>MC Aqua</aqua> White <css:aqua>CSS Aqua</css:aqua>";
-
-    final Component expected = Component.empty()
-      .append(Component.text("MC Aqua").color(TextColor.color(0x55ffff)))
-      .append(Component.text(" White "))
-      .append(Component.text("CSS Aqua").color(TextColor.color(0x00ffff)));
-
-    assertEquals(expected, MiniMessage.builder().editTags(tags -> tags.resolver(new CSSColorTagResolver())).build().deserialize(input));
   }
 
   @Test
