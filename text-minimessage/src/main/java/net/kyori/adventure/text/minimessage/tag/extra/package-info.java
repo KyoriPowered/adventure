@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 /**
- * Additional, non-standard, tags for MiniMessage.
+ * Extra tag types for MiniMessage.
  *
- * <p>These tags will <em>NOT</em> be included in MiniMessage by default.</p>
+ * <p>The tags in {@link ExtraTags} will not be included in MiniMessage instances by default.</p>
  *
- * @since 4.10.0
+ * @since 4.11.0
  */
-package net.kyori.adventure.text.minimessage.tag.nonstandard;
+package net.kyori.adventure.text.minimessage.tag.extra;

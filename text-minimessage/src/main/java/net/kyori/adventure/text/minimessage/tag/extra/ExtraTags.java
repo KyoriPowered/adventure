@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.minimessage.tag.nonstandard;
+package net.kyori.adventure.text.minimessage.tag.extra;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,18 +31,95 @@ import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * A transformation applying a single css text color.
+ * Extra tag types for MiniMessage.
  *
- * @since 4.10.0
+ * <p>These extra types are not included in the default tag resolver.</p>
+ *
+ * @since 4.11.0
  */
-@ApiStatus.Internal
-public class CSSColorTagResolver implements TagResolver {
-  public static final Map<String, TextColor> CSS_COLORS = new HashMap<>();
+public final class ExtraTags {
+
+  private ExtraTags() {
+  }
+
+  /**
+   * Get a resolver for the standard <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/color_value">CSS colors</a>.
+   *
+   * @return a resolver for CSS colors
+   * @since 4.11.0
+   */
+  public static TagResolver cssColors() {
+    return color("css", CSS_COLORS);
+  }
+
+  /**
+   * Create a color resolver for a custom map of colors.
+   *
+   * @param aliases the map of color names and their respective values
+   * @return a resolver for your colors
+   * @since 4.11.0
+   */
+  public static TagResolver color(final @NotNull Map<@NotNull String, @NotNull TextColor> aliases) {
+    return new TagResolver() {
+      @Override
+      public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
+        if (!this.has(name)) {
+          return null;
+        }
+
+        return Tag.styling(aliases.get(name));
+      }
+
+      @Override
+      public boolean has(final @NotNull String name) {
+        return aliases.containsKey(name);
+      }
+    };
+  }
+
+  /**
+   * Create a color resolver for a custom map of colors.
+   *
+   * @param qualifier the qualifier that can be used to specify these colors in the case of another resolver having the same key for a color
+   * @param aliases the map of color names and their respective values
+   * @return a resolver for your colors
+   * @since 4.11.0
+   */
+  public static TagResolver color(final @NotNull String qualifier, final @NotNull Map<@NotNull String, @NotNull TextColor> aliases) {
+    return new TagResolver() {
+      @Override
+      public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
+        if (!this.has(name)) {
+          return null;
+        }
+
+        final String colorName;
+        if (name.equals(qualifier)) {
+          colorName = arguments.popOr("Expected to find a color name: <" + qualifier + "name>").lowerValue();
+        } else {
+          colorName = name;
+        }
+
+        final TextColor color = aliases.get(colorName);
+        if (color == null) {
+          throw ctx.newException("Don't know how to turn '" + colorName + "' into a color");
+        }
+
+        return Tag.styling(color);
+      }
+
+      @Override
+      public boolean has(final @NotNull String name) {
+        return name.equals(qualifier) || aliases.containsKey(name);
+      }
+    };
+  }
+
+  private static final Map<String, TextColor> CSS_COLORS = new HashMap<>();
 
   static {
     CSS_COLORS.put("aliceblue", TextColor.color(0xf0f8ff));
@@ -192,31 +269,5 @@ public class CSSColorTagResolver implements TagResolver {
     CSS_COLORS.put("whitesmoke", TextColor.color(0xf5f5f5));
     CSS_COLORS.put("yellow", TextColor.color(0xffff00));
     CSS_COLORS.put("yellowgreen", TextColor.color(0x9acd32));
-  }
-
-  @Override
-  public @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue args, final @NotNull Context ctx) throws ParsingException {
-    if (!this.has(name)) {
-      return null;
-    }
-
-    final String colorName;
-    if (name.equals("css")) {
-      colorName = args.popOr("Expected to find a css color name: <name>").lowerValue();
-    } else {
-      colorName = name;
-    }
-
-    final TextColor color = CSS_COLORS.get(colorName);
-    if (color == null) {
-      throw ctx.newException("Don't know how to turn '" + colorName + "' into a css color");
-    }
-
-    return Tag.styling(color);
-  }
-
-  @Override
-  public boolean has(final @NotNull String name) {
-    return CSS_COLORS.containsKey(name) || name.equals("css");
   }
 }
