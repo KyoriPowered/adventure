@@ -31,6 +31,7 @@ import java.util.Locale;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 import net.kyori.adventure.text.minimessage.ParsingException;
+import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import net.kyori.adventure.text.minimessage.internal.parser.match.MatchedTokenConsumer;
 import net.kyori.adventure.text.minimessage.internal.parser.match.StringResolvingMatchedTokenConsumer;
 import net.kyori.adventure.text.minimessage.internal.parser.match.TokenListProducingMatchedTokenConsumer;
@@ -375,6 +376,15 @@ public final class TokenParser {
 
         case OPEN_TAG:
         case OPEN_CLOSE_TAG:
+          // Check if this even is a valid tag
+          final Token tagNamePart = token.childTokens().get(0);
+          final String tagName = message.substring(tagNamePart.startIndex(), tagNamePart.endIndex());
+          if (!TagInternals.sanitizeAndCheckValidTagName(tagName)) {
+            // This wouldn't be a valid tag, just parse it as text instead!
+            node.addChild(new TextNode(node, token, message));
+            break;
+          }
+
           final TagNode tagNode = new TagNode(node, token, message, tagProvider);
           if (tagNameChecker.test(tagNode.name())) {
             final Tag tag = tagProvider.resolve(tagNode);

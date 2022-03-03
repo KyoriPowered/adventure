@@ -443,15 +443,17 @@ public class MiniMessageParserTest extends AbstractTest {
 
   @Test
   void testInvalidTagNames() {
-    final String failingTest = "Hello <this_is_%not_allowed> but cool?";
-    final String failingTest1 = "Hello <this_is_not_allowed!> but cool?";
-    final String failingTest2 = "Hello <!?this_is_not_allowed> but cool?";
-    final String failingTest3 = "Hello <##this_is_%not_allowed> but cool?";
+    final String input1 = "Hello <this_is_%not_allowed> but ignored?";
+    final String input2 = "Hello <this_is_not_allowed!> but ignored?";
+    final String input3 = "Hello <!?this_is_not_allowed> but ignored?";
+    final String input4 = "Hello <##this_is_%not_allowed> but ignored?";
+    final String input5 = "<3 >Mini<3 />Message</3 >";
 
-    assertThrows(ParsingException.class, () -> PARSER.deserialize(failingTest));
-    assertThrows(ParsingException.class, () -> PARSER.deserialize(failingTest1));
-    assertThrows(ParsingException.class, () -> PARSER.deserialize(failingTest2));
-    assertThrows(ParsingException.class, () -> PARSER.deserialize(failingTest3));
+    this.assertParsedEquals(Component.text(input1), input1);
+    this.assertParsedEquals(Component.text(input2), input2);
+    this.assertParsedEquals(Component.text(input3), input3);
+    this.assertParsedEquals(Component.text(input4), input4);
+    this.assertParsedEquals(Component.text(input5), input5);
   }
 
   @Test
