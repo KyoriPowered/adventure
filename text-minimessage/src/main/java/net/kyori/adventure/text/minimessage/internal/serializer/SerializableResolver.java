@@ -71,7 +71,7 @@ public interface SerializableResolver {
   static @NotNull TagResolver claimingComponent(final @NotNull Set<String> names, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler, final @NotNull Function<Component, @Nullable Emitable> componentClaim) {
     final Set<String> ownNames = new HashSet<>(names);
     for (final String name : ownNames) {
-      TagInternals.checkTagName(name);
+      TagInternals.assertValidTagName(name);
     }
     requireNonNull(handler, "handler");
     return new ComponentClaimingResolverImpl(ownNames, handler, componentClaim);
@@ -102,7 +102,7 @@ public interface SerializableResolver {
   static @NotNull TagResolver claimingStyle(final @NotNull Set<String> names, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler, final @NotNull StyleClaim<?> styleClaim) {
     final Set<String> ownNames = new HashSet<>(names);
     for (final String name : ownNames) {
-      TagInternals.checkTagName(name);
+      TagInternals.assertValidTagName(name);
     }
     requireNonNull(handler, "handler");
     return new StyleClaimingResolverImpl(ownNames, handler, styleClaim);

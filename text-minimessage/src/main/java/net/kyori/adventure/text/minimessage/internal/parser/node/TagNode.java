@@ -68,7 +68,7 @@ public final class TagNode extends ElementNode {
 
     // Then assert the tag node has a proper name.
     try {
-      TagInternals.sanitizeAndCheckTagName(this.name());
+      TagInternals.sanitizeAndAssertValidTagName(this.name());
     } catch (final IllegalArgumentException | NullPointerException e) {
       throw new ParsingExceptionImpl("Invalid tag name " + this.name(), this.sourceMessage(), e, this.token());
     }

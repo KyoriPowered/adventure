@@ -92,7 +92,7 @@ public interface TagResolver {
    * @since 4.10.0
    */
   static TagResolver.@NotNull Single resolver(final @NotNull String name, final @NotNull Tag tag) {
-    TagInternals.checkTagName(name);
+    TagInternals.assertValidTagName(name);
     return new SingleResolver(
       name,
       requireNonNull(tag, "tag")
@@ -122,7 +122,7 @@ public interface TagResolver {
   static @NotNull TagResolver resolver(final @NotNull Set<String> names, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler) {
     final Set<String> ownNames = new HashSet<>(names);
     for (final String name : ownNames) {
-      TagInternals.checkTagName(name);
+      TagInternals.assertValidTagName(name);
     }
     requireNonNull(handler, "handler");
 
