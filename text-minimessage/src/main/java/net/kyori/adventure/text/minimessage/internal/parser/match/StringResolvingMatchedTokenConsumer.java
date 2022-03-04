@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.minimessage.internal.parser.match;
 
 import java.util.Objects;
+import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import net.kyori.adventure.text.minimessage.internal.parser.TokenParser;
 import net.kyori.adventure.text.minimessage.internal.parser.TokenParser.TagProvider;
 import net.kyori.adventure.text.minimessage.internal.parser.TokenType;
@@ -69,12 +70,15 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
       final String match = this.input.substring(start, end);
       final String tag = this.input.substring(start + 1, end - 1);
 
-      // we might care if it's a pre-process!
-      final @Nullable Tag replacement = this.tagProvider.resolve(TokenParser.TagProvider.sanitizePlaceholderName(tag));
+      // we might care if it's a valid tag!
+      if (TagInternals.sanitizeAndCheckValidTagName(tag)) {
+        // we might care if it's a pre-process!
+        final @Nullable Tag replacement = this.tagProvider.resolve(TokenParser.TagProvider.sanitizePlaceholderName(tag));
 
-      if (replacement instanceof PreProcess) {
-        this.builder.append(Objects.requireNonNull(((PreProcess) replacement).value(), "PreProcess replacements cannot return null"));
-        return;
+        if (replacement instanceof PreProcess) {
+          this.builder.append(Objects.requireNonNull(((PreProcess) replacement).value(), "PreProcess replacements cannot return null"));
+          return;
+        }
       }
 
       // if we get here, the placeholder wasn't found or was null

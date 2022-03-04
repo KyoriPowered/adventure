@@ -26,10 +26,13 @@ package net.kyori.adventure.text.minimessage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.empty;
@@ -471,5 +474,24 @@ public class MiniMessageParserTest extends AbstractTest {
     assertDoesNotThrow(() -> PARSER.deserialize(passingTest2));
     assertDoesNotThrow(() -> PARSER.deserialize(passingTest3));
     assertDoesNotThrow(() -> PARSER.deserialize(passingTest4));
+  }
+
+  @Test
+  void invalidPreprocessTagNames() {
+    final String input = "Some<##>of<>these<tag>are<3 >tags";
+    final Component expected = Component.text("Some<##>of<>these(meow)are<3 >tags");
+    final TagResolver alwaysMatchingResolver = new TagResolver() {
+      @Override
+      public Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
+        return Tag.preProcessParsed("(meow)");
+      }
+
+      @Override
+      public boolean has(final @NotNull String name) {
+        return true;
+      }
+    };
+
+    assertParsedEquals(expected, input, alwaysMatchingResolver);
   }
 }
