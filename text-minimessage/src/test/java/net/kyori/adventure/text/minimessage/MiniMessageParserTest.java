@@ -26,10 +26,13 @@ package net.kyori.adventure.text.minimessage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.empty;
@@ -443,15 +446,19 @@ public class MiniMessageParserTest extends AbstractTest {
 
   @Test
   void testInvalidTagNames() {
-    final String failingTest = "Hello <this_is_%not_allowed> but cool?";
-    final String failingTest1 = "Hello <this_is_not_allowed!> but cool?";
-    final String failingTest2 = "Hello <!?this_is_not_allowed> but cool?";
-    final String failingTest3 = "Hello <##this_is_%not_allowed> but cool?";
+    final String input1 = "Hello <this_is_%not_allowed> but ignored?";
+    final String input2 = "Hello <this_is_not_allowed!> but ignored?";
+    final String input3 = "Hello <!?this_is_not_allowed> but ignored?";
+    final String input4 = "Hello <##this_is_%not_allowed> but ignored?";
+    final String input5 = "<3 >Mini<3 />Message</3 >";
+    final String input6 = "this message <\"red\">isn't red";
 
-    assertThrows(ParsingException.class, () -> PARSER.deserialize(failingTest));
-    assertThrows(ParsingException.class, () -> PARSER.deserialize(failingTest1));
-    assertThrows(ParsingException.class, () -> PARSER.deserialize(failingTest2));
-    assertThrows(ParsingException.class, () -> PARSER.deserialize(failingTest3));
+    this.assertParsedEquals(Component.text(input1), input1);
+    this.assertParsedEquals(Component.text(input2), input2);
+    this.assertParsedEquals(Component.text(input3), input3);
+    this.assertParsedEquals(Component.text(input4), input4);
+    this.assertParsedEquals(Component.text(input5), input5);
+    this.assertParsedEquals(Component.text(input6), input6);
   }
 
   @Test
@@ -467,5 +474,24 @@ public class MiniMessageParserTest extends AbstractTest {
     assertDoesNotThrow(() -> PARSER.deserialize(passingTest2));
     assertDoesNotThrow(() -> PARSER.deserialize(passingTest3));
     assertDoesNotThrow(() -> PARSER.deserialize(passingTest4));
+  }
+
+  @Test
+  void invalidPreprocessTagNames() {
+    final String input = "Some<##>of<>these<tag>are<3 >tags";
+    final Component expected = Component.text("Some<##>of<>these(meow)are<3 >tags");
+    final TagResolver alwaysMatchingResolver = new TagResolver() {
+      @Override
+      public Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
+        return Tag.preProcessParsed("(meow)");
+      }
+
+      @Override
+      public boolean has(final @NotNull String name) {
+        return true;
+      }
+    };
+
+    assertParsedEquals(expected, input, alwaysMatchingResolver);
   }
 }
