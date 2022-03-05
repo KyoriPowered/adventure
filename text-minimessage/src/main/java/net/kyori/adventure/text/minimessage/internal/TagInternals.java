@@ -48,10 +48,22 @@ public final class TagInternals {
    * @param tagName the name of the tag
    * @since 4.10.0
    */
-  public static void checkTagName(final @NotNull String tagName) {
+  public static void assertValidTagName(final @NotNull String tagName) {
     if (!TAG_NAME_PATTERN.matcher(Objects.requireNonNull(tagName)).matches()) {
       throw new IllegalArgumentException("Tag name must match pattern " + TAG_NAME_PATTERN.pattern() + ", was " + tagName);
     }
+  }
+
+  /**
+   * Checks if a tag name matches the pattern for allowed tag names, first sanitizing it
+   * by converting the tag name to lowercase. Returns a boolean representing the validity
+   *
+   * @param tagName the name of the tag
+   * @return validity of this tag when sanitized
+   * @since 4.10.1
+   */
+  public static boolean sanitizeAndCheckValidTagName(final @NotNull String tagName) {
+    return TAG_NAME_PATTERN.matcher(Objects.requireNonNull(tagName).toLowerCase(Locale.ROOT)).matches();
   }
 
   /**
@@ -62,7 +74,7 @@ public final class TagInternals {
    * @param tagName the name of the tag
    * @since 4.10.0
    */
-  public static void sanitizeAndCheckTagName(final @NotNull String tagName) {
-    checkTagName(Objects.requireNonNull(tagName).toLowerCase(Locale.ROOT));
+  public static void sanitizeAndAssertValidTagName(final @NotNull String tagName) {
+    assertValidTagName(Objects.requireNonNull(tagName).toLowerCase(Locale.ROOT));
   }
 }
