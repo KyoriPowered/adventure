@@ -46,7 +46,7 @@ dependencies {
   annotationProcessor("ca.stellardrift:contract-validator:1.0.1") // https://github.com/zml2008/contract-validator
   api(platform(project(":adventure-bom")))
   checkstyle("ca.stellardrift:stylecheck:0.1")
-  testImplementation("com.google.guava:guava-testlib:31.0.1-jre")
+  testImplementation("com.google.guava:guava-testlib:31.1-jre")
   testImplementation("com.google.truth:truth:1.1.3")
   testImplementation("com.google.truth.extensions:truth-java8-extension:1.1.3")
   testImplementation(platform("org.junit:junit-bom:5.8.2"))
