@@ -40,6 +40,7 @@ public class ParsingExceptionImpl extends ParsingException {
 
   private final String originalText;
   private Token @NotNull [] tokens;
+  private final boolean withStackTrace;
 
   /**
    * Create a new parsing exception.
@@ -57,6 +58,7 @@ public class ParsingExceptionImpl extends ParsingException {
     super(message);
     this.tokens = tokens;
     this.originalText = originalText;
+    this.withStackTrace = false;
   }
 
   /**
@@ -65,6 +67,7 @@ public class ParsingExceptionImpl extends ParsingException {
    * @param message the detail message
    * @param originalText the original text which was parsed
    * @param cause the cause
+   * @param withStackTrace whether to generate a stacktrace
    * @param tokens the token which caused the error
    * @since 4.10.0
    */
@@ -72,11 +75,13 @@ public class ParsingExceptionImpl extends ParsingException {
     final String message,
     final @Nullable String originalText,
     final @Nullable Throwable cause,
+    final boolean withStackTrace,
     final @NotNull Token @NotNull ... tokens
   ) {
     super(message, cause);
     this.tokens = tokens;
     this.originalText = originalText;
+    this.withStackTrace = withStackTrace;
   }
 
   @Override
@@ -142,7 +147,10 @@ public class ParsingExceptionImpl extends ParsingException {
   }
 
   @Override
-  public ParsingExceptionImpl fillInStackTrace() { // no stacktrace
+  public Throwable fillInStackTrace() {
+    if (this.withStackTrace) {
+      return super.fillInStackTrace();
+    }
     return this;
   }
 
