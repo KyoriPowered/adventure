@@ -134,7 +134,8 @@ final class JoinConfigurationImpl implements JoinConfiguration {
       ExaminableProperty.of("lastSeparator", this.lastSeparator),
       ExaminableProperty.of("lastSeparatorIfSerial", this.lastSeparatorIfSerial),
       ExaminableProperty.of("convertor", this.convertor),
-      ExaminableProperty.of("predicate", this.predicate)
+      ExaminableProperty.of("predicate", this.predicate),
+      ExaminableProperty.of("rootStyle", this.rootStyle)
     );
   }
 
