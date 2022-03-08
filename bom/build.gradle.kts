@@ -1,5 +1,5 @@
 plugins {
-  `java-platform`
+  id("java-platform")
   id("adventure.base-conventions")
 }
 
