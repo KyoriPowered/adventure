@@ -3,9 +3,9 @@ plugins {
 }
 
 dependencies {
-  api(project(":adventure-api"))
-  api("org.spongepowered:configurate-core:3.7.3")
-  testImplementation(project(":adventure-text-serializer-gson"))
+  api(projects.adventureApi)
+  api(libs.configurate.v3)
+  testImplementation(projects.adventureTextSerializerGson)
 }
 
 applyJarMetadata("net.kyori.adventure.serializer.configurate3")

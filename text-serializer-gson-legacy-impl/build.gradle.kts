@@ -3,9 +3,9 @@ plugins {
 }
 
 dependencies {
-  api(project(":adventure-api"))
-  api(project(":adventure-text-serializer-gson"))
-  api(project(":adventure-nbt"))
+  api(projects.adventureApi)
+  api(projects.adventureTextSerializerGson)
+  api(projects.adventureNbt)
 }
 
 applyJarMetadata("net.kyori.adventure.text.serializer.gson.legacyimpl")

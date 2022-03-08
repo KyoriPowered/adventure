@@ -1,6 +1,6 @@
 plugins {
   id("adventure.common-conventions")
-  kotlin("jvm") version "1.6.10"
+  alias(libs.plugins.kotlin)
 }
 
 kotlin {
@@ -17,9 +17,9 @@ kotlin {
 }
 
 dependencies {
-  api(project(":adventure-api"))
-  implementation(kotlin("stdlib-jdk8"))
-  testImplementation(kotlin("test-junit5"))
+  api(projects.adventureApi)
+  implementation(libs.kotlin.stdlib)
+  testImplementation(libs.kotlin.testJunit5)
 }
 
 applyJarMetadata("net.kyori.adventure.extra.kotlin")

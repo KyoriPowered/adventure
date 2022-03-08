@@ -1,5 +1,5 @@
 plugins {
-  id("adventure.parent-build-logic")
+  alias(libs.plugins.indra.sonatype)
 }
 
 group = "net.kyori"

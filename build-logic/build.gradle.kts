@@ -2,25 +2,17 @@ plugins {
   `kotlin-dsl`
 }
 
-repositories {
-  maven(url = "https://repo.stellardrift.ca/repository/internal/") {
-    name = "stellardriftReleases"
-    mavenContent { releasesOnly() }
-  }
-  maven(url = "https://repo.stellardrift.ca/repository/snapshots/") {
-    name = "stellardriftSnapshots"
-    mavenContent { snapshotsOnly() }
-  }
+dependencies {
+  implementation(libs.build.indra)
+  implementation(libs.build.indra.sonatype)
+  implementation(libs.build.indra.crossdoc)
+  implementation(libs.build.testLogger)
+  compileOnly(libs.build.jmh)
+  implementation(libs.build.goomph)
 }
 
 dependencies {
-  val indraVersion = "2.1.1"
-  implementation("net.kyori", "indra-common", indraVersion)
-  implementation("net.kyori", "indra-publishing-sonatype", indraVersion)
-  implementation("net.kyori", "indra-crossdoc", indraVersion)
-  implementation("com.adarshr", "gradle-test-logger-plugin", "3.2.0")
-  implementation("me.champeau.jmh", "jmh-gradle-plugin", "0.6.6")
-  implementation("com.diffplug.gradle", "goomph", "3.35.0")
+  compileOnly(files(libs::class.java.protectionDomain.codeSource.location))
 }
 
 java {

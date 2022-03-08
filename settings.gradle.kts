@@ -13,6 +13,15 @@ pluginManagement {
   }
 }
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
+dependencyResolutionManagement {
+  repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+  repositories {
+    mavenCentral()
+  }
+}
+
 rootProject.name = "adventure-parent"
 
 // Make sure to update bom/build.gradle.kts when making changes to modules.
