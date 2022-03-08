@@ -7,7 +7,10 @@ val libs = extensions.getByType(org.gradle.accessors.dm.LibrariesForLibs::class)
 
 indra {
   javaVersions {
-    testWith(8, 11, 17)
+    val testVersions = (project.property("testJdks") as String)
+      .split(",")
+      .map { it.trim().toInt() }
+    testWith().addAll(testVersions)
   }
   checkstyle(libs.versions.checkstyle.get())
 
