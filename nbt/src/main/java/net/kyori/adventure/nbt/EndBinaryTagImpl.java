@@ -23,35 +23,16 @@
  */
 package net.kyori.adventure.nbt;
 
-import org.jetbrains.annotations.NotNull;
+final class EndBinaryTagImpl extends AbstractBinaryTag implements EndBinaryTag {
+  static final EndBinaryTagImpl INSTANCE = new EndBinaryTagImpl();
 
-/**
- * A binary tag holding a {@code short} value.
- *
- * @since 4.0.0
- */
-public interface ShortBinaryTag extends NumberBinaryTag {
-  /**
-   * Creates a binary tag holding a {@code short} value.
-   *
-   * @param value the value
-   * @return a binary tag
-   * @since 4.0.0
-   */
-  static @NotNull ShortBinaryTag of(final short value) {
-    return new ShortBinaryTagImpl(value);
+  @Override
+  public boolean equals(final Object that) {
+    return this == that;
   }
 
   @Override
-  default @NotNull BinaryTagType<ShortBinaryTag> type() {
-    return BinaryTagTypes.SHORT;
+  public int hashCode() {
+    return 0;
   }
-
-  /**
-   * Gets the value.
-   *
-   * @return the value
-   * @since 4.0.0
-   */
-  short value();
 }

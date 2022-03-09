@@ -23,35 +23,40 @@
  */
 package net.kyori.adventure.nbt;
 
+import java.util.stream.Stream;
+import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-/**
- * A binary tag holding a {@code short} value.
- *
- * @since 4.0.0
- */
-public interface ShortBinaryTag extends NumberBinaryTag {
-  /**
-   * Creates a binary tag holding a {@code short} value.
-   *
-   * @param value the value
-   * @return a binary tag
-   * @since 4.0.0
-   */
-  static @NotNull ShortBinaryTag of(final short value) {
-    return new ShortBinaryTagImpl(value);
+@Debug.Renderer(text = "\"\\\"\" + this.value + \"\\\"\"", hasChildren = "false")
+final class StringBinaryTagImpl extends AbstractBinaryTag implements StringBinaryTag {
+  private final String value;
+
+  StringBinaryTagImpl(final String value) {
+    this.value = value;
   }
 
   @Override
-  default @NotNull BinaryTagType<ShortBinaryTag> type() {
-    return BinaryTagTypes.SHORT;
+  public @NotNull String value() {
+    return this.value;
   }
 
-  /**
-   * Gets the value.
-   *
-   * @return the value
-   * @since 4.0.0
-   */
-  short value();
+  @Override
+  public boolean equals(final @Nullable Object other) {
+    if (this == other) return true;
+    if (other == null || this.getClass() != other.getClass()) return false;
+    final StringBinaryTagImpl that = (StringBinaryTagImpl) other;
+    return this.value.equals(that.value);
+  }
+
+  @Override
+  public int hashCode() {
+    return this.value.hashCode();
+  }
+
+  @Override
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(ExaminableProperty.of("value", this.value));
+  }
 }

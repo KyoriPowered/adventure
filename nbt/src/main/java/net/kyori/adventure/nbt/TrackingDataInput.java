@@ -71,11 +71,7 @@ final class TrackingDataInput implements DataInput, BinaryTagScope {
   }
 
   public TrackingDataInput enter() throws IOException {
-    if (this.depth++ > MAX_DEPTH) {
-      throw new IOException("NBT read exceeded maximum depth of " + MAX_DEPTH);
-    }
-    this.ensureMaxLength(0);
-    return this;
+    return this.enter(0);
   }
 
   public void exit() throws IOException {
@@ -126,43 +122,43 @@ final class TrackingDataInput implements DataInput, BinaryTagScope {
 
   @Override
   public short readShort() throws IOException {
-    this.counter += 2;
+    this.counter += (Short.SIZE / Byte.SIZE);
     return this.input.readShort();
   }
 
   @Override
   public int readUnsignedShort() throws IOException {
-    this.counter += 2;
+    this.counter += (Short.SIZE / Byte.SIZE);
     return this.input.readUnsignedShort();
   }
 
   @Override
   public char readChar() throws IOException {
-    this.counter += 2;
+    this.counter += (Character.SIZE / Byte.SIZE);
     return this.input.readChar();
   }
 
   @Override
   public int readInt() throws IOException {
-    this.counter += 4;
+    this.counter += (Integer.SIZE / Byte.SIZE);
     return this.input.readInt();
   }
 
   @Override
   public long readLong() throws IOException {
-    this.counter += 8;
+    this.counter += (Long.SIZE / Byte.SIZE);
     return this.input.readLong();
   }
 
   @Override
   public float readFloat() throws IOException {
-    this.counter += 4;
+    this.counter += (Float.SIZE / Byte.SIZE);
     return this.input.readFloat();
   }
 
   @Override
   public double readDouble() throws IOException {
-    this.counter += 8;
+    this.counter += (Double.SIZE / Byte.SIZE);
     return this.input.readDouble();
   }
 
