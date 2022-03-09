@@ -1,12 +1,12 @@
 plugins {
   id("adventure.common-conventions")
-  id("me.champeau.jmh")
+  alias(libs.plugins.jmh)
 }
 
 description = "A string-based, user-friendly format for representing Minecraft: Java Edition chat components."
 
 dependencies {
-  api(project(":adventure-api"))
+  api(projects.adventureApi)
   testImplementation(project(":adventure-text-serializer-plain"))
 }
 

@@ -13,6 +13,8 @@ plugins {
   id("com.diffplug.eclipse.apt")
   jacoco
 }
+// expose version catalog
+val libs = extensions.getByType(org.gradle.accessors.dm.LibrariesForLibs::class)
 
 testlogger {
   theme = ThemeType.MOCHA_PARALLEL
@@ -21,7 +23,7 @@ testlogger {
 
 plugins.withId("me.champeau.jmh") {
   extensions.configure(JmhParameters::class) {
-    jmhVersion.set(providers.gradleProperty("jmhVersion"))
+    jmhVersion.set(libs.versions.jmh.get())
   }
   tasks.named("compileJmhJava") {
     // avoid implicit task dependencies
@@ -38,21 +40,17 @@ configurations {
   }
 }
 
-repositories {
-  mavenCentral()
-}
-
 dependencies {
-  annotationProcessor("ca.stellardrift:contract-validator:1.0.1") // https://github.com/zml2008/contract-validator
+  annotationProcessor(libs.contractValidator) 
   api(platform(project(":adventure-bom")))
-  checkstyle("ca.stellardrift:stylecheck:0.1")
-  testImplementation("com.google.guava:guava-testlib:31.1-jre")
-  testImplementation("com.google.truth:truth:1.1.3")
-  testImplementation("com.google.truth.extensions:truth-java8-extension:1.1.3")
-  testImplementation(platform("org.junit:junit-bom:5.8.2"))
-  testImplementation("org.junit.jupiter:junit-jupiter-api")
-  testImplementation("org.junit.jupiter:junit-jupiter-engine")
-  testImplementation("org.junit.jupiter:junit-jupiter-params")
+  checkstyle(libs.stylecheck)
+  testImplementation(libs.guava.testlib)
+  testImplementation(libs.truth)
+  testImplementation(libs.truth.java8)
+  testImplementation(platform(libs.junit.bom))
+  testImplementation(libs.junit.api)
+  testImplementation(libs.junit.engine)
+  testImplementation(libs.junit.params)
 }
 
 val ADVENTURE_PREFIX = "adventure-"
