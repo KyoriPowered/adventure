@@ -115,4 +115,20 @@ class BlockNBTComponentTest extends AbstractNBTComponentTest<BlockNBTComponent, 
       BlockNBTComponent.Pos.fromString("12 ~3 1200")
     );
   }
+
+  @Test
+  void testLocalPosParsingWithNegatives() {
+    assertEquals(
+      BlockNBTComponent.LocalPos.localPos(-4.5, 3, -35.67),
+      BlockNBTComponent.Pos.fromString("^-4.5 ^3 ^-35.67")
+    );
+  }
+
+  @Test
+  void testWorldPosParsingWithNegatives() {
+    assertEquals(
+      BlockNBTComponent.WorldPos.worldPos(BlockNBTComponent.WorldPos.Coordinate.relative(-6), BlockNBTComponent.WorldPos.Coordinate.absolute(-34), BlockNBTComponent.WorldPos.Coordinate.relative(13)),
+      BlockNBTComponent.Pos.fromString("~-6 -34 ~13")
+    );
+  }
 }
