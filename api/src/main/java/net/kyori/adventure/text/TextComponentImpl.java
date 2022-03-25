@@ -59,6 +59,10 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
 
   private final String content;
 
+  // hashCode cache
+  private int code;
+  private boolean cached;
+
   TextComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final @NotNull String content) {
     super(children, style);
     this.content = content;
@@ -104,16 +108,29 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   public boolean equals(final @Nullable Object other) {
     if (this == other) return true;
     if (!(other instanceof TextComponentImpl)) return false;
-    if (!super.equals(other)) return false;
     final TextComponentImpl that = (TextComponentImpl) other;
+    // Fast exit for constant components
+    {
+      final boolean cached = this.cached;
+      final boolean thatCached = that.cached;
+      if (!cached) this.cached = true;
+      if (!thatCached) that.cached = true;
+      if (cached && thatCached && hashCode() != that.hashCode()) return false;
+    }
+    if (!super.equals(that)) return false;
     return Objects.equals(this.content, that.content);
   }
 
   @Override
   public int hashCode() {
-    int result = super.hashCode();
-    result = (31 * result) + this.content.hashCode();
-    return result;
+    int cached = this.code;
+    if (cached == 0) {
+      int result = super.hashCode();
+      result = (31 * result) + this.content.hashCode();
+      this.code = cached = result;
+      this.cached = true;
+    }
+    return cached;
   }
 
   @Override
