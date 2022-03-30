@@ -227,7 +227,6 @@ public final class StandardTags {
     return SelectorTag.RESOLVER;
   }
 
-
   /**
    * Get a resolver that handles all default standard tags.
    *
