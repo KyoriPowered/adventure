@@ -59,7 +59,8 @@ public final class StandardTags {
         RainbowTag.RESOLVER,
         ResetTag.RESOLVER,
         NewlineTag.RESOLVER,
-        TransitionTag.RESOLVER
+        TransitionTag.RESOLVER,
+        SelectorTag.RESOLVER
       )
       .build();
 
@@ -213,6 +214,19 @@ public final class StandardTags {
   public static @NotNull TagResolver newline() {
     return NewlineTag.RESOLVER;
   }
+
+  /**
+   * Get a resolver for the {@value SelectorTag#SELECTOR} tag.
+   *
+   * <p>This tag also responds to {@value SelectorTag#SEL}.</p>
+   *
+   * @return a resolver for the {@value SelectorTag#SELECTOR} tag
+   * @since 4.11.0
+   */
+  public static @NotNull TagResolver selector() {
+    return SelectorTag.RESOLVER;
+  }
+
 
   /**
    * Get a resolver that handles all default standard tags.
