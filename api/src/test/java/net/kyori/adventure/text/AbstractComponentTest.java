@@ -324,6 +324,13 @@ abstract class AbstractComponentTest<C extends BuildableComponent<C, B> & Scoped
       .testEquals();
   }
 
+  @Test
+  void testInternEquals() {
+    final C c0 = (C) this.buildOne().intern();
+    final C c1 = (C) this.buildOne().intern();
+    assertSame(c0, c1);
+  }
+
   // -----------------
   // ---- Builder ----
   // -----------------

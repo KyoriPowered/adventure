@@ -1706,6 +1706,14 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
+   * Returns a canonical representation of this component.
+   *
+   * @return the canonical representation of this component
+   * @since 4.11.0
+   */
+  @NotNull Component intern();
+
+  /**
    * Appends a component to this component.
    *
    * @param like the component to append

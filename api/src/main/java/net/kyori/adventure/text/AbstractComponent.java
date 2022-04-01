@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -44,6 +45,8 @@ import org.jetbrains.annotations.Nullable;
 @Debug.Renderer(text = "this.debuggerString()", childrenArray = "this.children().toArray()", hasChildren = "!this.children().isEmpty()")
 @Deprecated
 public abstract class AbstractComponent implements Component {
+  private static final HashMap<Integer, Component> COMPONENT_POOL = new HashMap<>();
+
   protected final List<Component> children;
   protected final Style style;
 
@@ -60,6 +63,17 @@ public abstract class AbstractComponent implements Component {
   @Override
   public final @NotNull Style style() {
     return this.style;
+  }
+
+  @Override
+  public @NotNull Component intern() {
+    synchronized (AbstractComponent.COMPONENT_POOL) {
+      final int hash = this.hashCode();
+      final Component component = AbstractComponent.COMPONENT_POOL.get(hash);
+      if (component != null) return component;
+      AbstractComponent.COMPONENT_POOL.put(hash, this);
+      return this;
+    }
   }
 
   @Override
