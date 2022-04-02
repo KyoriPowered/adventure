@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.util;
 
+import java.util.NoSuchElementException;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class IndexTest {
-  private static final Index<String, Thing> THINGS = Index.create(Thing.class, thing -> thing.name);
+  private static final Index<String, Thing> THINGS = Index.create(Thing.class, thing -> thing.name, Thing.ABC, Thing.DEF);
 
   @Test
   void testCreateWithNonUniqueKey() {
@@ -46,6 +47,7 @@ class IndexTest {
   @Test
   void testKey() {
     for (final Thing thing : Thing.values()) {
+      if (thing == Thing.NOT_PRESENT) continue;
       assertEquals(thing.name, THINGS.key(thing));
     }
   }
@@ -53,8 +55,29 @@ class IndexTest {
   @Test
   void testValue() {
     for (final Thing thing : Thing.values()) {
+      if (thing == Thing.NOT_PRESENT) continue;
       assertEquals(thing, THINGS.value(thing.name));
     }
+  }
+
+  @Test
+  void testValueOrThrow() {
+    assertThrows(NoSuchElementException.class, () -> THINGS.valueOrThrow("__NO_VALUE__"));
+  }
+
+  @Test
+  void testKeyOrThrow() {
+    assertThrows(NoSuchElementException.class, () -> THINGS.keyOrThrow(Thing.NOT_PRESENT));
+  }
+
+  @Test
+  void testValueOrDefault() {
+    assertEquals(Thing.NOT_PRESENT, THINGS.valueOr("__NO_VALUE__", Thing.NOT_PRESENT));
+  }
+
+  @Test
+  void testKeyOrDefault() {
+    assertEquals("__DEFAULT__", THINGS.keyOr(Thing.NOT_PRESENT, "__DEFAULT__"));
   }
 
   @Test
@@ -69,7 +92,8 @@ class IndexTest {
 
   private enum Thing {
     ABC("abc"),
-    DEF("def");
+    DEF("def"),
+    NOT_PRESENT("not_present");
 
     private final String name;
 
