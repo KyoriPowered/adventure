@@ -46,7 +46,7 @@ stylecheck = "ca.stellardrift:stylecheck:0.1"
 build-indra = { module = "net.kyori:indra-common", version.ref = "indra" }
 build-indra-sonatype = { module = "net.kyori:indra-publishing-sonatype", version.ref = "indra" }
 build-indra-crossdoc = { module = "net.kyori:indra-crossdoc", version.ref = "indra" }
-build-goomph = "com.diffplug.gradle:goomph:3.35.0"
+build-goomph = "com.diffplug.gradle:goomph:3.36.0"
 build-jmh = { module = "me.champeau.jmh:jmh-gradle-plugin", version.ref = "jmhPlugin" }
 build-testLogger = "com.adarshr:gradle-test-logger-plugin:3.2.0"
 
