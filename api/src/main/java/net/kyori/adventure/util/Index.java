@@ -29,6 +29,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.IntFunction;
@@ -155,6 +156,22 @@ public final class Index<K, V> {
   }
 
   /**
+   * Gets the key for a value or throws an exception.
+   *
+   * @param value the value
+   * @return the key
+   * @throws NoSuchElementException if there is no key for the value
+   * @since 4.11.0
+   */
+  public @NotNull K keyOrThrow(final @NotNull V value) {
+    final K key = this.key(value);
+    if (key == null) {
+      throw new NoSuchElementException("There is no key for value " + value);
+    }
+    return key;
+  }
+
+  /**
    * Gets the keys.
    *
    * @return the keys
@@ -173,6 +190,22 @@ public final class Index<K, V> {
    */
   public @Nullable V value(final @NotNull K key) {
     return this.keyToValue.get(key);
+  }
+
+  /**
+   * Gets a value by its key.
+   *
+   * @param key the key
+   * @return the value
+   * @throws NoSuchElementException if there is no value for the key
+   * @since 4.11.0
+   */
+  public @NotNull V valueOrThrow(final @NotNull K key) {
+    final V value = this.value(key);
+    if (value == null) {
+      throw new NoSuchElementException("There is no value for key " + key);
+    }
+    return value;
   }
 
   /**
