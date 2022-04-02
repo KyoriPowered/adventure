@@ -33,6 +33,8 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.IntFunction;
+
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -172,6 +174,21 @@ public final class Index<K, V> {
   }
 
   /**
+   * Gets a key by its value or returns
+   * a fallback key.
+   *
+   * @param value the value
+   * @param defaultKey the fallback key
+   * @return the key
+   * @since 4.11.0
+   */
+  @Contract("_, null -> null; _, !null -> !null")
+  public K keyOrDefault(final @NotNull V value, @Nullable K defaultKey) {
+    final K key = this.key(value);
+    return key == null ? defaultKey : key;
+  }
+
+  /**
    * Gets the keys.
    *
    * @return the keys
@@ -206,6 +223,21 @@ public final class Index<K, V> {
       throw new NoSuchElementException("There is no value for key " + key);
     }
     return value;
+  }
+
+  /**
+   * Gets a value by its key or returns
+   * a fallback value.
+   *
+   * @param key the key
+   * @param defaultValue the fallback value
+   * @return the value
+   * @since 4.11.0
+   */
+  @Contract("_, null -> null; _, !null -> !null")
+  public V valueOrDefault(final @NotNull K key, @Nullable V defaultValue) {
+    final V value = this.value(key);
+    return value == null ? defaultValue : value;
   }
 
   /**

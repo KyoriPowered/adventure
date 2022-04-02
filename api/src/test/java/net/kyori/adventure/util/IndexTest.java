@@ -61,13 +61,23 @@ class IndexTest {
   }
 
   @Test
-  void testNoValue() {
+  void testValueOrThrow() {
     assertThrows(NoSuchElementException.class, () -> THINGS.valueOrThrow("__NO_VALUE__"));
   }
 
   @Test
-  void testNoKey() {
+  void testKeyOrThrow() {
     assertThrows(NoSuchElementException.class, () -> THINGS.keyOrThrow(Thing.NOT_PRESENT));
+  }
+
+  @Test
+  void testValueOrDefault() {
+    assertEquals(Thing.NOT_PRESENT, THINGS.valueOrDefault("__NO_VALUE__", Thing.NOT_PRESENT));
+  }
+
+  @Test
+  void testKeyOrDefault() {
+    assertEquals("__DEFAULT__", THINGS.keyOrDefault(Thing.NOT_PRESENT, "__DEFAULT__"));
   }
 
   @Test
