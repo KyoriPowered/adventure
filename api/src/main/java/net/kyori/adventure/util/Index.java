@@ -33,7 +33,6 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.IntFunction;
-
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -183,7 +182,7 @@ public final class Index<K, V> {
    * @since 4.11.0
    */
   @Contract("_, null -> null; _, !null -> !null")
-  public K keyOrDefault(final @NotNull V value, @Nullable K defaultKey) {
+  public K keyOrDefault(final @NotNull V value, final @Nullable K defaultKey) {
     final K key = this.key(value);
     return key == null ? defaultKey : key;
   }
@@ -235,7 +234,7 @@ public final class Index<K, V> {
    * @since 4.11.0
    */
   @Contract("_, null -> null; _, !null -> !null")
-  public V valueOrDefault(final @NotNull K key, @Nullable V defaultValue) {
+  public V valueOrDefault(final @NotNull K key, final @Nullable V defaultValue) {
     final V value = this.value(key);
     return value == null ? defaultValue : value;
   }
