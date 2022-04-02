@@ -72,12 +72,12 @@ class IndexTest {
 
   @Test
   void testValueOrDefault() {
-    assertEquals(Thing.NOT_PRESENT, THINGS.valueOrDefault("__NO_VALUE__", Thing.NOT_PRESENT));
+    assertEquals(Thing.NOT_PRESENT, THINGS.valueOr("__NO_VALUE__", Thing.NOT_PRESENT));
   }
 
   @Test
   void testKeyOrDefault() {
-    assertEquals("__DEFAULT__", THINGS.keyOrDefault(Thing.NOT_PRESENT, "__DEFAULT__"));
+    assertEquals("__DEFAULT__", THINGS.keyOr(Thing.NOT_PRESENT, "__DEFAULT__"));
   }
 
   @Test

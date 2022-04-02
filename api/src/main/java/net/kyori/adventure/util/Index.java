@@ -173,8 +173,7 @@ public final class Index<K, V> {
   }
 
   /**
-   * Gets a key by its value or returns
-   * a fallback key.
+   * Gets a key by its value or returns a fallback key.
    *
    * @param value the value
    * @param defaultKey the fallback key
@@ -182,7 +181,7 @@ public final class Index<K, V> {
    * @since 4.11.0
    */
   @Contract("_, null -> null; _, !null -> !null")
-  public K keyOrDefault(final @NotNull V value, final @Nullable K defaultKey) {
+  public K keyOr(final @NotNull V value, final @Nullable K defaultKey) {
     final K key = this.key(value);
     return key == null ? defaultKey : key;
   }
@@ -225,8 +224,7 @@ public final class Index<K, V> {
   }
 
   /**
-   * Gets a value by its key or returns
-   * a fallback value.
+   * Gets a value by its key or returns a fallback value.
    *
    * @param key the key
    * @param defaultValue the fallback value
@@ -234,7 +232,7 @@ public final class Index<K, V> {
    * @since 4.11.0
    */
   @Contract("_, null -> null; _, !null -> !null")
-  public V valueOrDefault(final @NotNull K key, final @Nullable V defaultValue) {
+  public V valueOr(final @NotNull K key, final @Nullable V defaultValue) {
     final V value = this.value(key);
     return value == null ? defaultValue : value;
   }
