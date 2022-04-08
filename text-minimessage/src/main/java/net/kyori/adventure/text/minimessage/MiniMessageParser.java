@@ -66,10 +66,10 @@ final class MiniMessageParser {
   }
 
   void escapeTokens(final StringBuilder sb, final @NotNull ContextImpl context) {
-    escapeTokens(sb, context.message(), context);
+    this.escapeTokens(sb, context.message(), context);
   }
 
-  private void escapeTokens(StringBuilder sb, String richMessage, ContextImpl context) {
+  private void escapeTokens(final StringBuilder sb, final String richMessage, final ContextImpl context) {
     this.processTokens(sb, richMessage, context, (token, builder) -> {
       builder.append('\\').append(TokenParser.TAG_START);
       if (token.type() == TokenType.CLOSE_TAG) {
@@ -93,7 +93,7 @@ final class MiniMessageParser {
   }
 
   private void processTokens(final @NotNull StringBuilder sb, final @NotNull ContextImpl context, final BiConsumer<Token, StringBuilder> tagHandler) {
-    processTokens(sb, context.message(), context, tagHandler);
+    this.processTokens(sb, context.message(), context, tagHandler);
   }
 
   private void processTokens(final @NotNull StringBuilder sb, final @NotNull String richMessage, final @NotNull ContextImpl context, final BiConsumer<Token, StringBuilder> tagHandler) {

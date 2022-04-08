@@ -61,7 +61,7 @@ class ContextImpl implements Context {
     final String message,
     final MiniMessage miniMessage,
     final @NotNull TagResolver extraTags,
-    UnaryOperator<String> preProcessor,
+    final UnaryOperator<String> preProcessor,
     final UnaryOperator<Component> postProcessor) {
     this.strict = strict;
     this.debugOutput = debugOutput;
@@ -108,7 +108,9 @@ class ContextImpl implements Context {
     return this.postProcessor;
   }
 
-  public UnaryOperator<String> preProcessor() { return this.preProcessor; }
+  public UnaryOperator<String> preProcessor() {
+    return this.preProcessor;
+  }
 
   @Override
   public @NotNull Component deserialize(final @NotNull String message) {
