@@ -59,14 +59,14 @@ final class MiniMessageParser {
     this.tagResolver = tagResolver;
   }
 
-  @NotNull String escapeTokens(final @NotNull String richMessage, final @NotNull ContextImpl context) {
-    final StringBuilder sb = new StringBuilder(richMessage.length());
-    this.escapeTokens(sb, richMessage, context);
+  @NotNull String escapeTokens(final @NotNull ContextImpl context) {
+    final StringBuilder sb = new StringBuilder(context.message().length());
+    this.escapeTokens(sb, context);
     return sb.toString();
   }
 
-  void escapeTokens(final StringBuilder sb, final @NotNull String richMessage, final @NotNull ContextImpl context) {
-    this.processTokens(sb, richMessage, context, (token, builder) -> {
+  void escapeTokens(final StringBuilder sb, final @NotNull ContextImpl context) {
+    this.processTokens(sb, context, (token, builder) -> {
       builder.append('\\').append(TokenParser.TAG_START);
       if (token.type() == TokenType.CLOSE_TAG) {
         builder.append(TokenParser.CLOSE_TAG);
@@ -76,20 +76,21 @@ final class MiniMessageParser {
         if (i != 0) {
           builder.append(TokenParser.SEPARATOR);
         }
-        this.escapeTokens(builder, childTokens.get(i).get(richMessage).toString(), context); // todo: do we need to unwrap quotes on this?
+        this.escapeTokens(builder, context); // todo: do we need to unwrap quotes on this?
       }
       builder.append(TokenParser.TAG_END);
     });
   }
 
-  @NotNull String stripTokens(final @NotNull String richMessage, final @NotNull ContextImpl context) {
-    final StringBuilder sb = new StringBuilder(richMessage.length());
-    this.processTokens(sb, richMessage, context, (token, builder) -> {});
+  @NotNull String stripTokens(final @NotNull ContextImpl context) {
+    final StringBuilder sb = new StringBuilder(context.message().length());
+    this.processTokens(sb, context, (token, builder) -> {});
     return sb.toString();
   }
 
-  private void processTokens(final @NotNull StringBuilder sb, final @NotNull String richMessage, final @NotNull ContextImpl context, final BiConsumer<Token, StringBuilder> tagHandler) {
+  private void processTokens(final @NotNull StringBuilder sb, final @NotNull ContextImpl context, final BiConsumer<Token, StringBuilder> tagHandler) {
     final TagResolver combinedResolver = TagResolver.resolver(this.tagResolver, context.extraTags());
+    final String richMessage = context.message();
     final List<Token> root = TokenParser.tokenize(richMessage);
     for (final Token token : root) {
       switch (token.type()) {
@@ -117,8 +118,9 @@ final class MiniMessageParser {
     }
   }
 
-  @NotNull RootNode parseToTree(final @NotNull String richMessage, final @NotNull ContextImpl context) {
+  @NotNull RootNode parseToTree(final @NotNull ContextImpl context) {
     final TagResolver combinedResolver = TagResolver.resolver(this.tagResolver, context.extraTags());
+    final String richMessage = context.message();
     final Consumer<String> debug = context.debugOutput();
     if (debug != null) {
       debug.accept("Beginning parsing message ");
@@ -196,8 +198,8 @@ final class MiniMessageParser {
     return root;
   }
 
-  @NotNull Component parseFormat(final @NotNull String richMessage, final @NotNull ContextImpl context) {
-    final ElementNode root = this.parseToTree(richMessage, context);
+  @NotNull Component parseFormat(final @NotNull ContextImpl context) {
+    final ElementNode root = this.parseToTree(context);
     return Objects.requireNonNull(context.postProcessor().apply(this.treeToComponent(root, context)), "Post-processor must not return null");
   }
 

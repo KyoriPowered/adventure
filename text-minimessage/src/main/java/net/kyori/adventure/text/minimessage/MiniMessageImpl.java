@@ -73,22 +73,22 @@ final class MiniMessageImpl implements MiniMessage {
 
   @Override
   public @NotNull Component deserialize(final @NotNull String input) {
-    return this.parser.parseFormat(input, this.newContext(input, null));
+    return this.parser.parseFormat(this.newContext(input, null));
   }
 
   @Override
   public @NotNull Component deserialize(final @NotNull String input, final @NotNull TagResolver tagResolver) {
-    return this.parser.parseFormat(input, this.newContext(input, requireNonNull(tagResolver, "tagResolver")));
+    return this.parser.parseFormat(this.newContext(input, requireNonNull(tagResolver, "tagResolver")));
   }
 
   @Override
   public Node.@NotNull Root deserializeToTree(final @NotNull String input) {
-    return this.parser.parseToTree(input, this.newContext(input, null));
+    return this.parser.parseToTree(this.newContext(input, null));
   }
 
   @Override
   public Node.@NotNull Root deserializeToTree(final @NotNull String input, final @NotNull TagResolver tagResolver) {
-    return this.parser.parseToTree(input, this.newContext(input, requireNonNull(tagResolver, "tagResolver")));
+    return this.parser.parseToTree(this.newContext(input, requireNonNull(tagResolver, "tagResolver")));
   }
 
   @Override
@@ -113,12 +113,12 @@ final class MiniMessageImpl implements MiniMessage {
 
   @Override
   public @NotNull String escapeTags(final @NotNull String input) {
-    return this.parser.escapeTokens(input, this.newContext(input, null));
+    return this.parser.escapeTokens(this.newContext(input, null));
   }
 
   @Override
   public @NotNull String escapeTags(final @NotNull String input, final @NotNull TagResolver tagResolver) {
-    return this.parser.escapeTokens(input, this.newContext(input, tagResolver));
+    return this.parser.escapeTokens(this.newContext(input, tagResolver));
   }
 
   @Override
@@ -128,7 +128,7 @@ final class MiniMessageImpl implements MiniMessage {
 
   @Override
   public @NotNull String stripTags(final @NotNull String input, final @NotNull TagResolver tagResolver) {
-    return this.parser.stripTokens(input, this.newContext(input, tagResolver));
+    return this.parser.stripTokens(this.newContext(input, tagResolver));
   }
 
   private @NotNull ContextImpl newContext(final @NotNull String input, final @Nullable TagResolver resolver) {
