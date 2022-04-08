@@ -122,6 +122,15 @@ public class MiniMessageTest extends AbstractTest {
     this.assertParsedEquals(miniMessage, expected, input, t1, t2);
   }
 
+  @Test
+  void testPreprocessing() {
+    final Component expected = MiniMessage.miniMessage().deserialize("<red>Hello, world!</red>");
+
+    final String input = "Hello";
+    final MiniMessage miniMessage = MiniMessage.builder().preProcessor(str -> "<red>" + str + ", world!</red>").build();
+    this.assertParsedEquals(miniMessage, expected, input);
+  }
+
   // GH-103
   @Test
   void testPlaceholderInHover() {
