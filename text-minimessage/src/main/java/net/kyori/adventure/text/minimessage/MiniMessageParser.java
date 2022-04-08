@@ -120,11 +120,11 @@ final class MiniMessageParser {
 
   @NotNull RootNode parseToTree(final @NotNull ContextImpl context) {
     final TagResolver combinedResolver = TagResolver.resolver(this.tagResolver, context.extraTags());
-    final String richMessage = context.message();
+    final String processedMessage = context.preProcessor().apply(context.message());
     final Consumer<String> debug = context.debugOutput();
     if (debug != null) {
       debug.accept("Beginning parsing message ");
-      debug.accept(richMessage);
+      debug.accept(processedMessage);
       debug.accept("\n");
     }
 
@@ -185,10 +185,10 @@ final class MiniMessageParser {
       return combinedResolver.has(sanitized);
     };
 
-    final String preProcessed = TokenParser.resolvePreProcessTags(richMessage, transformationFactory);
+    final String preProcessed = TokenParser.resolvePreProcessTags(processedMessage, transformationFactory);
     context.message(preProcessed);
     // Then, once MiniMessage placeholders have been inserted, we can do the real parse
-    final RootNode root = TokenParser.parse(transformationFactory, tagNameChecker, preProcessed, richMessage, context.strict());
+    final RootNode root = TokenParser.parse(transformationFactory, tagNameChecker, preProcessed, processedMessage, context.strict());
 
     if (debug != null) {
       debug.accept("Text parsed into element tree:\n");
