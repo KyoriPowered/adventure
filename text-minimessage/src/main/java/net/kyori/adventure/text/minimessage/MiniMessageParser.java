@@ -66,7 +66,11 @@ final class MiniMessageParser {
   }
 
   void escapeTokens(final StringBuilder sb, final @NotNull ContextImpl context) {
-    this.processTokens(sb, context, (token, builder) -> {
+    escapeTokens(sb, context.message(), context);
+  }
+
+  private void escapeTokens(StringBuilder sb, String richMessage, ContextImpl context) {
+    this.processTokens(sb, richMessage, context, (token, builder) -> {
       builder.append('\\').append(TokenParser.TAG_START);
       if (token.type() == TokenType.CLOSE_TAG) {
         builder.append(TokenParser.CLOSE_TAG);
@@ -76,7 +80,7 @@ final class MiniMessageParser {
         if (i != 0) {
           builder.append(TokenParser.SEPARATOR);
         }
-        this.escapeTokens(builder, context); // todo: do we need to unwrap quotes on this?
+        this.escapeTokens(builder, childTokens.get(i).get(richMessage).toString(), context); // todo: do we need to unwrap quotes on this?
       }
       builder.append(TokenParser.TAG_END);
     });
@@ -89,8 +93,11 @@ final class MiniMessageParser {
   }
 
   private void processTokens(final @NotNull StringBuilder sb, final @NotNull ContextImpl context, final BiConsumer<Token, StringBuilder> tagHandler) {
+    processTokens(sb, context.message(), context, tagHandler);
+  }
+
+  private void processTokens(final @NotNull StringBuilder sb, final @NotNull String richMessage, final @NotNull ContextImpl context, final BiConsumer<Token, StringBuilder> tagHandler) {
     final TagResolver combinedResolver = TagResolver.resolver(this.tagResolver, context.extraTags());
-    final String richMessage = context.message();
     final List<Token> root = TokenParser.tokenize(richMessage);
     for (final Token token : root) {
       switch (token.type()) {
