@@ -123,7 +123,7 @@ class ContextImpl implements Context {
   }
 
   @Override
-  public @NotNull ParsingException newException(@NotNull final String message) {
+  public @NotNull ParsingException newException(final @NotNull String message) {
     return new ParsingExceptionImpl(message, this.message, null, false, EMPTY_TOKEN_ARRAY);
   }
 

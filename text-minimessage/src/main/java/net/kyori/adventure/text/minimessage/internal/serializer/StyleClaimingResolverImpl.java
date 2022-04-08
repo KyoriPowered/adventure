@@ -38,7 +38,7 @@ final class StyleClaimingResolverImpl implements TagResolver, SerializableResolv
   private final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler;
   private final @NotNull StyleClaim<?> styleClaim;
 
-  StyleClaimingResolverImpl(@NotNull final Set<String> names, @NotNull final BiFunction<ArgumentQueue, Context, Tag> handler, @NotNull final StyleClaim<?> styleClaim) {
+  StyleClaimingResolverImpl(final @NotNull Set<String> names, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler, final @NotNull StyleClaim<?> styleClaim) {
     this.names = names;
     this.handler = handler;
     this.styleClaim = styleClaim;

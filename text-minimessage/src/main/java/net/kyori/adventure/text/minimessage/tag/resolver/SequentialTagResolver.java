@@ -82,7 +82,7 @@ final class SequentialTagResolver implements TagResolver, SerializableResolver {
   }
 
   @Override
-  public void handle(@NotNull final Component serializable, @NotNull final ClaimConsumer consumer) {
+  public void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer) {
     for (final TagResolver resolver : this.resolvers) {
       if (resolver instanceof SerializableResolver) {
         ((SerializableResolver) resolver).handle(serializable, consumer);
