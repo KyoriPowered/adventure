@@ -50,15 +50,16 @@ class ContextImpl implements Context {
   private final boolean strict;
   private final Consumer<String> debugOutput;
   private String message;
-  private final MiniMessage miniMessage;
+  private final MiniMessageImpl miniMessage;
   private final TagResolver tagResolver;
   private final UnaryOperator<Component> postProcessor;
+  private int recursions;
 
   ContextImpl(
     final boolean strict,
     final Consumer<String> debugOutput,
     final String message,
-    final MiniMessage miniMessage,
+    final MiniMessageImpl miniMessage,
     final @NotNull TagResolver extraTags,
     final UnaryOperator<Component> postProcessor
   ) {
@@ -68,6 +69,7 @@ class ContextImpl implements Context {
     this.miniMessage = miniMessage;
     this.tagResolver = extraTags;
     this.postProcessor = postProcessor == null ? UnaryOperator.identity() : postProcessor;
+    this.recursions = 0;
   }
 
   static ContextImpl of(
@@ -120,6 +122,17 @@ class ContextImpl implements Context {
   public @NotNull Component deserialize(final @NotNull String message, final @NotNull TagResolver@NotNull... resolvers) {
     return this.miniMessage.deserialize(requireNonNull(message, "message"),
       TagResolver.builder().resolver(this.tagResolver).resolvers(requireNonNull(resolvers, "resolvers")).build());
+  }
+
+  @Override
+  public @NotNull String preProcess(final @NotNull String message) {
+    this.recursions++;
+    if (this.recursions >= 10) {
+      throw this.newException("Recursion limit hit.");
+    }
+    final String msg = this.miniMessage.preProcessTags(message, this);
+    this.recursions--;
+    return msg;
   }
 
   @Override

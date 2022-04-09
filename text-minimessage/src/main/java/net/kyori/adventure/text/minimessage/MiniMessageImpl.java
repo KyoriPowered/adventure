@@ -131,6 +131,10 @@ final class MiniMessageImpl implements MiniMessage {
     return this.parser.stripTokens(input, this.newContext(input, tagResolver));
   }
 
+  @NotNull String preProcessTags(final @NotNull String input, final @NotNull ContextImpl context) {
+    return this.parser.parsePreProcessTags(input, context);
+  }
+
   private @NotNull ContextImpl newContext(final @NotNull String input, final @Nullable TagResolver resolver) {
     requireNonNull(input, "input");
     if (resolver == null) {

@@ -70,6 +70,15 @@ public interface Context {
   @NotNull Component deserialize(final @NotNull String message, final @NotNull TagResolver@NotNull... resolvers);
 
   /**
+   * Resolve PreProcess tags and insert them in the String. This has a recursion limit of 10.
+   *
+   * @param message the message to replace tags
+   * @return the message with replaced {@link net.kyori.adventure.text.minimessage.tag.PreProcess} tags
+   * @since 4.10.2
+   */
+  @NotNull String preProcess(final @NotNull String message);
+
+  /**
    * Create a new parsing exception.
    *
    * @param message a detail message describing the error
