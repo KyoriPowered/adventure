@@ -62,7 +62,8 @@ class ContextImpl implements Context {
     final MiniMessage miniMessage,
     final @NotNull TagResolver extraTags,
     final UnaryOperator<String> preProcessor,
-    final UnaryOperator<Component> postProcessor) {
+    final UnaryOperator<Component> postProcessor
+  ) {
     this.strict = strict;
     this.debugOutput = debugOutput;
     this.message = message;
