@@ -140,23 +140,26 @@ class TagResolverTest {
 
   @Test
   void testTagResolverEquality() {
-    final TagResolver.Single first = Placeholder.unparsed("first", "firstreplace");
-    final TagResolver.Single second = Placeholder.unparsed("second", "secondreplace");
-    final TagResolver third = TagResolver.caching((name) -> null);
+    final TagResolver.Single single = Placeholder.unparsed("single", "replace");
+    final TagResolver standard = TagResolver.standard();
+    final TagResolver whitoutArguments = TagResolver.caching((name) -> null);
+    final TagResolver tag = TagResolver.resolver("tag", Tag.selfClosingInserting(Component.empty()));
     final TagResolver empty = TagResolver.empty();
 
     assertEquals(
       TagResolver.resolver(
-        first,
-        second,
-        third,
-        empty
+        single,
+        standard,
+        whitoutArguments,
+        empty,
+        tag
       ),
       TagResolver.resolver(
-        first,
-        second,
-        third,
-        empty
+        single,
+        standard,
+        whitoutArguments,
+        empty,
+        tag
       )
     );
   }
