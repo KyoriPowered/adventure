@@ -237,7 +237,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
    * Gets the style of the parent component that contains the joined components.
    *
    * @return the style
-   * @since 4.10.0
+   * @since 4.11.0
    */
   @NotNull Style parentStyle();
 
@@ -329,7 +329,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
      *
      * @param parentStyle the style
      * @return this builder
-     * @since 4.10.0
+     * @since 4.11.0
      */
     @Contract("_ -> this")
     @NotNull Builder parentStyle(final @NotNull Style parentStyle);
