@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage.tag.resolver;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.internal.serializer.ClaimConsumer;
 import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
@@ -77,5 +78,25 @@ final class CachingTagResolver implements TagResolver.WithoutArguments, Mappable
     if (this.resolver instanceof SerializableResolver) {
       ((SerializableResolver) this.resolver).handle(serializable, consumer);
     }
+  }
+
+  @Override
+  public boolean equals(final Object other) {
+    if (this == other) {
+      return true;
+    }
+    if (other == null) {
+      return false;
+    }
+    if (other.getClass() != CachingTagResolver.class) {
+      return false;
+    }
+    final CachingTagResolver that = (CachingTagResolver) other;
+    return Objects.equals(this.cache, that.cache);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.cache, this.resolver);
   }
 }
