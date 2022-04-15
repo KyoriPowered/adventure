@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * A tag that is applied at the tokenization stage, before the tree is constructed.
  *
- * <p>Its value must be a MiniMessage string, and cannot accept any arguments</p>
+ * <p>Its value must be a MiniMessage string.</p>
  *
  * @since 4.10.0
  */
