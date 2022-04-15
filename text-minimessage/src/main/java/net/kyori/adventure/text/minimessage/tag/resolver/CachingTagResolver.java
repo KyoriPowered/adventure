@@ -81,14 +81,11 @@ final class CachingTagResolver implements TagResolver.WithoutArguments, Mappable
   }
 
   @Override
-  public boolean equals(final Object other) {
+  public boolean equals(final @Nullable Object other) {
     if (this == other) {
       return true;
     }
-    if (other == null) {
-      return false;
-    }
-    if (other.getClass() != CachingTagResolver.class) {
+    if (!(other instanceof CachingTagResolver)) {
       return false;
     }
     final CachingTagResolver that = (CachingTagResolver) other;

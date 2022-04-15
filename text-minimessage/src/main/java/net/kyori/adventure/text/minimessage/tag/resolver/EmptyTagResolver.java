@@ -56,9 +56,4 @@ final class EmptyTagResolver implements TagResolver, MappableResolver, Serializa
   @Override
   public void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer) {
   }
-
-  @Override
-  public boolean equals(final Object other) {
-    return EmptyTagResolver.INSTANCE == other;
-  }
 }

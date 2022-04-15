@@ -92,14 +92,11 @@ final class SequentialTagResolver implements TagResolver, SerializableResolver {
   }
 
   @Override
-  public boolean equals(final Object other) {
+  public boolean equals(final @Nullable Object other) {
     if (other == this) {
       return true;
     }
-    if (other == null) {
-      return false;
-    }
-    if (other.getClass() != SequentialTagResolver.class) {
+    if (!(other instanceof SequentialTagResolver)) {
       return false;
     }
     final SequentialTagResolver that = (SequentialTagResolver) other;

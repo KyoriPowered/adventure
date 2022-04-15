@@ -48,14 +48,11 @@ final class MapTagResolver implements TagResolver.WithoutArguments, MappableReso
   }
 
   @Override
-  public boolean equals(final Object other) {
+  public boolean equals(final @Nullable Object other) {
     if (this == other) {
       return true;
     }
-    if (other == null) {
-      return false;
-    }
-    if (other.getClass() != MapTagResolver.class) {
+    if (!(other instanceof MapTagResolver)) {
       return false;
     }
     final MapTagResolver that = (MapTagResolver) other;
