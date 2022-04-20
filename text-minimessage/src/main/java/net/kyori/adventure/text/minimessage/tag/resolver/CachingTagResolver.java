@@ -89,7 +89,8 @@ final class CachingTagResolver implements TagResolver.WithoutArguments, Mappable
       return false;
     }
     final CachingTagResolver that = (CachingTagResolver) other;
-    return Objects.equals(this.cache, that.cache);
+    return Objects.equals(this.resolver, that.resolver)
+        || Objects.equals(this.cache, that.cache);
   }
 
   @Override

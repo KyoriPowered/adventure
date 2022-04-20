@@ -140,28 +140,25 @@ class TagResolverTest {
 
   @Test
   void testTagResolverEquality() {
-    final TagResolver.Single single = Placeholder.unparsed("single", "replace");
-    final TagResolver standard = TagResolver.standard();
-    final TagResolver whitoutArguments = TagResolver.caching((name) -> null);
-    final TagResolver tag = TagResolver.resolver("tag", Tag.selfClosingInserting(Component.empty()));
-    final TagResolver empty = TagResolver.empty();
-
-    assertEquals(
-      TagResolver.resolver(
-        single,
-        standard,
-        whitoutArguments,
-        empty,
-        tag
-      ),
-      TagResolver.resolver(
-        single,
-        standard,
-        whitoutArguments,
-        empty,
-        tag
-      )
+    final TagResolver first = TagResolver.resolver(
+        Placeholder.unparsed("single", "replace"),
+        TagResolver.standard(),
+        TagResolver.caching((name) -> null),
+        TagResolver.empty(),
+        TagResolver.resolver("tag", Tag.selfClosingInserting(Component.empty()))
     );
+    final TagResolver second = TagResolver.resolver(
+        Placeholder.unparsed("single", "replace"),
+        TagResolver.standard(),
+        TagResolver.caching((name) -> null),
+        TagResolver.empty(),
+        TagResolver.resolver("tag", Tag.selfClosingInserting(Component.empty()))
+    );
+
+    AbstractTest.dummyContext("equality test")
+      .deserialize("<test>", first, second);
+
+    assertEquals(first, second);
   }
 
   private static @NotNull Tag resolveForTest(final TagResolver resolver, final String tag) {
