@@ -285,6 +285,7 @@ final class TagStringReader {
             break;
         }
       } catch (final NumberFormatException ignored) {
+        // not a numeric tag of the appropriate type
       }
     } else if (noLongerNumericAt == -1) { // if we run out of content without an explicit value separator, then we're either an integer or string tag -- all others have a character at the end
       try {

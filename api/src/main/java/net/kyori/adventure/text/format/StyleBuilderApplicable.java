@@ -34,6 +34,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.0.0
  */
 @FunctionalInterface
+@SuppressWarnings("FunctionalInterfaceMethodChanged")
 public interface StyleBuilderApplicable extends ComponentBuilderApplicable {
   /**
    * Applies to {@code style}.

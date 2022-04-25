@@ -78,7 +78,7 @@ public interface TextReplacementConfig extends Buildable<TextReplacementConfig, 
      */
 
     /**
-     * Match against the literal string provided.
+     * Set this builder to match only the literal string provided.
      *
      * <p>This will <b>NOT</b> be parsed as a regular expression.</p>
      *
@@ -92,7 +92,7 @@ public interface TextReplacementConfig extends Buildable<TextReplacementConfig, 
     }
 
     /**
-     * Compile the provided input as a {@link Pattern} and match against it.
+     * Compile the provided input as a {@link Pattern} and set it as the match to test against.
      *
      * @param pattern the regex pattern to match
      * @return this builder

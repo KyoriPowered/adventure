@@ -1,6 +1,7 @@
 import com.adarshr.gradle.testlogger.theme.ThemeType
 import me.champeau.jmh.JMHPlugin
 import me.champeau.jmh.JmhParameters
+import net.ltgt.gradle.errorprone.errorprone
 import org.gradle.api.artifacts.type.ArtifactTypeDefinition
 
 plugins {
@@ -11,6 +12,7 @@ plugins {
   id("net.kyori.indra.license-header")
   id("com.adarshr.test-logger")
   id("com.diffplug.eclipse.apt")
+  id("net.ltgt.errorprone")
   jacoco
 }
 // expose version catalog
@@ -41,6 +43,7 @@ configurations {
 }
 
 dependencies {
+  errorprone(libs.errorprone)
   annotationProcessor(libs.contractValidator) 
   api(platform(project(":adventure-bom")))
   checkstyle(libs.stylecheck)
@@ -69,5 +72,13 @@ tasks {
 
   jacocoTestReport {
     dependsOn(test)
+  }
+  
+  withType(JavaCompile::class) {
+    options.errorprone {
+      disable("InvalidBlockTag") // we use custom block tags
+      disable("InlineMeSuggester") // we don't use errorprone annotations
+      disable("ReferenceEquality") // lots of comparison against EMPTY objects
+    }
   }
 }

@@ -479,6 +479,8 @@ public final class TokenParser {
             break;
           }
           break; // CLOSE_TAG
+        default: // ignore other tags
+          break;
       }
     }
 

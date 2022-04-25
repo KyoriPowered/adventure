@@ -3,6 +3,7 @@ plugins {
 }
 
 dependencies {
+  implementation(libs.build.errorpronePlugin)
   implementation(libs.build.indra)
   implementation(libs.build.indra.sonatype)
   implementation(libs.build.indra.crossdoc)

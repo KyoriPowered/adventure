@@ -29,8 +29,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.MessageFormat;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
@@ -198,23 +196,23 @@ public interface TranslationRegistry extends Translator {
    * @since 4.0.0
    */
   default void registerAll(final @NotNull Locale locale, final @NotNull Set<String> keys, final Function<String, MessageFormat> function) {
-    List<IllegalArgumentException> errors = null;
+    IllegalArgumentException firstError = null;
+    int errorCount = 0;
     for (final String key : keys) {
       try {
         this.register(key, locale, function.apply(key));
       } catch (final IllegalArgumentException e) {
-        if (errors == null) {
-          errors = new LinkedList<>();
+        if (firstError == null) {
+          firstError = e;
         }
-        errors.add(e);
+        errorCount++;
       }
     }
-    if (errors != null) {
-      final int size = errors.size();
-      if (size == 1) {
-        throw errors.get(0);
-      } else if (size > 1) {
-        throw new IllegalArgumentException(String.format("Invalid key (and %d more)", size - 1), errors.get(0));
+    if (firstError != null) {
+      if (errorCount == 1) {
+        throw firstError;
+      } else if (errorCount > 1) {
+        throw new IllegalArgumentException(String.format("Invalid key (and %d more)", errorCount - 1), firstError);
       }
     }
   }
