@@ -25,7 +25,6 @@ package net.kyori.adventure.key;
 
 import java.util.Comparator;
 import java.util.Objects;
-import java.util.function.IntPredicate;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
@@ -39,8 +38,6 @@ final class KeyImpl implements Key {
   static final String NAMESPACE_PATTERN = "[a-z0-9_\\-.]+";
   static final String VALUE_PATTERN = "[a-z0-9_\\-./]+";
 
-  private static final IntPredicate NAMESPACE_PREDICATE = value -> value == '_' || value == '-' || (value >= 'a' && value <= 'z') || (value >= '0' && value <= '9') || value == '.';
-  private static final IntPredicate VALUE_PREDICATE = value -> value == '_' || value == '-' || (value >= 'a' && value <= 'z') || (value >= '0' && value <= '9') || value == '/' || value == '.';
   private final String namespace;
   private final String value;
 
@@ -54,7 +51,7 @@ final class KeyImpl implements Key {
   @VisibleForTesting
   static boolean namespaceValid(final @NotNull String namespace) {
     for (int i = 0, length = namespace.length(); i < length; i++) {
-      if (!NAMESPACE_PREDICATE.test(namespace.charAt(i))) {
+      if (!validNamespaceChar(namespace.charAt(i))) {
         return false;
       }
     }
@@ -64,11 +61,19 @@ final class KeyImpl implements Key {
   @VisibleForTesting
   static boolean valueValid(final @NotNull String value) {
     for (int i = 0, length = value.length(); i < length; i++) {
-      if (!VALUE_PREDICATE.test(value.charAt(i))) {
+      if (!validValueChar(value.charAt(i))) {
         return false;
       }
     }
     return true;
+  }
+
+  private static boolean validNamespaceChar(final int value) {
+    return value == '_' || value == '-' || (value >= 'a' && value <= 'z') || (value >= '0' && value <= '9') || value == '.';
+  }
+
+  private static boolean validValueChar(final int value) {
+    return value == '_' || value == '-' || (value >= 'a' && value <= 'z') || (value >= '0' && value <= '9') || value == '/' || value == '.';
   }
 
   @Override

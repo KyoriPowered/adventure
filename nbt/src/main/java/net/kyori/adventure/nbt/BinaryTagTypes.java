@@ -121,7 +121,7 @@ public final class BinaryTagTypes {
     final int size = tag.size();
     output.writeInt(size);
     for (final BinaryTag item : tag) {
-      BinaryTagType.write(item.type(), item, output);
+      BinaryTagType.writeUntyped(item.type(), item, output);
     }
   });
   /**
@@ -149,7 +149,7 @@ public final class BinaryTagTypes {
         output.writeByte(type.id());
         if (type != BinaryTagTypes.END) {
           output.writeUTF(entry.getKey());
-          BinaryTagType.write(type, value, output);
+          BinaryTagType.writeUntyped(type, value, output);
         }
       }
     }

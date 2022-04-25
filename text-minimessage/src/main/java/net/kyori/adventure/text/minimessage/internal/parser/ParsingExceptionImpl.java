@@ -147,7 +147,7 @@ public class ParsingExceptionImpl extends ParsingException {
   }
 
   @Override
-  public Throwable fillInStackTrace() {
+  public synchronized Throwable fillInStackTrace() {
     if (this.withStackTrace) {
       return super.fillInStackTrace();
     }

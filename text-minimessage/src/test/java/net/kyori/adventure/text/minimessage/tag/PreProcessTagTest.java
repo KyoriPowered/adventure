@@ -41,8 +41,8 @@ public class PreProcessTagTest extends AbstractTest {
     this.assertParsedEquals(
       expected,
       input,
-      TagResolver.resolver("test", ((argumentQueue, context) ->
-        Tag.preProcessParsed(argumentQueue.pop().value() + argumentQueue.pop().value())))
+      TagResolver.resolver("test", (argumentQueue, context) ->
+        Tag.preProcessParsed(argumentQueue.pop().value() + argumentQueue.pop().value()))
     );
   }
 
@@ -54,8 +54,8 @@ public class PreProcessTagTest extends AbstractTest {
     this.assertParsedEquals(
       expected,
       input,
-      TagResolver.resolver("test", ((argumentQueue, context) ->
-        Tag.preProcessParsed(argumentQueue.pop().value() + argumentQueue.pop().value())))
+      TagResolver.resolver("test", (argumentQueue, context) ->
+        Tag.preProcessParsed(argumentQueue.pop().value() + argumentQueue.pop().value()))
     );
   }
 

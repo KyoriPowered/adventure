@@ -76,10 +76,10 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
 
   @Override
   public @NotNull Component deserialize(final @NotNull Type type, final @NotNull ConfigurationNode value) throws SerializationException {
-    return this.deserialize0(type, value);
+    return this.deserialize0(value);
   }
 
-  private @NotNull BuildableComponent<?, ?> deserialize0(final @NotNull Type type, final @NotNull ConfigurationNode value) throws SerializationException {
+  private @NotNull BuildableComponent<?, ?> deserialize0(final @NotNull ConfigurationNode value) throws SerializationException {
     // Try to read as a string
     if (!value.isList() && !value.isMap()) {
       final String str = value.getString();
@@ -97,7 +97,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
     } else if (value.isList()) {
       ComponentBuilder<?, ?> parent = null;
       for (final ConfigurationNode childElement : value.childrenList()) {
-        final BuildableComponent<?, ?> child = this.deserialize0(Component.class, childElement);
+        final BuildableComponent<?, ?> child = this.deserialize0(childElement);
         if (parent == null) {
           parent = child.toBuilder();
         } else {
@@ -169,7 +169,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
     if (children.containsKey(EXTRA)) {
       final ConfigurationNode extra = children.get(EXTRA);
       for (final ConfigurationNode child : extra.childrenList()) {
-        component.append(this.deserialize0(Component.class, child));
+        component.append(this.deserialize0(child));
       }
     }
 

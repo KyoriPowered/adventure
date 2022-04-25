@@ -212,8 +212,8 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         if (this.useTerriblyStupidHexFormat) {
           // ah yes, wonderful. A 14 digit long completely unreadable string.
           final StringBuilder legacy = new StringBuilder(String.valueOf(LEGACY_BUNGEE_HEX_CHAR));
-          for (final char character : hex.toCharArray()) {
-            legacy.append(this.character).append(character);
+          for (int i = 0, length = hex.length(); i < length; i++) {
+            legacy.append(this.character).append(hex.charAt(i));
           }
           return legacy.toString();
         } else {
@@ -426,6 +426,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
                 this.needsReset = true;
               }
               break;
+            default: break; // ignored
           }
         }
       }

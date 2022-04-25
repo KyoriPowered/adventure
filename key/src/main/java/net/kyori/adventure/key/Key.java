@@ -148,6 +148,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced {
    * @return the namespace
    * @since 4.0.0
    */
+  @Override
   @NotNull String namespace();
 
   /**
