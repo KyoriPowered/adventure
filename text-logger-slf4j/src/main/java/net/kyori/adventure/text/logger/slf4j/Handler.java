@@ -24,6 +24,8 @@
 package net.kyori.adventure.text.logger.slf4j;
 
 import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
@@ -48,10 +50,16 @@ final class Handler {
   }
 
   static final class DefaultProvider implements ComponentLoggerProvider {
+    private final Map<String, ComponentLogger> loggers = new ConcurrentHashMap<>();
     @Override
     public @NotNull ComponentLogger logger(final @NotNull LoggerHelper helper, final @NotNull String name) {
+      final ComponentLogger initial = this.loggers.get(name);
+      if (initial != null) return initial;
+
       final Logger backing = LoggerFactory.getLogger(name);
-      return helper.delegating(backing, helper.plainSerializer());
+      final ComponentLogger created = helper.delegating(backing, helper.plainSerializer());
+      final ComponentLogger existing = this.loggers.putIfAbsent(name, created);
+      return existing == null ? created : existing;
     }
   }
 

@@ -29,6 +29,8 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * An extended type of Logger capable of logging formatted components to the console.
  *
@@ -42,12 +44,14 @@ public interface ComponentLogger extends Logger {
   /**
    * Get a logger instance with the name of the calling class.
    *
+   * <p>This method is caller-sensitive and should not be wrapped. See
+   *
    * <p>This logger is produced by implementations of the {@link ComponentLoggerProvider}.</p>
    *
    * @return a logger with the name of the calling class
    * @since 4.11.0
    */
-  static ComponentLogger logger() {
+  static @NotNull ComponentLogger logger() {
     return logger(CallerClassFinder.callingClassName());
   }
 
@@ -60,8 +64,8 @@ public interface ComponentLogger extends Logger {
    * @return a logger with the provided name
    * @since 4.11.0
    */
-  static ComponentLogger logger(final String name) {
-    return Handler.logger(name);
+  static @NotNull ComponentLogger logger(final @NotNull String name) {
+    return Handler.logger(requireNonNull(name, "name"));
   }
 
   /**
@@ -73,7 +77,7 @@ public interface ComponentLogger extends Logger {
    * @return a logger with the name of the calling class
    * @since 4.11.0
    */
-  static ComponentLogger logger(final Class<?> clazz) {
+  static @NotNull ComponentLogger logger(final @NotNull Class<?> clazz) {
     return logger(clazz.getName());
   }
 

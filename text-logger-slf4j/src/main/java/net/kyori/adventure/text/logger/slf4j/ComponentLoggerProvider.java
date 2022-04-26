@@ -59,7 +59,7 @@ public interface ComponentLoggerProvider {
      * @return a plain serializer
      * @since 4.11.0
      */
-    Function<Component, String> plainSerializer();
+    @NotNull Function<Component, String> plainSerializer();
 
     /**
      * Create a component logger based on one which delegates to an underlying plain {@link Logger} implementation.
