@@ -143,14 +143,12 @@ class TagResolverTest {
     final TagResolver first = TagResolver.resolver(
         Placeholder.unparsed("single", "replace"),
         TagResolver.standard(),
-        TagResolver.caching((name) -> null),
         TagResolver.empty(),
         TagResolver.resolver("tag", Tag.selfClosingInserting(Component.empty()))
     );
     final TagResolver second = TagResolver.resolver(
         Placeholder.unparsed("single", "replace"),
         TagResolver.standard(),
-        TagResolver.caching((name) -> null),
         TagResolver.empty(),
         TagResolver.resolver("tag", Tag.selfClosingInserting(Component.empty()))
     );
