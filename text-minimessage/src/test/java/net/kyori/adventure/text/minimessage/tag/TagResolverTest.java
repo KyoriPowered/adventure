@@ -138,6 +138,27 @@ class TagResolverTest {
     assertDoesNotThrow(() -> TagResolver.resolver("v_9_v", Tag.preProcessParsed("something")));
   }
 
+  @Test
+  void testTagResolverEquality() {
+    final TagResolver first = TagResolver.resolver(
+        Placeholder.unparsed("single", "replace"),
+        TagResolver.standard(),
+        TagResolver.empty(),
+        TagResolver.resolver("tag", Tag.selfClosingInserting(Component.empty()))
+    );
+    final TagResolver second = TagResolver.resolver(
+        Placeholder.unparsed("single", "replace"),
+        TagResolver.standard(),
+        TagResolver.empty(),
+        TagResolver.resolver("tag", Tag.selfClosingInserting(Component.empty()))
+    );
+
+    AbstractTest.dummyContext("equality test")
+      .deserialize("<test>", first, second);
+
+    assertEquals(first, second);
+  }
+
   private static @NotNull Tag resolveForTest(final TagResolver resolver, final String tag) {
     try {
       final Context ctx = AbstractTest.dummyContext("help i shouldn't be seen");
