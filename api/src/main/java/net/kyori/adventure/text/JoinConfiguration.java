@@ -26,6 +26,7 @@ package net.kyori.adventure.text;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import net.kyori.adventure.builder.AbstractBuilder;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
@@ -61,6 +62,10 @@ import org.jetbrains.annotations.Nullable;
  *  <li>
  *    <b>a predicate</b> (required, defaults to {@code true})
  *    <p>a predicate that specifies if a given component should be included in the join process</p>
+ *  </li>
+ *  <li>
+ *    <b>a root {@link Style style} (required, defaults to {@link Style#empty()})</b>
+ *    <p>the style of the parent component that contains the joined components.</p>
  *  </li>
  * </ul>
  *
@@ -229,6 +234,14 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
   @NotNull Predicate<ComponentLike> predicate();
 
   /**
+   * Gets the style of the parent component that contains the joined components.
+   *
+   * @return the style
+   * @since 4.11.0
+   */
+  @NotNull Style parentStyle();
+
+  /**
    * A builder for join configurations.
    *
    * @since 4.9.0
@@ -300,7 +313,7 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
     @NotNull Builder convertor(final @NotNull Function<ComponentLike, Component> convertor);
 
     /**
-     * Gets the predicate of this join configuration builder.
+     * Sets the predicate of this join configuration builder.
      *
      * <p>This is used to determine if a component is to be included in the join process. It does not touch the prefix, suffix or any of the separators.</p>
      *
@@ -310,5 +323,15 @@ public interface JoinConfiguration extends Buildable<JoinConfiguration, JoinConf
      */
     @Contract("_ -> this")
     @NotNull Builder predicate(final @NotNull Predicate<ComponentLike> predicate);
+
+    /**
+     * Sets the style of the parent component that contains the joined components.
+     *
+     * @param parentStyle the style
+     * @return this builder
+     * @since 4.11.0
+     */
+    @Contract("_ -> this")
+    @NotNull Builder parentStyle(final @NotNull Style parentStyle);
   }
 }

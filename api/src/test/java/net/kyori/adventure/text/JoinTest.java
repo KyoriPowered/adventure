@@ -23,9 +23,13 @@
  */
 package net.kyori.adventure.text;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.IntStream;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
@@ -317,6 +321,54 @@ class JoinTest {
         .build(),
       result
     );
+  }
+
+  @Test
+  final void testJoinWithRootStyle() {
+    final Style style = Style.style(NamedTextColor.RED, TextDecoration.BOLD);
+    final Style epicStyle = Style.style(NamedTextColor.BLACK, TextDecoration.ITALIC);
+    final List<Component> componentsToJoin = new ArrayList<>();
+    componentsToJoin.add(Component.text("FIRST"));
+    componentsToJoin.add(Component.text("SECOND", style));
+    componentsToJoin.add(Component.text("THIRD"));
+    final Component result = Component.join(JoinConfiguration.builder().separator(Component.text(",")).parentStyle(epicStyle).build(), componentsToJoin);
+
+    assertEquals(
+      Component.text().style(epicStyle)
+        .append(Component.text("FIRST"))
+        .append(Component.text(","))
+        .append(Component.text("SECOND", style))
+        .append(Component.text(","))
+        .append(Component.text("THIRD"))
+        .build(),
+      result
+    );
+  }
+
+  @Test
+  final void testJoinWithRootStyleSingleComponent() {
+    final List<Component> componentsToJoin = new ArrayList<>();
+    componentsToJoin.add(Component.text("FIRST"));
+    final Style epicStyle = Style.style(NamedTextColor.BLACK, TextDecoration.ITALIC);
+    final Component result = Component.join(JoinConfiguration.builder().separator(Component.text(",")).parentStyle(epicStyle).build(), componentsToJoin);
+
+    assertEquals(
+      Component.text().style(epicStyle)
+        .append(Component.text("FIRST"))
+        .build(),
+      result
+    );
+  }
+
+  @Test
+  final void testJoinWithRootStyleNoComponents() {
+    final List<Component> componentsToJoin = new ArrayList<>();
+    final Style epicStyle = Style.style(NamedTextColor.BLACK, TextDecoration.ITALIC);
+    final Component result = Component.join(JoinConfiguration.builder().separator(Component.text(", ")).parentStyle(epicStyle).build(), componentsToJoin);
+
+    assertEquals(
+      Component.text().style(epicStyle).build(),
+      result);
   }
 
   private static final class TestComponentLike implements ComponentLike {

@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text.minimessage.internal.parser.node;
 
-import java.util.function.IntPredicate;
 import net.kyori.adventure.text.minimessage.internal.parser.Token;
 import net.kyori.adventure.text.minimessage.internal.parser.TokenParser;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +34,9 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.10.0
  */
 public final class TextNode extends ValueNode {
-  private static final IntPredicate ESCAPES = i -> i == TokenParser.TAG_START || i == TokenParser.ESCAPE;
+  private static boolean isEscape(final int escape) {
+    return escape == TokenParser.TAG_START || escape == TokenParser.ESCAPE;
+  }
 
   /**
    * Creates a new text node.
@@ -50,7 +51,7 @@ public final class TextNode extends ValueNode {
     final @NotNull Token token,
     final @NotNull String sourceMessage
   ) {
-    super(parent, token, sourceMessage, TokenParser.unescape(sourceMessage, token.startIndex(), token.endIndex(), ESCAPES));
+    super(parent, token, sourceMessage, TokenParser.unescape(sourceMessage, token.startIndex(), token.endIndex(), TextNode::isEscape));
   }
 
   @Override

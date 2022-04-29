@@ -129,7 +129,7 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
     });
 
     if (flattener == Handler.NONE) {
-      return this.unknownHandler == null ? null : (component, listener, depth) -> this.unknownHandler.apply(component);
+      return this.unknownHandler == null ? null : (component, listener, depth) -> listener.component(this.unknownHandler.apply(component));
     } else {
       return flattener;
     }

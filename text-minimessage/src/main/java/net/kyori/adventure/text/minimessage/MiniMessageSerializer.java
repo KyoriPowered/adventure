@@ -168,7 +168,7 @@ final class MiniMessageSerializer {
     // TokenEmitter
 
     @Override
-    public Collector tag(final String token) {
+    public @NotNull Collector tag(final @NotNull String token) {
       this.completeTag();
       this.consumer.append(TokenParser.TAG_START);
       this.escapeTagContent(token, QuotingOverride.UNQUOTED);
@@ -178,7 +178,7 @@ final class MiniMessageSerializer {
     }
 
     @Override
-    public @NotNull TokenEmitter selfClosingTag(@NotNull final String token) {
+    public @NotNull TokenEmitter selfClosingTag(final @NotNull String token) {
       this.completeTag();
       this.consumer.append(TokenParser.TAG_START);
       this.escapeTagContent(token, QuotingOverride.UNQUOTED);
@@ -187,7 +187,7 @@ final class MiniMessageSerializer {
     }
 
     @Override
-    public TokenEmitter argument(final String arg) {
+    public @NotNull TokenEmitter argument(final @NotNull String arg) {
       if (!this.tagState.isTag) {
         throw new IllegalStateException("Not within a tag!");
       }
@@ -213,7 +213,7 @@ final class MiniMessageSerializer {
     }
 
     @Override
-    public Collector text(final String text) {
+    public @NotNull Collector text(final @NotNull String text) {
       this.completeTag();
       // escape '\' and '<'
       appendEscaping(this.consumer, text, TEXT_ESCAPES, true);
@@ -285,7 +285,7 @@ final class MiniMessageSerializer {
     }
 
     @Override
-    public Collector pop() {
+    public @NotNull Collector pop() {
       this.emitClose(this.popTag(false));
       return this;
     }
@@ -312,7 +312,7 @@ final class MiniMessageSerializer {
     final Set<String> claimedStyleElements = new HashSet<>();
 
     @Override
-    public void style(final String claimKey, final @NotNull Emitable styleClaim) {
+    public void style(final @NotNull String claimKey, final @NotNull Emitable styleClaim) {
       if (this.claimedStyleElements.add(requireNonNull(claimKey, "claimKey"))) {
         styleClaim.emit(this);
       }

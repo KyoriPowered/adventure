@@ -141,6 +141,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   }
 
   @Override
+  @SuppressWarnings("JdkObsolete") // MessageFormat requires StringBuffer in its api
   protected @NotNull Component renderTranslatable(final @NotNull TranslatableComponent component, final @NotNull C context) {
     final @Nullable MessageFormat format = this.translate(component.key(), context);
     if (format == null) {

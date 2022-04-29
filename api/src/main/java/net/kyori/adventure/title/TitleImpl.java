@@ -137,7 +137,7 @@ final class TitleImpl implements Title {
     @Override
     public boolean equals(final @Nullable Object other) {
       if (this == other) return true;
-      if (other == null || this.getClass() != other.getClass()) return false;
+      if (!(other instanceof TimesImpl)) return false;
       final TimesImpl that = (TimesImpl) other;
       return this.fadeIn.equals(that.fadeIn)
         && this.stay.equals(that.stay)
