@@ -31,8 +31,9 @@ import net.kyori.adventure.text.minimessage.AbstractTest;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.minimessage.tag.resolver.Formatter.formatDate;
-import static net.kyori.adventure.text.minimessage.tag.resolver.Formatter.formatNumber;
+import static net.kyori.adventure.text.minimessage.tag.resolver.Formatter.choice;
+import static net.kyori.adventure.text.minimessage.tag.resolver.Formatter.date;
+import static net.kyori.adventure.text.minimessage.tag.resolver.Formatter.number;
 
 public class FormatterTest extends AbstractTest {
   @Test
@@ -43,7 +44,7 @@ public class FormatterTest extends AbstractTest {
     this.assertParsedEquals(
       expected,
       input,
-      formatNumber("mynumber", 20d)
+      number("mynumber", 20d)
     );
   }
 
@@ -55,7 +56,7 @@ public class FormatterTest extends AbstractTest {
     this.assertParsedEquals(
       expected,
       input,
-      formatNumber("mynumber", 20d)
+      number("mynumber", 20d)
     );
   }
 
@@ -67,7 +68,7 @@ public class FormatterTest extends AbstractTest {
     this.assertParsedEquals(
       expected,
       input,
-      formatNumber("double", 2000d)
+      number("double", 2000d)
     );
   }
 
@@ -80,12 +81,12 @@ public class FormatterTest extends AbstractTest {
     this.assertParsedEquals(
       expectedNegative,
       input,
-      formatNumber("double", -5)
+      number("double", -5)
     );
     this.assertParsedEquals(
       expectedPositive,
       input,
-      formatNumber("double", 5)
+      number("double", 5)
     );
   }
 
@@ -97,7 +98,23 @@ public class FormatterTest extends AbstractTest {
     this.assertParsedEquals(
       expected,
       input,
-      formatDate("date", LocalDateTime.of(2022, Month.FEBRUARY, 26, 21, 0, 0))
+      date("date", LocalDateTime.of(2022, Month.FEBRUARY, 26, 21, 0, 0))
     );
+  }
+
+  @Test
+  void testChoiceFormatter() {
+    final String input = "<choice:'-2#is small|-1#minus one|0#zero|1#one|1<is big'> result";
+    final Component verySmall = text("is small result");
+    final Component minusOne = text("minus one result");
+    final Component zero = text("zero result");
+    final Component one = text("one result");
+    final Component bigResult = text("is big result");
+
+    this.assertParsedEquals(verySmall, input, choice("choice", -5));
+    this.assertParsedEquals(minusOne, input, choice("choice", -1));
+    this.assertParsedEquals(zero, input, choice("choice", 0));
+    this.assertParsedEquals(one, input, choice("choice", 1));
+    this.assertParsedEquals(bigResult, input, choice("choice", 2));
   }
 }

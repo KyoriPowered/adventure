@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.tag.resolver;
 
+import java.text.ChoiceFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -37,7 +38,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * <p>These are effectively placeholders.</p>
  *
- * @since 4.10.0
+ * @since 4.11.0
  */
 public final class Formatter {
   private Formatter() {
@@ -55,9 +56,9 @@ public final class Formatter {
    * @param key the key
    * @param number the number
    * @return the placeholder
-   * @since 4.10.0
+   * @since 4.11.0
    */
-  public static TagResolver formatNumber(final @NotNull String key, final Number number) {
+  public static TagResolver number(final @NotNull String key, final @NotNull Number number) {
     return TagResolver.resolver(key, (argumentQueue, context) -> {
       final NumberFormat decimalFormat;
       if (argumentQueue.hasNext()) {
@@ -89,12 +90,53 @@ public final class Formatter {
    * @param key the key
    * @param time the time
    * @return the placeholder
-   * @since 4.10.0
+   * @since 4.11.0
    */
-  public static TagResolver formatDate(final @NotNull String key, final TemporalAccessor time) {
+  public static TagResolver date(final @NotNull String key, final @NotNull TemporalAccessor time) {
     return TagResolver.resolver(key, (argumentQueue, context) -> {
       final String format = argumentQueue.popOr("Format expected.").value();
       return Tag.inserting(context.deserialize(DateTimeFormatter.ofPattern(format).format(time)));
     });
+  }
+
+  /**
+   * Creates a replacement that inserts a choice formatted text. The component will be formatted by the provided ChoiceFormat.
+   *
+   * <p>This tag expectes a format as attribute. Refer to {@link ChoiceFormat} for usable patterns.</p>
+   *
+   * <p>This replacement is auto-closing, so its style will not influence the style of following components.</p>
+   *
+   * @param key the key
+   * @param number the number
+   * @return the placeholder
+   * @since 4.11.0
+   */
+  public static TagResolver choice(final @NotNull String key, final long number) {
+    return TagResolver.resolver(key, ((argumentQueue, context) -> {
+      final String format = argumentQueue.popOr("Format expected.").value();
+      ChoiceFormat choiceFormat = new ChoiceFormat(format);
+      return Tag.inserting(context.deserialize(choiceFormat.format(number)));
+    }));
+  }
+
+
+  /**
+   * Creates a replacement that inserts a choice formatted text. The component will be formatted by the provided ChoiceFormat.
+   *
+   * <p>This tag expectes a format as attribute. Refer to {@link ChoiceFormat} for usable patterns.</p>
+   *
+   * <p>This replacement is auto-closing, so its style will not influence the style of following components.</p>
+   *
+   * @param key the key
+   * @param number the number
+   * @return the placeholder
+   * @since 4.11.0
+   */
+  public static TagResolver choice(final @NotNull String key, final double number) {
+    return TagResolver.resolver(key, ((argumentQueue, context) -> {
+      final String format = argumentQueue.popOr("Format expected.").value();
+      ChoiceFormat choiceFormat = new ChoiceFormat(format);
+      return Tag.inserting(context.deserialize(choiceFormat.format(number)));
+    }));
   }
 }
