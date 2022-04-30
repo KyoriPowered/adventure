@@ -74,7 +74,7 @@ public interface Context {
    *
    * @param message the message to replace tags
    * @return the message with replaced {@link net.kyori.adventure.text.minimessage.tag.PreProcess} tags
-   * @since 4.10.2
+   * @since 4.11.0
    */
   @NotNull String preProcess(final @NotNull String message);
 
