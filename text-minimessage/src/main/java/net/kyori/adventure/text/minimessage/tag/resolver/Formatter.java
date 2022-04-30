@@ -114,11 +114,10 @@ public final class Formatter {
   public static TagResolver choice(final @NotNull String key, final long number) {
     return TagResolver.resolver(key, ((argumentQueue, context) -> {
       final String format = argumentQueue.popOr("Format expected.").value();
-      ChoiceFormat choiceFormat = new ChoiceFormat(format);
+      final ChoiceFormat choiceFormat = new ChoiceFormat(format);
       return Tag.inserting(context.deserialize(choiceFormat.format(number)));
     }));
   }
-
 
   /**
    * Creates a replacement that inserts a choice formatted text. The component will be formatted by the provided ChoiceFormat.
@@ -135,7 +134,7 @@ public final class Formatter {
   public static TagResolver choice(final @NotNull String key, final double number) {
     return TagResolver.resolver(key, ((argumentQueue, context) -> {
       final String format = argumentQueue.popOr("Format expected.").value();
-      ChoiceFormat choiceFormat = new ChoiceFormat(format);
+      final ChoiceFormat choiceFormat = new ChoiceFormat(format);
       return Tag.inserting(context.deserialize(choiceFormat.format(number)));
     }));
   }
