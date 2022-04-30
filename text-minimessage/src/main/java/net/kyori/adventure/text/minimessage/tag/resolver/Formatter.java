@@ -58,7 +58,7 @@ public final class Formatter {
    * @return the placeholder
    * @since 4.11.0
    */
-  public static TagResolver number(final @NotNull String key, final @NotNull Number number) {
+  public static @NotNull TagResolver number(final @NotNull String key, final @NotNull Number number) {
     return TagResolver.resolver(key, (argumentQueue, context) -> {
       final NumberFormat decimalFormat;
       if (argumentQueue.hasNext()) {
@@ -92,7 +92,7 @@ public final class Formatter {
    * @return the placeholder
    * @since 4.11.0
    */
-  public static TagResolver date(final @NotNull String key, final @NotNull TemporalAccessor time) {
+  public static @NotNull TagResolver date(final @NotNull String key, final @NotNull TemporalAccessor time) {
     return TagResolver.resolver(key, (argumentQueue, context) -> {
       final String format = argumentQueue.popOr("Format expected.").value();
       return Tag.inserting(context.deserialize(DateTimeFormatter.ofPattern(format).format(time)));
@@ -111,7 +111,7 @@ public final class Formatter {
    * @return the placeholder
    * @since 4.11.0
    */
-  public static TagResolver choice(final @NotNull String key, final long number) {
+  public static @NotNull TagResolver choice(final @NotNull String key, final long number) {
     return TagResolver.resolver(key, ((argumentQueue, context) -> {
       final String format = argumentQueue.popOr("Format expected.").value();
       final ChoiceFormat choiceFormat = new ChoiceFormat(format);
@@ -131,7 +131,7 @@ public final class Formatter {
    * @return the placeholder
    * @since 4.11.0
    */
-  public static TagResolver choice(final @NotNull String key, final double number) {
+  public static @NotNull TagResolver choice(final @NotNull String key, final double number) {
     return TagResolver.resolver(key, ((argumentQueue, context) -> {
       final String format = argumentQueue.popOr("Format expected.").value();
       final ChoiceFormat choiceFormat = new ChoiceFormat(format);
