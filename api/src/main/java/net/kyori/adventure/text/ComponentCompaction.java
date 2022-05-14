@@ -221,6 +221,7 @@ final class ComponentCompaction {
     
     builder.color(null);
     builder.decoration(TextDecoration.ITALIC, TextDecoration.State.NOT_SET);
+    builder.decoration(TextDecoration.OBFUSCATED, TextDecoration.State.NOT_SET);
     
     return builder.build();
   }
