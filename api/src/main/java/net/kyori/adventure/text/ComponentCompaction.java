@@ -48,6 +48,11 @@ final class ComponentCompaction {
     final int childrenSize = children.size();
 
     if (childrenSize == 0) {
+      // no children, style can be further simplified if self is blank
+      if (isBlank(self)) {
+        optimized = optimized.style(simplifyStyleForBlank(self.style()));
+      }
+
       // leaf nodes do not need to be further optimized - there is no point
       return optimized;
     }
@@ -74,7 +79,21 @@ final class ComponentCompaction {
     // optimize all children
     final List<Component> childrenToAppend = new ArrayList<>(children.size());
     for (int i = 0; i < children.size(); ++i) {
-      childrenToAppend.add(compact(children.get(i), childParentStyle));
+      Component child = children.get(i);
+
+      // compact child recursively
+      child = compact(child, childParentStyle);
+
+      // ignore useless empty children (regardless of its style)
+      if (child.children().isEmpty() && child instanceof TextComponent) {
+        final TextComponent textComponent = (TextComponent) child;
+
+        if (textComponent.content().isEmpty()) {
+          continue;
+        }
+      }
+
+      childrenToAppend.add(child);
     }
 
     // try to merge children into this parent component
@@ -120,6 +139,11 @@ final class ComponentCompaction {
       }
     }
 
+    // no children, style can be further simplified if self is blank
+    if (childrenToAppend.isEmpty() && isBlank(self)) {
+      optimized = optimized.style(simplifyStyleForBlank(self.style()));
+    }
+
     return optimized.children(childrenToAppend);
   }
 
@@ -163,6 +187,41 @@ final class ComponentCompaction {
       builder.insertion(null);
     }
 
+    return builder.build();
+  }
+
+  /**
+  * Checks whether the Component is blank (a TextComponent containing only space characters)
+  *
+  * @param component the component to check
+  * @return true if the provided component is blank, false otherwise
+  */
+  private static boolean isBlank(Component component) {
+    if (component instanceof TextComponent) {
+      final TextComponent textComponent = (TextComponent) component;
+      
+      for (char c : textComponent.content().toCharArray()) {
+        if (c != ' ') return false;
+      }
+      
+      return true;
+    }
+    return false;
+  }
+  
+  /**
+  * Simplify the provided style to remove any information that is redundant,
+  * given that the content is blank
+  *
+  * @param style style to simplify
+  * @return a new, simplified style
+  */
+  private static @NotNull Style simplifyStyleForBlank(final @NotNull Style style) {
+    final Style.Builder builder = style.toBuilder();
+    
+    builder.color(null);
+    builder.decoration(TextDecoration.ITALIC, TextDecoration.State.NOT_SET);
+    
     return builder.build();
   }
 
