@@ -199,8 +199,10 @@ final class ComponentCompaction {
   private static boolean isBlank(Component component) {
     if (component instanceof TextComponent) {
       final TextComponent textComponent = (TextComponent) component;
-      
-      for (char c : textComponent.content().toCharArray()) {
+
+      String content = textComponent.content();
+      for (int i = 0; i < content.length(); i++) {
+        char c = content.charAt(i);
         if (c != ' ') return false;
       }
       
