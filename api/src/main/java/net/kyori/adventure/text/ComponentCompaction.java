@@ -218,10 +218,18 @@ final class ComponentCompaction {
   */
   private static @NotNull Style simplifyStyleForBlank(final @NotNull Style style) {
     final Style.Builder builder = style.toBuilder();
-    
+
+    // TextColor doesn't affect spaces
     builder.color(null);
+
+    // ITALIC/OBFUSCATED don't affect spaces, as these styles only affect glyph rendering
     builder.decoration(TextDecoration.ITALIC, TextDecoration.State.NOT_SET);
     builder.decoration(TextDecoration.OBFUSCATED, TextDecoration.State.NOT_SET);
+
+    // UNDERLINE/STRIKETHROUGH affects spaces because the line renders on top
+    // BOLD affects spaces because it increments the character advance by 1
+
+    // font affects spaces in 1.19+ (since 22w11a), due to the font glyph provider for spaces
     
     return builder.build();
   }
