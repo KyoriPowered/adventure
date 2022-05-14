@@ -23,9 +23,9 @@ jobs:
     runs-on: "${{ matrix.os }}"
     steps:
       - name: "checkout repository"
-        uses: "actions/checkout@v2"
+        uses: "actions/checkout@v3"
       - name: "setup jdk ${{ env.RUNTIME_VERSION }}"
-        uses: "actions/setup-java@v2"
+        uses: "actions/setup-java@v3"
         with:
           distribution: "temurin"
           java-version: "${{ env.RUNTIME_VERSION }}"
@@ -36,7 +36,7 @@ jobs:
           arguments: "build"
       - name: "Archive test results"
         if: "${{ always() }}"
-        uses: "actions/upload-artifact@v2"
+        uses: "actions/upload-artifact@v3"
         with:
           name: "${{ runner.os }}-test-results"
           path: |
