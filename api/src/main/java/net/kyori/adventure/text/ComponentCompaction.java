@@ -49,8 +49,8 @@ final class ComponentCompaction {
 
     if (childrenSize == 0) {
       // no children, style can be further simplified if self is blank
-      if (isBlank(self)) {
-        optimized = optimized.style(simplifyStyleForBlank(self.style()));
+      if (isBlank(optimized)) {
+        optimized = optimized.style(simplifyStyleForBlank(optimized.style()));
       }
 
       // leaf nodes do not need to be further optimized - there is no point
@@ -58,8 +58,8 @@ final class ComponentCompaction {
     }
 
     // if there is only one child, check if self a useless empty component
-    if (childrenSize == 1 && self instanceof TextComponent) {
-      final TextComponent textComponent = (TextComponent) self;
+    if (childrenSize == 1 && optimized instanceof TextComponent) {
+      final TextComponent textComponent = (TextComponent) optimized;
 
       if (textComponent.content().isEmpty()) {
         final Component child = children.get(0);
@@ -140,8 +140,8 @@ final class ComponentCompaction {
     }
 
     // no children, style can be further simplified if self is blank
-    if (childrenToAppend.isEmpty() && isBlank(self)) {
-      optimized = optimized.style(simplifyStyleForBlank(self.style()));
+    if (childrenToAppend.isEmpty() && isBlank(optimized)) {
+      optimized = optimized.style(simplifyStyleForBlank(optimized.style()));
     }
 
     return optimized.children(childrenToAppend);
@@ -191,18 +191,19 @@ final class ComponentCompaction {
   }
 
   /**
-  * Checks whether the Component is blank (a TextComponent containing only space characters)
+  * Checks whether the Component is blank (a TextComponent containing only space characters).
   *
   * @param component the component to check
   * @return true if the provided component is blank, false otherwise
   */
-  private static boolean isBlank(Component component) {
+  private static boolean isBlank(final Component component) {
     if (component instanceof TextComponent) {
       final TextComponent textComponent = (TextComponent) component;
 
-      String content = textComponent.content();
+      final String content = textComponent.content();
+
       for (int i = 0; i < content.length(); i++) {
-        char c = content.charAt(i);
+        final char c = content.charAt(i);
         if (c != ' ') return false;
       }
       
@@ -213,7 +214,7 @@ final class ComponentCompaction {
   
   /**
   * Simplify the provided style to remove any information that is redundant,
-  * given that the content is blank
+  * given that the content is blank.
   *
   * @param style style to simplify
   * @return a new, simplified style
