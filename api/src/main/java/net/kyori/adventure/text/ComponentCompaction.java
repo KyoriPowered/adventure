@@ -97,21 +97,23 @@ final class ComponentCompaction {
     }
 
     // try to merge children into this parent component
-    while (!childrenToAppend.isEmpty()) {
-      final Component child = childrenToAppend.get(0);
-      final Style childStyle = child.style().merge(childParentStyle, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
+    if (optimized instanceof TextComponent) {
+      while (!childrenToAppend.isEmpty()) {
+        final Component child = childrenToAppend.get(0);
+        final Style childStyle = child.style().merge(childParentStyle, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
 
-      if (optimized instanceof TextComponent && child instanceof TextComponent && Objects.equals(childStyle, childParentStyle)) {
-        // merge child components into the parent if they are a text component with the same effective style
-        // in context of their parent style
-        optimized = joinText((TextComponent) optimized, (TextComponent) child);
-        childrenToAppend.remove(0);
+        if (child instanceof TextComponent && Objects.equals(childStyle, childParentStyle)) {
+          // merge child components into the parent if they are a text component with the same effective style
+          // in context of their parent style
+          optimized = joinText((TextComponent) optimized, (TextComponent) child);
+          childrenToAppend.remove(0);
 
-        // if the merged child had any children, retain them
-        childrenToAppend.addAll(0, child.children());
-      } else {
-        // this child can't be merged into the parent, so all children from now on must remain children
-        break;
+          // if the merged child had any children, retain them
+          childrenToAppend.addAll(0, child.children());
+        } else {
+          // this child can't be merged into the parent, so all children from now on must remain children
+          break;
+        }
       }
     }
 
@@ -121,22 +123,26 @@ final class ComponentCompaction {
       final Component child = childrenToAppend.get(i);
       final Component neighbor = childrenToAppend.get(i + 1);
 
-      // calculate the children's styles in context of their parent style
-      final Style childStyle = child.style().merge(childParentStyle, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
-      final Style neighborStyle = neighbor.style().merge(childParentStyle, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
+      if (child.children().isEmpty() && child instanceof TextComponent && neighbor instanceof TextComponent) {
+        // calculate the children's styles in context of their parent style
+        final Style childStyle = child.style().merge(childParentStyle, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
+        final Style neighborStyle = neighbor.style().merge(childParentStyle, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
 
-      if (child.children().isEmpty() && child instanceof TextComponent && neighbor instanceof TextComponent && childStyle.equals(neighborStyle)) {
-        final Component combined = joinText((TextComponent) child, (TextComponent) neighbor);
+        // check if styles are equivalent
+        if (childStyle.equals(neighborStyle)) {
+          final Component combined = joinText((TextComponent) child, (TextComponent) neighbor);
 
-        // replace the child and its neighbor with the single, combined component
-        childrenToAppend.set(i, combined);
-        childrenToAppend.remove(i + 1);
+          // replace the child and its neighbor with the single, combined component
+          childrenToAppend.set(i, combined);
+          childrenToAppend.remove(i + 1);
 
-        // don't increment the index -
-        // we want to try and optimize this combined component even further
-      } else {
-        i++;
+          // don't increment the index -
+          // we want to try and optimize this combined component even further
+          continue;
+        }
       }
+
+      i++;
     }
 
     // no children, style can be further simplified if self is blank
