@@ -24,8 +24,10 @@
 package net.kyori.adventure.text;
 
 import java.util.stream.Stream;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
@@ -314,4 +316,84 @@ class ComponentCompactingTest {
 
     assertEquals(expectedCompact, notCompact.compact());
   }
+
+  @Test
+  void testBlankStyleRemoval() {
+    final String blank = "   ";
+
+    final Component expectedCompact = text(blank);
+    final Component notCompact = text(blank, NamedTextColor.RED);
+
+    assertEquals(expectedCompact, notCompact.compact());
+  }
+
+  @Test
+  void testBlankCompactionWithRemovableStyle() {
+    final String blank = "   ";
+
+    final Component expectedCompact = text(blank);
+    final Component notCompact = text().append(
+      text(blank, NamedTextColor.RED)
+    ).build();
+
+    assertEquals(expectedCompact, notCompact.compact());
+  }
+
+  @Test
+  void testBlankCompactionWithManyStyle() {
+    final String blank = "   ";
+
+    final Component expectedCompact = text(blank + blank + blank + blank);
+    final Component notCompact = text().append(
+      text(blank, NamedTextColor.RED)
+        .append(text(blank).decorate(TextDecoration.ITALIC))
+    ).append(
+      text(blank).decorate(TextDecoration.OBFUSCATED)
+        .append(text(blank, TextColor.color(0xDEADB33F)))
+    ).build();
+
+    assertEquals(expectedCompact, notCompact.compact());
+  }
+
+  @Test
+  void testBlankCompactionWithNonRemovableStyle() {
+    final String blank = "   ";
+
+    final Component expectedCompact = text(blank).decorate(TextDecoration.STRIKETHROUGH);
+    final Component notCompact = text().append(
+      text(blank).decorate(TextDecoration.STRIKETHROUGH)
+    ).build();
+
+    assertEquals(expectedCompact, notCompact.compact());
+  }
+
+  @Test
+  void testBlankCompactionWithManyNonRemovableStyle() {
+    final String blank = "   ";
+
+    final Component notCompact = text().append(
+      text(blank).decorate(TextDecoration.STRIKETHROUGH)
+        .append(text(blank).decorate(TextDecoration.BOLD))
+    ).append(
+      text(blank).decorate(TextDecoration.UNDERLINED)
+        .append(text(blank).font(Key.key("kyori:meow")))
+    ).build();
+
+    assertEquals(notCompact, notCompact.compact());
+  }
+
+  @Test
+  void testEmptyCompactionWithManyNonRemovableStyle() {
+    final Component expectedCompact = text("meow");
+    final Component notCompact = text().content("meow").append(
+      empty().decorate(TextDecoration.STRIKETHROUGH)
+        .append(empty().decorate(TextDecoration.BOLD))
+    ).append(
+      empty().decorate(TextDecoration.UNDERLINED)
+        .append(empty().font(Key.key("kyori:meow")))
+    ).build();
+
+    assertEquals(expectedCompact, notCompact.compact());
+  }
+
 }
