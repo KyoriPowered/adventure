@@ -222,7 +222,7 @@ final class ComponentCompaction {
     // TextColor doesn't affect spaces
     builder.color(null);
 
-    // ITALIC/OBFUSCATED don't affect spaces, as these styles only affect glyph rendering
+    // ITALIC/OBFUSCATED don't affect spaces (in modern versions), as these styles only affect glyph rendering
     builder.decoration(TextDecoration.ITALIC, TextDecoration.State.NOT_SET);
     builder.decoration(TextDecoration.OBFUSCATED, TextDecoration.State.NOT_SET);
 
