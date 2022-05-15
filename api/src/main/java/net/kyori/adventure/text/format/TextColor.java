@@ -92,19 +92,20 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
     final float q = v * (1 - s * f);
     final float t = v * (1 - s * (1 - f));
 
-    if (i == 0) {
-      return color(v, t, p);
-    } else if (i == 1) {
-      return color(q, v, p);
-    } else if (i == 2) {
-      return color(p, v, t);
-    } else if (i == 3) {
-      return color(p, q, v);
-    } else if (i == 4) {
-      return color(t, p, v);
-    } else {
-      return color(v, p, q);
+    switch(i) {
+      case 0:
+        return color(v, t, p);
+      case 1:
+        return color(q, v, p);
+      case 2:
+        return color(p, v, t);
+      case 3:
+        return color(p, q, v);
+      case 4:
+        return color(t, p, v);
     }
+    
+    return color(v, p, q);
   }
 
   /**
