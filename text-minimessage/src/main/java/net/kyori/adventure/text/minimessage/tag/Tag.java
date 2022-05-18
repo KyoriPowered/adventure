@@ -25,7 +25,6 @@ package net.kyori.adventure.text.minimessage.tag;
 
 import java.util.Arrays;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.function.Consumer;
@@ -215,22 +214,6 @@ public /* sealed */ interface Tag /* permits Inserting, Modifying, ParserDirecti
         return OptionalDouble.of(Double.parseDouble(this.value()));
       } catch (final NumberFormatException ex) {
         return OptionalDouble.empty();
-      }
-    }
-
-    /**
-     * Try to return this argument as a {@code char}.
-     *
-     * <p>The optional will only be present if the value is a valid char.</p>
-     *
-     * @return an optional providing the value of this argument as an integer
-     * @since 4.10.0
-     */
-    default @NotNull Optional<Character> asChar() {
-      if (this.value().length() == 1) {
-        return Optional.of(this.value().charAt(0));
-      } else {
-        return Optional.empty();
       }
     }
   }

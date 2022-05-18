@@ -47,9 +47,9 @@ public final class Formatter {
   /**
    * Creates a replacement that inserts a number as a component. The component will be formatted by the provided DecimalFormat.
    *
-   * <p>This tag expects a format as attribute. Refer to {@link DecimalFormat} for usable patterns.</p>
+   * <p>This tag accepts a locale, a format pattern, both or nothing as arguments. The locale has to be provided as first argument.</p>
    *
-   * <p>You can specify the decimal and grouping separator by adding those as another attribute.</p>
+   * <p>Refer to {@link Locale} for usable locale tags. Refer to {@link DecimalFormat} for usable patterns.</p>
    *
    * <p>This replacement is auto-closing, so its style will not influence the style of following components.</p>
    *
@@ -111,27 +111,7 @@ public final class Formatter {
    * @return the placeholder
    * @since 4.11.0
    */
-  public static @NotNull TagResolver choice(final @NotNull String key, final long number) {
-    return TagResolver.resolver(key, ((argumentQueue, context) -> {
-      final String format = argumentQueue.popOr("Format expected.").value();
-      final ChoiceFormat choiceFormat = new ChoiceFormat(format);
-      return Tag.inserting(context.deserialize(choiceFormat.format(number)));
-    }));
-  }
-
-  /**
-   * Creates a replacement that inserts a choice formatted text. The component will be formatted by the provided ChoiceFormat.
-   *
-   * <p>This tag expectes a format as attribute. Refer to {@link ChoiceFormat} for usable patterns.</p>
-   *
-   * <p>This replacement is auto-closing, so its style will not influence the style of following components.</p>
-   *
-   * @param key the key
-   * @param number the number
-   * @return the placeholder
-   * @since 4.11.0
-   */
-  public static @NotNull TagResolver choice(final @NotNull String key, final double number) {
+  public static @NotNull TagResolver choice(final @NotNull String key, final Number number) {
     return TagResolver.resolver(key, ((argumentQueue, context) -> {
       final String format = argumentQueue.popOr("Format expected.").value();
       final ChoiceFormat choiceFormat = new ChoiceFormat(format);
