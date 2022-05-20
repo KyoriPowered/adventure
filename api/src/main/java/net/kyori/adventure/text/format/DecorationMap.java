@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2021 KyoriPowered
+ * Copyright (c) 2017-2022 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,21 +40,57 @@ import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
+/**
+ * Bit-set driven decoration -&gt; state map.
+ * Given that both {@link TextDecoration} and {@link TextDecoration.State} are enums, every value of each
+ * can be indexed by its ordinal. The way this works is by combining that property and "inserting" the state index
+ * as value in the text decoration index.
+ *
+ * <p>For each possible state value:</p>
+ * <ul>
+ *   <li>{@code State.NOT_SET -> 0b00}</li>
+ *   <li>{@code State.FALSE -> 0b01}</li>
+ *   <li>{@code State.TRUE -> 0b10}</li>
+ * </ul>
+ *
+ * <p>we assign one bit position to each decoration value ({@code p} representing the position holding the state value):</p>
+ * <ul>
+ *   <li>{@code TextDecoration.OBFUSCATED -> 0b0000p}</li>
+ *   <li>{@code TextDecoration.BOLD -> 0b000p0}</li>
+ *   <li>{@code TextDecoration.STRIKETHROUGH -> 0b00p00}</li>
+ *   <li>{@code TextDecoration.UNDERLINED -> 0b0p000}</li>
+ *   <li>{@code TextDecoration.ITALIC -> 0bp0000}</li>
+ * </ul>
+ *
+ * <p>but since State is tri-state it occupies two bits {@code [0b00, 0b01, 0b10]}, each decoration type must reserve
+ * two bits for itself, expanding 5 bits to 10 bits, two for each decoration type:</p>
+ * <ul>
+ *   <li>{@code TextDecoration.OBFUSCATED -> 0b00000000pp}</li>
+ *   <li>{@code TextDecoration.BOLD -> 0b000000pp00}</li>
+ *   <li>{@code TextDecoration.STRIKETHROUGH -> 0b0000pp0000}</li>
+ *   <li>{@code TextDecoration.UNDERLINED -> 0b00pp000000}</li>
+ *   <li>{@code TextDecoration.ITALIC -> 0bpp00000000}</li>
+ * </ul>
+ *
+ * <p>Here the {@code pp} bit pair represents the potential state values from the first list above.</p>
+ *
+ * <p>It is however possible to compact this even more using trinary logic and fit all of this into
+ * a single {@code byte}, I however am not doing that because it's more effort than my time's worth.</p>
+ */
 @Unmodifiable
 final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.State> implements Examinable {
   private static final TextDecoration.State[] STATES = TextDecoration.State.values();
   private static final int MAP_SIZE = StyleImpl.DECORATIONS.length;
   private static final TextDecoration.State[] EMPTY_STATE_ARRAY = {};
 
-  static final DecorationMap EMPTY = createEmptyDecorationMap();
+  static final DecorationMap EMPTY = new DecorationMap(0); // NOT_SET = 0 (happens to be the first State entry!)
   // key set is universal, all decorations always exist in any given style
   private static final KeySet KEY_SET = new KeySet();
 
   static DecorationMap fromMap(final Map<TextDecoration, TextDecoration.State> decorationMap) {
     if (decorationMap instanceof DecorationMap) return (DecorationMap) decorationMap;
     int bitSet = 0;
-    for (int i = 0; i < MAP_SIZE; i++) {
-      final TextDecoration decoration = StyleImpl.DECORATIONS[i];
+    for (final TextDecoration decoration : StyleImpl.DECORATIONS) {
       bitSet |= decorationMap.getOrDefault(decoration, TextDecoration.State.NOT_SET).ordinal() * offset(decoration);
     }
     return withBitSet(bitSet);
@@ -62,28 +98,20 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
 
   static DecorationMap merge(final Map<TextDecoration, TextDecoration.State> first, final Map<TextDecoration, TextDecoration.State> second) {
     int bitSet = 0;
-    for (int i = 0; i < MAP_SIZE; i++) {
-      final TextDecoration decoration = StyleImpl.DECORATIONS[i];
+    for (final TextDecoration decoration : StyleImpl.DECORATIONS) {
       bitSet |= first.getOrDefault(decoration, second.getOrDefault(decoration, TextDecoration.State.NOT_SET)).ordinal() * offset(decoration);
     }
     return withBitSet(bitSet);
   }
 
+  // TODO: use an array cache? bitset value = index of corresponding DecorationMap in the array
   private static DecorationMap withBitSet(final int bitSet) {
-    return bitSet == EMPTY.bitSet ? EMPTY : new DecorationMap(bitSet);
-  }
-
-  private static DecorationMap createEmptyDecorationMap() {
-    int bitSet = 0;
-    for (int i = 0; i < MAP_SIZE; i++) {
-      bitSet |= TextDecoration.State.NOT_SET.ordinal() * offset(StyleImpl.DECORATIONS[i]);
-    }
-    return new DecorationMap(bitSet);
+    return bitSet == 0 ? EMPTY : new DecorationMap(bitSet);
   }
 
   private static int offset(final TextDecoration decoration) {
-    // ordinal * 2, decoration states are tristate so they occupy two bits each [0b00, 0b01, 0b10]
-    return 1 << decoration.ordinal() * 2;
+    // ordinal * 2, decoration states are tri-state so they occupy two bits each [0b00, 0b01, 0b10]
+    return 1 << (decoration.ordinal() * 2);
   }
 
   private final int bitSet;
@@ -100,10 +128,8 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
     Objects.requireNonNull(state, "state");
     Objects.requireNonNull(decoration, "decoration");
     final int offset = offset(decoration);
-    return withBitSet(
-      this.bitSet & ~(0b11 * offset) // 'reset' the state bits
-        | state.ordinal() * offset
-    );
+    // 'reset' the state bits for the given decoration, and 'merge' the new state's bits
+    return withBitSet((this.bitSet & ~(0b11 * offset)) | (state.ordinal() * offset));
   }
 
   @Override
@@ -115,7 +141,7 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
   @Override
   public TextDecoration.State get(final Object o) {
     if (o instanceof TextDecoration) {
-      return STATES[this.bitSet >> ((TextDecoration) o).ordinal() * 2 & 0b11];
+      return STATES[(this.bitSet >> (((TextDecoration) o).ordinal() * 2)) & 0b11];
     }
     return null;
   }

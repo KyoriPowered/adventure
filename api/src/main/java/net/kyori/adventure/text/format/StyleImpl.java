@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.format;
 
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -275,7 +276,8 @@ final class StyleImpl implements Style {
     @Override
     public @NotNull Builder decoration(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
       requireNonNull(state, "state");
-      this.decorations.replace(decoration, state);
+      requireNonNull(decoration, "decoration");
+      this.decorations.put(decoration, state);
       return this;
     }
 
