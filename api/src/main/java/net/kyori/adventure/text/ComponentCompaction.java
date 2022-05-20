@@ -48,13 +48,18 @@ final class ComponentCompaction {
     final int childrenSize = children.size();
 
     if (childrenSize == 0) {
+      // no children, style can be further simplified if self is blank
+      if (isBlank(optimized)) {
+        optimized = optimized.style(simplifyStyleForBlank(optimized.style()));
+      }
+
       // leaf nodes do not need to be further optimized - there is no point
       return optimized;
     }
 
     // if there is only one child, check if self a useless empty component
-    if (childrenSize == 1 && self instanceof TextComponent) {
-      final TextComponent textComponent = (TextComponent) self;
+    if (childrenSize == 1 && optimized instanceof TextComponent) {
+      final TextComponent textComponent = (TextComponent) optimized;
 
       if (textComponent.content().isEmpty()) {
         final Component child = children.get(0);
@@ -74,25 +79,41 @@ final class ComponentCompaction {
     // optimize all children
     final List<Component> childrenToAppend = new ArrayList<>(children.size());
     for (int i = 0; i < children.size(); ++i) {
-      childrenToAppend.add(compact(children.get(i), childParentStyle));
+      Component child = children.get(i);
+
+      // compact child recursively
+      child = compact(child, childParentStyle);
+
+      // ignore useless empty children (regardless of its style)
+      if (child.children().isEmpty() && child instanceof TextComponent) {
+        final TextComponent textComponent = (TextComponent) child;
+
+        if (textComponent.content().isEmpty()) {
+          continue;
+        }
+      }
+
+      childrenToAppend.add(child);
     }
 
     // try to merge children into this parent component
-    while (!childrenToAppend.isEmpty()) {
-      final Component child = childrenToAppend.get(0);
-      final Style childStyle = child.style().merge(childParentStyle, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
+    if (optimized instanceof TextComponent) {
+      while (!childrenToAppend.isEmpty()) {
+        final Component child = childrenToAppend.get(0);
+        final Style childStyle = child.style().merge(childParentStyle, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
 
-      if (optimized instanceof TextComponent && child instanceof TextComponent && Objects.equals(childStyle, childParentStyle)) {
-        // merge child components into the parent if they are a text component with the same effective style
-        // in context of their parent style
-        optimized = joinText((TextComponent) optimized, (TextComponent) child);
-        childrenToAppend.remove(0);
+        if (child instanceof TextComponent && Objects.equals(childStyle, childParentStyle)) {
+          // merge child components into the parent if they are a text component with the same effective style
+          // in context of their parent style
+          optimized = joinText((TextComponent) optimized, (TextComponent) child);
+          childrenToAppend.remove(0);
 
-        // if the merged child had any children, retain them
-        childrenToAppend.addAll(0, child.children());
-      } else {
-        // this child can't be merged into the parent, so all children from now on must remain children
-        break;
+          // if the merged child had any children, retain them
+          childrenToAppend.addAll(0, child.children());
+        } else {
+          // this child can't be merged into the parent, so all children from now on must remain children
+          break;
+        }
       }
     }
 
@@ -102,22 +123,31 @@ final class ComponentCompaction {
       final Component child = childrenToAppend.get(i);
       final Component neighbor = childrenToAppend.get(i + 1);
 
-      // calculate the children's styles in context of their parent style
-      final Style childStyle = child.style().merge(childParentStyle, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
-      final Style neighborStyle = neighbor.style().merge(childParentStyle, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
+      if (child.children().isEmpty() && child instanceof TextComponent && neighbor instanceof TextComponent) {
+        // calculate the children's styles in context of their parent style
+        final Style childStyle = child.style().merge(childParentStyle, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
+        final Style neighborStyle = neighbor.style().merge(childParentStyle, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
 
-      if (child.children().isEmpty() && child instanceof TextComponent && neighbor instanceof TextComponent && childStyle.equals(neighborStyle)) {
-        final Component combined = joinText((TextComponent) child, (TextComponent) neighbor);
+        // check if styles are equivalent
+        if (childStyle.equals(neighborStyle)) {
+          final Component combined = joinText((TextComponent) child, (TextComponent) neighbor);
 
-        // replace the child and its neighbor with the single, combined component
-        childrenToAppend.set(i, combined);
-        childrenToAppend.remove(i + 1);
+          // replace the child and its neighbor with the single, combined component
+          childrenToAppend.set(i, combined);
+          childrenToAppend.remove(i + 1);
 
-        // don't increment the index -
-        // we want to try and optimize this combined component even further
-      } else {
-        i++;
+          // don't increment the index -
+          // we want to try and optimize this combined component even further
+          continue;
+        }
       }
+
+      i++;
+    }
+
+    // no children, style can be further simplified if self is blank
+    if (childrenToAppend.isEmpty() && isBlank(optimized)) {
+      optimized = optimized.style(simplifyStyleForBlank(optimized.style()));
     }
 
     return optimized.children(childrenToAppend);
@@ -163,6 +193,53 @@ final class ComponentCompaction {
       builder.insertion(null);
     }
 
+    return builder.build();
+  }
+
+  /**
+  * Checks whether the Component is blank (a TextComponent containing only space characters).
+  *
+  * @param component the component to check
+  * @return true if the provided component is blank, false otherwise
+  */
+  private static boolean isBlank(final Component component) {
+    if (component instanceof TextComponent) {
+      final TextComponent textComponent = (TextComponent) component;
+
+      final String content = textComponent.content();
+
+      for (int i = 0; i < content.length(); i++) {
+        final char c = content.charAt(i);
+        if (c != ' ') return false;
+      }
+      
+      return true;
+    }
+    return false;
+  }
+  
+  /**
+  * Simplify the provided style to remove any information that is redundant,
+  * given that the content is blank.
+  *
+  * @param style style to simplify
+  * @return a new, simplified style
+  */
+  private static @NotNull Style simplifyStyleForBlank(final @NotNull Style style) {
+    final Style.Builder builder = style.toBuilder();
+
+    // TextColor doesn't affect spaces
+    builder.color(null);
+
+    // ITALIC/OBFUSCATED don't affect spaces (in modern versions), as these styles only affect glyph rendering
+    builder.decoration(TextDecoration.ITALIC, TextDecoration.State.NOT_SET);
+    builder.decoration(TextDecoration.OBFUSCATED, TextDecoration.State.NOT_SET);
+
+    // UNDERLINE/STRIKETHROUGH affects spaces because the line renders on top
+    // BOLD affects spaces because it increments the character advance by 1
+
+    // font affects spaces in 1.19+ (since 22w11a), due to the font glyph provider for spaces
+    
     return builder.build();
   }
 
