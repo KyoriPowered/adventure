@@ -44,7 +44,7 @@ public interface ComponentLogger extends Logger {
   /**
    * Get a logger instance with the name of the calling class.
    *
-   * <p>This method is caller-sensitive and should not be wrapped. See
+   * <p>This method is caller-sensitive and should not be wrapped.</p>
    *
    * <p>This logger is produced by implementations of the {@link ComponentLoggerProvider}.</p>
    *

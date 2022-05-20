@@ -51,6 +51,7 @@ final class Handler {
 
   static final class DefaultProvider implements ComponentLoggerProvider {
     private final Map<String, ComponentLogger> loggers = new ConcurrentHashMap<>();
+
     @Override
     public @NotNull ComponentLogger logger(final @NotNull LoggerHelper helper, final @NotNull String name) {
       final ComponentLogger initial = this.loggers.get(name);
@@ -80,7 +81,7 @@ final class Handler {
     }
 
     @Override
-    public @NotNull ComponentLogger delegating(@NotNull final Logger base, @NotNull final Function<Component, String> serializer) {
+    public @NotNull ComponentLogger delegating(final @NotNull Logger base, final @NotNull Function<Component, String> serializer) {
       return new WrappingComponentLoggerImpl(base, serializer);
     }
   }
