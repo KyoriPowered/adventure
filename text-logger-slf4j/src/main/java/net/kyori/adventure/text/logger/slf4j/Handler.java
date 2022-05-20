@@ -67,7 +67,7 @@ final class Handler {
   static final class LoggerHelperImpl implements ComponentLoggerProvider.LoggerHelper {
     static final LoggerHelperImpl INSTANCE = new LoggerHelperImpl();
 
-    private LoggerHelperImpl() {
+    LoggerHelperImpl() {
     }
 
     @Override

@@ -25,15 +25,40 @@ package net.kyori.adventure.text.logger.slf4j;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.Logger;
 
+@ExtendWith(MockitoExtension.class)
 public class ComponentLoggerTest {
+  @Mock(name = "net.kyori.adventure.test.ComponentLoggerTest")
+  Logger backingLogger;
+
+  private final ComponentLoggerProvider.LoggerHelper helper = new Handler.LoggerHelperImpl();
+
+  ComponentLogger makeLogger() {
+    return new WrappingComponentLoggerImpl(this.backingLogger, this.helper.plainSerializer());
+  }
+
+  @BeforeEach
+  void enableLevels() {
+    Mockito.when(this.backingLogger.isInfoEnabled()).thenReturn(true);
+  }
+
   @Test
   void testLogSimple() {
     final Component toLog = Component.text().content("Hello ").color(NamedTextColor.RED).append(Component.translatable("location.world")).build();
 
-    final ComponentLogger logger = ComponentLogger.logger();
+    final ComponentLogger logger = this.makeLogger();
 
     logger.info(toLog);
+
+    Mockito.verify(this.backingLogger, Mockito.times(2)).isInfoEnabled();
+    Mockito.verify(this.backingLogger).info("Hello location.world");
+    Mockito.verifyNoMoreInteractions(this.backingLogger);
   }
 }

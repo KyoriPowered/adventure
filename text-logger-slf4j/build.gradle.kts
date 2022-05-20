@@ -7,6 +7,9 @@ dependencies {
   api(libs.slf4j)
   implementation(libs.slf4j.ext)
   testImplementation(libs.slf4j.simple)
+  testImplementation(libs.mockSlf4j)
+  testImplementation(libs.mockito)
+  testImplementation(libs.mockito.junit)
 }
 
 sourceSets.main {
