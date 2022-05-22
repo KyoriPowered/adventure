@@ -34,6 +34,7 @@ import org.slf4j.Logger;
  *
  * @since 4.11.0
  */
+@ApiStatus.Internal // SPI for platform use only
 public interface ComponentLoggerProvider {
   /**
    * Create a component logger for the provided logger name.

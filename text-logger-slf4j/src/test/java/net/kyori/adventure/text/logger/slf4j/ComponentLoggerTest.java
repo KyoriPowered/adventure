@@ -147,4 +147,13 @@ public class ComponentLoggerTest {
       ImmutableList.of(LoggingEvent.info(MARKED, "meow :3"))
     );
   }
+
+  @Test
+  void testComponentAsArgToPlainLog() {
+    this.makeLogger().info("Hello {}", Component.text("friend"));
+    assertEquals(
+      LOGGER.getLoggingEvents(),
+      ImmutableList.of(LoggingEvent.info("Hello {}", "friend"))
+    );
+  }
 }

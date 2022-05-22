@@ -5,7 +5,6 @@ plugins {
 dependencies {
   api(projects.adventureApi)
   api(libs.slf4j)
-  implementation(libs.slf4j.ext)
   testImplementation(libs.slf4jtest)
 }
 
