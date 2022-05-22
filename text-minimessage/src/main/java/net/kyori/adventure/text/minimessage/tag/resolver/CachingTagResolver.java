@@ -94,6 +94,6 @@ final class CachingTagResolver implements TagResolver.WithoutArguments, Mappable
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.cache, this.resolver);
+    return Objects.hash(this.resolver);
   }
 }
