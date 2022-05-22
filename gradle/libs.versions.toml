@@ -33,10 +33,7 @@ configurate-v4 = "org.spongepowered:configurate-core:4.1.2"
 # text-logger-slf4j
 slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 slf4j-ext = { module = "org.slf4j:slf4j-ext", version.ref = "slf4j" }
-slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
-mockSlf4j = "org.simplify4u:slf4j-mock:2.2.0"
-mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
-mockito-junit = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito" }
+slf4jtest = "com.github.valfirst:slf4j-test:2.6.1" # Specific versions are needed for different SLF4J versions
 
 # text-serializer-gson
 gson = "com.google.code.gson:gson:2.8.0"

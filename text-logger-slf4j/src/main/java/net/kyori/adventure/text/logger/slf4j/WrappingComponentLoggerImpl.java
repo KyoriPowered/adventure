@@ -25,6 +25,7 @@ package net.kyori.adventure.text.logger.slf4j;
 
 import java.util.function.Function;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -33,8 +34,6 @@ import org.slf4j.ext.LoggerWrapper;
 
 final class WrappingComponentLoggerImpl extends LoggerWrapper implements ComponentLogger {
   private static final String FQCN = WrappingComponentLoggerImpl.class.getName();
-
-  // TODO: maybe handle ComponentMessageThrowable logging somehow?
 
   private final Function<Component, String> serializer;
 
@@ -48,8 +47,8 @@ final class WrappingComponentLoggerImpl extends LoggerWrapper implements Compone
   }
 
   private Object maybeSerialize(final @Nullable Object input) {
-    if (input instanceof Component) {
-      return this.serialize((Component) input);
+    if (input instanceof ComponentLike) {
+      return this.serialize(((ComponentLike) input).asComponent());
     } else {
       return input;
     }
@@ -57,9 +56,13 @@ final class WrappingComponentLoggerImpl extends LoggerWrapper implements Compone
 
   private Object[] maybeSerialize(final @Nullable Object@NotNull... args) {
     for (int i = 0; i < args.length; i++) {
-      if (args[i] instanceof Component) {
-        args[i] = this.serialize((Component) args[i]);
+      if (args[i] instanceof ComponentLike) {
+        args[i] = this.serialize(((ComponentLike) args[i]).asComponent());
       }
+    }
+
+    if (args.length > 0 && args[args.length - 1] instanceof Throwable) {
+      args[args.length - 1] = UnpackedComponentThrowable.unpack((Throwable) args[args.length - 1], this.serializer);
     }
 
     return args;
@@ -97,7 +100,7 @@ final class WrappingComponentLoggerImpl extends LoggerWrapper implements Compone
   public void trace(final @NotNull Component msg, final @Nullable Throwable t) {
     if (!this.isTraceEnabled()) return;
 
-    this.trace(this.serialize(msg), t);
+    this.trace(this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
   }
 
   @Override
@@ -132,7 +135,7 @@ final class WrappingComponentLoggerImpl extends LoggerWrapper implements Compone
   public void trace(final Marker marker, final @NotNull Component msg, final @Nullable Throwable t) {
     if (!this.isTraceEnabled(marker)) return;
 
-    this.trace(marker, this.serialize(msg), t);
+    this.trace(marker, this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
   }
 
   @Override
@@ -167,7 +170,7 @@ final class WrappingComponentLoggerImpl extends LoggerWrapper implements Compone
   public void debug(final @NotNull Component msg, final @Nullable Throwable t) {
     if (!this.isDebugEnabled()) return;
 
-    this.debug(this.serialize(msg), t);
+    this.debug(this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
   }
 
   @Override
@@ -202,7 +205,7 @@ final class WrappingComponentLoggerImpl extends LoggerWrapper implements Compone
   public void debug(final Marker marker, final @NotNull Component msg, final @Nullable Throwable t) {
     if (!this.isDebugEnabled(marker)) return;
 
-    this.debug(marker, this.serialize(msg), t);
+    this.debug(marker, this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
   }
 
   @Override
@@ -237,7 +240,7 @@ final class WrappingComponentLoggerImpl extends LoggerWrapper implements Compone
   public void info(final @NotNull Component msg, final @Nullable Throwable t) {
     if (!this.isInfoEnabled()) return;
 
-    this.info(this.serialize(msg), t);
+    this.info(this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
   }
 
   @Override
@@ -272,7 +275,7 @@ final class WrappingComponentLoggerImpl extends LoggerWrapper implements Compone
   public void info(final Marker marker, final @NotNull Component msg, final @Nullable Throwable t) {
     if (!this.isInfoEnabled(marker)) return;
 
-    this.info(marker, this.serialize(msg), t);
+    this.info(marker, this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
   }
 
   @Override
@@ -307,7 +310,7 @@ final class WrappingComponentLoggerImpl extends LoggerWrapper implements Compone
   public void warn(final @NotNull Component msg, final @Nullable Throwable t) {
     if (!this.isWarnEnabled()) return;
 
-    this.warn(this.serialize(msg), t);
+    this.warn(this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
   }
 
   @Override
@@ -342,7 +345,7 @@ final class WrappingComponentLoggerImpl extends LoggerWrapper implements Compone
   public void warn(final Marker marker, final @NotNull Component msg, final @Nullable Throwable t) {
     if (!this.isWarnEnabled(marker)) return;
 
-    this.warn(marker, this.serialize(msg), t);
+    this.warn(marker, this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
   }
 
   @Override
@@ -377,7 +380,7 @@ final class WrappingComponentLoggerImpl extends LoggerWrapper implements Compone
   public void error(final @NotNull Component msg, final @Nullable Throwable t) {
     if (!this.isErrorEnabled()) return;
 
-    this.error(this.serialize(msg), t);
+    this.error(this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
   }
 
   @Override
@@ -412,6 +415,6 @@ final class WrappingComponentLoggerImpl extends LoggerWrapper implements Compone
   public void error(final Marker marker, final @NotNull Component msg, final @Nullable Throwable t) {
     if (!this.isErrorEnabled(marker)) return;
 
-    this.error(marker, this.serialize(msg), t);
+    this.error(marker, this.serialize(msg), UnpackedComponentThrowable.unpack(t, this.serializer));
   }
 }

@@ -23,42 +23,128 @@
  */
 package net.kyori.adventure.text.logger.slf4j;
 
+import com.github.valfirst.slf4jtest.LoggingEvent;
+import com.github.valfirst.slf4jtest.TestLogger;
+import com.github.valfirst.slf4jtest.TestLoggerFactory;
+import com.github.valfirst.slf4jtest.TestLoggerFactoryExtension;
+import com.google.common.collect.ImmutableList;
+import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.junit.jupiter.api.BeforeEach;
+import net.kyori.adventure.util.ComponentMessageThrowable;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.slf4j.Logger;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
-@ExtendWith(MockitoExtension.class)
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@ExtendWith(TestLoggerFactoryExtension.class)
 public class ComponentLoggerTest {
-  @Mock(name = "net.kyori.adventure.test.ComponentLoggerTest")
-  Logger backingLogger;
+  private static final TestLogger LOGGER = TestLoggerFactory.getTestLogger(ComponentLoggerTest.class);
 
-  private final ComponentLoggerProvider.LoggerHelper helper = new Handler.LoggerHelperImpl();
+  private static final Marker MARKED = MarkerFactory.getMarker("MARKED");
 
   ComponentLogger makeLogger() {
-    return new WrappingComponentLoggerImpl(this.backingLogger, this.helper.plainSerializer());
+    return ComponentLogger.logger();
   }
 
-  @BeforeEach
-  void enableLevels() {
-    Mockito.when(this.backingLogger.isInfoEnabled()).thenReturn(true);
+  @Test
+  void testCallerLogger() {
+    final ComponentLogger logger = ComponentLogger.logger();
+    assertEquals(this.getClass().getName(), logger.getName());
   }
 
   @Test
   void testLogSimple() {
-    final Component toLog = Component.text().content("Hello ").color(NamedTextColor.RED).append(Component.translatable("location.world")).build();
+    final Component toLog = Component.text()
+      .content("Hello ")
+      .color(NamedTextColor.RED)
+      .append(Component.translatable("location.world"))
+      .build();
 
-    final ComponentLogger logger = this.makeLogger();
+    this.makeLogger().info(toLog);
 
-    logger.info(toLog);
+    assertEquals(LOGGER.getLoggingEvents(), ImmutableList.of(LoggingEvent.info("Hello location.world")));
+  }
 
-    Mockito.verify(this.backingLogger, Mockito.times(2)).isInfoEnabled();
-    Mockito.verify(this.backingLogger).info("Hello location.world");
-    Mockito.verifyNoMoreInteractions(this.backingLogger);
+  @Test
+  void testComponentArg() {
+    final Component message = Component.text("Hello ").append(Component.text("{}", NamedTextColor.BLUE));
+    final Component arg = Component.selector("@s");
+
+    this.makeLogger().warn(message, arg);
+
+    assertEquals(LOGGER.getLoggingEvents(), ImmutableList.of(LoggingEvent.warn("Hello {}", "@s")));
+  }
+
+  @Test
+  void testStringArg() {
+    final Component message = Component.text("Hello ").append(Component.text("{}", NamedTextColor.BLUE));
+    final String arg = "world";
+
+    this.makeLogger().debug(message, arg);
+
+    assertEquals(LOGGER.getLoggingEvents(), ImmutableList.of(LoggingEvent.debug("Hello {}", arg)));
+  }
+
+  @Test
+  void testMultiArgs() {
+    final Component message = Component.text("Good morning! The time is {} and you have {} cats!");
+    final Component arg0 = Component.text("14:28", NamedTextColor.BLUE);
+    final String arg1 = "11";
+
+    this.makeLogger().error(message, arg0, arg1);
+    assertEquals(
+      LOGGER.getLoggingEvents(),
+      ImmutableList.of(LoggingEvent.error("Good morning! The time is {} and you have {} cats!", "14:28", "11"))
+    );
+  }
+
+  @Test
+  void testUnwrapThrowable() {
+    final Component message = Component.text("Hello world");
+    final Exception error = new RichTestException(Component.translatable("test.failed", NamedTextColor.DARK_PURPLE));
+
+    this.makeLogger().warn(message, error);
+
+    final List<LoggingEvent> events = LOGGER.getLoggingEvents();
+    assertEquals(1, events.size());
+    final Throwable thrownException = events.get(0).getThrowable().orElse(null);
+    assertNotNull(thrownException);
+
+    assertEquals("test.failed", thrownException.getMessage());
+    assertArrayEquals(error.getStackTrace(), thrownException.getStackTrace());
+    assertTrue(thrownException.toString().startsWith("net.kyori.adventure.text.logger.slf4j.ComponentLoggerTest$RichTestException"));
+  }
+
+  static class RichTestException extends Exception implements ComponentMessageThrowable {
+    private static final long serialVersionUID = -1l;
+
+    private final Component richMessage;
+
+    RichTestException(final Component richMessage) {
+      super("no");
+      this.richMessage = richMessage;
+    }
+
+    @Override
+    public @Nullable Component componentMessage() {
+      return this.richMessage;
+    }
+  }
+
+  @Test
+  void testWithMarker() {
+    final Component message = Component.text("meow :3");
+    this.makeLogger().info(MARKED, message);
+    assertEquals(
+      LOGGER.getLoggingEvents(),
+      ImmutableList.of(LoggingEvent.info(MARKED, "meow :3"))
+    );
   }
 }
