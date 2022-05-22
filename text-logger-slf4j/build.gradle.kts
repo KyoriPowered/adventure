@@ -14,6 +14,8 @@ sourceSets.main {
   }
 }
 
+applyJarMetadata("net.kyori.adventure.text.logger.slf4j")
+
 eclipse {
   // Make sure slf4j doesn't end up on the module path until we are actually a module
   classpath.file.whenMerged {
