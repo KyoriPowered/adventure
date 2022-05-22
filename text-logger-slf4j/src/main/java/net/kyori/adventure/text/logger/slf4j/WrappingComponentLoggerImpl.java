@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.logger.slf4j;
 
+import java.util.Arrays;
 import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
@@ -60,17 +61,24 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   private Object[] maybeSerialize(final @Nullable Object@NotNull... args) {
-    for (int i = 0; i < args.length; i++) {
-      if (args[i] instanceof ComponentLike) {
-        args[i] = this.serialize(((ComponentLike) args[i]).asComponent());
+    Object[] writable = args;
+    for (int i = 0; i < writable.length; i++) {
+      if (writable[i] instanceof ComponentLike) {
+        if (writable == args) {
+          writable = Arrays.copyOf(args, args.length);
+        }
+        writable[i] = this.serialize(((ComponentLike) writable[i]).asComponent());
       }
     }
 
-    if (args.length > 0 && args[args.length - 1] instanceof Throwable) {
-      args[args.length - 1] = UnpackedComponentThrowable.unpack((Throwable) args[args.length - 1], this.serializer);
+    if (writable.length > 0 && writable[writable.length - 1] instanceof Throwable) {
+      if (writable == args) {
+        writable = Arrays.copyOf(args, args.length);
+      }
+      writable[writable.length - 1] = UnpackedComponentThrowable.unpack((Throwable) writable[writable.length - 1], this.serializer);
     }
 
-    return args;
+    return writable;
   }
 
   // Basic methods, plain delegation
