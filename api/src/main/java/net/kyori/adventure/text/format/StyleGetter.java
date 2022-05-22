@@ -90,8 +90,8 @@ public interface StyleGetter {
   @SuppressWarnings("Duplicates")
   default @Unmodifiable @NotNull Map<TextDecoration, TextDecoration.State> decorations() {
     final Map<TextDecoration, TextDecoration.State> decorations = new EnumMap<>(TextDecoration.class);
-    for (int i = 0, length = StyleImpl.DECORATIONS.length; i < length; i++) {
-      final TextDecoration decoration = StyleImpl.DECORATIONS[i];
+    for (int i = 0, length = DecorationMap.DECORATIONS.length; i < length; i++) {
+      final TextDecoration decoration = DecorationMap.DECORATIONS[i];
       final TextDecoration.State value = this.decoration(decoration);
       decorations.put(decoration, value);
     }

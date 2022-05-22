@@ -79,8 +79,9 @@ import org.jetbrains.annotations.Unmodifiable;
  */
 @Unmodifiable
 final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.State> implements Examinable {
+  static final TextDecoration[] DECORATIONS = TextDecoration.values();
   private static final TextDecoration.State[] STATES = TextDecoration.State.values();
-  private static final int MAP_SIZE = StyleImpl.DECORATIONS.length;
+  private static final int MAP_SIZE = DECORATIONS.length;
   private static final TextDecoration.State[] EMPTY_STATE_ARRAY = {};
 
   static final DecorationMap EMPTY = new DecorationMap(0); // NOT_SET = 0 (happens to be the first State entry!)
@@ -90,7 +91,7 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
   static DecorationMap fromMap(final Map<TextDecoration, TextDecoration.State> decorationMap) {
     if (decorationMap instanceof DecorationMap) return (DecorationMap) decorationMap;
     int bitSet = 0;
-    for (final TextDecoration decoration : StyleImpl.DECORATIONS) {
+    for (final TextDecoration decoration : DECORATIONS) {
       bitSet |= decorationMap.getOrDefault(decoration, TextDecoration.State.NOT_SET).ordinal() * offset(decoration);
     }
     return withBitSet(bitSet);
@@ -98,7 +99,7 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
 
   static DecorationMap merge(final Map<TextDecoration, TextDecoration.State> first, final Map<TextDecoration, TextDecoration.State> second) {
     int bitSet = 0;
-    for (final TextDecoration decoration : StyleImpl.DECORATIONS) {
+    for (final TextDecoration decoration : DECORATIONS) {
       bitSet |= first.getOrDefault(decoration, second.getOrDefault(decoration, TextDecoration.State.NOT_SET)).ordinal() * offset(decoration);
     }
     return withBitSet(bitSet);
@@ -134,7 +135,7 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
 
   @Override
   public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-    return Arrays.stream(StyleImpl.DECORATIONS)
+    return Arrays.stream(DECORATIONS)
       .map(decoration -> ExaminableProperty.of(decoration.toString(), this.get(decoration)));
   }
 
@@ -248,7 +249,7 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
     public Object @NotNull [] toArray() {
       final TextDecoration.State[] states = new TextDecoration.State[MAP_SIZE];
       for (int i = 0; i < MAP_SIZE; i++) {
-        states[i] = DecorationMap.this.get(StyleImpl.DECORATIONS[i]);
+        states[i] = DecorationMap.this.get(DECORATIONS[i]);
       }
       return states;
     }
@@ -291,16 +292,16 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
 
     @Override
     public Object @NotNull [] toArray() {
-      return StyleImpl.DECORATIONS.clone();
+      return DECORATIONS.clone();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T @NotNull [] toArray(final T @NotNull [] dest) {
       if (dest.length < MAP_SIZE) {
-        return (T[]) Arrays.copyOf(StyleImpl.DECORATIONS, MAP_SIZE, dest.getClass());
+        return (T[]) Arrays.copyOf(DECORATIONS, MAP_SIZE, dest.getClass());
       }
-      System.arraycopy(StyleImpl.DECORATIONS, 0, dest, 0, MAP_SIZE);
+      System.arraycopy(DECORATIONS, 0, dest, 0, MAP_SIZE);
       if (dest.length > MAP_SIZE) {
         dest[MAP_SIZE] = null;
       }
@@ -309,7 +310,7 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
 
     @Override
     public @NotNull Iterator<TextDecoration> iterator() {
-      return Spliterators.iterator(Arrays.spliterator(StyleImpl.DECORATIONS));
+      return Spliterators.iterator(Arrays.spliterator(DECORATIONS));
     }
 
     @Override

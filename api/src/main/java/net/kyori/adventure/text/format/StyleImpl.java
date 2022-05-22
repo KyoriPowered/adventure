@@ -40,7 +40,6 @@ import org.jetbrains.annotations.Nullable;
 import static java.util.Objects.requireNonNull;
 
 final class StyleImpl implements Style {
-  static final TextDecoration[] DECORATIONS = TextDecoration.values();
   static final StyleImpl EMPTY = new StyleImpl(null, null, DecorationMap.EMPTY, null, null, null);
   // visible to avoid generating accessors when creating a builder
   final @Nullable Key font;
@@ -330,8 +329,8 @@ final class StyleImpl implements Style {
       }
 
       if (merges.contains(Merge.DECORATIONS)) {
-        for (int i = 0, length = DECORATIONS.length; i < length; i++) {
-          final TextDecoration decoration = DECORATIONS[i];
+        for (int i = 0, length = DecorationMap.DECORATIONS.length; i < length; i++) {
+          final TextDecoration decoration = DecorationMap.DECORATIONS[i];
           final TextDecoration.State state = that.decoration(decoration);
           if (state != TextDecoration.State.NOT_SET) merger.mergeDecoration(this, decoration, state);
         }
