@@ -54,4 +54,15 @@ class SelectorTagTest extends AbstractTest {
 
     this.assertParsedEquals(expected, input);
   }
+
+  @Test
+  void testSeparator() {
+    final String input = "Hello there, <sel:@s:separator/>!";
+    final Component expected = text()
+      .content("Hello there, ")
+      .append(selector("@s", text("separator")))
+      .append(text("!")).build();
+
+    this.assertParsedEquals(expected, input);
+  }
 }
