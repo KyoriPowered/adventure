@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.minimessage.tag.standard;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.SelectorComponent;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
@@ -54,8 +55,12 @@ final class SelectorTag {
 
   static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
     final String key = args.popOr("A selection key is required").value();
+    ComponentLike separator = null;
+    if (args.hasNext()) {
+      separator = ctx.deserialize(args.pop().value());
+    }
 
-    return Tag.inserting(Component.selector(key));
+    return Tag.inserting(Component.selector(key, separator));
   }
 
   static @Nullable Emitable claim(final Component input) {
