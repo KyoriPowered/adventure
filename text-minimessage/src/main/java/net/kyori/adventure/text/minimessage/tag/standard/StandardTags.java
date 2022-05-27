@@ -59,7 +59,8 @@ public final class StandardTags {
         RainbowTag.RESOLVER,
         ResetTag.RESOLVER,
         NewlineTag.RESOLVER,
-        TransitionTag.RESOLVER
+        TransitionTag.RESOLVER,
+        ProgressTag.RESOLVER
       )
       .build();
 
@@ -212,6 +213,16 @@ public final class StandardTags {
    */
   public static @NotNull TagResolver newline() {
     return NewlineTag.RESOLVER;
+  }
+
+  /**
+   * Get a resolver for the {@value ProgressTag#PROGRESS} tag.
+   *
+   * @return a resolver for the {@value ProgressTag#PROGRESS} tag
+   * @since 4.11.0
+   */
+  public static @NotNull TagResolver progress() {
+    return ProgressTag.RESOLVER;
   }
 
   /**
