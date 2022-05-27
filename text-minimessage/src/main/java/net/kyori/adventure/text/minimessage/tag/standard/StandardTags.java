@@ -60,7 +60,8 @@ public final class StandardTags {
         ResetTag.RESOLVER,
         NewlineTag.RESOLVER,
         TransitionTag.RESOLVER,
-        ProgressTag.RESOLVER
+        ProgressTag.RESOLVER,
+        RepeatTag.RESOLVER
       )
       .build();
 
@@ -223,6 +224,16 @@ public final class StandardTags {
    */
   public static @NotNull TagResolver progress() {
     return ProgressTag.RESOLVER;
+  }
+
+  /**
+   * Get a resolver for the {@value RepeatTag#REPEAT} tag.
+   *
+   * @return a resolver for the {@value RepeatTag#REPEAT} tag
+   * @since 4.11.0
+   */
+  public static @NotNull TagResolver repeat() {
+    return RepeatTag.RESOLVER;
   }
 
   /**
