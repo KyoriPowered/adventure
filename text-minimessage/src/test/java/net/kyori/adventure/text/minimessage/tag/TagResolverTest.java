@@ -128,6 +128,12 @@ class TagResolverTest {
     assertThrows(IllegalArgumentException.class, () -> TagResolver.resolver("#test#", Tag.preProcessParsed("something")));
   }
 
+  // https://github.com/KyoriPowered/adventure/issues/763
+  @Test
+  void testBuilderValidatesTagName() {
+    assertThrows(IllegalArgumentException.class, () -> TagResolver.builder().tag("INVALID#NAME", Tag.preProcessParsed("something")));
+  }
+
   @Test
   void testValidTagName() {
     assertDoesNotThrow(() -> TagResolver.resolver("valid_-name0909", Tag.preProcessParsed("something")));
