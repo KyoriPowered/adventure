@@ -24,6 +24,7 @@
 package net.kyori.adventure.sound;
 
 import com.google.common.testing.EqualsTester;
+import java.util.OptionalLong;
 import net.kyori.adventure.key.Key;
 import org.junit.jupiter.api.Test;
 
@@ -35,11 +36,12 @@ class SoundTest {
 
   @Test
   void testGetters() {
-    final Sound sound = Sound.sound(SOUND_KEY, Sound.Source.HOSTILE, 1f, 1f);
+    final Sound sound = Sound.sound(b -> b.type(SOUND_KEY).source(Sound.Source.HOSTILE).pitch(1f).volume(1f).seed(OptionalLong.of(666)));
     assertEquals(SOUND_KEY, sound.name());
     assertEquals(Sound.Source.HOSTILE, sound.source());
     assertEquals(1f, sound.volume());
     assertEquals(1f, sound.pitch());
+    assertEquals(666, sound.seed().getAsLong());
   }
 
   @Test

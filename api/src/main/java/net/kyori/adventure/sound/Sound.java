@@ -23,13 +23,17 @@
  */
 package net.kyori.adventure.sound;
 
+import java.util.OptionalLong;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
+import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.util.Index;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 import static java.util.Objects.requireNonNull;
 
@@ -56,6 +60,27 @@ import static java.util.Objects.requireNonNull;
 @ApiStatus.NonExtendable
 public interface Sound extends Examinable {
   /**
+   * Create a new builder for {@link Sound} instances.
+   *
+   * @return a new builder
+   * @since 4.12.0
+   */
+  static @NotNull Builder sound() {
+    return new SoundImpl.BuilderImpl();
+  }
+
+  /**
+   * Create a new {@link Sound} instance configured by the provided function.
+   *
+   * @param configurer a function that configures a builder
+   * @return a new builder
+   * @since 4.12.0
+   */
+  static @NotNull Sound sound(final @NotNull Consumer<Sound.Builder> configurer) {
+    return AbstractBuilder.configureAndBuild(sound(), configurer);
+  }
+
+  /**
    * Creates a new sound.
    *
    * @param name the name
@@ -66,14 +91,7 @@ public interface Sound extends Examinable {
    * @since 4.0.0
    */
   static @NotNull Sound sound(final @NotNull Key name, final @NotNull Source source, final float volume, final float pitch) {
-    requireNonNull(name, "name");
-    requireNonNull(source, "source");
-    return new SoundImpl(source, volume, pitch) {
-      @Override
-      public @NotNull Key name() {
-        return name;
-      }
-    };
+    return sound().type(name).source(source).volume(volume).pitch(pitch).build();
   }
 
   /**
@@ -102,14 +120,7 @@ public interface Sound extends Examinable {
    * @since 4.0.0
    */
   static @NotNull Sound sound(final @NotNull Supplier<? extends Type> type, final @NotNull Source source, final float volume, final float pitch) {
-    requireNonNull(type, "type");
-    requireNonNull(source, "source");
-    return new SoundImpl(source, volume, pitch) {
-      @Override
-      public @NotNull Key name() {
-        return type.get().key();
-      }
-    };
+    return sound().type(type).source(source).volume(volume).pitch(pitch).build();
   }
 
   /**
@@ -187,12 +198,30 @@ public interface Sound extends Examinable {
   float pitch();
 
   /**
+   * Get the seed used for playback of weighted sound effects.
+   *
+   * <p>When the seed is not provided, the seed of the receiver's world will be used instead.</p>
+   *
+   * @return the seed to use
+   * @since 4.12.0
+   */
+  @NotNull OptionalLong seed();
+
+  /**
    * Gets the {@link SoundStop} that will stop this specific sound.
    *
    * @return the sound stop
    * @since 4.8.0
    */
   @NotNull SoundStop asStop();
+
+  /**
+   * Create a new builder populated with values from this sound instance.
+   *
+   * @return a new builder
+   * @since 4.12.0
+   */
+  @NotNull Builder toBuilder();
 
   /**
    * The sound source.
@@ -273,5 +302,113 @@ public interface Sound extends Examinable {
     static @NotNull Emitter self() {
       return SoundImpl.EMITTER_SELF;
     }
+  }
+
+  /**
+   * A builder for sound instances.
+   *
+   * <p>Type is required, all other options are optional.</p>
+   *
+   * @since 4.12.0
+   */
+  interface Builder extends AbstractBuilder<Sound> {
+    /**
+     * Set the type of this sound.
+     *
+     * <p>Required.</p>
+     *
+     * @param type resource location of the sound event to play
+     * @return this builder
+     * @since 4.12.0
+     */
+    @NotNull Builder type(final @NotNull Key type);
+
+    /**
+     * Set the type of this sound.
+     *
+     * <p>Required.</p>
+     *
+     * @param type a type of sound to play
+     * @return this builder
+     * @since 4.12.0
+     */
+    @NotNull Builder type(final @NotNull Type type);
+
+    /**
+     * Set the type of this sound.
+     *
+     * <p>Required.</p>
+     *
+     * @param typeSupplier a type of sound to play, evaluated lazily
+     * @return this builder
+     * @since 4.12.0
+     */
+    @NotNull Builder type(final @NotNull Supplier<? extends Type> typeSupplier);
+
+    /**
+     * A {@link Source} to tell the game where the sound is coming from.
+     *
+     * <p>By default, {@link Source#MASTER} is used.</p>
+     *
+     * @param source a source
+     * @return this builder
+     * @since 4.12.0
+     */
+    @NotNull Builder source(final @NotNull Source source);
+
+    /**
+     * A {@link Source} to tell the game where the sound is coming from.
+     *
+     * <p>By default, {@link Source#MASTER} is used.</p>
+     *
+     * @param source a source provider, evaluated eagerly
+     * @return this builder
+     * @since 4.12.0
+     */
+    @NotNull Builder source(final Source.@NotNull Provider source);
+
+    /**
+     * The volume for this sound, indicating how far away it can be heard.
+     *
+     * <p>Default value is {@code 1}.</p>
+     *
+     * @param volume the sound volume
+     * @return this builder
+     * @since 4.12.0
+     */
+    @NotNull Builder volume(final @Range(from = 0, to = Integer.MAX_VALUE) float volume);
+
+    /**
+     * The volume for this sound, indicating how far away it can be heard.
+     *
+     * <p>Default value is {@code 1}.</p>
+     *
+     * @param pitch the sound pitch
+     * @return this builder
+     * @since 4.12.0
+     */
+    @NotNull Builder pitch(final @Range(from = -1, to = 1) float pitch);
+
+    /**
+     * The seed for this sound, used for weighted choices.
+     *
+     * <p>The default seed is the world seed of the receiver's current world.</p>
+     *
+     * @param seed the seed
+     * @return this builder
+     * @since 4.12.0
+     */
+    @NotNull Builder seed(final long seed);
+
+    /**
+     * The seed for this sound, used for weighted choices.
+     *
+     * <p>The default seed is the world seed of the receiver's current world.</p>
+     *
+     * @param seed the seed
+     * @return this builder
+     * @since 4.12.0
+     */
+    @NotNull Builder seed(final @NotNull OptionalLong seed);
   }
 }
