@@ -59,13 +59,17 @@ final class MiniMessageParser {
     this.tagResolver = tagResolver;
   }
 
-  @NotNull String escapeTokens(final @NotNull String richMessage, final @NotNull ContextImpl context) {
-    final StringBuilder sb = new StringBuilder(richMessage.length());
-    this.escapeTokens(sb, richMessage, context);
+  @NotNull String escapeTokens(final @NotNull ContextImpl context) {
+    final StringBuilder sb = new StringBuilder(context.message().length());
+    this.escapeTokens(sb, context);
     return sb.toString();
   }
 
-  void escapeTokens(final StringBuilder sb, final @NotNull String richMessage, final @NotNull ContextImpl context) {
+  void escapeTokens(final StringBuilder sb, final @NotNull ContextImpl context) {
+    this.escapeTokens(sb, context.message(), context);
+  }
+
+  private void escapeTokens(final StringBuilder sb, final String richMessage, final ContextImpl context) {
     this.processTokens(sb, richMessage, context, (token, builder) -> {
       builder.append('\\').append(TokenParser.TAG_START);
       if (token.type() == TokenType.CLOSE_TAG) {
@@ -82,10 +86,14 @@ final class MiniMessageParser {
     });
   }
 
-  @NotNull String stripTokens(final @NotNull String richMessage, final @NotNull ContextImpl context) {
-    final StringBuilder sb = new StringBuilder(richMessage.length());
-    this.processTokens(sb, richMessage, context, (token, builder) -> {});
+  @NotNull String stripTokens(final @NotNull ContextImpl context) {
+    final StringBuilder sb = new StringBuilder(context.message().length());
+    this.processTokens(sb, context, (token, builder) -> {});
     return sb.toString();
+  }
+
+  private void processTokens(final @NotNull StringBuilder sb, final @NotNull ContextImpl context, final BiConsumer<Token, StringBuilder> tagHandler) {
+    this.processTokens(sb, context.message(), context, tagHandler);
   }
 
   private void processTokens(final @NotNull StringBuilder sb, final @NotNull String richMessage, final @NotNull ContextImpl context, final BiConsumer<Token, StringBuilder> tagHandler) {
@@ -117,12 +125,13 @@ final class MiniMessageParser {
     }
   }
 
-  @NotNull RootNode parseToTree(final @NotNull String richMessage, final @NotNull ContextImpl context) {
+  @NotNull RootNode parseToTree(final @NotNull ContextImpl context) {
     final TagResolver combinedResolver = TagResolver.resolver(this.tagResolver, context.extraTags());
+    final String processedMessage = context.preProcessor().apply(context.message());
     final Consumer<String> debug = context.debugOutput();
     if (debug != null) {
       debug.accept("Beginning parsing message ");
-      debug.accept(richMessage);
+      debug.accept(processedMessage);
       debug.accept("\n");
     }
 
@@ -183,10 +192,10 @@ final class MiniMessageParser {
       return combinedResolver.has(sanitized);
     };
 
-    final String preProcessed = TokenParser.resolvePreProcessTags(richMessage, transformationFactory);
+    final String preProcessed = TokenParser.resolvePreProcessTags(processedMessage, transformationFactory);
     context.message(preProcessed);
     // Then, once MiniMessage placeholders have been inserted, we can do the real parse
-    final RootNode root = TokenParser.parse(transformationFactory, tagNameChecker, preProcessed, richMessage, context.strict());
+    final RootNode root = TokenParser.parse(transformationFactory, tagNameChecker, preProcessed, processedMessage, context.strict());
 
     if (debug != null) {
       debug.accept("Text parsed into element tree:\n");
@@ -196,8 +205,8 @@ final class MiniMessageParser {
     return root;
   }
 
-  @NotNull Component parseFormat(final @NotNull String richMessage, final @NotNull ContextImpl context) {
-    final ElementNode root = this.parseToTree(richMessage, context);
+  @NotNull Component parseFormat(final @NotNull ContextImpl context) {
+    final ElementNode root = this.parseToTree(context);
     return Objects.requireNonNull(context.postProcessor().apply(this.treeToComponent(root, context)), "Post-processor must not return null");
   }
 

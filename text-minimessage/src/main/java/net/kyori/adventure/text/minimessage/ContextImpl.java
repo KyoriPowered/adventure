@@ -52,6 +52,7 @@ class ContextImpl implements Context {
   private String message;
   private final MiniMessage miniMessage;
   private final TagResolver tagResolver;
+  private final UnaryOperator<String> preProcessor;
   private final UnaryOperator<Component> postProcessor;
 
   ContextImpl(
@@ -60,6 +61,7 @@ class ContextImpl implements Context {
     final String message,
     final MiniMessage miniMessage,
     final @NotNull TagResolver extraTags,
+    final UnaryOperator<String> preProcessor,
     final UnaryOperator<Component> postProcessor
   ) {
     this.strict = strict;
@@ -67,6 +69,7 @@ class ContextImpl implements Context {
     this.message = message;
     this.miniMessage = miniMessage;
     this.tagResolver = extraTags;
+    this.preProcessor = preProcessor == null ? UnaryOperator.identity() : preProcessor;
     this.postProcessor = postProcessor == null ? UnaryOperator.identity() : postProcessor;
   }
 
@@ -76,9 +79,10 @@ class ContextImpl implements Context {
     final String input,
     final MiniMessageImpl miniMessage,
     final TagResolver extraTags,
+    final UnaryOperator<String> preProcessor,
     final UnaryOperator<Component> postProcessor
   ) {
-    return new ContextImpl(strict, debugOutput, input, miniMessage, extraTags, postProcessor);
+    return new ContextImpl(strict, debugOutput, input, miniMessage, extraTags, preProcessor, postProcessor);
   }
 
   public boolean strict() {
@@ -103,6 +107,10 @@ class ContextImpl implements Context {
 
   public UnaryOperator<Component> postProcessor() {
     return this.postProcessor;
+  }
+
+  public UnaryOperator<String> preProcessor() {
+    return this.preProcessor;
   }
 
   @Override
