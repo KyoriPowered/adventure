@@ -70,6 +70,9 @@ final class SelectorTag {
     return emit -> {
       emit.tag(SEL);
       emit.argument(st.pattern());
+      if (st.separator() != null) {
+        emit.argument(st.separator());
+      }
     };
   }
 }
