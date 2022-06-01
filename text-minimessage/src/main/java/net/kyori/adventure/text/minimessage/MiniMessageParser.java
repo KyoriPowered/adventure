@@ -117,6 +117,13 @@ final class MiniMessageParser {
     }
   }
 
+  @NotNull String parsePreProcessTags(final @NotNull String richMessage, final @NotNull ContextImpl context) {
+    final TagResolver combinedResolver = TagResolver.resolver(this.tagResolver, context.extraTags());
+    final TokenParser.TagProvider transformationFactory = this.transformationFactory(context, combinedResolver, context.debugOutput());
+
+    return TokenParser.resolvePreProcessTags(richMessage, transformationFactory);
+  }
+
   @NotNull RootNode parseToTree(final @NotNull String richMessage, final @NotNull ContextImpl context) {
     final TagResolver combinedResolver = TagResolver.resolver(this.tagResolver, context.extraTags());
     final Consumer<String> debug = context.debugOutput();
@@ -126,6 +133,27 @@ final class MiniMessageParser {
       debug.accept("\n");
     }
 
+    final TokenParser.TagProvider transformationFactory = this.transformationFactory(context, combinedResolver, debug);
+    final Predicate<String> tagNameChecker = name -> {
+      final String sanitized = TokenParser.TagProvider.sanitizePlaceholderName(name);
+      return combinedResolver.has(sanitized);
+    };
+
+    final String preProcessed = TokenParser.resolvePreProcessTags(richMessage, transformationFactory);
+    context.message(preProcessed);
+    // Then, once MiniMessage placeholders have been inserted, we can do the real parse
+    final RootNode root = TokenParser.parse(transformationFactory, tagNameChecker, preProcessed, richMessage, context.strict());
+
+    if (debug != null) {
+      debug.accept("Text parsed into element tree:\n");
+      debug.accept(root.toString());
+    }
+
+    return root;
+  }
+
+  @NotNull
+  private TokenParser.TagProvider transformationFactory(final @NotNull ContextImpl context, final @NotNull TagResolver combinedResolver, final @Nullable Consumer<String> debug) {
     final TokenParser.TagProvider transformationFactory;
     if (debug != null) {
       transformationFactory = (name, args, token) -> {
@@ -178,22 +206,7 @@ final class MiniMessageParser {
         }
       };
     }
-    final Predicate<String> tagNameChecker = name -> {
-      final String sanitized = TokenParser.TagProvider.sanitizePlaceholderName(name);
-      return combinedResolver.has(sanitized);
-    };
-
-    final String preProcessed = TokenParser.resolvePreProcessTags(richMessage, transformationFactory);
-    context.message(preProcessed);
-    // Then, once MiniMessage placeholders have been inserted, we can do the real parse
-    final RootNode root = TokenParser.parse(transformationFactory, tagNameChecker, preProcessed, richMessage, context.strict());
-
-    if (debug != null) {
-      debug.accept("Text parsed into element tree:\n");
-      debug.accept(root.toString());
-    }
-
-    return root;
+    return transformationFactory;
   }
 
   @NotNull Component parseFormat(final @NotNull String richMessage, final @NotNull ContextImpl context) {
