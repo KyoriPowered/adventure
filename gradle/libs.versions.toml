@@ -10,6 +10,8 @@ indra = "2.1.1"
 jmh = "1.35"
 jmhPlugin = "0.6.6"
 junit = "5.8.2"
+mockito = "4.5.1"
+slf4j = "1.7.36"
 truth = "1.1.3"
 
 [libraries]
@@ -27,6 +29,10 @@ kotlin-testJunit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5" }
 # serializer-configurate*
 configurate-v3 = "org.spongepowered:configurate-core:3.7.3"
 configurate-v4 = "org.spongepowered:configurate-core:4.1.2"
+
+# text-logger-slf4j
+slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+slf4jtest = "com.github.valfirst:slf4j-test:2.6.1" # Specific versions are needed for different SLF4J versions
 
 # text-serializer-gson
 gson = "com.google.code.gson:gson:2.8.0"
