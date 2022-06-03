@@ -31,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A wrapper for exceptions that implement ComponentMessageThrowable.
  */
+@SuppressWarnings("OverrideThrowableToString")
 final class UnpackedComponentThrowable extends Throwable {
   private static final long serialVersionUID = -1L;
 
