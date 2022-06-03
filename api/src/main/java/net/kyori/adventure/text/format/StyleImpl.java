@@ -98,7 +98,7 @@ final class StyleImpl implements Style {
   @Override
   public TextDecoration.@NotNull State decoration(final @NotNull TextDecoration decoration) {
     // null -> null
-    final @Nullable TextDecoration.State state = this.decorations.get(decoration);
+    final TextDecoration.@Nullable State state = this.decorations.get(decoration);
     if (state != null) {
       return state;
     }
@@ -283,7 +283,7 @@ final class StyleImpl implements Style {
     // todo(kashike): promote to public api?
     @NotNull Builder decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
       requireNonNull(state, "state");
-      final @Nullable TextDecoration.State thisState = this.decorations.get(decoration);
+      final TextDecoration.@Nullable State thisState = this.decorations.get(decoration);
       if (thisState == TextDecoration.State.NOT_SET) {
         this.decorations.put(decoration, state);
       }
