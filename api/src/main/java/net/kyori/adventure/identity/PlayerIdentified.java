@@ -21,49 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.audience;
+package net.kyori.adventure.identity;
 
-import net.kyori.adventure.chat.ChatType;
-import net.kyori.adventure.key.Key;
-import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Message types.
+ * Something that can be identified with a {@link PlayerIdentity}.
  *
- * @since 4.0.0
- * @deprecated for removal since 4.12.0, use corresponding {@link ChatType} instead
+ * @since 4.12.0
  */
-@ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-@Deprecated
-public enum MessageType implements ChatType {
+public interface PlayerIdentified extends Identified {
   /**
-   * Chat message type.
+   * Gets the player identity.
    *
-   * @since 4.0.0
-   * @deprecated for removal since 4.12.0, use {@link ChatType#CHAT} instead
+   * @return the player identity
+   * @since 4.12.0
    */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Deprecated
-  CHAT(ChatType.CHAT),
-  /**
-   * System message type.
-   *
-   * @since 4.0.0
-   * @deprecated for removal since 4.12.0, use {@link ChatType#SYSTEM} instead
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Deprecated
-  SYSTEM(ChatType.SYSTEM);
-
-  private final ChatType chatType;
-
-  MessageType(final @NotNull ChatType chatType) {
-    this.chatType = chatType;
-  }
+  @Contract(pure = true)
+  @NotNull PlayerIdentity playerIdentity();
 
   @Override
-  public final @NotNull Key key() {
-    return this.chatType.key();
+  default @NotNull Identity identity() {
+    return this.playerIdentity();
   }
 }
