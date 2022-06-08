@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.identity;
 
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -38,11 +37,6 @@ public interface PlayerIdentified extends Identified {
    * @return the player identity
    * @since 4.12.0
    */
-  @Contract(pure = true)
-  @NotNull PlayerIdentity playerIdentity();
-
   @Override
-  default @NotNull Identity identity() {
-    return this.playerIdentity();
-  }
+  @NotNull PlayerIdentity identity();
 }
