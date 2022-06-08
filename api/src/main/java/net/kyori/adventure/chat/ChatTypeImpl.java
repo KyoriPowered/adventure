@@ -21,49 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.audience;
+package net.kyori.adventure.chat;
 
-import net.kyori.adventure.chat.ChatType;
+import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Message types.
- *
- * @since 4.0.0
- * @deprecated for removal since 4.12.0, use corresponding {@link ChatType} instead
- */
-@ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-@Deprecated
-public enum MessageType implements ChatType {
-  /**
-   * Chat message type.
-   *
-   * @since 4.0.0
-   * @deprecated for removal since 4.12.0, use {@link ChatType#CHAT} instead
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Deprecated
-  CHAT(ChatType.CHAT),
-  /**
-   * System message type.
-   *
-   * @since 4.0.0
-   * @deprecated for removal since 4.12.0, use {@link ChatType#SYSTEM} instead
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Deprecated
-  SYSTEM(ChatType.SYSTEM);
+final class ChatTypeImpl implements ChatType {
+  private final Key key;
 
-  private final ChatType chatType;
-
-  MessageType(final @NotNull ChatType chatType) {
-    this.chatType = chatType;
+  ChatTypeImpl(final @NotNull Key key) {
+    this.key = key;
   }
 
   @Override
-  public final @NotNull Key key() {
-    return this.chatType.key();
+  public @NotNull Key key() {
+    return this.key;
+  }
+
+  @Override
+  public String toString() {
+    return Internals.toString(this);
   }
 }

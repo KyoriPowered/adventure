@@ -21,49 +21,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.audience;
+package net.kyori.adventure.chat;
 
-import net.kyori.adventure.chat.ChatType;
-import net.kyori.adventure.key.Key;
+import java.time.Instant;
+import net.kyori.adventure.identity.PlayerIdentified;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Message types.
+ * A signed chat message.
  *
- * @since 4.0.0
- * @deprecated for removal since 4.12.0, use corresponding {@link ChatType} instead
+ * @since 4.12.0
+ * @sinceMinecraft 1.19
  */
-@ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-@Deprecated
-public enum MessageType implements ChatType {
+@ApiStatus.NonExtendable // todo do we want this? realistically nobody but platforms should be making these..
+public interface SignedMessage extends PlayerIdentified {
   /**
-   * Chat message type.
+   * The time that the message was sent.
    *
-   * @since 4.0.0
-   * @deprecated for removal since 4.12.0, use {@link ChatType#CHAT} instead
+   * @return the timestamp
+   * @since 4.12.0
+   * @sinceMinecraft 1.19
    */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Deprecated
-  CHAT(ChatType.CHAT),
+  @Contract(pure = true)
+  @NotNull Instant timeStamp();
+
   /**
-   * System message type.
+   * The salt.
    *
-   * @since 4.0.0
-   * @deprecated for removal since 4.12.0, use {@link ChatType#SYSTEM} instead
+   * @return the salt
+   * @since 4.12.0
+   * @sinceMinecraft 1.19
    */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Deprecated
-  SYSTEM(ChatType.SYSTEM);
+  @Contract(pure = true)
+  long salt();
 
-  private final ChatType chatType;
-
-  MessageType(final @NotNull ChatType chatType) {
-    this.chatType = chatType;
-  }
-
-  @Override
-  public final @NotNull Key key() {
-    return this.chatType.key();
-  }
+  /**
+   * The signature of the message.
+   *
+   * @return the signature
+   * @since 4.12.0
+   * @sinceMinecraft 1.19
+   */
+  byte[] signature();
 }
