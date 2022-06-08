@@ -70,6 +70,17 @@ public interface Sound extends Examinable {
   }
 
   /**
+   * Create a new builder for {@link Sound} instances.
+   *
+   * @param existing an existing sound to populate the builder with
+   * @return a new builder
+   * @since 4.12.0
+   */
+  static @NotNull Builder sound(final @NotNull Sound existing) {
+    return new SoundImpl.BuilderImpl(existing);
+  }
+
+  /**
    * Create a new {@link Sound} instance configured by the provided function.
    *
    * @param configurer a function that configures a builder
@@ -214,14 +225,6 @@ public interface Sound extends Examinable {
    * @since 4.8.0
    */
   @NotNull SoundStop asStop();
-
-  /**
-   * Create a new builder populated with values from this sound instance.
-   *
-   * @return a new builder
-   * @since 4.12.0
-   */
-  @NotNull Builder toBuilder();
 
   /**
    * The sound source.
