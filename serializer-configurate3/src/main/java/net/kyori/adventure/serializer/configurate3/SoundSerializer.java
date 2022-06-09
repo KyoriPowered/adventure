@@ -24,6 +24,7 @@
 package net.kyori.adventure.serializer.configurate3;
 
 import com.google.common.reflect.TypeToken;
+import java.util.OptionalLong;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import ninja.leaping.configurate.ConfigurationNode;
@@ -42,6 +43,7 @@ final class SoundSerializer implements TypeSerializer<Sound> {
   static final String SOURCE = "source";
   static final String PITCH = "pitch";
   static final String VOLUME = "volume";
+  static final String SEED = "seed";
 
   private SoundSerializer() {
   }
@@ -52,16 +54,24 @@ final class SoundSerializer implements TypeSerializer<Sound> {
       return null;
     }
 
+    final Sound.Builder builder = Sound.sound();
     final Key name = value.getNode(NAME).getValue(KeySerializer.INSTANCE.type());
     final Sound.Source source = value.getNode(SOURCE).getValue(SOURCE_TYPE);
-    final float volume = value.getNode(VOLUME).getFloat(1.0f);
-    final float pitch = value.getNode(PITCH).getFloat(1.0f);
-
     if (name == null || source == null) {
       throw new ObjectMappingException("A name and source are required to deserialize a Sound");
     }
 
-    return Sound.sound(name, source, volume, pitch);
+    builder
+      .type(name)
+      .source(source)
+      .volume(value.getNode(VOLUME).getFloat(1.0f))
+      .pitch(value.getNode(PITCH).getFloat(1.0f));
+    final ConfigurationNode seed = value.getNode(SEED);
+    if (!seed.isVirtual()) {
+      builder.seed(OptionalLong.of(seed.getLong()));
+    }
+
+    return builder.build();
   }
 
   @Override
@@ -74,5 +84,10 @@ final class SoundSerializer implements TypeSerializer<Sound> {
     value.getNode(SOURCE).setValue(SOURCE_TYPE, obj.source());
     value.getNode(VOLUME).setValue(obj.volume());
     value.getNode(PITCH).setValue(obj.pitch());
+    if (obj.seed().isPresent()) {
+      value.getNode(SEED).setValue(obj.seed().getAsLong());
+    } else {
+      value.getNode(SEED).setValue(null);
+    }
   }
 }
