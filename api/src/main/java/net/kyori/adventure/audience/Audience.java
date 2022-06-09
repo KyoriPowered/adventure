@@ -200,7 +200,7 @@ public interface Audience extends Pointered {
    * @param message a message
    * @see Component
    * @since 4.0.0
-   * @deprecated since 4.12.0, client errors and can reject identified messages without {@link SignedMessage} data, this may be unsupported in the future, use {@link #sendMessage(ComponentLike, SignedMessage, PlayerIdentified)} instead
+   * @deprecated since 4.12.0, the client errors on and can reject identified messages without {@link SignedMessage} data, this may be unsupported in the future, use {@link #sendMessage(ComponentLike, SignedMessage, PlayerIdentified)} instead
    */
   @Deprecated
   @ForwardingAudienceOverrideNotRequired
@@ -215,7 +215,7 @@ public interface Audience extends Pointered {
    * @param message a message
    * @see Component
    * @since 4.0.0
-   * @deprecated since 4.12.0, client errors and can reject identified messages without {@link SignedMessage} data, this may be unsupported in the future, use {@link #sendMessage(ComponentLike, SignedMessage, PlayerIdentified)} instead
+   * @deprecated since 4.12.0, the client errors on and can reject identified messages without {@link SignedMessage} data, this may be unsupported in the future, use {@link #sendMessage(ComponentLike, SignedMessage, PlayerIdentified)} instead
    */
   @Deprecated
   @ForwardingAudienceOverrideNotRequired
@@ -247,6 +247,7 @@ public interface Audience extends Pointered {
    * @deprecated since 4.12.0, the client errors on receiving and can reject identified messages without {@link SignedMessage} data, this may be unsupported in the future, use {@link #sendMessage(Component, SignedMessage, PlayerIdentified)} instead
    */
   @Deprecated
+  @ForwardingAudienceOverrideNotRequired
   default void sendMessage(final @NotNull Identified source, final @NotNull Component message) {
     this.sendMessage(source, message, MessageType.SYSTEM);
   }
