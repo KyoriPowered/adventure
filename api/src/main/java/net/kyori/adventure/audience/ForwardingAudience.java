@@ -100,11 +100,6 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
-  default void sendMessage(final @NotNull Identified source, final @NotNull Component message) {
-    for (final Audience audience : this.audiences()) audience.sendMessage(source, message);
-  }
-
-  @Override
   default void sendMessage(final @NotNull Component message, final @NotNull ChatType chatType) {
     for (final Audience audience : this.audiences()) audience.sendMessage(message, chatType);
   }
@@ -258,11 +253,6 @@ public interface ForwardingAudience extends Audience {
     @Override
     default @NotNull Pointers pointers() {
       return this.audience().pointers();
-    }
-
-    @Override
-    default void sendMessage(final @NotNull Identified source, final @NotNull Component message) {
-      this.audience().sendMessage(source, message);
     }
 
     @Override
