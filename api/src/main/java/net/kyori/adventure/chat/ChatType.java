@@ -38,7 +38,6 @@ import org.jetbrains.annotations.NotNull;
  * @sinceMinecraft 1.19
  */
 public interface ChatType extends Examinable, Keyed {
-  // todo should these be in another class/interface so as not to conflict with any implementations?
   /**
    * A chat message from a player.
    *
@@ -93,7 +92,6 @@ public interface ChatType extends Examinable, Keyed {
    * @since 4.12.0
    * @sinceMinecraft 1.19
    */
-  // todo TELLRAW or TELL_RAW? mc is inconsistent here (see teammsg)
   ChatType TELL_RAW_COMMAND = new ChatTypeImpl(Key.key("tellraw_command"));
 
   /**

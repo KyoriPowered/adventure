@@ -26,6 +26,9 @@ package net.kyori.adventure.identity;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Stream;
+import net.kyori.adventure.Adventure;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.pointer.Pointer;
 import net.kyori.adventure.text.Component;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
@@ -39,7 +42,13 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.12.0
  */
 public interface PlayerIdentity extends Examinable, Identity {
-  // todo do we want identity/identified overloads here?
+  /**
+   * A pointer to a team name.
+   *
+   * @since 4.12.0
+   */
+  Pointer<Component> TEAM_NAME = Pointer.pointer(Component.class, Key.key(Adventure.NAMESPACE, "team_name"));
+
   /**
    * Creates a new player identity.
    *
