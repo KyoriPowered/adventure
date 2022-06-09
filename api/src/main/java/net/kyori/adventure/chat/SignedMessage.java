@@ -35,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.12.0
  * @sinceMinecraft 1.19
  */
-@ApiStatus.NonExtendable // todo do we want this? realistically nobody but platforms should be making these..
+@ApiStatus.NonExtendable
 public interface SignedMessage extends PlayerIdentified {
   /**
    * The time that the message was sent.
@@ -64,5 +64,6 @@ public interface SignedMessage extends PlayerIdentified {
    * @since 4.12.0
    * @sinceMinecraft 1.19
    */
+  @Contract(pure = true)
   byte[] signature();
 }

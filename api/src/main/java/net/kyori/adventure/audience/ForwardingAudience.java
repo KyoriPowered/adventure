@@ -31,8 +31,12 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.chat.ChatType;
+import net.kyori.adventure.chat.SignedMessage;
 import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.identity.Identity;
+import net.kyori.adventure.identity.PlayerIdentified;
+import net.kyori.adventure.identity.PlayerIdentity;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.pointer.Pointer;
 import net.kyori.adventure.pointer.Pointers;
@@ -96,12 +100,32 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
-  default void sendMessage(final @NotNull Identified source, final @NotNull Component message, final @NotNull MessageType type) {
+  default void sendMessage(final @NotNull Identified source, final @NotNull Component message) {
+    for (final Audience audience : this.audiences()) audience.sendMessage(source, message);
+  }
+
+  @Override
+  default void sendMessage(final @NotNull Component message, final @NotNull ChatType chatType) {
+    for (final Audience audience : this.audiences()) audience.sendMessage(message, chatType);
+  }
+
+  @Override
+  default void sendMessage(final @NotNull Component message, final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentified source, final @NotNull ChatType chatType) {
+    for (final Audience audience : this.audiences()) audience.sendMessage(message, signedMessage, source, chatType);
+  }
+
+  @Override
+  default void sendMessage(final @NotNull Component message, final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentity source, final @NotNull ChatType chatType) {
+    for (final Audience audience : this.audiences()) audience.sendMessage(message, signedMessage, source, chatType);
+  }
+
+  @Override
+  default void sendMessage(@NotNull Identified source, @NotNull Component message, @NotNull MessageType type) {
     for (final Audience audience : this.audiences()) audience.sendMessage(source, message, type);
   }
 
   @Override
-  default void sendMessage(final @NotNull Identity source, final @NotNull Component message, final @NotNull MessageType type) {
+  default void sendMessage(@NotNull Identity source, @NotNull Component message, @NotNull MessageType type) {
     for (final Audience audience : this.audiences()) audience.sendMessage(source, message, type);
   }
 
@@ -234,6 +258,26 @@ public interface ForwardingAudience extends Audience {
     @Override
     default @NotNull Pointers pointers() {
       return this.audience().pointers();
+    }
+
+    @Override
+    default void sendMessage(final @NotNull Identified source, final @NotNull Component message) {
+      this.audience().sendMessage(source, message);
+    }
+
+    @Override
+    default void sendMessage(final @NotNull Component message, final @NotNull ChatType chatType) {
+      this.audience().sendMessage(message, chatType);
+    }
+
+    @Override
+    default void sendMessage(final @NotNull Component message, final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentified source, final @NotNull ChatType chatType) {
+      this.audience().sendMessage(message, signedMessage, source, chatType);
+    }
+
+    @Override
+    default void sendMessage(final @NotNull Component message, final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentity source, final @NotNull ChatType chatType) {
+      this.audience().sendMessage(message, signedMessage, source, chatType);
     }
 
     @Override
