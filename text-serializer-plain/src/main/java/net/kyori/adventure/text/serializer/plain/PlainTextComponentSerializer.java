@@ -32,7 +32,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Buildable;
-import org.jetbrains.annotations.ApiStatus;
+import net.kyori.adventure.util.PlatformAPI;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -108,7 +108,7 @@ public interface PlainTextComponentSerializer extends ComponentSerializer<Compon
    *
    * @since 4.8.0
    */
-  @ApiStatus.Internal
+  @PlatformAPI
   interface Provider {
     /**
      * Provides a {@link PlainTextComponentSerializer}.
@@ -116,7 +116,7 @@ public interface PlainTextComponentSerializer extends ComponentSerializer<Compon
      * @return a {@link PlainTextComponentSerializer}
      * @since 4.8.0
      */
-    @ApiStatus.Internal
+    @PlatformAPI
     @NotNull PlainTextComponentSerializer plainTextSimple();
 
     /**
@@ -125,7 +125,7 @@ public interface PlainTextComponentSerializer extends ComponentSerializer<Compon
      * @return a {@link Consumer}
      * @since 4.8.0
      */
-    @ApiStatus.Internal
+    @PlatformAPI
     @NotNull Consumer<Builder> plainText();
   }
 }
