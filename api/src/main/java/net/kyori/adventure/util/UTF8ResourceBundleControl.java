@@ -29,9 +29,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.Locale;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
@@ -62,26 +59,20 @@ public final class UTF8ResourceBundleControl extends ResourceBundle.Control {
     if (format.equals("java.properties")) {
       final String bundle = this.toBundleName(baseName, locale);
       final String resource = this.toResourceName(bundle, "properties");
-      final InputStream is;
-      try {
-        is = AccessController.doPrivileged((PrivilegedExceptionAction<InputStream>) () -> {
-          if (reload) {
-            final URL url = loader.getResource(resource);
-            if (url != null) {
-              final URLConnection connection = url.openConnection();
-              if (connection != null) {
-                connection.setUseCaches(false);
-                return connection.getInputStream();
-              }
-            }
-            return null;
-          } else {
-            return loader.getResourceAsStream(resource);
+      InputStream is = null;
+      if (reload) {
+        final URL url = loader.getResource(resource);
+        if (url != null) {
+          final URLConnection connection = url.openConnection();
+          if (connection != null) {
+            connection.setUseCaches(false);
+            is = connection.getInputStream();
           }
-        });
-      } catch (final PrivilegedActionException e) {
-        throw (IOException) e.getException();
+        }
+      } else {
+        is = loader.getResourceAsStream(resource);
       }
+
       if (is != null) {
         try(final InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8)) {
           return new PropertyResourceBundle(isr);
