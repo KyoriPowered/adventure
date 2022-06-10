@@ -396,4 +396,17 @@ class ComponentCompactingTest {
     assertEquals(expectedCompact, notCompact.compact());
   }
 
+  // https://github.com/KyoriPowered/adventure/issues/780
+  @Test
+  void testColorPreservedWithDecorations() {
+    final Component expectedComponent = text()
+      .decorate(TextDecoration.UNDERLINED)
+      .append(text(" ", NamedTextColor.RED))
+      .append(text(" ", NamedTextColor.GREEN))
+      .append(text(" ", NamedTextColor.BLUE))
+      .build();
+
+    assertEquals(expectedComponent, expectedComponent.compact());
+  }
+
 }

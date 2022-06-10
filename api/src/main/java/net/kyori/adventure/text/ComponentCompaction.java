@@ -50,7 +50,7 @@ final class ComponentCompaction {
     if (childrenSize == 0) {
       // no children, style can be further simplified if self is blank
       if (isBlank(optimized)) {
-        optimized = optimized.style(simplifyStyleForBlank(optimized.style()));
+        optimized = optimized.style(simplifyStyleForBlank(optimized.style(), parentStyle));
       }
 
       // leaf nodes do not need to be further optimized - there is no point
@@ -147,7 +147,7 @@ final class ComponentCompaction {
 
     // no children, style can be further simplified if self is blank
     if (childrenToAppend.isEmpty() && isBlank(optimized)) {
-      optimized = optimized.style(simplifyStyleForBlank(optimized.style()));
+      optimized = optimized.style(simplifyStyleForBlank(optimized.style(), parentStyle));
     }
 
     return optimized.children(childrenToAppend);
@@ -212,24 +212,28 @@ final class ComponentCompaction {
         final char c = content.charAt(i);
         if (c != ' ') return false;
       }
-      
+
       return true;
     }
     return false;
   }
-  
+
   /**
   * Simplify the provided style to remove any information that is redundant,
   * given that the content is blank.
   *
   * @param style style to simplify
+  * @param parentStyle style from component's parents, for context
   * @return a new, simplified style
   */
-  private static @NotNull Style simplifyStyleForBlank(final @NotNull Style style) {
+  private static @NotNull Style simplifyStyleForBlank(final @NotNull Style style, final @Nullable Style parentStyle) {
     final Style.Builder builder = style.toBuilder();
 
-    // TextColor doesn't affect spaces
-    builder.color(null);
+    // TextColor doesn't affect spaces, unless there is other decoration present
+    if (!(style.hasDecoration(TextDecoration.UNDERLINED) || style.hasDecoration(TextDecoration.STRIKETHROUGH))
+      && (parentStyle == null || !(parentStyle.hasDecoration(TextDecoration.UNDERLINED) || parentStyle.hasDecoration(TextDecoration.STRIKETHROUGH)))) {
+      builder.color(null);
+    }
 
     // ITALIC/OBFUSCATED don't affect spaces (in modern versions), as these styles only affect glyph rendering
     builder.decoration(TextDecoration.ITALIC, TextDecoration.State.NOT_SET);
@@ -239,7 +243,7 @@ final class ComponentCompaction {
     // BOLD affects spaces because it increments the character advance by 1
 
     // font affects spaces in 1.19+ (since 22w11a), due to the font glyph provider for spaces
-    
+
     return builder.build();
   }
 
