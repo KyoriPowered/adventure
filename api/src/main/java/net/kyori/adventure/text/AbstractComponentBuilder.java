@@ -245,6 +245,17 @@ abstract class AbstractComponentBuilder<C extends BuildableComponent<C, B>, B ex
 
   @Override
   @SuppressWarnings("unchecked")
+  public @NotNull B decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
+    requireNonNull(state, "state");
+    final TextDecoration.@NotNull State thisState = this.buildStyle().decoration(decoration);
+    if (thisState == TextDecoration.State.NOT_SET) {
+      this.styleBuilder().decoration(decoration, state);
+    }
+    return (B) this;
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
   public @NotNull B clickEvent(final @Nullable ClickEvent event) {
     this.styleBuilder().clickEvent(event);
     return (B) this;

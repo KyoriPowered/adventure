@@ -150,6 +150,16 @@ public interface StyleSetter<T extends StyleSetter<?>> {
   }
 
   /**
+   * Sets the state of a decoration to {@code state} if the current state of the decoration is {@link TextDecoration.State#NOT_SET}.
+   *
+   * @param decoration the decoration
+   * @param state the state
+   * @return an object ({@code T})
+   * @since 4.12.0
+   */
+  @NotNull T decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
+
+  /**
    * Sets the click event.
    *
    * @param event the click event

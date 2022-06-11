@@ -123,6 +123,19 @@ final class StyleImpl implements Style {
   }
 
   @Override
+  public @NotNull Style decorationIfAbsent(final @NotNull TextDecoration decoration, final @NotNull TextDecoration.State state) {
+    requireNonNull(state, "state");
+    final TextDecoration.@Nullable State thisState = this.decorations.get(decoration);
+    if (thisState == TextDecoration.State.NOT_SET) {
+      return new StyleImpl(this.font, this.color, this.decorations.with(decoration, state), this.clickEvent, this.hoverEvent, this.insertion);
+    }
+    if (thisState != null) {
+      return this;
+    }
+    throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
+  }
+
+  @Override
   public @Nullable ClickEvent clickEvent() {
     return this.clickEvent;
   }
@@ -280,8 +293,7 @@ final class StyleImpl implements Style {
       return this;
     }
 
-    // todo(kashike): promote to public api?
-    @NotNull Builder decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
+    public @NotNull Builder decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
       requireNonNull(state, "state");
       final TextDecoration.@Nullable State thisState = this.decorations.get(decoration);
       if (thisState == TextDecoration.State.NOT_SET) {
