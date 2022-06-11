@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.logger.slf4j;
 
+import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -79,6 +80,18 @@ public interface ComponentLogger extends Logger {
    */
   static @NotNull ComponentLogger logger(final @NotNull Class<?> clazz) {
     return logger(clazz.getName());
+  }
+
+  /**
+   * Gets a logger instance with the provided logger and serializer.
+   *
+   * @param backing the logger
+   * @param serializer the serializer
+   * @return a logger with the provided logger and serializer
+   * @since IDONTKNOW
+   */
+  static @NotNull ComponentLogger wrapping(final @NotNull Logger backing, final @NotNull Function<Component, String> serializer) {
+    return new WrappingComponentLoggerImpl(backing, serializer);
   }
 
   /**
