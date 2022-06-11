@@ -35,6 +35,7 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.PlatformAPI;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -271,6 +272,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    *
    * @since 4.8.0
    */
+  @ApiStatus.Internal
   @PlatformAPI
   interface Provider {
     /**
@@ -279,6 +281,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * @return a {@link LegacyComponentSerializer}
      * @since 4.8.0
      */
+    @ApiStatus.Internal
     @PlatformAPI
     @NotNull LegacyComponentSerializer legacyAmpersand();
 
@@ -288,6 +291,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * @return a {@link LegacyComponentSerializer}
      * @since 4.8.0
      */
+    @ApiStatus.Internal
     @PlatformAPI
     @NotNull LegacyComponentSerializer legacySection();
 
@@ -297,6 +301,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * @return a {@link Consumer}
      * @since 4.8.0
      */
+    @ApiStatus.Internal
     @PlatformAPI
     @NotNull Consumer<Builder> legacy();
   }

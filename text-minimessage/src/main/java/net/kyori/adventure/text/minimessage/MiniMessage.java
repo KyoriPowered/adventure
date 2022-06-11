@@ -31,6 +31,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tree.Node;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.PlatformAPI;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -298,6 +299,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    * @since 4.10.0
    * @hidden
    */
+  @ApiStatus.Internal
   @PlatformAPI
   interface Provider {
     /**
@@ -306,6 +308,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      * @return a {@link MiniMessage} instance
      * @since 4.10.0
      */
+    @ApiStatus.Internal
     @PlatformAPI
     @NotNull MiniMessage miniMessage();
 
@@ -315,6 +318,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      * @return a {@link Consumer} modifying a {@link Builder}
      * @since 4.10.0
      */
+    @ApiStatus.Internal
     @PlatformAPI
     @NotNull Consumer<Builder> builder();
   }

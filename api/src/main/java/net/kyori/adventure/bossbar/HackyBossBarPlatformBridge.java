@@ -24,6 +24,7 @@
 package net.kyori.adventure.bossbar;
 
 import net.kyori.adventure.util.PlatformAPI;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * This class is a major hack, intended to allow certain platforms a way
@@ -31,6 +32,7 @@ import net.kyori.adventure.util.PlatformAPI;
  *
  * @deprecated not an official API, and may disappear without warning
  */
+@ApiStatus.Internal
 @Deprecated
 @PlatformAPI
 abstract class HackyBossBarPlatformBridge {
