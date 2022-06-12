@@ -1734,6 +1734,28 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
+   * Appends a newline to this component.
+   *
+   * @return a component with the newline added
+   * @since 4.12.0
+   */
+  @Contract(pure = true)
+  default @NotNull Component appendNewline() {
+    return this.append(newline());
+  }
+
+  /**
+   * Appends a space to this component.
+   *
+   * @return a component with the space added
+   * @since 4.12.0
+   */
+  @Contract(pure = true)
+  default @NotNull Component appendSpace() {
+    return this.append(space());
+  }
+
+  /**
    * Apply a fallback style for this component and its children.
    *
    * <p>This method can be used to set the "default" style for a component, whilst still allowing children of the component to override the style.</p>

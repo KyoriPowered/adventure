@@ -116,6 +116,26 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
   @NotNull B append(final @NotNull Iterable<? extends ComponentLike> components);
 
   /**
+   * Appends a newline to this component.
+   *
+   * @return this builder
+   * @since 4.12.0
+   */
+  default @NotNull B appendNewline() {
+    return this.append(Component.newline());
+  }
+
+  /**
+   * Appends a space to this component.
+   *
+   * @return this builder
+   * @since 4.12.0
+   */
+  default @NotNull B appendSpace() {
+    return this.append(Component.space());
+  }
+
+  /**
    * Applies an action to this builder.
    *
    * @param consumer the action
