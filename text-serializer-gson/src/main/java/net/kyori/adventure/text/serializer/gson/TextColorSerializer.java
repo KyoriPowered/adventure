@@ -27,6 +27,7 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
+import java.util.Locale;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.jetbrains.annotations.NotNull;
@@ -49,8 +50,12 @@ final class TextColorSerializer extends TypeAdapter<TextColor> {
     } else if (this.downsampleColor) {
       out.value(NamedTextColor.NAMES.key(NamedTextColor.nearestTo(value)));
     } else {
-      out.value(value.asHexString());
+      out.value(asUpperCaseHexString(value));
     }
+  }
+
+  private static String asUpperCaseHexString(final TextColor color) {
+    return String.format(Locale.ROOT, "#%06X", color.value()); // to be consistent with vanilla
   }
 
   @Override
