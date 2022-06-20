@@ -342,6 +342,18 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
   @NotNull Style decoration(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
 
   /**
+   * Sets the state of a decoration on this style to {@code state} if the current state of
+   * the decoration is {@link TextDecoration.State#NOT_SET}.
+   *
+   * @param decoration the decoration
+   * @param state the state
+   * @return a style
+   * @since 4.12.0
+   */
+  @Override
+  @NotNull Style decorationIfAbsent(final @NotNull TextDecoration decoration, @NotNull final TextDecoration.State state);
+
+  /**
    * Gets a map of decorations this style has.
    *
    * @return a set of decorations this style has
@@ -363,18 +375,6 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
    */
   @Override
   @NotNull Style decorations(final @NotNull Map<TextDecoration, TextDecoration.State> decorations);
-
-  /**
-   * Sets the state of a decoration on this style to {@code state} if the current state of
-   * the decoration is {@link TextDecoration.State#NOT_SET}.
-   *
-   * @param decoration the decoration
-   * @param state the state
-   * @return a style
-   * @since 4.12.0
-   */
-  @Override
-  @NotNull Style decorationIfAbsent(final @NotNull TextDecoration decoration, @NotNull final TextDecoration.State state);
 
   /**
    * Gets the click event.

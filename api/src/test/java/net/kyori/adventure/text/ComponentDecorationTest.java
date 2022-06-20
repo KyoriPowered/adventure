@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.TextAssertions.assertDecorations;
 
-public class ComponentDecorationTest {
+class ComponentDecorationTest {
 
   @Test
   void testDecorationIfAbsent() {
