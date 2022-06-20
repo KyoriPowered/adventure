@@ -66,7 +66,10 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
       builder.registerTypeAdapterFactory(new SerializerFactory(downsampleColor, legacyHoverSerializer, emitLegacyHover));
       return builder;
     };
-    this.serializer = this.populator.apply(new GsonBuilder()).create();
+    this.serializer = this.populator.apply(
+      new GsonBuilder()
+        .disableHtmlEscaping() // to be consistent with vanilla
+    ).create();
   }
 
   @Override
