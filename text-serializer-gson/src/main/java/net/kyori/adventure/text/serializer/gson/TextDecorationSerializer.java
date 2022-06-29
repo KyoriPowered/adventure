@@ -27,7 +27,7 @@ import com.google.gson.TypeAdapter;
 import net.kyori.adventure.text.format.TextDecoration;
 
 final class TextDecorationSerializer {
-  static final TypeAdapter<TextDecoration> INSTANCE = IndexedSerializer.of("text decoration", TextDecoration.NAMES);
+  static final TypeAdapter<TextDecoration> INSTANCE = IndexedSerializer.strict("text decoration", TextDecoration.NAMES);
 
   private TextDecorationSerializer() {
   }

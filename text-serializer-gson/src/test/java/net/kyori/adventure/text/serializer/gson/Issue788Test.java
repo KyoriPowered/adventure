@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+// https://github.com/KyoriPowered/adventure/issues/788
 class Issue788Test {
   @Test
   void test() {
