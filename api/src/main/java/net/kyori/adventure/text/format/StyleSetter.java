@@ -126,6 +126,16 @@ public interface StyleSetter<T extends StyleSetter<?>> {
   @NotNull T decoration(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
 
   /**
+   * Sets the state of a decoration to {@code state} if the current state of the decoration is {@link TextDecoration.State#NOT_SET}.
+   *
+   * @param decoration the decoration
+   * @param state the state
+   * @return an object ({@code T})
+   * @since 4.12.0
+   */
+  @NotNull T decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
+
+  /**
    * Sets decorations using the specified {@code decorations} map.
    *
    * <p>If a given decoration does not have a value explicitly set, the value of that particular decoration is not changed.</p>

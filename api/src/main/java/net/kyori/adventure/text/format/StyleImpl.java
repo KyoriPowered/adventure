@@ -113,6 +113,19 @@ final class StyleImpl implements Style {
   }
 
   @Override
+  public @NotNull Style decorationIfAbsent(final @NotNull TextDecoration decoration, final @NotNull TextDecoration.State state) {
+    requireNonNull(state, "state");
+    final TextDecoration.@Nullable State oldState = this.decorations.get(decoration);
+    if (oldState == TextDecoration.State.NOT_SET) {
+      return new StyleImpl(this.font, this.color, this.decorations.with(decoration, state), this.clickEvent, this.hoverEvent, this.insertion);
+    }
+    if (oldState != null) {
+      return this;
+    }
+    throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
+  }
+
+  @Override
   public @NotNull Map<TextDecoration, TextDecoration.State> decorations() {
     return this.decorations;
   }
@@ -280,14 +293,14 @@ final class StyleImpl implements Style {
       return this;
     }
 
-    // todo(kashike): promote to public api?
-    @NotNull Builder decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
+    @Override
+    public @NotNull Builder decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
       requireNonNull(state, "state");
-      final TextDecoration.@Nullable State thisState = this.decorations.get(decoration);
-      if (thisState == TextDecoration.State.NOT_SET) {
+      final TextDecoration.@Nullable State oldState = this.decorations.get(decoration);
+      if (oldState == TextDecoration.State.NOT_SET) {
         this.decorations.put(decoration, state);
       }
-      if (thisState != null) {
+      if (oldState != null) {
         return this;
       }
       throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
