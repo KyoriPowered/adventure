@@ -114,11 +114,11 @@ public final class Formatter {
    * @since 4.11.0
    */
   public static @NotNull TagResolver choice(final @NotNull String key, final Number number) {
-    return TagResolver.resolver(key, ((argumentQueue, context) -> {
+    return TagResolver.resolver(key, (argumentQueue, context) -> {
       final String format = argumentQueue.popOr("Format expected.").value();
       final ChoiceFormat choiceFormat = new ChoiceFormat(format);
       return Tag.inserting(context.deserialize(choiceFormat.format(number)));
-    }));
+    });
   }
 
   /**

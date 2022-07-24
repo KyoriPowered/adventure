@@ -56,6 +56,19 @@ class GlobalTranslatorTest {
         .build(),
       GlobalTranslator.render(Component.translatable("testDummy", Component.text("kashike", NamedTextColor.DARK_PURPLE)), Locale.US)
     );
+    assertEquals(
+      Component.entityNBT()
+        .nbtPath("ignored")
+        .selector("@p")
+        .separator(
+          Component.text()
+            .append(Component.text("Hello "))
+            .append(Component.text("you"))
+            .append(Component.text("!"))
+        )
+        .build(),
+      GlobalTranslator.render(Component.entityNBT("ignored", "@p").separator(Component.translatable("testDummy", Component.text("you"))), Locale.US)
+    );
   }
 
   @Test

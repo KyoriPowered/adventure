@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collector;
+import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jetbrains.annotations.NotNull;
 
@@ -48,8 +49,9 @@ final class TagResolverBuilderImpl implements TagResolver.Builder {
 
   @Override
   public TagResolver.@NotNull Builder tag(final @NotNull String name, final @NotNull Tag tag) {
+    TagInternals.assertValidTagName(requireNonNull(name, "name"));
     this.replacements.put(
-      requireNonNull(name, "name"),
+      name,
       requireNonNull(tag, "tag")
     );
     return this;

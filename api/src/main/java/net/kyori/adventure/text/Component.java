@@ -1989,6 +1989,26 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
+   * Sets the state of a decoration on this component to {@code state} if the current state of
+   * the decoration is {@link TextDecoration.State#NOT_SET}.
+   *
+   * @param decoration the decoration
+   * @param state the state
+   * @return a component
+   * @since 4.12.0
+   */
+  @Override
+  default @NotNull Component decorationIfAbsent(final @NotNull TextDecoration decoration, @NotNull final TextDecoration.State state) {
+    requireNonNull(state, "state");
+    // Not delegating this method prevents object creation if decoration is NOT absent
+    final TextDecoration.@NotNull State oldState = this.decoration(decoration);
+    if (oldState == TextDecoration.State.NOT_SET) {
+      return this.style(this.style().decoration(decoration, state));
+    }
+    return this;
+  }
+
+  /**
    * Gets a set of decorations this component has.
    *
    * @return a set of decorations this component has
@@ -2215,7 +2235,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.9.0
    */
   default @NotNull Spliterator<Component> spliterator(final @NotNull ComponentIteratorType type, final @NotNull Set<ComponentIteratorFlag> flags) {
-    return Spliterators.spliteratorUnknownSize(this.iterator(type, flags), Spliterator.IMMUTABLE & Spliterator.NONNULL & Spliterator.ORDERED);
+    return Spliterators.spliteratorUnknownSize(this.iterator(type, flags), Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.ORDERED);
   }
 
   /**

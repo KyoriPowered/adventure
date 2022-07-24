@@ -27,7 +27,7 @@ import com.google.gson.TypeAdapter;
 import net.kyori.adventure.text.event.ClickEvent;
 
 final class ClickEventActionSerializer {
-  static final TypeAdapter<ClickEvent.Action> INSTANCE = IndexedSerializer.of("click action", ClickEvent.Action.NAMES);
+  static final TypeAdapter<ClickEvent.Action> INSTANCE = IndexedSerializer.lenient("click action", ClickEvent.Action.NAMES);
 
   private ClickEventActionSerializer() {
   }
