@@ -216,7 +216,7 @@ public final class StandardTags {
   public static @NotNull TagResolver newline() {
     return NewlineTag.RESOLVER;
   }
-  
+
   /**
    * Get a resolver for the {@value SelectorTag#SELECTOR} tag.
    *
@@ -233,7 +233,7 @@ public final class StandardTags {
    * Get a resolver for the {@value ProgressTag#PROGRESS} tag.
    *
    * @return a resolver for the {@value ProgressTag#PROGRESS} tag
-   * @since 4.11.0
+   * @since 4.13.0
    */
   public static @NotNull TagResolver progress() {
     return ProgressTag.RESOLVER;
@@ -243,7 +243,7 @@ public final class StandardTags {
    * Get a resolver for the {@value RepeatTag#REPEAT} tag.
    *
    * @return a resolver for the {@value RepeatTag#REPEAT} tag
-   * @since 4.11.0
+   * @since 4.13.0
    */
   public static @NotNull TagResolver repeat() {
     return RepeatTag.RESOLVER;

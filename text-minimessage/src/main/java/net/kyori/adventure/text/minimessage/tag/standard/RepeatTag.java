@@ -37,7 +37,6 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
  * @since 4.11.0
  */
 final class RepeatTag {
-
   private static final String REPEAT = "repeat";
 
   static final TagResolver RESOLVER = TagResolver.resolver(REPEAT, RepeatTag::create);
@@ -62,5 +61,4 @@ final class RepeatTag {
 
   private RepeatTag() {
   }
-
 }

@@ -137,5 +137,4 @@ public final class Formatter {
   public static @NotNull TagResolver progress(final @NotNull String key, final @NotNull Supplier<Double> progressSupplier) {
     return TagResolver.resolver(key, (args, ctx) -> ProgressTag.createProgressProvided(args, ctx, progressSupplier));
   }
-
 }

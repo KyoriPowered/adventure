@@ -51,7 +51,6 @@ import org.jetbrains.annotations.Nullable;
  */
 @ApiStatus.Internal
 public final class ProgressTag implements Inserting, Examinable {
-
   private static final String PROGRESS = "progress";
   private static final int DEFAULT_LENGTH = 10;
   private static final NamedTextColor DEFAULT_FILLED_COLOR = NamedTextColor.GREEN;

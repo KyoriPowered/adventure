@@ -36,7 +36,6 @@ import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
 import static net.kyori.adventure.text.format.TextColor.color;
 
 public class ProgressTagTest extends AbstractTest {
-
   @Test
   void testConstantProgress() {
     final String input = "<progress:0.5:|:10:green:#696969>";
@@ -77,5 +76,4 @@ public class ProgressTagTest extends AbstractTest {
       .append(empty);
     assertParsedEquals(expected, input, Formatter.progress("why_am_i_doing_this", progressSupplier));
   }
-
 }

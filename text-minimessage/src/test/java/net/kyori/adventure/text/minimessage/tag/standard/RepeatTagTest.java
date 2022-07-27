@@ -39,7 +39,6 @@ import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.parsed;
 
 public class RepeatTagTest extends AbstractTest {
-
   @Test
   void testSimpleRepeat() {
     final String input = "<repeat:5:'Hello World!'>";
@@ -89,5 +88,4 @@ public class RepeatTagTest extends AbstractTest {
     );
     assertParsedEquals(expected, input, parsed("idk_what_to_name", "<bold>cool placeholder value"));
   }
-
 }
