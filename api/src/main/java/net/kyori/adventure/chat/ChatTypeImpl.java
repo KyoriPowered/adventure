@@ -25,7 +25,9 @@ package net.kyori.adventure.chat;
 
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 final class ChatTypeImpl implements ChatType {
   private final Key key;
@@ -42,5 +44,37 @@ final class ChatTypeImpl implements ChatType {
   @Override
   public String toString() {
     return Internals.toString(this);
+  }
+
+  static final class BoundImpl implements ChatType.Bound {
+    private final ChatType chatType;
+    private final Component sender;
+    private final @Nullable Component target;
+
+    BoundImpl(final ChatType chatType, final Component sender, final @Nullable Component target) {
+      this.chatType = chatType;
+      this.sender = sender;
+      this.target = target;
+    }
+
+    @Override
+    public @NotNull ChatType chatType() {
+      return this.chatType;
+    }
+
+    @Override
+    public @NotNull Component sender() {
+      return this.sender;
+    }
+
+    @Override
+    public @Nullable Component target() {
+      return this.target;
+    }
+
+    @Override
+    public String toString() {
+      return Internals.toString(this);
+    }
   }
 }

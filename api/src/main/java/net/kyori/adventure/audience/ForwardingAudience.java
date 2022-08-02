@@ -100,18 +100,18 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
-  default void sendMessage(final @NotNull Component message, final @NotNull ChatType chatType) {
-    for (final Audience audience : this.audiences()) audience.sendMessage(message, chatType);
+  default void sendMessage(final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentified source) {
+    for (final Audience audience : this.audiences()) audience.sendMessage(signedMessage, source);
   }
 
   @Override
-  default void sendMessage(final @NotNull Component message, final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentified source, final @NotNull ChatType chatType) {
-    for (final Audience audience : this.audiences()) audience.sendMessage(message, signedMessage, source, chatType);
+  default void sendMessage(final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentity source) {
+    for (final Audience audience : this.audiences()) audience.sendMessage(signedMessage, source);
   }
 
   @Override
-  default void sendMessage(final @NotNull Component message, final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentity source, final @NotNull ChatType chatType) {
-    for (final Audience audience : this.audiences()) audience.sendMessage(message, signedMessage, source, chatType);
+  default void sendMessage(final @NotNull SignedMessage signedMessage, final ChatType.Bound boundChatType) {
+    for (final Audience audience : this.audiences()) audience.sendMessage(signedMessage, boundChatType);
   }
 
   @Override
@@ -256,18 +256,18 @@ public interface ForwardingAudience extends Audience {
     }
 
     @Override
-    default void sendMessage(final @NotNull Component message, final @NotNull ChatType chatType) {
-      this.audience().sendMessage(message, chatType);
+    default void sendMessage(final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentified source) {
+      this.audience().sendMessage(signedMessage, source);
     }
 
     @Override
-    default void sendMessage(final @NotNull Component message, final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentified source, final @NotNull ChatType chatType) {
-      this.audience().sendMessage(message, signedMessage, source, chatType);
+    default void sendMessage(final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentity source) {
+      this.audience().sendMessage(signedMessage, source);
     }
 
     @Override
-    default void sendMessage(final @NotNull Component message, final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentity source, final @NotNull ChatType chatType) {
-      this.audience().sendMessage(message, signedMessage, source, chatType);
+    default void sendMessage(final @NotNull SignedMessage signedMessage, final ChatType.Bound boundChatType) {
+      this.audience().sendMessage(signedMessage, boundChatType);
     }
 
     @Override

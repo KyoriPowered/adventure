@@ -27,9 +27,12 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
+import net.kyori.adventure.text.Component;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A type of chat.
@@ -47,20 +50,20 @@ public interface ChatType extends Examinable, Keyed {
   ChatType CHAT = new ChatTypeImpl(Key.key("chat"));
 
   /**
-   * A chat message from the "system" or server.
+   * A message send as a result of using the {@code /say} command.
    *
    * @since 4.12.0
    * @sinceMinecraft 1.19
    */
-  ChatType SYSTEM = new ChatTypeImpl(Key.key("system"));
+  ChatType SAY_COMMAND = new ChatTypeImpl(Key.key("say_command"));
 
   /**
-   * A game information message, displaying in the action bar.
+   * A message received as a result of using the {@code /msg} command.
    *
    * @since 4.12.0
    * @sinceMinecraft 1.19
    */
-  ChatType GAME_INFO = new ChatTypeImpl(Key.key("game_info"));
+  ChatType MSG_COMMAND_INCOMING = new ChatTypeImpl(Key.key("msg_command_incoming"));
 
   /**
    * A message sent as a result of using the {@code /msg} command.
@@ -68,7 +71,15 @@ public interface ChatType extends Examinable, Keyed {
    * @since 4.12.0
    * @sinceMinecraft 1.19
    */
-  ChatType MSG_COMMAND = new ChatTypeImpl(Key.key("say_command"));
+  ChatType MSG_COMMAND_OUTGOING = new ChatTypeImpl(Key.key("msg_command_outgoing"));
+
+  /**
+   * A message received as a result of using the {@code /teammsg} command.
+   *
+   * @since 4.12.0
+   * @sinceMinecraft 1.19
+   */
+  ChatType TEAM_MSG_COMMAND_INCOMING = new ChatTypeImpl(Key.key("team_msg_command_incoming"));
 
   /**
    * A message sent as a result of using the {@code /teammsg} command.
@@ -76,7 +87,7 @@ public interface ChatType extends Examinable, Keyed {
    * @since 4.12.0
    * @sinceMinecraft 1.19
    */
-  ChatType TEAM_MSG_COMMAND = new ChatTypeImpl(Key.key("team_msg_command"));
+  ChatType TEAM_MSG_COMMAND_OUTGOING = new ChatTypeImpl(Key.key("team_msg_command_outgoing"));
 
   /**
    * A message sent as a result of using the {@code /me} command.
@@ -85,14 +96,6 @@ public interface ChatType extends Examinable, Keyed {
    * @sinceMinecraft 1.19
    */
   ChatType EMOTE_COMMAND = new ChatTypeImpl(Key.key("emote_command"));
-
-  /**
-   * A message sent as a result of using the {@code /tellraw} command.
-   *
-   * @since 4.12.0
-   * @sinceMinecraft 1.19
-   */
-  ChatType TELL_RAW_COMMAND = new ChatTypeImpl(Key.key("tellraw_command"));
 
   /**
    * Creates a new chat type with a given key.
@@ -105,8 +108,39 @@ public interface ChatType extends Examinable, Keyed {
     return new ChatTypeImpl(Objects.requireNonNull(key, "key"));
   }
 
+  default ChatType.Bound bind(@NotNull final Component sender) {
+    return this.bind(sender, null);
+  }
+
+  default ChatType.Bound bind(@NotNull final Component sender, final @Nullable Component target) {
+    return new ChatTypeImpl.BoundImpl(this, sender, target);
+  }
+
+
   @Override
   default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("key", this.key()));
+  }
+
+  interface Bound extends Examinable {
+
+    @Contract(pure = true)
+    @NotNull ChatType chatType();
+
+    @Contract(pure = true)
+    @NotNull Component sender();
+
+    @Contract(pure = true)
+    @Nullable Component target();
+
+    @Override
+    @NotNull
+    default Stream<? extends ExaminableProperty> examinableProperties() {
+      return Stream.of(
+        ExaminableProperty.of("chatType", this.chatType()),
+        ExaminableProperty.of("sender", this.sender()),
+        ExaminableProperty.of("target", this.target())
+      );
+    }
   }
 }

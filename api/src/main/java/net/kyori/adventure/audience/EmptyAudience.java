@@ -79,27 +79,15 @@ final class EmptyAudience implements Audience {
   }
 
   @Override
-  public void sendMessage(final @NotNull ComponentLike message, final @NotNull ChatType chatType) {
+  public void sendMessage(final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentified source) {
   }
 
   @Override
-  public void sendMessage(final @NotNull ComponentLike message, final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentified source) {
+  public void sendMessage(final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentity source) {
   }
 
   @Override
-  public void sendMessage(final @NotNull Component message, final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentified source) {
-  }
-
-  @Override
-  public void sendMessage(final @NotNull ComponentLike message, final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentity source) {
-  }
-
-  @Override
-  public void sendMessage(final @NotNull ComponentLike message, final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentified source, final @NotNull ChatType chatType) {
-  }
-
-  @Override
-  public void sendMessage(final @NotNull ComponentLike message, final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentity source, final @NotNull ChatType chatType) {
+  public void sendMessage(final @NotNull SignedMessage signedMessage, final ChatType.Bound boundChatType) {
   }
 
   @Override
