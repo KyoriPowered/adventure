@@ -56,33 +56,17 @@ public interface SignedMessage extends Identified, ComponentLike {
   }
 
   /**
-   * Creates an unsigned {@link SignedMessage} for an {@link Identity}.
+   * Creates a system {@link SignedMessage}.
    *
    * @param component the message component
    * @param plain the plain text message
-   * @param identity the identity for the signed message header
    * @return a new unsigned {@link SignedMessage}
    * @since 4.12.0
    * @sinceMinecraft 1.19
    */
-  @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull SignedMessage unsigned(final @NotNull Component component, final @NotNull String plain, final @NotNull Identity identity) {
-    return new UnsignedSignedMessageImpl(component, plain, identity);
-  }
-
-  /**
-   * Creates an unsigned {@link SignedMessage} for an {@link Identity}.
-   *
-   * @param component the message component
-   * @param plain the plain text message
-   * @param identified the identity for the signed message header
-   * @return a new unsigned {@link SignedMessage}
-   * @since 4.12.0
-   * @sinceMinecraft 1.19
-   */
-  @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull SignedMessage unsigned(final @NotNull Component component, final @NotNull String plain, final @NotNull Identified identified) {
-    return new UnsignedSignedMessageImpl(component, plain, identified.identity());
+  @Contract(value = "_, _ -> new", pure = true)
+  static @NotNull SignedMessage system(final @NotNull Component component, final @NotNull String plain) {
+    return new SignedMessageImpl(component, plain);
   }
 
   /**
@@ -140,6 +124,30 @@ public interface SignedMessage extends Identified, ComponentLike {
    */
   @Contract(pure = true)
   @NotNull String plain();
+
+  /**
+   * Checks if this message is a system message.
+   *
+   * @return true if system
+   * @since 4.12.0
+   * @sinceMinecraft 1.19
+   */
+  @Contract(pure = true)
+  default boolean isSystem() {
+    return this.identity() == Identity.nil();
+  }
+
+  /**
+   * Checks if this message can be deleted via {@link net.kyori.adventure.audience.Audience#deleteMessage(SignedMessage)}.
+   *
+   * @return true if supports deletion
+   * @since 4.12.0
+   * @sinceMinecraft 1.19
+   */
+  @Contract(pure = true)
+  default boolean canDelete() {
+    return this.signature() != null;
+  }
 
   /**
    * A signature wrapper type.

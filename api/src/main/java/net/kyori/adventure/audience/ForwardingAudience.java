@@ -120,6 +120,29 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
+  default boolean deleteMessage(final @NotNull SignedMessage signedMessage) {
+    boolean result = true;
+    for (final Audience audience : this.audiences()) {
+      result &= audience.deleteMessage(signedMessage);
+    }
+    return result;
+  }
+
+  @Override
+  default void deleteMessage(final SignedMessage.@NotNull Signature signature) {
+    for (final Audience audience : this.audiences()) audience.deleteMessage(signature);
+  }
+
+  @Override
+  default boolean sendMessageHeader(final @NotNull SignedMessage signedMessage) {
+    boolean result = true;
+    for (final Audience audience : this.audiences()) {
+      result &= audience.sendMessageHeader(signedMessage);
+    }
+    return result;
+  }
+
+  @Override
   default void sendMessage(@NotNull Identified source, @NotNull Component message, @NotNull MessageType type) {
     for (final Audience audience : this.audiences()) audience.sendMessage(source, message, type);
   }
@@ -278,6 +301,21 @@ public interface ForwardingAudience extends Audience {
     @Override
     default void sendMessage(final @NotNull SignedMessage signedMessage, final ChatType.Bound boundChatType) {
       this.audience().sendMessage(signedMessage, boundChatType);
+    }
+
+    @Override
+    default boolean deleteMessage(final @NotNull SignedMessage signedMessage) {
+      return this.audience().deleteMessage(signedMessage);
+    }
+
+    @Override
+    default void deleteMessage(final SignedMessage.@NotNull Signature signature) {
+      this.audience().deleteMessage(signature);
+    }
+
+    @Override
+    default boolean sendMessageHeader(final @NotNull SignedMessage signedMessage) {
+      return this.audience().sendMessageHeader(signedMessage);
     }
 
     @Override

@@ -91,6 +91,15 @@ final class EmptyAudience implements Audience {
   }
 
   @Override
+  public void deleteMessage(final SignedMessage.@NotNull Signature signature) {
+  }
+
+  @Override
+  public boolean sendMessageHeader(final @NotNull SignedMessage signedMessage) {
+    return false;
+  }
+
+  @Override
   public void sendMessage(final @NotNull Identified source, final @NotNull Component message, final @NotNull MessageType type) {
   }
 

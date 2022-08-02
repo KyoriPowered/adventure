@@ -29,21 +29,20 @@ import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
-final class UnsignedSignedMessageImpl implements SignedMessage {
+// Used for system messages
+final class SignedMessageImpl implements SignedMessage {
   static final SecureRandom RANDOM = new SecureRandom();
 
   private final Instant instant;
   private final long salt;
   private final Component message;
   private final String plain;
-  private final Identity identity;
 
-  UnsignedSignedMessageImpl(final Component message, final String plain, final Identity identity) {
+  SignedMessageImpl(final Component message, final String plain) {
     this.instant = Instant.now();
     this.salt = RANDOM.nextLong();
     this.message = message;
     this.plain = plain;
-    this.identity = identity;
   }
 
   @Override
@@ -73,6 +72,6 @@ final class UnsignedSignedMessageImpl implements SignedMessage {
 
   @Override
   public @NotNull Identity identity() {
-    return this.identity;
+    return Identity.nil();
   }
 }
