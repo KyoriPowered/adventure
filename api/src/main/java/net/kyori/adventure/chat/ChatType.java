@@ -108,28 +108,73 @@ public interface ChatType extends Examinable, Keyed {
     return new ChatTypeImpl(Objects.requireNonNull(key, "key"));
   }
 
-  default ChatType.Bound bind(@NotNull final Component sender) {
+  /**
+   * Creates a bound chat type with a sender {@link Component}.
+   *
+   * @param sender the sender component
+   * @return a new bound chat type
+   * @since 4.12.0
+   * @sinceMinecraft 1.19
+   */
+  @Contract(value = "_ -> new", pure = true)
+  default @NotNull ChatType.Bound bind(@NotNull final Component sender) {
     return this.bind(sender, null);
   }
 
-  default ChatType.Bound bind(@NotNull final Component sender, final @Nullable Component target) {
+  /**
+   * Creates a bound chat type with a sender and target {@link Component}.
+   *
+   * @param sender the sender component
+   * @param target the optional target component
+   * @return a new bound chat type
+   * @since 4.12.0
+   * @sinceMinecraft 1.19
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  default @NotNull ChatType.Bound bind(@NotNull final Component sender, final @Nullable Component target) {
     return new ChatTypeImpl.BoundImpl(this, sender, target);
   }
-
 
   @Override
   default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(ExaminableProperty.of("key", this.key()));
   }
 
+  /**
+   * A bound {@link ChatType}.
+   *
+   * @since 4.12.0
+   * @sinceMinecraft 1.19
+   */
   interface Bound extends Examinable {
 
+    /**
+     * Gets the chat type.
+     *
+     * @return the chat type
+     * @since 4.12.0
+     * @sinceMinecraft 1.19
+     */
     @Contract(pure = true)
     @NotNull ChatType type();
 
+    /**
+     * Get the sender component.
+     *
+     * @return the sender component
+     * @since 4.12.0
+     * @sinceMinecraft 1.19
+     */
     @Contract(pure = true)
     @NotNull Component sender();
 
+    /**
+     * Get the target component.
+     *
+     * @return the target component or null
+     * @since 4.12.0
+     * @sinceMinecraft 1.19
+     */
     @Contract(pure = true)
     @Nullable Component target();
 

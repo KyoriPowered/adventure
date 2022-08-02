@@ -24,9 +24,7 @@
 package net.kyori.adventure.audience;
 
 import net.kyori.adventure.chat.ChatType;
-import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Message types.

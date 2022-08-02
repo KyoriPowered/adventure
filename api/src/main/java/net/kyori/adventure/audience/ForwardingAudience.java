@@ -100,6 +100,11 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
+  default void sendMessage(final @NotNull Component message) {
+    for (final Audience audience : this.audiences()) audience.sendMessage(message);
+  }
+
+  @Override
   default void sendMessage(final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentified source) {
     for (final Audience audience : this.audiences()) audience.sendMessage(signedMessage, source);
   }
@@ -253,6 +258,11 @@ public interface ForwardingAudience extends Audience {
     @Override
     default @NotNull Pointers pointers() {
       return this.audience().pointers();
+    }
+
+    @Override
+    default void sendMessage(final @NotNull Component message) {
+      this.audience().sendMessage(message);
     }
 
     @Override
