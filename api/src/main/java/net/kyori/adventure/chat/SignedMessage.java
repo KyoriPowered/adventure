@@ -141,6 +141,12 @@ public interface SignedMessage extends Identified, ComponentLike {
   @Contract(pure = true)
   @NotNull String plain();
 
+  /**
+   * A signature wrapper type.
+   *
+   * @since 4.12.0
+   * @sinceMinecraft 1.19
+   */
   final class Signature {
 
     final byte[] signature;
