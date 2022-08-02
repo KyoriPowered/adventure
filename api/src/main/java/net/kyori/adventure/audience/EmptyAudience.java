@@ -95,8 +95,7 @@ final class EmptyAudience implements Audience {
   }
 
   @Override
-  public boolean sendMessageHeader(final @NotNull SignedMessage signedMessage) {
-    return false;
+  public void sendMessageHeader(final @NotNull SignedMessage signedMessage) {
   }
 
   @Override

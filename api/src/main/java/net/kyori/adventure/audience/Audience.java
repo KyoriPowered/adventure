@@ -414,18 +414,15 @@ public interface Audience extends Pointered {
    * Requests deletion of a message with the provided {@link SignedMessage}'s signature.
    *
    * @param signedMessage the message to delete
-   * @return true if the signedMessage supports being deleted
    * @see SignedMessage#canDelete()
    * @since 4.12.0
    * @sinceMinecraft 1.19
    */
   @ForwardingAudienceOverrideNotRequired
-  default boolean deleteMessage(final @NotNull SignedMessage signedMessage) {
+  default void deleteMessage(final @NotNull SignedMessage signedMessage) {
     if (signedMessage.canDelete()) {
       this.deleteMessage(Objects.requireNonNull(signedMessage.signature(), "signedMessage must have a signature"));
-      return true;
     }
-    return false;
   }
 
   /**
@@ -442,12 +439,11 @@ public interface Audience extends Pointered {
    * Sends the signed message's header to this audience.
    *
    * @param signedMessage the signed message
-   * @return true if successfully sent
+   * @see SignedMessage#canSendAsHeader()
    * @since 4.12.0
    * @sinceMinecraft 1.19
    */
-  default boolean sendMessageHeader(final @NotNull SignedMessage signedMessage) {
-    return false;
+  default void sendMessageHeader(final @NotNull SignedMessage signedMessage) {
   }
   /* End: signed player messages */
 

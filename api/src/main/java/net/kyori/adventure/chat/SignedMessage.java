@@ -150,6 +150,16 @@ public interface SignedMessage extends Identified, ComponentLike {
   }
 
   /**
+   * Checks if this message can be sent as a header via {@link net.kyori.adventure.audience.Audience#sendMessageHeader(SignedMessage)}.
+   *
+   * @return true if supports sending as a header
+   * @since 4.12.0
+   * @sinceMinecraft 1.19
+   */
+  @Contract(pure = true)
+  boolean canSendAsHeader();
+
+  /**
    * A signature wrapper type.
    *
    * @since 4.12.0

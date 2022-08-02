@@ -71,6 +71,11 @@ final class SignedMessageImpl implements SignedMessage {
   }
 
   @Override
+  public boolean canSendAsHeader() {
+    return false;
+  }
+
+  @Override
   public @NotNull Identity identity() {
     return Identity.nil();
   }
