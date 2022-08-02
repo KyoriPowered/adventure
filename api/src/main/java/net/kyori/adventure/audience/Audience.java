@@ -339,7 +339,7 @@ public interface Audience extends Pointered {
   }
 
   /**
-   * Sends a player chat message from the given {@link Identified} to this {@link Audience} with the {@link ChatType} corresponding to the provided {@link MessageType}.
+   * Sends an unsigned player chat message from the given {@link Identified} to this {@link Audience} with the {@link ChatType} corresponding to the provided {@link MessageType}.
    *
    * @param source the source of the message
    * @param message a message
@@ -389,7 +389,7 @@ public interface Audience extends Pointered {
   }
 
   /**
-   * Sends a signed player chat message from player identified by the provided {@link PlayerIdentity} to this {@link Audience} with the {@link ChatType#CHAT chat} chat type.
+   * Sends a signed player chat message from the player identified by the provided {@link PlayerIdentity} to this {@link Audience} with the {@link ChatType#CHAT chat} chat type.
    *
    * @param signedMessage the signed message data
    * @param source the identity of the source of the message
@@ -401,7 +401,7 @@ public interface Audience extends Pointered {
   }
 
   /**
-   * Sends a signed player chat message from the given {@link PlayerIdentified} to this {@link Audience} with the provided {@link ChatType} chat type.
+   * Sends a signed player chat message to this {@link Audience} with the provided {@link ChatType.Bound} bound chat type.
    *
    * @param signedMessage the signed message data
    * @param boundChatType the bound chat type
