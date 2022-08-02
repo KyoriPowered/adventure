@@ -125,7 +125,7 @@ public interface ChatType extends Examinable, Keyed {
   interface Bound extends Examinable {
 
     @Contract(pure = true)
-    @NotNull ChatType chatType();
+    @NotNull ChatType type();
 
     @Contract(pure = true)
     @NotNull Component sender();
@@ -137,7 +137,7 @@ public interface ChatType extends Examinable, Keyed {
     @NotNull
     default Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
-        ExaminableProperty.of("chatType", this.chatType()),
+        ExaminableProperty.of("type", this.type()),
         ExaminableProperty.of("sender", this.sender()),
         ExaminableProperty.of("target", this.target())
       );

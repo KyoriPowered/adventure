@@ -58,7 +58,7 @@ final class ChatTypeImpl implements ChatType {
     }
 
     @Override
-    public @NotNull ChatType chatType() {
+    public @NotNull ChatType type() {
       return this.chatType;
     }
 

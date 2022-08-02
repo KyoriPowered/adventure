@@ -179,6 +179,7 @@ public interface Audience extends Pointered {
     action.accept(this);
   }
 
+  /* Start: system messages */
   /**
    * Sends a system chat message to this {@link Audience}.
    *
@@ -194,36 +195,6 @@ public interface Audience extends Pointered {
   }
 
   /**
-   * Sends a player chat message from the given {@link Identified} to this {@link Audience} with the {@link ChatType#CHAT system} chat type.
-   *
-   * @param source the source of the message
-   * @param message a message
-   * @see Component
-   * @since 4.0.0
-   * @deprecated since 4.12.0, the client errors on and can reject identified messages without {@link SignedMessage} data, this may be unsupported in the future, use {@link #sendMessage(SignedMessage, ChatType.Bound)} instead
-   */
-  @Deprecated
-  @ForwardingAudienceOverrideNotRequired
-  default void sendMessage(final @NotNull Identified source, final @NotNull ComponentLike message) {
-    this.sendMessage(source, message.asComponent());
-  }
-
-  /**
-   * Sends a player chat message from the entity represented by the given {@link Identity} to this {@link Audience} with the {@link ChatType#CHAT system} chat type.
-   *
-   * @param source the identity of the source of the message
-   * @param message a message
-   * @see Component
-   * @since 4.0.0
-   * @deprecated since 4.12.0, the client errors on and can reject identified messages without {@link SignedMessage} data, this may be unsupported in the future, use {@link #sendMessage(SignedMessage, ChatType.Bound)} instead
-   */
-  @Deprecated
-  @ForwardingAudienceOverrideNotRequired
-  default void sendMessage(final @NotNull Identity source, final @NotNull ComponentLike message) {
-    this.sendMessage(source, message.asComponent());
-  }
-
-  /**
    * Sends a system chat message to this {@link Audience}.
    *
    * @param message a message
@@ -233,36 +204,6 @@ public interface Audience extends Pointered {
    * @since 4.1.0
    */
   default void sendMessage(final @NotNull Component message) {
-  }
-
-  /**
-   * Sends a player chat message from the given {@link Identified} to this {@link Audience} with the {@link ChatType#CHAT system} chat type.
-   *
-   * @param source the source of the message
-   * @param message a message
-   * @see Component
-   * @since 4.0.0
-   * @deprecated since 4.12.0, the client errors on receiving and can reject identified messages without {@link SignedMessage} data, this may be unsupported in the future, use {@link #sendMessage(SignedMessage, PlayerIdentified)} instead
-   */
-  @Deprecated
-  @ForwardingAudienceOverrideNotRequired
-  default void sendMessage(final @NotNull Identified source, final @NotNull Component message) {
-    this.sendMessage(source, message, MessageType.CHAT);
-  }
-
-  /**
-   * Sends a player chat message from the entity represented by the given {@link Identity} to this {@link Audience} with the {@link ChatType#CHAT system} chat type.
-   *
-   * @param source the identity of the source of the message
-   * @param message a message
-   * @see Component
-   * @since 4.0.0
-   * @deprecated since 4.12.0, the client errors on receiving and can reject identified messages without {@link SignedMessage} data, this may be unsupported in the future, use {@link #sendMessage(SignedMessage, PlayerIdentity)} instead
-   */
-  @Deprecated
-  @ForwardingAudienceOverrideNotRequired
-  default void sendMessage(final @NotNull Identity source, final @NotNull Component message) {
-    this.sendMessage(source, message, MessageType.CHAT);
   }
 
   /**
@@ -284,40 +225,6 @@ public interface Audience extends Pointered {
   }
 
   /**
-   * Sends a player chat message from the given {@link Identified} to this {@link Audience} with the {@link ChatType} corresponding to the provided {@link MessageType}.
-   *
-   * @param source the source of the message
-   * @param message a message
-   * @param type the type
-   * @see Component
-   * @since 4.0.0
-   * @deprecated for removal since 4.12.0, {@link MessageType} is deprecated for removal and the client errors on receiving and can reject identified messages without {@link SignedMessage} data, use {@link #sendMessage(SignedMessage, ChatType.Bound)} instead
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Deprecated
-  @ForwardingAudienceOverrideNotRequired
-  default void sendMessage(final @NotNull Identified source, final @NotNull ComponentLike message, final @NotNull MessageType type) {
-    this.sendMessage(source, message.asComponent(), type);
-  }
-
-  /**
-   * Sends a player chat message from the entity represented by the given {@link Identity} to this {@link Audience}.
-   *
-   * @param source the identity of the source of the message
-   * @param message a message
-   * @param type the type
-   * @see Component
-   * @since 4.0.0
-   * @deprecated for removal since 4.12.0, {@link MessageType} is deprecated for removal and the client errors on receiving and can reject identified messages without {@link SignedMessage} data, use {@link #sendMessage(SignedMessage, ChatType.Bound)} instead
-   */
-  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-  @Deprecated
-  @ForwardingAudienceOverrideNotRequired
-  default void sendMessage(final @NotNull Identity source, final @NotNull ComponentLike message, final @NotNull MessageType type) {
-    this.sendMessage(source, message.asComponent(), type);
-  }
-
-  /**
    * Sends a system chat message to this {@link Audience} ignoring the provided {@link MessageType}.
    *
    * @param message a message
@@ -334,6 +241,102 @@ public interface Audience extends Pointered {
   default void sendMessage(final @NotNull Component message, final @NotNull MessageType type) {
     this.sendMessage(message);
   }
+  /* End: system messages */
+
+  /* Start: unsigned player messages */
+  /**
+   * Sends an unsigned player chat message from the given {@link Identified} to this {@link Audience} with the {@link ChatType#CHAT system} chat type.
+   *
+   * @param source the source of the message
+   * @param message a message
+   * @see Component
+   * @since 4.0.0
+   * @deprecated since 4.12.0, the client errors on and can reject identified messages without {@link SignedMessage} data, this may be unsupported in the future, use {@link #sendMessage(SignedMessage, ChatType.Bound)} instead
+   */
+  @Deprecated
+  @ForwardingAudienceOverrideNotRequired
+  default void sendMessage(final @NotNull Identified source, final @NotNull ComponentLike message) {
+    this.sendMessage(source, message.asComponent());
+  }
+
+  /**
+   * Sends an unsigned player chat message from the entity represented by the given {@link Identity} to this {@link Audience} with the {@link ChatType#CHAT system} chat type.
+   *
+   * @param source the identity of the source of the message
+   * @param message a message
+   * @see Component
+   * @since 4.0.0
+   * @deprecated since 4.12.0, the client errors on and can reject identified messages without {@link SignedMessage} data, this may be unsupported in the future, use {@link #sendMessage(SignedMessage, ChatType.Bound)} instead
+   */
+  @Deprecated
+  @ForwardingAudienceOverrideNotRequired
+  default void sendMessage(final @NotNull Identity source, final @NotNull ComponentLike message) {
+    this.sendMessage(source, message.asComponent());
+  }
+
+  /**
+   * Sends an unsigned player chat message from the given {@link Identified} to this {@link Audience} with the {@link ChatType#CHAT system} chat type.
+   *
+   * @param source the source of the message
+   * @param message a message
+   * @see Component
+   * @since 4.0.0
+   * @deprecated since 4.12.0, the client errors on receiving and can reject identified messages without {@link SignedMessage} data, this may be unsupported in the future, use {@link #sendMessage(SignedMessage, PlayerIdentified)} instead
+   */
+  @Deprecated
+  @ForwardingAudienceOverrideNotRequired
+  default void sendMessage(final @NotNull Identified source, final @NotNull Component message) {
+    this.sendMessage(source, message, MessageType.CHAT);
+  }
+
+  /**
+   * Sends an unsigned player chat message from the entity represented by the given {@link Identity} to this {@link Audience} with the {@link ChatType#CHAT system} chat type.
+   *
+   * @param source the identity of the source of the message
+   * @param message a message
+   * @see Component
+   * @since 4.0.0
+   * @deprecated since 4.12.0, the client errors on receiving and can reject identified messages without {@link SignedMessage} data, this may be unsupported in the future, use {@link #sendMessage(SignedMessage, PlayerIdentity)} instead
+   */
+  @Deprecated
+  @ForwardingAudienceOverrideNotRequired
+  default void sendMessage(final @NotNull Identity source, final @NotNull Component message) {
+    this.sendMessage(source, message, MessageType.CHAT);
+  }
+
+  /**
+   * Sends an unsigned player chat message from the given {@link Identified} to this {@link Audience} with the {@link ChatType} corresponding to the provided {@link MessageType}.
+   *
+   * @param source the source of the message
+   * @param message a message
+   * @param type the type
+   * @see Component
+   * @since 4.0.0
+   * @deprecated for removal since 4.12.0, {@link MessageType} is deprecated for removal and the client errors on receiving and can reject identified messages without {@link SignedMessage} data, use {@link #sendMessage(SignedMessage, ChatType.Bound)} instead
+   */
+  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
+  @Deprecated
+  @ForwardingAudienceOverrideNotRequired
+  default void sendMessage(final @NotNull Identified source, final @NotNull ComponentLike message, final @NotNull MessageType type) {
+    this.sendMessage(source, message.asComponent(), type);
+  }
+
+  /**
+   * Sends an unsigned player chat message from the entity represented by the given {@link Identity} to this {@link Audience}.
+   *
+   * @param source the identity of the source of the message
+   * @param message a message
+   * @param type the type
+   * @see Component
+   * @since 4.0.0
+   * @deprecated for removal since 4.12.0, {@link MessageType} is deprecated for removal and the client errors on receiving and can reject identified messages without {@link SignedMessage} data, use {@link #sendMessage(SignedMessage, ChatType.Bound)} instead
+   */
+  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
+  @Deprecated
+  @ForwardingAudienceOverrideNotRequired
+  default void sendMessage(final @NotNull Identity source, final @NotNull ComponentLike message, final @NotNull MessageType type) {
+    this.sendMessage(source, message.asComponent(), type);
+  }
 
   /**
    * Sends a player chat message from the given {@link Identified} to this {@link Audience} with the {@link ChatType} corresponding to the provided {@link MessageType}.
@@ -348,6 +351,9 @@ public interface Audience extends Pointered {
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Deprecated
   default void sendMessage(final @NotNull Identified source, final @NotNull Component message, final @NotNull MessageType type) {
+    if (source.identity() == Identity.nil()) {
+      this.sendMessage(message);
+    }
   }
 
   /**
@@ -363,8 +369,13 @@ public interface Audience extends Pointered {
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Deprecated
   default void sendMessage(final @NotNull Identity source, final @NotNull Component message, final @NotNull MessageType type) {
+    if (source == Identity.nil()) {
+      this.sendMessage(message);
+    }
   }
+  /* End: unsigned player messages */
 
+  /* Start: signed player messages */
   /**
    * Sends a signed player chat message from the given {@link PlayerIdentified} to this {@link Audience} with the {@link ChatType#CHAT chat} chat type.
    *
@@ -398,6 +409,7 @@ public interface Audience extends Pointered {
    */
   default void sendMessage(final @NotNull SignedMessage signedMessage, final ChatType.Bound boundChatType) {
   }
+  /* End: signed player messages */
 
   /**
    * Sends a message on the action bar.
