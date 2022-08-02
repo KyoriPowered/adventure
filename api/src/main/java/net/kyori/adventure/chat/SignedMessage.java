@@ -24,10 +24,14 @@
 package net.kyori.adventure.chat;
 
 import java.time.Instant;
-import net.kyori.adventure.identity.PlayerIdentified;
+import net.kyori.adventure.identity.Identified;
+import net.kyori.adventure.identity.Identity;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A signed chat message.
@@ -36,7 +40,51 @@ import org.jetbrains.annotations.NotNull;
  * @sinceMinecraft 1.19
  */
 @ApiStatus.NonExtendable
-public interface SignedMessage extends PlayerIdentified {
+public interface SignedMessage extends Identified, ComponentLike {
+
+  /**
+   * Creates a signature wrapper.
+   *
+   * @param signature the signature
+   * @return a new signature
+   * @since 4.12.0
+   * @sinceMinecraft 1.19
+   */
+  @Contract(value = "_ -> new", pure = true)
+  static @NotNull Signature signature(final byte[] signature) {
+    return new Signature(signature);
+  }
+
+  /**
+   * Creates an unsigned {@link SignedMessage} for an {@link Identity}.
+   *
+   * @param component the message component
+   * @param plain the plain text message
+   * @param identity the identity for the signed message header
+   * @return a new unsigned {@link SignedMessage}
+   * @since 4.12.0
+   * @sinceMinecraft 1.19
+   */
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static @NotNull SignedMessage unsigned(final @NotNull Component component, final @NotNull String plain, final @NotNull Identity identity) {
+    return new UnsignedSignedMessageImpl(component, plain, identity);
+  }
+
+  /**
+   * Creates an unsigned {@link SignedMessage} for an {@link Identity}.
+   *
+   * @param component the message component
+   * @param plain the plain text message
+   * @param identified the identity for the signed message header
+   * @return a new unsigned {@link SignedMessage}
+   * @since 4.12.0
+   * @sinceMinecraft 1.19
+   */
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static @NotNull SignedMessage unsigned(final @NotNull Component component, final @NotNull String plain, final @NotNull Identified identified) {
+    return new UnsignedSignedMessageImpl(component, plain, identified.identity());
+  }
+
   /**
    * The time that the message was sent.
    *
@@ -65,5 +113,52 @@ public interface SignedMessage extends PlayerIdentified {
    * @sinceMinecraft 1.19
    */
   @Contract(pure = true)
-  byte[] signature();
+  @Nullable Signature signature();
+
+  /**
+   * The signed component.
+   *
+   * @return the component
+   * @since 4.12.0
+   * @sinceMinecraft 1.19
+   */
+  @Contract(pure = true)
+  @NotNull Component message();
+
+  @Override
+  @NotNull
+  default Component asComponent() {
+    return this.message();
+  }
+
+  /**
+   * The plain string message.
+   *
+   * @return the plain string message
+   * @since 4.12.0
+   * @sinceMinecraft 1.19
+   */
+  @Contract(pure = true)
+  @NotNull String plain();
+
+  final class Signature {
+
+    final byte[] signature;
+
+    private Signature(final byte[] signature) {
+      this.signature = signature;
+    }
+
+    /**
+     * Gets the bytes for this signature.
+     *
+     * @return the bytes
+     * @since 4.12.0
+     * @sinceMinecraft 1.19
+     */
+    @Contract(pure = true)
+    public byte[] bytes() {
+      return this.signature;
+    }
+  }
 }
