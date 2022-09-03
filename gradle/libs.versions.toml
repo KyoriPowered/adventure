@@ -66,4 +66,4 @@ zJmh = { module = "org.openjdk.jmh:jmh-core", version.ref = "jmh" }
 [plugins]
 indra-sonatype = { id = "net.kyori.indra.publishing.sonatype", version.ref = "indra" }
 jmh = { id = "me.champeau.jmh", version.ref = "jmhPlugin" }
-kotlin = "org.jetbrains.kotlin.jvm:1.6.21"
+kotlin = "org.jetbrains.kotlin.jvm:1.7.10"
