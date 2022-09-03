@@ -79,6 +79,7 @@ tasks {
       disable("InvalidBlockTag") // we use custom block tags
       disable("InlineMeSuggester") // we don't use errorprone annotations
       disable("ReferenceEquality") // lots of comparison against EMPTY objects
+      disable("CanIgnoreReturnValueSuggester") // suggests errorprone annotation, not JB Contract annotation
     }
   }
 }
