@@ -192,7 +192,7 @@ public interface TagResolver {
    * @return the caching tag resolver
    * @since 4.10.0
    */
-  static @NotNull TagResolver caching(final @NotNull TagResolver.WithoutArguments resolver) {
+  static @NotNull TagResolver caching(final TagResolver.@NotNull WithoutArguments resolver) {
     if (resolver instanceof CachingTagResolver) {
       return resolver;
     } else {
@@ -387,7 +387,7 @@ public interface TagResolver {
      * @return this builder
      * @since 4.10.0
      */
-    default @NotNull Builder caching(final @NotNull TagResolver.WithoutArguments dynamic) {
+    default @NotNull Builder caching(final TagResolver.@NotNull WithoutArguments dynamic) {
       return this.resolver(TagResolver.caching(dynamic));
     }
 

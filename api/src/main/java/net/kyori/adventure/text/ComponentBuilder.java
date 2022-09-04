@@ -319,7 +319,7 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    */
   @Contract("_, _ -> this")
   @Override
-  @NotNull B decorationIfAbsent(final @NotNull TextDecoration decoration, @NotNull final TextDecoration.State state);
+  @NotNull B decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
 
   /**
    * Sets the click event of this component.

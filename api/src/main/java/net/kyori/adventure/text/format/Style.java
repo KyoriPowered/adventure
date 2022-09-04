@@ -351,7 +351,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
    * @since 4.12.0
    */
   @Override
-  @NotNull Style decorationIfAbsent(final @NotNull TextDecoration decoration, @NotNull final TextDecoration.State state);
+  @NotNull Style decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
 
   /**
    * Gets a map of decorations this style has.
@@ -783,7 +783,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
      */
     @Override
     @Contract("_, _ -> this")
-    @NotNull Builder decorationIfAbsent(final @NotNull TextDecoration decoration, @NotNull final TextDecoration.State state);
+    @NotNull Builder decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
 
     /**
      * Sets the click event.

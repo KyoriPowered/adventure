@@ -113,7 +113,7 @@ final class StyleImpl implements Style {
   }
 
   @Override
-  public @NotNull Style decorationIfAbsent(final @NotNull TextDecoration decoration, final @NotNull TextDecoration.State state) {
+  public @NotNull Style decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
     requireNonNull(state, "state");
     final TextDecoration.@Nullable State oldState = this.decorations.get(decoration);
     if (oldState == TextDecoration.State.NOT_SET) {

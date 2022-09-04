@@ -95,6 +95,7 @@ public interface ComponentIteratorType {
 
     deque.addAll(component.children());
   };
+
   /**
    * Populates a deque with the children of the provided component, based on the iterator type and flags.
    *

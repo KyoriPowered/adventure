@@ -66,7 +66,7 @@ class StringIOTest {
   void testBigTestRoundtrip() throws IOException {
     // Read and write
     final CompoundBinaryTag bigTest;
-    try(final InputStream is = this.getClass().getResourceAsStream("/bigtest.nbt")) {
+    try (final InputStream is = this.getClass().getResourceAsStream("/bigtest.nbt")) {
       bigTest = BinaryTagIO.reader().read(is, BinaryTagIO.Compression.GZIP);
       final String written = TagStringIO.get().asString(bigTest);
       assertEquals(bigTest, TagStringIO.get().asCompound(written));
@@ -74,7 +74,7 @@ class StringIOTest {
 
     // Read snbt equivalent
     final String result;
-    try(final InputStream is = this.getClass().getResourceAsStream("/bigtest.snbt"); final BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+    try (final InputStream is = this.getClass().getResourceAsStream("/bigtest.snbt"); final BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
       final StringBuilder build = new StringBuilder();
       final char[] buffer = new char[2048];
       int read;
@@ -91,7 +91,7 @@ class StringIOTest {
   @Test
   void testBigTestPrettyPrinting() throws IOException {
     final CompoundBinaryTag bigTest;
-    try(final InputStream is = this.getClass().getResourceAsStream("/bigtest.nbt")) {
+    try (final InputStream is = this.getClass().getResourceAsStream("/bigtest.nbt")) {
       bigTest = BinaryTagIO.reader().read(is, BinaryTagIO.Compression.GZIP);
     }
 
@@ -228,7 +228,7 @@ class StringIOTest {
     final BinaryTag tag = this.stringToTag(legacyInput);
     assertEquals("[\"Tag #1\",\"Tag #2\"]", this.tagToString(tag));
     final StringWriter output = new StringWriter();
-    try(final TagStringWriter writer = new TagStringWriter(output, "").legacy(true)) {
+    try (final TagStringWriter writer = new TagStringWriter(output, "").legacy(true)) {
       writer.writeTag(tag);
     }
     assertEquals(legacyInput, output.toString());
@@ -302,7 +302,7 @@ class StringIOTest {
 
   private String tagToString(final BinaryTag tag) throws IOException {
     final StringWriter writer = new StringWriter();
-    try(final TagStringWriter emitter = new TagStringWriter(writer, "")) {
+    try (final TagStringWriter emitter = new TagStringWriter(writer, "")) {
       emitter.writeTag(tag);
     }
     return writer.toString();

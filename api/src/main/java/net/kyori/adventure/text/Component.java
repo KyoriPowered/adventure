@@ -1998,7 +1998,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.12.0
    */
   @Override
-  default @NotNull Component decorationIfAbsent(final @NotNull TextDecoration decoration, @NotNull final TextDecoration.State state) {
+  default @NotNull Component decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
     requireNonNull(state, "state");
     // Not delegating this method prevents object creation if decoration is NOT absent
     final TextDecoration.@NotNull State oldState = this.decoration(decoration);

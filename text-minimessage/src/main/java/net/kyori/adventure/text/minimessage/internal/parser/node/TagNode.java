@@ -55,7 +55,7 @@ public final class TagNode extends ElementNode {
       final @NotNull ElementNode parent,
       final @NotNull Token token,
       final @NotNull String sourceMessage,
-      final @NotNull TokenParser.TagProvider tagProvider
+      final TokenParser.@NotNull TagProvider tagProvider
   ) {
     super(parent, token, sourceMessage);
     this.parts = genParts(token, sourceMessage, tagProvider);
@@ -69,7 +69,7 @@ public final class TagNode extends ElementNode {
   private static @NotNull List<TagPart> genParts(
     final @NotNull Token token,
     final @NotNull String sourceMessage,
-    final @NotNull TokenParser.TagProvider tagProvider
+    final TokenParser.@NotNull TagProvider tagProvider
   ) {
     final ArrayList<TagPart> parts = new ArrayList<>();
 

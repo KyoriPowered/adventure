@@ -74,7 +74,7 @@ public final class UTF8ResourceBundleControl extends ResourceBundle.Control {
       }
 
       if (is != null) {
-        try(final InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8)) {
+        try (final InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8)) {
           return new PropertyResourceBundle(isr);
         }
       } else {

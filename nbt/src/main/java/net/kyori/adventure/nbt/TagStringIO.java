@@ -102,7 +102,7 @@ public final class TagStringIO {
    */
   public String asString(final CompoundBinaryTag input) throws IOException {
     final StringBuilder sb = new StringBuilder();
-    try(final TagStringWriter emit = new TagStringWriter(sb, this.indent)) {
+    try (final TagStringWriter emit = new TagStringWriter(sb, this.indent)) {
       emit.legacy(this.emitLegacy);
       emit.writeTag(input);
     }
@@ -120,7 +120,7 @@ public final class TagStringIO {
    * @since 4.0.0
    */
   public void toWriter(final CompoundBinaryTag input, final Writer dest) throws IOException {
-    try(final TagStringWriter emit = new TagStringWriter(dest, this.indent)) {
+    try (final TagStringWriter emit = new TagStringWriter(dest, this.indent)) {
       emit.legacy(this.emitLegacy);
       emit.writeTag(input);
     }
@@ -184,7 +184,7 @@ public final class TagStringIO {
      *
      * <p>The legacy format was used in versions of Minecraft prior to 1.13</p>
      *
-     * <p>Be aware that because the legacy int array and modern list are ambiguous with each other, 
+     * <p>Be aware that because the legacy int array and modern list are ambiguous with each other,
      * the deserializer will always return legacy-format integer arrays as a list tag.</p>
      *
      * @param legacy whether to accept legacy formatting

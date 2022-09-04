@@ -2,7 +2,7 @@
 version = "1.0"
 
 [versions]
-checkstyle = "9.3"
+checkstyle = "10.3.3"
 errorprone = "2.15.0"
 examination = "1.3.0"
 guava = "31.1-jre"
@@ -49,7 +49,7 @@ truth-java8 = { module = "com.google.truth.extensions:truth-java8-extension", ve
 # https://github.com/zml2008/contract-validator
 contractValidator = "ca.stellardrift:contract-validator:1.0.1"
 errorprone = { module = "com.google.errorprone:error_prone_core", version.ref = "errorprone" }
-stylecheck = "ca.stellardrift:stylecheck:0.1"
+stylecheck = "ca.stellardrift:stylecheck:0.2.0"
 
 build-errorpronePlugin = "net.ltgt.gradle:gradle-errorprone-plugin:2.0.2"
 build-indra = { module = "net.kyori:indra-common", version.ref = "indra" }
