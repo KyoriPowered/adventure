@@ -280,6 +280,16 @@ public class MiniMessageParserTest extends AbstractTest {
     this.assertParsedEquals(expected3, input3);
   }
 
+  @Test
+  void testNonTerminatingQuote() {
+    final Component expected = empty().append(text("Remember the<3\"").color(RED)).append(text(" bug"));
+    final Component expected1 = empty().append(text("Remember the<3'").color(RED)).append(text(" bug"));
+    final String input = "<red>Remember the<3\"</red> bug";
+    final String input1 = "<red>Remember the<3'</red> bug";
+    this.assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected1, input1);
+  }
+
   // GH-68, GH-93
   @Test
   void testAngleBracketsShit() {
