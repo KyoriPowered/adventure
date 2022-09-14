@@ -284,10 +284,20 @@ public class MiniMessageParserTest extends AbstractTest {
   void testNonTerminatingQuote() {
     final Component expected = empty().append(text("Remember the<3\"").color(RED)).append(text(" bug"));
     final Component expected1 = empty().append(text("Remember the<3'").color(RED)).append(text(" bug"));
+    final Component expected2 = empty().append(text("Remember the<h:\"").color(RED)).append(text(" bug"));
+    final Component expected3 = empty().append(text("Remember the<h:\"").color(RED)).append(text(" \"bug"));
+    // This one is an actually valid use of quotes
+    final Component expected4 = empty().append(text("Remember the<h:\"</red> \">bug").color(RED));
     final String input = "<red>Remember the<3\"</red> bug";
     final String input1 = "<red>Remember the<3'</red> bug";
+    final String input2 = "<red>Remember the<h:\"</red> bug";
+    final String input3 = "<red>Remember the<h:\"</red> \"bug";
+    final String input4 = "<red>Remember the<h:\"</red> \">bug";
     this.assertParsedEquals(expected, input);
     this.assertParsedEquals(expected1, input1);
+    this.assertParsedEquals(expected2, input2);
+    this.assertParsedEquals(expected3, input3);
+    this.assertParsedEquals(expected4, input4);
   }
 
   // GH-68, GH-93
