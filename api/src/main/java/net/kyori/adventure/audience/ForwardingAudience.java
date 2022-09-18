@@ -23,10 +23,7 @@
  */
 package net.kyori.adventure.audience;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -40,11 +37,7 @@ import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.TitlePart;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
+import org.jetbrains.annotations.*;
 
 /**
  * A receiver that wraps one or more receivers.
@@ -148,6 +141,21 @@ public interface ForwardingAudience extends Audience {
   @Override
   default void hideBossBar(final @NotNull BossBar bar) {
     for (final Audience audience : this.audiences()) audience.hideBossBar(bar);
+  }
+
+  @Override
+  default boolean hasBossBar(final @NotNull BossBar bar) {
+    for (final Audience audience : this.audiences()) {
+      if (audience.hasBossBar(bar)) return true;
+    }
+    return false;
+  }
+
+  @Override
+  default @NotNull @UnmodifiableView Set<BossBar> getBossBars() {
+    Set<BossBar> ret = new HashSet<>();
+    for (final Audience audience : this.audiences()) ret.addAll(audience.getBossBars());
+    return Collections.unmodifiableSet(ret);
   }
 
   @Override
@@ -289,6 +297,16 @@ public interface ForwardingAudience extends Audience {
     @Override
     default void hideBossBar(final @NotNull BossBar bar) {
       this.audience().hideBossBar(bar);
+    }
+
+    @Override
+    default boolean hasBossBar(final @NotNull BossBar bar) {
+      return this.audience().hasBossBar(bar);
+    }
+
+    @Override
+    default @NotNull @UnmodifiableView Set<BossBar> getBossBars() {
+      return this.audience().getBossBars();
     }
 
     @Override

@@ -24,7 +24,9 @@
 package net.kyori.adventure.audience;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
@@ -40,6 +42,7 @@ import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.TitlePart;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnmodifiableView;
 
 /**
  * A receiver of Minecraft media.
@@ -499,6 +502,25 @@ public interface Audience extends Pointered {
    * @since 4.0.0
    */
   default void hideBossBar(final @NotNull BossBar bar) {
+  }
+
+  /**
+   * Check if this audience has been shown this BossBar
+   * @param bar BossBar
+   * @return boolean
+   * @since 4.12.0
+   */
+  default boolean hasBossBar(final @NotNull BossBar bar) {
+    return false;
+  }
+
+  /**
+   * Returns a set containing all BossBars this Audience has been shown
+   * @return An unmodifiable set of BossBars
+   * @since 4.12.0
+   */
+  default @NotNull @UnmodifiableView Set<BossBar> getBossBars() {
+    return Collections.emptySet();
   }
 
   /**
