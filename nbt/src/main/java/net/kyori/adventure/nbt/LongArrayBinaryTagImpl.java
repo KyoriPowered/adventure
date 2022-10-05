@@ -47,7 +47,7 @@ final class LongArrayBinaryTagImpl extends ArrayBinaryTagImpl implements LongArr
   public long@NotNull[] value() {
     return Arrays.copyOf(this.value, this.value.length);
   }
-  
+
   @Override
   public int size() {
     return this.value.length;

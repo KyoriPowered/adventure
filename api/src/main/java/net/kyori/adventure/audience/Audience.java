@@ -446,7 +446,7 @@ public interface Audience extends Pointered {
   default void showTitle(final @NotNull Title title) {
     final Title.Times times = title.times();
     if (times != null) this.sendTitlePart(TitlePart.TIMES, times);
-    
+
     this.sendTitlePart(TitlePart.SUBTITLE, title.subtitle());
     this.sendTitlePart(TitlePart.TITLE, title.title());
   }
