@@ -6,7 +6,7 @@ checkstyle = "10.3.4"
 errorprone = "2.15.0"
 examination = "1.3.0"
 guava = "31.1-jre"
-indra = "2.1.1"
+indra = "3.0.0"
 jmh = "1.35"
 jmhPlugin = "0.6.8"
 junit = "5.9.1"
@@ -53,8 +53,9 @@ stylecheck = "ca.stellardrift:stylecheck:0.2.0"
 
 build-errorpronePlugin = "net.ltgt.gradle:gradle-errorprone-plugin:2.0.2"
 build-indra = { module = "net.kyori:indra-common", version.ref = "indra" }
-build-indra-sonatype = { module = "net.kyori:indra-publishing-sonatype", version.ref = "indra" }
 build-indra-crossdoc = { module = "net.kyori:indra-crossdoc", version.ref = "indra" }
+build-indra-sonatype = { module = "net.kyori:indra-publishing-sonatype", version.ref = "indra" }
+build-indra-spotless = { module = "net.kyori:indra-licenser-spotless", version.ref = "indra" }
 build-goomph = "com.diffplug.gradle:goomph:3.39.0"
 build-jmh = { module = "me.champeau.jmh:jmh-gradle-plugin", version.ref = "jmhPlugin" }
 build-testLogger = "com.adarshr:gradle-test-logger-plugin:3.2.0"
