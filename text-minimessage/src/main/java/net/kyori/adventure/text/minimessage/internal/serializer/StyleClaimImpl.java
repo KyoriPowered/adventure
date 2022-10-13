@@ -45,7 +45,7 @@ class StyleClaimImpl<V> implements StyleClaim<V> {
   }
 
   @Override
-  public String claimKey() {
+  public @NotNull String claimKey() {
     return this.claimKey;
   }
 

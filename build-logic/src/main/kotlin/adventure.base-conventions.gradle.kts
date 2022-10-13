@@ -2,11 +2,17 @@ plugins {
   id("net.kyori.indra.publishing")
 }
 
+// expose version catalog
+val libs = extensions.getByType(org.gradle.accessors.dm.LibrariesForLibs::class)
+
 indra {
   javaVersions {
-    testWith(8, 11, 17)
+    val testVersions = (project.property("testJdks") as String)
+      .split(",")
+      .map { it.trim().toInt() }
+    testWith().addAll(testVersions)
   }
-  checkstyle("9.3")
+  checkstyle(libs.versions.checkstyle.get())
 
   github("KyoriPowered", "adventure") {
     ci(true)

@@ -309,6 +309,19 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
   @NotNull B decoration(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
 
   /**
+   * Sets the state of a decoration on this component to {@code state} if the current state of
+   * the decoration is {@link TextDecoration.State#NOT_SET}.
+   *
+   * @param decoration the decoration
+   * @param state the state
+   * @return this builder
+   * @since 4.12.0
+   */
+  @Contract("_, _ -> this")
+  @Override
+  @NotNull B decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
+
+  /**
    * Sets the click event of this component.
    *
    * @param event the click event

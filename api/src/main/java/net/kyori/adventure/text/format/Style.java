@@ -109,8 +109,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
    * @since 4.0.0
    */
   static @NotNull Style style(final @Nullable TextColor color) {
-    if (color == null) return empty();
-    return new StyleImpl(null, color, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null);
+    return empty().color(color);
   }
 
   /**
@@ -341,6 +340,18 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
    */
   @Override
   @NotNull Style decoration(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
+
+  /**
+   * Sets the state of a decoration on this style to {@code state} if the current state of
+   * the decoration is {@link TextDecoration.State#NOT_SET}.
+   *
+   * @param decoration the decoration
+   * @param state the state
+   * @return a style
+   * @since 4.12.0
+   */
+  @Override
+  @NotNull Style decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
 
   /**
    * Gets a map of decorations this style has.
@@ -761,6 +772,18 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
     @Override
     @Contract("_, _ -> this")
     @NotNull Builder decoration(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
+
+    /**
+     * Sets the state of a decoration on this style to {@code state} if the current state of the decoration is {@link TextDecoration.State#NOT_SET}.
+     *
+     * @param decoration the decoration
+     * @param state the state
+     * @return this builder
+     * @since 4.12.0
+     */
+    @Override
+    @Contract("_, _ -> this")
+    @NotNull Builder decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
 
     /**
      * Sets the click event.

@@ -41,14 +41,14 @@ final class SelectorComponentImpl extends AbstractComponent implements SelectorC
       ComponentLike.asComponents(children, IS_NOT_EMPTY),
       requireNonNull(style, "style"),
       requireNonNull(pattern, "pattern"),
-      separator
+      ComponentLike.unbox(separator)
     );
   }
 
-  SelectorComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final @NotNull String pattern, final @Nullable ComponentLike separator) {
+  SelectorComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final @NotNull String pattern, final @Nullable Component separator) {
     super(children, style);
     this.pattern = pattern;
-    this.separator = ComponentLike.unbox(separator);
+    this.separator = separator;
   }
 
   @Override

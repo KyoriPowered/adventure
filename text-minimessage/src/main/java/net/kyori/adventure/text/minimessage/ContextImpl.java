@@ -52,6 +52,7 @@ class ContextImpl implements Context {
   private String message;
   private final MiniMessage miniMessage;
   private final TagResolver tagResolver;
+  private final UnaryOperator<String> preProcessor;
   private final UnaryOperator<Component> postProcessor;
 
   ContextImpl(
@@ -60,6 +61,7 @@ class ContextImpl implements Context {
     final String message,
     final MiniMessage miniMessage,
     final @NotNull TagResolver extraTags,
+    final UnaryOperator<String> preProcessor,
     final UnaryOperator<Component> postProcessor
   ) {
     this.strict = strict;
@@ -67,6 +69,7 @@ class ContextImpl implements Context {
     this.message = message;
     this.miniMessage = miniMessage;
     this.tagResolver = extraTags;
+    this.preProcessor = preProcessor == null ? UnaryOperator.identity() : preProcessor;
     this.postProcessor = postProcessor == null ? UnaryOperator.identity() : postProcessor;
   }
 
@@ -76,9 +79,10 @@ class ContextImpl implements Context {
     final String input,
     final MiniMessageImpl miniMessage,
     final TagResolver extraTags,
+    final UnaryOperator<String> preProcessor,
     final UnaryOperator<Component> postProcessor
   ) {
-    return new ContextImpl(strict, debugOutput, input, miniMessage, extraTags, postProcessor);
+    return new ContextImpl(strict, debugOutput, input, miniMessage, extraTags, preProcessor, postProcessor);
   }
 
   public boolean strict() {
@@ -105,6 +109,10 @@ class ContextImpl implements Context {
     return this.postProcessor;
   }
 
+  public UnaryOperator<String> preProcessor() {
+    return this.preProcessor;
+  }
+
   @Override
   public @NotNull Component deserialize(final @NotNull String message) {
     return this.miniMessage.deserialize(requireNonNull(message, "message"), this.tagResolver);
@@ -123,18 +131,18 @@ class ContextImpl implements Context {
   }
 
   @Override
-  public @NotNull ParsingException newException(@NotNull final String message) {
-    return new ParsingExceptionImpl(message, this.message, null, EMPTY_TOKEN_ARRAY);
+  public @NotNull ParsingException newException(final @NotNull String message) {
+    return new ParsingExceptionImpl(message, this.message, null, false, EMPTY_TOKEN_ARRAY);
   }
 
   @Override
   public @NotNull ParsingException newException(final @NotNull String message, final @NotNull ArgumentQueue tags) {
-    return new ParsingExceptionImpl(message, this.message, tagsToTokens(((ArgumentQueueImpl<?>) tags).args));
+    return new ParsingExceptionImpl(message, this.message, null, false, tagsToTokens(((ArgumentQueueImpl<?>) tags).args));
   }
 
   @Override
   public @NotNull ParsingException newException(final @NotNull String message, final @Nullable Throwable cause, final @NotNull ArgumentQueue tags) {
-    return new ParsingExceptionImpl(message, this.message, cause, tagsToTokens(((ArgumentQueueImpl<?>) tags).args));
+    return new ParsingExceptionImpl(message, this.message, cause, false, tagsToTokens(((ArgumentQueueImpl<?>) tags).args));
   }
 
   private static Token[] tagsToTokens(final List<? extends Tag.Argument> tags) {

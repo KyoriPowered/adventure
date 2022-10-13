@@ -273,6 +273,16 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
     @NotNull Builder postProcessor(final @NotNull UnaryOperator<Component> postProcessor);
 
     /**
+     * Specify a function that takes the string at the start of the parser process.
+     * <p>By default, this does absolutely nothing.</p>
+     *
+     * @param preProcessor method run at the start of parsing
+     * @return this builder
+     * @since 4.11.0
+     */
+    @NotNull Builder preProcessor(final @NotNull UnaryOperator<String> preProcessor);
+
+    /**
      * Builds the serializer.
      *
      * @return the built serializer

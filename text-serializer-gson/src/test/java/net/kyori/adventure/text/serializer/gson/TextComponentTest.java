@@ -31,8 +31,6 @@ import org.junit.jupiter.api.Test;
 import static net.kyori.adventure.text.serializer.gson.StyleTest.name;
 
 class TextComponentTest extends ComponentTest {
-  private static final String KEY = "multiplayer.player.left";
-
   @Test
   void testSimple() {
     this.test(Component.text("Hello, world."), object(json -> json.addProperty(ComponentSerializerImpl.TEXT, "Hello, world.")));

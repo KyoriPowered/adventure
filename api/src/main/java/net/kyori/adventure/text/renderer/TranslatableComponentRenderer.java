@@ -87,29 +87,34 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
 
   @Override
   protected @NotNull Component renderBlockNbt(final @NotNull BlockNBTComponent component, final @NotNull C context) {
-    final BlockNBTComponent.Builder builder = nbt(Component.blockNBT(), component)
+    final BlockNBTComponent.Builder builder = this.nbt(context, Component.blockNBT(), component)
       .pos(component.pos());
     return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
   @Override
   protected @NotNull Component renderEntityNbt(final @NotNull EntityNBTComponent component, final @NotNull C context) {
-    final EntityNBTComponent.Builder builder = nbt(Component.entityNBT(), component)
+    final EntityNBTComponent.Builder builder = this.nbt(context, Component.entityNBT(), component)
       .selector(component.selector());
     return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
   @Override
   protected @NotNull Component renderStorageNbt(final @NotNull StorageNBTComponent component, final @NotNull C context) {
-    final StorageNBTComponent.Builder builder = nbt(Component.storageNBT(), component)
+    final StorageNBTComponent.Builder builder = this.nbt(context, Component.storageNBT(), component)
       .storage(component.storage());
     return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
-  protected static <C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> B nbt(final B builder, final C oldComponent) {
-    return builder
+  protected <O extends NBTComponent<O, B>, B extends NBTComponentBuilder<O, B>> B nbt(final @NotNull C context, final B builder, final O oldComponent) {
+    builder
       .nbtPath(oldComponent.nbtPath())
       .interpret(oldComponent.interpret());
+    final @Nullable Component separator = oldComponent.separator();
+    if (separator != null) {
+      builder.separator(this.render(separator, context));
+    }
+    return builder;
   }
 
   @Override
@@ -141,6 +146,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   }
 
   @Override
+  @SuppressWarnings("JdkObsolete") // MessageFormat requires StringBuffer in its api
   protected @NotNull Component renderTranslatable(final @NotNull TranslatableComponent component, final @NotNull C context) {
     final @Nullable MessageFormat format = this.translate(component.key(), context);
     if (format == null) {

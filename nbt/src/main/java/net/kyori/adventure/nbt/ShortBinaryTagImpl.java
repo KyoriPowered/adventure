@@ -21,47 +21,72 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.format;
+package net.kyori.adventure.nbt;
 
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
+import java.util.stream.Stream;
+import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-final class AlwaysMerger implements Merger {
-  static final AlwaysMerger INSTANCE = new AlwaysMerger();
+@Debug.Renderer(text = "String.valueOf(this.value) + \"s\"", hasChildren = "false")
+final class ShortBinaryTagImpl extends AbstractBinaryTag implements ShortBinaryTag {
+  private final short value;
 
-  private AlwaysMerger() {
+  ShortBinaryTagImpl(final short value) {
+    this.value = value;
   }
 
   @Override
-  public void mergeColor(final StyleImpl.BuilderImpl target, final @Nullable TextColor color) {
-    target.color(color);
+  public short value() {
+    return this.value;
   }
 
   @Override
-  public void mergeDecoration(final StyleImpl.BuilderImpl target, final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state) {
-    target.decoration(decoration, state);
+  public byte byteValue() {
+    return (byte) (this.value & 0xff);
   }
 
   @Override
-  public void mergeClickEvent(final StyleImpl.BuilderImpl target, final @Nullable ClickEvent event) {
-    target.clickEvent(event);
+  public double doubleValue() {
+    return this.value;
   }
 
   @Override
-  public void mergeHoverEvent(final StyleImpl.BuilderImpl target, final @Nullable HoverEvent<?> event) {
-    target.hoverEvent(event);
+  public float floatValue() {
+    return this.value;
   }
 
   @Override
-  public void mergeInsertion(final StyleImpl.BuilderImpl target, final @Nullable String insertion) {
-    target.insertion(insertion);
+  public int intValue() {
+    return this.value;
   }
 
   @Override
-  public void mergeFont(final StyleImpl.BuilderImpl target, final @Nullable Key font) {
-    target.font(font);
+  public long longValue() {
+    return this.value;
+  }
+
+  @Override
+  public short shortValue() {
+    return this.value;
+  }
+
+  @Override
+  public boolean equals(final @Nullable Object other) {
+    if (this == other) return true;
+    if (other == null || this.getClass() != other.getClass()) return false;
+    final ShortBinaryTagImpl that = (ShortBinaryTagImpl) other;
+    return this.value == that.value;
+  }
+
+  @Override
+  public int hashCode() {
+    return Short.hashCode(this.value);
+  }
+
+  @Override
+  public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(ExaminableProperty.of("value", this.value));
   }
 }

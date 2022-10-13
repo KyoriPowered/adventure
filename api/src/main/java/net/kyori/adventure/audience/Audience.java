@@ -446,7 +446,7 @@ public interface Audience extends Pointered {
   default void showTitle(final @NotNull Title title) {
     final Title.Times times = title.times();
     if (times != null) this.sendTitlePart(TitlePart.TIMES, times);
-    
+
     this.sendTitlePart(TitlePart.SUBTITLE, title.subtitle());
     this.sendTitlePart(TitlePart.TITLE, title.title());
   }
@@ -527,17 +527,6 @@ public interface Audience extends Pointered {
   }
 
   /**
-   * Stops a sound.
-   *
-   * @param sound the sound
-   * @since 4.8.0
-   */
-  @ForwardingAudienceOverrideNotRequired
-  default void stopSound(final @NotNull Sound sound) {
-    this.stopSound(Objects.requireNonNull(sound, "sound").asStop());
-  }
-
-  /**
    * Plays a sound from an emitter, usually an entity.
    *
    * <p>
@@ -554,6 +543,17 @@ public interface Audience extends Pointered {
    * @since 4.8.0
    */
   default void playSound(final @NotNull Sound sound, final Sound.@NotNull Emitter emitter) {
+  }
+
+  /**
+   * Stops a sound.
+   *
+   * @param sound the sound
+   * @since 4.8.0
+   */
+  @ForwardingAudienceOverrideNotRequired
+  default void stopSound(final @NotNull Sound sound) {
+    this.stopSound(Objects.requireNonNull(sound, "sound").asStop());
   }
 
   /**

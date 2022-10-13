@@ -72,7 +72,7 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
   public abstract void write(final @NotNull T tag, final @NotNull DataOutput output) throws IOException;
 
   @SuppressWarnings("unchecked") // HACK: generics suck
-  static <T extends BinaryTag> void write(final BinaryTagType<? extends BinaryTag> type, final T tag, final DataOutput output) throws IOException {
+  static <T extends BinaryTag> void writeUntyped(final BinaryTagType<? extends BinaryTag> type, final T tag, final DataOutput output) throws IOException {
     ((BinaryTagType<T>) type).write(tag, output);
   }
 

@@ -8,6 +8,9 @@
   <suppress files="src[\\/](test|jmh)[\\/]java[\\/].*" checks="(FilteringWriteTag|JavadocPackage|MissingJavadoc.*)"/>
   <suppress files="api[\\/]src[\\/]main[\\/]java[\\/]net[\\/]kyori[\\/]adventure[\\/]internal[\\/].*" checks="(FilteringWriteTag|JavadocPackage|MissingJavadoc.*)"/>
   <suppress files="minimessage[\\/]src[\\/]main[\\/]java[\\/]net[\\/]kyori[\\/]adventure[\\/]text[\\/]minimessage[\\/]parser[\\/].*" checks="(FilteringWriteTag|JavadocPackage|MissingJavadoc.*)"/>
+  
+  <!-- no package JD on multirelease variants -->
+  <suppress files="src[\\/]main[\\/]java\d+[\\/].*" checks="JavadocPackage"/>
 
   <suppress files=".*[\\/]nbt[\\/](List|Compound)BinaryTag.java" checks="MethodName"/>
 </suppressions>

@@ -3,9 +3,9 @@ plugins {
 }
 
 dependencies {
-  api("net.kyori:examination-api:1.3.0")
-  api("net.kyori:examination-string:1.3.0")
-  compileOnlyApi("org.jetbrains:annotations:23.0.0")
+  api(libs.examination.api)
+  api(libs.examination.string)
+  compileOnlyApi(libs.jetbrainsAnnotations)
 }
 
 applyJarMetadata("net.kyori.adventure.nbt")

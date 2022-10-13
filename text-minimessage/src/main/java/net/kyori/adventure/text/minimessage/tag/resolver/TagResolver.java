@@ -92,7 +92,7 @@ public interface TagResolver {
    * @since 4.10.0
    */
   static TagResolver.@NotNull Single resolver(final @NotNull String name, final @NotNull Tag tag) {
-    TagInternals.checkTagName(name);
+    TagInternals.assertValidTagName(name);
     return new SingleResolver(
       name,
       requireNonNull(tag, "tag")
@@ -122,7 +122,7 @@ public interface TagResolver {
   static @NotNull TagResolver resolver(final @NotNull Set<String> names, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler) {
     final Set<String> ownNames = new HashSet<>(names);
     for (final String name : ownNames) {
-      TagInternals.checkTagName(name);
+      TagInternals.assertValidTagName(name);
     }
     requireNonNull(handler, "handler");
 
@@ -192,7 +192,7 @@ public interface TagResolver {
    * @return the caching tag resolver
    * @since 4.10.0
    */
-  static @NotNull TagResolver caching(final @NotNull TagResolver.WithoutArguments resolver) {
+  static @NotNull TagResolver caching(final TagResolver.@NotNull WithoutArguments resolver) {
     if (resolver instanceof CachingTagResolver) {
       return resolver;
     } else {
@@ -387,7 +387,7 @@ public interface TagResolver {
      * @return this builder
      * @since 4.10.0
      */
-    default @NotNull Builder caching(final @NotNull TagResolver.WithoutArguments dynamic) {
+    default @NotNull Builder caching(final TagResolver.@NotNull WithoutArguments dynamic) {
       return this.resolver(TagResolver.caching(dynamic));
     }
 

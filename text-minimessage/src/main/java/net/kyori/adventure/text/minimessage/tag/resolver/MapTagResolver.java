@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.minimessage.tag.resolver;
 
 import java.util.Map;
+import java.util.Objects;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,5 +45,22 @@ final class MapTagResolver implements TagResolver.WithoutArguments, MappableReso
   public boolean contributeToMap(final @NotNull Map<String, Tag> map) {
     map.putAll(this.tagMap);
     return true;
+  }
+
+  @Override
+  public boolean equals(final @Nullable Object other) {
+    if (this == other) {
+      return true;
+    }
+    if (!(other instanceof MapTagResolver)) {
+      return false;
+    }
+    final MapTagResolver that = (MapTagResolver) other;
+    return Objects.equals(this.tagMap, that.tagMap);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.tagMap);
   }
 }

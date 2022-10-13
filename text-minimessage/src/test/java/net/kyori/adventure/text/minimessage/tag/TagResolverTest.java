@@ -128,6 +128,12 @@ class TagResolverTest {
     assertThrows(IllegalArgumentException.class, () -> TagResolver.resolver("#test#", Tag.preProcessParsed("something")));
   }
 
+  // https://github.com/KyoriPowered/adventure/issues/763
+  @Test
+  void testBuilderValidatesTagName() {
+    assertThrows(IllegalArgumentException.class, () -> TagResolver.builder().tag("INVALID#NAME", Tag.preProcessParsed("something")));
+  }
+
   @Test
   void testValidTagName() {
     assertDoesNotThrow(() -> TagResolver.resolver("valid_-name0909", Tag.preProcessParsed("something")));
@@ -136,6 +142,27 @@ class TagResolverTest {
     assertDoesNotThrow(() -> TagResolver.resolver("#valid", Tag.preProcessParsed("something")));
     assertDoesNotThrow(() -> TagResolver.resolver("valid99", Tag.preProcessParsed("something")));
     assertDoesNotThrow(() -> TagResolver.resolver("v_9_v", Tag.preProcessParsed("something")));
+  }
+
+  @Test
+  void testTagResolverEquality() {
+    final TagResolver first = TagResolver.resolver(
+        Placeholder.unparsed("single", "replace"),
+        TagResolver.standard(),
+        TagResolver.empty(),
+        TagResolver.resolver("tag", Tag.selfClosingInserting(Component.empty()))
+    );
+    final TagResolver second = TagResolver.resolver(
+        Placeholder.unparsed("single", "replace"),
+        TagResolver.standard(),
+        TagResolver.empty(),
+        TagResolver.resolver("tag", Tag.selfClosingInserting(Component.empty()))
+    );
+
+    AbstractTest.dummyContext("equality test")
+      .deserialize("<test>", first, second);
+
+    assertEquals(first, second);
   }
 
   private static @NotNull Tag resolveForTest(final TagResolver resolver, final String tag) {

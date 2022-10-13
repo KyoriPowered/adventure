@@ -21,25 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.format;
+package net.kyori.adventure.text.logger.slf4j;
 
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.StyleImpl.BuilderImpl;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+// Java 9+ version, see Java 8 version as well
+final class CallerClassFinder {
+  private CallerClassFinder() {
+  }
 
-interface Merger {
-  void mergeColor(final BuilderImpl target, final @Nullable TextColor color);
+  static String callingClassName() {
+    return callingClassName(2); // this, plus the calling method
+  }
 
-  void mergeDecoration(final BuilderImpl target, final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
-
-  void mergeClickEvent(final BuilderImpl target, final @Nullable ClickEvent event);
-
-  void mergeHoverEvent(final BuilderImpl target, final @Nullable HoverEvent<?> event);
-
-  void mergeInsertion(final BuilderImpl target, final @Nullable String insertion);
-
-  void mergeFont(final BuilderImpl target, final @Nullable Key font);
+  static String callingClassName(final int elementsToSkip) { // elementsToSkip not counting this method
+    return StackWalker.getInstance().walk(stream -> stream.map(StackWalker.StackFrame::getClassName)
+      .skip(elementsToSkip + 1)
+      .findFirst())
+    .orElseThrow(() -> new IllegalArgumentException("Not enough stack elements to skip " + elementsToSkip + " elements"));
+  }
 }

@@ -40,9 +40,8 @@ import org.jetbrains.annotations.NotNull;
 
 import static java.util.Objects.requireNonNull;
 
+@SuppressWarnings("deprecation")
 final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
-  private static final BiConsumer<BossBarImpl, Set<Flag>> FLAGS_ADDED = (bar, flagsAdded) -> bar.forEachListener(listener -> listener.bossBarFlagsChanged(bar, flagsAdded, Collections.emptySet()));
-  private static final BiConsumer<BossBarImpl, Set<Flag>> FLAGS_REMOVED = (bar, flagsRemoved) -> bar.forEachListener(listener -> listener.bossBarFlagsChanged(bar, Collections.emptySet(), flagsRemoved));
   private final List<Listener> listeners = new CopyOnWriteArrayList<>();
   private Component name;
   private float progress;
@@ -163,12 +162,12 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
 
   @Override
   public @NotNull BossBar addFlag(final @NotNull Flag flag) {
-    return this.editFlags(flag, Set::add, FLAGS_ADDED);
+    return this.editFlags(flag, Set::add, BossBarImpl::onFlagsAdded);
   }
 
   @Override
   public @NotNull BossBar removeFlag(final @NotNull Flag flag) {
-    return this.editFlags(flag, Set::remove, FLAGS_REMOVED);
+    return this.editFlags(flag, Set::remove, BossBarImpl::onFlagsRemoved);
   }
 
   private @NotNull BossBar editFlags(final @NotNull Flag flag, final @NotNull BiPredicate<Set<Flag>, Flag> predicate, final BiConsumer<BossBarImpl, Set<Flag>> onChange) {
@@ -180,12 +179,12 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
 
   @Override
   public @NotNull BossBar addFlags(final @NotNull Flag@NotNull... flags) {
-    return this.editFlags(flags, Set::add, FLAGS_ADDED);
+    return this.editFlags(flags, Set::add, BossBarImpl::onFlagsAdded);
   }
 
   @Override
   public @NotNull BossBar removeFlags(final @NotNull Flag@NotNull... flags) {
-    return this.editFlags(flags, Set::remove, FLAGS_REMOVED);
+    return this.editFlags(flags, Set::remove, BossBarImpl::onFlagsRemoved);
   }
 
   private @NotNull BossBar editFlags(final Flag[] flags, final BiPredicate<Set<Flag>, Flag> predicate, final BiConsumer<BossBarImpl, Set<Flag>> onChange) {
@@ -207,12 +206,12 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
 
   @Override
   public @NotNull BossBar addFlags(final @NotNull Iterable<Flag> flags) {
-    return this.editFlags(flags, Set::add, FLAGS_ADDED);
+    return this.editFlags(flags, Set::add, BossBarImpl::onFlagsAdded);
   }
 
   @Override
   public @NotNull BossBar removeFlags(final @NotNull Iterable<Flag> flags) {
-    return this.editFlags(flags, Set::remove, FLAGS_REMOVED);
+    return this.editFlags(flags, Set::remove, BossBarImpl::onFlagsRemoved);
   }
 
   private @NotNull BossBar editFlags(final Iterable<Flag> flags, final BiPredicate<Set<Flag>, Flag> predicate, final BiConsumer<BossBarImpl, Set<Flag>> onChange) {
@@ -247,6 +246,14 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
     for (final Listener listener : this.listeners) {
       consumer.accept(listener);
     }
+  }
+
+  private static void onFlagsAdded(final BossBarImpl bar, final Set<Flag> flagsAdded) {
+    bar.forEachListener(listener -> listener.bossBarFlagsChanged(bar, flagsAdded, Collections.emptySet()));
+  }
+
+  private static void onFlagsRemoved(final BossBarImpl bar, final Set<Flag> flagsRemoved) {
+    bar.forEachListener(listener -> listener.bossBarFlagsChanged(bar, Collections.emptySet(), flagsRemoved));
   }
 
   @Override

@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.minimessage;
 
 import java.util.Collections;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
@@ -68,7 +69,7 @@ public abstract class AbstractTest {
   }
 
   public static Context dummyContext(final String originalMessage) {
-    return ContextImpl.of(false, null, originalMessage, (MiniMessageImpl) PARSER, TagResolver.empty(), Component::compact);
+    return ContextImpl.of(false, null, originalMessage, (MiniMessageImpl) PARSER, TagResolver.empty(), UnaryOperator.identity(), Component::compact);
   }
 
   public static ArgumentQueue emptyArgumentQueue(final Context context) {

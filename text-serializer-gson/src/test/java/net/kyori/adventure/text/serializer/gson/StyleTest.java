@@ -80,7 +80,7 @@ class StyleTest extends GsonTest<Style> {
 
   @Test
   void testHexColor() {
-    this.test(Style.style(TextColor.color(0x0a1ab9)), object(json -> json.addProperty(StyleSerializer.COLOR, "#0a1ab9")));
+    this.test(Style.style(TextColor.color(0x0a1ab9)), object(json -> json.addProperty(StyleSerializer.COLOR, "#0A1AB9")));
   }
 
   @Test
@@ -159,7 +159,7 @@ class StyleTest extends GsonTest<Style> {
             contents.addProperty(ShowEntitySerializer.ID, dolores.toString());
             contents.add(ShowEntitySerializer.NAME, object(name -> {
               name.addProperty(ComponentSerializerImpl.TEXT, "Dolores");
-              name.addProperty(StyleSerializer.COLOR, "#0a1ab9");
+              name.addProperty(StyleSerializer.COLOR, "#0A1AB9");
             }));
           }));
         }));

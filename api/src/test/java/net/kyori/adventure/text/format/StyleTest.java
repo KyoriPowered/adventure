@@ -155,6 +155,23 @@ class StyleTest {
   }
 
   @Test
+  void testDecorationIfAbsent() {
+    final Style s0 = Style.style(TextDecoration.BOLD)
+      .decorationIfAbsent(TextDecoration.BOLD, TextDecoration.State.FALSE)
+      .decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+    assertDecorations(s0, ImmutableSet.of(TextDecoration.BOLD), ImmutableSet.of(TextDecoration.ITALIC));
+  }
+
+  @Test
+  void testDecorationIfAbsentWithBuilder() {
+    final Style s0 = Style.style().decoration(TextDecoration.BOLD, TextDecoration.State.TRUE)
+      .decorationIfAbsent(TextDecoration.BOLD, TextDecoration.State.FALSE)
+      .decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+      .build();
+    assertDecorations(s0, ImmutableSet.of(TextDecoration.BOLD), ImmutableSet.of(TextDecoration.ITALIC));
+  }
+
+  @Test
   void testOf_colorAndDecorations() {
     final Style s0 = Style.style(NamedTextColor.GREEN, TextDecoration.BOLD, TextDecoration.ITALIC);
     assertEquals(NamedTextColor.GREEN, s0.color());

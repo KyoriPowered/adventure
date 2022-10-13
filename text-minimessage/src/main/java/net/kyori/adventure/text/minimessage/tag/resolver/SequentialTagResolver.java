@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.tag.resolver;
 
+import java.util.Arrays;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
@@ -82,11 +83,28 @@ final class SequentialTagResolver implements TagResolver, SerializableResolver {
   }
 
   @Override
-  public void handle(@NotNull final Component serializable, @NotNull final ClaimConsumer consumer) {
+  public void handle(final @NotNull Component serializable, final @NotNull ClaimConsumer consumer) {
     for (final TagResolver resolver : this.resolvers) {
       if (resolver instanceof SerializableResolver) {
         ((SerializableResolver) resolver).handle(serializable, consumer);
       }
     }
+  }
+
+  @Override
+  public boolean equals(final @Nullable Object other) {
+    if (other == this) {
+      return true;
+    }
+    if (!(other instanceof SequentialTagResolver)) {
+      return false;
+    }
+    final SequentialTagResolver that = (SequentialTagResolver) other;
+    return Arrays.equals(this.resolvers, that.resolvers);
+  }
+
+  @Override
+  public int hashCode() {
+    return Arrays.hashCode(this.resolvers);
   }
 }
