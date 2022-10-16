@@ -23,8 +23,11 @@
  */
 package net.kyori.adventure.pointer;
 
+import java.util.Optional;
 import java.util.function.Supplier;
+import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.key.Key;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -64,5 +67,27 @@ final class PointersTest {
     assertTrue(p2.supports(pointer));
     assertEquals("test", p2.getOrDefault(pointer, null));
     assertEquals("tset", p2.getOrDefault(pointer, null)); // make sure the value does change
+  }
+
+  @Test
+  public void forwardPointer() {
+    final Pointer<String> pointer = Pointer.pointer(String.class, Key.key("adventure:test"));
+    final Pointers pointers = Pointers.builder()
+      .withForwardTo(pointer, new PointeredTestIdentity(), Identity.NAME)
+      .build();
+
+    final Optional<String> result = pointers.get(pointer);
+    assertTrue(result.isPresent());
+    assertEquals("test-name", result.get());
+  }
+
+  static class PointeredTestIdentity implements Pointered {
+
+    @Override
+    public @NotNull Pointers pointers() {
+      return Pointers.builder()
+        .withStatic(Identity.NAME, "test-name")
+        .build();
+    }
   }
 }
