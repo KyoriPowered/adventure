@@ -23,10 +23,15 @@
  */
 package net.kyori.adventure.pointer;
 
+import java.util.Set;
 import java.util.function.Supplier;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import org.junit.jupiter.api.Test;
 
+import static com.google.common.collect.testing.Helpers.assertContains;
+import static net.kyori.adventure.text.Component.empty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -64,5 +69,30 @@ final class PointersTest {
     assertTrue(p2.supports(pointer));
     assertEquals("test", p2.getOrDefault(pointer, null));
     assertEquals("tset", p2.getOrDefault(pointer, null)); // make sure the value does change
+  }
+
+  @Test
+  void pointers_filteredByPointerType() {
+    final Pointer<String> stringPointer = Pointer.pointer(String.class, Key.key("adventure:test"));
+    final Pointer<Component> componentPointer = Pointer.pointer(Component.class, Key.key("adventure:component-test"));
+    final Pointers pointers = Pointers.builder()
+      .withStatic(stringPointer, "test")
+      .withStatic(componentPointer, empty())
+      .build();
+    final Set<Pointer<String>> pointerSet = pointers.pointers(String.class);
+    assertEquals(1, pointerSet.size());
+    assertContains(pointerSet, stringPointer);
+  }
+
+  @Test
+  void pointers_filteredByAbstractType() {
+
+    final Pointer<Component> componentPointer = Pointer.pointer(Component.class, Key.key("adventure:test"));
+    final Pointers pointers = Pointers.builder()
+      .withStatic(componentPointer, empty())
+      .build();
+    final Set<Pointer<ComponentLike>> pointerSet = pointers.pointers(ComponentLike.class);
+    assertEquals(1, pointerSet.size());
+    assertContains(pointerSet, componentPointer);
   }
 }

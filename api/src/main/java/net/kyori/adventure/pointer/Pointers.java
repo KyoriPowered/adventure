@@ -23,7 +23,11 @@
  */
 package net.kyori.adventure.pointer;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.util.Buildable;
@@ -31,6 +35,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * A collection of {@link Pointer pointers}.
@@ -59,6 +64,36 @@ public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
   @Contract(pure = true)
   static @NotNull Builder builder() {
     return new PointersImpl.BuilderImpl();
+  }
+
+  /**
+   * Gets all {@code pointer} in this collection which have the given value type.
+   *
+   * @param valueType the type class of the pointer
+   * @param <V> the type of the pointer
+   * @return an unmodifiable set of pointers filtered by the given type
+   * @since 4.10.0
+   */
+  @SuppressWarnings("unchecked")
+  default <V> @NotNull @Unmodifiable Set<Pointer<V>> pointers(final @NotNull Class<V> valueType) {
+    Objects.requireNonNull(valueType, "valueType");
+    final Set<Pointer<V>> filteredPointers = new HashSet<>();
+    for (final Pointer<?> pointer : this.pointers()) {
+      if (valueType.isAssignableFrom(pointer.type()))
+        filteredPointers.add((Pointer<V>) pointer);
+    }
+    return Collections.unmodifiableSet(filteredPointers);
+  }
+
+  /**
+   * Gets all {@code pointer} in this pointer collection.
+   *
+   * @return an unmodifiable set of pointers in this pointer collection
+   * @throws UnsupportedOperationException if the implementing class does not support querying for pointers
+   * @since 4.10.0
+   */
+  default @NotNull @Unmodifiable Set<Pointer<?>> pointers() {
+    throw new UnsupportedOperationException("The underlying Pointers implementation does not support querying for pointers.");
   }
 
   /**
