@@ -28,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
+import org.slf4j.event.Level;
 
 import static java.util.Objects.requireNonNull;
 
@@ -199,6 +200,19 @@ public interface ComponentLogger extends Logger {
   void trace(final @NotNull Marker marker, final @NotNull Component msg, final @Nullable Throwable t);
 
   /**
+   * Entry point for fluent-logging for {@link Level#TRACE} level.
+   *
+   * <p><b>Warning:</b> This method is only available when running with SLF4J 2.0+</p>
+   *
+   * @return LoggingEventBuilder instance as appropriate for level TRACE
+   * @since 4.12.0
+   */
+  @Override
+  default ComponentLoggingEventBuilder atTrace() {
+    return this.atLevel(Level.TRACE);
+  }
+
+  /**
    * Log a message at the DEBUG level.
    *
    * @param msg the message string to be logged
@@ -315,6 +329,19 @@ public interface ComponentLogger extends Logger {
    * @since 4.11.0
    */
   void debug(final @NotNull Marker marker, final @NotNull Component msg, final @Nullable Throwable t);
+
+  /**
+   * Entry point for fluent-logging for {@link Level#DEBUG} level.
+   *
+   * <p><b>Warning:</b> This method is only available when running with SLF4J 2.0+</p>
+   *
+   * @return LoggingEventBuilder instance as appropriate for level DEBUG
+   * @since 4.12.0
+   */
+  @Override
+  default ComponentLoggingEventBuilder atDebug() {
+    return this.atLevel(Level.DEBUG);
+  }
 
   /**
    * Log a message at the INFO level.
@@ -435,6 +462,19 @@ public interface ComponentLogger extends Logger {
   void info(final @NotNull Marker marker, final @NotNull Component msg, final @NotNull Throwable t);
 
   /**
+   * Entry point for fluent-logging for {@link Level#INFO} level.
+   *
+   * <p><b>Warning:</b> This method is only available when running with SLF4J 2.0+</p>
+   *
+   * @return LoggingEventBuilder instance as appropriate for level INFO
+   * @since 4.12.0
+   */
+  @Override
+  default ComponentLoggingEventBuilder atInfo() {
+    return this.atLevel(Level.INFO);
+  }
+
+  /**
    * Log a message at the WARN level.
    *
    * @param msg the message string to be logged
@@ -551,6 +591,19 @@ public interface ComponentLogger extends Logger {
    * @since 4.11.0
    */
   void warn(final @NotNull Marker marker, final @NotNull Component msg, final @NotNull Throwable t);
+
+  /**
+   * Entry point for fluent-logging for {@link Level#WARN} level.
+   *
+   * <p><b>Warning:</b> This method is only available when running with SLF4J 2.0+</p>
+   *
+   * @return LoggingEventBuilder instance as appropriate for level WARN
+   * @since 4.12.0
+   */
+  @Override
+  default ComponentLoggingEventBuilder atWarn() {
+    return this.atLevel(Level.WARN);
+  }
 
   /**
    * Log a message at the ERROR level.
@@ -670,4 +723,43 @@ public interface ComponentLogger extends Logger {
    * @since 4.11.0
    */
   void error(final @NotNull Marker marker, final @NotNull Component msg, final @NotNull Throwable t);
+
+  /**
+   * Entry point for fluent-logging for {@link Level#ERROR} level.
+   *
+   * <p><b>Warning:</b> This method is only available when running with SLF4J 2.0+</p>
+   *
+   * @return LoggingEventBuilder instance as appropriate for level ERROR
+   * @since 4.12.0
+   */
+  @Override
+  default @NotNull ComponentLoggingEventBuilder atError() {
+    return this.atLevel(Level.ERROR);
+  }
+
+  /**
+   * Unconditionally create a new logging event builder.
+   *
+   * <p><b>Warning:</b> This method is only available when running with SLF4J 2.0+</p>
+   *
+   * @param level desired level for the event builder
+   * @return a new event builder
+   * @since 4.12.0
+   */
+  @Override
+  @NotNull ComponentLoggingEventBuilder makeLoggingEventBuilder(final @NotNull Level level);
+
+  /**
+   * Create the appropriate builder for the supplied level.
+   *
+   * <p>This may be a no-op if the passed level is disabled.</p>
+   *
+   * <p><b>Warning:</b> This method is only available when running with SLF4J 2.0+</p>
+   *
+   * @param level desired level for the event builder
+   * @return a new event builder
+   * @since 4.12.0
+   */
+  @Override
+  @NotNull ComponentLoggingEventBuilder atLevel(final @NotNull Level level);
 }
