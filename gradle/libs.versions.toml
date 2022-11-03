@@ -51,7 +51,7 @@ contractValidator = "ca.stellardrift:contract-validator:1.0.1"
 errorprone = { module = "com.google.errorprone:error_prone_core", version.ref = "errorprone" }
 stylecheck = "ca.stellardrift:stylecheck:0.2.0"
 
-build-errorpronePlugin = "net.ltgt.gradle:gradle-errorprone-plugin:2.0.2"
+build-errorpronePlugin = "net.ltgt.gradle:gradle-errorprone-plugin:3.0.1"
 build-indra = { module = "net.kyori:indra-common", version.ref = "indra" }
 build-indra-crossdoc = { module = "net.kyori:indra-crossdoc", version.ref = "indra" }
 build-indra-sonatype = { module = "net.kyori:indra-publishing-sonatype", version.ref = "indra" }
