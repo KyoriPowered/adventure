@@ -3,7 +3,7 @@ version = "1.0"
 
 [versions]
 checkstyle = "10.4"
-errorprone = "2.15.0"
+errorprone = "2.16"
 examination = "1.3.0"
 guava = "31.1-jre"
 indra = "3.0.1"
