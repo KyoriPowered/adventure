@@ -409,6 +409,7 @@ public interface Audience extends Pointered {
    *
    * @param message the component content
    * @param boundChatType the bound chat type
+   * @since 4.12.0
    * @sinceMinecraft 1.19
    */
   default void sendMessage(final @NotNull Component message, final @NotNull ChatType.Bound boundChatType) {
