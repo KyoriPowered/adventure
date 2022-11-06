@@ -109,30 +109,30 @@ public interface ChatType extends Examinable, Keyed {
   }
 
   /**
-   * Creates a bound chat type with a sender {@link Component}.
+   * Creates a bound chat type with a name {@link Component}.
    *
-   * @param sender the sender component
+   * @param name the name component
    * @return a new bound chat type
    * @since 4.12.0
    * @sinceMinecraft 1.19
    */
   @Contract(value = "_ -> new", pure = true)
-  default @NotNull ChatType.Bound bind(@NotNull final Component sender) {
-    return this.bind(sender, null);
+  default ChatType.@NotNull Bound bind(final @NotNull Component name) {
+    return this.bind(name, null);
   }
 
   /**
-   * Creates a bound chat type with a sender and target {@link Component}.
+   * Creates a bound chat type with a name and target {@link Component}.
    *
-   * @param sender the sender component
+   * @param name the name component
    * @param target the optional target component
    * @return a new bound chat type
    * @since 4.12.0
    * @sinceMinecraft 1.19
    */
   @Contract(value = "_, _ -> new", pure = true)
-  default @NotNull ChatType.Bound bind(@NotNull final Component sender, final @Nullable Component target) {
-    return new ChatTypeImpl.BoundImpl(this, sender, target);
+  default ChatType.@NotNull Bound bind(final @NotNull Component name, final @Nullable Component target) {
+    return new ChatTypeImpl.BoundImpl(this, name, target);
   }
 
   @Override
@@ -159,14 +159,14 @@ public interface ChatType extends Examinable, Keyed {
     @NotNull ChatType type();
 
     /**
-     * Get the sender component.
+     * Get the name component.
      *
-     * @return the sender component
+     * @return the name component
      * @since 4.12.0
      * @sinceMinecraft 1.19
      */
     @Contract(pure = true)
-    @NotNull Component sender();
+    @NotNull Component name();
 
     /**
      * Get the target component.
@@ -183,7 +183,7 @@ public interface ChatType extends Examinable, Keyed {
     default Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
         ExaminableProperty.of("type", this.type()),
-        ExaminableProperty.of("sender", this.sender()),
+        ExaminableProperty.of("name", this.name()),
         ExaminableProperty.of("target", this.target())
       );
     }

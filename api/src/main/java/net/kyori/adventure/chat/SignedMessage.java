@@ -24,9 +24,12 @@
 package net.kyori.adventure.chat;
 
 import java.time.Instant;
+import java.util.stream.Stream;
 import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +42,7 @@ import org.jetbrains.annotations.Nullable;
  * @sinceMinecraft 1.19
  */
 @ApiStatus.NonExtendable
-public interface SignedMessage extends Identified {
+public interface SignedMessage extends Identified, Examinable {
 
   /**
    * Creates a signature wrapper.
@@ -152,13 +155,24 @@ public interface SignedMessage extends Identified {
   @Contract(pure = true)
   boolean canSendAsHeader();
 
+  @Override
+  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(
+      ExaminableProperty.of("timeStamp", this.timeStamp()),
+      ExaminableProperty.of("salt", this.salt()),
+      ExaminableProperty.of("signature", this.signature()),
+      ExaminableProperty.of("unsignedContent", this.unsignedContent()),
+      ExaminableProperty.of("message", this.message())
+    );
+  }
+
   /**
    * A signature wrapper type.
    *
    * @since 4.12.0
    * @sinceMinecraft 1.19
    */
-  interface Signature {
+  interface Signature extends Examinable {
 
     /**
      * Gets the bytes for this signature.
@@ -169,5 +183,11 @@ public interface SignedMessage extends Identified {
      */
     @Contract(pure = true)
     byte[] bytes();
+
+    @Override
+    @NotNull
+    default Stream<? extends ExaminableProperty> examinableProperties() {
+      return Stream.of(ExaminableProperty.of("bytes", this.bytes()));
+    }
   }
 }

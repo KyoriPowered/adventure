@@ -48,12 +48,12 @@ final class ChatTypeImpl implements ChatType {
 
   static final class BoundImpl implements ChatType.Bound {
     private final ChatType chatType;
-    private final Component sender;
+    private final Component name;
     private final @Nullable Component target;
 
-    BoundImpl(final ChatType chatType, final Component sender, final @Nullable Component target) {
+    BoundImpl(final ChatType chatType, final Component name, final @Nullable Component target) {
       this.chatType = chatType;
-      this.sender = sender;
+      this.name = name;
       this.target = target;
     }
 
@@ -63,8 +63,8 @@ final class ChatTypeImpl implements ChatType {
     }
 
     @Override
-    public @NotNull Component sender() {
-      return this.sender;
+    public @NotNull Component name() {
+      return this.name;
     }
 
     @Override
