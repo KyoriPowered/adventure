@@ -30,7 +30,7 @@ import org.jetbrains.annotations.ApiStatus;
  * Message types.
  *
  * @since 4.0.0
- * @deprecated for removal since 4.12.0, use corresponding {@link ChatType} instead
+ * @deprecated for removal since 4.12.0, use separate methods on {@link Audience} for sending player or system messages
  */
 @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
 @Deprecated

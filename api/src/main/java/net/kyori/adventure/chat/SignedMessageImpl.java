@@ -79,4 +79,18 @@ final class SignedMessageImpl implements SignedMessage {
   public @NotNull Identity identity() {
     return Identity.nil();
   }
+
+  static final class SignatureImpl implements Signature {
+
+    final byte[] signature;
+
+    SignatureImpl(final byte[] signature) {
+      this.signature =signature;
+    }
+
+    @Override
+    public byte[] bytes() {
+      return this.signature;
+    }
+  }
 }

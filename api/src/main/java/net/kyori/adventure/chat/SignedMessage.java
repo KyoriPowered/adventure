@@ -52,7 +52,7 @@ public interface SignedMessage extends Identified, ComponentLike {
    */
   @Contract(value = "_ -> new", pure = true)
   static @NotNull Signature signature(final byte[] signature) {
-    return new Signature(signature);
+    return new SignedMessageImpl.SignatureImpl(signature);
   }
 
   /**
@@ -165,13 +165,7 @@ public interface SignedMessage extends Identified, ComponentLike {
    * @since 4.12.0
    * @sinceMinecraft 1.19
    */
-  final class Signature {
-
-    final byte[] signature;
-
-    private Signature(final byte[] signature) {
-      this.signature = signature;
-    }
+  interface Signature {
 
     /**
      * Gets the bytes for this signature.
@@ -181,8 +175,6 @@ public interface SignedMessage extends Identified, ComponentLike {
      * @sinceMinecraft 1.19
      */
     @Contract(pure = true)
-    public byte[] bytes() {
-      return this.signature;
-    }
+    byte[] bytes();
   }
 }
