@@ -281,7 +281,7 @@ public interface Audience extends Pointered {
    * @param message a message
    * @see Component
    * @since 4.0.0
-   * @deprecated since 4.12.0, the client errors on receiving and can reject identified messages without {@link SignedMessage} data, this may be unsupported in the future, use {@link #sendMessage(SignedMessage, PlayerIdentified)} instead
+   * @deprecated since 4.12.0, the client errors on receiving and can reject identified messages without {@link SignedMessage} data, this may be unsupported in the future, use {@link #sendChatMessage(SignedMessage, PlayerIdentified)} instead
    */
   @Deprecated
   @ForwardingAudienceOverrideNotRequired
@@ -296,7 +296,7 @@ public interface Audience extends Pointered {
    * @param message a message
    * @see Component
    * @since 4.0.0
-   * @deprecated since 4.12.0, the client errors on receiving and can reject identified messages without {@link SignedMessage} data, this may be unsupported in the future, use {@link #sendMessage(SignedMessage, PlayerIdentity)} instead
+   * @deprecated since 4.12.0, the client errors on receiving and can reject identified messages without {@link SignedMessage} data, this may be unsupported in the future, use {@link #sendChatMessage(SignedMessage, PlayerIdentity)} instead
    */
   @Deprecated
   @ForwardingAudienceOverrideNotRequired
@@ -375,39 +375,87 @@ public interface Audience extends Pointered {
   }
   /* End: unsigned player messages */
 
-  /* Start: signed player messages */
+  /* Start: disguised player messages */
   /**
-   * Sends a signed player chat message from the given {@link PlayerIdentified} to this {@link Audience} with the {@link ChatType#CHAT chat} chat type.
+   * Sends a chat message from the given {@link PlayerIdentified} to this {@link Audience} with the {@link ChatType#CHAT} chat type.
    *
-   * @param signedMessage the signed message data
+   * @param component the component content
    * @param source the source of the message
+   * @see #sendMessage(Component, ChatType.Bound)
    * @since 4.12.0
+   * @sinceMinecraft 1.19
    */
   @ForwardingAudienceOverrideNotRequired
-  default void sendMessage(final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentified source) {
-    this.sendMessage(signedMessage, source.identity());
+  default void sendChatMessage(final @NotNull Component component, final @NotNull PlayerIdentified source) {
+    this.sendChatMessage(component, source.identity());
   }
 
   /**
-   * Sends a signed player chat message from the player identified by the provided {@link PlayerIdentity} to this {@link Audience} with the {@link ChatType#CHAT chat} chat type.
+   * Sends a chat message from the given {@link PlayerIdentity} to this {@link Audience} with the {@link ChatType#CHAT} chat type.
+   *
+   * @param component the component content
+   * @param source the source of the message
+   * @see #sendMessage(Component, ChatType.Bound)
+   * @since 4.12.0
+   * @sinceMinecraft 1.19
+   */
+  @ForwardingAudienceOverrideNotRequired
+  default void sendChatMessage(final @NotNull Component component, final @NotNull PlayerIdentity source) {
+    this.sendMessage(component, ChatType.CHAT.bind(source.name()));
+  }
+
+  /**
+   * Sends a message to this {@link Audience} with the provided {@link ChatType.Bound bound chat type}.
+   *
+   * @param message the component content
+   * @param boundChatType the bound chat type
+   * @sinceMinecraft 1.19
+   */
+  default void sendMessage(final @NotNull Component message, final @NotNull ChatType.Bound boundChatType) {
+  }
+  /* End: disguised player messages
+
+  /* Start: signed player messages */
+  /**
+   * Sends a signed player chat message from the given {@link PlayerIdentified} to this {@link Audience} with the {@link ChatType#CHAT} chat type.
+   *
+   * @param signedMessage the signed message data
+   * @param source the source of the message
+   * @see #sendMessage(SignedMessage, ChatType.Bound)
+   * @since 4.12.0
+   * @sinceMinecraft 1.19
+   */
+  @ForwardingAudienceOverrideNotRequired
+  default void sendChatMessage(final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentified source) {
+    this.sendChatMessage(signedMessage, source.identity());
+  }
+
+  /**
+   * Sends a signed player chat message from the player identified by the provided {@link PlayerIdentity} to this {@link Audience} with the {@link ChatType#CHAT} chat type.
    *
    * @param signedMessage the signed message data
    * @param source the identity of the source of the message
+   * @see #sendMessage(SignedMessage, ChatType.Bound)
    * @since 4.12.0
+   * @sinceMinecraft 1.19
    */
   @ForwardingAudienceOverrideNotRequired
-  default void sendMessage(final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentity source) {
+  default void sendChatMessage(final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentity source) {
     this.sendMessage(signedMessage, ChatType.CHAT.bind(source.name()));
   }
 
   /**
-   * Sends a signed player chat message to this {@link Audience} with the provided {@link ChatType.Bound} bound chat type.
+   * Sends a signed player message to this {@link Audience} with the provided {@link ChatType.Bound bound chat type}.
    *
    * @param signedMessage the signed message data
    * @param boundChatType the bound chat type
    * @since 4.12.0
+   * @sinceMinecraft 1.19
    */
   default void sendMessage(final @NotNull SignedMessage signedMessage, final ChatType.Bound boundChatType) {
+    if (signedMessage.isSystem()) {
+      this.sendMessage(signedMessage.unsignedContent() != null ? signedMessage.unsignedContent() : Component.text(signedMessage.message()), boundChatType);
+    }
   }
 
   /**
@@ -421,7 +469,7 @@ public interface Audience extends Pointered {
   @ForwardingAudienceOverrideNotRequired
   default void deleteMessage(final @NotNull SignedMessage signedMessage) {
     if (signedMessage.canDelete()) {
-      this.deleteMessage(Objects.requireNonNull(signedMessage.signature(), "signedMessage must have a signature"));
+      this.deleteMessage(Objects.requireNonNull(signedMessage.signature()));
     }
   }
 
@@ -434,6 +482,9 @@ public interface Audience extends Pointered {
    */
   default void deleteMessage(final SignedMessage.@NotNull Signature signature) {
   }
+
+  // todo, the delete message packet also supports an int identifier that has something
+  //  to do with the message chain, unsure if that should be exposed
 
   /**
    * Sends the signed message's header to this audience.

@@ -27,7 +27,6 @@ import java.time.Instant;
 import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +39,7 @@ import org.jetbrains.annotations.Nullable;
  * @sinceMinecraft 1.19
  */
 @ApiStatus.NonExtendable
-public interface SignedMessage extends Identified, ComponentLike {
+public interface SignedMessage extends Identified {
 
   /**
    * Creates a signature wrapper.
@@ -58,15 +57,15 @@ public interface SignedMessage extends Identified, ComponentLike {
   /**
    * Creates a system {@link SignedMessage}.
    *
-   * @param component the message component
-   * @param plain the plain text message
-   * @return a new unsigned {@link SignedMessage}
+   * @param message the message
+   * @param unsignedContent the optional unsigned component content
+   * @return a new system {@link SignedMessage}
    * @since 4.12.0
    * @sinceMinecraft 1.19
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull SignedMessage system(final @NotNull Component component, final @NotNull String plain) {
-    return new SignedMessageImpl(component, plain);
+  static @NotNull SignedMessage system(final @NotNull String message, final @Nullable Component unsignedContent) {
+    return new SignedMessageImpl(message, unsignedContent);
   }
 
   /**
@@ -100,20 +99,14 @@ public interface SignedMessage extends Identified, ComponentLike {
   @Nullable Signature signature();
 
   /**
-   * The signed component.
+   * The unsigned component content.
    *
-   * @return the component
+   * @return the component or null
    * @since 4.12.0
    * @sinceMinecraft 1.19
    */
   @Contract(pure = true)
-  @NotNull Component message();
-
-  @Override
-  @NotNull
-  default Component asComponent() {
-    return this.message();
-  }
+  @Nullable Component unsignedContent();
 
   /**
    * The plain string message.
@@ -123,7 +116,7 @@ public interface SignedMessage extends Identified, ComponentLike {
    * @sinceMinecraft 1.19
    */
   @Contract(pure = true)
-  @NotNull String plain();
+  @NotNull String message();
 
   /**
    * Checks if this message is a system message.

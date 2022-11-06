@@ -28,21 +28,22 @@ import java.time.Instant;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-// Used for system messages
+// Used for system messages ONLY
 final class SignedMessageImpl implements SignedMessage {
   static final SecureRandom RANDOM = new SecureRandom();
 
   private final Instant instant;
   private final long salt;
-  private final Component message;
-  private final String plain;
+  private final String message;
+  private final Component unsignedContent;
 
-  SignedMessageImpl(final Component message, final String plain) {
+  SignedMessageImpl(final String message, final Component unsignedContent) {
     this.instant = Instant.now();
     this.salt = RANDOM.nextLong();
     this.message = message;
-    this.plain = plain;
+    this.unsignedContent = unsignedContent;
   }
 
   @Override
@@ -61,13 +62,13 @@ final class SignedMessageImpl implements SignedMessage {
   }
 
   @Override
-  public @NotNull Component message() {
-    return this.message;
+  public @Nullable Component unsignedContent() {
+    return this.unsignedContent;
   }
 
   @Override
-  public @NotNull String plain() {
-    return this.plain;
+  public @NotNull String message() {
+    return this.message;
   }
 
   @Override
@@ -85,7 +86,7 @@ final class SignedMessageImpl implements SignedMessage {
     final byte[] signature;
 
     SignatureImpl(final byte[] signature) {
-      this.signature =signature;
+      this.signature = signature;
     }
 
     @Override

@@ -105,13 +105,8 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
-  default void sendMessage(final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentified source) {
-    for (final Audience audience : this.audiences()) audience.sendMessage(signedMessage, source);
-  }
-
-  @Override
-  default void sendMessage(final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentity source) {
-    for (final Audience audience : this.audiences()) audience.sendMessage(signedMessage, source);
+  default void sendMessage(final @NotNull Component message, final ChatType.@NotNull Bound boundChatType) {
+    for (final Audience audience : this.audiences()) audience.sendMessage(message, boundChatType);
   }
 
   @Override
@@ -276,13 +271,8 @@ public interface ForwardingAudience extends Audience {
     }
 
     @Override
-    default void sendMessage(final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentified source) {
-      this.audience().sendMessage(signedMessage, source);
-    }
-
-    @Override
-    default void sendMessage(final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentity source) {
-      this.audience().sendMessage(signedMessage, source);
+    default void sendMessage(final @NotNull Component message, final ChatType.@NotNull Bound boundChatType) {
+      this.audience().sendMessage(message, boundChatType);
     }
 
     @Override

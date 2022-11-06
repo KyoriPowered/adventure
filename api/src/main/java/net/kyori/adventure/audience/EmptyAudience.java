@@ -79,11 +79,15 @@ final class EmptyAudience implements Audience {
   }
 
   @Override
-  public void sendMessage(final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentified source) {
+  public void sendMessage(final @NotNull Identified source, final @NotNull Component message, final @NotNull MessageType type) {
   }
 
   @Override
-  public void sendMessage(final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentity source) {
+  public void sendMessage(final @NotNull Identity source, final @NotNull Component message, final @NotNull MessageType type) {
+  }
+
+  @Override
+  public void sendMessage(final @NotNull Component message, final ChatType.@NotNull Bound boundChatType) {
   }
 
   @Override
@@ -96,14 +100,6 @@ final class EmptyAudience implements Audience {
 
   @Override
   public void sendMessageHeader(final @NotNull SignedMessage signedMessage) {
-  }
-
-  @Override
-  public void sendMessage(final @NotNull Identified source, final @NotNull Component message, final @NotNull MessageType type) {
-  }
-
-  @Override
-  public void sendMessage(final @NotNull Identity source, final @NotNull Component message, final @NotNull MessageType type) {
   }
 
   @Override
