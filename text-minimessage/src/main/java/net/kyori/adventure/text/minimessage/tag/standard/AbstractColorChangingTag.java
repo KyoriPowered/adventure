@@ -55,6 +55,11 @@ import org.jetbrains.annotations.Nullable;
  */
 abstract class AbstractColorChangingTag implements Modifying, Examinable {
 
+  private static final ComponentFlattener LENGTH_CALCULATOR = ComponentFlattener.builder()
+    .mapper(TextComponent.class, TextComponent::content)
+    .unknownMapper(x -> "_") // every unknown component gets a single colour
+    .build();
+
   private boolean visited;
   private int size = 0;
   private int disableApplyingColorDepth = -1;
@@ -76,7 +81,7 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
       final TagNode tag = (TagNode) current;
       if (tag.tag() instanceof Inserting) {
         // ComponentTransformation.apply() returns the value of the component placeholder
-        ComponentFlattener.textOnly().flatten(((Inserting) tag.tag()).value(), s -> this.size += s.codePointCount(0, s.length()));
+        LENGTH_CALCULATOR.flatten(((Inserting) tag.tag()).value(), s -> this.size += s.codePointCount(0, s.length()));
       }
     }
   }
@@ -124,6 +129,10 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
       }
 
       return parent.build();
+    } else if (!(current instanceof TextComponent)) {
+      final Component ret = current.children(Collections.emptyList()).colorIfAbsent(this.color());
+      this.advanceColor();
+      return ret;
     }
 
     return Component.empty().mergeStyle(current);
