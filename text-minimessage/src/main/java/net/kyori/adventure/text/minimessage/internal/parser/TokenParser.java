@@ -246,8 +246,11 @@ public final class TokenParser {
               break;
             case '\'':
             case '"':
-              state = FirstPassState.STRING;
               currentStringChar = (char) codePoint;
+              // Look ahead if the quote being opened is ever closed
+              if (message.indexOf(codePoint, i + 1) != -1) {
+                state = FirstPassState.STRING;
+              }
               break;
           }
           break;
@@ -256,6 +259,14 @@ public final class TokenParser {
             state = FirstPassState.TAG;
           }
           break;
+      }
+
+      if (i == (length - 1) && state == FirstPassState.TAG) {
+        // We've reached the end of the input with an open `<`, but it was never matched to a closing `>`.
+        // Anything which was inside of quotes needs to be parsed again, as it may contain additional tags.
+        // Rewind back to directly after the `<`, but in the NORMAL state, instead of TAG.
+        i = marker;
+        state = FirstPassState.NORMAL;
       }
     }
 
