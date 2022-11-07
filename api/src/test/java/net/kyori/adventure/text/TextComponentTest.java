@@ -166,4 +166,24 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
     assertEquals(wrappedItalic.compact(), Component.text("italic").decoration(TextDecoration.ITALIC, true));
     assertEquals(wrappedNotItalic.compact(), Component.text("non-italic").decoration(TextDecoration.ITALIC, false));
   }
+
+  @Test
+  void testAppendNewline() {
+    final Component c0 = Component.text("tuba").appendNewline().append(Component.text("time"));
+    final Component c1 = Component.text().content("tuba").appendNewline().append(Component.text("time")).build();
+
+    final Component c0Compact = c0.compact();
+    assertEquals(c0Compact, Component.text("tuba\ntime"));
+    assertEquals(c0Compact, c1.compact());
+  }
+
+  @Test
+  void testAppendSpace() {
+    final Component c0 = Component.text("tuba").appendSpace().append(Component.text("time"));
+    final Component c1 = Component.text().content("tuba").appendSpace().append(Component.text("time")).build();
+
+    final Component c0Compact = c0.compact();
+    assertEquals(c0Compact, Component.text("tuba time"));
+    assertEquals(c0Compact, c1.compact());
+  }
 }
