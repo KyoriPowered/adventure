@@ -54,7 +54,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.10.0
  */
 abstract class AbstractColorChangingTag implements Modifying, Examinable {
-
+  private final boolean interrupting = true;
   private boolean visited;
   private int size = 0;
   private int disableApplyingColorDepth = -1;
@@ -69,12 +69,20 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
       throw new IllegalStateException("Color changing tag instances cannot be re-used, return a new one for each resolve");
     }
 
+    if (this.disableApplyingColorDepth != -1 && depth > this.disableApplyingColorDepth) {
+      return;
+    }
+
     if (current instanceof ValueNode) {
       final String value = ((ValueNode) current).value();
       this.size += value.codePointCount(0, value.length());
     } else if (current instanceof TagNode) {
       final TagNode tag = (TagNode) current;
-      if (tag.tag() instanceof Inserting) {
+      if (this.interrupting && (tag.tag() == this || (tag.tag() instanceof Inserting && ((Inserting) tag.tag()).value().style().color() != null))) {
+        if (this.disableApplyingColorDepth == -1 || depth < this.disableApplyingColorDepth) {
+          this.disableApplyingColorDepth = depth + 1;
+        }
+      } else if (tag.tag() instanceof Inserting) {
         // ComponentTransformation.apply() returns the value of the component placeholder
         ComponentFlattener.textOnly().flatten(((Inserting) tag.tag()).value(), s -> this.size += s.codePointCount(0, s.length()));
       }
@@ -85,6 +93,7 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
   public final void postVisit() {
     // init
     this.visited = true;
+    this.disableApplyingColorDepth = -1;
     this.init();
   }
 
@@ -96,12 +105,14 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
       }
       // This component has its own color applied, which overrides ours
       // We still want to keep track of where we are though if this is text
-      if (current instanceof TextComponent) {
-        final String content = ((TextComponent) current).content();
-        final int len = content.codePointCount(0, content.length());
-        for (int i = 0; i < len; i++) {
-          // increment our color index
-          this.advanceColor();
+      if (!this.interrupting) {
+        if (current instanceof TextComponent) {
+          final String content = ((TextComponent) current).content();
+          final int len = content.codePointCount(0, content.length());
+          for (int i = 0; i < len; i++) {
+            // increment our color index
+            this.advanceColor();
+          }
         }
       }
       return current.children(Collections.emptyList());
