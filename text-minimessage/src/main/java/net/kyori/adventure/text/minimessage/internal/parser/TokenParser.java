@@ -248,7 +248,7 @@ public final class TokenParser {
             case '"':
               currentStringChar = (char) codePoint;
               // Look ahead if the quote being opened is ever closed
-              if (message.substring(i + 1).indexOf(codePoint) != -1) {
+              if (message.indexOf(codePoint, i + 1) != -1) {
                 state = FirstPassState.STRING;
               }
               break;
