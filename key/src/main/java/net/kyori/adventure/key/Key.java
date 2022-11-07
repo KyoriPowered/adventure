@@ -29,6 +29,7 @@ import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.intellij.lang.annotations.Pattern;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * An identifying object used to fetch and/or store unique objects.
@@ -62,6 +63,12 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @since 4.0.0
    */
   String MINECRAFT_NAMESPACE = "minecraft";
+  /**
+   * The default namespace and value separator.
+   *
+   * @since 4.12.0
+   */
+  char DEFAULT_SEPARATOR = ':';
 
   /**
    * Creates a key.
@@ -78,7 +85,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @since 4.0.0
    */
   static @NotNull Key key(final @NotNull @Pattern("(" + KeyImpl.NAMESPACE_PATTERN + ":)?" + KeyImpl.VALUE_PATTERN) String string) {
-    return key(string, ':');
+    return key(string, DEFAULT_SEPARATOR);
   }
 
   /**
@@ -140,6 +147,77 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    */
   static @NotNull Comparator<? super Key> comparator() {
     return KeyImpl.COMPARATOR;
+  }
+
+  /**
+   * Checks if {@code string} can be parsed into a {@link Key}.
+   *
+   * @param string the input string
+   * @return {@code true} if {@code string} can be parsed into a {@link Key}, {@code false} otherwise
+   * @since 4.12.0
+   */
+  static boolean parseable(final @Nullable String string) {
+    if (string == null) {
+      return false;
+    }
+    final int index = string.indexOf(DEFAULT_SEPARATOR);
+    final String namespace = index >= 1 ? string.substring(0, index) : MINECRAFT_NAMESPACE;
+    final String value = index >= 0 ? string.substring(index + 1) : string;
+    return parseableNamespace(namespace) && parseableValue(value);
+  }
+
+  /**
+   * Checks if {@code value} is a valid namespace.
+   *
+   * @param namespace the string to check
+   * @return {@code true} if {@code value} is a valid namespace, {@code false} otherwise
+   * @since 4.12.0
+   */
+  static boolean parseableNamespace(final @NotNull String namespace) {
+    for (int i = 0, length = namespace.length(); i < length; i++) {
+      if (!allowedInNamespace(namespace.charAt(i))) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Checks if {@code value} is a valid value.
+   *
+   * @param value the string to check
+   * @return {@code true} if {@code value} is a valid value, {@code false} otherwise
+   * @since 4.12.0
+   */
+  static boolean parseableValue(final @NotNull String value) {
+    for (int i = 0, length = value.length(); i < length; i++) {
+      if (!allowedInValue(value.charAt(i))) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Checks if {@code value} is a valid character in a namespace.
+   *
+   * @param character the character to check
+   * @return {@code true} if {@code value} is a valid character in a namespace, {@code false} otherwise
+   * @since 4.12.0
+   */
+  static boolean allowedInNamespace(final char character) {
+    return KeyImpl.allowedInNamespace(character);
+  }
+
+  /**
+   * Checks if {@code value} is a valid character in a value.
+   *
+   * @param character the character to check
+   * @return {@code true} if {@code value} is a valid character in a value, {@code false} otherwise
+   * @since 4.12.0
+   */
+  static boolean allowedInValue(final char character) {
+    return KeyImpl.allowedInValue(character);
   }
 
   /**
