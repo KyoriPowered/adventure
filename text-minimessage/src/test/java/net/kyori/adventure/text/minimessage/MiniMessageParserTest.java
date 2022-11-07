@@ -157,6 +157,15 @@ public class MiniMessageParserTest extends AbstractTest {
     assertEquals(expected, PlainTextComponentSerializer.plainText().serialize(comp));
   }
 
+  // https://github.com/KyoriPowered/adventure/issues/799
+  @Test
+  void testEscapeIgnoresSectionSigns() {
+    final String input = "Hello, read §64 for <red> information";
+    final String expected = "Hello, read §64 for \\<red> information";
+
+    assertEquals(expected, PARSER.escapeTags(input));
+  }
+
   @Test
   void testNiceMix() {
     final String input = "<yellow><test> random <bold>stranger</bold><click:run_command:test command><underlined><red>click here</click><blue> to <b>FEEL</underlined> it";
