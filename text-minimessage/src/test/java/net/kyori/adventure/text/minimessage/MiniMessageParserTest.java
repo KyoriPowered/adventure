@@ -23,9 +23,14 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.util.Collections;
+import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.internal.parser.Token;
+import net.kyori.adventure.text.minimessage.internal.parser.TokenParser;
+import net.kyori.adventure.text.minimessage.internal.parser.TokenType;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -54,6 +59,7 @@ import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.comp
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.parsed;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MiniMessageParserTest extends AbstractTest {
@@ -307,6 +313,21 @@ public class MiniMessageParserTest extends AbstractTest {
     this.assertParsedEquals(expected2, input2);
     this.assertParsedEquals(expected3, input3);
     this.assertParsedEquals(expected4, input4);
+  }
+
+  // https://github.com/KyoriPowered/adventure/issues/821
+  @Test
+  void testEscapeIncompleteTags() {
+    final String input = "<<aqua> a";
+    final String escaped = PARSER.escapeTags(input);
+
+    assertEquals("<\\<aqua> a", escaped);
+
+    final List<Token> expectedTokens = Collections.singletonList(new Token(0, escaped.length(), TokenType.TEXT));
+    assertIterableEquals(expectedTokens, TokenParser.tokenize(escaped));
+
+    final Component expected = text("<<aqua> a");
+    this.assertParsedEquals(expected, escaped);
   }
 
   // GH-68, GH-93

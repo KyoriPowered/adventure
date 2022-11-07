@@ -195,6 +195,11 @@ public final class TokenParser {
               escaped = currentStringChar == nextCodePoint || nextCodePoint == ESCAPE;
               break;
             case TAG:
+              // Escape characters are not valid in tag names, so we aren't a tag token
+              if (nextCodePoint == TAG_START) {
+                escaped = true;
+                state = FirstPassState.NORMAL;
+              }
               break;
           }
 
