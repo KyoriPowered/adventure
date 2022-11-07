@@ -25,7 +25,9 @@ package net.kyori.adventure.text.minimessage.tag.standard;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.AbstractTest;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.empty;
@@ -523,5 +525,21 @@ class GradientTagTest extends AbstractTest {
       );
 
     this.assertParsedEquals(expected, input);
+  }
+
+  // https://github.com/KyoriPowered/adventure/issues/790
+  @Test
+  void testDecorationsPreserved() {
+    final Component placeholder = Component.text("b", style(TextDecoration.ITALIC.withState(true)));
+    final String input = "<gradient>a<placeholder/>c<bold>d</bold>!</gradient>";
+    final Component expected = Component.textOfChildren(
+      text("a", WHITE),
+      text("b", color(0xcccccc), TextDecoration.ITALIC),
+      text("c", color(0x999999)),
+      text("d", color(0x666666), BOLD),
+      text("!", color(0x333333))
+    );
+
+    this.assertParsedEquals(expected, input, Placeholder.component("placeholder", placeholder));
   }
 }
