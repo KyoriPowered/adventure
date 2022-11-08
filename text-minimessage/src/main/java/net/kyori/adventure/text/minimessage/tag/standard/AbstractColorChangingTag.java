@@ -118,7 +118,7 @@ abstract class AbstractColorChangingTag implements Modifying, Examinable {
       final int[] holder = new int[1];
       for (final PrimitiveIterator.OfInt it = content.codePoints().iterator(); it.hasNext();) {
         holder[0] = it.nextInt();
-        final Component comp = Component.text(new String(holder, 0, 1), this.color());
+        final Component comp = Component.text(new String(holder, 0, 1), current.style().color(this.color()));
         this.advanceColor();
         parent.append(comp);
       }
