@@ -156,4 +156,17 @@ public class ComponentLoggerTest {
       ImmutableList.of(LoggingEvent.info("Hello {}", "friend"))
     );
   }
+
+  @Test
+  void testFluentApi() {
+    final Component message = Component.text("Hello ").append(Component.text("{}", NamedTextColor.BLUE));
+    final String arg = "world";
+
+    this.makeLogger().atDebug()
+        .setMessage(message)
+        .addArgument(arg)
+        .log();
+
+    assertEquals(LOGGER.getLoggingEvents(), ImmutableList.of(LoggingEvent.debug("Hello {}", arg)));
+  }
 }

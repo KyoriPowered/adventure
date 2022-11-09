@@ -31,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
+import org.slf4j.event.Level;
 import org.slf4j.spi.LocationAwareLogger;
 
 final class WrappingComponentLoggerImpl implements ComponentLogger {
@@ -136,6 +137,25 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   @Override
   public boolean isErrorEnabled(final Marker marker) {
     return this.logger.isErrorEnabled(marker);
+  }
+
+  @Override
+  public boolean isEnabledForLevel(final Level level) {
+    return this.logger.isEnabledForLevel(level);
+  }
+
+  @Override
+  public @NotNull ComponentLoggingEventBuilder makeLoggingEventBuilder(final @NotNull Level level) {
+    return new ComponentLoggingEventBuilderImpl(this.logger, level, this.serializer);
+  }
+
+  @Override
+  public @NotNull ComponentLoggingEventBuilder atLevel(final @NotNull Level level) {
+    if (this.logger.isEnabledForLevel(level)) {
+      return this.makeLoggingEventBuilder(level);
+    } else {
+      return NoOpComponentLoggingEventBuilderImpl.INSTANCE;
+    }
   }
 
   // Standard string methods, to process potential Component arguments
