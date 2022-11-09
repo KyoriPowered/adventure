@@ -29,6 +29,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 
+import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.Style.style;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -36,11 +37,11 @@ public class MiniMessageSerializerTest extends AbstractTest {
   @Test
   void testSerializeNestedStyles() {
     // These are mostly arbitrary, but I don't want to test every single combination
-    final Component component = Component.text()
-      .append(Component.text("b+i+u", style(TextDecoration.BOLD, TextDecoration.ITALIC, TextDecoration.UNDERLINED)))
-      .append(Component.text("color+insert", style(NamedTextColor.RED)).insertion("meow"))
-      .append(Component.text("st+font", style(TextDecoration.STRIKETHROUGH).font(Key.key("uniform"))))
-      .append(Component.text("empty"))
+    final Component component = text()
+      .append(text("b+i+u", style(TextDecoration.BOLD, TextDecoration.ITALIC, TextDecoration.UNDERLINED)))
+      .append(text("color+insert", style(NamedTextColor.RED)).insertion("meow"))
+      .append(text("st+font", style(TextDecoration.STRIKETHROUGH).font(Key.key("uniform"))))
+      .append(text("empty"))
       .build();
     final String expected = "<italic><underlined><bold>b+i+u</bold></underlined></italic>" +
       "<insert:meow><red>color+insert</red></insert>" +
@@ -56,16 +57,25 @@ public class MiniMessageSerializerTest extends AbstractTest {
     final MiniMessage serializer = MiniMessage.builder().strict(true).build();
 
     final String expected = "hello<red>red<bold>bold</bold></red>";
-    final Component input = Component.text()
+    final Component input = text()
       .content("hello")
       .append(
-        Component.text("red", NamedTextColor.RED)
+        text("red", NamedTextColor.RED)
           .append(
-            Component.text("bold", style(TextDecoration.BOLD))
+            text("bold", style(TextDecoration.BOLD))
           )
       )
       .build();
 
     assertEquals(expected, serializer.serialize(input));
   }
+
+  @Test
+  void testDoubleOpenRoundTrippedEscaped() {
+    final String expected = "\\<\\<aqua> a"; // this is valid but there is a redundant serialization
+    final Component component = text("<<aqua> a");
+    this.assertSerializedEquals(expected, component);
+    this.assertParsedEquals(component, expected);
+  }
+
 }
