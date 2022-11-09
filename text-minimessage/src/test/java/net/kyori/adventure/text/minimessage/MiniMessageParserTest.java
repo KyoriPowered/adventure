@@ -324,7 +324,7 @@ public class MiniMessageParserTest extends AbstractTest {
     assertEquals("<\\<aqua> a", escaped);
 
     final List<Token> expectedTokens = Collections.singletonList(new Token(0, escaped.length(), TokenType.TEXT));
-    assertIterableEquals(expectedTokens, TokenParser.tokenize(escaped));
+    assertIterableEquals(expectedTokens, TokenParser.tokenize(escaped, false));
 
     final Component expected = text("<<aqua> a");
     this.assertParsedEquals(expected, escaped);
