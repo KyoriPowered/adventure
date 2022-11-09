@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.translatable;
 import static net.kyori.adventure.text.event.HoverEvent.showText;
 import static net.kyori.adventure.text.format.NamedTextColor.BLACK;
 import static net.kyori.adventure.text.format.NamedTextColor.BLUE;
@@ -541,5 +542,19 @@ class GradientTagTest extends AbstractTest {
     );
 
     this.assertParsedEquals(expected, input, Placeholder.component("placeholder", placeholder));
+  }
+
+  // https://github.com/KyoriPowered/adventure/issues/827
+  @Test
+  void testLangTagInGradient() {
+    final String input = "<gradient:red:blue>ab<lang:block.minecraft.diamond_block>!</gradient>";
+    final Component expected = Component.textOfChildren(
+      text("a", RED),
+      text("b", color(0xd55580)),
+      translatable("block.minecraft.diamond_block", color(0xaa55aa))
+        .append(text("!", color(0x8055d5)))
+    );
+
+    this.assertParsedEquals(expected, input);
   }
 }
