@@ -51,6 +51,8 @@ truth-java8 = { module = "com.google.truth.extensions:truth-java8-extension", ve
 contractValidator = "ca.stellardrift:contract-validator:1.0.1"
 errorprone = { module = "com.google.errorprone:error_prone_core", version.ref = "errorprone" }
 stylecheck = "ca.stellardrift:stylecheck:0.2.0"
+autoService-annotations = "com.google.auto.service:auto-service-annotations:1.0.1"
+autoService-processor = "com.google.auto.service:auto-service:1.0.1"
 
 build-errorpronePlugin = "net.ltgt.gradle:gradle-errorprone-plugin:3.0.1"
 build-indra = { module = "net.kyori:indra-common", version.ref = "indra" }

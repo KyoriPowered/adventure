@@ -23,14 +23,17 @@
  */
 package net.kyori.adventure.annotation.processing;
 
+import com.google.auto.service.AutoService;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
-
 import org.jetbrains.annotations.ApiStatus;
 
 /**
@@ -39,27 +42,26 @@ import org.jetbrains.annotations.ApiStatus;
  * @since 4.12.0
  */
 @ApiStatus.Internal
-@SupportedAnnotationTypes("net.kyori.adventure.util.PlatformAPI")
+@AutoService(Processor.class)
+@SupportedAnnotationTypes(PlatformAPIAnnotationProcessor.ADVENTURE_PLATFORMAPI_ANNOTATION)
 public class PlatformAPIAnnotationProcessor extends AbstractProcessor {
+
+  public static final String ADVENTURE_PLATFORMAPI_ANNOTATION = "net.kyori.adventure.util.PlatformAPI";
 
   @Override
   public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
-    processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Please");
+    for (final TypeElement annotation : annotations) {
+      for (final Element element : roundEnv.getElementsAnnotatedWith(annotation)) {
+        if (element.getAnnotation(ApiStatus.Internal.class) == null) {
+          this.processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, ADVENTURE_PLATFORMAPI_ANNOTATION + " needs to be used together with " + ApiStatus.Internal.class.getCanonicalName() + ", see PlatformAPI javadocs", element);
+        }
+      }
+    }
     return false;
   }
 
   @Override
   public SourceVersion getSupportedSourceVersion() {
     return SourceVersion.latestSupported();
-  }
-
-  private static int getVersion() {
-    String version = System.getProperty("java.version");
-    if(version.startsWith("1.")) {
-      version = version.substring(2, 3);
-    } else {
-      int dot = version.indexOf(".");
-      if(dot != -1) { version = version.substring(0, dot); }
-    } return Integer.parseInt(version);
   }
 }

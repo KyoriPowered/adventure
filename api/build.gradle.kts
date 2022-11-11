@@ -9,12 +9,6 @@ configurations {
   }
 }
 
-tasks.withType<JavaCompile> {
-  doFirst {
-    println( "AnnotationProcessorPath for $name is ${options.annotationProcessorPath?.files}")
-  }
-}
-
 dependencies {
   api(projects.adventureKey)
   api(libs.examination.api)
