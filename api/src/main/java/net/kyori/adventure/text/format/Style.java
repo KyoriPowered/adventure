@@ -530,6 +530,15 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
   @NotNull Style merge(final @NotNull Style that, final Merge.@NotNull Strategy strategy, final @NotNull Set<Merge> merges);
 
   /**
+   * Simplify this style to remove any information that is redundant.
+   *
+   * @param that parent to compare against
+   * @return a new, simplified style
+   * @since 4.12.0
+   */
+  @NotNull Style unmerge(final @NotNull Style that);
+
+  /**
    * Tests if this style is empty.
    *
    * @return {@code true} if this style is empty, {@code false} if this
