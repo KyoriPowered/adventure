@@ -7,3 +7,7 @@ dependencies {
   compileOnlyApi(libs.autoService.annotations)
   api(libs.jetbrainsAnnotations)
 }
+
+tasks.withType(AbstractPublishToMaven::class) {
+  isEnabled = false
+}
