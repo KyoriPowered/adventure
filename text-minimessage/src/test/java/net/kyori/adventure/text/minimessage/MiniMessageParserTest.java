@@ -542,6 +542,6 @@ public class MiniMessageParserTest extends AbstractTest {
       }
     };
 
-    assertParsedEquals(expected, input, alwaysMatchingResolver);
+    this.assertParsedEquals(expected, input, alwaysMatchingResolver);
   }
 }

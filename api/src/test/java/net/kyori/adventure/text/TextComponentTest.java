@@ -25,6 +25,7 @@ package net.kyori.adventure.text;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.testing.EqualsTester;
+import java.util.Collections;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
@@ -185,5 +186,14 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
     final Component c0Compact = c0.compact();
     assertEquals(c0Compact, Component.text("tuba time"));
     assertEquals(c0Compact, c1.compact());
+  }
+
+  // https://github.com/KyoriPowered/adventure/issues/807
+  @Test
+  void testEmptyChildrenKeepsEmpty() {
+    assertSame(
+      Component.empty(),
+      Component.text("").children(Collections.emptyList())
+    );
   }
 }
