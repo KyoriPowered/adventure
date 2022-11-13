@@ -33,8 +33,6 @@ import net.kyori.adventure.chat.ChatType;
 import net.kyori.adventure.chat.SignedMessage;
 import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.identity.Identity;
-import net.kyori.adventure.identity.PlayerIdentified;
-import net.kyori.adventure.identity.PlayerIdentity;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.sound.Sound;
@@ -281,7 +279,7 @@ public interface Audience extends Pointered {
    * @param message a message
    * @see Component
    * @since 4.0.0
-   * @deprecated since 4.12.0, the client errors on receiving and can reject identified messages without {@link SignedMessage} data, this may be unsupported in the future, use {@link #sendChatMessage(SignedMessage, PlayerIdentified)} instead
+   * @deprecated since 4.12.0, the client errors on receiving and can reject identified messages without {@link SignedMessage} data, this may be unsupported in the future, use {@link #sendMessage(SignedMessage, ChatType.Bound)} instead
    */
   @Deprecated
   @ForwardingAudienceOverrideNotRequired
@@ -296,7 +294,7 @@ public interface Audience extends Pointered {
    * @param message a message
    * @see Component
    * @since 4.0.0
-   * @deprecated since 4.12.0, the client errors on receiving and can reject identified messages without {@link SignedMessage} data, this may be unsupported in the future, use {@link #sendChatMessage(SignedMessage, PlayerIdentity)} instead
+   * @deprecated since 4.12.0, the client errors on receiving and can reject identified messages without {@link SignedMessage} data, this may be unsupported in the future, use {@link #sendMessage(SignedMessage, ChatType.Bound)} instead
    */
   @Deprecated
   @ForwardingAudienceOverrideNotRequired
@@ -377,34 +375,6 @@ public interface Audience extends Pointered {
 
   /* Start: disguised player messages */
   /**
-   * Sends a chat message from the given {@link PlayerIdentified} to this {@link Audience} with the {@link ChatType#CHAT} chat type.
-   *
-   * @param component the component content
-   * @param source the source of the message
-   * @see #sendMessage(Component, ChatType.Bound)
-   * @since 4.12.0
-   * @sinceMinecraft 1.19
-   */
-  @ForwardingAudienceOverrideNotRequired
-  default void sendChatMessage(final @NotNull Component component, final @NotNull PlayerIdentified source) {
-    this.sendChatMessage(component, source.identity());
-  }
-
-  /**
-   * Sends a chat message from the given {@link PlayerIdentity} to this {@link Audience} with the {@link ChatType#CHAT} chat type.
-   *
-   * @param component the component content
-   * @param source the source of the message
-   * @see #sendMessage(Component, ChatType.Bound)
-   * @since 4.12.0
-   * @sinceMinecraft 1.19
-   */
-  @ForwardingAudienceOverrideNotRequired
-  default void sendChatMessage(final @NotNull Component component, final @NotNull PlayerIdentity source) {
-    this.sendMessage(component, ChatType.CHAT.bind(source.name()));
-  }
-
-  /**
    * Sends a message to this {@link Audience} with the provided {@link ChatType.Bound bound chat type}.
    *
    * @param message the component content
@@ -412,39 +382,11 @@ public interface Audience extends Pointered {
    * @since 4.12.0
    * @sinceMinecraft 1.19
    */
-  default void sendMessage(final @NotNull Component message, final @NotNull ChatType.Bound boundChatType) {
+  default void sendMessage(final @NotNull Component message, final ChatType.@NotNull Bound boundChatType) {
   }
   /* End: disguised player messages
 
   /* Start: signed player messages */
-  /**
-   * Sends a signed player chat message from the given {@link PlayerIdentified} to this {@link Audience} with the {@link ChatType#CHAT} chat type.
-   *
-   * @param signedMessage the signed message data
-   * @param source the source of the message
-   * @see #sendMessage(SignedMessage, ChatType.Bound)
-   * @since 4.12.0
-   * @sinceMinecraft 1.19
-   */
-  @ForwardingAudienceOverrideNotRequired
-  default void sendChatMessage(final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentified source) {
-    this.sendChatMessage(signedMessage, source.identity());
-  }
-
-  /**
-   * Sends a signed player chat message from the player identified by the provided {@link PlayerIdentity} to this {@link Audience} with the {@link ChatType#CHAT} chat type.
-   *
-   * @param signedMessage the signed message data
-   * @param source the identity of the source of the message
-   * @see #sendMessage(SignedMessage, ChatType.Bound)
-   * @since 4.12.0
-   * @sinceMinecraft 1.19
-   */
-  @ForwardingAudienceOverrideNotRequired
-  default void sendChatMessage(final @NotNull SignedMessage signedMessage, final @NotNull PlayerIdentity source) {
-    this.sendMessage(signedMessage, ChatType.CHAT.bind(source.name()));
-  }
-
   /**
    * Sends a signed player message to this {@link Audience} with the provided {@link ChatType.Bound bound chat type}.
    *
