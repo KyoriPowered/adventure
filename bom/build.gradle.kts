@@ -13,6 +13,7 @@ dependencies {
   constraints {
     sequenceOf(
       "api",
+      "annotation-processors",
       "extra-kotlin",
       "key",
       "nbt",

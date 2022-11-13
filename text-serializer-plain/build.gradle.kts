@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
   api(projects.adventureApi)
+  annotationProcessor(projects.adventureAnnotationProcessors)
 }
 
 applyJarMetadata("net.kyori.adventure.text.serializer.plain")

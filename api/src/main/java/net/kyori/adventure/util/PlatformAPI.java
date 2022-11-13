@@ -21,19 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.bossbar;
+package net.kyori.adventure.util;
 
-import net.kyori.adventure.util.PlatformAPI;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import org.jetbrains.annotations.ApiStatus;
 
 /**
- * This class is a major hack, intended to allow certain platforms a way
- * to define a platform-native counterpart to an Adventure boss bar.
+ * Elements annotated with the {@link PlatformAPI} annotation are intended for platform implementations of the Adventure API
+ * only and should not be used by standard developers. They are not public API and may change or be removed without warning at any time.
  *
- * @deprecated not an official API, and may disappear without warning
+ * <p>This annotation should always be used in tandem with the {@link ApiStatus.Internal} annotation to more consistently produce
+ * warnings</p>
+ *
+ * @since 4.12.0
  */
 @ApiStatus.Internal
-@Deprecated
-@PlatformAPI
-abstract class HackyBossBarPlatformBridge {
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.PACKAGE, ElementType.ANNOTATION_TYPE})
+public @interface PlatformAPI {
 }

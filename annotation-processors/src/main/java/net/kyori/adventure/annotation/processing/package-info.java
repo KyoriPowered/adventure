@@ -21,19 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.bossbar;
-
-import net.kyori.adventure.util.PlatformAPI;
-import org.jetbrains.annotations.ApiStatus;
-
 /**
- * This class is a major hack, intended to allow certain platforms a way
- * to define a platform-native counterpart to an Adventure boss bar.
- *
- * @deprecated not an official API, and may disappear without warning
+ * Annotation processors used by other adventure modules.
  */
 @ApiStatus.Internal
-@Deprecated
-@PlatformAPI
-abstract class HackyBossBarPlatformBridge {
-}
+package net.kyori.adventure.annotation.processing;
+
+import org.jetbrains.annotations.ApiStatus;

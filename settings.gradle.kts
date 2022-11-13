@@ -28,6 +28,7 @@ rootProject.name = "adventure-parent"
 
 sequenceOf(
   "api",
+  "annotation-processors",
   "bom",
   "extra-kotlin",
   "key",
