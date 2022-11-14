@@ -676,7 +676,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
    *
    * @since 4.0.0
    */
-  interface Builder extends AbstractBuilder<Style>, Buildable.Builder<Style>, MutableStyleSetter<Builder> {
+  interface Builder extends AbstractBuilder<Style>, Buildable.Builder<Style>, StyleGetter, MutableStyleSetter<Builder> {
     /**
      * Sets the font.
      *

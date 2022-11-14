@@ -35,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.8.0
  */
 @ApiStatus.NonExtendable
-public interface TextDecorationAndState extends Examinable, StyleBuilderApplicable {
+public interface TextDecorationAndState extends Examinable, StyleBuilderApplicable, StyleBuilderUnapplicable {
   /**
    * Gets the decoration.
    *
@@ -55,6 +55,13 @@ public interface TextDecorationAndState extends Examinable, StyleBuilderApplicab
   @Override
   default void styleApply(final Style.@NotNull Builder style) {
     style.decoration(this.decoration(), this.state());
+  }
+
+  @Override
+  default void styleUnApply(final Style.@NotNull Builder style) {
+    if (style.decoration(this.decoration()) == this.state()) {
+      style.decoration(this.decoration(), TextDecoration.State.NOT_SET);
+    }
   }
 
   @Override

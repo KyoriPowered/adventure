@@ -36,7 +36,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.0.0
  */
-public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
+public enum TextDecoration implements StyleBuilderApplicable, StyleBuilderUnapplicable, TextFormat {
   /**
    * A decoration which makes text obfuscated/unreadable.
    *
@@ -142,6 +142,11 @@ public enum TextDecoration implements StyleBuilderApplicable, TextFormat {
   @Override
   public void styleApply(final Style.@NotNull Builder style) {
     style.decorate(this);
+  }
+
+  @Override
+  public void styleUnApply(final Style.@NotNull Builder style) {
+    style.decoration(this, TextDecoration.State.NOT_SET);
   }
 
   @Override

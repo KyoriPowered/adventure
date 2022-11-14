@@ -305,9 +305,19 @@ final class StyleImpl implements Style {
     }
 
     @Override
+    public @Nullable Key font() {
+      return this.font;
+    }
+
+    @Override
     public @NotNull Builder font(final @Nullable Key font) {
       this.font = font;
       return this;
+    }
+
+    @Override
+    public @Nullable TextColor color() {
+      return this.color;
     }
 
     @Override
@@ -322,6 +332,11 @@ final class StyleImpl implements Style {
         this.color = color;
       }
       return this;
+    }
+
+    @Override
+    public TextDecoration.@NotNull State decoration(final @NotNull TextDecoration decoration) {
+      return this.decorations.getOrDefault(decoration, TextDecoration.State.NOT_SET);
     }
 
     @Override
@@ -346,15 +361,30 @@ final class StyleImpl implements Style {
     }
 
     @Override
+    public @Nullable ClickEvent clickEvent() {
+      return this.clickEvent;
+    }
+
+    @Override
     public @NotNull Builder clickEvent(final @Nullable ClickEvent event) {
       this.clickEvent = event;
       return this;
     }
 
     @Override
+    public @Nullable HoverEvent<?> hoverEvent() {
+      return this.hoverEvent;
+    }
+
+    @Override
     public @NotNull Builder hoverEvent(final @Nullable HoverEventSource<?> source) {
       this.hoverEvent = HoverEventSource.unbox(source);
       return this;
+    }
+
+    @Override
+    public @Nullable String insertion() {
+      return this.insertion;
     }
 
     @Override

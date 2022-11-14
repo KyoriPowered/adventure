@@ -268,7 +268,9 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
 
   @Override
   default void styleUnApply(final Style.@NotNull Builder style) {
-    style.color(null);
+    if (this.equals(style.color())) {
+      style.color(null);
+    }
   }
 
   @Override
