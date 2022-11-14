@@ -43,7 +43,7 @@ import org.jetbrains.annotations.Range;
  * @see NamedTextColor
  * @since 4.0.0
  */
-public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, StyleBuilderApplicable, TextFormat {
+public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, StyleBuilderApplicable, StyleBuilderUnapplicable, TextFormat {
   /**
    * Creates a new text colour.
    *
@@ -264,6 +264,11 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
   @Override
   default void styleApply(final Style.@NotNull Builder style) {
     style.color(this);
+  }
+
+  @Override
+  default void styleUnApply(final Style.@NotNull Builder style) {
+    style.color(null);
   }
 
   @Override
