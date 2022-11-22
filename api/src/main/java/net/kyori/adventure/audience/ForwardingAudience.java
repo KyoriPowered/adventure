@@ -123,12 +123,14 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
-  default void sendMessage(@NotNull Identified source, @NotNull Component message, @NotNull MessageType type) {
+  @Deprecated
+  default void sendMessage(final @NotNull Identified source, final @NotNull Component message, final @NotNull MessageType type) {
     for (final Audience audience : this.audiences()) audience.sendMessage(source, message, type);
   }
 
   @Override
-  default void sendMessage(@NotNull Identity source, @NotNull Component message, @NotNull MessageType type) {
+  @Deprecated
+  default void sendMessage(final @NotNull Identity source, final @NotNull Component message, final @NotNull MessageType type) {
     for (final Audience audience : this.audiences()) audience.sendMessage(source, message, type);
   }
 
@@ -289,11 +291,13 @@ public interface ForwardingAudience extends Audience {
     }
 
     @Override
+    @Deprecated
     default void sendMessage(final @NotNull Identified source, final @NotNull Component message, final @NotNull MessageType type) {
       this.audience().sendMessage(source, message, type);
     }
 
     @Override
+    @Deprecated
     default void sendMessage(final @NotNull Identity source, final @NotNull Component message, final @NotNull MessageType type) {
       this.audience().sendMessage(source, message, type);
     }

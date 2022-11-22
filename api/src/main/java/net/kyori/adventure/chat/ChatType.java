@@ -179,8 +179,7 @@ public interface ChatType extends Examinable, Keyed {
     @Nullable Component target();
 
     @Override
-    @NotNull
-    default Stream<? extends ExaminableProperty> examinableProperties() {
+    default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(
         ExaminableProperty.of("type", this.type()),
         ExaminableProperty.of("name", this.name()),

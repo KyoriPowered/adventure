@@ -185,8 +185,7 @@ public interface SignedMessage extends Identified, Examinable {
     byte[] bytes();
 
     @Override
-    @NotNull
-    default Stream<? extends ExaminableProperty> examinableProperties() {
+    default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
       return Stream.of(ExaminableProperty.of("bytes", this.bytes()));
     }
   }

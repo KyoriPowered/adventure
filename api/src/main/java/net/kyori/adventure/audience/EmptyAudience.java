@@ -77,10 +77,12 @@ final class EmptyAudience implements Audience {
   }
 
   @Override
+  @Deprecated
   public void sendMessage(final @NotNull Identified source, final @NotNull Component message, final @NotNull MessageType type) {
   }
 
   @Override
+  @Deprecated
   public void sendMessage(final @NotNull Identity source, final @NotNull Component message, final @NotNull MessageType type) {
   }
 

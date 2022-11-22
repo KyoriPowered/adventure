@@ -426,9 +426,6 @@ public interface Audience extends Pointered {
   default void deleteMessage(final SignedMessage.@NotNull Signature signature) {
   }
 
-  // todo, the delete message packet also supports an int identifier that has something
-  //  to do with the message chain, unsure if that should be exposed
-
   /**
    * Sends the signed message's header to this audience.
    *
