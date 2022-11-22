@@ -108,18 +108,13 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
-  default void sendMessage(final @NotNull SignedMessage signedMessage, final ChatType.Bound boundChatType) {
+  default void sendMessage(final @NotNull SignedMessage signedMessage, final ChatType.@NotNull Bound boundChatType) {
     for (final Audience audience : this.audiences()) audience.sendMessage(signedMessage, boundChatType);
   }
 
   @Override
   default void deleteMessage(final SignedMessage.@NotNull Signature signature) {
     for (final Audience audience : this.audiences()) audience.deleteMessage(signature);
-  }
-
-  @Override
-  default void sendMessageHeader(final @NotNull SignedMessage signedMessage) {
-    for (final Audience audience : this.audiences()) audience.sendMessageHeader(signedMessage);
   }
 
   @Override
@@ -276,18 +271,13 @@ public interface ForwardingAudience extends Audience {
     }
 
     @Override
-    default void sendMessage(final @NotNull SignedMessage signedMessage, final ChatType.Bound boundChatType) {
+    default void sendMessage(final @NotNull SignedMessage signedMessage, final ChatType.@NotNull Bound boundChatType) {
       this.audience().sendMessage(signedMessage, boundChatType);
     }
 
     @Override
     default void deleteMessage(final SignedMessage.@NotNull Signature signature) {
       this.audience().deleteMessage(signature);
-    }
-
-    @Override
-    default void sendMessageHeader(final @NotNull SignedMessage signedMessage) {
-      this.audience().sendMessageHeader(signedMessage);
     }
 
     @Override

@@ -91,15 +91,11 @@ final class EmptyAudience implements Audience {
   }
 
   @Override
-  public void sendMessage(final @NotNull SignedMessage signedMessage, final ChatType.Bound boundChatType) {
+  public void sendMessage(final @NotNull SignedMessage signedMessage, final ChatType.@NotNull Bound boundChatType) {
   }
 
   @Override
   public void deleteMessage(final SignedMessage.@NotNull Signature signature) {
-  }
-
-  @Override
-  public void sendMessageHeader(final @NotNull SignedMessage signedMessage) {
   }
 
   @Override

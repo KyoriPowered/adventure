@@ -145,16 +145,6 @@ public interface SignedMessage extends Identified, Examinable {
     return this.signature() != null;
   }
 
-  /**
-   * Checks if this message can be sent as a header via {@link net.kyori.adventure.audience.Audience#sendMessageHeader(SignedMessage)}.
-   *
-   * @return true if supports sending as a header
-   * @since 4.12.0
-   * @sinceMinecraft 1.19
-   */
-  @Contract(pure = true)
-  boolean canSendAsHeader();
-
   @Override
   default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(

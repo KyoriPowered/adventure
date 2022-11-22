@@ -349,9 +349,7 @@ public interface Audience extends Pointered {
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Deprecated
   default void sendMessage(final @NotNull Identified source, final @NotNull Component message, final @NotNull MessageType type) {
-    if (source.identity() == Identity.nil()) {
-      this.sendMessage(message);
-    }
+    this.sendMessage(message);
   }
 
   /**
@@ -367,9 +365,7 @@ public interface Audience extends Pointered {
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Deprecated
   default void sendMessage(final @NotNull Identity source, final @NotNull Component message, final @NotNull MessageType type) {
-    if (source == Identity.nil()) {
-      this.sendMessage(message);
-    }
+    this.sendMessage(message);
   }
   /* End: unsigned player messages */
 
@@ -395,7 +391,7 @@ public interface Audience extends Pointered {
    * @since 4.12.0
    * @sinceMinecraft 1.19
    */
-  default void sendMessage(final @NotNull SignedMessage signedMessage, final ChatType.Bound boundChatType) {
+  default void sendMessage(final @NotNull SignedMessage signedMessage, final ChatType.@NotNull Bound boundChatType) {
     if (signedMessage.isSystem()) {
       this.sendMessage(signedMessage.unsignedContent() != null ? signedMessage.unsignedContent() : Component.text(signedMessage.message()), boundChatType);
     }
@@ -424,17 +420,6 @@ public interface Audience extends Pointered {
    * @sinceMinecraft 1.19
    */
   default void deleteMessage(final SignedMessage.@NotNull Signature signature) {
-  }
-
-  /**
-   * Sends the signed message's header to this audience.
-   *
-   * @param signedMessage the signed message
-   * @see SignedMessage#canSendAsHeader()
-   * @since 4.12.0
-   * @sinceMinecraft 1.19
-   */
-  default void sendMessageHeader(final @NotNull SignedMessage signedMessage) {
   }
   /* End: signed player messages */
 
