@@ -162,6 +162,7 @@ public interface SignedMessage extends Identified, Examinable {
    * @since 4.12.0
    * @sinceMinecraft 1.19
    */
+  @ApiStatus.NonExtendable
   interface Signature extends Examinable {
 
     /**
