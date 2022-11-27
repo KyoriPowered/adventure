@@ -80,7 +80,7 @@ public interface SignedMessage extends Identified, Examinable {
    * @sinceMinecraft 1.19
    */
   @Contract(pure = true)
-  @NotNull Instant timeStamp();
+  @NotNull Instant timestamp();
 
   /**
    * The salt.
@@ -149,7 +149,7 @@ public interface SignedMessage extends Identified, Examinable {
   @Override
   default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
-      ExaminableProperty.of("timeStamp", this.timeStamp()),
+      ExaminableProperty.of("timestamp", this.timestamp()),
       ExaminableProperty.of("salt", this.salt()),
       ExaminableProperty.of("signature", this.signature()),
       ExaminableProperty.of("unsignedContent", this.unsignedContent()),

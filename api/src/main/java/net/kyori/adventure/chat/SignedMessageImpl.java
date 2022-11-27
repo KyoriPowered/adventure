@@ -47,7 +47,7 @@ final class SignedMessageImpl implements SignedMessage {
   }
 
   @Override
-  public @NotNull Instant timeStamp() {
+  public @NotNull Instant timestamp() {
     return this.instant;
   }
 
