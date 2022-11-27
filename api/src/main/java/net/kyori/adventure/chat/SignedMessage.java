@@ -28,6 +28,7 @@ import java.util.stream.Stream;
 import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.ApiStatus;
@@ -67,8 +68,8 @@ public interface SignedMessage extends Identified, Examinable {
    * @sinceMinecraft 1.19
    */
   @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull SignedMessage system(final @NotNull String message, final @Nullable Component unsignedContent) {
-    return new SignedMessageImpl(message, unsignedContent);
+  static @NotNull SignedMessage system(final @NotNull String message, final @Nullable ComponentLike unsignedContent) {
+    return new SignedMessageImpl(message, ComponentLike.unbox(unsignedContent));
   }
 
   /**

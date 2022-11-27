@@ -201,7 +201,9 @@ public interface Audience extends Pointered {
    * @see #sendMessage(Identity, Component)
    * @since 4.1.0
    */
+  @SuppressWarnings("deprecation")
   default void sendMessage(final @NotNull Component message) {
+    this.sendMessage(message, MessageType.SYSTEM);
   }
 
   /**
@@ -219,7 +221,7 @@ public interface Audience extends Pointered {
   @Deprecated
   @ForwardingAudienceOverrideNotRequired
   default void sendMessage(final @NotNull ComponentLike message, final @NotNull MessageType type) {
-    this.sendMessage(message);
+    this.sendMessage(message.asComponent(), type);
   }
 
   /**
@@ -237,7 +239,7 @@ public interface Audience extends Pointered {
   @Deprecated
   @ForwardingAudienceOverrideNotRequired
   default void sendMessage(final @NotNull Component message, final @NotNull MessageType type) {
-    this.sendMessage(message);
+    this.sendMessage(Identity.nil(), message, type);
   }
   /* End: system messages */
 
@@ -365,7 +367,7 @@ public interface Audience extends Pointered {
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Deprecated
   default void sendMessage(final @NotNull Identity source, final @NotNull Component message, final @NotNull MessageType type) {
-    this.sendMessage(message);
+    // implementation required
   }
   /* End: unsigned player messages */
 
@@ -378,7 +380,22 @@ public interface Audience extends Pointered {
    * @since 4.12.0
    * @sinceMinecraft 1.19
    */
+  @SuppressWarnings("deprecation")
   default void sendMessage(final @NotNull Component message, final ChatType.@NotNull Bound boundChatType) {
+    this.sendMessage(message, MessageType.CHAT);
+  }
+
+  /**
+   * Sends a message to this {@link Audience} with the provided {@link ChatType.Bound bound chat type}.
+   *
+   * @param message the component content
+   * @param boundChatType the bound chat type
+   * @since 4.12.0
+   * @sinceMinecraft 1.19
+   */
+  @ForwardingAudienceOverrideNotRequired
+  default void sendMessage(final @NotNull ComponentLike message, final ChatType.@NotNull Bound boundChatType) {
+    this.sendMessage(message.asComponent(), boundChatType);
   }
   /* End: disguised player messages
 
@@ -391,9 +408,13 @@ public interface Audience extends Pointered {
    * @since 4.12.0
    * @sinceMinecraft 1.19
    */
+  @SuppressWarnings("deprecation")
   default void sendMessage(final @NotNull SignedMessage signedMessage, final ChatType.@NotNull Bound boundChatType) {
+    final Component content = signedMessage.unsignedContent() != null ? signedMessage.unsignedContent() : Component.text(signedMessage.message());
     if (signedMessage.isSystem()) {
-      this.sendMessage(signedMessage.unsignedContent() != null ? signedMessage.unsignedContent() : Component.text(signedMessage.message()), boundChatType);
+      this.sendMessage(content);
+    } else {
+      this.sendMessage(signedMessage.identity(), content, MessageType.CHAT);
     }
   }
 

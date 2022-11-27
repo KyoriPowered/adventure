@@ -23,16 +23,18 @@
  */
 package net.kyori.adventure.chat;
 
-import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A type of chat.
@@ -104,8 +106,8 @@ public interface ChatType extends Examinable, Keyed {
    * @return the chat type
    * @since 4.12.0
    */
-  static @NotNull ChatType chatType(final @NotNull Key key) {
-    return new ChatTypeImpl(Objects.requireNonNull(key, "key"));
+  static @NotNull ChatType chatType(final @NotNull Keyed key) {
+    return key instanceof ChatType ? (ChatType) key : new ChatTypeImpl(requireNonNull(key, "key").key());
   }
 
   /**
@@ -117,7 +119,7 @@ public interface ChatType extends Examinable, Keyed {
    * @sinceMinecraft 1.19
    */
   @Contract(value = "_ -> new", pure = true)
-  default ChatType.@NotNull Bound bind(final @NotNull Component name) {
+  default ChatType.@NotNull Bound bind(final @NotNull ComponentLike name) {
     return this.bind(name, null);
   }
 
@@ -131,8 +133,8 @@ public interface ChatType extends Examinable, Keyed {
    * @sinceMinecraft 1.19
    */
   @Contract(value = "_, _ -> new", pure = true)
-  default ChatType.@NotNull Bound bind(final @NotNull Component name, final @Nullable Component target) {
-    return new ChatTypeImpl.BoundImpl(this, name, target);
+  default ChatType.@NotNull Bound bind(final @NotNull ComponentLike name, final @Nullable ComponentLike target) {
+    return new ChatTypeImpl.BoundImpl(this, requireNonNull(name.asComponent(), "name"), ComponentLike.unbox(target));
   }
 
   @Override
