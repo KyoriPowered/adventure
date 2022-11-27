@@ -351,7 +351,7 @@ public interface Audience extends Pointered {
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   @Deprecated
   default void sendMessage(final @NotNull Identified source, final @NotNull Component message, final @NotNull MessageType type) {
-    this.sendMessage(message);
+    this.sendMessage(source.identity(), message, type);
   }
 
   /**
