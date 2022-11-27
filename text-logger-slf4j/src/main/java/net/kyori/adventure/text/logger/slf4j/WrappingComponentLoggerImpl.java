@@ -33,6 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.Marker;
 import org.slf4j.event.Level;
 import org.slf4j.spi.LocationAwareLogger;
+import org.slf4j.spi.LoggingEventBuilder;
+import org.slf4j.spi.NOPLoggingEventBuilder;
 
 final class WrappingComponentLoggerImpl implements ComponentLogger {
   private static final String FQCN = WrappingComponentLoggerImpl.class.getName();
@@ -145,16 +147,16 @@ final class WrappingComponentLoggerImpl implements ComponentLogger {
   }
 
   @Override
-  public @NotNull ComponentLoggingEventBuilder makeLoggingEventBuilder(final @NotNull Level level) {
-    return new ComponentLoggingEventBuilderImpl(this.logger, level, this.serializer);
+  public @NotNull LoggingEventBuilder makeLoggingEventBuilder(final @NotNull Level level) {
+    return this.logger.makeLoggingEventBuilder(level);
   }
 
   @Override
-  public @NotNull ComponentLoggingEventBuilder atLevel(final @NotNull Level level) {
+  public @NotNull LoggingEventBuilder atLevel(final @NotNull Level level) {
     if (this.logger.isEnabledForLevel(level)) {
-      return this.makeLoggingEventBuilder(level);
+      return this.logger.makeLoggingEventBuilder(level);
     } else {
-      return NoOpComponentLoggingEventBuilderImpl.INSTANCE;
+      return NOPLoggingEventBuilder.singleton();
     }
   }
 
