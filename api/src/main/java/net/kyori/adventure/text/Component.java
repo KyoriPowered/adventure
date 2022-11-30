@@ -1258,6 +1258,25 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /*
+   * --------------------------
+   * ---- VirtualComponent ----
+   * --------------------------
+   */
+
+  /**
+   * Creates a virtual component with a value.
+   *
+   * @param virtual the value
+   * @return a virtual component
+   * @since 4.13.0
+   */
+  @Contract(value = "_ -> new", pure = true)
+  static @NotNull VirtualComponent virtual(final @NotNull VirtualComponentHolder<?> virtual) {
+    requireNonNull(virtual, "virtual");
+    return VirtualComponentImpl.createVirtual(virtual);
+  }
+
+  /*
    * -------------------------------
    * ---- TranslatableComponent ----
    * -------------------------------
