@@ -60,7 +60,8 @@ public final class StandardTags {
         ResetTag.RESOLVER,
         NewlineTag.RESOLVER,
         TransitionTag.RESOLVER,
-        SelectorTag.RESOLVER
+        SelectorTag.RESOLVER,
+        ScoreTag.RESOLVER
       )
       .build();
 
@@ -225,6 +226,16 @@ public final class StandardTags {
    */
   public static @NotNull TagResolver selector() {
     return SelectorTag.RESOLVER;
+  }
+
+  /**
+   * Get a resolver for the {@value ScoreTag#SCORE} tag.
+   *
+   * @return a resolver for the {@value ScoreTag#SCORE} tag
+   * @since 4.13.0
+   */
+  public static @NotNull TagResolver score() {
+    return ScoreTag.RESOLVER;
   }
 
   /**
