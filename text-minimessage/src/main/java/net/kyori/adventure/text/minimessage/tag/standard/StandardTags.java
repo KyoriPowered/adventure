@@ -61,7 +61,8 @@ public final class StandardTags {
         NewlineTag.RESOLVER,
         TransitionTag.RESOLVER,
         SelectorTag.RESOLVER,
-        ScoreTag.RESOLVER
+        ScoreTag.RESOLVER,
+        NbtTag.RESOLVER
       )
       .build();
 
@@ -236,6 +237,18 @@ public final class StandardTags {
    */
   public static @NotNull TagResolver score() {
     return ScoreTag.RESOLVER;
+  }
+
+  /**
+   * Get a resolver for the {@value NbtTag#NBT} tag.
+   *
+   * <p>This tag also responds to {@value NbtTag#DATA}.</p>
+   *
+   * @return a resolver for the {@value NbtTag#NBT} tag.
+   * @since 4.13.0
+   */
+  public static @NotNull TagResolver nbt() {
+    return NbtTag.RESOLVER;
   }
 
   /**
