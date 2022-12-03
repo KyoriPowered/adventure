@@ -139,7 +139,9 @@ public class ParsingExceptionImpl extends ParsingException {
     for (final Token t : ts) {
       Arrays.fill(chars, i, t.startIndex(), ' ');
       chars[t.startIndex()] = '^';
-      Arrays.fill(chars, t.startIndex() + 1, t.endIndex() - 1, '~');
+      if (Math.abs(t.startIndex() - t.endIndex()) > 1) {
+        Arrays.fill(chars, t.startIndex() + 1, t.endIndex() - 1, '~');
+      }
       chars[t.endIndex() - 1] = '^';
       i = t.endIndex();
     }
