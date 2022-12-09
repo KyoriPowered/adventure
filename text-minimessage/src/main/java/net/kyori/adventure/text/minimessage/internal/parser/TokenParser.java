@@ -86,7 +86,7 @@ public final class TokenParser {
     final boolean strict
   ) throws ParsingException {
     // collect tokens...
-    final List<Token> tokens = tokenize(message);
+    final List<Token> tokens = tokenize(message, false);
 
     // then build the tree!
     return buildTree(tagProvider, tagNameChecker, tokens, message, originalMessage, strict);
@@ -109,7 +109,7 @@ public final class TokenParser {
       lastResult = result;
       final StringResolvingMatchedTokenConsumer stringTokenResolver = new StringResolvingMatchedTokenConsumer(lastResult, provider);
 
-      parseString(lastResult, stringTokenResolver);
+      parseString(lastResult, false, stringTokenResolver);
       result = stringTokenResolver.result();
       passes++;
     } while (passes < MAX_DEPTH && !lastResult.equals(result));
@@ -121,12 +121,13 @@ public final class TokenParser {
    * Tokenize a minimessage string into a list of tokens.
    *
    * @param message the minimessage string to parse
+   * @param lenient whether to allow section symbols (for escaping/stripping/non-actual-parse stuff only)
    * @return the root tokens
    * @since 4.10.0
    */
-  public static List<Token> tokenize(final String message) {
+  public static List<Token> tokenize(final String message, final boolean lenient) {
     final TokenListProducingMatchedTokenConsumer listProducer = new TokenListProducingMatchedTokenConsumer(message);
-    parseString(message, listProducer);
+    parseString(message, lenient, listProducer);
     final List<Token> tokens = listProducer.result();
     parseSecondPass(message, tokens);
     return tokens;
@@ -142,10 +143,11 @@ public final class TokenParser {
    * Parses a string, providing information on matched tokens to the matched token consumer.
    *
    * @param message the message
+   * @param lenient whether to allow section symbols
    * @param consumer the consumer
    * @since 4.10.0
    */
-  public static void parseString(final String message, final MatchedTokenConsumer<?> consumer) {
+  public static void parseString(final String message, final boolean lenient, final MatchedTokenConsumer<?> consumer) {
     FirstPassState state = FirstPassState.NORMAL;
     // If the current state is escaped then the next character is skipped
     boolean escaped = false;
@@ -158,7 +160,7 @@ public final class TokenParser {
     final int length = message.length();
     for (int i = 0; i < length; i++) {
       final int codePoint = message.codePointAt(i);
-      if (codePoint == '§' && i + 1 < length) {
+      if (!lenient && codePoint == '§' && i + 1 < length) {
         final int nextChar = Character.toLowerCase(message.codePointAt(i + 1));
         // Only throw an exception if the next character is actually going to make a legacy color code
         if ((nextChar >= '0' && nextChar <= '9')
@@ -193,6 +195,11 @@ public final class TokenParser {
               escaped = currentStringChar == nextCodePoint || nextCodePoint == ESCAPE;
               break;
             case TAG:
+              // Escape characters are not valid in tag names, so we aren't a tag token
+              if (nextCodePoint == TAG_START) {
+                escaped = true;
+                state = FirstPassState.NORMAL;
+              }
               break;
           }
 
@@ -246,8 +253,11 @@ public final class TokenParser {
               break;
             case '\'':
             case '"':
-              state = FirstPassState.STRING;
               currentStringChar = (char) codePoint;
+              // Look ahead if the quote being opened is ever closed
+              if (message.indexOf(codePoint, i + 1) != -1) {
+                state = FirstPassState.STRING;
+              }
               break;
           }
           break;
@@ -256,6 +266,14 @@ public final class TokenParser {
             state = FirstPassState.TAG;
           }
           break;
+      }
+
+      if (i == (length - 1) && state == FirstPassState.TAG) {
+        // We've reached the end of the input with an open `<`, but it was never matched to a closing `>`.
+        // Anything which was inside of quotes needs to be parsed again, as it may contain additional tags.
+        // Rewind back to directly after the `<`, but in the NORMAL state, instead of TAG.
+        i = marker;
+        state = FirstPassState.NORMAL;
       }
     }
 

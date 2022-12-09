@@ -23,9 +23,14 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.util.Collections;
+import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.internal.parser.Token;
+import net.kyori.adventure.text.minimessage.internal.parser.TokenParser;
+import net.kyori.adventure.text.minimessage.internal.parser.TokenType;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -54,6 +59,7 @@ import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.comp
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.parsed;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MiniMessageParserTest extends AbstractTest {
@@ -155,6 +161,15 @@ public class MiniMessageParserTest extends AbstractTest {
     final Component comp = MiniMessage.miniMessage().deserialize(escaped);
 
     assertEquals(expected, PlainTextComponentSerializer.plainText().serialize(comp));
+  }
+
+  // https://github.com/KyoriPowered/adventure/issues/799
+  @Test
+  void testEscapeIgnoresSectionSigns() {
+    final String input = "Hello, read §64 for <red> information";
+    final String expected = "Hello, read §64 for \\<red> information";
+
+    assertEquals(expected, PARSER.escapeTags(input));
   }
 
   @Test
@@ -278,6 +293,41 @@ public class MiniMessageParserTest extends AbstractTest {
     this.assertParsedEquals(expected1, input1);
     this.assertParsedEquals(expected2, input2);
     this.assertParsedEquals(expected3, input3);
+  }
+
+  @Test
+  void testNonTerminatingQuote() {
+    final Component expected = empty().append(text("Remember the<3\"").color(RED)).append(text(" bug"));
+    final Component expected1 = empty().append(text("Remember the<3'").color(RED)).append(text(" bug"));
+    final Component expected2 = empty().append(text("Remember the<h:\"").color(RED)).append(text(" bug"));
+    final Component expected3 = empty().append(text("Remember the<h:\"").color(RED)).append(text(" \"bug"));
+    // This one is an actually valid use of quotes
+    final Component expected4 = empty().append(text("Remember the<h:\"</red> \">bug").color(RED));
+    final String input = "<red>Remember the<3\"</red> bug";
+    final String input1 = "<red>Remember the<3'</red> bug";
+    final String input2 = "<red>Remember the<h:\"</red> bug";
+    final String input3 = "<red>Remember the<h:\"</red> \"bug";
+    final String input4 = "<red>Remember the<h:\"</red> \">bug";
+    this.assertParsedEquals(expected, input);
+    this.assertParsedEquals(expected1, input1);
+    this.assertParsedEquals(expected2, input2);
+    this.assertParsedEquals(expected3, input3);
+    this.assertParsedEquals(expected4, input4);
+  }
+
+  // https://github.com/KyoriPowered/adventure/issues/821
+  @Test
+  void testEscapeIncompleteTags() {
+    final String input = "<<aqua> a";
+    final String escaped = PARSER.escapeTags(input);
+
+    assertEquals("<\\<aqua> a", escaped);
+
+    final List<Token> expectedTokens = Collections.singletonList(new Token(0, escaped.length(), TokenType.TEXT));
+    assertIterableEquals(expectedTokens, TokenParser.tokenize(escaped, false));
+
+    final Component expected = text("<<aqua> a");
+    this.assertParsedEquals(expected, escaped);
   }
 
   // GH-68, GH-93
@@ -492,6 +542,6 @@ public class MiniMessageParserTest extends AbstractTest {
       }
     };
 
-    assertParsedEquals(expected, input, alwaysMatchingResolver);
+    this.assertParsedEquals(expected, input, alwaysMatchingResolver);
   }
 }

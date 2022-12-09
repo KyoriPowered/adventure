@@ -48,14 +48,14 @@ final class BinaryTagReaderImpl implements BinaryTagIO.Reader {
 
   @Override
   public @NotNull CompoundBinaryTag read(final @NotNull Path path, final BinaryTagIO.@NotNull Compression compression) throws IOException {
-    try(final InputStream is = Files.newInputStream(path)) {
+    try (final InputStream is = Files.newInputStream(path)) {
       return this.read(is, compression);
     }
   }
 
   @Override
   public @NotNull CompoundBinaryTag read(final @NotNull InputStream input, final BinaryTagIO.@NotNull Compression compression) throws IOException {
-    try(final DataInputStream dis = new DataInputStream(new BufferedInputStream(compression.decompress(closeShield(input))))) {
+    try (final DataInputStream dis = new DataInputStream(new BufferedInputStream(compression.decompress(closeShield(input))))) {
       return this.read((DataInput) dis);
     }
   }
@@ -74,14 +74,14 @@ final class BinaryTagReaderImpl implements BinaryTagIO.Reader {
 
   @Override
   public Map.@NotNull Entry<String, CompoundBinaryTag> readNamed(final @NotNull Path path, final BinaryTagIO.@NotNull Compression compression) throws IOException {
-    try(final InputStream is = Files.newInputStream(path)) {
+    try (final InputStream is = Files.newInputStream(path)) {
       return this.readNamed(is, compression);
     }
   }
 
   @Override
   public Map.@NotNull Entry<String, CompoundBinaryTag> readNamed(final @NotNull InputStream input, final BinaryTagIO.@NotNull Compression compression) throws IOException {
-    try(final DataInputStream dis = new DataInputStream(new BufferedInputStream(compression.decompress(closeShield(input))))) {
+    try (final DataInputStream dis = new DataInputStream(new BufferedInputStream(compression.decompress(closeShield(input))))) {
       return this.readNamed((DataInput) dis);
     }
   }

@@ -33,6 +33,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.util.ComponentMessageThrowable;
 import org.jetbrains.annotations.Nullable;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Marker;
@@ -155,5 +156,19 @@ public class ComponentLoggerTest {
       LOGGER.getLoggingEvents(),
       ImmutableList.of(LoggingEvent.info("Hello {}", "friend"))
     );
+  }
+
+  @Test
+  @Disabled("We cannot implement this without forcing a binary dep at the moment")
+  void testFluentApi() {
+    final Component message = Component.text("Hello ").append(Component.text("{}", NamedTextColor.BLUE));
+    final String arg = "world";
+
+    this.makeLogger().atDebug()
+        // .setMessage(message)
+        .addArgument(arg)
+        .log();
+
+    assertEquals(LOGGER.getLoggingEvents(), ImmutableList.of(LoggingEvent.debug("Hello {}", arg)));
   }
 }

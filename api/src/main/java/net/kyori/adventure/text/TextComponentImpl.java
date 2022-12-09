@@ -46,8 +46,11 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   static final TextComponent SPACE = createDirect(" ");
 
   static TextComponent create(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String content) {
+    final List<Component> filteredChildren = ComponentLike.asComponents(children, IS_NOT_EMPTY);
+    if (filteredChildren.isEmpty() && style.isEmpty() && content.isEmpty()) return Component.empty();
+
     return new TextComponentImpl(
-      ComponentLike.asComponents(children, IS_NOT_EMPTY),
+      filteredChildren,
       requireNonNull(style, "style"),
       requireNonNull(content, "content")
     );

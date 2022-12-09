@@ -25,11 +25,14 @@ package net.kyori.adventure.text.minimessage.tag.standard;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.AbstractTest;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.translatable;
 import static net.kyori.adventure.text.event.HoverEvent.showText;
 import static net.kyori.adventure.text.format.NamedTextColor.BLACK;
 import static net.kyori.adventure.text.format.NamedTextColor.BLUE;
@@ -521,6 +524,36 @@ class GradientTagTest extends AbstractTest {
           text("C", NamedTextColor.WHITE)
         )
       );
+
+    this.assertParsedEquals(expected, input);
+  }
+
+  // https://github.com/KyoriPowered/adventure/issues/790
+  @Test
+  void testDecorationsPreserved() {
+    final Component placeholder = Component.text("b", style(TextDecoration.ITALIC.withState(true)));
+    final String input = "<gradient>a<placeholder/>c<bold>d</bold>!</gradient>";
+    final Component expected = Component.textOfChildren(
+      text("a", WHITE),
+      text("b", color(0xcccccc), TextDecoration.ITALIC),
+      text("c", color(0x999999)),
+      text("d", color(0x666666), BOLD),
+      text("!", color(0x333333))
+    );
+
+    this.assertParsedEquals(expected, input, Placeholder.component("placeholder", placeholder));
+  }
+
+  // https://github.com/KyoriPowered/adventure/issues/827
+  @Test
+  void testLangTagInGradient() {
+    final String input = "<gradient:red:blue>ab<lang:block.minecraft.diamond_block>!</gradient>";
+    final Component expected = Component.textOfChildren(
+      text("a", RED),
+      text("b", color(0xd55580)),
+      translatable("block.minecraft.diamond_block", color(0xaa55aa))
+        .append(text("!", color(0x8055d5)))
+    );
 
     this.assertParsedEquals(expected, input);
   }

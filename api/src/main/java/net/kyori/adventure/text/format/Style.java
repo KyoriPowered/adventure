@@ -351,7 +351,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
    * @since 4.12.0
    */
   @Override
-  @NotNull Style decorationIfAbsent(final @NotNull TextDecoration decoration, @NotNull final TextDecoration.State state);
+  @NotNull Style decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
 
   /**
    * Gets a map of decorations this style has.
@@ -528,6 +528,15 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
    * @since 4.0.0
    */
   @NotNull Style merge(final @NotNull Style that, final Merge.@NotNull Strategy strategy, final @NotNull Set<Merge> merges);
+
+  /**
+   * Simplify this style to remove any information that is redundant.
+   *
+   * @param that parent to compare against
+   * @return a new, simplified style
+   * @since 4.12.0
+   */
+  @NotNull Style unmerge(final @NotNull Style that);
 
   /**
    * Tests if this style is empty.
@@ -783,7 +792,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable, Styl
      */
     @Override
     @Contract("_, _ -> this")
-    @NotNull Builder decorationIfAbsent(final @NotNull TextDecoration decoration, @NotNull final TextDecoration.State state);
+    @NotNull Builder decorationIfAbsent(final @NotNull TextDecoration decoration, final TextDecoration.@NotNull State state);
 
     /**
      * Sets the click event.

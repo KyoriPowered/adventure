@@ -79,7 +79,7 @@ final class PointersImpl implements Pointers {
   }
 
   @Override
-  public @NotNull Pointers.Builder toBuilder() {
+  public Pointers.@NotNull Builder toBuilder() {
     return new BuilderImpl(this);
   }
 

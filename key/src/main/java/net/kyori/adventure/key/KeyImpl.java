@@ -28,7 +28,6 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.VisibleForTesting;
 
 import static java.util.Objects.requireNonNull;
 
@@ -42,38 +41,18 @@ final class KeyImpl implements Key {
   private final String value;
 
   KeyImpl(final @NotNull String namespace, final @NotNull String value) {
-    if (!namespaceValid(namespace)) throw new InvalidKeyException(namespace, value, String.format("Non [a-z0-9_.-] character in namespace of Key[%s]", asString(namespace, value)));
-    if (!valueValid(value)) throw new InvalidKeyException(namespace, value, String.format("Non [a-z0-9/._-] character in value of Key[%s]", asString(namespace, value)));
+    if (!Key.parseableNamespace(namespace)) throw new InvalidKeyException(namespace, value, String.format("Non [a-z0-9_.-] character in namespace of Key[%s]", asString(namespace, value)));
+    if (!Key.parseableValue(value)) throw new InvalidKeyException(namespace, value, String.format("Non [a-z0-9/._-] character in value of Key[%s]", asString(namespace, value)));
     this.namespace = requireNonNull(namespace, "namespace");
     this.value = requireNonNull(value, "value");
   }
 
-  @VisibleForTesting
-  static boolean namespaceValid(final @NotNull String namespace) {
-    for (int i = 0, length = namespace.length(); i < length; i++) {
-      if (!validNamespaceChar(namespace.charAt(i))) {
-        return false;
-      }
-    }
-    return true;
+  static boolean allowedInNamespace(final char character) {
+    return character == '_' || character == '-' || (character >= 'a' && character <= 'z') || (character >= '0' && character <= '9') || character == '.';
   }
 
-  @VisibleForTesting
-  static boolean valueValid(final @NotNull String value) {
-    for (int i = 0, length = value.length(); i < length; i++) {
-      if (!validValueChar(value.charAt(i))) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  private static boolean validNamespaceChar(final int value) {
-    return value == '_' || value == '-' || (value >= 'a' && value <= 'z') || (value >= '0' && value <= '9') || value == '.';
-  }
-
-  private static boolean validValueChar(final int value) {
-    return value == '_' || value == '-' || (value >= 'a' && value <= 'z') || (value >= '0' && value <= '9') || value == '/' || value == '.';
+  static boolean allowedInValue(final char character) {
+    return character == '_' || character == '-' || (character >= 'a' && character <= 'z') || (character >= '0' && character <= '9') || character == '.' || character == '/';
   }
 
   @Override

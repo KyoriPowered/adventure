@@ -150,7 +150,7 @@ public interface TranslationRegistry extends Translator {
    * @since 4.0.0
    */
   default void registerAll(final @NotNull Locale locale, final @NotNull Path path, final boolean escapeSingleQuotes) {
-    try(final BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+    try (final BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
       this.registerAll(locale, new PropertyResourceBundle(reader), escapeSingleQuotes);
     } catch (final IOException e) {
       // ignored

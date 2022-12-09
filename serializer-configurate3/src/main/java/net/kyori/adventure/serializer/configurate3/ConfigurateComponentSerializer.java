@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * A serializer that will output to Configurate {@link ConfigurationNode}s.
  *
- * <p>This serializer only modifies its own serializer collection. To add to another collection, 
+ * <p>This serializer only modifies its own serializer collection. To add to another collection,
  * use an existing serializer instance to {@linkplain #addSerializersTo(TypeSerializerCollection) populate}
  * that collection. Serializers are added for every Adventure data type.</p>
  *

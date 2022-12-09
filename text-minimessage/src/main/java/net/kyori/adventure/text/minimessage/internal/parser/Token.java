@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.minimessage.internal.parser;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.examination.Examinable;
@@ -124,6 +125,19 @@ public final class Token implements Examinable {
       ExaminableProperty.of("endIndex", this.endIndex),
       ExaminableProperty.of("type", this.type)
     );
+  }
+
+  @Override
+  public boolean equals(final Object other) {
+    if (this == other) return true;
+    if (!(other instanceof Token)) return false;
+    final Token that = (Token) other;
+    return this.startIndex == that.startIndex && this.endIndex == that.endIndex && this.type == that.type;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.startIndex, this.endIndex, this.type);
   }
 
   @Override

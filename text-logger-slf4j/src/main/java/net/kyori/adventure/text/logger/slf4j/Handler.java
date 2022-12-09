@@ -71,7 +71,7 @@ final class Handler {
     }
 
     @Override
-    public Function<Component, String> plainSerializer() {
+    public @NotNull Function<Component, String> plainSerializer() {
       return comp -> {
         final Component translated = GlobalTranslator.render(comp, Locale.getDefault());
         final StringBuilder contents = new StringBuilder();

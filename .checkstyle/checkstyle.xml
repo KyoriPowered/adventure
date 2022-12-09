@@ -273,8 +273,11 @@
     #####################
     -->
 
+    <!-- https://gitlab.com/stellardrift/stylecheck/-/blob/trunk/src/main/java/ca/stellardrift/stylecheck/AnnotationsCloseToType.java -->
+    <module name="AnnotationsCloseToType"/>
+
     <!-- https://checkstyle.org/config_javadoc.html#WriteTag -->
-    <!-- https://gitlab.com/stellardrift/stylecheck/-/blob/dev/src/main/java/ca/stellardrift/stylecheck/FilteringWriteTag.java -->
+    <!-- https://gitlab.com/stellardrift/stylecheck/-/blob/trunk/src/main/java/ca/stellardrift/stylecheck/FilteringWriteTag.java -->
     <module name="FilteringWriteTag">
       <property name="tag" value="@since\s"/>
       <property name="tagFormat" value="\d\.\d+\.\d+"/>

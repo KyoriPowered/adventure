@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.bossbar;
 
+import net.kyori.adventure.util.PlatformAPI;
 import org.jetbrains.annotations.ApiStatus;
 
 /**
@@ -31,7 +32,8 @@ import org.jetbrains.annotations.ApiStatus;
  *
  * @deprecated not an official API, and may disappear without warning
  */
-@Deprecated
 @ApiStatus.Internal
+@Deprecated
+@PlatformAPI
 abstract class HackyBossBarPlatformBridge {
 }

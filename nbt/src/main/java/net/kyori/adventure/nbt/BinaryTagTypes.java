@@ -84,7 +84,7 @@ public final class BinaryTagTypes {
   @SuppressWarnings("try")
   public static final BinaryTagType<ByteArrayBinaryTag> BYTE_ARRAY = BinaryTagType.register(ByteArrayBinaryTag.class, (byte) 7, input -> {
     final int length = input.readInt();
-    try(final BinaryTagScope ignored = TrackingDataInput.enter(input, length)) {
+    try (final BinaryTagScope ignored = TrackingDataInput.enter(input, length)) {
       final byte[] value = new byte[length];
       input.readFully(value);
       return ByteArrayBinaryTag.of(value);
@@ -109,7 +109,7 @@ public final class BinaryTagTypes {
   public static final BinaryTagType<ListBinaryTag> LIST = BinaryTagType.register(ListBinaryTag.class, (byte) 9, input -> {
     final BinaryTagType<? extends BinaryTag> type = BinaryTagType.of(input.readByte());
     final int length = input.readInt();
-    try(final BinaryTagScope ignored = TrackingDataInput.enter(input, length * 8L)) {
+    try (final BinaryTagScope ignored = TrackingDataInput.enter(input, length * 8L)) {
       final List<BinaryTag> tags = new ArrayList<>(length);
       for (int i = 0; i < length; i++) {
         tags.add(type.read(input));
@@ -131,7 +131,7 @@ public final class BinaryTagTypes {
    */
   @SuppressWarnings("try")
   public static final BinaryTagType<CompoundBinaryTag> COMPOUND = BinaryTagType.register(CompoundBinaryTag.class, (byte) 10, input -> {
-    try(final BinaryTagScope ignored = TrackingDataInput.enter(input)) {
+    try (final BinaryTagScope ignored = TrackingDataInput.enter(input)) {
       final Map<String, BinaryTag> tags = new HashMap<>();
       BinaryTagType<? extends BinaryTag> type;
       while ((type = BinaryTagType.of(input.readByte())) != BinaryTagTypes.END) {
@@ -164,7 +164,7 @@ public final class BinaryTagTypes {
   @SuppressWarnings("try")
   public static final BinaryTagType<IntArrayBinaryTag> INT_ARRAY = BinaryTagType.register(IntArrayBinaryTag.class, (byte) 11, input -> {
     final int length = input.readInt();
-    try(final BinaryTagScope ignored = TrackingDataInput.enter(input, length * 4L)) {
+    try (final BinaryTagScope ignored = TrackingDataInput.enter(input, length * 4L)) {
       final int[] value = new int[length];
       for (int i = 0; i < length; i++) {
         value[i] = input.readInt();
@@ -188,7 +188,7 @@ public final class BinaryTagTypes {
   @SuppressWarnings("try")
   public static final BinaryTagType<LongArrayBinaryTag> LONG_ARRAY = BinaryTagType.register(LongArrayBinaryTag.class, (byte) 12, input -> {
     final int length = input.readInt();
-    try(final BinaryTagScope ignored = TrackingDataInput.enter(input, length * 8L)) {
+    try (final BinaryTagScope ignored = TrackingDataInput.enter(input, length * 8L)) {
       final long[] value = new long[length];
       for (int i = 0; i < length; i++) {
         value[i] = input.readLong();

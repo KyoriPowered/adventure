@@ -79,7 +79,7 @@ public final class LinearComponents {
     final int size = builder.children.size();
     if (size == 0) {
       throw nothingComponentLike();
-    } else if (size == 1) {
+    } else if (size == 1 && !builder.hasStyle()) {
       return builder.children.get(0);
     } else {
       return builder.build();

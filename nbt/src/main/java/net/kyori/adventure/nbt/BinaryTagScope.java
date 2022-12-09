@@ -29,7 +29,7 @@ interface BinaryTagScope extends AutoCloseable {
   @Override
   void close() throws IOException;
 
-  class NoOp implements BinaryTagScope {
+  final class NoOp implements BinaryTagScope {
     static final NoOp INSTANCE = new NoOp();
 
     private NoOp() {

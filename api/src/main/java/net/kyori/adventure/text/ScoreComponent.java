@@ -32,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A component that can display a player's score from a scoreboard objective,
  * with an optional fallback value if the search for the score fails.
- * 
+ *
  * <p>This component consists of:</p>
  * <dl>
  *   <dt>name</dt>
