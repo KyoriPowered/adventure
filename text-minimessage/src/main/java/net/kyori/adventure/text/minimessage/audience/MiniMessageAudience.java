@@ -23,9 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage.audience;
 
-import java.util.Collections;
 import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.audience.ForwardingAudience;
 import net.kyori.adventure.chat.ChatType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -34,19 +32,11 @@ import net.kyori.adventure.title.TitlePart;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Implementation of {@link ForwardingAudience} that provides additional methods for sending MiniMessage strings.
+ * Implementation of {@link Audience} that provides additional methods for sending MiniMessage strings.
  *
  * @since 4.13.0
  */
-public final class MiniMessageAudience implements ForwardingAudience {
-
-  private final @NotNull Iterable<Audience> delegate;
-  private final @NotNull MiniMessage mini;
-
-  private MiniMessageAudience(final @NotNull Audience delegate, final @NotNull MiniMessage mini) {
-    this.delegate = Collections.singleton(delegate);
-    this.mini = mini;
-  }
+public interface MiniMessageAudience extends Audience {
 
   /**
    * Creates a new {@link MiniMessageAudience} that forwards to the provided {@link Audience}.
@@ -56,8 +46,8 @@ public final class MiniMessageAudience implements ForwardingAudience {
    * @return a new MiniMessageAudience
    * @since 4.13.0
    */
-  public static @NotNull MiniMessageAudience audience(final @NotNull Audience audience) {
-    return new MiniMessageAudience(audience, MiniMessage.miniMessage());
+  static @NotNull MiniMessageAudience audience(final @NotNull Audience audience) {
+    return audience(audience, MiniMessage.miniMessage());
   }
 
   /**
@@ -68,8 +58,8 @@ public final class MiniMessageAudience implements ForwardingAudience {
    * @return a new MiniMessageAudience
    * @since 4.13.0
    */
-  public static @NotNull MiniMessageAudience audience(final @NotNull Audience audience, final @NotNull MiniMessage mini) {
-    return new MiniMessageAudience(audience, mini);
+  static @NotNull MiniMessageAudience audience(final @NotNull Audience audience, final @NotNull MiniMessage mini) {
+    return new MiniMessageAudienceImpl(audience, mini);
   }
 
   /**
@@ -78,9 +68,7 @@ public final class MiniMessageAudience implements ForwardingAudience {
    * @param message the message with MiniMessage strings to send
    * @since 4.13.0
    */
-  public void sendMessage(final @NotNull String message) {
-    this.sendMessage(this.mini.deserialize(message));
-  }
+  void sendMessage(final @NotNull String message);
 
   /**
    * Sends a MiniMessage string to this audience.
@@ -89,9 +77,7 @@ public final class MiniMessageAudience implements ForwardingAudience {
    * @param tagResolver the tag resolver to parse additional tags
    * @since 4.13.0
    */
-  public void sendMessage(final @NotNull String message, final @NotNull TagResolver tagResolver) {
-    this.sendMessage(this.mini.deserialize(message, tagResolver));
-  }
+  void sendMessage(final @NotNull String message, final @NotNull TagResolver tagResolver);
 
   /**
    * Sends a MiniMessage string to this audience.
@@ -100,9 +86,7 @@ public final class MiniMessageAudience implements ForwardingAudience {
    * @param tagResolvers the tag resolvers to parse additional tags
    * @since 4.13.0
    */
-  public void sendMessage(final @NotNull String message, final @NotNull TagResolver @NotNull... tagResolvers) {
-    this.sendMessage(this.mini.deserialize(message, tagResolvers));
-  }
+  void sendMessage(final @NotNull String message, final @NotNull TagResolver @NotNull ... tagResolvers);
 
   /**
    * Sends a MiniMessage string to this audience.
@@ -111,9 +95,7 @@ public final class MiniMessageAudience implements ForwardingAudience {
    * @param bound the bound chat type
    * @since 4.13.0
    */
-  public void sendMessage(final @NotNull String message, final ChatType.@NotNull Bound bound) {
-    this.sendMessage(this.mini.deserialize(message), bound);
-  }
+  void sendMessage(final @NotNull String message, ChatType.@NotNull Bound bound);
 
   /**
    * Sends a MiniMessage string to this audience as action bar.
@@ -121,9 +103,7 @@ public final class MiniMessageAudience implements ForwardingAudience {
    * @param message the action bar with MiniMessage strings to send
    * @since 4.13.0
    */
-  public void sendActionBar(final @NotNull String message) {
-    this.sendActionBar(this.mini.deserialize(message));
-  }
+  void sendActionBar(final @NotNull String message);
 
   /**
    * Sends a MiniMessage string to this audience as action bar.
@@ -132,9 +112,7 @@ public final class MiniMessageAudience implements ForwardingAudience {
    * @param tagResolver the tag resolver to parse additional tags
    * @since 4.13.0
    */
-  public void sendActionBar(final @NotNull String message, final @NotNull TagResolver tagResolver) {
-    this.sendActionBar(this.mini.deserialize(message, tagResolver));
-  }
+  void sendActionBar(final @NotNull String message, final @NotNull TagResolver tagResolver);
 
   /**
    * Sends a MiniMessage string to this audience as action bar.
@@ -143,9 +121,7 @@ public final class MiniMessageAudience implements ForwardingAudience {
    * @param tagResolvers the tag resolvers to parse additional tags
    * @since 4.13.0
    */
-  public void sendActionBar(final @NotNull String message, final @NotNull TagResolver @NotNull... tagResolvers) {
-    this.sendActionBar(this.mini.deserialize(message, tagResolvers));
-  }
+  void sendActionBar(final @NotNull String message, final @NotNull TagResolver @NotNull ... tagResolvers);
 
   /**
    * Sends a MiniMessage string to this audience as player list header.
@@ -153,9 +129,7 @@ public final class MiniMessageAudience implements ForwardingAudience {
    * @param header the title header with MiniMessage strings to send
    * @since 4.13.0
    */
-  public void sendPlayerListHeader(final @NotNull String header) {
-    this.sendPlayerListHeader(this.mini.deserialize(header));
-  }
+  void sendPlayerListHeader(final @NotNull String header);
 
   /**
    * Sends a MiniMessage string to this audience as player list header.
@@ -164,9 +138,7 @@ public final class MiniMessageAudience implements ForwardingAudience {
    * @param tagResolver the tag resolver to parse additional tags
    * @since 4.13.0
    */
-  public void sendPlayerListHeader(final @NotNull String header, final @NotNull TagResolver tagResolver) {
-    this.sendPlayerListHeader(this.mini.deserialize(header, tagResolver));
-  }
+  void sendPlayerListHeader(final @NotNull String header, final @NotNull TagResolver tagResolver);
 
   /**
    * Sends a MiniMessage string to this audience as player list header.
@@ -175,9 +147,7 @@ public final class MiniMessageAudience implements ForwardingAudience {
    * @param tagResolvers the tag resolvers to parse additional tags
    * @since 4.13.0
    */
-  public void sendPlayerListHeader(final @NotNull String header, final @NotNull TagResolver @NotNull... tagResolvers) {
-    this.sendPlayerListHeader(this.mini.deserialize(header, tagResolvers));
-  }
+  void sendPlayerListHeader(final @NotNull String header, final @NotNull TagResolver @NotNull ... tagResolvers);
 
   /**
    * Sends a MiniMessage string to this audience as player list footer.
@@ -185,9 +155,7 @@ public final class MiniMessageAudience implements ForwardingAudience {
    * @param footer the title footer with MiniMessage strings to send
    * @since 4.13.0
    */
-  public void sendPlayerListFooter(final @NotNull String footer) {
-    this.sendPlayerListFooter(this.mini.deserialize(footer));
-  }
+  void sendPlayerListFooter(final @NotNull String footer);
 
   /**
    * Sends a MiniMessage string to this audience as player list footer.
@@ -196,9 +164,7 @@ public final class MiniMessageAudience implements ForwardingAudience {
    * @param tagResolver the tag resolver to parse additional tags
    * @since 4.13.0
    */
-  public void sendPlayerListFooter(final @NotNull String footer, final @NotNull TagResolver tagResolver) {
-    this.sendPlayerListFooter(this.mini.deserialize(footer, tagResolver));
-  }
+  void sendPlayerListFooter(final @NotNull String footer, final @NotNull TagResolver tagResolver);
 
   /**
    * Sends a MiniMessage string to this audience as player list footer.
@@ -207,9 +173,7 @@ public final class MiniMessageAudience implements ForwardingAudience {
    * @param tagResolvers the tag resolvers to parse additional tags
    * @since 4.13.0
    */
-  public void sendPlayerListFooter(final @NotNull String footer, final @NotNull TagResolver @NotNull... tagResolvers) {
-    this.sendPlayerListFooter(this.mini.deserialize(footer, tagResolvers));
-  }
+  void sendPlayerListFooter(final @NotNull String footer, final @NotNull TagResolver @NotNull ... tagResolvers);
 
   /**
    * Sends two MiniMessage strings to this audience as player list header and footer respectively.
@@ -218,9 +182,7 @@ public final class MiniMessageAudience implements ForwardingAudience {
    * @param footer the title footer with MiniMessage strings to send
    * @since 4.13.0
    */
-  public void sendPlayerListHeaderAndFooter(final @NotNull String header, final @NotNull String footer) {
-    this.sendPlayerListHeaderAndFooter(this.mini.deserialize(header), this.mini.deserialize(footer));
-  }
+  void sendPlayerListHeaderAndFooter(final @NotNull String header, final @NotNull String footer);
 
   /**
    * Sends two MiniMessage strings to this audience as player list header and footer respectively.
@@ -230,9 +192,7 @@ public final class MiniMessageAudience implements ForwardingAudience {
    * @param tagResolver the tag resolver to parse additional tags
    * @since 4.13.0
    */
-  public void sendPlayerListHeaderAndFooter(final @NotNull String header, final @NotNull String footer, final @NotNull TagResolver tagResolver) {
-    this.sendPlayerListHeaderAndFooter(this.mini.deserialize(header, tagResolver), this.mini.deserialize(footer, tagResolver));
-  }
+  void sendPlayerListHeaderAndFooter(final @NotNull String header, final @NotNull String footer, final @NotNull TagResolver tagResolver);
 
   /**
    * Sends two MiniMessage strings to this audience as player list header and footer respectively.
@@ -242,9 +202,7 @@ public final class MiniMessageAudience implements ForwardingAudience {
    * @param tagResolvers the tag resolvers to parse additional tags
    * @since 4.13.0
    */
-  public void sendPlayerListHeaderAndFooter(final @NotNull String header, final @NotNull String footer, final @NotNull TagResolver @NotNull... tagResolvers) {
-    this.sendPlayerListHeaderAndFooter(this.mini.deserialize(header, tagResolvers), this.mini.deserialize(footer, tagResolvers));
-  }
+  void sendPlayerListHeaderAndFooter(final @NotNull String header, final @NotNull String footer, final @NotNull TagResolver @NotNull ... tagResolvers);
 
   /**
    * Sends a MiniMessage string to this audience as title part.
@@ -253,9 +211,7 @@ public final class MiniMessageAudience implements ForwardingAudience {
    * @param message the content of the title part with MiniMessage strings to send
    * @since 4.13.0
    */
-  public void sendTitlePart(final @NotNull TitlePart<Component> part, final @NotNull String message) {
-    this.sendTitlePart(part, this.mini.deserialize(message));
-  }
+  void sendTitlePart(final @NotNull TitlePart<Component> part, final @NotNull String message);
 
   /**
    * Sends a MiniMessage string to this audience as title part.
@@ -265,9 +221,7 @@ public final class MiniMessageAudience implements ForwardingAudience {
    * @param tagResolver the tag resolver to parse additional tags
    * @since 4.13.0
    */
-  public void sendTitlePart(final @NotNull TitlePart<Component> part, final @NotNull String message, final @NotNull TagResolver tagResolver) {
-    this.sendTitlePart(part, this.mini.deserialize(message, tagResolver));
-  }
+  void sendTitlePart(final @NotNull TitlePart<Component> part, final @NotNull String message, final @NotNull TagResolver tagResolver);
 
   /**
    * Sends a MiniMessage string to this audience as title part.
@@ -277,12 +231,6 @@ public final class MiniMessageAudience implements ForwardingAudience {
    * @param tagResolvers the tag resolvers to parse additional tags
    * @since 4.13.0
    */
-  public void sendTitlePart(final @NotNull TitlePart<Component> part, final @NotNull String message, final @NotNull TagResolver @NotNull... tagResolvers) {
-    this.sendTitlePart(part, this.mini.deserialize(message, tagResolvers));
-  }
+  void sendTitlePart(final @NotNull TitlePart<Component> part, final @NotNull String message, final @NotNull TagResolver @NotNull ... tagResolvers);
 
-  @Override
-  public @NotNull Iterable<? extends Audience> audiences() {
-    return this.delegate;
-  }
 }
