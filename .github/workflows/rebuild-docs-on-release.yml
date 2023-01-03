@@ -8,3 +8,4 @@ on:
 jobs:
   call-build:
     uses: "KyoriPowered/.github/.github/workflows/shared-rebuild-docs.yaml@trunk"
+    secrets: "inherit"
