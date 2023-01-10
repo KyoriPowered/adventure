@@ -118,4 +118,24 @@ public final class Formatter {
       return Tag.inserting(context.deserialize(choiceFormat.format(number)));
     });
   }
+
+  /**
+   * Creates a choice tag. This will use the first argument when true, otherwise the second argument.
+   *
+   * <p>This tag expects two formats as attributes.</p>
+   *
+   * <p>This replacement is auto-closing, so its style will not influence the style of following components.</p>
+   *
+   * @param key the key
+   * @param value the value
+   * @return the placeholder
+   * @since 4.12.0
+   */
+  public static TagResolver booleanChoice(final @NotNull String key, final boolean value) {
+    return TagResolver.resolver(key, (argumentQueue, context) -> {
+      final String trueCase = argumentQueue.popOr("True format expected.").value();
+      final String falseCase = argumentQueue.popOr("Talse format expected.").value();
+      return Tag.inserting(context.deserialize(value ? trueCase : falseCase));
+    });
+  }
 }
