@@ -93,7 +93,7 @@ public final class Placeholder {
    * @return the placeholder
    * @since 4.13.0
    */
-  public static TagResolver.@NotNull Single style(final @NotNull String key, final @NotNull StyleBuilderApplicable style) {
+  public static TagResolver.@NotNull Single style(final @NotNull String key, final @NotNull StyleBuilderApplicable@NotNull... style) {
     return TagResolver.resolver(key, Tag.styling(style));
   }
 }
