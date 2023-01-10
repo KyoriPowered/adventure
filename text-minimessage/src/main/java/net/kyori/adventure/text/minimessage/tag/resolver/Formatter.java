@@ -129,7 +129,7 @@ public final class Formatter {
    * @param key the key
    * @param value the value
    * @return the placeholder
-   * @since 4.12.0
+   * @since 4.13.0
    */
   public static TagResolver booleanChoice(final @NotNull String key, final boolean value) {
     return TagResolver.resolver(key, (argumentQueue, context) -> {
