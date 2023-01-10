@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-  api(projects.adventureApi)
+  api(projects.adventureTextSerializerJson)
   api(libs.gson)
   testImplementation(projects.adventureNbt)
   annotationProcessor(projects.adventureAnnotationProcessors)

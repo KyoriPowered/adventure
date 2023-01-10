@@ -24,6 +24,7 @@ dependencies {
       "text-serializer-ansi",
       "text-serializer-gson",
       "text-serializer-gson-legacy-impl",
+      "text-serializer-json",
       "text-serializer-legacy",
       "text-serializer-plain"
     ).forEach {
