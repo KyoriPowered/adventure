@@ -1,13 +1,11 @@
 plugins {
-  id("adventure.common-conventions")
+  id("adventure.json-impl-conventions")
   alias(libs.plugins.jmh)
 }
 
 dependencies {
-  api(projects.adventureTextSerializerJson)
   api(libs.gson)
   testImplementation(projects.adventureNbt)
-  annotationProcessor(projects.adventureAnnotationProcessors)
 }
 
 applyJarMetadata("net.kyori.adventure.text.serializer.gson")
