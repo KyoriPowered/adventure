@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.serializer.gson;
+package net.kyori.adventure.text.serializer.json;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -46,7 +46,6 @@ import static net.kyori.adventure.text.event.HoverEvent.showItem;
 import static net.kyori.adventure.text.event.HoverEvent.showText;
 import static net.kyori.adventure.text.format.Style.style;
 import static net.kyori.adventure.text.format.TextColor.color;
-import static net.kyori.adventure.text.serializer.gson.GsonComponentSerializer.gson;
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.SampleTime)
@@ -77,16 +76,16 @@ public class ComponentSerializationBenchmark {
 
   @Benchmark
   public String simpleComponent() {
-    return gson().serialize(this.simpleComponent);
+    return JsonComponentSerializer.json().serialize(this.simpleComponent);
   }
 
   @Benchmark
   public String componentTreeWithStyle() {
-    return gson().serialize(this.componentTreeWithStyle);
+    return JsonComponentSerializer.json().serialize(this.componentTreeWithStyle);
   }
 
   @Benchmark
   public String componentTreeWithEvents() {
-    return gson().serialize(this.componentTreeWithEvents);
+    return JsonComponentSerializer.json().serialize(this.componentTreeWithEvents);
   }
 }

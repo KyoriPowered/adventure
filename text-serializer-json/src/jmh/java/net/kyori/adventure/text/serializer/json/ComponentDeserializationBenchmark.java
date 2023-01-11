@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.serializer.gson;
+package net.kyori.adventure.text.serializer.json;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -46,7 +46,6 @@ import static net.kyori.adventure.text.event.HoverEvent.showItem;
 import static net.kyori.adventure.text.event.HoverEvent.showText;
 import static net.kyori.adventure.text.format.Style.style;
 import static net.kyori.adventure.text.format.TextColor.color;
-import static net.kyori.adventure.text.serializer.gson.GsonComponentSerializer.gson;
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.SampleTime)
@@ -58,15 +57,15 @@ public class ComponentDeserializationBenchmark {
 
   @Setup(Level.Trial)
   public void prepare() {
-    this.simpleComponent = gson().serialize(text("Hello, World!", style(TextDecoration.UNDERLINED)));
-    this.componentTreeWithStyle = gson().serialize(text()
+    this.simpleComponent = JsonComponentSerializer.json().serialize(text("Hello, World!", style(TextDecoration.UNDERLINED)));
+    this.componentTreeWithStyle = JsonComponentSerializer.json().serialize(text()
                                                      .decorate(TextDecoration.UNDERLINED, TextDecoration.ITALIC)
                                                      .append(text("Component ", color(0x8cfbde)))
                                                      .append(text("with ", color(0x0fff95), TextDecoration.BOLD))
                                                      .append(text("hex ", color(0x06ba63)))
                                                      .append(text("colors", color(0x103900)))
                                                      .build());
-    this.componentTreeWithEvents = gson().serialize(text()
+    this.componentTreeWithEvents = JsonComponentSerializer.json().serialize(text()
                                                       .decorate(TextDecoration.UNDERLINED, TextDecoration.ITALIC)
                                                       .append(text("Component ", style(color(0x8cfbde), openUrl("https://kyori.net/"))))
                                                       .append(text("with ", style(color(0x0fff95), TextDecoration.BOLD, showItem(Key.key("iron_sword"), 1, BinaryTagHolder.binaryTagHolder("{Damage: 30, RepairCost: 4, Enchantments: [{id: 'minecraft:sharpness', lvl: 3s}, {id: 'minecraft:unbreaking', lvl: 1s}]}")))))
@@ -77,16 +76,16 @@ public class ComponentDeserializationBenchmark {
 
   @Benchmark
   public Component simpleComponent() {
-    return gson().deserialize(this.simpleComponent);
+    return JsonComponentSerializer.json().deserialize(this.simpleComponent);
   }
 
   @Benchmark
   public Component componentTreeWithStyle() {
-    return gson().deserialize(this.componentTreeWithStyle);
+    return JsonComponentSerializer.json().deserialize(this.componentTreeWithStyle);
   }
 
   @Benchmark
   public Component componentTreeWithEvents() {
-    return gson().deserialize(this.componentTreeWithEvents);
+    return JsonComponentSerializer.json().deserialize(this.componentTreeWithEvents);
   }
 }
