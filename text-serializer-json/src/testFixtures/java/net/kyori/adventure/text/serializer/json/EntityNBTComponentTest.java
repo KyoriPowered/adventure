@@ -21,47 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.serializer.gson;
+package net.kyori.adventure.text.serializer.json;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import java.util.function.Consumer;
+import net.kyori.adventure.text.Component;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-abstract class GsonTest<T> {
-  private final Gson gson;
-  private final Class<T> type;
-
-  GsonTest(final Gson gson, final Class<T> type) {
-    this.gson = gson;
-    this.type = type;
+final class EntityNBTComponentTest extends SerializerTest {
+  @Test
+  void testWithoutInterpret() {
+    this.testObject(
+      Component.entityNBT().nbtPath("abc").selector("test").build(),
+      json -> {
+        json.addProperty(JsonComponentConstants.NBT, "abc");
+        json.addProperty(JsonComponentConstants.NBT_INTERPRET, false);
+        json.addProperty(JsonComponentConstants.NBT_ENTITY, "test");
+      }
+    );
   }
 
-  final void test(final T object, final JsonElement json) {
-    assertEquals(json, this.serialize(object));
-    assertEquals(object, this.deserialize(json));
-  }
-
-  final JsonElement serialize(final T object) {
-    return this.gson.toJsonTree(object);
-  }
-
-  final T deserialize(final JsonElement json) {
-    return this.gson.fromJson(json, this.type);
-  }
-
-  static JsonArray array(final Consumer<? super JsonArray> consumer) {
-    final JsonArray json = new JsonArray();
-    consumer.accept(json);
-    return json;
-  }
-
-  static JsonObject object(final Consumer<? super JsonObject> consumer) {
-    final JsonObject json = new JsonObject();
-    consumer.accept(json);
-    return json;
+  @Test
+  void testWithInterpret() {
+    this.testObject(
+      Component.entityNBT().nbtPath("abc").selector("test").interpret(true).build(),
+      json -> {
+        json.addProperty(JsonComponentConstants.NBT, "abc");
+        json.addProperty(JsonComponentConstants.NBT_INTERPRET, true);
+        json.addProperty(JsonComponentConstants.NBT_ENTITY, "test");
+      }
+    );
   }
 }

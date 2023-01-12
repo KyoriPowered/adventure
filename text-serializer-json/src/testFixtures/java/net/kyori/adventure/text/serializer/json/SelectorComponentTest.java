@@ -21,16 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.serializer.gson;
+package net.kyori.adventure.text.serializer.json;
 
 import net.kyori.adventure.text.Component;
 import org.junit.jupiter.api.Test;
 
-class SelectorComponentTest extends ComponentTest {
+final class SelectorComponentTest extends SerializerTest {
   private static final String SELECTOR = "@p";
 
   @Test
   void test() {
-    this.test(Component.selector(SELECTOR), object(json -> json.addProperty(ComponentSerializerImpl.SELECTOR, SELECTOR)));
+    this.testObject(
+      Component.selector(SELECTOR),
+      json -> json.addProperty(JsonComponentConstants.SELECTOR, SELECTOR)
+    );
+  }
+
+  @Test
+  void testSeparator() {
+    final Component separator = Component.text(",");
+    this.testObject(
+      Component.selector(SELECTOR, separator),
+      json -> {
+        json.addProperty(JsonComponentConstants.SELECTOR, SELECTOR);
+        json.add(JsonComponentConstants.SEPARATOR, this.serialize(separator));
+      }
+    );
   }
 }

@@ -69,4 +69,57 @@ public final class Services {
     }
     return Optional.empty();
   }
+
+  /**
+   * A service that may be a fallback.
+   *
+   * @since 4.13.0
+   */
+  public interface Fallback {
+    /**
+     * Checks if this service is a fallback.
+     *
+     * @return if this service is a fallback service
+     * @since 4.13.0
+     */
+    boolean isFallback();
+  }
+
+  /**
+   * Locates a service.
+   *
+   * <p>If multiple services of this type exist, the first non-fallback service will be returned.</p>
+   *
+   * @param type the service type
+   * @param <P> the service type
+   * @return a service, or {@link Optional#empty()}
+   * @since 4.13.0
+   */
+  public static <P extends Fallback> @NotNull Optional<P> serviceWithFallback(final @NotNull Class<P> type) {
+    final ServiceLoader<P> loader = Services0.loader(type);
+    final Iterator<P> it = loader.iterator();
+    P firstFallback = null;
+
+    while (it.hasNext()) {
+      final P instance;
+
+      try {
+        instance = it.next();
+      } catch (final Throwable t) {
+        if (SERVICE_LOAD_FAILURES_ARE_FATAL) {
+          throw new IllegalStateException("Encountered an exception loading service " + type, t);
+        } else {
+          continue;
+        }
+      }
+
+      if (!instance.isFallback()) {
+        return Optional.of(instance);
+      } else if (firstFallback == null) {
+        firstFallback = instance;
+      }
+    }
+
+    return Optional.ofNullable(firstFallback);
+  }
 }

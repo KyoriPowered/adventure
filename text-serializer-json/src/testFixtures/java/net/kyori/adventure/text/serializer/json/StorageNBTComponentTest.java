@@ -21,34 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.serializer.gson;
+package net.kyori.adventure.text.serializer.json;
 
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.junit.jupiter.api.Test;
 
-class StorageNBTComponentTest extends ComponentTest {
+final class StorageNBTComponentTest extends SerializerTest {
   @Test
   void testWithoutInterpret() {
-    this.test(
+    this.testObject(
       Component.storageNBT().nbtPath("abc").storage(Key.key("doom:apple")).build(),
-      object(json -> {
-        json.addProperty(ComponentSerializerImpl.NBT, "abc");
-        json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
-        json.addProperty(ComponentSerializerImpl.NBT_STORAGE, "doom:apple");
-      })
+      json -> {
+        json.addProperty(JsonComponentConstants.NBT, "abc");
+        json.addProperty(JsonComponentConstants.NBT_INTERPRET, false);
+        json.addProperty(JsonComponentConstants.NBT_STORAGE, "doom:apple");
+      }
     );
   }
 
   @Test
   void testWithInterpret() {
-    this.test(
+    this.testObject(
       Component.storageNBT().nbtPath("abc").storage(Key.key("doom:apple")).build(),
-      object(json -> {
-        json.addProperty(ComponentSerializerImpl.NBT, "abc");
-        json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
-        json.addProperty(ComponentSerializerImpl.NBT_STORAGE, "doom:apple");
-      })
+      json -> {
+        json.addProperty(JsonComponentConstants.NBT, "abc");
+        json.addProperty(JsonComponentConstants.NBT_INTERPRET, false);
+        json.addProperty(JsonComponentConstants.NBT_STORAGE, "doom:apple");
+      }
     );
   }
 }

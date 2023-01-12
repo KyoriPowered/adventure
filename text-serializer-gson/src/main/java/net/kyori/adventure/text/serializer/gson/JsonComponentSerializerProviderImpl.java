@@ -23,31 +23,24 @@
  */
 package net.kyori.adventure.text.serializer.gson;
 
-import net.kyori.adventure.text.Component;
-import org.junit.jupiter.api.Test;
+import net.kyori.adventure.text.serializer.json.JsonComponentSerializer;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
-class EntityNBTComponentTest extends ComponentTest {
-  @Test
-  void testWithoutInterpret() {
-    this.test(
-      Component.entityNBT().nbtPath("abc").selector("test").build(),
-      object(json -> {
-        json.addProperty(ComponentSerializerImpl.NBT, "abc");
-        json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
-        json.addProperty(ComponentSerializerImpl.NBT_ENTITY, "test");
-      })
-    );
+/**
+ * Implementation of the JSON component serializer provider.
+ *
+ * @since 4.13.0
+ */
+@ApiStatus.Internal
+public final class JsonComponentSerializerProviderImpl implements JsonComponentSerializer.Provider {
+  @Override
+  public boolean isFallback() {
+    return true;
   }
 
-  @Test
-  void testWithInterpret() {
-    this.test(
-      Component.entityNBT().nbtPath("abc").selector("test").interpret(true).build(),
-      object(json -> {
-        json.addProperty(ComponentSerializerImpl.NBT, "abc");
-        json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, true);
-        json.addProperty(ComponentSerializerImpl.NBT_ENTITY, "test");
-      })
-    );
+  @Override
+  public @NotNull JsonComponentSerializer json() {
+    return GsonComponentSerializer.gson();
   }
 }

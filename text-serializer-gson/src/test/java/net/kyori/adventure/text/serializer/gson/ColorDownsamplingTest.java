@@ -24,13 +24,26 @@
 package net.kyori.adventure.text.serializer.gson;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.junit.jupiter.api.Test;
 
-class KeybindComponentTest extends ComponentTest {
-  private static final String KEY = "key.jump";
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+final class ColorDownsamplingTest {
+  @Test
+  void testPre116Downsamples() {
+    final TextColor original = TextColor.color(0xAB2211);
+    final NamedTextColor downsampled = NamedTextColor.nearestTo(original);
+    final Component test = Component.text("meow", original);
+    assertEquals("{\"color\":\"" + NamedTextColor.NAMES.key(downsampled) + "\",\"text\":\"meow\"}", GsonComponentSerializer.colorDownsamplingGson().serializer().toJson(test));
+  }
 
   @Test
-  void test() {
-    this.test(Component.keybind(KEY), object(json -> json.addProperty(ComponentSerializerImpl.KEYBIND, KEY)));
+  void testPre116DownsamplesInChildren() {
+    final TextColor original = TextColor.color(0xEC41AA);
+    final NamedTextColor downsampled = NamedTextColor.nearestTo(original);
+    final Component test = Component.text(builder -> builder.content("hey").append(Component.text("there", original)));
+    assertEquals("{\"extra\":[{\"color\":\"" + NamedTextColor.NAMES.key(downsampled) + "\",\"text\":\"there\"}],\"text\":\"hey\"}", GsonComponentSerializer.colorDownsamplingGson().serializer().toJson(test));
   }
 }

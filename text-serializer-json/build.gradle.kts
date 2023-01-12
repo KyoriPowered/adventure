@@ -22,7 +22,6 @@ configurations.register("jmh") {
     attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements.JAR))
   }
 
-
   outgoing {
     capabilities.clear()
     capability("${project.group}:${project.name}-benchmarks:${project.version}")
@@ -42,12 +41,15 @@ configurations.register("jmh") {
 dependencies {
   api(projects.adventureApi)
   annotationProcessor(projects.adventureAnnotationProcessors)
+
   testFixturesApi(libs.junit.api)
   testFixturesApi(platform(libs.junit.bom))
+  testFixturesImplementation(projects.adventureNbt)
+  testFixturesImplementation(libs.gson)
 
   "jmhImplementation"(sourceSets.main.map { it.output })
-  "jmhImplementation"("${me.champeau.jmh.JMHPlugin.JMH_CORE_DEPENDENCY}${libs.versions.jmh.get()}")
-  "jmhImplementation"("${me.champeau.jmh.JMHPlugin.JMH_GENERATOR_DEPENDENCY}${libs.versions.jmh.get()}")
+  "jmhImplementation"("${me.champeau.jmh.JMHPlugin.getJMH_CORE_DEPENDENCY()}${libs.versions.jmh.get()}")
+  "jmhImplementation"("${me.champeau.jmh.JMHPlugin.getJMH_GENERATOR_DEPENDENCY()}${libs.versions.jmh.get()}")
 }
 
 applyJarMetadata("net.kyori.adventure.text.serializer.json")

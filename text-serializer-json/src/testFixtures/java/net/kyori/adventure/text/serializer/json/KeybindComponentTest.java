@@ -21,17 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.serializer.gson;
+package net.kyori.adventure.text.serializer.json;
 
-import com.google.gson.Gson;
 import net.kyori.adventure.text.Component;
+import org.junit.jupiter.api.Test;
 
-abstract class ComponentTest extends GsonTest<Component> {
-  ComponentTest() {
-    this(GsonComponentSerializer.gson().serializer());
-  }
+final class KeybindComponentTest extends SerializerTest {
+  private static final String KEY = "key.jump";
 
-  ComponentTest(final Gson gson) {
-    super(gson, Component.class);
+  @Test
+  void test() {
+    this.testObject(
+      Component.keybind(KEY),
+      json -> json.addProperty(JsonComponentConstants.KEYBIND, KEY)
+    );
   }
 }

@@ -57,7 +57,7 @@ dependencies {
 
 // Configure benchmarks to read from json project
 plugins.withId("me.champeau.jmh") {
-  configurations.named(JMHPlugin.JHM_RUNTIME_CLASSPATH_CONFIGURATION) {
+  configurations.named(JMHPlugin.getJHM_RUNTIME_CLASSPATH_CONFIGURATION()) {
     extendsFrom(sharedBenchmarks.get())
   }
   tasks.named("jmhRunBytecodeGenerator", JmhBytecodeGeneratorTask::class) {

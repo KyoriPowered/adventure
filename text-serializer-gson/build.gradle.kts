@@ -5,7 +5,6 @@ plugins {
 
 dependencies {
   api(libs.gson)
-  testImplementation(projects.adventureNbt)
 }
 
 applyJarMetadata("net.kyori.adventure.text.serializer.gson")

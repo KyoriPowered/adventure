@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.serializer.gson;
+package net.kyori.adventure.text.serializer.json;
 
 import java.util.UUID;
 import net.kyori.adventure.key.Key;
@@ -31,27 +31,28 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.junit.jupiter.api.Test;
 
-import static net.kyori.adventure.text.serializer.gson.StyleTest.name;
-
-class TranslatableComponentTest extends ComponentTest {
+final class TranslatableComponentTest extends SerializerTest {
   private static final String KEY = "multiplayer.player.left";
 
   @Test
   void testNoArgs() {
-    this.test(Component.translatable(KEY), object(json -> json.addProperty(ComponentSerializerImpl.TRANSLATE, KEY)));
+    this.testObject(
+      Component.translatable(KEY),
+      json -> json.addProperty(JsonComponentConstants.TRANSLATE, KEY)
+    );
   }
 
   @Test
   void testFallback() {
-    this.test(
+    this.testObject(
       Component.translatable()
         .key("thisIsA")
         .fallback("This is a test.")
         .build(),
-      object(json -> {
-        json.addProperty(ComponentSerializerImpl.TRANSLATE, "thisIsA");
-        json.addProperty(ComponentSerializerImpl.TRANSLATE_FALLBACK, "This is a test.");
-      })
+      json -> {
+        json.addProperty(JsonComponentConstants.TRANSLATE, "thisIsA");
+        json.addProperty(JsonComponentConstants.TRANSLATE_FALLBACK, "This is a test.");
+      }
     );
   }
 
@@ -61,7 +62,7 @@ class TranslatableComponentTest extends ComponentTest {
     final String name = "kashike";
     final String command = String.format("/msg %s ", name);
 
-    this.test(
+    this.testObject(
       Component.translatable(
         KEY,
         Component.text().content(name)
@@ -73,27 +74,27 @@ class TranslatableComponentTest extends ComponentTest {
           )))
           .build()
       ).color(NamedTextColor.YELLOW),
-      object(json -> {
-        json.addProperty(ComponentSerializerImpl.TRANSLATE, KEY);
-        json.addProperty(StyleSerializer.COLOR, name(NamedTextColor.YELLOW));
-        json.add(ComponentSerializerImpl.TRANSLATE_WITH, array(with -> with.add(object(item -> {
-          item.addProperty(ComponentSerializerImpl.TEXT, name);
-          item.add(StyleSerializer.CLICK_EVENT, object(event -> {
-            event.addProperty(StyleSerializer.CLICK_EVENT_ACTION, name(ClickEvent.Action.SUGGEST_COMMAND));
-            event.addProperty(StyleSerializer.CLICK_EVENT_VALUE, command);
+      json -> {
+        json.addProperty(JsonComponentConstants.TRANSLATE, KEY);
+        json.addProperty(JsonComponentConstants.COLOR, name(NamedTextColor.YELLOW));
+        json.add(JsonComponentConstants.TRANSLATE_WITH, array(with -> with.add(object(item -> {
+          item.addProperty(JsonComponentConstants.TEXT, name);
+          item.add(JsonComponentConstants.CLICK_EVENT, object(event -> {
+            event.addProperty(JsonComponentConstants.CLICK_EVENT_ACTION, name(ClickEvent.Action.SUGGEST_COMMAND));
+            event.addProperty(JsonComponentConstants.CLICK_EVENT_VALUE, command);
           }));
-          item.add(StyleSerializer.HOVER_EVENT, object(event -> {
-            event.addProperty(StyleSerializer.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ENTITY));
-            event.add(StyleSerializer.HOVER_EVENT_CONTENTS, object(value -> {
-              value.addProperty(ShowEntitySerializer.TYPE, "minecraft:player");
-              value.addProperty(ShowEntitySerializer.ID, id.toString());
-              value.add(ShowEntitySerializer.NAME, object(namej -> {
-                namej.addProperty(ComponentSerializerImpl.TEXT, name);
+          item.add(JsonComponentConstants.HOVER_EVENT, object(event -> {
+            event.addProperty(JsonComponentConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ENTITY));
+            event.add(JsonComponentConstants.HOVER_EVENT_CONTENTS, object(value -> {
+              value.addProperty(JsonComponentConstants.SHOW_ENTITY_TYPE, "minecraft:player");
+              value.addProperty(JsonComponentConstants.SHOW_ENTITY_ID, id.toString());
+              value.add(JsonComponentConstants.SHOW_ENTITY_NAME, object(namej -> {
+                namej.addProperty(JsonComponentConstants.TEXT, name);
               }));
             }));
           }));
         }))));
-      })
+      }
     );
   }
 }

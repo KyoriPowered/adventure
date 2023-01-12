@@ -21,20 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.serializer.gson;
+package net.kyori.adventure.text.serializer.json;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 // https://github.com/KyoriPowered/adventure/issues/788
-class Issue788Test {
+final class Issue788Test extends SerializerTest {
   @Test
   void test() {
-    final String expected = "{\"extra\":[{\"color\":\"#FF00FF\",\"text\":\"PREPEND>\"},{\"text\":\"/sign test\"},{\"color\":\"#FF00FF\",\"text\":\"<APPEND\"}],\"text\":\"\"}";
-    final Component component = GsonComponentSerializer.gson().deserialize(expected);
-    final String actual = GsonComponentSerializer.gson().serialize(component);
-    assertEquals(expected, actual);
+    this.testObject(
+      Component.text()
+        .append(Component.text("PREPEND>", TextColor.color(0xFF00FF)))
+        .append(Component.text("/sign test"))
+        .append(Component.text("<APPEND", TextColor.color(0xFF00FF)))
+        .build(),
+      json -> {
+        json.addProperty(JsonComponentConstants.TEXT, "");
+        json.add(JsonComponentConstants.EXTRA, array(extra -> {
+          extra.add(object(object -> {
+            object.addProperty(JsonComponentConstants.COLOR, "#FF00FF");
+            object.addProperty(JsonComponentConstants.TEXT, "PREPEND>");
+          }));
+          extra.add(object(object -> object.addProperty(JsonComponentConstants.TEXT, "/sign test")));
+          extra.add(object(object -> {
+            object.addProperty(JsonComponentConstants.COLOR, "#FF00FF");
+            object.addProperty(JsonComponentConstants.TEXT, "<APPEND");
+          }));
+        }));
+      }
+    );
   }
 }
