@@ -90,6 +90,14 @@ class GsonComponentSerializerTest {
     assertEquals("Don't know how to turn null into a Component", ex.getMessage());
   }
 
+  // https://github.com/KyoriPowered/adventure/issues/414
+  @Test
+  void testSkipInvalidHoverEvent() {
+    final String input = "{\"text\": \"hello\", \"hoverEvent\":{\"action\":\"show_text\",\"value\":[]}}";
+    final Component expected = Component.text("hello");
+    assertEquals(expected, GsonComponentSerializer.gson().deserialize(input));
+  }
+
   private static String name(final NamedTextColor color) {
     return NamedTextColor.NAMES.key(color);
   }
