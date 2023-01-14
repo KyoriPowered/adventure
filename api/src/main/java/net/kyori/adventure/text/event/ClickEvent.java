@@ -27,6 +27,7 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.Style;
@@ -147,7 +148,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a callback click event
    * @since 4.13.0
    */
-  public static @NotNull ClickEvent callback(final @NotNull ClickCallback function) {
+  public static @NotNull ClickEvent callback(final @NotNull ClickCallback<Audience> function) {
     return ClickCallbackProviderLookup.PROVIDER.create(requireNonNull(function, "function"), ClickCallbackOptionsImpl.DEFAULT);
   }
 
@@ -159,7 +160,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a callback click event
    * @since 4.13.0
    */
-  public static @NotNull ClickEvent callback(final @NotNull ClickCallback function, final ClickCallback.@NotNull Options options) {
+  public static @NotNull ClickEvent callback(final @NotNull ClickCallback<Audience> function, final ClickCallback.@NotNull Options options) {
     return ClickCallbackProviderLookup.PROVIDER.create(requireNonNull(function, "function"), requireNonNull(options, "options"));
   }
 
@@ -171,7 +172,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @return a callback click event
    * @since 4.13.0
    */
-  public static @NotNull ClickEvent callback(final @NotNull ClickCallback function, final @NotNull Consumer<ClickCallback.Options.@NotNull Builder> optionsBuilder) {
+  public static @NotNull ClickEvent callback(final @NotNull ClickCallback<Audience> function, final @NotNull Consumer<ClickCallback.Options.@NotNull Builder> optionsBuilder) {
     return ClickCallbackProviderLookup.PROVIDER.create(
       requireNonNull(function, "function"),
       AbstractBuilder.configureAndBuild(ClickCallback.Options.builder(), requireNonNull(optionsBuilder, "optionsBuilder"))

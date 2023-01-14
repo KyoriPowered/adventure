@@ -25,27 +25,130 @@ package net.kyori.adventure.text.event;
 
 import java.time.Duration;
 import java.time.temporal.TemporalAmount;
+import java.util.function.Predicate;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.builder.AbstractBuilder;
+import net.kyori.adventure.permission.PermissionChecker;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.PlatformAPI;
+import net.kyori.adventure.util.TriState;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A handler for callback click events.
  *
+ * @param <T> audience type
  * @since 4.13.0
  */
 @FunctionalInterface
-public interface ClickCallback {
+public interface ClickCallback<T extends Audience> {
+  /**
+   * Adjust this callback to accept any audience, and perform the appropriate filtering.
+   *
+   * @param <W> the wider type
+   * @param <N> the narrower type
+   * @param original the original callback of a narrower audience type
+   * @param type the audience type to accept
+   * @param failureMessage the message to send to the audience if it is not of the appropriate type
+   * @return a new callback
+   * @since 4.13.0
+   */
+  static <W extends Audience, N extends W> @NotNull ClickCallback<W> widen(final @NotNull ClickCallback<N> original, final @NotNull Class<N> type, final @Nullable Component failureMessage) {
+    return audience -> {
+      if (type.isInstance(audience)) {
+        original.accept(type.cast(audience));
+      } else if (failureMessage != null) {
+        audience.sendMessage(failureMessage);
+      }
+    };
+  }
+
+  /**
+   * Adjust this callback to accept any audience, and perform the appropriate filtering.
+   *
+   * <p>No message will be sent if the audience is not of the appropriate type.</p>
+   *
+   * @param <W> the wider type
+   * @param <N> the narrower type
+   * @param original the original callback of a narrower audience type
+   * @param type the audience type to accept
+   * @return a new callback
+   * @since 4.13.0
+   */
+  static <W extends Audience, N extends W> @NotNull ClickCallback<W> widen(final @NotNull ClickCallback<N> original, final @NotNull Class<N> type) {
+    return ClickCallback.widen(original, type, null);
+  }
+
   /**
    * Perform an action for this event.
    *
    * @param audience the single-user audience who is attempting to execute this callback function.
    * @since 4.13.0
    */
-  void accept(final Audience audience);
+  void accept(final @NotNull T audience);
+
+  /**
+   * Filter audiences that receive this click callback.
+   *
+   * <p>Actions from audiences that do not match this predicate will be silently ignored.</p>
+   *
+   * @param filter the filter to test audiences with
+   * @return a filtered callback action
+   * @since 4.13.0
+   */
+  default @NotNull ClickCallback<T> filter(final @NotNull Predicate<T> filter) {
+    return this.filter(filter, null);
+  }
+
+  /**
+   * Filter audiences that receive this click callback.
+   *
+   * @param filter the filter to test audiences with
+   * @param failureMessage a message to send if the conditions are not met
+   * @return a filtered callback action
+   * @since 4.13.0
+   */
+  default @NotNull ClickCallback<T> filter(final @NotNull Predicate<T> filter, final @Nullable Component failureMessage) {
+    return audience -> {
+      if (filter.test(audience)) {
+        this.accept(audience);
+      } else if (failureMessage != null) {
+        audience.sendMessage(failureMessage);
+      }
+    };
+  }
+
+  /**
+   * Require that audiences receiving this callback have a certain permission.
+   *
+   * <p>For audiences without permissions information, this test will always pass.</p>
+   *
+   * <p>Actions from audiences that do not match this predicate will be silently ignored.</p>
+   *
+   * @param permission the permission to check
+   * @return a modified callback
+   * @since 4.13.0
+   */
+  default @NotNull ClickCallback<T> requiringPermission(final @NotNull String permission) {
+    return this.requiringPermission(permission, null);
+  }
+
+  /**
+   * Require that audiences receiving this callback have a certain permission.
+   *
+   * <p>For audiences without permissions information, this test will always pass.</p>
+   *
+   * @param permission the permission to check
+   * @param failureMessage a message to send if the conditions are not met
+   * @return a modified callback
+   * @since 4.13.0
+   */
+  default @NotNull ClickCallback<T> requiringPermission(final @NotNull String permission, final @Nullable Component failureMessage) {
+    return this.filter(audience -> audience.getOrDefault(PermissionChecker.POINTER, PermissionChecker.always(TriState.TRUE)).test(permission), failureMessage);
+  }
 
   /**
    * Options to configure how a callback can be executed.
@@ -140,6 +243,6 @@ public interface ClickCallback {
      * @return a created click event that will execute the provided callback with options
      * @since 4.13.0
      */
-    @NotNull ClickEvent create(final @NotNull ClickCallback callback, final ClickCallback.@NotNull Options options);
+    @NotNull ClickEvent create(final @NotNull ClickCallback<Audience> callback, final ClickCallback.@NotNull Options options);
   }
 }

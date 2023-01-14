@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.event;
 
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.util.Services;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,7 +37,7 @@ final class ClickCallbackProviderLookup {
 
   static final class Fallback implements ClickCallback.Provider {
     @Override
-    public @NotNull ClickEvent create(final @NotNull ClickCallback callback, final ClickCallback.@NotNull Options options) {
+    public @NotNull ClickEvent create(final @NotNull ClickCallback<Audience> callback, final ClickCallback.@NotNull Options options) {
       return ClickEvent.suggestCommand("Callbacks are not supported on this platform!");
     }
   }
