@@ -157,7 +157,6 @@ public interface ClickCallback<T extends Audience> {
    */
   @ApiStatus.NonExtendable
   interface Options extends Examinable {
-
     /**
      * Create a new builder.
      *
@@ -234,7 +233,6 @@ public interface ClickCallback<T extends Audience> {
   @PlatformAPI
   @ApiStatus.Internal
   interface Provider {
-
     /**
      * Create a real click event based on the provided parameters.
      *

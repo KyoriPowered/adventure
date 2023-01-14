@@ -28,7 +28,6 @@ import net.kyori.adventure.util.Services;
 import org.jetbrains.annotations.NotNull;
 
 final class ClickCallbackProviderLookup {
-
   private ClickCallbackProviderLookup() {
   }
 
