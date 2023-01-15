@@ -147,7 +147,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
             if (hoverEventObject.has(HOVER_EVENT_CONTENTS)) {
               final @Nullable JsonElement rawValue = hoverEventObject.get(HOVER_EVENT_CONTENTS);
               final Class<?> actionType = action.type();
-              if (rawValue.isJsonNull() || (rawValue.isJsonArray() && rawValue.getAsJsonArray().size() == 0) || (rawValue.isJsonObject() && rawValue.getAsJsonObject().size() == 0)) {
+              if (isNullOrEmpty(rawValue)) {
                 value = null;
               } else if (SerializerFactory.COMPONENT_TYPE.isAssignableFrom(actionType)) {
                 value = this.gson.fromJson(rawValue, SerializerFactory.COMPONENT_TYPE);
@@ -160,7 +160,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
               }
             } else if (hoverEventObject.has(HOVER_EVENT_VALUE)) {
               final JsonElement element = hoverEventObject.get(HOVER_EVENT_VALUE);
-              if (element.isJsonNull() || (element.isJsonArray() && element.getAsJsonArray().size() == 0) || (element.isJsonObject() && element.getAsJsonObject().size() == 0)) {
+              if (isNullOrEmpty(element)) {
                 value = null;
               } else {
                 final Component rawValue = this.gson.fromJson(element, SerializerFactory.COMPONENT_TYPE);
@@ -182,6 +182,10 @@ final class StyleSerializer extends TypeAdapter<Style> {
 
     in.endObject();
     return style.build();
+  }
+
+  private static boolean isNullOrEmpty(final @Nullable JsonElement element) {
+    return element == null || element.isJsonNull() || (element.isJsonArray() && element.getAsJsonArray().size() == 0) || (element.isJsonObject() && element.getAsJsonObject().size() == 0);
   }
 
   private boolean readBoolean(final JsonReader in) throws IOException {
