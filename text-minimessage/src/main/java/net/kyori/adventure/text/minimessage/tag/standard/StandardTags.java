@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2022 KyoriPowered
+ * Copyright (c) 2017-2023 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -60,7 +60,9 @@ public final class StandardTags {
         ResetTag.RESOLVER,
         NewlineTag.RESOLVER,
         TransitionTag.RESOLVER,
-        SelectorTag.RESOLVER
+        SelectorTag.RESOLVER,
+        ScoreTag.RESOLVER,
+        NbtTag.RESOLVER
       )
       .build();
 
@@ -225,6 +227,28 @@ public final class StandardTags {
    */
   public static @NotNull TagResolver selector() {
     return SelectorTag.RESOLVER;
+  }
+
+  /**
+   * Get a resolver for the {@value ScoreTag#SCORE} tag.
+   *
+   * @return a resolver for the {@value ScoreTag#SCORE} tag
+   * @since 4.13.0
+   */
+  public static @NotNull TagResolver score() {
+    return ScoreTag.RESOLVER;
+  }
+
+  /**
+   * Get a resolver for the {@value NbtTag#NBT} tag.
+   *
+   * <p>This tag also responds to {@value NbtTag#DATA}.</p>
+   *
+   * @return a resolver for the {@value NbtTag#NBT} tag.
+   * @since 4.13.0
+   */
+  public static @NotNull TagResolver nbt() {
+    return NbtTag.RESOLVER;
   }
 
   /**

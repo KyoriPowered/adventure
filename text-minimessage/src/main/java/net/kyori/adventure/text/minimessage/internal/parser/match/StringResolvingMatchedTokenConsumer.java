@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2022 KyoriPowered
+ * Copyright (c) 2017-2023 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -82,7 +82,7 @@ public final class StringResolvingMatchedTokenConsumer extends MatchedTokenConsu
 
       // we might care if it's a valid tag!
       if (TagInternals.sanitizeAndCheckValidTagName(tag)) {
-        final List<Token> tokens = tokenize(match);
+        final List<Token> tokens = tokenize(match, false);
         final List<TagPart> parts = new ArrayList<>();
         final List<Token> childs = tokens.isEmpty() ? null : tokens.get(0).childTokens();
         if (childs != null) {

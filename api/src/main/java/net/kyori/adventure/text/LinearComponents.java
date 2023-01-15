@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2022 KyoriPowered
+ * Copyright (c) 2017-2023 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -79,7 +79,7 @@ public final class LinearComponents {
     final int size = builder.children.size();
     if (size == 0) {
       throw nothingComponentLike();
-    } else if (size == 1) {
+    } else if (size == 1 && !builder.hasStyle()) {
       return builder.children.get(0);
     } else {
       return builder.build();

@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2022 KyoriPowered
+ * Copyright (c) 2017-2023 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,10 +27,13 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import net.kyori.adventure.chat.ChatType;
+import net.kyori.adventure.chat.SignedMessage;
 import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.pointer.Pointer;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -70,23 +73,29 @@ final class EmptyAudience implements Audience {
   }
 
   @Override
-  public void sendMessage(final @NotNull Identified source, final @NotNull ComponentLike message) {
+  public void sendMessage(final @NotNull Component message) {
   }
 
   @Override
-  public void sendMessage(final @NotNull Identity source, final @NotNull ComponentLike message) {
+  @Deprecated
+  public void sendMessage(final @NotNull Identified source, final @NotNull Component message, final @NotNull MessageType type) {
   }
 
   @Override
-  public void sendMessage(final @NotNull ComponentLike message, final @NotNull MessageType type) {
+  @Deprecated
+  public void sendMessage(final @NotNull Identity source, final @NotNull Component message, final @NotNull MessageType type) {
   }
 
   @Override
-  public void sendMessage(final @NotNull Identified source, final @NotNull ComponentLike message, final @NotNull MessageType type) {
+  public void sendMessage(final @NotNull Component message, final ChatType.@NotNull Bound boundChatType) {
   }
 
   @Override
-  public void sendMessage(final @NotNull Identity source, final @NotNull ComponentLike message, final @NotNull MessageType type) {
+  public void sendMessage(final @NotNull SignedMessage signedMessage, final ChatType.@NotNull Bound boundChatType) {
+  }
+
+  @Override
+  public void deleteMessage(final SignedMessage.@NotNull Signature signature) {
   }
 
   @Override

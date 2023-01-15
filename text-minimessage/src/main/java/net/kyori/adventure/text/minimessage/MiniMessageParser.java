@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2022 KyoriPowered
+ * Copyright (c) 2017-2023 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -98,7 +98,7 @@ final class MiniMessageParser {
 
   private void processTokens(final @NotNull StringBuilder sb, final @NotNull String richMessage, final @NotNull ContextImpl context, final BiConsumer<Token, StringBuilder> tagHandler) {
     final TagResolver combinedResolver = TagResolver.resolver(this.tagResolver, context.extraTags());
-    final List<Token> root = TokenParser.tokenize(richMessage);
+    final List<Token> root = TokenParser.tokenize(richMessage, true);
     for (final Token token : root) {
       switch (token.type()) {
         case TEXT:

@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2022 KyoriPowered
+ * Copyright (c) 2017-2023 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * A serializer that will output to Configurate {@link ConfigurationNode}s.
  *
- * <p>This serializer only modifies its own serializer collection. To add to another collection, 
+ * <p>This serializer only modifies its own serializer collection. To add to another collection,
  * use an existing serializer instance to {@linkplain #addSerializersTo(TypeSerializerCollection) populate}
  * that collection. Serializers are added for every Adventure data type.</p>
  *

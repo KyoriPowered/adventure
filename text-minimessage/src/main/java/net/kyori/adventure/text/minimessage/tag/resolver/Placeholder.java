@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2022 KyoriPowered
+ * Copyright (c) 2017-2023 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage.tag.resolver;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jetbrains.annotations.NotNull;
 
@@ -80,5 +81,19 @@ public final class Placeholder {
    */
   public static TagResolver.@NotNull Single component(final @NotNull String key, final @NotNull ComponentLike value) {
     return TagResolver.resolver(key, Tag.selfClosingInserting(value));
+  }
+
+  /**
+   * Creates a style tag which will modify the style of the component.
+   *
+   * <p>This style can be used like other styles.</p>
+   *
+   * @param key the key
+   * @param style the style
+   * @return the placeholder
+   * @since 4.13.0
+   */
+  public static TagResolver.@NotNull Single styling(final @NotNull String key, final @NotNull StyleBuilderApplicable@NotNull... style) {
+    return TagResolver.resolver(key, Tag.styling(style));
   }
 }

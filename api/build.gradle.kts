@@ -15,6 +15,7 @@ dependencies {
   api(libs.examination.string)
   compileOnlyApi(libs.jetbrainsAnnotations)
   testImplementation(libs.guava)
+  annotationProcessor(projects.adventureAnnotationProcessors)
 }
 
 applyJarMetadata("net.kyori.adventure")

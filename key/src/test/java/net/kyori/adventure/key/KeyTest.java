@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2022 KyoriPowered
+ * Copyright (c) 2017-2023 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -90,15 +90,21 @@ class KeyTest {
   }
 
   @Test
-  void testNamespaceValid() {
-    assertTrue(KeyImpl.namespaceValid(Key.MINECRAFT_NAMESPACE));
-    assertTrue(KeyImpl.namespaceValid("realms"));
-    assertFalse(KeyImpl.namespaceValid("some/path"));
+  void testParseable() {
+    assertTrue(Key.parseable("minecraft:empty"));
+    assertFalse(Key.parseable("minecraft:Empty"));
   }
 
   @Test
-  void testValueValid() {
-    assertTrue(KeyImpl.valueValid("empty"));
-    assertTrue(KeyImpl.valueValid("some/path"));
+  void testParseableNamespace() {
+    assertTrue(Key.parseableNamespace(Key.MINECRAFT_NAMESPACE));
+    assertTrue(Key.parseableNamespace("realms"));
+    assertFalse(Key.parseableNamespace("some/path"));
+  }
+
+  @Test
+  void testParseableValue() {
+    assertTrue(Key.parseableValue("empty"));
+    assertTrue(Key.parseableValue("some/path"));
   }
 }

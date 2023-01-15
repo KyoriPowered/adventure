@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2022 KyoriPowered
+ * Copyright (c) 2017-2023 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -114,6 +114,26 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    */
   @Contract("_ -> this")
   @NotNull B append(final @NotNull Iterable<? extends ComponentLike> components);
+
+  /**
+   * Appends a newline to this component.
+   *
+   * @return this builder
+   * @since 4.12.0
+   */
+  default @NotNull B appendNewline() {
+    return this.append(Component.newline());
+  }
+
+  /**
+   * Appends a space to this component.
+   *
+   * @return this builder
+   * @since 4.12.0
+   */
+  default @NotNull B appendSpace() {
+    return this.append(Component.space());
+  }
 
   /**
    * Applies an action to this builder.

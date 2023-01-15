@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2022 KyoriPowered
+ * Copyright (c) 2017-2023 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,8 +33,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 final class ComponentCompaction {
-  private static final TextDecoration[] DECORATIONS = TextDecoration.values();
-
   private ComponentCompaction() {
   }
 
@@ -42,7 +40,7 @@ final class ComponentCompaction {
     final List<Component> children = self.children();
     Component optimized = self.children(Collections.emptyList());
     if (parentStyle != null) {
-      optimized = optimized.style(simplifyStyle(self.style(), parentStyle));
+      optimized = optimized.style(self.style().unmerge(parentStyle));
     }
 
     final int childrenSize = children.size();
@@ -151,49 +149,6 @@ final class ComponentCompaction {
     }
 
     return optimized.children(childrenToAppend);
-  }
-
-  /**
-   * Simplify the provided style to remove any information that is redundant.
-   *
-   * @param style style to simplify
-   * @param parentStyle parent to compare against
-   * @return a new, simplified style
-   */
-  private static @NotNull Style simplifyStyle(final @NotNull Style style, final @NotNull Style parentStyle) {
-    if (style.isEmpty()) {
-      // the target style is empty, so there is nothing to simplify
-      return style;
-    }
-
-    final Style.Builder builder = style.toBuilder();
-    if (Objects.equals(style.font(), parentStyle.font())) {
-      builder.font(null);
-    }
-
-    if (Objects.equals(style.color(), parentStyle.color())) {
-      builder.color(null);
-    }
-
-    for (final TextDecoration decoration : DECORATIONS) {
-      if (style.decoration(decoration) == parentStyle.decoration(decoration)) {
-        builder.decoration(decoration, TextDecoration.State.NOT_SET);
-      }
-    }
-
-    if (Objects.equals(style.clickEvent(), parentStyle.clickEvent())) {
-      builder.clickEvent(null);
-    }
-
-    if (Objects.equals(style.hoverEvent(), parentStyle.hoverEvent())) {
-      builder.hoverEvent(null);
-    }
-
-    if (Objects.equals(style.insertion(), parentStyle.insertion())) {
-      builder.insertion(null);
-    }
-
-    return builder.build();
   }
 
   /**

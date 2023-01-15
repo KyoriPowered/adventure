@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2022 KyoriPowered
+ * Copyright (c) 2017-2023 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,7 @@ import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Buildable;
+import net.kyori.adventure.util.PlatformAPI;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -163,6 +164,7 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
    * @since 4.8.0
    */
   @ApiStatus.Internal
+  @PlatformAPI
   interface Provider {
     /**
      * Provides a standard {@link GsonComponentSerializer}.
@@ -171,6 +173,7 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
      * @since 4.8.0
      */
     @ApiStatus.Internal
+    @PlatformAPI
     @NotNull GsonComponentSerializer gson();
 
     /**
@@ -180,6 +183,7 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
      * @since 4.8.0
      */
     @ApiStatus.Internal
+    @PlatformAPI
     @NotNull GsonComponentSerializer gsonLegacy();
 
     /**
@@ -189,6 +193,7 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
      * @since 4.8.0
      */
     @ApiStatus.Internal
+    @PlatformAPI
     @NotNull Consumer<Builder> builder();
   }
 }

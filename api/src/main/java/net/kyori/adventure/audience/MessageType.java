@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2022 KyoriPowered
+ * Copyright (c) 2017-2023 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,22 +23,34 @@
  */
 package net.kyori.adventure.audience;
 
+import net.kyori.adventure.chat.ChatType;
+import org.jetbrains.annotations.ApiStatus;
+
 /**
  * Message types.
  *
  * @since 4.0.0
+ * @deprecated for removal since 4.12.0, use separate methods on {@link Audience} for sending player or system messages
  */
+@ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
+@Deprecated
 public enum MessageType {
   /**
    * Chat message type.
    *
    * @since 4.0.0
+   * @deprecated for removal since 4.12.0, use {@link ChatType#CHAT} instead
    */
+  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
+  @Deprecated
   CHAT,
   /**
    * System message type.
    *
    * @since 4.0.0
+   * @deprecated for removal since 4.12.0
    */
+  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
+  @Deprecated
   SYSTEM;
 }

@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2022 KyoriPowered
+ * Copyright (c) 2017-2023 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -180,6 +180,45 @@ final class StyleImpl implements Style {
 
     final Builder builder = this.toBuilder();
     builder.merge(that, strategy, merges);
+    return builder.build();
+  }
+
+  @Override
+  public @NotNull Style unmerge(final @NotNull Style that) {
+    if (this.isEmpty()) {
+      // the target style is empty, so there is nothing to simplify
+      return this;
+    }
+
+    final Style.Builder builder = new BuilderImpl(this);
+
+    if (Objects.equals(this.font(), that.font())) {
+      builder.font(null);
+    }
+
+    if (Objects.equals(this.color(), that.color())) {
+      builder.color(null);
+    }
+
+    for (int i = 0, length = DecorationMap.DECORATIONS.length; i < length; i++) {
+      final TextDecoration decoration = DecorationMap.DECORATIONS[i];
+      if (this.decoration(decoration) == that.decoration(decoration)) {
+        builder.decoration(decoration, TextDecoration.State.NOT_SET);
+      }
+    }
+
+    if (Objects.equals(this.clickEvent(), that.clickEvent())) {
+      builder.clickEvent(null);
+    }
+
+    if (Objects.equals(this.hoverEvent(), that.hoverEvent())) {
+      builder.hoverEvent(null);
+    }
+
+    if (Objects.equals(this.insertion(), that.insertion())) {
+      builder.insertion(null);
+    }
+
     return builder.build();
   }
 

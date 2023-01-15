@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2022 KyoriPowered
+ * Copyright (c) 2017-2023 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -368,6 +368,32 @@ class StyleTest {
         .merge(style, ImmutableSet.of(Style.Merge.COLOR))
         .build()
     );
+  }
+
+  @Test
+  void testUnmergeEmpty() {
+    final Style s0 = Style.empty();
+    final Style s1 = Style.style(NamedTextColor.DARK_RED, TextDecoration.BOLD, TextDecoration.ITALIC);
+    final Style s2 = s1.unmerge(s0);
+    assertEquals(NamedTextColor.DARK_RED, s2.color());
+    assertDecorations(s2, ImmutableSet.of(TextDecoration.BOLD, TextDecoration.ITALIC), ImmutableSet.of());
+  }
+
+  @Test
+  void testUnmerge() {
+    final Style s0 = Style.style(NamedTextColor.DARK_RED, TextDecoration.BOLD);
+    final Style s1 = Style.style(NamedTextColor.DARK_RED, TextDecoration.BOLD, TextDecoration.ITALIC);
+    final Style s2 = s1.unmerge(s0);
+    assertNull(s2.color());
+    assertDecorations(s2, ImmutableSet.of(TextDecoration.ITALIC), ImmutableSet.of());
+  }
+
+  @Test
+  void testUnmergeWithEmptyChild() {
+    final Style s0 = Style.style(NamedTextColor.DARK_RED, TextDecoration.BOLD);
+    final Style s1 = Style.empty();
+    final Style s2 = s1.unmerge(s0);
+    assertSame(s1, s2);
   }
 
   @Test

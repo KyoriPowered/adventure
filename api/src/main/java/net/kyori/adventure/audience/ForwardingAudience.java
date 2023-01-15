@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2022 KyoriPowered
+ * Copyright (c) 2017-2023 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,8 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.chat.ChatType;
+import net.kyori.adventure.chat.SignedMessage;
 import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
@@ -99,11 +101,33 @@ public interface ForwardingAudience extends Audience {
   }
 
   @Override
+  default void sendMessage(final @NotNull Component message) {
+    for (final Audience audience : this.audiences()) audience.sendMessage(message);
+  }
+
+  @Override
+  default void sendMessage(final @NotNull Component message, final ChatType.@NotNull Bound boundChatType) {
+    for (final Audience audience : this.audiences()) audience.sendMessage(message, boundChatType);
+  }
+
+  @Override
+  default void sendMessage(final @NotNull SignedMessage signedMessage, final ChatType.@NotNull Bound boundChatType) {
+    for (final Audience audience : this.audiences()) audience.sendMessage(signedMessage, boundChatType);
+  }
+
+  @Override
+  default void deleteMessage(final SignedMessage.@NotNull Signature signature) {
+    for (final Audience audience : this.audiences()) audience.deleteMessage(signature);
+  }
+
+  @Override
+  @Deprecated
   default void sendMessage(final @NotNull Identified source, final @NotNull Component message, final @NotNull MessageType type) {
     for (final Audience audience : this.audiences()) audience.sendMessage(source, message, type);
   }
 
   @Override
+  @Deprecated
   default void sendMessage(final @NotNull Identity source, final @NotNull Component message, final @NotNull MessageType type) {
     for (final Audience audience : this.audiences()) audience.sendMessage(source, message, type);
   }
@@ -255,11 +279,33 @@ public interface ForwardingAudience extends Audience {
     }
 
     @Override
+    default void sendMessage(final @NotNull Component message) {
+      this.audience().sendMessage(message);
+    }
+
+    @Override
+    default void sendMessage(final @NotNull Component message, final ChatType.@NotNull Bound boundChatType) {
+      this.audience().sendMessage(message, boundChatType);
+    }
+
+    @Override
+    default void sendMessage(final @NotNull SignedMessage signedMessage, final ChatType.@NotNull Bound boundChatType) {
+      this.audience().sendMessage(signedMessage, boundChatType);
+    }
+
+    @Override
+    default void deleteMessage(final SignedMessage.@NotNull Signature signature) {
+      this.audience().deleteMessage(signature);
+    }
+
+    @Override
+    @Deprecated
     default void sendMessage(final @NotNull Identified source, final @NotNull Component message, final @NotNull MessageType type) {
       this.audience().sendMessage(source, message, type);
     }
 
     @Override
+    @Deprecated
     default void sendMessage(final @NotNull Identity source, final @NotNull Component message, final @NotNull MessageType type) {
       this.audience().sendMessage(source, message, type);
     }

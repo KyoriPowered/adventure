@@ -1,4 +1,5 @@
 import com.adarshr.gradle.testlogger.theme.ThemeType
+import com.diffplug.gradle.spotless.FormatExtension
 import me.champeau.jmh.JMHPlugin
 import me.champeau.jmh.JmhParameters
 import net.ltgt.gradle.errorprone.errorprone
@@ -9,7 +10,7 @@ plugins {
   id("net.kyori.indra.crossdoc")
   id("net.kyori.indra")
   id("net.kyori.indra.checkstyle")
-  id("net.kyori.indra.license-header")
+  id("net.kyori.indra.licenser.spotless")
   id("com.adarshr.test-logger")
   id("com.diffplug.eclipse.apt")
   id("net.ltgt.errorprone")
@@ -54,6 +55,21 @@ dependencies {
   testImplementation(libs.junit.api)
   testImplementation(libs.junit.engine)
   testImplementation(libs.junit.params)
+}
+
+spotless {
+  fun FormatExtension.applyCommon() {
+    trimTrailingWhitespace()
+    endWithNewline()
+    indentWithSpaces(2)
+  }
+  java {
+    importOrderFile(rootProject.file(".spotless/kyori.importorder"))
+    applyCommon()
+  }
+  kotlinGradle {
+    applyCommon()
+  }
 }
 
 val ADVENTURE_PREFIX = "adventure-"

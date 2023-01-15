@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2022 KyoriPowered
+ * Copyright (c) 2017-2023 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -46,8 +46,11 @@ final class TextComponentImpl extends AbstractComponent implements TextComponent
   static final TextComponent SPACE = createDirect(" ");
 
   static TextComponent create(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String content) {
+    final List<Component> filteredChildren = ComponentLike.asComponents(children, IS_NOT_EMPTY);
+    if (filteredChildren.isEmpty() && style.isEmpty() && content.isEmpty()) return Component.empty();
+
     return new TextComponentImpl(
-      ComponentLike.asComponents(children, IS_NOT_EMPTY),
+      filteredChildren,
       requireNonNull(style, "style"),
       requireNonNull(content, "content")
     );

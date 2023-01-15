@@ -1,7 +1,7 @@
 /*
  * This file is part of adventure, licensed under the MIT License.
  *
- * Copyright (c) 2017-2022 KyoriPowered
+ * Copyright (c) 2017-2023 KyoriPowered
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -139,7 +139,9 @@ public class ParsingExceptionImpl extends ParsingException {
     for (final Token t : ts) {
       Arrays.fill(chars, i, t.startIndex(), ' ');
       chars[t.startIndex()] = '^';
-      Arrays.fill(chars, t.startIndex() + 1, t.endIndex() - 1, '~');
+      if (Math.abs(t.startIndex() - t.endIndex()) > 1) {
+        Arrays.fill(chars, t.startIndex() + 1, t.endIndex() - 1, '~');
+      }
       chars[t.endIndex() - 1] = '^';
       i = t.endIndex();
     }

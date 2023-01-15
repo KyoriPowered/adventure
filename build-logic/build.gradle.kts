@@ -5,8 +5,9 @@ plugins {
 dependencies {
   implementation(libs.build.errorpronePlugin)
   implementation(libs.build.indra)
-  implementation(libs.build.indra.sonatype)
   implementation(libs.build.indra.crossdoc)
+  implementation(libs.build.indra.sonatype)
+  implementation(libs.build.indra.spotless)
   implementation(libs.build.testLogger)
   compileOnly(libs.build.jmh)
   implementation(libs.build.goomph)
