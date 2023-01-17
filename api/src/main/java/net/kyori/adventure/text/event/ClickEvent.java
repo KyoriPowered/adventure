@@ -149,7 +149,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @since 4.13.0
    */
   public static @NotNull ClickEvent callback(final @NotNull ClickCallback<Audience> function) {
-    return ClickCallbackProviderLookup.PROVIDER.create(requireNonNull(function, "function"), ClickCallbackOptionsImpl.DEFAULT);
+    return ClickCallbackInternals.PROVIDER.create(requireNonNull(function, "function"), ClickCallbackOptionsImpl.DEFAULT);
   }
 
   /**
@@ -161,7 +161,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @since 4.13.0
    */
   public static @NotNull ClickEvent callback(final @NotNull ClickCallback<Audience> function, final ClickCallback.@NotNull Options options) {
-    return ClickCallbackProviderLookup.PROVIDER.create(requireNonNull(function, "function"), requireNonNull(options, "options"));
+    return ClickCallbackInternals.PROVIDER.create(requireNonNull(function, "function"), requireNonNull(options, "options"));
   }
 
   /**
@@ -173,7 +173,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    * @since 4.13.0
    */
   public static @NotNull ClickEvent callback(final @NotNull ClickCallback<Audience> function, final @NotNull Consumer<ClickCallback.Options.@NotNull Builder> optionsBuilder) {
-    return ClickCallbackProviderLookup.PROVIDER.create(
+    return ClickCallbackInternals.PROVIDER.create(
       requireNonNull(function, "function"),
       AbstractBuilder.configureAndBuild(ClickCallback.Options.builder(), requireNonNull(optionsBuilder, "optionsBuilder"))
     );

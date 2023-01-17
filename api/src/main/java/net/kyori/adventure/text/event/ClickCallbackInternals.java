@@ -24,12 +24,16 @@
 package net.kyori.adventure.text.event;
 
 import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.permission.PermissionChecker;
 import net.kyori.adventure.util.Services;
+import net.kyori.adventure.util.TriState;
 import org.jetbrains.annotations.NotNull;
 
-final class ClickCallbackProviderLookup {
-  private ClickCallbackProviderLookup() {
+final class ClickCallbackInternals {
+  private ClickCallbackInternals() {
   }
+
+  static final PermissionChecker ALWAYS_FALSE = PermissionChecker.always(TriState.FALSE);
 
   static final ClickCallback.Provider PROVIDER = Services.service(ClickCallback.Provider.class)
     .orElseGet(Fallback::new);

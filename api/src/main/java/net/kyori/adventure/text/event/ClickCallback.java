@@ -31,7 +31,6 @@ import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.permission.PermissionChecker;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.PlatformAPI;
-import net.kyori.adventure.util.TriState;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -124,7 +123,7 @@ public interface ClickCallback<T extends Audience> {
   /**
    * Require that audiences receiving this callback have a certain permission.
    *
-   * <p>For audiences without permissions information, this test will always pass.</p>
+   * <p>For audiences without permissions information, this test will always fail.</p>
    *
    * <p>Actions from audiences that do not match this predicate will be silently ignored.</p>
    *
@@ -139,7 +138,7 @@ public interface ClickCallback<T extends Audience> {
   /**
    * Require that audiences receiving this callback have a certain permission.
    *
-   * <p>For audiences without permissions information, this test will always pass.</p>
+   * <p>For audiences without permissions information, this test will always fail.</p>
    *
    * @param permission the permission to check
    * @param failureMessage a message to send if the conditions are not met
@@ -147,7 +146,7 @@ public interface ClickCallback<T extends Audience> {
    * @since 4.13.0
    */
   default @NotNull ClickCallback<T> requiringPermission(final @NotNull String permission, final @Nullable Component failureMessage) {
-    return this.filter(audience -> audience.getOrDefault(PermissionChecker.POINTER, PermissionChecker.always(TriState.TRUE)).test(permission), failureMessage);
+    return this.filter(audience -> audience.getOrDefault(PermissionChecker.POINTER, ClickCallbackInternals.ALWAYS_FALSE).test(permission), failureMessage);
   }
 
   /**
@@ -157,6 +156,13 @@ public interface ClickCallback<T extends Audience> {
    */
   @ApiStatus.NonExtendable
   interface Options extends Examinable {
+    /**
+     * Indicate that a callback should have unlimited uses.
+     *
+     * @since 4.13.0
+     */
+    int UNLIMITED_USES = -1;
+
     /**
      * Create a new builder.
      *
@@ -179,19 +185,19 @@ public interface ClickCallback<T extends Audience> {
     }
 
     /**
-     * Whether the callback can be executed multiple times.
+     * The number of times this callback can be executed.
      *
      * <p>By default callbacks are single-use.</p>
      *
-     * @return whether this callback is multi-use
+     * @return allowable use count, or {@link #UNLIMITED_USES}
      * @since 4.13.0
      */
-    boolean multiUse();
+    int uses();
 
     /**
      * How long this callback will last until it is made invalid.
      *
-     * <p>By default callbacks last 12 hours..</p>
+     * <p>By default callbacks last 12 hours.</p>
      *
      * @return the duration of this callback
      * @since 4.13.0
@@ -206,13 +212,13 @@ public interface ClickCallback<T extends Audience> {
     @ApiStatus.NonExtendable
     interface Builder extends AbstractBuilder<Options> {
       /**
-       * Set whether the callback can be multi-use.
+       * Set the number of uses allowed for this callback.
        *
-       * @param multiUse whether multiple clicks are allowed
+       * @param useCount the number of allowed uses, or {@link Options#UNLIMITED_USES}
        * @return this builder
        * @since 4.13.0
        */
-      @NotNull Builder multiUse(boolean multiUse);
+      @NotNull Builder uses(int useCount);
 
       /**
        * Set how long the callback should last from sending.

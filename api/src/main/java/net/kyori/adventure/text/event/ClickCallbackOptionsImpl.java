@@ -35,17 +35,17 @@ import static java.util.Objects.requireNonNull;
 final class ClickCallbackOptionsImpl implements ClickCallback.Options {
   static final ClickCallback.Options DEFAULT = new ClickCallbackOptionsImpl.BuilderImpl().build();
 
-  private final boolean multiUse;
+  private final int uses;
   private final Duration lifetime;
 
-  ClickCallbackOptionsImpl(final boolean multiUse, final Duration lifetime) {
-    this.multiUse = multiUse;
+  ClickCallbackOptionsImpl(final int uses, final Duration lifetime) {
+    this.uses = uses;
     this.lifetime = lifetime;
   }
 
   @Override
-  public boolean multiUse() {
-    return this.multiUse;
+  public int uses() {
+    return this.uses;
   }
 
   @Override
@@ -56,7 +56,7 @@ final class ClickCallbackOptionsImpl implements ClickCallback.Options {
   @Override
   public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.of(
-      ExaminableProperty.of("multiUse", this.multiUse),
+      ExaminableProperty.of("uses", this.uses),
       ExaminableProperty.of("expiration", this.lifetime)
     );
   }
@@ -67,26 +67,27 @@ final class ClickCallbackOptionsImpl implements ClickCallback.Options {
   }
 
   static final class BuilderImpl implements Builder {
-    private boolean multiUse;
+    private int uses;
     private Duration lifetime;
 
     BuilderImpl() {
+      this.uses = 1;
       this.lifetime = Duration.ofHours(12);
     }
 
     BuilderImpl(final ClickCallback.@NotNull Options existing) {
-      this.multiUse = existing.multiUse();
+      this.uses = existing.uses();
       this.lifetime = existing.lifetime();
     }
 
     @Override
     public ClickCallback.@NotNull Options build() {
-      return new ClickCallbackOptionsImpl(this.multiUse, this.lifetime);
+      return new ClickCallbackOptionsImpl(this.uses, this.lifetime);
     }
 
     @Override
-    public @NotNull Builder multiUse(final boolean multiUse) {
-      this.multiUse = multiUse;
+    public @NotNull Builder uses(final int uses) {
+      this.uses = uses;
       return this;
     }
 
