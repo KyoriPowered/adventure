@@ -247,7 +247,7 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
 
     @Override
     public Object @NotNull [] toArray() {
-      final TextDecoration.State[] states = new TextDecoration.State[MAP_SIZE];
+      final Object[] states = new Object[MAP_SIZE];
       for (int i = 0; i < MAP_SIZE; i++) {
         states[i] = DecorationMap.this.get(DECORATIONS[i]);
       }
@@ -292,7 +292,7 @@ final class DecorationMap extends AbstractMap<TextDecoration, TextDecoration.Sta
 
     @Override
     public Object @NotNull [] toArray() {
-      return DECORATIONS.clone();
+      return Arrays.copyOf(DECORATIONS, MAP_SIZE, Object[].class);
     }
 
     @Override
