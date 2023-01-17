@@ -32,6 +32,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.condition.DisabledIf;
 
 import static net.kyori.adventure.key.Key.key;
 import static net.kyori.adventure.text.Component.empty;
@@ -317,6 +318,11 @@ class ComponentCompactingTest {
     assertEquals(expectedCompact, notCompact.compact());
   }
 
+  private static boolean shouldSkipSimplifyingStyleForBlankComponents() {
+    return !ComponentCompaction.SIMPLIFY_STYLE_FOR_BLANK_COMPONENTS;
+  }
+
+  @DisabledIf(value = "shouldSkipSimplifyingStyleForBlankComponents", disabledReason = "https://github.com/KyoriPowered/adventure/issues/849") // todo: can this be fixed a better way?
   @Test
   void testBlankStyleRemoval() {
     final String blank = "   ";
@@ -327,6 +333,7 @@ class ComponentCompactingTest {
     assertEquals(expectedCompact, notCompact.compact());
   }
 
+  @DisabledIf(value = "shouldSkipSimplifyingStyleForBlankComponents", disabledReason = "https://github.com/KyoriPowered/adventure/issues/849") // todo: can this be fixed a better way?
   @Test
   void testBlankCompactionWithRemovableStyle() {
     final String blank = "   ";
@@ -339,6 +346,7 @@ class ComponentCompactingTest {
     assertEquals(expectedCompact, notCompact.compact());
   }
 
+  @DisabledIf(value = "shouldSkipSimplifyingStyleForBlankComponents", disabledReason = "https://github.com/KyoriPowered/adventure/issues/849") // todo: can this be fixed a better way?
   @Test
   void testBlankCompactionWithManyStyle() {
     final String blank = "   ";

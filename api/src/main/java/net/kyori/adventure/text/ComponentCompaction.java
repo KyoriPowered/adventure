@@ -31,8 +31,12 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 
 final class ComponentCompaction {
+  @VisibleForTesting
+  static final boolean SIMPLIFY_STYLE_FOR_BLANK_COMPONENTS = false;
+
   private ComponentCompaction() {
   }
 
@@ -182,6 +186,12 @@ final class ComponentCompaction {
   * @return a new, simplified style
   */
   private static @NotNull Style simplifyStyleForBlank(final @NotNull Style style, final @Nullable Style parentStyle) {
+    if (!SIMPLIFY_STYLE_FOR_BLANK_COMPONENTS) {
+      // todo: can this be fixed a better way?
+      // https://github.com/KyoriPowered/adventure/issues/849
+      return style;
+    }
+
     final Style.Builder builder = style.toBuilder();
 
     // TextColor doesn't affect spaces, unless there is other decoration present
