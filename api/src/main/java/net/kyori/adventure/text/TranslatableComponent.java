@@ -34,6 +34,7 @@ import net.kyori.adventure.translation.TranslationRegistry;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A component that can display translated text.
@@ -90,6 +91,24 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    */
   @Contract(pure = true)
   @NotNull TranslatableComponent key(final @NotNull String key);
+
+  /**
+   * Gets the fallback string.
+   *
+   * @return the fallback string
+   * @since 4.13.0
+   */
+  @Nullable String fallback();
+
+  /**
+   * Sets the fallback string.
+   *
+   * @param fallback the fallback string
+   * @return a translatable component
+   * @since 4.13.0
+   */
+  @Contract(pure = true)
+  @NotNull TranslatableComponent fallback(final @Nullable String fallback);
 
   /**
    * Gets the unmodifiable list of translation arguments.
@@ -157,6 +176,16 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      */
     @Contract("_ -> this")
     @NotNull Builder key(final @NotNull String key);
+
+    /**
+     * Sets the fallback string.
+     *
+     * @param fallback the fallback string
+     * @return this builder
+     * @since 4.13.0
+     */
+    @Contract("_ -> this")
+    @NotNull Builder fallback(final @NotNull String fallback);
 
     /**
      * Sets the translation args.

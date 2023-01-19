@@ -56,6 +56,7 @@ import org.jetbrains.annotations.Nullable;
 final class ComponentSerializerImpl extends TypeAdapter<Component> {
   static final String TEXT = "text";
   static final String TRANSLATE = "translate";
+  static final String TRANSLATE_FALLBACK = "fallback";
   static final String TRANSLATE_WITH = "with";
   static final String SCORE = "score";
   static final String SCORE_NAME = "name";
@@ -115,6 +116,7 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
     // type specific
     String text = null;
     String translate = null;
+    String translateFallback = null;
     List<Component> translateWith = null;
     String scoreName = null;
     String scoreObjective = null;
@@ -135,6 +137,8 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
         text = readString(in);
       } else if (fieldName.equals(TRANSLATE)) {
         translate = in.nextString();
+      } else if (fieldName.equals(TRANSLATE_FALLBACK)) {
+        translateFallback = in.nextString();
       } else if (fieldName.equals(TRANSLATE_WITH)) {
         translateWith = this.gson.fromJson(in, COMPONENT_LIST_TYPE);
       } else if (fieldName.equals(SCORE)) {
@@ -183,9 +187,9 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
       builder = Component.text().content(text);
     } else if (translate != null) {
       if (translateWith != null) {
-        builder = Component.translatable().key(translate).args(translateWith);
+        builder = Component.translatable().key(translate).fallback(translateFallback).args(translateWith);
       } else {
-        builder = Component.translatable().key(translate);
+        builder = Component.translatable().key(translate).fallback(translateFallback);
       }
     } else if (scoreName != null && scoreObjective != null) {
       if (scoreValue == null) {
@@ -261,6 +265,11 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
       final TranslatableComponent translatable = (TranslatableComponent) value;
       out.name(TRANSLATE);
       out.value(translatable.key());
+      final @Nullable String fallback = translatable.fallback();
+      if (fallback != null) {
+        out.name(TRANSLATE_FALLBACK);
+        out.value(fallback);
+      }
       if (!translatable.args().isEmpty()) {
         out.name(TRANSLATE_WITH);
         this.gson.toJson(translatable.args(), COMPONENT_LIST_TYPE, out);

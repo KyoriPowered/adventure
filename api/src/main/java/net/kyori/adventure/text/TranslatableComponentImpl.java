@@ -37,26 +37,29 @@ import org.jetbrains.annotations.Nullable;
 import static java.util.Objects.requireNonNull;
 
 final class TranslatableComponentImpl extends AbstractComponent implements TranslatableComponent {
-  static TranslatableComponent create(final @NotNull List<Component> children, final @NotNull Style style, final @NotNull String key, final @NotNull ComponentLike@NotNull[] args) {
+  static TranslatableComponent create(final @NotNull List<Component> children, final @NotNull Style style, final @NotNull String key, final @Nullable String fallback, final @NotNull ComponentLike@NotNull[] args) {
     requireNonNull(args, "args");
-    return create(children, style, key, Arrays.asList(args));
+    return create(children, style, key, fallback, Arrays.asList(args));
   }
 
-  static TranslatableComponent create(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String key, final @NotNull List<? extends ComponentLike> args) {
+  static TranslatableComponent create(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String key, final @Nullable String fallback, final @NotNull List<? extends ComponentLike> args) {
     return new TranslatableComponentImpl(
       ComponentLike.asComponents(children, IS_NOT_EMPTY),
       requireNonNull(style, "style"),
       requireNonNull(key, "key"),
+      fallback,
       ComponentLike.asComponents(args) // Since translation arguments can be indexed, empty components are also included.
     );
   }
 
   private final String key;
+  private final @Nullable String fallback;
   private final List<Component> args;
 
-  TranslatableComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final @NotNull String key, final @NotNull List<Component> args) {
+  TranslatableComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final @NotNull String key, final @Nullable String fallback, final @NotNull List<Component> args) {
     super(children, style);
     this.key = key;
+    this.fallback = fallback;
     this.args = args;
   }
 
@@ -68,7 +71,17 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
   @Override
   public @NotNull TranslatableComponent key(final @NotNull String key) {
     if (Objects.equals(this.key, key)) return this;
-    return create(this.children, this.style, key, this.args);
+    return create(this.children, this.style, key, this.fallback, this.args);
+  }
+
+  @Override
+  public @Nullable String fallback() {
+    return this.fallback;
+  }
+
+  @Override
+  public @NotNull TranslatableComponent fallback(final @Nullable String fallback) {
+    return create(this.children, this.style, this.key, fallback, this.args);
   }
 
   @Override
@@ -78,22 +91,22 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
 
   @Override
   public @NotNull TranslatableComponent args(final @NotNull ComponentLike@NotNull... args) {
-    return create(this.children, this.style, this.key, args);
+    return create(this.children, this.style, this.key, this.fallback, args);
   }
 
   @Override
   public @NotNull TranslatableComponent args(final @NotNull List<? extends ComponentLike> args) {
-    return create(this.children, this.style, this.key, args);
+    return create(this.children, this.style, this.key, this.fallback, args);
   }
 
   @Override
   public @NotNull TranslatableComponent children(final @NotNull List<? extends ComponentLike> children) {
-    return create(children, this.style, this.key, this.args);
+    return create(children, this.style, this.key, this.fallback, this.args);
   }
 
   @Override
   public @NotNull TranslatableComponent style(final @NotNull Style style) {
-    return create(this.children, style, this.key, this.args);
+    return create(this.children, style, this.key, this.fallback, this.args);
   }
 
   @Override
@@ -102,13 +115,14 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
     if (!(other instanceof TranslatableComponent)) return false;
     if (!super.equals(other)) return false;
     final TranslatableComponent that = (TranslatableComponent) other;
-    return Objects.equals(this.key, that.key()) && Objects.equals(this.args, that.args());
+    return Objects.equals(this.key, that.key()) && Objects.equals(this.fallback, that.fallback()) && Objects.equals(this.args, that.args());
   }
 
   @Override
   public int hashCode() {
     int result = super.hashCode();
     result = (31 * result) + this.key.hashCode();
+    result = (31 * result) + Objects.hashCode(this.fallback);
     result = (31 * result) + this.args.hashCode();
     return result;
   }
@@ -125,6 +139,7 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
 
   static final class BuilderImpl extends AbstractComponentBuilder<TranslatableComponent, Builder> implements TranslatableComponent.Builder {
     private @Nullable String key;
+    private @Nullable String fallback;
     private List<? extends Component> args = Collections.emptyList();
 
     BuilderImpl() {
@@ -139,6 +154,12 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
     @Override
     public @NotNull Builder key(final @NotNull String key) {
       this.key = key;
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder fallback(final @Nullable String fallback) {
+      this.fallback = fallback;
       return this;
     }
 
@@ -176,7 +197,7 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
     @Override
     public @NotNull TranslatableComponent build() {
       if (this.key == null) throw new IllegalStateException("key must be set");
-      return create(this.children, this.buildStyle(), this.key, this.args);
+      return create(this.children, this.buildStyle(), this.key, this.fallback, this.args);
     }
   }
 }
