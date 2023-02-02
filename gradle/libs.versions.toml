@@ -9,7 +9,7 @@ guava = "31.1-jre"
 indra = "3.0.1"
 jmh = "1.36"
 jmhPlugin = "0.6.8"
-junit = "5.9.1"
+junit = "5.9.2"
 mockito = "4.5.1"
 slf4j = "2.0.1"
 truth = "1.1.3"
@@ -33,7 +33,7 @@ configurate-v4 = "org.spongepowered:configurate-core:4.1.2"
 # text-logger-slf4j
 slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 slf4jRuntime = { module = "org.slf4j:slf4j-api", version = "1.7.36"}
-slf4jtest = "com.github.valfirst:slf4j-test:2.8.0" # Specific versions are needed for different SLF4J versions
+slf4jtest = "com.github.valfirst:slf4j-test:2.8.1" # Specific versions are needed for different SLF4J versions
 
 # text-serializer-gson
 gson = "com.google.code.gson:gson:2.8.0"
