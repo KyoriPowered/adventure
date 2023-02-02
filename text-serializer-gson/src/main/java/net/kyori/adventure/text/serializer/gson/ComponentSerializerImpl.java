@@ -58,6 +58,7 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
   static final String TRANSLATE = "translate";
   static final String TRANSLATE_FALLBACK = "fallback";
   static final String TRANSLATE_WITH = "with";
+  static final String FALLBACK = "fallback";
   static final String SCORE = "score";
   static final String SCORE_NAME = "name";
   static final String SCORE_OBJECTIVE = "objective";
@@ -273,6 +274,10 @@ final class ComponentSerializerImpl extends TypeAdapter<Component> {
       if (!translatable.args().isEmpty()) {
         out.name(TRANSLATE_WITH);
         this.gson.toJson(translatable.args(), COMPONENT_LIST_TYPE, out);
+      }
+      if (translatable.fallback() != null) {
+        out.name(FALLBACK);
+        out.value(translatable.fallback());
       }
     } else if (value instanceof ScoreComponent) {
       final ScoreComponent score = (ScoreComponent) value;

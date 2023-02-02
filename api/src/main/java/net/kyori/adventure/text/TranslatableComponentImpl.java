@@ -75,16 +75,6 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
   }
 
   @Override
-  public @Nullable String fallback() {
-    return this.fallback;
-  }
-
-  @Override
-  public @NotNull TranslatableComponent fallback(final @Nullable String fallback) {
-    return create(this.children, this.style, this.key, fallback, this.args);
-  }
-
-  @Override
   public @NotNull List<Component> args() {
     return this.args;
   }
@@ -97,6 +87,16 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
   @Override
   public @NotNull TranslatableComponent args(final @NotNull List<? extends ComponentLike> args) {
     return create(this.children, this.style, this.key, this.fallback, args);
+  }
+
+  @Override
+  public @Nullable String fallback() {
+    return this.fallback;
+  }
+
+  @Override
+  public @NotNull TranslatableComponent fallback(final @Nullable String fallback) {
+    return create(this.children, this.style, this.key, fallback, this.args);
   }
 
   @Override
@@ -149,17 +149,12 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
       super(component);
       this.key = component.key();
       this.args = component.args();
+      this.fallback = component.fallback();
     }
 
     @Override
     public @NotNull Builder key(final @NotNull String key) {
       this.key = key;
-      return this;
-    }
-
-    @Override
-    public @NotNull Builder fallback(final @Nullable String fallback) {
-      this.fallback = fallback;
       return this;
     }
 
@@ -191,6 +186,12 @@ final class TranslatableComponentImpl extends AbstractComponent implements Trans
     @Override
     public @NotNull Builder args(final @NotNull List<? extends ComponentLike> args) {
       this.args = ComponentLike.asComponents(requireNonNull(args, "args"));
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder fallback(final @Nullable String fallback) {
+      this.fallback = fallback;
       return this;
     }
 

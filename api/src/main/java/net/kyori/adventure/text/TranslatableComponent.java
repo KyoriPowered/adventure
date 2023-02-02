@@ -93,24 +93,6 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
   @NotNull TranslatableComponent key(final @NotNull String key);
 
   /**
-   * Gets the fallback string.
-   *
-   * @return the fallback string
-   * @since 4.13.0
-   */
-  @Nullable String fallback();
-
-  /**
-   * Sets the fallback string.
-   *
-   * @param fallback the fallback string
-   * @return a translatable component
-   * @since 4.13.0
-   */
-  @Contract(pure = true)
-  @NotNull TranslatableComponent fallback(final @Nullable String fallback);
-
-  /**
    * Gets the unmodifiable list of translation arguments.
    *
    * @return the unmodifiable list of translation arguments
@@ -138,12 +120,35 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
   @Contract(pure = true)
   @NotNull TranslatableComponent args(final @NotNull List<? extends ComponentLike> args);
 
+  /**
+   * Gets the translation fallback text for this component.
+   * The fallback text will be shown when the client doesn't know the
+   * translation key used in the translatable component.
+   *
+   * @return the fallback string
+   * @since 4.13.0
+   */
+  @Nullable String fallback();
+
+  /**
+   * Sets the translation fallback text for this component.
+   * The fallback text will be shown when the client doesn't know the
+   * translation key used in the translatable component.
+   *
+   * @param fallback the fallback string
+   * @return this builder
+   * @since 4.13.0
+   */
+  @Contract(pure = true)
+  @NotNull TranslatableComponent fallback(final @NotNull String fallback);
+
   @Override
   default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
     return Stream.concat(
       Stream.of(
         ExaminableProperty.of("key", this.key()),
-        ExaminableProperty.of("args", this.args())
+        ExaminableProperty.of("args", this.args()),
+        ExaminableProperty.of("fallback", this.fallback())
       ),
       BuildableComponent.super.examinableProperties()
     );
@@ -176,16 +181,6 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      */
     @Contract("_ -> this")
     @NotNull Builder key(final @NotNull String key);
-
-    /**
-     * Sets the fallback string.
-     *
-     * @param fallback the fallback string
-     * @return this builder
-     * @since 4.13.0
-     */
-    @Contract("_ -> this")
-    @NotNull Builder fallback(final @NotNull String fallback);
 
     /**
      * Sets the translation args.
@@ -237,5 +232,17 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      */
     @Contract("_ -> this")
     @NotNull Builder args(final @NotNull List<? extends ComponentLike> args);
+
+    /**
+     * Sets the translation fallback text.
+     * The fallback text will be shown when the client doesn't know the
+     * translation key used in the translatable component.
+     *
+     * @param fallback the fallback string
+     * @return this builder
+     * @since 4.13.0
+     */
+    @Contract("_ -> this")
+    @NotNull Builder fallback(final @Nullable String fallback);
   }
 }

@@ -53,6 +53,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
   static final String TEXT = "text";
   static final String TRANSLATE = "translate";
   static final String TRANSLATE_WITH = "with";
+  static final String FALLBACK = "fallback";
   static final String SCORE = "score";
   static final String SCORE_NAME = "name";
   static final String SCORE_OBJECTIVE = "objective";
@@ -205,6 +206,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
           with.appendListNode().set(Component.class, arg);
         }
       }
+      value.node(FALLBACK).set(tc.fallback());
     } else if (src instanceof ScoreComponent) {
       final ScoreComponent sc = (ScoreComponent) src;
       final ConfigurationNode score = value.node(SCORE);
