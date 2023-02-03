@@ -20,7 +20,7 @@ examination-api = { module = "net.kyori:examination-api", version.ref = "examina
 examination-string = { module = "net.kyori:examination-string", version.ref = "examination" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 guava-testlib = { module = "com.google.guava:guava-testlib", version.ref = "guava" }
-jetbrainsAnnotations = "org.jetbrains:annotations:23.1.0"
+jetbrainsAnnotations = "org.jetbrains:annotations:24.0.0"
 
 # extra-kotlin
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8" }
