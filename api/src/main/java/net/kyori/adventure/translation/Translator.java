@@ -27,11 +27,13 @@ import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * A message format translator.
+ * A message translator.
  *
  * <p>To see how to create a {@link Translator} with a {@link ResourceBundle}
  * see {@link TranslationRegistry#registerAll(Locale, ResourceBundle, boolean)}</p>
@@ -82,4 +84,16 @@ public interface Translator {
    * @since 4.0.0
    */
   @Nullable MessageFormat translate(final @NotNull String key, final @NotNull Locale locale);
+
+  /**
+   * Gets a translated component from a translatable component and locale.
+   *
+   * @param locale a locale
+   * @param component a translatable component
+   * @return a translated component or {@code null} to use {@link #translate(String, Locale)} instead (if available)
+   * @since 4.13.0
+   */
+  default @Nullable Component translate(final @NotNull TranslatableComponent component, final @NotNull Locale locale) {
+    return null;
+  }
 }

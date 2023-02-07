@@ -73,6 +73,13 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
       protected @Nullable MessageFormat translate(final @NotNull String key, final @NotNull Locale context) {
         return source.translate(key, context);
       }
+
+      @Override
+      protected @NotNull Component renderTranslatable(final @NotNull TranslatableComponent component, final @NotNull Locale context) {
+        final @Nullable Component translated = source.translate(component, context);
+        if (translated != null) return translated;
+        return super.renderTranslatable(component, context);
+      }
     };
   }
 
