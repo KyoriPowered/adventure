@@ -136,7 +136,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * translation key used in the translatable component.
    *
    * @param fallback the fallback string
-   * @return this builder
+   * @return a translatable component
    * @since 4.13.0
    */
   @Contract(pure = true)
