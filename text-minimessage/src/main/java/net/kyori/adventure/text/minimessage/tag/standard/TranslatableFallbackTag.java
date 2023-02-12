@@ -23,6 +23,9 @@
  */
 package net.kyori.adventure.text.minimessage.tag.standard;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.minimessage.Context;
@@ -33,10 +36,6 @@ import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Insert a translation component into the result, with a fallback string.

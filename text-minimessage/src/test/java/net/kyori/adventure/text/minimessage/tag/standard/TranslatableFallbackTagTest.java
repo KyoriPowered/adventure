@@ -31,9 +31,6 @@ import org.junit.jupiter.api.Test;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
-import static net.kyori.adventure.text.event.HoverEvent.showText;
-import static net.kyori.adventure.text.format.NamedTextColor.BLUE;
-import static net.kyori.adventure.text.format.NamedTextColor.RED;
 
 class TranslatableFallbackTagTest extends AbstractTest {
   @Test
