@@ -134,7 +134,7 @@ public final class Formatter {
   public static TagResolver booleanChoice(final @NotNull String key, final boolean value) {
     return TagResolver.resolver(key, (argumentQueue, context) -> {
       final String trueCase = argumentQueue.popOr("True format expected.").value();
-      final String falseCase = argumentQueue.popOr("Talse format expected.").value();
+      final String falseCase = argumentQueue.popOr("False format expected.").value();
       return Tag.inserting(context.deserialize(value ? trueCase : falseCase));
     });
   }
