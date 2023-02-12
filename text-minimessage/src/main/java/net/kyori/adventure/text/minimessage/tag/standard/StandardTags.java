@@ -52,6 +52,7 @@ public final class StandardTags {
         ColorTagResolver.INSTANCE,
         KeybindTag.RESOLVER,
         TranslatableTag.RESOLVER,
+        TranslatableFallbackTag.RESOLVER,
         InsertionTag.RESOLVER,
         FontTag.RESOLVER,
         DecorationTag.RESOLVER,
@@ -143,6 +144,18 @@ public final class StandardTags {
    */
   public static @NotNull TagResolver translatable() {
     return TranslatableTag.RESOLVER;
+  }
+
+  /**
+   * Get a resolver for the {@value TranslatableFallbackTag#TRANSLATE_OR} tag.
+   *
+   * <p>This tag also responds to {@value TranslatableFallbackTag#LANG_OR} and {@value TranslatableFallbackTag#TR_OR}.</p>
+   *
+   * @return a resolver for the {@value TranslatableFallbackTag#TRANSLATE_OR} tag
+   * @since 4.10.0
+   */
+  public static @NotNull TagResolver translatableFallback() {
+    return TranslatableFallbackTag.RESOLVER;
   }
 
   /**
