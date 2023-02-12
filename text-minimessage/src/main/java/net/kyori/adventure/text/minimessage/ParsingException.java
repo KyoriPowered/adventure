@@ -60,6 +60,19 @@ public abstract class ParsingException extends RuntimeException {
   }
 
   /**
+   * Create a new parsing exception with a message and an optional cause.
+   *
+   * @param message a detail message describing the error
+   * @param cause the cause
+   * @param enableSuppression whether suppression is enabled or disabled
+   * @param writableStackTrace whether the stack trace should be writable
+   * @since 4.13.0
+   */
+  protected ParsingException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
+    super(message, cause, enableSuppression, writableStackTrace);
+  }
+
+  /**
    * Get the input message which caused this exception.
    *
    * @return the original input message

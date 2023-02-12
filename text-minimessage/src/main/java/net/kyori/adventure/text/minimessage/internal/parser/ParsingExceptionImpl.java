@@ -40,7 +40,6 @@ public class ParsingExceptionImpl extends ParsingException {
 
   private final String originalText;
   private Token @NotNull [] tokens;
-  private final boolean withStackTrace;
 
   /**
    * Create a new parsing exception.
@@ -55,10 +54,9 @@ public class ParsingExceptionImpl extends ParsingException {
     final @Nullable String originalText,
     final @NotNull Token @NotNull ... tokens
   ) {
-    super(message);
+    super(message, null, true, false);
     this.tokens = tokens;
     this.originalText = originalText;
-    this.withStackTrace = false;
   }
 
   /**
@@ -78,10 +76,9 @@ public class ParsingExceptionImpl extends ParsingException {
     final boolean withStackTrace,
     final @NotNull Token @NotNull ... tokens
   ) {
-    super(message, cause);
+    super(message, cause, true, withStackTrace);
     this.tokens = tokens;
     this.originalText = originalText;
-    this.withStackTrace = withStackTrace;
   }
 
   @Override
@@ -146,14 +143,6 @@ public class ParsingExceptionImpl extends ParsingException {
       i = t.endIndex();
     }
     return new String(chars);
-  }
-
-  @Override
-  public synchronized Throwable fillInStackTrace() {
-    if (this.withStackTrace) {
-      return super.fillInStackTrace();
-    }
-    return this;
   }
 
   @Override
