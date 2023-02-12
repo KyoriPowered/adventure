@@ -62,7 +62,9 @@ public final class StandardTags {
         TransitionTag.RESOLVER,
         SelectorTag.RESOLVER,
         ScoreTag.RESOLVER,
-        NbtTag.RESOLVER
+        NbtTag.RESOLVER,
+        ProgressTag.RESOLVER,
+        RepeatTag.RESOLVER
       )
       .build();
 
@@ -249,6 +251,26 @@ public final class StandardTags {
    */
   public static @NotNull TagResolver nbt() {
     return NbtTag.RESOLVER;
+  }
+  
+  /**
+   * Get a resolver for the {@value ProgressTag#PROGRESS} tag.
+   *
+   * @return a resolver for the {@value ProgressTag#PROGRESS} tag
+   * @since 4.13.0
+   */
+  public static @NotNull TagResolver progress() {
+    return ProgressTag.RESOLVER;
+  }
+
+  /**
+   * Get a resolver for the {@value RepeatTag#REPEAT} tag.
+   *
+   * @return a resolver for the {@value RepeatTag#REPEAT} tag
+   * @since 4.13.0
+   */
+  public static @NotNull TagResolver repeat() {
+    return RepeatTag.RESOLVER;
   }
 
   /**

@@ -30,7 +30,9 @@ import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.Locale;
+import java.util.function.Supplier;
 import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.standard.ProgressTag;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -102,7 +104,7 @@ public final class Formatter {
   /**
    * Creates a replacement that inserts a choice formatted text. The component will be formatted by the provided ChoiceFormat.
    *
-   * <p>This tag expectes a format as attribute. Refer to {@link ChoiceFormat} for usable patterns.</p>
+   * <p>This tag expects a format as attribute. Refer to {@link ChoiceFormat} for usable patterns.</p>
    *
    * <p>This replacement is auto-closing, so its style will not influence the style of following components.</p>
    *
@@ -117,5 +119,22 @@ public final class Formatter {
       final ChoiceFormat choiceFormat = new ChoiceFormat(format);
       return Tag.inserting(context.deserialize(choiceFormat.format(number)));
     });
+  }
+
+  /**
+   * Creates a replacement that inserts a progress bar. The component will be formatted by the provided fill and remaining colors and length
+   *
+   * <p>This tag expects a text to use to denote progress and can accept length, filled color and empty color. The text has to be provided as first argument.
+   *    In case the fill and empty colors and length are not provided, they will default to {@link ProgressTag#DEFAULT_FILLED_COLOR}, {@link ProgressTag#DEFAULT_REMAINING_COLOR} and {@value ProgressTag#DEFAULT_LENGTH} respectively.</p>
+   *
+   * <p>This replacement is auto-closing, so its style will not influence the style of following components.</p>
+   *
+   * @param key the key
+   * @param progressSupplier the supplier for the progress value
+   * @return the placeholder
+   * @since 4.13.0
+   */
+  public static @NotNull TagResolver progress(final @NotNull String key, final @NotNull Supplier<Double> progressSupplier) {
+    return TagResolver.resolver(key, (args, ctx) -> ProgressTag.createProgressProvided(args, ctx, progressSupplier));
   }
 }
