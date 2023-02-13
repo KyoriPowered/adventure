@@ -147,7 +147,9 @@ final class StyleSerializer extends TypeAdapter<Style> {
             if (hoverEventObject.has(HOVER_EVENT_CONTENTS)) {
               final @Nullable JsonElement rawValue = hoverEventObject.get(HOVER_EVENT_CONTENTS);
               final Class<?> actionType = action.type();
-              if (SerializerFactory.COMPONENT_TYPE.isAssignableFrom(actionType)) {
+              if (isNullOrEmpty(rawValue)) {
+                value = null;
+              } else if (SerializerFactory.COMPONENT_TYPE.isAssignableFrom(actionType)) {
                 value = this.gson.fromJson(rawValue, SerializerFactory.COMPONENT_TYPE);
               } else if (SerializerFactory.SHOW_ITEM_TYPE.isAssignableFrom(actionType)) {
                 value = this.gson.fromJson(rawValue, SerializerFactory.SHOW_ITEM_TYPE);
@@ -157,8 +159,13 @@ final class StyleSerializer extends TypeAdapter<Style> {
                 value = null;
               }
             } else if (hoverEventObject.has(HOVER_EVENT_VALUE)) {
-              final Component rawValue = this.gson.fromJson(hoverEventObject.get(HOVER_EVENT_VALUE), SerializerFactory.COMPONENT_TYPE);
-              value = this.legacyHoverEventContents(action, rawValue);
+              final JsonElement element = hoverEventObject.get(HOVER_EVENT_VALUE);
+              if (isNullOrEmpty(element)) {
+                value = null;
+              } else {
+                final Component rawValue = this.gson.fromJson(element, SerializerFactory.COMPONENT_TYPE);
+                value = this.legacyHoverEventContents(action, rawValue);
+              }
             } else {
               value = null;
             }
@@ -175,6 +182,10 @@ final class StyleSerializer extends TypeAdapter<Style> {
 
     in.endObject();
     return style.build();
+  }
+
+  private static boolean isNullOrEmpty(final @Nullable JsonElement element) {
+    return element == null || element.isJsonNull() || (element.isJsonArray() && element.getAsJsonArray().size() == 0) || (element.isJsonObject() && element.getAsJsonObject().size() == 0);
   }
 
   private boolean readBoolean(final JsonReader in) throws IOException {
