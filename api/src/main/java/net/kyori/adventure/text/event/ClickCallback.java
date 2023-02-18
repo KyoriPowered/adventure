@@ -25,11 +25,11 @@ package net.kyori.adventure.text.event;
 
 import java.time.Duration;
 import java.time.temporal.TemporalAmount;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.permission.PermissionChecker;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.PlatformAPI;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
@@ -51,16 +51,16 @@ public interface ClickCallback<T extends Audience> {
    * @param <N> the narrower type
    * @param original the original callback of a narrower audience type
    * @param type the audience type to accept
-   * @param failureMessage the message to send to the audience if it is not of the appropriate type
+   * @param otherwise the action to perform on the audience if it is not of the appropriate type
    * @return a new callback
    * @since 4.13.0
    */
-  static <W extends Audience, N extends W> @NotNull ClickCallback<W> widen(final @NotNull ClickCallback<N> original, final @NotNull Class<N> type, final @Nullable Component failureMessage) {
+  static <W extends Audience, N extends W> @NotNull ClickCallback<W> widen(final @NotNull ClickCallback<N> original, final @NotNull Class<N> type, final @Nullable Consumer<? super Audience> otherwise) {
     return audience -> {
       if (type.isInstance(audience)) {
         original.accept(type.cast(audience));
-      } else if (failureMessage != null) {
-        audience.sendMessage(failureMessage);
+      } else if (otherwise != null) {
+        otherwise.accept(audience);
       }
     };
   }
@@ -78,7 +78,7 @@ public interface ClickCallback<T extends Audience> {
    * @since 4.13.0
    */
   static <W extends Audience, N extends W> @NotNull ClickCallback<W> widen(final @NotNull ClickCallback<N> original, final @NotNull Class<N> type) {
-    return ClickCallback.widen(original, type, null);
+    return widen(original, type, null);
   }
 
   /**
@@ -106,16 +106,16 @@ public interface ClickCallback<T extends Audience> {
    * Filter audiences that receive this click callback.
    *
    * @param filter the filter to test audiences with
-   * @param failureMessage a message to send if the conditions are not met
+   * @param otherwise the action to perform on the audience if the conditions are not met
    * @return a filtered callback action
    * @since 4.13.0
    */
-  default @NotNull ClickCallback<T> filter(final @NotNull Predicate<T> filter, final @Nullable Component failureMessage) {
+  default @NotNull ClickCallback<T> filter(final @NotNull Predicate<T> filter, final @Nullable Consumer<? super Audience> otherwise) {
     return audience -> {
       if (filter.test(audience)) {
         this.accept(audience);
-      } else if (failureMessage != null) {
-        audience.sendMessage(failureMessage);
+      } else if (otherwise != null) {
+        otherwise.accept(audience);
       }
     };
   }
@@ -141,12 +141,12 @@ public interface ClickCallback<T extends Audience> {
    * <p>For audiences without permissions information, this test will always fail.</p>
    *
    * @param permission the permission to check
-   * @param failureMessage a message to send if the conditions are not met
+   * @param otherwise the action to perform on the audience if the conditions are not met
    * @return a modified callback
    * @since 4.13.0
    */
-  default @NotNull ClickCallback<T> requiringPermission(final @NotNull String permission, final @Nullable Component failureMessage) {
-    return this.filter(audience -> audience.getOrDefault(PermissionChecker.POINTER, ClickCallbackInternals.ALWAYS_FALSE).test(permission), failureMessage);
+  default @NotNull ClickCallback<T> requiringPermission(final @NotNull String permission, final @Nullable Consumer<? super Audience> otherwise) {
+    return this.filter(audience -> audience.getOrDefault(PermissionChecker.POINTER, ClickCallbackInternals.ALWAYS_FALSE).test(permission), otherwise);
   }
 
   /**
