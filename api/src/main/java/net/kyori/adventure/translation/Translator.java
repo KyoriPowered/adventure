@@ -37,6 +37,9 @@ import org.jetbrains.annotations.Nullable;
  *
  * <p>To see how to create a {@link Translator} with a {@link ResourceBundle}
  * see {@link TranslationRegistry#registerAll(Locale, ResourceBundle, boolean)}</p>
+ * 
+ * <p>To bypass vanilla's {@link MessageFormat}-based translation system,
+ * see {@link #translate(TranslatableComponent, Locale)}</p>
  *
  * <p>After creating a {@link Translator} you can add it to the {@link GlobalTranslator}
  * to enable automatic translations by the platforms.</p>
@@ -77,6 +80,8 @@ public interface Translator {
 
   /**
    * Gets a message format from a key and locale.
+   *
+   * <p>This method is called only if {@link #translate(TranslatableComponent, Locale)} returns {@code null}.</p>
    *
    * @param locale a locale
    * @param key a translation key

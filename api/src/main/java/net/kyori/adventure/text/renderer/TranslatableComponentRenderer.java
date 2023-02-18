@@ -62,6 +62,9 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   /**
    * Creates a {@link TranslatableComponentRenderer} using the {@link Translator} to translate.
    *
+   * <p>Alongside the standard {@link MessageFormat} translation, this will also allow the {@link Translator} to
+   * create a {@link Component} {@link Translator#translate(TranslatableComponent, Locale) directly}.</p>
+   *
    * @param source the translation source
    * @return the renderer
    * @since 4.0.0
