@@ -37,7 +37,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * <p>To see how to create a {@link Translator} with a {@link ResourceBundle}
  * see {@link TranslationRegistry#registerAll(Locale, ResourceBundle, boolean)}</p>
- * 
+ *
  * <p>To bypass vanilla's {@link MessageFormat}-based translation system,
  * see {@link #translate(TranslatableComponent, Locale)}</p>
  *
