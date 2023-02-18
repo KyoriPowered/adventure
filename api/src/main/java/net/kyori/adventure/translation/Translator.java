@@ -81,7 +81,8 @@ public interface Translator {
   /**
    * Gets a message format from a key and locale.
    *
-   * <p>This method is called only if {@link #translate(TranslatableComponent, Locale)} returns {@code null}.</p>
+   * <p>When used in the {@link GlobalTranslator}, this method is called only if
+   * {@link #translate(TranslatableComponent, Locale)} returns {@code null}.</p>
    *
    * @param locale a locale
    * @param key a translation key
