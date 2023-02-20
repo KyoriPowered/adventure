@@ -72,7 +72,7 @@ final class ClickCallbackOptionsImpl implements ClickCallback.Options {
 
     BuilderImpl() {
       this.uses = 1;
-      this.lifetime = Duration.ofHours(12);
+      this.lifetime = ClickCallback.DEFAULT_LIFETIME;
     }
 
     BuilderImpl(final ClickCallback.@NotNull Options existing) {

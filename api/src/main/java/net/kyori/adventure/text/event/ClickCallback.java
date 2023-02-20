@@ -45,6 +45,13 @@ import org.jetbrains.annotations.Nullable;
 @FunctionalInterface
 public interface ClickCallback<T extends Audience> {
   /**
+   * The default lifetime of a callback after creating it.
+   *
+   * @since 4.13.0
+   */
+  Duration DEFAULT_LIFETIME = Duration.ofHours(12);
+
+  /**
    * Adjust this callback to accept any audience, and perform the appropriate filtering.
    *
    * @param <W> the wider type
@@ -197,7 +204,7 @@ public interface ClickCallback<T extends Audience> {
     /**
      * How long this callback will last until it is made invalid.
      *
-     * <p>By default callbacks last 12 hours.</p>
+     * <p>By default callbacks last {@link #DEFAULT_LIFETIME 12 hours}.</p>
      *
      * @return the duration of this callback
      * @since 4.13.0
@@ -247,6 +254,6 @@ public interface ClickCallback<T extends Audience> {
      * @return a created click event that will execute the provided callback with options
      * @since 4.13.0
      */
-    @NotNull ClickEvent create(final @NotNull ClickCallback<Audience> callback, final ClickCallback.@NotNull Options options);
+    @NotNull ClickEvent create(final @NotNull ClickCallback<Audience> callback, final @NotNull Options options);
   }
 }
