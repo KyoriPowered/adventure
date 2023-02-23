@@ -92,7 +92,7 @@ import static java.util.Objects.requireNonNull;
  *
  * <p>Further information about Components, along with functional
  * examples of how they can be used,
- * <a href="https://docs.adventure.kyori.net/text.html">can be found on
+ * <a href="https://docs.advntr.dev/text.html">can be found on
  * our documentation.</a></p>
  *
  * @see BlockNBTComponent

@@ -24,7 +24,7 @@
 /**
  * Adventure: a serverside user interface library for Minecraft: Java Edition.
  *
- * <p>See the <a href="https://docs.adventure.kyori.net/index.html">documentation</a>
+ * <p>See the <a href="https://docs.advntr.dev/index.html">documentation</a>
  * for usage and dependency information for this project and associated libraries.</p>
  */
 package net.kyori.adventure;

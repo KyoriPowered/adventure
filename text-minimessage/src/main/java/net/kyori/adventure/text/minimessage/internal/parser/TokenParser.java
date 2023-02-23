@@ -168,7 +168,7 @@ public final class TokenParser {
           || nextChar == 'r'
           || (nextChar >= 'k' && nextChar <= 'o')) {
           throw new ParsingExceptionImpl(
-            "Legacy formatting codes have been detected in a MiniMessage string - this is unsupported behaviour. Please refer to the Adventure documentation (https://docs.adventure.kyori.net) for more information.",
+            "Legacy formatting codes have been detected in a MiniMessage string - this is unsupported behaviour. Please refer to the Adventure documentation (https://docs.advntr.dev) for more information.",
             message,
             null,
             true,
