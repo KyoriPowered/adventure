@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.serializer.gson;
 
 import net.kyori.adventure.text.serializer.json.JsonComponentSerializer;
+import net.kyori.adventure.util.Services;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,12 +34,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 4.13.0
  */
 @ApiStatus.Internal
-public final class JsonComponentSerializerProviderImpl implements JsonComponentSerializer.Provider {
-  @Override
-  public boolean isFallback() {
-    return true;
-  }
-
+public final class JsonComponentSerializerProviderImpl implements JsonComponentSerializer.Provider, Services.Fallback {
   @Override
   public @NotNull JsonComponentSerializer json() {
     return GsonComponentSerializer.gson();

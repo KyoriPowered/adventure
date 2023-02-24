@@ -26,7 +26,6 @@ package net.kyori.adventure.text.serializer.json;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.PlatformAPI;
-import net.kyori.adventure.util.Services;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,7 +52,7 @@ public interface JsonComponentSerializer extends ComponentSerializer<Component, 
    */
   @ApiStatus.Internal
   @PlatformAPI
-  interface Provider extends Services.Fallback {
+  interface Provider {
     /**
      * Provides a standard {@link JsonComponentSerializer}.
      *
