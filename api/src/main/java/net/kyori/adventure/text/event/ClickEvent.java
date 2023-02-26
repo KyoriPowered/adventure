@@ -142,7 +142,7 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
   /**
    * Create a click event that, when clicked, will schedule a callback function to be executed on the server.
    *
-   * <p>By default, this will be a single-use function that expires after 12 hours. Exact lifetime is subject to change.</p>
+   * <p>By default, this will be a single-use function that expires after the value of {@link ClickCallback#DEFAULT_LIFETIME}.</p>
    *
    * @param function the function to execute
    * @return a callback click event

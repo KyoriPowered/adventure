@@ -33,6 +33,8 @@ import net.kyori.adventure.permission.PermissionChecker;
 import net.kyori.adventure.util.PlatformAPI;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.CheckReturnValue;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,11 +47,18 @@ import org.jetbrains.annotations.Nullable;
 @FunctionalInterface
 public interface ClickCallback<T extends Audience> {
   /**
-   * The default lifetime of a callback after creating it.
+   * The default lifetime of a callback after creating it, 12 hours.
    *
    * @since 4.13.0
    */
   Duration DEFAULT_LIFETIME = Duration.ofHours(12);
+
+  /**
+   * Indicate that a callback should have unlimited uses.
+   *
+   * @since 4.13.0
+   */
+  int UNLIMITED_USES = -1;
 
   /**
    * Adjust this callback to accept any audience, and perform the appropriate filtering.
@@ -62,6 +71,8 @@ public interface ClickCallback<T extends Audience> {
    * @return a new callback
    * @since 4.13.0
    */
+  @CheckReturnValue
+  @Contract(pure = true)
   static <W extends Audience, N extends W> @NotNull ClickCallback<W> widen(final @NotNull ClickCallback<N> original, final @NotNull Class<N> type, final @Nullable Consumer<? super Audience> otherwise) {
     return audience -> {
       if (type.isInstance(audience)) {
@@ -84,6 +95,8 @@ public interface ClickCallback<T extends Audience> {
    * @return a new callback
    * @since 4.13.0
    */
+  @CheckReturnValue
+  @Contract(pure = true)
   static <W extends Audience, N extends W> @NotNull ClickCallback<W> widen(final @NotNull ClickCallback<N> original, final @NotNull Class<N> type) {
     return widen(original, type, null);
   }
@@ -105,6 +118,8 @@ public interface ClickCallback<T extends Audience> {
    * @return a filtered callback action
    * @since 4.13.0
    */
+  @CheckReturnValue
+  @Contract(pure = true)
   default @NotNull ClickCallback<T> filter(final @NotNull Predicate<T> filter) {
     return this.filter(filter, null);
   }
@@ -117,6 +132,8 @@ public interface ClickCallback<T extends Audience> {
    * @return a filtered callback action
    * @since 4.13.0
    */
+  @CheckReturnValue
+  @Contract(pure = true)
   default @NotNull ClickCallback<T> filter(final @NotNull Predicate<T> filter, final @Nullable Consumer<? super Audience> otherwise) {
     return audience -> {
       if (filter.test(audience)) {
@@ -138,6 +155,8 @@ public interface ClickCallback<T extends Audience> {
    * @return a modified callback
    * @since 4.13.0
    */
+  @CheckReturnValue
+  @Contract(pure = true)
   default @NotNull ClickCallback<T> requiringPermission(final @NotNull String permission) {
     return this.requiringPermission(permission, null);
   }
@@ -152,6 +171,8 @@ public interface ClickCallback<T extends Audience> {
    * @return a modified callback
    * @since 4.13.0
    */
+  @CheckReturnValue
+  @Contract(pure = true)
   default @NotNull ClickCallback<T> requiringPermission(final @NotNull String permission, final @Nullable Consumer<? super Audience> otherwise) {
     return this.filter(audience -> audience.getOrDefault(PermissionChecker.POINTER, ClickCallbackInternals.ALWAYS_FALSE).test(permission), otherwise);
   }
@@ -163,13 +184,6 @@ public interface ClickCallback<T extends Audience> {
    */
   @ApiStatus.NonExtendable
   interface Options extends Examinable {
-    /**
-     * Indicate that a callback should have unlimited uses.
-     *
-     * @since 4.13.0
-     */
-    int UNLIMITED_USES = -1;
-
     /**
      * Create a new builder.
      *
@@ -204,7 +218,7 @@ public interface ClickCallback<T extends Audience> {
     /**
      * How long this callback will last until it is made invalid.
      *
-     * <p>By default callbacks last {@link #DEFAULT_LIFETIME 12 hours}.</p>
+     * <p>By default callbacks last the value of {@link #DEFAULT_LIFETIME}.</p>
      *
      * @return the duration of this callback
      * @since 4.13.0
@@ -221,7 +235,7 @@ public interface ClickCallback<T extends Audience> {
       /**
        * Set the number of uses allowed for this callback.
        *
-       * @param useCount the number of allowed uses, or {@link Options#UNLIMITED_USES}
+       * @param useCount the number of allowed uses, or {@link ClickCallback#UNLIMITED_USES}
        * @return this builder
        * @since 4.13.0
        */
