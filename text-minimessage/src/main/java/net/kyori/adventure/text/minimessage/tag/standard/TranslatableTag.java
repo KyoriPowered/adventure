@@ -72,7 +72,7 @@ final class TranslatableTag {
   }
 
   static @Nullable Emitable claim(final Component input) {
-    if (!(input instanceof TranslatableComponent)) return null;
+    if (!(input instanceof TranslatableComponent) || ((TranslatableComponent) input).fallback() != null) return null;
 
     final TranslatableComponent tr = (TranslatableComponent) input;
     return emit -> {

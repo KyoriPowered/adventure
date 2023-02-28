@@ -127,6 +127,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    *
    * @return the fallback string
    * @since 4.13.0
+   * @sinceMinecraft 1.19.4
    */
   @Nullable String fallback();
 
@@ -138,6 +139,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @param fallback the fallback string
    * @return a translatable component
    * @since 4.13.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(pure = true)
   @NotNull TranslatableComponent fallback(final @NotNull String fallback);
@@ -241,6 +243,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
      * @param fallback the fallback string
      * @return this builder
      * @since 4.13.0
+     * @sinceMinecraft 1.19.4
      */
     @Contract("_ -> this")
     @NotNull Builder fallback(final @Nullable String fallback);

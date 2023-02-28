@@ -41,6 +41,7 @@ import org.jetbrains.annotations.Nullable;
  * Insert a translation component into the result, with a fallback string.
  *
  * @since 4.13.0
+ * @sinceMinecraft 1.19.4
  */
 final class TranslatableFallbackTag {
   private static final String TR_OR = "tr_or";

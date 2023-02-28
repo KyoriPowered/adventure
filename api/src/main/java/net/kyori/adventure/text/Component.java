@@ -1285,6 +1285,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param fallback the fallback string
    * @return a translatable component
    * @since 4.13.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback) {
@@ -1298,6 +1299,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param fallback the fallback string
    * @return a translatable component
    * @since 4.13.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback) {
@@ -1338,6 +1340,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param style the style
    * @return a translatable component
    * @since 4.13.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @NotNull Style style) {
@@ -1352,6 +1355,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param style the style
    * @return a translatable component
    * @since 4.13.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @NotNull Style style) {
@@ -1392,6 +1396,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param color the color
    * @return a translatable component
    * @since 4.13.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @Nullable TextColor color) {
@@ -1406,6 +1411,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param color the color
    * @return a translatable component
    * @since 4.13.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _ , _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @Nullable TextColor color) {
@@ -1449,6 +1455,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param decorations the decorations
    * @return a translatable component
    * @since 4.13.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @Nullable TextColor color, final TextDecoration@NotNull... decorations) {
@@ -1464,6 +1471,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param decorations the decorations
    * @return a translatable component
    * @since 4.13.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @Nullable TextColor color, final TextDecoration@NotNull... decorations) {
@@ -1507,6 +1515,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param decorations the decorations
    * @return a translatable component
    * @since 4.13.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @Nullable TextColor color, final @NotNull Set<TextDecoration> decorations) {
@@ -1522,6 +1531,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param decorations the decorations
    * @return a translatable component
    * @since 4.13.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @Nullable TextColor color, final @NotNull Set<TextDecoration> decorations) {
@@ -1562,6 +1572,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.13.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @NotNull ComponentLike@NotNull... args) {
@@ -1576,6 +1587,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.13.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @NotNull ComponentLike@NotNull... args) {
@@ -1619,6 +1631,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.13.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @NotNull Style style, final @NotNull ComponentLike@NotNull... args) {
@@ -1634,6 +1647,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.13.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @NotNull Style style, final @NotNull ComponentLike@NotNull... args) {
@@ -1677,6 +1691,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.13.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @Nullable TextColor color, final @NotNull ComponentLike@NotNull... args) {
@@ -1692,6 +1707,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.13.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @Nullable TextColor color, final @NotNull ComponentLike@NotNull... args) {
@@ -1738,6 +1754,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.13.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @Nullable TextColor color, final @NotNull Set<TextDecoration> decorations, final @NotNull ComponentLike@NotNull... args) {
@@ -1754,6 +1771,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.13.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @Nullable TextColor color, final @NotNull Set<TextDecoration> decorations, final @NotNull ComponentLike@NotNull... args) {
@@ -1794,6 +1812,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.0.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @NotNull List<? extends ComponentLike> args) {
@@ -1808,6 +1827,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.8.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @NotNull List<? extends ComponentLike> args) {
@@ -1851,6 +1871,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.13.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @NotNull Style style, final @NotNull List<? extends ComponentLike> args) {
@@ -1866,6 +1887,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.13.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @NotNull Style style, final @NotNull List<? extends ComponentLike> args) {
@@ -1909,6 +1931,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.13.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @Nullable TextColor color, final @NotNull List<? extends ComponentLike> args) {
@@ -1924,6 +1947,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.13.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @Nullable TextColor color, final @NotNull List<? extends ComponentLike> args) {
@@ -1970,6 +1994,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.13.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @Nullable TextColor color, final @NotNull Set<TextDecoration> decorations, final @NotNull List<? extends ComponentLike> args) {
@@ -1986,6 +2011,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param args the translation arguments
    * @return a translatable component
    * @since 4.13.0
+   * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @Nullable TextColor color, final @NotNull Set<TextDecoration> decorations, final @NotNull List<? extends ComponentLike> args) {
