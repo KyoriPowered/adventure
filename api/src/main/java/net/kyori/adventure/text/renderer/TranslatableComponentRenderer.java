@@ -62,6 +62,9 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   /**
    * Creates a {@link TranslatableComponentRenderer} using the {@link Translator} to translate.
    *
+   * <p>Alongside the standard {@link MessageFormat}-based translation, this will also allow the {@link Translator}
+   * to create a {@link Component} {@link Translator#translate(TranslatableComponent, Locale) directly}.</p>
+   *
    * @param source the translation source
    * @return the renderer
    * @since 4.0.0
@@ -72,6 +75,13 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
       @Override
       protected @Nullable MessageFormat translate(final @NotNull String key, final @NotNull Locale context) {
         return source.translate(key, context);
+      }
+
+      @Override
+      protected @NotNull Component renderTranslatable(final @NotNull TranslatableComponent component, final @NotNull Locale context) {
+        final @Nullable Component translated = source.translate(component, context);
+        if (translated != null) return translated;
+        return super.renderTranslatable(component, context);
       }
     };
   }

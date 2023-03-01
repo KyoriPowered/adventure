@@ -27,11 +27,14 @@ import java.text.MessageFormat;
 import java.util.Locale;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,8 +48,9 @@ class GlobalTranslatorTest {
     GlobalTranslator.translator().removeSource(DummyTranslator.INSTANCE);
   }
 
-  @Test
-  void testRender() {
+  @ParameterizedTest
+  @ValueSource(strings = {"testDummy", "otherDummy"})
+  void testRender(final @NotNull String key) {
     GlobalTranslator.translator().addSource(DummyTranslator.INSTANCE);
     assertEquals(
       Component.text()
@@ -54,7 +58,7 @@ class GlobalTranslatorTest {
         .append(Component.text("kashike", NamedTextColor.DARK_PURPLE))
         .append(Component.text("!"))
         .build(),
-      GlobalTranslator.render(Component.translatable("testDummy", Component.text("kashike", NamedTextColor.DARK_PURPLE)), Locale.US)
+      GlobalTranslator.render(Component.translatable(key, Component.text("kashike", NamedTextColor.DARK_PURPLE)), Locale.US)
     );
     assertEquals(
       Component.entityNBT()
@@ -67,7 +71,7 @@ class GlobalTranslatorTest {
             .append(Component.text("!"))
         )
         .build(),
-      GlobalTranslator.render(Component.entityNBT("ignored", "@p").separator(Component.translatable("testDummy", Component.text("you"))), Locale.US)
+      GlobalTranslator.render(Component.entityNBT("ignored", "@p").separator(Component.translatable(key, Component.text("you"))), Locale.US)
     );
   }
 
@@ -89,6 +93,14 @@ class GlobalTranslatorTest {
     assertNull(GlobalTranslator.translator().translate("testDummy", Locale.US));
     GlobalTranslator.translator().addSource(DummyTranslator.INSTANCE);
     assertEquals(new MessageFormat("Hello {0}!"), GlobalTranslator.translator().translate("testDummy", Locale.US));
+    assertEquals(
+      Component.text()
+        .append(Component.text("Hello "))
+        .append(Component.text("{0}"))
+        .append(Component.text("!"))
+        .build(),
+      GlobalTranslator.translator().translate(Component.translatable("otherDummy"), Locale.US)
+    );
   }
 
   static class DummyTranslator implements Translator {
@@ -103,6 +115,17 @@ class GlobalTranslatorTest {
     public @Nullable MessageFormat translate(final @NotNull String key, final @NotNull Locale locale) {
       return (key.equals("testDummy") && locale.equals(Locale.US))
         ? new MessageFormat("Hello {0}!")
+        : null;
+    }
+
+    @Override
+    public @Nullable Component translate(final @NotNull TranslatableComponent component, final @NotNull Locale locale) {
+      return (component.key().equals("otherDummy") && locale.equals(Locale.US))
+        ? Component.text()
+          .append(Component.text("Hello "))
+          .append(component.args().isEmpty() ? Component.text("{0}") : component.args().get(0))
+          .append(Component.text("!"))
+          .build()
         : null;
     }
   }

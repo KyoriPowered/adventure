@@ -30,6 +30,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
@@ -75,6 +77,17 @@ final class GlobalTranslatorImpl implements GlobalTranslator {
     requireNonNull(locale, "locale");
     for (final Translator source : this.sources) {
       final MessageFormat translation = source.translate(key, locale);
+      if (translation != null) return translation;
+    }
+    return null;
+  }
+
+  @Override
+  public @Nullable Component translate(final @NotNull TranslatableComponent component, final @NotNull Locale locale) {
+    requireNonNull(component, "component");
+    requireNonNull(locale, "locale");
+    for (final Translator source : this.sources) {
+      final Component translation = source.translate(component, locale);
       if (translation != null) return translation;
     }
     return null;
