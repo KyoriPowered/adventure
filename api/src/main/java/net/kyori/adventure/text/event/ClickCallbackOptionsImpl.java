@@ -67,11 +67,13 @@ final class ClickCallbackOptionsImpl implements ClickCallback.Options {
   }
 
   static final class BuilderImpl implements Builder {
+    private static final int DEFAULT_USES = 1;
+
     private int uses;
     private Duration lifetime;
 
     BuilderImpl() {
-      this.uses = 1;
+      this.uses = DEFAULT_USES;
       this.lifetime = ClickCallback.DEFAULT_LIFETIME;
     }
 
