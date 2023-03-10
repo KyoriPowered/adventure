@@ -41,11 +41,11 @@ class ResetTagTest extends AbstractTest {
       .append(empty().color(YELLOW).insertion("test")
         .append(text("this"))
         .append(empty()
-          .append(text(" ", color(0xf3801f)))
-          .append(text("w", color(0x71f813)))
-          .append(text("o", color(0x03ca9c)))
-          .append(text("o", color(0x4135fe)))
-          .append(text("o", color(0xd507b1)))
+          .append(text(" ", color(0xff0000)))
+          .append(text("w", color(0xcbff00)))
+          .append(text("o", color(0x00ff66)))
+          .append(text("o", color(0x0065ff)))
+          .append(text("o", color(0xcc00ff)))
         )
       ).append(text(" to insert!"));
 
