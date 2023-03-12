@@ -101,7 +101,7 @@ final class RainbowTag extends AbstractColorChangingTag {
   @Override
   protected TextColor color() {
     final float index = this.colorIndex;
-    final float hue = (index / size() + this.phase / 10f) % 1;
+    final float hue = (index / this.size() + this.phase / 10f) % 1;
     return TextColor.color(HSVLike.hsvLike(hue, 1f, 1f));
   }
 
