@@ -25,7 +25,10 @@ package net.kyori.adventure.text.event;
 
 import java.net.URL;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
@@ -134,6 +137,46 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    */
   public static @NotNull ClickEvent copyToClipboard(final @NotNull String text) {
     return new ClickEvent(Action.COPY_TO_CLIPBOARD, text);
+  }
+
+  /**
+   * Create a click event that, when clicked, will schedule a callback function to be executed on the server.
+   *
+   * <p>By default, this will be a single-use function that expires after the value of {@link ClickCallback#DEFAULT_LIFETIME}.</p>
+   *
+   * @param function the function to execute
+   * @return a callback click event
+   * @since 4.13.0
+   */
+  public static @NotNull ClickEvent callback(final @NotNull ClickCallback<Audience> function) {
+    return ClickCallbackInternals.PROVIDER.create(requireNonNull(function, "function"), ClickCallbackOptionsImpl.DEFAULT);
+  }
+
+  /**
+   * Create a click event that, when clicked, will schedule a callback function to be executed on the server.
+   *
+   * @param function the function to execute
+   * @param options options to control how the callback will be stored on the server.
+   * @return a callback click event
+   * @since 4.13.0
+   */
+  public static @NotNull ClickEvent callback(final @NotNull ClickCallback<Audience> function, final ClickCallback.@NotNull Options options) {
+    return ClickCallbackInternals.PROVIDER.create(requireNonNull(function, "function"), requireNonNull(options, "options"));
+  }
+
+  /**
+   * Create a click event that, when clicked, will schedule a callback function to be executed on the server.
+   *
+   * @param function the function to execute
+   * @param optionsBuilder function that will be called to configure the click callback options
+   * @return a callback click event
+   * @since 4.13.0
+   */
+  public static @NotNull ClickEvent callback(final @NotNull ClickCallback<Audience> function, final @NotNull Consumer<ClickCallback.Options.@NotNull Builder> optionsBuilder) {
+    return ClickCallbackInternals.PROVIDER.create(
+      requireNonNull(function, "function"),
+      AbstractBuilder.configureAndBuild(ClickCallback.Options.builder(), requireNonNull(optionsBuilder, "optionsBuilder"))
+    );
   }
 
   /**

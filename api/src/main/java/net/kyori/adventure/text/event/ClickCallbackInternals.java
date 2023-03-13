@@ -21,38 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.audience;
+package net.kyori.adventure.text.event;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.function.Consumer;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.permission.PermissionChecker;
+import net.kyori.adventure.util.Services;
+import net.kyori.adventure.util.TriState;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * {@link Audience}-related utilities.
- *
- * @since 4.13.0
- */
-public final class Audiences {
-  static final Collector<? super Audience, ?, ForwardingAudience> COLLECTOR = Collectors.collectingAndThen(
-    Collectors.toCollection(ArrayList::new),
-    audiences -> Audience.audience(Collections.unmodifiableCollection(audiences))
-  );
-
-  private Audiences() {
+final class ClickCallbackInternals {
+  private ClickCallbackInternals() {
   }
 
-  /**
-   * Creates an action to send a message.
-   *
-   * @param message the message to send
-   * @return an action to send a message
-   * @since 4.13.0
-   */
-  public static @NotNull Consumer<? super Audience> sendingMessage(final @NotNull ComponentLike message) {
-    return audience -> audience.sendMessage(message);
+  static final PermissionChecker ALWAYS_FALSE = PermissionChecker.always(TriState.FALSE);
+
+  static final ClickCallback.Provider PROVIDER = Services.service(ClickCallback.Provider.class)
+    .orElseGet(Fallback::new);
+
+  static final class Fallback implements ClickCallback.Provider {
+    @Override
+    public @NotNull ClickEvent create(final @NotNull ClickCallback<Audience> callback, final ClickCallback.@NotNull Options options) {
+      return ClickEvent.suggestCommand("Callbacks are not supported on this platform!");
+    }
   }
 }
