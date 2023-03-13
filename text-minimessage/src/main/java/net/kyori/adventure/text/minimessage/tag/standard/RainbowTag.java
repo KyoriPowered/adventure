@@ -30,7 +30,7 @@ import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import net.kyori.adventure.util.ShadyPines;
+import net.kyori.adventure.util.HSVLike;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -48,10 +48,6 @@ final class RainbowTag extends AbstractColorChangingTag {
 
   private final boolean reversed;
   private final int phase;
-
-  private float center = 128;
-  private float width = 127;
-  private double frequency = 1;
 
   private int colorIndex = 0;
 
@@ -84,9 +80,6 @@ final class RainbowTag extends AbstractColorChangingTag {
 
   @Override
   protected void init() {
-    this.center = 128;
-    this.width = 127;
-    this.frequency = Math.PI * 2 / this.size();
     if (this.reversed) {
       this.colorIndex = this.size() - 1;
     }
@@ -107,11 +100,9 @@ final class RainbowTag extends AbstractColorChangingTag {
 
   @Override
   protected TextColor color() {
-    final int index = this.colorIndex;
-    final int red = (int) (Math.sin(this.frequency * index + 2 + this.phase) * this.width + this.center);
-    final int green = (int) (Math.sin(this.frequency * index + 0 + this.phase) * this.width + this.center);
-    final int blue = (int) (Math.sin(this.frequency * index + 4 + this.phase) * this.width + this.center);
-    return TextColor.color(red, green, blue);
+    final float index = this.colorIndex;
+    final float hue = (index / this.size() + this.phase / 10f) % 1;
+    return TextColor.color(HSVLike.hsvLike(hue, 1f, 1f));
   }
 
   @Override
@@ -124,15 +115,11 @@ final class RainbowTag extends AbstractColorChangingTag {
     if (this == other) return true;
     if (other == null || this.getClass() != other.getClass()) return false;
     final RainbowTag that = (RainbowTag) other;
-    return this.colorIndex == that.colorIndex
-      && ShadyPines.equals(that.center, this.center)
-      && ShadyPines.equals(that.width, this.width)
-      && ShadyPines.equals(that.frequency, this.frequency)
-      && this.phase == that.phase;
+    return this.colorIndex == that.colorIndex && this.phase == that.phase;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.colorIndex, this.center, this.width, this.frequency, this.phase);
+    return Objects.hash(this.colorIndex, this.phase);
   }
 }
