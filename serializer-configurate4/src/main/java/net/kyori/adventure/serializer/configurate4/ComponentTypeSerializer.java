@@ -53,6 +53,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
   static final String TEXT = "text";
   static final String TRANSLATE = "translate";
   static final String TRANSLATE_WITH = "with";
+  static final String TRANSLATE_FALLBACK = "fallback";
   static final String SCORE = "score";
   static final String SCORE_NAME = "name";
   static final String SCORE_OBJECTIVE = "objective";
@@ -117,17 +118,22 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
     if (children.containsKey(TEXT)) {
       component = Component.text().content(children.get(TEXT).getString());
     } else if (children.containsKey(TRANSLATE)) {
-      final String key = children.get(TRANSLATE).getString();
-      if (!children.containsKey(TRANSLATE_WITH)) {
-        component = Component.translatable().key(key);
-      } else {
+      final TranslatableComponent.Builder builder = Component.translatable()
+        .key(children.get(TRANSLATE).getString());
+
+      if (children.containsKey(TRANSLATE_WITH)) {
         final ConfigurationNode with = children.get(TRANSLATE_WITH);
         if (!with.isList()) {
           throw new SerializationException("Expected " + TRANSLATE_WITH + " to be a list");
         }
         final List<Component> args = with.get(LIST_TYPE);
-        component = Component.translatable().key(key).args(args);
+        builder.args(args);
       }
+
+      if (children.containsKey(TRANSLATE_FALLBACK)) {
+        builder.fallback(children.get(TRANSLATE_FALLBACK).getString());
+      }
+      component = builder;
     } else if (children.containsKey(SCORE)) {
       final ConfigurationNode score = children.get(SCORE);
       final ConfigurationNode name = score.node(SCORE_NAME);
@@ -205,6 +211,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
           with.appendListNode().set(Component.class, arg);
         }
       }
+      value.node(TRANSLATE_FALLBACK).set(tc.fallback());
     } else if (src instanceof ScoreComponent) {
       final ScoreComponent sc = (ScoreComponent) src;
       final ConfigurationNode score = value.node(SCORE);

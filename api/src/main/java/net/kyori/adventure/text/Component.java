@@ -1279,6 +1279,34 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
+   * Creates a translatable component with a translation key and an optional fallback string.
+   *
+   * @param key the translation key
+   * @param fallback the fallback string
+   * @return a translatable component
+   * @since 4.13.0
+   * @sinceMinecraft 1.19.4
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback) {
+    return translatable(key, fallback, Style.empty());
+  }
+
+  /**
+   * Creates a translatable component with a translation key and an optional fallback string.
+   *
+   * @param translatable the translatable object to get the key from
+   * @param fallback the fallback string
+   * @return a translatable component
+   * @since 4.13.0
+   * @sinceMinecraft 1.19.4
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback) {
+    return translatable(requireNonNull(translatable, "translatable").translationKey(), fallback, Style.empty());
+  }
+
+  /**
    * Creates a translatable component with a translation key and styling.
    *
    * @param key the translation key
@@ -1288,7 +1316,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @NotNull Style style) {
-    return TranslatableComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), key, Collections.emptyList());
+    return TranslatableComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), key, null, Collections.emptyList());
   }
 
   /**
@@ -1302,6 +1330,224 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @NotNull Style style) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), style);
+  }
+
+  /**
+   * Creates a translatable component with a translation key, optional fallback string, and styling.
+   *
+   * @param key the translation key
+   * @param fallback the fallback string
+   * @param style the style
+   * @return a translatable component
+   * @since 4.13.0
+   * @sinceMinecraft 1.19.4
+   */
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @NotNull Style style) {
+    return TranslatableComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), key, fallback, Collections.emptyList());
+  }
+
+  /**
+   * Creates a translatable component with a translation key, optional fallback string, and styling.
+   *
+   * @param translatable the translatable object to get the key from
+   * @param fallback the fallback string
+   * @param style the style
+   * @return a translatable component
+   * @since 4.13.0
+   * @sinceMinecraft 1.19.4
+   */
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @NotNull Style style) {
+    return translatable(requireNonNull(translatable, "translatable").translationKey(), fallback, style);
+  }
+
+  /**
+   * Creates a translatable component with a translation key, optional fallback string, and styling.
+   *
+   * @param key the translation key
+   * @param fallback the fallback string
+   * @param style the style
+   * @return a translatable component
+   * @since 4.13.0
+   * @sinceMinecraft 1.19.4
+   */
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @NotNull StyleBuilderApplicable... style) {
+    return translatable(requireNonNull(key, "key"), fallback, Style.style(style));
+  }
+
+  /**
+   * Creates a translatable component with a translation key, optional fallback string, and styling.
+   *
+   * @param translatable the translatable object to get the key from
+   * @param fallback the fallback string
+   * @param style the style
+   * @return a translatable component
+   * @since 4.13.0
+   * @sinceMinecraft 1.19.4
+   */
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @NotNull Iterable<StyleBuilderApplicable> style) {
+    return translatable(requireNonNull(translatable, "translatable").translationKey(), fallback, Style.style(style));
+  }
+
+  /**
+   * Creates a translatable component with a translation key, optional fallback string, and arguments.
+   *
+   * @param key the translation key
+   * @param fallback the fallback string
+   * @param args the translation arguments
+   * @return a translatable component
+   * @since 4.13.0
+   * @sinceMinecraft 1.19.4
+   */
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @NotNull ComponentLike@NotNull... args) {
+    return translatable(key, fallback, Style.empty(), args);
+  }
+
+  /**
+   * Creates a translatable component with a translation key, optional fallback string, and arguments.
+   *
+   * @param translatable the translatable object to get the key from
+   * @param fallback the fallback string
+   * @param args the translation arguments
+   * @return a translatable component
+   * @since 4.13.0
+   * @sinceMinecraft 1.19.4
+   */
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @NotNull ComponentLike@NotNull... args) {
+    return translatable(requireNonNull(translatable, "translatable").translationKey(), fallback, args);
+  }
+
+  /**
+   * Creates a translatable component with a translation key, optional fallback string, and styling.
+   *
+   * @param key the translation key
+   * @param fallback the fallback string
+   * @param style the style
+   * @param args the translation arguments
+   * @return a translatable component
+   * @since 4.13.0
+   * @sinceMinecraft 1.19.4
+   */
+  @Contract(value = "_, _, _, _ -> new", pure = true)
+  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @NotNull Style style, final @NotNull ComponentLike@NotNull... args) {
+    return TranslatableComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), key, fallback, requireNonNull(args, "args"));
+  }
+
+  /**
+   * Creates a translatable component with a translation key, optional fallback string, and styling.
+   *
+   * @param translatable the translatable object to get the key from
+   * @param fallback the fallback string
+   * @param style the style
+   * @param args the translation arguments
+   * @return a translatable component
+   * @since 4.13.0
+   * @sinceMinecraft 1.19.4
+   */
+  @Contract(value = "_, _, _, _ -> new", pure = true)
+  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @NotNull Style style, final @NotNull ComponentLike@NotNull... args) {
+    return translatable(requireNonNull(translatable, "translatable").translationKey(), fallback, style, args);
+  }
+
+  /**
+   * Creates a translatable component with a translation key, optional fallback string, and arguments.
+   *
+   * @param key the translation key
+   * @param fallback the fallback string
+   * @param style the style
+   * @param args the translation arguments
+   * @return a translatable component
+   * @since 4.0.0
+   * @sinceMinecraft 1.19.4
+   */
+  @Contract(value = "_, _, _, _ -> new", pure = true)
+  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @NotNull Style style, final @NotNull List<? extends ComponentLike> args) {
+    return TranslatableComponentImpl.create(Collections.emptyList(), style, key, fallback, requireNonNull(args, "args"));
+  }
+
+  /**
+   * Creates a translatable component with a translation key, optional fallback string, and arguments.
+   *
+   * @param translatable the translatable object to get the key from
+   * @param fallback the fallback string
+   * @param style the style
+   * @param args the translation arguments
+   * @return a translatable component
+   * @since 4.8.0
+   * @sinceMinecraft 1.19.4
+   */
+  @Contract(value = "_, _, _, _ -> new", pure = true)
+  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @NotNull Style style, final @NotNull List<? extends ComponentLike> args) {
+    return translatable(requireNonNull(translatable, "translatable").translationKey(), fallback, style, args);
+  }
+
+  /**
+   * Creates a translatable component with a translation key, optional fallback string, and arguments.
+   *
+   * @param key the translation key
+   * @param fallback the fallback string
+   * @param args the translation arguments
+   * @param style the style
+   * @return a translatable component
+   * @since 4.0.0
+   * @sinceMinecraft 1.19.4
+   */
+  @Contract(value = "_, _, _, _ -> new", pure = true)
+  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @NotNull List<? extends ComponentLike> args, final @NotNull Iterable<StyleBuilderApplicable> style) {
+    return TranslatableComponentImpl.create(Collections.emptyList(), Style.style(style), key, fallback, requireNonNull(args, "args"));
+  }
+
+  /**
+   * Creates a translatable component with a translation key, optional fallback string, and arguments.
+   *
+   * @param translatable the translatable object to get the key from
+   * @param fallback the fallback string
+   * @param args the translation arguments
+   * @param style the style
+   * @return a translatable component
+   * @since 4.8.0
+   * @sinceMinecraft 1.19.4
+   */
+  @Contract(value = "_, _, _, _ -> new", pure = true)
+  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @NotNull List<? extends ComponentLike> args, final @NotNull Iterable<StyleBuilderApplicable> style) {
+    return translatable(requireNonNull(translatable, "translatable").translationKey(), fallback, args, style);
+  }
+
+  /**
+   * Creates a translatable component with a translation key, optional fallback string, and arguments.
+   *
+   * @param key the translation key
+   * @param fallback the fallback string
+   * @param args the translation arguments
+   * @param style the style
+   * @return a translatable component
+   * @since 4.0.0
+   * @sinceMinecraft 1.19.4
+   */
+  @Contract(value = "_, _, _, _ -> new", pure = true)
+  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @NotNull List<? extends ComponentLike> args, final @NotNull StyleBuilderApplicable... style) {
+    return TranslatableComponentImpl.create(Collections.emptyList(), Style.style(style), key, fallback, requireNonNull(args, "args"));
+  }
+
+  /**
+   * Creates a translatable component with a translation key, optional fallback string, and arguments.
+   *
+   * @param translatable the translatable object to get the key from
+   * @param fallback the fallback string
+   * @param args the translation arguments
+   * @param style the style
+   * @return a translatable component
+   * @since 4.8.0
+   * @sinceMinecraft 1.19.4
+   */
+  @Contract(value = "_, _, _, _ -> new", pure = true)
+  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @NotNull List<? extends ComponentLike> args, final @NotNull StyleBuilderApplicable... style) {
+    return translatable(requireNonNull(translatable, "translatable").translationKey(), fallback, args, style);
   }
 
   /**
@@ -1423,7 +1669,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @NotNull Style style, final @NotNull ComponentLike@NotNull... args) {
-    return TranslatableComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), key, requireNonNull(args, "args"));
+    return TranslatableComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), key, null, requireNonNull(args, "args"));
   }
 
   /**
@@ -1508,7 +1754,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @NotNull List<? extends ComponentLike> args) {
-    return TranslatableComponentImpl.create(Collections.emptyList(), Style.empty(), key, requireNonNull(args, "args"));
+    return TranslatableComponentImpl.create(Collections.emptyList(), Style.empty(), key, null, requireNonNull(args, "args"));
   }
 
   /**
@@ -1535,7 +1781,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(value = "_, _, _ -> new", pure = true)
   static @NotNull TranslatableComponent translatable(final @NotNull String key, final @NotNull Style style, final @NotNull List<? extends ComponentLike> args) {
-    return TranslatableComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), key, requireNonNull(args, "args"));
+    return TranslatableComponentImpl.create(Collections.emptyList(), requireNonNull(style, "style"), key, null, requireNonNull(args, "args"));
   }
 
   /**

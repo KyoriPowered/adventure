@@ -42,6 +42,20 @@ class TranslatableComponentTest extends ComponentTest {
   }
 
   @Test
+  void testFallback() {
+    this.test(
+      Component.translatable()
+        .key("thisIsA")
+        .fallback("This is a test.")
+        .build(),
+      object(json -> {
+        json.addProperty(ComponentSerializerImpl.TRANSLATE, "thisIsA");
+        json.addProperty(ComponentSerializerImpl.TRANSLATE_FALLBACK, "This is a test.");
+      })
+    );
+  }
+
+  @Test
   void testSingleArgWithEvents() {
     final UUID id = UUID.fromString("eb121687-8b1a-4944-bd4d-e0a818d9dfe2");
     final String name = "kashike";

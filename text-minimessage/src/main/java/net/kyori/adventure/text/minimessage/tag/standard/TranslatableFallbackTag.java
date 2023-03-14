@@ -38,26 +38,28 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Insert a translation component into the result.
+ * Insert a translation component into the result, with a fallback string.
  *
- * @since 4.10.0
+ * @since 4.13.0
+ * @sinceMinecraft 1.19.4
  */
-final class TranslatableTag {
-  private static final String TR = "tr";
-  private static final String TRANSLATE = "translate";
-  private static final String LANG = "lang";
+final class TranslatableFallbackTag {
+  private static final String TR_OR = "tr_or";
+  private static final String TRANSLATE_OR = "translate_or";
+  private static final String LANG_OR = "lang_or";
 
   static final TagResolver RESOLVER = SerializableResolver.claimingComponent(
-    StandardTags.names(LANG, TRANSLATE, TR),
-    TranslatableTag::create,
-    TranslatableTag::claim
+    StandardTags.names(LANG_OR, TRANSLATE_OR, TR_OR),
+    TranslatableFallbackTag::create,
+    TranslatableFallbackTag::claim
   );
 
-  private TranslatableTag() {
+  private TranslatableFallbackTag() {
   }
 
   static Tag create(final ArgumentQueue args, final Context ctx) throws ParsingException {
     final String key = args.popOr("A translation key is required").value();
+    final String fallback = args.popOr("A fallback messages is required").value();
     final List<Component> with;
     if (args.hasNext()) {
       with = new ArrayList<>();
@@ -68,16 +70,17 @@ final class TranslatableTag {
       with = Collections.emptyList();
     }
 
-    return Tag.inserting(Component.translatable(key, with));
+    return Tag.inserting(Component.translatable(key, fallback, with));
   }
 
   static @Nullable Emitable claim(final Component input) {
-    if (!(input instanceof TranslatableComponent) || ((TranslatableComponent) input).fallback() != null) return null;
+    if (!(input instanceof TranslatableComponent) || ((TranslatableComponent) input).fallback() == null) return null;
 
     final TranslatableComponent tr = (TranslatableComponent) input;
     return emit -> {
-      emit.tag(LANG);
+      emit.tag(LANG_OR);
       emit.argument(tr.key());
+      emit.argument(tr.fallback());
       for (final Component with : tr.args()) {
         emit.argument(with);
       }
