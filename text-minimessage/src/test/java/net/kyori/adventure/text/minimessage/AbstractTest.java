@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.minimessage;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -74,5 +75,10 @@ public abstract class AbstractTest {
 
   public static ArgumentQueue emptyArgumentQueue(final Context context) {
     return new ArgumentQueueImpl<>(context, Collections.<Tag.Argument>emptyList());
+  }
+
+  public static Component virtualOfChildren(final ComponentLike... children) {
+    return Component.virtual(() -> "") // not part of equality... should it be?
+      .children(Arrays.asList(children));
   }
 }

@@ -24,9 +24,12 @@
 package net.kyori.adventure.text.minimessage.tag.standard;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.Context;
+import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
+import net.kyori.adventure.text.minimessage.internal.serializer.TokenEmitter;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -44,7 +47,7 @@ final class RainbowTag extends AbstractColorChangingTag {
   private static final String REVERSE = "!";
   private static final String RAINBOW = "rainbow";
 
-  static final TagResolver RESOLVER = TagResolver.resolver(RAINBOW, RainbowTag::create);
+  static final TagResolver RESOLVER = SerializableResolver.claimingComponent(RAINBOW, RainbowTag::create, AbstractColorChangingTag::claimComponent);
 
   private final boolean reversed;
   private final int phase;
@@ -103,6 +106,22 @@ final class RainbowTag extends AbstractColorChangingTag {
     final float index = this.colorIndex;
     final float hue = (index / this.size() + this.phase / 10f) % 1;
     return TextColor.color(HSVLike.hsvLike(hue, 1f, 1f));
+  }
+
+  @Override
+  protected @NotNull Consumer<TokenEmitter> preserveData() {
+    final boolean reversed = this.reversed;
+    final int phase = this.phase;
+    return emit -> {
+      emit.tag(RAINBOW);
+      if (reversed && phase != 0) {
+        emit.argument(REVERSE + phase);
+      } else if (reversed) {
+        emit.argument(REVERSE);
+      } else if (phase != 0) {
+        emit.argument(Integer.toString(phase));
+      }
+    };
   }
 
   @Override

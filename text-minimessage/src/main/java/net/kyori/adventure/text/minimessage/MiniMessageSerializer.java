@@ -68,10 +68,13 @@ final class MiniMessageSerializer {
   private static void visit(final @NotNull Component component, final Collector emitter, final SerializableResolver resolver, final boolean lastChild) {
     // visit self
     resolver.handle(component, emitter);
-    emitter.flushClaims(component);
+    Component childSource = emitter.flushClaims(component);
+    if (childSource == null) {
+      childSource = component;
+    }
 
     // then children
-    for (final Iterator<Component> it = component.children().iterator(); it.hasNext();) {
+    for (final Iterator<Component> it = childSource.children().iterator(); it.hasNext();) {
       emitter.mark();
       visit(it.next(), emitter, resolver, lastChild && !it.hasNext());
     }
@@ -336,9 +339,11 @@ final class MiniMessageSerializer {
       return this.claimedStyleElements.contains(claimId);
     }
 
-    void flushClaims(final Component component) {
+    @Nullable Component flushClaims(final Component component) { // return: a substitute to provide children
+      Component ret = null;
       if (this.componentClaim != null) {
         this.componentClaim.emit(this);
+        ret = this.componentClaim.substitute();
         this.componentClaim = null;
       } else if (component instanceof TextComponent) {
         this.text(((TextComponent) component).content());
@@ -347,6 +352,7 @@ final class MiniMessageSerializer {
         throw new IllegalStateException("Unclaimed component " + component);
       }
       this.claimedStyleElements.clear();
+      return ret;
     }
   }
 
