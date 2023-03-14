@@ -55,7 +55,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
   static final String TEXT = "text";
   static final String TRANSLATE = "translate";
   static final String TRANSLATE_WITH = "with";
-  static final String FALLBACK = "fallback";
+  static final String TRANSLATE_FALLBACK = "fallback";
   static final String SCORE = "score";
   static final String SCORE_NAME = "name";
   static final String SCORE_OBJECTIVE = "objective";
@@ -120,17 +120,22 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
     if (children.containsKey(TEXT)) {
       component = Component.text().content(children.get(TEXT).getString());
     } else if (children.containsKey(TRANSLATE)) {
+      final TranslatableComponent.Builder builder;
       final String key = children.get(TRANSLATE).getString();
       if (!children.containsKey(TRANSLATE_WITH)) {
-        component = Component.translatable().key(key);
+        builder = Component.translatable().key(key);
       } else {
         final ConfigurationNode with = children.get(TRANSLATE_WITH);
         if (!with.isList()) {
           throw new ObjectMappingException("Expected " + TRANSLATE_WITH + " to be a list");
         }
         final List<Component> args = with.getValue(LIST_TYPE);
-        component = Component.translatable().key(key).args(args);
+        builder = Component.translatable().key(key).args(args);
       }
+      if (children.containsKey(TRANSLATE_FALLBACK)) {
+        builder.fallback(children.get(TRANSLATE_FALLBACK).getString());
+      }
+      component = builder;
     } else if (children.containsKey(SCORE)) {
       final ConfigurationNode score = children.get(SCORE);
       final ConfigurationNode name = score.getNode(SCORE_NAME);
@@ -208,7 +213,7 @@ final class ComponentTypeSerializer implements TypeSerializer<Component> {
           with.appendListNode().setValue(TYPE, arg);
         }
       }
-      value.getNode(FALLBACK).setValue(tc.fallback());
+      value.getNode(TRANSLATE_FALLBACK).setValue(tc.fallback());
     } else if (src instanceof ScoreComponent) {
       final ScoreComponent sc = (ScoreComponent) src;
       final ConfigurationNode score = value.getNode(SCORE);
