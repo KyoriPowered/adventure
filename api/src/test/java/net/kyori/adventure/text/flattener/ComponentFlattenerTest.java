@@ -31,6 +31,7 @@ import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.NBTComponent;
 import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.VirtualComponentHolder;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -43,7 +44,6 @@ import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ComponentFlattenerTest {
-
   static class TrackingFlattener implements FlattenerListener {
     int pushCount;
     int popCount;
@@ -209,6 +209,14 @@ class ComponentFlattenerTest {
       .assertPushesAndPops(1)
       .assertStyles(Style.empty())
       .assertContents();
+  }
+
+  @Test
+  void testVirtualComponent() {
+    this.testFlatten(ComponentFlattener.basic(), Component.virtual((VirtualComponentHolder<String>) () -> "test123"))
+      .assertBalanced()
+      .assertPushesAndPops(1)
+      .assertContents("test123");
   }
 
   @Test
