@@ -152,7 +152,7 @@ public final class StandardTags {
    * <p>This tag also responds to {@value TranslatableFallbackTag#LANG_OR} and {@value TranslatableFallbackTag#TR_OR}.</p>
    *
    * @return a resolver for the {@value TranslatableFallbackTag#TRANSLATE_OR} tag
-   * @since 4.10.0
+   * @since 4.13.0
    */
   public static @NotNull TagResolver translatableFallback() {
     return TranslatableFallbackTag.RESOLVER;

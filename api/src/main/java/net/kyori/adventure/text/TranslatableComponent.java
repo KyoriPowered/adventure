@@ -142,7 +142,7 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @sinceMinecraft 1.19.4
    */
   @Contract(pure = true)
-  @NotNull TranslatableComponent fallback(final @NotNull String fallback);
+  @NotNull TranslatableComponent fallback(final @Nullable String fallback);
 
   @Override
   default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {

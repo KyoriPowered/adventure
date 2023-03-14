@@ -1388,7 +1388,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @NotNull List<StyleBuilderApplicable> style) {
+  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @NotNull Iterable<StyleBuilderApplicable> style) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), fallback, Style.style(style));
   }
 
@@ -1498,7 +1498,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @NotNull List<? extends ComponentLike> args, final @NotNull List<StyleBuilderApplicable> style) {
+  static @NotNull TranslatableComponent translatable(final @NotNull String key, final @Nullable String fallback, final @NotNull List<? extends ComponentLike> args, final @NotNull Iterable<StyleBuilderApplicable> style) {
     return TranslatableComponentImpl.create(Collections.emptyList(), Style.style(style), key, fallback, requireNonNull(args, "args"));
   }
 
@@ -1514,7 +1514,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @sinceMinecraft 1.19.4
    */
   @Contract(value = "_, _, _, _ -> new", pure = true)
-  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @NotNull List<? extends ComponentLike> args, final @NotNull List<StyleBuilderApplicable> style) {
+  static @NotNull TranslatableComponent translatable(final @NotNull Translatable translatable, final @Nullable String fallback, final @NotNull List<? extends ComponentLike> args, final @NotNull Iterable<StyleBuilderApplicable> style) {
     return translatable(requireNonNull(translatable, "translatable").translationKey(), fallback, args, style);
   }
 
