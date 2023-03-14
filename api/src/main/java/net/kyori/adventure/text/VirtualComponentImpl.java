@@ -33,6 +33,12 @@ final class VirtualComponentImpl extends TextComponentImpl implements VirtualCom
     return new VirtualComponentImpl(Collections.emptyList(), Style.empty(), "", virtual);
   }
 
+  static VirtualComponent createVirtual(final List<? extends ComponentLike> children, final Style style, final @NotNull VirtualComponentHolder<?> virtual) {
+    final List<Component> filteredChildren = ComponentLike.asComponents(children, IS_NOT_EMPTY);
+
+    return new VirtualComponentImpl(filteredChildren, style, "", virtual);
+  }
+
   private final VirtualComponentHolder<?> virtual;
 
   private VirtualComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final @NotNull String content, final @NotNull VirtualComponentHolder<?> virtual) {
@@ -48,5 +54,30 @@ final class VirtualComponentImpl extends TextComponentImpl implements VirtualCom
   @Override
   public @NotNull VirtualComponentHolder<?> holder() {
     return this.virtual;
+  }
+
+  @Override
+  public @NotNull String content() {
+    return this.virtual.fallbackString();
+  }
+
+  @Override
+  public @NotNull Builder toBuilder() {
+    return new BuilderImpl(this);
+  }
+
+  static final class BuilderImpl extends TextComponentImpl.BuilderImpl {
+    private final VirtualComponentHolder<?> holder;
+
+    BuilderImpl(final VirtualComponent other) {
+      super(other);
+
+      this.holder = other.holder();
+    }
+
+    @Override
+    public @NotNull TextComponent build() {
+      return createVirtual(this.children, this.buildStyle(), this.holder);
+    }
   }
 }

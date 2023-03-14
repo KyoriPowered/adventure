@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
 /**
@@ -39,4 +40,18 @@ public interface VirtualComponentHolder<V> {
    * @since 4.13.0
    */
   @UnknownNullability V unbox();
+
+  /**
+   * Get a fallback value for when this component has been serialized without being rendered.
+   *
+   * <p>By default, this will be the toString{} of {@link #unbox()}.</p>
+   *
+   * @return the fallback string
+   * @since 4.13.0
+   */
+  default @NotNull String fallbackString() {
+    final Object unboxed = this.unbox();
+    return unboxed == null ? "" : unboxed.toString();
+  }
+
 }

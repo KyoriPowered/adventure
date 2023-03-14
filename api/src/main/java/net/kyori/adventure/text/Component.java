@@ -1276,6 +1276,48 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
     return VirtualComponentImpl.createVirtual(virtual);
   }
 
+  /**
+   * Creates a virtual component with a value.
+   *
+   * @param virtual the value
+   * @param style the style
+   * @return a virtual component
+   * @since 4.13.0
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static @NotNull VirtualComponent virtual(final @NotNull VirtualComponentHolder<?> virtual, final @NotNull Style style) {
+    requireNonNull(virtual, "virtual");
+    return VirtualComponentImpl.createVirtual(virtual);
+  }
+
+  /**
+   * Creates a virtual component with a value.
+   *
+   * @param virtual the value
+   * @param style the style elements
+   * @return a virtual component
+   * @since 4.13.0
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static @NotNull VirtualComponent virtual(final @NotNull VirtualComponentHolder<?> virtual, final @NotNull StyleBuilderApplicable... style) {
+    requireNonNull(virtual, "virtual");
+    return VirtualComponentImpl.createVirtual(Collections.emptyList(), Style.style(style), virtual);
+  }
+
+  /**
+   * Creates a virtual component with a value.
+   *
+   * @param virtual the value
+   * @param style the style elements
+   * @return a virtual component
+   * @since 4.13.0
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static @NotNull VirtualComponent virtual(final @NotNull VirtualComponentHolder<?> virtual, final @NotNull Iterable<StyleBuilderApplicable> style) {
+    requireNonNull(virtual, "virtual");
+    return VirtualComponentImpl.createVirtual(Collections.emptyList(), Style.style(style), virtual);
+  }
+
   /*
    * -------------------------------
    * ---- TranslatableComponent ----

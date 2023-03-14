@@ -142,7 +142,7 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
    * @since 4.13.0
    */
   protected @NotNull Component renderVirtual(final @NotNull VirtualComponent component, final @NotNull C context) {
-    return Component.empty();
+    return component; // will be processed as a TextComponent instead
   }
 
   /**
