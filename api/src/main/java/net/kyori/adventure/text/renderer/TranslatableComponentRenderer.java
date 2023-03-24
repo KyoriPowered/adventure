@@ -164,7 +164,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
       // of this component might need additional rendering
 
       final TranslatableComponent.Builder builder = Component.translatable()
-        .key(component.key());
+        .key(component.key()).fallback(component.fallback());
       if (!component.args().isEmpty()) {
         final List<Component> args = new ArrayList<>(component.args());
         for (int i = 0, size = args.size(); i < size; i++) {
