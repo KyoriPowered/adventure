@@ -107,4 +107,9 @@ class KeyTest {
     assertTrue(Key.parseableValue("empty"));
     assertTrue(Key.parseableValue("some/path"));
   }
+
+  @Test
+  void testNulChar() {
+    assertThrows(InvalidKeyException.class, () -> Key.key("carbon:global\0\0\0"));
+  }
 }

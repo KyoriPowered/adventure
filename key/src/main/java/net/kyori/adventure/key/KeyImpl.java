@@ -23,8 +23,11 @@
  */
 package net.kyori.adventure.key;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.OptionalInt;
 import java.util.stream.Stream;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
@@ -41,10 +44,25 @@ final class KeyImpl implements Key {
   private final String value;
 
   KeyImpl(final @NotNull String namespace, final @NotNull String value) {
-    if (!Key.parseableNamespace(namespace)) throw new InvalidKeyException(namespace, value, String.format("Non [a-z0-9_.-] character in namespace of Key[%s]", asString(namespace, value)));
-    if (!Key.parseableValue(value)) throw new InvalidKeyException(namespace, value, String.format("Non [a-z0-9/._-] character in value of Key[%s]", asString(namespace, value)));
+    checkError("namespace", namespace, value, Key.checkNamespace(namespace));
+    checkError("value", namespace, value, Key.checkValue(value));
     this.namespace = requireNonNull(namespace, "namespace");
     this.value = requireNonNull(value, "value");
+  }
+
+  private static void checkError(final String name, final String namespace, final String value, final OptionalInt index) {
+    if (index.isPresent()) {
+      final int indexValue = index.getAsInt();
+      final char character = value.charAt(indexValue);
+      throw new InvalidKeyException(namespace, value, String.format(
+        "Non [a-z0-9_.-] character in %s of Key[%s] at index %d ('%s', bytes: %s)",
+        name,
+        asString(namespace, value),
+        indexValue,
+        character,
+        Arrays.toString(String.valueOf(character).getBytes(StandardCharsets.UTF_8))
+      ));
+    }
   }
 
   static boolean allowedInNamespace(final char character) {
