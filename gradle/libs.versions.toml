@@ -8,7 +8,7 @@ examination = "1.3.0"
 guava = "31.1-jre"
 indra = "3.0.1"
 jmh = "1.36"
-jmhPlugin = "0.6.8"
+jmhPlugin = "0.7.0"
 junit = "5.9.2"
 mockito = "4.5.1"
 slf4j = "2.0.1"
@@ -70,4 +70,4 @@ zJmh = { module = "org.openjdk.jmh:jmh-core", version.ref = "jmh" }
 [plugins]
 indra-sonatype = { id = "net.kyori.indra.publishing.sonatype", version.ref = "indra" }
 jmh = { id = "me.champeau.jmh", version.ref = "jmhPlugin" }
-kotlin = "org.jetbrains.kotlin.jvm:1.8.10"
+kotlin = "org.jetbrains.kotlin.jvm:1.8.20"
