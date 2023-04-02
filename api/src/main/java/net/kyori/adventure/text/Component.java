@@ -1264,58 +1264,70 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
 
   /**
-   * Creates a virtual component with a value.
+   * Creates a virtual component.
    *
-   * @param virtual the value
+   * @param <C> the context type
+   * @param context the context type
+   * @param renderer the renderer
    * @return a virtual component
-   * @since 4.13.0
+   * @since 4.14.0
    */
-  @Contract(value = "_ -> new", pure = true)
-  static @NotNull VirtualComponent virtual(final @NotNull VirtualComponentHolder<?> virtual) {
-    requireNonNull(virtual, "virtual");
-    return VirtualComponentImpl.createVirtual(virtual);
+  @Contract(value = "_, _ -> new", pure = true)
+  static <C> @NotNull VirtualComponent virtual(final @NotNull Class<C> context, final @NotNull VirtualComponentRenderer<C> renderer) {
+    requireNonNull(context, "context");
+    requireNonNull(renderer, "renderer");
+    return VirtualComponentImpl.createVirtual(context, renderer);
   }
 
   /**
    * Creates a virtual component with a value.
    *
-   * @param virtual the value
+   * @param <C> the context type
+   * @param context the context type
+   * @param renderer the renderer
    * @param style the style
    * @return a virtual component
-   * @since 4.13.0
+   * @since 4.14.0
    */
-  @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull VirtualComponent virtual(final @NotNull VirtualComponentHolder<?> virtual, final @NotNull Style style) {
-    requireNonNull(virtual, "virtual");
-    return VirtualComponentImpl.createVirtual(virtual);
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static <C> @NotNull VirtualComponent virtual(final @NotNull Class<C> context, final @NotNull VirtualComponentRenderer<C> renderer, final @NotNull Style style) {
+    requireNonNull(context, "context");
+    requireNonNull(renderer, "renderer");
+    return VirtualComponentImpl.createVirtual(context, renderer, Collections.emptyList(), style);
   }
 
   /**
    * Creates a virtual component with a value.
    *
-   * @param virtual the value
+   * @param <C> the context type
+   * @param context the context type
+   * @param renderer the renderer
    * @param style the style elements
    * @return a virtual component
-   * @since 4.13.0
+   * @since 4.14.0
    */
-  @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull VirtualComponent virtual(final @NotNull VirtualComponentHolder<?> virtual, final @NotNull StyleBuilderApplicable... style) {
-    requireNonNull(virtual, "virtual");
-    return VirtualComponentImpl.createVirtual(Collections.emptyList(), Style.style(style), virtual);
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static <C> @NotNull VirtualComponent virtual(final @NotNull Class<C> context, final @NotNull VirtualComponentRenderer<C> renderer, final @NotNull StyleBuilderApplicable... style) {
+    requireNonNull(context, "context");
+    requireNonNull(renderer, "renderer");
+    return VirtualComponentImpl.createVirtual(context, renderer, Collections.emptyList(), Style.style(style));
   }
 
   /**
    * Creates a virtual component with a value.
    *
-   * @param virtual the value
+   * @param <C> the context type
+   * @param context the context type
+   * @param renderer the renderer
    * @param style the style elements
    * @return a virtual component
-   * @since 4.13.0
+   * @since 4.14.0
    */
-  @Contract(value = "_, _ -> new", pure = true)
-  static @NotNull VirtualComponent virtual(final @NotNull VirtualComponentHolder<?> virtual, final @NotNull Iterable<StyleBuilderApplicable> style) {
-    requireNonNull(virtual, "virtual");
-    return VirtualComponentImpl.createVirtual(Collections.emptyList(), Style.style(style), virtual);
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static <C> @NotNull VirtualComponent virtual(final @NotNull Class<C> context, final @NotNull VirtualComponentRenderer<C> renderer, final @NotNull Iterable<StyleBuilderApplicable> style) {
+    requireNonNull(context, "context");
+    requireNonNull(renderer, "renderer");
+    return VirtualComponentImpl.createVirtual(context, renderer, Collections.emptyList(), Style.style(style));
   }
 
   /*

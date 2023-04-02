@@ -29,29 +29,28 @@ import org.jetbrains.annotations.UnknownNullability;
 /**
  * A holder for a value.
  *
- * @param <V> the stored value type
- * @since 4.13.0
+ * @param <C> the context type
+ * @since 4.14.0
  */
-public interface VirtualComponentHolder<V> {
+public interface VirtualComponentRenderer<C> {
   /**
-   * Gets the stored value.
+   * Gets the value by rendering using {@code context}.
    *
-   * @return the stored value
-   * @since 4.13.0
+   * @param context the context
+   * @return the rendered value
+   * @since 4.14.0
    */
-  @UnknownNullability V unbox();
+  @UnknownNullability ComponentLike apply(final @NotNull C context);
 
   /**
    * Get a fallback value for when this component has been serialized without being rendered.
    *
-   * <p>By default, this will be the toString{} of {@link #unbox()}.</p>
+   * <p>By default, this will be an empty string.</p>
    *
    * @return the fallback string
-   * @since 4.13.0
+   * @since 4.14.0
    */
   default @NotNull String fallbackString() {
-    final Object unboxed = this.unbox();
-    return unboxed == null ? "" : unboxed.toString();
+    return "";
   }
-
 }

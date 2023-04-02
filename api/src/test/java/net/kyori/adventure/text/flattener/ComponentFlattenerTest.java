@@ -31,7 +31,6 @@ import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.NBTComponent;
 import net.kyori.adventure.text.TranslatableComponent;
-import net.kyori.adventure.text.VirtualComponentHolder;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -213,7 +212,7 @@ class ComponentFlattenerTest {
 
   @Test
   void testVirtualComponent() {
-    this.testFlatten(ComponentFlattener.basic(), Component.virtual((VirtualComponentHolder<String>) () -> "test123"))
+    this.testFlatten(ComponentFlattener.basic(), Component.virtual(Object.class, context -> Component.text("test123")))
       .assertBalanced()
       .assertPushesAndPops(1)
       .assertContents("test123");

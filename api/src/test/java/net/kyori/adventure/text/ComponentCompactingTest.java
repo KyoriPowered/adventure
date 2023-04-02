@@ -420,7 +420,7 @@ class ComponentCompactingTest {
 
   @Test
   void testVirtualComponentsPreserved() {
-    final Component expectedComponent = virtual(() -> "meow :3")
+    final Component expectedComponent = virtual(Object.class, context -> text("meow :3"))
       .append(text("3"));
 
     assertEquals(expectedComponent, expectedComponent.compact());
