@@ -26,6 +26,7 @@ package net.kyori.adventure.text.serializer.gson;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
+import com.google.gson.internal.bind.TypeAdapters;
 import com.google.gson.reflect.TypeToken;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.BlockNBTComponent;
@@ -45,6 +46,7 @@ final class SerializerFactory implements TypeAdapterFactory {
   static final Class<HoverEvent.Action> HOVER_ACTION_TYPE = HoverEvent.Action.class;
   static final Class<HoverEvent.ShowItem> SHOW_ITEM_TYPE = HoverEvent.ShowItem.class;
   static final Class<HoverEvent.ShowEntity> SHOW_ENTITY_TYPE = HoverEvent.ShowEntity.class;
+  static final Class<String> STRING_TYPE = String.class;
   static final Class<TextColorWrapper> COLOR_WRAPPER_TYPE = TextColorWrapper.class;
   static final Class<TextColor> COLOR_TYPE = TextColor.class;
   static final Class<TextDecoration> TEXT_DECORATION_TYPE = TextDecoration.class;
@@ -78,6 +80,8 @@ final class SerializerFactory implements TypeAdapterFactory {
       return (TypeAdapter<T>) ShowItemSerializer.create(gson);
     } else if (SHOW_ENTITY_TYPE.isAssignableFrom(rawType)) {
       return (TypeAdapter<T>) ShowEntitySerializer.create(gson);
+    } else if (STRING_TYPE.isAssignableFrom(rawType)) {
+      return (TypeAdapter<T>) TypeAdapters.STRING;
     } else if (COLOR_WRAPPER_TYPE.isAssignableFrom(rawType)) {
       return (TypeAdapter<T>) TextColorWrapper.Serializer.INSTANCE;
     } else if (COLOR_TYPE.isAssignableFrom(rawType)) {
