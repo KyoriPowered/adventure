@@ -29,6 +29,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
 import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.bossbar.BossBarViewer;
 import net.kyori.adventure.chat.ChatType;
 import net.kyori.adventure.chat.SignedMessage;
 import net.kyori.adventure.identity.Identified;
@@ -83,6 +84,7 @@ import org.jetbrains.annotations.NotNull;
  * and any new methods will be stubbed by default.</p>
  *
  * @see ForwardingAudience
+ * @see BossBarViewer
  * @since 4.0.0
  */
 public interface Audience extends Pointered {

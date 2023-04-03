@@ -266,6 +266,14 @@ final class BossBarImpl extends HackyBossBarPlatformBridge implements BossBar {
     return this;
   }
 
+  @Override
+  public @NotNull Iterable<? extends BossBarViewer> viewers() {
+    if (this.implementation != null) {
+      return this.implementation.viewers();
+    }
+    return Collections.emptyList();
+  }
+
   private void forEachListener(final @NotNull Consumer<Listener> consumer) {
     for (final Listener listener : this.listeners) {
       consumer.accept(listener);
