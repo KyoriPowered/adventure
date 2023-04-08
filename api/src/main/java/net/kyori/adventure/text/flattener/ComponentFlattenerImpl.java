@@ -50,7 +50,10 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
     .mapper(ScoreComponent.class, ScoreComponent::value) // Removed in Vanilla 1.16, but we keep it for backwards compat
     .mapper(SelectorComponent.class, SelectorComponent::pattern)
     .mapper(TextComponent.class, TextComponent::content)
-    .mapper(TranslatableComponent.class, TranslatableComponent::key)
+    .mapper(TranslatableComponent.class, component -> {
+      final @Nullable String fallback = component.fallback();
+      return fallback != null ? fallback : component.key();
+    })
     // The Vanilla game will not print NBT components, expecting those to be resolved with sender context
     .build();
   static final ComponentFlattener TEXT_ONLY = new BuilderImpl()
