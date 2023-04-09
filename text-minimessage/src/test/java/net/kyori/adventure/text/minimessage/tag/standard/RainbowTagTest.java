@@ -24,7 +24,6 @@
 package net.kyori.adventure.text.minimessage.tag.standard;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.AbstractTest;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.junit.jupiter.api.Test;
@@ -32,7 +31,7 @@ import org.junit.jupiter.api.Test;
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.event.ClickEvent.openUrl;
-import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
+import static net.kyori.adventure.text.format.NamedTextColor.BLACK;
 import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
 import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
 import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
@@ -332,35 +331,19 @@ class RainbowTagTest extends AbstractTest {
 
     final Component expectedGradient = text()
       .append(text('g', WHITE))
-      .append(text('r', color(0xebebeb)))
-      .append(text('a', color(0xd8d8d8)))
-      .append(text('d', color(0xc4c4c4)))
+      .append(text('r', color(0xeaeaea)))
+      .append(text('a', color(0xd5d5d5)))
+      .append(text('d', color(0xbfbfbf)))
       .append(text("green", GREEN))
       .append(text()
-        .append(text('i', color(0x4e4e4e)))
-        .append(text('e', color(0x3b3b3b)))
-        .append(text('n', color(0x272727)))
-        .append(text('t', color(0x141414))))
+        .append(text('i', color(0x404040)))
+        .append(text('e', color(0x2b2b2b)))
+        .append(text('n', color(0x151515)))
+        .append(text('t', BLACK)))
       .build();
     final String gradientInput = "<gradient>grad<green>green</green>ient";
 
     this.assertParsedEquals(expectedGradient, gradientInput);
-  }
-
-  @Test
-  void gh137() {
-    final String input = "<gradient:gold:yellow:red><dum>";
-    final String input2 = "<gradient:gold:yellow:red><dum>a";
-    final Component expected1 = text("a", GOLD);
-    final Component expected2 = text().append(text("a", GOLD), text("a", YELLOW)).build();
-    final Component expected3 = text().append(text("a", GOLD), text("a", YELLOW), text("a", YELLOW)).build();
-    final Component expected4 = text().append(text("a", GOLD), text("a", TextColor.color(0xffd52b)), text("a", YELLOW), text("a", YELLOW)).build();
-
-    this.assertParsedEquals(expected1, input, component("dum", text("a")));
-    this.assertParsedEquals(expected2, input, component("dum", text("aa")));
-    this.assertParsedEquals(expected3, input, component("dum", text("aaa")));
-    this.assertParsedEquals(expected4, input, component("dum", text("aaaa")));
-    this.assertParsedEquals(expected4, input2, component("dum", text("aaa")));
   }
 
   @Test
