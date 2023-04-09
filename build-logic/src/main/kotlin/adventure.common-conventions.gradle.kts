@@ -32,7 +32,7 @@ plugins.withId("me.champeau.jmh") {
     // avoid implicit task dependencies
     dependsOn(tasks.compileTestJava, tasks.processTestResources)
   }
-  tasks.named(JMHPlugin.JMH_TASK_COMPILE_GENERATED_CLASSES_NAME, JavaCompile::class) {
+  tasks.named(JMHPlugin.getJMH_TASK_COMPILE_GENERATED_CLASSES_NAME(), JavaCompile::class) {
     classpath += configurations.getByName(JavaPlugin.COMPILE_CLASSPATH_CONFIGURATION_NAME).incoming.files
   }
 }
