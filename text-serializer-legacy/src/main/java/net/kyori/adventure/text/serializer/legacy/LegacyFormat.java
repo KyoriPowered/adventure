@@ -25,7 +25,6 @@ package net.kyori.adventure.text.serializer.legacy;
 
 import java.util.Objects;
 import java.util.stream.Stream;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.examination.Examinable;
@@ -44,7 +43,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class LegacyFormat implements Examinable {
   static final LegacyFormat RESET = new LegacyFormat(true);
-  private final @Nullable NamedTextColor color;
+  private final @Nullable TextColor color;
   private final @Nullable TextDecoration decoration;
   private final boolean reset;
 
@@ -52,7 +51,7 @@ public final class LegacyFormat implements Examinable {
    * Separate constructors to ensure a format can never be more than one thing.
    */
 
-  LegacyFormat(final @Nullable NamedTextColor color) {
+  LegacyFormat(final @Nullable TextColor color) {
     this.color = color;
     this.decoration = null;
     this.reset = false;

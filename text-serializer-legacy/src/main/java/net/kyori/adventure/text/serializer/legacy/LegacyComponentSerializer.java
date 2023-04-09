@@ -102,7 +102,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * @since 4.0.0
    */
   static @Nullable LegacyFormat parseChar(final char character) {
-    return LegacyComponentSerializerImpl.legacyFormat(character);
+    return LegacyCodeConverterImpl.legacyFormat(character);
   }
 
   /**
@@ -257,6 +257,14 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * @since 4.7.0
      */
     @NotNull Builder flattener(final @NotNull ComponentFlattener flattener);
+
+    /**
+     * Insert Javadocs here.
+     *
+     * @param supplier
+     * @return
+     */
+    @NotNull Builder legacyCodeConverterSupplier(final @NotNull LegacyCodeConverterSupplier supplier);
 
     /**
      * Builds the serializer.

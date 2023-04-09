@@ -27,9 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -40,7 +38,6 @@ import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.flattener.FlattenerListener;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -55,48 +52,6 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   static final Pattern DEFAULT_URL_PATTERN = Pattern.compile("(?:(https?)://)?([-\\w_.]+\\.\\w{2,})(/\\S*)?");
   static final Pattern URL_SCHEME_PATTERN = Pattern.compile("^[a-z][a-z0-9+\\-.]*:");
   private static final TextDecoration[] DECORATIONS = TextDecoration.values();
-  private static final char LEGACY_BUNGEE_HEX_CHAR = 'x';
-  private static final List<TextFormat> FORMATS;
-  private static final String LEGACY_CHARS;
-
-  static {
-    // Enumeration order may change - manually
-
-    final Map<TextFormat, String> formats = new LinkedHashMap<>(16 + 5 + 1); // colours + decorations + reset
-
-    formats.put(NamedTextColor.BLACK, "0");
-    formats.put(NamedTextColor.DARK_BLUE, "1");
-    formats.put(NamedTextColor.DARK_GREEN, "2");
-    formats.put(NamedTextColor.DARK_AQUA, "3");
-    formats.put(NamedTextColor.DARK_RED, "4");
-    formats.put(NamedTextColor.DARK_PURPLE, "5");
-    formats.put(NamedTextColor.GOLD, "6");
-    formats.put(NamedTextColor.GRAY, "7");
-    formats.put(NamedTextColor.DARK_GRAY, "8");
-    formats.put(NamedTextColor.BLUE, "9");
-    formats.put(NamedTextColor.GREEN, "a");
-    formats.put(NamedTextColor.AQUA, "b");
-    formats.put(NamedTextColor.RED, "c");
-    formats.put(NamedTextColor.LIGHT_PURPLE, "d");
-    formats.put(NamedTextColor.YELLOW, "e");
-    formats.put(NamedTextColor.WHITE, "f");
-
-    formats.put(TextDecoration.OBFUSCATED, "k");
-    formats.put(TextDecoration.BOLD, "l");
-    formats.put(TextDecoration.STRIKETHROUGH, "m");
-    formats.put(TextDecoration.UNDERLINED, "n");
-    formats.put(TextDecoration.ITALIC, "o");
-
-    formats.put(Reset.INSTANCE, "r");
-
-    FORMATS = Collections.unmodifiableList(new ArrayList<>(formats.keySet()));
-    LEGACY_CHARS = String.join("", formats.values());
-
-    // assert same length
-    if (FORMATS.size() != LEGACY_CHARS.length()) {
-      throw new IllegalStateException("FORMATS length differs from LEGACY_CHARS length");
-    }
-  }
 
   private static final Optional<Provider> SERVICE = Services.service(Provider.class);
   static final Consumer<Builder> BUILDER = SERVICE
@@ -109,125 +64,22 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   static final class Instances {
     static final LegacyComponentSerializer SECTION = SERVICE
       .map(Provider::legacySection)
-      .orElseGet(() -> new LegacyComponentSerializerImpl(SECTION_CHAR, HEX_CHAR, null, false, false, ComponentFlattener.basic()));
+      .orElseGet(() -> new LegacyComponentSerializerImpl(SECTION_CHAR, HEX_CHAR, null, false, false, ComponentFlattener.basic(), LegacyCodeConverterImpl::new));
     static final LegacyComponentSerializer AMPERSAND = SERVICE
       .map(Provider::legacyAmpersand)
-      .orElseGet(() -> new LegacyComponentSerializerImpl(AMPERSAND_CHAR, HEX_CHAR, null, false, false, ComponentFlattener.basic()));
+      .orElseGet(() -> new LegacyComponentSerializerImpl(AMPERSAND_CHAR, HEX_CHAR, null, false, false, ComponentFlattener.basic(), LegacyCodeConverterImpl::new));
   }
 
   private final char character;
-  private final char hexCharacter;
   private final @Nullable TextReplacementConfig urlReplacementConfig;
-  private final boolean hexColours;
-  private final boolean useTerriblyStupidHexFormat; // (╯°□°)╯︵ ┻━┻
   private final ComponentFlattener flattener;
+  private final LegacyCodeConverter legacyCodeConverter;
 
-  LegacyComponentSerializerImpl(final char character, final char hexCharacter, final @Nullable TextReplacementConfig urlReplacementConfig, final boolean hexColours, final boolean useTerriblyStupidHexFormat, final ComponentFlattener flattener) {
+  LegacyComponentSerializerImpl(final char character, final char hexCharacter, final @Nullable TextReplacementConfig urlReplacementConfig, final boolean hexColours, final boolean useTerriblyStupidHexFormat, final ComponentFlattener flattener, final LegacyCodeConverterSupplier supplier) {
     this.character = character;
-    this.hexCharacter = hexCharacter;
     this.urlReplacementConfig = urlReplacementConfig;
-    this.hexColours = hexColours;
-    this.useTerriblyStupidHexFormat = useTerriblyStupidHexFormat;
     this.flattener = flattener;
-  }
-
-  private @Nullable FormatCodeType determineFormatType(final char legacy, final String input, final int pos) {
-    if (pos >= 14) {
-      // The BungeeCord RGB color format uses a repeating sequence of RGB values, each character formatted
-      // as their own color format string, and to make things interesting, all the colors are also valid
-      // Mojang colors. To differentiate this, we do a lookback check for &x (or equivalent) for its position
-      // in the string if it is indeed a BungeeCord-style RGB color.
-      final int expectedCharacterPosition = pos - 14;
-      final int expectedIndicatorPosition = pos - 13;
-      if (input.charAt(expectedCharacterPosition) == this.character && input.charAt(expectedIndicatorPosition) == LEGACY_BUNGEE_HEX_CHAR) {
-        return FormatCodeType.BUNGEECORD_UNUSUAL_HEX;
-      }
-    }
-    if (legacy == this.hexCharacter && input.length() - pos >= 6) {
-      return FormatCodeType.KYORI_HEX;
-    } else if (LEGACY_CHARS.indexOf(legacy) != -1) {
-      return FormatCodeType.MOJANG_LEGACY;
-    }
-    return null;
-  }
-
-  static @Nullable LegacyFormat legacyFormat(final char character) {
-    final int index = LEGACY_CHARS.indexOf(character);
-    if (index != -1) {
-      final TextFormat format = FORMATS.get(index);
-      if (format instanceof NamedTextColor) {
-        return new LegacyFormat((NamedTextColor) format);
-      } else if (format instanceof TextDecoration) {
-        return new LegacyFormat((TextDecoration) format);
-      } else if (format instanceof Reset) {
-        return LegacyFormat.RESET;
-      }
-    }
-    return null;
-  }
-
-  private @Nullable DecodedFormat decodeTextFormat(final char legacy, final String input, final int pos) {
-    final FormatCodeType foundFormat = this.determineFormatType(legacy, input, pos);
-    if (foundFormat == null) {
-      return null;
-    }
-    if (foundFormat == FormatCodeType.KYORI_HEX) {
-      final @Nullable TextColor parsed = tryParseHexColor(input.substring(pos, pos + 6));
-      if (parsed != null) {
-        return new DecodedFormat(foundFormat, parsed);
-      }
-    } else if (foundFormat == FormatCodeType.MOJANG_LEGACY) {
-      return new DecodedFormat(foundFormat, FORMATS.get(LEGACY_CHARS.indexOf(legacy)));
-    } else if (foundFormat == FormatCodeType.BUNGEECORD_UNUSUAL_HEX) {
-      final StringBuilder foundHex = new StringBuilder(6);
-      for (int i = pos - 1; i >= pos - 11; i -= 2) {
-        foundHex.append(input.charAt(i));
-      }
-      final @Nullable TextColor parsed = tryParseHexColor(foundHex.reverse().toString());
-      if (parsed != null) {
-        return new DecodedFormat(foundFormat, parsed);
-      }
-    }
-    return null;
-  }
-
-  private static @Nullable TextColor tryParseHexColor(final String hexDigits) {
-    try {
-      final int color = Integer.parseInt(hexDigits, 16);
-      return TextColor.color(color);
-    } catch (final NumberFormatException ex) {
-      return null;
-    }
-  }
-
-  private static boolean isHexTextColor(final TextFormat format) {
-    return format instanceof TextColor && !(format instanceof NamedTextColor);
-  }
-
-  private String toLegacyCode(TextFormat format) {
-    if (isHexTextColor(format)) {
-      final TextColor color = (TextColor) format;
-      if (this.hexColours) {
-        final String hex = String.format("%06x", color.value());
-        if (this.useTerriblyStupidHexFormat) {
-          // ah yes, wonderful. A 14 digit long completely unreadable string.
-          final StringBuilder legacy = new StringBuilder(String.valueOf(LEGACY_BUNGEE_HEX_CHAR));
-          for (int i = 0, length = hex.length(); i < length; i++) {
-            legacy.append(this.character).append(hex.charAt(i));
-          }
-          return legacy.toString();
-        } else {
-          // this is a bit nicer, hey?
-          return this.hexCharacter + hex;
-        }
-      } else {
-        // if we are not using hex colours, then convert the hex colour
-        // to the "nearest" possible named/standard text colour
-        format = NamedTextColor.nearestTo(color);
-      }
-    }
-    final int index = FORMATS.indexOf(format);
-    return Character.toString(LEGACY_CHARS.charAt(index));
+    this.legacyCodeConverter = supplier.create(character, hexCharacter, hexColours, useTerriblyStupidHexFormat);
   }
 
   private TextComponent extractUrl(final TextComponent component) {
@@ -251,7 +103,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
     int pos = input.length();
     do {
-      final DecodedFormat decoded = this.decodeTextFormat(input.charAt(next + 1), input, next + 2);
+      final DecodedFormat decoded = this.legacyCodeConverter.decodeTextFormat(input.charAt(next + 1), input, next + 2);
       if (decoded != null) {
         final int from = next + (decoded.encodedFormat == FormatCodeType.KYORI_HEX ? 8 : 2);
         if (from != pos) {
@@ -314,7 +166,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     } else if (format instanceof TextDecoration) {
       builder.decoration((TextDecoration) format, TextDecoration.State.TRUE);
       return false;
-    } else if (format instanceof Reset) {
+    } else if (format instanceof LegacyCodeConverter.Reset) {
       return true;
     }
     throw new IllegalArgumentException(String.format("unknown format '%s'", format.getClass()));
@@ -323,10 +175,6 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   @Override
   public @NotNull Builder toBuilder() {
     return new BuilderImpl(this);
-  }
-
-  private enum Reset implements TextFormat {
-    INSTANCE
   }
 
   // Are you hungry?
@@ -379,7 +227,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
     void append(final @NotNull TextFormat format) {
       if (this.lastWritten != format) {
-        this.sb.append(LegacyComponentSerializerImpl.this.character).append(LegacyComponentSerializerImpl.this.toLegacyCode(format));
+        this.sb.append(LegacyComponentSerializerImpl.this.character).append(LegacyComponentSerializerImpl.this.legacyCodeConverter.toLegacyCode(format));
       }
       this.lastWritten = format;
     }
@@ -435,14 +283,14 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         final boolean colorChanged = this.color != Cereal.this.style.color;
         if (this.needsReset) {
           if (!colorChanged) {
-            Cereal.this.append(Reset.INSTANCE);
+            Cereal.this.append(LegacyCodeConverter.Reset.INSTANCE);
           }
           this.needsReset = false;
         }
 
         // If color changes, we need to do a full reset.
         // Additionally, if the last thing to be appended was a reset then we need to re-apply everything.
-        if (colorChanged || Cereal.this.lastWritten == Reset.INSTANCE) {
+        if (colorChanged || Cereal.this.lastWritten == LegacyCodeConverter.Reset.INSTANCE) {
           this.applyFullFormat();
           return;
         }
@@ -466,7 +314,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         if (this.color != null) {
           Cereal.this.append(this.color);
         } else {
-          Cereal.this.append(Reset.INSTANCE);
+          Cereal.this.append(LegacyCodeConverter.Reset.INSTANCE);
         }
         Cereal.this.style.color = this.color;
 
@@ -487,6 +335,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     private boolean hexColours = false;
     private boolean useTerriblyStupidHexFormat = false;
     private ComponentFlattener flattener = ComponentFlattener.basic();
+    private LegacyCodeConverterSupplier supplier = LegacyCodeConverterImpl::new;
 
     BuilderImpl() {
       BUILDER.accept(this); // let service provider touch the builder before anybody else touches it
@@ -495,11 +344,12 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     BuilderImpl(final @NotNull LegacyComponentSerializerImpl serializer) {
       this();
       this.character = serializer.character;
-      this.hexCharacter = serializer.hexCharacter;
+      this.hexCharacter = serializer.legacyCodeConverter.hexCharacter;
       this.urlReplacementConfig = serializer.urlReplacementConfig;
-      this.hexColours = serializer.hexColours;
-      this.useTerriblyStupidHexFormat = serializer.useTerriblyStupidHexFormat;
+      this.hexColours = serializer.legacyCodeConverter.hexColours;
+      this.useTerriblyStupidHexFormat = serializer.legacyCodeConverter.useTerriblyStupidHexFormat;
       this.flattener = serializer.flattener;
+      this.supplier = serializer.legacyCodeConverter.createSupplier();
     }
 
     @Override
@@ -564,27 +414,14 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     @Override
-    public @NotNull LegacyComponentSerializer build() {
-      return new LegacyComponentSerializerImpl(this.character, this.hexCharacter, this.urlReplacementConfig, this.hexColours, this.useTerriblyStupidHexFormat, this.flattener);
+    public @NotNull Builder legacyCodeConverterSupplier(final @NotNull LegacyCodeConverterSupplier supplier) {
+      this.supplier = supplier;
+      return this;
     }
-  }
 
-  enum FormatCodeType {
-    MOJANG_LEGACY,
-    KYORI_HEX,
-    BUNGEECORD_UNUSUAL_HEX;
-  }
-
-  static final class DecodedFormat {
-    final FormatCodeType encodedFormat;
-    final TextFormat format;
-
-    private DecodedFormat(final FormatCodeType encodedFormat, final TextFormat format) {
-      if (format == null) {
-        throw new IllegalStateException("No format found");
-      }
-      this.encodedFormat = encodedFormat;
-      this.format = format;
+    @Override
+    public @NotNull LegacyComponentSerializer build() {
+      return new LegacyComponentSerializerImpl(this.character, this.hexCharacter, this.urlReplacementConfig, this.hexColours, this.useTerriblyStupidHexFormat, this.flattener, this.supplier);
     }
   }
 }
