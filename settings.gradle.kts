@@ -23,7 +23,10 @@ dependencyResolutionManagement {
   repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
   repositories {
     mavenCentral()
-    mavenLocal() // TODO: this is only here bcuz net.kyori:ansi is only on s01.oss.sonatype.org rn and i'm lazy
+    maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
+      name = "s01Snapshots"
+      mavenContent { snapshotsOnly() }
+    }
   }
 }
 
