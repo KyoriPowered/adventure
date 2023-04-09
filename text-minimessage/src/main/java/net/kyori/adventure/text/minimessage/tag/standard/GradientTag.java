@@ -58,7 +58,7 @@ final class GradientTag extends AbstractColorChangingTag {
   private @Range(from = -1, to = 1) double phase;
 
   static Tag create(final ArgumentQueue args, final Context ctx) {
-    float phase = 0;
+    double phase = 0;
     final List<TextColor> textColors;
     if (args.hasNext()) {
       textColors = new ArrayList<>();
@@ -68,9 +68,9 @@ final class GradientTag extends AbstractColorChangingTag {
         if (!args.hasNext()) {
           final OptionalDouble possiblePhase = arg.asDouble();
           if (possiblePhase.isPresent()) {
-            phase = (float) possiblePhase.getAsDouble();
-            if (phase < -1f || phase > 1f) {
-              throw ctx.newException(String.format("Gradient phase is out of range (%s). Must be in the range [-1.0f, 1.0f] (inclusive).", phase), args);
+            phase = possiblePhase.getAsDouble();
+            if (phase < -1d || phase > 1d) {
+              throw ctx.newException(String.format("Gradient phase is out of range (%s). Must be in the range [-1.0, 1.0] (inclusive).", phase), args);
             }
             break;
           }
@@ -90,7 +90,7 @@ final class GradientTag extends AbstractColorChangingTag {
     return new GradientTag(phase, textColors);
   }
 
-  private GradientTag(final float phase, final List<TextColor> colors) {
+  private GradientTag(final double phase, final List<TextColor> colors) {
     if (colors.isEmpty()) {
       this.colors = new TextColor[]{TextColor.color(0xffffff), TextColor.color(0x000000)};
     } else {
