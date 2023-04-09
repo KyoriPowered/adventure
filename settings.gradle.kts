@@ -23,6 +23,7 @@ dependencyResolutionManagement {
   repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
   repositories {
     mavenCentral()
+    mavenLocal() // TODO: this is only here bcuz net.kyori:ansi is only on s01.oss.sonatype.org rn and i'm lazy
   }
 }
 
@@ -44,7 +45,8 @@ sequenceOf(
   "text-serializer-gson",
   "text-serializer-gson-legacy-impl",
   "text-serializer-legacy",
-  "text-serializer-plain"
+  "text-serializer-plain",
+  "text-serializer-ansi",
 ).forEach {
   include("adventure-$it")
   project(":adventure-$it").projectDir = file(it)
