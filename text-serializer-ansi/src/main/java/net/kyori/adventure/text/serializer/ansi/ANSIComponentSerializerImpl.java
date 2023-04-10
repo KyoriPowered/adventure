@@ -7,6 +7,7 @@ import net.kyori.adventure.text.flattener.FlattenerListener;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.util.Services;
 import net.kyori.ansi.ANSIComponentRenderer;
 import net.kyori.ansi.ColorLevel;
 import net.kyori.ansi.StyleOps;
@@ -14,8 +15,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
+import java.util.Optional;
+
 public class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
-  static final ANSIComponentSerializer INSTANCE = new ANSIComponentSerializerImpl();
+  private static final Optional<Provider> SERVICE = Services.service(Provider.class);
+  static final class Instances {
+    static final ANSIComponentSerializer INSTANCE = SERVICE
+      .map(Provider::ansi)
+      .orElseGet(ANSIComponentSerializerImpl::new);
+  }
 
   @Override
   public @NotNull String serialize(@NotNull Component component) {
