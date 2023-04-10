@@ -1,5 +1,29 @@
+/*
+ * This file is part of adventure, licensed under the MIT License.
+ *
+ * Copyright (c) 2017-2023 KyoriPowered
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package net.kyori.adventure.text.serializer.ansi;
 
+import java.util.Optional;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
@@ -15,10 +39,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-import java.util.Optional;
-
-public class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
+final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
   private static final Optional<Provider> SERVICE = Services.service(Provider.class);
+
   static final class Instances {
     static final ANSIComponentSerializer INSTANCE = SERVICE
       .map(Provider::ansi)
@@ -26,22 +49,22 @@ public class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
   }
 
   @Override
-  public @NotNull String serialize(@NotNull Component component) {
-    ANSIComponentRenderer.ToString<Style> renderer = ANSIComponentRenderer.toString(ComponentStyleOps.INSTANCE);
+  public @NotNull String serialize(final @NotNull Component component) {
+    final ANSIComponentRenderer.ToString<Style> renderer = ANSIComponentRenderer.toString(ComponentStyleOps.INSTANCE);
     ComponentFlattener.basic().flatten(component, new ANSIFlattenerListener(renderer));
     renderer.complete();
     return renderer.asString();
   }
 
   @Override
-  public @NotNull String serialize(@NotNull Component component, @NotNull ColorLevel colorLevel) {
-    ANSIComponentRenderer.ToString<Style> renderer = ANSIComponentRenderer.toString(ComponentStyleOps.INSTANCE, colorLevel);
+  public @NotNull String serialize(final @NotNull Component component, final @NotNull ColorLevel colorLevel) {
+    final ANSIComponentRenderer.ToString<Style> renderer = ANSIComponentRenderer.toString(ComponentStyleOps.INSTANCE, colorLevel);
     ComponentFlattener.basic().flatten(component, new ANSIFlattenerListener(renderer));
     renderer.complete();
     return renderer.asString();
   }
 
-  static StyleOps.State mapState(TextDecoration.State state) {
+  static StyleOps.State mapState(final TextDecoration.State state) {
     switch (state) {
       case NOT_SET:
         return StyleOps.State.UNSET;
@@ -57,38 +80,38 @@ public class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
     static final ComponentStyleOps INSTANCE = new ComponentStyleOps();
 
     @Override
-    public State bold(@NotNull Style style) {
+    public State bold(final @NotNull Style style) {
       return mapState(style.decoration(TextDecoration.BOLD));
     }
 
     @Override
-    public State italics(@NotNull Style style) {
+    public State italics(final @NotNull Style style) {
       return mapState(style.decoration(TextDecoration.ITALIC));
     }
 
     @Override
-    public State underlined(@NotNull Style style) {
+    public State underlined(final @NotNull Style style) {
       return mapState(style.decoration(TextDecoration.UNDERLINED));
     }
 
     @Override
-    public State strikethrough(@NotNull Style style) {
+    public State strikethrough(final @NotNull Style style) {
       return mapState(style.decoration(TextDecoration.STRIKETHROUGH));
     }
 
     @Override
-    public State obfuscated(@NotNull Style style) {
+    public State obfuscated(final @NotNull Style style) {
       return mapState(style.decoration(TextDecoration.OBFUSCATED));
     }
 
     @Override
-    public @Range(from = -1L, to = 16777215L) int color(@NotNull Style style) {
+    public @Range(from = -1L, to = 16777215L) int color(final @NotNull Style style) {
       final TextColor color = style.color();
       return color == null ? -1 : color.value();
     }
 
     @Override
-    public @Nullable String font(@NotNull Style style) {
+    public @Nullable String font(final @NotNull Style style) {
       final Key font = style.font();
       return font == null ? null : font.asString();
     }
@@ -97,24 +120,23 @@ public class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
   static class ANSIFlattenerListener implements FlattenerListener {
     private final ANSIComponentRenderer<Style> renderer;
 
-    ANSIFlattenerListener(ANSIComponentRenderer<Style> renderer) {
+    ANSIFlattenerListener(final ANSIComponentRenderer<Style> renderer) {
       this.renderer = renderer;
     }
 
     @Override
-    public void pushStyle(@NotNull Style style) {
-      renderer.pushStyle(style);
+    public void pushStyle(final @NotNull Style style) {
+      this.renderer.pushStyle(style);
     }
 
     @Override
-    public void component(@NotNull String text) {
-      renderer.text(text);
+    public void component(final @NotNull String text) {
+      this.renderer.text(text);
     }
 
     @Override
-    public void popStyle(@NotNull Style style) {
-      renderer.popStyle(style);
+    public void popStyle(final @NotNull Style style) {
+      this.renderer.popStyle(style);
     }
   }
 }
-
