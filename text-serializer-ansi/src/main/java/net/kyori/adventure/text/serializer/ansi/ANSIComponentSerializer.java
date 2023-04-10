@@ -23,7 +23,10 @@
  */
 package net.kyori.adventure.text.serializer.ansi;
 
+import java.util.function.Consumer;
+import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.PlatformAPI;
 import net.kyori.ansi.ColorLevel;
@@ -39,7 +42,8 @@ import org.jetbrains.annotations.NotNull;
 public interface ANSIComponentSerializer extends ComponentSerializer<Component, Component, String> {
   /**
    * Gets a component serializer for serialization to a string using ANSI escape codes.
-   * Note that this serializer does NOT support serialization.
+   *
+   * <p>Note that this serializer does NOT support serialization.</p>
    *
    * @return a component serializer for serialization with ANSI escape sequences.
    * @since 4.14.0
@@ -49,19 +53,56 @@ public interface ANSIComponentSerializer extends ComponentSerializer<Component, 
   }
 
   /**
-   * Serialize a {@link Component} to a {@link String} with ANSI escape sequences at the given {@link ColorLevel}.
+   * Create a new builder.
    *
-   * @param component the component to serialize
-   * @param colorLevel the color level to use for escape sequences
-   * @return string with escape sequences
-   * @see ColorLevel
+   * @return a new ANSI serializer builder
    * @since 4.14.0
    */
-  @NotNull String serialize(@NotNull Component component, @NotNull ColorLevel colorLevel);
+  static ANSIComponentSerializer.@NotNull Builder builder() {
+    return new ANSIComponentSerializerImpl.BuilderImpl();
+  }
 
   @Override
   default @NotNull Component deserialize(@NotNull String input) {
     throw new UnsupportedOperationException("AnsiComponentSerializer does not support deserialization");
+  }
+
+  /**
+   * A builder for the ANSI component serializer.
+   *
+   * @since 4.14.0
+   */
+  interface Builder extends AbstractBuilder<ANSIComponentSerializer> {
+    /**
+     * Sets the default color level used when serializing.
+     *
+     * <p>By default, this serializer will use {@link ColorLevel#compute()} to try to detect the color level of the terminal being used.</p>
+     *
+     * @param colorLevel the color level
+     * @return this builder
+     * @see ColorLevel
+     * @since 4.14.0
+     */
+    @NotNull Builder colorLevel(final ColorLevel colorLevel);
+
+    /**
+     * Sets the component flattener instance to use when traversing the component for serialization.
+     *
+     * <p>By default, this serializer will use {@link ComponentFlattener#basic()}.</p>
+     *
+     * @param componentFlattener the flattener instance.
+     * @return this builder
+     * @since 4.14.0
+     */
+    @NotNull Builder flattener(final ComponentFlattener componentFlattener);
+
+    /**
+     * Builds the serializer.
+     *
+     * @return the built serializer
+     */
+    @Override
+    @NotNull ANSIComponentSerializer build();
   }
 
   /**
@@ -81,5 +122,15 @@ public interface ANSIComponentSerializer extends ComponentSerializer<Component, 
     @ApiStatus.Internal
     @PlatformAPI
     @NotNull ANSIComponentSerializer ansi();
+
+    /**
+     * Completes the building process of {@link Builder}.
+     *
+     * @return a {@link Consumer}
+     * @since 4.8.0
+     */
+    @ApiStatus.Internal
+    @PlatformAPI
+    @NotNull Consumer<Builder> builder();
   }
 }

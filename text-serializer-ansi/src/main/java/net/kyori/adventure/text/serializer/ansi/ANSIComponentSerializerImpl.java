@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.serializer.ansi;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
@@ -42,23 +43,29 @@ import org.jetbrains.annotations.Range;
 final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
   private static final Optional<Provider> SERVICE = Services.service(Provider.class);
 
+  static final Consumer<Builder> BUILDER = SERVICE
+    .map(Provider::builder)
+    .orElseGet(() -> builder -> {
+      // NOOP
+    });
+
+  final ColorLevel colorLevel;
+  final ComponentFlattener flattener;
+
   static final class Instances {
     static final ANSIComponentSerializer INSTANCE = SERVICE
       .map(Provider::ansi)
-      .orElseGet(ANSIComponentSerializerImpl::new);
+      .orElseGet(() -> new ANSIComponentSerializerImpl(ColorLevel.compute(), ComponentFlattener.basic()));
+  }
+
+  ANSIComponentSerializerImpl(final ColorLevel colorLevel, final ComponentFlattener flattener) {
+    this.colorLevel = colorLevel;
+    this.flattener = flattener;
   }
 
   @Override
   public @NotNull String serialize(final @NotNull Component component) {
     final ANSIComponentRenderer.ToString<Style> renderer = ANSIComponentRenderer.toString(ComponentStyleOps.INSTANCE);
-    ComponentFlattener.basic().flatten(component, new ANSIFlattenerListener(renderer));
-    renderer.complete();
-    return renderer.asString();
-  }
-
-  @Override
-  public @NotNull String serialize(final @NotNull Component component, final @NotNull ColorLevel colorLevel) {
-    final ANSIComponentRenderer.ToString<Style> renderer = ANSIComponentRenderer.toString(ComponentStyleOps.INSTANCE, colorLevel);
     ComponentFlattener.basic().flatten(component, new ANSIFlattenerListener(renderer));
     renderer.complete();
     return renderer.asString();
@@ -137,6 +144,32 @@ final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
     @Override
     public void popStyle(final @NotNull Style style) {
       this.renderer.popStyle(style);
+    }
+  }
+
+  static final class BuilderImpl implements ANSIComponentSerializer.Builder {
+    private ColorLevel colorLevel = ColorLevel.compute();
+    private ComponentFlattener flattener = ComponentFlattener.basic();
+
+    BuilderImpl() {
+      BUILDER.accept(this);
+    }
+
+    @Override
+    public @NotNull Builder colorLevel(final ColorLevel colorLevel) {
+      this.colorLevel = colorLevel;
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder flattener(final ComponentFlattener componentFlattener) {
+      this.flattener = componentFlattener;
+      return this;
+    }
+
+    @Override
+    public @NotNull ANSIComponentSerializer build() {
+      return new ANSIComponentSerializerImpl(this.colorLevel, this.flattener);
     }
   }
 }

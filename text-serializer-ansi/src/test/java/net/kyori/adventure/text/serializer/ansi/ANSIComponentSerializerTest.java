@@ -35,28 +35,27 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ANSIComponentSerializerTest {
   @Test
   void testSimple() {
-    assertEquals("foo", ANSIComponentSerializer.ansi().serialize(
-      Component.text("foo"),
-      ColorLevel.INDEXED_16));
-    assertEquals("\u001B[91mfoo\u001B[0m", ANSIComponentSerializer.ansi().serialize(
-      Component.text("foo", NamedTextColor.RED),
-      ColorLevel.INDEXED_16));
-    assertEquals("\u001B[1mfoo\u001B[0m", ANSIComponentSerializer.ansi().serialize(
-      Component.text("foo").decorate(TextDecoration.BOLD),
-      ColorLevel.INDEXED_16));
+    final ANSIComponentSerializer indexed16 = ANSIComponentSerializer.builder().colorLevel(ColorLevel.INDEXED_16).build();
+
+    assertEquals("foo", indexed16.serialize(
+      Component.text("foo")));
+    assertEquals("\u001B[91mfoo\u001B[0m", indexed16.serialize(
+      Component.text("foo", NamedTextColor.RED)));
+    assertEquals("\u001B[1mfoo\u001B[0m", indexed16.serialize(
+      Component.text("foo").decorate(TextDecoration.BOLD)));
 
     TextComponent component = Component.text().content("")
       .append(Component.text("foo", NamedTextColor.GREEN))
       .append(Component.text("bar", NamedTextColor.BLUE))
       .build();
     assertEquals("\u001B[92mfoo\u001B[94mbar\u001B[0m",
-      ANSIComponentSerializer.ansi().serialize(component, ColorLevel.INDEXED_16));
+      indexed16.serialize(component));
 
     component = Component.text().content("")
       .append(Component.text("foo", NamedTextColor.GREEN, TextDecoration.BOLD))
       .append(Component.text("bar", NamedTextColor.BLUE))
       .build();
     assertEquals("\u001B[1m\u001B[92mfoo\u001B[0m\u001B[94mbar\u001B[0m",
-      ANSIComponentSerializer.ansi().serialize(component, ColorLevel.INDEXED_16));
+      indexed16.serialize(component));
   }
 }
