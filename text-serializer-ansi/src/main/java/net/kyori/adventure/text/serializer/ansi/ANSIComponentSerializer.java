@@ -43,7 +43,7 @@ public interface ANSIComponentSerializer extends ComponentSerializer<Component, 
   /**
    * Gets a component serializer for serialization to a string using ANSI escape codes.
    *
-   * <p>Note that this serializer does NOT support serialization.</p>
+   * <p>Note that this serializer does NOT support deserialization.</p>
    *
    * @return a component serializer for serialization with ANSI escape sequences.
    * @since 4.14.0
@@ -83,7 +83,7 @@ public interface ANSIComponentSerializer extends ComponentSerializer<Component, 
      * @see ColorLevel
      * @since 4.14.0
      */
-    @NotNull Builder colorLevel(final ColorLevel colorLevel);
+    @NotNull Builder colorLevel(final @NotNull ColorLevel colorLevel);
 
     /**
      * Sets the component flattener instance to use when traversing the component for serialization.
@@ -94,7 +94,7 @@ public interface ANSIComponentSerializer extends ComponentSerializer<Component, 
      * @return this builder
      * @since 4.14.0
      */
-    @NotNull Builder flattener(final ComponentFlattener componentFlattener);
+    @NotNull Builder flattener(final @NotNull ComponentFlattener componentFlattener);
 
     /**
      * Builds the serializer.

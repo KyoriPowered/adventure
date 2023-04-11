@@ -156,13 +156,13 @@ final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
     }
 
     @Override
-    public @NotNull Builder colorLevel(final ColorLevel colorLevel) {
+    public @NotNull Builder colorLevel(final @NotNull ColorLevel colorLevel) {
       this.colorLevel = colorLevel;
       return this;
     }
 
     @Override
-    public @NotNull Builder flattener(final ComponentFlattener componentFlattener) {
+    public @NotNull Builder flattener(final @NotNull ComponentFlattener componentFlattener) {
       this.flattener = componentFlattener;
       return this;
     }
