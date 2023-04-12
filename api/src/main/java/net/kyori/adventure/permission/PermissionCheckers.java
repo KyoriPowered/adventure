@@ -43,7 +43,7 @@ final class PermissionCheckers {
     }
 
     @Override
-    public @NotNull TriState value(final String permission) {
+    public @NotNull TriState value(final @NotNull String permission) {
       return this.value;
     }
 
