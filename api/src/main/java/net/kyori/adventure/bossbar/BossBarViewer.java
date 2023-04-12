@@ -23,57 +23,21 @@
  */
 package net.kyori.adventure.bossbar;
 
-import java.util.Collections;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnmodifiableView;
 
 /**
- * {@link BossBar} internal implementation.
+ * Something that can view a {@link BossBar}.
  *
- * @since 4.12.0
+ * @since 4.14.0
  */
-@ApiStatus.Internal
-public interface BossBarImplementation {
+public interface BossBarViewer {
   /**
-   * Gets an implementation, and casts it to {@code type}.
+   * Gets an unmodifiable view of all known currently active bossbars.
    *
-   * @param bar the bossbar
-   * @param type the implementation type
-   * @param <I> the implementation type
-   * @return a {@code I}
-   * @since 4.12.0
-   */
-  @ApiStatus.Internal
-  static <I extends BossBarImplementation> @NotNull I get(final @NotNull BossBar bar, final @NotNull Class<I> type) {
-    return BossBarImpl.ImplementationAccessor.get(bar, type);
-  }
-
-  /**
-   * Gets the viewers of this bossbar.
-   *
-   * @return the viewers of this bossbar
+   * @return an unmodifiable view of all known currently active bossbars
    * @since 4.14.0
    */
-  @ApiStatus.Internal
-  default @NotNull Iterable<? extends BossBarViewer> viewers() {
-    return Collections.emptyList();
-  }
-
-  /**
-   * A {@link BossBarImplementation} service provider.
-   *
-   * @since 4.12.0
-   */
-  @ApiStatus.Internal
-  interface Provider {
-    /**
-     * Gets an implementation.
-     *
-     * @param bar the bossbar
-     * @return a {@code I}
-     * @since 4.12.0
-     */
-    @ApiStatus.Internal
-    @NotNull BossBarImplementation create(final @NotNull BossBar bar);
-  }
+  @UnmodifiableView
+  @NotNull Iterable<? extends BossBar> activeBossBars();
 }
