@@ -27,7 +27,7 @@ import java.util.function.Consumer;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
-import net.kyori.adventure.text.serializer.ComponentSerializer;
+import net.kyori.adventure.text.serializer.ComponentEncoder;
 import net.kyori.adventure.util.PlatformAPI;
 import net.kyori.ansi.ColorLevel;
 import org.jetbrains.annotations.ApiStatus;
@@ -39,7 +39,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 4.14.0
  */
-public interface ANSIComponentSerializer extends ComponentSerializer<Component, Component, String> {
+public interface ANSIComponentSerializer extends ComponentEncoder<Component, String> {
   /**
    * Gets a component serializer for serialization to a string using ANSI escape codes.
    *
@@ -60,11 +60,6 @@ public interface ANSIComponentSerializer extends ComponentSerializer<Component, 
    */
   static ANSIComponentSerializer.@NotNull Builder builder() {
     return new ANSIComponentSerializerImpl.BuilderImpl();
-  }
-
-  @Override
-  default @NotNull Component deserialize(@NotNull String input) {
-    throw new UnsupportedOperationException("AnsiComponentSerializer does not support deserialization");
   }
 
   /**
