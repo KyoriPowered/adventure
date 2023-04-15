@@ -25,6 +25,7 @@ package net.kyori.adventure.text.minimessage.tag.standard;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.AbstractTest;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -36,8 +37,7 @@ import static net.kyori.adventure.text.Component.translatable;
 import static net.kyori.adventure.text.event.HoverEvent.showText;
 import static net.kyori.adventure.text.format.NamedTextColor.BLACK;
 import static net.kyori.adventure.text.format.NamedTextColor.BLUE;
-import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
-import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
 import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
 import static net.kyori.adventure.text.format.NamedTextColor.RED;
 import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
@@ -45,6 +45,7 @@ import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
 import static net.kyori.adventure.text.format.Style.style;
 import static net.kyori.adventure.text.format.TextColor.color;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
+import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class GradientTagTest extends AbstractTest {
@@ -57,28 +58,28 @@ class GradientTagTest extends AbstractTest {
       .append(empty()
         .append(text("|", WHITE))
         .append(text("|", color(0xf4f4f4)))
-        .append(text("|", color(0xeaeaea)))
-        .append(text("|", color(0xdfdfdf)))
-        .append(text("|", color(0xd5d5d5)))
-        .append(text("|", color(0xcacaca)))
-        .append(text("|", color(0xbfbfbf)))
-        .append(text("|", color(0xb5b5b5)))
-        .append(text("|", GRAY))
-        .append(text("|", color(0x9f9f9f)))
-        .append(text("|", color(0x959595)))
-        .append(text("|", color(0x8a8a8a)))
-        .append(text("|", color(0x808080)))
-        .append(text("|", color(0x757575)))
-        .append(text("|", color(0x6a6a6a)))
-        .append(text("|", color(0x606060)))
-        .append(text("|", DARK_GRAY))
-        .append(text("|", color(0x4a4a4a)))
-        .append(text("|", color(0x404040)))
-        .append(text("|", color(0x353535)))
-        .append(text("|", color(0x2a2a2a)))
-        .append(text("|", color(0x202020)))
-        .append(text("|", color(0x151515)))
+        .append(text("|", color(0xe9e9e9)))
+        .append(text("|", color(0xdedede)))
+        .append(text("|", color(0xd3d3d3)))
+        .append(text("|", color(0xc8c8c8)))
+        .append(text("|", color(0xbcbcbc)))
+        .append(text("|", color(0xb1b1b1)))
+        .append(text("|", color(0xa6a6a6)))
+        .append(text("|", color(0x9b9b9b)))
+        .append(text("|", color(0x909090)))
+        .append(text("|", color(0x858585)))
+        .append(text("|", color(0x7a7a7a)))
+        .append(text("|", color(0x6f6f6f)))
+        .append(text("|", color(0x646464)))
+        .append(text("|", color(0x595959)))
+        .append(text("|", color(0x4e4e4e)))
+        .append(text("|", color(0x434343)))
+        .append(text("|", color(0x373737)))
+        .append(text("|", color(0x2c2c2c)))
+        .append(text("|", color(0x212121)))
+        .append(text("|", color(0x161616)))
         .append(text("|", color(0x0b0b0b)))
+        .append(text("|", BLACK))
       ).append(text("!"));
 
     this.assertParsedEquals(expected, input);
@@ -93,28 +94,28 @@ class GradientTagTest extends AbstractTest {
         .append(empty()
           .append(text("|", style(WHITE)))
           .append(text("|", style(color(0xf4f4f4))))
-          .append(text("|", style(color(0xeaeaea))))
-          .append(text("|", style(color(0xdfdfdf))))
-          .append(text("|", style(color(0xd5d5d5))))
-          .append(text("|", style(color(0xcacaca))))
-          .append(text("|", style(color(0xbfbfbf))))
-          .append(text("|", style(color(0xb5b5b5))))
-          .append(text("|", style(GRAY)))
-          .append(text("|", style(color(0x9f9f9f))))
-          .append(text("|", style(color(0x959595))))
-          .append(text("|", style(color(0x8a8a8a))))
-          .append(text("|", style(color(0x808080))))
-          .append(text("|", style(color(0x757575))))
-          .append(text("|", style(color(0x6a6a6a))))
-          .append(text("|", style(color(0x606060))))
-          .append(text("|", style(DARK_GRAY)))
-          .append(text("|", style(color(0x4a4a4a))))
-          .append(text("|", style(color(0x404040))))
-          .append(text("|", style(color(0x353535))))
-          .append(text("|", style(color(0x2a2a2a))))
-          .append(text("|", style(color(0x202020))))
-          .append(text("|", style(color(0x151515))))
+          .append(text("|", style(color(0xe9e9e9))))
+          .append(text("|", style(color(0xdedede))))
+          .append(text("|", style(color(0xd3d3d3))))
+          .append(text("|", style(color(0xc8c8c8))))
+          .append(text("|", style(color(0xbcbcbc))))
+          .append(text("|", style(color(0xb1b1b1))))
+          .append(text("|", style(color(0xa6a6a6))))
+          .append(text("|", style(color(0x9b9b9b))))
+          .append(text("|", style(color(0x909090))))
+          .append(text("|", style(color(0x858585))))
+          .append(text("|", style(color(0x7a7a7a))))
+          .append(text("|", style(color(0x6f6f6f))))
+          .append(text("|", style(color(0x646464))))
+          .append(text("|", style(color(0x595959))))
+          .append(text("|", style(color(0x4e4e4e))))
+          .append(text("|", style(color(0x434343))))
+          .append(text("|", style(color(0x373737))))
+          .append(text("|", style(color(0x2c2c2c))))
+          .append(text("|", style(color(0x212121))))
+          .append(text("|", style(color(0x161616))))
           .append(text("|", style(color(0x0b0b0b))))
+          .append(text("|", style(BLACK)))
         ).append(text("!")));
 
     this.assertParsedEquals(expected, input);
@@ -127,29 +128,29 @@ class GradientTagTest extends AbstractTest {
       .append(text("Woo: "))
       .append(empty()
         .append(text("|", color(0x5e4fa2)))
-        .append(text("|", color(0x64529f)))
+        .append(text("|", color(0x65529f)))
         .append(text("|", color(0x6b559c)))
-        .append(text("|", color(0x715899)))
-        .append(text("|", color(0x785b96)))
-        .append(text("|", color(0x7e5d93)))
-        .append(text("|", color(0x846090)))
-        .append(text("|", color(0x8b638d)))
-        .append(text("|", color(0x91668a)))
-        .append(text("|", color(0x976987)))
-        .append(text("|", color(0x9e6c84)))
-        .append(text("|", color(0xa46f81)))
-        .append(text("|", color(0xab727e)))
-        .append(text("|", color(0xb1747a)))
-        .append(text("|", color(0xb77777)))
-        .append(text("|", color(0xbe7a74)))
-        .append(text("|", color(0xc47d71)))
-        .append(text("|", color(0xca806e)))
-        .append(text("|", color(0xd1836b)))
-        .append(text("|", color(0xd78668)))
-        .append(text("|", color(0xde8965)))
-        .append(text("|", color(0xe48b62)))
+        .append(text("|", color(0x725898)))
+        .append(text("|", color(0x795b95)))
+        .append(text("|", color(0x7f5e92)))
+        .append(text("|", color(0x86618f)))
+        .append(text("|", color(0x8d648c)))
+        .append(text("|", color(0x936789)))
+        .append(text("|", color(0x9a6a85)))
+        .append(text("|", color(0xa16d82)))
+        .append(text("|", color(0xa7707f)))
+        .append(text("|", color(0xae737c)))
+        .append(text("|", color(0xb47679)))
+        .append(text("|", color(0xbb7976)))
+        .append(text("|", color(0xc27c72)))
+        .append(text("|", color(0xc87f6f)))
+        .append(text("|", color(0xcf826c)))
+        .append(text("|", color(0xd68569)))
+        .append(text("|", color(0xdc8866)))
+        .append(text("|", color(0xe38b63)))
         .append(text("|", color(0xea8e5f)))
-        .append(text("|", color(0xf1915c)))
+        .append(text("|", color(0xf0915c)))
+        .append(text("|", color(0xf79459)))
       )
       .append(text("!"));
 
@@ -164,28 +165,28 @@ class GradientTagTest extends AbstractTest {
       .append(empty()
         .append(text("|", GREEN))
         .append(text("|", color(0x55f85c)))
-        .append(text("|", color(0x55f163)))
-        .append(text("|", color(0x55ea6a)))
-        .append(text("|", color(0x55e371)))
-        .append(text("|", color(0x55dc78)))
-        .append(text("|", color(0x55d580)))
-        .append(text("|", color(0x55cd87)))
-        .append(text("|", color(0x55c68e)))
-        .append(text("|", color(0x55bf95)))
-        .append(text("|", color(0x55b89c)))
-        .append(text("|", color(0x55b1a3)))
-        .append(text("|", color(0x55aaaa)))
-        .append(text("|", color(0x55a3b1)))
-        .append(text("|", color(0x559cb8)))
-        .append(text("|", color(0x5595bf)))
-        .append(text("|", color(0x558ec6)))
-        .append(text("|", color(0x5587cd)))
-        .append(text("|", color(0x5580d5)))
-        .append(text("|", color(0x5578dc)))
-        .append(text("|", color(0x5571e3)))
-        .append(text("|", color(0x556aea)))
-        .append(text("|", color(0x5563f1)))
+        .append(text("|", color(0x55f064)))
+        .append(text("|", color(0x55e96b)))
+        .append(text("|", color(0x55e173)))
+        .append(text("|", color(0x55da7a)))
+        .append(text("|", color(0x55d381)))
+        .append(text("|", color(0x55cb89)))
+        .append(text("|", color(0x55c490)))
+        .append(text("|", color(0x55bc98)))
+        .append(text("|", color(0x55b59f)))
+        .append(text("|", color(0x55aea6)))
+        .append(text("|", color(0x55a6ae)))
+        .append(text("|", color(0x559fb5)))
+        .append(text("|", color(0x5598bc)))
+        .append(text("|", color(0x5590c4)))
+        .append(text("|", color(0x5589cb)))
+        .append(text("|", color(0x5581d3)))
+        .append(text("|", color(0x557ada)))
+        .append(text("|", color(0x5573e1)))
+        .append(text("|", color(0x556be9)))
+        .append(text("|", color(0x5564f0)))
         .append(text("|", color(0x555cf8)))
+        .append(text("|", style(BLUE)))
       ).append(text("!"));
 
     this.assertParsedEquals(expected, input);
@@ -200,57 +201,57 @@ class GradientTagTest extends AbstractTest {
         .append(text("|", RED))
         .append(text("|", color(0xf25562)))
         .append(text("|", color(0xe5556f)))
-        .append(text("|", color(0xd8557c)))
-        .append(text("|", color(0xcb5589)))
-        .append(text("|", color(0xbe5596)))
-        .append(text("|", color(0xb155a3)))
-        .append(text("|", color(0xa355b1)))
-        .append(text("|", color(0x9655be)))
-        .append(text("|", color(0x8955cb)))
-        .append(text("|", color(0x7c55d8)))
-        .append(text("|", color(0x6f55e5)))
-        .append(text("|", color(0x6255f2)))
-        .append(text("|", BLUE))
-        .append(text("|", BLUE))
-        .append(text("|", color(0x5562f2)))
-        .append(text("|", color(0x556fe5)))
-        .append(text("|", color(0x557cd8)))
-        .append(text("|", color(0x5589cb)))
-        .append(text("|", color(0x5596be)))
-        .append(text("|", color(0x55a3b1)))
-        .append(text("|", color(0x55b1a3)))
-        .append(text("|", color(0x55be96)))
-        .append(text("|", color(0x55cb89)))
-        .append(text("|", color(0x55d87c)))
-        .append(text("|", color(0x55e56f)))
-        .append(text("|", color(0x55f262)))
-        .append(text("|", GREEN))
-        .append(text("|", GREEN))
-        .append(text("|", color(0x62ff55)))
-        .append(text("|", color(0x6fff55)))
-        .append(text("|", color(0x7cff55)))
-        .append(text("|", color(0x89ff55)))
-        .append(text("|", color(0x96ff55)))
-        .append(text("|", color(0xa3ff55)))
-        .append(text("|", color(0xb1ff55)))
-        .append(text("|", color(0xbeff55)))
-        .append(text("|", color(0xcbff55)))
-        .append(text("|", color(0xd8ff55)))
-        .append(text("|", color(0xe5ff55)))
-        .append(text("|", color(0xf2ff55)))
-        .append(text("|", YELLOW))
-        .append(text("|", YELLOW))
-        .append(text("|", color(0xfff255)))
-        .append(text("|", color(0xffe555)))
-        .append(text("|", color(0xffd855)))
-        .append(text("|", color(0xffcb55)))
-        .append(text("|", color(0xffbe55)))
-        .append(text("|", color(0xffb155)))
-        .append(text("|", color(0xffa355)))
-        .append(text("|", color(0xff9655)))
-        .append(text("|", color(0xff8955)))
-        .append(text("|", color(0xff7c55)))
+        .append(text("|", color(0xd9557b)))
+        .append(text("|", color(0xcc5588)))
+        .append(text("|", color(0xbf5595)))
+        .append(text("|", color(0xb255a2)))
+        .append(text("|", color(0xa555af)))
+        .append(text("|", color(0x9855bc)))
+        .append(text("|", color(0x8c55c8)))
+        .append(text("|", color(0x7f55d5)))
+        .append(text("|", color(0x7255e2)))
+        .append(text("|", color(0x6555ef)))
+        .append(text("|", color(0x5855fc)))
+        .append(text("|", color(0x555ff5)))
+        .append(text("|", color(0x556be9)))
+        .append(text("|", color(0x5578dc)))
+        .append(text("|", color(0x5585cf)))
+        .append(text("|", color(0x5592c2)))
+        .append(text("|", color(0x559fb5)))
+        .append(text("|", color(0x55aca8)))
+        .append(text("|", color(0x55b89c)))
+        .append(text("|", color(0x55c58f)))
+        .append(text("|", color(0x55d282)))
+        .append(text("|", color(0x55df75)))
+        .append(text("|", color(0x55ec68)))
+        .append(text("|", color(0x55f95b)))
+        .append(text("|", color(0x5bff55)))
+        .append(text("|", color(0x68ff55)))
+        .append(text("|", color(0x75ff55)))
+        .append(text("|", color(0x82ff55)))
+        .append(text("|", color(0x8fff55)))
+        .append(text("|", color(0x9cff55)))
+        .append(text("|", color(0xa8ff55)))
+        .append(text("|", color(0xb5ff55)))
+        .append(text("|", color(0xc2ff55)))
+        .append(text("|", color(0xcfff55)))
+        .append(text("|", color(0xdcff55)))
+        .append(text("|", color(0xe9ff55)))
+        .append(text("|", color(0xf5ff55)))
+        .append(text("|", color(0xfffc55)))
+        .append(text("|", color(0xffef55)))
+        .append(text("|", color(0xffe255)))
+        .append(text("|", color(0xffd555)))
+        .append(text("|", color(0xffc855)))
+        .append(text("|", color(0xffbc55)))
+        .append(text("|", color(0xffaf55)))
+        .append(text("|", color(0xffa255)))
+        .append(text("|", color(0xff9555)))
+        .append(text("|", color(0xff8855)))
+        .append(text("|", color(0xff7b55)))
         .append(text("|", color(0xff6f55)))
+        .append(text("|", color(0xff6255)))
+        .append(text("|", RED))
       ).append(text("!"));
 
     this.assertParsedEquals(expected, input);
@@ -263,59 +264,59 @@ class GradientTagTest extends AbstractTest {
       .append(text("Woo: "))
       .append(empty()
         .append(text("|", BLACK))
-        .append(text("|", color(0x90909)))
+        .append(text("|", color(0x0a0a0a)))
         .append(text("|", color(0x131313)))
-        .append(text("|", color(0x1c1c1c)))
+        .append(text("|", color(0x1d1d1d)))
         .append(text("|", color(0x262626)))
-        .append(text("|", color(0x2f2f2f)))
-        .append(text("|", color(0x393939)))
-        .append(text("|", color(0x424242)))
-        .append(text("|", color(0x4c4c4c)))
-        .append(text("|", DARK_GRAY))
-        .append(text("|", color(0x5e5e5e)))
-        .append(text("|", color(0x686868)))
-        .append(text("|", color(0x717171)))
-        .append(text("|", color(0x7b7b7b)))
-        .append(text("|", color(0x848484)))
-        .append(text("|", color(0x8e8e8e)))
-        .append(text("|", color(0x979797)))
-        .append(text("|", color(0xa1a1a1)))
-        .append(text("|", GRAY))
-        .append(text("|", color(0xb3b3b3)))
-        .append(text("|", color(0xbdbdbd)))
-        .append(text("|", color(0xc6c6c6)))
-        .append(text("|", color(0xd0d0d0)))
-        .append(text("|", color(0xd9d9d9)))
-        .append(text("|", color(0xe3e3e3)))
-        .append(text("|", color(0xececec)))
-        .append(text("|", color(0xf6f6f6)))
-        .append(text("|", WHITE))
-        .append(text("|", WHITE))
-        .append(text("|", color(0xf6f6f6)))
-        .append(text("|", color(0xececec)))
-        .append(text("|", color(0xe3e3e3)))
-        .append(text("|", color(0xd9d9d9)))
-        .append(text("|", color(0xd0d0d0)))
-        .append(text("|", color(0xc6c6c6)))
-        .append(text("|", color(0xbdbdbd)))
-        .append(text("|", color(0xb3b3b3)))
-        .append(text("|", GRAY))
-        .append(text("|", color(0xa1a1a1)))
-        .append(text("|", color(0x979797)))
-        .append(text("|", color(0x8e8e8e)))
-        .append(text("|", color(0x848484)))
-        .append(text("|", color(0x7b7b7b)))
-        .append(text("|", color(0x717171)))
-        .append(text("|", color(0x686868)))
-        .append(text("|", color(0x5e5e5e)))
-        .append(text("|", DARK_GRAY))
-        .append(text("|", color(0x4c4c4c)))
-        .append(text("|", color(0x424242)))
-        .append(text("|", color(0x393939)))
-        .append(text("|", color(0x2f2f2f)))
+        .append(text("|", color(0x303030)))
+        .append(text("|", color(0x3a3a3a)))
+        .append(text("|", color(0x434343)))
+        .append(text("|", color(0x4d4d4d)))
+        .append(text("|", color(0x575757)))
+        .append(text("|", color(0x606060)))
+        .append(text("|", color(0x6a6a6a)))
+        .append(text("|", color(0x737373)))
+        .append(text("|", color(0x7d7d7d)))
+        .append(text("|", color(0x878787)))
+        .append(text("|", color(0x909090)))
+        .append(text("|", color(0x9a9a9a)))
+        .append(text("|", color(0xa4a4a4)))
+        .append(text("|", color(0xadadad)))
+        .append(text("|", color(0xb7b7b7)))
+        .append(text("|", color(0xc0c0c0)))
+        .append(text("|", color(0xcacaca)))
+        .append(text("|", color(0xd4d4d4)))
+        .append(text("|", color(0xdddddd)))
+        .append(text("|", color(0xe7e7e7)))
+        .append(text("|", color(0xf1f1f1)))
+        .append(text("|", color(0xfafafa)))
+        .append(text("|", color(0xfafafa)))
+        .append(text("|", color(0xf1f1f1)))
+        .append(text("|", color(0xe7e7e7)))
+        .append(text("|", color(0xdddddd)))
+        .append(text("|", color(0xd4d4d4)))
+        .append(text("|", color(0xcacaca)))
+        .append(text("|", color(0xc0c0c0)))
+        .append(text("|", color(0xb7b7b7)))
+        .append(text("|", color(0xadadad)))
+        .append(text("|", color(0xa4a4a4)))
+        .append(text("|", color(0x9a9a9a)))
+        .append(text("|", color(0x909090)))
+        .append(text("|", color(0x878787)))
+        .append(text("|", color(0x7d7d7d)))
+        .append(text("|", color(0x737373)))
+        .append(text("|", color(0x6a6a6a)))
+        .append(text("|", color(0x606060)))
+        .append(text("|", color(0x575757)))
+        .append(text("|", color(0x4d4d4d)))
+        .append(text("|", color(0x434343)))
+        .append(text("|", color(0x3a3a3a)))
+        .append(text("|", color(0x303030)))
         .append(text("|", color(0x262626)))
-        .append(text("|", color(0x1c1c1c)))
+        .append(text("|", color(0x1d1d1d)))
         .append(text("|", color(0x131313)))
+        .append(text("|", color(0x0a0a0a)))
+        .append(text("|", BLACK))
       ).append(text("!"));
 
     this.assertParsedEquals(expected, input);
@@ -327,60 +328,60 @@ class GradientTagTest extends AbstractTest {
     final Component expected = empty().color(YELLOW)
       .append(text("Woo: "))
       .append(empty()
-        .append(text("|", color(0xa6a6a6)))
-        .append(text("|", color(0x9c9c9c)))
-        .append(text("|", color(0x939393)))
-        .append(text("|", color(0x898989)))
-        .append(text("|", color(0x808080)))
-        .append(text("|", color(0x777777)))
-        .append(text("|", color(0x6d6d6d)))
-        .append(text("|", color(0x646464)))
-        .append(text("|", color(0x5a5a5a)))
+        .append(text("|", color(0xb3b3b3)))
+        .append(text("|", color(0xbcbcbc)))
+        .append(text("|", color(0xc6c6c6)))
+        .append(text("|", color(0xcfcfcf)))
+        .append(text("|", color(0xd9d9d9)))
+        .append(text("|", color(0xe3e3e3)))
+        .append(text("|", color(0xececec)))
+        .append(text("|", color(0xf6f6f6)))
+        .append(text("|", color(0xffffff)))
+        .append(text("|", color(0xf5f5f5)))
+        .append(text("|", color(0xebebeb)))
+        .append(text("|", color(0xe2e2e2)))
+        .append(text("|", color(0xd8d8d8)))
+        .append(text("|", color(0xcecece)))
+        .append(text("|", color(0xc5c5c5)))
+        .append(text("|", color(0xbbbbbb)))
+        .append(text("|", color(0xb2b2b2)))
+        .append(text("|", color(0xa8a8a8)))
+        .append(text("|", color(0x9e9e9e)))
+        .append(text("|", color(0x959595)))
+        .append(text("|", color(0x8b8b8b)))
+        .append(text("|", color(0x818181)))
+        .append(text("|", color(0x787878)))
+        .append(text("|", color(0x6e6e6e)))
+        .append(text("|", color(0x656565)))
+        .append(text("|", color(0x5b5b5b)))
         .append(text("|", color(0x515151)))
-        .append(text("|", color(0x474747)))
+        .append(text("|", color(0x484848)))
         .append(text("|", color(0x3e3e3e)))
         .append(text("|", color(0x343434)))
         .append(text("|", color(0x2b2b2b)))
-        .append(text("|", color(0x222222)))
-        .append(text("|", color(0x181818)))
-        .append(text("|", color(0xf0f0f)))
-        .append(text("|", color(0x50505)))
-        .append(text("|", color(0x40404)))
-        .append(text("|", color(0xe0e0e)))
-        .append(text("|", color(0x171717)))
         .append(text("|", color(0x212121)))
-        .append(text("|", color(0x2a2a2a)))
-        .append(text("|", color(0x333333)))
-        .append(text("|", color(0x3d3d3d)))
-        .append(text("|", color(0x464646)))
-        .append(text("|", color(0x505050)))
-        .append(text("|", color(0x595959)))
-        .append(text("|", color(0x595959)))
-        .append(text("|", color(0x636363)))
-        .append(text("|", color(0x6c6c6c)))
-        .append(text("|", color(0x767676)))
-        .append(text("|", color(0x7f7f7f)))
-        .append(text("|", color(0x888888)))
-        .append(text("|", color(0x929292)))
-        .append(text("|", color(0x9b9b9b)))
-        .append(text("|", color(0xa5a5a5)))
-        .append(text("|", color(0xaeaeae)))
-        .append(text("|", color(0xb8b8b8)))
-        .append(text("|", color(0xc1c1c1)))
-        .append(text("|", color(0xcbcbcb)))
-        .append(text("|", color(0xd4d4d4)))
-        .append(text("|", color(0xdddddd)))
-        .append(text("|", color(0xe7e7e7)))
-        .append(text("|", color(0xf0f0f0)))
-        .append(text("|", color(0xfafafa)))
-        .append(text("|", color(0xfbfbfb)))
-        .append(text("|", color(0xf1f1f1)))
-        .append(text("|", color(0xe8e8e8)))
-        .append(text("|", color(0xdedede)))
-        .append(text("|", color(0xd5d5d5)))
-        .append(text("|", color(0xcccccc)))
-        .append(text("|", color(0xc2c2c2)))
-        .append(text("|", color(0xb9b9b9)))
+        .append(text("|", color(0x181818)))
+        .append(text("|", color(0x0e0e0e)))
+        .append(text("|", color(0x040404)))
+        .append(text("|", color(0x000000)))
+        .append(text("|", color(0x000000)))
+        .append(text("|", color(0x000000)))
+        .append(text("|", color(0x000000)))
+        .append(text("|", color(0x000000)))
+        .append(text("|", color(0x000000)))
+        .append(text("|", color(0x000000)))
+        .append(text("|", color(0x000000)))
+        .append(text("|", color(0x000000)))
+        .append(text("|", color(0x000000)))
+        .append(text("|", color(0x000000)))
+        .append(text("|", color(0x000000)))
+        .append(text("|", color(0x000000)))
+        .append(text("|", color(0x000000)))
+        .append(text("|", color(0x000000)))
+        .append(text("|", color(0x000000)))
+        .append(text("|", color(0x000000)))
+        .append(text("|", color(0x000000)))
+        .append(text("|", color(0x000000)))
       ).append(text("!"));
 
     this.assertParsedEquals(expected, input);
@@ -394,28 +395,28 @@ class GradientTagTest extends AbstractTest {
       .append(empty()
         .append(text("|", color(0x5588cc)))
         .append(text("|", color(0x5581d3)))
-        .append(text("|", color(0x557ada)))
-        .append(text("|", color(0x5573e1)))
-        .append(text("|", color(0x556ce8)))
-        .append(text("|", color(0x5565ef)))
-        .append(text("|", color(0x555ef7)))
+        .append(text("|", color(0x5579db)))
+        .append(text("|", color(0x5572e2)))
+        .append(text("|", color(0x556aea)))
+        .append(text("|", color(0x5563f1)))
+        .append(text("|", color(0x555cf8)))
         .append(text("|", color(0x5556fe)))
-        .append(text("|", color(0x555bf9)))
-        .append(text("|", color(0x5562f2)))
-        .append(text("|", color(0x5569eb)))
-        .append(text("|", color(0x5570e4)))
-        .append(text("|", color(0x5577dd)))
-        .append(text("|", color(0x557ed6)))
-        .append(text("|", color(0x5585cf)))
-        .append(text("|", color(0x558cc8)))
-        .append(text("|", color(0x5593c1)))
-        .append(text("|", color(0x559aba)))
-        .append(text("|", color(0x55a2b3)))
-        .append(text("|", color(0x55a9ab)))
-        .append(text("|", color(0x55b0a4)))
-        .append(text("|", color(0x55b79d)))
-        .append(text("|", color(0x55be96)))
+        .append(text("|", color(0x555df7)))
+        .append(text("|", color(0x5565ef)))
+        .append(text("|", color(0x556ce8)))
+        .append(text("|", color(0x5573e1)))
+        .append(text("|", color(0x557bd9)))
+        .append(text("|", color(0x5582d2)))
+        .append(text("|", color(0x5589cb)))
+        .append(text("|", color(0x5591c3)))
+        .append(text("|", color(0x5598bc)))
+        .append(text("|", color(0x55a0b4)))
+        .append(text("|", color(0x55a7ad)))
+        .append(text("|", color(0x55aea6)))
+        .append(text("|", color(0x55b69e)))
+        .append(text("|", color(0x55bd97)))
         .append(text("|", color(0x55c58f)))
+        .append(text("|", color(0x55cc88)))
       ).append(text("!"));
 
     this.assertParsedEquals(expected, input);
@@ -427,12 +428,12 @@ class GradientTagTest extends AbstractTest {
     final String input = "<gradient:green:blue>123<bold>456</gradient>!";
     final Component expected = empty()
       .append(text("1", GREEN))
-      .append(text("2", color(0x55e371)))
-      .append(text("3", color(0x55c68e)))
+      .append(text("2", color(0x55dd77)))
+      .append(text("3", color(0x55bb99)))
       .append(empty().decorate(BOLD)
-        .append(text("4", color(0x55aaaa)))
-        .append(text("5", color(0x558ec6)))
-        .append(text("6", color(0x5571e3)))
+        .append(text("4", color(0x5599bb)))
+        .append(text("5", color(0x5577dd)))
+        .append(text("6", color(0x5555ff)))
       )
       .append(text("!"));
 
@@ -444,22 +445,22 @@ class GradientTagTest extends AbstractTest {
     final String input = "<gradient:green:blue>123<gradient:red:yellow>456<bold>789</gradient>abc</gradient>!";
     final Component expected = empty()
       .append(text("1", GREEN))
-      .append(text("2", color(0x55f163)))
-      .append(text("3", color(0x55e371)))
+      .append(text("2", color(0x55f064)))
+      .append(text("3", color(0x55e074)))
       .append(empty()
         .append(text("4", RED))
-        .append(text("5", color(0xff7155)))
-        .append(text("6", color(0xff8e55)))
+        .append(text("5", color(0xff7755)))
+        .append(text("6", color(0xff9955)))
         .append(empty().decorate(BOLD)
-          .append(text("7", color(0xffaa55)))
-          .append(text("8", color(0xffc655)))
-          .append(text("9", color(0xffe355)))
+          .append(text("7", color(0xffbb55)))
+          .append(text("8", color(0xffdd55)))
+          .append(text("9", YELLOW))
         )
       )
       .append(empty()
-        .append(text("a", color(0x5580d5)))
-        .append(text("b", color(0x5571e3)))
-        .append(text("c", color(0x5563f1)))
+        .append(text("a", color(0x5574e0)))
+        .append(text("b", color(0x5564f0)))
+        .append(text("c", BLUE))
       )
       .append(text("!"));
 
@@ -474,8 +475,8 @@ class GradientTagTest extends AbstractTest {
     final Component expected = text("Something ")
       .append(empty()
         .append(text("𐌰", BLUE))
-        .append(text("𐌱", color(0x558ec6)))
-        .append(text("𐌲", color(0x55c68e)))
+        .append(text("𐌱", color(0x55aaaa)))
+        .append(text("𐌲", GREEN))
       );
 
     this.assertParsedEquals(expected, input);
@@ -487,7 +488,7 @@ class GradientTagTest extends AbstractTest {
     final String input2 = "<gradient:red:blue:green:red>AB";
 
     final Component expected1 = text("A", RED);
-    final Component expected2 = text().append(text("A", RED), text("B", BLUE)).build();
+    final Component expected2 = text().append(text("AB", RED)).build();
 
     this.assertParsedEquals(expected1, input1);
     this.assertParsedEquals(expected2, input2);
@@ -502,7 +503,7 @@ class GradientTagTest extends AbstractTest {
       .append(
         text("a", color(0x1985ff)),
         text("b", color(0x00fffb)),
-        text(" ", color(0x1e98ff)),
+        text(" ", color(0x1f9bff)),
         text("gray", NamedTextColor.GRAY)
       )
       .build();
@@ -516,12 +517,12 @@ class GradientTagTest extends AbstractTest {
     final String input = "<gradient:white:blue>A <gradient:yellow:black>B <white>C";
 
     final Component expected = Component.textOfChildren(
-        text("A", NamedTextColor.WHITE),
-        text(" ", color(0xddddff)),
+        text("A", WHITE),
+        text(" ", color(0xd5d5ff)),
         Component.textOfChildren(
-          text("B", NamedTextColor.YELLOW),
-          text(" ", color(0xaaaa39)),
-          text("C", NamedTextColor.WHITE)
+          text("B", YELLOW),
+          text(" ", color(0x80802b)),
+          text("C", WHITE)
         )
       );
 
@@ -535,10 +536,10 @@ class GradientTagTest extends AbstractTest {
     final String input = "<gradient>a<placeholder/>c<bold>d</bold>!</gradient>";
     final Component expected = Component.textOfChildren(
       text("a", WHITE),
-      text("b", color(0xcccccc), TextDecoration.ITALIC),
-      text("c", color(0x999999)),
-      text("d", color(0x666666), BOLD),
-      text("!", color(0x333333))
+      text("b", color(0xbfbfbf), TextDecoration.ITALIC),
+      text("c", color(0x808080)),
+      text("d", color(0x404040), BOLD),
+      text("!", BLACK)
     );
 
     this.assertParsedEquals(expected, input, Placeholder.component("placeholder", placeholder));
@@ -550,11 +551,43 @@ class GradientTagTest extends AbstractTest {
     final String input = "<gradient:red:blue>ab<lang:block.minecraft.diamond_block>!</gradient>";
     final Component expected = Component.textOfChildren(
       text("a", RED),
-      text("b", color(0xd55580)),
-      translatable("block.minecraft.diamond_block", color(0xaa55aa))
-        .append(text("!", color(0x8055d5)))
+      text("b", color(0xc6558e)),
+      translatable("block.minecraft.diamond_block", color(0x8e55c6))
+        .append(text("!", color(0x5555ff)))
     );
 
     this.assertParsedEquals(expected, input);
+  }
+
+  // https://github.com/KyoriPowered/adventure/issues/889
+  @Test
+  void testMultiColorPhased() {
+    final String input = "<gradient:#aa0000:#ff5555:#aaaaaa:1>-------";
+    final Component expected = Component.textOfChildren(
+      text("-", color(0xaaaaaa)),
+      text("-", color(0xaa7171)),
+      text("-", color(0xaa3939)),
+      text("-", color(0xaa0000)),
+      text("-", color(0xc61c1c)),
+      text("-", color(0xe33939)),
+      text("-", color(0xff5555))
+    );
+    this.assertParsedEquals(expected, input);
+  }
+
+  @Test
+  void gh137() {
+    final String input = "<gradient:gold:yellow:red><dum>";
+    final String input2 = "<gradient:gold:yellow:red><dum>a";
+    final Component expected1 = text("a", GOLD);
+    final Component expected2 = text().append(text("a", GOLD), text("a", RED)).build();
+    final Component expected3 = text().append(text("a", GOLD), text("a", YELLOW), text("a", RED)).build();
+    final Component expected4 = text().append(text("a", GOLD), text("a", TextColor.color(0xffe339)), text("a", color(0xffc655)), text("a", RED)).build();
+
+    this.assertParsedEquals(expected1, input, component("dum", text("a")));
+    this.assertParsedEquals(expected2, input, component("dum", text("aa")));
+    this.assertParsedEquals(expected3, input, component("dum", text("aaa")));
+    this.assertParsedEquals(expected4, input, component("dum", text("aaaa")));
+    this.assertParsedEquals(expected4, input2, component("dum", text("aaa")));
   }
 }

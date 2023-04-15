@@ -35,10 +35,10 @@ import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 /**
  * A transformation that applies a colour gradient.
@@ -51,15 +51,14 @@ final class GradientTag extends AbstractColorChangingTag {
   static final TagResolver RESOLVER = TagResolver.resolver(GRADIENT, GradientTag::create);
 
   private int index = 0;
-  private int colorIndex = 0;
 
-  private float factorStep = 0;
+  private double multiplier = 1;
+
   private final TextColor[] colors;
-  private float phase;
-  private final boolean negativePhase;
+  private @Range(from = -1, to = 1) double phase;
 
   static Tag create(final ArgumentQueue args, final Context ctx) {
-    float phase = 0;
+    double phase = 0;
     final List<TextColor> textColors;
     if (args.hasNext()) {
       textColors = new ArrayList<>();
@@ -69,9 +68,9 @@ final class GradientTag extends AbstractColorChangingTag {
         if (!args.hasNext()) {
           final OptionalDouble possiblePhase = arg.asDouble();
           if (possiblePhase.isPresent()) {
-            phase = (float) possiblePhase.getAsDouble();
-            if (phase < -1f || phase > 1f) {
-              throw ctx.newException(String.format("Gradient phase is out of range (%s). Must be in the range [-1.0f, 1.0f] (inclusive).", phase), args);
+            phase = possiblePhase.getAsDouble();
+            if (phase < -1d || phase > 1d) {
+              throw ctx.newException(String.format("Gradient phase is out of range (%s). Must be in the range [-1.0, 1.0] (inclusive).", phase), args);
             }
             break;
           }
@@ -81,7 +80,7 @@ final class GradientTag extends AbstractColorChangingTag {
         textColors.add(parsedColor);
       }
 
-      if (textColors.size() < 2) {
+      if (textColors.size() == 1) {
         throw ctx.newException("Invalid gradient, not enough colors. Gradients must have at least two colors.", args);
       }
     } else {
@@ -91,58 +90,46 @@ final class GradientTag extends AbstractColorChangingTag {
     return new GradientTag(phase, textColors);
   }
 
-  private GradientTag(final float phase, final List<TextColor> colors) {
-    if (phase < 0) {
-      this.negativePhase = true;
-      this.phase = 1 + phase;
-      Collections.reverse(colors);
-    } else {
-      this.negativePhase = false;
-      this.phase = phase;
-    }
-
+  private GradientTag(final double phase, final List<TextColor> colors) {
     if (colors.isEmpty()) {
       this.colors = new TextColor[]{TextColor.color(0xffffff), TextColor.color(0x000000)};
     } else {
       this.colors = colors.toArray(new TextColor[0]);
     }
+
+    if (phase < 0) {
+      this.phase = 1 + phase; // [-1, 0) -> [0, 1)
+      Collections.reverse(Arrays.asList(this.colors));
+    } else {
+      this.phase = phase;
+    }
   }
 
   @Override
   protected void init() {
-    int sectorLength = this.size() / (this.colors.length - 1);
-    if (sectorLength < 1) {
-      sectorLength = 1;
-    }
-    this.factorStep = 1.0f / (sectorLength + this.index);
-    this.phase = this.phase * sectorLength;
+    // Set a scaling factor for character indices, so that the colours in a gradient are evenly spread across the original text
+    // make it so the max character index maps to the maximum colour
+    this.multiplier = this.size() == 1 ? 0 : (double) (this.colors.length - 1) / (this.size() - 1);
+    this.phase *= this.colors.length - 1;
     this.index = 0;
   }
 
   @Override
   protected void advanceColor() {
-    // color switch needed?
     this.index++;
-    if (this.factorStep * this.index > 1) {
-      this.colorIndex++;
-      this.index = 0;
-    }
   }
 
   @Override
   protected TextColor color() {
-    float factor = this.factorStep * (this.index + this.phase);
-    // loop around if needed
-    if (factor > 1) {
-      factor = 1 - (factor - 1);
-    }
+    // from [0, this.colors.length - 1], select the position in the gradient
+    // we will wrap around in order to preserve an even cycle as would be seen with non-zero phases
+    final double position = ((this.index * this.multiplier) + this.phase);
+    final int lowUnclamped = (int) Math.floor(position);
 
-    if (this.negativePhase && this.colors.length % 2 != 0) {
-      // flip the gradient segment for to allow for looping phase -1 through 1
-      return TextColor.lerp(factor, this.colors[this.colorIndex + 1], this.colors[this.colorIndex]);
-    } else {
-      return TextColor.lerp(factor, this.colors[this.colorIndex], this.colors[this.colorIndex + 1]);
-    }
+    final int high = (int) Math.ceil(position) % this.colors.length;
+    final int low = lowUnclamped % this.colors.length;
+
+    return TextColor.lerp((float) position - lowUnclamped, this.colors[low], this.colors[high]);
   }
 
   @Override
@@ -159,14 +146,13 @@ final class GradientTag extends AbstractColorChangingTag {
     if (other == null || this.getClass() != other.getClass()) return false;
     final GradientTag that = (GradientTag) other;
     return this.index == that.index
-      && this.colorIndex == that.colorIndex
-      && ShadyPines.equals(that.factorStep, this.factorStep)
-      && this.phase == that.phase && Arrays.equals(this.colors, that.colors);
+      && this.phase == that.phase
+      && Arrays.equals(this.colors, that.colors);
   }
 
   @Override
   public int hashCode() {
-    int result = Objects.hash(this.index, this.colorIndex, this.factorStep, this.phase);
+    int result = Objects.hash(this.index, this.phase);
     result = 31 * result + Arrays.hashCode(this.colors);
     return result;
   }
