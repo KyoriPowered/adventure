@@ -93,7 +93,21 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
    * @param context a context
    * @return a message format or {@code null} to skip translation
    */
-  protected abstract @Nullable MessageFormat translate(final @NotNull String key, final @NotNull C context);
+  protected @Nullable MessageFormat translate(final @NotNull String key, final @NotNull C context) {
+    return null;
+  }
+
+  /**
+   * Gets a message format from a key, fallback string, and context.
+   *
+   * @param key a translation key
+   * @param fallback the fallback string
+   * @param context a context
+   * @return a message format or {@code null} to skip translation
+   */
+  protected @Nullable MessageFormat translate(final @NotNull String key, final @NotNull String fallback, final @NotNull C context) {
+    return this.translate(key, context);
+  }
 
   @Override
   protected @NotNull Component renderBlockNbt(final @NotNull BlockNBTComponent component, final @NotNull C context) {
@@ -158,7 +172,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
   @Override
   @SuppressWarnings("JdkObsolete") // MessageFormat requires StringBuffer in its api
   protected @NotNull Component renderTranslatable(final @NotNull TranslatableComponent component, final @NotNull C context) {
-    final @Nullable MessageFormat format = this.translate(component.key(), context);
+    final @Nullable MessageFormat format = this.translate(component.key(), component.fallback(), context);
     if (format == null) {
       // we don't have a translation for this component, but the arguments or children
       // of this component might need additional rendering
