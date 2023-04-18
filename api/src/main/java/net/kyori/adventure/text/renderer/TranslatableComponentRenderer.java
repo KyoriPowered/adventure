@@ -105,7 +105,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
    * @param context a context
    * @return a message format or {@code null} to skip translation
    */
-  protected @Nullable MessageFormat translate(final @NotNull String key, final @NotNull String fallback, final @NotNull C context) {
+  protected @Nullable MessageFormat translate(final @NotNull String key, final @Nullable String fallback, final @NotNull C context) {
     return this.translate(key, context);
   }
 
