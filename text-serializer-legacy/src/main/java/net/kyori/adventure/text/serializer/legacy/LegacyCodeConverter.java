@@ -1,37 +1,61 @@
 package net.kyori.adventure.text.serializer.legacy;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextFormat;
-import net.kyori.adventure.util.HSVLike;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static java.util.Objects.requireNonNull;
-
 public abstract class LegacyCodeConverter {
   protected static final char LEGACY_BUNGEE_HEX_CHAR = 'x';
+
+  protected final List<TextColor> colors;
+  protected final List<TextFormat> formats;
+  protected final String legacyChars;
 
   protected final char character;
   protected final char hexCharacter;
   protected final boolean hexColours;
   protected final boolean useTerriblyStupidHexFormat; // (╯°□°)╯︵ ┻━┻
 
-  protected LegacyCodeConverter(final char character, final char hexCharacter, final boolean hexColours, final boolean useTerriblyStupidHexFormat) {
+  protected LegacyCodeConverter(final List<CharacterAndFormat> characterFormats, final char character, final char hexCharacter, final boolean hexColours, final boolean useTerriblyStupidHexFormat) {
+    final List<TextColor> colors = new ArrayList<>();
+    final List<TextFormat> formats = new ArrayList<>(characterFormats.size());
+    final StringBuilder legacyChars = new StringBuilder(characterFormats.size());
+    for (int i = 0; i < characterFormats.size(); i++) {
+      CharacterAndFormat characterAndFormat = characterFormats.get(i);
+      legacyChars.append(characterAndFormat.getCharacter());
+      final TextFormat format = characterAndFormat.getFormat();
+      formats.add(format);
+      if (format instanceof TextColor) {
+        colors.add((TextColor) format);
+      }
+    }
+    this.colors = Collections.unmodifiableList(colors);
+    this.formats = Collections.unmodifiableList(formats);
+    this.legacyChars = legacyChars.toString();
+
     this.character = character;
     this.hexCharacter = hexCharacter;
     this.hexColours = hexColours;
     this.useTerriblyStupidHexFormat = useTerriblyStupidHexFormat;
   }
 
-  @NotNull abstract List<TextFormat> getFormats();
-
-  @NotNull abstract String getAllLegacyChars();
-
-  @NotNull abstract List<? extends TextColor> getLegacyColors();
-
   @NotNull abstract LegacyCodeConverterSupplier createSupplier();
+
+  /**
+   * Find the named colour nearest to the provided colour. Can be overridden to
+   *
+   * @param any colour to match
+   * @return nearest named colour. will always return a value
+   * @since 4.14.0
+   */
+  protected @NotNull TextColor nearestColorTo(final @NotNull TextColor any) {
+    return NamedTextColor.nearestColorTo(this.colors, any);
+  }
 
   private @Nullable FormatCodeType determineFormatType(final char legacy, final String input, final int pos) {
     if (pos >= 14) {
@@ -47,7 +71,7 @@ public abstract class LegacyCodeConverter {
     }
     if (legacy == this.hexCharacter && input.length() - pos >= 6) {
       return FormatCodeType.KYORI_HEX;
-    } else if (getAllLegacyChars().indexOf(legacy) != -1) {
+    } else if (legacyChars.indexOf(legacy) != -1) {
       return FormatCodeType.MOJANG_LEGACY;
     }
     return null;
@@ -64,7 +88,7 @@ public abstract class LegacyCodeConverter {
         return new DecodedFormat(foundFormat, parsed);
       }
     } else if (foundFormat == FormatCodeType.MOJANG_LEGACY) {
-      return new DecodedFormat(foundFormat, getFormats().get(getAllLegacyChars().indexOf(legacy)));
+      return new DecodedFormat(foundFormat, formats.get(legacyChars.indexOf(legacy)));
     } else if (foundFormat == FormatCodeType.BUNGEECORD_UNUSUAL_HEX) {
       final StringBuilder foundHex = new StringBuilder(6);
       for (int i = pos - 1; i >= pos - 11; i -= 2) {
@@ -113,56 +137,8 @@ public abstract class LegacyCodeConverter {
         format = nearestColorTo(color);
       }
     }
-    final int index = getFormats().indexOf(format);
-    return Character.toString(getAllLegacyChars().charAt(index));
-  }
-
-  /**
-   * Find the named colour nearest to the provided colour.
-   *
-   * @param any colour to match
-   * @return nearest named colour. will always return a value
-   * @since 4.14.0
-   */
-  public @NotNull TextColor nearestColorTo(final @NotNull TextColor any) {
-    if (any instanceof NamedTextColor) {
-      return any;
-    }
-
-    requireNonNull(any, "color");
-
-    float matchedDistance = Float.MAX_VALUE;
-    final List<? extends TextColor> values = getLegacyColors();
-    TextColor match = values.get(0);
-    for (int i = 0, length = values.size(); i < length; i++) {
-      final TextColor potential = values.get(i);
-      final float distance = distance(any.asHSV(), potential.asHSV());
-      if (distance < matchedDistance) {
-        match = potential;
-        matchedDistance = distance;
-      }
-      if (distance == 0) {
-        break; // same colour! whoo!
-      }
-    }
-    return match;
-  }
-
-  /**
-   * Returns a distance metric to the other colour.
-   *
-   * <p>This value is unitless and should only be used to compare with other text colours.</p>
-   *
-   * @param self the base colour
-   * @param other colour to compare to
-   * @return distance metric
-   */
-  protected static float distance(final @NotNull HSVLike self, final @NotNull HSVLike other) {
-    // weight hue more heavily than saturation and brightness. kind of magic numbers, but is fine for our use case of downsampling to a set of colors
-    final float hueDistance = 3 * Math.min(Math.abs(self.h() - other.h()), 1f - Math.abs(self.h() - other.h()));
-    final float saturationDiff = self.s() - other.s();
-    final float valueDiff = self.v() - other.v();
-    return hueDistance * hueDistance + saturationDiff * saturationDiff + valueDiff * valueDiff;
+    final int index = formats.indexOf(format);
+    return Character.toString(legacyChars.charAt(index));
   }
 
   protected enum Reset implements TextFormat {

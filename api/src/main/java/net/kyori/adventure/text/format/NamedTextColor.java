@@ -156,10 +156,7 @@ public final class NamedTextColor implements TextColor {
    */
   public static final NamedTextColor WHITE = new NamedTextColor("white", WHITE_VALUE);
 
-  /**
-   * @since 4.14.0
-   */
-  public static final List<NamedTextColor> VALUES = Collections.unmodifiableList(Arrays.asList(BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW, WHITE));
+  private static final List<NamedTextColor> VALUES = Collections.unmodifiableList(Arrays.asList(BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW, WHITE));
   /**
    * An index of name to color.
    *
@@ -240,12 +237,16 @@ public final class NamedTextColor implements TextColor {
       return (NamedTextColor) any;
     }
 
+    return nearestColorTo(VALUES, any);
+  }
+
+  public static <C extends TextColor> @NotNull C nearestColorTo(final @NotNull List<C> values, final @NotNull TextColor any) {
     requireNonNull(any, "color");
 
     float matchedDistance = Float.MAX_VALUE;
-    NamedTextColor match = VALUES.get(0);
-    for (int i = 0, length = VALUES.size(); i < length; i++) {
-      final NamedTextColor potential = VALUES.get(i);
+    C match = values.get(0);
+    for (int i = 0, length = values.size(); i < length; i++) {
+      final C potential = values.get(i);
       final float distance = distance(any.asHSV(), potential.asHSV());
       if (distance < matchedDistance) {
         match = potential;

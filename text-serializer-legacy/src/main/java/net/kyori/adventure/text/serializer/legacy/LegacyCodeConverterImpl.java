@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -14,56 +15,56 @@ import org.jetbrains.annotations.Nullable;
 
 final class LegacyCodeConverterImpl extends LegacyCodeConverter {
 
-  private static final List<TextFormat> FORMATS;
+  private static final List<CharacterAndFormat> FORMATS;
   private static final String LEGACY_CHARS;
 
   static {
     // Enumeration order may change - manually
 
-    final Map<TextFormat, String> formats = new LinkedHashMap<>(16 + 5 + 1); // colours + decorations + reset
+    final List<CharacterAndFormat> formats = new ArrayList<>(16 + 5 + 1); // colours + decorations + reset
 
-    formats.put(NamedTextColor.BLACK, "0");
-    formats.put(NamedTextColor.DARK_BLUE, "1");
-    formats.put(NamedTextColor.DARK_GREEN, "2");
-    formats.put(NamedTextColor.DARK_AQUA, "3");
-    formats.put(NamedTextColor.DARK_RED, "4");
-    formats.put(NamedTextColor.DARK_PURPLE, "5");
-    formats.put(NamedTextColor.GOLD, "6");
-    formats.put(NamedTextColor.GRAY, "7");
-    formats.put(NamedTextColor.DARK_GRAY, "8");
-    formats.put(NamedTextColor.BLUE, "9");
-    formats.put(NamedTextColor.GREEN, "a");
-    formats.put(NamedTextColor.AQUA, "b");
-    formats.put(NamedTextColor.RED, "c");
-    formats.put(NamedTextColor.LIGHT_PURPLE, "d");
-    formats.put(NamedTextColor.YELLOW, "e");
-    formats.put(NamedTextColor.WHITE, "f");
+    formats.add(new CharacterAndFormat('0', NamedTextColor.BLACK));
+    formats.add(new CharacterAndFormat('1', NamedTextColor.DARK_BLUE));
+    formats.add(new CharacterAndFormat('2', NamedTextColor.DARK_GREEN));
+    formats.add(new CharacterAndFormat('3', NamedTextColor.DARK_AQUA));
+    formats.add(new CharacterAndFormat('4', NamedTextColor.DARK_RED));
+    formats.add(new CharacterAndFormat('5', NamedTextColor.DARK_PURPLE));
+    formats.add(new CharacterAndFormat('6', NamedTextColor.GOLD));
+    formats.add(new CharacterAndFormat('7', NamedTextColor.GRAY));
+    formats.add(new CharacterAndFormat('8', NamedTextColor.DARK_GRAY));
+    formats.add(new CharacterAndFormat('9', NamedTextColor.BLUE));
+    formats.add(new CharacterAndFormat('a', NamedTextColor.GREEN));
+    formats.add(new CharacterAndFormat('b', NamedTextColor.AQUA));
+    formats.add(new CharacterAndFormat('c', NamedTextColor.RED));
+    formats.add(new CharacterAndFormat('d', NamedTextColor.LIGHT_PURPLE));
+    formats.add(new CharacterAndFormat('e', NamedTextColor.YELLOW));
+    formats.add(new CharacterAndFormat('f', NamedTextColor.WHITE));
 
-    formats.put(TextDecoration.OBFUSCATED, "k");
-    formats.put(TextDecoration.BOLD, "l");
-    formats.put(TextDecoration.STRIKETHROUGH, "m");
-    formats.put(TextDecoration.UNDERLINED, "n");
-    formats.put(TextDecoration.ITALIC, "o");
+    formats.add(new CharacterAndFormat('k', TextDecoration.OBFUSCATED));
+    formats.add(new CharacterAndFormat('l', TextDecoration.BOLD));
+    formats.add(new CharacterAndFormat('m', TextDecoration.STRIKETHROUGH));
+    formats.add(new CharacterAndFormat('n', TextDecoration.UNDERLINED));
+    formats.add(new CharacterAndFormat('o', TextDecoration.ITALIC));
 
-    formats.put(LegacyCodeConverter.Reset.INSTANCE, "r");
+    formats.add(new CharacterAndFormat('r', LegacyCodeConverter.Reset.INSTANCE));
 
-    FORMATS = Collections.unmodifiableList(new ArrayList<>(formats.keySet()));
-    LEGACY_CHARS = String.join("", formats.values());
-
-    // assert same length
-    if (FORMATS.size() != LEGACY_CHARS.length()) {
-      throw new IllegalStateException("FORMATS length differs from LEGACY_CHARS length");
+    StringBuilder legacyChars = new StringBuilder(formats.size());
+    FORMATS = Collections.unmodifiableList(formats);
+    for (int i = 0; i < FORMATS.size(); i++) {
+      legacyChars.append(FORMATS.get(i).getCharacter());
     }
+    LEGACY_CHARS = legacyChars.toString();
   }
 
   LegacyCodeConverterImpl(final char character, final char hexCharacter, final boolean hexColours, final boolean useTerriblyStupidHexFormat) {
-    super(character, hexCharacter, hexColours, useTerriblyStupidHexFormat);
+    super(FORMATS, character, hexCharacter, hexColours, useTerriblyStupidHexFormat);
   }
 
   static @Nullable LegacyFormat legacyFormat(final char character) {
     final int index = LEGACY_CHARS.indexOf(character);
     if (index != -1) {
-      final TextFormat format = FORMATS.get(index);
+      final CharacterAndFormat characterAndFormat = FORMATS.get(index);
+      final TextFormat format = characterAndFormat.getFormat();
       if (format instanceof TextColor) {
         return new LegacyFormat((TextColor) format);
       } else if (format instanceof TextDecoration) {
@@ -73,26 +74,6 @@ final class LegacyCodeConverterImpl extends LegacyCodeConverter {
       }
     }
     return null;
-  }
-
-  @Override
-  public @NotNull NamedTextColor nearestColorTo(final @NotNull TextColor color) {
-    return NamedTextColor.nearestTo(color);
-  }
-
-  @Override
-  @NotNull List<TextFormat> getFormats() {
-    return FORMATS;
-  }
-
-  @Override
-  @NotNull String getAllLegacyChars() {
-    return LEGACY_CHARS;
-  }
-
-  @Override
-  @NotNull List<? extends TextColor> getLegacyColors() {
-    return NamedTextColor.VALUES;
   }
 
   @Override
