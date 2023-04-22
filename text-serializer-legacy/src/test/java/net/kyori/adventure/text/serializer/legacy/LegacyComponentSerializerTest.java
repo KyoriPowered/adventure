@@ -323,7 +323,7 @@ class LegacyComponentSerializerTest {
 
   @Test
   void testNullTextFormat() {
-    final List<CharacterAndFormat> formats = new ArrayList<>(CharacterAndFormat.DEFAULT);
+    final List<CharacterAndFormat> formats = new ArrayList<>(CharacterAndFormat.DEFAULTS);
     formats.removeIf(format -> format.character() == 'm');
     final LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection().toBuilder().formats(formats).build();
 

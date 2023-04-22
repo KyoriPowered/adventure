@@ -40,41 +40,178 @@ import static java.util.Objects.requireNonNull;
  */
 public final class CharacterAndFormat {
   /**
-   * A list of vanilla default formats.
+   * Character and format pair representing {@link NamedTextColor#BLACK}.
    *
    * @since 4.14.0
    */
-  public static final List<CharacterAndFormat> DEFAULT = createDefault();
+  public static final CharacterAndFormat BLACK = new CharacterAndFormat('0', NamedTextColor.BLACK);
+  /**
+   * Character and format pair representing {@link NamedTextColor#DARK_BLUE}.
+   *
+   * @since 4.14.0
+   */
+  public static final CharacterAndFormat DARK_BLUE = new CharacterAndFormat('1', NamedTextColor.DARK_BLUE);
+  /**
+   * Character and format pair representing {@link NamedTextColor#DARK_GREEN}.
+   *
+   * @since 4.14.0
+   */
+  public static final CharacterAndFormat DARK_GREEN = new CharacterAndFormat('2', NamedTextColor.DARK_GREEN);
+  /**
+   * Character and format pair representing {@link NamedTextColor#DARK_AQUA}.
+   *
+   * @since 4.14.0
+   */
+  public static final CharacterAndFormat DARK_AQUA = new CharacterAndFormat('3', NamedTextColor.DARK_AQUA);
+  /**
+   * Character and format pair representing {@link NamedTextColor#DARK_RED}.
+   *
+   * @since 4.14.0
+   */
+  public static final CharacterAndFormat DARK_RED = new CharacterAndFormat('4', NamedTextColor.DARK_RED);
+  /**
+   * Character and format pair representing {@link NamedTextColor#DARK_PURPLE}.
+   *
+   * @since 4.14.0
+   */
+  public static final CharacterAndFormat DARK_PURPLE = new CharacterAndFormat('5', NamedTextColor.DARK_PURPLE);
+  /**
+   * Character and format pair representing {@link NamedTextColor#GOLD}.
+   *
+   * @since 4.14.0
+   */
+  public static final CharacterAndFormat GOLD = new CharacterAndFormat('6', NamedTextColor.GOLD);
+  /**
+   * Character and format pair representing {@link NamedTextColor#GRAY}.
+   *
+   * @since 4.14.0
+   */
+  public static final CharacterAndFormat GRAY = new CharacterAndFormat('7', NamedTextColor.GRAY);
+  /**
+   * Character and format pair representing {@link NamedTextColor#DARK_GRAY}.
+   *
+   * @since 4.14.0
+   */
+  public static final CharacterAndFormat DARK_GRAY = new CharacterAndFormat('8', NamedTextColor.DARK_GRAY);
+  /**
+   * Character and format pair representing {@link NamedTextColor#BLUE}.
+   *
+   * @since 4.14.0
+   */
+  public static final CharacterAndFormat BLUE = new CharacterAndFormat('9', NamedTextColor.BLUE);
+  /**
+   * Character and format pair representing {@link NamedTextColor#GREEN}.
+   *
+   * @since 4.14.0
+   */
+  public static final CharacterAndFormat GREEN = new CharacterAndFormat('a', NamedTextColor.GREEN);
+  /**
+   * Character and format pair representing {@link NamedTextColor#AQUA}.
+   *
+   * @since 4.14.0
+   */
+  public static final CharacterAndFormat AQUA = new CharacterAndFormat('b', NamedTextColor.AQUA);
+  /**
+   * Character and format pair representing {@link NamedTextColor#RED}.
+   *
+   * @since 4.14.0
+   */
+  public static final CharacterAndFormat RED = new CharacterAndFormat('c', NamedTextColor.RED);
+  /**
+   * Character and format pair representing {@link NamedTextColor#LIGHT_PURPLE}.
+   *
+   * @since 4.14.0
+   */
+  public static final CharacterAndFormat LIGHT_PURPLE = new CharacterAndFormat('d', NamedTextColor.LIGHT_PURPLE);
+  /**
+   * Character and format pair representing {@link NamedTextColor#YELLOW}.
+   *
+   * @since 4.14.0
+   */
+  public static final CharacterAndFormat YELLOW = new CharacterAndFormat('e', NamedTextColor.YELLOW);
+  /**
+   * Character and format pair representing {@link NamedTextColor#WHITE}.
+   *
+   * @since 4.14.0
+   */
+  public static final CharacterAndFormat WHITE = new CharacterAndFormat('f', NamedTextColor.WHITE);
+
+  /**
+   * Character and format pair representing {@link TextDecoration#OBFUSCATED}.
+   *
+   * @since 4.14.0
+   */
+  public static final CharacterAndFormat OBFUSCATED = new CharacterAndFormat('k', TextDecoration.OBFUSCATED);
+  /**
+   * Character and format pair representing {@link TextDecoration#BOLD}.
+   *
+   * @since 4.14.0
+   */
+  public static final CharacterAndFormat BOLD = new CharacterAndFormat('l', TextDecoration.BOLD);
+  /**
+   * Character and format pair representing {@link TextDecoration#STRIKETHROUGH}.
+   *
+   * @since 4.14.0
+   */
+  public static final CharacterAndFormat STRIKETHROUGH = new CharacterAndFormat('m', TextDecoration.STRIKETHROUGH);
+  /**
+   * Character and format pair representing {@link TextDecoration#UNDERLINED}.
+   *
+   * @since 4.14.0
+   */
+  public static final CharacterAndFormat UNDERLINED = new CharacterAndFormat('n', TextDecoration.UNDERLINED);
+  /**
+   * Character and format pair representing {@link TextDecoration#ITALIC}.
+   *
+   * @since 4.14.0
+   */
+  public static final CharacterAndFormat ITALIC = new CharacterAndFormat('o', TextDecoration.ITALIC);
+
+  /**
+   * Character and format pair representing {@link Reset#INSTANCE}.
+   *
+   * @since 4.14.0
+   */
+  public static final CharacterAndFormat RESET = new CharacterAndFormat('r', Reset.INSTANCE);
+
+  /**
+   * A list of character and format pairs containing all default vanilla formats.
+   *
+   * @since 4.14.0
+   */
+  public static final List<CharacterAndFormat> DEFAULTS = createDefault();
+
   private final char character;
   private final TextFormat format;
 
+  @SuppressWarnings("DuplicatedCode")
   private static List<CharacterAndFormat> createDefault() {
     final List<CharacterAndFormat> formats = new ArrayList<>(16 + 5 + 1); // colours + decorations + reset
 
-    formats.add(new CharacterAndFormat('0', NamedTextColor.BLACK));
-    formats.add(new CharacterAndFormat('1', NamedTextColor.DARK_BLUE));
-    formats.add(new CharacterAndFormat('2', NamedTextColor.DARK_GREEN));
-    formats.add(new CharacterAndFormat('3', NamedTextColor.DARK_AQUA));
-    formats.add(new CharacterAndFormat('4', NamedTextColor.DARK_RED));
-    formats.add(new CharacterAndFormat('5', NamedTextColor.DARK_PURPLE));
-    formats.add(new CharacterAndFormat('6', NamedTextColor.GOLD));
-    formats.add(new CharacterAndFormat('7', NamedTextColor.GRAY));
-    formats.add(new CharacterAndFormat('8', NamedTextColor.DARK_GRAY));
-    formats.add(new CharacterAndFormat('9', NamedTextColor.BLUE));
-    formats.add(new CharacterAndFormat('a', NamedTextColor.GREEN));
-    formats.add(new CharacterAndFormat('b', NamedTextColor.AQUA));
-    formats.add(new CharacterAndFormat('c', NamedTextColor.RED));
-    formats.add(new CharacterAndFormat('d', NamedTextColor.LIGHT_PURPLE));
-    formats.add(new CharacterAndFormat('e', NamedTextColor.YELLOW));
-    formats.add(new CharacterAndFormat('f', NamedTextColor.WHITE));
+    formats.add(BLACK);
+    formats.add(DARK_BLUE);
+    formats.add(DARK_GREEN);
+    formats.add(DARK_AQUA);
+    formats.add(DARK_RED);
+    formats.add(DARK_PURPLE);
+    formats.add(GOLD);
+    formats.add(GRAY);
+    formats.add(DARK_GRAY);
+    formats.add(BLUE);
+    formats.add(GREEN);
+    formats.add(AQUA);
+    formats.add(RED);
+    formats.add(LIGHT_PURPLE);
+    formats.add(YELLOW);
+    formats.add(WHITE);
 
-    formats.add(new CharacterAndFormat('k', TextDecoration.OBFUSCATED));
-    formats.add(new CharacterAndFormat('l', TextDecoration.BOLD));
-    formats.add(new CharacterAndFormat('m', TextDecoration.STRIKETHROUGH));
-    formats.add(new CharacterAndFormat('n', TextDecoration.UNDERLINED));
-    formats.add(new CharacterAndFormat('o', TextDecoration.ITALIC));
+    formats.add(OBFUSCATED);
+    formats.add(BOLD);
+    formats.add(STRIKETHROUGH);
+    formats.add(UNDERLINED);
+    formats.add(ITALIC);
 
-    formats.add(new CharacterAndFormat('r', Reset.INSTANCE));
+    formats.add(RESET);
 
     return Collections.unmodifiableList(formats);
   }
