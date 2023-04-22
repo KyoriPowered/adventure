@@ -260,12 +260,13 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
     @NotNull Builder flattener(final @NotNull ComponentFlattener flattener);
 
     /**
+     * Sets the formats to use.
      *
-     * @param characterAndFormats
-     * @return
+     * @param formats the formats
+     * @return this builder
      * @since 4.14.0
      */
-    @NotNull Builder characterAndFormats(final @NotNull List<CharacterAndFormat> characterAndFormats);
+    @NotNull Builder formats(final @NotNull List<CharacterAndFormat> formats);
 
     /**
      * Builds the serializer.

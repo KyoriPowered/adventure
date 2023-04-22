@@ -237,51 +237,7 @@ public final class NamedTextColor implements TextColor {
       return (NamedTextColor) any;
     }
 
-    return nearestColorTo(VALUES, any);
-  }
-
-  /**
-   *
-   * @param values
-   * @param any
-   * @param <C>
-   * @return
-   * @since 4.14.0
-   */
-  public static <C extends TextColor> @NotNull C nearestColorTo(final @NotNull List<C> values, final @NotNull TextColor any) {
-    requireNonNull(any, "color");
-
-    float matchedDistance = Float.MAX_VALUE;
-    C match = values.get(0);
-    for (int i = 0, length = values.size(); i < length; i++) {
-      final C potential = values.get(i);
-      final float distance = distance(any.asHSV(), potential.asHSV());
-      if (distance < matchedDistance) {
-        match = potential;
-        matchedDistance = distance;
-      }
-      if (distance == 0) {
-        break; // same colour! whoo!
-      }
-    }
-    return match;
-  }
-
-  /**
-   * Returns a distance metric to the other colour.
-   *
-   * <p>This value is unitless and should only be used to compare with other text colours.</p>
-   *
-   * @param self the base colour
-   * @param other colour to compare to
-   * @return distance metric
-   */
-  private static float distance(final @NotNull HSVLike self, final @NotNull HSVLike other) {
-    // weight hue more heavily than saturation and brightness. kind of magic numbers, but is fine for our use case of downsampling to a set of colors
-    final float hueDistance = 3 * Math.min(Math.abs(self.h() - other.h()), 1f - Math.abs(self.h() - other.h()));
-    final float saturationDiff = self.s() - other.s();
-    final float valueDiff = self.v() - other.v();
-    return hueDistance * hueDistance + saturationDiff * saturationDiff + valueDiff * valueDiff;
+    return TextColor.nearestColorTo(VALUES, any);
   }
 
   private final String name;
