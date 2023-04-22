@@ -39,7 +39,12 @@ import static java.util.Objects.requireNonNull;
  * @since 4.14.0
  */
 public final class CharacterAndFormat {
-  static final List<CharacterAndFormat> DEFAULT = createDefault();
+  /**
+   * A list of vanilla default formats.
+   *
+   * @since 4.14.0
+   */
+  public static final List<CharacterAndFormat> DEFAULT = createDefault();
   private final char character;
   private final TextFormat format;
 

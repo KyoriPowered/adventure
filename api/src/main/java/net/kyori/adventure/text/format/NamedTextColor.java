@@ -34,8 +34,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * The named text colours in Minecraft: Java Edition.
  *

@@ -163,7 +163,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     return format instanceof TextColor && !(format instanceof NamedTextColor);
   }
 
-  private String toLegacyCode(TextFormat format) {
+  private @Nullable String toLegacyCode(TextFormat format) {
     if (isHexTextColor(format)) {
       final TextColor color = (TextColor) format;
       if (this.hexColours) {
@@ -186,6 +186,10 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       }
     }
     final int index = this.formats.formats.indexOf(format);
+    if (index == -1) {
+      // this format was removed from the formats list
+      return null;
+    }
     return Character.toString(this.formats.characters.charAt(index));
   }
 
@@ -334,7 +338,11 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
     void append(final @NotNull TextFormat format) {
       if (this.lastWritten != format) {
-        this.sb.append(LegacyComponentSerializerImpl.this.character).append(LegacyComponentSerializerImpl.this.toLegacyCode(format));
+        final String legacyCode = LegacyComponentSerializerImpl.this.toLegacyCode(format);
+        if (legacyCode == null) {
+          return;
+        }
+        this.sb.append(LegacyComponentSerializerImpl.this.character).append(legacyCode);
       }
       this.lastWritten = format;
     }
