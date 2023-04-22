@@ -237,12 +237,24 @@ public final class NamedTextColor implements TextColor {
       return (NamedTextColor) any;
     }
 
+    return nearestColorTo(VALUES, any);
+  }
+
+  /**
+   *
+   * @param values
+   * @param any
+   * @param <C>
+   * @return
+   * @since 4.14.0
+   */
+  public static <C extends TextColor> @NotNull C nearestColorTo(final @NotNull List<C> values, final @NotNull TextColor any) {
     requireNonNull(any, "color");
 
     float matchedDistance = Float.MAX_VALUE;
-    NamedTextColor match = VALUES.get(0);
-    for (int i = 0, length = VALUES.size(); i < length; i++) {
-      final NamedTextColor potential = VALUES.get(i);
+    C match = values.get(0);
+    for (int i = 0, length = values.size(); i < length; i++) {
+      final C potential = values.get(i);
       final float distance = distance(any.asHSV(), potential.asHSV());
       if (distance < matchedDistance) {
         match = potential;
