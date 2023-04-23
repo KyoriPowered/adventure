@@ -324,7 +324,7 @@ class LegacyComponentSerializerTest {
   @Test
   void testNullTextFormat() {
     final List<CharacterAndFormat> formats = new ArrayList<>(CharacterAndFormat.DEFAULTS);
-    formats.removeIf(format -> format.character() == 'm');
+    formats.remove(CharacterAndFormat.STRIKETHROUGH);
     final LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection().toBuilder().formats(formats).build();
 
     final Component strikethough = Component.text("Hello World", Style.style(TextDecoration.STRIKETHROUGH));

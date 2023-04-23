@@ -30,6 +30,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextFormat;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -246,5 +247,29 @@ public final class CharacterAndFormat {
    */
   public @NotNull TextFormat format() {
     return this.format;
+  }
+
+  @Override
+  public boolean equals(final @Nullable Object other) {
+    if (this == other) return true;
+    if (!(other instanceof CharacterAndFormat)) return false;
+    final CharacterAndFormat that = (CharacterAndFormat) other;
+    return this.character == that.character
+      && this.format.equals(that.format);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = this.character;
+    result = 31 * result + this.format.hashCode();
+    return result;
+  }
+
+  @Override
+  public @NotNull String toString() {
+    return "CharacterAndFormat{" +
+      "character=" + this.character +
+      ", format=" + this.format +
+      '}';
   }
 }

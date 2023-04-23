@@ -180,9 +180,11 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
           return this.hexCharacter + hex;
         }
       } else {
-        // if we are not using hex colours, then convert the hex colour
-        // to the "nearest" possible named/standard text colour
-        format = TextColor.nearestColorTo(this.formats.colors, color);
+        if (!(color instanceof NamedTextColor)) {
+          // if we are not using hex colours, then convert the hex colour
+          // to the "nearest" possible named/standard text colour
+          format = TextColor.nearestColorTo(this.formats.colors, color);
+        }
       }
     }
     final int index = this.formats.formats.indexOf(format);
