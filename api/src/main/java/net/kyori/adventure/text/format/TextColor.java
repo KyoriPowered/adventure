@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.format;
 
+import java.util.List;
 import java.util.stream.Stream;
 import net.kyori.adventure.util.HSVLike;
 import net.kyori.adventure.util.RGBLike;
@@ -31,6 +32,8 @@ import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A color which may be applied to a {@link Style}.
@@ -259,6 +262,34 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
       Math.round(ag + clampedT * (bg - ag)),
       Math.round(ab + clampedT * (bb - ab))
     );
+  }
+
+  /**
+   * Find the colour nearest to the provided colour.
+   *
+   * @param values the colours for matching
+   * @param any colour to match
+   * @param <C> the color type
+   * @return nearest named colour. will always return a value
+   * @since 4.14.0
+   */
+  static <C extends TextColor> @NotNull C nearestColorTo(final @NotNull List<C> values, final @NotNull TextColor any) {
+    requireNonNull(any, "color");
+
+    float matchedDistance = Float.MAX_VALUE;
+    C match = values.get(0);
+    for (int i = 0, length = values.size(); i < length; i++) {
+      final C potential = values.get(i);
+      final float distance = TextColorImpl.distance(any.asHSV(), potential.asHSV());
+      if (distance < matchedDistance) {
+        match = potential;
+        matchedDistance = distance;
+      }
+      if (distance == 0) {
+        break; // same colour! whoo!
+      }
+    }
+    return match;
   }
 
   @Override

@@ -34,8 +34,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * The named text colours in Minecraft: Java Edition.
  *
@@ -237,39 +235,7 @@ public final class NamedTextColor implements TextColor {
       return (NamedTextColor) any;
     }
 
-    requireNonNull(any, "color");
-
-    float matchedDistance = Float.MAX_VALUE;
-    NamedTextColor match = VALUES.get(0);
-    for (int i = 0, length = VALUES.size(); i < length; i++) {
-      final NamedTextColor potential = VALUES.get(i);
-      final float distance = distance(any.asHSV(), potential.asHSV());
-      if (distance < matchedDistance) {
-        match = potential;
-        matchedDistance = distance;
-      }
-      if (distance == 0) {
-        break; // same colour! whoo!
-      }
-    }
-    return match;
-  }
-
-  /**
-   * Returns a distance metric to the other colour.
-   *
-   * <p>This value is unitless and should only be used to compare with other text colours.</p>
-   *
-   * @param self the base colour
-   * @param other colour to compare to
-   * @return distance metric
-   */
-  private static float distance(final @NotNull HSVLike self, final @NotNull HSVLike other) {
-    // weight hue more heavily than saturation and brightness. kind of magic numbers, but is fine for our use case of downsampling to a set of colors
-    final float hueDistance = 3 * Math.min(Math.abs(self.h() - other.h()), 1f - Math.abs(self.h() - other.h()));
-    final float saturationDiff = self.s() - other.s();
-    final float valueDiff = self.v() - other.v();
-    return hueDistance * hueDistance + saturationDiff * saturationDiff + valueDiff * valueDiff;
+    return TextColor.nearestColorTo(VALUES, any);
   }
 
   private final String name;

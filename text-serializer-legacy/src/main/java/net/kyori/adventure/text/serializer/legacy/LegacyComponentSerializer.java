@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.serializer.legacy;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import net.kyori.adventure.builder.AbstractBuilder;
@@ -257,6 +258,15 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * @since 4.7.0
      */
     @NotNull Builder flattener(final @NotNull ComponentFlattener flattener);
+
+    /**
+     * Sets the formats to use.
+     *
+     * @param formats the formats
+     * @return this builder
+     * @since 4.14.0
+     */
+    @NotNull Builder formats(final @NotNull List<CharacterAndFormat> formats);
 
     /**
      * Builds the serializer.
