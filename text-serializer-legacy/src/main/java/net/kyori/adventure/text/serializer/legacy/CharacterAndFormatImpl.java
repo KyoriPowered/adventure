@@ -26,6 +26,7 @@ package net.kyori.adventure.text.serializer.legacy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import net.kyori.adventure.internal.Internals;
 import net.kyori.adventure.text.format.TextFormat;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,38 +40,6 @@ final class CharacterAndFormatImpl implements CharacterAndFormat {
   CharacterAndFormatImpl(final char character, final @NotNull TextFormat format) {
     this.character = character;
     this.format = requireNonNull(format, "format");
-  }
-
-  @SuppressWarnings("DuplicatedCode")
-  static List<CharacterAndFormat> createDefault() {
-    final List<CharacterAndFormat> formats = new ArrayList<>(16 + 5 + 1); // colours + decorations + reset
-
-    formats.add(BLACK);
-    formats.add(DARK_BLUE);
-    formats.add(DARK_GREEN);
-    formats.add(DARK_AQUA);
-    formats.add(DARK_RED);
-    formats.add(DARK_PURPLE);
-    formats.add(GOLD);
-    formats.add(GRAY);
-    formats.add(DARK_GRAY);
-    formats.add(BLUE);
-    formats.add(GREEN);
-    formats.add(AQUA);
-    formats.add(RED);
-    formats.add(LIGHT_PURPLE);
-    formats.add(YELLOW);
-    formats.add(WHITE);
-
-    formats.add(OBFUSCATED);
-    formats.add(BOLD);
-    formats.add(STRIKETHROUGH);
-    formats.add(UNDERLINED);
-    formats.add(ITALIC);
-
-    formats.add(RESET);
-
-    return Collections.unmodifiableList(formats);
   }
 
   @Override
@@ -101,9 +70,45 @@ final class CharacterAndFormatImpl implements CharacterAndFormat {
 
   @Override
   public @NotNull String toString() {
-    return "CharacterAndFormat{" +
-      "character=" + this.character +
-      ", format=" + this.format +
-      '}';
+    return Internals.toString(this);
+  }
+
+  static final class Defaults {
+    static final List<CharacterAndFormat> DEFAULTS = createDefaults();
+
+    private Defaults() {
+    }
+
+    @SuppressWarnings("DuplicatedCode")
+    static List<CharacterAndFormat> createDefaults() {
+      final List<CharacterAndFormat> formats = new ArrayList<>(16 + 5 + 1); // colours + decorations + reset
+
+      formats.add(BLACK);
+      formats.add(DARK_BLUE);
+      formats.add(DARK_GREEN);
+      formats.add(DARK_AQUA);
+      formats.add(DARK_RED);
+      formats.add(DARK_PURPLE);
+      formats.add(GOLD);
+      formats.add(GRAY);
+      formats.add(DARK_GRAY);
+      formats.add(BLUE);
+      formats.add(GREEN);
+      formats.add(AQUA);
+      formats.add(RED);
+      formats.add(LIGHT_PURPLE);
+      formats.add(YELLOW);
+      formats.add(WHITE);
+
+      formats.add(OBFUSCATED);
+      formats.add(BOLD);
+      formats.add(STRIKETHROUGH);
+      formats.add(UNDERLINED);
+      formats.add(ITALIC);
+
+      formats.add(RESET);
+
+      return Collections.unmodifiableList(formats);
+    }
   }
 }

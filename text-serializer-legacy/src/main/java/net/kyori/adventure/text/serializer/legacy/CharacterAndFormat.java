@@ -24,17 +24,23 @@
 package net.kyori.adventure.text.serializer.legacy;
 
 import java.util.List;
+import java.util.stream.Stream;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextFormat;
+import net.kyori.examination.Examinable;
+import net.kyori.examination.ExaminableProperty;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
 /**
  * A combination of a {@code character} and a {@link TextFormat}.
  *
  * @since 4.14.0
  */
-public interface CharacterAndFormat {
+@ApiStatus.NonExtendable
+public interface CharacterAndFormat extends Examinable {
   /**
    * Character and format pair representing {@link NamedTextColor#BLACK}.
    *
@@ -171,13 +177,6 @@ public interface CharacterAndFormat {
   CharacterAndFormat RESET = characterAndFormat('r', Reset.INSTANCE);
 
   /**
-   * A list of character and format pairs containing all default vanilla formats.
-   *
-   * @since 4.14.0
-   */
-  List<CharacterAndFormat> DEFAULTS = CharacterAndFormatImpl.createDefault();
-
-  /**
    * Creates a new combination of a {@code character} and a {@link TextFormat}.
    *
    * @param character the character
@@ -185,8 +184,19 @@ public interface CharacterAndFormat {
    * @return a new character and format pair.
    * @since 4.14.0
    */
-  static CharacterAndFormat characterAndFormat(final char character, final @NotNull TextFormat format) {
+  static @NotNull CharacterAndFormat characterAndFormat(final char character, final @NotNull TextFormat format) {
     return new CharacterAndFormatImpl(character, format);
+  }
+
+  /**
+   * Gets an unmodifiable list of character and format pairs containing all default vanilla formats.
+   *
+   * @return am unmodifiable list of character and format pairs containing all default vanilla formats
+   * @since 4.14.0
+   */
+  @Unmodifiable
+  static @NotNull List<CharacterAndFormat> defaults() {
+    return CharacterAndFormatImpl.Defaults.DEFAULTS;
   }
 
   /**
@@ -204,4 +214,12 @@ public interface CharacterAndFormat {
    * @since 4.14.0
    */
   @NotNull TextFormat format();
+
+  @Override
+  default @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.of(
+      ExaminableProperty.of("character", this.character()),
+      ExaminableProperty.of("format", this.format())
+    );
+  }
 }

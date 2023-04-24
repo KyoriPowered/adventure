@@ -30,7 +30,7 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextFormat;
 
 final class CharacterAndFormatSet {
-  static final CharacterAndFormatSet DEFAULT = of(CharacterAndFormat.DEFAULTS);
+  static final CharacterAndFormatSet DEFAULT = of(CharacterAndFormat.defaults());
   final List<TextFormat> formats;
   final List<TextColor> colors;
   final String characters;
