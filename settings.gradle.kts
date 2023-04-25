@@ -44,7 +44,8 @@ sequenceOf(
   "text-serializer-gson",
   "text-serializer-gson-legacy-impl",
   "text-serializer-legacy",
-  "text-serializer-plain"
+  "text-serializer-plain",
+  "text-serializer-ansi",
 ).forEach {
   include("adventure-$it")
   project(":adventure-$it").projectDir = file(it)
