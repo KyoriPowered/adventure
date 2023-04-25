@@ -35,7 +35,8 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * A serializer which emits <a href="https://en.wikipedia.org/wiki/ANSI_escape_code">ANSI escape sequences</a>.
- * Note that this serializer does NOT support serialization.
+ *
+ * <p>Note that this serializer does NOT support deserialization.</p>
  *
  * @since 4.14.0
  */
