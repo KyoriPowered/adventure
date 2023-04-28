@@ -214,7 +214,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
    *
    * @param value the achievement value
    * @return a hover event
-   * @since 4.13.1
+   * @since 4.14.0
    * @deprecated Removed in Vanilla 1.12, but we keep it for backwards compat
    */
   @Deprecated
@@ -715,7 +715,7 @@ public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, Sty
     /**
      * Shows a {@link Component} when hovered over.
      *
-     * @since 4.13.1
+     * @since 4.14.0
      * @deprecated Removed in Vanilla 1.12, but we keep it for backwards compat
      */
     @Deprecated
