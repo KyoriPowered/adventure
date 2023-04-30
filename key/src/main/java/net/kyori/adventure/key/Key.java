@@ -24,6 +24,7 @@
 package net.kyori.adventure.key;
 
 import java.util.Comparator;
+import java.util.OptionalInt;
 import java.util.stream.Stream;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
@@ -174,12 +175,23 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @since 4.12.0
    */
   static boolean parseableNamespace(final @NotNull String namespace) {
+    return !checkNamespace(namespace).isPresent();
+  }
+
+  /**
+   * Checks if {@code value} is a valid namespace.
+   *
+   * @param namespace the string to check
+   * @return {@link OptionalInt#empty()} if {@code value} is a valid namespace, otherwise an {@code OptionalInt} containing the index of an invalid character
+   * @since 4.14.0
+   */
+  static @NotNull OptionalInt checkNamespace(final @NotNull String namespace) {
     for (int i = 0, length = namespace.length(); i < length; i++) {
       if (!allowedInNamespace(namespace.charAt(i))) {
-        return false;
+        return OptionalInt.of(i);
       }
     }
-    return true;
+    return OptionalInt.empty();
   }
 
   /**
@@ -190,12 +202,23 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @since 4.12.0
    */
   static boolean parseableValue(final @NotNull String value) {
+    return !checkValue(value).isPresent();
+  }
+
+  /**
+   * Checks if {@code value} is a valid value.
+   *
+   * @param value the string to check
+   * @return {@link OptionalInt#empty()} if {@code value} is a valid value, otherwise an {@code OptionalInt} containing the index of an invalid character
+   * @since 4.14.0
+   */
+  static @NotNull OptionalInt checkValue(final @NotNull String value) {
     for (int i = 0, length = value.length(); i < length; i++) {
       if (!allowedInValue(value.charAt(i))) {
-        return false;
+        return OptionalInt.of(i);
       }
     }
-    return true;
+    return OptionalInt.empty();
   }
 
   /**
