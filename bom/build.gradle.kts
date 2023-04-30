@@ -14,6 +14,7 @@ dependencies {
     sequenceOf(
       "api",
       "annotation-processors",
+      "bedrock",
       "extra-kotlin",
       "key",
       "nbt",

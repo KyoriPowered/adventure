@@ -33,6 +33,7 @@ rootProject.name = "adventure-parent"
 sequenceOf(
   "api",
   "annotation-processors",
+  "bedrock",
   "bom",
   "extra-kotlin",
   "key",
