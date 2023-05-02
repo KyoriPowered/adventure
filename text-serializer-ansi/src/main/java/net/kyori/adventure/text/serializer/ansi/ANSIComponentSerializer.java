@@ -113,7 +113,7 @@ public interface ANSIComponentSerializer extends ComponentEncoder<Component, Str
      * Provides a {@link ANSIComponentSerializer}.
      *
      * @return a {@link ANSIComponentSerializer}
-     * @since 4.8.0
+     * @since 4.14.0
      */
     @ApiStatus.Internal
     @PlatformAPI
@@ -123,7 +123,7 @@ public interface ANSIComponentSerializer extends ComponentEncoder<Component, Str
      * Completes the building process of {@link Builder}.
      *
      * @return a {@link Consumer}
-     * @since 4.8.0
+     * @since 4.14.0
      */
     @ApiStatus.Internal
     @PlatformAPI
