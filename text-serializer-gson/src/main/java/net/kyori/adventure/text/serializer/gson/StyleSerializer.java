@@ -204,7 +204,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
   }
 
   private Object legacyHoverEventContents(final HoverEvent.Action<?> action, final Component rawValue) {
-    if (action == HoverEvent.Action.SHOW_TEXT || action == HoverEvent.Action.SHOW_ACHIEVEMENT) {
+    if (action == HoverEvent.Action.SHOW_TEXT) {
       return rawValue; // Passthrough -- no serialization needed
     } else if (this.legacyHover != null) {
       try {
