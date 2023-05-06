@@ -304,7 +304,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
   }
 
   private void serializeLegacyHoverEvent(final HoverEvent<?> hoverEvent, final JsonWriter out) throws IOException {
-    if (hoverEvent.action() == HoverEvent.Action.SHOW_TEXT || hoverEvent.action() == HoverEvent.Action.SHOW_ACHIEVEMENT) { // serialization is the same
+    if (hoverEvent.action() == HoverEvent.Action.SHOW_TEXT) { // serialization is the same
       this.gson.toJson(hoverEvent.value(), SerializerFactory.COMPONENT_TYPE, out);
     } else if (this.legacyHover != null) { // for data formats that require knowledge of SNBT
       Component serialized = null;
