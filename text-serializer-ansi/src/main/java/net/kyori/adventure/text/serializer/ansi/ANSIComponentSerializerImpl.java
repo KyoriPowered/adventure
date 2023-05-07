@@ -65,8 +65,8 @@ final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
 
   @Override
   public @NotNull String serialize(final @NotNull Component component) {
-    final ANSIComponentRenderer.ToString<Style> renderer = ANSIComponentRenderer.toString(ComponentStyleOps.INSTANCE);
-    ComponentFlattener.basic().flatten(component, new ANSIFlattenerListener(renderer));
+    final ANSIComponentRenderer.ToString<Style> renderer = ANSIComponentRenderer.toString(ComponentStyleOps.INSTANCE, this.colorLevel);
+    this.flattener.flatten(component, new ANSIFlattenerListener(renderer));
     renderer.complete();
     return renderer.asString();
   }
