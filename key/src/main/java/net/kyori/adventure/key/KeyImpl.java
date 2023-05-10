@@ -38,10 +38,8 @@ import static java.util.Objects.requireNonNull;
 final class KeyImpl implements Key {
   static final Comparator<? super Key> COMPARATOR = Comparator.comparing(Key::value).thenComparing(Key::namespace);
 
-  @RegExp
-  static final String NAMESPACE_PATTERN = "[a-z0-9_\\-.]+";
-  @RegExp
-  static final String VALUE_PATTERN = "[a-z0-9_\\-./]+";
+  static final @RegExp String NAMESPACE_PATTERN = "[a-z0-9_\\-.]+";
+  static final @RegExp String VALUE_PATTERN = "[a-z0-9_\\-./]+";
 
   private final String namespace;
   private final String value;
