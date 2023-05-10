@@ -33,6 +33,7 @@ import java.util.stream.Collector;
 import net.kyori.adventure.text.minimessage.Context;
 import net.kyori.adventure.text.minimessage.ParsingException;
 import net.kyori.adventure.text.minimessage.internal.TagInternals;
+import net.kyori.adventure.text.minimessage.internal.TagPattern;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import org.jetbrains.annotations.ApiStatus;
@@ -91,7 +92,7 @@ public interface TagResolver {
    * @return a new tag resolver
    * @since 4.10.0
    */
-  static TagResolver.@NotNull Single resolver(@org.intellij.lang.annotations.Pattern(TagInternals.TAG_NAME) final @NotNull String name, final @NotNull Tag tag) {
+  static TagResolver.@NotNull Single resolver(@TagPattern final @NotNull String name, final @NotNull Tag tag) {
     TagInternals.assertValidTagName(name);
     return new SingleResolver(
       name,
