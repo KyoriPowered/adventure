@@ -35,13 +35,14 @@ import static java.lang.annotation.ElementType.LOCAL_VARIABLE;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PARAMETER;
 
-@Documented
-@Pattern(TagInternals.TAG_NAME_REGEX)
-@Retention(RetentionPolicy.CLASS)
-@Target({ METHOD, FIELD, PARAMETER, LOCAL_VARIABLE }) //Unsure of what is needed here
-// TODO: documentation
 /**
+ * something documentation.
+ *
  * @since 4.14.0
  */
+@Pattern(TagInternals.TAG_NAME_REGEX)
+@Documented
+@Retention(RetentionPolicy.CLASS)
+@Target({ METHOD, FIELD, PARAMETER, LOCAL_VARIABLE }) //Unsure of what is needed here
 public @interface TagPattern {
 }
