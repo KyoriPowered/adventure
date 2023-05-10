@@ -36,7 +36,8 @@ import org.jetbrains.annotations.NotNull;
  */
 @ApiStatus.Internal
 public final class TagInternals {
-  private static final Pattern TAG_NAME_PATTERN = Pattern.compile("[!?#]?[a-z0-9_-]*");
+  public static final String TAG_NAME = "[!?#]?[a-z0-9_-]*";
+  private static final Pattern TAG_NAME_PATTERN = Pattern.compile(TAG_NAME);
 
   private TagInternals() {
   }
@@ -48,7 +49,7 @@ public final class TagInternals {
    * @param tagName the name of the tag
    * @since 4.10.0
    */
-  public static void assertValidTagName(final @NotNull String tagName) {
+  public static void assertValidTagName(@org.intellij.lang.annotations.Pattern(TAG_NAME) final @NotNull String tagName) {
     if (!TAG_NAME_PATTERN.matcher(Objects.requireNonNull(tagName)).matches()) {
       throw new IllegalArgumentException("Tag name must match pattern " + TAG_NAME_PATTERN.pattern() + ", was " + tagName);
     }
@@ -62,7 +63,7 @@ public final class TagInternals {
    * @return validity of this tag when sanitized
    * @since 4.10.1
    */
-  public static boolean sanitizeAndCheckValidTagName(final @NotNull String tagName) {
+  public static boolean sanitizeAndCheckValidTagName(@org.intellij.lang.annotations.Pattern(TAG_NAME) final @NotNull String tagName) {
     return TAG_NAME_PATTERN.matcher(Objects.requireNonNull(tagName).toLowerCase(Locale.ROOT)).matches();
   }
 
@@ -74,7 +75,7 @@ public final class TagInternals {
    * @param tagName the name of the tag
    * @since 4.10.0
    */
-  public static void sanitizeAndAssertValidTagName(final @NotNull String tagName) {
+  public static void sanitizeAndAssertValidTagName(@org.intellij.lang.annotations.Pattern(TAG_NAME) final @NotNull String tagName) {
     assertValidTagName(Objects.requireNonNull(tagName).toLowerCase(Locale.ROOT));
   }
 }

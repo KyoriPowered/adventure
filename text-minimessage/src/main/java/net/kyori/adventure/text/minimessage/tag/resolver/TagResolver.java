@@ -91,7 +91,7 @@ public interface TagResolver {
    * @return a new tag resolver
    * @since 4.10.0
    */
-  static TagResolver.@NotNull Single resolver(final @NotNull String name, final @NotNull Tag tag) {
+  static TagResolver.@NotNull Single resolver(@org.intellij.lang.annotations.Pattern(TagInternals.TAG_NAME) final @NotNull String name, final @NotNull Tag tag) {
     TagInternals.assertValidTagName(name);
     return new SingleResolver(
       name,
