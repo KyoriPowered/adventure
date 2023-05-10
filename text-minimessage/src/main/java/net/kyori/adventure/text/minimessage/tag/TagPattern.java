@@ -36,12 +36,12 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PARAMETER;
 
 /**
- * something documentation.
+ * A {@link Tag} name must match this pattern. This is used to validate tag names. Uses <b>[!?#]?[a-z0-9_-]*</b>
  *
  * @since 4.14.0
  */
 @Documented
 @Retention(RetentionPolicy.CLASS)
-@Target({ METHOD, FIELD, PARAMETER, LOCAL_VARIABLE }) //Unsure of what is needed here
+@Target({ METHOD, FIELD, PARAMETER, LOCAL_VARIABLE })
 public @Pattern(TagInternals.TAG_NAME_REGEX) @interface TagPattern {
 }
