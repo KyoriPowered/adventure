@@ -249,6 +249,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @return the namespace
    * @since 4.0.0
    */
+  @Pattern(KeyImpl.NAMESPACE_PATTERN)
   @Override
   @NotNull String namespace();
 
@@ -258,6 +259,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @return the value
    * @since 4.0.0
    */
+  @Pattern(KeyImpl.VALUE_PATTERN)
   @NotNull String value();
 
   /**
