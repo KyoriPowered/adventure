@@ -26,7 +26,6 @@ package net.kyori.adventure.text.minimessage.internal;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Pattern;
-
 import net.kyori.adventure.text.minimessage.tag.TagPattern;
 import org.intellij.lang.annotations.RegExp;
 import org.jetbrains.annotations.ApiStatus;
@@ -39,8 +38,7 @@ import org.jetbrains.annotations.NotNull;
  */
 @ApiStatus.Internal
 public final class TagInternals {
-  @RegExp
-  public static final String TAG_NAME_REGEX = "[!?#]?[a-z0-9_-]*";
+  public static final @RegExp String TAG_NAME_REGEX = "[!?#]?[a-z0-9_-]*";
   private static final Pattern TAG_NAME_PATTERN = Pattern.compile(TAG_NAME_REGEX);
 
   private TagInternals() {
