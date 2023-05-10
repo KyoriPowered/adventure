@@ -43,6 +43,5 @@ import static java.lang.annotation.ElementType.PARAMETER;
 @Documented
 @Retention(RetentionPolicy.CLASS)
 @Target({ METHOD, FIELD, PARAMETER, LOCAL_VARIABLE }) //Unsure of what is needed here
-@Pattern(TagInternals.TAG_NAME_REGEX)
-public @interface TagPattern {
+public @Pattern(TagInternals.TAG_NAME_REGEX) @interface TagPattern {
 }
