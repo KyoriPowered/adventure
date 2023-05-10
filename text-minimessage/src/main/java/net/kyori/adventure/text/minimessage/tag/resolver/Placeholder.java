@@ -26,7 +26,7 @@ package net.kyori.adventure.text.minimessage.tag.resolver;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
-import net.kyori.adventure.text.minimessage.internal.TagPattern;
+import net.kyori.adventure.text.minimessage.tag.TagPattern;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import org.jetbrains.annotations.NotNull;
 

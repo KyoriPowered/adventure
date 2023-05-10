@@ -1,5 +1,6 @@
-package net.kyori.adventure.text.minimessage.internal;
+package net.kyori.adventure.text.minimessage.tag;
 
+import net.kyori.adventure.text.minimessage.internal.TagInternals;
 import org.intellij.lang.annotations.Pattern;
 
 import java.lang.annotation.Documented;

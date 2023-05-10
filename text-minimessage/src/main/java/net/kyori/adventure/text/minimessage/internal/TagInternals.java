@@ -27,6 +27,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+import net.kyori.adventure.text.minimessage.tag.TagPattern;
 import org.intellij.lang.annotations.RegExp;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
