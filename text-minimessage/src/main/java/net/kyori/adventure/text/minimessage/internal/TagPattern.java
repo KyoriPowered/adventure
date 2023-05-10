@@ -17,5 +17,8 @@ import static java.lang.annotation.ElementType.PARAMETER;
 @Retention(RetentionPolicy.CLASS)
 @Target({ METHOD, FIELD, PARAMETER, LOCAL_VARIABLE }) //Unsure of what is needed here
 // TODO: documentation
+/**
+ * @since 4.14.0
+ */
 public @interface TagPattern {
 }
