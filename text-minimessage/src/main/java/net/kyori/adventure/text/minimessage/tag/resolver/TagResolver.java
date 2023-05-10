@@ -108,7 +108,7 @@ public interface TagResolver {
    * @return a resolver that creates tags using the provided handler
    * @since 4.10.0
    */
-  static @NotNull TagResolver resolver(final @NotNull String name, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler) {
+  static @NotNull TagResolver resolver(@TagPattern final @NotNull String name, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler) {
     return resolver(Collections.singleton(name), handler);
   }
 
@@ -221,7 +221,7 @@ public interface TagResolver {
    * @throws ParsingException if the provided arguments are invalid
    * @since 4.10.0
    */
-  @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException;
+  @Nullable Tag resolve(@TagPattern final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException;
 
   /**
    * Get whether this resolver handles tags with a certain name.
@@ -261,7 +261,7 @@ public interface TagResolver {
     @NotNull Tag tag();
 
     @Override
-    default @Nullable Tag resolve(final @NotNull String name) {
+    default @Nullable Tag resolve(@TagPattern final @NotNull String name) {
       if (this.has(name)) {
         return this.tag();
       }
@@ -288,7 +288,7 @@ public interface TagResolver {
      * @return a tag, if any is known.
      * @since 4.10.0
      */
-    @Nullable Tag resolve(final @NotNull String name);
+    @Nullable Tag resolve(@TagPattern final @NotNull String name);
 
     /**
      * Check if this resolver knows of a tag.
@@ -303,7 +303,7 @@ public interface TagResolver {
     }
 
     @Override
-    default @Nullable Tag resolve(final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
+    default @Nullable Tag resolve(@TagPattern final @NotNull String name, final @NotNull ArgumentQueue arguments, final @NotNull Context ctx) throws ParsingException {
       final Tag resolved = this.resolve(name);
       if (resolved != null && arguments.hasNext()) {
         throw ctx.newException("Tag '<" + name + ">' does not accept any arguments");
@@ -328,7 +328,7 @@ public interface TagResolver {
      * @return this builder
      * @since 4.10.0
      */
-    @NotNull Builder tag(final @NotNull String name, final @NotNull Tag tag);
+    @NotNull Builder tag(@TagPattern final @NotNull String name, final @NotNull Tag tag);
 
     /**
      * Add a single dynamically created tag to this resolver.
@@ -338,7 +338,7 @@ public interface TagResolver {
      * @return this builder
      * @since 4.10.0
      */
-    default @NotNull Builder tag(final @NotNull String name, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler) {
+    default @NotNull Builder tag(@TagPattern final @NotNull String name, final @NotNull BiFunction<ArgumentQueue, Context, Tag> handler) {
       return this.tag(Collections.singleton(name), handler);
     }
 
