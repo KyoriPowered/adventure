@@ -113,7 +113,7 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @return a tag
    * @throws IllegalArgumentException if {@code type} is {@link BinaryTagTypes#END}
    * @since 4.0.0
-   * @deprecated for removal since 4.14.0, use {@link #listBinaryTag(BinaryTagType, List)}  instead.
+   * @deprecated for removal since 4.14.0, use {@link #listBinaryTag(BinaryTagType, List)} instead.
    */
   @Deprecated
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")

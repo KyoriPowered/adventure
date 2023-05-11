@@ -55,7 +55,7 @@ public interface IntArrayBinaryTag extends ArrayBinaryTag, Iterable<Integer> {
    * @param value the value
    * @return a binary tag
    * @since 4.0.0
-   * @deprecated for removal since 4.14.0, use {@link #intArrayBinaryTag(int...)}  instead.
+   * @deprecated for removal since 4.14.0, use {@link #intArrayBinaryTag(int...)} instead.
    */
   @Deprecated
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
