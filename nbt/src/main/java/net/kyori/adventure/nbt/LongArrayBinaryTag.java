@@ -23,12 +23,10 @@
  */
 package net.kyori.adventure.nbt;
 
-import java.util.List;
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.function.LongConsumer;
 import java.util.stream.LongStream;
-
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 

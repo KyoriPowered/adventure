@@ -42,7 +42,7 @@ public interface IntBinaryTag extends NumberBinaryTag {
   static @NotNull IntBinaryTag intBinaryTag(final int value) {
     return new IntBinaryTagImpl(value);
   }
-  
+
   /**
    * Creates a binary tag holding an {@code int} value.
    *

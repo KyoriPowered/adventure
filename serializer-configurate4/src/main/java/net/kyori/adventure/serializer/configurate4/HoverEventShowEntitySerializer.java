@@ -53,7 +53,7 @@ final class HoverEventShowEntitySerializer implements TypeSerializer<HoverEvent.
     }
     final @Nullable Component name = value.node(NAME).get(Component.class);
 
-    return HoverEvent.ShowEntity.of(typeId, id, name);
+    return HoverEvent.ShowEntity.showEntity(typeId, id, name);
   }
 
   @Override

@@ -49,7 +49,7 @@ public interface ByteArrayBinaryTag extends ArrayBinaryTag, Iterable<Byte> {
    * @param value the value
    * @return a binary tag
    * @since 4.0.0
-   * @deprecated for removal since 4.14.0, use {@link #byteArrayBinaryTag(byte...) instead.
+   * @deprecated for removal since 4.14.0, use {@link #byteArrayBinaryTag(byte...)}  instead.
    */
   @Deprecated
   @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")

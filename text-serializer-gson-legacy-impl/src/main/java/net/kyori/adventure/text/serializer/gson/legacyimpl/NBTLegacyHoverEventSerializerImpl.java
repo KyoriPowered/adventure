@@ -58,7 +58,7 @@ final class NBTLegacyHoverEventSerializerImpl implements LegacyHoverEventSeriali
     assertTextComponent(input);
     final CompoundBinaryTag contents = SNBT_CODEC.decode(((TextComponent) input).content());
     final CompoundBinaryTag tag = contents.getCompound(ITEM_TAG);
-    return HoverEvent.ShowItem.of(
+    return HoverEvent.ShowItem.showItem(
       Key.key(contents.getString(ITEM_TYPE)),
       contents.getByte(ITEM_COUNT, (byte) 1),
       tag == CompoundBinaryTag.empty() ? null : BinaryTagHolder.encode(tag, SNBT_CODEC)
@@ -69,7 +69,7 @@ final class NBTLegacyHoverEventSerializerImpl implements LegacyHoverEventSeriali
   public HoverEvent.@NotNull ShowEntity deserializeShowEntity(final @NotNull Component input, final Codec.Decoder<Component, String, ? extends RuntimeException> componentCodec) throws IOException {
     assertTextComponent(input);
     final CompoundBinaryTag contents = SNBT_CODEC.decode(((TextComponent) input).content());
-    return HoverEvent.ShowEntity.of(
+    return HoverEvent.ShowEntity.showEntity(
       Key.key(contents.getString(ENTITY_TYPE)),
       UUID.fromString(contents.getString(ENTITY_ID)),
       componentCodec.decode(contents.getString(ENTITY_NAME))

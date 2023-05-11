@@ -39,7 +39,7 @@ public final class BinaryTagTypes {
    *
    * @since 4.0.0
    */
-  public static final BinaryTagType<EndBinaryTag> END = BinaryTagType.register(EndBinaryTag.class, (byte) 0, input -> EndBinaryTag.get(), null); // nothing to write
+  public static final BinaryTagType<EndBinaryTag> END = BinaryTagType.register(EndBinaryTag.class, (byte) 0, input -> EndBinaryTag.endBinaryTag(), null); // nothing to write
   /**
    * {@link ByteBinaryTag}.
    *

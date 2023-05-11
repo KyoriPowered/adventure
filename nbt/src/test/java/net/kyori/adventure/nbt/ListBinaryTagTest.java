@@ -38,28 +38,28 @@ class ListBinaryTagTest {
   @Test
   void testAddEnd() {
     final ListBinaryTag l0 = ListBinaryTag.empty();
-    assertThrows(IllegalArgumentException.class, () -> l0.add(EndBinaryTag.get()));
+    assertThrows(IllegalArgumentException.class, () -> l0.add(EndBinaryTag.endBinaryTag()));
   }
 
   @Test
   void testAddOtherToEndChangesType() {
     final ListBinaryTag l0 = ListBinaryTag.empty();
-    final ListBinaryTag l1 = l0.add(IntBinaryTag.of(13));
+    final ListBinaryTag l1 = l0.add(IntBinaryTag.intBinaryTag(13));
     assertEquals(BinaryTagTypes.INT, l1.elementType());
   }
 
   @Test
   void testMismatchedAdd() {
-    final ListBinaryTag l0 = ListBinaryTag.of(BinaryTagTypes.BYTE, ImmutableList.of(ByteBinaryTag.of((byte) 0)));
-    assertThrows(IllegalArgumentException.class, () -> l0.add(IntBinaryTag.of(1)));
+    final ListBinaryTag l0 = ListBinaryTag.listBinaryTag(BinaryTagTypes.BYTE, ImmutableList.of(ByteBinaryTag.byteBinaryTag((byte) 0)));
+    assertThrows(IllegalArgumentException.class, () -> l0.add(IntBinaryTag.intBinaryTag(1)));
   }
 
   @Test
   void testSet() {
-    final IntBinaryTag i0 = IntBinaryTag.of(0);
-    final IntBinaryTag i1 = IntBinaryTag.of(1);
-    final IntBinaryTag i2 = IntBinaryTag.of(2);
-    final ListBinaryTag l3 = ListBinaryTag.of(BinaryTagTypes.INT, ImmutableList.of(i0, i1, i2));
+    final IntBinaryTag i0 = IntBinaryTag.intBinaryTag(0);
+    final IntBinaryTag i1 = IntBinaryTag.intBinaryTag(1);
+    final IntBinaryTag i2 = IntBinaryTag.intBinaryTag(2);
+    final ListBinaryTag l3 = ListBinaryTag.listBinaryTag(BinaryTagTypes.INT, ImmutableList.of(i0, i1, i2));
     final ListBinaryTag l2 = l3.set(1, i0, removed -> assertEquals(i1, removed));
     assertEquals(i0, l2.get(0));
     assertEquals(i0, l2.get(1));
@@ -77,10 +77,10 @@ class ListBinaryTagTest {
 
   @Test
   void testRemove() {
-    final IntBinaryTag i0 = IntBinaryTag.of(0);
-    final IntBinaryTag i1 = IntBinaryTag.of(1);
-    final IntBinaryTag i2 = IntBinaryTag.of(2);
-    final ListBinaryTag l3 = ListBinaryTag.of(BinaryTagTypes.INT, ImmutableList.of(i0, i1, i2));
+    final IntBinaryTag i0 = IntBinaryTag.intBinaryTag(0);
+    final IntBinaryTag i1 = IntBinaryTag.intBinaryTag(1);
+    final IntBinaryTag i2 = IntBinaryTag.intBinaryTag(2);
+    final ListBinaryTag l3 = ListBinaryTag.listBinaryTag(BinaryTagTypes.INT, ImmutableList.of(i0, i1, i2));
     final ListBinaryTag l2 = l3.remove(1, removed -> assertEquals(i1, removed));
     assertEquals(2, l2.size());
     assertEquals(i0, l2.get(0));

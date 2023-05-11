@@ -26,8 +26,6 @@ package net.kyori.adventure.nbt;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 /**
  * A binary tag holding a {@code long} value.
  *

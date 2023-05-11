@@ -34,12 +34,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ReadWriteTest {
   @Test
   void testByteArray() throws IOException {
-    this.testWriteRead(ByteArrayBinaryTag.of(Byte.MIN_VALUE, (byte) -100, (byte) 0, (byte) 100, Byte.MAX_VALUE), BinaryTagTypes.BYTE_ARRAY);
+    this.testWriteRead(ByteArrayBinaryTag.byteArrayBinaryTag(Byte.MIN_VALUE, (byte) -100, (byte) 0, (byte) 100, Byte.MAX_VALUE), BinaryTagTypes.BYTE_ARRAY);
   }
 
   @Test
   void testByte() throws IOException {
-    this.testWriteRead(ByteBinaryTag.of((byte) 2), BinaryTagTypes.BYTE);
+    this.testWriteRead(ByteBinaryTag.byteBinaryTag((byte) 2), BinaryTagTypes.BYTE);
   }
 
   @Test
@@ -54,34 +54,34 @@ class ReadWriteTest {
 
   @Test
   void testDouble() throws IOException {
-    this.testWriteRead(DoubleBinaryTag.of(4d), BinaryTagTypes.DOUBLE);
+    this.testWriteRead(DoubleBinaryTag.doubleBinaryTag(4d), BinaryTagTypes.DOUBLE);
   }
 
   @Test
   void testEnd() throws IOException {
-    this.testWriteRead(EndBinaryTag.get(), BinaryTagTypes.END);
+    this.testWriteRead(EndBinaryTag.endBinaryTag(), BinaryTagTypes.END);
   }
 
   @Test
   void testFloat() throws IOException {
-    this.testWriteRead(FloatBinaryTag.of(6f), BinaryTagTypes.FLOAT);
+    this.testWriteRead(FloatBinaryTag.floatBinaryTag(6f), BinaryTagTypes.FLOAT);
   }
 
   @Test
   void testIntArray() throws IOException {
-    this.testWriteRead(IntArrayBinaryTag.of(Integer.MIN_VALUE, -100, 0, 100, Integer.MAX_VALUE), BinaryTagTypes.INT_ARRAY);
+    this.testWriteRead(IntArrayBinaryTag.intArrayBinaryTag(Integer.MIN_VALUE, -100, 0, 100, Integer.MAX_VALUE), BinaryTagTypes.INT_ARRAY);
   }
 
   @Test
   void testInt() throws IOException {
-    this.testWriteRead(IntBinaryTag.of(8), BinaryTagTypes.INT);
+    this.testWriteRead(IntBinaryTag.intBinaryTag(8), BinaryTagTypes.INT);
   }
 
   @Test
   void testList() throws IOException {
     final ListBinaryTag a = ListBinaryTag.builder()
-      .add(DoubleBinaryTag.of(32d))
-      .add(DoubleBinaryTag.of(64d))
+      .add(DoubleBinaryTag.doubleBinaryTag(32d))
+      .add(DoubleBinaryTag.doubleBinaryTag(64d))
       .build();
     final ListBinaryTag b = this.testWriteRead(a, BinaryTagTypes.LIST);
     assertEquals(a.elementType(), b.elementType());
@@ -89,22 +89,22 @@ class ReadWriteTest {
 
   @Test
   void testLongArray() throws IOException {
-    this.testWriteRead(LongArrayBinaryTag.of(Long.MIN_VALUE, -100, 0, 100, Long.MAX_VALUE), BinaryTagTypes.LONG_ARRAY);
+    this.testWriteRead(LongArrayBinaryTag.longArrayBinaryTag(Long.MIN_VALUE, -100, 0, 100, Long.MAX_VALUE), BinaryTagTypes.LONG_ARRAY);
   }
 
   @Test
   void testLong() throws IOException {
-    this.testWriteRead(LongBinaryTag.of(10), BinaryTagTypes.LONG);
+    this.testWriteRead(LongBinaryTag.longBinaryTag(10), BinaryTagTypes.LONG);
   }
 
   @Test
   void testShort() throws IOException {
-    this.testWriteRead(ShortBinaryTag.of((short) 12), BinaryTagTypes.SHORT);
+    this.testWriteRead(ShortBinaryTag.shortBinaryTag((short) 12), BinaryTagTypes.SHORT);
   }
 
   @Test
   void testString() throws IOException {
-    this.testWriteRead(StringBinaryTag.of("Hello, world!"), BinaryTagTypes.STRING);
+    this.testWriteRead(StringBinaryTag.stringBinaryTag("Hello, world!"), BinaryTagTypes.STRING);
   }
 
   private <T extends BinaryTag> T testWriteRead(final T a, final BinaryTagType<T> type) throws IOException {
