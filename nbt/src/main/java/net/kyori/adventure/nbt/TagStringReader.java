@@ -94,11 +94,11 @@ final class TagStringReader {
 
     elementType = Character.toLowerCase(elementType);
     if (elementType == Tokens.TYPE_BYTE) {
-      return ByteArrayBinaryTag.of(this.byteArray());
+      return ByteArrayBinaryTag.byteArrayBinaryTag(this.byteArray());
     } else if (elementType == Tokens.TYPE_INT) {
-      return IntArrayBinaryTag.of(this.intArray());
+      return IntArrayBinaryTag.intArrayBinaryTag(this.intArray());
     } else if (elementType == Tokens.TYPE_LONG) {
-      return LongArrayBinaryTag.of(this.longArray());
+      return LongArrayBinaryTag.longArrayBinaryTag(this.longArray());
     } else {
       throw this.buffer.makeError("Type " + elementType + " is not a valid element type in an array!");
     }
@@ -222,7 +222,7 @@ final class TagStringReader {
         case Tokens.DOUBLE_QUOTE:
           // definitely a string tag
           this.buffer.advance();
-          return StringBinaryTag.of(unescape(this.buffer.takeUntil(startToken).toString()));
+          return StringBinaryTag.stringBinaryTag(unescape(this.buffer.takeUntil(startToken).toString()));
         default: // scalar
           return this.scalar();
       }
@@ -264,23 +264,23 @@ final class TagStringReader {
       try {
         switch (Character.toLowerCase(last)) { // try to read and return as a number
           case Tokens.TYPE_BYTE:
-            return ByteBinaryTag.of(Byte.parseByte(built.substring(0, length - 1)));
+            return ByteBinaryTag.byteBinaryTag(Byte.parseByte(built.substring(0, length - 1)));
           case Tokens.TYPE_SHORT:
-            return ShortBinaryTag.of(Short.parseShort(built.substring(0, length - 1)));
+            return ShortBinaryTag.shortBinaryTag(Short.parseShort(built.substring(0, length - 1)));
           case Tokens.TYPE_INT:
-            return IntBinaryTag.of(Integer.parseInt(built.substring(0, length - 1)));
+            return IntBinaryTag.intBinaryTag(Integer.parseInt(built.substring(0, length - 1)));
           case Tokens.TYPE_LONG:
-            return LongBinaryTag.of(Long.parseLong(built.substring(0, length - 1)));
+            return LongBinaryTag.longBinaryTag(Long.parseLong(built.substring(0, length - 1)));
           case Tokens.TYPE_FLOAT:
             final float floatValue = Float.parseFloat(built.substring(0, length - 1));
             if (Float.isFinite(floatValue)) { // don't accept NaN and Infinity
-              return FloatBinaryTag.of(floatValue);
+              return FloatBinaryTag.floatBinaryTag(floatValue);
             }
             break;
           case Tokens.TYPE_DOUBLE:
             final double doubleValue = Double.parseDouble(built.substring(0, length - 1));
             if (Double.isFinite(doubleValue)) { // don't accept NaN and Infinity
-              return DoubleBinaryTag.of(doubleValue);
+              return DoubleBinaryTag.doubleBinaryTag(doubleValue);
             }
             break;
         }
@@ -289,11 +289,11 @@ final class TagStringReader {
       }
     } else if (noLongerNumericAt == -1) { // if we run out of content without an explicit value separator, then we're either an integer or string tag -- all others have a character at the end
       try {
-        return IntBinaryTag.of(Integer.parseInt(built));
+        return IntBinaryTag.intBinaryTag(Integer.parseInt(built));
       } catch (final NumberFormatException ex) {
         if (built.indexOf('.') != -1) { // see if we have an unsuffixed double; always needs a dot
           try {
-            return DoubleBinaryTag.of(Double.parseDouble(built));
+            return DoubleBinaryTag.doubleBinaryTag(Double.parseDouble(built));
           } catch (final NumberFormatException ex2) {
             // ignore
           }
@@ -306,7 +306,7 @@ final class TagStringReader {
     } else if (built.equalsIgnoreCase(Tokens.LITERAL_FALSE)) {
       return ByteBinaryTag.ZERO;
     }
-    return StringBinaryTag.of(built);
+    return StringBinaryTag.stringBinaryTag(built);
 
   }
 
