@@ -76,7 +76,7 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
     }
     in.endObject();
 
-    return HoverEvent.ShowEntity.of(type, id, name);
+    return HoverEvent.ShowEntity.showEntity(type, id, name);
   }
 
   @Override

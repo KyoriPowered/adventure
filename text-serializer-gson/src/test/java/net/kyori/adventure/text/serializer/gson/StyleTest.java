@@ -145,7 +145,7 @@ class StyleTest extends GsonTest<Style> {
     final UUID dolores = UUID.randomUUID();
     this.test(
       Style.style()
-        .hoverEvent(HoverEvent.showEntity(HoverEvent.ShowEntity.of(
+        .hoverEvent(HoverEvent.showEntity(HoverEvent.ShowEntity.showEntity(
           Key.key(Key.MINECRAFT_NAMESPACE, "pig"),
           dolores,
           Component.text("Dolores", TextColor.color(0x0a1ab9))
@@ -175,7 +175,7 @@ class StyleTest extends GsonTest<Style> {
 
   private static Style showItemStyle(final int count) {
     return Style.style()
-      .hoverEvent(HoverEvent.showItem(HoverEvent.ShowItem.of(
+      .hoverEvent(HoverEvent.showItem(HoverEvent.ShowItem.showItem(
         Key.key(Key.MINECRAFT_NAMESPACE, "stone"),
         count,
         null // TODO: test for NBT?
