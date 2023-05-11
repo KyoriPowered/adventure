@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.nbt;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -36,8 +37,22 @@ public interface ShortBinaryTag extends NumberBinaryTag {
    *
    * @param value the value
    * @return a binary tag
-   * @since 4.0.0
+   * @since 4.14.0
    */
+  static @NotNull ShortBinaryTag shortBinaryTag(final short value) {
+    return new ShortBinaryTagImpl(value);
+  }
+
+  /**
+   * Creates a binary tag holding a {@code short} value.
+   *
+   * @param value the value
+   * @return a binary tag
+   * @since 4.0.0
+   * @deprecated for removal since 4.14.0, use {@link #shortBinaryTag(short)} instead.
+   */
+  @Deprecated
+  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   static @NotNull ShortBinaryTag of(final short value) {
     return new ShortBinaryTagImpl(value);
   }
