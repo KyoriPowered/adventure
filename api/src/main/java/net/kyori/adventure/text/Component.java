@@ -204,7 +204,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.14.0
    */
   @Contract(pure = true)
-  static @NotNull Component join(final @NotNull JoinConfiguration.Builder configBuilder, final @NotNull ComponentLike@NotNull... components) {
+  static @NotNull Component join(final JoinConfiguration.@NotNull Builder configBuilder, final @NotNull ComponentLike@NotNull... components) {
     return join(configBuilder, Arrays.asList(components));
   }
 
@@ -220,7 +220,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.14.0
    */
   @Contract(pure = true)
-  static @NotNull Component join(final @NotNull JoinConfiguration.Builder configBuilder, final @NotNull Iterable<? extends ComponentLike> components) {
+  static @NotNull Component join(final JoinConfiguration.@NotNull Builder configBuilder, final @NotNull Iterable<? extends ComponentLike> components) {
     return JoinConfigurationImpl.join(configBuilder.build(), components);
   }
 
