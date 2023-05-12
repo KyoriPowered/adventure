@@ -193,7 +193,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
-   * Joins {@code components} using the configuration in {@code config}.
+   * Joins {@code components} using the configuration in {@code configBuilder}.
    *
    * @param configBuilder the join configuration
    * @param components the components
@@ -209,7 +209,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
-   * Joins {@code components} using the configuration in {@code config}.
+   * Joins {@code components} using the configuration in {@code configBuilder}.
    *
    * @param configBuilder the join configuration
    * @param components the components
