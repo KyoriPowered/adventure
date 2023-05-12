@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -76,7 +77,7 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
     ((BinaryTagType<T>) type).write(tag, output);
   }
 
-  static @NotNull BinaryTagType<? extends BinaryTag> of(final byte id) {
+  static @NotNull BinaryTagType<? extends BinaryTag> binaryTagType(final byte id) {
     for (int i = 0; i < TYPES.size(); i++) {
       final BinaryTagType<? extends BinaryTag> type = TYPES.get(i);
       if (type.id() == id) {
@@ -84,6 +85,12 @@ public abstract class BinaryTagType<T extends BinaryTag> implements Predicate<Bi
       }
     }
     throw new IllegalArgumentException(String.valueOf(id));
+  }
+
+  @Deprecated
+  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
+  static @NotNull BinaryTagType<? extends BinaryTag> of(final byte id) {
+    return binaryTagType(id);
   }
 
   static <T extends BinaryTag> @NotNull BinaryTagType<T> register(final Class<T> type, final byte id, final Reader<T> reader, final @Nullable Writer<T> writer) {

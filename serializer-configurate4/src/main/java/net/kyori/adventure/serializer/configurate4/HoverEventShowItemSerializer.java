@@ -52,7 +52,7 @@ final class HoverEventShowItemSerializer implements TypeSerializer<HoverEvent.Sh
     final int count = value.node(COUNT).getInt(1);
     final String tag = value.node(TAG).getString();
 
-    return HoverEvent.ShowItem.of(id, count, tag == null ? null : BinaryTagHolder.binaryTagHolder(tag));
+    return HoverEvent.ShowItem.showItem(id, count, tag == null ? null : BinaryTagHolder.binaryTagHolder(tag));
   }
 
   @Override

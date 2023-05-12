@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.nbt;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -36,8 +37,22 @@ public interface FloatBinaryTag extends NumberBinaryTag {
    *
    * @param value the value
    * @return a binary tag
-   * @since 4.0.0
+   * @since 4.14.0
    */
+  static @NotNull FloatBinaryTag floatBinaryTag(final float value) {
+    return new FloatBinaryTagImpl(value);
+  }
+
+  /**
+   * Creates a binary tag holding a {@code float} value.
+   *
+   * @param value the value
+   * @return a binary tag
+   * @since 4.0.0
+   * @deprecated for removal since 4.14.0, use {@link #floatBinaryTag(float)} instead.
+   */
+  @Deprecated
+  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   static @NotNull FloatBinaryTag of(final float value) {
     return new FloatBinaryTagImpl(value);
   }

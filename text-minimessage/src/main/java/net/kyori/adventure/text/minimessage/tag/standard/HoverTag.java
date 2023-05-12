@@ -126,9 +126,9 @@ final class HoverTag {
         final Key key = Key.key(args.popOr("Show item hover needs at least an item ID").value());
         final int count = args.hasNext() ? args.pop().asInt().orElseThrow(() -> ctx.newException("The count argument was not a valid integer")) : 1;
         if (args.hasNext()) {
-          return HoverEvent.ShowItem.of(key, count, BinaryTagHolder.binaryTagHolder(args.pop().value()));
+          return HoverEvent.ShowItem.showItem(key, count, BinaryTagHolder.binaryTagHolder(args.pop().value()));
         } else {
-          return HoverEvent.ShowItem.of(key, count);
+          return HoverEvent.ShowItem.showItem(key, count);
         }
       } catch (final InvalidKeyException | NumberFormatException ex) {
         throw ctx.newException("Exception parsing show_item hover", ex, args);
@@ -162,9 +162,9 @@ final class HoverTag {
         final UUID id = UUID.fromString(args.popOr("Show entity needs an entity UUID").value());
         if (args.hasNext()) {
           final Component name = ctx.deserialize(args.pop().value());
-          return HoverEvent.ShowEntity.of(key, id, name);
+          return HoverEvent.ShowEntity.showEntity(key, id, name);
         }
-        return HoverEvent.ShowEntity.of(key, id);
+        return HoverEvent.ShowEntity.showEntity(key, id);
       } catch (final IllegalArgumentException | InvalidKeyException ex) {
         throw ctx.newException("Exception parsing show_entity hover", ex, args);
       }

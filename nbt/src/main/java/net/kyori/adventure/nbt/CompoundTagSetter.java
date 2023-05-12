@@ -107,7 +107,7 @@ public interface CompoundTagSetter<R> {
    * @since 4.0.0
    */
   default @NotNull R putByte(final @NotNull String key, final byte value) {
-    return this.put(key, ByteBinaryTag.of(value));
+    return this.put(key, ByteBinaryTag.byteBinaryTag(value));
   }
 
   /**
@@ -119,7 +119,7 @@ public interface CompoundTagSetter<R> {
    * @since 4.0.0
    */
   default @NotNull R putShort(final @NotNull String key, final short value) {
-    return this.put(key, ShortBinaryTag.of(value));
+    return this.put(key, ShortBinaryTag.shortBinaryTag(value));
   }
 
   /**
@@ -131,7 +131,7 @@ public interface CompoundTagSetter<R> {
    * @since 4.0.0
    */
   default @NotNull R putInt(final @NotNull String key, final int value) {
-    return this.put(key, IntBinaryTag.of(value));
+    return this.put(key, IntBinaryTag.intBinaryTag(value));
   }
 
   /**
@@ -143,7 +143,7 @@ public interface CompoundTagSetter<R> {
    * @since 4.0.0
    */
   default @NotNull R putLong(final @NotNull String key, final long value) {
-    return this.put(key, LongBinaryTag.of(value));
+    return this.put(key, LongBinaryTag.longBinaryTag(value));
   }
 
   /**
@@ -155,7 +155,7 @@ public interface CompoundTagSetter<R> {
    * @since 4.0.0
    */
   default @NotNull R putFloat(final @NotNull String key, final float value) {
-    return this.put(key, FloatBinaryTag.of(value));
+    return this.put(key, FloatBinaryTag.floatBinaryTag(value));
   }
 
   /**
@@ -167,7 +167,7 @@ public interface CompoundTagSetter<R> {
    * @since 4.0.0
    */
   default @NotNull R putDouble(final @NotNull String key, final double value) {
-    return this.put(key, DoubleBinaryTag.of(value));
+    return this.put(key, DoubleBinaryTag.doubleBinaryTag(value));
   }
 
   /**
@@ -179,7 +179,7 @@ public interface CompoundTagSetter<R> {
    * @since 4.0.0
    */
   default @NotNull R putByteArray(final @NotNull String key, final byte@NotNull[] value) {
-    return this.put(key, ByteArrayBinaryTag.of(value));
+    return this.put(key, ByteArrayBinaryTag.byteArrayBinaryTag(value));
   }
 
   /**
@@ -191,7 +191,7 @@ public interface CompoundTagSetter<R> {
    * @since 4.0.0
    */
   default @NotNull R putString(final @NotNull String key, final @NotNull String value) {
-    return this.put(key, StringBinaryTag.of(value));
+    return this.put(key, StringBinaryTag.stringBinaryTag(value));
   }
 
   /**
@@ -203,7 +203,7 @@ public interface CompoundTagSetter<R> {
    * @since 4.0.0
    */
   default @NotNull R putIntArray(final @NotNull String key, final int@NotNull[] value) {
-    return this.put(key, IntArrayBinaryTag.of(value));
+    return this.put(key, IntArrayBinaryTag.intArrayBinaryTag(value));
   }
 
   /**
@@ -215,6 +215,6 @@ public interface CompoundTagSetter<R> {
    * @since 4.0.0
    */
   default @NotNull R putLongArray(final @NotNull String key, final long@NotNull[] value) {
-    return this.put(key, LongArrayBinaryTag.of(value));
+    return this.put(key, LongArrayBinaryTag.longArrayBinaryTag(value));
   }
 }

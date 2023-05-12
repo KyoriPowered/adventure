@@ -39,10 +39,10 @@ class ShowItemSerializerTest {
   @Test
   void testDeserializeWithPopulatedTag() throws IOException {
     assertEquals(
-      HoverEvent.ShowItem.of(Key.key("minecraft", "diamond"), 1, BinaryTagHolder.binaryTagHolder(TagStringIO.get().asString(
+      HoverEvent.ShowItem.showItem(Key.key("minecraft", "diamond"), 1, BinaryTagHolder.binaryTagHolder(TagStringIO.get().asString(
         CompoundBinaryTag.builder()
           .put("display", CompoundBinaryTag.builder()
-            .put("Name", StringBinaryTag.of("A test!"))
+            .put("Name", StringBinaryTag.stringBinaryTag("A test!"))
             .build())
           .build()
       ))),
@@ -60,7 +60,7 @@ class ShowItemSerializerTest {
   @Test
   void testDeserializeWithNullTag() {
     assertEquals(
-      HoverEvent.ShowItem.of(Key.key("minecraft", "diamond"), 1, null),
+      HoverEvent.ShowItem.showItem(Key.key("minecraft", "diamond"), 1, null),
       GsonComponentSerializer.gson().serializer().fromJson(
         GsonTest.object(json -> {
           json.addProperty(ShowItemSerializer.ID, "minecraft:diamond");

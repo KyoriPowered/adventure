@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.nbt;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -36,8 +37,22 @@ public interface StringBinaryTag extends BinaryTag {
    *
    * @param value the value
    * @return a binary tag
-   * @since 4.0.0
+   * @since 4.14.0
    */
+  static @NotNull StringBinaryTag stringBinaryTag(final @NotNull String value) {
+    return new StringBinaryTagImpl(value);
+  }
+
+  /**
+   * Creates a binary tag holding a {@link String} value.
+   *
+   * @param value the value
+   * @return a binary tag
+   * @since 4.0.0
+   * @deprecated for removal since 4.14.0, use {@link #stringBinaryTag(String)} instead.
+   */
+  @Deprecated
+  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   static @NotNull StringBinaryTag of(final @NotNull String value) {
     return new StringBinaryTagImpl(value);
   }

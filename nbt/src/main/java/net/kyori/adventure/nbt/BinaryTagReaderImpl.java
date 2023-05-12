@@ -66,7 +66,7 @@ final class BinaryTagReaderImpl implements BinaryTagIO.Reader {
       input = new TrackingDataInput(input, this.maxBytes);
     }
 
-    final BinaryTagType<? extends BinaryTag> type = BinaryTagType.of(input.readByte());
+    final BinaryTagType<? extends BinaryTag> type = BinaryTagType.binaryTagType(input.readByte());
     requireCompound(type);
     input.skipBytes(input.readUnsignedShort()); // read empty name
     return BinaryTagTypes.COMPOUND.read(input);
@@ -88,7 +88,7 @@ final class BinaryTagReaderImpl implements BinaryTagIO.Reader {
 
   @Override
   public Map.@NotNull Entry<String, CompoundBinaryTag> readNamed(final @NotNull DataInput input) throws IOException {
-    final BinaryTagType<? extends BinaryTag> type = BinaryTagType.of(input.readByte());
+    final BinaryTagType<? extends BinaryTag> type = BinaryTagType.binaryTagType(input.readByte());
     requireCompound(type);
     final String name = input.readUTF();
     return new AbstractMap.SimpleImmutableEntry<>(name, BinaryTagTypes.COMPOUND.read(input));

@@ -40,7 +40,7 @@ class StringIOTest {
   void testReadKeyValuePair() throws StringTagParseException {
     final TagStringReader keyRead = new TagStringReader(new CharBuffer("testKey: \"hello\""));
     assertEquals("testKey", keyRead.key());
-    assertEquals(StringBinaryTag.of("hello"), keyRead.tag());
+    assertEquals(StringBinaryTag.stringBinaryTag("hello"), keyRead.tag());
   }
 
   @Test
@@ -51,9 +51,9 @@ class StringIOTest {
       .putString("quoted", "quo\"ted")
       .putString("comp:lex \"key", "let's go")
       .put("listed", ListBinaryTag.builder(BinaryTagTypes.STRING)
-        .add(StringBinaryTag.of("one"))
-        .add(StringBinaryTag.of("two"))
-        .add(StringBinaryTag.of("three"))
+        .add(StringBinaryTag.stringBinaryTag("one"))
+        .add(StringBinaryTag.stringBinaryTag("two"))
+        .add(StringBinaryTag.stringBinaryTag("three"))
         .build())
       .build();
 
@@ -102,124 +102,124 @@ class StringIOTest {
 
   @Test
   void testStringTag() throws IOException {
-    final StringBinaryTag basic = StringBinaryTag.of("hello");
+    final StringBinaryTag basic = StringBinaryTag.stringBinaryTag("hello");
     final String basicStr = this.tagToString(basic);
     assertEquals("\"hello\"", basicStr);
     assertEquals(basic, this.stringToTag(basicStr));
 
-    final StringBinaryTag withEscapes = StringBinaryTag.of("hello \\world");
+    final StringBinaryTag withEscapes = StringBinaryTag.stringBinaryTag("hello \\world");
     final String withEscapesStr = this.tagToString(withEscapes);
     assertEquals("\"hello \\\\world\"", withEscapesStr);
     assertEquals(withEscapes, this.stringToTag(withEscapesStr));
 
     // single quotes
-    assertEquals(StringBinaryTag.of("something single-quoted"), this.stringToTag("'something single-quoted'"));
+    assertEquals(StringBinaryTag.stringBinaryTag("something single-quoted"), this.stringToTag("'something single-quoted'"));
     // unquoted
-    assertEquals(StringBinaryTag.of("whatever"), this.stringToTag("whatever"));
+    assertEquals(StringBinaryTag.stringBinaryTag("whatever"), this.stringToTag("whatever"));
 
     // something vaguely like a number
-    assertEquals(StringBinaryTag.of("1.33.28d"), this.stringToTag("1.33.28d"));
-    assertEquals(StringBinaryTag.of("2147483649"), this.stringToTag("2147483649")); // larger than an int
+    assertEquals(StringBinaryTag.stringBinaryTag("1.33.28d"), this.stringToTag("1.33.28d"));
+    assertEquals(StringBinaryTag.stringBinaryTag("2147483649"), this.stringToTag("2147483649")); // larger than an int
   }
 
   private static final String UNICODE_TEST = "test ä ö";
 
   @Test
   void testUnicodeString() throws IOException {
-    assertEquals("\"" + UNICODE_TEST + "\"", this.tagToString(StringBinaryTag.of(UNICODE_TEST)));
-    assertEquals(StringBinaryTag.of(UNICODE_TEST), this.stringToTag("\"" + UNICODE_TEST + "\""));
+    assertEquals("\"" + UNICODE_TEST + "\"", this.tagToString(StringBinaryTag.stringBinaryTag(UNICODE_TEST)));
+    assertEquals(StringBinaryTag.stringBinaryTag(UNICODE_TEST), this.stringToTag("\"" + UNICODE_TEST + "\""));
   }
 
   @Test
   void testByteTag() throws IOException {
-    assertEquals("0b", this.tagToString(ByteBinaryTag.of((byte) 0)));
-    assertEquals("112b", this.tagToString(ByteBinaryTag.of((byte) 112)));
+    assertEquals("0b", this.tagToString(ByteBinaryTag.byteBinaryTag((byte) 0)));
+    assertEquals("112b", this.tagToString(ByteBinaryTag.byteBinaryTag((byte) 112)));
 
-    assertEquals(ByteBinaryTag.of((byte) 12), this.stringToTag("12b"));
-    assertEquals(ByteBinaryTag.of((byte) 13), this.stringToTag("13B"));
+    assertEquals(ByteBinaryTag.byteBinaryTag((byte) 12), this.stringToTag("12b"));
+    assertEquals(ByteBinaryTag.byteBinaryTag((byte) 13), this.stringToTag("13B"));
   }
 
   @Test
   void testShortTag() throws IOException {
-    assertEquals("14883s", this.tagToString(ShortBinaryTag.of((short) 14883)));
+    assertEquals("14883s", this.tagToString(ShortBinaryTag.shortBinaryTag((short) 14883)));
 
-    assertEquals(ShortBinaryTag.of((short) -28), this.stringToTag("-28S"));
-    assertEquals(ShortBinaryTag.of((short) 2229), this.stringToTag("+2229S"));
-    assertEquals(StringBinaryTag.of("12.88S"), this.stringToTag("12.88S"));
+    assertEquals(ShortBinaryTag.shortBinaryTag((short) -28), this.stringToTag("-28S"));
+    assertEquals(ShortBinaryTag.shortBinaryTag((short) 2229), this.stringToTag("+2229S"));
+    assertEquals(StringBinaryTag.stringBinaryTag("12.88S"), this.stringToTag("12.88S"));
   }
 
   @Test
   void testIntTag() throws IOException {
-    assertEquals("448228", this.tagToString(IntBinaryTag.of(448228)));
+    assertEquals("448228", this.tagToString(IntBinaryTag.intBinaryTag(448228)));
 
-    assertEquals(IntBinaryTag.of(4482828), this.stringToTag("4482828"));
-    assertEquals(IntBinaryTag.of(-24), this.stringToTag("-24"));
+    assertEquals(IntBinaryTag.intBinaryTag(4482828), this.stringToTag("4482828"));
+    assertEquals(IntBinaryTag.intBinaryTag(-24), this.stringToTag("-24"));
   }
 
   @Test
   void testReadLiteralBoolean() throws IOException {
-    assertEquals(ByteBinaryTag.of((byte) 1), this.stringToTag("true"));
-    assertEquals(ByteBinaryTag.of((byte) 0), this.stringToTag("false"));
+    assertEquals(ByteBinaryTag.byteBinaryTag((byte) 1), this.stringToTag("true"));
+    assertEquals(ByteBinaryTag.byteBinaryTag((byte) 0), this.stringToTag("false"));
   }
 
   @Test
   void testLongTag() throws IOException {
-    assertEquals("28292849L", this.tagToString(LongBinaryTag.of(28292849L)));
-    assertEquals("-28292849L", this.tagToString(LongBinaryTag.of(-28292849L)));
+    assertEquals("28292849L", this.tagToString(LongBinaryTag.longBinaryTag(28292849L)));
+    assertEquals("-28292849L", this.tagToString(LongBinaryTag.longBinaryTag(-28292849L)));
 
-    assertEquals(LongBinaryTag.of(42L), this.stringToTag("42l"));
-    assertEquals(LongBinaryTag.of(938L), this.stringToTag("+938L"));
+    assertEquals(LongBinaryTag.longBinaryTag(42L), this.stringToTag("42l"));
+    assertEquals(LongBinaryTag.longBinaryTag(938L), this.stringToTag("+938L"));
   }
 
   @Test
   void testFloatTag() throws IOException {
-    assertEquals("1.204f", this.tagToString(FloatBinaryTag.of(1.204f)));
+    assertEquals("1.204f", this.tagToString(FloatBinaryTag.floatBinaryTag(1.204f)));
 
-    assertEquals(FloatBinaryTag.of(1.2e4f), this.stringToTag("1.2e4f"));
-    assertEquals(FloatBinaryTag.of(4.3e-4f), this.stringToTag("4.3e-4f"));
-    assertEquals(FloatBinaryTag.of(-4.3e-4f), this.stringToTag("-4.3e-4F"));
-    assertEquals(FloatBinaryTag.of(4.3e-4f), this.stringToTag("+4.3e-4F"));
-    assertEquals(FloatBinaryTag.of(0.3f), this.stringToTag(".3F"));
+    assertEquals(FloatBinaryTag.floatBinaryTag(1.2e4f), this.stringToTag("1.2e4f"));
+    assertEquals(FloatBinaryTag.floatBinaryTag(4.3e-4f), this.stringToTag("4.3e-4f"));
+    assertEquals(FloatBinaryTag.floatBinaryTag(-4.3e-4f), this.stringToTag("-4.3e-4F"));
+    assertEquals(FloatBinaryTag.floatBinaryTag(4.3e-4f), this.stringToTag("+4.3e-4F"));
+    assertEquals(FloatBinaryTag.floatBinaryTag(0.3f), this.stringToTag(".3F"));
   }
 
   @Test
   void testDoubleTag() throws IOException {
-    assertEquals("1.204d", this.tagToString(DoubleBinaryTag.of(1.204d)));
+    assertEquals("1.204d", this.tagToString(DoubleBinaryTag.doubleBinaryTag(1.204d)));
 
-    assertEquals(DoubleBinaryTag.of(1.2e4d), this.stringToTag("1.2e4d"));
-    assertEquals(DoubleBinaryTag.of(4.3e-4d), this.stringToTag("4.3e-4d"));
-    assertEquals(DoubleBinaryTag.of(-4.3e-4d), this.stringToTag("-4.3e-4D"));
-    assertEquals(DoubleBinaryTag.of(4.3e-4d), this.stringToTag("+4.3e-4D"));
+    assertEquals(DoubleBinaryTag.doubleBinaryTag(1.2e4d), this.stringToTag("1.2e4d"));
+    assertEquals(DoubleBinaryTag.doubleBinaryTag(4.3e-4d), this.stringToTag("4.3e-4d"));
+    assertEquals(DoubleBinaryTag.doubleBinaryTag(-4.3e-4d), this.stringToTag("-4.3e-4D"));
+    assertEquals(DoubleBinaryTag.doubleBinaryTag(4.3e-4d), this.stringToTag("+4.3e-4D"));
   }
 
   @Test
   void testUnsuffixedDoubleTag() throws IOException {
     // we can read this, but will never write it
-    assertEquals(DoubleBinaryTag.of(2.55e5), this.stringToTag("2.55e5"));
-    assertEquals(DoubleBinaryTag.of(9.0), this.stringToTag("9."));
-    assertEquals(DoubleBinaryTag.of(-9.5), this.stringToTag("-9.5"));
-    assertEquals(DoubleBinaryTag.of(0.5), this.stringToTag(".5"));
+    assertEquals(DoubleBinaryTag.doubleBinaryTag(2.55e5), this.stringToTag("2.55e5"));
+    assertEquals(DoubleBinaryTag.doubleBinaryTag(9.0), this.stringToTag("9."));
+    assertEquals(DoubleBinaryTag.doubleBinaryTag(-9.5), this.stringToTag("-9.5"));
+    assertEquals(DoubleBinaryTag.doubleBinaryTag(0.5), this.stringToTag(".5"));
   }
 
   @Test
   void testSpecialFloatingPointNumbers() throws IOException {
-    assertEquals(StringBinaryTag.of("NaNd"), this.stringToTag("NaNd"));
-    assertEquals(StringBinaryTag.of("NaNf"), this.stringToTag("NaNf"));
-    assertEquals(StringBinaryTag.of("Infinityd"), this.stringToTag("Infinityd"));
-    assertEquals(StringBinaryTag.of("Infinityf"), this.stringToTag("Infinityf"));
+    assertEquals(StringBinaryTag.stringBinaryTag("NaNd"), this.stringToTag("NaNd"));
+    assertEquals(StringBinaryTag.stringBinaryTag("NaNf"), this.stringToTag("NaNf"));
+    assertEquals(StringBinaryTag.stringBinaryTag("Infinityd"), this.stringToTag("Infinityd"));
+    assertEquals(StringBinaryTag.stringBinaryTag("Infinityf"), this.stringToTag("Infinityf"));
   }
 
   @Test
   void testPrematureNumericParsing() throws IOException {
-    assertEquals(StringBinaryTag.of("0da"), this.stringToTag("0da"));
-    assertEquals(StringBinaryTag.of("00000faa"), this.stringToTag("00000faa"));
-    assertEquals(StringBinaryTag.of("1350diamonds_plz"), this.stringToTag("1350diamonds_plz"));
+    assertEquals(StringBinaryTag.stringBinaryTag("0da"), this.stringToTag("0da"));
+    assertEquals(StringBinaryTag.stringBinaryTag("00000faa"), this.stringToTag("00000faa"));
+    assertEquals(StringBinaryTag.stringBinaryTag("1350diamonds_plz"), this.stringToTag("1350diamonds_plz"));
   }
 
   @Test
   void testByteArrayTag() throws IOException {
-    assertEquals("[B;1B,2B,3B]", this.tagToString(ByteArrayBinaryTag.of((byte) 1, (byte) 2, (byte) 3)));
-    assertEquals(ByteArrayBinaryTag.of((byte) 1, (byte) 1, (byte) 2, (byte) 3, (byte) 5, (byte) 8), this.stringToTag("[B; 1b, 1b, 2b, 3b, 5b, 8b]"));
+    assertEquals("[B;1B,2B,3B]", this.tagToString(ByteArrayBinaryTag.byteArrayBinaryTag((byte) 1, (byte) 2, (byte) 3)));
+    assertEquals(ByteArrayBinaryTag.byteArrayBinaryTag((byte) 1, (byte) 1, (byte) 2, (byte) 3, (byte) 5, (byte) 8), this.stringToTag("[B; 1b, 1b, 2b, 3b, 5b, 8b]"));
   }
 
   @Test
@@ -234,8 +234,8 @@ class StringIOTest {
     assertEquals(legacyInput, output.toString());
 
     final ListTagBuilder<BinaryTag> builder = new ListTagBuilder<>();
-    builder.add(StringBinaryTag.of("Tag #1"));
-    builder.add(StringBinaryTag.of("Tag #2"));
+    builder.add(StringBinaryTag.stringBinaryTag("Tag #1"));
+    builder.add(StringBinaryTag.stringBinaryTag("Tag #2"));
     assertEquals(builder.build(), tag);
   }
 
@@ -249,14 +249,14 @@ class StringIOTest {
 
   @Test
   void testIntArrayTag() throws IOException {
-    assertEquals("[I;1,2,3]", this.tagToString(IntArrayBinaryTag.of(1, 2, 3)));
-    assertEquals(IntArrayBinaryTag.of(2, 4, 6, 8, 10, 12), this.stringToTag("[I; 2, 4, 6, 8, 10, 12]"));
+    assertEquals("[I;1,2,3]", this.tagToString(IntArrayBinaryTag.intArrayBinaryTag(1, 2, 3)));
+    assertEquals(IntArrayBinaryTag.intArrayBinaryTag(2, 4, 6, 8, 10, 12), this.stringToTag("[I; 2, 4, 6, 8, 10, 12]"));
   }
 
   @Test
   void testLongArrayTag() throws IOException {
-    assertEquals("[L;1l,2l,3l]", this.tagToString(LongArrayBinaryTag.of(1, 2, 3)));
-    assertEquals(LongArrayBinaryTag.of(2, 4, 6, -8, 10, 12), this.stringToTag("[L; 2l, 4l, 6l, -8l, 10l, 12l]"));
+    assertEquals("[L;1l,2l,3l]", this.tagToString(LongArrayBinaryTag.longArrayBinaryTag(1, 2, 3)));
+    assertEquals(LongArrayBinaryTag.longArrayBinaryTag(2, 4, 6, -8, 10, 12), this.stringToTag("[L; 2l, 4l, 6l, -8l, 10l, 12l]"));
   }
 
   @Test
@@ -274,30 +274,30 @@ class StringIOTest {
 
   @Test
   void testEmptyByteArray() throws IOException {
-    assertEquals("[B;]", this.tagToString(ByteArrayBinaryTag.of()));
-    assertEquals(ByteArrayBinaryTag.of(), this.stringToTag("[B;]"));
-    assertEquals(ByteArrayBinaryTag.of(), this.stringToTag("[B; ]"));
+    assertEquals("[B;]", this.tagToString(ByteArrayBinaryTag.byteArrayBinaryTag()));
+    assertEquals(ByteArrayBinaryTag.byteArrayBinaryTag(), this.stringToTag("[B;]"));
+    assertEquals(ByteArrayBinaryTag.byteArrayBinaryTag(), this.stringToTag("[B; ]"));
   }
 
   @Test
   void testEmptyIntArray() throws IOException {
-    assertEquals("[I;]", this.tagToString(IntArrayBinaryTag.of()));
-    assertEquals(IntArrayBinaryTag.of(), this.stringToTag("[I;]"));
-    assertEquals(IntArrayBinaryTag.of(), this.stringToTag("[I; ]"));
+    assertEquals("[I;]", this.tagToString(IntArrayBinaryTag.intArrayBinaryTag()));
+    assertEquals(IntArrayBinaryTag.intArrayBinaryTag(), this.stringToTag("[I;]"));
+    assertEquals(IntArrayBinaryTag.intArrayBinaryTag(), this.stringToTag("[I; ]"));
   }
 
   @Test
   void testEmptyLongArray() throws IOException {
-    assertEquals("[L;]", this.tagToString(LongArrayBinaryTag.of()));
-    assertEquals(LongArrayBinaryTag.of(), this.stringToTag("[L;]"));
-    assertEquals(LongArrayBinaryTag.of(), this.stringToTag("[L; ]"));
+    assertEquals("[L;]", this.tagToString(LongArrayBinaryTag.longArrayBinaryTag()));
+    assertEquals(LongArrayBinaryTag.longArrayBinaryTag(), this.stringToTag("[L;]"));
+    assertEquals(LongArrayBinaryTag.longArrayBinaryTag(), this.stringToTag("[L; ]"));
   }
 
   @Test
   void testTrailingComma() throws IOException {
     assertEquals(CompoundBinaryTag.builder().putString("test", "hello").build(), this.stringToTag("{test: \"hello\",}"));
-    assertEquals(IntArrayBinaryTag.of(1), this.stringToTag("[I;1,]"));
-    assertEquals(ListBinaryTag.builder().add(StringBinaryTag.of("hello")).build(), this.stringToTag("[\"hello\",]"));
+    assertEquals(IntArrayBinaryTag.intArrayBinaryTag(1), this.stringToTag("[I;1,]"));
+    assertEquals(ListBinaryTag.builder().add(StringBinaryTag.stringBinaryTag("hello")).build(), this.stringToTag("[\"hello\",]"));
   }
 
   private String tagToString(final BinaryTag tag) throws IOException {

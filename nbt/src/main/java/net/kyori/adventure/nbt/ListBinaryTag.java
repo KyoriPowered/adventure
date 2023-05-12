@@ -26,6 +26,7 @@ package net.kyori.adventure.nbt;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -93,12 +94,30 @@ public interface ListBinaryTag extends ListTagSetter<ListBinaryTag, BinaryTag>, 
    * @param tags the elements
    * @return a tag
    * @throws IllegalArgumentException if {@code type} is {@link BinaryTagTypes#END}
-   * @since 4.0.0
+   * @since 4.14.0
    */
-  static @NotNull ListBinaryTag of(final @NotNull BinaryTagType<? extends BinaryTag> type, final @NotNull List<BinaryTag> tags) {
+  static @NotNull ListBinaryTag listBinaryTag(final @NotNull BinaryTagType<? extends BinaryTag> type, final @NotNull List<BinaryTag> tags) {
     if (tags.isEmpty()) return empty();
     if (type == BinaryTagTypes.END) throw new IllegalArgumentException("Cannot create a list of " + BinaryTagTypes.END);
     return new ListBinaryTagImpl(type, tags);
+  }
+
+  /**
+   * Creates a tag.
+   *
+   * <p>If {@code tags} is empty, {@link #empty()} will be returned.</p>
+   *
+   * @param type the element type
+   * @param tags the elements
+   * @return a tag
+   * @throws IllegalArgumentException if {@code type} is {@link BinaryTagTypes#END}
+   * @since 4.0.0
+   * @deprecated for removal since 4.14.0, use {@link #listBinaryTag(BinaryTagType, List)} instead.
+   */
+  @Deprecated
+  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
+  static @NotNull ListBinaryTag of(final @NotNull BinaryTagType<? extends BinaryTag> type, final @NotNull List<BinaryTag> tags) {
+    return listBinaryTag(type, tags);
   }
 
   @Override

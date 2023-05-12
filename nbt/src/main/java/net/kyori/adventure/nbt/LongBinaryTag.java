@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.nbt;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -36,8 +37,22 @@ public interface LongBinaryTag extends NumberBinaryTag {
    *
    * @param value the value
    * @return a binary tag
-   * @since 4.0.0
+   * @since 4.14.0
    */
+  static @NotNull LongBinaryTag longBinaryTag(final long value) {
+    return new LongBinaryTagImpl(value);
+  }
+
+  /**
+   * Creates a binary tag holding a {@code long} value.
+   *
+   * @param value the value
+   * @return a binary tag
+   * @since 4.0.0
+   * @deprecated for removal since 4.14.0, use {@link #longBinaryTag(long)} instead.
+   */
+  @Deprecated
+  @ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
   static @NotNull LongBinaryTag of(final long value) {
     return new LongBinaryTagImpl(value);
   }

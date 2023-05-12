@@ -85,7 +85,7 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
     }
     in.endObject();
 
-    return HoverEvent.ShowItem.of(key, count, nbt);
+    return HoverEvent.ShowItem.showItem(key, count, nbt);
   }
 
   @Override

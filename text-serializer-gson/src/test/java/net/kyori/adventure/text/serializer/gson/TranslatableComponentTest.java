@@ -66,7 +66,7 @@ class TranslatableComponentTest extends ComponentTest {
         KEY,
         Component.text().content(name)
           .clickEvent(ClickEvent.suggestCommand(command))
-          .hoverEvent(HoverEvent.showEntity(HoverEvent.ShowEntity.of(
+          .hoverEvent(HoverEvent.showEntity(HoverEvent.ShowEntity.showEntity(
             Key.key("minecraft", "player"),
             id,
             Component.text(name)
