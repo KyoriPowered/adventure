@@ -195,6 +195,38 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   /**
    * Joins {@code components} using the configuration in {@code config}.
    *
+   * @param configBuilder the join configuration
+   * @param components the components
+   * @return the resulting component
+   * @see JoinConfiguration#noSeparators()
+   * @see JoinConfiguration#separator(ComponentLike)
+   * @see JoinConfiguration#separators(ComponentLike, ComponentLike)
+   * @since 4.14.0
+   */
+  @Contract(pure = true)
+  static @NotNull Component join(final @NotNull JoinConfiguration.Builder configBuilder, final @NotNull ComponentLike@NotNull... components) {
+    return join(configBuilder.build(), Arrays.asList(components));
+  }
+
+  /**
+   * Joins {@code components} using the configuration in {@code config}.
+   *
+   * @param configBuilder the join configuration
+   * @param components the components
+   * @return the resulting component
+   * @see JoinConfiguration#noSeparators()
+   * @see JoinConfiguration#separator(ComponentLike)
+   * @see JoinConfiguration#separators(ComponentLike, ComponentLike)
+   * @since 4.14.0
+   */
+  @Contract(pure = true)
+  static @NotNull Component join(final @NotNull JoinConfiguration.Builder configBuilder, final @NotNull Iterable<? extends ComponentLike> components) {
+    return JoinConfigurationImpl.join(configBuilder.build(), components);
+  }
+
+  /**
+   * Joins {@code components} using the configuration in {@code config}.
+   *
    * @param config the join configuration
    * @param components the components
    * @return the resulting component
