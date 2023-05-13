@@ -23,19 +23,29 @@
  */
 package net.kyori.adventure.key;
 
-import org.jetbrains.annotations.NotNull;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import org.intellij.lang.annotations.Pattern;
 
-/**
- * Something that has a namespace.
- *
- * @since 4.4.0
- */
-public interface Namespaced {
-  /**
-   * Gets the namespace.
-   *
-   * @return the namespace
-   * @since 4.4.0
-   */
-  @NotNull @KeyPattern.Namespace String namespace();
+@Documented
+@Pattern("(?:(" + KeyImpl.NAMESPACE_PATTERN + ":)?|:)" + KeyImpl.VALUE_PATTERN)
+@Retention(RetentionPolicy.CLASS)
+@Target({ElementType.FIELD, ElementType.LOCAL_VARIABLE, ElementType.METHOD, ElementType.PARAMETER})
+@interface KeyPattern {
+  @Documented
+  @Pattern(KeyImpl.NAMESPACE_PATTERN)
+  @Retention(RetentionPolicy.CLASS)
+  @Target({ElementType.FIELD, ElementType.LOCAL_VARIABLE, ElementType.METHOD, ElementType.PARAMETER})
+  @interface Namespace {
+  }
+
+  @Documented
+  @Pattern(KeyImpl.VALUE_PATTERN)
+  @Retention(RetentionPolicy.CLASS)
+  @Target({ElementType.FIELD, ElementType.LOCAL_VARIABLE, ElementType.METHOD, ElementType.PARAMETER})
+  @interface Value {
+  }
 }
