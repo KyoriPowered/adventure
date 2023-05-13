@@ -31,6 +31,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.Locale;
 import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.TagPattern;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -58,7 +59,7 @@ public final class Formatter {
    * @return the placeholder
    * @since 4.11.0
    */
-  public static @NotNull TagResolver number(final @NotNull String key, final @NotNull Number number) {
+  public static @NotNull TagResolver number(@TagPattern final @NotNull String key, final @NotNull Number number) {
     return TagResolver.resolver(key, (argumentQueue, context) -> {
       final NumberFormat decimalFormat;
       if (argumentQueue.hasNext()) {
@@ -92,7 +93,7 @@ public final class Formatter {
    * @return the placeholder
    * @since 4.11.0
    */
-  public static @NotNull TagResolver date(final @NotNull String key, final @NotNull TemporalAccessor time) {
+  public static @NotNull TagResolver date(@TagPattern final @NotNull String key, final @NotNull TemporalAccessor time) {
     return TagResolver.resolver(key, (argumentQueue, context) -> {
       final String format = argumentQueue.popOr("Format expected.").value();
       return Tag.inserting(context.deserialize(DateTimeFormatter.ofPattern(format).format(time)));
@@ -111,7 +112,7 @@ public final class Formatter {
    * @return the placeholder
    * @since 4.11.0
    */
-  public static @NotNull TagResolver choice(final @NotNull String key, final Number number) {
+  public static @NotNull TagResolver choice(@TagPattern final @NotNull String key, final Number number) {
     return TagResolver.resolver(key, (argumentQueue, context) -> {
       final String format = argumentQueue.popOr("Format expected.").value();
       final ChoiceFormat choiceFormat = new ChoiceFormat(format);
@@ -131,7 +132,7 @@ public final class Formatter {
    * @return the placeholder
    * @since 4.13.0
    */
-  public static TagResolver booleanChoice(final @NotNull String key, final boolean value) {
+  public static TagResolver booleanChoice(@TagPattern final @NotNull String key, final boolean value) {
     return TagResolver.resolver(key, (argumentQueue, context) -> {
       final String trueCase = argumentQueue.popOr("True format expected.").value();
       final String falseCase = argumentQueue.popOr("False format expected.").value();

@@ -250,7 +250,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @since 4.0.0
    */
   @Override
-  @NotNull String namespace();
+  @NotNull @Pattern(KeyImpl.NAMESPACE_PATTERN) String namespace();
 
   /**
    * Gets the value.
@@ -258,7 +258,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @return the value
    * @since 4.0.0
    */
-  @NotNull String value();
+  @NotNull @Pattern(KeyImpl.VALUE_PATTERN) String value();
 
   /**
    * Returns the string representation of this key.

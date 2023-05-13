@@ -26,6 +26,8 @@ package net.kyori.adventure.text.minimessage.internal;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Pattern;
+import net.kyori.adventure.text.minimessage.tag.TagPattern;
+import org.intellij.lang.annotations.RegExp;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,7 +38,8 @@ import org.jetbrains.annotations.NotNull;
  */
 @ApiStatus.Internal
 public final class TagInternals {
-  private static final Pattern TAG_NAME_PATTERN = Pattern.compile("[!?#]?[a-z0-9_-]*");
+  public static final @RegExp String TAG_NAME_REGEX = "[!?#]?[a-z0-9_-]*";
+  private static final Pattern TAG_NAME_PATTERN = Pattern.compile(TAG_NAME_REGEX);
 
   private TagInternals() {
   }
@@ -48,7 +51,7 @@ public final class TagInternals {
    * @param tagName the name of the tag
    * @since 4.10.0
    */
-  public static void assertValidTagName(final @NotNull String tagName) {
+  public static void assertValidTagName(@TagPattern final @NotNull String tagName) {
     if (!TAG_NAME_PATTERN.matcher(Objects.requireNonNull(tagName)).matches()) {
       throw new IllegalArgumentException("Tag name must match pattern " + TAG_NAME_PATTERN.pattern() + ", was " + tagName);
     }
@@ -62,7 +65,7 @@ public final class TagInternals {
    * @return validity of this tag when sanitized
    * @since 4.10.1
    */
-  public static boolean sanitizeAndCheckValidTagName(final @NotNull String tagName) {
+  public static boolean sanitizeAndCheckValidTagName(@TagPattern final @NotNull String tagName) {
     return TAG_NAME_PATTERN.matcher(Objects.requireNonNull(tagName).toLowerCase(Locale.ROOT)).matches();
   }
 
@@ -74,7 +77,7 @@ public final class TagInternals {
    * @param tagName the name of the tag
    * @since 4.10.0
    */
-  public static void sanitizeAndAssertValidTagName(final @NotNull String tagName) {
+  public static void sanitizeAndAssertValidTagName(@TagPattern final @NotNull String tagName) {
     assertValidTagName(Objects.requireNonNull(tagName).toLowerCase(Locale.ROOT));
   }
 }
