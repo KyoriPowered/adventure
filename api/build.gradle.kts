@@ -5,7 +5,7 @@ plugins {
 
 configurations {
   testCompileOnly {
-    extendsFrom(compileOnlyApi.forUseAtConfigurationTime().get())
+    extendsFrom(compileOnlyApi.get())
   }
 }
 
