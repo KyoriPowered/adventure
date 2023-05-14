@@ -19,46 +19,47 @@ indra {
   }
   mitLicense()
 
+  signWithKeyFromPrefixedProperties("kyori")
   configurePublications {
     pom {
       developers {
         developer {
-          id.set("kashike")
-          timezone.set("America/Vancouver")
+          id = "kashike"
+          timezone = "America/Vancouver"
         }
 
         developer {
-          id.set("lucko")
-          name.set("Luck")
-          url.set("https://lucko.me")
-          email.set("git@lucko.me")
+          id = "lucko"
+          name = "Luck"
+          url = "https://lucko.me"
+          email = "git@lucko.me"
         }
 
         developer {
-          id.set("zml")
-          name.set("zml")
-          timezone.set("America/Vancouver")
+          id = "zml"
+          name = "zml"
+          timezone = "America/Vancouver"
         }
 
         developer {
-          id.set("Electroid")
+          id = "Electroid"
         }
 
         developer {
-          id.set("minidigger")
-          name.set("MiniDigger")
+          id = "minidigger"
+          name = "MiniDigger"
         }
 
         developer {
-          id.set("kezz")
+          id = "kezz"
         }
 
         developer {
-          id.set("broccolai")
+          id = "broccolai"
         }
 
         developer {
-          id.set("rymiel")
+          id = "rymiel"
         }
       }
     }

@@ -26,7 +26,7 @@ testlogger {
 
 plugins.withId("me.champeau.jmh") {
   extensions.configure(JmhParameters::class) {
-    jmhVersion.set(libs.versions.jmh.get())
+    jmhVersion = libs.versions.jmh.get()
   }
   tasks.named("compileJmhJava") {
     // avoid implicit task dependencies
@@ -76,7 +76,7 @@ val ADVENTURE_PREFIX = "adventure-"
 indraCrossdoc {
   baseUrl().set(providers.gradleProperty("javadocPublishRoot"))
   nameBasedDocumentationUrlProvider {
-    projectNamePrefix.set(ADVENTURE_PREFIX)
+    projectNamePrefix = ADVENTURE_PREFIX
   }
 }
 
