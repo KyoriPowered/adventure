@@ -76,7 +76,7 @@ public final class Services {
    * <p>When used in tandem with {@link #serviceWithFallback(Class)}, classes that implement this interface
    * will be ignored in favour of classes that do not implement this interface.</p>
    *
-   * @since 4.13.0
+   * @since 4.14.0
    */
   public interface Fallback {
   }
@@ -89,8 +89,8 @@ public final class Services {
    * @param type the service type
    * @param <P> the service type
    * @return a service, or {@link Optional#empty()}
-   * @since 4.13.0
    * @see Fallback
+   * @since 4.14.0
    */
   public static <P> @NotNull Optional<P> serviceWithFallback(final @NotNull Class<P> type) {
     final ServiceLoader<P> loader = Services0.loader(type);

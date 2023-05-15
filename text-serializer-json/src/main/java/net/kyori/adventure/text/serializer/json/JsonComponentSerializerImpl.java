@@ -33,12 +33,12 @@ final class JsonComponentSerializerImpl implements JsonComponentSerializer {
   private static final Optional<Provider> SERVICE = Services.serviceWithFallback(Provider.class);
 
   @Override
-  public @NotNull Component deserialize(@NotNull String input) {
+  public @NotNull Component deserialize(final @NotNull String input) {
     throw new UnsupportedOperationException("No JsonComponentSerializer implementation found");
   }
 
   @Override
-  public @NotNull String serialize(@NotNull Component component) {
+  public @NotNull String serialize(final @NotNull Component component) {
     throw new UnsupportedOperationException("No JsonComponentSerializer implementation found");
   }
 

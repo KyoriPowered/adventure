@@ -61,6 +61,7 @@ final class JsonComponentSerializerTest extends SerializerTest {
       )
     );
   }
+
   // https://github.com/KyoriPowered/adventure/issues/414
   @Test
   @SuppressWarnings("deprecation")

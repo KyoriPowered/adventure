@@ -50,7 +50,7 @@ public abstract class SerializerTest {
   }
 
   final void testStyle(final Style style, final Consumer<? super JsonObject> consumer) {
-    testObject(Component.text("", style), object -> {
+    this.testObject(Component.text("", style), object -> {
       object.addProperty(JsonComponentConstants.TEXT, "");
       consumer.accept(object);
     });
@@ -59,15 +59,15 @@ public abstract class SerializerTest {
   final void testArray(final Component component, final Consumer<? super JsonArray> consumer) {
     final JsonArray json = array(consumer);
 
-    assertEquals(json, serialize(component));
-    assertEquals(component, deserialize(json));
+    assertEquals(json, this.serialize(component));
+    assertEquals(component, this.deserialize(json));
   }
 
   final void testObject(final Component component, final Consumer<? super JsonObject> consumer) {
     final JsonObject json = object(consumer);
 
-    assertEquals(json, serialize(component));
-    assertEquals(component, deserialize(json));
+    assertEquals(json, this.serialize(component));
+    assertEquals(component, this.deserialize(json));
   }
 
   static JsonArray array(final Consumer<? super JsonArray> consumer) {

@@ -28,7 +28,7 @@ import org.jetbrains.annotations.ApiStatus;
 /**
  * Constants to aid in the creation and testing of JSON component serializers.
  *
- * @since 4.13.0
+ * @since 4.14.0
  */
 @ApiStatus.Internal
 public final class JsonComponentConstants {

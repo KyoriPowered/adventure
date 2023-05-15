@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Implementation of the JSON component serializer provider.
  *
- * @since 4.13.0
+ * @since 4.14.0
  */
 @ApiStatus.Internal
 public final class JsonComponentSerializerProviderImpl implements JsonComponentSerializer.Provider, Services.Fallback {

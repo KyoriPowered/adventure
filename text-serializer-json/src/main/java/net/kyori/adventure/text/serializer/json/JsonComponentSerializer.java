@@ -32,14 +32,14 @@ import org.jetbrains.annotations.NotNull;
 /**
  * A JSON component serializer.
  *
- * @since 4.13.0
+ * @since 4.14.0
  */
 public interface JsonComponentSerializer extends ComponentSerializer<Component, Component, String> {
   /**
    * Gets a component serializer for JSON serialization and deserialization.
    *
    * @return a JSON component serializer
-   * @since 4.13.0
+   * @since 4.14.0
    */
   static @NotNull JsonComponentSerializer json() {
     return JsonComponentSerializerImpl.Instances.INSTANCE;
@@ -48,7 +48,7 @@ public interface JsonComponentSerializer extends ComponentSerializer<Component, 
   /**
    * A {@link JsonComponentSerializer} service provider.
    *
-   * @since 4.13.0
+   * @since 4.14.0
    */
   @ApiStatus.Internal
   @PlatformAPI
@@ -57,7 +57,7 @@ public interface JsonComponentSerializer extends ComponentSerializer<Component, 
      * Provides a standard {@link JsonComponentSerializer}.
      *
      * @return a {@link JsonComponentSerializer}
-     * @since 4.13.0
+     * @since 4.14.0
      */
     @ApiStatus.Internal
     @PlatformAPI
