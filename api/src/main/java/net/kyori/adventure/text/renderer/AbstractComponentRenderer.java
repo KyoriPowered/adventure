@@ -144,7 +144,7 @@ public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<
    */
   @SuppressWarnings("unchecked")
   protected @NotNull Component renderVirtual(final @NotNull VirtualComponent component, final @NotNull C context) {
-    if (component.context().isInstance(context)) {
+    if (component.contextType().isInstance(context)) {
       return ((VirtualComponentRenderer<C>) component.renderer()).apply(context).asComponent();
     }
     return component; // will be processed as a TextComponent instead

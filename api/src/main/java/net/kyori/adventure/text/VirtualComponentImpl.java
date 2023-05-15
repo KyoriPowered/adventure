@@ -29,33 +29,33 @@ import net.kyori.adventure.text.format.Style;
 import org.jetbrains.annotations.NotNull;
 
 final class VirtualComponentImpl extends TextComponentImpl implements VirtualComponent {
-  static <C> VirtualComponent createVirtual(final @NotNull Class<C> context, final @NotNull VirtualComponentRenderer<?> renderer) {
-    return createVirtual(context, renderer, Collections.emptyList(), Style.empty());
+  static <C> VirtualComponent createVirtual(final @NotNull Class<C> contextType, final @NotNull VirtualComponentRenderer<?> renderer) {
+    return createVirtual(contextType, renderer, Collections.emptyList(), Style.empty());
   }
 
-  static <C> VirtualComponent createVirtual(final @NotNull Class<C> context, final @NotNull VirtualComponentRenderer<?> renderer, final List<? extends ComponentLike> children, final Style style) {
+  static <C> VirtualComponent createVirtual(final @NotNull Class<C> contextType, final @NotNull VirtualComponentRenderer<?> renderer, final List<? extends ComponentLike> children, final Style style) {
     final List<Component> filteredChildren = ComponentLike.asComponents(children, IS_NOT_EMPTY);
 
-    return new VirtualComponentImpl(filteredChildren, style, "", context, renderer);
+    return new VirtualComponentImpl(filteredChildren, style, "", contextType, renderer);
   }
 
-  private final Class<?> context;
+  private final Class<?> contextType;
   private final VirtualComponentRenderer<?> renderer;
 
-  private VirtualComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final @NotNull String content, final @NotNull Class<?> context, final @NotNull VirtualComponentRenderer<?> renderer) {
+  private VirtualComponentImpl(final @NotNull List<Component> children, final @NotNull Style style, final @NotNull String content, final @NotNull Class<?> contextType, final @NotNull VirtualComponentRenderer<?> renderer) {
     super(children, style, content);
-    this.context = context;
+    this.contextType = contextType;
     this.renderer = renderer;
   }
 
   @Override
   VirtualComponent create0(final @NotNull List<? extends ComponentLike> children, final @NotNull Style style, final @NotNull String content) {
-    return new VirtualComponentImpl(ComponentLike.asComponents(children, IS_NOT_EMPTY), style, content, this.context, this.renderer);
+    return new VirtualComponentImpl(ComponentLike.asComponents(children, IS_NOT_EMPTY), style, content, this.contextType, this.renderer);
   }
 
   @Override
-  public @NotNull Class<?> context() {
-    return this.context;
+  public @NotNull Class<?> contextType() {
+    return this.contextType;
   }
 
   @Override
@@ -74,18 +74,18 @@ final class VirtualComponentImpl extends TextComponentImpl implements VirtualCom
   }
 
   static final class BuilderImpl extends TextComponentImpl.BuilderImpl {
-    private final Class<?> context;
+    private final Class<?> contextType;
     private final VirtualComponentRenderer<?> renderer;
 
     BuilderImpl(final VirtualComponent other) {
       super(other);
-      this.context = other.context();
+      this.contextType = other.contextType();
       this.renderer = other.renderer();
     }
 
     @Override
     public @NotNull TextComponent build() {
-      return createVirtual(this.context, this.renderer, this.children, this.buildStyle());
+      return createVirtual(this.contextType, this.renderer, this.children, this.buildStyle());
     }
   }
 }

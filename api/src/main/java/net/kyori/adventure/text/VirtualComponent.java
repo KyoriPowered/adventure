@@ -39,7 +39,7 @@ public interface VirtualComponent extends TextComponent {
    * @return the renderer context type
    * @since 4.14.0
    */
-  @NotNull Class<?> context();
+  @NotNull Class<?> contextType();
 
   /**
    * Gets the renderer.
