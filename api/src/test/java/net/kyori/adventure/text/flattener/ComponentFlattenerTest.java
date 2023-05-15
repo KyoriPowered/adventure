@@ -215,7 +215,7 @@ class ComponentFlattenerTest {
     this.testFlatten(ComponentFlattener.basic(), Component.virtual(Object.class, context -> Component.text("test123")))
       .assertBalanced()
       .assertPushesAndPops(1)
-      .assertContents("test123");
+      .assertContents(""); // cannot get rendered value as we don't have a context available
   }
 
   @Test
