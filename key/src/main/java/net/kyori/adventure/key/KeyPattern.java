@@ -30,11 +30,21 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.intellij.lang.annotations.Pattern;
 
+/**
+ * An annotation used to annotate elements that must match against a valid {@link Key} pattern.
+ *
+ * @since 4.14.0
+ */
 @Documented
 @Pattern("(?:(" + KeyImpl.NAMESPACE_PATTERN + ":)?|:)" + KeyImpl.VALUE_PATTERN)
 @Retention(RetentionPolicy.CLASS)
 @Target({ElementType.FIELD, ElementType.LOCAL_VARIABLE, ElementType.METHOD, ElementType.PARAMETER})
-@interface KeyPattern {
+public @interface KeyPattern {
+  /**
+   * An annotation used to annotate elements that must match against a valid {@link Key} {@link Key#namespace() namespace} pattern.
+   *
+   * @since 4.14.0
+   */
   @Documented
   @Pattern(KeyImpl.NAMESPACE_PATTERN)
   @Retention(RetentionPolicy.CLASS)
@@ -42,6 +52,11 @@ import org.intellij.lang.annotations.Pattern;
   @interface Namespace {
   }
 
+  /**
+   * An annotation used to annotate elements that must match against a valid {@link Key} {@link Key#value() value} pattern.
+   *
+   * @since 4.14.0
+   */
   @Documented
   @Pattern(KeyImpl.VALUE_PATTERN)
   @Retention(RetentionPolicy.CLASS)
