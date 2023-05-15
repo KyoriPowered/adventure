@@ -112,4 +112,9 @@ class KeyTest {
   void testNulChar() {
     assertThrows(InvalidKeyException.class, () -> Key.key("carbon:global\0\0\0"));
   }
+
+  @Test
+  void testParseWithEmptyNamespace() {
+    assertEquals(Key.key(Key.MINECRAFT_NAMESPACE, "test"), Key.key(":test"));
+  }
 }

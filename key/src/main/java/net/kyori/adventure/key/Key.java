@@ -28,7 +28,6 @@ import java.util.OptionalInt;
 import java.util.stream.Stream;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
-import org.intellij.lang.annotations.Pattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -85,7 +84,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @throws InvalidKeyException if the namespace or value contains an invalid character
    * @since 4.0.0
    */
-  static @NotNull Key key(final @NotNull @Pattern("(" + KeyImpl.NAMESPACE_PATTERN + ":)?" + KeyImpl.VALUE_PATTERN) String string) {
+  static @NotNull Key key(final @NotNull @KeyPattern String string) {
     return key(string, DEFAULT_SEPARATOR);
   }
 
@@ -121,7 +120,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @throws InvalidKeyException if the namespace or value contains an invalid character
    * @since 4.4.0
    */
-  static @NotNull Key key(final @NotNull Namespaced namespaced, final @NotNull @Pattern(KeyImpl.VALUE_PATTERN) String value) {
+  static @NotNull Key key(final @NotNull Namespaced namespaced, final @NotNull @KeyPattern.Value String value) {
     return key(namespaced.namespace(), value);
   }
 
@@ -134,7 +133,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @throws InvalidKeyException if the namespace or value contains an invalid character
    * @since 4.0.0
    */
-  static @NotNull Key key(final @NotNull @Pattern(KeyImpl.NAMESPACE_PATTERN) String namespace, final @NotNull @Pattern(KeyImpl.VALUE_PATTERN) String value) {
+  static @NotNull Key key(final @NotNull @KeyPattern.Namespace String namespace, final @NotNull @KeyPattern.Value String value) {
     return new KeyImpl(namespace, value);
   }
 
@@ -250,7 +249,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @since 4.0.0
    */
   @Override
-  @NotNull @Pattern(KeyImpl.NAMESPACE_PATTERN) String namespace();
+  @NotNull @KeyPattern.Namespace String namespace();
 
   /**
    * Gets the value.
@@ -258,7 +257,7 @@ public interface Key extends Comparable<Key>, Examinable, Namespaced, Keyed {
    * @return the value
    * @since 4.0.0
    */
-  @NotNull @Pattern(KeyImpl.VALUE_PATTERN) String value();
+  @NotNull @KeyPattern.Value String value();
 
   /**
    * Returns the string representation of this key.
