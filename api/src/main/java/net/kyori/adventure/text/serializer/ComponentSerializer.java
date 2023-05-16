@@ -154,23 +154,23 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
     UnaryOperator<Component> DEFAULT_COMPACTING_METHOD = Component::compact;
 
     /**
-     * Specify a function that takes the component at the end of the parser process.
+     * Specify a function that takes the {@link I} at the end of the process.
      * <p>By default, this compacts the resulting component with {@link Component#compact()}.</p>
      *
      * @param postProcessor method run at the end of parsing
      * @return this builder
      * @since 4.14.0
      */
-    @NotNull Builder<I, O, R> postProcessor(final @NotNull UnaryOperator<Component> postProcessor);
+    @NotNull Builder<I, O, R> postProcessor(final @NotNull UnaryOperator<I> postProcessor);
 
     /**
-     * Specify a function that takes the string at the start of the parser process.
+     * Specify a function that takes the {@link R} at the start of the process.
      * <p>By default, this does absolutely nothing.</p>
      *
      * @param preProcessor method run at the start of parsing
      * @return this builder
      * @since 4.14.0
      */
-    @NotNull Builder<I, O, R> preProcessor(final @NotNull UnaryOperator<String> preProcessor);
+    @NotNull Builder<I, O, R> preProcessor(final @NotNull UnaryOperator<R> preProcessor);
   }
 }
