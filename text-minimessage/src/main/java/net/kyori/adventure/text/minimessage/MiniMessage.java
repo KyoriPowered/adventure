@@ -272,9 +272,15 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
     @Override
     @NotNull MiniMessage build();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @NotNull Builder postProcessor(final @NotNull UnaryOperator<Component> postProcessor);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @NotNull Builder preProcessor(final @NotNull UnaryOperator<String> preProcessor);
   }

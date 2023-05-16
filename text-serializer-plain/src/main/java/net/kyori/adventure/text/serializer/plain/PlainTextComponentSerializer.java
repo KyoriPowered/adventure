@@ -104,9 +104,15 @@ public interface PlainTextComponentSerializer extends ComponentSerializer<Compon
      */
     @NotNull Builder flattener(final @NotNull ComponentFlattener flattener);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @NotNull Builder postProcessor(final @NotNull UnaryOperator<Component> postProcessor);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @NotNull Builder preProcessor(final @NotNull UnaryOperator<String> preProcessor);
   }
