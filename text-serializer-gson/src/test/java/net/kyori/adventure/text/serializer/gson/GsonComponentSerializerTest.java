@@ -98,11 +98,6 @@ class GsonComponentSerializerTest {
     assertEquals(expected, GsonComponentSerializer.gson().deserialize(input));
   }
 
-  @Test
-  void preProcess() {
-    final Component component = Component.text("Hello, world!", NamedTextColor.RED);
-  }
-
   private static String name(final NamedTextColor color) {
     return NamedTextColor.NAMES.key(color);
   }

@@ -24,6 +24,7 @@
 package net.kyori.adventure.text.serializer.plain;
 
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -91,7 +92,7 @@ public interface PlainTextComponentSerializer extends ComponentSerializer<Compon
    *
    * @since 4.8.0
    */
-  interface Builder extends AbstractBuilder<PlainTextComponentSerializer>, Buildable.Builder<PlainTextComponentSerializer> {
+  interface Builder extends AbstractBuilder<PlainTextComponentSerializer>, Buildable.Builder<PlainTextComponentSerializer>, ComponentSerializer.Builder<Component, TextComponent, String> {
     /**
      * Set the component flattener to use.
      *
@@ -102,6 +103,12 @@ public interface PlainTextComponentSerializer extends ComponentSerializer<Compon
      * @since 4.8.0
      */
     @NotNull Builder flattener(final @NotNull ComponentFlattener flattener);
+
+    @Override
+    @NotNull Builder postProcessor(final @NotNull UnaryOperator<Component> postProcessor);
+
+    @Override
+    @NotNull Builder preProcessor(final @NotNull UnaryOperator<String> preProcessor);
   }
 
   /**

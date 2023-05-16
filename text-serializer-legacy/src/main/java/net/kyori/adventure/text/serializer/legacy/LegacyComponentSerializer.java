@@ -25,6 +25,7 @@ package net.kyori.adventure.text.serializer.legacy;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
@@ -160,7 +161,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    *
    * @since 4.0.0
    */
-  interface Builder extends AbstractBuilder<LegacyComponentSerializer>, Buildable.Builder<LegacyComponentSerializer> {
+  interface Builder extends AbstractBuilder<LegacyComponentSerializer>, Buildable.Builder<LegacyComponentSerializer>, ComponentSerializer.Builder<Component, TextComponent, String> {
     /**
      * Sets the legacy character used by the serializer.
      *
@@ -267,6 +268,12 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      * @since 4.14.0
      */
     @NotNull Builder formats(final @NotNull List<CharacterAndFormat> formats);
+
+    @Override
+    @NotNull Builder postProcessor(final @NotNull UnaryOperator<Component> postProcessor);
+
+    @Override
+    @NotNull Builder preProcessor(final @NotNull UnaryOperator<String> preProcessor);
 
     /**
      * Builds the serializer.

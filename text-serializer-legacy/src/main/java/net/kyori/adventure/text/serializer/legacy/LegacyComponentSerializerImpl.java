@@ -28,9 +28,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -43,6 +45,7 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextFormat;
+import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Services;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -66,10 +69,10 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   static final class Instances {
     static final LegacyComponentSerializer SECTION = SERVICE
       .map(Provider::legacySection)
-      .orElseGet(() -> new LegacyComponentSerializerImpl(SECTION_CHAR, HEX_CHAR, null, false, false, ComponentFlattener.basic(), CharacterAndFormatSet.DEFAULT));
+      .orElseGet(() -> new LegacyComponentSerializerImpl(SECTION_CHAR, HEX_CHAR, null, false, false, ComponentFlattener.basic(), CharacterAndFormatSet.DEFAULT, ComponentSerializer.Builder.DEFAULT_NO_OP, ComponentSerializer.Builder.DEFAULT_COMPACTING_METHOD));
     static final LegacyComponentSerializer AMPERSAND = SERVICE
       .map(Provider::legacyAmpersand)
-      .orElseGet(() -> new LegacyComponentSerializerImpl(AMPERSAND_CHAR, HEX_CHAR, null, false, false, ComponentFlattener.basic(), CharacterAndFormatSet.DEFAULT));
+      .orElseGet(() -> new LegacyComponentSerializerImpl(AMPERSAND_CHAR, HEX_CHAR, null, false, false, ComponentFlattener.basic(), CharacterAndFormatSet.DEFAULT, ComponentSerializer.Builder.DEFAULT_NO_OP, ComponentSerializer.Builder.DEFAULT_COMPACTING_METHOD));
   }
 
   private final char character;
@@ -79,8 +82,10 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   private final boolean useTerriblyStupidHexFormat; // (╯°□°)╯︵ ┻━┻
   private final ComponentFlattener flattener;
   private final CharacterAndFormatSet formats;
+  private final UnaryOperator<Component> postProcessor;
+  private final UnaryOperator<String> preProcessor;
 
-  LegacyComponentSerializerImpl(final char character, final char hexCharacter, final @Nullable TextReplacementConfig urlReplacementConfig, final boolean hexColours, final boolean useTerriblyStupidHexFormat, final ComponentFlattener flattener, final CharacterAndFormatSet formats) {
+  LegacyComponentSerializerImpl(final char character, final char hexCharacter, final @Nullable TextReplacementConfig urlReplacementConfig, final boolean hexColours, final boolean useTerriblyStupidHexFormat, final ComponentFlattener flattener, final CharacterAndFormatSet formats, final @NotNull UnaryOperator<String> preProcessor, final @NotNull UnaryOperator<Component> postProcessor) {
     this.character = character;
     this.hexCharacter = hexCharacter;
     this.urlReplacementConfig = urlReplacementConfig;
@@ -88,6 +93,8 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     this.useTerriblyStupidHexFormat = useTerriblyStupidHexFormat;
     this.flattener = flattener;
     this.formats = formats;
+    this.postProcessor = postProcessor;
+    this.preProcessor = preProcessor;
   }
 
   private @Nullable FormatCodeType determineFormatType(final char legacy, final String input, final int pos) {
@@ -453,6 +460,8 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     private boolean useTerriblyStupidHexFormat = false;
     private ComponentFlattener flattener = ComponentFlattener.basic();
     private CharacterAndFormatSet formats = CharacterAndFormatSet.DEFAULT;
+    private UnaryOperator<Component> postProcessor = DEFAULT_COMPACTING_METHOD;
+    private UnaryOperator<String> preProcessor = DEFAULT_NO_OP;
 
     BuilderImpl() {
       BUILDER.accept(this); // let service provider touch the builder before anybody else touches it
@@ -467,6 +476,8 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       this.useTerriblyStupidHexFormat = serializer.useTerriblyStupidHexFormat;
       this.flattener = serializer.flattener;
       this.formats = serializer.formats;
+      this.postProcessor = serializer.postProcessor;
+      this.preProcessor = serializer.preProcessor;
     }
 
     @Override
@@ -537,8 +548,20 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     @Override
+    public @NotNull Builder postProcessor(final @NotNull UnaryOperator<Component> postProcessor) {
+      this.postProcessor = Objects.requireNonNull(postProcessor, "postProcessor");
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder preProcessor(final @NotNull UnaryOperator<String> preProcessor) {
+      this.preProcessor = Objects.requireNonNull(preProcessor, "preProcessor");
+      return this;
+    }
+
+    @Override
     public @NotNull LegacyComponentSerializer build() {
-      return new LegacyComponentSerializerImpl(this.character, this.hexCharacter, this.urlReplacementConfig, this.hexColours, this.useTerriblyStupidHexFormat, this.flattener, this.formats);
+      return new LegacyComponentSerializerImpl(this.character, this.hexCharacter, this.urlReplacementConfig, this.hexColours, this.useTerriblyStupidHexFormat, this.flattener, this.formats, this.preProcessor, this.postProcessor);
     }
   }
 

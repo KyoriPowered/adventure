@@ -23,10 +23,13 @@
  */
 package net.kyori.adventure.text.serializer.plain;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
+import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Services;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,16 +48,20 @@ final class PlainTextComponentSerializerImpl implements PlainTextComponentSerial
       // NOOP
     });
   final ComponentFlattener flattener;
+  private final UnaryOperator<Component> postProcessor;
+  private final UnaryOperator<String> preProcessor;
 
   // We cannot store these fields in PlainTextComponentSerializerImpl directly due to class initialisation issues.
   static final class Instances {
     static final PlainTextComponentSerializer INSTANCE = SERVICE
       .map(Provider::plainTextSimple)
-      .orElseGet(() -> new PlainTextComponentSerializerImpl(DEFAULT_FLATTENER));
+      .orElseGet(() -> new PlainTextComponentSerializerImpl(DEFAULT_FLATTENER, ComponentSerializer.Builder.DEFAULT_NO_OP, ComponentSerializer.Builder.DEFAULT_COMPACTING_METHOD));
   }
 
-  PlainTextComponentSerializerImpl(final ComponentFlattener flattener) {
+  PlainTextComponentSerializerImpl(final ComponentFlattener flattener, final @NotNull UnaryOperator<String> preProcessor, final @NotNull UnaryOperator<Component> postProcessor) {
     this.flattener = flattener;
+    this.preProcessor = preProcessor;
+    this.postProcessor = postProcessor;
   }
 
   @Override
@@ -69,6 +76,8 @@ final class PlainTextComponentSerializerImpl implements PlainTextComponentSerial
 
   static final class BuilderImpl implements PlainTextComponentSerializer.Builder {
     private ComponentFlattener flattener = DEFAULT_FLATTENER;
+    private UnaryOperator<Component> postProcessor = DEFAULT_COMPACTING_METHOD;
+    private UnaryOperator<String> preProcessor = DEFAULT_NO_OP;
 
     BuilderImpl() {
       BUILDER.accept(this);
@@ -77,6 +86,8 @@ final class PlainTextComponentSerializerImpl implements PlainTextComponentSerial
     BuilderImpl(final PlainTextComponentSerializerImpl serializer) {
       this();
       this.flattener = serializer.flattener;
+      this.postProcessor = serializer.postProcessor;
+      this.preProcessor = serializer.preProcessor;
     }
 
     @Override
@@ -86,8 +97,20 @@ final class PlainTextComponentSerializerImpl implements PlainTextComponentSerial
     }
 
     @Override
+    public @NotNull Builder postProcessor(final @NotNull UnaryOperator<Component> postProcessor) {
+      this.postProcessor = Objects.requireNonNull(postProcessor, "postProcessor");
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder preProcessor(final @NotNull UnaryOperator<String> preProcessor) {
+      this.preProcessor = Objects.requireNonNull(preProcessor, "preProcessor");
+      return this;
+    }
+
+    @Override
     public @NotNull PlainTextComponentSerializer build() {
-      return new PlainTextComponentSerializerImpl(this.flattener);
+      return new PlainTextComponentSerializerImpl(this.flattener, this.preProcessor, this.postProcessor);
     }
   }
 }
