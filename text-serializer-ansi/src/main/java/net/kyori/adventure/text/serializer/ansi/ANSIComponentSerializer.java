@@ -24,10 +24,12 @@
 package net.kyori.adventure.text.serializer.ansi;
 
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.serializer.ComponentEncoder;
+import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.PlatformAPI;
 import net.kyori.ansi.ColorLevel;
 import org.jetbrains.annotations.ApiStatus;
@@ -68,7 +70,7 @@ public interface ANSIComponentSerializer extends ComponentEncoder<Component, Str
    *
    * @since 4.14.0
    */
-  interface Builder extends AbstractBuilder<ANSIComponentSerializer> {
+  interface Builder extends AbstractBuilder<ANSIComponentSerializer>, ComponentSerializer.Builder<Component, Component, String> {
     /**
      * Sets the default color level used when serializing.
      *
@@ -91,6 +93,12 @@ public interface ANSIComponentSerializer extends ComponentEncoder<Component, Str
      * @since 4.14.0
      */
     @NotNull Builder flattener(final @NotNull ComponentFlattener componentFlattener);
+
+    @Override
+    @NotNull Builder postProcessor(final @NotNull UnaryOperator<Component> postProcessor);
+
+    @Override
+    @NotNull Builder preProcessor(final @NotNull UnaryOperator<String> preProcessor);
 
     /**
      * Builds the serializer.

@@ -118,7 +118,7 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
    *
    * @since 4.0.0
    */
-  interface Builder extends AbstractBuilder<GsonComponentSerializer>, Buildable.Builder<GsonComponentSerializer> {
+  interface Builder extends AbstractBuilder<GsonComponentSerializer>, Buildable.Builder<GsonComponentSerializer>, ComponentSerializer.Builder<Component, Component, String> {
     /**
      * Sets that the serializer should downsample hex colors to named colors.
      *
@@ -148,6 +148,12 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
      * @since 4.0.0
      */
     @NotNull Builder emitLegacyHoverEvent();
+
+    @Override
+    @NotNull Builder postProcessor(final @NotNull UnaryOperator<Component> postProcessor);
+
+    @Override
+    @NotNull Builder preProcessor(final @NotNull UnaryOperator<String> preProcessor);
 
     /**
      * Builds the serializer.

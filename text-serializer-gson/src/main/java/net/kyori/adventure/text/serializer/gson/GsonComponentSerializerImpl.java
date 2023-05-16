@@ -26,10 +26,12 @@ package net.kyori.adventure.text.serializer.gson;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Services;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,10 +48,10 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
   static final class Instances {
     static final GsonComponentSerializer INSTANCE = SERVICE
       .map(Provider::gson)
-      .orElseGet(() -> new GsonComponentSerializerImpl(false, null, false));
+      .orElseGet(() -> new GsonComponentSerializerImpl(false, null, false, ComponentSerializer.Builder.DEFAULT_NO_OP, ComponentSerializer.Builder.DEFAULT_COMPACTING_METHOD));
     static final GsonComponentSerializer LEGACY_INSTANCE = SERVICE
       .map(Provider::gsonLegacy)
-      .orElseGet(() -> new GsonComponentSerializerImpl(true, null, true));
+      .orElseGet(() -> new GsonComponentSerializerImpl(true, null, true, ComponentSerializer.Builder.DEFAULT_NO_OP, ComponentSerializer.Builder.DEFAULT_COMPACTING_METHOD));
   }
 
   private final Gson serializer;
@@ -57,11 +59,15 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
   private final boolean downsampleColor;
   private final @Nullable LegacyHoverEventSerializer legacyHoverSerializer;
   private final boolean emitLegacyHover;
+  private final UnaryOperator<Component> postProcessor;
+  private final UnaryOperator<String> preProcessor;
 
-  GsonComponentSerializerImpl(final boolean downsampleColor, final @Nullable LegacyHoverEventSerializer legacyHoverSerializer, final boolean emitLegacyHover) {
+  GsonComponentSerializerImpl(final boolean downsampleColor, final @Nullable LegacyHoverEventSerializer legacyHoverSerializer, final boolean emitLegacyHover, final @NotNull UnaryOperator<String> preProcessor, final @NotNull UnaryOperator<Component> postProcessor) {
     this.downsampleColor = downsampleColor;
     this.legacyHoverSerializer = legacyHoverSerializer;
     this.emitLegacyHover = emitLegacyHover;
+    this.preProcessor = preProcessor;
+    this.postProcessor = postProcessor;
     this.populator = builder -> {
       builder.registerTypeAdapterFactory(new SerializerFactory(downsampleColor, legacyHoverSerializer, emitLegacyHover));
       return builder;
@@ -123,6 +129,8 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
     private boolean downsampleColor = false;
     private @Nullable LegacyHoverEventSerializer legacyHoverSerializer;
     private boolean emitLegacyHover = false;
+    private UnaryOperator<Component> postProcessor = DEFAULT_COMPACTING_METHOD;
+    private UnaryOperator<String> preProcessor = DEFAULT_NO_OP;
 
     BuilderImpl() {
       BUILDER.accept(this); // let service provider touch the builder before anybody else touches it
@@ -133,6 +141,8 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
       this.downsampleColor = serializer.downsampleColor;
       this.emitLegacyHover = serializer.emitLegacyHover;
       this.legacyHoverSerializer = serializer.legacyHoverSerializer;
+      this.postProcessor = serializer.postProcessor;
+      this.preProcessor = serializer.preProcessor;
     }
 
     @Override
@@ -154,11 +164,23 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
     }
 
     @Override
+    public @NotNull Builder postProcessor(final @NotNull UnaryOperator<Component> postProcessor) {
+      this.postProcessor = Objects.requireNonNull(postProcessor, "postProcessor");
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder preProcessor(final @NotNull UnaryOperator<String> preProcessor) {
+      this.preProcessor = Objects.requireNonNull(preProcessor, "preProcessor");
+      return this;
+    }
+
+    @Override
     public @NotNull GsonComponentSerializer build() {
       if (this.legacyHoverSerializer == null) {
         return this.downsampleColor ? Instances.LEGACY_INSTANCE : Instances.INSTANCE;
       } else {
-        return new GsonComponentSerializerImpl(this.downsampleColor, this.legacyHoverSerializer, this.emitLegacyHover);
+        return new GsonComponentSerializerImpl(this.downsampleColor, this.legacyHoverSerializer, this.emitLegacyHover, this.preProcessor, this.postProcessor);
       }
     }
   }

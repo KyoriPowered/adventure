@@ -23,8 +23,10 @@
  */
 package net.kyori.adventure.text.serializer.ansi;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
@@ -32,6 +34,7 @@ import net.kyori.adventure.text.flattener.FlattenerListener;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Services;
 import net.kyori.ansi.ANSIComponentRenderer;
 import net.kyori.ansi.ColorLevel;
@@ -55,12 +58,17 @@ final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
   static final class Instances {
     static final ANSIComponentSerializer INSTANCE = SERVICE
       .map(Provider::ansi)
-      .orElseGet(() -> new ANSIComponentSerializerImpl(ColorLevel.compute(), ComponentFlattener.basic()));
+      .orElseGet(() -> new ANSIComponentSerializerImpl(ColorLevel.compute(), ComponentFlattener.basic(), ComponentSerializer.Builder.DEFAULT_NO_OP, ComponentSerializer.Builder.DEFAULT_COMPACTING_METHOD));
   }
 
-  ANSIComponentSerializerImpl(final ColorLevel colorLevel, final ComponentFlattener flattener) {
+  private final UnaryOperator<Component> postProcessor;
+  private final UnaryOperator<String> preProcessor;
+
+  ANSIComponentSerializerImpl(final ColorLevel colorLevel, final ComponentFlattener flattener, final @NotNull UnaryOperator<String> preProcessor, final @NotNull UnaryOperator<Component> postProcessor) {
     this.colorLevel = colorLevel;
     this.flattener = flattener;
+    this.postProcessor = postProcessor;
+    this.preProcessor = preProcessor;
   }
 
   @Override
@@ -150,6 +158,8 @@ final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
   static final class BuilderImpl implements ANSIComponentSerializer.Builder {
     private ColorLevel colorLevel = ColorLevel.compute();
     private ComponentFlattener flattener = ComponentFlattener.basic();
+    private UnaryOperator<Component> postProcessor = DEFAULT_COMPACTING_METHOD;
+    private UnaryOperator<String> preProcessor = DEFAULT_NO_OP;
 
     BuilderImpl() {
       BUILDER.accept(this);
@@ -168,8 +178,20 @@ final class ANSIComponentSerializerImpl implements ANSIComponentSerializer {
     }
 
     @Override
+    public @NotNull Builder postProcessor(final @NotNull UnaryOperator<Component> postProcessor) {
+      this.postProcessor = Objects.requireNonNull(postProcessor, "postProcessor");
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder preProcessor(final @NotNull UnaryOperator<String> preProcessor) {
+      this.preProcessor = Objects.requireNonNull(preProcessor, "preProcessor");
+      return this;
+    }
+
+    @Override
     public @NotNull ANSIComponentSerializer build() {
-      return new ANSIComponentSerializerImpl(this.colorLevel, this.flattener);
+      return new ANSIComponentSerializerImpl(this.colorLevel, this.flattener, this.preProcessor, this.postProcessor);
     }
   }
 }
