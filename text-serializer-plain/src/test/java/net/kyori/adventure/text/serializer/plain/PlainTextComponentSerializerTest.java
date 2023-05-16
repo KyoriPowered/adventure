@@ -43,10 +43,10 @@ class PlainTextComponentSerializerTest {
 
   @Test
   void testPreprocessing() {
-    final Component expected = PlainTextComponentSerializer.plainText().deserialize("Hello, world!");
+    final Component expected = PlainTextComponentSerializer.plainText().deserialize("Hello, universe!");
 
     final String input = "Hello";
-    final PlainTextComponentSerializer plainText = PlainTextComponentSerializer.builder().preProcessor(str -> str + ", world!").build();
+    final PlainTextComponentSerializer plainText = PlainTextComponentSerializer.builder().preProcessor(str -> str + ", universe!").build();
     this.assertParsedEquals(plainText, expected, input);
   }
 
