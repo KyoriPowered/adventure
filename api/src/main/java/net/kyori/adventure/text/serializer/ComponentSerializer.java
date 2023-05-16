@@ -140,11 +140,15 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
   }
 
   /**
+   * A {@link Component} serializer and deserializer builder.
    *
+   * @param <I> the input component type
+   * @param <O> the output component type
+   * @param <R> the serialized type
    *
    * @since 4.14.0
    */
-  interface Builder {
+  interface Builder<I extends Component, O extends Component, R> {
 
     UnaryOperator<String> DEFAULT_NO_OP = UnaryOperator.identity();
     UnaryOperator<Component> DEFAULT_COMPACTING_METHOD = Component::compact;
@@ -157,7 +161,7 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
      * @return this builder
      * @since 4.14.0
      */
-    @NotNull Builder postProcessor(final @NotNull UnaryOperator<Component> postProcessor);
+    @NotNull Builder<I, O, R> postProcessor(final @NotNull UnaryOperator<Component> postProcessor);
 
     /**
      * Specify a function that takes the string at the start of the parser process.
@@ -167,6 +171,6 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
      * @return this builder
      * @since 4.14.0
      */
-    @NotNull Builder preProcessor(final @NotNull UnaryOperator<String> preProcessor);
+    @NotNull Builder<I, O, R> preProcessor(final @NotNull UnaryOperator<String> preProcessor);
   }
 }
