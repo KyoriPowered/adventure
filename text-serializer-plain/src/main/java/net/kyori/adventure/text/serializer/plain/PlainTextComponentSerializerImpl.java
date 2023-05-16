@@ -67,12 +67,11 @@ final class PlainTextComponentSerializerImpl implements PlainTextComponentSerial
 
   @Override
   public void serialize(final @NotNull StringBuilder sb, final @NotNull Component component) {
-    sb.append(this.postProcessor.apply(requireNonNull(component, "component")));
-//    this.flattener.flatten(this.postProcessor.apply(requireNonNull(component, "component")), sb::append);
+    this.flattener.flatten(this.postProcessor.apply(requireNonNull(component, "component")), sb::append);
   }
 
   @Override
-  public @NotNull TextComponent deserialize(@NotNull String input) {
+  public @NotNull TextComponent deserialize(final @NotNull String input) {
     return Component.text(this.preProcessor.apply(input));
   }
 

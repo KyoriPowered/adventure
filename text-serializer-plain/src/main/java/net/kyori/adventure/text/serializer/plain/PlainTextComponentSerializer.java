@@ -66,11 +66,6 @@ public interface PlainTextComponentSerializer extends ComponentSerializer<Compon
     return new PlainTextComponentSerializerImpl.BuilderImpl();
   }
 
-//  @Override
-//  default @NotNull TextComponent deserialize(final @NotNull String input) {
-//    return Component.text(input);
-//  }
-
   @Override
   default @NotNull String serialize(final @NotNull Component component) {
     final StringBuilder sb = new StringBuilder();
