@@ -49,7 +49,6 @@ class LegacyComponentSerializerTest {
     assertEquals(component, LegacyComponentSerializer.legacySection().deserialize("foo"));
   }
 
-//  @Test
   void testPreprocessing() {
     final Component expected = LegacyComponentSerializer.legacyAmpersand().deserialize("&4Hello, universe!");
 
