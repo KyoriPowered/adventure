@@ -25,12 +25,17 @@ package net.kyori.adventure.text.serializer.legacy;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.ComponentSerializer;
+import net.kyori.examination.string.MultiLineStringExaminer;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,6 +49,40 @@ class LegacyComponentSerializerTest {
   void testSimpleFrom() {
     final TextComponent component = Component.text("foo");
     assertEquals(component, LegacyComponentSerializer.legacySection().deserialize("foo"));
+  }
+
+  @Test
+  void testPreprocessing() {
+    final Component expected = LegacyComponentSerializer.legacyAmpersand().deserialize("&4Hello, universe!");
+
+    final String input = "Hello";
+    final LegacyComponentSerializer plainText = LegacyComponentSerializer.builder().character('&').preProcessor(str -> "&4" + str + ", universe!").build();
+    this.assertParsedEquals(plainText, expected, input);
+  }
+
+//  @Test
+//  void testPostprocessing() {
+//    final Component expected = LegacyComponentSerializer.legacyAmpersand().deserialize("&4Hello, world!");
+//
+//    final String input = "&4Hello, you!";
+//    final LegacyComponentSerializer plainText = LegacyComponentSerializer.builder().character('&').postProcessor(comp -> comp.replaceText(
+//      TextReplacementConfig.builder()
+//        .matchLiteral("you!")
+//        .replacement("world!")
+//        .build())
+//    ).build();
+//    this.assertParsedEquals(plainText, expected, input);
+//  }
+
+  // temp
+  protected void assertParsedEquals(final ComponentSerializer<Component, TextComponent, String> serializer, final Component expected, final String input) {
+    final String expectedSerialized = this.prettyPrint(expected.compact());
+    final String actual = this.prettyPrint(serializer.deserialize(input).compact());
+    assertEquals(expectedSerialized, actual);
+  }
+
+  protected final String prettyPrint(final Component component) {
+    return component.examine(MultiLineStringExaminer.simpleEscaping()).collect(Collectors.joining("\n"));
   }
 
   @Test

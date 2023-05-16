@@ -211,9 +211,10 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
   @Override
   public @NotNull TextComponent deserialize(final @NotNull String input) {
-    int next = input.lastIndexOf(this.character, input.length() - 2);
+    final String processed = this.preProcessor.apply(input);
+    int next = processed.lastIndexOf(this.character, processed.length() - 2);
     if (next == -1) {
-      return this.extractUrl(Component.text(input));
+      return this.extractUrl(Component.text(processed));
     }
 
     final List<TextComponent> parts = new ArrayList<>();
@@ -223,7 +224,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
 
     int pos = input.length();
     do {
-      final DecodedFormat decoded = this.decodeTextFormat(input.charAt(next + 1), input, next + 2);
+      final DecodedFormat decoded = this.decodeTextFormat(processed.charAt(next + 1), processed, next + 2);
       if (decoded != null) {
         final int from = next + (decoded.encodedFormat == FormatCodeType.KYORI_HEX ? 8 : 2);
         if (from != pos) {
@@ -239,7 +240,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
             current = Component.text();
           }
 
-          current.content(input.substring(from, pos));
+          current.content(processed.substring(from, pos));
         } else if (current == null) {
           current = Component.text();
         }
@@ -256,14 +257,14 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
         pos = next;
       }
 
-      next = input.lastIndexOf(this.character, next - 1);
+      next = processed.lastIndexOf(this.character, next - 1);
     } while (next != -1);
 
     if (current != null) {
       parts.add(current.build());
     }
 
-    final String remaining = pos > 0 ? input.substring(0, pos) : "";
+    final String remaining = pos > 0 ? processed.substring(0, pos) : "";
     if (parts.size() == 1 && remaining.isEmpty()) {
       return this.extractUrl(parts.get(0));
     } else {
@@ -275,7 +276,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
   @Override
   public @NotNull String serialize(final @NotNull Component component) {
     final Cereal state = new Cereal();
-    this.flattener.flatten(component, state);
+    this.flattener.flatten(this.postProcessor.apply(component), state);
     return state.toString();
   }
 
