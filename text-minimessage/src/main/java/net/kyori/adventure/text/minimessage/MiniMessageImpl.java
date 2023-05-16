@@ -31,6 +31,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tree.Node;
+import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Services;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -54,11 +55,8 @@ final class MiniMessageImpl implements MiniMessage {
   static final class Instances {
     static final MiniMessage INSTANCE = SERVICE
       .map(Provider::miniMessage)
-      .orElseGet(() -> new MiniMessageImpl(TagResolver.standard(), false, null, DEFAULT_NO_OP, DEFAULT_COMPACTING_METHOD));
+      .orElseGet(() -> new MiniMessageImpl(TagResolver.standard(), false, null, ComponentSerializer.Builder.DEFAULT_NO_OP, ComponentSerializer.Builder.DEFAULT_COMPACTING_METHOD));
   }
-
-  static final UnaryOperator<String> DEFAULT_NO_OP = UnaryOperator.identity();
-  static final UnaryOperator<Component> DEFAULT_COMPACTING_METHOD = Component::compact;
 
   private final boolean strict;
   private final @Nullable Consumer<String> debugOutput;

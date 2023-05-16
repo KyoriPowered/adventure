@@ -211,7 +211,7 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
    *
    * @since 4.10.0
    */
-  interface Builder extends AbstractBuilder<MiniMessage> {
+  interface Builder extends AbstractBuilder<MiniMessage>, ComponentSerializer.Builder {
 
     /**
      * Set the known tags to the provided tag resolver.
@@ -263,25 +263,25 @@ public interface MiniMessage extends ComponentSerializer<Component, Component, S
      */
     @NotNull Builder debug(final @Nullable Consumer<String> debugOutput);
 
-    /**
-     * Specify a function that takes the component at the end of the parser process.
-     * <p>By default, this compacts the resulting component with {@link Component#compact()}.</p>
-     *
-     * @param postProcessor method run at the end of parsing
-     * @return this builder
-     * @since 4.10.0
-     */
-    @NotNull Builder postProcessor(final @NotNull UnaryOperator<Component> postProcessor);
-
-    /**
-     * Specify a function that takes the string at the start of the parser process.
-     * <p>By default, this does absolutely nothing.</p>
-     *
-     * @param preProcessor method run at the start of parsing
-     * @return this builder
-     * @since 4.11.0
-     */
-    @NotNull Builder preProcessor(final @NotNull UnaryOperator<String> preProcessor);
+//    /**
+//     * Specify a function that takes the component at the end of the parser process.
+//     * <p>By default, this compacts the resulting component with {@link Component#compact()}.</p>
+//     *
+//     * @param postProcessor method run at the end of parsing
+//     * @return this builder
+//     * @since 4.10.0
+//     */
+//    @NotNull Builder postProcessor(final @NotNull UnaryOperator<Component> postProcessor);
+//
+//    /**
+//     * Specify a function that takes the string at the start of the parser process.
+//     * <p>By default, this does absolutely nothing.</p>
+//     *
+//     * @param preProcessor method run at the start of parsing
+//     * @return this builder
+//     * @since 4.11.0
+//     */
+//    @NotNull Builder preProcessor(final @NotNull UnaryOperator<String> preProcessor);
 
     /**
      * Builds the serializer.

@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.serializer;
 
+import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
@@ -136,5 +137,36 @@ public interface ComponentSerializer<I extends Component, O extends Component, R
     if (component == null) return fallback;
 
     return this.serialize(component);
+  }
+
+  /**
+   *
+   *
+   * @since 4.14.0
+   */
+  interface Builder {
+
+    UnaryOperator<String> DEFAULT_NO_OP = UnaryOperator.identity();
+    UnaryOperator<Component> DEFAULT_COMPACTING_METHOD = Component::compact;
+
+    /**
+     * Specify a function that takes the component at the end of the parser process.
+     * <p>By default, this compacts the resulting component with {@link Component#compact()}.</p>
+     *
+     * @param postProcessor method run at the end of parsing
+     * @return this builder
+     * @since 4.14.0
+     */
+    @NotNull Builder postProcessor(final @NotNull UnaryOperator<Component> postProcessor);
+
+    /**
+     * Specify a function that takes the string at the start of the parser process.
+     * <p>By default, this does absolutely nothing.</p>
+     *
+     * @param preProcessor method run at the start of parsing
+     * @return this builder
+     * @since 4.14.0
+     */
+    @NotNull Builder preProcessor(final @NotNull UnaryOperator<String> preProcessor);
   }
 }
