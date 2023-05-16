@@ -23,10 +23,14 @@
  */
 package net.kyori.adventure.text.serializer.plain;
 
+import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.ComponentSerializer;
+import net.kyori.examination.string.MultiLineStringExaminer;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,6 +39,29 @@ class PlainTextComponentSerializerTest {
   @Test
   void testSimpleFrom() {
     assertEquals(Component.text("foo"), PlainTextComponentSerializer.plainText().deserialize("foo"));
+  }
+
+  @Test
+  void testPreprocessing() {
+    final Component expected = PlainTextComponentSerializer.plainText().deserialize("Hello, world!");
+
+    final String input = "Hello";
+    final PlainTextComponentSerializer plainText = PlainTextComponentSerializer.builder().preProcessor(str -> str + ", world!").build();
+    this.assertParsedEquals(plainText, expected, input);
+  }
+
+  @Test
+  void testPostprocessing() {
+    final Component expected = PlainTextComponentSerializer.plainText().deserialize("Hello, world!");
+
+    final String input = "Hello, you!";
+    final PlainTextComponentSerializer plainText = PlainTextComponentSerializer.builder().postProcessor(comp -> comp.replaceText(
+      TextReplacementConfig.builder()
+        .matchLiteral("you!")
+        .replacement("world!")
+        .build())
+    ).build();
+    this.assertParsedEquals(plainText, expected, input);
   }
 
   @Test
@@ -67,5 +94,16 @@ class PlainTextComponentSerializerTest {
       )
       .build();
     assertEquals("Hello there, you!", PlainTextComponentSerializer.plainText().serialize(c2));
+  }
+
+  // temp
+  protected void assertParsedEquals(final ComponentSerializer<Component, TextComponent, String> serializer, final Component expected, final String input) {
+    final String expectedSerialized = this.prettyPrint(expected.compact());
+    final String actual = this.prettyPrint(serializer.deserialize(input).compact());
+    assertEquals(expectedSerialized, actual);
+  }
+
+  protected final String prettyPrint(final Component component) {
+    return component.examine(MultiLineStringExaminer.simpleEscaping()).collect(Collectors.joining("\n"));
   }
 }

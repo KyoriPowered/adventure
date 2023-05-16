@@ -127,7 +127,7 @@ public class MiniMessageTest extends AbstractTest {
     final Component expected = MiniMessage.miniMessage().deserialize("<red>Hello, world!</red>");
 
     final String input = "Hello";
-    final MiniMessage miniMessage = MiniMessage.builder().preProcessor(str -> "<red>" + str + ", world!</red>").build();
+    final MiniMessage miniMessage = MiniMessage.builder().debug(System.out::print).preProcessor(str -> "<red>" + str + ", world!</red>").build();
     this.assertParsedEquals(miniMessage, expected, input);
   }
 

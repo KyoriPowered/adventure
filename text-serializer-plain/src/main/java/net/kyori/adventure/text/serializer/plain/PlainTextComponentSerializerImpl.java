@@ -28,6 +28,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Services;
@@ -66,7 +67,12 @@ final class PlainTextComponentSerializerImpl implements PlainTextComponentSerial
 
   @Override
   public void serialize(final @NotNull StringBuilder sb, final @NotNull Component component) {
-    this.flattener.flatten(requireNonNull(component, "component"), sb::append);
+    this.flattener.flatten(this.postProcessor.apply(requireNonNull(component, "component")), sb::append);
+  }
+
+  @Override
+  public @NotNull TextComponent deserialize(@NotNull String input) {
+    return Component.text(this.preProcessor.apply(input));
   }
 
   @Override
