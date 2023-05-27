@@ -48,6 +48,19 @@ import static java.util.Objects.requireNonNull;
  */
 public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, StyleBuilderApplicable, TextFormat {
   /**
+   * The hex character.
+   *
+   * @since 4.14.0
+   */
+  char HEX_CHARACTER = '#';
+  /**
+   * The hex character, in {@code String} format.
+   *
+   * @since 4.14.0
+   */
+  String HEX_PREFIX = "#";
+
+  /**
    * Creates a new text colour.
    *
    * @param value the rgb value
@@ -144,7 +157,7 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
    * @since 4.0.0
    */
   static @Nullable TextColor fromHexString(final @NotNull String string) {
-    if (string.startsWith("#")) {
+    if (string.startsWith(HEX_PREFIX)) {
       try {
         final int hex = Integer.parseInt(string.substring(1), 16);
         return color(hex);
@@ -163,7 +176,7 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
    * @since 4.0.0
    */
   static @Nullable TextColor fromCSSHexString(final @NotNull String string) {
-    if (string.startsWith("#")) {
+    if (string.startsWith(HEX_PREFIX)) {
       final String hexString = string.substring(1);
       if (hexString.length() != 3 && hexString.length() != 6) {
         return null;
@@ -202,7 +215,7 @@ public interface TextColor extends Comparable<TextColor>, Examinable, RGBLike, S
    * @since 4.0.0
    */
   default @NotNull String asHexString() {
-    return String.format("#%06x", this.value());
+    return String.format("%c%06x", HEX_CHARACTER, this.value());
   }
 
   /**

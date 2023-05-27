@@ -34,7 +34,6 @@ import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("UnstableApiUsage") // TypeToken
 final class TextColorSerializer extends ScalarSerializer<TextColor> {
   static final TextColorSerializer INSTANCE = new TextColorSerializer();
-  private static final String HEX_PREFIX = "#";
 
   private TextColorSerializer() {
     super(TextColor.class);
@@ -49,7 +48,7 @@ final class TextColorSerializer extends ScalarSerializer<TextColor> {
     }
     final String value = obj.toString();
     final TextColor result;
-    if (value.startsWith(HEX_PREFIX)) {
+    if (value.startsWith(TextColor.HEX_PREFIX)) {
       result = TextColor.fromHexString(value);
     } else {
       result = NamedTextColor.NAMES.value(value);

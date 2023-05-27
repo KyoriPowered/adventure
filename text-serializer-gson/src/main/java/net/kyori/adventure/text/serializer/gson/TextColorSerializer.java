@@ -55,7 +55,7 @@ final class TextColorSerializer extends TypeAdapter<TextColor> {
   }
 
   private static String asUpperCaseHexString(final TextColor color) {
-    return String.format(Locale.ROOT, "#%06X", color.value()); // to be consistent with vanilla
+    return String.format(Locale.ROOT, "%c%06X", TextColor.HEX_CHARACTER, color.value()); // to be consistent with vanilla
   }
 
   @Override
@@ -67,7 +67,7 @@ final class TextColorSerializer extends TypeAdapter<TextColor> {
   }
 
   static @Nullable TextColor fromString(final @NotNull String value) {
-    if (value.startsWith("#")) {
+    if (value.startsWith(TextColor.HEX_PREFIX)) {
       return TextColor.fromHexString(value);
     } else {
       return NamedTextColor.NAMES.value(value);
