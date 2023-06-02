@@ -8,6 +8,11 @@ dependencies {
   api(libs.jetbrainsAnnotations)
 }
 
-tasks.withType(AbstractPublishToMaven::class) {
-  isEnabled = false
+tasks {
+  withType(AbstractPublishToMaven::class).configureEach {
+    isEnabled = false
+  }
+  copyJavadoc {
+    isEnabled = false
+  }
 }
