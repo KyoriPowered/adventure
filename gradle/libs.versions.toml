@@ -2,7 +2,7 @@
 version = "1.0"
 
 [versions]
-checkstyle = "10.11.0"
+checkstyle = "10.12.0"
 errorprone = "2.19.1"
 examination = "1.3.0"
 guava = "32.0.0-jre"
