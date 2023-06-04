@@ -33,15 +33,20 @@ import org.jetbrains.annotations.Nullable;
 final class JSONComponentSerializerImpl implements JSONComponentSerializer {
   private static final JSONComponentSerializer MISSING_INSTANCE = new JSONComponentSerializerImpl();
   private static final Optional<Provider> SERVICE = Services.serviceWithFallback(Provider.class);
+  private static final String UNSUPPORTED_MESSAGE =
+    "No JsonComponentSerializer implementation found\n" +
+      "\n" +
+      "Are you missing an implementation artifact like adventure-text-serializer-gson?\n" +
+      "Is your environment configured in a way that causes ServiceLoader to malfunction?";
 
   @Override
   public @NotNull Component deserialize(final @NotNull String input) {
-    throw new UnsupportedOperationException("No JsonComponentSerializer implementation found");
+    throw new UnsupportedOperationException(UNSUPPORTED_MESSAGE);
   }
 
   @Override
   public @NotNull String serialize(final @NotNull Component component) {
-    throw new UnsupportedOperationException("No JsonComponentSerializer implementation found");
+    throw new UnsupportedOperationException(UNSUPPORTED_MESSAGE);
   }
 
   // We cannot store these fields in JsonComponentSerializerImpl directly due to class initialisation issues.
