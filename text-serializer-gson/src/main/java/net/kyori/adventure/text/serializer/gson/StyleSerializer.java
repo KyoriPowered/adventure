@@ -46,6 +46,17 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.util.Codec;
 import org.jetbrains.annotations.Nullable;
 
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.CLICK_EVENT;
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.CLICK_EVENT_ACTION;
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.CLICK_EVENT_VALUE;
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.COLOR;
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.FONT;
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.HOVER_EVENT;
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.HOVER_EVENT_ACTION;
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.HOVER_EVENT_CONTENTS;
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.HOVER_EVENT_VALUE;
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.INSERTION;
+
 final class StyleSerializer extends TypeAdapter<Style> {
   @SuppressWarnings("checkstyle:NoWhitespaceAfter")
   private static final TextDecoration[] DECORATIONS = {
@@ -68,17 +79,6 @@ final class StyleSerializer extends TypeAdapter<Style> {
       throw new IllegalStateException("Gson serializer is missing some text decorations: " + knownDecorations);
     }
   }
-
-  static final String FONT = "font";
-  static final String COLOR = "color";
-  static final String INSERTION = "insertion";
-  static final String CLICK_EVENT = "clickEvent";
-  static final String CLICK_EVENT_ACTION = "action";
-  static final String CLICK_EVENT_VALUE = "value";
-  static final String HOVER_EVENT = "hoverEvent";
-  static final String HOVER_EVENT_ACTION = "action";
-  static final String HOVER_EVENT_CONTENTS = "contents";
-  static final @Deprecated String HOVER_EVENT_VALUE = "value";
 
   static TypeAdapter<Style> create(final @Nullable LegacyHoverEventSerializer legacyHover, final boolean emitLegacyHover, final Gson gson) {
     return new StyleSerializer(legacyHover, emitLegacyHover, gson).nullSafe();

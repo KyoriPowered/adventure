@@ -53,25 +53,25 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.jetbrains.annotations.Nullable;
 
-final class ComponentSerializerImpl extends TypeAdapter<Component> {
-  static final String TEXT = "text";
-  static final String TRANSLATE = "translate";
-  static final String TRANSLATE_FALLBACK = "fallback";
-  static final String TRANSLATE_WITH = "with";
-  static final String SCORE = "score";
-  static final String SCORE_NAME = "name";
-  static final String SCORE_OBJECTIVE = "objective";
-  static final String SCORE_VALUE = "value";
-  static final String SELECTOR = "selector";
-  static final String KEYBIND = "keybind";
-  static final String EXTRA = "extra";
-  static final String NBT = "nbt";
-  static final String NBT_INTERPRET = "interpret";
-  static final String NBT_BLOCK = "block";
-  static final String NBT_ENTITY = "entity";
-  static final String NBT_STORAGE = "storage";
-  static final String SEPARATOR = "separator";
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.EXTRA;
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.KEYBIND;
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.NBT;
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.NBT_BLOCK;
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.NBT_ENTITY;
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.NBT_INTERPRET;
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.NBT_STORAGE;
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.SCORE;
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.SCORE_NAME;
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.SCORE_OBJECTIVE;
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.SCORE_VALUE;
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.SELECTOR;
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.SEPARATOR;
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.TEXT;
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.TRANSLATE;
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.TRANSLATE_FALLBACK;
+import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.TRANSLATE_WITH;
 
+final class ComponentSerializerImpl extends TypeAdapter<Component> {
   static final Type COMPONENT_LIST_TYPE = new TypeToken<List<Component>>() {}.getType();
 
   static TypeAdapter<Component> create(final Gson gson) {
