@@ -33,7 +33,7 @@ final class Issue792Test {
   @Test
   void test() {
     final String input = "[\"\",{\"text\":\"\",\"extra\":[{\"text\":\"\",\"color\":\"white\"},{\"text\":\"{marriagemaster_heart}\",\"color\":\"white\",\"clickEvent\":{\"action\":\"\",\"value\":\"\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[{\"text\":\"\"}]}}},{\"text\":\" \",\"color\":\"white\"},{\"text\":\"{vault_prefix}\",\"color\":\"white\",\"clickEvent\":{\"action\":\"\",\"value\":\"\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[{\"text\":\"\"}]}}},{\"text\":\"\",\"color\":\"white\"},{\"text\":\"{player_displayname}\",\"color\":\"white\",\"clickEvent\":{\"action\":\"\",\"value\":\"\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[{\"text\":\"\"}]}}},{\"text\":\"\",\"color\":\"white\"},{\"text\":\"{vault_suffix}\",\"color\":\"white\",\"clickEvent\":{\"action\":\"\",\"value\":\"\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[{\"text\":\"\"}]}}},{\"text\":\" \",\"color\":\"white\"},{\"text\":\"»\",\"color\":\"gray\"}]},{\"text\":\"\",\"color\":\"white\"},{\"text\":\" f\",\"color\":\"white\"},{\"text\":\" [✓]\",\"color\":\"red\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/vchatgui .DoctorMad9952 Global 421783436\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[{\"text\":\"Open Moderation GUI\",\"color\":\"red\"}]}}}]";
-    final Component component = JsonComponentSerializer.json().deserialize(input);
+    final Component component = JSONComponentSerializer.json().deserialize(input);
     assertNotNull(component);
   }
 }

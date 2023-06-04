@@ -35,9 +35,9 @@ import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.jetbrains.annotations.Nullable;
 
-import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.SHOW_ITEM_COUNT;
-import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.SHOW_ITEM_ID;
-import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.SHOW_ITEM_TAG;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.SHOW_ITEM_COUNT;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.SHOW_ITEM_ID;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.SHOW_ITEM_TAG;
 
 final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
   static TypeAdapter<HoverEvent.ShowItem> create(final Gson gson) {

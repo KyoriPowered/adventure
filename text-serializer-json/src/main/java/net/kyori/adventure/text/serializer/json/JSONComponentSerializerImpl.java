@@ -30,8 +30,8 @@ import net.kyori.adventure.util.Services;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-final class JsonComponentSerializerImpl implements JsonComponentSerializer {
-  private static final JsonComponentSerializer MISSING_INSTANCE = new JsonComponentSerializerImpl();
+final class JSONComponentSerializerImpl implements JSONComponentSerializer {
+  private static final JSONComponentSerializer MISSING_INSTANCE = new JSONComponentSerializerImpl();
   private static final Optional<Provider> SERVICE = Services.serviceWithFallback(Provider.class);
 
   @Override
@@ -46,7 +46,7 @@ final class JsonComponentSerializerImpl implements JsonComponentSerializer {
 
   // We cannot store these fields in JsonComponentSerializerImpl directly due to class initialisation issues.
   static final class Instances {
-    static final JsonComponentSerializer INSTANCE = SERVICE
+    static final JSONComponentSerializer INSTANCE = SERVICE
       .map(Provider::json)
       .orElse(MISSING_INSTANCE);
 
@@ -74,7 +74,7 @@ final class JsonComponentSerializerImpl implements JsonComponentSerializer {
     }
 
     @Override
-    public JsonComponentSerializer build() {
+    public JSONComponentSerializer build() {
       return MISSING_INSTANCE;
     }
   }

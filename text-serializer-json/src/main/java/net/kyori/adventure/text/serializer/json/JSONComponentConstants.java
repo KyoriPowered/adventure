@@ -31,9 +31,9 @@ import org.jetbrains.annotations.ApiStatus;
  * @since 4.14.0
  */
 @ApiStatus.Internal
-public final class JsonComponentConstants {
+public final class JSONComponentConstants {
 
-  private JsonComponentConstants() {
+  private JSONComponentConstants() {
     throw new IllegalStateException("Cannot instantiate");
   }
 

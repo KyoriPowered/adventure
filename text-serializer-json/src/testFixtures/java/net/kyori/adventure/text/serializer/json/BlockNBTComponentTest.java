@@ -33,9 +33,9 @@ final class BlockNBTComponentTest extends SerializerTest {
     this.testObject(
       Component.blockNBT().nbtPath("abc").localPos(1.23d, 2.0d, 3.89d).build(),
       json -> {
-        json.addProperty(JsonComponentConstants.NBT, "abc");
-        json.addProperty(JsonComponentConstants.NBT_INTERPRET, false);
-        json.addProperty(JsonComponentConstants.NBT_BLOCK, "^1.23 ^2.0 ^3.89");
+        json.addProperty(JSONComponentConstants.NBT, "abc");
+        json.addProperty(JSONComponentConstants.NBT_INTERPRET, false);
+        json.addProperty(JSONComponentConstants.NBT_BLOCK, "^1.23 ^2.0 ^3.89");
       }
     );
   }
@@ -45,9 +45,9 @@ final class BlockNBTComponentTest extends SerializerTest {
     this.testObject(
       Component.blockNBT().nbtPath("xyz").absoluteWorldPos(4, 5, 6).interpret(true).build(),
       json -> {
-        json.addProperty(JsonComponentConstants.NBT, "xyz");
-        json.addProperty(JsonComponentConstants.NBT_INTERPRET, true);
-        json.addProperty(JsonComponentConstants.NBT_BLOCK, "4 5 6");
+        json.addProperty(JSONComponentConstants.NBT, "xyz");
+        json.addProperty(JSONComponentConstants.NBT_INTERPRET, true);
+        json.addProperty(JSONComponentConstants.NBT_BLOCK, "4 5 6");
       }
     );
   }
@@ -57,9 +57,9 @@ final class BlockNBTComponentTest extends SerializerTest {
     this.testObject(
       Component.blockNBT().nbtPath("eeee").relativeWorldPos(7, 83, 900).build(),
       json -> {
-        json.addProperty(JsonComponentConstants.NBT, "eeee");
-        json.addProperty(JsonComponentConstants.NBT_INTERPRET, false);
-        json.addProperty(JsonComponentConstants.NBT_BLOCK, "~7 ~83 ~900");
+        json.addProperty(JSONComponentConstants.NBT, "eeee");
+        json.addProperty(JSONComponentConstants.NBT_INTERPRET, false);
+        json.addProperty(JSONComponentConstants.NBT_BLOCK, "~7 ~83 ~900");
       }
     );
   }
@@ -73,9 +73,9 @@ final class BlockNBTComponentTest extends SerializerTest {
         BlockNBTComponent.WorldPos.Coordinate.absolute(1200)
       ).build(),
       json -> {
-        json.addProperty(JsonComponentConstants.NBT, "qwert");
-        json.addProperty(JsonComponentConstants.NBT_INTERPRET, false);
-        json.addProperty(JsonComponentConstants.NBT_BLOCK, "12 ~3 1200");
+        json.addProperty(JSONComponentConstants.NBT, "qwert");
+        json.addProperty(JSONComponentConstants.NBT_INTERPRET, false);
+        json.addProperty(JSONComponentConstants.NBT_BLOCK, "12 ~3 1200");
       }
     );
   }

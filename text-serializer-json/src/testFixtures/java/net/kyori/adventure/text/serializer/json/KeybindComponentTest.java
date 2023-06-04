@@ -33,7 +33,7 @@ final class KeybindComponentTest extends SerializerTest {
   void test() {
     this.testObject(
       Component.keybind(KEY),
-      json -> json.addProperty(JsonComponentConstants.KEYBIND, KEY)
+      json -> json.addProperty(JSONComponentConstants.KEYBIND, KEY)
     );
   }
 }

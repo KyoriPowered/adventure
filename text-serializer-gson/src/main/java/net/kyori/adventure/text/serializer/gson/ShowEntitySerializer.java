@@ -35,9 +35,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.jetbrains.annotations.Nullable;
 
-import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.SHOW_ENTITY_ID;
-import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.SHOW_ENTITY_NAME;
-import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.SHOW_ENTITY_TYPE;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.SHOW_ENTITY_ID;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.SHOW_ENTITY_NAME;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.SHOW_ENTITY_TYPE;
 
 final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
   static TypeAdapter<HoverEvent.ShowEntity> create(final Gson gson) {

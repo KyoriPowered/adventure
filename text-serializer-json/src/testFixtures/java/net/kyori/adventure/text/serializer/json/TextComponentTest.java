@@ -33,7 +33,7 @@ final class TextComponentTest extends SerializerTest {
   void testSimple() {
     this.testObject(
       Component.text("Hello, world."),
-      json -> json.addProperty(JsonComponentConstants.TEXT, "Hello, world.")
+      json -> json.addProperty(JSONComponentConstants.TEXT, "Hello, world.")
     );
   }
 
@@ -50,32 +50,32 @@ final class TextComponentTest extends SerializerTest {
         .append(Component.text("s", NamedTextColor.RED))
         .build(),
       json -> {
-        json.addProperty(JsonComponentConstants.TEXT, "c");
-        json.addProperty(JsonComponentConstants.COLOR, name(NamedTextColor.GOLD));
-        json.add(JsonComponentConstants.EXTRA, array(extra -> {
+        json.addProperty(JSONComponentConstants.TEXT, "c");
+        json.addProperty(JSONComponentConstants.COLOR, name(NamedTextColor.GOLD));
+        json.add(JSONComponentConstants.EXTRA, array(extra -> {
           extra.add(object(item -> {
-            item.addProperty(JsonComponentConstants.TEXT, "o");
-            item.addProperty(JsonComponentConstants.COLOR, name(NamedTextColor.DARK_AQUA));
+            item.addProperty(JSONComponentConstants.TEXT, "o");
+            item.addProperty(JSONComponentConstants.COLOR, name(NamedTextColor.DARK_AQUA));
           }));
           extra.add(object(item -> {
-            item.addProperty(JsonComponentConstants.TEXT, "l");
-            item.addProperty(JsonComponentConstants.COLOR, name(NamedTextColor.LIGHT_PURPLE));
+            item.addProperty(JSONComponentConstants.TEXT, "l");
+            item.addProperty(JSONComponentConstants.COLOR, name(NamedTextColor.LIGHT_PURPLE));
           }));
           extra.add(object(item -> {
-            item.addProperty(JsonComponentConstants.TEXT, "o");
-            item.addProperty(JsonComponentConstants.COLOR, name(NamedTextColor.DARK_PURPLE));
+            item.addProperty(JSONComponentConstants.TEXT, "o");
+            item.addProperty(JSONComponentConstants.COLOR, name(NamedTextColor.DARK_PURPLE));
           }));
           extra.add(object(item -> {
-            item.addProperty(JsonComponentConstants.TEXT, "u");
-            item.addProperty(JsonComponentConstants.COLOR, name(NamedTextColor.BLUE));
+            item.addProperty(JSONComponentConstants.TEXT, "u");
+            item.addProperty(JSONComponentConstants.COLOR, name(NamedTextColor.BLUE));
           }));
           extra.add(object(item -> {
-            item.addProperty(JsonComponentConstants.TEXT, "r");
-            item.addProperty(JsonComponentConstants.COLOR, name(NamedTextColor.DARK_GREEN));
+            item.addProperty(JSONComponentConstants.TEXT, "r");
+            item.addProperty(JSONComponentConstants.COLOR, name(NamedTextColor.DARK_GREEN));
           }));
           extra.add(object(item -> {
-            item.addProperty(JsonComponentConstants.TEXT, "s");
-            item.addProperty(JsonComponentConstants.COLOR, name(NamedTextColor.RED));
+            item.addProperty(JSONComponentConstants.TEXT, "s");
+            item.addProperty(JSONComponentConstants.COLOR, name(NamedTextColor.RED));
           }));
         }));
       }
@@ -92,17 +92,17 @@ final class TextComponentTest extends SerializerTest {
         .append(Component.text("A what?", NamedTextColor.DARK_AQUA))
         .build(),
       json -> {
-        json.addProperty(JsonComponentConstants.TEXT, "This is a test.");
-        json.addProperty(JsonComponentConstants.COLOR, name(NamedTextColor.DARK_PURPLE));
-        json.add(JsonComponentConstants.HOVER_EVENT, object(event -> {
-          event.addProperty(JsonComponentConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_TEXT));
-          event.add(JsonComponentConstants.HOVER_EVENT_CONTENTS, object(value -> value.addProperty(JsonComponentConstants.TEXT, "A test.")));
+        json.addProperty(JSONComponentConstants.TEXT, "This is a test.");
+        json.addProperty(JSONComponentConstants.COLOR, name(NamedTextColor.DARK_PURPLE));
+        json.add(JSONComponentConstants.HOVER_EVENT, object(event -> {
+          event.addProperty(JSONComponentConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_TEXT));
+          event.add(JSONComponentConstants.HOVER_EVENT_CONTENTS, object(value -> value.addProperty(JSONComponentConstants.TEXT, "A test.")));
         }));
-        json.add(JsonComponentConstants.EXTRA, array(extra -> {
-          extra.add(object(item -> item.addProperty(JsonComponentConstants.TEXT, " ")));
+        json.add(JSONComponentConstants.EXTRA, array(extra -> {
+          extra.add(object(item -> item.addProperty(JSONComponentConstants.TEXT, " ")));
           extra.add(object(item -> {
-            item.addProperty(JsonComponentConstants.TEXT, "A what?");
-            item.addProperty(JsonComponentConstants.COLOR, name(NamedTextColor.DARK_AQUA));
+            item.addProperty(JSONComponentConstants.TEXT, "A what?");
+            item.addProperty(JSONComponentConstants.COLOR, name(NamedTextColor.DARK_AQUA));
           }));
         }));
       }

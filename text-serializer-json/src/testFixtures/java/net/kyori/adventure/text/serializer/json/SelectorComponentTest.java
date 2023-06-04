@@ -33,7 +33,7 @@ final class SelectorComponentTest extends SerializerTest {
   void test() {
     this.testObject(
       Component.selector(SELECTOR),
-      json -> json.addProperty(JsonComponentConstants.SELECTOR, SELECTOR)
+      json -> json.addProperty(JSONComponentConstants.SELECTOR, SELECTOR)
     );
   }
 
@@ -43,8 +43,8 @@ final class SelectorComponentTest extends SerializerTest {
     this.testObject(
       Component.selector(SELECTOR, separator),
       json -> {
-        json.addProperty(JsonComponentConstants.SELECTOR, SELECTOR);
-        json.add(JsonComponentConstants.SEPARATOR, this.serialize(separator));
+        json.addProperty(JSONComponentConstants.SELECTOR, SELECTOR);
+        json.add(JSONComponentConstants.SEPARATOR, this.serialize(separator));
       }
     );
   }

@@ -46,16 +46,16 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.util.Codec;
 import org.jetbrains.annotations.Nullable;
 
-import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.CLICK_EVENT;
-import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.CLICK_EVENT_ACTION;
-import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.CLICK_EVENT_VALUE;
-import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.COLOR;
-import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.FONT;
-import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.HOVER_EVENT;
-import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.HOVER_EVENT_ACTION;
-import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.HOVER_EVENT_CONTENTS;
-import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.HOVER_EVENT_VALUE;
-import static net.kyori.adventure.text.serializer.json.JsonComponentConstants.INSERTION;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.CLICK_EVENT;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.CLICK_EVENT_ACTION;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.CLICK_EVENT_VALUE;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.COLOR;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.FONT;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.HOVER_EVENT;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.HOVER_EVENT_ACTION;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.HOVER_EVENT_CONTENTS;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.HOVER_EVENT_VALUE;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.INSERTION;
 
 final class StyleSerializer extends TypeAdapter<Style> {
   @SuppressWarnings("checkstyle:NoWhitespaceAfter")

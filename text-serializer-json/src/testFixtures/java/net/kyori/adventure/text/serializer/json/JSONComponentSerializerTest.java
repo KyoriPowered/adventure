@@ -30,15 +30,15 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-final class JsonComponentSerializerTest extends SerializerTest {
+final class JSONComponentSerializerTest extends SerializerTest {
   @Test
   void testDeserializeNull() {
-    assertThrows(RuntimeException.class, () -> JsonComponentSerializer.json().deserialize("null"));
+    assertThrows(RuntimeException.class, () -> JSONComponentSerializer.json().deserialize("null"));
   }
 
   @Test
   void testDeserializePrimitive() {
-    assertEquals(Component.text("potato"), JsonComponentSerializer.json().deserialize("potato"));
+    assertEquals(Component.text("potato"), JSONComponentSerializer.json().deserialize("potato"));
   }
 
   @Test
@@ -55,8 +55,8 @@ final class JsonComponentSerializerTest extends SerializerTest {
         .build(),
       deserialize(
         array(array -> {
-          array.add(object(object -> object.addProperty(JsonComponentConstants.TEXT, "Hello, ")));
-          array.add(object(object -> object.addProperty(JsonComponentConstants.TEXT, "world.")));
+          array.add(object(object -> object.addProperty(JSONComponentConstants.TEXT, "Hello, ")));
+          array.add(object(object -> object.addProperty(JSONComponentConstants.TEXT, "world.")));
         })
       )
     );
@@ -70,10 +70,10 @@ final class JsonComponentSerializerTest extends SerializerTest {
     assertEquals(
       expected,
       deserialize(object(object -> {
-        object.addProperty(JsonComponentConstants.TEXT, "hello");
-        object.add(JsonComponentConstants.HOVER_EVENT, object(hover -> {
-          hover.addProperty(JsonComponentConstants.HOVER_EVENT_ACTION, "show_text");
-          hover.add(JsonComponentConstants.HOVER_EVENT_VALUE, new JsonArray());
+        object.addProperty(JSONComponentConstants.TEXT, "hello");
+        object.add(JSONComponentConstants.HOVER_EVENT, object(hover -> {
+          hover.addProperty(JSONComponentConstants.HOVER_EVENT_ACTION, "show_text");
+          hover.add(JSONComponentConstants.HOVER_EVENT_VALUE, new JsonArray());
         }));
       }))
     );

@@ -50,13 +50,13 @@ final class ShowItemSerializerTest extends SerializerTest {
           )))
         ).build(),
       json -> {
-        json.addProperty(JsonComponentConstants.TEXT, "");
-        json.add(JsonComponentConstants.HOVER_EVENT, object(hover -> {
-          hover.addProperty(JsonComponentConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ITEM));
-          hover.add(JsonComponentConstants.HOVER_EVENT_CONTENTS, object(contents -> {
-            contents.addProperty(JsonComponentConstants.SHOW_ITEM_ID, "minecraft:diamond");
-            contents.addProperty(JsonComponentConstants.SHOW_ITEM_COUNT, 2);
-            contents.addProperty(JsonComponentConstants.SHOW_ITEM_TAG, "{display:{Name:\"A test!\"}}");
+        json.addProperty(JSONComponentConstants.TEXT, "");
+        json.add(JSONComponentConstants.HOVER_EVENT, object(hover -> {
+          hover.addProperty(JSONComponentConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ITEM));
+          hover.add(JSONComponentConstants.HOVER_EVENT_CONTENTS, object(contents -> {
+            contents.addProperty(JSONComponentConstants.SHOW_ITEM_ID, "minecraft:diamond");
+            contents.addProperty(JSONComponentConstants.SHOW_ITEM_COUNT, 2);
+            contents.addProperty(JSONComponentConstants.SHOW_ITEM_TAG, "{display:{Name:\"A test!\"}}");
           }));
         }));
       }
@@ -74,12 +74,12 @@ final class ShowItemSerializerTest extends SerializerTest {
         )
       ).build(),
       json -> {
-        json.addProperty(JsonComponentConstants.TEXT, "");
-        json.add(JsonComponentConstants.HOVER_EVENT, object(hover -> {
-          hover.addProperty(JsonComponentConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ITEM));
-          hover.add(JsonComponentConstants.HOVER_EVENT_CONTENTS, object(contents -> {
-            contents.addProperty(JsonComponentConstants.SHOW_ITEM_ID, "minecraft:diamond");
-            contents.addProperty(JsonComponentConstants.SHOW_ITEM_COUNT, 2);
+        json.addProperty(JSONComponentConstants.TEXT, "");
+        json.add(JSONComponentConstants.HOVER_EVENT, object(hover -> {
+          hover.addProperty(JSONComponentConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ITEM));
+          hover.add(JSONComponentConstants.HOVER_EVENT_CONTENTS, object(contents -> {
+            contents.addProperty(JSONComponentConstants.SHOW_ITEM_ID, "minecraft:diamond");
+            contents.addProperty(JSONComponentConstants.SHOW_ITEM_COUNT, 2);
           }));
         }));
       }
@@ -102,12 +102,12 @@ final class ShowItemSerializerTest extends SerializerTest {
           )))
       ).build(),
       json -> {
-        json.addProperty(JsonComponentConstants.TEXT, "");
-        json.add(JsonComponentConstants.HOVER_EVENT, object(hover -> {
-          hover.addProperty(JsonComponentConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ITEM));
-          hover.add(JsonComponentConstants.HOVER_EVENT_CONTENTS, object(contents -> {
-            contents.addProperty(JsonComponentConstants.SHOW_ITEM_ID, "minecraft:diamond");
-            contents.addProperty(JsonComponentConstants.SHOW_ITEM_TAG, "{display:{Name:\"A test!\"}}");
+        json.addProperty(JSONComponentConstants.TEXT, "");
+        json.add(JSONComponentConstants.HOVER_EVENT, object(hover -> {
+          hover.addProperty(JSONComponentConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ITEM));
+          hover.add(JSONComponentConstants.HOVER_EVENT_CONTENTS, object(contents -> {
+            contents.addProperty(JSONComponentConstants.SHOW_ITEM_ID, "minecraft:diamond");
+            contents.addProperty(JSONComponentConstants.SHOW_ITEM_TAG, "{display:{Name:\"A test!\"}}");
           }));
         }));
       }

@@ -57,15 +57,15 @@ public class ComponentDeserializationBenchmark {
 
   @Setup(Level.Trial)
   public void prepare() {
-    this.simpleComponent = JsonComponentSerializer.json().serialize(text("Hello, World!", style(TextDecoration.UNDERLINED)));
-    this.componentTreeWithStyle = JsonComponentSerializer.json().serialize(text()
+    this.simpleComponent = JSONComponentSerializer.json().serialize(text("Hello, World!", style(TextDecoration.UNDERLINED)));
+    this.componentTreeWithStyle = JSONComponentSerializer.json().serialize(text()
                                                      .decorate(TextDecoration.UNDERLINED, TextDecoration.ITALIC)
                                                      .append(text("Component ", color(0x8cfbde)))
                                                      .append(text("with ", color(0x0fff95), TextDecoration.BOLD))
                                                      .append(text("hex ", color(0x06ba63)))
                                                      .append(text("colors", color(0x103900)))
                                                      .build());
-    this.componentTreeWithEvents = JsonComponentSerializer.json().serialize(text()
+    this.componentTreeWithEvents = JSONComponentSerializer.json().serialize(text()
                                                       .decorate(TextDecoration.UNDERLINED, TextDecoration.ITALIC)
                                                       .append(text("Component ", style(color(0x8cfbde), openUrl("https://kyori.net/"))))
                                                       .append(text("with ", style(color(0x0fff95), TextDecoration.BOLD, showItem(Key.key("iron_sword"), 1, BinaryTagHolder.binaryTagHolder("{Damage: 30, RepairCost: 4, Enchantments: [{id: 'minecraft:sharpness', lvl: 3s}, {id: 'minecraft:unbreaking', lvl: 1s}]}")))))
@@ -76,16 +76,16 @@ public class ComponentDeserializationBenchmark {
 
   @Benchmark
   public Component simpleComponent() {
-    return JsonComponentSerializer.json().deserialize(this.simpleComponent);
+    return JSONComponentSerializer.json().deserialize(this.simpleComponent);
   }
 
   @Benchmark
   public Component componentTreeWithStyle() {
-    return JsonComponentSerializer.json().deserialize(this.componentTreeWithStyle);
+    return JSONComponentSerializer.json().deserialize(this.componentTreeWithStyle);
   }
 
   @Benchmark
   public Component componentTreeWithEvents() {
-    return JsonComponentSerializer.json().deserialize(this.componentTreeWithEvents);
+    return JSONComponentSerializer.json().deserialize(this.componentTreeWithEvents);
   }
 }

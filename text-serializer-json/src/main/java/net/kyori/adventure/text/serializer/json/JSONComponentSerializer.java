@@ -36,15 +36,15 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.14.0
  */
-public interface JsonComponentSerializer extends ComponentSerializer<Component, Component, String> {
+public interface JSONComponentSerializer extends ComponentSerializer<Component, Component, String> {
   /**
    * Gets a component serializer for JSON serialization and deserialization.
    *
    * @return a JSON component serializer
    * @since 4.14.0
    */
-  static @NotNull JsonComponentSerializer json() {
-    return JsonComponentSerializerImpl.Instances.INSTANCE;
+  static @NotNull JSONComponentSerializer json() {
+    return JSONComponentSerializerImpl.Instances.INSTANCE;
   }
 
   /**
@@ -53,12 +53,12 @@ public interface JsonComponentSerializer extends ComponentSerializer<Component, 
    * @return the new builder
    * @since 4.14.0
    */
-  static JsonComponentSerializer.@NotNull Builder builder() {
-    return JsonComponentSerializerImpl.Instances.BUILDER_SUPPLIER.get();
+  static JSONComponentSerializer.@NotNull Builder builder() {
+    return JSONComponentSerializerImpl.Instances.BUILDER_SUPPLIER.get();
   }
 
   /**
-   * A builder for {@link JsonComponentSerializer} instances that delegates to the active serializer.
+   * A builder for {@link JSONComponentSerializer} instances that delegates to the active serializer.
    *
    * @since 4.14.0
    */
@@ -98,11 +98,11 @@ public interface JsonComponentSerializer extends ComponentSerializer<Component, 
      * @return the new serializer
      * @since 4.14.0
      */
-    JsonComponentSerializer build();
+    JSONComponentSerializer build();
   }
 
   /**
-   * A {@link JsonComponentSerializer} service provider.
+   * A {@link JSONComponentSerializer} service provider.
    *
    * @since 4.14.0
    */
@@ -110,19 +110,19 @@ public interface JsonComponentSerializer extends ComponentSerializer<Component, 
   @PlatformAPI
   interface Provider {
     /**
-     * Provides a standard {@link JsonComponentSerializer}.
+     * Provides a standard {@link JSONComponentSerializer}.
      *
-     * @return a {@link JsonComponentSerializer}
+     * @return a {@link JSONComponentSerializer}
      * @since 4.14.0
      */
     @ApiStatus.Internal
     @PlatformAPI
-    @NotNull JsonComponentSerializer json();
+    @NotNull JSONComponentSerializer json();
 
     /**
-     * Provide a supplier for builder builders of {@link JsonComponentSerializer} instances.
+     * Provide a supplier for builder builders of {@link JSONComponentSerializer} instances.
      *
-     * @return a {@link JsonComponentSerializer
+     * @return a {@link JSONComponentSerializer
      * @since 4.14.0
      */
     @ApiStatus.Internal

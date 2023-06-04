@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class SerializerTest {
   private final Gson gson = new Gson();
-  private final JsonComponentSerializer serializer = JsonComponentSerializer.json();
+  private final JSONComponentSerializer serializer = JSONComponentSerializer.json();
 
   final JsonElement serialize(final Component component) {
     return this.gson.fromJson(this.serializer.serialize(component), JsonElement.class);
@@ -51,7 +51,7 @@ public abstract class SerializerTest {
 
   final void testStyle(final Style style, final Consumer<? super JsonObject> consumer) {
     this.testObject(Component.text("", style), object -> {
-      object.addProperty(JsonComponentConstants.TEXT, "");
+      object.addProperty(JSONComponentConstants.TEXT, "");
       consumer.accept(object);
     });
   }

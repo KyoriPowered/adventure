@@ -30,7 +30,7 @@ import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.json.JsonComponentSerializer;
+import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.PlatformAPI;
 import org.jetbrains.annotations.ApiStatus;
@@ -45,7 +45,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @since 4.0.0
  */
-public interface GsonComponentSerializer extends JsonComponentSerializer, Buildable<GsonComponentSerializer, GsonComponentSerializer.Builder> {
+public interface GsonComponentSerializer extends JSONComponentSerializer, Buildable<GsonComponentSerializer, GsonComponentSerializer.Builder> {
   /**
    * Gets a component serializer for gson serialization and deserialization.
    *
@@ -118,7 +118,7 @@ public interface GsonComponentSerializer extends JsonComponentSerializer, Builda
    *
    * @since 4.0.0
    */
-  interface Builder extends AbstractBuilder<GsonComponentSerializer>, Buildable.Builder<GsonComponentSerializer>, JsonComponentSerializer.Builder {
+  interface Builder extends AbstractBuilder<GsonComponentSerializer>, Buildable.Builder<GsonComponentSerializer>, JSONComponentSerializer.Builder {
     /**
      * Sets that the serializer should downsample hex colors to named colors.
      *

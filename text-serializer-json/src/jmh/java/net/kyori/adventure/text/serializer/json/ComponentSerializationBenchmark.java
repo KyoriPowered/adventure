@@ -76,16 +76,16 @@ public class ComponentSerializationBenchmark {
 
   @Benchmark
   public String simpleComponent() {
-    return JsonComponentSerializer.json().serialize(this.simpleComponent);
+    return JSONComponentSerializer.json().serialize(this.simpleComponent);
   }
 
   @Benchmark
   public String componentTreeWithStyle() {
-    return JsonComponentSerializer.json().serialize(this.componentTreeWithStyle);
+    return JSONComponentSerializer.json().serialize(this.componentTreeWithStyle);
   }
 
   @Benchmark
   public String componentTreeWithEvents() {
-    return JsonComponentSerializer.json().serialize(this.componentTreeWithEvents);
+    return JSONComponentSerializer.json().serialize(this.componentTreeWithEvents);
   }
 }

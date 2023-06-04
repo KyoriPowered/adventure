@@ -44,8 +44,8 @@ class StyleTest extends SerializerTest {
   @Test
   void testWithDecorationAsColor() {
     final Style s0 = deserialize(object(object -> {
-      object.addProperty(JsonComponentConstants.TEXT, "");
-      object.addProperty(JsonComponentConstants.COLOR, name(TextDecoration.BOLD));
+      object.addProperty(JSONComponentConstants.TEXT, "");
+      object.addProperty(JSONComponentConstants.COLOR, name(TextDecoration.BOLD));
     })).style();
 
     assertNull(s0.color());
@@ -55,8 +55,8 @@ class StyleTest extends SerializerTest {
   @Test
   void testWithResetAsColor() {
     final Style s0 = deserialize(object(object -> {
-      object.addProperty(JsonComponentConstants.TEXT, "");
-      object.addProperty(JsonComponentConstants.COLOR, "reset");
+      object.addProperty(JSONComponentConstants.TEXT, "");
+      object.addProperty(JSONComponentConstants.COLOR, "reset");
     })).style();
 
     assertNull(s0.color());
@@ -69,12 +69,12 @@ class StyleTest extends SerializerTest {
 
   @Test
   void testHexColor() {
-    this.testStyle(Style.style(TextColor.color(0x0a1ab9)), json -> json.addProperty(JsonComponentConstants.COLOR, "#0A1AB9"));
+    this.testStyle(Style.style(TextColor.color(0x0a1ab9)), json -> json.addProperty(JSONComponentConstants.COLOR, "#0A1AB9"));
   }
 
   @Test
   void testNamedColor() {
-    this.testStyle(Style.style(NamedTextColor.LIGHT_PURPLE), json -> json.addProperty(JsonComponentConstants.COLOR, name(NamedTextColor.LIGHT_PURPLE)));
+    this.testStyle(Style.style(NamedTextColor.LIGHT_PURPLE), json -> json.addProperty(JSONComponentConstants.COLOR, name(NamedTextColor.LIGHT_PURPLE)));
   }
 
   @Test
@@ -84,14 +84,14 @@ class StyleTest extends SerializerTest {
     this.testStyle(Style.style(TextDecoration.BOLD.withState(TextDecoration.State.NOT_SET)), json -> {});
 
     final Style s0 = deserialize(object(object -> {
-      object.addProperty(JsonComponentConstants.TEXT, "");
+      object.addProperty(JSONComponentConstants.TEXT, "");
       object.addProperty(name(TextDecoration.BOLD), 1);
     })).style();
     assertFalse(s0.hasDecoration(TextDecoration.BOLD));
 
     assertThrows(RuntimeException.class, () -> {
       deserialize(object(object -> {
-        object.addProperty(JsonComponentConstants.TEXT, "");
+        object.addProperty(JSONComponentConstants.TEXT, "");
         object.add(name(TextDecoration.BOLD), JsonNull.INSTANCE);
       }));
     });
@@ -99,7 +99,7 @@ class StyleTest extends SerializerTest {
 
   @Test
   void testInsertion() {
-    this.testStyle(Style.style().insertion("honk").build(), json -> json.addProperty(JsonComponentConstants.INSERTION, "honk"));
+    this.testStyle(Style.style().insertion("honk").build(), json -> json.addProperty(JSONComponentConstants.INSERTION, "honk"));
   }
 
   @Test
@@ -112,12 +112,12 @@ class StyleTest extends SerializerTest {
         .clickEvent(ClickEvent.openUrl("https://github.com"))
         .build(),
       json -> {
-        json.addProperty(JsonComponentConstants.FONT, "kyori:kittens");
-        json.addProperty(JsonComponentConstants.COLOR, name(NamedTextColor.RED));
+        json.addProperty(JSONComponentConstants.FONT, "kyori:kittens");
+        json.addProperty(JSONComponentConstants.COLOR, name(NamedTextColor.RED));
         json.addProperty(name(TextDecoration.BOLD), true);
-        json.add(JsonComponentConstants.CLICK_EVENT, object(clickEvent -> {
-          clickEvent.addProperty(JsonComponentConstants.CLICK_EVENT_ACTION, name(ClickEvent.Action.OPEN_URL));
-          clickEvent.addProperty(JsonComponentConstants.CLICK_EVENT_VALUE, "https://github.com");
+        json.add(JSONComponentConstants.CLICK_EVENT, object(clickEvent -> {
+          clickEvent.addProperty(JSONComponentConstants.CLICK_EVENT_ACTION, name(ClickEvent.Action.OPEN_URL));
+          clickEvent.addProperty(JSONComponentConstants.CLICK_EVENT_VALUE, "https://github.com");
         }));
       }
     );
@@ -135,14 +135,14 @@ class StyleTest extends SerializerTest {
         )))
         .build(),
       json -> {
-        json.add(JsonComponentConstants.HOVER_EVENT, object(hoverEvent -> {
-          hoverEvent.addProperty(JsonComponentConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ENTITY));
-          hoverEvent.add(JsonComponentConstants.HOVER_EVENT_CONTENTS, object(contents -> {
-            contents.addProperty(JsonComponentConstants.SHOW_ENTITY_TYPE, "minecraft:pig");
-            contents.addProperty(JsonComponentConstants.SHOW_ENTITY_ID, dolores.toString());
-            contents.add(JsonComponentConstants.SHOW_ENTITY_NAME, object(name -> {
-              name.addProperty(JsonComponentConstants.TEXT, "Dolores");
-              name.addProperty(JsonComponentConstants.COLOR, "#0A1AB9");
+        json.add(JSONComponentConstants.HOVER_EVENT, object(hoverEvent -> {
+          hoverEvent.addProperty(JSONComponentConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ENTITY));
+          hoverEvent.add(JSONComponentConstants.HOVER_EVENT_CONTENTS, object(contents -> {
+            contents.addProperty(JSONComponentConstants.SHOW_ENTITY_TYPE, "minecraft:pig");
+            contents.addProperty(JSONComponentConstants.SHOW_ENTITY_ID, dolores.toString());
+            contents.add(JSONComponentConstants.SHOW_ENTITY_NAME, object(name -> {
+              name.addProperty(JSONComponentConstants.TEXT, "Dolores");
+              name.addProperty(JSONComponentConstants.COLOR, "#0A1AB9");
             }));
           }));
         }));

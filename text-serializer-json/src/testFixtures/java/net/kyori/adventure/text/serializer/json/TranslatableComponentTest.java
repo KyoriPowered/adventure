@@ -38,7 +38,7 @@ final class TranslatableComponentTest extends SerializerTest {
   void testNoArgs() {
     this.testObject(
       Component.translatable(KEY),
-      json -> json.addProperty(JsonComponentConstants.TRANSLATE, KEY)
+      json -> json.addProperty(JSONComponentConstants.TRANSLATE, KEY)
     );
   }
 
@@ -50,8 +50,8 @@ final class TranslatableComponentTest extends SerializerTest {
         .fallback("This is a test.")
         .build(),
       json -> {
-        json.addProperty(JsonComponentConstants.TRANSLATE, "thisIsA");
-        json.addProperty(JsonComponentConstants.TRANSLATE_FALLBACK, "This is a test.");
+        json.addProperty(JSONComponentConstants.TRANSLATE, "thisIsA");
+        json.addProperty(JSONComponentConstants.TRANSLATE_FALLBACK, "This is a test.");
       }
     );
   }
@@ -75,21 +75,21 @@ final class TranslatableComponentTest extends SerializerTest {
           .build()
       ).color(NamedTextColor.YELLOW),
       json -> {
-        json.addProperty(JsonComponentConstants.TRANSLATE, KEY);
-        json.addProperty(JsonComponentConstants.COLOR, name(NamedTextColor.YELLOW));
-        json.add(JsonComponentConstants.TRANSLATE_WITH, array(with -> with.add(object(item -> {
-          item.addProperty(JsonComponentConstants.TEXT, name);
-          item.add(JsonComponentConstants.CLICK_EVENT, object(event -> {
-            event.addProperty(JsonComponentConstants.CLICK_EVENT_ACTION, name(ClickEvent.Action.SUGGEST_COMMAND));
-            event.addProperty(JsonComponentConstants.CLICK_EVENT_VALUE, command);
+        json.addProperty(JSONComponentConstants.TRANSLATE, KEY);
+        json.addProperty(JSONComponentConstants.COLOR, name(NamedTextColor.YELLOW));
+        json.add(JSONComponentConstants.TRANSLATE_WITH, array(with -> with.add(object(item -> {
+          item.addProperty(JSONComponentConstants.TEXT, name);
+          item.add(JSONComponentConstants.CLICK_EVENT, object(event -> {
+            event.addProperty(JSONComponentConstants.CLICK_EVENT_ACTION, name(ClickEvent.Action.SUGGEST_COMMAND));
+            event.addProperty(JSONComponentConstants.CLICK_EVENT_VALUE, command);
           }));
-          item.add(JsonComponentConstants.HOVER_EVENT, object(event -> {
-            event.addProperty(JsonComponentConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ENTITY));
-            event.add(JsonComponentConstants.HOVER_EVENT_CONTENTS, object(value -> {
-              value.addProperty(JsonComponentConstants.SHOW_ENTITY_TYPE, "minecraft:player");
-              value.addProperty(JsonComponentConstants.SHOW_ENTITY_ID, id.toString());
-              value.add(JsonComponentConstants.SHOW_ENTITY_NAME, object(namej -> {
-                namej.addProperty(JsonComponentConstants.TEXT, name);
+          item.add(JSONComponentConstants.HOVER_EVENT, object(event -> {
+            event.addProperty(JSONComponentConstants.HOVER_EVENT_ACTION, name(HoverEvent.Action.SHOW_ENTITY));
+            event.add(JSONComponentConstants.HOVER_EVENT_CONTENTS, object(value -> {
+              value.addProperty(JSONComponentConstants.SHOW_ENTITY_TYPE, "minecraft:player");
+              value.addProperty(JSONComponentConstants.SHOW_ENTITY_ID, id.toString());
+              value.add(JSONComponentConstants.SHOW_ENTITY_NAME, object(namej -> {
+                namej.addProperty(JSONComponentConstants.TEXT, name);
               }));
             }));
           }));

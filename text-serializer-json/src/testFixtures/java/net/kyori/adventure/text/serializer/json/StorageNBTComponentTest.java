@@ -33,9 +33,9 @@ final class StorageNBTComponentTest extends SerializerTest {
     this.testObject(
       Component.storageNBT().nbtPath("abc").storage(Key.key("doom:apple")).build(),
       json -> {
-        json.addProperty(JsonComponentConstants.NBT, "abc");
-        json.addProperty(JsonComponentConstants.NBT_INTERPRET, false);
-        json.addProperty(JsonComponentConstants.NBT_STORAGE, "doom:apple");
+        json.addProperty(JSONComponentConstants.NBT, "abc");
+        json.addProperty(JSONComponentConstants.NBT_INTERPRET, false);
+        json.addProperty(JSONComponentConstants.NBT_STORAGE, "doom:apple");
       }
     );
   }
@@ -45,9 +45,9 @@ final class StorageNBTComponentTest extends SerializerTest {
     this.testObject(
       Component.storageNBT().nbtPath("abc").storage(Key.key("doom:apple")).build(),
       json -> {
-        json.addProperty(JsonComponentConstants.NBT, "abc");
-        json.addProperty(JsonComponentConstants.NBT_INTERPRET, false);
-        json.addProperty(JsonComponentConstants.NBT_STORAGE, "doom:apple");
+        json.addProperty(JSONComponentConstants.NBT, "abc");
+        json.addProperty(JSONComponentConstants.NBT_INTERPRET, false);
+        json.addProperty(JSONComponentConstants.NBT_STORAGE, "doom:apple");
       }
     );
   }

@@ -1,1 +1,1 @@
-net.kyori.adventure.text.serializer.gson.JsonComponentSerializerProviderImpl
+net.kyori.adventure.text.serializer.gson.JSONComponentSerializerProviderImpl

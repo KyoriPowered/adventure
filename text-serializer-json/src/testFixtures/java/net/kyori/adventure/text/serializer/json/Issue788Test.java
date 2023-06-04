@@ -38,16 +38,16 @@ final class Issue788Test extends SerializerTest {
         .append(Component.text("<APPEND", TextColor.color(0xFF00FF)))
         .build(),
       json -> {
-        json.addProperty(JsonComponentConstants.TEXT, "");
-        json.add(JsonComponentConstants.EXTRA, array(extra -> {
+        json.addProperty(JSONComponentConstants.TEXT, "");
+        json.add(JSONComponentConstants.EXTRA, array(extra -> {
           extra.add(object(object -> {
-            object.addProperty(JsonComponentConstants.COLOR, "#FF00FF");
-            object.addProperty(JsonComponentConstants.TEXT, "PREPEND>");
+            object.addProperty(JSONComponentConstants.COLOR, "#FF00FF");
+            object.addProperty(JSONComponentConstants.TEXT, "PREPEND>");
           }));
-          extra.add(object(object -> object.addProperty(JsonComponentConstants.TEXT, "/sign test")));
+          extra.add(object(object -> object.addProperty(JSONComponentConstants.TEXT, "/sign test")));
           extra.add(object(object -> {
-            object.addProperty(JsonComponentConstants.COLOR, "#FF00FF");
-            object.addProperty(JsonComponentConstants.TEXT, "<APPEND");
+            object.addProperty(JSONComponentConstants.COLOR, "#FF00FF");
+            object.addProperty(JSONComponentConstants.TEXT, "<APPEND");
           }));
         }));
       }

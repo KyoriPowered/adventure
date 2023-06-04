@@ -32,9 +32,9 @@ final class EntityNBTComponentTest extends SerializerTest {
     this.testObject(
       Component.entityNBT().nbtPath("abc").selector("test").build(),
       json -> {
-        json.addProperty(JsonComponentConstants.NBT, "abc");
-        json.addProperty(JsonComponentConstants.NBT_INTERPRET, false);
-        json.addProperty(JsonComponentConstants.NBT_ENTITY, "test");
+        json.addProperty(JSONComponentConstants.NBT, "abc");
+        json.addProperty(JSONComponentConstants.NBT_INTERPRET, false);
+        json.addProperty(JSONComponentConstants.NBT_ENTITY, "test");
       }
     );
   }
@@ -44,9 +44,9 @@ final class EntityNBTComponentTest extends SerializerTest {
     this.testObject(
       Component.entityNBT().nbtPath("abc").selector("test").interpret(true).build(),
       json -> {
-        json.addProperty(JsonComponentConstants.NBT, "abc");
-        json.addProperty(JsonComponentConstants.NBT_INTERPRET, true);
-        json.addProperty(JsonComponentConstants.NBT_ENTITY, "test");
+        json.addProperty(JSONComponentConstants.NBT, "abc");
+        json.addProperty(JSONComponentConstants.NBT_INTERPRET, true);
+        json.addProperty(JSONComponentConstants.NBT_ENTITY, "test");
       }
     );
   }
