@@ -135,13 +135,28 @@ public interface GsonComponentSerializer extends JsonComponentSerializer, Builda
      * @param serializer serializer
      * @return this builder
      * @since 4.0.0
+     * @deprecated for removal since 4.14.0, use {@link #legacyHoverEventSerializer(net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer)} instead
      */
-    @NotNull Builder legacyHoverEventSerializer(final @Nullable LegacyHoverEventSerializer serializer);
+    @Deprecated
+    default @NotNull Builder legacyHoverEventSerializer(final @Nullable LegacyHoverEventSerializer serializer) {
+      return this.legacyHoverEventSerializer((net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer) serializer);
+    }
+
+    /**
+     * Sets a serializer that will be used to interpret legacy hover event {@code value} payloads.
+     * If the serializer is {@code null}, then only {@link net.kyori.adventure.text.event.HoverEvent.Action#SHOW_TEXT}
+     * legacy hover events can be deserialized.
+     *
+     * @param serializer serializer
+     * @return this builder
+     * @since 4.14.0
+     */
+    @NotNull Builder legacyHoverEventSerializer(final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer serializer);
 
     /**
      * Output a legacy hover event {@code value} in addition to the modern {@code contents}.
      *
-     * <p>A {@link #legacyHoverEventSerializer(LegacyHoverEventSerializer) legacy hover serializer} must also be set
+     * <p>A {@link #legacyHoverEventSerializer(net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer) legacy hover serializer} must also be set
      * to serialize any hover events beyond those with action {@link net.kyori.adventure.text.event.HoverEvent.Action#SHOW_TEXT}</p>
      *
      * @return this builder

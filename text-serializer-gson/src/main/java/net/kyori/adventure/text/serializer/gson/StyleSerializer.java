@@ -80,15 +80,15 @@ final class StyleSerializer extends TypeAdapter<Style> {
     }
   }
 
-  static TypeAdapter<Style> create(final @Nullable LegacyHoverEventSerializer legacyHover, final boolean emitLegacyHover, final Gson gson) {
+  static TypeAdapter<Style> create(final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHover, final boolean emitLegacyHover, final Gson gson) {
     return new StyleSerializer(legacyHover, emitLegacyHover, gson).nullSafe();
   }
 
-  private final LegacyHoverEventSerializer legacyHover;
+  private final net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer legacyHover;
   private final boolean emitLegacyHover;
   private final Gson gson;
 
-  private StyleSerializer(final @Nullable LegacyHoverEventSerializer legacyHover, final boolean emitLegacyHover, final Gson gson) {
+  private StyleSerializer(final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHover, final boolean emitLegacyHover, final Gson gson) {
     this.legacyHover = legacyHover;
     this.emitLegacyHover = emitLegacyHover;
     this.gson = gson;

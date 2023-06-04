@@ -51,10 +51,10 @@ final class SerializerFactory implements TypeAdapterFactory {
   static final Class<BlockNBTComponent.Pos> BLOCK_NBT_POS_TYPE = BlockNBTComponent.Pos.class;
 
   private final boolean downsampleColors;
-  private final LegacyHoverEventSerializer legacyHoverSerializer;
+  private final net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer legacyHoverSerializer;
   private final boolean emitLegacyHover;
 
-  SerializerFactory(final boolean downsampleColors, final @Nullable LegacyHoverEventSerializer legacyHoverSerializer, final boolean emitLegacyHover) {
+  SerializerFactory(final boolean downsampleColors, final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHoverSerializer, final boolean emitLegacyHover) {
     this.downsampleColors = downsampleColors;
     this.legacyHoverSerializer = legacyHoverSerializer;
     this.emitLegacyHover = emitLegacyHover;
