@@ -64,7 +64,7 @@ final class JSONComponentSerializerImpl implements JSONComponentSerializer {
     }
 
     @Override
-    public @NotNull Builder legacyHoverEventSerializer(@Nullable LegacyHoverEventSerializer serializer) {
+    public @NotNull Builder legacyHoverEventSerializer(final @Nullable LegacyHoverEventSerializer serializer) {
       return this;
     }
 

@@ -92,6 +92,7 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
      * @since 4.14.0
      */
     @NotNull Builder emitLegacyHoverEvent();
+
     /**
      * Create a finished serializer instance.
      *
@@ -122,7 +123,7 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
     /**
      * Provide a supplier for builder builders of {@link JSONComponentSerializer} instances.
      *
-     * @return a {@link JSONComponentSerializer
+     * @return a {@link JSONComponentSerializer}
      * @since 4.14.0
      */
     @ApiStatus.Internal
