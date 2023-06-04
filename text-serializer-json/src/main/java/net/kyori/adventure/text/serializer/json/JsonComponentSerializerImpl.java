@@ -24,9 +24,11 @@
 package net.kyori.adventure.text.serializer.json;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Services;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 final class JsonComponentSerializerImpl implements JsonComponentSerializer {
   private static final JsonComponentSerializer MISSING_INSTANCE = new JsonComponentSerializerImpl();
@@ -47,5 +49,33 @@ final class JsonComponentSerializerImpl implements JsonComponentSerializer {
     static final JsonComponentSerializer INSTANCE = SERVICE
       .map(Provider::json)
       .orElse(MISSING_INSTANCE);
+
+    static final Supplier<Builder> BUILDER_SUPPLIER = SERVICE
+      .map(Provider::builder)
+      .orElse(BuilderImpl::new);
+  }
+
+  // A no-op builder that just returns the unsupported instance.
+  static final class BuilderImpl implements Builder {
+
+    @Override
+    public @NotNull Builder downsampleColors() {
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder legacyHoverEventSerializer(@Nullable LegacyHoverEventSerializer serializer) {
+      return this;
+    }
+
+    @Override
+    public @NotNull Builder emitLegacyHoverEvent() {
+      return this;
+    }
+
+    @Override
+    public JsonComponentSerializer build() {
+      return MISSING_INSTANCE;
+    }
   }
 }

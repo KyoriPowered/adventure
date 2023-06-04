@@ -23,11 +23,13 @@
  */
 package net.kyori.adventure.text.serializer.json;
 
+import java.util.function.Supplier;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.PlatformAPI;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A JSON component serializer.
@@ -43,6 +45,60 @@ public interface JsonComponentSerializer extends ComponentSerializer<Component, 
    */
   static @NotNull JsonComponentSerializer json() {
     return JsonComponentSerializerImpl.Instances.INSTANCE;
+  }
+
+  /**
+   * Get a builder to create a customized JSON serializer instance.
+   *
+   * @return the new builder
+   * @since 4.14.0
+   */
+  static JsonComponentSerializer.@NotNull Builder builder() {
+    return JsonComponentSerializerImpl.Instances.BUILDER_SUPPLIER.get();
+  }
+
+  /**
+   * A builder for {@link JsonComponentSerializer} instances that delegates to the active serializer.
+   *
+   * @since 4.14.0
+   */
+  interface Builder {
+    /**
+     * Sets that the serializer should downsample hex colors to named colors.
+     *
+     * @return this builder
+     * @since 4.14.0
+     */
+    @NotNull Builder downsampleColors();
+
+    /**
+     * Sets a serializer that will be used to interpret legacy hover event {@code value} payloads.
+     * If the serializer is {@code null}, then only {@link net.kyori.adventure.text.event.HoverEvent.Action#SHOW_TEXT}
+     * legacy hover events can be deserialized.
+     *
+     * @param serializer serializer
+     * @return this builder
+     * @since 4.14.0
+     */
+    @NotNull Builder legacyHoverEventSerializer(final @Nullable LegacyHoverEventSerializer serializer);
+
+    /**
+     * Output a legacy hover event {@code value} in addition to the modern {@code contents}.
+     *
+     * <p>A {@link #legacyHoverEventSerializer(LegacyHoverEventSerializer) legacy hover serializer} must also be set
+     * to serialize any hover events beyond those with action {@link net.kyori.adventure.text.event.HoverEvent.Action#SHOW_TEXT}</p>
+     *
+     * @return this builder
+     * @since 4.14.0
+     */
+    @NotNull Builder emitLegacyHoverEvent();
+    /**
+     * Create a finished serializer instance.
+     *
+     * @return the new serializer
+     * @since 4.14.0
+     */
+    JsonComponentSerializer build();
   }
 
   /**
@@ -62,5 +118,15 @@ public interface JsonComponentSerializer extends ComponentSerializer<Component, 
     @ApiStatus.Internal
     @PlatformAPI
     @NotNull JsonComponentSerializer json();
+
+    /**
+     * Provide a supplier for builder builders of {@link JsonComponentSerializer} instances.
+     *
+     * @return a {@link JsonComponentSerializer
+     * @since 4.14.0
+     */
+    @ApiStatus.Internal
+    @PlatformAPI
+    @NotNull Supplier<@NotNull Builder> builder();
   }
 }

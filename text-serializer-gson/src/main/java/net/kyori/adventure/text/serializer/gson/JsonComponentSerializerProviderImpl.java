@@ -23,6 +23,7 @@
  */
 package net.kyori.adventure.text.serializer.gson;
 
+import java.util.function.Supplier;
 import net.kyori.adventure.text.serializer.json.JsonComponentSerializer;
 import net.kyori.adventure.util.Services;
 import org.jetbrains.annotations.ApiStatus;
@@ -38,5 +39,10 @@ public final class JsonComponentSerializerProviderImpl implements JsonComponentS
   @Override
   public @NotNull JsonComponentSerializer json() {
     return GsonComponentSerializer.gson();
+  }
+
+  @Override
+  public @NotNull Supplier<JsonComponentSerializer.@NotNull Builder> builder() {
+    return GsonComponentSerializer::builder;
   }
 }
