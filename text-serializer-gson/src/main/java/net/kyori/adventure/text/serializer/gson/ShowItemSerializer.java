@@ -35,11 +35,11 @@ import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.jetbrains.annotations.Nullable;
 
-final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
-  static final String ID = "id";
-  static final String COUNT = "count";
-  static final String TAG = "tag";
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.SHOW_ITEM_COUNT;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.SHOW_ITEM_ID;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.SHOW_ITEM_TAG;
 
+final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
   static TypeAdapter<HoverEvent.ShowItem> create(final Gson gson) {
     return new ShowItemSerializer(gson).nullSafe();
   }
@@ -60,11 +60,11 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
 
     while (in.hasNext()) {
       final String fieldName = in.nextName();
-      if (fieldName.equals(ID)) {
+      if (fieldName.equals(SHOW_ITEM_ID)) {
         key = this.gson.fromJson(in, SerializerFactory.KEY_TYPE);
-      } else if (fieldName.equals(COUNT)) {
+      } else if (fieldName.equals(SHOW_ITEM_COUNT)) {
         count = in.nextInt();
-      } else if (fieldName.equals(TAG)) {
+      } else if (fieldName.equals(SHOW_ITEM_TAG)) {
         final JsonToken token = in.peek();
         if (token == JsonToken.STRING || token == JsonToken.NUMBER) {
           nbt = BinaryTagHolder.binaryTagHolder(in.nextString());
@@ -73,7 +73,7 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
         } else if (token == JsonToken.NULL) {
           in.nextNull();
         } else {
-          throw new JsonParseException("Expected " + TAG + " to be a string");
+          throw new JsonParseException("Expected " + SHOW_ITEM_TAG + " to be a string");
         }
       } else {
         in.skipValue();
@@ -92,18 +92,18 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
   public void write(final JsonWriter out, final HoverEvent.ShowItem value) throws IOException {
     out.beginObject();
 
-    out.name(ID);
+    out.name(SHOW_ITEM_ID);
     this.gson.toJson(value.item(), SerializerFactory.KEY_TYPE, out);
 
     final int count = value.count();
     if (count != 1) {
-      out.name(COUNT);
+      out.name(SHOW_ITEM_COUNT);
       out.value(count);
     }
 
     final @Nullable BinaryTagHolder nbt = value.nbt();
     if (nbt != null) {
-      out.name(TAG);
+      out.name(SHOW_ITEM_TAG);
       out.value(nbt.string());
     }
 

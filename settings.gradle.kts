@@ -43,6 +43,8 @@ sequenceOf(
   "text-minimessage",
   "text-serializer-gson",
   "text-serializer-gson-legacy-impl",
+  "text-serializer-json",
+  "text-serializer-json-legacy-impl",
   "text-serializer-legacy",
   "text-serializer-plain",
   "text-serializer-ansi",

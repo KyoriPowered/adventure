@@ -30,7 +30,7 @@ import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.builder.AbstractBuilder;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.ComponentSerializer;
+import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.PlatformAPI;
 import org.jetbrains.annotations.ApiStatus;
@@ -40,12 +40,15 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A gson component serializer.
  *
+ * <p>This is a specific implementation of {@link JSONComponentSerializer} for the Gson library.
+ * Libraries that want to remain unopinionated should work with that interface instead.</p>
+ *
  * <p>Use {@link Builder#downsampleColors()} to support platforms
  * that do not understand hex colors that were introduced in Minecraft 1.16.</p>
  *
  * @since 4.0.0
  */
-public interface GsonComponentSerializer extends ComponentSerializer<Component, Component, String>, Buildable<GsonComponentSerializer, GsonComponentSerializer.Builder> {
+public interface GsonComponentSerializer extends JSONComponentSerializer, Buildable<GsonComponentSerializer, GsonComponentSerializer.Builder> {
   /**
    * Gets a component serializer for gson serialization and deserialization.
    *
@@ -118,7 +121,7 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
    *
    * @since 4.0.0
    */
-  interface Builder extends AbstractBuilder<GsonComponentSerializer>, Buildable.Builder<GsonComponentSerializer> {
+  interface Builder extends AbstractBuilder<GsonComponentSerializer>, Buildable.Builder<GsonComponentSerializer>, JSONComponentSerializer.Builder {
     /**
      * Sets that the serializer should downsample hex colors to named colors.
      *
@@ -135,16 +138,19 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
      * @param serializer serializer
      * @return this builder
      * @since 4.0.0
+     * @deprecated for removal since 4.14.0, use {@link #legacyHoverEventSerializer(net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer)} instead
      */
-    @NotNull Builder legacyHoverEventSerializer(final @Nullable LegacyHoverEventSerializer serializer);
+    @Deprecated
+    default @NotNull Builder legacyHoverEventSerializer(final @Nullable LegacyHoverEventSerializer serializer) {
+      return this.legacyHoverEventSerializer((net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer) serializer);
+    }
+
+    @Override
+    @NotNull Builder legacyHoverEventSerializer(final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer serializer);
 
     /**
-     * Output a legacy hover event {@code value} in addition to the modern {@code contents}.
+     * {@inheritDoc}
      *
-     * <p>A {@link #legacyHoverEventSerializer(LegacyHoverEventSerializer) legacy hover serializer} must also be set
-     * to serialize any hover events beyond those with action {@link net.kyori.adventure.text.event.HoverEvent.Action#SHOW_TEXT}</p>
-     *
-     * @return this builder
      * @since 4.0.0
      */
     @NotNull Builder emitLegacyHoverEvent();

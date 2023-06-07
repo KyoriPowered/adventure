@@ -3,7 +3,6 @@ import com.diffplug.gradle.spotless.FormatExtension
 import me.champeau.jmh.JMHPlugin
 import me.champeau.jmh.JmhParameters
 import net.ltgt.gradle.errorprone.errorprone
-import org.gradle.api.artifacts.type.ArtifactTypeDefinition
 
 plugins {
   id("adventure.base-conventions")

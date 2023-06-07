@@ -46,6 +46,17 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.util.Codec;
 import org.jetbrains.annotations.Nullable;
 
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.CLICK_EVENT;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.CLICK_EVENT_ACTION;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.CLICK_EVENT_VALUE;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.COLOR;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.FONT;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.HOVER_EVENT;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.HOVER_EVENT_ACTION;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.HOVER_EVENT_CONTENTS;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.HOVER_EVENT_VALUE;
+import static net.kyori.adventure.text.serializer.json.JSONComponentConstants.INSERTION;
+
 final class StyleSerializer extends TypeAdapter<Style> {
   @SuppressWarnings("checkstyle:NoWhitespaceAfter")
   private static final TextDecoration[] DECORATIONS = {
@@ -69,26 +80,15 @@ final class StyleSerializer extends TypeAdapter<Style> {
     }
   }
 
-  static final String FONT = "font";
-  static final String COLOR = "color";
-  static final String INSERTION = "insertion";
-  static final String CLICK_EVENT = "clickEvent";
-  static final String CLICK_EVENT_ACTION = "action";
-  static final String CLICK_EVENT_VALUE = "value";
-  static final String HOVER_EVENT = "hoverEvent";
-  static final String HOVER_EVENT_ACTION = "action";
-  static final String HOVER_EVENT_CONTENTS = "contents";
-  static final @Deprecated String HOVER_EVENT_VALUE = "value";
-
-  static TypeAdapter<Style> create(final @Nullable LegacyHoverEventSerializer legacyHover, final boolean emitLegacyHover, final Gson gson) {
+  static TypeAdapter<Style> create(final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHover, final boolean emitLegacyHover, final Gson gson) {
     return new StyleSerializer(legacyHover, emitLegacyHover, gson).nullSafe();
   }
 
-  private final LegacyHoverEventSerializer legacyHover;
+  private final net.kyori.adventure.text.serializer.json.LegacyHoverEventSerializer legacyHover;
   private final boolean emitLegacyHover;
   private final Gson gson;
 
-  private StyleSerializer(final @Nullable LegacyHoverEventSerializer legacyHover, final boolean emitLegacyHover, final Gson gson) {
+  private StyleSerializer(final net.kyori.adventure.text.serializer.json.@Nullable LegacyHoverEventSerializer legacyHover, final boolean emitLegacyHover, final Gson gson) {
     this.legacyHover = legacyHover;
     this.emitLegacyHover = emitLegacyHover;
     this.gson = gson;
