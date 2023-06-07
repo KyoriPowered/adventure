@@ -44,7 +44,6 @@ import org.jetbrains.annotations.Nullable;
  * @since 4.10.0
  */
 final class ColorTagResolver implements TagResolver, SerializableResolver.Single {
-  private static final char HEX = '#';
   private static final String COLOR_3 = "c";
   private static final String COLOR_2 = "colour";
   private static final String COLOR = "color";
@@ -95,7 +94,7 @@ final class ColorTagResolver implements TagResolver, SerializableResolver.Single
     final TextColor color;
     if (COLOR_ALIASES.containsKey(colorName)) {
       color = COLOR_ALIASES.get(colorName);
-    } else if (colorName.charAt(0) == HEX) {
+    } else if (colorName.charAt(0) == TextColor.HEX_CHARACTER) {
       color = TextColor.fromHexString(colorName);
     } else {
       color = NamedTextColor.NAMES.value(colorName);

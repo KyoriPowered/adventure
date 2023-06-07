@@ -77,7 +77,7 @@ public final class TransitionTag implements Inserting, Examinable {
 
         final String argValue = arg.value();
         final TextColor parsedColor;
-        if (argValue.charAt(0) == '#') {
+        if (argValue.charAt(0) == TextColor.HEX_CHARACTER) {
           parsedColor = TextColor.fromHexString(argValue);
         } else {
           parsedColor = NamedTextColor.NAMES.value(arg.lowerValue());
