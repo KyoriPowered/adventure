@@ -274,17 +274,17 @@ final class StyleSerializer extends TypeAdapter<Style> {
       out.name(HOVER_EVENT_ACTION);
       final HoverEvent.Action<?> action = hoverEvent.action();
       this.gson.toJson(action, SerializerFactory.HOVER_ACTION_TYPE, out);
-      out.name(HOVER_EVENT_CONTENTS);
-      if (action == HoverEvent.Action.SHOW_ITEM) {
-        this.gson.toJson(hoverEvent.value(), SerializerFactory.SHOW_ITEM_TYPE, out);
-      } else if (action == HoverEvent.Action.SHOW_ENTITY) {
-        this.gson.toJson(hoverEvent.value(), SerializerFactory.SHOW_ENTITY_TYPE, out);
-      } else if (action == HoverEvent.Action.SHOW_TEXT) {
-        this.gson.toJson(hoverEvent.value(), SerializerFactory.COMPONENT_TYPE, out);
-      } else if (action == HoverEvent.Action.SHOW_ACHIEVEMENT) {
-        this.gson.toJson(hoverEvent.value(), SerializerFactory.STRING_TYPE, out);
-      } else {
-        throw new JsonParseException("Don't know how to serialize " + hoverEvent.value());
+      if (action != HoverEvent.Action.SHOW_ACHIEVEMENT) { // legacy action has no modern contents value
+        out.name(HOVER_EVENT_CONTENTS);
+        if (action == HoverEvent.Action.SHOW_ITEM) {
+          this.gson.toJson(hoverEvent.value(), SerializerFactory.SHOW_ITEM_TYPE, out);
+        } else if (action == HoverEvent.Action.SHOW_ENTITY) {
+          this.gson.toJson(hoverEvent.value(), SerializerFactory.SHOW_ENTITY_TYPE, out);
+        } else if (action == HoverEvent.Action.SHOW_TEXT) {
+          this.gson.toJson(hoverEvent.value(), SerializerFactory.COMPONENT_TYPE, out);
+        } else {
+          throw new JsonParseException("Don't know how to serialize " + hoverEvent.value());
+        }
       }
       if (this.emitLegacyHover) {
         out.name(HOVER_EVENT_VALUE);
@@ -306,6 +306,8 @@ final class StyleSerializer extends TypeAdapter<Style> {
   private void serializeLegacyHoverEvent(final HoverEvent<?> hoverEvent, final JsonWriter out) throws IOException {
     if (hoverEvent.action() == HoverEvent.Action.SHOW_TEXT) { // serialization is the same
       this.gson.toJson(hoverEvent.value(), SerializerFactory.COMPONENT_TYPE, out);
+    } else if (hoverEvent.action() == HoverEvent.Action.SHOW_ACHIEVEMENT) {
+      this.gson.toJson(hoverEvent.value(), String.class, out);
     } else if (this.legacyHover != null) { // for data formats that require knowledge of SNBT
       Component serialized = null;
       try {
