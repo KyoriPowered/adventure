@@ -47,7 +47,7 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
    * @since 4.14.0
    */
   static @NotNull JSONComponentSerializer json() {
-    return JSONComponentSerializerImpl.Instances.INSTANCE;
+    return JSONComponentSerializerAccessor.Instances.INSTANCE;
   }
 
   /**
@@ -57,7 +57,7 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
    * @since 4.14.0
    */
   static JSONComponentSerializer.@NotNull Builder builder() {
-    return JSONComponentSerializerImpl.Instances.BUILDER_SUPPLIER.get();
+    return JSONComponentSerializerAccessor.Instances.BUILDER_SUPPLIER.get();
   }
 
   /**
@@ -121,7 +121,7 @@ public interface JSONComponentSerializer extends ComponentSerializer<Component, 
      */
     @ApiStatus.Internal
     @PlatformAPI
-    @NotNull JSONComponentSerializer json();
+    @NotNull JSONComponentSerializer instance();
 
     /**
      * Provide a supplier for builder builders of {@link JSONComponentSerializer} instances.

@@ -32,11 +32,6 @@ import org.jetbrains.annotations.ApiStatus;
  */
 @ApiStatus.Internal
 public final class JSONComponentConstants {
-
-  private JSONComponentConstants() {
-    throw new IllegalStateException("Cannot instantiate");
-  }
-
   public static final String TEXT = "text";
   public static final String TRANSLATE = "translate";
   public static final String TRANSLATE_FALLBACK = "fallback";
@@ -70,4 +65,8 @@ public final class JSONComponentConstants {
   public static final String SHOW_ITEM_ID = "id";
   public static final String SHOW_ITEM_COUNT = "count";
   public static final String SHOW_ITEM_TAG = "tag";
+
+  private JSONComponentConstants() {
+    throw new IllegalStateException("Cannot instantiate");
+  }
 }

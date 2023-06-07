@@ -66,23 +66,6 @@ final class NBTLegacyHoverEventSerializerImpl implements LegacyHoverEventSeriali
   }
 
   @Override
-  public HoverEvent.@NotNull ShowEntity deserializeShowEntity(final @NotNull Component input, final Codec.Decoder<Component, String, ? extends RuntimeException> componentCodec) throws IOException {
-    assertTextComponent(input);
-    final CompoundBinaryTag contents = SNBT_CODEC.decode(((TextComponent) input).content());
-    return HoverEvent.ShowEntity.showEntity(
-      Key.key(contents.getString(ENTITY_TYPE)),
-      UUID.fromString(contents.getString(ENTITY_ID)),
-      componentCodec.decode(contents.getString(ENTITY_NAME))
-    );
-  }
-
-  private static void assertTextComponent(final Component component) {
-    if (!(component instanceof TextComponent) || !component.children().isEmpty()) {
-      throw new IllegalArgumentException("Legacy events must be single Component instances");
-    }
-  }
-
-  @Override
   public @NotNull Component serializeShowItem(final HoverEvent.@NotNull ShowItem input) throws IOException {
     final CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder()
       .putString(ITEM_TYPE, input.item().asString())
@@ -95,6 +78,17 @@ final class NBTLegacyHoverEventSerializerImpl implements LegacyHoverEventSeriali
   }
 
   @Override
+  public HoverEvent.@NotNull ShowEntity deserializeShowEntity(final @NotNull Component input, final Codec.Decoder<Component, String, ? extends RuntimeException> componentCodec) throws IOException {
+    assertTextComponent(input);
+    final CompoundBinaryTag contents = SNBT_CODEC.decode(((TextComponent) input).content());
+    return HoverEvent.ShowEntity.showEntity(
+      Key.key(contents.getString(ENTITY_TYPE)),
+      UUID.fromString(contents.getString(ENTITY_ID)),
+      componentCodec.decode(contents.getString(ENTITY_NAME))
+    );
+  }
+
+  @Override
   public @NotNull Component serializeShowEntity(final HoverEvent.@NotNull ShowEntity input, final Codec.Encoder<Component, String, ? extends RuntimeException> componentCodec) throws IOException {
     final CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder()
       .putString(ENTITY_ID, input.id().toString())
@@ -104,5 +98,11 @@ final class NBTLegacyHoverEventSerializerImpl implements LegacyHoverEventSeriali
       builder.putString(ENTITY_NAME, componentCodec.encode(name));
     }
     return Component.text(SNBT_CODEC.encode(builder.build()));
+  }
+
+  private static void assertTextComponent(final Component component) {
+    if (!(component instanceof TextComponent) || !component.children().isEmpty()) {
+      throw new IllegalArgumentException("Legacy events must be single Component instances");
+    }
   }
 }

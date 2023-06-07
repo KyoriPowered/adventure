@@ -23,16 +23,12 @@
  */
 package net.kyori.adventure.text.serializer.json;
 
-import java.util.Optional;
-import java.util.function.Supplier;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.util.Services;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-final class JSONComponentSerializerImpl implements JSONComponentSerializer {
-  private static final JSONComponentSerializer MISSING_INSTANCE = new JSONComponentSerializerImpl();
-  private static final Optional<Provider> SERVICE = Services.serviceWithFallback(Provider.class);
+final class DummyJSONComponentSerializer implements JSONComponentSerializer {
+  static final JSONComponentSerializer INSTANCE = new DummyJSONComponentSerializer();
   private static final String UNSUPPORTED_MESSAGE =
     "No JsonComponentSerializer implementation found\n" +
       "\n" +
@@ -49,20 +45,8 @@ final class JSONComponentSerializerImpl implements JSONComponentSerializer {
     throw new UnsupportedOperationException(UNSUPPORTED_MESSAGE);
   }
 
-  // We cannot store these fields in JsonComponentSerializerImpl directly due to class initialisation issues.
-  static final class Instances {
-    static final JSONComponentSerializer INSTANCE = SERVICE
-      .map(Provider::json)
-      .orElse(MISSING_INSTANCE);
-
-    static final Supplier<Builder> BUILDER_SUPPLIER = SERVICE
-      .map(Provider::builder)
-      .orElse(BuilderImpl::new);
-  }
-
   // A no-op builder that just returns the unsupported instance.
   static final class BuilderImpl implements Builder {
-
     @Override
     public @NotNull Builder downsampleColors() {
       return this;
@@ -80,7 +64,7 @@ final class JSONComponentSerializerImpl implements JSONComponentSerializer {
 
     @Override
     public JSONComponentSerializer build() {
-      return MISSING_INSTANCE;
+      return INSTANCE;
     }
   }
 }

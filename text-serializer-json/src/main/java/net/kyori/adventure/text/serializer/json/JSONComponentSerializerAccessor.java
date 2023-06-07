@@ -21,33 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.text.serializer.gson;
+package net.kyori.adventure.text.serializer.json;
 
+import java.util.Optional;
 import java.util.function.Supplier;
-import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
 import net.kyori.adventure.util.Services;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 
-/**
- * Implementation of the JSON component serializer provider.
- *
- * @since 4.14.0
- */
-@ApiStatus.Internal
-public final class JSONComponentSerializerProviderImpl implements JSONComponentSerializer.Provider, Services.Fallback {
-  @Override
-  public @NotNull JSONComponentSerializer instance() {
-    return GsonComponentSerializer.gson();
+final class JSONComponentSerializerAccessor {
+  private static final Optional<JSONComponentSerializer.Provider> SERVICE = Services.serviceWithFallback(JSONComponentSerializer.Provider.class);
+
+  private JSONComponentSerializerAccessor() {
   }
 
-  @Override
-  public @NotNull Supplier<JSONComponentSerializer.@NotNull Builder> builder() {
-    return GsonComponentSerializer::builder;
-  }
+  static final class Instances {
+    static final JSONComponentSerializer INSTANCE = SERVICE
+      .map(JSONComponentSerializer.Provider::instance)
+      .orElse(DummyJSONComponentSerializer.INSTANCE);
 
-  @Override
-  public String toString() {
-    return "JSONComponentSerializerProviderImpl[GsonComponentSerializer]";
+    static final Supplier<JSONComponentSerializer.Builder> BUILDER_SUPPLIER = SERVICE
+      .map(JSONComponentSerializer.Provider::builder)
+      .orElse(DummyJSONComponentSerializer.BuilderImpl::new);
   }
 }

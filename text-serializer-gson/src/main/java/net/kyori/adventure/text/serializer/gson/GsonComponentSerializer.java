@@ -128,6 +128,7 @@ public interface GsonComponentSerializer extends JSONComponentSerializer, Builda
      * @return this builder
      * @since 4.0.0
      */
+    @Override
     @NotNull Builder downsampleColors();
 
     /**
@@ -153,6 +154,7 @@ public interface GsonComponentSerializer extends JSONComponentSerializer, Builda
      *
      * @since 4.0.0
      */
+    @Override
     @NotNull Builder emitLegacyHoverEvent();
 
     /**
